@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65746247669
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30AD6247695
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729993AbgHQP2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:28:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35004 "EHLO mail.kernel.org"
+        id S1732503AbgHQTjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:39:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729811AbgHQP00 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:26:26 -0400
+        id S1729547AbgHQP0i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:26:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 93BB523718;
-        Mon, 17 Aug 2020 15:26:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1273923A9A;
+        Mon, 17 Aug 2020 15:26:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597677986;
-        bh=VJbg8hMm8UosYBUqGXvPNUZUBrnWT/iWfgBsybH5Ap8=;
+        s=default; t=1597677997;
+        bh=UZUBwEF4e/RfXG5mcWp5oc22U3LXwLC+GXqXMZIrbZY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DAGjVxeB2Ol8ESeSpSvxpHMnKFMu7R93orW0CYV7QV1YaA2ZW85RqO7FgTNgW/3Ub
-         H2eCt/DOKp8PTYBfjIkoHDDsroBFnazE5EsnfvPYTICo9TkPhxHeM95zARA1YSoO/M
-         Kx9Y2+UEXTVniDfnZoFIXASq8HHgfRkDjKvVAmw4=
+        b=MB03q+OSxKLUuDqCjf7g1kaYbmQvpg+ZUPEs+Jo62TOL9oluR3QPv91TWA7NpcVTZ
+         tFnnPXXqgxXmO/mG4Renhm1tEbgrQvaFQE+ACJpifuJq6Xelg24jazOGjzPdwpGDYL
+         O+zqutCLqPpfYgARLKUMpwgz/8zyjnSfsZtRgc6A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.de>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org,
+        Mark Starovoytov <mstarovoitov@marvell.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 179/464] ASoC: Intel: sof_sdw: add missing .owner field
-Date:   Mon, 17 Aug 2020 17:12:12 +0200
-Message-Id: <20200817143842.394445387@linuxfoundation.org>
+Subject: [PATCH 5.8 182/464] net: atlantic: MACSec offload statistics checkpatch fix
+Date:   Mon, 17 Aug 2020 17:12:15 +0200
+Message-Id: <20200817143842.535570375@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -47,40 +46,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Mark Starovoytov <mstarovoitov@marvell.com>
 
-[ Upstream commit fb4b42f68972d6bc905c8b6e21a43a490dedfca7 ]
+[ Upstream commit 3a8b44546979cf682324bd2fd61e539f428911b4 ]
 
-This field is required for ASoC cards. Not setting it will result in a
-module->name pointer being NULL and generate problems such as
+This patch fixes a checkpatch warning.
 
-cat /proc/asound/modules
- 0 (efault)
+Fixes: aec0f1aac58e ("net: atlantic: MACSec offload statistics implementation")
 
-Fixes: 52db12d193d4 ('ASoC: Intel: boards: add sof_sdw machine driver')
-Reported-by: Jaroslav Kysela <perex@perex.cz>
-Suggested-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20200625191308.3322-4-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Mark Starovoytov <mstarovoitov@marvell.com>
+Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_sdw.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/aquantia/atlantic/aq_ethtool.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index e1c1a8ba78e62..1bfd9613449e9 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -893,6 +893,7 @@ static const char sdw_card_long_name[] = "Intel Soundwire SOF";
+diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ethtool.c b/drivers/net/ethernet/aquantia/atlantic/aq_ethtool.c
+index 743d3b13b39d7..bb1fc6052bcf1 100644
+--- a/drivers/net/ethernet/aquantia/atlantic/aq_ethtool.c
++++ b/drivers/net/ethernet/aquantia/atlantic/aq_ethtool.c
+@@ -123,21 +123,21 @@ static const char aq_macsec_stat_names[][ETH_GSTRING_LEN] = {
+ 	"MACSec OutUnctrlHitDropRedir",
+ };
  
- static struct snd_soc_card card_sof_sdw = {
- 	.name = "soundwire",
-+	.owner = THIS_MODULE,
- 	.late_probe = sof_sdw_hdmi_card_late_probe,
- 	.codec_conf = codec_conf,
- 	.num_configs = ARRAY_SIZE(codec_conf),
+-static const char *aq_macsec_txsc_stat_names[] = {
++static const char * const aq_macsec_txsc_stat_names[] = {
+ 	"MACSecTXSC%d ProtectedPkts",
+ 	"MACSecTXSC%d EncryptedPkts",
+ 	"MACSecTXSC%d ProtectedOctets",
+ 	"MACSecTXSC%d EncryptedOctets",
+ };
+ 
+-static const char *aq_macsec_txsa_stat_names[] = {
++static const char * const aq_macsec_txsa_stat_names[] = {
+ 	"MACSecTXSC%dSA%d HitDropRedirect",
+ 	"MACSecTXSC%dSA%d Protected2Pkts",
+ 	"MACSecTXSC%dSA%d ProtectedPkts",
+ 	"MACSecTXSC%dSA%d EncryptedPkts",
+ };
+ 
+-static const char *aq_macsec_rxsa_stat_names[] = {
++static const char * const aq_macsec_rxsa_stat_names[] = {
+ 	"MACSecRXSC%dSA%d UntaggedHitPkts",
+ 	"MACSecRXSC%dSA%d CtrlHitDrpRedir",
+ 	"MACSecRXSC%dSA%d NotUsingSa",
 -- 
 2.25.1
 
