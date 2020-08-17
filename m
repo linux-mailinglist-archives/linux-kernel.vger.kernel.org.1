@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0831246CBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF44246CC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388681AbgHQQ0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 12:26:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37606 "EHLO mail.kernel.org"
+        id S1731032AbgHQQ2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 12:28:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387825AbgHQPv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:51:56 -0400
+        id S2387858AbgHQPwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:52:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2C5220882;
-        Mon, 17 Aug 2020 15:51:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A4B32063A;
+        Mon, 17 Aug 2020 15:52:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679514;
-        bh=TVYzjNuX4vwDfn/79udKVbRMl5PZMEj9N1jvPHPi73c=;
+        s=default; t=1597679553;
+        bh=OICnLkXlVe5P+5n/vyf978ebwQib89u725aBI8qOb9s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mPs7ZcBW+W7aHnTs/fEKEWCNg/z3AOG4q+40Xdzc1VlUgU1bMSyJiXpw2NkSPeQeh
-         hZvqIeVo0wj06HoVYoyCLrc8QIYE7+Iy3iNQryyZfU4KoFspdPrRMnQNzs1yVxtsKl
-         CWzd9bTHXHEGrQFPZolOX5bQPqwPNtFCWh0+6hyA=
+        b=WkG5IOQ5m4bdCIdSFAPFn+ZcZjbuF4PZV1kgaOznT+eO2gMvyZ1Elzzjy3oNJdvBb
+         +5A4fcIUctEKvJlWtEIYvih4l94/GQwiPdYg5kBJ5bVyxNPewNeWP15tBa1/EA5ICk
+         2rGnx/wCZyY7K9g8QtjCazZTRnhQZhZ9JSdp3IZE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marco Felsch <m.felsch@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
+        stable@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 221/393] drm/imx: tve: fix regulator_disable error path
-Date:   Mon, 17 Aug 2020 17:14:31 +0200
-Message-Id: <20200817143830.343688448@linuxfoundation.org>
+Subject: [PATCH 5.7 223/393] spi: lantiq-ssc: Fix warning by using WQ_MEM_RECLAIM
+Date:   Mon, 17 Aug 2020 17:14:33 +0200
+Message-Id: <20200817143830.440172053@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
 References: <20200817143819.579311991@linuxfoundation.org>
@@ -44,68 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marco Felsch <m.felsch@pengutronix.de>
+From: Hauke Mehrtens <hauke@hauke-m.de>
 
-[ Upstream commit 7bb58b987fee26da2a1665c01033022624986b7c ]
+[ Upstream commit ba3548cf29616b58c93bbaffc3d636898d009858 ]
 
-Add missing regulator_disable() as devm_action to avoid dedicated
-unbind() callback and fix the missing error handling.
+The lantiq-ssc driver uses internally an own workqueue to wait till the
+data is not only written out of the FIFO but really written to the wire.
+This workqueue is flushed while the SPI subsystem is working in some
+other system workqueue.
 
-Fixes: fcbc51e54d2a ("staging: drm/imx: Add support for Television Encoder (TVEv2)")
-Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+The system workqueue is marked as WQ_MEM_RECLAIM, but the workqueue in
+the lantiq-ssc driver does not use WQ_MEM_RECLAIM for now. Add this flag
+too to prevent this warning.
+
+This fixes the following warning:
+[    2.975956] WARNING: CPU: 1 PID: 17 at kernel/workqueue.c:2614 check_flush_dependency+0x168/0x184
+[    2.984752] workqueue: WQ_MEM_RECLAIM kblockd:blk_mq_run_work_fn is flushing !WQ_MEM_RECLAIM 1e100800.spi:0x0
+
+Fixes: 891b7c5fbf61 ("mtd_blkdevs: convert to blk-mq")
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+Link: https://lore.kernel.org/r/20200717215648.20522-1-hauke@hauke-m.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/imx/imx-tve.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ drivers/spi/spi-lantiq-ssc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/imx/imx-tve.c b/drivers/gpu/drm/imx/imx-tve.c
-index 9fd4b464e829c..f91c3eb7697bc 100644
---- a/drivers/gpu/drm/imx/imx-tve.c
-+++ b/drivers/gpu/drm/imx/imx-tve.c
-@@ -494,6 +494,13 @@ static int imx_tve_register(struct drm_device *drm, struct imx_tve *tve)
- 	return 0;
- }
+diff --git a/drivers/spi/spi-lantiq-ssc.c b/drivers/spi/spi-lantiq-ssc.c
+index 44600fb71c484..049a64451c750 100644
+--- a/drivers/spi/spi-lantiq-ssc.c
++++ b/drivers/spi/spi-lantiq-ssc.c
+@@ -909,7 +909,7 @@ static int lantiq_ssc_probe(struct platform_device *pdev)
+ 	master->bits_per_word_mask = SPI_BPW_RANGE_MASK(2, 8) |
+ 				     SPI_BPW_MASK(16) | SPI_BPW_MASK(32);
  
-+static void imx_tve_disable_regulator(void *data)
-+{
-+	struct imx_tve *tve = data;
-+
-+	regulator_disable(tve->dac_reg);
-+}
-+
- static bool imx_tve_readable_reg(struct device *dev, unsigned int reg)
- {
- 	return (reg % 4 == 0) && (reg <= 0xdc);
-@@ -617,6 +624,9 @@ static int imx_tve_bind(struct device *dev, struct device *master, void *data)
- 		ret = regulator_enable(tve->dac_reg);
- 		if (ret)
- 			return ret;
-+		ret = devm_add_action_or_reset(dev, imx_tve_disable_regulator, tve);
-+		if (ret)
-+			return ret;
- 	}
- 
- 	tve->clk = devm_clk_get(dev, "tve");
-@@ -661,18 +671,8 @@ static int imx_tve_bind(struct device *dev, struct device *master, void *data)
- 	return 0;
- }
- 
--static void imx_tve_unbind(struct device *dev, struct device *master,
--	void *data)
--{
--	struct imx_tve *tve = dev_get_drvdata(dev);
--
--	if (!IS_ERR(tve->dac_reg))
--		regulator_disable(tve->dac_reg);
--}
--
- static const struct component_ops imx_tve_ops = {
- 	.bind	= imx_tve_bind,
--	.unbind	= imx_tve_unbind,
- };
- 
- static int imx_tve_probe(struct platform_device *pdev)
+-	spi->wq = alloc_ordered_workqueue(dev_name(dev), 0);
++	spi->wq = alloc_ordered_workqueue(dev_name(dev), WQ_MEM_RECLAIM);
+ 	if (!spi->wq) {
+ 		err = -ENOMEM;
+ 		goto err_clk_put;
 -- 
 2.25.1
 
