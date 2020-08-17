@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEFDC247643
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:35:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BCE924763E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732347AbgHQTfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:35:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48130 "EHLO mail.kernel.org"
+        id S1732294AbgHQTfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:35:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729789AbgHQP32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:29:28 -0400
+        id S1729425AbgHQP3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:29:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EEFCE23B85;
-        Mon, 17 Aug 2020 15:29:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B821323BE2;
+        Mon, 17 Aug 2020 15:29:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678168;
-        bh=TPvivIz/oPvaS6bc4/Rp6tbbh1/uQX/iceHJri6MASg=;
+        s=default; t=1597678174;
+        bh=I0mBP7wTCEKkZIwHjCDfXcQWyWEOqJFbo3CJkQzU6tM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ebRcccuH/xT+emtZE7Yx2Kteecpe7ijdy2uDjYzm+VgRQ7rdx/LjSx3IvDUKdVgav
-         XoyjJU5jUSEJARvhz7gtrrpOlqCd63Q8FC3X2FRn3yoeOsr1gqx1CaKQc013ECI5wp
-         PrPUnJQaXD9RUp9GHX0GDOFCgRIoePGNP8Iljvi0=
+        b=uHiCEKVoCE8AHo/GCm4wLGyioymWD3Kkm3HJEqJJnOIfG9IjxzRFy4u3idJKd6nVR
+         VgfiW6a5NVnSzNdlzGSN2O8nTIUBr/k0GoRCDLgs2kSa1qHgy+O2reKXZ3L+twUfSx
+         j973Pa2756YdpInrR50EssfzsCuxvJfnmozls0cc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Tyler Hicks <tyhicks@linux.microsoft.com>,
         Mimi Zohar <zohar@linux.ibm.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 241/464] ima: Free the entire rule if it fails to parse
-Date:   Mon, 17 Aug 2020 17:13:14 +0200
-Message-Id: <20200817143845.340769278@linuxfoundation.org>
+Subject: [PATCH 5.8 243/464] ima: Fail rule parsing when the KEXEC_CMDLINE hook is combined with an invalid cond
+Date:   Mon, 17 Aug 2020 17:13:16 +0200
+Message-Id: <20200817143845.436176143@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -46,66 +47,76 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Tyler Hicks <tyhicks@linux.microsoft.com>
 
-[ Upstream commit 2bdd737c5687d6dec30e205953146ede8a87dbdd ]
+[ Upstream commit db2045f5892a9db7354442bf77f9b03b50ff9ee1 ]
 
-Use ima_free_rule() to fix memory leaks of allocated ima_rule_entry
-members, such as .fsname and .keyrings, when an error is encountered
-during rule parsing.
+The KEXEC_CMDLINE hook function only supports the pcr conditional. Make
+this clear at policy load so that IMA policy authors don't assume that
+other conditionals are supported.
 
-Set the args_p pointer to NULL after freeing it in the error path of
-ima_lsm_rule_init() so that it isn't freed twice.
+Since KEXEC_CMDLINE's inception, ima_match_rules() has always returned
+true on any loaded KEXEC_CMDLINE rule without any consideration for
+other conditionals present in the rule. Make it clear that pcr is the
+only supported KEXEC_CMDLINE conditional by returning an error during
+policy load.
 
-This fixes a memory leak seen when loading an rule that contains an
-additional piece of allocated memory, such as an fsname, followed by an
-invalid conditional:
+An example of why this is a problem can be explained with the following
+rule:
 
- # echo "measure fsname=tmpfs bad=cond" > /sys/kernel/security/ima/policy
- -bash: echo: write error: Invalid argument
- # echo scan > /sys/kernel/debug/kmemleak
- # cat /sys/kernel/debug/kmemleak
- unreferenced object 0xffff98e7e4ece6c0 (size 8):
-   comm "bash", pid 672, jiffies 4294791843 (age 21.855s)
-   hex dump (first 8 bytes):
-     74 6d 70 66 73 00 6b a5                          tmpfs.k.
-   backtrace:
-     [<00000000abab7413>] kstrdup+0x2e/0x60
-     [<00000000f11ede32>] ima_parse_add_rule+0x7d4/0x1020
-     [<00000000f883dd7a>] ima_write_policy+0xab/0x1d0
-     [<00000000b17cf753>] vfs_write+0xde/0x1d0
-     [<00000000b8ddfdea>] ksys_write+0x68/0xe0
-     [<00000000b8e21e87>] do_syscall_64+0x56/0xa0
-     [<0000000089ea7b98>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ dont_measure func=KEXEC_CMDLINE obj_type=foo_t
 
-Fixes: f1b08bbcbdaf ("ima: define a new policy condition based on the filesystem name")
-Fixes: 2b60c0ecedf8 ("IMA: Read keyrings= option from the IMA policy")
+An IMA policy author would have assumed that rule is valid because the
+parser accepted it but the result was that measurements for all
+KEXEC_CMDLINE operations would be disabled.
+
+Fixes: b0935123a183 ("IMA: Define a new hook to measure the kexec boot command line arguments")
 Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
 Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/integrity/ima/ima_policy.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ security/integrity/ima/ima_policy.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
 diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-index 641582230861c..18271920d315d 100644
+index a3d72342408ad..a77e0b34e72f7 100644
 --- a/security/integrity/ima/ima_policy.c
 +++ b/security/integrity/ima/ima_policy.c
-@@ -913,6 +913,7 @@ static int ima_lsm_rule_init(struct ima_rule_entry *entry,
+@@ -343,6 +343,17 @@ static int ima_lsm_update_rule(struct ima_rule_entry *entry)
+ 	return 0;
+ }
  
- 		if (ima_rules == &ima_default_rules) {
- 			kfree(entry->lsm[lsm_rule].args_p);
-+			entry->lsm[lsm_rule].args_p = NULL;
- 			result = -EINVAL;
- 		} else
- 			result = 0;
-@@ -1404,7 +1405,7 @@ ssize_t ima_parse_add_rule(char *rule)
- 
- 	result = ima_parse_rule(p, entry);
- 	if (result) {
--		kfree(entry);
-+		ima_free_rule(entry);
- 		integrity_audit_msg(AUDIT_INTEGRITY_STATUS, NULL,
- 				    NULL, op, "invalid-policy", result,
- 				    audit_info);
++static bool ima_rule_contains_lsm_cond(struct ima_rule_entry *entry)
++{
++	int i;
++
++	for (i = 0; i < MAX_LSM_RULES; i++)
++		if (entry->lsm[i].args_p)
++			return true;
++
++	return false;
++}
++
+ /*
+  * The LSM policy can be reloaded, leaving the IMA LSM based rules referring
+  * to the old, stale LSM policy.  Update the IMA LSM based rules to reflect
+@@ -998,6 +1009,16 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
+ 		/* Validation of these hook functions is in ima_parse_rule() */
+ 		break;
+ 	case KEXEC_CMDLINE:
++		if (entry->action & ~(MEASURE | DONT_MEASURE))
++			return false;
++
++		if (entry->flags & ~(IMA_FUNC | IMA_PCR))
++			return false;
++
++		if (ima_rule_contains_lsm_cond(entry))
++			return false;
++
++		break;
+ 	case KEY_CHECK:
+ 		if (entry->action & ~(MEASURE | DONT_MEASURE))
+ 			return false;
 -- 
 2.25.1
 
