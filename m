@@ -2,43 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD31E246E53
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFF4246D9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389683AbgHQRSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:18:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53808 "EHLO mail.kernel.org"
+        id S2388121AbgHQRGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:06:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729307AbgHQQPS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:15:18 -0400
+        id S2388512AbgHQQJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:09:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D407622CF7;
-        Mon, 17 Aug 2020 16:15:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 131B020760;
+        Mon, 17 Aug 2020 16:09:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597680917;
-        bh=8vYg9VB/+RQNMzlHch8gpYo0lzW65j9Y2L692K7Wbcs=;
+        s=default; t=1597680572;
+        bh=tUg0ufDbgldg0Nz5MOqtxis8bznVshMzTik0MI4PymY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G0jBv+XEFHYGaBxptnDg117jqSP0M9C/aRbA8hgvgmwHvJwJrsLbZZr0eG5Dwpcs0
-         5dyB0g8c5D5CAs6Or4nxi8BgA5adPREZSFu260WMia0fIciRr+m7amxgtWwxlBknr/
-         OKOGNabFl+lFe/PENyXt2SFKOe/JoFs+DFc1z2Tk=
+        b=NHZx5EWfJzw0z7c8+5Ra1R1vAI+rioGf5156XAuJdohobDC/9C869Z1B3Uv1qp1s1
+         rUz6GmevB6phxUfISxAG161YY+CT8sdUMyl+FWKoqPOFn9mv778Mc6B466EpMlmb2T
+         P0bksBwcdL0OynZNGQCQUO2vNSZR4C4+ZgywDs2s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shirisha Ganta <shiganta@in.ibm.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Harish <harish@linux.ibm.com>,
-        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
-        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 110/168] selftests/powerpc: Fix CPU affinity for child process
-Date:   Mon, 17 Aug 2020 17:17:21 +0200
-Message-Id: <20200817143739.184679793@linuxfoundation.org>
+        stable@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Subject: [PATCH 5.4 241/270] cpufreq: dt: fix oops on armada37xx
+Date:   Mon, 17 Aug 2020 17:17:22 +0200
+Message-Id: <20200817143807.811386707@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143733.692105228@linuxfoundation.org>
-References: <20200817143733.692105228@linuxfoundation.org>
+In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
+References: <20200817143755.807583758@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,82 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Harish <harish@linux.ibm.com>
+From: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
 
-[ Upstream commit 854eb5022be04f81e318765f089f41a57c8e5d83 ]
+commit 10470dec3decaf5ed3c596f85debd7c42777ae12 upstream.
 
-On systems with large number of cpus, test fails trying to set
-affinity by calling sched_setaffinity() with smaller size for affinity
-mask. This patch fixes it by making sure that the size of allocated
-affinity mask is dependent on the number of CPUs as reported by
-get_nprocs().
+Commit 0c868627e617e43a295d8 (cpufreq: dt: Allow platform specific
+intermediate callbacks) added two function pointers to the
+struct cpufreq_dt_platform_data. However, armada37xx_cpufreq_driver_init()
+has this struct (pdata) located on the stack and uses only "suspend"
+and "resume" fields. So these newly added "get_intermediate" and
+"target_intermediate" pointers are uninitialized and contain arbitrary
+non-null values, causing all kinds of trouble.
 
-Fixes: 00b7ec5c9cf3 ("selftests/powerpc: Import Anton's context_switch2 benchmark")
-Reported-by: Shirisha Ganta <shiganta@in.ibm.com>
-Signed-off-by: Sandipan Das <sandipan@linux.ibm.com>
-Signed-off-by: Harish <harish@linux.ibm.com>
-Reviewed-by: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
-Reviewed-by: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200609081423.529664-1-harish@linux.ibm.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+For instance, here is an oops on espressobin after an attempt to change
+the cpefreq governor:
+
+[   29.174554] Unable to handle kernel execute from non-executable memory at virtual address ffff00003f87bdc0
+...
+[   29.269373] pc : 0xffff00003f87bdc0
+[   29.272957] lr : __cpufreq_driver_target+0x138/0x580
+...
+
+Fixed by zeroing out pdata before use.
+
+Cc: <stable@vger.kernel.org> # v5.7+
+Signed-off-by: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- .../powerpc/benchmarks/context_switch.c       | 21 ++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+ drivers/cpufreq/armada-37xx-cpufreq.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/powerpc/benchmarks/context_switch.c b/tools/testing/selftests/powerpc/benchmarks/context_switch.c
-index 87f1f0252299f..9ec7674697b1e 100644
---- a/tools/testing/selftests/powerpc/benchmarks/context_switch.c
-+++ b/tools/testing/selftests/powerpc/benchmarks/context_switch.c
-@@ -23,6 +23,7 @@
- #include <limits.h>
- #include <sys/time.h>
- #include <sys/syscall.h>
-+#include <sys/sysinfo.h>
- #include <sys/types.h>
- #include <sys/shm.h>
- #include <linux/futex.h>
-@@ -108,8 +109,9 @@ static void start_thread_on(void *(*fn)(void *), void *arg, unsigned long cpu)
+--- a/drivers/cpufreq/armada-37xx-cpufreq.c
++++ b/drivers/cpufreq/armada-37xx-cpufreq.c
+@@ -456,6 +456,7 @@ static int __init armada37xx_cpufreq_dri
+ 	/* Now that everything is setup, enable the DVFS at hardware level */
+ 	armada37xx_cpufreq_enable_dvfs(nb_pm_base);
  
- static void start_process_on(void *(*fn)(void *), void *arg, unsigned long cpu)
- {
--	int pid;
--	cpu_set_t cpuset;
-+	int pid, ncpus;
-+	cpu_set_t *cpuset;
-+	size_t size;
++	memset(&pdata, 0, sizeof(pdata));
+ 	pdata.suspend = armada37xx_cpufreq_suspend;
+ 	pdata.resume = armada37xx_cpufreq_resume;
  
- 	pid = fork();
- 	if (pid == -1) {
-@@ -120,14 +122,23 @@ static void start_process_on(void *(*fn)(void *), void *arg, unsigned long cpu)
- 	if (pid)
- 		return;
- 
--	CPU_ZERO(&cpuset);
--	CPU_SET(cpu, &cpuset);
-+	ncpus = get_nprocs();
-+	size = CPU_ALLOC_SIZE(ncpus);
-+	cpuset = CPU_ALLOC(ncpus);
-+	if (!cpuset) {
-+		perror("malloc");
-+		exit(1);
-+	}
-+	CPU_ZERO_S(size, cpuset);
-+	CPU_SET_S(cpu, size, cpuset);
- 
--	if (sched_setaffinity(0, sizeof(cpuset), &cpuset)) {
-+	if (sched_setaffinity(0, size, cpuset)) {
- 		perror("sched_setaffinity");
-+		CPU_FREE(cpuset);
- 		exit(1);
- 	}
- 
-+	CPU_FREE(cpuset);
- 	fn(arg);
- 
- 	exit(0);
--- 
-2.25.1
-
 
 
