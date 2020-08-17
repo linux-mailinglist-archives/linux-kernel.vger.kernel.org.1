@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9282F24772A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 663AB247718
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729685AbgHQTqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:46:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43914 "EHLO mail.kernel.org"
+        id S1729436AbgHQPWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:22:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729360AbgHQPVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:21:32 -0400
+        id S1726630AbgHQPVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:21:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E62F207D3;
-        Mon, 17 Aug 2020 15:21:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5580D20709;
+        Mon, 17 Aug 2020 15:21:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597677692;
-        bh=gWkKBLqrFyWOSdK7if2G2dxRkh8/ELMIAsFk2X3V7AE=;
+        s=default; t=1597677697;
+        bh=aKTOyl9duLwPf7+O5+vQT/Ns1nC3HmsArkT1Gs9u4B8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2l6P3DpknOknM90+KPhTNTysoWeXi6ohLiXLG/aaBs9z2HB4Afp1AS6TkGAjNcpzJ
-         KV+DVeVcu1rPU/kjTAV/gQvi2mTi88wOlEIj5U4j9WAVb/icTt1mWbd6Y3DB7rKL+t
-         /tlBlA6axk6bRf0PErglntRe1AOu9HyHh439tPiI=
+        b=WpOpBGS3CttHURQmFYvAT7iEKTj8ZFtl/0Q/HYMVxTcim9L2tIIXYt1uA4w9Rx001
+         oh56mqe7Egcoa7Rnxw1XXFzWcFDqkArjQsLCc5DnpWf5jUonJ+GUhMr6Nbvb84M5Ns
+         AfI89bWO3qtqjQxZSBuTqqwtuv6MASyVo/0AU1gA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 073/464] nvme-multipath: fix logic for non-optimized paths
-Date:   Mon, 17 Aug 2020 17:10:26 +0200
-Message-Id: <20200817143837.268973244@linuxfoundation.org>
+        stable@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 075/464] irqchip/loongson-pch-pic: Fix the misused irq flow handler
+Date:   Mon, 17 Aug 2020 17:10:28 +0200
+Message-Id: <20200817143837.367100750@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -44,40 +45,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Wilck <mwilck@suse.com>
+From: Huacai Chen <chenhc@lemote.com>
 
-[ Upstream commit 3f6e3246db0e6f92e784965d9d0edb8abe6c6b74 ]
+[ Upstream commit ac62460c24126eb2442e3653a266ebbf05b004d8 ]
 
-Handle the special case where we have exactly one optimized path,
-which we should keep using in this case.
+Loongson PCH PIC is a standard level triggered PIC, and it need to clear
+interrupt during unmask.
 
-Fixes: 75c10e732724 ("nvme-multipath: round-robin I/O policy")
-Signed off-by: Martin Wilck <mwilck@suse.com>
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Fixes: ef8c01eb64ca6719da449dab0 ("irqchip: Add Loongson PCH PIC controller")
+Signed-off-by: Huacai Chen <chenhc@lemote.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Tested-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Link: https://lore.kernel.org/r/1596099090-23516-6-git-send-email-chenhc@lemote.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/multipath.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/irqchip/irq-loongson-pch-pic.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
-index 66509472fe06a..fe8f7f123fac7 100644
---- a/drivers/nvme/host/multipath.c
-+++ b/drivers/nvme/host/multipath.c
-@@ -246,6 +246,12 @@ static struct nvme_ns *nvme_round_robin_path(struct nvme_ns_head *head,
- 			fallback = ns;
- 	}
+diff --git a/drivers/irqchip/irq-loongson-pch-pic.c b/drivers/irqchip/irq-loongson-pch-pic.c
+index 016f32c4cbe18..9bf6b9a5f7348 100644
+--- a/drivers/irqchip/irq-loongson-pch-pic.c
++++ b/drivers/irqchip/irq-loongson-pch-pic.c
+@@ -64,15 +64,6 @@ static void pch_pic_bitclr(struct pch_pic *priv, int offset, int bit)
+ 	raw_spin_unlock(&priv->pic_lock);
+ }
  
-+	/* No optimized path found, re-check the current path */
-+	if (!nvme_path_is_disabled(old) &&
-+	    old->ana_state == NVME_ANA_OPTIMIZED) {
-+		found = old;
-+		goto out;
-+	}
- 	if (!fallback)
- 		return NULL;
- 	found = fallback;
+-static void pch_pic_eoi_irq(struct irq_data *d)
+-{
+-	u32 idx = PIC_REG_IDX(d->hwirq);
+-	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
+-
+-	writel(BIT(PIC_REG_BIT(d->hwirq)),
+-			priv->base + PCH_PIC_CLR + idx * 4);
+-}
+-
+ static void pch_pic_mask_irq(struct irq_data *d)
+ {
+ 	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
+@@ -85,6 +76,9 @@ static void pch_pic_unmask_irq(struct irq_data *d)
+ {
+ 	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
+ 
++	writel(BIT(PIC_REG_BIT(d->hwirq)),
++			priv->base + PCH_PIC_CLR + PIC_REG_IDX(d->hwirq) * 4);
++
+ 	irq_chip_unmask_parent(d);
+ 	pch_pic_bitclr(priv, PCH_PIC_MASK, d->hwirq);
+ }
+@@ -124,7 +118,6 @@ static struct irq_chip pch_pic_irq_chip = {
+ 	.irq_mask		= pch_pic_mask_irq,
+ 	.irq_unmask		= pch_pic_unmask_irq,
+ 	.irq_ack		= irq_chip_ack_parent,
+-	.irq_eoi		= pch_pic_eoi_irq,
+ 	.irq_set_affinity	= irq_chip_set_affinity_parent,
+ 	.irq_set_type		= pch_pic_set_type,
+ };
+@@ -153,7 +146,7 @@ static int pch_pic_alloc(struct irq_domain *domain, unsigned int virq,
+ 
+ 	irq_domain_set_info(domain, virq, hwirq,
+ 			    &pch_pic_irq_chip, priv,
+-			    handle_fasteoi_ack_irq, NULL, NULL);
++			    handle_level_irq, NULL, NULL);
+ 	irq_set_probe(virq);
+ 
+ 	return 0;
 -- 
 2.25.1
 
