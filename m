@@ -2,70 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC472472B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B31D2472BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391600AbgHQSqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:46:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388043AbgHQSqm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 14:46:42 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FEDCC061389;
-        Mon, 17 Aug 2020 11:46:41 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 9F77014ACC17C;
-        Mon, 17 Aug 2020 11:29:47 -0700 (PDT)
-Date:   Mon, 17 Aug 2020 11:46:29 -0700 (PDT)
-Message-Id: <20200817.114629.1895503086750807628.davem@davemloft.net>
-To:     rdunlap@infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH] phylink: <linux/phylink.h>: fix function prototype
- kernel-doc warning
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <f99bacca-0868-dff0-ff72-ebe8b8749270@infradead.org>
-References: <20200816222549.379-1-rdunlap@infradead.org>
-        <20200816.211451.1874573780407600816.davem@davemloft.net>
-        <f99bacca-0868-dff0-ff72-ebe8b8749270@infradead.org>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 17 Aug 2020 11:29:47 -0700 (PDT)
+        id S2391515AbgHQSrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:47:14 -0400
+Received: from mga06.intel.com ([134.134.136.31]:35786 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391607AbgHQSq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 14:46:58 -0400
+IronPort-SDR: iM7JMPgDl1SMpaEYb0MNNo+9icdl3D11PMZ+vS//g1N4Spj5RZ1E+YUzrtijlZ2NtEiCjHSeme
+ Wb9ZisOhJZiw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="216296295"
+X-IronPort-AV: E=Sophos;i="5.76,324,1592895600"; 
+   d="scan'208";a="216296295"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 11:46:56 -0700
+IronPort-SDR: es36+i1onmXPqW83f7u1/Q1fmWC0Un2m/tSACm7I0mIyVf6iSR9ZNsTqARmWaOvlBH2ZlSsai6
+ 37iELQbJqWrg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,324,1592895600"; 
+   d="scan'208";a="292520047"
+Received: from martincl-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.45.150])
+  by orsmga003.jf.intel.com with ESMTP; 17 Aug 2020 11:46:53 -0700
+Date:   Mon, 17 Aug 2020 21:46:52 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Masahisa Kojima <masahisa.kojima@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        ardb@kernel.org, devicetree@vger.kernel.org,
+        linux-integrity@vger.kernel.org, peterhuewe@gmx.de, jgg@ziepe.ca,
+        Rob Herring <robh+dt@kernel.org>, Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v5 2/2] dt-bindings: Add SynQucer TPM MMIO as a trivial
+ device
+Message-ID: <20200817184652.GA44714@linux.intel.com>
+References: <20200728031433.3370-1-masahisa.kojima@linaro.org>
+ <20200728031433.3370-3-masahisa.kojima@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200728031433.3370-3-masahisa.kojima@linaro.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
-Date: Sun, 16 Aug 2020 22:43:54 -0700
-
-> On 8/16/20 9:14 PM, David Miller wrote:
->> From: Randy Dunlap <rdunlap@infradead.org>
->> Date: Sun, 16 Aug 2020 15:25:49 -0700
->> 
->>> Fix a kernel-doc warning for the pcs_config() function prototype:
->>>
->>> ../include/linux/phylink.h:406: warning: Excess function parameter 'permit_pause_to_mac' description in 'pcs_config'
->>>
->>> Fixes: 7137e18f6f88 ("net: phylink: add struct phylink_pcs")
->>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> 
->> There's no definition of this function anywhere.  Maybe just remove all of
->> this?
->> 
+On Tue, Jul 28, 2020 at 12:14:32PM +0900, Masahisa Kojima wrote:
+> Add a compatible string for the SynQuacer TPM to the binding for a
+> TPM exposed via a memory mapped TIS frame. The MMIO window behaves
+> slightly differently on this hardware, so it requires its own
+> identifier.
 > 
-> It's for documentation purposes...
-> 
-> It's a "method" (callback) function.
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Acked-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Masahisa Kojima <masahisa.kojima@linaro.org>
 
-I see, that's an unfortunate shortcoming of kerneldoc.
+Acked-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 
-Applied, thanks.
-
+/Jarkko
