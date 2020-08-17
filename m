@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE3FA2475B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5A162474A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730532AbgHQT1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:27:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35404 "EHLO mail.kernel.org"
+        id S1730376AbgHQPkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:40:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730370AbgHQPdV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:33:21 -0400
+        id S1729695AbgHQPdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:33:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4655208E4;
-        Mon, 17 Aug 2020 15:33:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 30F4C22B49;
+        Mon, 17 Aug 2020 15:33:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678400;
-        bh=nrJEqP40ZR2hqulL9zfKStqb14ZXK7kIm751aLXO3kM=;
+        s=default; t=1597678403;
+        bh=2HnaoUpQU7Dicbmj+xnwySE5pVovhZ3kXMTyQSvzi1E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tvqd6Sc9l29Hmw3z0SIMI0Qhurx3iaNQ6s6EILEb3ZEuvW61BfAc/Vf4l3bZuhhPU
-         7m7v2NpulzUOPJGf0h4vYujph2Nn37M/E7MD27qV/1vAkaHY8ebw/40eRo9zQC6W7v
-         12og5lin5gReIae9Nv+rzGDX05KKOkpJ0tlTtQsQ=
+        b=XwYEERRn6eqMPP9a8/iiVmnJYUuSJW70DmGhNfTG634n0iEaFeU+mvgkgaCjnoyAO
+         BmYqEloCrzp39TZ967nr7NOpNPekOKcWhJbqlR8aL43PQU4xDZp2OpwAjbj/ARUqmd
+         0B5O2/BRo8zhTsG12OTd4XZBGe8reGS2mSMPk5uQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 291/464] net: dsa: mv88e6xxx: MV88E6097 does not support jumbo configuration
-Date:   Mon, 17 Aug 2020 17:14:04 +0200
-Message-Id: <20200817143847.693087057@linuxfoundation.org>
+Subject: [PATCH 5.8 292/464] bpf: Fix pos computation for bpf_iter seq_ops->start()
+Date:   Mon, 17 Aug 2020 17:14:05 +0200
+Message-Id: <20200817143847.742429900@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -46,36 +44,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+From: Yonghong Song <yhs@fb.com>
 
-[ Upstream commit 0f3c66a3c7b4e8b9f654b3c998e9674376a51b0f ]
+[ Upstream commit 3f9969f2c040ba2ba635b6b5a7051f404bcc634d ]
 
-The MV88E6097 chip does not support configuring jumbo frames. Prior to
-commit 5f4366660d65 only the 6352, 6351, 6165 and 6320 chips configured
-jumbo mode. The refactor accidentally added the function for the 6097.
-Remove the erroneous function pointer assignment.
+Currently, the pos pointer in bpf iterator map/task/task_file
+seq_ops->start() is always incremented.
+This is incorrect. It should be increased only if
+*pos is 0 (for SEQ_START_TOKEN) since these start()
+function actually returns the first real object.
+If *pos is not 0, it merely found the object
+based on the state in seq->private, and not really
+advancing the *pos. This patch fixed this issue
+by only incrementing *pos if it is 0.
 
-Fixes: 5f4366660d65 ("net: dsa: mv88e6xxx: Refactor setting of jumbo frames")
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Note that the old *pos calculation, although not
+correct, does not affect correctness of bpf_iter
+as bpf_iter seq_file->read() does not support llseek.
+
+This patch also renamed "mid" in bpf_map iterator
+seq_file private data to "map_id" for better clarity.
+
+Fixes: 6086d29def80 ("bpf: Add bpf_map iterator")
+Fixes: eaaacd23910f ("bpf: Add task and task/file iterator targets")
+Signed-off-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Link: https://lore.kernel.org/bpf/20200722195156.4029817-1-yhs@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/mv88e6xxx/chip.c | 1 -
- 1 file changed, 1 deletion(-)
+ kernel/bpf/map_iter.c  | 16 ++++++----------
+ kernel/bpf/task_iter.c |  6 ++++--
+ 2 files changed, 10 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
-index fee16c947c2e8..359043659327e 100644
---- a/drivers/net/dsa/mv88e6xxx/chip.c
-+++ b/drivers/net/dsa/mv88e6xxx/chip.c
-@@ -3485,7 +3485,6 @@ static const struct mv88e6xxx_ops mv88e6097_ops = {
- 	.port_set_frame_mode = mv88e6351_port_set_frame_mode,
- 	.port_set_egress_floods = mv88e6352_port_set_egress_floods,
- 	.port_set_ether_type = mv88e6351_port_set_ether_type,
--	.port_set_jumbo_size = mv88e6165_port_set_jumbo_size,
- 	.port_egress_rate_limiting = mv88e6095_port_egress_rate_limiting,
- 	.port_pause_limit = mv88e6097_port_pause_limit,
- 	.port_disable_learn_limit = mv88e6xxx_port_disable_learn_limit,
+diff --git a/kernel/bpf/map_iter.c b/kernel/bpf/map_iter.c
+index c69071e334bf6..1a04c168563d3 100644
+--- a/kernel/bpf/map_iter.c
++++ b/kernel/bpf/map_iter.c
+@@ -6,7 +6,7 @@
+ #include <linux/kernel.h>
+ 
+ struct bpf_iter_seq_map_info {
+-	u32 mid;
++	u32 map_id;
+ };
+ 
+ static void *bpf_map_seq_start(struct seq_file *seq, loff_t *pos)
+@@ -14,27 +14,23 @@ static void *bpf_map_seq_start(struct seq_file *seq, loff_t *pos)
+ 	struct bpf_iter_seq_map_info *info = seq->private;
+ 	struct bpf_map *map;
+ 
+-	map = bpf_map_get_curr_or_next(&info->mid);
++	map = bpf_map_get_curr_or_next(&info->map_id);
+ 	if (!map)
+ 		return NULL;
+ 
+-	++*pos;
++	if (*pos == 0)
++		++*pos;
+ 	return map;
+ }
+ 
+ static void *bpf_map_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+ {
+ 	struct bpf_iter_seq_map_info *info = seq->private;
+-	struct bpf_map *map;
+ 
+ 	++*pos;
+-	++info->mid;
++	++info->map_id;
+ 	bpf_map_put((struct bpf_map *)v);
+-	map = bpf_map_get_curr_or_next(&info->mid);
+-	if (!map)
+-		return NULL;
+-
+-	return map;
++	return bpf_map_get_curr_or_next(&info->map_id);
+ }
+ 
+ struct bpf_iter__bpf_map {
+diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+index 4dbf2b6035f87..ac7869a389990 100644
+--- a/kernel/bpf/task_iter.c
++++ b/kernel/bpf/task_iter.c
+@@ -50,7 +50,8 @@ static void *task_seq_start(struct seq_file *seq, loff_t *pos)
+ 	if (!task)
+ 		return NULL;
+ 
+-	++*pos;
++	if (*pos == 0)
++		++*pos;
+ 	return task;
+ }
+ 
+@@ -209,7 +210,8 @@ static void *task_file_seq_start(struct seq_file *seq, loff_t *pos)
+ 		return NULL;
+ 	}
+ 
+-	++*pos;
++	if (*pos == 0)
++		++*pos;
+ 	info->task = task;
+ 	info->files = files;
+ 
 -- 
 2.25.1
 
