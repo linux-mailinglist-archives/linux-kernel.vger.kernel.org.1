@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB293246EB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 519A8246FEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729434AbgHQRfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:35:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33394 "EHLO mail.kernel.org"
+        id S2388954AbgHQR4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:56:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730102AbgHQQRq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:17:46 -0400
+        id S2388558AbgHQQKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:10:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2FFEC22BEA;
-        Mon, 17 Aug 2020 16:17:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B67C122EBE;
+        Mon, 17 Aug 2020 16:10:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597681063;
-        bh=+RjtoMXfi5nM0xHjJHVcjEt1tdqpHEiBMxfBhtLK/uk=;
+        s=default; t=1597680637;
+        bh=adhBHVJy2xHltP0rEAb5LWwcSj9nXk0sTpa4G7JeJGI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M53BPLl2wZH+nSBU9WzvJyJR4gc6XHG1emi+IDGBY4+Z9akXq6X5d8UPnSFFuNyzH
-         sOJLMvBVcsP+dov2DvlecDgqE5u82LxsRkotIUh9197QwWDzzwoyzzywem8x1N32Ne
-         w+908E902LSCk7DJ1pn+ZcoZYrPk3z1s4bBHpX5o=
+        b=0k8Xc/rHHnjxDjmn5ZU3ThDK/DkokMpUFrDCHYTPOpUjKEnwBkH6X5ULbUdKHdDXN
+         VKRqcMw0WLYI1dt+BFZtx75kZluTD3TGrfcecoyNgT59UFLVl6JsD66Y2yGVU11XwM
+         Ul7kUAESz4LakuhbwO3AaWHw4EIMdo+zUvE8/HMI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Tim Froidcoeur <tim.froidcoeur@tessares.net>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 136/168] net: refactor bind_bucket fastreuse into helper
-Date:   Mon, 17 Aug 2020 17:17:47 +0200
-Message-Id: <20200817143740.496196974@linuxfoundation.org>
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 5.4 267/270] xen/gntdev: Fix dmabuf import with non-zero sgt offset
+Date:   Mon, 17 Aug 2020 17:17:48 +0200
+Message-Id: <20200817143809.107707559@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143733.692105228@linuxfoundation.org>
-References: <20200817143733.692105228@linuxfoundation.org>
+In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
+References: <20200817143755.807583758@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,145 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Froidcoeur <tim.froidcoeur@tessares.net>
+From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 
-[ Upstream commit 62ffc589abb176821662efc4525ee4ac0b9c3894 ]
+commit 5fa4e6f1c2d8c9a4e47e1931b42893172d388f2b upstream.
 
-Refactor the fastreuse update code in inet_csk_get_port into a small
-helper function that can be called from other places.
+It is possible that the scatter-gather table during dmabuf import has
+non-zero offset of the data, but user-space doesn't expect that.
+Fix this by failing the import, so user-space doesn't access wrong data.
 
-Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: Tim Froidcoeur <tim.froidcoeur@tessares.net>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: bf8dc55b1358 ("xen/gntdev: Implement dma-buf import functionality")
+
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Acked-by: Juergen Gross <jgross@suse.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200813062113.11030-2-andr2000@gmail.com
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- include/net/inet_connection_sock.h |    4 +
- net/ipv4/inet_connection_sock.c    |   93 ++++++++++++++++++++-----------------
- 2 files changed, 55 insertions(+), 42 deletions(-)
 
---- a/include/net/inet_connection_sock.h
-+++ b/include/net/inet_connection_sock.h
-@@ -313,5 +313,9 @@ int inet_csk_compat_getsockopt(struct so
- int inet_csk_compat_setsockopt(struct sock *sk, int level, int optname,
- 			       char __user *optval, unsigned int optlen);
- 
-+/* update the fast reuse flag when adding a socket */
-+void inet_csk_update_fastreuse(struct inet_bind_bucket *tb,
-+			       struct sock *sk);
-+
- struct dst_entry *inet_csk_update_pmtu(struct sock *sk, u32 mtu);
- #endif /* _INET_CONNECTION_SOCK_H */
---- a/net/ipv4/inet_connection_sock.c
-+++ b/net/ipv4/inet_connection_sock.c
-@@ -285,51 +285,12 @@ static inline int sk_reuseport_match(str
- 				    ipv6_only_sock(sk), true, false);
- }
- 
--/* Obtain a reference to a local port for the given sock,
-- * if snum is zero it means select any available local port.
-- * We try to allocate an odd port (and leave even ports for connect())
-- */
--int inet_csk_get_port(struct sock *sk, unsigned short snum)
-+void inet_csk_update_fastreuse(struct inet_bind_bucket *tb,
-+			       struct sock *sk)
- {
--	bool reuse = sk->sk_reuse && sk->sk_state != TCP_LISTEN;
--	struct inet_hashinfo *hinfo = sk->sk_prot->h.hashinfo;
--	int ret = 1, port = snum;
--	struct inet_bind_hashbucket *head;
--	struct net *net = sock_net(sk);
--	struct inet_bind_bucket *tb = NULL;
- 	kuid_t uid = sock_i_uid(sk);
-+	bool reuse = sk->sk_reuse && sk->sk_state != TCP_LISTEN;
- 
--	if (!port) {
--		head = inet_csk_find_open_port(sk, &tb, &port);
--		if (!head)
--			return ret;
--		if (!tb)
--			goto tb_not_found;
--		goto success;
--	}
--	head = &hinfo->bhash[inet_bhashfn(net, port,
--					  hinfo->bhash_size)];
--	spin_lock_bh(&head->lock);
--	inet_bind_bucket_for_each(tb, &head->chain)
--		if (net_eq(ib_net(tb), net) && tb->port == port)
--			goto tb_found;
--tb_not_found:
--	tb = inet_bind_bucket_create(hinfo->bind_bucket_cachep,
--				     net, head, port);
--	if (!tb)
--		goto fail_unlock;
--tb_found:
--	if (!hlist_empty(&tb->owners)) {
--		if (sk->sk_reuse == SK_FORCE_REUSE)
--			goto success;
--
--		if ((tb->fastreuse > 0 && reuse) ||
--		    sk_reuseport_match(tb, sk))
--			goto success;
--		if (inet_csk_bind_conflict(sk, tb, true, true))
--			goto fail_unlock;
--	}
--success:
- 	if (hlist_empty(&tb->owners)) {
- 		tb->fastreuse = reuse;
- 		if (sk->sk_reuseport) {
-@@ -373,6 +334,54 @@ success:
- 			tb->fastreuseport = 0;
- 		}
+---
+ drivers/xen/gntdev-dmabuf.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+--- a/drivers/xen/gntdev-dmabuf.c
++++ b/drivers/xen/gntdev-dmabuf.c
+@@ -641,6 +641,14 @@ dmabuf_imp_to_refs(struct gntdev_dmabuf_
+ 		goto fail_detach;
  	}
-+}
-+
-+/* Obtain a reference to a local port for the given sock,
-+ * if snum is zero it means select any available local port.
-+ * We try to allocate an odd port (and leave even ports for connect())
-+ */
-+int inet_csk_get_port(struct sock *sk, unsigned short snum)
-+{
-+	bool reuse = sk->sk_reuse && sk->sk_state != TCP_LISTEN;
-+	struct inet_hashinfo *hinfo = sk->sk_prot->h.hashinfo;
-+	int ret = 1, port = snum;
-+	struct inet_bind_hashbucket *head;
-+	struct net *net = sock_net(sk);
-+	struct inet_bind_bucket *tb = NULL;
-+
-+	if (!port) {
-+		head = inet_csk_find_open_port(sk, &tb, &port);
-+		if (!head)
-+			return ret;
-+		if (!tb)
-+			goto tb_not_found;
-+		goto success;
+ 
++	/* Check that we have zero offset. */
++	if (sgt->sgl->offset) {
++		ret = ERR_PTR(-EINVAL);
++		pr_debug("DMA buffer has %d bytes offset, user-space expects 0\n",
++			 sgt->sgl->offset);
++		goto fail_unmap;
 +	}
-+	head = &hinfo->bhash[inet_bhashfn(net, port,
-+					  hinfo->bhash_size)];
-+	spin_lock_bh(&head->lock);
-+	inet_bind_bucket_for_each(tb, &head->chain)
-+		if (net_eq(ib_net(tb), net) && tb->port == port)
-+			goto tb_found;
-+tb_not_found:
-+	tb = inet_bind_bucket_create(hinfo->bind_bucket_cachep,
-+				     net, head, port);
-+	if (!tb)
-+		goto fail_unlock;
-+tb_found:
-+	if (!hlist_empty(&tb->owners)) {
-+		if (sk->sk_reuse == SK_FORCE_REUSE)
-+			goto success;
 +
-+		if ((tb->fastreuse > 0 && reuse) ||
-+		    sk_reuseport_match(tb, sk))
-+			goto success;
-+		if (inet_csk_bind_conflict(sk, tb, true, true))
-+			goto fail_unlock;
-+	}
-+success:
-+	inet_csk_update_fastreuse(tb, sk);
-+
- 	if (!inet_csk(sk)->icsk_bind_hash)
- 		inet_bind_hash(sk, tb, port);
- 	WARN_ON(inet_csk(sk)->icsk_bind_hash != tb);
+ 	/* Check number of pages that imported buffer has. */
+ 	if (attach->dmabuf->size != gntdev_dmabuf->nr_pages << PAGE_SHIFT) {
+ 		ret = ERR_PTR(-EINVAL);
 
 
