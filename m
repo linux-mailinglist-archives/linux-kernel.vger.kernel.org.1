@@ -2,88 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCED8246EA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 773AF246E95
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729092AbgHQReQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:34:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388973AbgHQQtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:49:06 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2389395AbgHQRdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:33:37 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:48097 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729092AbgHQQxY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:53:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597683203; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=vvIj8nL35Cjq14NalPJcQsLYy6Oeb6O5Y2EHRW7KxX4=; b=PR5Mnv9qxlLkEC95ozeKIunl4YYUH/xQ1FLau/jxA2r3bcG+cphRi/WM1+rSPYyXZEz1GuvY
+ pytrxtAiNM3PMIi2fQVAK289Tt9eP5t+U7ensV3EqpBxUsiKw/sO5A0r/ApwZLaCmmtSM4eH
+ 6Y63BTdGA973XZFZIDltwQlsDfQ=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
+ 5f3ab5f203528d4024fec304 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 Aug 2020 16:53:06
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AF514C433A0; Mon, 17 Aug 2020 16:53:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7515720674;
-        Mon, 17 Aug 2020 16:49:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597682946;
-        bh=JlMazASo7t7j+lxiY0wrEYqEoBjyCQ5tvz9EhUeBBqo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W6ooD0DRmdvqTgXKYpVJV6wDmkDHrOPWIkDevMC0CC9xZdc6kVJn+LyRL13dc9Swm
-         NJSYX+iFMkCvpmyuII6JN5/ePhPHLlrhgBLmft8I/dP9uQ5rHyuVxDVTuwr2XETXLI
-         IWZd/YApfXK9CX9HRA7AEms0jry9G+CPrJLICSPQ=
-Date:   Mon, 17 Aug 2020 18:49:24 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Guilherme G. Piccoli" <gpiccoli@canonical.com>
-Cc:     jan.kiszka@siemens.com, jbeulich@suse.com,
-        linux-kernel@vger.kernel.org, marc.zyngier@arm.com,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        "Guilherme G. Piccoli" <kernel@gpiccoli.net>,
-        pedro.principeza@canonical.com
-Subject: Re: [PATCH 4.19 35/47] x86/irq: Seperate unused system vectors from
- spurious entry again
-Message-ID: <20200817164924.GA721399@kroah.com>
-References: <c2b7a96a-122e-bdec-7368-d54700a55915@canonical.com>
- <20200817162156.GA715236@kroah.com>
- <a2788632-5690-932b-90de-14bd9cabedec@canonical.com>
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1C653C433C6;
+        Mon, 17 Aug 2020 16:53:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1C653C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Mon, 17 Aug 2020 10:52:59 -0600
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
+        linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Vivek Gautam <vivek.gautam@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        freedreno@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [Freedreno] [PATCH 05/19] iommu: add private interface for
+ adreno-smmu
+Message-ID: <20200817165259.GH3221@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
+        linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Vivek Gautam <vivek.gautam@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>, freedreno@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20200810222657.1841322-1-jcrouse@codeaurora.org>
+ <20200814024114.1177553-6-robdclark@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a2788632-5690-932b-90de-14bd9cabedec@canonical.com>
+In-Reply-To: <20200814024114.1177553-6-robdclark@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 01:43:14PM -0300, Guilherme G. Piccoli wrote:
-> On 17/08/2020 13:21, Greg KH wrote:
-> > On Mon, Aug 17, 2020 at 12:36:25PM -0300, Guilherme G. Piccoli wrote:
-> >> Hi Greg / Thomas and all involved here. First, apologies for
-> >> necro-bumping this thread, but I'm working a backport of this patch to
-> >> kernel 4.15 (Ubuntu) and then I noticed we have it on stable, but only
-> >> in 4.19+.
-> >>
-> >> Since the fixes tag presents an old commit (since ~3.19), I'm curious if
-> >> we have a special reason to not have it on long-term stables, like 4.9
-> >> or 4.14. It's a subtle portion of arch code, so I'm afraid I didn't see
-> >> something that prevents its backport for previous versions.
-> > 
-> > What is the git commit id of this patch you are referring to, you didn't
-> > provide any context here :(
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > 
+On Thu, Aug 13, 2020 at 07:41:00PM -0700, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
 > 
-> I'm sorry, I hoped the subject + thread would suffice heh
+> This interface will be used for drm/msm to coordinate with the
+> qcom_adreno_smmu_impl to enable/disable TTBR0 translation.
+> 
+> Once TTBR0 translation is enabled, the GPU's CP (Command Processor)
+> will directly switch TTBR0 pgtables (and do the necessary TLB inv)
+> synchronized to the GPU's operation.  But help from the SMMU driver
+> is needed to initially bootstrap TTBR0 translation, which cannot be
+> done from the GPU.
+> 
+> Since this is a very special case, a private interface is used to
+> avoid adding highly driver specific things to the public iommu
+> interface.
+> 
 
-There is no thread here :(
+Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
 
-> So, the mainline commit is: f8a8fe61fec8 ("x86/irq: Seperate unused
-> system vectors from spurious entry again") [0]. The backport to 4.19
-> stable tree has the following id: fc6975ee932b .
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+>  include/linux/adreno-smmu-priv.h | 36 ++++++++++++++++++++++++++++++++
+>  1 file changed, 36 insertions(+)
+>  create mode 100644 include/linux/adreno-smmu-priv.h
+> 
+> diff --git a/include/linux/adreno-smmu-priv.h b/include/linux/adreno-smmu-priv.h
+> new file mode 100644
+> index 000000000000..a889f28afb42
+> --- /dev/null
+> +++ b/include/linux/adreno-smmu-priv.h
+> @@ -0,0 +1,36 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (C) 2020 Google, Inc
+> + */
+> +
+> +#ifndef __ADRENO_SMMU_PRIV_H
+> +#define __ADRENO_SMMU_PRIV_H
+> +
+> +#include <linux/io-pgtable.h>
+> +
+> +/**
+> + * struct adreno_smmu_priv - private interface between adreno-smmu and GPU
+> + *
+> + * @cookie:        An opque token provided by adreno-smmu and passed
+> + *                 back into the callbacks
+> + * @get_ttbr1_cfg: Get the TTBR1 config for the GPUs context-bank
+> + * @set_ttbr0_cfg: Set the TTBR0 config for the GPUs context bank.  A
+> + *                 NULL config disables TTBR0 translation, otherwise
+> + *                 TTBR0 translation is enabled with the specified cfg
+> + *
+> + * The GPU driver (drm/msm) and adreno-smmu work together for controlling
+> + * the GPU's SMMU instance.  This is by necessity, as the GPU is directly
+> + * updating the SMMU for context switches, while on the other hand we do
+> + * not want to duplicate all of the initial setup logic from arm-smmu.
+> + *
+> + * This private interface is used for the two drivers to coordinate.  The
+> + * cookie and callback functions are populated when the GPU driver attaches
+> + * it's domain.
+> + */
+> +struct adreno_smmu_priv {
+> +    const void *cookie;
+> +    const struct io_pgtable_cfg *(*get_ttbr1_cfg)(const void *cookie);
+> +    int (*set_ttbr0_cfg)(const void *cookie, const struct io_pgtable_cfg *cfg);
+> +};
+> +
+> +#endif /* __ADRENO_SMMU_PRIV_H */
+> \ No newline at end of file
+> -- 
+> 2.26.2
+> 
+> _______________________________________________
+> Freedreno mailing list
+> Freedreno@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/freedreno
 
-Wow, over 1 1/2 years old, can you remember individual patches that long
-ago?
-
-Anyway, did you try to backport the patch to older kernels to see if it
-was possible and could work?
-
-If so, great, please feel free to submit it to the
-stable@vger.kernel.org list and I will be glad to pick it up.
-
-thanks,
-
-greg k-h
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
