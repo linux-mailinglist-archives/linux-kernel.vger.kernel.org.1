@@ -2,89 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C09B2245B4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 06:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1674E245B54
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 06:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726590AbgHQEFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 00:05:04 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:51949 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726420AbgHQEFC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 00:05:02 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597637102; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=3tzJwPgMhmWp2g1x0sfXafqBb2LcavWpjSfQTLWoul0=; b=J25x8Kw8v5NPunGhscy2mZZhDy5mlD6H++gPHpC77KJirYIbUkXqEk/Ltil/CiMx/KWteyOv
- p0u3Xiw1jHGSUxyMnk9vhAcOK3xaXQwfnAMcH9E5ZMVYpYgQEWRE6MW1C0Q6eQR0Mq0UhrJc
- pX6Gq5Nk4hOqIDLPA3k+atkrpRY=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f3a01d4247ccc308ca2d856 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 Aug 2020 04:04:36
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3A60DC43391; Mon, 17 Aug 2020 04:04:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 33428C433CA;
-        Mon, 17 Aug 2020 04:04:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 33428C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCH] arm64: dts: qcom: sc7180: Fix the LLCC base register size
-Date:   Mon, 17 Aug 2020 09:34:17 +0530
-Message-Id: <20200817040417.11111-1-saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726700AbgHQEJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 00:09:50 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:37904 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726676AbgHQEJp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 00:09:45 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U5xGSVm_1597637373;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0U5xGSVm_1597637373)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 17 Aug 2020 12:09:33 +0800
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+To:     axboe@kernel.dk
+Cc:     ming.lei@redhat.com, hch@lst.de, baolin.wang@linux.alibaba.com,
+        baolin.wang7@gmail.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND 0/5] Some clean-ups for bio merge
+Date:   Mon, 17 Aug 2020 12:09:14 +0800
+Message-Id: <cover.1597637287.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is only one LLCC logical bank on SC7180 SoC of size
-0x50000(320KB) not 2MB, so correct the size and fix copy
-paste mistake from SDM845 which had 4 logical banks.
+Hi,
 
-Fixes: 7cee5c742899 ("arm64: dts: qcom: sc7180: Fix node order")
-Fixes: c831fa299996 ("arm64: dts: qcom: sc7180: Add Last level cache controller node")
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+There are some duplicated code when trying to merge bio from pluged list
+and software queue, thus this patch set did some clean-ups when merging
+a bio. Any comments are welcome. Thanks.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index d46b3833e52f..e875f6c3b663 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -2618,7 +2618,7 @@ dc_noc: interconnect@9160000 {
- 
- 		system-cache-controller@9200000 {
- 			compatible = "qcom,sc7180-llcc";
--			reg = <0 0x09200000 0 0x200000>, <0 0x09600000 0 0x50000>;
-+			reg = <0 0x09200000 0 0x50000>, <0 0x09600000 0 0x50000>;
- 			reg-names = "llcc_base", "llcc_broadcast_base";
- 			interrupts = <GIC_SPI 582 IRQ_TYPE_LEVEL_HIGH>;
- 		};
+Baolin Wang (5):
+  block: Move bio merge related functions into blk-merge.c
+  block: Remove redundant blk_mq_sched_allow_merge() validation
+  block: Add a new helper to attempt to merge a bio
+  block: Remove blk_mq_attempt_merge() function
+  block: Remove __blk_mq_sched_bio_merge() helper
+
+ block/blk-core.c     | 156 -----------------------------------------------
+ block/blk-merge.c    | 168 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ block/blk-mq-sched.c |  64 ++++++--------------
+ block/blk-mq-sched.h |  13 +---
+ block/blk.h          |   9 +++
+ 5 files changed, 197 insertions(+), 213 deletions(-)
+
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+1.8.3.1
 
