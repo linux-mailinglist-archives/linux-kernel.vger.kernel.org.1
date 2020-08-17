@@ -2,274 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00EFA245E32
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 09:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09111245E3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 09:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbgHQHlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 03:41:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45606 "EHLO
+        id S1726746AbgHQHoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 03:44:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726953AbgHQHlD (ORCPT
+        with ESMTP id S1726366AbgHQHoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 03:41:03 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E25C061388;
-        Mon, 17 Aug 2020 00:41:02 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z18so13899652wrm.12;
-        Mon, 17 Aug 2020 00:41:02 -0700 (PDT)
+        Mon, 17 Aug 2020 03:44:06 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A05FC061388;
+        Mon, 17 Aug 2020 00:44:06 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id j21so7712254pgi.9;
+        Mon, 17 Aug 2020 00:44:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rHQ4xMykMaYzmKYcciJ0rrSU9YLiVKU1u6aMO/QeTf0=;
-        b=PS1luolkWZY5Oh7auOQXOzCmGCVxSgnSBuYpEfGYfc/ekRTAdeYT+gbHPh0WBHHHFa
-         LLD97UZg2YImVHN4zGiBX6HYTiHU5iDcOic3rY7gfgGuPbJeIAD4GQwsm49eN8n4mDls
-         4jePHz7xOSWuCCm8XOvFoLD1ngAH1UnPJWdcs+9Q4nrpZWqPM803E2zp/v34JFhQCM74
-         aRBtRSjsnAx0YA7ybXrubnOgtCOH+e4y2b7BIeIugM0LxxZofa0CvpU9Dy7knZc8LKG2
-         vwhDYBbPSIf/Zh7JD2FnbhTnKlPi4lNz6FpFJqc6uE97Cqxk0kZBTW0g0sMyY90Ekzk5
-         P5Rw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dyqpdq5z1tV4VGcNVcGfrr6ZWrqS+ezelgjUrIGuMOY=;
+        b=cVPgV/X2Wys5BSUaCqslmYpTyAJtSfcqQjAtJ25PxE1bfi6QFMip/+YUNsGYJVlT+0
+         fXDpLXtueD0UY8a3VnYymeANd2d7ULnAldZ/eXoIt9hN/eQ5zHJzohxOoJATmYTOPZz0
+         bMG7Js45uAPDKsG2z3UE/v7pBolErl8xOmBoWIQMrQV0CvHDSKISsjS6OYbXTV7w5A3i
+         ZMMF0wU6IPdqazs+Cr4qE+i4IsIOGUDgzgHBmYOZAu2lVJVohKmQdNtRuQo0p4bNmgNI
+         4qAaXddUlKfFUvKHnbH1vP1t58TcAqD8BOAGMTs0QphZN7Elrj43DFQs4ZO4bCE5ljwQ
+         f6lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rHQ4xMykMaYzmKYcciJ0rrSU9YLiVKU1u6aMO/QeTf0=;
-        b=G5wMx2tEzffUJREdKCRniFRqjufptrxzhoZsGrgpEAPMKlv/F1NTnKblPxj8bcnsdA
-         pQ4OxuES0Xk95glIBAdSByfJyaeQDXqvHWHM4ke/SsvCOcT613Rs9vDqkD9ZFWvfY4t9
-         qmt6zjxhFrliNxnsLRlHOLm6Rsm3Wv1FZMRtfN6P0LdiS/olbtEsBEGAGgX6xfW8Zx9N
-         6SYM9C4CsV2pL9J49fUPe/mU+buXCnsbYGC4GNlRCcoYRk2SGVonBq6CPJJ8+COZB5Ad
-         QVYHSnpdjcn8H3onyvcDRavo6RH0hnpt5N6Lf1ak3YsxsyjITi6Hs85ds89rNuW2fgOn
-         ftRA==
-X-Gm-Message-State: AOAM531LdQpdkwP9OSN3/cJQ/yhgBzH+HNVVx3CWy7tiEDZbXV+lDsZq
-        u8d+WBtpp98TqGWJ/bkq8cDDNwgZj7g=
-X-Google-Smtp-Source: ABdhPJxD/SpWdp8O4H7ZsEqCH+NXbt9XIUSFps04TRqRz2irwylI4CUzkbGS1jK6P61XNnNkddSfJQ==
-X-Received: by 2002:adf:97dd:: with SMTP id t29mr13235478wrb.97.1597650061210;
-        Mon, 17 Aug 2020 00:41:01 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id g16sm26910678wrs.88.2020.08.17.00.40.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Aug 2020 00:41:00 -0700 (PDT)
-Subject: Re: [PATCH v6 14/15] vfio: Document dual stage control
-To:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>,
-        "Sun, Yi Y" <yi.y.sun@intel.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "Wu, Hao" <hao.wu@intel.com>,
-        "stefanha@gmail.com" <stefanha@gmail.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <1595917664-33276-1-git-send-email-yi.l.liu@intel.com>
- <1595917664-33276-15-git-send-email-yi.l.liu@intel.com>
- <aa1297cb-2bde-0cea-70a4-fc8f56d745e6@redhat.com>
- <DM5PR11MB143519ABA63F46D7864E9EA2C35F0@DM5PR11MB1435.namprd11.prod.outlook.com>
-From:   Eric Auger <eric.auger.pro@gmail.com>
-Message-ID: <77c8b564-d8b8-4169-3556-5e0d91d3ea9b@gmail.com>
-Date:   Mon, 17 Aug 2020 09:40:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dyqpdq5z1tV4VGcNVcGfrr6ZWrqS+ezelgjUrIGuMOY=;
+        b=GXqPgbcj+kA4fACZt0z5cvqkbNcbF4xCc2tPMzt+kYTGt1JKwvIZ7Sn8PXsNvmhD2z
+         IvrEZ9zBW7ehMBBq8onZ79mNg3xoTEDP1fkq4SlW8QhiQtxTVPoDsza5b9tBoqc/2sli
+         90eW5Nsjx5hX63a139ePfEBNtMlSSczHbK29LZnXTYqIHFhCuvG7KyUGZ1tpcekpoL+R
+         0zJH9d3uuWwtUu+vSIUA7BRv4e3sflrtGrtm6EDdioddt6TOYK7AjT1+XrxUKmqrDz2X
+         XY6fVKfEiapGxjviM2ZKdRAGxjvehYsZUzTLoCTFt2etUMQ72/5JhXZdD1qz6T9QOMdT
+         AUNA==
+X-Gm-Message-State: AOAM530E/05IZPsR1s7kv5b0X04cJy0XF9U77Xjoamr/HR46kOpDbKNh
+        rA67oNdgDVXuMe/rpYL/VwsOBVqlPylmHA==
+X-Google-Smtp-Source: ABdhPJzbfbQ/uiCg2uwPwKHRn+2dYffKumh3NKqwFNqCskJdyyJPr79StlzHRuaoRMXJeVgxADokSA==
+X-Received: by 2002:a63:541e:: with SMTP id i30mr9448058pgb.416.1597650245662;
+        Mon, 17 Aug 2020 00:44:05 -0700 (PDT)
+Received: from gmail.com ([103.105.152.86])
+        by smtp.gmail.com with ESMTPSA id y135sm18998916pfg.148.2020.08.17.00.44.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Aug 2020 00:44:05 -0700 (PDT)
+Date:   Mon, 17 Aug 2020 13:12:29 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        skhan@linuxfoundation.org
+Subject: Re: [PATCH v1] [media] saa7134: use generic power management
+Message-ID: <20200817074229.GB5869@gmail.com>
+References: <20200622120229.89610-1-vaibhavgupta40@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <DM5PR11MB143519ABA63F46D7864E9EA2C35F0@DM5PR11MB1435.namprd11.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200622120229.89610-1-vaibhavgupta40@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yi,
-
-On 8/17/20 9:00 AM, Liu, Yi L wrote:
-> Hi Eric,
+On Mon, Jun 22, 2020 at 05:32:30PM +0530, Vaibhav Gupta wrote:
+> With the support of generic PM callbacks, drivers no longer need to use
+> legacy .suspend() and .resume() in which they had to maintain PCI states
+> changes and device's power state themselves. The required operations are
+> done by PCI core.
 > 
->> From: Auger Eric <eric.auger@redhat.com>
->> Sent: Sunday, August 16, 2020 7:52 PM
->>
->> Hi Yi,
->>
->> On 7/28/20 8:27 AM, Liu Yi L wrote:
->>> From: Eric Auger <eric.auger@redhat.com>
->>>
->>> The VFIO API was enhanced to support nested stage control: a bunch of> new
->> ioctls and usage guideline.
->>>
->>> Let's document the process to follow to set up nested mode.
->>>
->>> Cc: Kevin Tian <kevin.tian@intel.com>
->>> CC: Jacob Pan <jacob.jun.pan@linux.intel.com>
->>> Cc: Alex Williamson <alex.williamson@redhat.com>
->>> Cc: Eric Auger <eric.auger@redhat.com>
->>> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
->>> Cc: Joerg Roedel <joro@8bytes.org>
->>> Cc: Lu Baolu <baolu.lu@linux.intel.com>
->>> Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
->>> Signed-off-by: Eric Auger <eric.auger@redhat.com>
->>> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
->>> ---
->>> v5 -> v6:
->>> *) tweak per Eric's comments.
->>>
->>> v3 -> v4:
->>> *) add review-by from Stefan Hajnoczi
->>>
->>> v2 -> v3:
->>> *) address comments from Stefan Hajnoczi
->>>
->>> v1 -> v2:
->>> *) new in v2, compared with Eric's original version, pasid table bind
->>>    and fault reporting is removed as this series doesn't cover them.
->>>    Original version from Eric.
->>>    https://lkml.org/lkml/2020/3/20/700
->>> ---
->>>  Documentation/driver-api/vfio.rst | 75
->> +++++++++++++++++++++++++++++++++++++++
->>>  1 file changed, 75 insertions(+)
->>>
->>> diff --git a/Documentation/driver-api/vfio.rst b/Documentation/driver-api/vfio.rst
->>> index f1a4d3c..c0d43f0 100644
->>> --- a/Documentation/driver-api/vfio.rst
->>> +++ b/Documentation/driver-api/vfio.rst
->>> @@ -239,6 +239,81 @@ group and can access them as follows::
->>>  	/* Gratuitous device reset and go... */
->>>  	ioctl(device, VFIO_DEVICE_RESET);
->>>
->>> +IOMMU Dual Stage Control
->>> +------------------------
->>> +
->>> +Some IOMMUs support 2 stages/levels of translation. Stage corresponds
->>> +to the ARM terminology while level corresponds to Intel's terminology.
->>> +In the following text we use either without distinction.
->>> +
->>> +This is useful when the guest is exposed with a virtual IOMMU and some
->>> +devices are assigned to the guest through VFIO. Then the guest OS can
->>> +use stage-1 (GIOVA -> GPA or GVA->GPA), while the hypervisor uses stage
->>> +2 for VM isolation (GPA -> HPA).
->>> +
->>> +Under dual stage translation, the guest gets ownership of the stage-1 page
->>> +tables and also owns stage-1 configuration structures. The hypervisor owns
->>> +the root configuration structure (for security reason), including stage-2
->>> +configuration.
->> This is only true for vtd. On ARM the stage2 cfg is the Context
->> Descriptor table (aka PASID table). root cfg only store the GPA of the
->> CD table.
+> Compile-tested only.
 > 
-> I've a check with you on the meaning of "configuration structures".
-> For Vt-d, does it mean the root table/context table/pasid table? if
-> I'm correct, then how about below description?
-Yes I agree
+> Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+> ---
+>  drivers/media/pci/saa7134/saa7134-core.c | 25 ++++++++----------------
+>  1 file changed, 8 insertions(+), 17 deletions(-)
 > 
-> "Under dual stage translation, the guest gets ownership of the stage-1
-> configuration structures or page tables.
-Actually on ARM the guest both owns the S1 configuration (CD table) and
-S1 page tables ;-)
-
-on Intel I understand the guest only owns the S1 page tables.
-
-If confirmed, you may use such kind of explicit statement.
-
-Thanks
-
-Eric
-
- This depends on vendor. The
-> hypervisor owns the root configuration structure (for security reason),
-> including stage-2 configuration."
-> 
->>  This works as long as configuration structures and page table
->>> +formats are compatible between the virtual IOMMU and the physical IOMMU.
->>> +
->>> +Assuming the HW supports it, this nested mode is selected by choosing the
->>> +VFIO_TYPE1_NESTING_IOMMU type through:
->>> +
->>> +    ioctl(container, VFIO_SET_IOMMU, VFIO_TYPE1_NESTING_IOMMU);
->>> +
->>> +This forces the hypervisor to use the stage-2, leaving stage-1 available
->>> +for guest usage. The stage-1 format and binding method are vendor specific
->> . There are reported in the nesting capability ...
-> 
-> got it.
-> 
-> "The stage-1 format and binding method are reported in nesting capability."
-> 
->>> +and reported in nesting cap (VFIO_IOMMU_TYPE1_INFO_CAP_NESTING) through
->>> +VFIO_IOMMU_GET_INFO:
->>> +
->>> +    ioctl(container->fd, VFIO_IOMMU_GET_INFO, &nesting_info);
->>> +
->>> +The nesting cap info is available only after NESTING_IOMMU is selected.
->>> +If underlying IOMMU doesn't support nesting, VFIO_SET_IOMMU fails and
->> If the underlying
-> 
-> got it.
-> 
->>> +userspace should try other IOMMU types. Details of the nesting cap info
->>> +can be found in Documentation/userspace-api/iommu.rst.
->>> +
->>> +The stage-1 page table can be bound to the IOMMU in two methods: directly>
->> +or indirectly. Direct binding requires userspace to notify VFIO of every
->> Not sure we shall use this direct/indirect terminology. I don't think
->> this is part of either ARM or Intel SPEC.
->>
->> Suggestion: On Intel, the stage1 page table info are mediated by the
->> userspace for each PASID. On ARM, the userspace directly passes the GPA
->> of the whole PASID table. Currently only Intel's binding is supported.
-> 
-> got it. this is what we want to say by ditect/indirect terminology.
-> 
-> Regards,
-> Yi Liu
-> 
->>> +guest stage-1 page table binding, while indirect binding allows userspace
->>> +to bind once with an intermediate structure (e.g. PASID table) which
->>> +indirectly links to guest stage-1 page tables. The actual binding method
->>> +depends on IOMMU vendor. Currently only the direct binding capability (
->>> +IOMMU_NESTING_FEAT_BIND_PGTBL) is supported:
->>> +
->>> +    nesting_op->flags = VFIO_IOMMU_NESTING_OP_BIND_PGTBL;
->>> +    memcpy(&nesting_op->data, &bind_data, sizeof(bind_data));
->>> +    ioctl(container->fd, VFIO_IOMMU_NESTING_OP, nesting_op);
->>> +
->>> +When multiple stage-1 page tables are supported on a device, each page
->>> +table is associated with a PASID (Process Address Space ID) to differentiate
->>> +with each other. In such case, userspace should include PASID in the
->>> +bind_data when issuing direct binding request.
->>> +
->>> +PASID could be managed per-device or system-wide which, again, depends on
->>> +IOMMU vendor and is reported in nesting cap info. When system-wide policy
->>> +is reported (IOMMU_NESTING_FEAT_SYSWIDE_PASID), e.g. as by Intel platforms,
->>> +userspace *must* allocate PASID from VFIO before attempting binding of
->>> +stage-1 page table:
->>> +
->>> +    req.flags = VFIO_IOMMU_ALLOC_PASID;
->>> +    ioctl(container, VFIO_IOMMU_PASID_REQUEST, &req);
->>> +
->>> +Once the stage-1 page table is bound to the IOMMU, the guest is allowed to
->>> +fully manage its mapping at its disposal. The IOMMU walks nested stage-1
->>> +and stage-2 page tables when serving DMA requests from assigned device, and
->>> +may cache the stage-1 mapping in the IOTLB. When required (IOMMU_NESTING_
->>> +FEAT_CACHE_INVLD), userspace *must* forward guest stage-1 invalidation to
->>> +the host, so the IOTLB is invalidated:
->>> +
->>> +    nesting_op->flags = VFIO_IOMMU_NESTING_OP_CACHE_INVLD;
->>> +    memcpy(&nesting_op->data, &cache_inv_data, sizeof(cache_inv_data));
->>> +    ioctl(container->fd, VFIO_IOMMU_NESTING_OP, nesting_op);
->>> +
->>> +Forwarded invalidations can happen at various granularity levels (page
->>> +level, context level, etc.)
->>> +
->>>  VFIO User API
->>>  -------------------------------------------------------------------------------
->>>
->>>
->> Thanks
->>
->> Eric
+> diff --git a/drivers/media/pci/saa7134/saa7134-core.c b/drivers/media/pci/saa7134/saa7134-core.c
+> index e4623ed2f831..eb01109d4f98 100644
+> --- a/drivers/media/pci/saa7134/saa7134-core.c
+> +++ b/drivers/media/pci/saa7134/saa7134-core.c
+> @@ -1370,10 +1370,8 @@ static void saa7134_finidev(struct pci_dev *pci_dev)
+>  	kfree(dev);
+>  }
+>  
+> -#ifdef CONFIG_PM
+> -
+>  /* resends a current buffer in queue after resume */
+> -static int saa7134_buffer_requeue(struct saa7134_dev *dev,
+> +static int __maybe_unused saa7134_buffer_requeue(struct saa7134_dev *dev,
+>  				  struct saa7134_dmaqueue *q)
+>  {
+>  	struct saa7134_buf *buf, *next;
+> @@ -1397,8 +1395,9 @@ static int saa7134_buffer_requeue(struct saa7134_dev *dev,
+>  	return 0;
+>  }
+>  
+> -static int saa7134_suspend(struct pci_dev *pci_dev , pm_message_t state)
+> +static int __maybe_unused saa7134_suspend(struct device *dev_d)
+>  {
+> +	struct pci_dev *pci_dev = to_pci_dev(dev_d);
+>  	struct v4l2_device *v4l2_dev = pci_get_drvdata(pci_dev);
+>  	struct saa7134_dev *dev = container_of(v4l2_dev, struct saa7134_dev, v4l2_dev);
+>  
+> @@ -1428,21 +1427,15 @@ static int saa7134_suspend(struct pci_dev *pci_dev , pm_message_t state)
+>  	if (dev->remote && dev->remote->dev->users)
+>  		saa7134_ir_close(dev->remote->dev);
+>  
+> -	pci_save_state(pci_dev);
+> -	pci_set_power_state(pci_dev, pci_choose_state(pci_dev, state));
+> -
+>  	return 0;
+>  }
+>  
+> -static int saa7134_resume(struct pci_dev *pci_dev)
+> +static int __maybe_unused saa7134_resume(struct device *dev_d)
+>  {
+> -	struct v4l2_device *v4l2_dev = pci_get_drvdata(pci_dev);
+> +	struct v4l2_device *v4l2_dev = dev_get_drvdata(dev_d);
+>  	struct saa7134_dev *dev = container_of(v4l2_dev, struct saa7134_dev, v4l2_dev);
+>  	unsigned long flags;
+>  
+> -	pci_set_power_state(pci_dev, PCI_D0);
+> -	pci_restore_state(pci_dev);
+> -
+>  	/* Do things that are done in saa7134_initdev ,
+>  		except of initializing memory structures.*/
+>  
+> @@ -1490,7 +1483,6 @@ static int saa7134_resume(struct pci_dev *pci_dev)
+>  
+>  	return 0;
+>  }
+> -#endif
+>  
+>  /* ----------------------------------------------------------- */
+>  
+> @@ -1522,15 +1514,14 @@ EXPORT_SYMBOL(saa7134_ts_unregister);
+>  
+>  /* ----------------------------------------------------------- */
+>  
+> +static SIMPLE_DEV_PM_OPS(saa7134_pm_ops, saa7134_suspend, saa7134_resume);
+> +
+>  static struct pci_driver saa7134_pci_driver = {
+>  	.name     = "saa7134",
+>  	.id_table = saa7134_pci_tbl,
+>  	.probe    = saa7134_initdev,
+>  	.remove   = saa7134_finidev,
+> -#ifdef CONFIG_PM
+> -	.suspend  = saa7134_suspend,
+> -	.resume   = saa7134_resume
+> -#endif
+> +	.driver.pm = &saa7134_pm_ops,
+>  };
+>  
+>  static int __init saa7134_init(void)
+> -- 
+> 2.27.0
 > 
