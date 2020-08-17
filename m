@@ -2,115 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A634E2475AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06EB22475CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732137AbgHQT0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:26:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52068 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730405AbgHQT02 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 15:26:28 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EBF88B032;
-        Mon, 17 Aug 2020 19:26:51 +0000 (UTC)
-Date:   Mon, 17 Aug 2020 21:26:25 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [RFC PATCH 0/8] memcg: Enable fine-grained per process memory
- control
-Message-ID: <20200817192625.GF28270@dhcp22.suse.cz>
-References: <20200817140831.30260-1-longman@redhat.com>
- <20200817152655.GE28270@dhcp22.suse.cz>
- <e66d6b5f-6f02-8c8f-681e-1d6da7a72224@redhat.com>
+        id S1732220AbgHQT2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:28:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732190AbgHQT2P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 15:28:15 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5904EC061342
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 12:28:15 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id f9so8123140pju.4
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 12:28:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/K/jgK8f2b3gfIxZCz2aodMs51/j1UmWIbA0xQ4Rg4o=;
+        b=lfkmiNvf7aWyMq4W/ABS66AbSGwPDK4/gSe7KpUo1u+V3ZDzJYaa4SZCJM35LFoSeq
+         uypWUeCVnbtPuTlC6Lv32YnGX41etwb0Tro5sTqJv62MgvvHNClJfRyjsQ85Ou5LahfA
+         L3x2mLvPon1Pa5RiuLmxjerV4ytCXX9sKlZ2A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/K/jgK8f2b3gfIxZCz2aodMs51/j1UmWIbA0xQ4Rg4o=;
+        b=IRH7ii17nMoMbUywfh8pp1Od86qEN4e0PxeqSK7OyZuIQEaFsBvrFfWZBi4npd8VF/
+         YJ6iyZk4N2ZHFkcVfKMqw3akwwJDrQDKJW9QX9gCHTJtXM7I3EPy8hGOh1vRDgqELVic
+         1iZqlDqHQViB12VJMo1Ent+6G6cHwgW6bAhyV3Pffjy3lgHIJNozNIWLyB3QGM+bnj0n
+         Ias9xRO0UL5QKHZJ2Xhuw+8Qljt5q5bNFo/Z+boh+TyNiCQNqt4z0a5WKbUUvrylZOY+
+         DPMUphFnXTs4/dQbJ3pdqjGpebYbLR/xULNNJw9uBd2wwh6A6DiLE8NEG8HygJYUEBK7
+         ImGg==
+X-Gm-Message-State: AOAM5329hiVsAXrlUbB8ASx1jgSHfAqGGXY88bGdTdyVtAnf+6jFDwbm
+        9NpbJK1kOYRE+4qHJh9CMpwKFA==
+X-Google-Smtp-Source: ABdhPJxQXWN+Ph7ND4lvHYfqN6PVhgPAKtkPfn8HjEia6Dm6hV0gw3K3eYh80/xzuqoQhRxCjmbyAw==
+X-Received: by 2002:a17:902:8210:: with SMTP id x16mr12901228pln.166.1597692494753;
+        Mon, 17 Aug 2020 12:28:14 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id b25sm20700960pft.134.2020.08.17.12.28.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Aug 2020 12:28:13 -0700 (PDT)
+Date:   Mon, 17 Aug 2020 12:28:11 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     James Bottomley <jejb@linux.ibm.com>
+Cc:     Allen Pais <allen.cryptic@gmail.com>, martin.petersen@oracle.com,
+        kashyap.desai@broadcom.com, sumit.saxena@broadcom.com,
+        shivasharan.srikanteshwara@broadcom.com,
+        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, target-devel@vger.kernel.org,
+        megaraidlinux.pdl@broadcom.com, Allen Pais <allen.lkml@gmail.com>
+Subject: Re: [PATCH 0/8] scsi: convert tasklets to use new tasklet_setup()
+Message-ID: <202008171227.D3A4F454D8@keescook>
+References: <20200817085409.25268-1-allen.cryptic@gmail.com>
+ <1597675318.4475.11.camel@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e66d6b5f-6f02-8c8f-681e-1d6da7a72224@redhat.com>
+In-Reply-To: <1597675318.4475.11.camel@linux.ibm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 17-08-20 11:55:37, Waiman Long wrote:
-> On 8/17/20 11:26 AM, Michal Hocko wrote:
-> > On Mon 17-08-20 10:08:23, Waiman Long wrote:
-> > > Memory controller can be used to control and limit the amount of
-> > > physical memory used by a task. When a limit is set in "memory.high" in
-> > > a v2 non-root memory cgroup, the memory controller will try to reclaim
-> > > memory if the limit has been exceeded. Normally, that will be enough
-> > > to keep the physical memory consumption of tasks in the memory cgroup
-> > > to be around or below the "memory.high" limit.
-> > > 
-> > > Sometimes, memory reclaim may not be able to recover memory in a rate
-> > > that can catch up to the physical memory allocation rate. In this case,
-> > > the physical memory consumption will keep on increasing.  When it reaches
-> > > "memory.max" for memory cgroup v2 or when the system is running out of
-> > > free memory, the OOM killer will be invoked to kill some tasks to free
-> > > up additional memory. However, one has little control of which tasks
-> > > are going to be killed by an OOM killer. Killing tasks that hold some
-> > > important resources without freeing them first can create other system
-> > > problems down the road.
-> > > 
-> > > Users who do not want the OOM killer to be invoked to kill random
-> > > tasks in an out-of-memory situation can use the memory control
-> > > facility provided by this new patchset via prctl(2) to better manage
-> > > the mitigation action that needs to be performed to various tasks when
-> > > the specified memory limit is exceeded with memory cgroup v2 being used.
-> > > 
-> > > The currently supported mitigation actions include the followings:
-> > > 
-> > >   1) Return ENOMEM for some syscalls that allocate or handle memory
-> > >   2) Slow down the process for memory reclaim to catch up
-> > >   3) Send a specific signal to the task
-> > >   4) Kill the task
-> > > 
-> > > The users that want better memory control for their applicatons can
-> > > either modify their applications to call the prctl(2) syscall directly
-> > > with the new memory control command code or write the desired action to
-> > > the newly provided memctl procfs files of their applications provided
-> > > that those applications run in a non-root v2 memory cgroup.
-> > prctl is fundamentally about per-process control while cgroup (not only
-> > memcg) is about group of processes interface. How do those two interact
-> > together? In other words what is the semantic when different processes
-> > have a different views on the same underlying memcg event?
-> As said in a previous mail, this patchset is derived from a customer request
-> and per-process control is exactly what the customer wants. That is why
-> prctl() is used. This patchset is intended to supplement the existing memory
-> cgroup features. Processes in a memory cgroup that don't use this new API
-> will behave exactly like before. Only processes that opt to use this new API
-> will have additional mitigation actions applied on them in case the
-> additional limits are reached.
+On Mon, Aug 17, 2020 at 07:41:58AM -0700, James Bottomley wrote:
+> On Mon, 2020-08-17 at 14:24 +0530, Allen Pais wrote:
+> > From: Allen Pais <allen.lkml@gmail.com>
+> > 
+> > Commit 12cc923f1ccc ("tasklet: Introduce new initialization API")'
+> > introduced a new tasklet initialization API. This series converts 
+> > all the scsi drivers to use the new tasklet_setup() API
+> 
+> I've got to say I agree with Jens, this was a silly obfuscation:
+> 
+> +#define from_tasklet(var, callback_tasklet, tasklet_fieldname) \
+> +       container_of(callback_tasklet, typeof(*var), tasklet_fieldname)
+> 
+> Just use container_of directly since we all understand what it does.
 
-Please keep in mind that you are proposing a new user API that we will
-have to maintain for ever. That requires that the interface is
-consistent and well defined. As I've said the fundamental problem with
-this interface is that you are trying to hammer a process centric
-interface into a framework that is fundamentally process group oriented.
-Maybe there is a sensible way to do that without all sorts of weird
-corner cases but I haven't seen any of that explained here.
+But then the lines get really long, wrapped, etc. This is what the
+timer_struct conversion did too (added a container_of wrapper), so I
+think it makes sense here too.
 
-Really just try to describe a semantic when two different tasks in the
-same memcg have a different opinion on the same event. One wants ENOMEM
-and other a specific signal to be delivered. Right now the behavior will
-be timing specific because who hits the oom path is non-deterministic
-from the userspace POV. Let's say that you can somehow handle that, now
-how are you going implement ENOMEM for any context other than current
-task? I am pretty sure the more specific questions you will have the
-more this will get awkward.
 -- 
-Michal Hocko
-SUSE Labs
+Kees Cook
