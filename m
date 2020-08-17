@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1CA247358
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB322471A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731576AbgHQSym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:54:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36596 "EHLO mail.kernel.org"
+        id S2391109AbgHQSb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:31:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730919AbgHQPvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:51:21 -0400
+        id S1730863AbgHQQA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:00:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1B1120657;
-        Mon, 17 Aug 2020 15:51:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6297E208C7;
+        Mon, 17 Aug 2020 16:00:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679480;
-        bh=mjuxfjKqgxt2gXjsirK1S359T6DYB81tLFOmd6wXCKM=;
+        s=default; t=1597680055;
+        bh=aYG/jnikgEWyVG2dqQNg2g22DSYc7s2Ba/lJaKzMlRw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bufl4kw/Ow93RbdStSWLgiWNVRO5vPxQSAM0heWd0o2G0WItFVPuEOOmeXXk8zGTK
-         DmQHfTTRxue6R7/A54miJhJda7mZGrnVdxeAnh996ZMZLiZYN/4CiIiXRWP77Fsm5C
-         3p1ZRbsa7byp51pQTZRZFixc90qntOK1VV3yfQio=
+        b=VdLD3bHTQdXMV/Yz1BS/gYvpAI/wSB2QUwHwsUeLZOElYVLTD4mP+mNRZw4/aN3sE
+         IhafmQ5dpJmAUn+vSodg1nvWntJwI42UnXtJMw9CaIIwHnBsTOE6SHYHTQO03WcQ/a
+         xlq4skhAANZNPKWKOyTa77lV3Vk9dS2VmpWrbZ/w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Brian Foster <bfoster@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
+        stable@vger.kernel.org, Jon Lin <jon.lin@rock-chips.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 186/393] xfs: dont eat an EIO/ENOSPC writeback error when scrubbing data fork
-Date:   Mon, 17 Aug 2020 17:13:56 +0200
-Message-Id: <20200817143828.643410220@linuxfoundation.org>
+Subject: [PATCH 5.4 036/270] spi: rockchip: Fix error in SPI slave pio read
+Date:   Mon, 17 Aug 2020 17:13:57 +0200
+Message-Id: <20200817143757.592848129@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
-References: <20200817143819.579311991@linuxfoundation.org>
+In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
+References: <20200817143755.807583758@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,68 +46,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+From: Jon Lin <jon.lin@rock-chips.com>
 
-[ Upstream commit eb0efe5063bb10bcb653e4f8e92a74719c03a347 ]
+[ Upstream commit 4294e4accf8d695ea5605f6b189008b692e3e82c ]
 
-The data fork scrubber calls filemap_write_and_wait to flush dirty pages
-and delalloc reservations out to disk prior to checking the data fork's
-extent mappings.  Unfortunately, this means that scrub can consume the
-EIO/ENOSPC errors that would otherwise have stayed around in the address
-space until (we hope) the writer application calls fsync to persist data
-and collect errors.  The end result is that programs that wrote to a
-file might never see the error code and proceed as if nothing were
-wrong.
+The RXFLR is possible larger than rx_left in Rockchip SPI, fix it.
 
-xfs_scrub is not in a position to notify file writers about the
-writeback failure, and it's only here to check metadata, not file
-contents.  Therefore, if writeback fails, we should stuff the error code
-back into the address space so that an fsync by the writer application
-can pick that up.
-
-Fixes: 99d9d8d05da2 ("xfs: scrub inode block mappings")
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Brian Foster <bfoster@redhat.com>
-Reviewed-by: Dave Chinner <dchinner@redhat.com>
+Fixes: 01b59ce5dac8 ("spi: rockchip: use irq rather than polling")
+Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+Tested-by: Emil Renner Berthing <kernel@esmil.dk>
+Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+Reviewed-by: Emil Renner Berthing <kernel@esmil.dk>
+Link: https://lore.kernel.org/r/20200723004356.6390-3-jon.lin@rock-chips.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/scrub/bmap.c | 22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+ drivers/spi/spi-rockchip.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/xfs/scrub/bmap.c b/fs/xfs/scrub/bmap.c
-index add8598eacd5d..c4788d244de35 100644
---- a/fs/xfs/scrub/bmap.c
-+++ b/fs/xfs/scrub/bmap.c
-@@ -45,9 +45,27 @@ xchk_setup_inode_bmap(
- 	 */
- 	if (S_ISREG(VFS_I(sc->ip)->i_mode) &&
- 	    sc->sm->sm_type == XFS_SCRUB_TYPE_BMBTD) {
-+		struct address_space	*mapping = VFS_I(sc->ip)->i_mapping;
-+
- 		inode_dio_wait(VFS_I(sc->ip));
--		error = filemap_write_and_wait(VFS_I(sc->ip)->i_mapping);
--		if (error)
-+
-+		/*
-+		 * Try to flush all incore state to disk before we examine the
-+		 * space mappings for the data fork.  Leave accumulated errors
-+		 * in the mapping for the writer threads to consume.
-+		 *
-+		 * On ENOSPC or EIO writeback errors, we continue into the
-+		 * extent mapping checks because write failures do not
-+		 * necessarily imply anything about the correctness of the file
-+		 * metadata.  The metadata and the file data could be on
-+		 * completely separate devices; a media failure might only
-+		 * affect a subset of the disk, etc.  We can handle delalloc
-+		 * extents in the scrubber, so leaving them in memory is fine.
-+		 */
-+		error = filemap_fdatawrite(mapping);
-+		if (!error)
-+			error = filemap_fdatawait_keep_errors(mapping);
-+		if (error && (error != -ENOSPC && error != -EIO))
- 			goto out;
- 	}
+diff --git a/drivers/spi/spi-rockchip.c b/drivers/spi/spi-rockchip.c
+index 2cc6d9951b52e..008b64f4e031a 100644
+--- a/drivers/spi/spi-rockchip.c
++++ b/drivers/spi/spi-rockchip.c
+@@ -286,7 +286,7 @@ static void rockchip_spi_pio_writer(struct rockchip_spi *rs)
+ static void rockchip_spi_pio_reader(struct rockchip_spi *rs)
+ {
+ 	u32 words = readl_relaxed(rs->regs + ROCKCHIP_SPI_RXFLR);
+-	u32 rx_left = rs->rx_left - words;
++	u32 rx_left = (rs->rx_left > words) ? rs->rx_left - words : 0;
  
+ 	/* the hardware doesn't allow us to change fifo threshold
+ 	 * level while spi is enabled, so instead make sure to leave
 -- 
 2.25.1
 
