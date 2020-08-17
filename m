@@ -2,108 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5092475F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C61822475EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389722AbgHQTbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:31:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730596AbgHQT3t (ORCPT
+        id S1732057AbgHQTbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:31:03 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:33962 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390230AbgHQT37 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 15:29:49 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F4F2C061342
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 12:29:49 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id p37so8587508pgl.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 12:29:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IQEFM5eDrlk4uN0cUulgaoouXT3z+FbkNrUscxGEwfY=;
-        b=Il4/WYWWqFE/qAzOwm9kfMC9NOlA004aXkbH1fIy/V7R5qAIiigoyGwSXJeap5fGzZ
-         IAtDk7ThFw+I+uoN3iEBR0k7l7V4G8iWozOPbWwoF8xpj+feXJjxWDmDJxCbi3yVIIz4
-         DcKKycHMZ5M8iGH9xX6OxumCJ3bPk/sESXWCs=
+        Mon, 17 Aug 2020 15:29:59 -0400
+Received: by mail-il1-f194.google.com with SMTP id t4so15561006iln.1;
+        Mon, 17 Aug 2020 12:29:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=IQEFM5eDrlk4uN0cUulgaoouXT3z+FbkNrUscxGEwfY=;
-        b=mXred5VSDZeLml2eQbfhkA5NgLQ2tHuHXUZ+LH9IKg++NMrkAWPczkDhDJeZ8iwJNy
-         T7JMmrDpUDT5D8ufYw69UbRdrznWXMNLxxmqRkoqdlYM3qODmNduNfc1rlcJQe3TLm0U
-         Fc6CoQNSm4ydWuXAdNwFSw7sRBxnObI0SeWfDdXCIjT9neN7tRyGUQNeWa6LMfRtrNum
-         KeDZH0+0KV1Bqxl6Nea1bZUGxcVlRltBzyRweI35hlI3o/XV0bp8wMwJOda+Ddtv84qw
-         qxams+QbzT+DWGNuN2qvvspym9hMMC0YKM6JEBp3UkW5vWLzPJ0jF2SPsGRsxXXiTPil
-         6egw==
-X-Gm-Message-State: AOAM532tpRqGveHZipxOeL1CmTUaysDMPOoLnCDcRdwD3kCjnHTXD9P8
-        QURv/twnzDzoYBj1rH71hKSwiQ==
-X-Google-Smtp-Source: ABdhPJxcba+zdwEuQprcShXltivd2diUYpTiu6P3/hYoUspmLcf/BB1Tt2/E3lFjFEP7byFNgsURlA==
-X-Received: by 2002:a63:2e87:: with SMTP id u129mr11009060pgu.347.1597692589083;
-        Mon, 17 Aug 2020 12:29:49 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h19sm18737765pjv.41.2020.08.17.12.29.47
+        bh=FpFm0NgNiDqAexVigqjuzKZAAaZLotZJRuJ9L95Do60=;
+        b=Mq8aUrmmKaxT4+Dp9BmArVFRl3sTisvL4Lglivp4UB9VEtQhG6lzna62bH5eGfLR/N
+         3T0m5bt0J+6ftk7mdpjx8zXAFsr3vqv9V1iYXjTCasRg4tZvh9dGQAd3kqNZ90D2Ab06
+         e+0JFuM5SGVtOoFvuD7JBnFLdeTKEzN8J80qJP2Vh17PYRwzc5uVvPxwnXadXokbqj+k
+         tDrfqQqip+1p9CWjjBRIDbssjJ8ZKTl5eIaWA3H/cxOPxohyaNZOyzFn4amYOTj76iFO
+         lc2O8ka01Y4fqjNIGkg0FdJwN9BOyQuJgqQU9HKBRkY/Xd6m9BwR5KUgMqH2tA5Bp9LE
+         DK3w==
+X-Gm-Message-State: AOAM5321Ll5DnKvajP50b9rVInjhTnVuMVPdUW1NlMMtzdVlkaCR2p6q
+        Okp0Q7JX7qfbBA0oSWqyS5gvqbtNcg==
+X-Google-Smtp-Source: ABdhPJygpJYJZbSJFFFLfwam8k8Pk1UNtIiJG/OEfigzlhmKdRcuLTTYGPFlws8J9FXaf6XfuPRdCQ==
+X-Received: by 2002:a92:d4cf:: with SMTP id o15mr15611895ilm.25.1597692598797;
+        Mon, 17 Aug 2020 12:29:58 -0700 (PDT)
+Received: from xps15 ([64.188.179.249])
+        by smtp.gmail.com with ESMTPSA id n9sm9556901iox.43.2020.08.17.12.29.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 12:29:47 -0700 (PDT)
-Date:   Mon, 17 Aug 2020 12:29:46 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Allen Pais <allen.cryptic@gmail.com>, jdike@addtoit.com,
-        richard@nod.at, anton.ivanov@cambridgegreys.com, 3chas3@gmail.com,
-        stefanr@s5r6.in-berlin.de, airlied@linux.ie, daniel@ffwll.ch,
-        sre@kernel.org, James.Bottomley@HansenPartnership.com,
-        kys@microsoft.com, deller@gmx.de, dmitry.torokhov@gmail.com,
-        jassisinghbrar@gmail.com, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, maximlevitsky@gmail.com, oakad@yahoo.com,
-        ulf.hansson@linaro.org, mporter@kernel.crashing.org,
-        alex.bou9@gmail.com, broonie@kernel.org, martyn@welchs.me.uk,
-        manohar.vanga@gmail.com, mitch@sfgoth.com, davem@davemloft.net,
-        kuba@kernel.org, linux-um@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux1394-devel@lists.sourceforge.net,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-hyperv@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-ntb@googlegroups.com, linux-s390@vger.kernel.org,
-        linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
-        Allen Pais <allen.lkml@gmail.com>,
-        Romain Perier <romain.perier@gmail.com>
-Subject: Re: [PATCH] block: convert tasklets to use new tasklet_setup() API
-Message-ID: <202008171228.29E6B3BB@keescook>
-References: <20200817091617.28119-1-allen.cryptic@gmail.com>
- <20200817091617.28119-2-allen.cryptic@gmail.com>
- <b5508ca4-0641-7265-2939-5f03cbfab2e2@kernel.dk>
+        Mon, 17 Aug 2020 12:29:58 -0700 (PDT)
+Received: (nullmailer pid 1405345 invoked by uid 1000);
+        Mon, 17 Aug 2020 19:29:57 -0000
+Date:   Mon, 17 Aug 2020 13:29:57 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Thomas Preston <thomas.preston@codethink.co.uk>
+Cc:     linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] pinctrl: mcp23s08: Fixups for mcp23x17
+Message-ID: <20200817192957.GA1401599@bogus>
+References: <20200814100357.209340-1-thomas.preston@codethink.co.uk>
+ <26d33248-c07b-db2c-2989-3ca14aea7896@codethink.co.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b5508ca4-0641-7265-2939-5f03cbfab2e2@kernel.dk>
+In-Reply-To: <26d33248-c07b-db2c-2989-3ca14aea7896@codethink.co.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 06:56:47AM -0700, Jens Axboe wrote:
-> On 8/17/20 2:15 AM, Allen Pais wrote:
-> > From: Allen Pais <allen.lkml@gmail.com>
-> > 
-> > In preparation for unconditionally passing the
-> > struct tasklet_struct pointer to all tasklet
-> > callbacks, switch to using the new tasklet_setup()
-> > and from_tasklet() to pass the tasklet pointer explicitly.
+On Fri, Aug 14, 2020 at 02:56:54PM +0100, Thomas Preston wrote:
+> On 14/08/2020 11:03, Thomas Preston wrote:
+> > I'm in the process of adding a device tree overlay for the PiFace
+> > Digital Raspberry Pi daughter board [0]. It's an mcp23s17 SPI GPIO port
+> > expander. In doing so, I noticed some errors with the mcp23s08 driver.
+> [snip]
+> > They're quite trivial and backwards compatible, although I might be
+> > wrong about "interrupt-controller". Can someone please confirm?
+> [snip]
+> > [0] https://github.com/raspberrypi/linux/pull/3794
 > 
-> Who came up with the idea to add a macro 'from_tasklet' that is just
-> container_of? container_of in the code would be _much_ more readable,
-> and not leave anyone guessing wtf from_tasklet is doing.
-> 
-> I'd fix that up now before everything else goes in...
+> Actually I think I'm wrong about the interrupt-controller changes in patches
+> 0002 and 0003.
 
-As I mentioned in the other thread, I think this makes things much more
-readable. It's the same thing that the timer_struct conversion did
-(added a container_of wrapper) to avoid the ever-repeating use of
-typeof(), long lines, etc.
+You are. Looking at the datasheet, the GPIOs have interrupt capability. 
+GPIO controllers are typically both an interrupt client and provider.
 
--- 
-Kees Cook
+Rob
