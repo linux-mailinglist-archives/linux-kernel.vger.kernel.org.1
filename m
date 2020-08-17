@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6242476DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C27F247689
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404331AbgHQTmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:42:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33030 "EHLO
+        id S1729819AbgHQP0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729654AbgHQPYc (ORCPT
+        with ESMTP id S1729268AbgHQPYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:24:32 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F0E4C061389
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 08:24:32 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id b2so7939602qvp.9
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 08:24:32 -0700 (PDT)
+        Mon, 17 Aug 2020 11:24:39 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 666F4C061389
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 08:24:39 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id w9so12658287qts.6
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 08:24:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chrisdown.name; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=ouSI1fmyjCntwkXvcneKy2HMb4z/YqQB4UaucGM5G0Y=;
-        b=Vdd2eqWvFrDEP81j55aAGX78kvn3o7e5PdhKBfLbtGXSxnZXEFS6rNF/rNyAuLbiId
-         XAIjZxMjdkeI2BHrQgpKtsu4A99B1E2wWYMOiQAEcV45tNhN+AmeunsfqNljum1qmsGp
-         FYfBdcuJnRnf02FgwuoTFernXAY68L33k3cu8=
+        bh=U4Ljhge3b+epbgJXir/y5ETgZWDFNKeJO8zvcM0T4us=;
+        b=C/V/yGu/4HGw7a6hMLP9ENVYj7zDu12bR05GBt/EgSs8a6JahItGEOI83s5DtjzNsi
+         4B4yy5oUx78hTyZUwHMrh/tJ4KzD3RW1fnpbH1UeMuFB6sKYcv4jFiWLkadC7mq8qpzU
+         YpJxg2NhFWQqLqM47/UhmR+u9Ho3XekXb7wRw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ouSI1fmyjCntwkXvcneKy2HMb4z/YqQB4UaucGM5G0Y=;
-        b=MESwOO/E5Ugrpf013uffEkgzpuQfX94AhYVlxJ9vsLL9Mp6L30JHfUotIznVBqK4K4
-         v5WtTD41jeBCbrpVVyVEecfXCL9DaAdY2kDjOnxbvTvQiM/uIBZTYwvqc3AnpDCQG6Zh
-         blPvqEaCnSvpaX60lRxVLI/clFvvNHNssABBTQA0tK5V56q2IP2xoXAnSO0DlIUQgs2i
-         Rf1MrdpfW4uPnWN13S7S4MtOr9qx282L7mwRMuP3L2GOUiap2tuP1SGt0Nt+gO8J3qNN
-         PFuBJ1yW6urEMAfjWgf3Mp972eIhN/KmW0RLm5oOPVV0ghuM1EplkXe8v6ghZakSgssw
-         Pukw==
-X-Gm-Message-State: AOAM532vDrvF4RZoPgiK2qqo9FWhS7i/YJAzlt6uMN9pXiaQc/MfLAZk
-        hW3H1p1em6DIeQuyd7UlTXKV1cweQuJvucDIOAI=
-X-Google-Smtp-Source: ABdhPJyyv2xXWPrLIBu7N4Y0+Z1a5cPzlfs3fyYI6SBL3A/7lcjOwOjhex5two4mD3qVApuTRMZIiQ==
-X-Received: by 2002:ad4:5742:: with SMTP id q2mr15301837qvx.83.1597677870937;
-        Mon, 17 Aug 2020 08:24:30 -0700 (PDT)
+        bh=U4Ljhge3b+epbgJXir/y5ETgZWDFNKeJO8zvcM0T4us=;
+        b=m9CICk9WpwxR6YgOEktydJAEp7QvMwTFRLMhed/xiDefxSEfukMGlsCDqJNh6nyxwW
+         NrlPTuvABLsf/fWOFssiy58wlosxxNxeDdf8YnXlNiEWfnjs/DVa08u9VeIC653dJdlR
+         foz066hzHiFMoaxGTUINFRiQPxsw0uG6fB2NhG1VnoE/1ei5QQ3ttmY+oPcqUz04IiM/
+         DbfarsYIrA3kC1gJfxkXBqJXrFKdI6gnCYca8P0fhxyZ/CqsZxS9nPRU4+f81FE4TFlg
+         zOpv68eqhKGhQLfpWKUmoV3adw7gDS7lQ6orx+U+71dPvOikLOvnVgO9E4DfE+qpglaS
+         INuw==
+X-Gm-Message-State: AOAM533WBOswoQZRTHDUi++wp+LScy7dxTgo6fG1MKOeMKsEZgVFK8xN
+        CUgV5Jjt21FWxd6jDcCPMHryN5NFHcwWlvAIy8Y=
+X-Google-Smtp-Source: ABdhPJz5Q/JCWN/QUYuwgiY1Gs+yTS5fb3FSC/aue1dAnIvbCvUr5tP+Ffo/P3UhtLcre9qjYlsHjA==
+X-Received: by 2002:aed:2358:: with SMTP id i24mr14078467qtc.234.1597677878337;
+        Mon, 17 Aug 2020 08:24:38 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::1:47cc])
-        by smtp.gmail.com with ESMTPSA id g11sm17602002qke.128.2020.08.17.08.24.30
+        by smtp.gmail.com with ESMTPSA id i7sm17771201qkb.131.2020.08.17.08.24.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 08:24:30 -0700 (PDT)
-Date:   Mon, 17 Aug 2020 16:24:29 +0100
+        Mon, 17 Aug 2020 08:24:37 -0700 (PDT)
+Date:   Mon, 17 Aug 2020 16:24:36 +0100
 From:   Chris Down <chris@chrisdown.name>
 To:     linux-kernel@vger.kernel.org
 Cc:     Borislav Petkov <bp@suse.de>, Jakub Kicinski <kuba@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>, kernel-team@fb.com,
         sean.j.christopherson@intel.com, tony.luck@intel.com,
         torvalds@linux-foundation.org, x86@kernel.org
-Subject: [PATCH 1/2] x86: Prevent userspace MSR access from dominating the
- console
-Message-ID: <8ebda3f90bca583f12969892e0f0e97166c4d492.1597677395.git.chris@chrisdown.name>
+Subject: [PATCH 2/2] x86: Make source of unrecognised MSR writes unambiguous
+Message-ID: <df42b70ed20d616d7c2d7f42cd38300115584619.1597677395.git.chris@chrisdown.name>
 References: <cover.1597677395.git.chris@chrisdown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -66,75 +65,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applications which manipulate MSRs from userspace often do so
-infrequently, and all at once. As such, the default printk ratelimit
-architecture supplied by pr_err_ratelimited doesn't do enough to prevent
-kmsg becoming completely overwhelmed with their messages and pushing
-other salient information out of the circular buffer. In one case, I saw
-over 80% of kmsg being filled with these messages, and the default kmsg
-buffer being completely filled less than 5 minutes after boot(!).
-
-This change makes things much less aggressive, while still achieving the
-original goal of fiter_write(). Operators will still get warnings that
-MSRs are being manipulated from userspace, but they won't have other
-also potentially useful messages pushed out of the kmsg buffer.
-
-Of course, one can boot with `allow_writes=1` to avoid these messages at
-all, but that then has the downfall that one doesn't get _any_
-notification at all about these problems in the first place, and so is
-much less likely to forget to fix it. One might rather it was less
-binary: it was still logged, just less often, so that application
-developers _do_ have the incentive to improve their current methods,
-without us having to push other useful stuff out of the kmsg buffer.
-
-This one example isn't the point, of course: I'm sure there are plenty
-of other non-ideal-but-pragmatic cases where people are writing to MSRs
-from userspace right now, and it will take time for those people to find
-other solutions.
-
-Overall, this patch keeps the intent of the original patch, while
-mitigating its sometimes heavy effects on kmsg composition.
+In many cases the comm enough isn't enough to distinguish the offender,
+since for interpreted languages it's likely just going to be "python3"
+or whatever. Add the pid to make it unambiguous.
 
 Signed-off-by: Chris Down <chris@chrisdown.name>
 Cc: Borislav Petkov <bp@suse.de>
 Cc: Jakub Kicinski <kuba@kernel.org>
 ---
- arch/x86/kernel/msr.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ arch/x86/kernel/msr.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/arch/x86/kernel/msr.c b/arch/x86/kernel/msr.c
-index 49dcfb85e773..3babb0e58b0e 100644
+index 3babb0e58b0e..76b6b0011d62 100644
 --- a/arch/x86/kernel/msr.c
 +++ b/arch/x86/kernel/msr.c
-@@ -80,18 +80,27 @@ static ssize_t msr_read(struct file *file, char __user *buf,
- 
- static int filter_write(u32 reg)
- {
-+	/*
-+	 * Banging MSRs usually happens all at once, and can easily saturate
-+	 * kmsg. Only allow 1 MSR message every 30 seconds.
-+	 *
-+	 * We could be smarter here and do it per-MSR, or whatever, but it would
-+	 * certainly be more complex, and this is enough at least to stop
-+	 * completely saturating the ring buffer.
-+	 */
-+	static DEFINE_RATELIMIT_STATE(fw_rs, 30 * HZ, 1);
-+
- 	switch (allow_writes) {
- 	case MSR_WRITES_ON:  return 0;
- 	case MSR_WRITES_OFF: return -EPERM;
- 	default: break;
- 	}
- 
--	if (reg == MSR_IA32_ENERGY_PERF_BIAS)
-+	if (!__ratelimit(&fw_rs) || reg == MSR_IA32_ENERGY_PERF_BIAS)
+@@ -99,8 +99,9 @@ static int filter_write(u32 reg)
+ 	if (!__ratelimit(&fw_rs) || reg == MSR_IA32_ENERGY_PERF_BIAS)
  		return 0;
  
--	pr_err_ratelimited("Write to unrecognized MSR 0x%x by %s\n"
--			   "Please report to x86@kernel.org\n",
--			   reg, current->comm);
-+	pr_err("Write to unrecognized MSR 0x%x by %s\n"
-+	       "Please report to x86@kernel.org\n", reg, current->comm);
+-	pr_err("Write to unrecognized MSR 0x%x by %s\n"
+-	       "Please report to x86@kernel.org\n", reg, current->comm);
++	pr_err("Write to unrecognized MSR 0x%x by pid %s:%d\n"
++	       "Please report to x86@kernel.org\n",
++	       reg, current->comm, current->pid);
  
  	return 0;
  }
