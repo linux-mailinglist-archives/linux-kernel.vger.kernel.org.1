@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B38E5247359
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54BED24719E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731666AbgHQSyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:54:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36510 "EHLO mail.kernel.org"
+        id S2391091AbgHQSbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:31:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730918AbgHQPvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:51:18 -0400
+        id S2388016AbgHQQBU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:01:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64218208C7;
-        Mon, 17 Aug 2020 15:51:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89C38206FA;
+        Mon, 17 Aug 2020 16:01:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679477;
-        bh=f5AxJzQEgxpGJl23qttQXr3kXsI0TYM6W1c+K0TsGFc=;
+        s=default; t=1597680080;
+        bh=lbL7P2kqhPvQnOmd05EN1QjyhRu02oRHZ6JHPQepo6Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RI2ts9tk/Vw7c1G2Km0KQzrjFRu718c/Tox0HTnihS5zVp50/qreBwqu1p0X/FmoV
-         qnL6LfRqAfS7N2Kg0iq3wzkjlJGa4RZj8TJ/aAmk9s9a5SMwI40/DV0LBF9t8VvbNw
-         2/ZzlAVfqKaYnBy2jES84O7PxS08RBvo/04L+dhw=
+        b=gY7U9Yqs/b5nluLc+DwmPdVj8s4qIJ/ObTknGIXo7c3EZowoeeRqUcnCiXzvhR2H6
+         wRyQXWr0Cm/NtUqqspPii4Y/muXSscp8qP5mXqlIlHKIzZuGiZ2Idw/t3eyXsyPsI3
+         6RBsD8JLKBwXLD+KOr6OzixTggdEDL5Vw2N2pjIw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 195/393] drm: panel: simple: Fix bpc for LG LB070WV8 panel
-Date:   Mon, 17 Aug 2020 17:14:05 +0200
-Message-Id: <20200817143829.081943634@linuxfoundation.org>
+        stable@vger.kernel.org, Martin Wilck <mwilck@suse.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 045/270] nvme-multipath: do not fall back to __nvme_find_path() for non-optimized paths
+Date:   Mon, 17 Aug 2020 17:14:06 +0200
+Message-Id: <20200817143758.043522163@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
-References: <20200817143819.579311991@linuxfoundation.org>
+In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
+References: <20200817143755.807583758@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,35 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+From: Hannes Reinecke <hare@suse.de>
 
-[ Upstream commit a6ae2fe5c9f9fd355a48fb7d21c863e5b20d6c9c ]
+[ Upstream commit fbd6a42d8932e172921c7de10468a2e12c34846b ]
 
-The LG LB070WV8 panel incorrectly reports a 16 bits per component value,
-while the panel uses 8 bits per component. Fix it.
+When nvme_round_robin_path() finds a valid namespace we should be using it;
+falling back to __nvme_find_path() for non-optimized paths will cause the
+result from nvme_round_robin_path() to be ignored for non-optimized paths.
 
-Fixes: dd0150026901 ("drm/panel: simple: Add support for LG LB070WV8 800x480 7" panel")
-Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200711225317.28476-1-laurent.pinchart+renesas@ideasonboard.com
+Fixes: 75c10e732724 ("nvme-multipath: round-robin I/O policy")
+Signed-off-by: Martin Wilck <mwilck@suse.com>
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/panel/panel-simple.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvme/host/multipath.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index db91b3c031a13..346e3f9fd505a 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -2093,7 +2093,7 @@ static const struct drm_display_mode lg_lb070wv8_mode = {
- static const struct panel_desc lg_lb070wv8 = {
- 	.modes = &lg_lb070wv8_mode,
- 	.num_modes = 1,
--	.bpc = 16,
-+	.bpc = 8,
- 	.size = {
- 		.width = 151,
- 		.height = 91,
+diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
+index 38d25d7c6bca3..484aad0d0c9c6 100644
+--- a/drivers/nvme/host/multipath.c
++++ b/drivers/nvme/host/multipath.c
+@@ -275,10 +275,13 @@ inline struct nvme_ns *nvme_find_path(struct nvme_ns_head *head)
+ 	struct nvme_ns *ns;
+ 
+ 	ns = srcu_dereference(head->current_path[node], &head->srcu);
+-	if (READ_ONCE(head->subsys->iopolicy) == NVME_IOPOLICY_RR && ns)
+-		ns = nvme_round_robin_path(head, node, ns);
+-	if (unlikely(!ns || !nvme_path_is_optimized(ns)))
+-		ns = __nvme_find_path(head, node);
++	if (unlikely(!ns))
++		return __nvme_find_path(head, node);
++
++	if (READ_ONCE(head->subsys->iopolicy) == NVME_IOPOLICY_RR)
++		return nvme_round_robin_path(head, node, ns);
++	if (unlikely(!nvme_path_is_optimized(ns)))
++		return __nvme_find_path(head, node);
+ 	return ns;
+ }
+ 
 -- 
 2.25.1
 
