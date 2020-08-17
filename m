@@ -2,120 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D20424749E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC022474CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392045AbgHQTMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40464 "EHLO
+        id S1731916AbgHQTPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:15:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730690AbgHQTM0 (ORCPT
+        with ESMTP id S1730416AbgHQTP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 15:12:26 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C642FC061389;
-        Mon, 17 Aug 2020 12:12:25 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id q14so15501476ilj.8;
-        Mon, 17 Aug 2020 12:12:25 -0700 (PDT)
+        Mon, 17 Aug 2020 15:15:26 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B71B3C061342
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 12:15:24 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id mw10so8116174pjb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 12:15:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NnKCBhQp2Gdr4n0TX2Bi3YpuER7JXpHBIDQP8R6n9AI=;
-        b=GvMzuAxS6elmKSXxwtmwDg4ZABKQ94RBoIywyhmFuxzOvYj70kocfV6jjnvsD6xJUG
-         TDoxSm0valHIzQ+TX5vr9M31BeFGUFSufYX4P6oEOMp0EM+3WgULq2SPTUHCgsOIRxuI
-         fDyMPGMz+v+4byLbGWFj/UVM5255nK7fua7CeNib7oKaPFCl1EXmMDRODEX3VnP75fLd
-         grnlAHLzvu/8yvLB6wGOmLG/dhoY8pJbKuZoJFz1OrzTsTTMBng+mF7Yb3wcndmk68im
-         uw4FgY0JdtfocFKOeNcsRmidTCINPH/bEXdOXIZv0ihpFzBXEJoD1Qtei9Vvrm3Cod6j
-         Eglg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tmBgqfU+29UH3A8gIAUsMUZvU1W2cHudzSZ0yYhvH2g=;
+        b=aX4E0LFgDJUJNb9coXJEVWiFmcjetcbxAVRPFlHU+DPwMWC+xVxGVFwkAMuaLx8U84
+         po7x1kjGihO1o2YsEEtX4D5mdlIDO5HlKqYEVeRBXBKxpG/GAuuxSuPH95iP77RlnFmG
+         LfNgJRnCT9dWldE3WzaTTcQFgdaUSAl3IuBpM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NnKCBhQp2Gdr4n0TX2Bi3YpuER7JXpHBIDQP8R6n9AI=;
-        b=VWAHb/g8D5UURwdhTs2KJ3iPt66p3RPHgiSwFuTRl6+q2LEhQVFLlqk1wuR66+8KpB
-         06KL1LRdLwwxwbyLcS8Ou/j4EhmIhrpPt6Qj+dgkNbhT05jBfmtgUqowKE05yA0CgLU1
-         UCA/QDq9ATyXYc/pL1wtA/58rqkilEA+iXOg6BJSk90xA9TS7ljmD44O+2twcekHMG/7
-         iMw4sjqJZx/IhPeWhXKdZrtwMg11nG/VliCxHK22Q3tyYSyiEj5DjVfIQZj5emz1VrEh
-         0Ru2u3M1v1Okae6XLll76NauQa0BlEjMfKiaf4rgBAjakw9WVBrrNoWP9EN88TRC+wYz
-         2FuQ==
-X-Gm-Message-State: AOAM532D8bjdrDJMSznm/TotFkZy+GZH+iJo0LZaFO2okhm+PrnkbpHB
-        YbwIYpQCjFEp8/zW6DfiDf1JiehC0Ps7T5Fv80c=
-X-Google-Smtp-Source: ABdhPJzXgU+DNHNKO8z9tSqkcxA+YPlJ5aCtnpEUqz2sSEapV34xuQepCaVuriNJ1z06vI0ZEuk2ZLoKyfGEp42KQIo=
-X-Received: by 2002:a05:6e02:5c7:: with SMTP id l7mr15394166ils.268.1597691543350;
- Mon, 17 Aug 2020 12:12:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200816071518.6964-1-colyli@suse.de> <CAM_iQpUFtZdrhfUbuYYODNeSVqPOqx8mio6Znp6v3Q5iDZeyqg@mail.gmail.com>
- <20200817054538.GA11705@lst.de>
-In-Reply-To: <20200817054538.GA11705@lst.de>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Mon, 17 Aug 2020 12:12:12 -0700
-Message-ID: <CAM_iQpWnzm=cQZvZMcjKXez1L55tSVfWyadP3d0CUaT=D4nOhw@mail.gmail.com>
-Subject: Re: [PATCH v5 1/3] net: introduce helper sendpage_ok() in include/linux/net.h
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Coly Li <colyli@suse.de>, linux-block@vger.kernel.org,
-        linux-nvme@lists.infradead.org,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tmBgqfU+29UH3A8gIAUsMUZvU1W2cHudzSZ0yYhvH2g=;
+        b=pk9ZIDCdw/v5Kzy05VstXSafj+W34caKSmFubK9xxUOq5ThNuaiGdVGMSP74XN3dmQ
+         xWMDMjBTlAI1Y67jbN0dvt98U6k8yfdjvnnwJon9zL2Fff3GQ7i0ICVTus3B+Kl1UWNn
+         oLqjZLY78iTJEUDYmZcYLckYDk8slojjGRhjZdhMW2SzV5W07W/IBSlFHA5cfHT27XHM
+         MGiIYLYKs9usfq+UgyeJOlm4i4IIU/CBZkLCPZr6aeNGK9WMz7N/vxbCG5OOxT/yQCeU
+         Buhcl6CXkf8BGLnRJTiat8TenMIteOJyO6sn4kRnfEXcUGr0Lr48vW6A7nppr08vpd7S
+         jm+g==
+X-Gm-Message-State: AOAM531z4bCPxy38IBeKbfllOey6FNJYE4X2ZlsfFJ0jSb/In5b3joWP
+        5sKuZUjpqPI4DcQXHQ1UkkH6UA==
+X-Google-Smtp-Source: ABdhPJw8/sMKSS0IvyS3CfDbpG7kKz1MmBn08NvHr5WPVkZ+puU1nQqC5SLXkU6uzhSgG0dVNngF+g==
+X-Received: by 2002:a17:902:7293:: with SMTP id d19mr12778333pll.303.1597691724086;
+        Mon, 17 Aug 2020 12:15:24 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q5sm18109334pgv.1.2020.08.17.12.15.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Aug 2020 12:15:21 -0700 (PDT)
+Date:   Mon, 17 Aug 2020 12:15:20 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        Joe Perches <joe@perches.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?iso-8859-1?Q?D=E1vid_Bolvansk=FD?= <david.bolvansky@gmail.com>,
+        Eli Friedman <efriedma@quicinc.com>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Daniel Axtens <dja@axtens.net>, Ingo Molnar <mingo@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Hannes Reinecke <hare@suse.de>, Jan Kara <jack@suse.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Mikhail Skorzhinskii <mskorzhinskiy@solarflare.com>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Vlastimil Babka <vbabka@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: Re: [PATCH v2] lib/string.c: implement stpcpy
+Message-ID: <202008171213.CBCFF5D67@keescook>
+References: <CAKwvOdnyHfx6ayqEoOr3pb_ibKBAG9vj31LuKE+f712W=7LFKA@mail.gmail.com>
+ <457a91183581509abfa00575d0392be543acbe07.camel@perches.com>
+ <CAKwvOdk4PRi45MXCtg4kmeN6c1AK5w9EJ1XFBJ5GyUjwEtRj1g@mail.gmail.com>
+ <ccacb2a860151fdd6ce95371f1e0cd7658a308d1.camel@perches.com>
+ <CAKwvOd=QkpmdWHAvWVFtogsDom2z_fA4XmDF6aLqz1czjSgZbQ@mail.gmail.com>
+ <20200816001917.4krsnrik7hxxfqfm@google.com>
+ <CA+icZUW=rQ-e=mmYWsgVns8jDoQ=FJ7kdem1fWnW_i5jx-6JzQ@mail.gmail.com>
+ <20200816150217.GA1306483@rani.riverdale.lan>
+ <CABCJKucsXufD6rmv7qQZ=9kLC7XrngCJkKA_WzGOAn-KfcObeA@mail.gmail.com>
+ <CAKwvOd=Ns4_+amT8P-7yQ56xUdDmL=1zDUThF-OmFKhexhJPdg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOd=Ns4_+amT8P-7yQ56xUdDmL=1zDUThF-OmFKhexhJPdg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 16, 2020 at 10:45 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Sun, Aug 16, 2020 at 10:55:09AM -0700, Cong Wang wrote:
-> > On Sun, Aug 16, 2020 at 1:36 AM Coly Li <colyli@suse.de> wrote:
-> > >
-> > > The original problem was from nvme-over-tcp code, who mistakenly uses
-> > > kernel_sendpage() to send pages allocated by __get_free_pages() without
-> > > __GFP_COMP flag. Such pages don't have refcount (page_count is 0) on
-> > > tail pages, sending them by kernel_sendpage() may trigger a kernel panic
-> > > from a corrupted kernel heap, because these pages are incorrectly freed
-> > > in network stack as page_count 0 pages.
-> > >
-> > > This patch introduces a helper sendpage_ok(), it returns true if the
-> > > checking page,
-> > > - is not slab page: PageSlab(page) is false.
-> > > - has page refcount: page_count(page) is not zero
-> > >
-> > > All drivers who want to send page to remote end by kernel_sendpage()
-> > > may use this helper to check whether the page is OK. If the helper does
-> > > not return true, the driver should try other non sendpage method (e.g.
-> > > sock_no_sendpage()) to handle the page.
-> >
-> > Can we leave this helper to mm subsystem?
-> >
-> > I know it is for sendpage, but its implementation is all about some
-> > mm details and its two callers do not belong to net subsystem either.
-> >
-> > Think this in another way: who would fix it if it is buggy? I bet mm people
-> > should. ;)
->
-> No.  This is all about a really unusual imitation in sendpage, which
+On Mon, Aug 17, 2020 at 11:36:49AM -0700, Nick Desaulniers wrote:
+> That said, this libcall optimization/transformation (sprintf->stpcpy)
+> does look useful to me.  Kees, do you have thoughts on me providing
+> the implementation without exposing it in a header vs using
+> -fno-builtin-stpcpy?  (I would need to add the missing EXPORT_SYMBOL,
+> as pointed out by 0day bot and on the github thread).  I don't care
+> either way; I'd just like your input before sending a V+1.  Maybe
+> better to just not implement it and never implement it?
 
-So netdev people will have to understand and support PageSlab() or
-page_count()?
+I think I would ultimately prefer -fno-builtin-stpcpy, but for now,
+sure, an implementation without a header (and a biiig comment above it
+detailing why and a reference to the bug) would be fine by me.
 
-If it is unusual even for mm people, how could netdev people suppose
-to understand this unusual mm bug? At least not any better.
-
-> is pretty much unexpected.  In fact the best thing would be to make
-> sock_sendpage do the right thing and call sock_no_sendpage based
-> on this condition, so that driver writers don't have to worry at all.
-
-Agreed, but kernel_sendpage() still relies on mm to provide a helper
-to make the decision and ensure this helper is always up-to-date.
-
-In short, it is all about ownership.
-
-Thanks.
+-- 
+Kees Cook
