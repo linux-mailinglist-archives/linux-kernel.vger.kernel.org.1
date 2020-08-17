@@ -2,73 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A948B245F6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B1324601D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728204AbgHQIVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 04:21:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727006AbgHQIVS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 04:21:18 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753CDC061389;
-        Mon, 17 Aug 2020 01:21:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Te7ybJvVG4iKO2ohYmX5Pvjiv68xvlZXMI+4wj+EaTc=; b=FAo9+ki050pf10fKywl/9gNJTQ
-        x3y7tfPplgYWFFVugPLMoL5EzDHxr4EIGIzwq0+sVb9xkIoFbW/Dy8i19EWmeSauFXVEqJZ0iig4X
-        7j5bYgCeagxq+CZZXNne2N0BZ1rJvU13gLxL1QoQtSeh5E/Bi6LenRtmHeNLlaaM/FonoTQli8aAt
-        A4AcTxuiJ9FF533W0MJS5nb/d8gaIUDbMkHvtr24MIgkR07xPqnjT4vDfjPs2Hcg5C/dtsSPOi8s0
-        Pl35tiScHmFYsOi9YYzLz08XY9rW0gthZ0/uCbyUa9PWCsdkLsRbo29PpH3z5Jfl9cX9JBdLVxj1I
-        6BkVrfeg==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k7aOB-0004Z2-0d; Mon, 17 Aug 2020 08:21:07 +0000
-Date:   Mon, 17 Aug 2020 09:21:06 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        John Stultz <john.stultz@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Wei Xu <xuwei5@hisilicon.com>, devicetree@vger.kernel.org,
-        Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
-        iommu@lists.linux-foundation.org,
-        Chenfeng <puck.chen@hisilicon.com>, devel@driverdev.osuosl.org,
-        Suzhuangluan <suzhuangluan@hisilicon.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/16] IOMMU driver for Kirin 960/970
-Message-ID: <20200817082106.GA16296@infradead.org>
-References: <cover.1597650455.git.mchehab+huawei@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1597650455.git.mchehab+huawei@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        id S1728089AbgHQI3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 04:29:31 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:45170 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728230AbgHQI3X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 04:29:23 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 451011A0078;
+        Mon, 17 Aug 2020 10:29:21 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D409F1A0CB3;
+        Mon, 17 Aug 2020 10:29:18 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 7B9A6402BE;
+        Mon, 17 Aug 2020 10:29:15 +0200 (CEST)
+From:   andy.tang@nxp.com
+To:     axboe@kernel.dk
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yuantian Tang <andy.tang@nxp.com>,
+        Udit Kumar <udit.kumar@nxp.com>
+Subject: [PATCH] ahci: qoriq: enable acpi support in qoriq ahci driver
+Date:   Mon, 17 Aug 2020 16:22:04 +0800
+Message-Id: <20200817082204.13523-1-andy.tang@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 09:49:59AM +0200, Mauro Carvalho Chehab wrote:
-> Add a driver for the Kirin 960/970 iommu.
-> 
-> As on the past series, this starts from the original 4.9 driver from
-> the 96boards tree:
-> 
-> 	https://github.com/96boards-hikey/linux/tree/hikey970-v4.9
-> 
-> The remaining patches add SPDX headers and make it build and run with
-> the upstream Kernel.
+From: Yuantian Tang <andy.tang@nxp.com>
 
-Please don't add iommu drivers to staging, and just work with the
-maintainers to properly clean it up.
+This patch enables ACPI support in qoriq ahci driver.
 
-I also don't think adding a totally out of date not compiling version
-is a good idea.  Please do a proper rollup, and if required (probably
-not in this case), split it into useful chunks.
+Signed-off-by: Udit Kumar <udit.kumar@nxp.com>
+Signed-off-by: Yuantian Tang <andy.tang@nxp.com>
+---
+ drivers/ata/ahci_qoriq.c | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/ata/ahci_qoriq.c b/drivers/ata/ahci_qoriq.c
+index a330307d3201..5b46fc9aeb4a 100644
+--- a/drivers/ata/ahci_qoriq.c
++++ b/drivers/ata/ahci_qoriq.c
+@@ -6,6 +6,7 @@
+  *   Tang Yuantian <Yuantian.Tang@freescale.com>
+  */
+ 
++#include <linux/acpi.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/pm.h>
+@@ -80,6 +81,12 @@ static const struct of_device_id ahci_qoriq_of_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, ahci_qoriq_of_match);
+ 
++static const struct acpi_device_id ahci_qoriq_acpi_match[] = {
++	{"NXP0004", .driver_data = (kernel_ulong_t)AHCI_LX2160A},
++	{ }
++};
++MODULE_DEVICE_TABLE(acpi, ahci_qoriq_acpi_match);
++
+ static int ahci_qoriq_hardreset(struct ata_link *link, unsigned int *class,
+ 			  unsigned long deadline)
+ {
+@@ -255,6 +262,7 @@ static int ahci_qoriq_phy_init(struct ahci_host_priv *hpriv)
+ static int ahci_qoriq_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
++	const struct acpi_device_id *acpi_id;
+ 	struct device *dev = &pdev->dev;
+ 	struct ahci_host_priv *hpriv;
+ 	struct ahci_qoriq_priv *qoriq_priv;
+@@ -267,14 +275,18 @@ static int ahci_qoriq_probe(struct platform_device *pdev)
+ 		return PTR_ERR(hpriv);
+ 
+ 	of_id = of_match_node(ahci_qoriq_of_match, np);
+-	if (!of_id)
++	acpi_id = acpi_match_device(ahci_qoriq_acpi_match, &pdev->dev);
++	if (!(of_id || acpi_id))
+ 		return -ENODEV;
+ 
+ 	qoriq_priv = devm_kzalloc(dev, sizeof(*qoriq_priv), GFP_KERNEL);
+ 	if (!qoriq_priv)
+ 		return -ENOMEM;
+ 
+-	qoriq_priv->type = (enum ahci_qoriq_type)of_id->data;
++	if (of_id)
++		qoriq_priv->type = (enum ahci_qoriq_type)of_id->data;
++	else
++		qoriq_priv->type = (enum ahci_qoriq_type)acpi_id->driver_data;
+ 
+ 	if (unlikely(!ecc_initialized)) {
+ 		res = platform_get_resource_byname(pdev,
+@@ -288,7 +300,8 @@ static int ahci_qoriq_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	qoriq_priv->is_dmacoherent = of_dma_is_coherent(np);
++	if (device_get_dma_attr(&pdev->dev) == DEV_DMA_COHERENT)
++		qoriq_priv->is_dmacoherent = true;
+ 
+ 	rc = ahci_platform_enable_resources(hpriv);
+ 	if (rc)
+@@ -354,6 +367,7 @@ static struct platform_driver ahci_qoriq_driver = {
+ 	.driver = {
+ 		.name = DRV_NAME,
+ 		.of_match_table = ahci_qoriq_of_match,
++		.acpi_match_table = ahci_qoriq_acpi_match,
+ 		.pm = &ahci_qoriq_pm_ops,
+ 	},
+ };
+-- 
+2.17.1
+
