@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CDCA247617
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA92624767D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730240AbgHQPax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:30:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44016 "EHLO mail.kernel.org"
+        id S1732450AbgHQTiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:38:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729542AbgHQP2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:28:35 -0400
+        id S1729411AbgHQP1K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:27:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B32923AFE;
-        Mon, 17 Aug 2020 15:28:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 78D08238E6;
+        Mon, 17 Aug 2020 15:27:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678115;
-        bh=xdoyQXyF72FtUFPSXhWHvSJWOV8YBtDyng3jIj+DsCE=;
+        s=default; t=1597678030;
+        bh=E4lK+dqFUzpw7gqJd5bSG/HC6k97NF3vbobVxr/JN90=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YIMe0Kz1HhRzwaYzk2e6AaCc4IRMiy1rVHLhJRu3oTSgievMvAb91DO9TiN2RzDG+
-         U7zXg3xoS+n+16YAzo3Ut963rs/SfIGzC6pbClKnY1yxhaAynvvSpCRhaNpYel8k68
-         n/UxmmAhzVc9nKTTenBo1ceqphFF+WEP7y3OJzm8=
+        b=0oDnuHAuucrPbLkj6kxvJ3mp7WbkJbXAaCJ1VX4gqauUwlahT2GbgP1Ct1Jy2S6zp
+         llIyFxwPyeQwx+qR8Au22zdVCd/M+R7X8uju25fD/dT8lJb0Ig+7E3yKcXOboB59PP
+         3SdZICkJ9Kb0CrGmedD71fSDeherPzV+MfPxRAkc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chen Tao <chentao107@huawei.com>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 193/464] drm/amdgpu/debugfs: fix memory leak when amdgpu_virt_enable_access_debugfs failed
-Date:   Mon, 17 Aug 2020 17:12:26 +0200
-Message-Id: <20200817143843.068083865@linuxfoundation.org>
+Subject: [PATCH 5.8 195/464] drm/radeon: fix array out-of-bounds read and write issues
+Date:   Mon, 17 Aug 2020 17:12:28 +0200
+Message-Id: <20200817143843.162887170@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -44,34 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Tao <chentao107@huawei.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 888e32d71115e26b57bdcbc717c68e9c5026bac3 ]
+[ Upstream commit 7ee78aff9de13d5dccba133f4a0de5367194b243 ]
 
-Fix memory leak in amdgpu_debugfs_gpr_read not freeing data when
-amdgpu_virt_enable_access_debugfs failed.
+There is an off-by-one bounds check on the index into arrays
+table->mc_reg_address and table->mc_reg_table_entry[k].mc_data[j] that
+can lead to reads and writes outside of arrays. Fix the bound checking
+off-by-one error.
 
-Fixes: 95a2f917387a2 ("drm/amdgpu: restrict debugfs register access under SR-IOV")
-Signed-off-by: Chen Tao <chentao107@huawei.com>
+Addresses-Coverity: ("Out-of-bounds read/write")
+Fixes: cc8dbbb4f62a ("drm/radeon: add dpm support for CI dGPUs (v2)")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c | 2 +-
+ drivers/gpu/drm/radeon/ci_dpm.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-index 386b979e08522..f87b225437fc3 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-@@ -977,7 +977,7 @@ static ssize_t amdgpu_debugfs_gpr_read(struct file *f, char __user *buf,
+diff --git a/drivers/gpu/drm/radeon/ci_dpm.c b/drivers/gpu/drm/radeon/ci_dpm.c
+index f434efdeca44d..ba20c6f037198 100644
+--- a/drivers/gpu/drm/radeon/ci_dpm.c
++++ b/drivers/gpu/drm/radeon/ci_dpm.c
+@@ -4351,7 +4351,7 @@ static int ci_set_mc_special_registers(struct radeon_device *rdev,
+ 					table->mc_reg_table_entry[k].mc_data[j] |= 0x100;
+ 			}
+ 			j++;
+-			if (j > SMU7_DISCRETE_MC_REGISTER_ARRAY_SIZE)
++			if (j >= SMU7_DISCRETE_MC_REGISTER_ARRAY_SIZE)
+ 				return -EINVAL;
  
- 	r = amdgpu_virt_enable_access_debugfs(adev);
- 	if (r < 0)
--		return r;
-+		goto err;
- 
- 	/* switch to the specific se/sh/cu */
- 	mutex_lock(&adev->grbm_idx_mutex);
+ 			if (!pi->mem_gddr5) {
 -- 
 2.25.1
 
