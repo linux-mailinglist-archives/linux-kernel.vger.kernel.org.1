@@ -2,111 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC3D247A72
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 00:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E188C247A85
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 00:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729465AbgHQW2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 18:28:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726778AbgHQW2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 18:28:05 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5AC39204EC;
-        Mon, 17 Aug 2020 22:28:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597703284;
-        bh=NUONv9kLCShilfn9ZT/o30cFFqVc/L2+Z/w6nr7C0zk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=z2inuekbTwOWe5b25wv8EliIvOxNuBYdsAw0rDxdv8Tx1PeutqY/VjF5lmu44RB7h
-         11nUJyqzMMgH8lXsbxK2+PVorRtEXuGvPQXRL5rtuxd2GNLaKnBPuwzPIHkYG9klAk
-         kKI2Pc2NooJe/okdbcRDEET3yYg5bItBBn++/0jQ=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id DA17C3522617; Mon, 17 Aug 2020 15:28:03 -0700 (PDT)
-Date:   Mon, 17 Aug 2020 15:28:03 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        id S1730113AbgHQWfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 18:35:03 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:39385 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729013AbgHQWe7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 18:34:59 -0400
+Received: from hanvin-mobl2.amr.corp.intel.com (jfdmzpr03-ext.jf.intel.com [134.134.139.72])
+        (authenticated bits=0)
+        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 07HMVRrV2411257
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Mon, 17 Aug 2020 15:31:28 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 07HMVRrV2411257
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2020072401; t=1597703492;
+        bh=LKtFMKVgtOY/6bgoWtqeglon0IHwcNuLxWmX3T+HkBY=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=KUs7+/XBtVIJ5EhmCEDOIFwDAK8ODSK/P6kH2ED3Bu4rW+YQeCQqon9LYR0NK5LC+
+         XgQOIWhLEolFJ4ch6EKj5UrDoPQs9dnlUSSb3yt6uJ40aafO46eEMZv1opQv90pbpP
+         X9KOBLkOpUTVXo6wEbH4JKjlBcFoF08kR2S3yzmUJyqhkHsXIgoq+WX9dVAbrEUtC3
+         U0epQC9hqP8YKAGWe165qUj94F1RyQGO1JO7/z3Wic08vA257p/1UsIhQrsDI+g7AY
+         /8Tv2E9Fc3r1YaA1q23uEMeXe5d7q6TO5m2r4/4dTHFM/EMEvRdGv+JWghE9zqrJei
+         XF/IHfC1GR7sA==
+Subject: Re: [PATCH 1/4] Makefile: add -fno-builtin-stpcpy
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Joe Perches <joe@perches.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
-Message-ID: <20200817222803.GE23602@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200814083037.GD3982@worktop.programming.kicks-ass.net>
- <20200814141425.GM4295@paulmck-ThinkPad-P72>
- <20200814161106.GA13853@paulmck-ThinkPad-P72>
- <20200814174924.GI3982@worktop.programming.kicks-ass.net>
- <20200814180224.GQ4295@paulmck-ThinkPad-P72>
- <875z9lkoo4.fsf@nanos.tec.linutronix.de>
- <20200814204140.GT4295@paulmck-ThinkPad-P72>
- <20200814215206.GL3982@worktop.programming.kicks-ass.net>
- <20200816225655.GA17869@pc636>
- <20200817082849.GA28270@dhcp22.suse.cz>
+        Daniel Axtens <dja@axtens.net>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Yury Norov <yury.norov@gmail.com>, x86@kernel.org,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Bruce Ashfield <bruce.ashfield@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>,
+        Andi Kleen <ak@suse.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
+        Eli Friedman <efriedma@quicinc.com>, stable@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>
+References: <20200817220212.338670-1-ndesaulniers@google.com>
+ <20200817220212.338670-2-ndesaulniers@google.com>
+From:   "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <82bbeff7-acc3-410c-9bca-3644b141dc1a@zytor.com>
+Date:   Mon, 17 Aug 2020 15:31:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200817082849.GA28270@dhcp22.suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200817220212.338670-2-ndesaulniers@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 10:28:49AM +0200, Michal Hocko wrote:
-> On Mon 17-08-20 00:56:55, Uladzislau Rezki wrote:
-
-[ . . . ]
-
-> > wget ftp://vps418301.ovh.net/incoming/1000000_kmalloc_kfree_rcu_proc_percpu_pagelist_fractio_is_8.png
+On 2020-08-17 15:02, Nick Desaulniers wrote:
+> LLVM implemented a recent "libcall optimization" that lowers calls to
+> `sprintf(dest, "%s", str)` where the return value is used to
+> `stpcpy(dest, str) - dest`. This generally avoids the machinery involved
+> in parsing format strings. This optimization was introduced into
+> clang-12. Because the kernel does not provide an implementation of
+> stpcpy, we observe linkage failures for almost all targets when building
+> with ToT clang.
 > 
-> 1/8 of the memory in pcp lists is quite large and likely not something
-> used very often.
+> The interface is unsafe as it does not perform any bounds checking.
+> Disable this "libcall optimization" via `-fno-builtin-stpcpy`.
 > 
-> Both these numbers just make me think that a dedicated pool of page
-> pre-allocated for RCU specifically might be a better solution. I still
-> haven't read through that branch of the email thread though so there
-> might be some pretty convincing argments to not do that.
+> Unlike
+> commit 5f074f3e192f ("lib/string.c: implement a basic bcmp")
+> which cited failures with `-fno-builtin-*` flags being retained in LLVM
+> LTO, that bug seems to have been fixed by
+> https://reviews.llvm.org/D71193, so the above sha can now be reverted in
+> favor of `-fno-builtin-bcmp`.
+> 
 
-To avoid the problematic corner cases, we would need way more dedicated
-memory than is reasonable, as in well over one hundred pages per CPU.
-Sure, we could choose a smaller number, but then we are failing to defend
-against flooding, even on systems that have more than enough free memory
-to be able to do so.  It would be better to live within what is available,
-taking the performance/robustness hit only if there isn't enough.
+stpcpy() and (to a lesser degree) mempcpy() are fairly useful routines
+in general. Perhaps we *should* provide them?
 
-My current belief is that we need a combination of (1) either the
-GFP_NOLOCK flag or Peter Zijlstra's patch and (2) Thomas Gleixner's
-delayed allocation approach.  As you say and as Uladislau's measurements
-suggest, if we only have Peter's approach, although we could handle short
-floods just fine, we could not handle longer-term floods.  And Thomas's
-approach is in fact designed to handle these longer-term floods.
+	-hpa
 
-Except that if we have only Thomas's approach, then we have to handle the
-possibility that RCU_SOFTIRQ happened on the back of an interrupt that
-happened while the interrupted process was holding a memory-allocator
-lock.  This means further deferral, such as going into a workqueue,
-which would allow better memory-allocator results, but which would also
-mean further delays from the time that memory was needed until the time
-that it was actually supplied.  Delays that could be bridged by either
-a GFP_NOLOCK flag or Peter's patch.
-
-So again, it looks like this is not an either/or situation, but rather
-an need-both situation.
-
-I freely confess that one of my hopes almost 30 years ago was that a
-high-quality parallel memory allocator would eliminate the need for
-special-purpose allocators, but as has been noted several times on this
-thread, reality does not always seem to be compelled to take such
-hopes into account.
-
-							Thanx, Paul
