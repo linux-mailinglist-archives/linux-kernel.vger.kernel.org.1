@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6272473C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:01:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B6222473EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731415AbgHQTBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:01:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60236 "EHLO mail.kernel.org"
+        id S2391914AbgHQTDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:03:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730835AbgHQPsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:48:09 -0400
+        id S1730274AbgHQPqx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:46:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 759982065D;
-        Mon, 17 Aug 2020 15:48:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98C972065D;
+        Mon, 17 Aug 2020 15:46:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679287;
-        bh=EqM+gLh7D3odZQRkGC9GZ7RNw+ABm4SgeE8Cenu11Gg=;
+        s=default; t=1597679213;
+        bh=R6iUOdW2Vvpm1oszaxfkkIvx9qztEzigJ29wTSfP1Ts=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YHQAkzRcQ/gOioFMPL3d3T41HjqiM4PuE5o5ekiXzW2QJZswnqxE7+z/+3hxZHtTD
-         2jPa4QDmUXDm0YXVboD3EjyBCoKpPY8vfOnUSROqeAxVEal322aU4+cCHt1/nvRAwm
-         oV8TulEGq252F/zDoK1QmygVcERnDGHs1fLJy3HA=
+        b=UWh2KyiWFIE1IqgveeKlV2E6huzgXWcUN0c3u+sxMTeb5bPrRlUgU9LzKMRrAhZWP
+         ubP4YurSEOWUtmDGdEyFuSC0VFGHCEBKDsOGYIJ+toiFUyWsFCNnab7LM1NmTwQvrv
+         POCM2SRrZQZC2eSOHULVDU/ZIfpCryvXt7SLa2+c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        stable@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
         Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 129/393] btmrvl: Fix firmware filename for sd8977 chipset
-Date:   Mon, 17 Aug 2020 17:12:59 +0200
-Message-Id: <20200817143825.866153275@linuxfoundation.org>
+Subject: [PATCH 5.7 135/393] Bluetooth: hci_qca: Only remove TX clock vote after TX is completed
+Date:   Mon, 17 Aug 2020 17:13:05 +0200
+Message-Id: <20200817143826.157709733@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
 References: <20200817143819.579311991@linuxfoundation.org>
@@ -46,45 +45,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Matthias Kaehlcke <mka@chromium.org>
 
-[ Upstream commit dbec3af5f13b88a96e31f252957ae1a82484a923 ]
+[ Upstream commit eff981f6579d5797d68d27afc0eede529ac8778a ]
 
-Firmware for sd8977 chipset is distributed by Marvell package and also as
-part of the linux-firmware repository in filename sdsd8977_combo_v2.bin.
+qca_suspend() removes the vote for the UART TX clock after
+writing an IBS sleep request to the serial buffer. This is
+not a good idea since there is no guarantee that the request
+has been sent at this point. Instead remove the vote after
+successfully entering IBS sleep. This also fixes the issue
+of the vote being removed in case of an aborted suspend due
+to a failure of entering IBS sleep.
 
-This patch fixes mwifiex driver to load correct firmware file for sd8977.
-
-Fixes: 8c57983bf7a79 ("Bluetooth: btmrvl: add support for sd8977 chipset")
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Acked-by: Ganapathi Bhat <ganapathi.bhat@nxp.com>
+Fixes: 41d5b25fed0a0 ("Bluetooth: hci_qca: add PM support")
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
 Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/btmrvl_sdio.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/bluetooth/hci_qca.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/bluetooth/btmrvl_sdio.c b/drivers/bluetooth/btmrvl_sdio.c
-index 0f3a020703ab2..7aa2c94720bc5 100644
---- a/drivers/bluetooth/btmrvl_sdio.c
-+++ b/drivers/bluetooth/btmrvl_sdio.c
-@@ -328,7 +328,7 @@ static const struct btmrvl_sdio_device btmrvl_sdio_sd8897 = {
+diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+index 568f7ec20b000..dc949592c4ed5 100644
+--- a/drivers/bluetooth/hci_qca.c
++++ b/drivers/bluetooth/hci_qca.c
+@@ -2023,8 +2023,6 @@ static int __maybe_unused qca_suspend(struct device *dev)
  
- static const struct btmrvl_sdio_device btmrvl_sdio_sd8977 = {
- 	.helper         = NULL,
--	.firmware       = "mrvl/sd8977_uapsta.bin",
-+	.firmware       = "mrvl/sdsd8977_combo_v2.bin",
- 	.reg            = &btmrvl_reg_8977,
- 	.support_pscan_win_report = true,
- 	.sd_blksz_fw_dl = 256,
-@@ -1831,6 +1831,6 @@ MODULE_FIRMWARE("mrvl/sd8787_uapsta.bin");
- MODULE_FIRMWARE("mrvl/sd8797_uapsta.bin");
- MODULE_FIRMWARE("mrvl/sd8887_uapsta.bin");
- MODULE_FIRMWARE("mrvl/sd8897_uapsta.bin");
--MODULE_FIRMWARE("mrvl/sd8977_uapsta.bin");
-+MODULE_FIRMWARE("mrvl/sdsd8977_combo_v2.bin");
- MODULE_FIRMWARE("mrvl/sd8987_uapsta.bin");
- MODULE_FIRMWARE("mrvl/sd8997_uapsta.bin");
+ 		qca->tx_ibs_state = HCI_IBS_TX_ASLEEP;
+ 		qca->ibs_sent_slps++;
+-
+-		qca_wq_serial_tx_clock_vote_off(&qca->ws_tx_vote_off);
+ 		break;
+ 
+ 	case HCI_IBS_TX_ASLEEP:
+@@ -2052,8 +2050,10 @@ static int __maybe_unused qca_suspend(struct device *dev)
+ 			qca->rx_ibs_state == HCI_IBS_RX_ASLEEP,
+ 			msecs_to_jiffies(IBS_BTSOC_TX_IDLE_TIMEOUT_MS));
+ 
+-	if (ret > 0)
++	if (ret > 0) {
++		qca_wq_serial_tx_clock_vote_off(&qca->ws_tx_vote_off);
+ 		return 0;
++	}
+ 
+ 	if (ret == 0)
+ 		ret = -ETIMEDOUT;
 -- 
 2.25.1
 
