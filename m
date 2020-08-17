@@ -2,60 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7819F246325
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 801EB246334
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727890AbgHQJVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 05:21:19 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:39241 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726267AbgHQJVS (ORCPT
+        id S1728077AbgHQJXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 05:23:25 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:49786 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726538AbgHQJXY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 05:21:18 -0400
-X-Originating-IP: 176.184.36.142
-Received: from localhost (sto93-h02-176-184-36-142.dsl.sta.abo.bbox.fr [176.184.36.142])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 5ADC3E0006;
-        Mon, 17 Aug 2020 09:21:03 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
-        ludovic.desroches@microchip.com, nicolas.ferre@microchip.com
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 0/3] AT91 PM improvements
-Date:   Mon, 17 Aug 2020 11:20:45 +0200
-Message-Id: <159765603097.1268970.6113229947662328094.b4-ty@bootlin.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <1596616610-15460-1-git-send-email-claudiu.beznea@microchip.com>
-References: <1596616610-15460-1-git-send-email-claudiu.beznea@microchip.com>
+        Mon, 17 Aug 2020 05:23:24 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07H9Eei0010088;
+        Mon, 17 Aug 2020 04:22:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=TIgmhQPJma7LMTwk9a2r2DrIV+fSdBsZPGpZsfznD4U=;
+ b=kVBF4LkTLx+vxHzdlXI1tA7RDqD1CjQfpE84Hhq/pf2ALXeTa8QDni7zy382rlhUn1ls
+ xPiR1Vo8Jpnsa2/INR2kWExSzu5ENhrUH+2xECCel8ELvmTXiKy9ATK+zyMuCt1ZDRHH
+ 5AXYi2s8hgkVEt7MjOx+sY2DlByUWWI8pctYa0OsCet7v1n2qqdezmKeL0XvgnXCY7bm
+ SPVxvzgliAALRuMLzSFUPg4SHjBSKywMfcS6ImkMBMLZo1XKu9F6F9LiwxPmJqu7krsQ
+ QmE6oDxyJG/cC/lG0xPaqv+yt0XMttcHMU9OIsQkidCstX7sDrE1DujKkDAcJDtZBILG vw== 
+Authentication-Results: ppops.net;
+        spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 32xd42t8c0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 17 Aug 2020 04:22:23 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 17 Aug
+ 2020 10:22:21 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Mon, 17 Aug 2020 10:22:21 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id AB8B42C3;
+        Mon, 17 Aug 2020 09:22:21 +0000 (UTC)
+Date:   Mon, 17 Aug 2020 09:22:21 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+CC:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, "kernel@puri.sm" <kernel@puri.sm>
+Subject: Re: [PATCH] ASoC: wm8962: Export DAC/ADC monomix switches
+Message-ID: <20200817092221.GE10899@ediswmail.ad.cirrus.com>
+References: <3662154.EqNIRYjrc8@pliszka>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <3662154.EqNIRYjrc8@pliszka>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-SPF-Result: fail
+X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com include:spf.protection.outlook.com
+ ip4:5.172.152.52 -all
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
+ lowpriorityscore=0 adultscore=0 priorityscore=1501 mlxlogscore=756
+ mlxscore=0 spamscore=0 suspectscore=0 phishscore=0 impostorscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008170070
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 5 Aug 2020 11:36:47 +0300, Claudiu Beznea wrote:
-> This series adds ULP0 fast mode intended to reduce the suspend/resume
-> time in the detriment of power consumption (patch 1/3).
-> Along with this patch 2/3 adds code to avoid requesting a PM mode
-> not available on platforms not supporting it.
-> Patch 3/3 decrements a device_node refcount after its usage.
+On Sun, Aug 16, 2020 at 03:23:34AM +0200, Sebastian Krzyszkowiak wrote:
+> This allows solutions like ALSA UCM to utilize hardware mono downmix
+> for cases where mono output to a single speaker is desired only in
+> specific situations (like on a mobile phone).
 > 
-> Thank you,
-> Claudiu Beznea
-> 
-> [...]
+> Signed-off-by: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+> ---
 
-Applied, thanks!
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-[1/3] ARM: at91: pm: add support for ULP0 fast wakeup
-      commit: e70bfc2fa8fe1a95a522f9d1ccf24d3d9b81366a
-[2/3] ARM: at91: pm: add per soc validation of pm modes
-      commit: 39add36049c347dffcb2be872dd442c137625f17
-[3/3] ARM: at91: pm: of_node_put() after its usage
-      commit: e222f943519564978e082c152b4140a47e93392c
-
-Best regards,
--- 
-Alexandre Belloni <alexandre.belloni@bootlin.com>
+Thanks,
+Charles
