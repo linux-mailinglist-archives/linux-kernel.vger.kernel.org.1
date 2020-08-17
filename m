@@ -2,86 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5057247206
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9B4247208
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730163AbgHQSg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:36:56 -0400
-Received: from mail-ej1-f43.google.com ([209.85.218.43]:44487 "EHLO
-        mail-ej1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391362AbgHQSgm (ORCPT
+        id S2390307AbgHQShO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:37:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730586AbgHQShC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 14:36:42 -0400
-Received: by mail-ej1-f43.google.com with SMTP id bo3so18925574ejb.11;
-        Mon, 17 Aug 2020 11:36:40 -0700 (PDT)
+        Mon, 17 Aug 2020 14:37:02 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C1FC061389
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 11:37:01 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id a79so8636199pfa.8
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 11:37:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Qs4A+yO1as0umF/I9cYQ72bVP8PG6ZMKCk38nSsEIIo=;
+        b=SISFndTkcUp1pFH8U2YJFkEw+BBQKq+fPBX0eplQ0w0CvJ7hvE9YNjpKcE135MBPmF
+         aNGX23frr8ivsWZfRpIx6QCzwGTIyYb009KwfQPglZxUaQMAGseC48uBHP5u3tXn4Y41
+         viemUxJp2fH19u/cR+4Li1Qh5Yt0qX3bEb5ezK61MDWVsYXc/1sy3x2sYodeRPMh73jt
+         xacOsf6vqOjFVkL95ZrjdTHG5h3gxGixIkz2LYtqd7u/MxXS0iLkVgfIv7u6C2Ff4QiG
+         OitIeDihGZSyo+I7KjXFEdUHSxPnYEEbNqC2Pjx3klB0C8VMJtcc/qPNYa4pZMBABFm+
+         FJcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=w4avb5XD1N6bs6gwuW3db4QCXTxFoO49CBCvweYnBUM=;
-        b=l04tDjWgYtlWfOWr+S6S3GyVGq1ufh9Z7kiJfAQZvAPwlsgUhOT6JhgpFGsVfPatpE
-         upoWfQTW4/SJuzYOVmdKoxP+lYDXY8/Sg2TjDN1F0kD4lpAxXXno6wT7r0XiXJOSkgN7
-         MNIAM/tuXq1AeLhN+UvWl12LEVBeYaIIr+1HolyF3/iZ/9jM/rDb6OkKMJWAqwXb83KW
-         BGiCF3xo3HTjcDw+/e5k0+bJGIrzTPQPMIO5gkkLDEvfr6KEmSGzbzaIUnpHLVyES9Jm
-         kvUKfST/2E5fHibEZzVuT4hORKSakgSiRbDBJuqwBsdw8UrFPDStIpe+nVStrjCIaEcL
-         zQbA==
-X-Gm-Message-State: AOAM531DXcAbZipQ5o0GvLBmzNKsG6H9Ivkkve/VpiFuKUsvaDfixUtT
-        yYGxqVb5URtuz03lkq6Oun4=
-X-Google-Smtp-Source: ABdhPJwXdYPrnnml9V9iJJthvNLmgucp4z6ahCb2RPLRjcr+hstD10uoSo1B39MitlYHVzGFOQFeog==
-X-Received: by 2002:a17:906:1396:: with SMTP id f22mr16050829ejc.227.1597689399902;
-        Mon, 17 Aug 2020 11:36:39 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.216])
-        by smtp.googlemail.com with ESMTPSA id d2sm14871625ejm.19.2020.08.17.11.36.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 17 Aug 2020 11:36:39 -0700 (PDT)
-Date:   Mon, 17 Aug 2020 20:36:36 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Markus Mayer <mmayer@broadcom.com>,
-        Roger Quadros <rogerq@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Cc:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [RFT 08/16] memory: omap-gpmc: Use WARN() instead of BUG() on
- wrong free
-Message-ID: <20200817183636.GG3464@kozik-lap>
-References: <20200724182328.3348-1-krzk@kernel.org>
- <20200724182328.3348-9-krzk@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Qs4A+yO1as0umF/I9cYQ72bVP8PG6ZMKCk38nSsEIIo=;
+        b=gplkAo12rIeQeSho07rMgTrAM2aDRgvmmCG9RganMlkW7x4a8urXUxi639tzW0/FAq
+         +WJpN5b2eq2GzMqbB/VmST5ymqA0t90uamCi+xGf8zOm0aZhurG+UEZCOvffnF2cUSLy
+         twoLJ1/K6sRq+QbJK9PyqK1OmglX5wjhYoN2Aqh6nf1tqh9xbXP6GAcP59rAYlgtT7E+
+         qlXaaXD+/e0ajfkIRIJGeoJMVVlhfqTnBfbHR1CF/x/aF0cdkkdyWf62xsTKKEk4bf9R
+         dS2Jg8Z+rrXPPu3+SKOTkJ4K7ouMxzCGq+lKKkmdf5kf9vb/OmtUbSoLtAIUDTdSU5rf
+         pCvQ==
+X-Gm-Message-State: AOAM5306TFvmf1rXIytrulg27MgNHXgnbczXdfJL3puuWtMXSzEYc8CY
+        +okILe27JXV5wPV0B4+CBTw2PHNXm3AeeWLIg3mWYA==
+X-Google-Smtp-Source: ABdhPJzSDKc0EvCiFo6KHm47j9PJB2kRpSihpJykKUkv7WSSdYOXLHmnjugILSKRGo8bc2gUQ1TMZ0JAA8w0atuBhWw=
+X-Received: by 2002:a05:6a00:14d0:: with SMTP id w16mr12126301pfu.39.1597689420744;
+ Mon, 17 Aug 2020 11:37:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200724182328.3348-9-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200815014006.GB99152@rani.riverdale.lan> <20200815020946.1538085-1-ndesaulniers@google.com>
+ <202008150921.B70721A359@keescook> <CAKwvOdnyHfx6ayqEoOr3pb_ibKBAG9vj31LuKE+f712W=7LFKA@mail.gmail.com>
+ <457a91183581509abfa00575d0392be543acbe07.camel@perches.com>
+ <CAKwvOdk4PRi45MXCtg4kmeN6c1AK5w9EJ1XFBJ5GyUjwEtRj1g@mail.gmail.com>
+ <ccacb2a860151fdd6ce95371f1e0cd7658a308d1.camel@perches.com>
+ <CAKwvOd=QkpmdWHAvWVFtogsDom2z_fA4XmDF6aLqz1czjSgZbQ@mail.gmail.com>
+ <20200816001917.4krsnrik7hxxfqfm@google.com> <CA+icZUW=rQ-e=mmYWsgVns8jDoQ=FJ7kdem1fWnW_i5jx-6JzQ@mail.gmail.com>
+ <20200816150217.GA1306483@rani.riverdale.lan> <CABCJKucsXufD6rmv7qQZ=9kLC7XrngCJkKA_WzGOAn-KfcObeA@mail.gmail.com>
+In-Reply-To: <CABCJKucsXufD6rmv7qQZ=9kLC7XrngCJkKA_WzGOAn-KfcObeA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 17 Aug 2020 11:36:49 -0700
+Message-ID: <CAKwvOd=Ns4_+amT8P-7yQ56xUdDmL=1zDUThF-OmFKhexhJPdg@mail.gmail.com>
+Subject: Re: [PATCH v2] lib/string.c: implement stpcpy
+To:     Sami Tolvanen <samitolvanen@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        Joe Perches <joe@perches.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
+        Eli Friedman <efriedma@quicinc.com>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Daniel Axtens <dja@axtens.net>, Ingo Molnar <mingo@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Nathan Chancellor <natechancellor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 08:23:20PM +0200, Krzysztof Kozlowski wrote:
-> Since driver tracks reserved memory, freeing a non-reserved GPMC should
-> not be fatal and crash the system.  Printing a warning is friendlier.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> ---
-> 
-> Not tested on HW.
-> ---
->  drivers/memory/omap-gpmc.c | 3 +--
+On Mon, Aug 17, 2020 at 10:14 AM Sami Tolvanen <samitolvanen@google.com> wrote:
+>
+> On Sun, Aug 16, 2020 at 8:02 AM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> >
+> > On Sun, Aug 16, 2020 at 07:22:35AM +0200, Sedat Dilek wrote:
+> > > On Sun, Aug 16, 2020 at 2:19 AM 'Fangrui Song' via Clang Built Linux
+> > > <clang-built-linux@googlegroups.com> wrote:
+> > > >
+> > > > Adding a definition without a declaration for stpcpy looks good.
+> > > > Clang LTO will work.
+> > > >
+> > > > (If the kernel does not want to provide these routines,
+> > > > is http://git.kernel.org/linus/6edfba1b33c701108717f4e036320fc39abe1912
+> > > > probably wrong? (why remove -ffreestanding from the main Makefile) )
+> > > >
+> > >
+> > > We had some many issues in arch/x86 where *FLAGS were removed or used
+> > > differently and had to re-add them :-(.
+> > >
+> > > So if -ffreestanding is used in arch/x86 and was! used in top-level
+> > > Makefile - it makes sense to re-add it back?
+> > > ( I cannot speak for archs other than x86. )
+> > >
+> > > - Sedat -
+> >
+> > -ffreestanding disables _all_ builtins and libcall optimizations, which
+> > is probably not desirable. If we added it back, we'd need to also go
 
-Applied.
+I agree.
 
-Best regards,
-Krzysztof
+> > back to #define various string functions to the __builtin versions.
+> >
+> > Though I don't understand the original issue, with -ffreestanding,
+> > sprintf shouldn't have been turned into strcpy in the first place.
 
+Huh? The original issue for this thread is because `-ffreestanding`
+*isn't* being used for most targets (oh boy, actually mixed usage by
+ARCH. Looks like MIPS, m68k, superH, xtensa, and 32b x86 use it?); and
+I'm not suggesting it be used.
+
+> > 32-bit still has -ffreestanding -- I wonder if that's actually necessary
+> > any more?
+
+Fair question.  Someone will have to go chase git history, since
+0a6ef376d4ba covers it up.  If anyone has any tricks to do so quickly;
+I'd love to know.  I generally checkout the commit prior, then use vim
+fugitive to get git blame.
+
+> > Why does -fno-builtin-stpcpy not work with clang LTO? Isn't that a
+> > compiler bug?
+
+Yes; Sami found a recent patch that looks to me like it may have
+recently solved that bug.
+https://reviews.llvm.org/D71193 which landed Dec 12 2019. The bug
+report was based on
+https://github.com/ClangBuiltLinux/linux/issues/416#issuecomment-472231304
+(Issue reported March 8 2019).  And I do recall being able to
+reproduce the bug when I sent
+commit 5f074f3e192f ("lib/string.c: implement a basic bcmp")
+
+Now that that is fixed as reported by Sami below, I don't mind sending
+a revert for 5f074f3e192f that adds -fno-builtin-bcmp, because the
+current implementation of bcmp isn't useful.
+
+That said, this libcall optimization/transformation (sprintf->stpcpy)
+does look useful to me.  Kees, do you have thoughts on me providing
+the implementation without exposing it in a header vs using
+-fno-builtin-stpcpy?  (I would need to add the missing EXPORT_SYMBOL,
+as pointed out by 0day bot and on the github thread).  I don't care
+either way; I'd just like your input before sending a V+1.  Maybe
+better to just not implement it and never implement it?
+
+>
+> I just confirmed that adding -fno-builtin-stpcpy to KBUILD_CFLAGS does
+> work with LTO as well.
+>
+> Sami
+
+-- 
+Thanks,
+~Nick Desaulniers
