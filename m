@@ -2,66 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF7A246812
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 16:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F1424682A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 16:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729006AbgHQOKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 10:10:36 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:49558 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728958AbgHQOKU (ORCPT
+        id S1728780AbgHQOM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 10:12:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728669AbgHQOM2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 10:10:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597673420;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=k4SVy3Q7kvs9PtLL75xW8B+I2m2NEtNuQTvJNDb9D5o=;
-        b=SaDmWaWtIhrYzg2Fxx7gPYdHFvq566gdNC7gqGkIIIDodH3H8MtGHPBptC6R/Cr9tZxIiN
-        ayBIfg7gUqCiag5reeRjiucBLdn/QAKiwjfmg6ATPwF4Q/r3HUCWiPHrAzzhZFVzOMTf6z
-        pIPbFzQ7gBUVtix2OF9HKOqxJoVfH78=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-107-XR16wYhrOq-qf-SCmeZS5A-1; Mon, 17 Aug 2020 10:10:17 -0400
-X-MC-Unique: XR16wYhrOq-qf-SCmeZS5A-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D2835425CF;
-        Mon, 17 Aug 2020 14:10:15 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.59])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 69BA5795AE;
-        Mon, 17 Aug 2020 14:10:14 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Mon, 17 Aug 2020 16:10:15 +0200 (CEST)
-Date:   Mon, 17 Aug 2020 16:10:13 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     akpm@linux-foundation.org, axboe@kernel.dk,
-        linux-kernel@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH 1/2] kernel/sys: only take tasklist_lock for
- get/setpriority(PRIO_PGRP)
-Message-ID: <20200817141012.GE29865@redhat.com>
-References: <20200817003148.23691-1-dave@stgolabs.net>
- <20200817003148.23691-2-dave@stgolabs.net>
+        Mon, 17 Aug 2020 10:12:28 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381BEC061342
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 07:12:27 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id g6so17595597ljn.11
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 07:12:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q7d9pcUKbDGfUpE6Avug3GSgjxvOVpz7Xk0gMD0ttFI=;
+        b=gMYUOdqdelXi5UQrg9TpMibqw1w8S+D7awDT/BVjaXw0fti06gTMWCpDjBZe1W3JuF
+         8kvgIhZgJvl2rmVX9sEqiCzZuIFkC8nAmnRa1P9BdBrDlVfna7dmE4p4LsGXFIi84F1z
+         Xwp39IbROt/uopEH0yzVyvloQrlb7SUdwdrSX54JKhlP7hSlH2Jlkb1FF+QZX1AnhtA6
+         DG2/CggHeahPAYMXlvXPAmxz01X9bZ5KKSFsCKsVlv2fzk9Nr/6zHNDKFnM8m56OSV52
+         Aut9y7m932gKz0zRZaps3FnIUKfRrzulUVC09X1S6VMJvradsQl61jIhQLcIitHOgmWa
+         xynw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q7d9pcUKbDGfUpE6Avug3GSgjxvOVpz7Xk0gMD0ttFI=;
+        b=bb7IhcHfDDoJAwmuri8ycVp8B4yYBnYLB4KOMgQln584LBUNhByDtqeTR2leh57xHI
+         Oir8GBnTOvvwS3I01NfHUCFMoSDzBvDn8kS+ecU5JTjjPZZJRSpDr6ep9Lq51otRuZ0J
+         EJ0n7Do3nmYDft9cDzKAji84yw/Wtayz0UiZBrv6qZ9zjZ4WPQlhkMhUJ8NURKfkW0i7
+         t6gRb29bLeGHQtzrY2K+zzVlfpD3aq8ENBWVLjHzoDl1edyQVpO6DXPVS4bz4pkICHJP
+         NEQEYTatRA/XLeczDD5C7Pd4Yupf1HhUGlZg1NH6BPWe93DEnyd2n2trIIoWeMPpw59W
+         o6zw==
+X-Gm-Message-State: AOAM532EIjZ8Y+XYuSSpfWWhfZrR8SaFFmTWFNZwsmNcwfqEpUi2+E1d
+        RV2Mo/7s0/lF/PPIvQPRar2st5mz1nxUS5FQ/4+kWQ==
+X-Google-Smtp-Source: ABdhPJzZvNTsjJlCZRY46qgZ5XPfaIqBt+6PYchX+KcW7o6RJ0edJpORQWsb2GY8kITxV/aTPnf5HGKblVtJ7XlEV8w=
+X-Received: by 2002:a2e:b6cc:: with SMTP id m12mr6743907ljo.256.1597673545599;
+ Mon, 17 Aug 2020 07:12:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200817003148.23691-2-dave@stgolabs.net>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20200811145816.GA424033@kroah.com> <CAD=FV=UD=cTn6jwpYS-C-=1ORd-4azZ8ZiBR6om++2sMS1nmMg@mail.gmail.com>
+ <CAFA6WYPBdOiVsKR_hSLpigN_1b9jimXKaqyRZjvKSx3xpAmLjA@mail.gmail.com>
+ <CAD=FV=WccmFRkV4UUTLSYR9+7210h00Si=nG4tRs3BBuweA6ng@mail.gmail.com>
+ <CAD=FV=V8UhQVQvcAp6XCmT3=6FYM=_zPELy4FTj4kMKUswaR8Q@mail.gmail.com>
+ <CAFA6WYPxieH6ZTa_BFdaLuiwbqAs6r7eKmxG7ci4XtyRONGN7g@mail.gmail.com>
+ <20200813101703.566thqmnc2d7cb3n@holly.lan> <CAFA6WYPd-fcDkYNk1KrjYwD=FH3FBvjDGEoxCBBN9CRidoVXbw@mail.gmail.com>
+ <20200814141822.opahh33nfc5yodkb@holly.lan> <CAFA6WYO3YmgCftr-hFdiHGHATeox9en_HZvgnAL=zhoa=OEi_w@mail.gmail.com>
+ <20200817092830.xcl2gkyxoe5grgnz@holly.lan>
+In-Reply-To: <20200817092830.xcl2gkyxoe5grgnz@holly.lan>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Mon, 17 Aug 2020 19:42:14 +0530
+Message-ID: <CAFA6WYOX0VzSvCyNTPemNMBPmSY75Q8vKdyQLc9cuq2m5eBWLg@mail.gmail.com>
+Subject: Re: [RFC 0/5] Introduce NMI aware serial drivers
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org, kgdb-bugreport@lists.sourceforge.net,
+        Jiri Slaby <jslaby@suse.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/16, Davidlohr Bueso wrote:
+On Mon, 17 Aug 2020 at 14:58, Daniel Thompson
+<daniel.thompson@linaro.org> wrote:
 >
-> Suggested-by: Oleg Nesterov <oleg@redhat.com>
-> Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
-> ---
->  kernel/sys.c | 16 ++++++++--------
+> On Mon, Aug 17, 2020 at 10:42:43AM +0530, Sumit Garg wrote:
+> > On Fri, 14 Aug 2020 at 19:48, Daniel Thompson
+> > <daniel.thompson@linaro.org> wrote:
+> > >
+> > > On Fri, Aug 14, 2020 at 05:36:36PM +0530, Sumit Garg wrote:
+> > > > On Thu, 13 Aug 2020 at 15:47, Daniel Thompson
+> > > > <daniel.thompson@linaro.org> wrote:
+> > > > >
+> > > > > On Thu, Aug 13, 2020 at 02:55:12PM +0530, Sumit Garg wrote:
+> > > > > > On Thu, 13 Aug 2020 at 05:38, Doug Anderson <dianders@chromium.org> wrote:
+> > > > > > > On Wed, Aug 12, 2020 at 8:27 AM Doug Anderson <dianders@chromium.org> wrote:
+> > > > > > > > One
+> > > > > > > > last worry is that I assume that most people testing (and even
+> > > > > > > > automated testing labs) will either always enable NMI or won't enable
+> > > > > > > > NMI.  That means that everyone will be only testing one codepath or
+> > > > > > > > the other and (given the complexity) the non-tested codepath will
+> > > > > > > > break.
+> > > > > > > >
+> > > > > >
+> > > > > > The current patch-set only makes this NMI to work when debugger (kgdb)
+> > > > > > is enabled which I think is mostly suitable for development
+> > > > > > environments. So most people testing will involve existing IRQ mode
+> > > > > > only.
+> > > > > >
+> > > > > > However, it's very much possible to make NMI mode as default for a
+> > > > > > particular serial driver if the underlying irqchip supports it but it
+> > > > > > depends if we really see any production level usage of NMI debug
+> > > > > > feature.
+> > > > >
+> > > > > The effect of this patch is not to make kgdb work from NMI it is to make
+> > > > > (some) SysRqs work from NMI. I think that only allowing it to deploy for
+> > > > > kgdb users is a mistake.
+> > > > >
+> > > > > Having it deploy automatically for kgdb users might be OK but it seems
+> > > > > sensible to make this feature available for other users too.
+> > > >
+> > > > I think I wasn't clear enough in my prior reply. Actually I meant to
+> > > > say that this patch-set enables NMI support for a particular serial
+> > > > driver via ".poll_init()" interface and the only current user of that
+> > > > interface is kgdb.
+> > > >
+> > > > So if there are other users interested in this feature, they can use
+> > > > ".poll_init()" interface as well to enable it.
+> > >
+> > > Huh?
+> > >
+> > > We appear to speaking interchangably about users (people who sit in
+> > > front of the machine and want a stack trace) and sub-systems ;-).
+> > >
+> > > I don't think other SysRq commands have quite such a direct relationship
+> > > between the sub-system and the sysrq command. For example who are you
+> > > expecting to call .poll_init() if a user wants to use the SysRq to
+> > > provoke a stack trace?
+> > >
+> >
+> > Ah, I see. So you meant to provide a user-space interface to
+> > dynamically enable/disable NMI debug, correct? It will require IRQ <->
+> > NMI switching at runtime which should be doable safely.
+>
+> I haven't given much thought to the exact mechanism, though I would
+> perhaps have started by thinking about a module parameter).
+>
+> From an RFC point of view, I simple think this feature is potentially
+> useful on systems without kgdb (which, let's be honest, are firmly in
+> the majority) so making .poll_init() the only way to activate it is a
+> mistake.
+>
 
-Acked-by: Oleg Nesterov <oleg@redhat.com>
+Makes sense, will add a module parameter to enable this feature during
+boot as well.
 
+-Sumit
+
+>
+> Daniel.
