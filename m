@@ -2,109 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E07E2246199
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E976246192
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728708AbgHQI6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 04:58:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728542AbgHQI6M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 04:58:12 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E6DC061389
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:58:12 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id kr4so7494516pjb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:58:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=82iyXT6DzTJGk80q+wM5oW6Nfvht/wMpYLWFiVAtXjo=;
-        b=ihyd3IRTDQ2sNWvyGa48ej4ZTH5YFMTLLhjYx2kl5gFT+X/RNcDRvczG7Fv0Yt5XHd
-         UhXaxJXJB3ZwAtjFDicTsBpasCmOZ4lxSVTDx42l2+qz4bLXhj8i3joztKz0oOR7nMox
-         ZKMKH5IooVM1s0wcKgvBIiLNW+5PCSTlFwDhhO1fU2kc/1q9iYoK5H7FXvoRYquf1U+Q
-         4csT4c+hEqMna877Fuo9FwQk6fO63aqWNuqPBXv4TFMQKMcz9MGV193UZpnv6g74OuMd
-         5Nl1Pp/E0yAr9yIJzUVzt01sDnj3BXgxXNZ+wrNOqUqNixAAvQdzJBCNNwvDcg9e4s24
-         qB1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=82iyXT6DzTJGk80q+wM5oW6Nfvht/wMpYLWFiVAtXjo=;
-        b=VWeRpkUqPHVMpA0+vzdqfM6D4II3vlyZYMZ3JgkgtN6veFg2/5jcDLRXg57xfmBsmb
-         V1W8K4I4idZMM1+3dgjoiO9HPXrhfU8O2kF7IhbTKJhUrMq6OWVmcC8EfOCCff0RIq/3
-         h9cv19gCEMNok+rvrynPmO9il3aQfHHUEfmTXMj8Wr0LZKrAm1WMmAHGYRqfqf1guBeN
-         gxUgyKCnaEbJb4HxxTDTpef+J2Clj4+hAfM79nzyvYUlO3O+iyrYCrUiIBFEMZU+89Xe
-         zD8LxvCseHtusI21fsr6s+vVFQZx8VcgphD3U77sdr/wFb1fO1Jp1doQ89qpGX6/r1y1
-         W7Fg==
-X-Gm-Message-State: AOAM533cvuFGkfPx7OQwwRpaeaZIfccn5BtmkfnOOSQPaMJG16jCEMQ1
-        es6yY9kdVxhnLEQNEBmPl8s=
-X-Google-Smtp-Source: ABdhPJwmOQdDa+LVIgCsVYsGqUOJh7huV7BDongW+Nmhyb70or57kdsFY11/0oKkwXHZEeyX/z3a4g==
-X-Received: by 2002:a17:90a:c28d:: with SMTP id f13mr8357466pjt.124.1597654692036;
-        Mon, 17 Aug 2020 01:58:12 -0700 (PDT)
-Received: from localhost.localdomain ([49.207.202.98])
-        by smtp.gmail.com with ESMTPSA id j5sm19057245pfg.80.2020.08.17.01.58.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 01:58:11 -0700 (PDT)
-From:   Allen Pais <allen.cryptic@gmail.com>
-To:     perex@perex.cz, tiwai@suse.com, clemens@ladisch.de,
-        o-takashi@sakamocchi.jp, timur@kernel.org, nicoleotsuka@gmail.com,
-        Xiubo.Lee@gmail.com
-Cc:     keescook@chromium.org, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Allen Pais <allen.lkml@gmail.com>,
-        Romain Perier <romain.perier@gmail.com>
-Subject: [PATCH 10/10] sound: ua101: convert tasklets to use new tasklet_setup() API
-Date:   Mon, 17 Aug 2020 14:27:03 +0530
-Message-Id: <20200817085703.25732-11-allen.cryptic@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200817085703.25732-1-allen.cryptic@gmail.com>
-References: <20200817085703.25732-1-allen.cryptic@gmail.com>
+        id S1728665AbgHQI5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 04:57:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:50902 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728037AbgHQI52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 04:57:28 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1176631B;
+        Mon, 17 Aug 2020 01:57:28 -0700 (PDT)
+Received: from [192.168.178.2] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4C4EB3F6CF;
+        Mon, 17 Aug 2020 01:57:26 -0700 (PDT)
+Subject: Re: [PATCH] sched/fair: reduce preemption with IDLE tasks
+ runable(Internet mail)
+To:     =?UTF-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>
+Cc:     Jiang Biao <benbjiang@gmail.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200801023248.90104-1-benbjiang@gmail.com>
+ <5ed0fd46-3a3d-3c1a-5d75-03a74864e640@arm.com>
+ <592F24A7-BF43-457D-AC40-DC5E35279730@tencent.com>
+ <8bef1f94-f9bf-08a5-2ff3-3485d7796a96@arm.com>
+ <8629CB9F-AFC8-43D6-BD14-B60A0B85ADB3@tencent.com>
+ <5f870781-1648-b4ac-6026-557dfc347109@arm.com>
+ <CCA1D942-3669-4216-92BD-768967B1ECE5@tencent.com>
+ <4964e359-afc5-a256-4950-853a9485eeff@arm.com>
+ <70236E62-AA36-48C1-9382-86353649253C@tencent.com>
+ <3a1047fc-a86a-014a-b17a-eae71f669da1@arm.com>
+ <643B0ECE-D758-4D08-8B1B-C70F34DD9943@tencent.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <55f04582-69d6-aeb4-85be-3e46a3b15beb@arm.com>
+Date:   Mon, 17 Aug 2020 10:57:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <643B0ECE-D758-4D08-8B1B-C70F34DD9943@tencent.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Allen Pais <allen.lkml@gmail.com>
+On 14/08/2020 01:55, benbjiang(蒋彪) wrote:
+> Hi,
+> 
+>> On Aug 13, 2020, at 2:39 AM, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>>
+>> On 12/08/2020 05:19, benbjiang(蒋彪) wrote:
+>>> Hi,
+>>>
+>>>> On Aug 11, 2020, at 11:54 PM, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>>>>
+>>>> On 11/08/2020 02:41, benbjiang(蒋彪) wrote:
+>>>>> Hi,
+>>>>>
+>>>>>> On Aug 10, 2020, at 9:24 PM, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>>>>>>
+>>>>>> On 06/08/2020 17:52, benbjiang(蒋彪) wrote:
+>>>>>>> Hi, 
+>>>>>>>
+>>>>>>>> On Aug 6, 2020, at 9:29 PM, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>>>>>>>>
+>>>>>>>> On 03/08/2020 13:26, benbjiang(蒋彪) wrote:
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>>> On Aug 3, 2020, at 4:16 PM, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>>>>>>>>>>
+>>>>>>>>>> On 01/08/2020 04:32, Jiang Biao wrote:
+>>>>>>>>>>> From: Jiang Biao <benbjiang@tencent.com>
 
-In preparation for unconditionally passing the
-struct tasklet_struct pointer to all tasklet
-callbacks, switch to using the new tasklet_setup()
-and from_tasklet() to pass the tasklet pointer explicitly.
+[...]
 
-Signed-off-by: Romain Perier <romain.perier@gmail.com>
-Signed-off-by: Allen Pais <allen.lkml@gmail.com>
----
- sound/usb/misc/ua101.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+>>> ** 2normal+1idle: idle preempt normal every 600+ms **
+>>
+>> During the 3.2s the 2 SCHED_OTHER tasks run, the SCHED_IDLE task is
+>> switched in only once, after ~2.5s.
+> Use your config with loop increased from 200 to 2000, to observe longer,
+> 
+>            <...>-37620 [002] d... 47950.446191: sched_switch: prev_comm=task_other-1 prev_pid=37620 prev_prio=120 prev_state=S ==> next_comm=task_idle-2 next_pid=37621 next_prio=120
+>            <...>-37619 [002] d... 47955.687709: sched_switch: prev_comm=task_other-0 prev_pid=37619 prev_prio=120 prev_state=R ==> next_comm=task_idle-2 next_pid=37621 next_prio=120
+> // The first preemption interval is 5.2s.
+>            <...>-37620 [002] d... 47956.375716: sched_switch: prev_comm=task_other-1 prev_pid=37620 prev_prio=120 prev_state=R ==> next_comm=task_idle-2 next_pid=37621 next_prio=120
+>            <...>-37619 [002] d... 47957.060722: sched_switch: prev_comm=task_other-0 prev_pid=37619 prev_prio=120 prev_state=R ==> next_comm=task_idle-2 next_pid=37621 next_prio=120
+>            <...>-37620 [002] d... 47957.747728: sched_switch: prev_comm=task_other-1 prev_pid=37620 prev_prio=120 prev_state=R ==> next_comm=task_idle-2 next_pid=37621 next_prio=120
+>           <...>-37620 [002] d... 47958.423734: sched_switch: prev_comm=task_other-1 prev_pid=37620 prev_prio=120 prev_state=R ==> next_comm=task_idle-2 next_pid=37621 next_prio=120
+>            <...>-37620 [002] d... 47959.119740: sched_switch: prev_comm=task_other-1 prev_pid=37620 prev_prio=120 prev_state=R ==> next_comm=task_idle-2 next_pid=37621 next_prio=120
+> // After the first preemption, the rest preemption intervals are all about 600ms+. :)
 
-diff --git a/sound/usb/misc/ua101.c b/sound/usb/misc/ua101.c
-index 884e740a785c..3b2dce1043f5 100644
---- a/sound/usb/misc/ua101.c
-+++ b/sound/usb/misc/ua101.c
-@@ -247,9 +247,9 @@ static inline void add_with_wraparound(struct ua101 *ua,
- 		*value -= ua->playback.queue_length;
- }
- 
--static void playback_tasklet(unsigned long data)
-+static void playback_tasklet(struct tasklet_struct *t)
- {
--	struct ua101 *ua = (void *)data;
-+	struct ua101 *ua = from_tasklet(ua, t, playback_tasklet);
- 	unsigned long flags;
- 	unsigned int frames;
- 	struct ua101_urb *urb;
-@@ -1218,8 +1218,7 @@ static int ua101_probe(struct usb_interface *interface,
- 	spin_lock_init(&ua->lock);
- 	mutex_init(&ua->mutex);
- 	INIT_LIST_HEAD(&ua->ready_playback_urbs);
--	tasklet_init(&ua->playback_tasklet,
--		     playback_tasklet, (unsigned long)ua);
-+	tasklet_setup(&ua->playback_tasklet, playback_tasklet);
- 	init_waitqueue_head(&ua->alsa_capture_wait);
- 	init_waitqueue_head(&ua->rate_feedback_wait);
- 	init_waitqueue_head(&ua->alsa_playback_wait);
--- 
-2.17.1
+Are you sure about this?
 
+The math is telling me for the:
+
+idle task:      (3 / (1024 + 1024 + 3))^(-1) * 4ms = 2735ms
+
+normal task: (1024 / (1024 + 1024 + 3))^(-1) * 4ms =    8ms
+
+(4ms - 250 Hz)
+
+>>> ** 3normal+idle: idle preempt normal every 1000+ms **
+>>
+>> Ah, this was meant to be 3 SCHED_OTHER tasks only! To see the difference
+>> in behavior.
+> With 3 SCHED_OHTER tasks only, the SCHED_OHTER task is switched in
+> Every 27ms.
+
+normal task: (1024 / (1024 + 1024 + 1024))^(-1) * 4ms = 12ms
+
+>>> ** 2normal(nice 19)+1idle(nice 0): idle preempt normal every 30+ms **
+>>
+>> During the 3.2s the 2 SCHED_OTHER tasks run, the SCHED_IDLE task is
+>> switched in every ~45ms.
+> That’s as what I expected. :)
+
+idle task:    (3 / (15 + 15 + 3))^(-1) * 4ms = 44ms
+
+normal task: (15 / (15 + 15 + 3))^(-1) * 4ms =  9ms
