@@ -2,131 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E40246E39
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C70246E3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390054AbgHQRZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:25:44 -0400
-Received: from mga17.intel.com ([192.55.52.151]:61735 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389816AbgHQRWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 13:22:36 -0400
-IronPort-SDR: TAUe2uTwTVI6nPrDPM+SOMtrutA4JDauDBigh/U55F5qq9w9+97Q7BzZarL1C7Rn3NjAvft8TQ
- gm2SPDPrU8Rg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="134818255"
-X-IronPort-AV: E=Sophos;i="5.76,324,1592895600"; 
-   d="scan'208";a="134818255"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 10:22:35 -0700
-IronPort-SDR: nEoLZbUtp34BoUYd5WmOxfMcLgAQPMgFE8tvVUJU8KClPVVBi0dLi9d3gco++TBY/fY3P1cqiZ
- TCzf3cLJNS9Q==
-X-IronPort-AV: E=Sophos;i="5.76,324,1592895600"; 
-   d="scan'208";a="292496184"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 10:22:34 -0700
-Date:   Mon, 17 Aug 2020 10:22:33 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Mohammed Gamal <mgamal@redhat.com>
-Cc:     kvm@vger.kernel.org, pbonzini@redhat.com,
-        linux-kernel@vger.kernel.org, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org
-Subject: Re: [PATCH v3 7/9] KVM: VMX: Add guest physical address check in EPT
- violation and misconfig
-Message-ID: <20200817172233.GF22407@linux.intel.com>
-References: <20200710154811.418214-1-mgamal@redhat.com>
- <20200710154811.418214-8-mgamal@redhat.com>
- <20200715230006.GF12349@linux.intel.com>
+        id S2389843AbgHQR0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:26:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390039AbgHQRZd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 13:25:33 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84C57C061389;
+        Mon, 17 Aug 2020 10:25:33 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id j9so15174824ilc.11;
+        Mon, 17 Aug 2020 10:25:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rKtlLroQpL/sWAJgH4qxybWU48/NnHnKlgQrlvvNczw=;
+        b=Zh1hzjplnO00QpCm/On/zjcaMBwW9TTlmZ3xHT74iBDu8raplF54GVXb0JGtIgCZus
+         owaf1p2obJm9WFiiMARI3u+MFRo5MmOf9c7bohL5PGxygj+7g4S84OYpeJZjl8nqciz5
+         oyQMYuBWu0tVZk8SjeAIf5qw9l1gCM8140nr9wB94lJ2DPlnh+lfMGsMkRB7HLHqGTCp
+         XAlCYEsYhJxcGSMUwpYpUfW5QY2vIyb2c/KexMWq0kiIvnJ5d7X+eKomPKtiL4AE4mEn
+         66gUW7Gam9grdox6zUK0Zc+8vW/kn7wePWxt1b0rVRqi4TUPmBD54TmRiuO7RVRPmNZ9
+         h9MA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rKtlLroQpL/sWAJgH4qxybWU48/NnHnKlgQrlvvNczw=;
+        b=SXyWyjuCYocXFNWET8nJpmJI3nZrRzJ47hbpF8mdYsdvC8IFsYNO5H5+nUez8Y/sD6
+         B2Zd+I8ZfEu5BZuy49s6QI3oJT+FgWK13z8MfzPzEojB0cLKIFb4k4o//JvoruRePsK7
+         rmSlYK8yRmC7DCoGX3jr+E1Z+weF+v6qZZgkFnllMCVpcw+WktV/zLw4HOL+4VzMfSS5
+         RbLQNEtO9XqFzy6a2pbmzo1P++SA5c6WpzxOe1aTBjaYUmIapsDLHhb/P5NIpp36iNsR
+         c0lRhWY9Jc1R5uZmAZWQR30iEQy1hW/ikvm/F0g2Zenaqmpu1Nx++AlmUVTXuFJZ88RH
+         quMQ==
+X-Gm-Message-State: AOAM530snq+ugm27TwAszEj7PpEkbxeRFlTiaLNtanTsM7d8h2sIlzNc
+        QTBdi6dbvZErnIVfFb0gGKMcCx9ZBdMesh0OxHeYG0EYgw81gQ==
+X-Google-Smtp-Source: ABdhPJxKJV7ZDUifvV2jxONW1h9vnjrTDiPV21b4WSI1cQ36QytJWfdjPUr/+UXcj5suUkTUs5Ql6OXn0KmK/xxxrB0=
+X-Received: by 2002:a92:2901:: with SMTP id l1mr9877131ilg.306.1597685132897;
+ Mon, 17 Aug 2020 10:25:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200715230006.GF12349@linux.intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20200817165059.957748-1-ztong0001@gmail.com> <20200817170038.GA725471@kroah.com>
+In-Reply-To: <20200817170038.GA725471@kroah.com>
+From:   Tong Zhang <ztong0001@gmail.com>
+Date:   Mon, 17 Aug 2020 13:25:22 -0400
+Message-ID: <CAA5qM4AH7rLCve8YjZ50No02BY524nPbSOJVa+8_e3dXKmpuJw@mail.gmail.com>
+Subject: Re: [PATCH] tty: serial: fix earlycon dependency
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     jirislaby@kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 04:00:08PM -0700, Sean Christopherson wrote:
-> On Fri, Jul 10, 2020 at 05:48:09PM +0200, Mohammed Gamal wrote:
-> > Check guest physical address against it's maximum physical memory. If
-> > the guest's physical address exceeds the maximum (i.e. has reserved bits
-> > set), inject a guest page fault with PFERR_RSVD_MASK set.
-> > 
-> > This has to be done both in the EPT violation and page fault paths, as
-> > there are complications in both cases with respect to the computation
-> > of the correct error code.
-> > 
-> > For EPT violations, unfortunately the only possibility is to emulate,
-> > because the access type in the exit qualification might refer to an
-> > access to a paging structure, rather than to the access performed by
-> > the program.
-> > 
-> > Trapping page faults instead is needed in order to correct the error code,
-> > but the access type can be obtained from the original error code and
-> > passed to gva_to_gpa.  The corrections required in the error code are
-> > subtle. For example, imagine that a PTE for a supervisor page has a reserved
-> > bit set.  On a supervisor-mode access, the EPT violation path would trigger.
-> > However, on a user-mode access, the processor will not notice the reserved
-> > bit and not include PFERR_RSVD_MASK in the error code.
-> > 
-> > Co-developed-by: Mohammed Gamal <mgamal@redhat.com>
-> > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> > ---
-> >  arch/x86/kvm/vmx/vmx.c | 24 +++++++++++++++++++++---
-> >  arch/x86/kvm/vmx/vmx.h |  3 ++-
-> >  2 files changed, 23 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> > index 770b090969fb..de3f436b2d32 100644
-> > --- a/arch/x86/kvm/vmx/vmx.c
-> > +++ b/arch/x86/kvm/vmx/vmx.c
-> > @@ -4790,9 +4790,15 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
-> >  
-> >  	if (is_page_fault(intr_info)) {
-> >  		cr2 = vmx_get_exit_qual(vcpu);
-> > -		/* EPT won't cause page fault directly */
-> > -		WARN_ON_ONCE(!vcpu->arch.apf.host_apf_flags && enable_ept);
-> > -		return kvm_handle_page_fault(vcpu, error_code, cr2, NULL, 0);
-> > +		if (enable_ept && !vcpu->arch.apf.host_apf_flags) {
-> > +			/*
-> > +			 * EPT will cause page fault only if we need to
-> > +			 * detect illegal GPAs.
-> > +			 */
-> > +			kvm_fixup_and_inject_pf_error(vcpu, cr2, error_code);
-> 
-> This splats when running the PKU unit test, although the test still passed.
-> I haven't yet spent the brain power to determine if this is a benign warning,
-> i.e. simply unexpected, or if permission_fault() fault truly can't handle PK
-> faults.
-> 
->   WARNING: CPU: 25 PID: 5465 at arch/x86/kvm/mmu.h:197 paging64_walk_addr_generic+0x594/0x750 [kvm]
->   Hardware name: Intel Corporation WilsonCity/WilsonCity, BIOS WLYDCRB1.SYS.0014.D62.2001092233 01/09/2020
->   RIP: 0010:paging64_walk_addr_generic+0x594/0x750 [kvm]
->   Code: <0f> 0b e9 db fe ff ff 44 8b 43 04 4c 89 6c 24 30 8b 13 41 39 d0 89
->   RSP: 0018:ff53778fc623fb60 EFLAGS: 00010202
->   RAX: 0000000000000001 RBX: ff53778fc623fbf0 RCX: 0000000000000007
->   RDX: 0000000000000001 RSI: 0000000000000002 RDI: ff4501efba818000
->   RBP: 0000000000000020 R08: 0000000000000005 R09: 00000000004000e7
->   R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000007
->   R13: ff4501efba818388 R14: 10000000004000e7 R15: 0000000000000000
->   FS:  00007f2dcf31a700(0000) GS:ff4501f1c8040000(0000) knlGS:0000000000000000
->   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->   CR2: 0000000000000000 CR3: 0000001dea475005 CR4: 0000000000763ee0
->   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->   PKRU: 55555554
->   Call Trace:
->    paging64_gva_to_gpa+0x3f/0xb0 [kvm]
->    kvm_fixup_and_inject_pf_error+0x48/0xa0 [kvm]
->    handle_exception_nmi+0x4fc/0x5b0 [kvm_intel]
->    kvm_arch_vcpu_ioctl_run+0x911/0x1c10 [kvm]
->    kvm_vcpu_ioctl+0x23e/0x5d0 [kvm]
->    ksys_ioctl+0x92/0xb0
->    __x64_sys_ioctl+0x16/0x20
->    do_syscall_64+0x3e/0xb0
->    entry_SYSCALL_64_after_hwframe+0x44/0xa9
->   ---[ end trace d17eb998aee991da ]---
+On Mon, Aug 17, 2020 at 1:00 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> We can handle lines 72 characters long :)
+OK, thanks, I was not aware of that, I will reformat the text in the
+next version
 
-Looks like this series got pulled for 5.9, has anyone looked into this?
+> > Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+>
+> What broke to cause this to be needed?
+
+newbie here, please don't laugh at me,
+I just followed what people were doing after read some articles from
+the internet
+
+> Can you provide a "Fixes:" tag for this?
+sure, thanks for the suggestion
+
+>
+> > ---
+> >  drivers/tty/serial/Kconfig | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+> > index 8a0352eb337c..42e844314cbb 100644
+> > --- a/drivers/tty/serial/Kconfig
+> > +++ b/drivers/tty/serial/Kconfig
+> > @@ -8,6 +8,7 @@ menu "Serial drivers"
+> >
+> >  config SERIAL_EARLYCON
+> >       bool
+> > +     select SERIAL_CORE
+>
+> Are you _sure_ about this?  This feels odd...
+
+Yeah.. that also seems odd to me -- this bug can be triggered under
+some corner cases
+which I haven't figured out why --
+I can encounter this problem when doing allmodconfig followed by some random
+select/deselect in menuconfig. -- It seems that menuconfig is not
+doing some dependency
+check correctly, i.e. when SERIAL_CORE is not builtin, SERIAL_EARLYCON
+should not
+be selected either.
+What do you suggest?
+
+> thanks,
+Thank you.
+
+> greg k-h
