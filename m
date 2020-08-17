@@ -2,118 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1428247E72
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 08:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B916247EA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 08:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbgHRGaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 02:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726519AbgHRGaP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 02:30:15 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E7CC061389;
-        Mon, 17 Aug 2020 23:30:15 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id m71so9474758pfd.1;
-        Mon, 17 Aug 2020 23:30:15 -0700 (PDT)
+        id S1726731AbgHRGs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 02:48:27 -0400
+Received: from mail-db8eur05on2059.outbound.protection.outlook.com ([40.107.20.59]:28824
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726480AbgHRGsZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 02:48:25 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cCfsMFWxy8xeHce9EXV0estMZB/aNo4oKhmIBAp8i13hQqu0Hvd18JYoTkorNieLP0jdCmZuQ48uYKz+MRd2kyDy6AQrYOlsQC1zHQ1Cz+F8odCg+F2X8oHZh4WD1A9q/saMFwl7Yx2/g2rdWel9owPoe4u04TMO3fB0/Q+G1WU/wlmxCxzA3TNtAgVBYI+bChlSDGlggwkYIFRlzSPGtA4Sux2CAfLZkgiDlCcZHnle9DAn2zX9w8ksgQ1meUjjGKTP+5YSga9P1Bnr9JRbg39Y1wrpzr1ekQwg0pK/zYH1C413+0kbhnF9oMPrxQLTrK5GmvYcEl2FEUByu0to3w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RPrTYZVH1G+G/OS/3YmI5YCL8W9JtFq7DF94lCvM4Go=;
+ b=QDoykQSQ3b00fKZXwhEJLGQJ1GxdARv6G3KpcoFioY208xlztdlqcGMhzjZxR1j6tcI0n8dhyo7Dpe3mlsKYkLRUIH58qT/T3JKvDNFTfeHB1QuCvJUdCtlYYYwC+HeKHNrssE4IHwprs3Wg5EgZiqBkJR6dLrAldCkVzGaGumVEZ28/80VzxcMtWDnGeMlkRQydf131OO0GKQ9Hz3RO/xH2lrW6zMrCoKjHUV+PruJYlqMGNK5fG191NDck4GIA/2V1W5f08Bc5vRYZbOBaTExUCeHboLcQqIvVJeD3RXweRUuL9J5leKSCGwLGnA864tmvzN68LZyDFkfQjGNDXw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=neutral (sender ip is
+ 193.240.239.45) smtp.rcpttodomain=kernel.org smtp.mailfrom=diasemi.com;
+ dmarc=fail (p=none sp=none pct=100) action=none header.from=diasemi.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=q4QHL6A8uyFKbDV2P19zFKn9zEQqqmFB/XApBSU9BFw=;
-        b=W5b/Tfm0+LD9Z7cvao+vMTNs9ijNvX7eXiw9ZsZ/7TGir/QSEaMH65fRi3PbZY7TUo
-         RYENSmFLiLWoLgg06zUoCHo3PhEYejSAhdyujGtoWZrYXfHmNjrycZ4kk/mu2KaSspaU
-         dNmEUQnnB83A3TdVIVXJMjCt0pajG+gbk67LVdM7qufEB6RXDBM4b+gtAGUXlhEY01x/
-         YR/2UMmLU5obRUsA+3hfRcgcbuCN8ChlBl1fNxsmFRnUjNyp98hqzB8btOhclU+gqjeX
-         kR5BllY6FvJckr5H19WeKKpZxaRN8EBdFf1wPdHEsN28QKT9wgI6UHnBsbynSNtdMauO
-         4v1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=q4QHL6A8uyFKbDV2P19zFKn9zEQqqmFB/XApBSU9BFw=;
-        b=ejwOfQxJ59yYQ3SYqz+wRYnfmv6iIe8GyxQhO5iTvZ1eS/rXc1WWs58F6OaJT+kpW0
-         VIPxkEEIvVZERaIP6VIx3913SzFmUrNCMbReOKZIGH16yu2htG18j8LmLxOk+KvtEOad
-         Ke/LDYcpfIsSlXC0+mQibBCmW2pUh0VTIRi5RlTq4umOLxNULpqh+xDtil4oUJExnP3z
-         C3ObBjAKhIRg4PN88S1UqHoeMwap37qllOZchseLzer1xTgI1JuJNFm5Wz2pkXTE7g0g
-         MTC+muTQLSKtPvkTujKTY1C8+dQV8k7sOAFXH328EQzl3a61Xis2j94t+2R2gJTlmrZN
-         wccA==
-X-Gm-Message-State: AOAM531XyGrB0eSq3Zj5n2qS8TzJbYDJpihf7R5p3Ambwrt/s6lpa3gq
-        Yz7+rOGcqK4jYKaDJWdeVkM=
-X-Google-Smtp-Source: ABdhPJwbqB7FRtldYEWCEwLz0lnKf/pdK1wAl2llvb5R0ejJ/742o9gwl5IRmSTx+MNxi8KBz8Hirg==
-X-Received: by 2002:aa7:9a1c:: with SMTP id w28mr10809351pfj.116.1597732214919;
-        Mon, 17 Aug 2020 23:30:14 -0700 (PDT)
-Received: from huyue2.ccdomain.com ([124.156.176.71])
-        by smtp.gmail.com with ESMTPSA id f6sm21532959pje.16.2020.08.17.23.30.11
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 17 Aug 2020 23:30:14 -0700 (PDT)
-From:   Yue Hu <zbestahu@gmail.com>
-To:     rui.zhang@intel.com, daniel.lezcano@linaro.org,
-        amit.kucheria@verdurent.com, viresh.kumar@linaro.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, zbestahu@163.com
-Subject: [PATCH] thermal: sysfs: fall back to vzalloc for cooling device's statistics
-Date:   Tue, 18 Aug 2020 14:30:04 +0800
-Message-Id: <20200818063005.13828-1-zbestahu@gmail.com>
-X-Mailer: git-send-email 2.19.1.windows.1
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RPrTYZVH1G+G/OS/3YmI5YCL8W9JtFq7DF94lCvM4Go=;
+ b=01/shgT/AHy/2WzGuC/L8alHP4fbOx6/pd9yEMFJoy7fhgXzk8LUYe6+P7J2kbPl3DkqTg4w5H/nW4n/ALMeMl1IPG+gnAFYsto7fcusKVbSDUl2zmAK8zZmZ6WI/LmLtaL64zTZDShPxNLNiMbU/ZCAcv2cBjcHUeARUHy4q8M=
+Received: from MR2P264CA0177.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501::16) by
+ DB8PR10MB3815.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:160::22) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3283.16; Tue, 18 Aug 2020 06:48:21 +0000
+Received: from VE1EUR02FT031.eop-EUR02.prod.protection.outlook.com
+ (2603:10a6:501:0:cafe::5a) by MR2P264CA0177.outlook.office365.com
+ (2603:10a6:501::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.16 via Frontend
+ Transport; Tue, 18 Aug 2020 06:48:21 +0000
+X-MS-Exchange-Authentication-Results: spf=neutral (sender IP is
+ 193.240.239.45) smtp.mailfrom=diasemi.com; kernel.org; dkim=none (message not
+ signed) header.d=none;kernel.org; dmarc=fail action=none
+ header.from=diasemi.com;
+Received-SPF: Neutral (protection.outlook.com: 193.240.239.45 is neither
+ permitted nor denied by domain of diasemi.com)
+Received: from mailrelay1.diasemi.com (193.240.239.45) by
+ VE1EUR02FT031.mail.protection.outlook.com (10.152.12.135) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3283.16 via Frontend Transport; Tue, 18 Aug 2020 06:48:20 +0000
+Received: from krsrvapps-03.diasemi.com (10.93.17.2) by
+ NB-EX-CASHUB01.diasemi.com (10.1.16.140) with Microsoft SMTP Server id
+ 14.3.468.0; Tue, 18 Aug 2020 08:48:16 +0200
+Received: by krsrvapps-03.diasemi.com (Postfix, from userid 22266)      id
+ 5A5FC13F670; Tue, 18 Aug 2020 15:48:15 +0900 (KST)
+Message-ID: <4f9843d978aebfde7f0b25f9059c66a5f29bfdf0.1597706056.git.Roy.Im@diasemi.com>
+In-Reply-To: <cover.1597706056.git.Roy.Im@diasemi.com>
+References: <cover.1597706056.git.Roy.Im@diasemi.com>
+From:   Roy Im <roy.im.opensource@diasemi.com>
+Date:   Tue, 18 Aug 2020 08:14:15 +0900
+Subject: [RESEND PATCH v19 1/3] MAINTAINERS: da7280 updates to the Dialog
+ Semiconductor search terms
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Rob Herring <robh@kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
+        Support Opensource <support.opensource@diasemi.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b7470763-b047-4eb9-15d7-08d84342b24e
+X-MS-TrafficTypeDiagnostic: DB8PR10MB3815:
+X-Microsoft-Antispam-PRVS: <DB8PR10MB3815489F9E3E303B9FDDF857A25C0@DB8PR10MB3815.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +7Hz/Q+uA2ClhppcOv2ZHFYUxb0TyxpYrMIPOrfdnosxRHzilA0SzU0eWxJSnvWfvz4wWn9EpOEmXjF+EMhU3QJ6teLwu9nG11DREq0GhAoBaQVYL9crR+AUd8mb0BMf6+8B2e8lPHUSLutf4fGG2rneZHnMwjmHtEHtDGHsEVCfcLcXRG0xbBPUZdiL8HFCe0ZmHoGC5JdfZiIn3JJ5U9UbLfbaVZuQ7Lv7zrHNvuSwiUuHHZNk0qvSH/nFr2lSyIv3lSPpQtCC983Bn4/2cxe1rVhy6jly3Ow9yCFOxbBursCpgAgpmdpM6Ukt1G7J8UnBNyTcKGgG8OFt4q2hLpsEgD2qKH2p+Zi2WIEGJ9W8hkj+AC/WdWCd3tqda8rBD1hzlaM9ZPXPOCJycpeGqwGUFMEBIZ4pC/H3/ztB9x4DG6cOMGe53hC5StKHGawOwC3LoaqhZjC5Vjd5RiR/y7BC4W3fzXzLHx8qvsZT+XT/J2pRm21iOfB94Jmekve6
+X-Forefront-Antispam-Report: CIP:193.240.239.45;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mailrelay1.diasemi.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(396003)(346002)(46966005)(36906005)(6266002)(966005)(336012)(8676002)(316002)(107886003)(54906003)(36756003)(478600001)(83380400001)(186003)(356005)(8936002)(82740400003)(33310700002)(70206006)(70586007)(5660300002)(4326008)(86362001)(110136005)(26005)(2616005)(42186006)(47076004)(81166007)(82310400002)(2906002)(426003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: diasemi.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2020 06:48:20.8669
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b7470763-b047-4eb9-15d7-08d84342b24e
+X-MS-Exchange-CrossTenant-Id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=511e3c0e-ee96-486e-a2ec-e272ffa37b7c;Ip=[193.240.239.45];Helo=[mailrelay1.diasemi.com]
+X-MS-Exchange-CrossTenant-AuthSource: VE1EUR02FT031.eop-EUR02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR10MB3815
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yue Hu <huyue2@yulong.com>
+This patch adds the da7280 bindings doc and driver to the Dialog
+Semiconductor support list.
 
-We observed warning about kzalloc() when register thermal cooling device
-in backlight_device_register(). backlight display can be a cooling device
-since reducing screen brightness will can help reduce temperature.
+Signed-off-by: Roy Im <roy.im.opensource@diasemi.com>
 
-However, ->get_max_state of backlight will assign max brightness of 1024
-to states. The memory size can be getting 1MB+ due to states * states.
-That is so large to trigger kmalloc() warning.
-
-So, let's remove it and try vzalloc() if kzalloc() fails.
-
-Signed-off-by: Yue Hu <huyue2@yulong.com>
 ---
- drivers/thermal/thermal_sysfs.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+v19: No changes.
+v18: No changes.
+v17: No changes.
+v16: No changes.
+v15: No changes.
+v14: No changes.
+v13: No changes.
+v12: Corrected file list order.
+v11: No changes.
+v10: No changes.
+v9: No changes.
+v8: No changes.
+v7: No changes.
+v6: No changes.
+v5: No changes.
+v4: No changes.
+v3: No changes.
+v2: No changes.
 
-diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
-index aa99edb..9bae0b6 100644
---- a/drivers/thermal/thermal_sysfs.c
-+++ b/drivers/thermal/thermal_sysfs.c
-@@ -16,6 +16,8 @@
- #include <linux/device.h>
- #include <linux/err.h>
- #include <linux/slab.h>
-+#include <linux/vmalloc.h>
-+#include <linux/mm.h>
- #include <linux/string.h>
- #include <linux/jiffies.h>
- 
-@@ -919,7 +921,9 @@ static void cooling_device_stats_setup(struct thermal_cooling_device *cdev)
- 	var += sizeof(*stats->time_in_state) * states;
- 	var += sizeof(*stats->trans_table) * states * states;
- 
--	stats = kzalloc(var, GFP_KERNEL);
-+	stats = kzalloc(var, GFP_KERNEL | __GFP_NOWARN);
-+	if (!stats)
-+		stats = vzalloc(var);
- 	if (!stats)
- 		return;
- 
-@@ -938,7 +942,7 @@ static void cooling_device_stats_setup(struct thermal_cooling_device *cdev)
- 
- static void cooling_device_stats_destroy(struct thermal_cooling_device *cdev)
- {
--	kfree(cdev->stats);
-+	kvfree(cdev->stats);
- 	cdev->stats = NULL;
- }
- 
+
+ MAINTAINERS | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 4e2698c..81a9416 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5003,6 +5003,7 @@ M:	Support Opensource <support.opensource@diasemi.com>
+ S:	Supported
+ W:	http://www.dialog-semiconductor.com/products
+ F:	Documentation/devicetree/bindings/input/da90??-onkey.txt
++F:	Documentation/devicetree/bindings/input/dlg,da72??.txt
+ F:	Documentation/devicetree/bindings/mfd/da90*.txt
+ F:	Documentation/devicetree/bindings/regulator/da92*.txt
+ F:	Documentation/devicetree/bindings/regulator/slg51000.txt
+@@ -5013,6 +5014,7 @@ F:	Documentation/hwmon/da90??.rst
+ F:	drivers/gpio/gpio-da90??.c
+ F:	drivers/hwmon/da90??-hwmon.c
+ F:	drivers/iio/adc/da91??-*.c
++F:	drivers/input/misc/da72??.[ch]
+ F:	drivers/input/misc/da90??_onkey.c
+ F:	drivers/input/touchscreen/da9052_tsi.c
+ F:	drivers/leds/leds-da90??.c
 -- 
-1.9.1
+end-of-patch for RESEND PATCH v19
 
