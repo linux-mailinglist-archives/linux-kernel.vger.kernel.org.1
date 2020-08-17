@@ -2,266 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E00247925
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 23:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A95824793D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 23:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728789AbgHQVwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 17:52:12 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:39553 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728482AbgHQVwL (ORCPT
+        id S1728899AbgHQVyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 17:54:00 -0400
+Received: from rnd-relay.smtp.broadcom.com ([192.19.229.170]:47422 "EHLO
+        rnd-relay.smtp.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727931AbgHQVxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 17:52:11 -0400
-Received: by mail-io1-f67.google.com with SMTP id z6so19180823iow.6;
-        Mon, 17 Aug 2020 14:52:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=E11IGqe88Tc6Z0vOlOvE5ENGRj196p+lCtOlbpTnEuM=;
-        b=TZNegIblZYVc6zm/EWEOaaWNRV0ClM1HEIWqH2wQjVVK3KMhplP9hrVHzUm/BNjCeq
-         IglNDShCTEj4B80jUpsuqAnIZBQkH0G4CYcPS0GQYKfOIjdkf6XeL1TzfarRC/M8pE6P
-         K9+mxdk67+HYZ0E0UoGT/pmY6VGFQTLAWShjqqnRWUQdZJ/uPLrusP05aXPHFoRpEnxx
-         1Ir+gsEHXmr+6YCXebFmYNeyWB5fCduQzEr3fc2lntfMGkhfTAT61Rs/k5xPxtSKNalx
-         428h9PToPnti/ZQDKpcTyBaTxc8ooyLoIcXGULFvRskRt4/STpDm6o9gqQZ4Dcu4oQjX
-         aC8A==
-X-Gm-Message-State: AOAM531t3y/9sYx3Y0noMwjk3HyARmvzhhwGvnegR71iceDESPf1DD6G
-        eMwbwaxumvITq9DhP1s4Lg==
-X-Google-Smtp-Source: ABdhPJyHSDK+5TEtfeg0k9BGNP6X9Atf/V18+ASpg7f0YjHh3/cYxf3H70kyY4EQqMZnas7g5GZrTg==
-X-Received: by 2002:a6b:8dd2:: with SMTP id p201mr14037976iod.152.1597701129759;
-        Mon, 17 Aug 2020 14:52:09 -0700 (PDT)
-Received: from xps15 ([64.188.179.249])
-        by smtp.gmail.com with ESMTPSA id t187sm9556524iof.54.2020.08.17.14.52.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 14:52:09 -0700 (PDT)
-Received: (nullmailer pid 1635439 invoked by uid 1000);
-        Mon, 17 Aug 2020 21:52:08 -0000
-Date:   Mon, 17 Aug 2020 15:52:08 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     lgirdwood@gmail.com, broonie@kernel.org, shengjiu.wang@nxp.com,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Linux-imx@nxp.com
-Subject: Re: [PATCH] dt-bindings: sound: Convert NXP spdif to json-schema
-Message-ID: <20200817215208.GA1632404@bogus>
-References: <1596691077-30658-1-git-send-email-Anson.Huang@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1596691077-30658-1-git-send-email-Anson.Huang@nxp.com>
+        Mon, 17 Aug 2020 17:53:37 -0400
+Received: from mail-irv-17.broadcom.com (mail-irv-17.lvn.broadcom.net [10.75.242.48])
+        by rnd-relay.smtp.broadcom.com (Postfix) with ESMTP id EA47830C20B;
+        Mon, 17 Aug 2020 14:51:11 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 rnd-relay.smtp.broadcom.com EA47830C20B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1597701072;
+        bh=ubBMJ940rYl92I/Jyrk5HpYWcSFbpmpmT4Ss/yrNXcU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=l8GCsv6KPSY0S1UZ1zKkiYsiS7/SWlE4tXKWNxfa+ncXvzCCAgXe4UriCgEJoloWA
+         qjY6cwXbGngkg2fLIu25m8FOwM8SKprirpCW9NkYKqtPoCM5E8QD7QTgZ77Zy8M5CM
+         trzPUIS3Q8VBJ/azsTHutBZUf1rkmLhMtNsTlXGw=
+Received: from stbsrv-and-01.and.broadcom.net (stbsrv-and-01.and.broadcom.net [10.28.16.211])
+        by mail-irv-17.broadcom.com (Postfix) with ESMTP id 7D633140069;
+        Mon, 17 Aug 2020 14:53:31 -0700 (PDT)
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+To:     linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Christoph Hellwig <hch@lst.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        devel@driverdev.osuosl.org (open list:STAGING SUBSYSTEM),
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE),
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS FOR ALLWINNER
+        A10), Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        iommu@lists.linux-foundation.org (open list:IOMMU DRIVERS),
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Julien Grall <julien.grall@arm.com>,
+        linux-acpi@vger.kernel.org (open list:ACPI FOR ARM64 (ACPI/arm64)),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT),
+        linux-kernel@vger.kernel.org (open list),
+        linux-media@vger.kernel.org (open list:ALLWINNER A10 CSI DRIVER),
+        linux-remoteproc@vger.kernel.org (open list:REMOTE PROCESSOR
+        (REMOTEPROC) SUBSYSTEM),
+        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        linux-sh@vger.kernel.org (open list:SUPERH),
+        linux-usb@vger.kernel.org (open list:USB SUBSYSTEM),
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+Subject: [PATCH RESEND v10 00/11] PCI: brcmstb: enable PCIe for STB chips
+Date:   Mon, 17 Aug 2020 17:53:02 -0400
+Message-Id: <20200817215326.30912-1-james.quinlan@broadcom.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 01:17:57PM +0800, Anson Huang wrote:
-> Convert the NXP SPDIF binding to DT schema format using json-schema.
-> 
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> ---
->  .../devicetree/bindings/sound/fsl,spdif.txt        |  68 -------------
->  .../devicetree/bindings/sound/fsl,spdif.yaml       | 108 +++++++++++++++++++++
->  2 files changed, 108 insertions(+), 68 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/fsl,spdif.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/fsl,spdif.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/fsl,spdif.txt b/Documentation/devicetree/bindings/sound/fsl,spdif.txt
-> deleted file mode 100644
-> index e1365b0..0000000
-> --- a/Documentation/devicetree/bindings/sound/fsl,spdif.txt
-> +++ /dev/null
-> @@ -1,68 +0,0 @@
-> -Freescale Sony/Philips Digital Interface Format (S/PDIF) Controller
-> -
-> -The Freescale S/PDIF audio block is a stereo transceiver that allows the
-> -processor to receive and transmit digital audio via an coaxial cable or
-> -a fibre cable.
-> -
-> -Required properties:
-> -
-> -  - compatible		: Compatible list, should contain one of the following
-> -			  compatibles:
-> -			  "fsl,imx35-spdif",
-> -			  "fsl,vf610-spdif",
-> -			  "fsl,imx6sx-spdif",
-> -
-> -  - reg			: Offset and length of the register set for the device.
-> -
-> -  - interrupts		: Contains the spdif interrupt.
-> -
-> -  - dmas		: Generic dma devicetree binding as described in
-> -			  Documentation/devicetree/bindings/dma/dma.txt.
-> -
-> -  - dma-names		: Two dmas have to be defined, "tx" and "rx".
-> -
-> -  - clocks		: Contains an entry for each entry in clock-names.
-> -
-> -  - clock-names		: Includes the following entries:
-> -	"core"		  The core clock of spdif controller.
-> -	"rxtx<0-7>"	  Clock source list for tx and rx clock.
-> -			  This clock list should be identical to the source
-> -			  list connecting to the spdif clock mux in "SPDIF
-> -			  Transceiver Clock Diagram" of SoC reference manual.
-> -			  It can also be referred to TxClk_Source bit of
-> -			  register SPDIF_STC.
-> -	"spba"		  The spba clock is required when SPDIF is placed as a
-> -			  bus slave of the Shared Peripheral Bus and when two
-> -			  or more bus masters (CPU, DMA or DSP) try to access
-> -			  it. This property is optional depending on the SoC
-> -			  design.
-> -
-> -Optional properties:
-> -
-> -   - big-endian		: If this property is absent, the native endian mode
-> -			  will be in use as default, or the big endian mode
-> -			  will be in use for all the device registers.
-> -
-> -Example:
-> -
-> -spdif: spdif@2004000 {
-> -	compatible = "fsl,imx35-spdif";
-> -	reg = <0x02004000 0x4000>;
-> -	interrupts = <0 52 0x04>;
-> -	dmas = <&sdma 14 18 0>,
-> -	       <&sdma 15 18 0>;
-> -	dma-names = "rx", "tx";
-> -
-> -	clocks = <&clks 197>, <&clks 3>,
-> -	       <&clks 197>, <&clks 107>,
-> -	       <&clks 0>, <&clks 118>,
-> -	       <&clks 62>, <&clks 139>,
-> -	       <&clks 0>;
-> -	clock-names = "core", "rxtx0",
-> -		"rxtx1", "rxtx2",
-> -		"rxtx3", "rxtx4",
-> -		"rxtx5", "rxtx6",
-> -		"rxtx7";
-> -
-> -	big-endian;
-> -};
-> diff --git a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
-> new file mode 100644
-> index 0000000..819f37f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
-> @@ -0,0 +1,108 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/fsl,spdif.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Freescale Sony/Philips Digital Interface Format (S/PDIF) Controller
-> +
-> +maintainers:
-> +  - Shengjiu Wang <shengjiu.wang@nxp.com>
-> +
-> +description: |
-> +  The Freescale S/PDIF audio block is a stereo transceiver that allows the
-> +  processor to receive and transmit digital audio via an coaxial cable or
-> +  a fibre cable.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - fsl,imx35-spdif
-> +      - fsl,vf610-spdif
-> +      - fsl,imx6sx-spdif
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  dmas:
-> +    items:
-> +      - description: DMA controller phandle and request line for RX
-> +      - description: DMA controller phandle and request line for TX
-> +
-> +  dma-names:
-> +    items:
-> +      - const: rx
-> +      - const: tx
-> +
-> +  clocks:
-> +    items:
-> +      - description: The core clock of spdif controller.
-> +      - description: Clock for tx0 and rx0.
-> +      - description: Clock for tx1 and rx1.
-> +      - description: Clock for tx2 and rx2.
-> +      - description: Clock for tx3 and rx3.
-> +      - description: Clock for tx4 and rx4.
-> +      - description: Clock for tx5 and rx5.
-> +      - description: Clock for tx6 and rx6.
-> +      - description: Clock for tx7 and rx7.
-> +      - description: The spba clock is required when SPDIF is placed as a bus
-> +          slave of the Shared Peripheral Bus and when two or more bus masters
-> +          (CPU, DMA or DSP) try to access it. This property is optional depending
-> +          on the SoC design.
-> +    minItems: 9
-> +
-> +  clock-names:
-> +    items:
-> +      - const: core
-> +      - const: rxtx0
-> +      - const: rxtx1
-> +      - const: rxtx2
-> +      - const: rxtx3
-> +      - const: rxtx4
-> +      - const: rxtx5
-> +      - const: rxtx6
-> +      - const: rxtx7
-> +      - const: spba
-> +    minItems: 9
-> +
-> +  big-endian:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: |
-> +      If this property is absent, the native endian mode will be in use
-> +      as default, or the big endian mode will be in use for all the device
-> +      registers. Set this flag for HCDs with big endian descriptors and big
-> +      endian registers.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - dmas
-> +  - dma-names
-> +  - clocks
-> +  - clock-names
+Patchset Summary:
+  Enhance a PCIe host controller driver.  Because of its unusual design
+  we are foced to change dev->dma_pfn_offset into a more general role
+  allowing multiple offsets.  See the 'v1' notes below for more info.
 
-Add:
+v10: 
+  Commit: "device-mapping: Introduce DMA range map, supplanting ..."
+  -- change title of commit; "bus core:" => "device-mapping:"
+  -- instead of allocating the DMA map with devm, use kcalloc
+     and call kfree() during device_release().  (RobH) Also,
+     for three cases that want to use the same DMA map, copy
+     the dma_range_map using a helper function.
+  -- added a missing 'return = 0;' to of_dma_get_range().  (Nicolas)
+  -- removed dma_range_overlaps(); instead return error if there
+     is an existing DMA map. (Christoph).
+  Commit: "PCI: brcmstb: Set additional internal memory DMA ..."
+  -- Changed constant 1 to 1ULL. (Nicolas)
+  Commit: "ata: ahci_brcm: Fix use of BCM7216 reset controller"
+     This commit has been removed from this patchset and will be
+     submitted on its own.
 
-additionalProperties: false
+v9:
+  Commit: "device core: Introduce DMA range map, supplanting ..."
+  -- A number of code improvements were implemented as suggested by
+     ChristophH.  Unfortunately, some of these changes reversed the
+     implemented suggestions of other reviewers; for example, the new
+     macros PFN_DMA_ADDR(), DMA_ADDR_PFN() have been pulled.
 
-With that added,
+v8:
+  Commit: "device core: Introduce DMA range map, supplanting ..."
+  -- To satisfy a specific m68 compile configuration, I moved the 'struct
+     bus_dma_region; definition out of #ifdef CONFIG_HAS_DMA and also defined
+     three inline functions for !CONFIG_HAS_DMA (kernel test robot).
+  -- The sunXi drivers -- suc4i_csi, sun6i_csi, cedrus_hw -- set
+     a pfn_offset outside of_dma_configure() but the code offers no 
+     insight on the size of the translation window.  V7 had me using
+     SIZE_MAX as the size.  I have since contacted the sunXi maintainer and
+     he said that using a size of SZ_4G would cover sunXi configurations.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+v7:
+  Commit: "device core: Introduce DMA range map, supplanting ..."
+  -- remove second kcalloc/copy in device.c (AndyS)
+  -- use PTR_ERR_OR_ZERO() and PHYS_PFN() (AndyS)
+  -- indentation, sizeof(struct ...) => sizeof(*r) (AndyS)
+  -- add pfn.h definitions: PFN_DMA_ADDR(), DMA_ADDR_PFN() (AndyS)
+  -- Fixed compile error in "sun6i_csi.c" (kernel test robot)
+  Commit "ata: ahci_brcm: Fix use of BCM7216 reset controller"
+  -- correct name of function in the commit msg (SergeiS)
+  
+v6:
+  Commit "device core: Introduce DMA range map":
+  -- of_dma_get_range() now takes a single argument and returns either
+     NULL, a valid map, or an ERR_PTR. (Robin)
+  -- offsets are no longer a PFN value but an actual address. (Robin)
+  -- the bus_dma_region struct stores the range size instead of
+     the cpu_end and pci_end values. (Robin)
+  -- devices that were setting a single offset with no boundaries
+     have been modified to have boundaries; in a few places
+     where this information was unavilable a /* FIXME: ... */
+     comment was added. (Robin)
+  -- dma_attach_offset_range() can be called when an offset
+     map already exists; if it's range is already present
+     nothing is done and success is returned. (Robin)
+  All commits:
+  -- Man name/style/corrections/etc changed (Bjorn)
+  -- rebase to Torvalds master
 
-> +
-> +examples:
-> +  - |
-> +    spdif@2004000 {
-> +        compatible = "fsl,imx35-spdif";
-> +        reg = <0x02004000 0x4000>;
-> +        interrupts = <0 52 0x04>;
-> +        dmas = <&sdma 14 18 0>,
-> +               <&sdma 15 18 0>;
-> +        dma-names = "rx", "tx";
-> +        clocks = <&clks 197>, <&clks 3>,
-> +                 <&clks 197>, <&clks 107>,
-> +                 <&clks 0>, <&clks 118>,
-> +                 <&clks 62>, <&clks 139>,
-> +                 <&clks 0>;
-> +        clock-names = "core", "rxtx0",
-> +                      "rxtx1", "rxtx2",
-> +                      "rxtx3", "rxtx4",
-> +                      "rxtx5", "rxtx6",
-> +                      "rxtx7";
-> +        big-endian;
-> +    };
-> -- 
-> 2.7.4
-> 
+v5:
+  Commit "device core: Introduce multiple dma pfn offsets"
+  -- in of/address.c: "map_size = 0" => "*map_size = 0"
+  -- use kcalloc instead of kzalloc (AndyS)
+  -- use PHYS_ADDR_MAX instead of "~(phys_addr_t)0"
+  Commit "PCI: brcmstb: Set internal memory viewport sizes"
+  -- now gives error on missing dma-ranges property.
+  Commit "dt-bindings: PCI: Add bindings for more Brcmstb chips"
+  -- removed "Allof:" from brcm,scb-sizes definition (RobH)
+  All Commits:
+  -- indentation style, use max chars 100 (AndyS)
+  -- rebased to torvalds master
+
+v4:
+  Commit "device core: Introduce multiple dma pfn offsets"
+  -- of_dma_get_range() does not take a dev param but instead
+     takes two "out" params: map and map_size.  We do this so
+     that the code that parses dma-ranges is separate from
+     the code that modifies 'dev'.   (Nicolas)
+  -- the separate case of having a single pfn offset has
+     been removed and is now processed by going through the
+     map array. (Nicolas)
+  -- move attach_uniform_dma_pfn_offset() from of/address.c to
+     dma/mapping.c so that it does not depend on CONFIG_OF. (Nicolas)
+  -- devm_kcalloc => devm_kzalloc (DanC)
+  -- add/fix assignment to dev->dma_pfn_offset_map for func
+     attach_uniform_dma_pfn_offset() (DanC, Nicolas)
+  -- s/struct dma_pfn_offset_region/struct bus_dma_region/ (Nicolas)
+  -- s/attach_uniform_dma_pfn_offset/dma_attach_uniform_pfn_offset/
+  -- s/attach_dma_pfn_offset_map/dma_attach_pfn_offset_map/
+  -- More use of PFN_{PHYS,DOWN,UP}. (AndyS)
+  Commit "of: Include a dev param in of_dma_get_range()"
+  -- this commit was sqaushed with "device core: Introduce ..."
+
+v3:
+  Commit "device core: Introduce multiple dma pfn offsets"
+  Commit "arm: dma-mapping: Invoke dma offset func if needed"
+  -- The above two commits have been squashed.  More importantly,
+     the code has been modified so that the functionality for
+     multiple pfn offsets subsumes the use of dev->dma_pfn_offset.
+     In fact, dma_pfn_offset is removed and supplanted by
+     dma_pfn_offset_map, which is a pointer to an array.  The
+     more common case of a uniform offset is now handled as
+     a map with a single entry, while cases requiring multiple
+     pfn offsets use a map with multiple entries.  Code paths
+     that used to do this:
+
+         dev->dma_pfn_offset = mydrivers_pfn_offset;
+
+     have been changed to do this:
+
+         attach_uniform_dma_pfn_offset(dev, pfn_offset);
+
+  Commit "dt-bindings: PCI: Add bindings for more Brcmstb chips"
+  -- Add if/then clause for required props: resets, reset-names (RobH)
+  -- Change compatible list from const to enum (RobH)
+  -- Change list of u32-tuples to u64 (RobH)
+
+  Commit "of: Include a dev param in of_dma_get_range()"
+  -- modify of/unittests.c to add NULL param in of_dma_get_range() call.
+
+  Commit "device core: Add ability to handle multiple dma offsets"
+  -- align comment in device.h (AndyS).
+  -- s/cpu_beg/cpu_start/ and s/dma_beg/dma_start/ in struct
+     dma_pfn_offset_region (AndyS).
+
+v2:
+Commit: "device core: Add ability to handle multiple dma offsets"
+  o Added helper func attach_dma_pfn_offset_map() in address.c (Chistoph)
+  o Helpers funcs added to __phys_to_dma() & __dma_to_phys() (Christoph)
+  o Added warning when multiple offsets are needed and !DMA_PFN_OFFSET_MAP
+  o dev->dma_pfn_map => dev->dma_pfn_offset_map
+  o s/frm/from/ for dma_pfn_offset_frm_{phys,dma}_addr() (Christoph)
+  o In device.h: s/const void */const struct dma_pfn_offset_region */
+  o removed 'unlikely' from unlikely(dev->dma_pfn_offset_map) since
+    guarded by CONFIG_DMA_PFN_OFFSET_MAP (Christoph)
+  o Since dev->dma_pfn_offset is copied in usb/core/{usb,message}.c, now
+    dev->dma_pfn_offset_map is copied as well.
+  o Merged two of the DMA commits into one (Christoph).
+
+Commit "arm: dma-mapping: Invoke dma offset func if needed":
+  o Use helper functions instead of #if CONFIG_DMA_PFN_OFFSET
+
+Other commits' changes:
+  o Removed need for carrying of_id var in priv (Nicolas)
+  o Commit message rewordings (Bjorn)
+  o Commit log messages filled to 75 chars (Bjorn)
+  o devm_reset_control_get_shared())
+    => devm_reset_control_get_optional_shared (Philipp)
+  o Add call to reset_control_assert() in PCIe remove routines (Philipp)
+
+v1:
+This patchset expands the usefulness of the Broadcom Settop Box PCIe
+controller by building upon the PCIe driver used currently by the
+Raspbery Pi.  Other forms of this patchset were submitted by me years
+ago and not accepted; the major sticking point was the code required
+for the DMA remapping needed for the PCIe driver to work [1].
+
+There have been many changes to the DMA and OF subsystems since that
+time, making a cleaner and less intrusive patchset possible.  This
+patchset implements a generalization of "dev->dma_pfn_offset", except
+that instead of a single scalar offset it provides for multiple
+offsets via a function which depends upon the "dma-ranges" property of
+the PCIe host controller.  This is required for proper functionality
+of the BrcmSTB PCIe controller and possibly some other devices.
+
+[1] https://lore.kernel.org/linux-arm-kernel/1516058925-46522-5-git-send-email-jim2101024@gmail.com/
+
+
+Jim Quinlan (11):
+  PCI: brcmstb: PCIE_BRCMSTB depends on ARCH_BRCMSTB
+  dt-bindings: PCI: Add bindings for more Brcmstb chips
+  PCI: brcmstb: Add bcm7278 register info
+  PCI: brcmstb: Add suspend and resume pm_ops
+  PCI: brcmstb: Add bcm7278 PERST# support
+  PCI: brcmstb: Add control of rescal reset
+  device-mapping: Introduce DMA range map, supplanting dma_pfn_offset
+  PCI: brcmstb: Set additional internal memory DMA viewport sizes
+  PCI: brcmstb: Accommodate MSI for older chips
+  PCI: brcmstb: Set bus max burst size by chip type
+  PCI: brcmstb: Add bcm7211, bcm7216, bcm7445, bcm7278 to match list
+
+ .../bindings/pci/brcm,stb-pcie.yaml           |  56 ++-
+ arch/arm/include/asm/dma-mapping.h            |  10 +-
+ arch/arm/mach-keystone/keystone.c             |  17 +-
+ arch/sh/drivers/pci/pcie-sh7786.c             |   9 +-
+ arch/sh/kernel/dma-coherent.c                 |  15 +-
+ arch/x86/pci/sta2x11-fixup.c                  |   7 +-
+ drivers/acpi/arm64/iort.c                     |   5 +-
+ drivers/base/core.c                           |   2 +
+ drivers/gpu/drm/sun4i/sun4i_backend.c         |   5 +-
+ drivers/iommu/io-pgtable-arm.c                |   2 +-
+ .../platform/sunxi/sun4i-csi/sun4i_csi.c      |   5 +-
+ .../platform/sunxi/sun6i-csi/sun6i_csi.c      |   4 +-
+ drivers/of/address.c                          |  72 ++-
+ drivers/of/device.c                           |  43 +-
+ drivers/of/of_private.h                       |  10 +-
+ drivers/of/unittest.c                         |  31 +-
+ drivers/pci/controller/Kconfig                |   3 +-
+ drivers/pci/controller/pcie-brcmstb.c         | 409 +++++++++++++++---
+ drivers/remoteproc/remoteproc_core.c          |   8 +-
+ .../staging/media/sunxi/cedrus/cedrus_hw.c    |   7 +-
+ drivers/usb/core/message.c                    |   9 +-
+ drivers/usb/core/usb.c                        |   7 +-
+ include/linux/device.h                        |   4 +-
+ include/linux/dma-direct.h                    |   8 +-
+ include/linux/dma-mapping.h                   |  36 ++
+ kernel/dma/coherent.c                         |  10 +-
+ kernel/dma/mapping.c                          |  65 +++
+ 27 files changed, 672 insertions(+), 187 deletions(-)
+
+-- 
+2.17.1
+
