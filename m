@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CAFC246C90
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A421246CBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729318AbgHQQVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 12:21:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33628 "EHLO mail.kernel.org"
+        id S2387743AbgHQQZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 12:25:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387782AbgHQPt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:49:26 -0400
+        id S1730905AbgHQPvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:51:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6F08020855;
-        Mon, 17 Aug 2020 15:49:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8252F20882;
+        Mon, 17 Aug 2020 15:51:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679366;
-        bh=iPCciwlE+Izoq2VcPO5gcCSP/vAeWEixAgllqOvtQMY=;
+        s=default; t=1597679463;
+        bh=LQsR3dnBfeULtjAcQHnXV69le54pY/011/AqbEmrMsw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jyxLSKSSmCNvL+ixamkFDOv76g+Yak4Yye0hhB6MuVgFeMbSO22YNd0uvfgVI9b/S
-         UFY3waDB+WyCvtDi8lezo+Q1r0ucoPuMIKuQVwgtrzqW2lXCw0RR0mJOFczMENH2ru
-         3dEIoEWOzMHbB7KmsVncAeOTXx19z3PYWFSfcfwI=
+        b=iQRGb8eFneSOVQiD2aiummKQqqWujnX3CseKLI1zFjpoIM3BNOXpu7jxs87gmltqK
+         R0VxJi/hRegcdMarjjYpAvHDmk1p6GtOmt5kNaIE6w6bnHkIqEce1NMgYLmbp5qbhH
+         McDM1je5oxSaBAtdE+FxoPZwC0YAdiOxgEOy3OnE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dariusz Marcinkiewicz <darekm@google.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Xiang Zheng <zhengxiang9@huawei.com>,
+        Heyi Guo <guoheyi@huawei.com>,
+        Biaoxiang Ye <yebiaoxiang@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 185/393] media: cros-ec-cec: do not bail on device_init_wakeup failure
-Date:   Mon, 17 Aug 2020 17:13:55 +0200
-Message-Id: <20200817143828.594817240@linuxfoundation.org>
+Subject: [PATCH 5.7 190/393] PCI: Fix pci_cfg_wait queue locking problem
+Date:   Mon, 17 Aug 2020 17:14:00 +0200
+Message-Id: <20200817143828.838186964@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
 References: <20200817143819.579311991@linuxfoundation.org>
@@ -45,48 +46,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dariusz Marcinkiewicz <darekm@google.com>
+From: Bjorn Helgaas <bhelgaas@google.com>
 
-[ Upstream commit 6f01dfb760c027d5dd6199d91ee9599f2676b5c6 ]
+[ Upstream commit 2a7e32d0547f41c5ce244f84cf5d6ca7fccee7eb ]
 
-Do not fail probing when device_init_wakeup fails.
+The pci_cfg_wait queue is used to prevent user-space config accesses to
+devices while they are recovering from reset.
 
-device_init_wakeup fails when the device is already enabled as wakeup
-device. Hence, the driver fails to probe the device if:
-- The device has already been enabled for wakeup (by e.g. sysfs)
-- The driver has been unloaded and is being loaded again.
+Previously we used these operations on pci_cfg_wait:
 
-This goal of the patch is to fix the above cases.
+  __add_wait_queue(&pci_cfg_wait, ...)
+  __remove_wait_queue(&pci_cfg_wait, ...)
+  wake_up_all(&pci_cfg_wait)
 
-Overwhelming majority of the drivers do not check device_init_wakeup
-return code.
+The wake_up acquires the wait queue lock, but the add and remove do not.
 
-Fixes: cd70de2d356ee ("media: platform: Add ChromeOS EC CEC driver")
-Signed-off-by: Dariusz Marcinkiewicz <darekm@google.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Originally these were all protected by the pci_lock, but cdcb33f98244
+("PCI: Avoid possible deadlock on pci_lock and p->pi_lock"), moved
+wake_up_all() outside pci_lock, so it could race with add/remove
+operations, which caused occasional kernel panics, e.g., during vfio-pci
+hotplug/unplug testing:
+
+  Unable to handle kernel read from unreadable memory at virtual address ffff802dac469000
+
+Resolve this by using wait_event() instead of __add_wait_queue() and
+__remove_wait_queue().  The wait queue lock is held by both wait_event()
+and wake_up_all(), so it provides mutual exclusion.
+
+Fixes: cdcb33f98244 ("PCI: Avoid possible deadlock on pci_lock and p->pi_lock")
+Link: https://lore.kernel.org/linux-pci/79827f2f-9b43-4411-1376-b9063b67aee3@huawei.com/T/#u
+Based-on: https://lore.kernel.org/linux-pci/20191210031527.40136-1-zhengxiang9@huawei.com/
+Based-on-patch-by: Xiang Zheng <zhengxiang9@huawei.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Tested-by: Xiang Zheng <zhengxiang9@huawei.com>
+Cc: Heyi Guo <guoheyi@huawei.com>
+Cc: Biaoxiang Ye <yebiaoxiang@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/cros-ec-cec/cros-ec-cec.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/pci/access.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/media/platform/cros-ec-cec/cros-ec-cec.c b/drivers/media/platform/cros-ec-cec/cros-ec-cec.c
-index 0e7e2772f08f9..2d95e16cd2489 100644
---- a/drivers/media/platform/cros-ec-cec/cros-ec-cec.c
-+++ b/drivers/media/platform/cros-ec-cec/cros-ec-cec.c
-@@ -277,11 +277,7 @@ static int cros_ec_cec_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, cros_ec_cec);
- 	cros_ec_cec->cros_ec = cros_ec;
+diff --git a/drivers/pci/access.c b/drivers/pci/access.c
+index 79c4a2ef269a7..9793f17fa1843 100644
+--- a/drivers/pci/access.c
++++ b/drivers/pci/access.c
+@@ -204,17 +204,13 @@ EXPORT_SYMBOL(pci_bus_set_ops);
+ static DECLARE_WAIT_QUEUE_HEAD(pci_cfg_wait);
  
--	ret = device_init_wakeup(&pdev->dev, 1);
--	if (ret) {
--		dev_err(&pdev->dev, "failed to initialize wakeup\n");
--		return ret;
--	}
-+	device_init_wakeup(&pdev->dev, 1);
+ static noinline void pci_wait_cfg(struct pci_dev *dev)
++	__must_hold(&pci_lock)
+ {
+-	DECLARE_WAITQUEUE(wait, current);
+-
+-	__add_wait_queue(&pci_cfg_wait, &wait);
+ 	do {
+-		set_current_state(TASK_UNINTERRUPTIBLE);
+ 		raw_spin_unlock_irq(&pci_lock);
+-		schedule();
++		wait_event(pci_cfg_wait, !dev->block_cfg_access);
+ 		raw_spin_lock_irq(&pci_lock);
+ 	} while (dev->block_cfg_access);
+-	__remove_wait_queue(&pci_cfg_wait, &wait);
+ }
  
- 	cros_ec_cec->adap = cec_allocate_adapter(&cros_ec_cec_ops, cros_ec_cec,
- 						 DRV_NAME,
+ /* Returns 0 on success, negative values indicate error. */
 -- 
 2.25.1
 
