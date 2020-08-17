@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 412B2247CAD
+	by mail.lfdr.de (Postfix) with ESMTP id AED0A247CAE
 	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 05:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726828AbgHRDXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 23:23:50 -0400
+        id S1726838AbgHRDXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 23:23:54 -0400
 Received: from mga03.intel.com ([134.134.136.65]:63987 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726647AbgHRDXo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 23:23:44 -0400
-IronPort-SDR: qLpJXfaOl3XlFR94yWYHIu0AWulDAF5tOd6wxibRKfIh4Nivh7NPjWl4fMuLn4n+37goalt6sI
- RJNFnNMUNglQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="154806515"
+        id S1726820AbgHRDXr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 23:23:47 -0400
+IronPort-SDR: sZPM6vjB7w7FDhU+/SJDPTwwsLjSIjyKeqS/9Tl00//rzcLv+MnzChflUoavn6r3ZnrgIsCM7z
+ 6fE22Av5Snfw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="154806518"
 X-IronPort-AV: E=Sophos;i="5.76,325,1592895600"; 
-   d="scan'208";a="154806515"
+   d="scan'208";a="154806518"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 20:23:43 -0700
-IronPort-SDR: 3uNF3wfHbS4SFkosHNHgGmXYY5/3DHNSEDjHQ3d0j0t7K7+ch1FvfbuHAyNicBX0UmUALxlWXi
- ofKhHgkkKh9g==
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 20:23:47 -0700
+IronPort-SDR: xDqN1dgdDYDwVq+SeaUu259O1Kh52s9XmxAfAgtveXmBMi9SJcGrjrt3kAgQcxET5VTi57MJ8x
+ Q0vGgDM+YHtA==
 X-IronPort-AV: E=Sophos;i="5.76,325,1592895600"; 
-   d="scan'208";a="441084647"
+   d="scan'208";a="441084662"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 20:23:40 -0700
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 20:23:44 -0700
 From:   Bard Liao <yung-chuan.liao@linux.intel.com>
 To:     alsa-devel@alsa-project.org, vkoul@kernel.org
 Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
@@ -34,9 +34,9 @@ Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
         ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
         pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
         mengdong.lin@intel.com, bard.liao@intel.com
-Subject: [PATCH v2 08/12] soundwire: intel: add CLK_STOP_BUS_RESET support
-Date:   Mon, 17 Aug 2020 23:29:19 +0800
-Message-Id: <20200817152923.3259-9-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH v2 09/12] soundwire: intel: add CLK_STOP_NOT_ALLOWED support
+Date:   Mon, 17 Aug 2020 23:29:20 +0800
+Message-Id: <20200817152923.3259-10-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200817152923.3259-1-yung-chuan.liao@linux.intel.com>
 References: <20200817152923.3259-1-yung-chuan.liao@linux.intel.com>
@@ -45,85 +45,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rander Wang <rander.wang@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Move existing pm_runtime suspend under the CLK_STOP_TEARDOWN case.
+In case the clock needs to keep running, we need to prevent the Master
+from entering pm_runtime suspend.
 
-In this mode the Master IP will lose all context but in-band wakes are
-supported.
-
-On pm_runtime resume a complete re-enumeration will be performed after
-a bus reset.
-
-Signed-off-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 44 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
+ drivers/soundwire/intel.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
 diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 68c1cdfb7999..ad476e9e4d25 100644
+index ad476e9e4d25..95b14c034ea7 100644
 --- a/drivers/soundwire/intel.c
 +++ b/drivers/soundwire/intel.c
-@@ -1575,6 +1575,26 @@ static int intel_suspend_runtime(struct device *dev)
+@@ -1367,6 +1367,7 @@ int intel_master_startup(struct platform_device *pdev)
+ 	struct sdw_intel *sdw = cdns_to_intel(cdns);
+ 	struct sdw_bus *bus = &cdns->bus;
+ 	int link_flags;
++	u32 clock_stop_quirks;
+ 	int ret;
  
- 		intel_shim_wake(sdw, false);
+ 	if (bus->prop.hw_disabled) {
+@@ -1423,6 +1424,20 @@ int intel_master_startup(struct platform_device *pdev)
+ 		pm_runtime_enable(dev);
+ 	}
  
-+	} else if (clock_stop_quirks & SDW_INTEL_CLK_STOP_BUS_RESET) {
-+		ret = sdw_cdns_clock_stop(cdns, true);
-+		if (ret < 0) {
-+			dev_err(dev, "cannot enable clock stop on suspend\n");
-+			return ret;
-+		}
-+
-+		ret = sdw_cdns_enable_interrupt(cdns, false);
-+		if (ret < 0) {
-+			dev_err(dev, "cannot disable interrupts on suspend\n");
-+			return ret;
-+		}
-+
-+		ret = intel_link_power_down(sdw);
-+		if (ret) {
-+			dev_err(dev, "Link power down failed: %d", ret);
-+			return ret;
-+		}
-+
-+		intel_shim_wake(sdw, true);
- 	} else {
- 		dev_err(dev, "%s clock_stop_quirks %x unsupported\n",
- 			__func__, clock_stop_quirks);
-@@ -1691,6 +1711,30 @@ static int intel_resume_runtime(struct device *dev)
- 			dev_err(dev, "unable to exit bus reset sequence during resume\n");
- 			return ret;
- 		}
-+	} else if (clock_stop_quirks & SDW_INTEL_CLK_STOP_BUS_RESET) {
-+		ret = intel_init(sdw);
-+		if (ret) {
-+			dev_err(dev, "%s failed: %d", __func__, ret);
-+			return ret;
-+		}
-+
++	clock_stop_quirks = sdw->link_res->clock_stop_quirks;
++	if (clock_stop_quirks & SDW_INTEL_CLK_STOP_NOT_ALLOWED) {
 +		/*
-+		 * make sure all Slaves are tagged as UNATTACHED and
-+		 * provide reason for reinitialization
++		 * To keep the clock running we need to prevent
++		 * pm_runtime suspend from happening by increasing the
++		 * reference count.
++		 * This quirk is specified by the parent PCI device in
++		 * case of specific latency requirements. It will have
++		 * no effect if pm_runtime is disabled by the user via
++		 * a module parameter for testing purposes.
 +		 */
-+		sdw_clear_slave_status(bus, SDW_UNATTACH_REQUEST_MASTER_RESET);
++		pm_runtime_get_noresume(dev);
++	}
 +
-+		ret = sdw_cdns_enable_interrupt(cdns, true);
-+		if (ret < 0) {
-+			dev_err(dev, "cannot enable interrupts during resume\n");
-+			return ret;
-+		}
-+
-+		ret = sdw_cdns_clock_restart(cdns, true);
-+		if (ret < 0) {
-+			dev_err(dev, "unable to restart clock during resume\n");
-+			return ret;
-+		}
- 	} else {
- 		dev_err(dev, "%s clock_stop_quirks %x unsupported\n",
- 			__func__, clock_stop_quirks);
+ 	/*
+ 	 * The runtime PM status of Slave devices is "Unsupported"
+ 	 * until they report as ATTACHED. If they don't, e.g. because
+@@ -1454,6 +1469,11 @@ static int intel_master_remove(struct platform_device *pdev)
+ 	struct sdw_intel *sdw = cdns_to_intel(cdns);
+ 	struct sdw_bus *bus = &cdns->bus;
+ 
++	/*
++	 * Since pm_runtime is already disabled, we don't decrease
++	 * the refcount when the clock_stop_quirk is
++	 * SDW_INTEL_CLK_STOP_NOT_ALLOWED
++	 */
+ 	if (!bus->prop.hw_disabled) {
+ 		intel_debugfs_exit(sdw);
+ 		sdw_cdns_enable_interrupt(cdns, false);
 -- 
 2.17.1
 
