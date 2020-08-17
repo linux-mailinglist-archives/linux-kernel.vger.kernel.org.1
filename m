@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775AC246BC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43409246BBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388201AbgHQQCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 12:02:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53652 "EHLO mail.kernel.org"
+        id S2388152AbgHQQBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 12:01:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387633AbgHQPnT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:43:19 -0400
+        id S2387618AbgHQPnD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:43:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22EA322CAD;
-        Mon, 17 Aug 2020 15:43:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F14FA22CAE;
+        Mon, 17 Aug 2020 15:43:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678998;
-        bh=drw5bpymsEmzse0AQE94EHwiijtRpGBgXRZNsFvsyBE=;
+        s=default; t=1597678983;
+        bh=yIxbhgabo7mdCS7x+F+liubHbDxp3iWHeZ2h1v7TaMs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RQTgC8D+5BfcEjvPEtQhQGCo94WoI66iufiKH7AoqOTypFkXiHiuLactVa9Ev3ZJE
-         lJY0J3cXmXL1mGg4ILVyc+aEGp4dAPYFjz4lsRBM6LanyOwpqTdgFwS2m8kb3W2lqR
-         xpkTncWNrc8+e6KN4F85NBDaPJaGP0cq75Wfc/Qg=
+        b=JC0FQFIWqb9/fFx5umaYxzZljQ/Fz2Rc7p10GfpYoqsSgQXmOvpcaKkdC330v+VhC
+         yypiSOfX4LChsP8AU63VtD4xKsuC23itXIHy+b1WnXuHdVmbuTJBRcbKo5ULwMy2ny
+         W/d1zMFZD1PGLhZmOCe0kwwW6SOg4qXN6IRycaiQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
+        stable@vger.kernel.org, Qais Yousef <qais.yousef@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
         Lukasz Luba <lukasz.luba@arm.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 021/393] ARM: exynos: MCPM: Restore big.LITTLE cpuidle support
-Date:   Mon, 17 Aug 2020 17:11:11 +0200
-Message-Id: <20200817143820.622086517@linuxfoundation.org>
+Subject: [PATCH 5.7 026/393] sched/uclamp: Fix initialization of struct uclamp_rq
+Date:   Mon, 17 Aug 2020 17:11:16 +0200
+Message-Id: <20200817143820.877691888@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
 References: <20200817143819.579311991@linuxfoundation.org>
@@ -46,70 +46,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Szyprowski <m.szyprowski@samsung.com>
+From: Qais Yousef <qais.yousef@arm.com>
 
-[ Upstream commit ea9dd8f61c8a890843f68e8dc0062ce78365aab8 ]
+[ Upstream commit d81ae8aac85ca2e307d273f6dc7863a721bf054e ]
 
-Call exynos_cpu_power_up(cpunr) unconditionally. This is needed by the
-big.LITTLE cpuidle driver and has no side-effects on other code paths.
+struct uclamp_rq was zeroed out entirely in assumption that in the first
+call to uclamp_rq_inc() they'd be initialized correctly in accordance to
+default settings.
 
-The additional soft-reset call during little core power up has been added
-to properly boot all cores on the Exynos5422-based boards with secure
-firmware (like Odroid XU3/XU4 family). This however broke big.LITTLE
-CPUidle driver, which worked only on boards without secure firmware (like
-Peach-Pit/Pi Chromebooks). Apply the workaround only when board is
-running under secure firmware.
+But when next patch introduces a static key to skip
+uclamp_rq_{inc,dec}() until userspace opts in to use uclamp, schedutil
+will fail to perform any frequency changes because the
+rq->uclamp[UCLAMP_MAX].value is zeroed at init and stays as such. Which
+means all rqs are capped to 0 by default.
 
-Fixes: 833b5794e330 ("ARM: EXYNOS: reset Little cores when cpu is up")
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Fix it by making sure we do proper initialization at init without
+relying on uclamp_rq_inc() doing it later.
+
+Fixes: 69842cba9ace ("sched/uclamp: Add CPU's clamp buckets refcounting")
+Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+Tested-by: Lukasz Luba <lukasz.luba@arm.com>
+Link: https://lkml.kernel.org/r/20200630112123.12076-2-qais.yousef@arm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mach-exynos/mcpm-exynos.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ kernel/sched/core.c | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm/mach-exynos/mcpm-exynos.c b/arch/arm/mach-exynos/mcpm-exynos.c
-index 9a681b421ae11..cd861c57d5adf 100644
---- a/arch/arm/mach-exynos/mcpm-exynos.c
-+++ b/arch/arm/mach-exynos/mcpm-exynos.c
-@@ -26,6 +26,7 @@
- #define EXYNOS5420_USE_L2_COMMON_UP_STATE	BIT(30)
- 
- static void __iomem *ns_sram_base_addr __ro_after_init;
-+static bool secure_firmware __ro_after_init;
- 
- /*
-  * The common v7_exit_coherency_flush API could not be used because of the
-@@ -58,15 +59,16 @@ static void __iomem *ns_sram_base_addr __ro_after_init;
- static int exynos_cpu_powerup(unsigned int cpu, unsigned int cluster)
- {
- 	unsigned int cpunr = cpu + (cluster * EXYNOS5420_CPUS_PER_CLUSTER);
-+	bool state;
- 
- 	pr_debug("%s: cpu %u cluster %u\n", __func__, cpu, cluster);
- 	if (cpu >= EXYNOS5420_CPUS_PER_CLUSTER ||
- 		cluster >= EXYNOS5420_NR_CLUSTERS)
- 		return -EINVAL;
- 
--	if (!exynos_cpu_power_state(cpunr)) {
--		exynos_cpu_power_up(cpunr);
--
-+	state = exynos_cpu_power_state(cpunr);
-+	exynos_cpu_power_up(cpunr);
-+	if (!state && secure_firmware) {
- 		/*
- 		 * This assumes the cluster number of the big cores(Cortex A15)
- 		 * is 0 and the Little cores(Cortex A7) is 1.
-@@ -258,6 +260,8 @@ static int __init exynos_mcpm_init(void)
- 		return -ENOMEM;
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index a7ef76a62699a..1bae86fc128b2 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1237,6 +1237,20 @@ static void uclamp_fork(struct task_struct *p)
  	}
+ }
  
-+	secure_firmware = exynos_secure_firmware_available();
++static void __init init_uclamp_rq(struct rq *rq)
++{
++	enum uclamp_id clamp_id;
++	struct uclamp_rq *uc_rq = rq->uclamp;
 +
- 	/*
- 	 * To increase the stability of KFC reset we need to program
- 	 * the PMU SPARE3 register
++	for_each_clamp_id(clamp_id) {
++		uc_rq[clamp_id] = (struct uclamp_rq) {
++			.value = uclamp_none(clamp_id)
++		};
++	}
++
++	rq->uclamp_flags = 0;
++}
++
+ static void __init init_uclamp(void)
+ {
+ 	struct uclamp_se uc_max = {};
+@@ -1245,11 +1259,8 @@ static void __init init_uclamp(void)
+ 
+ 	mutex_init(&uclamp_mutex);
+ 
+-	for_each_possible_cpu(cpu) {
+-		memset(&cpu_rq(cpu)->uclamp, 0,
+-				sizeof(struct uclamp_rq)*UCLAMP_CNT);
+-		cpu_rq(cpu)->uclamp_flags = 0;
+-	}
++	for_each_possible_cpu(cpu)
++		init_uclamp_rq(cpu_rq(cpu));
+ 
+ 	for_each_clamp_id(clamp_id) {
+ 		uclamp_se_set(&init_task.uclamp_req[clamp_id],
 -- 
 2.25.1
 
