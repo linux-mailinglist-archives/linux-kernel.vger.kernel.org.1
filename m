@@ -2,73 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D33B2464F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 12:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4435E246505
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728263AbgHQK5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 06:57:25 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:33778 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727021AbgHQK4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 06:56:35 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id EA7F5FA70E4499864175;
-        Mon, 17 Aug 2020 18:56:31 +0800 (CST)
-Received: from [10.174.187.22] (10.174.187.22) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 17 Aug 2020 18:56:26 +0800
-Subject: Re: [PATCH 2/3] KVM: uapi: Remove KVM_DEV_TYPE_ARM_PV_TIME in
- kvm_device_type
-To:     Steven Price <steven.price@arm.com>, Marc Zyngier <maz@kernel.org>
-References: <20200817033729.10848-1-zhukeqian1@huawei.com>
- <20200817033729.10848-3-zhukeqian1@huawei.com>
- <f97633b4a39c301f916bb76030dcabf0@kernel.org>
- <4cd543a2-4d5b-882c-38d6-f5055512f0dc@huawei.com>
- <72e34f84-5bea-8f69-6699-29e2970c80b4@arm.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        <wanghaibin.wang@huawei.com>
-From:   zhukeqian <zhukeqian1@huawei.com>
-Message-ID: <40a10c89-d876-5aea-dd45-b7e75ef31c71@huawei.com>
-Date:   Mon, 17 Aug 2020 18:56:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S1728355AbgHQK7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 06:59:25 -0400
+Received: from muru.com ([72.249.23.125]:40508 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728301AbgHQK7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 06:59:00 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 26A7980A3;
+        Mon, 17 Aug 2020 10:58:58 +0000 (UTC)
+Date:   Mon, 17 Aug 2020 13:59:26 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Bin Liu <b-liu@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johan Hovold <johan@kernel.org>, od@zcrc.me,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] usb: musb: Fix runtime PM race in musb_queue_resume_work
+Message-ID: <20200817105926.GF2994@atomide.com>
+References: <20200809125359.31025-1-paul@crapouillou.net>
 MIME-Version: 1.0
-In-Reply-To: <72e34f84-5bea-8f69-6699-29e2970c80b4@arm.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.187.22]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200809125359.31025-1-paul@crapouillou.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steven,
+* Paul Cercueil <paul@crapouillou.net> [200809 12:54]:
+> musb_queue_resume_work() would call the provided callback if the runtime
+> PM status was 'active'. Otherwise, it would enqueue the request if the
+> hardware was still suspended (musb->is_runtime_suspended is true).
+> 
+> This causes a race with the runtime PM handlers, as it is possible to be
+> in the case where the runtime PM status is not yet 'active', but the
+> hardware has been awaken (PM resume function has been called).
+> 
+> When hitting the race, the resume work was not enqueued, which probably
+> triggered other bugs further down the stack. For instance, a telnet
+> connection on Ingenic SoCs would result in a 50/50 chance of a
+> segmentation fault somewhere in the musb code.
+> 
+> Rework the code so that either we call the callback directly if
+> (musb->is_runtime_suspended == 0), or enqueue the query otherwise.
 
-On 2020/8/17 17:49, Steven Price wrote:
-> On 17/08/2020 09:43, zhukeqian wrote:
->> Hi Marc,
->>
-[...]
->>>
->>> It is pretty unfortunate that PV time has turned into such a train wreck,
->>> but that's what we have now, and it has to stay.
->> Well, I see. It is a sad thing indeed.
-> 
-> Sorry about that, this got refactored so many times I guess I lost track of what was actually needed and this hunk remained when it should have been removed.
-> 
-It's fine :-) , not a serious problem.
-> I would hope that I'm the only one who has any userspace code which uses this, but I guess we should still be cautious since this has been in several releases now.
-> 
-OK. For insurance purposes, we ought to ignore this patch to avoid breaking any user-space program.
-> Steve
-> .
-Thanks,
-Keqian
-> 
+Yes we should use is_runtime_suspended, thanks for fixing it.
+Things still work for me so:
+
+Reviewed-by: Tony Lindgren <tony@atomide.com>
+Tested-by: Tony Lindgren <tony@atomide.com>
