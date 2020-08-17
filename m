@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0980247006
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8FA246F29
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390220AbgHQR6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:58:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35748 "EHLO mail.kernel.org"
+        id S2388827AbgHQRnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:43:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388540AbgHQQKO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:10:14 -0400
+        id S1731094AbgHQQQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:16:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6335B20772;
-        Mon, 17 Aug 2020 16:09:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9DFFA204FD;
+        Mon, 17 Aug 2020 16:15:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597680599;
-        bh=uNGWZjCsg64ckoUhe0XxFhNdO/u7Unjei4kpB/FWVdQ=;
+        s=default; t=1597680949;
+        bh=xG8/kLZ35jqLlqpTwQ2SgV6SH5BSThBWrl/d887Snko=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jbUSFgS8pm4ROKF+FimIsHZB6mopblhf7iyfVNVWLpc/hK1FBtR3p9cg03wzAW9EA
-         fDUMe2WpNdLKKKnQk4FZjMDH26txL/t3PxgKbgpKXBIEFMKbl0TMl/GM//Cpcht/BF
-         EhgakJzUPguPB8USt2xra3Jz0VZj6tBgw+LfLU4c=
+        b=lnV34G9w1EaVNRP50sN9yI9FpWWDzTkkC1E87xE0aCrQVWkD+UsyuT1w4dQtTmLFy
+         yyyYxq/pRuyFKhyQibNoQ8T6LRA+Ij8/wzSWnO25viN3IMdhXJFaSdYVWGItHaoBFI
+         rsje/Ti0JBswqgLKuO8nYA0KTM0KFluEmqJnKZJ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Schnelle <svens@stackframe.org>,
-        Helge Deller <deller@gmx.de>
-Subject: [PATCH 5.4 251/270] parisc: mask out enable and reserved bits from sba imask
-Date:   Mon, 17 Aug 2020 17:17:32 +0200
-Message-Id: <20200817143808.328815013@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Florinel Iordache <florinel.iordache@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 122/168] fsl/fman: fix unreachable code
+Date:   Mon, 17 Aug 2020 17:17:33 +0200
+Message-Id: <20200817143739.771651641@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
-References: <20200817143755.807583758@linuxfoundation.org>
+In-Reply-To: <20200817143733.692105228@linuxfoundation.org>
+References: <20200817143733.692105228@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +45,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Schnelle <svens@stackframe.org>
+From: Florinel Iordache <florinel.iordache@nxp.com>
 
-commit 5b24993c21cbf2de11aff077a48c5cb0505a0450 upstream.
+[ Upstream commit cc79fd8f557767de90ff199d3b6fb911df43160a ]
 
-When using kexec the SBA IOMMU IBASE might still have the RE
-bit set. This triggers a WARN_ON when trying to write back the
-IBASE register later, and it also makes some mask calculations fail.
+The parameter 'priority' is incorrectly forced to zero which ultimately
+induces logically dead code in the subsequent lines.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Sven Schnelle <svens@stackframe.org>
-Signed-off-by: Helge Deller <deller@gmx.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 57ba4c9b56d8 ("fsl/fman: Add FMan MAC support")
+Signed-off-by: Florinel Iordache <florinel.iordache@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/parisc/sba_iommu.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/freescale/fman/fman_memac.c | 1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/parisc/sba_iommu.c
-+++ b/drivers/parisc/sba_iommu.c
-@@ -1270,7 +1270,7 @@ sba_ioc_init_pluto(struct parisc_device
- 	** (one that doesn't overlap memory or LMMIO space) in the
- 	** IBASE and IMASK registers.
- 	*/
--	ioc->ibase = READ_REG(ioc->ioc_hpa + IOC_IBASE);
-+	ioc->ibase = READ_REG(ioc->ioc_hpa + IOC_IBASE) & ~0x1fffffULL;
- 	iova_space_size = ~(READ_REG(ioc->ioc_hpa + IOC_IMASK) & 0xFFFFFFFFUL) + 1;
+diff --git a/drivers/net/ethernet/freescale/fman/fman_memac.c b/drivers/net/ethernet/freescale/fman/fman_memac.c
+index e1901874c19f0..08f8b36779ea4 100644
+--- a/drivers/net/ethernet/freescale/fman/fman_memac.c
++++ b/drivers/net/ethernet/freescale/fman/fman_memac.c
+@@ -856,7 +856,6 @@ int memac_set_tx_pause_frames(struct fman_mac *memac, u8 priority,
  
- 	if ((ioc->ibase < 0xfed00000UL) && ((ioc->ibase + iova_space_size) > 0xfee00000UL)) {
+ 	tmp = ioread32be(&regs->command_config);
+ 	tmp &= ~CMD_CFG_PFC_MODE;
+-	priority = 0;
+ 
+ 	iowrite32be(tmp, &regs->command_config);
+ 
+-- 
+2.25.1
+
 
 
