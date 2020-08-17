@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 752FA245EB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA601245EBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726747AbgHQICR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 04:02:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48894 "EHLO
+        id S1726819AbgHQIDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 04:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726196AbgHQICN (ORCPT
+        with ESMTP id S1726718AbgHQIC5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 04:02:13 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B24C061388;
-        Mon, 17 Aug 2020 01:02:12 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id t10so16630886ejs.8;
-        Mon, 17 Aug 2020 01:02:12 -0700 (PDT)
+        Mon, 17 Aug 2020 04:02:57 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4EAC061388;
+        Mon, 17 Aug 2020 01:02:56 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id cq28so11540857edb.10;
+        Mon, 17 Aug 2020 01:02:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=mkd7ir4Lc8kADukcTengkjGMz/MiXAOCy4lcMiClwWU=;
-        b=NLbJDg/mdLf06f57YwxmSt/5hByD6eH3N+bG9wQ6irkM4AGgOQ3nDSxSzqztzdImua
-         +FZ8EIiyDrnbbX7c3BR1F3Yw23Z54UTY1y4PFGB6JXgsJPBqHUMIWxCl6dZUtwWpY/Rg
-         yUAi52JyLIjfEpKC42XgNrJdFJ21WXN8RSCCAGbQlPW73LmptYcUI63m1F6WX1UmpsgC
-         eyNYWprS69Y0WuvZ9SGDxwDpznhBuY7pgi9nkjkb0chzT7fjmxJLKijSl4/zud1iagud
-         cpFpAbx/LfDoJnzNSu2yqJEbzpbEHLtpF1lKu0rP94lPmO+w6XeWsxDm/t5znt8uv/k9
-         ReJw==
+        bh=HtIGKJyafh0KqYvWaN0N70g2C6u2mDYlrTBjQ0qqhk8=;
+        b=PYVreFLa0BUrCJDR5kYGmojmlz9nq/Or2c/2yNio3HCIUUpyTr6XZWEHZhREJnKZ8b
+         0eKR+SCWXgEiU1esKAyllTQp6df9jVpXS9Kdf42hpXGCf2T6F2IjljQ3weorOXaZSJys
+         QntouI11/51OtMQJxHQQAqDlHxy+iu+k4G6BKSk78iWPuE41H1GUjqPCcA9x+bhvhp1L
+         NYEDx34mUF+FHc7wXzaPnS9xjABy6By+n/wC4ypU3J/hq55m4SzltnbIAkMT3jkEbH2N
+         Un+GEkgTPrNwnLZar6Xm77JM9OdU02jUI9FBHQrH0LB0Kg+E6UVQCbIvjiZZOoJOvlsW
+         c/6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=mkd7ir4Lc8kADukcTengkjGMz/MiXAOCy4lcMiClwWU=;
-        b=BnLe0J2lrWqhKasbBvuJHdzdSotHYwcgI9zbq8sMr1ckDQyVhRW1LHLcXEDSs86gWz
-         Xsp9ChMzOfp96pa5Rw2PZwBgYagyW6ddpTkwsJ0v/gEtrfNQKgbbdVD0ltcE40SCE3D5
-         Q947lopTj+GvH4b4cuv3dHoFUhwkiDwUIaBhf6k8foE1uPddGLN835FPtByEo1tNrmx+
-         ZiGmnl2vBWu18ygVf91GXJRyblflA+YazeNMHPS3Oc33iE53Uw42ARDT7qpq/F3HDaXO
-         5z09IPhgXhEKcjItBspPbqih6lMuBYdtONqWW2RZJYSc2BdbDUGrovP4lR5HYzwsR4hf
-         YDCw==
-X-Gm-Message-State: AOAM533O/5jyfx9BS8z15QyCBQsRvjZP90Kgk+10FckmFTGt8oeXjQiz
-        rGDuRYA1f4VR9QLR7YT44kBKHJEaiFQ6Tpj28UPARYjcV20=
-X-Google-Smtp-Source: ABdhPJyULURHsOc6QrXjl1m4GIJaBypxn0n7q6U6kawvWYJPtUY16SsiyWZ/QvpEtIybyexMm9znpKLiSVA8mAKXH8c=
-X-Received: by 2002:a17:906:138b:: with SMTP id f11mr13497776ejc.310.1597651331359;
- Mon, 17 Aug 2020 01:02:11 -0700 (PDT)
+        bh=HtIGKJyafh0KqYvWaN0N70g2C6u2mDYlrTBjQ0qqhk8=;
+        b=l94si/YrSYUG7AOsfG57I75vPBs+a7obYkWOtiZr2h9yHomroEHuf/Nt+4n3TtJwVP
+         I3EMHRz59sz/rMB5AYOxNOIWMoBxXnoEqMvMmQOFaYUwG7y4jFkaEx8CTROVctif/4j3
+         1hecbFxzxPBfj/eSgTz+QcnzpIogLUDMPep8j8msqWeSVKStR3cVidkfjwo8LbEj8VN+
+         vRbJTtBho5j6C9xtmefxMrutjDk13aIx9QSwdHM7nXOPri3DJ3j9F6XQTzFr5E+4pFL7
+         +IjjbeuzufLhzwXTJBSzYiy4QqduTIVhwSnsbl2VLfI6NQfzhqdklNHMfPV+Sg7ItnkO
+         1OfA==
+X-Gm-Message-State: AOAM531DpMq8kJYMfZvQ/ZoSitMcECOwtnb32v3yXzpzI8eV2I4U3yQW
+        dslhV4ujmj8eSUz19L81GS6OpNAX4AGCqpagjwo=
+X-Google-Smtp-Source: ABdhPJz/ETQXjPQ3lM4w9XVSHIN886q8jOOzC2UsVk4A9gloEQmp+JIJvo8O+X0uendOw7yD2F1dGvih02MLLBgudhM=
+X-Received: by 2002:aa7:d983:: with SMTP id u3mr14266898eds.366.1597651375434;
+ Mon, 17 Aug 2020 01:02:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <1597406966-13740-1-git-send-email-abel.vesa@nxp.com> <1597406966-13740-6-git-send-email-abel.vesa@nxp.com>
-In-Reply-To: <1597406966-13740-6-git-send-email-abel.vesa@nxp.com>
+References: <1597406966-13740-1-git-send-email-abel.vesa@nxp.com> <1597406966-13740-8-git-send-email-abel.vesa@nxp.com>
+In-Reply-To: <1597406966-13740-8-git-send-email-abel.vesa@nxp.com>
 From:   Dong Aisheng <dongas86@gmail.com>
-Date:   Mon, 17 Aug 2020 15:47:05 +0800
-Message-ID: <CAA+hA=SbFoPrKfOWFQOiM+Y7bB1HC5Y5F0XpDbqbn5D0=Dn7pA@mail.gmail.com>
-Subject: Re: [PATCH v2 05/17] dt-bindings: reset: imx8mp: Add media blk_ctrl
+Date:   Mon, 17 Aug 2020 15:47:49 +0800
+Message-ID: <CAA+hA=TKkdYvC8X5pwGjGGY8jGXpvv2C1nP+tsRckhUGObSLqg@mail.gmail.com>
+Subject: Re: [PATCH v2 07/17] dt-bindings: reset: imx8mp: Add hdmi blk_ctrl
  reset IDs
 To:     Abel Vesa <abel.vesa@nxp.com>
 Cc:     Mike Turquette <mturquette@baylibre.com>,
@@ -77,7 +77,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Fri, Aug 14, 2020 at 8:13 PM Abel Vesa <abel.vesa@nxp.com> wrote:
 >
-> These will be used by the imx8mp for blk-ctrl driver.
+> These will be used imx8mp for blk-ctrl driver.
 >
 > Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
 > Acked-by: Rob Herring <robh@kernel.org>
