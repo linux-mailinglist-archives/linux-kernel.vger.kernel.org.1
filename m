@@ -2,98 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93322474EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A206247507
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392214AbgHQTQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:16:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389932AbgHQTQo (ORCPT
+        id S2392271AbgHQTSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:18:34 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:52256 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392131AbgHQTS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 15:16:44 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F2CC061342
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 12:16:40 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id r11so8684688pfl.11
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 12:16:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iGRzfPyw7ESx9wXeagb3xJwksI9OtPsVQy2m4SGV5Xo=;
-        b=AOzQ2918L26XOqNuhI39UDWiFl/NgEDi3gEqKcXm3SjCQrlCrHzQxyDSNBU4MoqN6P
-         hbt6hn1pjWmdyPvmuxZjEyngCGtz3/+LXbmmkYLhR8X/zsnHL+lm13Oud9WWBnuyL5DQ
-         Rit2cIThg2WcXHH36RfxlFSgTAvF1/H288vBQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iGRzfPyw7ESx9wXeagb3xJwksI9OtPsVQy2m4SGV5Xo=;
-        b=FarHlfbQnYekQtdw8IS+CsbJHxEJjyvZQVr/cYxwW9OqBfYIA1EetPXWCO++wDtJaI
-         8IcmZ0gZrIAgvzmoWJIedp6eTJ/SIzOJp8u3/f7Upwow75TK1zOIjOjpPCTALSdDLCMX
-         K406OPH25TR0VIbRAWB1Uuz63zHbnH/yII/NZ9G2apn+7fVRJucGg1xIiVPsBg0o5NEB
-         KpSNywAYnpI7MddYKwXO/PlhddghM6eDAKo5VufMyDWFYPKvMRNVI0TvKtazlH/SdO4G
-         SRYiAgZf/p0Tqd/N5k41eW4aJgUD0+BvPi0mnbG7n0jEe6WP30xokXPeg/aYOcGJrzP0
-         vdmg==
-X-Gm-Message-State: AOAM531//SftzeHDl/AqzrQHRRxOOEztvkP3luUTgVvpMYh6GJA7bu94
-        z/wI9MZmnqFjrbl8eWoll/TOmg==
-X-Google-Smtp-Source: ABdhPJwx6+0uQ9KiWoyCEx/3rDJPN+0vrjL39vxdhLZ+1kK3upxTaoDjH7lVLlGZ1b6tyDYJ3RYrfg==
-X-Received: by 2002:a63:ff5f:: with SMTP id s31mr4115897pgk.333.1597691799926;
-        Mon, 17 Aug 2020 12:16:39 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s4sm20767427pfh.128.2020.08.17.12.16.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 12:16:38 -0700 (PDT)
-Date:   Mon, 17 Aug 2020 12:16:37 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Joe Perches <joe@perches.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?iso-8859-1?Q?D=E1vid_Bolvansk=FD?= <david.bolvansky@gmail.com>,
-        Eli Friedman <efriedma@quicinc.com>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Daniel Axtens <dja@axtens.net>, Ingo Molnar <mingo@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH v2] lib/string.c: implement stpcpy
-Message-ID: <202008171216.945D6D7D11@keescook>
-References: <202008150921.B70721A359@keescook>
- <CAKwvOdnyHfx6ayqEoOr3pb_ibKBAG9vj31LuKE+f712W=7LFKA@mail.gmail.com>
- <457a91183581509abfa00575d0392be543acbe07.camel@perches.com>
- <CAKwvOdk4PRi45MXCtg4kmeN6c1AK5w9EJ1XFBJ5GyUjwEtRj1g@mail.gmail.com>
- <ccacb2a860151fdd6ce95371f1e0cd7658a308d1.camel@perches.com>
- <CAKwvOd=QkpmdWHAvWVFtogsDom2z_fA4XmDF6aLqz1czjSgZbQ@mail.gmail.com>
- <20200816001917.4krsnrik7hxxfqfm@google.com>
- <CA+icZUW=rQ-e=mmYWsgVns8jDoQ=FJ7kdem1fWnW_i5jx-6JzQ@mail.gmail.com>
- <20200816150217.GA1306483@rani.riverdale.lan>
- <CABCJKucsXufD6rmv7qQZ=9kLC7XrngCJkKA_WzGOAn-KfcObeA@mail.gmail.com>
+        Mon, 17 Aug 2020 15:18:26 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07HJIEDF041828;
+        Mon, 17 Aug 2020 14:18:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1597691894;
+        bh=80uJ5kKs7K6ojF+rJ/lSvYTiOi3jFw4mNWv2W/UGfYA=;
+        h=From:To:CC:Subject:Date;
+        b=CXQWgNkTw+S21ozwtWoHygnVTOEVH1sVSDh3VZ+pUp+ftF1BeIUiBIvfJTcNGm1L+
+         K0N98YWUbw+7guB7liQbPtpa0ZATzm3ue2otVTjdHarb62aeSYMX6FFMYwrKBfMxJT
+         9FPT0BoWeuB/pak1zL0kTx5jnxKPfHsACTcMgvaA=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 07HJIEM0102013
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 17 Aug 2020 14:18:14 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 17
+ Aug 2020 14:18:13 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 17 Aug 2020 14:18:13 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07HJIDeW094892;
+        Mon, 17 Aug 2020 14:18:13 -0500
+From:   Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+To:     <sre@kernel.org>, <robh+dt@kernel.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <dmurphy@ti.com>, Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+Subject: [PATCH v1 0/2] Introduce the BQ256XX family of chargers
+Date:   Mon, 17 Aug 2020 14:17:21 -0500
+Message-ID: <20200817191723.22416-1-r-rivera-matos@ti.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABCJKucsXufD6rmv7qQZ=9kLC7XrngCJkKA_WzGOAn-KfcObeA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 10:14:43AM -0700, Sami Tolvanen wrote:
-> I just confirmed that adding -fno-builtin-stpcpy to KBUILD_CFLAGS does
-> work with LTO as well.
+Hello,
 
-Oh, I read this out of order; sorry! Yes, if -fno-builtin-stpcpy works,
-let's use that instead. Doesn't that solve it too?
+This patchset introduces the bq256xx family of charging ICs. The bq256xx ICs
+are highly integrated, buck, switching chargers intended for use in 
+smartphones, tablets, and portable electronics.
+
+Ricardo Rivera-Matos (2):
+  dt-bindings: power: Add the bq256xx dt bindings
+  power: supply: bq256xx: Introduce the BQ256XX charger driver
+
+ .../bindings/power/supply/bq256xx.yaml        |   99 +
+ drivers/power/supply/Kconfig                  |   11 +
+ drivers/power/supply/Makefile                 |    1 +
+ drivers/power/supply/bq256xx_charger.c        | 1769 +++++++++++++++++
+ 4 files changed, 1880 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/power/supply/bq256xx.yaml
+ create mode 100644 drivers/power/supply/bq256xx_charger.c
 
 -- 
-Kees Cook
+2.28.0
+
