@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68179246A23
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A65246A1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730225AbgHQPar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:30:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43422 "EHLO mail.kernel.org"
+        id S1730178AbgHQPab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:30:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730016AbgHQP2c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:28:32 -0400
+        id S1729980AbgHQP2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:28:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DBE7923BDB;
-        Mon, 17 Aug 2020 15:28:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 645C923442;
+        Mon, 17 Aug 2020 15:27:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678109;
-        bh=pHYlclpSKjbiZNMgPJarljjkUereLNLSMpnfdT7p3Ow=;
+        s=default; t=1597678080;
+        bh=HPpur3AcZsnKoew8nx57JsgJtcKgbmaF7FrVy1/AC7g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LUD/XY0/MBiralYET8YUBUsO3PY9+eWkSSvAOxNtEmMdmH0iLTQyzwjJkdRXuQCuI
-         +ijFHEhFLMJXPmUa3zR76Yb3JhO9ovVItlGVWejxT63ScC4l4xJBXjv4oFaSNJuOhv
-         pwrhgeoHSn88P+wSG9ePxwJWpIbRmI8lM5cwoJEg=
+        b=s8TwWaonn3PJGjiPF4cbDsfqFxO8OaVrj+4IJlybVZud1DSCWVFjDyG7eHN0KH+FE
+         Iw794CdYYNyHH6ujVUEtiIOgrMx/CCB1w95s6Q4plW+TQsnLJUCizOTdOA4m//Cs5s
+         Z+5UFWrn1RSXRhHiYTE1ihmM6Y7e+WiThtQTKFdA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        stable@vger.kernel.org, Brian Foster <bfoster@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 191/464] tracing: Move pipe reference to trace array instead of current_tracer
-Date:   Mon, 17 Aug 2020 17:12:24 +0200
-Message-Id: <20200817143842.971050640@linuxfoundation.org>
+Subject: [PATCH 5.8 211/464] xfs: preserve rmapbt swapext block reservation from freed blocks
+Date:   Mon, 17 Aug 2020 17:12:44 +0200
+Message-Id: <20200817143843.918936064@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -44,108 +44,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Brian Foster <bfoster@redhat.com>
 
-[ Upstream commit 7ef282e05132d56b6f6b71e3873f317664bea78b ]
+[ Upstream commit f74681ba2006434be195402e0b15fc5763cddd7e ]
 
-If a process has the trace_pipe open on a trace_array, the current tracer
-for that trace array should not be changed. This was original enforced by a
-global lock, but when instances were introduced, it was moved to the
-current_trace. But this structure is shared by all instances, and a
-trace_pipe is for a single instance. There's no reason that a process that
-has trace_pipe open on one instance should prevent another instance from
-changing its current tracer. Move the reference counter to the trace_array
-instead.
+The rmapbt extent swap algorithm remaps individual extents between
+the source inode and the target to trigger reverse mapping metadata
+updates. If either inode straddles a format or other bmap allocation
+boundary, the individual unmap and map cycles can trigger repeated
+bmap block allocations and frees as the extent count bounces back
+and forth across the boundary. While net block usage is bound across
+the swap operation, this behavior can prematurely exhaust the
+transaction block reservation because it continuously drains as the
+transaction rolls. Each allocation accounts against the reservation
+and each free returns to global free space on transaction roll.
 
-This is marked as "Fixes" but is more of a clean up than a true fix.
-Backport if you want, but its not critical.
+The previous workaround to this problem attempted to detect this
+boundary condition and provide surplus block reservation to
+acommodate it. This is insufficient because more remaps can occur
+than implied by the extent counts; if start offset boundaries are
+not aligned between the two inodes, for example.
 
-Fixes: cf6ab6d9143b1 ("tracing: Add ref count to tracer for when they are being read by pipe")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+To address this problem more generically and dynamically, add a
+transaction accounting mode that returns freed blocks to the
+transaction reservation instead of the superblock counters on
+transaction roll and use it when the rmapbt based algorithm is
+active. This allows the chain of remap transactions to preserve the
+block reservation based own its own frees and prevent premature
+exhaustion regardless of the remap pattern. Note that this is only
+safe for superblocks with lazy sb accounting, but the latter is
+required for v5 supers and the rmap feature depends on v5.
+
+Fixes: b3fed434822d0 ("xfs: account format bouncing into rmapbt swapext tx reservation")
+Root-caused-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Brian Foster <bfoster@redhat.com>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/trace.c | 12 ++++++------
- kernel/trace/trace.h |  2 +-
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ fs/xfs/libxfs/xfs_shared.h |  1 +
+ fs/xfs/xfs_bmap_util.c     | 18 +++++++++---------
+ fs/xfs/xfs_trans.c         | 19 ++++++++++++++++++-
+ 3 files changed, 28 insertions(+), 10 deletions(-)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index bb62269724d5f..6fc6da55b94e2 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -5887,7 +5887,7 @@ int tracing_set_tracer(struct trace_array *tr, const char *buf)
+diff --git a/fs/xfs/libxfs/xfs_shared.h b/fs/xfs/libxfs/xfs_shared.h
+index c45acbd3add94..708feb8eac766 100644
+--- a/fs/xfs/libxfs/xfs_shared.h
++++ b/fs/xfs/libxfs/xfs_shared.h
+@@ -65,6 +65,7 @@ void	xfs_log_get_max_trans_res(struct xfs_mount *mp,
+ #define XFS_TRANS_DQ_DIRTY	0x10	/* at least one dquot in trx dirty */
+ #define XFS_TRANS_RESERVE	0x20    /* OK to use reserved data blocks */
+ #define XFS_TRANS_NO_WRITECOUNT 0x40	/* do not elevate SB writecount */
++#define XFS_TRANS_RES_FDBLKS	0x80	/* reserve newly freed blocks */
+ /*
+  * LOWMODE is used by the allocator to activate the lowspace algorithm - when
+  * free space is running low the extent allocator may choose to allocate an
+diff --git a/fs/xfs/xfs_bmap_util.c b/fs/xfs/xfs_bmap_util.c
+index f37f5cc4b19ff..afdc7f8e0e701 100644
+--- a/fs/xfs/xfs_bmap_util.c
++++ b/fs/xfs/xfs_bmap_util.c
+@@ -1567,6 +1567,7 @@ xfs_swap_extents(
+ 	int			lock_flags;
+ 	uint64_t		f;
+ 	int			resblks = 0;
++	unsigned int		flags = 0;
+ 
+ 	/*
+ 	 * Lock the inodes against other IO, page faults and truncate to
+@@ -1630,17 +1631,16 @@ xfs_swap_extents(
+ 		resblks +=  XFS_SWAP_RMAP_SPACE_RES(mp, tipnext, w);
+ 
+ 		/*
+-		 * Handle the corner case where either inode might straddle the
+-		 * btree format boundary. If so, the inode could bounce between
+-		 * btree <-> extent format on unmap -> remap cycles, freeing and
+-		 * allocating a bmapbt block each time.
++		 * If either inode straddles a bmapbt block allocation boundary,
++		 * the rmapbt algorithm triggers repeated allocs and frees as
++		 * extents are remapped. This can exhaust the block reservation
++		 * prematurely and cause shutdown. Return freed blocks to the
++		 * transaction reservation to counter this behavior.
+ 		 */
+-		if (ipnext == (XFS_IFORK_MAXEXT(ip, w) + 1))
+-			resblks += XFS_IFORK_MAXEXT(ip, w);
+-		if (tipnext == (XFS_IFORK_MAXEXT(tip, w) + 1))
+-			resblks += XFS_IFORK_MAXEXT(tip, w);
++		flags |= XFS_TRANS_RES_FDBLKS;
  	}
+-	error = xfs_trans_alloc(mp, &M_RES(mp)->tr_write, resblks, 0, 0, &tp);
++	error = xfs_trans_alloc(mp, &M_RES(mp)->tr_write, resblks, 0, flags,
++				&tp);
+ 	if (error)
+ 		goto out_unlock;
  
- 	/* If trace pipe files are being read, we can't change the tracer */
--	if (tr->current_trace->ref) {
-+	if (tr->trace_ref) {
- 		ret = -EBUSY;
- 		goto out;
- 	}
-@@ -6103,7 +6103,7 @@ static int tracing_open_pipe(struct inode *inode, struct file *filp)
+diff --git a/fs/xfs/xfs_trans.c b/fs/xfs/xfs_trans.c
+index 3c94e5ff43160..0ad72a83edac4 100644
+--- a/fs/xfs/xfs_trans.c
++++ b/fs/xfs/xfs_trans.c
+@@ -107,7 +107,8 @@ xfs_trans_dup(
  
- 	nonseekable_open(inode, filp);
+ 	ntp->t_flags = XFS_TRANS_PERM_LOG_RES |
+ 		       (tp->t_flags & XFS_TRANS_RESERVE) |
+-		       (tp->t_flags & XFS_TRANS_NO_WRITECOUNT);
++		       (tp->t_flags & XFS_TRANS_NO_WRITECOUNT) |
++		       (tp->t_flags & XFS_TRANS_RES_FDBLKS);
+ 	/* We gave our writer reference to the new transaction */
+ 	tp->t_flags |= XFS_TRANS_NO_WRITECOUNT;
+ 	ntp->t_ticket = xfs_log_ticket_get(tp->t_ticket);
+@@ -272,6 +273,8 @@ xfs_trans_alloc(
+ 	 */
+ 	WARN_ON(resp->tr_logres > 0 &&
+ 		mp->m_super->s_writers.frozen == SB_FREEZE_COMPLETE);
++	ASSERT(!(flags & XFS_TRANS_RES_FDBLKS) ||
++	       xfs_sb_version_haslazysbcount(&mp->m_sb));
  
--	tr->current_trace->ref++;
-+	tr->trace_ref++;
- out:
- 	mutex_unlock(&trace_types_lock);
- 	return ret;
-@@ -6122,7 +6122,7 @@ static int tracing_release_pipe(struct inode *inode, struct file *file)
- 
- 	mutex_lock(&trace_types_lock);
- 
--	tr->current_trace->ref--;
-+	tr->trace_ref--;
- 
- 	if (iter->trace->pipe_close)
- 		iter->trace->pipe_close(iter);
-@@ -7424,7 +7424,7 @@ static int tracing_buffers_open(struct inode *inode, struct file *filp)
- 
- 	filp->private_data = info;
- 
--	tr->current_trace->ref++;
-+	tr->trace_ref++;
- 
- 	mutex_unlock(&trace_types_lock);
- 
-@@ -7525,7 +7525,7 @@ static int tracing_buffers_release(struct inode *inode, struct file *file)
- 
- 	mutex_lock(&trace_types_lock);
- 
--	iter->tr->current_trace->ref--;
-+	iter->tr->trace_ref--;
- 
- 	__trace_array_put(iter->tr);
- 
-@@ -8733,7 +8733,7 @@ static int __remove_instance(struct trace_array *tr)
- 	int i;
- 
- 	/* Reference counter for a newly created trace array = 1. */
--	if (tr->ref > 1 || (tr->current_trace && tr->current_trace->ref))
-+	if (tr->ref > 1 || (tr->current_trace && tr->trace_ref))
- 		return -EBUSY;
- 
- 	list_del(&tr->list);
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 13db4000af3fe..f21607f871891 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -356,6 +356,7 @@ struct trace_array {
- 	struct trace_event_file *trace_marker_file;
- 	cpumask_var_t		tracing_cpumask; /* only trace on set CPUs */
- 	int			ref;
-+	int			trace_ref;
- #ifdef CONFIG_FUNCTION_TRACER
- 	struct ftrace_ops	*ops;
- 	struct trace_pid_list	__rcu *function_pids;
-@@ -547,7 +548,6 @@ struct tracer {
- 	struct tracer		*next;
- 	struct tracer_flags	*flags;
- 	int			enabled;
--	int			ref;
- 	bool			print_max;
- 	bool			allow_instances;
- #ifdef CONFIG_TRACER_MAX_TRACE
+ 	tp->t_magic = XFS_TRANS_HEADER_MAGIC;
+ 	tp->t_flags = flags;
+@@ -365,6 +368,20 @@ xfs_trans_mod_sb(
+ 			tp->t_blk_res_used += (uint)-delta;
+ 			if (tp->t_blk_res_used > tp->t_blk_res)
+ 				xfs_force_shutdown(mp, SHUTDOWN_CORRUPT_INCORE);
++		} else if (delta > 0 && (tp->t_flags & XFS_TRANS_RES_FDBLKS)) {
++			int64_t	blkres_delta;
++
++			/*
++			 * Return freed blocks directly to the reservation
++			 * instead of the global pool, being careful not to
++			 * overflow the trans counter. This is used to preserve
++			 * reservation across chains of transaction rolls that
++			 * repeatedly free and allocate blocks.
++			 */
++			blkres_delta = min_t(int64_t, delta,
++					     UINT_MAX - tp->t_blk_res);
++			tp->t_blk_res += blkres_delta;
++			delta -= blkres_delta;
+ 		}
+ 		tp->t_fdblocks_delta += delta;
+ 		if (xfs_sb_version_haslazysbcount(&mp->m_sb))
 -- 
 2.25.1
 
