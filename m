@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1F9246ACE
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 229E3246AD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387592AbgHQPmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:42:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43954 "EHLO mail.kernel.org"
+        id S2387636AbgHQPnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:43:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730520AbgHQPgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:36:52 -0400
+        id S1730188AbgHQPhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:37:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7995020709;
-        Mon, 17 Aug 2020 15:36:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E12BE23120;
+        Mon, 17 Aug 2020 15:37:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678612;
-        bh=TJ9AZakn52veKcbnZMKtfI9JpjIqWLaXbvn0eVDK0/8=;
+        s=default; t=1597678639;
+        bh=RPEiQDy6a3Jp0/Ow1vYnPqNQ//IIH6hyciHaIjsqhoE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xCI/6ggC/ki06LObWJ3Af3LQSor26sN7kA4NHVHB2oYKTO1vF2yJk2ZCmG7fT8ecc
-         icdeKQ8YrLmRM729KcjqTfgA7ekfPLcbmJ3k8HaaNvX4XpbKdRyNmEKX6g95MeK4m/
-         +I9ozehsqypN35gCLa1BoTyIjOlulAKe/0ptzWW0=
+        b=avsa6ZDi/p0b8Vzaeo3rD4HYjxsNNfwo9SNa4kLqHtuqzM8s1AmyFlERjRVJQ+Wze
+         m3Ul3ibg3XlHJuWj6qMNVEz7dZw0ozbyPp7B0GsT6y0J8sZrQOt6IpL6joxFCObCdk
+         4I6xu8edythlOJ60c4AY12p1J+01NBf2NFmJzu8Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Baruch Siach <baruch@tkos.co.il>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.8 395/464] net: phy: marvell10g: fix null pointer dereference
-Date:   Mon, 17 Aug 2020 17:15:48 +0200
-Message-Id: <20200817143852.699988475@linuxfoundation.org>
+        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: [PATCH 5.8 403/464] ALSA: hda - reverse the setting value in the micmute_led_set
+Date:   Mon, 17 Aug 2020 17:15:56 +0200
+Message-Id: <20200817143853.084754257@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -47,85 +44,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Marek Behún" <marek.behun@nic.cz>
+From: Hui Wang <hui.wang@canonical.com>
 
-[ Upstream commit 1b8ef1423dbfd34de2439a2db457b84480b7c8a8 ]
+commit 404690649e6a52ee39817168f2d984726412e091 upstream.
 
-Commit c3e302edca24 ("net: phy: marvell10g: fix temperature sensor on 2110")
-added a check for PHY ID via phydev->drv->phy_id in a function which is
-called by devres at a time when phydev->drv is already set to null by
-phy_remove function.
+Before the micmute_led_set() is introduced, the function of
+alc_gpio_micmute_update() will set the gpio value with the
+!micmute_led.led_value, and the machines have the correct micmute led
+status. After the micmute_led_set() is introduced, it sets the gpio
+value with !!micmute_led.led_value, so the led status is not correct
+anymore, we need to set micmute_led_polarity = 1 to workaround it.
 
-This null pointer dereference can be triggered via SFP subsystem with a
-SFP module containing this Marvell PHY. When the SFP interface is put
-down, the SFP subsystem removes the PHY.
+Now we fix the micmute_led_set() and remove micmute_led_polarity = 1.
 
-Fixes: c3e302edca24 ("net: phy: marvell10g: fix temperature sensor on 2110")
-Signed-off-by: Marek Behún <marek.behun@nic.cz>
-Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc: Andrew Lunn <andrew@lunn.ch>
-Cc: Baruch Siach <baruch@tkos.co.il>
-Cc: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 87dc36482cab ("ALSA: hda/realtek - Add LED class support for micmute LED")
+Reported-and-suggested-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Link: https://lore.kernel.org/r/20200811122430.6546-1-hui.wang@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/phy/marvell10g.c |   18 +++++++-----------
- 1 file changed, 7 insertions(+), 11 deletions(-)
 
---- a/drivers/net/phy/marvell10g.c
-+++ b/drivers/net/phy/marvell10g.c
-@@ -205,13 +205,6 @@ static int mv3310_hwmon_config(struct ph
- 			      MV_V2_TEMP_CTRL_MASK, val);
+---
+ sound/pci/hda/patch_realtek.c |    5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4118,7 +4118,7 @@ static int micmute_led_set(struct led_cl
+ 	struct alc_spec *spec = codec->spec;
+ 
+ 	alc_update_gpio_led(codec, spec->gpio_mic_led_mask,
+-			    spec->micmute_led_polarity, !!brightness);
++			    spec->micmute_led_polarity, !brightness);
+ 	return 0;
  }
  
--static void mv3310_hwmon_disable(void *data)
--{
--	struct phy_device *phydev = data;
--
--	mv3310_hwmon_config(phydev, false);
--}
--
- static int mv3310_hwmon_probe(struct phy_device *phydev)
+@@ -4173,8 +4173,6 @@ static void alc285_fixup_hp_gpio_led(str
  {
- 	struct device *dev = &phydev->mdio.dev;
-@@ -235,10 +228,6 @@ static int mv3310_hwmon_probe(struct phy
- 	if (ret)
- 		return ret;
+ 	struct alc_spec *spec = codec->spec;
  
--	ret = devm_add_action_or_reset(dev, mv3310_hwmon_disable, phydev);
--	if (ret)
--		return ret;
+-	spec->micmute_led_polarity = 1;
 -
- 	priv->hwmon_dev = devm_hwmon_device_register_with_info(dev,
- 				priv->hwmon_name, phydev,
- 				&mv3310_hwmon_chip_info, NULL);
-@@ -423,6 +412,11 @@ static int mv3310_probe(struct phy_devic
- 	return phy_sfp_probe(phydev, &mv3310_sfp_ops);
+ 	alc_fixup_hp_gpio_led(codec, action, 0x04, 0x01);
  }
  
-+static void mv3310_remove(struct phy_device *phydev)
-+{
-+	mv3310_hwmon_config(phydev, false);
-+}
-+
- static int mv3310_suspend(struct phy_device *phydev)
+@@ -4426,7 +4424,6 @@ static void alc233_fixup_lenovo_line2_mi
  {
- 	return mv3310_power_down(phydev);
-@@ -762,6 +756,7 @@ static struct phy_driver mv3310_drivers[
- 		.read_status	= mv3310_read_status,
- 		.get_tunable	= mv3310_get_tunable,
- 		.set_tunable	= mv3310_set_tunable,
-+		.remove		= mv3310_remove,
- 	},
- 	{
- 		.phy_id		= MARVELL_PHY_ID_88E2110,
-@@ -776,6 +771,7 @@ static struct phy_driver mv3310_drivers[
- 		.read_status	= mv3310_read_status,
- 		.get_tunable	= mv3310_get_tunable,
- 		.set_tunable	= mv3310_set_tunable,
-+		.remove		= mv3310_remove,
- 	},
- };
+ 	struct alc_spec *spec = codec->spec;
  
+-	spec->micmute_led_polarity = 1;
+ 	alc_fixup_hp_gpio_led(codec, action, 0, 0x04);
+ 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
+ 		spec->init_amp = ALC_INIT_DEFAULT;
 
 
