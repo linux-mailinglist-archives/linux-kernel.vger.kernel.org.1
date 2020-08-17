@@ -2,112 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 595CA246F30
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 742C4246F87
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389105AbgHQRn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:43:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389020AbgHQRns (ORCPT
+        id S2390100AbgHQRsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:48:33 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39198 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390094AbgHQRsU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 13:43:48 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99461C061389;
-        Mon, 17 Aug 2020 10:43:48 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id x5so13949493wmi.2;
-        Mon, 17 Aug 2020 10:43:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HFsbrpQA/6K/m6r64TJHx6ZpqfJgPOgySDUCEdnMbUs=;
-        b=BEVJDvx4JugvWQ1LtNcvyOtVSVOmLiagYyaUL4nRagGU9m0FqRjQngHvQ+WqZu1gpN
-         G/6e3/WToUY711n0lcpG6utJKT4+1ge+FKcETxwVdq8SwEXmmWFJA5dF/7jhjYLYBrpG
-         s9pk+O6sE35yNH8cZFSwElKy6xPNP11BZZIHzGrsN4DopoNUVdZtIp8mEMVZ85ZDDvzD
-         hdWV4V9hlZNZxt1k833BuryAlMT2pqX/UEbCoSstqGFxgYX0hQXnfmxyvyYKjUe3uWz3
-         AUy9/GH+rZixjDs9WNrEKmcvmJOO4+8BJx3do2iJzZ3GLCbrpUcPRo1Ggqo+zowb/8BE
-         ANMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HFsbrpQA/6K/m6r64TJHx6ZpqfJgPOgySDUCEdnMbUs=;
-        b=LuGTfsvtC+Z1EaJL5ODbGrNibIZwnZzuMl+XAFSANSMWMsx6+swTbqEg7MzLgJZ7bY
-         E3Hu7fdeJHMUud8lfDY/nTIiYuyBJEHqN8Dxl4FzzHsh3cb/5wgd5XZOf2sLUv7ojdvT
-         nTovuRT59CHyqwAx1MJoDZIT+6asx3bOujFzwURkZGeByqNatN0XNZ/2iixxbemZZtee
-         YNjFX5D2/0RAUgEoQjJS2+k3UasVoVe1YjW9t9QZlthKFBXC63vy3zP49sJ9B7Cx8RMg
-         Yml01QSAG0O78drOKisKlLCkJK9NUKExrB3BgnlP5CniAIV9Pm0C6JghtjsiHdhO9G6Y
-         ncxA==
-X-Gm-Message-State: AOAM533dMbWWspZsHtQShfvqWvIPJ0o0Y2/mtbV2c/161HUn5UTYje/j
-        RAXqmxS4KkEeE0P+DQmt4X8=
-X-Google-Smtp-Source: ABdhPJyrcKXTHc4h4Psph7lG3cawYaF1Uisg47sIhEE1aW8mNmbTC9HMd1oGHBj6YzpuAqNrjqVsyw==
-X-Received: by 2002:a1c:3b89:: with SMTP id i131mr15545485wma.30.1597686227372;
-        Mon, 17 Aug 2020 10:43:47 -0700 (PDT)
-Received: from lenovo-laptop (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id a10sm31312236wro.35.2020.08.17.10.43.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 10:43:46 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-X-Google-Original-From: Alex Dewar <alex.dewar@gmx.co.uk>
-Date:   Mon, 17 Aug 2020 18:43:44 +0100
-To:     David Lechner <david@lechnology.com>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sekhar Nori <nsekhar@ti.com>,
-        Bartosz Go??aszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH] power: supply: Add dependency to lego-ev3-battery
- Kconfig options
-Message-ID: <20200817174344.lxuzlly4it5vpfmz@lenovo-laptop>
-References: <20200809185444.54247-1-alex.dewar90@gmail.com>
- <d6c98ee6-f2f3-c55a-be16-3794ccf30a28@lechnology.com>
- <20200812133711.ddwhxypmvr27pxdu@lenovo-laptop>
- <ce0ae241-10e1-de5c-e694-2c00dc01a2c4@lechnology.com>
- <20200812190253.zewvdfvyu6cnggcl@lenovo-laptop>
- <0927eaf0-62d6-adaf-c4b0-89d7f4cc7b4a@lechnology.com>
+        Mon, 17 Aug 2020 13:48:20 -0400
+Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1k7jEY-0000AV-7b; Mon, 17 Aug 2020 17:47:46 +0000
+Date:   Mon, 17 Aug 2020 19:47:45 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Andrei Vagin <avagin@gmail.com>, adobriyan@gmail.com,
+        viro@zeniv.linux.org.uk, davem@davemloft.net,
+        akpm@linux-foundation.org, areber@redhat.com, serge@hallyn.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Subject: Re: [PATCH 00/23] proc: Introduce /proc/namespaces/ directory to
+ expose namespaces lineary
+Message-ID: <20200817174745.jssxjdcwoqxeg5pu@wittgenstein>
+References: <2d65ca28-bcfa-b217-e201-09163640ebc2@virtuozzo.com>
+ <20200810173431.GA68662@gmail.com>
+ <33565447-9b97-a820-bc2c-a4ff53a7675a@virtuozzo.com>
+ <20200812175338.GA596568@gmail.com>
+ <8f3c9414-9efc-cc01-fb2a-4d83266e96b2@virtuozzo.com>
+ <20200814011649.GA611947@gmail.com>
+ <0af3f2fa-f2c3-fb7d-b57e-9c41fe94ca58@virtuozzo.com>
+ <20200814192102.GA786465@gmail.com>
+ <56ed1fb9-4f1f-3528-3f09-78478b9dfcf2@virtuozzo.com>
+ <87d03pb7f2.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <0927eaf0-62d6-adaf-c4b0-89d7f4cc7b4a@lechnology.com>
+In-Reply-To: <87d03pb7f2.fsf@x220.int.ebiederm.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 02:12:57PM -0500, David Lechner wrote:
-> On 8/12/20 2:02 PM, Alex Dewar wrote:
-> > On Wed, Aug 12, 2020 at 10:24:30AM -0500, David Lechner wrote:
-> > > On 8/12/20 8:37 AM, Alex Dewar wrote:
-> > > > On Tue, Aug 11, 2020 at 09:24:10AM -0500, David Lechner wrote:
-> > > > > On 8/9/20 1:54 PM, Alex Dewar wrote:
-> > > > > > This battery appears only to be used by a single board (DA850), so it
-> > > > > > makes sense to add this to the Kconfig file so that users don't build
-> > > > > > the module unnecessarily. It currently seems to be built for the x86
-> > > > > > Arch Linux kernel where it's probably not doing much good.
-> > > > > 
-> > > > > It would probably also make sense to add "default n" since it only
-> > > > > applies to one board in the entire arch.
-> > > > 
-> > > > Ah ok. That makes sense. Would you like me to send a follow-on patch for
-> > > > this?
-> > > 
-> > > You can just send a v2 patch that includes the change below and the
-> > > additional change.
-> > 
-> > I've just had a look at the documentation[1] and it seems that as there's
-> > no "default y" there it'll default to n anyway. Have I got that right?
-> > 
-> > [1] https://www.kernel.org/doc/html/latest/kbuild/kconfig-language.html#menu-attributes
-> > 
+On Mon, Aug 17, 2020 at 10:48:01AM -0500, Eric W. Biederman wrote:
 > 
-> Yes, that seems right. That makes me wonder why this would have been enabled in
-> the Arch Linux kernel for x86 then.
+> Creating names in the kernel for namespaces is very difficult and
+> problematic.  I have not seen anything that looks like  all of the
+> problems have been solved with restoring these new names.
+> 
+> When your filter for your list of namespaces is user namespace creating
+> a new directory in proc is highly questionable.
+> 
+> As everyone uses proc placing this functionality in proc also amplifies
+> the problem of creating names.
+> 
+> 
+> Rather than proc having a way to mount a namespace filesystem filter by
+> the user namespace of the mounter likely to have many many fewer
+> problems.  Especially as we are limiting/not allow new non-process
+> things and ideally finding a way to remove the non-process things.
+> 
+> 
+> Kirill you have a good point that taking the case where a pid namespace
+> does not exist in a user namespace is likely quite unrealistic.
+> 
+> Kirill mentioned upthread that the list of namespaces are the list that
+> can appear in a container.  Except by discipline in creating containers
+> it is not possible to know which namespaces may appear in attached to a
+> process.  It is possible to be very creative with setns, and violate any
+> constraint you may have.  Which means your filtered list of namespaces
+> may not contain all of the namespaces used by a set of processes.  This
 
-Not sure, maybe the Arch devs like Lego? ;-)
+Indeed. We use setns() quite creatively when intercepting syscalls and
+when attaching to a container.
 
-Are you happy to give an Acked-by for this anyhoo?
+> further argues that attaching the list of namespaces to proc does not
+> make sense.
+> 
+> Andrei has a good point that placing the names in a hierarchy by
+> user namespace has the potential to create more freedom when
+> assigning names to namespaces, as it means the names for namespaces
+> do not need to be globally unique, and while still allowing the names
+> to stay the same.
+> 
+> 
+> To recap the possibilities for names for namespaces that I have seen
+> mentioned in this thread are:
+>   - Names per mount
+>   - Names per user namespace
+> 
+> I personally suspect that names per mount are likely to be so flexibly
+> they are confusing, while names per user namespace are likely to be
+> rigid, possibly too rigid to use.
+> 
+> It all depends upon how everything is used.  I have yet to see a
+> complete story of how these names will be generated and used.  So I can
+> not really judge.
 
-@Sebastian, are you happy to pick up this patch?
+So I haven't fully understood either what the motivation for this
+patchset is.
+I can just speak to the use-case I had when I started prototyping
+something similar: We needed a way to get a view on all namespaces
+that exist on the system because we wanted a way to do namespace
+debugging on a live system. This interface could've easily lived in
+debugfs. The main point was that it should contain all namespaces.
+Note, that it wasn't supposed to be a hierarchical format it was only
+mean to list all namespaces and accessible to real root.
+The interface here is way more flexible/complex and I haven't yet
+figured out what exactly it is supposed to be used for.
 
-Best,
-Alex
+> 
+> 
+> Let me add another take on this idea that might give this work a path
+> forward. If I were solving this I would explore giving nsfs directories
+> per user namespace, and a way to mount it that exposed the directory of
+> the mounters current user namespace (something like btrfs snapshots).
+> 
+> Hmm.  For the user namespace directory I think I would give it a file
+> "ns" that can be opened to get a file handle on the user namespace.
+> Plus a set of subdirectories "cgroup", "ipc", "mnt", "net", "pid",
+> "user", "uts") for each type of namespace.  In each directory I think
+> I would just have a 64bit counter and each new entry I would assign the
+> next number from that counter.
+> 
+> The restore could either have the ability to rename files or simply the
+> ability to bump the counter (like we do with pids) so the names of the
+> namespaces can be restored.
+> 
+> That winds up making a user namespace the namespace of namespaces, so
+> I am not 100% about the idea. 
+
+I think you're right that we need to understand better what the use-case
+is. If I understand your suggestion correctly it wouldn't allow to show
+nested user namespaces if the nsfs mount is per-user namespace.
+
+Let me throw in a crazy idea: couldn't we just make the ioctl_ns() walk
+a namespace hierarchy? For example, you could pass in a user namespace
+fd and then you'd get back a struct with handles for fds for the
+namespaces owned by that user namespace and then you could use
+NS_GET_USERNS/NS_GET_PARENT to walk upwards from the user namespace fd
+passed in initially and so on? Or something similar/simpler. This would
+also decouple this from procfs somewhat.
+
+Christian
