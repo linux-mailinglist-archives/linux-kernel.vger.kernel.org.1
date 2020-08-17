@@ -2,187 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E65245F2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30738245F48
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727990AbgHQITT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 04:19:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727107AbgHQITN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 04:19:13 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02670C061388
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:19:12 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id g6so16440054ljn.11
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:19:11 -0700 (PDT)
+        id S1728083AbgHQIUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 04:20:09 -0400
+Received: from mail-eopbgr1320120.outbound.protection.outlook.com ([40.107.132.120]:37025
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728070AbgHQIUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 04:20:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KckMiAoip/bcxOm1+QSevZ6xOxTq2dYuE0XV+4E6CVR3zu2iiMket4LYmz8zGd6YSpvNs0QOMPIuSfN5iXaCoB1LHE7HNhmpOJHMDs8+jszwCIDtr3QBsXrLh8DoK6kKAbPynj7mRDDGqx0EgWnOQJaRVqCbcjhdoORfXxKZxOCB78u4g1C6qnYX16Z8GJJMhJ8HW3YxDlWIn4yavhfrxvAxNrGqKRlIdus6c/NZ3PkPNaR+AVaU02XlNsY/paCiKa+e6M8RXiueQPqolPi0cdLiwjTK2exRPPKWiWynAEJeAj9moXwbBeeOdWBbU2dEF/gdfzwogBe/88bkbpzqTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q3A0XgXaTt47xmLgoP9TFmSw7SIzmXa4aI5UoH17RO4=;
+ b=PQ3ThirWYx7vnt/f9aSFNSeHpwGhszrzJlCXy/g8+laKMW52dTcmICXKsoHfiJXhmggGahF6NV1AJAxxEoGcLBlJZwI9e9n68CU4xw4UL0vqFtOdZNgMTr2hEj+kBE4d9O6avPihf7AQH3CcfI3IBWKFL5tIB2Mh24g/p4KUmI/cWW9YAOg2uTHCFh/y0Gl4k53x+ACllD3jsGodiReJ3PDEGdntNAs2SxFxUp4JwTRwUThEceYuWgsAvWQXSFDi90iwGQIkXgJRpzgi0AlEqXxePlEvsuCX+YdHGjPoyYD3FtM9dtVEhY1V5+YpIt8YQ/UJ/SnpFuhy6zJJh5Cwdg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Kb+WB6cxbXGASa1Z0Djt+5EpB4RsvAhrI2bCYvlv0Cg=;
-        b=RTv9uMmMNydE7Xt7PNMfQJedSXhU5NBZ9mD406ib+5ZRsErO9PVET+SYSdtdaHfsJX
-         9qJ7I6UToW7NqZdDwhG54X9tLHt40oiuUvqJPobzzfF9CRVwsXyi1zXG8QQIYmWj+Abh
-         R2kDAMEXUdQY4oB9NSxN+MY5ny358H3yp3k5vEmK5GXUz8sYQHpCmR3WpPXRm+js1zun
-         VmCHSARtCw2ddjZNigehY0i21/HyUjQrGh24hTVAR/SnDTICdQBpZWViHwSV640lBhBr
-         wEoRYpNLAB+u50Bl0+7+iPz7JPu8Ojamn/TVNfMYIdh7AsLstA1Ac7sxkhkbjBc+S5dk
-         EhvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Kb+WB6cxbXGASa1Z0Djt+5EpB4RsvAhrI2bCYvlv0Cg=;
-        b=LyeHaC6+BFrJcAUDryrlMw/1XoxxBPPfnoz3i228OzaZJDc7pLIV6Jqukfy1klZH3G
-         FS5w8dwH1yrYW2NPY2Uk6bugE05veZrRyKRBC9vBZWcd1bKXszW/tdxJ3LH3SFCY6Az7
-         saCFzzXGMTbOWWSXUzlHZBPfOoF2w28XLI/7KYqqywKpNw3oIXXBChjMR5fQn8ku03Ig
-         NwGFe3bKAhgzNKcQ/MCsh+rbTielRfcliLxM1nPlD3kFsJQoGdUz5v7yi26JtPQleR2H
-         l7C2R+ikS7zlfYIG3ro7PH+zcwsuOteyjx5QxkvAx7SCjAo/fXOvusw9UOSLRgkypTOW
-         nkfA==
-X-Gm-Message-State: AOAM532XwxZXt42mXMFK8c5wfKilGqzUW00699RqlpQDQqKGCvsSw5wc
-        AWUjAolBjxK32SBWVihWlKVFrHolPZBzSkmoIt5xag==
-X-Google-Smtp-Source: ABdhPJxPXH/haxs+9hofM/AFS9b4pMCkPlHNlhjMcD/zdsLgjWAcFlYoOxaAeZ4YVcu5dmM/WmVBuikeqCMuk3a4yFs=
-X-Received: by 2002:a2e:b0db:: with SMTP id g27mr7374888ljl.69.1597652350333;
- Mon, 17 Aug 2020 01:19:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200730135423.232776-1-arch0.zheng@gmail.com>
- <20200806144533.GA2123716@gmail.com> <2d271bf3-69c1-e5fd-b7a9-f766ff26ed62@gmail.com>
- <32e6e7dd-38cb-3317-138e-e337093e3173@gmail.com>
-In-Reply-To: <32e6e7dd-38cb-3317-138e-e337093e3173@gmail.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 17 Aug 2020 10:18:59 +0200
-Message-ID: <CAKfTPtBGA8d5zKcTkotxD+NmSmfXNt6yUOG_q8FN0g-rdor8bw@mail.gmail.com>
-Subject: Re: [PATCH] sched/core: add unlikely in group_has_capacity()
-To:     Qi Zheng <arch0.zheng@gmail.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q3A0XgXaTt47xmLgoP9TFmSw7SIzmXa4aI5UoH17RO4=;
+ b=hFTZ/eiTa8FzdMuITOqd87It5ke+3w0dxeFyi7+DMWWeBkIMWVnvFps6l7GMduM2Lz+7j4BIfhkHraRQU+lCkunyJn4kRMV8uwrajKP0AkNxW6HpXpgbIaOMMBNLpg4761O2Fo+j2t9EZfWczZXdcZZqNHLJSmulJSpcRQ88VR8=
+Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com (2603:1096:404:d5::22)
+ by TY2PR01MB4218.jpnprd01.prod.outlook.com (2603:1096:404:d3::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.20; Mon, 17 Aug
+ 2020 08:19:55 +0000
+Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com
+ ([fe80::9083:6001:8090:9f3]) by TY2PR01MB3692.jpnprd01.prod.outlook.com
+ ([fe80::9083:6001:8090:9f3%6]) with mapi id 15.20.3283.027; Mon, 17 Aug 2020
+ 08:19:55 +0000
+From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+To:     Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+CC:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Chris Paterson <Chris.Paterson2@renesas.com>
+Subject: RE: [PATCH 1/2] dt-bindings: PCI: rcar: Add device tree support for
+ r8a7742
+Thread-Topic: [PATCH 1/2] dt-bindings: PCI: rcar: Add device tree support for
+ r8a7742
+Thread-Index: AQHWbz2YLmmvYoZWOUiLDevVqH8RSKk7/6GA
+Date:   Mon, 17 Aug 2020 08:19:55 +0000
+Message-ID: <TY2PR01MB369230866CBF6D701B48AFE1D85F0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+References: <20200810174156.30880-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200810174156.30880-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200810174156.30880-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: bp.renesas.com; dkim=none (message not signed)
+ header.d=none;bp.renesas.com; dmarc=none action=none header.from=renesas.com;
+x-originating-ip: [240f:60:5f3e:1:3806:c8ab:968a:d05d]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: b01d0f51-e83e-45b8-de94-08d842865308
+x-ms-traffictypediagnostic: TY2PR01MB4218:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <TY2PR01MB421877B1B0B462A8B2AA469CD85F0@TY2PR01MB4218.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3173;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: j0qyHwU7LOMDCS6KrWR5rvJgnom3cSCaUnHc/XF/vnd6CfIvemHKJZ+f8Mraxmhd/qufjfsQYgzNH6Su+LfTF0Seu1KDAOejR8YawWKwrnuIJItYcujS9oOrKCr19RbW/ZVoGKpH77Hga+MhsISced6A7yyhEY/BepJy1YJC1UT31FhPiTLnFCEe2m6Q7jpevLc64yobPcKFVU77B6Tr8srb/paTlY4GsMVf8zXq4Hr1DzQj4aCTDLFGwkeKX/c7xm2yc+RnzylG5ay4/Hb9qq8cV4oEI7nlCEUOiL0RqcS+segMWZHJutYQC4pd05Nd5TUpx+/CHao0ge0yU3/4iBwx/u2dH2Oah46MiLrFxCZlo3iv21a2FGds47X0yuss
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3692.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(366004)(136003)(39860400002)(7696005)(9686003)(2906002)(55016002)(52536014)(66446008)(66946007)(64756008)(66556008)(66476007)(86362001)(110136005)(6506007)(316002)(76116006)(71200400001)(4326008)(7416002)(8936002)(4744005)(5660300002)(478600001)(33656002)(107886003)(8676002)(186003)(54906003)(138113003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: E8H9IfzAcq/MUXqGxxR5fwdq5rsOkQTkyx+o3ebhWo/p0UIGbb3ieChUQYPHLW3jjVndhuRbnLxl6HDkVVfUoJzygPk08sC8LLTr6cC3QRLl3aM/RB0sL+dFtpEWk8mkczoN+4uaIJPszqQGUTBQxBdRxfrGIzSpMGS7daYKMyQ0QwbITUmWOJbSopAPtkdf3WvPQptk0RUrkcQLo5+wZd4ngibuT9KI8P61U/XzR7CuG7Ou/B0eg2nmIdSr4Ceesb7J/QZjuW64oc28vxZt+sI8DSHoYEDJAW5ChF5PMImCpy+uqkAV6+jqnGAu9NqS8qX0x/s3lpv9PYrfwUtALtC7FUeNnqdnxLnLGMuIYQ1rbPKrfAgP3FgZBTdeofO1VxkdkJhXtbEllM3ERlS4oqB3jna57vb/u41PrVFaxAKMnle4esNRRsdbjkpukPflGmd/0J/YikvQrb7iRmQx0Yp/OTgWR+5ZZ+896A/BeALP7+EsH8ln/CVwftVSNcLtN+Rt/FNp2nGrIvouNwABqqAqWgovFdPX4unpo4PUfMRCaCOyREFgBa9LWxDg4TAE/RU2JmU69a2GhCrbOdg8o3s7HvTbEnmOPZUzJpY3lv1duwRdqZxVcTRuGOpOeZ8QVfg/m5nekr/4j59eVfrB0bojELn1xQr7ttponXf78YxlyrLn8kUHq9KiCwQTLxvJdljtCweDGbvNxn6p5LsxvQ==
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB3692.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b01d0f51-e83e-45b8-de94-08d842865308
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Aug 2020 08:19:55.8046
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 5x6FWC8RF/HO7N1T8whHMe15602epF87KjfvyK20J8tJTULcFA/84D4sw+KtH06wg0RBuZuEkJ31uDTGlQRRC5J4lRN74Se+VUBaARVSsUAs7i9oH6kqbdQ0ruFvchVp
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB4218
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 Aug 2020 at 03:49, Qi Zheng <arch0.zheng@gmail.com> wrote:
->
-> On 2020/8/7 =E4=B8=8A=E5=8D=8810:47, Qi Zheng wrote:
-> > Yeah, because of the following two points, I also think
-> > the probability is 0%:
-> > a) the sd is protected by rcu lock, and load_balance()
-> >     func is between rcu_read_lock() and rcu_read_unlock().
-> > b) the sgs is a local variable.
-> >
-> > So in the group_classify(), the env->sd->imbalance_pct and
-> > the sgs will not be changed. May I remove the duplicate check
-> > from group_has_capacity() and resubmit a patch?
-> >
-> > Yours,
-> > Qi Zheng
-> >
-> > On 2020/8/6 =E4=B8=8B=E5=8D=8810:45, Ingo Molnar wrote:
-> >>
-> >> * Qi Zheng <arch0.zheng@gmail.com> wrote:
-> >>
-> >>> 1. The group_has_capacity() function is only called in
-> >>>     group_classify().
-> >>> 2. Before calling the group_has_capacity() function,
-> >>>     group_is_overloaded() will first judge the following
-> >>>     formula, if it holds, the group_classify() will directly
-> >>>     return the group_overloaded.
-> >>>
-> >>>     (sgs->group_capacity * imbalance_pct) <
-> >>>                          (sgs->group_runnable * 100)
-> >>>
-> >>> Therefore, when the group_has_capacity() is called, the
-> >>> probability that the above formalu holds is very small. Hint
-> >>> compilers about that.
-> >>>
-> >>> Signed-off-by: Qi Zheng <arch0.zheng@gmail.com>
-> >>> ---
-> >>>   kernel/sched/fair.c | 4 ++--
-> >>>   1 file changed, 2 insertions(+), 2 deletions(-)
-> >>>
-> >>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> >>> index 2ba8f230feb9..9074fd5e23b2 100644
-> >>> --- a/kernel/sched/fair.c
-> >>> +++ b/kernel/sched/fair.c
-> >>> @@ -8234,8 +8234,8 @@ group_has_capacity(unsigned int imbalance_pct,
-> >>> struct sg_lb_stats *sgs)
-> >>>       if (sgs->sum_nr_running < sgs->group_weight)
-> >>>           return true;
-> >>> -    if ((sgs->group_capacity * imbalance_pct) <
-> >>> -            (sgs->group_runnable * 100))
-> >>> +    if (unlikely((sgs->group_capacity * imbalance_pct) <
-> >>> +            (sgs->group_runnable * 100)))
-> >>>           return false;
-> >>
-> >> Isn't the probability that this second check will match around 0%?
-> >>
-> >> I.e. wouldn't the right fix be to remove the duplicate check from
-> >> group_has_capacity(), because it's already been checked in
-> >> group_classify()? Maybe while leaving a comment in place?
-> >>
-> >> Thanks,
-> >>
-> >>     Ingo
-> >>
->
-> Hi,
->
-> As Valentin and I discussed in the patch below, simply removing the
-> check may not be completely harmless.
->
->         [PATCH]sched/fair: Remove the duplicate check from
->                                         group_has_capacity() :
->         -       if ((sgs->group_capacity * imbalance_pct) <
->         -                       (sgs->group_runnable * 100))
->         -               return false;
->
->
-> If sum_nr_running < group_weight, we won't evaluate it.
-> If sum_nr_running > group_weight, we either won't call into
->    group_has_capacity() or we'll have checked it already in
->    group_overloaded().
-> But in the case of sum_nr_running =3D=3D group_weight, we can
-> run to this check.
+Hi Lad-san,
 
-The case "sum_nr_running =3D=3D group_weight" should not be considered as
-a corner case because that's the final state that we are trying to
-reach with load balance: 1 task per CPU
-And because of task migrations involved to reach this state, we easily
-have a temporarly low group_utilization (because of the migration) but
-a high group_runnable. This state highlights the fact that some tasks
-were competing for CPU cycles before the migration done by the load
-balance and the task that remains on the CPU, should fill the spare
-capacity. So the test prevents the load balance to immediately put
-back another task on the CPU
+> From: Lad Prabhakar, Sent: Tuesday, August 11, 2020 2:42 AM
+>=20
+> Add support for r8a7742. The Renesas RZ/G1H (R8A7742) PCIe controller
+> is identical to the R-Car Gen2 family.
+>=20
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
 
-Removing the condition should not be considered
+Thank you for your patch!
 
->
-> Although I also think it is unlikely to cause the significant
-> capacity pressure at the =3D=3D case, but I'm not sure whether there
-> are some special scenarios. such as some cpus in sg->cpumask are
-> no longer active, or other scenarios?
->
-> So adding the unlikely() in group_has_capacity() may be the safest
-> way.
+Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-Adding unlikely() is safe and I'm fine to add it but I'd like some
-figures that show improvements
+Best regards,
+Yoshihiro Shimoda
 
-Regards,
-Vincent
-
->
-> Add Valentin Schneider <valentin.schneider@arm.com>.
->
-> Yours,
-> Qi Zheng
