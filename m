@@ -2,78 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0728246E2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E216F246E5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389652AbgHQRY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:24:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46080 "EHLO mail.kernel.org"
+        id S2389432AbgHQR2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:28:22 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:15452 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389374AbgHQRJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 13:09:46 -0400
-Received: from C02YQ0RWLVCF.internal.digitalocean.com (c-73-181-34-237.hsd1.co.comcast.net [73.181.34.237])
+        id S2389418AbgHQRLE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 13:11:04 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597684263; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=IqsNUvABr0OrpoE56YQ1186lSjWEeIkkE5qYTPlZ1U4=; b=Ae2OoQ+U1/a1XiMPhGVVf2vRKJwry+1DPXuKm0wKUn2KAmN7o+a0RSGZc7Qb/dqc6jyCmGS7
+ YTd0qqE+oiuykT70DvldoYWJefr0xRCqz47ftrPt4eE55RV0dOSJDKqolWbSqIgtyUJagedX
+ Y2p04ZJwL15ml3xW87XSSV99PdU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
+ 5f3aba26f2b697637aa36f5e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 Aug 2020 17:11:02
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7229DC4339C; Mon, 17 Aug 2020 17:11:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 96B112067C;
-        Mon, 17 Aug 2020 17:09:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597684186;
-        bh=XmC5Gbza5UeU7Kf72z5M/6CooUNadr7oFKBfdMzI/hI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=XkUjBtMbVva/OY7CzF1LahcEjL8C890OUAu71IqHsKw1n2JQK/0OElj9Omb497+58
-         6Ir8EmgDXmpnk2c6zTXhg4S+33hc/vEUE1sp8wgMsmQosxaxSSpfOjw40z8pT8f2PH
-         VfAuUuRjdyPm8PZzNm7/DL/p4QsPWb7wmciBORRA=
-From:   David Ahern <dsahern@kernel.org>
-To:     acme@kernel.org
-Cc:     namhyung@kernel.org, linux-kernel@vger.kernel.org,
-        jolsa@kernel.org, David Ahern <dsahern@kernel.org>
-Subject: [PATCH v2] perf sched timehist: Fix use of CPU list with summary option
-Date:   Mon, 17 Aug 2020 11:09:42 -0600
-Message-Id: <20200817170943.1486-1-dsahern@kernel.org>
-X-Mailer: git-send-email 2.21.1 (Apple Git-122.3)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C4EE4C433C6;
+        Mon, 17 Aug 2020 17:10:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C4EE4C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Mon, 17 Aug 2020 11:10:56 -0600
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drm/msm/gpu: make ringbuffer readonly
+Message-ID: <20200817171056.GA7438@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        dri-devel@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200817162309.362032-1-robdclark@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200817162309.362032-1-robdclark@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not update thread stats or show idle summary unless CPU is in
-the list of interest.
+On Mon, Aug 17, 2020 at 09:23:09AM -0700, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
+> 
+> The GPU has no business writing into the ringbuffer, let's make it
+> readonly to the GPU.
 
-Fixes: c30d630d1bcf ("perf sched timehist: Add support for filtering on CPU")
-Signed-off-by: David Ahern <dsahern@kernel.org>
----
-v2
-- check that cpu_list is set before checking cpu_bitmap in timehist_print_summary
- 
- tools/perf/builtin-sched.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Yep. There are some additional things we can do in the a6xx family to make this
+even more robust but for the vast majority of targets out in this world this is
+a good and necessary fix.
 
-diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
-index 0c7d599fa555..e6fc297cee91 100644
---- a/tools/perf/builtin-sched.c
-+++ b/tools/perf/builtin-sched.c
-@@ -2584,7 +2584,8 @@ static int timehist_sched_change_event(struct perf_tool *tool,
- 	}
- 
- 	if (!sched->idle_hist || thread->tid == 0) {
--		timehist_update_runtime_stats(tr, t, tprev);
-+		if (!cpu_list || test_bit(sample->cpu, cpu_bitmap))
-+			timehist_update_runtime_stats(tr, t, tprev);
- 
- 		if (sched->idle_hist) {
- 			struct idle_thread_runtime *itr = (void *)tr;
-@@ -2857,6 +2858,9 @@ static void timehist_print_summary(struct perf_sched *sched,
- 
- 	printf("\nIdle stats:\n");
- 	for (i = 0; i < idle_max_cpu; ++i) {
-+		if (cpu_list && !test_bit(i, cpu_bitmap))
-+			continue;
-+
- 		t = idle_threads[i];
- 		if (!t)
- 			continue;
+Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
+
+> Fixes: 7198e6b03155 ("drm/msm: add a3xx gpu support")
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+>  drivers/gpu/drm/msm/msm_ringbuffer.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/msm_ringbuffer.c b/drivers/gpu/drm/msm/msm_ringbuffer.c
+> index e397c44cc011..39ecb5a18431 100644
+> --- a/drivers/gpu/drm/msm/msm_ringbuffer.c
+> +++ b/drivers/gpu/drm/msm/msm_ringbuffer.c
+> @@ -27,7 +27,8 @@ struct msm_ringbuffer *msm_ringbuffer_new(struct msm_gpu *gpu, int id,
+>  	ring->id = id;
+>  
+>  	ring->start = msm_gem_kernel_new(gpu->dev, MSM_GPU_RINGBUFFER_SZ,
+> -		MSM_BO_WC, gpu->aspace, &ring->bo, &ring->iova);
+> +		MSM_BO_WC | MSM_BO_GPU_READONLY, gpu->aspace, &ring->bo,
+> +		&ring->iova);
+>  
+>  	if (IS_ERR(ring->start)) {
+>  		ret = PTR_ERR(ring->start);
+> -- 
+> 2.26.2
+> 
+
 -- 
-2.17.1
-
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
