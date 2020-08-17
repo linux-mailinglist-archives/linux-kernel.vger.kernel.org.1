@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 062322474E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED16E2474DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392206AbgHQTQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:16:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47658 "EHLO mail.kernel.org"
+        id S2392200AbgHQTQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:16:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730474AbgHQPjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:39:12 -0400
+        id S1730639AbgHQPjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:39:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9AF8208E4;
-        Mon, 17 Aug 2020 15:39:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 54590208E4;
+        Mon, 17 Aug 2020 15:39:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678751;
-        bh=adrKwjKBYwAGO2tCI25+wx390wp6p3FolWXMxPZgFos=;
+        s=default; t=1597678759;
+        bh=0vzo1+dfsxzsfhFpidf+D+o54CBDt9UpG9cy1L0J2jU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OrYHAoDS8R29Wu2s+EQejofZvZJ5gX2XrfBCBv/cvcReKuKW7NcPNAjE2lv3dQzys
-         ZcDeuO6AubJDTmPSFlJH2MPiQRhbPV3JGpIyY2YtqYEgpXIoBrPc48QBdaWE095wv2
-         iMsLbNtVZFSGN445XyQBqK2MajlqroCuDC5ja/0o=
+        b=iFExq3XPx+OCac7jtGttS3JCe9xOPJtkwWn+3sQMdFVhY3aRa71GdhjzeFayikFvK
+         IeKuiEQi0yuORsuRyY25msH6Mwz/F7HOcBwmbsrPNPN0i0q/gcLmlx53UZbhX160fc
+         ZR8Dfj9ul2EZejP0VbvJRk6KQJr366JAGlzliTk8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Helge Deller <deller@gmx.de>
-Subject: [PATCH 5.8 441/464] Revert "parisc: Improve interrupt handling in arch_spin_lock_flags()"
-Date:   Mon, 17 Aug 2020 17:16:34 +0200
-Message-Id: <20200817143854.900561251@linuxfoundation.org>
+Subject: [PATCH 5.8 444/464] Revert "parisc: Revert "Release spinlocks using ordered store""
+Date:   Mon, 17 Aug 2020 17:16:37 +0200
+Message-Id: <20200817143855.046736766@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -44,63 +44,73 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Helge Deller <deller@gmx.de>
 
-commit 3d05b8aebc5f10ee3ab129b61100196855dd7249 upstream.
+commit 157e9afcc4fa25068b0e8743bc254a9b56010e13 upstream.
 
-This reverts commit 2772f0efd5bbd5413db3d22e363b779ca0fa5310.
-It turns out that we want to implement the spinlock code differently.
+This reverts commit 86d4d068df573a8c2105554624796c086d6bec3d.
 
 Signed-off-by: Helge Deller <deller@gmx.de>
-Cc: <stable@vger.kernel.org> # v5.7+
+Cc: <stable@vger.kernel.org> # v5.0+
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/parisc/include/asm/spinlock.h |   25 ++++++++-----------------
- 1 file changed, 8 insertions(+), 17 deletions(-)
+ arch/parisc/include/asm/spinlock.h |    4 ++--
+ arch/parisc/kernel/syscall.S       |   12 ++++--------
+ 2 files changed, 6 insertions(+), 10 deletions(-)
 
 --- a/arch/parisc/include/asm/spinlock.h
 +++ b/arch/parisc/include/asm/spinlock.h
-@@ -10,34 +10,25 @@
- static inline int arch_spin_is_locked(arch_spinlock_t *x)
- {
- 	volatile unsigned int *a = __ldcw_align(x);
--	smp_mb();
- 	return *a == 0;
- }
- 
--static inline void arch_spin_lock(arch_spinlock_t *x)
--{
--	volatile unsigned int *a;
--
--	a = __ldcw_align(x);
--	while (__ldcw(a) == 0)
--		while (*a == 0)
--			cpu_relax();
--}
-+#define arch_spin_lock(lock) arch_spin_lock_flags(lock, 0)
- 
- static inline void arch_spin_lock_flags(arch_spinlock_t *x,
- 					 unsigned long flags)
- {
+@@ -37,8 +37,8 @@ static inline void arch_spin_unlock(arch
  	volatile unsigned int *a;
--	unsigned long flags_dis;
  
  	a = __ldcw_align(x);
--	while (__ldcw(a) == 0) {
--		local_save_flags(flags_dis);
--		local_irq_restore(flags);
-+	while (__ldcw(a) == 0)
- 		while (*a == 0)
--			cpu_relax();
--		local_irq_restore(flags_dis);
--	}
-+			if (flags & PSW_SM_I) {
-+				local_irq_enable();
-+				cpu_relax();
-+				local_irq_disable();
-+			} else
-+				cpu_relax();
+-	mb();
+-	*a = 1;
++	/* Release with ordered store. */
++	__asm__ __volatile__("stw,ma %0,0(%1)" : : "r"(1), "r"(a) : "memory");
  }
- #define arch_spin_lock_flags arch_spin_lock_flags
  
+ static inline int arch_spin_trylock(arch_spinlock_t *x)
+--- a/arch/parisc/kernel/syscall.S
++++ b/arch/parisc/kernel/syscall.S
+@@ -640,8 +640,7 @@ cas_action:
+ 	sub,<>	%r28, %r25, %r0
+ 2:	stw	%r24, 0(%r26)
+ 	/* Free lock */
+-	sync
+-	stw	%r20, 0(%sr2,%r20)
++	stw,ma	%r20, 0(%sr2,%r20)
+ #if ENABLE_LWS_DEBUG
+ 	/* Clear thread register indicator */
+ 	stw	%r0, 4(%sr2,%r20)
+@@ -655,8 +654,7 @@ cas_action:
+ 3:		
+ 	/* Error occurred on load or store */
+ 	/* Free lock */
+-	sync
+-	stw	%r20, 0(%sr2,%r20)
++	stw,ma	%r20, 0(%sr2,%r20)
+ #if ENABLE_LWS_DEBUG
+ 	stw	%r0, 4(%sr2,%r20)
+ #endif
+@@ -857,8 +855,7 @@ cas2_action:
+ 
+ cas2_end:
+ 	/* Free lock */
+-	sync
+-	stw	%r20, 0(%sr2,%r20)
++	stw,ma	%r20, 0(%sr2,%r20)
+ 	/* Enable interrupts */
+ 	ssm	PSW_SM_I, %r0
+ 	/* Return to userspace, set no error */
+@@ -868,8 +865,7 @@ cas2_end:
+ 22:
+ 	/* Error occurred on load or store */
+ 	/* Free lock */
+-	sync
+-	stw	%r20, 0(%sr2,%r20)
++	stw,ma	%r20, 0(%sr2,%r20)
+ 	ssm	PSW_SM_I, %r0
+ 	ldo	1(%r0),%r28
+ 	b	lws_exit
 
 
