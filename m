@@ -2,168 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9102479E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 00:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0BD247967
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 00:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729786AbgHQWGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 18:06:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729767AbgHQWGf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 18:06:35 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A259C061343
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 15:06:35 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id f9so8299888pju.4
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 15:06:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cWCid31trlwRX7XdfsbfwsYP5/XIk2QJn77x1TORX4M=;
-        b=NXzN4f82HnWfQkiCcF+SX5NXOiO4v+KrUeo/LrrpOV+3MGTS+4cyvz3PWtiz+gB6vr
-         QL0TK1sDFtGUtdMqdj8BplSJ+vL9el6/RVpkjy03Npgh44KcgW+WykjkSKy3c3yi7ve5
-         uZsoIrNDJcDgFuj7T3th5Mh3X9k5tHK5ZzPdGdH72PjjkYd8YGJrA2wHlgHoO6DtH3xJ
-         M9oNHiXVM/91ZencrMHLzl34yY6uSdOKyh3sRihaaxspFIRXrkkQQQiMDnG9cyZ2KvwO
-         EbA/uWWkwxeUvPGqI1GzFSzcml5KspjAgCsntz81TrfELRcidw7/keX+nZo0Z7ph9z7o
-         vnZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cWCid31trlwRX7XdfsbfwsYP5/XIk2QJn77x1TORX4M=;
-        b=GALW36X0UPjdeUHty9RfYki5gVee/jVBmk4kSg3gurNqHMH3cHuZ9dr4DOryGHOmCl
-         Fy3gFlQlQj8WeDWERmH4EsgdBjhrbodafZoqMS3ilqkr6gtW0fegb5dpOHkPlEK8yNDy
-         SK2nGakryR0QVQQ7PZDUlw7q5xnz2SX5B90coBd9+j7VAJF1C19+PLfOZI3rvMiVA4cE
-         R/dXLXFCjnCGyJcsdT0iKk4r8THAWgY2X0HYyai3uWpc+fOnlmNXBTTsKSANe9voajum
-         28Kg72CbXfm+P9R/6OiKGtF0NuXDrlPqNfnlXD6pHeRpzgvh7W9e3ghMd5cIBj7RKr/d
-         Xnow==
-X-Gm-Message-State: AOAM531nx/EWepDqcHm+Nm0JAKkFDFvBrfLNUA2WmfUu2d6m059p3AkT
-        3U2wJQjCebPzk5GFkDvdbbWu7w==
-X-Google-Smtp-Source: ABdhPJyX2YqsEKBUUEhjY7AqW5QScCarLEIXr9eJDcVCFNHsKfKduPE6VRJ2uTT7E90j6XOcZsqfXA==
-X-Received: by 2002:a17:902:8210:: with SMTP id x16mr13374143pln.166.1597701993230;
-        Mon, 17 Aug 2020 15:06:33 -0700 (PDT)
-Received: from google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
-        by smtp.gmail.com with ESMTPSA id j142sm21983520pfd.100.2020.08.17.15.06.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 15:06:32 -0700 (PDT)
-Date:   Mon, 17 Aug 2020 15:06:29 -0700
-From:   Fangrui Song <maskray@google.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        James Morse <james.morse@arm.com>,
-        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 23/36] arm/build: Explicitly keep .ARM.attributes
- sections
-Message-ID: <20200817220629.3pkabegeedomsaaz@google.com>
-References: <20200731230820.1742553-1-keescook@chromium.org>
- <20200731230820.1742553-24-keescook@chromium.org>
- <CAKwvOdn11z+iFQZC54JvQHC=NFX1FsoRMw2a-2P=5sQ6FKwbnw@mail.gmail.com>
+        id S1729158AbgHQWAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 18:00:47 -0400
+Received: from mga14.intel.com ([192.55.52.115]:10735 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729130AbgHQWAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 18:00:45 -0400
+IronPort-SDR: I9toPskfI0kaNYhSulzqMSsQ1dZrGsqe2Dy3nmgZAxusD/cSA5/Pl/2zoZz05KlF/g73U1mPTY
+ CBI9opMoJ0Xw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="154054024"
+X-IronPort-AV: E=Sophos;i="5.76,324,1592895600"; 
+   d="scan'208";a="154054024"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 15:00:32 -0700
+IronPort-SDR: ZjwV9A1iZaGpe1LREmuuS8Wtrn/H7J531Bh+8pifrr0xvZg0vESMDdA0xwgLHHycDAUdL9ltqa
+ nJv+Xg4OSLgg==
+X-IronPort-AV: E=Sophos;i="5.76,324,1592895600"; 
+   d="scan'208";a="292565549"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 15:00:32 -0700
+Date:   Mon, 17 Aug 2020 15:07:31 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Auger Eric <eric.auger@redhat.com>
+Cc:     iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v7 1/7] docs: IOMMU user API
+Message-ID: <20200817150731.4909d896@jacob-builder>
+In-Reply-To: <398b7773-bf59-70ca-07ad-ac0ebcc8ae30@redhat.com>
+References: <1596068467-49322-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1596068467-49322-2-git-send-email-jacob.jun.pan@linux.intel.com>
+        <398b7773-bf59-70ca-07ad-ac0ebcc8ae30@redhat.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdn11z+iFQZC54JvQHC=NFX1FsoRMw2a-2P=5sQ6FKwbnw@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-03, 'Nick Desaulniers' via Clang Built Linux wrote:
->On Fri, Jul 31, 2020 at 4:18 PM Kees Cook <keescook@chromium.org> wrote:
->>
->> In preparation for adding --orphan-handling=warn, explicitly keep the
->> .ARM.attributes section by expanding the existing ELF_DETAILS macro into
->> ARM_DETAILS.
->>
->> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
->> Link: https://lore.kernel.org/lkml/CAKwvOdk-racgq5pxsoGS6Vtifbtrk5fmkmnoLxrQMaOvV0nPWw@mail.gmail.com/
->> Signed-off-by: Kees Cook <keescook@chromium.org>
->> ---
->>  arch/arm/include/asm/vmlinux.lds.h | 4 ++++
->>  arch/arm/kernel/vmlinux-xip.lds.S  | 2 +-
->>  arch/arm/kernel/vmlinux.lds.S      | 2 +-
->>  3 files changed, 6 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/arm/include/asm/vmlinux.lds.h b/arch/arm/include/asm/vmlinux.lds.h
->> index a08f4301b718..c4af5182ab48 100644
->> --- a/arch/arm/include/asm/vmlinux.lds.h
->> +++ b/arch/arm/include/asm/vmlinux.lds.h
->> @@ -52,6 +52,10 @@
->>                 ARM_MMU_DISCARD(*(__ex_table))                          \
->>                 COMMON_DISCARDS
->>
->> +#define ARM_DETAILS                                                    \
->> +               ELF_DETAILS                                             \
->> +               .ARM.attributes 0 : { *(.ARM.attributes) }
->
->I had to look up what the `0` meant:
->https://sourceware.org/binutils/docs/ld/Output-Section-Attributes.html#Output-Section-Attributes
->mentions it's an "address" and
->https://ftp.gnu.org/old-gnu/Manuals/ld-2.9.1/html_chapter/ld_3.html#SEC21
->mentions it as "start" (an address).
->Unless we need those, can we drop them? (Sorry for the resulting churn
->that would cause).  I think the NO_LOAD stuff makes more sense, but
->I'm curious if the kernel checks for that.
+On Wed, 12 Aug 2020 18:38:50 +0200
+Auger Eric <eric.auger@redhat.com> wrote:
 
-NOLOAD means SHT_NOBITS (usually SHF_ALLOC). .ARM.attributes is a
-non-SHF_ALLOC section.
+> Hi Jacob,
+> 
+> On 7/30/20 2:21 AM, Jacob Pan wrote:
+> > IOMMU UAPI is newly introduced to support communications between
+> > guest virtual IOMMU and host IOMMU. There has been lots of
+> > discussions on how it should work with VFIO UAPI and userspace in
+> > general.
+> > 
+> > This document is intended to clarify the UAPI design and usage. The
+> > mechanics of how future extensions should be achieved are also
+> > covered in this documentation.
+> > 
+> > Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
+> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > ---
+> >  Documentation/userspace-api/iommu.rst | 212
+> > ++++++++++++++++++++++++++++++++++
+> > MAINTAINERS                           |   1 + 2 files changed, 213
+> > insertions(+) create mode 100644
+> > Documentation/userspace-api/iommu.rst
+> > 
+> > diff --git a/Documentation/userspace-api/iommu.rst
+> > b/Documentation/userspace-api/iommu.rst new file mode 100644
+> > index 000000000000..b2f5b3256d85
+> > --- /dev/null
+> > +++ b/Documentation/userspace-api/iommu.rst
+> > @@ -0,0 +1,212 @@
+> > +.. SPDX-License-Identifier: GPL-2.0
+> > +.. iommu:
+> > +
+> > +=====================================
+> > +IOMMU Userspace API
+> > +=====================================
+> > +
+> > +IOMMU UAPI is used for virtualization cases where communications
+> > are +needed between physical and virtual IOMMU drivers. For
+> > baremetal +usage, the IOMMU is a system device which does not need
+> > to communicate +with user space directly.
+> > +
+> > +The primary use cases are guest Shared Virtual Address (SVA) and
+> > +guest IO virtual address (IOVA), wherin the vIOMMU implementation
+> > +relies on the physical IOMMU and for this reason requires
+> > interactions +with the host driver.
+> > +
+> > +.. contents:: :local:
+> > +
+> > +Functionalities
+> > +===============
+> > +Communications of user and kernel involve both directions. The
+> > +supported user-kernel APIs are as follows:
+> > +
+> > +1. Alloc/Free PASID
+> > +2. Bind/unbind guest PASID (e.g. Intel VT-d)  
+> nit: s/unbind/Unbind to match above Free
+Sounds good, same below.
 
-An explicit 0 (output section address) is good - GNU ld's internal
-linker scripts (ld --verbose output) use 0 for such non-SHF_ALLOC sections.
-Without the 0, the section may get a non-zero address, which is not
-wrong - but probably does not look well. See https://reviews.llvm.org/D85867 for details.
+> > +3. Bind/unbind guest PASID table (e.g. ARM SMMU)
+> > +4. Invalidate IOMMU caches requested by guests  
+> s/requested by guests/upon guest requests
+Will do.
 
+> > +5. Report errors to the guest and serve page requests
+> > +
+> > +Requirements
+> > +============
+> > +The IOMMU UAPIs are generic and extensible to meet the following
+> > +requirements:
+> > +
+> > +1. Emulated and para-virtualised vIOMMUs
+> > +2. Multiple vendors (Intel VT-d, ARM SMMU, etc.)
+> > +3. Extensions to the UAPI shall not break existing user space
+> > +
+> > +Interfaces
+> > +==========
+> > +Although the data structures defined in IOMMU UAPI are
+> > self-contained, +there is no user API functions introduced.
+> > Instead, IOMMU UAPI is +designed to work with existing user driver
+> > frameworks such as VFIO. +
+> > +Extension Rules & Precautions
+> > +-----------------------------
+> > +When IOMMU UAPI gets extended, the data structures can *only* be
+> > +modified in two ways:
+> > +
+> > +1. Adding new fields by re-purposing the padding[] field. No size
+> > change. +2. Adding new union members at the end. May increase the
+> > structure sizes. +
+> > +No new fields can be added *after* the variable sized union in
+> > that it +will break backward compatibility when offset moves. A new
+> > flag must +be introduced whenever a change affects the structure
+> > using either +method. The IOMMU driver processes the data based on
+> > flags which +ensures backward compatibility.
+> > +
+> > +Version field is only reserved for the unlikely event of UAPI
+> > upgrade +at its entirety.
+> > +
+> > +It's *always* the caller's responsibility to indicate the size of
+> > the +structure passed by setting argsz appropriately.
+> > +Though at the same time, argsz is user provided data which is not
+> > +trusted. The argsz field allows the user app to indicate how much
+> > data +it is providing, it's still the kernel's responsibility to
+> > validate +whether it's correct and sufficient for the requested
+> > operation. +
+> > +Compatibility Checking
+> > +----------------------
+> > +When IOMMU UAPI extension results in some structure size increase,
+> > +IOMMU UAPI code shall handle the following cases:
+> > +
+> > +1. User and kernel has exact size match
+> > +2. An older user with older kernel header (smaller UAPI size)
+> > running on a
+> > +   newer kernel (larger UAPI size)
+> > +3. A newer user with newer kernel header (larger UAPI size) running
+> > +   on an older kernel.
+> > +4. A malicious/misbehaving user pass illegal/invalid size but
+> > within
+> > +   range. The data may contain garbage.
+> > +
+> > +Feature Checking
+> > +----------------
+> > +While launching a guest with vIOMMU, it is important to ensure
+> > that host +can support the UAPI data structures to be used for
+> > vIOMMU-pIOMMU +communications. Without upfront compatibility
+> > checking, the future errors +can lead to catastrophic failures for
+> > the users.  
+> I would rather say: it is strongly advised to check the compatibility
+> upfront, as some subsequent errors happening during vIOMMU operation,
+> such as cache invalidation failures cannot be nicely escaladated to
+> the guest due to IOMMU specifications.
+> 
+Sounds more fluid, will do. I also wanted to emphasis on the potential
+catastrophic results.
 
-Reviewed-by: Fangrui Song <maskray@google.com>
+> > +
+> > +User applications such as QEMU are expected to import kernel UAPI
+> > +headers. Backward compatibility is supported per feature flags.
+> > +For example, an older QEMU (with older kernel header) can run on
+> > newer +kernel. Newer QEMU (with new kernel header) may refuse to
+> > initialize +on an older kernel if new feature flags are not
+> > supported by older +kernel. Simply recompiling existing code with
+> > newer kernel header should +not be an issue in that only existing
+> > flags are used. +
+> > +IOMMU vendor driver should report the below features to IOMMU UAPI
+> > +consumers (e.g. via VFIO).
+> > +
+> > +1. IOMMU_NESTING_FEAT_SYSWIDE_PASID
+> > +2. IOMMU_NESTING_FEAT_BIND_PGTBL
+> > +3. IOMMU_NESTING_FEAT_BIND_PASID_TABLE
+> > +4. IOMMU_NESTING_FEAT_CACHE_INVLD
+> > +5. IOMMU_NESTING_FEAT_PAGE_REQUEST
+> > +
+> > +Take VFIO as example, upon request from VFIO user space (e.g.
+> > QEMU), +VFIO kernel code shall query IOMMU vendor driver for the
+> > support of +the above features. Query result can then be reported
+> > back to the +user-space caller. Details can be found in
+> > +Documentation/driver-api/vfio.rst.
+> > +
+> > +
+> > +Data Passing Example with VFIO
+> > +------------------------------
+> > +As the ubiquitous userspace driver framework, VFIO is already IOMMU
+> > +aware and shares many key concepts such as device model, group, and
+> > +protection domain. Other user driver frameworks can also be
+> > extended +to support IOMMU UAPI but it is outside the scope of this
+> > document. +
+> > +In this tight-knit VFIO-IOMMU interface, the ultimate consumer of
+> > the +IOMMU UAPI data is the host IOMMU driver. VFIO facilitates
+> > user-kernel +transport, capability checking, security, and life
+> > cycle management of +process address space ID (PASID).
+> > +
+> > +Unlike normal user data passed via VFIO UAPI IOTCL, IOMMU driver
+> > is the +ultimate consumer of its UAPI data.  
+> I would remove the above sentence as it sounds like a repetition of
+> the above paragraph 1st sentence. You may simply say that VFIO mostly
+> conveys the data structs downto the IOMMU driver.
+> 
+Right, it is redundant.
 
->> +
->>  #define ARM_STUBS_TEXT                                                 \
->>                 *(.gnu.warning)                                         \
->>                 *(.glue_7)                                              \
->> diff --git a/arch/arm/kernel/vmlinux-xip.lds.S b/arch/arm/kernel/vmlinux-xip.lds.S
->> index 904c31fa20ed..57fcbf55f913 100644
->> --- a/arch/arm/kernel/vmlinux-xip.lds.S
->> +++ b/arch/arm/kernel/vmlinux-xip.lds.S
->> @@ -150,7 +150,7 @@ SECTIONS
->>         _end = .;
->>
->>         STABS_DEBUG
->> -       ELF_DETAILS
->> +       ARM_DETAILS
->>  }
->>
->>  /*
->> diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmlinux.lds.S
->> index bb950c896a67..1d3d3b599635 100644
->> --- a/arch/arm/kernel/vmlinux.lds.S
->> +++ b/arch/arm/kernel/vmlinux.lds.S
->> @@ -149,7 +149,7 @@ SECTIONS
->>         _end = .;
->>
->>         STABS_DEBUG
->> -       ELF_DETAILS
->> +       ARM_DETAILS
->>  }
->>
->>  #ifdef CONFIG_STRICT_KERNEL_RWX
->> --
->> 2.25.1
->>
+>  At VFIO layer, the IOMMU UAPI data
+> > +is wrapped in a VFIO UAPI data. It follows the
+> > +pattern below::
+> > +
+> > +   struct {
+> > +	__u32 argsz;
+> > +	__u32 flags;
+> > +	__u8  data[];
+> > +   };
+> > +
+> > +Here data[] contains the IOMMU UAPI data structures. VFIO has the
+> > +freedom to bundle the data as well as parse data size based on its
+> > own flags. +
+> > +In order to determine the size and feature set of the user data,
+> > argsz +and flags (or the equivalent) are also embedded in the IOMMU
+> > UAPI data +structures.
+> > +
+> > +A "__u32 argsz" field is *always* at the beginning of each
+> > structure. +
+> > +For example:
+> > +::
+> > +
+> > +   struct iommu_cache_invalidate_info {
+> > +	__u32	argsz;
+> > +	#define IOMMU_CACHE_INVALIDATE_INFO_VERSION_1 1
+> > +	__u32	version;
+> > +	/* IOMMU paging structure cache */
+> > +	#define IOMMU_CACHE_INV_TYPE_IOTLB	(1 << 0) /*
+> > IOMMU IOTLB */
+> > +	#define IOMMU_CACHE_INV_TYPE_DEV_IOTLB	(1 << 1) /*
+> > Device IOTLB */
+> > +	#define IOMMU_CACHE_INV_TYPE_PASID	(1 << 2) /*
+> > PASID cache */
+> > +	#define IOMMU_CACHE_INV_TYPE_NR		(3)
+> > +	__u8	cache;
+> > +	__u8	granularity;
+> > +	__u8	padding[6];
+> > +	union {
+> > +		struct iommu_inv_pasid_info pasid_info;
+> > +		struct iommu_inv_addr_info addr_info;
+> > +	} granu;
+> > +   };
+> > +
+> > +VFIO is responsible for checking its own argsz and flags. It then
+> > +invokes appropriate IOMMU UAPI functions. The user pointers are
+> > passed +to the IOMMU layer for further processing. The
+> > responsibilities are +divided as follows:
+> > +
+> > +- Generic IOMMU layer checks argsz range based on UAPI data in the
+> > +  current kernel version
+> > +
+> > +- Generic IOMMU layer checks content of the UAPI data for non-zero
+> > +  reserved bits in flags, padding fields, and unsupported version.
+> > +  This is to ensure not breaking userspace in the future when these
+> > +  fields or flags are used.
+> > +
+> > +- Vendor IOMMU driver checks argsz based on vendor flags, UAPI data
+> > +  is consumed based on flags. Vendor driver has access to
+> > +  unadulterated argsz value in case of vendor specific future
+> > +  extensions. Currently, it does not perform the copy_from_user()
+> > +  itself. A __user pointer can be provided in some future scenarios
+> > +  where there's vendor data outside of the structure definition.
+> > +
+> > +IOMMU code treats UAPI data into two categories:
+> > +
+> > +- structure contains vendor data
+> > +  (Example: iommu_uapi_cache_invalidate())
+> > +
+> > +- structure contains only generic data
+> > +  (Example: iommu_uapi_sva_bind_gpasid())
+> > +
+> > +
+> > +
+> > +Sharing UAPI with in-kernel users
+> > +---------------------------------
+> > +For UAPIs that are shared with in-kernel users, a wrapper function
+> > is +provided to distinguish the callers. For example,
+> > +
+> > +Userspace caller ::
+> > +
+> > +  int iommu_uapi_sva_unbind_gpasid(struct iommu_domain *domain,
+> > +                                   struct device *dev,
+> > +                                   void __user *udata)
+> > +
+> > +In-kernel caller ::
+> > +
+> > +  int iommu_sva_unbind_gpasid(struct iommu_domain *domain,
+> > +                                   struct device *dev,
+> > +                                   struct iommu_gpasid_bind_data
+> > *data) diff --git a/MAINTAINERS b/MAINTAINERS
+> > index d53db30d1365..11f907b11f12 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -9010,6 +9010,7 @@ L:	iommu@lists.linux-foundation.org
+> >  S:	Maintained
+> >  T:	git
+> > git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git
+> > F:	Documentation/devicetree/bindings/iommu/ +F:
+> > Documentation/userspace-api/iommu.rst F:	drivers/iommu/
+> >  F:	include/linux/iommu.h
+> >  F:	include/linux/iova.h
+> >   
+> Besides the above suggestions,
+> 
+> Reviewed-by: Eric Auger <eric.auger@redhat.com>
+> 
+> Eric
+> 
+Thank you so much, will integrate into version 8.
