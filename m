@@ -2,97 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE812246108
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A116246120
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728524AbgHQIr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 04:47:56 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:39799 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728072AbgHQIru (ORCPT
+        id S1728072AbgHQIs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 04:48:56 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:39626 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726871AbgHQIsz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 04:47:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597654067;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=t355WPxa6uPtXL7lonYCwvII2S9kGVc9Ngbl+va3Q60=;
-        b=Uof3R/krOg1yAzNoKrFKek7aV/LVfVKB9lE90p7sPmJIXXNP1uub4hTpmJdBBlhHML6MBB
-        WX+W13fwbNWLAsc0SSBEp8lglBLp86M4flKfcca5VwOebrCAHEq5gbp6Imab1eOS7iTKK/
-        wPDnfKtU0XrRVAZvMKbMLlFNT5lyeL0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-469-jE_OXeiPPe2LKymmUwTwdQ-1; Mon, 17 Aug 2020 04:47:43 -0400
-X-MC-Unique: jE_OXeiPPe2LKymmUwTwdQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A951D81F010;
-        Mon, 17 Aug 2020 08:47:41 +0000 (UTC)
-Received: from kamzik.brq.redhat.com (unknown [10.40.192.210])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7048D5D9D2;
-        Mon, 17 Aug 2020 08:47:38 +0000 (UTC)
-Date:   Mon, 17 Aug 2020 10:47:35 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     Keqian Zhu <zhukeqian1@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
-        Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Steven Price <steven.price@arm.com>, wanghaibin.wang@huawei.com
-Subject: Re: [PATCH 1/3] KVM: arm64: Some fixes of PV-time interface document
-Message-ID: <20200817084735.xyfdtgcsuxzwgzyr@kamzik.brq.redhat.com>
-References: <20200817033729.10848-1-zhukeqian1@huawei.com>
- <20200817033729.10848-2-zhukeqian1@huawei.com>
+        Mon, 17 Aug 2020 04:48:55 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07425;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0U6-Thdu_1597654123;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U6-Thdu_1597654123)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 17 Aug 2020 16:48:43 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     alexander.h.duyck@linux.intel.com, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: [PATCH] mm/page_reporting: the "page" must not be the list head
+Date:   Mon, 17 Aug 2020 16:48:36 +0800
+Message-Id: <20200817084836.29216-1-richard.weiyang@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1 (Apple Git-117)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200817033729.10848-2-zhukeqian1@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 11:37:27AM +0800, Keqian Zhu wrote:
-> Rename PV_FEATURES tp PV_TIME_FEATURES
-> 
-> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-> ---
->  Documentation/virt/kvm/arm/pvtime.rst | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/virt/kvm/arm/pvtime.rst b/Documentation/virt/kvm/arm/pvtime.rst
-> index 687b60d..94bffe2 100644
-> --- a/Documentation/virt/kvm/arm/pvtime.rst
-> +++ b/Documentation/virt/kvm/arm/pvtime.rst
-> @@ -3,7 +3,7 @@
->  Paravirtualized time support for arm64
->  ======================================
->  
-> -Arm specification DEN0057/A defines a standard for paravirtualised time
-> +Arm specification DEN0057/A defines a standard for paravirtualized time
->  support for AArch64 guests:
->  
->  https://developer.arm.com/docs/den0057/a
-> @@ -19,8 +19,8 @@ Two new SMCCC compatible hypercalls are defined:
->  
->  These are only available in the SMC64/HVC64 calling convention as
->  paravirtualized time is not available to 32 bit Arm guests. The existence of
-> -the PV_FEATURES hypercall should be probed using the SMCCC 1.1 ARCH_FEATURES
-> -mechanism before calling it.
-> +the PV_TIME_FEATURES hypercall should be probed using the SMCCC 1.1
-> +ARCH_FEATURES mechanism before calling it.
->  
->  PV_TIME_FEATURES
->      ============= ========    ==========
-> -- 
-> 1.8.3.1
->
+If "page" is the list head, list_for_each_entry_safe() would stop
+iteration.
 
-Reviewed-by: Andrew Jones <drjones@redhat.com>
+Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+---
+ mm/page_reporting.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/page_reporting.c b/mm/page_reporting.c
+index 3bbd471cfc81..aaaa3605123d 100644
+--- a/mm/page_reporting.c
++++ b/mm/page_reporting.c
+@@ -178,7 +178,7 @@ page_reporting_cycle(struct page_reporting_dev_info *prdev, struct zone *zone,
+ 		 * the new head of the free list before we release the
+ 		 * zone lock.
+ 		 */
+-		if (&page->lru != list && !list_is_first(&page->lru, list))
++		if (!list_is_first(&page->lru, list))
+ 			list_rotate_to_front(&page->lru, list);
+ 
+ 		/* release lock before waiting on report processing */
+-- 
+2.20.1 (Apple Git-117)
 
