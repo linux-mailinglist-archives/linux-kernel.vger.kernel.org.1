@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7FDC246AF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1F9246ACE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730028AbgHQPpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:45:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46324 "EHLO mail.kernel.org"
+        id S2387592AbgHQPmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:42:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730588AbgHQPiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:38:18 -0400
+        id S1730520AbgHQPgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:36:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2FCF22C9F;
-        Mon, 17 Aug 2020 15:38:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7995020709;
+        Mon, 17 Aug 2020 15:36:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678698;
-        bh=32lIzJAnUv4Rf9+Zm6bqbTnb8HSvaEfJkalMsbS//Z4=;
+        s=default; t=1597678612;
+        bh=TJ9AZakn52veKcbnZMKtfI9JpjIqWLaXbvn0eVDK0/8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GhY8NaD83Shv4SdeqOkyQbIIbah4IlNA43MPb98Zp3y56gZAqHI6tYNfYLOwR4XmM
-         pdQAZ4jOBGObvCxE7NF5GwTYb1NJdyvRK3pdHP5tcJpzseO3Cut/vSZMceM1ilDIOY
-         R0slVDjgdQkGFstAQZuWCZLVPvjq2kErO0mwFI3U=
+        b=xCI/6ggC/ki06LObWJ3Af3LQSor26sN7kA4NHVHB2oYKTO1vF2yJk2ZCmG7fT8ecc
+         icdeKQ8YrLmRM729KcjqTfgA7ekfPLcbmJ3k8HaaNvX4XpbKdRyNmEKX6g95MeK4m/
+         +I9ozehsqypN35gCLa1BoTyIjOlulAKe/0ptzWW0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Ogness <john.ogness@linutronix.de>,
-        kernel test robot <lkp@intel.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Baruch Siach <baruch@tkos.co.il>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.8 383/464] af_packet: TPACKET_V3: fix fill status rwlock imbalance
-Date:   Mon, 17 Aug 2020 17:15:36 +0200
-Message-Id: <20200817143852.123370743@linuxfoundation.org>
+Subject: [PATCH 5.8 395/464] net: phy: marvell10g: fix null pointer dereference
+Date:   Mon, 17 Aug 2020 17:15:48 +0200
+Message-Id: <20200817143852.699988475@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -44,72 +47,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Ogness <john.ogness@linutronix.de>
+From: "Marek Behún" <marek.behun@nic.cz>
 
-[ Upstream commit 88fd1cb80daa20af063bce81e1fad14e945a8dc4 ]
+[ Upstream commit 1b8ef1423dbfd34de2439a2db457b84480b7c8a8 ]
 
-After @blk_fill_in_prog_lock is acquired there is an early out vnet
-situation that can occur. In that case, the rwlock needs to be
-released.
+Commit c3e302edca24 ("net: phy: marvell10g: fix temperature sensor on 2110")
+added a check for PHY ID via phydev->drv->phy_id in a function which is
+called by devres at a time when phydev->drv is already set to null by
+phy_remove function.
 
-Also, since @blk_fill_in_prog_lock is only acquired when @tp_version
-is exactly TPACKET_V3, only release it on that exact condition as
-well.
+This null pointer dereference can be triggered via SFP subsystem with a
+SFP module containing this Marvell PHY. When the SFP interface is put
+down, the SFP subsystem removes the PHY.
 
-And finally, add sparse annotation so that it is clearer that
-prb_fill_curr_block() and prb_clear_blk_fill_status() are acquiring
-and releasing @blk_fill_in_prog_lock, respectively. sparse is still
-unable to understand the balance, but the warnings are now on a
-higher level that make more sense.
-
-Fixes: 632ca50f2cbd ("af_packet: TPACKET_V3: replace busy-wait loop")
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
-Reported-by: kernel test robot <lkp@intel.com>
+Fixes: c3e302edca24 ("net: phy: marvell10g: fix temperature sensor on 2110")
+Signed-off-by: Marek Behún <marek.behun@nic.cz>
+Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Baruch Siach <baruch@tkos.co.il>
+Cc: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/packet/af_packet.c |    9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/net/phy/marvell10g.c |   18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -942,6 +942,7 @@ static int prb_queue_frozen(struct tpack
+--- a/drivers/net/phy/marvell10g.c
++++ b/drivers/net/phy/marvell10g.c
+@@ -205,13 +205,6 @@ static int mv3310_hwmon_config(struct ph
+ 			      MV_V2_TEMP_CTRL_MASK, val);
  }
  
- static void prb_clear_blk_fill_status(struct packet_ring_buffer *rb)
-+	__releases(&pkc->blk_fill_in_prog_lock)
+-static void mv3310_hwmon_disable(void *data)
+-{
+-	struct phy_device *phydev = data;
+-
+-	mv3310_hwmon_config(phydev, false);
+-}
+-
+ static int mv3310_hwmon_probe(struct phy_device *phydev)
  {
- 	struct tpacket_kbdq_core *pkc  = GET_PBDQC_FROM_RB(rb);
- 	atomic_dec(&pkc->blk_fill_in_prog);
-@@ -989,6 +990,7 @@ static void prb_fill_curr_block(char *cu
- 				struct tpacket_kbdq_core *pkc,
- 				struct tpacket_block_desc *pbd,
- 				unsigned int len)
-+	__acquires(&pkc->blk_fill_in_prog_lock)
+ 	struct device *dev = &phydev->mdio.dev;
+@@ -235,10 +228,6 @@ static int mv3310_hwmon_probe(struct phy
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = devm_add_action_or_reset(dev, mv3310_hwmon_disable, phydev);
+-	if (ret)
+-		return ret;
+-
+ 	priv->hwmon_dev = devm_hwmon_device_register_with_info(dev,
+ 				priv->hwmon_name, phydev,
+ 				&mv3310_hwmon_chip_info, NULL);
+@@ -423,6 +412,11 @@ static int mv3310_probe(struct phy_devic
+ 	return phy_sfp_probe(phydev, &mv3310_sfp_ops);
+ }
+ 
++static void mv3310_remove(struct phy_device *phydev)
++{
++	mv3310_hwmon_config(phydev, false);
++}
++
+ static int mv3310_suspend(struct phy_device *phydev)
  {
- 	struct tpacket3_hdr *ppd;
- 
-@@ -2286,8 +2288,11 @@ static int tpacket_rcv(struct sk_buff *s
- 	if (do_vnet &&
- 	    virtio_net_hdr_from_skb(skb, h.raw + macoff -
- 				    sizeof(struct virtio_net_hdr),
--				    vio_le(), true, 0))
-+				    vio_le(), true, 0)) {
-+		if (po->tp_version == TPACKET_V3)
-+			prb_clear_blk_fill_status(&po->rx_ring);
- 		goto drop_n_account;
-+	}
- 
- 	if (po->tp_version <= TPACKET_V2) {
- 		packet_increment_rx_head(po, &po->rx_ring);
-@@ -2393,7 +2398,7 @@ static int tpacket_rcv(struct sk_buff *s
- 		__clear_bit(slot_id, po->rx_ring.rx_owner_map);
- 		spin_unlock(&sk->sk_receive_queue.lock);
- 		sk->sk_data_ready(sk);
--	} else {
-+	} else if (po->tp_version == TPACKET_V3) {
- 		prb_clear_blk_fill_status(&po->rx_ring);
- 	}
+ 	return mv3310_power_down(phydev);
+@@ -762,6 +756,7 @@ static struct phy_driver mv3310_drivers[
+ 		.read_status	= mv3310_read_status,
+ 		.get_tunable	= mv3310_get_tunable,
+ 		.set_tunable	= mv3310_set_tunable,
++		.remove		= mv3310_remove,
+ 	},
+ 	{
+ 		.phy_id		= MARVELL_PHY_ID_88E2110,
+@@ -776,6 +771,7 @@ static struct phy_driver mv3310_drivers[
+ 		.read_status	= mv3310_read_status,
+ 		.get_tunable	= mv3310_get_tunable,
+ 		.set_tunable	= mv3310_set_tunable,
++		.remove		= mv3310_remove,
+ 	},
+ };
  
 
 
