@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2BBF246EBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4EC3246FDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731277AbgHQRfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:35:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33266 "EHLO mail.kernel.org"
+        id S2388598AbgHQRy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:54:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730054AbgHQQRp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:17:45 -0400
+        id S2388589AbgHQQLE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:11:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7483C2075B;
-        Mon, 17 Aug 2020 16:17:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B34BC22BF5;
+        Mon, 17 Aug 2020 16:11:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597681060;
-        bh=JwBFHVM3zClCcFsLQOBYkaN/QxPl8gqzR3imMdH576I=;
+        s=default; t=1597680664;
+        bh=5GDMueqNpv673QiI73sCw3/yXTsCns+lReg0nfYIfr0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hjYnskCgbbSFLWvINDUAGhwzSibQKjhjCWrwhy6mCTo01TT0udAVje8zZhhkf5WaW
-         m+q5X1GOoyQv/Fs7V1+rijPhvtIr/OyeDmsaWOJU8eHxEXGmj0Cxdmbq2TNtMTk7xO
-         Kyih1e9alVjnZ71ZtuZQIhI3hA67RFh4jCV/0MTY=
+        b=oeZ2CbUYN5twaDEgZ3s6JL4LHk7Tsi4Q2C+UV8TyQq46lQGYE9C9mj6KQSklW9Jch
+         4ydtEpukOW7US+ytcFWO5tHVQ8BQmm0aQHSZBYIdeGDXiHvdWVQ7ZvuwYrwGp0+T//
+         dZ+Lp9oREmGyHwy1SUqWNY/ppx+zbFa7CvvAJSOY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 135/168] net/tls: Fix kmap usage
-Date:   Mon, 17 Aug 2020 17:17:46 +0200
-Message-Id: <20200817143740.446300902@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 5.4 266/270] xen/balloon: make the balloon wait interruptible
+Date:   Mon, 17 Aug 2020 17:17:47 +0200
+Message-Id: <20200817143809.060064975@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143733.692105228@linuxfoundation.org>
-References: <20200817143733.692105228@linuxfoundation.org>
+In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
+References: <20200817143755.807583758@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+From: Roger Pau Monne <roger.pau@citrix.com>
 
-[ Upstream commit b06c19d9f827f6743122795570bfc0c72db482b0 ]
+commit 88a479ff6ef8af7f07e11593d58befc644244ff7 upstream.
 
-When MSG_OOB is specified to tls_device_sendpage() the mapped page is
-never unmapped.
+So it can be killed, or else processes can get hung indefinitely
+waiting for balloon pages.
 
-Hold off mapping the page until after the flags are checked and the page
-is actually needed.
-
-Fixes: e8f69799810c ("net/tls: Add generic NIC offload infrastructure")
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200727091342.52325-3-roger.pau@citrix.com
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/tls/tls_device.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/tls/tls_device.c
-+++ b/net/tls/tls_device.c
-@@ -476,7 +476,7 @@ int tls_device_sendpage(struct sock *sk,
- 			int offset, size_t size, int flags)
- {
- 	struct iov_iter	msg_iter;
--	char *kaddr = kmap(page);
-+	char *kaddr;
- 	struct kvec iov;
- 	int rc;
- 
-@@ -490,6 +490,7 @@ int tls_device_sendpage(struct sock *sk,
- 		goto out;
+---
+ drivers/xen/balloon.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+--- a/drivers/xen/balloon.c
++++ b/drivers/xen/balloon.c
+@@ -570,11 +570,13 @@ static int add_ballooned_pages(int nr_pa
+ 	if (xen_hotplug_unpopulated) {
+ 		st = reserve_additional_memory();
+ 		if (st != BP_ECANCELED) {
++			int rc;
++
+ 			mutex_unlock(&balloon_mutex);
+-			wait_event(balloon_wq,
++			rc = wait_event_interruptible(balloon_wq,
+ 				   !list_empty(&ballooned_pages));
+ 			mutex_lock(&balloon_mutex);
+-			return 0;
++			return rc ? -ENOMEM : 0;
+ 		}
  	}
  
-+	kaddr = kmap(page);
- 	iov.iov_base = kaddr + offset;
- 	iov.iov_len = size;
- 	iov_iter_kvec(&msg_iter, WRITE | ITER_KVEC, &iov, 1, size);
 
 
