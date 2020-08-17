@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E16B2475E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 671CF2474F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388363AbgHQTaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:30:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58430 "EHLO mail.kernel.org"
+        id S2387417AbgHQPie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:38:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730301AbgHQPcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:32:05 -0400
+        id S1730312AbgHQPcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:32:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1AC8F22CBE;
-        Mon, 17 Aug 2020 15:32:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C499220786;
+        Mon, 17 Aug 2020 15:32:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678324;
-        bh=GkcRN+bMz+7K9z0kn8bWe7OlGo50pYckHJVciOJpBO4=;
+        s=default; t=1597678333;
+        bh=gVKeEKKY+TbImxEgUxvijJBzrR3by6I8snMip+JEKHA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d5ZkLk7+S85OaDD/jUiUdzKnuP58cSEzscd2gM8v9JLOpA8H5tkJHnALPGFPGAF1k
-         h99TAHQwnQntLb5QPaRBDR0PBXfTGE7rUOMLWwnjNAn1s/IZvmndEMmzP7gzZVGe7/
-         Mwah7ApN6Y7pdfuRYIfw9NZFBkDtAuNPIpNksRe4=
+        b=lf4f76l1q/nQ6V1AfK4Vcp0pu4GMnrCYZrPzB5m6yFWpiKdxbCJsIuY11RSa/sj0k
+         IJRHHRyUxnYGDQy4py3FpqdXPepEN1CyMe2I9iHBpk5KXifqwEELbZD6nVMDRxxcC8
+         3K1FpKe1tnXFABNCVidM6M1p6uCMxTmcSK+Zy+GY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Wei Hu <weh@microsoft.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Michael Kelley <mikelley@microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 295/464] powerpc/watchpoint: Fix DAWR exception for CACHEOP
-Date:   Mon, 17 Aug 2020 17:14:08 +0200
-Message-Id: <20200817143847.889929337@linuxfoundation.org>
+Subject: [PATCH 5.8 298/464] PCI: hv: Fix a timing issue which causes kdump to fail occasionally
+Date:   Mon, 17 Aug 2020 17:14:11 +0200
+Message-Id: <20200817143848.081418490@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -45,71 +45,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+From: Wei Hu <weh@microsoft.com>
 
-[ Upstream commit f3c832f1350bcf1e6906113ee3168066f4235dbe ]
+[ Upstream commit d6af2ed29c7c1c311b96dac989dcb991e90ee195 ]
 
-'ea' returned by analyse_instr() needs to be aligned down to cache
-block size for CACHEOP instructions. analyse_instr() does not set
-size for CACHEOP, thus size also needs to be calculated manually.
+Kdump could fail sometime on Hyper-V guest because the retry in
+hv_pci_enter_d0() releases child device structures in hv_pci_bus_exit().
 
-Fixes: 27985b2a640e ("powerpc/watchpoint: Don't ignore extraneous exceptions blindly")
-Fixes: 74c6881019b7 ("powerpc/watchpoint: Prepare handler to handle more than one watchpoint")
-Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200723090813.303838-4-ravi.bangoria@linux.ibm.com
+Although there is a second asynchronous device relations message sending
+from the host, if this message arrives to the guest after
+hv_send_resource_allocated() is called, the retry would fail.
+
+Fix the problem by moving retry to hv_pci_probe() and start the retry
+from hv_pci_query_relations() call.  This will cause a device relations
+message to arrive to the guest synchronously; the guest would then be
+able to rebuild the child device structures before calling
+hv_send_resource_allocated().
+
+Link: https://lore.kernel.org/r/20200727071731.18516-1-weh@microsoft.com
+Fixes: c81992e7f4aa ("PCI: hv: Retry PCI bus D0 entry on invalid device state")
+Signed-off-by: Wei Hu <weh@microsoft.com>
+[lorenzo.pieralisi@arm.com: fixed a comment and commit log]
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/hw_breakpoint.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+ drivers/pci/controller/pci-hyperv.c | 71 +++++++++++++++--------------
+ 1 file changed, 37 insertions(+), 34 deletions(-)
 
-diff --git a/arch/powerpc/kernel/hw_breakpoint.c b/arch/powerpc/kernel/hw_breakpoint.c
-index a971e22aea819..c55e67bab2710 100644
---- a/arch/powerpc/kernel/hw_breakpoint.c
-+++ b/arch/powerpc/kernel/hw_breakpoint.c
-@@ -538,7 +538,12 @@ static bool check_dawrx_constraints(struct pt_regs *regs, int type,
- 	if (OP_IS_LOAD(type) && !(info->type & HW_BRK_TYPE_READ))
- 		return false;
+diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+index bf40ff09c99d6..d0033ff6c1437 100644
+--- a/drivers/pci/controller/pci-hyperv.c
++++ b/drivers/pci/controller/pci-hyperv.c
+@@ -2759,10 +2759,8 @@ static int hv_pci_enter_d0(struct hv_device *hdev)
+ 	struct pci_bus_d0_entry *d0_entry;
+ 	struct hv_pci_compl comp_pkt;
+ 	struct pci_packet *pkt;
+-	bool retry = true;
+ 	int ret;
  
--	if (OP_IS_STORE(type) && !(info->type & HW_BRK_TYPE_WRITE))
+-enter_d0_retry:
+ 	/*
+ 	 * Tell the host that the bus is ready to use, and moved into the
+ 	 * powered-on state.  This includes telling the host which region
+@@ -2789,38 +2787,6 @@ static int hv_pci_enter_d0(struct hv_device *hdev)
+ 	if (ret)
+ 		goto exit;
+ 
+-	/*
+-	 * In certain case (Kdump) the pci device of interest was
+-	 * not cleanly shut down and resource is still held on host
+-	 * side, the host could return invalid device status.
+-	 * We need to explicitly request host to release the resource
+-	 * and try to enter D0 again.
+-	 */
+-	if (comp_pkt.completion_status < 0 && retry) {
+-		retry = false;
+-
+-		dev_err(&hdev->device, "Retrying D0 Entry\n");
+-
+-		/*
+-		 * Hv_pci_bus_exit() calls hv_send_resource_released()
+-		 * to free up resources of its child devices.
+-		 * In the kdump kernel we need to set the
+-		 * wslot_res_allocated to 255 so it scans all child
+-		 * devices to release resources allocated in the
+-		 * normal kernel before panic happened.
+-		 */
+-		hbus->wslot_res_allocated = 255;
+-
+-		ret = hv_pci_bus_exit(hdev, true);
+-
+-		if (ret == 0) {
+-			kfree(pkt);
+-			goto enter_d0_retry;
+-		}
+-		dev_err(&hdev->device,
+-			"Retrying D0 failed with ret %d\n", ret);
+-	}
+-
+ 	if (comp_pkt.completion_status < 0) {
+ 		dev_err(&hdev->device,
+ 			"PCI Pass-through VSP failed D0 Entry with status %x\n",
+@@ -3058,6 +3024,7 @@ static int hv_pci_probe(struct hv_device *hdev,
+ 	struct hv_pcibus_device *hbus;
+ 	u16 dom_req, dom;
+ 	char *name;
++	bool enter_d0_retry = true;
+ 	int ret;
+ 
+ 	/*
+@@ -3178,11 +3145,47 @@ static int hv_pci_probe(struct hv_device *hdev,
+ 	if (ret)
+ 		goto free_fwnode;
+ 
++retry:
+ 	ret = hv_pci_query_relations(hdev);
+ 	if (ret)
+ 		goto free_irq_domain;
+ 
+ 	ret = hv_pci_enter_d0(hdev);
 +	/*
-+	 * The Cache Management instructions other than dcbz never
-+	 * cause a match. i.e. if type is CACHEOP, the instruction
-+	 * is dcbz, and dcbz is treated as Store.
++	 * In certain case (Kdump) the pci device of interest was
++	 * not cleanly shut down and resource is still held on host
++	 * side, the host could return invalid device status.
++	 * We need to explicitly request host to release the resource
++	 * and try to enter D0 again.
++	 * Since the hv_pci_bus_exit() call releases structures
++	 * of all its child devices, we need to start the retry from
++	 * hv_pci_query_relations() call, requesting host to send
++	 * the synchronous child device relations message before this
++	 * information is needed in hv_send_resources_allocated()
++	 * call later.
 +	 */
-+	if ((OP_IS_STORE(type) || type == CACHEOP) && !(info->type & HW_BRK_TYPE_WRITE))
- 		return false;
- 
- 	if (is_kernel_addr(regs->nip) && !(info->type & HW_BRK_TYPE_KERNEL))
-@@ -601,6 +606,15 @@ static bool check_constraints(struct pt_regs *regs, struct ppc_inst instr,
- 	return false;
- }
- 
-+static int cache_op_size(void)
-+{
-+#ifdef __powerpc64__
-+	return ppc64_caches.l1d.block_size;
-+#else
-+	return L1_CACHE_BYTES;
-+#endif
-+}
++	if (ret == -EPROTO && enter_d0_retry) {
++		enter_d0_retry = false;
 +
- static void get_instr_detail(struct pt_regs *regs, struct ppc_inst *instr,
- 			     int *type, int *size, unsigned long *ea)
- {
-@@ -616,7 +630,12 @@ static void get_instr_detail(struct pt_regs *regs, struct ppc_inst *instr,
- 	if (!(regs->msr & MSR_64BIT))
- 		*ea &= 0xffffffffUL;
- #endif
++		dev_err(&hdev->device, "Retrying D0 Entry\n");
 +
- 	*size = GETSIZE(op.type);
-+	if (*type == CACHEOP) {
-+		*size = cache_op_size();
-+		*ea &= ~(*size - 1);
++		/*
++		 * Hv_pci_bus_exit() calls hv_send_resources_released()
++		 * to free up resources of its child devices.
++		 * In the kdump kernel we need to set the
++		 * wslot_res_allocated to 255 so it scans all child
++		 * devices to release resources allocated in the
++		 * normal kernel before panic happened.
++		 */
++		hbus->wslot_res_allocated = 255;
++		ret = hv_pci_bus_exit(hdev, true);
++
++		if (ret == 0)
++			goto retry;
++
++		dev_err(&hdev->device,
++			"Retrying D0 failed with ret %d\n", ret);
 +	}
- }
+ 	if (ret)
+ 		goto free_irq_domain;
  
- static bool is_larx_stcx_instr(int type)
 -- 
 2.25.1
 
