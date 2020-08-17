@@ -2,125 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079D2245DC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 09:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1CA245DD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 09:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgHQHSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 03:18:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbgHQHSI (ORCPT
+        id S1726752AbgHQHUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 03:20:36 -0400
+Received: from sonic316-55.consmr.mail.ne1.yahoo.com ([66.163.187.181]:41340
+        "EHLO sonic316-55.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726371AbgHQHUg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 03:18:08 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C899BC061388
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 00:18:07 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id d14so14124442qke.13
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 00:18:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=/Set//dgm7G/XdtiNNP38eYsEDsXQCMaAkbmzasEPMg=;
-        b=JdBgyG4W1iyFfmRRasE/WxCe+QioC2gKjz2BHSMl7Mow6xxBfhSXol7QKLgheZht1F
-         DCP89xzuke3Sm08FZLbNOchZ6zcVdgyjGxrQvFUAex9B0thU/DTSkHj4VuCOriaw+0BA
-         F8vW+w84c7DQPmVSRTBWs1SE2R4Ii17eZwzyepJKanQZQIiR23vJ6J3doVGopNqc8Dmh
-         IzgN3x1rlXiMnMaCCLNUDrRptOHoWc/4whQuHkVAM5RuSkDe+AbSD87BPWofVBE2le1c
-         3omWdmBJa8cVa3g0KiG0+gAZNxEnsOtHDL7XsdndPbfhfd1rlNabtWjsdl3QZ29vOxx7
-         k5Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=/Set//dgm7G/XdtiNNP38eYsEDsXQCMaAkbmzasEPMg=;
-        b=Cy9NJqT1tItvk2XJOSmy/uLY1m2qUJ5k+KAtNhyn6CWxiUCWAfc0i5Re97AVJ7WaBy
-         CfKpJZ3k7DX2+Zd3rgof3yuSjXj98bdU78q6V10WFUaml1wtC8y0qVQJ+m5QS2Y8H3uI
-         OYpzqyd0L9y94KcPYHEWjmVB2YFVuRv7kuIb45feniHD5qtn33CuViDasfAOj0hjK57X
-         xJNr5P2HOzDnKdkmCPIlVn01UAmu8BnEMvc7iqoxcrUIJGGrNuxS8oYYMA8DkWernhK6
-         eNuXd0XrEvNRvDtuZTOAV+gfvBiMVHDWwhLu5RWwHzqBixEE90I3O2qKne/eGOiZP8uz
-         IrYA==
-X-Gm-Message-State: AOAM531xbVvYGX6Mxioa6kBtGj/K4qgo3mH3czvPm5IxvzNUkOTDEwig
-        2s0vkFjnOdwyL2FRWGMpI9d4P94t5q5QJw==
-X-Google-Smtp-Source: ABdhPJxYEgL55GYgsN0r/l+TigB5h3PzzlWKJwkc8ZGKufBA3D5n+IxqISh4QRcIWzBUlPgZjKA4JQ==
-X-Received: by 2002:a05:620a:152d:: with SMTP id n13mr10980555qkk.43.1597648686064;
-        Mon, 17 Aug 2020 00:18:06 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id b187sm15642131qkd.107.2020.08.17.00.18.02
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 17 Aug 2020 00:18:04 -0700 (PDT)
-Date:   Mon, 17 Aug 2020 00:17:49 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Song Liu <songliubraving@fb.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH] uprobes: __replace_page() avoid BUG in
- munlock_vma_page()
-In-Reply-To: <852258AE-75B6-404A-B236-9EEF37AEE43F@fb.com>
-Message-ID: <alpine.LSU.2.11.2008162340320.1025@eggly.anvils>
-References: <alpine.LSU.2.11.2008161338360.20413@eggly.anvils> <852258AE-75B6-404A-B236-9EEF37AEE43F@fb.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Mon, 17 Aug 2020 03:20:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1597648835; bh=wQR2TNpnSC5+pl+9xCwBDdU8shZ+1jYIhLI8TGcKGS0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=rj/Ao4sSjyOH0l9IiWgqJn+hlur38woztj3WnZU+bYPaWFK087gNg25sCy0yH1SPnn8hQ8KXjBULFKtfh5BclmAxxbzelhRhDm/3ZbM6hekGyaYc4C5ISiQg+K+7mUpDmrlxu8+thKhFzuzqMlCDTtgPvlyAMvoEL6FMVMwPPjPvHSzyOP854ep5fJS/MoM+SIxT0vjL28YB3T3qNr6p2hDhXMrX4+Dg3OT+NyUZxIvI3dyXiBEzakAk4DkZcFjHQnqgJBU1ZVGjGfiSU5vJx5PAYygxkOnm0NjBjrxQnZiQS1Spd0NFMAmZfFrTqCnwJZUutACAAxJmkMDn69wktA==
+X-YMail-OSG: xG5Dy8UVM1lXH5YD2PpeZel9PqZYKWHci4QL49Na4g9s_cv3TmGs0SdmABXapPA
+ .4.FFUWcGzQ4wA4uQBA0Le.4If3Hz_krhZo1BqtABk6_98E0mKeuHHcR9kfaUfWkL0R6a0jFa6px
+ KUXlmptsbIlqRAiN3BUnspi_UbLS.mVs9g.HiC8B1j1lIq.U2mO9yuIBq0iiu1MoxLCcT0fSpVnD
+ 3Gsr_IzNymuvWJTqlTdA2EumV.9_s21BAYh0SlaL5a_iRBg3H6YJAO7WE1Fqjv8WjCALCBq8iyZ_
+ OGHvv81.GYgBearLG3PlkiRrhwd47w0CoQTwXzTtiDc_.A5JR9_NLx8zvu6wuUydChKdB_uusoeh
+ 95YXi7bQXazVggiHbeBfG1Z10XOwclSKtm3dh6r79mCX45Bk1xdJzsqiRO9ANTxix_r0zP4jqrDD
+ 2MnRvoR6zknfdGfZakYhmKGKWK7atgf9Ax64MobFOg3owElxrJU3szmSFD2xi2X1PymR0XYOJDND
+ ask.GMhMh7.kjCCIY3LgCW93deLBCrPnsLzGdPaLgytkAad0J1nWjjizdpzfFJ.qWFd9HA.UHsHM
+ UI17dci2LpvMlTs3PErAZaz799ckvzNJDHwgiWwiSzhVjJK3VcvbxMtW9X_QEd9Kgl2O3.woXnm.
+ zb1NyjGcSpLuR_82VSwWuCVCWQOT6Tu5C.xq2uWcPnt3ncJHB.SwT2x3IPFBf82lmt36p.Yajgqr
+ ejbOQekDevuwAjj9N7iQuuwlW8AZpfd3l3IhrZ7vywdUQefGWMcA4DDUTb7mBK0VPgLhFsXc1.Fz
+ zji9mhwmX71rfvSzq2s10J1gty1O4xXeavjeMssvfIcySlOmXcTLb466wRa2VjZteV_ausMdnJ3v
+ BTjpKUeSZaH06qs7kc_rYcdAj.W06LoiCdsyrNY0T_fRa71TrZ1wXWsy2Hm0Y4ExRRgbsHayq584
+ rNx2NWLQMjYt3.Rnh1ZE6C1e09snD7E2vweBN15JB6ypUkKyfPjXl6uo.gAGhAZiMCIBy7Kf413E
+ lULJ5Wd5M9hiKXWFSmRtBJWRQUg2JBZwTeBoZqozYMiE65e3GQWpRAwIyQfLihXnkjGZVlwS.lYT
+ kkGihBKE3cewVJk9wea.N7KhDyfpart0W7u7QGjnV.MMi39CMt53D9sF4p7mhUHo56vPZfezgjw5
+ 6l2M7pqnCksq8vc30rNeTEoFH2fgDW.9pIbtHnRKeVHm9Op9xEIxixpshes.UvSE..4248eUSzy7
+ JougUGC2St0msgGwM_.ssOzSGjNzPx1kAX_ZnZEVUF5Yn9IOL9FG3_TLs4nqo9wwx2WtEQky8.D6
+ 2IF4zu_pheYw6JkKs02bvScupE3s24DRr9KsqTD1OeLyMKCyGXJWQIXwp_aVmo1BEFsL5OsL9O7E
+ -
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Mon, 17 Aug 2020 07:20:35 +0000
+Date:   Mon, 17 Aug 2020 07:18:35 +0000 (UTC)
+From:   "Mrs. Maureen Hinckley" <mua39@gvsao.in>
+Reply-To: maurhinck2@gmail.com
+Message-ID: <240010608.3000878.1597648715121@mail.yahoo.com>
+Subject: RE
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <240010608.3000878.1597648715121.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16455 YMailNodin Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 Aug 2020, Song Liu wrote:
-> > On Aug 16, 2020, at 1:44 PM, Hugh Dickins <hughd@google.com> wrote:
-> > 
-> > syzbot crashed on the VM_BUG_ON_PAGE(PageTail) in munlock_vma_page(),
-> > when called from uprobes __replace_page().  Which of many ways to fix it?
-> > Settled on not calling when PageCompound (since Head and Tail are equals
-> > in this context, PageCompound the usual check in uprobes.c, and the prior
-> > use of FOLL_SPLIT_PMD will have cleared PageMlocked already).
-> > 
-> > Reported-by: syzbot <syzkaller@googlegroups.com>
-> > Fixes: 5a52c9df62b4 ("uprobe: use FOLL_SPLIT_PMD instead of FOLL_SPLIT")
-> > Signed-off-by: Hugh Dickins <hughd@google.com>
-> > Cc: stable@vger.kernel.org # v5.4+
-> > ---
-> > This one is not a 5.9-rc regression, but still good to fix.
-> > 
-> > kernel/events/uprobes.c |    2 +-
-> > 1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > --- v5.9-rc/kernel/events/uprobes.c	2020-08-12 19:46:50.851196584 -0700
-> > +++ linux/kernel/events/uprobes.c	2020-08-16 13:18:35.292821674 -0700
-> > @@ -205,7 +205,7 @@ static int __replace_page(struct vm_area
-> > 		try_to_free_swap(old_page);
-> > 	page_vma_mapped_walk_done(&pvmw);
-> > 
-> > -	if (vma->vm_flags & VM_LOCKED)
-> > +	if ((vma->vm_flags & VM_LOCKED) && !PageCompound(old_page))
-> 
-> Do we need munlock_vma_page() for THP page head? 
 
-No: as the commit message says "the prior use of FOLL_SPLIT_PMD
-will have cleared PageMlocked already" - our THP implementation
-has difficulty supporting Mlocked consistently when the huge page is
-somewhere mapped by ptes, so one of the things that __split_huge_pmd()
-does is clear_page_mlock(), then PageDoubleMap will prevent Mlocked
-being set again once GUP has brought the old_page pte back in.
 
-But if you'd prefer us to munlock_vma_page(compound_head(old_page))
-instead, I can certainly change the patch: it's one of the options
-I considered, but couldn't quite bring myself to do it that way,
-knowing that actually it would never find PageMlocked set.  (If
-PageMlocked were allowed on tail pages, I'd have used a PageMlocked
-test instead of the PageCompound one: I spent nearly an hour
-bikeshedding the alternatives here!)
+I am Maureen Hinckley and my foundation is donating (Five hundred and fifty=
+ thousand USD) to you. Contact us via my email at (maurhinck2@gmail.com) fo=
+r further details.
 
-(One day I must remind myself of when munlock_vma_page() should be
-used, versus when clear_page_mlock() should be used: I think it comes
-down to a choice of which stats get incremented, but I may also be
-forgetting something more important: anyway, no obvious reason to
-depart from the munlock_vma_page() that's always been used here.)
-
-Hugh
+Best Regards,
+Mrs. Maureen Hinckley,
+Copyright =C2=A92020 The Maureen Hinckley Foundation All Rights Reserved.
