@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F97247205
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFD89247200
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391383AbgHQSgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:36:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46322 "EHLO mail.kernel.org"
+        id S2391363AbgHQSgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:36:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730946AbgHQP7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:59:04 -0400
+        id S1730959AbgHQP7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:59:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5998120729;
-        Mon, 17 Aug 2020 15:59:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 44D822072E;
+        Mon, 17 Aug 2020 15:59:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679943;
-        bh=y708uWgSHbGvpVbbWkqv/I//b1Eb3citB2TGp3O3MF0=;
+        s=default; t=1597679955;
+        bh=tUg0ufDbgldg0Nz5MOqtxis8bznVshMzTik0MI4PymY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ug2euTPlRM3ZFSvwQ1n30i/mPfcoRs59oUty+2RYW6VH+F6XBnXJAAG3esGt4D0PR
-         EyOK3HEf6garx4oszAZAQXQRq9CQ+piv6+qyVWtfT3FobQWZSCuabjHdgbYX4Flwqy
-         OaouDioUklLXGoDbW09rL29tCN0a/NQV5jWlqfZE=
+        b=ZfYfYK7RVMS5Wx3VxIHPjs2saJ9bLeto3KaORrHcwd+1/Otgb6hpmUEJXOdoir4fe
+         Ji9FvC72I3EMId/ZdcEKgiuMvZB2APxCTSPUixGXWvcHPrnOuoUtSYwvolb6nFk657
+         sYRitSVFw77GlOwoncxlme4HYn6XXm1Xl9FKXq7s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+a730016dc0bdce4f6ff5@syzkaller.appspotmail.com,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.7 357/393] io_uring: fail poll arm on queue proc failure
-Date:   Mon, 17 Aug 2020 17:16:47 +0200
-Message-Id: <20200817143836.915920303@linuxfoundation.org>
+        stable@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Subject: [PATCH 5.7 361/393] cpufreq: dt: fix oops on armada37xx
+Date:   Mon, 17 Aug 2020 17:16:51 +0200
+Message-Id: <20200817143837.113419999@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
 References: <20200817143819.579311991@linuxfoundation.org>
@@ -45,38 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
 
-commit a36da65c46565d2527eec3efdb546251e38253fd upstream.
+commit 10470dec3decaf5ed3c596f85debd7c42777ae12 upstream.
 
-Check the ipt.error value, it must have been either cleared to zero or
-set to another error than the default -EINVAL if we don't go through the
-waitqueue proc addition. Just give up on poll at that point and return
-failure, this will fallback to async work.
+Commit 0c868627e617e43a295d8 (cpufreq: dt: Allow platform specific
+intermediate callbacks) added two function pointers to the
+struct cpufreq_dt_platform_data. However, armada37xx_cpufreq_driver_init()
+has this struct (pdata) located on the stack and uses only "suspend"
+and "resume" fields. So these newly added "get_intermediate" and
+"target_intermediate" pointers are uninitialized and contain arbitrary
+non-null values, causing all kinds of trouble.
 
-io_poll_add() doesn't suffer from this failure case, as it returns the
-error value directly.
+For instance, here is an oops on espressobin after an attempt to change
+the cpefreq governor:
 
-Cc: stable@vger.kernel.org # v5.7+
-Reported-by: syzbot+a730016dc0bdce4f6ff5@syzkaller.appspotmail.com
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+[   29.174554] Unable to handle kernel execute from non-executable memory at virtual address ffff00003f87bdc0
+...
+[   29.269373] pc : 0xffff00003f87bdc0
+[   29.272957] lr : __cpufreq_driver_target+0x138/0x580
+...
+
+Fixed by zeroing out pdata before use.
+
+Cc: <stable@vger.kernel.org> # v5.7+
+Signed-off-by: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/io_uring.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/cpufreq/armada-37xx-cpufreq.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -4544,7 +4544,7 @@ static bool io_arm_poll_handler(struct i
+--- a/drivers/cpufreq/armada-37xx-cpufreq.c
++++ b/drivers/cpufreq/armada-37xx-cpufreq.c
+@@ -456,6 +456,7 @@ static int __init armada37xx_cpufreq_dri
+ 	/* Now that everything is setup, enable the DVFS at hardware level */
+ 	armada37xx_cpufreq_enable_dvfs(nb_pm_base);
  
- 	ret = __io_arm_poll_handler(req, &apoll->poll, &ipt, mask,
- 					io_async_wake);
--	if (ret) {
-+	if (ret || ipt.error) {
- 		io_poll_remove_double(req, apoll->double_poll);
- 		spin_unlock_irq(&ctx->completion_lock);
- 		memcpy(&req->work, &apoll->work, sizeof(req->work));
++	memset(&pdata, 0, sizeof(pdata));
+ 	pdata.suspend = armada37xx_cpufreq_suspend;
+ 	pdata.resume = armada37xx_cpufreq_resume;
+ 
 
 
