@@ -2,77 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2613246524
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0187246533
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727072AbgHQLIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 07:08:49 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:31912 "EHLO
+        id S1726876AbgHQLNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 07:13:01 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:57867 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726651AbgHQLIc (ORCPT
+        by vger.kernel.org with ESMTP id S1726385AbgHQLMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 07:08:32 -0400
+        Mon, 17 Aug 2020 07:12:53 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597662511;
+        s=mimecast20190719; t=1597662771;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=sRXpA3KVhG5i/ooij8DK6osX068yWEAfosvf8o3Zs6Y=;
-        b=geegxBTIg0QOKdQY/NHKC5v12WrWx9UNO63wcLBHBhZfIW2LS9/t37cWeGMO8iWFmdsh8i
-        R5EpMKrY6lGN1CT3pUoxMkPhn2QWwIMTaVA6UolZF/4BDKkpBV7GWB5mdWypzgj27qzeJr
-        hycX0a6RiKaxtDlIFiUDJp4oFQI9LWQ=
+        bh=ojqM6VDGywhYof5vQ0rOPdeZdR7vkZBO7fWbPCxSWII=;
+        b=IdnzvL6wNbgMddYRdZWXF5gqHMHWMmT0mxJS1TC7efxBSg4ND+AjP0qqY8jsk5gmqXuQmX
+        Xg4gnd6hw2rTE30HFXSyEVXUmUp9a+AclRiMppxzKJyAKFuHrTeYGsCuKl7x3dfltEiyQq
+        HhqTq6I+G4AjaWN//ryNSee6UwmWP10=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-239-OQTjsRyGO2CmwRxlHku8Ow-1; Mon, 17 Aug 2020 07:08:28 -0400
-X-MC-Unique: OQTjsRyGO2CmwRxlHku8Ow-1
+ us-mta-420-AxrCrgTLPfKBA1qS5-fhAQ-1; Mon, 17 Aug 2020 07:12:44 -0400
+X-MC-Unique: AxrCrgTLPfKBA1qS5-fhAQ-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C4B2185E53C;
-        Mon, 17 Aug 2020 11:08:26 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 184321DDE5;
+        Mon, 17 Aug 2020 11:12:42 +0000 (UTC)
 Received: from sirius.home.kraxel.org (ovpn-112-195.ams2.redhat.com [10.36.112.195])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3997310013C2;
-        Mon, 17 Aug 2020 11:08:26 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 91FD01002393;
+        Mon, 17 Aug 2020 11:12:35 +0000 (UTC)
 Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
-        id 201FA9D8F; Mon, 17 Aug 2020 13:08:24 +0200 (CEST)
-Date:   Mon, 17 Aug 2020 13:08:24 +0200
+        id 6A0F29D8F; Mon, 17 Aug 2020 13:12:34 +0200 (CEST)
+Date:   Mon, 17 Aug 2020 13:12:34 +0200
 From:   Gerd Hoffmann <kraxel@redhat.com>
-To:     Sidong Yang <realwakka@gmail.com>
-Cc:     Dave Airlie <airlied@redhat.com>, Daniel Vetter <daniel@ffwll.ch>,
-        virtualization@lists.linux-foundation.org,
-        spice-devel@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/qxl: Replace deprecated function in qxl_display
-Message-ID: <20200817110824.ascomag3nh7ufabs@sirius.home.kraxel.org>
-References: <20200524022624.10363-1-realwakka@gmail.com>
+To:     David Stevens <stevensd@chromium.org>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        open list <linux-kernel@vger.kernel.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:VIRTIO GPU DRIVER" 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, virtio-dev@lists.oasis-open.org,
+        alex.williamson@redhat.com
+Subject: Re: [virtio-dev] Re: [PATCH v5 0/3] Support virtio cross-device
+ resources
+Message-ID: <20200817111234.i7pqtnnk2ciw4rqb@sirius.home.kraxel.org>
+References: <20200609012518.198908-1-stevensd@chromium.org>
+ <20200609055021-mutt-send-email-mst@kernel.org>
+ <CAD=HUj7wJfoKj_K44Cs9eEmh=OQHZ1+qz7ZHxoscHjYgOMXvZQ@mail.gmail.com>
+ <20200817105008.mi3ukh6kxgi37gjs@sirius.home.kraxel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200524022624.10363-1-realwakka@gmail.com>
+In-Reply-To: <20200817105008.mi3ukh6kxgi37gjs@sirius.home.kraxel.org>
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 24, 2020 at 11:26:23AM +0900, Sidong Yang wrote:
-> Hi, Dave.
+On Mon, Aug 17, 2020 at 12:50:08PM +0200, Gerd Hoffmann wrote:
+> On Tue, Jun 23, 2020 at 10:31:28AM +0900, David Stevens wrote:
+> > Unless there are any remaining objections to these patches, what are
+> > the next steps towards getting these merged? Sorry, I'm not familiar
+> > with the workflow for contributing patches to Linux.
 > 
-> This is resended e-mail for your advice.
-> 
-> I'm a newbie interested in linux kernel and qxl module.
-> Please check this patch and give me advice for me.
-> Also I'll be glad if there is any task that you bothered.
-> Thanks.
-> 
-> Sidong.
-> 
-> Replace deprecated function drm_modeset_lock/unlock_all with
-> helper function DRM_MODESET_LOCK_ALL_BEGIN/END.
-> 
-> Signed-off-by: Sidong Yang <realwakka@gmail.com>
+> Sorry, just have been busy and not paying as much attention to drm
+> patches as usual.  Playing catch-up now.  Queued for drm-misc-next,
+> unless something goes wrong in my testing the patches should land
+> in linux-next soon and be merged upstream in the next merge window.
 
-Queued for drm-misc-next.
+Oh, spoke too soon.  scripts/checkpatch.pl has a bunch of codestyle
+warnings.  Can you fix them and resend?
 
 thanks,
   Gerd
