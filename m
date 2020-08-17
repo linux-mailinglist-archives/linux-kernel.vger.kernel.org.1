@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5F7246A10
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65258246A07
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730130AbgHQP3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:29:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39868 "EHLO mail.kernel.org"
+        id S1730079AbgHQP3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:29:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729924AbgHQP1g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:27:36 -0400
+        id S1729845AbgHQP1H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:27:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA8D8233CF;
-        Mon, 17 Aug 2020 15:27:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A45C423B30;
+        Mon, 17 Aug 2020 15:27:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678056;
-        bh=u6wmnyOOZXtqwxDGaWRzoJFsFE7VNtRuFcd3L5HmiBc=;
+        s=default; t=1597678027;
+        bh=vSmbqkIxhcGcQn3a2A2tY4h80W1wyonKyRhHieL1P9k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qAW545Eoe/ytO6yawRJ0VqgiKpQoRXZsOtoR2TJBwapVg4A42UjmpptV64C5ItZOm
-         9JL2OK8ezNft2ImdGbplp865XGqOjfi/y1sl7dn4O79mkuGy+AESDWSObxPZTYBjh2
-         gdo38SVG4irfSm5p+d7b3cCRbZiZS98OR7hl67Fc=
+        b=VTo8vTSIWvLUw0aRAYbwgKewW+g4ptARmiLkFh89v0Dihovb29vkoah9Pbo35836O
+         3NzSWmwb3G3QgpSU6BYoa4AitBDEjyMcb79C/f11cN8/jjH3LIDiUhPyL4wYvlvf6z
+         TnsT5UjDJNG9PLciFZJdv6JV2L43NfNlkPm968kA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 186/464] cxl: Fix kobject memleak
-Date:   Mon, 17 Aug 2020 17:12:19 +0200
-Message-Id: <20200817143842.731796077@linuxfoundation.org>
+Subject: [PATCH 5.8 194/464] drm/amdgpu: ensure 0 is returned for success in jpeg_v2_5_wait_for_idle
+Date:   Mon, 17 Aug 2020 17:12:27 +0200
+Message-Id: <20200817143843.115247097@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -46,42 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 85c5cbeba8f4fb28e6b9bfb3e467718385f78f76 ]
+[ Upstream commit 57f01856645afe4c3d0f9915ee2bb043e8dd7982 ]
 
-Currently the error return path from kobject_init_and_add() is not
-followed by a call to kobject_put() - which means we are leaking
-the kobject.
+In the cases where adev->jpeg.num_jpeg_inst is zero or the condition
+adev->jpeg.harvest_config & (1 << i) is always non-zero the variable
+ret is never set to an error condition and the function returns
+an uninitialized value in ret.  Since the only exit condition at
+the end if the function is a success then explicitly return
+0 rather than a potentially uninitialized value in ret.
 
-Fix it by adding a call to kobject_put() in the error path of
-kobject_init_and_add().
-
-Fixes: b087e6190ddc ("cxl: Export optional AFU configuration record in sysfs")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Acked-by: Andrew Donnellan <ajd@linux.ibm.com>
-Acked-by: Frederic Barrat <fbarrat@linux.ibm.com>
-Link: https://lore.kernel.org/r/20200602120733.5943-1-wanghai38@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Addresses-Coverity: ("Uninitialized scalar variable")
+Fixes: 14f43e8f88c5 ("drm/amdgpu: move JPEG2.5 out from VCN2.5")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/cxl/sysfs.c | 2 +-
+ drivers/gpu/drm/amd/amdgpu/jpeg_v2_5.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/cxl/sysfs.c b/drivers/misc/cxl/sysfs.c
-index f0263d1a1fdf2..d97a243ad30c0 100644
---- a/drivers/misc/cxl/sysfs.c
-+++ b/drivers/misc/cxl/sysfs.c
-@@ -624,7 +624,7 @@ static struct afu_config_record *cxl_sysfs_afu_new_cr(struct cxl_afu *afu, int c
- 	rc = kobject_init_and_add(&cr->kobj, &afu_config_record_type,
- 				  &afu->dev.kobj, "cr%i", cr->cr);
- 	if (rc)
--		goto err;
-+		goto err1;
+diff --git a/drivers/gpu/drm/amd/amdgpu/jpeg_v2_5.c b/drivers/gpu/drm/amd/amdgpu/jpeg_v2_5.c
+index 713c325604453..25ebf8f19b85a 100644
+--- a/drivers/gpu/drm/amd/amdgpu/jpeg_v2_5.c
++++ b/drivers/gpu/drm/amd/amdgpu/jpeg_v2_5.c
+@@ -462,7 +462,7 @@ static int jpeg_v2_5_wait_for_idle(void *handle)
+ 			return ret;
+ 	}
  
- 	rc = sysfs_create_bin_file(&cr->kobj, &cr->config_attr);
- 	if (rc)
+-	return ret;
++	return 0;
+ }
+ 
+ static int jpeg_v2_5_set_clockgating_state(void *handle,
 -- 
 2.25.1
 
