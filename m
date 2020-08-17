@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46CAF2471AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1CA247358
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391125AbgHQScQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:32:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48298 "EHLO mail.kernel.org"
+        id S1731576AbgHQSym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:54:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387796AbgHQQAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:00:53 -0400
+        id S1730919AbgHQPvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:51:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD7FB20729;
-        Mon, 17 Aug 2020 16:00:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C1B1120657;
+        Mon, 17 Aug 2020 15:51:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597680053;
-        bh=uDNuu8ieTtvwevvvZ3UxB8Nzo72p4ml8UDOezEUj0u4=;
+        s=default; t=1597679480;
+        bh=mjuxfjKqgxt2gXjsirK1S359T6DYB81tLFOmd6wXCKM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vDTu6lBQpfGprNSQEWDkXd+ybP7+DIf8a1hoSclyUOEraFKx1TWr9APfUa38HECD8
-         Mwa/kAyHKr+uYkgA5XYhAhMHh6uJNzKik7ti9OVsMNiyCa6LnujfngRzafeRfsjlAz
-         Y8eW09K27biemx0AjLZ1z9oHHM52OKtpgE34OF2A=
+        b=bufl4kw/Ow93RbdStSWLgiWNVRO5vPxQSAM0heWd0o2G0WItFVPuEOOmeXXk8zGTK
+         DmQHfTTRxue6R7/A54miJhJda7mZGrnVdxeAnh996ZMZLiZYN/4CiIiXRWP77Fsm5C
+         3p1ZRbsa7byp51pQTZRZFixc90qntOK1VV3yfQio=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Brian Foster <bfoster@redhat.com>,
+        Dave Chinner <dchinner@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 027/270] ARM: dts: gose: Fix ports node name for adv7612
-Date:   Mon, 17 Aug 2020 17:13:48 +0200
-Message-Id: <20200817143757.130363981@linuxfoundation.org>
+Subject: [PATCH 5.7 186/393] xfs: dont eat an EIO/ENOSPC writeback error when scrubbing data fork
+Date:   Mon, 17 Aug 2020 17:13:56 +0200
+Message-Id: <20200817143828.643410220@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
-References: <20200817143755.807583758@linuxfoundation.org>
+In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
+References: <20200817143819.579311991@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,34 +46,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-[ Upstream commit 59692ac5a7bb8c97ff440fc8917828083fbc38d6 ]
+[ Upstream commit eb0efe5063bb10bcb653e4f8e92a74719c03a347 ]
 
-When adding the adv7612 device node the ports node was misspelled as
-port, fix this.
+The data fork scrubber calls filemap_write_and_wait to flush dirty pages
+and delalloc reservations out to disk prior to checking the data fork's
+extent mappings.  Unfortunately, this means that scrub can consume the
+EIO/ENOSPC errors that would otherwise have stayed around in the address
+space until (we hope) the writer application calls fsync to persist data
+and collect errors.  The end result is that programs that wrote to a
+file might never see the error code and proceed as if nothing were
+wrong.
 
-Fixes: bc63cd87f3ce924f ("ARM: dts: gose: add HDMI input")
-Signed-off-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-Link: https://lore.kernel.org/r/20200713111016.523189-1-niklas.soderlund+renesas@ragnatech.se
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+xfs_scrub is not in a position to notify file writers about the
+writeback failure, and it's only here to check metadata, not file
+contents.  Therefore, if writeback fails, we should stuff the error code
+back into the address space so that an fsync by the writer application
+can pick that up.
+
+Fixes: 99d9d8d05da2 ("xfs: scrub inode block mappings")
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Brian Foster <bfoster@redhat.com>
+Reviewed-by: Dave Chinner <dchinner@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/r8a7793-gose.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/xfs/scrub/bmap.c | 22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/r8a7793-gose.dts b/arch/arm/boot/dts/r8a7793-gose.dts
-index dc435ac95d23a..9f507393c3752 100644
---- a/arch/arm/boot/dts/r8a7793-gose.dts
-+++ b/arch/arm/boot/dts/r8a7793-gose.dts
-@@ -399,7 +399,7 @@ hdmi-in@4c {
- 			interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
- 			default-input = <0>;
- 
--			port {
-+			ports {
- 				#address-cells = <1>;
- 				#size-cells = <0>;
+diff --git a/fs/xfs/scrub/bmap.c b/fs/xfs/scrub/bmap.c
+index add8598eacd5d..c4788d244de35 100644
+--- a/fs/xfs/scrub/bmap.c
++++ b/fs/xfs/scrub/bmap.c
+@@ -45,9 +45,27 @@ xchk_setup_inode_bmap(
+ 	 */
+ 	if (S_ISREG(VFS_I(sc->ip)->i_mode) &&
+ 	    sc->sm->sm_type == XFS_SCRUB_TYPE_BMBTD) {
++		struct address_space	*mapping = VFS_I(sc->ip)->i_mapping;
++
+ 		inode_dio_wait(VFS_I(sc->ip));
+-		error = filemap_write_and_wait(VFS_I(sc->ip)->i_mapping);
+-		if (error)
++
++		/*
++		 * Try to flush all incore state to disk before we examine the
++		 * space mappings for the data fork.  Leave accumulated errors
++		 * in the mapping for the writer threads to consume.
++		 *
++		 * On ENOSPC or EIO writeback errors, we continue into the
++		 * extent mapping checks because write failures do not
++		 * necessarily imply anything about the correctness of the file
++		 * metadata.  The metadata and the file data could be on
++		 * completely separate devices; a media failure might only
++		 * affect a subset of the disk, etc.  We can handle delalloc
++		 * extents in the scrubber, so leaving them in memory is fine.
++		 */
++		error = filemap_fdatawrite(mapping);
++		if (!error)
++			error = filemap_fdatawait_keep_errors(mapping);
++		if (error && (error != -ENOSPC && error != -EIO))
+ 			goto out;
+ 	}
  
 -- 
 2.25.1
