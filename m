@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 065532473CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F38A324756B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731776AbgHQTBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:01:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59194 "EHLO mail.kernel.org"
+        id S1730447AbgHQPfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:35:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730272AbgHQPro (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:47:44 -0400
+        id S1730168AbgHQPa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:30:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BEA7E20789;
-        Mon, 17 Aug 2020 15:47:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DE7622CF8;
+        Mon, 17 Aug 2020 15:30:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679263;
-        bh=Wxm+dQv1e/7S1fyu4VC3ugX/kDSnqeoQZQzm/VmVwXQ=;
+        s=default; t=1597678227;
+        bh=ZKVk/wxZoh+1ON43O4MrsASnLMbbya2SkuJcqE5JLhM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MEGWAseOMH0LWg7NJWzmP1RBVWtey5Rcr/taMENO/hCDJfzU6yQmq+3hOPiEsTmeX
-         1RSSTU6uvh6n7x0a7rejkSDYCmviBHA3kHhoxuMu5WTtXjWgoSeRJrvLBNNWSa/1UG
-         1MjanwfZ9CsA3xBSCqwjA8tFSOFtPo1ejJRvPoFM=
+        b=khNSPnO12ZfBQJk9wznhQWlMFdCBrVFtMZ2nApmGuD+JRJ4arwb6abqwyO8ukVfca
+         uIv3NAkN986vb6/rEmFflmYncy+o6C5Qns0rfmAQ04VxgkYtWlk+2Btsc4CfwYRkGu
+         o+2Zc4QWytZsdRhmKdWI3dW38gj3HCBghJ/hZhF0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Chen <Mark-YW.Chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org, Mike Leach <mike.leach@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 150/393] Bluetooth: btusb: fix up firmware download sequence
-Date:   Mon, 17 Aug 2020 17:13:20 +0200
-Message-Id: <20200817143826.890504707@linuxfoundation.org>
+Subject: [PATCH 5.8 262/464] coresight: etmv4: Fix resource selector constant
+Date:   Mon, 17 Aug 2020 17:13:35 +0200
+Message-Id: <20200817143846.339550458@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
-References: <20200817143819.579311991@linuxfoundation.org>
+In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
+References: <20200817143833.737102804@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,57 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Wang <sean.wang@mediatek.com>
+From: Mike Leach <mike.leach@linaro.org>
 
-[ Upstream commit f645125711c80f9651e4a57403d799070c6ad13b ]
+[ Upstream commit cb8bba907a4ff4ba42f1d245cb506d55829674b8 ]
 
-Data RAM on the device have to be powered on before starting to download
-the firmware.
+ETMv4 max resource selector constant incorrectly set to 16. Updated to the
+correct 32 value, and adjustments made to limited code using it.
 
-Fixes: a1c49c434e15 ("Bluetooth: btusb: Add protocol support for MediaTek MT7668U USB devices")
-Co-developed-by: Mark Chen <Mark-YW.Chen@mediatek.com>
-Signed-off-by: Mark Chen <Mark-YW.Chen@mediatek.com>
-Signed-off-by: Sean Wang <sean.wang@mediatek.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Mike Leach <mike.leach@linaro.org>
+Fixes: 2e1cdfe184b52 ("coresight-etm4x: Adding CoreSight ETM4x driver")
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Link: https://lore.kernel.org/r/20200716175746.3338735-10-mathieu.poirier@linaro.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/btusb.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ drivers/hwtracing/coresight/coresight-etm4x.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 3d9313c746f39..4085387f13cfb 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -2826,7 +2826,7 @@ static int btusb_mtk_setup_firmware(struct hci_dev *hdev, const char *fwname)
- 	const u8 *fw_ptr;
- 	size_t fw_size;
- 	int err, dlen;
--	u8 flag;
-+	u8 flag, param;
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
+index 4a695bf90582e..b0d633daf7162 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x.h
++++ b/drivers/hwtracing/coresight/coresight-etm4x.h
+@@ -133,7 +133,7 @@
+ #define ETMv4_MAX_CTXID_CMP		8
+ #define ETM_MAX_VMID_CMP		8
+ #define ETM_MAX_PE_CMP			8
+-#define ETM_MAX_RES_SEL			16
++#define ETM_MAX_RES_SEL			32
+ #define ETM_MAX_SS_CMP			8
  
- 	err = request_firmware(&fw, fwname, &hdev->dev);
- 	if (err < 0) {
-@@ -2834,6 +2834,20 @@ static int btusb_mtk_setup_firmware(struct hci_dev *hdev, const char *fwname)
- 		return err;
- 	}
+ #define ETM_ARCH_V4			0x40
+@@ -325,7 +325,7 @@ struct etmv4_save_state {
+ 	u32	trccntctlr[ETMv4_MAX_CNTR];
+ 	u32	trccntvr[ETMv4_MAX_CNTR];
  
-+	/* Power on data RAM the firmware relies on. */
-+	param = 1;
-+	wmt_params.op = BTMTK_WMT_FUNC_CTRL;
-+	wmt_params.flag = 3;
-+	wmt_params.dlen = sizeof(param);
-+	wmt_params.data = &param;
-+	wmt_params.status = NULL;
-+
-+	err = btusb_mtk_hci_wmt_sync(hdev, &wmt_params);
-+	if (err < 0) {
-+		bt_dev_err(hdev, "Failed to power on data RAM (%d)", err);
-+		return err;
-+	}
-+
- 	fw_ptr = fw->data;
- 	fw_size = fw->size;
+-	u32	trcrsctlr[ETM_MAX_RES_SEL * 2];
++	u32	trcrsctlr[ETM_MAX_RES_SEL];
  
+ 	u32	trcssccr[ETM_MAX_SS_CMP];
+ 	u32	trcsscsr[ETM_MAX_SS_CMP];
 -- 
 2.25.1
 
