@@ -2,78 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C11A0245B20
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 05:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9D9245B25
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 05:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727780AbgHQDi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Aug 2020 23:38:26 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:43272 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727074AbgHQDiW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Aug 2020 23:38:22 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 5A30889994A65CB4171F;
-        Mon, 17 Aug 2020 11:38:18 +0800 (CST)
-Received: from DESKTOP-5IS4806.china.huawei.com (10.174.187.22) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 17 Aug 2020 11:38:07 +0800
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>
-CC:     Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        <wanghaibin.wang@huawei.com>, Keqian Zhu <zhukeqian1@huawei.com>
-Subject: [PATCH 3/3] KVM: arm64: Use kvm_write_guest_lock when init stolen time
-Date:   Mon, 17 Aug 2020 11:37:29 +0800
-Message-ID: <20200817033729.10848-4-zhukeqian1@huawei.com>
-X-Mailer: git-send-email 2.8.4.windows.1
-In-Reply-To: <20200817033729.10848-1-zhukeqian1@huawei.com>
-References: <20200817033729.10848-1-zhukeqian1@huawei.com>
+        id S1726631AbgHQDpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Aug 2020 23:45:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726385AbgHQDpw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 Aug 2020 23:45:52 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E7EC061389
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Aug 2020 20:45:52 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id f5so6827540plr.9
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Aug 2020 20:45:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MA/9gHI0V+yftTzDrDx3504zFpgx5aUeDq1OIejihpQ=;
+        b=vs8KGi9WejCWcKWcxD6bsXKCrIcM0+m4Bw8FfFf3Og83i3+KSRNNLWCD4ty/tof3Nr
+         4iKnYwHGhQzW/DLjCAlrjRt/VjAL+bRx0t7QGSPZMmnAXHZOjye2Zh5oghknrvL2Juco
+         gLVkZFd1cJAMCWC0w9qW8GeKTVfXiaxcIGi98sOYGm5cyiAGdgVeSkRwWjbVZjQsubmy
+         yheIf4xhYRDJCIa8y8TNxAB6L0U8GwS+VMZV2+VtMq95iBnPmBxmt91jPbSaizfLN4uY
+         Guo9phQx+7+J6PPgpTaUcKFvTetyfEm652SAIY3I5MsWNCtyDZDR4wIPrnloFWg9Y8gS
+         xnZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MA/9gHI0V+yftTzDrDx3504zFpgx5aUeDq1OIejihpQ=;
+        b=HdOQULKAk9xX+OKIzOE0cPZ9k/xrXIOu30IvC4jU7OF8ZzYUhMogvjv/j0knrCeG7F
+         a8eD4FJwOKndtYg0IYAv3lQDHoedoWR1sMmvkQJECthDJSBTPQ3tHKpyvt6pZAELlnvC
+         b9jORsDiCq9pCqkpod2KdOyUFzoo4wGIi4eXeLYPRUEhnH9K1SKc5paa/fc19SIoHOFo
+         5QySulGlA9QRr4qDMF5AiXK96xgRMTuBIIir4BF5DoM4ueylp/NcZvn6iwXwggvDeqTb
+         /3WywxnAZTaGpIcoLB8EXUOQZ4IrLBfstaxJjr79uuO4eVSs/iQnde2FcI0qVrkKsCrJ
+         TBaQ==
+X-Gm-Message-State: AOAM530w/WLiY2T3s6hMBXRsKCmbLnrx2U/7WuDOWKyf1DE77ZYday37
+        PtlkZr1oOo4Moov3H1vfDTs/YWneVQNWlQ==
+X-Google-Smtp-Source: ABdhPJziFq7DHhuHPYkQ5rKF4HfMbh/cUrsPSHGpavzCqwuHvA591aVIa0+v1ku33lFfVV8TOVUIXQ==
+X-Received: by 2002:a17:90b:8e:: with SMTP id bb14mr11493068pjb.170.1597635951325;
+        Sun, 16 Aug 2020 20:45:51 -0700 (PDT)
+Received: from ?IPv6:2605:e000:100e:8c61:ea1b:63b0:364:3a3b? ([2605:e000:100e:8c61:ea1b:63b0:364:3a3b])
+        by smtp.gmail.com with ESMTPSA id s24sm15332095pjp.1.2020.08.16.20.45.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 16 Aug 2020 20:45:50 -0700 (PDT)
+Subject: Re: [PATCH] ata: ahci: use ata_link_info() instead of
+ ata_link_printk()
+To:     Xu Wang <vulab@iscas.ac.cn>, linux-ide@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20200817032913.10173-1-vulab@iscas.ac.cn>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <de66f1e7-9ac6-b8be-a243-0fe68419bc24@kernel.dk>
+Date:   Sun, 16 Aug 2020 20:45:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.187.22]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200817032913.10173-1-vulab@iscas.ac.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a lock version kvm_write_guest. Use it to simplify code.
+On 8/16/20 8:29 PM, Xu Wang wrote:
+> Using ata_link_info() instead of ata_link_printk().
 
-Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
----
- arch/arm64/kvm/pvtime.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+Applied, thanks.
 
-diff --git a/arch/arm64/kvm/pvtime.c b/arch/arm64/kvm/pvtime.c
-index f7b52ce..2b24e7f 100644
---- a/arch/arm64/kvm/pvtime.c
-+++ b/arch/arm64/kvm/pvtime.c
-@@ -55,7 +55,6 @@ gpa_t kvm_init_stolen_time(struct kvm_vcpu *vcpu)
- 	struct pvclock_vcpu_stolen_time init_values = {};
- 	struct kvm *kvm = vcpu->kvm;
- 	u64 base = vcpu->arch.steal.base;
--	int idx;
- 
- 	if (base == GPA_INVALID)
- 		return base;
-@@ -66,10 +65,7 @@ gpa_t kvm_init_stolen_time(struct kvm_vcpu *vcpu)
- 	 */
- 	vcpu->arch.steal.steal = 0;
- 	vcpu->arch.steal.last_steal = current->sched_info.run_delay;
--
--	idx = srcu_read_lock(&kvm->srcu);
--	kvm_write_guest(kvm, base, &init_values, sizeof(init_values));
--	srcu_read_unlock(&kvm->srcu, idx);
-+	kvm_write_guest_lock(kvm, base, &init_values, sizeof(init_values));
- 
- 	return base;
- }
 -- 
-1.8.3.1
+Jens Axboe
 
