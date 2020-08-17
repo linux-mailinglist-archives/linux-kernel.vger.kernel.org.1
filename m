@@ -2,54 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52ED824659C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F1F246576
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726707AbgHQLmu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 17 Aug 2020 07:42:50 -0400
-Received: from correo.yucatan.gob.mx ([187.141.74.27]:13280 "EHLO
-        antispam.yucatan.gob.mx" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726151AbgHQLmu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 07:42:50 -0400
-Received: from correo.yucatan.gob.mx ([192.168.25.101])
-        by antispam.yucatan.gob.mx  with ESMTP id 07HBKVBI013797-07HBKVBL013797
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=CAFAIL);
-        Mon, 17 Aug 2020 06:20:31 -0500
-From:   Felipe Francisco Romero Ruiz <felipe.romero@yucatan.gob.mx>
-To:     "NO-REPLY@MICROSOFT.NET" <NO-REPLY@MICROSOFT.NET>
-Subject: =?koi8-r?B?78LSwdTJ1MUg187JzcHOycUsIN7UzyDTxcrewdMgzsXPwsjPxMnNzyDT0s/e?=
- =?koi8-r?B?zs8g0M/E1NfF0sTJ1Ngg18Hb1SDV3sXUztXAINrB0MnT2CDczMXL1NLPzs7P?=
- =?koi8-r?B?yiDQz97U2S4=?=
-Thread-Topic: =?koi8-r?B?78LSwdTJ1MUg187JzcHOycUsIN7UzyDTxcrewdMgzsXPwsjPxMnNzyDT0s/e?=
- =?koi8-r?B?zs8g0M/E1NfF0sTJ1Ngg18Hb1SDV3sXUztXAINrB0MnT2CDczMXL1NLPzs7P?=
- =?koi8-r?B?yiDQz97U2S4=?=
-Thread-Index: AdZ0iGqMvFdNFEUiRJ2DImpAtxqrKw==
-Date:   Mon, 17 Aug 2020 11:20:30 +0000
-Message-ID: <9B5224426D8A9A4F8725FFD78A10E7DA4D09DB2E@SRV-MAILBOX-02.gobierno1.yucatan.gob.mx>
-Accept-Language: es-ES, es-MX, en-US
-Content-Language: es-ES
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [196.171.2.106]
-Content-Type: text/plain; charset="koi8-r"
-Content-Transfer-Encoding: 8BIT
+        id S1728515AbgHQLbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 07:31:43 -0400
+Received: from elvis.franken.de ([193.175.24.41]:49797 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728453AbgHQLbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 07:31:24 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1k7dMD-0003tH-02; Mon, 17 Aug 2020 13:31:17 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 6598EC0D74; Mon, 17 Aug 2020 13:22:10 +0200 (CEST)
+Date:   Mon, 17 Aug 2020 13:22:10 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH v2] MIPS: Loongson: Use default CONFIG_FRAME_WARN as 2048
+ for Loongson64 to fix build warnings
+Message-ID: <20200817112210.GC11725@alpha.franken.de>
+References: <1597401090-4314-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1597401090-4314-1-git-send-email-yangtiezhu@loongson.cn>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-СРОЧНОЕ УВЕДОМЛЕНИЕ MICROSOFT[Color de fuente]
+On Fri, Aug 14, 2020 at 06:31:30PM +0800, Tiezhu Yang wrote:
+> After commit 70b838292bef ("MIPS: Update default config file for
+> Loongson-3"), CONFIG_VHOST_SCSI and CONFIG_VHOST are set when use
+> loongson3_defconfig, and then there exists the following two build
+> warnings related with these two configs:
+> 
+>   CC [M]  drivers/vhost/scsi.o
+> drivers/vhost/scsi.c: In function Б─≤vhost_scsi_flushБ─≥:
+> drivers/vhost/scsi.c:1374:1: warning: the frame size of 1040 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+>  }
+>  ^
+>   LD [M]  drivers/vhost/vhost_scsi.o
+>   CC [M]  drivers/vhost/vsock.o
+>   LD [M]  drivers/vhost/vhost_vsock.o
+>   CC [M]  drivers/vhost/vhost.o
+> drivers/vhost/vhost.c: In function Б─≤log_usedБ─≥:
+> drivers/vhost/vhost.c:1896:1: warning: the frame size of 1040 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+>  }
+>  ^
+> 
+> CONFIG_FRAME_WARN=2048 can fix it, since the default CONFIG_FRAME_WARN
+> for 64BIT is 2048, just delete the CONFIG_FRAME_WARN line in defconfig.
+> 
+> config FRAME_WARN
+>         int "Warn for stack frames larger than"
+>         range 0 8192
+>         default 2048 if GCC_PLUGIN_LATENT_ENTROPY
+>         default 1280 if (!64BIT && PARISC)
+>         default 1024 if (!64BIT && !PARISC)
+>         default 2048 if 64BIT
+> 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  arch/mips/configs/loongson3_defconfig | 1 -
+>  1 file changed, 1 deletion(-)
 
+applied to mips-next.
 
-Обратите внимание, что ваша учетная запись электронной почты нуждается в срочном подтверждении сейчас, чтобы выпустить около 20 ваших входящих сообщений, которые в настоящее время приостановлены. Нажмите кнопку подтверждения ниже, чтобы подтвердить свою учетную запись сейчас.
+Thomas.
 
-
-ПРОВЕРЬТЕ<https://67guiogj.wixsite.com/mysite>
-
-
-Команда проверки Microsoft
-
-
-Авторские права © 2020 Microsoft .Inc. Все права защищены.
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
