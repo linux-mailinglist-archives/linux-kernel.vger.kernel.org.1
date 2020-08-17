@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFEA6245EF0
+	by mail.lfdr.de (Postfix) with ESMTP id 63F67245EEF
 	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727966AbgHQILp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 04:11:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50328 "EHLO
+        id S1727954AbgHQILn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 04:11:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727902AbgHQILY (ORCPT
+        with ESMTP id S1727901AbgHQIL1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 04:11:24 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41120C06138A
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:11:23 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id a79so7844581pfa.8
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:11:23 -0700 (PDT)
+        Mon, 17 Aug 2020 04:11:27 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D00C061342
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:11:27 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id d4so7322959pjx.5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:11:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=igR/75gxadmtMWi9MLkMfLLU0IUv0P9kjxxPayYPRNc=;
-        b=C8Stt0OlJzlkc6BUmSvLpowDIaQDIjMoBeWtXArari9zGfvxvs69bK6rIOYcHidnxL
-         FNqKY9k4Dc2qknAn0rwYORoNYLIevPVUaTyGpky1jzUzxcewRYgV1iP6yDu8EYr3cKXg
-         cE6Lz3EkRB1oKuR6L5bXfe/HEHI/K9Oc85allpXmSSU/xQUpE66GsanpaDM4zCTATb8c
-         tjEGO834txneUa7AMWjcT4ht3zwMUYmG5tFFeucrRg0z5GNq23ZgiCy4YlAyr1Lycho9
-         QbeBA1e6Q/NgXVSqgRk7KGdNEuBkvp5z5rALg635boIFg1PgshxFBzdsNDr4SVkVVrYA
-         6UCA==
+        bh=2jlucAzcv0W9eM59+GUn2Gh+5IEHgp5g50ux6o6FWwQ=;
+        b=t2MQSO33f1vjbVEQeuo3aU++uKHVnUyyrTtB3geB2I08q7ydG1kWWexSrXGDcLWNdv
+         1DlHUBJ+biSN3baHJHgEWZwCeTElOGpgVYrWDI0Kt/zPqL3vkhdg3i/ZiLZdHXIFaczn
+         +F2ygDuPckoakT4oIKq67rcj8g59qwcFwR24DHvn38NgRh0fQjl8TUE4mmLnwGxszJh2
+         Np0X12q/PXnv5FYcMAJTQujiLVQdM6TsVxViUJGMM2vO8opwWf6WON7JoHHS6DMOZhKN
+         JZvHL/ffslNv006PR5pAvZ6RuLuD1L5kS+I8cwnPyQlpfEWmuAQU/MTin6aK8Hy4YNza
+         nfjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=igR/75gxadmtMWi9MLkMfLLU0IUv0P9kjxxPayYPRNc=;
-        b=Mb8VFiw5wPAptEWGEdDmrKvaCOyhe59OKWpcGfH3gPR33N3rgTPsnuss/gEHQaMzdb
-         M4mOg8m52VmIXs5UPRVEgBvLWixteAhhBeCApZOx3VdZc378Mpk6OYQXOqHg0c1C/0YO
-         CvADgSexJ0pd4DIiqKY/jHwRhe5mhqwblFK5UHXtYgMMBEI6/pdojKf6DnBoj9KDm0Lv
-         19Nmy1+vhy2fJxmujyZdx+mfXgBG0j+q38Y6hQ6GhniEygJPRm7msaSRHd31+HK1xL3e
-         TO5Qq0IRV8d1jdyprcdwFLeImN4xi8mN5Vgz4rHY2CjPAXVuHLvO7njl4ywsAu8rv7wP
-         euBg==
-X-Gm-Message-State: AOAM53202/CS0KoVXhSawd9rbBQjbir/Xx7xRmapx3nBMeZqev4FAPAb
-        /VGIbt9ZYkSzib5XYXlqPFM=
-X-Google-Smtp-Source: ABdhPJxyvl5y2FHfcn9LZz/PK7f9uH0f1QB5TX5zO4RPaiypNoYfiqUAdNULSj/MXIrliafQrT7w0g==
-X-Received: by 2002:aa7:9e45:: with SMTP id z5mr10816004pfq.166.1597651882821;
-        Mon, 17 Aug 2020 01:11:22 -0700 (PDT)
+        bh=2jlucAzcv0W9eM59+GUn2Gh+5IEHgp5g50ux6o6FWwQ=;
+        b=cV0EojC94xyti99al8ltEBdj+Kf87sM34uSENtUDq9rEdd367Et4qsd+NOH6atZqAM
+         VS24FU3dlPK7Wi4389Iin19PF1JqegI2wZ4nJvTq4lCSku7rOl3vfboiBAseUglHPhC6
+         Tk1jXdm9J5QLTIOfKHGbdfCEElULOpRc88AgzxfcP4Y8+1nbvZ7oejmqG9zqGeN7e7Xa
+         26teQQVHOjTwH6tiGs8ZSIuYQlM5U9/gy+RKcXMjMJin4qHGdA/zDy6z7qfWmLpHepI1
+         c/gsypwkVKOA7DHABQmLodvceWTi1k7I4YkHaCUna9KarM483CAQv92shaeKd+Z9ekxm
+         Xrzg==
+X-Gm-Message-State: AOAM531VWla5ATLKA68v6j3I/qahx4ZejfJkXXLZOi461E2LRghz8i3/
+        DoQqhv/OSy/cSWYQLIF/wNs=
+X-Google-Smtp-Source: ABdhPJyjoI0JkeOWbU0bb5kX5eCoqltfYh3yZoAKu+OpTQJh7RAmgYhlWJE4RsqnMrAcaumgImJMNg==
+X-Received: by 2002:a17:90a:5b:: with SMTP id 27mr10822949pjb.188.1597651886671;
+        Mon, 17 Aug 2020 01:11:26 -0700 (PDT)
 Received: from localhost.localdomain ([49.207.202.98])
-        by smtp.gmail.com with ESMTPSA id 77sm18499751pfx.85.2020.08.17.01.11.19
+        by smtp.gmail.com with ESMTPSA id 77sm18499751pfx.85.2020.08.17.01.11.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 01:11:22 -0700 (PDT)
+        Mon, 17 Aug 2020 01:11:26 -0700 (PDT)
 From:   Allen Pais <allen.lkml@gmail.com>
 To:     nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
         ludovic.desroches@microchip.com, heiko@sntech.de,
@@ -55,11 +55,10 @@ Cc:     keescook@chromium.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org,
         inux-mediatek@lists.infradead.org,
-        Allen Pais <allen.lkml@gmail.com>,
-        Romain Perier <romain.perier@gmail.com>
-Subject: [PATCH 18/19] crypto: talitos: convert tasklets to use new tasklet_setup() API
-Date:   Mon, 17 Aug 2020 13:39:40 +0530
-Message-Id: <20200817080941.19227-19-allen.lkml@gmail.com>
+        Allen Pais <allen.lkml@gmail.com>
+Subject: [PATCH 19/19] crypto: octeontx: convert tasklets to use new tasklet_setup() API
+Date:   Mon, 17 Aug 2020 13:39:41 +0530
+Message-Id: <20200817080941.19227-20-allen.lkml@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200817080941.19227-1-allen.lkml@gmail.com>
 References: <20200817080941.19227-1-allen.lkml@gmail.com>
@@ -73,93 +72,42 @@ struct tasklet_struct pointer to all tasklet
 callbacks, switch to using the new tasklet_setup()
 and from_tasklet() to pass the tasklet pointer explicitly.
 
-Signed-off-by: Romain Perier <romain.perier@gmail.com>
 Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 ---
- drivers/crypto/talitos.c | 42 ++++++++++++++++++----------------------
- 1 file changed, 19 insertions(+), 23 deletions(-)
+ drivers/crypto/marvell/octeontx/otx_cptvf_main.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
-index 7c547352a862..6d729af1f8e4 100644
---- a/drivers/crypto/talitos.c
-+++ b/drivers/crypto/talitos.c
-@@ -402,10 +402,11 @@ static void flush_channel(struct device *dev, int ch, int error, int reset_ch)
-  * process completed requests for channels that have done status
-  */
- #define DEF_TALITOS1_DONE(name, ch_done_mask)				\
--static void talitos1_done_##name(unsigned long data)			\
-+static void talitos1_done_##name(struct tasklet_struct *t)		\
- {									\
--	struct device *dev = (struct device *)data;			\
--	struct talitos_private *priv = dev_get_drvdata(dev);		\
-+	struct talitos_private *priv = from_tasklet(priv, t,		\
-+		done_task[0]);						\
-+	struct device *dev = priv->dev;					\
- 	unsigned long flags;						\
- 									\
- 	if (ch_done_mask & 0x10000000)					\
-@@ -428,11 +429,12 @@ static void talitos1_done_##name(unsigned long data)			\
- DEF_TALITOS1_DONE(4ch, TALITOS1_ISR_4CHDONE)
- DEF_TALITOS1_DONE(ch0, TALITOS1_ISR_CH_0_DONE)
+diff --git a/drivers/crypto/marvell/octeontx/otx_cptvf_main.c b/drivers/crypto/marvell/octeontx/otx_cptvf_main.c
+index 228fe8e47e0e..515049cca9e3 100644
+--- a/drivers/crypto/marvell/octeontx/otx_cptvf_main.c
++++ b/drivers/crypto/marvell/octeontx/otx_cptvf_main.c
+@@ -17,11 +17,12 @@
+ #define DRV_NAME	"octeontx-cptvf"
+ #define DRV_VERSION	"1.0"
  
--#define DEF_TALITOS2_DONE(name, ch_done_mask)				\
--static void talitos2_done_##name(unsigned long data)			\
-+#define DEF_TALITOS2_DONE(name, ch_done_mask, tasklet_idx)		\
-+static void talitos2_done_##name(struct tasklet_struct *t)		\
- {									\
--	struct device *dev = (struct device *)data;			\
--	struct talitos_private *priv = dev_get_drvdata(dev);		\
-+	struct talitos_private *priv = from_tasklet(priv, t,		\
-+		done_task[tasklet_idx]);				\
-+	struct device *dev = priv->dev;					\
- 	unsigned long flags;						\
- 									\
- 	if (ch_done_mask & 1)						\
-@@ -452,10 +454,10 @@ static void talitos2_done_##name(unsigned long data)			\
- 	spin_unlock_irqrestore(&priv->reg_lock, flags);			\
+-static void vq_work_handler(unsigned long data)
++static void vq_work_handler(struct tasklet_struct *t)
+ {
+-	struct otx_cptvf_wqe_info *cwqe_info =
+-					(struct otx_cptvf_wqe_info *) data;
+-
++	struct otx_cptvf_wqe *cwqe = from_tasklet(cwqe, t, twork);
++	struct otx_cptvf_wqe_info *cwqe_info = container_of(cwqe,
++							typeof(*cwqe_info),
++							vq_wqe[0]);
+ 	otx_cpt_post_process(&cwqe_info->vq_wqe[0]);
  }
  
--DEF_TALITOS2_DONE(4ch, TALITOS2_ISR_4CHDONE)
--DEF_TALITOS2_DONE(ch0, TALITOS2_ISR_CH_0_DONE)
--DEF_TALITOS2_DONE(ch0_2, TALITOS2_ISR_CH_0_2_DONE)
--DEF_TALITOS2_DONE(ch1_3, TALITOS2_ISR_CH_1_3_DONE)
-+DEF_TALITOS2_DONE(4ch, TALITOS2_ISR_4CHDONE, 0)
-+DEF_TALITOS2_DONE(ch0, TALITOS2_ISR_CH_0_DONE), 0
-+DEF_TALITOS2_DONE(ch0_2, TALITOS2_ISR_CH_0_2_DONE, 0)
-+DEF_TALITOS2_DONE(ch1_3, TALITOS2_ISR_CH_1_3_DONE, 1)
- 
- /*
-  * locate current (offending) descriptor
-@@ -3385,23 +3387,17 @@ static int talitos_probe(struct platform_device *ofdev)
- 
- 	if (has_ftr_sec1(priv)) {
- 		if (priv->num_channels == 1)
--			tasklet_init(&priv->done_task[0], talitos1_done_ch0,
--				     (unsigned long)dev);
-+			tasklet_setup(&priv->done_task[0], talitos1_done_ch0);
- 		else
--			tasklet_init(&priv->done_task[0], talitos1_done_4ch,
--				     (unsigned long)dev);
-+			tasklet_setup(&priv->done_task[0], talitos1_done_4ch);
- 	} else {
- 		if (priv->irq[1]) {
--			tasklet_init(&priv->done_task[0], talitos2_done_ch0_2,
--				     (unsigned long)dev);
--			tasklet_init(&priv->done_task[1], talitos2_done_ch1_3,
--				     (unsigned long)dev);
-+			tasklet_setup(&priv->done_task[0], talitos2_done_ch0_2);
-+			tasklet_setup(&priv->done_task[1], talitos2_done_ch1_3);
- 		} else if (priv->num_channels == 1) {
--			tasklet_init(&priv->done_task[0], talitos2_done_ch0,
--				     (unsigned long)dev);
-+			tasklet_setup(&priv->done_task[0], talitos2_done_ch0);
- 		} else {
--			tasklet_init(&priv->done_task[0], talitos2_done_4ch,
--				     (unsigned long)dev);
-+			tasklet_setup(&priv->done_task[0], talitos2_done_4ch);
- 		}
+@@ -41,8 +42,7 @@ static int init_worker_threads(struct otx_cptvf *cptvf)
  	}
  
+ 	for (i = 0; i < cptvf->num_queues; i++) {
+-		tasklet_init(&cwqe_info->vq_wqe[i].twork, vq_work_handler,
+-			     (u64)cwqe_info);
++		tasklet_setup(&cwqe_info->vq_wqe[i].twork, vq_work_handler);
+ 		cwqe_info->vq_wqe[i].cptvf = cptvf;
+ 	}
+ 	cptvf->wqe_info = cwqe_info;
 -- 
 2.17.1
 
