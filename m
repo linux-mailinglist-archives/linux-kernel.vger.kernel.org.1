@@ -2,73 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0512463D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE58B2463DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726772AbgHQJzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 05:55:40 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:38766 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726385AbgHQJzj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 05:55:39 -0400
-Received: from zn.tnic (p200300ec2f26be0071e1cf3fa1f5ba15.dip0.t-ipconnect.de [IPv6:2003:ec:2f26:be00:71e1:cf3f:a1f5:ba15])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 948751EC026E;
-        Mon, 17 Aug 2020 11:55:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1597658138;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=6Tf7YYM5n7xeCYKiahGC5yoyixvXsbkIQzXgCUnTbvE=;
-        b=qnNWe2+JAHspKFI14qcip1FWrnCyPmEUGlBZmVgUM2uJrggwdS4T4WpaFfKXzqSI+haJoQ
-        C6jfNP7Htugt7Yv06dWRXQIUragD1VcI/zFvxGUh5UQ4jJPFucZlwXgoEbP/I7gUlq4CUQ
-        7i+CXzsXrc+1zXmEc50vz2mIzGPOxBI=
-Date:   Mon, 17 Aug 2020 11:56:38 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Dinh Nguyen <dinguyen@kernel.org>
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thor.thayer@linux.intel.com
-Subject: Re: [PATCH] MAINTAINERS: edac: socfpga: transfer SoCFPGA EDAC
- maintainership
-Message-ID: <20200817095638.GE549@zn.tnic>
-References: <20200729174511.4256-1-dinguyen@kernel.org>
+        id S1726753AbgHQJ60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 05:58:26 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:36239 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726366AbgHQJ6Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 05:58:24 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U6.NLKV_1597658301;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U6.NLKV_1597658301)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 17 Aug 2020 17:58:22 +0800
+Date:   Mon, 17 Aug 2020 17:58:21 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm/pageblock: mitigation cmpxchg false sharing in
+ pageblock flags
+Message-ID: <20200817095821.GA29756@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <1597549677-7480-1-git-send-email-alex.shi@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200729174511.4256-1-dinguyen@kernel.org>
+In-Reply-To: <1597549677-7480-1-git-send-email-alex.shi@linux.alibaba.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 12:45:11PM -0500, Dinh Nguyen wrote:
-> Thor Thayer is leaving Intel and will no longer be able to maintain the
-> EDAC for SoCFPGA, thus transfer maintainership to Dinh Nguyen.
-> 
-> Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
-> ---
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index f0569cf304ca..c53fc9febf12 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2466,7 +2466,7 @@ S:	Maintained
->  F:	drivers/clk/socfpga/
->  
->  ARM/SOCFPGA EDAC SUPPORT
-> -M:	Thor Thayer <thor.thayer@linux.intel.com>
-> +M:	Dinh Nguyen <dinguyen@kernel.org>
->  S:	Maintained
->  F:	drivers/edac/altera_edac.
+On Sun, Aug 16, 2020 at 11:47:56AM +0800, Alex Shi wrote:
+>pageblock_flags is used as long, since every pageblock_flags is just 4
+>bits, 'long' size will include 8(32bit machine) or 16 pageblocks' flags,
+>that flag setting has to sync in cmpxchg with 7 or 15 other pageblock
+>flags. It would cause long waiting for sync.
+>
+>If we could change the pageblock_flags variable as char, we could use
+>char size cmpxchg, which just sync up with 2 pageblock flags. it could
+>relief much false sharing in cmpxchg.
+>
 
-Applied, thanks.
+If my understanding is correct, CPU reads data in the size of cacheline.
+Define a variable a char or other, doesn't help on false sharing. 
+
+Correct me, if not.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Wei Yang
+Help you, Help me
