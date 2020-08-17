@@ -2,264 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6D1246811
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 16:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4FD2467FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 16:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728981AbgHQOKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 10:10:31 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:50854 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728982AbgHQOKU (ORCPT
+        id S1728852AbgHQOI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 10:08:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728399AbgHQOI4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 10:10:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597673418;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=7a3mQcEQYLMtjY6U/koWkESRRECCeXLzk+bt2NSvZuo=;
-        b=STcCTApvARX7/qTWzXc7LUk8F/H/7/7npIbCape2gNEChRDH0Kr1XpuqLF71VWm1QtySji
-        AY7dDt/+rDguzW9tYUlWlNURZYQeUoCV3e8hgX5E761IxQspgVhsb7C2miznV0pOWSi0zG
-        0oAg84X9mtDqS3qcqjuYIKJzY592XZg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-458-qadAukWcOu-r2yAAMxOy1w-1; Mon, 17 Aug 2020 10:10:13 -0400
-X-MC-Unique: qadAukWcOu-r2yAAMxOy1w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA55818686C2;
-        Mon, 17 Aug 2020 14:10:11 +0000 (UTC)
-Received: from llong.com (ovpn-118-35.rdu2.redhat.com [10.10.118.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DFCDD19C4F;
-        Mon, 17 Aug 2020 14:10:09 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Waiman Long <longman@redhat.com>
-Subject: [RFC PATCH 8/8] memcg: Add over-high action prctl() documentation
-Date:   Mon, 17 Aug 2020 10:08:31 -0400
-Message-Id: <20200817140831.30260-9-longman@redhat.com>
-In-Reply-To: <20200817140831.30260-1-longman@redhat.com>
-References: <20200817140831.30260-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        Mon, 17 Aug 2020 10:08:56 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B60C061389
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 07:08:56 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id 140so8429164lfi.5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 07:08:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wXcT5D3YPLxs0BHlK1ApyhwbxStR2iEL/1ij7RZlVSg=;
+        b=UtJ9Uiu93VNGHSx3MCslQ3fCdktTr5rgfLsYlndNhlcbGF7sTH/Rk1QkjVxKFtExoV
+         M1aJgMntdOcQ4Olq16mYPPh4SwvarA20WpzvIVTi8kGL06+vrTZEVZn/TH7XCZI/YQjC
+         NCtaik9x8I5wpMaPjMaEtKxFp+Hpq3H9iqfrSPhqp7rC8CNE0oPwim4opa9t9X8jqO7y
+         7gl7TkTIKTvjpkYQ6DizrB6QbQgZhe6fMO74IN/9CmoJgoaWAOv/Er4PTIUM/vrQpf3f
+         2P8cWd2/McA9BXErfWX0iNi9Uh5+XpSApgwhVJieyKweITKCnygPou55c0RaJJ9Fs5nx
+         rWbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wXcT5D3YPLxs0BHlK1ApyhwbxStR2iEL/1ij7RZlVSg=;
+        b=ga1pkVNXsOgUuBNXdu+XO3ALFnj0UkH9KG2QtoYXFZSmATKZjNs5FbpDn+Spd9fKwT
+         muab4JccyhnSunk2FNEdiveDjat/6p+o1M14gcKIKnmb9XyEw+bkwtm9zEmjUUl9owX9
+         KmjL4VhFTfeT8zpj8Nl10aySY7XTc+GNVC0WpQ3hPAlbAwOLbHjrgjEchUwDm0YMYo/L
+         RNILk6/bmMw866tNIq9k8gkmMxiN6VVvC44aR5/4wMBbYWwQXSuFObLv62x62lmLgdDN
+         Qmuwk4RMfFVvwSOjA185G7MOtt7KBGD0psOhaENhiC/eXR64FM9SXg9q+3icKFQJGK0p
+         9klQ==
+X-Gm-Message-State: AOAM532vTMB9m8s36kVmjLTbXC0n2qWlBn1RDpJg8sC65/ftMEtB4T26
+        EUnAqJeTScPTSD1OBky2I8LjXPmUpQpvUxz5GPLKXw==
+X-Google-Smtp-Source: ABdhPJzXhdIKOfUDVmtjB35eqR3KDK/qTvSx3T4VdSpxgr4lQ2Jyue6nJpR39oc8VOxYLu6UzljkZJufLkwQNVxD1Eg=
+X-Received: by 2002:a19:86c3:: with SMTP id i186mr7707962lfd.59.1597673334498;
+ Mon, 17 Aug 2020 07:08:54 -0700 (PDT)
+MIME-Version: 1.0
+References: <1595333413-30052-1-git-send-email-sumit.garg@linaro.org>
+ <1595333413-30052-2-git-send-email-sumit.garg@linaro.org> <CAD=FV=Uqi28A=sm5+JhAqBM2OtBM3_XwvvkaKyEDVL9uVEioog@mail.gmail.com>
+ <CAFA6WYMy_+RdsPJekm7zmCrFUXHqjsfr3JvyD7L8A2X8+jB8Qw@mail.gmail.com> <CAD=FV=WJzdhqnztNtj7p5S365wVPcgs2Kya_4bVwqeDWFojUrQ@mail.gmail.com>
+In-Reply-To: <CAD=FV=WJzdhqnztNtj7p5S365wVPcgs2Kya_4bVwqeDWFojUrQ@mail.gmail.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Mon, 17 Aug 2020 19:38:42 +0530
+Message-ID: <CAFA6WYPG1dApPhAL252nJJyi99qHFS+jMUP_mV9g0EqXBZTWWQ@mail.gmail.com>
+Subject: Re: [RFC 1/5] tty/sysrq: Make sysrq handler NMI aware
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        linux-serial@vger.kernel.org, kgdb-bugreport@lists.sourceforge.net,
+        Jiri Slaby <jslaby@suse.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A new memcontrol.rst documentation file is added to document the new
-prctl(2) interface for setting the over-high mitigation action parameters
-and retrieving them.
+On Fri, 14 Aug 2020 at 20:27, Doug Anderson <dianders@chromium.org> wrote:
+>
+> Hi,
+>
+> On Fri, Aug 14, 2020 at 12:24 AM Sumit Garg <sumit.garg@linaro.org> wrote:
+> >
+> > + Peter (author of irq_work.c)
+> >
+> > On Thu, 13 Aug 2020 at 05:30, Doug Anderson <dianders@chromium.org> wrote:
+> > >
+> > > Hi,
+> > >
+> > > On Tue, Jul 21, 2020 at 5:10 AM Sumit Garg <sumit.garg@linaro.org> wrote:
+> > > >
+> > > > In a future patch we will add support to the serial core to make it
+> > > > possible to trigger a magic sysrq from an NMI context. Prepare for this
+> > > > by marking some sysrq actions as NMI safe. Safe actions will be allowed
+> > > > to run from NMI context whilst that cannot run from an NMI will be queued
+> > > > as irq_work for later processing.
+> > > >
+> > > > A particular sysrq handler is only marked as NMI safe in case the handler
+> > > > isn't contending for any synchronization primitives as in NMI context
+> > > > they are expected to cause deadlocks. Note that the debug sysrq do not
+> > > > contend for any synchronization primitives. It does call kgdb_breakpoint()
+> > > > to provoke a trap but that trap handler should be NMI safe on
+> > > > architectures that implement an NMI.
+> > > >
+> > > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > > > ---
+> > > >  drivers/tty/sysrq.c       | 33 ++++++++++++++++++++++++++++++++-
+> > > >  include/linux/sysrq.h     |  1 +
+> > > >  kernel/debug/debug_core.c |  1 +
+> > > >  3 files changed, 34 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
+> > > > index 7c95afa9..8017e33 100644
+> > > > --- a/drivers/tty/sysrq.c
+> > > > +++ b/drivers/tty/sysrq.c
+> > > > @@ -50,6 +50,8 @@
+> > > >  #include <linux/syscalls.h>
+> > > >  #include <linux/of.h>
+> > > >  #include <linux/rcupdate.h>
+> > > > +#include <linux/irq_work.h>
+> > > > +#include <linux/kfifo.h>
+> > > >
+> > > >  #include <asm/ptrace.h>
+> > > >  #include <asm/irq_regs.h>
+> > > > @@ -111,6 +113,7 @@ static const struct sysrq_key_op sysrq_loglevel_op = {
+> > > >         .help_msg       = "loglevel(0-9)",
+> > > >         .action_msg     = "Changing Loglevel",
+> > > >         .enable_mask    = SYSRQ_ENABLE_LOG,
+> > > > +       .nmi_safe       = true,
+> > > >  };
+> > > >
+> > > >  #ifdef CONFIG_VT
+> > > > @@ -157,6 +160,7 @@ static const struct sysrq_key_op sysrq_crash_op = {
+> > > >         .help_msg       = "crash(c)",
+> > > >         .action_msg     = "Trigger a crash",
+> > > >         .enable_mask    = SYSRQ_ENABLE_DUMP,
+> > > > +       .nmi_safe       = true,
+> > > >  };
+> > > >
+> > > >  static void sysrq_handle_reboot(int key)
+> > > > @@ -170,6 +174,7 @@ static const struct sysrq_key_op sysrq_reboot_op = {
+> > > >         .help_msg       = "reboot(b)",
+> > > >         .action_msg     = "Resetting",
+> > > >         .enable_mask    = SYSRQ_ENABLE_BOOT,
+> > > > +       .nmi_safe       = true,
+> > > >  };
+> > > >
+> > > >  const struct sysrq_key_op *__sysrq_reboot_op = &sysrq_reboot_op;
+> > > > @@ -217,6 +222,7 @@ static const struct sysrq_key_op sysrq_showlocks_op = {
+> > > >         .handler        = sysrq_handle_showlocks,
+> > > >         .help_msg       = "show-all-locks(d)",
+> > > >         .action_msg     = "Show Locks Held",
+> > > > +       .nmi_safe       = true,
+> > > >  };
+> > > >  #else
+> > > >  #define sysrq_showlocks_op (*(const struct sysrq_key_op *)NULL)
+> > > > @@ -289,6 +295,7 @@ static const struct sysrq_key_op sysrq_showregs_op = {
+> > > >         .help_msg       = "show-registers(p)",
+> > > >         .action_msg     = "Show Regs",
+> > > >         .enable_mask    = SYSRQ_ENABLE_DUMP,
+> > > > +       .nmi_safe       = true,
+> > > >  };
+> > > >
+> > > >  static void sysrq_handle_showstate(int key)
+> > > > @@ -326,6 +333,7 @@ static const struct sysrq_key_op sysrq_ftrace_dump_op = {
+> > > >         .help_msg       = "dump-ftrace-buffer(z)",
+> > > >         .action_msg     = "Dump ftrace buffer",
+> > > >         .enable_mask    = SYSRQ_ENABLE_DUMP,
+> > > > +       .nmi_safe       = true,
+> > > >  };
+> > > >  #else
+> > > >  #define sysrq_ftrace_dump_op (*(const struct sysrq_key_op *)NULL)
+> > > > @@ -538,6 +546,23 @@ static void __sysrq_put_key_op(int key, const struct sysrq_key_op *op_p)
+> > > >                  sysrq_key_table[i] = op_p;
+> > > >  }
+> > > >
+> > > > +#define SYSRQ_NMI_FIFO_SIZE    64
+> > > > +static DEFINE_KFIFO(sysrq_nmi_fifo, int, SYSRQ_NMI_FIFO_SIZE);
+> > >
+> > > A 64-entry FIFO seems excessive. Quite honestly even a FIFO seems a
+> > > bit excessive and it feels like if two sysrqs were received in super
+> > > quick succession that it would be OK to just process the first one.  I
+> > > guess if it simplifies the processing to have a FIFO then it shouldn't
+> > > hurt, but no need for 64 entries.
+> > >
+> >
+> > Okay, would a 2-entry FIFO work here? As here we need a FIFO to pass
+> > on the key parameter.
+>
+> ...or even a 1-entry FIFO if that makes sense?
+>
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- Documentation/userspace-api/index.rst      |   1 +
- Documentation/userspace-api/memcontrol.rst | 174 +++++++++++++++++++++
- 2 files changed, 175 insertions(+)
- create mode 100644 Documentation/userspace-api/memcontrol.rst
+Yes it would make sense but unfortunately not supported by kfifo
+(size: power of 2).
 
-diff --git a/Documentation/userspace-api/index.rst b/Documentation/userspace-api/index.rst
-index 69fc5167e648..1c0fc7a7f4ec 100644
---- a/Documentation/userspace-api/index.rst
-+++ b/Documentation/userspace-api/index.rst
-@@ -23,6 +23,7 @@ place where this information is gathered.
-    accelerators/ocxl
-    ioctl/index
-    media/index
-+   memcontrol
- 
- .. only::  subproject and html
- 
-diff --git a/Documentation/userspace-api/memcontrol.rst b/Documentation/userspace-api/memcontrol.rst
-new file mode 100644
-index 000000000000..0cfcc72ad5f0
---- /dev/null
-+++ b/Documentation/userspace-api/memcontrol.rst
-@@ -0,0 +1,174 @@
-+==============
-+Memory Control
-+==============
-+
-+Memory controller can be used to control and limit the amount of
-+physical memory used by a task. When a limit is set in "memory.high" in
-+a v2 non-root memory cgroup, the memory controller will try to reclaim
-+memory if the limit has been exceeded. Normally, that will be enough
-+to keep the physical memory consumption of tasks in the memory cgroup
-+to be around or below the "memory.high" limit.
-+
-+Sometimes, memory reclaim may not be able to recover memory in a rate
-+that can catch up to the physical memory allocation rate. In this case,
-+the physical memory consumption will keep on increasing.  For memory
-+cgroup v2, when it is reaching "memory.max" or the system is running
-+out of free memory, the OOM killer will be invoked to kill some tasks
-+to free up additional memory. However, one has little control of which
-+tasks are going to be killed by an OOM killer. Killing tasks that hold
-+some important resources without freeing them first can create other
-+system problems.
-+
-+Users who do not want the OOM killer to be invoked to kill random
-+tasks in an out-of-memory situation can use the memory control facility
-+provided by :manpage:`prctl(2)` to better manage the mitigation action
-+that needs to be performed to an individual task when the specified
-+memory limit is exceeded with memory cgroup v2 being used.
-+
-+The task to be controlled must be running in a non-root memory cgroup
-+as no limit will be imposed on tasks running in the root memory cgroup.
-+
-+There are two prctl commands related to this:
-+
-+ * PR_SET_MEMCONTROL
-+
-+ * PR_GET_MEMCONTROL
-+
-+
-+PR_SET_MEMCONTROL
-+-----------------
-+
-+PR_SET_MEMCTROL controls what action should be taken when the memory
-+limit is exceeded.
-+
-+The arg2 of :manpage:`prctl(2)` sets the desired mitigation action. The
-+action code consists of three different parts:
-+
-+ * Bits 0-7: action command
-+
-+ * Bits 8-15: signal number
-+
-+ * Bits 16-31: flags
-+
-+The currently supported action commands are:
-+
-+====== ================== ================================================
-+Value  Define             Description
-+====== ================== ================================================
-+0      PR_MEMACT_NONE     Use the default memory cgroup behavior
-+1      PR_MEMACT_ENOMEM   Return ENOMEM for selected syscalls that try to
-+                          allocate more memory when the preset memory limit
-+                          is exceeded
-+2      PR_MEMACT_SLOWDOWN Slow down the process for memory reclaim to
-+                          catch up when memory limit is exceeded
-+3      PR_MEMACT_SIGNAL   Send a signal to the task that has exceeded
-+                          preset memory limit
-+4      PR_MEMACT_KILL     Kill the task that has exceeded preset memory
-+                          limit
-+====== ================== ================================================
-+
-+The currently supports flags are:
-+
-+====== ==================== ================================================
-+Value  Define               Description
-+====== ==================== ================================================
-+0x01   PR_MEMFLAG_SIGCONT   Send a signal on every allocation request instead
-+                            of a one-shot signal
-+0x02   PR_MEMFLAG_DIRECT    Check per-task memory limit irrespective of cgroup
-+                            setting
-+0x04   PR_MEMFLAG_LOG       Log any actions taken to the kernel ring buffer
-+0x10   PR_MEMFLAG_RSS_ANON  Check process anonymous memory
-+0x20   PR_MEMFLAG_RSS_FILE  Check process page caches
-+0x40   PR_MEMFLAG_RSS_SHMEM Check process shared memory
-+0x70   PR_MEMFLAG_RSS       Equivalent to (PR_MEMFLAG_RSS_ANON |
-+                            PR_MEMFLAG_RSS_FILE | PR_MEMFLAG_RSS_SHMEM)
-+====== ==================== ================================================
-+
-+If the action command is PR_MEMACT_SIGNAL, bits 16-23 of the action
-+code contains the signal number to be used when the memory limit is
-+exceeded. By default, the signal number is reset after delivery so
-+that the signal will be delivered only once. Another PR_SET_MEMCONTROL
-+command will have to be issued to set the signal again.  If the user
-+want a non-fatal signal to be delivered every time when the memory
-+limit is breached without doing another PR_SET_MEMCONTROL call, the
-+PR_MEMFLAG_SIGCONT flag can be set.
-+
-+The arg3 of :manpage:`prctl(2)` sets the additional memory cgroup
-+limit that will be added to the value specified in the "memory.high"
-+control file to get the real limit over which action specified in the
-+action command will be triggered. This is to make sure that mitigation
-+action will only be taken when the kernel memory reclaim facility fails
-+to limit the growth of physical memory usage.
-+
-+If any of the PR_MEMFLAG_RSS* flag is specified, arg4 contains the
-+per-process memory limit that will be used to compare against the sum
-+of the specified RSS memory consumption of the process to determine
-+if action will be taken provided that overall memory consumption has
-+exceeded the "memory.high" + arg3 limit when the PR_MEMFLAG_DIRECT flag
-+isn't set.
-+
-+If the PR_MEMFLAG_DIRECT flag is set, however, the cgroup memory limit
-+is ignored and a memory-over-limit check will be performed on each
-+memory allocation request, if applicable. This is reserved for special
-+use case and is not recommended for general use.
-+
-+
-+PR_GET_MEMCONTROL
-+-----------------
-+
-+PR_GET_MEMCONTROL returns the parameters set by a previous
-+PR_SET_MEMCONTROL command.
-+
-+The arg2 of :manpage:`prctl(2)` sets type of parameter that is to be
-+returned. The possible values are:
-+
-+====== =================== ================================================
-+Value  Define              Description
-+====== =================== ================================================
-+0      PR_MEMGET_ACTION    Return the action code - command, flags & signal
-+1      PR_MEMGET_CLIMIT    Return the additional cgroup memory limit (in bytes)
-+2      PR_MEMGET_PLIMIT    Return the process memory limit for PR_MEMFLAG_RSS*
-+====== =================== ================================================
-+
-+
-+/proc/<pid>/memctl
-+------------------
-+
-+PR_GET_MEMCONTROL only returns memory control setting about the
-+task itself. To find those information about other tasks, the
-+/proc/<pid>/memctl file can be read. This file reports three integer
-+parameters:
-+
-+ * action code
-+
-+ * cgroup additional memory limit
-+
-+ * process memory limit for PR_MEMFLAG_RSS* flags
-+
-+These are the same values that will be returned if the task is
-+calling :manpage:`prctl(2)` with PR_GET_MEMCONTROL command and the
-+PR_MEMGET_ACTION, PR_MEMGET_CLIMIT and PR_MEMGET_PLIMIT arguments
-+respectively.
-+
-+Privileged users can also write to the memctl file directly to modify
-+those parameters for a given task.
-+
-+This procfs file is present for each of the running threads of a process.
-+So multiple writes to each of them are needed to update the parameters
-+for all the threads within a running process.
-+
-+Affected Syscalls
-+-----------------
-+
-+The following system calls have additional check for the over-high
-+memory usage flag that is set by the above memory control facility.
-+
-+ * :manpage:`brk(2)`
-+
-+ * :manpage:`mlock(2)`
-+
-+ * :manpage:`mlock2(2)`
-+
-+ * :manpage:`mlockall(2)`
-+
-+ * :manpage:`mmap(2)`
--- 
-2.18.1
+>
+> > > > +static void sysrq_do_nmi_work(struct irq_work *work)
+> > > > +{
+> > > > +       const struct sysrq_key_op *op_p;
+> > > > +       int key;
+> > > > +
+> > > > +       while (kfifo_out(&sysrq_nmi_fifo, &key, 1)) {
+> > > > +               op_p = __sysrq_get_key_op(key);
+> > > > +               if (op_p)
+> > > > +                       op_p->handler(key);
+> > > > +       }
+> > >
+> > > Do you need to manage "suppress_printk" in this function?  Do you need
+> > > to call rcu_sysrq_start() and rcu_read_lock()?
+> >
+> > Ah I missed those. Will add them here instead.
+> >
+> > >
+> > > If so, how do you prevent racing between the mucking we're doing with
+> > > these things and the mucking that the NMI does with them?
+> >
+> > IIUC, here you meant to highlight the race while scheduled sysrq is
+> > executing in IRQ context and we receive a new sysrq in NMI context,
+> > correct? If yes, this seems to be a trickier situation. I think the
+> > appropriate way to handle it would be to deny any further sysrq
+> > handling until the prior sysrq handling is complete, your views?
+>
+> The problem is that in some cases you're running NMIs directly at FIQ
+> time and other cases you're running them at IRQ time.  So you
+> definitely can't just move it to NMI.
+>
+> Skipping looking for other SYSRQs until the old one is complete sounds
+> good to me.  Again my ignorance will make me sound like a fool,
+> probably, but can you use the kfifo as a form of mutual exclusion?  If
+> you have a 1-entry kfifo, maybe:
+>
+> 1. First try to add to the "FIFO".  If it fails (out of space) then a
+> sysrq is in progress.  Ignore this one.
+> 2. Decide if you're NMI-safe or not.
+> 3. If NMI safe, modify "suppress_printk", call rcu functions, then
+> call the handler.  Restore suppress_printk and then dequeue from FIFO.
+> 4. If not-NMI safe, the irq worker would "peek" into the FIFO, do its
+> work (wrapped with "suppress_printk" and the like), and not dequeue
+> until it's done.
+>
+> In the above you'd use the FIFO as a locking mechanism.  I don't know
+> if that's a valid use of it or if there is a better NMI-safe mechanism
+> for this.  I think the kfifo docs talk about only one reader and one
+> writer and here we have two readers, so maybe it's illegal.  It also
+> seems weird to have a 1-entry "FIFO" and feels like there's probably a
+> better data structure for this.
 
+Thanks for your suggestions. Have a look at below implementation, I
+have used 2-entry fifo but only single entry used for locking
+mechanism:
+
+@@ -538,6 +546,39 @@ static void __sysrq_put_key_op(int key, const
+struct sysrq_key_op *op_p)
+                 sysrq_key_table[i] = op_p;
+ }
+
++#define SYSRQ_NMI_FIFO_SIZE    2
++static DEFINE_KFIFO(sysrq_nmi_fifo, int, SYSRQ_NMI_FIFO_SIZE);
++
++static void sysrq_do_nmi_work(struct irq_work *work)
++{
++       const struct sysrq_key_op *op_p;
++       int orig_suppress_printk;
++       int key;
++
++       orig_suppress_printk = suppress_printk;
++       suppress_printk = 0;
++
++       rcu_sysrq_start();
++       rcu_read_lock();
++
++       if (kfifo_peek(&sysrq_nmi_fifo, &key)) {
++               op_p = __sysrq_get_key_op(key);
++               if (op_p)
++                       op_p->handler(key);
++       }
++
++       rcu_read_unlock();
++       rcu_sysrq_end();
++
++       suppress_printk = orig_suppress_printk;
++
++       /* Pop contents from fifo if any */
++       while (kfifo_get(&sysrq_nmi_fifo, &key))
++               ;
++}
++
++static DEFINE_IRQ_WORK(sysrq_nmi_work, sysrq_do_nmi_work);
++
+ void __handle_sysrq(int key, bool check_mask)
+ {
+        const struct sysrq_key_op *op_p;
++}
++
++static DEFINE_IRQ_WORK(sysrq_nmi_work, sysrq_do_nmi_work);
++
+ void __handle_sysrq(int key, bool check_mask)
+ {
+        const struct sysrq_key_op *op_p;
+@@ -545,6 +586,10 @@ void __handle_sysrq(int key, bool check_mask)
+        int orig_suppress_printk;
+        int i;
+
++       /* Skip sysrq handling if one already in progress */
++       if (!kfifo_is_empty(&sysrq_nmi_fifo))
++               return;
++
+        orig_suppress_printk = suppress_printk;
+        suppress_printk = 0;
+
+@@ -568,7 +613,13 @@ void __handle_sysrq(int key, bool check_mask)
+                if (!check_mask || sysrq_on_mask(op_p->enable_mask)) {
+                        pr_info("%s\n", op_p->action_msg);
+                        console_loglevel = orig_log_level;
+-                       op_p->handler(key);
++
++                       if (in_nmi() && !op_p->nmi_safe) {
++                               kfifo_put(&sysrq_nmi_fifo, key);
++                               irq_work_queue(&sysrq_nmi_work);
++                       } else {
++                               op_p->handler(key);
++                       }
+                } else {
+                        pr_info("This sysrq operation is disabled.\n");
+                        console_loglevel = orig_log_level;
+
+-Sumit
