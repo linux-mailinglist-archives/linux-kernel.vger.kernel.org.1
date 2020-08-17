@@ -2,64 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C759F245AE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 05:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9A1245AEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 05:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726938AbgHQDH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Aug 2020 23:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60098 "EHLO
+        id S1727050AbgHQDJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Aug 2020 23:09:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726606AbgHQDH0 (ORCPT
+        with ESMTP id S1726769AbgHQDJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Aug 2020 23:07:26 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A76C061388
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Aug 2020 20:07:25 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id d22so7528096pfn.5
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Aug 2020 20:07:25 -0700 (PDT)
+        Sun, 16 Aug 2020 23:09:09 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A05FC061388
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Aug 2020 20:09:09 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id x25so7538453pff.4
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Aug 2020 20:09:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/y3+sIpziI5i2x/IrsZTj9dc44wN9fN2Q4/rOL2VgUc=;
-        b=BvINO9nn5tfb50yh6jKlnRihWrRMuT6XhZAD/8h6S8XRIIl93QpNwoycR/MeMYym08
-         uD0zC8BOchR0VuTWgqhI5Jto7pkZ1ZS61S+3wO4FFUe+xeufo3kHKJ1xpQAXE4oZjEOA
-         mEN5C/u75TR6ZXCF700os5SN475dlm6t7r1m3aOMVwOxY27wnIJzq9evFjUrOEWYi2Ca
-         Qw2OTr6lJ+FRAayUrxECsUmIfmYbpuiGW5ergC+OQSqVBr56FjgGVeS478gWUzyLZ95X
-         G7c7G5ic10fnKaeiLxMijuNIklPoPVtIqCO7VTX9ikSB5CfM/w2T6RA3R1DOF/yYOSWf
-         nGIg==
+        bh=k0k1ufswwvQqlhfc5nLZm/JdhT9rudIpJBeiiTryuvI=;
+        b=bz66Q8Av14jmfKp4MtM8VmcuJu3xbFqx+cwOenX2OPH0WxtKGARCq3MHKtfnePrfko
+         NPNRFZSrlZaqgj0i35VnkZE7Q4S6qJsGq7OSumaMjorNdX2uYarD8dE89Pk20Z2W3tO4
+         eDW4NijWVHK6LB6JeTg7/wj59gk8ZblIq/UTEXvzEpHD3VhzlDVPs0mFVY9bvC3oUHkr
+         I91gKr3zbf24z1VESIv+TgOCTYispv9r+II3V01sxKp3x9szhVU0eSLvHMJVu8Blg2do
+         ZQ60uvWD/9Qk2FLNyhcAeuKIrDDhMvwsdXjW+5dq6ii1SK5oHgO0gVLb4rWqS0dQx9Hi
+         NaFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=/y3+sIpziI5i2x/IrsZTj9dc44wN9fN2Q4/rOL2VgUc=;
-        b=Sx1nO+Sb/h/dlNWZAiyM+/h4yhoMfRqJj1aHohU2iOnCn/UqI3pLGUc6vPIsj8008j
-         eL7AEf/0uZ4eHUvUVs5BKNo9PxjdFndjhOnYA458a7g8bBhhq2l/3XAsPE0h0WQnmS5V
-         lkeVOAtGjGgMEGhcX4SnlOvJZxnkOuhTAjTLbWF64hT91cXfKvjmr5PzrG5Ktb4f6MGA
-         3fTseIrvY1ges62hqT2MAF1gl5AK9QHOq+053WAk36cLYdps2MzLA2b0EYMA7glbb7Or
-         RAuJpgOsyTq9NfhmgNWpbjd5hr91om3DNHlpVCKBnArhjS+NYMqvrXBXS8ftOZoxmJsF
-         NnLQ==
-X-Gm-Message-State: AOAM530sh3YfDa5hT2CALBoc7WjEL+ZXXFkm9sOfC+Xe5Oo2Z8hIvFEq
-        miS8DXZlxJscTe0JJmN2XxB318siwTO5/g==
-X-Google-Smtp-Source: ABdhPJy8AHV8k/93PskJpi0rA9JuD7vXvSvbRHrZ8o/IR6+gZ82f73n70Vt5ocBfZ+4dfTaRG0kMxg==
-X-Received: by 2002:a63:e703:: with SMTP id b3mr8596103pgi.39.1597633644187;
-        Sun, 16 Aug 2020 20:07:24 -0700 (PDT)
+        bh=k0k1ufswwvQqlhfc5nLZm/JdhT9rudIpJBeiiTryuvI=;
+        b=NSA+lwdz1FxOtfsoFnhAijZ3qiBiLnz+aD2hJuA3T9Xw5rJ6d4BXf2ZdSznegl4w+Z
+         nqQgQNT48EZhsxCYGbzaoyUdMbEiIJkIJ7sxgYCpuarZHqBUgBI4mnX9WXnoavjHl/ai
+         8CewMAvjPLKNr13Z+BKI2e2bN+ZiMf6PdbErJLGbPs8LQpRfKhT0oDoViHPmXI7J2YOO
+         i+FBDvJNXl+1NGPXBNNvHdHdWEsbhiZKBR42S4u6uQzOLANqNJDIl5cYB76dCJxwOXjW
+         LX96Ru7pVgHaXYV5vnOFz/Vzd0wOsmgIucB9uSKz3mErm5ooyJCTc8HR1FiqTpjkdPPf
+         WAag==
+X-Gm-Message-State: AOAM530mjnxIeGVrOiCJpWz68E5w6O49jD9tBS2NWLaa9t/TUqVqa7gr
+        pihh3dOMb//PhjH7lyA/v4MiBxVJsR9cLg==
+X-Google-Smtp-Source: ABdhPJz/bi2nU4yddK5D5WoB9ZR5r+QGieKD/y6Z9tJUYP1qdCQuJXA//jJNqogDDY0Ut6KtcpQtLw==
+X-Received: by 2002:a05:6a00:150c:: with SMTP id q12mr9844126pfu.296.1597633748519;
+        Sun, 16 Aug 2020 20:09:08 -0700 (PDT)
 Received: from ?IPv6:2605:e000:100e:8c61:ea1b:63b0:364:3a3b? ([2605:e000:100e:8c61:ea1b:63b0:364:3a3b])
-        by smtp.gmail.com with ESMTPSA id w16sm15710766pjd.50.2020.08.16.20.07.23
+        by smtp.gmail.com with ESMTPSA id jb1sm15850532pjb.9.2020.08.16.20.09.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 16 Aug 2020 20:07:23 -0700 (PDT)
-Subject: Re: [PATCH] bsg-lib: convert comma to semicolon
-To:     Xu Wang <vulab@iscas.ac.cn>, linux-block@vger.kernel.org
+        Sun, 16 Aug 2020 20:09:07 -0700 (PDT)
+Subject: Re: [PATCH] ata: ahci: use ata_link_info() instead of
+ ata_link_printk()
+To:     Xu Wang <vulab@iscas.ac.cn>, linux-ide@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org
-References: <20200817021649.9922-1-vulab@iscas.ac.cn>
+References: <20200817011854.9668-1-vulab@iscas.ac.cn>
 From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <b17a63b2-ed72-66b9-6157-38636d4a7316@kernel.dk>
-Date:   Sun, 16 Aug 2020 20:07:22 -0700
+Message-ID: <e64e363a-55e5-7a71-ced7-fd28fc32aaa8@kernel.dk>
+Date:   Sun, 16 Aug 2020 20:09:06 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200817021649.9922-1-vulab@iscas.ac.cn>
+In-Reply-To: <20200817011854.9668-1-vulab@iscas.ac.cn>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -68,10 +69,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/16/20 7:16 PM, Xu Wang wrote:
-> Replace a comma between expression statements by a semicolon.
+On 8/16/20 6:18 PM, Xu Wang wrote:
+> Using ata_link_info() instead of ata_link_printk().
+> 
+> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+> ---
+>  drivers/ata/ahci.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
+> index 0c0a736eb861..9d72d907b4ee 100644
+> --- a/drivers/ata/ahci.c
+> +++ b/drivers/ata/ahci.c
+> @@ -807,7 +807,7 @@ static int ahci_avn_hardreset(struct ata_link *link, unsigned int *class,
+>  				(sstatus & 0xf) != 1)
+>  			break;
+>  
+> -		ata_link_printk(link, KERN_INFO, "avn bounce port%d\n",
+> +		ata_link_info(link,  "avn bounce port%d\n",
+>  				port);
 
-Thanks, applied.
+Why not collapse that into one line as well when making that change, as
+it now fits just fine?
+
+Apart from that, looks fine to me.
 
 -- 
 Jens Axboe
