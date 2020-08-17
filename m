@@ -2,139 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4849524644A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 12:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 529FB24644E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 12:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727845AbgHQKU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 06:20:28 -0400
-Received: from verein.lst.de ([213.95.11.211]:56177 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726165AbgHQKU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 06:20:27 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 46FC568B05; Mon, 17 Aug 2020 12:20:21 +0200 (CEST)
-Date:   Mon, 17 Aug 2020 12:20:20 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Cc:     iommu@lists.linux-foundation.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Ram Pai <linuxram@us.ibm.com>,
-        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: Re: [PATCH] swiotlb: Allow allocating buffer anywhere in memory
-Message-ID: <20200817102020.GD25336@lst.de>
-References: <20200815204536.663801-1-bauerman@linux.ibm.com>
+        id S1727901AbgHQKVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 06:21:06 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:34531 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726888AbgHQKU7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 06:20:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597659659; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=C1hZ2gm17WhpsJNUvxDXJNYffSUUYMl+EuQWFbm62NM=;
+ b=dFbFJ2c+k5zOA/DSBVMUfv6GK8AgjuI7EbkMqmlY2p8IoN97lSHk7DtRJYUU14FnW4omduiF
+ lFHoH0AfqkOw7pXAMmfwmpWkH3ez417ehJlkHOcg6OL2jiDk+v7sCSt+WW849tdL1t/C8/9V
+ hSmhne7vve9MQ0UuWrayLIG0S/U=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
+ 5f3a59f603528d4024247de7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 Aug 2020 10:20:38
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C2496C433A1; Mon, 17 Aug 2020 10:20:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2DFFDC433CB;
+        Mon, 17 Aug 2020 10:20:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2DFFDC433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200815204536.663801-1-bauerman@linux.ibm.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 09/30] net: wireless: ath: ath5k: pcu: Add a description
+ for
+ 'band' remove one for 'mode'
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200814113933.1903438-10-lee.jones@linaro.org>
+References: <20200814113933.1903438-10-lee.jones@linaro.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Nick Kossifidis <mickflemm@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Reyk Floeter <reyk@openbsd.org>,
+        "W. S. Bell" <mentor@madwifi.org>,
+        Luis Rodriguez <mcgrof@winlab.rutgers.edu>,
+        Pavel Roskin <proski@gnu.org>, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200817102037.C2496C433A1@smtp.codeaurora.org>
+Date:   Mon, 17 Aug 2020 10:20:37 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 15, 2020 at 05:45:36PM -0300, Thiago Jung Bauermann wrote:
-> POWER secure guests (i.e., guests which use the Protection Execution
-> Facility) need to use SWIOTLB to be able to do I/O with the hypervisor, but
-> they don't need the SWIOTLB memory to be in low addresses since the
-> hypervisor doesn't have any addressing limitation.
-> 
-> This solves a SWIOTLB initialization problem we are seeing in secure guests
-> with 128 GB of RAM: they are configured with 4 GB of crashkernel reserved
-> memory, which leaves no space for SWIOTLB in low addresses.
+Lee Jones <lee.jones@linaro.org> wrote:
 
-What about just open coding the allocation and using
-swiotlb_init_with_tbl?
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/net/wireless/ath/ath5k/pcu.c:115: warning: Function parameter or member 'band' not described in 'ath5k_hw_get_frame_duration'
+>  drivers/net/wireless/ath/ath5k/pcu.c:955: warning: Excess function parameter 'mode' description in 'ath5k_hw_pcu_init'
+> 
+> Cc: Jiri Slaby <jirislaby@kernel.org>
+> Cc: Nick Kossifidis <mickflemm@gmail.com>
+> Cc: Luis Chamberlain <mcgrof@kernel.org>
+> Cc: Kalle Valo <kvalo@codeaurora.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Reyk Floeter <reyk@openbsd.org>
+> Cc: "W. S. Bell" <mentor@madwifi.org>
+> Cc: Luis Rodriguez <mcgrof@winlab.rutgers.edu>
+> Cc: Pavel Roskin <proski@gnu.org>
+> Cc: linux-wireless@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-> 
-> Signed-off-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
-> ---
->  arch/powerpc/mm/mem.c   |  7 ++++++-
->  include/linux/swiotlb.h |  8 +++++++-
->  kernel/dma/swiotlb.c    | 10 +++++++---
->  3 files changed, 20 insertions(+), 5 deletions(-)
-> 
-> Normally I would split changes like this into one patch touching generic
-> code and another for the arch-specific part, but in this case I thought it
-> would be unneeded complexity. I can split though if people prefer it that
-> way.
-> 
-> diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
-> index c2c11eb8dcfc..13f2e3aff8b5 100644
-> --- a/arch/powerpc/mm/mem.c
-> +++ b/arch/powerpc/mm/mem.c
-> @@ -50,6 +50,7 @@
->  #include <asm/swiotlb.h>
->  #include <asm/rtas.h>
->  #include <asm/kasan.h>
-> +#include <asm/svm.h>
->  
->  #include <mm/mmu_decl.h>
->  
-> @@ -290,7 +291,11 @@ void __init mem_init(void)
->  	 * back to to-down.
->  	 */
->  	memblock_set_bottom_up(true);
-> -	swiotlb_init(0);
-> +	/*
-> +	 * SVM guests can use the SWIOTLB wherever it is in memory,
-> +	 * even if not DMA-able.
-> +	 */
-> +	swiotlb_init_anywhere(0, is_secure_guest());
->  #endif
->  
->  	high_memory = (void *) __va(max_low_pfn * PAGE_SIZE);
-> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-> index 046bb94bd4d6..433f3dbb35b5 100644
-> --- a/include/linux/swiotlb.h
-> +++ b/include/linux/swiotlb.h
-> @@ -29,7 +29,13 @@ enum swiotlb_force {
->   */
->  #define IO_TLB_SHIFT 11
->  
-> -extern void swiotlb_init(int verbose);
-> +void __init swiotlb_init_anywhere(int verbose, bool allocate_anywhere);
-> +
-> +static inline void swiotlb_init(int verbose)
-> +{
-> +	swiotlb_init_anywhere(verbose, false);
-> +}
-> +
->  int swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose);
->  extern unsigned long swiotlb_nr_tbl(void);
->  unsigned long swiotlb_size_or_default(void);
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index c19379fabd20..27070aa59e34 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -244,7 +244,7 @@ int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
->   * structures for the software IO TLB used to implement the DMA API.
->   */
->  void  __init
-> -swiotlb_init(int verbose)
-> +swiotlb_init_anywhere(int verbose, bool allocate_anywhere)
->  {
->  	size_t default_size = IO_TLB_DEFAULT_SIZE;
->  	unsigned char *vstart;
-> @@ -257,8 +257,12 @@ swiotlb_init(int verbose)
->  
->  	bytes = io_tlb_nslabs << IO_TLB_SHIFT;
->  
-> -	/* Get IO TLB memory from the low pages */
-> -	vstart = memblock_alloc_low(PAGE_ALIGN(bytes), PAGE_SIZE);
-> +	if (allocate_anywhere)
-> +		vstart = memblock_alloc(PAGE_ALIGN(bytes), PAGE_SIZE);
-> +	else
-> +		/* Get IO TLB memory from the low pages */
-> +		vstart = memblock_alloc_low(PAGE_ALIGN(bytes), PAGE_SIZE);
-> +
->  	if (vstart && !swiotlb_init_with_tbl(vstart, io_tlb_nslabs, verbose))
->  		return;
->  
----end quoted text---
+3 patches applied to ath-next branch of ath.git, thanks.
+
+3a059c76f4eb ath5k: pcu: Add a description for 'band' remove one for 'mode'
+691c7a4d4fd7 wil6210: Demote non-kerneldoc headers to standard comment blocks
+1d4f5c15cf65 ath5k: Fix kerneldoc formatting issue
+
+-- 
+https://patchwork.kernel.org/patch/11714405/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
