@@ -2,91 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB69C24735E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01692247349
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388092AbgHQSy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:54:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37708 "EHLO
+        id S1731080AbgHQSxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:53:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730917AbgHQSy4 (ORCPT
+        with ESMTP id S2387814AbgHQSxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 14:54:56 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED041C061389;
-        Mon, 17 Aug 2020 11:54:55 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id 6so13276296qtt.0;
-        Mon, 17 Aug 2020 11:54:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=EyInuEBx4tu8/dpK6QVmoYclYZh/Tpg6DL8iKkTJkGU=;
-        b=WA+o569b6qU9RIK8BsU79Xhczucyqu1v2kaoVouU7fMrqwOUY2OyVs9O7aiNYPuzfl
-         avdb3ooAA8YBV5u5nvog6hB9QI+4Zu3Hcywk15YkFXfgkTKZpvbXvyJxFm8PNit0vxWb
-         MCL6CkZwvbKmggNumNDl30FJvQfjWmAlFGqpQfbbhX2RbABWBKLeAUJHT6dl5EVWzyt3
-         PRbcXED8PgwrPH3jLFqA2lmIcSNXW8uL2ngTMKUIrcY06yjln5EPuX7OSmr5AqYkzCvw
-         BRPWf/YRFhdul+WTxFcaiqgDtgjuLswXlYksDLI0omlITnTOz+vWaQxrYds/lfvGIPxq
-         GfEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=EyInuEBx4tu8/dpK6QVmoYclYZh/Tpg6DL8iKkTJkGU=;
-        b=j74txvyTsmf1BePC0+JhhhO+oeXByoXiAosVJU05Lnjdq2fRmeN98dSHGrqAHQDMIg
-         Z5mB65ov0XmbXJIV7Z7luwlBRLmUNbQjqUmpkIe+Uu9hEp7tBXG+RMCGmyTgRJhxVVfV
-         UrVQCCXHXiD0UXixHOSMcgn7tuQyJWpQmr9qV6Lc1jHuk/pPUpszJXD3eSokvyOK+Y7b
-         QieihtBv1nEB05BCxb3Ur+Y7+3svteCe5r8B/ChPlEp6qQyGVJkyoCmIJhK+su/0MKN3
-         kCt/G0aDAqU2TBgEWoajXKJGykSWSc4eKbbmE2RPArfpU66872HaxqHLogyo01fQxU7Z
-         Sp5Q==
-X-Gm-Message-State: AOAM532oRaWOYplV+iFyWgvMP7kyXwfZOJqdNPVwReSBkcs0zQ2kS+vl
-        xifTywEeF2IzcwJuhYRusMY=
-X-Google-Smtp-Source: ABdhPJyOu0pQY8yotrl8IF2bpoy442cARcsPMMim1bBFdx5ZWmsjekNfmiZ04J3F1AzoSCTJFVk3sQ==
-X-Received: by 2002:ac8:4c86:: with SMTP id j6mr14725822qtv.65.1597690495228;
-        Mon, 17 Aug 2020 11:54:55 -0700 (PDT)
-Received: from tong-desktop.local ([2601:5c0:c100:b9d:c66:53f8:5dc7:25fa])
-        by smtp.googlemail.com with ESMTPSA id w12sm17318534qkj.116.2020.08.17.11.54.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 11:54:54 -0700 (PDT)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        linux-serial@vger.kernel.org
-Cc:     ztong0001@gmail.com, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] Fixes: tty: serial: earlycon dependency
-Date:   Mon, 17 Aug 2020 14:54:19 -0400
-Message-Id: <20200817185419.1133596-1-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200817170038.GA725471@kroah.com>
-References: <20200817170038.GA725471@kroah.com>
+        Mon, 17 Aug 2020 14:53:44 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5D0C061389;
+        Mon, 17 Aug 2020 11:53:44 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f26be00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f26:be00:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 594151EC026E;
+        Mon, 17 Aug 2020 20:53:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1597690421;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=R9rpQQ3QHK65dGeiLDAY9hsv8ikqXlZFeTV49qjDFhs=;
+        b=JLyHtJuMAboC+cV46FCxtaqv6/HVYof2SrVxT377a4nEjVxBhWTBBZjvB2FWruvZeCoftT
+        oxmab1CVK7Y+XDzb2G9AU00CkuADnq9K0D8MoBmdemyZFos51X34b5zQcoYRY1jtNV0Gnn
+        wuCneV/LpbFQyLhQPohnFbuIoPkCjPA=
+Date:   Mon, 17 Aug 2020 20:54:36 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Luca Stefani <luca.stefani.ge1@gmail.com>,
+        Tony Luck <tony.luck@intel.com>, linux-edac@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] RAS/CEC: Fix cec_init prototype
+Message-ID: <20200817185436.GO549@zn.tnic>
+References: <20200805045955.GB9127@nazgul.tnic>
+ <20200805095708.83939-1-luca.stefani.ge1@gmail.com>
+ <20200812210909.GA3283093@google.com>
+ <20200817151357.GK549@zn.tnic>
+ <CABCJKuccY-wOEuQm--TQYgJvErOXu5u-jBMgCrM7JYsNqYK=gg@mail.gmail.com>
+ <20200817174102.GN549@zn.tnic>
+ <CABCJKud6M+u-TUZ2w5zdPPnwJQ1b7wxXwg8Rnoc=rBC6zMvRxA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CABCJKud6M+u-TUZ2w5zdPPnwJQ1b7wxXwg8Rnoc=rBC6zMvRxA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-parse_options() in drivers/tty/serial/earlycon.c calls uart_parse_earlycon
-in drivers/tty/serial/serial_core.c therefore selecting SERIAL_EARLYCON
-should automatically select SERIAL_CORE, otherwise will result in symbol
-not found error during linking if SERIAL_CORE is not configured as builtin
+On Mon, Aug 17, 2020 at 11:11:02AM -0700, Sami Tolvanen wrote:
+> Not the toolchain, the tree has patches for LTO+CFI, which tends to
+> break with type mismatches. This doesn't affect just building the
+> kernel with Clang without other changes.
 
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
----
- drivers/tty/serial/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Ok, that explains it.
 
-diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index 8a0352eb337c..42e844314cbb 100644
---- a/drivers/tty/serial/Kconfig
-+++ b/drivers/tty/serial/Kconfig
-@@ -8,6 +8,7 @@ menu "Serial drivers"
- 
- config SERIAL_EARLYCON
- 	bool
-+	select SERIAL_CORE
- 	help
- 	  Support for early consoles with the earlycon parameter. This enables
- 	  the console before standard serial driver is probed. The console is
+As for why I'm still chasing down the exact reason for the reported
+breakage: this will determine the urgency with which this fix is handled
+and to which trees it needs to go so please be more precise next time
+when saying "it broke". :)
+
+Thx.
+
 -- 
-2.25.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
