@@ -2,60 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6F8246926
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B77524692F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729128AbgHQPNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:13:13 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:58236 "EHLO mail.skyhub.de"
+        id S1729147AbgHQPOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:14:34 -0400
+Received: from mga12.intel.com ([192.55.52.136]:55009 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726630AbgHQPNI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:13:08 -0400
-Received: from zn.tnic (p200300ec2f26be00b1bb9962444976f9.dip0.t-ipconnect.de [IPv6:2003:ec:2f26:be00:b1bb:9962:4449:76f9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CD8A81EC0242;
-        Mon, 17 Aug 2020 17:13:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1597677184;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=i8MVmyah1Fs8KfXU9N/awUAHhqMXH1WZUfiLuvVrNJE=;
-        b=X52MOy3NrN1+LRV78et6GuwdpO/kQSocJZyY1p18gEkt3UZ6K8NodJo6PcvBHqjJuny3zQ
-        jKIQtPjlbCiMXnOFf/HjzIyUZqx7c1Q3W3WniEIkeAy1bJD06TnTdbHGCQ/cVdEZJequgE
-        u5v8Mvt8wcFPWrgHDMcgpbEZ/VCYMvU=
-Date:   Mon, 17 Aug 2020 17:13:57 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Luca Stefani <luca.stefani.ge1@gmail.com>,
-        Tony Luck <tony.luck@intel.com>, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] RAS/CEC: Fix cec_init prototype
-Message-ID: <20200817151357.GK549@zn.tnic>
-References: <20200805045955.GB9127@nazgul.tnic>
- <20200805095708.83939-1-luca.stefani.ge1@gmail.com>
- <20200812210909.GA3283093@google.com>
+        id S1726630AbgHQPOe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:14:34 -0400
+IronPort-SDR: TwljEyUIosj63YTOzdTki3H/MzsDQYXcdUCy+1SVjabBJxu+bumm7qOtjS+FEu+YLEbKPJkAlV
+ YtJMXSdSTuyw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9715"; a="134245421"
+X-IronPort-AV: E=Sophos;i="5.76,322,1592895600"; 
+   d="scan'208";a="134245421"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 08:14:33 -0700
+IronPort-SDR: M4lPcSqU1VGRY+xlpUR0D5GOIZi7NVdcxGRGA+jje3kW1lS9sGTjNmwWqdLPOO0NgbHR43uGp4
+ IxaBfgbmEaOQ==
+X-IronPort-AV: E=Sophos;i="5.76,322,1592895600"; 
+   d="scan'208";a="310124183"
+Received: from jhor-mobl.gar.corp.intel.com (HELO [10.209.166.196]) ([10.209.166.196])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 08:14:31 -0700
+Subject: Re: [PATCH v2] soundwire: SDCA: add helper macro to access controls
+To:     Vinod Koul <vkoul@kernel.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org,
+        jank@cadence.com, srinivas.kandagatla@linaro.org,
+        rander.wang@linux.intel.com, ranjani.sridharan@linux.intel.com,
+        hui.wang@canonical.com, sanyog.r.kale@intel.com,
+        mengdong.lin@intel.com, bard.liao@intel.com
+References: <20200816201058.9687-1-yung-chuan.liao@linux.intel.com>
+ <20200817121411.GR2639@vkoul-mobl>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <2ab412c5-bf96-5ba3-c193-5a8ad9071bbb@linux.intel.com>
+Date:   Mon, 17 Aug 2020 10:14:25 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200812210909.GA3283093@google.com>
+In-Reply-To: <20200817121411.GR2639@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 02:09:09PM -0700, Sami Tolvanen wrote:
-> The type mismatch broke allyesconfig in my test tree and your patch
-> fixes the issue.
 
-How are you building your allyesconfigs? Because allyesconfig works here
-fine on latest Linus tree.
+>> The upcoming SDCA (SoundWire Device Class Audio) specification defines
+>> a hiearchical encoding to interface with Class-defined capabilities,
+> 
+> typo hiearchical
 
-Thx.
+ok
 
--- 
-Regards/Gruss,
-    Boris.
+>> based on which audio function, entity, control and channel being used.
+> 
+> Can you please elaborate on what do these terms refer to?
+> 
+> Also can we have some documentation for this and how Linux is going to
+> use it..
 
-https://people.kernel.org/tglx/notes-about-netiquette
+These are concepts in the SDCA draft spec, and that should be the 
+reference. We worked with MIPI so that this spec will be available with 
+a click-through agreement when ratified, for now it's only available to 
+contributors per MIPI bylaws.
+
+If you do not have access to this specification, then that's a real 
+problem. Maybe you need to let Bard take care of this part as a 
+co-maintainer?
+
+The goal with this macro is to enable a first set of codecs drivers 
+using these concepts to be released upstream. All you need to know at 
+this point is that controls are defined in a hierarchical way and 
+accessed with a read/write transaction from/to the address created with 
+the following macro.
+
+>> +/* v1.2 device - SDCA address mapping */
+>> +#define SDW_SDCA_CTL(fun, ent, ctl, ch)		(BIT(30) |			\
+>> +						 (((fun) & 0x7) << 22) |	\
+>> +						 (((ent) & 0x40) << 15) |	\
+>> +						 (((ent) & 0x3f) << 7) |	\
+>> +						 (((ctl) & 0x30) << 15) |	\
+>> +						 (((ctl) & 0x0f) << 3) |	\
+>> +						 (((ch) & 0x38) << 12) |	\
+>> +						 ((ch) & 0x07))
+>> +
+> 
+> how about adding an underscore to the arguments here:
+> 
+> #define SDW_SDCA_CTL(_fun, _ent, _ctl, _ch)
+> and so on..
+
+I checked the SoundWire defines and the vast majority of the macros 
+don't use underscores, and when they do there's no consistency between 1 
+or 2 underscores.
+
