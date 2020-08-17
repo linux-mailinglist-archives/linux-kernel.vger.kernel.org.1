@@ -2,57 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E19F2465AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D212465D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727818AbgHQLsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 07:48:40 -0400
-Received: from muru.com ([72.249.23.125]:40596 "EHLO muru.com"
+        id S1728214AbgHQL6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 07:58:15 -0400
+Received: from elvis.franken.de ([193.175.24.41]:49839 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726161AbgHQLsW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 07:48:22 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 6068880A3;
-        Mon, 17 Aug 2020 11:48:20 +0000 (UTC)
-Date:   Mon, 17 Aug 2020 14:48:47 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     Linux-OMAP <linux-omap@vger.kernel.org>,
-        Adam Ford <adam.ford@logicpd.com>,
-        "H. Nikolaus Schaller" <hns@goldelico.com>,
-        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 2/2] ARM: dts: omap3: Add cpu trips and cooling map for
- omap34/36 families
-Message-ID: <20200817114847.GL2994@atomide.com>
-References: <20191007220540.30690-1-aford173@gmail.com>
- <20191007220540.30690-2-aford173@gmail.com>
- <CAHCN7x+fnyXb+UO3xPd0nKeZNAPhRsXd5kTCAHxvg6hSt8Bx-A@mail.gmail.com>
+        id S1726980AbgHQL6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 07:58:13 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1k7dmF-0004BP-00; Mon, 17 Aug 2020 13:58:11 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 6F205C0D74; Mon, 17 Aug 2020 13:53:08 +0200 (CEST)
+Date:   Mon, 17 Aug 2020 13:53:08 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-mips@linux-mips.org, Hauke Mehrtens <hauke@hauke-m.de>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        "open list:BROADCOM BCM47XX MIPS ARCHITECTURE" 
+        <linux-mips@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/2] firmware: bcm47xx_sprom: Fix -Wmissing-prototypes
+ warnings
+Message-ID: <20200817115308.GA4796@alpha.franken.de>
+References: <20200726041521.5398-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHCN7x+fnyXb+UO3xPd0nKeZNAPhRsXd5kTCAHxvg6hSt8Bx-A@mail.gmail.com>
+In-Reply-To: <20200726041521.5398-1-f.fainelli@gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Adam Ford <aford173@gmail.com> [200805 13:17]:
-> I know this is an old thread.  I am trying to revisit some of the
-> other issues that came about with this, but is there any way we can
-> get patch 2/2 applied?  It might not do anything unless the bandgap
-> sensor is enabled, but it at least gets us one step closer for those
-> who choose to enable it.  With 1GHz support now available, it would be
-> nice to have the precautions to protect the processor from running too
-> fast when its too hot.
+On Sat, Jul 25, 2020 at 09:15:19PM -0700, Florian Fainelli wrote:
+> Hi Thomas,
+> 
+> This patch series fixes W=1 -Wmissing-prototypes warnings for the
+> bcm47xx_sprom.c firmware file.
+> 
+> Thanks!
+> 
+> Florian Fainelli (2):
+>   firmware: bcm47xx_sprom: Fix -Wmissing-prototypes warnings
+>   MIPS: BCM47xx: Include bcm47xx_sprom.h
+> 
+>  arch/mips/include/asm/mach-bcm47xx/bcm47xx.h |  4 +---
+>  drivers/firmware/broadcom/bcm47xx_sprom.c    |  1 +
+>  include/linux/bcm47xx_sprom.h                | 10 ++++++++++
+>  3 files changed, 12 insertions(+), 3 deletions(-)
 
-Sure seems OK to me. Care to resend as I no longer have it in my inbox?
+series applied to mips-next.
 
-Regards,
+Thomas.
 
-Tony
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
