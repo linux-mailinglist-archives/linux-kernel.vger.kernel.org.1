@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23666246E4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8ACB246DAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389774AbgHQRWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:22:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56260 "EHLO mail.kernel.org"
+        id S2389381AbgHQRJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:09:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731141AbgHQQSB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:18:01 -0400
+        id S2388587AbgHQQLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:11:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 16F4F22CA1;
-        Mon, 17 Aug 2020 16:17:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F94F20748;
+        Mon, 17 Aug 2020 16:11:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597681075;
-        bh=vPeBCt8thzFG8GWW6Q01OjtB4q5Va9ZO6h/U/hX0IDg=;
+        s=default; t=1597680661;
+        bh=AeWOSZs2Ggfl1t1WNA/c3wR5SFzllGTVFS/NVXtR+ow=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZiBSIu8/bC1R/+kqZOBQL9s9fZ01uWb19+sDS5zQWtF9/hW+Dfkb9k7Pe2nfPJLSf
-         39EL6MVYGBQC1kWjh27Dj3NiW62CT+d+ra1K54BfLt+clf8ApjgSiV7j0pXiQMEEr0
-         8SFb6KMxgrAwv2d0A7NPlP0yA0beyUOIRZVqG6JI=
+        b=DI3Vsa/RhGZbqOGYAWSVEaH7gUAuy76hKWLb6uNIfmT1CNTNEjtBJYC5K7JOP2Zko
+         pu8B2VzQ4+ZR8AYtSI7DxbPFBpUJuuGlHU2Dlfma1CCQS3hpPW5j0JDmOgWFf4Y92A
+         tj4R4Gjowcr0PcZtz4TDk+XKsxkmw+qolTUBdc8g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Ogness <john.ogness@linutronix.de>,
-        kernel test robot <lkp@intel.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 131/168] af_packet: TPACKET_V3: fix fill status rwlock imbalance
-Date:   Mon, 17 Aug 2020 17:17:42 +0200
-Message-Id: <20200817143740.241219751@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 5.4 265/270] xen/balloon: fix accounting in alloc_xenballooned_pages error path
+Date:   Mon, 17 Aug 2020 17:17:46 +0200
+Message-Id: <20200817143809.020440170@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143733.692105228@linuxfoundation.org>
-References: <20200817143733.692105228@linuxfoundation.org>
+In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
+References: <20200817143755.807583758@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,72 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Ogness <john.ogness@linutronix.de>
+From: Roger Pau Monne <roger.pau@citrix.com>
 
-[ Upstream commit 88fd1cb80daa20af063bce81e1fad14e945a8dc4 ]
+commit 1951fa33ec259abdf3497bfee7b63e7ddbb1a394 upstream.
 
-After @blk_fill_in_prog_lock is acquired there is an early out vnet
-situation that can occur. In that case, the rwlock needs to be
-released.
+target_unpopulated is incremented with nr_pages at the start of the
+function, but the call to free_xenballooned_pages will only subtract
+pgno number of pages, and thus the rest need to be subtracted before
+returning or else accounting will be skewed.
 
-Also, since @blk_fill_in_prog_lock is only acquired when @tp_version
-is exactly TPACKET_V3, only release it on that exact condition as
-well.
-
-And finally, add sparse annotation so that it is clearer that
-prb_fill_curr_block() and prb_clear_blk_fill_status() are acquiring
-and releasing @blk_fill_in_prog_lock, respectively. sparse is still
-unable to understand the balance, but the warnings are now on a
-higher level that make more sense.
-
-Fixes: 632ca50f2cbd ("af_packet: TPACKET_V3: replace busy-wait loop")
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200727091342.52325-2-roger.pau@citrix.com
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/packet/af_packet.c |    9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
 
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -949,6 +949,7 @@ static int prb_queue_frozen(struct tpack
+---
+ drivers/xen/balloon.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
+
+--- a/drivers/xen/balloon.c
++++ b/drivers/xen/balloon.c
+@@ -632,6 +632,12 @@ int alloc_xenballooned_pages(int nr_page
+  out_undo:
+ 	mutex_unlock(&balloon_mutex);
+ 	free_xenballooned_pages(pgno, pages);
++	/*
++	 * NB: free_xenballooned_pages will only subtract pgno pages, but since
++	 * target_unpopulated is incremented with nr_pages at the start we need
++	 * to remove the remaining ones also, or accounting will be screwed.
++	 */
++	balloon_stats.target_unpopulated -= nr_pages - pgno;
+ 	return ret;
  }
- 
- static void prb_clear_blk_fill_status(struct packet_ring_buffer *rb)
-+	__releases(&pkc->blk_fill_in_prog_lock)
- {
- 	struct tpacket_kbdq_core *pkc  = GET_PBDQC_FROM_RB(rb);
- 	atomic_dec(&pkc->blk_fill_in_prog);
-@@ -996,6 +997,7 @@ static void prb_fill_curr_block(char *cu
- 				struct tpacket_kbdq_core *pkc,
- 				struct tpacket_block_desc *pbd,
- 				unsigned int len)
-+	__acquires(&pkc->blk_fill_in_prog_lock)
- {
- 	struct tpacket3_hdr *ppd;
- 
-@@ -2272,8 +2274,11 @@ static int tpacket_rcv(struct sk_buff *s
- 	if (do_vnet &&
- 	    virtio_net_hdr_from_skb(skb, h.raw + macoff -
- 				    sizeof(struct virtio_net_hdr),
--				    vio_le(), true, 0))
-+				    vio_le(), true, 0)) {
-+		if (po->tp_version == TPACKET_V3)
-+			prb_clear_blk_fill_status(&po->rx_ring);
- 		goto drop_n_account;
-+	}
- 
- 	if (po->tp_version <= TPACKET_V2) {
- 		packet_increment_rx_head(po, &po->rx_ring);
-@@ -2379,7 +2384,7 @@ static int tpacket_rcv(struct sk_buff *s
- 		__clear_bit(slot_id, po->rx_ring.rx_owner_map);
- 		spin_unlock(&sk->sk_receive_queue.lock);
- 		sk->sk_data_ready(sk);
--	} else {
-+	} else if (po->tp_version == TPACKET_V3) {
- 		prb_clear_blk_fill_status(&po->rx_ring);
- 	}
- 
+ EXPORT_SYMBOL(alloc_xenballooned_pages);
 
 
