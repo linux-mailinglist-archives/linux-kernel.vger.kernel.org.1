@@ -2,300 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3F7245DB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 09:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7F52245D63
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 09:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727909AbgHQHOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 03:14:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57900 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726648AbgHQHLV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 03:11:21 -0400
-Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35D4C22B4E;
-        Mon, 17 Aug 2020 07:11:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597648277;
-        bh=8GNxSBcE1rBcmPZRNM+Aogsc1VbF9eSM/5Z18Uqta3c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LDiwI3AElrJu5LARy4xlNMh+B5vQFqL1BmCs15Ts8fy5Jx0R9/CRYxpaGEpgz86II
-         +IV1+Rw+Qdz45FgfCIWM40WSDD0P/+rap7PZTO40nXpzm0Hn0obYrjlADN0kiEH4ES
-         JVXLWyReINslCO/7X9JoVMxjWDYxU/l5BriN1Wnc=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1k7ZIZ-00Bdjo-BV; Mon, 17 Aug 2020 09:11:15 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org
-Subject: [PATCH v3 13/44] staging: mfd: hi6421-spmi-pmic: deal with non-static functions
-Date:   Mon, 17 Aug 2020 09:10:32 +0200
-Message-Id: <d26323ab7be5b4efb73b1950b4daaa5959277449.1597647359.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1597647359.git.mchehab+huawei@kernel.org>
-References: <cover.1597647359.git.mchehab+huawei@kernel.org>
+        id S1726308AbgHQHKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 03:10:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725765AbgHQHKr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 03:10:47 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E311EC061388
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 00:10:46 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id l204so13974899oib.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 00:10:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Yjoi260yivvP8E6VWrtmP+N5ypeCnjjZyP0aQQnqe/M=;
+        b=OhMuhXoTQ8sDuP2VzfqpdbjlOHEj2dXmR8dEiSEBWTL2GfPjIGBRLuFtA1Z5CbwOfz
+         xxSi5QjyDz1zuz+NVO7M3hLBjTlUn7N47KbczSAr3HzvR5uP5adz/5tTPt1djhfj7bGa
+         URyv+LzO/KA/mihbRAWKJz76MzcNODlK/X1BN0OkxdhCEwN02P5ygU/ARzs73bFr9VpV
+         mqI6aCS7HVyb6X9LKY+NAU7sTUl0nL1viANnYejE4Z/qQzv3n/i2KhuJQCgXG6oMQH7X
+         uppDOlFl/krlzy4jVxU2TZaTcfv6d5EkkMqus9kw6WyPURbzhEIvHqM+JMz+gx5RC0tk
+         J14g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Yjoi260yivvP8E6VWrtmP+N5ypeCnjjZyP0aQQnqe/M=;
+        b=Kbbhv6rE9PQrPAfBbzI1eQ1LmyEgYWgUpJNZeEaiSaR0j2pdrdHdSXB61sVCqIecXj
+         /Gu0MotrTV4OH3+pDvV2re0kNknfAN/ATmEwW/VzMYY7D4c8CjauFdHm9Quyb4ImNFPl
+         +MdTO5rFYgJ5qf0iz6EL67pbL7Mv9DHvIHCQtfxfefQCSxsNHi/iJ12SX7mfWLgufbfg
+         z9JJBfbYYixeEdZxzmHGPik4uKDggPOO9cFGm8IT+gfGe+NDK/HaLLlc1JnJKjgq/JEY
+         fQB4g1qjZ9bCZKeUq8PV6XvFT8d4WC7D4xIyZdCe5SdT/AQ1hybzqiF534ucbOa/bRG2
+         0TwQ==
+X-Gm-Message-State: AOAM532ngS8al3F6q9YA0HpQzKepvQdUrLWirdTZGcHuA0kZwO5rRLAp
+        wLwwukadp8JSStbcoJ8EtfsJw0+6MXgJ1W7ZQZU6cQ==
+X-Google-Smtp-Source: ABdhPJwlVHo4MS+1XuXNymGW9ImwwYnBx/t4+c4KCEPyzFY62JhauWBY8c3AEs7t4tsTfyxaH8c0LTxMtrMpsk3pqIU=
+X-Received: by 2002:aca:aa8c:: with SMTP id t134mr8082078oie.121.1597648243722;
+ Mon, 17 Aug 2020 00:10:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200807090031.3506555-1-elver@google.com> <87pn7yxnjc.fsf@nanos> <CANpmjNPz8vZLGWUzO_8xxtxdXC7cODUL1zVyZf-rBKDBd9LOpA@mail.gmail.com>
+In-Reply-To: <CANpmjNPz8vZLGWUzO_8xxtxdXC7cODUL1zVyZf-rBKDBd9LOpA@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 17 Aug 2020 09:10:32 +0200
+Message-ID: <CANpmjNM7kyBLpvcL7wqAUpMnQhPv8zc=aCnE2eQO248b9-2CNQ@mail.gmail.com>
+Subject: Re: [PATCH] kcsan: Treat runtime as NMI-like with interrupt tracing
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzbot <syzbot+8db9e1ecde74e590a657@syzkaller.appspotmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Several functions aren't used outside the mfd driver. So,
-either remove or make them static.
+On Tue, 11 Aug 2020 at 08:56, Marco Elver <elver@google.com> wrote:
+> On Mon, 10 Aug 2020 at 22:18, Thomas Gleixner <tglx@linutronix.de> wrote:
+> > Marco Elver <elver@google.com> writes:
+> > > Since KCSAN instrumentation is everywhere, we need to treat the hooks
+> > > NMI-like for interrupt tracing. In order to present an as 'normal' as
+> > > possible context to the code called by KCSAN when reporting errors, we
+> > > need to update the IRQ-tracing state.
+> > >
+> > > Tested: Several runs through kcsan-test with different configuration
+> > > (PROVE_LOCKING on/off), as well as hours of syzbot testing with the
+> > > original config that caught the problem (without CONFIG_PARAVIRT=y,
+> > > which appears to cause IRQ state tracking inconsistencies even when
+> > > KCSAN remains off, see Link).
+> > >
+> > > Link: https://lkml.kernel.org/r/0000000000007d3b2d05ac1c303e@google.com
+> > > Fixes: 248591f5d257 ("kcsan: Make KCSAN compatible with new IRQ state tracking")
+> > > Reported-by: syzbot+8db9e1ecde74e590a657@syzkaller.appspotmail.com
+> > > Co-developed-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > > Signed-off-by: Marco Elver <elver@google.com>
+> > > ---
+> > > Patch Note: This patch applies to latest mainline. While current
+> > > mainline suffers from the above problem, the configs required to hit the
+> > > issue are likely not enabled too often (of course with PROVE_LOCKING on;
+> > > we hit it on syzbot though). It'll probably be wise to queue this as
+> > > normal on -rcu, just in case something is still off, given the
+> > > non-trivial nature of the issue. (If it should instead go to mainline
+> > > right now as a fix, I'd like some more test time on syzbot.)
+> >
+> > I'd rather stick it into mainline before -rc1.
+> >
+> > Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+>
+> Thank you, sounds good.
+>
+> FWIW I let it run on syzkaller over night once more, rebased against
+> Sunday's mainline, and found no DEBUG_LOCKDEP issues. (It still found
+> the known issue in irqentry_exit(), but is not specific to KCSAN:
+> https://lore.kernel.org/lkml/000000000000e3068105ac405407@google.com/)
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/staging/hikey9xx/hi6421-spmi-pmic.c | 147 ++++----------------
- 1 file changed, 24 insertions(+), 123 deletions(-)
+I lost track of what's happening with the IRQ state tracking patches.
+Do we still need this?
 
-diff --git a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-index 809381eb6043..8b87d48b88b5 100644
---- a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-+++ b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-@@ -73,21 +73,21 @@ u32 hisi_pmic_read(struct hisi_pmic *pmic, int reg)
- 	u8 read_value = 0;
- 	struct spmi_device *pdev;
- 
--	if (NULL == g_pmic) {
--		pr_err(" g_pmic  is NULL\n");
-+	if (!g_pmic) {
-+		pr_err("%s: g_pmic is NULL\n", __func__);
- 		return 0;
- 	}
- 
- 	pdev = to_spmi_device(g_pmic->dev);
--	if (NULL == pdev) {
--		pr_err("%s:pdev get failed!\n", __func__);
-+	if (!pdev) {
-+		pr_err("%s: pdev get failed!\n", __func__);
- 		return 0;
- 	}
- 
- 	ret = spmi_ext_register_readl(pdev, reg, (unsigned char*)&read_value, 1);/*lint !e734 !e732 */
- 	if (ret) {
--		pr_err("%s:spmi_ext_register_readl failed!\n", __func__);
--		return ret;
-+		pr_err("%s: spmi_ext_register_readl failed!\n", __func__);
-+		return 0;
- 	}
- 	return (u32)read_value;
- }
-@@ -98,34 +98,32 @@ void hisi_pmic_write(struct hisi_pmic *pmic, int reg, u32 val)
- 	u32 ret;
- 	struct spmi_device *pdev;
- 
--	if (NULL == g_pmic) {
--		pr_err(" g_pmic  is NULL\n");
-+	if (!g_pmic) {
-+		pr_err("%s: g_pmic is NULL\n", __func__);
- 		return;
- 	}
- 
- 	pdev = to_spmi_device(g_pmic->dev);
--	if (NULL == pdev) {
--		pr_err("%s:pdev get failed!\n", __func__);
-+	if (!pdev) {
-+		pr_err("%s: pdev get failed!\n", __func__);
- 		return;
- 	}
- 
- 	ret = spmi_ext_register_writel(pdev, reg, (unsigned char*)&val, 1);/*lint !e734 !e732 */
- 	if (ret) {
--		pr_err("%s:spmi_ext_register_writel failed!\n", __func__);
--		return ;
-+		pr_err("%s: spmi_ext_register_writel failed!\n", __func__);
-+		return;
- 	}
- }
- EXPORT_SYMBOL(hisi_pmic_write);
- 
--
--void hisi_pmic_rmw(struct hisi_pmic *pmic, int reg,
--		     u32 mask, u32 bits)
-+void hisi_pmic_rmw(struct hisi_pmic *pmic, int reg, u32 mask, u32 bits)
- {
- 	u32 data;
- 	unsigned long flags;
- 
--	if (NULL == g_pmic) {
--		pr_err(" g_pmic  is NULL\n");
-+	if (!g_pmic) {
-+		pr_err("%s: g_pmic is NULL\n", __func__);
- 		return;
- 	}
- 
-@@ -137,75 +135,6 @@ void hisi_pmic_rmw(struct hisi_pmic *pmic, int reg,
- }
- EXPORT_SYMBOL(hisi_pmic_rmw);
- 
--unsigned int hisi_pmic_reg_read(int addr)
--{
--	return (unsigned int)hisi_pmic_read(g_pmic, addr);
--}
--EXPORT_SYMBOL(hisi_pmic_reg_read);
--
--void hisi_pmic_reg_write(int addr, int val)
--{
--	hisi_pmic_write(g_pmic, addr, val);
--}
--EXPORT_SYMBOL(hisi_pmic_reg_write);
--
--void hisi_pmic_reg_write_lock(int addr, int val)
--{
--	unsigned long flags;
--
--	if (NULL == g_pmic) {
--		pr_err(" g_pmic  is NULL\n");
--		return;
--	}
--
--	spin_lock_irqsave(&g_pmic->lock, flags);
--	hisi_pmic_write(g_pmic, g_pmic->normal_lock.addr, g_pmic->normal_lock.val);
--	hisi_pmic_write(g_pmic, g_pmic->debug_lock.addr, g_pmic->debug_lock.val);
--	hisi_pmic_write(g_pmic, addr, val);
--	hisi_pmic_write(g_pmic, g_pmic->normal_lock.addr, 0);
--	hisi_pmic_write(g_pmic, g_pmic->debug_lock.addr, 0);
--	spin_unlock_irqrestore(&g_pmic->lock, flags);
--}
--
--int hisi_pmic_array_read(int addr, char *buff, unsigned int len)
--{
--	unsigned int i;
--
--	if ((len > 32) || (NULL == buff)) {
--		return -EINVAL;
--	}
--
--	/*
--	 * Here is a bug in the pmu die.
--	 * the coul driver will read 4 bytes,
--	 * but the ssi bus only read 1 byte, and the pmu die
--	 * will make sampling 1/10669us about vol cur,so the driver
--	 * read the data is not the same sampling
--	 */
--	for (i = 0; i < len; i++)
--	{
--		*(buff + i) = hisi_pmic_reg_read(addr+i);
--	}
--
--	return 0;
--}
--
--int hisi_pmic_array_write(int addr, char *buff, unsigned int len)
--{
--    unsigned int i;
--
--	if ((len > 32) || (NULL == buff)) {
--		return -EINVAL;
--	}
--
--	for (i = 0; i < len; i++)
--	{
--		hisi_pmic_reg_write(addr+i, *(buff + i));
--	}
--
--	return 0;
--}
--
- static irqreturn_t hisi_irq_handler(int irq, void *data)
- {
- 	struct hisi_pmic *pmic = (struct hisi_pmic *)data;
-@@ -213,13 +142,13 @@ static irqreturn_t hisi_irq_handler(int irq, void *data)
- 	int i, offset;
- 
- 	for (i = 0; i < pmic->irqarray; i++) {
--		pending = hisi_pmic_reg_read((i + pmic->irq_addr.start_addr));
-+		pending = hisi_pmic_read(g_pmic, (i + pmic->irq_addr.start_addr));
- 		pending &= HISI_MASK_FIELD;
- 		if (pending != 0) {
- 			pr_info("pending[%d]=0x%lx\n\r", i, pending);
- 		}
- 
--		hisi_pmic_reg_write((i + pmic->irq_addr.start_addr), pending);
-+		hisi_pmic_write(g_pmic, (i + pmic->irq_addr.start_addr), pending);
- 
- 		/*solve powerkey order*/
- 		if ((HISI_IRQ_KEY_NUM == i) && ((pending & HISI_IRQ_KEY_VALUE) == HISI_IRQ_KEY_VALUE)) {
-@@ -237,13 +166,13 @@ static irqreturn_t hisi_irq_handler(int irq, void *data)
- 	/*Handle the second group irq if analysis the second group irq from dtsi*/
- 	if (1 == g_extinterrupt_flag){
- 		for (i = 0; i < pmic->irqarray1; i++) {
--			pending = hisi_pmic_reg_read((i + pmic->irq_addr1.start_addr));
-+			pending = hisi_pmic_read(g_pmic, (i + pmic->irq_addr1.start_addr));
- 			pending &= HISI_MASK_FIELD;
- 			if (pending != 0) {
- 				pr_info("pending[%d]=0x%lx\n\r", i, pending);
- 			}
- 
--			hisi_pmic_reg_write((i + pmic->irq_addr1.start_addr), pending);
-+			hisi_pmic_write(g_pmic, (i + pmic->irq_addr1.start_addr), pending);
- 
- 			if (pending) {
- 				for_each_set_bit(offset, &pending, HISI_BITS)
-@@ -276,9 +205,9 @@ static void hisi_irq_mask(struct irq_data *d)
- 		offset += pmic->irq_mask_addr.start_addr;
- 	}
- 	spin_lock_irqsave(&g_pmic->lock, flags);
--	data = hisi_pmic_reg_read(offset);
-+	data = hisi_pmic_read(g_pmic, offset);
- 	data |= (1 << (irqd_to_hwirq(d) & 0x07));
--	hisi_pmic_reg_write(offset, data);
-+	hisi_pmic_write(g_pmic, offset, data);
- 	spin_unlock_irqrestore(&g_pmic->lock, flags);
- }
- 
-@@ -303,9 +232,9 @@ static void hisi_irq_unmask(struct irq_data *d)
- 		offset += pmic->irq_mask_addr.start_addr;
- 	}
- 	spin_lock_irqsave(&g_pmic->lock, flags);
--	data = hisi_pmic_reg_read(offset);
--	data &= ~(1 << (irqd_to_hwirq(d) & 0x07)); /*lint !e502 */
--	hisi_pmic_reg_write(offset, data);
-+	data = hisi_pmic_read(g_pmic, offset);
-+	data &= ~(1 << (irqd_to_hwirq(d) & 0x07));
-+	hisi_pmic_write(g_pmic, offset, data);
- 	spin_unlock_irqrestore(&g_pmic->lock, flags);
- }
- 
-@@ -452,34 +381,6 @@ static int get_pmic_device_tree_data1(struct device_node *np, struct hisi_pmic *
- 	return ret;
- }/*lint -restore*/
- 
--int hisi_get_pmic_irq_byname(unsigned int pmic_irq_list)
--{
--	if ( NULL == g_pmic ) {
--		pr_err("[%s]g_pmic is NULL\n", __func__);
--		return -1;
--	}
--
--	if (pmic_irq_list > (unsigned int)g_pmic->irqnum) {
--		pr_err("[%s]input pmic irq number is error.\n", __func__);
--		return -1;
--	}
--	pr_info("%s:g_pmic->irqs[%d]=%d\n", __func__, pmic_irq_list, g_pmic->irqs[pmic_irq_list]);
--	return (int)g_pmic->irqs[pmic_irq_list];
--}
--EXPORT_SYMBOL(hisi_get_pmic_irq_byname);
--
--int hisi_pmic_get_vbus_status(void)
--{
--	if (0 == g_pmic_vbus.addr)
--		return -1;
--
--	if (hisi_pmic_reg_read(g_pmic_vbus.addr) & BIT(g_pmic_vbus.bit))
--		return 1;
--
--	return 0;
--}
--EXPORT_SYMBOL(hisi_pmic_get_vbus_status);
--
- static void hisi_pmic_irq_prc(struct hisi_pmic *pmic)
- {
- 	int i;
--- 
-2.26.2
+Or would Peter's new approach (to make raw->non-raw work) supersede this patch?
+    https://lkml.kernel.org/r/20200811201755.GI35926@hirez.programming.kicks-ass.net
 
+Which would appear to be the nicer solution.
+
+Thanks,
+-- Marco
