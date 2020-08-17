@@ -2,100 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 028B6246830
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 16:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DED5246833
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 16:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728923AbgHQOOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 10:14:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728465AbgHQOOB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 10:14:01 -0400
-Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A87720729;
-        Mon, 17 Aug 2020 14:14:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597673640;
-        bh=8O7qw6BCN+efbgg/RYA0raLJkFhZsKOGJVtGubbB164=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Yi5vjPkHVvumnFVZRdbd4wh9eM7MLT0ZFpBuBiRacd99mxSSAX0ols3pxA1vIYlxk
-         qeJz3aoOprLanOD9VTnQfgXE+lYayxbkZVMA/N4kAG7nxUJ99bVrFdsaSucpNxyOYc
-         Hm1r/p+32ZIbGHr74T4/4+16NVgSz2AvDCMcZeQ0=
-Received: by mail-oi1-f178.google.com with SMTP id j7so14889947oij.9;
-        Mon, 17 Aug 2020 07:14:00 -0700 (PDT)
-X-Gm-Message-State: AOAM532VyIl6B/HnSWTyZx2DYNE9fzD6k6cwNJs9QGP6MK2Uda6R/wLH
-        ReODdXceUswTrSwgya85JGODeEWpyoWdajOuTQ==
-X-Google-Smtp-Source: ABdhPJzDyEB62OFCS0ZR6kCDWJDbaeab8pSiIIncA5711i8IP18JmASq9esmDP4wsdj5hEzDb6mZAZhkabYpBOIhyJs=
-X-Received: by 2002:aca:c3d8:: with SMTP id t207mr9793498oif.152.1597673639819;
- Mon, 17 Aug 2020 07:13:59 -0700 (PDT)
+        id S1728898AbgHQOPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 10:15:16 -0400
+Received: from smtprelay0032.hostedemail.com ([216.40.44.32]:39432 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728465AbgHQOPM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 10:15:12 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id B25F118026136;
+        Mon, 17 Aug 2020 14:15:10 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 10,1,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2525:2553:2560:2563:2682:2685:2736:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6117:8985:9025:10004:10400:10848:11232:11658:11914:12043:12297:12438:12679:12740:12760:12895:13019:13069:13071:13161:13229:13311:13357:13439:14180:14181:14659:14721:21060:21080:21433:21627:21811:21889:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: able03_0f15ed127017
+X-Filterd-Recvd-Size: 1732
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf03.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 17 Aug 2020 14:15:09 +0000 (UTC)
+Message-ID: <0e130d4398b3e4a7e826a16b6726f0f0bce74900.camel@perches.com>
+Subject: Re: [PATCH V2 6/6] ceph_debug: Remove now unused dout macro
+ definitions
+From:   Joe Perches <joe@perches.com>
+To:     Ilya Dryomov <idryomov@gmail.com>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Ceph Development <ceph-devel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Mon, 17 Aug 2020 07:15:08 -0700
+In-Reply-To: <CAOi1vP8rL6R8LqFnz10O=N4gfC2zYiZdfZbg3NkcePRvOKu7xA@mail.gmail.com>
+References: <cover.1597626802.git.joe@perches.com>
+         <fe4e9e2a544af4d00aa5c97d9288d9b4d67db1ed.1597626802.git.joe@perches.com>
+         <CAOi1vP8rL6R8LqFnz10O=N4gfC2zYiZdfZbg3NkcePRvOKu7xA@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-References: <cover.1597247164.git.mchehab+huawei@kernel.org>
- <da65a508d01aa2092999d0ce7e9c061ccfd24036.1597247164.git.mchehab+huawei@kernel.org>
- <20200814201708.GA2665752@bogus> <20200815115536.6519a7f5@coco.lan>
-In-Reply-To: <20200815115536.6519a7f5@coco.lan>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 17 Aug 2020 08:13:47 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+AsbJxsyjVt_YC=9ToqQC_0XPLymLkKnmpc0uuS-1eSQ@mail.gmail.com>
-Message-ID: <CAL_Jsq+AsbJxsyjVt_YC=9ToqQC_0XPLymLkKnmpc0uuS-1eSQ@mail.gmail.com>
-Subject: Re: [PATCH 43/44] dt: document HiSilicon SPMI controller and
- mfd/regulator properties
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     mauro.chehab@huawei.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        devicetree@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 15, 2020 at 3:55 AM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
->
-> Hi Rob,
->
-> Em Fri, 14 Aug 2020 14:17:08 -0600
-> Rob Herring <robh@kernel.org> escreveu:
->
-> > On Wed, 12 Aug 2020 17:56:53 +0200, Mauro Carvalho Chehab wrote:
-> > > Add documentation for the properties needed by the HiSilicon
-> > > 6421v600 driver, and by the SPMI controller used to access
-> > > the chipset.
-> > >
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > > ---
-> > >  .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 182 ++++++++++++++++++
-> > >  .../spmi/hisilicon,hisi-spmi-controller.yaml  |  54 ++++++
-> > >  2 files changed, 236 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
-> > >  create mode 100644 Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
-> > >
-> >
-> >
-> > My bot found errors running 'make dt_binding_check' on your patch:
-> >
-> > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.example.dt.yaml: example-0: spmi@fff24000:reg:0: [0, 4294066176, 0, 4096] is too long
->
-> I was unable to find any way to solve this one. What's the proper
-> way to set the length of the root reg on some example?
+On Mon, 2020-08-17 at 11:24 +0200, Ilya Dryomov wrote:
+> On Mon, Aug 17, 2020 at 3:34 AM Joe Perches <joe@perches.com> wrote:
+> > All the uses have be converted to pr_debug, so remove these.
+[]
+> Hi Joe,
 
-The default is 1 address and size cell. Either adjust 'reg' for that
-or you can define a bus node:
+Hi Ilya.
 
-bus {
-  #address-cells = <2>;
-  #size-cells = <2>;
+> Yeah, roughly the same thing can be achieved with +flmp instead
+> of just +p with PRETTYDEBUG, but PRETTYDEBUG formatting actually
+> predates those flags and some of us still use bash scripts from
+> back then.  We also have a few guides and blog entries with just
+> +p, but that's not a big deal.
 
-  spmi@123 {
-    ...
-  };
-};
+btw: I sent a patch adding a +F flag to emit
+the kbasename(FILE) to dynamic debug output.
 
-My preference is doing the former.
+https://lore.kernel.org/lkml/3e4a895e7c25e37c0f4727b960b7abdcf0752cbb.camel@perches.com/
 
-Rob
+
+
