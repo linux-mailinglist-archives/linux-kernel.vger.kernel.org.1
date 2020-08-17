@@ -2,57 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4435E246505
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD5A246506
 	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728355AbgHQK7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 06:59:25 -0400
-Received: from muru.com ([72.249.23.125]:40508 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728301AbgHQK7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 06:59:00 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 26A7980A3;
-        Mon, 17 Aug 2020 10:58:58 +0000 (UTC)
-Date:   Mon, 17 Aug 2020 13:59:26 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Bin Liu <b-liu@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johan Hovold <johan@kernel.org>, od@zcrc.me,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] usb: musb: Fix runtime PM race in musb_queue_resume_work
-Message-ID: <20200817105926.GF2994@atomide.com>
-References: <20200809125359.31025-1-paul@crapouillou.net>
+        id S1728382AbgHQLAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 07:00:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728363AbgHQK7j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 06:59:39 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383E5C061342
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 03:59:39 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id 77so14073729ilc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 03:59:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mRFKMn469rvJhbWPmwRlBDaHdkmhCPJ0BZ8j32mtJZ8=;
+        b=nYtFxTDlguMrPy84wfm448P60GlInQ7IF6vj7mfgT+/kHB8EL9ZE3BIajxXy6O+CnG
+         oiOVOML039xpDFQXS9P0FqmUspW3JExsgLjasj8rZSfKaY/zPKzRjcaexFXPwd6oj9/9
+         UgahkMybxjI7uz6FwlLOLZQd/Gxjm8txa1PhkFigBFT07tviMtLt5GupPjt8ubs8hSmI
+         gXFWrIAXriIiUl9Ork9197tmvAOpzwIyfxMEzk/l+PdqgSJlp+CeCYEspyUQkczU14fh
+         RTLo4a5KTluMp+5wiqvuF1T2afYhnr+fGdLqg6ykzSNMWmR+jJ89cwiOlt42bs2429Id
+         ZKXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mRFKMn469rvJhbWPmwRlBDaHdkmhCPJ0BZ8j32mtJZ8=;
+        b=S8BgF7bec/02xoAm0CLdqRJCsHJ+GcEZ0hKg+k7iGJ+Bg0qaawK+gkbWJFmP67Mqn5
+         tkrEojjWGIAk2UPIGhtovFMI8xmgV+VlFbOUPjvdGe/OirgpWLSC0ISF+fNtdTi2CmQR
+         AEgWX0tOWw8br6Lj2PrY/6SxxpA4xuyxnuwnKlw2BuZc3S1L6/gLc3gnZqj0/RPS4cVt
+         RRlsWL4OlJmEXFUtFrxebgutYbgagU9/pFBD6quys+2rWTFJumLeBSsaIcxStHNJUSwy
+         A7ULm3ZO+0w4RCGbMs9AOYjd9QfR432ZbJzBmw17it2UcaaNkcnE7wMruH53JY1LrQLo
+         j2Yg==
+X-Gm-Message-State: AOAM532edQDpNkkEaLOPk8E4N28WsEmAeDo5VF4t9tUpSTVJyncmNZFt
+        WONcOYwWFCBE3zBEpbWhtap71ORXKcdzQbKZTgdM4EDIeg8=
+X-Google-Smtp-Source: ABdhPJz/QfASkB2AoUF3H9HAnFJU6XXHvJ/U1MYXBfXZTb/tYWN+NSY2WoyFrL+ntJxqIizgsyeEfbprGLbH/1tYPAM=
+X-Received: by 2002:a92:c7ae:: with SMTP id f14mr13948607ilk.39.1597661978616;
+ Mon, 17 Aug 2020 03:59:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200809125359.31025-1-paul@crapouillou.net>
+References: <1597395824-3325-1-git-send-email-zhaoyang.huang@unisoc.com>
+ <20200814131034.f71a91c6827904e12a629e04@linux-foundation.org> <20200814211459.65f6db0211872e30684a630a@linux-foundation.org>
+In-Reply-To: <20200814211459.65f6db0211872e30684a630a@linux-foundation.org>
+From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date:   Mon, 17 Aug 2020 18:59:27 +0800
+Message-ID: <CAGWkznFYaMLUf3cazP9x9eA-SYTu6GkXR=m3q20WowGsCZLWHw@mail.gmail.com>
+Subject: Re: [PATCH] mm : sync ra->ra_pages with bdi->ra_pages
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Roman Gushchin <klamm@yandex-team.ru>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Paul Cercueil <paul@crapouillou.net> [200809 12:54]:
-> musb_queue_resume_work() would call the provided callback if the runtime
-> PM status was 'active'. Otherwise, it would enqueue the request if the
-> hardware was still suspended (musb->is_runtime_suspended is true).
-> 
-> This causes a race with the runtime PM handlers, as it is possible to be
-> in the case where the runtime PM status is not yet 'active', but the
-> hardware has been awaken (PM resume function has been called).
-> 
-> When hitting the race, the resume work was not enqueued, which probably
-> triggered other bugs further down the stack. For instance, a telnet
-> connection on Ingenic SoCs would result in a 50/50 chance of a
-> segmentation fault somewhere in the musb code.
-> 
-> Rework the code so that either we call the callback directly if
-> (musb->is_runtime_suspended == 0), or enqueue the query otherwise.
-
-Yes we should use is_runtime_suspended, thanks for fixing it.
-Things still work for me so:
-
-Reviewed-by: Tony Lindgren <tony@atomide.com>
-Tested-by: Tony Lindgren <tony@atomide.com>
+On Sat, Aug 15, 2020 at 12:15 PM Andrew Morton
+<akpm@linux-foundation.org> wrote:
+>
+> On Fri, 14 Aug 2020 13:10:34 -0700 Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> > On Fri, 14 Aug 2020 17:03:44 +0800 Zhaoyang Huang <huangzhaoyang@gmail.com> wrote:
+> >
+> > > Some system(like android) will turbo read during startup via expanding the
+> > > readahead window and then set it back to normal(128kb as usual). However, some
+> > > files in the system process context will keep to be opened since it is opened
+> > > up and has no chance to sync with the updated value as it is almost impossible
+> > > to change the files attached to the inode(processes are unaware of these things)
+> >
+> > How about making VM_READAHEAD_PAGES a variable?
+>
+> Or make it settable in Kconfig?
+I don't think so. The scenario I gave before is a dynamic process,
+can't be solved via menuconfig thing.
