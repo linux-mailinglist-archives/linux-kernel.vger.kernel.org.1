@@ -2,94 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C7D24724C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C9D247261
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391418AbgHQSks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:40:48 -0400
-Received: from mga07.intel.com ([134.134.136.100]:34905 "EHLO mga07.intel.com"
+        id S2391444AbgHQSlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:41:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387965AbgHQSkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 14:40:23 -0400
-IronPort-SDR: C+wxtgCfVfmKhcjAu48yXh8rPzLOnHkB+CFaCj57oPK8885Sx8EVQPlttXu/S6u7+7lcDEsWJi
- uA6MSfaaFWpA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="219093665"
-X-IronPort-AV: E=Sophos;i="5.76,324,1592895600"; 
-   d="scan'208";a="219093665"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 11:40:21 -0700
-IronPort-SDR: qwIq53Nbz+h+rUZRC7HF+/ezgtonG3ao5oVglIRhEJtkrL7hwHqBOsP2WxnnIOK8/5fin4ByJG
- fv0DtQKglrDw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,324,1592895600"; 
-   d="scan'208";a="326491264"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 17 Aug 2020 11:40:19 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1k7k3O-009UFq-Ck; Mon, 17 Aug 2020 21:40:18 +0300
-Date:   Mon, 17 Aug 2020 21:40:18 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Kent Gibson <warthog618@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v4 00/20] gpio: cdev: add uAPI v2
-Message-ID: <20200817184018.GV1891694@smile.fi.intel.com>
-References: <20200814030257.135463-1-warthog618@gmail.com>
- <CAMpxmJUCwXVv6U9sE=8isRMoNd8QvM9XLu4PU2Rr454wt_FTUw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMpxmJUCwXVv6U9sE=8isRMoNd8QvM9XLu4PU2Rr454wt_FTUw@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S2389597AbgHQSlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 14:41:40 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 73123204EC;
+        Mon, 17 Aug 2020 18:41:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597689700;
+        bh=XGnEgmFBVdyc/oUXakYFZiKhW4THFttuZ2JyUOkUtJw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jHawPRZQrrd5xxfRQtHweKENED5UFeclNEs/TU/nUtthQQZGnCL0R1AJ+Sk46mDyQ
+         icRCngDuUc/ZyulO0k04YaBQYT5wRmJvOyTh0Yqj/ernE9YH+1S6cpkWclCHRgMYQA
+         3d20KnUo5XBAY2DvCeRAvg2R4oADhEYrn4Kfvg4k=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Harvey Hunt <harveyhuntnexus@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH v2 1/2] MAINTAINERS: Remove JZ4780 DMA driver entry
+Date:   Mon, 17 Aug 2020 20:41:30 +0200
+Message-Id: <20200817184131.907-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 08:24:24PM +0200, Bartosz Golaszewski wrote:
-> On Fri, Aug 14, 2020 at 5:03 AM Kent Gibson <warthog618@gmail.com> wrote:
-> >
-> > This patchset defines and implements adds a new version of the
-> > GPIO CDEV uAPI to address existing 32/64-bit alignment issues, add
-> > support for debounce, event sequence numbers, and allowing for requested
-> > lines with different configurations.
-> > It provides some future proofing by adding optional configuration fields
-> > and padding reserved for future use.
-> >
-> > The series can be partitioned into two sets; the first eleven
-> > contain the v2 uAPI implementation, and the final seven port
-> > the GPIO tools to the v2 uAPI and extend them to use new uAPI features.
-> >
-> > The more complicated patches include their own commentary where
-> > appropriate.
+The entry for MIPS Ingenic JZ4780 DMA driver is not up to date anymore.
+Zubair Lutfullah Kakakhel's email bounces and no maintenance is
+provided.
 
-> The series looks quite good to me and I think we're on track to get it
-> in for v5.10. I'd love to have Andy (Cc'd) take a look as well. There
-> are some nits here and there but as long as we get the ABI right, any
-> implementation details can be ironed out later.
-> 
-> I need to think about some details a bit more but I really like the
-> current state of the patches.
+Suggested-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-First of all, I apologize for being silent, I'm quite busy with internal
-development / work.
+---
 
-Second, I didn't hear further why we can't fix current ABI as proposed by Arnd
-and see what we will have afterwards?
+Changes since v1:
+1. New patch
+---
+ MAINTAINERS | 5 -----
+ 1 file changed, 5 deletions(-)
 
-Third, I'm not satisfied with the approach of wasting some memory for padding
-and I think the proper solution for the ABI is to have versioning inside the
-structures.
-
-What do you think?
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b0a742ce8f2c..9ab3a7fd6451 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8580,11 +8580,6 @@ F:	include/uapi/rdma/
+ F:	samples/bpf/ibumad_kern.c
+ F:	samples/bpf/ibumad_user.c
+ 
+-INGENIC JZ4780 DMA Driver
+-M:	Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+-S:	Maintained
+-F:	drivers/dma/dma-jz4780.c
+-
+ INGENIC JZ4780 NAND DRIVER
+ M:	Harvey Hunt <harveyhuntnexus@gmail.com>
+ L:	linux-mtd@lists.infradead.org
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.17.1
 
