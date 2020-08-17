@@ -2,121 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E418B246E11
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FBAA246E15
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389766AbgHQRWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:22:00 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:38825 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388646AbgHQQ0Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:26:25 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597681584; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=3AJR1rabANV+5oYOKdD6QLeJhKliqDUS2dV6N7xL9LU=; b=L2NQEIbvimy8hZs6KUTHyT2QCOWrMbyc/hrTQZ3LuC0TheiGQwMn/POpWl7Eui2q5SrKRRcI
- 8gyMchodfrN+SGPsiURj1HPvC8p2nMsJl3VNaiRk2XkGXRdoPIsllXWI7UXXJX3xJBgtpnoN
- lMIJGHuPkQ7IvEdbgJ0gwJm8Ed4=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
- 5f3aaf9cba4c2cd367bbae48 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 Aug 2020 16:26:04
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9543FC43387; Mon, 17 Aug 2020 16:26:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3201BC433C6;
-        Mon, 17 Aug 2020 16:26:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3201BC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Mon, 17 Aug 2020 10:25:57 -0600
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Brian Masney <masneyb@onstation.org>,
-        Takashi Iwai <tiwai@suse.de>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drm/msm/adreno: fix updating ring fence
-Message-ID: <20200817162556.GD3221@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
-        dri-devel@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Brian Masney <masneyb@onstation.org>, Takashi Iwai <tiwai@suse.de>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200813000311.708728-1-robdclark@gmail.com>
+        id S2389780AbgHQRWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:22:16 -0400
+Received: from mga03.intel.com ([134.134.136.65]:10701 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731243AbgHQQcJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:32:09 -0400
+IronPort-SDR: OgIy0tFYSB8VRyYiBcpQMHC9GDDfYcELHRgBZhGW0HcidjHM+hJ0MZQGuk208kf2oX4zN908ie
+ ou2w8V/yiuNg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="154720042"
+X-IronPort-AV: E=Sophos;i="5.76,324,1592895600"; 
+   d="scan'208";a="154720042"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 09:32:08 -0700
+IronPort-SDR: gNGa53ARN2B7I6Gdco4Cf5OlcSb1BwI/csVdhVxHYKUn7DGgGs7yaKNfcMPwlAdWh87KZIXCG+
+ eiiPc4lUjVHA==
+X-IronPort-AV: E=Sophos;i="5.76,324,1592895600"; 
+   d="scan'208";a="440920616"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 09:32:08 -0700
+Date:   Mon, 17 Aug 2020 09:32:07 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Julia Suvorova <jsuvorov@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Jones <drjones@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] KVM: x86: introduce KVM_MEM_PCI_HOLE memory
+Message-ID: <20200817163207.GC22407@linux.intel.com>
+References: <20200807141232.402895-1-vkuznets@redhat.com>
+ <20200807141232.402895-3-vkuznets@redhat.com>
+ <20200814023139.GB4845@linux.intel.com>
+ <20200814102850-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200813000311.708728-1-robdclark@gmail.com>
+In-Reply-To: <20200814102850-mutt-send-email-mst@kernel.org>
 User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 05:03:09PM -0700, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
+On Fri, Aug 14, 2020 at 10:30:14AM -0400, Michael S. Tsirkin wrote:
+> On Thu, Aug 13, 2020 at 07:31:39PM -0700, Sean Christopherson wrote:
+> > > @@ -2318,6 +2338,11 @@ static int __kvm_read_guest_page(struct kvm_memory_slot *slot, gfn_t gfn,
+> > >  	int r;
+> > >  	unsigned long addr;
+> > >  
+> > > +	if (unlikely(slot && (slot->flags & KVM_MEM_PCI_HOLE))) {
+> > > +		memset(data, 0xff, len);
+> > > +		return 0;
+> > > +	}
+> > 
+> > This feels wrong, shouldn't we be treating PCI_HOLE as MMIO?  Given that
+> > this is performance oriented, I would think we'd want to leverage the
+> > GPA from the VMCS instead of doing a full translation.
+> > 
+> > That brings up a potential alternative to adding a memslot flag.  What if
+> > we instead add a KVM_MMIO_BUS device similar to coalesced MMIO?  I think
+> > it'd be about the same amount of KVM code, and it would provide userspace
+> > with more flexibility, e.g. I assume it would allow handling even writes
+> > wholly within the kernel for certain ranges and/or use cases, and it'd
+> > allow stuffing a value other than 0xff (though I have no idea if there is
+> > a use case for this).
 > 
-> We need to set it to the most recent completed fence, not the most
-> recent submitted.  Otherwise we have races where we think we can retire
-> submits that the GPU is not finished with, if the GPU doesn't manage to
-> overwrite the seqno before we look at it.
-> 
-> This can show up with hang recovery if one of the submits after the
-> crashing submit also hangs after it is replayed.
+> I still think down the road the way to go is to map
+> valid RO page full of 0xff to avoid exit on read.
+> I don't think a KVM_MMIO_BUS device will allow this, will it?
 
-Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
+No, it would not, but adding KVM_MEM_PCI_HOLE doesn't get us any closer to
+solving that problem either.
 
-> Fixes: f97decac5f4c ("drm/msm: Support multiple ringbuffers")
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
->  drivers/gpu/drm/msm/adreno/adreno_gpu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> index f9e3badf2fca..34e6242c1767 100644
-> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> @@ -405,7 +405,7 @@ int adreno_hw_init(struct msm_gpu *gpu)
->  		ring->next = ring->start;
->  
->  		/* reset completed fence seqno: */
-> -		ring->memptrs->fence = ring->seqno;
-> +		ring->memptrs->fence = ring->fctx->completed_fence;
->  		ring->memptrs->rptr = 0;
->  	}
->  
-> -- 
-> 2.26.2
-> 
+What if we add a flag to allow routing all GFNs in a memslot to a single
+HVA?  At a glance, it doesn't seem to heinous.  It would have several of the
+same touchpoints as this series, e.g. __kvm_set_memory_region() and
+kvm_alloc_memslot_metadata().
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+The functional changes (for x86) would be a few lines in
+__gfn_to_hva_memslot() and some new logic in kvm_handle_hva_range().  The
+biggest concern is probably the fragility of such an implementation, as KVM
+has a habit of open coding operations on memslots.
+
+The new flags could then be paired with KVM_MEM_READONLY to yield the desired
+behavior of reading out 0xff for an arbitrary range without requiring copious
+memslots and/or host pages.
+
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 852fc8274bdd..875243a0ab36 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -1103,6 +1103,9 @@ __gfn_to_memslot(struct kvm_memslots *slots, gfn_t gfn)
+ static inline unsigned long
+ __gfn_to_hva_memslot(struct kvm_memory_slot *slot, gfn_t gfn)
+ {
++       if (unlikely(slot->flags & KVM_MEM_SINGLE_HVA))
++               return slot->userspace_addr;
++
+        return slot->userspace_addr + (gfn - slot->base_gfn) * PAGE_SIZE;
+ }
+
