@@ -2,180 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 298132467AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 15:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 041E7246763
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 15:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728651AbgHQNrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 09:47:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727953AbgHQNrV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 09:47:21 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF70CC061389;
-        Mon, 17 Aug 2020 06:47:20 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id b11so8390305lfe.10;
-        Mon, 17 Aug 2020 06:47:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Kp2OAD0ICogQKk52QDNikt0ThpNhJxZYmPf9EL7yEaM=;
-        b=TOs1HrhMt19tbzY2EpvLz0ZtqqfJBYuaiUcH1BoiflXvgVQXzRskCMS5CRRklvjC6t
-         eGBk6qUdm0k2f+5hb2i9wIgxxxFkqiFEgGIAagH4vDpuaDc77YGkVmb311PB9CZD8CWJ
-         Ft5IktDWFGEnAg2wd6cNmMftbBUTKLoCA8/OTi92XxV/N9aeksT2NYMvYAtcK9BM4puK
-         5C1fpmjshcdns4dH5k77cNgcuTzOKGiYvHcItBYHR8Lxz1yMNoBAJNcrdav9DGC99obX
-         MROU8H7nS1Rvc4qO72R7wy7J+hZ6lAO2ayQ7a1UYRixcSCgdv/j+lydISSxyUtMZOQLd
-         eFMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Kp2OAD0ICogQKk52QDNikt0ThpNhJxZYmPf9EL7yEaM=;
-        b=SfqJhxq9ILGsQLduW4O4lZolebG7eByky7mY6T+TNhfLJ+O1jg55Hc15YSwUlh2/53
-         TvbGSFdnqUB4KbYY0u/miE3U1f2SAHRiUr0xWix3Ttfljva8IlrXRl+tSpIqButiBe+i
-         Gpybxbjs7telE611H8VFtZ2lbZXjutp39IO/eUEyppWpnzEdYhaUvBeiokSGfmA6aqkg
-         KTPEqW319qfb/IsZfI9umXOzaukmns5KR1U8BaBCbyzs8ELlCZqIz4QXHWdVpjAhQUf4
-         0UssbwYJ/P583EmDu4O6GTt4q5xw4O7UfapYvyIcX6lcc8o8V2+3zyZBVkaExdNO5AIP
-         rVMA==
-X-Gm-Message-State: AOAM533RnuxcskePDvSiEEL0k7mN0B+/had3/YXrrSb8++JQA2jo3QBG
-        gGjUXFB7aZMsmtrjrsCGKxKg+Dapi7h7dGhBBYA=
-X-Google-Smtp-Source: ABdhPJyfeEonIvGC2m3t5jnrWcaI+aOxpZTWZT8u8NDEyeRVe4igLqnzXcGjizWkbSVMZm2wPBtA/32o9PnS1z7Skxw=
-X-Received: by 2002:a19:8957:: with SMTP id l84mr7184858lfd.66.1597672039259;
- Mon, 17 Aug 2020 06:47:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <1596714629-16425-1-git-send-email-shengjiu.wang@nxp.com>
-In-Reply-To: <1596714629-16425-1-git-send-email-shengjiu.wang@nxp.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Mon, 17 Aug 2020 10:47:08 -0300
-Message-ID: <CAOMZO5C34LyMEx0S+_W-OuHz=SjbzRGb8gf5+tj6MvsMGD0x_Q@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: imx6sll-evk: Add audio sound card node
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728521AbgHQNdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 09:33:32 -0400
+Received: from mga17.intel.com ([192.55.52.151]:35962 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728349AbgHQNdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 09:33:31 -0400
+IronPort-SDR: Zqd+1GQ132B98LPpABbjGyUe359esc4Plb3EsYBuZzc6KOjAmGvXurNpYitgj6haNerrgcSswG
+ /HzMjD5vcLLQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9715"; a="134759639"
+X-IronPort-AV: E=Sophos;i="5.76,322,1592895600"; 
+   d="scan'208";a="134759639"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 06:33:31 -0700
+IronPort-SDR: E8WEF2UhFAYaIvOt4bObPNnuNOrUKIp59q5nUuKU6+1HdLopvbzewb86ff9KmBzhtV+NOrHO+v
+ EIe8iW/nshXw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,322,1592895600"; 
+   d="scan'208";a="334075644"
+Received: from marshy.an.intel.com ([10.122.105.159])
+  by FMSMGA003.fm.intel.com with ESMTP; 17 Aug 2020 06:33:30 -0700
+From:   richard.gong@linux.intel.com
+To:     derek.kiernan@xilinx.com, dragan.cvetic@xilinx.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, dinguyen@kernel.org,
+        richard.gong@intel.com
+Subject: [PATCHv2 0/2] add Intel SoCFPGA crypto service driver 
+Date:   Mon, 17 Aug 2020 08:47:28 -0500
+Message-Id: <1597672050-25829-1-git-send-email-richard.gong@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shengjiu,
+From: Richard Gong <richard.gong@intel.com>
 
-On Thu, Aug 6, 2020 at 8:55 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
->
-> Add audio sound card node, which depends on codec node,
-> SSI node, audmux node.
->
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  arch/arm/boot/dts/imx6sll-evk.dts | 74 +++++++++++++++++++++++++++++++
->  1 file changed, 74 insertions(+)
->
-> diff --git a/arch/arm/boot/dts/imx6sll-evk.dts b/arch/arm/boot/dts/imx6sll-evk.dts
-> index 5ace9e6acf85..45bf5e61e960 100644
-> --- a/arch/arm/boot/dts/imx6sll-evk.dts
-> +++ b/arch/arm/boot/dts/imx6sll-evk.dts
-> @@ -132,6 +132,29 @@ panel_in: endpoint {
->                         };
->                 };
->         };
-> +
-> +       sound {
-> +               compatible = "fsl,imx6sl-evk-wm8962", "fsl,imx-audio-wm8962";
-> +               model = "wm8962-audio";
-> +               audio-cpu = <&ssi2>;
-> +               audio-codec = <&codec>;
-> +               audio-routing =
-> +                       "Headphone Jack", "HPOUTL",
-> +                       "Headphone Jack", "HPOUTR",
-> +                       "Ext Spk", "SPKOUTL",
-> +                       "Ext Spk", "SPKOUTR",
-> +                       "AMIC", "MICBIAS",
-> +                       "IN3R", "AMIC";
-> +               mux-int-port = <2>;
-> +               mux-ext-port = <3>;
-> +               hp-det-gpio = <&gpio4 24 GPIO_ACTIVE_LOW>;
-> +       };
-> +};
-> +
-> +&audmux {
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_audmux3>;
-> +       status = "okay";
->  };
->
->  &cpu0 {
-> @@ -247,6 +270,27 @@ vgen6_reg: vgen6 {
->         };
->  };
->
-> +&i2c3 {
-> +       clock-frequency = <100000>;
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_i2c3>;
-> +       status = "okay";
-> +
-> +       codec: wm8962@1a {
+This is the 2nd submission of Intel SoCFPGA crypto service driver.
 
-Node names should be generic:
+I followed the process to register or request a valid IOCTL number/letter,
+but I got the delivery failure status notification.
 
-wm8962: audio-codec@1a
+Cypto service driver and service layer driver patches have been reviewed
+internally by colleagues at Intel.
 
-> +               compatible = "wlf,wm8962";
-> +               reg = <0x1a>;
-> +               clocks = <&clks IMX6SLL_CLK_EXTERN_AUDIO>;
-> +               DCVDD-supply = <&vgen3_reg>;
-> +               DBVDD-supply = <&reg_aud3v>;
-> +               AVDD-supply = <&vgen3_reg>;
-> +               CPVDD-supply = <&vgen3_reg>;
-> +               MICVDD-supply = <&reg_aud3v>;
-> +               PLLVDD-supply = <&vgen3_reg>;
-> +               SPKVDD1-supply = <&reg_aud4v>;
-> +               SPKVDD2-supply = <&reg_aud4v>;
-> +       };
-> +};
-> +
->  &lcdif {
->         pinctrl-names = "default";
->         pinctrl-0 = <&pinctrl_lcd>;
-> @@ -273,6 +317,10 @@ &snvs_pwrkey {
->         status = "okay";
->  };
->
-> +&ssi2 {
-> +       status = "okay";
-> +};
-> +
->  &uart1 {
->         pinctrl-names = "default";
->         pinctrl-0 = <&pinctrl_uart1>;
-> @@ -329,6 +377,25 @@ &wdog1 {
->  };
->
->  &iomuxc {
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_hog>;
-> +
-> +       pinctrl_audmux3: audmux3grp {
-> +               fsl,pins = <
-> +                       MX6SLL_PAD_AUD_TXC__AUD3_TXC            0x4130b0
-> +                       MX6SLL_PAD_AUD_TXFS__AUD3_TXFS          0x4130b0
-> +                       MX6SLL_PAD_AUD_TXD__AUD3_TXD            0x4110b0
-> +                       MX6SLL_PAD_AUD_RXD__AUD3_RXD            0x4130b0
-> +                       MX6SLL_PAD_AUD_MCLK__AUDIO_CLK_OUT      0x4130b0
-> +               >;
-> +       };
-> +
-> +       pinctrl_hog: hoggrp {
-> +               fsl,pins = <
-> +                       MX6SLL_PAD_GPIO4_IO24__GPIO4_IO24 0x17059 /* HP DETECT */
+Intel SoCFPGA is composed of a 64 bit quad-core ARM Cortex A53 hard
+processor system (HPS) and Secure Device Manager (SDM). SDM is the
+hardware which does the FPGA configuration, QSPI, remote system update,
+crypto and warm reset.
 
-Please place it under audmux3 group for consistency.
+To meet the whole system security needs and support virtual machine
+requesting communication with SDM, only the secure world of software (EL3,
+Exception Level 3) can interface with SDM. All software entities running
+on other exception levels must channel through the EL3 software whenever
+it needs service from SDM.
+
+Intel Stratix10 service layer driver is added to provide the service for
+FPGA configuration, Remote System Update and FPGA crypto service (FCS).
+Running at privileged exception level (EL1, Exception Level 1), Intel
+Stratix10 service layer driver interfaces with the service clients at EL1
+and manages secure monitor call (SMC) to communicate with secure monitor
+software at secure monitor exception level (EL3).
+
+The crypto services include security certificate, image boot validation,
+security key cancellation, get provision data, random number generation,
+advance encryption standard (AES) encryption and decryption services.
+
+To perform supporting crypto features on Intel SoCFPGA platforms, Linux
+user-space application interacts with FPGA crypto service (FCS) driver via
+structures defined in include/uapi/linux/intel_fcs-ioctl.h.
+
+The application allocates spaces for IOCTL structure to hold the contents
+or points to the data that FCS driver needs, uses IOCTL calls to passes
+data to kernel FCS driver for processing at low level firmware and get
+processed data or status back form the low level firmware via FCS driver.
+
+The user-space application named as fcs_client is at
+https://github.com/altera-opensource/fcs_apps/tree/fcs_client.
+
+Richard Gong (2):
+  firmware: stratix10-svc: extend svc to support new crypto features
+  misc: add Intel SoCFPGA crypto service driver
+
+ drivers/firmware/stratix10-svc.c                   | 178 +++++-
+ drivers/misc/Kconfig                               |  12 +
+ drivers/misc/Makefile                              |   1 +
+ drivers/misc/intel-fcs.c                           | 709 +++++++++++++++++++++
+ include/linux/firmware/intel/stratix10-smc.h       | 147 ++++-
+ .../linux/firmware/intel/stratix10-svc-client.h    |  42 ++
+ include/uapi/linux/intel-fcs_ioctl.h               | 222 +++++++
+ 7 files changed, 1292 insertions(+), 19 deletions(-)
+ create mode 100644 drivers/misc/intel-fcs.c
+ create mode 100644 include/uapi/linux/intel-fcs_ioctl.h
+
+-- 
+2.7.4
+
