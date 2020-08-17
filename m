@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC06C246B4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADCE9246B4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387862AbgHQPwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:52:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49112 "EHLO mail.kernel.org"
+        id S2387842AbgHQPwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:52:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730676AbgHQPkl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730674AbgHQPkl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 Aug 2020 11:40:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94EBF22BEB;
-        Mon, 17 Aug 2020 15:40:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 02552207FF;
+        Mon, 17 Aug 2020 15:40:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678840;
-        bh=oiYqFNOTIqWznWy5oZ7YjAKLAwxOQpK6HJg4N1XZrkQ=;
+        s=default; t=1597678837;
+        bh=kLRldtUwC7t3HFPXhNORNdUQOkvhyX8mWGlBQq4PcV0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I3h5SgYjodMPr9cCbqvMpQ10cJlP115b1EU3hqejCBPjAD5we5niJfADD4czef1b/
-         +P9u7vH4mtB324uopY/Cp5XQmPjZVR9iXxnj3dnz1ZLdrFb8jBb3aUD6PZhwckerj0
-         lh7lxyxq3hR2mwBhs4AKUchPfiOr1zFDz+GZjurI=
+        b=uCtDGdM99oT2GD53EQUG75o7x8bHXdgt5QA+QtIEznXnIavMY+aMbWvw2XxbOSoy9
+         2minu+mEDqYp3s9PqtuEwlY6ZOJDcpMr1+fnIjs1D5mhdU4oubs1hpaj3FaRNUtFbE
+         3fzCi5GIzR8JCengttVQQm7r0kdrjH0L0cyv0IOk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miles Chen <miles.chen@mediatek.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Huckleberry <nhuck@google.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH 5.8 449/464] ARM: 8992/1: Fix unwind_frame for clang-built kernels
-Date:   Mon, 17 Aug 2020 17:16:42 +0200
-Message-Id: <20200817143855.280685160@linuxfoundation.org>
+        stable@vger.kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH 5.8 458/464] s390/numa: set node distance to LOCAL_DISTANCE
+Date:   Mon, 17 Aug 2020 17:16:51 +0200
+Message-Id: <20200817143855.712919334@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -45,80 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Huckleberry <nhuck@google.com>
+From: Alexander Gordeev <agordeev@linux.ibm.com>
 
-commit b4d5ec9b39f8b31d98f65bc5577b5d15d93795d7 upstream.
+commit 535e4fc623fab2e09a0653fc3a3e17f382ad0251 upstream.
 
-Since clang does not push pc and sp in function prologues, the current
-implementation of unwind_frame does not work. By using the previous
-frame's lr/fp instead of saved pc/sp we get valid unwinds on clang-built
-kernels.
+The node distance is hardcoded to 0, which causes a trouble
+for some user-level applications. In particular, "libnuma"
+expects the distance of a node to itself as LOCAL_DISTANCE.
+This update removes the offending node distance override.
 
-The bounds check on next frame pointer must be changed as well since
-there are 8 less bytes between frames.
-
-This fixes /proc/<pid>/stack.
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/912
-
-Reported-by: Miles Chen <miles.chen@mediatek.com>
-Tested-by: Miles Chen <miles.chen@mediatek.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Nathan Huckleberry <nhuck@google.com>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Cc: <stable@vger.kernel.org> # 4.4
+Fixes: 3a368f742da1 ("s390/numa: add core infrastructure")
+Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/kernel/stacktrace.c |   24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ arch/s390/include/asm/topology.h |    6 ------
+ 1 file changed, 6 deletions(-)
 
---- a/arch/arm/kernel/stacktrace.c
-+++ b/arch/arm/kernel/stacktrace.c
-@@ -22,6 +22,19 @@
-  * A simple function epilogue looks like this:
-  *	ldm	sp, {fp, sp, pc}
-  *
-+ * When compiled with clang, pc and sp are not pushed. A simple function
-+ * prologue looks like this when built with clang:
-+ *
-+ *	stmdb	{..., fp, lr}
-+ *	add	fp, sp, #x
-+ *	sub	sp, sp, #y
-+ *
-+ * A simple function epilogue looks like this when built with clang:
-+ *
-+ *	sub	sp, fp, #x
-+ *	ldm	{..., fp, pc}
-+ *
-+ *
-  * Note that with framepointer enabled, even the leaf functions have the same
-  * prologue and epilogue, therefore we can ignore the LR value in this case.
-  */
-@@ -34,6 +47,16 @@ int notrace unwind_frame(struct stackfra
- 	low = frame->sp;
- 	high = ALIGN(low, THREAD_SIZE);
+--- a/arch/s390/include/asm/topology.h
++++ b/arch/s390/include/asm/topology.h
+@@ -86,12 +86,6 @@ static inline const struct cpumask *cpum
  
-+#ifdef CONFIG_CC_IS_CLANG
-+	/* check current frame pointer is within bounds */
-+	if (fp < low + 4 || fp > high - 4)
-+		return -EINVAL;
-+
-+	frame->sp = frame->fp;
-+	frame->fp = *(unsigned long *)(fp);
-+	frame->pc = frame->lr;
-+	frame->lr = *(unsigned long *)(fp + 4);
-+#else
- 	/* check current frame pointer is within bounds */
- 	if (fp < low + 12 || fp > high - 4)
- 		return -EINVAL;
-@@ -42,6 +65,7 @@ int notrace unwind_frame(struct stackfra
- 	frame->fp = *(unsigned long *)(fp - 12);
- 	frame->sp = *(unsigned long *)(fp - 8);
- 	frame->pc = *(unsigned long *)(fp - 4);
-+#endif
+ #define pcibus_to_node(bus) __pcibus_to_node(bus)
  
- 	return 0;
- }
+-#define node_distance(a, b) __node_distance(a, b)
+-static inline int __node_distance(int a, int b)
+-{
+-	return 0;
+-}
+-
+ #else /* !CONFIG_NUMA */
+ 
+ #define numa_node_id numa_node_id
 
 
