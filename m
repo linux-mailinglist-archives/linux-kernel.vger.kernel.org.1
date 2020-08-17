@@ -2,65 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36CA5246030
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FFD724604E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727083AbgHQIbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 04:31:22 -0400
-Received: from mga18.intel.com ([134.134.136.126]:1808 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726688AbgHQIbV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 04:31:21 -0400
-IronPort-SDR: 8dTlWI76XhtspZhuWhxnXqRFBetY563pZ1St6IJCW7SMbERy9mIl1k0mwmf4C8cab0v2mRifd6
- eo2uUxOifkcw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9715"; a="142284607"
-X-IronPort-AV: E=Sophos;i="5.76,322,1592895600"; 
-   d="scan'208";a="142284607"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 01:31:20 -0700
-IronPort-SDR: 3H0imvvqwXYvalrcURB4ZVobiAarxMXgSw6lf9x2eqV5SI+GV4MUYrcqDXTJrPae8Bu5XIQNhP
- kFOSTAAyMv7Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,322,1592895600"; 
-   d="scan'208";a="440798680"
-Received: from chenyu-office.sh.intel.com ([10.239.158.173])
-  by orsmga004.jf.intel.com with ESMTP; 17 Aug 2020 01:31:18 -0700
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Len Brown <lenb@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>,
-        Chen Yu <yu.c.chen@intel.com>
-Subject: [PATCH] tools/power turbostat: Support Sapphire Rapids
-Date:   Mon, 17 Aug 2020 16:32:23 +0800
-Message-Id: <20200817083223.18697-1-yu.c.chen@intel.com>
+        id S1726858AbgHQIfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 04:35:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726385AbgHQIfY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 04:35:24 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E332EC061388;
+        Mon, 17 Aug 2020 01:35:23 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id f5so7139579plr.9;
+        Mon, 17 Aug 2020 01:35:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=RTg2ZMt185zzvUgaMnfoRgnvAtOybCl6nq3HlbjwXIo=;
+        b=np1DZOoVOiJmzQfi5gIFqZ65oL1RRtYC/68KC3rInxkaZDqqFb/7z2Lfa/8VuU5mxt
+         hKEecv7OPaClrMrl2IIyG7rQQkOidWxYQokK7lg9P1SL5ycFolrW7nHdGNTyIfWBa1ZR
+         zx2obDmU6/uhiHeOwGDeTg4RpWMMKRCvc9qaB0/Bm544JouhDftKId5XsiqtXOuArMgl
+         hPUrI1znMdzk/abSdiSO/zFiyTwS1HMfRTC9XTg7ymAhtc8PIZmzLYvAp/w7o+O6tvfT
+         O8CHuhs55HOCj2GicPc7wDhsybyic+UH/GEEGAJkk8oFkKe0Yq06697J9pl0eG35Fhui
+         d6Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=RTg2ZMt185zzvUgaMnfoRgnvAtOybCl6nq3HlbjwXIo=;
+        b=rxxaFcTV88t36call5yacylSsg3UOC1xN70AfcpCiA6Y3dYu2gCCbniFX0yPhOz3Xy
+         CccC0AnWeGSmSmiY9wZgT82/X7KbeSLFXV50tXRWvfhi7AZXnZOgIY8/XmY11YEKJgz8
+         ne8hwFR1rhlUPWWXGO6SOnDkkjtfJGamV7ckjt6U4lFKy2DQoYUgYhSTRtdgQVLE13wb
+         cWA0WxyHbzMiB79zjkxkxJ7wa4GZMijcnZ7cJbo5aS0F8L71V6SOCkGCIc/h9JTNpMRX
+         zHOZ6OkCkzVxppz9UtATrOSAlHtSDJNpGG+lvYjX0HvIK7eNxkrV4S1cRvlGaq/4Splo
+         g6ow==
+X-Gm-Message-State: AOAM533w/jy3dR+vYwpZ1+EasA3NjLp+kNq/joFrv6MZvb/Y83FHG9Yf
+        sT2KoqzILBYcLYe3DvNr6Ik=
+X-Google-Smtp-Source: ABdhPJx8MPEZVqt1qfF75/O368PzmZucttE6ZMqC8OTPwo0zJWTrr5MWUzU7fT3D2F2oBQlTv6nlCw==
+X-Received: by 2002:a17:902:c286:: with SMTP id i6mr9995341pld.219.1597653322315;
+        Mon, 17 Aug 2020 01:35:22 -0700 (PDT)
+Received: from localhost.localdomain ([49.207.202.98])
+        by smtp.gmail.com with ESMTPSA id h5sm18434068pfq.146.2020.08.17.01.35.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Aug 2020 01:35:21 -0700 (PDT)
+From:   Allen Pais <allen.lkml@gmail.com>
+To:     ludovic.desroches@microchip.com, ulf.hansson@linaro.org,
+        manuel.lauss@gmail.com, mirq-linux@rere.qmqm.pl,
+        jh80.chung@samsung.com, oakad@yahoo.com,
+        yamada.masahiro@socionext.com, brucechang@via.com.tw,
+        HaraldWelte@viatech.com
+Cc:     keescook@chromium.org, inux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, Allen Pais <allen.lkml@gmail.com>
+Subject: [PATCH 00/10] mmc: convert tasklets to use new tasklet_setup()
+Date:   Mon, 17 Aug 2020 14:04:58 +0530
+Message-Id: <20200817083508.22657-1-allen.lkml@gmail.com>
 X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enumerate Saphire Rapids.
-Treat it like Sky Lake and Ice Lake server in turbostat.
+Commit 12cc923f1ccc ("tasklet: Introduce new initialization API")'
+introduced a new tasklet initialization API. This series converts 
+all the mmc drivers to use the new tasklet_setup() API
 
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
- tools/power/x86/turbostat/turbostat.c | 1 +
- 1 file changed, 1 insertion(+)
+Allen Pais (10):
+  mmc: atmel-mci: convert tasklets to use new tasklet_setup() API
+  mmc: au1xmmc: convert tasklets to use new tasklet_setup() API
+  mmc: cb710: convert tasklets to use new tasklet_setup() API
+  mmc: dw_mmc: convert tasklets to use new tasklet_setup() API
+  mmc: omap: convert tasklets to use new tasklet_setup() API
+  mmc: renesas: convert tasklets to use new tasklet_setup() API
+  mmc: s3cmci: convert tasklets to use new tasklet_setup() API
+  mmc: tifm_sd: convert tasklets to use new tasklet_setup() API
+  mmc: uniphier: convert tasklets to use new tasklet_setup() API
+  mmc: via-sdmmc: convert tasklets to use new tasklet_setup() API
 
-diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-index 33b370865d16..bf09f8bc000b 100644
---- a/tools/power/x86/turbostat/turbostat.c
-+++ b/tools/power/x86/turbostat/turbostat.c
-@@ -4694,6 +4694,7 @@ unsigned int intel_model_duplicates(unsigned int model)
- 		return INTEL_FAM6_ATOM_TREMONT;
- 
- 	case INTEL_FAM6_ICELAKE_X:
-+	case INTEL_FAM6_SAPPHIRERAPIDS_X:
- 		return INTEL_FAM6_SKYLAKE_X;
- 	}
- 	return model;
+ drivers/mmc/host/atmel-mci.c                  |  6 +++---
+ drivers/mmc/host/au1xmmc.c                    | 15 ++++++--------
+ drivers/mmc/host/cb710-mmc.c                  | 11 +++++-----
+ drivers/mmc/host/dw_mmc.c                     |  6 +++---
+ drivers/mmc/host/omap.c                       |  7 +++----
+ drivers/mmc/host/renesas_sdhi.h               |  1 +
+ drivers/mmc/host/renesas_sdhi_core.c          |  2 ++
+ drivers/mmc/host/renesas_sdhi_internal_dmac.c | 20 +++++++++----------
+ drivers/mmc/host/renesas_sdhi_sys_dmac.c      |  9 ++++-----
+ drivers/mmc/host/s3cmci.c                     |  6 +++---
+ drivers/mmc/host/tifm_sd.c                    |  7 +++----
+ drivers/mmc/host/uniphier-sd.c                | 14 ++++++-------
+ drivers/mmc/host/via-sdmmc.c                  |  7 +++----
+ 13 files changed, 53 insertions(+), 58 deletions(-)
+
 -- 
 2.17.1
 
