@@ -2,107 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7CA624684B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 16:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A1B24684D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 16:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728959AbgHQOXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 10:23:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51752 "EHLO
+        id S1728968AbgHQOYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 10:24:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728465AbgHQOXO (ORCPT
+        with ESMTP id S1728465AbgHQOYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 10:23:14 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B60C061389
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 07:23:14 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id c80so13377977wme.0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 07:23:13 -0700 (PDT)
+        Mon, 17 Aug 2020 10:24:09 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423D8C061389
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 07:24:08 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id w25so17650143ljo.12
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 07:24:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=t0TLC5mt6zw20J38nO6UV1Kz+5E95WBtIXeRkoxQ4a0=;
-        b=blS9fZ3JD9HAa7bD+eWHtxemNd3m+Oygxgqi+azouKjOFjp5Ojtep+vaNXIIthwDL3
-         uxt5q2n7lpf7By1YTt9Gw9PSXJngu/R1jTmLrCotBATJtF0rOIbBmZ1RW7kyINvfpV2t
-         MHCW1qXEc4idxajgUmxlrrZdEVpucCEZnM6hWIm9+69nTaGHhhPg4OymcqoXbDQg/amT
-         J2jFDEtSqmmf1M2i0h77X4NonGihVMhArYq+qA13jpSrEju2G0el9EwWwLfcOiVD0t8+
-         cbsaDtT3QgxEJ/AORsyJ1a3hnwPFSE23TDphSY8iW+Hm0qVfEa8X/YnSXFfBNW9uEp2e
-         0q/Q==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oU7e+jIr/cI/ou5kHSSsfha06PmR4hz2KnNYeE0ncyg=;
+        b=EiPVoknUJcywffhSmPfzdZX8frrHNh4TAkgBe9sRQg3aMFUAzaAs2xuI7sPHuBYHoB
+         nHj9iUvWbWAxExZAwF+zDwOjmhRgHvPsIGHZEWfKE0QIEXr5q7wH8wsfNinfWGErSQFI
+         I2SaKX/XfpzOgiGFuDP2S+VJixH2ZWk27E5fDzpPZFfMTpP5S5l/WAFdODRP93oiMe7/
+         fCAk7F5bKrO0MdBpTrTpwRmhCAvdu08zqb9Khk2U+fbXYaWwxo41vQZHzaQLskGEteZv
+         JuP6grRSg6wimPHpZclWJJrhJmO+BjBhUBhzo6s8vu8nw+LGp8/sjVpC/6HuHj7TDfGo
+         habw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=t0TLC5mt6zw20J38nO6UV1Kz+5E95WBtIXeRkoxQ4a0=;
-        b=XzhsOxjOhb9IEJ91ssBQfvEAYPAzP0br8i+tlAq/bHAEN0Kllgv5t+0A3MAFFbeaQ4
-         3Fu0l91gQ5lkXtFukiJByLh5wG0nUgKoscqIQctW3T3rKA555i1jIEgu6shoCpQZBjJM
-         AmFuIv62MvnKeM4Pb8OkUCQLl6cs0fwofNrdaFUj1M1BoiPmJxyxtj/Oq+yaS/5ETkoP
-         7UwNFaE/p5KapU8MOf1kKoGtxyp7cBpegD7h6FDon1BRUOMqK0vltXnYKQuj3BTXnljt
-         gYZ+Tjc00+lYNupz0oVtwMQI5WVKiWlDKIDYfpIo8oz49mpVbnUq5qQkwzoNQtp53+/e
-         1bpg==
-X-Gm-Message-State: AOAM531TGNfMqPRD7Drkl3GEZqMK+sNGECBGpXvtpy/Av/Ef5OCUm8da
-        kJBIwE1Z9wZFXfqarD3tA+d3AB/cWeCEnkKk18U=
-X-Google-Smtp-Source: ABdhPJyJgM5lMJV2i/j6WM/wDqdMV/DzSVBCn4wg1H/xhgKaAdWJS8j6+eEdtpNihr5t9pd0M3hLqgvQFWpnhz3aaLs=
-X-Received: by 2002:a1c:b145:: with SMTP id a66mr15539336wmf.133.1597674192546;
- Mon, 17 Aug 2020 07:23:12 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oU7e+jIr/cI/ou5kHSSsfha06PmR4hz2KnNYeE0ncyg=;
+        b=I/dQGyuFfbQetrmu+aLR7fgCQ6hOZ+8/YmYYHLCWiS2bHiHMNmJsYBPLpL4Zz/JFs5
+         EJyH4aaY2aytgAxsk867rzaQcuzZrdH2srsf3IEIEob+DhxOM7jwC2WRXZKigvpOS0nY
+         Gp/KAm3i9utYdmQIFpGtXybnpfay8nU1ERC4fGv/mSuqEq9mxeTmGwSpzGy+83ypYxw8
+         0Q8LXA+nOOwHdMEaX1OLOjGj7inbgG8Hfk5uM/IlkAl1zTVkaf/jTkF9bAXCUlih2oar
+         gOeyrg7BUpfvzpeut5/K2YHZjXnAoVXzPvLuFMHztcQg+jWbyzljqrFGesucumleAoa+
+         H2xQ==
+X-Gm-Message-State: AOAM531p0Vgv97KEqF97h6iMZv+Db2XGTJu5LZcvODJPkfiJo056x8iF
+        DFtd4iP5T0hGi7vz8clal5I9gUZJXf6wmMcSHU8JuQ==
+X-Google-Smtp-Source: ABdhPJzyYSgkPBQJajdoF5LqQQKz259BV4J6EumeZ8VPZ3rX9VyL6FgcFUgPSlYGKcwOcGR3OcWBpP+o0QJ6FOC/zXg=
+X-Received: by 2002:a2e:3202:: with SMTP id y2mr7902509ljy.30.1597674246644;
+ Mon, 17 Aug 2020 07:24:06 -0700 (PDT)
 MIME-Version: 1.0
-Reply-To: mrsanna.h.bruun119@gmail.com
-Received: by 2002:adf:93c4:0:0:0:0:0 with HTTP; Mon, 17 Aug 2020 07:23:11
- -0700 (PDT)
-From:   "Mrs. Anna H. Bruun" <mrsanna.h.bruun119@gmail.com>
-Date:   Mon, 17 Aug 2020 07:23:11 -0700
-X-Google-Sender-Auth: m9DCNeJ5cImCELydcCb4keNGJVY
-Message-ID: <CADyOJT_5wtDYC0boNJi7qeNOnng0198YH6Naecq9yrFGnZ7nhQ@mail.gmail.com>
-Subject: My Greetings
-To:     undisclosed-recipients:;
+References: <1595333413-30052-1-git-send-email-sumit.garg@linaro.org>
+ <1595333413-30052-3-git-send-email-sumit.garg@linaro.org> <CAD=FV=XUNqun3d+C_7GpgntGWRXwLSLnXKStLUz8iqZoGKu8zg@mail.gmail.com>
+ <CAFA6WYNq-Z5WD=AqJn2_DEg0F6G1CYte2y5Snc964vsgCnr0Bw@mail.gmail.com>
+ <CAD=FV=Vu3PGSUzargD-6e2XOw=Eh7CZaQ_+a09dr8SR1T8eE2g@mail.gmail.com>
+ <CAFA6WYPJ_w+R15NRKK5BzZtTxKq8Gh_mGswuYbW0cYZoBYLhxw@mail.gmail.com>
+ <20200814141322.lffebtamfjt2qrym@holly.lan> <CAFA6WYNAdELYCoOVQokgLNKhOYF9QK85UidgvyFfo4wsSNwKXw@mail.gmail.com>
+ <CAD=FV=WiZi18zBwx9J0sKLdCqMCvxuQ=U0m21yNqhtaBfZEqzA@mail.gmail.com>
+In-Reply-To: <CAD=FV=WiZi18zBwx9J0sKLdCqMCvxuQ=U0m21yNqhtaBfZEqzA@mail.gmail.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Mon, 17 Aug 2020 19:53:55 +0530
+Message-ID: <CAFA6WYOww8T7fmP-LtzS-EXG0iBbKEUOS5KrUU_7i+yqd_rFfQ@mail.gmail.com>
+Subject: Re: [RFC 2/5] serial: core: Add framework to allow NMI aware serial drivers
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org, kgdb-bugreport@lists.sourceforge.net,
+        Jiri Slaby <jslaby@suse.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My Dear
+On Mon, 17 Aug 2020 at 19:27, Doug Anderson <dianders@chromium.org> wrote:
+>
+> Hi,
+>
+> On Mon, Aug 17, 2020 at 5:27 AM Sumit Garg <sumit.garg@linaro.org> wrote:
+> >
+> > Thanks for your suggestion, irq_work_schedule() looked even better
+> > without any overhead, see below:
+> >
+> > diff --git a/include/linux/irq_work.h b/include/linux/irq_work.h
+> > index 3082378..1eade89 100644
+> > --- a/include/linux/irq_work.h
+> > +++ b/include/linux/irq_work.h
+> > @@ -3,6 +3,7 @@
+> >  #define _LINUX_IRQ_WORK_H
+> >
+> >  #include <linux/smp_types.h>
+> > +#include <linux/workqueue.h>
+> >
+> >  /*
+> >   * An entry can be in one of four states:
+> > @@ -24,6 +25,11 @@ struct irq_work {
+> >         void (*func)(struct irq_work *);
+> >  };
+> >
+> > +struct irq_work_schedule {
+> > +       struct irq_work work;
+> > +       struct work_struct *sched_work;
+> > +};
+> > +
+> >  static inline
+> >  void init_irq_work(struct irq_work *work, void (*func)(struct irq_work *))
+> >  {
+> >  {
+> > @@ -39,6 +45,7 @@ void init_irq_work(struct irq_work *work, void
+> > (*func)(struct irq_work *))
+> >
+> >  bool irq_work_queue(struct irq_work *work);
+> >  bool irq_work_queue_on(struct irq_work *work, int cpu);
+> > +bool irq_work_schedule(struct work_struct *sched_work);
+> >
+> >  void irq_work_tick(void);
+> >  void irq_work_sync(struct irq_work *work);
+> > diff --git a/kernel/irq_work.c b/kernel/irq_work.c
+> > index eca8396..3880316 100644
+> > --- a/kernel/irq_work.c
+> > +++ b/kernel/irq_work.c
+> > @@ -24,6 +24,8 @@
+> >  static DEFINE_PER_CPU(struct llist_head, raised_list);
+> >  static DEFINE_PER_CPU(struct llist_head, lazy_list);
+> >
+> > +static struct irq_work_schedule irq_work_sched;
+> > +
+> >  /*
+> >   * Claim the entry so that no one else will poke at it.
+> >   */
+> > @@ -79,6 +81,25 @@ bool irq_work_queue(struct irq_work *work)
+> >  }
+> >  EXPORT_SYMBOL_GPL(irq_work_queue);
+> >
+> > +static void irq_work_schedule_fn(struct irq_work *work)
+> > +{
+> > +       struct irq_work_schedule *irq_work_sched =
+> > +               container_of(work, struct irq_work_schedule, work);
+> > +
+> > +       if (irq_work_sched->sched_work)
+> > +               schedule_work(irq_work_sched->sched_work);
+> > +}
+> > +
+> > +/* Schedule work via irq work queue */
+> > +bool irq_work_schedule(struct work_struct *sched_work)
+> > +{
+> > +       init_irq_work(&irq_work_sched.work, irq_work_schedule_fn);
+> > +       irq_work_sched.sched_work = sched_work;
+> > +
+> > +       return irq_work_queue(&irq_work_sched.work);
+> > +}
+> > +EXPORT_SYMBOL_GPL(irq_work_schedule);
+>
+> Wait, howzat work?  There's a single global variable that you stash
+> the "sched_work" into with no locking?  What if two people schedule
+> work at the same time?
 
-My Name is Mrs. Anna H. Bruun, from Norway. I know that this message
-will be a surprise to you. Firstly, I am married to Mr. Patrick Bruun,
-A gold merchant who owns a small gold Mine in Burkina Faso; He died of
-Cardiovascular Disease in mid-March 2011. During his life time he
-deposited the sum of =E2=82=AC 8.5 Million Euro) Eight million, Five hundre=
-d
-thousand Euros in a bank in Ouagadougou the capital city of Burkina
-Faso. The deposited money was from the sale of the shares, death
-benefits payment and entitlements of my deceased husband by his
-company.
+This API is intended to be invoked from NMI context only, so I think
+there will be a single user at a time. And we can make that explicit
+as well:
 
-I am sending this message to you praying that it will reach you in
-good health, since I am not in good health condition in which I sleep
-every night without knowing if I may be alive to see the next day. I
-am suffering from long time cancer and presently i am partially
-suffering from a stroke illness which has become almost impossible for
-me to move around. I am married to my late husband for over 4 years
-before he died and is unfortunately that we don't have a child, my
-doctor confided in me that i have less chance to live. Having known my
-health condition, I decided to contact you to claim the fund since I
-don't have any relation I grew up from the orphanage home,
++/* Schedule work via irq work queue */
++bool irq_work_schedule(struct work_struct *sched_work)
++{
++       if (in_nmi()) {
++               init_irq_work(&irq_work_sched.work, irq_work_schedule_fn);
++               irq_work_sched.sched_work = sched_work;
++
++               return irq_work_queue(&irq_work_sched.work);
++       }
++
++       return false;
++}
++EXPORT_SYMBOL_GPL(irq_work_schedule);
 
-I have decided to donate what I have to you for the support of helping
-Motherless babies/Less privileged/Widows' because I am dying and
-diagnosed of cancer for about 2 years ago. I have been touched by God
-Almighty to donate from what I have inherited from my late husband to
-you for good work of God Almighty. I have asked Almighty God to
-forgive me and believe he has, because He is a Merciful God I will be
-going in for an operation surgery soon
+-Sumit
 
-This is the reason i need your services to stand as my next of kin or
-an executor to claim the funds for charity purposes. If this money
-remains unclaimed after my death, the bank executives or the
-government will take the money as unclaimed fund and maybe use it for
-selfish and worthless ventures, I need a very honest person who can
-claim this money and use it for Charity works, for orphanages, widows
-and also build schools for less privilege that will be named after my
-late husband and my name; I need your urgent answer to know if you
-will be able to execute this project, and I will give you more
-Information on how the fund will be transferred to your bank account.
-
-Thanks
-Mrs. Anna H.
+>
+> -Doug
