@@ -2,79 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73F0D24684A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 16:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7CA624684B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 16:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728922AbgHQOXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 10:23:11 -0400
-Received: from smtprelay0047.hostedemail.com ([216.40.44.47]:52682 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728465AbgHQOXK (ORCPT
+        id S1728959AbgHQOXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 10:23:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728465AbgHQOXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 10:23:10 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 3EC1D182CF66B;
-        Mon, 17 Aug 2020 14:23:09 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2525:2553:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3167:3352:3622:3865:3867:3868:3871:3872:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:9025:10004:10400:10848:11026:11232:11473:11658:11914:12043:12296:12297:12438:12740:12760:12895:13069:13311:13357:13439:14096:14097:14181:14659:14721:14764:21080:21347:21451:21611:21627:21990:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: soup81_331683427017
-X-Filterd-Recvd-Size: 2118
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 17 Aug 2020 14:23:07 +0000 (UTC)
-Message-ID: <fafab4f8754a924a97e2115fbd95085dbf918a9b.camel@perches.com>
-Subject: Re: [PATCH] x86: Use fallthrough pseudo-keyword
-From:   Joe Perches <joe@perches.com>
-To:     Borislav Petkov <bp@alien8.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Gustavo A. R. Silva" <kernel.org@embeddedor>
-Date:   Mon, 17 Aug 2020 07:23:05 -0700
-In-Reply-To: <20200817130227.GI549@zn.tnic>
-References: <20200707200303.GA4680@embeddedor>
-         <20200817130227.GI549@zn.tnic>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Mon, 17 Aug 2020 10:23:14 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B60C061389
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 07:23:14 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id c80so13377977wme.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 07:23:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=t0TLC5mt6zw20J38nO6UV1Kz+5E95WBtIXeRkoxQ4a0=;
+        b=blS9fZ3JD9HAa7bD+eWHtxemNd3m+Oygxgqi+azouKjOFjp5Ojtep+vaNXIIthwDL3
+         uxt5q2n7lpf7By1YTt9Gw9PSXJngu/R1jTmLrCotBATJtF0rOIbBmZ1RW7kyINvfpV2t
+         MHCW1qXEc4idxajgUmxlrrZdEVpucCEZnM6hWIm9+69nTaGHhhPg4OymcqoXbDQg/amT
+         J2jFDEtSqmmf1M2i0h77X4NonGihVMhArYq+qA13jpSrEju2G0el9EwWwLfcOiVD0t8+
+         cbsaDtT3QgxEJ/AORsyJ1a3hnwPFSE23TDphSY8iW+Hm0qVfEa8X/YnSXFfBNW9uEp2e
+         0q/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=t0TLC5mt6zw20J38nO6UV1Kz+5E95WBtIXeRkoxQ4a0=;
+        b=XzhsOxjOhb9IEJ91ssBQfvEAYPAzP0br8i+tlAq/bHAEN0Kllgv5t+0A3MAFFbeaQ4
+         3Fu0l91gQ5lkXtFukiJByLh5wG0nUgKoscqIQctW3T3rKA555i1jIEgu6shoCpQZBjJM
+         AmFuIv62MvnKeM4Pb8OkUCQLl6cs0fwofNrdaFUj1M1BoiPmJxyxtj/Oq+yaS/5ETkoP
+         7UwNFaE/p5KapU8MOf1kKoGtxyp7cBpegD7h6FDon1BRUOMqK0vltXnYKQuj3BTXnljt
+         gYZ+Tjc00+lYNupz0oVtwMQI5WVKiWlDKIDYfpIo8oz49mpVbnUq5qQkwzoNQtp53+/e
+         1bpg==
+X-Gm-Message-State: AOAM531TGNfMqPRD7Drkl3GEZqMK+sNGECBGpXvtpy/Av/Ef5OCUm8da
+        kJBIwE1Z9wZFXfqarD3tA+d3AB/cWeCEnkKk18U=
+X-Google-Smtp-Source: ABdhPJyJgM5lMJV2i/j6WM/wDqdMV/DzSVBCn4wg1H/xhgKaAdWJS8j6+eEdtpNihr5t9pd0M3hLqgvQFWpnhz3aaLs=
+X-Received: by 2002:a1c:b145:: with SMTP id a66mr15539336wmf.133.1597674192546;
+ Mon, 17 Aug 2020 07:23:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Reply-To: mrsanna.h.bruun119@gmail.com
+Received: by 2002:adf:93c4:0:0:0:0:0 with HTTP; Mon, 17 Aug 2020 07:23:11
+ -0700 (PDT)
+From:   "Mrs. Anna H. Bruun" <mrsanna.h.bruun119@gmail.com>
+Date:   Mon, 17 Aug 2020 07:23:11 -0700
+X-Google-Sender-Auth: m9DCNeJ5cImCELydcCb4keNGJVY
+Message-ID: <CADyOJT_5wtDYC0boNJi7qeNOnng0198YH6Naecq9yrFGnZ7nhQ@mail.gmail.com>
+Subject: My Greetings
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-08-17 at 15:02 +0200, Borislav Petkov wrote:
-> On Tue, Jul 07, 2020 at 03:03:03PM -0500, Gustavo A. R. Silva wrote:
-> > Replace the existing /* fall through */ comments and its variants with
-> > the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
-> > fall-through markings when it is the case.
-> > 
-> > [1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
-> 
-> ...
-> 
-> > @@ -362,7 +361,6 @@ static short get_segment_selector(struct pt_regs *regs, int seg_reg_idx)
-> >  		case INAT_SEG_REG_GS:
-> >  			return vm86regs->gs;
-> >  		case INAT_SEG_REG_IGNORE:
-> > -			/* fall through */
-> >  		default:
-> >  			return -EINVAL;
-> >  		}
-> > @@ -386,7 +384,6 @@ static short get_segment_selector(struct pt_regs *regs, int seg_reg_idx)
-> >  		 */
-> >  		return get_user_gs(regs);
-> >  	case INAT_SEG_REG_IGNORE:
-> > -		/* fall through */
-> >  	default:
-> >  		return -EINVAL;
-> >  	}
-> 
-> What's the logic for those two to not get a fallthrough; marker?
+My Dear
 
-consecutive case labels do not need one.
+My Name is Mrs. Anna H. Bruun, from Norway. I know that this message
+will be a surprise to you. Firstly, I am married to Mr. Patrick Bruun,
+A gold merchant who owns a small gold Mine in Burkina Faso; He died of
+Cardiovascular Disease in mid-March 2011. During his life time he
+deposited the sum of =E2=82=AC 8.5 Million Euro) Eight million, Five hundre=
+d
+thousand Euros in a bank in Ouagadougou the capital city of Burkina
+Faso. The deposited money was from the sale of the shares, death
+benefits payment and entitlements of my deceased husband by his
+company.
 
+I am sending this message to you praying that it will reach you in
+good health, since I am not in good health condition in which I sleep
+every night without knowing if I may be alive to see the next day. I
+am suffering from long time cancer and presently i am partially
+suffering from a stroke illness which has become almost impossible for
+me to move around. I am married to my late husband for over 4 years
+before he died and is unfortunately that we don't have a child, my
+doctor confided in me that i have less chance to live. Having known my
+health condition, I decided to contact you to claim the fund since I
+don't have any relation I grew up from the orphanage home,
 
+I have decided to donate what I have to you for the support of helping
+Motherless babies/Less privileged/Widows' because I am dying and
+diagnosed of cancer for about 2 years ago. I have been touched by God
+Almighty to donate from what I have inherited from my late husband to
+you for good work of God Almighty. I have asked Almighty God to
+forgive me and believe he has, because He is a Merciful God I will be
+going in for an operation surgery soon
+
+This is the reason i need your services to stand as my next of kin or
+an executor to claim the funds for charity purposes. If this money
+remains unclaimed after my death, the bank executives or the
+government will take the money as unclaimed fund and maybe use it for
+selfish and worthless ventures, I need a very honest person who can
+claim this money and use it for Charity works, for orphanages, widows
+and also build schools for less privilege that will be named after my
+late husband and my name; I need your urgent answer to know if you
+will be able to execute this project, and I will give you more
+Information on how the fund will be transferred to your bank account.
+
+Thanks
+Mrs. Anna H.
