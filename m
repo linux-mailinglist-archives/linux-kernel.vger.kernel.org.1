@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1B624711D
+	by mail.lfdr.de (Postfix) with ESMTP id B454124711E
 	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390853AbgHQSVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:21:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51984 "EHLO mail.kernel.org"
+        id S2390861AbgHQSVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:21:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387981AbgHQQEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:04:22 -0400
+        id S2388296AbgHQQEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:04:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7EF87208B3;
-        Mon, 17 Aug 2020 16:04:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 574F52053B;
+        Mon, 17 Aug 2020 16:04:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597680255;
-        bh=87Fl949AzeQxELVjL2JDgPA6BXffnHKt0pB+nQTHT88=;
+        s=default; t=1597680262;
+        bh=RwtrKVP5RQWAvp1tztqKQtXfF1K0yIRnWyu7KPRMd6M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GgbpB2N+/gh1meo3oFt7taLBUcUC2Jyuii9DbdhzpsSXVKImXFlJrOdGvyXHuoR/j
-         IJaPELIsmnbllSvm0Ca2yQb+PHTN7MmRs1sd139125ckgJ2pBXjvYkx/YbvRUu8ep4
-         /OAM5dOZO9f3ztGCNCcSsHfn9YgCWr9bnrQsYbpA=
+        b=qrndPxfBwVLpRHwZCgQFnM8B2VS7IvCIMDOhqhsGOsIRXsZ1Vs2VvhvGs3VB5ZEsf
+         h02mVXPIOPOzyHHK7KPpW4JQPY6+b/qGL41JMoKv3601CEV6/6yucNzolCq9jOsR2/
+         n9i9RTq13U54wUjM7WTzwjAOjJPUA8XrKJRVeW7Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 113/270] scsi: cumana_2: Fix different dev_id between request_irq() and free_irq()
-Date:   Mon, 17 Aug 2020 17:15:14 +0200
-Message-Id: <20200817143801.402891222@linuxfoundation.org>
+Subject: [PATCH 5.4 116/270] drm/radeon: fix array out-of-bounds read and write issues
+Date:   Mon, 17 Aug 2020 17:15:17 +0200
+Message-Id: <20200817143801.551976591@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
 References: <20200817143755.807583758@linuxfoundation.org>
@@ -45,36 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 040ab9c4fd0070cd5fa71ba3a7b95b8470db9b4d ]
+[ Upstream commit 7ee78aff9de13d5dccba133f4a0de5367194b243 ]
 
-The dev_id used in request_irq() and free_irq() should match.  Use 'info'
-in both cases.
+There is an off-by-one bounds check on the index into arrays
+table->mc_reg_address and table->mc_reg_table_entry[k].mc_data[j] that
+can lead to reads and writes outside of arrays. Fix the bound checking
+off-by-one error.
 
-Link: https://lore.kernel.org/r/20200625204730.943520-1-christophe.jaillet@wanadoo.fr
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Acked-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Addresses-Coverity: ("Out-of-bounds read/write")
+Fixes: cc8dbbb4f62a ("drm/radeon: add dpm support for CI dGPUs (v2)")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/arm/cumana_2.c | 2 +-
+ drivers/gpu/drm/radeon/ci_dpm.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/arm/cumana_2.c b/drivers/scsi/arm/cumana_2.c
-index a1f3e9ee4e639..14e1d001253c4 100644
---- a/drivers/scsi/arm/cumana_2.c
-+++ b/drivers/scsi/arm/cumana_2.c
-@@ -450,7 +450,7 @@ static int cumanascsi2_probe(struct expansion_card *ec,
+diff --git a/drivers/gpu/drm/radeon/ci_dpm.c b/drivers/gpu/drm/radeon/ci_dpm.c
+index f9685cce16520..1e62e7bbf1b1d 100644
+--- a/drivers/gpu/drm/radeon/ci_dpm.c
++++ b/drivers/gpu/drm/radeon/ci_dpm.c
+@@ -4366,7 +4366,7 @@ static int ci_set_mc_special_registers(struct radeon_device *rdev,
+ 					table->mc_reg_table_entry[k].mc_data[j] |= 0x100;
+ 			}
+ 			j++;
+-			if (j > SMU7_DISCRETE_MC_REGISTER_ARRAY_SIZE)
++			if (j >= SMU7_DISCRETE_MC_REGISTER_ARRAY_SIZE)
+ 				return -EINVAL;
  
- 	if (info->info.scsi.dma != NO_DMA)
- 		free_dma(info->info.scsi.dma);
--	free_irq(ec->irq, host);
-+	free_irq(ec->irq, info);
- 
-  out_release:
- 	fas216_release(host);
+ 			if (!pi->mem_gddr5) {
 -- 
 2.25.1
 
