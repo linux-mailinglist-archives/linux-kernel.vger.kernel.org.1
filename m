@@ -2,119 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0077245FE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB0D3245FF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726286AbgHQI1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 04:27:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52820 "EHLO
+        id S1728043AbgHQI1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 04:27:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726361AbgHQI04 (ORCPT
+        with ESMTP id S1728406AbgHQI0T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 04:26:56 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A99A7C061388;
-        Mon, 17 Aug 2020 01:26:55 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id u128so7871609pfb.6;
-        Mon, 17 Aug 2020 01:26:55 -0700 (PDT)
+        Mon, 17 Aug 2020 04:26:19 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8943EC06138A
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:26:19 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id i26so11598341edv.4
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 01:26:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=lVv9KH9OHYQxfiTtM7sr/yrxc3VHJHaRO2GRJfzHnA0=;
-        b=tdpwarCYYV8gEQ5ZksyKAt24uXKiAXb9mffYCIfGOHo6XRdKn3E/4d0a7jNVUxQglq
-         SV6/7fuATPb///IcuEDDTQy3TJ09Q1W87uRD8n3gBQVMDEY+AhZVua01ADz8gmMn4X6i
-         nfm9It6IQbwseLhnOfwPJUrm1lyCdalOqlvSZVMv0KDkIDIe3qq850RJhPZX578LBRk3
-         JOWeQLhC13jRH9ekm9SPnhrPyqSRYvPEVa8c8KfC1fyiaQebuzhJeeCTmaDDyw7hnXW7
-         3sd06wpWx4FeZO9QIEMGU9dvOliR2qloKLNMr/vJ1TEZEJxwBBUuWHb/5Cro85mZTxbd
-         o4Vg==
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EB784NjPICkYR6SWnOZXgVJnpSq6x26Bh+bf4QaSgmE=;
+        b=WW6BjLlHMZolL6jV9wGUJ2Nqna4uXwJlebSkTA9urlIi6Sa4Pa/NFLVlhsaFlRrn9E
+         XQngChT6EYMcGX3cA8zMULqnTs8j60bTV+lfjDankwdHtdAkUKN1PbSGAMxLTWewd3c0
+         abf5dN1kL9l6jxvEgxS3raK9zw14TFbm9RQxo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=lVv9KH9OHYQxfiTtM7sr/yrxc3VHJHaRO2GRJfzHnA0=;
-        b=tN0Izqryc8O/LRMyDMffTokJAp367WEnE2twMKsNrxaf6F1gsZVnvKX45kFh14bf/H
-         ATPmqigs4CpkEYQhdMLagHT3a/ZniIxgKFJfHXQ9BtirmUZkHPd2g88B4F2pH8b522/U
-         xbus5LILGkDdEuGM15ng1srXAJx13R4Uki6gbVjGz1g2XMYM2+L20JfQSSAO/VW3Q2C0
-         yIRPg4jfabaeVoc6LxfRsob73z7yEaGu4po5H0XqgMajSEYb7rFjdGvg404JiH0QrOwH
-         BdGapTHwqvr071zhQW8Tj4/7o++ru1N1syLvO/+gA6kQ2wNowYTVLe0B6olA+n+90Jfg
-         spVQ==
-X-Gm-Message-State: AOAM532WZwOKN8HMLdymEsnT/STxspUGxKI8X9iUac0dk4Fd3tq15sYK
-        RcOZSCg23dytQ/mk3QCjBjQ=
-X-Google-Smtp-Source: ABdhPJwxI7njVddj/NNf3D82oUgJzonLqIGa7AYU/tTYlx3E4MoM1tP++tr/dbSigeWK25H0FtOm/g==
-X-Received: by 2002:a63:ee12:: with SMTP id e18mr8908728pgi.1.1597652814950;
-        Mon, 17 Aug 2020 01:26:54 -0700 (PDT)
-Received: from localhost.localdomain ([49.207.202.98])
-        by smtp.gmail.com with ESMTPSA id r186sm19928482pfr.162.2020.08.17.01.26.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 01:26:54 -0700 (PDT)
-From:   Allen Pais <allen.lkml@gmail.com>
-To:     jes@trained-monkey.org, davem@davemloft.net, kuba@kernel.org,
-        kda@linux-powerpc.org, dougmill@linux.ibm.com,
-        cooldavid@cooldavid.org, mlindner@marvell.com, borisp@mellanox.com
-Cc:     keescook@chromium.org, linux-acenic@sunsite.dk,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-rdma@vger.kernel.org,
-        oss-drivers@netronome.com, Allen Pais <allen.lkml@gmail.com>,
-        Romain Perier <romain.perier@gmail.com>
-Subject: [PATCH 20/20] ethernet: smsc: convert tasklets to use new tasklet_setup() API
-Date:   Mon, 17 Aug 2020 13:54:34 +0530
-Message-Id: <20200817082434.21176-22-allen.lkml@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200817082434.21176-1-allen.lkml@gmail.com>
-References: <20200817082434.21176-1-allen.lkml@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EB784NjPICkYR6SWnOZXgVJnpSq6x26Bh+bf4QaSgmE=;
+        b=qPyfn9E1M3kSW6IJgsqg0C0HmP5iYtsC2svwhg25eyCanvYRr4jGI9Xtkjv3rusNYL
+         pajjQXkpCKqIEbzQ1lieMCjuXyhLgkgaiI9Hl5ccNSRYRa2MQfHHfr9proImTBWXCW38
+         jiX/zW0XnubcPupKC+Bz0cgUrgOnaMTHXWJCwO/VEcba18bxkZiK68V2m7U5PTJ3IUUh
+         H+t6T8D9aArgMxMejP/8PTbqfK4g1N6DRD4L5BHCVeOAKg/3VWYW9gkwdEpLzVKaZ4n6
+         zj+5iram3352DtG7PEje+kFlKGhrfgsyRFsg8yDcyNzTobvwdf+2Zju7knohGQNjtSR/
+         G6Uw==
+X-Gm-Message-State: AOAM533hVAYrnvP7DEdqjvyDWEB1hBpnkh87XZ7/FGAf8LGrs9+/AbLI
+        Pi6yByJkvtiQCodf24VsxqYQUQ==
+X-Google-Smtp-Source: ABdhPJxsKL8nm53WAnCAbGQdXqx/yIadsPW7nUTLAsMfgGi8OvTQ7NHOoDONUkkkyNaMHrIoZuYVvQ==
+X-Received: by 2002:a50:c3c4:: with SMTP id i4mr13899573edf.244.1597652778082;
+        Mon, 17 Aug 2020 01:26:18 -0700 (PDT)
+Received: from [172.16.11.132] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id v13sm14170727edl.9.2020.08.17.01.26.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Aug 2020 01:26:17 -0700 (PDT)
+Subject: Re: [PATCH 08/30] net: wireless: ath: carl9170: Mark 'ar9170_qmap' as
+ __maybe_unused
+To:     Christian Lamparter <chunkeey@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Christian Lamparter <chunkeey@googlemail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+References: <20200814113933.1903438-1-lee.jones@linaro.org>
+ <20200814113933.1903438-9-lee.jones@linaro.org>
+ <7ef231f2-e6d3-904f-dc3a-7ef82beda6ef@gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <9776eb47-6b83-a891-f057-dd34d14ea16e@rasmusvillemoes.dk>
+Date:   Mon, 17 Aug 2020 10:26:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <7ef231f2-e6d3-904f-dc3a-7ef82beda6ef@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for unconditionally passing the
-struct tasklet_struct pointer to all tasklet
-callbacks, switch to using the new tasklet_setup()
-and from_tasklet() to pass the tasklet pointer explicitly.
+On 14/08/2020 17.14, Christian Lamparter wrote:
+> On 2020-08-14 13:39, Lee Jones wrote:
+>> 'ar9170_qmap' is used in some source files which include carl9170.h,
+>> but not all of them.  Mark it as __maybe_unused to show that this is
+>> not only okay, it's expected.
+>>
+>> Fixes the following W=1 kernel build warning(s)
+> 
+> Is this W=1 really a "must" requirement? I find it strange having
+> __maybe_unused in header files as this "suggests" that the
+> definition is redundant.
 
-Signed-off-by: Romain Perier <romain.perier@gmail.com>
-Signed-off-by: Allen Pais <allen.lkml@gmail.com>
----
- drivers/net/ethernet/smsc/smc91x.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+In this case it seems one could replace the table lookup with a
 
-diff --git a/drivers/net/ethernet/smsc/smc91x.c b/drivers/net/ethernet/smsc/smc91x.c
-index 1c4fea9c3ec4..7e585aa3031c 100644
---- a/drivers/net/ethernet/smsc/smc91x.c
-+++ b/drivers/net/ethernet/smsc/smc91x.c
-@@ -535,10 +535,10 @@ static inline void  smc_rcv(struct net_device *dev)
- /*
-  * This is called to actually send a packet to the chip.
-  */
--static void smc_hardware_send_pkt(unsigned long data)
-+static void smc_hardware_send_pkt(struct tasklet_struct *t)
- {
--	struct net_device *dev = (struct net_device *)data;
--	struct smc_local *lp = netdev_priv(dev);
-+	struct smc_local *lp = from_tasklet(lp, t, tx_task);
-+	struct net_device *dev = lp->dev;
- 	void __iomem *ioaddr = lp->base;
- 	struct sk_buff *skb;
- 	unsigned int packet_no, len;
-@@ -688,7 +688,7 @@ smc_hard_start_xmit(struct sk_buff *skb, struct net_device *dev)
- 		 * Allocation succeeded: push packet to the chip's own memory
- 		 * immediately.
- 		 */
--		smc_hardware_send_pkt((unsigned long)dev);
-+		smc_hardware_send_pkt(&lp->tx_task);
- 	}
- 
- 	return NETDEV_TX_OK;
-@@ -1965,7 +1965,7 @@ static int smc_probe(struct net_device *dev, void __iomem *ioaddr,
- 	dev->netdev_ops = &smc_netdev_ops;
- 	dev->ethtool_ops = &smc_ethtool_ops;
- 
--	tasklet_init(&lp->tx_task, smc_hardware_send_pkt, (unsigned long)dev);
-+	tasklet_setup(&lp->tx_task, smc_hardware_send_pkt);
- 	INIT_WORK(&lp->phy_configure, smc_phy_configure);
- 	lp->dev = dev;
- 	lp->mii.phy_id_mask = 0x1f;
--- 
-2.17.1
+static inline u8 ar9170_qmap(u8 idx) { return 3 - idx; }
 
+gcc doesn't warn about unused static inline functions (or one would have
+a million warnings to deal with). Just my $0.02.
+
+Rasmus
