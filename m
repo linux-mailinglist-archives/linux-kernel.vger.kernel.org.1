@@ -2,83 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF099246564
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 400E5246572
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728320AbgHQLae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 07:30:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:53474 "EHLO foss.arm.com"
+        id S1728477AbgHQLb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 07:31:29 -0400
+Received: from elvis.franken.de ([193.175.24.41]:49790 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728177AbgHQLaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 07:30:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ACC8512FC;
-        Mon, 17 Aug 2020 04:30:20 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 782183F66B;
-        Mon, 17 Aug 2020 04:30:19 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>, mingo@kernel.org,
-        peterz@infradead.org, vincent.guittot@linaro.org,
-        morten.rasmussen@arm.com, Quentin Perret <qperret@google.com>
-Subject: [PATCH v6 05/17] sched/topology: Verify SD_* flags setup when sched_debug is on
-Date:   Mon, 17 Aug 2020 12:29:51 +0100
-Message-Id: <20200817113003.20802-6-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200817113003.20802-1-valentin.schneider@arm.com>
-References: <20200817113003.20802-1-valentin.schneider@arm.com>
+        id S1728168AbgHQLbV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 07:31:21 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1k7dMD-0003tH-00; Mon, 17 Aug 2020 13:31:17 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 7C81EC0D71; Mon, 17 Aug 2020 13:16:43 +0200 (CEST)
+Date:   Mon, 17 Aug 2020 13:16:43 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
+Cc:     f.fainelli@gmail.com, jonas.gorski@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/5] MIPS: BCM63xx: board improvements
+Message-ID: <20200817111643.GA11725@alpha.franken.de>
+References: <20200812075235.366864-1-noltari@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200812075235.366864-1-noltari@gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we have some description of what we expect the flags layout to
-be, we can use that to assert at runtime that the actual layout is sane.
+On Wed, Aug 12, 2020 at 09:52:30AM +0200, Álvaro Fernández Rojas wrote:
+> v4: Split license change to a new patch.
+> v3: Reword DWV-S0 board commit description to avoid possible confusions.
+> v2: switch to SPDX license identifier.
+> 
+> Álvaro Fernández Rojas (5):
+>   MIPS: BCM63xx: remove duplicated new lines
+>   MIPS: BCM63xx: remove EHCI from BCM6348 boards
+>   MIPS: BCM63xx: enable EHCI for DWV-S0 board
+>   MIPS: BCM63xx: refactor board declarations
+>   MIPS: BCM63xx: switch to SPDX license identifier
+> 
+>  arch/mips/bcm63xx/boards/board_bcm963xx.c | 625 +++++++++++-----------
+>  1 file changed, 306 insertions(+), 319 deletions(-)
 
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
- kernel/sched/topology.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+series applied to mips-next.
 
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 865fff3ef20a..f128fcf46a41 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -29,6 +29,8 @@ static int sched_domain_debug_one(struct sched_domain *sd, int cpu, int level,
- 				  struct cpumask *groupmask)
- {
- 	struct sched_group *group = sd->groups;
-+	unsigned long flags = sd->flags;
-+	unsigned int idx;
- 
- 	cpumask_clear(groupmask);
- 
-@@ -43,6 +45,21 @@ static int sched_domain_debug_one(struct sched_domain *sd, int cpu, int level,
- 		printk(KERN_ERR "ERROR: domain->groups does not contain CPU%d\n", cpu);
- 	}
- 
-+	for_each_set_bit(idx, &flags, __SD_FLAG_CNT) {
-+		unsigned int flag = BIT(idx);
-+		unsigned int meta_flags = sd_flag_debug[idx].meta_flags;
-+
-+		if ((meta_flags & SDF_SHARED_CHILD) && sd->child &&
-+		    !(sd->child->flags & flag))
-+			printk(KERN_ERR "ERROR: flag %s set here but not in child\n",
-+			       sd_flag_debug[idx].name);
-+
-+		if ((meta_flags & SDF_SHARED_PARENT) && sd->parent &&
-+		    !(sd->parent->flags & flag))
-+			printk(KERN_ERR "ERROR: flag %s set here but not in parent\n",
-+			       sd_flag_debug[idx].name);
-+	}
-+
- 	printk(KERN_DEBUG "%*s groups:", level + 1, "");
- 	do {
- 		if (!group) {
+Thomas.
+
 -- 
-2.27.0
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
