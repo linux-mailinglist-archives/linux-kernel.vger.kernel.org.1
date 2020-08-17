@@ -2,144 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E49E246837
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 16:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B6F246847
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 16:22:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728949AbgHQOPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 10:15:54 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3065 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728831AbgHQOPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 10:15:53 -0400
-Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.54])
-        by Forcepoint Email with ESMTP id 5AC8B462E995EFE33ED2;
-        Mon, 17 Aug 2020 22:15:51 +0800 (CST)
-Received: from [10.174.186.8] (10.174.186.8) by dggeme755-chm.china.huawei.com
- (10.3.19.101) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1913.5; Mon, 17
- Aug 2020 22:15:50 +0800
-Subject: Re: [RFC][PATCH 0/4] arm64:kvm: teach guest sched that VCPUs can be
- preempted
-To:     Marc Zyngier <maz@kernel.org>
-References: <20200721041742.197354-1-sergey.senozhatsky@gmail.com>
- <20200817020310.GA1210848@jagdpanzerIV.localdomain>
- <fe72592c-c721-bece-1469-95eebf931299@huawei.com>
- <cbcfb402b7fdb8a2a45b80fbb0e79f3e@kernel.org>
-CC:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        "will@kernel.org" <will@kernel.org>, <joelaf@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        <suleiman@google.com>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "Wanghaibin (D)" <wanghaibin.wang@huawei.com>,
-        <yezengruan@huawei.com>
-From:   yezengruan <yezengruan@huawei.com>
-Message-ID: <3ff3b016-3f63-7d03-ed4b-c98d74db4af8@huawei.com>
-Date:   Mon, 17 Aug 2020 22:15:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1728873AbgHQOWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 10:22:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728465AbgHQOWS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 10:22:18 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A6CDC061389;
+        Mon, 17 Aug 2020 07:22:17 -0700 (PDT)
+Date:   Mon, 17 Aug 2020 16:22:14 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597674135;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=j4xxhCUOoqfsgVxjLw+tTnX7DOxVf/4QOq6Nb41D69Y=;
+        b=0DxbvkUh7Jau8mQwiRKBDN4jBFCiFpqzLh6oyAeyNgyRINtyePvqVOH3GzuTk06XkUTAsA
+        9nxm6DMgVVUNPkSSD1kbNSO+JTUEjbEJTm7Jg+E7xZG/eu0e5K4sMs1pXOAkohsOn+GkED
+        f2fqB7LtzGOWx5UCXx6YiCF8ct8LjeCw6rjKi4eYGc2e58smJKhyoI/7PYG9msRLL50+ES
+        pKA31lTFFc3TkERrjsNp4iGMfXYMiRWsrDhbjlakFqWI3HsVRkz7kmfjdcun2Grts7POe2
+        WrRu8LNEuY87KYVQIXPIDozsq8lxbGEIOGT+iWNnuBfNBZTIFdqbd5a+iTa7Bw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597674135;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=j4xxhCUOoqfsgVxjLw+tTnX7DOxVf/4QOq6Nb41D69Y=;
+        b=dKszOnRXHWvHJK/xrxkMKoFxXV1l9qCq/BqafMd9StHXyfU2sSC3yNXKk8PG+kL6W2GGUV
+        AdcJHK9fJ0HkyeCA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Julia Lawall <julia.lawall@inria.fr>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
+        linux-rt-users <linux-rt-users@vger.kernel.org>
+Subject: Re: [PATCH] printk: fix ifnullfree.cocci warnings
+Message-ID: <20200817142214.oummrtyh5xmad5ke@linutronix.de>
+References: <alpine.DEB.2.21.2007241203410.2834@hadrien>
+ <87y2n53xi6.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <cbcfb402b7fdb8a2a45b80fbb0e79f3e@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.186.8]
-X-ClientProxiedBy: dggeme712-chm.china.huawei.com (10.1.199.108) To
- dggeme755-chm.china.huawei.com (10.3.19.101)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87y2n53xi6.fsf@jogness.linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/8/17 20:25, Marc Zyngier wrote:
-> On 2020-08-17 13:03, yezengruan wrote:
->> On 2020/8/17 10:03, Sergey Senozhatsky wrote:
->>> On (20/07/21 13:17), Sergey Senozhatsky wrote:
->>>> Hello,
->>>>
->>>>     RFC
->>>>
->>>>     We noticed that in a number of cases when we wake_up_process()
->>>> on arm64 guest we end up enqueuing that task on a preempted VCPU. The culprit
->>>> appears to be the fact that arm64 guests are not aware of VCPU preemption
->>>> as such, so when sched picks up an idle VCPU it always assumes that VCPU
->>>> is available:
->>>>
->>>>       wake_up_process()
->>>>        try_to_wake_up()
->>>>         select_task_rq_fair()
->>>>          available_idle_cpu()
->>>>           vcpu_is_preempted()    // return false;
->>>>
->>>> Which is, obviously, not the case.
->>>>
->>>> This RFC patch set adds a simple vcpu_is_preempted() implementation so
->>>> that scheduler can make better decisions when it search for the idle
->>>> (v)CPU.
->>> Hi,
->>>
->>> A gentle ping.
->>>
->>>     -ss
->>> _______________________________________________
->>> kvmarm mailing list
->>> kvmarm@lists.cs.columbia.edu
->>> https://lists.cs.columbia.edu/mailman/listinfo/kvmarm
->>> .
->>
->> Hi Sergey,
->>
->> I have a set of patches similar to yours.
->>
->> https://lore.kernel.org/lkml/20191226135833.1052-1-yezengruan@huawei.com/
->
-> It really isn't the same thing at all. You are exposing PV spinlocks,
-> while Sergey exposes preemption to vcpus. The former is a massive,
-> and probably unnecessary superset of the later, which only impacts
-> the scheduler (it doesn't change the way locks are implemented).
->
-> You really shouldn't conflate the two (which you have done in your
-> series).
->
->         M.
+On 2020-07-27 15:26:33 [+0206], John Ogness wrote:
+> On 2020-07-24, Julia Lawall <julia.lawall@inria.fr> wrote:
+> > Make the code a little simpler by dropping
+> > some unneeded tests.
+> >
+> > Generated by: scripts/coccinelle/free/ifnullfree.cocci
+> >
+> > Fixes: c406fbce2054 ("printk: implement syslog")
+> > CC: John Ogness <john.ogness@linutronix.de>
+> > Signed-off-by: kernel test robot <lkp@intel.com>
+> 
+> This is for the rogue version of the printk ringbuffer within RT at the
+> moment. Until the new accepted version is mainline, we might as well
+> keep the RT variant maintained.
+> 
+> Acked-by: John Ogness <john.ogness@linutronix.de>
 
+Applied.
 
-Hi Marc,
-
-Actually, both series support paravirtualization vcpu_is_preempted. My
-series regard this as PV lock, but only the vcpu_is_preempted interface
-of pv_lock_opt is implemented.
-
-Except wake_up_process(), the vcpu_is_preempted interface of the current
-kernel is used in the following scenarios:
-
-kernel/sched/core.c:                            <---- wake_up_process()
---------------------
-available_idle_cpu
-    vcpu_is_preempted
-
-kernel/locking/rwsem.c:
------------------------
-rwsem_optimistic_spin
-    rwsem_spin_on_owner
-        owner_on_cpu
-            vcpu_is_preempted
-
-kernel/locking/mutex.c:
------------------------
-mutex_optimistic_spin
-    mutex_spin_on_owner
-        vcpu_is_preempted
-
-kernel/locking/osq_lock.c:
---------------------------
-osq_lock
-    vcpu_is_preempted
-
-
-Thanks,
-
-Zengruan
-
+Sebastian
