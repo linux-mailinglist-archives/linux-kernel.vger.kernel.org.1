@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31070246991
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C238246967
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729544AbgHQPX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:23:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46042 "EHLO mail.kernel.org"
+        id S1729368AbgHQPVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:21:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729379AbgHQPWT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:22:19 -0400
+        id S1729306AbgHQPU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:20:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 67F6720709;
-        Mon, 17 Aug 2020 15:22:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4BD6D2065C;
+        Mon, 17 Aug 2020 15:20:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597677739;
-        bh=i8CA6/j1VbHk5HL5gl8INswoxQFjy/h3zO5JJS8sS7M=;
+        s=default; t=1597677657;
+        bh=AiOlWcS4Nc4rzG2Flyr2zCMjKAcNKrD8KD3GG6vV3I8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yBf8Ij2mDDZJZlt1SvOdAp53Ie0019JkJQcVgPH+b1zFoUPWr4//v8L5qL2MookaS
-         0dBT7etaUPQfh1QFHC1xXdWqrpw4Ndlm7jA5R+H0DZUkXHAPG2C0+V6Zzw1OeMXUVJ
-         eZoTJcka7bb/fLv1wCbVc1MXA+jVF7jSg4xhIiA4=
+        b=rB0zAR1IS7hc6vXyZDuurCgvKJAJHgPqfq85AktSmEtvAgTCDwEnjOoR4dvumv3dO
+         DJMp37Lpa8Nrty42ecaH4m6DdwvIe6x971TptmUt+8FBxGQv97yJY5kD5ILoFT0c2N
+         JT4iDKM5HgMwpFBRwBeG0k2kfLcOwBvEFH5k7gdE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Paul Moore <paul@paul-moore.com>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Song Liu <songliubraving@fb.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 059/464] scripts/selinux/mdp: fix initial SID handling
-Date:   Mon, 17 Aug 2020 17:10:12 +0200
-Message-Id: <20200817143836.591463966@linuxfoundation.org>
+Subject: [PATCH 5.8 062/464] md: raid0/linear: fix dereference before null check on pointer mddev
+Date:   Mon, 17 Aug 2020 17:10:15 +0200
+Message-Id: <20200817143836.734203816@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -45,67 +45,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Smalley <stephen.smalley.work@gmail.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 382c2b5d23b4245f1818f69286db334355488dc4 ]
+[ Upstream commit 9a5a85972c073f720d81a7ebd08bfe278e6e16db ]
 
-commit e3e0b582c321 ("selinux: remove unused initial SIDs and improve
-handling") broke scripts/selinux/mdp since the unused initial SID names
-were removed and the corresponding generation of policy initial SID
-definitions by mdp was not updated accordingly.  Fix it.  With latest
-upstream checkpolicy it is no longer necessary to include the SID context
-definitions for the unused initial SIDs but retain them for compatibility
-with older checkpolicy.
+Pointer mddev is being dereferenced with a test_bit call before mddev
+is being null checked, this may cause a null pointer dereference. Fix
+this by moving the null pointer checks to sanity check mddev before
+it is dereferenced.
 
-Fixes: e3e0b582c321 ("selinux: remove unused initial SIDs and improve handling")
-Signed-off-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+Addresses-Coverity: ("Dereference before null check")
+Fixes: 62f7b1989c02 ("md raid0/linear: Mark array as 'broken' and fail BIOs if a member is gone")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Reviewed-by: Guilherme G. Piccoli <gpiccoli@canonical.com>
+Signed-off-by: Song Liu <songliubraving@fb.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/selinux/mdp/mdp.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
+ drivers/md/md.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/scripts/selinux/mdp/mdp.c b/scripts/selinux/mdp/mdp.c
-index 576d11a60417b..6ceb88eb9b590 100644
---- a/scripts/selinux/mdp/mdp.c
-+++ b/scripts/selinux/mdp/mdp.c
-@@ -67,8 +67,14 @@ int main(int argc, char *argv[])
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index f567f536b529b..90756450b9588 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -470,17 +470,18 @@ static blk_qc_t md_make_request(struct request_queue *q, struct bio *bio)
+ 	struct mddev *mddev = bio->bi_disk->private_data;
+ 	unsigned int sectors;
  
- 	initial_sid_to_string_len = sizeof(initial_sid_to_string) / sizeof (char *);
- 	/* print out the sids */
--	for (i = 1; i < initial_sid_to_string_len; i++)
--		fprintf(fout, "sid %s\n", initial_sid_to_string[i]);
-+	for (i = 1; i < initial_sid_to_string_len; i++) {
-+		const char *name = initial_sid_to_string[i];
+-	if (unlikely(test_bit(MD_BROKEN, &mddev->flags)) && (rw == WRITE)) {
++	if (mddev == NULL || mddev->pers == NULL) {
+ 		bio_io_error(bio);
+ 		return BLK_QC_T_NONE;
+ 	}
+ 
+-	blk_queue_split(q, &bio);
+-
+-	if (mddev == NULL || mddev->pers == NULL) {
++	if (unlikely(test_bit(MD_BROKEN, &mddev->flags)) && (rw == WRITE)) {
+ 		bio_io_error(bio);
+ 		return BLK_QC_T_NONE;
+ 	}
 +
-+		if (name)
-+			fprintf(fout, "sid %s\n", name);
-+		else
-+			fprintf(fout, "sid unused%d\n", i);
-+	}
- 	fprintf(fout, "\n");
- 
- 	/* print out the class permissions */
-@@ -126,9 +132,16 @@ int main(int argc, char *argv[])
- #define OBJUSERROLETYPE "user_u:object_r:base_t"
- 
- 	/* default sids */
--	for (i = 1; i < initial_sid_to_string_len; i++)
--		fprintf(fout, "sid %s " SUBJUSERROLETYPE "%s\n",
--			initial_sid_to_string[i], mls ? ":" SYSTEMLOW : "");
-+	for (i = 1; i < initial_sid_to_string_len; i++) {
-+		const char *name = initial_sid_to_string[i];
++	blk_queue_split(q, &bio);
 +
-+		if (name)
-+			fprintf(fout, "sid %s ", name);
-+		else
-+			fprintf(fout, "sid unused%d\n", i);
-+		fprintf(fout, SUBJUSERROLETYPE "%s\n",
-+			mls ? ":" SYSTEMLOW : "");
-+	}
- 	fprintf(fout, "\n");
- 
- #define FS_USE(behavior, fstype)			    \
+ 	if (mddev->ro == 1 && unlikely(rw == WRITE)) {
+ 		if (bio_sectors(bio) != 0)
+ 			bio->bi_status = BLK_STS_IOERR;
 -- 
 2.25.1
 
