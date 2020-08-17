@@ -2,83 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F90B24794A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 23:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F92247955
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 23:56:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729010AbgHQVys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 17:54:48 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:34904 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728857AbgHQVxy (ORCPT
+        id S1729071AbgHQVzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 17:55:46 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:42242 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728803AbgHQVzp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 17:53:54 -0400
-Received: by mail-il1-f195.google.com with SMTP id q14so12432265ilm.2;
-        Mon, 17 Aug 2020 14:53:53 -0700 (PDT)
+        Mon, 17 Aug 2020 17:55:45 -0400
+Received: by mail-io1-f68.google.com with SMTP id g13so4911351ioo.9;
+        Mon, 17 Aug 2020 14:55:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=irJy6S2QShWPaULF8WN8Xlc9QcpqNGnW+ZOqavaiAyM=;
-        b=d8cM75gEHUaRRHCqQTxgy6t8O4641CoUmEi85l9mVCM++fJvJoBppibjxYGD6LGzR2
-         Fm4RcV/+ArH/ke/aFw9iH6kIfvrtw35rKOZLOPIilHCzOFCxAlwccHfWT8ZjJy/LbH+d
-         eic/9Q5CDgsKUkaMppZl99j0IDOOjIrR4FEJPPxmQ0UqvyrFX8SxRS7ESTUYMKfoUtPg
-         d5A94l8ZalyJpCszH4hkRntGgu8SjBsTp0g3Yw37Hj7jOVfS1hzizhNIz51z5sl1Pw6N
-         bXf8FIVrgp4xzJmgcGMnGM04P0dP0ItI4ANhVs+rPXB1k84pFYl4ECNmFuLdCqQBGx02
-         OyXw==
-X-Gm-Message-State: AOAM532yyzNkWew9sSGYW/aGXrt7yQzdu+Fv9szg6bFpsGNBOfqXU3ZR
-        lL0DCTyYGin9elB3JMDwdg==
-X-Google-Smtp-Source: ABdhPJzI1M0gVI1I3xczRo7fzd9EhOM5wg2+74nfZYkCDwTZcLbXmRjG9cYzZnFU3l78Z92I5uWOog==
-X-Received: by 2002:a92:aa94:: with SMTP id p20mr15902826ill.266.1597701233225;
-        Mon, 17 Aug 2020 14:53:53 -0700 (PDT)
+        bh=nkpIYhalEcM+P3nv1fCih/h2x5+KBhnkb2wFnc/lhB8=;
+        b=T9fmygbA8DbrXiW3OVPQPR5WvFM9bmLxRrbEgFeAJuBHzfZIFb/RKE6vyflCAiAkJb
+         9rJm+t182SPvjwTxqD3x0bjRHydXtsp5/D5VcrY5pwwGpRqvSRYIaMXkpsRSznXeAz+p
+         Sbv+YU4AfISOwCx6w1gW1+uwjFOvz0kSRDhE65x7RGKv+gPTAX/ebq9jwSiAakttYrXr
+         bQ2R6pl1iyD+T82weCsLXf4HSNG0gGFrPEqHzNsc3mCARrrhvAJ24JS61nSt21dn8xuy
+         HptCGbPAnxQuifQf6ebh8BGz4nQiAzs4Cmdni2V9TB5zl9KxDRbodVay3PhXPHZ1Bb9s
+         8RfA==
+X-Gm-Message-State: AOAM533X5cIhFkvvZ25brZmWzq3baYR664yCPtkBVhegs00rDJU7BMo6
+        +88OZrynIzcCD/Lx95F66g==
+X-Google-Smtp-Source: ABdhPJwDNrUfp8Fv8dzBBjKs4kQQjiJPwC5XtW2qYTwNIhyPOu65dg7TzCwVaw1CyyD4fNG+ENza/g==
+X-Received: by 2002:a6b:8b86:: with SMTP id n128mr13794859iod.202.1597701343859;
+        Mon, 17 Aug 2020 14:55:43 -0700 (PDT)
 Received: from xps15 ([64.188.179.249])
-        by smtp.gmail.com with ESMTPSA id n5sm742881ilj.43.2020.08.17.14.53.51
+        by smtp.gmail.com with ESMTPSA id 13sm9921642ilz.58.2020.08.17.14.55.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 14:53:52 -0700 (PDT)
-Received: (nullmailer pid 1638312 invoked by uid 1000);
-        Mon, 17 Aug 2020 21:53:50 -0000
-Date:   Mon, 17 Aug 2020 15:53:50 -0600
+        Mon, 17 Aug 2020 14:55:42 -0700 (PDT)
+Received: (nullmailer pid 1641174 invoked by uid 1000);
+        Mon, 17 Aug 2020 21:55:40 -0000
+Date:   Mon, 17 Aug 2020 15:55:40 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] of: platform: Destroy child devices symmetrically
-Message-ID: <20200817215350.GA1638282@bogus>
-References: <20200806153650.3883530-1-thierry.reding@gmail.com>
+To:     Georgi Djakov <georgi.djakov@linaro.org>
+Cc:     devicetree@vger.kernel.org, sibis@codeaurora.org,
+        dianders@chromium.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, mka@chromium.org, bjorn.andersson@linaro.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v2 2/7] dt-bindings: interconnect: Document the support
+ of optional path tag
+Message-ID: <20200817215540.GA1641121@bogus>
+References: <20200806163126.22667-1-georgi.djakov@linaro.org>
+ <20200806163126.22667-3-georgi.djakov@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200806153650.3883530-1-thierry.reding@gmail.com>
+In-Reply-To: <20200806163126.22667-3-georgi.djakov@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 06 Aug 2020 17:36:50 +0200, Thierry Reding wrote:
-> From: Thierry Reding <treding@nvidia.com>
+On Thu, 06 Aug 2020 19:31:21 +0300, Georgi Djakov wrote:
+> Let's document that we now support specifying path tag information in the
+> arg cells of the 'interconnects' DT property. This information would be
+> populated when the xlate_extended() callback is used.
 > 
-> Iterate over child devices in reverse when unpopulating a platform
-> device to make this step symmetrical with the population step. This
-> fixes an issue in the Tegra DRM driver where upon module unload the
-> DPAUX controller tries to unregister an I2C controller but will end
-> up waiting indefinitely because one of the SOR devices is keeping a
-> reference to it. Since the SOR devices are instantiated after the
-> DPAUX devices, they would only be removed (and hence release their
-> reference to the I2C controller) after the DPAUX devices have been
-> removed.
+> Specifying the tag in DT will allow the interconnect framework to do the
+> aggregation based on the tag automatically. The users can still use the
+> icc_set_tag() API if/when needed.
 > 
-> While destroying the child devices in reverse order helps in this
-> situation, it isn't fully safe to do so either. An even better way
-> would be for the child devices to be reordered to match the probe
-> order, which would work irrespective of the instantiation order.
-> 
-> However, reordering by probe order would be fairly complicated and
-> doesn't fix any known issues, so we'll go with the simpler fix for
-> now.
-> 
-> Signed-off-by: Thierry Reding <treding@nvidia.com>
+> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
 > ---
->  drivers/of/platform.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  .../bindings/interconnect/interconnect.txt    | 24 ++++++++++++++++++-
+>  1 file changed, 23 insertions(+), 1 deletion(-)
 > 
 
-Applied, thanks!
+Reviewed-by: Rob Herring <robh@kernel.org>
