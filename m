@@ -2,40 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5AA92474C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50A332474D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392171AbgHQTPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:15:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48604 "EHLO mail.kernel.org"
+        id S2392175AbgHQTQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:16:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387467AbgHQPkM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:40:12 -0400
+        id S2387433AbgHQPji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:39:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BD5D223120;
-        Mon, 17 Aug 2020 15:39:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0417122C9F;
+        Mon, 17 Aug 2020 15:39:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678795;
-        bh=Vz1IWgRRXlQKFbJAubLEj5+gx2dz54XngUGfMWWbNtA=;
+        s=default; t=1597678777;
+        bh=8cLVw7nzYeeb/D1UEPPeffAQwZifocd6+H+cQwWUp8A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hfxQ2nhK3CW4JeeMzIpmnxJwGCmRDXmQhiChpncpnltzP7j2GYy6hl+XfbLucfGMg
-         Cym8d7xFpxoz4AWzHGOjOiqmQz5jGabiWEyr65LmaB9YUS0h22wCKKf4OahnAZdYNU
-         uXs94YjRqkrMYwVd6vANpDWBc9EASdA9WhfrYtQ8=
+        b=D1fKrUYoEFdj8Jp2zOc2FvA+AUpRd4SlmJ77HX1X1p4lJjFPpcziBVluXdjWVlYNh
+         ib+d3AO9r5T8lSWr92T2JitguQbGCmp+DirGbX0CrnnBGFd28OqjhSgAANTxnJAAO7
+         nfanmv/ECRWL+Y3zQ7Eo+JCZn5NIDzO0eG/vk4EI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+4a88b2b9dc280f47baf4@syzkaller.appspotmail.com,
-        Eric Biggers <ebiggers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Qiujun Huang <anenbupt@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.8 416/464] fs/minix: check return value of sb_getblk()
-Date:   Mon, 17 Aug 2020 17:16:09 +0200
-Message-Id: <20200817143853.706051071@linuxfoundation.org>
+        stable@vger.kernel.org, Zheng Bin <zhengbin13@huawei.com>,
+        Dominique Martinet <asmadeus@codewreck.org>
+Subject: [PATCH 5.8 420/464] 9p: Fix memory leak in v9fs_mount
+Date:   Mon, 17 Aug 2020 17:16:13 +0200
+Message-Id: <20200817143853.891906569@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -48,78 +43,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+From: Zheng Bin <zhengbin13@huawei.com>
 
-commit da27e0a0e5f655f0d58d4e153c3182bb2b290f64 upstream.
+commit cb0aae0e31c632c407a2cab4307be85a001d4d98 upstream.
 
-Patch series "fs/minix: fix syzbot bugs and set s_maxbytes".
+v9fs_mount
+  v9fs_session_init
+    v9fs_cache_session_get_cookie
+      v9fs_random_cachetag                     -->alloc cachetag
+      v9ses->fscache = fscache_acquire_cookie  -->maybe NULL
+  sb = sget                                    -->fail, goto clunk
+clunk_fid:
+  v9fs_session_close
+    if (v9ses->fscache)                        -->NULL
+      kfree(v9ses->cachetag)
 
-This series fixes all syzbot bugs in the minix filesystem:
+Thus memleak happens.
 
-	KASAN: null-ptr-deref Write in get_block
-	KASAN: use-after-free Write in get_block
-	KASAN: use-after-free Read in get_block
-	WARNING in inc_nlink
-	KMSAN: uninit-value in get_block
-	WARNING in drop_nlink
-
-It also fixes the minix filesystem to set s_maxbytes correctly, so that
-userspace sees the correct behavior when exceeding the max file size.
-
-This patch (of 6):
-
-sb_getblk() can fail, so check its return value.
-
-This fixes a NULL pointer dereference.
-
-Originally from Qiujun Huang.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-by: syzbot+4a88b2b9dc280f47baf4@syzkaller.appspotmail.com
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Qiujun Huang <anenbupt@gmail.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r/20200628060846.682158-1-ebiggers@kernel.org
-Link: http://lkml.kernel.org/r/20200628060846.682158-2-ebiggers@kernel.org
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Link: http://lkml.kernel.org/r/20200615012153.89538-1-zhengbin13@huawei.com
+Fixes: 60e78d2c993e ("9p: Add fscache support to 9p")
+Cc: <stable@vger.kernel.org> # v2.6.32+
+Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
+Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/minix/itree_common.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ fs/9p/v9fs.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/fs/minix/itree_common.c
-+++ b/fs/minix/itree_common.c
-@@ -75,6 +75,7 @@ static int alloc_branch(struct inode *in
- 	int n = 0;
- 	int i;
- 	int parent = minix_new_block(inode);
-+	int err = -ENOSPC;
+--- a/fs/9p/v9fs.c
++++ b/fs/9p/v9fs.c
+@@ -500,10 +500,9 @@ void v9fs_session_close(struct v9fs_sess
+ 	}
  
- 	branch[0].key = cpu_to_block(parent);
- 	if (parent) for (n = 1; n < num; n++) {
-@@ -85,6 +86,11 @@ static int alloc_branch(struct inode *in
- 			break;
- 		branch[n].key = cpu_to_block(nr);
- 		bh = sb_getblk(inode->i_sb, parent);
-+		if (!bh) {
-+			minix_free_block(inode, nr);
-+			err = -ENOMEM;
-+			break;
-+		}
- 		lock_buffer(bh);
- 		memset(bh->b_data, 0, bh->b_size);
- 		branch[n].bh = bh;
-@@ -103,7 +109,7 @@ static int alloc_branch(struct inode *in
- 		bforget(branch[i].bh);
- 	for (i = 0; i < n; i++)
- 		minix_free_block(inode, block_to_cpu(branch[i].key));
--	return -ENOSPC;
-+	return err;
- }
- 
- static inline int splice_branch(struct inode *inode,
+ #ifdef CONFIG_9P_FSCACHE
+-	if (v9ses->fscache) {
++	if (v9ses->fscache)
+ 		v9fs_cache_session_put_cookie(v9ses);
+-		kfree(v9ses->cachetag);
+-	}
++	kfree(v9ses->cachetag);
+ #endif
+ 	kfree(v9ses->uname);
+ 	kfree(v9ses->aname);
 
 
