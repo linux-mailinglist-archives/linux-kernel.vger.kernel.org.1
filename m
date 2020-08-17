@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51EA24699F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF7F2469A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729641AbgHQPYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:24:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49642 "EHLO mail.kernel.org"
+        id S1729662AbgHQPYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:24:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729520AbgHQPXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:23:12 -0400
+        id S1729525AbgHQPXS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:23:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F96822DBF;
-        Mon, 17 Aug 2020 15:23:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 18EBA22E00;
+        Mon, 17 Aug 2020 15:23:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597677791;
-        bh=I4DTYmsf4Ie6Pvy2AwZnwahqayBuUFUZyeolksFCTwU=;
+        s=default; t=1597677797;
+        bh=6GjrX3vgGRkDhD7NBWNBJhQdyA9DGy1SvAWjflW4pFk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OKQk/WximNMlkAdg+w5z2DKw+R4NQPt8zXkNhcuylSoscoc/A4uoQMO4OYyO2sMas
-         y7vE4TJvKjpyCL6YUa6LEAWR0oGTGzWXEC8tRlX+BnELnn3HmIXHacWhAMuFnqCCiP
-         q5cOqnWcQ8yRPRYOgFaOlJHvU9AEmZrKxYqjmitk=
+        b=f1qB2BQMrL4OdBx7AAO5dHGkvMBoLg+Nm3dHRTQj9Xo+1S+UanUPYAw2vjP+XYzg0
+         QWpvY5pbXr/QuOXzxGXgXGcfiHY2uaYJfk8AV2n+nGSokuiYgor0QBTYgKO6IQgBb5
+         5SqjyC+JArtgeZf3GNtRB1xxI9dNFwdE/oHx3aEQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 109/464] mm/mmap.c: Add cond_resched() for exit_mmap() CPU stalls
-Date:   Mon, 17 Aug 2020 17:11:02 +0200
-Message-Id: <20200817143839.021623585@linuxfoundation.org>
+Subject: [PATCH 5.8 111/464] drm/amdgpu/debugfs: fix ref count leak when pm_runtime_get_sync fails
+Date:   Mon, 17 Aug 2020 17:11:04 +0200
+Message-Id: <20200817143839.121606604@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -46,81 +44,272 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul E. McKenney <paulmck@kernel.org>
+From: Alex Deucher <alexander.deucher@amd.com>
 
-[ Upstream commit 0a3b3c253a1eb2c7fe7f34086d46660c909abeb3 ]
+[ Upstream commit 9eee152aab56d374edb9ad21b3db05f5cdda2fe6 ]
 
-A large process running on a heavily loaded system can encounter the
-following RCU CPU stall warning:
+The call to pm_runtime_get_sync increments the counter even in case of
+failure, leading to incorrect ref count.
+In case of failure, decrement the ref count before returning.
 
-  rcu: INFO: rcu_sched self-detected stall on CPU
-  rcu: 	3-....: (20998 ticks this GP) idle=4ea/1/0x4000000000000002 softirq=556558/556558 fqs=5190
-  	(t=21013 jiffies g=1005461 q=132576)
-  NMI backtrace for cpu 3
-  CPU: 3 PID: 501900 Comm: aio-free-ring-w Kdump: loaded Not tainted 5.2.9-108_fbk12_rc3_3858_gb83b75af7909 #1
-  Hardware name: Wiwynn   HoneyBadger/PantherPlus, BIOS HBM6.71 02/03/2016
-  Call Trace:
-   <IRQ>
-   dump_stack+0x46/0x60
-   nmi_cpu_backtrace.cold.3+0x13/0x50
-   ? lapic_can_unplug_cpu.cold.27+0x34/0x34
-   nmi_trigger_cpumask_backtrace+0xba/0xca
-   rcu_dump_cpu_stacks+0x99/0xc7
-   rcu_sched_clock_irq.cold.87+0x1aa/0x397
-   ? tick_sched_do_timer+0x60/0x60
-   update_process_times+0x28/0x60
-   tick_sched_timer+0x37/0x70
-   __hrtimer_run_queues+0xfe/0x270
-   hrtimer_interrupt+0xf4/0x210
-   smp_apic_timer_interrupt+0x5e/0x120
-   apic_timer_interrupt+0xf/0x20
-   </IRQ>
-  RIP: 0010:kmem_cache_free+0x223/0x300
-  Code: 88 00 00 00 0f 85 ca 00 00 00 41 8b 55 18 31 f6 f7 da 41 f6 45 0a 02 40 0f 94 c6 83 c6 05 9c 41 5e fa e8 a0 a7 01 00 41 56 9d <49> 8b 47 08 a8 03 0f 85 87 00 00 00 65 48 ff 08 e9 3d fe ff ff 65
-  RSP: 0018:ffffc9000e8e3da8 EFLAGS: 00000206 ORIG_RAX: ffffffffffffff13
-  RAX: 0000000000020000 RBX: ffff88861b9de960 RCX: 0000000000000030
-  RDX: fffffffffffe41e8 RSI: 000060777fe3a100 RDI: 000000000001be18
-  RBP: ffffea00186e7780 R08: ffffffffffffffff R09: ffffffffffffffff
-  R10: ffff88861b9dea28 R11: ffff88887ffde000 R12: ffffffff81230a1f
-  R13: ffff888854684dc0 R14: 0000000000000206 R15: ffff8888547dbc00
-   ? remove_vma+0x4f/0x60
-   remove_vma+0x4f/0x60
-   exit_mmap+0xd6/0x160
-   mmput+0x4a/0x110
-   do_exit+0x278/0xae0
-   ? syscall_trace_enter+0x1d3/0x2b0
-   ? handle_mm_fault+0xaa/0x1c0
-   do_group_exit+0x3a/0xa0
-   __x64_sys_exit_group+0x14/0x20
-   do_syscall_64+0x42/0x100
-   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-And on a PREEMPT=n kernel, the "while (vma)" loop in exit_mmap() can run
-for a very long time given a large process.  This commit therefore adds
-a cond_resched() to this loop, providing RCU any needed quiescent states.
-
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: <linux-mm@kvack.org>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Acked-by: Evan Quan <evan.quan@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/mmap.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c | 95 +++++++++++++++------
+ 1 file changed, 70 insertions(+), 25 deletions(-)
 
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 8c7ca737a19b3..dcdab2675a21a 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -3171,6 +3171,7 @@ void exit_mmap(struct mm_struct *mm)
- 		if (vma->vm_flags & VM_ACCOUNT)
- 			nr_accounted += vma_pages(vma);
- 		vma = remove_vma(vma);
-+		cond_resched();
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
+index a414da22a359c..386b979e08522 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
+@@ -223,12 +223,16 @@ static int  amdgpu_debugfs_process_reg_op(bool read, struct file *f,
+ 	*pos &= (1UL << 22) - 1;
+ 
+ 	r = pm_runtime_get_sync(adev->ddev->dev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return r;
++	}
+ 
+ 	r = amdgpu_virt_enable_access_debugfs(adev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return r;
++	}
+ 
+ 	if (use_bank) {
+ 		if ((sh_bank != 0xFFFFFFFF && sh_bank >= adev->gfx.config.max_sh_per_se) ||
+@@ -332,12 +336,16 @@ static ssize_t amdgpu_debugfs_regs_pcie_read(struct file *f, char __user *buf,
+ 		return -EINVAL;
+ 
+ 	r = pm_runtime_get_sync(adev->ddev->dev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return r;
++	}
+ 
+ 	r = amdgpu_virt_enable_access_debugfs(adev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return r;
++	}
+ 
+ 	while (size) {
+ 		uint32_t value;
+@@ -387,12 +395,16 @@ static ssize_t amdgpu_debugfs_regs_pcie_write(struct file *f, const char __user
+ 		return -EINVAL;
+ 
+ 	r = pm_runtime_get_sync(adev->ddev->dev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return r;
++	}
+ 
+ 	r = amdgpu_virt_enable_access_debugfs(adev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return r;
++	}
+ 
+ 	while (size) {
+ 		uint32_t value;
+@@ -443,12 +455,16 @@ static ssize_t amdgpu_debugfs_regs_didt_read(struct file *f, char __user *buf,
+ 		return -EINVAL;
+ 
+ 	r = pm_runtime_get_sync(adev->ddev->dev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return r;
++	}
+ 
+ 	r = amdgpu_virt_enable_access_debugfs(adev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return r;
++	}
+ 
+ 	while (size) {
+ 		uint32_t value;
+@@ -498,12 +514,16 @@ static ssize_t amdgpu_debugfs_regs_didt_write(struct file *f, const char __user
+ 		return -EINVAL;
+ 
+ 	r = pm_runtime_get_sync(adev->ddev->dev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return r;
++	}
+ 
+ 	r = amdgpu_virt_enable_access_debugfs(adev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return r;
++	}
+ 
+ 	while (size) {
+ 		uint32_t value;
+@@ -554,12 +574,16 @@ static ssize_t amdgpu_debugfs_regs_smc_read(struct file *f, char __user *buf,
+ 		return -EINVAL;
+ 
+ 	r = pm_runtime_get_sync(adev->ddev->dev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return r;
++	}
+ 
+ 	r = amdgpu_virt_enable_access_debugfs(adev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return r;
++	}
+ 
+ 	while (size) {
+ 		uint32_t value;
+@@ -609,12 +633,16 @@ static ssize_t amdgpu_debugfs_regs_smc_write(struct file *f, const char __user *
+ 		return -EINVAL;
+ 
+ 	r = pm_runtime_get_sync(adev->ddev->dev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return r;
++	}
+ 
+ 	r = amdgpu_virt_enable_access_debugfs(adev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return r;
++	}
+ 
+ 	while (size) {
+ 		uint32_t value;
+@@ -764,12 +792,16 @@ static ssize_t amdgpu_debugfs_sensor_read(struct file *f, char __user *buf,
+ 	valuesize = sizeof(values);
+ 
+ 	r = pm_runtime_get_sync(adev->ddev->dev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return r;
++	}
+ 
+ 	r = amdgpu_virt_enable_access_debugfs(adev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return r;
++	}
+ 
+ 	r = amdgpu_dpm_read_sensor(adev, idx, &values[0], &valuesize);
+ 
+@@ -842,12 +874,16 @@ static ssize_t amdgpu_debugfs_wave_read(struct file *f, char __user *buf,
+ 	simd = (*pos & GENMASK_ULL(44, 37)) >> 37;
+ 
+ 	r = pm_runtime_get_sync(adev->ddev->dev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return r;
++	}
+ 
+ 	r = amdgpu_virt_enable_access_debugfs(adev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return r;
++	}
+ 
+ 	/* switch to the specific se/sh/cu */
+ 	mutex_lock(&adev->grbm_idx_mutex);
+@@ -977,6 +1013,7 @@ static ssize_t amdgpu_debugfs_gpr_read(struct file *f, char __user *buf,
  	}
- 	vm_unacct_memory(nr_accounted);
- }
+ 
+ err:
++	pm_runtime_put_autosuspend(adev->ddev->dev);
+ 	kfree(data);
+ 	amdgpu_virt_disable_access_debugfs(adev);
+ 	return result;
+@@ -1003,8 +1040,10 @@ static ssize_t amdgpu_debugfs_gfxoff_write(struct file *f, const char __user *bu
+ 		return -EINVAL;
+ 
+ 	r = pm_runtime_get_sync(adev->ddev->dev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return r;
++	}
+ 
+ 	while (size) {
+ 		uint32_t value;
+@@ -1140,8 +1179,10 @@ static int amdgpu_debugfs_test_ib(struct seq_file *m, void *data)
+ 	int r = 0, i;
+ 
+ 	r = pm_runtime_get_sync(dev->dev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return r;
++	}
+ 
+ 	/* Avoid accidently unparking the sched thread during GPU reset */
+ 	mutex_lock(&adev->lock_reset);
+@@ -1197,8 +1238,10 @@ static int amdgpu_debugfs_evict_vram(struct seq_file *m, void *data)
+ 	int r;
+ 
+ 	r = pm_runtime_get_sync(dev->dev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return r;
++	}
+ 
+ 	seq_printf(m, "(%d)\n", amdgpu_bo_evict_vram(adev));
+ 
+@@ -1216,8 +1259,10 @@ static int amdgpu_debugfs_evict_gtt(struct seq_file *m, void *data)
+ 	int r;
+ 
+ 	r = pm_runtime_get_sync(dev->dev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return r;
++	}
+ 
+ 	seq_printf(m, "(%d)\n", ttm_bo_evict_mm(&adev->mman.bdev, TTM_PL_TT));
+ 
+@@ -1417,16 +1462,16 @@ static int amdgpu_debugfs_sclk_set(void *data, u64 val)
+ 		return -EINVAL;
+ 
+ 	ret = pm_runtime_get_sync(adev->ddev->dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put_autosuspend(adev->ddev->dev);
+ 		return ret;
++	}
+ 
+ 	if (is_support_sw_smu(adev)) {
+ 		ret = smu_get_dpm_freq_range(&adev->smu, SMU_SCLK, &min_freq, &max_freq, true);
+ 		if (ret || val > max_freq || val < min_freq)
+ 			return -EINVAL;
+ 		ret = smu_set_soft_freq_range(&adev->smu, SMU_SCLK, (uint32_t)val, (uint32_t)val, true);
+-	} else {
+-		return 0;
+ 	}
+ 
+ 	pm_runtime_mark_last_busy(adev->ddev->dev);
 -- 
 2.25.1
 
