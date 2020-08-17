@@ -2,75 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D871245C14
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 07:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4605B245C19
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 07:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726705AbgHQFpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 01:45:43 -0400
-Received: from verein.lst.de ([213.95.11.211]:55031 "EHLO verein.lst.de"
+        id S1726768AbgHQFqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 01:46:47 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:2279 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726303AbgHQFpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 01:45:42 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 69E1767357; Mon, 17 Aug 2020 07:45:38 +0200 (CEST)
-Date:   Mon, 17 Aug 2020 07:45:38 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     Coly Li <colyli@suse.de>, linux-block@vger.kernel.org,
-        linux-nvme@lists.infradead.org,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
-        Jan Kara <jack@suse.com>, Jens Axboe <axboe@kernel.dk>,
-        Mikhail Skorzhinskii <mskorzhinskiy@solarflare.com>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Vlastimil Babka <vbabka@suse.com>
-Subject: Re: [PATCH v5 1/3] net: introduce helper sendpage_ok() in
- include/linux/net.h
-Message-ID: <20200817054538.GA11705@lst.de>
-References: <20200816071518.6964-1-colyli@suse.de> <CAM_iQpUFtZdrhfUbuYYODNeSVqPOqx8mio6Znp6v3Q5iDZeyqg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM_iQpUFtZdrhfUbuYYODNeSVqPOqx8mio6Znp6v3Q5iDZeyqg@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S1726336AbgHQFqo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 01:46:44 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4BVNMb4NNFz9tytm;
+        Mon, 17 Aug 2020 07:46:35 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id BF9zu5YcO0s8; Mon, 17 Aug 2020 07:46:35 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BVNMb30Ryz9tytl;
+        Mon, 17 Aug 2020 07:46:35 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3DA2C8B772;
+        Mon, 17 Aug 2020 07:46:40 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id H2O5bNNzOIr4; Mon, 17 Aug 2020 07:46:40 +0200 (CEST)
+Received: from po17688vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.104])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1F1498B75B;
+        Mon, 17 Aug 2020 07:46:40 +0200 (CEST)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 0451D65CDD; Mon, 17 Aug 2020 05:46:39 +0000 (UTC)
+Message-Id: <9d11143d4e27ba8274369a926968756917584868.1597643153.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v1] powerpc/process: Remove unnecessary #ifdef
+ CONFIG_FUNCTION_GRAPH_TRACER
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon, 17 Aug 2020 05:46:39 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 16, 2020 at 10:55:09AM -0700, Cong Wang wrote:
-> On Sun, Aug 16, 2020 at 1:36 AM Coly Li <colyli@suse.de> wrote:
-> >
-> > The original problem was from nvme-over-tcp code, who mistakenly uses
-> > kernel_sendpage() to send pages allocated by __get_free_pages() without
-> > __GFP_COMP flag. Such pages don't have refcount (page_count is 0) on
-> > tail pages, sending them by kernel_sendpage() may trigger a kernel panic
-> > from a corrupted kernel heap, because these pages are incorrectly freed
-> > in network stack as page_count 0 pages.
-> >
-> > This patch introduces a helper sendpage_ok(), it returns true if the
-> > checking page,
-> > - is not slab page: PageSlab(page) is false.
-> > - has page refcount: page_count(page) is not zero
-> >
-> > All drivers who want to send page to remote end by kernel_sendpage()
-> > may use this helper to check whether the page is OK. If the helper does
-> > not return true, the driver should try other non sendpage method (e.g.
-> > sock_no_sendpage()) to handle the page.
-> 
-> Can we leave this helper to mm subsystem?
-> 
-> I know it is for sendpage, but its implementation is all about some
-> mm details and its two callers do not belong to net subsystem either.
-> 
-> Think this in another way: who would fix it if it is buggy? I bet mm people
-> should. ;)
+ftrace_graph_ret_addr() is always defined and returns 'ip' when
+CONFIG_FUNCTION GRAPH_TRACER is not set.
 
-No.  This is all about a really unusual imitation in sendpage, which
-is pretty much unexpected.  In fact the best thing would be to make
-sock_sendpage do the right thing and call sock_no_sendpage based
-on this condition, so that driver writers don't have to worry at all.
+So the #ifdef is not needed, remove it.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/process.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
+index ffbe79960c73..e86e28c28259 100644
+--- a/arch/powerpc/kernel/process.c
++++ b/arch/powerpc/kernel/process.c
+@@ -2096,10 +2096,8 @@ void show_stack(struct task_struct *tsk, unsigned long *stack,
+ 	unsigned long sp, ip, lr, newsp;
+ 	int count = 0;
+ 	int firstframe = 1;
+-#ifdef CONFIG_FUNCTION_GRAPH_TRACER
+ 	unsigned long ret_addr;
+ 	int ftrace_idx = 0;
+-#endif
+ 
+ 	if (tsk == NULL)
+ 		tsk = current;
+@@ -2127,12 +2125,10 @@ void show_stack(struct task_struct *tsk, unsigned long *stack,
+ 		if (!firstframe || ip != lr) {
+ 			printk("%s["REG"] ["REG"] %pS",
+ 				loglvl, sp, ip, (void *)ip);
+-#ifdef CONFIG_FUNCTION_GRAPH_TRACER
+ 			ret_addr = ftrace_graph_ret_addr(current,
+ 						&ftrace_idx, ip, stack);
+ 			if (ret_addr != ip)
+ 				pr_cont(" (%pS)", (void *)ret_addr);
+-#endif
+ 			if (firstframe)
+ 				pr_cont(" (unreliable)");
+ 			pr_cont("\n");
+-- 
+2.25.0
+
