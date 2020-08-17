@@ -2,117 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B73AD2475A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:27:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A634E2475AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732092AbgHQTZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732083AbgHQTZm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 15:25:42 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD3FEC061389
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 12:25:41 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id i20so1822920qkk.8
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 12:25:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/kXuaN4AISusMlSkk2TTILtf5athEb7HHTj/BXfUUMU=;
-        b=sef5NOnEMc5nMqLQAehSTQDhfZ46QOtS1oW9CJlK4AXP5+gkrMhCAMBEtPbqvVzKr0
-         yAjODdfU4JSnB5BKF062O+zy171oc4LMeifmp7mPMhAyJc0ylBp3d+TEKBmHRMxQari4
-         szVpFMjye/T+BFept4uUfaYCo+Hmg44nsfyBxrIA8R3yloM0ejE6Q5JtCPSwvJ1b2aLC
-         pKBFRTtOYokNbXXiKPv4yP5068Go4iUiwMTxXTcVmPoSZ5AfIi64/BdoMxmbFqHL3p5g
-         NcX2J40IBF8QKAMIcwzICyWcRYeRQ8TqkrXYO9jpCKWw9Ap5euwpwVptWMJFxzge4ndT
-         bzzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/kXuaN4AISusMlSkk2TTILtf5athEb7HHTj/BXfUUMU=;
-        b=OaKzRw2GHQlSxo4Il7rLxZ+iSHzYUpcX4NAGMjUpSZodjUhqOi7wvICphGkXcHzYvK
-         rRUeFtQoFf68uVJnZRVFX6OhLmN9K2LvPLd0sSs1sT3Wu7eVo9HPviuTqmIcyUDb9OY8
-         OPwAaQQtFYVZBQ9di+b0DYl0vE7P58WWQGOgzrOrC0sUGcAjG3AuKd8pl+MZD00M7PI+
-         MT7vHcW4k5IGlkagDC2EToY18XvgulpTANm2MeTCEyexldPXxOyy6YY/ak4hl/y5Tbf5
-         fPQWQJptGB6pBNOaljrjPX4hhBm//7utHnRhhgmW6U+byMqD7tUMp6uNTL1cicXTeZlA
-         oPtA==
-X-Gm-Message-State: AOAM533b+r33GA1RU/CgqltQWpBBgwHWnibl150GLuzBHz1GZKEs4gxQ
-        5RaXS1j9Dqt67RgjtX/zOOT7vXAQvobP4dbYZjmSnA==
-X-Google-Smtp-Source: ABdhPJx655WoWSZf8sKCtbQuqerBJWhb5d5rkooksrvYXLljTd0tdKuq/bKTr3OTKpoHtxRX1s5CYeo/ddHv+O/tjjo=
-X-Received: by 2002:a37:a495:: with SMTP id n143mr14451570qke.330.1597692341063;
- Mon, 17 Aug 2020 12:25:41 -0700 (PDT)
+        id S1732137AbgHQT0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:26:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52068 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730405AbgHQT02 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 15:26:28 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EBF88B032;
+        Mon, 17 Aug 2020 19:26:51 +0000 (UTC)
+Date:   Mon, 17 Aug 2020 21:26:25 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [RFC PATCH 0/8] memcg: Enable fine-grained per process memory
+ control
+Message-ID: <20200817192625.GF28270@dhcp22.suse.cz>
+References: <20200817140831.30260-1-longman@redhat.com>
+ <20200817152655.GE28270@dhcp22.suse.cz>
+ <e66d6b5f-6f02-8c8f-681e-1d6da7a72224@redhat.com>
 MIME-Version: 1.0
-References: <20200814030257.135463-1-warthog618@gmail.com> <CAMpxmJUCwXVv6U9sE=8isRMoNd8QvM9XLu4PU2Rr454wt_FTUw@mail.gmail.com>
- <20200817184018.GV1891694@smile.fi.intel.com>
-In-Reply-To: <20200817184018.GV1891694@smile.fi.intel.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 17 Aug 2020 21:25:30 +0200
-Message-ID: <CAMpxmJV6k=mQaYsH_abTHhyXis+hLJkJX+M9jAtciUB=0uoEUA@mail.gmail.com>
-Subject: Re: [PATCH v4 00/20] gpio: cdev: add uAPI v2
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Kent Gibson <warthog618@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e66d6b5f-6f02-8c8f-681e-1d6da7a72224@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 8:40 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Mon, Aug 17, 2020 at 08:24:24PM +0200, Bartosz Golaszewski wrote:
-> > On Fri, Aug 14, 2020 at 5:03 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > >
-> > > This patchset defines and implements adds a new version of the
-> > > GPIO CDEV uAPI to address existing 32/64-bit alignment issues, add
-> > > support for debounce, event sequence numbers, and allowing for requested
-> > > lines with different configurations.
-> > > It provides some future proofing by adding optional configuration fields
-> > > and padding reserved for future use.
-> > >
-> > > The series can be partitioned into two sets; the first eleven
-> > > contain the v2 uAPI implementation, and the final seven port
-> > > the GPIO tools to the v2 uAPI and extend them to use new uAPI features.
-> > >
-> > > The more complicated patches include their own commentary where
-> > > appropriate.
->
-> > The series looks quite good to me and I think we're on track to get it
-> > in for v5.10. I'd love to have Andy (Cc'd) take a look as well. There
-> > are some nits here and there but as long as we get the ABI right, any
-> > implementation details can be ironed out later.
-> >
-> > I need to think about some details a bit more but I really like the
-> > current state of the patches.
->
-> First of all, I apologize for being silent, I'm quite busy with internal
-> development / work.
->
-> Second, I didn't hear further why we can't fix current ABI as proposed by Arnd
-> and see what we will have afterwards?
->
+On Mon 17-08-20 11:55:37, Waiman Long wrote:
+> On 8/17/20 11:26 AM, Michal Hocko wrote:
+> > On Mon 17-08-20 10:08:23, Waiman Long wrote:
+> > > Memory controller can be used to control and limit the amount of
+> > > physical memory used by a task. When a limit is set in "memory.high" in
+> > > a v2 non-root memory cgroup, the memory controller will try to reclaim
+> > > memory if the limit has been exceeded. Normally, that will be enough
+> > > to keep the physical memory consumption of tasks in the memory cgroup
+> > > to be around or below the "memory.high" limit.
+> > > 
+> > > Sometimes, memory reclaim may not be able to recover memory in a rate
+> > > that can catch up to the physical memory allocation rate. In this case,
+> > > the physical memory consumption will keep on increasing.  When it reaches
+> > > "memory.max" for memory cgroup v2 or when the system is running out of
+> > > free memory, the OOM killer will be invoked to kill some tasks to free
+> > > up additional memory. However, one has little control of which tasks
+> > > are going to be killed by an OOM killer. Killing tasks that hold some
+> > > important resources without freeing them first can create other system
+> > > problems down the road.
+> > > 
+> > > Users who do not want the OOM killer to be invoked to kill random
+> > > tasks in an out-of-memory situation can use the memory control
+> > > facility provided by this new patchset via prctl(2) to better manage
+> > > the mitigation action that needs to be performed to various tasks when
+> > > the specified memory limit is exceeded with memory cgroup v2 being used.
+> > > 
+> > > The currently supported mitigation actions include the followings:
+> > > 
+> > >   1) Return ENOMEM for some syscalls that allocate or handle memory
+> > >   2) Slow down the process for memory reclaim to catch up
+> > >   3) Send a specific signal to the task
+> > >   4) Kill the task
+> > > 
+> > > The users that want better memory control for their applicatons can
+> > > either modify their applications to call the prctl(2) syscall directly
+> > > with the new memory control command code or write the desired action to
+> > > the newly provided memctl procfs files of their applications provided
+> > > that those applications run in a non-root v2 memory cgroup.
+> > prctl is fundamentally about per-process control while cgroup (not only
+> > memcg) is about group of processes interface. How do those two interact
+> > together? In other words what is the semantic when different processes
+> > have a different views on the same underlying memcg event?
+> As said in a previous mail, this patchset is derived from a customer request
+> and per-process control is exactly what the customer wants. That is why
+> prctl() is used. This patchset is intended to supplement the existing memory
+> cgroup features. Processes in a memory cgroup that don't use this new API
+> will behave exactly like before. Only processes that opt to use this new API
+> will have additional mitigation actions applied on them in case the
+> additional limits are reached.
 
-Sure we can get back to fixing it but it will only address a single
-bug and still not allow us to add new features and simplifications. Do
-you mind rebasing your old patch on top of v5.9-rc1?
+Please keep in mind that you are proposing a new user API that we will
+have to maintain for ever. That requires that the interface is
+consistent and well defined. As I've said the fundamental problem with
+this interface is that you are trying to hammer a process centric
+interface into a framework that is fundamentally process group oriented.
+Maybe there is a sensible way to do that without all sorts of weird
+corner cases but I haven't seen any of that explained here.
 
-> Third, I'm not satisfied with the approach of wasting some memory for padding
-> and I think the proper solution for the ABI is to have versioning inside the
-> structures.
->
-> What do you think?
->
-
-Wasting a bit of memory is fine with me. As long as we're not copying
-more than a page-worth of memory between the kernel and user-space,
-the overhead is insignificant.
-
-I prefer to make structs extensible over adding new versions in the future.
-
-Bart
+Really just try to describe a semantic when two different tasks in the
+same memcg have a different opinion on the same event. One wants ENOMEM
+and other a specific signal to be delivered. Right now the behavior will
+be timing specific because who hits the oom path is non-deterministic
+from the userspace POV. Let's say that you can somehow handle that, now
+how are you going implement ENOMEM for any context other than current
+task? I am pretty sure the more specific questions you will have the
+more this will get awkward.
+-- 
+Michal Hocko
+SUSE Labs
