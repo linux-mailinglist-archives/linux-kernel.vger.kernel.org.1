@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C53382476F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD9F2476B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732576AbgHQTna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:43:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51716 "EHLO mail.kernel.org"
+        id S1729583AbgHQPZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:25:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729554AbgHQPXn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:23:43 -0400
+        id S1729273AbgHQPXr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:23:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D6E4F20855;
-        Mon, 17 Aug 2020 15:23:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F15E2339D;
+        Mon, 17 Aug 2020 15:23:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597677822;
-        bh=SKg//3fuREQZh9y9DI1jVZ9k9TPhKVYsX+NVgvMkf/8=;
+        s=default; t=1597677827;
+        bh=kbuDP+M988482p05npem60kQat8V2wwECI9KCrdipsk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wHwOcpudcIZayMRm5ofLQoqdvTF/U/kNI/4fuHzAh8dbN7Jp+L/E3J2c4AsXOIV4c
-         HV9WbJPu1zqNxP53kIAnmKtxBSWqy+y3knfRMg+wmdP81EB1Da2AK8sEQUovzTwN2n
-         LYhSH/BgGvF+G9kbkLlOpEpfmy8ZCkeZzUVyQwE4=
+        b=C+l8O1KJxi3KlWf6Y+t1fGXsoZ6bJcbyTuARGXAxqGQf9SPrB6nlvLXb6715veZkr
+         Fm6td/brK/EgwCxIkre8HFYcbrMJaA0+YxQyeG0pcdu6i4ZU53yxR3d3iHa3t45Z3T
+         7ytta//DrGoEwYAwvnO93SK0Ho3GiNWZB82tv6ck=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
+        stable@vger.kernel.org, Aaron Ma <aaron.ma@canonical.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 090/464] bus: ti-sysc: Add missing quirk flags for usb_host_hs
-Date:   Mon, 17 Aug 2020 17:10:43 +0200
-Message-Id: <20200817143838.101618022@linuxfoundation.org>
+Subject: [PATCH 5.8 092/464] rtw88: 8822ce: add support for device ID 0xc82f
+Date:   Mon, 17 Aug 2020 17:10:45 +0200
+Message-Id: <20200817143838.196129828@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -43,45 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Aaron Ma <aaron.ma@canonical.com>
 
-[ Upstream commit 4254632dba27271f6de66efd87e444ee405dee29 ]
+[ Upstream commit 7d428b1c9ffc9ddcdd64c6955836bbb17a233ef3 ]
 
-Similar to what we have for the legacy platform data, we need to
-configure SWSUP_SIDLE and SWSUP_MSTANDBY quirks for usb_host_hs.
+New device ID 0xc82f found on Lenovo ThinkCenter.
+Tested it with c822 driver, works good.
 
-These are needed to drop the legacy platform data for usb_host_hs.
+PCI id:
+03:00.0 Network controller [0280]: Realtek Semiconductor Co., Ltd.
+Device [10ec:c82f]
+        Subsystem: Lenovo Device [17aa:c02f]
 
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200612082745.204400-1-aaron.ma@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bus/ti-sysc.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/wireless/realtek/rtw88/rtw8822ce.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
-index 191c97b84715f..fb5a901fd89e5 100644
---- a/drivers/bus/ti-sysc.c
-+++ b/drivers/bus/ti-sysc.c
-@@ -1395,6 +1395,10 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
- 		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_SWSUP_MSTANDBY),
- 	SYSC_QUIRK("tptc", 0, 0, -ENODEV, -ENODEV, 0x40007c00, 0xffffffff,
- 		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_SWSUP_MSTANDBY),
-+	SYSC_QUIRK("usb_host_hs", 0, 0, 0x10, 0x14, 0x50700100, 0xffffffff,
-+		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_SWSUP_MSTANDBY),
-+	SYSC_QUIRK("usb_host_hs", 0, 0, 0x10, -ENODEV, 0x50700101, 0xffffffff,
-+		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_SWSUP_MSTANDBY),
- 	SYSC_QUIRK("usb_otg_hs", 0, 0x400, 0x404, 0x408, 0x00000050,
- 		   0xffffffff, SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_SWSUP_MSTANDBY),
- 	SYSC_QUIRK("usb_otg_hs", 0, 0, 0x10, -ENODEV, 0x4ea2080d, 0xffffffff,
-@@ -1473,8 +1477,6 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
- 	SYSC_QUIRK("tpcc", 0, 0, -ENODEV, -ENODEV, 0x40014c00, 0xffffffff, 0),
- 	SYSC_QUIRK("usbhstll", 0, 0, 0x10, 0x14, 0x00000004, 0xffffffff, 0),
- 	SYSC_QUIRK("usbhstll", 0, 0, 0x10, 0x14, 0x00000008, 0xffffffff, 0),
--	SYSC_QUIRK("usb_host_hs", 0, 0, 0x10, 0x14, 0x50700100, 0xffffffff, 0),
--	SYSC_QUIRK("usb_host_hs", 0, 0, 0x10, -ENODEV, 0x50700101, 0xffffffff, 0),
- 	SYSC_QUIRK("venc", 0x58003000, 0, -ENODEV, -ENODEV, 0x00000002, 0xffffffff, 0),
- 	SYSC_QUIRK("vfpe", 0, 0, 0x104, -ENODEV, 0x4d001200, 0xffffffff, 0),
- #endif
+diff --git a/drivers/net/wireless/realtek/rtw88/rtw8822ce.c b/drivers/net/wireless/realtek/rtw88/rtw8822ce.c
+index 7b6bd990651e1..026ac49ce6e3c 100644
+--- a/drivers/net/wireless/realtek/rtw88/rtw8822ce.c
++++ b/drivers/net/wireless/realtek/rtw88/rtw8822ce.c
+@@ -11,6 +11,10 @@ static const struct pci_device_id rtw_8822ce_id_table[] = {
+ 		PCI_DEVICE(PCI_VENDOR_ID_REALTEK, 0xC822),
+ 		.driver_data = (kernel_ulong_t)&rtw8822c_hw_spec
+ 	},
++	{
++		PCI_DEVICE(PCI_VENDOR_ID_REALTEK, 0xC82F),
++		.driver_data = (kernel_ulong_t)&rtw8822c_hw_spec
++	},
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(pci, rtw_8822ce_id_table);
 -- 
 2.25.1
 
