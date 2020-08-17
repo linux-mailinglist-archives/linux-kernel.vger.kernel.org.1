@@ -2,161 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 156972466A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 14:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FEAB2466B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 14:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728399AbgHQMri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 08:47:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35594 "EHLO mail.kernel.org"
+        id S1728512AbgHQMwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 08:52:45 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:45980 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726265AbgHQMrh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 08:47:37 -0400
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+        id S1726265AbgHQMwm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 08:52:42 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597668762; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=JGVe9PW+tTDsQAAqGjQ8ritTdegK9mneovtsPPAvGdU=; b=RluLe+SmuQH1y41/KBqJt+nn02DGm+Oz+Q6ZCfmZvuRFJW6IRQ4jtJLtrt1YP46eDYPbveTd
+ efplYXQwLruG5ue+vGQUOKDywtqSdOaPwkoGPACLVatPEP71z6FvkED7gPnh5E4+Xsoyx9Xn
+ WmdKYmKZqaWHVH10qCjdfLUFaDk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
+ 5f3a7d6eba4c2cd36711cb35 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 Aug 2020 12:51:58
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DAD9BC43387; Mon, 17 Aug 2020 12:51:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.6 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.7] (unknown [117.217.239.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 09A2A2078D;
-        Mon, 17 Aug 2020 12:47:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597668456;
-        bh=F6AeSzf4yODe5VfS/mOvvXXrmYEDiPf8ncHRYGsJH9o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WLGovId1pF0RtoS/pxVhAbmTDQxL+wlb/YPyjGm4gwU7EG0HpRde71z58372pAGUI
-         Mk7gmvMtdYHyCuhuPVYr4Pyx7oBmnbh5hBitrBnQEaY0aHR0Q7DRVQHu/ZXD3RYk4h
-         ZjAMCDf1SsweOIV20FDlQU218t5SISXQewIF1Xjo=
-Received: by mail-lj1-f179.google.com with SMTP id h19so17298517ljg.13;
-        Mon, 17 Aug 2020 05:47:35 -0700 (PDT)
-X-Gm-Message-State: AOAM532oqzzG5LP9YEUrK2IZP8tpsDMZcUPpohezb42zbSVCSt0TzE4J
-        Yr6UXzWlaMlVjN6FRh5PIq4hUnJAjDtwgDZCwss=
-X-Google-Smtp-Source: ABdhPJw1v8JVnt2oJ6bSCPU4EmN7bm2mGdNOp7Vx6uxxuEJFPNSCeEfTKhQjsXzu5H3BmOMqhHgKjHmNPG6tmd7ZCYE=
-X-Received: by 2002:a2e:9bc1:: with SMTP id w1mr6581503ljj.79.1597668454259;
- Mon, 17 Aug 2020 05:47:34 -0700 (PDT)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3ABC4C433CA;
+        Mon, 17 Aug 2020 12:51:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3ABC4C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [RESEND PATCH] drm/msm/a6xx: fix frequency not always being
+ restored on GMU resume
+To:     Jonathan Marek <jonathan@marek.ca>, freedreno@lists.freedesktop.org
+Cc:     David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Sean Paul <sean@poorly.run>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200813185450.19387-1-jonathan@marek.ca>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <270c4efd-8524-c389-3347-2f9c4e246b6d@codeaurora.org>
+Date:   Mon, 17 Aug 2020 18:21:50 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <1594683562-68149-4-git-send-email-guoren@kernel.org> <mhng-296dd63e-71de-4d30-acfb-df374d12388d@palmerdabbelt-glaptop1>
-In-Reply-To: <mhng-296dd63e-71de-4d30-acfb-df374d12388d@palmerdabbelt-glaptop1>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Mon, 17 Aug 2020 20:47:21 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTTz_EFpzMoT3yBgCNTNme9_QbQ9b2dGZB3S0F5+O6Fpyw@mail.gmail.com>
-Message-ID: <CAJF2gTTz_EFpzMoT3yBgCNTNme9_QbQ9b2dGZB3S0F5+O6Fpyw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/7] riscv: Fixup kprobes handler couldn't change pc
-To:     Palmer Dabbelt <palmerdabbelt@google.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Anup Patel <anup@brainfault.org>, linux-csky@vger.kernel.org,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Zong Li <zong.li@sifive.com>,
-        =?UTF-8?Q?Patrick_St=C3=A4hlin?= <me@packi.ch>,
-        Bjorn Topel <bjorn.topel@gmail.com>,
-        Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200813185450.19387-1-jonathan@marek.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 15, 2020 at 6:36 AM Palmer Dabbelt <palmerdabbelt@google.com> wrote:
->
-> On Mon, 13 Jul 2020 16:39:18 PDT (-0700), guoren@kernel.org wrote:
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> >
-> > The "Changing Execution Path" section in the Documentation/kprobes.txt
-> > said:
-> >
-> > Since kprobes can probe into a running kernel code, it can change the
-> > register set, including instruction pointer.
-> >
-> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> > ---
-> >  arch/riscv/kernel/mcount-dyn.S | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/riscv/kernel/mcount-dyn.S b/arch/riscv/kernel/mcount-dyn.S
-> > index 35a6ed7..4b58b54 100644
-> > --- a/arch/riscv/kernel/mcount-dyn.S
-> > +++ b/arch/riscv/kernel/mcount-dyn.S
-> > @@ -123,6 +123,7 @@ ENDPROC(ftrace_caller)
-> >       sd      ra, (PT_SIZE_ON_STACK+8)(sp)
-> >       addi    s0, sp, (PT_SIZE_ON_STACK+16)
-> >
-> > +     sd ra,  PT_EPC(sp)
-> >       sd x1,  PT_RA(sp)
-> >       sd x2,  PT_SP(sp)
-> >       sd x3,  PT_GP(sp)
->
-> So that's definately not going to be EPC any more.  I'm not sure that field is
-> sanely named, though, as it's really just the PC when it comes to other ptrace
-> stuff.
->
-> > @@ -157,6 +158,7 @@ ENDPROC(ftrace_caller)
-> >       .endm
-> >
-> >       .macro RESTORE_ALL
-> > +     ld ra,  PT_EPC(sp)
-> >       ld x1,  PT_RA(sp)
->
-> x1 is ra, so loading it twice doesn't seem reasonable.
->
-> >       ld x2,  PT_SP(sp)
-> >       ld x3,  PT_GP(sp)
-> > @@ -190,7 +192,6 @@ ENDPROC(ftrace_caller)
-> >       ld x31, PT_T6(sp)
-> >
-> >       ld      s0, (PT_SIZE_ON_STACK)(sp)
-> > -     ld      ra, (PT_SIZE_ON_STACK+8)(sp)
-> >       addi    sp, sp, (PT_SIZE_ON_STACK+16)
-> >       .endm
->
-> If you're dropping the load you should drop the store above as well.  In
-> general this seems kind of mixed up, both before and after this patch.
+Why don't we move the early return in a6xx_gmu_set_freq() to 
+msm_devfreq_target() instead?
 
-This is a wrong patch, it should be:
+-Akhil.
 
-diff --git a/arch/riscv/kernel/mcount-dyn.S b/arch/riscv/kernel/mcount-dyn.S
-index 35a6ed7..d82b8f0 100644
---- a/arch/riscv/kernel/mcount-dyn.S
-+++ b/arch/riscv/kernel/mcount-dyn.S
-@@ -120,10 +120,10 @@ ENDPROC(ftrace_caller)
-        .macro SAVE_ALL
-        addi    sp, sp, -(PT_SIZE_ON_STACK+16)
-        sd      s0, (PT_SIZE_ON_STACK)(sp)
--       sd      ra, (PT_SIZE_ON_STACK+8)(sp)
-        addi    s0, sp, (PT_SIZE_ON_STACK+16)
+On 8/14/2020 12:24 AM, Jonathan Marek wrote:
+> The patch reorganizing the set_freq function made it so the gmu resume
+> doesn't always set the frequency, because a6xx_gmu_set_freq() exits early
+> when the frequency hasn't been changed. Note this always happens when
+> resuming GMU after recovering from a hang.
+> 
+> Use a simple workaround to prevent this from happening.
+> 
+> Fixes: 1f60d11423db ("drm: msm: a6xx: send opp instead of a frequency")
+> 
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> ---
+>   drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> index b67b38c8fadf..bbbd00020f92 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> @@ -845,6 +845,7 @@ static void a6xx_gmu_set_initial_freq(struct msm_gpu *gpu, struct a6xx_gmu *gmu)
+>   	if (IS_ERR_OR_NULL(gpu_opp))
+>   		return;
+>   
+> +	gmu->freq = 0; /* so a6xx_gmu_set_freq() doesn't exit early */
+>   	a6xx_gmu_set_freq(gpu, gpu_opp);
+>   	dev_pm_opp_put(gpu_opp);
+>   }
+> 
 
--       sd x1,  PT_RA(sp)
-+       sd ra,  PT_EPC(sp)
-+       sd ra,  PT_RA(sp)
-        sd x2,  PT_SP(sp)
-        sd x3,  PT_GP(sp)
-        sd x4,  PT_TP(sp)
-@@ -157,7 +157,7 @@ ENDPROC(ftrace_caller)
-        .endm
-
-        .macro RESTORE_ALL
--       ld x1,  PT_RA(sp)
-+       ld ra,  PT_EPC(sp)
-        ld x2,  PT_SP(sp)
-        ld x3,  PT_GP(sp)
-        ld x4,  PT_TP(sp)
-@@ -190,7 +190,6 @@ ENDPROC(ftrace_caller)
-        ld x31, PT_T6(sp)
-
-        ld      s0, (PT_SIZE_ON_STACK)(sp)
--       ld      ra, (PT_SIZE_ON_STACK+8)(sp)
-        addi    sp, sp, (PT_SIZE_ON_STACK+16)
-        .endm
-
-Now, I'm developing livepatch and they are so mixed features (kprobe,
-livepatch, ftrace, optprobes, STACK_WALK, -fpatchable-function-entry
-'no -pg'). I'll test this patch in the next version of the patchset.
-
-Thx for the review.
-
--- 
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
