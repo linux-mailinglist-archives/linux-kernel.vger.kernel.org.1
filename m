@@ -2,149 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1B82473CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F3D2473BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731566AbgHQTBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:01:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730830AbgHQPsA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:48:00 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AB43C061342;
-        Mon, 17 Aug 2020 08:47:59 -0700 (PDT)
-Date:   Mon, 17 Aug 2020 15:47:54 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597679275;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sfG3NSVBr4paNKgfERRH/ehgelvWsFkUr80BrGwy6Mk=;
-        b=GriPZrfjKricvBzBPPikY9JufpHNUhjPnKW95ucWZr0Tq1MAmPl0CfUtulN/6Kw5eoYcoh
-        51cphJnSkjFeM9h8RKbBeKkSVMqAUCwyd/ZwvCS/J839eQAxU47rr4/PU3Jk2wceVb5Ude
-        c4GUlgHrXikLqtMOb9yycGwhicW2Xb17f0ToyrdJDc6OAlv7GujU8M7HQAU0VPSQpcYgCB
-        N6cQXZ4J7ZyPBpdkrKkvPUOkJdDWujAQPm/U9wcghdDxyddFDI2aW7Faa0fCQvyFq77Ynx
-        unN5btYEgPUXrvquG2vUjYPm6JGdLyht5XPkKGSUxBd87R81Hj94vA96x0rFVA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597679275;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sfG3NSVBr4paNKgfERRH/ehgelvWsFkUr80BrGwy6Mk=;
-        b=Dwl1bGKO6ziVqSvaMG15cK6cRr8FtGdDfzQ8Gl3Ls3Vpf7D+F2hCrgFdkoEhtpj/YWMSyL
-        xWMSxnCiWNwu12Ag==
-From:   "tip-bot2 for Ricardo Neri" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cpu] x86/cpu: Use SERIALIZE in sync_core() when available
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200807032833.17484-1-ricardo.neri-calderon@linux.intel.com>
-References: <20200807032833.17484-1-ricardo.neri-calderon@linux.intel.com>
+        id S2403967AbgHQTAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:00:32 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:14031 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730832AbgHQPsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:48:10 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4BVdjS6XRmz9vCxl;
+        Mon, 17 Aug 2020 17:47:56 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id HMNM4ubvFG_E; Mon, 17 Aug 2020 17:47:56 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BVdjS5Vhfz9vCxf;
+        Mon, 17 Aug 2020 17:47:56 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 35ED38B7C2;
+        Mon, 17 Aug 2020 17:48:01 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id i100p36g_FZq; Mon, 17 Aug 2020 17:48:01 +0200 (CEST)
+Received: from [172.25.230.104] (po15451.idsi0.si.c-s.fr [172.25.230.104])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id EA36D8B779;
+        Mon, 17 Aug 2020 17:47:59 +0200 (CEST)
+Subject: Re: [PATCH 10/11] powerpc: use non-set_fs based maccess routines
+To:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>, x86@kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org
+References: <20200817073212.830069-1-hch@lst.de>
+ <20200817073212.830069-11-hch@lst.de>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <84df68bd-eb66-0105-1f3c-f3b07e5d60e6@csgroup.eu>
+Date:   Mon, 17 Aug 2020 17:47:55 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Message-ID: <159767927411.3192.1923111080573965673.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200817073212.830069-11-hch@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cpu branch of tip:
 
-Commit-ID:     bf9c912f9a649776c2d741310486a6984edaac72
-Gitweb:        https://git.kernel.org/tip/bf9c912f9a649776c2d741310486a6984edaac72
-Author:        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-AuthorDate:    Thu, 06 Aug 2020 20:28:33 -07:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 17 Aug 2020 17:23:04 +02:00
 
-x86/cpu: Use SERIALIZE in sync_core() when available
+Le 17/08/2020 à 09:32, Christoph Hellwig a écrit :
+> Provide __get_kernel_nofault and __put_kernel_nofault routines to
+> implement the maccess routines without messing with set_fs and without
+> opening up access to user space.
 
-The SERIALIZE instruction gives software a way to force the processor to
-complete all modifications to flags, registers and memory from previous
-instructions and drain all buffered writes to memory before the next
-instruction is fetched and executed. Thus, it serves the purpose of
-sync_core(). Use it when available.
+__get_user_size() opens access to user space. You have to use 
+__get_user_size_allowed() when user access is already allowed (or when 
+not needed to allow it).
 
-Suggested-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Link: https://lkml.kernel.org/r/20200807032833.17484-1-ricardo.neri-calderon@linux.intel.com
----
- arch/x86/include/asm/special_insns.h |  6 ++++++
- arch/x86/include/asm/sync_core.h     | 26 ++++++++++++++++++--------
- 2 files changed, 24 insertions(+), 8 deletions(-)
+Christophe
 
-diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
-index 59a3e13..5999b0b 100644
---- a/arch/x86/include/asm/special_insns.h
-+++ b/arch/x86/include/asm/special_insns.h
-@@ -234,6 +234,12 @@ static inline void clwb(volatile void *__p)
- 
- #define nop() asm volatile ("nop")
- 
-+static inline void serialize(void)
-+{
-+	/* Instruction opcode for SERIALIZE; supported in binutils >= 2.35. */
-+	asm volatile(".byte 0xf, 0x1, 0xe8" ::: "memory");
-+}
-+
- #endif /* __KERNEL__ */
- 
- #endif /* _ASM_X86_SPECIAL_INSNS_H */
-diff --git a/arch/x86/include/asm/sync_core.h b/arch/x86/include/asm/sync_core.h
-index fdb5b35..4631c0f 100644
---- a/arch/x86/include/asm/sync_core.h
-+++ b/arch/x86/include/asm/sync_core.h
-@@ -5,6 +5,7 @@
- #include <linux/preempt.h>
- #include <asm/processor.h>
- #include <asm/cpufeature.h>
-+#include <asm/special_insns.h>
- 
- #ifdef CONFIG_X86_32
- static inline void iret_to_self(void)
-@@ -54,14 +55,23 @@ static inline void iret_to_self(void)
- static inline void sync_core(void)
- {
- 	/*
--	 * There are quite a few ways to do this.  IRET-to-self is nice
--	 * because it works on every CPU, at any CPL (so it's compatible
--	 * with paravirtualization), and it never exits to a hypervisor.
--	 * The only down sides are that it's a bit slow (it seems to be
--	 * a bit more than 2x slower than the fastest options) and that
--	 * it unmasks NMIs.  The "push %cs" is needed because, in
--	 * paravirtual environments, __KERNEL_CS may not be a valid CS
--	 * value when we do IRET directly.
-+	 * The SERIALIZE instruction is the most straightforward way to
-+	 * do this but it not universally available.
-+	 */
-+	if (static_cpu_has(X86_FEATURE_SERIALIZE)) {
-+		serialize();
-+		return;
-+	}
-+
-+	/*
-+	 * For all other processors, there are quite a few ways to do this.
-+	 * IRET-to-self is nice because it works on every CPU, at any CPL
-+	 * (so it's compatible with paravirtualization), and it never exits
-+	 * to a hypervisor. The only down sides are that it's a bit slow
-+	 * (it seems to be a bit more than 2x slower than the fastest
-+	 * options) and that it unmasks NMIs.  The "push %cs" is needed
-+	 * because, in paravirtual environments, __KERNEL_CS may not be a
-+	 * valid CS value when we do IRET directly.
- 	 *
- 	 * In case NMI unmasking or performance ever becomes a problem,
- 	 * the next best option appears to be MOV-to-CR2 and an
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>   arch/powerpc/include/asm/uaccess.h | 16 ++++++++++++++++
+>   1 file changed, 16 insertions(+)
+> 
+> diff --git a/arch/powerpc/include/asm/uaccess.h b/arch/powerpc/include/asm/uaccess.h
+> index 00699903f1efca..a31de40ac00b62 100644
+> --- a/arch/powerpc/include/asm/uaccess.h
+> +++ b/arch/powerpc/include/asm/uaccess.h
+> @@ -623,4 +623,20 @@ do {									\
+>   		__put_user_goto(*(u8*)(_src + _i), (u8 __user *)(_dst + _i), e);\
+>   } while (0)
+>   
+> +#define HAVE_GET_KERNEL_NOFAULT
+> +
+> +#define __get_kernel_nofault(dst, src, type, err_label)			\
+> +do {									\
+> +	int __kr_err;							\
+> +									\
+> +	__get_user_size(*((type *)(dst)), (__force type __user *)(src),	\
+> +			sizeof(type), __kr_err);			\
+> +	if (unlikely(__kr_err))						\
+> +		goto err_label;						\
+> +} while (0)
+> +
+> +#define __put_kernel_nofault(dst, src, type, err_label)			\
+> +	__put_user_size_goto(*((type *)(src)),				\
+> +		(__force type __user *)(dst), sizeof(type), err_label)
+> +
+>   #endif	/* _ARCH_POWERPC_UACCESS_H */
+> 
