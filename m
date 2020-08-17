@@ -2,102 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65CC6247853
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 22:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D36C9247867
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 22:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726935AbgHQUur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 16:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726165AbgHQUum (ORCPT
+        id S1727017AbgHQU7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 16:59:18 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:36776 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726228AbgHQU7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 16:50:42 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8CDC061389
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 13:50:41 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id bo3so19418023ejb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 13:50:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WDaNvWkqzm6caaEe1B0qA/ONFIO+S2PQpkxNU8y5rjQ=;
-        b=pkTdLRrXB+5YlBJUBPXrnBVMqqkA6coVYHzqF7833j3SefWK1EvleeXK55563+dCQa
-         1ZNBfEYKZDIQ0/tRMrexHUxizXDoSz6CuNx6552lrC8hAdM89Eh4ZCjrvATuDaPjmXff
-         lqr9FkMeb8lz+8k4CsB9w9h64/sxCMXvAI6Dwl6qNSOSCe37JMM3H0hYrGoiEkzLaPeX
-         Rj7PAMabnr5uhtWhoIyCFOEvW/QZ0XmYeUmbHfwqVTDVRSl+xlRbszeV+PKV2ABz0xqV
-         3DwYzc+lhdRU+yUof/Ir9MmtQlK2k5YbqiyOsvaDuYfedLucyVe+WMImhIrTvb0pHvEX
-         UuvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WDaNvWkqzm6caaEe1B0qA/ONFIO+S2PQpkxNU8y5rjQ=;
-        b=birCjS7vHpXCZvU5xwYnBHftYwiktO9cSWtBroGKmkMymQmu0Dtwsbyr7Bz+EBul6Z
-         EClpd2mGhe5Q3Ldlpusoxjo80aQXekCEHjAPZk92r0CVXVUeRmvVhzZ+ZR4MJ9RAB5SF
-         Hr3homYQZvqi4TXmPC3U3+7jr9saU8gKN5QTmo0tGZf7829tzbMxEpk6IJg/7Zq4x99C
-         dQYdrnj93GXqgzEwa6p8OBStUhs5XEALOT7lrWOwibeIHRRTOmYHMxvcgrOCPz0CmKbG
-         2mPbzsP1+Iz9k4ZcJnE7MPI6sDhonbnRB3VGs8tdpJMPhrDe64dE8VcQLKDaz+d4xLpN
-         uceQ==
-X-Gm-Message-State: AOAM532VVV95oQcEVd9rvOHEFSHFk9L0zF9jt5LbbvGYFKRkKhXDJkT3
-        oeOtYKd0vSNUZqVCW0xpi2HpF4BggZarthbl2PU=
-X-Google-Smtp-Source: ABdhPJx1hSJ30Z0sQOaUwQm4gXEa3jjwt7xV3r8pvg6Ms4N7JILuO9372UQj+2GENKsdtRKY60jwe357xwqokZcE/W4=
-X-Received: by 2002:a17:906:3616:: with SMTP id q22mr17771581ejb.79.1597697440475;
- Mon, 17 Aug 2020 13:50:40 -0700 (PDT)
+        Mon, 17 Aug 2020 16:59:17 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07HKwfO3028875;
+        Mon, 17 Aug 2020 15:58:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1597697921;
+        bh=sZfjcuY3ET6KjajkQkKEOmAhEG2PZKNSiWaJZrOVbUE=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=qvZfWvIjepWO8bOVGrRdhY0HfVM2GRMNoTXv1IuKSV5PLpSydT1/oqq9CtMKbk0b0
+         lvSsBmyWNzmhiANo7LNagRcFeaj8CRGDXSWyxyBpsHyyM4WARy0ICV74XJzEdQ0WOR
+         jMXf7apDG4h0b6wOF6RqrEaKx+F4+Uw/jUNgSFps=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 07HKwfsm116665
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 17 Aug 2020 15:58:41 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 17
+ Aug 2020 15:58:41 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 17 Aug 2020 15:58:41 -0500
+Received: from [10.250.227.175] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07HKwdLv013286;
+        Mon, 17 Aug 2020 15:58:40 -0500
+Subject: Re: [net-next iproute2 PATCH v4 1/2] iplink: hsr: add support for
+ creating PRP device similar to HSR
+To:     Stephen Hemminger <stephen@networkplumber.org>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>,
+        <nsekhar@ti.com>, <vinicius.gomes@intel.com>,
+        <kuznet@ms2.inr.ac.ru>
+References: <20200806203712.2712-1-m-karicheri2@ti.com>
+ <20200806203712.2712-2-m-karicheri2@ti.com>
+ <20200816154608.0fe0917b@hermes.lan>
+From:   Murali Karicheri <m-karicheri2@ti.com>
+Message-ID: <682a636a-a42b-f40d-853c-3ae7d3c4bd82@ti.com>
+Date:   Mon, 17 Aug 2020 16:58:39 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <alpine.LSU.2.11.2008021204390.27773@eggly.anvils>
- <alpine.LSU.2.11.2008021217020.27773@eggly.anvils> <alpine.LSU.2.11.2008141503370.18085@eggly.anvils>
-In-Reply-To: <alpine.LSU.2.11.2008141503370.18085@eggly.anvils>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 17 Aug 2020 13:50:28 -0700
-Message-ID: <CAHbLzkpYWxGiXqyaF167dj_qFo1apchryGHv_RG4UKQgY5-jOQ@mail.gmail.com>
-Subject: Re: [PATCH] khugepaged: adjust VM_BUG_ON_MM() in __khugepaged_enter()
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200816154608.0fe0917b@hermes.lan>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 3:13 PM Hugh Dickins <hughd@google.com> wrote:
->
-> syzbot crashes on the VM_BUG_ON_MM(khugepaged_test_exit(mm), mm) in
-> __khugepaged_enter(): yes, when one thread is about to dump core, has set
-> core_state, and is waiting for others, another might do something calling
-> __khugepaged_enter(), which now crashes because I lumped the core_state
-> test (known as "mmget_still_valid") into khugepaged_test_exit().  I still
-> think it's best to lump them together, so just in this exceptional case,
-> check mm->mm_users directly instead of khugepaged_test_exit().
->
-> Reported-by: syzbot <syzkaller@googlegroups.com>
-> Fixes: bbe98f9cadff ("khugepaged: khugepaged_test_exit() check mmget_still_valid()")
-> Signed-off-by: Hugh Dickins <hughd@google.com>
-> Cc: stable@vger.kernel.org # v4.8+
 
-Acked-by: Yang Shi <shy828301@gmail.com>
 
-> ---
->
->  mm/khugepaged.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> --- v5.9-rc/mm/khugepaged.c     2020-08-12 19:46:50.867196579 -0700
-> +++ linux/mm/khugepaged.c       2020-08-14 14:24:32.739457309 -0700
-> @@ -466,7 +466,7 @@ int __khugepaged_enter(struct mm_struct
->                 return -ENOMEM;
->
->         /* __khugepaged_exit() must not run from under us */
-> -       VM_BUG_ON_MM(khugepaged_test_exit(mm), mm);
-> +       VM_BUG_ON_MM(atomic_read(&mm->mm_users) == 0, mm);
->         if (unlikely(test_and_set_bit(MMF_VM_HUGEPAGE, &mm->flags))) {
->                 free_mm_slot(mm_slot);
->                 return 0;
->
+On 8/16/20 6:46 PM, Stephen Hemminger wrote:
+> On Thu, 6 Aug 2020 16:37:11 -0400
+> Murali Karicheri <m-karicheri2@ti.com> wrote:
+> 
+>> +	
+> 
+>> +		print_int(PRINT_ANY,
+>> +			  "proto",
+>> +			  "proto %d ",
+>> +			  rta_getattr_u8(tb[IFLA_HSR_PROTOCOL]));
+> 
+> Since this unsigned value, you probably want to use print_uint, or print_hhu.
+> Also please put as many arguments on one line that will fit in 80 (to 90) characters.
+> 
+> 	if (tb[IFLA_HSR_PROTOCOL])
+> 		print_hhu(PRINT_ANY, "proto", "proto %hhu ",
+> 			  rta_getattr_u8(tb[IFLA_HSR_PROTOCOL]));
+> 
+Ok. Will send v5 shortly for this.
+-- 
+Murali Karicheri
+Texas Instruments
