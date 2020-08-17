@@ -2,68 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 752622464E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 12:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D33B2464F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 12:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728167AbgHQKyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 06:54:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38234 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726830AbgHQKx3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 06:53:29 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D29B20758;
-        Mon, 17 Aug 2020 10:53:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597661606;
-        bh=/yg5CG5Pqlvxg6RARc2mE3qINPJ76LuMoK+3ZPUd37k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FJs7ih+8pOsI/ft0TcODZut2ndgo9ESSIIxrxt0ZRhkrBwTaEqicpHXLzaEHIp2po
-         xTBAnvSRray/zbgtWWx7nVyQo4+83TA/yhFWR2XNsR7NX4GAR8WmgjsVnhbTj3IBJn
-         auUSFIUTsuEwhGmVnLTZhzblSXZLR2lfwJTstKxM=
-Date:   Mon, 17 Aug 2020 12:53:45 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
-        Joerg Roedel <jroedel@suse.de>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Chenfeng <puck.chen@hisilicon.com>,
-        Joerg Roedel <joro@8bytes.org>, linuxarm@huawei.com,
-        Wei Xu <xuwei5@hisilicon.com>, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        iommu@lists.linux-foundation.org, Rob Herring <robh+dt@kernel.org>,
-        John Stultz <john.stultz@linaro.org>, mauro.chehab@huawei.com,
-        Suzhuangluan <suzhuangluan@hisilicon.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 00/16] IOMMU driver for Kirin 960/970
-Message-ID: <20200817105345.GA3483231@kroah.com>
-References: <cover.1597650455.git.mchehab+huawei@kernel.org>
- <20200817082106.GA16296@infradead.org>
- <20200817112725.26f1b7d6@coco.lan>
- <20200817093703.GA2258686@kroah.com>
- <20200817124617.303bb4a9@coco.lan>
+        id S1728263AbgHQK5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 06:57:25 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:33778 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727021AbgHQK4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 06:56:35 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id EA7F5FA70E4499864175;
+        Mon, 17 Aug 2020 18:56:31 +0800 (CST)
+Received: from [10.174.187.22] (10.174.187.22) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 17 Aug 2020 18:56:26 +0800
+Subject: Re: [PATCH 2/3] KVM: uapi: Remove KVM_DEV_TYPE_ARM_PV_TIME in
+ kvm_device_type
+To:     Steven Price <steven.price@arm.com>, Marc Zyngier <maz@kernel.org>
+References: <20200817033729.10848-1-zhukeqian1@huawei.com>
+ <20200817033729.10848-3-zhukeqian1@huawei.com>
+ <f97633b4a39c301f916bb76030dcabf0@kernel.org>
+ <4cd543a2-4d5b-882c-38d6-f5055512f0dc@huawei.com>
+ <72e34f84-5bea-8f69-6699-29e2970c80b4@arm.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        <wanghaibin.wang@huawei.com>
+From:   zhukeqian <zhukeqian1@huawei.com>
+Message-ID: <40a10c89-d876-5aea-dd45-b7e75ef31c71@huawei.com>
+Date:   Mon, 17 Aug 2020 18:56:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200817124617.303bb4a9@coco.lan>
+In-Reply-To: <72e34f84-5bea-8f69-6699-29e2970c80b4@arm.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.187.22]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 12:46:17PM +0200, Mauro Carvalho Chehab wrote:
-> The main reason of submitting via staging is that I need to preserve
-> the patch that added this driver as-is, in order to preserve its
-> SoB and not causing legal issues.
+Hi Steven,
+
+On 2020/8/17 17:49, Steven Price wrote:
+> On 17/08/2020 09:43, zhukeqian wrote:
+>> Hi Marc,
+>>
+[...]
+>>>
+>>> It is pretty unfortunate that PV time has turned into such a train wreck,
+>>> but that's what we have now, and it has to stay.
+>> Well, I see. It is a sad thing indeed.
 > 
-> It it is OK for iommu to accept a submission like that, I can
-> re-submit it, doing the changes at drivers/iommu.
-
-You can always do this just fine, as one single patch.  You do know
-about the co-developed-by: line, right?
-
-thanks,
-
-greg k-h
+> Sorry about that, this got refactored so many times I guess I lost track of what was actually needed and this hunk remained when it should have been removed.
+> 
+It's fine :-) , not a serious problem.
+> I would hope that I'm the only one who has any userspace code which uses this, but I guess we should still be cautious since this has been in several releases now.
+> 
+OK. For insurance purposes, we ought to ignore this patch to avoid breaking any user-space program.
+> Steve
+> .
+Thanks,
+Keqian
+> 
