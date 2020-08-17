@@ -2,81 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF8D246923
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B817824692D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729101AbgHQPNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:13:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36946 "EHLO mail.kernel.org"
+        id S1729135AbgHQPON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:14:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726630AbgHQPNE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:13:04 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
+        id S1726630AbgHQPOL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:14:11 -0400
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F25552054F;
-        Mon, 17 Aug 2020 15:13:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1274A206FA;
+        Mon, 17 Aug 2020 15:14:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597677183;
-        bh=w2+enJFouBsFUVObLi7FC01Ch0U8RkRLzoUBOYBMdX8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ArtbqySg4ioFTkukPMpYffClJ1lADZAlRkRsJdoA+y8hZt7nCNnRK0DvlDXXHNle7
-         NolvE2Yl4NgbHgk9iRNTvcPKVyu03Ogc4YOsfYMntugwj5at4Rk+sYsQDHORthO6B6
-         GdYBwaf+gZhvYDJgblu/Kxd+2PoakVIEJFEeOifQ=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH] clk: imx: vf610: Add CRC clock
-Date:   Mon, 17 Aug 2020 17:12:54 +0200
-Message-Id: <20200817151254.11466-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        s=default; t=1597677250;
+        bh=hqEMfNYoKv2H/A9NzWzm3pq6Ot1n4/y/J+WGuaOxqMY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Sj4XnJIEDsVqpYNelJN42gpLdtuvPyZFo+ro80ps5X1fNlN/EEWNnpxGm92khy4Lx
+         maruxkU2rTx7p++FLm8BfGzV8SdWIqHqPg3QRh0+IMhm1z9xBygMGnywg8GxrBQgC+
+         JPiQrofIkFExUoSg+dk7StvMEvdHJ0n3Dwi/NZ7o=
+Received: by mail-ej1-f50.google.com with SMTP id bo3so18126248ejb.11;
+        Mon, 17 Aug 2020 08:14:09 -0700 (PDT)
+X-Gm-Message-State: AOAM533ZI6LdQ9NKY2jaUFUXDNSxeIBTsKW3Yg3X9XmVr+/85tyjyjE3
+        s2Pl7OuRXbVSQgw7QN1zPg9kZf03zXDD1/k91g==
+X-Google-Smtp-Source: ABdhPJwbE2nEYvLa7dwJUU9IVHpeywzEtAxNOSighTuc9Ly6OaPt76S0xzF2xY1xirFF+T46DK/F0HVQWCkErsPlpOg=
+X-Received: by 2002:a17:906:2356:: with SMTP id m22mr15233703eja.124.1597677248601;
+ Mon, 17 Aug 2020 08:14:08 -0700 (PDT)
+MIME-Version: 1.0
+References: <1597289564-17030-1-git-send-email-neal.liu@mediatek.com>
+ <1597289564-17030-3-git-send-email-neal.liu@mediatek.com> <CAAOTY_88YSHOvDEHm+rM1=fTv_y25nUh1tuLUH8YSxH5UD1bug@mail.gmail.com>
+ <1597636953.3394.7.camel@mtkswgap22>
+In-Reply-To: <1597636953.3394.7.camel@mtkswgap22>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Mon, 17 Aug 2020 23:13:56 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__7gmvp+U+xD12KJkxuya=CkD8xV67S3pfC60gyfajQiA@mail.gmail.com>
+Message-ID: <CAAOTY__7gmvp+U+xD12KJkxuya=CkD8xV67S3pfC60gyfajQiA@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] soc: mediatek: add mt6779 devapc driver
+To:     Neal Liu <neal.liu@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the clock for CRC block allowing it to be enabled by consumers.
+Hi, Neal:
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/clk/imx/clk-vf610.c             | 1 +
- include/dt-bindings/clock/vf610-clock.h | 3 ++-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+Neal Liu <neal.liu@mediatek.com> =E6=96=BC 2020=E5=B9=B48=E6=9C=8817=E6=97=
+=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=8812:02=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Hi Chun-Kuang,
+>
+> On Sat, 2020-08-15 at 11:03 +0800, Chun-Kuang Hu wrote:
+> > Hi, Neal:
+> >
+> > Neal Liu <neal.liu@mediatek.com> =E6=96=BC 2020=E5=B9=B48=E6=9C=8813=E6=
+=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=8811:33=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+> > >
+> > > MediaTek bus fabric provides TrustZone security support and data
+> > > protection to prevent slaves from being accessed by unexpected
+> > > masters.
+> > > The security violation is logged and sent to the processor for
+> > > further analysis or countermeasures.
+> > >
+> > > Any occurrence of security violation would raise an interrupt, and
+> > > it will be handled by mtk-devapc driver. The violation
+> > > information is printed in order to find the murderer.
+> > >
+> > > Signed-off-by: Neal Liu <neal.liu@mediatek.com>
+> > > ---
+> >
+> > [snip]
+> >
+> > > +/*
+> > > + * devapc_violation_irq - the devapc Interrupt Service Routine (ISR)=
+ will dump
+> > > + *                        violation information including which mast=
+er violates
+> > > + *                        access slave.
+> > > + */
+> > > +static irqreturn_t devapc_violation_irq(int irq_number,
+> > > +                                       struct mtk_devapc_context *ct=
+x)
+> > > +{
+> > > +       /*
+> > > +        * Mask slave's irq before clearing vio status.
+> > > +        * Must do it to avoid nested interrupt and prevent
+> > > +        * unexpected behavior.
+> > > +        */
+> > > +       mask_module_irq(ctx, true);
+> >
+> > I still don't understand why nested interrupt happen. If two CPU
+> > process different devapc interrupt at the same time, mask interrupt
+> > could not prevent these two CPU to sync vio dbg at the same time. As I
+> > know, in ARM CPU, only CPU0 process irq handler, and all devapc
+> > interrupt has the same priority, so why nested interrupt happen? Could
+> > you explain more detail about how nested interrupt happen?
+>
+> If there is another violation happened before previous violation is
+> fully handled, nested interrupt would happen.
+>
+> Let's me take an example:
+> vio A happen
+> enter A ISR
+> ...             vio B happen
+> finish A ISR    enter B ISR
+>                 ...
+>                 finish B ISR
+>
+> We mask all module's irq to avoid nested interrupt.
 
-diff --git a/drivers/clk/imx/clk-vf610.c b/drivers/clk/imx/clk-vf610.c
-index 5129ef8e1d6e..0166ad0b9eb8 100644
---- a/drivers/clk/imx/clk-vf610.c
-+++ b/drivers/clk/imx/clk-vf610.c
-@@ -328,6 +328,7 @@ static void __init vf610_clocks_init(struct device_node *ccm_node)
- 	clk[VF610_CLK_DSPI2] = imx_clk_gate2("dspi2", "ipg_bus", CCM_CCGR6, CCM_CCGRx_CGn(12));
- 	clk[VF610_CLK_DSPI3] = imx_clk_gate2("dspi3", "ipg_bus", CCM_CCGR6, CCM_CCGRx_CGn(13));
- 
-+	clk[VF610_CLK_CRC] = imx_clk_gate2("crc", "ipg_bus", CCM_CCGR1, CCM_CCGRx_CGn(3));
- 	clk[VF610_CLK_WDT] = imx_clk_gate2("wdt", "ipg_bus", CCM_CCGR1, CCM_CCGRx_CGn(14));
- 
- 	clk[VF610_CLK_ESDHC0_SEL] = imx_clk_mux("esdhc0_sel", CCM_CSCMR1, 16, 2, esdhc_sels, 4);
-diff --git a/include/dt-bindings/clock/vf610-clock.h b/include/dt-bindings/clock/vf610-clock.h
-index 0f2d60e884dc..373644e46747 100644
---- a/include/dt-bindings/clock/vf610-clock.h
-+++ b/include/dt-bindings/clock/vf610-clock.h
-@@ -196,6 +196,7 @@
- #define VF610_CLK_TCON0			187
- #define VF610_CLK_TCON1			188
- #define VF610_CLK_CAAM			189
--#define VF610_CLK_END			190
-+#define VF610_CLK_CRC			190
-+#define VF610_CLK_END			191
- 
- #endif /* __DT_BINDINGS_CLOCK_VF610_H */
--- 
-2.17.1
+This is not 'nested' interrupt. After A ISR is finished, B ISR happen.
+So A ISR and B ISR are consecutive interrupt, not nested interrupt.
+To compare mask irq and no mask irq, Let's consider this situation:
 
+1. 1000 consecutive violation happen, the time period between two
+violation is 0.01 ms, so the total time is 10ms. (In 10ms, 1000
+violation happen)
+2. One ISR handle time is 1 ms, so in one ISR handler, 100 violation happen=
+.
+
+For mask irq solution, 10 ISR handler is trigger. For no mask irq
+solution, 11 ISR handler is trigger.
+I think these two solution have similar result, and no mask irq
+solution print more information (If these 1000 violation is trigger by
+20 different driver, no mask solution may show one more driver than
+mask solution)
+So I think it's not necessary to mask irq in irq handler.
+
+>
+> >
+> > > +
+> > > +       while (devapc_sync_vio_dbg(ctx))
+> > > +               devapc_extract_vio_dbg(ctx);
+> > > +
+> > > +       /*
+> > > +        * Ensure that violation info are written
+> > > +        * before further operations
+> > > +        */
+> > > +       smp_mb();
+> > > +
+> > > +       clear_vio_status(ctx);
+> > > +       mask_module_irq(ctx, false);
+> > > +
+> > > +       return IRQ_HANDLED;
+> > > +}
+> > > +
+> >
+> > [snip]
+> >
+> > > +
+> > > +static int mtk_devapc_remove(struct platform_device *pdev)
+> > > +{
+> > > +       struct mtk_devapc_context *ctx =3D platform_get_drvdata(pdev)=
+;
+> > > +
+> > > +       stop_devapc(ctx);
+> > > +
+> > > +       if (ctx->infra_clk)
+> >
+> > This always true.
+>
+> Does it mean that remove function would be called only if probe function
+> is returned successfully?
+
+Yes.
+
+> Is there any chance this function would be called directly?
+
+No.
+
+Regards,
+Chun-Kuang.
+
+>
+> >
+> > Regards,
+> > Chun-Kuang.
+> >
+> > > +               clk_disable_unprepare(ctx->infra_clk);
+> > > +
+> > > +       return 0;
+> > > +}
+> > > +
+> > > +static struct platform_driver mtk_devapc_driver =3D {
+> > > +       .probe =3D mtk_devapc_probe,
+> > > +       .remove =3D mtk_devapc_remove,
+> > > +       .driver =3D {
+> > > +               .name =3D KBUILD_MODNAME,
+> > > +               .of_match_table =3D mtk_devapc_dt_match,
+> > > +       },
+> > > +};
+> > > +
+> > > +module_platform_driver(mtk_devapc_driver);
+> > > +
+> > > +MODULE_DESCRIPTION("Mediatek Device APC Driver");
+> > > +MODULE_AUTHOR("Neal Liu <neal.liu@mediatek.com>");
+> > > +MODULE_LICENSE("GPL");
+> > > --
+> > > 1.7.9.5
+> > > _______________________________________________
+> > > Linux-mediatek mailing list
+> > > Linux-mediatek@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-mediatek
+>
