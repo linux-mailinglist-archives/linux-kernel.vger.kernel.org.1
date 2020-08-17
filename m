@@ -2,107 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6E12474F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1763247480
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392230AbgHQTRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:17:16 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:38343 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387421AbgHQPi6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:38:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597678734;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZkWVLRXZ5vVFgxHkOqqYvCoNjff7Y5hvG4el3ZRbhHA=;
-        b=PCDaGtJ/hYwQosgCRiZvDPtF2KD4EwEYW+2PzBs1Q8bPSbI+xoqq5wfL5tD5FMIwUO600G
-        2Hi3U4T6N9RXRMp6DUhLqy+GeAZZ1H77qpDkqQj72hdTlOdOZjnx766ggofFtJdNmWSakE
-        a3y70DhJCknHgmLV+i4P5Nde5wE78uA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-500-RxczTlPaMrKBj81he1F3KQ-1; Mon, 17 Aug 2020 11:38:52 -0400
-X-MC-Unique: RxczTlPaMrKBj81he1F3KQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2404039AbgHQTKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:10:41 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:61019 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730751AbgHQPlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:41:39 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597678897; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=VYK3lYSXyLSuNZtDJEqONO4W2R+VnVrEGPnXZiROXgU=; b=gYRDJiXQ2Qf0KWpMjLodtEh7kVPAu632MKBT6STNaOphxtEVyv4q+Y8G539H2gW+KjfnU5t4
+ llDmLmkF4LQH5hrjsuIWJZ/dGU5QKFjo+SEILJIqcOiIOo/hOP50BT+isyAPOI5u2ZXsm/F1
+ DwNAsUOp+G9MCiP5OpT9jgZuJxI=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
+ 5f3aa50b61f1d41834b5419d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 Aug 2020 15:40:59
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AE41FC433B2; Mon, 17 Aug 2020 15:40:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.6 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.7] (unknown [117.217.239.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D38AF807333;
-        Mon, 17 Aug 2020 15:38:50 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-118-35.rdu2.redhat.com [10.10.118.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4F98A614F9;
-        Mon, 17 Aug 2020 15:38:46 +0000 (UTC)
-Subject: Re: [RFC PATCH 1/8] memcg: Enable fine-grained control of over
- memory.high action
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20200817140831.30260-1-longman@redhat.com>
- <20200817140831.30260-2-longman@redhat.com>
- <20200817143044.GA1987@chrisdown.name>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <934e4bc3-bab6-b19a-49f9-6a6ae8638570@redhat.com>
-Date:   Mon, 17 Aug 2020 11:38:45 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7AE34C43391;
+        Mon, 17 Aug 2020 15:40:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7AE34C43391
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [PATCH 16/19] drm/msm/a6xx: Add support for per-instance
+ pagetables
+To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org,
+        iommu@lists.linux-foundation.org, linux-arm-msm@vger.kernel.org
+Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Will Deacon <will@kernel.org>, freedreno@lists.freedesktop.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Vivek Gautam <vivek.gautam@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Eric Anholt <eric@anholt.net>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200810222657.1841322-1-jcrouse@codeaurora.org>
+ <20200814024114.1177553-17-robdclark@gmail.com>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <7c130df7-c7f4-8694-c7be-ce3debe01662@codeaurora.org>
+Date:   Mon, 17 Aug 2020 21:10:46 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200817143044.GA1987@chrisdown.name>
+In-Reply-To: <20200814024114.1177553-17-robdclark@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/17/20 10:30 AM, Chris Down wrote:
-> Astractly, I think this really overcomplicates the API a lot. If these 
-> are truly generally useful (and I think that remains to be 
-> demonstrated), they should be additions to the existing API, rather 
-> than a sidestep with prctl.
-This patchset is derived from customer requests. With existing API, I 
-suppose you mean the memory cgroup API. Right? The reason to use prctl() 
-is that there are users out there who want some kind of per-process 
-control instead of for a whole group of processes unless the users try 
-to create one cgroup per process which is not very efficient.
->
-> I also worry about some other more concrete things:
->
-> 1. Doesn't this allow unprivileged applications to potentially bypass 
->    memory.high constraints set by a system administrator?
-The memory.high constraint is for triggering memory reclaim. The new 
-mitigation actions introduced by this patchset will only be applied if 
-memory reclaim alone fails to limit the physical memory consumption. The 
-current memory cgroup memory reclaim code will not be affected by this 
-patchset.
-> 2. What's the purpose of PR_MEMACT_KILL, compared to memory.max?
-A user can use this to specify which processes are less important and 
-can be sacrificed first instead of the other more important ones in case 
-they are really in a OOM situation. IOW, users can specify the order 
-where OOM kills can happen.
-> 3. Why add this entirely separate signal delivery path when we already 
-> have eventfd/poll/inotify support, which makes a lot more sense for 
-> modern    applications?
+On 8/14/2020 8:11 AM, Rob Clark wrote:
+> From: Jordan Crouse <jcrouse@codeaurora.org>
+> 
+> Add support for using per-instance pagetables if all the dependencies are
+> available.
+> 
+> Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+>   drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 70 +++++++++++++++++++++++++++
+>   drivers/gpu/drm/msm/adreno/a6xx_gpu.h |  1 +
+>   drivers/gpu/drm/msm/msm_ringbuffer.h  |  1 +
+>   3 files changed, 72 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> index 5eabb0109577..9653ac9b3cb8 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> @@ -81,6 +81,56 @@ static void get_stats_counter(struct msm_ringbuffer *ring, u32 counter,
+>   	OUT_RING(ring, upper_32_bits(iova));
+>   }
+>   
+> +static void a6xx_set_pagetable(struct a6xx_gpu *a6xx_gpu,
+> +		struct msm_ringbuffer *ring, struct msm_file_private *ctx)
+> +{
+> +	phys_addr_t ttbr;
+> +	u32 asid;
+> +	u64 memptr = rbmemptr(ring, ttbr0);
+> +
+> +	if (ctx == a6xx_gpu->cur_ctx)
+> +		return;
+> +
+> +	if (msm_iommu_pagetable_params(ctx->aspace->mmu, &ttbr, &asid))
+> +		return;
+> +
+> +	/* Execute the table update */
+> +	OUT_PKT7(ring, CP_SMMU_TABLE_UPDATE, 4);
+> +	OUT_RING(ring, CP_SMMU_TABLE_UPDATE_0_TTBR0_LO(lower_32_bits(ttbr)));
+> +
+> +	/*
+> +	 * For now ignore the asid since the smmu driver uses a TLBIASID to
+> +	 * flush the TLB when we use iommu_flush_tlb_all() and the smmu driver
+> +	 * isn't aware that the asid changed.  Instead, keep the default asid
+> +	 * (0, same as the context bank) to make sure the TLB is properly
+> +	 * flushed.
+> +	 */
+> +	OUT_RING(ring,
+> +		CP_SMMU_TABLE_UPDATE_1_TTBR0_HI(upper_32_bits(ttbr)) |
+> +		CP_SMMU_TABLE_UPDATE_1_ASID(0));
+> +	OUT_RING(ring, CP_SMMU_TABLE_UPDATE_2_CONTEXTIDR(0));
+> +	OUT_RING(ring, CP_SMMU_TABLE_UPDATE_3_CONTEXTBANK(0));
+> +
+> +	/*
+> +	 * Write the new TTBR0 to the memstore. This is good for debugging.
+> +	 */
+> +	OUT_PKT7(ring, CP_MEM_WRITE, 4);
+> +	OUT_RING(ring, CP_MEM_WRITE_0_ADDR_LO(lower_32_bits(memptr)));
+> +	OUT_RING(ring, CP_MEM_WRITE_1_ADDR_HI(upper_32_bits(memptr)));
+> +	OUT_RING(ring, lower_32_bits(ttbr));
+> +	OUT_RING(ring, (0 << 16) | upper_32_bits(ttbr));
+why (0 << 16) is required here?
+> +
+> +	/*
+> +	 * And finally, trigger a uche flush to be sure there isn't anything
+> +	 * lingering in that part of the GPU
+> +	 */
+> +
+> +	OUT_PKT7(ring, CP_EVENT_WRITE, 1);
+> +	OUT_RING(ring, 0x31);
+This may be unnecessary, but no harm in keeping it. SMMU_TABLE_UPDATE is 
+supposed to do a UCHE flush.
 
-Good question, I will look further into this to see if it can be 
-applicable in this case.
-
-Cheers,
-Longman
-
+-Akhil
+> +
+> +	a6xx_gpu->cur_ctx = ctx;
+> +}
+> +
+>   static void a6xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>   {
+>   	unsigned int index = submit->seqno % MSM_GPU_SUBMIT_STATS_COUNT;
+> @@ -90,6 +140,8 @@ static void a6xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>   	struct msm_ringbuffer *ring = submit->ring;
+>   	unsigned int i;
+>   
+> +	a6xx_set_pagetable(a6xx_gpu, ring, submit->queue->ctx);
+> +
+>   	get_stats_counter(ring, REG_A6XX_RBBM_PERFCTR_CP_0_LO,
+>   		rbmemptr_stats(ring, index, cpcycles_start));
+>   
+> @@ -696,6 +748,8 @@ static int a6xx_hw_init(struct msm_gpu *gpu)
+>   	/* Always come up on rb 0 */
+>   	a6xx_gpu->cur_ring = gpu->rb[0];
+>   
+> +	a6xx_gpu->cur_ctx = NULL;
+> +
+>   	/* Enable the SQE_to start the CP engine */
+>   	gpu_write(gpu, REG_A6XX_CP_SQE_CNTL, 1);
+>   
+> @@ -1008,6 +1062,21 @@ static unsigned long a6xx_gpu_busy(struct msm_gpu *gpu)
+>   	return (unsigned long)busy_time;
+>   }
+>   
+> +static struct msm_gem_address_space *
+> +a6xx_create_private_address_space(struct msm_gpu *gpu)
+> +{
+> +	struct msm_gem_address_space *aspace = NULL;
+> +	struct msm_mmu *mmu;
+> +
+> +	mmu = msm_iommu_pagetable_create(gpu->aspace->mmu);
+> +
+> +	if (!IS_ERR(mmu))
+> +		aspace = msm_gem_address_space_create(mmu,
+> +			"gpu", 0x100000000ULL, 0x1ffffffffULL);
+> +
+> +	return aspace;
+> +}
+> +
+>   static const struct adreno_gpu_funcs funcs = {
+>   	.base = {
+>   		.get_param = adreno_get_param,
+> @@ -1031,6 +1100,7 @@ static const struct adreno_gpu_funcs funcs = {
+>   		.gpu_state_put = a6xx_gpu_state_put,
+>   #endif
+>   		.create_address_space = adreno_iommu_create_address_space,
+> +		.create_private_address_space = a6xx_create_private_address_space,
+>   	},
+>   	.get_timestamp = a6xx_get_timestamp,
+>   };
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+> index 03ba60d5b07f..da22d7549d9b 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+> @@ -19,6 +19,7 @@ struct a6xx_gpu {
+>   	uint64_t sqe_iova;
+>   
+>   	struct msm_ringbuffer *cur_ring;
+> +	struct msm_file_private *cur_ctx;
+>   
+>   	struct a6xx_gmu gmu;
+>   };
+> diff --git a/drivers/gpu/drm/msm/msm_ringbuffer.h b/drivers/gpu/drm/msm/msm_ringbuffer.h
+> index 7764373d0ed2..0987d6bf848c 100644
+> --- a/drivers/gpu/drm/msm/msm_ringbuffer.h
+> +++ b/drivers/gpu/drm/msm/msm_ringbuffer.h
+> @@ -31,6 +31,7 @@ struct msm_rbmemptrs {
+>   	volatile uint32_t fence;
+>   
+>   	volatile struct msm_gpu_submit_stats stats[MSM_GPU_SUBMIT_STATS_COUNT];
+> +	volatile u64 ttbr0;
+>   };
+>   
+>   struct msm_ringbuffer {
+> 
 
