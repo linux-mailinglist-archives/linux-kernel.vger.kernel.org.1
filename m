@@ -2,142 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE863246FC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:53:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B00246F85
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731628AbgHQRxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:53:47 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:34738 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388627AbgHQQLi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:11:38 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 5AC9A1C0BB6; Mon, 17 Aug 2020 18:11:33 +0200 (CEST)
-Date:   Mon, 17 Aug 2020 18:11:32 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     kernel list <linux-kernel@vger.kernel.org>,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, intel-gfx@lists.freedesktop.org,
-        torvalds@linux-foundation.org
-Subject: 5.9-rc1: graphics regression moved from -next to mainline
-Message-ID: <20200817161132.GA4711@amd>
+        id S2390097AbgHQRs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:48:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388746AbgHQQNM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:13:12 -0400
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E72C820882;
+        Mon, 17 Aug 2020 16:13:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597680791;
+        bh=gOa0eYxDEsJl2GQzrDLlhSJ5bJ/ZSXUtDonvSlh0ISI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=vLRATeCcDCX/WCszaMIH4H6QE5Q8qaxo+6lOPhJY3rU/qC3/KnPHOgpGDtINee7Gq
+         VcWIayKF3Q5vcKl+04xcwMH7/dbSBKTxAP7wJHZxqdCIaZTaY9H7oqkp8AkQMziwc8
+         C466cFsSL7D9DSNpN4oisiuWqbgpp5MlAwUUJYj4=
+Received: by mail-ot1-f43.google.com with SMTP id h22so13818866otq.11;
+        Mon, 17 Aug 2020 09:13:10 -0700 (PDT)
+X-Gm-Message-State: AOAM531NhY7Wt0pAoz/CGBobj3yGVukH2RMWCgIJe/MsLh2Zs4iCYRgU
+        XEGus4Y64M0JWEZhp8O1r0TWjGYLEjztDfWyJw==
+X-Google-Smtp-Source: ABdhPJyXcxsLxb+WyZgDqUvX+ZXB5O5RvpOgmleI0+UY8O6F4IJdy3paAveojUJFPRMuv9DQhsNQTGig0iW3qRkFcQI=
+X-Received: by 2002:a9d:7f84:: with SMTP id t4mr11916864otp.192.1597680790121;
+ Mon, 17 Aug 2020 09:13:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="SUOF0GtieIMvvwua"
-Content-Disposition: inline
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20200815125112.462652-2-maz@kernel.org> <20200815232228.GA1325245@bjorn-Precision-5520>
+ <87pn7qnabq.wl-maz@kernel.org>
+In-Reply-To: <87pn7qnabq.wl-maz@kernel.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 17 Aug 2020 10:12:58 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+fDNa60+6+s9MwVjUFUPAuc43+uMx4Fm2nZhUgrV7LEg@mail.gmail.com>
+Message-ID: <CAL_Jsq+fDNa60+6+s9MwVjUFUPAuc43+uMx4Fm2nZhUgrV7LEg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] PCI: rockchip: Work around missing device_type
+ property in DT
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Aug 16, 2020 at 4:40 AM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Sun, 16 Aug 2020 00:22:28 +0100,
+> Bjorn Helgaas <helgaas@kernel.org> wrote:
+> >
+> > On Sat, Aug 15, 2020 at 01:51:11PM +0100, Marc Zyngier wrote:
+> > > Recent changes to the DT PCI bus parsing made it mandatory for
+> > > device tree nodes describing a PCI controller to have the
+> > > 'device_type = "pci"' property for the node to be matched.
+> > >
+> > > Although this follows the letter of the specification, it
+> > > breaks existing device-trees that have been working fine
+> > > for years.  Rockchip rk3399-based systems are a prime example
+> > > of such collateral damage, and have stopped discovering their
+> > > PCI bus.
+> > >
+> > > In order to paper over the blunder, let's add a workaround
+> > > to the pcie-rockchip driver, adding the missing property when
+> > > none is found at boot time. A warning will hopefully nudge the
+> > > user into updating their DT to a fixed version if they can, but
+> > > the insentive is obviously pretty small.
+> >
+> > s/insentive/incentive/ (Lorenzo or I can fix this up)
+> >
+> > > Fixes: 2f96593ecc37 ("of_address: Add bus type match for pci ranges parser")
+> > > Suggested-by: Roh Herring <robh+dt@kernel.org>
+> >
+> > s/Roh/Rob/ (similarly)
+>
+> Clearly not my day when it comes to proofreading commit messages.
+> Thanks for pointing this out, and in advance for fixing it up.
+>
+> >
+> > > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> >
+> > This looks like a candidate for v5.9, since 2f96593ecc37 was merged
+> > during the v5.9 merge window, right?
+>
+> Absolutely.
+>
+> > I wonder how many other DTs are similarly broken?  Maybe Rob's DT
+> > checker has already looked?
+>
+> I've just managed to run the checker, which comes up with all kinds of
+> goodies. Apart from the above, it also spots the following:
+>
+> - arch/arm64/boot/dts/mediatek/mt7622.dtsi: Has a device_type property
+>   in its main PCIe node, but not in the child nodes. It isn't obvious
+>   to me whether that's a violation or not (the spec doesn't say
+>   whether the property should be set on a per-port basis). Rob?
 
---SUOF0GtieIMvvwua
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The rule is bridge nodes should have 'device_type = "pci"'. But what's
+needed to fix these cases is setting device_type where we are parsing
+ranges or dma-ranges which we're not doing on the child ndes.
+Otherwise, I don't think it matters in this case unless you have child
+(grandchild here) nodes for PCI devices. If you did have child nodes,
+the address translation was already broken before this change.
 
-Hi!
+> - arch/arm64/boot/dts/qcom/msm8996.dtsi: Only one out of the three
+>   PCIe nodes has the device_type property, probably broken similarly
+>   to rk3399.
 
-After about half an hour of uptime, screen starts blinking on thinkpad
-x60 and machine becomes unusable.
+The only upstream board is DB820c, so probably not as wide an impact...
 
-I already reported this in -next, and now it is in mainline. It is
-32-bit x86 system.
+There are also 92 (lots of duplicates due to multiple boards) more
+cases in arch/arm/. A log is here[1].
 
+> I could move the workaround to drivers/pci/of.c, and have it called
+> from the individual drivers. I don't have the HW to test those though.
+>
+> Thoughts?
 
-								Pavel
+I think we should go with my other suggestion of looking at the node
+name. Looks like just checking 'pcie' is enough. We can skip 'pci' as
+I don't see any cases.
 
+Rob
 
-Aug 17 17:36:04 amd ovpn-castor[2828]: UDPv4 link local (bound):
-[undef]
-Aug 17 17:36:04 amd ovpn-castor[2828]: UDPv4 link remote:
-[AF_INET]87.138.219.28:1194
-Aug 17 17:36:23 amd kernel: BUG: unable to handle page fault for
-address: f8601000
-Aug 17 17:36:23 amd kernel: #PF: supervisor write access in kernel
-mode
-Aug 17 17:36:23 amd kernel: #PF: error_code(0x0002) - not-present page
-Aug 17 17:36:23 amd kernel: *pdpt =3D 00000000318f2001 *pde =3D
-0000000000000000
-Aug 17 17:36:23 amd kernel: Oops: 0002 [#1] PREEMPT SMP PTI
-Aug 17 17:36:23 amd kernel: CPU: 1 PID: 3004 Comm: Xorg Not tainted
-5.9.0-rc1+ #86
-Aug 17 17:36:23 amd kernel: Hardware name: LENOVO 17097HU/17097HU,
-BIOS 7BETD8WW (2.19 ) 03/31
-/2011
-Aug 17 17:36:23 amd kernel: EIP: eb_relocate_vma+0xcf6/0xf20
-Aug 17 17:36:23 amd kernel: Code: e9 ff f7 ff ff c7 85 c0 fd ff ff ed
-ff ff ff c7 85 c4 fd ff
-ff ff ff ff ff 8b 85 c0 fd ff ff e9 a5 f8 ff ff 8b 85 d0 fd ff ff <c7>
-03 01 00 40 10 89 43 04
- 8b 85 b4 fd ff ff 89 43 08 e9 9f f7 ff
- Aug 17 17:36:23 amd kernel: EAX: 003c306c EBX: f8601000 ECX: 00847000
- EDX: 00000000
- Aug 17 17:36:23 amd kernel: ESI: 00847000 EDI: 00000000 EBP: f1947c68
- ESP: f19479fc
- Aug 17 17:36:23 amd kernel: DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS:
- 0068 EFLAGS: 00210246
- Aug 17 17:36:23 amd kernel: CR0: 80050033 CR2: f8601000 CR3: 31a1e000
- CR4: 000006b0
- Aug 17 17:36:23 amd kernel: Call Trace:
- Aug 17 17:36:23 amd kernel: ? i915_vma_pin+0xc5/0x8c0
- Aug 17 17:36:23 amd kernel: ? __mutex_unlock_slowpath+0x2b/0x280
- Aug 17 17:36:23 amd kernel: ? __active_retire+0x7e/0xd0
- Aug 17 17:36:23 amd kernel: ? mutex_unlock+0xb/0x10
- Aug 17 17:36:23 amd kernel: ? i915_vma_pin+0xc5/0x8c0
- Aug 17 17:36:23 amd kernel: ? __lock_acquire.isra.31+0x261/0x530
- Aug 17 17:36:23 amd kernel: ? eb_lookup_vmas+0x1f5/0x9e0
- Aug 17 17:36:23 amd kernel: i915_gem_do_execbuffer+0xaab/0x2780
- Aug 17 17:36:23 amd kernel: ? _raw_spin_unlock_irqrestore+0x27/0x40
- Aug 17 17:36:23 amd kernel: ? __lock_acquire.isra.31+0x261/0x530
- Aug 17 17:36:23 amd kernel: ? __lock_acquire.isra.31+0x261/0x530
- Aug 17 17:36:23 amd kernel: ? kvmalloc_node+0x69/0x70
- Aug 17 17:36:23 amd kernel: i915_gem_execbuffer2_ioctl+0xdd/0x360
- Aug 17 17:36:23 amd kernel: ? i915_gem_execbuffer_ioctl+0x2b0/0x2b0
- Aug 17 17:36:23 amd kernel: drm_ioctl_kernel+0x87/0xd0
- Aug 17 17:36:23 amd kernel: drm_ioctl+0x1f4/0x38b
- Aug 17 17:36:23 amd kernel: ? i915_gem_execbuffer_ioctl+0x2b0/0x2b0
- Aug 17 17:36:23 amd kernel: ? posix_get_monotonic_timespec+0x1c/0x90
- Aug 17 17:36:23 amd kernel: ? ktime_get_ts64+0x7a/0x1e0
- Aug 17 17:36:23 amd kernel: ? drm_ioctl_kernel+0xd0/0xd0
- Aug 17 17:36:23 amd kernel: __ia32_sys_ioctl+0x1ad/0x799
- Aug 17 17:36:23 amd kernel: ? debug_smp_processor_id+0x12/0x20
- Aug 17 17:36:23 amd kernel: ? exit_to_user_mode_prepare+0x4f/0x100
- Aug 17 17:36:23 amd kernel: do_int80_syscall_32+0x2c/0x40
- Aug 17 17:36:23 amd kernel: entry_INT80_32+0x111/0x111
- Aug 17 17:36:23 amd kernel: EIP: 0xb7fbc092
- Aug 17 17:36:23 amd kernel: Code: 00 00 00 e9 90 ff ff ff ff a3 24 00
- 00 00 68 30 00 00 00 e9 80 ff ff ff ff a3 e8 ff ff ff 66 90 00 00 00
- 00 00 00 00 00 cd 80 <c3> 8d b4 26 00 00 00 00 8d b6 00 00 00 00 8b
- 1c 24 c3 8d b4 26 00
- Aug 17 17:36:23 amd kernel: EAX: ffffffda EBX: 0000000a ECX: c0406469
- EDX: bff0ae3c
- Aug 17 17:36:23 amd kernel: ESI: b73aa000 EDI: c0406469 EBP: 0000000a
- ESP: bff0adb4
- Aug 17 17:36:23 amd kernel: DS: 007b ES: 007b FS: 0000 GS: 0033 SS:
- 007b EFLAGS: 00200296
- Aug 17 17:36:23 amd kernel: ? asm_exc_nmi+0xcc/0x2bc
- Aug 17 17:36:23 amd kernel: Modules linked in:
- Aug 17 17:36:23 amd kernel: CR2: 00000000f8601000
- Aug 17 17:36:23 amd kernel: ---[ end trace 2ca9775068bbac06 ]---
-=20
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---SUOF0GtieIMvvwua
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl86rDQACgkQMOfwapXb+vK26gCgk1vGvPiX4oaOabpqNWKNdxhE
-ipgAn1rhEu+JZ64Qn+ophD0RZA+rFzwX
-=8BiJ
------END PGP SIGNATURE-----
-
---SUOF0GtieIMvvwua--
+[1] https://gitlab.com/robherring/linux-dt-bindings/-/jobs/688752562
