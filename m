@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3782476D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A57E2476D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729494AbgHQPXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:23:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45634 "EHLO mail.kernel.org"
+        id S1729552AbgHQPXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:23:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729421AbgHQPWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:22:10 -0400
+        id S1729219AbgHQPWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:22:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 167D322B45;
-        Mon, 17 Aug 2020 15:22:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0334520888;
+        Mon, 17 Aug 2020 15:22:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597677729;
-        bh=IPrxSe+zlkAV1YF+9agKI2SRHHcxYLSZAX0ZjcL2ix0=;
+        s=default; t=1597677741;
+        bh=9SWCTvbJ98KOQ9GVIu50Cbq1XurQ6Ach9phYfuzlA6U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RezhYY/DQYtb/ASe3/XqLlLY0D6PGdoLMXe7CHMCVgynyKJzqLiR73vvflIkvkcGO
-         j7zjzen5+30nR08rB3FTsQjs5kc99ZRilnyPqEQNSUtjQNvsF5PrtWPX77HvzLot31
-         234Q/xElnUiqrAbgQFBjyw7eGD7iQFJ6au3XCaI0=
+        b=zOnfwM6p3Rv+eRL85obHIRIbwiTSRcfD9ZT5tVXm4urnKRLR1Z9TJfVUqKVIBs2hF
+         sT5uRJ0ypQy7hKoV83hh6/F1Auqm3FErOnNUt0E33DI0l5S7KqbKOg+WbHgp7w02VF
+         tDr3LTdPtWIfdpMCLOENENw1mP8oLSpRXR/Xh+fE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Lin <jon.lin@rock-chips.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Marc Zyngier <maz@kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 056/464] spi: rockchip: Fix error in SPI slave pio read
-Date:   Mon, 17 Aug 2020 17:10:09 +0200
-Message-Id: <20200817143836.444580437@linuxfoundation.org>
+Subject: [PATCH 5.8 060/464] irqchip/ti-sci-inta: Fix return value about devm_ioremap_resource()
+Date:   Mon, 17 Aug 2020 17:10:13 +0200
+Message-Id: <20200817143836.639682960@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -46,37 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jon Lin <jon.lin@rock-chips.com>
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
 
-[ Upstream commit 4294e4accf8d695ea5605f6b189008b692e3e82c ]
+[ Upstream commit 4b127a14cb1385dd355c7673d975258d5d668922 ]
 
-The RXFLR is possible larger than rx_left in Rockchip SPI, fix it.
+When call function devm_ioremap_resource(), we should use IS_ERR()
+to check the return value and return PTR_ERR() if failed.
 
-Fixes: 01b59ce5dac8 ("spi: rockchip: use irq rather than polling")
-Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
-Tested-by: Emil Renner Berthing <kernel@esmil.dk>
-Reviewed-by: Heiko Stuebner <heiko@sntech.de>
-Reviewed-by: Emil Renner Berthing <kernel@esmil.dk>
-Link: https://lore.kernel.org/r/20200723004356.6390-3-jon.lin@rock-chips.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 9f1463b86c13 ("irqchip/ti-sci-inta: Add support for Interrupt Aggregator driver")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Link: https://lore.kernel.org/r/1591437017-5295-2-git-send-email-yangtiezhu@loongson.cn
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-rockchip.c | 2 +-
+ drivers/irqchip/irq-ti-sci-inta.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-rockchip.c b/drivers/spi/spi-rockchip.c
-index 9b8a5e1233c06..4776aa815c3fa 100644
---- a/drivers/spi/spi-rockchip.c
-+++ b/drivers/spi/spi-rockchip.c
-@@ -288,7 +288,7 @@ static void rockchip_spi_pio_writer(struct rockchip_spi *rs)
- static void rockchip_spi_pio_reader(struct rockchip_spi *rs)
- {
- 	u32 words = readl_relaxed(rs->regs + ROCKCHIP_SPI_RXFLR);
--	u32 rx_left = rs->rx_left - words;
-+	u32 rx_left = (rs->rx_left > words) ? rs->rx_left - words : 0;
+diff --git a/drivers/irqchip/irq-ti-sci-inta.c b/drivers/irqchip/irq-ti-sci-inta.c
+index 7e3ebf6ed2cd1..be0a35d917962 100644
+--- a/drivers/irqchip/irq-ti-sci-inta.c
++++ b/drivers/irqchip/irq-ti-sci-inta.c
+@@ -572,7 +572,7 @@ static int ti_sci_inta_irq_domain_probe(struct platform_device *pdev)
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	inta->base = devm_ioremap_resource(dev, res);
+ 	if (IS_ERR(inta->base))
+-		return -ENODEV;
++		return PTR_ERR(inta->base);
  
- 	/* the hardware doesn't allow us to change fifo threshold
- 	 * level while spi is enabled, so instead make sure to leave
+ 	domain = irq_domain_add_linear(dev_of_node(dev),
+ 				       ti_sci_get_num_resources(inta->vint),
 -- 
 2.25.1
 
