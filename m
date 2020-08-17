@@ -2,164 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C25AD247155
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB9F24717E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731520AbgHQSZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:25:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390912AbgHQSYh (ORCPT
+        id S2391000AbgHQS2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:28:51 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:59030 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391002AbgHQS2e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 14:24:37 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C42FC061389
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 11:24:36 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id c12so13179405qtn.9
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 11:24:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mAFYWBF2GClAQZpHVZzSpokffvud/RBlK/za9SW/At8=;
-        b=IBh00V0k+zSkWhzx+YDpFbXyCl492e3Cc1rN0Hf31AltN8GmHUZ7Eu1Pnr7EGvdcA5
-         nviZ6dfEjD2KAco8CV5UaRnttND2uXkUM8rzllVu+1MBBohlBneT0e8Wo5eWcmktWLRD
-         NW6WAQLGbwa4X4zUOzyGjdB8hCsWtQXzJICTVtZh0P0/c9Vdhdv9ie7yfcRhquLkPaK+
-         N9vw4pjngpcirMxXIWCs1rmYXNNykxCyJgA/gRPoM6R0iLPXLZA3L+1YNA/dUyU7Rqy0
-         9xauNpSOcy6qWdsK/03HKNao1hacWMCxETj9VXx0murRt+DWAqOUqABB97XUPcSaNjqy
-         hmcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mAFYWBF2GClAQZpHVZzSpokffvud/RBlK/za9SW/At8=;
-        b=AytSfMHK9AjHFvc4v3Z8EF1DCm5FKzCMLLtVQCBGasODnPEqMrX3DKyYvDwygfdW1G
-         4kJU1yQE6f1EGXWJiloKF4Fx9kdMmq/PGbuxjUjQ9oqW6kOgE5ibJb/cUH+kOSLheGEL
-         xCmW7mi0Ytezbfm6zmcBabljasK0mFK88ic6zphZDtoE9JDiQ5H90tMrJBXHtgp/bsOV
-         kYLpRcAoF0LWD/UJ/rDZYRbwjEBIcUDHdAuRzpgs6/kg9WMuu5MbZfKGT/Iyj1AU6IUW
-         aZNmQacnLLBs12+ERuroXCzWhiC4gWmuZGj+iH7mUyshe3c+lqcbRe+tZ9R107WZc5BI
-         w9JA==
-X-Gm-Message-State: AOAM531+5RiR3kA4LfqtXx7BmKAXw94DEkNOy2kHZu14Gjzq+iuNZ9d+
-        WxSWABr35G8E6n0F9R+vjg/7CFbxFJBFmHRkR+bYGQ==
-X-Google-Smtp-Source: ABdhPJz927wcFmwanL9peMgX6pJXjDjF/dCLzYQ1JQ08qtiKJGp6eO+5/A76xOwmtPGcsAJ6dPdeBM9DOfi9rb0qVcc=
-X-Received: by 2002:ac8:6952:: with SMTP id n18mr14369852qtr.27.1597688675455;
- Mon, 17 Aug 2020 11:24:35 -0700 (PDT)
+        Mon, 17 Aug 2020 14:28:34 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1k7jrk-001UEg-5B; Mon, 17 Aug 2020 12:28:16 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1k7jrj-0003E9-5O; Mon, 17 Aug 2020 12:28:15 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Alexander Popov <alex.popov@linux.com>
+Cc:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
+        Will Deacon <will@kernel.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Patrick Bellasi <patrick.bellasi@arm.com>,
+        David Howells <dhowells@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
+        notify@kernel.org, Kexec Mailing List <kexec@lists.infradead.org>
+References: <20200813151922.1093791-1-alex.popov@linux.com>
+        <20200813151922.1093791-3-alex.popov@linux.com>
+Date:   Mon, 17 Aug 2020 13:24:37 -0500
+In-Reply-To: <20200813151922.1093791-3-alex.popov@linux.com> (Alexander
+        Popov's message of "Thu, 13 Aug 2020 18:19:22 +0300")
+Message-ID: <87zh6t9llm.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20200814030257.135463-1-warthog618@gmail.com>
-In-Reply-To: <20200814030257.135463-1-warthog618@gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 17 Aug 2020 20:24:24 +0200
-Message-ID: <CAMpxmJUCwXVv6U9sE=8isRMoNd8QvM9XLu4PU2Rr454wt_FTUw@mail.gmail.com>
-Subject: Re: [PATCH v4 00/20] gpio: cdev: add uAPI v2
-To:     Kent Gibson <warthog618@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1k7jrj-0003E9-5O;;;mid=<87zh6t9llm.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+IYzzebB5ZnTtqYaH62lkbTUMdTHJJuM0=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa03.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_40,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMNoVowels autolearn=disabled
+        version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
+        *      [score: 0.3847]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa03 0; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: ; sa03 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Alexander Popov <alex.popov@linux.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 567 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 3.6 (0.6%), b_tie_ro: 2.4 (0.4%), parse: 1.22
+        (0.2%), extract_message_metadata: 14 (2.5%), get_uri_detail_list: 2.4
+        (0.4%), tests_pri_-1000: 9 (1.5%), tests_pri_-950: 1.47 (0.3%),
+        tests_pri_-900: 1.36 (0.2%), tests_pri_-90: 236 (41.6%), check_bayes:
+        226 (39.9%), b_tokenize: 16 (2.7%), b_tok_get_all: 59 (10.4%),
+        b_comp_prob: 3.1 (0.5%), b_tok_touch_all: 145 (25.6%), b_finish: 0.71
+        (0.1%), tests_pri_0: 290 (51.1%), check_dkim_signature: 0.41 (0.1%),
+        check_dkim_adsp: 2.0 (0.4%), poll_dns_idle: 0.76 (0.1%), tests_pri_10:
+        1.72 (0.3%), tests_pri_500: 5.0 (0.9%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH RFC 2/2] lkdtm: Add heap spraying test
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 5:03 AM Kent Gibson <warthog618@gmail.com> wrote:
->
-> This patchset defines and implements adds a new version of the
-> GPIO CDEV uAPI to address existing 32/64-bit alignment issues, add
-> support for debounce, event sequence numbers, and allowing for requested
-> lines with different configurations.
-> It provides some future proofing by adding optional configuration fields
-> and padding reserved for future use.
->
-> The series can be partitioned into two sets; the first eleven
-> contain the v2 uAPI implementation, and the final seven port
-> the GPIO tools to the v2 uAPI and extend them to use new uAPI features.
->
-> The more complicated patches include their own commentary where
-> appropriate.
->
-> Cheers,
-> Kent.
->
-> Changes for v4:
->  - bitmap width clarification in gpiod.h (patch 04)
->  - fix info offset initialisation bug (patch 08 and inserting patch 01)
->  - replace strncpy with strscpy to remove compiler warnings
->    (patch 08 and inserting patch 02)
->  - fix mask handling in line_get_values (patch 07)
->
-> Changes for v3:
->  - disabling the character device from the build requires EXPERT
->  - uAPI revisions (see patch 02)
->  - replace padding_not_zeroed with calls to memchr_inv
->  - don't use bitops on 64-bit flags as that doesn't work on BE-32
->  - accept first attribute matching a line in gpio_v2_line_config.attrs
->    rather than the last
->  - rework lsgpio port to uAPI v2 as flags reverted to v1 like layout
->    (since patch v2)
->  - swapped patches 17 and 18 to apply debounce to multiple monitored
->    lines
->
-> Changes for v2:
->  - split out cleanup patches into a separate series.
->  - split implementation patch into a patch for each ioctl or major feature.
->  - split tool port patch into a patch per tool.
->  - rework uAPI to allow requested lines with different configurations.
->
->
-> Kent Gibson (20):
->   gpiolib: cdev: desc_to_lineinfo should set info offset
->   gpiolib: cdev: replace strncpy with strscpy
->   gpio: uapi: define GPIO_MAX_NAME_SIZE for array sizes
->   gpio: uapi: define uAPI v2
->   gpiolib: make cdev a build option
->   gpiolib: add build option for CDEV v1 ABI
->   gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL and
->     GPIO_V2_LINE_GET_VALUES_IOCTL
->   gpiolib: cdev: support GPIO_V2_GET_LINEINFO_IOCTL and
->     GPIO_V2_GET_LINEINFO_WATCH_IOCTL
->   gpiolib: cdev: support edge detection for uAPI v2
->   gpiolib: cdev: support GPIO_V2_LINE_SET_CONFIG_IOCTL
->   gpiolib: cdev: support GPIO_V2_LINE_SET_VALUES_IOCTL
->   gpiolib: cdev: support setting debounce
->   gpio: uapi: document uAPI v1 as deprecated
->   tools: gpio: port lsgpio to v2 uAPI
->   tools: gpio: port gpio-watch to v2 uAPI
->   tools: gpio: rename nlines to num_lines
->   tools: gpio: port gpio-hammer to v2 uAPI
->   tools: gpio: port gpio-event-mon to v2 uAPI
->   tools: gpio: add multi-line monitoring to gpio-event-mon
->   tools: gpio: add debounce support to gpio-event-mon
->
->  drivers/gpio/Kconfig        |   29 +-
->  drivers/gpio/Makefile       |    2 +-
->  drivers/gpio/gpiolib-cdev.c | 1354 +++++++++++++++++++++++++++++++++--
->  drivers/gpio/gpiolib-cdev.h |   15 +
->  drivers/gpio/gpiolib.c      |    2 +
->  drivers/gpio/gpiolib.h      |    6 +
->  include/uapi/linux/gpio.h   |  316 +++++++-
->  tools/gpio/gpio-event-mon.c |  146 ++--
->  tools/gpio/gpio-hammer.c    |   56 +-
->  tools/gpio/gpio-utils.c     |  127 ++--
->  tools/gpio/gpio-utils.h     |   50 +-
->  tools/gpio/gpio-watch.c     |   16 +-
->  tools/gpio/lsgpio.c         |   60 +-
->  13 files changed, 1949 insertions(+), 230 deletions(-)
->
->
-> base-commit: 22cc422070d9a9a399f8a70b89f1b852945444cb
-> --
-> 2.28.0
->
+Alexander Popov <alex.popov@linux.com> writes:
 
-Hi Kent!
+> Add a simple test for CONFIG_SLAB_QUARANTINE.
+>
+> It performs heap spraying that aims to reallocate the recently freed heap
+> object. This technique is used for exploiting use-after-free
+> vulnerabilities in the kernel code.
+>
+> This test shows that CONFIG_SLAB_QUARANTINE breaks heap spraying
+> exploitation technique.
+>
+> Signed-off-by: Alexander Popov <alex.popov@linux.com>
 
-The series looks quite good to me and I think we're on track to get it
-in for v5.10. I'd love to have Andy (Cc'd) take a look as well. There
-are some nits here and there but as long as we get the ABI right, any
-implementation details can be ironed out later.
+Why put this test in the linux kernel dump test module?
 
-I need to think about some details a bit more but I really like the
-current state of the patches.
+I have no problem with tests, and I may be wrong but this
+does not look like you are testing to see if heap corruption
+triggers a crash dump.  Which is what the rest of the tests
+in lkdtm are about.  Seeing if the test triggers successfully
+triggers a crash dump.
 
-Bart
+Eric
+
+> ---
+>  drivers/misc/lkdtm/core.c  |  1 +
+>  drivers/misc/lkdtm/heap.c  | 40 ++++++++++++++++++++++++++++++++++++++
+>  drivers/misc/lkdtm/lkdtm.h |  1 +
+>  3 files changed, 42 insertions(+)
+>
+> diff --git a/drivers/misc/lkdtm/core.c b/drivers/misc/lkdtm/core.c
+> index a5e344df9166..78b7669c35eb 100644
+> --- a/drivers/misc/lkdtm/core.c
+> +++ b/drivers/misc/lkdtm/core.c
+> @@ -126,6 +126,7 @@ static const struct crashtype crashtypes[] = {
+>  	CRASHTYPE(SLAB_FREE_DOUBLE),
+>  	CRASHTYPE(SLAB_FREE_CROSS),
+>  	CRASHTYPE(SLAB_FREE_PAGE),
+> +	CRASHTYPE(HEAP_SPRAY),
+>  	CRASHTYPE(SOFTLOCKUP),
+>  	CRASHTYPE(HARDLOCKUP),
+>  	CRASHTYPE(SPINLOCKUP),
+> diff --git a/drivers/misc/lkdtm/heap.c b/drivers/misc/lkdtm/heap.c
+> index 1323bc16f113..a72a241e314a 100644
+> --- a/drivers/misc/lkdtm/heap.c
+> +++ b/drivers/misc/lkdtm/heap.c
+> @@ -205,6 +205,46 @@ static void ctor_a(void *region)
+>  static void ctor_b(void *region)
+>  { }
+>  
+> +#define HEAP_SPRAY_SIZE 128
+> +
+> +void lkdtm_HEAP_SPRAY(void)
+> +{
+> +	int *addr;
+> +	int *spray_addrs[HEAP_SPRAY_SIZE] = { 0 };
+> +	unsigned long i = 0;
+> +
+> +	addr = kmem_cache_alloc(a_cache, GFP_KERNEL);
+> +	if (!addr) {
+> +		pr_info("Unable to allocate memory in lkdtm-heap-a cache\n");
+> +		return;
+> +	}
+> +
+> +	*addr = 0x31337;
+> +	kmem_cache_free(a_cache, addr);
+> +
+> +	pr_info("Performing heap spraying...\n");
+> +	for (i = 0; i < HEAP_SPRAY_SIZE; i++) {
+> +		spray_addrs[i] = kmem_cache_alloc(a_cache, GFP_KERNEL);
+> +		*spray_addrs[i] = 0x31337;
+> +		pr_info("attempt %lu: spray alloc addr %p vs freed addr %p\n",
+> +						i, spray_addrs[i], addr);
+> +		if (spray_addrs[i] == addr) {
+> +			pr_info("freed addr is reallocated!\n");
+> +			break;
+> +		}
+> +	}
+> +
+> +	if (i < HEAP_SPRAY_SIZE)
+> +		pr_info("FAIL! Heap spraying succeed :(\n");
+> +	else
+> +		pr_info("OK! Heap spraying hasn't succeed :)\n");
+> +
+> +	for (i = 0; i < HEAP_SPRAY_SIZE; i++) {
+> +		if (spray_addrs[i])
+> +			kmem_cache_free(a_cache, spray_addrs[i]);
+> +	}
+> +}
+> +
+>  void __init lkdtm_heap_init(void)
+>  {
+>  	double_free_cache = kmem_cache_create("lkdtm-heap-double_free",
+> diff --git a/drivers/misc/lkdtm/lkdtm.h b/drivers/misc/lkdtm/lkdtm.h
+> index 8878538b2c13..dfafb4ae6f3a 100644
+> --- a/drivers/misc/lkdtm/lkdtm.h
+> +++ b/drivers/misc/lkdtm/lkdtm.h
+> @@ -45,6 +45,7 @@ void lkdtm_READ_BUDDY_AFTER_FREE(void);
+>  void lkdtm_SLAB_FREE_DOUBLE(void);
+>  void lkdtm_SLAB_FREE_CROSS(void);
+>  void lkdtm_SLAB_FREE_PAGE(void);
+> +void lkdtm_HEAP_SPRAY(void);
+>  
+>  /* lkdtm_perms.c */
+>  void __init lkdtm_perms_init(void);
