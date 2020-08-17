@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD63247196
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B8B24719C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391077AbgHQSai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:30:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48862 "EHLO mail.kernel.org"
+        id S2391085AbgHQSaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:30:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388146AbgHQQB3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2388148AbgHQQB3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 Aug 2020 12:01:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B2F120748;
-        Mon, 17 Aug 2020 16:01:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED247207FB;
+        Mon, 17 Aug 2020 16:01:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597680085;
-        bh=6LmQh1e/NqQGj+89BAr9m4CJNhDun1U7OdbG+iIs+F8=;
+        s=default; t=1597680087;
+        bh=VdDv/tPrzl9Gjvzoe32tHMeY4aINAE3rMv3C+4ryWME=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iamwe4/D22KiXYlfvzMmlolIxzCmTA30A8ZDg6E4qpqBKAjmaKglVW82CGiAGYdXW
-         mPBH1ZCjUbDgw9MMpMfggln6jIJy+Pivv76DBSWS1F/KxA3091MvCxLDYwdqoPAo2E
-         4SiPSpUrzerOFAd9AX73oNJvv1uoAZekp+MJxcos=
+        b=tIru1hqaT/u1Uh5QZC9SuRmu0P3ibIFqMYtAVTs51o3Q46SILJvHaiiN5gX9pVsxH
+         jGJ1kmo9hrJI6z5yl+yx8x/KJEGlZ8rcX6/kJt721wwnV30v6G4l/Dt7WOdzoTfkaZ
+         wW3RXXUGYXnW2yqhesjBJ1hJ5ZvBGXg1eXozlI1U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Jyri Sarha <jsarha@ti.com>, Sam Ravnborg <sam@ravnborg.org>,
+        stable@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 046/270] drm/tilcdc: fix leak & null ref in panel_connector_get_modes
-Date:   Mon, 17 Aug 2020 17:14:07 +0200
-Message-Id: <20200817143758.089957631@linuxfoundation.org>
+Subject: [PATCH 5.4 047/270] soc: qcom: rpmh-rsc: Set suppress_bind_attrs flag
+Date:   Mon, 17 Aug 2020 17:14:08 +0200
+Message-Id: <20200817143758.134261276@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
 References: <20200817143755.807583758@linuxfoundation.org>
@@ -44,49 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+From: Maulik Shah <mkshah@codeaurora.org>
 
-[ Upstream commit 3f9c1c872cc97875ddc8d63bc9fe6ee13652b933 ]
+[ Upstream commit 1a53ce9ab4faeb841b33d62d23283dc76c0e7c5a ]
 
-If videomode_from_timings() returns true, the mode allocated with
-drm_mode_create will be leaked.
+rpmh-rsc driver is fairly core to system and should not be removable
+once its probed. However it allows to unbind driver from sysfs using
+below command which results into a crash on sc7180.
 
-Also, the return value of drm_mode_create() is never checked, and thus
-could cause NULL deref.
+echo 18200000.rsc > /sys/bus/platform/drivers/rpmh/unbind
 
-Fix these two issues.
+Lets prevent unbind at runtime by setting suppress_bind_attrs flag.
 
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200429104234.18910-1-tomi.valkeinen@ti.com
-Reviewed-by: Jyri Sarha <jsarha@ti.com>
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+Link: https://lore.kernel.org/r/1592808805-2437-1-git-send-email-mkshah@codeaurora.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/tilcdc/tilcdc_panel.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/soc/qcom/rpmh-rsc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/tilcdc/tilcdc_panel.c b/drivers/gpu/drm/tilcdc/tilcdc_panel.c
-index 5584e656b8575..8c4fd1aa4c2db 100644
---- a/drivers/gpu/drm/tilcdc/tilcdc_panel.c
-+++ b/drivers/gpu/drm/tilcdc/tilcdc_panel.c
-@@ -143,12 +143,16 @@ static int panel_connector_get_modes(struct drm_connector *connector)
- 	int i;
+diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
+index 0ba1f465db122..8924fcd9f5f59 100644
+--- a/drivers/soc/qcom/rpmh-rsc.c
++++ b/drivers/soc/qcom/rpmh-rsc.c
+@@ -715,6 +715,7 @@ static struct platform_driver rpmh_driver = {
+ 	.driver = {
+ 		  .name = "rpmh",
+ 		  .of_match_table = rpmh_drv_match,
++		  .suppress_bind_attrs = true,
+ 	},
+ };
  
- 	for (i = 0; i < timings->num_timings; i++) {
--		struct drm_display_mode *mode = drm_mode_create(dev);
-+		struct drm_display_mode *mode;
- 		struct videomode vm;
- 
- 		if (videomode_from_timings(timings, &vm, i))
- 			break;
- 
-+		mode = drm_mode_create(dev);
-+		if (!mode)
-+			break;
-+
- 		drm_display_mode_from_videomode(&vm, mode);
- 
- 		mode->type = DRM_MODE_TYPE_DRIVER;
 -- 
 2.25.1
 
