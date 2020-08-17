@@ -2,93 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29102246E2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5918246E6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389796AbgHQRX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:23:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731373AbgHQRFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 13:05:03 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95E8F2067C;
-        Mon, 17 Aug 2020 17:05:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597683903;
-        bh=GUsArLbL02qpHoztHYo42iM7UEhUrFu2gzZLc6e45Xw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WrOmmGSWsfm1b1BGZwv55E9QTH0wydsd48MODLzbQ6ilDmmo3YgzJtjKI+0yIYKGW
-         4/vjd/CYFEzjL2JyUrIzKmX9IyMR3GzVgcAU3zKJ9uLHzW7I3fKNma7b+3OZcqhni/
-         a3WHDpUR1MxN+7CX5zZi9N2c0hMY5I4xBPkfwyeU=
-Date:   Mon, 17 Aug 2020 19:05:22 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Guilherme G. Piccoli" <gpiccoli@canonical.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, jan.kiszka@siemens.com,
-        jbeulich@suse.com, linux-kernel@vger.kernel.org,
-        marc.zyngier@arm.com, stable@vger.kernel.org,
-        "Guilherme G. Piccoli" <kernel@gpiccoli.net>,
-        pedro.principeza@canonical.com
-Subject: Re: [PATCH 4.19 35/47] x86/irq: Seperate unused system vectors from
- spurious entry again
-Message-ID: <20200817170522.GA795695@kroah.com>
-References: <c2b7a96a-122e-bdec-7368-d54700a55915@canonical.com>
- <20200817162156.GA715236@kroah.com>
- <a2788632-5690-932b-90de-14bd9cabedec@canonical.com>
- <20200817164924.GA721399@kroah.com>
- <14968c46-ad8f-fbdf-88d6-0ded954534c9@canonical.com>
+        id S2389653AbgHQR3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:29:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388446AbgHQRFm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 13:05:42 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DAD9C061342
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 10:05:41 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id f18so13604276wmc.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 10:05:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ch+bM0/nUYIOT7cRcwubqqUU36WUEhTLPi7zotN6dio=;
+        b=ITRrUO21ngebvWm9j+03QV3n0tPRcS57uZLesFg4Fh73jpL38IRqaUiFq1ht2His/g
+         kwv8RvVgsdoEOzEV0e3sf6Fon8eelIScjRJWN6ShAhQcqGU1azZ9eiAZQNtOB9BxIswP
+         o9PsFIooXcNuqKqc110bJg8pddoTCQT+iUOu2nJOA54wkClOHHdURoLj6FPntf0ZR4X/
+         OB4lxJCMFv15zZ4MLzOc5jbQqqxU0XoHhO7mJLyiJBwTOu4zjU1JJHVBhK9qvV7sX1NY
+         w6jDFZq0L8f5Xwwev6/20uZQT9/OJZsERAmwn9ehlKmuWVBNvDYgXdVoZLToQw7TbpLy
+         D4iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ch+bM0/nUYIOT7cRcwubqqUU36WUEhTLPi7zotN6dio=;
+        b=mQKC/hJFX/RCKZZmEk06eiY5QBeazUNUdBIXdGTlLHz/Os+AXWKXWJDkasmCQ3jAu9
+         l+4pgWbwAiS9MMZhpLMXgzlhAayGK5Ya9wqcZFHS58/M3eTXJBmTZryX+pUaIh9iLIrT
+         1OvtMmrFTb27KHEDaBZov2ODpR4bMcUZwDYmCmlBa5GhdyEzzgDVW7ykSN75xGIIJxcB
+         nBhVMQbB6wHlSsnoE7ooioKvnIBZP9/kYnQmZe2qkggTj8xQ1kOgMQyf/NnaqOg/tg3j
+         MNa3XhYwS3C8e8eg735buWQ5Qm6ZyPYXQwWTfc3Zl8gTmQzP9KmW5ULgctFRBWSg2zlx
+         g18Q==
+X-Gm-Message-State: AOAM531GsXhWvQPVz3ScOHcn6dVCDE+PEHtBPMv9kSV2Ov3SXsqfe1Zf
+        T8SmR913qlQJDIPy050M8CZMGw==
+X-Google-Smtp-Source: ABdhPJy54z0Stss+3IUESXNQ+OZuPidLgQs6L/EOj7nJxU8HbSFzXIkZDadL+9l32ahhBkJk1YCBsw==
+X-Received: by 2002:a7b:c242:: with SMTP id b2mr16109424wmj.90.1597683939473;
+        Mon, 17 Aug 2020 10:05:39 -0700 (PDT)
+Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
+        by smtp.gmail.com with ESMTPSA id k184sm29747177wme.1.2020.08.17.10.05.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Aug 2020 10:05:38 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH v7 0/3] devres: provide and use devm_krealloc()
+Date:   Mon, 17 Aug 2020 19:05:32 +0200
+Message-Id: <20200817170535.17041-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <14968c46-ad8f-fbdf-88d6-0ded954534c9@canonical.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 01:59:00PM -0300, Guilherme G. Piccoli wrote:
-> On 17/08/2020 13:49, Greg KH wrote:
-> > [...]
-> >> I'm sorry, I hoped the subject + thread would suffice heh
-> > 
-> > There is no thread here :(
-> > 
-> 
-> Wow, that's odd. I've sent with In-Reply-To, I'd expect it'd get
-> threaded with the original message. Looking in lore archive [1], it
-> seems my first message wasn't threaded but the others were...apologies
-> for that, not sure what happened...
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-reply to is fine, but how do you know what my email client has (hint,
-not a copy of 1.5 years of history sitting around in it at the
-moment...)  So there is no "thread" here as far as it is concerned...
+Hi Greg, Andy,
 
-Anyway, not a big deal, just properly quote emails in the future, that's
-good to get used to no matter what :)
+this is another reworked version of devm_krealloc(). This time without the risk
+of sleeping with spinlock taken but still with enough protection for the devres
+list. We're using slab's ksize() to determine whether the new size is larger
+than the current real size of the chunk and then either return the same pointer
+or manually alloc a new, larger chunk outside of the spinlock.
 
-> >> So, the mainline commit is: f8a8fe61fec8 ("x86/irq: Seperate unused
-> >> system vectors from spurious entry again") [0]. The backport to 4.19
-> >> stable tree has the following id: fc6975ee932b .
-> > 
-> > Wow, over 1 1/2 years old, can you remember individual patches that long
-> > ago?
-> > 
-> > Anyway, did you try to backport the patch to older kernels to see if it
-> > was possible and could work?
-> > 
-> > If so, great, please feel free to submit it to the
-> > stable@vger.kernel.org list and I will be glad to pick it up.
-> > 
-> 
-> I'm working on it, it is feasible. But I'm seeking here, in this
-> message, what is the reason it wasn't backported for pre-4.19
+===
 
-Try reading the stable mailing list archives, again, you are asking
-about a patch 1.5 years ago.  I can't remember information about patches
-sent _yesterday_ given the quantity we go through...
+Regular krealloc() obviously can't work with managed memory. This series
+implements devm_krealloc() and adds two first users with hope that this
+helper will be adopted by other drivers currently using non-managed
+krealloc().
 
-thanks,
+v1 -> v2:
+- remove leftover call to hwmon_device_unregister() from pmbus_core.c
+- add a patch extending devm_kmalloc() to handle zero size case
+- use WARN_ON() instead of WARN_ONCE() in devm_krealloc() when passed
+  a pointer to non-managed memory
+- correctly handle the case when devm_krealloc() is passed a pointer to
+  memory in .rodata (potentially returned by devm_kstrdup_const())
+- correctly handle ZERO_SIZE_PTR passed as the ptr argument in devm_krealloc()
 
-greg k-h
+v2 -> v3:
+- drop already applied patches
+- collect Acks
+- add an additional user in iio
+
+v3 -> v4:
+- add the kerneldoc for devm_krealloc()
+- WARN() outside of spinlock
+- rename local variable
+
+v4 -> v5:
+- tweak the kerneldoc
+
+v5 -> v6:
+- tweak the devres_lock handling in devm_krealloc()
+
+v6 -> v7:
+- rework devm_krealloc() to avoid calling krealloc() with spinlock taken
+
+Bartosz Golaszewski (3):
+  devres: provide devm_krealloc()
+  hwmon: pmbus: use more devres helpers
+  iio: adc: xilinx-xadc: use devm_krealloc()
+
+ .../driver-api/driver-model/devres.rst        |  1 +
+ drivers/base/devres.c                         | 93 +++++++++++++++++++
+ drivers/hwmon/pmbus/pmbus_core.c              | 28 ++----
+ drivers/iio/adc/xilinx-xadc-core.c            | 16 ++--
+ include/linux/device.h                        |  2 +
+ 5 files changed, 113 insertions(+), 27 deletions(-)
+
+-- 
+2.26.1
+
