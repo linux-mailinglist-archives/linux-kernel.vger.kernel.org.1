@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F28F72471BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BF17247396
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391159AbgHQScw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:32:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48208 "EHLO mail.kernel.org"
+        id S2391793AbgHQS6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:58:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387664AbgHQQAs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:00:48 -0400
+        id S2387804AbgHQPtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:49:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B858B20888;
-        Mon, 17 Aug 2020 16:00:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4CF8320789;
+        Mon, 17 Aug 2020 15:49:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597680048;
-        bh=sB317FLKXl8ZWzvoUjIVlaxiV8Hf9CrJJB1t9Ct1CJM=;
+        s=default; t=1597679380;
+        bh=9Z4upJ0AkAAW6Tc4QqIbxpu4zOCZcHSXdTtefvlZoxQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L7c8exVLX3DpSJtbXCNwwEJ8ooq+7Fv+2Puhz9RM7+7I7kyEXlV43hVdn9AwO2S4i
-         4ihROqey8X+u2457/TLNpcLmQSjI/w2YUgrWGxW95TjfijgsTYyVfOrH0nIHmJlNum
-         Ad/85kSaFrNrM1LeJS+7OdiXNV3fqAbwTmvaIMcg=
+        b=TJB8oxFDFmr2Nn9JXAKe+lau/bqH2d9PzA0puVLZX1HejQEKUG5HrFI3KZGE0+Oe9
+         ufkNW+ZjoABmc500tCZKJ3Gcy/U8nfZp/lsYyhjmvf+LZ2YeOpHQApw1TdN/cZgpHQ
+         4M5LUAevibeV9PO4aqX2H4jgZ/ohkfYUy/6HBZK0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Mark Starovoytov <mstarovoitov@marvell.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 009/270] arm64: dts: rockchip: fix rk3368-lion gmac reset gpio
-Date:   Mon, 17 Aug 2020 17:13:30 +0200
-Message-Id: <20200817143756.267601525@linuxfoundation.org>
+Subject: [PATCH 5.7 161/393] net: atlantic: MACSec offload statistics checkpatch fix
+Date:   Mon, 17 Aug 2020 17:13:31 +0200
+Message-Id: <20200817143827.427055382@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
-References: <20200817143755.807583758@linuxfoundation.org>
+In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
+References: <20200817143819.579311991@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,41 +46,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+From: Mark Starovoytov <mstarovoitov@marvell.com>
 
-[ Upstream commit 2300e6dab473e93181cf76e4fe6671aa3d24c57b ]
+[ Upstream commit 3a8b44546979cf682324bd2fd61e539f428911b4 ]
 
-The lion gmac node currently uses opposite active-values for the
-gmac phy reset pin. The gpio-declaration uses active-high while the
-separate snps,reset-active-low property marks the pin as active low.
+This patch fixes a checkpatch warning.
 
-While on the kernel side this works ok, other DT users may get
-confused - as seen with uboot right now.
+Fixes: aec0f1aac58e ("net: atlantic: MACSec offload statistics implementation")
 
-So bring this in line and make both properties match, similar to the
-other Rockchip board.
-
-Fixes: d99a02bcfa81 ("arm64: dts: rockchip: add RK3368-uQ7 (Lion) SoM")
-Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-Link: https://lore.kernel.org/r/20200607212909.920575-1-heiko@sntech.de
+Signed-off-by: Mark Starovoytov <mstarovoitov@marvell.com>
+Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/rockchip/rk3368-lion.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/aquantia/atlantic/aq_ethtool.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3368-lion.dtsi b/arch/arm64/boot/dts/rockchip/rk3368-lion.dtsi
-index e17311e090826..216aafd90e7f1 100644
---- a/arch/arm64/boot/dts/rockchip/rk3368-lion.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3368-lion.dtsi
-@@ -156,7 +156,7 @@ &gmac {
- 	pinctrl-0 = <&rgmii_pins>;
- 	snps,reset-active-low;
- 	snps,reset-delays-us = <0 10000 50000>;
--	snps,reset-gpio = <&gpio3 RK_PB3 GPIO_ACTIVE_HIGH>;
-+	snps,reset-gpio = <&gpio3 RK_PB3 GPIO_ACTIVE_LOW>;
- 	tx_delay = <0x10>;
- 	rx_delay = <0x10>;
- 	status = "okay";
+diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ethtool.c b/drivers/net/ethernet/aquantia/atlantic/aq_ethtool.c
+index 7241cf92b43a5..446c59f2ab448 100644
+--- a/drivers/net/ethernet/aquantia/atlantic/aq_ethtool.c
++++ b/drivers/net/ethernet/aquantia/atlantic/aq_ethtool.c
+@@ -123,21 +123,21 @@ static const char aq_macsec_stat_names[][ETH_GSTRING_LEN] = {
+ 	"MACSec OutUnctrlHitDropRedir",
+ };
+ 
+-static const char *aq_macsec_txsc_stat_names[] = {
++static const char * const aq_macsec_txsc_stat_names[] = {
+ 	"MACSecTXSC%d ProtectedPkts",
+ 	"MACSecTXSC%d EncryptedPkts",
+ 	"MACSecTXSC%d ProtectedOctets",
+ 	"MACSecTXSC%d EncryptedOctets",
+ };
+ 
+-static const char *aq_macsec_txsa_stat_names[] = {
++static const char * const aq_macsec_txsa_stat_names[] = {
+ 	"MACSecTXSC%dSA%d HitDropRedirect",
+ 	"MACSecTXSC%dSA%d Protected2Pkts",
+ 	"MACSecTXSC%dSA%d ProtectedPkts",
+ 	"MACSecTXSC%dSA%d EncryptedPkts",
+ };
+ 
+-static const char *aq_macsec_rxsa_stat_names[] = {
++static const char * const aq_macsec_rxsa_stat_names[] = {
+ 	"MACSecRXSC%dSA%d UntaggedHitPkts",
+ 	"MACSecRXSC%dSA%d CtrlHitDrpRedir",
+ 	"MACSecRXSC%dSA%d NotUsingSa",
 -- 
 2.25.1
 
