@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 625F1246EBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 133F0246FEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731272AbgHQRfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:35:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56220 "EHLO mail.kernel.org"
+        id S2388653AbgHQRzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:55:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730322AbgHQQRu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:17:50 -0400
+        id S2388374AbgHQQKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:10:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E567822CAF;
-        Mon, 17 Aug 2020 16:17:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B39E20748;
+        Mon, 17 Aug 2020 16:10:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597681068;
-        bh=oH4VHohmkYgfHQ4bhyNLNm4/Q8IS8mB1/jcuedtF8ps=;
+        s=default; t=1597680642;
+        bh=/cuD2ZRHke61dcElaO4+21/PDcRJpbABFxPbMOpsJZo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VX6Ub9N/TM6uIQk7G4JaZWsPREO85LAqGlx/8JWlHdNeqaVM2xvnsbMptz/8641ua
-         twPx7zRoODczuNi4WmPhxNeZYTjRX2ClM6y0krzC2OujwQTKTA22HL2QJYde9vvAFH
-         lmBSoi6mANQ4hN3BzlZZ3F80AQtTDQSX6yCyOCbI=
+        b=S2oUXpx63GSEwVIjdCdo/AnsDJtD6EloYj0zcYrJ7JMKg1r/jzhmDYqDoTOWoxDt0
+         +wtRSpELXUKkK/k6qiY3uoURgZNL4Rb3/WP8vkMvmb8IKeUPMO5EogRrKA3OtaYNRm
+         CqljBQtpYDGxVhEl3XZ3lCe5auAzuqAj0yRxUVII=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brant Merryman <brant.merryman@silabs.com>,
-        Phu Luu <phu.luu@silabs.com>, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 138/168] USB: serial: cp210x: re-enable auto-RTS on open
-Date:   Mon, 17 Aug 2020 17:17:49 +0200
-Message-Id: <20200817143740.592062851@linuxfoundation.org>
+        stable@vger.kernel.org, Ilya Leoshkevich <iii@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH 5.4 269/270] s390/gmap: improve THP splitting
+Date:   Mon, 17 Aug 2020 17:17:50 +0200
+Message-Id: <20200817143809.204796062@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143733.692105228@linuxfoundation.org>
-References: <20200817143733.692105228@linuxfoundation.org>
+In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
+References: <20200817143755.807583758@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,61 +45,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brant Merryman <brant.merryman@silabs.com>
+From: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
 
-commit c7614ff9b73a1e6fb2b1b51396da132ed22fecdb upstream.
+commit ba925fa35057a062ac98c3e8138b013ce4ce351c upstream.
 
-CP210x hardware disables auto-RTS but leaves auto-CTS when in hardware
-flow control mode and UART on cp210x hardware is disabled. When
-re-opening the port, if auto-CTS is enabled on the cp210x, then auto-RTS
-must be re-enabled in the driver.
+During s390_enable_sie(), we need to take care of splitting all qemu user
+process THP mappings. This is currently done with follow_page(FOLL_SPLIT),
+by simply iterating over all vma ranges, with PAGE_SIZE increment.
 
-Signed-off-by: Brant Merryman <brant.merryman@silabs.com>
-Co-developed-by: Phu Luu <phu.luu@silabs.com>
-Signed-off-by: Phu Luu <phu.luu@silabs.com>
-Link: https://lore.kernel.org/r/ECCF8E73-91F3-4080-BE17-1714BC8818FB@silabs.com
-[ johan: fix up tags and problem description ]
-Fixes: 39a66b8d22a3 ("[PATCH] USB: CP2101 Add support for flow control")
-Cc: stable <stable@vger.kernel.org>     # 2.6.12
-Signed-off-by: Johan Hovold <johan@kernel.org>
+This logic is sub-optimal and can result in a lot of unnecessary overhead,
+especially when using qemu and ASAN with large shadow map. Ilya reported
+significant system slow-down with one CPU busy for a long time and overall
+unresponsiveness.
+
+Fix this by using walk_page_vma() and directly calling split_huge_pmd()
+only for present pmds, which greatly reduces overhead.
+
+Cc: <stable@vger.kernel.org> # v5.4+
+Reported-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Signed-off-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/cp210x.c |   17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ arch/s390/mm/gmap.c |   27 ++++++++++++++++++++-------
+ 1 file changed, 20 insertions(+), 7 deletions(-)
 
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -893,6 +893,7 @@ static void cp210x_get_termios_port(stru
- 	u32 baud;
- 	u16 bits;
- 	u32 ctl_hs;
-+	u32 flow_repl;
+--- a/arch/s390/mm/gmap.c
++++ b/arch/s390/mm/gmap.c
+@@ -2485,23 +2485,36 @@ void gmap_sync_dirty_log_pmd(struct gmap
+ }
+ EXPORT_SYMBOL_GPL(gmap_sync_dirty_log_pmd);
  
- 	cp210x_read_u32_reg(port, CP210X_GET_BAUDRATE, &baud);
- 
-@@ -993,6 +994,22 @@ static void cp210x_get_termios_port(stru
- 	ctl_hs = le32_to_cpu(flow_ctl.ulControlHandshake);
- 	if (ctl_hs & CP210X_SERIAL_CTS_HANDSHAKE) {
- 		dev_dbg(dev, "%s - flow control = CRTSCTS\n", __func__);
-+		/*
-+		 * When the port is closed, the CP210x hardware disables
-+		 * auto-RTS and RTS is deasserted but it leaves auto-CTS when
-+		 * in hardware flow control mode. When re-opening the port, if
-+		 * auto-CTS is enabled on the cp210x, then auto-RTS must be
-+		 * re-enabled in the driver.
-+		 */
-+		flow_repl = le32_to_cpu(flow_ctl.ulFlowReplace);
-+		flow_repl &= ~CP210X_SERIAL_RTS_MASK;
-+		flow_repl |= CP210X_SERIAL_RTS_SHIFT(CP210X_SERIAL_RTS_FLOW_CTL);
-+		flow_ctl.ulFlowReplace = cpu_to_le32(flow_repl);
-+		cp210x_write_reg_block(port,
-+				CP210X_SET_FLOW,
-+				&flow_ctl,
-+				sizeof(flow_ctl));
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++static int thp_split_walk_pmd_entry(pmd_t *pmd, unsigned long addr,
++				    unsigned long end, struct mm_walk *walk)
++{
++	struct vm_area_struct *vma = walk->vma;
 +
- 		cflag |= CRTSCTS;
- 	} else {
- 		dev_dbg(dev, "%s - flow control = NONE\n", __func__);
++	split_huge_pmd(vma, pmd, addr);
++	return 0;
++}
++
++static const struct mm_walk_ops thp_split_walk_ops = {
++	.pmd_entry	= thp_split_walk_pmd_entry,
++};
++
+ static inline void thp_split_mm(struct mm_struct *mm)
+ {
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ 	struct vm_area_struct *vma;
+-	unsigned long addr;
+ 
+ 	for (vma = mm->mmap; vma != NULL; vma = vma->vm_next) {
+-		for (addr = vma->vm_start;
+-		     addr < vma->vm_end;
+-		     addr += PAGE_SIZE)
+-			follow_page(vma, addr, FOLL_SPLIT);
+ 		vma->vm_flags &= ~VM_HUGEPAGE;
+ 		vma->vm_flags |= VM_NOHUGEPAGE;
++		walk_page_vma(vma, &thp_split_walk_ops, NULL);
+ 	}
+ 	mm->def_flags |= VM_NOHUGEPAGE;
+-#endif
+ }
++#else
++static inline void thp_split_mm(struct mm_struct *mm)
++{
++}
++#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+ 
+ /*
+  * Remove all empty zero pages from the mapping for lazy refaulting
 
 
