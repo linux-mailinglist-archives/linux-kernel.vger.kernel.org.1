@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BBD0246B64
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9EA5246B6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387970AbgHQPyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:54:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50488 "EHLO mail.kernel.org"
+        id S2387998AbgHQPye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:54:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730721AbgHQPlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:41:18 -0400
+        id S1730771AbgHQPlv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:41:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A95E822CAE;
-        Mon, 17 Aug 2020 15:41:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B3B922CF8;
+        Mon, 17 Aug 2020 15:41:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678877;
-        bh=pwd8sTXOmkL22U64OXCCpqiQ23X2e4TzpaRY8PfRy+M=;
+        s=default; t=1597678910;
+        bh=s2bVGAhZxzkklepQXeBLPTCF0rSqnarv9PWI2eXr2p4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=liFAG/f3U44UnHHGH4OWGb3awcO7PkHHvnENR0H+jsg755VHh+8gLFFEnMsQQyM4i
-         wGY5Pct4fKX3hse0YjvbaTHlAXkSba7t0NorGWBpMUn/ttwpbQhGKXc0dUws+JMVqt
-         38Hvba2kqApZZf1calDY9eXQ4pqTd/ybUYwZSXpw=
+        b=erC043ncfx3iLDzJbLpDv1emgeFAfNGceO3Gk1PdXyYFqTKB+npTD1/RppO/0S1kr
+         wQZei8w57zx4gHaghQrM4u+/9L1ZzKAi6iOq4BA+SoRdcFRhz8pGzCySommJ6w/4uq
+         5p1NTacIl17XBsWmdVSkrcIe4SwSCI0LICU9Vkgc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gilad Ben-Yossef <gilad@benyossef.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Lu Wei <luwei32@huawei.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 020/393] crypto: ccree - fix resource leak on error path
-Date:   Mon, 17 Aug 2020 17:11:10 +0200
-Message-Id: <20200817143820.573802137@linuxfoundation.org>
+Subject: [PATCH 5.7 032/393] platform/x86: intel-vbtn: Fix return value check in check_acpi_dev()
+Date:   Mon, 17 Aug 2020 17:11:22 +0200
+Message-Id: <20200817143821.164685782@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
 References: <20200817143819.579311991@linuxfoundation.org>
@@ -45,84 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gilad Ben-Yossef <gilad@benyossef.com>
+From: Lu Wei <luwei32@huawei.com>
 
-[ Upstream commit 9bc6165d608d676f05d8bf156a2c9923ee38d05b ]
+[ Upstream commit 64dd4a5a7d214a07e3d9f40227ec30ac8ba8796e ]
 
-Fix a small resource leak on the error path of cipher processing.
+In the function check_acpi_dev(), if it fails to create
+platform device, the return value is ERR_PTR() or NULL.
+Thus it must use IS_ERR_OR_NULL() to check return value.
 
-Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
-Fixes: 63ee04c8b491e ("crypto: ccree - add skcipher support")
-Cc: Markus Elfring <Markus.Elfring@web.de>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: 332e081225fc ("intel-vbtn: new driver for Intel Virtual Button")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Lu Wei <luwei32@huawei.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/ccree/cc_cipher.c | 30 ++++++++++++++++++------------
- 1 file changed, 18 insertions(+), 12 deletions(-)
+ drivers/platform/x86/intel-vbtn.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/ccree/cc_cipher.c b/drivers/crypto/ccree/cc_cipher.c
-index a84335328f371..89f7661f0dce8 100644
---- a/drivers/crypto/ccree/cc_cipher.c
-+++ b/drivers/crypto/ccree/cc_cipher.c
-@@ -159,7 +159,6 @@ static int cc_cipher_init(struct crypto_tfm *tfm)
- 				     skcipher_alg.base);
- 	struct device *dev = drvdata_to_dev(cc_alg->drvdata);
- 	unsigned int max_key_buf_size = cc_alg->skcipher_alg.max_keysize;
--	int rc = 0;
+diff --git a/drivers/platform/x86/intel-vbtn.c b/drivers/platform/x86/intel-vbtn.c
+index a05b80955dcdd..5db8b7ad1f5df 100644
+--- a/drivers/platform/x86/intel-vbtn.c
++++ b/drivers/platform/x86/intel-vbtn.c
+@@ -286,7 +286,7 @@ check_acpi_dev(acpi_handle handle, u32 lvl, void *context, void **rv)
+ 		return AE_OK;
  
- 	dev_dbg(dev, "Initializing context @%p for %s\n", ctx_p,
- 		crypto_tfm_alg_name(tfm));
-@@ -171,10 +170,19 @@ static int cc_cipher_init(struct crypto_tfm *tfm)
- 	ctx_p->flow_mode = cc_alg->flow_mode;
- 	ctx_p->drvdata = cc_alg->drvdata;
+ 	if (acpi_match_device_ids(dev, ids) == 0)
+-		if (acpi_create_platform_device(dev, NULL))
++		if (!IS_ERR_OR_NULL(acpi_create_platform_device(dev, NULL)))
+ 			dev_info(&dev->dev,
+ 				 "intel-vbtn: created platform device\n");
  
-+	if (ctx_p->cipher_mode == DRV_CIPHER_ESSIV) {
-+		/* Alloc hash tfm for essiv */
-+		ctx_p->shash_tfm = crypto_alloc_shash("sha256-generic", 0, 0);
-+		if (IS_ERR(ctx_p->shash_tfm)) {
-+			dev_err(dev, "Error allocating hash tfm for ESSIV.\n");
-+			return PTR_ERR(ctx_p->shash_tfm);
-+		}
-+	}
-+
- 	/* Allocate key buffer, cache line aligned */
- 	ctx_p->user.key = kmalloc(max_key_buf_size, GFP_KERNEL);
- 	if (!ctx_p->user.key)
--		return -ENOMEM;
-+		goto free_shash;
- 
- 	dev_dbg(dev, "Allocated key buffer in context. key=@%p\n",
- 		ctx_p->user.key);
-@@ -186,21 +194,19 @@ static int cc_cipher_init(struct crypto_tfm *tfm)
- 	if (dma_mapping_error(dev, ctx_p->user.key_dma_addr)) {
- 		dev_err(dev, "Mapping Key %u B at va=%pK for DMA failed\n",
- 			max_key_buf_size, ctx_p->user.key);
--		return -ENOMEM;
-+		goto free_key;
- 	}
- 	dev_dbg(dev, "Mapped key %u B at va=%pK to dma=%pad\n",
- 		max_key_buf_size, ctx_p->user.key, &ctx_p->user.key_dma_addr);
- 
--	if (ctx_p->cipher_mode == DRV_CIPHER_ESSIV) {
--		/* Alloc hash tfm for essiv */
--		ctx_p->shash_tfm = crypto_alloc_shash("sha256-generic", 0, 0);
--		if (IS_ERR(ctx_p->shash_tfm)) {
--			dev_err(dev, "Error allocating hash tfm for ESSIV.\n");
--			return PTR_ERR(ctx_p->shash_tfm);
--		}
--	}
-+	return 0;
- 
--	return rc;
-+free_key:
-+	kfree(ctx_p->user.key);
-+free_shash:
-+	crypto_free_shash(ctx_p->shash_tfm);
-+
-+	return -ENOMEM;
- }
- 
- static void cc_cipher_exit(struct crypto_tfm *tfm)
 -- 
 2.25.1
 
