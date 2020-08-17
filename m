@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079672473B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87AB12471D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730901AbgHQS7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:59:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59920 "EHLO mail.kernel.org"
+        id S2390617AbgHQSee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:34:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730855AbgHQPsc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:48:32 -0400
+        id S1731001AbgHQQAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:00:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 55CA62067C;
-        Mon, 17 Aug 2020 15:48:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5FD1920729;
+        Mon, 17 Aug 2020 16:00:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679310;
-        bh=SOZN3vB8b/e9xXVr3NCnRkVcHjwE78Nhys0Nf+rGu6E=;
+        s=default; t=1597680008;
+        bh=tE+/jS+BvX9zc+s1uCDMixr7naVAWq9W2jUqiuF35ew=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CqhDwspYfQ+NgN7RlEBUlc56Np/+rsiVmWSyn6mJGVdTP4anChlndV4gSIiGk7zXF
-         Jrm1LtLMS+rbJwL6/DqTDelsQN2iwwwTXbfKdL1Gg7OJUNSvepkiMNSHaO/QGht3lz
-         N2AOih6PP0nmUNVQ1P8BeIUagE5WGFpp6FQFJbB0=
+        b=n54xZULfaGhcY4/Rgj4dZGDBFy/j3fqhvzKdahSz34n4mB2wXDXP//3B7GNuU4NqO
+         gSNrfDTn8OU+62a93JdFdIZl3AiczcgVlLlk8x8MxrUI71GAvQ+PAB3EjsQvNE38LJ
+         qVhzoV/zxgKJWy+ZOLQvf+GvC7g186FurHyPMNDw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 168/393] net: ethernet: ti: am65-cpsw-nuss: restore vlan configuration while down/up
-Date:   Mon, 17 Aug 2020 17:13:38 +0200
-Message-Id: <20200817143827.769585713@linuxfoundation.org>
+Subject: [PATCH 5.4 018/270] firmware: arm_scmi: Fix SCMI genpd domain probing
+Date:   Mon, 17 Aug 2020 17:13:39 +0200
+Message-Id: <20200817143756.698669069@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
-References: <20200817143819.579311991@linuxfoundation.org>
+In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
+References: <20200817143755.807583758@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,78 +45,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grygorii Strashko <grygorii.strashko@ti.com>
+From: Cristian Marussi <cristian.marussi@arm.com>
 
-[ Upstream commit 7bcffde02152dd3cb180f6f3aef27e8586b2a905 ]
+[ Upstream commit e0f1a30cf184821499eeb67daedd7a3f21bbcb0b ]
 
-The vlan configuration is not restored after interface down/up sequence.
+When, at probe time, an SCMI communication failure inhibits the capacity
+to query power domains states, such domains should be skipped.
 
-Steps to check:
- # ip link add link eth0 name eth0.100 type vlan id 100
- # ifconfig eth0 down
- # ifconfig eth0 up
+Registering partially initialized SCMI power domains with genpd will
+causes kernel panic.
 
-This patch fixes it, restoring vlan ALE entries on .ndo_open().
+ arm-scmi timed out in resp(caller: scmi_power_state_get+0xa4/0xd0)
+ scmi-power-domain scmi_dev.2: failed to get state for domain 9
+ Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+ Mem abort info:
+   ESR = 0x96000006
+   EC = 0x25: DABT (current EL), IL = 32 bits
+   SET = 0, FnV = 0
+   EA = 0, S1PTW = 0
+ Data abort info:
+   ISV = 0, ISS = 0x00000006
+   CM = 0, WnR = 0
+ user pgtable: 4k pages, 48-bit VAs, pgdp=00000009f3691000
+ [0000000000000000] pgd=00000009f1ca0003, p4d=00000009f1ca0003, pud=00000009f35ea003, pmd=0000000000000000
+ Internal error: Oops: 96000006 [#1] PREEMPT SMP
+ CPU: 2 PID: 381 Comm: bash Not tainted 5.8.0-rc1-00011-gebd118c2cca8 #2
+ Hardware name: ARM LTD ARM Juno Development Platform/ARM Juno Development Platform, BIOS EDK II Jan  3 2020
+ Internal error: Oops: 96000006 [#1] PREEMPT SMP
+ pstate: 80000005 (Nzcv daif -PAN -UAO BTYPE=--)
+ pc : of_genpd_add_provider_onecell+0x98/0x1f8
+ lr : of_genpd_add_provider_onecell+0x48/0x1f8
+ Call trace:
+  of_genpd_add_provider_onecell+0x98/0x1f8
+  scmi_pm_domain_probe+0x174/0x1e8
+  scmi_dev_probe+0x90/0xe0
+  really_probe+0xe4/0x448
+  driver_probe_device+0xfc/0x168
+  device_driver_attach+0x7c/0x88
+  bind_store+0xe8/0x128
+  drv_attr_store+0x2c/0x40
+  sysfs_kf_write+0x4c/0x60
+  kernfs_fop_write+0x114/0x230
+  __vfs_write+0x24/0x50
+  vfs_write+0xbc/0x1e0
+  ksys_write+0x70/0xf8
+  __arm64_sys_write+0x24/0x30
+  el0_svc_common.constprop.3+0x94/0x160
+  do_el0_svc+0x2c/0x98
+  el0_sync_handler+0x148/0x1a8
+  el0_sync+0x158/0x180
 
-Fixes: 93a76530316a ("net: ethernet: ti: introduce am65x/j721e gigabit eth subsystem driver")
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Do not register any power domain that failed to be queried with genpd.
+
+Fixes: 898216c97ed2 ("firmware: arm_scmi: add device power domain support using genpd")
+Link: https://lore.kernel.org/r/20200619220330.12217-1-cristian.marussi@arm.com
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ti/am65-cpsw-nuss.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ drivers/firmware/arm_scmi/scmi_pm_domain.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index 3e4388e6b5fa1..61b59a3b277ec 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -217,6 +217,9 @@ static int am65_cpsw_nuss_ndo_slave_add_vid(struct net_device *ndev,
- 	u32 port_mask, unreg_mcast = 0;
- 	int ret;
+diff --git a/drivers/firmware/arm_scmi/scmi_pm_domain.c b/drivers/firmware/arm_scmi/scmi_pm_domain.c
+index 87f737e01473c..041f8152272bf 100644
+--- a/drivers/firmware/arm_scmi/scmi_pm_domain.c
++++ b/drivers/firmware/arm_scmi/scmi_pm_domain.c
+@@ -85,7 +85,10 @@ static int scmi_pm_domain_probe(struct scmi_device *sdev)
+ 	for (i = 0; i < num_domains; i++, scmi_pd++) {
+ 		u32 state;
  
-+	if (!netif_running(ndev) || !vid)
-+		return 0;
-+
- 	ret = pm_runtime_get_sync(common->dev);
- 	if (ret < 0) {
- 		pm_runtime_put_noidle(common->dev);
-@@ -240,6 +243,9 @@ static int am65_cpsw_nuss_ndo_slave_kill_vid(struct net_device *ndev,
- 	struct am65_cpsw_common *common = am65_ndev_to_common(ndev);
- 	int ret;
+-		domains[i] = &scmi_pd->genpd;
++		if (handle->power_ops->state_get(handle, i, &state)) {
++			dev_warn(dev, "failed to get state for domain %d\n", i);
++			continue;
++		}
  
-+	if (!netif_running(ndev) || !vid)
-+		return 0;
-+
- 	ret = pm_runtime_get_sync(common->dev);
- 	if (ret < 0) {
- 		pm_runtime_put_noidle(common->dev);
-@@ -565,6 +571,16 @@ static int am65_cpsw_nuss_ndo_slave_stop(struct net_device *ndev)
- 	return 0;
- }
+ 		scmi_pd->domain = i;
+ 		scmi_pd->handle = handle;
+@@ -94,13 +97,10 @@ static int scmi_pm_domain_probe(struct scmi_device *sdev)
+ 		scmi_pd->genpd.power_off = scmi_pd_power_off;
+ 		scmi_pd->genpd.power_on = scmi_pd_power_on;
  
-+static int cpsw_restore_vlans(struct net_device *vdev, int vid, void *arg)
-+{
-+	struct am65_cpsw_port *port = arg;
+-		if (handle->power_ops->state_get(handle, i, &state)) {
+-			dev_warn(dev, "failed to get state for domain %d\n", i);
+-			continue;
+-		}
+-
+ 		pm_genpd_init(&scmi_pd->genpd, NULL,
+ 			      state == SCMI_POWER_STATE_GENERIC_OFF);
 +
-+	if (!vdev)
-+		return 0;
-+
-+	return am65_cpsw_nuss_ndo_slave_add_vid(port->ndev, 0, vid);
-+}
-+
- static int am65_cpsw_nuss_ndo_slave_open(struct net_device *ndev)
- {
- 	struct am65_cpsw_common *common = am65_ndev_to_common(ndev);
-@@ -638,6 +654,9 @@ static int am65_cpsw_nuss_ndo_slave_open(struct net_device *ndev)
- 		}
++		domains[i] = &scmi_pd->genpd;
  	}
  
-+	/* restore vlan configurations */
-+	vlan_for_each(ndev, cpsw_restore_vlans, port);
-+
- 	phy_attached_info(port->slave.phy);
- 	phy_start(port->slave.phy);
- 
+ 	scmi_pd_data->domains = domains;
 -- 
 2.25.1
 
