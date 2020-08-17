@@ -2,228 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66BD1245EA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 09:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 390EE245E4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 09:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726458AbgHQH7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 03:59:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48486 "EHLO
+        id S1726650AbgHQHqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 03:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbgHQH7k (ORCPT
+        with ESMTP id S1726089AbgHQHqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 03:59:40 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFDF6C061388;
-        Mon, 17 Aug 2020 00:59:39 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id l23so11518580edv.11;
-        Mon, 17 Aug 2020 00:59:39 -0700 (PDT)
+        Mon, 17 Aug 2020 03:46:50 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98D4C061388;
+        Mon, 17 Aug 2020 00:46:50 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id 2so7402618pjx.5;
+        Mon, 17 Aug 2020 00:46:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1cXbBaafW+50dqCculqXKIrD5iW7sKJPiSxkET4AvNE=;
-        b=Nm3IJty4q+nOfBiYjAgN2NNT/Ch60U3kFDaPe7ksbAtNDXMRFTodjZ4718jIwWG4at
-         NLK4gzt86SR/xlVJyDQRc3XUNMq4tqg/JmJ7lMKJRZFAlaXpECSQE80LNlIaOcdR6V0P
-         3iRcOow9jmzhuUjw6ng67yK/ODaJKsFZYsJ/KpxvF+358PHHT/n1uZgdntQMJWWHIDLJ
-         lonJkbEj9GGn99RNhTQI3sUYQiw4ERGlX6JHuKjcrxy9Lxze4yM+j3ip0go5+m0Vq7kC
-         Fs1S65bJ/vMKUGnv3V1/T9obSPfo9/IE1QMeTkbxrB+QPIX2+mUaGxtR4oZaMk/0NeGi
-         DwtQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LZRMSrBr7/vKE4UdeSABY6b/Zwq77nI7xyHDqM8/IwM=;
+        b=j0x6mCa8Uc7oA6s+ex2+GxuwOZELXDDKx5k3RWmZZmOilScX9AQdDXw3aNbCPZVXWL
+         GpM1O8b6xW+BMCqf0uIBXYoRt6pL7AczzNKpGe4kFoR7m146xmS7uNKn4pSlaDFpuDb/
+         7bETik/tMc4YOlatyrxzjZG8BzXnKWp0Fmfm4ruJU06Ln0hDlU5wy2a0v8a5czI/wbuQ
+         vqbfYEJvJbHX8/1l7GCPsViR6qKerHBpDCXRcPMfN45wJz7t1r1fE3XUUFCwRl7mYW0F
+         Y30P18+gG1IwoI4HHbuiJqRzEZEr5Q8pzvMAMxgNSFaOG9x7yST66wS7oGqwuXdCpM+M
+         UlwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1cXbBaafW+50dqCculqXKIrD5iW7sKJPiSxkET4AvNE=;
-        b=AmQfwLc3ppg4bCM3kawgUkgDollNJblGIg/o0mlVnlhGffwoLovW2FHraz7lpiLtSa
-         8hj6SA9W7251M3/RPGWmiM/Zv5DgMVY6cCWrCWHQQPXZi/+Ic9leL1JpK3sd/gH185vV
-         rToapePpj4A8ZW/pqMtuKKeRliYrTVhJzqP3cpd8JXwP+Ck5yw0MvAaqJQDYOW5PWy5P
-         ukywT2M2l4Ab6ViX3qEgdUj5rC0R47S5kBTcK9HpYv3p0SEpa7N43rTyyCcG3lV7REeh
-         LI9QTK/kOT/YeDV/8alAK+0vAQ/Qg5UCrAB9Z20f4GNPggCFV7+bAJHPv0BajCNmRV7p
-         53fw==
-X-Gm-Message-State: AOAM530uPYmc7XzdYaMAb3Cd3cOxKA9hw4od2TulTnxHvMuJwgnRLmWc
-        DYdGfR7IfXq62cvqPCBsOwQYZL8sxonsL+UENto=
-X-Google-Smtp-Source: ABdhPJzqKXF/U+5Ql0v/Df74UZIr4RCMxKWkg92mOvojgyrs0Tdhf8aOjQd4f8MhONWORxA/VMe2Cp0vp5ky014312M=
-X-Received: by 2002:aa7:d410:: with SMTP id z16mr13495000edq.287.1597651178388;
- Mon, 17 Aug 2020 00:59:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LZRMSrBr7/vKE4UdeSABY6b/Zwq77nI7xyHDqM8/IwM=;
+        b=aPbKQ7bD8snaHQH6zZZdfb+Fd2mrOQczyKWJlhbjDts6BKdGHzEfRduxHOHqctrTtl
+         aAFZxM20mKTz8VDepJexlUs6MUFZfesdd9qwBs0k4pgK9OHpyaQo8M2ylsp9eRKrKoGT
+         3hfiom8TsKLYPRFFX9CfE/O1PXGwzFJSsm3nSB//yo1jaxXUojxN65N19S0PTxBYM0TN
+         55nT2qdsPAFcmdhUdB1YywV3sT7NWMcy7fC9SA8blhzHfQrCvaLDWJWDs4fuBr9V7RJ5
+         l5S9JB0UqQ+8IuXiJvTB/RyJmNntGcAJygzqYRyR0sceafBL8I9pCADj4a4s3md/x9CW
+         mm4g==
+X-Gm-Message-State: AOAM531IiQ6CZseYLFidKsxKg+qvV6abxUWBDuAn93MlzFTwRR9rnC/1
+        3sNFo7avaqd0CCAE7wyeRIk=
+X-Google-Smtp-Source: ABdhPJwXn/WjeEGwrJvbdSPrlAx+5odIX14PWQ7A66El9MjrTgTDdiaCiyeTSlB4xFRJ4lw0WLHtWQ==
+X-Received: by 2002:a17:90a:8918:: with SMTP id u24mr11089516pjn.7.1597650410282;
+        Mon, 17 Aug 2020 00:46:50 -0700 (PDT)
+Received: from gmail.com ([103.105.152.86])
+        by smtp.gmail.com with ESMTPSA id b15sm17586069pje.52.2020.08.17.00.46.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Aug 2020 00:46:49 -0700 (PDT)
+Date:   Mon, 17 Aug 2020 13:15:01 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Andres Salomon <dilinger@queued.net>,
+        Antonino Daplas <adaplas@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-geode@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH v2 01/12] fbdev: gxfb: use generic power management
+Message-ID: <20200817074501.GC5869@gmail.com>
+References: <20200810165458.GA292825@ravnborg.org>
+ <20200810185723.15540-1-vaibhavgupta40@gmail.com>
+ <20200810185723.15540-2-vaibhavgupta40@gmail.com>
+ <20200816201601.GA1426650@ravnborg.org>
 MIME-Version: 1.0
-References: <1597406966-13740-1-git-send-email-abel.vesa@nxp.com> <1597406966-13740-2-git-send-email-abel.vesa@nxp.com>
-In-Reply-To: <1597406966-13740-2-git-send-email-abel.vesa@nxp.com>
-From:   Dong Aisheng <dongas86@gmail.com>
-Date:   Mon, 17 Aug 2020 15:44:32 +0800
-Message-ID: <CAA+hA=Qd5BURqbQox1MhXtXcG1fRW6h-pyo2LcH6uukOYi0sKg@mail.gmail.com>
-Subject: Re: [PATCH v2 01/17] dt-bindings: clocks: imx8mp: Rename audiomix ids
- clocks to audio_blk_ctrl
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <fabio.estevam@nxp.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Anson Huang <anson.huang@nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Fugang Duan <fugang.duan@nxp.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200816201601.GA1426650@ravnborg.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 8:14 PM Abel Vesa <abel.vesa@nxp.com> wrote:
->
-> In the reference manual the actual name is Audio BLK_CTRL.
-> Lets make it more obvious here by renaming from audiomix to audio_blk_ctrl.
->
-> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+On Sun, Aug 16, 2020 at 10:16:01PM +0200, Sam Ravnborg wrote:
+> Hi Vaibhav
+> 
+> On Tue, Aug 11, 2020 at 12:27:12AM +0530, Vaibhav Gupta wrote:
+> > Drivers should do only device-specific jobs. But in general, drivers using
+> > legacy PCI PM framework for .suspend()/.resume() have to manage many PCI
+> > PM-related tasks themselves which can be done by PCI Core itself. This
+> > brings extra load on the driver and it directly calls PCI helper functions
+> > to handle them.
+> > 
+> > Although the gxfb driver does not have that extra load,
+> Sorry, but I am lost here.
+> If this drivers does not have the extra load that you describe here then
+> I really cannot see why it is relevant for this driver to describe it.
+> 
+> This is a seldomly touched driver - so it helps if the changelog when we
+> finally touch the code is easy to parse.
+> 
+> > we should switch to
+> > the new generic framework by updating function signatures and define a
+> > "struct dev_pm_ops" variable to bind PM callbacks so that we can remove
+> > the legacy .suspend & .resume bindings.
+> This part matches the patch - good.
+> 
+> > Additionally, this helps us to
+> > remove the unnecessary call to gxfb_suspend() in the event of Freeze and
+> > Hibernate, as the function does nothing in their case.
+> What I think you are explaining above is that the pci pm support
+> will only call the suspend operation in case of suspend, so the 
+> state.event == PM_EVENT_SUSPEND can be dropped in gxfb_suspend().
+> 
+> For reference later I would prefer that this is explained a bit
+> more explicit - not that the changelog needs update anyway.
+> > 
+> > Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+> Patch looks good, but please give the changelog one more go.
+> I have not checked other patches - but I assume they would benefit
+> from a similar clarification.
+> 
+> 	Sam
+> 
+Hello Sam
 
-As there's still no users of the old definitions, it's okay for me to
-change it now.
-Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
+I will do the changes as suggested.
 
-Regards
-Aisheng
-
-> ---
->  include/dt-bindings/clock/imx8mp-clock.h | 120 +++++++++++++++----------------
->  1 file changed, 60 insertions(+), 60 deletions(-)
->
-> diff --git a/include/dt-bindings/clock/imx8mp-clock.h b/include/dt-bindings/clock/imx8mp-clock.h
-> index 7a23f28..6008f32 100644
-> --- a/include/dt-bindings/clock/imx8mp-clock.h
-> +++ b/include/dt-bindings/clock/imx8mp-clock.h
-> @@ -324,66 +324,66 @@
->
->  #define IMX8MP_CLK_END                         313
->
-> -#define IMX8MP_CLK_AUDIOMIX_SAI1_IPG           0
-> -#define IMX8MP_CLK_AUDIOMIX_SAI1_MCLK1         1
-> -#define IMX8MP_CLK_AUDIOMIX_SAI1_MCLK2         2
-> -#define IMX8MP_CLK_AUDIOMIX_SAI1_MCLK3         3
-> -#define IMX8MP_CLK_AUDIOMIX_SAI2_IPG           4
-> -#define IMX8MP_CLK_AUDIOMIX_SAI2_MCLK1         5
-> -#define IMX8MP_CLK_AUDIOMIX_SAI2_MCLK2         6
-> -#define IMX8MP_CLK_AUDIOMIX_SAI2_MCLK3         7
-> -#define IMX8MP_CLK_AUDIOMIX_SAI3_IPG           8
-> -#define IMX8MP_CLK_AUDIOMIX_SAI3_MCLK1         9
-> -#define IMX8MP_CLK_AUDIOMIX_SAI3_MCLK2         10
-> -#define IMX8MP_CLK_AUDIOMIX_SAI3_MCLK3         11
-> -#define IMX8MP_CLK_AUDIOMIX_SAI5_IPG           12
-> -#define IMX8MP_CLK_AUDIOMIX_SAI5_MCLK1         13
-> -#define IMX8MP_CLK_AUDIOMIX_SAI5_MCLK2         14
-> -#define IMX8MP_CLK_AUDIOMIX_SAI5_MCLK3         15
-> -#define IMX8MP_CLK_AUDIOMIX_SAI6_IPG           16
-> -#define IMX8MP_CLK_AUDIOMIX_SAI6_MCLK1         17
-> -#define IMX8MP_CLK_AUDIOMIX_SAI6_MCLK2         18
-> -#define IMX8MP_CLK_AUDIOMIX_SAI6_MCLK3         19
-> -#define IMX8MP_CLK_AUDIOMIX_SAI7_IPG           20
-> -#define IMX8MP_CLK_AUDIOMIX_SAI7_MCLK1         21
-> -#define IMX8MP_CLK_AUDIOMIX_SAI7_MCLK2         22
-> -#define IMX8MP_CLK_AUDIOMIX_SAI7_MCLK3         23
-> -#define IMX8MP_CLK_AUDIOMIX_ASRC_IPG           24
-> -#define IMX8MP_CLK_AUDIOMIX_PDM_IPG            25
-> -#define IMX8MP_CLK_AUDIOMIX_SDMA2_ROOT         26
-> -#define IMX8MP_CLK_AUDIOMIX_SDMA3_ROOT         27
-> -#define IMX8MP_CLK_AUDIOMIX_SPBA2_ROOT         28
-> -#define IMX8MP_CLK_AUDIOMIX_DSP_ROOT           29
-> -#define IMX8MP_CLK_AUDIOMIX_DSPDBG_ROOT                30
-> -#define IMX8MP_CLK_AUDIOMIX_EARC_IPG           31
-> -#define IMX8MP_CLK_AUDIOMIX_OCRAMA_IPG         32
-> -#define IMX8MP_CLK_AUDIOMIX_AUD2HTX_IPG                33
-> -#define IMX8MP_CLK_AUDIOMIX_EDMA_ROOT          34
-> -#define IMX8MP_CLK_AUDIOMIX_AUDPLL_ROOT                35
-> -#define IMX8MP_CLK_AUDIOMIX_MU2_ROOT           36
-> -#define IMX8MP_CLK_AUDIOMIX_MU3_ROOT           37
-> -#define IMX8MP_CLK_AUDIOMIX_EARC_PHY           38
-> -#define IMX8MP_CLK_AUDIOMIX_PDM_ROOT           39
-> -#define IMX8MP_CLK_AUDIOMIX_SAI1_MCLK1_SEL     40
-> -#define IMX8MP_CLK_AUDIOMIX_SAI1_MCLK2_SEL     41
-> -#define IMX8MP_CLK_AUDIOMIX_SAI2_MCLK1_SEL     42
-> -#define IMX8MP_CLK_AUDIOMIX_SAI2_MCLK2_SEL     43
-> -#define IMX8MP_CLK_AUDIOMIX_SAI3_MCLK1_SEL     44
-> -#define IMX8MP_CLK_AUDIOMIX_SAI3_MCLK2_SEL     45
-> -#define IMX8MP_CLK_AUDIOMIX_SAI4_MCLK1_SEL     46
-> -#define IMX8MP_CLK_AUDIOMIX_SAI4_MCLK2_SEL     47
-> -#define IMX8MP_CLK_AUDIOMIX_SAI5_MCLK1_SEL     48
-> -#define IMX8MP_CLK_AUDIOMIX_SAI5_MCLK2_SEL     49
-> -#define IMX8MP_CLK_AUDIOMIX_SAI6_MCLK1_SEL     50
-> -#define IMX8MP_CLK_AUDIOMIX_SAI6_MCLK2_SEL     51
-> -#define IMX8MP_CLK_AUDIOMIX_SAI7_MCLK1_SEL     52
-> -#define IMX8MP_CLK_AUDIOMIX_SAI7_MCLK2_SEL     53
-> -#define IMX8MP_CLK_AUDIOMIX_PDM_SEL            54
-> -#define IMX8MP_CLK_AUDIOMIX_SAI_PLL_REF_SEL    55
-> -#define IMX8MP_CLK_AUDIOMIX_SAI_PLL            56
-> -#define IMX8MP_CLK_AUDIOMIX_SAI_PLL_BYPASS     57
-> -#define IMX8MP_CLK_AUDIOMIX_SAI_PLL_OUT                58
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI1_IPG             0
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI1_MCLK1           1
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI1_MCLK2           2
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI1_MCLK3           3
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI2_IPG             4
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI2_MCLK1           5
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI2_MCLK2           6
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI2_MCLK3           7
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI3_IPG             8
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI3_MCLK1           9
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI3_MCLK2           10
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI3_MCLK3           11
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI5_IPG             12
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI5_MCLK1           13
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI5_MCLK2           14
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI5_MCLK3           15
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI6_IPG             16
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI6_MCLK1           17
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI6_MCLK2           18
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI6_MCLK3           19
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI7_IPG             20
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI7_MCLK1           21
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI7_MCLK2           22
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI7_MCLK3           23
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_ASRC_IPG             24
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_PDM_IPG              25
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SDMA2_ROOT           26
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SDMA3_ROOT           27
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SPBA2_ROOT           28
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_DSP_ROOT             29
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_DSPDBG_ROOT          30
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_EARC_IPG             31
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_OCRAMA_IPG           32
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_AUD2HTX_IPG          33
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_EDMA_ROOT            34
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_AUDPLL_ROOT          35
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_MU2_ROOT             36
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_MU3_ROOT             37
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_EARC_PHY             38
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_PDM_ROOT             39
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI1_MCLK1_SEL       40
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI1_MCLK2_SEL       41
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI2_MCLK1_SEL       42
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI2_MCLK2_SEL       43
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI3_MCLK1_SEL       44
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI3_MCLK2_SEL       45
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI4_MCLK1_SEL       46
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI4_MCLK2_SEL       47
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI5_MCLK1_SEL       48
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI5_MCLK2_SEL       49
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI6_MCLK1_SEL       50
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI6_MCLK2_SEL       51
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI7_MCLK1_SEL       52
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI7_MCLK2_SEL       53
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_PDM_SEL              54
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI_PLL_REF_SEL      55
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI_PLL              56
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI_PLL_BYPASS       57
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI_PLL_OUT          58
->
-> -#define IMX8MP_CLK_AUDIOMIX_END                        59
-> +#define IMX8MP_CLK_AUDIO_BLK_CTRL_END                  59
->
->  #endif
-> --
-> 2.7.4
->
+Thanks
+Vaibhav Gupta
+> > ---
+> >  drivers/video/fbdev/geode/gxfb.h       |  5 ----
+> >  drivers/video/fbdev/geode/gxfb_core.c  | 36 ++++++++++++++------------
+> >  drivers/video/fbdev/geode/suspend_gx.c |  4 ---
+> >  3 files changed, 20 insertions(+), 25 deletions(-)
+> > 
+> > diff --git a/drivers/video/fbdev/geode/gxfb.h b/drivers/video/fbdev/geode/gxfb.h
+> > index d2e9c5c8e294..792c111c21e4 100644
+> > --- a/drivers/video/fbdev/geode/gxfb.h
+> > +++ b/drivers/video/fbdev/geode/gxfb.h
+> > @@ -21,7 +21,6 @@ struct gxfb_par {
+> >  	void __iomem *dc_regs;
+> >  	void __iomem *vid_regs;
+> >  	void __iomem *gp_regs;
+> > -#ifdef CONFIG_PM
+> >  	int powered_down;
+> >  
+> >  	/* register state, for power management functionality */
+> > @@ -36,7 +35,6 @@ struct gxfb_par {
+> >  	uint64_t fp[FP_REG_COUNT];
+> >  
+> >  	uint32_t pal[DC_PAL_COUNT];
+> > -#endif
+> >  };
+> >  
+> >  unsigned int gx_frame_buffer_size(void);
+> > @@ -49,11 +47,8 @@ void gx_set_dclk_frequency(struct fb_info *info);
+> >  void gx_configure_display(struct fb_info *info);
+> >  int gx_blank_display(struct fb_info *info, int blank_mode);
+> >  
+> > -#ifdef CONFIG_PM
+> >  int gx_powerdown(struct fb_info *info);
+> >  int gx_powerup(struct fb_info *info);
+> > -#endif
+> > -
+> >  
+> >  /* Graphics Processor registers (table 6-23 from the data book) */
+> >  enum gp_registers {
+> > diff --git a/drivers/video/fbdev/geode/gxfb_core.c b/drivers/video/fbdev/geode/gxfb_core.c
+> > index d38a148d4746..44089b331f91 100644
+> > --- a/drivers/video/fbdev/geode/gxfb_core.c
+> > +++ b/drivers/video/fbdev/geode/gxfb_core.c
+> > @@ -322,17 +322,14 @@ static struct fb_info *gxfb_init_fbinfo(struct device *dev)
+> >  	return info;
+> >  }
+> >  
+> > -#ifdef CONFIG_PM
+> > -static int gxfb_suspend(struct pci_dev *pdev, pm_message_t state)
+> > +static int __maybe_unused gxfb_suspend(struct device *dev)
+> >  {
+> > -	struct fb_info *info = pci_get_drvdata(pdev);
+> > +	struct fb_info *info = dev_get_drvdata(dev);
+> >  
+> > -	if (state.event == PM_EVENT_SUSPEND) {
+> > -		console_lock();
+> > -		gx_powerdown(info);
+> > -		fb_set_suspend(info, 1);
+> > -		console_unlock();
+> > -	}
+> > +	console_lock();
+> > +	gx_powerdown(info);
+> > +	fb_set_suspend(info, 1);
+> > +	console_unlock();
+> >  
+> >  	/* there's no point in setting PCI states; we emulate PCI, so
+> >  	 * we don't end up getting power savings anyways */
+> > @@ -340,9 +337,9 @@ static int gxfb_suspend(struct pci_dev *pdev, pm_message_t state)
+> >  	return 0;
+> >  }
+> >  
+> > -static int gxfb_resume(struct pci_dev *pdev)
+> > +static int __maybe_unused gxfb_resume(struct device *dev)
+> >  {
+> > -	struct fb_info *info = pci_get_drvdata(pdev);
+> > +	struct fb_info *info = dev_get_drvdata(dev);
+> >  	int ret;
+> >  
+> >  	console_lock();
+> > @@ -356,7 +353,6 @@ static int gxfb_resume(struct pci_dev *pdev)
+> >  	console_unlock();
+> >  	return 0;
+> >  }
+> > -#endif
+> >  
+> >  static int gxfb_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> >  {
+> > @@ -467,15 +463,23 @@ static const struct pci_device_id gxfb_id_table[] = {
+> >  
+> >  MODULE_DEVICE_TABLE(pci, gxfb_id_table);
+> >  
+> > +static const struct dev_pm_ops gxfb_pm_ops = {
+> > +#ifdef CONFIG_PM_SLEEP
+> > +	.suspend	= gxfb_suspend,
+> > +	.resume		= gxfb_resume,
+> > +	.freeze		= NULL,
+> > +	.thaw		= gxfb_resume,
+> > +	.poweroff	= NULL,
+> > +	.restore	= gxfb_resume,
+> > +#endif
+> > +};
+> > +
+> >  static struct pci_driver gxfb_driver = {
+> >  	.name		= "gxfb",
+> >  	.id_table	= gxfb_id_table,
+> >  	.probe		= gxfb_probe,
+> >  	.remove		= gxfb_remove,
+> > -#ifdef CONFIG_PM
+> > -	.suspend	= gxfb_suspend,
+> > -	.resume		= gxfb_resume,
+> > -#endif
+> > +	.driver.pm	= &gxfb_pm_ops,
+> >  };
+> >  
+> >  #ifndef MODULE
+> > diff --git a/drivers/video/fbdev/geode/suspend_gx.c b/drivers/video/fbdev/geode/suspend_gx.c
+> > index 1110a527c35c..8c49d4e98772 100644
+> > --- a/drivers/video/fbdev/geode/suspend_gx.c
+> > +++ b/drivers/video/fbdev/geode/suspend_gx.c
+> > @@ -11,8 +11,6 @@
+> >  
+> >  #include "gxfb.h"
+> >  
+> > -#ifdef CONFIG_PM
+> > -
+> >  static void gx_save_regs(struct gxfb_par *par)
+> >  {
+> >  	int i;
+> > @@ -259,5 +257,3 @@ int gx_powerup(struct fb_info *info)
+> >  	par->powered_down  = 0;
+> >  	return 0;
+> >  }
+> > -
+> > -#endif
+> > -- 
+> > 2.27.0
