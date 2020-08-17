@@ -2,80 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE9F24645A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 12:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5117E24646B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 12:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728018AbgHQKWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 06:22:02 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:57910 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726369AbgHQKV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 06:21:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597659718; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=HesLtvDCqqMuxbBVhLIM5+4/cz/qmroX/Ohci/Yh1V0=;
- b=UdDByGoF0SF6NpRx1XgHYqPN2XN77Uq41aDWf1BpLo99XjAJXjJdfWFUqYCCFgKU+0TDm8I6
- c1XQJ/8GvrF2RFAQ94UuWIouFF4vzMM1nxlwxRKRpzShwsZZoB65nEVJ3D8UyRN3WVZxzepb
- PGDM2+4nQdBpbD6db8UuLSL53LQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5f3a5a463f2ce11020c5165c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 Aug 2020 10:21:58
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 415C2C433CA; Mon, 17 Aug 2020 10:21:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
-        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 31369C433CB;
-        Mon, 17 Aug 2020 10:21:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 31369C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1727959AbgHQKYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 06:24:25 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10604 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726161AbgHQKYT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 06:24:19 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07HA2Yx2030409;
+        Mon, 17 Aug 2020 06:23:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=6rHct8CYFquwu64es5L0JgVpUaLIDKc/vt54YPSWpb8=;
+ b=XlASdY5rfymF6tHkT8ydyMvr/L4G0s2lCyTT3sVuKCyIWgUCWKmUwJ1qeB/I3SwMv0ws
+ KEOUepr2SUSx5r/sPT6r+VBoTft+q2jmHJ0xU/vqy90rdMq6/cDE0qwBX2ik3gw7D1+4
+ GZadbvtPeSUYb+MSEWi+ZLWt/pnA8ZEvfEyCt+YCZx1H0UeInJIdkXGRjgJJetdQbWz0
+ tfLHTjVQEqJgKyfOtzmglK+hjDqfxvI6illSMpxVR69tJkdyYW/SFRryP1xMKpSd0e0i
+ WlJSAwGlFe3CJZXHC16tbizp9Y+NVU/LZy4cuvZX96uNlyefCrdSNg97HRoClqD+oCtc GQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32y3ss97nc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Aug 2020 06:23:55 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07HANtYg100721;
+        Mon, 17 Aug 2020 06:23:55 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32y3ss97kk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Aug 2020 06:23:55 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07HALNkI004976;
+        Mon, 17 Aug 2020 10:23:52 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma05fra.de.ibm.com with ESMTP id 32x7b819pk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Aug 2020 10:23:52 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07HANmx330867714
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 17 Aug 2020 10:23:48 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A34704C040;
+        Mon, 17 Aug 2020 10:23:48 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2077D4C044;
+        Mon, 17 Aug 2020 10:23:46 +0000 (GMT)
+Received: from bangoria.ibmuc.com (unknown [9.199.37.13])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 17 Aug 2020 10:23:45 +0000 (GMT)
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+To:     mpe@ellerman.id.au, christophe.leroy@c-s.fr
+Cc:     ravi.bangoria@linux.ibm.com, mikey@neuling.org, paulus@samba.org,
+        naveen.n.rao@linux.vnet.ibm.com, pedromfc@br.ibm.com,
+        rogealve@br.ibm.com, jniethe5@gmail.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/6] powerpc/watchpoint: Bug fixes plus new feature flag
+Date:   Mon, 17 Aug 2020 15:53:24 +0530
+Message-Id: <20200817102330.777537-1-ravi.bangoria@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] ath6kl: fix spelling mistake "initilisation" ->
- "initialization"
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200806121958.60700-1-colin.king@canonical.com>
-References: <20200806121958.60700-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200817102158.415C2C433CA@smtp.codeaurora.org>
-Date:   Mon, 17 Aug 2020 10:21:58 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-17_02:2020-08-17,2020-08-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ mlxscore=0 bulkscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0
+ priorityscore=1501 spamscore=0 clxscore=1011 impostorscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008170071
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Colin King <colin.king@canonical.com> wrote:
+Patch #1 fixes a bug about watchpoint not firing when created with
+         ptrace PPC_PTRACE_SETHWDEBUG and CONFIG_HAVE_HW_BREAKPOINT=N.
+         The fix uses HW_BRK_TYPE_PRIV_ALL for ptrace user which, I
+         guess, should be fine because we don't leak any kernel
+         addresses and PRIV_ALL will also help to cover scenarios when
+         kernel accesses user memory.
+Patch #2,#3 fixes infinite exception bug, again the bug happens only
+         with CONFIG_HAVE_HW_BREAKPOINT=N.
+Patch #4 fixes two places where we are missing to set hw_len.
+Patch #5 introduce new feature bit PPC_DEBUG_FEATURE_DATA_BP_ARCH_31
+         which will be set when running on ISA 3.1 compliant machine.
+Patch #6 finally adds selftest to test scenarios fixed by patch#2,#3
+         and also moves MODE_EXACT tests outside of BP_RANGE condition.
 
-> There is a spelling mistake in an ath6kl_err error message. Fix it.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Christophe, let me know if this series breaks something for 8xx.
 
-Patch applied to ath-next branch of ath.git, thanks.
+v3: https://lore.kernel.org/r/20200805062750.290289-1-ravi.bangoria@linux.ibm.com
 
-42f5fe34a701 ath6kl: fix spelling mistake "initilisation" -> "initialization"
+v3->v4:
+  - Patch #1. Allow HW_BRK_TYPE_PRIV_ALL instead of HW_BRK_TYPE_USER
+  - Patch #2, #3, #4 and #6 are new.
+  - Rebased to powerpc/next.
+
+Ravi Bangoria (6):
+  powerpc/watchpoint/ptrace: Fix SETHWDEBUG when
+    CONFIG_HAVE_HW_BREAKPOINT=N
+  powerpc/watchpoint: Move DAWR detection logic outside of
+    hw_breakpoint.c
+  powerpc/watchpoint: Fix exception handling for
+    CONFIG_HAVE_HW_BREAKPOINT=N
+  powerpc/watchpoint: Add hw_len wherever missing
+  powerpc/watchpoint/ptrace: Introduce PPC_DEBUG_FEATURE_DATA_BP_ARCH_31
+  powerpc/watchpoint/selftests: Tests for kernel accessing user memory
+
+ Documentation/powerpc/ptrace.rst              |   1 +
+ arch/powerpc/include/asm/hw_breakpoint.h      |  11 ++
+ arch/powerpc/include/uapi/asm/ptrace.h        |   1 +
+ arch/powerpc/kernel/Makefile                  |   3 +-
+ arch/powerpc/kernel/hw_breakpoint.c           | 149 +----------------
+ .../kernel/hw_breakpoint_constraints.c        | 152 ++++++++++++++++++
+ arch/powerpc/kernel/process.c                 |  48 ++++++
+ arch/powerpc/kernel/ptrace/ptrace-noadv.c     |  10 +-
+ arch/powerpc/xmon/xmon.c                      |   1 +
+ .../selftests/powerpc/ptrace/ptrace-hwbreak.c |  48 +++++-
+ 10 files changed, 273 insertions(+), 151 deletions(-)
+ create mode 100644 arch/powerpc/kernel/hw_breakpoint_constraints.c
 
 -- 
-https://patchwork.kernel.org/patch/11703485/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.26.2
 
