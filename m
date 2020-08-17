@@ -2,223 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E046C247015
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D723324701B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389010AbgHQSAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:00:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731268AbgHQR7l (ORCPT
+        id S2388431AbgHQSCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:02:23 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:39698 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2388828AbgHQSAv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 13:59:41 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5A4C061389
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 10:59:40 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id g8so13989589wmk.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 10:59:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xpqTsrG3Vt+9rDMAnpoJVGMbucsRUJ6l/Nbc7i/7gDA=;
-        b=h6ZG5ld+KvETec+uQL+lRN1c5eWYIQtVdKcid3x29ZR6yoRvAKfH5SNMoqyuhoXHqY
-         vn3Yq0Mkz234dFO8/B7pWQ72jTjCf39QvXhvWIoqLGReggdC6HOPcQdWBUE5OcN3yN2J
-         k0GMO2isL+iYSCyS8Ki6wat/iJPKx1SGR8a5mfMBmStrFeNgQk4/DGy6a/7gEtB46B5Z
-         RUTbyfgnL1BUp1/FciwUEhZjN4snWastUJ6yA5f1r+HPzORjvhbblR1O6qIG0aQz8Skk
-         Q8W/nc1k6kjrufjywWABDg81yz4UpSwLugQq6Mh4GvuHGCUBh8jIm130wFdVCFH8Axmr
-         bUEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xpqTsrG3Vt+9rDMAnpoJVGMbucsRUJ6l/Nbc7i/7gDA=;
-        b=quZQCM8Lwto85ul7PWYK6eu9rQ8nF50Rl8+V3e5GJ3OwtkBsWuhZNSL4SpFlVnSZn4
-         ykcBZt4Cxtvkp7R7z/tDn1MUBDxFJm3ufZIzMKoYnd0ouoB+iLAhRJx7dARigNG5rWal
-         QcPJ+1TO7TKT5gGHhNsSgpmPC+11IER89jVYQCUDzCL6LmYLBZzMpZzsP1HveGFFRLjA
-         qB4SRvmIEJlOdWNyxmAaLgu/+ZtNCvXnaURHlm8rl3GrjmXcBc7HofLXHeO3OaLM71B+
-         6dW1gdXmefWGhWfnrnh6h97QycufmKs1stV3P+x7bQVrAzYXd+QbZMCSOmTbbGWDjFpj
-         ZTJA==
-X-Gm-Message-State: AOAM533e+tMNVvbP5eEHxA8v9lMhLj8VBPr794UwDSuUIRHoxrsQPHB+
-        71LQ3aQxeqh+3axgooZSC++7Qxj8aZuxeDki5Xc=
-X-Google-Smtp-Source: ABdhPJybgXSXlNHDmYFUVQMVyBXKeZlv0ylOpLrcNbwC8oQGiSf5RCUwjbU9ykGlb6A3yx619pF76myTqoQg/AUf36I=
-X-Received: by 2002:a7b:c941:: with SMTP id i1mr15423755wml.73.1597687179587;
- Mon, 17 Aug 2020 10:59:39 -0700 (PDT)
+        Mon, 17 Aug 2020 14:00:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597687246;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=M7O0Zd6WuXF1RKsXDTV/oWCgHc9hBiiy2FXt3YXOKsQ=;
+        b=Gs6qf9vFRjVNzyyo5Jdgb4vaA3lTrAplhhEDEIHEdSDYVBKnmgVf1h5jHorJsXWwLAI3nP
+        ZIrAqtD/Of92M9upmi7pLl/8Fz0ztz2zUTyN8xVv2DZMR7xLaSMDIk7/PMPuXj+EYIFmHS
+        hP1wOKndvSlV7on+j2bTxscd4YJ0RtQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-423-qQDItl9mNwqrS87_GLAxJQ-1; Mon, 17 Aug 2020 14:00:44 -0400
+X-MC-Unique: qQDItl9mNwqrS87_GLAxJQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 54F4E1008549;
+        Mon, 17 Aug 2020 18:00:43 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 01BBA7A3B4;
+        Mon, 17 Aug 2020 18:00:42 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: [PATCH] KVM: x86: fix access code passed to gva_to_gpa
+Date:   Mon, 17 Aug 2020 14:00:42 -0400
+Message-Id: <20200817180042.32264-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-References: <20200804201313.6464-1-amonakov@ispras.ru> <alpine.LNX.2.20.13.2008161149010.7727@monopod.intra.ispras.ru>
-In-Reply-To: <alpine.LNX.2.20.13.2008161149010.7727@monopod.intra.ispras.ru>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 17 Aug 2020 13:59:28 -0400
-Message-ID: <CADnq5_OaTdfVGCvENTr3tDrU+9jR0VYo-49sjByOQR4EwDWwPA@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/amd/display: use correct scale for actual_brightness
-To:     Alexander Monakov <amonakov@ispras.ru>
-Cc:     amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 3:09 AM Alexander Monakov <amonakov@ispras.ru> wrote:
->
-> Ping.
+The PK bit of the error code is computed dynamically in permission_fault
+and therefore need not be passed to gva_to_gpa: only the access bits
+(fetch, user, write) need to be passed down.
 
-Patch looks good to me:
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Not doing so causes a splat in the pku test:
 
-Nick, unless you have any objections, I'll go ahead and apply it.
+   WARNING: CPU: 25 PID: 5465 at arch/x86/kvm/mmu.h:197 paging64_walk_addr_generic+0x594/0x750 [kvm]
+   Hardware name: Intel Corporation WilsonCity/WilsonCity, BIOS WLYDCRB1.SYS.0014.D62.2001092233 01/09/2020
+   RIP: 0010:paging64_walk_addr_generic+0x594/0x750 [kvm]
+   Code: <0f> 0b e9 db fe ff ff 44 8b 43 04 4c 89 6c 24 30 8b 13 41 39 d0 89
+   RSP: 0018:ff53778fc623fb60 EFLAGS: 00010202
+   RAX: 0000000000000001 RBX: ff53778fc623fbf0 RCX: 0000000000000007
+   RDX: 0000000000000001 RSI: 0000000000000002 RDI: ff4501efba818000
+   RBP: 0000000000000020 R08: 0000000000000005 R09: 00000000004000e7
+   R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000007
+   R13: ff4501efba818388 R14: 10000000004000e7 R15: 0000000000000000
+   FS:  00007f2dcf31a700(0000) GS:ff4501f1c8040000(0000) knlGS:0000000000000000
+   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+   CR2: 0000000000000000 CR3: 0000001dea475005 CR4: 0000000000763ee0
+   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+   PKRU: 55555554
+   Call Trace:
+    paging64_gva_to_gpa+0x3f/0xb0 [kvm]
+    kvm_fixup_and_inject_pf_error+0x48/0xa0 [kvm]
+    handle_exception_nmi+0x4fc/0x5b0 [kvm_intel]
+    kvm_arch_vcpu_ioctl_run+0x911/0x1c10 [kvm]
+    kvm_vcpu_ioctl+0x23e/0x5d0 [kvm]
+    ksys_ioctl+0x92/0xb0
+    __x64_sys_ioctl+0x16/0x20
+    do_syscall_64+0x3e/0xb0
+    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+   ---[ end trace d17eb998aee991da ]---
 
-Alex
+Reported-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Fixes: 897861479c064 ("KVM: x86: Add helper functions for illegal GPA checking and page fault injection")
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kvm/x86.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
->
-> On Tue, 4 Aug 2020, Alexander Monakov wrote:
->
-> > Documentation for sysfs backlight level interface requires that
-> > values in both 'brightness' and 'actual_brightness' files are
-> > interpreted to be in range from 0 to the value given in the
-> > 'max_brightness' file.
-> >
-> > With amdgpu, max_brightness gives 255, and values written by the user
-> > into 'brightness' are internally rescaled to a wider range. However,
-> > reading from 'actual_brightness' gives the raw register value without
-> > inverse rescaling. This causes issues for various userspace tools such
-> > as PowerTop and systemd that expect the value to be in the correct
-> > range.
-> >
-> > Introduce a helper to retrieve internal backlight range. Use it to
-> > reimplement 'convert_brightness' as 'convert_brightness_from_user' and
-> > introduce 'convert_brightness_to_user'.
-> >
-> > Bug: https://bugzilla.kernel.org/show_bug.cgi?id=203905
-> > Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1242
-> > Cc: Alex Deucher <alexander.deucher@amd.com>
-> > Cc: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-> > Signed-off-by: Alexander Monakov <amonakov@ispras.ru>
-> > ---
-> > v2: split convert_brightness to &_from_user and &_to_user (Nicholas)
-> >
-> >  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 81 +++++++++----------
-> >  1 file changed, 40 insertions(+), 41 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> > index 710edc70e37e..b60a763f3f95 100644
-> > --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> > +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> > @@ -2881,51 +2881,50 @@ static int set_backlight_via_aux(struct dc_link *link, uint32_t brightness)
-> >       return rc ? 0 : 1;
-> >  }
-> >
-> > -static u32 convert_brightness(const struct amdgpu_dm_backlight_caps *caps,
-> > -                           const uint32_t user_brightness)
-> > +static int get_brightness_range(const struct amdgpu_dm_backlight_caps *caps,
-> > +                             unsigned *min, unsigned *max)
-> >  {
-> > -     u32 min, max, conversion_pace;
-> > -     u32 brightness = user_brightness;
-> > -
-> >       if (!caps)
-> > -             goto out;
-> > +             return 0;
-> >
-> > -     if (!caps->aux_support) {
-> > -             max = caps->max_input_signal;
-> > -             min = caps->min_input_signal;
-> > -             /*
-> > -              * The brightness input is in the range 0-255
-> > -              * It needs to be rescaled to be between the
-> > -              * requested min and max input signal
-> > -              * It also needs to be scaled up by 0x101 to
-> > -              * match the DC interface which has a range of
-> > -              * 0 to 0xffff
-> > -              */
-> > -             conversion_pace = 0x101;
-> > -             brightness =
-> > -                     user_brightness
-> > -                     * conversion_pace
-> > -                     * (max - min)
-> > -                     / AMDGPU_MAX_BL_LEVEL
-> > -                     + min * conversion_pace;
-> > +     if (caps->aux_support) {
-> > +             // Firmware limits are in nits, DC API wants millinits.
-> > +             *max = 1000 * caps->aux_max_input_signal;
-> > +             *min = 1000 * caps->aux_min_input_signal;
-> >       } else {
-> > -             /* TODO
-> > -              * We are doing a linear interpolation here, which is OK but
-> > -              * does not provide the optimal result. We probably want
-> > -              * something close to the Perceptual Quantizer (PQ) curve.
-> > -              */
-> > -             max = caps->aux_max_input_signal;
-> > -             min = caps->aux_min_input_signal;
-> > -
-> > -             brightness = (AMDGPU_MAX_BL_LEVEL - user_brightness) * min
-> > -                            + user_brightness * max;
-> > -             // Multiple the value by 1000 since we use millinits
-> > -             brightness *= 1000;
-> > -             brightness = DIV_ROUND_CLOSEST(brightness, AMDGPU_MAX_BL_LEVEL);
-> > +             // Firmware limits are 8-bit, PWM control is 16-bit.
-> > +             *max = 0x101 * caps->max_input_signal;
-> > +             *min = 0x101 * caps->min_input_signal;
-> >       }
-> > +     return 1;
-> > +}
-> >
-> > -out:
-> > -     return brightness;
-> > +static u32 convert_brightness_from_user(const struct amdgpu_dm_backlight_caps *caps,
-> > +                                     uint32_t brightness)
-> > +{
-> > +     unsigned min, max;
-> > +
-> > +     if (!get_brightness_range(caps, &min, &max))
-> > +             return brightness;
-> > +
-> > +     // Rescale 0..255 to min..max
-> > +     return min + DIV_ROUND_CLOSEST((max - min) * brightness,
-> > +                                    AMDGPU_MAX_BL_LEVEL);
-> > +}
-> > +
-> > +static u32 convert_brightness_to_user(const struct amdgpu_dm_backlight_caps *caps,
-> > +                                   uint32_t brightness)
-> > +{
-> > +     unsigned min, max;
-> > +
-> > +     if (!get_brightness_range(caps, &min, &max))
-> > +             return brightness;
-> > +
-> > +     if (brightness < min)
-> > +             return 0;
-> > +     // Rescale min..max to 0..255
-> > +     return DIV_ROUND_CLOSEST(AMDGPU_MAX_BL_LEVEL * (brightness - min),
-> > +                              max - min);
-> >  }
-> >
-> >  static int amdgpu_dm_backlight_update_status(struct backlight_device *bd)
-> > @@ -2941,7 +2940,7 @@ static int amdgpu_dm_backlight_update_status(struct backlight_device *bd)
-> >
-> >       link = (struct dc_link *)dm->backlight_link;
-> >
-> > -     brightness = convert_brightness(&caps, bd->props.brightness);
-> > +     brightness = convert_brightness_from_user(&caps, bd->props.brightness);
-> >       // Change brightness based on AUX property
-> >       if (caps.aux_support)
-> >               return set_backlight_via_aux(link, brightness);
-> > @@ -2958,7 +2957,7 @@ static int amdgpu_dm_backlight_get_brightness(struct backlight_device *bd)
-> >
-> >       if (ret == DC_ERROR_UNEXPECTED)
-> >               return bd->props.brightness;
-> > -     return ret;
-> > +     return convert_brightness_to_user(&dm->backlight_caps, ret);
-> >  }
-> >
-> >  static const struct backlight_ops amdgpu_dm_backlight_ops = {
-> >
-> > base-commit: bcf876870b95592b52519ed4aafcf9d95999bc9c
-> >
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 2db369a64f29..a6e42ce607ca 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -10743,9 +10743,13 @@ EXPORT_SYMBOL_GPL(kvm_spec_ctrl_test_value);
+ void kvm_fixup_and_inject_pf_error(struct kvm_vcpu *vcpu, gva_t gva, u16 error_code)
+ {
+ 	struct x86_exception fault;
++	const unsigned access_mask =
++		PFERR_WRITE_MASK | PFERR_FETCH_MASK | PFERR_USER_MASK;
+ 
+ 	if (!(error_code & PFERR_PRESENT_MASK) ||
+-	    vcpu->arch.walk_mmu->gva_to_gpa(vcpu, gva, error_code, &fault) != UNMAPPED_GVA) {
++	    vcpu->arch.walk_mmu->gva_to_gpa(vcpu, gva,
++					    error_code & access_mask,
++					    &fault) != UNMAPPED_GVA) {
+ 		/*
+ 		 * If vcpu->arch.walk_mmu->gva_to_gpa succeeded, the page
+ 		 * tables probably do not match the TLB.  Just proceed
+-- 
+2.26.2
+
