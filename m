@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C10A4246E67
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E06246E62
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389881AbgHQR3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:29:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49134 "EHLO
+        id S2388762AbgHQR2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:28:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389342AbgHQRI1 (ORCPT
+        with ESMTP id S2389322AbgHQRKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 13:08:27 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B166C061345
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 10:08:27 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id q12so11343660qvm.19
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 10:08:27 -0700 (PDT)
+        Mon, 17 Aug 2020 13:10:19 -0400
+Received: from mail-ej1-x649.google.com (mail-ej1-x649.google.com [IPv6:2a00:1450:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC315C061348
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 10:08:44 -0700 (PDT)
+Received: by mail-ej1-x649.google.com with SMTP id gg11so5790678ejb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 10:08:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc:content-transfer-encoding;
-        bh=UJJuAgJHQPnZMmpmLTzANSSOedGbmL0b+IVXcx3Ufzs=;
-        b=v0rOCwpTkjRzfGnF2j8U3++ah+cWR7bAfIci0JLRCzHhoCND9w63qxJtFji0g8qm9H
-         JW5ukYsE4fnaO28tNwcBnJBn+DfmI6r3Y8OpLmZ09l2xXBekBeJYwvliiHfSCzfZCYZr
-         xpmhjHdU9y/aXL1u2l7zv4WdzHctL3iaH5QPKoW5+ZbyJAP434SVP1+HMc+UlaLV6csV
-         1f2KBTPi23YkBo9huXsOLBGbm8eUZlzOXnlnB7+nsmHQmjHxCwRIY0Vl8jnb8MnPPL7g
-         kYLQTvVM+GkrKIDg644UJzInyNQ7U+yQcJke/tymBPP0BEs0jK63wAwJWMpVQW1GLoJ4
-         Mq2A==
+        bh=EPrw5RnVluwXxcHuirD84lbrde8q2sR6O2SJbUiYZDY=;
+        b=Gy44oW7fKCqNOu7gPn6b5s9Hw32Xq4yvq7Q8/WI+rSdRN/RrnCMqHlZokwohf6GGkz
+         ypoB6AUHgyfz+bJDXMWm8Blt0UBD6/dGaIuQIvfl7bOt3jN4vxXJTDu2jOpZ4ewyPhrG
+         YfljJu3kjA2wyvHtPaCjKBwl0przKWbYzsWQsdGdnLc4hfFX787wguDrmO4kprYWkhbv
+         9kmWDpjQzVkL2fxSU9KyBkHzj+rX/3HVxRRYRvYLEYt0N4IA1YunVE4CE5wFA26dT5Sn
+         rUrfV1QDNrPwEPvMO5NDiStCmjaz0+nUPq4iRWwIJvzH0bytnrQlfiDS2GHAcmp5HOLN
+         S45A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc:content-transfer-encoding;
-        bh=UJJuAgJHQPnZMmpmLTzANSSOedGbmL0b+IVXcx3Ufzs=;
-        b=EIjhpUiLgs5PwQ1NWNzRUFD6P9XIv7Vqp72Jqe+THXoRq4hmeW2Gd2ctJSF9xorlj4
-         41wgYOhi2Tx/Zo8Yzj2+QlhxWMTtekLyKVzHflNwzruSuRvUXKkk6MNSEYbrW1UzeNvE
-         UNgFijiha3oL8G0hJ3UFJNeZ3pa6vlVvZ4xTyu39PmF/5VW5/Kza7XruRGZO8kO4dzW4
-         r2v/mvS6gLLG0Jw4+2q3QiVAtLA2RHn5RnIO9GNnZCUjp5f9kwvix2AAFfcRK4/uopdm
-         ZUoffdy50/hGonDZQvTj+PWvD7M7CHW8uVAh6yaMHyGn7Zo51gWGG5XBBW4xmcZJhE4N
-         YAZA==
-X-Gm-Message-State: AOAM53302yUOYCt3fcohZ5ngEA2HX32pTR1I9yLJGN1lw7xu9lAFEWat
-        WSNctllWUb3tcseG65luupEjzT1iTQ==
-X-Google-Smtp-Source: ABdhPJz6qBKxAvbT13/LVRv5sOiMCXyLh1r546HBd6vDU0zkwqi5WeiV04XRE3fbBoM67yo8+87qI6KMZw==
-X-Received: by 2002:a0c:f6cb:: with SMTP id d11mr15516103qvo.84.1597684106062;
- Mon, 17 Aug 2020 10:08:26 -0700 (PDT)
-Date:   Mon, 17 Aug 2020 19:07:12 +0200
+        bh=EPrw5RnVluwXxcHuirD84lbrde8q2sR6O2SJbUiYZDY=;
+        b=OymIp5KVJs6p8BIYjAd4nFnGST8LR7E2RXIZEnF6vxPNQ2XXsSxnfwojpAq4KxQKxB
+         k+jjsLS5K/mKiUnVHclE1qeb4zHUbX/pZ+X0rbRveQD5Wxo+EzFxElLsSIO3tjC0Gzhx
+         Cx9fy/EtIURH8FOOJ59ubsybk6bQ7LxLd0MlEfsqPIvU4q3XA3fKEZzYM821F5PNZLew
+         2sqK9AQi5Xjt/fYjQf3Quo0/fv2AftbjRH3UpjBrCAsvqi72l5jtSEo/o70RnNBBCRcQ
+         xDPVaC8JCKkaPlSA+X0lic5tYsYC9gHAeW8liz+wR72X9COaeLsUVkQWhe4OIDPvjTbX
+         xZ7A==
+X-Gm-Message-State: AOAM533aHmIAUtiUS9LbxBmF/XD9Eq6k7pyyNYECTaXaXElBnsk5+yMQ
+        9/F3pOcUZbVd0ZP5DjB8ESDqqP9Arw==
+X-Google-Smtp-Source: ABdhPJybsAInpFNA74sYWytsOjuXY3Qmc09wmwcrpFe5e0ysRNhDs7qvPGChjMLprINFNMZKElFXgEgVXg==
+X-Received: by 2002:aa7:da46:: with SMTP id w6mr16086222eds.7.1597684122851;
+ Mon, 17 Aug 2020 10:08:42 -0700 (PDT)
+Date:   Mon, 17 Aug 2020 19:07:13 +0200
 In-Reply-To: <20200817170729.2605279-1-tweek@google.com>
-Message-Id: <20200817170729.2605279-2-tweek@google.com>
+Message-Id: <20200817170729.2605279-3-tweek@google.com>
 Mime-Version: 1.0
 References: <20200817170729.2605279-1-tweek@google.com>
 X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
-Subject: [PATCH v3 1/3] selinux: add tracepoint on audited events
+Subject: [PATCH v3 2/3] selinux: add basic filtering for audit trace events
 From:   "=?UTF-8?q?Thi=C3=A9baud=20Weksteen?=" <tweek@google.com>
 To:     Paul Moore <paul@paul-moore.com>
 Cc:     Nick Kralevich <nnk@google.com>,
-        "=?UTF-8?q?Thi=C3=A9baud=20Weksteen?=" <tweek@google.com>,
-        Joel Fernandes <joelaf@google.com>,
         Peter Enderborg <peter.enderborg@sony.com>,
+        "=?UTF-8?q?Thi=C3=A9baud=20Weksteen?=" <tweek@google.com>,
         Stephen Smalley <stephen.smalley.work@gmail.com>,
         Eric Paris <eparis@parisplace.org>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -72,149 +71,166 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The audit data currently captures which process and which target
-is responsible for a denial. There is no data on where exactly in the
-process that call occurred. Debugging can be made easier by being able to
-reconstruct the unified kernel and userland stack traces [1]. Add a
-tracepoint on the SELinux denials which can then be used by userland
-(i.e. perf).
+From: Peter Enderborg <peter.enderborg@sony.com>
 
-Although this patch could manually be added by each OS developer to
-trouble shoot a denial, adding it to the kernel streamlines the
-developers workflow.
+This patch adds further attributes to the event. These attributes are
+helpful to understand the context of the message and can be used
+to filter the events.
 
-It is possible to use perf for monitoring the event:
-  # perf record -e avc:selinux_audited -g -a
-  ^C
-  # perf report -g
-  [...]
-      6.40%     6.40%  audited=3D800000 tclass=3D4
-               |
-                  __libc_start_main
-                  |
-                  |--4.60%--__GI___ioctl
-                  |          entry_SYSCALL_64
-                  |          do_syscall_64
-                  |          __x64_sys_ioctl
-                  |          ksys_ioctl
-                  |          binder_ioctl
-                  |          binder_set_nice
-                  |          can_nice
-                  |          capable
-                  |          security_capable
-                  |          cred_has_capability.isra.0
-                  |          slow_avc_audit
-                  |          common_lsm_audit
-                  |          avc_audit_post_callback
-                  |          avc_audit_post_callback
-                  |
+There are three common items. Source context, target context and tclass.
+There are also items from the outcome of operation performed.
 
-It is also possible to use the ftrace interface:
-  # echo 1 > /sys/kernel/debug/tracing/events/avc/selinux_audited/enable
-  # cat /sys/kernel/debug/tracing/trace
-  tracer: nop
-  entries-in-buffer/entries-written: 1/1   #P:8
-  [...]
-  dmesg-3624  [001] 13072.325358: selinux_denied: audited=3D800000 tclass=
-=3D4
+An event is similar to:
+           <...>-1309  [002] ....  6346.691689: selinux_audited:
+       requested=3D0x4000000 denied=3D0x4000000 audited=3D0x4000000
+       result=3D-13
+       scontext=3Dsystem_u:system_r:cupsd_t:s0-s0:c0.c1023
+       tcontext=3Dsystem_u:object_r:bin_t:s0 tclass=3Dfile
 
-The tclass value can be mapped to a class by searching
-security/selinux/flask.h. The audited value is a bit field of the
-permissions described in security/selinux/av_permissions.h for the
-corresponding class.
+With systems where many denials are occurring, it is useful to apply a
+filter. The filtering is a set of logic that is inserted with
+the filter file. Example:
+ echo "tclass=3D=3D\"file\" " > events/avc/selinux_audited/filter
 
-[1] https://source.android.com/devices/tech/debug/native_stack_dump
+This adds that we only get tclass=3Dfile.
 
-Signed-off-by: Thi=C3=A9baud Weksteen <tweek@google.com>
-Suggested-by: Joel Fernandes <joelaf@google.com>
-Reviewed-by: Peter Enderborg <peter.enderborg@sony.com>
+The trace can also have extra properties. Adding the user stack
+can be done with
+   echo 1 > options/userstacktrace
+
+Now the output will be
+         runcon-1365  [003] ....  6960.955530: selinux_audited:
+     requested=3D0x4000000 denied=3D0x4000000 audited=3D0x4000000
+     result=3D-13
+     scontext=3Dsystem_u:system_r:cupsd_t:s0-s0:c0.c1023
+     tcontext=3Dsystem_u:object_r:bin_t:s0 tclass=3Dfile
+          runcon-1365  [003] ....  6960.955560: <user stack trace>
+ =3D>  <00007f325b4ce45b>
+ =3D>  <00005607093efa57>
+
+Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
+Reviewed-by: Thi=C3=A9baud Weksteen <tweek@google.com>
 ---
- MAINTAINERS                |  1 +
- include/trace/events/avc.h | 37 +++++++++++++++++++++++++++++++++++++
- security/selinux/avc.c     |  5 +++++
- 3 files changed, 43 insertions(+)
- create mode 100644 include/trace/events/avc.h
+ include/trace/events/avc.h | 36 ++++++++++++++++++++++++++----------
+ security/selinux/avc.c     | 22 +++++++++++++---------
+ 2 files changed, 39 insertions(+), 19 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c8e8232c65da..0efaea0e144c 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15426,6 +15426,7 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/gi=
-t/pcmoore/selinux.git
- F:	Documentation/ABI/obsolete/sysfs-selinux-checkreqprot
- F:	Documentation/ABI/obsolete/sysfs-selinux-disable
- F:	Documentation/admin-guide/LSM/SELinux.rst
-+F:	include/trace/events/avc.h
- F:	include/uapi/linux/selinux_netlink.h
- F:	scripts/selinux/
- F:	security/selinux/
 diff --git a/include/trace/events/avc.h b/include/trace/events/avc.h
-new file mode 100644
-index 000000000000..07c058a9bbcd
---- /dev/null
+index 07c058a9bbcd..b55fda2e0773 100644
+--- a/include/trace/events/avc.h
 +++ b/include/trace/events/avc.h
-@@ -0,0 +1,37 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Author: Thi=C3=A9baud Weksteen <tweek@google.com>
-+ */
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM avc
-+
-+#if !defined(_TRACE_SELINUX_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define _TRACE_SELINUX_H
-+
-+#include <linux/tracepoint.h>
-+
-+TRACE_EVENT(selinux_audited,
-+
-+	TP_PROTO(struct selinux_audit_data *sad),
-+
-+	TP_ARGS(sad),
-+
-+	TP_STRUCT__entry(
-+		__field(unsigned int, tclass)
-+		__field(unsigned int, audited)
+@@ -1,6 +1,7 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ /*
+- * Author: Thi=C3=A9baud Weksteen <tweek@google.com>
++ * Authors:	Thi=C3=A9baud Weksteen <tweek@google.com>
++ *		Peter Enderborg <Peter.Enderborg@sony.com>
+  */
+ #undef TRACE_SYSTEM
+ #define TRACE_SYSTEM avc
+@@ -12,23 +13,38 @@
+=20
+ TRACE_EVENT(selinux_audited,
+=20
+-	TP_PROTO(struct selinux_audit_data *sad),
++	TP_PROTO(struct selinux_audit_data *sad,
++		char *scontext,
++		char *tcontext,
++		const char *tclass
 +	),
-+
-+	TP_fast_assign(
-+		__entry->tclass =3D sad->tclass;
-+		__entry->audited =3D sad->audited;
-+	),
-+
-+	TP_printk("tclass=3D%u audited=3D%x",
-+		__entry->tclass,
-+		__entry->audited)
-+);
-+
-+#endif
-+
-+/* This part must be outside protection */
-+#include <trace/define_trace.h>
+=20
+-	TP_ARGS(sad),
++	TP_ARGS(sad, scontext, tcontext, tclass),
+=20
+ 	TP_STRUCT__entry(
+-		__field(unsigned int, tclass)
+-		__field(unsigned int, audited)
++		__field(u32, requested)
++		__field(u32, denied)
++		__field(u32, audited)
++		__field(int, result)
++		__string(scontext, scontext)
++		__string(tcontext, tcontext)
++		__string(tclass, tclass)
+ 	),
+=20
+ 	TP_fast_assign(
+-		__entry->tclass =3D sad->tclass;
+-		__entry->audited =3D sad->audited;
++		__entry->requested	=3D sad->requested;
++		__entry->denied		=3D sad->denied;
++		__entry->audited	=3D sad->audited;
++		__entry->result		=3D sad->result;
++		__assign_str(tcontext, tcontext);
++		__assign_str(scontext, scontext);
++		__assign_str(tclass, tclass);
+ 	),
+=20
+-	TP_printk("tclass=3D%u audited=3D%x",
+-		__entry->tclass,
+-		__entry->audited)
++	TP_printk("requested=3D0x%x denied=3D0x%x audited=3D0x%x result=3D%d scon=
+text=3D%s tcontext=3D%s tclass=3D%s",
++		__entry->requested, __entry->denied, __entry->audited, __entry->result,
++		__get_str(scontext), __get_str(tcontext), __get_str(tclass)
++	)
+ );
+=20
+ #endif
 diff --git a/security/selinux/avc.c b/security/selinux/avc.c
-index d18cb32a242a..b0a0af778b70 100644
+index b0a0af778b70..7de5cc5169af 100644
 --- a/security/selinux/avc.c
 +++ b/security/selinux/avc.c
-@@ -31,6 +31,9 @@
- #include "avc_ss.h"
- #include "classmap.h"
-=20
-+#define CREATE_TRACE_POINTS
-+#include <trace/events/avc.h>
-+
- #define AVC_CACHE_SLOTS			512
- #define AVC_DEF_CACHE_THRESHOLD		512
- #define AVC_CACHE_RECLAIM		16
-@@ -706,6 +709,8 @@ static void avc_audit_post_callback(struct audit_buffer=
- *ab, void *a)
+@@ -705,35 +705,39 @@ static void avc_audit_post_callback(struct audit_buff=
+er *ab, void *a)
+ {
+ 	struct common_audit_data *ad =3D a;
+ 	struct selinux_audit_data *sad =3D ad->selinux_audit_data;
+-	char *scontext;
++	char *scontext =3D NULL;
++	char *tcontext =3D NULL;
++	const char *tclass =3D NULL;
  	u32 scontext_len;
++	u32 tcontext_len;
  	int rc;
 =20
-+	trace_selinux_audited(sad);
-+
+-	trace_selinux_audited(sad);
+-
  	rc =3D security_sid_to_context(sad->state, sad->ssid, &scontext,
  				     &scontext_len);
  	if (rc)
+ 		audit_log_format(ab, " ssid=3D%d", sad->ssid);
+ 	else {
+ 		audit_log_format(ab, " scontext=3D%s", scontext);
+-		kfree(scontext);
+ 	}
+=20
+-	rc =3D security_sid_to_context(sad->state, sad->tsid, &scontext,
+-				     &scontext_len);
++	rc =3D security_sid_to_context(sad->state, sad->tsid, &tcontext,
++				     &tcontext_len);
+ 	if (rc)
+ 		audit_log_format(ab, " tsid=3D%d", sad->tsid);
+ 	else {
+-		audit_log_format(ab, " tcontext=3D%s", scontext);
+-		kfree(scontext);
++		audit_log_format(ab, " tcontext=3D%s", tcontext);
+ 	}
+=20
+-	audit_log_format(ab, " tclass=3D%s", secclass_map[sad->tclass-1].name);
++	tclass =3D secclass_map[sad->tclass-1].name;
++	audit_log_format(ab, " tclass=3D%s", tclass);
+=20
+ 	if (sad->denied)
+ 		audit_log_format(ab, " permissive=3D%u", sad->result ? 0 : 1);
+=20
++	trace_selinux_audited(sad, scontext, tcontext, tclass);
++	kfree(tcontext);
++	kfree(scontext);
++
+ 	/* in case of invalid context report also the actual context string */
+ 	rc =3D security_sid_to_context_inval(sad->state, sad->ssid, &scontext,
+ 					   &scontext_len);
 --=20
 2.28.0.220.ged08abb693-goog
 
