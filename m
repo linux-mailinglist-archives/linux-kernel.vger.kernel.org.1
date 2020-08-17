@@ -2,86 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0FB2461CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4729A2461D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726779AbgHQJDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 05:03:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726788AbgHQJDj (ORCPT
+        id S1728758AbgHQJD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 05:03:58 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:40476 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728725AbgHQJDu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 05:03:39 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C5AC061389
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 02:03:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LYBZx3KQuv7ApO3hpLxpQgXwKNCku2UgvV7NAm4UvVg=; b=ZQI1/jsb0vPedK7MwW8XBDozPy
-        f8oh3o6qLiZU2JSNpd+Y/kyeVdYswjIr71PR2vTkyh/1zgZoadcLVfQhDsX9swwmyF4uF5k8qKiyT
-        kxS5WYNiCW6cPUWL8CHAqNATzBbYSJTF+dqW8Ij3s72fj+EmHdLbFbxeChqcAjaTuAyz8yXvschk1
-        w45p5dT0C1nTepqu+QFFeTcCA7lhPI7C8MgrVaK+LE1Ud+P6pjzx+sTX1PI2YTFVbvGiLbHaCMl12
-        ulFz7afU7mNXTnq5TgkoScwWQiyHJ0MxWiI9y5ck92qZuEkAqD+WHA8kou17yOhdApbtUahr+0RLS
-        QcistZog==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k7b38-0000Tv-Ip; Mon, 17 Aug 2020 09:03:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 782F33060F2;
-        Mon, 17 Aug 2020 11:03:25 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4C569200D4C23; Mon, 17 Aug 2020 11:03:25 +0200 (CEST)
-Date:   Mon, 17 Aug 2020 11:03:25 +0200
-From:   peterz@infradead.org
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
-        linux-kernel@vger.kernel.org, will@kernel.org, hch@lst.de,
-        axboe@kernel.dk, chris@chris-wilson.co.uk, davem@davemloft.net,
-        kuba@kernel.org, fweisbec@gmail.com, oleg@redhat.com
-Subject: Re: [RFC][PATCH 1/9] irq_work: Cleanup
-Message-ID: <20200817090325.GK2674@hirez.programming.kicks-ass.net>
-References: <20200722150149.525408253@infradead.org>
- <20200722153017.024407984@infradead.org>
- <20200723161411.GA23103@paulmck-ThinkPad-P72>
+        Mon, 17 Aug 2020 05:03:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597655029;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iWLBVVWGQzp5rvaiSkpRpGi21EkmGXSL34WymXzDWrA=;
+        b=XKLTYemfR8Y5I9gxJm4we2pECXyNP8fnWoBhxCSCfQoDTnpcDOFHr05L66DFp9AAHpqXKx
+        IGc4Gs1as2lS27UxsZO/BnERNBLZSJJl8JATgN6E0BnUxHkM9pLh/KdfeOffJuw9QVUg08
+        W8Wj9BhtyIhvT/BbDpqgIqu1uUTG7io=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-548-XOr0Q0g5Pm2_V_1gskoIRA-1; Mon, 17 Aug 2020 05:03:45 -0400
+X-MC-Unique: XOr0Q0g5Pm2_V_1gskoIRA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D3A50801ADB;
+        Mon, 17 Aug 2020 09:03:43 +0000 (UTC)
+Received: from sirius.home.kraxel.org (ovpn-112-195.ams2.redhat.com [10.36.112.195])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 746637A1C0;
+        Mon, 17 Aug 2020 09:03:43 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id AB9611753B; Mon, 17 Aug 2020 11:03:42 +0200 (CEST)
+Date:   Mon, 17 Aug 2020 11:03:42 +0200
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     dri-devel@lists.freedesktop.org, 1882851@bugs.launchpad.net,
+        David Airlie <airlied@linux.ie>, Chia-I Wu <olvaffe@gmail.com>,
+        "open list:VIRTIO GPU DRIVER" 
+        <virtualization@lists.linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drm/virtio: fix unblank
+Message-ID: <20200817090342.bemmtkvz4seayp2i@sirius.home.kraxel.org>
+References: <20200807105429.24208-1-kraxel@redhat.com>
+ <20200807130956.GE2352366@phenom.ffwll.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200723161411.GA23103@paulmck-ThinkPad-P72>
+In-Reply-To: <20200807130956.GE2352366@phenom.ffwll.local>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 09:14:11AM -0700, Paul E. McKenney wrote:
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -1287,8 +1287,6 @@ static int rcu_implicit_dynticks_qs(stru
-> >  		if (IS_ENABLED(CONFIG_IRQ_WORK) &&
-> >  		    !rdp->rcu_iw_pending && rdp->rcu_iw_gp_seq != rnp->gp_seq &&
-> >  		    (rnp->ffmask & rdp->grpmask)) {
-> > -			init_irq_work(&rdp->rcu_iw, rcu_iw_handler);
+  Hi,
+
+> > --- a/drivers/gpu/drm/virtio/virtgpu_display.c
+> > +++ b/drivers/gpu/drm/virtio/virtgpu_display.c
+> > @@ -100,6 +100,7 @@ static void virtio_gpu_crtc_atomic_enable(struct drm_crtc *crtc,
+> >  	struct virtio_gpu_output *output = drm_crtc_to_virtio_gpu_output(crtc);
+> >  
+> >  	output->enabled = true;
+> > +	output->need_update = true;
+
+> > --- a/drivers/gpu/drm/virtio/virtgpu_plane.c
+> > +++ b/drivers/gpu/drm/virtio/virtgpu_plane.c
+> > @@ -163,7 +163,8 @@ static void virtio_gpu_primary_plane_update(struct drm_plane *plane,
+> >  	    plane->state->src_w != old_state->src_w ||
+> >  	    plane->state->src_h != old_state->src_h ||
+> >  	    plane->state->src_x != old_state->src_x ||
+> > -	    plane->state->src_y != old_state->src_y) {
+> > +	    plane->state->src_y != old_state->src_y ||
+> > +	    output->need_update) {
 > 
-> We are actually better off with the IRQ_WORK_INIT_HARD() here rather
-> than unconditionally at boot.
+> Uh instead of hand-rolling what's essentially a drm_crtc_needs_modeset
+> check, why not use that one? atomic helpers try to keep the usual suspects
+> for state transitions already handy, to avoid every driver rolling their
+> own. Or do I miss something here?
 
-Ah, but there isn't an init_irq_work() variant that does the HARD thing.
+Well, the virtio-gpu virtual hardware can't do plane updates and crtc
+updates independant from each other.  So the crtc callbacks handle
+disable only (we don't need a fb for that) and leave the enable to the
+plane update.
 
-> The reason for this is that we get here only if a single grace
-> period extends beyond 10.5 seconds (mainline) or beyond 30 seconds
-> (many distribution kernels).  Which almost never happens.  And yes,
-> rcutree_prepare_cpu() is also invoked as each CPU that comes online,
-> not that this is all that common outside of rcutorture and boot time.  ;-)
+I suspect calling drm_atomic_crtc_needs_modeset() in plane update isn't
+going to fly ...
 
-What do you mean 'also' ? Afaict this is CPU bringup only code (initial
-and hotplug). We really don't care about code there. It's the slowest
-possible path we have in the kernel.
-
-> > -			atomic_set(&rdp->rcu_iw.flags, IRQ_WORK_HARD_IRQ);
-> >  			rdp->rcu_iw_pending = true;
-> >  			rdp->rcu_iw_gp_seq = rnp->gp_seq;
-> >  			irq_work_queue_on(&rdp->rcu_iw, rdp->cpu);
+take care,
+  Gerd
 
