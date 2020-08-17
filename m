@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3350D246F14
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9B4F246FF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731543AbgHQRm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:42:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55382 "EHLO mail.kernel.org"
+        id S2389788AbgHQR5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:57:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731096AbgHQQQj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:16:39 -0400
+        id S2388544AbgHQQK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:10:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 812EA2065C;
-        Mon, 17 Aug 2020 16:15:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC26720829;
+        Mon, 17 Aug 2020 16:10:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597680952;
-        bh=Fwo0FDK2/w9SWFeNDQy6dcWQ1EaURSRHtoIZWGQM2A4=;
+        s=default; t=1597680609;
+        bh=S7IDOuSAt3Vf7G3wy1Q4EP0Obdmq8ti/LHttpaBl6qw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o8rltkut0NBd1eDILH9NIhNjm9ykZB7YA+OAzoQrqCIEuITkUFeVhm9CBxc78PHRD
-         kj8R5eSFoVwN9QGW1dz4alxJP5ejLFrmkdK2zTJLfjgSrHMIFdqUy/GLsvNJlao+kw
-         HYlKQH2J4gaOrYuOE+B7Bq9B1AvPoHO77CqJbHec=
+        b=GykfzMfb7w76ZTo5IsYBCKmBYs3ZoZ6Cw5KvxQvXeJ/tCtM9cVZ8ghG6s7FywFe1F
+         VrfxRxD5PVsRvp0h/Luz0e9GyzomMhx0OHRC1ejSDgDF+NsS79kYmjcGPAjqc7hZ9m
+         4ntYlLVfAJp6N4np9UDks2VP0guN5dcj8SSKe0Qo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Florinel Iordache <florinel.iordache@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 123/168] fsl/fman: check dereferencing null pointer
-Date:   Mon, 17 Aug 2020 17:17:34 +0200
-Message-Id: <20200817143739.824113379@linuxfoundation.org>
+        stable@vger.kernel.org, Hector Martin <marcan@marcan.st>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 254/270] ALSA: usb-audio: add quirk for Pioneer DDJ-RB
+Date:   Mon, 17 Aug 2020 17:17:35 +0200
+Message-Id: <20200817143808.476137807@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143733.692105228@linuxfoundation.org>
-References: <20200817143733.692105228@linuxfoundation.org>
+In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
+References: <20200817143755.807583758@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,72 +43,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florinel Iordache <florinel.iordache@nxp.com>
+From: Hector Martin <marcan@marcan.st>
 
-[ Upstream commit cc5d229a122106733a85c279d89d7703f21e4d4f ]
+commit 6e8596172ee1cd46ec0bfd5adcf4ff86371478b6 upstream.
 
-Add a safe check to avoid dereferencing null pointer
+This is just another Pioneer device with fixed endpoints. Input is dummy
+but used as feedback (it always returns silence).
 
-Fixes: 57ba4c9b56d8 ("fsl/fman: Add FMan MAC support")
-Signed-off-by: Florinel Iordache <florinel.iordache@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Hector Martin <marcan@marcan.st>
+Link: https://lore.kernel.org/r/20200810082502.225979-1-marcan@marcan.st
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/ethernet/freescale/fman/fman_dtsec.c | 4 ++--
- drivers/net/ethernet/freescale/fman/fman_memac.c | 2 +-
- drivers/net/ethernet/freescale/fman/fman_tgec.c  | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ sound/usb/quirks-table.h |   56 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
 
-diff --git a/drivers/net/ethernet/freescale/fman/fman_dtsec.c b/drivers/net/ethernet/freescale/fman/fman_dtsec.c
-index 1ca543ac8f2cd..d2de9ea80c43f 100644
---- a/drivers/net/ethernet/freescale/fman/fman_dtsec.c
-+++ b/drivers/net/ethernet/freescale/fman/fman_dtsec.c
-@@ -1205,7 +1205,7 @@ int dtsec_del_hash_mac_address(struct fman_mac *dtsec, enet_addr_t *eth_addr)
- 		list_for_each(pos,
- 			      &dtsec->multicast_addr_hash->lsts[bucket]) {
- 			hash_entry = ETH_HASH_ENTRY_OBJ(pos);
--			if (hash_entry->addr == addr) {
-+			if (hash_entry && hash_entry->addr == addr) {
- 				list_del_init(&hash_entry->node);
- 				kfree(hash_entry);
- 				break;
-@@ -1218,7 +1218,7 @@ int dtsec_del_hash_mac_address(struct fman_mac *dtsec, enet_addr_t *eth_addr)
- 		list_for_each(pos,
- 			      &dtsec->unicast_addr_hash->lsts[bucket]) {
- 			hash_entry = ETH_HASH_ENTRY_OBJ(pos);
--			if (hash_entry->addr == addr) {
-+			if (hash_entry && hash_entry->addr == addr) {
- 				list_del_init(&hash_entry->node);
- 				kfree(hash_entry);
- 				break;
-diff --git a/drivers/net/ethernet/freescale/fman/fman_memac.c b/drivers/net/ethernet/freescale/fman/fman_memac.c
-index 08f8b36779ea4..9088b4f4b4b87 100644
---- a/drivers/net/ethernet/freescale/fman/fman_memac.c
-+++ b/drivers/net/ethernet/freescale/fman/fman_memac.c
-@@ -985,7 +985,7 @@ int memac_del_hash_mac_address(struct fman_mac *memac, enet_addr_t *eth_addr)
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -3570,6 +3570,62 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge
+ 		}
+ 	}
+ },
++{
++	/*
++	 * PIONEER DJ DDJ-RB
++	 * PCM is 4 channels out, 2 dummy channels in @ 44.1 fixed
++	 * The feedback for the output is the dummy input.
++	 */
++	USB_DEVICE_VENDOR_SPEC(0x2b73, 0x000e),
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = (const struct snd_usb_audio_quirk[]) {
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 4,
++					.iface = 0,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.endpoint = 0x01,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC|
++						   USB_ENDPOINT_SYNC_ASYNC,
++					.rates = SNDRV_PCM_RATE_44100,
++					.rate_min = 44100,
++					.rate_max = 44100,
++					.nr_rates = 1,
++					.rate_table = (unsigned int[]) { 44100 }
++				}
++			},
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 2,
++					.iface = 0,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.endpoint = 0x82,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC|
++						 USB_ENDPOINT_SYNC_ASYNC|
++						 USB_ENDPOINT_USAGE_IMPLICIT_FB,
++					.rates = SNDRV_PCM_RATE_44100,
++					.rate_min = 44100,
++					.rate_max = 44100,
++					.nr_rates = 1,
++					.rate_table = (unsigned int[]) { 44100 }
++				}
++			},
++			{
++				.ifnum = -1
++			}
++		}
++	}
++},
  
- 	list_for_each(pos, &memac->multicast_addr_hash->lsts[hash]) {
- 		hash_entry = ETH_HASH_ENTRY_OBJ(pos);
--		if (hash_entry->addr == addr) {
-+		if (hash_entry && hash_entry->addr == addr) {
- 			list_del_init(&hash_entry->node);
- 			kfree(hash_entry);
- 			break;
-diff --git a/drivers/net/ethernet/freescale/fman/fman_tgec.c b/drivers/net/ethernet/freescale/fman/fman_tgec.c
-index f75b9c11b2d29..ac5a281e0ec3b 100644
---- a/drivers/net/ethernet/freescale/fman/fman_tgec.c
-+++ b/drivers/net/ethernet/freescale/fman/fman_tgec.c
-@@ -630,7 +630,7 @@ int tgec_del_hash_mac_address(struct fman_mac *tgec, enet_addr_t *eth_addr)
- 
- 	list_for_each(pos, &tgec->multicast_addr_hash->lsts[hash]) {
- 		hash_entry = ETH_HASH_ENTRY_OBJ(pos);
--		if (hash_entry->addr == addr) {
-+		if (hash_entry && hash_entry->addr == addr) {
- 			list_del_init(&hash_entry->node);
- 			kfree(hash_entry);
- 			break;
--- 
-2.25.1
-
+ #define ALC1220_VB_DESKTOP(vend, prod) { \
+ 	USB_DEVICE(vend, prod),	\
 
 
