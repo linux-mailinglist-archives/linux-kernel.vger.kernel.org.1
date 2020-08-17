@@ -2,97 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD842460FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C6524610E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728515AbgHQIrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 04:47:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728016AbgHQIrZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 04:47:25 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68210C061388;
-        Mon, 17 Aug 2020 01:47:25 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id k18so7883461pfp.7;
-        Mon, 17 Aug 2020 01:47:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=I9FCZOgIDuZqeurOHDh0nbpiKmkOvQNtsIsTlWYfc1Y=;
-        b=HFtOQ5AlNWLobweJbdYclZKpNoCZYZSSQ7FjqaOzxn3bUNoTtUgUfNeCT1A+UbLXVY
-         FdbbVnKnsy4hXPSbY7m6m3Kc3GKYQl4Z1tcriXuMcZsULljml7W3WoY09rp+AwjybdST
-         Kr4G7JrhHKO5p9ek0hpCjB+kbOPzmhUHuoHueGU8tP+Y4xZ+j/+Ea7Y7QRhBfpX2IT10
-         FISBVOF4394pHGIexQJUSskOjPhebxVO1hh1EuCIoIulAHsTKN2Z/o/U423Xu3a/c94g
-         HIK/XiVoaTPKB1ItLx53sa3m+W9acLIHG0HijwffrWelWvi0TwouPy03yuV1LSMCgQB0
-         YUxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=I9FCZOgIDuZqeurOHDh0nbpiKmkOvQNtsIsTlWYfc1Y=;
-        b=YMWcXzdPWpr631LG0jrgLUjt8GkUYTjMp88IOjDcrJjyFD4+tPDZNypMbTAHy3pv9v
-         6rfWT8sCFxORfoahxMSe7NTkzSEKvhQZgxTz5x4/IJ8DMjFn+NLb95NC2qpWPb1jiyi2
-         6kzD/ZvvpWKaANQWvEVsgUyAnkTr3guc+q+XmlpLhl6eMv+9nHr5z2YpVka+5MuYkcTH
-         7DMeT+JbW7CiwjMcKUBblzQYo5GVFJz3oglLhVlFpvK7nD+tg2L9tIZC37u1e0jHyrBL
-         YmFQ5ZpOHo3xB+rjY8+bJiKCKWqsjR4WfwvaopcPvzFGnrX9eqkN9hgZv3KUtu5ENya4
-         NpqQ==
-X-Gm-Message-State: AOAM533LcKEMrj2nwu3Atgzz2QdjBi8qLHXh6ch+6j/Mldn7Ws4KDxW7
-        EjArTVfg2VVJCE88HrTr+GU=
-X-Google-Smtp-Source: ABdhPJwTnBvHFCwyjA7hh+z6WJdIOftS4ISK9d7eBdKss0Xek7P60Pw9LQNtFXEqQ85qo+gOEiLD1Q==
-X-Received: by 2002:aa7:9564:: with SMTP id x4mr10453280pfq.29.1597654044966;
-        Mon, 17 Aug 2020 01:47:24 -0700 (PDT)
-Received: from localhost.localdomain ([49.207.202.98])
-        by smtp.gmail.com with ESMTPSA id ml18sm16418443pjb.43.2020.08.17.01.47.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 01:47:24 -0700 (PDT)
-From:   Allen Pais <allen.cryptic@gmail.com>
-To:     m.grzeschik@pengutronix.de, davem@davemloft.net, paulus@samba.org,
-        oliver@neukum.org, woojung.huh@microchip.com, petkan@nucleusys.com
-Cc:     keescook@chromium.org, netdev@vger.kernel.org,
-        linux-ppp@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, Allen Pais <allen.lkml@gmail.com>,
-        Romain Perier <romain.perier@gmail.com>
-Subject: [PATCH 9/9] net: usbnet: convert tasklets to use new tasklet_setup() API
-Date:   Mon, 17 Aug 2020 14:16:14 +0530
-Message-Id: <20200817084614.24263-13-allen.cryptic@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200817084614.24263-1-allen.cryptic@gmail.com>
-References: <20200817084614.24263-1-allen.cryptic@gmail.com>
+        id S1728538AbgHQIsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 04:48:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37936 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726457AbgHQIrW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 04:47:22 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5E9B4AE8C;
+        Mon, 17 Aug 2020 08:47:45 +0000 (UTC)
+Date:   Mon, 17 Aug 2020 10:47:19 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     paulmck@kernel.org, Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
+Message-ID: <20200817084719.GB28270@dhcp22.suse.cz>
+References: <20200814180141.GP4295@paulmck-ThinkPad-P72>
+ <87tux4kefm.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87tux4kefm.fsf@nanos.tec.linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Allen Pais <allen.lkml@gmail.com>
+On Sat 15-08-20 01:14:53, Thomas Gleixner wrote:
+[...]
+> For normal operations a couple of pages which can be preallocated are
+> enough. What you are concerned of is the case where you run out of
+> pointer storage space.
+> 
+> There are two reasons why that can happen:
+> 
+>       1) RCU call flooding
+>       2) RCU not being able to run and mop up the backlog
+> 
+> #1 is observable by looking at the remaining storage space and the RCU
+>    call frequency
+> 
+> #2 is uninteresting because it's caused by RCU being stalled / delayed
+>    e.g. by a runaway of some sorts or a plain RCU usage bug.
+>    
+>    Allocating more memory in that case does not solve or improve anything.
+> 
+> So the interesting case is #1. Which means we need to look at the
+> potential sources of the flooding:
+> 
+>     1) User space via syscalls, e.g. open/close
+>     2) Kernel thread
+>     3) Softirq
+>     4) Device interrupt
+>     5) System interrupts, deep atomic context, NMI ...
+> 
+> #1 trivial fix is to force switching to an high prio thread or a soft
+>    interrupt which does the allocation
+> 
+> #2 Similar to #1 unless that thread loops with interrupts, softirqs or
+>    preemption disabled. If that's the case then running out of RCU
+>    storage space is the least of your worries.
+> 
+> #3 Similar to #2. The obvious candidates (e.g. NET) for monopolizing a
+>    CPU have loop limits in place already. If there is a bug which fails
+>    to care about the limit, why would RCU care and allocate more memory?
+> 
+> #4 Similar to #3. If the interrupt handler loops forever or if the
+>    interrupt is a runaway which prevents task/softirq processing then
+>    RCU free performance is the least of your worries.
+> 
+> #5 Clearly a bug and making RCU accomodate for that is beyond silly.
+> 
+> So if call_rcu() detects that the remaining storage space for pointers
+> goes below the critical point or if it observes high frequency calls
+> then it simply should force a soft interrupt which does the allocation.
+>
+> Allocating from softirq context obviously without holding the raw lock
+> which is used inside call_rcu() is safe on all configurations.
+> 
+> If call_rcu() is forced to use the fallback for a few calls until this
+> happens then that's not the end of the world. It is not going to be a
+> problem ever for the most obvious issue #1, user space madness, because
+> that case cannot delay the softirq processing unless there is a kernel
+> bug which makes again RCU free performance irrelevant.
 
-In preparation for unconditionally passing the
-struct tasklet_struct pointer to all tasklet
-callbacks, switch to using the new tasklet_setup()
-and from_tasklet() to pass the tasklet pointer explicitly
-and remove the .data field.
+Yes, this makes perfect sense to me! I really do not think we want to
+optimize for a userspace abuse to allow complete pcp allocator memory
+depletion (or a control in a worse case).
 
-Signed-off-by: Romain Perier <romain.perier@gmail.com>
-Signed-off-by: Allen Pais <allen.lkml@gmail.com>
----
- drivers/net/usb/usbnet.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
-index e45935a5856a..45bf0814939d 100644
---- a/drivers/net/usb/usbnet.c
-+++ b/drivers/net/usb/usbnet.c
-@@ -1708,8 +1708,7 @@ usbnet_probe (struct usb_interface *udev, const struct usb_device_id *prod)
- 	skb_queue_head_init (&dev->txq);
- 	skb_queue_head_init (&dev->done);
- 	skb_queue_head_init(&dev->rxq_pause);
--	dev->bh.func = usbnet_bh_tasklet;
--	dev->bh.data = (unsigned long)&dev->delay;
-+	dev->bh.func = (void(*) (unsigned long))usbnet_bh_tasklet;
- 	INIT_WORK (&dev->kevent, usbnet_deferred_kevent);
- 	init_usb_anchor(&dev->deferred);
- 	timer_setup(&dev->delay, usbnet_bh, 0);
+Thanks!
 -- 
-2.17.1
-
+Michal Hocko
+SUSE Labs
