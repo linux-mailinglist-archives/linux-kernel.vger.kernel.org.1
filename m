@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6300A246BC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D479B246BCC
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387819AbgHQQCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 12:02:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53876 "EHLO mail.kernel.org"
+        id S1730407AbgHQQCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 12:02:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387616AbgHQPn1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:43:27 -0400
+        id S2387646AbgHQPnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:43:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B610922D02;
-        Mon, 17 Aug 2020 15:43:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE8AA2075B;
+        Mon, 17 Aug 2020 15:43:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679007;
-        bh=xnrS1ql8mTJfZuXx7vS6OCxPj+h1Ygx9v8nHW/GzhqE=;
+        s=default; t=1597679010;
+        bh=AILpoJFYFqqiQwh8J5OFU9tSJgZo+/G+qh3xcX/ibdE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N5HKuMmwNSkUhEm0doDrh1lW0twdOz2wANzoVMDmiMbP/rxYRyqSHmB516ZYaPocX
-         2MId48h7Nqa+2h4kwgwCwbN+WMZadUIixLmi1TRFkllARpqe4hz8pC5Y8ufDYKLuPD
-         Dlmv0qZkxKBDvGjcmqYjdJuMUTU3ufndmNQ2DVW8=
+        b=YMKk2K8cXqzf8rtivTcf7LpDnriOUPY0pYeMw27HCb8wY4vK/maoQCOubya49zmP3
+         ML575GbbUyADwku12rvKrcUR+UIIZVrifZ1qqXgMlbUm8rW5GYQrXqm8t0pmgzJZ+y
+         3+1QH3HnxQH+LoC7Km9+CTC1n23UTPI2qNt+84Vo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, "kernelci.org bot" <bot@kernelci.org>,
+        Guillaume Tucker <guillaume.tucker@collabora.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 065/393] net: mscc: ocelot: fix encoding destination ports into multicast IPv4 address
-Date:   Mon, 17 Aug 2020 17:11:55 +0200
-Message-Id: <20200817143822.783450813@linuxfoundation.org>
+Subject: [PATCH 5.7 066/393] ARM: exynos: clear L310_AUX_CTRL_FULL_LINE_ZERO in default l2c_aux_val
+Date:   Mon, 17 Aug 2020 17:11:56 +0200
+Message-Id: <20200817143822.825152303@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
 References: <20200817143819.579311991@linuxfoundation.org>
@@ -44,115 +45,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Guillaume Tucker <guillaume.tucker@collabora.com>
 
-[ Upstream commit 0897ecf7532577bda3dbcb043ce046a96948889d ]
+[ Upstream commit 5b17a04addc29201dc142c8d2c077eb7745d2e35 ]
 
-The ocelot hardware designers have made some hacks to support multicast
-IPv4 and IPv6 addresses. Normally, the MAC table matches on MAC
-addresses and the destination ports are selected through the DEST_IDX
-field of the respective MAC table entry. The DEST_IDX points to a Port
-Group ID (PGID) which contains the bit mask of ports that frames should
-be forwarded to. But there aren't a lot of PGIDs (only 80 or so) and
-there are clearly many more IP multicast addresses than that, so it
-doesn't scale to use this PGID mechanism, so something else was done.
-Since the first portion of the MAC address is known, the hack they did
-was to use a single PGID for _flooding_ unknown IPv4 multicast
-(PGID_MCIPV4 == 62), but for known IP multicast, embed the destination
-ports into the first 3 bytes of the MAC address recorded in the MAC
-table.
+This "alert" error message can be seen on exynos4412-odroidx2:
 
-The VSC7514 datasheet explains it like this:
+    L2C: platform modifies aux control register: 0x02070000 -> 0x3e470001
+    L2C: platform provided aux values permit register corruption.
 
-    3.9.1.5 IPv4 Multicast Entries
+Followed by this plain error message:
 
-    MAC table entries with the ENTRY_TYPE = 2 settings are interpreted
-    as IPv4 multicast entries.
-    IPv4 multicasts entries match IPv4 frames, which are classified to
-    the specified VID, and which have DMAC = 0x01005Exxxxxx, where
-    xxxxxx is the lower 24 bits of the MAC address in the entry.
-    Instead of a lookup in the destination mask table (PGID), the
-    destination set is programmed as part of the entry MAC address. This
-    is shown in the following table.
+    L2C-310: enabling full line of zeros but not enabled in Cortex-A9
 
-    Table 78: IPv4 Multicast Destination Mask
+To fix it, don't set the L310_AUX_CTRL_FULL_LINE_ZERO flag (bit 0) in
+the default value of l2c_aux_val.  It may instead be enabled when
+applicable by the logic in l2c310_enable() if the attribute
+"arm,full-line-zero-disable" was set in the device tree.
 
-        Destination Ports            Record Bit Field
-        ---------------------------------------------
-        Ports 10-0                   MAC[34-24]
+The initial commit that introduced this default value was in v2.6.38
+commit 1cf0eb799759 ("ARM: S5PV310: Add L2 cache init function in
+cpu.c").
 
-    Example: All IPv4 multicast frames in VLAN 12 with MAC 01005E112233 are
-    to be forwarded to ports 3, 8, and 9. This is done by inserting the
-    following entry in the MAC table entry:
-    VALID = 1
-    VID = 12
-    MAC = 0x000308112233
-    ENTRY_TYPE = 2
-    DEST_IDX = 0
+However, the code to set the L310_AUX_CTRL_FULL_LINE_ZERO flag and
+manage that feature was added much later and the default value was not
+updated then.  So this seems to have been a subtle oversight
+especially since enabling it only in the cache and not in the A9 core
+doesn't actually prevent the platform from running.  According to the
+TRM, the opposite would be a real issue, if the feature was enabled in
+the A9 core but not in the cache controller.
 
-But this procedure is not at all what's going on in the driver. In fact,
-the code that embeds the ports into the MAC address looks like it hasn't
-actually been tested. This patch applies the procedure described in the
-datasheet.
-
-Since there are many other fixes to be made around multicast forwarding
-until it works properly, there is no real reason for this patch to be
-backported to stable trees, or considered a real fix of something that
-should have worked.
-
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: "kernelci.org bot" <bot@kernelci.org>
+Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mscc/ocelot.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ arch/arm/mach-exynos/exynos.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mscc/ocelot.c b/drivers/net/ethernet/mscc/ocelot.c
-index 76dbf9ac8ad50..1eaefc0ff87e6 100644
---- a/drivers/net/ethernet/mscc/ocelot.c
-+++ b/drivers/net/ethernet/mscc/ocelot.c
-@@ -1599,14 +1599,14 @@ static int ocelot_port_obj_add_mdb(struct net_device *dev,
- 	addr[0] = 0;
- 
- 	if (!new) {
--		addr[2] = mc->ports << 0;
--		addr[1] = mc->ports << 8;
-+		addr[1] = mc->ports >> 8;
-+		addr[2] = mc->ports & 0xff;
- 		ocelot_mact_forget(ocelot, addr, vid);
- 	}
- 
- 	mc->ports |= BIT(port);
--	addr[2] = mc->ports << 0;
--	addr[1] = mc->ports << 8;
-+	addr[1] = mc->ports >> 8;
-+	addr[2] = mc->ports & 0xff;
- 
- 	return ocelot_mact_learn(ocelot, 0, addr, vid, ENTRYTYPE_MACv4);
+diff --git a/arch/arm/mach-exynos/exynos.c b/arch/arm/mach-exynos/exynos.c
+index 7a8d1555db404..36c37444485a8 100644
+--- a/arch/arm/mach-exynos/exynos.c
++++ b/arch/arm/mach-exynos/exynos.c
+@@ -193,7 +193,7 @@ static void __init exynos_dt_fixup(void)
  }
-@@ -1630,9 +1630,9 @@ static int ocelot_port_obj_del_mdb(struct net_device *dev,
- 		return -ENOENT;
  
- 	memcpy(addr, mc->addr, ETH_ALEN);
--	addr[2] = mc->ports << 0;
--	addr[1] = mc->ports << 8;
- 	addr[0] = 0;
-+	addr[1] = mc->ports >> 8;
-+	addr[2] = mc->ports & 0xff;
- 	ocelot_mact_forget(ocelot, addr, vid);
- 
- 	mc->ports &= ~BIT(port);
-@@ -1642,8 +1642,8 @@ static int ocelot_port_obj_del_mdb(struct net_device *dev,
- 		return 0;
- 	}
- 
--	addr[2] = mc->ports << 0;
--	addr[1] = mc->ports << 8;
-+	addr[1] = mc->ports >> 8;
-+	addr[2] = mc->ports & 0xff;
- 
- 	return ocelot_mact_learn(ocelot, 0, addr, vid, ENTRYTYPE_MACv4);
- }
+ DT_MACHINE_START(EXYNOS_DT, "Samsung Exynos (Flattened Device Tree)")
+-	.l2c_aux_val	= 0x3c400001,
++	.l2c_aux_val	= 0x3c400000,
+ 	.l2c_aux_mask	= 0xc20fffff,
+ 	.smp		= smp_ops(exynos_smp_ops),
+ 	.map_io		= exynos_init_io,
 -- 
 2.25.1
 
