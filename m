@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1919D246F0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A177246FF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731518AbgHQRlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:41:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55714 "EHLO mail.kernel.org"
+        id S2389525AbgHQR4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:56:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731078AbgHQQQj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:16:39 -0400
+        id S2388549AbgHQQK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:10:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5102722CAF;
-        Mon, 17 Aug 2020 16:15:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7386C22D75;
+        Mon, 17 Aug 2020 16:10:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597680956;
-        bh=h6Fj3ETpMGOpPRh1EYAIBRsMwJkRuf4kml+PDi+3WTA=;
+        s=default; t=1597680614;
+        bh=xdUZ6JmuAWxPCP7ksF1xp3Pn0z3uNevBMXyZq8yKP4Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O/QURIUEos7AxRnk4nqQQIseSB8gsgqq4B6DnhTAv22rdoCXoJm8g8gfXkP+ibPOv
-         5/49toUdvNv2NdWCWETX4ESwg8Ts3Q5nUJH8ExswgcQAjCs4p3qdbY0Dtjf+yz41v0
-         oe6fEYNI+bslap3USnnNr12Lt0iuUL2/lJ0tUR/8=
+        b=GxpyeVKC0bLPFWOfWgwj9HH1WsfG5wuicNq6ROvZPSQkh6UKp0zbTmej1utDKnyoR
+         K31GV38hogT6PGlFciKLW/XyiJsXm5NNdGQ5lwalXtysYkyZ4yDRjiU/GA917sMapl
+         NM/gWOiFQCdDMcor3yU/7VI0pEt1PBAd6SxaLWo8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        David Teigland <teigland@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 125/168] dlm: Fix kobject memleak
-Date:   Mon, 17 Aug 2020 17:17:36 +0200
-Message-Id: <20200817143739.928348964@linuxfoundation.org>
+        stable@vger.kernel.org, Matteo Croce <mcroce@linux.microsoft.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH 5.4 256/270] pstore: Fix linking when crypto API disabled
+Date:   Mon, 17 Aug 2020 17:17:37 +0200
+Message-Id: <20200817143808.572108530@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143733.692105228@linuxfoundation.org>
-References: <20200817143733.692105228@linuxfoundation.org>
+In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
+References: <20200817143755.807583758@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,52 +43,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Matteo Croce <mcroce@linux.microsoft.com>
 
-[ Upstream commit 0ffddafc3a3970ef7013696e7f36b3d378bc4c16 ]
+commit fd49e03280e596e54edb93a91bc96170f8e97e4a upstream.
 
-Currently the error return path from kobject_init_and_add() is not
-followed by a call to kobject_put() - which means we are leaking
-the kobject.
+When building a kernel with CONFIG_PSTORE=y and CONFIG_CRYPTO not set,
+a build error happens:
 
-Set do_unreg = 1 before kobject_init_and_add() to ensure that
-kobject_put() can be called in its error patch.
+    ld: fs/pstore/platform.o: in function `pstore_dump':
+    platform.c:(.text+0x3f9): undefined reference to `crypto_comp_compress'
+    ld: fs/pstore/platform.o: in function `pstore_get_backend_records':
+    platform.c:(.text+0x784): undefined reference to `crypto_comp_decompress'
 
-Fixes: 901195ed7f4b ("Kobject: change GFS2 to use kobject_init_and_add")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Signed-off-by: David Teigland <teigland@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This because some pstore code uses crypto_comp_(de)compress regardless
+of the CONFIG_CRYPTO status. Fix it by wrapping the (de)compress usage
+by IS_ENABLED(CONFIG_PSTORE_COMPRESS)
+
+Signed-off-by: Matteo Croce <mcroce@linux.microsoft.com>
+Link: https://lore.kernel.org/lkml/20200706234045.9516-1-mcroce@linux.microsoft.com
+Fixes: cb3bee0369bc ("pstore: Use crypto compress API")
+Cc: stable@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/dlm/lockspace.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/pstore/platform.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/fs/dlm/lockspace.c b/fs/dlm/lockspace.c
-index f1261fa0af8a1..244b87e4dfe7f 100644
---- a/fs/dlm/lockspace.c
-+++ b/fs/dlm/lockspace.c
-@@ -633,6 +633,9 @@ static int new_lockspace(const char *name, const char *cluster,
- 	wait_event(ls->ls_recover_lock_wait,
- 		   test_bit(LSFL_RECOVER_LOCK, &ls->ls_flags));
+--- a/fs/pstore/platform.c
++++ b/fs/pstore/platform.c
+@@ -275,6 +275,9 @@ static int pstore_compress(const void *i
+ {
+ 	int ret;
  
-+	/* let kobject handle freeing of ls if there's an error */
-+	do_unreg = 1;
++	if (!IS_ENABLED(CONFIG_PSTORE_COMPRESSION))
++		return -EINVAL;
 +
- 	ls->ls_kobj.kset = dlm_kset;
- 	error = kobject_init_and_add(&ls->ls_kobj, &dlm_ktype, NULL,
- 				     "%s", ls->ls_name);
-@@ -640,9 +643,6 @@ static int new_lockspace(const char *name, const char *cluster,
- 		goto out_recoverd;
- 	kobject_uevent(&ls->ls_kobj, KOBJ_ADD);
+ 	ret = crypto_comp_compress(tfm, in, inlen, out, &outlen);
+ 	if (ret) {
+ 		pr_err("crypto_comp_compress failed, ret = %d!\n", ret);
+@@ -661,7 +664,7 @@ static void decompress_record(struct pst
+ 	int unzipped_len;
+ 	char *unzipped, *workspace;
  
--	/* let kobject handle freeing of ls if there's an error */
--	do_unreg = 1;
--
- 	/* This uevent triggers dlm_controld in userspace to add us to the
- 	   group of nodes that are members of this lockspace (managed by the
- 	   cluster infrastructure.)  Once it's done that, it tells us who the
--- 
-2.25.1
-
+-	if (!record->compressed)
++	if (!IS_ENABLED(CONFIG_PSTORE_COMPRESSION) || !record->compressed)
+ 		return;
+ 
+ 	/* Only PSTORE_TYPE_DMESG support compression. */
 
 
