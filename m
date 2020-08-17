@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21E36246ACD
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B802E246AC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:42:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387584AbgHQPms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:42:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43660 "EHLO mail.kernel.org"
+        id S2387494AbgHQPmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:42:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730004AbgHQPgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:36:24 -0400
+        id S1729397AbgHQPfR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:35:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CE2DA22E02;
-        Mon, 17 Aug 2020 15:36:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0227822C9F;
+        Mon, 17 Aug 2020 15:35:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678583;
-        bh=S77HsE32xw75YMJY8MhWSvUCv7M5y/Urn5gHgTo7HQ8=;
+        s=default; t=1597678516;
+        bh=+bzjetun8RNTzJ2/XSVVLY03Knr3lMknX4t/ao13OAQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EVIojPJOTebDzIBOS1FuX9YOhnNqAZESCRES/5r0REjt8RadArzmE/k7kLsonTYDR
-         YO68/WfoHaE2eU5DmSZQzCpUstuTZ0fw++4SXnP26E5A5P2UH5n9tsdO4SF5EZ89+i
-         du5/wBHZJ8A9GFCY8BJYq6CfGOomn/w/fgCOWrq0=
+        b=IPdR6fzGEaxLyo+4J7IZS+1boh1lbIjCKRpo3QzuHFQE2yRhVpLhzX67FPJDJV286
+         hsnzcznvMk0Wjtxfpk/J5+1Eatxo3/93awv+/lldTPkapa2ZE1rWKj6r3398r4b+1j
+         oLopv23ZsgWQ1WzO8ld+kr1sDK/PDX6UDYK4B02s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        stable@vger.kernel.org,
+        Florinel Iordache <florinel.iordache@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 354/464] ftrace: Fix ftrace_trace_task return value
-Date:   Mon, 17 Aug 2020 17:15:07 +0200
-Message-Id: <20200817143850.724302013@linuxfoundation.org>
+Subject: [PATCH 5.8 362/464] fsl/fman: fix unreachable code
+Date:   Mon, 17 Aug 2020 17:15:15 +0200
+Message-Id: <20200817143851.113169287@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -44,69 +45,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Florinel Iordache <florinel.iordache@nxp.com>
 
-[ Upstream commit c58b6b0372de0d4cd0536d6585addd1b36b151ae ]
+[ Upstream commit cc79fd8f557767de90ff199d3b6fb911df43160a ]
 
-I was attempting to use pid filtering with function_graph, but it wasn't
-allowing anything to make it through.  Turns out ftrace_trace_task
-returns false if ftrace_ignore_pid is not-empty, which isn't correct
-anymore.  We're now setting it to FTRACE_PID_IGNORE if we need to ignore
-that pid, otherwise it's set to the pid (which is weird considering the
-name) or to FTRACE_PID_TRACE.  Fix the check to check for !=
-FTRACE_PID_IGNORE.  With this we can now use function_graph with pid
-filtering.
+The parameter 'priority' is incorrectly forced to zero which ultimately
+induces logically dead code in the subsequent lines.
 
-Link: https://lkml.kernel.org/r/20200725005048.1790-1-josef@toxicpanda.com
-
-Fixes: 717e3f5ebc82 ("ftrace: Make function trace pid filtering a bit more exact")
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Fixes: 57ba4c9b56d8 ("fsl/fman: Add FMan MAC support")
+Signed-off-by: Florinel Iordache <florinel.iordache@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/ftrace.c | 3 ---
- kernel/trace/trace.h  | 7 ++++++-
- 2 files changed, 6 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/freescale/fman/fman_memac.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 1903b80db6ebc..7d879fae3777f 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -139,9 +139,6 @@ static inline void ftrace_ops_init(struct ftrace_ops *ops)
- #endif
- }
+diff --git a/drivers/net/ethernet/freescale/fman/fman_memac.c b/drivers/net/ethernet/freescale/fman/fman_memac.c
+index a5500ede40703..bb02b37422cc2 100644
+--- a/drivers/net/ethernet/freescale/fman/fman_memac.c
++++ b/drivers/net/ethernet/freescale/fman/fman_memac.c
+@@ -852,7 +852,6 @@ int memac_set_tx_pause_frames(struct fman_mac *memac, u8 priority,
  
--#define FTRACE_PID_IGNORE	-1
--#define FTRACE_PID_TRACE	-2
--
- static void ftrace_pid_func(unsigned long ip, unsigned long parent_ip,
- 			    struct ftrace_ops *op, struct pt_regs *regs)
- {
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index f21607f871891..610d21355526d 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -1103,6 +1103,10 @@ print_graph_function_flags(struct trace_iterator *iter, u32 flags)
- extern struct list_head ftrace_pids;
+ 	tmp = ioread32be(&regs->command_config);
+ 	tmp &= ~CMD_CFG_PFC_MODE;
+-	priority = 0;
  
- #ifdef CONFIG_FUNCTION_TRACER
-+
-+#define FTRACE_PID_IGNORE	-1
-+#define FTRACE_PID_TRACE	-2
-+
- struct ftrace_func_command {
- 	struct list_head	list;
- 	char			*name;
-@@ -1114,7 +1118,8 @@ struct ftrace_func_command {
- extern bool ftrace_filter_param __initdata;
- static inline int ftrace_trace_task(struct trace_array *tr)
- {
--	return !this_cpu_read(tr->array_buffer.data->ftrace_ignore_pid);
-+	return this_cpu_read(tr->array_buffer.data->ftrace_ignore_pid) !=
-+		FTRACE_PID_IGNORE;
- }
- extern int ftrace_is_dead(void);
- int ftrace_create_function_files(struct trace_array *tr,
+ 	iowrite32be(tmp, &regs->command_config);
+ 
 -- 
 2.25.1
 
