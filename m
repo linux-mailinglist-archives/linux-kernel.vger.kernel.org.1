@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22645246F93
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E8F0246FBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388566AbgHQQMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 12:12:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59172 "EHLO mail.kernel.org"
+        id S2388640AbgHQQLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 12:11:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730812AbgHQPrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:47:09 -0400
+        id S2387545AbgHQPqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:46:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7322D20855;
-        Mon, 17 Aug 2020 15:47:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F37A32067C;
+        Mon, 17 Aug 2020 15:46:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679228;
-        bh=Spr9HGWFgTiZN+TRdPU6IyN2JbV7fTSzBYUGFI3Bz3o=;
+        s=default; t=1597679201;
+        bh=bXOSpFUr15VAm3bVAU/GBKdHAAr5b+vERnYtChHHRIU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WIJ02E0FwLQfqa+3Z9VMRReB1bktAxyo3mDCxwCpfLaWmMvXBziAu0Z7tp1ZxF7Vi
-         2b+8iu9QLyePEyhGIbXfr2x1z+hAkHVqNMjoD0yenfykcMvfPKKXCBVag9XrhTNdvN
-         Jwv+8sZn3GFVJ0Tql88KS9t9eq50ztu/EBlWH8HE=
+        b=uxZFeGXB0kKwMqAVY2cF6xu/lQOiUnk6b8klVdyrHVb7KDoohKOUb7McAYwAWMcpn
+         a0tdZVfW/yBhJIVJaq54S/lxz+1PT0walA2U9lWvDrlIEYVKhB0OxUJf8TK7mdwptW
+         gspuaxdpiRBgulauzfKArHOc77zonkUNcpsP2pZE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
+        stable@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Teddy Wang <teddy.wang@siliconmotion.com>,
+        Dejin Zheng <zhengdejin5@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 122/393] drm/gem: Fix a leak in drm_gem_objects_lookup()
-Date:   Mon, 17 Aug 2020 17:12:52 +0200
-Message-Id: <20200817143825.527406976@linuxfoundation.org>
+Subject: [PATCH 5.7 131/393] video: fbdev: sm712fb: fix an issue about iounmap for a wrong address
+Date:   Mon, 17 Aug 2020 17:13:01 +0200
+Message-Id: <20200817143825.963891853@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
 References: <20200817143819.579311991@linuxfoundation.org>
@@ -44,44 +48,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Dejin Zheng <zhengdejin5@gmail.com>
 
-[ Upstream commit ec0bb482de0ad5e4aba2a4537ea53eaeb77d11a6 ]
+[ Upstream commit 98bd4f72988646c35569e1e838c0ab80d06c77f6 ]
 
-If the "handles" allocation or the copy_from_user() fails then we leak
-"objs".  It's supposed to be freed in panfrost_job_cleanup().
+the sfb->fb->screen_base is not save the value get by iounmap() when
+the chip id is 0x720. so iounmap() for address sfb->fb->screen_base
+is not right.
 
-Fixes: c117aa4d8701 ("drm: Add a drm_gem_objects_lookup helper")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Emil Velikov <emil.l.velikov@gmail.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200320132334.GC95012@mwanda
+Fixes: 1461d6672864854 ("staging: sm7xxfb: merge sm712fb with fbdev")
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: Teddy Wang <teddy.wang@siliconmotion.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200422160719.27763-1-zhengdejin5@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_gem.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/video/fbdev/sm712fb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/drm_gem.c b/drivers/gpu/drm/drm_gem.c
-index 3087aa710e8da..d847540e4f8c3 100644
---- a/drivers/gpu/drm/drm_gem.c
-+++ b/drivers/gpu/drm/drm_gem.c
-@@ -710,6 +710,8 @@ int drm_gem_objects_lookup(struct drm_file *filp, void __user *bo_handles,
- 	if (!objs)
- 		return -ENOMEM;
- 
-+	*objs_out = objs;
-+
- 	handles = kvmalloc_array(count, sizeof(u32), GFP_KERNEL);
- 	if (!handles) {
- 		ret = -ENOMEM;
-@@ -723,8 +725,6 @@ int drm_gem_objects_lookup(struct drm_file *filp, void __user *bo_handles,
+diff --git a/drivers/video/fbdev/sm712fb.c b/drivers/video/fbdev/sm712fb.c
+index 6a1b4a853d9ee..8cd655d6d6280 100644
+--- a/drivers/video/fbdev/sm712fb.c
++++ b/drivers/video/fbdev/sm712fb.c
+@@ -1429,6 +1429,8 @@ static int smtc_map_smem(struct smtcfb_info *sfb,
+ static void smtc_unmap_smem(struct smtcfb_info *sfb)
+ {
+ 	if (sfb && sfb->fb->screen_base) {
++		if (sfb->chip_id == 0x720)
++			sfb->fb->screen_base -= 0x00200000;
+ 		iounmap(sfb->fb->screen_base);
+ 		sfb->fb->screen_base = NULL;
  	}
- 
- 	ret = objects_lookup(filp, handles, count, objs);
--	*objs_out = objs;
--
- out:
- 	kvfree(handles);
- 	return ret;
 -- 
 2.25.1
 
