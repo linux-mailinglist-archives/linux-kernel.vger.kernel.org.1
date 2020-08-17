@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 777A92468D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 16:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE26A2468CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 16:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729181AbgHQOzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 10:55:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56564 "EHLO
+        id S1729115AbgHQOyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 10:54:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729072AbgHQOyU (ORCPT
+        with ESMTP id S1726630AbgHQOyV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 10:54:20 -0400
+        Mon, 17 Aug 2020 10:54:21 -0400
 Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D9AC061344
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 07:54:19 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id c19so13367110wmd.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 07:54:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8255C061389
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 07:54:20 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id k20so14136888wmi.5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 07:54:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=rP4szUXJvfYTvxUeVM7AVSTLCdSWwY5XZ+xFqvnQB/A=;
-        b=g+iq+KRSVdn3IqbRBT93xFqRdSEbPayULPc8QQxuwLQRWgPYDDmR/ahg2H/BPOgnrW
-         dSyQE40Cso6nylXUI3KRWx6NfCbroN/XG5JaPFSMdQLnb80fJhOctSP++I9EmmvBWCmV
-         myCHMlbnIMwy+d1YLducvdC9CcWROmweGNd/+CrcfwapexKVWTC2uzrkkgCFLJOvRm07
-         K4lWovb0lCgpA1mUrhoPb8bWIA6xsg82xGLohFuoa9W2dgXyAwf3H9fg11+gzUe0S/YF
-         N21P5rKgKnmwPFoAT7IGDNhx85hkizzTWvMZyTShINmRfGBsYIk81Y16U3bOsIn8Q4lZ
-         +3cw==
+        bh=+GmZLqRqCBxGNiL/K4/3XwerixrPqOChYFgw/4bX5hg=;
+        b=OxJ62YjETf3c/7dCsx4kmzMZW10Wcxi01b3hx7eFT4eYO1gos9IzhZfs3nqc05GtHC
+         kLrLNMpkEtunvSSRWmmRa6OqoFdIanFE2mcxaFxwfVs++/csiEGoJuX6Wtzq3pUxozqm
+         /rn4nvIz5drjgcrRBqFQ1m86kSuGM+VJku9Edzqxnp7LNJ2KVH5GjOwTCDMAnxwnNOj8
+         fqD1PfBaDZkfmex1K/sDlbyhdNFj5bLo6h991PRCbnLXU9f6zxbtJXzwRq32R3Z9dLnZ
+         LsriysvZGlBwKJ8cPWSYQPji9HCabiOhDrC5hqWOcUJsmRpJiuR3svT1xHxSoDHRub9V
+         JGtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=rP4szUXJvfYTvxUeVM7AVSTLCdSWwY5XZ+xFqvnQB/A=;
-        b=XAiNfXTDHfPYt1adAWqK2GoEKPJCvMUM7FgTf5r+BvcLXqOYYBTB7ZuanKlO0LKD0h
-         GYccIc7fjKPsS1yVL+auCJo6e3OKhr9gXgyaw8/X/uzeysJwggopWcVJJJ29rms3WQHX
-         X/P67Kx/nS8iaW77XiQIuFc70VTEFTNXUFMjGdw3UdREj+bDBqQMm6mA3xJDrq0hZ3mJ
-         mSmzvNjwyknm5Nrk8lB6AhWkkREOECkXpxQHRQ6EKQfIj3xsHt7lNxVKXBKkus/fXLUz
-         6CWLIZuCtdtFa5JJpz/G/rOHT6/O7NXxlJvQA9myh+UqH5JZa4JXxw2sW1RKcYNzXZ7V
-         pvLw==
-X-Gm-Message-State: AOAM532LJHjGKrIQsGuKLLMqWuTK51/Mt41hECq86SWt0jihq8kCSHqk
-        z8uLQ6n3J8wznenh+yTFB2ENyg==
-X-Google-Smtp-Source: ABdhPJwvTETI/jkSPzdj8CKJpcQ/FMV+ueWsTXYREJfeIfwcq6AHAifbAJpWJQuQKLuGABB2R5ZFxA==
-X-Received: by 2002:a1c:19c2:: with SMTP id 185mr14758349wmz.8.1597676058315;
-        Mon, 17 Aug 2020 07:54:18 -0700 (PDT)
+        bh=+GmZLqRqCBxGNiL/K4/3XwerixrPqOChYFgw/4bX5hg=;
+        b=HDPP+adrlIdyVwK0vsR7+hWWpVKRgx7rUqKA8FDo+wdifRxq6hTBKGUunj0IdCNjJH
+         FoVdGqOEQYNO95cql84UkM4ifJDaJV9zv+ozSAf2w8CfvKF+xUEGBLSUiwvT1qPPZLYh
+         X+Zqy/pEjGcjTp3PB+MkdpuI0FqS3/t6+8qU833xbM/D879LIQQ65YjoXS0zqYr73Q8N
+         wlKD16iWwRdSEteFlT4/cqS2VWmJm+X14SelhsAUxc/M0D5AZR1nPrTfv5E3hu2zUYGq
+         8VQUyNgaShgX7QTWkRwMWhDtREU5f/zES7Ni3Cgp1sMOasaFsX1OlQZwJFFz2uAW62Po
+         KVow==
+X-Gm-Message-State: AOAM5331BG2vZIF6Rv2nsbiSEhYjO2IdayUHq+boOMcv0lZY0doemsYX
+        zijLYHudw+FTHfyhjGPCrVhUMg==
+X-Google-Smtp-Source: ABdhPJzt7AZlOtqtJPNnCDp2qVeamg/gwb8Bn2RQTjQKYqpYiToGSj3CeXpB2O0J6oSvp//aOvcXRA==
+X-Received: by 2002:a1c:286:: with SMTP id 128mr14187961wmc.37.1597676059473;
+        Mon, 17 Aug 2020 07:54:19 -0700 (PDT)
 Received: from hackbox2.linaro.org ([81.128.185.34])
-        by smtp.gmail.com with ESMTPSA id r16sm35005678wrr.13.2020.08.17.07.54.17
+        by smtp.gmail.com with ESMTPSA id r16sm35005678wrr.13.2020.08.17.07.54.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 07:54:17 -0700 (PDT)
+        Mon, 17 Aug 2020 07:54:18 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         James Clark <james.clark@arm.com>,
@@ -61,9 +61,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
         Mike Leach <mike.leach@linaro.org>
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH RESEND v1 04/13] perf arm-spe: Fix packet length handling
-Date:   Mon, 17 Aug 2020 15:53:39 +0100
-Message-Id: <20200817145348.14461-5-leo.yan@linaro.org>
+Subject: [PATCH RESEND v1 05/13] perf arm-spe: Refactor packet header parsing
+Date:   Mon, 17 Aug 2020 15:53:40 +0100
+Message-Id: <20200817145348.14461-6-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200817145348.14461-1-leo.yan@linaro.org>
 References: <20200817145348.14461-1-leo.yan@linaro.org>
@@ -72,139 +72,172 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When process address packet and counter packet, if the packet contains
-extended header, it misses to account the extra one byte for header
-length calculation, thus returns the wrong packet length.
+The packet header parsing uses the hard coded values and it uses nested
+if-else statements.
 
-To correct the packet length calculation, one possible fixing is simply
-to plus extra 1 for extended header, but will spread some duplicate code
-in the flows for processing address packet and counter packet.
-Alternatively, we can refine the function arm_spe_get_payload() to not
-only support short header and allow it to support extended header, and
-rely on it for the packet length calculation.
-
-So this patch refactors function arm_spe_get_payload() with a new
-argument 'ext_hdr' for support extended header; the packet processing
-flows can invoke this function to unify the packet length calculation.
+To improve the readability, this patch refactors the macros for packet
+header format so it removes the hard coded values.  Furthermore, based
+on the new mask macros it reduces the nested if-else statements and
+changes to use the flat conditions checking, this is directive and can
+easily map to the descriptions in ARMv8-a architecture reference manual
+(ARM DDI 0487E.a), chapter 'D10.1.5 Statistical Profiling Extension
+protocol packet headers'.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
- .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 34 +++++++------------
- 1 file changed, 12 insertions(+), 22 deletions(-)
+ .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 92 +++++++++----------
+ .../arm-spe-decoder/arm-spe-pkt-decoder.h     | 17 ++++
+ 2 files changed, 58 insertions(+), 51 deletions(-)
 
 diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-index 5a8696031e16..4f0aeb62e97b 100644
+index 4f0aeb62e97b..5f4f900a9980 100644
 --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
 +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-@@ -80,14 +80,15 @@ const char *arm_spe_pkt_name(enum arm_spe_pkt_type type)
- 	(1 << (((val) & SPE_HEADER_SZ_MASK) >> SPE_HEADER_SZ_SHIFT))
+@@ -15,28 +15,6 @@
+ #define NS_FLAG		BIT(63)
+ #define EL_FLAG		(BIT(62) | BIT(61))
  
- static int arm_spe_get_payload(const unsigned char *buf, size_t len,
-+			       unsigned char ext_hdr,
- 			       struct arm_spe_pkt *packet)
- {
--	size_t payload_len = PAYLOAD_LEN(buf[0]);
-+	size_t payload_len = PAYLOAD_LEN(buf[ext_hdr]);
- 
--	if (len < 1 + payload_len)
-+	if (len < 1 + ext_hdr + payload_len)
- 		return ARM_SPE_NEED_MORE_BYTES;
- 
--	buf++;
-+	buf += 1 + ext_hdr;
- 
- 	switch (payload_len) {
- 	case 1: packet->payload = *(uint8_t *)buf; break;
-@@ -97,7 +98,7 @@ static int arm_spe_get_payload(const unsigned char *buf, size_t len,
- 	default: return ARM_SPE_BAD_PACKET;
- 	}
- 
--	return 1 + payload_len;
-+	return 1 + ext_hdr + payload_len;
- }
- 
- static int arm_spe_get_pad(struct arm_spe_pkt *packet)
-@@ -128,7 +129,7 @@ static int arm_spe_get_timestamp(const unsigned char *buf, size_t len,
+-#define SPE_HEADER0_PAD			0x0
+-#define SPE_HEADER0_END			0x1
+-#define SPE_HEADER0_ADDRESS		0x30 /* address packet (short) */
+-#define SPE_HEADER0_ADDRESS_MASK	0x38
+-#define SPE_HEADER0_COUNTER		0x18 /* counter packet (short) */
+-#define SPE_HEADER0_COUNTER_MASK	0x38
+-#define SPE_HEADER0_TIMESTAMP		0x71
+-#define SPE_HEADER0_TIMESTAMP		0x71
+-#define SPE_HEADER0_EVENTS		0x2
+-#define SPE_HEADER0_EVENTS_MASK		0xf
+-#define SPE_HEADER0_SOURCE		0x3
+-#define SPE_HEADER0_SOURCE_MASK		0xf
+-#define SPE_HEADER0_CONTEXT		0x24
+-#define SPE_HEADER0_CONTEXT_MASK	0x3c
+-#define SPE_HEADER0_OP_TYPE		0x8
+-#define SPE_HEADER0_OP_TYPE_MASK	0x3c
+-#define SPE_HEADER1_ALIGNMENT		0x0
+-#define SPE_HEADER1_ADDRESS		0xb0 /* address packet (extended) */
+-#define SPE_HEADER1_ADDRESS_MASK	0xf8
+-#define SPE_HEADER1_COUNTER		0x98 /* counter packet (extended) */
+-#define SPE_HEADER1_COUNTER_MASK	0xf8
+-
+ #if __BYTE_ORDER == __BIG_ENDIAN
+ #define le16_to_cpu bswap_16
+ #define le32_to_cpu bswap_32
+@@ -197,46 +175,58 @@ static int arm_spe_get_addr(const unsigned char *buf, size_t len,
+ static int arm_spe_do_get_packet(const unsigned char *buf, size_t len,
  				 struct arm_spe_pkt *packet)
  {
- 	packet->type = ARM_SPE_TIMESTAMP;
--	return arm_spe_get_payload(buf, len, packet);
-+	return arm_spe_get_payload(buf, len, 0, packet);
+-	unsigned int byte;
++	unsigned int hdr;
++	unsigned char ext_hdr = 0;
+ 
+ 	memset(packet, 0, sizeof(struct arm_spe_pkt));
+ 
+ 	if (!len)
+ 		return ARM_SPE_NEED_MORE_BYTES;
+ 
+-	byte = buf[0];
+-	if (byte == SPE_HEADER0_PAD)
++	hdr = buf[0];
++
++	if (hdr == SPE_HEADER0_PAD)
+ 		return arm_spe_get_pad(packet);
+-	else if (byte == SPE_HEADER0_END) /* no timestamp at end of record */
++
++	if (hdr == SPE_HEADER0_END) /* no timestamp at end of record */
+ 		return arm_spe_get_end(packet);
+-	else if (byte & 0xc0 /* 0y11xxxxxx */) {
+-		if (byte & 0x80) {
+-			if ((byte & SPE_HEADER0_ADDRESS_MASK) == SPE_HEADER0_ADDRESS)
+-				return arm_spe_get_addr(buf, len, 0, packet);
+-			if ((byte & SPE_HEADER0_COUNTER_MASK) == SPE_HEADER0_COUNTER)
+-				return arm_spe_get_counter(buf, len, 0, packet);
+-		} else
+-			if (byte == SPE_HEADER0_TIMESTAMP)
+-				return arm_spe_get_timestamp(buf, len, packet);
+-			else if ((byte & SPE_HEADER0_EVENTS_MASK) == SPE_HEADER0_EVENTS)
+-				return arm_spe_get_events(buf, len, packet);
+-			else if ((byte & SPE_HEADER0_SOURCE_MASK) == SPE_HEADER0_SOURCE)
+-				return arm_spe_get_data_source(buf, len, packet);
+-			else if ((byte & SPE_HEADER0_CONTEXT_MASK) == SPE_HEADER0_CONTEXT)
+-				return arm_spe_get_context(buf, len, packet);
+-			else if ((byte & SPE_HEADER0_OP_TYPE_MASK) == SPE_HEADER0_OP_TYPE)
+-				return arm_spe_get_op_type(buf, len, packet);
+-	} else if ((byte & 0xe0) == 0x20 /* 0y001xxxxx */) {
+-		/* 16-bit header */
+-		byte = buf[1];
+-		if (byte == SPE_HEADER1_ALIGNMENT)
++
++	if (hdr == SPE_HEADER0_TIMESTAMP)
++		return arm_spe_get_timestamp(buf, len, packet);
++
++	if ((hdr & SPE_HEADER0_MASK1) == SPE_HEADER0_EVENTS)
++		return arm_spe_get_events(buf, len, packet);
++
++	if ((hdr & SPE_HEADER0_MASK1) == SPE_HEADER0_SOURCE)
++		return arm_spe_get_data_source(buf, len, packet);
++
++	if ((hdr & SPE_HEADER0_MASK2) == SPE_HEADER0_CONTEXT)
++		return arm_spe_get_context(buf, len, packet);
++
++	if ((hdr & SPE_HEADER0_MASK2) == SPE_HEADER0_OPERATION)
++		return arm_spe_get_op_type(buf, len, packet);
++
++	if ((hdr & SPE_HEADER0_MASK3) == SPE_HEADER0_EXTENDED) {
++		/* 16-bit extended format header */
++		ext_hdr = 1;
++
++		hdr = buf[1];
++		if (hdr == SPE_HEADER1_ALIGNMENT)
+ 			return arm_spe_get_alignment(buf, len, packet);
+-		else if ((byte & SPE_HEADER1_ADDRESS_MASK) == SPE_HEADER1_ADDRESS)
+-			return arm_spe_get_addr(buf, len, 1, packet);
+-		else if ((byte & SPE_HEADER1_COUNTER_MASK) == SPE_HEADER1_COUNTER)
+-			return arm_spe_get_counter(buf, len, 1, packet);
+ 	}
+ 
++	/*
++	 * The short format header's byte 0 or the extended format header's
++	 * byte 1 has been assigned to 'hdr', which uses the same encoding for
++	 * address packet and counter packet, so don't need to distinguish if
++	 * it's short format or extended format and handle in once.
++	 */
++	if ((hdr & SPE_HEADER0_MASK4) == SPE_HEADER0_ADDRESS)
++		return arm_spe_get_addr(buf, len, ext_hdr, packet);
++
++	if ((hdr & SPE_HEADER0_MASK4) == SPE_HEADER0_COUNTER)
++		return arm_spe_get_counter(buf, len, ext_hdr, packet);
++
+ 	return ARM_SPE_BAD_PACKET;
  }
  
- static int arm_spe_get_events(const unsigned char *buf, size_t len,
-@@ -143,14 +144,14 @@ static int arm_spe_get_events(const unsigned char *buf, size_t len,
- 	 */
- 	packet->index = PAYLOAD_LEN(buf[0]);
+diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+index aca919159cad..9df5ebe02c5d 100644
+--- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
++++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+@@ -36,6 +36,23 @@ struct arm_spe_pkt {
+ 	uint64_t		payload;
+ };
  
--	return arm_spe_get_payload(buf, len, packet);
-+	return arm_spe_get_payload(buf, len, 0, packet);
- }
++/* Short header (HEADER0) and extended header (HEADER1) */
++#define SPE_HEADER0_PAD			0x0
++#define SPE_HEADER0_END			0x1
++#define SPE_HEADER0_TIMESTAMP		0x71
++#define SPE_HEADER0_MASK1		0xcf	/* Mask for event & data source */
++#define SPE_HEADER0_EVENTS		0x42
++#define SPE_HEADER0_SOURCE		0x43
++#define SPE_HEADER0_MASK2		0xfc	/* Mask for context & operation */
++#define SPE_HEADER0_CONTEXT		0x64
++#define SPE_HEADER0_OPERATION		0x48
++#define SPE_HEADER0_MASK3		0xe0	/* Mask for extended format */
++#define SPE_HEADER0_EXTENDED		0x20
++#define SPE_HEADER0_MASK4		0xf8	/* Mask for address & counter */
++#define SPE_HEADER0_ADDRESS		0xb0
++#define SPE_HEADER0_COUNTER		0x98
++#define SPE_HEADER1_ALIGNMENT		0x0
++
+ #define SPE_HEADER_SZ_SHIFT		(4)
+ #define SPE_HEADER_SZ_MASK		(0x30)
  
- static int arm_spe_get_data_source(const unsigned char *buf, size_t len,
- 				   struct arm_spe_pkt *packet)
- {
- 	packet->type = ARM_SPE_DATA_SOURCE;
--	return arm_spe_get_payload(buf, len, packet);
-+	return arm_spe_get_payload(buf, len, 0, packet);
- }
- 
- static int arm_spe_get_context(const unsigned char *buf, size_t len,
-@@ -158,8 +159,7 @@ static int arm_spe_get_context(const unsigned char *buf, size_t len,
- {
- 	packet->type = ARM_SPE_CONTEXT;
- 	packet->index = buf[0] & 0x3;
--
--	return arm_spe_get_payload(buf, len, packet);
-+	return arm_spe_get_payload(buf, len, 0, packet);
- }
- 
- static int arm_spe_get_op_type(const unsigned char *buf, size_t len,
-@@ -167,41 +167,31 @@ static int arm_spe_get_op_type(const unsigned char *buf, size_t len,
- {
- 	packet->type = ARM_SPE_OP_TYPE;
- 	packet->index = buf[0] & 0x3;
--	return arm_spe_get_payload(buf, len, packet);
-+	return arm_spe_get_payload(buf, len, 0, packet);
- }
- 
- static int arm_spe_get_counter(const unsigned char *buf, size_t len,
- 			       const unsigned char ext_hdr, struct arm_spe_pkt *packet)
- {
--	if (len < 2)
--		return ARM_SPE_NEED_MORE_BYTES;
--
- 	packet->type = ARM_SPE_COUNTER;
- 	if (ext_hdr)
- 		packet->index = ((buf[0] & 0x3) << 3) | (buf[1] & 0x7);
- 	else
- 		packet->index = buf[0] & 0x7;
- 
--	packet->payload = le16_to_cpu(*(uint16_t *)(buf + 1));
--
--	return 1 + ext_hdr + 2;
-+	return arm_spe_get_payload(buf, len, ext_hdr, packet);
- }
- 
- static int arm_spe_get_addr(const unsigned char *buf, size_t len,
- 			    const unsigned char ext_hdr, struct arm_spe_pkt *packet)
- {
--	if (len < 8)
--		return ARM_SPE_NEED_MORE_BYTES;
--
- 	packet->type = ARM_SPE_ADDRESS;
- 	if (ext_hdr)
- 		packet->index = ((buf[0] & 0x3) << 3) | (buf[1] & 0x7);
- 	else
- 		packet->index = buf[0] & 0x7;
- 
--	memcpy_le64(&packet->payload, buf + 1, 8);
--
--	return 1 + ext_hdr + 8;
-+	return arm_spe_get_payload(buf, len, ext_hdr, packet);
- }
- 
- static int arm_spe_do_get_packet(const unsigned char *buf, size_t len,
 -- 
 2.17.1
 
