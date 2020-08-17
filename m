@@ -2,190 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E0B246774
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 15:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 893B624678B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 15:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728620AbgHQNkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 09:40:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38256 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728388AbgHQNkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 09:40:11 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F76B204FD;
-        Mon, 17 Aug 2020 13:40:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597671610;
-        bh=DpLtEeCc7osoHKspUjh3s0M2UFGfAdKBrZ9NCbDLJus=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X6klsXTpEEaXqfqTcVJypMXzfzu9JQ4TaCW/J3Tq/B1oovyfR9P4jk/Xsiz5AIOjr
-         dNJmFX0fb4QyMDVanUJ2gbr1jdLdcZnLojOcoPrn3TmaOAl+8jzaZ8yramQa9sSE6i
-         vDeNlv785AJ5Q+GXYwAdtudNncn2E0CYUNuhKayQ=
-Date:   Mon, 17 Aug 2020 21:40:05 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     robh+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] ARM: dts: imx7d-sdb: Add notes for audio sound card
-Message-ID: <20200817134003.GI16951@dragon>
-References: <1595483016-8822-1-git-send-email-shengjiu.wang@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1595483016-8822-1-git-send-email-shengjiu.wang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1728806AbgHQNml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 09:42:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728465AbgHQNku (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 09:40:50 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07801C061389
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 06:40:49 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id g6so17469724ljn.11
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 06:40:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=m+ousw4fXr79+y3y64jWSrgKPSzonc7IxBJ1mGORPXc=;
+        b=TEppYqF1eUfSax+aIvKd0LAUnTJWiokA4qC4Xpz2SYDaqKl5E7Sak8XoxxT4cWWViC
+         JzKjRvb2mIubhps5A5g6PvyMSVLUkkRNx+mtvF3nrwtZ9eRm/Qxj4vaAaFaIV3pAOGj2
+         Fe75HXYQwFsThowTlTbsAonowIKHGsT2mSRuLWOXOPw7VYsTVrGHHK+CxbA7ZG351aTk
+         0nl5OT5UjgVUR7ecO8HrzWsfn/RWr+L2lX6wz2aqs7sZB34Hzsn4LNdcC6PXD9PzvoE3
+         ipojH8izMRvbA0svEpxiKXr6Wobptv/9JrDkGUzSNQ6dyFyQpC+tvOZbE0iMVzy9hrYh
+         M6Pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=m+ousw4fXr79+y3y64jWSrgKPSzonc7IxBJ1mGORPXc=;
+        b=UdyCjpfEiONrAsICEW0VPhmy2y1iSnYY2ASAQ3SnaGOLQ5JCrsq6kHFlB4ILIwmW61
+         WO3KzVah2bkBL0f8saGDppo0WJfHwcBHAP/hYSwTh3Z7IwlzrX9wohBZe+cpMTDo4PtZ
+         ET6KAqATkP4w8gWigib848Cg5BOJ4VRvGhdj+I6+rxpwz1lam+yPR136veTq+M55fa/D
+         6tO26vUu3WEudHrguusT0SNDabqKtL2bP41qTSb2JI6zDMAAv2DXUwx+NH9gXfwh9Spa
+         41MEer0BQYj9Gdriz02rSVZDAFU/aJDcAecLIQZQlgqr1jGboAvUDDxasRo+uqcBXgQF
+         8PRg==
+X-Gm-Message-State: AOAM531iPmcAha+J1Rfu/ub+M7ERrHseurNwRcs9e+O9Bd13u6Ms/6j3
+        VHM7Ry12mMAu3iTldSy/K0aWwg==
+X-Google-Smtp-Source: ABdhPJwmB0UO6vc4c3I2R5pE5ACL/1O6dNBEGweV8RJPEozIubkSsXH04rvei5cu86g/SsJLdWUK+A==
+X-Received: by 2002:a2e:5301:: with SMTP id h1mr6111553ljb.147.1597671646924;
+        Mon, 17 Aug 2020 06:40:46 -0700 (PDT)
+Received: from gilgamesh.semihalf.com (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
+        by smtp.gmail.com with ESMTPSA id g22sm3443791lja.29.2020.08.17.06.40.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 17 Aug 2020 06:40:46 -0700 (PDT)
+From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+To:     tglx@linutronix.de, jason@lakedaemon.net, maz@kernel.org,
+        s-anna@ti.com
+Cc:     grzegorz.jaszczyk@linaro.org, robh+dt@kernel.org,
+        lee.jones@linaro.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, david@lechnology.com,
+        praneeth@ti.com
+Subject: [PATCH v5 0/5] Add TI PRUSS Local Interrupt Controller IRQChip driver
+Date:   Mon, 17 Aug 2020 15:40:08 +0200
+Message-Id: <1597671613-20879-1-git-send-email-grzegorz.jaszczyk@linaro.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 01:43:36PM +0800, Shengjiu Wang wrote:
-> Configure the SAI device node, configure audio clock
-> and pinctrl.
-> 
-> Enable the audio sound card, which use the SAI1 and
-> wm8960, and enable headphone detection.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Hi All,
 
-s/notes/nodes in subject?
+The following is a v4 version of the series [1-4] that adds an IRQChip
+driver for the local interrupt controller present within a Programmable
+Real-Time Unit and Industrial Communication Subsystem (PRU-ICSS) present on a
+number of TI SoCs including OMAP architecture based AM335x, AM437x, AM57xx SoCs,
+Keystone 2 architecture based 66AK2G SoCs, Davinci architecture based
+OMAP-L138/DA850 SoCs and the latest K3 architecture based AM65x and J721E SoCs.
+Please see the v1 cover-letter [1] for details about the features of this
+interrupt controller.  More details can be found in any of the supported SoC
+TRMs.  Eg: Chapter 30.1.6 of AM5728 TRM [5]
 
-I fixed it up and applied the patch.
+Please see the individual patches for exact changes in each patch, following are
+the main changes from v4:
+ - Update dt-binding description (no functional changes).
+ - Use more meaningful define/variable names, drop redundant error messages, fix
+   error handling in case of irq == 0 (patch #2).
 
-Shawn
+[1] https://patchwork.kernel.org/cover/11034561/
+[2] https://patchwork.kernel.org/cover/11069749/
+[3] https://patchwork.kernel.org/cover/11639055/
+[4] https://patchwork.kernel.org/cover/11688727/
+[5] http://www.ti.com/lit/pdf/spruhz6
 
-> ---
->  arch/arm/boot/dts/imx7d-sdb.dts | 81 +++++++++++++++++++++++++++++++++
->  1 file changed, 81 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/imx7d-sdb.dts b/arch/arm/boot/dts/imx7d-sdb.dts
-> index 17cca8a9f77b..b50b19f2d0f1 100644
-> --- a/arch/arm/boot/dts/imx7d-sdb.dts
-> +++ b/arch/arm/boot/dts/imx7d-sdb.dts
-> @@ -146,6 +146,24 @@ panel_in: endpoint {
->  			};
->  		};
->  	};
-> +
-> +	sound {
-> +		compatible = "fsl,imx7d-evk-wm8960",
-> +			     "fsl,imx-audio-wm8960";
-> +		model = "wm8960-audio";
-> +		audio-cpu = <&sai1>;
-> +		audio-codec = <&codec>;
-> +		hp-det-gpio = <&gpio2 28 GPIO_ACTIVE_HIGH>;
-> +		audio-routing =
-> +			"Headphone Jack", "HP_L",
-> +			"Headphone Jack", "HP_R",
-> +			"Ext Spk", "SPK_LP",
-> +			"Ext Spk", "SPK_LN",
-> +			"Ext Spk", "SPK_RP",
-> +			"Ext Spk", "SPK_RN",
-> +			"LINPUT1", "AMIC",
-> +			"AMIC", "MICB";
-> +	};
->  };
->  
->  &adc1 {
-> @@ -363,6 +381,13 @@ codec: wm8960@1a {
->  		clocks = <&clks IMX7D_AUDIO_MCLK_ROOT_CLK>;
->  		clock-names = "mclk";
->  		wlf,shared-lrclk;
-> +		wlf,hp-cfg = <2 2 3>;
-> +		wlf,gpio-cfg = <1 3>;
-> +		assigned-clocks = <&clks IMX7D_AUDIO_MCLK_ROOT_SRC>,
-> +				  <&clks IMX7D_PLL_AUDIO_POST_DIV>,
-> +				  <&clks IMX7D_AUDIO_MCLK_ROOT_CLK>;
-> +		assigned-clock-parents = <&clks IMX7D_PLL_AUDIO_POST_DIV>;
-> +		assigned-clock-rates = <0>, <884736000>, <12288000>;
->  	};
->  };
->  
-> @@ -391,6 +416,28 @@ &reg_1p2 {
->  	vin-supply = <&sw2_reg>;
->  };
->  
-> +&sai1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_sai1>;
-> +	assigned-clocks = <&clks IMX7D_SAI1_ROOT_SRC>,
-> +			  <&clks IMX7D_PLL_AUDIO_POST_DIV>,
-> +			  <&clks IMX7D_SAI1_ROOT_CLK>;
-> +	assigned-clock-parents = <&clks IMX7D_PLL_AUDIO_POST_DIV>;
-> +	assigned-clock-rates = <0>, <884736000>, <36864000>;
-> +	status = "okay";
-> +};
-> +
-> +&sai3 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_sai3 &pinctrl_sai3_mclk>;
-> +	assigned-clocks = <&clks IMX7D_SAI3_ROOT_SRC>,
-> +			  <&clks IMX7D_PLL_AUDIO_POST_DIV>,
-> +			  <&clks IMX7D_SAI3_ROOT_CLK>;
-> +	assigned-clock-parents = <&clks IMX7D_PLL_AUDIO_POST_DIV>;
-> +	assigned-clock-rates = <0>, <884736000>, <36864000>;
-> +	status = "okay";
-> +};
-> +
->  &snvs_pwrkey {
->  	status = "okay";
->  };
-> @@ -550,6 +597,7 @@ MX7D_PAD_SD2_WP__GPIO5_IO10		0x59
->  		pinctrl_hog: hoggrp {
->  			fsl,pins = <
->  				MX7D_PAD_ECSPI2_SS0__GPIO4_IO23		0x34  /* bt reg on */
-> +				MX7D_PAD_EPDC_BDR0__GPIO2_IO28		0x59  /* headphone detect */
->  			>;
->  		};
->  
-> @@ -615,6 +663,33 @@ MX7D_PAD_LCD_RESET__LCD_RESET		0x79
->  			>;
->  		};
->  
-> +		pinctrl_sai1: sai1grp {
-> +			fsl,pins = <
-> +				MX7D_PAD_SAI1_MCLK__SAI1_MCLK           0x1f
-> +				MX7D_PAD_ENET1_RX_CLK__SAI1_TX_BCLK     0x1f
-> +				MX7D_PAD_ENET1_CRS__SAI1_TX_SYNC	0x1f
-> +				MX7D_PAD_ENET1_COL__SAI1_TX_DATA0	0x30
-> +				MX7D_PAD_ENET1_TX_CLK__SAI1_RX_DATA0	0x1f
-> +			>;
-> +		};
-> +
-> +		pinctrl_sai2: sai2grp {
-> +			fsl,pins = <
-> +				MX7D_PAD_SAI2_TX_BCLK__SAI2_TX_BCLK     0x1f
-> +				MX7D_PAD_SAI2_TX_SYNC__SAI2_TX_SYNC     0x1f
-> +				MX7D_PAD_SAI2_TX_DATA__SAI2_TX_DATA0    0x30
-> +				MX7D_PAD_SAI2_RX_DATA__SAI2_RX_DATA0    0x1f
-> +			>;
-> +		};
-> +
-> +		pinctrl_sai3: sai3grp {
-> +			fsl,pins = <
-> +				MX7D_PAD_UART3_TX_DATA__SAI3_TX_BCLK   0x1f
-> +				MX7D_PAD_UART3_CTS_B__SAI3_TX_SYNC     0x1f
-> +				MX7D_PAD_UART3_RTS_B__SAI3_TX_DATA0    0x30
-> +			>;
-> +		};
-> +
->  		pinctrl_spi4: spi4grp {
->  			fsl,pins = <
->  				MX7D_PAD_GPIO1_IO09__GPIO1_IO9	0x59
-> @@ -776,4 +851,10 @@ pinctrl_usb_otg2_vbus_reg: usbotg2vbusreggrp {
->  			MX7D_PAD_LPSR_GPIO1_IO07__GPIO1_IO7	  0x14
->  		>;
->  	};
-> +
-> +	pinctrl_sai3_mclk: sai3grp_mclk {
-> +		fsl,pins = <
-> +			MX7D_PAD_LPSR_GPIO1_IO03__SAI3_MCLK	0x1f
-> +		>;
-> +	};
->  };
-> -- 
-> 2.27.0
-> 
+Best regards
+Grzegorz
+
+David Lechner (1):
+  irqchip/irq-pruss-intc: Implement irq_{get,set}_irqchip_state ops
+
+Grzegorz Jaszczyk (1):
+  irqchip/irq-pruss-intc: Add a PRUSS irqchip driver for PRUSS
+    interrupts
+
+Suman Anna (3):
+  dt-bindings: irqchip: Add PRU-ICSS interrupt controller bindings
+  irqchip/irq-pruss-intc: Add logic for handling reserved interrupts
+  irqchip/irq-pruss-intc: Add support for ICSSG INTC on K3 SoCs
+
+ .../interrupt-controller/ti,pruss-intc.yaml        | 158 +++++
+ drivers/irqchip/Kconfig                            |  10 +
+ drivers/irqchip/Makefile                           |   1 +
+ drivers/irqchip/irq-pruss-intc.c                   | 658 +++++++++++++++++++++
+ 4 files changed, 827 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
+ create mode 100644 drivers/irqchip/irq-pruss-intc.c
+
+-- 
+2.7.4
+
