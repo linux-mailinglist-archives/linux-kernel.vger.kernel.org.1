@@ -2,101 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1F0246E5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14D60246E32
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389576AbgHQR2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:28:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389474AbgHQRMk (ORCPT
+        id S2389783AbgHQRZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:25:09 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:38452 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389524AbgHQRNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 13:12:40 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5436AC061342
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 10:12:40 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id r4so15695517wrx.9
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 10:12:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AueLUpVNwOplEaRIeklXnlMpQk/hv9PNTq+/4iLo0R0=;
-        b=Gpu1742R6bQKiE7BaePK5diMLvF+iZfSSkZ0BOARPwt42lhi8nz00uW6K89/MGg4zm
-         hZXZDUrk/4N+XUcR0wbbQo713rcnKWaOX9p4s60ZhAx89+KzEZhhA4saULYqOxNRGYdx
-         hUyQy65h8Dy4+B9yFynN1Kh1R/12oHa6Gs3j4u3Q4o3r9uQOP6RgH+35nG01K9CZdK68
-         rzoGzIXjOR9WHXTKTHVQO9vD4+jdCw3iMYQLPoCTJcpW+4tvowsYeLvIo21HjWRa2vmV
-         04Cx09aiVDy2hFLu9lZ+jRZdQNHnPp6FILixg0q9oSK7M9y8md8BFE7vFrK7eGa8X8yl
-         WMrw==
+        Mon, 17 Aug 2020 13:13:46 -0400
+Received: from mail-ej1-f71.google.com ([209.85.218.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <guilherme.piccoli@canonical.com>)
+        id 1k7ihb-0005cu-US
+        for linux-kernel@vger.kernel.org; Mon, 17 Aug 2020 17:13:44 +0000
+Received: by mail-ej1-f71.google.com with SMTP id a19so5771672ejs.12
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 10:13:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AueLUpVNwOplEaRIeklXnlMpQk/hv9PNTq+/4iLo0R0=;
-        b=gG99knuWUx6D2FgLYOJkYOFRNUAQ69GMYjaPrMofv5NWt8ou2LnMEMh6wOYC+EkNmE
-         0dqF9+4MGG5ofuo28yoHO9G4Bq269xqYCdJGUpBqDz2KPB46NhFMXWAjX9RWMfwHmoRQ
-         hocWBI9c0B2rz8XOD01wYe5jCKnHVoR1DOGvX6ie/VLFVfXbL8Ekn2MqsWj79baGV5Sz
-         iu/BTpCS164Pk3q2c0Zq32xYwIJhAHvznWz1usoHoaV07m7AUOxAJthgpOjy8Y2sx3XQ
-         c5s61hp3Dne8WWOag1whcmi8Xj0Jh25ql/gdgCNyQ4w6j+AfkI3y6MTGcATqdZOejQdG
-         AFSw==
-X-Gm-Message-State: AOAM532J16NPPyzU6NbBEw1WwC3oi/A5775+ST4+coT9OQPBcd601y30
-        bbp2QcnUavZR9/Ey0wokG8DtZ7v6FZA1GEeTEmMfUKRhncQcOg==
-X-Google-Smtp-Source: ABdhPJwzzJqqKP8Dz57WEH4mjrx29gWDTGQSyhqQk/3EQMn3h+P+wfHkvWUG7jnjma/rWD/FdEgspqJzfrhXMf85F+M=
-X-Received: by 2002:adf:fc06:: with SMTP id i6mr16257949wrr.79.1597684357045;
- Mon, 17 Aug 2020 10:12:37 -0700 (PDT)
+        bh=ortJXZij7qhe0ZAYBzpiXihdZh9t9k9y3DWPAjhxY9E=;
+        b=TGUNUZ2YyRYLK99T6y+w7F4B4muIdM+JL4qQOxcrTdp0uclMcTjjBksaJ89BWYO1Wh
+         0Fc7A0IqvFH8UHdgBL8uuX78UhITvKUCeWMhwmoR38TwQEAn0SdmC8viQryuz8gMJMSY
+         x8QpinbWA1+gvXtxbg1+p6ij1dh6RW33kOW97u2sFhQDneV7qzGwejqgXZp7wEeiNahU
+         yF13Oly0Hy1ZKbJnCRAPIUIbpiBkCIlJd6HJjhgLFLse/NOkgzrRsCAQfCdQ/8687lrq
+         fZu8jERY65AHi6lXZte/RfvYEFMAc+HQX8YCgTObV4ueiqdfjxRX4VDzBVwyOAcKcJbu
+         bSLA==
+X-Gm-Message-State: AOAM533qEh0IliYlCweSPcPG6sb9SlQD428ESwmC8V0EP9idbdUtwNrp
+        KTmqp5gLHjaJu6dvFTAzcXH8ZK9wYw3ouvkoXSIyP6hDWARiXwQ8zJY1DSEYfPk2gxyuYbGXnxe
+        tSJIwvTVXfuPM7SY0NCw/PNspJz31ifgZx4qNOKefQuMfuV7u/oTsY+Xd3Q==
+X-Received: by 2002:a17:907:11dd:: with SMTP id va29mr16717388ejb.470.1597684423591;
+        Mon, 17 Aug 2020 10:13:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy+P7qcj2FO8zBWQkQhYdBN5ckyKddUU2gVpQAdmLowvJ1iTcyzeQlevRPzJ0r4zj5MZRKPlm7o/RxnXFvwmbo=
+X-Received: by 2002:a17:907:11dd:: with SMTP id va29mr16717379ejb.470.1597684423396;
+ Mon, 17 Aug 2020 10:13:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAMi1Hd3Dv_T7kgThLTk2QLtfS7LBvhJ5R=6C3seUYK0GvNV6eA@mail.gmail.com>
- <20200806223134.42748-1-konradybcio@gmail.com> <20200813070448.GA499758@builder.lan>
-In-Reply-To: <20200813070448.GA499758@builder.lan>
-From:   Amit Pundir <amit.pundir@linaro.org>
-Date:   Mon, 17 Aug 2020 22:42:00 +0530
-Message-ID: <CAMi1Hd3j-A1Se9swD0TQ9YzTBGicPDc1nFZbf4uisVk5A+u1GQ@mail.gmail.com>
-Subject: Re: your mail
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Konrad Dybcio <konradybcio@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        dt <devicetree@vger.kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>
+References: <c2b7a96a-122e-bdec-7368-d54700a55915@canonical.com>
+ <20200817162156.GA715236@kroah.com> <a2788632-5690-932b-90de-14bd9cabedec@canonical.com>
+ <20200817164924.GA721399@kroah.com> <14968c46-ad8f-fbdf-88d6-0ded954534c9@canonical.com>
+ <20200817170522.GA795695@kroah.com>
+In-Reply-To: <20200817170522.GA795695@kroah.com>
+From:   Guilherme Piccoli <gpiccoli@canonical.com>
+Date:   Mon, 17 Aug 2020 14:13:07 -0300
+Message-ID: <CAHD1Q_zsu=M9TZpNFwEni3zW4HQ0eCvmqPBtJt_oJi+3YNOCvQ@mail.gmail.com>
+Subject: Re: [PATCH 4.19 35/47] x86/irq: Seperate unused system vectors from
+ spurious entry again
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, jan.kiszka@siemens.com,
+        jbeulich@suse.com, LKML <linux-kernel@vger.kernel.org>,
+        marc.zyngier@arm.com, stable@vger.kernel.org,
+        "Guilherme G. Piccoli" <kernel@gpiccoli.net>,
+        Pedro Principeza <pedro.principeza@canonical.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Aug 2020 at 12:38, Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
+On Mon, Aug 17, 2020 at 2:05 PM Greg KH <gregkh@linuxfoundation.org> wrote:
 >
-> On Thu 06 Aug 15:31 PDT 2020, Konrad Dybcio wrote:
->
-> > Subject: Re: [PATCH v4] arm64: dts: qcom: Add support for Xiaomi Poco F1 (Beryllium)
+> On Mon, Aug 17, 2020 at 01:59:00PM -0300, Guilherme G. Piccoli wrote:
+> > On 17/08/2020 13:49, Greg KH wrote:
+> > > [...]
+> > >> I'm sorry, I hoped the subject + thread would suffice heh
+> > >
+> > > There is no thread here :(
+> > >
 > >
-> > >// This removed_region is needed to boot the device
-> > >               // TODO: Find out the user of this reserved memory
-> > >               removed_region: memory@88f00000 {
-> >
-> > This region seems to belong to the Trust Zone. When Linux tries to access it, TZ bites and shuts the device down.
-> >
+> > Wow, that's odd. I've sent with In-Reply-To, I'd expect it'd get
+> > threaded with the original message. Looking in lore archive [1], it
+> > seems my first message wasn't threaded but the others were...apologies
+> > for that, not sure what happened...
 >
-> This is in line with what the documentation indicates and then it would
-> be better to just bump &tz_mem to a size of 0x4900000.
-
-Hi, so just to be sure that I got this right, you want me to extend
-&tz_mem to the size of 0x4900000 from the default size of 0x2D00000 by
-including this downstream &removed_region (of size 0x1A00000) +
-previously unreserved downstream memory region (of size 0x200000), to
-align with the starting address of &qseecom_mem?
-
-I just gave this &tz_mem change a spin and I do not see any obvious
-regression in my limited smoke testing (Boots AOSP to UI with
-v5.9-rc1. Touch/BT/WiFi works) so far, with 20+ out-of-tree patches.
-
-Regards,
-Amit Pundir
-
+> reply to is fine, but how do you know what my email client has (hint,
+> not a copy of 1.5 years of history sitting around in it at the
+> moment...)  So there is no "thread" here as far as it is concerned...
 >
-> Regards,
-> Bjorn
+> Anyway, not a big deal, just properly quote emails in the future, that's
+> good to get used to no matter what :)
+>
+Sure, will do - specially for super old threads like this.
+
+
+> > >> So, the mainline commit is: f8a8fe61fec8 ("x86/irq: Seperate unused
+> > >> system vectors from spurious entry again") [0]. The backport to 4.19
+> > >> stable tree has the following id: fc6975ee932b .
+> > >
+> > > Wow, over 1 1/2 years old, can you remember individual patches that long
+> > > ago?
+> > >
+> > > Anyway, did you try to backport the patch to older kernels to see if it
+> > > was possible and could work?
+> > >
+> > > If so, great, please feel free to submit it to the
+> > > stable@vger.kernel.org list and I will be glad to pick it up.
+> > >
+> >
+> > I'm working on it, it is feasible. But I'm seeking here, in this
+> > message, what is the reason it wasn't backported for pre-4.19
+>
+> Try reading the stable mailing list archives, again, you are asking
+> about a patch 1.5 years ago.  I can't remember information about patches
+> sent _yesterday_ given the quantity we go through...
+>
+> thanks,
+>
+> greg k-h
+
+OK, thanks Greg. If Thomas or anybody involved here knows a reason to
+not backport it to older kernels, please let me know - I'd really
+appreciate that.
+Cheers,
+
+
+Guilherme
