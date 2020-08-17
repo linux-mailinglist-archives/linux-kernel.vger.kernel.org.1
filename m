@@ -2,70 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B3F224790D
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 23:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8418224791F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 23:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728705AbgHQVrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 17:47:06 -0400
-Received: from mail-il1-f196.google.com ([209.85.166.196]:34709 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728689AbgHQVrE (ORCPT
+        id S1728766AbgHQVtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 17:49:17 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:8384 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728147AbgHQVtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 17:47:04 -0400
-Received: by mail-il1-f196.google.com with SMTP id t4so15872965iln.1;
-        Mon, 17 Aug 2020 14:47:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0IjbqSR7n8dwKiCZAlHG0n3ZZFd//DhI57E3MhdcDB8=;
-        b=Tq5auwkQWUG2+ZAmbcPIu8nvuWja+CJ3FFSv+KExzewe6qgJqhRXBYuVfBj/sT2OLa
-         cUbHcmTOzYGMXLfDgM+ORqqEebpXRdir5PBvgCB7UkpuYH9DTQLe/Te7FSR7GFN2U3IK
-         oJlKJJ/xnYgU4zPyc/giv0ybU4Ht5lfiTWTOnZTUjmqPiI4FwQvzmB9hJbpOqQo3U29B
-         TEJAuQxcHqrEmh4A3EXUWhFSl/y+peoBHqq70x+EqGO+F1t88bpi8pULPl5ZTEEmkcAm
-         +hw726cp1Y5wv4pDr6nJxLkqR5xA/3uCAvEMsdsfTQfrEn0ukj5recL3txngJ2wkbp8p
-         z4qA==
-X-Gm-Message-State: AOAM531qk4/Ud5SiGhIHPDkxXucZg0NHEOsxchNczatbKGoN+mLCSa5n
-        fEDzH/zrmo7Xk2x21sI1Vw==
-X-Google-Smtp-Source: ABdhPJwemuxUItv9uklxNA+c+9GTeWnEAEzWz7eGcjRVkLiwrv6diPZMqHw/ZZ3mu+HKdhkUay5P1Q==
-X-Received: by 2002:a05:6e02:cb0:: with SMTP id 16mr3765217ilg.147.1597700823027;
-        Mon, 17 Aug 2020 14:47:03 -0700 (PDT)
-Received: from xps15 ([64.188.179.249])
-        by smtp.gmail.com with ESMTPSA id t88sm10733892ilk.26.2020.08.17.14.47.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 14:47:02 -0700 (PDT)
-Received: (nullmailer pid 1627315 invoked by uid 1000);
-        Mon, 17 Aug 2020 21:47:01 -0000
-Date:   Mon, 17 Aug 2020 15:47:01 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     s.hauer@pengutronix.de, linux-ide@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        festevam@gmail.com, Linux-imx@nxp.com, shawnguo@kernel.org,
-        axboe@kernel.dk, linux-arm-kernel@lists.infradead.org,
-        robh+dt@kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH] dt-bindings: ata: Convert i.MX sata to json-schema
-Message-ID: <20200817214701.GA1627254@bogus>
-References: <1596611746-29155-1-git-send-email-Anson.Huang@nxp.com>
+        Mon, 17 Aug 2020 17:49:15 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07HLX0Hb022210;
+        Mon, 17 Aug 2020 17:48:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=Tq/uE0SXbNExMxY3ew7lO372jMbMpFBJGrQbS5RiDDE=;
+ b=gIUAROwkI6VGltsJX/wTziYt2Hh1LIpA1aLhttWDsGrHQMdipl26J0DpLGOm+tkBgI+t
+ z4aRFlvzaxnAY93L8llPPiqVwNksZVjWAokGnXNY1QhV1mrS64fterjNXSquN3AsL5dt
+ fO0S4V9ePFTTwqSkt86flY1q+kEhRb35QlQ7x64i3X2Ip8enFXEt2WebCPa1SUDBWbDC
+ qnCBmp2BnQKr3hiZw9Z9aFpGRx8DdRDqbvWQAAPPWGSne8zVMsqy6Cs/UWz+381P0xVb
+ 1Cl+n5s0j3jYJQc9iIjycr39nzX7YpfV1EPVkm1PgIdsHWhZJxZ5Ui2VUlhw10LJkG+X oA== 
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32yxagwvn5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Aug 2020 17:48:58 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07HLien2011858;
+        Mon, 17 Aug 2020 21:48:56 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma01dal.us.ibm.com with ESMTP id 32x7b911yd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Aug 2020 21:48:56 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07HLmtm819005936
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 17 Aug 2020 21:48:55 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7784778063;
+        Mon, 17 Aug 2020 21:48:55 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C599E78060;
+        Mon, 17 Aug 2020 21:48:52 +0000 (GMT)
+Received: from morokweng.localdomain (unknown [9.211.138.167])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Mon, 17 Aug 2020 21:48:52 +0000 (GMT)
+References: <20200815204536.663801-1-bauerman@linux.ibm.com> <20200817102020.GD25336@lst.de>
+User-agent: mu4e 1.2.0; emacs 26.3
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     iommu@lists.linux-foundation.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Ram Pai <linuxram@us.ibm.com>,
+        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>
+Subject: Re: [PATCH] swiotlb: Allow allocating buffer anywhere in memory
+In-reply-to: <20200817102020.GD25336@lst.de>
+Date:   Mon, 17 Aug 2020 18:48:49 -0300
+Message-ID: <87o8n96j0e.fsf@morokweng.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1596611746-29155-1-git-send-email-Anson.Huang@nxp.com>
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-17_15:2020-08-17,2020-08-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ suspectscore=0 bulkscore=0 mlxlogscore=930 lowpriorityscore=0
+ impostorscore=0 phishscore=0 priorityscore=1501 spamscore=0 clxscore=1011
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008170146
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 05 Aug 2020 15:15:46 +0800, Anson Huang wrote:
-> Convert the i.MX sata binding to DT schema format using json-schema.
-> 
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> ---
->  Documentation/devicetree/bindings/ata/imx-sata.txt | 37 ----------
->  .../devicetree/bindings/ata/imx-sata.yaml          | 81 ++++++++++++++++++++++
->  2 files changed, 81 insertions(+), 37 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/ata/imx-sata.txt
->  create mode 100644 Documentation/devicetree/bindings/ata/imx-sata.yaml
-> 
 
-Applied, thanks!
+Hello Christoph,
+
+Christoph Hellwig <hch@lst.de> writes:
+
+> On Sat, Aug 15, 2020 at 05:45:36PM -0300, Thiago Jung Bauermann wrote:
+>> POWER secure guests (i.e., guests which use the Protection Execution
+>> Facility) need to use SWIOTLB to be able to do I/O with the hypervisor, but
+>> they don't need the SWIOTLB memory to be in low addresses since the
+>> hypervisor doesn't have any addressing limitation.
+>> 
+>> This solves a SWIOTLB initialization problem we are seeing in secure guests
+>> with 128 GB of RAM: they are configured with 4 GB of crashkernel reserved
+>> memory, which leaves no space for SWIOTLB in low addresses.
+>
+> What about just open coding the allocation and using
+> swiotlb_init_with_tbl?
+
+Yes, that works too. I just sent a v2 implementing that change. I just
+had to add a small accessor function so that I could set no_iotlb_memory
+from outside swiotlb.c.
+
+Thank you for the quick review.
+
+-- 
+Thiago Jung Bauermann
+IBM Linux Technology Center
