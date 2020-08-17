@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C8C246D7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D8E246CE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729834AbgHQQ6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 12:58:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53420 "EHLO mail.kernel.org"
+        id S2388670AbgHQQc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 12:32:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388371AbgHQQFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:05:35 -0400
+        id S2388004AbgHQPyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:54:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91C2C206FA;
-        Mon, 17 Aug 2020 16:05:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 86AEF208B3;
+        Mon, 17 Aug 2020 15:54:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597680334;
-        bh=gHsN9jhXumNw+tbpnE6zTu3lcgEEreImArIzYB4SLk4=;
+        s=default; t=1597679689;
+        bh=EXzeOTHPIzPxT19jkvKZyyanh+VKXO8I23xTbKj1mVw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PPMNAj6VJbUPmgZkOrwSARg2Ho2TDPkJjiThjb6X6484RCTVQIrSPxliNBvrLnbXK
-         XoMtQecGX2Mrc9M7XoTFdtd3qLMvjIVUhSZe8MO3ZMUnPqFAGBhCVB1S86Fow6OTJr
-         4pGqHUmuNCapzh2VW1pSmnTdginOJ//2h2Bf+Skg=
+        b=bLTR2EMK8ESYlrRXVvSpncdcfpxlejdAVnDHLep4e76G7MQofGOA6xx+Uk4d6qSRP
+         AdUqzmZUSu+0eRcwujIGQJXUAzqQA1kvXez5f+2DGNpYD3A5B/x+1SwGzxYPBgGQEk
+         5ppQnh3idMUGKdrnzowxaqvmiaBwLuqx1IwkEFRQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Janne Karhunen <janne.karhunen@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
+        stable@vger.kernel.org,
+        Florinel Iordache <florinel.iordache@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 145/270] ima: Have the LSM free its audit rule
-Date:   Mon, 17 Aug 2020 17:15:46 +0200
-Message-Id: <20200817143803.022733744@linuxfoundation.org>
+Subject: [PATCH 5.7 301/393] fsl/fman: fix dereference null return value
+Date:   Mon, 17 Aug 2020 17:15:51 +0200
+Message-Id: <20200817143834.216276087@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
-References: <20200817143755.807583758@linuxfoundation.org>
+In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
+References: <20200817143819.579311991@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,62 +45,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tyler Hicks <tyhicks@linux.microsoft.com>
+From: Florinel Iordache <florinel.iordache@nxp.com>
 
-[ Upstream commit 9ff8a616dfab96a4fa0ddd36190907dc68886d9b ]
+[ Upstream commit 0572054617f32670abab4b4e89a876954d54b704 ]
 
-Ask the LSM to free its audit rule rather than directly calling kfree().
-Both AppArmor and SELinux do additional work in their audit_rule_free()
-hooks. Fix memory leaks by allowing the LSMs to perform necessary work.
+Check before using returned value to avoid dereferencing null pointer.
 
-Fixes: b16942455193 ("ima: use the lsm policy update notifier")
-Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc: Janne Karhunen <janne.karhunen@gmail.com>
-Cc: Casey Schaufler <casey@schaufler-ca.com>
-Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+Fixes: 18a6c85fcc78 ("fsl/fman: Add FMan Port Support")
+Signed-off-by: Florinel Iordache <florinel.iordache@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/integrity/ima/ima.h        | 5 +++++
- security/integrity/ima/ima_policy.c | 2 +-
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/freescale/fman/fman_port.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
-index be469fce19e12..8173982e00ab5 100644
---- a/security/integrity/ima/ima.h
-+++ b/security/integrity/ima/ima.h
-@@ -362,6 +362,7 @@ static inline void ima_free_modsig(struct modsig *modsig)
- #ifdef CONFIG_IMA_LSM_RULES
- 
- #define security_filter_rule_init security_audit_rule_init
-+#define security_filter_rule_free security_audit_rule_free
- #define security_filter_rule_match security_audit_rule_match
- 
- #else
-@@ -372,6 +373,10 @@ static inline int security_filter_rule_init(u32 field, u32 op, char *rulestr,
- 	return -EINVAL;
- }
- 
-+static inline void security_filter_rule_free(void *lsmrule)
-+{
-+}
-+
- static inline int security_filter_rule_match(u32 secid, u32 field, u32 op,
- 					     void *lsmrule)
- {
-diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-index 558a7607bf93a..e725d41872713 100644
---- a/security/integrity/ima/ima_policy.c
-+++ b/security/integrity/ima/ima_policy.c
-@@ -254,7 +254,7 @@ static void ima_lsm_free_rule(struct ima_rule_entry *entry)
- 	int i;
- 
- 	for (i = 0; i < MAX_LSM_RULES; i++) {
--		kfree(entry->lsm[i].rule);
-+		security_filter_rule_free(entry->lsm[i].rule);
- 		kfree(entry->lsm[i].args_p);
+diff --git a/drivers/net/ethernet/freescale/fman/fman_port.c b/drivers/net/ethernet/freescale/fman/fman_port.c
+index 87b26f063cc82..c27df153f8959 100644
+--- a/drivers/net/ethernet/freescale/fman/fman_port.c
++++ b/drivers/net/ethernet/freescale/fman/fman_port.c
+@@ -1767,6 +1767,7 @@ static int fman_port_probe(struct platform_device *of_dev)
+ 	struct fman_port *port;
+ 	struct fman *fman;
+ 	struct device_node *fm_node, *port_node;
++	struct platform_device *fm_pdev;
+ 	struct resource res;
+ 	struct resource *dev_res;
+ 	u32 val;
+@@ -1791,8 +1792,14 @@ static int fman_port_probe(struct platform_device *of_dev)
+ 		goto return_err;
  	}
- 	kfree(entry);
+ 
+-	fman = dev_get_drvdata(&of_find_device_by_node(fm_node)->dev);
++	fm_pdev = of_find_device_by_node(fm_node);
+ 	of_node_put(fm_node);
++	if (!fm_pdev) {
++		err = -EINVAL;
++		goto return_err;
++	}
++
++	fman = dev_get_drvdata(&fm_pdev->dev);
+ 	if (!fman) {
+ 		err = -EINVAL;
+ 		goto return_err;
 -- 
 2.25.1
 
