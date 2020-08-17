@@ -2,135 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FC22465A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E19F2465AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbgHQLrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 07:47:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44870 "EHLO mail.kernel.org"
+        id S1727818AbgHQLsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 07:48:40 -0400
+Received: from muru.com ([72.249.23.125]:40596 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726161AbgHQLre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 07:47:34 -0400
-Received: from localhost (unknown [122.171.38.130])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C07AE20674;
-        Mon, 17 Aug 2020 11:47:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597664853;
-        bh=PWU1FA67zQAasUqd3BPumylawraXXdrgHP9MCo9WyJc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2Bb0s9c1fXzrj0yzxKH6TCjhWGcINNywtn7fDxCldvxcXqhjpd+ietw8xoQr1LBU4
-         +tId8AB1jrQEbVZDeJb458pPtVyNcCho0J3XN5oui0KxZzSSAUpgVTgwSfGcxehI18
-         juHydM2Zsdmrr3Rko36cqSQH8+J5gro0pUpgtS08=
-Date:   Mon, 17 Aug 2020 17:17:29 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org,
-        jank@cadence.com, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, ranjani.sridharan@linux.intel.com,
-        hui.wang@canonical.com, pierre-louis.bossart@linux.intel.com,
-        sanyog.r.kale@intel.com, slawomir.blauciak@intel.com,
-        mengdong.lin@intel.com, bard.liao@intel.com
-Subject: Re: [PATCH 09/13] soundwire: intel: add CLK_STOP_BUS_RESET support
-Message-ID: <20200817114729.GP2639@vkoul-mobl>
-References: <20200721203723.18305-1-yung-chuan.liao@linux.intel.com>
- <20200721203723.18305-10-yung-chuan.liao@linux.intel.com>
+        id S1726161AbgHQLsW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 07:48:22 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 6068880A3;
+        Mon, 17 Aug 2020 11:48:20 +0000 (UTC)
+Date:   Mon, 17 Aug 2020 14:48:47 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Linux-OMAP <linux-omap@vger.kernel.org>,
+        Adam Ford <adam.ford@logicpd.com>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 2/2] ARM: dts: omap3: Add cpu trips and cooling map for
+ omap34/36 families
+Message-ID: <20200817114847.GL2994@atomide.com>
+References: <20191007220540.30690-1-aford173@gmail.com>
+ <20191007220540.30690-2-aford173@gmail.com>
+ <CAHCN7x+fnyXb+UO3xPd0nKeZNAPhRsXd5kTCAHxvg6hSt8Bx-A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200721203723.18305-10-yung-chuan.liao@linux.intel.com>
+In-Reply-To: <CAHCN7x+fnyXb+UO3xPd0nKeZNAPhRsXd5kTCAHxvg6hSt8Bx-A@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-07-20, 04:37, Bard Liao wrote:
-> From: Rander Wang <rander.wang@intel.com>
-> 
-> Move existing pm_runtime suspend under the CLK_STOP_TEARDOWN case.
-> 
-> In this mode the Master IP will lose all context but in-band wakes are
-> supported.
-> 
-> On pm_runtime resume a complete re-enumeration will be performed after
-> a bus reset.
-> 
-> Signed-off-by: Rander Wang <rander.wang@intel.com>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> ---
->  drivers/soundwire/intel.c | 44 +++++++++++++++++++++++++++++++++++++++
->  1 file changed, 44 insertions(+)
-> 
-> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-> index 1954eb48b86c..744fc0a4816a 100644
-> --- a/drivers/soundwire/intel.c
-> +++ b/drivers/soundwire/intel.c
-> @@ -1576,6 +1576,26 @@ static int intel_suspend_runtime(struct device *dev)
->  
->  		intel_shim_wake(sdw, false);
->  
-> +	} else if (clock_stop_quirks & SDW_INTEL_CLK_STOP_BUS_RESET) {
-> +		ret = sdw_cdns_clock_stop(cdns, true);
-> +		if (ret < 0) {
-> +			dev_err(dev, "cannot enable clock stop on suspend\n");
-> +			return ret;
-> +		}
-> +
-> +		ret = sdw_cdns_enable_interrupt(cdns, false);
-> +		if (ret < 0) {
-> +			dev_err(dev, "cannot disable interrupts on suspend\n");
-> +			return ret;
-> +		}
-> +
-> +		ret = intel_link_power_down(sdw);
-> +		if (ret) {
-> +			dev_err(dev, "Link power down failed: %d", ret);
-> +			return ret;
-> +		}
+* Adam Ford <aford173@gmail.com> [200805 13:17]:
+> I know this is an old thread.  I am trying to revisit some of the
+> other issues that came about with this, but is there any way we can
+> get patch 2/2 applied?  It might not do anything unless the bandgap
+> sensor is enabled, but it at least gets us one step closer for those
+> who choose to enable it.  With 1GHz support now available, it would be
+> nice to have the precautions to protect the processor from running too
+> fast when its too hot.
 
-no cleanup on all the error cases here?
+Sure seems OK to me. Care to resend as I no longer have it in my inbox?
 
-> +
-> +		intel_shim_wake(sdw, true);
->  	} else {
->  		dev_err(dev, "%s clock_stop_quirks %x unsupported\n",
->  			__func__, clock_stop_quirks);
-> @@ -1694,6 +1714,30 @@ static int intel_resume_runtime(struct device *dev)
->  			dev_err(dev, "unable to exit bus reset sequence during resume\n");
->  			return ret;
->  		}
-> +	} else if (clock_stop_quirks & SDW_INTEL_CLK_STOP_BUS_RESET) {
-> +		ret = intel_init(sdw);
-> +		if (ret) {
-> +			dev_err(dev, "%s failed: %d", __func__, ret);
-> +			return ret;
-> +		}
-> +
-> +		/*
-> +		 * make sure all Slaves are tagged as UNATTACHED and
-> +		 * provide reason for reinitialization
-> +		 */
-> +		sdw_clear_slave_status(bus, SDW_UNATTACH_REQUEST_MASTER_RESET);
-> +
-> +		ret = sdw_cdns_enable_interrupt(cdns, true);
-> +		if (ret < 0) {
-> +			dev_err(dev, "cannot enable interrupts during resume\n");
-> +			return ret;
-> +		}
-> +
-> +		ret = sdw_cdns_clock_restart(cdns, true);
-> +		if (ret < 0) {
-> +			dev_err(dev, "unable to restart clock during resume\n");
-> +			return ret;
-> +		}
->  	} else {
->  		dev_err(dev, "%s clock_stop_quirks %x unsupported\n",
->  			__func__, clock_stop_quirks);
-> -- 
-> 2.17.1
+Regards,
 
--- 
-~Vinod
+Tony
