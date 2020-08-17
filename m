@@ -2,165 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A73C2470AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3152D2470D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390572AbgHQSNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:13:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390540AbgHQSM5 (ORCPT
+        id S2390694AbgHQSPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:15:48 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:38774 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2390473AbgHQSPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 14:12:57 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC354C061389
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 11:12:56 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id 185so18496074ljj.7
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 11:12:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7yoDJoEA7vgq3GWujkt1bvWEISuJc569oCDBRXcp0LQ=;
-        b=oAGoWeFyEp4ErQovLfIwgMmnPbn1pu/GKGb5fxo9wsdh6qi3jOnvmY7V7dCP/mg9iE
-         moTJN0CTldA0hDCarFbJ/df/D7OvJwcbx82pBySGh4bZNxWQY9cQ9HB8EzFfDa3dl2Gg
-         nNLfgkjKkmoYH/ircXshAHufiIAffsPkshYfU=
+        Mon, 17 Aug 2020 14:15:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597688108;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g80cYW2IFYoqF9vli22IsbwtpI2QtdO1qkGnkN211CA=;
+        b=B1zuT3bYS1oN6dQVx2tWGtnGSP1cW5qRJKSnRWGvUY4wOM05IOoVP8ujQSF5by6gLvmcIa
+        6zDQU82zG1Wu+VlMBpxQq/iSvdyEh8gONYQudUsEnf5ZLpiR+3uuxZ/k2zvV1riSUaG49i
+        xJVP8g9JPteVrlRKRFlYEm1IvJN/PNk=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-544-FB9DIeLkOOyqF7qsvLAS3g-1; Mon, 17 Aug 2020 14:15:07 -0400
+X-MC-Unique: FB9DIeLkOOyqF7qsvLAS3g-1
+Received: by mail-qk1-f200.google.com with SMTP id v16so11391726qka.18
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 11:15:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7yoDJoEA7vgq3GWujkt1bvWEISuJc569oCDBRXcp0LQ=;
-        b=rrqbjIlzisD+hloS3yjBI1wfvwstOAB+wPQT3evufswzaHXzHczqXmlsG2i2C7Nn1t
-         LMy7tutf6TJaNP69UMMxxtdrk7w9u2P54xbUDePVMs8dndr+P3ZjMS1AH5mEDUXncn3p
-         04Sjeyhigfc2Sz37p9SVTYIegdmjcVb1ezCW5b6PgAh2+ghqUSowK634Rxau7sBNgiD0
-         zqj3zi/K+izny9ar2mjWDBs1exrL95xjT+mbOBRzkdsnmFl0GBsQ84PviUAHzllpG7Lz
-         AhX2Bz+A+G8k7UhMQYwF7XEW55ywZ2bU3GtR/iTiPkS1gOS9lHzTiuWIVaVSmlMt06qk
-         tXdA==
-X-Gm-Message-State: AOAM530ENf2XLXOWzVtQJR4gjxH+4JfCKwpBVQcRkXwQRMB9KU1L1yeY
-        RBemSJ1cuzQ7jp/mA1Re1ZX0tagmBkbjKg==
-X-Google-Smtp-Source: ABdhPJxmP/nQb4ErcmLSJR1C6LmnByt+ED89nTvKE3nEp/fTsJwT1RftH7yVmBEkRw8AZwF80RrjlA==
-X-Received: by 2002:a2e:8689:: with SMTP id l9mr8556546lji.467.1597687974875;
-        Mon, 17 Aug 2020 11:12:54 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id i16sm5150470ljn.100.2020.08.17.11.12.54
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=g80cYW2IFYoqF9vli22IsbwtpI2QtdO1qkGnkN211CA=;
+        b=Fzzt7CzNBPuWWhqO+XgjB/4s4Sjs6iwtgLncK7KGsGTKf8BHIAAY9kiaO6P0laLEMx
+         D+FeJx4FtyNc6xStpMrlMWM/eTqNPkYlZTQXPLYacp95xVR3QuS/2xtFL4yoOcvawfJY
+         jvafdCBJSMtuzpfAUCWnDDa/hmv+zk6Jo4VELDdKT2ych3nQo06CCnKrTfc+bK2UETrm
+         ZBBrU/3tpgC4es6hARxfWdif+P6EjVw8zdHdnTW3/80R2DFJDBgFswdsNjzXAdDTEUsS
+         FlClxBVGZvTv8qUL//StWSUkHaOOio4hJl6iyGubwwYTpmI8kLKL1MIeHa/8+4o2XDqp
+         eSPQ==
+X-Gm-Message-State: AOAM532mkApiolz4rFm9M3xmveoAUcHckkjMCnEBJlUj1t93Tc+YVoOS
+        51dL11SOf9Y9mMXdat2imxEIHBxhJjgkcpyUPEGcMMlqO6T+iwVxo+PVEvXjr6QBDTUENHekv3N
+        yymbrG4DGBlxkqKArrx6Afx0C
+X-Received: by 2002:aed:2f84:: with SMTP id m4mr14446133qtd.61.1597688106682;
+        Mon, 17 Aug 2020 11:15:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyXUfqFuGv20cuhSCCCZGpqoNHsGaqjHh4vKhxtI6LiZdZbnvJveBje9ZvXIG7CvZAAvbAeOw==
+X-Received: by 2002:aed:2f84:: with SMTP id m4mr14446091qtd.61.1597688106092;
+        Mon, 17 Aug 2020 11:15:06 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id s184sm18253320qkf.50.2020.08.17.11.15.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Aug 2020 11:12:54 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id f26so18510990ljc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 11:12:54 -0700 (PDT)
-X-Received: by 2002:a05:651c:1b4:: with SMTP id c20mr7906945ljn.432.1597687973528;
- Mon, 17 Aug 2020 11:12:53 -0700 (PDT)
+        Mon, 17 Aug 2020 11:15:05 -0700 (PDT)
+Subject: Re: [PATCH 2/3] fpga manager: xilinx-spi: provide better diagnostics
+ on programming failure
+To:     Luca Ceresoli <luca@lucaceresoli.net>, linux-fpga@vger.kernel.org
+Cc:     Moritz Fischer <mdf@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Anatolij Gustschin <agust@denx.de>
+References: <20200817165911.32589-1-luca@lucaceresoli.net>
+ <20200817165911.32589-2-luca@lucaceresoli.net>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <b1a1a9d9-d36b-40f0-24e3-f793e55db929@redhat.com>
+Date:   Mon, 17 Aug 2020 11:15:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20200814213842.31151-1-ashok.raj@intel.com>
-In-Reply-To: <20200814213842.31151-1-ashok.raj@intel.com>
-From:   Evan Green <evgreen@chromium.org>
-Date:   Mon, 17 Aug 2020 11:12:17 -0700
-X-Gmail-Original-Message-ID: <CAE=gft6fQ7cLQO025TDYNF-d6xxMeGkOHVieMZDq6wAZ84NsGQ@mail.gmail.com>
-Message-ID: <CAE=gft6fQ7cLQO025TDYNF-d6xxMeGkOHVieMZDq6wAZ84NsGQ@mail.gmail.com>
-Subject: Re: [PATCH] x86/hotplug: Silence APIC only after all irq's are migrated
-To:     Ashok Raj <ashok.raj@intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sukumar Ghorai <sukumar.ghorai@intel.com>,
-        Srikanth Nandamuri <srikanth.nandamuri@intel.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200817165911.32589-2-luca@lucaceresoli.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ashok,
-Thank you, Srikanth, and Sukumar for some very impressive debugging here.
+The other two patches are fine.
 
-On Fri, Aug 14, 2020 at 2:38 PM Ashok Raj <ashok.raj@intel.com> wrote:
+On 8/17/20 9:59 AM, Luca Ceresoli wrote:
+> When the DONE pin does not go high after programming to confirm programming
+> success, the INIT_B pin provides some info on the reason. Use it if
+> available to provide a more explanatory error message.
 >
-> When offlining CPU's, fixup_irqs() migrates all interrupts away from the
-> outgoing CPU to an online CPU. Its always possible the device sent an
-> interrupt to the previous CPU destination. Pending interrupt bit in IRR in
-> lapic identifies such interrupts. apic_soft_disable() will not capture any
-> new interrupts in IRR. This causes interrupts from device to be lost during
-> cpu offline. The issue was found when explicitly setting MSI affinity to a
-> CPU and immediately offlining it. It was simple to recreate with a USB
-> ethernet device and doing I/O to it while the CPU is offlined. Lost
-> interrupts happen even when Interrupt Remapping is enabled.
->
-> Current code does apic_soft_disable() before migrating interrupts.
->
-> native_cpu_disable()
-> {
->         ...
->         apic_soft_disable();
->         cpu_disable_common();
->           --> fixup_irqs(); // Too late to capture anything in IRR.
-> }
->
-> Just fliping the above call sequence seems to hit the IRR checks
-> and the lost interrupt is fixed for both legacy MSI and when
-> interrupt remapping is enabled.
->
->
-> Fixes: 60dcaad5736f ("x86/hotplug: Silence APIC and NMI when CPU is dead")
-> Link: https://lore.kernel.org/lkml/875zdarr4h.fsf@nanos.tec.linutronix.de/
-> Signed-off-by: Ashok Raj <ashok.raj@intel.com>
->
-> To: linux-kernel@vger.kernel.org
-> To: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Sukumar Ghorai <sukumar.ghorai@intel.com>
-> Cc: Srikanth Nandamuri <srikanth.nandamuri@intel.com>
-> Cc: Evan Green <evgreen@chromium.org>
-> Cc: Mathias Nyman <mathias.nyman@linux.intel.com>
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: stable@vger.kernel.org
+> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
 > ---
->  arch/x86/kernel/smpboot.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
+>  drivers/fpga/xilinx-spi.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
 >
-> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-> index ffbd9a3d78d8..278cc9f92f2f 100644
-> --- a/arch/x86/kernel/smpboot.c
-> +++ b/arch/x86/kernel/smpboot.c
-> @@ -1603,13 +1603,20 @@ int native_cpu_disable(void)
->         if (ret)
->                 return ret;
->
-> +       cpu_disable_common();
->         /*
->          * Disable the local APIC. Otherwise IPI broadcasts will reach
->          * it. It still responds normally to INIT, NMI, SMI, and SIPI
-> -        * messages.
+> diff --git a/drivers/fpga/xilinx-spi.c b/drivers/fpga/xilinx-spi.c
+> index 502fae0d1d85..2aa942bb1114 100644
+> --- a/drivers/fpga/xilinx-spi.c
+> +++ b/drivers/fpga/xilinx-spi.c
+> @@ -169,7 +169,16 @@ static int xilinx_spi_write_complete(struct fpga_manager *mgr,
+>  			return xilinx_spi_apply_cclk_cycles(conf);
+>  	}
+>  
+> -	dev_err(&mgr->dev, "Timeout after config data transfer.\n");
+> +	if (conf->init_b) {
+> +		int init_b_asserted = gpiod_get_value(conf->init_b);
 
-I'm slightly unclear about whether interrupts are disabled at the core
-by this point or not. I followed native_cpu_disable() up to
-__cpu_disable(), up to take_cpu_down(). This is passed into a call to
-stop_machine_cpuslocked(), where interrupts get disabled at the core.
-So unless there's another path, it seems like interrupts are always
-disabled at the core by this point.
+gpiod_get_value can fail. So maybe need split the first statement.
 
-If interrupts are always disabled, then the comment above is a little
-obsolete, since we're not expecting to receive broadcast IPIs from
-here on out anyway. We could clean up that comment in this change.
+init_b_asserted < 0 ? "invalid device"
 
-If there is a path to here where interrupts are still enabled at the
-core, then we'd need to watch out, because this change now allows
-broadcast IPIs to come in during cpu_disable_common(). That could be
-bad. But I think that's not this case, so this should be ok.
+As the if-else statement is getting complicated, embedding the ? : makes this hard to read.  'if,else if, else' would be better.
 
-> +        * messages. Its important to do apic_soft_disable() after
-> +        * fixup_irqs(), because fixup_irqs() called from cpu_disable_common()
-> +        * depends on IRR being set. After apic_soft_disable() CPU preserves
-> +        * currently set IRR/ISR but new interrupts will not set IRR.
-> +        * This causes interrupts sent to outgoing cpu before completion
-> +        * of irq migration to be lost. Check SDM Vol 3 "10.4.7.2 Local
-> +        * APIC State after It Has been Software Disabled" section for more
-> +        * details.
->          */
->         apic_soft_disable();
-> -       cpu_disable_common();
->
->         return 0;
+> +
+> +		dev_err(&mgr->dev,
+> +			init_b_asserted ? "CRC error or invalid device\n"
+> +			: "Missing sync word or incomplete bitstream\n");
+> +	} else {
+> +		dev_err(&mgr->dev, "Timeout after config data transfer.\n");
+patch 3 removes '.' s , and you just added one back in ?
+> +	}
+> +
+>  	return -ETIMEDOUT;
 >  }
-> --
-> 2.13.6
->
+>  
+
+Reviewed-by: Tom Rix <trix@redhat.com>
+
+
