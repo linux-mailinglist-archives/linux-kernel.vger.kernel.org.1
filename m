@@ -2,154 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D412468A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 16:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5CA2468B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 16:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729049AbgHQOrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 10:47:39 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:22053 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729006AbgHQOrh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 10:47:37 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597675656; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=tgTAxFdftyFAguKX6yCWKGS0/ZD3dDVKkF/drriTSI4=; b=utA0RCO3f1E+254lgNapexfM5mrqpYm8HZN5VG4uPdHnLzW9upDReIdmDG511jWBO2lR7C8b
- R2mwy9QJlzvrGY7+r9s2DjJlbxQZCKjLEGDRuOAGTH84Iv+F1FmAG4WjsBMUAnTCaFxI2ZvJ
- ljWziyXvTMRbkxTKx1IRrcqdx5Q=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f3a9888247ccc308cb2ca5c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 Aug 2020 14:47:36
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 49EDCC433A0; Mon, 17 Aug 2020 14:47:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 08449C433C6;
-        Mon, 17 Aug 2020 14:47:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 08449C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        "Isaac J. Manjarres" <isaacm@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCHv2] soc: qcom: llcc: Support chipsets that can write to llcc registers
-Date:   Mon, 17 Aug 2020 20:17:22 +0530
-Message-Id: <20200817144722.6665-1-saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
+        id S1729079AbgHQOus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 10:50:48 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:60391 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728683AbgHQOu3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 10:50:29 -0400
+Received: from [78.134.86.56] (port=43576 helo=melee.fritz.box)
+        by hostingweb31.netsons.net with esmtpa (Exim 4.93)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1k7gSv-0003f6-MY; Mon, 17 Aug 2020 16:50:25 +0200
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Luca Ceresoli <luca@lucaceresoli.net>, Keerthy <j-keerthy@ti.com>,
+        Axel Lin <axel.lin@ingics.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/3] mfd: lp87565: convert DT to yaml and add LP87524-Q1
+Date:   Mon, 17 Aug 2020 16:50:15 +0200
+Message-Id: <20200817145018.3992-1-luca@lucaceresoli.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Isaac J. Manjarres" <isaacm@codeaurora.org>
+Hi,
 
-Older chipsets may not be allowed to configure certain LLCC registers
-as that is handled by the secure side software. However, this is not
-the case for newer chipsets and they must configure these registers
-according to the contents of the SCT table, while keeping in mind that
-older targets may not have these capabilities. So add support to allow
-such configuration of registers to enable capacity based allocation
-and power collapse retention for capable chipsets.
+the following patches are a fairly straightforward addition of a new chip
+variant along with DT bindings conversion to yaml.
 
-Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
-(sai: use table instead of dt property and minor commit msg change)
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
----
+v4 splits the yaml bindings as requested by Rob Herring and as a few minor
+improvements to the bindings. No changes to the driver since v2.
 
-Changes in v2:
- * Fix build errors reported by kernel test robot.
+RFC,v1: https://lkml.org/lkml/2020/6/3/908
+v2: https://lkml.org/lkml/2020/6/17/492
+v3: https://lkml.org/lkml/2020/6/22/1139
 
----
- drivers/soc/qcom/llcc-qcom.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+Luca
 
-diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
-index 429b5a60a1ba..865f607cf502 100644
---- a/drivers/soc/qcom/llcc-qcom.c
-+++ b/drivers/soc/qcom/llcc-qcom.c
-@@ -45,6 +45,9 @@
- #define LLCC_TRP_ATTR0_CFGn(n)        (0x21000 + SZ_8 * n)
- #define LLCC_TRP_ATTR1_CFGn(n)        (0x21004 + SZ_8 * n)
- 
-+#define LLCC_TRP_SCID_DIS_CAP_ALLOC   0x21F00
-+#define LLCC_TRP_PCB_ACT              0x21F04
-+
- #define BANK_OFFSET_STRIDE	      0x80000
- 
- /**
-@@ -318,6 +321,11 @@ size_t llcc_get_slice_size(struct llcc_slice_desc *desc)
- }
- EXPORT_SYMBOL_GPL(llcc_get_slice_size);
- 
-+static const struct of_device_id __maybe_unused qcom_llcc_configure_of_match[] = {
-+	{ .compatible = "qcom,sc7180-llcc" },
-+	{ }
-+};
-+
- static int qcom_llcc_cfg_program(struct platform_device *pdev)
- {
- 	int i;
-@@ -327,13 +335,17 @@ static int qcom_llcc_cfg_program(struct platform_device *pdev)
- 	u32 attr0_val;
- 	u32 max_cap_cacheline;
- 	u32 sz;
-+	u32 disable_cap_alloc = 0, retain_pc = 0;
- 	int ret = 0;
- 	const struct llcc_slice_config *llcc_table;
- 	struct llcc_slice_desc desc;
-+	const struct of_device_id *llcc_configure;
- 
- 	sz = drv_data->cfg_size;
- 	llcc_table = drv_data->cfg;
- 
-+	llcc_configure = of_match_node(qcom_llcc_configure_of_match, pdev->dev.of_node);
-+
- 	for (i = 0; i < sz; i++) {
- 		attr1_cfg = LLCC_TRP_ATTR1_CFGn(llcc_table[i].slice_id);
- 		attr0_cfg = LLCC_TRP_ATTR0_CFGn(llcc_table[i].slice_id);
-@@ -369,6 +381,21 @@ static int qcom_llcc_cfg_program(struct platform_device *pdev)
- 					attr0_val);
- 		if (ret)
- 			return ret;
-+
-+		if (llcc_configure) {
-+			disable_cap_alloc |= llcc_table[i].dis_cap_alloc << llcc_table[i].slice_id;
-+			ret = regmap_write(drv_data->bcast_regmap,
-+						LLCC_TRP_SCID_DIS_CAP_ALLOC, disable_cap_alloc);
-+			if (ret)
-+				return ret;
-+
-+			retain_pc |= llcc_table[i].retain_on_pc << llcc_table[i].slice_id;
-+			ret = regmap_write(drv_data->bcast_regmap,
-+						LLCC_TRP_PCB_ACT, retain_pc);
-+			if (ret)
-+				return ret;
-+		}
-+
- 		if (llcc_table[i].activate_on_init) {
- 			desc.slice_id = llcc_table[i].slice_id;
- 			ret = llcc_slice_activate(&desc);
+Luca Ceresoli (3):
+  dt-bindings: mfd: lp87565: convert to yaml
+  dt-bindings: mfd: add LP87524-Q1
+  mfd: lp87565: add LP87524-Q1 variant
+
+ .../devicetree/bindings/mfd/lp87565.txt       |  79 -------------
+ .../bindings/mfd/ti,lp87524-q1.yaml           | 105 ++++++++++++++++++
+ .../bindings/mfd/ti,lp87561-q1.yaml           |  68 ++++++++++++
+ .../bindings/mfd/ti,lp87565-q1.yaml           |  85 ++++++++++++++
+ drivers/mfd/lp87565.c                         |   4 +
+ include/linux/mfd/lp87565.h                   |   1 +
+ 6 files changed, 263 insertions(+), 79 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mfd/lp87565.txt
+ create mode 100644 Documentation/devicetree/bindings/mfd/ti,lp87524-q1.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/ti,lp87561-q1.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/ti,lp87565-q1.yaml
+
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.28.0
 
