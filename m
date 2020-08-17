@@ -2,95 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3620924628B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2862462CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728479AbgHQJRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 05:17:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60980 "EHLO
+        id S1726974AbgHQJTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 05:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726297AbgHQJRv (ORCPT
+        with ESMTP id S1726676AbgHQJTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 05:17:51 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651BBC061389
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 02:17:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=yq/G/7azxwsTAMVI9n5yMwPxsdFTF2npCDkTU+EjKoI=; b=HHY7+2adY5BXeFqlVq8Il/j7Br
-        n3v5DL8IOZjsWn8EV3VFgQbzQHTt11yLSRgXbTwfuyddobsmK0VO+OPo9E7P7ZRtgl/61NaHiRVQn
-        BJUS4mx40tSS+FTp58TW4n+okabHFGwTSfzuOjNonRPnBw7UoZbMcEwqUlfFenNuTDqI4COenPq0L
-        oiGuR2ivdp8hfnfL5n4YXHjmU6m+nU3McDJuDgZ5nQD54mtV5fl7RkOv7drSwhPTNDNqh3Fh0/9fN
-        3vTpDcSjrUdnziYDi6nmjEYOcRjOT+vjfl4mLpPdBI2U7xbdKeYH8BLh3h5duSMAnIveY4wNZXlmf
-        uVKUDylA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k7bFs-0001jE-IF; Mon, 17 Aug 2020 09:17:25 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CEAD9301179;
-        Mon, 17 Aug 2020 11:16:33 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7FBD7200D4C2E; Mon, 17 Aug 2020 11:16:33 +0200 (CEST)
-Date:   Mon, 17 Aug 2020 11:16:33 +0200
-From:   peterz@infradead.org
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
-        linux-kernel@vger.kernel.org, will@kernel.org, hch@lst.de,
-        axboe@kernel.dk, chris@chris-wilson.co.uk, davem@davemloft.net,
-        kuba@kernel.org, fweisbec@gmail.com, oleg@redhat.com
-Subject: Re: [RFC][PATCH 1/9] irq_work: Cleanup
-Message-ID: <20200817091633.GL35926@hirez.programming.kicks-ass.net>
-References: <20200722150149.525408253@infradead.org>
- <20200722153017.024407984@infradead.org>
- <20200723161411.GA23103@paulmck-ThinkPad-P72>
- <20200817090325.GK2674@hirez.programming.kicks-ass.net>
+        Mon, 17 Aug 2020 05:19:06 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42B2CC06138A
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 02:19:06 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z18so14190042wrm.12
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 02:19:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qX871vE+FuBcMCwIyoO/B6faScex0KuAjvcf8gzD10o=;
+        b=NAHfXp4UBf6Jibtr2eCLhEO9YoL8Wt0anDkAAE2K5TZU53xG1vkvMB2EgNCPhxmGx5
+         5T32Kbcf1FdbzuearoAM/32+vKjxF0vhz64kmxZbU9ko7qcmNfkyTlqyF/GFcyxSVLrJ
+         4AipYvBmctHdf5NScgCdQmoDe6GBXy6cl050KRWSjF4d85M4QevyefgyHJWjxGkWqVTS
+         bbVXr1TUoX220i171lSN7bFYORPx8K6513VEN6ttGYOEkm+naSJ8p2UZxdk0z7fJNMaf
+         FjjpeZuHmTS3NmdyQULQ9ufpXW+PaUMUhtPwUwlVvQxYUkLL8MOw27x70MEt5E9DxpzO
+         VQNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qX871vE+FuBcMCwIyoO/B6faScex0KuAjvcf8gzD10o=;
+        b=Bkh1ocXnUdqdbZ12mE37ljqHhf/2ciC5ARIXeW7VLA+ohacBe2klAk/MhGIN8m2WL0
+         8TfOWIXcKy2pATOriLE/Mvpsd6TNh5Kze2e5/XjfO3dv97hPLbPbYK1jDLbhzDLogY6S
+         fSkT2gA6DrotzytBdujQwLr/grz5kpJM9PR/R9rlNiBWBL4B/jsjIKoXmkM7pwXVvsfq
+         VN2FbulfwXCWQkLo71zIEcNnTCKrWsgTeE5tXYpJ9vLpxThlJxzEH5JtQBQA3YcU+Buw
+         rbyllRyisxC0KtsTI0wt7KPYpiYOs31W/88dbYZYnkb9JbYvN50yFMdSRRsszItBY+Wu
+         wgCA==
+X-Gm-Message-State: AOAM530Eb3Elg+yQraDwxBI+mcSWFTPWarr+uxO1jJHuSB7Uiyl4ko3w
+        ujp4Nm0HD0iPWo1Mfr38Hc4PyAuVxYkp/za6r0I=
+X-Google-Smtp-Source: ABdhPJyqCR0rK5Dp5nj1dXQBMsH1a4xuJvfOer49VOTuXmGUa+ctG1GwTxQ2v/dZNgABIn1M51tgRR3MnRWB5D7Osl8=
+X-Received: by 2002:adf:b1dc:: with SMTP id r28mr14132586wra.242.1597655944611;
+ Mon, 17 Aug 2020 02:19:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200817090325.GK2674@hirez.programming.kicks-ass.net>
+References: <20200817085703.25732-1-allen.cryptic@gmail.com> <s5hpn7pprl1.wl-tiwai@suse.de>
+In-Reply-To: <s5hpn7pprl1.wl-tiwai@suse.de>
+From:   Allen Pais <allen.cryptic@gmail.com>
+Date:   Mon, 17 Aug 2020 14:48:53 +0530
+Message-ID: <CAEogwTAGHOfBe4ztkx9To0gQGwHwFWzCBxn8nzWJP=wRJUJ56A@mail.gmail.com>
+Subject: Re: [PATCH 00/10] sound: convert tasklets to use new tasklet_setup()
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     perex@perex.cz, tiwai@suse.com, clemens@ladisch.de,
+        o-takashi@sakamocchi.jp, timur@kernel.org, nicoleotsuka@gmail.com,
+        Xiubo.Lee@gmail.com, keescook@chromium.org,
+        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, Allen Pais <allen.lkml@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 11:03:25AM +0200, peterz@infradead.org wrote:
-> On Thu, Jul 23, 2020 at 09:14:11AM -0700, Paul E. McKenney wrote:
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -1287,8 +1287,6 @@ static int rcu_implicit_dynticks_qs(stru
-> > >  		if (IS_ENABLED(CONFIG_IRQ_WORK) &&
-> > >  		    !rdp->rcu_iw_pending && rdp->rcu_iw_gp_seq != rnp->gp_seq &&
-> > >  		    (rnp->ffmask & rdp->grpmask)) {
-> > > -			init_irq_work(&rdp->rcu_iw, rcu_iw_handler);
-> > 
-> > We are actually better off with the IRQ_WORK_INIT_HARD() here rather
-> > than unconditionally at boot.
-> 
-> Ah, but there isn't an init_irq_work() variant that does the HARD thing.
+>
+> Is this targeted for 5.9 or 5.10?
 
-Ah you meant doing:
+This is targeted for 5.9.
 
-		rdp->rcu_iw = IRQ_WORK_INIT_HARD(rcu_iw_handler)
+> I have a patch set to drop the whole tasklet usage in sound/*
+> (destined for 5.10, to be submitted soon), so if that's for 5.10,
+> it'll be likely superfluous.
 
-But then it is non-obvious how that doesn't trample state. I suppose
-that rcu_iw_pending thing ensures that... I'll think about it.
+ I have picked patches from your tree to adapt to this new API.
+Those can be picked in 5.10 I suppose.
 
-> > The reason for this is that we get here only if a single grace
-> > period extends beyond 10.5 seconds (mainline) or beyond 30 seconds
-> > (many distribution kernels).  Which almost never happens.  And yes,
-> > rcutree_prepare_cpu() is also invoked as each CPU that comes online,
-> > not that this is all that common outside of rcutorture and boot time.  ;-)
-> 
-> What do you mean 'also' ? Afaict this is CPU bringup only code (initial
-> and hotplug). We really don't care about code there. It's the slowest
-> possible path we have in the kernel.
-> 
-> > > -			atomic_set(&rdp->rcu_iw.flags, IRQ_WORK_HARD_IRQ);
-> > >  			rdp->rcu_iw_pending = true;
-> > >  			rdp->rcu_iw_gp_seq = rnp->gp_seq;
-> > >  			irq_work_queue_on(&rdp->rcu_iw, rdp->cpu);
-> 
+Thanks.
