@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25951245E7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 09:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C3B245E77
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 09:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727079AbgHQHun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 03:50:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45570 "EHLO mail.kernel.org"
+        id S1727033AbgHQHul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 03:50:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726885AbgHQHu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726874AbgHQHu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 Aug 2020 03:50:26 -0400
 Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5732722BEB;
+        by mail.kernel.org (Postfix) with ESMTPSA id 6C71A22CAD;
         Mon, 17 Aug 2020 07:50:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1597650620;
-        bh=2CcidvDqdTXESGqs1Ha/OCKMUNaguD47aMVxDK/J77I=;
+        bh=FiVFRusfj9DjxEECqrLRwnPwn3v/1jVkijJ8N2ump8g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=puMGsIbTnIIq6yFDzJx19fI7EmkhGzxfcGF7h/d+glupo8/aGeSBiRle2l1osg79Y
-         vmqtKIAbGPAKV/q9zxbzPbNM/8Q7pYEA5vqV3zCE+9e5clUMz0WF9prYo4vl9FZtZT
-         6jnkxDiPr4a7XYm0FKHB8JqqZuRHnKB8A79jdGXc=
+        b=WhMMGunmpgK8vFWnOdTQ2I8t9MbghOejJRSb+BTP9jycrNykrJQP3kz4Br4sXCn0s
+         4wwBV/Lx6SIIapFKypuni/Kbn41IlmBg7YFmeu7+n7UCekd4w/Oh6G6JMLRekvyPwg
+         LRgUpuTisRQGkhsAJDrp8QBMM9mEU6AgEfstMrh4=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1k7ZuM-00BfcQ-DT; Mon, 17 Aug 2020 09:50:18 +0200
+        id 1k7ZuM-00BfcU-FM; Mon, 17 Aug 2020 09:50:18 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         John Stultz <john.stultz@linaro.org>,
         Manivannan Sadhasivam <mani@kernel.org>,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org
-Subject: [PATCH 13/16] iommu: hisi_smmu_lpae: make OF compatible more standard
-Date:   Mon, 17 Aug 2020 09:50:12 +0200
-Message-Id: <2073dc8cc7998cc0019d1b47e243b4193543d080.1597650455.git.mchehab+huawei@kernel.org>
+        Joerg Roedel <joro@8bytes.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 14/16] dt: add an spec for the Kirin36x0 SMMU
+Date:   Mon, 17 Aug 2020 09:50:13 +0200
+Message-Id: <0fa3a11f63e68fdef3a8aa8d45f1df4d0832dcac.1597650455.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1597650455.git.mchehab+huawei@kernel.org>
 References: <cover.1597650455.git.mchehab+huawei@kernel.org>
@@ -46,31 +49,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use "manufacturer,model" pattern for the expected compatible
-string for this board.
-
-Most of compatible lines for Huawei's Hisilicon SoCs start
-with "hisilicon,". Use the same pattern here for this new
-driver.
+Describe the properties expected by the IOMMU driver used on
+Hikey960 and Hikey970 boards.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/staging/hikey9xx/hisi_smmu_lpae.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../iommu/hisilicon,kirin36x0-smmu.yaml       | 55 +++++++++++++++++++
+ 1 file changed, 55 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iommu/hisilicon,kirin36x0-smmu.yaml
 
-diff --git a/drivers/staging/hikey9xx/hisi_smmu_lpae.c b/drivers/staging/hikey9xx/hisi_smmu_lpae.c
-index 33aba006d6a1..0f4d7b54193e 100644
---- a/drivers/staging/hikey9xx/hisi_smmu_lpae.c
-+++ b/drivers/staging/hikey9xx/hisi_smmu_lpae.c
-@@ -616,7 +616,7 @@ static int hisi_smmu_remove_lpae(struct platform_device *pdev)
- }
- 
- static const struct of_device_id hisi_smmu_of_match_lpae[] = {
--	{ .compatible = "hisi,hisi-smmu-lpae"},
-+	{ .compatible = "hisilicon,smmu-lpae"},
- 	{ },
- };
- MODULE_DEVICE_TABLE(of, hisi_smmu_of_match_lpae);
+diff --git a/Documentation/devicetree/bindings/iommu/hisilicon,kirin36x0-smmu.yaml b/Documentation/devicetree/bindings/iommu/hisilicon,kirin36x0-smmu.yaml
+new file mode 100644
+index 000000000000..ec4c98faf3a5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iommu/hisilicon,kirin36x0-smmu.yaml
+@@ -0,0 +1,55 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iommu/hisilicon,kirin36x0-smmu.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Hisilicon support for HI3660/HI3670 SMMU
++
++maintainers:
++  - Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
++
++description: |+
++  Huawei's Hisilicon Kirin 3660/3670 contains a System MMU that enables
++  scattered physical memory chunks visible as a contiguous region to
++  DMA-capable peripheral devices like GPU and ISP.
++
++  The IOMMU domains are described via iommu_info settings.
++
++properties:
++  compatible:
++    const: hisilicon,hisi-smmu-lpae
++
++  iommu_info:
++    type: object
++
++    properties:
++      start-addr:
++        maxItems: 1
++        description: Memory start address (32 bits)
++
++      size:
++        maxItems: 1
++        description: size of the I/O MMU block (32 bits)
++
++      iova-align:
++        minItems: 2
++        maxItems: 2
++        description: DMA address alignment of the mapped memory (64 bits)
++
++required:
++  - compatible
++
++additionalProperties: false
++
++examples:
++  - |
++    smmu_lpae {
++      compatible = "hisilicon,smmu-lpae";
++
++      iommu_info {
++        start-addr = <0x40000>;
++        size = <0xbffc0000>;
++        iova-align = <0x0 0x8000>;
++      };
++    };
 -- 
 2.26.2
 
