@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D44E3246DB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3890F246DB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389338AbgHQRKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:10:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39652 "EHLO mail.kernel.org"
+        id S2389424AbgHQRLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:11:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388606AbgHQQLR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:11:17 -0400
+        id S2388615AbgHQQLV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:11:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 916C022BF5;
-        Mon, 17 Aug 2020 16:11:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A0E920748;
+        Mon, 17 Aug 2020 16:11:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597680676;
-        bh=5umpobZfU532MNHExFEMg4AwPASjY4mr8L46crhIfWk=;
+        s=default; t=1597680680;
+        bh=MAmK02myBiOmRCCmZhei5NrKsLigcr8ZtSo2hj9UJi0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fk86VXhBa4tBbGHDJxjIr3BWLnMCtm5NvY4KH2BvwV0GeQxkqmEr2iCPLAT8g6naT
-         IailWnlTPxWuy038uF3UTU/n3WbWnBasI5TTPl6U1iiO+MahDp2x5lz6NU7XTSj1t6
-         rRqW0IaD1bReqwiDjsZ9DCzlvy2A5q43VecVJ9Wo=
+        b=wBcKhmeTdyCwmlnvWhUvLkxtZxlLfjibKCVS5Fes/5wiFiPvsOSLLjXqnOfAM2QoH
+         D42e9adHy6duLdMSIKuv537F0p10C48wQHSu8VMrW9Vxd/bY0tWi8Vyd/av+NPp5bw
+         FoYL75Px6jSS8V2lborFWRqrjGxpk3H+to6rtWtY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gilad Ben-Yossef <gilad@benyossef.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Alim Akhtar <alim.akhtar@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 012/168] crypto: ccree - fix resource leak on error path
-Date:   Mon, 17 Aug 2020 17:15:43 +0200
-Message-Id: <20200817143734.336080170@linuxfoundation.org>
+Subject: [PATCH 4.19 014/168] arm64: dts: exynos: Fix silent hang after boot on Espresso
+Date:   Mon, 17 Aug 2020 17:15:45 +0200
+Message-Id: <20200817143734.431155037@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143733.692105228@linuxfoundation.org>
 References: <20200817143733.692105228@linuxfoundation.org>
@@ -45,84 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gilad Ben-Yossef <gilad@benyossef.com>
+From: Alim Akhtar <alim.akhtar@samsung.com>
 
-[ Upstream commit 9bc6165d608d676f05d8bf156a2c9923ee38d05b ]
+[ Upstream commit b072714bfc0e42c984b8fd6e069f3ca17de8137a ]
 
-Fix a small resource leak on the error path of cipher processing.
+Once regulators are disabled after kernel boot, on Espresso board silent
+hang observed because of LDO7 being disabled.  LDO7 actually provide
+power to CPU cores and non-cpu blocks circuitries.  Keep this regulator
+always-on to fix this hang.
 
-Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
-Fixes: 63ee04c8b491e ("crypto: ccree - add skcipher support")
-Cc: Markus Elfring <Markus.Elfring@web.de>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: 9589f7721e16 ("arm64: dts: Add S2MPS15 PMIC node on exynos7-espresso")
+Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/ccree/cc_cipher.c | 30 ++++++++++++++++++------------
- 1 file changed, 18 insertions(+), 12 deletions(-)
+ arch/arm64/boot/dts/exynos/exynos7-espresso.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/crypto/ccree/cc_cipher.c b/drivers/crypto/ccree/cc_cipher.c
-index 28a5b8b38fa2f..1bcb6f0157b07 100644
---- a/drivers/crypto/ccree/cc_cipher.c
-+++ b/drivers/crypto/ccree/cc_cipher.c
-@@ -137,7 +137,6 @@ static int cc_cipher_init(struct crypto_tfm *tfm)
- 				     skcipher_alg.base);
- 	struct device *dev = drvdata_to_dev(cc_alg->drvdata);
- 	unsigned int max_key_buf_size = cc_alg->skcipher_alg.max_keysize;
--	int rc = 0;
+diff --git a/arch/arm64/boot/dts/exynos/exynos7-espresso.dts b/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
+index 00dd89b92b427..d991eae5202f2 100644
+--- a/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
++++ b/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
+@@ -152,6 +152,7 @@ ldo7_reg: LDO7 {
+ 				regulator-min-microvolt = <700000>;
+ 				regulator-max-microvolt = <1150000>;
+ 				regulator-enable-ramp-delay = <125>;
++				regulator-always-on;
+ 			};
  
- 	dev_dbg(dev, "Initializing context @%p for %s\n", ctx_p,
- 		crypto_tfm_alg_name(tfm));
-@@ -149,10 +148,19 @@ static int cc_cipher_init(struct crypto_tfm *tfm)
- 	ctx_p->flow_mode = cc_alg->flow_mode;
- 	ctx_p->drvdata = cc_alg->drvdata;
- 
-+	if (ctx_p->cipher_mode == DRV_CIPHER_ESSIV) {
-+		/* Alloc hash tfm for essiv */
-+		ctx_p->shash_tfm = crypto_alloc_shash("sha256-generic", 0, 0);
-+		if (IS_ERR(ctx_p->shash_tfm)) {
-+			dev_err(dev, "Error allocating hash tfm for ESSIV.\n");
-+			return PTR_ERR(ctx_p->shash_tfm);
-+		}
-+	}
-+
- 	/* Allocate key buffer, cache line aligned */
- 	ctx_p->user.key = kmalloc(max_key_buf_size, GFP_KERNEL);
- 	if (!ctx_p->user.key)
--		return -ENOMEM;
-+		goto free_shash;
- 
- 	dev_dbg(dev, "Allocated key buffer in context. key=@%p\n",
- 		ctx_p->user.key);
-@@ -164,21 +172,19 @@ static int cc_cipher_init(struct crypto_tfm *tfm)
- 	if (dma_mapping_error(dev, ctx_p->user.key_dma_addr)) {
- 		dev_err(dev, "Mapping Key %u B at va=%pK for DMA failed\n",
- 			max_key_buf_size, ctx_p->user.key);
--		return -ENOMEM;
-+		goto free_key;
- 	}
- 	dev_dbg(dev, "Mapped key %u B at va=%pK to dma=%pad\n",
- 		max_key_buf_size, ctx_p->user.key, &ctx_p->user.key_dma_addr);
- 
--	if (ctx_p->cipher_mode == DRV_CIPHER_ESSIV) {
--		/* Alloc hash tfm for essiv */
--		ctx_p->shash_tfm = crypto_alloc_shash("sha256-generic", 0, 0);
--		if (IS_ERR(ctx_p->shash_tfm)) {
--			dev_err(dev, "Error allocating hash tfm for ESSIV.\n");
--			return PTR_ERR(ctx_p->shash_tfm);
--		}
--	}
-+	return 0;
- 
--	return rc;
-+free_key:
-+	kfree(ctx_p->user.key);
-+free_shash:
-+	crypto_free_shash(ctx_p->shash_tfm);
-+
-+	return -ENOMEM;
- }
- 
- static void cc_cipher_exit(struct crypto_tfm *tfm)
+ 			ldo8_reg: LDO8 {
 -- 
 2.25.1
 
