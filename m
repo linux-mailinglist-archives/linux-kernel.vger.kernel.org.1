@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0236F246CCF
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB0B246CD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387925AbgHQQ3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 12:29:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40240 "EHLO mail.kernel.org"
+        id S2388825AbgHQQ3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 12:29:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387918AbgHQPx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:53:28 -0400
+        id S2387922AbgHQPxd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:53:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6582F2177B;
-        Mon, 17 Aug 2020 15:53:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 74F9A21744;
+        Mon, 17 Aug 2020 15:53:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679601;
-        bh=dcddfmLyhXUn3pYXNnA+TfcrOwHJ4l1GD7OgCvFCEDI=;
+        s=default; t=1597679610;
+        bh=QNi9gv+rf5slUxfdHR740fYbHA5xhV8irPouXkkHkWA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KJEDvwf11mOw6sGlbPqEdl5u1Dov4Z/k2YHGWQBY4281fJnhRyO8m/nx8sevVjDw+
-         3zAoOqJ+7nAUmpeHYQh5/uSPMVjokCQy67niQ8M4IvdPoD5640bRfgao1GOrErqtvc
-         txtCB0zj9wIQ9Ey/iPQsqM5a1Htz3M0R8rAP/INo=
+        b=YfXoZKio5+5QYdRfmgi4acX6VtXSXBUc4cBYGjKaB0Xaq5PR8wQHE1BHz/4MALAex
+         oTSu3rILmGti9EJGD5/TZzmrm/uc3h7wEQawKT3iwTxqc8s4RxK57nm+ZxECjpkSTc
+         tlKzS2PK8K8P8pQvLe7AxqIs/xK48p+BBdQA4UCg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hanjun Guo <guohanjun@huawei.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
+        stable@vger.kernel.org, Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 271/393] PCI: Release IVRS table in AMD ACS quirk
-Date:   Mon, 17 Aug 2020 17:15:21 +0200
-Message-Id: <20200817143832.765122083@linuxfoundation.org>
+Subject: [PATCH 5.7 273/393] powerpc/pseries/hotplug-cpu: Remove double free in error path
+Date:   Mon, 17 Aug 2020 17:15:23 +0200
+Message-Id: <20200817143832.862440119@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
 References: <20200817143819.579311991@linuxfoundation.org>
@@ -44,37 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hanjun Guo <guohanjun@huawei.com>
+From: Nathan Lynch <nathanl@linux.ibm.com>
 
-[ Upstream commit 090688fa4e448284aaa16136372397d7d10814db ]
+[ Upstream commit a0ff72f9f5a780341e7ff5e9ba50a0dad5fa1980 ]
 
-The acpi_get_table() should be coupled with acpi_put_table() if the mapped
-table is not used at runtime to release the table mapping.
+In the unlikely event that the device tree lacks a /cpus node,
+find_dlpar_cpus_to_add() oddly frees the cpu_drcs buffer it has been
+passed before returning an error. Its only caller also frees the
+buffer on error.
 
-In pci_quirk_amd_sb_acs(), IVRS table is just used for checking AMD IOMMU
-is supported, not used at runtime, so put the table after using it.
+Remove the less conventional kfree() of a caller-supplied buffer from
+find_dlpar_cpus_to_add().
 
-Fixes: 15b100dfd1c9 ("PCI: Claim ACS support for AMD southbridge devices")
-Link: https://lore.kernel.org/r/1595411068-15440-1-git-send-email-guohanjun@huawei.com
-Signed-off-by: Hanjun Guo <guohanjun@huawei.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Fixes: 90edf184b9b7 ("powerpc/pseries: Add CPU dlpar add functionality")
+Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20190919231633.1344-1-nathanl@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/quirks.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/powerpc/platforms/pseries/hotplug-cpu.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index cd522dd3dd585..5622603d96d4e 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -4422,6 +4422,8 @@ static int pci_quirk_amd_sb_acs(struct pci_dev *dev, u16 acs_flags)
- 	if (ACPI_FAILURE(status))
- 		return -ENODEV;
- 
-+	acpi_put_table(header);
-+
- 	/* Filter out flags not applicable to multifunction */
- 	acs_flags &= (PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_EC | PCI_ACS_DT);
+diff --git a/arch/powerpc/platforms/pseries/hotplug-cpu.c b/arch/powerpc/platforms/pseries/hotplug-cpu.c
+index d4b346355bb9e..6d4ee03d476a9 100644
+--- a/arch/powerpc/platforms/pseries/hotplug-cpu.c
++++ b/arch/powerpc/platforms/pseries/hotplug-cpu.c
+@@ -739,7 +739,6 @@ static int dlpar_cpu_add_by_count(u32 cpus_to_add)
+ 	parent = of_find_node_by_path("/cpus");
+ 	if (!parent) {
+ 		pr_warn("Could not find CPU root node in device tree\n");
+-		kfree(cpu_drcs);
+ 		return -1;
+ 	}
  
 -- 
 2.25.1
