@@ -2,118 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D209424621A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF88124622A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727084AbgHQJKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 05:10:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49688 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728352AbgHQJKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 05:10:00 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C3C82B67A;
-        Mon, 17 Aug 2020 09:10:23 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 82A9BDA6EF; Mon, 17 Aug 2020 11:08:54 +0200 (CEST)
-Date:   Mon, 17 Aug 2020 11:08:54 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, kernel-hardening@lists.openwall.com
-Subject: Re: [PATCH v2] overflow: Add __must_check attribute to check_*()
- helpers
-Message-ID: <20200817090854.GA2026@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Kees Cook <keescook@chromium.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-References: <202008151007.EF679DF@keescook>
+        id S1727921AbgHQJL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 05:11:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726873AbgHQJLq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 05:11:46 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4447C06138A
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 02:11:43 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id p20so14209581wrf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 02:11:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=07PeHWdMcjvU0Z3mRCz4j6J4OnybjlFdXNQEtkp5iNM=;
+        b=v15ar5ZUf9fg2i9QpHlhA6tdSPxe3HKgh6yeZR7gDrMQwuAwkn6z0ypi/Jst3Xy+/9
+         znCE6w6lWD3t0eiVK1ZnPHfiRnsWsNz+N0PIp5zraYB3uKpz2TBYyrDWVPEhcZ9G9tBv
+         mby8rluoaeyMAXtw9tU5Mb8qKohXcPYb0BJkvdX+bZRi5rl0V1Y2GdLEdEp+tX/IuqiZ
+         pFNDiah4j6cRgiSjjUcXqrHTdSJw+qCfUzu+CM+b/Dft1Q8pQrScUi5PmBDf9fvZh925
+         1Q7Sv9WDpx0GX/iB1FJBym/ML+ZNHveCrT5hC/Q1z1IHpgFqmxaMnqt9+Z2wW4DnPHqN
+         wNjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=07PeHWdMcjvU0Z3mRCz4j6J4OnybjlFdXNQEtkp5iNM=;
+        b=XDoaCD5mW9MzLUQyTKSLatqOWpq1jHstPustS8lYb4/UvUCwOjg+4sNv26T0AX0dvz
+         h7kgJRwfOBpEm4kuaYRLLSCJML9MBszW8St3fhdmRQOmZVabCLt32GmYdEsKTeOPPC/Q
+         WyE7EBPVu36W3oMmXGdtmgLm5i+FJ4SHaB6EmxV8fKCNRMuBEt6HjceJ3yYko03FuIpF
+         vbBxNKdunbnR03vnkJKDWo9doBLR/8G/DvivgQgAV8FmP6LOwVWhOeW9YHHNXdGX8q58
+         LpEQ0xk+VrWqkmmbChPsGgObA30Kec1ZB0HbdEd3tWVshkwb3lPH3InKU4TrLNyxaz+Q
+         fvPg==
+X-Gm-Message-State: AOAM533O1FzaV41W+NAvEmEcKnz/gBFbO1qrgNwSL0kO+J+CsvATZEg3
+        VY7V+D+vaKdpeLizdS4vG5nWzw==
+X-Google-Smtp-Source: ABdhPJzb6oTwo2yK93dI70IfJGN9epiVad6B2+zA3GHeS9TaBGz+cBETqM9IVYZ/+Y6/tC5EHWTY/A==
+X-Received: by 2002:a5d:6910:: with SMTP id t16mr15249162wru.178.1597655502546;
+        Mon, 17 Aug 2020 02:11:42 -0700 (PDT)
+Received: from dell ([95.149.164.62])
+        by smtp.gmail.com with ESMTPSA id 15sm27555396wmo.33.2020.08.17.02.11.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Aug 2020 02:11:41 -0700 (PDT)
+Date:   Mon, 17 Aug 2020 10:11:39 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc:     David Miller <davem@davemloft.net>, kuba@kernel.org,
+        Michael Buesch <m@bues.ch>,
+        Stefano Brivio <stefano.brivio@polimi.it>,
+        Andreas Jaggi <andreas.jaggi@waterwave.ch>,
+        Network Development <netdev@vger.kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        b43-dev <b43-dev@lists.infradead.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Martin Langer <martin-langer@gmx.de>,
+        van Dyk <kugelfang@gentoo.org>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH 26/30] net: wireless: broadcom: b43: phy_common: Demote
+ non-conformant kerneldoc header
+Message-ID: <20200817091139.GU4354@dell>
+References: <20200814113933.1903438-1-lee.jones@linaro.org>
+ <20200814113933.1903438-27-lee.jones@linaro.org>
+ <CACna6ryNNyyVftEFNFEwouKc3O21oPaeqie+bjJR4L_Cf8z2BQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <202008151007.EF679DF@keescook>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACna6ryNNyyVftEFNFEwouKc3O21oPaeqie+bjJR4L_Cf8z2BQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 15, 2020 at 10:09:24AM -0700, Kees Cook wrote:
-> Since the destination variable of the check_*_overflow() helpers will
-> contain a wrapped value on failure, it would be best to make sure callers
-> really did check the return result of the helper. Adjust the macros to use
-> a bool-wrapping static inline that is marked with __must_check. This means
-> the macros can continue to have their type-agnostic behavior while gaining
-> the function attribute (that cannot be applied directly to macros).
+On Mon, 17 Aug 2020, Rafał Miłecki wrote:
+
+> On Fri, 14 Aug 2020 at 13:41, Lee Jones <lee.jones@linaro.org> wrote:
+> > Fixes the following W=1 kernel build warning(s):
+> >
+> >  drivers/net/wireless/broadcom/b43/phy_common.c:467: warning: Function parameter or member 'work' not described in 'b43_phy_txpower_adjust_work'
 > 
-> Suggested-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
-> v2:
-> - de-generalized __must_check_overflow() from being named "bool" (willy)
-> - fix comment typos (rasmus)
-> v1: https://lore.kernel.org/lkml/202008121450.405E4A3@keescook
-> ---
->  include/linux/overflow.h | 39 ++++++++++++++++++++++++---------------
->  1 file changed, 24 insertions(+), 15 deletions(-)
-> 
-> diff --git a/include/linux/overflow.h b/include/linux/overflow.h
-> index 93fcef105061..f1c4e7b56bd9 100644
-> --- a/include/linux/overflow.h
-> +++ b/include/linux/overflow.h
-> @@ -43,6 +43,16 @@
->  #define is_non_negative(a) ((a) > 0 || (a) == 0)
->  #define is_negative(a) (!(is_non_negative(a)))
->  
-> +/*
-> + * Allows for effectively applying __must_check to a macro so we can have
-> + * both the type-agnostic benefits of the macros while also being able to
-> + * enforce that the return value is, in fact, checked.
-> + */
-> +static inline bool __must_check __must_check_overflow(bool overflow)
-> +{
-> +	return unlikely(overflow);
+> Why you can't document @work instead? Should be quite a better solution.
 
-How does the 'unlikely' hint propagate through return? It is in a static
-inline so compiler has complete information in order to use it, but I'm
-curious if it actually does.
+It some circumstances it would, but not this one.
 
-> +}
-> +
->  #ifdef COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW
->  /*
->   * For simplicity and code hygiene, the fallback code below insists on
-> @@ -52,32 +62,32 @@
->   * alias for __builtin_add_overflow, but add type checks similar to
->   * below.
->   */
-> -#define check_add_overflow(a, b, d) ({		\
-> +#define check_add_overflow(a, b, d) __must_check_overflow(({	\
->  	typeof(a) __a = (a);			\
->  	typeof(b) __b = (b);			\
->  	typeof(d) __d = (d);			\
->  	(void) (&__a == &__b);			\
->  	(void) (&__a == __d);			\
->  	__builtin_add_overflow(__a, __b, __d);	\
-> -})
-> +}))
-
-In case the hint gets dropped, the fix would probably be
-
-#define check_add_overflow(a, b, d) unlikely(__must_check_overflow(({	\
- 	typeof(a) __a = (a);			\
- 	typeof(b) __b = (b);			\
- 	typeof(d) __d = (d);			\
- 	(void) (&__a == &__b);			\
- 	(void) (&__a == __d);			\
- 	__builtin_add_overflow(__a, __b, __d);	\
-})))
+ 1. This 'kernel-doc' function is not referenced from any
+    documentation location i.e. it is presently unused and there is no
+    reason for it to be kernel-doc in the first place.
+ 2. This patch stops `scripts/find-unused-docs.sh` complaining about
+    phy_common.c
+ 3. 'b43_phy_txpower_adjust_work' is the only function that has been
+     documented as kernel-doc - why is that?  Seems like a mistake.
+ 
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
