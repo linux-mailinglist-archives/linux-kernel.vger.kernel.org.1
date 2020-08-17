@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EBB3246DE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8B9246DDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389637AbgHQRRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:17:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51576 "EHLO mail.kernel.org"
+        id S2389601AbgHQRQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:16:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388129AbgHQQPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:15:05 -0400
+        id S2388769AbgHQQNz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:13:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DDBFB22B45;
-        Mon, 17 Aug 2020 16:15:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 50D6920658;
+        Mon, 17 Aug 2020 16:13:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597680905;
-        bh=DIhwfaHIx7haxE15HfsTsiSJsUEg2xtWAfqosJb4amg=;
+        s=default; t=1597680832;
+        bh=NI13nfLqQv9gzozmG+JagpQfnNQnWYTygAizOUqmkFY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rl6SbJQqtMwbxB4bPp/cer26JodpjMLa8XKFHTqubqbcZwyV1lanJlrtl7+J0aSY4
-         naQd9cYcoH4r3uHNaTuekxV3MRtb1L1zHq7qpvF6Wb6OBfPJPpkivvjwOvnI3wasJN
-         d38pvswFwdBpw+Ro+BEahfaCvDDwA8L4aps87hUA=
+        b=1rhqZVUgAv66PParCQGb2cH89v/pgaTioITi8yGi8e7CNae1+Jo31tsUZwcUHVEHt
+         3T5LbYhx840879QVhCn/D6VW69kZcb46/i5H3gKXfGj/b/L//kemMsiHxJsubUb2eS
+         TxjAaYNjvjmy4jhqigqukHF1DjCsMurSc4AFOl4s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Brian Foster <bfoster@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 074/168] media: exynos4-is: Add missed check for pinctrl_lookup_state()
-Date:   Mon, 17 Aug 2020 17:16:45 +0200
-Message-Id: <20200817143737.413925127@linuxfoundation.org>
+Subject: [PATCH 4.19 076/168] xfs: fix reflink quota reservation accounting error
+Date:   Mon, 17 Aug 2020 17:16:47 +0200
+Message-Id: <20200817143737.511119337@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143733.692105228@linuxfoundation.org>
 References: <20200817143733.692105228@linuxfoundation.org>
@@ -45,36 +45,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuhong Yuan <hslester96@gmail.com>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-[ Upstream commit 18ffec750578f7447c288647d7282c7d12b1d969 ]
+[ Upstream commit 83895227aba1ade33e81f586aa7b6b1e143096a5 ]
 
-fimc_md_get_pinctrl() misses a check for pinctrl_lookup_state().
-Add the missed check to fix it.
+Quota reservations are supposed to account for the blocks that might be
+allocated due to a bmap btree split.  Reflink doesn't do this, so fix
+this to make the quota accounting more accurate before we start
+rearranging things.
 
-Fixes: 4163851f7b99 ("[media] s5p-fimc: Use pinctrl API for camera ports configuration]")
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 862bb360ef56 ("xfs: reflink extents from one file to another")
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Brian Foster <bfoster@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/exynos4-is/media-dev.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/xfs/xfs_reflink.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/media/platform/exynos4-is/media-dev.c b/drivers/media/platform/exynos4-is/media-dev.c
-index b5993532831da..2d25a197dc657 100644
---- a/drivers/media/platform/exynos4-is/media-dev.c
-+++ b/drivers/media/platform/exynos4-is/media-dev.c
-@@ -1259,6 +1259,9 @@ static int fimc_md_get_pinctrl(struct fimc_md *fmd)
+diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
+index 6622652a85a80..0b159a79a17c6 100644
+--- a/fs/xfs/xfs_reflink.c
++++ b/fs/xfs/xfs_reflink.c
+@@ -1010,6 +1010,7 @@ xfs_reflink_remap_extent(
+ 	xfs_filblks_t		rlen;
+ 	xfs_filblks_t		unmap_len;
+ 	xfs_off_t		newlen;
++	int64_t			qres;
+ 	int			error;
  
- 	pctl->state_idle = pinctrl_lookup_state(pctl->pinctrl,
- 					PINCTRL_STATE_IDLE);
-+	if (IS_ERR(pctl->state_idle))
-+		return PTR_ERR(pctl->state_idle);
-+
- 	return 0;
- }
+ 	unmap_len = irec->br_startoff + irec->br_blockcount - destoff;
+@@ -1032,13 +1033,19 @@ xfs_reflink_remap_extent(
+ 	xfs_ilock(ip, XFS_ILOCK_EXCL);
+ 	xfs_trans_ijoin(tp, ip, 0);
  
+-	/* If we're not just clearing space, then do we have enough quota? */
+-	if (real_extent) {
+-		error = xfs_trans_reserve_quota_nblks(tp, ip,
+-				irec->br_blockcount, 0, XFS_QMOPT_RES_REGBLKS);
+-		if (error)
+-			goto out_cancel;
+-	}
++	/*
++	 * Reserve quota for this operation.  We don't know if the first unmap
++	 * in the dest file will cause a bmap btree split, so we always reserve
++	 * at least enough blocks for that split.  If the extent being mapped
++	 * in is written, we need to reserve quota for that too.
++	 */
++	qres = XFS_EXTENTADD_SPACE_RES(mp, XFS_DATA_FORK);
++	if (real_extent)
++		qres += irec->br_blockcount;
++	error = xfs_trans_reserve_quota_nblks(tp, ip, qres, 0,
++			XFS_QMOPT_RES_REGBLKS);
++	if (error)
++		goto out_cancel;
+ 
+ 	trace_xfs_reflink_remap(ip, irec->br_startoff,
+ 				irec->br_blockcount, irec->br_startblock);
 -- 
 2.25.1
 
