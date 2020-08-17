@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F78D246B06
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ABD3246B1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387754AbgHQPqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:46:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46794 "EHLO mail.kernel.org"
+        id S2387758AbgHQPs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:48:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730274AbgHQPik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:38:40 -0400
+        id S1730617AbgHQPis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:38:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A8C5622C9F;
-        Mon, 17 Aug 2020 15:38:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47613208E4;
+        Mon, 17 Aug 2020 15:38:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678719;
-        bh=tUg0ufDbgldg0Nz5MOqtxis8bznVshMzTik0MI4PymY=;
+        s=default; t=1597678727;
+        bh=CsHthHehN7Oq9N7RKyJZNpDPp0iklDcRQQ7X8Zxd+CQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MQUTkzeuXF2qanupwFryL1p9+CE2fNNDQTPWdjEd/U6aunqBaAUPDdKmE/vhkHznB
-         lbyqu79UPvyvfO1BT1xy6uYMlJelTzRpfBQpG+C+wZyNIoTi2CNbyjJ97vFprYXzrr
-         1BxlL1ilujEbpQzjeaEtGz3cP1ja6PL0SVC68huo=
+        b=2q344K0V7H44BLO7h8zGnz6NxleCl4TdqDYD3CvR+eyGUHSwgKTDLD5jSmjypLxf/
+         EbPraJb5LjJwpVyct9AnxZ40erjx2pmcoQZxPg22cBSyrCp9mlR4hJXegCkZRaLGXj
+         3c7yGnK3/eZURgSxGfddgd8nIJ4HFnfzrAEw8p7Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Subject: [PATCH 5.8 431/464] cpufreq: dt: fix oops on armada37xx
-Date:   Mon, 17 Aug 2020 17:16:24 +0200
-Message-Id: <20200817143854.426668767@linuxfoundation.org>
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>
+Subject: [PATCH 5.8 434/464] PM / devfreq: rk3399_dmc: Fix kernel oops when rockchip,pmu is absent
+Date:   Mon, 17 Aug 2020 17:16:27 +0200
+Message-Id: <20200817143854.567216826@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -44,48 +43,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+From: Marc Zyngier <maz@kernel.org>
 
-commit 10470dec3decaf5ed3c596f85debd7c42777ae12 upstream.
+commit 63ef91f24f9bfc70b6446319f6cabfd094481372 upstream.
 
-Commit 0c868627e617e43a295d8 (cpufreq: dt: Allow platform specific
-intermediate callbacks) added two function pointers to the
-struct cpufreq_dt_platform_data. However, armada37xx_cpufreq_driver_init()
-has this struct (pdata) located on the stack and uses only "suspend"
-and "resume" fields. So these newly added "get_intermediate" and
-"target_intermediate" pointers are uninitialized and contain arbitrary
-non-null values, causing all kinds of trouble.
+Booting a recent kernel on a rk3399-based system (nanopc-t4),
+equipped with a recent u-boot and ATF results in an Oops due
+to a NULL pointer dereference.
 
-For instance, here is an oops on espressobin after an attempt to change
-the cpefreq governor:
+This turns out to be due to the rk3399-dmc driver looking for
+an *undocumented* property (rockchip,pmu), and happily using
+a NULL pointer when the property isn't there.
 
-[   29.174554] Unable to handle kernel execute from non-executable memory at virtual address ffff00003f87bdc0
-...
-[   29.269373] pc : 0xffff00003f87bdc0
-[   29.272957] lr : __cpufreq_driver_target+0x138/0x580
-...
+Instead, make most of what was brought in with 9173c5ceb035
+("PM / devfreq: rk3399_dmc: Pass ODT and auto power down parameters
+to TF-A.") conditioned on finding this property in the device-tree,
+preventing the driver from exploding.
 
-Fixed by zeroing out pdata before use.
-
-Cc: <stable@vger.kernel.org> # v5.7+
-Signed-off-by: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Cc: stable@vger.kernel.org
+Fixes: 9173c5ceb035 ("PM / devfreq: rk3399_dmc: Pass ODT and auto power down parameters to TF-A.")
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/cpufreq/armada-37xx-cpufreq.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/devfreq/rk3399_dmc.c |   42 +++++++++++++++++++++++-------------------
+ 1 file changed, 23 insertions(+), 19 deletions(-)
 
---- a/drivers/cpufreq/armada-37xx-cpufreq.c
-+++ b/drivers/cpufreq/armada-37xx-cpufreq.c
-@@ -456,6 +456,7 @@ static int __init armada37xx_cpufreq_dri
- 	/* Now that everything is setup, enable the DVFS at hardware level */
- 	armada37xx_cpufreq_enable_dvfs(nb_pm_base);
+--- a/drivers/devfreq/rk3399_dmc.c
++++ b/drivers/devfreq/rk3399_dmc.c
+@@ -95,18 +95,20 @@ static int rk3399_dmcfreq_target(struct
  
-+	memset(&pdata, 0, sizeof(pdata));
- 	pdata.suspend = armada37xx_cpufreq_suspend;
- 	pdata.resume = armada37xx_cpufreq_resume;
+ 	mutex_lock(&dmcfreq->lock);
  
+-	if (target_rate >= dmcfreq->odt_dis_freq)
+-		odt_enable = true;
+-
+-	/*
+-	 * This makes a SMC call to the TF-A to set the DDR PD (power-down)
+-	 * timings and to enable or disable the ODT (on-die termination)
+-	 * resistors.
+-	 */
+-	arm_smccc_smc(ROCKCHIP_SIP_DRAM_FREQ, dmcfreq->odt_pd_arg0,
+-		      dmcfreq->odt_pd_arg1,
+-		      ROCKCHIP_SIP_CONFIG_DRAM_SET_ODT_PD,
+-		      odt_enable, 0, 0, 0, &res);
++	if (dmcfreq->regmap_pmu) {
++		if (target_rate >= dmcfreq->odt_dis_freq)
++			odt_enable = true;
++
++		/*
++		 * This makes a SMC call to the TF-A to set the DDR PD
++		 * (power-down) timings and to enable or disable the
++		 * ODT (on-die termination) resistors.
++		 */
++		arm_smccc_smc(ROCKCHIP_SIP_DRAM_FREQ, dmcfreq->odt_pd_arg0,
++			      dmcfreq->odt_pd_arg1,
++			      ROCKCHIP_SIP_CONFIG_DRAM_SET_ODT_PD,
++			      odt_enable, 0, 0, 0, &res);
++	}
+ 
+ 	/*
+ 	 * If frequency scaling from low to high, adjust voltage first.
+@@ -371,13 +373,14 @@ static int rk3399_dmcfreq_probe(struct p
+ 	}
+ 
+ 	node = of_parse_phandle(np, "rockchip,pmu", 0);
+-	if (node) {
+-		data->regmap_pmu = syscon_node_to_regmap(node);
+-		of_node_put(node);
+-		if (IS_ERR(data->regmap_pmu)) {
+-			ret = PTR_ERR(data->regmap_pmu);
+-			goto err_edev;
+-		}
++	if (!node)
++		goto no_pmu;
++
++	data->regmap_pmu = syscon_node_to_regmap(node);
++	of_node_put(node);
++	if (IS_ERR(data->regmap_pmu)) {
++		ret = PTR_ERR(data->regmap_pmu);
++		goto err_edev;
+ 	}
+ 
+ 	regmap_read(data->regmap_pmu, RK3399_PMUGRF_OS_REG2, &val);
+@@ -399,6 +402,7 @@ static int rk3399_dmcfreq_probe(struct p
+ 		goto err_edev;
+ 	};
+ 
++no_pmu:
+ 	arm_smccc_smc(ROCKCHIP_SIP_DRAM_FREQ, 0, 0,
+ 		      ROCKCHIP_SIP_CONFIG_DRAM_INIT,
+ 		      0, 0, 0, 0, &res);
 
 
