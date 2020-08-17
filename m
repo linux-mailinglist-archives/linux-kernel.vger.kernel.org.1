@@ -2,129 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B71B246393
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8E9246387
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727037AbgHQJjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 05:39:46 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:55863 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728412AbgHQJiS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 05:38:18 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from moshe@mellanox.com)
-        with SMTP; 17 Aug 2020 12:38:14 +0300
-Received: from dev-l-vrt-135.mtl.labs.mlnx (dev-l-vrt-135.mtl.labs.mlnx [10.234.135.1])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 07H9cEeu011441;
-        Mon, 17 Aug 2020 12:38:14 +0300
-Received: from dev-l-vrt-135.mtl.labs.mlnx (localhost [127.0.0.1])
-        by dev-l-vrt-135.mtl.labs.mlnx (8.15.2/8.15.2/Debian-10) with ESMTP id 07H9cEQ4003256;
-        Mon, 17 Aug 2020 12:38:14 +0300
-Received: (from moshe@localhost)
-        by dev-l-vrt-135.mtl.labs.mlnx (8.15.2/8.15.2/Submit) id 07H9cEGf003251;
-        Mon, 17 Aug 2020 12:38:14 +0300
-From:   Moshe Shemesh <moshe@mellanox.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Moshe Shemesh <moshe@mellanox.com>
-Subject: [PATCH net-next RFC v2 13/13] devlink: Add Documentation/networking/devlink/devlink-reload.rst
-Date:   Mon, 17 Aug 2020 12:37:52 +0300
-Message-Id: <1597657072-3130-14-git-send-email-moshe@mellanox.com>
-X-Mailer: git-send-email 1.8.4.3
-In-Reply-To: <1597657072-3130-1-git-send-email-moshe@mellanox.com>
-References: <1597657072-3130-1-git-send-email-moshe@mellanox.com>
+        id S1727104AbgHQJjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 05:39:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:52092 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728434AbgHQJjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 05:39:06 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 247BE31B;
+        Mon, 17 Aug 2020 02:39:06 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B62C43F6CF;
+        Mon, 17 Aug 2020 02:39:04 -0700 (PDT)
+Subject: Re: [PATCH 1/3] KVM: arm64: Some fixes of PV-time interface document
+To:     Keqian Zhu <zhukeqian1@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        wanghaibin.wang@huawei.com
+References: <20200817033729.10848-1-zhukeqian1@huawei.com>
+ <20200817033729.10848-2-zhukeqian1@huawei.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <ee7e726a-324f-16d6-7888-508ce7a2e19d@arm.com>
+Date:   Mon, 17 Aug 2020 10:39:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200817033729.10848-2-zhukeqian1@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add devlink reload rst documentation file.
-Update index file to include it.
+On 17/08/2020 04:37, Keqian Zhu wrote:
+> Rename PV_FEATURES tp PV_TIME_FEATURES
+                      ^^
+Typos are sadly far too easy in documentation...
 
-Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
----
-- Instead of reload levels driver,fw_reset,fw_live_patch have reload
-  actions driver_reinit,fw_activate,fw_live_patch
----
- .../networking/devlink/devlink-reload.rst     | 54 +++++++++++++++++++
- Documentation/networking/devlink/index.rst    |  1 +
- 2 files changed, 55 insertions(+)
- create mode 100644 Documentation/networking/devlink/devlink-reload.rst
+> 
+> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
 
-diff --git a/Documentation/networking/devlink/devlink-reload.rst b/Documentation/networking/devlink/devlink-reload.rst
-new file mode 100644
-index 000000000000..9846ea727f3b
---- /dev/null
-+++ b/Documentation/networking/devlink/devlink-reload.rst
-@@ -0,0 +1,54 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+==============
-+Devlink Reload
-+==============
-+
-+``devlink-reload`` provides mechanism to either reload driver entities,
-+applying ``devlink-params`` and ``devlink-resources`` new values or firmware
-+activation depends on reload action selected.
-+
-+Reload actions
-+=============
-+
-+User may select a reload action.
-+By default ``driver_reinit`` action is done.
-+
-+.. list-table:: Possible reload actions
-+   :widths: 5 90
-+
-+   * - Name
-+     - Description
-+   * - ``driver-reinit``
-+     - Driver entities re-initialization, including applying
-+       new values to devlink entities which are used during driver
-+       load such as ``devlink-params`` in configuration mode
-+       ``driverinit`` or ``devlink-resources``
-+   * - ``fw_activate``
-+     - Firmware activate. Can be used for firmware reload or firmware
-+       upgrade if new firmware is stored and driver supports such
-+       firmware upgrade.
-+   * - ``fw_live_patch``
-+     - Firmware live patch, applies firmware changes without reset.
-+
-+Change namespace
-+================
-+
-+All devlink instances are created in init_net and stay there for a
-+lifetime. Allow user to be able to move devlink instances into
-+namespaces during devlink reload operation. That ensures proper
-+re-instantiation of driver objects, including netdevices.
-+
-+example usage
-+-------------
-+
-+.. code:: shell
-+
-+    $ devlink dev reload help
-+    $ devlink dev reload DEV [ netns { PID | NAME | ID } ] [ action { fw_live_patch | driver_reinit | fw_activate } ]
-+
-+    # Run reload command for devlink driver entities re-initialization:
-+    $ devlink dev reload pci/0000:82:00.0 action driver_reinit
-+
-+    # Run reload command to activate firmware:
-+    $ devlink dev reload pci/0000:82:00.0 action fw_activate
-diff --git a/Documentation/networking/devlink/index.rst b/Documentation/networking/devlink/index.rst
-index 7684ae5c4a4a..d82874760ae2 100644
---- a/Documentation/networking/devlink/index.rst
-+++ b/Documentation/networking/devlink/index.rst
-@@ -20,6 +20,7 @@ general.
-    devlink-params
-    devlink-region
-    devlink-resource
-+   devlink-reload
-    devlink-trap
- 
- Driver-specific documentation
--- 
-2.17.1
+Reviewed-by: Steven Price <steven.price@arm.com>
+
+> ---
+>   Documentation/virt/kvm/arm/pvtime.rst | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/virt/kvm/arm/pvtime.rst b/Documentation/virt/kvm/arm/pvtime.rst
+> index 687b60d..94bffe2 100644
+> --- a/Documentation/virt/kvm/arm/pvtime.rst
+> +++ b/Documentation/virt/kvm/arm/pvtime.rst
+> @@ -3,7 +3,7 @@
+>   Paravirtualized time support for arm64
+>   ======================================
+>   
+> -Arm specification DEN0057/A defines a standard for paravirtualised time
+> +Arm specification DEN0057/A defines a standard for paravirtualized time
+>   support for AArch64 guests:
+>   
+>   https://developer.arm.com/docs/den0057/a
+> @@ -19,8 +19,8 @@ Two new SMCCC compatible hypercalls are defined:
+>   
+>   These are only available in the SMC64/HVC64 calling convention as
+>   paravirtualized time is not available to 32 bit Arm guests. The existence of
+> -the PV_FEATURES hypercall should be probed using the SMCCC 1.1 ARCH_FEATURES
+> -mechanism before calling it.
+> +the PV_TIME_FEATURES hypercall should be probed using the SMCCC 1.1
+> +ARCH_FEATURES mechanism before calling it.
+>   
+>   PV_TIME_FEATURES
+>       ============= ========    ==========
+> 
 
