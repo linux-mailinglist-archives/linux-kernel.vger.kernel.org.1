@@ -2,82 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD66E245BF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 07:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66AB3245BE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 07:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726560AbgHQF3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 01:29:00 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:11074 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726235AbgHQF27 (ORCPT
+        id S1726476AbgHQFXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 01:23:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726203AbgHQFXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 01:28:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597642139; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=54+oQH+CEQlOQzUWT+fCfANJA0KB5CGoWMMpbTEkZAw=; b=E/+P5EqCaqApObE9SUuYi+ijnjK0Lv5ZLpgQZHkAhjQwyGXgx3LAds64kmkpO23BCBiIX0/Y
- AntY8M7AvoBEFHE53JwnH0DQN5P73fLM5FzjSr80rgtRB9Pnwl+9TQ2d5bNj6o6X9vyNVWtw
- UfjoNDUdvkDw8Uz+RY9HP7sN6Mk=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5f3a1591d96d28d61ef97d63 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 Aug 2020 05:28:49
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C39B2C433CA; Mon, 17 Aug 2020 05:28:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from kathirav-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kathirav)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5BB77C433C6;
-        Mon, 17 Aug 2020 05:28:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5BB77C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kathirav@codeaurora.org
-From:   Kathiravan T <kathirav@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Mon, 17 Aug 2020 01:23:44 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54486C061388
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Aug 2020 22:23:44 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id p37so7573186pgl.3
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Aug 2020 22:23:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=rvHREJoleP0JUZs3Dvt83vX65WijQycSG2RFi03WGKs=;
+        b=QDJHqykYOPiXjK9hVif8fRYqxZCtxZqRXzuVfseze4T4GKQ+5BidtRUWsKFJFiC2+5
+         OktCe6fkxBGeHYPJCRAm54qiktc572cEIo2LEh9bIrZbRm1kkroyEbHQOHWQHOHg49CM
+         MuUSuLo5wwycxrP8HSPmJ2dFHtpHORNggrZZtalHXEHZRk4HQnXuVOKjTeKCl5u3uQ8J
+         aIvCo/Fv0wRvofFqIPJ21pcgYtvZeqY6DBi4lvctvwb1MlxXj9PRIzHtUwWiSvlbO3J4
+         mOY9rvaKGaVfihNSsFXgA+Alu3g3VTQd3FQ2m9hvgJBajuM1ry3GnykQxqLr8/E7uOUP
+         kYVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=rvHREJoleP0JUZs3Dvt83vX65WijQycSG2RFi03WGKs=;
+        b=rgitBSgGOcvaxY0Q3zN+vNjSM4+7mjs77GpRD3kFYKi5Xl+2jys/EOAGBsgNrscwEg
+         gLsSOGg3X1tx424+T+AvXlWzO0pgl6B0y1WuVO/Jnda74wIna+CLPG8heTYaCVxxMo6R
+         BsKR/loc5MBkNlI0G8yKM5oqWJibpd+pn2Vw9/z8tSkVHltN0wKkxCIwLub1EWcDIbuW
+         snjZj5KYnVMiCdpe1aIXmJyHSAa6Zky0xrn3Km62txjAmlh2VRX7ZrAw9DR3/zEWdYcc
+         fmd0vhio8CN2IA91J5ldM+/oty12waEsNEyFcWd27V0ljyUl0pGFri1xdFA7m1/DT7XZ
+         3n/w==
+X-Gm-Message-State: AOAM533o3JHNb1ZnLMUe+ThRV/o9NblU8zcilt5Bb19p5TBWVTfVTBrN
+        zaNO75UdL57SXSQRHpFWmxU=
+X-Google-Smtp-Source: ABdhPJxZSepobHQ9GAwcE1Tb82oTAsdlrtp659qhIYWGrs5giqtKaaDHxKJrDhawAJJZNs/yyvdCOg==
+X-Received: by 2002:a63:ea41:: with SMTP id l1mr6258912pgk.419.1597641823903;
+        Sun, 16 Aug 2020 22:23:43 -0700 (PDT)
+Received: from localhost ([121.0.29.56])
+        by smtp.gmail.com with ESMTPSA id d93sm15904744pjk.44.2020.08.16.22.23.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 16 Aug 2020 22:23:43 -0700 (PDT)
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         linux-kernel@vger.kernel.org
-Cc:     kathirav@codeaurora.org
-Subject: [PATCH V2] arm64: dts: ipq8074: Use the A53 PMU compatible
-Date:   Mon, 17 Aug 2020 10:58:36 +0530
-Message-Id: <1597642116-15902-1-git-send-email-kathirav@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+Subject: [PATCH V3 1/3] x86/entry: avoid calling into sync_regs() when entering from userspace
+Date:   Mon, 17 Aug 2020 14:23:53 +0800
+Message-Id: <20200817062355.2884-2-jiangshanlai@gmail.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
+In-Reply-To: <20200817062355.2884-1-jiangshanlai@gmail.com>
+References: <CALCETrWx66qLc-NiwKS_Zu=BP8JDTzfeUO7A2vDd01kXNmiNiA@mail.gmail.com>
+ <20200817062355.2884-1-jiangshanlai@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IPQ8074 has A53 cores, so lets use the corresponding PMU compatible.
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Signed-off-by: Kathiravan T <kathirav@codeaurora.org>
+7f2590a110b8("x86/entry/64: Use a per-CPU trampoline stack for IDT entries")
+made a change that when any exception happens on userspace, the
+entry code will save the pt_regs on the sp0 stack, and then copy it
+to the thread stack via sync_regs() and switch to thread stack
+afterward.
+
+And recent x86/entry work makes interrupt also use idtentry
+and makes all the interrupt code save the pt_regs on the sp0 stack
+and then copy it to the thread stack like exception.
+
+This is hot path (page fault, ipi), such overhead should be avoided.
+This patch borrows the way how original interrupt_entry handles it.
+It switches to the thread stack directly right away when comes
+from userspace.
+
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
-[V2]
-	- Rebased on v5.9-rc1
+ arch/x86/entry/entry_64.S | 43 +++++++++++++++++++++++++++++++--------
+ 1 file changed, 34 insertions(+), 9 deletions(-)
 
- arch/arm64/boot/dts/qcom/ipq8074.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-index 96a5ec89b5f0..e4859c7f6208 100644
---- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-@@ -67,7 +67,7 @@
- 	};
+diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+index 70dea9337816..1a7715430da3 100644
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -928,19 +928,42 @@ SYM_CODE_END(paranoid_exit)
+ SYM_CODE_START_LOCAL(error_entry)
+ 	UNWIND_HINT_FUNC
+ 	cld
+-	PUSH_AND_CLEAR_REGS save_ret=1
+-	ENCODE_FRAME_POINTER 8
+-	testb	$3, CS+8(%rsp)
++	testb	$3, CS-ORIG_RAX+8(%rsp)
+ 	jz	.Lerror_kernelspace
  
- 	pmu {
--		compatible = "arm,armv8-pmuv3";
-+		compatible = "arm,cortex-a53-pmu";
- 		interrupts = <GIC_PPI 7 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
- 	};
+-	/*
+-	 * We entered from user mode or we're pretending to have entered
+-	 * from user mode due to an IRET fault.
+-	 */
+ 	SWAPGS
+ 	FENCE_SWAPGS_USER_ENTRY
+-	/* We have user CR3.  Change to kernel CR3. */
+-	SWITCH_TO_KERNEL_CR3 scratch_reg=%rax
++	/*
++	 * Switch to the thread stack. The IRET frame and orig_ax are
++	 * on the stack, as well as the return address. RDI..R12 are
++	 * not (yet) on the stack and space has not (yet) been
++	 * allocated for them.
++	 */
++	pushq	%rdx
++
++	/* Need to switch before accessing the thread stack. */
++	SWITCH_TO_KERNEL_CR3 scratch_reg=%rdx
++	movq	%rsp, %rdx
++	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rsp
++
++	 /*
++	  * We have RDX, return address, and orig_ax on the stack on
++	  * top of the IRET frame. That means offset=24
++	  */
++	UNWIND_HINT_IRET_REGS base=%rdx offset=24
++
++	pushq	7*8(%rdx)		/* regs->ss */
++	pushq	6*8(%rdx)		/* regs->rsp */
++	pushq	5*8(%rdx)		/* regs->eflags */
++	pushq	4*8(%rdx)		/* regs->cs */
++	pushq	3*8(%rdx)		/* regs->ip */
++	pushq	2*8(%rdx)		/* regs->orig_ax */
++	pushq	8(%rdx)			/* return address */
++	UNWIND_HINT_FUNC
++
++	PUSH_AND_CLEAR_REGS rdx=(%rdx), save_ret=1
++	ENCODE_FRAME_POINTER 8
++	ret
  
+ .Lerror_entry_from_usermode_after_swapgs:
+ 	/* Put us onto the real thread stack. */
+@@ -964,6 +987,8 @@ SYM_CODE_START_LOCAL(error_entry)
+ 	 * for these here too.
+ 	 */
+ .Lerror_kernelspace:
++	PUSH_AND_CLEAR_REGS save_ret=1
++	ENCODE_FRAME_POINTER 8
+ 	leaq	native_irq_return_iret(%rip), %rcx
+ 	cmpq	%rcx, RIP+8(%rsp)
+ 	je	.Lerror_bad_iret
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+2.19.1.6.gb485710b
 
