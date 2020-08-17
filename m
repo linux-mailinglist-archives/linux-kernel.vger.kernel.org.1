@@ -2,109 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C70246E3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7099246E45
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389843AbgHQR0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390039AbgHQRZd (ORCPT
+        id S2389896AbgHQR07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:26:59 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:11740 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389856AbgHQR0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 13:25:33 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84C57C061389;
-        Mon, 17 Aug 2020 10:25:33 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id j9so15174824ilc.11;
-        Mon, 17 Aug 2020 10:25:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rKtlLroQpL/sWAJgH4qxybWU48/NnHnKlgQrlvvNczw=;
-        b=Zh1hzjplnO00QpCm/On/zjcaMBwW9TTlmZ3xHT74iBDu8raplF54GVXb0JGtIgCZus
-         owaf1p2obJm9WFiiMARI3u+MFRo5MmOf9c7bohL5PGxygj+7g4S84OYpeJZjl8nqciz5
-         oyQMYuBWu0tVZk8SjeAIf5qw9l1gCM8140nr9wB94lJ2DPlnh+lfMGsMkRB7HLHqGTCp
-         XAlCYEsYhJxcGSMUwpYpUfW5QY2vIyb2c/KexMWq0kiIvnJ5d7X+eKomPKtiL4AE4mEn
-         66gUW7Gam9grdox6zUK0Zc+8vW/kn7wePWxt1b0rVRqi4TUPmBD54TmRiuO7RVRPmNZ9
-         h9MA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rKtlLroQpL/sWAJgH4qxybWU48/NnHnKlgQrlvvNczw=;
-        b=SXyWyjuCYocXFNWET8nJpmJI3nZrRzJ47hbpF8mdYsdvC8IFsYNO5H5+nUez8Y/sD6
-         B2Zd+I8ZfEu5BZuy49s6QI3oJT+FgWK13z8MfzPzEojB0cLKIFb4k4o//JvoruRePsK7
-         rmSlYK8yRmC7DCoGX3jr+E1Z+weF+v6qZZgkFnllMCVpcw+WktV/zLw4HOL+4VzMfSS5
-         RbLQNEtO9XqFzy6a2pbmzo1P++SA5c6WpzxOe1aTBjaYUmIapsDLHhb/P5NIpp36iNsR
-         c0lRhWY9Jc1R5uZmAZWQR30iEQy1hW/ikvm/F0g2Zenaqmpu1Nx++AlmUVTXuFJZ88RH
-         quMQ==
-X-Gm-Message-State: AOAM530snq+ugm27TwAszEj7PpEkbxeRFlTiaLNtanTsM7d8h2sIlzNc
-        QTBdi6dbvZErnIVfFb0gGKMcCx9ZBdMesh0OxHeYG0EYgw81gQ==
-X-Google-Smtp-Source: ABdhPJxKJV7ZDUifvV2jxONW1h9vnjrTDiPV21b4WSI1cQ36QytJWfdjPUr/+UXcj5suUkTUs5Ql6OXn0KmK/xxxrB0=
-X-Received: by 2002:a92:2901:: with SMTP id l1mr9877131ilg.306.1597685132897;
- Mon, 17 Aug 2020 10:25:32 -0700 (PDT)
+        Mon, 17 Aug 2020 13:26:52 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597685211; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=JmxeOCVIHQVo+Zeifx/78oNUHBmLeZEDsBLUSMTLYlo=; b=U56gbUPa0GWFDKbxHNpMqOZST2HcTKpU7fL4+ohQppKIYxI4et1ez4lPTyAu5P+Q3PDUZ9ke
+ A6nK2XTIojoXQELJF/HuHTM7coWcvdOwT+cunqQcRx9DiCB5ZL499jM3s//nTwfHLUSfK7yd
+ Xt3WW8n4zWDAER5jUP6sK/aD+bI=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5f3abdd4cbcd42bdeef6dfe9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 Aug 2020 17:26:44
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AB694C433B1; Mon, 17 Aug 2020 17:26:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A1FCAC433CA;
+        Mon, 17 Aug 2020 17:26:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A1FCAC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Mon, 17 Aug 2020 11:26:36 -0600
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Bernard Zhao <bernard@vivo.com>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        opensource.kernel@vivo.com
+Subject: Re: [Freedreno] [PATCH] drm/msm/adreno: remove return value of
+ function XX_print
+Message-ID: <20200817172636.GC7438@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Bernard Zhao <bernard@vivo.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        opensource.kernel@vivo.com
+References: <20200814081747.8624-1-bernard@vivo.com>
 MIME-Version: 1.0
-References: <20200817165059.957748-1-ztong0001@gmail.com> <20200817170038.GA725471@kroah.com>
-In-Reply-To: <20200817170038.GA725471@kroah.com>
-From:   Tong Zhang <ztong0001@gmail.com>
-Date:   Mon, 17 Aug 2020 13:25:22 -0400
-Message-ID: <CAA5qM4AH7rLCve8YjZ50No02BY524nPbSOJVa+8_e3dXKmpuJw@mail.gmail.com>
-Subject: Re: [PATCH] tty: serial: fix earlycon dependency
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     jirislaby@kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200814081747.8624-1-bernard@vivo.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 1:00 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> We can handle lines 72 characters long :)
-OK, thanks, I was not aware of that, I will reformat the text in the
-next version
+On Fri, Aug 14, 2020 at 01:17:44AM -0700, Bernard Zhao wrote:
+> XX_print like pfp_print/me_print/meq_print/roq_print are just
+> used in file a5xx_debugfs.c. And these function always return
+> 0, this return value is meaningless.
+> This change is to make the code a bit more readable.
 
-> > Signed-off-by: Tong Zhang <ztong0001@gmail.com>
->
-> What broke to cause this to be needed?
+This is reasonable.  I'm always for negative lines.
 
-newbie here, please don't laugh at me,
-I just followed what people were doing after read some articles from
-the internet
+Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
 
-> Can you provide a "Fixes:" tag for this?
-sure, thanks for the suggestion
+> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+> ---
+>  drivers/gpu/drm/msm/adreno/a5xx_debugfs.c | 21 +++++++--------------
+>  1 file changed, 7 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_debugfs.c b/drivers/gpu/drm/msm/adreno/a5xx_debugfs.c
+> index 68eddac7771c..fc2c905b6c9e 100644
+> --- a/drivers/gpu/drm/msm/adreno/a5xx_debugfs.c
+> +++ b/drivers/gpu/drm/msm/adreno/a5xx_debugfs.c
+> @@ -11,7 +11,7 @@
+>  
+>  #include "a5xx_gpu.h"
+>  
+> -static int pfp_print(struct msm_gpu *gpu, struct drm_printer *p)
+> +static void pfp_print(struct msm_gpu *gpu, struct drm_printer *p)
+>  {
+>  	int i;
+>  
+> @@ -22,11 +22,9 @@ static int pfp_print(struct msm_gpu *gpu, struct drm_printer *p)
+>  		drm_printf(p, "  %02x: %08x\n", i,
+>  			gpu_read(gpu, REG_A5XX_CP_PFP_STAT_DATA));
+>  	}
+> -
+> -	return 0;
+>  }
+>  
+> -static int me_print(struct msm_gpu *gpu, struct drm_printer *p)
+> +static void me_print(struct msm_gpu *gpu, struct drm_printer *p)
+>  {
+>  	int i;
+>  
+> @@ -37,11 +35,9 @@ static int me_print(struct msm_gpu *gpu, struct drm_printer *p)
+>  		drm_printf(p, "  %02x: %08x\n", i,
+>  			gpu_read(gpu, REG_A5XX_CP_ME_STAT_DATA));
+>  	}
+> -
+> -	return 0;
+>  }
+>  
+> -static int meq_print(struct msm_gpu *gpu, struct drm_printer *p)
+> +static void meq_print(struct msm_gpu *gpu, struct drm_printer *p)
+>  {
+>  	int i;
+>  
+> @@ -52,11 +48,9 @@ static int meq_print(struct msm_gpu *gpu, struct drm_printer *p)
+>  		drm_printf(p, "  %02x: %08x\n", i,
+>  			gpu_read(gpu, REG_A5XX_CP_MEQ_DBG_DATA));
+>  	}
+> -
+> -	return 0;
+>  }
+>  
+> -static int roq_print(struct msm_gpu *gpu, struct drm_printer *p)
+> +static void roq_print(struct msm_gpu *gpu, struct drm_printer *p)
+>  {
+>  	int i;
+>  
+> @@ -71,8 +65,6 @@ static int roq_print(struct msm_gpu *gpu, struct drm_printer *p)
+>  		drm_printf(p, "  %02x: %08x %08x %08x %08x\n", i,
+>  			val[0], val[1], val[2], val[3]);
+>  	}
+> -
+> -	return 0;
+>  }
+>  
+>  static int show(struct seq_file *m, void *arg)
+> @@ -81,10 +73,11 @@ static int show(struct seq_file *m, void *arg)
+>  	struct drm_device *dev = node->minor->dev;
+>  	struct msm_drm_private *priv = dev->dev_private;
+>  	struct drm_printer p = drm_seq_file_printer(m);
+> -	int (*show)(struct msm_gpu *gpu, struct drm_printer *p) =
+> +	void (*show)(struct msm_gpu *gpu, struct drm_printer *p) =
+>  		node->info_ent->data;
+>  
+> -	return show(priv->gpu, &p);
+> +	show(priv->gpu, &p);
+> +	return 0;
+>  }
+>  
+>  #define ENT(n) { .name = #n, .show = show, .data = n ##_print }
+> -- 
+> 2.26.2
+> 
+> _______________________________________________
+> Freedreno mailing list
+> Freedreno@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/freedreno
 
->
-> > ---
-> >  drivers/tty/serial/Kconfig | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-> > index 8a0352eb337c..42e844314cbb 100644
-> > --- a/drivers/tty/serial/Kconfig
-> > +++ b/drivers/tty/serial/Kconfig
-> > @@ -8,6 +8,7 @@ menu "Serial drivers"
-> >
-> >  config SERIAL_EARLYCON
-> >       bool
-> > +     select SERIAL_CORE
->
-> Are you _sure_ about this?  This feels odd...
-
-Yeah.. that also seems odd to me -- this bug can be triggered under
-some corner cases
-which I haven't figured out why --
-I can encounter this problem when doing allmodconfig followed by some random
-select/deselect in menuconfig. -- It seems that menuconfig is not
-doing some dependency
-check correctly, i.e. when SERIAL_CORE is not builtin, SERIAL_EARLYCON
-should not
-be selected either.
-What do you suggest?
-
-> thanks,
-Thank you.
-
-> greg k-h
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
