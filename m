@@ -2,91 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2E9C24664E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 14:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 187B824665B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 14:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728338AbgHQM0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 08:26:23 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:51676 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728255AbgHQM0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 08:26:17 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 011A9D86263573792732;
-        Mon, 17 Aug 2020 20:26:16 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 17 Aug 2020 20:26:09 +0800
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "David Rientjes" <rientjes@google.com>,
-        Michel Lespinasse <walken@google.com>,
-        "Daniel Axtens" <dja@axtens.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Akash Goel <akash.goel@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>
-CC:     Wei Yongjun <weiyongjun1@huawei.com>,
-        <linux-kernel@vger.kernel.org>, "Hulk Robot" <hulkci@huawei.com>
-Subject: [PATCH] kernel/relay.c: fix memleak on destroy relay channel
-Date:   Mon, 17 Aug 2020 20:28:26 +0800
-Message-ID: <20200817122826.48518-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1728382AbgHQM2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 08:28:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:54458 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726265AbgHQM2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 08:28:48 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CA29330E;
+        Mon, 17 Aug 2020 05:28:47 -0700 (PDT)
+Received: from [10.37.12.68] (unknown [10.37.12.68])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF22B3F66B;
+        Mon, 17 Aug 2020 05:28:45 -0700 (PDT)
+Subject: Re: [PATCH] memory: samsung: exynos5422-dmc: Additional locking for
+ 'curr_rate'
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     oss-self-reviewed-patches@listhost.cambridge.arm.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        kgene@kernel.org, b.zolnierkie@samsung.com
+References: <20200811101727.3976-1-lukasz.luba@arm.com>
+ <20200817115435.GA2346@kozik-lap>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <b1cbd097-b31d-b1f2-243b-f4ed3074a9ce@arm.com>
+Date:   Mon, 17 Aug 2020 13:28:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200817115435.GA2346@kozik-lap>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kmemleak report memory leak as follows:
+Hi Krzysztof,
 
-unreferenced object 0x607ee4e5f948 (size 8):
-comm "syz-executor.1", pid 2098, jiffies 4295031601 (age 288.468s)
-hex dump (first 8 bytes):
-00 00 00 00 00 00 00 00 ........
-backtrace:
-[<00000000ca1de2fa>] relay_open kernel/relay.c:583 [inline]
-[<00000000ca1de2fa>] relay_open+0xb6/0x970 kernel/relay.c:563
-[<0000000038ae5a4b>] do_blk_trace_setup+0x4a8/0xb20 kernel/trace/blktrace.c:557
-[<00000000d5e778e9>] __blk_trace_setup+0xb6/0x150 kernel/trace/blktrace.c:597
-[<0000000038fdf803>] blk_trace_ioctl+0x146/0x280 kernel/trace/blktrace.c:738
-[<00000000ce25a0ca>] blkdev_ioctl+0xb2/0x6a0 block/ioctl.c:613
-[<00000000579e47e0>] block_ioctl+0xe5/0x120 fs/block_dev.c:1871
-[<00000000b1588c11>] vfs_ioctl fs/ioctl.c:48 [inline]
-[<00000000b1588c11>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-[<00000000b1588c11>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-[<00000000b1588c11>] __x64_sys_ioctl+0x170/0x1ce fs/ioctl.c:739
-[<0000000088fc9942>] do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
-[<000000004f6dd57a>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+On 8/17/20 12:54 PM, Krzysztof Kozlowski wrote:
+> On Tue, Aug 11, 2020 at 11:17:27AM +0100, Lukasz Luba wrote:
+>> The 'curr_rate' is protected by local 'dmc->lock' in various places, but
+>> not in a function exynos5_dmc_get_status(). The lock protects frequency
+>> (and voltage) change process and the corresponding value stored in
+>> 'curr_rate'. Add the locking mechanism to protect the 'curr_rate' reading
+>> also in the exynos5_dmc_get_status().
+>>
+>> Suggested-by: Krzysztof Kozlowski <krzk@kernel.org>
+>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>> ---
+>>   drivers/memory/samsung/exynos5422-dmc.c | 3 +++
+> 
+> Thanks, applied.
+> 
 
-'chan->buf' is malloced in relay_open() by alloc_percpu() but not free
-while destroy the relay channel. Fix it by adding free_percpu() before
-return from relay_destroy_channel().
+Thank you for applying it.
 
-Fixes: 017c59c042d0 ("relay: Use per CPU constructs for the relay channel buffer pointers")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
- kernel/relay.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/kernel/relay.c b/kernel/relay.c
-index 72fe443ea78f..fb4e0c530c08 100644
---- a/kernel/relay.c
-+++ b/kernel/relay.c
-@@ -197,6 +197,7 @@ static struct rchan_buf *relay_create_buf(struct rchan *chan)
- static void relay_destroy_channel(struct kref *kref)
- {
- 	struct rchan *chan = container_of(kref, struct rchan, kref);
-+	free_percpu(chan->buf);
- 	kfree(chan);
- }
- 
--- 
-2.25.1
-
+Regards,
+Lukasz
