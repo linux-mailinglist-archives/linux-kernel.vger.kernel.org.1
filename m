@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEAB1247117
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD93D247114
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:20:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390836AbgHQSUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:20:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52266 "EHLO mail.kernel.org"
+        id S2390523AbgHQSUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:20:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388307AbgHQQEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:04:30 -0400
+        id S2388326AbgHQQEf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:04:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7293B207FB;
-        Mon, 17 Aug 2020 16:04:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 55E24206FA;
+        Mon, 17 Aug 2020 16:04:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597680269;
-        bh=RRLC9Yh8n99NVnPYn6CiVl3hrQBqRwfzwDN7vcnfiD0=;
+        s=default; t=1597680274;
+        bh=NIfl73RREMDELHyMtwbSZUzs++FkBZ0sfKTVdjnFj1Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GSEjWNIb/UneIi1bqv/99QYm/TnrbQ7Kicci+mRKphQdlsXieptLM6q6pDilxb3Lt
-         7rX2rtuRF7plp+N/oyceB1q4kVpa0y4wbuXblbYs1FS5AV8uay7pFIXdAhOA9h5BLK
-         Z1guFf5QdzHLyNlIxxKi7CgoxsOfzQZ13Ow6NSqs=
+        b=YTSYHesOJeDc+7i8JPYtYc+mE8DAmjPzXVLuwZfXHuZnmIIAA32fbGX1RBQoAu9kS
+         DMxayrm1OI4euiXL+Fe2qX2uVcE3E8H1AnM2hBkq4ChkX9Mt+aLnD8qCowXARDn9JU
+         kYvWN/zgzNCDuaH18nhRe/aJz5bhmudYwVwvj8oo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Andrew Bowers <andrewx.bowers@intel.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 119/270] iavf: Fix updating statistics
-Date:   Mon, 17 Aug 2020 17:15:20 +0200
-Message-Id: <20200817143801.690088709@linuxfoundation.org>
+Subject: [PATCH 5.4 121/270] scsi: powertec: Fix different dev_id between request_irq() and free_irq()
+Date:   Mon, 17 Aug 2020 17:15:22 +0200
+Message-Id: <20200817143801.791162806@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
 References: <20200817143755.807583758@linuxfoundation.org>
@@ -44,41 +45,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Nguyen <anthony.l.nguyen@intel.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 9358076642f14cec8c414850d5a909cafca3a9d6 ]
+[ Upstream commit d179f7c763241c1dc5077fca88ddc3c47d21b763 ]
 
-Commit bac8486116b0 ("iavf: Refactor the watchdog state machine") inverted
-the logic for when to update statistics. Statistics should be updated when
-no other commands are pending, instead they were only requested when a
-command was processed. iavf_request_stats() would see a pending request
-and not request statistics to be updated. This caused statistics to never
-be updated; fix the logic.
+The dev_id used in request_irq() and free_irq() should match. Use 'info' in
+both cases.
 
-Fixes: bac8486116b0 ("iavf: Refactor the watchdog state machine")
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
+Link: https://lore.kernel.org/r/20200626035948.944148-1-christophe.jaillet@wanadoo.fr
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/iavf/iavf_main.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/scsi/arm/powertec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
-index 905fc45b4a58f..34124c213d27c 100644
---- a/drivers/net/ethernet/intel/iavf/iavf_main.c
-+++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
-@@ -1948,7 +1948,10 @@ static void iavf_watchdog_task(struct work_struct *work)
- 				iavf_send_api_ver(adapter);
- 			}
- 		} else {
--			if (!iavf_process_aq_command(adapter) &&
-+			/* An error will be returned if no commands were
-+			 * processed; use this opportunity to update stats
-+			 */
-+			if (iavf_process_aq_command(adapter) &&
- 			    adapter->state == __IAVF_RUNNING)
- 				iavf_request_stats(adapter);
- 		}
+diff --git a/drivers/scsi/arm/powertec.c b/drivers/scsi/arm/powertec.c
+index c795537a671cb..2dc0df005cb3b 100644
+--- a/drivers/scsi/arm/powertec.c
++++ b/drivers/scsi/arm/powertec.c
+@@ -378,7 +378,7 @@ static int powertecscsi_probe(struct expansion_card *ec,
+ 
+ 	if (info->info.scsi.dma != NO_DMA)
+ 		free_dma(info->info.scsi.dma);
+-	free_irq(ec->irq, host);
++	free_irq(ec->irq, info);
+ 
+  out_release:
+ 	fas216_release(host);
 -- 
 2.25.1
 
