@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D030246D17
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C01B8246DC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731316AbgHQQoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 12:44:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46888 "EHLO mail.kernel.org"
+        id S2389494AbgHQRNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:13:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730975AbgHQP7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:59:38 -0400
+        id S2388669AbgHQQMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:12:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8FD7A20825;
-        Mon, 17 Aug 2020 15:59:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47BE720760;
+        Mon, 17 Aug 2020 16:12:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679977;
-        bh=0Lulmu8qY+l8cB5M7Ak1H3xJrMUnSSGPpXUUroF0XiA=;
+        s=default; t=1597680729;
+        bh=yH+DAPdtU3IVv54d4VVXWRQgzC7pzyB7IRbaGehowlw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pp3JDieZsPy8+QXUU2cMZelSY6SCGhaidkAJPjL6cbdFgEmblUHbCUtaos1dkecEa
-         sBDEcC1W401MwcNjGawyUF9BcvaVisHGh05CN5eT8yAmhPqNp7dc2f+k68NRbdoKxK
-         0C2Uz5+/upm5Xd//Se1G42T6NxOI3DIZbiXuQjZo=
+        b=QWjaQVeCNEMeRuH2m0hUozb+MCmUVocsAXNRKHDP9cH9zJ4cUpNsIccAp4R/caG3E
+         p7dnpJztfEYKQSb2PhcMxyMiJT9jngb2YPRYgL4remMNow5x45/Sm+3wLPN5PwhU5i
+         KRYkY4PyW8ttJtlcCQwP6Bpq0smU7WUdwVocg3NY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef <josef.grieb@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.7 392/393] io_uring: enable lookup of links holding inflight files
-Date:   Mon, 17 Aug 2020 17:17:22 +0200
-Message-Id: <20200817143838.604364210@linuxfoundation.org>
+        stable@vger.kernel.org, Zhenzhong Duan <zhenzhong.duan@gmail.com>,
+        Borislav Petkov <bp@suse.de>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 004/168] x86/mce/inject: Fix a wrong assignment of i_mce.status
+Date:   Mon, 17 Aug 2020 17:15:35 +0200
+Message-Id: <20200817143733.928530433@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
-References: <20200817143819.579311991@linuxfoundation.org>
+In-Reply-To: <20200817143733.692105228@linuxfoundation.org>
+References: <20200817143733.692105228@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,168 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Zhenzhong Duan <zhenzhong.duan@gmail.com>
 
-commit f254ac04c8744cf7bfed012717eac34eacc65dfb upstream.
+[ Upstream commit 5d7f7d1d5e01c22894dee7c9c9266500478dca99 ]
 
-When a process exits, we cancel whatever requests it has pending that
-are referencing the file table. However, if a link is holding a
-reference, then we cannot find it by simply looking at the inflight
-list.
+The original code is a nop as i_mce.status is or'ed with part of itself,
+fix it.
 
-Enable checking of the poll and timeout list to find the link, and
-cancel it appropriately.
-
-Cc: stable@vger.kernel.org
-Reported-by: Josef <josef.grieb@gmail.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-
+Fixes: a1300e505297 ("x86/ras/mce_amd_inj: Trigger deferred and thresholding errors interrupts")
+Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Yazen Ghannam <yazen.ghannam@amd.com>
+Link: https://lkml.kernel.org/r/20200611023238.3830-1-zhenzhong.duan@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io_uring.c |   97 ++++++++++++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 87 insertions(+), 10 deletions(-)
+ arch/x86/kernel/cpu/mcheck/mce-inject.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -4638,6 +4638,7 @@ static bool io_poll_remove_one(struct io
- 		io_cqring_fill_event(req, -ECANCELED);
- 		io_commit_cqring(req->ctx);
- 		req->flags |= REQ_F_COMP_LOCKED;
-+		req_set_fail_links(req);
- 		io_put_req(req);
+diff --git a/arch/x86/kernel/cpu/mcheck/mce-inject.c b/arch/x86/kernel/cpu/mcheck/mce-inject.c
+index 1ceccc4a5472c..9cc524be3c949 100644
+--- a/arch/x86/kernel/cpu/mcheck/mce-inject.c
++++ b/arch/x86/kernel/cpu/mcheck/mce-inject.c
+@@ -518,7 +518,7 @@ static void do_inject(void)
+ 	 */
+ 	if (inj_type == DFR_INT_INJ) {
+ 		i_mce.status |= MCI_STATUS_DEFERRED;
+-		i_mce.status |= (i_mce.status & ~MCI_STATUS_UC);
++		i_mce.status &= ~MCI_STATUS_UC;
  	}
  
-@@ -4820,6 +4821,23 @@ static enum hrtimer_restart io_timeout_f
- 	return HRTIMER_NORESTART;
- }
- 
-+static int __io_timeout_cancel(struct io_kiocb *req)
-+{
-+	int ret;
-+
-+	list_del_init(&req->list);
-+
-+	ret = hrtimer_try_to_cancel(&req->io->timeout.timer);
-+	if (ret == -1)
-+		return -EALREADY;
-+
-+	req_set_fail_links(req);
-+	req->flags |= REQ_F_COMP_LOCKED;
-+	io_cqring_fill_event(req, -ECANCELED);
-+	io_put_req(req);
-+	return 0;
-+}
-+
- static int io_timeout_cancel(struct io_ring_ctx *ctx, __u64 user_data)
- {
- 	struct io_kiocb *req;
-@@ -4827,7 +4845,6 @@ static int io_timeout_cancel(struct io_r
- 
- 	list_for_each_entry(req, &ctx->timeout_list, list) {
- 		if (user_data == req->user_data) {
--			list_del_init(&req->list);
- 			ret = 0;
- 			break;
- 		}
-@@ -4836,15 +4853,7 @@ static int io_timeout_cancel(struct io_r
- 	if (ret == -ENOENT)
- 		return ret;
- 
--	ret = hrtimer_try_to_cancel(&req->io->timeout.timer);
--	if (ret == -1)
--		return -EALREADY;
--
--	req_set_fail_links(req);
--	req->flags |= REQ_F_COMP_LOCKED;
--	io_cqring_fill_event(req, -ECANCELED);
--	io_put_req(req);
--	return 0;
-+	return __io_timeout_cancel(req);
- }
- 
- static int io_timeout_remove_prep(struct io_kiocb *req,
-@@ -7579,6 +7588,71 @@ static int io_uring_release(struct inode
- 	return 0;
- }
- 
-+/*
-+ * Returns true if 'preq' is the link parent of 'req'
-+ */
-+static bool io_match_link(struct io_kiocb *preq, struct io_kiocb *req)
-+{
-+	struct io_kiocb *link;
-+
-+	if (!(preq->flags & REQ_F_LINK_HEAD))
-+		return false;
-+
-+	list_for_each_entry(link, &preq->link_list, link_list) {
-+		if (link == req)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
-+/*
-+ * We're looking to cancel 'req' because it's holding on to our files, but
-+ * 'req' could be a link to another request. See if it is, and cancel that
-+ * parent request if so.
-+ */
-+static bool io_poll_remove_link(struct io_ring_ctx *ctx, struct io_kiocb *req)
-+{
-+	struct hlist_node *tmp;
-+	struct io_kiocb *preq;
-+	bool found = false;
-+	int i;
-+
-+	spin_lock_irq(&ctx->completion_lock);
-+	for (i = 0; i < (1U << ctx->cancel_hash_bits); i++) {
-+		struct hlist_head *list;
-+
-+		list = &ctx->cancel_hash[i];
-+		hlist_for_each_entry_safe(preq, tmp, list, hash_node) {
-+			found = io_match_link(preq, req);
-+			if (found) {
-+				io_poll_remove_one(preq);
-+				break;
-+			}
-+		}
-+	}
-+	spin_unlock_irq(&ctx->completion_lock);
-+	return found;
-+}
-+
-+static bool io_timeout_remove_link(struct io_ring_ctx *ctx,
-+				   struct io_kiocb *req)
-+{
-+	struct io_kiocb *preq;
-+	bool found = false;
-+
-+	spin_lock_irq(&ctx->completion_lock);
-+	list_for_each_entry(preq, &ctx->timeout_list, list) {
-+		found = io_match_link(preq, req);
-+		if (found) {
-+			__io_timeout_cancel(preq);
-+			break;
-+		}
-+	}
-+	spin_unlock_irq(&ctx->completion_lock);
-+	return found;
-+}
-+
- static void io_uring_cancel_files(struct io_ring_ctx *ctx,
- 				  struct files_struct *files)
- {
-@@ -7629,6 +7703,9 @@ static void io_uring_cancel_files(struct
- 			}
- 		} else {
- 			io_wq_cancel_work(ctx->io_wq, &cancel_req->work);
-+			/* could be a link, check and remove if it is */
-+			if (!io_poll_remove_link(ctx, cancel_req))
-+				io_timeout_remove_link(ctx, cancel_req);
- 			io_put_req(cancel_req);
- 		}
- 
+ 	/*
+-- 
+2.25.1
+
 
 
