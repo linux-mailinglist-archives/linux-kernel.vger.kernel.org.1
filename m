@@ -2,89 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ECFF245FA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E94D245FFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728186AbgHQIXu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 17 Aug 2020 04:23:50 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:25465 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727898AbgHQIXR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 04:23:17 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-180-lNRQs7-OMBKEt5epJ5rllg-1; Mon, 17 Aug 2020 09:23:12 +0100
-X-MC-Unique: lNRQs7-OMBKEt5epJ5rllg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 17 Aug 2020 09:23:11 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 17 Aug 2020 09:23:11 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Christoph Hellwig' <hch@lst.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "x86@kernel.org" <x86@kernel.org>
-CC:     Kees Cook <keescook@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: RE: [PATCH 09/11] x86: remove address space overrides using set_fs()
-Thread-Topic: [PATCH 09/11] x86: remove address space overrides using set_fs()
-Thread-Index: AQHWdGicIkTuqnSld0yWphpVxhe9Oqk79IHw
-Date:   Mon, 17 Aug 2020 08:23:11 +0000
-Message-ID: <935d551809894d14965e430e05d21057@AcuMS.aculab.com>
-References: <20200817073212.830069-1-hch@lst.de>
- <20200817073212.830069-10-hch@lst.de>
-In-Reply-To: <20200817073212.830069-10-hch@lst.de>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1728521AbgHQI2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 04:28:13 -0400
+Received: from mga02.intel.com ([134.134.136.20]:39733 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728307AbgHQI15 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 04:27:57 -0400
+IronPort-SDR: RN8TCLZ4ToFewbdc5uR8rSJDDpSpRGtqJioEMZ3KeDyjFr7wkitumdkFwk951HySM06e4AM1wA
+ VQLbD2kRwVJg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9715"; a="142485498"
+X-IronPort-AV: E=Sophos;i="5.76,322,1592895600"; 
+   d="scan'208";a="142485498"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 01:27:56 -0700
+IronPort-SDR: jlweMGgmnmuDxpK/28ZfkxICm7W9Bw5hE6caHFphHEnPY/rg2JZVeaGTdGOayRAdwkC49Kz3uR
+ weoZ+heuQTKw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,322,1592895600"; 
+   d="scan'208";a="496935225"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by fmsmga005.fm.intel.com with ESMTP; 17 Aug 2020 01:27:54 -0700
+Date:   Mon, 17 Aug 2020 16:24:10 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     broonie@kernel.org, lee.jones@linaro.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, matthew.gerlach@linux.intel.com,
+        russell.h.weight@intel.com, lgoncalv@redhat.com, hao.wu@intel.com
+Subject: Re: [PATCH v3 0/2] add regmap-spi-avmm & Intel Max10 BMC chip support
+Message-ID: <20200817082410.GB19661@yilunxu-OptiPlex-7050>
+References: <1596614456-20182-1-git-send-email-yilun.xu@intel.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0.001
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1596614456-20182-1-git-send-email-yilun.xu@intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig
-> Sent: 17 August 2020 08:32
->
-> Stop providing the possibility to override the address space using
-> set_fs() now that there is no need for that any more.  To properly
-> handle the TASK_SIZE_MAX checking for 4 vs 5-level page tables on
-> x86 a new alternative is introduced, which just like the one in
-> entry_64.S has to use the hardcoded virtual address bits to escape
-> the fact that TASK_SIZE_MAX isn't actually a constant when 5-level
-> page tables are enabled.
-....
-> @@ -93,7 +69,7 @@ static inline bool pagefault_disabled(void);
->  #define access_ok(addr, size)					\
->  ({									\
->  	WARN_ON_IN_IRQ();						\
-> -	likely(!__range_not_ok(addr, size, user_addr_max()));		\
-> +	likely(!__range_not_ok(addr, size, TASK_SIZE_MAX));		\
->  })
+Hi Brown & jones:
 
-Can't that always compare against a constant even when 5-levl
-page tables are enabled on x86-64?
+I tried to refacor the regmap code and add comments in this patchset. I
+made big changes to the rx flow and remove some tricky parts in it.
 
-On x86-64 it can (probably) reduce to (addr | (addr + size)) < 0.
+Would it be more understandable than last version? I'm expecting your
+comments on it when you have time, thanks in advance.
 
-	David
+Yilun
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+On Wed, Aug 05, 2020 at 04:00:54PM +0800, Xu Yilun wrote:
+> This patchset adds the regmap-spi-avmm to support the Intel SPI Slave to
+> AVMM Bus Bridge (spi-avmm) IP block. It also implements the usercase - the
+> driver of Intel Max10 BMC chip which integrates this IP block.
+> 
+> Patch #1 implements the regmap-spi-avmm.
+> Patch #2 implements the mfd driver of Intel Max10 BMC chip.
+> 
+> Main changes from v1:
+> - Split out the regmap-spi-avmm module out of intel-m10-bmc module.
+> 
+> Main changes from v2:
+> - Refactor the code of regmap-spi-avmm.
+>    - Rewrites the rx flow and simplifies the implementation, collapse some
+>      function calls.
+>    - Add bounds checking every time we fill trans_buf & phy_buf.
+>    - Try to configure spi mode on regmap init
+>    - delete regmap_bus.reg_write/reg_read callbacks.
+>    - Squash the bug fixing patch.
+> - Add the sub devices in mfd_cell for Max10 bmc driver.
+> - Improve comments and some minor fixes.
+> 
+> Xu Yilun (2):
+>   regmap: add Intel SPI Slave to AVMM Bus Bridge support
+>   mfd: intel-m10-bmc: add Max10 BMC chip support for Intel FPGA PAC
+> 
+>  .../ABI/testing/sysfs-driver-intel-m10-bmc         |  15 +
+>  drivers/base/regmap/Kconfig                        |   6 +-
+>  drivers/base/regmap/Makefile                       |   1 +
+>  drivers/base/regmap/regmap-spi-avmm.c              | 735 +++++++++++++++++++++
+>  drivers/mfd/Kconfig                                |  13 +
+>  drivers/mfd/Makefile                               |   2 +
+>  drivers/mfd/intel-m10-bmc.c                        | 169 +++++
+>  include/linux/mfd/intel-m10-bmc.h                  |  57 ++
+>  include/linux/regmap.h                             |  36 +
+>  9 files changed, 1033 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/ABI/testing/sysfs-driver-intel-m10-bmc
+>  create mode 100644 drivers/base/regmap/regmap-spi-avmm.c
+>  create mode 100644 drivers/mfd/intel-m10-bmc.c
+>  create mode 100644 include/linux/mfd/intel-m10-bmc.h
+> 
+> -- 
+> 2.7.4
