@@ -2,166 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50A022477DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 22:02:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A6E2477E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 22:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729368AbgHQUCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 16:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48278 "EHLO
+        id S1729765AbgHQUDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 16:03:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729317AbgHQUCR (ORCPT
+        with ESMTP id S1729317AbgHQUCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 16:02:17 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C406C061342
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 13:02:17 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id r13so11206887iln.0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 13:02:17 -0700 (PDT)
+        Mon, 17 Aug 2020 16:02:22 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01102C061389
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 13:02:22 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id 189so7984570pgg.13
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 13:02:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=42EHKaiZokDYEpY04AQEHHdjVaoqLPYqnG7cOPFCkVo=;
-        b=UHRcBPsnuwQhn3lAwxUnaMePKdIl5grFxltDU8PhTR6WLHfWFDbi2EKC+nzAhXFKsk
-         Kj26U6KLk9VROr9Zvg9QT+0ePSN5fZsV5DJBIov3SJk+OVUohgcEBBDoYt/AdOFb3VId
-         ntKhlpjtfnSoZfherw1s1yh05Ozxy1lNa20PIXZN4EYEu7T8EEsf4PWtydabRxXHX8fx
-         lqd/l6hGDUi/rFf9nKBX1AKe0Vo3ohnAoa2gM4PZ/3byBobTwWlN+6PmI9PFlph0wyDG
-         BoG6ayyGj/c0QIyGXj91qlxT7SaGZrldW0BhTH39V4+UPxdEJMrqCbBFSFf0+VUc9MHf
-         OTGA==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=97DJCt1f0pZE/lulXm7MIIWiJdssbmLKs4FWP+jsWew=;
+        b=aSZhdkNSZ87cEFa5bVOxaRgbLX85Ac+f9y0d86ayXObRrHbI44P6QsGc3j0vxCaOtG
+         T2k2WOgfibXFL7wthStQUZ2a3THDVNOGIm8YJURtA34YheOr2MAVAuh07KvbwkyanYJS
+         0EG510E/ggHXtfUb6SqMiyn275eeX4FnCQjVBA0Ynkest98IGBIFATGO7FCiNvsrRbkh
+         fmWOvmbqhkjk1q/XQS+NvaPIgrNKptwTVoidsz8P1vd8W5lrCq8X1NqQRsc/NszaPSZV
+         B+EkeoLweuq1QOusC/DDv9aQ54VFoeSpo/Y8VIPH3trT8rbQk4iBVBt328RQJCy4a+pu
+         mrUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=42EHKaiZokDYEpY04AQEHHdjVaoqLPYqnG7cOPFCkVo=;
-        b=ZWb/GHRbJyuk0UN5IKnSuhvXlXwrlXJOpyjGo7IemyMuBGfWkz54d129xU2l/Q4whv
-         d+jQ9IzOO0y/YM2Dh0lB6s58zg7hf5bdaPVj0VKbU8N8YzLVwl5GqjWVlFj9QR2VPIpc
-         0wrYmX65irIXcWA5Yyukus06gNhPX/XOk+xdfO/QzR6hNXydK1JtznOAuW3n2WG3y9Li
-         Q4rH4U/Ks8U/mymOkC92tXGilcO30eBW+AQyBzku5nO3sC05lYAukCPsBohbymqYVVY3
-         SujnARXDBw7+YkFSTW4QoNlmBl4rhmDgXrNDIhvhJjQtDVGnYFGCJsyCfyaR4UjjkWEU
-         rX8g==
-X-Gm-Message-State: AOAM533BQb6FclcoYG2RPR3nh1GUxSjoBsh8NlH3lroxGXYKEQfLZrca
-        0bsRwvSnWT7CUQk2EVE3di70Sn8nBTLRTy3a+80s7A==
-X-Google-Smtp-Source: ABdhPJz7+/cSad+TqEVktg+PR5xxDaQJGXqAXQEodbtGBY1kqiUkr3yUdwTHkmeHwjQMPc5WO3+3DORBrxf8XAicLVM=
-X-Received: by 2002:a92:a157:: with SMTP id v84mr14515417ili.189.1597694536738;
- Mon, 17 Aug 2020 13:02:16 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=97DJCt1f0pZE/lulXm7MIIWiJdssbmLKs4FWP+jsWew=;
+        b=Bo3zByHe4Qdyd6l0cjR1tsKtzKdX/aBcnvzNYoXvCIoGKvl/9HZU5vJvnYb/uUlQxJ
+         011MUexuFMeL/ub2Ay0EfFUjUJVBnGbG0dcv0GtILit2mnkcCXHriZN2z49ej6hlJjCO
+         VvdfgFwmfvl5KioRNupBR+KNzXUzkbOqhc3eLFdS3u5Lj8IyaML/tXhGn/jnNP7BzN2/
+         BjWGivUsn2QnmqdeguqZKCsTAQn2j0zJr9Wl3iyLTHdv4JkMAFimXqRsTbbqnFNkhyXP
+         OcDu6kIZxguo+YIFe7lSJtv7nAxolZKNbBnmA/uIpt0gC934FIL1lDnXrwWM+d5geByV
+         g1ng==
+X-Gm-Message-State: AOAM532q3MZBuSUjAmVDOiLOUxvF1CLNZ196En4Yf6TPMJdkp446v+i3
+        1l8Lky5KinWV5AisdgSQlvfhbA==
+X-Google-Smtp-Source: ABdhPJx6fgKnzdqFet7WfKg8Bw76iQ/G91m6PuMxHTNY08ReQtFVhesqdO2JpfqR2BskRMIqTcZ09Q==
+X-Received: by 2002:a63:d143:: with SMTP id c3mr10873272pgj.306.1597694541448;
+        Mon, 17 Aug 2020 13:02:21 -0700 (PDT)
+Received: from ?IPv6:2605:e000:100e:8c61:bd62:5cef:d7f8:5bff? ([2605:e000:100e:8c61:bd62:5cef:d7f8:5bff])
+        by smtp.gmail.com with ESMTPSA id c27sm18199498pgn.86.2020.08.17.13.02.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Aug 2020 13:02:20 -0700 (PDT)
+Subject: Re: [PATCH] block: convert tasklets to use new tasklet_setup() API
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Allen Pais <allen.cryptic@gmail.com>, jdike@addtoit.com,
+        richard@nod.at, anton.ivanov@cambridgegreys.com, 3chas3@gmail.com,
+        stefanr@s5r6.in-berlin.de, airlied@linux.ie, daniel@ffwll.ch,
+        sre@kernel.org, James.Bottomley@HansenPartnership.com,
+        kys@microsoft.com, deller@gmx.de, dmitry.torokhov@gmail.com,
+        jassisinghbrar@gmail.com, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, maximlevitsky@gmail.com, oakad@yahoo.com,
+        ulf.hansson@linaro.org, mporter@kernel.crashing.org,
+        alex.bou9@gmail.com, broonie@kernel.org, martyn@welchs.me.uk,
+        manohar.vanga@gmail.com, mitch@sfgoth.com, davem@davemloft.net,
+        kuba@kernel.org, linux-um@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux1394-devel@lists.sourceforge.net,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-hyperv@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-ntb@googlegroups.com, linux-s390@vger.kernel.org,
+        linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
+        Allen Pais <allen.lkml@gmail.com>,
+        Romain Perier <romain.perier@gmail.com>
+References: <20200817091617.28119-1-allen.cryptic@gmail.com>
+ <20200817091617.28119-2-allen.cryptic@gmail.com>
+ <b5508ca4-0641-7265-2939-5f03cbfab2e2@kernel.dk>
+ <202008171228.29E6B3BB@keescook>
+ <161b75f1-4e88-dcdf-42e8-b22504d7525c@kernel.dk>
+ <202008171246.80287CDCA@keescook>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <df645c06-c30b-eafa-4d23-826b84f2ff48@kernel.dk>
+Date:   Mon, 17 Aug 2020 13:02:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200817170535.17041-1-brgl@bgdev.pl> <20200817170535.17041-2-brgl@bgdev.pl>
- <20200817173908.GS1891694@smile.fi.intel.com>
-In-Reply-To: <20200817173908.GS1891694@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 17 Aug 2020 22:02:05 +0200
-Message-ID: <CAMRc=MdaaWhV_ZKHgWy_Gxkp=jMuZcwqpoE8Ya_84n9ZT5O31A@mail.gmail.com>
-Subject: Re: [PATCH v7 1/3] devres: provide devm_krealloc()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <202008171246.80287CDCA@keescook>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 7:43 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Mon, Aug 17, 2020 at 07:05:33PM +0200, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >
-> > Implement the managed variant of krealloc(). This function works with
-> > all memory allocated by devm_kmalloc() (or devres functions using it
-> > implicitly like devm_kmemdup(), devm_kstrdup() etc.).
-> >
-> > Managed realloc'ed chunks can be manually released with devm_kfree().
->
-> Thanks for an update! My comments / questions below.
->
-> ...
->
-> > +static struct devres *to_devres(void *data)
-> > +{
-> > +     return (struct devres *)((u8 *)data - ALIGN(sizeof(struct devres),
-> > +                                                 ARCH_KMALLOC_MINALIGN));
->
-> Do you really need both explicit castings?
->
+On 8/17/20 12:48 PM, Kees Cook wrote:
+> On Mon, Aug 17, 2020 at 12:44:34PM -0700, Jens Axboe wrote:
+>> On 8/17/20 12:29 PM, Kees Cook wrote:
+>>> On Mon, Aug 17, 2020 at 06:56:47AM -0700, Jens Axboe wrote:
+>>>> On 8/17/20 2:15 AM, Allen Pais wrote:
+>>>>> From: Allen Pais <allen.lkml@gmail.com>
+>>>>>
+>>>>> In preparation for unconditionally passing the
+>>>>> struct tasklet_struct pointer to all tasklet
+>>>>> callbacks, switch to using the new tasklet_setup()
+>>>>> and from_tasklet() to pass the tasklet pointer explicitly.
+>>>>
+>>>> Who came up with the idea to add a macro 'from_tasklet' that is just
+>>>> container_of? container_of in the code would be _much_ more readable,
+>>>> and not leave anyone guessing wtf from_tasklet is doing.
+>>>>
+>>>> I'd fix that up now before everything else goes in...
+>>>
+>>> As I mentioned in the other thread, I think this makes things much more
+>>> readable. It's the same thing that the timer_struct conversion did
+>>> (added a container_of wrapper) to avoid the ever-repeating use of
+>>> typeof(), long lines, etc.
+>>
+>> But then it should use a generic name, instead of each sub-system using
+>> some random name that makes people look up exactly what it does. I'm not
+>> huge fan of the container_of() redundancy, but adding private variants
+>> of this doesn't seem like the best way forward. Let's have a generic
+>> helper that does this, and use it everywhere.
+> 
+> I'm open to suggestions, but as things stand, these kinds of treewide
 
-Yeah, we can probably drop the (struct devres *) here.
+On naming? Implementation is just as it stands, from_tasklet() is
+totally generic which is why I objected to it. from_member()? Not great
+with naming... But I can see this going further and then we'll suddenly
+have tons of these. It's not good for readability.
 
-> > +}
->
-> ...
->
-> > +     total_old_size = ksize(to_devres(ptr));
->
-> But how you can guarantee this pointer:
->  - belongs to devres,
+> changes end up getting whole-release delays because of the need to have
+> the API in place for everyone before patches to do the changes can be
+> sent to multiple maintainers, etc.
 
-We can only check if a chunk is dynamically allocated with ksize() -
-it will return 0 if it isn't and I'll add a check for that in the next
-iteration. We check whether it's a managed chunk later after taking
-the lock.
+Sure, that's always true of treewide changes like that.
 
->  - hasn't gone while you run a ksize()?
->
+-- 
+Jens Axboe
 
-At some point you need to draw a line. In the end: how do you
-guarantee a devres buffer hasn't been freed when you're using it? In
-my comment to the previous version of this patch I clarified that we
-need to protect all modifications of the devres linked list - we must
-not realloc a chunk that contains the links without taking the
-spinlock but also we must not call alloc() funcs with GFP_KERNEL with
-spinlock taken. The issue we could run into is: someone modifies the
-linked list by adding/removing other managed resources, not modifying
-this one.
-
-The way this function works now guarantees it but other than that:
-it's up to the users to not free memory they're actively using.
-
-> ...
->
-> > +     new_dr = alloc_dr(devm_kmalloc_release,
-> > +                       total_new_size, gfp, dev_to_node(dev));
->
-> Can you move some parameters to the previous line?
->
-
-Why though? It's fine this way.
-
-> > +     if (!new_dr)
-> > +             return NULL;
->
-> ...
->
-> > +     spin_lock_irqsave(&dev->devres_lock, flags);
-> > +
-> > +     old_dr = find_dr(dev, devm_kmalloc_release, devm_kmalloc_match, ptr);
-> > +     if (!old_dr) {
-> > +             spin_unlock_irqrestore(&dev->devres_lock, flags);
-> > +             devres_free(new_dr);
-> > +             WARN(1, "Memory chunk not managed or managed by a different device.");
-> > +             return NULL;
-> > +     }
-> > +
-> > +     replace_dr(dev, &old_dr->node, &new_dr->node);
-> > +
-> > +     spin_unlock_irqrestore(&dev->devres_lock, flags);
-> > +
-> > +     memcpy(new_dr->data, old_dr->data, devres_data_size(total_old_size));
->
-> But new_dr may concurrently gone at this point, no? It means memcpy() should be
-> under spin lock.
->
-
-Just as I explained above: we're protecting the linked list, not the
-resource itself.
-
-Bartosz
