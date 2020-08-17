@@ -2,74 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3043245CCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 09:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAFCF245CD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 09:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbgHQHBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 03:01:49 -0400
-Received: from ms-10.1blu.de ([178.254.4.101]:40302 "EHLO ms-10.1blu.de"
+        id S1726853AbgHQHB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 03:01:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726613AbgHQHAr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 03:00:47 -0400
-Received: from [78.43.71.214] (helo=marius.fritz.box)
-        by ms-10.1blu.de with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <mail@mariuszachmann.de>)
-        id 1k7Z8N-00009O-MZ; Mon, 17 Aug 2020 09:00:43 +0200
-From:   Marius Zachmann <mail@mariuszachmann.de>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Marius Zachmann <mail@mariuszachmann.de>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] hwmon: corsair-cpro: fix ccp_probe, add delay
-Date:   Mon, 17 Aug 2020 09:00:40 +0200
-Message-Id: <20200817070040.7952-1-mail@mariuszachmann.de>
-X-Mailer: git-send-email 2.28.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Con-Id: 241080
-X-Con-U: 0-mail
-X-Originating-IP: 78.43.71.214
+        id S1726227AbgHQHB2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 03:01:28 -0400
+Received: from localhost.localdomain (unknown [194.230.155.242])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F35412072D;
+        Mon, 17 Aug 2020 07:01:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597647688;
+        bh=NiP7kfVyJU+2aMhFaE2wxEMOF2hoELOP5019APcWLcg=;
+        h=From:To:Subject:Date:From;
+        b=2isQ6TdcEXxqLINIa31JvyfIDrqYdxFQW3EAWl/wt/yZm2Hw9QjEqcv4wImJz+IUX
+         GwcbrbT0nybRKT1pxcRit2C+N4oon3x8n+S17m7mzK0b4TwSi02Gs3tbWJI0+m7NEn
+         qfBCMvQDk+5iTLm6SawoQnXC0QlyX5Sb9uUR5o4g=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Li Yang <leoyang.li@nxp.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v2 1/4] dt-bindings: arm: fsl: Add binding for Variscite VAR-SOM-MX8MM module
+Date:   Mon, 17 Aug 2020 09:01:17 +0200
+Message-Id: <20200817070120.4937-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Possibly because of the changes in usbhid/hid-core.c the first
-raw input report is not received during ccp_probe function and it will
-timeout. I am not sure, whether this behaviour is expected after
-hid_device_io_start or if I am missing something.
-As a solution this adds msleep(50) to ccp_probe so that all initial
-input reports can be received.
+Add a binding for the Variscite VAR-SOM-MX8MM System on Module.
 
-Signed-off-by: Marius Zachmann <mail@mariuszachmann.de>
----
-v2:
-- fix accidentally deleted comment
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
 ---
- drivers/hwmon/corsair-cpro.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/hwmon/corsair-cpro.c b/drivers/hwmon/corsair-cpro.c
-index 591929ec217a..c04fac1d820f 100644
---- a/drivers/hwmon/corsair-cpro.c
-+++ b/drivers/hwmon/corsair-cpro.c
-@@ -10,6 +10,7 @@
+Changes since v1:
+1. None
+---
+ Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
- #include <linux/bitops.h>
- #include <linux/completion.h>
-+#include <linux/delay.h>
- #include <linux/hid.h>
- #include <linux/hwmon.h>
- #include <linux/kernel.h>
-@@ -513,6 +514,7 @@ static int ccp_probe(struct hid_device *hdev, const struct hid_device_id *id)
- 	init_completion(&ccp->wait_input_report);
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index f63895c8ce2d..d8208aa56a3d 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -342,6 +342,7 @@ properties:
+         items:
+           - enum:
+               - fsl,imx8mm-evk            # i.MX8MM EVK Board
++              - variscite,var-som-mx8mm   # i.MX8MM Variscite VAR-SOM-MX8MM module
+           - const: fsl,imx8mm
+ 
+       - description: i.MX8MN based Boards
+-- 
+2.17.1
 
- 	hid_device_io_start(hdev);
-+	msleep(50); /* wait before events can be received */
-
- 	/* temp and fan connection status only updates when device is powered on */
- 	ret = get_temp_cnct(ccp);
---
-2.28.0
