@@ -2,109 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 192B4245BF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 07:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 650CD245C10
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 07:46:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbgHQFb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 01:31:57 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:49324 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726267AbgHQFb4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 01:31:56 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R621e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0U5xbPkm_1597642278;
-Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0U5xbPkm_1597642278)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 17 Aug 2020 13:31:46 +0800
-Subject: Re: [PATCH V3 0/3] x86/entry: simply stack switching when exception
- on userspace
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jann Horn <jannh@google.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-References: <CALCETrWx66qLc-NiwKS_Zu=BP8JDTzfeUO7A2vDd01kXNmiNiA@mail.gmail.com>
- <20200817062355.2884-1-jiangshanlai@gmail.com>
-From:   Lai Jiangshan <laijs@linux.alibaba.com>
-Message-ID: <879c4480-9629-9a9c-ce93-f72118f068db@linux.alibaba.com>
-Date:   Mon, 17 Aug 2020 13:31:18 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
+        id S1726673AbgHQFph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 01:45:37 -0400
+Received: from mail1.skidata.com ([91.230.2.99]:13562 "EHLO mail1.skidata.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726303AbgHQFpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 01:45:33 -0400
+X-Greylist: delayed 435 seconds by postgrey-1.27 at vger.kernel.org; Mon, 17 Aug 2020 01:45:30 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=skidata.com; i=@skidata.com; q=dns/txt; s=selector1;
+  t=1597643131; x=1629179131;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=VYLBjYz9lx/nrXI3opLlz8j0PHFlXG1/ZEX5YI80V6Y=;
+  b=WtYTGKnTmQpZ5x95Mjrtm4Z+2r4cq1cDd4zgMaFbUmYw5ZqfFVAKLzsI
+   qFMORePP4Gm3U+CNyiGicy7oL6ogX3Shsjcl+URUA6xGu8mcbahuL4oRU
+   fdgjOu+5nNVI7245a8TPs2fM4UieXVIEjfi4AE/b0FdGAqsqe8NYmkJUA
+   nthQDLkrZxTZRGIEMZtFqJBToNg7WTfD0bkcCUFGarDQUC0RzjpGkOC7O
+   KXoRR04L6AuDM8ODMnRS3mS2OTjVYsB03pJj3UZ4XOhPeDu9QO4hs1gvC
+   N/49SAq8YcLIyBj61grb/nqm4tfYDqlxVljsYtJAjXneGA++SmP9ykayO
+   Q==;
+IronPort-SDR: svI9QV3IU5oopAVv5yamxDgdlocA1iJY3YSUF4EoHghv0pgx7rr8qYaXkKz5Omkxq2uybaSfdj
+ 1dD7IDxYChlmXsW52gUikLfeYy0fDPtToSUvTzOiSLEDrAr1H5ycWGdiqrHMmlVmzVGFcjGjCn
+ vyiYzbUfXj4k21HYamaZ92VvdFf1lutJUyxZ0kD6RwOaFA6yq59RZ3P9gLdmKUd6AbU7Ummw4D
+ Y2lkzlC6cjdyZtDG5ddHSKZVBFRj2gbaypEpl+VvtyBmVS+EJKOQQZ0r5NVceKThI+XQuyf8Qn
+ 3/U=
+X-IronPort-AV: E=Sophos;i="5.76,322,1592863200"; 
+   d="scan'208";a="26161391"
+Date:   Mon, 17 Aug 2020 07:38:13 +0200
+From:   Richard Leitner <richard.leitner@skidata.com>
+To:     Robin Gong <yibin.gong@nxp.com>
+CC:     <mark.rutland@arm.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
+        <catalin.marinas@arm.com>, <vkoul@kernel.org>,
+        <will.deacon@arm.com>, <shawnguo@kernel.org>, <festevam@gmail.com>,
+        <s.hauer@pengutronix.de>, <martin.fuzzey@flowbird.group>,
+        <u.kleine-koenig@pengutronix.de>, <dan.j.williams@intel.com>,
+        <matthias.schiffer@ew.tq-group.com>, <frieder.schrempf@kontron.de>,
+        <r.schwebel@pengutronix.de>, <linux-spi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kernel@pengutronix.de>,
+        <dmaengine@vger.kernel.org>, <linux-imx@nxp.com>
+Subject: Re: [PATCH v12 03/12] Revert "dmaengine: imx-sdma: refine to load
+ context only once"
+Message-ID: <20200817053813.GA551027@pcleri>
+References: <1597161231-32303-1-git-send-email-yibin.gong@nxp.com>
+ <1597161231-32303-4-git-send-email-yibin.gong@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <20200817062355.2884-1-jiangshanlai@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1597161231-32303-4-git-send-email-yibin.gong@nxp.com>
+X-Originating-IP: [192.168.111.252]
+X-ClientProxiedBy: sdex6srv.skidata.net (192.168.111.84) To
+ sdex5srv.skidata.net (192.168.111.83)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 11, 2020 at 11:53:42PM +0800, Robin Gong wrote:
+> This reverts commit ad0d92d7ba6aecbe2705907c38ff8d8be4da1e9c, because
+> in spi-imx case, burst length may be changed dynamically.
+> 
+> Signed-off-by: Robin Gong <yibin.gong@nxp.com>
+> Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
 
-Deeply sorry, the cover-letter was forgotten to send to LKML.
+Hi Robin,
+thanks for the pointer to this patch.
 
-Here it is:
+As you suggested I've tested the two patches on my custom i.MX6DL
+board. Therefore please feel free to add:
 
-On 2020/8/17 14:23, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
+Tested-by: Richard Leitner <richard.leitner@skidata.com>
+
+regards;rl
+
+> ---
+>  drivers/dma/imx-sdma.c | 8 --------
+>  1 file changed, 8 deletions(-)
 > 
-> 7f2590a110b8("x86/entry/64: Use a per-CPU trampoline stack for IDT entries")
-> has resulted that when exception on userspace, the kernel (error_entry)
-> always push the pt_regs to entry stack(sp0), and then copy them to the
-> kernel stack.
+> diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
+> index 270992c..d305b80 100644
+> --- a/drivers/dma/imx-sdma.c
+> +++ b/drivers/dma/imx-sdma.c
+> @@ -377,7 +377,6 @@ struct sdma_channel {
+>  	unsigned long			watermark_level;
+>  	u32				shp_addr, per_addr;
+>  	enum dma_status			status;
+> -	bool				context_loaded;
+>  	struct imx_dma_data		data;
+>  	struct work_struct		terminate_worker;
+>  };
+> @@ -984,9 +983,6 @@ static int sdma_load_context(struct sdma_channel *sdmac)
+>  	int ret;
+>  	unsigned long flags;
+>  
+> -	if (sdmac->context_loaded)
+> -		return 0;
+> -
+>  	if (sdmac->direction == DMA_DEV_TO_MEM)
+>  		load_address = sdmac->pc_from_device;
+>  	else if (sdmac->direction == DMA_DEV_TO_DEV)
+> @@ -1029,8 +1025,6 @@ static int sdma_load_context(struct sdma_channel *sdmac)
+>  
+>  	spin_unlock_irqrestore(&sdma->channel_0_lock, flags);
+>  
+> -	sdmac->context_loaded = true;
+> -
+>  	return ret;
+>  }
+>  
+> @@ -1069,7 +1063,6 @@ static void sdma_channel_terminate_work(struct work_struct *work)
+>  	vchan_get_all_descriptors(&sdmac->vc, &head);
+>  	spin_unlock_irqrestore(&sdmac->vc.lock, flags);
+>  	vchan_dma_desc_free_list(&sdmac->vc, &head);
+> -	sdmac->context_loaded = false;
+>  }
+>  
+>  static int sdma_terminate_all(struct dma_chan *chan)
+> @@ -1337,7 +1330,6 @@ static void sdma_free_chan_resources(struct dma_chan *chan)
+>  
+>  	sdmac->event_id0 = 0;
+>  	sdmac->event_id1 = 0;
+> -	sdmac->context_loaded = false;
+>  
+>  	sdma_set_channel_priority(sdmac, 0);
+>  
+> -- 
+> 2.7.4
 > 
-> And recent x86/entry work makes interrupt also use idtentry
-> and makes all the interrupt code save the pt_regs on the sp0 stack
-> and then copy it to the thread stack like exception.
 > 
-> This is hot path (page fault, ipi), such overhead should be avoided.
-> And the original interrupt_entry directly switches to kernel stack
-> and pushes pt_regs to kernel stack. We should do it for error_entry.
-> This is the job of patch1.
-> 
-> Patch 2-3 simplify stack switching for .Lerror_bad_iret by just doing
-> all the work in one function (fixup_bad_iret()).
-> 
-> The patch set is based on v5.9-rc1
-> 
-> Changed from V1:
-> 	based on tip/master -> based on tip/x86/entry
-> 
-> 	patch 1 replaces the patch1,2 of V1, it borrows the
-> 	original interrupt_entry's code into error_entry.
-> 
-> 	patch2-4 is V1's patch3-5, unchanged (but rebased)
-> 
-> Changed from V2:
-> 	(re-)based on v5.9-rc1
-> 	drop the patch4 of V2 patchset
-> 
-> Cc: Andy Lutomirski <luto@kernel.org>,
-> Cc: Thomas Gleixner <tglx@linutronix.de>,
-> Cc: Ingo Molnar <mingo@redhat.com>,
-> Cc: Borislav Petkov <bp@alien8.de>,
-> Cc: x86@kernel.org,
-> Cc: "H. Peter Anvin" <hpa@zytor.com>,
-> Cc: Peter Zijlstra <peterz@infradead.org>,
-> Cc: Alexandre Chartre <alexandre.chartre@oracle.com>,
-> Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
-> Cc: Jann Horn <jannh@google.com>,
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> 
-> 
-> Lai Jiangshan (3):
->    x86/entry: avoid calling into sync_regs() when entering from userspace
->    x86/entry: directly switch to kernel stack when .Lerror_bad_iret
->    x86/entry: remove unused sync_regs()
-> 
->   arch/x86/entry/entry_64.S    | 52 +++++++++++++++++++++++-------------
->   arch/x86/include/asm/traps.h |  1 -
->   arch/x86/kernel/traps.c      | 22 +++------------
->   3 files changed, 38 insertions(+), 37 deletions(-)
-> 
+
+-- 
+Richard Leitner
+Hardware R&D / Senior Embedded Linux Engineer
+
+SKIDATA | Driving Your Digital Future
+
+SKIDATA GmbH
+Untersbergstraße 40 | 5083 Grödig/Salzburg | Austria
+[t] +43-6246-888-4245 | [m] +43-664-88616370
+[w] www.skidata.com
