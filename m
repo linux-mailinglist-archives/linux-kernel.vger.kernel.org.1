@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33114247062
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FF7224704F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390334AbgHQSHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:07:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57900 "EHLO mail.kernel.org"
+        id S2390301AbgHQSGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:06:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388463AbgHQQIg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:08:36 -0400
+        id S2388467AbgHQQIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:08:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 629E522B49;
-        Mon, 17 Aug 2020 16:08:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E50320729;
+        Mon, 17 Aug 2020 16:08:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597680515;
-        bh=shT0TsfYxiP/hnTvhFCHDh5rpK6WtRm4y7EfStqYOc0=;
+        s=default; t=1597680521;
+        bh=rP0Pnfudk9O22rL7HZsvmleC7CC0Vd2k9j7/NyMyxtI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fFs6GVF9a5F/MY49bKvO+r0hew8zzigPOHnIdWeurD3dPTZDRomwV3iQWcDwBA6rA
-         zuJXvT4QSPBhMDQOg9uXswnjqksDDbQBBMaCb3HdgLUJiNzM5G/0qx+zjaAVl89R6X
-         kN3TBElGPGDSHNhqXcknWBlClABcRTVuCQA6zlvU=
+        b=A0OyFhbacjZTv8mzSIVOCTTaE4spSYnYb+9jtsBl5eRAuH8lNnU6wUnjWakV5tqcn
+         yCWbUnCbO8X3aArQXIouMF5QwpISSDYvQ9m/l+v1zX9HQmEq+E26pKlB/PmsH4PNC6
+         ReaY0UDbk1NhP4/R4i9j3pirU25ehggfGw/rUA/M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Ogness <john.ogness@linutronix.de>,
-        kernel test robot <lkp@intel.com>,
+        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 217/270] af_packet: TPACKET_V3: fix fill status rwlock imbalance
-Date:   Mon, 17 Aug 2020 17:16:58 +0200
-Message-Id: <20200817143806.598095707@linuxfoundation.org>
+Subject: [PATCH 5.4 219/270] net: Fix potential memory leak in proto_register()
+Date:   Mon, 17 Aug 2020 17:17:00 +0200
+Message-Id: <20200817143806.687248368@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
 References: <20200817143755.807583758@linuxfoundation.org>
@@ -44,72 +43,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Ogness <john.ogness@linutronix.de>
+From: Miaohe Lin <linmiaohe@huawei.com>
 
-[ Upstream commit 88fd1cb80daa20af063bce81e1fad14e945a8dc4 ]
+[ Upstream commit 0f5907af39137f8183ed536aaa00f322d7365130 ]
 
-After @blk_fill_in_prog_lock is acquired there is an early out vnet
-situation that can occur. In that case, the rwlock needs to be
-released.
+If we failed to assign proto idx, we free the twsk_slab_name but forget to
+free the twsk_slab. Add a helper function tw_prot_cleanup() to free these
+together and also use this helper function in proto_unregister().
 
-Also, since @blk_fill_in_prog_lock is only acquired when @tp_version
-is exactly TPACKET_V3, only release it on that exact condition as
-well.
-
-And finally, add sparse annotation so that it is clearer that
-prb_fill_curr_block() and prb_clear_blk_fill_status() are acquiring
-and releasing @blk_fill_in_prog_lock, respectively. sparse is still
-unable to understand the balance, but the warnings are now on a
-higher level that make more sense.
-
-Fixes: 632ca50f2cbd ("af_packet: TPACKET_V3: replace busy-wait loop")
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
-Reported-by: kernel test robot <lkp@intel.com>
+Fixes: b45ce32135d1 ("sock: fix potential memory leak in proto_register()")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/packet/af_packet.c |    9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ net/core/sock.c |   25 +++++++++++++++----------
+ 1 file changed, 15 insertions(+), 10 deletions(-)
 
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -941,6 +941,7 @@ static int prb_queue_frozen(struct tpack
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -3337,6 +3337,16 @@ static void sock_inuse_add(struct net *n
  }
+ #endif
  
- static void prb_clear_blk_fill_status(struct packet_ring_buffer *rb)
-+	__releases(&pkc->blk_fill_in_prog_lock)
++static void tw_prot_cleanup(struct timewait_sock_ops *twsk_prot)
++{
++	if (!twsk_prot)
++		return;
++	kfree(twsk_prot->twsk_slab_name);
++	twsk_prot->twsk_slab_name = NULL;
++	kmem_cache_destroy(twsk_prot->twsk_slab);
++	twsk_prot->twsk_slab = NULL;
++}
++
+ static void req_prot_cleanup(struct request_sock_ops *rsk_prot)
  {
- 	struct tpacket_kbdq_core *pkc  = GET_PBDQC_FROM_RB(rb);
- 	atomic_dec(&pkc->blk_fill_in_prog);
-@@ -988,6 +989,7 @@ static void prb_fill_curr_block(char *cu
- 				struct tpacket_kbdq_core *pkc,
- 				struct tpacket_block_desc *pbd,
- 				unsigned int len)
-+	__acquires(&pkc->blk_fill_in_prog_lock)
- {
- 	struct tpacket3_hdr *ppd;
- 
-@@ -2285,8 +2287,11 @@ static int tpacket_rcv(struct sk_buff *s
- 	if (do_vnet &&
- 	    virtio_net_hdr_from_skb(skb, h.raw + macoff -
- 				    sizeof(struct virtio_net_hdr),
--				    vio_le(), true, 0))
-+				    vio_le(), true, 0)) {
-+		if (po->tp_version == TPACKET_V3)
-+			prb_clear_blk_fill_status(&po->rx_ring);
- 		goto drop_n_account;
-+	}
- 
- 	if (po->tp_version <= TPACKET_V2) {
- 		packet_increment_rx_head(po, &po->rx_ring);
-@@ -2392,7 +2397,7 @@ static int tpacket_rcv(struct sk_buff *s
- 		__clear_bit(slot_id, po->rx_ring.rx_owner_map);
- 		spin_unlock(&sk->sk_receive_queue.lock);
- 		sk->sk_data_ready(sk);
--	} else {
-+	} else if (po->tp_version == TPACKET_V3) {
- 		prb_clear_blk_fill_status(&po->rx_ring);
+ 	if (!rsk_prot)
+@@ -3407,7 +3417,7 @@ int proto_register(struct proto *prot, i
+ 						  prot->slab_flags,
+ 						  NULL);
+ 			if (prot->twsk_prot->twsk_slab == NULL)
+-				goto out_free_timewait_sock_slab_name;
++				goto out_free_timewait_sock_slab;
+ 		}
  	}
+ 
+@@ -3415,15 +3425,15 @@ int proto_register(struct proto *prot, i
+ 	ret = assign_proto_idx(prot);
+ 	if (ret) {
+ 		mutex_unlock(&proto_list_mutex);
+-		goto out_free_timewait_sock_slab_name;
++		goto out_free_timewait_sock_slab;
+ 	}
+ 	list_add(&prot->node, &proto_list);
+ 	mutex_unlock(&proto_list_mutex);
+ 	return ret;
+ 
+-out_free_timewait_sock_slab_name:
++out_free_timewait_sock_slab:
+ 	if (alloc_slab && prot->twsk_prot)
+-		kfree(prot->twsk_prot->twsk_slab_name);
++		tw_prot_cleanup(prot->twsk_prot);
+ out_free_request_sock_slab:
+ 	if (alloc_slab) {
+ 		req_prot_cleanup(prot->rsk_prot);
+@@ -3447,12 +3457,7 @@ void proto_unregister(struct proto *prot
+ 	prot->slab = NULL;
+ 
+ 	req_prot_cleanup(prot->rsk_prot);
+-
+-	if (prot->twsk_prot != NULL && prot->twsk_prot->twsk_slab != NULL) {
+-		kmem_cache_destroy(prot->twsk_prot->twsk_slab);
+-		kfree(prot->twsk_prot->twsk_slab_name);
+-		prot->twsk_prot->twsk_slab = NULL;
+-	}
++	tw_prot_cleanup(prot->twsk_prot);
+ }
+ EXPORT_SYMBOL(proto_unregister);
  
 
 
