@@ -2,98 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1E032466CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 15:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE502466CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 15:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728471AbgHQNAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 09:00:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52370 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728422AbgHQNAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 09:00:06 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        id S1728505AbgHQNBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 09:01:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726194AbgHQNBf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 09:01:35 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BCE3C061389
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 06:01:35 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f26be0031a8dd4880ed200b.dip0.t-ipconnect.de [IPv6:2003:ec:2f26:be00:31a8:dd48:80ed:200b])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94E5D2078D;
-        Mon, 17 Aug 2020 13:00:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597669205;
-        bh=RMvr6YO+zDnQv57z11+kDa9qwJd5VGOLgh5RiQrKqsI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=gPXeMUZxrJsLtySD17uBZEOxp386qqqH8HtblHyMvvRmLlQ+UkDeeyEhQdZcdfB97
-         FBkVqam4y4xLCJrsGAoko0b432FgsPjIWgQaDUPoUzGo5geqetxVCcfYn+MAkJQPY5
-         maQqiHjlc+8v41pE68NCBKjL7hqED2RSYwcSr/Hs=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 726CC3522CAE; Mon, 17 Aug 2020 06:00:05 -0700 (PDT)
-Date:   Mon, 17 Aug 2020 06:00:05 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     peterz@infradead.org
-Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
-        linux-kernel@vger.kernel.org, will@kernel.org, hch@lst.de,
-        axboe@kernel.dk, chris@chris-wilson.co.uk, davem@davemloft.net,
-        kuba@kernel.org, fweisbec@gmail.com, oleg@redhat.com
-Subject: Re: [RFC][PATCH 1/9] irq_work: Cleanup
-Message-ID: <20200817130005.GC23602@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200722150149.525408253@infradead.org>
- <20200722153017.024407984@infradead.org>
- <20200723161411.GA23103@paulmck-ThinkPad-P72>
- <20200817090325.GK2674@hirez.programming.kicks-ass.net>
- <20200817091633.GL35926@hirez.programming.kicks-ass.net>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C5BCA1EC0330;
+        Mon, 17 Aug 2020 15:01:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1597669292;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=tLOg+qGvJJcBv2b5B817+87cewFZk0KCe49pFMIgwkA=;
+        b=PVvSSiryHsqgHTC0dZNZ5d2VyarVkqQmXbRdlQE/hugA5kVpjEeHHvrYoA1jEqngPIg5FJ
+        lZOmEw1sjMuTO2GtqSX29B004uABNFJx6ZVy7ENOfCx1ke2RhRrmxUKgvJ/MbGbk6yHQbF
+        jbjR7RZop6Cys6qYrlpkkD+F0frAGaI=
+Date:   Mon, 17 Aug 2020 15:02:27 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Gustavo A. R. Silva" <kernel.org@embeddedor>
+Subject: Re: [PATCH] x86: Use fallthrough pseudo-keyword
+Message-ID: <20200817130227.GI549@zn.tnic>
+References: <20200707200303.GA4680@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200817091633.GL35926@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200707200303.GA4680@embeddedor>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 11:16:33AM +0200, peterz@infradead.org wrote:
-> On Mon, Aug 17, 2020 at 11:03:25AM +0200, peterz@infradead.org wrote:
-> > On Thu, Jul 23, 2020 at 09:14:11AM -0700, Paul E. McKenney wrote:
-> > > > --- a/kernel/rcu/tree.c
-> > > > +++ b/kernel/rcu/tree.c
-> > > > @@ -1287,8 +1287,6 @@ static int rcu_implicit_dynticks_qs(stru
-> > > >  		if (IS_ENABLED(CONFIG_IRQ_WORK) &&
-> > > >  		    !rdp->rcu_iw_pending && rdp->rcu_iw_gp_seq != rnp->gp_seq &&
-> > > >  		    (rnp->ffmask & rdp->grpmask)) {
-> > > > -			init_irq_work(&rdp->rcu_iw, rcu_iw_handler);
-> > > 
-> > > We are actually better off with the IRQ_WORK_INIT_HARD() here rather
-> > > than unconditionally at boot.
-> > 
-> > Ah, but there isn't an init_irq_work() variant that does the HARD thing.
+On Tue, Jul 07, 2020 at 03:03:03PM -0500, Gustavo A. R. Silva wrote:
+> Replace the existing /* fall through */ comments and its variants with
+> the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+> fall-through markings when it is the case.
 > 
-> Ah you meant doing:
-> 
-> 		rdp->rcu_iw = IRQ_WORK_INIT_HARD(rcu_iw_handler)
-> 
-> But then it is non-obvious how that doesn't trample state. I suppose
-> that rcu_iw_pending thing ensures that... I'll think about it.
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-Yes, this is what I had in mind.  And you are right, the point of the
-!rdp->rcu_iw_pending check is to prevent initialization while still
-in use.
+...
 
-> > > The reason for this is that we get here only if a single grace
-> > > period extends beyond 10.5 seconds (mainline) or beyond 30 seconds
-> > > (many distribution kernels).  Which almost never happens.  And yes,
-> > > rcutree_prepare_cpu() is also invoked as each CPU that comes online,
-> > > not that this is all that common outside of rcutorture and boot time.  ;-)
-> > 
-> > What do you mean 'also' ? Afaict this is CPU bringup only code (initial
-> > and hotplug). We really don't care about code there. It's the slowest
-> > possible path we have in the kernel.
+> @@ -362,7 +361,6 @@ static short get_segment_selector(struct pt_regs *regs, int seg_reg_idx)
+>  		case INAT_SEG_REG_GS:
+>  			return vm86regs->gs;
+>  		case INAT_SEG_REG_IGNORE:
+> -			/* fall through */
+>  		default:
+>  			return -EINVAL;
+>  		}
+> @@ -386,7 +384,6 @@ static short get_segment_selector(struct pt_regs *regs, int seg_reg_idx)
+>  		 */
+>  		return get_user_gs(regs);
+>  	case INAT_SEG_REG_IGNORE:
+> -		/* fall through */
+>  	default:
+>  		return -EINVAL;
+>  	}
 
-The "also" was acknowledging that a workload with lots of CPU hotplug
-would also needlessly invoke IRQ_WORK_INIT_HARD() multiple times.
+What's the logic for those two to not get a fallthrough; marker?
 
-							Thanx, Paul
+-- 
+Regards/Gruss,
+    Boris.
 
-> > > > -			atomic_set(&rdp->rcu_iw.flags, IRQ_WORK_HARD_IRQ);
-> > > >  			rdp->rcu_iw_pending = true;
-> > > >  			rdp->rcu_iw_gp_seq = rnp->gp_seq;
-> > > >  			irq_work_queue_on(&rdp->rcu_iw, rdp->cpu);
-> > 
+https://people.kernel.org/tglx/notes-about-netiquette
