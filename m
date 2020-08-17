@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE324246DE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EBB3246DE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389645AbgHQRRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:17:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52880 "EHLO mail.kernel.org"
+        id S2389637AbgHQRRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:17:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730957AbgHQQPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:15:03 -0400
+        id S2388129AbgHQQPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:15:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 33DBB20658;
-        Mon, 17 Aug 2020 16:15:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DDBFB22B45;
+        Mon, 17 Aug 2020 16:15:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597680902;
-        bh=aMXRQbGt+myTEvXRk+LaenodkxkzD/fx6yGyb7R01sw=;
+        s=default; t=1597680905;
+        bh=DIhwfaHIx7haxE15HfsTsiSJsUEg2xtWAfqosJb4amg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rzt+NtfKqI71imvAA86hTHG2HLp2qdFfACuTTa0ilalsKw2cU7c5OhUrvJtOabS6P
-         5zaohCETPOJfvnVahKbx/1JUCB4Cm79PoGxY37x+OyZe3Eua2DoHCeVRBem5yiBuC/
-         73tZNcf8EecnCGmgEB+b1R7m5KFIIp5eQjXa4tHs=
+        b=Rl6SbJQqtMwbxB4bPp/cer26JodpjMLa8XKFHTqubqbcZwyV1lanJlrtl7+J0aSY4
+         naQd9cYcoH4r3uHNaTuekxV3MRtb1L1zHq7qpvF6Wb6OBfPJPpkivvjwOvnI3wasJN
+         d38pvswFwdBpw+Ro+BEahfaCvDDwA8L4aps87hUA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 073/168] media: firewire: Using uninitialized values in node_probe()
-Date:   Mon, 17 Aug 2020 17:16:44 +0200
-Message-Id: <20200817143737.355562192@linuxfoundation.org>
+Subject: [PATCH 4.19 074/168] media: exynos4-is: Add missed check for pinctrl_lookup_state()
+Date:   Mon, 17 Aug 2020 17:16:45 +0200
+Message-Id: <20200817143737.413925127@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143733.692105228@linuxfoundation.org>
 References: <20200817143733.692105228@linuxfoundation.org>
@@ -45,38 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-[ Upstream commit 2505a210fc126599013aec2be741df20aaacc490 ]
+[ Upstream commit 18ffec750578f7447c288647d7282c7d12b1d969 ]
 
-If fw_csr_string() returns -ENOENT, then "name" is uninitialized.  So
-then the "strlen(model_names[i]) <= name_len" is true because strlen()
-is unsigned and -ENOENT is type promoted to a very high positive value.
-Then the "strncmp(name, model_names[i], name_len)" uses uninitialized
-data because "name" is uninitialized.
+fimc_md_get_pinctrl() misses a check for pinctrl_lookup_state().
+Add the missed check to fix it.
 
-Fixes: 92374e886c75 ("[media] firedtv: drop obsolete backend abstraction")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: 4163851f7b99 ("[media] s5p-fimc: Use pinctrl API for camera ports configuration]")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/firewire/firedtv-fw.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/media/platform/exynos4-is/media-dev.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/media/firewire/firedtv-fw.c b/drivers/media/firewire/firedtv-fw.c
-index 92f4112d2e377..eaf94b817dbc0 100644
---- a/drivers/media/firewire/firedtv-fw.c
-+++ b/drivers/media/firewire/firedtv-fw.c
-@@ -271,6 +271,8 @@ static int node_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
+diff --git a/drivers/media/platform/exynos4-is/media-dev.c b/drivers/media/platform/exynos4-is/media-dev.c
+index b5993532831da..2d25a197dc657 100644
+--- a/drivers/media/platform/exynos4-is/media-dev.c
++++ b/drivers/media/platform/exynos4-is/media-dev.c
+@@ -1259,6 +1259,9 @@ static int fimc_md_get_pinctrl(struct fimc_md *fmd)
  
- 	name_len = fw_csr_string(unit->directory, CSR_MODEL,
- 				 name, sizeof(name));
-+	if (name_len < 0)
-+		return name_len;
- 	for (i = ARRAY_SIZE(model_names); --i; )
- 		if (strlen(model_names[i]) <= name_len &&
- 		    strncmp(name, model_names[i], name_len) == 0)
+ 	pctl->state_idle = pinctrl_lookup_state(pctl->pinctrl,
+ 					PINCTRL_STATE_IDLE);
++	if (IS_ERR(pctl->state_idle))
++		return PTR_ERR(pctl->state_idle);
++
+ 	return 0;
+ }
+ 
 -- 
 2.25.1
 
