@@ -2,85 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A435246302
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7819F246325
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728300AbgHQJUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 05:20:09 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9822 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726161AbgHQJUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 05:20:05 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 5FC7371CC3DB3C292129;
-        Mon, 17 Aug 2020 17:19:58 +0800 (CST)
-Received: from [10.174.179.61] (10.174.179.61) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 17 Aug 2020 17:19:54 +0800
-Subject: Re: [PATCH] mm/slub: make add_full() condition more explicit
-To:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        "David Rientjes" <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>
-CC:     <liu.xiang6@zte.com.cn>,
-        "open list:SLAB ALLOCATOR" <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200811020240.1231-1-wuyun.wu@huawei.com>
-From:   Abel Wu <wuyun.wu@huawei.com>
-Message-ID: <40c24455-02fd-4b4c-7740-bb7d2af0f5c7@huawei.com>
-Date:   Mon, 17 Aug 2020 17:19:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.1.0
+        id S1727890AbgHQJVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 05:21:19 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:39241 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726267AbgHQJVS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 05:21:18 -0400
+X-Originating-IP: 176.184.36.142
+Received: from localhost (sto93-h02-176-184-36-142.dsl.sta.abo.bbox.fr [176.184.36.142])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 5ADC3E0006;
+        Mon, 17 Aug 2020 09:21:03 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        ludovic.desroches@microchip.com, nicolas.ferre@microchip.com
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 0/3] AT91 PM improvements
+Date:   Mon, 17 Aug 2020 11:20:45 +0200
+Message-Id: <159765603097.1268970.6113229947662328094.b4-ty@bootlin.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <1596616610-15460-1-git-send-email-claudiu.beznea@microchip.com>
+References: <1596616610-15460-1-git-send-email-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <20200811020240.1231-1-wuyun.wu@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.61]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping :)
+On Wed, 5 Aug 2020 11:36:47 +0300, Claudiu Beznea wrote:
+> This series adds ULP0 fast mode intended to reduce the suspend/resume
+> time in the detriment of power consumption (patch 1/3).
+> Along with this patch 2/3 adds code to avoid requesting a PM mode
+> not available on platforms not supporting it.
+> Patch 3/3 decrements a device_node refcount after its usage.
+> 
+> Thank you,
+> Claudiu Beznea
+> 
+> [...]
 
-On 2020/8/11 10:02, wuyun.wu@huawei.com wrote:
-> From: Abel Wu <wuyun.wu@huawei.com>
-> 
-> The commit below is incomplete, as it didn't handle the add_full() part.
-> commit a4d3f8916c65 ("slub: remove useless kmem_cache_debug() before remove_full()")
-> 
-> This patch checks for SLAB_STORE_USER instead of kmem_cache_debug(),
-> since that should be the only context in which we need the list_lock for
-> add_full().
-> 
-> Signed-off-by: Abel Wu <wuyun.wu@huawei.com>
-> ---
->  mm/slub.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index f226d66408ee..df93a5a0e9a4 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -2182,7 +2182,8 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
->  		}
->  	} else {
->  		m = M_FULL;
-> -		if (kmem_cache_debug(s) && !lock) {
-> +#ifdef CONFIG_SLUB_DEBUG
-> +		if ((s->flags & SLAB_STORE_USER) && !lock) {
->  			lock = 1;
->  			/*
->  			 * This also ensures that the scanning of full
-> @@ -2191,6 +2192,7 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
->  			 */
->  			spin_lock(&n->list_lock);
->  		}
-> +#endif
->  	}
->  
->  	if (l != m) {
-> 
+Applied, thanks!
+
+[1/3] ARM: at91: pm: add support for ULP0 fast wakeup
+      commit: e70bfc2fa8fe1a95a522f9d1ccf24d3d9b81366a
+[2/3] ARM: at91: pm: add per soc validation of pm modes
+      commit: 39add36049c347dffcb2be872dd442c137625f17
+[3/3] ARM: at91: pm: of_node_put() after its usage
+      commit: e222f943519564978e082c152b4140a47e93392c
+
+Best regards,
+-- 
+Alexandre Belloni <alexandre.belloni@bootlin.com>
