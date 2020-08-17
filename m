@@ -2,78 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62AF4245EC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC57245ED3
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726875AbgHQIG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 04:06:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbgHQIG0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 04:06:26 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B13C061388;
-        Mon, 17 Aug 2020 01:06:25 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id q3so8953519ybp.7;
-        Mon, 17 Aug 2020 01:06:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RvZPDrvmfEiKC4tHNx7HHIStbbhxJ3KZNZoKmceVCt8=;
-        b=iLdjt5aGTDR2TjfH/YM/zYjVgquCAFjTonvBSjNebP+JplL/9szjGBHNCoIw4A3kzT
-         FlDKeVeq3h6yAVKSRKIfMqF4IxNmb7EwJVykI2N2weat8Qj6zSQbCwHmU/q7S8rjBA7s
-         SSVLIopj6vA9mUZehH+uhO4juamYi2ym5judzl6lFE4/PtBvGnR3iy7WQgf2XYiImavU
-         Sw4kRLnLb5ylIvhXRLrnajIO8p0VG+n3lbl3wodIIq4TUSj+vyvDIWWR3Xhcfgr1zits
-         mck22Jyqro/lL3uFXyqdLPDHK24SxnUx00feSoPus3RGKkO1Q7Dyeq/SOVKoL/L2rxOX
-         SS2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RvZPDrvmfEiKC4tHNx7HHIStbbhxJ3KZNZoKmceVCt8=;
-        b=kVl9CodUWHHbdIjPefjrfda2C7i9Mxv7mm8nfZcTt5pl4QMyJV3Y2I0UZrYss46A2r
-         2lFIu9AZxX40m5IJxGcTtWuHDXybMx26T7L5wQXXioUz54v/ZhvN5dZXs9VYXJ57w/XM
-         FTUJUY237oMEmOnl9BUN1gH0fmg0/CQG8KrbUcNtomDvBnvFSxG/yldMBaDe8sXAiPXo
-         SZR3DtO56PELQm6QVTTdAvQofr9EZtv3R3rZMaT+RwbSkqW0mE2eZyfg0vYWcY9ZyhLy
-         dGSrRiYkonxeQPE0L17ETi7UvQM4y1UwuUNav89k3M30eisjPI0LtWROcwGnoTkjimQL
-         VQXg==
-X-Gm-Message-State: AOAM533qgO08LbzY2OpP/PphglE1foFanrXURRZ831C45W9w2WTHd6+5
-        rb/wZ7JeeVs6ESvWmf8Bfg9OAfitPUd3nNd+VzQ=
-X-Google-Smtp-Source: ABdhPJwuEiUsH+Vvl0Yk+PNDQ+Y5+7C2mO55RV8fSgIhUwox27zfL1LyVmevflabpOJiY5DM9KPz97anKR2APR5znb8=
-X-Received: by 2002:a25:df92:: with SMTP id w140mr18569600ybg.455.1597651583753;
- Mon, 17 Aug 2020 01:06:23 -0700 (PDT)
+        id S1726961AbgHQIHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 04:07:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53342 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726934AbgHQIHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 04:07:35 -0400
+Received: from dragon (unknown [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 40D2720758;
+        Mon, 17 Aug 2020 08:07:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597651655;
+        bh=brGKh7glX5r5oiJ5N4dduRMuN53pF28YcimSGGrgpKQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=z9SiSTSNK4ZGq5qzaEX4UGpdRQLuI5evIPschXW1F8xJeSZfDBOKgyYOSkcv6GCGZ
+         bThQsKb6Tfdi/eQNHmA/gMjyPVVCBuAJaaKY0sybfjOmR5gAIt1FIYVETtj6zlPlyR
+         IZYI5SUsWrtU/ub0hx4bFP3T9FR8o4S4m86qE7MM=
+Date:   Mon, 17 Aug 2020 16:07:19 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>,
+        Silvano Di Ninno <silvano.dininno@nxp.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/5] hwrng: add support for i.MX6 rngb
+Message-ID: <20200817080718.GD16951@dragon>
+References: <20200715152604.10407-1-horia.geanta@nxp.com>
 MIME-Version: 1.0
-References: <20200814113933.1903438-1-lee.jones@linaro.org> <20200814113933.1903438-27-lee.jones@linaro.org>
-In-Reply-To: <20200814113933.1903438-27-lee.jones@linaro.org>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Date:   Mon, 17 Aug 2020 10:06:12 +0200
-Message-ID: <CACna6ryNNyyVftEFNFEwouKc3O21oPaeqie+bjJR4L_Cf8z2BQ@mail.gmail.com>
-Subject: Re: [PATCH 26/30] net: wireless: broadcom: b43: phy_common: Demote
- non-conformant kerneldoc header
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Miller <davem@davemloft.net>, kuba@kernel.org,
-        Michael Buesch <m@bues.ch>,
-        Stefano Brivio <stefano.brivio@polimi.it>,
-        Andreas Jaggi <andreas.jaggi@waterwave.ch>,
-        Network Development <netdev@vger.kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        b43-dev <b43-dev@lists.infradead.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Martin Langer <martin-langer@gmx.de>,
-        van Dyk <kugelfang@gentoo.org>,
-        Kalle Valo <kvalo@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200715152604.10407-1-horia.geanta@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 Aug 2020 at 13:41, Lee Jones <lee.jones@linaro.org> wrote:
-> Fixes the following W=1 kernel build warning(s):
->
->  drivers/net/wireless/broadcom/b43/phy_common.c:467: warning: Function parameter or member 'work' not described in 'b43_phy_txpower_adjust_work'
+On Wed, Jul 15, 2020 at 06:25:59PM +0300, Horia Geantă wrote:
+> Add support for RNGB found in some i.MX6 SoCs (6SL, 6SLL, 6ULL, 6ULZ),
+> based on RNGC driver (drivers/char/hw_random/imx-rngc.c).
+> 
+> This driver claims support also for RNGB (besides RNGC),
+> and is currently used only by i.MX25.
+> 
+> Note:
+> 
+> Several NXP SoC from QorIQ family (P1010, P1023, P4080, P3041, P5020)
+> also have a RNGB, however it's part of the CAAM
+> (Cryptograhic Accelerator and Assurance Module) crypto accelerator.
+> In this case, RNGB is managed in the caam driver
+> (drivers/crypto/caam/), since it's tightly related to
+> the caam "job ring" interface, not to mention CAAM internally relying on
+> RNGB as source of randomness.
+> 
+> On the other hand, the i.MX6 SoCs with RNGB have a DCP
+> (Data Co-Processor) crypto accelerator and this block and RNGB
+> are independent.
+> 
+> Changelog:
+> v4
+> -remove unneeded compatible strings from the driver
+> v3
+> -mention in the DT binding the compatibility with "fsl,imx25-rngb"
+> -collected Reviewed-by
+> v2
+> -update rngb DT binding with compatible strings for i.MX6 SoCs
+> 
+> Horia Geantă (5):
+...
+>   ARM: dts: imx6sl: fix rng node
+>   ARM: dts: imx6sll: add rng
+>   ARM: dts: imx6ull: add rng
 
-Why you can't document @work instead? Should be quite a better solution.
+Applied these 3, thanks.
+
+Shawn
