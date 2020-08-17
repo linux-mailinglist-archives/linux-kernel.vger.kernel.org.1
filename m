@@ -2,67 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5707C246454
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 12:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE9F24645A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 12:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727942AbgHQKVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 06:21:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53776 "EHLO mail.kernel.org"
+        id S1728018AbgHQKWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 06:22:02 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:57910 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726165AbgHQKVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 06:21:44 -0400
-Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
+        id S1726369AbgHQKV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 06:21:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597659718; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=HesLtvDCqqMuxbBVhLIM5+4/cz/qmroX/Ohci/Yh1V0=;
+ b=UdDByGoF0SF6NpRx1XgHYqPN2XN77Uq41aDWf1BpLo99XjAJXjJdfWFUqYCCFgKU+0TDm8I6
+ c1XQJ/8GvrF2RFAQ94UuWIouFF4vzMM1nxlwxRKRpzShwsZZoB65nEVJ3D8UyRN3WVZxzepb
+ PGDM2+4nQdBpbD6db8UuLSL53LQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5f3a5a463f2ce11020c5165c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 Aug 2020 10:21:58
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 415C2C433CA; Mon, 17 Aug 2020 10:21:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 004132078A;
-        Mon, 17 Aug 2020 10:21:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597659704;
-        bh=ovtTW2fCfcjd32QufVbUkaQHW26qGINnQJXinpGHiU8=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=zgDDLsZChMNRGx0G1LVTQMnzzPd6AUnV6kVFSIf1/2Ru0+ZBP5khL9w7417w94J0s
-         bdmHmULUaaVykYETE0nrGpeGWYEUm6L3Nkbeyn2xBy3USAG0BBdiLfPUiNM1in1Pv9
-         qkPUI9iYQZHpf116y4niqlpZwIsadmypTk/nchtM=
-Date:   Mon, 17 Aug 2020 12:21:41 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        syzkaller-bugs@googlegroups.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees] [PATCH v2 RESEND] usbhid: Fix slab-out-of-bounds
- write in hiddev_ioctl_usage()
-In-Reply-To: <20200729113712.8097-1-yepeilin.cs@gmail.com>
-Message-ID: <nycvar.YFH.7.76.2008171221290.27422@cbobk.fhfr.pm>
-References: <20200718231218.170730-1-yepeilin.cs@gmail.com> <20200729113712.8097-1-yepeilin.cs@gmail.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 31369C433CB;
+        Mon, 17 Aug 2020 10:21:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 31369C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] ath6kl: fix spelling mistake "initilisation" ->
+ "initialization"
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200806121958.60700-1-colin.king@canonical.com>
+References: <20200806121958.60700-1-colin.king@canonical.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200817102158.415C2C433CA@smtp.codeaurora.org>
+Date:   Mon, 17 Aug 2020 10:21:58 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Jul 2020, Peilin Ye wrote:
+Colin King <colin.king@canonical.com> wrote:
 
-> `uref->usage_index` is not always being properly checked, causing
-> hiddev_ioctl_usage() to go out of bounds under some cases. Fix it.
+> There is a spelling mistake in an ath6kl_err error message. Fix it.
 > 
-> Reported-by: syzbot+34ee1b45d88571c2fa8b@syzkaller.appspotmail.com
-> Link: https://syzkaller.appspot.com/bug?id=f2aebe90b8c56806b050a20b36f51ed6acabe802
-> Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-> ---
-> Change in v2:
->     - Add the same check for the `HIDIOCGUSAGE` case. (Suggested by
->       Dan Carpenter <dan.carpenter@oracle.com>)
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Applied, thanks.
+Patch applied to ath-next branch of ath.git, thanks.
+
+42f5fe34a701 ath6kl: fix spelling mistake "initilisation" -> "initialization"
 
 -- 
-Jiri Kosina
-SUSE Labs
+https://patchwork.kernel.org/patch/11703485/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
