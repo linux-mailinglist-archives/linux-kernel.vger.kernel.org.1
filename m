@@ -2,107 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1997A245ED9
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5192C245EF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 10:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727014AbgHQIIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 04:08:02 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:52071 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726768AbgHQIIC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 04:08:02 -0400
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id BB259FF80B;
-        Mon, 17 Aug 2020 08:07:55 +0000 (UTC)
-Date:   Mon, 17 Aug 2020 10:11:38 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: media: ov772x: Document endpoint
- properties
-Message-ID: <20200817081138.dog5lhpmszbu2mgc@uno.localdomain>
-References: <1596454753-13612-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1596454753-13612-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CA+V-a8sjxL-rbYAti8Djj2ch2+Zf+88_wNjbZHzKVBB66aZJ0g@mail.gmail.com>
+        id S1728008AbgHQIMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 04:12:20 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:19636 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726297AbgHQIMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 04:12:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597651936; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=eI34u/iSchtGSOGXnguCsZq4UgsFfKNHCgVA8utOJCo=; b=NjM2tnQdD/tKlBFpNT6fFAW9cz0TEnGtXAhz5oe5TMiLfev2uneuRKA1wlIIi0YMQpqReH8T
+ TlAn91TEgyHk88iBg4VlcxKDDhKd25hbulsPFGKRWc0l/eclrUbDLZSHgsWcPJaGO+as8zOD
+ 7fYm2CE4nM6wfSvt2eu8RNE3HH0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5f3a3bd791f8def8b28f2847 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 Aug 2020 08:12:07
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 31CAAC4344D; Mon, 17 Aug 2020 08:12:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E0B33C43449;
+        Mon, 17 Aug 2020 08:12:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E0B33C43449
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        "Isaac J. Manjarres" <isaacm@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCH] soc: qcom: llcc: Support chipsets that can write to llcc registers
+Date:   Mon, 17 Aug 2020 13:41:38 +0530
+Message-Id: <20200817081138.6755-1-saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CA+V-a8sjxL-rbYAti8Djj2ch2+Zf+88_wNjbZHzKVBB66aZJ0g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Prabhakar,
+From: "Isaac J. Manjarres" <isaacm@codeaurora.org>
 
-On Sat, Aug 15, 2020 at 11:34:33AM +0100, Lad, Prabhakar wrote:
-> Hi Jacopo,
->
-> On Mon, Aug 3, 2020 at 12:39 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> >
-> > Document endpoint properties required for parallel interface
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > ---
-> >  .../devicetree/bindings/media/i2c/ov772x.txt     | 16 ++++++++++++++++
-> >  1 file changed, 16 insertions(+)
-> >
-> I see you already have a patch for YAML conversion for OV772x binding
-> [1], if you plan to post a v2 would you be OK to pick these changes as
-> part of your conversion changes ?
+Older chipsets may not be allowed to configure certain LLCC registers
+as that is handled by the secure side software. However, this is not
+the case for newer chipsets and they must configure these registers
+according to the contents of the SCT table, while keeping in mind that
+older targets may not have these capabilities. So add support to allow
+such configuration of registers to enable capacity based allocation
+and power collapse retention for capable chipsets.
 
-Sure thing, I'll add the following properties to the series!
+Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
+(sai: use table instead of dt property and minor commit msg change)
+Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+---
+ drivers/soc/qcom/llcc-qcom.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-Thanks
-  j
+diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
+index 429b5a60a1ba..20619d15ecba 100644
+--- a/drivers/soc/qcom/llcc-qcom.c
++++ b/drivers/soc/qcom/llcc-qcom.c
+@@ -45,6 +45,9 @@
+ #define LLCC_TRP_ATTR0_CFGn(n)        (0x21000 + SZ_8 * n)
+ #define LLCC_TRP_ATTR1_CFGn(n)        (0x21004 + SZ_8 * n)
+ 
++#define LLCC_TRP_SCID_DIS_CAP_ALLOC   0x21F00
++#define LLCC_TRP_PCB_ACT              0x21F04
++
+ #define BANK_OFFSET_STRIDE	      0x80000
+ 
+ /**
+@@ -318,6 +321,11 @@ size_t llcc_get_slice_size(struct llcc_slice_desc *desc)
+ }
+ EXPORT_SYMBOL_GPL(llcc_get_slice_size);
+ 
++static const struct of_device_id qcom_llcc_configure_of_match[] = {
++	{ .compatible = "qcom,sc7180-llcc" },
++	{ }
++};
++
+ static int qcom_llcc_cfg_program(struct platform_device *pdev)
+ {
+ 	int i;
+@@ -327,13 +335,18 @@ static int qcom_llcc_cfg_program(struct platform_device *pdev)
+ 	u32 attr0_val;
+ 	u32 max_cap_cacheline;
+ 	u32 sz;
++	u32 disable_cap_alloc = 0, retain_pc = 0;
+ 	int ret = 0;
+ 	const struct llcc_slice_config *llcc_table;
+ 	struct llcc_slice_desc desc;
++	const struct of_device_id *llcc_configure;
++	const struct device_node *np = dev_of_node(&pdev->dev);
+ 
+ 	sz = drv_data->cfg_size;
+ 	llcc_table = drv_data->cfg;
+ 
++	llcc_configure = of_match_node(qcom_llcc_configure_of_match, np);
++
+ 	for (i = 0; i < sz; i++) {
+ 		attr1_cfg = LLCC_TRP_ATTR1_CFGn(llcc_table[i].slice_id);
+ 		attr0_cfg = LLCC_TRP_ATTR0_CFGn(llcc_table[i].slice_id);
+@@ -369,6 +382,21 @@ static int qcom_llcc_cfg_program(struct platform_device *pdev)
+ 					attr0_val);
+ 		if (ret)
+ 			return ret;
++
++		if (llcc_configure) {
++			disable_cap_alloc |= llcc_table[i].dis_cap_alloc << llcc_table[i].slice_id;
++			ret = regmap_write(drv_data->bcast_regmap,
++						LLCC_TRP_SCID_DIS_CAP_ALLOC, disable_cap_alloc);
++			if (ret)
++				return ret;
++
++			retain_pc |= llcc_table[i].retain_on_pc << llcc_table[i].slice_id;
++			ret = regmap_write(drv_data->bcast_regmap,
++						LLCC_TRP_PCB_ACT, retain_pc);
++			if (ret)
++				return ret;
++		}
++
+ 		if (llcc_table[i].activate_on_init) {
+ 			desc.slice_id = llcc_table[i].slice_id;
+ 			ret = llcc_slice_activate(&desc);
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
->
-> [1] https://www.spinics.net/lists/linux-media/msg173201.html
->
-> Cheers,
-> Prabhakar
->
-> > diff --git a/Documentation/devicetree/bindings/media/i2c/ov772x.txt b/Documentation/devicetree/bindings/media/i2c/ov772x.txt
-> > index 0b3ede5b8e6a..1f4153484717 100644
-> > --- a/Documentation/devicetree/bindings/media/i2c/ov772x.txt
-> > +++ b/Documentation/devicetree/bindings/media/i2c/ov772x.txt
-> > @@ -21,6 +21,22 @@ subnode for its digital output video port, in accordance with the video
-> >  interface bindings defined in Documentation/devicetree/bindings/media/
-> >  video-interfaces.txt.
-> >
-> > +Endpoint node required properties for parallel connection are:
-> > +- remote-endpoint: a phandle to the bus receiver's endpoint node.
-> > +- bus-width: shall be set to <8> for 8 bits parallel bus
-> > +            or <10> for 10 bits parallel bus
-> > +- data-shift: shall be set to <2> for 8 bits parallel bus
-> > +             (lines 9:2 are used) or <0> for 10 bits parallel bus
-> > +- hsync-active: active state of the HSYNC signal, 0/1 for LOW/HIGH respectively.
-> > +               (Not required for bus-type equal 6)
-> > +- vsync-active: active state of the VSYNC signal, 0/1 for LOW/HIGH respectively.
-> > +               (Not required for bus-type equal 6)
-> > +- pclk-sample: sample data on rising (1) or falling (0) edge of the pixel clock
-> > +              signal. (Not required for bus-type equal 6)
-> > +- bus-type: data bus type. Possible values are:
-> > +           5 - Parallel
-> > +           6 - Bt.656
-> > +
-> >  Example:
-> >
-> >  &i2c0 {
-> > --
-> > 2.17.1
-> >
