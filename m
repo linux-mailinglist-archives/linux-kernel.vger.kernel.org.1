@@ -2,123 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3152D2470D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62DFC247133
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390694AbgHQSPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:15:48 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:38774 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390473AbgHQSPR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 14:15:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597688108;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g80cYW2IFYoqF9vli22IsbwtpI2QtdO1qkGnkN211CA=;
-        b=B1zuT3bYS1oN6dQVx2tWGtnGSP1cW5qRJKSnRWGvUY4wOM05IOoVP8ujQSF5by6gLvmcIa
-        6zDQU82zG1Wu+VlMBpxQq/iSvdyEh8gONYQudUsEnf5ZLpiR+3uuxZ/k2zvV1riSUaG49i
-        xJVP8g9JPteVrlRKRFlYEm1IvJN/PNk=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-544-FB9DIeLkOOyqF7qsvLAS3g-1; Mon, 17 Aug 2020 14:15:07 -0400
-X-MC-Unique: FB9DIeLkOOyqF7qsvLAS3g-1
-Received: by mail-qk1-f200.google.com with SMTP id v16so11391726qka.18
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 11:15:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=g80cYW2IFYoqF9vli22IsbwtpI2QtdO1qkGnkN211CA=;
-        b=Fzzt7CzNBPuWWhqO+XgjB/4s4Sjs6iwtgLncK7KGsGTKf8BHIAAY9kiaO6P0laLEMx
-         D+FeJx4FtyNc6xStpMrlMWM/eTqNPkYlZTQXPLYacp95xVR3QuS/2xtFL4yoOcvawfJY
-         jvafdCBJSMtuzpfAUCWnDDa/hmv+zk6Jo4VELDdKT2ych3nQo06CCnKrTfc+bK2UETrm
-         ZBBrU/3tpgC4es6hARxfWdif+P6EjVw8zdHdnTW3/80R2DFJDBgFswdsNjzXAdDTEUsS
-         FlClxBVGZvTv8qUL//StWSUkHaOOio4hJl6iyGubwwYTpmI8kLKL1MIeHa/8+4o2XDqp
-         eSPQ==
-X-Gm-Message-State: AOAM532mkApiolz4rFm9M3xmveoAUcHckkjMCnEBJlUj1t93Tc+YVoOS
-        51dL11SOf9Y9mMXdat2imxEIHBxhJjgkcpyUPEGcMMlqO6T+iwVxo+PVEvXjr6QBDTUENHekv3N
-        yymbrG4DGBlxkqKArrx6Afx0C
-X-Received: by 2002:aed:2f84:: with SMTP id m4mr14446133qtd.61.1597688106682;
-        Mon, 17 Aug 2020 11:15:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyXUfqFuGv20cuhSCCCZGpqoNHsGaqjHh4vKhxtI6LiZdZbnvJveBje9ZvXIG7CvZAAvbAeOw==
-X-Received: by 2002:aed:2f84:: with SMTP id m4mr14446091qtd.61.1597688106092;
-        Mon, 17 Aug 2020 11:15:06 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id s184sm18253320qkf.50.2020.08.17.11.15.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Aug 2020 11:15:05 -0700 (PDT)
-Subject: Re: [PATCH 2/3] fpga manager: xilinx-spi: provide better diagnostics
- on programming failure
-To:     Luca Ceresoli <luca@lucaceresoli.net>, linux-fpga@vger.kernel.org
-Cc:     Moritz Fischer <mdf@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Anatolij Gustschin <agust@denx.de>
-References: <20200817165911.32589-1-luca@lucaceresoli.net>
- <20200817165911.32589-2-luca@lucaceresoli.net>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <b1a1a9d9-d36b-40f0-24e3-f793e55db929@redhat.com>
-Date:   Mon, 17 Aug 2020 11:15:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S2390401AbgHQSWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:22:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36736 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390912AbgHQSVz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 14:21:55 -0400
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D1D9320738;
+        Mon, 17 Aug 2020 18:21:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597688515;
+        bh=ywvUa0thchGA9URPQznfjWIyxppEo/JGKZ107vVQVQQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Y/RXsrrpXvzRbb9Bjm/MkVRUSxhLxuGu8CSdYYwdyLHTiUloID/MsoZ+qpcnBzG9F
+         KAZVk+Kkuhw34IvZftks6NNv8s45M65L5zLJWiAaTCMkLiMXoZRaXy6vhf1N/5DAvd
+         yv/DYZ8GCSBvu2G6sDH/V7x5/+yPqDVxOT/nOGns=
+Received: by mail-oi1-f179.google.com with SMTP id b22so15611410oic.8;
+        Mon, 17 Aug 2020 11:21:54 -0700 (PDT)
+X-Gm-Message-State: AOAM533VrkiwNbLXRjAEHf/cEqtwBRnADOzy8YSjvDkz6IY+Mgy+Dk/H
+        EcOhc3QEAe83yUB1SHjOprTBLgaEsFo1kKID3Q==
+X-Google-Smtp-Source: ABdhPJxFsvl9kH86GxixpRdB5tPpGwqT2xFsCvdog8At58/krej8IRcOw7DKZn8zvJK2vP5cE27RU3JaNpXROwleBQs=
+X-Received: by 2002:aca:90a:: with SMTP id 10mr10338190oij.106.1597688514113;
+ Mon, 17 Aug 2020 11:21:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200817165911.32589-2-luca@lucaceresoli.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20200814225637.702584-1-arch0.zheng@gmail.com>
+In-Reply-To: <20200814225637.702584-1-arch0.zheng@gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 17 Aug 2020 12:21:42 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJ7eK3HB_E8OeSbs=xVLYrvOcXD9GxpKr2N4dXZWnBP+g@mail.gmail.com>
+Message-ID: <CAL_JsqJ7eK3HB_E8OeSbs=xVLYrvOcXD9GxpKr2N4dXZWnBP+g@mail.gmail.com>
+Subject: Re: [PATCH] of/fdt: Remove duplicate check in early_init_dt_scan_memory()
+To:     Qi Zheng <arch0.zheng@gmail.com>
+Cc:     Frank Rowand <frowand.list@gmail.com>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The other two patches are fine.
-
-On 8/17/20 9:59 AM, Luca Ceresoli wrote:
-> When the DONE pin does not go high after programming to confirm programming
-> success, the INIT_B pin provides some info on the reason. Use it if
-> available to provide a more explanatory error message.
+On Fri, Aug 14, 2020 at 4:57 PM Qi Zheng <arch0.zheng@gmail.com> wrote:
 >
-> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+> When the value of the first reg is not NULL, there will be
+> two repeated checks. So modify it.
+
+I prefer the way it was. I'm sure the compiler is smart enough to
+throw out the 2nd check. Plus, 'linux,usable-memory' being present is
+the exception, so usually 'reg' will be NULL.
+
+> Signed-off-by: Qi Zheng <arch0.zheng@gmail.com>
 > ---
->  drivers/fpga/xilinx-spi.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
+>  drivers/of/fdt.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 >
-> diff --git a/drivers/fpga/xilinx-spi.c b/drivers/fpga/xilinx-spi.c
-> index 502fae0d1d85..2aa942bb1114 100644
-> --- a/drivers/fpga/xilinx-spi.c
-> +++ b/drivers/fpga/xilinx-spi.c
-> @@ -169,7 +169,16 @@ static int xilinx_spi_write_complete(struct fpga_manager *mgr,
->  			return xilinx_spi_apply_cclk_cycles(conf);
->  	}
->  
-> -	dev_err(&mgr->dev, "Timeout after config data transfer.\n");
-> +	if (conf->init_b) {
-> +		int init_b_asserted = gpiod_get_value(conf->init_b);
-
-gpiod_get_value can fail. So maybe need split the first statement.
-
-init_b_asserted < 0 ? "invalid device"
-
-As the if-else statement is getting complicated, embedding the ? : makes this hard to read.  'if,else if, else' would be better.
-
-> +
-> +		dev_err(&mgr->dev,
-> +			init_b_asserted ? "CRC error or invalid device\n"
-> +			: "Missing sync word or incomplete bitstream\n");
-> +	} else {
-> +		dev_err(&mgr->dev, "Timeout after config data transfer.\n");
-patch 3 removes '.' s , and you just added one back in ?
-> +	}
-> +
->  	return -ETIMEDOUT;
->  }
->  
-
-Reviewed-by: Tom Rix <trix@redhat.com>
-
-
+> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+> index 4602e467ca8b..f54412c00642 100644
+> --- a/drivers/of/fdt.c
+> +++ b/drivers/of/fdt.c
+> @@ -1002,10 +1002,11 @@ int __init early_init_dt_scan_memory(unsigned long node, const char *uname,
+>                 return 0;
+>
+>         reg = of_get_flat_dt_prop(node, "linux,usable-memory", &l);
+> -       if (reg == NULL)
+> +       if (reg == NULL) {
+>                 reg = of_get_flat_dt_prop(node, "reg", &l);
+> -       if (reg == NULL)
+> -               return 0;
+> +               if (reg == NULL)
+> +                       return 0;
+> +       }
+>
+>         endp = reg + (l / sizeof(__be32));
+>         hotpluggable = of_get_flat_dt_prop(node, "hotpluggable", NULL);
+> --
+> 2.25.1
+>
