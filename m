@@ -2,108 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F84324656E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A07246584
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728460AbgHQLbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 07:31:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728168AbgHQLbL (ORCPT
+        id S1728565AbgHQLcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 07:32:13 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:55738 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727050AbgHQLcM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 07:31:11 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B80FDC061389
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 04:31:10 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 6D12728DA67
-Subject: Re: [PATCH v2 2/2] platform/chrome: cros_ec_proto: check for missing
- EC_CMD_HOST_EVENT_GET_WAKE_MASK
-To:     Brian Norris <briannorris@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <20200724190841.3112365-1-briannorris@chromium.org>
- <20200724190841.3112365-2-briannorris@chromium.org>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <6c200c61-209f-eb76-88b6-16491e2bc69c@collabora.com>
-Date:   Mon, 17 Aug 2020 13:31:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Mon, 17 Aug 2020 07:32:12 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1k7dN2-0002Ii-P6; Mon, 17 Aug 2020 11:32:08 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][V3] of/address: check for invalid range.cpu_addr
+Date:   Mon, 17 Aug 2020 12:32:08 +0100
+Message-Id: <20200817113208.523805-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20200724190841.3112365-2-briannorris@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Brian,
+From: Colin Ian King <colin.king@canonical.com>
 
-On 24/7/20 21:08, Brian Norris wrote:
-> As with cros_ec_cmd_xfer_status(), etc., it's not enough to simply check
-> for the return status of send_command() -- that only covers transport or
-> other similarly-fatal errors. One must also check the ->result field, to
-> see whether the command really succeeded. If not, we can't use the data
-> it returns.
-> 
-> The caller of cros_ec_get_host_event_wake_mask() ignores this, and so
-> for example, on EC's where the command is not implemented, we're using
-> junk (or in practice, all zeros) for our wake-mask. We should be using a
-> non-zero default (currently, it's supposed to be all-1's).
-> 
-> Fix this by checking the ->result field and returning -EPROTO for
-> errors.
-> 
-> I might label this as fixing commit 29d99b966d60 ("cros_ec: Don't signal
-> wake event for non-wake host events"), except that this fix alone
-> actually may make things worse, as it now allows for a lot more spurious
-> wakeups. The patch "platform/chrome: cros_ec_proto: ignore battery/AC
-> wakeups on old ECs" helps to mitigate this.
-> 
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
+Currently invalid CPU addresses are not being sanity checked resulting in
+SATA setup failure on a SynQuacer SC2A11 development machine. The original
+check was removed by and earlier commit, so add a sanity check back in
+to avoid this regression.
 
-Sorry for late notice. The patch has been applied for 5.9.
+Fixes: 7a8b64d17e35 ("of/address: use range parser for of_dma_get_range")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
 
-> ---
-> v2:
->  * EOPNOTSUPP, not ENOTSUPP
-> ---
->  drivers/platform/chrome/cros_ec_proto.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> 
-> diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
-> index e93024b55ce8..31ca0af62388 100644
-> --- a/drivers/platform/chrome/cros_ec_proto.c
-> +++ b/drivers/platform/chrome/cros_ec_proto.c
-> @@ -208,6 +208,12 @@ static int cros_ec_get_host_event_wake_mask(struct cros_ec_device *ec_dev,
->  	msg->insize = sizeof(*r);
->  
->  	ret = send_command(ec_dev, msg);
-> +	if (ret >= 0) {
-> +		if (msg->result == EC_RES_INVALID_COMMAND)
-> +			return -EOPNOTSUPP;
-> +		if (msg->result != EC_RES_SUCCESS)
-> +			return -EPROTO;
-> +	}
->  	if (ret > 0) {
->  		r = (struct ec_response_host_event_mask *)msg->data;
->  		*mask = r->mask;
-> @@ -488,6 +494,13 @@ int cros_ec_query_all(struct cros_ec_device *ec_dev)
->  			  BIT(EC_HOST_EVENT_BATTERY_CRITICAL) |
->  			  BIT(EC_HOST_EVENT_PD_MCU) |
->  			  BIT(EC_HOST_EVENT_BATTERY_STATUS));
-> +		/*
-> +		 * Old ECs may not support this command. Complain about all
-> +		 * other errors.
-> +		 */
-> +		if (ret != -EOPNOTSUPP)
-> +			dev_err(ec_dev->dev,
-> +				"failed to retrieve wake mask: %d\n", ret);
->  	}
->  
->  	ret = 0;
-> 
+V2: print message using pr_err and don't print range.cpu_addr as it's always
+    going to be OF_BAD_ADDR so the information is pointless.
+V3: print the bus address to help diagnose issues
+
+---
+ drivers/of/address.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/of/address.c b/drivers/of/address.c
+index 590493e04b01..945b3d785f44 100644
+--- a/drivers/of/address.c
++++ b/drivers/of/address.c
+@@ -985,6 +985,11 @@ int of_dma_get_range(struct device_node *np, u64 *dma_addr, u64 *paddr, u64 *siz
+ 			/* Don't error out as we'd break some existing DTs */
+ 			continue;
+ 		}
++		if (range.cpu_addr == OF_BAD_ADDR) {
++			pr_err("translation of DMA address(%llx) to CPU address failed node(%pOF)\n",
++			       range.bus_addr, node);
++			continue;
++		}
+ 		dma_offset = range.cpu_addr - range.bus_addr;
+ 
+ 		/* Take lower and upper limits */
+-- 
+2.27.0
+
