@@ -2,111 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA9B245AEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 05:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA2A245B0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 05:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726996AbgHQDJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Aug 2020 23:09:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726235AbgHQDJA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Aug 2020 23:09:00 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7CABC061385
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Aug 2020 20:09:00 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id n128so9782482oif.0
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Aug 2020 20:09:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=landley-net.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VUwWPfMFaK7Ua27x+BYsqt8qSqzZlNaS/aMpIL7yuSw=;
-        b=utWOu3oN3/U852PBbErO0/SQKSZMtH2sdGg1SUoskWjy9SksHhb0eu0x0JYcfw1POE
-         ayUgUEDG1Jsc1X/GUVJQs9A4GiSI2wEPEw+F9b1Dp4PwLgNCerDA2M37LxkEnYO3mAJp
-         DWiqaJB88/LLC5nEz68evEbKCN2vW82kQvA4UIaAYcWHHi0QS3trlukqHjPO0Tlyfdh5
-         t9GG7oWgpbHDgjH9eyPmP3IkpprYSY55PgPRT83d+BY/Udgy7SDispFvkXeK8qy/w3Jv
-         S20hk8VzedN5H9DYESHpm6qJQO9h0Rs2AfYMyvUEx8XDUGQ4+4uLb/pkuRb5Zwy5WGhr
-         9x4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VUwWPfMFaK7Ua27x+BYsqt8qSqzZlNaS/aMpIL7yuSw=;
-        b=PKNtjBSOcFBTCCFWfY74PnLT3xhaJ70sCuLvO3W66IEzeysHgZqoyCPA0ZkspGDygE
-         vx2ooIiARiue2tL/tc60BtNERCyCEdn7RolVC/i/kfiN3qTMPxmvjbL1Jajy2NNWNC0n
-         34E5cBeKzVuUYw+81lY5okdv9MbvKOctrV+ZVTBLUVv+MTTQrTlyZ8uEqnrW6NcD8w4V
-         LwrsZXIgRfOAC+cATFZE1F+K0B3jETVGVtBgF4dhLakp1/CSYp3uEGvHa0BY/qDNYWcA
-         xA2F/88jLJiSqLGCyx7ssmBUe/WvtD1GhD/CpIbqY/WbVJQYTU/z5shhUy+sg7mtaSmw
-         Y17A==
-X-Gm-Message-State: AOAM533dhHAPdAaNhxDcX69qs+NX2xcEeVNOvBAs1ah2acWin6T7b9o6
-        G3+F0JLI/IJR3oyvs4dQWXogSQ==
-X-Google-Smtp-Source: ABdhPJySdNxP09FGzCeHqqHEHRixrNk5nzHWEtuld881QXLgXnsHG18H633vGJGzwpOn5PQv38Bznw==
-X-Received: by 2002:aca:eb84:: with SMTP id j126mr8262398oih.30.1597633740038;
-        Sun, 16 Aug 2020 20:09:00 -0700 (PDT)
-Received: from [192.168.86.21] ([136.62.4.88])
-        by smtp.gmail.com with ESMTPSA id g34sm1701273ooi.31.2020.08.16.20.08.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 16 Aug 2020 20:08:59 -0700 (PDT)
-Subject: Re: [PATCH] serial: sh-sci: Make sure status register SCxSR is read
- in correct sequence
-To:     Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc:     Kazuhiro Fujita <kazuhiro.fujita.jg@renesas.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hao Bui <hao.bui.yg@renesas.com>,
-        KAZUMI HARADA <kazumi.harada.rh@renesas.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Chris Brandt <Chris.Brandt@renesas.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-References: <1585333048-31828-1-git-send-email-kazuhiro.fujita.jg@renesas.com>
- <CAMuHMdW+u5r6zyxFJsVzj21BYDrKCr=Q6Ojk5VeN+mkhvXX9Jw@mail.gmail.com>
- <OSBPR01MB3590E3D12546BC6711CEB542AAC80@OSBPR01MB3590.jpnprd01.prod.outlook.com>
- <CAMuHMdXmfQ0x7mCZ-E7OPQFv2z-=mFDT20hJ2_JKax=OePB8eA@mail.gmail.com>
- <CA+V-a8vPn_z_j1Vwr_1F=dCw8H=g5UMWvWxgRqBeVR7dzHPz8Q@mail.gmail.com>
- <CAMuHMdWc9q9NjQuAuy5M=v_x=i8XxVg5JZHswjvPsgNzhHfO0w@mail.gmail.com>
- <CAMuHMdUyV58t3eihBJv2xex5gW1Oef37Jo3FHoJstU=SspmpHA@mail.gmail.com>
- <CAMuHMdU0EiQuk_bWx1yrmbBTXg8mL-PeN2=P61xQ5Ucb5QmYYg@mail.gmail.com>
- <OSBPR01MB50485F5DA2F82E455DCA6B56AA5E0@OSBPR01MB5048.jpnprd01.prod.outlook.com>
-From:   Rob Landley <rob@landley.net>
-Message-ID: <b384543f-c80d-aa63-63a6-1b5dbc47885d@landley.net>
-Date:   Sun, 16 Aug 2020 22:17:48 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <OSBPR01MB50485F5DA2F82E455DCA6B56AA5E0@OSBPR01MB5048.jpnprd01.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1727063AbgHQD3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Aug 2020 23:29:32 -0400
+Received: from smtp21.cstnet.cn ([159.226.251.21]:42702 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726235AbgHQD3a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 Aug 2020 23:29:30 -0400
+Received: from localhost (unknown [159.226.5.99])
+        by APP-01 (Coremail) with SMTP id qwCowADHz2+P+TlfauNCAQ--.38977S2;
+        Mon, 17 Aug 2020 11:29:19 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     axboe@kernel.dk, linux-ide@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
+Subject: [PATCH] ata: ahci: use ata_link_info() instead of ata_link_printk()
+Date:   Mon, 17 Aug 2020 03:29:13 +0000
+Message-Id: <20200817032913.10173-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: qwCowADHz2+P+TlfauNCAQ--.38977S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Gw13Gr1fCr18JFWxuw4rKrg_yoWxCFc_uF
+        y8Zw47WrWjyF15Zr17Ja13ZF90k3Wvvw1kXFyIganxury5Ww4fJrW0q3W5X34DXw4IkF98
+        ArWUAFy5CrnIgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb4AFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
+        1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1q6rW5McIj6I8E87Iv67AKxVW8Jr0_Cr1UMcvjeVCFs4IE7xkEbV
+        WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK
+        6r48MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_
+        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjoKZJ
+        UUUUU==
+X-Originating-IP: [159.226.5.99]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiAw4LA13qZTb7pwAAs9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/16/20 11:22 AM, Prabhakar Mahadev Lad wrote:
->> FTR, I gave it a try on the SH7751R-based I-O DATA USL-5P aka Landisk:
->> SCIF is affected, and fixed by commit 3dc4db3662366306 ("serial: sh-sci:
->> Make sure status register SCxSR is read in correct sequence").
->>
-> Thank you Geert.
-> 
-> Cheers,
-> Prabhakar
+Using ata_link_info() instead of ata_link_printk().
 
-Did we ever figure out how to get linux to talk to the _first_ serial port on
-the qemu-system-sh4 r2d board? I'm still doing:
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ drivers/ata/ahci.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-  qemu-system-sh4 -M r2d -serial null -serial mon:stdio
+diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
+index 0c0a736eb861..fbd8eaa32d32 100644
+--- a/drivers/ata/ahci.c
++++ b/drivers/ata/ahci.c
+@@ -807,8 +807,7 @@ static int ahci_avn_hardreset(struct ata_link *link, unsigned int *class,
+ 				(sstatus & 0xf) != 1)
+ 			break;
+ 
+-		ata_link_printk(link, KERN_INFO, "avn bounce port%d\n",
+-				port);
++		ata_link_info(link,  "avn bounce port%d\n", port);
+ 
+ 		pci_read_config_word(pdev, 0x92, &val);
+ 		val &= ~(1 << port);
+-- 
+2.17.1
 
-Because I can only get a working console on the _second_ serial port. (SCI vs
-SCIF I think?)
-
-Rob
