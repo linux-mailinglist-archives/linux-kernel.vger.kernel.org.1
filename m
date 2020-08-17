@@ -2,78 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 619E6245AE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 05:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 876A9245ADA
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 05:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727043AbgHQDFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Aug 2020 23:05:23 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:64599 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726424AbgHQDFU (ORCPT
+        id S1726729AbgHQDEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Aug 2020 23:04:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726424AbgHQDES (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Aug 2020 23:05:20 -0400
-X-UUID: 13ca9d3ca144428fab8404007b45e70e-20200817
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=MgYUQXlp69yp7mKaPcEZgq7fYcJApihBC9PfPYl1V5Y=;
-        b=dvTkpM3q6SBSndnfPmjK7zPgOp1UilpyIWwXLW1LF2s3ab+uMCO84DiAZELYBAAnrEE9KNXha9SWUNPJvW3z4b+K6Ux07NEKMN5/NEgVKUj8b+FTd6+p51ZYMJL3Dd2dUiacgqtRPtLY2Q3SWjwHiJmaVLSU3DK00R7MaRb70sE=;
-X-UUID: 13ca9d3ca144428fab8404007b45e70e-20200817
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <crystal.guo@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 154625755; Mon, 17 Aug 2020 11:05:17 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 17 Aug 2020 11:05:15 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 17 Aug 2020 11:05:14 +0800
-From:   Crystal Guo <crystal.guo@mediatek.com>
-To:     <p.zabel@pengutronix.de>, <robh+dt@kernel.org>,
-        <matthias.bgg@gmail.com>
-CC:     <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <s-anna@ti.com>, <afd@ti.com>, <seiya.wang@mediatek.com>,
-        <stanley.chu@mediatek.com>, <yingjoe.chen@mediatek.com>,
-        <fan.chen@mediatek.com>, <yong.liang@mediatek.com>,
-        Crystal Guo <crystal.guo@mediatek.com>
-Subject: [v4,4/4] arm64: dts: mt8192: add infracfg_rst node
-Date:   Mon, 17 Aug 2020 11:03:24 +0800
-Message-ID: <20200817030324.5690-5-crystal.guo@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20200817030324.5690-1-crystal.guo@mediatek.com>
-References: <20200817030324.5690-1-crystal.guo@mediatek.com>
+        Sun, 16 Aug 2020 23:04:18 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 005FFC061385;
+        Sun, 16 Aug 2020 20:04:17 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id s14so824292plp.4;
+        Sun, 16 Aug 2020 20:04:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u2t9cZojup/XRAfOOohcGCISaz5vKpnzd7po0W7Brn4=;
+        b=mSek12SAv1BJ6ldCV8GbAcqWxHtmYqybitk2vnr8tEQJDg9njV0L2OK9MMFHwSVXB6
+         YnxwwLHYPWeXDaBxfiLBMJNil43M/nUv16OYieMI149G/rP1GXkdtR4wuNL8KZQK1V2h
+         72RLjJvdNFsND45+Dqdz59o/YGYH6O8TF7G1tsVJQrFcuVYfFm81Eughm0igkP+dKzc+
+         cwA9gKOIg45WjWBt8+BUkjutzNI6OoMVRcQgJd8iDr2OjsA6xlyj5Bn/JvToxwFtAjke
+         E6+ncpe2QToaQBOZ/pD5FoGq/pkTAwoXDkhjCfoQfizb44tH/JRrefhlaplYFbfTIMS2
+         pvCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u2t9cZojup/XRAfOOohcGCISaz5vKpnzd7po0W7Brn4=;
+        b=gmZ88t34LBisXCXakfD980N43vwkXMoxJ/XEnhMKXCXSCUuCFkD7X78pQNXlHYWmEO
+         VoMoowSiacjQxzjWGPW4UOtaXk6836vZtB8Pg/DxWDRPhH70KIgymSRzxodMk0YyAnrO
+         IhGTsIL3nabIJuys/o0LjVCDHzY/S0TlCNTdK30TOz0c5m9LW/ZRbusgY47ZfyDvR/dX
+         aa+zFM97tIW6FLkVdAZjUV22RbEIbvgPM2fsXvtxuSWbKDnjBbv37zuo/7fBwAFOItOP
+         JHItk2xHlmgj0gS7F5hV9x6k6unQQXLp0NWk28hQZ1mdoiZo4pIqCAhwDYUl4/kQ5eo2
+         kvag==
+X-Gm-Message-State: AOAM533SbKS+sPWP3nwzNYeKTpquim//SP31deq43QOCbwfhnajD7KQ/
+        L2jQ4BuuzfL5ngCq9sqRE2M=
+X-Google-Smtp-Source: ABdhPJwcOR2+1quyxWqjQQMMyinCGbyTuuXsCkvKpAd0p7fdGw5BaRkRa1UqMLxTq/Loy1rvyTeCgw==
+X-Received: by 2002:a17:90a:2081:: with SMTP id f1mr11353865pjg.174.1597633457296;
+        Sun, 16 Aug 2020 20:04:17 -0700 (PDT)
+Received: from localhost.localdomain.com ([2605:e000:160b:911f:722f:a74:437d:fd3c])
+        by smtp.gmail.com with ESMTPSA id n22sm14869939pjq.25.2020.08.16.20.04.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Aug 2020 20:04:16 -0700 (PDT)
+From:   Chris Healy <cphealy@gmail.com>
+X-Google-Original-From: Chris Healy <cphealy@gmail.com
+To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        linux@rempel-privat.de, davem@davemloft.net,
+        philippe.schenker@toradex.com, andrew@lunn.ch,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Chris Healy <cphealy@gmail.com>
+Subject: [PATCH] ARM: dts: imx7d-zii-rmu2: fix rgmii phy-mode for ksz9031 phy
+Date:   Sun, 16 Aug 2020 20:04:01 -0700
+Message-Id: <20200817030401.3124855-1-cphealy@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-YWRkIGluZnJhY2ZnX3JzdCBub2RlIHdoaWNoIGlzIGZvciBNVDgxOTIgcGxhdGZvcm0NCg0KU2ln
-bmVkLW9mZi1ieTogQ3J5c3RhbCBHdW8gPGNyeXN0YWwuZ3VvQG1lZGlhdGVrLmNvbT4NCi0tLQ0K
-IGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTkyLmR0c2kgfCAxMSArKysrKysrKysr
-LQ0KIDEgZmlsZSBjaGFuZ2VkLCAxMCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQoNCmRp
-ZmYgLS1naXQgYS9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5Mi5kdHNpIGIvYXJj
-aC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDgxOTIuZHRzaQ0KaW5kZXggOTMxZTFjYTE3MjIw
-Li5hMGNiOTkwNDcwNmIgMTAwNjQ0DQotLS0gYS9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVr
-L210ODE5Mi5kdHNpDQorKysgYi9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5Mi5k
-dHNpDQpAQCAtMTAsNiArMTAsNyBAQA0KICNpbmNsdWRlIDxkdC1iaW5kaW5ncy9pbnRlcnJ1cHQt
-Y29udHJvbGxlci9pcnEuaD4NCiAjaW5jbHVkZSA8ZHQtYmluZGluZ3MvcGluY3RybC9tdDgxOTIt
-cGluZnVuYy5oPg0KICNpbmNsdWRlIDxkdC1iaW5kaW5ncy9wb3dlci9tdDgxOTItcG93ZXIuaD4N
-CisjaW5jbHVkZSA8ZHQtYmluZGluZ3MvcmVzZXQvdGktc3lzY29uLmg+DQogDQogLyB7DQogCWNv
-bXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTkyIjsNCkBAIC0yMTksOSArMjIwLDE3IEBADQogCQl9
-Ow0KIA0KIAkJaW5mcmFjZmc6IGluZnJhY2ZnQDEwMDAxMDAwIHsNCi0JCQljb21wYXRpYmxlID0g
-Im1lZGlhdGVrLG10ODE5Mi1pbmZyYWNmZyIsICJzeXNjb24iOw0KKwkJCWNvbXBhdGlibGUgPSAi
-bWVkaWF0ZWssbXQ4MTkyLWluZnJhY2ZnIiwgInN5c2NvbiIsICJzaW1wbGUtbWZkIjsNCiAJCQly
-ZWcgPSA8MCAweDEwMDAxMDAwIDAgMHgxMDAwPjsNCiAJCQkjY2xvY2stY2VsbHMgPSA8MT47DQor
-DQorCQkJaW5mcmFjZmdfcnN0OiByZXNldC1jb250cm9sbGVyIHsNCisJCQkJY29tcGF0aWJsZSA9
-ICJtZWRpYXRlayxpbmZyYS1yZXNldCIsICJ0aSxzeXNjb24tcmVzZXQiOw0KKwkJCQkjcmVzZXQt
-Y2VsbHMgPSA8MT47DQorCQkJCXRpLHJlc2V0LWJpdHMgPSA8DQorCQkJCQkweDE0MCAxNSAweDE0
-NCAxNSAwIDAgKEFTU0VSVF9TRVQgfCBERUFTU0VSVF9TRVQgfCBTVEFUVVNfTk9ORSkgLyogMDog
-cGNpZSAqLw0KKwkJCQk+Ow0KKwkJCX07DQogCQl9Ow0KIA0KIAkJcGVyaWNmZzogcGVyaWNmZ0Ax
-MDAwMzAwMCB7DQotLSANCjIuMTguMA0K
+From: Chris Healy <cphealy@gmail.com>
+
+Since commit bcf3440c6dd7 ("net: phy: micrel: add phy-mode support for the
+KSZ9031 PHY") the networking is broken on the imx7d-zii-rmu2 board.
+
+Fix it by switching to phy-mode = "rgmii-id".
+
+Fixes: bcf3440c6dd7 ("net: phy: micrel: add phy-mode support for the KSZ9031 PHY")
+Signed-off-by: Chris Healy <cphealy@gmail.com>
+---
+ arch/arm/boot/dts/imx7d-zii-rmu2.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/imx7d-zii-rmu2.dts b/arch/arm/boot/dts/imx7d-zii-rmu2.dts
+index e5e20b07f184..7cb6153fc650 100644
+--- a/arch/arm/boot/dts/imx7d-zii-rmu2.dts
++++ b/arch/arm/boot/dts/imx7d-zii-rmu2.dts
+@@ -58,7 +58,7 @@ &fec1 {
+ 			  <&clks IMX7D_ENET1_TIME_ROOT_CLK>;
+ 	assigned-clock-parents = <&clks IMX7D_PLL_ENET_MAIN_100M_CLK>;
+ 	assigned-clock-rates = <0>, <100000000>;
+-	phy-mode = "rgmii";
++	phy-mode = "rgmii-id";
+ 	phy-handle = <&fec1_phy>;
+ 	status = "okay";
+ 
+-- 
+2.26.2
 
