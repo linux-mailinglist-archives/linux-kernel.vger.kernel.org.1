@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A503A2473FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F26D12473BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391958AbgHQTED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:04:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57896 "EHLO mail.kernel.org"
+        id S2403952AbgHQTAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:00:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730792AbgHQPqQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:46:16 -0400
+        id S1730842AbgHQPsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:48:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD0EA2065D;
-        Mon, 17 Aug 2020 15:46:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 357002067C;
+        Mon, 17 Aug 2020 15:48:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679172;
-        bh=j1ZFhY5yPwchj58hGcRxDu3F9DG3gz9cojapMFGgyV0=;
+        s=default; t=1597679289;
+        bh=2K2iG1CjBSTPdSLSG5ajTMC50p1FwenSlUrZitpjRWY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XJtR7KwuRwXiqd28Wja14/6YxCwaGRAhg6TU51dDgUW2q1xtqT5i6GAagKwJRzzHI
-         YsZj7J3Mij+xm7CSIUvmM/0EbyaOAsBe3mj3nbblGuTxnRc2SBoTewyI/aRKK2yZvj
-         kCTWIk+p6EChJeA8tNSZeEIxFaGIWlPBLsqDNCAA=
+        b=oegW66dysqiskC83vyZ1y93AKbVTIl7YHDFHE1+O88AxJFSxF0EK7O8GwtwNUhS9N
+         bZrbwXLIBm6J9gPY/sYa1kHPUNpzzfZ4zQmuVvQbveYVwAG76Zsy9mIshXGEUIUWp1
+         takhr69R9NoJCHcyjVERXOWD7ftASRx7ptmXi8OI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 119/393] io_uring: fix stalled deferred requests
-Date:   Mon, 17 Aug 2020 17:12:49 +0200
-Message-Id: <20200817143825.387573280@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 120/393] crypto: caam - silence .setkey in case of bad key length
+Date:   Mon, 17 Aug 2020 17:12:50 +0200
+Message-Id: <20200817143825.433597223@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
 References: <20200817143819.579311991@linuxfoundation.org>
@@ -43,34 +45,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Begunkov <asml.silence@gmail.com>
+From: Horia Geantă <horia.geanta@nxp.com>
 
-[ Upstream commit dd9dfcdf5a603680458f5e7b0d2273c66e5417db ]
+[ Upstream commit da6a66853a381864f4b040832cf11f0dbba0a097 ]
 
-Always do io_commit_cqring() after completing a request, even if it was
-accounted as overflowed on the CQ side. Failing to do that may lead to
-not to pushing deferred requests when needed, and so stalling the whole
-ring.
+In case of bad key length, driver emits "key size mismatch" messages,
+but only for xts(aes) algorithms.
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Reduce verbosity by making them visible only when debugging.
+This way crypto fuzz testing log cleans up a bit.
+
+Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io_uring.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/crypto/caam/caamalg.c     | 2 +-
+ drivers/crypto/caam/caamalg_qi.c  | 2 +-
+ drivers/crypto/caam/caamalg_qi2.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index c212af69c15b4..06a093da872f8 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -7581,6 +7581,7 @@ static void io_uring_cancel_files(struct io_ring_ctx *ctx,
- 			}
- 			WRITE_ONCE(ctx->rings->cq_overflow,
- 				atomic_inc_return(&ctx->cached_cq_overflow));
-+			io_commit_cqring(ctx);
- 			spin_unlock_irq(&ctx->completion_lock);
+diff --git a/drivers/crypto/caam/caamalg.c b/drivers/crypto/caam/caamalg.c
+index b2f9882bc010f..bf90a4fcabd1f 100644
+--- a/drivers/crypto/caam/caamalg.c
++++ b/drivers/crypto/caam/caamalg.c
+@@ -838,7 +838,7 @@ static int xts_skcipher_setkey(struct crypto_skcipher *skcipher, const u8 *key,
+ 	u32 *desc;
  
- 			/*
+ 	if (keylen != 2 * AES_MIN_KEY_SIZE  && keylen != 2 * AES_MAX_KEY_SIZE) {
+-		dev_err(jrdev, "key size mismatch\n");
++		dev_dbg(jrdev, "key size mismatch\n");
+ 		return -EINVAL;
+ 	}
+ 
+diff --git a/drivers/crypto/caam/caamalg_qi.c b/drivers/crypto/caam/caamalg_qi.c
+index 27e36bdf6163b..315d53499ce85 100644
+--- a/drivers/crypto/caam/caamalg_qi.c
++++ b/drivers/crypto/caam/caamalg_qi.c
+@@ -728,7 +728,7 @@ static int xts_skcipher_setkey(struct crypto_skcipher *skcipher, const u8 *key,
+ 	int ret = 0;
+ 
+ 	if (keylen != 2 * AES_MIN_KEY_SIZE  && keylen != 2 * AES_MAX_KEY_SIZE) {
+-		dev_err(jrdev, "key size mismatch\n");
++		dev_dbg(jrdev, "key size mismatch\n");
+ 		return -EINVAL;
+ 	}
+ 
+diff --git a/drivers/crypto/caam/caamalg_qi2.c b/drivers/crypto/caam/caamalg_qi2.c
+index 28669cbecf77c..e1b6bc6ef091b 100644
+--- a/drivers/crypto/caam/caamalg_qi2.c
++++ b/drivers/crypto/caam/caamalg_qi2.c
+@@ -1058,7 +1058,7 @@ static int xts_skcipher_setkey(struct crypto_skcipher *skcipher, const u8 *key,
+ 	u32 *desc;
+ 
+ 	if (keylen != 2 * AES_MIN_KEY_SIZE  && keylen != 2 * AES_MAX_KEY_SIZE) {
+-		dev_err(dev, "key size mismatch\n");
++		dev_dbg(dev, "key size mismatch\n");
+ 		return -EINVAL;
+ 	}
+ 
 -- 
 2.25.1
 
