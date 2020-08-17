@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01624246A9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E141246AA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730633AbgHQPjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:39:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33340 "EHLO mail.kernel.org"
+        id S2387453AbgHQPjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:39:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730335AbgHQPcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:32:53 -0400
+        id S1730352AbgHQPdH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:33:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45B7022B40;
-        Mon, 17 Aug 2020 15:32:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 186B822D00;
+        Mon, 17 Aug 2020 15:33:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678372;
-        bh=3bA66jFSyUuGfQ13Zx/hap/5xok8FbaDikQg8GCSOgc=;
+        s=default; t=1597678386;
+        bh=u2l8rYnpqO1GxowdoZloj+Y5TmSk8RmfO86+JjBpaeA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nQuzbFHHQnjOsbXYP9rmMUNWlb1aQZowyq8LQRAadE8Z1MlNJ2vxh69mgVYBoZpbd
-         ZJKLS9Kug26ntKHQCr1IiCA3GLyXtyfoWRW5nlbBKlqz+rZlAIiH93IB/pI9otELCp
-         BdYifF9bm/4knXAAa/YR53EfbSMBNyAzINSYXQDY=
+        b=mey7hUYXKz4aBFMUs3pC9bw++hyvxqj9RijmT5Ewy7XqU0zTNggAnOcciNo7165m4
+         W3I1cFXX0iVm8Awgui0iKIyoaY+CCqOnDWolWV8NueUAZ08JfOhU/cX/U43Q+DGTSD
+         SMS1Ot1aC509dcWu86Sa4NQhYjtGI01VmOLAWmB0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, DENG Qingfang <dqfext@gmail.com>,
-        Mauri Sandberg <sandberg@mailfence.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Oliver OHalloran <oohall@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 311/464] net: dsa: rtl8366: Fix VLAN semantics
-Date:   Mon, 17 Aug 2020 17:14:24 +0200
-Message-Id: <20200817143848.693885753@linuxfoundation.org>
+Subject: [PATCH 5.8 315/464] selftests/powerpc: Squash spurious errors due to device removal
+Date:   Mon, 17 Aug 2020 17:14:28 +0200
+Message-Id: <20200817143848.885698106@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -47,89 +44,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Oliver O'Halloran <oohall@gmail.com>
 
-[ Upstream commit 15ab7906cc9290afb006df1bb1074907fbcc7061 ]
+[ Upstream commit 5f8cf6475828b600ff6d000e580c961ac839cc61 ]
 
-The RTL8366 would not handle adding new members (ports) to
-a VLAN: the code assumed that ->port_vlan_add() was only
-called once for a single port. When intializing the
-switch with .configure_vlan_while_not_filtering set to
-true, the function is called numerous times for adding
-all ports to VLAN1, which was something the code could
-not handle.
+For drivers that don't have the error handling callbacks we implement
+recovery by removing the device and re-probing it. This causes the sysfs
+directory for the PCI device to be removed which causes the following
+spurious error to be printed when checking the PE state:
 
-Alter rtl8366_set_vlan() to just |= new members and
-untagged flags to 4k and MC VLAN table entries alike.
-This makes it possible to just add new ports to a
-VLAN.
+Breaking 0005:03:00.0...
+./eeh-basic.sh: line 13: can't open /sys/bus/pci/devices/0005:03:00.0/eeh_pe_state: no such file
+0005:03:00.0, waited 0/60
+0005:03:00.0, waited 1/60
+0005:03:00.0, waited 2/60
+0005:03:00.0, waited 3/60
+0005:03:00.0, waited 4/60
+0005:03:00.0, waited 5/60
+0005:03:00.0, waited 6/60
+0005:03:00.0, waited 7/60
+0005:03:00.0, Recovered after 8 seconds
 
-Put in some helpful debug code that can be used to find
-any further bugs here.
+We currently try to avoid this by checking if the PE state file exists
+before reading from it. This is however inherently racy so re-work the
+state checking so that we only read from the file once, and we squash any
+errors that occur while reading.
 
-Cc: DENG Qingfang <dqfext@gmail.com>
-Cc: Mauri Sandberg <sandberg@mailfence.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Fixes: d8652956cf37 ("net: dsa: realtek-smi: Add Realtek SMI driver")
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 85d86c8aa52e ("selftests/powerpc: Add basic EEH selftest")
+Signed-off-by: Oliver O'Halloran <oohall@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200727010127.23698-1-oohall@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/rtl8366.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+ tools/testing/selftests/powerpc/eeh/eeh-functions.sh | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/dsa/rtl8366.c b/drivers/net/dsa/rtl8366.c
-index ac88caca5ad4d..a75dcd6698b8a 100644
---- a/drivers/net/dsa/rtl8366.c
-+++ b/drivers/net/dsa/rtl8366.c
-@@ -43,18 +43,26 @@ int rtl8366_set_vlan(struct realtek_smi *smi, int vid, u32 member,
- 	int ret;
- 	int i;
+diff --git a/tools/testing/selftests/powerpc/eeh/eeh-functions.sh b/tools/testing/selftests/powerpc/eeh/eeh-functions.sh
+index f52ed92b53e74..00dc32c0ed75c 100755
+--- a/tools/testing/selftests/powerpc/eeh/eeh-functions.sh
++++ b/tools/testing/selftests/powerpc/eeh/eeh-functions.sh
+@@ -5,12 +5,17 @@ pe_ok() {
+ 	local dev="$1"
+ 	local path="/sys/bus/pci/devices/$dev/eeh_pe_state"
  
-+	dev_dbg(smi->dev,
-+		"setting VLAN%d 4k members: 0x%02x, untagged: 0x%02x\n",
-+		vid, member, untag);
-+
- 	/* Update the 4K table */
- 	ret = smi->ops->get_vlan_4k(smi, vid, &vlan4k);
- 	if (ret)
- 		return ret;
+-	if ! [ -e "$path" ] ; then
++	# if a driver doesn't support the error handling callbacks then the
++	# device is recovered by removing and re-probing it. This causes the
++	# sysfs directory to disappear so read the PE state once and squash
++	# any potential error messages
++	local eeh_state="$(cat $path 2>/dev/null)"
++	if [ -z "$eeh_state" ]; then
+ 		return 1;
+ 	fi
  
--	vlan4k.member = member;
--	vlan4k.untag = untag;
-+	vlan4k.member |= member;
-+	vlan4k.untag |= untag;
- 	vlan4k.fid = fid;
- 	ret = smi->ops->set_vlan_4k(smi, &vlan4k);
- 	if (ret)
- 		return ret;
+-	local fw_state="$(cut -d' ' -f1 < $path)"
+-	local sw_state="$(cut -d' ' -f2 < $path)"
++	local fw_state="$(echo $eeh_state | cut -d' ' -f1)"
++	local sw_state="$(echo $eeh_state | cut -d' ' -f2)"
  
-+	dev_dbg(smi->dev,
-+		"resulting VLAN%d 4k members: 0x%02x, untagged: 0x%02x\n",
-+		vid, vlan4k.member, vlan4k.untag);
-+
- 	/* Try to find an existing MC entry for this VID */
- 	for (i = 0; i < smi->num_vlan_mc; i++) {
- 		struct rtl8366_vlan_mc vlanmc;
-@@ -65,11 +73,16 @@ int rtl8366_set_vlan(struct realtek_smi *smi, int vid, u32 member,
- 
- 		if (vid == vlanmc.vid) {
- 			/* update the MC entry */
--			vlanmc.member = member;
--			vlanmc.untag = untag;
-+			vlanmc.member |= member;
-+			vlanmc.untag |= untag;
- 			vlanmc.fid = fid;
- 
- 			ret = smi->ops->set_vlan_mc(smi, i, &vlanmc);
-+
-+			dev_dbg(smi->dev,
-+				"resulting VLAN%d MC members: 0x%02x, untagged: 0x%02x\n",
-+				vid, vlanmc.member, vlanmc.untag);
-+
- 			break;
- 		}
- 	}
+ 	# If EEH_PE_ISOLATED or EEH_PE_RECOVERING are set then the PE is in an
+ 	# error state or being recovered. Either way, not ok.
 -- 
 2.25.1
 
