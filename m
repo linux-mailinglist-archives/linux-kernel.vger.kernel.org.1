@@ -2,77 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C2862462CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37357246318
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726974AbgHQJTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 05:19:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726676AbgHQJTG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 05:19:06 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42B2CC06138A
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 02:19:06 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id z18so14190042wrm.12
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 02:19:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qX871vE+FuBcMCwIyoO/B6faScex0KuAjvcf8gzD10o=;
-        b=NAHfXp4UBf6Jibtr2eCLhEO9YoL8Wt0anDkAAE2K5TZU53xG1vkvMB2EgNCPhxmGx5
-         5T32Kbcf1FdbzuearoAM/32+vKjxF0vhz64kmxZbU9ko7qcmNfkyTlqyF/GFcyxSVLrJ
-         4AipYvBmctHdf5NScgCdQmoDe6GBXy6cl050KRWSjF4d85M4QevyefgyHJWjxGkWqVTS
-         bbVXr1TUoX220i171lSN7bFYORPx8K6513VEN6ttGYOEkm+naSJ8p2UZxdk0z7fJNMaf
-         FjjpeZuHmTS3NmdyQULQ9ufpXW+PaUMUhtPwUwlVvQxYUkLL8MOw27x70MEt5E9DxpzO
-         VQNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qX871vE+FuBcMCwIyoO/B6faScex0KuAjvcf8gzD10o=;
-        b=Bkh1ocXnUdqdbZ12mE37ljqHhf/2ciC5ARIXeW7VLA+ohacBe2klAk/MhGIN8m2WL0
-         8TfOWIXcKy2pATOriLE/Mvpsd6TNh5Kze2e5/XjfO3dv97hPLbPbYK1jDLbhzDLogY6S
-         fSkT2gA6DrotzytBdujQwLr/grz5kpJM9PR/R9rlNiBWBL4B/jsjIKoXmkM7pwXVvsfq
-         VN2FbulfwXCWQkLo71zIEcNnTCKrWsgTeE5tXYpJ9vLpxThlJxzEH5JtQBQA3YcU+Buw
-         rbyllRyisxC0KtsTI0wt7KPYpiYOs31W/88dbYZYnkb9JbYvN50yFMdSRRsszItBY+Wu
-         wgCA==
-X-Gm-Message-State: AOAM530Eb3Elg+yQraDwxBI+mcSWFTPWarr+uxO1jJHuSB7Uiyl4ko3w
-        ujp4Nm0HD0iPWo1Mfr38Hc4PyAuVxYkp/za6r0I=
-X-Google-Smtp-Source: ABdhPJyqCR0rK5Dp5nj1dXQBMsH1a4xuJvfOer49VOTuXmGUa+ctG1GwTxQ2v/dZNgABIn1M51tgRR3MnRWB5D7Osl8=
-X-Received: by 2002:adf:b1dc:: with SMTP id r28mr14132586wra.242.1597655944611;
- Mon, 17 Aug 2020 02:19:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200817085703.25732-1-allen.cryptic@gmail.com> <s5hpn7pprl1.wl-tiwai@suse.de>
-In-Reply-To: <s5hpn7pprl1.wl-tiwai@suse.de>
-From:   Allen Pais <allen.cryptic@gmail.com>
-Date:   Mon, 17 Aug 2020 14:48:53 +0530
-Message-ID: <CAEogwTAGHOfBe4ztkx9To0gQGwHwFWzCBxn8nzWJP=wRJUJ56A@mail.gmail.com>
-Subject: Re: [PATCH 00/10] sound: convert tasklets to use new tasklet_setup()
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     perex@perex.cz, tiwai@suse.com, clemens@ladisch.de,
-        o-takashi@sakamocchi.jp, timur@kernel.org, nicoleotsuka@gmail.com,
-        Xiubo.Lee@gmail.com, keescook@chromium.org,
-        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, Allen Pais <allen.lkml@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728963AbgHQJUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 05:20:35 -0400
+Received: from foss.arm.com ([217.140.110.172]:51626 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728139AbgHQJUb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 05:20:31 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C522E31B;
+        Mon, 17 Aug 2020 02:20:30 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.65.199])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 88B433F6CF;
+        Mon, 17 Aug 2020 02:20:27 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, will@kernel.org,
+        akpm@linux-foundation.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Suzuki Poulose <suzuki.poulose@arm.com>,
+        Zi Yan <ziy@nvidia.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] arm64/mm: Enable THP migration
+Date:   Mon, 17 Aug 2020 14:49:42 +0530
+Message-Id: <1597655984-15428-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> Is this targeted for 5.9 or 5.10?
+This series enables THP migration on arm64 via ARCH_ENABLE_THP_MIGRATION.
+But first this modifies all existing THP helpers like pmd_present() and
+pmd_trans_huge() etc per expected generic memory semantics as concluded
+from a previous discussion here.
 
-This is targeted for 5.9.
+https://lkml.org/lkml/2018/10/9/220
 
-> I have a patch set to drop the whole tasklet usage in sound/*
-> (destined for 5.10, to be submitted soon), so if that's for 5.10,
-> it'll be likely superfluous.
+This series is based on v5.9-rc1.
 
- I have picked patches from your tree to adapt to this new API.
-Those can be picked in 5.10 I suppose.
+Changes in V1:
 
-Thanks.
+- Used new PMD_PRESENT_INVALID (bit 59) to represent invalidated PMD state per Catalin
+
+Changes in RFC V2: (https://patchwork.kernel.org/project/linux-mm/list/?series=302965)
+
+- Used PMD_TABLE_BIT to represent splitting PMD state per Catalin
+
+Changes in RFC V1: (https://patchwork.kernel.org/project/linux-mm/list/?series=138797)
+
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Suzuki Poulose <suzuki.poulose@arm.com>
+Cc: Zi Yan <ziy@nvidia.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+
+Anshuman Khandual (2):
+  arm64/mm: Change THP helpers to comply with generic MM semantics
+  arm64/mm: Enable THP migration
+
+ arch/arm64/Kconfig                    |  4 +++
+ arch/arm64/include/asm/pgtable-prot.h |  7 +++++
+ arch/arm64/include/asm/pgtable.h      | 39 ++++++++++++++++++++++++---
+ 3 files changed, 47 insertions(+), 3 deletions(-)
+
+-- 
+2.20.1
+
