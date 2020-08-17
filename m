@@ -2,138 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D28BC24633D
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD28B24634D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728338AbgHQJYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 05:24:36 -0400
-Received: from muru.com ([72.249.23.125]:40478 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726381AbgHQJYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 05:24:35 -0400
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 57A5680A3;
-        Mon, 17 Aug 2020 09:24:34 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] clocksource/drivers/timer-ti-dm: Do reset before enable
-Date:   Mon, 17 Aug 2020 12:24:28 +0300
-Message-Id: <20200817092428.6176-1-tony@atomide.com>
-X-Mailer: git-send-email 2.28.0
+        id S1728298AbgHQJ1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 05:27:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726422AbgHQJ1C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 05:27:02 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E4B9C061389;
+        Mon, 17 Aug 2020 02:27:00 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id ha11so7414925pjb.1;
+        Mon, 17 Aug 2020 02:27:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Rj6QAfp7fK0l7e7qFTK0S101pCtERJaPK3wMNiuezuY=;
+        b=U0jcnI9S/jFzGDnvfm0t7CpqXvnyBzY4klINeV9Qgxl6g7KRhDVeAgua2xpHY3b8Lw
+         XZXsUdrM5cQhpLB75CHifTZ9IHODvopA22F4njsuxi/eVy78Cv0TPbyLfJVAZGomuxGo
+         eLqCJlNMwP7zjCwLGNJ15rwNg8uo05wxki0/A6ySGyeX+jwzOYZi/Klh9oarQu95UW3J
+         QcOizn8dPSbPaGrvX5Ip+z2dO9mZg2ernZBrwfbj+o8kPeePADEUJ4Ys63aQltpk3eCS
+         lUlCgurWWMAc3rXbwLrohpq4cqzxyrASROHsbjnAOJHVWMCkSYB5atU7zN0EbC5uPGGG
+         AzYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Rj6QAfp7fK0l7e7qFTK0S101pCtERJaPK3wMNiuezuY=;
+        b=fncFLbuzmusDFaZrz4EX2qZmuiBY/ry88/DGbHLUVkK82hpjgQt6rDFTg451lgERzM
+         IdpwB69OgZIex39g1lXMgmKhv/JVOcUn1h6kDBOn3Qmxbgp0f41u3Xy1gY4T2X0/AV4I
+         QB2OpsPx9q+l6bjCUp92x8nN9MJj/gIZibWnoomoT3I6oTN6HdVNfHpOHpXiaYXChHmc
+         vUFBTyZoSXmJpmAPQG0Y2dX0X5tWOBqIePA7zG7e6fkBMjeMO68hoKonObLiWsR3OWnS
+         sv+ZkDFnbdqespOVGV41bsxI5JN5HlRwhsfC/BPPT/5bn8ZR0Q8vnu2CJKUsuT5D6QJ0
+         t07Q==
+X-Gm-Message-State: AOAM530XeB3WqCUkB7w98yrpYdY2MNuAxhLNg0j6+0HA4N8zGsc3jOM/
+        o6qOx/stt4ZCQVsRkuGD7us=
+X-Google-Smtp-Source: ABdhPJz6lYnPyu0mQrpiz1HjSnbolwJUpaJy7iVIhiwHyzlwegTyNekAgYgri6gIqN+wwTIAdHUnAw==
+X-Received: by 2002:a17:90a:230d:: with SMTP id f13mr11126659pje.116.1597656420344;
+        Mon, 17 Aug 2020 02:27:00 -0700 (PDT)
+Received: from gmail.com ([103.105.152.86])
+        by smtp.gmail.com with ESMTPSA id e4sm18904633pfd.204.2020.08.17.02.26.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Aug 2020 02:26:59 -0700 (PDT)
+Date:   Mon, 17 Aug 2020 14:55:11 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Prabhakar Kushwaha <pkushwaha@marvell.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Jia-Ju Bai <baijiaju1990@gmail.com>,
+        Javier Martinez Canillas <javier@osg.samsung.com>,
+        Zhang Rui <rui.zhang@intel.com>
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH v3] ata: use generic power management
+Message-ID: <20200817092511.GA10566@gmail.com>
+References: <20200817092245.10478-1-vaibhavgupta40@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200817092245.10478-1-vaibhavgupta40@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 6cfcd5563b4f ("clocksource/drivers/timer-ti-dm: Fix suspend and
-resume for am3 and am4") exposed a new issue for type2 dual mode timers
-on at least omap5 where the clockevent will stop when the SoC starts
-entering idle states during the boot.
+Hello,
 
-Turns out we are wrongly first enabling the system timer and then
-resetting it, while we must also re-enable it after reset. The current
-sequence leaves the timer module in a partially initialized state. This
-issue went unnoticed earlier with ti-sysc driver reconfiguring the timer
-module until we fixed the issue of ti-sysc reconfiguring system timers.
+I am working to upgrade power management framework support for PCI drivers, as
+my project under the Linux Kernel Mentorship Program.
 
-Let's fix the issue by calling dmtimer_systimer_enable() from reset for
-both type1 and type2 timers, and switch the order of reset and enable in
-dmtimer_systimer_setup(). Let's also move dmtimer_systimer_enable() and
-dmtimer_systimer_disable() to do this without adding forward declarations.
+The ultimate goal is to completely remove the legacy framework. And for this we
+need to remove ".suspend" and ".resume" pointers from "struct pci_driver".
 
-Fixes: 6cfcd5563b4f ("clocksource/drivers/timer-ti-dm: Fix suspend and resume for am3 and am4")
-Reported-by: H. Nikolaus Schaller" <hns@goldelico.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- drivers/clocksource/timer-ti-dm-systimer.c | 44 +++++++++++-----------
- 1 file changed, 23 insertions(+), 21 deletions(-)
+The patch is doing the change for the same. The actual suspend() and
+resume() callbacks are defined in drivers/ata/libata-core.c and are exported.
+Which are then used by other files.
 
-diff --git a/drivers/clocksource/timer-ti-dm-systimer.c b/drivers/clocksource/timer-ti-dm-systimer.c
---- a/drivers/clocksource/timer-ti-dm-systimer.c
-+++ b/drivers/clocksource/timer-ti-dm-systimer.c
-@@ -69,12 +69,33 @@ static bool dmtimer_systimer_revision1(struct dmtimer_systimer *t)
- 	return !(tidr >> 16);
- }
- 
-+static void dmtimer_systimer_enable(struct dmtimer_systimer *t)
-+{
-+	u32 val;
-+
-+	if (dmtimer_systimer_revision1(t))
-+		val = DMTIMER_TYPE1_ENABLE;
-+	else
-+		val = DMTIMER_TYPE2_ENABLE;
-+
-+	writel_relaxed(val, t->base + t->sysc);
-+}
-+
-+static void dmtimer_systimer_disable(struct dmtimer_systimer *t)
-+{
-+	if (!dmtimer_systimer_revision1(t))
-+		return;
-+
-+	writel_relaxed(DMTIMER_TYPE1_DISABLE, t->base + t->sysc);
-+}
-+
- static int __init dmtimer_systimer_type1_reset(struct dmtimer_systimer *t)
- {
- 	void __iomem *syss = t->base + OMAP_TIMER_V1_SYS_STAT_OFFSET;
- 	int ret;
- 	u32 l;
- 
-+	dmtimer_systimer_enable(t);
- 	writel_relaxed(BIT(1) | BIT(2), t->base + t->ifctrl);
- 	ret = readl_poll_timeout_atomic(syss, l, l & BIT(0), 100,
- 					DMTIMER_RESET_WAIT);
-@@ -88,6 +109,7 @@ static int __init dmtimer_systimer_type2_reset(struct dmtimer_systimer *t)
- 	void __iomem *sysc = t->base + t->sysc;
- 	u32 l;
- 
-+	dmtimer_systimer_enable(t);
- 	l = readl_relaxed(sysc);
- 	l |= BIT(0);
- 	writel_relaxed(l, sysc);
-@@ -336,26 +358,6 @@ static int __init dmtimer_systimer_init_clock(struct dmtimer_systimer *t,
- 	return 0;
- }
- 
--static void dmtimer_systimer_enable(struct dmtimer_systimer *t)
--{
--	u32 val;
--
--	if (dmtimer_systimer_revision1(t))
--		val = DMTIMER_TYPE1_ENABLE;
--	else
--		val = DMTIMER_TYPE2_ENABLE;
--
--	writel_relaxed(val, t->base + t->sysc);
--}
--
--static void dmtimer_systimer_disable(struct dmtimer_systimer *t)
--{
--	if (!dmtimer_systimer_revision1(t))
--		return;
--
--	writel_relaxed(DMTIMER_TYPE1_DISABLE, t->base + t->sysc);
--}
--
- static int __init dmtimer_systimer_setup(struct device_node *np,
- 					 struct dmtimer_systimer *t)
- {
-@@ -409,8 +411,8 @@ static int __init dmtimer_systimer_setup(struct device_node *np,
- 	t->wakeup = regbase + _OMAP_TIMER_WAKEUP_EN_OFFSET;
- 	t->ifctrl = regbase + _OMAP_TIMER_IF_CTRL_OFFSET;
- 
--	dmtimer_systimer_enable(t);
- 	dmtimer_systimer_reset(t);
-+	dmtimer_systimer_enable(t);
- 	pr_debug("dmtimer rev %08x sysc %08x\n", readl_relaxed(t->base),
- 		 readl_relaxed(t->base + t->sysc));
- 
--- 
-2.28.0
+Thus removing those pointers, included 54 files in this patch. Although, the
+actual changes are done in few files only. The changes should work fine as I
+have done similar changes for other drivers too which made their way into the
+kernel. Still, tests on few ata devices are necessary.
+
+I tried but unfortunately, I couldn't find or arrange devices to test upon. I
+have added the authors of the previous commit(s) for respective drivers as
+recipients. It would be very helpful if someone can test it on a device.
+
+Thanks
+Vaibhav Gupta
