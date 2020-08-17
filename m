@@ -2,83 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5572465D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 13:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 400DF2465DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 14:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728177AbgHQL6J convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 17 Aug 2020 07:58:09 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:43778 "EHLO huawei.com"
+        id S1727863AbgHQMAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 08:00:47 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9749 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726980AbgHQL6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 07:58:08 -0400
-Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.57])
-        by Forcepoint Email with ESMTP id C7D07439247B691B2075;
-        Mon, 17 Aug 2020 19:58:05 +0800 (CST)
-Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
- dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Mon, 17 Aug 2020 19:58:05 +0800
-Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
- dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
- Mon, 17 Aug 2020 19:58:05 +0800
-From:   linmiaohe <linmiaohe@huawei.com>
-To:     David Miller <davem@davemloft.net>
-CC:     "kuba@kernel.org" <kuba@kernel.org>,
-        "martin.varghese@nokia.com" <martin.varghese@nokia.com>,
-        "fw@strlen.de" <fw@strlen.de>, "pshelar@ovn.org" <pshelar@ovn.org>,
-        "dcaratti@redhat.com" <dcaratti@redhat.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "steffen.klassert@secunet.com" <steffen.klassert@secunet.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "shmulik@metanetworks.com" <shmulik@metanetworks.com>,
-        "kyk.segfault@gmail.com" <kyk.segfault@gmail.com>,
-        "sowmini.varadhan@oracle.com" <sowmini.varadhan@oracle.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] net: handle the return value of pskb_carve_frag_list()
- correctly
-Thread-Topic: [PATCH] net: handle the return value of pskb_carve_frag_list()
- correctly
-Thread-Index: AdZ0Yo20uYefvGXNRNyT7FI7JGGSHQ==
-Date:   Mon, 17 Aug 2020 11:58:05 +0000
-Message-ID: <02b2c26de261418f91106a29cd702692@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.176.142]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726457AbgHQMAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 08:00:46 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 6ADAEE713FB79A561007;
+        Mon, 17 Aug 2020 20:00:44 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Mon, 17 Aug 2020
+ 20:00:37 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] mm/migrate: Avoid possible unnecessary ptrace_may_access() call in kernel_move_pages()
+Date:   Mon, 17 Aug 2020 07:59:33 -0400
+Message-ID: <20200817115933.44565-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Miller <davem@davemloft.net> wrote:
->> David Miller <davem@davemloft.net> wrote:
->>>> +	/* split line is in frag list */
->>>> +	if (k == 0 && pskb_carve_frag_list(skb, shinfo, off - pos, gfp_mask)) {
->>>> +		/* skb_frag_unref() is not needed here as shinfo->nr_frags = 0. */
->>>> +		if (skb_has_frag_list(skb))
->>>> +			kfree_skb_list(skb_shinfo(skb)->frag_list);
->>>> +		kfree(data);
->>>> +		return -ENOMEM;
->>>
->>>On error, the caller is going to kfree_skb(skb) which will take care of the frag list.
->>>
->> 
->> I'am sorry for my careless. The caller will take care of the frag list and kfree(data) is enough here.
->> Many thanks for review, will send v2 soon.
->
->Actually, reading this again, what about the skb_clone_fraglist() done a few lines up?  Who will release that reference to the fraglist items?
->
->Maybe the kfree_skb_list() is necessary after all?
+There is no need to check if this process has the right to modify the
+specified process when they are same.
 
-Yep, it looks really confusing here. On error, the caller calls kfree_skb(skb) but only atomic_sub the skb_shared_info->dataref indeed because skb is cloned
-here and it shares the fraglist with origin skbuff. But the skb_clone_fraglist() done a few lines up hold the extra reference to the fraglist for coming new skb->data.
-As there is no new skb->data anymore, that reference to the fraglist items won't be release unless we take care of it here.
+Signed-off-by: Hongxiang Lou <louhongxiang@huawei.com>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ mm/migrate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It seems this patch exactly do the right things already. :)
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 34a842a8eb6a..342c1ce0b433 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -1903,7 +1903,7 @@ static int kernel_move_pages(pid_t pid, unsigned long nr_pages,
+ 	 * Check if this process has the right to modify the specified
+ 	 * process. Use the regular "ptrace_may_access()" checks.
+ 	 */
+-	if (!ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS)) {
++	if (pid && !ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS)) {
+ 		rcu_read_unlock();
+ 		err = -EPERM;
+ 		goto out;
+-- 
+2.19.1
 
