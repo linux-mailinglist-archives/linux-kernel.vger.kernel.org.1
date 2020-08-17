@@ -2,72 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B05AF2478CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 23:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E66032478EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 23:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728338AbgHQV0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 17:26:05 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:42137 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728307AbgHQV0D (ORCPT
+        id S1728532AbgHQVhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 17:37:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726634AbgHQVhU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 17:26:03 -0400
-Received: by mail-il1-f195.google.com with SMTP id t13so15772752ile.9;
-        Mon, 17 Aug 2020 14:26:03 -0700 (PDT)
+        Mon, 17 Aug 2020 17:37:20 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9815C061389
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 14:37:19 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id t6so19102183ljk.9
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 14:37:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jm8jZArYddhqUYv8uma7iesaEBvjq6SOsDLcRZUaQ/E=;
+        b=K9ybUtGr6t0dUEotn+b5ds3wNHdUEMLBrVq/JaBumu59HnobQacNfCGqQl5mJHNbVA
+         hkLWBuL6YoF8g3a1YCO+tfDSdddHQkHB/d4NFnZf0r0jOWl5e4HE9u22yd9cLQ+svWGM
+         1fKT0VIsFmJ3woXTAuGbLupTo9xre9P3/nkK8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=j6+8ivPskM82OWr42a4LsreFZvgKx1kAB3ys2yCSz8I=;
-        b=nf7lKGB3aCZPWwzrBscQa5azzyjZVVt1IYUpvfTnUYY+Gp7qUi1rWwlmuM7ce14Y+m
-         aleuCQoF3wYLgZwf/d/oGPWp16bK1SItmdtOudWUoyzIjMxoIkQ9JdQBTq0EqM+Vy15i
-         IXW+F7xB+l3tvyfqyqVeYWqc0ttqwlJI4J/mSM4kOmhnnF3Sl+vW37uBH8AI9UprfXtf
-         VUITFIY24IWvN5a925mIDBpTKXXWvdn5YJqj27fzzSiHnO3Dm9fAdrR5Ke2/6gEOWNKy
-         GJWmE30DxS4I0MVvUyB7CXF/o8MCmIv5tTOz7UYDSEmkrWSj7X+8M0CSQS4z5vKcA9pw
-         kVpA==
-X-Gm-Message-State: AOAM531q9E8QfAXS5EJAtU3dxUJrehPyhceagcD0bb3Nqr0uLtIaYQJ7
-        3JrsI6dfCA9t3/2tHf8GRg==
-X-Google-Smtp-Source: ABdhPJxvB4WeLN/KkQ+e8GF34vSz5fvZhjljVBy9I+SbB1N5TWrE1Rg8AU9jto+9BLfxKM00fUxQwg==
-X-Received: by 2002:a92:c090:: with SMTP id h16mr9457523ile.103.1597699562741;
-        Mon, 17 Aug 2020 14:26:02 -0700 (PDT)
-Received: from xps15 ([64.188.179.249])
-        by smtp.gmail.com with ESMTPSA id c76sm10571612ill.63.2020.08.17.14.26.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 14:26:02 -0700 (PDT)
-Received: (nullmailer pid 1592228 invoked by uid 1000);
-        Mon, 17 Aug 2020 21:26:00 -0000
-Date:   Mon, 17 Aug 2020 15:26:00 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     Dave Gerlach <d-gerlach@ti.com>, Tero Kristo <t-kristo@ti.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Sekhar Nori <nsekhar@ti.com>, linux-kernel@vger.kernel.org,
-        santosh.shilimkar@oracle.com, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH next 2/3] bindings: soc: ti: soc: ringacc: remove ti,
- dma-ring-reset-quirk
-Message-ID: <20200817212600.GA1592198@bogus>
-References: <20200804211732.2861-1-grygorii.strashko@ti.com>
- <20200804211732.2861-3-grygorii.strashko@ti.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jm8jZArYddhqUYv8uma7iesaEBvjq6SOsDLcRZUaQ/E=;
+        b=MKP+Rd8W40B+ztpQiCxb/VtbFtRO182JjrEPzZlpE6OrYbCpNS8sjxLl/F7Z4AHc4m
+         aKgpaiQwkWcqWl01hVIcgD9IjET7/7pqBIkKpcUHhcz/b/EsOXWA72Y6tYQi2OeSQW+Z
+         c10gsfRfE/Vd0XZvz2QOFHx4+BoDid9Cpmr9DPQFxRt9NQL0s1QFefSwfkSeaC55LMpZ
+         m7XW58OcSDttUWLUOJYwbTng+lSiob2kphqW+tNpT10ag8FdzweDXD+F5hHbtWg8Uuu5
+         VmTPaY3Dy+8uc+gLedCBKnUxEx3PLHMcyZ6yGVaEMX9Sv9DunxGjdsx/F90gnnf4Cmpw
+         1JVA==
+X-Gm-Message-State: AOAM532oDiPopHYqhJcOFMCfuom0HLYpjYcjcAqAF98XyI+Ic8NTrJXZ
+        QyfzvLDreEL2ZDp7Y8nvuSWAmTJzAC1NJw==
+X-Google-Smtp-Source: ABdhPJyuW5Q8YqfLJLXW56QmPE6u6p7BaE/i4CS8iaoP+0+TH9RSAVVg6wJYdU/OIs6+sCuie4bavQ==
+X-Received: by 2002:a05:651c:1343:: with SMTP id j3mr7653130ljb.112.1597700237985;
+        Mon, 17 Aug 2020 14:37:17 -0700 (PDT)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id l24sm5308332ljb.43.2020.08.17.14.37.17
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Aug 2020 14:37:17 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id m22so19102617ljj.5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 14:37:17 -0700 (PDT)
+X-Received: by 2002:a05:6512:3b7:: with SMTP id v23mr8282877lfp.10.1597699793904;
+ Mon, 17 Aug 2020 14:29:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200804211732.2861-3-grygorii.strashko@ti.com>
+References: <c6fda26e8d134264b04fadc3386d6c32@gmail.com> <20200816175303.GB1236603@ZenIV.linux.org.uk>
+ <20200817204223.GB12414@amd> <87lfid6kpi.fsf@x220.int.ebiederm.org>
+In-Reply-To: <87lfid6kpi.fsf@x220.int.ebiederm.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 17 Aug 2020 14:29:37 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj04wKCjHz6b6d7N58xoS4AftnwTUBaXsEekQ5RhfWVnw@mail.gmail.com>
+Message-ID: <CAHk-=wj04wKCjHz6b6d7N58xoS4AftnwTUBaXsEekQ5RhfWVnw@mail.gmail.com>
+Subject: Re: [PATCH] Makefile: Yes. Finally remove '-Wdeclaration-after-statement'
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Witten <mfwitten@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        John Levon <john.levon@joyent.com>,
+        John Levon <levon@movementarian.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 05 Aug 2020 00:17:31 +0300, Grygorii Strashko wrote:
-> Remove "ti,dma-ring-reset-quirk" DT property as proper w/a handling is
-> implemented now in Ringacc driver using SoC info.
-> 
-> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-> ---
->  Documentation/devicetree/bindings/soc/ti/k3-ringacc.yaml | 6 ------
->  1 file changed, 6 deletions(-)
-> 
+On Mon, Aug 17, 2020 at 2:15 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+> Does anyone remember why we added this warning?  I had always thought
+> it's purpose was to ensure we stayed within our chosen dialect of C.
 
-Acked-by: Rob Herring <robh@kernel.org>
+As far as I'm concerned, that's the primary motivation.
+
+I'm not seeing why we'd suddenly allow the "put variable declarations
+anywhere" when we've been able to keep from doing it until now.
+
+We're still building primarily good old K&R ANSI C, just with
+extensions. Wild variable placement doesn't seem like a useful
+extension.
+
+(Other variable placement improvements are: block-scope variable
+declarations inside the "for()" statement is very syntactically
+useful, for example. THAT would be useful if we can finally enable it
+without gcc going all wonky on us)
+
+                Linus
