@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAA1F2469F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C572469F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 17:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730002AbgHQP2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:28:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34626 "EHLO mail.kernel.org"
+        id S1729673AbgHQP2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:28:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729810AbgHQP0Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:26:24 -0400
+        id S1729406AbgHQP03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:26:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 370DF22DBF;
-        Mon, 17 Aug 2020 15:26:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C78523159;
+        Mon, 17 Aug 2020 15:26:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597677982;
-        bh=IGN/m2EtxKNoYYRaJtEqHcO+yM2lpVJRF/occyqOmt8=;
+        s=default; t=1597677988;
+        bh=AWzTDOSp9902vFeSTzQeewOWoyM76XLWejNu5KwIUE0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RTKw7V4piBWiIAVtyv99ZYJ+3LZNs7DnsGvHbftg0pJPKwbNm8JEVRIMGGi0MaUBj
-         HRPHdkedwhZeMsOcTIKw4Fe6nLE7DAxqbrKcO2blRXMntmqjpkngFUukva0JWcL2V8
-         5e82+0LrAu3SupVf9Is4Skxi74/NHQbQ8MWhYDc8=
+        b=l6voz3uAAGvd6IDmiu1a4shB+xStVkHvwQIP9+s7a+jR6tdjZWBEUsIuzanAgKcX/
+         gyVBsLiSQ51lBHUMoR5d00WgenKT3FiQncTB0qectR7AtxDao9ZjRP0nJ+07fhCQ9c
+         hNCXZeKkKz2pF/3Xs0UItYUiwk07rMkOLxRWo0VA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -32,9 +32,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Kai Vehmanen <kai.vehmanen@linux.intel.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 178/464] ASoC: Intel: cml_rt1011_rt5682: add missing .owner field
-Date:   Mon, 17 Aug 2020 17:12:11 +0200
-Message-Id: <20200817143842.347180590@linuxfoundation.org>
+Subject: [PATCH 5.8 180/464] ASoC: Intel: bxt_rt298: add missing .owner field
+Date:   Mon, 17 Aug 2020 17:12:13 +0200
+Message-Id: <20200817143842.438461313@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -49,7 +49,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 299120928897d6cb893c7165df7cd232d835e259 ]
+[ Upstream commit 88cee34b776f80d2da04afb990c2a28c36799c43 ]
 
 This field is required for ASoC cards. Not setting it will result in a
 module->name pointer being NULL and generate problems such as
@@ -57,30 +57,38 @@ module->name pointer being NULL and generate problems such as
 cat /proc/asound/modules
  0 (efault)
 
-Fixes: 17fe95d6df93 ('ASoC: Intel: boards: Add CML m/c using RT1011 and RT5682')
+Fixes: 76016322ec56 ('ASoC: Intel: Add Broxton-P machine driver')
 Reported-by: Jaroslav Kysela <perex@perex.cz>
 Suggested-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20200625191308.3322-3-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20200625191308.3322-5-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/cml_rt1011_rt5682.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/intel/boards/bxt_rt298.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/boards/cml_rt1011_rt5682.c b/sound/soc/intel/boards/cml_rt1011_rt5682.c
-index 68eff29daf8f8..6f89b50a8c8ff 100644
---- a/sound/soc/intel/boards/cml_rt1011_rt5682.c
-+++ b/sound/soc/intel/boards/cml_rt1011_rt5682.c
-@@ -493,6 +493,7 @@ static struct snd_soc_codec_conf rt1011_conf[] = {
- /* Cometlake audio machine driver for RT1011 and RT5682 */
- static struct snd_soc_card snd_soc_card_cml = {
- 	.name = "cml_rt1011_rt5682",
+diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
+index 7a4decf341918..c84c60df17dbc 100644
+--- a/sound/soc/intel/boards/bxt_rt298.c
++++ b/sound/soc/intel/boards/bxt_rt298.c
+@@ -565,6 +565,7 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
+ /* broxton audio machine driver for SPT + RT298S */
+ static struct snd_soc_card broxton_rt298 = {
+ 	.name = "broxton-rt298",
 +	.owner = THIS_MODULE,
- 	.dai_link = cml_rt1011_rt5682_dailink,
- 	.num_links = ARRAY_SIZE(cml_rt1011_rt5682_dailink),
- 	.codec_conf = rt1011_conf,
+ 	.dai_link = broxton_rt298_dais,
+ 	.num_links = ARRAY_SIZE(broxton_rt298_dais),
+ 	.controls = broxton_controls,
+@@ -580,6 +581,7 @@ static struct snd_soc_card broxton_rt298 = {
+ 
+ static struct snd_soc_card geminilake_rt298 = {
+ 	.name = "geminilake-rt298",
++	.owner = THIS_MODULE,
+ 	.dai_link = broxton_rt298_dais,
+ 	.num_links = ARRAY_SIZE(broxton_rt298_dais),
+ 	.controls = broxton_controls,
 -- 
 2.25.1
 
