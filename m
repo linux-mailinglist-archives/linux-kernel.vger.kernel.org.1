@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 709F52461C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F32B32461C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728662AbgHQJC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 05:02:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58584 "EHLO
+        id S1726769AbgHQJDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 05:03:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728482AbgHQJCy (ORCPT
+        with ESMTP id S1726837AbgHQJC7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 05:02:54 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0081EC061389;
-        Mon, 17 Aug 2020 02:02:53 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id x25so7919257pff.4;
-        Mon, 17 Aug 2020 02:02:53 -0700 (PDT)
+        Mon, 17 Aug 2020 05:02:59 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2827C061389;
+        Mon, 17 Aug 2020 02:02:58 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id d188so7911952pfd.2;
+        Mon, 17 Aug 2020 02:02:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=9gjqpRS8olyjc/G08W3tsbKuo7w0JyAKTnFiPDwOnLs=;
-        b=Y8e7p5A+U70fs8zMCX99v4qWd6fhAwzqCgzVw6MybAu0YKzv985Gzz88KVzjlO00kH
-         ZAjoOPBR7uVDqzY14l50NCRxWKxebE4hCuLp3K82NcoayY1F4MmINy2f5odh9eHAndnu
-         C2NiQKq3ADK50JyGQPJa+npJ4re/v4TtPyhWg9Ji4D+RO3dxkLFyhA1P0wFFg7kTBxd1
-         b7RqHitiCauEPujt1dsnfyTsWUKed/bl9Yh7l8IX1Jvl2G6n9K6la8snK/umY1tdQSgW
-         KDOIL8eRZTWF6bSt4eI8gJuznMohjSDQ+jTZsbLhNXvtsfB7P7kVvBJ+6WNyPH7oaPwN
-         8b6w==
+        bh=xXbF1OGSfwps8eIxFqyJWCOGFrRBRoS9IAapxWYH5tU=;
+        b=UGys9s0cH3XJ7ytiyAvyHhECfx/sgE7VT+4dU+PFtuVRKYibSk4ZdfmReJ5RHeo4oB
+         cE77BSIVRi+aL2qPqpPHpFAR1LSBTrzvNNl5+1z2oukApZE2Lh0c8Y3/yCTaGn1btkI3
+         DvfBXKhyn1mhWjbBF8kHKW4euTK7Ux3RSg5XFcHWLBm6Ex4WbXmFJRsy6oz8LHIem23T
+         s/vVZgJ8dTQWc7edHye0v87zndklTmo3yTfDJa2KJhz3KKYSGaQVeY4NJka4LW2TDcnd
+         io8PK2w/yoaTYclhmldJ4rX2kkhp+HrYmndLi4PUVEPGGhD9ac4NWIc9Y4RAyWFd0HTP
+         8flQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=9gjqpRS8olyjc/G08W3tsbKuo7w0JyAKTnFiPDwOnLs=;
-        b=hu76dRLqQQQ7cYCNjUxDfwUB5IQzLxrTDCuG/dBZcI8lZp73S4AR4UqYKtvukn9UxK
-         8o2y+9DhdDYVs18/jxQqf6AMCfKQXQE7xZllI9RHdID4t3sBKB8H99jgAxzdTQ9xkd2G
-         7RTZ/v4TeRg9b67NNx8T7pNYavRvaYV8sI9wwzs35yx/NMsU4OFIE2PNq/5ITKl87PFB
-         3ZiEBV4Lzbsh/33wdnOjvYcF8Sy5WcJK6Y/OC1ntv0gOwkP4GgTaD6/kwKStqgejKMUx
-         sCiA5Fg/3CuM+cXTa3s/hJV4IAbK1gROeqiG1dk3nbinQIT4qKyYUJhZhWicC/RPAXq+
-         iF5g==
-X-Gm-Message-State: AOAM530RHXIQZN3/MXNHf4N3XKEDXFqAYRokY+n/YebSvjWtjLhBvh4Y
-        lgp02Uyj4ZYxWTTybSvngp4=
-X-Google-Smtp-Source: ABdhPJwCbYSaFDUdxe1jOJYWD7q8rFdA3Zk4x0wFc5VcGkSDok1smRFfy3wXDtC7EEtu4HiZJA6q+w==
-X-Received: by 2002:aa7:9ecd:: with SMTP id r13mr7291913pfq.317.1597654973506;
-        Mon, 17 Aug 2020 02:02:53 -0700 (PDT)
+        bh=xXbF1OGSfwps8eIxFqyJWCOGFrRBRoS9IAapxWYH5tU=;
+        b=t/TwHd8HmtIHs+F7YY2ICaMIAyEfzGNsuk+72JWdY7gu3mxi8qbKwQ7vRc3NT4sGgm
+         5D061goswTMYEpLiwN9hPe+FZM+Pij22PBQrrmUlQj6l6gBLf8AwbHm1PGjWnCYhIw7I
+         g7UjtIj5f49Pd6q4Kuc4o+JvqXfrXh5UGX++fIB+gJ+GjwfNiL4gP8Iuuxs+jvzftucM
+         t0jcvRdPHDyCHe+4+9zAts8eYbBrPMr2ku+4cBYgVlPqjiKdXyhmM6FGEtyCOAjq9PN7
+         qnC8PD4XPtd6kHgMYA1KJ0coL8Cs/lAjAZBsY6nD3C1h8GNtbgRIL/ZYsy2NGdoVY+qL
+         ENeA==
+X-Gm-Message-State: AOAM5311USW/0l7OIp4AryyLL7dGQeSwQTlOBBkZDoARQQqWjqUqBMCP
+        qFdA6mabNDKYpkELFh0gPnw=
+X-Google-Smtp-Source: ABdhPJxAkXUAop1wEFaah3YAPnjGLxZjtihx6qYBEHA3JVTfQ+jUGc2wTge02f2yvKEBQPSGJto8nw==
+X-Received: by 2002:a62:3856:: with SMTP id f83mr10808398pfa.35.1597654978435;
+        Mon, 17 Aug 2020 02:02:58 -0700 (PDT)
 Received: from localhost.localdomain ([49.207.202.98])
-        by smtp.gmail.com with ESMTPSA id f3sm19488238pfj.206.2020.08.17.02.02.49
+        by smtp.gmail.com with ESMTPSA id f3sm19488238pfj.206.2020.08.17.02.02.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 02:02:52 -0700 (PDT)
+        Mon, 17 Aug 2020 02:02:57 -0700 (PDT)
 From:   Allen Pais <allen.cryptic@gmail.com>
 To:     duncan.sands@free.fr, gregkh@linuxfoundation.org,
         jacmet@sunsite.dk, balbi@kernel.org, leoyang.li@nxp.com,
@@ -55,9 +55,9 @@ Cc:     keescook@chromium.org, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         Allen Pais <allen.lkml@gmail.com>,
         Romain Perier <romain.perier@gmail.com>
-Subject: [PATCH 6/7] usb: xhci: convert tasklets to use new tasklet_setup() API
-Date:   Mon, 17 Aug 2020 14:32:08 +0530
-Message-Id: <20200817090209.26351-7-allen.cryptic@gmail.com>
+Subject: [PATCH 7/7] usb: mos7720: convert tasklets to use new tasklet_setup() API
+Date:   Mon, 17 Aug 2020 14:32:09 +0530
+Message-Id: <20200817090209.26351-8-allen.cryptic@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200817090209.26351-1-allen.cryptic@gmail.com>
 References: <20200817090209.26351-1-allen.cryptic@gmail.com>
@@ -76,39 +76,38 @@ and from_tasklet() to pass the tasklet pointer explicitly.
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 ---
- drivers/usb/host/xhci-dbgtty.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/usb/serial/mos7720.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/usb/host/xhci-dbgtty.c b/drivers/usb/host/xhci-dbgtty.c
-index b8918f73a432..ae4e4ab638b5 100644
---- a/drivers/usb/host/xhci-dbgtty.c
-+++ b/drivers/usb/host/xhci-dbgtty.c
-@@ -288,14 +288,14 @@ static const struct tty_operations dbc_tty_ops = {
- 	.unthrottle		= dbc_tty_unthrottle,
- };
- 
--static void dbc_rx_push(unsigned long _port)
-+static void dbc_rx_push(struct tasklet_struct *t)
+diff --git a/drivers/usb/serial/mos7720.c b/drivers/usb/serial/mos7720.c
+index 2ec4eeacebc7..5eed1078fac8 100644
+--- a/drivers/usb/serial/mos7720.c
++++ b/drivers/usb/serial/mos7720.c
+@@ -282,11 +282,12 @@ static void destroy_urbtracker(struct kref *kref)
+  * port callback had to be deferred because the disconnect mutex could not be
+  * obtained at the time.
+  */
+-static void send_deferred_urbs(unsigned long _mos_parport)
++static void send_deferred_urbs(struct tasklet_struct *t)
  {
- 	struct dbc_request	*req;
- 	struct tty_struct	*tty;
- 	unsigned long		flags;
- 	bool			do_push = false;
- 	bool			disconnect = false;
--	struct dbc_port		*port = (void *)_port;
-+	struct dbc_port		*port = from_tasklet(port, t, push);
- 	struct list_head	*queue = &port->read_queue;
+ 	int ret_val;
+ 	unsigned long flags;
+-	struct mos7715_parport *mos_parport = (void *)_mos_parport;
++	struct mos7715_parport *mos_parport = from_tasklet(mos_parport, t,
++							   urb_tasklet);
+ 	struct urbtracker *urbtrack, *tmp;
+ 	struct list_head *cursor, *next;
+ 	struct device *dev;
+@@ -716,8 +717,7 @@ static int mos7715_parport_init(struct usb_serial *serial)
+ 	INIT_LIST_HEAD(&mos_parport->deferred_urbs);
+ 	usb_set_serial_data(serial, mos_parport); /* hijack private pointer */
+ 	mos_parport->serial = serial;
+-	tasklet_init(&mos_parport->urb_tasklet, send_deferred_urbs,
+-		     (unsigned long) mos_parport);
++	tasklet_setup(&mos_parport->urb_tasklet, send_deferred_urbs);
+ 	init_completion(&mos_parport->syncmsg_compl);
  
- 	spin_lock_irqsave(&port->port_lock, flags);
-@@ -382,7 +382,7 @@ xhci_dbc_tty_init_port(struct xhci_dbc *dbc, struct dbc_port *port)
- {
- 	tty_port_init(&port->port);
- 	spin_lock_init(&port->port_lock);
--	tasklet_init(&port->push, dbc_rx_push, (unsigned long)port);
-+	tasklet_setup(&port->push, dbc_rx_push);
- 	INIT_LIST_HEAD(&port->read_pool);
- 	INIT_LIST_HEAD(&port->read_queue);
- 	INIT_LIST_HEAD(&port->write_pool);
+ 	/* cycle parallel port reset bit */
 -- 
 2.17.1
 
