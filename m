@@ -2,219 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5717A247AFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 01:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60587247B08
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 01:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726582AbgHQXJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 19:09:19 -0400
-Received: from mga05.intel.com ([192.55.52.43]:27833 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726228AbgHQXJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 19:09:18 -0400
-IronPort-SDR: d7DqqNsWu3Hll1Iwjdh6OWW9Y/Zg7HPNzipVy2hnZk7KFS2R8LWzI7m8IkkgjJV37awnUP/2k+
- 6rfWGFWnYexQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="239629314"
-X-IronPort-AV: E=Sophos;i="5.76,324,1592895600"; 
-   d="scan'208";a="239629314"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 16:09:15 -0700
-IronPort-SDR: KMpVnkvl+UhEi/okXHw8bi5AJiqlz6P9Yyoa9lS+QCz9vQJPiIUsxA0v3Anu2ON4wtYgUePGQN
- dBpBZuXqaaFQ==
-X-IronPort-AV: E=Sophos;i="5.76,324,1592895600"; 
-   d="scan'208";a="310244195"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 16:09:16 -0700
-Date:   Mon, 17 Aug 2020 16:16:15 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Auger Eric <eric.auger@redhat.com>
-Cc:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v7 5/7] iommu/uapi: Rename uapi functions
-Message-ID: <20200817161615.35dac072@jacob-builder>
-In-Reply-To: <310ebf1c-02d6-b31f-e92e-619d46fa94aa@redhat.com>
-References: <1596068467-49322-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1596068467-49322-6-git-send-email-jacob.jun.pan@linux.intel.com>
-        <310ebf1c-02d6-b31f-e92e-619d46fa94aa@redhat.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1726698AbgHQXU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 19:20:27 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:60590 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726196AbgHQXU1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 19:20:27 -0400
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 8422020B4908;
+        Mon, 17 Aug 2020 16:20:25 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8422020B4908
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1597706425;
+        bh=A+zf61jOkHNDiHT7zD/PpNx0R2iUw1Lg8D+5Srdt20k=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=HeTPrkfo2JeC1OZcPHHMnV8MGL8cu0d1d5OOXT4L9DHQiG8T1Dgn3c7LTfgWTEZZd
+         n4Uq67TxTcTfoMKnRYkUQ+g4beV4ftHzQMXyGGcbHtjlrnPOn0lfF5OQ2Q2el9kMP/
+         lzlBfI0f+p1Ix+KNyiMLVzg0ZWN+/fUIXlFzdDs8=
+Subject: Re: [PATCH 2/2] SELinux: Measure state and hash of policy using IMA
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>
+Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>,
+        tusharsu@linux.microsoft.com, sashal@kernel.org,
+        James Morris <jmorris@namei.org>,
+        linux-integrity@vger.kernel.org,
+        SElinux list <selinux@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        paul Moore <paul@paul-moore.com>
+References: <20200813170707.2659-1-nramas@linux.microsoft.com>
+ <20200813170707.2659-3-nramas@linux.microsoft.com>
+ <5f738fd8-fe28-5358-b3d8-b671b45caa7f@gmail.com>
+ <7315b7e8-2c53-2555-bc2e-aae42e16aaa2@linux.microsoft.com>
+ <CAEjxPJ6sZdm2w=bbkL0uJyEkHw0gCT_y812WQBZPtLCJzO6r3A@mail.gmail.com>
+ <e935c06f-09e2-a2f7-f97f-768bc017f477@linux.microsoft.com>
+ <CAEjxPJ7uWee5jjALtQ3azMvKRMk8pxFiYByWmYVhjgJiMNZ8ww@mail.gmail.com>
+ <3679df359c35561f5bf6608911f96cc0292c7854.camel@linux.ibm.com>
+ <57f972a7-26f1-3ac7-4001-54c0bc7e12a8@schaufler-ca.com>
+ <089ca24d-863b-ca84-4859-d2d6e4f09b4c@linux.microsoft.com>
+ <082a4311cd9211475df4c694f310f652d51e5d64.camel@linux.ibm.com>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <a5b9e465-bcb5-e56a-513b-6c9094b8fa81@linux.microsoft.com>
+Date:   Mon, 17 Aug 2020 16:20:24 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <082a4311cd9211475df4c694f310f652d51e5d64.camel@linux.ibm.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Aug 2020 10:58:53 +0200
-Auger Eric <eric.auger@redhat.com> wrote:
-
-> Hi Jacob,
+On 8/17/20 4:11 PM, Mimi Zohar wrote:
+> On Mon, 2020-08-17 at 15:33 -0700, Lakshmi Ramasubramanian wrote:
+>> On 8/17/20 3:00 PM, Casey Schaufler wrote:
+>>> On 8/17/2020 2:31 PM, Mimi Zohar wrote:
+>>>> On Thu, 2020-08-13 at 14:13 -0400, Stephen Smalley wrote:
+>>>>> On Thu, Aug 13, 2020 at 2:03 PM Lakshmi Ramasubramanian
+>>>>> <nramas@linux.microsoft.com> wrote:
+>>>>>> On 8/13/20 10:58 AM, Stephen Smalley wrote:
+>>>>>>> On Thu, Aug 13, 2020 at 1:52 PM Lakshmi Ramasubramanian
+>>>>>>> <nramas@linux.microsoft.com> wrote:
+>>>>>>>> On 8/13/20 10:42 AM, Stephen Smalley wrote:
+>>>>>>>>
+>>>>>>>>>> diff --git a/security/selinux/measure.c b/security/selinux/measure.c
+>>>>>>>>>> new file mode 100644
+>>>>>>>>>> index 000000000000..f21b7de4e2ae
+>>>>>>>>>> --- /dev/null
+>>>>>>>>>> +++ b/security/selinux/measure.c
+>>>>>>>>>> @@ -0,0 +1,204 @@
+>>>>>>>>>> +static int selinux_hash_buffer(void *buf, size_t buf_len,
+>>>>>>>>>> +                   void **buf_hash, int *buf_hash_len)
+>>>>>>>>>> +{
+>>>>>>>>>> +    struct crypto_shash *tfm;
+>>>>>>>>>> +    struct shash_desc *desc = NULL;
+>>>>>>>>>> +    void *digest = NULL;
+>>>>>>>>>> +    int desc_size;
+>>>>>>>>>> +    int digest_size;
+>>>>>>>>>> +    int ret = 0;
+>>>>>>>>>> +
+>>>>>>>>>> +    tfm = crypto_alloc_shash("sha256", 0, 0);
+>>>>>>>>>> +    if (IS_ERR(tfm))
+>>>>>>>>>> +        return PTR_ERR(tfm);
+>>>>>>>>> Can we make the algorithm selectable via kernel parameter and/or writing
+>>>>>>>>> to a new selinuxfs node?
+>>>>>>>> I can add a kernel parameter to select this hash algorithm.
+>>>>>>> Also can we provide a Kconfig option for the default value like IMA does?
+>>>>>>>
+>>>>>> Would we need both - Kconfig and kernel param?
+>>>>>>
+>>>>>> The other option is to provide an IMA function to return the current
+>>>>>> hash algorithm used for measurement. That way a consistent hash
+>>>>>> algorithm can be employed by both IMA and the callers. Would that be better?
+>>>>> This is why I preferred just passing the serialized policy buffer to
+>>>>> IMA and letting it handle the hashing.  But apparently that approach
+>>>>> wouldn't fly.  IMA appears to support both a Kconfig option for
+>>>>> selecting a default algorithm and a kernel parameter for overriding
+>>>>> it.  I assume the idea is that the distros can pick a reasonable
+>>>>> default and then the end users can override that if they have specific
+>>>>> requirements.  I'd want the same for SELinux.  If IMA is willing to
+>>>>> export its hash algorithm to external components, then I'm willing to
+>>>>> reuse that but not sure if that's a layering violation.
+>>>> With the new ima_measure_critical_data() hook, I agree with you and
+>>>> Casey it doesn't make sense for each caller to have to write their own
+>>>> function.  Casey suggested exporting IMA's hash function or defining a
+>>>> new common hash function.   There's nothing specific to IMA.
+>>>
+>>> Except that no one is going to use the function unless they're
+>>> doing an IMA operation.
+>>
+>> Can we do the following instead:
+>>
+>> In ima_measure_critical_data() IMA hook, we can add another param for
+>> the caller to indicate whether
+>>
+>>    => The contents of "buf" needs to be measured
+>>       OR
+>>    => Hash of the contents of "buf" needs to be measured.
+>>
+>> This way IMA doesn't need to export any new function to meet the hashing
+>> requirement.
 > 
-> On 7/30/20 2:21 AM, Jacob Pan wrote:
-> > User APIs such as iommu_sva_unbind_gpasid() may also be used by the
-> > kernel. Since we introduced user pointer to the UAPI functions,  
-> Practically this is done in the next patch. What about something like:
-> 
-> We plan to have two flavors of the same API functions, one called
-> through ioctls, carrying a user pointer and one called directly with
-> valid IOMMU UAPI structs. To differentiate both, let's rename existing
-> functions with an iommu_uapi_ prefix.
-> 
-will do. Thanks!
-
-> Besides
-> Reviewed-by: Eric Auger <eric.auger@redhat.com>
-> 
-> 
-> Thanks
-> 
-> Eric
-> > in-kernel callers cannot share the same APIs. In-kernel callers are
-> > also trusted, there is no need to validate the data.
-> > 
-> > This patch renames all UAPI functions with iommu_uapi_ prefix such
-> > that is clear to the intended callers.
-> > 
-> > Suggested-by: Alex Williamson <alex.williamson@redhat.com>
-> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > ---
-> >  drivers/iommu/iommu.c | 18 +++++++++---------
-> >  include/linux/iommu.h | 31 ++++++++++++++++---------------
-> >  2 files changed, 25 insertions(+), 24 deletions(-)
-> > 
-> > diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> > index b6858adc4f17..3a913ce94a3d 100644
-> > --- a/drivers/iommu/iommu.c
-> > +++ b/drivers/iommu/iommu.c
-> > @@ -1950,35 +1950,35 @@ int iommu_attach_device(struct iommu_domain
-> > *domain, struct device *dev) }
-> >  EXPORT_SYMBOL_GPL(iommu_attach_device);
-> >  
-> > -int iommu_cache_invalidate(struct iommu_domain *domain, struct
-> > device *dev,
-> > -			   struct iommu_cache_invalidate_info
-> > *inv_info) +int iommu_uapi_cache_invalidate(struct iommu_domain
-> > *domain, struct device *dev,
-> > +				struct iommu_cache_invalidate_info
-> > *inv_info) {
-> >  	if (unlikely(!domain->ops->cache_invalidate))
-> >  		return -ENODEV;
-> >  
-> >  	return domain->ops->cache_invalidate(domain, dev,
-> > inv_info); }
-> > -EXPORT_SYMBOL_GPL(iommu_cache_invalidate);
-> > +EXPORT_SYMBOL_GPL(iommu_uapi_cache_invalidate);
-> >  
-> > -int iommu_sva_bind_gpasid(struct iommu_domain *domain,
-> > -			   struct device *dev, struct
-> > iommu_gpasid_bind_data *data) +int
-> > iommu_uapi_sva_bind_gpasid(struct iommu_domain *domain,
-> > +			       struct device *dev, struct
-> > iommu_gpasid_bind_data *data) {
-> >  	if (unlikely(!domain->ops->sva_bind_gpasid))
-> >  		return -ENODEV;
-> >  
-> >  	return domain->ops->sva_bind_gpasid(domain, dev, data);
-> >  }
-> > -EXPORT_SYMBOL_GPL(iommu_sva_bind_gpasid);
-> > +EXPORT_SYMBOL_GPL(iommu_uapi_sva_bind_gpasid);
-> >  
-> > -int iommu_sva_unbind_gpasid(struct iommu_domain *domain, struct
-> > device *dev,
-> > -			     ioasid_t pasid)
-> > +int iommu_uapi_sva_unbind_gpasid(struct iommu_domain *domain,
-> > struct device *dev,
-> > +				 ioasid_t pasid)
-> >  {
-> >  	if (unlikely(!domain->ops->sva_unbind_gpasid))
-> >  		return -ENODEV;
-> >  
-> >  	return domain->ops->sva_unbind_gpasid(dev, pasid);
-> >  }
-> > -EXPORT_SYMBOL_GPL(iommu_sva_unbind_gpasid);
-> > +EXPORT_SYMBOL_GPL(iommu_uapi_sva_unbind_gpasid);
-> >  
-> >  static void __iommu_detach_device(struct iommu_domain *domain,
-> >  				  struct device *dev)
-> > diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> > index 5f0b7859d2eb..2dcc1a33f6dc 100644
-> > --- a/include/linux/iommu.h
-> > +++ b/include/linux/iommu.h
-> > @@ -430,13 +430,13 @@ extern int iommu_attach_device(struct
-> > iommu_domain *domain, struct device *dev);
-> >  extern void iommu_detach_device(struct iommu_domain *domain,
-> >  				struct device *dev);
-> > -extern int iommu_cache_invalidate(struct iommu_domain *domain,
-> > -				  struct device *dev,
-> > -				  struct
-> > iommu_cache_invalidate_info *inv_info); -extern int
-> > iommu_sva_bind_gpasid(struct iommu_domain *domain,
-> > -		struct device *dev, struct iommu_gpasid_bind_data
-> > *data); -extern int iommu_sva_unbind_gpasid(struct iommu_domain
-> > *domain,
-> > -				struct device *dev, ioasid_t
-> > pasid); +extern int iommu_uapi_cache_invalidate(struct iommu_domain
-> > *domain,
-> > +				       struct device *dev,
-> > +				       struct
-> > iommu_cache_invalidate_info *inv_info); +extern int
-> > iommu_uapi_sva_bind_gpasid(struct iommu_domain *domain,
-> > +				      struct device *dev, struct
-> > iommu_gpasid_bind_data *data); +extern int
-> > iommu_uapi_sva_unbind_gpasid(struct iommu_domain *domain,
-> > +					struct device *dev,
-> > ioasid_t pasid); extern struct iommu_domain
-> > *iommu_get_domain_for_dev(struct device *dev); extern struct
-> > iommu_domain *iommu_get_dma_domain(struct device *dev); extern int
-> > iommu_map(struct iommu_domain *domain, unsigned long iova, @@
-> > -1054,21 +1054,22 @@ static inline int iommu_sva_get_pasid(struct
-> > iommu_sva *handle) return IOMMU_PASID_INVALID; }
-> >  
-> > -static inline int
-> > -iommu_cache_invalidate(struct iommu_domain *domain,
-> > -		       struct device *dev,
-> > -		       struct iommu_cache_invalidate_info
-> > *inv_info) +static inline int iommu_uapi_cache_invalidate(struct
-> > iommu_domain *domain,
-> > +					      struct device *dev,
-> > +					      struct
-> > iommu_cache_invalidate_info *inv_info) {
-> >  	return -ENODEV;
-> >  }
-> > -static inline int iommu_sva_bind_gpasid(struct iommu_domain
-> > *domain,
-> > -				struct device *dev, struct
-> > iommu_gpasid_bind_data *data) +
-> > +static inline int iommu_uapi_sva_bind_gpasid(struct iommu_domain
-> > *domain,
-> > +					     struct device *dev,
-> > +					     struct
-> > iommu_gpasid_bind_data *data) {
-> >  	return -ENODEV;
-> >  }
-> >  
-> > -static inline int iommu_sva_unbind_gpasid(struct iommu_domain
-> > *domain,
-> > -					   struct device *dev, int
-> > pasid) +static inline int iommu_uapi_sva_unbind_gpasid(struct
-> > iommu_domain *domain,
-> > +					       struct device *dev,
-> > int pasid) {
-> >  	return -ENODEV;
-> >  }
-> >   
+> I'm not sure overloading the parameters is a good idea, but extending
+> ima_measure_critical_data() to calculate a simple buffer hash should be
+> fine.
 > 
 
-[Jacob Pan]
+Sorry I wasn't clear - I didn't mean to say overload existing 
+parameters, but extending the IMA hook to calculate the hash of the 
+buffer - like the following:
+
+int ima_measure_critical_data(const char *event_name,
+                               const char *event_data_source,
+                               const void *buf, int buf_len,
+                               bool measure_buf_hash);
+
+If measure_buf_hash is true, IMA will calculate the hash of contents of 
+"buf" and measure the hash.
+Else, IMA will measure the contents of "buf".
+
+  -lakshmi
+
+
