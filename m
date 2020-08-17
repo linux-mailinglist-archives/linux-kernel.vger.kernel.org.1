@@ -2,88 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8186E247648
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B59247667
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390867AbgHQTfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:35:47 -0400
-Received: from mail-il1-f194.google.com ([209.85.166.194]:37259 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730068AbgHQTfj (ORCPT
+        id S1732404AbgHQTg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:36:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732395AbgHQTgy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 15:35:39 -0400
-Received: by mail-il1-f194.google.com with SMTP id p13so15570268ilh.4;
-        Mon, 17 Aug 2020 12:35:38 -0700 (PDT)
+        Mon, 17 Aug 2020 15:36:54 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 697B9C061342
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 12:36:54 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id d188so8731385pfd.2
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 12:36:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uSda/maq1kyFlmgdc9lPucbhxB4Rs/n3Ulbz/u//5ko=;
+        b=E+bxGWQ4aloHMCGvC/C88Lm/LjqBzqUeliCrcozBEZMRKbyg+1uq3MbJHRL+u+fAgy
+         rcfLJVPQZ9kKIBkXB0xoAGLmBb+lgoPAZlnS4ffebwSge6AqZOPLud4MtAVsUxyNCwLs
+         808/MgaEYfc7LQRe31GlclDrcC3duq6vYQwQ4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+        h=x-gm-message-state:date:from:to:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=iAgp3OtOJ2V/PDJ3pq372B1DRl70fIx00JIpk/BWygU=;
-        b=WD83jij1Rbas2aoH26bst4Wd2IAZsamOy69COePEP242UJVeliasG91aV7xS3fMGP7
-         zo0EoAACW4gJMuGLQzG8bVBwVR75yBOePYP0SdltQxjm0HZkGHZR8aOSkPGvxKNa47Ov
-         67WYEd3wShUexT/2jx7D0To8LCDs2sv6/L36akxJOoPvrKhGD258NT9JrZt539EEvH8c
-         F4V/SNEdalpsxdxOU9aJFXJN6IuS9lE4g91WF7jYaKUWy4eXK0xZqs5EALbR8Li1TPMj
-         VuEkuMB3qYv/moOZrGCJKKnlGpZQ/4/zcBSl97xhiHoBFpoDEX349nnSYl9XZYGaegQk
-         z12g==
-X-Gm-Message-State: AOAM530uBiw0LBvTLOCtcWudQw+5XmKkSmjJA6DAU44h66T4K+AAA6Hl
-        n9rK+N2iCKHFwhrM9tbbfw==
-X-Google-Smtp-Source: ABdhPJwXOJDDDq8HeKQf/PZk3gaBEkSGQVXO8CPg+FvLgAC1GUzXTU3b3o6z9o/yPeoBt4dX6qCiJw==
-X-Received: by 2002:a92:d4cc:: with SMTP id o12mr14429800ilm.90.1597692938320;
-        Mon, 17 Aug 2020 12:35:38 -0700 (PDT)
-Received: from xps15 ([64.188.179.249])
-        by smtp.gmail.com with ESMTPSA id f132sm9555787ioa.45.2020.08.17.12.35.36
+        bh=uSda/maq1kyFlmgdc9lPucbhxB4Rs/n3Ulbz/u//5ko=;
+        b=cYvyQ3wEtEjw55G6zrs5eoUmzfl9vam13HoOGUNuWegUalp1MnA7Ny1FErbdupXsw1
+         K3lVvxnVgdvjD99aRqdH0ixYXgIeCHEdNLhR/cyJ+6nJaJP3V7zK0Lc76AvwdvcG0ox1
+         6aQZXZwpGaaaXHEg/E6I4dq/NVXv/9V+e0vtsmXZmop7Kb77nn5edvKtsKqmv7Nkq2mK
+         V1TKAMKyi8A/tYLr7dOrpd3lmcAi56StxXo7WpmA9GBjIlowG0oZs8SGZx/QTC0Q3q/Y
+         eMQabnMGjce548MtPX+MOBM1vA6F1tqVsmXCJDKw6IQlcMY3LsH2FHNSwA5ZJJWp3bXf
+         z57A==
+X-Gm-Message-State: AOAM532U4zNA2Dv3fo763R5MU43ppyrqEdtx6ekuoHJea3ZjJUgfWw4L
+        jar2wBRordCIangBst/Kf3TrcQ==
+X-Google-Smtp-Source: ABdhPJzvvoBV3hMQrSf1AK6MLwM3KhYjHVP7hewssO8T6Pva04uXO9tD4vj9ZMjY0m+FhHm8dDndNg==
+X-Received: by 2002:a65:63ca:: with SMTP id n10mr11219632pgv.252.1597693014022;
+        Mon, 17 Aug 2020 12:36:54 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id g4sm19415044pjh.32.2020.08.17.12.36.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 12:35:37 -0700 (PDT)
-Received: (nullmailer pid 1415017 invoked by uid 1000);
-        Mon, 17 Aug 2020 19:35:35 -0000
-Date:   Mon, 17 Aug 2020 13:35:35 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v3] dt-bindings: at25: convert the binding document to
- yaml
-Message-ID: <20200817193535.GA1414886@bogus>
-References: <20200812200602.GA2612803@bogus>
- <20200813085959.15946-1-ceggers@arri.de>
+        Mon, 17 Aug 2020 12:36:52 -0700 (PDT)
+Date:   Mon, 17 Aug 2020 12:36:51 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     dsterba@suse.cz, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, kernel-hardening@lists.openwall.com
+Subject: Re: [PATCH v2] overflow: Add __must_check attribute to check_*()
+ helpers
+Message-ID: <202008171235.816B3AD@keescook>
+References: <202008151007.EF679DF@keescook>
+ <20200817090854.GA2026@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200813085959.15946-1-ceggers@arri.de>
+In-Reply-To: <20200817090854.GA2026@twin.jikos.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Aug 2020 10:59:59 +0200, Christian Eggers wrote:
-> Convert the binding document for at25 EEPROMs from txt to yaml.
+On Mon, Aug 17, 2020 at 11:08:54AM +0200, David Sterba wrote:
+> On Sat, Aug 15, 2020 at 10:09:24AM -0700, Kees Cook wrote:
+> > +static inline bool __must_check __must_check_overflow(bool overflow)
+> > +{
+> > +	return unlikely(overflow);
 > 
-> Signed-off-by: Christian Eggers <ceggers@arri.de>
-> ---
-> On Wednesday, 12 August 2020, 22:06:02 CEST, Rob Herring wrote:
-> > > +This file has been moved to at25.yaml.
-> >
-> > We only do this to save updating a bunch of references and there aren't
-> > any, so just remove the file.
-> file removed.
-> 
-> > I'd just fix it up, but this wouldn't apply for me on Linus' current
-> > master. Please rebase and resend (You can want til rc1 if you want
-> > because that's what I'll ultimately apply it too).
-> This was my fault. I forgot to revert my previous patch ("dt-bindings: at25: fix
-> syntax error in example code"). So v2 was created from a wrong base.
-> 
-> I'll be unavailable until August, 23.
-> 
-> regards
-> Christian
-> 
->  .../devicetree/bindings/eeprom/at25.txt       |  45 ------
->  .../devicetree/bindings/eeprom/at25.yaml      | 129 ++++++++++++++++++
->  2 files changed, 129 insertions(+), 45 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/eeprom/at25.txt
->  create mode 100644 Documentation/devicetree/bindings/eeprom/at25.yaml
-> 
+> How does the 'unlikely' hint propagate through return? It is in a static
+> inline so compiler has complete information in order to use it, but I'm
+> curious if it actually does.
 
-Applied, thanks!
+It may not -- it depends on how the compiler decides to deal with it. :)
+
+> In case the hint gets dropped, the fix would probably be
+> 
+> #define check_add_overflow(a, b, d) unlikely(__must_check_overflow(({	\
+>  	typeof(a) __a = (a);			\
+>  	typeof(b) __b = (b);			\
+>  	typeof(d) __d = (d);			\
+>  	(void) (&__a == &__b);			\
+>  	(void) (&__a == __d);			\
+>  	__builtin_add_overflow(__a, __b, __d);	\
+> })))
+
+Unfortunately not, as the unlikely() ends up eating the __must_check
+attribute. :(
+
+-- 
+Kees Cook
