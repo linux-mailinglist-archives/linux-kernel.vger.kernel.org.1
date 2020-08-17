@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0748B247392
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B6F2471A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403972AbgHQS6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:58:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34416 "EHLO mail.kernel.org"
+        id S2391103AbgHQSbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:31:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730655AbgHQPuG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:50:06 -0400
+        id S2387808AbgHQQA7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:00:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BEAE02067C;
-        Mon, 17 Aug 2020 15:49:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B3D7207FF;
+        Mon, 17 Aug 2020 16:00:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679389;
-        bh=SJxSG5hjeCoBv7dI/pFgKfrBpXKRvG9S8f+X7U2EkEs=;
+        s=default; t=1597680058;
+        bh=rsrKN8/Zq2kTiieVqJx9AAitOPFHZwp5YN/wsqrv6uQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sG8aHlV+bu/wm4j9/Kdv22bXCaAX8Q7s38l9diNqv7hRpc5ElQd9vpiZb26/Y/YzK
-         R1zWmYVErNKJ15a2IudZpUIborSEfIJRwoXlSx3q1auvQBo8pa9cOE9/BQf/GIQGCA
-         JHGadqA3wM4rTLDtMs4qO2nBwmtiUpovNerB9zts=
+        b=V/ZHfAbMtlZYoWd1/Xhru9McQV+PRuPMKYl8Jlm+2c/cNaRHA3UvxoRq+gG6r9+i8
+         hfwn1/wpqf/OjEphm5sttD4aR8r0fDLG6d22tGYMoPKBHN9osc+q5XknkRLSZ2h1PH
+         JlApKS5++FKwtOZfG+ZpYkjDuWQomkHAPew7yiTA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Brian Foster <bfoster@redhat.com>,
+        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 187/393] xfs: fix reflink quota reservation accounting error
-Date:   Mon, 17 Aug 2020 17:13:57 +0200
-Message-Id: <20200817143828.691455190@linuxfoundation.org>
+Subject: [PATCH 5.4 037/270] ARM: socfpga: PM: add missing put_device() call in socfpga_setup_ocram_self_refresh()
+Date:   Mon, 17 Aug 2020 17:13:58 +0200
+Message-Id: <20200817143757.642855276@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
-References: <20200817143819.579311991@linuxfoundation.org>
+In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
+References: <20200817143755.807583758@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,62 +44,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit 83895227aba1ade33e81f586aa7b6b1e143096a5 ]
+[ Upstream commit 3ad7b4e8f89d6bcc9887ca701cf2745a6aedb1a0 ]
 
-Quota reservations are supposed to account for the blocks that might be
-allocated due to a bmap btree split.  Reflink doesn't do this, so fix
-this to make the quota accounting more accurate before we start
-rearranging things.
+if of_find_device_by_node() succeed, socfpga_setup_ocram_self_refresh
+doesn't have a corresponding put_device(). Thus add a jump target to
+fix the exception handling for this function implementation.
 
-Fixes: 862bb360ef56 ("xfs: reflink extents from one file to another")
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Brian Foster <bfoster@redhat.com>
+Fixes: 44fd8c7d4005 ("ARM: socfpga: support suspend to ram")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/xfs_reflink.c | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
+ arch/arm/mach-socfpga/pm.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
-index 107bf2a2f3448..d89201d40891f 100644
---- a/fs/xfs/xfs_reflink.c
-+++ b/fs/xfs/xfs_reflink.c
-@@ -1003,6 +1003,7 @@ xfs_reflink_remap_extent(
- 	xfs_filblks_t		rlen;
- 	xfs_filblks_t		unmap_len;
- 	xfs_off_t		newlen;
-+	int64_t			qres;
- 	int			error;
+diff --git a/arch/arm/mach-socfpga/pm.c b/arch/arm/mach-socfpga/pm.c
+index 6ed887cf8dc9a..365c0428b21b6 100644
+--- a/arch/arm/mach-socfpga/pm.c
++++ b/arch/arm/mach-socfpga/pm.c
+@@ -49,14 +49,14 @@ static int socfpga_setup_ocram_self_refresh(void)
+ 	if (!ocram_pool) {
+ 		pr_warn("%s: ocram pool unavailable!\n", __func__);
+ 		ret = -ENODEV;
+-		goto put_node;
++		goto put_device;
+ 	}
  
- 	unmap_len = irec->br_startoff + irec->br_blockcount - destoff;
-@@ -1025,13 +1026,19 @@ xfs_reflink_remap_extent(
- 	xfs_ilock(ip, XFS_ILOCK_EXCL);
- 	xfs_trans_ijoin(tp, ip, 0);
+ 	ocram_base = gen_pool_alloc(ocram_pool, socfpga_sdram_self_refresh_sz);
+ 	if (!ocram_base) {
+ 		pr_warn("%s: unable to alloc ocram!\n", __func__);
+ 		ret = -ENOMEM;
+-		goto put_node;
++		goto put_device;
+ 	}
  
--	/* If we're not just clearing space, then do we have enough quota? */
--	if (real_extent) {
--		error = xfs_trans_reserve_quota_nblks(tp, ip,
--				irec->br_blockcount, 0, XFS_QMOPT_RES_REGBLKS);
--		if (error)
--			goto out_cancel;
--	}
-+	/*
-+	 * Reserve quota for this operation.  We don't know if the first unmap
-+	 * in the dest file will cause a bmap btree split, so we always reserve
-+	 * at least enough blocks for that split.  If the extent being mapped
-+	 * in is written, we need to reserve quota for that too.
-+	 */
-+	qres = XFS_EXTENTADD_SPACE_RES(mp, XFS_DATA_FORK);
-+	if (real_extent)
-+		qres += irec->br_blockcount;
-+	error = xfs_trans_reserve_quota_nblks(tp, ip, qres, 0,
-+			XFS_QMOPT_RES_REGBLKS);
-+	if (error)
-+		goto out_cancel;
+ 	ocram_pbase = gen_pool_virt_to_phys(ocram_pool, ocram_base);
+@@ -67,7 +67,7 @@ static int socfpga_setup_ocram_self_refresh(void)
+ 	if (!suspend_ocram_base) {
+ 		pr_warn("%s: __arm_ioremap_exec failed!\n", __func__);
+ 		ret = -ENOMEM;
+-		goto put_node;
++		goto put_device;
+ 	}
  
- 	trace_xfs_reflink_remap(ip, irec->br_startoff,
- 				irec->br_blockcount, irec->br_startblock);
+ 	/* Copy the code that puts DDR in self refresh to ocram */
+@@ -81,6 +81,8 @@ static int socfpga_setup_ocram_self_refresh(void)
+ 	if (!socfpga_sdram_self_refresh_in_ocram)
+ 		ret = -EFAULT;
+ 
++put_device:
++	put_device(&pdev->dev);
+ put_node:
+ 	of_node_put(np);
+ 
 -- 
 2.25.1
 
