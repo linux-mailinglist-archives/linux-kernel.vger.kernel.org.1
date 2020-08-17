@@ -2,177 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347B5246E83
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 935FB246E77
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388802AbgHQRdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:33:01 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:39644 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388979AbgHQQz4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:55:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597683355; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=opili1/+0dW4EUDDFvf9qZg/sEOsjBH8GyzqwpumoDE=; b=TpnKhhXzVqzxEcxMh2Jre9Ovk5LLw2t9ggRUhLcPYa6fXkZbDojJyt1gBtj+9zWyOiuhBj+g
- zrpzZzQyyx0mKbBjTtGWI1L3CCUXBWAVBVA5YGL03WdAJpZCV60Ng621K8ufEC3ZbZ5htHL1
- e5Xh7MM2HeGkW+GESELXBEjBFyE=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f3ab685440a07969a534475 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 17 Aug 2020 16:55:33
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 549FFC433A1; Mon, 17 Aug 2020 16:55:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1BA23C433CB;
-        Mon, 17 Aug 2020 16:55:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1BA23C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Mon, 17 Aug 2020 10:55:25 -0600
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        linux-arm-msm@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Will Deacon <will@kernel.org>, freedreno@lists.freedesktop.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Vivek Gautam <vivek.gautam@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 07/19] drm/msm: set adreno_smmu as gpu's drvdata
-Message-ID: <20200817165524.GJ3221@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
-        dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        linux-arm-msm@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Will Deacon <will@kernel.org>, freedreno@lists.freedesktop.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Vivek Gautam <vivek.gautam@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Clark <robdclark@chromium.org>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200810222657.1841322-1-jcrouse@codeaurora.org>
- <20200814024114.1177553-8-robdclark@gmail.com>
+        id S2389511AbgHQRb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:31:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44724 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388918AbgHQQ5d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:57:33 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2326AADE5;
+        Mon, 17 Aug 2020 16:57:57 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id BD1611E12CB; Mon, 17 Aug 2020 18:57:31 +0200 (CEST)
+Date:   Mon, 17 Aug 2020 18:57:31 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com, miklos@szeredi.hu, stefanha@redhat.com,
+        dgilbert@redhat.com, Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-nvdimm@lists.01.org
+Subject: Re: [PATCH v2 01/20] dax: Modify bdev_dax_pgoff() to handle NULL bdev
+Message-ID: <20200817165731.GB22500@quack2.suse.cz>
+References: <20200807195526.426056-1-vgoyal@redhat.com>
+ <20200807195526.426056-2-vgoyal@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200814024114.1177553-8-robdclark@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200807195526.426056-2-vgoyal@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 07:41:02PM -0700, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
+On Fri 07-08-20 15:55:07, Vivek Goyal wrote:
+> virtiofs does not have a block device but it has dax device.
+> Modify bdev_dax_pgoff() to be able to handle that.
 > 
-> This will be populated by adreno-smmu, to provide a way for coordinating
-> enabling/disabling TTBR0 translation.
+> If there is no bdev, that means dax offset is 0. (It can't be a partition
+> block device starting at an offset in dax device).
 > 
+> This is little hackish. There have been discussions about getting rid
+> of dax not supporting partitions.
+> 
+> https://lore.kernel.org/linux-fsdevel/20200107125159.GA15745@infradead.org/
+> 
+> IMHO, this path can easily break exisitng users. For example
+> ioctl(BLKPG_ADD_PARTITION) will start breaking on block devices
+> supporting DAX. Also, I personally find it very useful to be able to
+> partition dax devices and still be able to use DAX.
+> 
+> Alternatively, I tried to store offset into dax device information in iomap
+> interface, but that got NACKed.
+> 
+> https://lore.kernel.org/linux-fsdevel/20200217133117.GB20444@infradead.org/
+> 
+> I can't think of a good path to solve this issue properly. So to make
+> progress, it seems this patch is least bad option for now and I hope
+> we can take it.
+> 
+> Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
+> Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> Cc: Christoph Hellwig <hch@infradead.org>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: linux-nvdimm@lists.01.org
 
-Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
+This patch looks OK to me. You can add:
 
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
 > ---
->  drivers/gpu/drm/msm/adreno/adreno_device.c | 2 --
->  drivers/gpu/drm/msm/msm_gpu.c              | 2 +-
->  drivers/gpu/drm/msm/msm_gpu.h              | 6 +++++-
->  3 files changed, 6 insertions(+), 4 deletions(-)
+>  drivers/dax/super.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
-> index 26664e1b30c0..58e03b20e1c7 100644
-> --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
-> +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
-> @@ -417,8 +417,6 @@ static int adreno_bind(struct device *dev, struct device *master, void *data)
->  		return PTR_ERR(gpu);
->  	}
->  
-> -	dev_set_drvdata(dev, gpu);
-> -
->  	return 0;
->  }
->  
-> diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
-> index 6aa9e04e52e7..806eb0957280 100644
-> --- a/drivers/gpu/drm/msm/msm_gpu.c
-> +++ b/drivers/gpu/drm/msm/msm_gpu.c
-> @@ -892,7 +892,7 @@ int msm_gpu_init(struct drm_device *drm, struct platform_device *pdev,
->  		gpu->gpu_cx = NULL;
->  
->  	gpu->pdev = pdev;
-> -	platform_set_drvdata(pdev, gpu);
-> +	platform_set_drvdata(pdev, &gpu->adreno_smmu);
->  
->  	msm_devfreq_init(gpu);
->  
-> diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
-> index 8bda7beaed4b..f91b141add75 100644
-> --- a/drivers/gpu/drm/msm/msm_gpu.h
-> +++ b/drivers/gpu/drm/msm/msm_gpu.h
-> @@ -7,6 +7,7 @@
->  #ifndef __MSM_GPU_H__
->  #define __MSM_GPU_H__
->  
-> +#include <linux/adreno-smmu-priv.h>
->  #include <linux/clk.h>
->  #include <linux/interconnect.h>
->  #include <linux/pm_opp.h>
-> @@ -73,6 +74,8 @@ struct msm_gpu {
->  	struct platform_device *pdev;
->  	const struct msm_gpu_funcs *funcs;
->  
-> +	struct adreno_smmu_priv adreno_smmu;
-> +
->  	/* performance counters (hw & sw): */
->  	spinlock_t perf_lock;
->  	bool perfcntr_active;
-> @@ -143,7 +146,8 @@ struct msm_gpu {
->  
->  static inline struct msm_gpu *dev_to_gpu(struct device *dev)
+> diff --git a/drivers/dax/super.c b/drivers/dax/super.c
+> index 8e32345be0f7..c4bec437e88b 100644
+> --- a/drivers/dax/super.c
+> +++ b/drivers/dax/super.c
+> @@ -46,7 +46,8 @@ EXPORT_SYMBOL_GPL(dax_read_unlock);
+>  int bdev_dax_pgoff(struct block_device *bdev, sector_t sector, size_t size,
+>  		pgoff_t *pgoff)
 >  {
-> -	return dev_get_drvdata(dev);
-> +	struct adreno_smmu_priv *adreno_smmu = dev_get_drvdata(dev);
-> +	return container_of(adreno_smmu, struct msm_gpu, adreno_smmu);
->  }
+> -	phys_addr_t phys_off = (get_start_sect(bdev) + sector) * 512;
+> +	sector_t start_sect = bdev ? get_start_sect(bdev) : 0;
+> +	phys_addr_t phys_off = (start_sect + sector) * 512;
 >  
->  /* It turns out that all targets use the same ringbuffer size */
+>  	if (pgoff)
+>  		*pgoff = PHYS_PFN(phys_off);
 > -- 
-> 2.26.2
+> 2.25.4
 > 
-
 -- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
