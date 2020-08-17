@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76EFA247239
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A758247215
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388108AbgHQP6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 11:58:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52256 "EHLO mail.kernel.org"
+        id S1730748AbgHQP6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 11:58:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387498AbgHQPmR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:42:17 -0400
+        id S2387546AbgHQPm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:42:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9F7020825;
-        Mon, 17 Aug 2020 15:42:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D267F20825;
+        Mon, 17 Aug 2020 15:42:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678936;
-        bh=8JV+rmwC4TMJFgVYMg7/BZTrgWw4TMd4Hsvprj762is=;
+        s=default; t=1597678948;
+        bh=lc7hxZLB0QegXEzX7NqRavm14GKELH629t/S1CVA/tI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CjqlLSvaHskA9fG8zSPhU0VUAqskSuWDAIgIY8tYihWiooIgeEc7UI1udEsNUg+f3
-         8zWyyZQ4S6dLSOSHOJFi6DCekoVrlOdE509TTm2TJ1CM9OMq4VugStntftSS8gvYTI
-         745/umgMEEvO59Z6hPxx8pJ7Mhy/a9Ob9gAEeEk0=
+        b=QIhKSzXgCWFnytsTtq1xJagzHL5oC9AhE5z3TR1CXCvuahKrixGKXhK2Ec7YSZcBD
+         p9K7fbUWitij80zFMnXwQwm5UZ3UklCD781Xcc7/do7oA+6wBm3mTS5z5ZnjNhq0P5
+         xTOGcWikrzzuJOgCzJOT0zGXdU5rhkGoJlZmSzo8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
+        stable@vger.kernel.org, Vladimir Zapolskiy <vz@mleia.com>,
+        Wen Yang <wenyang@linux.alibaba.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 023/393] firmware: arm_scmi: Fix SCMI genpd domain probing
-Date:   Mon, 17 Aug 2020 17:11:13 +0200
-Message-Id: <20200817143820.725680164@linuxfoundation.org>
+Subject: [PATCH 5.7 044/393] regulator: fix memory leak on error path of regulator_register()
+Date:   Mon, 17 Aug 2020 17:11:34 +0200
+Message-Id: <20200817143821.738366081@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
 References: <20200817143819.579311991@linuxfoundation.org>
@@ -45,99 +45,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cristian Marussi <cristian.marussi@arm.com>
+From: Vladimir Zapolskiy <vz@mleia.com>
 
-[ Upstream commit e0f1a30cf184821499eeb67daedd7a3f21bbcb0b ]
+[ Upstream commit 9177514ce34902b3adb2abd490b6ad05d1cfcb43 ]
 
-When, at probe time, an SCMI communication failure inhibits the capacity
-to query power domains states, such domains should be skipped.
+The change corrects registration and deregistration on error path
+of a regulator, the problem was manifested by a reported memory
+leak on deferred probe:
 
-Registering partially initialized SCMI power domains with genpd will
-causes kernel panic.
+    as3722-regulator as3722-regulator: regulator 13 register failed -517
 
- arm-scmi timed out in resp(caller: scmi_power_state_get+0xa4/0xd0)
- scmi-power-domain scmi_dev.2: failed to get state for domain 9
- Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
- Mem abort info:
-   ESR = 0x96000006
-   EC = 0x25: DABT (current EL), IL = 32 bits
-   SET = 0, FnV = 0
-   EA = 0, S1PTW = 0
- Data abort info:
-   ISV = 0, ISS = 0x00000006
-   CM = 0, WnR = 0
- user pgtable: 4k pages, 48-bit VAs, pgdp=00000009f3691000
- [0000000000000000] pgd=00000009f1ca0003, p4d=00000009f1ca0003, pud=00000009f35ea003, pmd=0000000000000000
- Internal error: Oops: 96000006 [#1] PREEMPT SMP
- CPU: 2 PID: 381 Comm: bash Not tainted 5.8.0-rc1-00011-gebd118c2cca8 #2
- Hardware name: ARM LTD ARM Juno Development Platform/ARM Juno Development Platform, BIOS EDK II Jan  3 2020
- Internal error: Oops: 96000006 [#1] PREEMPT SMP
- pstate: 80000005 (Nzcv daif -PAN -UAO BTYPE=--)
- pc : of_genpd_add_provider_onecell+0x98/0x1f8
- lr : of_genpd_add_provider_onecell+0x48/0x1f8
- Call trace:
-  of_genpd_add_provider_onecell+0x98/0x1f8
-  scmi_pm_domain_probe+0x174/0x1e8
-  scmi_dev_probe+0x90/0xe0
-  really_probe+0xe4/0x448
-  driver_probe_device+0xfc/0x168
-  device_driver_attach+0x7c/0x88
-  bind_store+0xe8/0x128
-  drv_attr_store+0x2c/0x40
-  sysfs_kf_write+0x4c/0x60
-  kernfs_fop_write+0x114/0x230
-  __vfs_write+0x24/0x50
-  vfs_write+0xbc/0x1e0
-  ksys_write+0x70/0xf8
-  __arm64_sys_write+0x24/0x30
-  el0_svc_common.constprop.3+0x94/0x160
-  do_el0_svc+0x2c/0x98
-  el0_sync_handler+0x148/0x1a8
-  el0_sync+0x158/0x180
+    # cat /sys/kernel/debug/kmemleak
+    unreferenced object 0xecc43740 (size 64):
+      comm "swapper/0", pid 1, jiffies 4294937640 (age 712.880s)
+      hex dump (first 32 bytes):
+        72 65 67 75 6c 61 74 6f 72 2e 32 34 00 5a 5a 5a  regulator.24.ZZZ
+        5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a  ZZZZZZZZZZZZZZZZ
+      backtrace:
+        [<0c4c3d1c>] __kmalloc_track_caller+0x15c/0x2c0
+        [<40c0ad48>] kvasprintf+0x64/0xd4
+        [<109abd29>] kvasprintf_const+0x70/0x84
+        [<c4215946>] kobject_set_name_vargs+0x34/0xa8
+        [<62282ea2>] dev_set_name+0x40/0x64
+        [<a39b6757>] regulator_register+0x3a4/0x1344
+        [<16a9543f>] devm_regulator_register+0x4c/0x84
+        [<51a4c6a1>] as3722_regulator_probe+0x294/0x754
+        ...
 
-Do not register any power domain that failed to be queried with genpd.
+The memory leak problem was introduced as a side ef another fix in
+regulator_register() error path, I believe that the proper fix is
+to decouple device_register() function into its two compounds and
+initialize a struct device before assigning any values to its fields
+and then using it before actual registration of a device happens.
 
-Fixes: 898216c97ed2 ("firmware: arm_scmi: add device power domain support using genpd")
-Link: https://lore.kernel.org/r/20200619220330.12217-1-cristian.marussi@arm.com
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+This lets to call put_device() safely after initialization, and, since
+now a release callback is called, kfree(rdev->constraints) shall be
+removed to exclude a double free condition.
+
+Fixes: a3cde9534ebd ("regulator: core: fix regulator_register() error paths to properly release rdev")
+Signed-off-by: Vladimir Zapolskiy <vz@mleia.com>
+Cc: Wen Yang <wenyang@linux.alibaba.com>
+Link: https://lore.kernel.org/r/20200724005013.23278-1-vz@mleia.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/arm_scmi/scmi_pm_domain.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/regulator/core.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/firmware/arm_scmi/scmi_pm_domain.c b/drivers/firmware/arm_scmi/scmi_pm_domain.c
-index bafbfe358f97d..9e44479f02842 100644
---- a/drivers/firmware/arm_scmi/scmi_pm_domain.c
-+++ b/drivers/firmware/arm_scmi/scmi_pm_domain.c
-@@ -85,7 +85,10 @@ static int scmi_pm_domain_probe(struct scmi_device *sdev)
- 	for (i = 0; i < num_domains; i++, scmi_pd++) {
- 		u32 state;
+diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+index 7486f6e4e613c..0cb99bb090ef8 100644
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -5005,7 +5005,6 @@ regulator_register(const struct regulator_desc *regulator_desc,
+ 	struct regulator_dev *rdev;
+ 	bool dangling_cfg_gpiod = false;
+ 	bool dangling_of_gpiod = false;
+-	bool reg_device_fail = false;
+ 	struct device *dev;
+ 	int ret, i;
  
--		domains[i] = &scmi_pd->genpd;
-+		if (handle->power_ops->state_get(handle, i, &state)) {
-+			dev_warn(dev, "failed to get state for domain %d\n", i);
-+			continue;
-+		}
- 
- 		scmi_pd->domain = i;
- 		scmi_pd->handle = handle;
-@@ -94,13 +97,10 @@ static int scmi_pm_domain_probe(struct scmi_device *sdev)
- 		scmi_pd->genpd.power_off = scmi_pd_power_off;
- 		scmi_pd->genpd.power_on = scmi_pd_power_on;
- 
--		if (handle->power_ops->state_get(handle, i, &state)) {
--			dev_warn(dev, "failed to get state for domain %d\n", i);
--			continue;
--		}
--
- 		pm_genpd_init(&scmi_pd->genpd, NULL,
- 			      state == SCMI_POWER_STATE_GENERIC_OFF);
-+
-+		domains[i] = &scmi_pd->genpd;
+@@ -5134,10 +5133,12 @@ regulator_register(const struct regulator_desc *regulator_desc,
  	}
  
- 	scmi_pd_data->domains = domains;
+ 	/* register with sysfs */
++	device_initialize(&rdev->dev);
+ 	rdev->dev.class = &regulator_class;
+ 	rdev->dev.parent = dev;
+ 	dev_set_name(&rdev->dev, "regulator.%lu",
+ 		    (unsigned long) atomic_inc_return(&regulator_no));
++	dev_set_drvdata(&rdev->dev, rdev);
+ 
+ 	/* set regulator constraints */
+ 	if (init_data)
+@@ -5188,12 +5189,9 @@ regulator_register(const struct regulator_desc *regulator_desc,
+ 	    !rdev->desc->fixed_uV)
+ 		rdev->is_switch = true;
+ 
+-	dev_set_drvdata(&rdev->dev, rdev);
+-	ret = device_register(&rdev->dev);
+-	if (ret != 0) {
+-		reg_device_fail = true;
++	ret = device_add(&rdev->dev);
++	if (ret != 0)
+ 		goto unset_supplies;
+-	}
+ 
+ 	rdev_init_debugfs(rdev);
+ 
+@@ -5215,17 +5213,15 @@ regulator_register(const struct regulator_desc *regulator_desc,
+ 	mutex_unlock(&regulator_list_mutex);
+ wash:
+ 	kfree(rdev->coupling_desc.coupled_rdevs);
+-	kfree(rdev->constraints);
+ 	mutex_lock(&regulator_list_mutex);
+ 	regulator_ena_gpio_free(rdev);
+ 	mutex_unlock(&regulator_list_mutex);
++	put_device(&rdev->dev);
++	rdev = NULL;
+ clean:
+ 	if (dangling_of_gpiod)
+ 		gpiod_put(config->ena_gpiod);
+-	if (reg_device_fail)
+-		put_device(&rdev->dev);
+-	else
+-		kfree(rdev);
++	kfree(rdev);
+ 	kfree(config);
+ rinse:
+ 	if (dangling_cfg_gpiod)
 -- 
 2.25.1
 
