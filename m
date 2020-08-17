@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C89246C45
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A4A4246C4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 18:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388687AbgHQQMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 12:12:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58736 "EHLO mail.kernel.org"
+        id S2388522AbgHQQMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 12:12:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387751AbgHQPqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:46:51 -0400
+        id S1730813AbgHQPrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:47:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B94422065D;
-        Mon, 17 Aug 2020 15:46:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 469682065D;
+        Mon, 17 Aug 2020 15:47:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679210;
-        bh=hvnd6rY9b+ciKQ1KWJkWmZnmieEZ4BnpOAOucN+yc8o=;
+        s=default; t=1597679230;
+        bh=yXQOpAs4ndvdbKpfDxoRQL3kvSO841IDlA/qnlsWcOY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xvILtrOjRnlYPG0hTRvQGgaG60J/fq6Utk3TShKtYsydAl/C7i+sgy78o6jZom7Ue
-         xiPKktQZ/EUZkqZgu57gZfLT+pwdGUrxDOvs0jVXrwyd8fEeQX4+D+L1JajxYbisuV
-         em4Ws/g8xtrmWmXdvAvyHRQdGX8C1GD0OnmdFmo8=
+        b=JKr2urQxIE2lX81V/w/CZTVRLx3PTSGkMKkpdcxy5lwzEcBLyVcz6yaA96nOCUYom
+         JLFRqEJnIMZ5a+R9El516lAtRyGEWcEJxhgscsZwquIsbr2aQGSc6rwG822F6LMTGT
+         D4BjmdYcjxa9+knhSGx09+VL9gDVojOXaC6wLOVA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org,
+        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 134/393] Bluetooth: hci_qca: Fix an error pointer dereference
-Date:   Mon, 17 Aug 2020 17:13:04 +0200
-Message-Id: <20200817143826.109775509@linuxfoundation.org>
+Subject: [PATCH 5.7 140/393] iio: improve IIO_CONCENTRATION channel type description
+Date:   Mon, 17 Aug 2020 17:13:10 +0200
+Message-Id: <20200817143826.402675819@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
 References: <20200817143819.579311991@linuxfoundation.org>
@@ -44,65 +46,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Tomasz Duszynski <tomasz.duszynski@octakon.com>
 
-[ Upstream commit 4c07a5d7aeb39f559b29aa58ec9a8a5ab4282cb0 ]
+[ Upstream commit df16c33a4028159d1ba8a7061c9fa950b58d1a61 ]
 
-When a function like devm_clk_get_optional() function returns both error
-pointers on error and NULL then the NULL return means that the optional
-feature is deliberately disabled.  It is a special sort of success and
-should not trigger an error message.  The surrounding code should be
-written to check for NULL and not crash.
+IIO_CONCENTRATION together with INFO_RAW specifier is used for reporting
+raw concentrations of pollutants. Raw value should be meaningless
+before being properly scaled. Because of that description shouldn't
+mention raw value unit whatsoever.
 
-On the other hand, if we encounter an error, then the probe from should
-clean up and return a failure.
+Fix this by rephrasing existing description so it follows conventions
+used throughout IIO ABI docs.
 
-In this code, if devm_clk_get_optional() returns an error pointer then
-the kernel will crash inside the call to:
-
-	clk_set_rate(qcadev->susclk, SUSCLK_RATE_32KHZ);
-
-The error handling must be updated to prevent that.
-
-Fixes: 77131dfec6af ("Bluetooth: hci_qca: Replace devm_gpiod_get() with devm_gpiod_get_optional()")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: 8ff6b3bc94930 ("iio: chemical: Add IIO_CONCENTRATION channel type")
+Signed-off-by: Tomasz Duszynski <tomasz.duszynski@octakon.com>
+Acked-by: Matt Ranostay <matt.ranostay@konsulko.com>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/hci_qca.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ Documentation/ABI/testing/sysfs-bus-iio | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-index 14e4d2eaf8959..568f7ec20b000 100644
---- a/drivers/bluetooth/hci_qca.c
-+++ b/drivers/bluetooth/hci_qca.c
-@@ -1941,17 +1941,17 @@ static int qca_serdev_probe(struct serdev_device *serdev)
- 		}
+diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
+index d3e53a6d8331b..5c62bfb0f3f57 100644
+--- a/Documentation/ABI/testing/sysfs-bus-iio
++++ b/Documentation/ABI/testing/sysfs-bus-iio
+@@ -1569,7 +1569,8 @@ What:		/sys/bus/iio/devices/iio:deviceX/in_concentrationX_voc_raw
+ KernelVersion:	4.3
+ Contact:	linux-iio@vger.kernel.org
+ Description:
+-		Raw (unscaled no offset etc.) percentage reading of a substance.
++		Raw (unscaled no offset etc.) reading of a substance. Units
++		after application of scale and offset are percents.
  
- 		qcadev->susclk = devm_clk_get_optional(&serdev->dev, NULL);
--		if (!qcadev->susclk) {
-+		if (IS_ERR(qcadev->susclk)) {
- 			dev_warn(&serdev->dev, "failed to acquire clk\n");
--		} else {
--			err = clk_set_rate(qcadev->susclk, SUSCLK_RATE_32KHZ);
--			if (err)
--				return err;
--
--			err = clk_prepare_enable(qcadev->susclk);
--			if (err)
--				return err;
-+			return PTR_ERR(qcadev->susclk);
- 		}
-+		err = clk_set_rate(qcadev->susclk, SUSCLK_RATE_32KHZ);
-+		if (err)
-+			return err;
-+
-+		err = clk_prepare_enable(qcadev->susclk);
-+		if (err)
-+			return err;
- 
- 		err = hci_uart_register_device(&qcadev->serdev_hu, &qca_proto);
- 		if (err) {
+ What:		/sys/bus/iio/devices/iio:deviceX/in_resistance_raw
+ What:		/sys/bus/iio/devices/iio:deviceX/in_resistanceX_raw
 -- 
 2.25.1
 
