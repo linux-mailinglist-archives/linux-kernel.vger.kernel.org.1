@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 936AD24724F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAACE247297
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730408AbgHQSlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:41:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45126 "EHLO mail.kernel.org"
+        id S2391527AbgHQSoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:44:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730783AbgHQP5h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:57:37 -0400
+        id S1730138AbgHQP4L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:56:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 152C0214F1;
-        Mon, 17 Aug 2020 15:57:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A0B59208C7;
+        Mon, 17 Aug 2020 15:56:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597679856;
-        bh=b7Yu3sQYWoqbtcJgs4FPhBXye/HKQxUh/xoeKTgJoD0=;
+        s=default; t=1597679771;
+        bh=EbKJFmJMFC5qcVZXrPC9mGVW7qZWGEtTZ4ULWTa08eo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0gWbAfltgpmTpDMOpopLM1UqxESultuFCpjD5Frwgrpo3GFatRQmZP6l9bdh7fyQc
-         5fzVrGGL45xIH60alu1AaP3ij+q4Lw06jSI6n1ybNpLza9iQgS77Z2ou7eCpbo8q3O
-         WZgtPAq853W3QAL0+jYUookp5YIb5XBSKMyYe8s8=
+        b=KWMX+8yx1v1mC9+60qsHTaRGohKtSQ4f791touuMKE9VNhCy+HrwFESniYQmHP+uC
+         uDMnjM5N/dLnvG3bH/8a35ogyAbZPSmR2xrwO0+YTCyZpmt9j3engwNMkmPCbdq+v2
+         pS4wQy6JeDUZ6aELvAJa+DwOY+hylC3lcZDCq2BY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Tim Froidcoeur <tim.froidcoeur@tessares.net>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Baruch Siach <baruch@tkos.co.il>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.7 327/393] net: initialize fastreuse on inet_inherit_port
-Date:   Mon, 17 Aug 2020 17:16:17 +0200
-Message-Id: <20200817143835.458507117@linuxfoundation.org>
+Subject: [PATCH 5.7 329/393] net: phy: marvell10g: fix null pointer dereference
+Date:   Mon, 17 Aug 2020 17:16:19 +0200
+Message-Id: <20200817143835.554848778@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143819.579311991@linuxfoundation.org>
 References: <20200817143819.579311991@linuxfoundation.org>
@@ -45,60 +47,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Froidcoeur <tim.froidcoeur@tessares.net>
+From: "Marek Behún" <marek.behun@nic.cz>
 
-[ Upstream commit d76f3351cea2d927fdf70dd7c06898235035e84e ]
+[ Upstream commit 1b8ef1423dbfd34de2439a2db457b84480b7c8a8 ]
 
-In the case of TPROXY, bind_conflict optimizations for SO_REUSEADDR or
-SO_REUSEPORT are broken, possibly resulting in O(n) instead of O(1) bind
-behaviour or in the incorrect reuse of a bind.
+Commit c3e302edca24 ("net: phy: marvell10g: fix temperature sensor on 2110")
+added a check for PHY ID via phydev->drv->phy_id in a function which is
+called by devres at a time when phydev->drv is already set to null by
+phy_remove function.
 
-the kernel keeps track for each bind_bucket if all sockets in the
-bind_bucket support SO_REUSEADDR or SO_REUSEPORT in two fastreuse flags.
-These flags allow skipping the costly bind_conflict check when possible
-(meaning when all sockets have the proper SO_REUSE option).
+This null pointer dereference can be triggered via SFP subsystem with a
+SFP module containing this Marvell PHY. When the SFP interface is put
+down, the SFP subsystem removes the PHY.
 
-For every socket added to a bind_bucket, these flags need to be updated.
-As soon as a socket that does not support reuse is added, the flag is
-set to false and will never go back to true, unless the bind_bucket is
-deleted.
-
-Note that there is no mechanism to re-evaluate these flags when a socket
-is removed (this might make sense when removing a socket that would not
-allow reuse; this leaves room for a future patch).
-
-For this optimization to work, it is mandatory that these flags are
-properly initialized and updated.
-
-When a child socket is created from a listen socket in
-__inet_inherit_port, the TPROXY case could create a new bind bucket
-without properly initializing these flags, thus preventing the
-optimization to work. Alternatively, a socket not allowing reuse could
-be added to an existing bind bucket without updating the flags, causing
-bind_conflict to never be called as it should.
-
-Call inet_csk_update_fastreuse when __inet_inherit_port decides to create
-a new bind_bucket or use a different bind_bucket than the one of the
-listen socket.
-
-Fixes: 093d282321da ("tproxy: fix hash locking issue when using port redirection in __inet_inherit_port()")
-Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: Tim Froidcoeur <tim.froidcoeur@tessares.net>
+Fixes: c3e302edca24 ("net: phy: marvell10g: fix temperature sensor on 2110")
+Signed-off-by: Marek Behún <marek.behun@nic.cz>
+Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Baruch Siach <baruch@tkos.co.il>
+Cc: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/inet_hashtables.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/phy/marvell10g.c |   18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
---- a/net/ipv4/inet_hashtables.c
-+++ b/net/ipv4/inet_hashtables.c
-@@ -163,6 +163,7 @@ int __inet_inherit_port(const struct soc
- 				return -ENOMEM;
- 			}
- 		}
-+		inet_csk_update_fastreuse(tb, child);
- 	}
- 	inet_bind_hash(child, tb, port);
- 	spin_unlock(&head->lock);
+--- a/drivers/net/phy/marvell10g.c
++++ b/drivers/net/phy/marvell10g.c
+@@ -205,13 +205,6 @@ static int mv3310_hwmon_config(struct ph
+ 			      MV_V2_TEMP_CTRL_MASK, val);
+ }
+ 
+-static void mv3310_hwmon_disable(void *data)
+-{
+-	struct phy_device *phydev = data;
+-
+-	mv3310_hwmon_config(phydev, false);
+-}
+-
+ static int mv3310_hwmon_probe(struct phy_device *phydev)
+ {
+ 	struct device *dev = &phydev->mdio.dev;
+@@ -235,10 +228,6 @@ static int mv3310_hwmon_probe(struct phy
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = devm_add_action_or_reset(dev, mv3310_hwmon_disable, phydev);
+-	if (ret)
+-		return ret;
+-
+ 	priv->hwmon_dev = devm_hwmon_device_register_with_info(dev,
+ 				priv->hwmon_name, phydev,
+ 				&mv3310_hwmon_chip_info, NULL);
+@@ -423,6 +412,11 @@ static int mv3310_probe(struct phy_devic
+ 	return phy_sfp_probe(phydev, &mv3310_sfp_ops);
+ }
+ 
++static void mv3310_remove(struct phy_device *phydev)
++{
++	mv3310_hwmon_config(phydev, false);
++}
++
+ static int mv3310_suspend(struct phy_device *phydev)
+ {
+ 	return mv3310_power_down(phydev);
+@@ -763,6 +757,7 @@ static struct phy_driver mv3310_drivers[
+ 		.read_status	= mv3310_read_status,
+ 		.get_tunable	= mv3310_get_tunable,
+ 		.set_tunable	= mv3310_set_tunable,
++		.remove		= mv3310_remove,
+ 	},
+ 	{
+ 		.phy_id		= MARVELL_PHY_ID_88E2110,
+@@ -778,6 +773,7 @@ static struct phy_driver mv3310_drivers[
+ 		.read_status	= mv3310_read_status,
+ 		.get_tunable	= mv3310_get_tunable,
+ 		.set_tunable	= mv3310_set_tunable,
++		.remove		= mv3310_remove,
+ 	},
+ };
+ 
 
 
