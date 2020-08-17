@@ -2,275 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3FB24701E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F49824715D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 20:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388860AbgHQSBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 14:01:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33938 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388519AbgHQQJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:09:46 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE00D20888;
-        Mon, 17 Aug 2020 16:09:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597680585;
-        bh=8a1rTYBeA0M5LsvywqB+Aj7jHIdH0DCuMUGry8MXuHM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VsLxAXg7ECYUJNsK0tsTqhUXJR8LWT7oqe1fp2DN53dPLik/88DKb6r1JoDmLn7Om
-         DbjSV/oG/BJx0GwHX4wzudBvkJNO9RVzz9D1UiMTPJLLsLi4s53ZOFU5rWADIuzyGd
-         Fc5+X0ROXwmO4y3Ij6GD736uZz0BwBDMxi8cBry0=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
-        Gao Xiang <hsiangkao@redhat.com>
-Subject: [PATCH 5.4 245/270] erofs: fix extended inode could cross boundary
-Date:   Mon, 17 Aug 2020 17:17:26 +0200
-Message-Id: <20200817143808.030271308@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
-References: <20200817143755.807583758@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S2390825AbgHQSZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 14:25:45 -0400
+Received: from pbmsgap01.intersil.com ([192.157.179.201]:49106 "EHLO
+        pbmsgap01.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388208AbgHQQCl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:02:41 -0400
+X-Greylist: delayed 1493 seconds by postgrey-1.27 at vger.kernel.org; Mon, 17 Aug 2020 12:02:40 EDT
+Received: from pps.filterd (pbmsgap01.intersil.com [127.0.0.1])
+        by pbmsgap01.intersil.com (8.16.0.27/8.16.0.27) with SMTP id 07HFWv40003023;
+        Mon, 17 Aug 2020 11:37:45 -0400
+Received: from pbmxdp01.intersil.corp (pbmxdp01.pb.intersil.com [132.158.200.222])
+        by pbmsgap01.intersil.com with ESMTP id 32xb7y925u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 17 Aug 2020 11:37:45 -0400
+Received: from pbmxdp02.intersil.corp (132.158.200.223) by
+ pbmxdp01.intersil.corp (132.158.200.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.1979.3; Mon, 17 Aug 2020 11:37:43 -0400
+Received: from localhost (132.158.202.109) by pbmxdp02.intersil.corp
+ (132.158.200.223) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Mon, 17 Aug 2020 11:37:43 -0400
+From:   <min.li.xe@renesas.com>
+To:     <richardcochran@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Min Li <min.li.xe@renesas.com>
+Subject: [PATCH net] ptp: ptp_clockmatrix: use i2c_master_send for i2c write
+Date:   Mon, 17 Aug 2020 11:37:35 -0400
+Message-ID: <1597678655-842-1-git-send-email-min.li.xe@renesas.com>
+X-Mailer: git-send-email 2.7.4
+X-TM-AS-MML: disable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-17_10:2020-08-17,2020-08-17 signatures=0
+X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 suspectscore=4 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=834
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-2006250000 definitions=main-2008170118
+X-Proofpoint-Spam-Reason: mlx
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gao Xiang <hsiangkao@redhat.com>
+From: Min Li <min.li.xe@renesas.com>
 
-commit 0dcd3c94e02438f4a571690e26f4ee997524102a upstream.
+The old code for i2c write would break on some controllers, which fails
+at handling Repeated Start Condition. So we will just use i2c_master_send
+to handle write in one transanction.
 
-Each ondisk inode should be aligned with inode slot boundary
-(32-byte alignment) because of nid calculation formula, so all
-compact inodes (32 byte) cannot across page boundary. However,
-extended inode is now 64-byte form, which can across page boundary
-in principle if the location is specified on purpose, although
-it's hard to be generated by mkfs due to the allocation policy
-and rarely used by Android use case now mainly for > 4GiB files.
-
-For now, only two fields `i_ctime_nsec` and `i_nlink' couldn't
-be read from disk properly and cause out-of-bound memory read
-with random value.
-
-Let's fix now.
-
-Fixes: 431339ba9042 ("staging: erofs: add inode operations")
-Cc: <stable@vger.kernel.org> # 4.19+
-Link: https://lore.kernel.org/r/20200729175801.GA23973@xiangao.remote.csb
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Min Li <min.li.xe@renesas.com>
 ---
- fs/erofs/inode.c |  121 +++++++++++++++++++++++++++++++++++--------------------
- 1 file changed, 79 insertions(+), 42 deletions(-)
+ drivers/ptp/ptp_clockmatrix.c | 56 +++++++++++++++++++++++++++++++++----------
+ drivers/ptp/ptp_clockmatrix.h |  4 +++-
+ 2 files changed, 46 insertions(+), 14 deletions(-)
 
---- a/fs/erofs/inode.c
-+++ b/fs/erofs/inode.c
-@@ -8,31 +8,80 @@
- 
- #include <trace/events/erofs.h>
- 
--/* no locking */
--static int erofs_read_inode(struct inode *inode, void *data)
-+/*
-+ * if inode is successfully read, return its inode page (or sometimes
-+ * the inode payload page if it's an extended inode) in order to fill
-+ * inline data if possible.
-+ */
-+static struct page *erofs_read_inode(struct inode *inode,
-+				     unsigned int *ofs)
- {
-+	struct super_block *sb = inode->i_sb;
-+	struct erofs_sb_info *sbi = EROFS_SB(sb);
- 	struct erofs_inode *vi = EROFS_I(inode);
--	struct erofs_inode_compact *dic = data;
--	struct erofs_inode_extended *die;
-+	const erofs_off_t inode_loc = iloc(sbi, vi->nid);
- 
--	const unsigned int ifmt = le16_to_cpu(dic->i_format);
--	struct erofs_sb_info *sbi = EROFS_SB(inode->i_sb);
--	erofs_blk_t nblks = 0;
-+	erofs_blk_t blkaddr, nblks = 0;
-+	struct page *page;
-+	struct erofs_inode_compact *dic;
-+	struct erofs_inode_extended *die, *copied = NULL;
-+	unsigned int ifmt;
-+	int err;
- 
--	vi->datalayout = erofs_inode_datalayout(ifmt);
-+	blkaddr = erofs_blknr(inode_loc);
-+	*ofs = erofs_blkoff(inode_loc);
- 
-+	erofs_dbg("%s, reading inode nid %llu at %u of blkaddr %u",
-+		  __func__, vi->nid, *ofs, blkaddr);
-+
-+	page = erofs_get_meta_page(sb, blkaddr);
-+	if (IS_ERR(page)) {
-+		erofs_err(sb, "failed to get inode (nid: %llu) page, err %ld",
-+			  vi->nid, PTR_ERR(page));
-+		return page;
-+	}
-+
-+	dic = page_address(page) + *ofs;
-+	ifmt = le16_to_cpu(dic->i_format);
-+
-+	vi->datalayout = erofs_inode_datalayout(ifmt);
- 	if (vi->datalayout >= EROFS_INODE_DATALAYOUT_MAX) {
- 		erofs_err(inode->i_sb, "unsupported datalayout %u of nid %llu",
- 			  vi->datalayout, vi->nid);
--		DBG_BUGON(1);
--		return -EOPNOTSUPP;
-+		err = -EOPNOTSUPP;
-+		goto err_out;
- 	}
- 
- 	switch (erofs_inode_version(ifmt)) {
- 	case EROFS_INODE_LAYOUT_EXTENDED:
--		die = data;
--
- 		vi->inode_isize = sizeof(struct erofs_inode_extended);
-+		/* check if the inode acrosses page boundary */
-+		if (*ofs + vi->inode_isize <= PAGE_SIZE) {
-+			*ofs += vi->inode_isize;
-+			die = (struct erofs_inode_extended *)dic;
-+		} else {
-+			const unsigned int gotten = PAGE_SIZE - *ofs;
-+
-+			copied = kmalloc(vi->inode_isize, GFP_NOFS);
-+			if (!copied) {
-+				err = -ENOMEM;
-+				goto err_out;
-+			}
-+			memcpy(copied, dic, gotten);
-+			unlock_page(page);
-+			put_page(page);
-+
-+			page = erofs_get_meta_page(sb, blkaddr + 1);
-+			if (IS_ERR(page)) {
-+				erofs_err(sb, "failed to get inode payload page (nid: %llu), err %ld",
-+					  vi->nid, PTR_ERR(page));
-+				kfree(copied);
-+				return page;
-+			}
-+			*ofs = vi->inode_isize - gotten;
-+			memcpy((u8 *)copied + gotten, page_address(page), *ofs);
-+			die = copied;
-+		}
- 		vi->xattr_isize = erofs_xattr_ibody_size(die->i_xattr_icount);
- 
- 		inode->i_mode = le16_to_cpu(die->i_mode);
-@@ -69,9 +118,12 @@ static int erofs_read_inode(struct inode
- 		/* total blocks for compressed files */
- 		if (erofs_inode_is_data_compressed(vi->datalayout))
- 			nblks = le32_to_cpu(die->i_u.compressed_blocks);
-+
-+		kfree(copied);
- 		break;
- 	case EROFS_INODE_LAYOUT_COMPACT:
- 		vi->inode_isize = sizeof(struct erofs_inode_compact);
-+		*ofs += vi->inode_isize;
- 		vi->xattr_isize = erofs_xattr_ibody_size(dic->i_xattr_icount);
- 
- 		inode->i_mode = le16_to_cpu(dic->i_mode);
-@@ -111,8 +163,8 @@ static int erofs_read_inode(struct inode
- 		erofs_err(inode->i_sb,
- 			  "unsupported on-disk inode version %u of nid %llu",
- 			  erofs_inode_version(ifmt), vi->nid);
--		DBG_BUGON(1);
--		return -EOPNOTSUPP;
-+		err = -EOPNOTSUPP;
-+		goto err_out;
- 	}
- 
- 	if (!nblks)
-@@ -120,13 +172,18 @@ static int erofs_read_inode(struct inode
- 		inode->i_blocks = roundup(inode->i_size, EROFS_BLKSIZ) >> 9;
- 	else
- 		inode->i_blocks = nblks << LOG_SECTORS_PER_BLOCK;
--	return 0;
-+	return page;
- 
- bogusimode:
- 	erofs_err(inode->i_sb, "bogus i_mode (%o) @ nid %llu",
- 		  inode->i_mode, vi->nid);
-+	err = -EFSCORRUPTED;
-+err_out:
- 	DBG_BUGON(1);
--	return -EFSCORRUPTED;
-+	kfree(copied);
-+	unlock_page(page);
-+	put_page(page);
-+	return ERR_PTR(err);
+diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatrix.c
+index 73aaae5..e020faf 100644
+--- a/drivers/ptp/ptp_clockmatrix.c
++++ b/drivers/ptp/ptp_clockmatrix.c
+@@ -142,16 +142,15 @@ static int idtcm_strverscmp(const char *ver1, const char *ver2)
+ 	return result;
  }
  
- static int erofs_fill_symlink(struct inode *inode, void *data,
-@@ -146,7 +203,7 @@ static int erofs_fill_symlink(struct ino
- 	if (!lnk)
- 		return -ENOMEM;
- 
--	m_pofs += vi->inode_isize + vi->xattr_isize;
-+	m_pofs += vi->xattr_isize;
- 	/* inline symlink data shouldn't cross page boundary as well */
- 	if (m_pofs + inode->i_size > PAGE_SIZE) {
- 		kfree(lnk);
-@@ -167,37 +224,17 @@ static int erofs_fill_symlink(struct ino
- 
- static int erofs_fill_inode(struct inode *inode, int isdir)
+-static int idtcm_xfer(struct idtcm *idtcm,
+-		      u8 regaddr,
+-		      u8 *buf,
+-		      u16 count,
+-		      bool write)
++static int idtcm_xfer_read(struct idtcm *idtcm,
++			   u8 regaddr,
++			   u8 *buf,
++			   u16 count)
  {
--	struct super_block *sb = inode->i_sb;
- 	struct erofs_inode *vi = EROFS_I(inode);
- 	struct page *page;
--	void *data;
--	int err;
--	erofs_blk_t blkaddr;
- 	unsigned int ofs;
--	erofs_off_t inode_loc;
-+	int err = 0;
+ 	struct i2c_client *client = idtcm->client;
+ 	struct i2c_msg msg[2];
+ 	int cnt;
+-	char *fmt = "i2c_transfer failed at %d in %s for %s, at addr: %04X!\n";
++	char *fmt = "i2c_transfer failed at %d in %s, at addr: %04X!\n";
  
- 	trace_erofs_fill_inode(inode, isdir);
--	inode_loc = iloc(EROFS_SB(sb), vi->nid);
--	blkaddr = erofs_blknr(inode_loc);
--	ofs = erofs_blkoff(inode_loc);
--
--	erofs_dbg("%s, reading inode nid %llu at %u of blkaddr %u",
--		  __func__, vi->nid, ofs, blkaddr);
+ 	msg[0].addr = client->addr;
+ 	msg[0].flags = 0;
+@@ -159,7 +158,7 @@ static int idtcm_xfer(struct idtcm *idtcm,
+ 	msg[0].buf = &regaddr;
  
--	page = erofs_get_meta_page(sb, blkaddr);
--
--	if (IS_ERR(page)) {
--		erofs_err(sb, "failed to get inode (nid: %llu) page, err %ld",
--			  vi->nid, PTR_ERR(page));
-+	/* read inode base data from disk */
-+	page = erofs_read_inode(inode, &ofs);
-+	if (IS_ERR(page))
- 		return PTR_ERR(page);
--	}
--
--	DBG_BUGON(!PageUptodate(page));
--	data = page_address(page);
--
--	err = erofs_read_inode(inode, data + ofs);
--	if (err)
--		goto out_unlock;
+ 	msg[1].addr = client->addr;
+-	msg[1].flags = write ? 0 : I2C_M_RD;
++	msg[1].flags = I2C_M_RD;
+ 	msg[1].len = count;
+ 	msg[1].buf = buf;
  
- 	/* setup the new inode */
- 	switch (inode->i_mode & S_IFMT) {
-@@ -210,7 +247,7 @@ static int erofs_fill_inode(struct inode
- 		inode->i_fop = &erofs_dir_fops;
- 		break;
- 	case S_IFLNK:
--		err = erofs_fill_symlink(inode, data, ofs);
-+		err = erofs_fill_symlink(inode, page_address(page), ofs);
- 		if (err)
- 			goto out_unlock;
- 		inode_nohighmem(inode);
-
+@@ -170,7 +169,6 @@ static int idtcm_xfer(struct idtcm *idtcm,
+ 			fmt,
+ 			__LINE__,
+ 			__func__,
+-			write ? "write" : "read",
+ 			regaddr);
+ 		return cnt;
+ 	} else if (cnt != 2) {
+@@ -182,6 +180,37 @@ static int idtcm_xfer(struct idtcm *idtcm,
+ 	return 0;
+ }
+ 
++static int idtcm_xfer_write(struct idtcm *idtcm,
++			    u8 regaddr,
++			    u8 *buf,
++			    u16 count)
++{
++	struct i2c_client *client = idtcm->client;
++	/* we add 1 byte for device register */
++	u8 msg[IDTCM_MAX_WRITE_COUNT + 1];
++	int cnt;
++	char *fmt = "i2c_master_send failed at %d in %s, at addr: %04X!\n";
++
++	if (count > IDTCM_MAX_WRITE_COUNT)
++		return -EINVAL;
++
++	msg[0] = regaddr;
++	memcpy(&msg[1], buf, count);
++
++	cnt = i2c_master_send(client, msg, count + 1);
++
++	if (cnt < 0) {
++		dev_err(&client->dev,
++			fmt,
++			__LINE__,
++			__func__,
++			regaddr);
++		return cnt;
++	}
++
++	return 0;
++}
++
+ static int idtcm_page_offset(struct idtcm *idtcm, u8 val)
+ {
+ 	u8 buf[4];
+@@ -195,7 +224,7 @@ static int idtcm_page_offset(struct idtcm *idtcm, u8 val)
+ 	buf[2] = 0x10;
+ 	buf[3] = 0x20;
+ 
+-	err = idtcm_xfer(idtcm, PAGE_ADDR, buf, sizeof(buf), 1);
++	err = idtcm_xfer_write(idtcm, PAGE_ADDR, buf, sizeof(buf));
+ 
+ 	if (err) {
+ 		idtcm->page_offset = 0xff;
+@@ -223,11 +252,12 @@ static int _idtcm_rdwr(struct idtcm *idtcm,
+ 	err = idtcm_page_offset(idtcm, hi);
+ 
+ 	if (err)
+-		goto out;
++		return err;
+ 
+-	err = idtcm_xfer(idtcm, lo, buf, count, write);
+-out:
+-	return err;
++	if (write)
++		return idtcm_xfer_write(idtcm, lo, buf, count);
++
++	return idtcm_xfer_read(idtcm, lo, buf, count);
+ }
+ 
+ static int idtcm_read(struct idtcm *idtcm,
+diff --git a/drivers/ptp/ptp_clockmatrix.h b/drivers/ptp/ptp_clockmatrix.h
+index ffae56c..344aa04 100644
+--- a/drivers/ptp/ptp_clockmatrix.h
++++ b/drivers/ptp/ptp_clockmatrix.h
+@@ -53,7 +53,9 @@
+ 
+ #define OUTPUT_MODULE_FROM_INDEX(index)	(OUTPUT_0 + (index) * 0x10)
+ 
+-#define PEROUT_ENABLE_OUTPUT_MASK		(0xdeadbeef)
++#define PEROUT_ENABLE_OUTPUT_MASK	(0xdeadbeef)
++
++#define IDTCM_MAX_WRITE_COUNT		(512)
+ 
+ /* Values of DPLL_N.DPLL_MODE.PLL_MODE */
+ enum pll_mode {
+-- 
+2.7.4
 
