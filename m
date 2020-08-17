@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A4E246FFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 358E8246F1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 19:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389908AbgHQR5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 13:57:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35748 "EHLO mail.kernel.org"
+        id S1731567AbgHQRmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 13:42:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388551AbgHQQK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:10:29 -0400
+        id S1731114AbgHQQQj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 12:16:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DDD6F22DA7;
-        Mon, 17 Aug 2020 16:10:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D71022BEA;
+        Mon, 17 Aug 2020 16:16:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597680627;
-        bh=Kp8YB+cckSSzEOMiviR23Op7YTUgP0UQ2ytfzormX48=;
+        s=default; t=1597680976;
+        bh=7nvE3dkhdEe7sJvLakuPkpz8dtwTtFlRFnVNQXuA5ho=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XS679j2JrGyiID5S+YI6N90Azk9epqgEs39Dq5ds5Pyq8J/wQPjiomdSzN2VCCCqs
-         6zooCOUn+ZVNcsNtmn7CnlWHELpyIiZVlF+/3J/4eR/XdgSdNVvc5A2rNOUR1g/sde
-         d+M4FQPNungMwNY4kQ2haQcYPmLIWItXWOdewCVE=
+        b=t8yoQhMRQkZIAT+TsyGCqzEaGr9JY2OxqTwKIm+XBYlm3yo3SYU5ayb6t1p+fEIPV
+         6H2RjFHo1NFvpXSSe7AhHXdY9OFk6HXjI5/MUCTepBvpdnfbd+mfcekCooG0G0Kn70
+         8/1uE3RGOh45ohMPB2IGEqHK69HdYrNaIksCg6oQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hector Martin <marcan@marcan.st>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 232/270] ALSA: usb-audio: fix overeager device match for MacroSilicon MS2109
-Date:   Mon, 17 Aug 2020 17:17:13 +0200
-Message-Id: <20200817143807.353670508@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 103/168] Smack: prevent underflow in smk_set_cipso()
+Date:   Mon, 17 Aug 2020 17:17:14 +0200
+Message-Id: <20200817143738.859256032@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200817143755.807583758@linuxfoundation.org>
-References: <20200817143755.807583758@linuxfoundation.org>
+In-Reply-To: <20200817143733.692105228@linuxfoundation.org>
+References: <20200817143733.692105228@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hector Martin <marcan@marcan.st>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 14a720dc1f5332f3bdf30a23a3bc549e81be974c upstream.
+[ Upstream commit 42a2df3e829f3c5562090391b33714b2e2e5ad4a ]
 
-Matching by device matches all interfaces, which breaks the video/HID
-portions of the device depending on module load order.
+We have an upper bound on "maplevel" but forgot to check for negative
+values.
 
-Fixes: e337bf19f6af ("ALSA: usb-audio: add quirk for MacroSilicon MS2109")
-Cc: stable@vger.kernel.org
-Signed-off-by: Hector Martin <marcan@marcan.st>
-Link: https://lore.kernel.org/r/20200810045319.128745-1-marcan@marcan.st
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: e114e473771c ("Smack: Simplified Mandatory Access Control Kernel")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/quirks-table.h |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ security/smack/smackfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -3623,7 +3623,13 @@ ALC1220_VB_DESKTOP(0x26ce, 0x0a01), /* A
-  * with.
-  */
- {
--	USB_DEVICE(0x534d, 0x2109),
-+	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
-+		       USB_DEVICE_ID_MATCH_INT_CLASS |
-+		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
-+	.idVendor = 0x534d,
-+	.idProduct = 0x2109,
-+	.bInterfaceClass = USB_CLASS_AUDIO,
-+	.bInterfaceSubClass = USB_SUBCLASS_AUDIOCONTROL,
- 	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
- 		.vendor_name = "MacroSilicon",
- 		.product_name = "MS2109",
+diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
+index 981f582539acf..accd3846f1e3e 100644
+--- a/security/smack/smackfs.c
++++ b/security/smack/smackfs.c
+@@ -912,7 +912,7 @@ static ssize_t smk_set_cipso(struct file *file, const char __user *buf,
+ 	}
+ 
+ 	ret = sscanf(rule, "%d", &maplevel);
+-	if (ret != 1 || maplevel > SMACK_CIPSO_MAXLEVEL)
++	if (ret != 1 || maplevel < 0 || maplevel > SMACK_CIPSO_MAXLEVEL)
+ 		goto out;
+ 
+ 	rule += SMK_DIGITLEN;
+-- 
+2.25.1
+
 
 
