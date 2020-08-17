@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406AF2461C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 709F52461C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 11:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728687AbgHQJDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 05:03:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58570 "EHLO
+        id S1728662AbgHQJC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 05:02:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728574AbgHQJCt (ORCPT
+        with ESMTP id S1728482AbgHQJCy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 05:02:49 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D08C061389;
-        Mon, 17 Aug 2020 02:02:49 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id mt12so7496612pjb.4;
-        Mon, 17 Aug 2020 02:02:49 -0700 (PDT)
+        Mon, 17 Aug 2020 05:02:54 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0081EC061389;
+        Mon, 17 Aug 2020 02:02:53 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id x25so7919257pff.4;
+        Mon, 17 Aug 2020 02:02:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=fyyx5l8JBWdsh/vzK9XkI9lqTabxVOq8Vrtc0Hw0vUw=;
-        b=tFFetna8jRJGMqAQA4gg5CD4aJnfg7vJVX2XDgITV0TAHrZGa3EqUKCj9X6roVS5ua
-         z/bDFWyUaKt5hZ8eLbEPXauBjLbr7vULyfh2HFpNOrOrHKQspo1GpKhj2CVYSiqlOz5C
-         E1Ty/AgVyY+Jwc7oa/2GIpXxmmuWnm7GKDqOIB5MhOztkcPbFfDxayheFXZrohbg62XB
-         3YGfCksc/u4epg7xhLM7TDqpQ+iPBG9DZ1GKR8YPry+Cy6xxc3eNwJo8i/lrFtKiW6jo
-         cGlkep4oOA/E6A9HY5up7IdKcLTpd0CCE6MyIWeYwwaubVPlmp8tlZkmdmDxBBQDLqFu
-         FnKw==
+        bh=9gjqpRS8olyjc/G08W3tsbKuo7w0JyAKTnFiPDwOnLs=;
+        b=Y8e7p5A+U70fs8zMCX99v4qWd6fhAwzqCgzVw6MybAu0YKzv985Gzz88KVzjlO00kH
+         ZAjoOPBR7uVDqzY14l50NCRxWKxebE4hCuLp3K82NcoayY1F4MmINy2f5odh9eHAndnu
+         C2NiQKq3ADK50JyGQPJa+npJ4re/v4TtPyhWg9Ji4D+RO3dxkLFyhA1P0wFFg7kTBxd1
+         b7RqHitiCauEPujt1dsnfyTsWUKed/bl9Yh7l8IX1Jvl2G6n9K6la8snK/umY1tdQSgW
+         KDOIL8eRZTWF6bSt4eI8gJuznMohjSDQ+jTZsbLhNXvtsfB7P7kVvBJ+6WNyPH7oaPwN
+         8b6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=fyyx5l8JBWdsh/vzK9XkI9lqTabxVOq8Vrtc0Hw0vUw=;
-        b=BXAMmPVCOir40gUPuEMm3xaPMSzHpjvk7YS/qHiGGQl4QPz5AerPZ6eLxDO3tvh749
-         bVZoIjuP1hstUOHh6TjMfJWy1LiKGnAfB/Rl4HlRshwseh2lqj9TX6LluBil/8Lg61ha
-         YLLJ+OIr6a/onDQ0VdXCycJ18f7hPXciruko3ImJwJ/H3L86uBLM7Ec1QfOIej+u1Rd2
-         +1Ikf7lF1hUEcuHCRwiGOhKRtyHnbQeTYe+WqR3j2U1ca0j66ZCZSd/rZHgng5klofDJ
-         R1S09bS/4PGOs/UltP8dwYzv0jrsMa53d6EBoRUFiz+wqYU/ZrwpEWTJNbb0ciRdt3lt
-         v/Ug==
-X-Gm-Message-State: AOAM5323KMiw/FiKY9bteKoYUZeKi+dRqlG2FQ+jhikfATtJ9r70g56F
-        XT0NVBvJnAp9K2GGlP1mzW4=
-X-Google-Smtp-Source: ABdhPJzhCkInkV1nfo/rOzX+w0Rb6oz49Qjtqes/TFI+PpxRKs02Pp4T3OSKhx5YtGjO6CHHY4rWlA==
-X-Received: by 2002:a17:902:d715:: with SMTP id w21mr10488997ply.197.1597654968699;
-        Mon, 17 Aug 2020 02:02:48 -0700 (PDT)
+        bh=9gjqpRS8olyjc/G08W3tsbKuo7w0JyAKTnFiPDwOnLs=;
+        b=hu76dRLqQQQ7cYCNjUxDfwUB5IQzLxrTDCuG/dBZcI8lZp73S4AR4UqYKtvukn9UxK
+         8o2y+9DhdDYVs18/jxQqf6AMCfKQXQE7xZllI9RHdID4t3sBKB8H99jgAxzdTQ9xkd2G
+         7RTZ/v4TeRg9b67NNx8T7pNYavRvaYV8sI9wwzs35yx/NMsU4OFIE2PNq/5ITKl87PFB
+         3ZiEBV4Lzbsh/33wdnOjvYcF8Sy5WcJK6Y/OC1ntv0gOwkP4GgTaD6/kwKStqgejKMUx
+         sCiA5Fg/3CuM+cXTa3s/hJV4IAbK1gROeqiG1dk3nbinQIT4qKyYUJhZhWicC/RPAXq+
+         iF5g==
+X-Gm-Message-State: AOAM530RHXIQZN3/MXNHf4N3XKEDXFqAYRokY+n/YebSvjWtjLhBvh4Y
+        lgp02Uyj4ZYxWTTybSvngp4=
+X-Google-Smtp-Source: ABdhPJwCbYSaFDUdxe1jOJYWD7q8rFdA3Zk4x0wFc5VcGkSDok1smRFfy3wXDtC7EEtu4HiZJA6q+w==
+X-Received: by 2002:aa7:9ecd:: with SMTP id r13mr7291913pfq.317.1597654973506;
+        Mon, 17 Aug 2020 02:02:53 -0700 (PDT)
 Received: from localhost.localdomain ([49.207.202.98])
-        by smtp.gmail.com with ESMTPSA id f3sm19488238pfj.206.2020.08.17.02.02.44
+        by smtp.gmail.com with ESMTPSA id f3sm19488238pfj.206.2020.08.17.02.02.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 02:02:48 -0700 (PDT)
+        Mon, 17 Aug 2020 02:02:52 -0700 (PDT)
 From:   Allen Pais <allen.cryptic@gmail.com>
 To:     duncan.sands@free.fr, gregkh@linuxfoundation.org,
         jacmet@sunsite.dk, balbi@kernel.org, leoyang.li@nxp.com,
@@ -55,9 +55,9 @@ Cc:     keescook@chromium.org, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         Allen Pais <allen.lkml@gmail.com>,
         Romain Perier <romain.perier@gmail.com>
-Subject: [PATCH 5/7] usb/gadget: fsl_qe_udc: convert tasklets to use new tasklet_setup() API
-Date:   Mon, 17 Aug 2020 14:32:07 +0530
-Message-Id: <20200817090209.26351-6-allen.cryptic@gmail.com>
+Subject: [PATCH 6/7] usb: xhci: convert tasklets to use new tasklet_setup() API
+Date:   Mon, 17 Aug 2020 14:32:08 +0530
+Message-Id: <20200817090209.26351-7-allen.cryptic@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200817090209.26351-1-allen.cryptic@gmail.com>
 References: <20200817090209.26351-1-allen.cryptic@gmail.com>
@@ -76,35 +76,39 @@ and from_tasklet() to pass the tasklet pointer explicitly.
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 ---
- drivers/usb/gadget/udc/fsl_qe_udc.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/usb/host/xhci-dbgtty.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/usb/gadget/udc/fsl_qe_udc.c b/drivers/usb/gadget/udc/fsl_qe_udc.c
-index 2707be628298..fa66449b3907 100644
---- a/drivers/usb/gadget/udc/fsl_qe_udc.c
-+++ b/drivers/usb/gadget/udc/fsl_qe_udc.c
-@@ -923,9 +923,9 @@ static int qe_ep_rxframe_handle(struct qe_ep *ep)
- 	return 0;
- }
+diff --git a/drivers/usb/host/xhci-dbgtty.c b/drivers/usb/host/xhci-dbgtty.c
+index b8918f73a432..ae4e4ab638b5 100644
+--- a/drivers/usb/host/xhci-dbgtty.c
++++ b/drivers/usb/host/xhci-dbgtty.c
+@@ -288,14 +288,14 @@ static const struct tty_operations dbc_tty_ops = {
+ 	.unthrottle		= dbc_tty_unthrottle,
+ };
  
--static void ep_rx_tasklet(unsigned long data)
-+static void ep_rx_tasklet(struct tasklet_struct *t)
+-static void dbc_rx_push(unsigned long _port)
++static void dbc_rx_push(struct tasklet_struct *t)
  {
--	struct qe_udc *udc = (struct qe_udc *)data;
-+	struct qe_udc *udc = from_tasklet(udc, t, rx_tasklet);
- 	struct qe_ep *ep;
- 	struct qe_frame *pframe;
- 	struct qe_bd __iomem *bd;
-@@ -2553,8 +2553,7 @@ static int qe_udc_probe(struct platform_device *ofdev)
- 					DMA_TO_DEVICE);
- 	}
+ 	struct dbc_request	*req;
+ 	struct tty_struct	*tty;
+ 	unsigned long		flags;
+ 	bool			do_push = false;
+ 	bool			disconnect = false;
+-	struct dbc_port		*port = (void *)_port;
++	struct dbc_port		*port = from_tasklet(port, t, push);
+ 	struct list_head	*queue = &port->read_queue;
  
--	tasklet_init(&udc->rx_tasklet, ep_rx_tasklet,
--			(unsigned long)udc);
-+	tasklet_setup(&udc->rx_tasklet, ep_rx_tasklet);
- 	/* request irq and disable DR  */
- 	udc->usb_irq = irq_of_parse_and_map(np, 0);
- 	if (!udc->usb_irq) {
+ 	spin_lock_irqsave(&port->port_lock, flags);
+@@ -382,7 +382,7 @@ xhci_dbc_tty_init_port(struct xhci_dbc *dbc, struct dbc_port *port)
+ {
+ 	tty_port_init(&port->port);
+ 	spin_lock_init(&port->port_lock);
+-	tasklet_init(&port->push, dbc_rx_push, (unsigned long)port);
++	tasklet_setup(&port->push, dbc_rx_push);
+ 	INIT_LIST_HEAD(&port->read_pool);
+ 	INIT_LIST_HEAD(&port->read_queue);
+ 	INIT_LIST_HEAD(&port->write_pool);
 -- 
 2.17.1
 
