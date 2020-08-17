@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BCE924763E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82372247639
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732294AbgHQTfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:35:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48412 "EHLO mail.kernel.org"
+        id S1732337AbgHQTfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:35:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729425AbgHQP3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:29:35 -0400
+        id S1730131AbgHQP3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:29:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B821323BE2;
-        Mon, 17 Aug 2020 15:29:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA1EE2395B;
+        Mon, 17 Aug 2020 15:29:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678174;
-        bh=I0mBP7wTCEKkZIwHjCDfXcQWyWEOqJFbo3CJkQzU6tM=;
+        s=default; t=1597678183;
+        bh=BuJEaREvInwyPxaAcnGoOa/f2RTigPclr2JZ8rA+a6Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uHiCEKVoCE8AHo/GCm4wLGyioymWD3Kkm3HJEqJJnOIfG9IjxzRFy4u3idJKd6nVR
-         VgfiW6a5NVnSzNdlzGSN2O8nTIUBr/k0GoRCDLgs2kSa1qHgy+O2reKXZ3L+twUfSx
-         j973Pa2756YdpInrR50EssfzsCuxvJfnmozls0cc=
+        b=KkbC00oPTHFIT6I/0pS/XC/sKSNXi3W5ZGX4r8M0xyBSZSCO4fqEexvgTJKWFh/OO
+         hGCtj2ICsLB2xVFf7W/znue3vZt+Qob3m1bINq97fGCy6I3Flq9nho0fqUZS1qUUD5
+         IrVYNwcfRKCMt27eKPuO64nbWcGtHqBpEVnW2UxM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 243/464] ima: Fail rule parsing when the KEXEC_CMDLINE hook is combined with an invalid cond
-Date:   Mon, 17 Aug 2020 17:13:16 +0200
-Message-Id: <20200817143845.436176143@linuxfoundation.org>
+Subject: [PATCH 5.8 246/464] ASoC: meson: fixes the missed kfree() for axg_card_add_tdm_loopback
+Date:   Mon, 17 Aug 2020 17:13:19 +0200
+Message-Id: <20200817143845.580630640@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200817143833.737102804@linuxfoundation.org>
 References: <20200817143833.737102804@linuxfoundation.org>
@@ -45,78 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tyler Hicks <tyhicks@linux.microsoft.com>
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-[ Upstream commit db2045f5892a9db7354442bf77f9b03b50ff9ee1 ]
+[ Upstream commit bd054ece7d9cdd88e900df6625e951a01d9f655e ]
 
-The KEXEC_CMDLINE hook function only supports the pcr conditional. Make
-this clear at policy load so that IMA policy authors don't assume that
-other conditionals are supported.
+axg_card_add_tdm_loopback() misses to call kfree() in an error path. We
+can use devm_kasprintf() to fix the issue, also improve maintainability.
+So use it instead.
 
-Since KEXEC_CMDLINE's inception, ima_match_rules() has always returned
-true on any loaded KEXEC_CMDLINE rule without any consideration for
-other conditionals present in the rule. Make it clear that pcr is the
-only supported KEXEC_CMDLINE conditional by returning an error during
-policy load.
-
-An example of why this is a problem can be explained with the following
-rule:
-
- dont_measure func=KEXEC_CMDLINE obj_type=foo_t
-
-An IMA policy author would have assumed that rule is valid because the
-parser accepted it but the result was that measurements for all
-KEXEC_CMDLINE operations would be disabled.
-
-Fixes: b0935123a183 ("IMA: Define a new hook to measure the kexec boot command line arguments")
-Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+Fixes: c84836d7f650 ("ASoC: meson: axg-card: use modern dai_link style")
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20200717082242.130627-1-jingxiangfeng@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/integrity/ima/ima_policy.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ sound/soc/meson/axg-card.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-index a3d72342408ad..a77e0b34e72f7 100644
---- a/security/integrity/ima/ima_policy.c
-+++ b/security/integrity/ima/ima_policy.c
-@@ -343,6 +343,17 @@ static int ima_lsm_update_rule(struct ima_rule_entry *entry)
- 	return 0;
- }
+diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
+index 89f7f64747cd0..47f2d93224fea 100644
+--- a/sound/soc/meson/axg-card.c
++++ b/sound/soc/meson/axg-card.c
+@@ -116,7 +116,7 @@ static int axg_card_add_tdm_loopback(struct snd_soc_card *card,
  
-+static bool ima_rule_contains_lsm_cond(struct ima_rule_entry *entry)
-+{
-+	int i;
-+
-+	for (i = 0; i < MAX_LSM_RULES; i++)
-+		if (entry->lsm[i].args_p)
-+			return true;
-+
-+	return false;
-+}
-+
- /*
-  * The LSM policy can be reloaded, leaving the IMA LSM based rules referring
-  * to the old, stale LSM policy.  Update the IMA LSM based rules to reflect
-@@ -998,6 +1009,16 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
- 		/* Validation of these hook functions is in ima_parse_rule() */
- 		break;
- 	case KEXEC_CMDLINE:
-+		if (entry->action & ~(MEASURE | DONT_MEASURE))
-+			return false;
-+
-+		if (entry->flags & ~(IMA_FUNC | IMA_PCR))
-+			return false;
-+
-+		if (ima_rule_contains_lsm_cond(entry))
-+			return false;
-+
-+		break;
- 	case KEY_CHECK:
- 		if (entry->action & ~(MEASURE | DONT_MEASURE))
- 			return false;
+ 	lb = &card->dai_link[*index + 1];
+ 
+-	lb->name = kasprintf(GFP_KERNEL, "%s-lb", pad->name);
++	lb->name = devm_kasprintf(card->dev, GFP_KERNEL, "%s-lb", pad->name);
+ 	if (!lb->name)
+ 		return -ENOMEM;
+ 
 -- 
 2.25.1
 
