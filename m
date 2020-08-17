@@ -2,59 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5652475B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78701247538
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Aug 2020 21:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732149AbgHQT1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 15:27:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36020 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730386AbgHQPdd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:33:33 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 273CA22CAE;
-        Mon, 17 Aug 2020 15:33:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597678413;
-        bh=oRpPTF8CLVl2GdwVLqbcgNxfGrfqo2YvIIghubdcD3U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cuCOTw7vdPagZu/YDOJ36n2k21iuhjC6Q+xcZCv5VwkvMnHehBKNuY7qWH1YfhLfQ
-         uxs01fevGl2GXxKi+lBy8SDRp/QtPGUzthJFloMf+LShCgY+WQoz9xkezYTUR31ppl
-         J47G6NfE97P+DK4Vs9w04H/cBfS//QF3y2IB04fA=
-Date:   Mon, 17 Aug 2020 08:33:30 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Allen Pais <allen.lkml@gmail.com>
-Cc:     jes@trained-monkey.org, davem@davemloft.net, kda@linux-powerpc.org,
-        dougmill@linux.ibm.com, cooldavid@cooldavid.org,
-        mlindner@marvell.com, borisp@mellanox.com, keescook@chromium.org,
-        linux-acenic@sunsite.dk, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-rdma@vger.kernel.org,
-        oss-drivers@netronome.com, Romain Perier <romain.perier@gmail.com>
-Subject: Re: [PATCH 08/20] ethernet: hinic: convert tasklets to use new
- tasklet_setup() API
-Message-ID: <20200817083330.78e365eb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200817082434.21176-10-allen.lkml@gmail.com>
-References: <20200817082434.21176-1-allen.lkml@gmail.com>
-        <20200817082434.21176-10-allen.lkml@gmail.com>
+        id S2392355AbgHQTUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 15:20:53 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:34966 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730504AbgHQPgj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 11:36:39 -0400
+Received: from mail-qt1-f199.google.com ([209.85.160.199])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <gpiccoli@canonical.com>)
+        id 1k7hBZ-0003m7-49
+        for linux-kernel@vger.kernel.org; Mon, 17 Aug 2020 15:36:33 +0000
+Received: by mail-qt1-f199.google.com with SMTP id d2so12288415qtn.8
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 08:36:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:in-reply-to:from:subject:autocrypt
+         :message-id:date:user-agent:mime-version:content-language
+         :content-transfer-encoding;
+        bh=lX4oOpPokyQTRhoLahqmU7hqvUsW/41acop/Y5jmbvU=;
+        b=lQZg6DK5QXuk6HASQTe4gXU4atE0SswMRIqjU17EBygJtc9i5h9Ra9AUSs8ZT0B7wI
+         ihmoojEYgwDC/X8QnTe5/IvJsakmvib8AX3p3i5nczut6+iZpEnNiazg1+AViz+tEj3+
+         /XC28oGxbRrA9hGharOB38vEJx0538IO0muUvWd7vm/G9l4119s6YyUzuZH6hL6icfSJ
+         Q7tLyT71QROrniN4zYaDzC5xuTWkWHKJpXvocARNbwpUeiHrGJrd/tGl/YZ+9jAUngsY
+         gAp76C8ExgnI6aq9VETH/5Sy1MOqejUet7NFaPKj1cdz10uWUHmMsAx6YpEIKhvkAtTv
+         MApw==
+X-Gm-Message-State: AOAM533DQT2ceo/yFZQgSqd+TGC+VwnR0hfzxfLgw3l2uxKNtxOgj7dV
+        uyJCx8bB2wmpAId9Chea46uFtqF8n+T4ZFQAIDNkgPHkPaUDY+lMjLid1akkK7rLmfvzuU4y6Q3
+        0tZifW9MD2Qi15nZbr2FjSAq6FbVVqyE6d07+6hy+TQ==
+X-Received: by 2002:a05:620a:122c:: with SMTP id v12mr13770143qkj.113.1597678592181;
+        Mon, 17 Aug 2020 08:36:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzchQO2wunkBbUHR/IjckxcCFqozbIFfFvtzJjLWjYXzLfIMTg7Akjsd9tvlBZhBTWCddLYzA==
+X-Received: by 2002:a05:620a:122c:: with SMTP id v12mr13770114qkj.113.1597678591791;
+        Mon, 17 Aug 2020 08:36:31 -0700 (PDT)
+Received: from [192.168.1.75] ([191.8.4.228])
+        by smtp.gmail.com with ESMTPSA id n6sm16058624qkh.74.2020.08.17.08.36.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Aug 2020 08:36:30 -0700 (PDT)
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     jan.kiszka@siemens.com, jbeulich@suse.com,
+        linux-kernel@vger.kernel.org, marc.zyngier@arm.com,
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        "Guilherme G. Piccoli" <kernel@gpiccoli.net>,
+        gpiccoli@canonical.com, pedro.principeza@canonical.com
+In-Reply-To: 
+From:   "Guilherme G. Piccoli" <gpiccoli@canonical.com>
+Subject: Re: [PATCH 4.19 35/47] x86/irq: Seperate unused system vectors from
+ spurious entry again
+Autocrypt: addr=gpiccoli@canonical.com; prefer-encrypt=mutual; keydata=
+ xsBNBFpVBxcBCADPNKmu2iNKLepiv8+Ssx7+fVR8lrL7cvakMNFPXsXk+f0Bgq9NazNKWJIn
+ Qxpa1iEWTZcLS8ikjatHMECJJqWlt2YcjU5MGbH1mZh+bT3RxrJRhxONz5e5YILyNp7jX+Vh
+ 30rhj3J0vdrlIhPS8/bAt5tvTb3ceWEic9mWZMsosPavsKVcLIO6iZFlzXVu2WJ9cov8eQM/
+ irIgzvmFEcRyiQ4K+XUhuA0ccGwgvoJv4/GWVPJFHfMX9+dat0Ev8HQEbN/mko/bUS4Wprdv
+ 7HR5tP9efSLucnsVzay0O6niZ61e5c97oUa9bdqHyApkCnGgKCpg7OZqLMM9Y3EcdMIJABEB
+ AAHNLUd1aWxoZXJtZSBHLiBQaWNjb2xpIDxncGljY29saUBjYW5vbmljYWwuY29tPsLAdwQT
+ AQgAIQUCWmClvQIbAwULCQgHAgYVCAkKCwIEFgIDAQIeAQIXgAAKCRDOR5EF9K/7Gza3B/9d
+ 5yczvEwvlh6ksYq+juyuElLvNwMFuyMPsvMfP38UslU8S3lf+ETukN1S8XVdeq9yscwtsRW/
+ 4YoUwHinJGRovqy8gFlm3SAtjfdqysgJqUJwBmOtcsHkmvFXJmPPGVoH9rMCUr9s6VDPox8f
+ q2W5M7XE9YpsfchS/0fMn+DenhQpV3W6pbLtuDvH/81GKrhxO8whSEkByZbbc+mqRhUSTdN3
+ iMpRL0sULKPVYbVMbQEAnfJJ1LDkPqlTikAgt3peP7AaSpGs1e3pFzSEEW1VD2jIUmmDku0D
+ LmTHRl4t9KpbU/H2/OPZkrm7809QovJGRAxjLLPcYOAP7DUeltvezsBNBFpVBxcBCADbxD6J
+ aNw/KgiSsbx5Sv8nNqO1ObTjhDR1wJw+02Bar9DGuFvx5/qs3ArSZkl8qX0X9Vhptk8rYnkn
+ pfcrtPBYLoux8zmrGPA5vRgK2ItvSc0WN31YR/6nqnMfeC4CumFa/yLl26uzHJa5RYYQ47jg
+ kZPehpc7IqEQ5IKy6cCKjgAkuvM1rDP1kWQ9noVhTUFr2SYVTT/WBHqUWorjhu57/OREo+Tl
+ nxI1KrnmW0DbF52tYoHLt85dK10HQrV35OEFXuz0QPSNrYJT0CZHpUprkUxrupDgkM+2F5LI
+ bIcaIQ4uDMWRyHpDbczQtmTke0x41AeIND3GUc+PQ4hWGp9XABEBAAHCwF8EGAEIAAkFAlpV
+ BxcCGwwACgkQzkeRBfSv+xv1wwgAj39/45O3eHN5pK0XMyiRF4ihH9p1+8JVfBoSQw7AJ6oU
+ 1Hoa+sZnlag/l2GTjC8dfEGNoZd3aRxqfkTrpu2TcfT6jIAsxGjnu+fUCoRNZzmjvRziw3T8
+ egSPz+GbNXrTXB8g/nc9mqHPPprOiVHDSK8aGoBqkQAPZDjUtRwVx112wtaQwArT2+bDbb/Y
+ Yh6gTrYoRYHo6FuQl5YsHop/fmTahpTx11IMjuh6IJQ+lvdpdfYJ6hmAZ9kiVszDF6pGFVkY
+ kHWtnE2Aa5qkxnA2HoFpqFifNWn5TyvJFpyqwVhVI8XYtXyVHub/WbXLWQwSJA4OHmqU8gDl
+ X18zwLgdiQ==
+Message-ID: <c2b7a96a-122e-bdec-7368-d54700a55915@canonical.com>
+Date:   Mon, 17 Aug 2020 12:36:25 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 Aug 2020 13:54:22 +0530 Allen Pais wrote:
-> In preparation for unconditionally passing the
-> struct tasklet_struct pointer to all tasklet
-> callbacks, switch to using the new tasklet_setup()
-> and from_tasklet() to pass the tasklet pointer explicitly.
-> 
-> Signed-off-by: Romain Perier <romain.perier@gmail.com>
-> Signed-off-by: Allen Pais <allen.lkml@gmail.com>
+Hi Greg / Thomas and all involved here. First, apologies for
+necro-bumping this thread, but I'm working a backport of this patch to
+kernel 4.15 (Ubuntu) and then I noticed we have it on stable, but only
+in 4.19+.
 
-drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.c:374: warning: Function parameter or member 't' not described in 'ceq_tasklet'
-drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.c:374: warning: Excess function parameter 'ceq_data' description in 'ceq_tasklet'
+Since the fixes tag presents an old commit (since ~3.19), I'm curious if
+we have a special reason to not have it on long-term stables, like 4.9
+or 4.14. It's a subtle portion of arch code, so I'm afraid I didn't see
+something that prevents its backport for previous versions.
+
+Thanks in advance,
+
+
+Guilherme
