@@ -2,65 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0DA02480C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C47B2480DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbgHRIgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 04:36:22 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:24052 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726145AbgHRIgV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 04:36:21 -0400
-X-UUID: 56fe74ee8da5410e9e41e283d0d89019-20200818
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=yCWYxl8u4fmCuo9QoLsyo+ItSwrT/KvrNuPZDJcZcvE=;
-        b=M+iK1nK5dCfreb7yQg13VIzB5qFYzftSe76jUIJXqdWuCL0Qpp4KkDoa8VigQfnCXpoDp65J+7JBMx1jkvLLIltkCEWqUnY+M4ck7UYJFDCXkBFcMS4G34nrhrerPdZvhTHiWGiAkCyjecw38LK6pgtmuUqFqb2pZrguufmtlmI=;
-X-UUID: 56fe74ee8da5410e9e41e283d0d89019-20200818
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <light.hsieh@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 372831850; Tue, 18 Aug 2020 16:36:19 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 18 Aug 2020 16:36:16 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 18 Aug 2020 16:36:17 +0800
-From:   <light.hsieh@mediatek.com>
-To:     <linus.walleij@linaro.org>
-CC:     <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sean.wang@kernel.org>,
-        <kuohong.wang@mediatek.com>, Light Hsieh <light.hsieh@mediatek.com>
-Subject: [PATCH v1 2/2] pinctrl: mediatek: make MediaTek MT6765 pinctrl driver support race-free register access
-Date:   Tue, 18 Aug 2020 16:36:16 +0800
-Message-ID: <1597739776-15944-2-git-send-email-light.hsieh@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1597739776-15944-1-git-send-email-light.hsieh@mediatek.com>
-References: <1597739776-15944-1-git-send-email-light.hsieh@mediatek.com>
+        id S1726683AbgHRIkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 04:40:39 -0400
+Received: from mga06.intel.com ([134.134.136.31]:40470 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726451AbgHRIki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 04:40:38 -0400
+IronPort-SDR: T9R1fIU2ryonDXheVzsQIsdXIECAukWDZyc9KZWzhKhQVPqQVEb+Xt+LSlPnOikUPKaqBKa78I
+ KBeF3WNjd21g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="216388157"
+X-IronPort-AV: E=Sophos;i="5.76,326,1592895600"; 
+   d="scan'208";a="216388157"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 01:40:37 -0700
+IronPort-SDR: IyUEvBF20eM7Hhc/CZ3qTnf0ZmrCmOt13gqRWqWoG9St1mIjB8NkWCQimi3/J5zs6pS031RCB1
+ 4ol/IsdRznOg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,326,1592895600"; 
+   d="scan'208";a="471722425"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by orsmga005.jf.intel.com with ESMTP; 18 Aug 2020 01:40:32 -0700
+Date:   Tue, 18 Aug 2020 16:36:47 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     broonie@kernel.org, linux-kernel@vger.kernel.org, trix@redhat.com,
+        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
+        lgoncalv@redhat.com, hao.wu@intel.com
+Subject: Re: [PATCH v3 0/2] add regmap-spi-avmm & Intel Max10 BMC chip support
+Message-ID: <20200818083647.GE22873@yilunxu-OptiPlex-7050>
+References: <1596614456-20182-1-git-send-email-yilun.xu@intel.com>
+ <20200817082410.GB19661@yilunxu-OptiPlex-7050>
+ <20200817091252.GV4354@dell>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200817091252.GV4354@dell>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTGlnaHQgSHNpZWggPGxpZ2h0LmhzaWVoQG1lZGlhdGVrLmNvbT4NCg0KVGhpcyBwYXRj
-aCBtYWtlIE1lZGlhVGVrIE1UNjc2NSBwaW5jdHJsIGRyaXZlciBzdXBwb3J0IHJhY2UtZnJlZSBy
-ZWdpc3RlciBhY2Nlc3MNCg0KU2lnbmVkLW9mZi1ieTogTGlnaHQgSHNpZWggPGxpZ2h0LmhzaWVo
-QG1lZGlhdGVrLmNvbT4NCi0tLQ0KIGRyaXZlcnMvcGluY3RybC9tZWRpYXRlay9waW5jdHJsLW10
-Njc2NS5jIHwgMiArKw0KIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykNCg0KZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvcGluY3RybC9tZWRpYXRlay9waW5jdHJsLW10Njc2NS5jIGIvZHJpdmVy
-cy9waW5jdHJsL21lZGlhdGVrL3BpbmN0cmwtbXQ2NzY1LmMNCmluZGV4IDJjNTlkMzkuLmYzM2Mz
-NzEgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3BpbmN0cmwvbWVkaWF0ZWsvcGluY3RybC1tdDY3NjUu
-Yw0KKysrIGIvZHJpdmVycy9waW5jdHJsL21lZGlhdGVrL3BpbmN0cmwtbXQ2NzY1LmMNCkBAIC0x
-MDcxLDYgKzEwNzEsOCBAQA0KIAkubmdycHMgPSBBUlJBWV9TSVpFKG10a19waW5zX210Njc2NSks
-DQogCS5laW50X2h3ID0gJm10Njc2NV9laW50X2h3LA0KIAkuZ3Bpb19tID0gMCwNCisJLnJhY2Vf
-ZnJlZV9hY2Nlc3MgPSB0cnVlLA0KKwkubXdyX2ZpZWxkX3dpZHRoID0gNCwNCiAJLmJhc2VfbmFt
-ZXMgPSBtdDY3NjVfcGluY3RybF9yZWdpc3Rlcl9iYXNlX25hbWVzLA0KIAkubmJhc2VfbmFtZXMg
-PSBBUlJBWV9TSVpFKG10Njc2NV9waW5jdHJsX3JlZ2lzdGVyX2Jhc2VfbmFtZXMpLA0KIAkuYmlh
-c19zZXRfY29tYm8gPSBtdGtfcGluY29uZl9iaWFzX3NldF9jb21ibywNCi0tIA0KMS44LjEuMS5k
-aXJ0eQ0K
+On Mon, Aug 17, 2020 at 10:12:52AM +0100, Lee Jones wrote:
+> On Mon, 17 Aug 2020, Xu Yilun wrote:
+> 
+> > Hi Brown & jones:
+> > 
+> > I tried to refacor the regmap code and add comments in this patchset. I
+> > made big changes to the rx flow and remove some tricky parts in it.
+> > 
+> > Would it be more understandable than last version? I'm expecting your
+> > comments on it when you have time, thanks in advance.
+> 
+> Just resubmit please.  We can review the code itself.
 
+Ok. I'll rebase it to 5.9-rc1 and resubmit it.
+
+Thanks,
+Yilun
+
+> 
+> -- 
+> Lee Jones [李琼斯]
+> Senior Technical Lead - Developer Services
+> Linaro.org │ Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
