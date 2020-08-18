@@ -2,93 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF96724822D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 11:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0CF3248235
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 11:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbgHRJt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 05:49:29 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:63592 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726273AbgHRJt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 05:49:27 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597744167; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=3wksdGO40o3VARZadJ14XsJCGAyoRmPiBj/5YMig9kA=;
- b=e6jFup17nQ9efCDcboudP5054bPRR59gub2PcAjSR2Nze5R4mRgEhX7Rb8CiFNvDYDpuQrnn
- GtenhFlfRMHog637BqAxicGVh714/abTaaXh5qWQvjNoD7EVYPveMO9MOAnNwf+bOqnh0Qiw
- fQlNkKgBpYixXC5KsSljB3VghDo=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5f3ba40d8567201751074d2e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 18 Aug 2020 09:49:01
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D38E5C433CB; Tue, 18 Aug 2020 09:49:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
-        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 680A9C433CA;
-        Tue, 18 Aug 2020 09:48:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 680A9C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1726611AbgHRJua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 05:50:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726398AbgHRJu2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 05:50:28 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48768C061342
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 02:50:28 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id c15so17602007wrs.11
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 02:50:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=KDn/L/KgtGjfXOwvFM3d0ycolsRtvWGhY+IU39u+X2I=;
+        b=sfBZhgvdUnGznJEo+Fcb9wMuFjWPXc+9UyK5W7mn6ZVikBjC9pqwkoJi5IafZR0gkl
+         vgL1ZKVd5RDfHNTuPkY3RFpg7AUtf3pNQi3J0mZpOMUC4qmcxHW5XLiUcOdGEllDSyLf
+         s/Eq4wUgkxMzpcZ5VGQfC2USDRS28oFOKG4naOfGrXD2liqaJDkHhTjmQJfK7qYw/0x1
+         kH3nYgWp/zwaj2VKMDJPyxYcCnAWU/+gx0CeriL/zJ3TjEDFYabY86wIKDQDVhaveEEm
+         pGmuCMyTVATxmjOk3r+EzalELAUljZdQEdjZ+hDwTuOdd6565PXAA36XbpmoOqNP0gOx
+         tSWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=KDn/L/KgtGjfXOwvFM3d0ycolsRtvWGhY+IU39u+X2I=;
+        b=hcJB+gBnd45cIDU10BkJed5RwQoVkFx/v9q/Wh2TWhQ8R1Yuck8TiDPhXE2kh6/6l2
+         SdH53HZmON+q1fsoAFO5PTMk919tIXw0zKKzVkIzxkrdRnHCoTQs30lI0WNy1V5zhA7I
+         vHlLIR1e6Gc0DwdBknHQ+EpYwa/vjgMGYh8fQo5wPpxDE0Ylh3pU+yOHoge2WxNyY+jc
+         xGrGHNL+lEkOt1kymolRc85TCdo/i+GooJNP7wEfq3Um3LfUaHicX3KS3jlvaX3ZvEPE
+         JKIg74JbEOOldYs3dVoODl5YjwrSA+fB2Lisv0+MZXHMS7ytchXKHwffs8FrpDV7Yk1s
+         5bFw==
+X-Gm-Message-State: AOAM5326e3+I/IQ/X8c0s/+6xfT5kRNz7ZTfHTdIQ8drgHLOVR1GRXfT
+        tvG/wIGbm690SA+g9/+oiVCbEw==
+X-Google-Smtp-Source: ABdhPJz1F0Shr79zg0ZgvQ3EF447qJ/7AgvM1fwOZGThYbUCe++2sCbkQwJc4VdZGNq+dmjgy0daFQ==
+X-Received: by 2002:a5d:6348:: with SMTP id b8mr19151821wrw.362.1597744226614;
+        Tue, 18 Aug 2020 02:50:26 -0700 (PDT)
+Received: from dell ([95.149.164.62])
+        by smtp.gmail.com with ESMTPSA id h10sm33963387wro.57.2020.08.18.02.50.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Aug 2020 02:50:25 -0700 (PDT)
+Date:   Tue, 18 Aug 2020 10:50:24 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Christian Lamparter <chunkeey@gmail.com>, davem@davemloft.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        Christian Lamparter <chunkeey@googlemail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 08/30] net: wireless: ath: carl9170: Mark 'ar9170_qmap'
+ as __maybe_unused
+Message-ID: <20200818095024.GZ4354@dell>
+References: <20200814113933.1903438-1-lee.jones@linaro.org>
+ <20200814113933.1903438-9-lee.jones@linaro.org>
+ <7ef231f2-e6d3-904f-dc3a-7ef82beda6ef@gmail.com>
+ <9776eb47-6b83-a891-f057-dd34d14ea16e@rasmusvillemoes.dk>
+ <87eeo5mnr0.fsf@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] ath10k: Register shutdown handler
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1593193981-30161-1-git-send-email-pillair@codeaurora.org>
-References: <1593193981-30161-1-git-send-email-pillair@codeaurora.org>
-To:     Rakesh Pillai <pillair@codeaurora.org>
-Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Rakesh Pillai <pillair@codeaurora.org>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200818094900.D38E5C433CB@smtp.codeaurora.org>
-Date:   Tue, 18 Aug 2020 09:49:00 +0000 (UTC)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87eeo5mnr0.fsf@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rakesh Pillai <pillair@codeaurora.org> wrote:
+On Mon, 17 Aug 2020, Kalle Valo wrote:
 
-> As a part of device shutdown the smmu driver will be
-> stopped and henceforth any IOVA address translation
-> will not be done. The wlan driver, being one of the
-> smmu driver consumer, should stop all the dma related
-> activity as a part of shutdown, and thereby ensuring
-> that no dma activity is done once the smmu driver
-> shuts down.
+> Rasmus Villemoes <linux@rasmusvillemoes.dk> writes:
 > 
-> During the device shutdown, the smmu calls shutdown
-> for all its consumers in order to indicate them to
-> stop all their dma activities.
+> > On 14/08/2020 17.14, Christian Lamparter wrote:
+> >> On 2020-08-14 13:39, Lee Jones wrote:
+> >>> 'ar9170_qmap' is used in some source files which include carl9170.h,
+> >>> but not all of them.  Mark it as __maybe_unused to show that this is
+> >>> not only okay, it's expected.
+> >>>
+> >>> Fixes the following W=1 kernel build warning(s)
+> >> 
+> >> Is this W=1 really a "must" requirement? I find it strange having
+> >> __maybe_unused in header files as this "suggests" that the
+> >> definition is redundant.
+> >
+> > In this case it seems one could replace the table lookup with a
+> >
+> > static inline u8 ar9170_qmap(u8 idx) { return 3 - idx; }
+> >
+> > gcc doesn't warn about unused static inline functions (or one would have
+> > a million warnings to deal with). Just my $0.02.
 > 
-> Register the shutdown handler to stop the wlan
-> driver and avoid any dma operations.
+> Yeah, this is much better.
 > 
-> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
-> 
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> And I think that static variables should not even be in the header
+> files. Doesn't it mean that there's a local copy of the variable
+> everytime the .h file is included? Sure, in this case the overhead is
+> small (4 bytes per include) but still it's wrong.
 
-Patch applied to ath-next branch of ath.git, thanks.
+It happens a lot.
 
-caf275463d37 ath10k: Register shutdown handler
+As I stated before, the 2 viable options are to a) move it into the
+source files; ensuring code duplication, unnecessary maintenance
+burden and probably disparity over time, or b) create (or locate if
+there is one already) a special header file which is only to be
+included by the users.
+
+The later option gets really complicated if there are a variety of
+tables which are included by any given number of source file
+permutations.
+
+The accepted answer in all of the other subsystems I've worked with so
+far, is to use __maybe_unused.  It's simple, non-intrusive and doesn't
+rely on any functional changes.
+
+> Having a static inline
+> function would solve that problem as well the compiler warning.
+
+This time yes, but it's a hack that will only work with simple,
+linear data.  Try doing that with some of the other, more complicated
+tables, like mwifiex_sdio_sd8*.
 
 -- 
-https://patchwork.kernel.org/patch/11628291/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
