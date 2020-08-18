@@ -2,106 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 811E424826F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 12:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E0B248275
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 12:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726568AbgHRKBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 06:01:42 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9758 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726145AbgHRKBm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 06:01:42 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 39D7F7C5D9FE4F502BC5;
-        Tue, 18 Aug 2020 18:01:38 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.202) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 18 Aug
- 2020 18:01:33 +0800
-Subject: Re: [PATCH] f2fs: fix indefinite loop scanning for free nid
-To:     Sahitya Tummala <stummala@codeaurora.org>
-CC:     Jaegeuk Kim <jaegeuk@kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>
-References: <1597392335-4998-1-git-send-email-stummala@codeaurora.org>
- <e1251327-bd48-215d-e558-08780474bddb@huawei.com>
- <20200818095547.GA5062@codeaurora.org>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <cf2eb391-65a0-a309-6ab7-950ff6f1d660@huawei.com>
-Date:   Tue, 18 Aug 2020 18:01:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1726640AbgHRKDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 06:03:48 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:45202 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726336AbgHRKDr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 06:03:47 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597745026; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=JE65E5Dtrka1DOzWdtukE2KACAFY/NVV59JKO7w/pIg=;
+ b=XtzgrLuwAJ4LfB+ZaqJvlIFKkhiDZMuQNDhwaQkyXy6nQ7BQjbIKWI6ufSJP/9YeQ/32/yiE
+ xP8Y4OnGpa/6N7M9LIWsoE72QCQLJZY6kJl0QBywsnWQww/6nUFIv+nYTBUXBeMN1M66yr2e
+ 853JiU0gh660vWXB47E/y7XNwrQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5f3ba76e1e4d3989d41ed4aa (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 18 Aug 2020 10:03:26
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 90DE5C433CB; Tue, 18 Aug 2020 10:03:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AA871C433CA;
+        Tue, 18 Aug 2020 10:03:24 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20200818095547.GA5062@codeaurora.org>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Date:   Tue, 18 Aug 2020 15:33:24 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Krishna Manikandan <mkrishn@codeaurora.org>,
+        Emil Velikov <emil.velikov@collabora.com>, robdclark@gmail.com,
+        seanpaul@chromium.org, hoegsberg@chromium.org,
+        kalyan_t@codeaurora.org, nganji@codeaurora.org
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mka@chromium.org,
+        linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [v2] drm/msm: add shutdown support for display platform_driver
+In-Reply-To: <1591009402-681-1-git-send-email-mkrishn@codeaurora.org>
+References: <1591009402-681-1-git-send-email-mkrishn@codeaurora.org>
+Message-ID: <a3fcad3f97c258043cd4268ef2c99740@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/8/18 17:55, Sahitya Tummala wrote:
-> On Tue, Aug 18, 2020 at 04:29:05PM +0800, Chao Yu wrote:
->> On 2020/8/14 16:05, Sahitya Tummala wrote:
->>> If the sbi->ckpt->next_free_nid is not NAT block aligned and if there
->>> are free nids in that NAT block between the start of the block and
->>> next_free_nid, then those free nids will not be scanned in scan_nat_page().
->>> This results into mismatch between nm_i->available_nids and the sum of
->>> nm_i->free_nid_count of all NAT blocks scanned. And nm_i->available_nids
->>> will always be greater than the sum of free nids in all the blocks.
->>> Under this condition, if we use all the currently scanned free nids,
->>> then it will loop forever in f2fs_alloc_nid() as nm_i->available_nids
->>> is still not zero but nm_i->free_nid_count of that partially scanned
->>> NAT block is zero.
->>>
->>> Fix this to align the nm_i->next_scan_nid to the first nid of the
->>> corresponding NAT block.
->>>
->>> Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
->>> ---
->>>   fs/f2fs/node.c | 2 ++
->>>   1 file changed, 2 insertions(+)
->>>
->>> diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
->>> index 9bbaa26..d615e59 100644
->>> --- a/fs/f2fs/node.c
->>> +++ b/fs/f2fs/node.c
->>> @@ -2402,6 +2402,8 @@ static int __f2fs_build_free_nids(struct f2fs_sb_info *sbi,
->>>   			if (IS_ERR(page)) {
->>>   				ret = PTR_ERR(page);
->>>   			} else {
->>> +				if (nid % NAT_ENTRY_PER_BLOCK)
->>> +					nid = NAT_BLOCK_OFFSET(nid) * NAT_ENTRY_PER_BLOCK;
->>
->> How about moving this logic to the beginning of __f2fs_build_free_nids(),
->> after nid reset?
->>
-> 
-> Sure, I will move it.
-> 
->> BTW, it looks we can add unlikely in this judgment condition?
-> 
-> But it may not be an unlikely as it can happen whenever checkpoint is done,
-> based on the next available free nid in function next_free_nid(), which can happen
-> quite a few times, right?
+Hi,
 
-Oh, yes, I missed that place, please ignore that suggestion.. :)
+On 2020-06-01 16:33, Krishna Manikandan wrote:
+> Define shutdown callback for display drm driver,
+> so as to disable all the CRTCS when shutdown
+> notification is received by the driver.
+> 
+> This change will turn off the timing engine so
+> that no display transactions are requested
+> while mmu translations are getting disabled
+> during reboot sequence.
+> 
+> Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
+> 
+> Changes in v2:
+> 	- Remove NULL check from msm_pdev_shutdown (Stephen Boyd)
+> 	- Change commit text to reflect when this issue
+> 	  was uncovered (Sai Prakash Ranjan)
+> ---
+>  drivers/gpu/drm/msm/msm_drv.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/msm/msm_drv.c 
+> b/drivers/gpu/drm/msm/msm_drv.c
+> index e4b750b..94e3963 100644
+> --- a/drivers/gpu/drm/msm/msm_drv.c
+> +++ b/drivers/gpu/drm/msm/msm_drv.c
+> @@ -1322,6 +1322,13 @@ static int msm_pdev_remove(struct 
+> platform_device *pdev)
+>  	return 0;
+>  }
+> 
+> +static void msm_pdev_shutdown(struct platform_device *pdev)
+> +{
+> +	struct drm_device *drm = platform_get_drvdata(pdev);
+> +
+> +	drm_atomic_helper_shutdown(drm);
+> +}
+> +
+>  static const struct of_device_id dt_match[] = {
+>  	{ .compatible = "qcom,mdp4", .data = (void *)KMS_MDP4 },
+>  	{ .compatible = "qcom,mdss", .data = (void *)KMS_MDP5 },
+> @@ -1334,6 +1341,7 @@ static int msm_pdev_remove(struct platform_device 
+> *pdev)
+>  static struct platform_driver msm_platform_driver = {
+>  	.probe      = msm_pdev_probe,
+>  	.remove     = msm_pdev_remove,
+> +	.shutdown   = msm_pdev_shutdown,
+>  	.driver     = {
+>  		.name   = "msm",
+>  		.of_match_table = dt_match,
+
+Any more comments on this patch?
 
 Thanks,
+Sai
 
-> 
-> Hitting the loop forever issue condition due to this could be a rare/difficult to
-> reproduce but this check itself may not be unlikely in my opinion.
-> 
-> Thanks,
-> 
->>
->> Thanks,
->>
->>>   				ret = scan_nat_page(sbi, page, nid);
->>>   				f2fs_put_page(page, 1);
->>>   			}
->>>
-> 
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
