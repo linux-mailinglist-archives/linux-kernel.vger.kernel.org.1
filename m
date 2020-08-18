@@ -2,66 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA052487F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 779762487EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727820AbgHROlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 10:41:25 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9767 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727783AbgHROlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 10:41:21 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 8D3A3CA22FF82614D1D8;
-        Tue, 18 Aug 2020 22:41:18 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Tue, 18 Aug 2020
- 22:41:08 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <peppe.cavallaro@st.com>, <alexandre.torgue@st.com>,
-        <joabreu@synopsys.com>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <mcoquelin.stm32@gmail.com>, <ajayg@nvidia.com>
-CC:     <netdev@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH] net: stmmac: Fix signedness bug in stmmac_probe_config_dt()
-Date:   Tue, 18 Aug 2020 22:39:52 +0800
-Message-ID: <20200818143952.50752-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1726969AbgHROlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 10:41:02 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:59804 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726585AbgHROk4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 10:40:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597761654;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Me2nEXfs6+MwbcBz8kcYDmmfJIuN9KRoRNQt94lDVkY=;
+        b=imy9tfNqqtqkAghpFXQLCCAkXzZiG2efKJpUxSceYyp/B7wr58PNkvk20G//zeqGqKDqNc
+        nZc7tI3ynx0WBZpfZ9pVtyWbWbLdf/pHyT/+yosczOiSfnT1wrE0l0O07CnR7nCE2EvyWx
+        QC2sjRliN14bLhauV6W7Ti8AmhhAH04=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-367-jdMofpa5N9-WaijYMi1w3A-1; Tue, 18 Aug 2020 10:40:49 -0400
+X-MC-Unique: jdMofpa5N9-WaijYMi1w3A-1
+Received: by mail-qv1-f72.google.com with SMTP id c4so13436594qvq.15
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 07:40:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Me2nEXfs6+MwbcBz8kcYDmmfJIuN9KRoRNQt94lDVkY=;
+        b=ed0jm6ku0bphxMHXTZe1qSWAjGwNdfBQR+IvUMj+/ld36JAKXKGJdtRUjGZD3iqMiZ
+         oybAk5kQmC+mkTXlrnddTW57a5t6IqfAd3N5tH2GkFdTSzZ0sdCLKtM4gA5u8RgMVkPW
+         ery3/kFRFB0UsbSO/Cq/PZ/NeoQc3s5cMvdugzB/1kZeiKbJX4VUwUlLcw+cv2LEcq4z
+         hEa4nn2gfWcQtQ4aVD3ZMrUnsN7H3tejNOMn/crGc7+8nFcIr49l3xGAPOivlmNfcw1I
+         4m7A8Vo5x4oWAZz9eG0/iPNwm76xMSN9Y8ALBpKpdl37lpJvFtPpwGA9xveEDj2HlxPo
+         MDVQ==
+X-Gm-Message-State: AOAM5319ogTJJyluoAstyIhewgMjUQ84vI17TZEOi3LdJ/WuJFB5mPeo
+        SgG6DshfxOTPt37z5LZaaA7/oN9IYmlD9Z6knExMWI/xfU77fVqp+TKBxnQbrNRLW2603CVNEav
+        FdK/Hn7RLY70KNe8n/FM9tuD/
+X-Received: by 2002:a37:6c7:: with SMTP id 190mr17070313qkg.163.1597761648320;
+        Tue, 18 Aug 2020 07:40:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwh1KKi6sSONuAEpAIlQtNdijIzVhZZdqE4JyuGdZ58OaFIj7ZreUze9rrye83+q0H1uLBA/w==
+X-Received: by 2002:a37:6c7:: with SMTP id 190mr17070298qkg.163.1597761648107;
+        Tue, 18 Aug 2020 07:40:48 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 84sm20296994qkl.11.2020.08.18.07.40.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Aug 2020 07:40:47 -0700 (PDT)
+Subject: Re: [PATCH v3 0/2] add regmap-spi-avmm & Intel Max10 BMC chip support
+To:     Xu Yilun <yilun.xu@intel.com>, Lee Jones <lee.jones@linaro.org>
+Cc:     broonie@kernel.org, linux-kernel@vger.kernel.org,
+        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
+        lgoncalv@redhat.com, hao.wu@intel.com
+References: <1596614456-20182-1-git-send-email-yilun.xu@intel.com>
+ <20200817082410.GB19661@yilunxu-OptiPlex-7050> <20200817091252.GV4354@dell>
+ <20200818083647.GE22873@yilunxu-OptiPlex-7050>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <5a2d4761-e800-bfb6-d67b-8740b8039ecc@redhat.com>
+Date:   Tue, 18 Aug 2020 07:40:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.108]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200818083647.GE22873@yilunxu-OptiPlex-7050>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "plat->phy_interface" variable is an enum and in this context GCC
-will treat it as an unsigned int so the error handling is never
-triggered.
+Yilun,
 
-Fixes: b9f0b2f634c0 ("net: stmmac: platform: fix probe for ACPI devices")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I was looking at the tx side a bit and think the padding function could be moved into the pkt/phy function.  The pky/phy function already is looking for the eop's so reuse it and remove the search for eop and exchange the loops that do char moving and padding to mem* functions.  The logic is something like.                                                          
+if (tb == tb_end - 1 && !eop_inserted) {
+        *pb = PKT_EOP;
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-index f32317fa75c8..b5b558b02e7d 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-@@ -413,7 +413,7 @@ stmmac_probe_config_dt(struct platform_device *pdev, const char **mac)
- 	}
- 
- 	plat->phy_interface = device_get_phy_mode(&pdev->dev);
--	if (plat->phy_interface < 0)
-+	if ((int)plat->phy_interface < 0)
- 		return ERR_PTR(plat->phy_interface);
- 
- 	plat->interface = stmmac_of_get_mac_mode(np);
--- 
-2.17.1
+        p_eop = pb;
 
+...
+
+    dst_pb = &br->phy_buf[aligned_len];
+    size_t s = pb - p_eop + 1;
+    /* move EOP and bytes after EOP to the end of aligned size */
+    memmove(dst_pb - s, p_eop, s);
+    /* fill the hole with PHY_IDLEs */
+    memset(p_eop, PHY_IDLE, aligned_len - br->phy_len);
+    /* update the phy data length */
+
+Tom
+
+ 
+
+On 8/18/20 1:36 AM, Xu Yilun wrote:
+> On Mon, Aug 17, 2020 at 10:12:52AM +0100, Lee Jones wrote:
+>> On Mon, 17 Aug 2020, Xu Yilun wrote:
+>>
+>>> Hi Brown & jones:
+>>>
+>>> I tried to refacor the regmap code and add comments in this patchset. I
+>>> made big changes to the rx flow and remove some tricky parts in it.
+>>>
+>>> Would it be more understandable than last version? I'm expecting your
+>>> comments on it when you have time, thanks in advance.
+>> Just resubmit please.  We can review the code itself.
+> Ok. I'll rebase it to 5.9-rc1 and resubmit it.
+>
+> Thanks,
+> Yilun
+>
+>> -- 
+>> Lee Jones [李琼斯]
+>> Senior Technical Lead - Developer Services
+>> Linaro.org │ Open source software for Arm SoCs
+>> Follow Linaro: Facebook | Twitter | Blog
 
