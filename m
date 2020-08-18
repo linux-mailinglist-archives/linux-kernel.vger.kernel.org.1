@@ -2,81 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A819248781
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3224248787
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726985AbgHRO23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 10:28:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726660AbgHRO21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 10:28:27 -0400
-Received: from coco.lan (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A1CD207D3;
-        Tue, 18 Aug 2020 14:28:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597760906;
-        bh=TyjAOtFLUcdkHJqVznsWOj1rsY2m5SGYugIkegCaavY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bxizRbar0YqT2TrzigWWLFiyjHd8OrzPxdbiHrSL99ATPBIiho1ScQAO7glgsBm1d
-         CbqL8TXLmE9kPn/MY2ElMs8rz7fnLBvYK+P6j8yH2z/fv3Q506iLRcxsBsCOKM8oYr
-         TVBv9HaIJ85o0Un2VIykpVXUobCuAXfcoKVL/ss4=
-Date:   Tue, 18 Aug 2020 16:28:20 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
-        Rob Herring <robh@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linuxarm@huawei.com, Wei Xu <xuwei5@hisilicon.com>,
-        linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, mauro.chehab@huawei.com,
-        Lee Jones <lee.jones@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 00/44] SPMI patches needed by Hikey 970
-Message-ID: <20200818162820.3c78c33c@coco.lan>
-In-Reply-To: <20200818141750.GA608639@kroah.com>
-References: <cover.1597647359.git.mchehab+huawei@kernel.org>
-        <20200818141750.GA608639@kroah.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1726884AbgHRO3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 10:29:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726660AbgHRO3J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 10:29:09 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB92C061389
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 07:29:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=VZDYV+ciZiiGk6QTWs9Cp9XFnW9zNuBEfYzoE+JwROc=; b=BntgZ1r7vQGNVtI9n4W/8TiXi8
+        efkW53rJGrZnaXAT2K3r/3yGyypLaMP0r4Tnvwsscc3UirzQJ9b1iwVBfdaBc1aG7ZNd7iMwtT+cx
+        8hPTAVY5hcvQnXQbBZVaw9VW1Y+rvev/z1g1FFlxEYLWQ7WQRSWMvRBQvKkhYFxHw1VWuYBJFKhnV
+        pj3dpUHU7b0wGBH7nY0lC+8eiaLiNsDO0zQA+DHuHNawkR+aeTt7WDQqIse/a1lQpKYEEiGU/36sX
+        kKtc7n8kds0LXQ49WBDf/TmodmPVO3iQCkCQLHU8wu7ve7h40MOJ48qNu8GY7sverTumL73r82W70
+        2nXij/PQ==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k82bp-0007nI-Km; Tue, 18 Aug 2020 14:29:06 +0000
+Subject: Re: [PATCH] staging: emxx_udc: Use standard BIT() macro
+To:     Alex Dewar <alex.dewar90@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saiyam Doshi <saiyamdoshi.in@gmail.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+References: <20200818134922.409195-1-alex.dewar90@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <baecb36e-1f82-1e0e-6460-d6759a9193c1@infradead.org>
+Date:   Tue, 18 Aug 2020 07:29:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200818134922.409195-1-alex.dewar90@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 18 Aug 2020 16:17:50 +0200
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-
-> On Mon, Aug 17, 2020 at 09:10:19AM +0200, Mauro Carvalho Chehab wrote:
-> > Hi Greg,
-> > 
-> > This patch series is part of a work I'm doing in order to be able to support
-> > a HiKey 970 board that I recently got on my hands.  
+On 8/18/20 6:49 AM, Alex Dewar wrote:
+> Currently emxx_udc.h defines bit values using local macros. Use the
+> standard one instead.
 > 
-> With this applied, I get the following build error:
-> ERROR: modpost: "__spmi_driver_register" [drivers/staging/hikey9xx/hi6421-spmi-pmic.ko] undefined!
-> ERROR: modpost: "spmi_ext_register_writel" [drivers/staging/hikey9xx/hi6421-spmi-pmic.ko] undefined!
-> ERROR: modpost: "spmi_ext_register_readl" [drivers/staging/hikey9xx/hi6421-spmi-pmic.ko] undefined!
-> ERROR: modpost: "spmi_controller_add" [drivers/staging/hikey9xx/hisi-spmi-controller.ko] undefined!
-> ERROR: modpost: "spmi_controller_alloc" [drivers/staging/hikey9xx/hisi-spmi-controller.ko] undefined!
-> ERROR: modpost: "spmi_controller_remove" [drivers/staging/hikey9xx/hisi-spmi-controller.ko] undefined!
+> Also, combine bit values with bitwise-or rather than addition, as
+> suggested by Coccinelle.
 > 
-> 
-> I'll take this in my testing tree for now, can you send a follow-on
-> patch to fix this?
+> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
 
-Surely. That's because it got moved from drivers/spmi/Kconfig.
-The Kconfig var was inside a:
+Hi,
 
-if SPMI
-...
-endif
+Does this build?  Just checking.
 
-This driver should "depends on SPMI". I'll send you a patch in a few.
+Looks like it would need this:
 
-Thanks,
-Mauro
+#include <linux/bits.h>
+
+since it (indirectly) provides definition of the BIT() macro.
+
+> ---
+>  drivers/staging/emxx_udc/emxx_udc.h | 456 +++++++++++++---------------
+>  1 file changed, 211 insertions(+), 245 deletions(-)
+
+
+thanks.
+-- 
+~Randy
+
