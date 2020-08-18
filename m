@@ -2,87 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D116248E6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 21:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59785248E72
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 21:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbgHRTHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 15:07:02 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:49516 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726435AbgHRTHC (ORCPT
+        id S1726681AbgHRTMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 15:12:36 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:37242 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726632AbgHRTMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 15:07:02 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07IJ6teI012213;
-        Tue, 18 Aug 2020 14:06:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1597777615;
-        bh=ATT9YzBtFfOv6tpYe6xqvgONf4ZLmPGq3Z7H+UA4wq8=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=VBQLhkMmzhTnD3FER2HDMQbJDIv+qAZi+y0679ddInmb8qZF2jnzHs1cCw4G6bc7t
-         00aFty27gkNRGCbW+lXZCCaF8XiSRVv7kU3jRcSLiVYkLEcxCWCJFBp0eEaHYNjJXi
-         8HypjwHbTUTO+20io0KUxNaB5N2rF4pfa5twIz4E=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07IJ6tCl079230;
-        Tue, 18 Aug 2020 14:06:55 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 18
- Aug 2020 14:06:55 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 18 Aug 2020 14:06:54 -0500
-Received: from [10.250.38.37] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07IJ6sbK107852;
-        Tue, 18 Aug 2020 14:06:54 -0500
-Subject: Re: [PATCH] dt: bindings: lp55xx: Updte yaml examples with new color
- ID
-To:     <pavel@ucw.cz>, <robh@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-leds@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200812193248.11325-1-dmurphy@ti.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <df82c0f7-8ea6-04f6-6da1-018dac7e4c6b@ti.com>
-Date:   Tue, 18 Aug 2020 14:06:54 -0500
+        Tue, 18 Aug 2020 15:12:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597777952;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FrkRbCQkgSp3Ii7GT5sFQHM/1w0xlNAEg5ZSV7ZGgc4=;
+        b=UcYHX0iqdQtPa2KTxbEiczCzmWRQqjueEk22xm+ZORe5oWPQ4TesctNsPY9M2XrrLO1UuD
+        JOgQ119jZLDouuqYCWWxh2p8WjKuTrLmf7t/ybAgexdBdiuM6nUBnp30oij8onSZmKgQUi
+        0MvfIhrjXqCdrcZYbPDyhIRZNiGA5V4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-240-CRxXt4FSMkydQdNbwy1VUQ-1; Tue, 18 Aug 2020 15:12:30 -0400
+X-MC-Unique: CRxXt4FSMkydQdNbwy1VUQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DD35A18686D7;
+        Tue, 18 Aug 2020 19:12:27 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-112-51.rdu2.redhat.com [10.10.112.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D4B405C1BB;
+        Tue, 18 Aug 2020 19:12:22 +0000 (UTC)
+Subject: Re: [RFC PATCH 1/8] memcg: Enable fine-grained control of over
+ memory.high action
+To:     Chris Down <chris@chrisdown.name>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
+References: <20200817140831.30260-1-longman@redhat.com>
+ <20200817140831.30260-2-longman@redhat.com>
+ <CALvZod5V3N3K9-tDoaq=JgkeuAK=0TkRf97Vua0khXL+Lxw+Pg@mail.gmail.com>
+ <20200817165608.GA58383@chrisdown.name>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <d55bc1b8-da20-0366-8a54-d7dc6e2cc21d@redhat.com>
+Date:   Tue, 18 Aug 2020 15:12:22 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200812193248.11325-1-dmurphy@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20200817165608.GA58383@chrisdown.name>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pavel
-
-On 8/12/20 2:32 PM, Dan Murphy wrote:
-> Update the binding examples for the color ID to LED_COLOR_ID_RGB
+On 8/17/20 12:56 PM, Chris Down wrote:
+> Shakeel Butt writes:
+>>> Sometimes, memory reclaim may not be able to recover memory in a rate
+>>> that can catch up to the physical memory allocation rate especially
+>>> when rotating disks are used for swapping or writing dirty pages. In
+>>> this case, the physical memory consumption will keep on increasing.
+>>
+>> Isn't this the real underlying issue? Why not make the guarantees of
+>> memory.high more strict instead of adding more interfaces and
+>> complexity?
 >
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> ---
->   Documentation/devicetree/bindings/leds/leds-lp55xx.yaml | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> Oh, thanks Shakeel for bringing this up. I missed this in the original 
+> changelog and I'm surprised that it's mentioned, since we do have 
+> protections against that.
 >
-> diff --git a/Documentation/devicetree/bindings/leds/leds-lp55xx.yaml b/Documentation/devicetree/bindings/leds/leds-lp55xx.yaml
-> index b1bb3feb0f4d..89f69d62493e 100644
-> --- a/Documentation/devicetree/bindings/leds/leds-lp55xx.yaml
-> +++ b/Documentation/devicetree/bindings/leds/leds-lp55xx.yaml
-> @@ -189,7 +189,7 @@ examples:
->                  #address-cells = <1>;
->                  #size-cells = <0>;
->                  reg = <0x2>;
-> -               color = <LED_COLOR_ID_MULTI>;
-> +               color = <LED_COLOR_ID_RGB>;
->                  function = LED_FUNCTION_STANDBY;
->                  linux,default-trigger = "heartbeat";
->   
+> Waiman, we already added artificial throttling if memory reclaim is 
+> not sufficiently achieved in 0e4b01df8659 ("mm, memcg: throttle 
+> allocators when failing reclaim over memory.high"), which has been 
+> present since v5.4. This should significantly inhibit physical memory 
+> consumption from increasing. What problems are you having with that? :-)
+>
+Oh, I think I overlooked your patch. You are right. There are already 
+throttling in place. So I need to re-examine my patch to see if it is 
+still necessary or reduce the scope of the patch.
 
-Don't forget this simple update to the LP55xx yaml file.
-
-Dan
+Thanks,
+Longman
 
