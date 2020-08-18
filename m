@@ -2,102 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B11422519F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1643251A0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726798AbgHYNmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 09:42:49 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:41051 "EHLO
+        id S1726809AbgHYNq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 09:46:28 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:41899 "EHLO
         wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726611AbgHYNlk (ORCPT
+        by vger.kernel.org with ESMTP id S1726551AbgHYNlk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 25 Aug 2020 09:41:40 -0400
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 2CB90BDB;
+        by mailout.west.internal (Postfix) with ESMTP id A45A3C3A;
         Tue, 25 Aug 2020 09:35:28 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Tue, 25 Aug 2020 09:35:28 -0400
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 25 Aug 2020 09:35:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=OB6C5rBdrsWYefSK+JPJv5u1Nkg
-        G5sD9y7dak5b46mg=; b=EsPj6jpasoYSP0YKt7mLyaiMGUGgtLvGKfqEaGYBUmp
-        6F8sYCCBPYEDXPhGBwdqATRn6G/s74WQmRxDZlfC2AtCmoTzDMZlkadxLNQcel1h
-        hVn+ydQYlQ8DAhH4UgiZMGT+0dOXDOg++qArL7XGXUCIaufkYafOiKyJ/vYJYi5K
-        n8Fi2+QciSv+fYUVTXT8eALX9oC2HI1a2vKhfbpRr9erniSKhxgOGFpyrqnTelX3
-        L+toz7iBjRrFZarLGA/TfwttmrwYdNxAHqudpMGRxJqBZEZx+VjnpBU8vICMQtT6
-        ieM03Pts2nTOU7pvtaNpycP/N0pqkSiWsd23XsUugwg==
+        :content-type:in-reply-to; s=fm3; bh=xTWDnflbQvjGc9pJORy0trBH/Hi
+        jBQsjxwEsTIAsojw=; b=qgNk/129ZMAdQFwYnTgnBFShZX/0z/9wi0B53VaumK5
+        BPoe7vG0j6ENPJlYhJ89s/Wah7rk6GGsNWZon6LoDVMAIhwTkecXqjxQ0B/2cFp5
+        q8bSNjdeI6G1t7xiaJsxntVqwfF0BCCHVbIbXml/lDRe7ltWp7TDu0O+uuBnqmWS
+        Cs/HRbJW60mt63Gp8M00kJzbfepXVuImrl6uqIXlNGLxYdCXvxr9ZYriqbAeuXmk
+        K+NwoIxZbmbVSvykR4jRZyMMQZklnKfhVNpkIFYWvxpAyF/+OhnMeqYIB69i2TOy
+        OixgqW8IqhkqfBQmlhKIAfjGtBmmJdyIXYhqUqXDM1Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=OB6C5r
-        BdrsWYefSK+JPJv5u1NkgG5sD9y7dak5b46mg=; b=jbMgxGY8XZUU3NoJVcHFeq
-        3x9sPixGdxeuJBfUbpTiYbcG7z4m7sZOTNjI4RBi/fCHGzGUV5YUjQ7+nSBDThE+
-        61SsJZ3irmvDzt7bv69kz6baYEVwyOoQVyxlXnlSdLzkmHYivRCgVhIaAxql8EpM
-        B6mkmwYC7p8a6EFM4YwXe+Jx21cqPPyX8smGD7ifY+L258IwUIj8iPJiywQoFCXZ
-        TPhRrGalxT2y3PbWkPVpw1hUk7WeclJWIczmX5BxRuNKVrBLu4ZBwk5d9eBWjEPi
-        VBt3/ByFS8eTzO44AUFdJCKFEtHWnKO2uFUzNrFvKG95Ne87pvSOuDuLy+gZCCiQ
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=xTWDnf
+        lbQvjGc9pJORy0trBH/HijBQsjxwEsTIAsojw=; b=JN6U/R1d/ynU1n70jTUR4d
+        c9ubnk6cR4WCLYaGmKfmXTh4G2A6R4f4H0ezzZKw16E9dDO9z8hLFsw2fn4U5BYj
+        BPX8O26NEY4wHTLy3fg4TvwQ3Gr+wM9+S+QOrQWdKczyHYlQxySgJvcXAJAPEG8K
+        6Rdv7LbrZcraUkNrw68CZrJGZWWfwVLVk1CTvxhZ1BZgBqZu5EJduNevNFRtXR5n
+        4I6umJCocFUZWXozdCfQTQG7kYSB+d7MpxR9BL7cbUmdXwHkV6q9ebieCPxLBWpS
+        g4XjT9qaBZpxRw96wgXaZFh2B6+6dxd3hxaAME5S4pdk9N7r9sub/jvLG+k7KLbQ
         ==
-X-ME-Sender: <xms:nhNFX4NDcLveTBRdwVWoTEJZAxBQlCGZWOvkK46EMgAU_r2pnUyKNw>
+X-ME-Sender: <xms:nxNFX6yxuvSuu-Z8Di38cWYcCKkhWufA1c57mmQ4U9hDgRlN8PlXAw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedruddvtddgieelucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
     vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
     htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepudenuc
     frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:nhNFX--MLspTHky8cfdWSXoscLxGcU7RJlqIvHUsZjGMLCahO_oJww>
-    <xmx:nhNFX_QTJQ60vvWpQxCnSEURmFXFXtC7FkeZkzbd1gxzVdQmsl-6Dg>
-    <xmx:nhNFXwsjipdACMGmSyrbzjaiMN8-D1xpIHKfkaZFCMFbM7G-4vgpkw>
-    <xmx:nxNFX_6AsWog0CaOOUJVClBK0jcBKewTziwomVM9CpcA0radMDWdiw>
+X-ME-Proxy: <xmx:nxNFX2RKpCnmTKla08HUz3kF9C2W5doYQW8rA2h9Q0pBIY1Wz1nGzQ>
+    <xmx:nxNFX8XcWZkhIvpQt4NKJQX_-g95nfb29F_Nj3SUb2faSejoUidPkg>
+    <xmx:nxNFXwhqG6gZvjqhAM70OMNr1mvpOMw29cY2xznXN332cJHnVRNcPA>
+    <xmx:oBNFX_MIKJG3ugU8S1c_5NY6S6CFtYksfc9D6n6idfw_YTCjXWqvaw>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id EA9CF30600A3;
-        Tue, 25 Aug 2020 09:35:25 -0400 (EDT)
-Date:   Tue, 18 Aug 2020 10:49:06 +0200
+        by mail.messagingengine.com (Postfix) with ESMTPA id 9BBDE3280059;
+        Tue, 25 Aug 2020 09:35:27 -0400 (EDT)
+Date:   Tue, 18 Aug 2020 11:04:09 +0200
 From:   Maxime Ripard <maxime@cerno.tech>
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc:     wens@csie.org, jernej.skrabec@siol.net, airlied@linux.ie,
-        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/sun4i: Constify static structs
-Message-ID: <20200818084906.lhuzwqdoyqzapjsx@gilmour.lan>
-References: <20200804215337.54594-1-rikard.falkeborn@gmail.com>
+To:     Alexander Kochetkov <al.kochet@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Alexander Kochetkov <akochetkov@lintech.ru>
+Subject: Re: [PATCH] arm64: dts: allwinner: replace numerical constant with
+ CCU_CLKX
+Message-ID: <20200818090409.te6oefjtuseclx4g@gilmour.lan>
+References: <20200803143022.25909-1-al.kochet@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="7xomoy5wll6xmvne"
+        protocol="application/pgp-signature"; boundary="pga65g2vz6oo4kok"
 Content-Disposition: inline
-In-Reply-To: <20200804215337.54594-1-rikard.falkeborn@gmail.com>
+In-Reply-To: <20200803143022.25909-1-al.kochet@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---7xomoy5wll6xmvne
+--pga65g2vz6oo4kok
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-On Tue, Aug 04, 2020 at 11:53:37PM +0200, Rikard Falkeborn wrote:
-> A number of static variables are not modified and can be made const to
-> allow the compiler to put them in read-only memory.
+On Mon, Aug 03, 2020 at 05:30:22PM +0300, Alexander Kochetkov wrote:
+> From: Alexander Kochetkov <akochetkov@lintech.ru>
 >=20
-> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+> Signed-off-by: Alexander Kochetkov <al.kochet@gmail.com>
 
-Applied, thanks!
+Applied, thanks
+
 Maxime
 
---7xomoy5wll6xmvne
+--pga65g2vz6oo4kok
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXzuWAgAKCRDj7w1vZxhR
-xeMiAP9ZL9rjwDAjy7IbU3HboVfFI4FAP7eQZPgomHMvsL0ToAD/Z2CtUjH4lak/
-EVZ2tUz2sOcYWfa9U+uzNZ0Cj4EOIgg=
-=uQCW
+iHQEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXzuZiQAKCRDj7w1vZxhR
+xRD2APiHXOaxYjxcyyB920l1xxejOlrk/yVKF/YHdgQVWmQSAP9lU84Nbjf9wLwA
+nrvH0z9sV68fq/EbcHryPrKy++qdAw==
+=UJIV
 -----END PGP SIGNATURE-----
 
---7xomoy5wll6xmvne--
+--pga65g2vz6oo4kok--
