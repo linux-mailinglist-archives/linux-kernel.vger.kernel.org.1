@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98ABE2480E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7092480E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726482AbgHRIq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 04:46:29 -0400
-Received: from mail-eopbgr1400075.outbound.protection.outlook.com ([40.107.140.75]:2272
-        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726145AbgHRIq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 04:46:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cWFT6Op+r4L8el/5sVj1GASuqvnDrS3wn67qgIJGo3RTTep5oPfoSs5PZ796DCA1nmmaHIWbR+8+6uJCE8nE5bRMo7QCEaGA/tPB1dbLLKutzlt0a7xraNSRLYtkecV2as5JJ7uL3npcLLVt6Lt+GDeSJEBYU9nxQADXK/sCjjdNcM6KWHQAxmw00ThfjeGxBJlQ32eH9KQpWVIr4WvtlAuHZQnFoOkHDpcBFoFewscQkxVvDyGNB9ZLl8mHGHkvGZbBfSffpS/nMW/2ZqbynHuNLVOIELUmAcYYP8LiBc2bCCak6jI40FU1pGZIjKieZr8/E0QJwex+UL+wcui4jQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6kJpPpb2tM1i8t/9DA6GQ8XakZOuNv6Yw9EJoONomGY=;
- b=STfg2koqpF3yUVlnYRcXKT711fwZpEODYxK+UzNljH0YvUnmjr/96Zd0MWzNQjbGjdqmX5jR313OrNvPX7jvHh6AAU8Z64xZPoQH0WLPoxz9f9XybMzZPFQuwkLqX1NTZTx7jwE5+sBfad2tmmgzPAKIHodGkTMzPSeevy0veFXhvsYmT3KFgB+i/cqlYSbXhm+WpGI5aYEMUwWvQla6UXpKalckiK+qIwU1VHOK4EckyUIDAQJT9D4KrBqZqLP5AmRC6jtot3QxEWPVUAF9LkpeMUvFQJQbNVETN5tqtsIG3vvtJACtmtHfN7n6e5KgjrkXxX/GXlgsS2khiLRKAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
- header.d=nec.com; arc=none
+        id S1726541AbgHRIrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 04:47:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726145AbgHRIrL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 04:47:11 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 789EDC061389
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 01:47:09 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id c15so17423948wrs.11
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 01:47:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=necglobal.onmicrosoft.com; s=selector1-necglobal-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6kJpPpb2tM1i8t/9DA6GQ8XakZOuNv6Yw9EJoONomGY=;
- b=Uu4IsC2+4porSLh3dq7O3sQ1GLLCJGF/LY58M8XqmNLKZekOYU9EZodiraAmVk4DSuWHFhwCWAdBVOF1Ubo3YsGwT97+UyRyTv3da9N03I6JKUZJao9yWAKii3JeZXm2pjnmcJaXDHBMRplDNWsIRt26R/6Tcw60BUrRz/sYoq0=
-Received: from TY2PR01MB3210.jpnprd01.prod.outlook.com (2603:1096:404:74::14)
- by TYAPR01MB3584.jpnprd01.prod.outlook.com (2603:1096:404:c4::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.15; Tue, 18 Aug
- 2020 08:46:23 +0000
-Received: from TY2PR01MB3210.jpnprd01.prod.outlook.com
- ([fe80::21d2:e51a:a880:2042]) by TY2PR01MB3210.jpnprd01.prod.outlook.com
- ([fe80::21d2:e51a:a880:2042%7]) with mapi id 15.20.3283.023; Tue, 18 Aug 2020
- 08:46:23 +0000
-From:   =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
-        <naoya.horiguchi@nec.com>
-To:     Xianting Tian <tian.xianting@h3c.com>
-CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm/memory-failure: do pgoff calculation before
- for_each_process()
-Thread-Topic: [PATCH] mm/memory-failure: do pgoff calculation before
- for_each_process()
-Thread-Index: AQHWdTpfy+qolaFA5Ee6XfcA6pvtAak9jaWA
-Date:   Tue, 18 Aug 2020 08:46:23 +0000
-Message-ID: <20200818084623.GA30688@hori.linux.bs1.fc.nec.co.jp>
-References: <20200818082647.34322-1-tian.xianting@h3c.com>
-In-Reply-To: <20200818082647.34322-1-tian.xianting@h3c.com>
-Accept-Language: ja-JP, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: h3c.com; dkim=none (message not signed)
- header.d=none;h3c.com; dmarc=none action=none header.from=nec.com;
-x-originating-ip: [165.225.110.205]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 46053f29-ef1c-4347-605c-08d843532ff6
-x-ms-traffictypediagnostic: TYAPR01MB3584:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TYAPR01MB3584B4A9B561F6DBAEAB873FE75C0@TYAPR01MB3584.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: v0ppkKxcv6QncxoCUoK5m9kp1Pu+IdKSAggkjhrTFj5SFzO1Gb6dc9rhGohFHsDf/CoQ+Zi2v062IDGfYc4/jKrKLQe5zTB1X030rlxN5R+ZXrKqVX4XwWDUNSoO3EppI7NMintfMvjouZNM/13QQhqfnv/b7SE2P4OvrvnMPuT9bk70HxRdfW7aVaXPzO2WrJJTBLaZYIsmLrxOKSxoUtdAJKFwSFCJQD4kl6HvM5TXwMhK+6hbF6t2eJLC6wHFtS76OAxXJVqagwdWT508Id1/iqk8GqEgjrks2ajqcyp/ki7Im/y+6kjb9Y/lPHHOtcgVjTWuPQDoWu3omtQoOA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3210.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(136003)(366004)(346002)(39860400002)(71200400001)(33656002)(6486002)(6916009)(66476007)(1076003)(5660300002)(186003)(66946007)(64756008)(478600001)(54906003)(76116006)(66446008)(2906002)(66556008)(85182001)(316002)(26005)(9686003)(4326008)(6512007)(8676002)(6506007)(4744005)(8936002)(55236004)(86362001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: QJi2jZ/1kTErR+PSIim98l3/Uh8ayxCFx2JCWXaZ3ny5kdAGdsFCL1Wqb3HtYNWRnDGHoUIEdNwSN/Z949Jqs1LQYyDbKvTIYr1DEYvnbdzPd74H4Q3Gdck4rQK1RmRFW49sBKr3WYkj/NRd2iSDPAnh+Xuc0G0wM4pbrOM+blb7DTawuzDe8BytFLcoIewEMUrKxTHvuOitlgG+/Y6lxdq2YqJUJG9oRC2P/7y1EicCV49F56bDeL55BI/XgGXCCwtb7mrwHHtkpaONB5S+7TJb+eDY5upSU+T0z7RfcpnmUKNfSCZAPm81LBE6dVXWjMxbT3kLeWdD23qQImY+0rHVI7tshRJi6AnbHjygugHU8alN6IuBxKA1CkARGlFz5nLyk//e0iTZXr/NHRkEiktL3h+iJApdfu9w0Yon2SXyWT33v1dqmde2dU5sjgSTHZbvrVZABWvpWyLKXQzVQNJy70adKNWVqEdAt73c5t6dWfqQQar9DnvWIBKjkbcVI6pUQrmL9HEHdpOhi5yEiiT4NUXwFiNbQWtAhd/QPTbTzd+O7onFia3xFWVdvEXJ25uEk/fuuOpMZOa1EL6z5ic68H3jnG6WwjDIEwC+AHVHqdDbMP3IQwsfEXVxJo7tkHO/EcQgd2SSCj1yV6Ibdg==
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-ID: <FBD6ED68B8D270439437618D4728E0E6@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=NRXSlg5+U42+r5yz1HaufmNO5p1AhYU7aGg04+6KXs8=;
+        b=qtvHb2JIL3T8E/cpqHVqVZTwC+2u6wi/BU8buEwdhurz/5FqZ7HmYNki9XMvQzeEOh
+         6WFyeYstY9bzdFkbf8+St/om42mXRQ7aC2eqZbXYC9A+zEfAFgZ3tJQ5207yU/kkGSPs
+         gjyZcAQFPk8J3lGiKEqb20V6lYuRAeGn0UctPicSNM/modZhriw7Gh3UBrYMqzsrnHG/
+         SHJu+fPKnq7F5AwzuI+Vzf9zqK2tHq8sxUGh/DihhIYv1twN+w1XaJkMseultI1K1L1q
+         oaNqI6wiYSSeth7ZAFKZjYHdwrgGbZ2GcqWzoDEw7ri3Qj8c+dOFGFuQWLoiseSfkGdk
+         YU8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=NRXSlg5+U42+r5yz1HaufmNO5p1AhYU7aGg04+6KXs8=;
+        b=VLsInwz8Md2NcZikbaIrYge/vpz9+q5Pd8scZvDg2BMcPzQRAvyDEDuiadUVvs6Xdd
+         HZaaHJCSHnbq04cFhSRzYdgydRj+ee332TFSPRk46FA7iNydlgtpskc0nPwsV0ctoFkS
+         nIDX1d5bseCSF6ALMoga4OltJuNdKjnboEAfy7CG1L6mqGwYEYcS4i8qU6ginyCe9ZJn
+         62kKQgrgw2Wf3yQiUzSBMT2s4Hsl96YzkTgeFXDNScs+xOfgHNTpOTCURmOd8BqOWmGJ
+         UnVsWRdE1H1qFcEU1/DnIwuM+VunciHBSmvkRKQ5UJZP53/ZJfJBWmf+uM/wD3Baqz56
+         omVg==
+X-Gm-Message-State: AOAM530ZnNDnGLRCnZ/dhgtI5JdjEDU06K1YJrWB3+WzhTX/WD9mVwfV
+        0KzMBcn87KD5bIP0lTJ2eU0=
+X-Google-Smtp-Source: ABdhPJxYBgGknEAQK8xsd1B/rwkA33jfkZZNMZ/DlgBKDOAkmd6M6OvtzohckbpoiaN34Csc8pKccg==
+X-Received: by 2002:adf:fe50:: with SMTP id m16mr19935544wrs.27.1597740428207;
+        Tue, 18 Aug 2020 01:47:08 -0700 (PDT)
+Received: from tsnow ([94.159.146.190])
+        by smtp.gmail.com with ESMTPSA id n11sm26064727wmi.15.2020.08.18.01.47.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Aug 2020 01:47:07 -0700 (PDT)
+Date:   Tue, 18 Aug 2020 11:47:02 +0300
+From:   Tomer Samara <tomersamara98@gmail.com>
+To:     Laura Abbott <labbott@redhat.com>
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        devel@driverdev.osuosl.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] *** SUBJECT HERE ***
+Message-ID: <cover.1597740422.git.tomersamara98@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nec.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB3210.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 46053f29-ef1c-4347-605c-08d843532ff6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Aug 2020 08:46:23.7888
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hIKIvPCGeBQTr6gmTzxVu5ZQpWZYTcqn+Uo+CLS5GW2YG2GnF/CEuDjMYRie7/6rfsrNEZxK2cSc8Y/TWuJdKA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB3584
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 04:26:47PM +0800, Xianting Tian wrote:
-> There is no need to calcaulate pgoff in each loop of for_each_process(),
-> so move it to the place before for_each_process(), which can save some
-> CPU cycles.
->=20
-> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+*** BLURB HERE ***
 
-Looks good to me. Thank you.
+Tomer Samara (4):
+  staging: android: Replace BUG_ON with WARN_ON
+  staging: android: Add error handling to ion_page_pool_shrink
+  staging: android: Convert BUG to WARN
+  staging: android: Add error handling to order_to_index callers
 
-Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>=
+ drivers/staging/android/ion/ion_page_pool.c   | 14 ++++++++++----
+ drivers/staging/android/ion/ion_system_heap.c | 16 +++++++++++++---
+ 2 files changed, 23 insertions(+), 7 deletions(-)
+
+-- 
+2.25.1
+
+/tmp/0001-staging-android-Replace-BUG_ON-with-WARN_ON.patch
+/tmp/0002-staging-android-Add-error-handling-to-ion_page_pool_.patch
+/tmp/0003-staging-android-Convert-BUG-to-WARN.patch
+/tmp/0004-staging-android-Add-error-handling-to-order_to_index.patch
