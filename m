@@ -2,131 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE4F248E69
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 21:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7451248E63
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 21:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726778AbgHRTDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 15:03:54 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:36623 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726435AbgHRTDx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 15:03:53 -0400
-Received: from carbon-x1.hos.anvin.org ([IPv6:2601:646:8600:3280:61e8:d401:1991:f3df])
-        (authenticated bits=0)
-        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 07IJ2bvX2888434
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Tue, 18 Aug 2020 12:02:38 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 07IJ2bvX2888434
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2020072401; t=1597777361;
-        bh=cfOAXIuv0d1n/p0ol2GZ1qiMxIvr2XSR2TAgYuI9r3w=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=z6FSMv10XGVilhbjjXXiM0AVWKbJ7Fhzt0md6cIgU1Ohsv04ugdthB2lXdOawFp4G
-         /yIHdNmPHZoJCDgNTXPnJTtAPUBICrzszid60D+pV/4UicZbTfZbrRU0+BZ8RM9wQ7
-         35+zOHMSIK0jpi7uLcUHBcJWVVBeZ5kJHzSii4DCkNNkgF64tjR5yM5SQnJO97g4e0
-         TLtVUzXQFjyCrQUlr1DheafRH0JBDtqIMF2aHk+22UqWXF1TCLjag5KLD7muJd8VV/
-         HrTaRZAfyaXM5tK2841JwFpFsQImabhN3BWsuyiGhtf+WNri0flORDI4/EZYE6HGwH
-         89XyyKW8H1m/w==
-Subject: Re: [PATCH 0/4] -ffreestanding/-fno-builtin-* patches
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Joe Perches <joe@perches.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Bruce Ashfield <bruce.ashfield@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>,
-        Andi Kleen <ak@suse.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?UTF-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
-        Eli Friedman <efriedma@quicinc.com>
-References: <20200817220212.338670-1-ndesaulniers@google.com>
- <fae91af3-4e08-a929-e5c3-25271ad7324b@zytor.com>
- <CAKwvOdk6A4AqTtOsD34WNwxRjyTvXP8KCNj2xfNWYdPT+sLHwQ@mail.gmail.com>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <76071c24-ec6f-7f7a-4172-082bd574d581@zytor.com>
-Date:   Tue, 18 Aug 2020 12:02:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726713AbgHRTDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 15:03:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44224 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726435AbgHRTDC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 15:03:02 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 447DE2076E;
+        Tue, 18 Aug 2020 19:03:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597777381;
+        bh=7H5ZWWY6YLYiTiWY7a+UJBAlG+UhyF+KVtyPoiI+3DY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lG6c7XfmiFTjSYHYrfxKb5hhYD6nIpqiB/Rpqaq0tdFteoQGT8DqDJlQ6shK6MgTI
+         VpZFrJ//JYY431uMKgbwb/ByRcOPRzHDb0PYobp0Jm56cMrpp2LwSlpQ4TzZKVyT2A
+         mLQU/svuX6rlC8PEFLK3Mjoj9w6cRfaxJwpgL4D0=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1k86st-00406W-Q2; Tue, 18 Aug 2020 20:02:59 +0100
 MIME-Version: 1.0
-In-Reply-To: <CAKwvOdk6A4AqTtOsD34WNwxRjyTvXP8KCNj2xfNWYdPT+sLHwQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Tue, 18 Aug 2020 20:02:59 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Rob Herring <robh@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH 1/2] PCI: rockchip: Work around missing device_type
+ property in DT
+In-Reply-To: <CAGETcx-hkz8fyAHuhRi=JhBFu4YUmL2UpHfgs7doLHK-RdKA0A@mail.gmail.com>
+References: <20200815125112.462652-2-maz@kernel.org>
+ <20200815232228.GA1325245@bjorn-Precision-5520>
+ <87pn7qnabq.wl-maz@kernel.org>
+ <CAL_Jsq+fDNa60+6+s9MwVjUFUPAuc43+uMx4Fm2nZhUgrV7LEg@mail.gmail.com>
+ <e2cde177e82fbdf158732ad73ccdc6c5@kernel.org>
+ <CAL_JsqL1_d2grS3Pz6NNeVAOMPbx_hAe+MrseQeQp=bHRQ7rfQ@mail.gmail.com>
+ <72c10e43023289b9a4c36226fe3fd5d9@kernel.org>
+ <CAGETcx-hkz8fyAHuhRi=JhBFu4YUmL2UpHfgs7doLHK-RdKA0A@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.7
+Message-ID: <d6f0894a81c645d66480310cd741a44e@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: saravanak@google.com, robh@kernel.org, helgaas@kernel.org, linux-pci@vger.kernel.org, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, lorenzo.pieralisi@arm.com, heiko@sntech.de, shawn.lin@rock-chips.com, bhelgaas@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-18 10:56, Nick Desaulniers wrote:
->>
->> The problem here is twofold:
->>
->> 1. The user would be expected to know what kind of the optimizations the
->> compiler can do on what function, which is private knowledge to the
->> compiler.
->>
->> 2. The only way to override -fno-builtin is by a header file with macros
->> overriding the function names with __builtin, but that doesn't tell the
->> compiler proper anything about the execution environment.
->>
->> So the Right Thing is for the compiler authors to change the way
->> -ffreestanding works.
-> 
-> Sir, this is an Arby's
-> 
-> There are things all across the compilation landscape that make we
-> want to pontificate or even throw a tantrum in an Arby's.  Would I?
-> Well, no, I'm just trying to flip burgers or shovel the elephant
-> sh...or w/e they do at Arby's (I've never actually been; I detest
-> roast beef).
-> 
-> Would it be interesting to have a way of opting in, as you describe,
-> such that your compiler knew exactly what kind of embedded environment
-> it was targeting?  Maybe, but I'd argue that opting out is just the
-> other side of the same coin. Heads, I win; tails, you lose. That the
-> opt in or opt out list is shorter for a given project is not
-> particularly interesting.  Should we change the semantics of a fairly
-> commonly used compiler flag that multiple toolchains are in agreement
-> of, then fix all of the breakage in all of the code that relied on
-> those semantics?  I'm afraid that ship may have already
-> sailed...probably 20 or 30 years ago.
-> 
->> -ffreestanding means, by definition, that there
->> are no library calls (other than libgcc or whatever else is supplied
->> with the compiler) that the compiler can call. That is currently an
->> all-or-nothing choice, or at least one choice per C standard implemented.
-> 
-> Yes?
-> 
+On 2020-08-18 18:48, Saravana Kannan wrote:
+> On Tue, Aug 18, 2020 at 10:34 AM Marc Zyngier <maz@kernel.org> wrote:
 
-I'm not saying "change the semantics", nor am I saying that playing
-whack-a-mole *for a limited time* is unreasonable. But I would like to go back
-to the compiler authors and get them to implement such a #pragma: "this
-freestanding implementation *does* support *this specific library function*,
-and you are free to call it." The only way we can get what we really need from
-the compilers is by speaking up and requesting it, and we have done so very
-successfully recently; further back we tended to get a lot of
-language-lawyering, but these days both the gcc and the clang teams have been
-wonderfully responsive.
+[...]
 
-	-hpa
+>> OK. So how about something like this?
+>> 
+>> diff --git a/drivers/of/address.c b/drivers/of/address.c
+>> index 590493e04b01..a7a6ee599b14 100644
+>> --- a/drivers/of/address.c
+>> +++ b/drivers/of/address.c
+>> @@ -134,9 +134,13 @@ static int of_bus_pci_match(struct device_node 
+>> *np)
+>>          * "pciex" is PCI Express
+>>          * "vci" is for the /chaos bridge on 1st-gen PCI powermacs
+>>          * "ht" is hypertransport
+>> +        *
+>> +        * If none of the device_type match, and that the node name is
+>> +        * "pcie", accept the device as PCI (with a warning).
+>>          */
+>>         return of_node_is_type(np, "pci") || of_node_is_type(np, 
+>> "pciex") ||
+>> -               of_node_is_type(np, "vci") || of_node_is_type(np, 
+>> "ht");
+>> +               of_node_is_type(np, "vci") || of_node_is_type(np, 
+>> "ht") ||
+>> +               WARN_ON_ONCE(of_node_name_eq(np, "pcie"));
+> 
+> I don't think we need the _ONCE. Otherwise, it'd warn only for the
+> first device that has this problem.
 
+Because probing devices doesn't necessarily occur once. Case in point,
+it takes *10 to 15* attempts for a rk3399 system such as mine to finally
+probe its PCIe device, thanks to the wonderful -EPROBE_DEFER.
+
+Do I want to see the same stack trace 10 (or more) times? No.
+
+> How about?
+> WARN(of_node_name_eq(np, "pcie"), "Missing device type in %pOF", np)
+> 
+> That'll even tell them which node is bad.
+
+I explained my objections above. Spitting out the device node is
+useful, but there is no need to be exhaustive (if you're in a
+position to fix the DT, you can track all the broken instances
+for your device easily).
+
+I'm actually minded to tone it down even more, because the stack
+trace is meaningless to most users. See below for a revised patch.
+
+         M.
+
+diff --git a/drivers/of/address.c b/drivers/of/address.c
+index 590493e04b01..b37bd9cc2810 100644
+--- a/drivers/of/address.c
++++ b/drivers/of/address.c
+@@ -128,15 +128,29 @@ static unsigned int of_bus_pci_get_flags(const 
+__be32 *addr)
+   * PCI bus specific translator
+   */
+
++static bool of_node_is_pcie(struct device_node *np)
++{
++	bool is_pcie = of_node_name_eq(np, "pcie");
++
++	if (is_pcie)
++		pr_warn_once("%pOF: Missing device_type\n", np);
++
++	return is_pcie;
++}
++
+  static int of_bus_pci_match(struct device_node *np)
+  {
+  	/*
+   	 * "pciex" is PCI Express
+  	 * "vci" is for the /chaos bridge on 1st-gen PCI powermacs
+  	 * "ht" is hypertransport
++	 *
++	 * If none of the device_type match, and that the node name is
++	 * "pcie", accept the device as PCI (with a warning).
+  	 */
+  	return of_node_is_type(np, "pci") || of_node_is_type(np, "pciex") ||
+-		of_node_is_type(np, "vci") || of_node_is_type(np, "ht");
++		of_node_is_type(np, "vci") || of_node_is_type(np, "ht") ||
++		of_node_is_pcie(np);
+  }
+
+  static void of_bus_pci_count_cells(struct device_node *np,
+
+-- 
+Jazz is not dead. It just smells funny...
