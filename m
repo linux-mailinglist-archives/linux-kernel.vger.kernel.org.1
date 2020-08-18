@@ -2,92 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC0A248852
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF1E924885B
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726863AbgHROzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 10:55:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56260 "EHLO
+        id S1727096AbgHRO41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 10:56:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726539AbgHROzk (ORCPT
+        with ESMTP id S1726675AbgHRO4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 10:55:40 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B30C061389
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 07:55:39 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id j9so17820068ilc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 07:55:39 -0700 (PDT)
+        Tue, 18 Aug 2020 10:56:23 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D613C061389
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 07:56:22 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id 9so16495289wmj.5
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 07:56:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hTTAJhh4NfjRHYn5UI6mlznlBlZYFizrT8lslR+Z18E=;
-        b=vh12em2jvehxMcRPxHt0I2lWNAsDN3sZSBXx4kJbYF0NfJXsSIE1NVVqTy/+6tKJMF
-         7RB2EYuxpr1PxGbqVNEez8GM8mwOByVxPSd//nQ8WoZoNLKX0s5deJPv5469v9sIjtgq
-         G0W0pU17InFXwODo47EKbwVzWeJy2mXrQ/8xTyTe+JvYDKk8PXR2c5IAQ+oylPbs7q/n
-         aUrX1f/Djm6IdJRF89V2qMW0DmEw/cvdPN5ZMpGWLCunkU8Ioc7AEfKYsqPZaqI/AliI
-         IltgHRorX6o2IcZX+N/J20iW5PEzuToOZ+bIIE//rL/pr+FsDUj65rt8QANZIIsJDrpM
-         X69Q==
+        bh=RWwP4svyK47rE8PCHksIuxk8Iq2Ls/f4vWTfeoUX+J4=;
+        b=JySWOkpbUlLKowOfNb8wv6q1aSw/t9gx/zd1VYIBfPLtCeYSn+VZISq2Yc4mi7zpPb
+         c3Q+SmSFJo6o3338jpOrkTZ/xbluylZO1n7mg0c4tc27Poj5OmPn5EUamoKwqiwQGudq
+         w9CTHkPI1uRWbaJmfpJOObiJylAKEf9z2mjxKTTQawUfhHNagQoaaANsCM1CmZl2cSTb
+         DC+5x1I1ZVNvEmOQTg6gdPRWwwm0JL1qKdbedXmdz4xftWid0/rV7S5BzULEfvj85DY7
+         yCRlhl6TolGtXHw41liC0j3x5EPRDDj8lD3I62yDIUiz7igOhRJRInUHagTljSjFERGX
+         +qBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hTTAJhh4NfjRHYn5UI6mlznlBlZYFizrT8lslR+Z18E=;
-        b=LOg4AXhc77t50P5YMYSwR6BijBkTbejonHyK39ALNYi3qd4rpD3+EIyZcWsNWc12LU
-         6lPdje7r9nRXtOvE9tAt+X7VhFbSZau1AoE5szfNTF2cIW97Qe93YZOmDKa5k0HNqqlz
-         tEf8SnV29HKun9AbIacsz6DFZuJ7GDxSRgV/yHaLt4361a2KBa4a+HzLulp0o/wVTpEG
-         ac+2OZ/nHS4ZAv6BC6XkMtg3AZ1NUffl07rgcSA2epNe2wOlXGusBGrOvIQR6KA7aCRk
-         hyQUQFQP9QVUtnwHvS4aRqP1eOvonAW8L6EehT6jhAqYs1rRxuwszTmzlO1QVXyCPXxc
-         Mc7A==
-X-Gm-Message-State: AOAM530dCzl6KmFHAGVfnDpLdczpkZBz/0HAIjcKQNbO8BdHwUAGJvP3
-        /Xe5yXhgZckzF9MYt879K57ur3k9tbd8sKreWRI=
-X-Google-Smtp-Source: ABdhPJyugOzq1mpedIjjSmTESPhs9cSE7mixc1n80W/RK28kNpOwE78cHLlZbvm3vZliI5m8Ws6AWgiGDZyM2eNZf40=
-X-Received: by 2002:a92:d646:: with SMTP id x6mr18734591ilp.237.1597762539068;
- Tue, 18 Aug 2020 07:55:39 -0700 (PDT)
+        bh=RWwP4svyK47rE8PCHksIuxk8Iq2Ls/f4vWTfeoUX+J4=;
+        b=XKwYm8Okw5UxT/t/kxNTiFQt+Zn9azOjKtPIJW+GL1OR/R0yRVGPtKubMXw6ByjEbS
+         PflQ19fZszpnHhvZHpI96+aRxea7HGVT00sDcNd6GqHibrkdK1LBML/7NTcdKOl19r9/
+         e2d5ovxklfUVUYA0cj+aXKfBaMQHxM9Ir3wlUPXFYlR0aOD4n4G/VBpc62uk1cETDNGc
+         po4l4shsvjdaM7Y7a1OHfAtHdMCB/qtlKjaUeXZQPzOWE4ibndsiR3ii3Bb0pY/g8kXU
+         w0E0Ld9XGeHe5s33Y6I1LBaIcPuvXKSjblw6vgJlW59/j4aDTT42UIJjSutNxLyg+1nv
+         8UNQ==
+X-Gm-Message-State: AOAM532WXsd5O2JAYTXysvmsPWnXE+ofKykLHU4ph6K039t04YiriUCs
+        t5AnPhwlTTJ5yrC3XRfET15LPm3aFNGPGC6IF+A=
+X-Google-Smtp-Source: ABdhPJx2BPjSzPsR+9yU5xMlkhANUSgJE+ae7RrbiOpMjEikTMSCnVPx67UHT2OU/yTw+hz96u0OPwoafanw2XCb5Fg=
+X-Received: by 2002:a05:600c:252:: with SMTP id 18mr333641wmj.56.1597762580993;
+ Tue, 18 Aug 2020 07:56:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200818084448.33969-1-richard.weiyang@linux.alibaba.com>
-In-Reply-To: <20200818084448.33969-1-richard.weiyang@linux.alibaba.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Tue, 18 Aug 2020 07:55:28 -0700
-Message-ID: <CAKgT0UfQ4BGygD-r+uVpMhF2RBAynhZp54H-6EVrEc7PdESNqQ@mail.gmail.com>
-Subject: Re: [Patch v2] mm/page_reporting: drop stale list head check in page_reporting_cycle
-To:     Wei Yang <richard.weiyang@linux.alibaba.com>
-Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Hildenbrand <david@redhat.com>
+References: <20200816073214.980424-1-ztong0001@gmail.com>
+In-Reply-To: <20200816073214.980424-1-ztong0001@gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 18 Aug 2020 10:56:10 -0400
+Message-ID: <CADnq5_NDMZp9-1vVZ_CuxPJmxF8c1ULNbVmuMD6V9C3QT=OsmQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: should check error using DC_OK
+To:     Tong Zhang <ztong0001@gmail.com>
+Cc:     "Wentland, Harry" <harry.wentland@amd.com>,
+        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Siqueira, Rodrigo" <Rodrigo.Siqueira@amd.com>,
+        Wenjing Liu <wenjing.liu@amd.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        abdoulaye.berthe@amd.com, Hersen Wu <hersenxs.wu@amd.com>,
+        jinlong.zhang@amd.com, "Cyr, Aric" <aric.cyr@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 1:45 AM Wei Yang
-<richard.weiyang@linux.alibaba.com> wrote:
+On Mon, Aug 17, 2020 at 3:08 AM Tong Zhang <ztong0001@gmail.com> wrote:
 >
-> list_for_each_entry_safe() guarantees that we will never stumble over
-> the list head; "&page->lru != list" will always evaluate to true. Let's
-> simplify.
+> core_link_read_dpcd returns only DC_OK(1) and DC_ERROR_UNEXPECTED(-1),
+> the caller should check error using DC_OK instead of checking against 0
 >
-> Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> ---
->  mm/page_reporting.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/page_reporting.c b/mm/page_reporting.c
-> index 3bbd471cfc81..aaaa3605123d 100644
-> --- a/mm/page_reporting.c
-> +++ b/mm/page_reporting.c
-> @@ -178,7 +178,7 @@ page_reporting_cycle(struct page_reporting_dev_info *prdev, struct zone *zone,
->                  * the new head of the free list before we release the
->                  * zone lock.
->                  */
-> -               if (&page->lru != list && !list_is_first(&page->lru, list))
-> +               if (!list_is_first(&page->lru, list))
->                         list_rotate_to_front(&page->lru, list);
->
->                 /* release lock before waiting on report processing */
+> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
 
-Reviewed-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Applied.  Thanks!
+
+Alex
+
+> ---
+>  drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+> index 5cb7b834e459..a60a457fcc8f 100644
+> --- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+> +++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+> @@ -4376,9 +4376,9 @@ bool dc_link_get_backlight_level_nits(struct dc_link *link,
+>                         link->connector_signal != SIGNAL_TYPE_DISPLAY_PORT))
+>                 return false;
+>
+> -       if (!core_link_read_dpcd(link, DP_SOURCE_BACKLIGHT_CURRENT_PEAK,
+> +       if (core_link_read_dpcd(link, DP_SOURCE_BACKLIGHT_CURRENT_PEAK,
+>                         dpcd_backlight_get.raw,
+> -                       sizeof(union dpcd_source_backlight_get)))
+> +                       sizeof(union dpcd_source_backlight_get)) != DC_OK)
+>                 return false;
+>
+>         *backlight_millinits_avg =
+> @@ -4417,9 +4417,9 @@ bool dc_link_read_default_bl_aux(struct dc_link *link, uint32_t *backlight_milli
+>                 link->connector_signal != SIGNAL_TYPE_DISPLAY_PORT))
+>                 return false;
+>
+> -       if (!core_link_read_dpcd(link, DP_SOURCE_BACKLIGHT_LEVEL,
+> +       if (core_link_read_dpcd(link, DP_SOURCE_BACKLIGHT_LEVEL,
+>                 (uint8_t *) backlight_millinits,
+> -               sizeof(uint32_t)))
+> +               sizeof(uint32_t)) != DC_OK)
+>                 return false;
+>
+>         return true;
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
