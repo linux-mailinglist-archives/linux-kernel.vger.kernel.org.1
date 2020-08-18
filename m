@@ -2,103 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 359BE2488A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 17:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9CD42488C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 17:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726809AbgHRPGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 11:06:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35550 "EHLO mail.kernel.org"
+        id S1727013AbgHRPL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 11:11:28 -0400
+Received: from mga17.intel.com ([192.55.52.151]:54595 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726630AbgHRPGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 11:06:41 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21FD7207D3;
-        Tue, 18 Aug 2020 15:06:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597763200;
-        bh=EWjrUEn8Fdl8vRk5AW0ZEQ0oQDuBzaEaX+X3DssIftw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fdnPgih/agxspQ3O97ozg+vfLTKhbe903DSbfSdPJPdNgPfjbfpNrw9kTy2acF2Er
-         qeHmtCEY0hxPYbnljXO+hvtujxi6rif6YSLQOweYR8ysm10y5Th6fWLxpoyn2pBxW1
-         o4dZJ0kBLmyt9us1ueN0PezqTv4EdBeq1ovCkHOs=
-Date:   Tue, 18 Aug 2020 17:07:04 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     devel@driverdev.osuosl.org,
-        Manivannan Sadhasivam <mani@kernel.org>, linuxarm@huawei.com,
-        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        mauro.chehab@huawei.com
-Subject: Re: [PATCH 1/6] staging: hikey9xx: fix Kconfig dependency chain
-Message-ID: <20200818150704.GA665815@kroah.com>
-References: <cover.1597762400.git.mchehab+huawei@kernel.org>
- <1b7e23500e7449593393115cc0954af441b0c730.1597762400.git.mchehab+huawei@kernel.org>
+        id S1726570AbgHRPL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 11:11:26 -0400
+IronPort-SDR: VLJ01JHyOp6SbVB/gOumoQmlR+hiS6MuzCRFG611NJZLYJP3mhY2dbjLX2cJ+urJw0Ma8e+WWN
+ w3As+iJPQfUw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="134986578"
+X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
+   d="scan'208";a="134986578"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 08:11:26 -0700
+IronPort-SDR: wpnUt6l9zL5pTGol124Nt0/IN+bZOQ6r1M/bJ27aHUxqFKdewMwDsMoP6G4BixKoPq1AWF6CgK
+ U7y3y3zpprQA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
+   d="scan'208";a="441253428"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by orsmga004.jf.intel.com with ESMTP; 18 Aug 2020 08:11:24 -0700
+Date:   Tue, 18 Aug 2020 23:07:38 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Tom Rix <trix@redhat.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, broonie@kernel.org,
+        linux-kernel@vger.kernel.org, matthew.gerlach@linux.intel.com,
+        russell.h.weight@intel.com, lgoncalv@redhat.com, hao.wu@intel.com
+Subject: Re: [PATCH v3 0/2] add regmap-spi-avmm & Intel Max10 BMC chip support
+Message-ID: <20200818150738.GA11659@yilunxu-OptiPlex-7050>
+References: <1596614456-20182-1-git-send-email-yilun.xu@intel.com>
+ <20200817082410.GB19661@yilunxu-OptiPlex-7050>
+ <20200817091252.GV4354@dell>
+ <20200818083647.GE22873@yilunxu-OptiPlex-7050>
+ <5a2d4761-e800-bfb6-d67b-8740b8039ecc@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1b7e23500e7449593393115cc0954af441b0c730.1597762400.git.mchehab+huawei@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5a2d4761-e800-bfb6-d67b-8740b8039ecc@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 04:58:53PM +0200, Mauro Carvalho Chehab wrote:
-> Both the SPMI controller and the SPMI PMIC driver
-> depends on the SPMI bus support.
+I think that's a good optimization. I'll include this change and send a
+v4.
+
+Thanks.
+
+On Tue, Aug 18, 2020 at 07:40:45AM -0700, Tom Rix wrote:
+> Yilun,
 > 
-> The dependency for the regulator is also wrong:
-> it should depends on the SPMI version of the HiSilicon 6421,
-> and not on the normal one.
+> I was looking at the tx side a bit and think the padding function could be moved into the pkt/phy function.  The pky/phy function already is looking for the eop's so reuse it and remove the search for eop and exchange the loops that do char moving and padding to mem* functions.  The logic is something like.                                                          
+> if (tb == tb_end - 1 && !eop_inserted) {
+>         *pb = PKT_EOP;
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  drivers/staging/hikey9xx/Kconfig | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>         p_eop = pb;
 > 
-> diff --git a/drivers/staging/hikey9xx/Kconfig b/drivers/staging/hikey9xx/Kconfig
-> index 76267b9be562..a004839e8fa9 100644
-> --- a/drivers/staging/hikey9xx/Kconfig
-> +++ b/drivers/staging/hikey9xx/Kconfig
-> @@ -5,6 +5,7 @@ config SPMI_HISI3670
->  	tristate "Hisilicon 3670 SPMI Controller"
->  	select IRQ_DOMAIN_HIERARCHY
->  	depends on HAS_IOMEM
-> +	depends on SPMI
->  	help
->  	  If you say yes to this option, support will be included for the
->  	  built-in SPMI PMIC Arbiter interface on Hisilicon 3670
-> @@ -14,6 +15,7 @@ config SPMI_HISI3670
->  config MFD_HI6421_SPMI
->  	tristate "HiSilicon Hi6421v600 SPMI PMU/Codec IC"
->  	depends on OF
-> +	depends on SPMI
->  	select MFD_CORE
->  	help
->  	  Add support for HiSilicon Hi6421v600 SPMI PMIC. Hi6421 includes
-> @@ -28,7 +30,7 @@ config MFD_HI6421_SPMI
->  # to be placed at drivers/regulator
->  config REGULATOR_HI6421V600
->  	tristate "HiSilicon Hi6421v600 PMIC voltage regulator support"
-> -	depends on MFD_HI6421_PMIC && OF
-> +	depends on MFD_HI6421_SPMI && OF
->  	help
->  	  This driver provides support for the voltage regulators on
->  	  HiSilicon Hi6421v600 PMU / Codec IC.
-
-Better, but now I get the following build error:
-
-ERROR: modpost: "regulator_map_voltage_iterate" [drivers/staging/hikey9xx/hi6421v600-regulator.ko] undefined!
-ERROR: modpost: "regulator_list_voltage_table" [drivers/staging/hikey9xx/hi6421v600-regulator.ko] undefined!
-ERROR: modpost: "of_get_regulator_init_data" [drivers/staging/hikey9xx/hi6421v600-regulator.ko] undefined!
-ERROR: modpost: "regulator_register" [drivers/staging/hikey9xx/hi6421v600-regulator.ko] undefined!
-ERROR: modpost: "regulator_unregister" [drivers/staging/hikey9xx/hi6421v600-regulator.ko] undefined!
-ERROR: modpost: "rdev_get_drvdata" [drivers/staging/hikey9xx/hi6421v600-regulator.ko] undefined!
-
-Someone need CONFIG_REGULATOR enabled?
-
-Another follow-on patch?  :)
-
-thanks,
-
-greg k-h
+> ...
+> 
+>     dst_pb = &br->phy_buf[aligned_len];
+>     size_t s = pb - p_eop + 1;
+>     /* move EOP and bytes after EOP to the end of aligned size */
+>     memmove(dst_pb - s, p_eop, s);
+>     /* fill the hole with PHY_IDLEs */
+>     memset(p_eop, PHY_IDLE, aligned_len - br->phy_len);
+>     /* update the phy data length */
+> 
+> Tom
+> 
+>  
+> 
+> On 8/18/20 1:36 AM, Xu Yilun wrote:
+> > On Mon, Aug 17, 2020 at 10:12:52AM +0100, Lee Jones wrote:
+> >> On Mon, 17 Aug 2020, Xu Yilun wrote:
+> >>
+> >>> Hi Brown & jones:
+> >>>
+> >>> I tried to refacor the regmap code and add comments in this patchset. I
+> >>> made big changes to the rx flow and remove some tricky parts in it.
+> >>>
+> >>> Would it be more understandable than last version? I'm expecting your
+> >>> comments on it when you have time, thanks in advance.
+> >> Just resubmit please.  We can review the code itself.
+> > Ok. I'll rebase it to 5.9-rc1 and resubmit it.
+> >
+> > Thanks,
+> > Yilun
+> >
+> >> -- 
+> >> Lee Jones [李琼斯]
+> >> Senior Technical Lead - Developer Services
+> >> Linaro.org │ Open source software for Arm SoCs
+> >> Follow Linaro: Facebook | Twitter | Blog
