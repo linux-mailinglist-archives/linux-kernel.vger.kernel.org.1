@@ -2,55 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C17F248C1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02A0248C24
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728509AbgHRQ4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 12:56:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37880 "EHLO mail.kernel.org"
+        id S1728536AbgHRQ46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 12:56:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728464AbgHRQz4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 12:55:56 -0400
+        id S1728471AbgHRQ4G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 12:56:06 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B1F820786;
-        Tue, 18 Aug 2020 16:55:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0A4C2083B;
+        Tue, 18 Aug 2020 16:56:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597769756;
-        bh=CJ+7MrW9n8maKY/KRemfT07oZ9ah6UedsLiX0UnR0KE=;
+        s=default; t=1597769766;
+        bh=V0gIKXHRc7WtWMad/EM5E+ugoy/k2S15r42+s4jRwKc=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=lTyzTzUFRGDcvFr8HzJv0+oTkdOkF81E+6+SI8nOb3ubUWp80lLTDdBJxv+xXxeGW
-         Dr1diSgDgJuJFD0sd7tETwV891v/CiVCOBK4PyiMPA0z0MDVh8Gg6Bm+acsXEOLt9O
-         GugKMoye5KfFyDl3hJ+MOouItRhMhSrtgFeuusLY=
-Date:   Tue, 18 Aug 2020 17:55:25 +0100
+        b=M+v6KNQuO27FHS4W3SHPLdfaWTenkNBBzqpOzqo9m3odkILqw06/K7NL+JdGz506q
+         ElUfIzlp09qs15ActbjcLVky8gV/PmC2Q1iqWa4QkVIQ1yy/R6+V4h6e6EthEHysej
+         gQQNTq497RV5ygGJdY4uktGTjSmtSXtQ95ThAaHc=
+Date:   Tue, 18 Aug 2020 17:55:35 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Samuel Holland <samuel@sholland.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Chen-Yu Tsai <wens@csie.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
+To:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Youling Tang <tangyouling@loongson.cn>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jie Yang <yang.jie@linux.intel.com>,
         Takashi Iwai <tiwai@suse.com>
-Cc:     linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, Ondrej Jirman <megous@megous.com>
-In-Reply-To: <20200726025334.59931-1-samuel@sholland.org>
-References: <20200726025334.59931-1-samuel@sholland.org>
-Subject: Re: [PATCH v2 0/8] ASoC: sun50i-codec-analog: Cleanup and power management
-Message-Id: <159776961932.56094.11388923690461869289.b4-ty@kernel.org>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1597299157-32221-1-git-send-email-tangyouling@loongson.cn>
+References: <1597299157-32221-1-git-send-email-tangyouling@loongson.cn>
+Subject: Re: [PATCH] sound/soc/intel: Fix spelling mistake "cant" --> "can't"
+Message-Id: <159776961932.56094.17997972202673075473.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 25 Jul 2020 21:53:26 -0500, Samuel Holland wrote:
-> This series performs some minor cleanup on the driver for the analog
-> codec in the Allwinner A64, and hooks up the existing mute switches to
-> DAPM widgets, in order to provide improved power management.
-> 
-> Changes since v1:
->   - Collected Acked-by/Reviewed-by tags
->   - Used SOC_MIXER_NAMED_CTL_ARRAY to avoid naming a widget "Earpiece"
-> 
-> [...]
+On Thu, 13 Aug 2020 14:12:37 +0800, Youling Tang wrote:
+> There is some spelling mistakes in a dev_err message. Fix it.
 
 Applied to
 
@@ -58,22 +51,8 @@ Applied to
 
 Thanks!
 
-[1/8] ASoC: sun50i-codec-analog: Fix duplicate use of ADC enable bits
-      commit: ad5b7f69a09b6784f6fc263d7c0fffdda947a8ce
-[2/8] ASoC: sun50i-codec-analog: Gate the amplifier clock during suspend
-      commit: 9b7612bb75e50acc55d2143cadb8057a6721d9c7
-[3/8] ASoC: sun50i-codec-analog: Group and sort mixer routes
-      commit: cababecb33c05b8229558df6248d5869a38ceec3
-[4/8] ASoC: sun50i-codec-analog: Make headphone routes stereo
-      commit: 241a578a9ebf866351e12029fc77f5a48b742042
-[5/8] ASoC: sun50i-codec-analog: Enable DAPM for headphone switch
-      commit: 4b9f39e14cf606def16897d85da492fc54b94a43
-[6/8] ASoC: sun50i-codec-analog: Make line out routes stereo
-      commit: dd8286a34963c47964ab3c73d56656c9719a36b4
-[7/8] ASoC: sun50i-codec-analog: Enable DAPM for line out switch
-      commit: 95d34762f201c0f7cf0ed920815f349cfe336fe1
-[8/8] ASoC: sun50i-codec-analog: Enable DAPM for earpiece switch
-      commit: 7829e68d55692c9f7f5665ebec9fa1f33d5ad72f
+[1/1] sound/soc/intel: Fix spelling mistake "cant" --> "can't"
+      commit: ade5376dff579e759cd40cf7831306173bb875cf
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
