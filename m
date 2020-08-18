@@ -2,157 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0BE2248200
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 11:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB75A248225
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 11:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726552AbgHRJgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 05:36:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726165AbgHRJgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 05:36:17 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F1A72078B;
-        Tue, 18 Aug 2020 09:36:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597743376;
-        bh=jf7Mx1Ot8arfUuf6gg/Wk5ylCL0JP7drPzwJqzU4itw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kncx4qd2AeaHd89DpmQpPvAWG2MJRYJkGWXg7bKYSHDqCKc3NXVxtfyxGvaKapyL7
-         OOmMHwYltbvwO8xVLm4X924GpUWRtTwD6omZKLuFCTWymoLruGjkXM4KV/Q323bOPz
-         +8BbwgbRO1Z7qEgQblVXZ5XIaL9o9UzrTS9NLlsw=
-Date:   Tue, 18 Aug 2020 11:36:40 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sergey Korolev <s.korolev@ndmsystems.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Rob Gill <rrobgill@protonmail.com>,
-        Bastien Nocera <hadess@hadess.net>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Johan Hovold <johan@kernel.org>,
-        Nishad Kamdar <nishadkamdar@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] USB: core: remove polling for
- /sys/kernel/debug/usb/devices
-Message-ID: <20200818093640.GC34785@kroah.com>
-References: <20200809161233.13135-1-s.korolev@ndmsystems.com>
+        id S1726476AbgHRJpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 05:45:20 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:25480 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726145AbgHRJpP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 05:45:15 -0400
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200818094512epoutp0208060699c21c760566edf125e2f765b2~sU5_SRG-e0386903869epoutp02U
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 09:45:12 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200818094512epoutp0208060699c21c760566edf125e2f765b2~sU5_SRG-e0386903869epoutp02U
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1597743912;
+        bh=NsOkvQvkZldczEqoWc3iM/DpfiYCpCE0mDSOoCg/0iU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AkaISKoluwZ6XYRe1HTd/8+1jaQhi6NA0CA2ARIsJqx+l/CCoRD3+++00Xgwch6AL
+         ARX2acvYLPtF2EiaPIhJ10lfbPPpMhpeA+vlrEmmTY7a1AvvTICCgrRMIVTN+ipNOY
+         3yRDJE699gU2M5OrqF8GJYptNnse7Z0o5yJ6uEFA=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20200818094511epcas2p474d123ae164af4eb831076642f6ee69a~sU59Ogbj72342323423epcas2p4X;
+        Tue, 18 Aug 2020 09:45:11 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.40.188]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4BW5cP3FYBzMqYkZ; Tue, 18 Aug
+        2020 09:45:09 +0000 (GMT)
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        36.FA.19322.523AB3F5; Tue, 18 Aug 2020 18:45:09 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200818094508epcas2p418f7d4eb9bb6ca3f41cac4529c6d0942~sU565tFYa2340623406epcas2p4U;
+        Tue, 18 Aug 2020 09:45:08 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200818094508epsmtrp1fc688000405a3e1ef8637970e1e77fa3~sU564_uyd2407924079epsmtrp1A;
+        Tue, 18 Aug 2020 09:45:08 +0000 (GMT)
+X-AuditID: b6c32a45-797ff70000004b7a-b3-5f3ba32518b2
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        0E.97.08303.423AB3F5; Tue, 18 Aug 2020 18:45:08 +0900 (KST)
+Received: from KEI (unknown [12.36.155.227]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200818094508epsmtip206c9cca6a2cc76d1706f68fa73ae5f6b~sU56vFHRz2251022510epsmtip2U;
+        Tue, 18 Aug 2020 09:45:08 +0000 (GMT)
+Date:   Tue, 18 Aug 2020 18:37:39 +0900
+From:   Cho KyongHo <pullip.cho@samsung.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     joro@8bytes.org, catalin.marinas@arm.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, m.szyprowski@samsung.com,
+        robin.murphy@arm.com, janghyuck.kim@samsung.com,
+        hyesoo.yu@samsung.com
+Subject: Re: [PATCH 1/2] dma-mapping: introduce relaxed version of dma sync
+Message-ID: <20200818093739.GB191752@KEI>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200809161233.13135-1-s.korolev@ndmsystems.com>
+In-Reply-To: <20200818082852.GA15145@willie-the-truck>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNJsWRmVeSWpSXmKPExsWy7bCmma7qYut4g/8HxCzeL+thtPjbeYHV
+        YsF+a4vNc4otOmdvYLfY9Pgaq8XlXXPYLNYeuctucfDDE1aLljumDlweTw7OY/JYM28No8em
+        VZ1sHpuX1HtMvrGc0aNvyypGj8+b5ALYo3JsMlITU1KLFFLzkvNTMvPSbZW8g+Od403NDAx1
+        DS0tzJUU8hJzU22VXHwCdN0yc4BuU1IoS8wpBQoFJBYXK+nb2RTll5akKmTkF5fYKqUWpOQU
+        GBoW6BUn5haX5qXrJefnWhkaGBiZAlUm5GTMX3aNtaBZsGLBu83MDYzveLsYOTkkBEwkFu/f
+        wt7FyMUhJLCDUeLI8x5mCOcTo8S0bXOhMp8ZJXbdvczSxcgB1tJ9KBOkW0hgF6PEoZW2EDUP
+        GSV+3fjKCJJgEVCVWHq8kxnEZhPQklg99zhYXERAUWLH9j9gG5gFfjFK3Fj4mwUkISzgLbFm
+        RTMTiM0roClxeEMbG4QtKHFy5hOwGk4BM4mT7d1MIEeICqhIvDpYDzJHQmAuh8S0ubeZIP5x
+        keh5uYYFwhaWeHUc5DcQW0riZX8bO0TDdEaJd/MPsUEkNjNKfNstCGEbS8x61g52KbNAhsTT
+        Z7ugPlaWOHKLBSLMJ9Fx+C87RJhXoqNNCKJTRWLn1GssMKv69t6A6vSQ+DtRCBJWxxglXi1N
+        nsAoPwvJY7OQ7IKwdSQW7P7ENguom1lAWmL5Pw4IU1Ni/S79BYysqxjFUguKc9NTi40KDJGj
+        ehMjONVque5gnPz2g94hRiYOxkOMEhzMSiK8SSfM44V4UxIrq1KL8uOLSnNSiw8xmgKjaSKz
+        lGhyPjDZ55XEG5oamZkZWJpamJoZWSiJ8+YqXogTEkhPLEnNTk0tSC2C6WPi4JRqYMotOWxj
+        LvEmxeXZh+xlHltCH2fbrLhs7jat+OpGKY6vASYce1Zovz/cMT31m8F1u2tlu6Uyu81+KpzU
+        N7V4PvH+K42c5h2npPt0FpoWHd0X0TIxQK3v8eUaxs8l7PMYTsy+tW5eo/iV2GPl+gUiDRPV
+        8+LjMnOLxTWePPWLeNnCah3ZI8+x5JbPjD96Z6beXeJSdrJGNvcKm8O1TN9HVyfLsTvlbLZ9
+        tvn2t8JrXfFz3/39ZXe+KsndcGsDR9m6utP70i6erPwkt5sjs4Hz+YYtHUU/T6qqG8o8Vvcv
+        UohMeGMcKtunEjKjmuM9i/KMddXq20zeZ5i/de1jFlRZMHVJ1ZcSC/bGiMURdjt3KLEUZyQa
+        ajEXFScCALBJtCg+BAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrPLMWRmVeSWpSXmKPExsWy7bCSvK7KYut4g73fzS3eL+thtPjbeYHV
+        YsF+a4vNc4otOmdvYLfY9Pgaq8XlXXPYLNYeuctucfDDE1aLljumDlweTw7OY/JYM28No8em
+        VZ1sHpuX1HtMvrGc0aNvyypGj8+b5ALYo7hsUlJzMstSi/TtErgyDr+vLDjMV3FmQk4D43Hu
+        LkYODgkBE4nuQ5ldjJwcQgI7GCW2TJIDsSUEpCTmda9lgrCFJe63HGHtYuQCqrnPKDGxZRU7
+        SIJFQFVi6fFOZhCbTUBLYvXc44wgtoiAosSO7X+YQRqYBf4wSjw8eh+sQVjAW2LNimawqbwC
+        mhKHN7SxQUw9xihx9e5/doiEoMTJmU9YQGxmoKk3/r1kArmUWUBaYvk/DpAwp4CZxMn2brCw
+        qICKxKuD9RMYBWchaZ6FpHkWQvMCRuZVjJKpBcW56bnFhgVGeanlesWJucWleel6yfm5mxjB
+        caKltYNxz6oPeocYmTgYDzFKcDArifAmnTCPF+JNSaysSi3Kjy8qzUktPsQozcGiJM77ddbC
+        OCGB9MSS1OzU1ILUIpgsEwenVAOThE2UCsexQt3iVy2vw2d+7oj0vNy1poP12T8/PQVW62hb
+        i9t11cFesh+FrNxydx3tudxib7Pe8YcaU/wOsfmHTl+5mL/a5cZHv5lGk11Wh3Smqr10YhXh
+        vLVqitbb9eKO1w3jb6peZzxZcuPWeblXpTrLZqV4TcqRf2jNEHBzL7t+4KKouUfPrNQq7ZH8
+        vfDw24hHN3/F9iza8+XfBh77JC028YAnZzd3v94TZru+yMJ2/pxT/fqqq59ohL3i2BW6PYp/
+        xXk/YeZyv9srs3Nj6o4v0+q1midqd86H0+hoZfQsnnm/zMOs77KF/Iion3TduudbjZHK2y9+
+        1iqbRAXK2D9t3bpI4VnnchexA4xKLMUZiYZazEXFiQCwYQjgAgMAAA==
+X-CMS-MailID: 20200818094508epcas2p418f7d4eb9bb6ca3f41cac4529c6d0942
+X-Msg-Generator: CA
+Content-Type: multipart/mixed;
+        boundary="----6Tv-RL.wkjEGwkeNQieDfELFd5He6k7dbFa.nbvKv8n_uDOi=_29efc_"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200818075050epcas2p15c780650f5f6b4a54ce731c273d24c98
+References: <CGME20200818075050epcas2p15c780650f5f6b4a54ce731c273d24c98@epcas2p1.samsung.com>
+        <1597736591-20457-1-git-send-email-pullip.cho@samsung.com>
+        <20200818082852.GA15145@willie-the-truck>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 09, 2020 at 07:12:30PM +0300, Sergey Korolev wrote:
-> The latest reference to usbfs_conn_disc_event() removed in
-> commit fb28d58b72aa ("USB: remove CONFIG_USB_DEVICEFS")
-> in 2012 and now a user poll() waits infinitely for content changes.
+------6Tv-RL.wkjEGwkeNQieDfELFd5He6k7dbFa.nbvKv8n_uDOi=_29efc_
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+
+On Tue, Aug 18, 2020 at 09:28:53AM +0100, Will Deacon wrote:
+> On Tue, Aug 18, 2020 at 04:43:10PM +0900, Cho KyongHo wrote:
+> > Cache maintenance operations in the most of CPU architectures needs
+> > memory barrier after the cache maintenance for the DMAs to view the
+> > region of the memory correctly. The problem is that memory barrier is
+> > very expensive and dma_[un]map_sg() and dma_sync_sg_for_{device|cpu}()
+> > involves the memory barrier per every single cache sg entry. In some
+> > CPU micro-architecture, a single memory barrier consumes more time than
+> > cache clean on 4KiB. It becomes more serious if the number of CPU cores
+> > are larger.
 > 
-> Signed-off-by: Sergey Korolev <s.korolev@ndmsystems.com>
-> ---
->  drivers/usb/core/devices.c | 41 --------------------------------------
->  drivers/usb/core/usb.h     |  1 -
->  2 files changed, 42 deletions(-)
+> Have you got higher-level performance data for this change? It's more likely
+> that the DSB is what actually forces the prior cache maintenance to
+> complete,
+
+This patch does not skip necessary DSB after cache maintenance. It just
+remove repeated dsb per every single sg entry and call dsb just once
+after cache maintenance on all sg entries is completed.
+
+> so it's important to look at the bigger picture, not just the
+> apparent relative cost of these instructions.
 > 
-> diff --git a/drivers/usb/core/devices.c b/drivers/usb/core/devices.c
-> index 696b2b692b83..1ef2de6e375a 100644
-> --- a/drivers/usb/core/devices.c
-> +++ b/drivers/usb/core/devices.c
-> @@ -39,7 +39,6 @@
->  #include <linux/fs.h>
->  #include <linux/mm.h>
->  #include <linux/gfp.h>
-> -#include <linux/poll.h>
->  #include <linux/usb.h>
->  #include <linux/usbdevice_fs.h>
->  #include <linux/usb/hcd.h>
-> @@ -97,22 +96,6 @@ static const char format_endpt[] =
->  /* E:  Ad=xx(s) Atr=xx(ssss) MxPS=dddd Ivl=D?s */
->    "E:  Ad=%02x(%c) Atr=%02x(%-4s) MxPS=%4d Ivl=%d%cs\n";
->  
-> -/*
-> - * Wait for an connect/disconnect event to happen. We initialize
-> - * the event counter with an odd number, and each event will increment
-> - * the event counter by two, so it will always _stay_ odd. That means
-> - * that it will never be zero, so "event 0" will never match a current
-> - * event, and thus 'poll' will always trigger as readable for the first
-> - * time it gets called.
-> - */
-> -static struct device_connect_event {
-> -	atomic_t count;
-> -	wait_queue_head_t wait;
-> -} device_event = {
-> -	.count = ATOMIC_INIT(1),
-> -	.wait = __WAIT_QUEUE_HEAD_INITIALIZER(device_event.wait)
-> -};
-> -
->  struct class_info {
->  	int class;
->  	char *class_name;
-> @@ -146,12 +129,6 @@ static const struct class_info clas_info[] = {
->  
->  /*****************************************************************/
->  
-> -void usbfs_conn_disc_event(void)
-> -{
-> -	atomic_add(2, &device_event.count);
-> -	wake_up(&device_event.wait);
-> -}
-> -
->  static const char *class_decode(const int class)
->  {
->  	int ix;
-> @@ -623,25 +600,7 @@ static ssize_t usb_device_read(struct file *file, char __user *buf,
->  	return total_written;
->  }
->  
-> -/* Kernel lock for "lastev" protection */
-> -static __poll_t usb_device_poll(struct file *file,
-> -				    struct poll_table_struct *wait)
-> -{
-> -	unsigned int event_count;
-> -
-> -	poll_wait(file, &device_event.wait, wait);
-> -
-> -	event_count = atomic_read(&device_event.count);
-> -	if (file->f_version != event_count) {
-> -		file->f_version = event_count;
-> -		return EPOLLIN | EPOLLRDNORM;
-> -	}
-> -
-> -	return 0;
-> -}
-> -
->  const struct file_operations usbfs_devices_fops = {
->  	.llseek =	no_seek_end_llseek,
->  	.read =		usb_device_read,
-> -	.poll =		usb_device_poll,
->  };
-> diff --git a/drivers/usb/core/usb.h b/drivers/usb/core/usb.h
-> index 98e7d1ee63dc..c893f54a3420 100644
-> --- a/drivers/usb/core/usb.h
-> +++ b/drivers/usb/core/usb.h
-> @@ -191,7 +191,6 @@ extern const struct attribute_group *usb_interface_groups[];
->  extern struct usb_driver usbfs_driver;
->  extern const struct file_operations usbfs_devices_fops;
->  extern const struct file_operations usbdev_file_operations;
-> -extern void usbfs_conn_disc_event(void);
->  
->  extern int usb_devio_init(void);
->  extern void usb_devio_cleanup(void);
+If you mean bigger picture is the performance impact of this patch to a
+complete user scenario, we are evaluating it in some latency sensitve
+scenario. But I wonder if a performance gain in a platform/SoC specific
+scenario is also persuasive.
 
-Why not fix this up instead?  The debugfs file can be polled and this
-should be fixed to accurately handle that.
+> Also, it's a miracle that non-coherent DMA even works,
 
-It's kind of proof though that no one really cares about this option in
-that no one has noticed it being gone for so long, so if you don't want
-to fix it, I will just take this patch for now.
+I am sorry, Will. I don't understand this. Can you let me know what do
+you mena with the above sentence?
 
-Let me know.
+> so I'm not sure
+> that we should be complicating the implementation like this to try to
+> make it "fast".
+> 
+I agree that this patch makes the implementation of dma API a bit more
+but I don't think this does not impact its complication seriously.
 
-thanks,
+> Will
+> 
 
-greg k-h
+Thank you.
+
+------6Tv-RL.wkjEGwkeNQieDfELFd5He6k7dbFa.nbvKv8n_uDOi=_29efc_
+Content-Type: text/plain; charset="utf-8"
+
+
+------6Tv-RL.wkjEGwkeNQieDfELFd5He6k7dbFa.nbvKv8n_uDOi=_29efc_--
