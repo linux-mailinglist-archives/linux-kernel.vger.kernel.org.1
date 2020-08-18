@@ -2,89 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 907F0248258
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 11:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B59524825C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 11:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbgHRJzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 05:55:43 -0400
-Received: from muru.com ([72.249.23.125]:40756 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726353AbgHRJzn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 05:55:43 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id E575B810D;
-        Tue, 18 Aug 2020 09:55:41 +0000 (UTC)
-Date:   Tue, 18 Aug 2020 12:56:09 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH] n_gsm: Fix write handling for zero bytes written
-Message-ID: <20200818095609.GQ2994@atomide.com>
-References: <20200817135454.28505-1-tony@atomide.com>
- <1b8538a8-d8b6-4287-36e1-aa1e0863ff2d@kernel.org>
+        id S1726541AbgHRJ5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 05:57:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726145AbgHRJ5O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 05:57:14 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5286C061389
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 02:57:13 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id o2so9208870qvk.6
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 02:57:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XfOEACjh/QsOL13/8B8TglBfnAUxbCJSo9rU0NqtdyI=;
+        b=EtgAZxRb38TOztAaSduARXIPvPHZFM95tYQk4ZRdGQy451E/huH1cbbBJ5SLT3puZI
+         Sy/X6TR4x6gz1y5oqr3Cg/gfQ8KDKof68tm/VOWVhJeRzJIoQNV7HeSVMKv1kvlqVbjd
+         qtUI5wlL7l+8oFRj0WZM47tmyGt2zewEn3bc5bLHrv577qRB2X/AQ9rPxkKSlmBX1sVS
+         EICkP4rsNTcrDIJyccpvqXhWDKclxmf6vLq8bK2cq1cXIWPj5tBjA3JC8SqNNzvFKaWw
+         i2MOKjzOr7fmO26Tdixb2b91zRdzkjQK7YoZyhkkH4GQtA/v8MWn8c71uuj2RaJJF0xF
+         kt9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XfOEACjh/QsOL13/8B8TglBfnAUxbCJSo9rU0NqtdyI=;
+        b=Gr7o6L10GKCfpFMgJCeY+r2zy/74iGjBlmlsXvdco1iuNBBMHzfHFWHrZUC+EmN74Y
+         p1iFIUgKX/SjXCpXZj2DKS6NTevqSM6QRpWWG4PIgEWDPKD9xGKTmsJP/7yawP/tJpcx
+         /1oiKkBbQc7JlzUPyeHHOEt3vu76CpTDw6fXDV8jkrE3j2MGapL/wSC5Y26av7V+zP06
+         DSO1M3QJNmKhkK/Kmpo250yBuo2gZs8OHMdVnOscioa4/4TELvSxqbNQWvILjeKmcDhl
+         iivGL7W7W+gtMI7R0DNnGQTK6r64R9tuWPJwJKp6NW54gvKvIyLED6ZjjnFfq9+qjQn7
+         97Tg==
+X-Gm-Message-State: AOAM532MuKgytYwE8AFVbCFCSfc1TPWnq7TlTaqK4KRwVe+sUKFJdm3M
+        TEZFe9mH2jvpVUbP+O5dbFd3b8CPLXxNr+TLUrFFUA==
+X-Google-Smtp-Source: ABdhPJxas6mk96CCCq6K2EbrhFAmDFY+8RxVLUdXFs3/UGXBQxgwATGli05rfUqMrlfS/GKtjJkpQwyEEbYFR+Kuc5g=
+X-Received: by 2002:a0c:f849:: with SMTP id g9mr18632025qvo.80.1597744632772;
+ Tue, 18 Aug 2020 02:57:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1b8538a8-d8b6-4287-36e1-aa1e0863ff2d@kernel.org>
+References: <1595640639-9310-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
+ <CACT4Y+YXT9iLij-AbrUwj=yPq-YNFw=Au9g0LQJCKwYonaHCDQ@mail.gmail.com>
+ <46674d71-1e41-cb68-ed99-72c25a73dfef@i-love.sakura.ne.jp> <37b60b14-4eb6-36b3-1195-97c2d27b7ed8@i-love.sakura.ne.jp>
+In-Reply-To: <37b60b14-4eb6-36b3-1195-97c2d27b7ed8@i-love.sakura.ne.jp>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 18 Aug 2020 11:57:01 +0200
+Message-ID: <CACT4Y+Y0ptJDj1F89jKQEKB_L8U2yFCUUZ7pwxh+fcE-ZpsBkg@mail.gmail.com>
+Subject: Re: [PATCH] lockdep: Introduce CONFIG_LOCKDEP_LARGE
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Aug 4, 2020 at 4:36 AM Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
+>
+> Hello, Peter, Ingo and Will.
+>
+> (Q1) Can we change the capacity using kernel config?
+>
+> (Q2) If we can change the capacity, is it OK to specify these constants
+>      independently? (In other words, is there inter-dependency among
+>      these constants?)
 
-* Jiri Slaby <jirislaby@kernel.org> [200818 08:24]:
-> On 17. 08. 20, 15:54, Tony Lindgren wrote:
-> > If write returns zero we currently end up removing the message
-> > from the queue. Instead of removing the message, we want to just
-> > break out of the loop just like we already do for error codes.
-> 
-> When exactly does the only writer (gsmld_output) return zero for
-> non-zero len parameter?
 
-I ran into this when testing with the WIP serial core PM runtime
-changes from Andy Shevchenko earlier. If there are also other
-cases where we have serial drivers return 0, I don't know about
-them.
+I think we should do this.
+syzbot uses a very beefy kernel config and very broad load.
+We are hitting "BUG: MAX_LOCKDEP_ENTRIES too low!" for the part 428
+days and already hit it 96K times. It's just harming overall kernel
+testing:
+https://syzkaller.appspot.com/bug?id=3d97ba93fb3566000c1c59691ea427370d33ea1b
 
-Basically with the WIP serial core changes, if the open serial port
-is in PM runtime suspended state with it's autosuspend_delay_ms
-expired, we have write return 0 and just wake up the serial device
-on TX.
+I think it's better if exact values are not hardcoded, but rather
+specified in the config. Today we are switching from 4K to 8K, but as
+we enable more configs and learn to reach more code, we may need 16K.
 
-I don't think there's much anything else we can currently do there
-in the PM runtime suspended case as we want to get rid of the
-remaining pm_runtime_irq_safe() dependencies as it takes a permanent
-usage count on the parent device.
 
-Regards,
+> (Q3) Do you think that we can extend lockdep to be used as a tool for auditing
+>      locks held in kernel space and rebuilding lock dependency map in user space?
 
-Tony
+This looks like lots of work. Also unpleasant dependencies on
+user-space. If there is a user-space component, it will need to be
+deployed to _all_ of kernel testing systems and for all users of
+syzkaller. And it will also be a dependency for reproducers. Currently
+one can run a C reproducer and get the errors message from LOCKDEP. It
+seems that a user-space component will make it significantly more
+complicated.
 
-> 
-> > Signed-off-by: Tony Lindgren <tony@atomide.com>
-> > ---
-> >  drivers/tty/n_gsm.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-> > --- a/drivers/tty/n_gsm.c
-> > +++ b/drivers/tty/n_gsm.c
-> > @@ -691,7 +691,8 @@ static void gsm_data_kick(struct gsm_mux *gsm, struct gsm_dlci *dlci)
-> >  			print_hex_dump_bytes("gsm_data_kick: ",
-> >  					     DUMP_PREFIX_OFFSET,
-> >  					     gsm->txframe, len);
-> > -		if (gsm->output(gsm, gsm->txframe, len) < 0)
-> > +
-> > +		if (gsm->output(gsm, gsm->txframe, len) <= 0)
-> >  			break;
-> >  		/* FIXME: Can eliminate one SOF in many more cases */
-> >  		gsm->tx_bytes -= msg->len;
-> > 
-> 
-> thanks,
-> -- 
-> js
+
+> On 2020/07/25 14:23, Tetsuo Handa wrote:
+> >> Also somebody may use it to _reduce_ size of the table for a smaller kernel.
+> >
+> > Maybe. But my feeling is that it is very rare that the kernel actually deadlocks
+> > as soon as lockdep warned the possibility of deadlock.
+> >
+> > Since syzbot runs many instances in parallel, a lot of CPU resource is spent for
+> > checking the same dependency tree. However, the possibility of deadlock can be
+> > warned for only locks held within each kernel boot, and it is impossible to hold
+> > all locks with one kernel boot.
+> >
+> > Then, it might be nice if lockdep can audit only "which lock was held from which
+> > context and what backtrace" and export that log like KCOV data (instead of evaluating
+> > the possibility of deadlock), and rebuild the whole dependency (and evaluate the
+> > possibility of deadlock) across multiple kernel boots in userspace.
+>
