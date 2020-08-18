@@ -2,181 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1B3248B93
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDCC248B9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727050AbgHRQ11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 12:27:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:44862 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728230AbgHRQ0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 12:26:36 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 133D21FB;
-        Tue, 18 Aug 2020 09:26:35 -0700 (PDT)
-Received: from [10.57.40.122] (unknown [10.57.40.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 738A13F66B;
-        Tue, 18 Aug 2020 09:26:32 -0700 (PDT)
-Subject: Re: [PATCH 00/16] IOMMU driver for Kirin 960/970
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
-        Joerg Roedel <jroedel@suse.de>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Chenfeng <puck.chen@hisilicon.com>, linuxarm@huawei.com,
-        Wei Xu <xuwei5@hisilicon.com>, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, Rob Herring <robh+dt@kernel.org>,
-        John Stultz <john.stultz@linaro.org>, mauro.chehab@huawei.com,
-        Suzhuangluan <suzhuangluan@hisilicon.com>,
-        linux-arm-kernel@lists.infradead.org
-References: <cover.1597650455.git.mchehab+huawei@kernel.org>
- <5c7918b6-c506-680b-cb0f-9e5f6a7038d9@arm.com>
- <20200818172909.71f5243a@coco.lan>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <79f40595-7769-aa6a-fbba-53adcffca327@arm.com>
-Date:   Tue, 18 Aug 2020 17:26:30 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1728261AbgHRQ3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 12:29:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726793AbgHRQ1Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 12:27:24 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F574C061389
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 09:27:24 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id c6so18098633ilo.13
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 09:27:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=oryb9Gw/XAffWSWQvfMiaYrjBvPkCAMTzbIDIXNJbnI=;
+        b=lbSYVl4iccAlsHjqO4TXn8l7W42NVRbWABhoe/TSlReejliAxJF6mSRBLxDZNPJNZh
+         VId4k9ffeWPZhk7cbu1TO7cS/PNEVLwghIPT6w6bL9qC/JdbsNwj29BHb6Di8pjDYd6t
+         Mb2Tj5uHQalzN89CEw8MTgpDGxSlc9Qr6rOFCyrfhM2cJuE07faFRcVHPHcuNjNsYD8h
+         gn37CS6aTkVi9vjW3F+tGK72J0Xcltvu5GUZOJml8o8u07l9AaJo4Zwu5kdMWo9WTeex
+         bxkuSzPNLlN7W1jffzHdrMP5MTNsNLgCT2Qq6iS6IKQpIJZweyCvjyX90YIefZjzDyp2
+         IE1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=oryb9Gw/XAffWSWQvfMiaYrjBvPkCAMTzbIDIXNJbnI=;
+        b=RvlGillKtpUUhSHqCAmj6yaWyXhQURUnq/YymJRxXwP9D6gR5zA3IVvNyqTTt4jvHr
+         Hkw9/LuXxHE3Y5iq18z5LLUqIa6sQ+Sc8qYrcu31vUCig4NAmX5HuGN9DMLyxanIyW3k
+         knXxHhHsksGKLlkTTo+FhekjOqltIiKB/eKazpYiWZ35ViFDkAPrken3puu9WeQUBLtC
+         eMuKX7LcwE1GNKXlj94Fb4d6rI1nt13OUCKhEQdoDWVG7OPFfRTv69PMExFy/siVxXZg
+         boy5iiEhA4cADPw0p9P0gpJLwgheF48GqB4NRQ2SofS+wS0riNOphEjAHC6ys8bp2CwB
+         4AJg==
+X-Gm-Message-State: AOAM5337VkpnBcdqjD8VXE8zQUgsW5YZq957UX5HMUCpwZJeQERovM4y
+        I8tmzV9Vay5IOImqewCsUSbApM2g7L3WUQ3ob+u0WQ==
+X-Google-Smtp-Source: ABdhPJzG6Vqg4L5Wbx1ozdnU3GZmWNDJJUJs9j/zG7IUQgWN6QYwYtaA8cti9q2O+EPbmg1Ym7IzGb6KgGhztaQ6jQY=
+X-Received: by 2002:a92:d30a:: with SMTP id x10mr18640134ila.287.1597768043689;
+ Tue, 18 Aug 2020 09:27:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200818172909.71f5243a@coco.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20200817170535.17041-1-brgl@bgdev.pl> <20200817170535.17041-2-brgl@bgdev.pl>
+ <20200817173908.GS1891694@smile.fi.intel.com> <CAMRc=MdaaWhV_ZKHgWy_Gxkp=jMuZcwqpoE8Ya_84n9ZT5O31A@mail.gmail.com>
+ <20200818082500.GB1891694@smile.fi.intel.com>
+In-Reply-To: <20200818082500.GB1891694@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 18 Aug 2020 18:27:12 +0200
+Message-ID: <CAMRc=Md5yrgxnPf=qwKYhwHACcq-XeKOKZ76OwYdMGO8SgYmzQ@mail.gmail.com>
+Subject: Re: [PATCH v7 1/3] devres: provide devm_krealloc()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-18 16:29, Mauro Carvalho Chehab wrote:
-> Hi Robin,
-> 
-> Em Tue, 18 Aug 2020 15:47:55 +0100
-> Robin Murphy <robin.murphy@arm.com> escreveu:
-> 
->> On 2020-08-17 08:49, Mauro Carvalho Chehab wrote:
->>> Add a driver for the Kirin 960/970 iommu.
->>>
->>> As on the past series, this starts from the original 4.9 driver from
->>> the 96boards tree:
->>>
->>> 	https://github.com/96boards-hikey/linux/tree/hikey970-v4.9
->>>
->>> The remaining patches add SPDX headers and make it build and run with
->>> the upstream Kernel.
->>>
->>> Chenfeng (1):
->>>     iommu: add support for HiSilicon Kirin 960/970 iommu
->>>
->>> Mauro Carvalho Chehab (15):
->>>     iommu: hisilicon: remove default iommu_map_sg handler
->>>     iommu: hisilicon: map and unmap ops gained new arguments
->>>     iommu: hisi_smmu_lpae: rebase it to work with upstream
->>>     iommu: hisi_smmu: remove linux/hisi/hisi-iommu.h
->>>     iommu: hisilicon: cleanup its code style
->>>     iommu: hisi_smmu_lpae: get rid of IOMMU_SEC and IOMMU_DEVICE
->>>     iommu: get rid of map/unmap tile functions
->>>     iommu: hisi_smmu_lpae: use the right code to get domain-priv data
->>>     iommu: hisi_smmu_lpae: convert it to probe_device
->>>     iommu: add Hisilicon Kirin970 iommu at the building system
->>>     iommu: hisi_smmu_lpae: cleanup printk macros
->>>     iommu: hisi_smmu_lpae: make OF compatible more standard
->>
->> Echoing the other comments about none of the driver patches being CC'd
->> to the IOMMU list...
->>
->> Still, I dug the series up on lore and frankly I'm not sure what to make
->> of it - AFAICS the "driver" is just yet another implementation of Arm
->> LPAE pagetable code, with no obvious indication of how those pagetables
->> ever get handed off to IOMMU hardware (and indeed no indication of IOMMU
->> hardware at all). Can you explain how it's supposed to work?
->>
->> And as a pre-emptive strike, we really don't need any more LPAE
->> implementations - that's what the io-pgtable library is all about (which
->> incidentally has been around since 4.0...). I think that should make the
->> issue of preserving authorship largely moot since there's no need to
->> preserve most of the code anyway ;)
-> 
-> I didn't know about that, since I got a Hikey 970 board for the first time
-> about one month ago, and that's the first time I looked into iommu code.
-> 
-> My end goal with this is to make the DRM/KMS driver to work with upstream
-> Kernels.
-> 
-> The full patch series are at:
-> 
-> 	https://github.com/mchehab/linux/commits/hikey970/to_upstream-2.0-v1.1
-> 
-> (I need to put a new version there, after some changes due to recent
-> upstream discussions at the regulator's part of the code)
-> 
-> Basically, the DT binding has this, for IOMMU:
-> 
-> 
-> 	smmu_lpae {
-> 		compatible = "hisilicon,smmu-lpae";
-> 	};
-> 
+On Tue, Aug 18, 2020 at 10:40 AM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Mon, Aug 17, 2020 at 10:02:05PM +0200, Bartosz Golaszewski wrote:
+> > On Mon, Aug 17, 2020 at 7:43 PM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > > On Mon, Aug 17, 2020 at 07:05:33PM +0200, Bartosz Golaszewski wrote:
+> > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+>
 > ...
-> 	dpe: dpe@e8600000 {
-> 		compatible = "hisilicon,kirin970-dpe";
-> 		memory-region = <&drm_dma_reserved>;
-> ...
-> 		iommu_info {
-> 			start-addr = <0x8000>;
-> 			size = <0xbfff8000>;
-> 		};
-> 	}
-> 
-> This is used by kirin9xx_drm_dss.c in order to enable and use
-> the iommu:
-> 
-> 
-> 	static int dss_enable_iommu(struct platform_device *pdev, struct dss_hw_ctx *ctx)
-> 	{
-> 		struct device *dev = NULL;
-> 
-> 		dev = &pdev->dev;
-> 
-> 		/* create iommu domain */
-> 		ctx->mmu_domain = iommu_domain_alloc(dev->bus);
-> 		if (!ctx->mmu_domain) {
-> 			pr_err("iommu_domain_alloc failed!\n");
-> 			return -EINVAL;
-> 		}
-> 
-> 		iommu_attach_device(ctx->mmu_domain, dev);
-> 
-> 		return 0;
-> 	}
-> 
-> The only place where the IOMMU domain is used is on this part of the
-> code(error part simplified here) [1]:
-> 
-> 	void hisi_dss_smmu_on(struct dss_hw_ctx *ctx)
-> 	{
-> 		uint64_t fama_phy_pgd_base;
-> 		uint32_t phy_pgd_base;
-> ...
-> 		fama_phy_pgd_base = iommu_iova_to_phys(ctx->mmu_domain, 0);
-> 		phy_pgd_base = (uint32_t)fama_phy_pgd_base;
-> 		if (WARN_ON(!phy_pgd_base))
-> 			return;
-> 
-> 		set_reg(smmu_base + SMMU_CB_TTBR0, phy_pgd_base, 32, 0);
-> 	}
-> 
-> [1] https://github.com/mchehab/linux/commit/36da105e719b47bbe9d6cb7e5619b30c7f3eb1bd
-> 
-> In other words, the driver needs to get the physical address of the frame
-> buffer (mapped via iommu) in order to set some DRM-specific register.
-> 
-> Yeah, the above code is somewhat hackish. I would love to replace
-> this part by a more standard approach.
+>
+> > > > +static struct devres *to_devres(void *data)
+> > > > +{
+> > > > +     return (struct devres *)((u8 *)data - ALIGN(sizeof(struct dev=
+res),
+> > > > +                                                 ARCH_KMALLOC_MINA=
+LIGN));
+> > >
+> > > Do you really need both explicit castings?
+> > >
+> >
+> > Yeah, we can probably drop the (struct devres *) here.
+>
+> void * -> u8 * here is also not needed, it is considered byte access IIRC=
+.
+>
 
-OK, so from a quick look at that, my impression is that your display 
-controller has its own MMU and you don't need to pretend to use the 
-IOMMU API at all. Just have the DRM driver use io-pgtable directly to 
-run its own set of ARM_32_LPAE_S1 pagetables - see Panfrost for an 
-example (but try to ignore the wacky "Mali LPAE" format).
+Actually it turns out that while we don't need the (void *) -> (u8 *)
+casting, we must cast to (struct devres *) or the following error is
+produced:
 
-Robin.
+drivers/base/devres.c: In function =E2=80=98to_devres=E2=80=99:
+drivers/base/devres.c:41:21: error: returning =E2=80=98u8 *=E2=80=99 {aka =
+=E2=80=98unsigned
+char *=E2=80=99} from a function with incompatible return type =E2=80=98str=
+uct devres
+*=E2=80=99 [-Werror=3Dincompatible-pointer-types]
+  return ((u8 *)data - ALIGN(sizeof(struct devres),
+         ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        ARCH_KMALLOC_MINALIGN));
+        ~~~~~~~~~~~~~~~~~~~~~~~
+
+Bart
