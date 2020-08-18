@@ -2,118 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9400524869A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADCAB24869E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726838AbgHROAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 10:00:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726482AbgHROAJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 10:00:09 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26825C061389;
-        Tue, 18 Aug 2020 07:00:09 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id 2so9440566pjx.5;
-        Tue, 18 Aug 2020 07:00:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/oh+BcdsFeBRm7bcoZIVYJ25TsHY2ROrPUeqhFfeYCY=;
-        b=rPsGsqpBlwfOIi1dDqvsJIViRe2mzwhb1+n7f2Ez6TWD9FWEPhZD1teu6GGT/YEKBk
-         xX4n3EmeK6UC0cHa/PILAC66FWHopAqt2WOCYoOr99kUGIgFgd5KwcpAspg5l9jBkhT6
-         B6suQg6iPopeT5V5p06r+MH6K6uWfU+HxcWh+CF+qIQcsPoJW3z7/519xtBzwq/KnjgB
-         1KxnywCbY7qdOpJOrFG/3olaE31TWk/146VsMQCZlHS8BLacEsZkOEQxBSDxDTRlymlX
-         VVboTuvAuIUNTEii9Y85xPOBan44+nD+pwnfRccdua5gFLOs78zSgnmOSsfEL3aNJ9Xm
-         6JjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/oh+BcdsFeBRm7bcoZIVYJ25TsHY2ROrPUeqhFfeYCY=;
-        b=EaViUmdHBHTm5PqV0JI1oOVSk0emb6zePqnEBL13cGnIdhy9o/qIUiwlGvpuG+6qVO
-         CfPyd6TbJnYrjRX59c7UmSNGpH4CTo6D1BSBh36SMSLJ9tU9mXnQeZeDwXmir8eMsRvy
-         /DCS9/jZRJmBeHffaYlwudxnWHGW7fGDlkHcl6sTZKfvqe0XZsvHjh26jDlg9KRuPPHj
-         1zH5AM+DtwS7LeIm1iafNuQwnO59XPaQZczVCkqNHkmWHsY7U6ubyOaLNXrZZ3dotHId
-         W15Pqg0VXgm4r90VTGNfJ+5/iqzDQCfyUNCfW1Wrgqeae5nVUOCkDAryRgdrLxCQmIFU
-         5+7w==
-X-Gm-Message-State: AOAM532dm2pM9ZJBmtm85BkP9vhsxhMyMFbw59Lzr42rX5n2YR70BBsk
-        ifcN0SqvgRmpNGgrPSuv3pGt0pMwHsY=
-X-Google-Smtp-Source: ABdhPJxH966E5lH7RAu83+sOGjaAPxkud5eI2kNsZBNzLmIKwHRuvQEJRRAWIJjU6JCS71onbA4i4Q==
-X-Received: by 2002:a17:90a:fe91:: with SMTP id co17mr79426pjb.103.1597759208613;
-        Tue, 18 Aug 2020 07:00:08 -0700 (PDT)
-Received: from sol (106-69-184-100.dyn.iinet.net.au. [106.69.184.100])
-        by smtp.gmail.com with ESMTPSA id w82sm25275749pff.7.2020.08.18.07.00.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 07:00:07 -0700 (PDT)
-Date:   Tue, 18 Aug 2020 22:00:02 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v4 09/20] gpiolib: cdev: support edge detection for uAPI
- v2
-Message-ID: <20200818140002.GA17809@sol>
-References: <20200814030257.135463-1-warthog618@gmail.com>
- <20200814030257.135463-10-warthog618@gmail.com>
- <CAMpxmJVeAKpNnX0HXSNSLYqX6T+qxun8ppZ7EwzFb3WsS=nanw@mail.gmail.com>
+        id S1726883AbgHROBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 10:01:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726476AbgHROBq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 10:01:46 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4792C20706;
+        Tue, 18 Aug 2020 14:01:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597759305;
+        bh=UPYNOE1fTUq6nftlsWgimnfBgSq0ipHEEplvkeAhMKo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m7Thd5r2sdzbG+01QHiutP3X24Vlgdboh9jGho7cp86YzWzVZJHifPSrltWF5xK0v
+         EOrDPfGko5PQPHCfpOeOfBT62oOL7SoTU+2YlByZaaBtFADHIxrfMFBMOcPaPmo+5K
+         aWqjcpfF4lcrXeGvtZ4rrjE8k0JWQNMpq11aVYWM=
+Date:   Tue, 18 Aug 2020 16:02:09 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     =?iso-8859-1?B?Suly9G1l?= Pouiller <jerome.pouiller@silabs.com>
+Cc:     Tomer Samara <tomersamara98@gmail.com>, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] staging: wfx: refactor to avoid duplication at
+ hif_tx.c
+Message-ID: <20200818140209.GA547677@kroah.com>
+References: <20200805121442.GA31953@tsnow>
+ <2040746.q8W4dvF0dS@pc-42>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAMpxmJVeAKpNnX0HXSNSLYqX6T+qxun8ppZ7EwzFb3WsS=nanw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2040746.q8W4dvF0dS@pc-42>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 16, 2020 at 04:32:34PM +0200, Bartosz Golaszewski wrote:
-> On Fri, Aug 14, 2020 at 5:04 AM Kent Gibson <warthog618@gmail.com> wrote:
-> >
-> > Add support for edge detection to lines requested using
-> > GPIO_V2_GET_LINE_IOCTL.
-> >
-[snip]
-
-> >
-> > +       /* event_buffer_size only valid with edge detection */
-> > +       has_edge_detection = gpio_v2_line_config_has_edge_detection(lc);
-> > +       if (lr.event_buffer_size && !has_edge_detection)
-> > +               return -EINVAL;
+On Mon, Aug 10, 2020 at 11:38:33AM +0200, Jérôme Pouiller wrote:
+> Hello Tomer,
+> 
+> On Wednesday 5 August 2020 14:14:42 CEST Tomer Samara wrote:
+> > 
+> > Add functions wfx_full_send(), wfx_full_send_no_reply_async(),
+> > wfx_full_send_no_reply() and wfx_full_send_no_reply_free()
+> > which works as follow:
+> > wfx_full_send() - simple wrapper for both wfx_fill_header()
+> >                   and wfx_cmd_send().
+> > wfx_full_send_no_reply_async() - wrapper for both but with
+> >                                  NULL as reply and size zero.
+> > wfx_full_send_no_reply() - same as wfx_full_send_no_reply_async()
+> >                            but with false async value
+> > wfx_full_send_no_reply_free() - same as wfx_full_send_no_reply()
+> >                                 but also free the struct hif_msg.
+> > 
+> > Signed-off-by: Tomer Samara <tomersamara98@gmail.com>
+> > ---
+> > Changes in v2:
+> >  - Changed these functions to static
+> > 
+> > drivers/staging/wfx/hif_tx.c | 180 ++++++++++++++++-------------------
+> >  1 file changed, 80 insertions(+), 100 deletions(-)
+> > 
+> > diff --git a/drivers/staging/wfx/hif_tx.c b/drivers/staging/wfx/hif_tx.c
+> > index 5110f9b93762..17f668fa40a0 100644
+> > --- a/drivers/staging/wfx/hif_tx.c
+> > +++ b/drivers/staging/wfx/hif_tx.c
+> > @@ -40,7 +40,7 @@ static void wfx_fill_header(struct hif_msg *hif, int if_id,
+> > 
+> >  static void *wfx_alloc_hif(size_t body_len, struct hif_msg **hif)
+> >  {
+> > -       *hif = kzalloc(sizeof(struct hif_msg) + body_len, GFP_KERNEL);
+> > +       *hif = kzalloc(sizeof(*hif) + body_len, GFP_KERNEL);
+> 
+> This change is not related to the rest of the patch. It should probably be
+> split out.
+> 
+> >         if (*hif)
+> >                 return (*hif)->body;
+> >         else
+> > @@ -123,9 +123,39 @@ int wfx_cmd_send(struct wfx_dev *wdev, struct hif_msg *request,
+> >         return ret;
+> >  }
+> > 
+> > +static int wfx_full_send(struct wfx_dev *wdev, struct hif_msg *hif, void *reply,
+> > +                        size_t reply_len, bool async, int if_id, unsigned int cmd,
+> > +                        int size)
+> > +{
+> > +       wfx_fill_header(hif, if_id, cmd, size);
+> > +       return wfx_cmd_send(wdev, hif, reply, reply_len, async);
+> > +}
+> 
+> This function takes 8 parameters. Are you sure it simplifies the code?
+> 
+> In add, it does two actions: modify hif and send it. I would keep these
+> two actions separated.
+> 
 > > +
-> >         line = kzalloc(struct_size(line, descs, lr.num_lines),
-> >                        GFP_KERNEL);
-> >         if (!line)
-> > @@ -666,6 +944,16 @@ static int line_create(struct gpio_device *gdev, void __user *ip)
-> >         line->gdev = gdev;
-> >         get_device(&gdev->dev);
-> >
-> > +       line->edets = kcalloc(lr.num_lines, sizeof(*line->edets),
-> > +                             GFP_KERNEL);
+> > +static int wfx_full_send_no_reply_async(struct wfx_dev *wdev, struct hif_msg *hif, int if_id,
+> > +                                       unsigned int cmd, int size, bool async)
+> > +{
+> > +       return wfx_full_send(wdev, hif, NULL, 0, async, if_id, cmd, size);
+> > +}
 > 
-> You're allocating num_lines of edge detectors even if only certain
-> lines have edge detection (via attributes). I don't like it but it
-> made me think about struct line. How about having struct line which
-> actually only represents a single line (and it contains the relevant
-> gpio_desc pointer as well as the associated edge detector and any
-> other data only relevant for this line) and a set of lines would be
-> aggregated in struct line_request or line_request_data which would
-> additionally contain common fields? Does that even make sense?
+> Does it make sense to have a parameter 'async' to
+> wfx_full_send_no_reply_async()? It is weird to call this function with
+> async=false, no?
 > 
+> > +
+> > +static int wfx_full_send_no_reply(struct wfx_dev *wdev, struct hif_msg *hif, int if_id,
+> > +                                 unsigned int cmd, int size)
+> > +{
+> > +       return wfx_full_send_no_reply_async(wdev, hif, if_id, cmd, size, false);
+> > +}
+> > +
+> > +static int wfx_full_send_no_reply_free(struct wfx_dev *wdev, struct hif_msg *hif, int if_id,
+> > +                                      unsigned int cmd, int size)
+> > +{
+> > +       int ret;
+> > +
+> > +       ret = wfx_full_send_no_reply(wdev, hif, if_id, cmd, size);
+> > +       kfree(hif);
+> > +       return ret;
+> > +}
+> 
+> One more time, sending the data and releasing are unrelated actions.
+> Indeed, it saves a few lines of code, but is it really an improvement?
+> 
+> > +
+> >  // This function is special. After HIF_REQ_ID_SHUT_DOWN, chip won't reply to any
+> >  // request anymore. We need to slightly hack struct wfx_hif_cmd for that job. Be
+> > -// carefull to only call this funcion during device unregister.
+> > +// careful to only call this function during device unregister.
+> 
+> Not related to the rest of the patch.
+> 
+> [...]
+> 
+> As it stands, I think this change does not improve the code. Obviously, it
+> is a subjective opinion. What the other developers think about it?
 
-You are right, and it makes total sense.
+I agree with you, this just makes things more complex for no good
+reason.
 
-I'm not totally thrilled with the block allocation either, but an
-earlier draft with edge detectors/debouncers created and destroyed as
-required resulted in complicated lifecycle management that this approach
-avoids.
+Now dropped from my review queue.
 
-I'll have a look at restructuring it as you suggest.
-The only downside that springs to mind is that the gpiolib API expects
-a desc array, which we'll no longer have handy, so it would have to be
-built on the fly as per the sparse gets/sets.
+thanks,
 
-Cheers,
-Kent.
+greg k-h
