@@ -2,109 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E332487D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA052487F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727097AbgHROiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 10:38:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727033AbgHROiB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 10:38:01 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F67CC061389;
-        Tue, 18 Aug 2020 07:38:01 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id m8so10074144pfh.3;
-        Tue, 18 Aug 2020 07:38:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2r3YLIonviXk+yiTh2eL5fGwLG3nibOXqnr3jMeFSxw=;
-        b=vPDS6jyEFa2pVglVMhDsJUQB3MELfJ46P/i/Kx5bmZjr1wl0M1cBAfXE02msNjRehH
-         76vt2EQ44Wusv6N6rGb6Zyh3nbYbIlp04r8yzboE5YpsHEnqqDaIvKLe0E3ZlFsjHjLS
-         mgXHS9cePmDk4Ydxd7kHpKAkdVntxnylNRmF6QjOExWxBnxGuh41glOpahf9z1CiXYEf
-         QCIm5YBFoMQDns4qw8YCBKlc9eojA2XKdHlxjMUgknxV9IvTzchhAk+GTBEQ5tnB58bU
-         Vgo7urIRUdSba8NThKLzlbwEWiAO4IFllSZ9wXEw6b+C/OEKpiPITyiv/HM2155IHPqV
-         V1fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2r3YLIonviXk+yiTh2eL5fGwLG3nibOXqnr3jMeFSxw=;
-        b=g5o260hgAsj3diP/+8fW52OCsGwI3SQhwoPrm4ZlnIXwuVrjbJNOd9ZWOmocVZPp4Y
-         nYE53mo25zDCfemmOQ1RbYKjtvVOrk58iWk1CM/5Kd0S75qKx9Elp20OKUNtgD3MixgG
-         CYl+SzU7xkLVpQovRdxVWJnhAwmO50GfJ/xeCaibX3sEG5P1abiFe59T05balV1KQ6Vo
-         7TGL+KxgO6jG2YRVCICTt93dV8nRE6BagnvAgqHuH2epQ0wYNxtCMc+k2ZTDQsbGmb1J
-         vkNoV5LkeS2OrSqBmq5TXdQUMbbP+X/gE8mMMkne9+iAygSSml7icmLkWLuHjqCDXqJK
-         C1DQ==
-X-Gm-Message-State: AOAM530xtP1plJvYs6Hut0ltbeobSV7mNDyyQwPl9/6GWynQPTNDkL32
-        dImFQWznnKeR56arfIvnek75PPXm11o=
-X-Google-Smtp-Source: ABdhPJwUON8dwXpoGVKSYuYs9uPXS4HjS7ngwVT1Jae5RghclPIexe/+chXmz79GW1A5l7N72s0PJw==
-X-Received: by 2002:a65:58cf:: with SMTP id e15mr13720757pgu.59.1597761480619;
-        Tue, 18 Aug 2020 07:38:00 -0700 (PDT)
-Received: from sol (106-69-184-100.dyn.iinet.net.au. [106.69.184.100])
-        by smtp.gmail.com with ESMTPSA id z1sm158662pjn.34.2020.08.18.07.37.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 07:37:59 -0700 (PDT)
-Date:   Tue, 18 Aug 2020 22:37:54 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v4 12/20] gpiolib: cdev: support setting debounce
-Message-ID: <20200818143754.GB17809@sol>
-References: <20200814030257.135463-1-warthog618@gmail.com>
- <20200814030257.135463-13-warthog618@gmail.com>
- <CAMpxmJXxUD9HqkEAzMjJA6dOem9aAkPwdT4BKyPXb-C06dGkqw@mail.gmail.com>
+        id S1727820AbgHROlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 10:41:25 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9767 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727783AbgHROlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 10:41:21 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 8D3A3CA22FF82614D1D8;
+        Tue, 18 Aug 2020 22:41:18 +0800 (CST)
+Received: from localhost (10.174.179.108) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Tue, 18 Aug 2020
+ 22:41:08 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <peppe.cavallaro@st.com>, <alexandre.torgue@st.com>,
+        <joabreu@synopsys.com>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <mcoquelin.stm32@gmail.com>, <ajayg@nvidia.com>
+CC:     <netdev@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH] net: stmmac: Fix signedness bug in stmmac_probe_config_dt()
+Date:   Tue, 18 Aug 2020 22:39:52 +0800
+Message-ID: <20200818143952.50752-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMpxmJXxUD9HqkEAzMjJA6dOem9aAkPwdT4BKyPXb-C06dGkqw@mail.gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.108]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 08:21:58PM +0200, Bartosz Golaszewski wrote:
-> On Fri, Aug 14, 2020 at 5:05 AM Kent Gibson <warthog618@gmail.com> wrote:
-> >
-> > Add support for setting debounce on a line via the GPIO uAPI.
-> > Where debounce is not supported by hardware, a software debounce is
-> > provided.
-> >
-> > Signed-off-by: Kent Gibson <warthog618@gmail.com>
-> > ---
+The "plat->phy_interface" variable is an enum and in this context GCC
+will treat it as an unsigned int so the error handling is never
+triggered.
 
-[snip]
+Fixes: b9f0b2f634c0 ("net: stmmac: platform: fix probe for ACPI devices")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > +       debounce_period = READ_ONCE(desc->debounce_period);
-> > +       if (debounce_period) {
-> > +               info->attrs[num_attrs].id = GPIO_V2_LINE_ATTR_ID_DEBOUNCE;
-> > +               info->attrs[num_attrs].debounce_period = debounce_period;
-> > +               num_attrs++;
-> > +       }
-> > +       info->num_attrs = num_attrs;
-> 
-> AFAICT this (reading it in gpio_desc_to_lineinfo) is the only reason
-> to store the debounce period in struct gpio_desc. I'm wondering if we
-> can avoid extending this struct only for such uncommon case and store
-> it elsewhere. In all other cases where you read or write to it - you
-> have access to the underlying edge detector. Would the single-line
-> struct line I suggested elsewhere be a good place? On the other hand
-> I'm not sure how to get it having only the desc. I need to think about
-> it more.
-> 
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+index f32317fa75c8..b5b558b02e7d 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+@@ -413,7 +413,7 @@ stmmac_probe_config_dt(struct platform_device *pdev, const char **mac)
+ 	}
+ 
+ 	plat->phy_interface = device_get_phy_mode(&pdev->dev);
+-	if (plat->phy_interface < 0)
++	if ((int)plat->phy_interface < 0)
+ 		return ERR_PTR(plat->phy_interface);
+ 
+ 	plat->interface = stmmac_of_get_mac_mode(np);
+-- 
+2.17.1
 
-Yeah, it is stored there so it can be returned by lineinfo_get() for the
-GPIO_V2_GET_LINEINFO_IOCTL and GPIO_V2_GET_LINEINFO_WATCH_IOCTL.
-And the same applies to any future config fields.
-I would also like to not pollute the desc, or anything else in gpiolib,
-but wasn't sure where else to put it.
 
-I'm open to suggestions.
-
-Cheers,
-Kent.
