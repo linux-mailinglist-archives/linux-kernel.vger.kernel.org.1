@@ -2,68 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95337248C29
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F29248C2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728539AbgHRQ53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 12:57:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39042 "EHLO mail.kernel.org"
+        id S1728585AbgHRQ5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 12:57:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728271AbgHRQ4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 12:56:32 -0400
+        id S1728464AbgHRQ4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 12:56:39 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 68DD320866;
-        Tue, 18 Aug 2020 16:56:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A0F1207DE;
+        Tue, 18 Aug 2020 16:56:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597769792;
-        bh=C7CLmTRDuo1Am8syaTB05mD0CZGXECeviyZKIGQlC74=;
+        s=default; t=1597769799;
+        bh=d9cPWtyENfNl2HRXMgEXWQnjJbqhSVmywdREqBxnrCY=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=h18P64vx+aVCi4pv8eAKhyxO1PkGkHFKn5RNVAac/fhL7R/GKtWYVATBX34ba5zo7
-         renVjb9DJSvESmFX4JBjVeaGOOm3HfqCHeGi0/df0EE8Vfddf9pUkJoF80zunS7RFf
-         emsK3u1UEJR6WRSvIOEhy6N57I72ojLbx80eXIpE=
-Date:   Tue, 18 Aug 2020 17:56:01 +0100
+        b=yACKnyoFBp/jxXuRDWlpSzvp2g1iat9EXWJrvfq2dZ+yQg8CnSl9gDFhRAUIeA6i0
+         EWulvufwZkN8Ge0orn4jZUcjPoLezXn4aclHI6Rg1JqA7kwW6G6CBFzIAHDj3XN6cm
+         I9riw1LPjz9poKJXILlWkhL0s6sIq4k0OOqZ8wyE=
+Date:   Tue, 18 Aug 2020 17:56:08 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Oder Chiou <oder_chiou@realtek.com>
-Cc:     Shuming Fan <shumingf@realtek.com>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        Takashi Iwai <tiwai@suse.com>
-In-Reply-To: <20200804000531.920688-1-swboyd@chromium.org>
-References: <20200804000531.920688-1-swboyd@chromium.org>
-Subject: Re: [PATCH 0/3] ASoC: rt5682: Use clk APIs better
-Message-Id: <159776961931.56094.13706014566883693653.b4-ty@kernel.org>
+To:     lgirdwood@gmail.com, robh+dt@kernel.org,
+        cy_huang <u0084500@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        cy_huang@richtek.com, gene_chen@richtek.com
+In-Reply-To: <1597461262-25878-1-git-send-email-u0084500@gmail.com>
+References: <1597461262-25878-1-git-send-email-u0084500@gmail.com>
+Subject: Re: [PATCH 1/3] regulator: rt4801: Add support for RT4801 Display Bias regulator driver
+Message-Id: <159776976828.56451.5593321071237177212.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 3 Aug 2020 17:05:28 -0700, Stephen Boyd wrote:
-> This patch series drops a printk message down to dev_dbg() because it
-> was noisy and then migrates this driver to use clk_hw based APIs instead
-> of clk based APIs because this device is a clk provider, not a clk
-> consumer. I've only lightly tested the last two patches but I don't have
-> all combinations of clks for this device.
-> 
-> Cc: Cheng-Yi Chiang <cychiang@chromium.org>
-> Cc: Shuming Fan <shumingf@realtek.com>
-> 
-> [...]
+On Sat, 15 Aug 2020 11:14:20 +0800, cy_huang wrote:
+> Adds support for the RT4801 DSV. It has two regulators (DSVP/DSVN) with
+> an I2C interface. DSVP/DSVN can provide the display panel module for the
+> positive/negative voltage range from (+/-)4V to (+/-)6V.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/3] ASoC: rt5682: Use dev_dbg() in rt5682_clk_check()
-      commit: 0b95aa8e8afa4bcd49c8fa36404e2deb02a947ed
-[2/3] ASoC: rt5682: Drop usage of __clk_get_name()
-      commit: edbd24ea1e5c72980b37ae2d271696b05274d509
-[3/3] ASoC: rt5682: Use clk_hw based APIs for registration
-      commit: 653bdab267bd8dbce9cbd16bec843ca9d20a8450
+[1/3] regulator: rt4801: Add support for RT4801 Display Bias regulator driver
+      commit: 5bbbfc7f7f0a44b7a85ab3872dd2ccce7019f7b1
+[2/3] regulator: rt4801: Add DT binding documentation
+      commit: fd6b928db8a05fcd8629320c52eae214a8615aae
+[3/3] regulator: rt4801: Fix the dt-binding document for dtc check.
+      commit: 6f4ac2844b61d43c0c48b7c67a974d9f6e4ddd9c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
