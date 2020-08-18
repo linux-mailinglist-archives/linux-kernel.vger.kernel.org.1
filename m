@@ -2,182 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F08F247DFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 07:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F4BE247DFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 07:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726747AbgHRFod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 01:44:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726228AbgHRFod (ORCPT
+        id S1726788AbgHRFon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 01:44:43 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:33360 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726228AbgHRFom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 01:44:33 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49683C061389;
-        Mon, 17 Aug 2020 22:44:31 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id m7so17224575qki.12;
-        Mon, 17 Aug 2020 22:44:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QntzPrOLLfJzsd4iLjQzQgU+MiMIJO0uA0wns6X4c7E=;
-        b=eL7dtsSMDWjrZxIuwHIPBo3xk60D7EtZRCBpQNsZqEUQOk0cIiE9DztISG54k/kQHj
-         7qhLA66zMTr/eGlkShLIvRH4WQdsVwY2purFz2BTUsc7246BAgb0ISXC/mu/LfdqPvqo
-         JH2yYRUoufiZNiq6h5Pu/EKAlL8GLXqy4R69udndLq4gxu11Lb83xsuSEwDYyQW6zaUb
-         o7RmoLz0mtB+yNAV++PqOQG5zJiwHFMrF7i+W0lN/OhWHE+cEFU7vaok04IP7gwOimTJ
-         92jldJojQt45UW27pUrLyyk6xjP5VyOiX9UgZEJoUk9r6EvUcgdWgnH4EYmM41U8TJTO
-         uOQg==
+        Tue, 18 Aug 2020 01:44:42 -0400
+Received: by mail-ej1-f67.google.com with SMTP id jp10so20615779ejb.0;
+        Mon, 17 Aug 2020 22:44:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QntzPrOLLfJzsd4iLjQzQgU+MiMIJO0uA0wns6X4c7E=;
-        b=cAYQs9Lt3N93F/lWoP1s5Rt9fdBhtTnlwzplBOj1cHbicBTndcldhNRI7GYmG2KDPS
-         Q+kFRr0DxHfT3k8AhPW8EZGT1lTeINPXklmu5si9dRUDbHV+kKvZeeqV/isqttUKuuNJ
-         yMEqrteG9lWbm11AG+U48nDGeiOgQMsOC5U4M1iYGc26AxOtIp/TSy49tV9PyVeUhxak
-         Z7NgRxW6M2Xash8C7YvSIH+z+6MfKhpt3LNcUjWjrbjHLBtvV1mOtxbVntpKNuADv3b4
-         kzjKlXblxqRphVHavCP7zIAT6WBLwqvYip4bpFdxUw2W+EwU1r/ZxinMPhOj4DsvXF2F
-         PyoA==
-X-Gm-Message-State: AOAM533E5HE1SMBEFi+lMpUKxQQulzWTdUECBYgjt4fgKcnzEgLbxWP+
-        /Hns1IvtuWgLVnq+f1D/E2o=
-X-Google-Smtp-Source: ABdhPJy9kXKHV7x0YjcquAFP2t6zaotOsmnqnzEy1FUZph04XGpTnQfSXqiTbGVrkaBrdeywxlMtgg==
-X-Received: by 2002:a37:61ce:: with SMTP id v197mr16077683qkb.44.1597729470594;
-        Mon, 17 Aug 2020 22:44:30 -0700 (PDT)
-Received: from ubuntu-n2-xlarge-x86 ([2604:1380:45d1:2600::1])
-        by smtp.gmail.com with ESMTPSA id i20sm19279855qka.17.2020.08.17.22.44.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 22:44:29 -0700 (PDT)
-Date:   Mon, 17 Aug 2020 22:44:28 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Joe Perches <joe@perches.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Yury Norov <yury.norov@gmail.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Bruce Ashfield <bruce.ashfield@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>,
-        Andi Kleen <ak@suse.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?iso-8859-1?Q?D=E1vid_Bolvansk=FD?= <david.bolvansky@gmail.com>,
-        Eli Friedman <efriedma@quicinc.com>
-Subject: Re: [PATCH 2/4] Revert "lib/string.c: implement a basic bcmp"
-Message-ID: <20200818054428.GA2540870@ubuntu-n2-xlarge-x86>
-References: <20200817220212.338670-1-ndesaulniers@google.com>
- <20200817220212.338670-3-ndesaulniers@google.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8xJ+uVT/WHccEkVlHi1wKll5tijnlgRwLyicm8LM78A=;
+        b=pvax8nwiTzlSC8KLnlD5iBsWFk7Se46AKY8/yWk0VEMGeoWkJbm8mafPjkg7PUt6VF
+         Xqgaq86t9PUmBY1oVAFQGeLeo/0/5qxRti4jHJfuHDbY4WQYUMJsG5RElHGYPXd9dDhy
+         S1p3kiIsU32s9fpFoT3ABrNtngUbJ2bllcCCNUcyYYL2KAcaA0027slT8dydyrUc2Us1
+         GsNHyr+Mk373Qc1Cp6IY3yPWY/6kpA8GhIP0DgiN4eky2RAxi1NM/Xb7XEXDUahCTwdp
+         lya7XJtszn0E6xzmzY82KpkR8wDCAXh8hoaVGxBHyzuzE/dITdbPDnVWzVz/zb7oBe9i
+         WPAw==
+X-Gm-Message-State: AOAM530fDM5yQZv8SnZ+MwIYFC3yiT0Alu6tthiHnP8tCaZvhQhhzKHt
+        UlQA/D0e1pfJ0x165Q0N9z8f1pYDhbUmXg==
+X-Google-Smtp-Source: ABdhPJwyOOGrfzUtvh0bzgyzCD9OdFf8HsVYlqBtL8jzJNuBwgt45xYpvdBEwHia444d6IN47WvOGQ==
+X-Received: by 2002:a17:907:36b:: with SMTP id rs11mr19095297ejb.544.1597729480728;
+        Mon, 17 Aug 2020 22:44:40 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id j24sm15574395ejv.32.2020.08.17.22.44.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Aug 2020 22:44:40 -0700 (PDT)
+Subject: Re: [PATCH 00/16] wirless: convert tasklets to use new
+ tasklet_setup()
+To:     Allen Pais <allen.cryptic@gmail.com>, kvalo@codeaurora.org,
+        kuba@kernel.org, mickflemm@gmail.com, mcgrof@kernel.org,
+        chunkeey@googlemail.com, Larry.Finger@lwfinger.net,
+        stas.yakovlev@gmail.com, helmut.schaa@googlemail.com,
+        pkshih@realtek.com, yhchuang@realtek.com, dsd@gentoo.org,
+        kune@deine-taler.de
+Cc:     keescook@chromium.org, ath11k@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, b43-dev@lists.infradead.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        brcm80211-dev-list@cypress.com, Allen Pais <allen.lkml@gmail.com>
+References: <20200817090637.26887-1-allen.cryptic@gmail.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <9cbb824a-5769-dd24-dcec-d9522d93e9b2@kernel.org>
+Date:   Tue, 18 Aug 2020 07:44:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200817220212.338670-3-ndesaulniers@google.com>
+In-Reply-To: <20200817090637.26887-1-allen.cryptic@gmail.com>
+Content-Type: text/plain; charset=iso-8859-2
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 03:02:10PM -0700, Nick Desaulniers wrote:
-> This reverts commit 5f074f3e192f10c9fade898b9b3b8812e3d83342.
+On 17. 08. 20, 11:06, Allen Pais wrote:
+> From: Allen Pais <allen.lkml@gmail.com>
 > 
-> Use `-fno-builtin-bcmp` instead.
-> 
-> The issue with using `-fno-builtin-*` flags was that they were not
-> retained during an LTO link with LLVM.  This was fixed in clang-11 by
-> https://reviews.llvm.org/D71193
-> (0508c994f0b14144041f2cfd3ba9f9a80f03de08), which is also the minimum
-> supported version of clang for LTO.
-> 
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
->  Makefile               |  1 +
->  include/linux/string.h |  3 ---
->  lib/string.c           | 20 --------------------
->  3 files changed, 1 insertion(+), 23 deletions(-)
-> 
-> diff --git a/Makefile b/Makefile
-> index 211a1b6f6478..722ff5864275 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -964,6 +964,7 @@ endif
->  # to provide implementations of these routines, then prevent the compiler from
->  # emitting calls to what will be undefined symbols.
->  KBUILD_CFLAGS	+= -fno-builtin-stpcpy
-> +KBUILD_CFLAGS	+= -fno-builtin-bcmp
+> Commit 12cc923f1ccc ("tasklet: Introduce new initialization API")'
+> introduced a new tasklet initialization API. This series converts 
+> all the wireless drivers to use the new tasklet_setup() API
 
-I personally think that this hunk should be its own patch before this
-one then have this patch just be the revert, that way there is no
-regression across a bisect (if one were to ever occur) and so the revert
-is a straight 'git revert', rather than have something else mixed in
-that requires reading the actual changelog text.
+General question for the whole series: have you considered the long-term
+aim instead? That is: convert away from tasklets completely? I.e. use
+threaded irqs or workqueues?
 
-No objections if you disagree though.
-
->  # include additional Makefiles when needed
->  include-y			:= scripts/Makefile.extrawarn
-> diff --git a/include/linux/string.h b/include/linux/string.h
-> index b1f3894a0a3e..f3bdb74bc230 100644
-> --- a/include/linux/string.h
-> +++ b/include/linux/string.h
-> @@ -155,9 +155,6 @@ extern void * memscan(void *,int,__kernel_size_t);
->  #ifndef __HAVE_ARCH_MEMCMP
->  extern int memcmp(const void *,const void *,__kernel_size_t);
->  #endif
-> -#ifndef __HAVE_ARCH_BCMP
-> -extern int bcmp(const void *,const void *,__kernel_size_t);
-> -#endif
->  #ifndef __HAVE_ARCH_MEMCHR
->  extern void * memchr(const void *,int,__kernel_size_t);
->  #endif
-> diff --git a/lib/string.c b/lib/string.c
-> index 6012c385fb31..69328b8353e1 100644
-> --- a/lib/string.c
-> +++ b/lib/string.c
-> @@ -922,26 +922,6 @@ __visible int memcmp(const void *cs, const void *ct, size_t count)
->  EXPORT_SYMBOL(memcmp);
->  #endif
->  
-> -#ifndef __HAVE_ARCH_BCMP
-> -/**
-> - * bcmp - returns 0 if and only if the buffers have identical contents.
-> - * @a: pointer to first buffer.
-> - * @b: pointer to second buffer.
-> - * @len: size of buffers.
-> - *
-> - * The sign or magnitude of a non-zero return value has no particular
-> - * meaning, and architectures may implement their own more efficient bcmp(). So
-> - * while this particular implementation is a simple (tail) call to memcmp, do
-> - * not rely on anything but whether the return value is zero or non-zero.
-> - */
-> -#undef bcmp
-> -int bcmp(const void *a, const void *b, size_t len)
-> -{
-> -	return memcmp(a, b, len);
-> -}
-> -EXPORT_SYMBOL(bcmp);
-> -#endif
-> -
->  #ifndef __HAVE_ARCH_MEMSCAN
->  /**
->   * memscan - Find a character in an area of memory.
-> -- 
-> 2.28.0.220.ged08abb693-goog
-> 
-
-Cheers,
-Nathan
+thanks,
+-- 
+js
+suse labs
