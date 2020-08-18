@@ -2,56 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 492C6249031
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 23:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E86F249033
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 23:35:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbgHRVeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 17:34:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59118 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726735AbgHRVer (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 17:34:47 -0400
-Subject: Re: [GIT PULL] Fix regression in IA-64 caused by page table allocation
- refactoring
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597786486;
-        bh=MNq7AuZvcokP1xsstxmaDjgBwecj/YAFGNVeyLdWBow=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=gOKaAUdShubgLIoZUowrItOdHUlUxtuVy+dwRzMtk7qK+LWyuLsslrXYUJ/zfNPCw
-         jYarZgTvCqDY0ubfdQPk71soX/nXNt/AIbI4oFBtmkQYrPYGXYt+5E2UWqbqPMUvZv
-         rxO4H2F2q2Ita/ZfwtUXs95ThY+58Ae/HWUTenN0=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200818101549.GN752365@kernel.org>
-References: <20200818101549.GN752365@kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200818101549.GN752365@kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/rppt/memblock.git tags/fixes-2020-08-18
-X-PR-Tracked-Commit-Id: bd05220c7be3356046861c317d9c287ca50445ba
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9899b587588fb6ced0597e188e049f1ab92c7003
-Message-Id: <159778648690.7307.14255426878917698709.pr-tracker-bot@kernel.org>
-Date:   Tue, 18 Aug 2020 21:34:46 +0000
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jessica Clarke <jrtc27@jrtc27.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S1726953AbgHRVfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 17:35:00 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:44812 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726372AbgHRVe4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 17:34:56 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 748AC1C0BB8; Tue, 18 Aug 2020 23:34:54 +0200 (CEST)
+Date:   Tue, 18 Aug 2020 23:34:53 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.19 073/168] media: firewire: Using uninitialized values
+ in node_probe()
+Message-ID: <20200818213453.GB25182@amd>
+References: <20200817143733.692105228@linuxfoundation.org>
+ <20200817143737.355562192@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="pvezYHf7grwyp3Bc"
+Content-Disposition: inline
+In-Reply-To: <20200817143737.355562192@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 18 Aug 2020 13:15:49 +0300:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/rppt/memblock.git tags/fixes-2020-08-18
+--pvezYHf7grwyp3Bc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9899b587588fb6ced0597e188e049f1ab92c7003
+Hi!
 
-Thank you!
+> From: Dan Carpenter <dan.carpenter@oracle.com>
+>=20
+> [ Upstream commit 2505a210fc126599013aec2be741df20aaacc490 ]
+>=20
+> If fw_csr_string() returns -ENOENT, then "name" is uninitialized.  So
+> then the "strlen(model_names[i]) <=3D name_len" is true because strlen()
+> is unsigned and -ENOENT is type promoted to a very high positive value.
+> Then the "strncmp(name, model_names[i], name_len)" uses uninitialized
+> data because "name" is uninitialized.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+This causes memory leak, AFAICT.
+
+Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+								Pavel
+
+diff --git a/drivers/media/firewire/firedtv-fw.c b/drivers/media/firewire/f=
+iredtv-fw.c
+index eaf94b817dbc..2ac9d24d3f0c 100644
+--- a/drivers/media/firewire/firedtv-fw.c
++++ b/drivers/media/firewire/firedtv-fw.c
+@@ -271,8 +271,10 @@ static int node_probe(struct fw_unit *unit, const stru=
+ct ieee1394_device_id *id)
+=20
+ 	name_len =3D fw_csr_string(unit->directory, CSR_MODEL,
+ 				 name, sizeof(name));
+-	if (name_len < 0)
+-		return name_len;
++	if (name_len < 0) {
++		err =3D name_len;
++		goto fail_free;
++	}
+ 	for (i =3D ARRAY_SIZE(model_names); --i; )
+ 		if (strlen(model_names[i]) <=3D name_len &&
+ 		    strncmp(name, model_names[i], name_len) =3D=3D 0)
+
+
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--pvezYHf7grwyp3Bc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl88SX0ACgkQMOfwapXb+vI6YQCglanJAWy5M2+yqIDcVnaJjLnA
+cCcAnR5rfyY8Pk/j/uo1uVKXyK0zUtkw
+=XDJf
+-----END PGP SIGNATURE-----
+
+--pvezYHf7grwyp3Bc--
