@@ -2,75 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83AB4247FBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 09:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC48B247FC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 09:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726435AbgHRHsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 03:48:40 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:33098 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726043AbgHRHsj (ORCPT
+        id S1726519AbgHRHts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 03:49:48 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41558 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726336AbgHRHtq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 03:48:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597736918;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=yo4kEY+qRk9I44ALuDXlR4fywd4izKlmhlTyX/YouR0=;
-        b=UgwepVE/MlkygrLtWlGnfZh3L2UOlSOrt5epNTgRQGSgkh2tpLNTq5kF1O1oP4X2f9Uy15
-        jUdclC8/CxvCve5mTLCgmrIHP61SeEjqhmpCftnjoQgNJYy5oWRuPv6Sq8v00NcAoCb/W0
-        kE2+eiiOsEpGbdn5OD1TQ3UxaT6gyng=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-357-wnVYBnzFPBOs3Ycc8Zs0ow-1; Tue, 18 Aug 2020 03:48:34 -0400
-X-MC-Unique: wnVYBnzFPBOs3Ycc8Zs0ow-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA694185E52C;
-        Tue, 18 Aug 2020 07:48:33 +0000 (UTC)
-Received: from sirius.home.kraxel.org (ovpn-112-195.ams2.redhat.com [10.36.112.195])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4C615261B7;
-        Tue, 18 Aug 2020 07:48:30 +0000 (UTC)
-Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
-        id 76E519CA6; Tue, 18 Aug 2020 09:48:29 +0200 (CEST)
-From:   Gerd Hoffmann <kraxel@redhat.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Gerd Hoffmann <kraxel@redhat.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        virtualization@lists.linux-foundation.org (open list:VIRTIO GPU DRIVER),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] drm/virtio: set max_segment
-Date:   Tue, 18 Aug 2020 09:48:28 +0200
-Message-Id: <20200818074828.9509-3-kraxel@redhat.com>
-In-Reply-To: <20200818074828.9509-1-kraxel@redhat.com>
-References: <20200818074828.9509-1-kraxel@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        Tue, 18 Aug 2020 03:49:46 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07I7WZql160485;
+        Tue, 18 Aug 2020 03:49:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=87gJXPDfhi2rateCJHzi2rAoFQOxxft7r4R9eDeoiyo=;
+ b=cNBG7oi+D9lOKanCx5Q8BHZNOqIqs5w3L0SBFhEKLxa0tlQpftXfa2UgS7hL4LvcVe2u
+ PUlr27sSY4ktAnj1hvHevvFVbQ4QVKHYrw/x6P6RKJUaTSRklbYEOTgNU1h0w3O3QagH
+ pMgDrdiX4uRfGyJJMhbSCxCLbK4amxp6jnDJHx0b5cYwnjTd7RtjVCOoLZDzPXPqCem0
+ MGDtm1xUxOGJnyu6yHidw/haFJWC7l34lN1tgsKkFS6SnSaHsE/Ah0BH9ZAsmTzgxNKL
+ cDszJ/y8lBQNkywVr+HV4dl32xy7pXdCeujeGb6DhHny9yFu46AVgg3KGnf90/OaD4JS aw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3304nu0tp4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Aug 2020 03:49:28 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07I7XRk6163508;
+        Tue, 18 Aug 2020 03:49:28 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3304nu0tn5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Aug 2020 03:49:27 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07I7ijEt011058;
+        Tue, 18 Aug 2020 07:49:26 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 3304cc0c4c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Aug 2020 07:49:25 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07I7nNcx12976508
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 Aug 2020 07:49:23 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A36E211C050;
+        Tue, 18 Aug 2020 07:49:23 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0606B11C04C;
+        Tue, 18 Aug 2020 07:49:21 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Tue, 18 Aug 2020 07:49:20 +0000 (GMT)
+Date:   Tue, 18 Aug 2020 13:19:20 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Such?nek <msuchanek@suse.de>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
+        Mel Gorman <mgorman@suse.de>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        linuxppc-dev@lists.ozlabs.org, Christopher Lameter <cl@linux.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Subject: Re: [PATCH v5 3/3] mm/page_alloc: Keep memoryless cpuless node 0
+ offline
+Message-ID: <20200818074920.GA3698@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <12945273-d788-710d-e8d7-974966529c7d@redhat.com>
+ <20200701122110.GT2369@dhcp22.suse.cz>
+ <20200703091001.GJ21462@kitsune.suse.cz>
+ <20200703092414.GR18446@dhcp22.suse.cz>
+ <20200703105944.GS18446@dhcp22.suse.cz>
+ <20200703125823.GA26243@linux.vnet.ibm.com>
+ <20200806213211.6a6a56037fe771836e5abbe9@linux-foundation.org>
+ <20200812060101.GB10992@linux.vnet.ibm.com>
+ <13a85e52-5caa-24a8-7169-3992b1ad262a@redhat.com>
+ <20200818073712.GK28270@dhcp22.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <20200818073712.GK28270@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-18_04:2020-08-18,2020-08-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ adultscore=0 clxscore=1011 priorityscore=1501 phishscore=0 mlxscore=0
+ mlxlogscore=999 spamscore=0 bulkscore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008180051
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When initializing gem objects call virtio_max_dma_size() to figure the
-scatter list limit.  Needed to make virtio-gpu work properly with SEV.
+* Michal Hocko <mhocko@suse.com> [2020-08-18 09:37:12]:
 
-Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
----
- drivers/gpu/drm/virtio/virtgpu_object.c | 1 +
- 1 file changed, 1 insertion(+)
+> On Tue 18-08-20 09:32:52, David Hildenbrand wrote:
+> > On 12.08.20 08:01, Srikar Dronamraju wrote:
+> > > Hi Andrew, Michal, David
+> > > 
+> > > * Andrew Morton <akpm@linux-foundation.org> [2020-08-06 21:32:11]:
+> > > 
+> > >> On Fri, 3 Jul 2020 18:28:23 +0530 Srikar Dronamraju <srikar@linux.vnet.ibm.com> wrote:
+> > >>
+> > >>>> The memory hotplug changes that somehow because you can hotremove numa
+> > >>>> nodes and therefore make the nodemask sparse but that is not a common
+> > >>>> case. I am not sure what would happen if a completely new node was added
+> > >>>> and its corresponding node was already used by the renumbered one
+> > >>>> though. It would likely conflate the two I am afraid. But I am not sure
+> > >>>> this is really possible with x86 and a lack of a bug report would
+> > >>>> suggest that nobody is doing that at least.
+> > >>>>
+> > >> So...  do we merge this patch or not?  Seems that the overall view is
+> > >> "risky but nobody is likely to do anything better any time soon"?
+> > > 
+> > > Can we decide on this one way or the other?
+> > 
+> > Hmm, not sure who's the person to decide. I tend to prefer doing the
+> > node renaming, handling this in ppc code;
+> 
+> Agreed. That would be a safer option.
 
-diff --git a/drivers/gpu/drm/virtio/virtgpu_object.c b/drivers/gpu/drm/virtio/virtgpu_object.c
-index 1359eb8f1a02..26b608e2554e 100644
---- a/drivers/gpu/drm/virtio/virtgpu_object.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_object.c
-@@ -214,6 +214,7 @@ int virtio_gpu_object_create(struct virtio_gpu_device *vgdev,
- 		goto err_free_gem;
- 
- 	bo->dumb = params->dumb;
-+	shmem_obj->base.max_segment = virtio_max_dma_size(vgdev->vdev);
- 
- 	if (fence) {
- 		ret = -ENOMEM;
+Okay, will send arch specific v6 version.
+
+> -- 
+> Michal Hocko
+> SUSE Labs
+
 -- 
-2.18.4
-
+Thanks and Regards
+Srikar Dronamraju
