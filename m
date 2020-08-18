@@ -2,91 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 711982480EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079FE24813A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726420AbgHRIwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 04:52:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbgHRIwN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 04:52:13 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9284AC061389
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 01:52:12 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id d190so15505883wmd.4
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 01:52:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:cc:subject:message-id:mime-version:content-disposition;
-        bh=NRXSlg5+U42+r5yz1HaufmNO5p1AhYU7aGg04+6KXs8=;
-        b=KmAj8K/cYU+TcoE/PQdjWenUy4DPWY+a4IxIpXihWl0Go9S0wLueKJm66vzG9xZFaU
-         hV2NdvkdxPSzs2VfMV0meYreAH0ywZTniyq50amKdRzhJt6WTumlc6/5nGQwiFWX8hQn
-         3fbAdb3qPwZKWQKq2rXx6kuMcuKAcU6QQMQSn3XH1xqKOaae688ZoGFFtOENbKQbSgxa
-         RWBXwpPPbu1GxeQBK1yEc+XKvi/vvf//JLwv76mfU9VMgSDRb6xxj1Tkfpkl6XvfZlr9
-         TV7sFWCJXS9isSuwWuMOHsxntrJSE42Zzef4MnEqcBJX+bnmTaLWyA3YNDBHYmggLAk1
-         eIcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=NRXSlg5+U42+r5yz1HaufmNO5p1AhYU7aGg04+6KXs8=;
-        b=O1TVUuymbMUHv/YjaKv9sRlVGIwauFHj0aQwgavKUueoTxDPWGs0A4TFCPAKFKZjRZ
-         RRRb6tBVf4OMEZPprXacrLKcVFk+4i7shgO1AiI20kwm7Q8VzIrhv1onGX9tSjft0xBn
-         VJcB+GU2isz2JDRELNIiqZtUKTj/p/lSyv/Fh1KRIBx3ii77lVlfskjXhNxXhI7UtW+J
-         H8z54NRiXq84/nSwnt7xljw+MtVttD13+cobJBbq5si8UwO/v8GLSMn7z7rI8dJkuI7C
-         zRKZk8HGeUYVEBtqSRdM97LF7hcSlzBfpkGJwv3EGmLUrmYLMQovAiLIGY6Rz2kTM89O
-         0XUQ==
-X-Gm-Message-State: AOAM532G8PvL5v3iGItI5T2oXM5rYtBmi9FBqeEwxTAfwSdzVjBLJfNp
-        UcgGm4WpAsnvyrpHlN7Ki3U=
-X-Google-Smtp-Source: ABdhPJxnlP0vZjXNWran/cULmdsS5AmAYwn4ztkVU7HYOyiC3uxCdjIT8N2W+JNr5NvyqtJsfSq2DQ==
-X-Received: by 2002:a1c:e907:: with SMTP id q7mr19248587wmc.155.1597740727946;
-        Tue, 18 Aug 2020 01:52:07 -0700 (PDT)
-Received: from tsnow ([94.159.146.190])
-        by smtp.gmail.com with ESMTPSA id i7sm35425407wrs.25.2020.08.18.01.52.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 01:52:07 -0700 (PDT)
-Date:   Tue, 18 Aug 2020 11:52:02 +0300
-From:   Tomer Samara <tomersamara98@gmail.com>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        devel@driverdev.osuosl.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/4] *** SUBJECT HERE ***
-Message-ID: <cover.1597740722.git.tomersamara98@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-To:     unlisted-recipients:; (no To-header on input)
+        id S1726886AbgHRI7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 04:59:03 -0400
+Received: from smtp21.cstnet.cn ([159.226.251.21]:50616 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726341AbgHRI7D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 04:59:03 -0400
+Received: from localhost (unknown [159.226.5.99])
+        by APP-01 (Coremail) with SMTP id qwCowAD3lkRelztfI8eLAQ--.19298S2;
+        Tue, 18 Aug 2020 16:54:54 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     davem@davemloft.net, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        kuba@kernel.org, netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
+Subject: [PATCH] rpl_iptunnel: simplify the return expression of rpl_do_srh()
+Date:   Tue, 18 Aug 2020 08:54:54 +0000
+Message-Id: <20200818085454.12224-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: qwCowAD3lkRelztfI8eLAQ--.19298S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruF47GF4DJrWfXFykAFWrXwb_yoW3JFg_CF
+        1vgFWxCrn3ur4FkanxCa1fAF9Fq3s2vF40g3s7KrW8t343KrZI9rnavFW5GrykWrWvkryU
+        Xa40kFyIyr1fWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbfxYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z2
+        80aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAK
+        zVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAFwI0_Cr1j6rxdMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjcxG6xCI17CEII8vrVW3JVW8
+        Jr1lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8ZwCF04k20xvY0x0EwIxGrw
+        CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
+        14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
+        IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxK
+        x2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0ziAR65UUUUU=
+X-Originating-IP: [159.226.5.99]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCwUMA1z4jXyoSgAAs2
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-*** BLURB HERE ***
+Simplify the return expression.
 
-Tomer Samara (4):
-  staging: android: Replace BUG_ON with WARN_ON
-  staging: android: Add error handling to ion_page_pool_shrink
-  staging: android: Convert BUG to WARN
-  staging: android: Add error handling to order_to_index callers
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ net/ipv6/rpl_iptunnel.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
- drivers/staging/android/ion/ion_page_pool.c   | 14 ++++++++++----
- drivers/staging/android/ion/ion_system_heap.c | 16 +++++++++++++---
- 2 files changed, 23 insertions(+), 7 deletions(-)
-
+diff --git a/net/ipv6/rpl_iptunnel.c b/net/ipv6/rpl_iptunnel.c
+index 5fdf3ebb953f..e58ad9ac987c 100644
+--- a/net/ipv6/rpl_iptunnel.c
++++ b/net/ipv6/rpl_iptunnel.c
+@@ -197,11 +197,7 @@ static int rpl_do_srh(struct sk_buff *skb, const struct rpl_lwt *rlwt)
+ 
+ 	tinfo = rpl_encap_lwtunnel(dst->lwtstate);
+ 
+-	err = rpl_do_srh_inline(skb, rlwt, tinfo->srh);
+-	if (err)
+-		return err;
+-
+-	return 0;
++	return rpl_do_srh_inline(skb, rlwt, tinfo->srh);
+ }
+ 
+ static int rpl_output(struct net *net, struct sock *sk, struct sk_buff *skb)
 -- 
-2.25.1
+2.17.1
 
-/tmp/0001-staging-android-Replace-BUG_ON-with-WARN_ON.patch
-/tmp/0002-staging-android-Add-error-handling-to-ion_page_pool_.patch
-/tmp/0003-staging-android-Convert-BUG-to-WARN.patch
-/tmp/0004-staging-android-Add-error-handling-to-order_to_index.patch
