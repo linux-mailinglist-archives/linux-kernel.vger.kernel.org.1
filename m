@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADED62492A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 04:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C10AA2492A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 04:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbgHSCBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 22:01:10 -0400
+        id S1727957AbgHSCBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 22:01:13 -0400
 Received: from mga04.intel.com ([192.55.52.120]:3696 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726815AbgHSCA7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 22:00:59 -0400
-IronPort-SDR: BkX/w++riQHRGAjedTe4jJCIsfoA7kec5LtdaQtDHFJTYR7dJ7j94P/CfPQmDPtzFE3qhXz/Gi
- NdupHA8hSbTQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="152449459"
+        id S1727926AbgHSCBE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 22:01:04 -0400
+IronPort-SDR: sbr9IDXaoXfWa/quWwNihgEfSbIpvBKnXRDpkLNkGojmvZlxO0DNq/3fUqEVynA+oqd0cxZyMj
+ o5iIUT0a6EDQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="152449469"
 X-IronPort-AV: E=Sophos;i="5.76,329,1592895600"; 
-   d="scan'208";a="152449459"
+   d="scan'208";a="152449469"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 19:00:59 -0700
-IronPort-SDR: 8O9wl9OXXY3v7qbKIzVtJsDElyQFSs8nf7Iuv0+gLmQvvXHWl9WLzywcFtRIyoY7XF3WuzsiR+
- gBbt8hu6lQ9Q==
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 19:01:03 -0700
+IronPort-SDR: jm7ZcW/dZk/waEJZvpQVmAefCr+re9Cl8AOVJzwLIKkUmWPu/P76g1d0J7z39WZ+RX/b8V8ant
+ B6hE+uJ1dxWA==
 X-IronPort-AV: E=Sophos;i="5.76,329,1592895600"; 
-   d="scan'208";a="279565098"
+   d="scan'208";a="279565122"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 19:00:55 -0700
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 19:00:59 -0700
 From:   Bard Liao <yung-chuan.liao@linux.intel.com>
 To:     alsa-devel@alsa-project.org, vkoul@kernel.org
 Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
@@ -34,9 +34,9 @@ Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
         ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
         pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
         mengdong.lin@intel.com, bard.liao@intel.com
-Subject: [PATCH 4/7] soundwire: bus: use quirk to filter out invalid parity errors
-Date:   Tue, 18 Aug 2020 22:06:53 +0800
-Message-Id: <20200818140656.29014-5-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 5/7] ASoC: codecs: realtek-soundwire: ignore initial PARITY errors
+Date:   Tue, 18 Aug 2020 22:06:54 +0800
+Message-Id: <20200818140656.29014-6-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200818140656.29014-1-yung-chuan.liao@linux.intel.com>
 References: <20200818140656.29014-1-yung-chuan.liao@linux.intel.com>
@@ -47,69 +47,83 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-If a Slave device reports with a quirk that its initial parity check
-may be incorrect, filter it but keep the parity checks active in
-steady state.
+The parity calculation is not reset on a Severe Reset, which leads to
+misleading/harmless errors reported on startup. The addition of a
+quirk helps filter out such errors while leaving the error checks on
+in steady-state.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/bus.c       | 8 +++++++-
- include/linux/soundwire/sdw.h | 4 ++++
- 2 files changed, 11 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt1308-sdw.c | 1 +
+ sound/soc/codecs/rt5682-sdw.c | 1 +
+ sound/soc/codecs/rt700-sdw.c  | 1 +
+ sound/soc/codecs/rt711-sdw.c  | 1 +
+ sound/soc/codecs/rt715-sdw.c  | 1 +
+ 5 files changed, 5 insertions(+)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index cddf39e3adfc..869290a8db40 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -1362,6 +1362,8 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 	unsigned long port;
- 	bool slave_notify = false;
- 	u8 buf, buf2[2], _buf, _buf2[2];
-+	bool parity_check;
-+	bool parity_quirk;
+diff --git a/sound/soc/codecs/rt1308-sdw.c b/sound/soc/codecs/rt1308-sdw.c
+index 5cf10fd447eb..81e3e2caeb2f 100644
+--- a/sound/soc/codecs/rt1308-sdw.c
++++ b/sound/soc/codecs/rt1308-sdw.c
+@@ -124,6 +124,7 @@ static int rt1308_read_prop(struct sdw_slave *slave)
+ 	struct sdw_dpn_prop *dpn;
  
- 	sdw_modify_slave_status(slave, SDW_SLAVE_ALERT);
+ 	prop->scp_int1_mask = SDW_SCP_INT1_BUS_CLASH | SDW_SCP_INT1_PARITY;
++	prop->quirks = SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY;
  
-@@ -1394,7 +1396,11 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 		 * interrupt
- 		 */
- 		if (buf & SDW_SCP_INT1_PARITY) {
--			if (slave->prop.scp_int1_mask & SDW_SCP_INT1_PARITY)
-+			parity_check = slave->prop.scp_int1_mask & SDW_SCP_INT1_PARITY;
-+			parity_quirk = !slave->first_interrupt_done &&
-+				(slave->prop.quirks & SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY);
-+
-+			if (parity_check && !parity_quirk)
- 				dev_err(&slave->dev, "Parity error detected\n");
- 			clear |= SDW_SCP_INT1_PARITY;
- 		}
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 3550ab530c43..19bec6e4bbb6 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -356,6 +356,7 @@ struct sdw_dpn_prop {
-  * @src_dpn_prop: Source Data Port N properties
-  * @sink_dpn_prop: Sink Data Port N properties
-  * @scp_int1_mask: SCP_INT1_MASK desired settings
-+ * @quirks: bitmask identifying deltas from the MIPI specification
-  */
- struct sdw_slave_prop {
- 	u32 mipi_revision;
-@@ -378,8 +379,11 @@ struct sdw_slave_prop {
- 	struct sdw_dpn_prop *src_dpn_prop;
- 	struct sdw_dpn_prop *sink_dpn_prop;
- 	u8 scp_int1_mask;
-+	u32 quirks;
- };
+ 	prop->paging_support = true;
  
-+#define SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY	BIT(0)
-+
- /**
-  * struct sdw_master_prop - Master properties
-  * @revision: MIPI spec version of the implementation
+diff --git a/sound/soc/codecs/rt5682-sdw.c b/sound/soc/codecs/rt5682-sdw.c
+index 544073975020..148d4cff267b 100644
+--- a/sound/soc/codecs/rt5682-sdw.c
++++ b/sound/soc/codecs/rt5682-sdw.c
+@@ -545,6 +545,7 @@ static int rt5682_read_prop(struct sdw_slave *slave)
+ 
+ 	prop->scp_int1_mask = SDW_SCP_INT1_IMPL_DEF | SDW_SCP_INT1_BUS_CLASH |
+ 		SDW_SCP_INT1_PARITY;
++	prop->quirks = SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY;
+ 
+ 	prop->paging_support = false;
+ 
+diff --git a/sound/soc/codecs/rt700-sdw.c b/sound/soc/codecs/rt700-sdw.c
+index a46b957a3f1b..2d475405b20d 100644
+--- a/sound/soc/codecs/rt700-sdw.c
++++ b/sound/soc/codecs/rt700-sdw.c
+@@ -341,6 +341,7 @@ static int rt700_read_prop(struct sdw_slave *slave)
+ 
+ 	prop->scp_int1_mask = SDW_SCP_INT1_IMPL_DEF | SDW_SCP_INT1_BUS_CLASH |
+ 		SDW_SCP_INT1_PARITY;
++	prop->quirks = SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY;
+ 
+ 	prop->paging_support = false;
+ 
+diff --git a/sound/soc/codecs/rt711-sdw.c b/sound/soc/codecs/rt711-sdw.c
+index a877e366fec5..7a1ae7442e75 100644
+--- a/sound/soc/codecs/rt711-sdw.c
++++ b/sound/soc/codecs/rt711-sdw.c
+@@ -345,6 +345,7 @@ static int rt711_read_prop(struct sdw_slave *slave)
+ 
+ 	prop->scp_int1_mask = SDW_SCP_INT1_IMPL_DEF | SDW_SCP_INT1_BUS_CLASH |
+ 		SDW_SCP_INT1_PARITY;
++	prop->quirks = SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY;
+ 
+ 	prop->paging_support = false;
+ 
+diff --git a/sound/soc/codecs/rt715-sdw.c b/sound/soc/codecs/rt715-sdw.c
+index 0eb8943ed6ff..761d4663e813 100644
+--- a/sound/soc/codecs/rt715-sdw.c
++++ b/sound/soc/codecs/rt715-sdw.c
+@@ -439,6 +439,7 @@ static int rt715_read_prop(struct sdw_slave *slave)
+ 
+ 	prop->scp_int1_mask = SDW_SCP_INT1_IMPL_DEF | SDW_SCP_INT1_BUS_CLASH |
+ 		SDW_SCP_INT1_PARITY;
++	prop->quirks = SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY;
+ 
+ 	prop->paging_support = false;
+ 
 -- 
 2.17.1
 
