@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2B72486F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E34D72486D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727102AbgHROQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 10:16:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48904 "EHLO
+        id S1726973AbgHRONO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 10:13:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726570AbgHROM0 (ORCPT
+        with ESMTP id S1726923AbgHROMl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 10:12:26 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF03C061343
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 07:12:24 -0700 (PDT)
+        Tue, 18 Aug 2020 10:12:41 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3930FC061389
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 07:12:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=AwvM0zlXDZu+2GkEyaiWz2zndTWZII374Hua899bqqw=; b=lpfGBqZ16nioA2YSQ3wJ/a/vil
-        YH+6g2hLVxMsMS7ZO0cUpbNYLGnWyLkAXDPtaRnbO6CoEdrF0tbv+eC85IIHr8TJBUJW+NcgBczWo
-        XILNIFrCrJ7Mn7UsHn15RTt0Da4g1PbTMQiBYJKSlB9wgcCtquXYZxkDqBohLu+eLMEnIZQhqgZ4a
-        Xonp5rb39APGqNU40pQg2qFyQ6pUK/zllhmRqHpunw9BQevAlozaOPkhoBbaFVBPjyeC5OE3Cg6C7
-        0BgMkQAgdfEAY4xVieELx3ISkQ7S4wbtNNQ1n9I1H8qfLkSO5PL06LrFOzf/Zbv9L6b5bkQ0pE2Eu
-        YBoU3lFA==;
+        bh=usfJYrHjoBxFonX6sQP2Y3rxktOMSPitLSs0Bq2ULDs=; b=J/z3sGgmw26VoRwZHJTiHkVuNY
+        3cJ2BO1DQWxwvEzefjIhA4dhn5yq2osaoDxlHbg2X741in1Rh5JihKO8q+3snmJxN0CMIcyg3LWyN
+        50xdwPmCiS3yNP4NKuZcC/zabBwHIWHmPP+ZhrdbhnKyxllhDNCj2uwfNR9TwvY2R4WIpcYvLWZeo
+        +hx+SgSMPT259x4tUoHowTIsHGJDul4d3AdMuWEuLLh8BX62orMnsTheoMSw8UzZ0El8FIXdzUmI/
+        +Cs6mk4eOkJP/NH4GSy4l9uQF6/YE993/OqUy6fcyT7gFePpX1+y6xU7ejEehQZtHwQ6zdofOPz1n
+        kR4PEijg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k82LL-0000oL-8X; Tue, 18 Aug 2020 14:12:03 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k82LL-0006VI-6c; Tue, 18 Aug 2020 14:12:04 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B1E60307985;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B3F4730799A;
         Tue, 18 Aug 2020 16:12:00 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id E43A923D42C10; Tue, 18 Aug 2020 16:11:59 +0200 (CEST)
-Message-ID: <20200818135805.220737930@infradead.org>
+        id EB76223D42C11; Tue, 18 Aug 2020 16:11:59 +0200 (CEST)
+Message-ID: <20200818135805.279421092@infradead.org>
 User-Agent: quilt/0.66
-Date:   Tue, 18 Aug 2020 15:57:51 +0200
+Date:   Tue, 18 Aug 2020 15:57:52 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     x86@kernel.org
 Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
@@ -47,7 +47,7 @@ Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
         hpa@zytor.com, luto@kernel.org, ard.biesheuvel@linaro.org,
         jpoimboe@redhat.com, pbonzini@redhat.com,
         mathieu.desnoyers@efficios.com, linux@rasmusvillemoes.dk
-Subject: [PATCH v7 16/18] static_call: Allow early init
+Subject: [PATCH v7 17/18] tracepoint: Optimize using static_call()
 References: <20200818135735.948368560@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,231 +56,315 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to use static_call() to wire up x86_pmu, we need to
-initialize earlier, specifically before memory allocation works; copy
-some of the tricks from jump_label to enable this.
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Primarily we overload key->next to store a sites pointer when there
-are no modules, this avoids having to use kmalloc() to initialize the
-sites and allows us to run much earlier.
+Currently the tracepoint site will iterate a vector and issue indirect
+calls to however many handlers are registered (ie. the vector is
+long).
 
+Using static_call() it is possible to optimize this for the common
+case of only having a single handler registered. In this case the
+static_call() can directly call this handler. Otherwise, if the vector
+is longer than 1, call a function that iterates the whole vector like
+the current code.
+
+[peterz: updated to new interface]
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- arch/x86/kernel/setup.c       |    2 +
- arch/x86/kernel/static_call.c |    5 ++-
- include/linux/static_call.h   |   15 +++++++--
- kernel/static_call.c          |   70 +++++++++++++++++++++++++++++++++++++++---
- 4 files changed, 85 insertions(+), 7 deletions(-)
+ include/linux/tracepoint-defs.h |    5 ++
+ include/linux/tracepoint.h      |   86 ++++++++++++++++++++++++++++------------
+ include/trace/define_trace.h    |   14 +++---
+ kernel/tracepoint.c             |   25 +++++++++--
+ 4 files changed, 94 insertions(+), 36 deletions(-)
 
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
+--- a/include/linux/tracepoint-defs.h
++++ b/include/linux/tracepoint-defs.h
+@@ -11,6 +11,8 @@
+ #include <linux/atomic.h>
+ #include <linux/static_key.h>
+ 
++struct static_call_key;
++
+ struct trace_print_flags {
+ 	unsigned long		mask;
+ 	const char		*name;
+@@ -30,6 +32,9 @@ struct tracepoint_func {
+ struct tracepoint {
+ 	const char *name;		/* Tracepoint name */
+ 	struct static_key key;
++	struct static_call_key *static_call_key;
++	void *static_call_tramp;
++	void *iterator;
+ 	int (*regfunc)(void);
+ 	void (*unregfunc)(void);
+ 	struct tracepoint_func __rcu *funcs;
+--- a/include/linux/tracepoint.h
++++ b/include/linux/tracepoint.h
 @@ -19,6 +19,7 @@
- #include <linux/hugetlb.h>
- #include <linux/tboot.h>
- #include <linux/usb/xhci-dbgp.h>
+ #include <linux/cpumask.h>
+ #include <linux/rcupdate.h>
+ #include <linux/tracepoint-defs.h>
 +#include <linux/static_call.h>
  
- #include <uapi/linux/mount.h>
+ struct module;
+ struct tracepoint;
+@@ -92,7 +93,9 @@ extern int syscall_regfunc(void);
+ extern void syscall_unregfunc(void);
+ #endif /* CONFIG_HAVE_SYSCALL_TRACEPOINTS */
  
-@@ -849,6 +850,7 @@ void __init setup_arch(char **cmdline_p)
- 	early_cpu_init();
- 	arch_init_ideal_nops();
- 	jump_label_init();
-+	static_call_init();
- 	early_ioremap_init();
++#ifndef PARAMS
+ #define PARAMS(args...) args
++#endif
  
- 	setup_olpc_ofw_pgd();
---- a/arch/x86/kernel/static_call.c
-+++ b/arch/x86/kernel/static_call.c
-@@ -11,7 +11,7 @@ enum insn_type {
- 	RET = 3,  /* tramp / site cond-tail-call */
- };
+ #define TRACE_DEFINE_ENUM(x)
+ #define TRACE_DEFINE_SIZEOF(x)
+@@ -148,6 +151,12 @@ static inline struct tracepoint *tracepo
  
--static void __static_call_transform(void *insn, enum insn_type type, void *func)
-+static void __ref __static_call_transform(void *insn, enum insn_type type, void *func)
- {
- 	int size = CALL_INSN_SIZE;
- 	const void *code;
-@@ -38,6 +38,9 @@ static void __static_call_transform(void
- 	if (memcmp(insn, code, size) == 0)
- 		return;
+ #ifdef TRACEPOINTS_ENABLED
  
-+	if (unlikely(system_state == SYSTEM_BOOTING))
-+		return text_poke_early(insn, code, size);
++#ifdef CONFIG_HAVE_STATIC_CALL
++#define __DO_TRACE_CALL(name)	static_call(tp_func_##name)
++#else
++#define __DO_TRACE_CALL(name)	__tracepoint_iter_##name
++#endif /* CONFIG_HAVE_STATIC_CALL */
 +
- 	text_poke_bp(insn, code, size, NULL);
- }
+ /*
+  * it_func[0] is never NULL because there is at least one element in the array
+  * when the array itself is non NULL.
+@@ -157,12 +166,11 @@ static inline struct tracepoint *tracepo
+  * has a "void" prototype, then it is invalid to declare a function
+  * as "(void *, void)".
+  */
+-#define __DO_TRACE(tp, proto, args, cond, rcuidle)			\
++#define __DO_TRACE(name, proto, args, cond, rcuidle)			\
+ 	do {								\
+ 		struct tracepoint_func *it_func_ptr;			\
+-		void *it_func;						\
+-		void *__data;						\
+ 		int __maybe_unused __idx = 0;				\
++		void *__data;						\
+ 									\
+ 		if (!(cond))						\
+ 			return;						\
+@@ -182,14 +190,11 @@ static inline struct tracepoint *tracepo
+ 			rcu_irq_enter_irqson();				\
+ 		}							\
+ 									\
+-		it_func_ptr = rcu_dereference_raw((tp)->funcs);		\
+-									\
++		it_func_ptr =						\
++			rcu_dereference_raw((&__tracepoint_##name)->funcs); \
+ 		if (it_func_ptr) {					\
+-			do {						\
+-				it_func = (it_func_ptr)->func;		\
+-				__data = (it_func_ptr)->data;		\
+-				((void(*)(proto))(it_func))(args);	\
+-			} while ((++it_func_ptr)->func);		\
++			__data = (it_func_ptr)->data;			\
++			__DO_TRACE_CALL(name)(args);			\
+ 		}							\
+ 									\
+ 		if (rcuidle) {						\
+@@ -205,7 +210,7 @@ static inline struct tracepoint *tracepo
+ 	static inline void trace_##name##_rcuidle(proto)		\
+ 	{								\
+ 		if (static_key_false(&__tracepoint_##name.key))		\
+-			__DO_TRACE(&__tracepoint_##name,		\
++			__DO_TRACE(name,				\
+ 				TP_PROTO(data_proto),			\
+ 				TP_ARGS(data_args),			\
+ 				TP_CONDITION(cond), 1);			\
+@@ -227,11 +232,13 @@ static inline struct tracepoint *tracepo
+  * poking RCU a bit.
+  */
+ #define __DECLARE_TRACE(name, proto, args, cond, data_proto, data_args) \
++	extern int __tracepoint_iter_##name(data_proto);		\
++	DECLARE_STATIC_CALL(tp_func_##name, __tracepoint_iter_##name); \
+ 	extern struct tracepoint __tracepoint_##name;			\
+ 	static inline void trace_##name(proto)				\
+ 	{								\
+ 		if (static_key_false(&__tracepoint_##name.key))		\
+-			__DO_TRACE(&__tracepoint_##name,		\
++			__DO_TRACE(name,				\
+ 				TP_PROTO(data_proto),			\
+ 				TP_ARGS(data_args),			\
+ 				TP_CONDITION(cond), 0);			\
+@@ -277,21 +284,50 @@ static inline struct tracepoint *tracepo
+  * structures, so we create an array of pointers that will be used for iteration
+  * on the tracepoints.
+  */
+-#define DEFINE_TRACE_FN(name, reg, unreg)				 \
+-	static const char __tpstrtab_##name[]				 \
+-	__section(__tracepoints_strings) = #name;			 \
+-	struct tracepoint __tracepoint_##name __used			 \
+-	__section(__tracepoints) =					 \
+-		{ __tpstrtab_##name, STATIC_KEY_INIT_FALSE, reg, unreg, NULL };\
+-	__TRACEPOINT_ENTRY(name);
++#define DEFINE_TRACE_FN(_name, _reg, _unreg, proto, args)		\
++	static const char __tpstrtab_##_name[]				\
++	__section(__tracepoints_strings) = #_name;			\
++	extern struct static_call_key STATIC_CALL_KEY(tp_func_##_name);	\
++	int __tracepoint_iter_##_name(void *__data, proto);		\
++	struct tracepoint __tracepoint_##_name	__used			\
++	__section(__tracepoints) = {					\
++		.name = __tpstrtab_##_name,				\
++		.key = STATIC_KEY_INIT_FALSE,				\
++		.static_call_key = &STATIC_CALL_KEY(tp_func_##_name),	\
++		.static_call_tramp = STATIC_CALL_TRAMP_ADDR(tp_func_##_name), \
++		.iterator = &__tracepoint_iter_##_name,			\
++		.regfunc = _reg,					\
++		.unregfunc = _unreg,					\
++		.funcs = NULL };					\
++	__TRACEPOINT_ENTRY(_name);					\
++	int __tracepoint_iter_##_name(void *__data, proto)		\
++	{								\
++		struct tracepoint_func *it_func_ptr;			\
++		void *it_func;						\
++									\
++		it_func_ptr =						\
++			rcu_dereference_raw((&__tracepoint_##_name)->funcs); \
++		do {							\
++			it_func = (it_func_ptr)->func;			\
++			__data = (it_func_ptr)->data;			\
++			((void(*)(void *, proto))(it_func))(__data, args); \
++		} while ((++it_func_ptr)->func);			\
++		return 0;						\
++	}								\
++	DEFINE_STATIC_CALL(tp_func_##_name, __tracepoint_iter_##_name);
  
---- a/include/linux/static_call.h
-+++ b/include/linux/static_call.h
-@@ -136,6 +136,8 @@ extern void arch_static_call_transform(v
+-#define DEFINE_TRACE(name)						\
+-	DEFINE_TRACE_FN(name, NULL, NULL);
++#define DEFINE_TRACE(name, proto, args)		\
++	DEFINE_TRACE_FN(name, NULL, NULL, PARAMS(proto), PARAMS(args));
  
- #ifdef CONFIG_HAVE_STATIC_CALL_INLINE
- 
-+extern void __init static_call_init(void);
+ #define EXPORT_TRACEPOINT_SYMBOL_GPL(name)				\
+-	EXPORT_SYMBOL_GPL(__tracepoint_##name)
++	EXPORT_SYMBOL_GPL(__tracepoint_##name);				\
++	EXPORT_SYMBOL_GPL(__tracepoint_iter_##name);			\
++	EXPORT_STATIC_CALL_GPL(tp_func_##name)
+ #define EXPORT_TRACEPOINT_SYMBOL(name)					\
+-	EXPORT_SYMBOL(__tracepoint_##name)
++	EXPORT_SYMBOL(__tracepoint_##name);				\
++	EXPORT_SYMBOL(__tracepoint_iter_##name);			\
++	EXPORT_STATIC_CALL(tp_func_##name)
 +
- struct static_call_mod {
- 	struct static_call_mod *next;
- 	struct module *mod; /* for vmlinux, mod == NULL */
-@@ -144,7 +146,12 @@ struct static_call_mod {
  
- struct static_call_key {
- 	void *func;
--	struct static_call_mod *mods;
-+	union {
-+		/* bit 0: 0 = mods, 1 = sites */
-+		unsigned long type;
-+		struct static_call_mod *mods;
-+		struct static_call_site *sites;
-+	};
- };
- 
- extern void __static_call_update(struct static_call_key *key, void *tramp, void *func);
-@@ -155,7 +162,7 @@ extern int static_call_text_reserved(voi
- 	DECLARE_STATIC_CALL(name, _func);				\
- 	struct static_call_key STATIC_CALL_KEY(name) = {		\
- 		.func = _func,						\
--		.mods = NULL,						\
-+		.type = 1,						\
- 	};								\
- 	ARCH_DEFINE_STATIC_CALL_TRAMP(name, _func)
- 
-@@ -180,6 +187,8 @@ extern int static_call_text_reserved(voi
- 
- #elif defined(CONFIG_HAVE_STATIC_CALL)
- 
-+static inline void static_call_init(void) { }
-+
- struct static_call_key {
- 	void *func;
- };
-@@ -225,6 +234,8 @@ static inline int static_call_text_reser
- 
- #else /* Generic implementation */
- 
-+static inline void static_call_init(void) { }
-+
- struct static_call_key {
- 	void *func;
- };
---- a/kernel/static_call.c
-+++ b/kernel/static_call.c
-@@ -94,10 +94,31 @@ static inline void static_call_sort_entr
- 	     static_call_site_cmp, static_call_site_swap);
- }
- 
-+static inline bool static_call_key_has_mods(struct static_call_key *key)
-+{
-+	return !(key->type & 1);
-+}
-+
-+static inline struct static_call_mod *static_call_key_next(struct static_call_key *key)
-+{
-+	if (!static_call_key_has_mods(key))
-+		return NULL;
-+
-+	return key->mods;
-+}
-+
-+static inline struct static_call_site *static_call_key_sites(struct static_call_key *key)
-+{
-+	if (static_call_key_has_mods(key))
-+		return NULL;
-+
-+	return (struct static_call_site *)(key->type & ~1);
-+}
-+
- void __static_call_update(struct static_call_key *key, void *tramp, void *func)
- {
- 	struct static_call_site *site, *stop;
--	struct static_call_mod *site_mod;
-+	struct static_call_mod *site_mod, first;
- 
- 	cpus_read_lock();
- 	static_call_lock();
-@@ -116,13 +137,22 @@ void __static_call_update(struct static_
- 	if (WARN_ON_ONCE(!static_call_initialized))
- 		goto done;
- 
--	for (site_mod = key->mods; site_mod; site_mod = site_mod->next) {
-+	first = (struct static_call_mod){
-+		.next = static_call_key_next(key),
-+		.mod = NULL,
-+		.sites = static_call_key_sites(key),
-+	};
-+
-+	for (site_mod = &first; site_mod; site_mod = site_mod->next) {
- 		struct module *mod = site_mod->mod;
- 
- 		if (!site_mod->sites) {
- 			/*
- 			 * This can happen if the static call key is defined in
- 			 * a module which doesn't use it.
-+			 *
-+			 * It also happens in the has_mods case, where the
-+			 * 'first' entry has no sites associated with it.
- 			 */
- 			continue;
- 		}
-@@ -192,16 +222,48 @@ static int __static_call_init(struct mod
- 		if (key != prev_key) {
- 			prev_key = key;
- 
-+			/*
-+			 * For vmlinux (!mod) avoid the allocation by storing
-+			 * the sites pointer in the key itself. Also see
-+			 * __static_call_update()'s @first.
-+			 *
-+			 * This allows architectures (eg. x86) to call
-+			 * static_call_init() before memory allocation works.
-+			 */
-+			if (!mod) {
-+				key->sites = site;
-+				key->type |= 1;
-+				goto do_transform;
-+			}
-+
- 			site_mod = kzalloc(sizeof(*site_mod), GFP_KERNEL);
- 			if (!site_mod)
- 				return -ENOMEM;
- 
-+			/*
-+			 * When the key has a direct sites pointer, extract
-+			 * that into an explicit struct static_call_mod, so we
-+			 * can have a list of modules.
-+			 */
-+			if (static_call_key_sites(key)) {
-+				site_mod->mod = NULL;
-+				site_mod->next = NULL;
-+				site_mod->sites = static_call_key_sites(key);
-+
-+				key->mods = site_mod;
-+
-+				site_mod = kzalloc(sizeof(*site_mod), GFP_KERNEL);
-+				if (!site_mod)
-+					return -ENOMEM;
-+			}
-+
- 			site_mod->mod = mod;
- 			site_mod->sites = site;
--			site_mod->next = key->mods;
-+			site_mod->next = static_call_key_next(key);
- 			key->mods = site_mod;
- 		}
- 
-+do_transform:
- 		arch_static_call_transform(site_addr, NULL, key->func,
- 				static_call_is_tail(site));
+ #else /* !TRACEPOINTS_ENABLED */
+ #define __DECLARE_TRACE(name, proto, args, cond, data_proto, data_args) \
+@@ -320,8 +356,8 @@ static inline struct tracepoint *tracepo
+ 		return false;						\
  	}
-@@ -348,7 +410,7 @@ int static_call_text_reserved(void *star
- 	return __static_call_mod_text_reserved(start, end);
+ 
+-#define DEFINE_TRACE_FN(name, reg, unreg)
+-#define DEFINE_TRACE(name)
++#define DEFINE_TRACE_FN(name, reg, unreg, proto, args)
++#define DEFINE_TRACE(name, proto, args)
+ #define EXPORT_TRACEPOINT_SYMBOL_GPL(name)
+ #define EXPORT_TRACEPOINT_SYMBOL(name)
+ 
+--- a/include/trace/define_trace.h
++++ b/include/trace/define_trace.h
+@@ -25,7 +25,7 @@
+ 
+ #undef TRACE_EVENT
+ #define TRACE_EVENT(name, proto, args, tstruct, assign, print)	\
+-	DEFINE_TRACE(name)
++	DEFINE_TRACE(name, PARAMS(proto), PARAMS(args))
+ 
+ #undef TRACE_EVENT_CONDITION
+ #define TRACE_EVENT_CONDITION(name, proto, args, cond, tstruct, assign, print) \
+@@ -39,12 +39,12 @@
+ #undef TRACE_EVENT_FN
+ #define TRACE_EVENT_FN(name, proto, args, tstruct,		\
+ 		assign, print, reg, unreg)			\
+-	DEFINE_TRACE_FN(name, reg, unreg)
++	DEFINE_TRACE_FN(name, reg, unreg, PARAMS(proto), PARAMS(args))
+ 
+ #undef TRACE_EVENT_FN_COND
+ #define TRACE_EVENT_FN_COND(name, proto, args, cond, tstruct,		\
+ 		assign, print, reg, unreg)			\
+-	DEFINE_TRACE_FN(name, reg, unreg)
++	DEFINE_TRACE_FN(name, reg, unreg, PARAMS(proto), PARAMS(args))
+ 
+ #undef TRACE_EVENT_NOP
+ #define TRACE_EVENT_NOP(name, proto, args, struct, assign, print)
+@@ -54,15 +54,15 @@
+ 
+ #undef DEFINE_EVENT
+ #define DEFINE_EVENT(template, name, proto, args) \
+-	DEFINE_TRACE(name)
++	DEFINE_TRACE(name, PARAMS(proto), PARAMS(args))
+ 
+ #undef DEFINE_EVENT_FN
+ #define DEFINE_EVENT_FN(template, name, proto, args, reg, unreg) \
+-	DEFINE_TRACE_FN(name, reg, unreg)
++	DEFINE_TRACE_FN(name, reg, unreg, PARAMS(proto), PARAMS(args))
+ 
+ #undef DEFINE_EVENT_PRINT
+ #define DEFINE_EVENT_PRINT(template, name, proto, args, print)	\
+-	DEFINE_TRACE(name)
++	DEFINE_TRACE(name, PARAMS(proto), PARAMS(args))
+ 
+ #undef DEFINE_EVENT_CONDITION
+ #define DEFINE_EVENT_CONDITION(template, name, proto, args, cond) \
+@@ -70,7 +70,7 @@
+ 
+ #undef DECLARE_TRACE
+ #define DECLARE_TRACE(name, proto, args)	\
+-	DEFINE_TRACE(name)
++	DEFINE_TRACE(name, PARAMS(proto), PARAMS(args))
+ 
+ #undef TRACE_INCLUDE
+ #undef __TRACE_INCLUDE
+--- a/kernel/tracepoint.c
++++ b/kernel/tracepoint.c
+@@ -221,6 +221,20 @@ static void *func_remove(struct tracepoi
+ 	return old;
  }
  
--static void __init static_call_init(void)
-+void __init static_call_init(void)
- {
- 	int ret;
++static void tracepoint_update_call(struct tracepoint *tp, struct tracepoint_func *tp_funcs)
++{
++	void *func = tp->iterator;
++
++	/* Synthetic events do not have static call sites */
++	if (!tp->static_call_key)
++		return;
++
++	if (!tp_funcs[1].func)
++		func = tp_funcs[0].func;
++
++	__static_call_update(tp->static_call_key, tp->static_call_tramp, func);
++}
++
+ /*
+  * Add the probe function to a tracepoint.
+  */
+@@ -251,8 +265,9 @@ static int tracepoint_add_func(struct tr
+ 	 * include/linux/tracepoint.h using rcu_dereference_sched().
+ 	 */
+ 	rcu_assign_pointer(tp->funcs, tp_funcs);
+-	if (!static_key_enabled(&tp->key))
+-		static_key_slow_inc(&tp->key);
++	tracepoint_update_call(tp, tp_funcs);
++	static_key_enable(&tp->key);
++
+ 	release_probes(old);
+ 	return 0;
+ }
+@@ -281,9 +296,11 @@ static int tracepoint_remove_func(struct
+ 		if (tp->unregfunc && static_key_enabled(&tp->key))
+ 			tp->unregfunc();
  
+-		if (static_key_enabled(&tp->key))
+-			static_key_slow_dec(&tp->key);
++		static_key_disable(&tp->key);
++	} else {
++		tracepoint_update_call(tp, tp_funcs);
+ 	}
++
+ 	rcu_assign_pointer(tp->funcs, tp_funcs);
+ 	release_probes(old);
+ 	return 0;
 
 
