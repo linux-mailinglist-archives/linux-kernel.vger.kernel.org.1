@@ -2,87 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC91247DEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 07:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A15B247E0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 07:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726630AbgHRFkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 01:40:47 -0400
-Received: from david.siemens.de ([192.35.17.14]:49134 "EHLO david.siemens.de"
+        id S1726676AbgHRFtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 01:49:15 -0400
+Received: from smtp.h3c.com ([60.191.123.50]:8241 "EHLO h3cspam02-ex.h3c.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726382AbgHRFkq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 01:40:46 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by david.siemens.de (8.15.2/8.15.2) with ESMTPS id 07I5efPM017941
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 Aug 2020 07:40:41 +0200
-Received: from [139.22.40.250] ([139.22.40.250])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 07I5eenx028261;
-        Tue, 18 Aug 2020 07:40:40 +0200
-Subject: Re: [PATCH 2/2] tasks: Add task_struct addr for lx-ps cmd
-To:     Ritesh Harjani <riteshh@linux.ibm.com>,
-        Kieran Bingham <kbingham@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <cover.1597721575.git.riteshh@linux.ibm.com>
- <99e6236ed1b67140dae967dbf802c0eabd7b0eba.1597721575.git.riteshh@linux.ibm.com>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Message-ID: <1566dd81-a906-068d-ccc9-ed9cde8571d7@siemens.com>
-Date:   Tue, 18 Aug 2020 07:40:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726228AbgHRFtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 01:49:14 -0400
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
+        by h3cspam02-ex.h3c.com with ESMTPS id 07I5mrPN027012
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 18 Aug 2020 13:48:53 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from localhost.localdomain (10.99.212.201) by
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 18 Aug 2020 13:48:55 +0800
+From:   Xianting Tian <tian.xianting@h3c.com>
+To:     <song@kernel.org>
+CC:     <linux-raid@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Xianting Tian <tian.xianting@h3c.com>
+Subject: [PATCH] md: only calculate blocksize once and use i_blocksize()
+Date:   Tue, 18 Aug 2020 13:42:06 +0800
+Message-ID: <20200818054206.6612-1-tian.xianting@h3c.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <99e6236ed1b67140dae967dbf802c0eabd7b0eba.1597721575.git.riteshh@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.99.212.201]
+X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
+X-DNSRBL: 
+X-MAIL: h3cspam02-ex.h3c.com 07I5mrPN027012
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.08.20 06:04, Ritesh Harjani wrote:
-> task_struct addr in lx-ps cmd seems helpful
-> 
-> <e.g. o/p>
->       TASK          PID    COMM
-> 0xffffffff82c2b8c0   0   swapper/0
-> 0xffff888a0ba20040   1   systemd
-> 0xffff888a0ba24040   2   kthreadd
-> 0xffff888a0ba28040   3   rcu_gp
-> 
-> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> ---
->  scripts/gdb/linux/tasks.py | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/scripts/gdb/linux/tasks.py b/scripts/gdb/linux/tasks.py
-> index 0301dc1e0138..17ec19e9b5bf 100644
-> --- a/scripts/gdb/linux/tasks.py
-> +++ b/scripts/gdb/linux/tasks.py
-> @@ -73,11 +73,12 @@ class LxPs(gdb.Command):
->          super(LxPs, self).__init__("lx-ps", gdb.COMMAND_DATA)
->  
->      def invoke(self, arg, from_tty):
-> +        gdb.write("{:>10} {:>12} {:>7}\n".format("TASK", "PID", "COMM"))
->          for task in task_lists():
-> -            gdb.write("{address} {pid} {comm}\n".format(
-> -                address=task,
-> -                pid=task["pid"],
-> -                comm=task["comm"].string()))
-> +            gdb.write("{} {:^5} {}\n".format(
-> +                task.format_string().split()[0],
-> +                task["pid"].format_string(),
-> +                task["comm"].string()))
->  
->  
->  LxPs()
-> 
+We alreday has the interface i_blocksize(), which can be used
+to get blocksize, so use it.
+Only calculate blocksize once and use it within read_page().
 
-This patch is confusing me. We already dump the task address. What the
-patch changes is adding a header and some conversions of the values. Can
-you elaborate?
+Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+---
+ drivers/md/md-bitmap.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-Jan
-
+diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
+index 95a5f3757..0d5544868 100644
+--- a/drivers/md/md-bitmap.c
++++ b/drivers/md/md-bitmap.c
+@@ -357,11 +357,12 @@ static int read_page(struct file *file, unsigned long index,
+ 	struct inode *inode = file_inode(file);
+ 	struct buffer_head *bh;
+ 	sector_t block, blk_cur;
++	unsigned long blocksize = i_blocksize(inode);
+ 
+ 	pr_debug("read bitmap file (%dB @ %llu)\n", (int)PAGE_SIZE,
+ 		 (unsigned long long)index << PAGE_SHIFT);
+ 
+-	bh = alloc_page_buffers(page, 1<<inode->i_blkbits, false);
++	bh = alloc_page_buffers(page, blocksize, false);
+ 	if (!bh) {
+ 		ret = -ENOMEM;
+ 		goto out;
+@@ -383,10 +384,10 @@ static int read_page(struct file *file, unsigned long index,
+ 
+ 			bh->b_blocknr = block;
+ 			bh->b_bdev = inode->i_sb->s_bdev;
+-			if (count < (1<<inode->i_blkbits))
++			if (count < blocksize)
+ 				count = 0;
+ 			else
+-				count -= (1<<inode->i_blkbits);
++				count -= blocksize;
+ 
+ 			bh->b_end_io = end_bitmap_write;
+ 			bh->b_private = bitmap;
 -- 
-Siemens AG, Corporate Technology, CT RDA IOT SES-DE
-Corporate Competence Center Embedded Linux
+2.17.1
+
