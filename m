@@ -2,248 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 904B0248A78
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 17:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC34248A52
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 17:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728270AbgHRPu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 11:50:29 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2653 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728269AbgHRPtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 11:49:11 -0400
-Received: from lhreml722-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id 51E8BDCF110317A0CBA6;
-        Tue, 18 Aug 2020 16:49:10 +0100 (IST)
-Received: from kstruczy-linux-box (10.204.65.138) by
- lhreml722-chm.china.huawei.com (10.201.108.73) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Tue, 18 Aug 2020 16:49:08 +0100
-Received: by kstruczy-linux-box (sSMTP sendmail emulation); Tue, 18 Aug 2020 17:49:11 +0200
-From:   <krzysztof.struczynski@huawei.com>
-To:     <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <containers@lists.linux-foundation.org>,
-        <linux-security-module@vger.kernel.org>
-CC:     <zohar@linux.ibm.com>, <stefanb@linux.vnet.ibm.com>,
-        <sunyuqiong1988@gmail.com>, <mkayaalp@cs.binghamton.edu>,
-        <dmitry.kasatkin@gmail.com>, <serge@hallyn.com>,
-        <jmorris@namei.org>, <christian@brauner.io>,
-        <silviu.vlasceanu@huawei.com>, <roberto.sassu@huawei.com>,
-        Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
-Subject: [RFC PATCH 30/30] ima: Set ML template per ima namespace
-Date:   Tue, 18 Aug 2020 17:42:30 +0200
-Message-ID: <20200818154230.14016-21-krzysztof.struczynski@huawei.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200818154230.14016-1-krzysztof.struczynski@huawei.com>
-References: <20200818154230.14016-1-krzysztof.struczynski@huawei.com>
+        id S1728046AbgHRPqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 11:46:00 -0400
+Received: from mga09.intel.com ([134.134.136.24]:39627 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727770AbgHRPpf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 11:45:35 -0400
+IronPort-SDR: PqBHDbmlU/dRhgnHQEu6bpTIgeeX0MTUm+tGgQWqzJcBOIuqj3nzuGCHpadezj1fAlwZmu0jpW
+ /DMUSR9/b7/g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="156016569"
+X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
+   d="scan'208";a="156016569"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 08:44:47 -0700
+IronPort-SDR: T9Fg95g8XxLenJ5jQDfLCFegfIwxQ9pjRGDy3DrWpASLq6K2h2Wvzw2iMobVVHYE72TcDFbo6R
+ MMHEABIuZ0uQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
+   d="scan'208";a="497411171"
+Received: from ribnhajh-mobl.ger.corp.intel.com (HELO localhost) ([10.249.47.113])
+  by fmsmga005.fm.intel.com with ESMTP; 18 Aug 2020 08:44:45 -0700
+Date:   Tue, 18 Aug 2020 18:44:44 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     James Bottomley <jejb@linux.ibm.com>
+Cc:     Coly Li <colyli@suse.de>, Stefan Berger <stefanb@linux.ibm.com>,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Subject: Re: [PATCH RESEND] docs: update trusted-encrypted.rst
+Message-ID: <20200818154444.GA137138@linux.intel.com>
+References: <20200815075143.47082-1-colyli@suse.de>
+ <cf667ea0-dab7-a242-886c-938582c62ff6@linux.ibm.com>
+ <1597595769.8344.7.camel@linux.ibm.com>
+ <f9d4c4a9-5059-eae2-bc89-51f16e8ca4d9@suse.de>
+ <1597597933.8344.13.camel@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.204.65.138]
-X-ClientProxiedBy: fraeml707-chm.china.huawei.com (10.206.15.35) To
- lhreml722-chm.china.huawei.com (10.201.108.73)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1597597933.8344.13.camel@linux.ibm.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
+On Sun, Aug 16, 2020 at 10:12:13AM -0700, James Bottomley wrote:
+> On Mon, 2020-08-17 at 00:57 +0800, Coly Li wrote:
+> > On 2020/8/17 00:36, James Bottomley wrote:
+> > > On Sun, 2020-08-16 at 12:06 -0400, Stefan Berger wrote:
+> > > [...]
+> > > > A note in this file states this:
+> > > > 
+> > > > Note: When using a TPM 2.0 with a persistent key with handle
+> > > > 0x81000001, append 'keyhandle=0x81000001' to statements between
+> > > > quotes, such as "new 32 keyhandle=0x81000001".
+> > > > 
+> > > > Now if someone was (still) interested in TPM 1.2 
+> > > > adapt the  note to state that these keyhandle=... should be
+> > > > removed for the TPM 1.2 case.
+> > > 
+> > > Actually, I also have a plan to match what userspace does and
+> > > simply assume a keyhandle of 40000001 (generate an EC Storage
+> > > Primary Key on the fly) if it's not specified, which will make the
+> > > TPM1.2 and 2.0 versions of this the same.  Unfortunately the
+> > > necessary precursor patches are taking an age to get upstream.
+> > 
+> > Hi James,
+> > 
+> > Do you have a plan to push such patches into upstream soon? If yes
+> > than I may wait for your patch and withdraw this one.
+> 
+> Well, as I said above it depends on not yet upstream precursor patches.
+>  They have been pending for about a year, so I've no real idea of the
+> timeline.
+> 
+> James
 
-Set ML template based on the ima_template string. It can be defined by
-the user through kcmd_for_children ima securityfs entry. Acceptable
-values are the same as for the ima_template kernel boot parameter.
+As far as I remember there was not much left in the previous version to
+do. Some time has passed when it was discussed but I recall it was
+mainly about documenting the key format.
 
-Signed-off-by: Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
----
- include/linux/ima.h                   |  1 +
- security/integrity/ima/ima.h          |  1 +
- security/integrity/ima/ima_init.c     |  1 +
- security/integrity/ima/ima_ns.c       | 30 ++++++++++++++++++++++++++-
- security/integrity/ima/ima_template.c | 29 +++++++++++++++-----------
- 5 files changed, 49 insertions(+), 13 deletions(-)
-
-diff --git a/include/linux/ima.h b/include/linux/ima.h
-index 7db4995c66cf..f65d6424e584 100644
---- a/include/linux/ima.h
-+++ b/include/linux/ima.h
-@@ -211,6 +211,7 @@ struct ima_namespace {
- #ifdef CONFIG_KEYS
- 	struct key_tag *key_domain;
- #endif
-+	struct ima_template_desc *ima_template;
- } __randomize_layout;
- 
- extern struct ima_namespace init_ima_ns;
-diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
-index b55d25c2bf63..89cb050d5668 100644
---- a/security/integrity/ima/ima.h
-+++ b/security/integrity/ima/ima.h
-@@ -177,6 +177,7 @@ int template_desc_init_fields(const char *template_fmt,
- struct ima_template_desc *ima_template_desc_current(void);
- struct ima_template_desc *lookup_template_desc(const char *name);
- bool ima_template_has_modsig(const struct ima_template_desc *ima_template);
-+int ima_template_setup(char *str, struct ima_namespace *ima_ns);
- int ima_restore_measurement_entry(struct ima_template_entry *entry);
- int ima_restore_measurement_list(loff_t bufsize, void *buf);
- int ima_measurements_show(struct seq_file *m, void *v);
-diff --git a/security/integrity/ima/ima_init.c b/security/integrity/ima/ima_init.c
-index 1668edf3ed32..af77d2c85964 100644
---- a/security/integrity/ima/ima_init.c
-+++ b/security/integrity/ima/ima_init.c
-@@ -49,6 +49,7 @@ struct ima_namespace init_ima_ns = {
- #ifdef CONFIG_KEYS
- 	.key_domain = &init_ima_key_domain,
- #endif
-+	.ima_template = NULL,
- };
- EXPORT_SYMBOL(init_ima_ns);
- 
-diff --git a/security/integrity/ima/ima_ns.c b/security/integrity/ima/ima_ns.c
-index 9b9c34e71cc6..05c5f0df8f8f 100644
---- a/security/integrity/ima/ima_ns.c
-+++ b/security/integrity/ima/ima_ns.c
-@@ -48,6 +48,28 @@ static void dec_ima_namespaces(struct ucounts *ucounts)
- 	return dec_ucount(ucounts, UCOUNT_IMA_NAMESPACES);
- }
- 
-+static int ima_set_ns_template(struct ima_namespace *ima_ns)
-+{
-+	int result;
-+
-+	if (!ima_ns->ima_template)
-+		ima_ns->ima_template =
-+			lookup_template_desc(CONFIG_IMA_DEFAULT_TEMPLATE);
-+
-+	result = template_desc_init_fields(ima_ns->ima_template->fmt,
-+					   &(ima_ns->ima_template->fields),
-+					   &(ima_ns->ima_template->num_fields));
-+	if (result < 0) {
-+		pr_err("template %s init failed, result: %d\n",
-+		       (strlen(ima_ns->ima_template->name) ?
-+		       ima_ns->ima_template->name :
-+		       ima_ns->ima_template->fmt), result);
-+		ima_ns->ima_template = NULL;
-+	}
-+
-+	return result;
-+}
-+
- static int ima_ns_add_boot_aggregate(struct ima_namespace *ima_ns)
- {
- 	static const char op[] = "ns_add_boot_aggregate";
-@@ -269,6 +291,7 @@ static struct ima_namespace *clone_ima_ns(struct user_namespace *user_ns,
- 	ns->policy_path_for_children = NULL;
- 	ns->x509_path_for_children = NULL;
- 	ns->policy_setup_for_children = NULL;
-+	ns->ima_template = NULL;
- 
- 	INIT_LIST_HEAD(&ns->policy_data->ima_default_rules);
- 	INIT_LIST_HEAD(&ns->policy_data->ima_policy_rules);
-@@ -444,6 +467,10 @@ static int imans_activate(struct ima_namespace *ima_ns)
- 	if (ima_ns->frozen)
- 		goto out;
- 
-+	res = ima_set_ns_template(ima_ns);
-+	if (res < 0)
-+		goto out;
-+
- 	res = ima_set_ns_policy(ima_ns);
- 	if (res < 0)
- 		goto out;
-@@ -580,10 +607,11 @@ struct ima_kernel_param {
- 	int (*set)(char *val, struct ima_namespace *ima_ns);
- };
- 
--/* TODO: add ima_template, ima_template_fmt, ima_hash, ... */
-+/* TODO: add ima_template_fmt, ima_hash, ... */
- static const struct ima_kernel_param ima_kernel_params[] = {
- 	{"ima_appraise", ima_default_appraise_setup},
- 	{"ima_policy", ima_policy_setup},
-+	{"ima_template", ima_template_setup},
- };
- static const size_t ima_kernel_params_size = ARRAY_SIZE(ima_kernel_params);
- 
-diff --git a/security/integrity/ima/ima_template.c b/security/integrity/ima/ima_template.c
-index 2020bd5176a4..91339a7e1134 100644
---- a/security/integrity/ima/ima_template.c
-+++ b/security/integrity/ima/ima_template.c
-@@ -57,8 +57,6 @@ static const struct ima_template_field supported_fields[] = {
-  */
- #define MAX_TEMPLATE_NAME_LEN sizeof("d-ng|n-ng|sig|buf|d-modisg|modsig|ns")
- 
--static struct ima_template_desc *ima_template;
--
- /**
-  * ima_template_has_modsig - Check whether template has modsig-related fields.
-  * @ima_template: IMA template to check.
-@@ -78,12 +76,12 @@ bool ima_template_has_modsig(const struct ima_template_desc *ima_template)
- 	return false;
- }
- 
--static int __init ima_template_setup(char *str)
-+int ima_template_setup(char *str, struct ima_namespace *ima_ns)
- {
- 	struct ima_template_desc *template_desc;
- 	int template_len = strlen(str);
- 
--	if (ima_template)
-+	if (ima_ns->ima_template)
- 		return 1;
- 
- 	ima_init_template_list();
-@@ -109,16 +107,21 @@ static int __init ima_template_setup(char *str)
- 		return 1;
- 	}
- 
--	ima_template = template_desc;
-+	ima_ns->ima_template = template_desc;
- 	return 1;
- }
--__setup("ima_template=", ima_template_setup);
-+
-+static int __init template_setup(char *str)
-+{
-+	return ima_template_setup(str, &init_ima_ns);
-+}
-+__setup("ima_template=", template_setup);
- 
- static int __init ima_template_fmt_setup(char *str)
- {
- 	int num_templates = ARRAY_SIZE(builtin_templates);
- 
--	if (ima_template)
-+	if (init_ima_ns.ima_template)
- 		return 1;
- 
- 	if (template_desc_init_fields(str, NULL, NULL) < 0) {
-@@ -128,7 +131,7 @@ static int __init ima_template_fmt_setup(char *str)
- 	}
- 
- 	builtin_templates[num_templates - 1].fmt = str;
--	ima_template = builtin_templates + num_templates - 1;
-+	init_ima_ns.ima_template = builtin_templates + num_templates - 1;
- 
- 	return 1;
- }
-@@ -247,12 +250,14 @@ void ima_init_template_list(void)
- 
- struct ima_template_desc *ima_template_desc_current(void)
- {
--	if (!ima_template) {
-+	struct ima_namespace *ima_ns = get_current_ns();
-+
-+	if (!ima_ns->ima_template) {
- 		ima_init_template_list();
--		ima_template =
--		    lookup_template_desc(CONFIG_IMA_DEFAULT_TEMPLATE);
-+		ima_ns->ima_template =
-+			lookup_template_desc(CONFIG_IMA_DEFAULT_TEMPLATE);
- 	}
--	return ima_template;
-+	return ima_ns->ima_template;
- }
- 
- int __init ima_init_template(void)
--- 
-2.20.1
-
+/Jarkko
