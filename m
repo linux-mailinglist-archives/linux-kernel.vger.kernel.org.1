@@ -2,110 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84EEA2480A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C92732480AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726539AbgHRIbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 04:31:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35574 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726145AbgHRIbl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 04:31:41 -0400
-Received: from localhost (unknown [122.171.38.130])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9CACB2067C;
-        Tue, 18 Aug 2020 08:31:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597739500;
-        bh=cjUtFFEhvcQwQkw1VVlJuHM2ITwJUHRyNQQzIFZR3Vs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rS9YImYIwCC+kc9eRT1/QzM2OjBOFNhgOyh7n7hkABGdbsnSLinFAOHFB5Z4HTCiK
-         mChIGSni7plQROsSHXIiVtJcPO2ivbqH/f9kXEoeAWTdKJ5mHMrB7KUQoho54RI7uN
-         BSxuKNU76veor9YUNXy4RG9R7Tq7Yrb6nXaK/YHE=
-Date:   Tue, 18 Aug 2020 14:01:36 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     "Liao, Bard" <bard.liao@intel.com>
-Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "jank@cadence.com" <jank@cadence.com>,
-        "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
-        "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>,
-        "ranjani.sridharan@linux.intel.com" 
-        <ranjani.sridharan@linux.intel.com>,
-        "hui.wang@canonical.com" <hui.wang@canonical.com>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>,
-        "Kale, Sanyog R" <sanyog.r.kale@intel.com>,
-        "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH 1/2] soundwire: add definition for maximum number of ports
-Message-ID: <20200818083136.GX2639@vkoul-mobl>
-References: <20200817174727.15139-1-yung-chuan.liao@linux.intel.com>
- <20200817174727.15139-2-yung-chuan.liao@linux.intel.com>
- <20200818063538.GV2639@vkoul-mobl>
- <DM6PR11MB4074A817AEBB4636095581F2FF5C0@DM6PR11MB4074.namprd11.prod.outlook.com>
+        id S1726633AbgHRIcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 04:32:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726408AbgHRIcQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 04:32:16 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2410C061342
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 01:32:15 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id j188so9698587vsd.2
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 01:32:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gdzGXdJzbzfy/qK6DtfKB+VKyIPw+983nFML+OWFz6U=;
+        b=VSQrVY7RXrLQ0ue8Q2I0aBrYUTi/7u+IErMMNMzzRccXnUEEU2TOzHRM3xqK7goqn0
+         H6Sue3kIy6YO2ixq6n0SG+xg31x70KolAaBqaa1+7Iq2n0hbcabF2rHpoZWaqshNGZ7I
+         9UhD8baZn0iCciDdT6bUU9y5UDf0MphN68NxcVkg3LFhHnSLFuwsroPAUse787hFycEq
+         n0OJdH26+KNKmkq+DMwybYTMq0rfq0yXPdrKOrwvrZS0+9sdLWP9U4MmwuhHgiBNKWEN
+         83Rnk0azT3tn9sjo3ZNe3BjymZ/79Bj01tKEvtSIe/Uf9wI7xgWk8HW9pvQK+j4mV00y
+         osag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gdzGXdJzbzfy/qK6DtfKB+VKyIPw+983nFML+OWFz6U=;
+        b=JvWCrGWL/dVbyxJaHON+Lx+t//4+m2A+/4yi2yhQhKD4+hv5KWBEfR0AtImhbli97V
+         pRHRn2XRFqtSOYSFldDczvRXRtyhM5fGuyxa5XWkAMOrxVZDEnVjZMufdQ8293aRpM/9
+         kXfJPy3xydP5TZNdtabSOw1K5UikFXUJYRFdTAKE+1HX2eE3Y2H2/9vcQYUwrdqATaIL
+         bN7sae2dn+JAQvSdvbw4ykhH4ZpETVDZysXLIJ0Iqyqehvi9tlE9c/glD385WfE1npQx
+         unqq7QAECJf6d9JCWlsmlHp0tY25Qq326RFqxKfVWzu9K6VvXVxORcY9ZnXUnr0hyRU2
+         3z/g==
+X-Gm-Message-State: AOAM533y/wzWlwv6EvjBfTkBzrN+yfTaCkPd22pL9PYmd0iqvXMvXHGC
+        NEC6+ppWgfRURrk0/AxQp5agC9M+0exOpdca4Jwrng==
+X-Google-Smtp-Source: ABdhPJyC/9bxBpbbBnKbGc/Ktsk24e1jIQYYpsHyLYSOr2rKEYgB+318Ug7FCqybaniWCNklMXNQYm4zkZo+HxoVhrk=
+X-Received: by 2002:a67:e9d8:: with SMTP id q24mr10518427vso.165.1597739534917;
+ Tue, 18 Aug 2020 01:32:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB4074A817AEBB4636095581F2FF5C0@DM6PR11MB4074.namprd11.prod.outlook.com>
+References: <20200811190252.10559-1-sibis@codeaurora.org> <CAPDyKFqNMEtHwcJFxYQP5H1Yjrsr1T3UUZoXes69EthSjAYs2A@mail.gmail.com>
+ <1ba3e4d703dd0a52547d63fa014451eb@codeaurora.org> <CAPDyKFrH9WTg4O5L+e1AijNvsagLYZ9QVTeoD0x0SQgYd3hkBg@mail.gmail.com>
+ <1ca666c336ebee569a429e729d5ae547@codeaurora.org> <CAPDyKFrqxRrWSX5VaMy4DSjFNaMikKBYsZy5NiPMJvUybYttsw@mail.gmail.com>
+ <33169e221707a2456397e478b275cfa9@codeaurora.org>
+In-Reply-To: <33169e221707a2456397e478b275cfa9@codeaurora.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 18 Aug 2020 10:31:38 +0200
+Message-ID: <CAPDyKFoPEEvrBgs4D45027+HgdNPbcM+WVHm=QVrGWgWMR61Ng@mail.gmail.com>
+Subject: Re: [PATCH 1/2] PM / Domains: Add GENPD_FLAG_SUSPEND_ON flag
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Andy Gross <agross@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-kernel-owner@vger.kernel.org,
+        Kevin Hilman <khilman@kernel.org>,
+        linux-arm-msm-owner@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-08-20, 06:53, Liao, Bard wrote:
-> > -----Original Message-----
-> > From: Vinod Koul <vkoul@kernel.org>
-> > Sent: Tuesday, August 18, 2020 2:36 PM
-> > To: Bard Liao <yung-chuan.liao@linux.intel.com>
-> > Cc: alsa-devel@alsa-project.org; linux-kernel@vger.kernel.org; tiwai@suse.de;
-> > broonie@kernel.org; gregkh@linuxfoundation.org; jank@cadence.com;
-> > srinivas.kandagatla@linaro.org; rander.wang@linux.intel.com;
-> > ranjani.sridharan@linux.intel.com; hui.wang@canonical.com; pierre-
-> > louis.bossart@linux.intel.com; Kale, Sanyog R <sanyog.r.kale@intel.com>; Lin,
-> > Mengdong <mengdong.lin@intel.com>; Liao, Bard <bard.liao@intel.com>
-> > Subject: Re: [PATCH 1/2] soundwire: add definition for maximum number of
-> > ports
-> > 
-> > On 18-08-20, 01:47, Bard Liao wrote:
-> > > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > >
-> > > A Device may have at most 15 physical ports (DP0, DP1..DP14).
-> > >
-> > > Signed-off-by: Pierre-Louis Bossart
-> > > <pierre-louis.bossart@linux.intel.com>
-> > > Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
-> > > Reviewed-by: Guennadi Liakhovetski
-> > > <guennadi.liakhovetski@linux.intel.com>
-> > > Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> > > ---
-> > >  include/linux/soundwire/sdw.h | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/include/linux/soundwire/sdw.h
-> > > b/include/linux/soundwire/sdw.h index 76052f12c9f7..0aa4c6af7554
-> > > 100644
-> > > --- a/include/linux/soundwire/sdw.h
-> > > +++ b/include/linux/soundwire/sdw.h
-> > > @@ -38,7 +38,8 @@ struct sdw_slave;
-> > >  #define SDW_FRAME_CTRL_BITS		48
-> > >  #define SDW_MAX_DEVICES			11
-> > >
-> > > -#define SDW_VALID_PORT_RANGE(n)		((n) <= 14 && (n) >= 1)
-> > > +#define SDW_MAX_PORTS			15
-> > > +#define SDW_VALID_PORT_RANGE(n)		((n) <
-> > SDW_MAX_PORTS && (n) >= 1)
-> > 
-> > What is the use of this one if we are allocating all ports always, Also, I dont
-> > see it used in second patch?
-> 
-> It is used in drivers/soundwire/stream.c and drivers/soundwire/debugfs.c.
+On Mon, 17 Aug 2020 at 18:49, Sibi Sankar <sibis@codeaurora.org> wrote:
+>
+> On 2020-08-17 14:14, Ulf Hansson wrote:
+> > On Thu, 13 Aug 2020 at 19:26, Sibi Sankar <sibis@codeaurora.org> wrote:
+> >>
+> >> On 2020-08-13 18:04, Ulf Hansson wrote:
+> >> > On Wed, 12 Aug 2020 at 19:03, Sibi Sankar <sibis@codeaurora.org> wrote:
+> >> >>
+> >> >> Uffe,
+> >> >> Thanks for taking time to review the
+> >> >> series!
+> >> >>
+> >> >> On 2020-08-12 15:15, Ulf Hansson wrote:
+> >> >> > On Tue, 11 Aug 2020 at 21:03, Sibi Sankar <sibis@codeaurora.org> wrote:
+> >> >> >>
+> >> >> >> This is for power domains which needs to stay powered on for suspend
+> >> >> >> but can be powered on/off as part of runtime PM. This flag is aimed at
+> >> >> >> power domains coupled to remote processors which enter suspend states
+> >> >> >> independent to that of the application processor. Such power domains
+> >> >> >> are turned off only on remote processor crash/shutdown.
+> >> >> >
+> >> >> > As Kevin also requested, please elaborate more on the use case.
+> >> >> >
+> >> >> > Why exactly must the PM domain stay powered on during system suspend?
+> >> >> > Is there a wakeup configured that needs to be managed - or is there a
+> >> >> > co-processor/FW behaviour that needs to be obeyed to?
+> >> >>
+> >> >> Yes this is a co-processor behavior that
+> >> >> needs to be obeyed. Specifically application
+> >> >> processor notifies the Always on Subsystem
+> >> >> (AOSS) that a particular co-processor is up
+> >> >> using the power domains exposed by AOSS QMP
+> >> >> driver. AOSS uses this information to wait
+> >> >> for the co-processors to suspend before
+> >> >> starting its sleep sequence. The application
+> >> >> processor powers off these power domains only
+> >> >> if the co-processor has crashed or powered
+> >> >> off.
+> >> >
+> >> > Thanks for clarifying!
+> >> >
+> >> > Although, can you please elaborate a bit more on the actual use case?
+> >> > What are the typical co-processor and what drivers are involved in
+> >> > managing it?
+> >>
+> >> The co-processors using the power domains
+> >> exposed by qcom_aoss driver are modem,
+> >> audio dsp, compute dsp managed using
+> >> qcom_q6v5_mss and qcom_q6v5_pas driver.
+> >>
+> >> >
+> >> > As you may know, runtime PM becomes disabled during system suspend of
+> >> > a device. Which means, if the driver tries to power off the
+> >> > coprocessor (via calling pm_runtime_put() for example), somewhere in
+> >> > the system suspend phase of the corresponding device, its attached PM
+> >> > domain stays powered on when managed by genpd.
+> >>
+> >> The drivers aren't really expected
+> >> do anything during suspend/resume
+> >> pretty much because the co-processors
+> >> enter low-power modes independent to
+> >> that of the application processor. On
+> >> co-processor crash the remoteproc core
+> >> does a pm_stay_awake followed by a
+> >> pm_relax after crash recovery.
+> >
+> > Okay, thanks again for clarifying. You have convinced me about the
+> > need for a new flag to cope with these use cases.
+> >
+> > Would you mind updating the commit message with some of the
+> > information you just provided?
+> >
+> > Additionally, to make it clear that the flag should be used to keep
+> > the PM domain powered on during system suspend, but only if it's
+> > already powered on - please rename the flag to GENPD_FLAG_NO_SUSPEND,
+> > and update the corresponding description of it in the header file.
+>
+> Thanks, naming it ^^ makes more sense :)
+>
+> https://lore.kernel.org/lkml/340a7aafcf0301ff3158a4e211992041@codeaurora.org/
+>
+> Also we wouldn't want to power on
+> runtime suspended power domains with
+> the NO_SUSPEND flag set, on resume as
+> explained ^^. Do you agree with that
+> as well?
 
-Ah overlooked that it is modified, pls ignore this comment
+Actually no.
 
--- 
-~Vinod
+Instead, I think that deserves a separate flag, as it may very well
+turn out that resuming can be skipped for other cases than
+"NO_SUSPEND".
+
+Therefore, please add a GENPD_FLAG_NO_RESUME for this.
+
+Kind regards
+Uffe
