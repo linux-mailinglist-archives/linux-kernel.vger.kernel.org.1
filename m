@@ -2,147 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B2812486CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38EF32486EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726861AbgHROLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 10:11:55 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:4866 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726542AbgHROLw (ORCPT
+        id S1726949AbgHROPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 10:15:39 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:44152 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726612AbgHRONr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 10:11:52 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07IE56ur030307;
-        Tue, 18 Aug 2020 10:11:48 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 3304n5a33e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 Aug 2020 10:11:48 -0400
-Received: from SCSQMBX10.ad.analog.com (scsqmbx10.ad.analog.com [10.77.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 07IEBkYt044490
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Tue, 18 Aug 2020 10:11:46 -0400
-Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
- SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 18 Aug 2020 07:11:45 -0700
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 18 Aug 2020 07:10:50 -0700
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Tue, 18 Aug 2020 07:11:44 -0700
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 07IEBgan008414;
-        Tue, 18 Aug 2020 10:11:43 -0400
-From:   Cristian Pop <cristian.pop@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <jic23@kernel.org>, Cristian Pop <cristian.pop@analog.com>
-Subject: [RFC PATCH] iio: core: Add optional symbolic label to a device channel
-Date:   Tue, 18 Aug 2020 17:12:44 +0300
-Message-ID: <20200818141244.51273-1-cristian.pop@analog.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-18_10:2020-08-18,2020-08-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- lowpriorityscore=0 bulkscore=0 suspectscore=0 clxscore=1015 phishscore=0
- priorityscore=1501 mlxlogscore=999 spamscore=0 impostorscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008180102
+        Tue, 18 Aug 2020 10:13:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597760025;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=5mbAxZDicFpvBlanHGzWhCcTGWd2P55ViK8g3cXeULA=;
+        b=FkwWdH4aSCWvowtfMT0QZPJ28EnbuWvr0+ixlqykVu5FXoc/NzPWWN8j8bEgcXB0Ty2Rv4
+        VIw7AztZ4xA7vrxt/xqFTiGM3zmbxR649RRRYytRKCq4N4yGpLWcjDLlZXpC6pXF4u38Td
+        ik9y6q8sg5c4BcrL9exCIl8UHpSNYfM=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-552-RoXA2-doPCeVZiEO-D16lg-1; Tue, 18 Aug 2020 10:13:43 -0400
+X-MC-Unique: RoXA2-doPCeVZiEO-D16lg-1
+Received: by mail-qk1-f199.google.com with SMTP id x18so13177851qkb.16
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 07:13:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=5mbAxZDicFpvBlanHGzWhCcTGWd2P55ViK8g3cXeULA=;
+        b=gYVFmEQAOSu2/uk1UjMiALvlNfhptXEY+U2Y23q49g3Bx5N9tINTj8HgTSbF2bdJd2
+         p42xxsXtlAABqAkYNqxhGeAHTS0004S4hUIcv/3tgsSots5sQrYP+NHlazaHEEtR3ig9
+         8lL6RJqpOda6/xLziLzzRSbJpiJCcCy4dc/PtsZojyFICO88ZCqtZEaZ/qkyW227Vi1p
+         S+PKFzSGCmbjyBEGCYPU4IinYiFXH/7+HhVU1vQsnqI/4auNbqKZtvD5GQiB6Nyx3Wa4
+         4mAatIwzp2Vomp+2MS++IC4NdhbBbcx8msc9jq+EF7UrkBymvMqHU1NRqKH/zobTLFRq
+         Mn+Q==
+X-Gm-Message-State: AOAM532mI+9KxgtcFgEiZWUJCeP6yR6NY4b/nbNIgByOHcnK8nMTZiqs
+        wFtjzaFXh9QpN+mh2pd0ohgRX7TIcsKZ8Uxk8JMoosZaXs3Xy3lKBomFy+nN6zXRnaAInT6ozrO
+        gsuaSiFYrTs+GthNtJZyeXSSi
+X-Received: by 2002:a37:654e:: with SMTP id z75mr17382723qkb.235.1597760022489;
+        Tue, 18 Aug 2020 07:13:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxcNERkf07f873dxUZbjCVeW5+bdQ+AxXl1IqnadX9c2qONRAsyr32ogfC81RXvDcda3rufsA==
+X-Received: by 2002:a37:654e:: with SMTP id z75mr17382672qkb.235.1597760021867;
+        Tue, 18 Aug 2020 07:13:41 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 22sm20581510qkg.24.2020.08.18.07.13.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Aug 2020 07:13:41 -0700 (PDT)
+From:   trix@redhat.com
+To:     viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] writeback: clear auto_free in initializaiton
+Date:   Tue, 18 Aug 2020 07:13:30 -0700
+Message-Id: <20200818141330.29134-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a label is defined in the device tree for this channel add that
-to the channel specific attributes. This is useful for userspace to
-be able to identify an individual channel.
+From: Tom Rix <trix@redhat.com>
 
-Signed-off-by: Cristian Pop <cristian.pop@analog.com>
+Review fs/fs-writeback.c bdi_split_work_to_wbs
+The CONFIG_CGROUP_WRITEBACK version contains this line
+	base_work->auto_free = 0;
+Which seems like a strange place to set auto_free as
+it is not where the rest of base_work is initialized.
+
+In the default version of bdi_split_work_to_wbs, if a
+successful malloc happens, base_work is copied and
+auto_free is set to 1, else the base_work is
+copied to another local valarible and its auto_free
+is set to 0.
+
+So move the clearing of auto_free to the
+initialization of the local base_work structures.
+
+Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- drivers/iio/industrialio-core.c | 10 ++++++++--
- include/linux/iio/iio.h         |  2 ++
- include/linux/iio/types.h       |  1 +
- 3 files changed, 11 insertions(+), 2 deletions(-)
+ fs/fs-writeback.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-index 1527f01a44f1..32277e94f02d 100644
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -135,6 +135,7 @@ static const char * const iio_modifier_names[] = {
- /* relies on pairs of these shared then separate */
- static const char * const iio_chan_info_postfix[] = {
- 	[IIO_CHAN_INFO_RAW] = "raw",
-+	[IIO_CHAN_INFO_LABEL] = "label",
- 	[IIO_CHAN_INFO_PROCESSED] = "input",
- 	[IIO_CHAN_INFO_SCALE] = "scale",
- 	[IIO_CHAN_INFO_OFFSET] = "offset",
-@@ -653,14 +654,18 @@ static ssize_t iio_read_channel_info(struct device *dev,
- 	int ret;
- 	int val_len = 2;
+diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+index a605c3dddabc..fa1106de2ab0 100644
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -881,7 +881,6 @@ static void bdi_split_work_to_wbs(struct backing_dev_info *bdi,
+ 		work = &fallback_work;
+ 		*work = *base_work;
+ 		work->nr_pages = nr_pages;
+-		work->auto_free = 0;
+ 		work->done = &fallback_work_done;
  
--	if (indio_dev->info->read_raw_multi)
-+	if (indio_dev->info->read_raw_multi) {
- 		ret = indio_dev->info->read_raw_multi(indio_dev, this_attr->c,
- 							INDIO_MAX_RAW_ELEMENTS,
- 							vals, &val_len,
- 							this_attr->address);
--	else
-+	} else {
- 		ret = indio_dev->info->read_raw(indio_dev, this_attr->c,
- 				    &vals[0], &vals[1], this_attr->address);
-+		if (ret < 0 && this_attr->address == IIO_CHAN_INFO_LABEL &&
-+			this_attr->c->label_name)
-+			return sprintf(buf, "%s\n", this_attr->c->label_name);
-+	}
+ 		wb_queue_work(wb, work);
+@@ -1055,10 +1054,8 @@ static void bdi_split_work_to_wbs(struct backing_dev_info *bdi,
+ {
+ 	might_sleep();
  
- 	if (ret < 0)
- 		return ret;
-@@ -1399,6 +1404,7 @@ static int iio_device_register_sysfs(struct iio_dev *indio_dev)
- 			attrcount_orig++;
- 	}
- 	attrcount = attrcount_orig;
-+
+-	if (!skip_if_busy || !writeback_in_progress(&bdi->wb)) {
+-		base_work->auto_free = 0;
++	if (!skip_if_busy || !writeback_in_progress(&bdi->wb))
+ 		wb_queue_work(&bdi->wb, base_work);
+-	}
+ }
+ 
+ #endif	/* CONFIG_CGROUP_WRITEBACK */
+@@ -2459,6 +2456,7 @@ static void __writeback_inodes_sb_nr(struct super_block *sb, unsigned long nr,
+ 		.done			= &done,
+ 		.nr_pages		= nr,
+ 		.reason			= reason,
++		.auto_free		= 0,
+ 	};
+ 
+ 	if (!bdi_has_dirty_io(bdi) || bdi == &noop_backing_dev_info)
+@@ -2538,6 +2536,7 @@ void sync_inodes_sb(struct super_block *sb)
+ 		.done		= &done,
+ 		.reason		= WB_REASON_SYNC,
+ 		.for_sync	= 1,
++		.auto_free	= 0,
+ 	};
+ 
  	/*
- 	 * New channel registration method - relies on the fact a group does
- 	 * not need to be initialized if its name is NULL.
-diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
-index a1be82e74c93..39209f3b62be 100644
---- a/include/linux/iio/iio.h
-+++ b/include/linux/iio/iio.h
-@@ -223,6 +223,7 @@ struct iio_event_spec {
-  *			correspond to the first name that the channel is referred
-  *			to by in the datasheet (e.g. IND), or the nearest
-  *			possible compound name (e.g. IND-INC).
-+ * @label_name:		Unique name to identify which channel this is.
-  * @modified:		Does a modifier apply to this channel. What these are
-  *			depends on the channel type.  Modifier is set in
-  *			channel2. Examples are IIO_MOD_X for axial sensors about
-@@ -260,6 +261,7 @@ struct iio_chan_spec {
- 	const struct iio_chan_spec_ext_info *ext_info;
- 	const char		*extend_name;
- 	const char		*datasheet_name;
-+	const char		*label_name;
- 	unsigned		modified:1;
- 	unsigned		indexed:1;
- 	unsigned		output:1;
-diff --git a/include/linux/iio/types.h b/include/linux/iio/types.h
-index e6fd3645963c..c8f65f476eb2 100644
---- a/include/linux/iio/types.h
-+++ b/include/linux/iio/types.h
-@@ -34,6 +34,7 @@ enum iio_available_type {
- 
- enum iio_chan_info_enum {
- 	IIO_CHAN_INFO_RAW = 0,
-+	IIO_CHAN_INFO_LABEL,
- 	IIO_CHAN_INFO_PROCESSED,
- 	IIO_CHAN_INFO_SCALE,
- 	IIO_CHAN_INFO_OFFSET,
 -- 
-2.17.1
+2.18.1
 
