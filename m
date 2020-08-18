@@ -2,164 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1928248278
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 12:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCEEC248282
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 12:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgHRKEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 06:04:31 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37736 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726336AbgHRKEa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 06:04:30 -0400
-Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k7yTd-00008v-Jn; Tue, 18 Aug 2020 10:04:21 +0000
-Date:   Tue, 18 Aug 2020 12:04:20 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        criu@openvz.org, bpf@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Jann Horn <jann@thejh.net>, Kees Cook <keescook@chromium.org>,
-        Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Matthew Wilcox <willy@debian.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Matthew Wilcox <matthew@wil.cx>,
-        Trond Myklebust <trond.myklebust@fys.uio.no>,
-        Chris Wright <chrisw@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [PATCH 01/17] exec: Move unshare_files to fix posix file locking
- during exec
-Message-ID: <20200818100420.akdocgojdjhmq5z6@wittgenstein>
-References: <87ft8l6ic3.fsf@x220.int.ebiederm.org>
- <20200817220425.9389-1-ebiederm@xmission.com>
+        id S1726689AbgHRKFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 06:05:08 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:45202 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726043AbgHRKFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 06:05:07 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597745107; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=T1CCGquylX71KDdCAwA2iJHahtHl1/4eQuBxd7BGCEw=; b=Ryao98Z27uF+QR4rZM0/4Rr9IZRghu47p6EMbX3z72dqxJ0PsAcu6Kzg6EgEKJIxuPrYp7Uv
+ mcyMXLH4zEpefKKj5Fo4EQ1JFvv3J8KLPb2Cx3nPvh/CfSwaHvLsGFHTo6nJCgGAQocTI6YX
+ iZ/whtzj2EAuxZM98E1tJx/hYwY=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
+ 5f3ba7b51e4d3989d41f4651 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 18 Aug 2020 10:04:37
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4B65FC433CA; Tue, 18 Aug 2020 10:04:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+Received: from codeaurora.org (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: stummala)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3B6E7C433C6;
+        Tue, 18 Aug 2020 10:04:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3B6E7C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=stummala@codeaurora.org
+Date:   Tue, 18 Aug 2020 15:34:31 +0530
+From:   Sahitya Tummala <stummala@codeaurora.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, stummala@codeaurora.org
+Subject: Re: [PATCH] f2fs: fix indefinite loop scanning for free nid
+Message-ID: <20200818100431.GB5062@codeaurora.org>
+References: <1597392335-4998-1-git-send-email-stummala@codeaurora.org>
+ <e1251327-bd48-215d-e558-08780474bddb@huawei.com>
+ <20200818095547.GA5062@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200817220425.9389-1-ebiederm@xmission.com>
+In-Reply-To: <20200818095547.GA5062@codeaurora.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 05:04:09PM -0500, Eric W. Biederman wrote:
-> Many moons ago the binfmts were doing some very questionable things
-> with file descriptors and an unsharing of the file descriptor table
-> was added to make things better[1][2].  The helper steal_files was
-> added to avoid breaking the userspace programs[3][4][6].
+On Tue, Aug 18, 2020 at 03:25:47PM +0530, Sahitya Tummala wrote:
+> On Tue, Aug 18, 2020 at 04:29:05PM +0800, Chao Yu wrote:
+> > On 2020/8/14 16:05, Sahitya Tummala wrote:
+> > >If the sbi->ckpt->next_free_nid is not NAT block aligned and if there
+> > >are free nids in that NAT block between the start of the block and
+> > >next_free_nid, then those free nids will not be scanned in scan_nat_page().
+> > >This results into mismatch between nm_i->available_nids and the sum of
+> > >nm_i->free_nid_count of all NAT blocks scanned. And nm_i->available_nids
+> > >will always be greater than the sum of free nids in all the blocks.
+> > >Under this condition, if we use all the currently scanned free nids,
+> > >then it will loop forever in f2fs_alloc_nid() as nm_i->available_nids
+> > >is still not zero but nm_i->free_nid_count of that partially scanned
+> > >NAT block is zero.
+> > >
+> > >Fix this to align the nm_i->next_scan_nid to the first nid of the
+> > >corresponding NAT block.
+> > >
+> > >Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
+> > >---
+> > >  fs/f2fs/node.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
+> > >diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+> > >index 9bbaa26..d615e59 100644
+> > >--- a/fs/f2fs/node.c
+> > >+++ b/fs/f2fs/node.c
+> > >@@ -2402,6 +2402,8 @@ static int __f2fs_build_free_nids(struct f2fs_sb_info *sbi,
+> > >  			if (IS_ERR(page)) {
+> > >  				ret = PTR_ERR(page);
+> > >  			} else {
+> > >+				if (nid % NAT_ENTRY_PER_BLOCK)
+> > >+					nid = NAT_BLOCK_OFFSET(nid) * NAT_ENTRY_PER_BLOCK;
+> > 
+> > How about moving this logic to the beginning of __f2fs_build_free_nids(),
+> > after nid reset?
+> > 
 > 
-> Unfortunately it turned out that steal_locks did not work for network
-> file systems[5], so it was removed to see if anyone would
-> complain[7][8].  It was thought at the time that NPTL would not be
-> affected as the unshare_files happened after the other threads were
-> killed[8].  Unfortunately because there was an unshare_files in
-> binfmt_elf.c before the threads were killed this analysis was
-> incorrect.
+> Sure, I will move it.
 > 
-> This unshare_files in binfmt_elf.c resulted in the unshares_files
-> happening whenever threads were present.  Which led to unshare_files
-> being moved to the start of do_execve[9].
+> > BTW, it looks we can add unlikely in this judgment condition?
 > 
-> Later the problems were rediscovered and suggested approach was to
-> readd steal_locks under a different name[10].  I happened to be
-> reviewing patches and I noticed that this approach was a step
-> backwards[11].
+> But it may not be an unlikely as it can happen whenever checkpoint is done,
+> based on the next available free nid in function next_free_nid(), which can happen
+> quite a few times, right?
 > 
-> I proposed simply moving unshare_files[12] and it was pointed
-> out that moving unshare_files without auditing the code was
-> also unsafe[13].
+> Hitting the loop forever issue condition due to this could be a rare/difficult to
+> reproduce but this check itself may not be unlikely in my opinion.
 > 
-> There were then several attempts to solve this[14][15][16] and I even
-> posted this set of changes[17].  Unfortunately because auditing all of
-> execve is time consuming this change did not make it in at the time.
-> 
-> Well now that I am cleaning up exec I have made the time to read
-> through all of the binfmts and the only playing with file descriptors
-> is either the security modules closing them in
-> security_bprm_committing_creds or is in the generic code in fs/exec.c.
-> None of it happens before begin_new_exec is called.
-> 
-> So move unshare_files into begin_new_exec, after the point of no
-> return.  If memory is very very very low and the application calling
-> exec is sharing file descriptor tables between processes we might fail
-> past the point of no return.  Which is unfortunate but no different
-> than any of the other places where we allocate memory after the point
-> of no return.
-> 
-> This movement allows another process that shares the file table, or
-> another thread of the same process and that closes files or changes
-> their close on exec behavior and races with execve to cause some
-> unexpected things to happen.  There is only one time of check to time
 
-It seems to only make the already existing race window wider by moving
-it from bprm_execve() to begin_new_exec() which isn't great but probably
-ok since done for a good reason.
+Sorry, I was wrong above. During CP we update only ckpt->next_free_nid but not
+the nm_i->next_free_nid, which is done only once during boot up.
 
-> of use race and it is just there so that execve fails instead of
-> an interpreter failing when it tries to open the file it is supposed
-> to be interpreting.   Failing later if userspace is being silly is
-> not a problem.
-> 
-> With this change it the following discription from the removal
-> of steal_locks[8] finally becomes true.
-> 
->     Apps using NPTL are not affected, since all other threads are killed before
->     execve.
-> 
->     Apps using LinuxThreads are only affected if they
-> 
->       - have multiple threads during exec (LinuxThreads doesn't kill other
->         threads, the app may do it with pthread_kill_other_threads_np())
->       - rely on POSIX locks being inherited across exec
-> 
->     Both conditions are documented, but not their interaction.
-> 
->     Apps using clone() natively are affected if they
-> 
->       - use clone(CLONE_FILES)
->       - rely on POSIX locks being inherited across exec
-> 
-> I have investigated some paths to make it possible to solve this
-> without moving unshare_files but they all look more complicated[18].
-> 
-> Reported-by: Daniel P. Berrangé <berrange@redhat.com>
-> Reported-by: Jeff Layton <jlayton@redhat.com>
-> History-tree: git://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
-> [1] 02cda956de0b ("[PATCH] unshare_files"
-> [2] 04e9bcb4d106 ("[PATCH] use new unshare_files helper")
-> [3] 088f5d7244de ("[PATCH] add steal_locks helper")
-> [4] 02c541ec8ffa ("[PATCH] use new steal_locks helper")
-> [5] https://lkml.kernel.org/r/E1FLIlF-0007zR-00@dorka.pomaz.szeredi.hu
-> [6] https://lkml.kernel.org/r/0060321191605.GB15997@sorel.sous-sol.org
-> [7] https://lkml.kernel.org/r/E1FLwjC-0000kJ-00@dorka.pomaz.szeredi.hu
-> [8] c89681ed7d0e ("[PATCH] remove steal_locks()")
-> [9] fd8328be874f ("[PATCH] sanitize handling of shared descriptor tables in failing execve()")
-> [10] https://lkml.kernel.org/r/20180317142520.30520-1-jlayton@kernel.org
-> [11] https://lkml.kernel.org/r/87r2nwqk73.fsf@xmission.com
-> [12] https://lkml.kernel.org/r/87bmfgvg8w.fsf@xmission.com
-> [13] https://lkml.kernel.org/r/20180322111424.GE30522@ZenIV.linux.org.uk
-> [14] https://lkml.kernel.org/r/20180827174722.3723-1-jlayton@kernel.org
-> [15] https://lkml.kernel.org/r/20180830172423.21964-1-jlayton@kernel.org
-> [16] https://lkml.kernel.org/r/20180914105310.6454-1-jlayton@kernel.org
-> [17] https://lkml.kernel.org/r/87a7ohs5ow.fsf@xmission.com
-> [18] https://lkml.kernel.org/r/87pn8c1uj6.fsf_-_@x220.int.ebiederm.org
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> ---
+So yes, I will mark it as unlikely conditiona.
 
-Slightly scary change but it solves a problem.
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Thanks,
+
+> Thanks,
+> 
+> > 
+> > Thanks,
+> > 
+> > >  				ret = scan_nat_page(sbi, page, nid);
+> > >  				f2fs_put_page(page, 1);
+> > >  			}
+> > >
+> 
+> -- 
+> --
+> Sent by a consultant of the Qualcomm Innovation Center, Inc.
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+
+-- 
+--
+Sent by a consultant of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
