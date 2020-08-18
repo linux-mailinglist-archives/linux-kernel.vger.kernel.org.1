@@ -2,147 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0A8248D68
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CACE248D73
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726702AbgHRRo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 13:44:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40648 "EHLO mail.kernel.org"
+        id S1726705AbgHRRqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 13:46:34 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:14412 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726569AbgHRRo2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 13:44:28 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85C772054F;
-        Tue, 18 Aug 2020 17:44:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597772668;
-        bh=onQFFNb26cT+U2VVH+aoG5XV2IEw+ODDDbuu02NYzP0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tby04IYXoKLmrkGNwYiBdnp+BPk4yLtiPg8oDPDt8k1qy/RsYGikSG9muDe8qyCNv
-         xCMrBQAVTY6wbBa6k4eEaVQnsnhlj4PNciQRHD+LnFaaWrHG6jI+C4QmpSaqX7smma
-         pGhWFFW3BHoqyGAYCZrdOKqJxNyQzcdtph8AT9I0=
-Date:   Tue, 18 Aug 2020 19:44:51 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Scott Branden <scott.branden@broadcom.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com
-Subject: Re: [PATCH v2 1/3] bcm-vk: add bcm_vk UAPI
-Message-ID: <20200818174451.GA749919@kroah.com>
-References: <20200806004631.8102-1-scott.branden@broadcom.com>
- <20200806004631.8102-2-scott.branden@broadcom.com>
- <20200818135313.GB495837@kroah.com>
- <8894c3c4-4d5c-cb94-bc90-a26833ebf268@broadcom.com>
+        id S1726585AbgHRRqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 13:46:34 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4BWJHm6yfkz9vCpm;
+        Tue, 18 Aug 2020 19:46:28 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id PUJiHemN8w2H; Tue, 18 Aug 2020 19:46:28 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BWJHm57LBz9vCpk;
+        Tue, 18 Aug 2020 19:46:28 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 98DFD8B7EC;
+        Tue, 18 Aug 2020 19:46:30 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 23Wk_hhLKoET; Tue, 18 Aug 2020 19:46:30 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9D7D58B7D7;
+        Tue, 18 Aug 2020 19:46:29 +0200 (CEST)
+Subject: Re: remove the last set_fs() in common code, and remove it for x86
+ and powerpc
+To:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>, x86@kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org
+References: <20200817073212.830069-1-hch@lst.de>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <319d15b1-cb4a-a7b4-3082-12bb30eb5143@csgroup.eu>
+Date:   Tue, 18 Aug 2020 19:46:22 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8894c3c4-4d5c-cb94-bc90-a26833ebf268@broadcom.com>
+In-Reply-To: <20200817073212.830069-1-hch@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 10:23:42AM -0700, Scott Branden wrote:
-> Hi Greg,
+
+
+Le 17/08/2020 à 09:32, Christoph Hellwig a écrit :
+> Hi all,
 > 
-> On 2020-08-18 6:53 a.m., Greg Kroah-Hartman wrote:
-> > On Wed, Aug 05, 2020 at 05:46:29PM -0700, Scott Branden wrote:
-> >> Add user space api for bcm-vk driver.
-> >>
-> >> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
-> >> ---
-> >>  include/uapi/linux/misc/bcm_vk.h | 99 ++++++++++++++++++++++++++++++++
-> >>  1 file changed, 99 insertions(+)
-> >>  create mode 100644 include/uapi/linux/misc/bcm_vk.h
-> >>
-> >> diff --git a/include/uapi/linux/misc/bcm_vk.h b/include/uapi/linux/misc/bcm_vk.h
-> >> new file mode 100644
-> >> index 000000000000..783087b7c31f
-> >> --- /dev/null
-> >> +++ b/include/uapi/linux/misc/bcm_vk.h
-> >> @@ -0,0 +1,99 @@
-> >> +/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-2-Clause) */
-> >> +/*
-> >> + * Copyright 2018-2020 Broadcom.
-> >> + */
-> >> +
-> >> +#ifndef __UAPI_LINUX_MISC_BCM_VK_H
-> >> +#define __UAPI_LINUX_MISC_BCM_VK_H
-> >> +
-> >> +#include <linux/ioctl.h>
-> >> +#include <linux/types.h>
-> >> +
-> >> +#define BCM_VK_MAX_FILENAME 64
-> >> +
-> >> +struct vk_image {
-> >> +	__u32 type; /* Type of image */
-> >> +#define VK_IMAGE_TYPE_BOOT1 1 /* 1st stage (load to SRAM) */
-> >> +#define VK_IMAGE_TYPE_BOOT2 2 /* 2nd stage (load to DDR) */
-> >> +	char filename[BCM_VK_MAX_FILENAME]; /* Filename of image */
-> >> +};
-> >> +
-> >> +struct vk_reset {
-> >> +	__u32 arg1;
-> >> +	__u32 arg2;
-> >> +};
-> >> +
-> >> +#define VK_MAGIC		0x5e
-> >> +
-> >> +/* Load image to Valkyrie */
-> >> +#define VK_IOCTL_LOAD_IMAGE	_IOW(VK_MAGIC, 0x2, struct vk_image)
-> >> +
-> >> +/* Send Reset to Valkyrie */
-> >> +#define VK_IOCTL_RESET		_IOW(VK_MAGIC, 0x4, struct vk_reset)
-> >> +
-> >> +/*
-> >> + * message block - basic unit in the message where a message's size is always
-> >> + *		   N x sizeof(basic_block)
-> >> + */
-> >> +struct vk_msg_blk {
-> >> +	__u8 function_id;
-> >> +#define VK_FID_TRANS_BUF	5
-> >> +#define VK_FID_SHUTDOWN		8
-> >> +	__u8 size;
-> >> +	__u16 trans_id; /* transport id, queue & msg_id */
-> >> +	__u32 context_id;
-> >> +	__u32 args[2];
-> >> +#define VK_CMD_PLANES_MASK	0x000f /* number of planes to up/download */
-> >> +#define VK_CMD_UPLOAD		0x0400 /* memory transfer to vk */
-> >> +#define VK_CMD_DOWNLOAD		0x0500 /* memory transfer from vk */
-> >> +#define VK_CMD_MASK		0x0f00 /* command mask */
-> >> +};
-> >> +
-> >> +#define VK_BAR_FWSTS			0x41c
-> >> +#define VK_BAR_COP_FWSTS		0x428
-> >> +/* VK_FWSTS definitions */
-> >> +#define VK_FWSTS_RELOCATION_ENTRY	BIT(0)
-> > <snip>
-> >
-> > I thought BIT() was not allowed in uapi .h files, this really works
-> > properly???
-> I did some investigation and it looks like a few other header files in include/uapi also use the BIT() macro:
-> include/uapi/misc/uacce/uacce.h
-> include/uapi/linux/psci.h
-> include/uapi/linux/v4l2-subdev.h
-
-Does the header install test target now fail for these?
-
-> tools/include/uapi/linux/pkt_sched.h
-
-That doesn't count :)
-
-> It does look like we end up defining the BIT() macro in our user space app that includes the header file.
+> this series removes the last set_fs() used to force a kernel address
+> space for the uaccess code in the kernel read/write/splice code, and then
+> stops implementing the address space overrides entirely for x86 and
+> powerpc.
 > 
-> So, what is the proper thing to be done?
-> 1) Move the BIT() macro somewhere in include/uapi and include it in the necessary header files
-> 2) Use the _BITUL macro in include/uapi/linux/const.h instead?
-> 3) something else?
+> The file system part has been posted a few times, and the read/write side
+> has been pretty much unchanced.  For splice this series drops the
+> conversion of the seq_file and sysctl code to the iter ops, and thus loses
+> the splice support for them.  The reasons for that is that it caused a lot
+> of churn for not much use - splice for these small files really isn't much
+> of a win, even if existing userspace uses it.  All callers I found do the
+> proper fallback, but if this turns out to be an issue the conversion can
+> be resurrected.
 
-open-code it for now please, that's the best way as I am pretty sure we
-can not contaminate the global C namespace with out BIT() macro, no
-matter how much we would like to...
+I like this series.
 
-thanks,
+I gave it a go on my powerpc mpc832x. I tested it on top of my newest 
+series that reworks the 32 bits signal handlers (see 
+https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=196278) 
+with the microbenchmark test used is that series.
 
-greg k-h
+With KUAP activated, on top of signal32 rework, performance is boosted 
+as system time for the microbenchmark goes from 1.73s down to 1.56s, 
+that is 10% quicker
+
+Surprisingly, with the kernel as is today without my signal's series, 
+your series degrades performance slightly (from 2.55s to 2.64s ie 3.5% 
+slower).
+
+
+I also observe, in both cases, a degradation on
+
+	dd if=/dev/zero of=/dev/null count=1M
+
+Without your series, it runs in 5.29 seconds.
+With your series, it runs in 5.82 seconds, that is 10% more time.
+
+Christophe
+
+
+> 
+> Besides x86 and powerpc I plan to eventually convert all other
+> architectures, although this will be a slow process, starting with the
+> easier ones once the infrastructure is merged.  The process to convert
+> architectures is roughtly:
+> 
+>   - ensure there is no set_fs(KERNEL_DS) left in arch specific code
+>   - implement __get_kernel_nofault and __put_kernel_nofault
+>   - remove the arch specific address limitation functionality
+> 
+> Diffstat:
+>   arch/Kconfig                           |    3
+>   arch/alpha/Kconfig                     |    1
+>   arch/arc/Kconfig                       |    1
+>   arch/arm/Kconfig                       |    1
+>   arch/arm64/Kconfig                     |    1
+>   arch/c6x/Kconfig                       |    1
+>   arch/csky/Kconfig                      |    1
+>   arch/h8300/Kconfig                     |    1
+>   arch/hexagon/Kconfig                   |    1
+>   arch/ia64/Kconfig                      |    1
+>   arch/m68k/Kconfig                      |    1
+>   arch/microblaze/Kconfig                |    1
+>   arch/mips/Kconfig                      |    1
+>   arch/nds32/Kconfig                     |    1
+>   arch/nios2/Kconfig                     |    1
+>   arch/openrisc/Kconfig                  |    1
+>   arch/parisc/Kconfig                    |    1
+>   arch/powerpc/include/asm/processor.h   |    7 -
+>   arch/powerpc/include/asm/thread_info.h |    5 -
+>   arch/powerpc/include/asm/uaccess.h     |   78 ++++++++-----------
+>   arch/powerpc/kernel/signal.c           |    3
+>   arch/powerpc/lib/sstep.c               |    6 -
+>   arch/riscv/Kconfig                     |    1
+>   arch/s390/Kconfig                      |    1
+>   arch/sh/Kconfig                        |    1
+>   arch/sparc/Kconfig                     |    1
+>   arch/um/Kconfig                        |    1
+>   arch/x86/ia32/ia32_aout.c              |    1
+>   arch/x86/include/asm/page_32_types.h   |   11 ++
+>   arch/x86/include/asm/page_64_types.h   |   38 +++++++++
+>   arch/x86/include/asm/processor.h       |   60 ---------------
+>   arch/x86/include/asm/thread_info.h     |    2
+>   arch/x86/include/asm/uaccess.h         |   26 ------
+>   arch/x86/kernel/asm-offsets.c          |    3
+>   arch/x86/lib/getuser.S                 |   28 ++++---
+>   arch/x86/lib/putuser.S                 |   21 +++--
+>   arch/xtensa/Kconfig                    |    1
+>   drivers/char/mem.c                     |   16 ----
+>   drivers/misc/lkdtm/bugs.c              |    2
+>   drivers/misc/lkdtm/core.c              |    4 +
+>   drivers/misc/lkdtm/usercopy.c          |    2
+>   fs/read_write.c                        |   69 ++++++++++-------
+>   fs/splice.c                            |  130 +++------------------------------
+>   include/linux/fs.h                     |    2
+>   include/linux/uaccess.h                |   18 ++++
+>   lib/test_bitmap.c                      |   10 ++
+>   46 files changed, 235 insertions(+), 332 deletions(-)
+> 
