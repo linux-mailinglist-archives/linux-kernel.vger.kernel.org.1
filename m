@@ -2,192 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25932248E0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 20:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C138F248E1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 20:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgHRSk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 14:40:27 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:49405 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726552AbgHRSk0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 14:40:26 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 2EF325C0103;
-        Tue, 18 Aug 2020 14:40:25 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Tue, 18 Aug 2020 14:40:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=DLEOdn
-        0ZYH7rfqxZIVt9qEq5wO+o1yaDM7tmzdVy9bA=; b=SSQsUiDQHx32Bo+0i+QyGD
-        RioGu7LADwWEY+v7JGo2rp1E4bWhXwKf/0nVvfoKUFBnInJeyhmcXuYIx9Cicmru
-        QmXDG9LWmXtrIWzS/2A2CVUBj3iIruilidp2x6Usq1pVXiNN/VAzmfEjCDn0Xrcq
-        xiq3sxX0eLxb3q6bj2QT6yiu0rkZdT+K5V8bzI1JdpQQaoP3Wi7YMmvAlPuM09ZE
-        5zh4pQNLR1q83a21wG51vM88Fz2SEb61CSPOfk+UN8eoQ5ht0GeXeRIJEdwQ1FzF
-        8MlyMnEE0auEhx3KGqfrGsD80TUGgd2obGR9qo4G2N5IzKeYDguRnYYoX4ul6lrQ
-        ==
-X-ME-Sender: <xms:mCA8X5EFwgouVL0bwhFIA_yIoP-aU9CVqiqhoinL1VdSBKcZjv9eiA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedruddtiedguddtjecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtjeenucfhrhhomhepofgrrhgv
-    khcuofgrrhgtiiihkhhofihskhhiqdfikphrvggtkhhiuceomhgrrhhmrghrvghksehinh
-    hvihhsihgslhgvthhhihhnghhslhgrsgdrtghomheqnecuggftrfgrthhtvghrnhepteev
-    ffeigffhkefhgfegfeffhfegveeikeettdfhheevieehieeitddugeefteffnecukfhppe
-    eluddrieegrddujedtrdekleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
-    mhgrihhlfhhrohhmpehmrghrmhgrrhgvkhesihhnvhhishhisghlvghthhhinhhgshhlrg
-    gsrdgtohhm
-X-ME-Proxy: <xmx:mCA8X-XAPg1dICFKWXcU84bswEGrc09dlJXR5LCspxS8QX_gkcemXQ>
-    <xmx:mCA8X7I3gmV5pcaQ1igFgTJEM2aTcbNHasD-KktkTW3Ca3nQ4baI-g>
-    <xmx:mCA8X_EOdy8p6UFP5STgge7CgyXhRBEwbjetuhb1ulwLobA0V7cbSw>
-    <xmx:mSA8X2enzAPIUAZ-60kTvVEC3rCYgRBFLwsorxaz_o4nCsmKXBxvlQ>
-Received: from mail-itl (ip5b40aa59.dynamic.kabel-deutschland.de [91.64.170.89])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 73B8230600A3;
-        Tue, 18 Aug 2020 14:40:23 -0400 (EDT)
-Date:   Tue, 18 Aug 2020 20:40:18 +0200
-From:   Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= 
-        <marmarek@invisiblethingslab.com>
-To:     Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
-        norbert.kaminski@3mdeb.com, xen-devel@lists.xenproject.org,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] efi: discover ESRT table on Xen PV too
-Message-ID: <20200818184018.GN1679@mail-itl>
-References: <20200816001949.595424-1-marmarek@invisiblethingslab.com>
- <20200817090013.GN975@Air-de-Roger>
- <20200818120135.GK1679@mail-itl>
- <20200818124710.GK828@Air-de-Roger>
- <20200818150020.GL1679@mail-itl>
- <20200818172114.GO828@Air-de-Roger>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="zPXeIxDajdrcF2en"
-Content-Disposition: inline
-In-Reply-To: <20200818172114.GO828@Air-de-Roger>
+        id S1726751AbgHRSsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 14:48:02 -0400
+Received: from mga06.intel.com ([134.134.136.31]:36697 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726576AbgHRSsB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 14:48:01 -0400
+IronPort-SDR: IVDYX5Rb3CRXEL/nbryLP52dYXl5H6A4Jf0dzueeCWW9GkaQzyal3M06dhAB4el/zYBVoIowDG
+ vwbj/ObYelqw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="216512912"
+X-IronPort-AV: E=Sophos;i="5.76,328,1592895600"; 
+   d="scan'208";a="216512912"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 11:48:01 -0700
+IronPort-SDR: WIa7X/9iStEAYLjxD5dyLJm8cBF40k5hzdTqkxY+uoT8BBhOhJ645QlDpnn5hdNZBWEpEBzXpO
+ MdV2IyLkKL9w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,328,1592895600"; 
+   d="scan'208";a="370983290"
+Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
+  by orsmga001.jf.intel.com with ESMTP; 18 Aug 2020 11:48:01 -0700
+Subject: [RFC][PATCH 0/9] [v3] Migrate Pages in lieu of discard
+To:     linux-kernel@vger.kernel.org
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        yang.shi@linux.alibaba.com, rientjes@google.com,
+        ying.huang@intel.com, dan.j.williams@intel.com
+From:   Dave Hansen <dave.hansen@linux.intel.com>
+Date:   Tue, 18 Aug 2020 11:41:22 -0700
+Message-Id: <20200818184122.29C415DF@viggo.jf.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+todo:
+Changes since (https://lwn.net/Articles/824830/):
+ * Use higher-level migrate_pages() API approach from Yang Shi's
+   earlier patches.
+ * made sure to actually check node_reclaim_mode's new bit
+ * disabled migration entirely before introducing RECLAIM_MIGRATE
+ * Replace GFP_NOWAIT with explicit __GFP_KSWAPD_RECLAIM and
+   comment why we want that.
+ * Comment on effects of that keep multiple source nodes from
+   sharing target nodes
 
---zPXeIxDajdrcF2en
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] efi: discover ESRT table on Xen PV too
+The full series is also available here:
 
-On Tue, Aug 18, 2020 at 07:21:14PM +0200, Roger Pau Monn=C3=A9 wrote:
-> > Let me draw the picture from the beginning.
->=20
-> Thanks, greatly appreciated.
->=20
-> > EFI memory map contains various memory regions. Some of them are marked
-> > as not needed after ExitBootServices() call (done in Xen before
-> > launching dom0). This includes EFI_BOOT_SERVICES_DATA and
-> > EFI_BOOT_SERVICES_CODE.
-> >=20
-> > EFI SystemTable contains pointers to various ConfigurationTables -
-> > physical addresses (at least in this case). Xen does interpret some of
-> > them, but not ESRT. Xen pass the whole (address of) SystemTable to Linux
-> > dom0 (at least in PV case). Xen doesn't do anything about tables it
-> > doesn't understand.
-> >=20
-> > Now, the code in Linux takes the (ESRT) table address early and checks
-> > the memory map for it. We have 3 cases:
-> >  - it points at area marked as neither EFI_*_SERVICES_DATA, nor with
-> >    EFI_MEMORY_RUNTIME attribute -> Linux refuse to use it
-> >  - it points to EFI_RUNTIME_SERVICES_DATA or with EFI_MEMORY_RUNTIME
-> >    attribute - Linux uses the table; memory map already says the area
-> >    belongs to EFI and the OS should not use it for something else
-> >  - it points to EFI_BOOT_SERVICES_DATA - Linux mark the area as reserved
-> >    to not release it after calling ExitBootServices()
-> >=20
-> > The problematic is the third case - at the time when Linux dom0 is run,
-> > ExitBootServices() was already called and EFI_BOOT_SERVICES_* memory was
-> > already released. It could be already used for something else (for
-> > example Xen could overwrite it while loading dom0).
-> >=20
-> > Note the problematic case should be the most common - UEFI specification
-> > says "The ESRT shall be stored in memory of type EfiBootServicesData"
-> > (chapter 22.3 of UEFI Spec v2.6).
-> >=20
-> > For this reason, to use ESRT in dom0, Xen should do something about it
-> > before ExitBootServices() call. While analyzing all the EFI tables is
-> > probably not a viable option, it can do some simple action:
-> >  - retains all the EFI_BOOT_SERVICES_* areas - there is already code
-> >    for that, controlled with /mapbs boot switch (to xen.efi, would need
-> >    another option for multiboot2+efi)
-> >  - have a list of tables to retain - since Xen already do analyze some
-> >    of the ConfigurationTables, it can also have a list of those to
-> >    preserve even if they live in EFI_BOOT_SERVICES_DATA. In this case,
-> >    while Xen doesn't need to parse the whole table, it need to parse it=
-'s
-> >    header to get the table size - to reserve that memory and not reuse
-> >    it after ExitBootServices().
->=20
-> Xen seems to already contain skeleton
-> XEN_EFI_query_capsule_capabilities and XEN_EFI_update_capsule
-> hypercalls which is what should be used in order to perform the
-> updates?
+	https://github.com/hansendc/linux/tree/automigrate-20200818
 
-I think those covers only runtime service calls similarly named. But you
-need also ESRT table to collect info about devices that you can even
-attempt to update.
+--
 
-TBH, I'm not sure if those runtime services are really needed. I think
-Norbert succeeded UEFI update from within Xen PV dom0 with just access
-to the ESRT table, but without those services.
+We're starting to see systems with more and more kinds of memory such
+as Intel's implementation of persistent memory.
 
-> So yes, I agree Xen should make sure the region of the table is not
-> freed when exiting boot services, and that dom0 can access it. I
-> guess we should move the checks done by Linux to Xen, and then only
-> provide the ESRT table to dom0 if the checks (now done by Xen) pass.
+Let's say you have a system with some DRAM and some persistent memory.
+Today, once DRAM fills up, reclaim will start and some of the DRAM
+contents will be thrown out.  Allocations will, at some point, start
+falling over to the slower persistent memory.
 
-Yes, something like this. But note currently in the (PV) dom0 case, Xen
-provides dom0 with a pointer to the whole SystemTable, not individual
-ConfigurationTables. Making it filter what dom0 gets would require Xen
-to re-construct the whole thing with just those elements that are
-desired. Not exactly sure if worth the effort given the privilege dom0
-has.
+That has two nasty properties.  First, the newer allocations can end
+up in the slower persistent memory.  Second, reclaimed data in DRAM
+are just discarded even if there are gobs of space in persistent
+memory that could be used.
 
-BTW How does it look in PVH dom0 case? Does it also get unmodified host
-EFI SystemTable? In that case, it would be more tricky, because (IIUC)
-physical addresses (like the one for ESRT table) are not meaningful to
-PVH dom0.
+This set implements a solution to these problems.  At the end of the
+reclaim process in shrink_page_list() just before the last page
+refcount is dropped, the page is migrated to persistent memory instead
+of being dropped.
 
-> It might be helpful to see the whole picture here with the hooks to
-> perform the updates also implemented, as those are missing in Xen (and
-> Linux?). That would give a clearer view of what you are trying to
-> achieve IMO.
+While I've talked about a DRAM/PMEM pairing, this approach would
+function in any environment where memory tiers exist.
 
-Norbert, can you shed some light on this process?
+This is not perfect.  It "strands" pages in slower memory and never
+brings them back to fast DRAM.  Other things need to be built to
+promote hot pages back to DRAM.
 
-While those two runtime services seems relevant, I see also an update
-process involving simply dropping some file into ESP (/boot/efi). I'm
-not sure if some runtime services were involved.
+This is also all based on an upstream mechanism that allows
+persistent memory to be onlined and used as if it were volatile:
 
---=20
-Best Regards,
-Marek Marczykowski-G=C3=B3recki
-Invisible Things Lab
-A: Because it messes up the order in which people normally read text.
-Q: Why is top-posting such a bad thing?
+	http://lkml.kernel.org/r/20190124231441.37A4A305@viggo.jf.intel.com
 
---zPXeIxDajdrcF2en
-Content-Type: application/pgp-signature; name="signature.asc"
+== Open Issues ==
 
------BEGIN PGP SIGNATURE-----
+ * For cpusets and memory policies that restrict allocations
+   to PMEM, is it OK to demote to PMEM?  Do we need a cgroup-
+   level API to opt-in or opt-out of these migrations?
+ * Migration failures will result in pages being unreclaimable.
+   Need to be able to fall back to normal reclaim.
 
-iQEzBAEBCAAdFiEEhrpukzGPukRmQqkK24/THMrX1ywFAl88IJIACgkQ24/THMrX
-1yyGUQf/XyHSwgWMa3bAf29o+euHtEQX2Y9xDY4JNgw+kpV0yXiMFfrif5G09dvF
-Ix4e1v0hWImfDv+qzQ+jIpRtwLq6SAa5sMe3v9lCM+dRcj8xc9AxIY1fL7zPXPOt
-UXaEiUL6JAXsbVWj/fg8iSyuZKb2EBqVLgk5Gbysq+YRNC1GY5Wf057OLbAFmz0S
-yqwHJsBsBk9Tan5qk83oTse4c4azt0AglO+Uw2mzlIvch2Xvu3aSebnyHFpqx3m0
-lpWtJ6Zgi7bfcOme7fYi8fNh+09NCQYjP6r+9R2qP32cg4XBRSVGC5g/kFODMFMs
-PUP0VVZfphqLpaDlUG/ztaoJ1ZxrwQ==
-=iwo+
------END PGP SIGNATURE-----
 
---zPXeIxDajdrcF2en--
+Cc: Yang Shi <yang.shi@linux.alibaba.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Huang Ying <ying.huang@intel.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+
+--
+
+Dave Hansen (5):
+      mm/numa: node demotion data structure and lookup
+      mm/vmscan: Attempt to migrate page in lieu of discard
+      mm/numa: automatically generate node migration order
+      mm/vmscan: never demote for memcg reclaim
+      mm/numa: new reclaim mode to enable reclaim-based migration
+
+Keith Busch (2):
+      mm/migrate: Defer allocating new page until needed
+      mm/vmscan: Consider anonymous pages without swap
+
+Yang Shi (1):
+      mm/vmscan: add page demotion counter
+
+ Documentation/admin-guide/sysctl/vm.rst |    9
+ include/linux/migrate.h                 |    6
+ include/linux/node.h                    |    9
+ include/linux/vm_event_item.h           |    2
+ include/trace/events/migrate.h          |    3
+ mm/debug.c                              |    1
+ mm/internal.h                           |    1
+ mm/migrate.c                            |  400 ++++++++++++++++++++++++++------
+ mm/page_alloc.c                         |    2
+ mm/vmscan.c                             |   88 ++++++-
+ mm/vmstat.c                             |    2
+ 11 files changed, 439 insertions(+), 84 deletions(-)
