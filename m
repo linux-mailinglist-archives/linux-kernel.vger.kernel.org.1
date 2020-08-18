@@ -2,56 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D6AE248C26
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64BDD248C2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727875AbgHRQ5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 12:57:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38528 "EHLO mail.kernel.org"
+        id S1728574AbgHRQ5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 12:57:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728434AbgHRQ4R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 12:56:17 -0400
+        id S1728494AbgHRQ4X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 12:56:23 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D82F920825;
-        Tue, 18 Aug 2020 16:56:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F76820829;
+        Tue, 18 Aug 2020 16:56:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597769776;
-        bh=ak6+QCL5n29G4GLWbvhUOxpo7V6NC6tHUrZDrPnF8Pc=;
+        s=default; t=1597769781;
+        bh=zOU4Pdp1V5FeOhpAv/v6/unjQwdDYx6ZaaOnFF7Mnmg=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=Q4zuPDC4Obrg7RPGEUput1lScWOndJrBqR+KVJcVRXyS42FLRHADsncbSCT2jMp4r
-         1seJ867b9hUM6uZ2/rwGB7e/pzCLsdtgx5NmkHrPnrNbAz5Y3wX6pYIfbKGjsv1yWL
-         R6LGyEqG4l9fZGzun99/SOoEWm0UcbzElnd+SLi4=
-Date:   Tue, 18 Aug 2020 17:55:45 +0100
+        b=FLldg7pSy4wgyeihdoPTQ4O5HGunk6EmATkRuxHotsyw0cABy8TN6Nvk3OJmoMU7p
+         q+KQZAw/MlneDDdhqVMozzxpj+4+fW6gt8XO4T5CHAtuzTRnxmpz3SWOt7xmNzpDJX
+         ymRu3IJMKjyoFaI27eGSJHWbxUBq4v2sYuHZCO6w=
+Date:   Tue, 18 Aug 2020 17:55:50 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Jaroslav Kysela <perex@perex.cz>,
+To:     Michal Simek <michal.simek@xilinx.com>,
+        Colin King <colin.king@canonical.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
         Liam Girdwood <lgirdwood@gmail.com>,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
         Takashi Iwai <tiwai@suse.com>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Yong Zhi <yong.zhi@intel.com>,
-        Support Opensource <support.opensource@diasemi.com>,
-        alsa-devel@alsa-project.org
-In-Reply-To: <cover.1597164865.git.Adam.Thomson.Opensource@diasemi.com>
-References: <cover.1597164865.git.Adam.Thomson.Opensource@diasemi.com>
-Subject: Re: [PATCH 0/3] ASoC: da7219: Reorganise device/codec level probe/remove
-Message-Id: <159776961932.56094.1814239239605160041.b4-ty@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+In-Reply-To: <20200817224706.6139-1-colin.king@canonical.com>
+References: <20200817224706.6139-1-colin.king@canonical.com>
+Subject: Re: [PATCH] sound: remove duplicate "the the" phrase in Kconfig text
+Message-Id: <159776961933.56094.6016392996060777072.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 Aug 2020 17:57:22 +0100, Adam Thomson wrote:
-> This patch set reorganises and fixes device and codec level probe/remove
-> handling within the driver, to allow clean probe and remove at the codec level.
-> 
-> This set relates to an issue raised by Yong Zhi where a codec level re-probe
-> would fail due to clks still being registered from the previous instantiation.
-> In addition some improvements around regulator handling and soft reset have
-> also been included.
-> 
-> [...]
+On Mon, 17 Aug 2020 23:47:06 +0100, Colin King wrote:
+> There are a couple of occurrences of "the the" in the Kconfig
+> text. Fix these.
 
 Applied to
 
@@ -59,12 +51,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: da7219: Move required devm_* allocations to device level code
-      commit: 21f279f34c212e82f0330697394840898908f7a6
-[2/3] ASoC: da7219: Move soft reset handling to codec level probe
-      commit: aa5b18d1c29023b315073661b74c67f91bf2f27c
-[3/3] ASoC: da7219: Fix clock handling around codec level probe
-      commit: 78013a1cf2971684775f6956d5666237ac53a1aa
+[1/1] sound: remove duplicate "the the" phrase in Kconfig text
+      commit: 466a806a7d2beffa6a79d61dbabac8a48685c3e2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
