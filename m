@@ -2,87 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 249C32519A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B11422519F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Aug 2020 15:42:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726749AbgHYNaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 Aug 2020 09:30:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726024AbgHYNaR (ORCPT
+        id S1726798AbgHYNmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 Aug 2020 09:42:49 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:41051 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726611AbgHYNlk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 Aug 2020 09:30:17 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50170C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 Aug 2020 06:30:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=T0iA/ESQ7g89ajHduy7nVinGEeYb5qspM1YNkrQY/OQ=; b=JePRDUdSk6wTLpH+cDjmhVmoCP
-        iKx9/roB2SULZZms3G5d07MEjORCH/osBFueYs1IdIS8T62B3Zb0FV8YZVJPYijn74LljtZAH3Qst
-        jITFluYmF2XPojsZy4VrYPd2cj11vHmyhtHLqW4ZcPZ6LuvAfP2JTGV7FCgM6BJhjzDQ3bq8+LJFX
-        cHvaN8Vanpl7dVO29V3pfVQoaU+vdi5ZvCEIoqMPrgJvagRZaBEG0PGrZtK3+RB1qivIGMl3/4S+t
-        HywWwaisgot7VbZ3rYSPUC7hJemtaoOQ5RL7m+6Sc4bAWrnAOFYOdRT/NC3OlfEWdlUF9YyxXiHLe
-        SpibzOMw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kAZ1b-0001Lp-5c; Tue, 25 Aug 2020 13:30:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 40F1A3003D8;
-        Tue, 25 Aug 2020 15:30:05 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 29B3421F9DB48; Tue, 25 Aug 2020 15:30:05 +0200 (CEST)
-Date:   Tue, 25 Aug 2020 15:30:05 +0200
-From:   peterz@infradead.org
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     "Eddy_Wu@trendmicro.com" <Eddy_Wu@trendmicro.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: x86/kprobes: kretprobe fails to triggered if kprobe at function
- entry is not optimized (trigger by int3 breakpoint)
-Message-ID: <20200825133005.GY1362448@hirez.programming.kicks-ass.net>
-References: <8816bdbbc55c4d2397e0b02aad2825d3@trendmicro.com>
- <20200825005426.f592075d13be740cb3c9aa77@kernel.org>
- <7396e7b2079644a6aafd9670a111232b@trendmicro.com>
- <20200825151538.f856d701a34f4e0561a64932@kernel.org>
- <20200825120911.GX1362448@hirez.programming.kicks-ass.net>
- <20200825221555.a2d72c9754284feced6a8536@kernel.org>
+        Tue, 25 Aug 2020 09:41:40 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 2CB90BDB;
+        Tue, 25 Aug 2020 09:35:28 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 25 Aug 2020 09:35:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=OB6C5rBdrsWYefSK+JPJv5u1Nkg
+        G5sD9y7dak5b46mg=; b=EsPj6jpasoYSP0YKt7mLyaiMGUGgtLvGKfqEaGYBUmp
+        6F8sYCCBPYEDXPhGBwdqATRn6G/s74WQmRxDZlfC2AtCmoTzDMZlkadxLNQcel1h
+        hVn+ydQYlQ8DAhH4UgiZMGT+0dOXDOg++qArL7XGXUCIaufkYafOiKyJ/vYJYi5K
+        n8Fi2+QciSv+fYUVTXT8eALX9oC2HI1a2vKhfbpRr9erniSKhxgOGFpyrqnTelX3
+        L+toz7iBjRrFZarLGA/TfwttmrwYdNxAHqudpMGRxJqBZEZx+VjnpBU8vICMQtT6
+        ieM03Pts2nTOU7pvtaNpycP/N0pqkSiWsd23XsUugwg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=OB6C5r
+        BdrsWYefSK+JPJv5u1NkgG5sD9y7dak5b46mg=; b=jbMgxGY8XZUU3NoJVcHFeq
+        3x9sPixGdxeuJBfUbpTiYbcG7z4m7sZOTNjI4RBi/fCHGzGUV5YUjQ7+nSBDThE+
+        61SsJZ3irmvDzt7bv69kz6baYEVwyOoQVyxlXnlSdLzkmHYivRCgVhIaAxql8EpM
+        B6mkmwYC7p8a6EFM4YwXe+Jx21cqPPyX8smGD7ifY+L258IwUIj8iPJiywQoFCXZ
+        TPhRrGalxT2y3PbWkPVpw1hUk7WeclJWIczmX5BxRuNKVrBLu4ZBwk5d9eBWjEPi
+        VBt3/ByFS8eTzO44AUFdJCKFEtHWnKO2uFUzNrFvKG95Ne87pvSOuDuLy+gZCCiQ
+        ==
+X-ME-Sender: <xms:nhNFX4NDcLveTBRdwVWoTEJZAxBQlCGZWOvkK46EMgAU_r2pnUyKNw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedruddvtddgieelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:nhNFX--MLspTHky8cfdWSXoscLxGcU7RJlqIvHUsZjGMLCahO_oJww>
+    <xmx:nhNFX_QTJQ60vvWpQxCnSEURmFXFXtC7FkeZkzbd1gxzVdQmsl-6Dg>
+    <xmx:nhNFXwsjipdACMGmSyrbzjaiMN8-D1xpIHKfkaZFCMFbM7G-4vgpkw>
+    <xmx:nxNFX_6AsWog0CaOOUJVClBK0jcBKewTziwomVM9CpcA0radMDWdiw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id EA9CF30600A3;
+        Tue, 25 Aug 2020 09:35:25 -0400 (EDT)
+Date:   Tue, 18 Aug 2020 10:49:06 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     wens@csie.org, jernej.skrabec@siol.net, airlied@linux.ie,
+        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/sun4i: Constify static structs
+Message-ID: <20200818084906.lhuzwqdoyqzapjsx@gilmour.lan>
+References: <20200804215337.54594-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="7xomoy5wll6xmvne"
 Content-Disposition: inline
-In-Reply-To: <20200825221555.a2d72c9754284feced6a8536@kernel.org>
+In-Reply-To: <20200804215337.54594-1-rikard.falkeborn@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 10:15:55PM +0900, Masami Hiramatsu wrote:
 
-> > damn... one last problem is dangling instances.. so close.
-> > We can apparently unregister a kretprobe while there's still active
-> > kretprobe_instance's out referencing it.
-> 
-> Yeah, kretprobe already provided the per-instance data (as far as
-> I know, only systemtap depends on it). We need to provide it for
-> such users.
-> But if we only have one lock, we can avoid checking NMI because
-> we can check the recursion with trylock. It is needed only if the
-> kretprobe uses per-instance data. Or we can just pass a dummy
-> instance on the stack.
+--7xomoy5wll6xmvne
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I think it is true in general, you can unregister a rp while tasks are
-preempted.
+Hi,
 
-Anyway,. I think I have a solution, just need to talk to paulmck for a
-bit.
+On Tue, Aug 04, 2020 at 11:53:37PM +0200, Rikard Falkeborn wrote:
+> A number of static variables are not modified and can be made const to
+> allow the compiler to put them in read-only memory.
+>=20
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 
-> > Ignoring that issue for the moment, the below seems to actually work.
-> 
-> OK, this looks good to me too.
-> I'll make a series to rewrite kretprobe based on this patch, OK?
+Applied, thanks!
+Maxime
 
-Please, I'll send the fix along when I have it.
+--7xomoy5wll6xmvne
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXzuWAgAKCRDj7w1vZxhR
+xeMiAP9ZL9rjwDAjy7IbU3HboVfFI4FAP7eQZPgomHMvsL0ToAD/Z2CtUjH4lak/
+EVZ2tUz2sOcYWfa9U+uzNZ0Cj4EOIgg=
+=uQCW
+-----END PGP SIGNATURE-----
+
+--7xomoy5wll6xmvne--
