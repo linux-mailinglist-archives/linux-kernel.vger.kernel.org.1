@@ -2,91 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC20248CF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C754E248D45
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728535AbgHRR3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 13:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726715AbgHRR3Q (ORCPT
+        id S1728888AbgHRRge convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 18 Aug 2020 13:36:34 -0400
+Received: from wildebeest.demon.nl ([212.238.236.112]:50288 "EHLO
+        gnu.wildebeest.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728532AbgHRRgX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 13:29:16 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE6FFC061389
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 10:29:14 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id bs17so15907769edb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 10:29:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=javigon-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3/0UrSCWdiUFQjlCmwTT+sDLdgmMCbkkvjiVvm/Zb4Q=;
-        b=0e9ZniydNVaI5+0HNp4JTj3vU9pqBMNjVOiGh3ElOE5Ouu6Ediz5A/BEtJaR8Yvadb
-         C4WYUsAkrOXygNOwvi5dDs9VkD0FWK2suynMdogo87lgbhuPrF/lx8iymwJ/dkP0ZdPT
-         bYrooWf1aJmO6wNkqGTI0tLWXJhyg/lh2lp3I39BrVspTnnihjy0E3Fi1rSF9F2smTSP
-         tQcLx+EAsEWbVzaOiMsflFvTE74JcTRj6UETYLxS4QhgIf8dlDRdAd4Du4bokDZJuvDv
-         naDhBGIim5OWIpqv/ztnr7J/BT2RHKRabHTRXBw076UJhXZoS0Uf3BPhWuX4h7oQg84x
-         NvJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3/0UrSCWdiUFQjlCmwTT+sDLdgmMCbkkvjiVvm/Zb4Q=;
-        b=gJ1uL2WPQC05hfxuriMH/RBNY+wGnUi/fvJ3CA9NZUrudoXWO80XOvlKRen6PQcZJd
-         G0nZN1lX96y4LY42Z96XJ75Oemv7YP9IBsuaSxMy0BQ4Y1e2+mA72hKtm0t4hhvT+VlI
-         M/KdrUvIbNHunwPS5V5juEd++SSDSUKCVr17WGZZ5CojrE/BpNApXOsSyuR9Q3b8URcU
-         E8QlRsmQJC/CDfita87Nis88GjBiA91GNNOw92kDzWBZrr3osqyRGoILX+GgSoz2N22P
-         ik2OHKg1QKa4VElTruAZBIG2iXwQFm1HMELAjNEyjX1Vql8nHKpOFRmlfe5gLqPw8xUH
-         /4Xg==
-X-Gm-Message-State: AOAM530rCGmXa4HxZ/eQeTFxlD6bKFS/WxJYroKQQHXKUUnmVvliV+uW
-        IGkAERGippvYirNPYq+yke/NjQ==
-X-Google-Smtp-Source: ABdhPJzlBOCe1lDdHrtT3awmcFNNz4BOC3NXuiv9YMW6pUkc5e3zSKPkQFenrYEnw9XSdDgkG1B4Vg==
-X-Received: by 2002:aa7:db10:: with SMTP id t16mr20427706eds.196.1597771753518;
-        Tue, 18 Aug 2020 10:29:13 -0700 (PDT)
-Received: from localhost (5.186.127.235.cgn.fibianet.dk. [5.186.127.235])
-        by smtp.gmail.com with ESMTPSA id l23sm16763331eje.46.2020.08.18.10.29.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 10:29:12 -0700 (PDT)
-Date:   Tue, 18 Aug 2020 19:29:12 +0200
-From:   Javier Gonzalez <javier@javigon.com>
-To:     Keith Busch <kbusch@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Kanchan Joshi <joshi.k@samsung.com>, Damien.LeMoal@wdc.com,
-        axboe@kernel.dk, sagi@grimberg.me, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org, johannes.thumshirn@wdc.com,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        SelvaKumar S <selvakuma.s1@samsung.com>
-Subject: Re: [PATCH 2/2] nvme: add emulation for zone-append
-Message-ID: <20200818172912.e54klrofz3tfhxhj@MacBook-Pro.localdomain>
-References: <20200818052936.10995-1-joshi.k@samsung.com>
- <CGME20200818053256epcas5p46d0b66b3702192eb6617c8bba334c15f@epcas5p4.samsung.com>
- <20200818052936.10995-3-joshi.k@samsung.com>
- <20200818071249.GB2544@lst.de>
- <20200818095033.h6ybdwiq3ljagl5a@mpHalley.local>
- <20200818165811.GA2979311@dhcp-10-100-145-180.wdl.wdc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200818165811.GA2979311@dhcp-10-100-145-180.wdl.wdc.com>
+        Tue, 18 Aug 2020 13:36:23 -0400
+X-Greylist: delayed 381 seconds by postgrey-1.27 at vger.kernel.org; Tue, 18 Aug 2020 13:36:21 EDT
+Received: from tarox.wildebeest.org (tarox.wildebeest.org [172.31.17.39])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by gnu.wildebeest.org (Postfix) with ESMTPSA id 8197F30278CD;
+        Tue, 18 Aug 2020 19:29:56 +0200 (CEST)
+Received: by tarox.wildebeest.org (Postfix, from userid 1000)
+        id 2FDCF401443A; Tue, 18 Aug 2020 19:29:56 +0200 (CEST)
+Message-ID: <c9c4a42ba6b4d36e557a5441e90f7f4961ec3f72.camel@klomp.org>
+Subject: Re: Kernel build error on BTFIDS vmlinux
+From:   Mark Wielaard <mark@klomp.org>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>, sdf@google.com,
+        andriin@fb.com, nickc@redhat.com
+Date:   Tue, 18 Aug 2020 19:29:56 +0200
+In-Reply-To: <20200818183318.2c3fe4a2@carbon>
+References: <20200818105555.51fc6d62@carbon> <20200818091404.GB177896@krava>
+         <20200818105602.GC177896@krava> <20200818134543.GD177896@krava>
+         <20200818183318.2c3fe4a2@carbon>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Mailer: Evolution 3.28.5 (3.28.5-8.el7) 
+Mime-Version: 1.0
+X-Spam-Flag: NO
+X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on gnu.wildebeest.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.08.2020 09:58, Keith Busch wrote:
->On Tue, Aug 18, 2020 at 11:50:33AM +0200, Javier Gonzalez wrote:
->> a number of customers are requiring the use of normal writes, which we
->> want to support.
->
->A device that supports append is completely usable for those customers,
->too. There's no need to create divergence in this driver.
+Hi,
 
-Not really. You know as well as I do that some features are disabled for
-a particular SSD model on customer requirements. Generic models
-implementing append can submit both I/Os, but those that remove append
-are left out.
+Adding Nick, the binutils maintainer, so we can make sure
+binutils/elfutils agree on some ELF section compression corner case.
 
-I would like to understand how we can enable these NVMe-compatible
-models in Linux. If it is a performance concern, we will address it.
+On Tue, 2020-08-18 at 18:33 +0200, Jesper Dangaard Brouer wrote:
+> On Tue, 18 Aug 2020 15:45:43 +0200
+> Jiri Olsa <jolsa@redhat.com> wrote:
+> 
+> > On Tue, Aug 18, 2020 at 12:56:08PM +0200, Jiri Olsa wrote:
+> > > On Tue, Aug 18, 2020 at 11:14:10AM +0200, Jiri Olsa wrote:  
+> > > > On Tue, Aug 18, 2020 at 10:55:55AM +0200, Jesper Dangaard Brouer wrote:  
+> > > > > 
+> > > > > On latest DaveM net-git tree (06a4ec1d9dc652), after linking (LD vmlinux) the
+> > > > > "BTFIDS vmlinux" fails. Are anybody else experiencing this? Are there already a
+> > > > > fix? (just returned from vacation so not fully up-to-date on ML yet)
+> > > > > 
+> > > > > The tool which is called and error message:
+> > > > >   ./tools/bpf/resolve_btfids/resolve_btfids vmlinux
+> > > > >   FAILED elf_update(WRITE): invalid section alignment  
+> > > > 
+> > > > hi,
+> > > > could you send your .config as well?  
+> > > 
+> > > reproduced.. checking on fix  
+> > 
+> > I discussed this with Mark (cc-ed) it seems to be a problem
+> > with linker when dealing with compressed debug info data,
+> > which is enabled in your .config
+> > 
+> > it works for me when I disable CONFIG_DEBUG_INFO_COMPRESSED option
+> 
+> Thanks for finding this!
+> I confirm that disabling CONFIG_DEBUG_INFO_COMPRESSED fixed the issue.
+> 
+> > Mark will fix this upstream, meanwhile he suggested workaround
+> > we can do in resolve_btfids tool, that I'll try to send shortly
+> 
+> Great!
 
+So, the issue is that there is some confusion about the correct
+alignment of compressed ELF sections.
+
+When an ELF section is compressed using gabi-zlib it contains a header
+(a Elf_Chdr32 or Elf_Chdr64, followed by the compressed data) The
+header explains how the section data is compressed, what the exploded
+size is, what the alignment of that uncompressed data is, etc.
+
+Because of this header the section data should be aligned to 4 (for
+32bit) or 8 (for 64 bit) bytes, but binutils ld sets sh_addralign to 1.
+[*]
+
+elfutils libelf is liberal in what it accepts, and internally fixes up
+the alignment if it is wrong. Which is why we probably didn't see this
+before. But it won't let you write out misaligned data like that. Which
+is slightly confusing, because if you didn't change that section data,
+it is not immediately clear why you are getting an error.
+
+Also if you would decompress the section data to use it and then
+recompress it elfutils libelf would set sh_addralign correctly for you.
+But it won't if you don't use the (uncompressed) data.
+
+The workaround would be to explicitly set the alignment of the
+compressed section before writing out the section. Which is what Jiri
+is now testing.
+
+But it would obviously be better if that wasn't necessary. So I'll try
+to fix libelf so that if it fixes up the alignment when reading the
+compressed data, it also does that when writing out the data again. But
+that would only help for a new version of elfutils.
+
+So it would be nice if binutils ld could also be fixed to write out
+compressed sections with the correct alignment.
+
+Then hopefully if someone has either a new elfutils or a new binutils
+it just works without needing any workarounds.
+
+Cheers,
+
+Mark
+
+[*] If this sounds vaguely familiar then that is because we did have a
+different alignment bug, but for the uncompressed data (which is the
+alignment set in the compression header):
+https://bugzilla.redhat.com/show_bug.cgi?id=1678204
+That bug was about ch_addralign, this bug is about sh_addralign.
