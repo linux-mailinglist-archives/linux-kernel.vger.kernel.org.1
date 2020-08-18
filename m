@@ -2,141 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF802488D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 17:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7852488DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 17:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727856AbgHRPMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 11:12:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726873AbgHRPMJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 11:12:09 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8CACC061389;
-        Tue, 18 Aug 2020 08:12:08 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id z18so18602674wrm.12;
-        Tue, 18 Aug 2020 08:12:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K7rzgcMuhB59uSbGxt2+obmcC2a75JDzO+8IEBPn/20=;
-        b=LBPbIGYQrU0mHziA4nNdl4eE3cXtppYEvfLXZxMFHqUJCC3aPFJcpOX4uJ04qMnssG
-         Ag5clvTZ7KaHp05xI+LCkT46W+mumhbi4uMzTEJ0Zgw7EHw2biiG22cGZvWWi8pxSKUn
-         b+v8CHE4M/CZIj/ImziP2Zwe6Qr+5YWvKJ7VWieX7JGRgV9arfMDfkxkIL/t2jBZldOQ
-         42hgWUG6W+6+Bo9XvCgOGgt9ZRn/D8ze4gVCG8oUASyzK10IQlJx8mGSCfQnykVQkC+J
-         UnF7P+cyJAVXZcDJ/N6ANDnOzFaD1Jc+NLZEKQQKLDOnvlSZiA5g2pYB+cNNfwTlgOBN
-         eWHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K7rzgcMuhB59uSbGxt2+obmcC2a75JDzO+8IEBPn/20=;
-        b=er6gUCaHCrHfN1PbVsIjxmS/u6juuPVw8YcHXZ1rhQei1qvymrvY0LoBlXPFz/wYo5
-         qLHeJHbaQBeEVDDKvvqWLvVJVhlvf/tZLTBKWY3grYOqLwI3ZLr8Tbz295tHgmLB31E9
-         FY01AqHCHepiFb+Yj3y/G8GhmYt6fu15DNr+g8dHCwvrwS1MRt+5H5fJ2Ds5YKQKFK2z
-         qNX48zIo2MkiElVW/2YWiQ/ANYnjBPIIUQ5NU2l0GS1dD5SNN7zIy3ehEc8xCv80wdmJ
-         jQeGB+fZkIECnPs8OkQrqqtTCz5vqX4qCvkLVdXqti0lZ3IMMLLVGFfbDR/6z0fgKYRv
-         HSKg==
-X-Gm-Message-State: AOAM533V3dug9xAmRBQwqE9AVnkunX+rnXM82IBoDpEVW4kDfYGIaT1l
-        NBqr53N2HhJxfMwWYtkQXRdFCQabFEiX0gkoWoA=
-X-Google-Smtp-Source: ABdhPJwKdzwEohL5E9SDLCVg0q8nhvUN8RMpxHE73jN/E0C6arJhxxGXiKWPU1nLKhzAjKAWQrer6Yss9Q2RQ13N+mU=
-X-Received: by 2002:adf:f485:: with SMTP id l5mr19243697wro.147.1597763527343;
- Tue, 18 Aug 2020 08:12:07 -0700 (PDT)
+        id S1726716AbgHRPPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 11:15:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39010 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726539AbgHRPPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 11:15:12 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A32D2054F;
+        Tue, 18 Aug 2020 15:15:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597763711;
+        bh=oS4H9N77c9RTUfV0WFBdDsZdB594DRNKFt9jHii7/Pk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YdFq56/b16kAMnBdnZ6baWZABAlJJGBJgOKkjQDMCQfQCSWjWRVfRr+sRvX3gtGyh
+         +SiINg939ZP1cl7qV80GduJeH7HMDA78T/48+EpXglIQvuLzBGINK0Z4PgE6hE9UqX
+         zEHUD6ytaz3AMOI3QG/7T6E18gvUJ+xcMxjz5oHQ=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1k83KP-003wAO-M1; Tue, 18 Aug 2020 16:15:09 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>, Nishanth Menon <nm@ti.com>,
+        Rob Herring <robh@kernel.org>, Suman Anna <s-anna@ti.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: [GIT PULL] irqchip fixes for 5.9, take #1
+Date:   Tue, 18 Aug 2020 16:14:48 +0100
+Message-Id: <20200818151448.472216-1-maz@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <1591009402-681-1-git-send-email-mkrishn@codeaurora.org> <a3fcad3f97c258043cd4268ef2c99740@codeaurora.org>
-In-Reply-To: <a3fcad3f97c258043cd4268ef2c99740@codeaurora.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Tue, 18 Aug 2020 08:12:53 -0700
-Message-ID: <CAF6AEGvDN2B-xxecOt+0aaweWohGSKekb3tCerX42T1eOte-ig@mail.gmail.com>
-Subject: Re: [v2] drm/msm: add shutdown support for display platform_driver
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Krishna Manikandan <mkrishn@codeaurora.org>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>, nganji@codeaurora.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        linux-arm-msm-owner@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: tglx@linutronix.de, john.stultz@linaro.org, lokeshvutla@ti.com, nm@ti.com, robh@kernel.org, s-anna@ti.com, jason@lakedaemon.net, linux-kernel@vger.kernel.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 3:03 AM Sai Prakash Ranjan
-<saiprakash.ranjan@codeaurora.org> wrote:
->
-> Hi,
->
-> On 2020-06-01 16:33, Krishna Manikandan wrote:
-> > Define shutdown callback for display drm driver,
-> > so as to disable all the CRTCS when shutdown
-> > notification is received by the driver.
-> >
-> > This change will turn off the timing engine so
-> > that no display transactions are requested
-> > while mmu translations are getting disabled
-> > during reboot sequence.
-> >
-> > Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
-> >
-> > Changes in v2:
-> >       - Remove NULL check from msm_pdev_shutdown (Stephen Boyd)
-> >       - Change commit text to reflect when this issue
-> >         was uncovered (Sai Prakash Ranjan)
-> > ---
-> >  drivers/gpu/drm/msm/msm_drv.c | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> >
-> > diff --git a/drivers/gpu/drm/msm/msm_drv.c
-> > b/drivers/gpu/drm/msm/msm_drv.c
-> > index e4b750b..94e3963 100644
-> > --- a/drivers/gpu/drm/msm/msm_drv.c
-> > +++ b/drivers/gpu/drm/msm/msm_drv.c
-> > @@ -1322,6 +1322,13 @@ static int msm_pdev_remove(struct
-> > platform_device *pdev)
-> >       return 0;
-> >  }
-> >
-> > +static void msm_pdev_shutdown(struct platform_device *pdev)
-> > +{
-> > +     struct drm_device *drm = platform_get_drvdata(pdev);
-> > +
-> > +     drm_atomic_helper_shutdown(drm);
-> > +}
-> > +
-> >  static const struct of_device_id dt_match[] = {
-> >       { .compatible = "qcom,mdp4", .data = (void *)KMS_MDP4 },
-> >       { .compatible = "qcom,mdss", .data = (void *)KMS_MDP5 },
-> > @@ -1334,6 +1341,7 @@ static int msm_pdev_remove(struct platform_device
-> > *pdev)
-> >  static struct platform_driver msm_platform_driver = {
-> >       .probe      = msm_pdev_probe,
-> >       .remove     = msm_pdev_remove,
-> > +     .shutdown   = msm_pdev_shutdown,
-> >       .driver     = {
-> >               .name   = "msm",
-> >               .of_match_table = dt_match,
->
-> Any more comments on this patch?
+Hi Thomas,
 
-sorry, I managed to overlook this earlier.. I've pulled it in to msm-next
+As -rc1 is out, here's the first batches of fixes for 5.9. The most
+important one is a fix for a typo that broke modular irqchips using
+the brand new set of macros. Oh hum...
 
-BR,
--R
+The rest of it is what I was hinting at when I sent the original 5.9
+pull request, with a bunch of TI updates that deal with the change of
+their firmware interface. The handling of the dependencies was bad
+enough that I couldn't send it before -rc1 was out...
 
-> Thanks,
-> Sai
->
-> --
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-> member
-> of Code Aurora Forum, hosted by The Linux Foundation
+Please pull,
+
+	M.
+
+The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
+
+  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git tags/irqchip-fixes-5.9-1
+
+for you to fetch changes up to 7828a3ef8646fb2e69ed45616c8453a037ca7867:
+
+  irqchip: Fix probing deferal when using IRQCHIP_PLATFORM_DRIVER helpers (2020-08-17 08:06:11 +0100)
+
+----------------------------------------------------------------
+irqchip fixes for Linux 5.9, take #1
+
+- Fix an embarassing typo in the new module helpers, leading
+  to the probe failing most of the time
+
+- The promised TI firmware rework that couldn't make it into
+  the merge window due to a very badly managed set of dependency
+
+----------------------------------------------------------------
+Lokesh Vutla (13):
+      firmware: ti_sci: Drop the device id to resource type translation
+      firmware: ti_sci: Drop unused structure ti_sci_rm_type_map
+      firmware: ti_sci: Add support for getting resource with subtype
+      dt-bindings: irqchip: ti, sci-intr: Update bindings to drop the usage of gic as parent
+      dt-bindings: irqchip: Convert ti, sci-intr bindings to yaml
+      irqchip/ti-sci-intr: Add support for INTR being a parent to INTR
+      dt-bindings: irqchip: ti, sci-inta: Update docs to support different parent.
+      dt-bindings: irqchip: Convert ti, sci-inta bindings to yaml
+      irqchip/ti-sci-inta: Do not store TISCI device id in platform device id field
+      irqchip/ti-sci-inta: Add support for INTA directly connecting to GIC
+      arm64: dts: k3-j721e: ti-sci-inta/intr: Update to latest bindings
+      arm64: dts: k3-am65: ti-sci-inta/intr: Update to latest bindings
+      arm64: dts: k3-am65: Update the RM resource types
+
+Marc Zyngier (1):
+      irqchip: Fix probing deferal when using IRQCHIP_PLATFORM_DRIVER helpers
+
+ .../bindings/interrupt-controller/ti,sci-inta.txt  |  66 ---------
+ .../bindings/interrupt-controller/ti,sci-inta.yaml |  98 +++++++++++++
+ .../bindings/interrupt-controller/ti,sci-intr.txt  |  82 -----------
+ .../bindings/interrupt-controller/ti,sci-intr.yaml | 102 ++++++++++++++
+ MAINTAINERS                                        |   4 +-
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi           |  36 +++--
+ arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi            |  12 +-
+ arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi         |   8 +-
+ arch/arm64/boot/dts/ti/k3-am654-base-board.dts     |   4 +-
+ .../boot/dts/ti/k3-j721e-common-proc-board.dts     |  10 +-
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi          |  43 +++---
+ arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi    |  12 +-
+ drivers/firmware/ti_sci.c                          | 155 +++++++++------------
+ drivers/irqchip/irq-ti-sci-inta.c                  |  95 ++++++++++---
+ drivers/irqchip/irq-ti-sci-intr.c                  | 152 ++++++++++++--------
+ drivers/irqchip/irqchip.c                          |   2 +-
+ include/linux/soc/ti/ti_sci_protocol.h             |  13 ++
+ 17 files changed, 517 insertions(+), 377 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.txt
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.yaml
+ delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/ti,sci-intr.txt
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/ti,sci-intr.yaml
