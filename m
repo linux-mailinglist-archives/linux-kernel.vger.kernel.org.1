@@ -2,530 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 011F5248CC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0D6248CD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728710AbgHRRUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 13:20:14 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:63725 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728635AbgHRRUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 13:20:04 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4BWHhn0ZLqz9vCxn;
-        Tue, 18 Aug 2020 19:19:37 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id Ic4ZZQwtZg4S; Tue, 18 Aug 2020 19:19:37 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4BWHhm5z31z9vCxg;
-        Tue, 18 Aug 2020 19:19:36 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A6D9B8B7EC;
-        Tue, 18 Aug 2020 19:19:38 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id kh-bM3XvDDRb; Tue, 18 Aug 2020 19:19:38 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 283818B7D7;
-        Tue, 18 Aug 2020 19:19:38 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 0762265CF4; Tue, 18 Aug 2020 17:19:38 +0000 (UTC)
-Message-Id: <c7b37b385ccf9666066452e58f018a86573f83e8.1597770847.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1597770847.git.christophe.leroy@csgroup.eu>
-References: <cover.1597770847.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 25/25] powerpc/signal32: Transform save_user_regs() and
- save_tm_user_regs() in 'unsafe' version
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue, 18 Aug 2020 17:19:38 +0000 (UTC)
+        id S1728819AbgHRRV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 13:21:29 -0400
+Received: from esa2.hc3370-68.iphmx.com ([216.71.145.153]:54815 "EHLO
+        esa2.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728781AbgHRRVX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 13:21:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1597771283;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=VfmAjtjrR5Ynd62bslgEeAhZ8za/6MtFXClJnwwT3/4=;
+  b=bwRYljVIHibor6m9SFQVcB7J/EJWWP5tuEOkqFEOQrMtQt6iZQ1IoCbE
+   FgYeojahteQDwWFVWDjwRfRtC778zDnUaz713DB86rbTnWxWyfySpprxt
+   w4o0DJCujYIT6R4Up+nKAV/HJYuX5MXv9UJuiz/DnPaX0609EFN7DSmPe
+   A=;
+Authentication-Results: esa2.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: zO7pjpdgDyALpNUdQNwaOEZc3lL4eELU/ihYg2Dk/WSBgXSI53yydL07x0s+fGosQacUtfHAO8
+ hLVsdsQZE2mHA24h0GXBO69J1XZe/Oz6Ye4QGx0Lxo6XqAVJ3F2h+F2XeKZ1wimMH1ljzlA2XE
+ xzihH7RPDcurRln5vKCsLGDyZXQFM1BGUc7syThAvoLDyPKXJYf++tXXehMMeu/176XJOi5pI9
+ JaSPzAwyimhC+h8vrg7Zsi3ir4u44HwtUTBeNlEDZiclQ+FOpCld0CaDW8nLJKSBP8uLaS6tS2
+ dOM=
+X-SBRS: 2.7
+X-MesageID: 24808311
+X-Ironport-Server: esa2.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.76,328,1592884800"; 
+   d="scan'208";a="24808311"
+Date:   Tue, 18 Aug 2020 19:21:14 +0200
+From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To:     Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= 
+        <marmarek@invisiblethingslab.com>
+CC:     Ard Biesheuvel <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
+        <norbert.kaminski@3mdeb.com>, <xen-devel@lists.xenproject.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] efi: discover ESRT table on Xen PV too
+Message-ID: <20200818172114.GO828@Air-de-Roger>
+References: <20200816001949.595424-1-marmarek@invisiblethingslab.com>
+ <20200817090013.GN975@Air-de-Roger>
+ <20200818120135.GK1679@mail-itl>
+ <20200818124710.GK828@Air-de-Roger>
+ <20200818150020.GL1679@mail-itl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200818150020.GL1679@mail-itl>
+X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
+ AMSPEX02CL02.citrite.net (10.69.22.126)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change those two functions to be used within a user access block.
+On Tue, Aug 18, 2020 at 05:00:20PM +0200, Marek Marczykowski-Górecki wrote:
+> On Tue, Aug 18, 2020 at 02:47:10PM +0200, Roger Pau Monné wrote:
+> > On Tue, Aug 18, 2020 at 02:01:35PM +0200, Marek Marczykowski-Górecki wrote:
+> > > Do you mean PV dom0 should receive full EFI memory map? Jan already
+> > > objected this as it would be a layering violation.
+> > 
+> > dom0 is already capable of getting the native e820 memory map using
+> > XENMEM_machine_memory_map, I'm not sure why allowing to return the
+> > memory map in EFI form would be any different (or a layering
+> > violation in the PV dom0 case).
+> >
+> > Do you have a reference to that thread? I certainly missed it.
+> 
+> See this thread: http://markmail.org/message/nrrvuau5whebksy2
+> 
+> > For PVH dom0 we could consider something different, since in that case
+> > there's a guest memory map which could likely be returned in EFI
+> > format and with the EFI regions if required.
+> > 
+> > > > > Skip this part on Xen PV (let Xen do the right thing if it deems
+> > > > > necessary) and use ESRT table normally.
+> > > > 
+> > > > Maybe it would be better to introduce a new hypercall (or add a
+> > > > parameter to XENMEM_machine_memory_map) in order to be able to fetch
+> > > > the EFI memory map?
+> > > >
+> > > > That should allow a PV dom0 to check the ESRT is correct and thus not
+> > > > diverge from bate metal.
+> > > 
+> > > Note the EFI memory map there is used not just to check things, but to
+> > > actually modify it to reserve the region. I think that's rather Xen
+> > > responsibility, not dom0. See the comment from Ard.
+> > 
+> > But that would modify Linux copy of the memory map, which is fine? My
+> > understanding of EFI is limited, but I don't think such changes are
+> > feed back into EFI, so Linux is completely free to do whatever it
+> > wants with it's copy of the EFI memory map.
+> 
+> Yes, but the thing is to make sure Xen doesn't use that memory, not only
+> dom0. See below.
+> 
+> > > > > +	if (efi_enabled(EFI_MEMMAP)) {
+> > > > > +		rc = efi_mem_desc_lookup(efi.esrt, &md);
+> > > > > +		if (rc < 0 ||
+> > > > > +		    (!(md.attribute & EFI_MEMORY_RUNTIME) &&
+> > > > > +		     md.type != EFI_BOOT_SERVICES_DATA &&
+> > > > > +		     md.type != EFI_RUNTIME_SERVICES_DATA)) {
+> > > > > +			pr_warn("ESRT header is not in the memory map.\n");
+> > > > > +			return;
+> > > > > +		}
+> > > > 
+> > > > Here you blindly trust the data in the ESRT in the PV case, without
+> > > > checking it matches the regions on the memory map, which could lead to
+> > > > errors if ESRT turns to be wrong.
+> > > 
+> > > I don't think checking merely if ESRT lives somewhere in
+> > > EFI_{BOOT,RUNTIME}_SERVICES_DATA area guarantees its correctness.
+> > > 
+> > > On the other hand, this seems to be done to prevent overwriting that
+> > > memory with something else (see that in case of EFI_BOOT_SERVICES_DATA
+> > > it is later marked as reserved. I think it should be rather done by Xen,
+> > > not dom0.
+> > 
+> > Forcing Xen to do all those checks seems quite a tedious work, and in
+> > fact the memory map that dom0 has might be more complete than the one
+> > Xen is able to construct, as Xen doesn't have an AML parser so it's
+> > not able to get all the possible info from ACPI.
+> 
+> Let me draw the picture from the beginning.
 
-For that, change save_general_regs() to and unsafe_save_general_regs(),
-then replace all user accesses by unsafe_ versions.
+Thanks, greatly appreciated.
 
-This series leads to a reduction from 2.55s to 1.73s of
-the system CPU time with the following microbench app
-on an mpc832x with KUAP (approx 32%)
+> EFI memory map contains various memory regions. Some of them are marked
+> as not needed after ExitBootServices() call (done in Xen before
+> launching dom0). This includes EFI_BOOT_SERVICES_DATA and
+> EFI_BOOT_SERVICES_CODE.
+> 
+> EFI SystemTable contains pointers to various ConfigurationTables -
+> physical addresses (at least in this case). Xen does interpret some of
+> them, but not ESRT. Xen pass the whole (address of) SystemTable to Linux
+> dom0 (at least in PV case). Xen doesn't do anything about tables it
+> doesn't understand.
+> 
+> Now, the code in Linux takes the (ESRT) table address early and checks
+> the memory map for it. We have 3 cases:
+>  - it points at area marked as neither EFI_*_SERVICES_DATA, nor with
+>    EFI_MEMORY_RUNTIME attribute -> Linux refuse to use it
+>  - it points to EFI_RUNTIME_SERVICES_DATA or with EFI_MEMORY_RUNTIME
+>    attribute - Linux uses the table; memory map already says the area
+>    belongs to EFI and the OS should not use it for something else
+>  - it points to EFI_BOOT_SERVICES_DATA - Linux mark the area as reserved
+>    to not release it after calling ExitBootServices()
+> 
+> The problematic is the third case - at the time when Linux dom0 is run,
+> ExitBootServices() was already called and EFI_BOOT_SERVICES_* memory was
+> already released. It could be already used for something else (for
+> example Xen could overwrite it while loading dom0).
+> 
+> Note the problematic case should be the most common - UEFI specification
+> says "The ESRT shall be stored in memory of type EfiBootServicesData"
+> (chapter 22.3 of UEFI Spec v2.6).
+> 
+> For this reason, to use ESRT in dom0, Xen should do something about it
+> before ExitBootServices() call. While analyzing all the EFI tables is
+> probably not a viable option, it can do some simple action:
+>  - retains all the EFI_BOOT_SERVICES_* areas - there is already code
+>    for that, controlled with /mapbs boot switch (to xen.efi, would need
+>    another option for multiboot2+efi)
+>  - have a list of tables to retain - since Xen already do analyze some
+>    of the ConfigurationTables, it can also have a list of those to
+>    preserve even if they live in EFI_BOOT_SERVICES_DATA. In this case,
+>    while Xen doesn't need to parse the whole table, it need to parse it's
+>    header to get the table size - to reserve that memory and not reuse
+>    it after ExitBootServices().
 
-Without KUAP, the difference is in the noise.
+Xen seems to already contain skeleton
+XEN_EFI_query_capsule_capabilities and XEN_EFI_update_capsule
+hypercalls which is what should be used in order to perform the
+updates?
 
-	void sigusr1(int sig) { }
+So yes, I agree Xen should make sure the region of the table is not
+freed when exiting boot services, and that dom0 can access it. I
+guess we should move the checks done by Linux to Xen, and then only
+provide the ESRT table to dom0 if the checks (now done by Xen) pass.
 
-	int main(int argc, char **argv)
-	{
-		int i = 100000;
+It might be helpful to see the whole picture here with the hooks to
+perform the updates also implemented, as those are missing in Xen (and
+Linux?). That would give a clearer view of what you are trying to
+achieve IMO.
 
-		signal(SIGUSR1, sigusr1);
-		for (;i--;)
-		    raise(SIGUSR1);
-		exit(0);
-	}
-
-An additional 0.10s reduction is achieved by removing
-CONFIG_PPC_FPU, as the mpc832x has no FPU.
-
-A bit less spectacular on an 8xx as KUAP is less heavy, prior to
-the series (with KUAP) it ran in 8.10 ms. Once applies the removal
-of FPU regs handling, we get 7.05s. With the full series, we get 6.9s.
-If artificially re-activating FPU regs handling with the full series,
-we get 7.6s.
-
-So for the 8xx, the removal of the FPU regs copy is what makes the
-difference, but the rework of handle_signal also have a benefit.
-
-Same as above, without KUAP the difference is in the noise.
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/signal_32.c | 224 ++++++++++++++++----------------
- 1 file changed, 111 insertions(+), 113 deletions(-)
-
-diff --git a/arch/powerpc/kernel/signal_32.c b/arch/powerpc/kernel/signal_32.c
-index 86539a4e0514..f795fe0240a1 100644
---- a/arch/powerpc/kernel/signal_32.c
-+++ b/arch/powerpc/kernel/signal_32.c
-@@ -93,8 +93,8 @@ static inline int get_sigset_t(sigset_t *set,
- #define to_user_ptr(p)		ptr_to_compat(p)
- #define from_user_ptr(p)	compat_ptr(p)
- 
--static inline int save_general_regs(struct pt_regs *regs,
--		struct mcontext __user *frame)
-+static __always_inline int
-+save_general_regs_unsafe(struct pt_regs *regs, struct mcontext __user *frame)
- {
- 	elf_greg_t64 *gregs = (elf_greg_t64 *)regs;
- 	int val, i;
-@@ -108,10 +108,12 @@ static inline int save_general_regs(struct pt_regs *regs,
- 		else
- 			val = gregs[i];
- 
--		if (__put_user(val, &frame->mc_gregs[i]))
--			return -EFAULT;
-+		unsafe_put_user(val, &frame->mc_gregs[i], failed);
- 	}
- 	return 0;
-+
-+failed:
-+	return 1;
- }
- 
- static inline int restore_general_regs(struct pt_regs *regs,
-@@ -148,11 +150,15 @@ static inline int get_sigset_t(sigset_t *set, const sigset_t __user *uset)
- #define to_user_ptr(p)		((unsigned long)(p))
- #define from_user_ptr(p)	((void __user *)(p))
- 
--static inline int save_general_regs(struct pt_regs *regs,
--		struct mcontext __user *frame)
-+static __always_inline int
-+save_general_regs_unsafe(struct pt_regs *regs, struct mcontext __user *frame)
- {
- 	WARN_ON(!FULL_REGS(regs));
--	return __copy_to_user(&frame->mc_gregs, regs, GP_REGS_SIZE);
-+	unsafe_copy_to_user(&frame->mc_gregs, regs, GP_REGS_SIZE, failed);
-+	return 0;
-+
-+failed:
-+	return 1;
- }
- 
- static inline int restore_general_regs(struct pt_regs *regs,
-@@ -170,6 +176,11 @@ static inline int restore_general_regs(struct pt_regs *regs,
- }
- #endif
- 
-+#define unsafe_save_general_regs(regs, frame, label) do {	\
-+	if (save_general_regs_unsafe(regs, frame))	\
-+		goto label;					\
-+} while (0)
-+
- /*
-  * When we have signals to deliver, we set up on the
-  * user stack, going down from the original stack pointer:
-@@ -249,21 +260,19 @@ static void prepare_save_user_regs(int ctx_has_vsx_region)
- #endif
- }
- 
--static int save_user_regs(struct pt_regs *regs, struct mcontext __user *frame,
--			  struct mcontext __user *tm_frame, int ctx_has_vsx_region)
-+static int save_user_regs_unsafe(struct pt_regs *regs, struct mcontext __user *frame,
-+				 struct mcontext __user *tm_frame, int ctx_has_vsx_region)
- {
- 	unsigned long msr = regs->msr;
- 
- 	/* save general registers */
--	if (save_general_regs(regs, frame))
--		return 1;
-+	unsafe_save_general_regs(regs, frame, failed);
- 
- #ifdef CONFIG_ALTIVEC
- 	/* save altivec registers */
- 	if (current->thread.used_vr) {
--		if (__copy_to_user(&frame->mc_vregs, &current->thread.vr_state,
--				   ELF_NVRREG * sizeof(vector128)))
--			return 1;
-+		unsafe_copy_to_user(&frame->mc_vregs, &current->thread.vr_state,
-+				    ELF_NVRREG * sizeof(vector128), failed);
- 		/* set MSR_VEC in the saved MSR value to indicate that
- 		   frame->mc_vregs contains valid data */
- 		msr |= MSR_VEC;
-@@ -276,11 +285,10 @@ static int save_user_regs(struct pt_regs *regs, struct mcontext __user *frame,
- 	 * most significant bits of that same vector. --BenH
- 	 * Note that the current VRSAVE value is in the SPR at this point.
- 	 */
--	if (__put_user(current->thread.vrsave, (u32 __user *)&frame->mc_vregs[32]))
--		return 1;
-+	unsafe_put_user(current->thread.vrsave, (u32 __user *)&frame->mc_vregs[32],
-+			failed);
- #endif /* CONFIG_ALTIVEC */
--	if (copy_fpr_to_user(&frame->mc_fregs, current))
--		return 1;
-+	unsafe_copy_fpr_to_user(&frame->mc_fregs, current, failed);
- 
- 	/*
- 	 * Clear the MSR VSX bit to indicate there is no valid state attached
-@@ -295,17 +303,15 @@ static int save_user_regs(struct pt_regs *regs, struct mcontext __user *frame,
- 	 * contains valid data
- 	 */
- 	if (current->thread.used_vsr && ctx_has_vsx_region) {
--		if (copy_vsx_to_user(&frame->mc_vsregs, current))
--			return 1;
-+		unsafe_copy_vsx_to_user(&frame->mc_vsregs, current, failed);
- 		msr |= MSR_VSX;
- 	}
- #endif /* CONFIG_VSX */
- #ifdef CONFIG_SPE
- 	/* save spe registers */
- 	if (current->thread.used_spe) {
--		if (__copy_to_user(&frame->mc_vregs, current->thread.evr,
--				   ELF_NEVRREG * sizeof(u32)))
--			return 1;
-+		unsafe_copy_to_user(&frame->mc_vregs, current->thread.evr,
-+				    ELF_NEVRREG * sizeof(u32)), failed);
- 		/* set MSR_SPE in the saved MSR value to indicate that
- 		   frame->mc_vregs contains valid data */
- 		msr |= MSR_SPE;
-@@ -313,21 +319,29 @@ static int save_user_regs(struct pt_regs *regs, struct mcontext __user *frame,
- 	/* else assert((regs->msr & MSR_SPE) == 0) */
- 
- 	/* We always copy to/from spefscr */
--	if (__put_user(current->thread.spefscr, (u32 __user *)&frame->mc_vregs + ELF_NEVRREG))
--		return 1;
-+	unsafe_put_user(current->thread.spefscr,
-+			(u32 __user *)&frame->mc_vregs + ELF_NEVRREG, failed);
- #endif /* CONFIG_SPE */
- 
--	if (__put_user(msr, &frame->mc_gregs[PT_MSR]))
--		return 1;
-+	unsafe_put_user(msr, &frame->mc_gregs[PT_MSR], failed);
-+
- 	/* We need to write 0 the MSR top 32 bits in the tm frame so that we
- 	 * can check it on the restore to see if TM is active
- 	 */
--	if (tm_frame && __put_user(0, &tm_frame->mc_gregs[PT_MSR]))
--		return 1;
-+	if (tm_frame)
-+		unsafe_put_user(0, &tm_frame->mc_gregs[PT_MSR], failed);
- 
- 	return 0;
-+
-+failed:
-+	return 1;
- }
- 
-+#define unsafe_save_user_regs(regs, frame, tm_frame, has_vsx, label) do { \
-+	if (save_user_regs_unsafe(regs, frame, tm_frame, has_vsx))	\
-+		goto label;						\
-+} while (0)
-+
- #ifdef CONFIG_PPC_TRANSACTIONAL_MEM
- /*
-  * Save the current user registers on the user stack.
-@@ -336,7 +350,7 @@ static int save_user_regs(struct pt_regs *regs, struct mcontext __user *frame,
-  * We also save the transactional registers to a second ucontext in the
-  * frame.
-  *
-- * See save_user_regs() and signal_64.c:setup_tm_sigcontexts().
-+ * See save_user_regs_unsafe() and signal_64.c:setup_tm_sigcontexts().
-  */
- static void prepare_save_tm_user_regs(void)
- {
-@@ -352,13 +366,12 @@ static void prepare_save_tm_user_regs(void)
- #endif
- }
- 
--static int save_tm_user_regs(struct pt_regs *regs, struct mcontext __user *frame,
--			     struct mcontext __user *tm_frame, unsigned long msr)
-+static int save_tm_user_regs_unsafe(struct pt_regs *regs, struct mcontext __user *frame,
-+				    struct mcontext __user *tm_frame, unsigned long msr)
- {
- 	/* Save both sets of general registers */
--	if (save_general_regs(&current->thread.ckpt_regs, frame)
--	    || save_general_regs(regs, tm_frame))
--		return 1;
-+	unsafe_save_general_regs(&current->thread.ckpt_regs, frame, failed);
-+	unsafe_save_general_regs(regs, tm_frame, failed);
- 
- 	/* Stash the top half of the 64bit MSR into the 32bit MSR word
- 	 * of the transactional mcontext.  This way we have a backward-compatible
-@@ -366,26 +379,21 @@ static int save_tm_user_regs(struct pt_regs *regs, struct mcontext __user *frame
- 	 * also look at what type of transaction (T or S) was active at the
- 	 * time of the signal.
- 	 */
--	if (__put_user((msr >> 32), &tm_frame->mc_gregs[PT_MSR]))
--		return 1;
-+	unsafe_put_user((msr >> 32), &tm_frame->mc_gregs[PT_MSR], failed);
- 
- #ifdef CONFIG_ALTIVEC
- 	/* save altivec registers */
- 	if (current->thread.used_vr) {
--		if (__copy_to_user(&frame->mc_vregs, &current->thread.ckvr_state,
--				   ELF_NVRREG * sizeof(vector128)))
--			return 1;
--		if (msr & MSR_VEC) {
--			if (__copy_to_user(&tm_frame->mc_vregs,
--					   &current->thread.vr_state,
--					   ELF_NVRREG * sizeof(vector128)))
--				return 1;
--		} else {
--			if (__copy_to_user(&tm_frame->mc_vregs,
--					   &current->thread.ckvr_state,
--					   ELF_NVRREG * sizeof(vector128)))
--				return 1;
--		}
-+		unsafe_copy_to_user(&frame->mc_vregs, &current->thread.ckvr_state,
-+				    ELF_NVRREG * sizeof(vector128), failed);
-+		if (msr & MSR_VEC)
-+			unsafe_copy_to_user(&tm_frame->mc_vregs,
-+					    &current->thread.vr_state,
-+					    ELF_NVRREG * sizeof(vector128), failed);
-+		else
-+			unsafe_copy_to_user(&tm_frame->mc_vregs,
-+					    &current->thread.ckvr_state,
-+					    ELF_NVRREG * sizeof(vector128), failed);
- 
- 		/* set MSR_VEC in the saved MSR value to indicate that
- 		 * frame->mc_vregs contains valid data
-@@ -398,29 +406,21 @@ static int save_tm_user_regs(struct pt_regs *regs, struct mcontext __user *frame
- 	 * significant bits of a vector, we "cheat" and stuff VRSAVE in the
- 	 * most significant bits of that same vector. --BenH
- 	 */
--	if (__put_user(current->thread.ckvrsave,
--		       (u32 __user *)&frame->mc_vregs[32]))
--		return 1;
--	if (msr & MSR_VEC) {
--		if (__put_user(current->thread.vrsave,
--			       (u32 __user *)&tm_frame->mc_vregs[32]))
--			return 1;
--	} else {
--		if (__put_user(current->thread.ckvrsave,
--			       (u32 __user *)&tm_frame->mc_vregs[32]))
--			return 1;
--	}
-+	unsafe_put_user(current->thread.ckvrsave,
-+			(u32 __user *)&frame->mc_vregs[32], failed);
-+	if (msr & MSR_VEC)
-+		unsafe_put_user(current->thread.vrsave,
-+				(u32 __user *)&tm_frame->mc_vregs[32], failed);
-+	else
-+		unsafe_put_user(current->thread.ckvrsave,
-+				(u32 __user *)&tm_frame->mc_vregs[32], failed);
- #endif /* CONFIG_ALTIVEC */
- 
--	if (copy_ckfpr_to_user(&frame->mc_fregs, current))
--		return 1;
--	if (msr & MSR_FP) {
--		if (copy_fpr_to_user(&tm_frame->mc_fregs, current))
--			return 1;
--	} else {
--		if (copy_ckfpr_to_user(&tm_frame->mc_fregs, current))
--			return 1;
--	}
-+	unsafe_copy_ckfpr_to_user(&frame->mc_fregs, current, failed);
-+	if (msr & MSR_FP)
-+		unsafe_copy_fpr_to_user(&tm_frame->mc_fregs, current, failed);
-+	else
-+		unsafe_copy_ckfpr_to_user(&tm_frame->mc_fregs, current, failed);
- 
- #ifdef CONFIG_VSX
- 	/*
-@@ -430,53 +430,54 @@ static int save_tm_user_regs(struct pt_regs *regs, struct mcontext __user *frame
- 	 * contains valid data
- 	 */
- 	if (current->thread.used_vsr) {
--		if (copy_ckvsx_to_user(&frame->mc_vsregs, current))
--			return 1;
--		if (msr & MSR_VSX) {
--			if (copy_vsx_to_user(&tm_frame->mc_vsregs,
--						      current))
--				return 1;
--		} else {
--			if (copy_ckvsx_to_user(&tm_frame->mc_vsregs, current))
--				return 1;
--		}
-+		unsafe_copy_ckvsx_to_user(&frame->mc_vsregs, current, failed);
-+		if (msr & MSR_VSX)
-+			unsafe_copy_vsx_to_user(&tm_frame->mc_vsregs, current, failed);
-+		else
-+			unsafe_copy_ckvsx_to_user(&tm_frame->mc_vsregs, current, failed);
- 
- 		msr |= MSR_VSX;
- 	}
- #endif /* CONFIG_VSX */
- #ifdef CONFIG_SPE
- 	/* SPE regs are not checkpointed with TM, so this section is
--	 * simply the same as in save_user_regs().
-+	 * simply the same as in save_user_regs_unsafe().
- 	 */
- 	if (current->thread.used_spe) {
--		if (__copy_to_user(&frame->mc_vregs, current->thread.evr,
--				   ELF_NEVRREG * sizeof(u32)))
--			return 1;
-+		unsafe_copy_to_user(&frame->mc_vregs, current->thread.evr,
-+				    ELF_NEVRREG * sizeof(u32), failed);
- 		/* set MSR_SPE in the saved MSR value to indicate that
- 		 * frame->mc_vregs contains valid data */
- 		msr |= MSR_SPE;
- 	}
- 
- 	/* We always copy to/from spefscr */
--	if (__put_user(current->thread.spefscr, (u32 __user *)&frame->mc_vregs + ELF_NEVRREG))
--		return 1;
-+	unsafe_put_user(current->thread.spefscr,
-+			(u32 __user *)&frame->mc_vregs + ELF_NEVRREG, failed);
- #endif /* CONFIG_SPE */
- 
--	if (__put_user(msr, &frame->mc_gregs[PT_MSR]))
--		return 1;
-+	unsafe_put_user(msr, &frame->mc_gregs[PT_MSR], failed);
- 
- 	return 0;
-+
-+failed:
-+	return 1;
- }
- #else
- static void prepare_save_tm_user_regs(void) { }
- 
--static int save_tm_user_regs(struct pt_regs *regs, struct mcontext __user *frame,
--			     struct mcontext __user *tm_frame, unsigned long msr)
-+static int save_tm_user_regs_unsafe(struct pt_regs *regs, struct mcontext __user *frame,
-+				    struct mcontext __user *tm_frame, unsigned long msr)
- {
- 	return 0;
- }
- #endif
- 
-+#define unsafe_save_tm_user_regs(regs, frame, tm_frame, msr, label) do { \
-+	if (save_tm_user_regs_unsafe(regs, frame, tm_frame, msr))	\
-+		goto label;						\
-+} while (0)
-+
- /*
-  * Restore the current user register values from the user stack,
-  * (except for MSR).
-@@ -769,6 +770,11 @@ int handle_rt_signal32(struct ksignal *ksig, sigset_t *oldset,
- #ifdef CONFIG_PPC_TRANSACTIONAL_MEM
- 	tm_mctx = &frame->uc_transact.uc_mcontext;
- #endif
-+	if (MSR_TM_ACTIVE(msr))
-+		prepare_save_tm_user_regs();
-+	else
-+		prepare_save_user_regs(1);
-+
- 	if (!user_write_access_begin(frame, sizeof(*frame)))
- 		goto badframe;
- 
-@@ -788,8 +794,10 @@ int handle_rt_signal32(struct ksignal *ksig, sigset_t *oldset,
- 		unsafe_put_user((unsigned long)tm_mctx,
- 				&frame->uc_transact.uc_regs, failed);
- #endif
-+		unsafe_save_tm_user_regs(regs, mctx, tm_mctx, msr, failed);
- 	} else {
- 		unsafe_put_user(0, &frame->uc.uc_link, failed);
-+		unsafe_save_user_regs(regs, mctx, tm_mctx, 1, failed);
- 	}
- 
- 	/* Save user registers on the stack */
-@@ -812,15 +820,6 @@ int handle_rt_signal32(struct ksignal *ksig, sigset_t *oldset,
- 	if (tramp == (unsigned long)mctx->mc_pad)
- 		flush_icache_range(tramp, tramp + 2 * sizeof(unsigned long));
- 
--	if (MSR_TM_ACTIVE(msr)) {
--		prepare_save_tm_user_regs();
--		if (save_tm_user_regs(regs, mctx, tm_mctx, msr))
--			goto badframe;
--	} else {
--		prepare_save_user_regs(1);
--		if (save_user_regs(regs, mctx, tm_mctx, 1))
--			goto badframe;
--	}
- 	regs->link = tramp;
- 
- #ifdef CONFIG_PPC_FPU_REGS
-@@ -875,6 +874,11 @@ int handle_signal32(struct ksignal *ksig, sigset_t *oldset,
- #ifdef CONFIG_PPC_TRANSACTIONAL_MEM
- 	tm_mctx = &frame->mctx_transact;
- #endif
-+	if (MSR_TM_ACTIVE(msr))
-+		prepare_save_tm_user_regs();
-+	else
-+		prepare_save_user_regs(1);
-+
- 	if (!user_write_access_begin(frame, sizeof(*frame)))
- 		goto badframe;
- 	sc = (struct sigcontext __user *) &frame->sctx;
-@@ -892,6 +896,11 @@ int handle_signal32(struct ksignal *ksig, sigset_t *oldset,
- 	unsafe_put_user(to_user_ptr(mctx), &sc->regs, failed);
- 	unsafe_put_user(ksig->sig, &sc->signal, failed);
- 
-+	if (MSR_TM_ACTIVE(msr))
-+		unsafe_save_tm_user_regs(regs, mctx, tm_mctx, msr, failed);
-+	else
-+		unsafe_save_user_regs(regs, mctx, tm_mctx, 1, failed);
-+
- 	if (vdso32_sigtramp && tsk->mm->context.vdso_base) {
- 		tramp = tsk->mm->context.vdso_base + vdso32_sigtramp;
- 	} else {
-@@ -905,16 +914,6 @@ int handle_signal32(struct ksignal *ksig, sigset_t *oldset,
- 	if (tramp == (unsigned long)mctx->mc_pad)
- 		flush_icache_range(tramp, tramp + 2 * sizeof(unsigned long));
- 
--	if (MSR_TM_ACTIVE(msr)) {
--		prepare_save_tm_user_regs();
--		if (save_tm_user_regs(regs, mctx, tm_mctx, msr))
--			goto badframe;
--	} else {
--		prepare_save_user_regs(1);
--		if (save_user_regs(regs, mctx, tm_mctx, 1))
--			goto badframe;
--	}
--
- 	regs->link = tramp;
- 
- #ifdef CONFIG_PPC_FPU_REGS
-@@ -1066,10 +1065,9 @@ SYSCALL_DEFINE3(swapcontext, struct ucontext __user *, old_ctx,
- 		mctx = (struct mcontext __user *)
- 			((unsigned long) &old_ctx->uc_mcontext & ~0xfUL);
- 		prepare_save_user_regs(ctx_has_vsx_region);
--		if (save_user_regs(regs, mctx, NULL, ctx_has_vsx_region))
--			return -EFAULT;
- 		if (!user_write_access_begin(old_ctx, ctx_size))
- 			return -EFAULT;
-+		unsafe_save_user_regs(regs, mctx, NULL, ctx_has_vsx_region, failed);
- 		unsafe_put_sigset_t(&old_ctx->uc_sigmask, &current->blocked, failed);
- 		unsafe_put_user(to_user_ptr(mctx), &old_ctx->uc_regs, failed);
- 		user_write_access_end();
--- 
-2.25.0
-
+Thanks, Roger.
