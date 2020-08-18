@@ -2,100 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB4512485B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 15:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78EB42485DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 15:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726552AbgHRNM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 09:12:29 -0400
-Received: from ms-10.1blu.de ([178.254.4.101]:59348 "EHLO ms-10.1blu.de"
+        id S1726795AbgHRNN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 09:13:28 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33412 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726145AbgHRNM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 09:12:27 -0400
-Received: from [78.43.71.214] (helo=marius.localnet)
-        by ms-10.1blu.de with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <mail@mariuszachmann.de>)
-        id 1k81Pb-00086x-EN; Tue, 18 Aug 2020 15:12:23 +0200
-From:   Marius Zachmann <mail@mariuszachmann.de>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org
-Subject: Re: [PATCH v2] hwmon: corsair-cpro: fix ccp_probe, add delay [HID related]
-Date:   Tue, 18 Aug 2020 15:12:22 +0200
-Message-ID: <79890342.HV0Al07Iil@marius>
-In-Reply-To: <20200817153533.GA243558@roeck-us.net>
-References: <20200817070040.7952-1-mail@mariuszachmann.de> <20200817153533.GA243558@roeck-us.net>
+        id S1726731AbgHRNNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 09:13:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2008BB167;
+        Tue, 18 Aug 2020 13:13:44 +0000 (UTC)
+From:   Coly Li <colyli@suse.de>
+To:     linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
+        netdev@vger.kernel.org, open-iscsi@googlegroups.com,
+        linux-scsi@vger.kernel.org, ceph-devel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Coly Li <colyli@suse.de>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
+        Jan Kara <jack@suse.com>, Jens Axboe <axboe@kernel.dk>,
+        Mikhail Skorzhinskii <mskorzhinskiy@solarflare.com>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Vlastimil Babka <vbabka@suse.com>, stable@vger.kernel.org
+Subject: [PATCH v7 2/6] nvme-tcp: check page by sendpage_ok() before calling kernel_sendpage()
+Date:   Tue, 18 Aug 2020 21:12:23 +0800
+Message-Id: <20200818131227.37020-3-colyli@suse.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200818131227.37020-1-colyli@suse.de>
+References: <20200818131227.37020-1-colyli@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Con-Id: 241080
-X-Con-U: 0-linux
-X-Originating-IP: 78.43.71.214
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.08.20 at 17:35:33 CEST, Guenter Roeck wrote
-> On Mon, Aug 17, 2020 at 09:00:40AM +0200, Marius Zachmann wrote:
-> > Possibly because of the changes in usbhid/hid-core.c the first
-> > raw input report is not received during ccp_probe function and it will
-> > timeout. I am not sure, whether this behaviour is expected after
-> > hid_device_io_start or if I am missing something.
-> > As a solution this adds msleep(50) to ccp_probe so that all initial
-> > input reports can be received.
-> > 
-> > Signed-off-by: Marius Zachmann <mail@mariuszachmann.de>
-> 
-> Let's just ask the HID maintainers. Is this expected, and the correct fix ?
-> 
-> Thanks,
-> Guenter
-> 
+Currently nvme_tcp_try_send_data() doesn't use kernel_sendpage() to
+send slab pages. But for pages allocated by __get_free_pages() without
+__GFP_COMP, which also have refcount as 0, they are still sent by
+kernel_sendpage() to remote end, this is problematic.
 
-This seems to be a problem with "HID: usbhid: do not sleep when opening
-device". There is a bug report with some Logitech devices at the correct
-thread. These drivers also use hid_device_io_start and fail. Seems to me,
-this is the same problem and I retract this (not so beautiful) fix until
-this is sorted out.
+The new introduced helper sendpage_ok() checks both PageSlab tag and
+page_count counter, and returns true if the checking page is OK to be
+sent by kernel_sendpage().
 
-Thanks,
-Marius
+This patch fixes the page checking issue of nvme_tcp_try_send_data()
+with sendpage_ok(). If sendpage_ok() returns true, send this page by
+kernel_sendpage(), otherwise use sock_no_sendpage to handle this page.
 
-> > ---
-> > v2:
-> > - fix accidentally deleted comment
-> > 
-> > ---
-> >  drivers/hwmon/corsair-cpro.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/drivers/hwmon/corsair-cpro.c b/drivers/hwmon/corsair-cpro.c
-> > index 591929ec217a..c04fac1d820f 100644
-> > --- a/drivers/hwmon/corsair-cpro.c
-> > +++ b/drivers/hwmon/corsair-cpro.c
-> > @@ -10,6 +10,7 @@
-> > 
-> >  #include <linux/bitops.h>
-> >  #include <linux/completion.h>
-> > +#include <linux/delay.h>
-> >  #include <linux/hid.h>
-> >  #include <linux/hwmon.h>
-> >  #include <linux/kernel.h>
-> > @@ -513,6 +514,7 @@ static int ccp_probe(struct hid_device *hdev, const struct hid_device_id *id)
-> >  	init_completion(&ccp->wait_input_report);
-> > 
-> >  	hid_device_io_start(hdev);
-> > +	msleep(50); /* wait before events can be received */
-> > 
-> >  	/* temp and fan connection status only updates when device is powered on */
-> >  	ret = get_temp_cnct(ccp);
-> > --
-> > 2.28.0
-> 
+Signed-off-by: Coly Li <colyli@suse.de>
+Cc: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Hannes Reinecke <hare@suse.de>
+Cc: Jan Kara <jack@suse.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Mikhail Skorzhinskii <mskorzhinskiy@solarflare.com>
+Cc: Philipp Reisner <philipp.reisner@linbit.com>
+Cc: Sagi Grimberg <sagi@grimberg.me>
+Cc: Vlastimil Babka <vbabka@suse.com>
+Cc: stable@vger.kernel.org
+---
+ drivers/nvme/host/tcp.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-
-
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+index 62fbaecdc960..902fe742762b 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -912,12 +912,11 @@ static int nvme_tcp_try_send_data(struct nvme_tcp_request *req)
+ 		else
+ 			flags |= MSG_MORE | MSG_SENDPAGE_NOTLAST;
+ 
+-		/* can't zcopy slab pages */
+-		if (unlikely(PageSlab(page))) {
+-			ret = sock_no_sendpage(queue->sock, page, offset, len,
++		if (sendpage_ok(page)) {
++			ret = kernel_sendpage(queue->sock, page, offset, len,
+ 					flags);
+ 		} else {
+-			ret = kernel_sendpage(queue->sock, page, offset, len,
++			ret = sock_no_sendpage(queue->sock, page, offset, len,
+ 					flags);
+ 		}
+ 		if (ret <= 0)
+-- 
+2.26.2
 
