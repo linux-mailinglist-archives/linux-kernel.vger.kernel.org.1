@@ -2,126 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38EF32486EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5D22486F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726949AbgHROPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 10:15:39 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:44152 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726612AbgHRONr (ORCPT
+        id S1726938AbgHROQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 10:16:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726912AbgHROPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 10:13:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597760025;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=5mbAxZDicFpvBlanHGzWhCcTGWd2P55ViK8g3cXeULA=;
-        b=FkwWdH4aSCWvowtfMT0QZPJ28EnbuWvr0+ixlqykVu5FXoc/NzPWWN8j8bEgcXB0Ty2Rv4
-        VIw7AztZ4xA7vrxt/xqFTiGM3zmbxR649RRRYytRKCq4N4yGpLWcjDLlZXpC6pXF4u38Td
-        ik9y6q8sg5c4BcrL9exCIl8UHpSNYfM=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-552-RoXA2-doPCeVZiEO-D16lg-1; Tue, 18 Aug 2020 10:13:43 -0400
-X-MC-Unique: RoXA2-doPCeVZiEO-D16lg-1
-Received: by mail-qk1-f199.google.com with SMTP id x18so13177851qkb.16
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 07:13:42 -0700 (PDT)
+        Tue, 18 Aug 2020 10:15:47 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D2BC061389
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 07:15:47 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id k4so17718474ilr.12
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 07:15:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NbZdFPM5mBHqNGZT0LL+I7dna9RSXYnxxpFw086pKfU=;
+        b=RmVr4Ws8VwlRGBEkpomlyGq7Aa0s7haUzbe8y/edlWahTFpVVmh6pJL1CXEQXYIUMn
+         KxKzn9CWd8KWZVijUNs5WUvP5lHaCC/QdCQwNFqlKfruuVjzi4lrNfv+Tlqr5gTPTTOK
+         ZnSmqHecyXnOclp15Ft5knVdiGdSIIBiIvg1KB+h/U2p3IeTvxUWJavPZvXRUdSrleeG
+         NGhG5Pt85VWQ8TgPQZLu2hglWQCkb6xYpLuh7aPxYBer5dh+edoA5MXkRNmCgydpMcbO
+         BXfXuDsO64NYGcxdY0OuwhTzrMZaFxF8KLNg0jLHU9puqySUm11CZ4y3CpnYIwCjcYWJ
+         dFdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=5mbAxZDicFpvBlanHGzWhCcTGWd2P55ViK8g3cXeULA=;
-        b=gYVFmEQAOSu2/uk1UjMiALvlNfhptXEY+U2Y23q49g3Bx5N9tINTj8HgTSbF2bdJd2
-         p42xxsXtlAABqAkYNqxhGeAHTS0004S4hUIcv/3tgsSots5sQrYP+NHlazaHEEtR3ig9
-         8lL6RJqpOda6/xLziLzzRSbJpiJCcCy4dc/PtsZojyFICO88ZCqtZEaZ/qkyW227Vi1p
-         S+PKFzSGCmbjyBEGCYPU4IinYiFXH/7+HhVU1vQsnqI/4auNbqKZtvD5GQiB6Nyx3Wa4
-         4mAatIwzp2Vomp+2MS++IC4NdhbBbcx8msc9jq+EF7UrkBymvMqHU1NRqKH/zobTLFRq
-         Mn+Q==
-X-Gm-Message-State: AOAM532mI+9KxgtcFgEiZWUJCeP6yR6NY4b/nbNIgByOHcnK8nMTZiqs
-        wFtjzaFXh9QpN+mh2pd0ohgRX7TIcsKZ8Uxk8JMoosZaXs3Xy3lKBomFy+nN6zXRnaAInT6ozrO
-        gsuaSiFYrTs+GthNtJZyeXSSi
-X-Received: by 2002:a37:654e:: with SMTP id z75mr17382723qkb.235.1597760022489;
-        Tue, 18 Aug 2020 07:13:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxcNERkf07f873dxUZbjCVeW5+bdQ+AxXl1IqnadX9c2qONRAsyr32ogfC81RXvDcda3rufsA==
-X-Received: by 2002:a37:654e:: with SMTP id z75mr17382672qkb.235.1597760021867;
-        Tue, 18 Aug 2020 07:13:41 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 22sm20581510qkg.24.2020.08.18.07.13.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 07:13:41 -0700 (PDT)
-From:   trix@redhat.com
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] writeback: clear auto_free in initializaiton
-Date:   Tue, 18 Aug 2020 07:13:30 -0700
-Message-Id: <20200818141330.29134-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NbZdFPM5mBHqNGZT0LL+I7dna9RSXYnxxpFw086pKfU=;
+        b=YsLlaegqs1MQfW+/QoRf+lI5M9/UUfAlOy5myRTWZSXi+xwuwHIayt9HVWATkQqVGc
+         qku8Q3MB5KO6KIy9ESu1IiGSjyhV1yQrzLs4BWHjlTRHs7nYYfvhI02jgjTXSyMC4OT/
+         ySEYnBDJuLCNtNbnFyE3ZUsd0KHV8C3nUUs2rr9XkFWdeDFS8mWqzp+YYC9z+Qlq8cTB
+         XvuXNeM+Opm3bkn/amy2dPhTayyT5nnXlVanK6ktKBvlBQmZ1XTGNzWqU1U496xe/nXz
+         HOY3eqAN746Tz9aKrUCnksEg9Mj9GNHdnpOkLZGgD6EcOTr4PJ9Q4sCF77488pod7I+m
+         G2Mw==
+X-Gm-Message-State: AOAM533qCbbeprvRJ3D5t/cXXZoLK4deLH+bET6F4Y9G9SIxsz/yMwJg
+        AKSzoY9xMRUOp/uY8Ntc6Om8K8O37LdOsvUsTMWw+g==
+X-Google-Smtp-Source: ABdhPJyEbAN+iTARA7Bg/Z96WFkMrFUm1/8bnjeKgQoDf0vjSXWxYSCOO5hB7Cboyb71Za9ILdQaTPfP1VPvInU6J7A=
+X-Received: by 2002:a92:bb0e:: with SMTP id w14mr16467650ili.68.1597760146420;
+ Tue, 18 Aug 2020 07:15:46 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200818115712.36497-1-linmiaohe@huawei.com>
+In-Reply-To: <20200818115712.36497-1-linmiaohe@huawei.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 18 Aug 2020 07:15:35 -0700
+Message-ID: <CANn89iLuh-3OHDmRKKm3N59oHzC15K+k84KD42Ej+3qP_GC57Q@mail.gmail.com>
+Subject: Re: [PATCH] net: Relax the npages test against MAX_SKB_FRAGS
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, martin.varghese@nokia.com,
+        Florian Westphal <fw@strlen.de>,
+        Pravin B Shelar <pshelar@ovn.org>,
+        Davide Caratti <dcaratti@redhat.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Paolo Abeni <pabeni@redhat.com>, shmulik@metanetworks.com,
+        kyk.segfault@gmail.com, netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Tue, Aug 18, 2020 at 4:58 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>
+> The npages test against MAX_SKB_FRAGS can be relaxed if we succeed to
+> allocate high order pages as the note in comment said.
+>
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>  net/core/skbuff.c | 11 ++++-------
+>  1 file changed, 4 insertions(+), 7 deletions(-)
+>
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index 2f7dd689bccc..ca432bbfd90b 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -5758,13 +5758,6 @@ struct sk_buff *alloc_skb_with_frags(unsigned long header_len,
+>         struct page *page;
+>         int i;
+>
+> -       *errcode = -EMSGSIZE;
+> -       /* Note this test could be relaxed, if we succeed to allocate
+> -        * high order pages...
+> -        */
+> -       if (npages > MAX_SKB_FRAGS)
+> -               return NULL;
+> -
+>         *errcode = -ENOBUFS;
+>         skb = alloc_skb(header_len, gfp_mask);
+>         if (!skb)
+> @@ -5775,6 +5768,10 @@ struct sk_buff *alloc_skb_with_frags(unsigned long header_len,
+>         for (i = 0; npages > 0; i++) {
+>                 int order = max_page_order;
+>
+> +               if (unlikely(i >= MAX_SKB_FRAGS)) {
+> +                       *errcode = -EMSGSIZE;
+> +                       goto failure;
+> +               }
+>                 while (order) {
+>                         if (npages >= 1 << order) {
+>                                 page = alloc_pages((gfp_mask & ~__GFP_DIRECT_RECLAIM) |
+> --
+> 2.19.1
 
-Review fs/fs-writeback.c bdi_split_work_to_wbs
-The CONFIG_CGROUP_WRITEBACK version contains this line
-	base_work->auto_free = 0;
-Which seems like a strange place to set auto_free as
-it is not where the rest of base_work is initialized.
 
-In the default version of bdi_split_work_to_wbs, if a
-successful malloc happens, base_work is copied and
-auto_free is set to 1, else the base_work is
-copied to another local valarible and its auto_free
-is set to 0.
 
-So move the clearing of auto_free to the
-initialization of the local base_work structures.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- fs/fs-writeback.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+We do not want this change.
 
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index a605c3dddabc..fa1106de2ab0 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -881,7 +881,6 @@ static void bdi_split_work_to_wbs(struct backing_dev_info *bdi,
- 		work = &fallback_work;
- 		*work = *base_work;
- 		work->nr_pages = nr_pages;
--		work->auto_free = 0;
- 		work->done = &fallback_work_done;
- 
- 		wb_queue_work(wb, work);
-@@ -1055,10 +1054,8 @@ static void bdi_split_work_to_wbs(struct backing_dev_info *bdi,
- {
- 	might_sleep();
- 
--	if (!skip_if_busy || !writeback_in_progress(&bdi->wb)) {
--		base_work->auto_free = 0;
-+	if (!skip_if_busy || !writeback_in_progress(&bdi->wb))
- 		wb_queue_work(&bdi->wb, base_work);
--	}
- }
- 
- #endif	/* CONFIG_CGROUP_WRITEBACK */
-@@ -2459,6 +2456,7 @@ static void __writeback_inodes_sb_nr(struct super_block *sb, unsigned long nr,
- 		.done			= &done,
- 		.nr_pages		= nr,
- 		.reason			= reason,
-+		.auto_free		= 0,
- 	};
- 
- 	if (!bdi_has_dirty_io(bdi) || bdi == &noop_backing_dev_info)
-@@ -2538,6 +2536,7 @@ void sync_inodes_sb(struct super_block *sb)
- 		.done		= &done,
- 		.reason		= WB_REASON_SYNC,
- 		.for_sync	= 1,
-+		.auto_free	= 0,
- 	};
- 
- 	/*
--- 
-2.18.1
+This interface is used by datagram providers, we do not want to claim
+they can safely use skb allocations over 64KB.
 
+Returning -EMSGSIZE should not depend on availability of high-order pages.
+
+The comment was a hint, but we need first a valid user before
+considering expanding the interface.
