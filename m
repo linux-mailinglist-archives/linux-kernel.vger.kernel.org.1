@@ -2,76 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7650C248AB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 17:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA366248A9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 17:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726729AbgHRPzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 11:55:24 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:38675 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728351AbgHRPw0 (ORCPT
+        id S1726588AbgHRPxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 11:53:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728004AbgHRPxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 11:52:26 -0400
-Received: by mail-il1-f195.google.com with SMTP id 77so18007787ilc.5;
-        Tue, 18 Aug 2020 08:52:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=INrr6/zrEHQooP2zq2cHYbWwtP13T97p5GMii88VP+c=;
-        b=Wew8fEmx70eG3fpvTUjI0srDF3AOOWtyUoBp+iEfuO11ejWoM9pLuVepcfZ38pXicU
-         84J5jwCgnVPMSfpfvCPHHCL6a2L7uxYHaq+ZzxDBlm4Zv0EqSOItGL4Y+hYs/mVWMMJ7
-         ZNfjk5NmKFMSllsywWAwd8YXzPe07B5CwB2MGHNCLvNMzvtvWyCjVloC+Fsb1yoI09c7
-         yehbhdRy4UsOgdSJyulY49i10yJF/E6KPNkz5ZeUAayYUlUiP4R179Jx80ANExihVgBb
-         VxTLtHiLiyCexjp/nIkS0E0KFvSjNUp48q0Oq9ySZjp7zOeUiKrFb9lh2+R/WXu7FSSP
-         GDUQ==
-X-Gm-Message-State: AOAM530EMEaY45qiO1NfN/7axKlbjIkrMjTRIMQ9RJjtunLsZ8o8t3bp
-        MLG9z89H8PlPuqFEKTml4w==
-X-Google-Smtp-Source: ABdhPJx2x6OCoI4sP3a4qc4u+s1xgHoZzcUeF366wUarpkv/L7lbjx0P0ELnzplm23RuPhRA4B4YSA==
-X-Received: by 2002:a92:ae06:: with SMTP id s6mr17633149ilh.64.1597765945303;
-        Tue, 18 Aug 2020 08:52:25 -0700 (PDT)
-Received: from xps15 ([64.188.179.249])
-        by smtp.gmail.com with ESMTPSA id 3sm2647273ily.31.2020.08.18.08.52.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 08:52:24 -0700 (PDT)
-Received: (nullmailer pid 3528032 invoked by uid 1000);
-        Tue, 18 Aug 2020 15:52:21 -0000
-Date:   Tue, 18 Aug 2020 09:52:21 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     kernel@pengutronix.de, mturquette@baylibre.com, festevam@gmail.com,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-serial@vger.kernel.org, sboyd@kernel.org,
-        linux-kernel@vger.kernel.org, Linux-imx@nxp.com,
-        robh+dt@kernel.org, fugang.duan@nxp.com,
-        linux-arm-kernel@lists.infradead.org, s.hauer@pengutronix.de,
-        gregkh@linuxfoundation.org, shawnguo@kernel.org
-Subject: Re: [PATCH V3 3/5] dt-bindings: serial: Convert i.MX uart to
- json-schema
-Message-ID: <20200818155221.GA3527986@bogus>
-References: <1597721685-9280-1-git-send-email-Anson.Huang@nxp.com>
- <1597721685-9280-3-git-send-email-Anson.Huang@nxp.com>
+        Tue, 18 Aug 2020 11:53:00 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3041C061389
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 08:52:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=Dn2I3qAdTWh3ORoWLS/wdmt8G2wMu07ZNwWGXI9oNjs=; b=qb1iiiUlJs54zsXMKWlg2x1a9/
+        FvxcTm+TKFQO/jivct0sZPJLWXsFQEC4GeYvrUkPjB90b2oJTM5OyZYCH3Pj+3eyzCkSVsjp7cPVV
+        W+2N1eosu/ockjKe+6h8sDHgrdGHx4OIGuL6vuWK5nX+wwgvAV+6sEQMfe3QWU1Fvy5KtuYZEBOiZ
+        5kkUImjabpoHnkPlMPdyF8v6D7i8eqs/XP7ytz8yhUlrJUKB46PCBxhUAbL8N9E9CuCaeGYAEgDsW
+        UHrJWr/ansON5yG70YsnhszZfv/oBemyU4kgr9IawBj3GCAKSiKk+lm5w6zxqImZI0Yw8xlCDO1aO
+        9AqOiUYg==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k83uk-0005Ki-FG; Tue, 18 Aug 2020 15:52:43 +0000
+Subject: Re: [RFC][PATCH v2 10/10] irq_work: Add a few comments
+To:     Peter Zijlstra <peterz@infradead.org>, mingo@kernel.org,
+        torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, will@kernel.org, paulmck@kernel.org,
+        hch@lst.de, axboe@kernel.dk, chris@chris-wilson.co.uk,
+        davem@davemloft.net, kuba@kernel.org, fweisbec@gmail.com,
+        oleg@redhat.com, vincent.guittot@linaro.org
+References: <20200818105102.926463950@infradead.org>
+ <20200818112418.591210082@infradead.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <56be3f06-4d4a-4128-a8b4-dbe12d37ce78@infradead.org>
+Date:   Tue, 18 Aug 2020 08:52:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1597721685-9280-3-git-send-email-Anson.Huang@nxp.com>
+In-Reply-To: <20200818112418.591210082@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Aug 2020 11:34:43 +0800, Anson Huang wrote:
-> Convert the i.MX uart binding to DT schema format using json-schema.
-> 
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> ---
-> no change.
-> ---
->  .../devicetree/bindings/serial/fsl-imx-uart.txt    | 40 ----------
->  .../devicetree/bindings/serial/fsl-imx-uart.yaml   | 92 ++++++++++++++++++++++
->  2 files changed, 92 insertions(+), 40 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/serial/fsl-imx-uart.txt
->  create mode 100644 Documentation/devicetree/bindings/serial/fsl-imx-uart.yaml
-> 
+Hi Peter,
 
-Applied, thanks!
+a few typos below...
+
+On 8/18/20 3:51 AM, Peter Zijlstra wrote:
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  include/linux/irq_work.h |   80 +++++++++++++++++++++++++++++++++++++++++------
+>  kernel/irq_work.c        |   10 +++++
+>  2 files changed, 80 insertions(+), 10 deletions(-)
+> 
+> --- a/include/linux/irq_work.h
+> +++ b/include/linux/irq_work.h
+
+
+> @@ -48,12 +47,45 @@ static inline bool irq_work_is_busy(stru
+>  
+>  #ifdef CONFIG_IRQ_WORK
+>  
+> +/*
+> + * irq_work_queue(): run @work in IRQ context on this CPU
+> + * @work: work to run
+> + *
+> + * Self-IPI, NMI-safe
+> + *
+> + * When the function returns false; @work is already queued and
+> + * any eventual execution of it's func() is guaranteed to see
+
+                                its
+
+> + * any state before the failing enqueue.
+> + */
+>  bool irq_work_queue(struct irq_work *work);
+> +
+> +/*
+> + * irq_work_queue_on(): run @work in IRQ context on @cpu
+> + * @work: work to run
+> + * @cpu: cpu to run @work on
+> + *
+> + * *NOT* NMI-safe
+> + *
+> + * When the function returns false; @work is already queued and
+
+                                false,
+
+> + * any eventual execution of it's func() is guaranteed to see
+
+                                its
+
+> + * any state before the failing enqueue.
+> + */
+
+> @@ -67,8 +99,36 @@ static inline bool irq_work_needs_cpu(vo
+
+> +/*
+> + * irq_work_queue_remote_state(): like irq_work_queue_remote() except dangerous
+> + * @cpu:
+> + * @work:
+> + *
+> + * DO NOT USE, this function is horrible/dangerous.
+> + *
+> + * The test-and-set-PENDING is not atomic, it also doesn't set
+> + * the BUSY bit and with that breaks irq_work_sync().
+> + *
+> + * This means that the caller needs external serialization; life-time,
+> + * where relevant, also needs to be externally orchestated.
+
+                                                  orchestrated.
+
+> + *
+> + * There is no validation/debugging to help you if you get it wrong.
+> + */
+>  extern int irq_work_queue_remote_static(int cpu, struct irq_work *work);
+> +
+>  extern void irq_work_single(void *arg);
+>  #endif
+>  
+
+
+-- 
+~Randy
+
