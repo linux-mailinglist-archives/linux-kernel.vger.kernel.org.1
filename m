@@ -2,78 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF14247F2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 09:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C899B247F33
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 09:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726786AbgHRHO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 03:14:56 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:54295 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726370AbgHRHOx (ORCPT
+        id S1726820AbgHRHPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 03:15:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27148 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726476AbgHRHPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 03:14:53 -0400
-X-UUID: 02bfad7e1fad48e3bfbeba36a133b4fe-20200818
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=cX1RyWC6RhWrmSa5l9WmiLo7asIr+FhEw7uQh+t/SNY=;
-        b=U+yfBntiTCeAsf9E+TNx26TZRCZY/8mJbF0Tb0He5ewi3ViMsiJKrFXGRAQfzIZGuLo0brokjQ03TfxGdTp/TIz7j7GH1ruMQQSked5EIq2i0WGXvzi90FfkRLHlYUXLn40ZhTxrcd4stT+OzZNWEz6Xdd9XZYzkAWSZfZBv61M=;
-X-UUID: 02bfad7e1fad48e3bfbeba36a133b4fe-20200818
-Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
-        (envelope-from <landen.chao@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 2014314872; Tue, 18 Aug 2020 15:14:46 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 18 Aug 2020 15:14:43 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 18 Aug 2020 15:14:44 +0800
-From:   Landen Chao <landen.chao@mediatek.com>
-To:     <andrew@lunn.ch>, <f.fainelli@gmail.com>,
-        <vivien.didelot@savoirfairelinux.com>, <matthias.bgg@gmail.com>,
-        <robh+dt@kernel.org>, <mark.rutland@arm.com>
-CC:     <devicetree@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <davem@davemloft.net>,
-        <sean.wang@mediatek.com>, <opensource@vdorst.com>,
-        <frank-w@public-files.de>, <dqfext@gmail.com>,
-        Landen Chao <landen.chao@mediatek.com>
-Subject: [PATCH net-next v2 7/7] arm64: dts: mt7622: add mt7531 dsa to bananapi-bpi-r64 board
-Date:   Tue, 18 Aug 2020 15:14:12 +0800
-Message-ID: <2a986604b49f7bfbee3898c8870bb0cf8182e879.1597729692.git.landen.chao@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <cover.1597729692.git.landen.chao@mediatek.com>
-References: <cover.1597729692.git.landen.chao@mediatek.com>
+        Tue, 18 Aug 2020 03:15:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597734905;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VnkZLMte3116urPzW5jKDlxRd4vsRM7I0r+mSa2q174=;
+        b=MgsXpBMtXmMOJ0hyIw7fG34i/pFZBlY/c3tPAgPL3QDlViBcKKKXvymJatVimXD/Sa3yuZ
+        fIY0XO9CKD1blC5EmSqH2r+ON5e1tuQIstWc9og2P+C7xaeZTetcE4MJ2UUfo6NxmaZjvR
+        vgs/WBIJaCVNkEXDA2FxHm2J+zjrybI=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-200-Xy10gfRmMWWXdyFdRV1i0Q-1; Tue, 18 Aug 2020 03:15:02 -0400
+X-MC-Unique: Xy10gfRmMWWXdyFdRV1i0Q-1
+Received: by mail-wm1-f71.google.com with SMTP id q15so7030789wmj.6
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 00:15:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VnkZLMte3116urPzW5jKDlxRd4vsRM7I0r+mSa2q174=;
+        b=UOCnanfXTZq6IBIssE7kT3EHu7oDiu0zwfytKam+n3IBQr84Xwv75MPJ1bWb8MGy3a
+         jQgb6QGfzfJwXRrK+Uryk2bInr4nni0vajVIxEq4EeTCLnwhLgXZWadURIW3Rl3mDnDF
+         Z2o/uboKGZZitt1sFoRV4EJSQv2H0c5cjk3mt/4Q72+7yVf4nATx2KhVRjH/+ZYvBvi9
+         tyC0X7/RzcGwVbKI5Yv8tGECHXOUOSWA0BiNSJyO2krfJ1c/6HlvZ85KUYG/qy7l2iLO
+         aYIMkaLr5y5hS7Gh01FoR6HPLJaVClalJV5bu5MoDGk+Hx3MX5EkCFtH9GFdoFFD9Q5B
+         Fnig==
+X-Gm-Message-State: AOAM532S5+jY63qQs8LGVEcPA3bJh5izFnN4grU3kjNvpXbxBLIeCDcN
+        +5kqtiD/P6gWf+yw1fW+94g+rWyIx+q59WZ4/CjSXFKsyTiR4/3KkeSTlTARvqiF8lTPHiDCnN/
+        4kmw5yAyAPQn6zkdh6OlsbfVv
+X-Received: by 2002:adf:b312:: with SMTP id j18mr19499391wrd.142.1597734900805;
+        Tue, 18 Aug 2020 00:15:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxxDBVc6FNobMFPmLaQ8JBtEJ0j8nc00thHTm7+HAm5Z27/zTChbr9Q9OWX0Of8Uc7BLJHy1Q==
+X-Received: by 2002:adf:b312:: with SMTP id j18mr19499363wrd.142.1597734900475;
+        Tue, 18 Aug 2020 00:15:00 -0700 (PDT)
+Received: from [192.168.10.150] ([93.56.170.5])
+        by smtp.gmail.com with ESMTPSA id t14sm32631227wrv.14.2020.08.18.00.14.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Aug 2020 00:14:59 -0700 (PDT)
+Subject: Re: [PATCH v2 1/4] x86/cpufeatures: Add enumeration for SERIALIZE
+ instruction
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Cathy Zhang <cathy.zhang@intel.com>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kyung Min Park <kyung.min.park@intel.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>, fenghua.yu@intel.com
+References: <1594088183-7187-1-git-send-email-cathy.zhang@intel.com>
+ <1594088183-7187-2-git-send-email-cathy.zhang@intel.com>
+ <CALCETrWudiF8G8r57r5i4JefuP5biG1kHg==0O8YXb-bYS-0BA@mail.gmail.com>
+ <20200708022102.GA25016@ranerica-svr.sc.intel.com>
+ <87eep3ywz0.fsf@nanos.tec.linutronix.de>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <be322917-0f10-de4c-9b7c-308d667277eb@redhat.com>
+Date:   Tue, 18 Aug 2020 09:14:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <87eep3ywz0.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QWRkIG10NzUzMSBkc2EgdG8gYmFuYW5hcGktYnBpLXI2NCBib2FyZCBmb3IgNSBnaWdhIEV0aGVy
-bmV0IHBvcnRzIHN1cHBvcnQuDQoNClNpZ25lZC1vZmYtYnk6IExhbmRlbiBDaGFvIDxsYW5kZW4u
-Y2hhb0BtZWRpYXRlay5jb20+DQotLS0NCiAuLi4vZHRzL21lZGlhdGVrL210NzYyMi1iYW5hbmFw
-aS1icGktcjY0LmR0cyAgfCA0NCArKysrKysrKysrKysrKysrKysrDQogMSBmaWxlIGNoYW5nZWQs
-IDQ0IGluc2VydGlvbnMoKykNCg0KZGlmZiAtLWdpdCBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVk
-aWF0ZWsvbXQ3NjIyLWJhbmFuYXBpLWJwaS1yNjQuZHRzIGIvYXJjaC9hcm02NC9ib290L2R0cy9t
-ZWRpYXRlay9tdDc2MjItYmFuYW5hcGktYnBpLXI2NC5kdHMNCmluZGV4IGQxNzRhZDIxNDg1Ny4u
-YzU3YjI1NzExNjVmIDEwMDY0NA0KLS0tIGEvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9t
-dDc2MjItYmFuYW5hcGktYnBpLXI2NC5kdHMNCisrKyBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVk
-aWF0ZWsvbXQ3NjIyLWJhbmFuYXBpLWJwaS1yNjQuZHRzDQpAQCAtMTQzLDYgKzE0Myw1MCBAQA0K
-IAltZGlvOiBtZGlvLWJ1cyB7DQogCQkjYWRkcmVzcy1jZWxscyA9IDwxPjsNCiAJCSNzaXplLWNl
-bGxzID0gPDA+Ow0KKw0KKwkJc3dpdGNoQDAgew0KKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWss
-bXQ3NTMxIjsNCisJCQlyZWcgPSA8MD47DQorCQkJcmVzZXQtZ3Bpb3MgPSA8JnBpbyA1NCAwPjsN
-CisNCisJCQlwb3J0cyB7DQorCQkJCSNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KKwkJCQkjc2l6ZS1j
-ZWxscyA9IDwwPjsNCisNCisJCQkJcG9ydEAwIHsNCisJCQkJCXJlZyA9IDwwPjsNCisJCQkJCWxh
-YmVsID0gIndhbiI7DQorCQkJCX07DQorDQorCQkJCXBvcnRAMSB7DQorCQkJCQlyZWcgPSA8MT47
-DQorCQkJCQlsYWJlbCA9ICJsYW4wIjsNCisJCQkJfTsNCisNCisJCQkJcG9ydEAyIHsNCisJCQkJ
-CXJlZyA9IDwyPjsNCisJCQkJCWxhYmVsID0gImxhbjEiOw0KKwkJCQl9Ow0KKw0KKwkJCQlwb3J0
-QDMgew0KKwkJCQkJcmVnID0gPDM+Ow0KKwkJCQkJbGFiZWwgPSAibGFuMiI7DQorCQkJCX07DQor
-DQorCQkJCXBvcnRANCB7DQorCQkJCQlyZWcgPSA8ND47DQorCQkJCQlsYWJlbCA9ICJsYW4zIjsN
-CisJCQkJfTsNCisNCisJCQkJcG9ydEA2IHsNCisJCQkJCXJlZyA9IDw2PjsNCisJCQkJCWxhYmVs
-ID0gImNwdSI7DQorCQkJCQlldGhlcm5ldCA9IDwmZ21hYzA+Ow0KKwkJCQkJcGh5LW1vZGUgPSAi
-MjUwMGJhc2UteCI7DQorCQkJCX07DQorCQkJfTsNCisJCX07DQorDQogCX07DQogfTsNCiANCi0t
-IA0KMi4xNy4xDQo=
+On 23/07/20 01:02, Thomas Gleixner wrote:
+>> I am cc'ing Fenghua, who has volunteered to work on this. Addind support
+>> for SERIALIZE in sync_core() should not block merging these patches,
+>> correct?
+> Come on. We are not serving KVM first before making this usable on bare
+> metal.
+
+This in the end was merged in 5.9, but: why not?  It is just an
+instruction with no other support code needed in the kernel (or KVM for
+that matter except for marking the CPUID bit as supported).  It is
+common to run hosts with an older kernel than the guests, and by this
+line of reasoning, we should not even have enabled support for FSGSBASE
+in KVM.
+
+Paolo
 
