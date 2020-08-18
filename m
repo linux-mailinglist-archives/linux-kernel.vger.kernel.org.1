@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A7B4248106
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CCC248136
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726731AbgHRI5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 04:57:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37862 "EHLO mx2.suse.de"
+        id S1726923AbgHRI6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 04:58:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37752 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726697AbgHRI5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 04:57:09 -0400
+        id S1726624AbgHRI5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 04:57:00 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E83F1B02C;
-        Tue, 18 Aug 2020 08:57:32 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id C0EF5B033;
+        Tue, 18 Aug 2020 08:57:22 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 03/16] vc: propagate "viewed as bool" from screenpos up
+Subject: [PATCH 6/8] tty: vt, fix kernel-doc
 Date:   Tue, 18 Aug 2020 10:56:53 +0200
-Message-Id: <20200818085706.12163-3-jslaby@suse.cz>
+Message-Id: <20200818085655.12071-6-jslaby@suse.cz>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200818085706.12163-1-jslaby@suse.cz>
-References: <20200818085706.12163-1-jslaby@suse.cz>
+In-Reply-To: <20200818085655.12071-1-jslaby@suse.cz>
+References: <20200818085655.12071-1-jslaby@suse.cz>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -32,160 +32,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-viewed is used as a flag, i.e. bool. So treat is as such in most of the
-places. vcs_vc is handled in the next patch.
-
-Note: the last parameter of invert_screen was misnamed in the
-declaration since 1.1.92.
+As in the previous patches, fix kernel-doc in vt.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/accessibility/speakup/main.c |  4 ++--
- drivers/tty/vt/selection.c           |  2 +-
- drivers/tty/vt/vt.c                  | 18 ++++++++++--------
- include/linux/selection.h            |  6 +++---
- 4 files changed, 16 insertions(+), 14 deletions(-)
+ drivers/tty/vt/consolemap.c | 2 +-
+ drivers/tty/vt/vt.c         | 7 ++++---
+ drivers/tty/vt/vt_ioctl.c   | 3 +--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/accessibility/speakup/main.c b/drivers/accessibility/speakup/main.c
-index ddfd12afe3b9..be79b2135fac 100644
---- a/drivers/accessibility/speakup/main.c
-+++ b/drivers/accessibility/speakup/main.c
-@@ -257,7 +257,7 @@ static struct notifier_block vt_notifier_block = {
- 
- static unsigned char get_attributes(struct vc_data *vc, u16 *pos)
- {
--	pos = screen_pos(vc, pos - (u16 *)vc->vc_origin, 1);
-+	pos = screen_pos(vc, pos - (u16 *)vc->vc_origin, true);
- 	return (scr_readw(pos) & ~vc->vc_hi_font_mask) >> 8;
- }
- 
-@@ -465,7 +465,7 @@ static u16 get_char(struct vc_data *vc, u16 *pos, u_char *attribs)
- 		u16 w;
- 		u16 c;
- 
--		pos = screen_pos(vc, pos - (u16 *)vc->vc_origin, 1);
-+		pos = screen_pos(vc, pos - (u16 *)vc->vc_origin, true);
- 		w = scr_readw(pos);
- 		c = w & 0xff;
- 
-diff --git a/drivers/tty/vt/selection.c b/drivers/tty/vt/selection.c
-index 8e74654c1b27..f245a5acf7e9 100644
---- a/drivers/tty/vt/selection.c
-+++ b/drivers/tty/vt/selection.c
-@@ -54,7 +54,7 @@ static struct vc_selection {
- /* set reverse video on characters s-e of console with selection. */
- static inline void highlight(const int s, const int e)
- {
--	invert_screen(vc_sel.cons, s, e-s+2, 1);
-+	invert_screen(vc_sel.cons, s, e-s+2, true);
- }
- 
- /* use complementary color to show the pointer */
+diff --git a/drivers/tty/vt/consolemap.c b/drivers/tty/vt/consolemap.c
+index 5d5a5fd2dce7..5d778c0aa009 100644
+--- a/drivers/tty/vt/consolemap.c
++++ b/drivers/tty/vt/consolemap.c
+@@ -708,7 +708,7 @@ EXPORT_SYMBOL(con_set_default_unimap);
+ /**
+  *	con_copy_unimap		-	copy unimap between two vts
+  *	@dst_vc: target
+- *	@src_vt: source
++ *	@src_vc: source
+  *
+  *	The caller must hold the console lock when invoking this method
+  */
 diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index a0da7771c327..0f7064d41e92 100644
+index 0f7064d41e92..71f972675fee 100644
 --- a/drivers/tty/vt/vt.c
 +++ b/drivers/tty/vt/vt.c
-@@ -284,7 +284,7 @@ static inline bool con_should_update(const struct vc_data *vc)
- }
+@@ -1181,7 +1181,6 @@ static inline int resize_screen(struct vc_data *vc, int width, int height,
+ /**
+  *	vc_do_resize	-	resizing method for the tty
+  *	@tty: tty being resized
+- *	@real_tty: real tty (different to tty if a pty/tty pair)
+  *	@vc: virtual console private data
+  *	@cols: columns
+  *	@lines: lines
+@@ -2607,6 +2606,9 @@ static inline int vc_sanitize_unicode(const int c)
  
- static inline unsigned short *screenpos(const struct vc_data *vc, int offset,
--		int viewed)
-+		bool viewed)
- {
- 	unsigned short *p;
- 	
-@@ -544,7 +544,7 @@ int vc_uniscr_check(struct vc_data *vc)
-  * This must be preceded by a successful call to vc_uniscr_check() once
-  * the console lock has been taken.
+ /**
+  * vc_translate_unicode -- Combine UTF-8 into Unicode in @vc_utf_char
++ * @vc: virtual console
++ * @c: character to translate
++ * @rescan: we return true if we need more (continuation) data
+  *
+  * @vc_utf_char is the being-constructed unicode character.
+  * @vc_utf_count is the number of continuation bytes still expected to arrive.
+@@ -3982,7 +3984,7 @@ EXPORT_SYMBOL(con_is_visible);
+ 
+ /**
+  * con_debug_enter - prepare the console for the kernel debugger
+- * @sw: console driver
++ * @vc: virtual console
+  *
+  * Called when the console is taken over by the kernel debugger, this
+  * function needs to save the current console state, then put the console
+@@ -4040,7 +4042,6 @@ EXPORT_SYMBOL_GPL(con_debug_enter);
+ 
+ /**
+  * con_debug_leave - restore console state
+- * @sw: console driver
+  *
+  * Restore the console state to what it was before the kernel debugger
+  * was invoked.
+diff --git a/drivers/tty/vt/vt_ioctl.c b/drivers/tty/vt/vt_ioctl.c
+index 91c301775047..7726df6b9b6f 100644
+--- a/drivers/tty/vt/vt_ioctl.c
++++ b/drivers/tty/vt/vt_ioctl.c
+@@ -181,7 +181,7 @@ static void vt_event_wait(struct vt_event_wait *vw)
+ 
+ /**
+  *	vt_event_wait_ioctl	-	event ioctl handler
+- *	@arg: argument to ioctl
++ *	@event: argument to ioctl (the event)
+  *
+  *	Implement the VT_WAITEVENT ioctl using the VT event interface
   */
--void vc_uniscr_copy_line(const struct vc_data *vc, void *dest, int viewed,
-+void vc_uniscr_copy_line(const struct vc_data *vc, void *dest, bool viewed,
- 			 unsigned int row, unsigned int col, unsigned int nr)
- {
- 	struct uni_screen *uniscr = get_vc_uniscr(vc);
-@@ -753,7 +753,7 @@ static void update_attr(struct vc_data *vc)
- }
+@@ -208,7 +208,6 @@ static int vt_event_wait_ioctl(struct vt_event __user *event)
  
- /* Note: inverting the screen twice should revert to the original state */
--void invert_screen(struct vc_data *vc, int offset, int count, int viewed)
-+void invert_screen(struct vc_data *vc, int offset, int count, bool viewed)
- {
- 	unsigned short *p;
- 
-@@ -812,7 +812,7 @@ void complement_pos(struct vc_data *vc, int offset)
- 
- 	if (old_offset != -1 && old_offset >= 0 &&
- 	    old_offset < vc->vc_screenbuf_size) {
--		scr_writew(old, screenpos(vc, old_offset, 1));
-+		scr_writew(old, screenpos(vc, old_offset, true));
- 		if (con_should_update(vc))
- 			vc->vc_sw->con_putc(vc, old, oldy, oldx);
- 		notify_update(vc);
-@@ -824,7 +824,7 @@ void complement_pos(struct vc_data *vc, int offset)
- 	    offset < vc->vc_screenbuf_size) {
- 		unsigned short new;
- 		unsigned short *p;
--		p = screenpos(vc, offset, 1);
-+		p = screenpos(vc, offset, true);
- 		old = scr_readw(p);
- 		new = old ^ vc->vc_complement_mask;
- 		scr_writew(new, p);
-@@ -1885,7 +1885,9 @@ static void set_mode(struct vc_data *vc, int on_off)
- 			case 5:			/* Inverted screen on/off */
- 				if (vc->vc_decscnm != on_off) {
- 					vc->vc_decscnm = on_off;
--					invert_screen(vc, 0, vc->vc_screenbuf_size, 0);
-+					invert_screen(vc, 0,
-+							vc->vc_screenbuf_size,
-+							false);
- 					update_attr(vc);
- 				}
- 				break;
-@@ -4743,7 +4745,7 @@ int con_font_op(struct vc_data *vc, struct console_font_op *op)
- /* used by selection */
- u16 screen_glyph(const struct vc_data *vc, int offset)
- {
--	u16 w = scr_readw(screenpos(vc, offset, 1));
-+	u16 w = scr_readw(screenpos(vc, offset, true));
- 	u16 c = w & 0xff;
- 
- 	if (w & vc->vc_hi_font_mask)
-@@ -4763,7 +4765,7 @@ u32 screen_glyph_unicode(const struct vc_data *vc, int n)
- EXPORT_SYMBOL_GPL(screen_glyph_unicode);
- 
- /* used by vcs - note the word offset */
--unsigned short *screen_pos(const struct vc_data *vc, int w_offset, int viewed)
-+unsigned short *screen_pos(const struct vc_data *vc, int w_offset, bool viewed)
- {
- 	return screenpos(vc, 2 * w_offset, viewed);
- }
-diff --git a/include/linux/selection.h b/include/linux/selection.h
-index 15e36e7ef869..170ef28ff26b 100644
---- a/include/linux/selection.h
-+++ b/include/linux/selection.h
-@@ -34,11 +34,11 @@ extern unsigned char default_grn[];
- extern unsigned char default_blu[];
- 
- extern unsigned short *screen_pos(const struct vc_data *vc, int w_offset,
--		int viewed);
-+		bool viewed);
- extern u16 screen_glyph(const struct vc_data *vc, int offset);
- extern u32 screen_glyph_unicode(const struct vc_data *vc, int offset);
- extern void complement_pos(struct vc_data *vc, int offset);
--extern void invert_screen(struct vc_data *vc, int offset, int count, int shift);
-+extern void invert_screen(struct vc_data *vc, int offset, int count, bool viewed);
- 
- extern void getconsxy(const struct vc_data *vc, unsigned char xy[static 2]);
- extern void putconsxy(struct vc_data *vc, unsigned char xy[static const 2]);
-@@ -49,7 +49,7 @@ extern void vcs_scr_updated(struct vc_data *vc);
- 
- extern int vc_uniscr_check(struct vc_data *vc);
- extern void vc_uniscr_copy_line(const struct vc_data *vc, void *dest,
--				int viewed,
-+				bool viewed,
- 				unsigned int row, unsigned int col,
- 				unsigned int nr);
- 
+ /**
+  *	vt_waitactive	-	active console wait
+- *	@event: event code
+  *	@n: new console
+  *
+  *	Helper for event waits. Used to implement the legacy
 -- 
 2.28.0
 
