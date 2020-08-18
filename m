@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1505B24810C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7B4248106
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726783AbgHRI5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 04:57:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37854 "EHLO mx2.suse.de"
+        id S1726731AbgHRI5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 04:57:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37862 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726696AbgHRI5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 04:57:08 -0400
+        id S1726697AbgHRI5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 04:57:09 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C33DBAC48;
+        by mx2.suse.de (Postfix) with ESMTP id E83F1B02C;
         Tue, 18 Aug 2020 08:57:32 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 02/16] vt: declare xy for get/putconsxy properly
-Date:   Tue, 18 Aug 2020 10:56:52 +0200
-Message-Id: <20200818085706.12163-2-jslaby@suse.cz>
+Subject: [PATCH 03/16] vc: propagate "viewed as bool" from screenpos up
+Date:   Tue, 18 Aug 2020 10:56:53 +0200
+Message-Id: <20200818085706.12163-3-jslaby@suse.cz>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200818085706.12163-1-jslaby@suse.cz>
 References: <20200818085706.12163-1-jslaby@suse.cz>
@@ -32,60 +32,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-That is:
-1) call the parameter 'xy' to denote what it really is, not generic 'p'
-2) tell the compiler and users that we expect an array:
-   * with at least 2 chars (static 2)
-   * which we don't modify in putconsxy (const)
+viewed is used as a flag, i.e. bool. So treat is as such in most of the
+places. vcs_vc is handled in the next patch.
+
+Note: the last parameter of invert_screen was misnamed in the
+declaration since 1.1.92.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/vt/vt.c       | 10 +++++-----
- include/linux/selection.h |  4 ++--
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ drivers/accessibility/speakup/main.c |  4 ++--
+ drivers/tty/vt/selection.c           |  2 +-
+ drivers/tty/vt/vt.c                  | 18 ++++++++++--------
+ include/linux/selection.h            |  6 +++---
+ 4 files changed, 16 insertions(+), 14 deletions(-)
 
+diff --git a/drivers/accessibility/speakup/main.c b/drivers/accessibility/speakup/main.c
+index ddfd12afe3b9..be79b2135fac 100644
+--- a/drivers/accessibility/speakup/main.c
++++ b/drivers/accessibility/speakup/main.c
+@@ -257,7 +257,7 @@ static struct notifier_block vt_notifier_block = {
+ 
+ static unsigned char get_attributes(struct vc_data *vc, u16 *pos)
+ {
+-	pos = screen_pos(vc, pos - (u16 *)vc->vc_origin, 1);
++	pos = screen_pos(vc, pos - (u16 *)vc->vc_origin, true);
+ 	return (scr_readw(pos) & ~vc->vc_hi_font_mask) >> 8;
+ }
+ 
+@@ -465,7 +465,7 @@ static u16 get_char(struct vc_data *vc, u16 *pos, u_char *attribs)
+ 		u16 w;
+ 		u16 c;
+ 
+-		pos = screen_pos(vc, pos - (u16 *)vc->vc_origin, 1);
++		pos = screen_pos(vc, pos - (u16 *)vc->vc_origin, true);
+ 		w = scr_readw(pos);
+ 		c = w & 0xff;
+ 
+diff --git a/drivers/tty/vt/selection.c b/drivers/tty/vt/selection.c
+index 8e74654c1b27..f245a5acf7e9 100644
+--- a/drivers/tty/vt/selection.c
++++ b/drivers/tty/vt/selection.c
+@@ -54,7 +54,7 @@ static struct vc_selection {
+ /* set reverse video on characters s-e of console with selection. */
+ static inline void highlight(const int s, const int e)
+ {
+-	invert_screen(vc_sel.cons, s, e-s+2, 1);
++	invert_screen(vc_sel.cons, s, e-s+2, true);
+ }
+ 
+ /* use complementary color to show the pointer */
 diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index 8f283221330e..a0da7771c327 100644
+index a0da7771c327..0f7064d41e92 100644
 --- a/drivers/tty/vt/vt.c
 +++ b/drivers/tty/vt/vt.c
-@@ -4769,17 +4769,17 @@ unsigned short *screen_pos(const struct vc_data *vc, int w_offset, int viewed)
+@@ -284,7 +284,7 @@ static inline bool con_should_update(const struct vc_data *vc)
  }
- EXPORT_SYMBOL_GPL(screen_pos);
  
--void getconsxy(const struct vc_data *vc, unsigned char *p)
-+void getconsxy(const struct vc_data *vc, unsigned char xy[static 2])
+ static inline unsigned short *screenpos(const struct vc_data *vc, int offset,
+-		int viewed)
++		bool viewed)
  {
- 	/* clamp values if they don't fit */
--	p[0] = min(vc->state.x, 0xFFu);
--	p[1] = min(vc->state.y, 0xFFu);
-+	xy[0] = min(vc->state.x, 0xFFu);
-+	xy[1] = min(vc->state.y, 0xFFu);
- }
- 
--void putconsxy(struct vc_data *vc, unsigned char *p)
-+void putconsxy(struct vc_data *vc, unsigned char xy[static const 2])
+ 	unsigned short *p;
+ 	
+@@ -544,7 +544,7 @@ int vc_uniscr_check(struct vc_data *vc)
+  * This must be preceded by a successful call to vc_uniscr_check() once
+  * the console lock has been taken.
+  */
+-void vc_uniscr_copy_line(const struct vc_data *vc, void *dest, int viewed,
++void vc_uniscr_copy_line(const struct vc_data *vc, void *dest, bool viewed,
+ 			 unsigned int row, unsigned int col, unsigned int nr)
  {
- 	hide_cursor(vc);
--	gotoxy(vc, p[0], p[1]);
-+	gotoxy(vc, xy[0], xy[1]);
- 	set_cursor(vc);
+ 	struct uni_screen *uniscr = get_vc_uniscr(vc);
+@@ -753,7 +753,7 @@ static void update_attr(struct vc_data *vc)
  }
  
+ /* Note: inverting the screen twice should revert to the original state */
+-void invert_screen(struct vc_data *vc, int offset, int count, int viewed)
++void invert_screen(struct vc_data *vc, int offset, int count, bool viewed)
+ {
+ 	unsigned short *p;
+ 
+@@ -812,7 +812,7 @@ void complement_pos(struct vc_data *vc, int offset)
+ 
+ 	if (old_offset != -1 && old_offset >= 0 &&
+ 	    old_offset < vc->vc_screenbuf_size) {
+-		scr_writew(old, screenpos(vc, old_offset, 1));
++		scr_writew(old, screenpos(vc, old_offset, true));
+ 		if (con_should_update(vc))
+ 			vc->vc_sw->con_putc(vc, old, oldy, oldx);
+ 		notify_update(vc);
+@@ -824,7 +824,7 @@ void complement_pos(struct vc_data *vc, int offset)
+ 	    offset < vc->vc_screenbuf_size) {
+ 		unsigned short new;
+ 		unsigned short *p;
+-		p = screenpos(vc, offset, 1);
++		p = screenpos(vc, offset, true);
+ 		old = scr_readw(p);
+ 		new = old ^ vc->vc_complement_mask;
+ 		scr_writew(new, p);
+@@ -1885,7 +1885,9 @@ static void set_mode(struct vc_data *vc, int on_off)
+ 			case 5:			/* Inverted screen on/off */
+ 				if (vc->vc_decscnm != on_off) {
+ 					vc->vc_decscnm = on_off;
+-					invert_screen(vc, 0, vc->vc_screenbuf_size, 0);
++					invert_screen(vc, 0,
++							vc->vc_screenbuf_size,
++							false);
+ 					update_attr(vc);
+ 				}
+ 				break;
+@@ -4743,7 +4745,7 @@ int con_font_op(struct vc_data *vc, struct console_font_op *op)
+ /* used by selection */
+ u16 screen_glyph(const struct vc_data *vc, int offset)
+ {
+-	u16 w = scr_readw(screenpos(vc, offset, 1));
++	u16 w = scr_readw(screenpos(vc, offset, true));
+ 	u16 c = w & 0xff;
+ 
+ 	if (w & vc->vc_hi_font_mask)
+@@ -4763,7 +4765,7 @@ u32 screen_glyph_unicode(const struct vc_data *vc, int n)
+ EXPORT_SYMBOL_GPL(screen_glyph_unicode);
+ 
+ /* used by vcs - note the word offset */
+-unsigned short *screen_pos(const struct vc_data *vc, int w_offset, int viewed)
++unsigned short *screen_pos(const struct vc_data *vc, int w_offset, bool viewed)
+ {
+ 	return screenpos(vc, 2 * w_offset, viewed);
+ }
 diff --git a/include/linux/selection.h b/include/linux/selection.h
-index 34404a019ebf..15e36e7ef869 100644
+index 15e36e7ef869..170ef28ff26b 100644
 --- a/include/linux/selection.h
 +++ b/include/linux/selection.h
-@@ -40,8 +40,8 @@ extern u32 screen_glyph_unicode(const struct vc_data *vc, int offset);
+@@ -34,11 +34,11 @@ extern unsigned char default_grn[];
+ extern unsigned char default_blu[];
+ 
+ extern unsigned short *screen_pos(const struct vc_data *vc, int w_offset,
+-		int viewed);
++		bool viewed);
+ extern u16 screen_glyph(const struct vc_data *vc, int offset);
+ extern u32 screen_glyph_unicode(const struct vc_data *vc, int offset);
  extern void complement_pos(struct vc_data *vc, int offset);
- extern void invert_screen(struct vc_data *vc, int offset, int count, int shift);
+-extern void invert_screen(struct vc_data *vc, int offset, int count, int shift);
++extern void invert_screen(struct vc_data *vc, int offset, int count, bool viewed);
  
--extern void getconsxy(const struct vc_data *vc, unsigned char *p);
--extern void putconsxy(struct vc_data *vc, unsigned char *p);
-+extern void getconsxy(const struct vc_data *vc, unsigned char xy[static 2]);
-+extern void putconsxy(struct vc_data *vc, unsigned char xy[static const 2]);
+ extern void getconsxy(const struct vc_data *vc, unsigned char xy[static 2]);
+ extern void putconsxy(struct vc_data *vc, unsigned char xy[static const 2]);
+@@ -49,7 +49,7 @@ extern void vcs_scr_updated(struct vc_data *vc);
  
- extern u16 vcs_scr_readw(const struct vc_data *vc, const u16 *org);
- extern void vcs_scr_writew(struct vc_data *vc, u16 val, u16 *org);
+ extern int vc_uniscr_check(struct vc_data *vc);
+ extern void vc_uniscr_copy_line(const struct vc_data *vc, void *dest,
+-				int viewed,
++				bool viewed,
+ 				unsigned int row, unsigned int col,
+ 				unsigned int nr);
+ 
 -- 
 2.28.0
 
