@@ -2,48 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64BDD248C2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95337248C29
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728574AbgHRQ5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 12:57:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38734 "EHLO mail.kernel.org"
+        id S1728539AbgHRQ53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 12:57:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728494AbgHRQ4X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 12:56:23 -0400
+        id S1728271AbgHRQ4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 12:56:32 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F76820829;
-        Tue, 18 Aug 2020 16:56:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 68DD320866;
+        Tue, 18 Aug 2020 16:56:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597769781;
-        bh=zOU4Pdp1V5FeOhpAv/v6/unjQwdDYx6ZaaOnFF7Mnmg=;
+        s=default; t=1597769792;
+        bh=C7CLmTRDuo1Am8syaTB05mD0CZGXECeviyZKIGQlC74=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=FLldg7pSy4wgyeihdoPTQ4O5HGunk6EmATkRuxHotsyw0cABy8TN6Nvk3OJmoMU7p
-         q+KQZAw/MlneDDdhqVMozzxpj+4+fW6gt8XO4T5CHAtuzTRnxmpz3SWOt7xmNzpDJX
-         ymRu3IJMKjyoFaI27eGSJHWbxUBq4v2sYuHZCO6w=
-Date:   Tue, 18 Aug 2020 17:55:50 +0100
+        b=h18P64vx+aVCi4pv8eAKhyxO1PkGkHFKn5RNVAac/fhL7R/GKtWYVATBX34ba5zo7
+         renVjb9DJSvESmFX4JBjVeaGOOm3HfqCHeGi0/df0EE8Vfddf9pUkJoF80zunS7RFf
+         emsK3u1UEJR6WRSvIOEhy6N57I72ojLbx80eXIpE=
+Date:   Tue, 18 Aug 2020 17:56:01 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Michal Simek <michal.simek@xilinx.com>,
-        Colin King <colin.king@canonical.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
+To:     Stephen Boyd <swboyd@chromium.org>,
+        Oder Chiou <oder_chiou@realtek.com>
+Cc:     Shuming Fan <shumingf@realtek.com>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
         Takashi Iwai <tiwai@suse.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-In-Reply-To: <20200817224706.6139-1-colin.king@canonical.com>
-References: <20200817224706.6139-1-colin.king@canonical.com>
-Subject: Re: [PATCH] sound: remove duplicate "the the" phrase in Kconfig text
-Message-Id: <159776961933.56094.6016392996060777072.b4-ty@kernel.org>
+In-Reply-To: <20200804000531.920688-1-swboyd@chromium.org>
+References: <20200804000531.920688-1-swboyd@chromium.org>
+Subject: Re: [PATCH 0/3] ASoC: rt5682: Use clk APIs better
+Message-Id: <159776961931.56094.13706014566883693653.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 Aug 2020 23:47:06 +0100, Colin King wrote:
-> There are a couple of occurrences of "the the" in the Kconfig
-> text. Fix these.
+On Mon, 3 Aug 2020 17:05:28 -0700, Stephen Boyd wrote:
+> This patch series drops a printk message down to dev_dbg() because it
+> was noisy and then migrates this driver to use clk_hw based APIs instead
+> of clk based APIs because this device is a clk provider, not a clk
+> consumer. I've only lightly tested the last two patches but I don't have
+> all combinations of clks for this device.
+> 
+> Cc: Cheng-Yi Chiang <cychiang@chromium.org>
+> Cc: Shuming Fan <shumingf@realtek.com>
+> 
+> [...]
 
 Applied to
 
@@ -51,8 +58,12 @@ Applied to
 
 Thanks!
 
-[1/1] sound: remove duplicate "the the" phrase in Kconfig text
-      commit: 466a806a7d2beffa6a79d61dbabac8a48685c3e2
+[1/3] ASoC: rt5682: Use dev_dbg() in rt5682_clk_check()
+      commit: 0b95aa8e8afa4bcd49c8fa36404e2deb02a947ed
+[2/3] ASoC: rt5682: Drop usage of __clk_get_name()
+      commit: edbd24ea1e5c72980b37ae2d271696b05274d509
+[3/3] ASoC: rt5682: Use clk_hw based APIs for registration
+      commit: 653bdab267bd8dbce9cbd16bec843ca9d20a8450
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
