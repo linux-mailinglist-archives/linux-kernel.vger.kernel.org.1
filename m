@@ -2,150 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6969D248E1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 20:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CBD5248E2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 20:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726738AbgHRSrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 14:47:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36446 "EHLO
+        id S1726675AbgHRSvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 14:51:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726699AbgHRSrP (ORCPT
+        with ESMTP id S1726552AbgHRSvp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 14:47:15 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8479FC061342
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 11:47:15 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id u189so23077270ybg.17
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 11:47:15 -0700 (PDT)
+        Tue, 18 Aug 2020 14:51:45 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82610C061389
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 11:51:44 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id c15so10780807lfi.3
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 11:51:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bfVQLroskM5Wc4DhZMIyj9jgHc+j8RHZ/garHr4Fpmo=;
-        b=CIx7kMWbB8VmYnYBEoD4nNQsaSQZt1zzWgyHBo9TmOh+81P13Aq4a+yETjPZEdKzHt
-         6xhM+il6SYmrYbNG1IV7d069OMSWVqj57ViYi+dViNBbqPDo4foz1/sXg+neeEwOnROJ
-         b3vK60iuFFWLcpf66/+S0SZnj2eh8Khpc1C4Awp23aYoNw3Hn2ktDyYyIqmyY/lLuNWy
-         0KsGsEIVRDT/ZcJr7rljERS6QGsxhldWu58VpPBprIVTjCTNGFYgQ/jP9PX7jqtcNwYD
-         yHdVBEoP2GYwds522u6f/lZ7QVEz357iUqWtZYvud/ZMRq5iE6U6JD54o1RFc5iL68P9
-         PFUQ==
+        bh=U7uYPAcT0a2iCnawB895QmRQ5uyxHh+JN3tvANE4Kno=;
+        b=OfpfhktcB0EPTZRtZL54l/zyIACV/6gX4M1jGmcmJz+vzsbzEUHkXqlwyyhXnVEw/b
+         pb0mQNipDGcNuotJJcAm05QIjnugVLc3nSBHazWgWqbIC1R7nPjSnZAExUgdxpbrDVDF
+         qQ/ANj0NRdAF1Kakd5EKBxqxVxEd2U/8zf13I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=bfVQLroskM5Wc4DhZMIyj9jgHc+j8RHZ/garHr4Fpmo=;
-        b=iY01raQyfOyZWtXtW7mLPCUfGvIk30Q8ZHmkVY7v8Hdhg5rEKetly4h5A8N43B39cY
-         2h6yOf55FlrB2/VB6DLJcsnH/+awFeZRau0P6HYvEMOFj8zYIvtwJ6Nb9ygj/iLGavvM
-         Nzv1cUp7SNBXxSsmlwBEgrRBGH9EvCR4wZBBq30uAeQXjo631MwMwfH44jelm/H/sJCs
-         grIt7BWwrKYlSNdX1dPd6G5jPbU6buVDTPJR/W04EBqIJfOFwvckCm81crBWHjYCaaZH
-         1eptPL9LUNzMHuWW0TKaqkfO5JZXkYr5M1mmCUH44vQDXe0OdCRnqIR/b0jExMW1i9mn
-         f2uw==
-X-Gm-Message-State: AOAM533UvWAmdLVzZPcw3IF2MezJO0sUQI3ThjIDfkKqCHXCwktMUO0d
-        DpXo68L6uykMogK0prr9Q9Tf10fx9pM=
-X-Google-Smtp-Source: ABdhPJxZwwFPlarZ3LoosIXt55p8uBBCrvGv9J5VLrCxYXf9wPeT384wi+a1vkBEDJm/7ct0Z09BbNo6pl0=
-X-Received: by 2002:a25:a091:: with SMTP id y17mr28606051ybh.82.1597776434643;
- Tue, 18 Aug 2020 11:47:14 -0700 (PDT)
-Date:   Tue, 18 Aug 2020 12:47:04 -0600
-In-Reply-To: <20200818184704.3625199-1-yuzhao@google.com>
-Message-Id: <20200818184704.3625199-3-yuzhao@google.com>
-Mime-Version: 1.0
-References: <20200818184704.3625199-1-yuzhao@google.com>
-X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
-Subject: [PATCH v2 3/3] mm: remove superfluous __ClearPageWaiters()
-From:   Yu Zhao <yuzhao@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Huang Ying <ying.huang@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>, Qian Cai <cai@lca.pw>,
-        Mel Gorman <mgorman@suse.de>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        "=?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?=" <jglisse@redhat.com>,
-        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Yu Zhao <yuzhao@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U7uYPAcT0a2iCnawB895QmRQ5uyxHh+JN3tvANE4Kno=;
+        b=hOJaqNgjUaT2QVZTsmBJgddG6LAfgScam51jlBSiGBNtdNEKjiiwqJW3nF/lsrPn6v
+         Nk61dfGw50VJr9fZSm0AZUuj/Sk22gYLyY1z7/Vg1UnZ9gBYHlxb77UGdlpO+R/EFX03
+         b16SmkJlUk58LCSQKMbg9LSOAoqROpDgQyYA+KsCEZnoSIFlXwUHIHt8zmYPp2ZHEqbr
+         6PyTQ0IvLjjANwhqYjxbRZF9J1Zk6RdB9IsKw1oaYK+4FMt8HLbkx7OjDXDU55GHsBTB
+         vXa5RgZTN2aS4ij2cAd8R8bEbDa6rQfj+T40SYGL9RxFjbfKHqdIUd/BZurWAVUsc8Vm
+         GzDg==
+X-Gm-Message-State: AOAM533TymvyI7ZSY7BHdpQ4of6/vu7AJdmwAZQPjEaWLMerKjEIbxdD
+        YEbmlN0pQmW/NNM6SjIC2MVp2boZeYd7fA==
+X-Google-Smtp-Source: ABdhPJzN2+zAZTyr6dcdEHWQM2lNv2oXHDafc06ClspL7RD6xS81cwZ9V6iqu6ae4vFteiXzaYD9BA==
+X-Received: by 2002:a19:4094:: with SMTP id n142mr10371879lfa.166.1597776702601;
+        Tue, 18 Aug 2020 11:51:42 -0700 (PDT)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id w19sm6096267ljd.112.2020.08.18.11.51.42
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Aug 2020 11:51:42 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id d2so10775315lfj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 11:51:42 -0700 (PDT)
+X-Received: by 2002:ac2:46d0:: with SMTP id p16mr10615970lfo.142.1597776701601;
+ Tue, 18 Aug 2020 11:51:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <1842689.1596468469@warthog.procyon.org.uk> <1845353.1596469795@warthog.procyon.org.uk>
+ <CAJfpegunY3fuxh486x9ysKtXbhTE0745ZCVHcaqs9Gww9RV2CQ@mail.gmail.com>
+ <ac1f5e3406abc0af4cd08d818fe920a202a67586.camel@themaw.net>
+ <CAJfpegu8omNZ613tLgUY7ukLV131tt7owR+JJ346Kombt79N0A@mail.gmail.com>
+ <CAJfpegtNP8rQSS4Z14Ja4x-TOnejdhDRTsmmDD-Cccy2pkfVVw@mail.gmail.com>
+ <20200811135419.GA1263716@miu.piliscsaba.redhat.com> <CAHk-=wjzLmMRf=QG-n+1HnxWCx4KTQn9+OhVvUSJ=ZCQd6Y1WA@mail.gmail.com>
+ <52483.1597190733@warthog.procyon.org.uk> <CAHk-=wiPx0UJ6Q1X=azwz32xrSeKnTJcH8enySwuuwnGKkHoPA@mail.gmail.com>
+ <066f9aaf-ee97-46db-022f-5d007f9e6edb@redhat.com> <CAHk-=wgz5H-xYG4bOrHaEtY7rvFA1_6+mTSpjrgK8OsNbfF+Pw@mail.gmail.com>
+ <94f907f0-996e-0456-db8a-7823e2ef3d3f@redhat.com> <CAHk-=wig0ZqWxgWtD9F1xZzE7jEmgLmXRWABhss0+er3ZRtb9g@mail.gmail.com>
+ <CAHk-=wh4qaj6iFTrbHy8TPfmM3fj+msYC5X_KE0rCdStJKH2NA@mail.gmail.com> <CAJfpegsr8URJHoFunnGShB-=jqypvtrmLV-BcWajkHux2H4x2w@mail.gmail.com>
+In-Reply-To: <CAJfpegsr8URJHoFunnGShB-=jqypvtrmLV-BcWajkHux2H4x2w@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 18 Aug 2020 11:51:25 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh5YifP7hzKSbwJj94+DZ2czjrZsczy6GBimiogZws=rg@mail.gmail.com>
+Message-ID: <CAHk-=wh5YifP7hzKSbwJj94+DZ2czjrZsczy6GBimiogZws=rg@mail.gmail.com>
+Subject: Re: file metadata via fs API
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Steven Whitehouse <swhiteho@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, Karel Zak <kzak@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Christian Brauner <christian@brauner.io>,
+        Lennart Poettering <lennart@poettering.net>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ian Kent <raven@themaw.net>,
+        LSM <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Presumably __ClearPageWaiters() was added to follow the previously
-removed __ClearPageActive() pattern.
+On Tue, Aug 18, 2020 at 5:50 AM Miklos Szeredi <miklos@szeredi.hu> wrote:
+>
+> How do you propose handling variable size attributes, like the list of
+> fs options?
 
-Only flags that are in PAGE_FLAGS_CHECK_AT_FREE needs to be properly
-cleared because otherwise we think there may be some kind of leak.
-PG_waiters is not one of those flags and leaving the clearing to
-PAGE_FLAGS_CHECK_AT_PREP is more appropriate.
+I really REALLY think those things should just be ASCII data.
 
-Signed-off-by: Yu Zhao <yuzhao@google.com>
----
- include/linux/page-flags.h | 2 +-
- mm/filemap.c               | 2 ++
- mm/memremap.c              | 2 --
- mm/swap.c                  | 3 ---
- 4 files changed, 3 insertions(+), 6 deletions(-)
+I think marshalling binary data is actively evil and wrong. It's great
+for well-specified wire protocols. It's great for internal
+communication in user space. It's *NOT* great for a kernel system call
+interface.
 
-diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-index 6be1aa559b1e..dba80a2bdfba 100644
---- a/include/linux/page-flags.h
-+++ b/include/linux/page-flags.h
-@@ -318,7 +318,7 @@ static inline int TestClearPage##uname(struct page *page) { return 0; }
- 	TESTSETFLAG_FALSE(uname) TESTCLEARFLAG_FALSE(uname)
- 
- __PAGEFLAG(Locked, locked, PF_NO_TAIL)
--PAGEFLAG(Waiters, waiters, PF_ONLY_HEAD) __CLEARPAGEFLAG(Waiters, waiters, PF_ONLY_HEAD)
-+PAGEFLAG(Waiters, waiters, PF_ONLY_HEAD)
- PAGEFLAG(Error, error, PF_NO_TAIL) TESTCLEARFLAG(Error, error, PF_NO_TAIL)
- PAGEFLAG(Referenced, referenced, PF_HEAD)
- 	TESTCLEARFLAG(Referenced, referenced, PF_HEAD)
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 1aaea26556cc..75240c7ef73f 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -1079,6 +1079,8 @@ static void wake_up_page_bit(struct page *page, int bit_nr)
- 		 * other pages on it.
- 		 *
- 		 * That's okay, it's a rare case. The next waker will clear it.
-+		 * Otherwise the bit will be cleared by PAGE_FLAGS_CHECK_AT_PREP
-+		 * when the page is being freed.
- 		 */
- 	}
- 	spin_unlock_irqrestore(&q->lock, flags);
-diff --git a/mm/memremap.c b/mm/memremap.c
-index 3a06eb91cb59..a9d02ffaf9e3 100644
---- a/mm/memremap.c
-+++ b/mm/memremap.c
-@@ -451,8 +451,6 @@ void free_devmap_managed_page(struct page *page)
- 		return;
- 	}
- 
--	__ClearPageWaiters(page);
--
- 	mem_cgroup_uncharge(page);
- 
- 	/*
-diff --git a/mm/swap.c b/mm/swap.c
-index 999a84dbe12c..40bf20a75278 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -90,7 +90,6 @@ static void __page_cache_release(struct page *page)
- 		del_page_from_lru_list(page, lruvec, page_off_lru(page));
- 		spin_unlock_irqrestore(&pgdat->lru_lock, flags);
- 	}
--	__ClearPageWaiters(page);
- }
- 
- static void __put_single_page(struct page *page)
-@@ -900,8 +899,6 @@ void release_pages(struct page **pages, int nr)
- 			del_page_from_lru_list(page, lruvec, page_off_lru(page));
- 		}
- 
--		__ClearPageWaiters(page);
--
- 		list_add(&page->lru, &pages_to_free);
- 	}
- 	if (locked_pgdat)
--- 
-2.28.0.220.ged08abb693-goog
+One single simple binary structure? Sure. That's how system calls
+work. I'm not claiming that things like "stat()" are wrong because
+they take binary data.
 
+But marshalling random binary structures into some buffer? Let's avoid
+that. Particularly for these kinds of fairly free-form things like fs
+options.
+
+Those things *are* strings, most of them. Exactly because it needs a
+level of flexibility that binary data just doesn't have.
+
+So I'd suggest something that is very much like "statfsat()", which
+gets a buffer and a length, and returns an extended "struct statfs"
+*AND* just a string description at the end.
+
+And if you don't pass a sufficiently big buffer, it will not do some
+random "continuations". No state between system calls. It gets
+truncated, and you need to pass a bigger buffer, kind of like
+"snprintf()".
+
+I think people who have problems parsing plain ASCII text are just
+wrong. It's not that expensive. The thing that makes /proc/mounts
+expensive is not the individual lines - it's that there are a lot of
+them.
+
+                     Linus
