@@ -2,167 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A338247CE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 05:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92CB247CFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 05:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbgHRDe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 23:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726451AbgHRDeT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 23:34:19 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10551C061344;
-        Mon, 17 Aug 2020 20:34:19 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id y10so7002157plr.11;
-        Mon, 17 Aug 2020 20:34:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=t5NIMSla2q4H4CYrgEoypiSInrv82zNsRbmwKfnLv98=;
-        b=uRdD8KLtueArRi5YgefMeJDNmk3262hrEcmU4d2F6wq++v7Ma9rUefUixF2COxCtLc
-         td5Rwz0puO391VwBccL0iLXviBugIL3u84rPg8rn+K+h4YofYGJhIsC8G6APa8gVgzX5
-         2APhZ1DyLJRboh/HWU4dTWnJYXK0nLTNC8tH9fSFizTp9Ip7QLOgDFv0zUDT46SeFoAc
-         yQStkqIILuLhbKNuf8KDIetfzrKboLdpW02QzOvqhM0RvSPIi0r7Wmlh/Nq4Q+AJ0A6q
-         Tfg69C3isdqL8HsOzA8eHcZZF6FPHrfmwUviJRUc1g0N2OtBxFLf7tCrbRwIxKg42dX/
-         ZzJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=t5NIMSla2q4H4CYrgEoypiSInrv82zNsRbmwKfnLv98=;
-        b=JIZirNFWDNdYyY/srWP/jddhfF28drnY0IBBMa790y6U/Zdg8XAn3Wl8hiCh5KYU1w
-         5r+P8BNdpTCMmEbPcl1O0x2auLN7rrBMlcFX76dg52/nHF73PfM/MpUWLTWXiVxoUeKi
-         Y3cMS8aLktm6hezIB8YIAJXW/sfEs2DOTkIVvV58kiejmr9O8OSjvIwN8YP1W3G2KyU1
-         t3Jp4/CjQPLN+HHIQUNpL7VkWv9oATJ7m6uxaSIsT3OYUtybNXPXhxQ9G7CbaSxi9Ba1
-         X/Boezno7uIyoyy/Df1Bqq23M7lHqiECUye9+A6qwrdrE67YagZw2c1x+1i4KZ8056jM
-         FVkA==
-X-Gm-Message-State: AOAM533D9ebrMnbOMNTKbtdI2gMANWgFMkaTQ0ir62xbzEnH7KK8kJTA
-        +AdX6t64ndLLcjntHGDQL+M=
-X-Google-Smtp-Source: ABdhPJy6d0Cu933mn+84pD243uhmVtbLS27aP0ei6qwpVknrf2wE9OmynUNrAFXe9REc+s5VjsOUuA==
-X-Received: by 2002:a17:90a:4214:: with SMTP id o20mr4177105pjg.232.1597721658610;
-        Mon, 17 Aug 2020 20:34:18 -0700 (PDT)
-Received: from bobo.ozlabs.ibm.com (193-116-193-175.tpgi.com.au. [193.116.193.175])
-        by smtp.gmail.com with ESMTPSA id b18sm19823352pgj.12.2020.08.17.20.34.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 20:34:18 -0700 (PDT)
-From:   Nicholas Piggin <npiggin@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>
-Cc:     Nicholas Piggin <npiggin@gmail.com>, Jens Axboe <axboe@kernel.dk>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org
-Subject: [RFC PATCH 2/2] powerpc/64s/radix: Fix mm_cpumask trimming race vs kthread_use_mm
-Date:   Tue, 18 Aug 2020 13:34:05 +1000
-Message-Id: <20200818033405.170457-2-npiggin@gmail.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20200818033405.170457-1-npiggin@gmail.com>
-References: <20200818033405.170457-1-npiggin@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726583AbgHRDkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 23:40:10 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:44512 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726302AbgHRDkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 23:40:09 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 41C9F2016DD;
+        Tue, 18 Aug 2020 05:40:07 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 61AD32016D9;
+        Tue, 18 Aug 2020 05:40:01 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id E4B6B402AD;
+        Tue, 18 Aug 2020 05:39:53 +0200 (CEST)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, gregkh@linuxfoundation.org,
+        fugang.duan@nxp.com, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V3 1/5] dt-bindings: clock: Update i.MX28 example
+Date:   Tue, 18 Aug 2020 11:34:41 +0800
+Message-Id: <1597721685-9280-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 0cef77c7798a7 ("powerpc/64s/radix: flush remote CPUs out of
-single-threaded mm_cpumask") added a mechanism to trim the mm_cpumask of
-a process under certain conditions. One of the assumptions is that
-mm_users would not be incremented via a reference outside the process
-context with mmget_not_zero() then go on to kthread_use_mm() via that
-reference.
+Update the i.MX28 clock example to align with MXS AUART binding doc to
+avoid below build error:
 
-That invariant was broken by io_uring code (see previous sparc64 fix),
-but I'll point Fixes: to the original powerpc commit because we are
-changing that assumption going forward, so this will make backports
-match up.
+Documentation/devicetree/bindings/clock/imx28-clock.example.dt.yaml:
+  serial@8006a000: clocks: [[4294967295, 45]] is too short
+Documentation/devicetree/bindings/clock/imx28-clock.example.dt.yaml:
+  serial@8006a000: compatible: Additional items are not allowed
+  ('fsl,imx23-auart' was unexpected)
+Documentation/devicetree/bindings/clock/imx28-clock.example.dt.yaml:
+  serial@8006a000: compatible: ['fsl,imx28-auart', 'fsl,imx23-auart']
+  is too long
+Documentation/devicetree/bindings/clock/imx28-clock.example.dt.yaml:
+  serial@8006a000: 'dmas' is a required property
+Documentation/devicetree/bindings/clock/imx28-clock.example.dt.yaml:
+  serial@8006a000: 'dma-names' is a required property
 
-Fix this by no longer relying on that assumption, but by having each CPU
-check the mm is not being used, and clearing their own bit from the mask
-if it's okay. This relies on commit 38cf307c1f20 ("mm: fix
-kthread_use_mm() vs TLB invalidate") to disable irqs over the mm switch.
-
-Fixes: 0cef77c7798a7 ("powerpc/64s/radix: flush remote CPUs out of single-threaded mm_cpumask")
-not-yet-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 ---
- arch/powerpc/include/asm/tlb.h       | 13 -------------
- arch/powerpc/mm/book3s64/radix_tlb.c | 23 ++++++++++++++++-------
- 2 files changed, 16 insertions(+), 20 deletions(-)
+no change.
+---
+ Documentation/devicetree/bindings/clock/imx28-clock.yaml | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/tlb.h b/arch/powerpc/include/asm/tlb.h
-index fbc6f3002f23..d97f061fecac 100644
---- a/arch/powerpc/include/asm/tlb.h
-+++ b/arch/powerpc/include/asm/tlb.h
-@@ -66,19 +66,6 @@ static inline int mm_is_thread_local(struct mm_struct *mm)
- 		return false;
- 	return cpumask_test_cpu(smp_processor_id(), mm_cpumask(mm));
- }
--static inline void mm_reset_thread_local(struct mm_struct *mm)
--{
--	WARN_ON(atomic_read(&mm->context.copros) > 0);
--	/*
--	 * It's possible for mm_access to take a reference on mm_users to
--	 * access the remote mm from another thread, but it's not allowed
--	 * to set mm_cpumask, so mm_users may be > 1 here.
--	 */
--	WARN_ON(current->mm != mm);
--	atomic_set(&mm->context.active_cpus, 1);
--	cpumask_clear(mm_cpumask(mm));
--	cpumask_set_cpu(smp_processor_id(), mm_cpumask(mm));
--}
- #else /* CONFIG_PPC_BOOK3S_64 */
- static inline int mm_is_thread_local(struct mm_struct *mm)
- {
-diff --git a/arch/powerpc/mm/book3s64/radix_tlb.c b/arch/powerpc/mm/book3s64/radix_tlb.c
-index 0d233763441f..a421a0e3f930 100644
---- a/arch/powerpc/mm/book3s64/radix_tlb.c
-+++ b/arch/powerpc/mm/book3s64/radix_tlb.c
-@@ -645,19 +645,29 @@ static void do_exit_flush_lazy_tlb(void *arg)
- 	struct mm_struct *mm = arg;
- 	unsigned long pid = mm->context.id;
+diff --git a/Documentation/devicetree/bindings/clock/imx28-clock.yaml b/Documentation/devicetree/bindings/clock/imx28-clock.yaml
+index 72328d5..671b279 100644
+--- a/Documentation/devicetree/bindings/clock/imx28-clock.yaml
++++ b/Documentation/devicetree/bindings/clock/imx28-clock.yaml
+@@ -108,8 +108,10 @@ examples:
+     };
  
-+	/*
-+	 * A kthread could have done a mmget_not_zero() after the flushing CPU
-+	 * checked mm_users == 1, and be in the process of kthread_use_mm when
-+	 * interrupted here. In that case, current->mm will be set to mm,
-+	 * because kthread_use_mm() setting ->mm and switching to the mm is
-+	 * done with interrupts off.
-+	 */
- 	if (current->mm == mm)
--		return; /* Local CPU */
-+		goto out_flush;
- 
- 	if (current->active_mm == mm) {
--		/*
--		 * Must be a kernel thread because sender is single-threaded.
--		 */
--		BUG_ON(current->mm);
-+		WARN_ON_ONCE(current->mm != NULL);
-+		/* Is a kernel thread and is using mm as the lazy tlb */
- 		mmgrab(&init_mm);
--		switch_mm(mm, &init_mm, current);
- 		current->active_mm = &init_mm;
-+		switch_mm_irqs_off(mm, &init_mm, current);
- 		mmdrop(mm);
- 	}
-+
-+	atomic_dec(&mm->context.active_cpus);
-+	cpumask_clear_cpu(smp_processor_id(), mm_cpumask(mm));
-+
-+out_flush:
- 	_tlbiel_pid(pid, RIC_FLUSH_ALL);
- }
- 
-@@ -672,7 +682,6 @@ static void exit_flush_lazy_tlbs(struct mm_struct *mm)
- 	 */
- 	smp_call_function_many(mm_cpumask(mm), do_exit_flush_lazy_tlb,
- 				(void *)mm, 1);
--	mm_reset_thread_local(mm);
- }
- 
- void radix__flush_tlb_mm(struct mm_struct *mm)
+     serial@8006a000 {
+-        compatible = "fsl,imx28-auart", "fsl,imx23-auart";
++        compatible = "fsl,imx28-auart";
+         reg = <0x8006a000 0x2000>;
+-        interrupts = <112 70 71>;
++        interrupts = <112>;
++        dmas = <&dma_apbx 8>, <&dma_apbx 9>;
++        dma-names = "rx", "tx";
+         clocks = <&clks 45>;
+     };
 -- 
-2.23.0
+2.7.4
 
