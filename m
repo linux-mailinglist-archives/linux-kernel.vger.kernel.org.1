@@ -2,92 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10BEC247CA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 05:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FAAF247CC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 05:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726592AbgHRDWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 23:22:22 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:39478 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726302AbgHRDWW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 23:22:22 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U668H2X_1597720937;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U668H2X_1597720937)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 18 Aug 2020 11:22:17 +0800
-Date:   Tue, 18 Aug 2020 11:22:17 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     Alexander Duyck <alexander.h.duyck@linux.intel.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/page_reporting: the "page" must not be the list head
-Message-ID: <20200818032217.GA31960@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20200817084836.29216-1-richard.weiyang@linux.alibaba.com>
- <fa97519b-a860-5fea-9511-2237f195caeb@redhat.com>
- <aaa56d83-2444-d74e-025a-508a2be6b772@linux.intel.com>
+        id S1726709AbgHRD2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 23:28:30 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9824 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726429AbgHRD23 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 23:28:29 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 2FCB945B8D7662B5BD6A;
+        Tue, 18 Aug 2020 11:28:25 +0800 (CST)
+Received: from DESKTOP-5IS4806.china.huawei.com (10.174.187.22) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 18 Aug 2020 11:28:16 +0800
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>
+CC:     Marc Zyngier <maz@kernel.org>, Steven Price <steven.price@arm.com>,
+        "Andrew Jones" <drjones@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Will Deacon" <will@kernel.org>, James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        <wanghaibin.wang@huawei.com>, Keqian Zhu <zhukeqian1@huawei.com>
+Subject: [PATCH v2 0/2] clocksource: arm_arch_timer: Some fixes
+Date:   Tue, 18 Aug 2020 11:28:12 +0800
+Message-ID: <20200818032814.15968-1-zhukeqian1@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aaa56d83-2444-d74e-025a-508a2be6b772@linux.intel.com>
+Content-Type: text/plain
+X-Originating-IP: [10.174.187.22]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 09:05:32AM -0700, Alexander Duyck wrote:
->
->
->On 8/17/2020 2:35 AM, David Hildenbrand wrote:
->> On 17.08.20 10:48, Wei Yang wrote:
->> > If "page" is the list head, list_for_each_entry_safe() would stop
->> > iteration.
->> > 
->> > Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
->> > ---
->> >   mm/page_reporting.c | 2 +-
->> >   1 file changed, 1 insertion(+), 1 deletion(-)
->> > 
->> > diff --git a/mm/page_reporting.c b/mm/page_reporting.c
->> > index 3bbd471cfc81..aaaa3605123d 100644
->> > --- a/mm/page_reporting.c
->> > +++ b/mm/page_reporting.c
->> > @@ -178,7 +178,7 @@ page_reporting_cycle(struct page_reporting_dev_info *prdev, struct zone *zone,
->> >   		 * the new head of the free list before we release the
->> >   		 * zone lock.
->> >   		 */
->> > -		if (&page->lru != list && !list_is_first(&page->lru, list))
->> > +		if (!list_is_first(&page->lru, list))
->> >   			list_rotate_to_front(&page->lru, list);
->> >   		/* release lock before waiting on report processing */
->> > 
->> 
->> Is this a fix or a cleanup? If it's a fix, can this be reproduced easily
->> and what ere the effects?
->> 
->
->This should be a clean-up. Since the &page->lru != list will always be true.
->
->If I recall at some point the that was a check for &next->lru != list but I
->think I pulled out an additional conditional check somewhere so that we just
->go through the start of the loop again and iterate over reported pages until
->we are guaranteed to have a non-reported page to rotate to the top of the
->list with the general idea being that we wanted the allocator to pull
->non-reported pages before reported pages.
+change log:
 
-Hi, Alexander,
+v2:
+ - Do not revert commit 0ea415390cd3, fix it instead.
+ - Correct the tags of second patch.
 
-I see you mentioned in the changelog, this change "mm/page_reporting: rotate
-reported pages to the tail of the list" brings some performance gain.
+Keqian Zhu (2):
+  clocksource: arm_arch_timer: Use stable count reader in erratum sne
+  clocksource: arm_arch_timer: Correct fault programming of
+    CNTKCTL_EL1.EVNTI
 
-Would you mind sharing more test detail? I would like to have a try at my
-side.
-
-Thanks :-)
+ drivers/clocksource/arm_arch_timer.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
 -- 
-Wei Yang
-Help you, Help me
+1.8.3.1
+
