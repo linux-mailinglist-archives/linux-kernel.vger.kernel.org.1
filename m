@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3B79249040
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 23:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E110249041
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 23:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726899AbgHRVia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726875AbgHRVia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 18 Aug 2020 17:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34706 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726783AbgHRViO (ORCPT
+        with ESMTP id S1726799AbgHRViP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 17:38:14 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFBA3C061342
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 14:38:13 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id r15so9670893wrp.13
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 14:38:13 -0700 (PDT)
+        Tue, 18 Aug 2020 17:38:15 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33838C061343
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 14:38:15 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id k8so279815wma.2
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 14:38:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=melexis.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=kCKkfI4KUgwhE7z/MGIgFuxJr6A36cU9I1dFPpHRlos=;
-        b=Te28b6GraM5AAO5E5d9a7pbomPCfaBFiUh1IlgdWQp7iRYae5+R+sV3xKyOn2oDIkV
-         odfxpeWDKt1Ai24PpuW+Vvf0tFwI9ePJXbAZUUPJcQ4CzcmcxN7XzzgZDmLrLQAxwYjE
-         JLldjyhrcJZXeiaRA67gLVd4z+2AjSQBruM9vzoLITm7SzsXnawRjrIz72s0ovegdXNw
-         x7O5PbRwiCWiXBH2AOihqu4w5Dr65r927pDIqLSlrmTJIL2ZgoaxBJzGtmOzKwn91Pth
-         uUSKINmo6BsCWKj0/lEi+/bHL05g0JnoO+5C5qhziEBt3qjqqBPCw3yDaBiFb5L02z2C
-         SIpA==
+        bh=hkVI01i3TLrSdzKf7VYHhdEqSltEGddTXnsWOh1/YsM=;
+        b=kzHVtPt8wp9IvYy2NsG64JKyRoeMhnQnWw85I3YKjzRSCv6mgX0LH3CfjOgiyDy1Rt
+         jiqCP81k0b4FIp3mr8ZL4u83pWoMjn8PW4CzWPVz2GXk/IORCQ9k7s7hLT+efg4xxnoL
+         Nmwp/zanRQXQwz1sKT14w4hshTFcQGQXsuEDuqX7fREYtQ3OeP1e1dW2j05zJbBKtizp
+         AdRAn3okhMJx4YSg4zDT6OKIzhaZv0bGsTIjPg/apb4UE2vVSjnruRxTB/e2wUiuHCLW
+         AvKlYc6yRqtPYBS00BqBkfix/gJU7qYBCo3LH92y208jrSsTTOqmcjdcZ9/bnzrRfwaV
+         T3gA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=kCKkfI4KUgwhE7z/MGIgFuxJr6A36cU9I1dFPpHRlos=;
-        b=lQZCStkDZgDjw9HFQo7aF+Q9LcbZ4hd/c3OxjE0vEf+PuxH1L4X9ncVbfiTX8CSiUY
-         Vhubdbb8gzOjUcCxyjH9JXOKRHXMRgp4/iGcTQwuHnuAMesSZfB4w3YAgXczuDGlghj/
-         QKVe++Q7sziMX7JznX/jQz8Dl9V3gHwDin0Yet0QMHO4xb24SXyMZx2S+8En1UBfCLQ2
-         +qtqV7Mvjcm7tg9HZFdsOc28p5Eem7jHfNMyl5hQIEW5Uz+7K6HDaYdrVYEDAIBs3Vep
-         1uHkIJRaFdIXYllPrcAbuvuS3oDTHvHuUoZizShVFinHdDUkvxt+i7G/i5TC7lwbdyNP
-         16dA==
-X-Gm-Message-State: AOAM531+guIdnQ1gx04c4b+dMNe8eAOeJyR4w/YKBT/UOXyXfXekW0l2
-        pPvpArV8X/S/0/iw+ThjBr+C3B9FU/rFRLxNzxE=
-X-Google-Smtp-Source: ABdhPJzzLziDaSiiV6C5/msWuEDrAjETq4OW0ouB5eldrg1N+W3o2BnVXNTMG2xvY3VpZFRIcS6cuA==
-X-Received: by 2002:a5d:6a4a:: with SMTP id t10mr23083894wrw.360.1597786692207;
-        Tue, 18 Aug 2020 14:38:12 -0700 (PDT)
+        bh=hkVI01i3TLrSdzKf7VYHhdEqSltEGddTXnsWOh1/YsM=;
+        b=lN8RZe+xDKtLRKDJfYqhG527HQfrRUMvzGiqKkNa9N0HIKJ+Uf2pJzJd0p1TSlHP7X
+         JMxnTjiYnYlFVi9+y6CdS0bJJ2/XXLgr93MrWn8KGjt6/aJIlBNm/6C6wMmt6qFlcf22
+         /i0vtlUNcml6cR1QLMI/uwr+KffiAlyLnF1W8ckpNUJEWgDd3sjXClbBzPsm2NXM6oUX
+         vQUNR82bJUNpRSf2+Bpl6m63AyGcDU8z7iM0N3paSW2RyYKNs/LgOZH12IPxMy3hVRrH
+         WEZxqWeRGXD0JhRX45v+cHTWm6L6L3zCub1PyMxxIVFw4WZ0K+MyeVdsQuuNAP6Xcbci
+         7VlA==
+X-Gm-Message-State: AOAM5311I9sOj1djrY1Co5FnFo56vPMSDtNf7LPmPS3215c/gTRrNbuY
+        lzXX1RKL32xUr7f2ANbmLDn9ng==
+X-Google-Smtp-Source: ABdhPJx4EC1L4toYDnBar1k9GU/hYpSFfkJ9zKqSzKre3qXIAEhjZNwhivgC93vIWCtrIUABE3vcqw==
+X-Received: by 2002:a1c:8195:: with SMTP id c143mr1767857wmd.85.1597786693841;
+        Tue, 18 Aug 2020 14:38:13 -0700 (PDT)
 Received: from localhost.localdomain ([88.116.83.106])
-        by smtp.gmail.com with ESMTPSA id z207sm1797860wmc.2.2020.08.18.14.38.10
+        by smtp.gmail.com with ESMTPSA id z207sm1797860wmc.2.2020.08.18.14.38.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 14:38:11 -0700 (PDT)
+        Tue, 18 Aug 2020 14:38:12 -0700 (PDT)
 From:   Crt Mori <cmo@melexis.com>
 To:     Jonathan Cameron <jic23@kernel.org>
 Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
         Crt Mori <cmo@melexis.com>,
         Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v6 2/5] iio:temperature:mlx90632: Add kerneldoc to the internal struct
-Date:   Tue, 18 Aug 2020 23:37:34 +0200
-Message-Id: <20200818213737.140613-3-cmo@melexis.com>
+Subject: [PATCH v6 3/5] iio:temperature:mlx90632: Convert polling while loop to regmap
+Date:   Tue, 18 Aug 2020 23:37:35 +0200
+Message-Id: <20200818213737.140613-4-cmo@melexis.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200818213737.140613-1-cmo@melexis.com>
 References: <20200818213737.140613-1-cmo@melexis.com>
@@ -66,36 +66,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document internal/private struct for mlx90632 device.
+Reduce number of lines and improve readability to convert polling while
+loops to regmap_read_poll_timeout.
 
 Signed-off-by: Crt Mori <cmo@melexis.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 ---
- drivers/iio/temperature/mlx90632.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/iio/temperature/mlx90632.c | 16 +++++-----------
+ 1 file changed, 5 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/iio/temperature/mlx90632.c b/drivers/iio/temperature/mlx90632.c
-index c3de10ba5b1e..ce75f5a3486b 100644
+index ce75f5a3486b..d782634c107f 100644
 --- a/drivers/iio/temperature/mlx90632.c
 +++ b/drivers/iio/temperature/mlx90632.c
-@@ -89,9 +89,16 @@
- #define MLX90632_MAX_MEAS_NUM	31 /**< Maximum measurements in list */
- #define MLX90632_SLEEP_DELAY_MS 3000 /**< Autosleep delay */
+@@ -180,25 +180,19 @@ static s32 mlx90632_pwr_continuous(struct regmap *regmap)
+  */
+ static int mlx90632_perform_measurement(struct mlx90632_data *data)
+ {
+-	int ret, tries = 100;
+ 	unsigned int reg_status;
++	int ret;
  
-+/**
-+ * struct mlx90632_data - private data for the MLX90632 device
-+ * @client: I2C client of the device
-+ * @lock: Internal mutex for multiple reads for single measurement
-+ * @regmap: Regmap of the device
-+ * @emissivity: Object emissivity from 0 to 1000 where 1000 = 1.
-+ */
- struct mlx90632_data {
- 	struct i2c_client *client;
--	struct mutex lock; /* Multiple reads for single measurement */
-+	struct mutex lock;
- 	struct regmap *regmap;
- 	u16 emissivity;
- };
+ 	ret = regmap_update_bits(data->regmap, MLX90632_REG_STATUS,
+ 				 MLX90632_STAT_DATA_RDY, 0);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	while (tries-- > 0) {
+-		ret = regmap_read(data->regmap, MLX90632_REG_STATUS,
+-				  &reg_status);
+-		if (ret < 0)
+-			return ret;
+-		if (reg_status & MLX90632_STAT_DATA_RDY)
+-			break;
+-		usleep_range(10000, 11000);
+-	}
++	ret = regmap_read_poll_timeout(data->regmap, MLX90632_REG_STATUS, reg_status,
++				       !(reg_status & MLX90632_STAT_DATA_RDY), 10000,
++				       100 * 10000);
+ 
+-	if (tries < 0) {
++	if (ret < 0) {
+ 		dev_err(&data->client->dev, "data not ready");
+ 		return -ETIMEDOUT;
+ 	}
 -- 
 2.25.1
 
