@@ -2,48 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2847D248C11
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CCBA248C12
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728366AbgHRQzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 12:55:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35432 "EHLO mail.kernel.org"
+        id S1728419AbgHRQzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 12:55:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728327AbgHRQyf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 12:54:35 -0400
+        id S1728391AbgHRQyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 12:54:41 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6523207D3;
-        Tue, 18 Aug 2020 16:54:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4DD4E207DE;
+        Tue, 18 Aug 2020 16:54:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597769675;
-        bh=3vbm55O2sXgcIvXGhZRQabLgIImj+oFTn5mSUu/7Agw=;
+        s=default; t=1597769680;
+        bh=6IjWju0cG/TFyI32CMnJxEjghzNZ8gdEUP+yjd7GWjw=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=Hd8yj2Z4AZnjkkZfNcW76gJD1StQ0Hd498Lrh2p0s3HytUpyS9vBhtC0Hkx1oj+KM
-         IOhlAnOWEf0qRJZ5I5H9B/xQOTLqe7baPNC2DDKpqx0Cxc5f3lEm/D63e6/yzYs8Vx
-         wnW+amRKnMUbil8RaF824efxXqqyaLSdP05mlc2o=
-Date:   Tue, 18 Aug 2020 17:54:04 +0100
+        b=dE/Aj3rNQfpPWtDt9bsbKDhDaacQfYNsR50BF/r59zwBDl4ti6z5EjYomGaCfAoM+
+         D1JzBPTO5mx1sSkG5m1Cy5gAutNXkJLf+QsQr7WV/w9WVjqB+XezR1gKXisMt5sVxO
+         5L8qyyK3KOEzkbA6N/bPOca0cucCkMd2kFT6lgoA=
+Date:   Tue, 18 Aug 2020 17:54:09 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     festevam@gmail.com, Xiubo.Lee@gmail.com, tiwai@suse.com,
-        Shengjiu Wang <shengjiu.wang@nxp.com>, timur@kernel.org,
-        lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-        nicoleotsuka@gmail.com, linuxppc-dev@lists.ozlabs.org,
-        alsa-devel@alsa-project.org, perex@perex.cz
-In-Reply-To: <1597047103-6863-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1597047103-6863-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH v2] ASoC: fsl-asoc-card: Get "extal" clock rate by clk_get_rate
-Message-Id: <159776961931.56094.3057738370364224756.b4-ty@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <20200808012209.10880-1-rdunlap@infradead.org>
+References: <20200808012209.10880-1-rdunlap@infradead.org>
+Subject: Re: [PATCH] ASoC: various vendors: delete repeated words in comments
+Message-Id: <159776961931.56094.907020129915498135.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 Aug 2020 16:11:43 +0800, Shengjiu Wang wrote:
-> On some platform(.e.g. i.MX8QM MEK), the "extal" clock is different
-> with the mclk of codec, then the clock rate is also different.
-> So it is better to get clock rate of "extal" rate by clk_get_rate,
-> don't reuse the clock rate of mclk.
+On Fri, 7 Aug 2020 18:22:09 -0700, Randy Dunlap wrote:
+> Drop the repeated words {related, we, is, the} in comments.
 
 Applied to
 
@@ -51,8 +45,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl-asoc-card: Get "extal" clock rate by clk_get_rate
-      commit: a8fd5ca8016948a611bff62b0990ade9e1f8e83c
+[1/1] ASoC: various vendors: delete repeated words in comments
+      commit: 0d8aa2ccb2f21c79bc9d4dceab0c6f99ff20bae1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
