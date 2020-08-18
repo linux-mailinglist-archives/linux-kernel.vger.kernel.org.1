@@ -2,96 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F39EA2481E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 11:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0602481E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 11:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbgHRJ1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 05:27:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbgHRJ1k (ORCPT
+        id S1726482AbgHRJaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 05:30:20 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:25388 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726145AbgHRJaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 05:27:40 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 389AFC061389
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 02:27:40 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id 2so17576231qkf.10
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 02:27:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=l1uRMktfRV5crgPVmS/xcdDcOHzetxlDlwwdgtJx5JA=;
-        b=aXZCsxwprTxASQu2DNMwoUtCZ6t+hAn/5sw5abMV4tonMk0SgnkIntg7cbyYTZWblV
-         6aEwV7fV6oFYpxM4V71CUTNFU+ySLfcQw6a2IuXnzfyCU985kgho/mfmw+W4V4KlsDoV
-         HACh+ZAEE3ZN9fLfhWnARV3NpdrsfiULbLeio=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=l1uRMktfRV5crgPVmS/xcdDcOHzetxlDlwwdgtJx5JA=;
-        b=CTuPSF2Wc+5c8nJFE8kHIiYLu+2wX6obgRmDXO8PMvIhx6z6pI/oJVFX0SMjH1RL0z
-         Q1BNJnVZPsgUbDR/pEIayYbRNvErlw7GlfM7Dq7wmfp/pIGQ7aTRyfrMxvL+LCuwfTuu
-         DLu6IRxhWxOvh32Ufsz2PKv201/tQpChzRyKe/qthxeTMgBOoKrKlz/JPsrBeme0/uA8
-         bD0x7cMSb062wfVUhNIdjXr823FN7YIy/KzNNuDUUWCx+H3M8Wfwmmy5giY07qy90h7J
-         +spedqUOf3IjOS5nsuPkyrnq2OSJCRzoqwMlvRqVoiIEqnG6b72DcUftNEIw80u+Tia+
-         Op7w==
-X-Gm-Message-State: AOAM533+Nvi3QqZsAciSV+c0fNR5nbVpFTepj8zay4ZXe2/6P+w6PCDI
-        HjeX7Xuz7puoxEO6rz+2KkCY2A==
-X-Google-Smtp-Source: ABdhPJyjRbj82qo14ynmuKZgINBcTQu1SV2ro8jRAdmhpvPscAYrmOepaS8i23X7ke5WKJ6U1bhfGg==
-X-Received: by 2002:a37:a104:: with SMTP id k4mr16018682qke.384.1597742859405;
-        Tue, 18 Aug 2020 02:27:39 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:179c])
-        by smtp.gmail.com with ESMTPSA id d16sm19784856qkk.106.2020.08.18.02.27.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 02:27:39 -0700 (PDT)
-Date:   Tue, 18 Aug 2020 10:27:37 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     peterz@infradead.org
-Cc:     Waiman Long <longman@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [RFC PATCH 0/8] memcg: Enable fine-grained per process memory
- control
-Message-ID: <20200818092737.GA148695@chrisdown.name>
-References: <20200817140831.30260-1-longman@redhat.com>
- <20200818091453.GL2674@hirez.programming.kicks-ass.net>
+        Tue, 18 Aug 2020 05:30:19 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597743019; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=AHVbPJFk+TLJWIDMizKenawUcEUUBXKZ1Yv5y2vGNuY=;
+ b=XqZ7IzUL8Nw0Vn37g1M7niGEggQ8/49MRS9XUuM4aNd2+lSXDNgKgHPF6kKi3tEam5iLr3GK
+ f/UyrJfF/LFkEPEYaKm0b8nqQmZg8EtrdpDhDQzcCSXtqB5XZp5LC59v6rnm80k+6BsTQIvF
+ R/jTb/DX21lFVGnbMkj0+eSJRrs=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5f3b9f6ef2b697637a220853 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 18 Aug 2020 09:29:18
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EB685C433A1; Tue, 18 Aug 2020 09:29:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: hongwus)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 19D12C433CA;
+        Tue, 18 Aug 2020 09:29:16 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200818091453.GL2674@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 18 Aug 2020 17:29:16 +0800
+From:   hongwus@codeaurora.org
+To:     Asutosh Das <asutoshd@codeaurora.org>
+Cc:     Can Guo <cang@codeaurora.org>, nguyenb@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-scsi-owner@vger.kernel.org
+Subject: Re: [PATCH] scsi: ufs: Remove an unpaired
+ ufshcd_scsi_unblock_requests() in err_handler()
+In-Reply-To: <20200818054237.GA880@asutoshd-linux1.qualcomm.com>
+References: <1597728047-39936-1-git-send-email-cang@codeaurora.org>
+ <20200818054237.GA880@asutoshd-linux1.qualcomm.com>
+Message-ID: <72617138cbb0ccd5a50a9b7048251489@codeaurora.org>
+X-Sender: hongwus@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-peterz@infradead.org writes:
->On Mon, Aug 17, 2020 at 10:08:23AM -0400, Waiman Long wrote:
->> Memory controller can be used to control and limit the amount of
->> physical memory used by a task. When a limit is set in "memory.high" in
->> a v2 non-root memory cgroup, the memory controller will try to reclaim
->> memory if the limit has been exceeded. Normally, that will be enough
->> to keep the physical memory consumption of tasks in the memory cgroup
->> to be around or below the "memory.high" limit.
->>
->> Sometimes, memory reclaim may not be able to recover memory in a rate
->> that can catch up to the physical memory allocation rate. In this case,
->> the physical memory consumption will keep on increasing.
->
->Then slow down the allocator? That's what we do for dirty pages too, we
->slow down the dirtier when we run against the limits.
+On 2020-08-18 13:42, Asutosh Das wrote:
+> On Mon, Aug 17 2020 at 22:21 -0700, Can Guo wrote:
+>> Commit 5586dd8ea250a ("scsi: ufs: Fix a race condition between error
+>> handler and runtime PM ops") moves the ufshcd_scsi_block_requests() 
+>> inside
+>> err_handler(), but forgets to remove the 
+>> ufshcd_scsi_unblock_requests() in
+>> the early return path. Correct the coding mistake.
+>> 
+>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>> 
+> Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
+> 
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index 2b55c2e..b8441ad 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -5670,7 +5670,6 @@ static void ufshcd_err_handler(struct 
+>> work_struct *work)
+>> 		if (hba->ufshcd_state != UFSHCD_STATE_ERROR)
+>> 			hba->ufshcd_state = UFSHCD_STATE_OPERATIONAL;
+>> 		spin_unlock_irqrestore(hba->host->host_lock, flags);
+>> -		ufshcd_scsi_unblock_requests(hba);
+>> 		return;
+>> 	}
+>> 	ufshcd_set_eh_in_progress(hba);
+>> -- Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, 
+>> a Linux Foundation Collaborative Project.
+>> 
 
-We already do that since v5.4. I'm wondering whether Waiman's customer is just 
-running with a too-old kernel without 0e4b01df865 ("mm, memcg: throttle 
-allocators when failing reclaim over memory.high") backported.
+Reviewed-by: Hongwu Su<hongwus@codeaurora.org>
