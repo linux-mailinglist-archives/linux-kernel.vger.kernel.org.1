@@ -2,84 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A15B247E0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 07:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B56247DF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 07:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbgHRFtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 01:49:15 -0400
-Received: from smtp.h3c.com ([60.191.123.50]:8241 "EHLO h3cspam02-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726228AbgHRFtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 01:49:14 -0400
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
-        by h3cspam02-ex.h3c.com with ESMTPS id 07I5mrPN027012
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 18 Aug 2020 13:48:53 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from localhost.localdomain (10.99.212.201) by
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 18 Aug 2020 13:48:55 +0800
-From:   Xianting Tian <tian.xianting@h3c.com>
-To:     <song@kernel.org>
-CC:     <linux-raid@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Xianting Tian <tian.xianting@h3c.com>
-Subject: [PATCH] md: only calculate blocksize once and use i_blocksize()
-Date:   Tue, 18 Aug 2020 13:42:06 +0800
-Message-ID: <20200818054206.6612-1-tian.xianting@h3c.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726707AbgHRFme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 01:42:34 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:37018 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726228AbgHRFmd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 01:42:33 -0400
+Received: by mail-ej1-f67.google.com with SMTP id qc22so20577054ejb.4;
+        Mon, 17 Aug 2020 22:42:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1tVz7UT+SvsNDotol38wN9NUomwuxLq4eSOdjboG+OY=;
+        b=eII3H7oLNtReXuSTcSLRJbono5IJ5z1Dbt033YzmNIrFhrEOh6DF1keS2mZDP1NrsW
+         UGnW8jVScgSD6wn58LXhRMurD7mgIn46OxEnkNotK5k5zlHgGELmeqIaNu46nT6ORvEF
+         YZalgzTmMctNVuaVx+/bZxitH1nqFWVZw10W/Cderv6mkqed9MHAam2GXJMy1nFsBa9J
+         pitZwTWAQg8ht/RiH7k9UCjUX+EFtG4P5Axmd+/KKAXMACUDo/Z8761M23iE8xAWAnMY
+         +45dXczc4AXuFkWG8GMHrdbx78j3Tz0qchcLcI+W4hX9Kz4c1XmK7P1cH/CzyYhoVYV5
+         sWAA==
+X-Gm-Message-State: AOAM532/DIX+CoblL+1Od8t/BYGsUU6WZ12UpqHIPcwvAeyJP25sTfiF
+        pkLrE/BbR50UvskB4q7Oq9qAF/65OlE=
+X-Google-Smtp-Source: ABdhPJwDhpmTxHUv/rAR858626yDAWiLDUAqQgeA5SJPCXuVD9+jaHiH0SIIZAKI5WxInsWGT+HVjw==
+X-Received: by 2002:a17:906:3cc:: with SMTP id c12mr17804853eja.222.1597729351225;
+        Mon, 17 Aug 2020 22:42:31 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id i9sm15678045ejb.48.2020.08.17.22.42.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Aug 2020 22:42:30 -0700 (PDT)
+Subject: Re: [PATCH v2] Fixes: tty: serial: earlycon dependency
+To:     Tong Zhang <ztong0001@gmail.com>, gregkh@linuxfoundation.org,
+        linux-serial@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Hurley <peter@hurleysoftware.com>
+References: <20200817170038.GA725471@kroah.com>
+ <20200817185419.1133596-1-ztong0001@gmail.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <603a20ef-fe09-c4ae-11d0-3f1dc7b87580@kernel.org>
+Date:   Tue, 18 Aug 2020 07:42:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.99.212.201]
-X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
-X-DNSRBL: 
-X-MAIL: h3cspam02-ex.h3c.com 07I5mrPN027012
+In-Reply-To: <20200817185419.1133596-1-ztong0001@gmail.com>
+Content-Type: text/plain; charset=iso-8859-2
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We alreday has the interface i_blocksize(), which can be used
-to get blocksize, so use it.
-Only calculate blocksize once and use it within read_page().
+On 17. 08. 20, 20:54, Tong Zhang wrote:
+> parse_options() in drivers/tty/serial/earlycon.c calls uart_parse_earlycon
+> in drivers/tty/serial/serial_core.c therefore selecting SERIAL_EARLYCON
+> should automatically select SERIAL_CORE, otherwise will result in symbol
+> not found error during linking if SERIAL_CORE is not configured as builtin
+> 
+> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
 
-Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
----
- drivers/md/md-bitmap.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+The "Fixes:" keyword should not have been in the Subject but here.
+According to your findings something like this:
 
-diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
-index 95a5f3757..0d5544868 100644
---- a/drivers/md/md-bitmap.c
-+++ b/drivers/md/md-bitmap.c
-@@ -357,11 +357,12 @@ static int read_page(struct file *file, unsigned long index,
- 	struct inode *inode = file_inode(file);
- 	struct buffer_head *bh;
- 	sector_t block, blk_cur;
-+	unsigned long blocksize = i_blocksize(inode);
- 
- 	pr_debug("read bitmap file (%dB @ %llu)\n", (int)PAGE_SIZE,
- 		 (unsigned long long)index << PAGE_SHIFT);
- 
--	bh = alloc_page_buffers(page, 1<<inode->i_blkbits, false);
-+	bh = alloc_page_buffers(page, blocksize, false);
- 	if (!bh) {
- 		ret = -ENOMEM;
- 		goto out;
-@@ -383,10 +384,10 @@ static int read_page(struct file *file, unsigned long index,
- 
- 			bh->b_blocknr = block;
- 			bh->b_bdev = inode->i_sb->s_bdev;
--			if (count < (1<<inode->i_blkbits))
-+			if (count < blocksize)
- 				count = 0;
- 			else
--				count -= (1<<inode->i_blkbits);
-+				count -= blocksize;
- 
- 			bh->b_end_io = end_bitmap_write;
- 			bh->b_private = bitmap;
+Fixes: 73abaf87f01b (serial: earlycon: Refactor parse_options into
+serial core)
+
+I am not sure:
+1) it should be "select" (and not "depends")
+2) serial earlycon should depend on serial core. But it's likely OK.
+
+>  drivers/tty/serial/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+> index 8a0352eb337c..42e844314cbb 100644
+> --- a/drivers/tty/serial/Kconfig
+> +++ b/drivers/tty/serial/Kconfig
+> @@ -8,6 +8,7 @@ menu "Serial drivers"
+>  
+>  config SERIAL_EARLYCON
+>  	bool
+> +	select SERIAL_CORE
+>  	help
+>  	  Support for early consoles with the earlycon parameter. This enables
+>  	  the console before standard serial driver is probed. The console is
+> 
+
+thanks,
 -- 
-2.17.1
-
+js
+suse labs
