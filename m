@@ -2,94 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D4B247E45
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 08:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B977C247E4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 08:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726585AbgHRGL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 02:11:29 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:44449 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726228AbgHRGL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 02:11:27 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BW0sm2f4Sz9sTH;
-        Tue, 18 Aug 2020 16:11:24 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1597731084;
-        bh=uA/giJ0TzTis8fgQXiophKkvkStCEFhq3/Fv5VyfCnU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=rh1pVCPYZrQ5XQKNrDSZ/U2ZGU8jKU6X/PGdKy3GRhOHDP+yfoN5DjPQuTybp3QMJ
-         uVeWDG5RUWGsCEGJNbuTFXw7p0AVzG+13WWN7pzqW3E2El6LeJl6jOTS21B6zL3mee
-         h0Mozz4eOvvQbaZdNu4F80Pu11B+1bu1ZurwGcn2olYd8FcSJrfcGzmHUy1vKUB7Hu
-         LcAbjGNWqyB87q3TZNmcKDEWgIoZGobmwEyk7Xz9fQqRmidHKfsnOHmqPeXrxPpAEV
-         wGsx8Pn9AWh9YJHcbu3JDMz8WqDA9aLxERhUaWLJAXyVQwCE56I7WMK+TuoaPnJ8Xx
-         ZYBrcClqwN9dg==
-Date:   Tue, 18 Aug 2020 16:11:21 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Can Guo <cang@codeaurora.org>
-Subject: linux-next: Fixes tag needs some work in the scsi-mkp tree
-Message-ID: <20200818161121.77559bee@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Xl6MU2KjIxU7XP9BQJULhYe";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1726593AbgHRGMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 02:12:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726228AbgHRGMs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 02:12:48 -0400
+Received: from mail-ej1-x64a.google.com (mail-ej1-x64a.google.com [IPv6:2a00:1450:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E19FC061342
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 23:12:47 -0700 (PDT)
+Received: by mail-ej1-x64a.google.com with SMTP id ew2so6383929ejb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 23:12:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=eFG3+ZU04dg7j/n8RQMsX5KJHQEOve2F0DGeAT5bRdQ=;
+        b=lyPvpxTAYkmA1z+nQG0Kuj8CGkbqhbEixqfs7MpHSSXUBLVcJi6NLxh/KEhmQL5EH7
+         5LSouC2V3yBab61eAHZyRvORAUg5Be9pSM+3L3iUKRgDm6Mht1H4yvISTZ0Ww03gpvdg
+         pnVXfrkIqkKKPA6Kdb1H+YIfNpae2jXeKun5A+WYPF6E9AF4vTnFoEs9MtZZqYuyqUoG
+         /O9iGZrtwqIJ4vBGeVgVfTjOsU2HyLOMVEYbXkMZdWfbUSDhXrtKg1BKoyYesGENNP4o
+         h9VEoWGepxLcXumVisMg6kou8lmk28WgL62sHFtT2pC/3sWTKoXMY3O1d5+rjCTOUoAb
+         /vRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=eFG3+ZU04dg7j/n8RQMsX5KJHQEOve2F0DGeAT5bRdQ=;
+        b=Cv6rC8twOhkmLRj1EiN8077vDk2ckl3GvR89nmZAO9GKR9E65wCR233jnr5nIkITpA
+         j48+i0A3k6Bg7ZRGuQOW9+OXgxU0ny+sIiy5lkTLBQsVwJw2Kq4O/4zNhdB+og0ECn8L
+         sOrpfVPpCfzrh0+YHfi5JGQdWvbqmqujcOLkeB8hbv7wJ4yLMMzbxSlx3G+MyrZwYXBp
+         VUz2ZsZDTCZtVMQf2BX8e1OWWlGI7oOCWf+Gs3XmNty+SG/HPaTSVLLzcPGriibDgZ5z
+         N3QD7zf818OPovT40villaHg4f0IGmMnEkJCCmDTuYjrawSrn1UVZnirOgqcBibohswn
+         6+EA==
+X-Gm-Message-State: AOAM533SWJhuesPEUr0zd1i7VrvrJ7XcDOlPNFjDlmCqu9fXYzbhLaTB
+        6WXV5cMzsm4/Zfb/aNZBmPrzgZHRBw==
+X-Google-Smtp-Source: ABdhPJx/znTRf5ONMvee2ts2374fyNiuRaF1EBB88UBg4JiH+0EZjiz4EMZMQwRCBdDWPBloMOlMMnRJdw==
+X-Received: by 2002:a05:6402:1ca6:: with SMTP id cz6mr17981292edb.310.1597731166134;
+ Mon, 17 Aug 2020 23:12:46 -0700 (PDT)
+Date:   Tue, 18 Aug 2020 08:12:34 +0200
+Message-Id: <20200818061239.29091-1-jannh@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
+Subject: [PATCH v3 0/5] Fix ELF / FDPIC ELF core dumping, and use mmap_lock
+ properly in there
+From:   Jann Horn <jannh@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Xl6MU2KjIxU7XP9BQJULhYe
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+At the moment, we have that rather ugly mmget_still_valid() helper to
+work around <https://crbug.com/project-zero/1790>: ELF core dumping
+doesn't take the mmap_sem while traversing the task's VMAs, and if
+anything (like userfaultfd) then remotely messes with the VMA tree,
+fireworks ensue. So at the moment we use mmget_still_valid() to bail
+out in any writers that might be operating on a remote mm's VMAs.
 
-Hi all,
+With this series, I'm trying to get rid of the need for that as
+cleanly as possible. ("cleanly" meaning "avoid holding the mmap_lock
+across unbounded sleeps".)
 
-In commit
 
-  35afe60929ab ("scsi: ufs: Properly release resources if a task is aborted=
- successfully")
+Patches 1, 2 and 3 are relatively unrelated cleanups in the core
+dumping code.
 
-Fixes tag
+Patches 4 and 5 implement the main change: Instead of repeatedly
+accessing the VMA list with sleeps in between, we snapshot it at the
+start with proper locking, and then later we just use our copy of
+the VMA list. This ensures that the kernel won't crash, that VMA
+metadata in the coredump is consistent even in the presence of
+concurrent modifications, and that any virtual addresses that aren't
+being concurrently modified have their contents show up in the core
+dump properly.
 
-  Fixes: 5a0b0cb9bee7 ("ufs: Add support for clock gating")
+The disadvantage of this approach is that we need a bit more memory
+during core dumping for storing metadata about all VMAs.
 
-has these problem(s):
+After this series has landed, we should be able to rip out
+mmget_still_valid().
 
-  - Subject does not match target commit subject
-    Just use
-	git log -1 --format=3D'Fixes: %h ("%s")'
 
-Did you mean
+I have tested:
 
-Fixes: 5a0b0cb9bee7 ("[SCSI] ufs: Add support for sending NOP OUT UPIU")
+ - Creating a simple core dump on X86-64 still works.
+ - The created coredump on X86-64 opens in GDB and looks plausible.
+ - NOMMU 32-bit ARM can still generate plausible-looking core dumps
+   through the FDPIC implementation. (I can't test this with GDB because
+   GDB is missing some structure definition for nommu ARM, but I've
+   poked around in the hexdump and it looked decent.)
 
-or
+Jann Horn (5):
+  binfmt_elf_fdpic: Stop using dump_emit() on user pointers on !MMU
+  coredump: Let dump_emit() bail out on short writes
+  coredump: Refactor page range dumping into common helper
+  binfmt_elf, binfmt_elf_fdpic: Use a VMA list snapshot
+  mm/gup: Take mmap_lock in get_dump_page()
 
-Fixes: 1ab27c9cf8b6 ("ufs: Add support for clock gating")
+ fs/binfmt_elf.c          | 184 ++++++++++++++-------------------------
+ fs/binfmt_elf_fdpic.c    | 106 +++++++++-------------
+ fs/coredump.c            | 125 +++++++++++++++++++++++---
+ include/linux/coredump.h |  11 +++
+ mm/gup.c                 |  61 +++++++------
+ 5 files changed, 265 insertions(+), 222 deletions(-)
 
---=20
-Cheers,
-Stephen Rothwell
 
---Sig_/Xl6MU2KjIxU7XP9BQJULhYe
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+base-commit: 06a4ec1d9dc652e17ee3ac2ceb6c7cf6c2b75cdd
+-- 
+2.28.0.220.ged08abb693-goog
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl87cQkACgkQAVBC80lX
-0GynMAgAkSl6ASR3JRrkZO9rg03BodTPJ/k/jWAdIGaoD2Ljh6A0gHrEHjx2U5NA
-/RoNFqWJ5hUnf5P0fayvcF+9SbJwplNo7U1NuyFfSDi1n0y7SvVutqOGQ3fMuDHw
-ngz9QVGLeFjdg0vhh7iKNww47NTpbplMsi7bfZRJcNlKbj3qVwGOorA8ZHkjgNDl
-lZxy1jR9agQwfZg2dm1yf5jrqQ9yvmzzr9ZM1C/21wTQk5xB2R23WVcuWYpMm3O7
-21IpLCg2OMKRhZQUwqcUBmL2wE/vL0JBl1RVDidYJ80+9NCgsjNmHdRY6lJxZfzv
-0flD3d9FpuZRCNGh6m29wixNx9S1Rg==
-=qb+q
------END PGP SIGNATURE-----
-
---Sig_/Xl6MU2KjIxU7XP9BQJULhYe--
