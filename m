@@ -2,79 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F4F2248344
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 12:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E89248347
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 12:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726786AbgHRKnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 06:43:49 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:39312 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726473AbgHRKns (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 06:43:48 -0400
-Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k7z5m-0003jk-JH; Tue, 18 Aug 2020 10:43:46 +0000
-Date:   Tue, 18 Aug 2020 12:43:45 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        criu@openvz.org, bpf@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Jann Horn <jann@thejh.net>, Kees Cook <keescook@chromium.org>,
-        Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Matthew Wilcox <willy@debian.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Matthew Wilcox <matthew@wil.cx>,
-        Trond Myklebust <trond.myklebust@fys.uio.no>,
-        Chris Wright <chrisw@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [PATCH 12/17] proc/fd: In fdinfo seq_show don't use
- get_files_struct
-Message-ID: <20200818104345.n5ugxlzuv5iuggqs@wittgenstein>
-References: <87ft8l6ic3.fsf@x220.int.ebiederm.org>
- <20200817220425.9389-12-ebiederm@xmission.com>
+        id S1726804AbgHRKpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 06:45:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726203AbgHRKpD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 06:45:03 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A4408204EA;
+        Tue, 18 Aug 2020 10:45:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597747503;
+        bh=V2xRo09r41goWcHkv/TbZqQoAC4ijfdpV8AhWqNHVa8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Fh5UJUtv8etbELwMr2WpcfExLHbDpbyxc8JOao7kijScx1xcMrMp2cxAMpUru677p
+         m9jcw94Zv7743Oy88oRexPOJWKKsp3xONJUS3/SWF4Dv6qL0cjeTppw8xJuMheqfxZ
+         LTzaqXDgyTnnreT1mV1S2GX3/m2Q6XYGFyIC8AGc=
+Date:   Tue, 18 Aug 2020 11:44:32 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Allen Pais <allen.cryptic@gmail.com>, perex@perex.cz,
+        tiwai@suse.com, clemens@ladisch.de, o-takashi@sakamocchi.jp,
+        timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        keescook@chromium.org, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Allen Pais <allen.lkml@gmail.com>
+Subject: Re: [PATCH 00/10] sound: convert tasklets to use new tasklet_setup()
+Message-ID: <20200818104432.GB5337@sirena.org.uk>
+References: <20200817085703.25732-1-allen.cryptic@gmail.com>
+ <s5hsgckl084.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="RASg3xLB4tUQ4RcS"
 Content-Disposition: inline
-In-Reply-To: <20200817220425.9389-12-ebiederm@xmission.com>
+In-Reply-To: <s5hsgckl084.wl-tiwai@suse.de>
+X-Cookie: You're at Witt's End.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 05:04:20PM -0500, Eric W. Biederman wrote:
-> When discussing[1] exec and posix file locks it was realized that none
-> of the callers of get_files_struct fundamentally needed to call
-> get_files_struct, and that by switching them to helper functions
-> instead it will both simplify their code and remove unnecessary
-> increments of files_struct.count.  Those unnecessary increments can
-> result in exec unnecessarily unsharing files_struct which breaking
-> posix locks, and it can result in fget_light having to fallback to
-> fget reducing system performance.
-> 
-> Instead hold task_lock for the duration that task->files needs to be
-> stable in seq_show.  The task_lock was already taken in
-> get_files_struct, and so skipping get_files_struct performs less work
-> overall, and avoids the problems with the files_struct reference
-> count.
-> 
-> [1] https://lkml.kernel.org/r/20180915160423.GA31461@redhat.com
-> Suggested-by: Oleg Nesterov <oleg@redhat.com>
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> ---
 
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+--RASg3xLB4tUQ4RcS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Aug 18, 2020 at 12:25:31PM +0200, Takashi Iwai wrote:
+
+> Mark, may I apply those ASoC patches through my tree together with
+> others?  Those seem targeting to 5.9, and I have a patch set to
+> convert to tasklet for 5.10, which would be better manageable when
+> based on top of those changes.
+
+These patches which I wasn't CCed on and which need their subject lines
+fixing :( .  With the subject lines fixed I guess so so
+
+Acked-by: Mark Brown <broonie@kernel.org>
+
+but judging from some of the other threads about similar patches that I
+was randomly CCed on I'm not sure people like from_tasklet() so perhaps
+there might be issues.
+
+Allen, as documented in submitting-patches.rst please send patches to
+the maintainers for the code you would like to change.  The normal
+kernel workflow is that people apply patches from their inboxes, if they
+aren't copied they are likely to not see the patch at all and it is much
+more difficult to apply patches.
+
+--RASg3xLB4tUQ4RcS
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl87sQ8ACgkQJNaLcl1U
+h9AXXgf9Grt6q+diq7m3+Va9EPuojISFzp0rHACAAAE39g0r2Kzx/g53wYjT8uoA
+Yr6dm9ajOxkGjqsZp4Zsp6iSabfuXuEAi9qBBBkCJlatDiEWwObS4X77VNUE82lo
+U7d2ljdnsbtM/zTfYjc63OaAstv4bXWHm+NtjgJhiO155DifPsUOW8js8IPoSlN+
+XDEPT0VVKs1syY90ef4oz7i/aTnOKLlGEejv1YHLRkvwmQyWbjZOo83UHSuB7IPB
+GeTWC/+jE9ujCAKoCFmW8la4LWjfn8yV15s0LI7OFBFZZQoulBBhC7Dp316u5wsw
+B2jWhNhnIJc8tG4nAuopeUqjHqIKYA==
+=oDDH
+-----END PGP SIGNATURE-----
+
+--RASg3xLB4tUQ4RcS--
