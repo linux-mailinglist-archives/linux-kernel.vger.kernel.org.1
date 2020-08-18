@@ -2,76 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98C02480E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C40862480E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726451AbgHRIpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 04:45:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726043AbgHRIpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 04:45:42 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31C0A2067C;
-        Tue, 18 Aug 2020 08:45:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597740341;
-        bh=ak+y5BoFBVfW8paleI+5GaKh+4eEBA0XSb9vh8DWjBM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d8dhDn3mfjAbebIyQe71qhjzJlE02m6fYxbU49B6KA/1dYS5xcDjUItb6ej4GhNmc
-         h93KXvX1tvvKK1ODJvuQz8CCn27BS4v6nMcTrV1XS0JDPIxPW2i9kIlSP7Y2dp3QBO
-         mSKygM2a1FupGQxQW44MQyncnhzg5Xo1L3VVS7S8=
-Date:   Tue, 18 Aug 2020 10:46:05 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] usb: renesas-xhci: remove version check
-Message-ID: <20200818084605.GA27455@kroah.com>
-References: <20200818071739.789720-1-vkoul@kernel.org>
- <20200818073108.GE9254@kroah.com>
- <20200818083919.GY2639@vkoul-mobl>
+        id S1726519AbgHRIqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 04:46:40 -0400
+Received: from mail.windriver.com ([147.11.1.11]:35639 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726145AbgHRIqj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 04:46:39 -0400
+Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
+        by mail.windriver.com (8.15.2/8.15.2) with ESMTPS id 07I8kSaT020265
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Tue, 18 Aug 2020 01:46:28 -0700 (PDT)
+Received: from pek-lpggp1.wrs.com (128.224.153.74) by ALA-HCB.corp.ad.wrs.com
+ (147.11.189.41) with Microsoft SMTP Server id 14.3.487.0; Tue, 18 Aug 2020
+ 01:46:09 -0700
+From:   <yanfei.xu@windriver.com>
+To:     <akpm@linux-foundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+Subject: [PATCH] mm/memory.c: Replace vmf->vma with variable vma
+Date:   Tue, 18 Aug 2020 16:46:07 +0800
+Message-ID: <20200818084607.37616-1-yanfei.xu@windriver.com>
+X-Mailer: git-send-email 2.18.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200818083919.GY2639@vkoul-mobl>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 02:09:19PM +0530, Vinod Koul wrote:
-> On 18-08-20, 09:31, Greg Kroah-Hartman wrote:
-> > On Tue, Aug 18, 2020 at 12:47:39PM +0530, Vinod Koul wrote:
-> > > Some devices in wild are reporting bunch of firmware versions, so remove
-> > > the check for versions in driver
-> > > 
-> > > Reported by: Anastasios Vacharakis <vacharakis@gmail.com>
-> > > Reported by: Glen Journeay <journeay@gmail.com>
-> > > Fixes: 2478be82de44 ("usb: renesas-xhci: Add ROM loader for uPD720201")
-> > > Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=208911
-> > > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > > ---
-> > > Changes in v3:
-> > >  - drop additional firmware versions and remove the check
-> > > 
-> > > Greg, this fixes regression for folks with preprogrammed controllers
-> > > please mark as stable material
-> > 
-> > You could have done so by putting "Cc: stable..." in the s-o-b of the
-> > kernel, why force me to do that by hand?
-> 
-> Oops, wasnt sure of your preference. Btw am sure you would have scripted
-> it :-)
-> 
-> Would you like me to send an update with stable tagged or this is fine
-> for now?
+From: Yanfei Xu <yanfei.xu@windriver.com>
 
-I can do it now, but in the future please be nice to maintainers, we are
-overworked as you well know :)
+The code has declared a vma_struct named vma which is assigned a
+value of vmf->vma. Thus, use variable vma directly here.
 
-thanks,
+Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+---
+ mm/memory.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-greg k-h
+diff --git a/mm/memory.c b/mm/memory.c
+index 9cc3d0dc816c..88f61b4f9638 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3454,7 +3454,7 @@ static vm_fault_t __do_fault(struct vm_fault *vmf)
+ 	 *				# flush A, B to clear the writeback
+ 	 */
+ 	if (pmd_none(*vmf->pmd) && !vmf->prealloc_pte) {
+-		vmf->prealloc_pte = pte_alloc_one(vmf->vma->vm_mm);
++		vmf->prealloc_pte = pte_alloc_one(vma->vm_mm);
+ 		if (!vmf->prealloc_pte)
+ 			return VM_FAULT_OOM;
+ 		smp_wmb(); /* See comment in __pte_alloc() */
+-- 
+2.18.2
+
