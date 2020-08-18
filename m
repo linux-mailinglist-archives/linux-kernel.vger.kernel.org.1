@@ -2,173 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3089A24852A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 14:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF525248556
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 14:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726971AbgHRMs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 08:48:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726945AbgHRMsx (ORCPT
+        id S1726835AbgHRMwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 08:52:14 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:60680 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726391AbgHRMwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 08:48:53 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9224C061389
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 05:48:53 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id a79so9905631pfa.8
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 05:48:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2PiBfpyPpwYw2gBlkazywYW35vVveYdo+y+uOHyp6ug=;
-        b=fRABIdZs6mvbIVr4a0oD+jtpjiKfueaUVYVJ4Y4DTEexjvZFvSUb8oL11xZxBFJ9Fa
-         c9GO/WERZtx3ZgE3dLI/jfHh1QnWfQzJxCEqKyrpkAGMSUEJMaaRo7KshBDlAG2o3w8A
-         2ANl4fPw3i8g2Cw8YX71+9a3OJ2JdTjJxwJzblEP+ckLna6Dixotdjv9rT1M7w1QwK5k
-         I1TarQqbnmiWWac10/vXCYOzOliGu/RgywtiHxW//Pumlc2OAm1bH5aiPjhiJe2L5YIn
-         q+bTy6V6OHN8dhxNKf5H8io3xqnlYTbCPAot9ycJbqFkcdqlHnPnA/z5RZ/9d8HPvCbD
-         3UGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2PiBfpyPpwYw2gBlkazywYW35vVveYdo+y+uOHyp6ug=;
-        b=C6LgJbg06aqtF1xOtgebN9LIPy+yuO6GQYyuIX+7T1y+OPuVma0OWH0NiSOnehsnmO
-         5newdRdQTyXPdqkvLaB5ai0J/qE+z1/pdFxjjnuufHBrfNIBfM5JnWaAMmSpQZSH9I0+
-         yriBQd/HUy0MtyIkdTImyFA59YMLWyseoGELsgecSNg/Nz8JGH7eOd5K2xDCAVjauCS+
-         jRCbTTVVN9aGEY6ql3viN2eERZZGK53gU32Zxa9zBhTF60thjIWwTDth6XWO2qkvk9xF
-         kyTRHE4OuJvejBUKnXRhwmEHznD0rz7YjM/ENuZHrUvwIfW3bk2JFg0W3a8U2BDrxwPq
-         viaQ==
-X-Gm-Message-State: AOAM533pqLkOTLL/SdPpPC9J+0aq06enGr9dkEijQyATygC27lzTfTa5
-        IcEd3ingANeD2mGCVqJt1ClW
-X-Google-Smtp-Source: ABdhPJyHTPDSgQc89zx5NWlOlg3j0Fes+5KpAnOZzFGVChpNvEKqXWnQZpY+1TzcvBnUU5G8huGHSQ==
-X-Received: by 2002:a63:c30b:: with SMTP id c11mr2180353pgd.252.1597754933173;
-        Tue, 18 Aug 2020 05:48:53 -0700 (PDT)
-Received: from localhost.localdomain ([116.68.79.111])
-        by smtp.gmail.com with ESMTPSA id e4sm24264221pfd.204.2020.08.18.05.48.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 05:48:52 -0700 (PDT)
-From:   Vaishnav M A <vaishnav@beagleboard.org>
-To:     greybus-dev@lists.linaro.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, arnd@arndb.de, johan@kernel.org,
-        elder@kernel.org
-Cc:     Vaishnav M A <vaishnav@beagleboard.org>, robh@kernel.org,
-        mchehab+huawei@kernel.org, davem@davemloft.net,
-        jkridner@beagleboard.org, drew@beagleboard.org,
-        robertcnelson@beagleboard.org, rajkovic@mikroe.com,
-        chrisfriedt@gmail.com, zoran.stojsavljevic@gmail.com
-Subject: [RFC PATCH v2 3/3] Add Device Tree Bindings for mikroBUS port
-Date:   Tue, 18 Aug 2020 18:18:15 +0530
-Message-Id: <20200818124815.11029-4-vaishnav@beagleboard.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200818124815.11029-1-vaishnav@beagleboard.org>
-References: <20200818124815.11029-1-vaishnav@beagleboard.org>
+        Tue, 18 Aug 2020 08:52:05 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1k815n-002tHu-Ks; Tue, 18 Aug 2020 06:51:55 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1k815m-0002uy-Vs; Tue, 18 Aug 2020 06:51:55 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        criu@openvz.org, bpf@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Jann Horn <jann@thejh.net>, Kees Cook <keescook@chromium.org>,
+        "Daniel P. Berrang\?\?" <berrange@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Matthew Wilcox <willy@debian.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Matthew Wilcox <matthew@wil.cx>,
+        Trond Myklebust <trond.myklebust@fys.uio.no>,
+        Chris Wright <chrisw@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+References: <87ft8l6ic3.fsf@x220.int.ebiederm.org>
+        <20200817220425.9389-17-ebiederm@xmission.com>
+        <20200818112020.GA17080@infradead.org>
+Date:   Tue, 18 Aug 2020 07:48:21 -0500
+In-Reply-To: <20200818112020.GA17080@infradead.org> (Christoph Hellwig's
+        message of "Tue, 18 Aug 2020 12:20:20 +0100")
+Message-ID: <87blj83ysq.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-XM-SPF: eid=1k815m-0002uy-Vs;;;mid=<87blj83ysq.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19i1uubQLTFHwGCBALZbWaXu5opyhIYahI=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
+        XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4768]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Christoph Hellwig <hch@infradead.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 279 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 10 (3.7%), b_tie_ro: 9 (3.2%), parse: 0.83 (0.3%),
+         extract_message_metadata: 10 (3.7%), get_uri_detail_list: 0.48 (0.2%),
+         tests_pri_-1000: 17 (6.0%), tests_pri_-950: 1.31 (0.5%),
+        tests_pri_-900: 1.07 (0.4%), tests_pri_-90: 72 (25.7%), check_bayes:
+        70 (25.1%), b_tokenize: 7 (2.5%), b_tok_get_all: 6 (2.2%),
+        b_comp_prob: 1.78 (0.6%), b_tok_touch_all: 52 (18.6%), b_finish: 0.91
+        (0.3%), tests_pri_0: 155 (55.4%), check_dkim_signature: 0.50 (0.2%),
+        check_dkim_adsp: 2.4 (0.9%), poll_dns_idle: 0.75 (0.3%), tests_pri_10:
+        2.1 (0.8%), tests_pri_500: 7 (2.4%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 17/17] file: Rename __close_fd to close_fd and remove the files parameter
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds device tree bindings for the mikroBUS port,
-device tree overlays for the mikrobus Port on the BeagleBoard.org
-PocketBeagle is available here :
-github.com/beagleboard/bb.org-overlays/blob/master/src/arm/PB-MIKROBUS-0.dts
+Christoph Hellwig <hch@infradead.org> writes:
 
-Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
----
- .../bindings/misc/linux,mikrobus.txt          | 81 +++++++++++++++++++
- 1 file changed, 81 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/misc/linux,mikrobus.txt
+> Please kill off ksys_close as well while you're at it.
 
-diff --git a/Documentation/devicetree/bindings/misc/linux,mikrobus.txt b/Documentation/devicetree/bindings/misc/linux,mikrobus.txt
-new file mode 100644
-index 000000000000..99f75caf5f35
---- /dev/null
-+++ b/Documentation/devicetree/bindings/misc/linux,mikrobus.txt
-@@ -0,0 +1,81 @@
-+mikroBUS add-on board socket
-+
-+Required properties:
-+- compatible: Must be "linux,mikrobus"
-+- i2c-adapter:  phandle to the i2c adapter attached to the mikrobus socket.
-+- spi-master: spi bus number of the spi-master attached to the mikrobus socket.
-+- spi-cs: spi chip-select numbers corresponding to the chip-selects
-+	  on the mikrobus socket(0 -> chip select corresponding to CS pin
-+	  1 -> chip select corresponding to RST pin).
-+- serdev-controller:  phandle to the uart port attached to the mikrobus socket.
-+- pwms: phandle to the pwm-controller corresponding to the mikroBUS PWM pin.
-+- mikrobus-gpios: gpios array corresponding to GPIOs on the mikroBUS port,
-+		  for targets not supporting the AN pin on the mikroBUS port as
-+		  GPIO, the length of the gpios array can be 11, otherwise it
-+		  should be 12.
-+- pinctrl-names: pinctrl state names to support additional pin usage/deviations
-+		 from mikroBUS socket standard usage, must be "default",
-+		 "pwm_default", "pwm_gpio", "uart_default", "uart_gpio",
-+		 "i2c_default", "i2c_gpio", "spi_default", "spi_gpio", these
-+		 pinctrl names should have corresponding pinctrl-N entries which
-+		 corresponds to the pinmux state for the pingroup, for example,
-+		 i2c_default corresponds to the state where the I2C pin group
-+		 (SCL,SDA) are configured in I2C mode and i2c_gpio mode corresponds
-+		 to the pinmux state where these pins are configured as GPIO.
-+- pinctrl-N : pinctrl-(0-8) corresponds to the pinctrl states for the states described
-+	      above.
-+
-+Example:
-+	mikrobus-0 {
-+		compatible = "linux,mikrobus";
-+		status = "okay";
-+		pinctrl-names = "default", "pwm_default", "pwm_gpio",
-+				"uart_default", "uart_gpio", "i2c_default",
-+				"i2c_gpio", "spi_default", "spi_gpio";
-+		pinctrl-0 = <
-+			&P2_03_gpio_input_pin
-+			&P1_04_gpio_pin
-+			&P1_02_gpio_pin
-+		>;
-+		pinctrl-1 = <&P2_01_pwm_pin>;
-+		pinctrl-2 = <&P2_01_gpio_pin>;
-+		pinctrl-3 = <
-+			&P2_05_uart_pin
-+			&P2_07_uart_pin
-+		>;
-+		pinctrl-4 = <
-+			&P2_05_gpio_pin
-+			&P2_07_gpio_pin
-+		>;
-+		pinctrl-5 = <
-+			&P2_09_i2c_pin
-+			&P2_11_i2c_pin
-+		>;
-+		pinctrl-6 = <
-+			&P2_09_gpio_pin
-+			&P2_11_gpio_pin
-+		>;
-+		pinctrl-7 = <
-+			&P1_12_spi_pin
-+			&P1_10_spi_pin
-+			&P1_08_spi_sclk_pin
-+			&P1_06_spi_cs_pin
-+		>;
-+		pinctrl-8 = <
-+			&P1_12_gpio_pin
-+			&P1_10_gpio_pin
-+			&P1_08_gpio_pin
-+			&P1_06_gpio_pin
-+		>;
-+		i2c-adapter = <&i2c1>;
-+		spi-master = <0>;
-+		spi-cs = <0 1>;
-+		serdev-controller = <&uart4>;
-+		pwms = <&ehrpwm1 0 500000 0>;
-+		mikrobus-gpios = <&gpio1 18 0> , <&gpio0 23 0>,
-+					<&gpio0 30 0> , <&gpio0 31 0>,
-+					<&gpio0 15 0> , <&gpio0 14 0>,
-+					<&gpio0 4 0> , <&gpio0 3 0>,
-+					<&gpio0 2 0> , <&gpio0 5 0>,
-+					<&gpio2 25 0>  , <&gpio2 3 0>;
-+	};
-\ No newline at end of file
--- 
-2.25.1
+Good point.  ksys_close is just a trivial wrapper around close_fd.  So
+the one caller of ksys_close autofs_dev_ioctl_closemount can be
+trivially changed to call close_fd.
 
+Eric
