@@ -2,215 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A54248884
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 17:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2364248896
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 17:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726963AbgHRPAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 11:00:38 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:35189 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726651AbgHRPAc (ORCPT
+        id S1727968AbgHRPCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 11:02:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727791AbgHRPB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 11:00:32 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 7E1E510C5;
-        Tue, 18 Aug 2020 11:00:31 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Tue, 18 Aug 2020 11:00:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=8S7o2W
-        itJx0pvqq+v4qz1FcBNywixhV6Vrq1Sr74rOw=; b=IeUFct3LDCNutJP+hMWOsL
-        f7wWiak+icSFW+MvRxJnmmDGVyq+QoNjV0u0h4diVV85i1/bFgS5beDJp4GT+BI5
-        e/88q9Otlp5sm33ZVUNDGIdy0Uxvd3inGz9wbsS38qsBvAEyeJ4vFMjjAHAyTaIH
-        ekE21bRWkxHpuHdnUnYWo4SwU71GkUekGLPLWKBktRuwREBNnDBzfNbzjhP+2w+z
-        TPzOUMmikQGgs+METUaEul7INBjjAQyARvMXa6zOEKm3HjE/XMbzmIEo/qJ8Ipzw
-        FCpGsI0LkRZoSUVTuwq+O08Qsaz7dmMA2CK8i1eFzKAOVsTKInwba/eHBoHXOrhg
-        ==
-X-ME-Sender: <xms:Du07X4wwgPwBWcNAvrSn1iRQao6L6jxNoEUJRph4lHXYzBSrngnqqA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedruddtiedgjedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforghrvghk
-    ucforghrtgiihihkohifshhkihdqifpkrhgvtghkihcuoehmrghrmhgrrhgvkhesihhnvh
-    hishhisghlvghthhhinhhgshhlrggsrdgtohhmqeenucggtffrrghtthgvrhhnpeeikeeg
-    iedvleekjeegteekleegveeghfefgefhffeiheduueetkeeuteegteeigfenucffohhmrg
-    hinhepmhgrrhhkmhgrihhlrdhorhhgnecukfhppeeluddrieegrddujedtrdekleenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrghrmhgrrh
-    gvkhesihhnvhhishhisghlvghthhhinhhgshhlrggsrdgtohhm
-X-ME-Proxy: <xmx:Du07X8SPOB_hyzkXYgeEq9bJ2pYBd98O9jD72RPbDr8CCMQ3MkBwfA>
-    <xmx:Du07X6WmT5S8CagUx1Gs1I6N7wHAHwb61jqpSn_skwZdSaPJDdGhnw>
-    <xmx:Du07X2ieobDKlLmeb_mQEy-JiqzqUHoGC8RHIX3xHEMQgSrbOLFn6A>
-    <xmx:D-07X74Ol74v2NphVCtLF4ypBLH_KCh_kpsDKDD3EPcH7Yscu5YTdg>
-Received: from mail-itl (ip5b40aa59.dynamic.kabel-deutschland.de [91.64.170.89])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 9ACC4306005F;
-        Tue, 18 Aug 2020 11:00:29 -0400 (EDT)
-Date:   Tue, 18 Aug 2020 17:00:20 +0200
-From:   Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= 
-        <marmarek@invisiblethingslab.com>
-To:     Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
-        norbert.kaminski@3mdeb.com, xen-devel@lists.xenproject.org,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] efi: discover ESRT table on Xen PV too
-Message-ID: <20200818150020.GL1679@mail-itl>
-References: <20200816001949.595424-1-marmarek@invisiblethingslab.com>
- <20200817090013.GN975@Air-de-Roger>
- <20200818120135.GK1679@mail-itl>
- <20200818124710.GK828@Air-de-Roger>
+        Tue, 18 Aug 2020 11:01:28 -0400
+Received: from sequoia-grove.ad.secure-endpoints.com (sequoia-grove.secure-endpoints.com [IPv6:2001:470:1f07:f77:70f5:c082:a96a:5685])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30CCC061342
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 08:01:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/relaxed;
+        d=auristor.com; s=MDaemon; r=y; t=1597762881; x=1598367681;
+        i=jaltman@auristor.com; q=dns/txt; h=Subject:To:Cc:References:
+        From:Organization:Message-ID:Date:User-Agent:MIME-Version:
+        In-Reply-To:Content-Type; bh=Tcrx0CBuzXKry9+g+roR0MsjkXc6IXhaTNW
+        VyukqMro=; b=qodT9E7OE+FneZ3X9IuxqOAwJPIg8Hau0zhvom5bw6obTBB8Cu1
+        1OS6KvbuMWk9TLaniQu68d9UEFu5vonrQnArVKaSyNIxEpZekwUvklPFVKf3SVdL
+        2s1HnBoA/laPTPF4yqs2b2nfLudaV/Uznd8h7YrydIQxEMTdfwUG8f1k=
+X-MDAV-Result: clean
+X-MDAV-Processed: sequoia-grove.ad.secure-endpoints.com, Tue, 18 Aug 2020 11:01:21 -0400
+Received: from [IPv6:2604:2000:1741:8407:31b2:27ea:a55f:abe6] by auristor.com (IPv6:2001:470:1f07:f77:28d9:68fb:855d:c2a5) (MDaemon PRO v20.0.1) 
+        with ESMTPSA id md5001002630221.msg; Tue, 18 Aug 2020 11:01:19 -0400
+X-Spam-Processed: sequoia-grove.ad.secure-endpoints.com, Tue, 18 Aug 2020 11:01:19 -0400
+        (not processed: message from trusted or authenticated source)
+X-MDRemoteIP: 2604:2000:1741:8407:31b2:27ea:a55f:abe6
+X-MDHelo: [IPv6:2604:2000:1741:8407:31b2:27ea:a55f:abe6]
+X-MDArrival-Date: Tue, 18 Aug 2020 11:01:19 -0400
+X-MDOrigin-Country: United States, North America
+X-Authenticated-Sender: jaltman@auristor.com
+X-Return-Path: prvs=1499b3761b=jaltman@auristor.com
+X-Envelope-From: jaltman@auristor.com
+X-MDaemon-Deliver-To: linux-kernel@vger.kernel.org
+Subject: Re: file metadata via fs API (was: [GIT PULL] Filesystem Information)
+To:     "Linus Torvalds (torvalds@linux-foundation.org)" 
+        <torvalds@linux-foundation.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, Karel Zak <kzak@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Christian Brauner <christian@brauner.io>,
+        Lennart Poettering <lennart@poettering.net>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ian Kent <raven@themaw.net>,
+        LSM <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1842689.1596468469@warthog.procyon.org.uk>
+ <1845353.1596469795@warthog.procyon.org.uk>
+ <CAJfpegunY3fuxh486x9ysKtXbhTE0745ZCVHcaqs9Gww9RV2CQ@mail.gmail.com>
+ <ac1f5e3406abc0af4cd08d818fe920a202a67586.camel@themaw.net>
+ <CAJfpegu8omNZ613tLgUY7ukLV131tt7owR+JJ346Kombt79N0A@mail.gmail.com>
+ <CAJfpegtNP8rQSS4Z14Ja4x-TOnejdhDRTsmmDD-Cccy2pkfVVw@mail.gmail.com>
+ <20200811135419.GA1263716@miu.piliscsaba.redhat.com>
+ <CAHk-=wjzLmMRf=QG-n+1HnxWCx4KTQn9+OhVvUSJ=ZCQd6Y1WA@mail.gmail.com>
+ <52483.1597190733@warthog.procyon.org.uk>
+ <CAHk-=wiPx0UJ6Q1X=azwz32xrSeKnTJcH8enySwuuwnGKkHoPA@mail.gmail.com>
+ <679456f1-5867-4017-b1d6-95197d2fa81b@auristor.com>
+ <CAHk-=whLhwum2E+qperD=TypGHXxoBtXOu-HHDd9L9_XFFyiaA@mail.gmail.com>
+From:   Jeffrey E Altman <jaltman@auristor.com>
+Organization: AuriStor, Inc.
+Message-ID: <cc774343-1782-6479-306b-4b0d7146bb6e@auristor.com>
+Date:   Tue, 18 Aug 2020 11:01:10 -0400
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="pe+tqlI1iYzVj1X/"
-Content-Disposition: inline
-In-Reply-To: <20200818124710.GK828@Air-de-Roger>
+In-Reply-To: <CAHk-=whLhwum2E+qperD=TypGHXxoBtXOu-HHDd9L9_XFFyiaA@mail.gmail.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms070203090704080909030005"
+X-MDCFSigsAdded: auristor.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is a cryptographically signed message in MIME format.
 
---pe+tqlI1iYzVj1X/
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
+--------------ms070203090704080909030005
+Content-Type: multipart/mixed;
+ boundary="------------15A85830EC70DC04AB47698C"
+Content-Language: en-US
+
+This is a multi-part message in MIME format.
+--------------15A85830EC70DC04AB47698C
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] efi: discover ESRT table on Xen PV too
 
-On Tue, Aug 18, 2020 at 02:47:10PM +0200, Roger Pau Monn=C3=A9 wrote:
-> On Tue, Aug 18, 2020 at 02:01:35PM +0200, Marek Marczykowski-G=C3=B3recki=
- wrote:
-> > Do you mean PV dom0 should receive full EFI memory map? Jan already
-> > objected this as it would be a layering violation.
+On 8/14/2020 1:05 PM, Linus Torvalds (torvalds@linux-foundation.org) wrot=
+e:
+> Honestly, I really think you may want an extended [f]statfs(), not
+> some mount tracking.
 >=20
-> dom0 is already capable of getting the native e820 memory map using
-> XENMEM_machine_memory_map, I'm not sure why allowing to return the
-> memory map in EFI form would be any different (or a layering
-> violation in the PV dom0 case).
->
-> Do you have a reference to that thread? I certainly missed it.
+>                  Linus
 
-See this thread: http://markmail.org/message/nrrvuau5whebksy2
+Linus,
 
-> For PVH dom0 we could consider something different, since in that case
-> there's a guest memory map which could likely be returned in EFI
-> format and with the EFI regions if required.
->=20
-> > > > Skip this part on Xen PV (let Xen do the right thing if it deems
-> > > > necessary) and use ESRT table normally.
-> > >=20
-> > > Maybe it would be better to introduce a new hypercall (or add a
-> > > parameter to XENMEM_machine_memory_map) in order to be able to fetch
-> > > the EFI memory map?
-> > >
-> > > That should allow a PV dom0 to check the ESRT is correct and thus not
-> > > diverge from bate metal.
-> >=20
-> > Note the EFI memory map there is used not just to check things, but to
-> > actually modify it to reserve the region. I think that's rather Xen
-> > responsibility, not dom0. See the comment from Ard.
->=20
-> But that would modify Linux copy of the memory map, which is fine? My
-> understanding of EFI is limited, but I don't think such changes are
-> feed back into EFI, so Linux is completely free to do whatever it
-> wants with it's copy of the EFI memory map.
+Thank you for the reply.  Perhaps some of the communication disconnect
+is due to which thread this discussion is taking place on.  My
+understanding is that there were two separate pull requests.  One for
+mount notifications and the other for filesystem information.  This
+thread is derived from the pull request entitled "Filesystem
+Information" and my response was a request for use cases.  The
+assumption being that the request was related to the subject.
 
-Yes, but the thing is to make sure Xen doesn't use that memory, not only
-dom0. See below.
+I apologize for creating unnecessary noise due to my misinterpretation
+of your intended question.  The use cases I described and the types of
+filesystem information required to satisfy them do not require mount
+tracking.
 
-> > > > +	if (efi_enabled(EFI_MEMMAP)) {
-> > > > +		rc =3D efi_mem_desc_lookup(efi.esrt, &md);
-> > > > +		if (rc < 0 ||
-> > > > +		    (!(md.attribute & EFI_MEMORY_RUNTIME) &&
-> > > > +		     md.type !=3D EFI_BOOT_SERVICES_DATA &&
-> > > > +		     md.type !=3D EFI_RUNTIME_SERVICES_DATA)) {
-> > > > +			pr_warn("ESRT header is not in the memory map.\n");
-> > > > +			return;
-> > > > +		}
-> > >=20
-> > > Here you blindly trust the data in the ESRT in the PV case, without
-> > > checking it matches the regions on the memory map, which could lead to
-> > > errors if ESRT turns to be wrong.
-> >=20
-> > I don't think checking merely if ESRT lives somewhere in
-> > EFI_{BOOT,RUNTIME}_SERVICES_DATA area guarantees its correctness.
-> >=20
-> > On the other hand, this seems to be done to prevent overwriting that
-> > memory with something else (see that in case of EFI_BOOT_SERVICES_DATA
-> > it is later marked as reserved. I think it should be rather done by Xen,
-> > not dom0.
->=20
-> Forcing Xen to do all those checks seems quite a tedious work, and in
-> fact the memory map that dom0 has might be more complete than the one
-> Xen is able to construct, as Xen doesn't have an AML parser so it's
-> not able to get all the possible info from ACPI.
+Jeffrey Altman
 
-Let me draw the picture from the beginning.
 
-EFI memory map contains various memory regions. Some of them are marked
-as not needed after ExitBootServices() call (done in Xen before
-launching dom0). This includes EFI_BOOT_SERVICES_DATA and
-EFI_BOOT_SERVICES_CODE.
+--------------15A85830EC70DC04AB47698C
+Content-Type: text/x-vcard; charset=utf-8;
+ name="jaltman.vcf"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="jaltman.vcf"
 
-EFI SystemTable contains pointers to various ConfigurationTables -
-physical addresses (at least in this case). Xen does interpret some of
-them, but not ESRT. Xen pass the whole (address of) SystemTable to Linux
-dom0 (at least in PV case). Xen doesn't do anything about tables it
-doesn't understand.
+begin:vcard
+fn:Jeffrey Altman
+n:Altman;Jeffrey
+org:AuriStor, Inc.
+adr:;;255 W 94TH ST STE 6B;New York;NY;10025-6985;United States
+email;internet:jaltman@auristor.com
+title:CEO
+tel;work:+1-212-769-9018
+url:https://www.linkedin.com/in/jeffreyaltman/
+version:2.1
+end:vcard
 
-Now, the code in Linux takes the (ESRT) table address early and checks
-the memory map for it. We have 3 cases:
- - it points at area marked as neither EFI_*_SERVICES_DATA, nor with
-   EFI_MEMORY_RUNTIME attribute -> Linux refuse to use it
- - it points to EFI_RUNTIME_SERVICES_DATA or with EFI_MEMORY_RUNTIME
-   attribute - Linux uses the table; memory map already says the area
-   belongs to EFI and the OS should not use it for something else
- - it points to EFI_BOOT_SERVICES_DATA - Linux mark the area as reserved
-   to not release it after calling ExitBootServices()
 
-The problematic is the third case - at the time when Linux dom0 is run,
-ExitBootServices() was already called and EFI_BOOT_SERVICES_* memory was
-already released. It could be already used for something else (for
-example Xen could overwrite it while loading dom0).
+--------------15A85830EC70DC04AB47698C--
 
-Note the problematic case should be the most common - UEFI specification
-says "The ESRT shall be stored in memory of type EfiBootServicesData"
-(chapter 22.3 of UEFI Spec v2.6).
+--------------ms070203090704080909030005
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-For this reason, to use ESRT in dom0, Xen should do something about it
-before ExitBootServices() call. While analyzing all the EFI tables is
-probably not a viable option, it can do some simple action:
- - retains all the EFI_BOOT_SERVICES_* areas - there is already code
-   for that, controlled with /mapbs boot switch (to xen.efi, would need
-   another option for multiboot2+efi)
- - have a list of tables to retain - since Xen already do analyze some
-   of the ConfigurationTables, it can also have a list of those to
-   preserve even if they live in EFI_BOOT_SERVICES_DATA. In this case,
-   while Xen doesn't need to parse the whole table, it need to parse it's
-   header to get the table size - to reserve that memory and not reuse
-   it after ExitBootServices().
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
+DGswggXSMIIEuqADAgECAhBAAW0B1qVVQ32wvx2EXYU6MA0GCSqGSIb3DQEBCwUAMDoxCzAJ
+BgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEy
+MB4XDTE5MDkwNTE0MzE0N1oXDTIyMTEwMTE0MzE0N1owcDEvMC0GCgmSJomT8ixkAQETH0Ew
+MTQxMEMwMDAwMDE2RDAxRDZBNTQwMDAwMDQ0NDcxGTAXBgNVBAMTEEplZmZyZXkgRSBBbHRt
+YW4xFTATBgNVBAoTDEF1cmlTdG9yIEluYzELMAkGA1UEBhMCVVMwggEiMA0GCSqGSIb3DQEB
+AQUAA4IBDwAwggEKAoIBAQCY1TC9QeWnUgEoJ81FcAVnhGn/AWuzvkYRUG5/ZyXDdaM212e8
+ybCklgSmZweqNdrfaaHXk9vwjpvpD4YWgb07nJ1QBwlvRV/VPAaDdneIygJJWBCzaMVLttKO
+0VimH/I/HUwFBQT2mrktucCEf2qogdi2P+p5nuhnhIUiyZ71Fo43gF6cuXIMV/1rBNIJDuwM
+Q3H8zi6GL0p4mZFZDDKtbYq2l8+MNxFvMrYcLaJqejQNQRBuZVfv0Fq9pOGwNLAk19baIw3U
+xdwx+bGpTtS63Py1/57MQ0W/ZXE/Ocnt1qoDLpJeZIuEBKgMcn5/iN9+Ro5zAuOBEKg34wBS
+8QCTAgMBAAGjggKcMIICmDAOBgNVHQ8BAf8EBAMCBPAwgYQGCCsGAQUFBwEBBHgwdjAwBggr
+BgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVudHJ1c3QuY29tMEIGCCsGAQUF
+BzAChjZodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NlcnRzL3RydXN0aWRjYWEx
+Mi5wN2MwHwYDVR0jBBgwFoAUpHPa72k1inXMoBl7CDL4a4nkQuwwCQYDVR0TBAIwADCCASsG
+A1UdIASCASIwggEeMIIBGgYLYIZIAYb5LwAGAgEwggEJMEoGCCsGAQUFBwIBFj5odHRwczov
+L3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRpZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRt
+bDCBugYIKwYBBQUHAgIwga0MgapUaGlzIFRydXN0SUQgQ2VydGlmaWNhdGUgaGFzIGJlZW4g
+aXNzdWVkIGluIGFjY29yZGFuY2Ugd2l0aCBJZGVuVHJ1c3QncyBUcnVzdElEIENlcnRpZmlj
+YXRlIFBvbGljeSBmb3VuZCBhdCBodHRwczovL3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRp
+ZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRtbDBFBgNVHR8EPjA8MDqgOKA2hjRodHRwOi8v
+dmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NybC90cnVzdGlkY2FhMTIuY3JsMB8GA1UdEQQY
+MBaBFGphbHRtYW5AYXVyaXN0b3IuY29tMB0GA1UdDgQWBBR7pHsvL4H5GdzNToI9e5BuzV19
+bzAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwDQYJKoZIhvcNAQELBQADggEBAFlm
+JYk4Ff1v/n0foZkv661W4LCRtroBaVykOXetrDDOQNK2N6JdTa146uIZVgBeU+S/0DLvJBKY
+tkUHQ9ovjXJTsuCBmhIIw3YlHoFxbku0wHEpXMdFUHV3tUodFJJKF3MbC8j7dOMkag59/Mdz
+Sjszdvit0av9nTxWs/tRKKtSQQlxtH34TouIke2UgP/Nn901QLOrJYJmtjzVz8DW3IYVxfci
+SBHhbhJTdley5cuEzphELo5NR4gFjBNlxH7G57Hno9+EWILpx302FJMwTgodIBJbXLbPMHou
+xQbOL2anOTUMKO8oH0QdQHCtC7hpgoQa7UJYJxDBI+PRaQ/HObkwggaRMIIEeaADAgECAhEA
++d5Wf8lNDHdw+WAbUtoVOzANBgkqhkiG9w0BAQsFADBKMQswCQYDVQQGEwJVUzESMBAGA1UE
+ChMJSWRlblRydXN0MScwJQYDVQQDEx5JZGVuVHJ1c3QgQ29tbWVyY2lhbCBSb290IENBIDEw
+HhcNMTUwMjE4MjIyNTE5WhcNMjMwMjE4MjIyNTE5WjA6MQswCQYDVQQGEwJVUzESMBAGA1UE
+ChMJSWRlblRydXN0MRcwFQYDVQQDEw5UcnVzdElEIENBIEExMjCCASIwDQYJKoZIhvcNAQEB
+BQADggEPADCCAQoCggEBANGRTTzPCic0kq5L6ZrUJWt5LE/n6tbPXPhGt2Egv7plJMoEpvVJ
+JDqGqDYymaAsd8Hn9ZMAuKUEFdlx5PgCkfu7jL5zgiMNnAFVD9PyrsuF+poqmlxhlQ06sFY2
+hbhQkVVQ00KCNgUzKcBUIvjv04w+fhNPkwGW5M7Ae5K5OGFGwOoRck9GG6MUVKvTNkBw2/vN
+MOd29VGVTtR0tjH5PS5yDXss48Yl1P4hDStO2L4wTsW2P37QGD27//XGN8K6amWB6F2XOgff
+/PmlQjQOORT95PmLkwwvma5nj0AS0CVp8kv0K2RHV7GonllKpFDMT0CkxMQKwoj+tWEWJTiD
+KSsCAwEAAaOCAoAwggJ8MIGJBggrBgEFBQcBAQR9MHswMAYIKwYBBQUHMAGGJGh0dHA6Ly9j
+b21tZXJjaWFsLm9jc3AuaWRlbnRydXN0LmNvbTBHBggrBgEFBQcwAoY7aHR0cDovL3ZhbGlk
+YXRpb24uaWRlbnRydXN0LmNvbS9yb290cy9jb21tZXJjaWFscm9vdGNhMS5wN2MwHwYDVR0j
+BBgwFoAU7UQZwNPwBovupHu+QucmVMiONnYwDwYDVR0TAQH/BAUwAwEB/zCCASAGA1UdIASC
+ARcwggETMIIBDwYEVR0gADCCAQUwggEBBggrBgEFBQcCAjCB9DBFFj5odHRwczovL3NlY3Vy
+ZS5pZGVudHJ1c3QuY29tL2NlcnRpZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRtbDADAgEB
+GoGqVGhpcyBUcnVzdElEIENlcnRpZmljYXRlIGhhcyBiZWVuIGlzc3VlZCBpbiBhY2NvcmRh
+bmNlIHdpdGggSWRlblRydXN0J3MgVHJ1c3RJRCBDZXJ0aWZpY2F0ZSBQb2xpY3kgZm91bmQg
+YXQgaHR0cHM6Ly9zZWN1cmUuaWRlbnRydXN0LmNvbS9jZXJ0aWZpY2F0ZXMvcG9saWN5L3Rz
+L2luZGV4Lmh0bWwwSgYDVR0fBEMwQTA/oD2gO4Y5aHR0cDovL3ZhbGlkYXRpb24uaWRlbnRy
+dXN0LmNvbS9jcmwvY29tbWVyY2lhbHJvb3RjYTEuY3JsMB0GA1UdJQQWMBQGCCsGAQUFBwMC
+BggrBgEFBQcDBDAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0OBBYEFKRz2u9pNYp1zKAZewgy+GuJ
+5ELsMA0GCSqGSIb3DQEBCwUAA4ICAQAN4YKu0vv062MZfg+xMSNUXYKvHwvZIk+6H1pUmivy
+DI4I6A3wWzxlr83ZJm0oGIF6PBsbgKJ/fhyyIzb+vAYFJmyI8I/0mGlc+nIQNuV2XY8cypPo
+VJKgpnzp/7cECXkX8R4NyPtEn8KecbNdGBdEaG4a7AkZ3ujlJofZqYdHxN29tZPdDlZ8fR36
+/mAFeCEq0wOtOOc0Eyhs29+9MIZYjyxaPoTS+l8xLcuYX3RWlirRyH6RPfeAi5kySOEhG1qu
+NHe06QIwpigjyFT6v/vRqoIBr7WpDOSt1VzXPVbSj1PcWBgkwyGKHlQUOuSbHbHcjOD8w8wH
+SDbL+L2he8hNN54doy1e1wJHKmnfb0uBAeISoxRbJnMMWvgAlH5FVrQWlgajeH/6NbYbBSRx
+ALuEOqEQepmJM6qz4oD2sxdq4GMN5adAdYEswkY/o0bRKyFXTD3mdqeRXce0jYQbWm7oapqS
+ZBccFvUgYOrB78tB6c1bxIgaQKRShtWR1zMM0JfqUfD9u8Fg7G5SVO0IG/GcxkSvZeRjhYcb
+TfqF2eAgprpyzLWmdr0mou3bv1Sq4OuBhmTQCnqxAXr4yVTRYHkp5lCvRgeJAme1OTVpVPth
+/O7HJ7VuEP9GOr6kCXCXmjB4P3UJ2oU0NqfoQdcSSSt9hliALnExTEjii20B2nSDojGCAxQw
+ggMQAgEBME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEXMBUGA1UEAxMO
+VHJ1c3RJRCBDQSBBMTICEEABbQHWpVVDfbC/HYRdhTowDQYJYIZIAWUDBAIBBQCgggGXMBgG
+CSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIwMDgxODE1MDExMVow
+LwYJKoZIhvcNAQkEMSIEIAkuzvlXuwfdOk2ODynS1rS+6qt7k5rG3/SoaaFfX13zMF0GCSsG
+AQQBgjcQBDFQME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEXMBUGA1UE
+AxMOVHJ1c3RJRCBDQSBBMTICEEABbQHWpVVDfbC/HYRdhTowXwYLKoZIhvcNAQkQAgsxUKBO
+MDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQg
+Q0EgQTEyAhBAAW0B1qVVQ32wvx2EXYU6MGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZIAWUDBAEq
+MAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwIC
+AUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwDQYJKoZIhvcNAQEBBQAEggEAeHm9ImgiHtKp
+4+Ufhz7bRRfS2kv1Awy379Cg5bDYVj77f/IbAiPHo4ZD3f8LItjccOmy0nHeoJ2qk2b43IBX
+M/iNhyD46kX8OGvlKuBLW/GCDHVkpMnbo7LyOXUaQ75PDjjZ4LnImtLhYNVJrvbdNsxIju82
+H0cGlcrFbb1XaQobR+2cfYzmC8Wm/jya/kmlIUVNB88GsO5HrkrTP4M+T6+PCtYeHNz3UWMt
+VuTMO38QmW9Ry8FA/TYEUBS+oe1WlTved69Z0oPoKaUpdcAa8n+LVrO5NQG354h4A3M3xuzk
+zF+LJEh+SWzFklndVQ5GCswASXeI46/47TBEQLuaZAAAAAAAAA==
+--------------ms070203090704080909030005--
 
-I think the second solution is slightly more elegant.
-
---=20
-Best Regards,
-Marek Marczykowski-G=C3=B3recki
-Invisible Things Lab
-A: Because it messes up the order in which people normally read text.
-Q: Why is top-posting such a bad thing?
-
---pe+tqlI1iYzVj1X/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhrpukzGPukRmQqkK24/THMrX1ywFAl877QQACgkQ24/THMrX
-1ywhywf/eGFZ6OCabrDr7rLIyZb+h0glpr6T/95k3/v/plivK1v3J/tWQ5+0cHtz
-+j/6b/jRWGzRiheX22jsuTKWJBr3s04oOJmcrYq2LrdBB5jmR8qLK/nwBrLRZwlt
-s1xKHFFYPSOfdNikfBOcHVdzBg4FMEL5ETzLcTjfTme+xHKoZFRQ527GRfrUcxMi
-LzHKisOmBOHcBoPbcS0Oe0nH4ZfCsizPIKlsmagytmEq67TEYMcle820BPcI/pv6
-dUQaocEaqIqgJIIlRDJ3ouGTOrhh/3ICuu6Zvsm0eolg8Lbw9wPVnXVIHQBToCME
-GMmzBJ91gvCMpUiIsugdO77VJfg1eg==
-=j7zi
------END PGP SIGNATURE-----
-
---pe+tqlI1iYzVj1X/--
