@@ -2,94 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F55248D8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 088C9248D88
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbgHRR4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 13:56:54 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2662 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726541AbgHRR4u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 13:56:50 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id 41A6913A95D71BCC9E35;
-        Tue, 18 Aug 2020 18:56:49 +0100 (IST)
-Received: from [127.0.0.1] (10.210.172.123) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Tue, 18 Aug
- 2020 18:56:48 +0100
-Subject: Re: [PATCH] MAINTAINERS: Add entries for CoreSight and Arm SPE
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>, <acme@kernel.org>,
-        <will@kernel.org>, <leo.yan@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <20200817193140.3659956-1-mathieu.poirier@linaro.org>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <ede047ea-ad6a-1f7e-d597-b47bc87271c3@huawei.com>
-Date:   Tue, 18 Aug 2020 18:54:28 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1726729AbgHRRzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 13:55:22 -0400
+Received: from mout.gmx.net ([212.227.17.20]:41509 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726552AbgHRRzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 13:55:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1597773282;
+        bh=ThYSr0h07PGP1iFZ6rJ9QbxAVk1GY6nk6qUL/FemZjQ=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=ZD/HUFz6g7LsjEF68Pf72sBJy6F4o4HegT7T6oCNs66tsD490C5Oq6ZF6WvVPyOa+
+         x9u1GMMo1fsn+utxxRdeQw06U0RzzG7jNzwcEdwJhOA9InImLUFHRplDyDTsA2nitS
+         CaBeqk/46dKifXD/NfBYnkTW6F1UMXHb52E4EFU0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [185.53.43.192] ([185.53.43.192]) by web-mail.gmx.net
+ (3c-app-gmx-bs30.server.lan [172.19.170.82]) (via HTTP); Tue, 18 Aug 2020
+ 19:54:41 +0200
 MIME-Version: 1.0
-In-Reply-To: <20200817193140.3659956-1-mathieu.poirier@linaro.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.172.123]
-X-ClientProxiedBy: lhreml708-chm.china.huawei.com (10.201.108.57) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Message-ID: <trinity-fb75beca-fce7-4d9e-b427-0e3e261ef8ca-1597773281910@3c-app-gmx-bs30>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Landen Chao <landen.chao@mediatek.com>
+Cc:     andrew@lunn.ch, f.fainelli@gmail.com,
+        vivien.didelot@savoirfairelinux.com, matthias.bgg@gmail.com,
+        robh+dt@kernel.org, mark.rutland@arm.com,
+        devicetree@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        davem@davemloft.net, sean.wang@mediatek.com, opensource@vdorst.com,
+        dqfext@gmail.com, Landen Chao <landen.chao@mediatek.com>
+Subject: Aw: [PATCH net-next v2 0/7] net-next: dsa: mt7530: add support for
+ MT7531
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 18 Aug 2020 19:54:41 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <cover.1597729692.git.landen.chao@mediatek.com>
+References: <cover.1597729692.git.landen.chao@mediatek.com>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:Ds7VLClrKGTh8K23luUtZMtW5sd/BqVZ/QNFG8icOaN//D2sZPAPHdI401Z6MtEtACOkM
+ VZax2EdaXstWLv+op9BWiVSjga+IuK3OVvw4bazTpeIyWGzp3V2nSFk2ZPa3H1t0cXMQXjK3oa3g
+ dDCIWWlrAsWSKRsQYqwRhlAz9VfEbn2PAPSGiHX2UHC47xQqMD1/BXMgEdoTYQPkzJySeXhJgCa9
+ QEMpMC7X4AwLQB0A/+r/DMv1nLio3QOlGuDPEjGKJeANp5DEfgMocu2TSqshfeXKqp+LB/X/9Qx6
+ co=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:TOaPV0uW0Dc=:NACFWz84xXR+Lpez06ygpx
+ +3G9O8E0XVmC48ZtdOUS5XPxVVEHH+gNGvU0vn2PeZa1pujoqz66bys8kEXcaBf0CQlBXTzgp
+ mKIkFe6+YgUjQYlDCEdok/JqijoEpqg47fhSmufqe2qdKmCwcF3vKpcJzvABi76oYVo/xCMgk
+ Xy2CPhgqoMcfNUbqFfptGyi/jCj1A9Lyv+wB9oCqMUihkw5/+3vYM7N03b5DJku2KW8kVmLKX
+ +8lAqbW2uwupsesREbGvooYM0EIN2Oy8/Q0qRhBwtk9X9gn54ZomN7M6LRtf0sWGYUU9y7YI6
+ u/qSnQKWIrnRKI7J6wmONMkQeCK8j0DEXOxPQk4tzrhSWeQLAXUWbu0da+5pTQ50cPahtiuxI
+ Ihebagt6WchvWhoChbCjxbJ/9Gco4UXdR3x+7dMNXsEU0c/M+fxxfW8ScuhNJu+qZ1bxIuUEW
+ 1MQMZa9GdW8H0yfG82LKqYnVOjtZazrB/y4Ff6Y3qUxOszRq9ZXaPtMFEHMCb/nMbj1ERNW5/
+ aGSWh3/NOuHIlE6tgUOIL5mCO3ieblGH9RH17iusS6fYbBwWsdpVlzqhDQpCH1kWa0e92sApd
+ Nptz2mHh24s+GtTZghsQLYl3q4W9gGbBZ3meUw2Bda26K09kVUx6n9kr6bmjCQuaLobKZ07uN
+ 1DwUtFN3m9Hu4/RxtkXwJa+gb0TFHySv7hRoZz6fnd3OtMjJied1n72jCVFijl7tCbc8=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/08/2020 20:31, Mathieu Poirier wrote:
-> Add entries for perf tools elements related to the support of
-> Arm CoreSight and Arm SPE.
+Tested full series on Bananapi-R2+R64 with5.9-rc1 (iperf3 no retransmitts, Throughput >900Mbit/s)
 
-Thanks for doing this...
+Tested-By: Frank Wunderlich <frank-w@public-files.de>
 
-> 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> ---
->   MAINTAINERS | 10 ++++++++++
->   1 file changed, 10 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 4e2698cc7e23..f9bb76baeec9 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -13427,8 +13427,18 @@ F:	tools/perf/
->   PERFORMANCE EVENTS SUBSYSTEM ARM64 PMU EVENTS
->   R:	John Garry <john.garry@huawei.com>
->   R:	Will Deacon <will@kernel.org>
-> +R:	Mathieu Poirier <mathieu.poirier@linaro.org>
-> +R:	Leo Yan <leo.yan@linaro.org>
->   L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->   S:	Supported
-> +F:	tools/build/feature/test-libopencsd.c
-> +F:	tools/perf/arch/arm/util/auxtrace.c
-> +F:	tools/perf/arch/arm/util/cs-etm.*
-> +F:	tools/perf/arch/arm/util/pmu.c
-> +F:	tools/perf/arch/arm64/util/arm-spe.c
-> +F:	tools/perf/util/arm-spe.h
-> +F:	tools/perf/util/cs-etm-decoder/*
-> +F:	tools/perf/util/cs-etm.*
+maybe you can include the port_change_mtu callback you've send me? or do you want to send it separately
 
-But from the previous discussion, I thought that we wanted an entry to 
-cover all tools/perf/arch/arm64/ and other related folders. Or was it 
-just put all special interest parts (like SPE support) under one entry 
-and leave the other arm/arm64 parts to be caught by "PERFORMANCE EVENTS 
-SUBSYSTEM" entry?
-
-Cheers,
-John
-
->   F:	tools/perf/pmu-events/arch/arm64/
->   
->   PERSONALITY HANDLING
-> 
-
+regards Frank
