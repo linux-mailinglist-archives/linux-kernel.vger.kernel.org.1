@@ -2,83 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F952483F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 13:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43B4B24840A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 13:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbgHRLfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 07:35:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726640AbgHRLfc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 07:35:32 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF4EBC061342
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 04:35:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=pg9bLsU6l9G88ZYLI6rak6/wPwxiNcw3KCO9a4fmWsM=; b=nlkSlFbouJ1ClxHCFQY5iGX0xc
-        aLu9eYFhsZHUuVWklwB2srnsEqXYNGme2lwL6slSz1gJ36gJ8UConPZkLGx3wuDP07BCfqf1iv+8n
-        flTBEOZToc4ubMFGmY5lpj2ggl0ADRbJ6i3vuPPOlLSc2KSwlfpMbHyPWv84g/k01zhxgKhRaA5ah
-        CK4ifbZMYQeqBO8U5XMpu8p1rCPz5RVel2Yi8GlcbEmuluzsL0u+tNrYTzbth9rkHhz0K6zgh3FEd
-        Qm+z+4v7Qo+e2SIt/NgOo+DQMgatCmoGVvggR5eFx2ngvh1mnLXiqlPX3iPNH+PSUbWDFix/c2Z6/
-        JCmUr65g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k7ztI-0002c1-G1; Tue, 18 Aug 2020 11:34:56 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D6973301179;
-        Tue, 18 Aug 2020 13:34:54 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 96452200D4C26; Tue, 18 Aug 2020 13:34:54 +0200 (CEST)
-Date:   Tue, 18 Aug 2020 13:34:54 +0200
-From:   peterz@infradead.org
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Jiang Biao <benbjiang@gmail.com>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jiang Biao <benbjiang@tencent.com>
-Subject: Re: [PATCH v3] sched/fair: simplfy the work when reweighting entity
-Message-ID: <20200818113454.GS2674@hirez.programming.kicks-ass.net>
-References: <20200811113209.34057-1-benbjiang@tencent.com>
- <CAKfTPtBReSax0AK9sanzcSzBMJzx7jK-K8Umc3kfH_n11N7f3A@mail.gmail.com>
+        id S1726569AbgHRLmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 07:42:50 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9760 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726495AbgHRLmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 07:42:45 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 14332AF0B9ACCF4CAC08;
+        Tue, 18 Aug 2020 19:42:43 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Tue, 18 Aug 2020
+ 19:42:36 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <edumazet@google.com>,
+        <kafai@fb.com>, <ast@kernel.org>, <jakub@cloudflare.com>,
+        <zhang.lin16@zte.com.cn>, <keescook@chromium.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] net: Avoid strcmp current->comm with warncomm when warned >= 5
+Date:   Tue, 18 Aug 2020 07:41:32 -0400
+Message-ID: <20200818114132.17510-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtBReSax0AK9sanzcSzBMJzx7jK-K8Umc3kfH_n11N7f3A@mail.gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 11:07:37AM +0200, Vincent Guittot wrote:
-> On Tue, 11 Aug 2020 at 13:32, Jiang Biao <benbjiang@gmail.com> wrote:
-> >
-> > From: Jiang Biao <benbjiang@tencent.com>
-> >
-> > The code in reweight_entity() can be simplified.
-> >
-> > For a sched entity on the rq, the entity accounting can be replaced by
-> > cfs_rq instantaneous load updates currently called from within the
-> > entity accounting.
-> >
-> > Even though an entity on the rq can't represent a task in
-> > reweight_entity() (a task is always dequeued before calling this
-> > function) and so the numa task accounting and the rq->cfs_tasks list
-> > management of the entity accounting are never called, the redundant
-> > cfs_rq->nr_running decrement/increment will be avoided.
-> >
-> > Signed-off-by: Jiang Biao <benbjiang@tencent.com>
-> 
-> Minor typo of the subject: s/simplfy/simplify/
+We can possibly avoid strcmp warncomm with current->comm by check warned
+first.
 
-I've made it "Simplify" :-)
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ net/core/sock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks guys!
+diff --git a/net/core/sock.c b/net/core/sock.c
+index e4f40b175acb..51e13bc42791 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -417,7 +417,7 @@ static void sock_warn_obsolete_bsdism(const char *name)
+ {
+ 	static int warned;
+ 	static char warncomm[TASK_COMM_LEN];
+-	if (strcmp(warncomm, current->comm) && warned < 5) {
++	if (warned < 5 && strcmp(warncomm, current->comm)) {
+ 		strcpy(warncomm,  current->comm);
+ 		pr_warn("process `%s' is using obsolete %s SO_BSDCOMPAT\n",
+ 			warncomm, name);
+-- 
+2.19.1
+
