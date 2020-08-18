@@ -2,83 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8848248096
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A9A624809A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726435AbgHRI3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 04:29:11 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9833 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726043AbgHRI3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 04:29:11 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id E2CAB93B21F94BEC3230;
-        Tue, 18 Aug 2020 16:29:08 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.211) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 18 Aug
- 2020 16:29:06 +0800
-Subject: Re: [PATCH] f2fs: fix indefinite loop scanning for free nid
-To:     Sahitya Tummala <stummala@codeaurora.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-CC:     <linux-kernel@vger.kernel.org>
-References: <1597392335-4998-1-git-send-email-stummala@codeaurora.org>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <e1251327-bd48-215d-e558-08780474bddb@huawei.com>
-Date:   Tue, 18 Aug 2020 16:29:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1726585AbgHRI3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 04:29:47 -0400
+Received: from mga04.intel.com ([192.55.52.120]:29035 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726043AbgHRI3q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 04:29:46 -0400
+IronPort-SDR: O+H3jEO6LcQZETTNZRvCczdYUg08cKoDS/dcXsQ8TaZO6Rx94v/ccCyxe7fk6VjD7j2TgjRPU5
+ ZlN+1VoDmZ6A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="152272031"
+X-IronPort-AV: E=Sophos;i="5.76,326,1592895600"; 
+   d="scan'208";a="152272031"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 01:29:45 -0700
+IronPort-SDR: fhO4aQsUo9lOdKcpUe21R7LSa6ve5iULPzuKL8QgJ0Pol0BqK9qOYmKk2hlmFO0FV7L9r4RKVb
+ m3T3+J6/V9lg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,326,1592895600"; 
+   d="scan'208";a="441147947"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.107])
+  by orsmga004.jf.intel.com with ESMTP; 18 Aug 2020 01:29:43 -0700
+Date:   Tue, 18 Aug 2020 16:29:43 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Borislav Petkov <bp@suse.de>
+Cc:     kernel test robot <rong.a.chen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+Subject: Re: [LKP] Re: [x86/mce] 1de08dccd3: will-it-scale.per_process_ops
+ -14.1% regression
+Message-ID: <20200818082943.GA65567@shbuild999.sh.intel.com>
+References: <20200425114414.GU26573@shao2-debian>
+ <20200425130136.GA28245@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <1597392335-4998-1-git-send-email-stummala@codeaurora.org>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200425130136.GA28245@zn.tnic>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/8/14 16:05, Sahitya Tummala wrote:
-> If the sbi->ckpt->next_free_nid is not NAT block aligned and if there
-> are free nids in that NAT block between the start of the block and
-> next_free_nid, then those free nids will not be scanned in scan_nat_page().
-> This results into mismatch between nm_i->available_nids and the sum of
-> nm_i->free_nid_count of all NAT blocks scanned. And nm_i->available_nids
-> will always be greater than the sum of free nids in all the blocks.
-> Under this condition, if we use all the currently scanned free nids,
-> then it will loop forever in f2fs_alloc_nid() as nm_i->available_nids
-> is still not zero but nm_i->free_nid_count of that partially scanned
-> NAT block is zero.
-> 
-> Fix this to align the nm_i->next_scan_nid to the first nid of the
-> corresponding NAT block.
-> 
-> Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
-> ---
->   fs/f2fs/node.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-> index 9bbaa26..d615e59 100644
-> --- a/fs/f2fs/node.c
-> +++ b/fs/f2fs/node.c
-> @@ -2402,6 +2402,8 @@ static int __f2fs_build_free_nids(struct f2fs_sb_info *sbi,
->   			if (IS_ERR(page)) {
->   				ret = PTR_ERR(page);
->   			} else {
-> +				if (nid % NAT_ENTRY_PER_BLOCK)
-> +					nid = NAT_BLOCK_OFFSET(nid) * NAT_ENTRY_PER_BLOCK;
+Hi Borislav,
 
-How about moving this logic to the beginning of __f2fs_build_free_nids(),
-after nid reset?
+On Sat, Apr 25, 2020 at 03:01:36PM +0200, Borislav Petkov wrote:
+> On Sat, Apr 25, 2020 at 07:44:14PM +0800, kernel test robot wrote:
+> > Greeting,
+> > 
+> > FYI, we noticed a -14.1% regression of will-it-scale.per_process_ops due to commit:
+> > 
+> > 
+> > commit: 1de08dccd383482a3e88845d3554094d338f5ff9 ("x86/mce: Add a struct mce.kflags field")
+> 
+> I don't see how a struct mce member addition will cause any performance
+> regression. Please check your test case.
 
-BTW, it looks we can add unlikely in this judgment condition?
+Sorry for the late response.
+
+We've done more rounds of test, and the test results are consistent.
+
+Our suspect is the commit changes the data alignment of other kernel
+domains than mce, which causes the performance change to this malloc
+microbenchmark.
+
+Without the patch, size of 'struct mce' is 120 bytes, while it will
+be 128 bytes after adding the '__u64 kflags' 
+
+And we also debugged further:
+
+* add "mce=off" to kernel cmdline, the performance change keeps. 
+
+* change the 'kflags' from __u64 to __u32 (the size of mce will
+  go back to 120 bytes), the performance change is gone
+
+* only comment off '__u64 kflags', peformance change is gone.
+
+We also tried perf c2c tool to capture some data, but the platform
+is a Xeon Phi which doesn't support it. Capturing raw HITM event
+also can not provide useful data.
+
+0day has reported quite some strange peformance bump like this,
+  https://lore.kernel.org/lkml/20200205123216.GO12867@shao2-debian/
+  https://lore.kernel.org/lkml/20200114085637.GA29297@shao2-debian/
+  https://lore.kernel.org/lkml/20200330011254.GA14393@feng-iot/
+for some of which, the bump could be gone if we hack to force all
+kernel functions to be aligned, but it doesn't work for this case.
+
+So together with the debugging above, we thought this could be a
+data alignment change caused performance bump.
 
 Thanks,
+Feng
 
->   				ret = scan_nat_page(sbi, page, nid);
->   				f2fs_put_page(page, 1);
->   			}
+> Thx.
 > 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+> _______________________________________________
+> LKP mailing list -- lkp@lists.01.org
+> To unsubscribe send an email to lkp-leave@lists.01.org
