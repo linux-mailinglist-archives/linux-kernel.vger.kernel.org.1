@@ -2,121 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B7824816B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 11:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67DC7248186
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 11:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726585AbgHRJHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 05:07:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726370AbgHRJHu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 05:07:50 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A133C061389
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 02:07:50 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id w14so20604546ljj.4
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 02:07:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fZnxPwWDe+137g4lC8OGah8jmu6F2XgBBRdxMx+JMFY=;
-        b=c07Et75jGoRRCU9SGELs4oHTfr+/H4D/1uxObUPJ24ofLPA0OiSnJ0z8FFv3sPKr5T
-         2igd4HF3xWCidJ0rSVvX4jTGDJ2HTkRt1jurlkYcrBpkuanWEojIfKyao9h8TnCb8K3s
-         oy3VZZXAfv4W+pnTzZR9Yd7XtGZmVNVQART9TqKNKPc4n+8uTMWGiTCD408iN32X8VMm
-         ITaFArMjiUKbHBRuMilWJh9IxXIYtTMa7y2ZesUWt7V1RibiTWWLjrx7CxAGbPFNOzQL
-         KV5c6SKIYF0Hn0EImzAUDAduUnHadxKe6ffdg7lD4/U9Ysp9N5t4U1VzSz8TAyOqpCaL
-         Kbtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fZnxPwWDe+137g4lC8OGah8jmu6F2XgBBRdxMx+JMFY=;
-        b=TRQFyL8PCZrIuEXZbRMehOwHRYi9BvJk2WYFb16qyvJzuS7PB6Y9bYEMk/GrwI9/Kz
-         McIwk/7GMRDJjGx07FqoHoSbwpDLRL91bRB4Y6BbeSOCjyPrNh5WnWjA162Q6M+4Zd0E
-         AsBXxVP02zLMXFzfXPLbcuogoDQqWVOuVd7cJvDjtSS942eAmKfQ0OMchz25UCQvGnVc
-         ZDPztkdkOzLj+LvAnyRnhiYILKVQfAJF5bwjDanusgvnd0OQgMSETaBbttTHSWfTa9qZ
-         IDCT5qirxvCRuHtllhjiegHrehIakoFjfzgF71mW/17plUdB6moY2eOtITbSSF2h3K81
-         cNbA==
-X-Gm-Message-State: AOAM530xqSwiSK9sPjLv6fj5wF7WLlfhZpAbyQkexQYxpBgjkh45lpBo
-        EIs2gZaLD0gh2AaDKBppUCVc+XNtIaTWCeTnTraDDA==
-X-Google-Smtp-Source: ABdhPJwhGVYumWhavpL2roJ7EphWNB1VFxxxuBXrJ2Q40IekG6bzaLeBvZSiFKHTVCMnmDfn0z0Y57aWaL0TnFLLzMs=
-X-Received: by 2002:a2e:9990:: with SMTP id w16mr8587816lji.156.1597741668678;
- Tue, 18 Aug 2020 02:07:48 -0700 (PDT)
+        id S1726648AbgHRJJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 05:09:32 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:19745 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726634AbgHRJJb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 05:09:31 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597741770; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=xbw7f7EvWXObjIipWjGcoTIEGzRejBWjPZyzXh3div8=; b=hel20JfpbH+cPX4xQL1XClNOuKYWqMGXvwxLndwL1ZwQq7ZR9Xzr8sQqAKM5cQXAgFXcv3gq
+ 5NUUR2LRTYFIWN3UstxiQCQ59pqKDixeZWacl9tQdn0jGvOeDZk+wRfYcnooD6ZPzMjy9Cmy
+ NkRdG08f2eOiA+I3Y7SQt/N5uCM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5f3b9aa0440a07969ad2b824 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 18 Aug 2020 09:08:48
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 62C06C43387; Tue, 18 Aug 2020 09:08:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1C4A3C433CA;
+        Tue, 18 Aug 2020 09:08:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1C4A3C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Tang Bin <tangbin@cmss.chinamobile.com>
+Cc:     netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        davem@davemloft.net, ath10k@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ath10k: fix the status check and wrong return
+References: <20200814144844.1920-1-tangbin@cmss.chinamobile.com>
+        <87y2mdjqkx.fsf@codeaurora.org>
+        <e53ee8ca-9c2b-2313-6fd7-8f73ae33e1a2@cmss.chinamobile.com>
+Date:   Tue, 18 Aug 2020 12:08:42 +0300
+In-Reply-To: <e53ee8ca-9c2b-2313-6fd7-8f73ae33e1a2@cmss.chinamobile.com> (Tang
+        Bin's message of "Tue, 18 Aug 2020 09:42:03 +0800")
+Message-ID: <87lficjp7p.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-References: <20200811113209.34057-1-benbjiang@tencent.com>
-In-Reply-To: <20200811113209.34057-1-benbjiang@tencent.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 18 Aug 2020 11:07:37 +0200
-Message-ID: <CAKfTPtBReSax0AK9sanzcSzBMJzx7jK-K8Umc3kfH_n11N7f3A@mail.gmail.com>
-Subject: Re: [PATCH v3] sched/fair: simplfy the work when reweighting entity
-To:     Jiang Biao <benbjiang@gmail.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jiang Biao <benbjiang@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 Aug 2020 at 13:32, Jiang Biao <benbjiang@gmail.com> wrote:
->
-> From: Jiang Biao <benbjiang@tencent.com>
->
-> The code in reweight_entity() can be simplified.
->
-> For a sched entity on the rq, the entity accounting can be replaced by
-> cfs_rq instantaneous load updates currently called from within the
-> entity accounting.
->
-> Even though an entity on the rq can't represent a task in
-> reweight_entity() (a task is always dequeued before calling this
-> function) and so the numa task accounting and the rq->cfs_tasks list
-> management of the entity accounting are never called, the redundant
-> cfs_rq->nr_running decrement/increment will be avoided.
->
-> Signed-off-by: Jiang Biao <benbjiang@tencent.com>
+Tang Bin <tangbin@cmss.chinamobile.com> writes:
 
-Minor typo of the subject: s/simplfy/simplify/
+> =E5=9C=A8 2020/8/17 22:26, Kalle Valo =E5=86=99=E9=81=93:
+>>> In the function ath10k_ahb_clock_init(), devm_clk_get() doesn't
+>>> return NULL. Thus use IS_ERR() and PTR_ERR() to validate
+>>> the returned value instead of IS_ERR_OR_NULL().
+>> Why? What's the benefit of this patch? Or what harm does
+>> IS_ERR_OR_NULL() create?
+>
+> Thanks for you reply, the benefit of this patch is simplify the code,
+> because in
+>
+> this function, I don't think the situation of 'devm_clk_get() return
+> NULL' exists.
+>
+> So please think about it, thanks.
 
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+I think you missed my comment below:
 
-> ---
-> v3<-v2: Amend commit log taking Dietmar's advice. Thx.
-> v2<-v1: Amend the commit log
->
->  kernel/sched/fair.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 04fa8dbcfa4d..18a8fc7bd0de 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -3086,7 +3086,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
->                 /* commit outstanding execution time */
->                 if (cfs_rq->curr == se)
->                         update_curr(cfs_rq);
-> -               account_entity_dequeue(cfs_rq, se);
-> +               update_load_sub(&cfs_rq->load, se->load.weight);
->         }
->         dequeue_load_avg(cfs_rq, se);
->
-> @@ -3102,7 +3102,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
->
->         enqueue_load_avg(cfs_rq, se);
->         if (se->on_rq)
-> -               account_entity_enqueue(cfs_rq, se);
-> +               update_load_add(&cfs_rq->load, se->load.weight);
->
->  }
->
-> --
-> 2.21.0
->
+>> devm_clk_get() can return NULL if CONFIG_HAVE_CLK is disabled:
+>>
+>> static inline struct clk *devm_clk_get(struct device *dev, const char *i=
+d)
+>> {
+>> 	return NULL;
+>> }
+
+So I think this patch just creates a new bug and does not improve
+anything.
+
+--=20
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
