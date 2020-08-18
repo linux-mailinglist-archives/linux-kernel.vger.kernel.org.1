@@ -2,127 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F592482C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 12:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80333248270
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 12:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbgHRKR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 06:17:27 -0400
-Received: from mga04.intel.com ([192.55.52.120]:39352 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726569AbgHRKR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 06:17:26 -0400
-IronPort-SDR: 3qVvRh29vkvtaGcoDcHJ+XWVRZCOxod4unzOSEiLPBGDX6eJehM/0Mf+SXoQG+nRWG5HHebA6+
- A9lV/P2ahuDg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="152284286"
-X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
-   d="scan'208";a="152284286"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 03:17:26 -0700
-IronPort-SDR: +RQdUwcKd0WpF1MV50K77ipSbXSpGk4l5pWDUHQoibQeSGg/cDyEdDflEAxvBYD4/wd4LIkt6S
- d0ZiwUUXD3Xg==
-X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
-   d="scan'208";a="279363998"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 03:17:22 -0700
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
-        broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        mengdong.lin@intel.com, bard.liao@intel.com
-Subject: [PATCH] soundwire: cadence: fix race condition between suspend and Slave device alerts
-Date:   Tue, 18 Aug 2020 06:23:40 +0800
-Message-Id: <20200817222340.18042-1-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726671AbgHRKBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 06:01:51 -0400
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.160]:36030 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726043AbgHRKBt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 06:01:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1597744907;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=gJZHQFoC1RuwciwdjDmugKLAqLBT+pDMLrsktIem2so=;
+        b=ld1kuJRxVSvq4czLNR0vE0+kZGqvAZCUVNFGLdJjwltT/hxlufO+CZlBsvW1+hNCT/
+        EPjBzz1KxEEzH66N0fcL8yhufl/Nmqg83BTedtGtCjdPUK7e+ZJY82f9Ca2fwL6QFLqj
+        +8ArC6t2nnF52H0dWW/PdvQZhLD1Qp/tDEwMq3VxL+woCXYdkpT73C0+xjm7BNwTGyot
+        eW8tEyNL9VQtmX3RURtjdrL3ZkRaEkt38VpAD7s4FIe/RcpIUODBcBPVsUWv/TqCynYJ
+        mbWjhCh+B+UoVwdRrDkWKAhcAfCpDQsm0PUdbr4x+I8iGKwRVY70RQW64142A9Mfq7Jx
+        zu9g==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Qpw97WFDVCaXA4NMLE="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+        by smtp.strato.de (RZmta 46.10.5 DYNA|AUTH)
+        with ESMTPSA id V07054w7I9wlRjh
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+        Tue, 18 Aug 2020 11:58:47 +0200 (CEST)
+Subject: Re: [Letux-kernel] [PATCH] omap5: Fix DSI base address and clocks
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset=us-ascii
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <20200818095100.25412-1-dave@ds0.me>
+Date:   Tue, 18 Aug 2020 11:58:47 +0200
+Cc:     kernel@pyra-handheld.com,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Message-Id: <9081697A-02F9-42EA-9F22-F62381FA1C79@goldelico.com>
+References: <20200818095100.25412-1-dave@ds0.me>
+To:     Tony Lindgren <tony@atomide.com>
+X-Mailer: Apple Mail (2.3124)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-In system suspend stress cases, the SOF CI reports timeouts. The root
-cause is that an alert is generated while the system suspends. The
-interrupt handling generates transactions on the bus that will never
-be handled because the interrupts are disabled in parallel.
+> Am 18.08.2020 um 11:51 schrieb David Shah <dave@ds0.me>:
+> 
+> DSI was not probing due to base address off by 0x1000, and sys_clk
+> missing.
+> 
+> With this patch, the Pyra display works if HDMI is disabled in the
+> device tree.
 
-As a result, the transaction never completes and times out on resume.
-This error doesn't seem too problematic since it happens in a work
-queue, and the system recovers without issues.
+For me it also works if HDMI is not disabled.
+So IMHO this comment is misleading.
 
-Nevertheless, this race condition should not happen. When doing a
-system suspend, or when disabling interrupts, we should make sure the
-current transaction can complete, and prevent new work from being
-queued.
+Otherwise,
 
-BugLink: https://github.com/thesofproject/linux/issues/2344
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/cadence_master.c | 24 +++++++++++++++++++++++-
- drivers/soundwire/cadence_master.h |  1 +
- 2 files changed, 24 insertions(+), 1 deletion(-)
+Tested-by: H. Nikolaus Schaller <hns@goldelico.com>
 
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index 24eafe0aa1c3..1330ffc47596 100644
---- a/drivers/soundwire/cadence_master.c
-+++ b/drivers/soundwire/cadence_master.c
-@@ -791,7 +791,16 @@ irqreturn_t sdw_cdns_irq(int irq, void *dev_id)
- 			     CDNS_MCP_INT_SLAVE_MASK, 0);
- 
- 		int_status &= ~CDNS_MCP_INT_SLAVE_MASK;
--		schedule_work(&cdns->work);
-+
-+		/*
-+		 * Deal with possible race condition between interrupt
-+		 * handling and disabling interrupts on suspend.
-+		 *
-+		 * If the master is in the process of disabling
-+		 * interrupts, don't schedule a workqueue
-+		 */
-+		if (cdns->interrupt_enabled)
-+			schedule_work(&cdns->work);
- 	}
- 
- 	cdns_writel(cdns, CDNS_MCP_INTSTAT, int_status);
-@@ -924,6 +933,19 @@ int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns, bool state)
- 		slave_state = cdns_readl(cdns, CDNS_MCP_SLAVE_INTSTAT1);
- 		cdns_writel(cdns, CDNS_MCP_SLAVE_INTSTAT1, slave_state);
- 	}
-+	cdns->interrupt_enabled = state;
-+
-+	/*
-+	 * Complete any on-going status updates before updating masks,
-+	 * and cancel queued status updates.
-+	 *
-+	 * There could be a race with a new interrupt thrown before
-+	 * the 3 mask updates below are complete, so in the interrupt
-+	 * we use the 'interrupt_enabled' status to prevent new work
-+	 * from being queued.
-+	 */
-+	if (!state)
-+		cancel_work_sync(&cdns->work);
- 
- 	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK0, slave_intmask0);
- 	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK1, slave_intmask1);
-diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
-index fdec62b912d3..4d1aab5b5ec2 100644
---- a/drivers/soundwire/cadence_master.h
-+++ b/drivers/soundwire/cadence_master.h
-@@ -133,6 +133,7 @@ struct sdw_cdns {
- 
- 	bool link_up;
- 	unsigned int msg_count;
-+	bool interrupt_enabled;
- 
- 	struct work_struct work;
- 
--- 
-2.17.1
+> 
+> Signed-off-by: David Shah <dave@ds0.me>
+> ---
+> arch/arm/boot/dts/omap5.dtsi | 20 +++++++++++---------
+> 1 file changed, 11 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/omap5.dtsi b/arch/arm/boot/dts/omap5.dtsi
+> index c96e19a15c52..849a2dd9fef7 100644
+> --- a/arch/arm/boot/dts/omap5.dtsi
+> +++ b/arch/arm/boot/dts/omap5.dtsi
+> @@ -388,11 +388,11 @@ rfbi: encoder@0  {
+> 					};
+> 				};
+> 
+> -				target-module@5000 {
+> +				target-module@4000 {
+> 					compatible = "ti,sysc-omap2", "ti,sysc";
+> -					reg = <0x5000 0x4>,
+> -					      <0x5010 0x4>,
+> -					      <0x5014 0x4>;
+> +					reg = <0x4000 0x4>,
+> +					      <0x4010 0x4>,
+> +					      <0x4014 0x4>;
+> 					reg-names = "rev", "sysc", "syss";
+> 					ti,sysc-sidle = <SYSC_IDLE_FORCE>,
+> 							<SYSC_IDLE_NO>,
+> @@ -404,7 +404,7 @@ SYSC_OMAP2_SOFTRESET |
+> 					ti,syss-mask = <1>;
+> 					#address-cells = <1>;
+> 					#size-cells = <1>;
+> -					ranges = <0 0x5000 0x1000>;
+> +					ranges = <0 0x4000 0x1000>;
+> 
+> 					dsi1: encoder@0 {
+> 						compatible = "ti,omap5-dsi";
+> @@ -414,8 +414,9 @@ dsi1: encoder@0 {
+> 						reg-names = "proto", "phy", "pll";
+> 						interrupts = <GIC_SPI 53 IRQ_TYPE_LEVEL_HIGH>;
+> 						status = "disabled";
+> -						clocks = <&dss_clkctrl OMAP5_DSS_CORE_CLKCTRL 8>;
+> -						clock-names = "fck";
+> +						clocks = <&dss_clkctrl OMAP5_DSS_CORE_CLKCTRL 8>,
+> +							 <&dss_clkctrl OMAP5_DSS_CORE_CLKCTRL 10>;
+> +						clock-names = "fck", "sys_clk";
+> 					};
+> 				};
+> 
+> @@ -445,8 +446,9 @@ dsi2: encoder@0 {
+> 						reg-names = "proto", "phy", "pll";
+> 						interrupts = <GIC_SPI 55 IRQ_TYPE_LEVEL_HIGH>;
+> 						status = "disabled";
+> -						clocks = <&dss_clkctrl OMAP5_DSS_CORE_CLKCTRL 8>;
+> -						clock-names = "fck";
+> +						clocks = <&dss_clkctrl OMAP5_DSS_CORE_CLKCTRL 8>,
+> +							 <&dss_clkctrl OMAP5_DSS_CORE_CLKCTRL 10>;
+> +						clock-names = "fck", "sys_clk";
+> 					};
+> 				};
+> 
+> -- 
+> 2.28.0
+> 
+> _______________________________________________
+> https://projects.goldelico.com/p/gta04-kernel/
+> Letux-kernel mailing list
+> Letux-kernel@openphoenux.org
+> http://lists.goldelico.com/mailman/listinfo.cgi/letux-kernel
 
