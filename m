@@ -2,107 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF525248556
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 14:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4FE248541
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 14:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726835AbgHRMwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 08:52:14 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:60680 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726391AbgHRMwF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 08:52:05 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1k815n-002tHu-Ks; Tue, 18 Aug 2020 06:51:55 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1k815m-0002uy-Vs; Tue, 18 Aug 2020 06:51:55 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        criu@openvz.org, bpf@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Jann Horn <jann@thejh.net>, Kees Cook <keescook@chromium.org>,
-        "Daniel P. Berrang\?\?" <berrange@redhat.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Matthew Wilcox <willy@debian.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Matthew Wilcox <matthew@wil.cx>,
-        Trond Myklebust <trond.myklebust@fys.uio.no>,
-        Chris Wright <chrisw@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-References: <87ft8l6ic3.fsf@x220.int.ebiederm.org>
-        <20200817220425.9389-17-ebiederm@xmission.com>
-        <20200818112020.GA17080@infradead.org>
-Date:   Tue, 18 Aug 2020 07:48:21 -0500
-In-Reply-To: <20200818112020.GA17080@infradead.org> (Christoph Hellwig's
-        message of "Tue, 18 Aug 2020 12:20:20 +0100")
-Message-ID: <87blj83ysq.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1726670AbgHRMuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 08:50:15 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:34450 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726391AbgHRMuO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 08:50:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597755014; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=oevYdqFGLDHN5iSBw8FvMUwlcjiMNTgT96naIwWWoCU=;
+ b=sakmImFt7zHJ/q4Om0tPr6NtoRM7I+mFe1FIbAPcYx176zL42zS9JZKXx164guMhP42MNKhp
+ np4X7rm4O8iOulyO9BVOEzaXqzlGuMiYQFDwwv9KhGOfRFqAqXY6v0VtlHriLz+0x7Ri1ggp
+ oFgt0BROw4tSxC8r2L+Lm8HTFpk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5f3bce7ed48d4625ca7f6212 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 18 Aug 2020 12:50:06
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 77FBEC433A0; Tue, 18 Aug 2020 12:50:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6EE5BC433CA;
+        Tue, 18 Aug 2020 12:50:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6EE5BC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1k815m-0002uy-Vs;;;mid=<87blj83ysq.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19i1uubQLTFHwGCBALZbWaXu5opyhIYahI=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
-        XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4768]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Christoph Hellwig <hch@infradead.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 279 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 10 (3.7%), b_tie_ro: 9 (3.2%), parse: 0.83 (0.3%),
-         extract_message_metadata: 10 (3.7%), get_uri_detail_list: 0.48 (0.2%),
-         tests_pri_-1000: 17 (6.0%), tests_pri_-950: 1.31 (0.5%),
-        tests_pri_-900: 1.07 (0.4%), tests_pri_-90: 72 (25.7%), check_bayes:
-        70 (25.1%), b_tokenize: 7 (2.5%), b_tok_get_all: 6 (2.2%),
-        b_comp_prob: 1.78 (0.6%), b_tok_touch_all: 52 (18.6%), b_finish: 0.91
-        (0.3%), tests_pri_0: 155 (55.4%), check_dkim_signature: 0.50 (0.2%),
-        check_dkim_adsp: 2.4 (0.9%), poll_dns_idle: 0.75 (0.3%), tests_pri_10:
-        2.1 (0.8%), tests_pri_500: 7 (2.4%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 17/17] file: Rename __close_fd to close_fd and remove the files parameter
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] brcmfmac: check ndev pointer
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200802161804.6126-1-trix@redhat.com>
+References: <20200802161804.6126-1-trix@redhat.com>
+To:     trix@redhat.com
+Cc:     arend.vanspriel@broadcom.com, franky.lin@broadcom.com,
+        hante.meuleman@broadcom.com, chi-hsien.lin@cypress.com,
+        wright.feng@cypress.com, davem@davemloft.net, kuba@kernel.org,
+        rafal@milecki.pl, tklauser@distanz.ch,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200818125004.77FBEC433A0@smtp.codeaurora.org>
+Date:   Tue, 18 Aug 2020 12:50:04 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christoph Hellwig <hch@infradead.org> writes:
+trix@redhat.com wrote:
 
-> Please kill off ksys_close as well while you're at it.
+> From: Tom Rix <trix@redhat.com>
+> 
+> Clang static analysis reports this error
+> 
+> brcmfmac/core.c:490:4: warning: Dereference of null pointer
+>         (*ifp)->ndev->stats.rx_errors++;
+>         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> In this block of code
+> 
+> 	if (ret || !(*ifp) || !(*ifp)->ndev) {
+> 		if (ret != -ENODATA && *ifp)
+> 			(*ifp)->ndev->stats.rx_errors++;
+> 		brcmu_pkt_buf_free_skb(skb);
+> 		return -ENODATA;
+> 	}
+> 
+> (*ifp)->ndev being NULL is caught as an error
+> But then it is used to report the error.
+> 
+> So add a check before using it.
+> 
+> Fixes: 91b632803ee4 ("brcmfmac: Use net_device_stats from struct net_device")
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-Good point.  ksys_close is just a trivial wrapper around close_fd.  So
-the one caller of ksys_close autofs_dev_ioctl_closemount can be
-trivially changed to call close_fd.
+Patch applied to wireless-drivers-next.git, thanks.
 
-Eric
+9c9f015bc9f8 brcmfmac: check ndev pointer
+
+-- 
+https://patchwork.kernel.org/patch/11696567/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
