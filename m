@@ -2,90 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD0C248E37
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 20:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A8B248E49
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 20:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726716AbgHRSyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 14:54:36 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:27506 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726670AbgHRSye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 14:54:34 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597776873; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=qgjBQdmGdWynaWSNQfVd0+hOTs1Zz97WJ7gQC5huOBE=; b=XuMIov4d/y6g2EyevJtHgvjLsxMgRugjbeOUFe/ntEqMtHHMksdBDarbRRQZ1h/wUE/lQVpU
- jNhmzDApxv71KmiFOCuPHYHd4iuzTcKKNffidh5W3DfKZyZLVgw/oOOSHK75/dJgPfMPoiog
- xmEQjiZgKGXcOipbYNrQRBJKkQg=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f3c23e4f2b697637a94ba29 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 18 Aug 2020 18:54:28
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 04650C433CA; Tue, 18 Aug 2020 18:54:27 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from eberman-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: eberman)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9F259C433A1;
-        Tue, 18 Aug 2020 18:54:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9F259C433A1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=eberman@codeaurora.org
-From:   Elliot Berman <eberman@codeaurora.org>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Andy Yan <andy.yan@rock-chips.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Elliot Berman <eberman@codeaurora.org>, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Trilok Soni <tsoni@codeaurora.org>,
-        Prasad Sodagudi <psodagud@codeaurora.org>
-Subject: [RESEND PATCH v1 4/4] arm64: dts: qcom: pm8150: Add reboot magic
-Date:   Tue, 18 Aug 2020 11:54:16 -0700
-Message-Id: <1597776856-12014-5-git-send-email-eberman@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1597776856-12014-1-git-send-email-eberman@codeaurora.org>
-References: <1597776856-12014-1-git-send-email-eberman@codeaurora.org>
+        id S1726828AbgHRSz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 14:55:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726705AbgHRSzZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 14:55:25 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3904C061389;
+        Tue, 18 Aug 2020 11:55:23 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id f19so11455571qtp.2;
+        Tue, 18 Aug 2020 11:55:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=b3jNsyj/qiBAuy4YJCoytwqosstgAXD/++wTpyEbakU=;
+        b=dWNgsnEipriITe0mjwq95y0gULU3kOwQLSobXeWaYDw0Cbjwwf4MCX3g8yrdz3GKWV
+         d/XtOuS4ZxHZwU3PqZ3kgWFv7DQ/E2i1BGrS5Kuvso24spEjd9bgIpn6L/QCloULM0SN
+         PiY2NGbhJmkkgs1101USl1jvVUD43zUSzXwOAcPxq16oXrCwkv1ZvgFSdlPs1QqpsxHu
+         fnaErg4JTIWYY69JmDoaLxn4JDA5wmAAxy7PMiZUv8HyZDxSwiNGVERnMSKclXioPkaJ
+         FXblSXCadnQ+AkVJ0lBRVxHS8tZ6tRshG3hNCbHXiSh5rNUb+EXRF44BTSxUYmW5+OhC
+         iJIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=b3jNsyj/qiBAuy4YJCoytwqosstgAXD/++wTpyEbakU=;
+        b=QXDlwwRgveAQMqv2UxRrARK2szQUG4ZI4ssqkQGfc/9HZXlzeK5cdZ6p7qSmZ3N8nH
+         uAyb1B1UqEKxJbPdDxOOIiSs9Yyn/jrZ+G7ut1vKvZQ+MQT6svUONcl3RKaiBTKf0Jt2
+         OMJaXrAQJon/STI/axrHDecAOqFog/fptVP8dfnO6in7UJ45X9cDLs0tN0QKKi6UiXpp
+         CZO4qXZIhTUOqQOTJFadY+pztELHhb+zjB9M30127Af+KLyh0ApfB5zX3Lv/M07v6ds9
+         wde1f6OPbBJswaX9XXa+ztbmwLXxf09Kagjq35np3EV0es35dM/nHXMj/ErdLVRCP2g9
+         aWBg==
+X-Gm-Message-State: AOAM532r0ihhvEXZkD4xBQY4iyPcYAn2Oj+/Mey0IXm/asI5ndi223XZ
+        oW7ztSp+1fYUuwrl0kz9K0w=
+X-Google-Smtp-Source: ABdhPJzMq+tTPcrnH3DTevTOuTLR+H4yZD2srB20pl4xe+6ZIBA/sei9Ubuxgt0mzdIYmUmNHemhiA==
+X-Received: by 2002:aed:2199:: with SMTP id l25mr18742965qtc.309.1597776923228;
+        Tue, 18 Aug 2020 11:55:23 -0700 (PDT)
+Received: from tong-desktop.local ([2601:5c0:c100:b9d:f9e2:64b4:fbc4:6485])
+        by smtp.googlemail.com with ESMTPSA id x198sm23498821qka.37.2020.08.18.11.55.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Aug 2020 11:55:22 -0700 (PDT)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org, robh@kernel.org,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     ztong0001@gmail.com, kernel test robot <lkp@intel.com>
+Subject: [PATCH v4] tty: serial: earlycon dependency
+Date:   Tue, 18 Aug 2020 14:54:59 -0400
+Message-Id: <20200818185458.84418-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200818162556.6621-1-ztong0001@gmail.com>
+References: <20200818162556.6621-1-ztong0001@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add reboot command magic values for pm8150 pon device.
+parse_options() in drivers/tty/serial/earlycon.c calls uart_parse_earlycon
+in drivers/tty/serial/serial_core.c therefore selecting SERIAL_EARLYCON
+should automatically select SERIAL_CORE, otherwise will result in symbol
+not found error during linking if SERIAL_CORE is not configured as builtin
 
-Signed-off-by: Elliot Berman <eberman@codeaurora.org>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
 ---
- arch/arm64/boot/dts/qcom/pm8150.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/pm8150.dtsi b/arch/arm64/boot/dts/qcom/pm8150.dtsi
-index 1b64069..afd6231 100644
---- a/arch/arm64/boot/dts/qcom/pm8150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/pm8150.dtsi
-@@ -50,6 +50,11 @@
- 		pon: power-on@800 {
- 			compatible = "qcom,pm8916-pon";
- 			reg = <0x0800>;
-+
-+			reboot-mode-names = "bootloader", "recovery",
-+					    "dm-verity device corrupted";
-+			reboot-mode-magic = <0x1>, <0x2>, <0x4>;
-+
- 			pwrkey {
- 				compatible = "qcom,pm8941-pwrkey";
- 				interrupts = <0x0 0x8 0x0 IRQ_TYPE_EDGE_BOTH>;
+Fixes: 9aac5887595b ("tty/serial: add generic serial earlycon")
+v2: I made an attempt to fix the commit log
+v3: I made another attempt to fix the commit log and I also changed
+select to depends according to Jiri's comment
+v4: fixed another stupid error -- should be "depends on" not "depends"
+Reported-by: kernel test robot <lkp@intel.com>
+
+ drivers/tty/serial/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+index 8a0352eb337c..759ac4a5a5c5 100644
+--- a/drivers/tty/serial/Kconfig
++++ b/drivers/tty/serial/Kconfig
+@@ -8,6 +8,7 @@ menu "Serial drivers"
+ 
+ config SERIAL_EARLYCON
+ 	bool
++	depends on SERIAL_CORE
+ 	help
+ 	  Support for early consoles with the earlycon parameter. This enables
+ 	  the console before standard serial driver is probed. The console is
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.25.1
 
