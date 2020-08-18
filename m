@@ -2,219 +2,692 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2E024819E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 11:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8632B248194
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 11:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbgHRJOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 05:14:38 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2613 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726203AbgHRJOg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 05:14:36 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id 93ACB97961580369653F;
-        Tue, 18 Aug 2020 10:14:32 +0100 (IST)
-Received: from localhost (10.52.121.15) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 18 Aug
- 2020 10:14:32 +0100
-Date:   Tue, 18 Aug 2020 10:13:01 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-CC:     <linux-mm@kvack.org>, <linux-arm-kernel@lists.infradead.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <akpm@linux-foundation.org>, Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        "Suzuki Poulose" <suzuki.poulose@arm.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] arm64/mm: Change THP helpers to comply with generic
- MM semantics
-Message-ID: <20200818101301.000027ef@Huawei.com>
-In-Reply-To: <1597655984-15428-2-git-send-email-anshuman.khandual@arm.com>
-References: <1597655984-15428-1-git-send-email-anshuman.khandual@arm.com>
-        <1597655984-15428-2-git-send-email-anshuman.khandual@arm.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1726398AbgHRJN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 05:13:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726145AbgHRJN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 05:13:58 -0400
+Received: from coco.lan (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A928206B5;
+        Tue, 18 Aug 2020 09:13:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597742036;
+        bh=y6t/nDZtQAaatHx+Es3LX2J9jd8u3hy8rCEe/i31UrM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=d9XRnInfBjaxiUhh7v2yUGiArHMESUlinwjmKn2kU17BwWrXAKw4S7MkRwRBP79bq
+         V2QsdIEGETwIvLoocU2a+P6rMW02dIZASv/g/Bu/w+wEp+kZCA/Tb9ZMxkSFRbyAQL
+         MwVlazcSkCfnsVmMpQu4YvuW+To1x1yhU4wltO8M=
+Date:   Tue, 18 Aug 2020 11:13:51 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Lee Jones <lee.jones@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v3 43/44] dt: document HiSilicon SPMI controller and
+ mfd/regulator properties
+Message-ID: <20200818111351.7e3fc780@coco.lan>
+In-Reply-To: <20200817201211.GA1437827@bogus>
+References: <cover.1597647359.git.mchehab+huawei@kernel.org>
+        <2f88fed96d67b05fc033356fdbb7e3227955ab34.1597647359.git.mchehab+huawei@kernel.org>
+        <20200817201211.GA1437827@bogus>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.121.15]
-X-ClientProxiedBy: lhreml723-chm.china.huawei.com (10.201.108.74) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 Aug 2020 14:49:43 +0530
-Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+Em Mon, 17 Aug 2020 14:12:11 -0600
+Rob Herring <robh@kernel.org> escreveu:
 
-> pmd_present() and pmd_trans_huge() are expected to behave in the following
-> manner during various phases of a given PMD. It is derived from a previous
-> detailed discussion on this topic [1] and present THP documentation [2].
-> 
-> pmd_present(pmd):
-> 
-> - Returns true if pmd refers to system RAM with a valid pmd_page(pmd)
-> - Returns false if pmd does not refer to system RAM - Invalid pmd_page(pmd)
-> 
-> pmd_trans_huge(pmd):
-> 
-> - Returns true if pmd refers to system RAM and is a trans huge mapping
-> 
-> -------------------------------------------------------------------------
-> |	PMD states	|	pmd_present	|	pmd_trans_huge	|
-> -------------------------------------------------------------------------
-> |	Mapped		|	Yes		|	Yes		|
-> -------------------------------------------------------------------------
-> |	Splitting	|	Yes		|	Yes		|
-> -------------------------------------------------------------------------
-> |	Migration/Swap	|	No		|	No		|
-> -------------------------------------------------------------------------
-> 
-> The problem:
-> 
-> PMD is first invalidated with pmdp_invalidate() before it's splitting. This
-> invalidation clears PMD_SECT_VALID as below.
-> 
-> PMD Split -> pmdp_invalidate() -> pmd_mkinvalid -> Clears PMD_SECT_VALID
-> 
-> Once PMD_SECT_VALID gets cleared, it results in pmd_present() return false
-> on the PMD entry. It will need another bit apart from PMD_SECT_VALID to re-
-> affirm pmd_present() as true during the THP split process. To comply with
-> above mentioned semantics, pmd_trans_huge() should also check pmd_present()
-> first before testing presence of an actual transparent huge mapping.
-> 
-> The solution:
-> 
-> Ideally PMD_TYPE_SECT should have been used here instead. But it shares the
-> bit position with PMD_SECT_VALID which is used for THP invalidation. Hence
-> it will not be there for pmd_present() check after pmdp_invalidate().
-> 
-> A new software defined PMD_PRESENT_INVALID (bit 59) can be set on the PMD
-> entry during invalidation which can help pmd_present() return true and in
-> recognizing the fact that it still points to memory.
-> 
-> This bit is transient. During the split process it will be overridden by a
-> page table page representing normal pages in place of erstwhile huge page.
-> Other pmdp_invalidate() callers always write a fresh PMD value on the entry
-> overriding this transient PMD_PRESENT_INVALID bit, which makes it safe.
-> 
-> [1]: https://lkml.org/lkml/2018/10/17/231
-> [2]: https://www.kernel.org/doc/Documentation/vm/transhuge.txt
+> On Mon, Aug 17, 2020 at 09:11:02AM +0200, Mauro Carvalho Chehab wrote:
+> > Add documentation for the properties needed by the HiSilicon
+> > 6421v600 driver, and by the SPMI controller used to access
+> > the chipset.
+> >=20
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 182 ++++++++++++++++++
+> >  .../spmi/hisilicon,hisi-spmi-controller.yaml  |  54 ++++++
+> >  2 files changed, 236 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/mfd/hisilicon,hi6=
+421-spmi-pmic.yaml
+> >  create mode 100644 Documentation/devicetree/bindings/spmi/hisilicon,hi=
+si-spmi-controller.yaml
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spm=
+i-pmic.yaml b/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-p=
+mic.yaml
+> > new file mode 100644
+> > index 000000000000..95494114554d
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.=
+yaml
+> > @@ -0,0 +1,182 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/mfd/hisilicon,hi6421-spmi-pmic.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: HiSilicon 6421v600 SPMI PMIC
+> > +
+> > +maintainers:
+> > +  - Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > +
+> > +description: |
+> > +  HiSilicon 6421v600 uses a MIPI System Power Management (SPMI) bus in=
+ order
+> > +  to provide interrupts and power supply.
+> > +
+> > +  The GPIO and interrupt settings are represented as part of the top-l=
+evel PMIC
+> > +  node.
+> > +
+> > +  The SPMI controller part is provided by
+> > +  Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controlle=
+r.yaml.
+> > +
+> > +properties:
+> > +  $nodename:
+> > +    pattern: "pmic@[0-9a-f]"
+> > +
+> > +  compatible:
+> > +    const: hisilicon,hi6421-spmi-pmic =20
+>=20
+> -spmi-pmic is redundant. Can the hi6421 be anything else?
 
-Hi Anshuman,
+There are other HiSilicom 6421 variants that don't use SPMI bus:
 
-One query on this.  From my reading of the ARM ARM, bit 59 is not
-an ignored bit.  The exact requirements for hardware to be using
-it are a bit complex though.
+	Documentation/devicetree/bindings/mfd/hi6421.txt:       "hisilicon,hi6421-=
+pmic";
+	Documentation/devicetree/bindings/mfd/hi6421.txt:       "hisilicon,hi6421v=
+530-pmic";
 
-It 'might' be safe to use it for this, but if so can we have a comment
-explaining why.  Also more than possible I'm misunderstanding things! 
+The DT file on Kernel 4.9 uses hi6421v600 (although the schematics
+from 96boards name it as hi6421v610).
+
+While I don't mind much,would prefer to keep "spmi" on its name, in order
+to distinguish this one from the non-spmi variants.
+
+Maybe we use this for compatible:
+
+	hisilicon,hi6421v600-spmi
+
+>=20
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  spmi-channel:
+> > +    description: number of the SPMI channel where the PMIC is connecte=
+d =20
+>=20
+> This looks like a common (to SPMI), but it's not something defined in=20
+> spmi.txt=20
+
+This one is not part of the SPMI core. It is stored inside a private=20
+structure inside at the HiSilicon spmi controller driver. It is stored=20
+there as ctrl_dev->channel, and it is used to calculate the register offset
+for readl():
+
+	offset  =3D SPMI_APB_SPMI_STATUS_BASE_ADDR;
+	offset +=3D SPMI_CHANNEL_OFFSET * ctrl_dev->channel + SPMI_SLAVE_OFFSET * =
+sid;
+	do {
+		status =3D readl(base + offset);
+	...
+
+The SPMI bus is somewhat similar to I2C: it is a 2-wire serial bus
+with up to 16 devices connected to it.
+
+Now, most modern I2C chipsets provide multiple independent I2C
+channels, on different pins. Also, on some chipsets, certain
+GPIO pins can be used either as GPIO or as I2C.
+
+I strongly suspect that this is the case here: according with
+the Hikey 970 schematics:
+
+	https://www.96boards.org/documentation/consumer/hikey/hikey970/hardware-do=
+cs/files/hikey970-schematics.pdf
+
+The pins used by SPMI clock/data can also be used as GPIO.
+
+While I don't have access to the datasheets for Kirin 970 (or any other
+chipsets on this board), for me, it sounds that different GPIO pins
+are allowed to use SPMI. The "spmi-channel" property specifies
+what pins will be used for SPMI, among the ones that are
+compatible with MIPI SPMI specs.
+
+> (which should ideally be converted to schema first).=20
+
+I can try porting spmi schema to yaml on a separate patch,
+and submit it independently of this series.
+
+> Minimally,=20
+> it needs a better explanation and determination if it should be common=20
+> or is HiSilicon specific.
+
+What about:
+
+  spmi-channel:
+    description: |
+      number of the SPMI channel at the HiSilicon SoC that will
+      be used for the MIPI SPMI controller.
+
+>=20
+> > +
+> > +  '#interrupt-cells':
+> > +    const: 2
+> > +
+> > +  interrupt-controller:
+> > +    description:
+> > +      Identify that the PMIC is capable of behaving as an interrupt co=
+ntroller. =20
+>=20
+> No need to redefine common properties if nothing specific to this device=
+=20
+> to say. Just:
+>=20
+> interrupt-controller: true
+
+Ok.
+
+>=20
+> > +
+> > +  gpios:
+> > +    maxItems: 1
+> > +
+> > +  irq-num:
+> > +    description: Interrupt request number
+> > +
+> > +  'irq-array':
+> > +    description: Interrupt request array
+> > +
+> > +  'irq-mask-addr':
+> > +    description: Address for the interrupt request mask
+> > +
+> > +  'irq-addr':
+> > +    description: Address for the interrupt request =20
+>=20
+> What's all these non-standard interrupt properties?
+
+After doing a deeper look at the code which handles IRQs on this PMIC,
+I'm considering to get rid of two properties: irq-num and irq-array.
+
+See, the code does this:
+
+	/* During probe time */
+	pmic->irqs =3D devm_kzalloc(dev, pmic->irqnum * sizeof(int), GFP_KERNEL);
+
+	/* While handling IRQs */
+	for (i =3D 0; i < pmic->irqarray; i++) {
+		pending =3D hi6421_spmi_pmic_read(pmic, (i + pmic->irq_addr));
+		pending &=3D 0xff;
+
+		for_each_set_bit(offset, &pending, 8)
+			generic_handle_irq(pmic->irqs[offset + i * 8]);
+
+	}
+
+Right now, Hikey 970 sets:
+
+	irq-num =3D <16>;
+	irq-array =3D <2>;
+	irq-mask-addr =3D <0x202>;
+	irq-addr =3D <0x212>;
+
+=46rom the above code, it sounds to me that irq-array is the number of
+bytes used for IRQ, while irq-num is the number of bits. E. g:
+
+	irq_num =3D  irqarray * 8;
+
+So, we can get rid of at least one of them.
+
+Going further, the code provides an special treatment for some IRQs:
+
+	#define HISI_IRQ_KEY_NUM		0
+	#define HISI_IRQ_KEY_VALUE		0xc0
+	#define HISI_IRQ_KEY_DOWN		7
+	#define HISI_IRQ_KEY_UP			6
+
+	for (i =3D 0; i < pmic->irqarray; i++) {
+		pending =3D hi6421_spmi_pmic_read(pmic, (i + pmic->irq_addr));
+
+	...
+		/* solve powerkey order */
+		if ((i =3D=3D HISI_IRQ_KEY_NUM) &&
+		    ((pending & HISI_IRQ_KEY_VALUE) =3D=3D HISI_IRQ_KEY_VALUE)) {
+			generic_handle_irq(pmic->irqs[HISI_IRQ_KEY_DOWN]);
+			generic_handle_irq(pmic->irqs[HISI_IRQ_KEY_UP]);
+			pending &=3D (~HISI_IRQ_KEY_VALUE);
+		}
+
+As the values for HISI_IRQ_KEY_DOWN and HISI_IRQ_KEY_UP don't
+depend on irqarray, it sounds to me that this is actually hardcoded=20
+for irqarray =3D=3D 2.
+
+So, I'll just get rid of those, replacing them by some defines inside
+the code. If needed later, this patch can always be reverted.
+
+> > +  'irq-mask-addr':
+> > +    description: Address for the interrupt request mask
+> > +
+> > +  'irq-addr':
+> > +    description: Address for the interrupt request =20
+
+Those two seems more standard to me: irq-mask-addr is the address to
+enable/disable IRQs, while irq-addr is where the pending IRQs are
+stored.
+
+What would be the standard way to specify them both?
+
+> > +
+> > +  regulators:
+> > +    type: object =20
+>=20
+> additionalProperties: false
+>=20
+> > +
+> > +    properties:
+> > +      '#address-cells':
+> > +        const: 1
+> > +
+> > +      '#size-cells':
+> > +        const: 0
+> > +
+> > +    patternProperties:
+> > +      '^ldo@[0-9]+$': =20
+>=20
+> Unit-addresses are hex.
+>
+> Also, doesn't match the example.
+
+True. This should be, instead:
+
+	patternProperties:
+          '^ldo[0-9]+@[0-9a-f]+$': =20
+
+The name part of the property would better to stay in decimal,
+as it makes a in order to match the public schematics:
+
+	https://www.96boards.org/documentation/consumer/hikey/hikey970/hardware-do=
+cs/files/hikey970-schematics.pdf
+
+Using decimal values, the dmesg matches the schematics helps a lot when
+dealing issues related to PM, as the names of the LDO lines will match
+page 12 the schematics:
+
+	ldo3: 1500 <--> 2000 mV at 1800 mV normal=20
+	ldo4: 1725 <--> 1900 mV at 1800 mV normal idle=20
+	ldo9: 1750 <--> 3300 mV at 2950 mV normal idle=20
+	ldo15: 1800 <--> 3000 mV at 2950 mV normal idle=20
+	ldo16: 1800 <--> 3000 mV at 2950 mV normal idle=20
+	ldo17: 2500 <--> 3300 mV at 2500 mV normal idle=20
+	ldo33: 2500 <--> 3300 mV at 2500 mV normal=20
+	ldo34: 2600 <--> 3300 mV at 2600 mV normal=20
+	ldo4: disabling
+	ldo33: disabling
+
+So, from above, looking at the datasheet, it is clear that
+ldo33 - e. g. PCIe Switch VDD25 - is disabled.
+
+>=20
+> > +        type: object
+> > +
+> > +        $ref: "/schemas/regulator/regulator.yaml#"
+> > +
+> > +        properties:
+> > +          reg:
+> > +            description: Enable register.
+> > + =20
+>=20
+> > +          '#address-cells':
+> > +            const: 1
+> > +
+> > +          '#size-cells':
+> > +            const: 0 =20
+>=20
+> No child nodes, you don't need these.
+
+It is needed. However, this is at the second file of the DT.
+
+See, as SPMI is actually a bus, the entire DT setting has 3
+parts:
+  - the SPMI controller;
+  - the PMICs;
+  - the regulators.
+
+A complete example is:
+
+	spmi: spmi@fff24000 {
+		compatible =3D "hisilicon,spmi-controller";
+		#address-cells =3D <2>;
+		#size-cells =3D <0>;
+		status =3D "ok";
+		reg =3D <0x0 0xfff24000 0x0 0x1000>;
+		spmi-channel =3D <2>;
+
+		pmic: pmic@0 {
+			compatible =3D "hisilicon,hi6421-spmi-pmic";
+			slave_id =3D <0>;
+			reg =3D <0 SPMI_USID>;
+
+			#interrupt-cells =3D <2>;
+			interrupt-controller;
+			gpios =3D <&gpio28 0 0>;
+			irq-mask-addr =3D <0x202>;
+			irq-addr =3D <0x212>;
+
+			regulators {
+				#address-cells =3D <1>;
+				#size-cells =3D <0>;
+
+				ldo3: ldo3@16 {
+					reg =3D <0x16>;
+					vsel-reg =3D <0x51>;
+
+					regulator-name =3D "ldo3";
+					regulator-min-microvolt =3D <1500000>;
+					regulator-max-microvolt =3D <2000000>;
+					regulator-boot-on;
+
+					enable-mask =3D <0x01>;
+
+					voltage-table =3D <1500000>, <1550000>,
+							<1600000>, <1650000>,
+							<1700000>, <1725000>,
+							<1750000>, <1775000>,
+							<1800000>, <1825000>,
+							<1850000>, <1875000>,
+							<1900000>, <1925000>,
+							<1950000>, <2000000>;
+					off-on-delay-us =3D <20000>;
+					startup-delay-us =3D <120>;
+				};
+				...
+			};
+		};
+	};
+
+The child nodes are at the regulator DT properties.
+
+Well, I can drop those from here, adding them only at the regulator's
+part, using "bus { ... };".
+
+> > +
+> > +          vsel-reg:
+> > +            description: Voltage selector register. =20
+>=20
+> 'reg' can have multiple entries if you want.
+
+Yes, I know. I was in doubt if I should either place vsel-reg on
+a separate property or together with reg. I ended keeping it
+in separate on the submitted patch series.
+
+What makes more sense?
+
+>=20
+> > +
+> > +          enable-mask:
+> > +            description: Bitmask used to enable the regulator. =20
+>=20
+> But if there's a shared enable reg, then you shouldn't have duplicate=20
+> addresses (same 'reg' value in multiple nodes).
+
+At least for the LDOs supported on HiKey 970, values for
+"reg" and "vsel-reg" are unique: each LDO has their own.
+
+Right now, enable-mask is 0x01 for all LDOs at the Hikey 970
+DTS. However, only 8 LDOs are currently present at the DTS. From
+the schematics, it sounds that HiSilicon 6421v600 supports
+at least 37 lines. I've no idea if enable-mask remains the same
+for the other ones, nor if "reg" and "vsel-reg" won't be
+unique in the general case.
+
+> These perhaps should be driver data rather than in DT as it's all fixed=20
+> for this chip. We don't try to parameterize everything in DT.
+
+I considered that. However, I've no idea about the values and
+ranges for the other 29 LDOs. So, without knowing better about
+this silicon, I prefer to keep those at DT.
+
+>=20
+> > +
+> > +          voltage-table:
+> > +            description: Table with the selector items for the voltage=
+ regulator.
+> > +            minItems: 2
+> > +            maxItems: 16 =20
+>=20
+> Needs a type $ref.
+
+Ok. I'll add:
+
+		$ref: /schemas/types.yaml#/definitions/uint32
+
+> > +
+> > +          off-on-delay-us:
+> > +            description: Time required for changing state to enabled i=
+n microseconds.
+> > +
+> > +          startup-delay-us:
+> > +            description: Startup time in microseconds.
+> > +
+> > +          idle-mode-mask:
+> > +            description: Bitmask used to put the regulator on idle mod=
+e.
+> > +
+> > +          eco-microamp:
+> > +            description: Maximum current while on idle mode.
+> > +
+> > +        required:
+> > +          - reg
+> > +          - vsel-reg
+> > +          - enable-mask
+> > +          - voltage-table
+> > +          - off-on-delay-us
+> > +          - startup-delay-us
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - regulators =20
+>=20
+> Add:
+>=20
+> additionalProperties: false
+
+Ok.
+
+>=20
+> > +
+> > +examples:
+> > +  - |
+> > +    /* pmic properties */
+> > +
+> > +    pmic: pmic@0 {
+> > +      compatible =3D "hisilicon,hi6421-spmi-pmic";
+> > +      slave_id =3D <0>; =20
+>=20
+> Not documented. I believe this is part of 'reg'.
+
+Good point. I'll double-check this one, but I guess you're right.
+
+>=20
+> > +      reg =3D <0 0>;
+> > +
+> > +      #interrupt-cells =3D <2>;
+> > +      interrupt-controller;
+> > +      gpios =3D <&gpio28 0 0>;
+> > +      irq-num =3D <16>;
+> > +      irq-array =3D <2>;
+> > +      irq-mask-addr =3D <0x202 2>;
+> > +      irq-addr =3D <0x212 2>;
+> > +
+> > +      #address-cells =3D <1>;
+> > +      #size-cells =3D <0>;
+> > +
+> > +      regulators {
+> > +          #address-cells =3D <1>;
+> > +          #size-cells =3D <0>;
+> > +
+> > +        ldo3: ldo3@16 {
+> > +          reg =3D <0x16>;
+> > +          vsel-reg =3D <0x51>;
+> > +
+> > +          regulator-name =3D "ldo3";
+> > +          regulator-min-microvolt =3D <1500000>;
+> > +          regulator-max-microvolt =3D <2000000>;
+> > +          regulator-boot-on;
+> > +
+> > +          enable-mask =3D <0x01>;
+> > +
+> > +          voltage-table =3D <1500000>, <1550000>, <1600000>, <1650000>,
+> > +                          <1700000>, <1725000>, <1750000>, <1775000>,
+> > +                          <1800000>, <1825000>, <1850000>, <1875000>,
+> > +                          <1900000>, <1925000>, <1950000>, <2000000>;
+> > +          off-on-delay-us =3D <20000>;
+> > +          startup-delay-us =3D <120>;
+> > +        };
+> > +
+> > +        ldo4: ldo4@17 { /* 40 PIN */
+> > +          reg =3D <0x17>;
+> > +          vsel-reg =3D <0x52>;
+> > +
+> > +          regulator-name =3D "ldo4";
+> > +          regulator-min-microvolt =3D <1725000>;
+> > +          regulator-max-microvolt =3D <1900000>;
+> > +          regulator-boot-on;
+> > +
+> > +          enable-mask =3D <0x01>;
+> > +          idle-mode-mask =3D <0x10>;
+> > +          eco-microamp =3D <10000>;
+> > +
+> > +          hi6421-vsel =3D <0x52 0x07>; =20
+>=20
+> Not documented.
+
+This is a left-over. I dropped this one, in favor of "vsel-reg"
+(plus a mask for the voltage-table size).
+
+>=20
+> > +          voltage-table =3D <1725000>, <1750000>, <1775000>, <1800000>,
+> > +                          <1825000>, <1850000>, <1875000>, <1900000>;
+> > +          off-on-delay-us =3D <20000>;
+> > +          startup-delay-us =3D <120>;
+> > +        };
+> > +      };
+> > +    };
+> > diff --git a/Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi=
+-controller.yaml b/Documentation/devicetree/bindings/spmi/hisilicon,hisi-sp=
+mi-controller.yaml
+> > new file mode 100644
+> > index 000000000000..5aeb2ae12024
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-contro=
+ller.yaml
+> > @@ -0,0 +1,54 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/spmi/hisilicon,hisi-spmi-controller=
+.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: HiSilicon SPMI controller
+> > +
+> > +maintainers:
+> > +  - Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > +
+> > +description: |
+> > +  The HiSilicon SPMI controller is found on some Kirin-based designs.
+> > +  It is a MIPI System Power Management (SPMI) controller.
+> > +
+> > +  The PMIC part is provided by
+> > +  Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yam=
+l.
+> > +
+> > +properties:
+> > +  $nodename:
+> > +    pattern: "spmi@[0-9a-f]"
+> > +
+> > +  compatible:
+> > +    const: hisilicon,spmi-controller =20
+>=20
+> Needs an SoC specific compatible.
+
+What about:
+	hisilicon,kirin970-spmi-controller=20
+
+>=20
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  "#address-cells":
+> > +    const: 2
+> > +
+> > +  "#size-cells":
+> > +    const: 0
+> > +
+> > +  spmi-channel:
+> > +    description: number of the SPMI channel where the PMIC is connected
+> > +
+> > +patternProperties:
+> > +  "^pmic@[0-9a-f]$":
+> > +    $ref: "/schemas/mfd/hisilicon,hi6421-spmi-pmic.yaml#"
+> > +
+> > +examples:
+> > +  - |
+> > +    spmi: spmi@fff24000 {
+> > +      compatible =3D "hisilicon,spmi-controller";
+> > +      #address-cells =3D <2>;
+> > +      #size-cells =3D <0>;
+> > +      status =3D "ok";
+> > +      reg =3D <0x0 0xfff24000 0x0 0x1000>;
+> > +      spmi-channel =3D <2>; =20
+>=20
+> Does this go in the SPMI controller or child (pmic)?
+
+Those belong to the SPMI controller. Maybe I did some mess trying to
+split up DT in order to place the Kirin970 SPMI bus controller on
+one file, and the HiSilicon 6421v600 on another one.
+
+I ended needing to duplicate some things, as otherwise the DT checks fail.
+
+Basically, the full DT is:
+
+	spmi: spmi@fff24000 {
+		/* Kirin 970 SPMI controller props */
+
+		pmic: pmic@0 {
+			/* HiSilicon 6421v600 PMIC props */
+
+			regulators {
+				ldo3: ldo3@16 {
+					/* HiSilicon 6421v600 ldo3 regulator props */
+				};
+				ldo4: ldo3@17 {
+					/* HiSilicon 6421v600 ldo4 regulator props */
+				};
+				...
+				ldo34: ldo3@33 {
+					/* HiSilicon 6421v600 ldo34 regulator props */
+				};
+			};
+		};
+	};
 
 Thanks,
-
-Jonathan
-
-
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Suzuki Poulose <suzuki.poulose@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  arch/arm64/include/asm/pgtable-prot.h |  7 ++++++
->  arch/arm64/include/asm/pgtable.h      | 34 ++++++++++++++++++++++++---
->  2 files changed, 38 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/pgtable-prot.h b/arch/arm64/include/asm/pgtable-prot.h
-> index 4d867c6446c4..28792fdd9627 100644
-> --- a/arch/arm64/include/asm/pgtable-prot.h
-> +++ b/arch/arm64/include/asm/pgtable-prot.h
-> @@ -19,6 +19,13 @@
->  #define PTE_DEVMAP		(_AT(pteval_t, 1) << 57)
->  #define PTE_PROT_NONE		(_AT(pteval_t, 1) << 58) /* only when !PTE_VALID */
->  
-> +/*
-> + * This help indicate that the entry is present i.e pmd_page()
-> + * still points to a valid huge page in memory even if the pmd
-> + * has been invalidated.
-> + */
-> +#define PMD_PRESENT_INVALID	(_AT(pteval_t, 1) << 59) /* only when !PMD_SECT_VALID */
-> +
->  #ifndef __ASSEMBLY__
->  
->  #include <asm/cpufeature.h>
-> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> index d5d3fbe73953..7aa69cace784 100644
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -145,6 +145,18 @@ static inline pte_t set_pte_bit(pte_t pte, pgprot_t prot)
->  	return pte;
->  }
->  
-> +static inline pmd_t clr_pmd_bit(pmd_t pmd, pgprot_t prot)
-> +{
-> +	pmd_val(pmd) &= ~pgprot_val(prot);
-> +	return pmd;
-> +}
-> +
-> +static inline pmd_t set_pmd_bit(pmd_t pmd, pgprot_t prot)
-> +{
-> +	pmd_val(pmd) |= pgprot_val(prot);
-> +	return pmd;
-> +}
-> +
->  static inline pte_t pte_wrprotect(pte_t pte)
->  {
->  	pte = clear_pte_bit(pte, __pgprot(PTE_WRITE));
-> @@ -363,15 +375,24 @@ static inline int pmd_protnone(pmd_t pmd)
->  }
->  #endif
->  
-> +#define pmd_present_invalid(pmd)     (!!(pmd_val(pmd) & PMD_PRESENT_INVALID))
-> +
-> +static inline int pmd_present(pmd_t pmd)
-> +{
-> +	return pte_present(pmd_pte(pmd)) || pmd_present_invalid(pmd);
-> +}
-> +
->  /*
->   * THP definitions.
->   */
->  
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> -#define pmd_trans_huge(pmd)	(pmd_val(pmd) && !(pmd_val(pmd) & PMD_TABLE_BIT))
-> +static inline int pmd_trans_huge(pmd_t pmd)
-> +{
-> +	return pmd_val(pmd) && pmd_present(pmd) && !(pmd_val(pmd) & PMD_TABLE_BIT);
-> +}
->  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
->  
-> -#define pmd_present(pmd)	pte_present(pmd_pte(pmd))
->  #define pmd_dirty(pmd)		pte_dirty(pmd_pte(pmd))
->  #define pmd_young(pmd)		pte_young(pmd_pte(pmd))
->  #define pmd_valid(pmd)		pte_valid(pmd_pte(pmd))
-> @@ -381,7 +402,14 @@ static inline int pmd_protnone(pmd_t pmd)
->  #define pmd_mkclean(pmd)	pte_pmd(pte_mkclean(pmd_pte(pmd)))
->  #define pmd_mkdirty(pmd)	pte_pmd(pte_mkdirty(pmd_pte(pmd)))
->  #define pmd_mkyoung(pmd)	pte_pmd(pte_mkyoung(pmd_pte(pmd)))
-> -#define pmd_mkinvalid(pmd)	(__pmd(pmd_val(pmd) & ~PMD_SECT_VALID))
-> +
-> +static inline pmd_t pmd_mkinvalid(pmd_t pmd)
-> +{
-> +	pmd = set_pmd_bit(pmd, __pgprot(PMD_PRESENT_INVALID));
-> +	pmd = clr_pmd_bit(pmd, __pgprot(PMD_SECT_VALID));
-> +
-> +	return pmd;
-> +}
->  
->  #define pmd_thp_or_huge(pmd)	(pmd_huge(pmd) || pmd_trans_huge(pmd))
->  
-
-
+Mauro
