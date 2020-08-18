@@ -2,27 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89583248130
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE2C248139
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726909AbgHRI6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 04:58:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37846 "EHLO mx2.suse.de"
+        id S1726945AbgHRI6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 04:58:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37702 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726694AbgHRI5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 04:57:10 -0400
+        id S1726398AbgHRI47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 04:56:59 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A169EABF4;
-        Tue, 18 Aug 2020 08:57:32 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 7D5C6B02D;
+        Tue, 18 Aug 2020 08:57:22 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 01/16] vt: make vc_data pointers const in selection.h
+Subject: [PATCH 4/8] tty: fix kernel-doc
 Date:   Tue, 18 Aug 2020 10:56:51 +0200
-Message-Id: <20200818085706.12163-1-jslaby@suse.cz>
+Message-Id: <20200818085655.12071-4-jslaby@suse.cz>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200818085655.12071-1-jslaby@suse.cz>
+References: <20200818085655.12071-1-jslaby@suse.cz>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -30,187 +32,279 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are many functions declared in selection.h which only read from
-struct vc_data passed as a parameter. Make all those uses const to hint
-the compiler a bit.
+With W=1, the kernel-doc checker complains quite a lot in the tty layer.
+Over the time, many documented parameters were renamed, removed or
+switched from tty to tty_port and similar. Some were mistyped in the doc
+too.
+
+So fix all these in the tty core. (But do not add the missing ones which
+the checker complains about too. Not now.) The rest in the tty layer
+will follow in the next patches.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/vt/consolemap.c      |  2 +-
- drivers/tty/vt/vt.c              | 15 ++++++++-------
- drivers/video/console/sticon.c   |  2 +-
- drivers/video/fbdev/core/fbcon.c |  2 +-
- include/linux/console.h          |  2 +-
- include/linux/consolemap.h       |  3 ++-
- include/linux/selection.h        | 14 ++++++++------
- 7 files changed, 22 insertions(+), 18 deletions(-)
+ drivers/tty/pty.c          |  2 +-
+ drivers/tty/tty_baudrate.c |  6 +++---
+ drivers/tty/tty_buffer.c   | 14 +++++++-------
+ drivers/tty/tty_io.c       | 26 ++++++++++++--------------
+ drivers/tty/tty_jobctrl.c  |  4 ++--
+ drivers/tty/tty_ldisc.c    |  3 +--
+ 6 files changed, 26 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/tty/vt/consolemap.c b/drivers/tty/vt/consolemap.c
-index 5947b54d92be..5d5a5fd2dce7 100644
---- a/drivers/tty/vt/consolemap.c
-+++ b/drivers/tty/vt/consolemap.c
-@@ -268,7 +268,7 @@ unsigned short *set_translate(int m, struct vc_data *vc)
-  *    was active.
-  * Still, it is now possible to a certain extent to cut and paste non-ASCII.
+diff --git a/drivers/tty/pty.c b/drivers/tty/pty.c
+index 00099a8439d2..b6d8cc7f0f16 100644
+--- a/drivers/tty/pty.c
++++ b/drivers/tty/pty.c
+@@ -100,7 +100,7 @@ static void pty_unthrottle(struct tty_struct *tty)
+  *	pty_write		-	write to a pty
+  *	@tty: the tty we write from
+  *	@buf: kernel buffer of data
+- *	@count: bytes to write
++ *	@c: bytes to write
+  *
+  *	Our "hardware" write method. Data is coming from the ldisc which
+  *	may be in a non sleeping state. We simply throw this at the other
+diff --git a/drivers/tty/tty_baudrate.c b/drivers/tty/tty_baudrate.c
+index 40207cab3b2a..84fec3c62d6a 100644
+--- a/drivers/tty/tty_baudrate.c
++++ b/drivers/tty/tty_baudrate.c
+@@ -119,8 +119,8 @@ EXPORT_SYMBOL(tty_termios_input_baud_rate);
+ /**
+  *	tty_termios_encode_baud_rate
+  *	@termios: ktermios structure holding user requested state
+- *	@ispeed: input speed
+- *	@ospeed: output speed
++ *	@ibaud: input speed
++ *	@obaud: output speed
+  *
+  *	Encode the speeds set into the passed termios structure. This is
+  *	used as a library helper for drivers so that they can report back
+@@ -223,7 +223,7 @@ EXPORT_SYMBOL_GPL(tty_termios_encode_baud_rate);
+ /**
+  *	tty_encode_baud_rate		-	set baud rate of the tty
+  *	@ibaud: input baud rate
+- *	@obad: output baud rate
++ *	@obaud: output baud rate
+  *
+  *	Update the current termios data for the tty with the new speed
+  *	settings. The caller must hold the termios_rwsem for the tty in
+diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
+index ec145a59f199..bd2d91546e32 100644
+--- a/drivers/tty/tty_buffer.c
++++ b/drivers/tty/tty_buffer.c
+@@ -42,7 +42,7 @@
+  *	tty_buffer_lock_exclusive	-	gain exclusive access to buffer
+  *	tty_buffer_unlock_exclusive	-	release exclusive access
+  *
+- *	@port - tty_port owning the flip buffer
++ *	@port: tty port owning the flip buffer
+  *
+  *	Guarantees safe use of the line discipline's receive_buf() method by
+  *	excluding the buffer work and any pending flush from using the flip
+@@ -78,7 +78,7 @@ EXPORT_SYMBOL_GPL(tty_buffer_unlock_exclusive);
+ 
+ /**
+  *	tty_buffer_space_avail	-	return unused buffer space
+- *	@port - tty_port owning the flip buffer
++ *	@port: tty port owning the flip buffer
+  *
+  *	Returns the # of bytes which can be written by the driver without
+  *	reaching the buffer limit.
+@@ -107,7 +107,7 @@ static void tty_buffer_reset(struct tty_buffer *p, size_t size)
+ 
+ /**
+  *	tty_buffer_free_all		-	free buffers used by a tty
+- *	@tty: tty to free from
++ *	@port: tty port to free from
+  *
+  *	Remove all the buffers pending on a tty whether queued with data
+  *	or in the free ring. Must be called when the tty is no longer in use
+@@ -142,7 +142,7 @@ void tty_buffer_free_all(struct tty_port *port)
+ 
+ /**
+  *	tty_buffer_alloc	-	allocate a tty buffer
+- *	@tty: tty device
++ *	@port: tty port
+  *	@size: desired size (characters)
+  *
+  *	Allocate a new tty buffer to hold the desired number of characters.
+@@ -184,7 +184,7 @@ static struct tty_buffer *tty_buffer_alloc(struct tty_port *port, size_t size)
+ 
+ /**
+  *	tty_buffer_free		-	free a tty buffer
+- *	@tty: tty owning the buffer
++ *	@port: tty port owning the buffer
+  *	@b: the buffer to free
+  *
+  *	Free a tty buffer, or add it to the free list according to our
+@@ -243,7 +243,7 @@ void tty_buffer_flush(struct tty_struct *tty, struct tty_ldisc *ld)
+ 
+ /**
+  *	tty_buffer_request_room		-	grow tty buffer if needed
+- *	@tty: tty structure
++ *	@port: tty port
+  *	@size: size desired
+  *	@flags: buffer flags if new buffer allocated (default = 0)
+  *
+@@ -559,7 +559,7 @@ EXPORT_SYMBOL(tty_flip_buffer_push);
+ 
+ /**
+  *	tty_buffer_init		-	prepare a tty buffer structure
+- *	@tty: tty to initialise
++ *	@port: tty port to initialise
+  *
+  *	Set up the initial state of the buffer management for a tty device.
+  *	Must be called before the other tty buffer functions are used.
+diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+index ceed72c9a88f..7a4c02548fb3 100644
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -307,7 +307,7 @@ static int check_tty_count(struct tty_struct *tty, const char *routine)
+ 
+ /**
+  *	get_tty_driver		-	find device of a tty
+- *	@dev_t: device identifier
++ *	@device: device identifier
+  *	@index: returns the index of the tty
+  *
+  *	This routine returns a tty driver structure, given a device number
+@@ -544,7 +544,7 @@ EXPORT_SYMBOL_GPL(tty_wakeup);
+ 
+ /**
+  *	__tty_hangup		-	actual handler for hangup events
+- *	@work: tty device
++ *	@tty: tty device
+  *
+  *	This can be called by a "kworker" kernel thread.  That is process
+  *	synchronous but doesn't hold any locks, so we need to make sure we
+@@ -1232,7 +1232,7 @@ static int tty_driver_install_tty(struct tty_driver *driver,
+ /**
+  *	tty_driver_remove_tty() - remove a tty from the driver tables
+  *	@driver: the driver for the tty
+- *	@idx:	 the minor number
++ *	@tty: tty to remove
+  *
+  *	Remvoe a tty object from the driver tables. The tty->index field
+  *	will be set by the time this is called.
+@@ -1247,9 +1247,9 @@ static void tty_driver_remove_tty(struct tty_driver *driver, struct tty_struct *
+ 		driver->ttys[tty->index] = NULL;
+ }
+ 
+-/*
+- * 	tty_reopen()	- fast re-open of an open tty
+- * 	@tty	- the tty to open
++/**
++ *	tty_reopen()	- fast re-open of an open tty
++ *	@tty: the tty to open
+  *
+  *	Return 0 on success, -errno on error.
+  *	Re-opens on master ptys are not allowed and return -EIO.
+@@ -1295,7 +1295,6 @@ static int tty_reopen(struct tty_struct *tty)
+  *	tty_init_dev		-	initialise a tty device
+  *	@driver: tty driver we are opening a device on
+  *	@idx: device index
+- *	@ret_tty: returned tty structure
+  *
+  *	Prepare a tty device. This may not be a "new" clean device but
+  *	could also be an active device. The pty drivers require special
+@@ -1313,6 +1312,8 @@ static int tty_reopen(struct tty_struct *tty)
+  * failed open.  The new code protects the open with a mutex, so it's
+  * really quite straightforward.  The mutex locking can probably be
+  * relaxed for the (most common) case of reopening a tty.
++ *
++ *	Return: returned tty structure
   */
--u16 inverse_translate(struct vc_data *conp, int glyph, int use_unicode)
-+u16 inverse_translate(const struct vc_data *conp, int glyph, int use_unicode)
- {
- 	struct uni_pagedir *p;
- 	int m;
-diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index ccb533fd00a2..8f283221330e 100644
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -283,7 +283,8 @@ static inline bool con_should_update(const struct vc_data *vc)
- 	return con_is_visible(vc) && !console_blanked;
- }
  
--static inline unsigned short *screenpos(struct vc_data *vc, int offset, int viewed)
-+static inline unsigned short *screenpos(const struct vc_data *vc, int offset,
-+		int viewed)
- {
- 	unsigned short *p;
- 	
-@@ -543,7 +544,7 @@ int vc_uniscr_check(struct vc_data *vc)
-  * This must be preceded by a successful call to vc_uniscr_check() once
-  * the console lock has been taken.
-  */
--void vc_uniscr_copy_line(struct vc_data *vc, void *dest, int viewed,
-+void vc_uniscr_copy_line(const struct vc_data *vc, void *dest, int viewed,
- 			 unsigned int row, unsigned int col, unsigned int nr)
- {
- 	struct uni_screen *uniscr = get_vc_uniscr(vc);
-@@ -4740,7 +4741,7 @@ int con_font_op(struct vc_data *vc, struct console_font_op *op)
-  */
+ struct tty_struct *tty_init_dev(struct tty_driver *driver, int idx)
+@@ -1432,7 +1433,7 @@ static void tty_flush_works(struct tty_struct *tty)
  
- /* used by selection */
--u16 screen_glyph(struct vc_data *vc, int offset)
-+u16 screen_glyph(const struct vc_data *vc, int offset)
- {
- 	u16 w = scr_readw(screenpos(vc, offset, 1));
- 	u16 c = w & 0xff;
-@@ -4751,7 +4752,7 @@ u16 screen_glyph(struct vc_data *vc, int offset)
- }
- EXPORT_SYMBOL_GPL(screen_glyph);
+ /**
+  *	release_one_tty		-	release tty structure memory
+- *	@kref: kref of tty we are obliterating
++ *	@work: work of tty we are obliterating
+  *
+  *	Releases memory associated with a tty structure, and clears out the
+  *	driver table slots. This function is called when a device is no longer
+@@ -1528,7 +1529,6 @@ static void release_tty(struct tty_struct *tty, int idx)
+ /**
+  *	tty_release_checks - check a tty before real release
+  *	@tty: tty to check
+- *	@o_tty: link of @tty (if any)
+  *	@idx: index of the tty
+  *
+  *	Performs some paranoid checking before true release of the @tty.
+@@ -2200,7 +2200,7 @@ static int tiocsti(struct tty_struct *tty, char __user *p)
  
--u32 screen_glyph_unicode(struct vc_data *vc, int n)
-+u32 screen_glyph_unicode(const struct vc_data *vc, int n)
- {
- 	struct uni_screen *uniscr = get_vc_uniscr(vc);
+ /**
+  *	tiocgwinsz		-	implement window query ioctl
+- *	@tty; tty
++ *	@tty: tty
+  *	@arg: user buffer for result
+  *
+  *	Copies the kernel idea of the window size into the user buffer.
+@@ -2223,8 +2223,7 @@ static int tiocgwinsz(struct tty_struct *tty, struct winsize __user *arg)
+ /**
+  *	tty_do_resize		-	resize event
+  *	@tty: tty being resized
+- *	@rows: rows (character)
+- *	@cols: cols (character)
++ *	@ws: new dimensions
+  *
+  *	Update the termios variables and send the necessary signals to
+  *	peform a terminal resize correctly
+@@ -2254,7 +2253,7 @@ EXPORT_SYMBOL(tty_do_resize);
  
-@@ -4762,13 +4763,13 @@ u32 screen_glyph_unicode(struct vc_data *vc, int n)
- EXPORT_SYMBOL_GPL(screen_glyph_unicode);
+ /**
+  *	tiocswinsz		-	implement window size set ioctl
+- *	@tty; tty side of tty
++ *	@tty: tty side of tty
+  *	@arg: user buffer for result
+  *
+  *	Copies the user idea of the window size to the kernel. Traditionally
+@@ -2402,7 +2401,6 @@ static int send_break(struct tty_struct *tty, unsigned int duration)
+ /**
+  *	tty_tiocmget		-	get modem status
+  *	@tty: tty device
+- *	@file: user file pointer
+  *	@p: pointer to result
+  *
+  *	Obtain the modem status bits from the tty driver if the feature
+diff --git a/drivers/tty/tty_jobctrl.c b/drivers/tty/tty_jobctrl.c
+index f8ed50a16848..28a23a0fef21 100644
+--- a/drivers/tty/tty_jobctrl.c
++++ b/drivers/tty/tty_jobctrl.c
+@@ -178,8 +178,8 @@ void session_clear_tty(struct pid *session)
  
- /* used by vcs - note the word offset */
--unsigned short *screen_pos(struct vc_data *vc, int w_offset, int viewed)
-+unsigned short *screen_pos(const struct vc_data *vc, int w_offset, int viewed)
- {
- 	return screenpos(vc, 2 * w_offset, viewed);
- }
- EXPORT_SYMBOL_GPL(screen_pos);
- 
--void getconsxy(struct vc_data *vc, unsigned char *p)
-+void getconsxy(const struct vc_data *vc, unsigned char *p)
- {
- 	/* clamp values if they don't fit */
- 	p[0] = min(vc->state.x, 0xFFu);
-@@ -4782,7 +4783,7 @@ void putconsxy(struct vc_data *vc, unsigned char *p)
- 	set_cursor(vc);
- }
- 
--u16 vcs_scr_readw(struct vc_data *vc, const u16 *org)
-+u16 vcs_scr_readw(const struct vc_data *vc, const u16 *org)
- {
- 	if ((unsigned long)org == vc->vc_pos && softcursor_original != -1)
- 		return softcursor_original;
-diff --git a/drivers/video/console/sticon.c b/drivers/video/console/sticon.c
-index 21a5c280c8c9..e21147e8a14e 100644
---- a/drivers/video/console/sticon.c
-+++ b/drivers/video/console/sticon.c
-@@ -236,7 +236,7 @@ static int sticon_blank(struct vc_data *c, int blank, int mode_switch)
-     return 1;
- }
- 
--static u16 *sticon_screen_pos(struct vc_data *conp, int offset)
-+static u16 *sticon_screen_pos(const struct vc_data *conp, int offset)
- {
-     int line;
-     unsigned long p;
-diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index 8a31fc2b2258..6068845d98f2 100644
---- a/drivers/video/fbdev/core/fbcon.c
-+++ b/drivers/video/fbdev/core/fbcon.c
-@@ -2765,7 +2765,7 @@ static void fbcon_set_palette(struct vc_data *vc, const unsigned char *table)
- 	fb_set_cmap(&palette_cmap, info);
- }
- 
--static u16 *fbcon_screen_pos(struct vc_data *vc, int offset)
-+static u16 *fbcon_screen_pos(const struct vc_data *vc, int offset)
- {
- 	unsigned long p;
- 	int line;
-diff --git a/include/linux/console.h b/include/linux/console.h
-index 0670d3491e0e..4b1e26c4cb42 100644
---- a/include/linux/console.h
-+++ b/include/linux/console.h
-@@ -74,7 +74,7 @@ struct consw {
- 			enum vc_intensity intensity,
- 			bool blink, bool underline, bool reverse, bool italic);
- 	void	(*con_invert_region)(struct vc_data *vc, u16 *p, int count);
--	u16    *(*con_screen_pos)(struct vc_data *vc, int offset);
-+	u16    *(*con_screen_pos)(const struct vc_data *vc, int offset);
- 	unsigned long (*con_getxy)(struct vc_data *vc, unsigned long position,
- 			int *px, int *py);
- 	/*
-diff --git a/include/linux/consolemap.h b/include/linux/consolemap.h
-index 254246673390..bcfce748c9d8 100644
---- a/include/linux/consolemap.h
-+++ b/include/linux/consolemap.h
-@@ -17,7 +17,8 @@
- #ifdef CONFIG_CONSOLE_TRANSLATIONS
- struct vc_data;
- 
--extern u16 inverse_translate(struct vc_data *conp, int glyph, int use_unicode);
-+extern u16 inverse_translate(const struct vc_data *conp, int glyph,
-+		int use_unicode);
- extern unsigned short *set_translate(int m, struct vc_data *vc);
- extern int conv_uni_to_pc(struct vc_data *conp, long ucs);
- extern u32 conv_8bit_to_uni(unsigned char c);
-diff --git a/include/linux/selection.h b/include/linux/selection.h
-index 5b890ef5b59f..34404a019ebf 100644
---- a/include/linux/selection.h
-+++ b/include/linux/selection.h
-@@ -33,21 +33,23 @@ extern unsigned char default_red[];
- extern unsigned char default_grn[];
- extern unsigned char default_blu[];
- 
--extern unsigned short *screen_pos(struct vc_data *vc, int w_offset, int viewed);
--extern u16 screen_glyph(struct vc_data *vc, int offset);
--extern u32 screen_glyph_unicode(struct vc_data *vc, int offset);
-+extern unsigned short *screen_pos(const struct vc_data *vc, int w_offset,
-+		int viewed);
-+extern u16 screen_glyph(const struct vc_data *vc, int offset);
-+extern u32 screen_glyph_unicode(const struct vc_data *vc, int offset);
- extern void complement_pos(struct vc_data *vc, int offset);
- extern void invert_screen(struct vc_data *vc, int offset, int count, int shift);
- 
--extern void getconsxy(struct vc_data *vc, unsigned char *p);
-+extern void getconsxy(const struct vc_data *vc, unsigned char *p);
- extern void putconsxy(struct vc_data *vc, unsigned char *p);
- 
--extern u16 vcs_scr_readw(struct vc_data *vc, const u16 *org);
-+extern u16 vcs_scr_readw(const struct vc_data *vc, const u16 *org);
- extern void vcs_scr_writew(struct vc_data *vc, u16 val, u16 *org);
- extern void vcs_scr_updated(struct vc_data *vc);
- 
- extern int vc_uniscr_check(struct vc_data *vc);
--extern void vc_uniscr_copy_line(struct vc_data *vc, void *dest, int viewed,
-+extern void vc_uniscr_copy_line(const struct vc_data *vc, void *dest,
-+				int viewed,
- 				unsigned int row, unsigned int col,
- 				unsigned int nr);
- 
+ /**
+  *	tty_signal_session_leader	- sends SIGHUP to session leader
+- *	@tty		controlling tty
+- *	@exit_session	if non-zero, signal all foreground group processes
++ *	@tty: controlling tty
++ *	@exit_session: if non-zero, signal all foreground group processes
+  *
+  *	Send SIGHUP and SIGCONT to the session leader and its process group.
+  *	Optionally, signal all processes in the foreground process group.
+diff --git a/drivers/tty/tty_ldisc.c b/drivers/tty/tty_ldisc.c
+index ec1f6a48121e..fe37ec331289 100644
+--- a/drivers/tty/tty_ldisc.c
++++ b/drivers/tty/tty_ldisc.c
+@@ -79,7 +79,6 @@ EXPORT_SYMBOL(tty_register_ldisc);
+ /**
+  *	tty_unregister_ldisc	-	unload a line discipline
+  *	@disc: ldisc number
+- *	@new_ldisc: pointer to the ldisc object
+  *
+  *	Remove a line discipline from the kernel providing it is not
+  *	currently in use.
+@@ -542,7 +541,7 @@ static void tty_ldisc_restore(struct tty_struct *tty, struct tty_ldisc *old)
+ /**
+  *	tty_set_ldisc		-	set line discipline
+  *	@tty: the terminal to set
+- *	@ldisc: the line discipline
++ *	@disc: the line discipline number
+  *
+  *	Set the discipline of a tty line. Must be called from a process
+  *	context. The ldisc change logic has to protect itself against any
 -- 
 2.28.0
 
