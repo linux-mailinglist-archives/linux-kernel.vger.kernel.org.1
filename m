@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C29B0248486
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 14:11:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D79248481
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 14:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726909AbgHRMLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 08:11:01 -0400
-Received: from mga07.intel.com ([134.134.136.100]:58738 "EHLO mga07.intel.com"
+        id S1726838AbgHRMKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 08:10:36 -0400
+Received: from mga07.intel.com ([134.134.136.100]:58739 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726837AbgHRMKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 08:10:21 -0400
-IronPort-SDR: Qr9FqWjiTP6L8hrZdKd+C6OYo5Ui53HNVRo5gPlJa7B5/4TLTq9jBK8Jr/GTtTVahlfLwOAJR3
- BQWP+zZp3hWg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="219200400"
+        id S1726792AbgHRMKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 08:10:23 -0400
+IronPort-SDR: mss5JKyw5bR37BTig66GpIaVZ7J11/Xx/yxgLG9Syh8ia8Hjnx6nqYIn+dmrNOcdWoiMj8DHHc
+ p5wZ/x6+mArA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="219200404"
 X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
-   d="scan'208";a="219200400"
+   d="scan'208";a="219200404"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 05:10:20 -0700
-IronPort-SDR: nTd3h3+oObJSYkT1KRpalDVCQ0oWImq4U2yt5oeIcAaBwEHFyL/ErUWnfix6hw31bQ/9uQkGAS
- Q1cenOMyDOGA==
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 05:10:22 -0700
+IronPort-SDR: zSuB06hyksvsmMMuIP6as8mjjlqkZ3hBWy5xVqaEyU84k1/Xie1+GafoiiGPM0liAP9IPuA/K9
+ +4nwSTWMkFeg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
-   d="scan'208";a="326713041"
+   d="scan'208";a="326713055"
 Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
-  by orsmga008.jf.intel.com with ESMTP; 18 Aug 2020 05:10:17 -0700
+  by orsmga008.jf.intel.com with ESMTP; 18 Aug 2020 05:10:20 -0700
 From:   Tomas Winkler <tomas.winkler@intel.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
         linux-kernel@vger.kernel.org,
         Tomas Winkler <tomas.winkler@intel.com>
-Subject: [char-misc-next 09/13] mei: bus: use zero vtag for bus clients.
-Date:   Tue, 18 Aug 2020 14:51:43 +0300
-Message-Id: <20200818115147.2567012-10-tomas.winkler@intel.com>
+Subject: [char-misc-next 10/13] mei: bus: unconditionally enable clients with vtag support
+Date:   Tue, 18 Aug 2020 14:51:44 +0300
+Message-Id: <20200818115147.2567012-11-tomas.winkler@intel.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200818115147.2567012-1-tomas.winkler@intel.com>
 References: <20200818115147.2567012-1-tomas.winkler@intel.com>
@@ -47,114 +47,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alexander Usyskin <alexander.usyskin@intel.com>
 
-The zero vtag is required for the read flow to work also for
-devices on the mei client bus.
+The list of clients is only visible via mei client bus.
+Enabling vtag clients on the mei client bus allows user-space to
+enumerate clients with vtag support by traversing the mei bus on sysfs.
+This feature is required for ACRN device model service.
 
 Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
 Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
 ---
- drivers/misc/mei/bus.c | 72 +++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 71 insertions(+), 1 deletion(-)
+ drivers/misc/mei/bus-fixup.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/misc/mei/bus.c b/drivers/misc/mei/bus.c
-index fc20a0da5c24..9cdaa7f3af23 100644
---- a/drivers/misc/mei/bus.c
-+++ b/drivers/misc/mei/bus.c
-@@ -495,6 +495,68 @@ static void mei_cl_bus_module_put(struct mei_cl_device *cldev)
- 	module_put(cldev->bus->dev->driver->owner);
+diff --git a/drivers/misc/mei/bus-fixup.c b/drivers/misc/mei/bus-fixup.c
+index 07ba16d46690..4e30fa98fe7d 100644
+--- a/drivers/misc/mei/bus-fixup.c
++++ b/drivers/misc/mei/bus-fixup.c
+@@ -463,6 +463,17 @@ static void mei_nfc(struct mei_cl_device *cldev)
+ 	dev_dbg(bus->dev, "end of fixup match = %d\n", cldev->do_match);
  }
  
 +/**
-+ * mei_cl_bus_vtag - get bus vtag entry wrapper
-+ *     The tag for bus client is always first.
++ * vt_support - enable on bus clients with vtag support
 + *
-+ * @cl: host client
-+ *
-+ * Return: bus vtag or NULL
++ * @cldev: me clients device
 + */
-+static inline struct mei_cl_vtag *mei_cl_bus_vtag(struct mei_cl *cl)
++static void vt_support(struct mei_cl_device *cldev)
 +{
-+	return list_first_entry_or_null(&cl->vtag_map,
-+					struct mei_cl_vtag, list);
++	if (cldev->me_cl->props.vt_supported == 1)
++		cldev->do_match = 1;
 +}
 +
-+/**
-+ * mei_cl_bus_vtag_alloc - add bus client entry to vtag map
-+ *
-+ * @cldev: me client device
-+ *
-+ * Return:
-+ * * 0 on success
-+ * * -ENOMEM if memory allocation failed
-+ */
-+static int mei_cl_bus_vtag_alloc(struct mei_cl_device *cldev)
-+{
-+	struct mei_cl *cl = cldev->cl;
-+	struct mei_cl_vtag *cl_vtag;
-+
-+	/*
-+	 * Bail out if the client does not supports vtags
-+	 * or has already allocated one
-+	 */
-+	if (mei_cl_vt_support_check(cl) || mei_cl_bus_vtag(cl))
-+		return 0;
-+
-+	cl_vtag = mei_cl_vtag_alloc(NULL, 0);
-+	if (IS_ERR(cl_vtag))
-+		return -ENOMEM;
-+
-+	list_add_tail(&cl_vtag->list, &cl->vtag_map);
-+
-+	return 0;
-+}
-+
-+/**
-+ * mei_cl_bus_vtag_free - remove the bus entry from vtag map
-+ *
-+ * @cldev: me client device
-+ */
-+static void mei_cl_bus_vtag_free(struct mei_cl_device *cldev)
-+{
-+	struct mei_cl *cl = cldev->cl;
-+	struct mei_cl_vtag *cl_vtag;
-+
-+	cl_vtag = mei_cl_bus_vtag(cl);
-+	if (!cl_vtag)
-+		return;
-+
-+	list_del(&cl_vtag->list);
-+	kfree(cl_vtag);
-+}
-+
+ #define MEI_FIXUP(_uuid, _hook) { _uuid, _hook }
+ 
+ static struct mei_fixup {
+@@ -476,6 +487,7 @@ static struct mei_fixup {
+ 	MEI_FIXUP(MEI_UUID_WD, mei_wd),
+ 	MEI_FIXUP(MEI_UUID_MKHIF_FIX, mei_mkhi_fix),
+ 	MEI_FIXUP(MEI_UUID_HDCP, whitelist),
++	MEI_FIXUP(MEI_UUID_ANY, vt_support),
+ };
+ 
  /**
-  * mei_cldev_enable - enable me client device
-  *     create connection with me client
-@@ -531,9 +593,15 @@ int mei_cldev_enable(struct mei_cl_device *cldev)
- 		goto out;
- 	}
- 
-+	ret = mei_cl_bus_vtag_alloc(cldev);
-+	if (ret)
-+		goto out;
-+
- 	ret = mei_cl_connect(cl, cldev->me_cl, NULL);
--	if (ret < 0)
-+	if (ret < 0) {
- 		dev_err(&cldev->dev, "cannot connect\n");
-+		mei_cl_bus_vtag_free(cldev);
-+	}
- 
- out:
- 	mutex_unlock(&bus->device_lock);
-@@ -586,6 +654,8 @@ int mei_cldev_disable(struct mei_cl_device *cldev)
- 
- 	mutex_lock(&bus->device_lock);
- 
-+	mei_cl_bus_vtag_free(cldev);
-+
- 	if (!mei_cl_is_connected(cl)) {
- 		dev_dbg(bus->dev, "Already disconnected\n");
- 		err = 0;
 -- 
 2.25.4
 
