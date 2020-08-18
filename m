@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF6D248E26
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 20:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64764248E23
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 20:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726798AbgHRSsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 14:48:18 -0400
-Received: from mga11.intel.com ([192.55.52.93]:55907 "EHLO mga11.intel.com"
+        id S1726861AbgHRSs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 14:48:26 -0400
+Received: from mga14.intel.com ([192.55.52.115]:63808 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726758AbgHRSsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 14:48:09 -0400
-IronPort-SDR: wzcELj/txhzm8VRaZs8zFFK/A5eO3vHrm8jQKMFK5d9CC0pHSxpYmIiO/xAo0h+DI/5wBWbZd2
- 6Ad2/MuV3+TQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="152610603"
+        id S1726795AbgHRSsT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 14:48:19 -0400
+IronPort-SDR: DQKCtZFFwFlkRSHphVQkQm3TQobJQg2YVHziYr4y29IzYeRUaUMMuVbZ2+fT/qvTaCz/4uKvvs
+ ArNxgLQk0jNg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="154248706"
 X-IronPort-AV: E=Sophos;i="5.76,328,1592895600"; 
-   d="scan'208";a="152610603"
+   d="scan'208";a="154248706"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 11:48:05 -0700
-IronPort-SDR: gAPTHYZVvz+wiER8GaV85OxG4K4whEJA+4sbIpoDTNSLFSxBo3CPC+82fmAXqf5IctR5XMrL7q
- 5ch3+uphlVng==
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 11:48:07 -0700
+IronPort-SDR: emSl2c0c4Z2kpGQzxXQI1LdUHj3B37UgttUoY8IhQqBclhLlUQuUpkpFiadz5S7ul3PsZjhyjE
+ ttq7+9vwAbtg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,328,1592895600"; 
-   d="scan'208";a="296945441"
+   d="scan'208";a="496948337"
 Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
-  by orsmga006.jf.intel.com with ESMTP; 18 Aug 2020 11:48:04 -0700
-Subject: [RFC][PATCH 2/9] mm/numa: automatically generate node migration order
+  by fmsmga006.fm.intel.com with ESMTP; 18 Aug 2020 11:48:06 -0700
+Subject: [RFC][PATCH 3/9] mm/migrate: update migration order during on hotplug events
 To:     linux-kernel@vger.kernel.org
 Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
         yang.shi@linux.alibaba.com, rientjes@google.com,
         ying.huang@intel.com, dan.j.williams@intel.com
 From:   Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Tue, 18 Aug 2020 11:41:26 -0700
+Date:   Tue, 18 Aug 2020 11:41:27 -0700
 References: <20200818184122.29C415DF@viggo.jf.intel.com>
 In-Reply-To: <20200818184122.29C415DF@viggo.jf.intel.com>
-Message-Id: <20200818184126.B8E91F10@viggo.jf.intel.com>
+Message-Id: <20200818184127.C3B49AB6@viggo.jf.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -45,39 +45,20 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dave Hansen <dave.hansen@linux.intel.com>
 
-When memory fills up on a node, memory contents can be
-automatically migrated to another node.  The biggest problems are
-knowing when to migrate and to where the migration should be
-targeted.
+Reclaim-based migration is attempting to optimize data placement in
+memory based on the system topology.  If the system changes, so must
+the migration ordering.
 
-The most straightforward way to generate the "to where" list
-would be to follow the page allocator fallback lists.  Those
-lists already tell us if memory is full where to look next.  It
-would also be logical to move memory in that order.
+The implementation here is pretty simple and entirely unoptimized.  On
+any memory or CPU hotplug events, assume that a node was added or
+removed and recalculate all migration targets.  This ensures that the
+node_demotion[] array is always ready to be used in case the new
+reclaim mode is enabled.
 
-But, the allocator fallback lists have a fatal flaw: most nodes
-appear in all the lists.  This would potentially lead to
-migration cycles (A->B, B->A, A->B, ...).
-
-Instead of using the allocator fallback lists directly, keep a
-separate node migration ordering.  But, reuse the same data used
-to generate page allocator fallback in the first place:
-find_next_best_node().
-
-This means that the firmware data used to populate node distances
-essentially dictates the ordering for now.  It should also be
-architecture-neutral since all NUMA architectures have a working
-find_next_best_node().
-
-The protocol for node_demotion[] access and writing is not
-standard.  It has no specific locking and is intended to be read
-locklessly.  Readers must take care to avoid observing changes
-that appear incoherent.  This was done so that node_demotion[]
-locking has no chance of becoming a bottleneck on large systems
-with lots of CPUs in direct reclaim.
-
-This code is unused for now.  It will be called later in the
-series.
+This recalculation is far from optimal, most glaringly that it does
+not even attempt to figure out if nodes are actually coming or going.
+But, given the expected paucity of hotplug events, this should be
+fine.
 
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 Cc: Yang Shi <yang.shi@linux.alibaba.com>
@@ -86,190 +67,120 @@ Cc: Huang Ying <ying.huang@intel.com>
 Cc: Dan Williams <dan.j.williams@intel.com>
 ---
 
- b/mm/internal.h   |    1 
- b/mm/migrate.c    |  137 +++++++++++++++++++++++++++++++++++++++++++++++++++++-
- b/mm/page_alloc.c |    2 
- 3 files changed, 138 insertions(+), 2 deletions(-)
+ b/mm/migrate.c |   93 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 93 insertions(+)
 
-diff -puN mm/internal.h~auto-setup-default-migration-path-from-firmware mm/internal.h
---- a/mm/internal.h~auto-setup-default-migration-path-from-firmware	2020-08-18 11:36:48.960583188 -0700
-+++ b/mm/internal.h	2020-08-18 11:36:48.968583188 -0700
-@@ -203,6 +203,7 @@ extern int user_min_free_kbytes;
+diff -puN mm/migrate.c~enable-numa-demotion mm/migrate.c
+--- a/mm/migrate.c~enable-numa-demotion	2020-08-18 11:36:50.193583185 -0700
++++ b/mm/migrate.c	2020-08-18 11:36:50.197583185 -0700
+@@ -49,6 +49,7 @@
+ #include <linux/sched/mm.h>
+ #include <linux/ptrace.h>
+ #include <linux/oom.h>
++#include <linux/memory.h>
  
- extern void zone_pcp_update(struct zone *zone);
- extern void zone_pcp_reset(struct zone *zone);
-+extern int find_next_best_node(int node, nodemask_t *used_node_mask);
+ #include <asm/tlbflush.h>
  
- #if defined CONFIG_COMPACTION || defined CONFIG_CMA
- 
-diff -puN mm/migrate.c~auto-setup-default-migration-path-from-firmware mm/migrate.c
---- a/mm/migrate.c~auto-setup-default-migration-path-from-firmware	2020-08-18 11:36:48.962583188 -0700
-+++ b/mm/migrate.c	2020-08-18 11:36:48.970583188 -0700
-@@ -1160,6 +1160,10 @@ out:
- 	return rc;
+@@ -3130,9 +3131,101 @@ again:
+ 		goto again;
  }
  
 +/*
-+ * Writes to this array occur without locking.  READ_ONCE()
-+ * is recommended for readers to ensure consistent reads.
++ * For callers that do not hold get_online_mems() already.
 + */
- static int node_demotion[MAX_NUMNODES] = {[0 ...  MAX_NUMNODES - 1] = NUMA_NO_NODE};
- 
- /**
-@@ -1173,7 +1177,13 @@ static int node_demotion[MAX_NUMNODES] =
-  */
- int next_demotion_node(int node)
+ void set_migration_target_nodes(void)
  {
--	return node_demotion[node];
-+	/*
-+	 * node_demotion[] is updated without excluding
-+	 * this function from running.  READ_ONCE() avoids
-+	 * reading multiple, inconsistent 'node' values
-+	 * during an update.
-+	 */
-+	return READ_ONCE(node_demotion[node]);
+ 	get_online_mems();
+ 	__set_migration_target_nodes();
+ 	put_online_mems();
  }
- 
- /*
-@@ -3001,3 +3011,128 @@ void migrate_vma_finalize(struct migrate
- }
- EXPORT_SYMBOL(migrate_vma_finalize);
- #endif /* CONFIG_DEVICE_PRIVATE */
 +
-+/* Disable reclaim-based migration. */
-+static void disable_all_migrate_targets(void)
++/*
++ * React to hotplug events that might affect the migration targes
++ * like events that online or offline NUMA nodes.
++ *
++ * The ordering is also currently dependent on which nodes have
++ * CPUs.  That means we need CPU on/offline notification too.
++ */
++static int migration_online_cpu(unsigned int cpu)
 +{
-+	int node;
++	set_migration_target_nodes();
++	return 0;
++}
 +
-+	for_each_online_node(node)
-+		node_demotion[node] = NUMA_NO_NODE;
++static int migration_offline_cpu(unsigned int cpu)
++{
++	set_migration_target_nodes();
++	return 0;
 +}
 +
 +/*
-+ * Find an automatic demotion target for 'node'.
-+ * Failing here is OK.  It might just indicate
-+ * being at the end of a chain.
++ * This leaves migrate-on-reclaim transiently disabled
++ * between the MEM_GOING_OFFLINE and MEM_OFFLINE events.
++ * This runs reclaim-based micgration is enabled or not.
++ * This ensures that the user can turn reclaim-based
++ * migration at any time without needing to recalcuate
++ * migration targets.
++ *
++ * These callbacks already hold get_online_mems().  That
++ * is why __set_migration_target_nodes() can be used as
++ * opposed to set_migration_target_nodes().
 + */
-+static int establish_migrate_target(int node, nodemask_t *used)
++#if defined(CONFIG_MEMORY_HOTPLUG)
++static int __meminit migrate_on_reclaim_callback(struct notifier_block *self,
++						 unsigned long action, void *arg)
 +{
-+	int migration_target;
-+
-+	/*
-+	 * Can not set a migration target on a
-+	 * node with it already set.
-+	 *
-+	 * No need for READ_ONCE() here since this
-+	 * in the write path for node_demotion[].
-+	 * This should be the only thread writing.
-+	 */
-+	if (node_demotion[node] != NUMA_NO_NODE)
-+		return NUMA_NO_NODE;
-+
-+	migration_target = find_next_best_node(node, used);
-+	if (migration_target == NUMA_NO_NODE)
-+		return NUMA_NO_NODE;
-+
-+	node_demotion[node] = migration_target;
-+
-+	return migration_target;
-+}
-+
-+/*
-+ * When memory fills up on a node, memory contents can be
-+ * automatically migrated to another node instead of
-+ * discarded at reclaim.
-+ *
-+ * Establish a "migration path" which will start at nodes
-+ * with CPUs and will follow the priorities used to build the
-+ * page allocator zonelists.
-+ *
-+ * The difference here is that cycles must be avoided.  If
-+ * node0 migrates to node1, then neither node1, nor anything
-+ * node1 migrates to can migrate to node0.
-+ *
-+ * This function can run simultaneously with readers of
-+ * node_demotion[].  However, it can not run simultaneously
-+ * with itself.  Exclusion is provided by memory hotplug events
-+ * being single-threaded.
-+ */
-+void __set_migration_target_nodes(void)
-+{
-+	nodemask_t next_pass	= NODE_MASK_NONE;
-+	nodemask_t this_pass	= NODE_MASK_NONE;
-+	nodemask_t used_targets = NODE_MASK_NONE;
-+	int node;
-+
-+	/*
-+	 * Avoid any oddities like cycles that could occur
-+	 * from changes in the topology.  This will leave
-+	 * a momentary gap when migration is disabled.
-+	 */
-+	disable_all_migrate_targets();
-+
-+	/*
-+	 * Ensure that the "disable" is visible across the system.
-+	 * Readers will see either a combination of before+disable
-+	 * state or disable+after.  They will never see before and
-+	 * after state together.
-+	 *
-+	 * The before+after state together might have cycles and
-+	 * could cause readers to do things like loop until this
-+	 * function finishes.  This ensures they can only see a
-+	 * single "bad" read and would, for instance, only loop
-+	 * once.
-+	 */
-+	smp_wmb();
-+
-+	/*
-+	 * Allocations go close to CPUs, first.  Assume that
-+	 * the migration path starts at the nodes with CPUs.
-+	 */
-+	next_pass = node_states[N_CPU];
-+again:
-+	this_pass = next_pass;
-+	next_pass = NODE_MASK_NONE;
-+	/*
-+	 * To avoid cycles in the migration "graph", ensure
-+	 * that migration sources are not future targets by
-+	 * setting them in 'used_targets'.  Do this only
-+	 * once per pass so that multiple source nodes can
-+	 * share a target node.
-+	 *
-+	 * 'used_targets' will become unavailable in future
-+	 * passes.  This limits some opportunities for
-+	 * multiple source nodes to share a desintation.
-+	 */
-+	nodes_or(used_targets, used_targets, this_pass);
-+	for_each_node_mask(node, this_pass) {
-+		int target_node = establish_migrate_target(node, &used_targets);
-+
-+		if (target_node == NUMA_NO_NODE)
-+			continue;
-+
-+		/* Visit targets from this pass in the next pass: */
-+		node_set(target_node, next_pass);
++	switch (action) {
++	case MEM_GOING_OFFLINE:
++		/*
++		 * Make sure there are not transient states where
++		 * an offline node is a migration target.  This
++		 * will leave migration disabled until the offline
++		 * completes and the MEM_OFFLINE case below runs.
++		 */
++		disable_all_migrate_targets();
++		break;
++	case MEM_OFFLINE:
++	case MEM_ONLINE:
++		/*
++		 * Recalculate the target nodes once the node
++		 * reaches its final state (online or offline).
++		 */
++		__set_migration_target_nodes();
++		break;
++	case MEM_CANCEL_OFFLINE:
++		/*
++		 * MEM_GOING_OFFLINE disabled all the migration
++		 * targets.  Reenable them.
++		 */
++		__set_migration_target_nodes();
++		break;
++	case MEM_GOING_ONLINE:
++	case MEM_CANCEL_ONLINE:
++		break;
 +	}
-+	/* Is another pass necessary? */
-+	if (!nodes_empty(next_pass))
-+		goto again;
++
++	return notifier_from_errno(0);
 +}
 +
-+void set_migration_target_nodes(void)
++static int __init migrate_on_reclaim_init(void)
 +{
-+	get_online_mems();
-+	__set_migration_target_nodes();
-+	put_online_mems();
++	int ret;
++
++	ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "migrate on reclaim",
++				migration_online_cpu,
++				migration_offline_cpu);
++	/*
++	 * In the unlikely case that this fails, the automatic
++	 * migration targets may become suboptimal for nodes
++	 * where N_CPU changes.  With such a small impact in a
++	 * rare case, do not bother trying to do anything special.
++	 */
++	WARN_ON(ret < 0);
++
++	hotplug_memory_notifier(migrate_on_reclaim_callback, 100);
++	return 0;
 +}
-diff -puN mm/page_alloc.c~auto-setup-default-migration-path-from-firmware mm/page_alloc.c
---- a/mm/page_alloc.c~auto-setup-default-migration-path-from-firmware	2020-08-18 11:36:48.964583188 -0700
-+++ b/mm/page_alloc.c	2020-08-18 11:36:48.972583188 -0700
-@@ -5607,7 +5607,7 @@ static int node_load[MAX_NUMNODES];
-  *
-  * Return: node id of the found node or %NUMA_NO_NODE if no node is found.
-  */
--static int find_next_best_node(int node, nodemask_t *used_node_mask)
-+int find_next_best_node(int node, nodemask_t *used_node_mask)
- {
- 	int n, val;
- 	int min_val = INT_MAX;
++late_initcall(migrate_on_reclaim_init);
++#endif /* CONFIG_MEMORY_HOTPLUG */
 _
