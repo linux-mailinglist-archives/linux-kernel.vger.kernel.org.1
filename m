@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4AD4248A4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 17:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 955A6248A54
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 17:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728006AbgHRPpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 11:45:53 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2637 "EHLO huawei.com"
+        id S1728063AbgHRPqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 11:46:14 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2639 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726971AbgHRPoe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 11:44:34 -0400
-Received: from lhreml722-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id F38319593CBDEE2F0A10;
-        Tue, 18 Aug 2020 16:44:32 +0100 (IST)
+        id S1727122AbgHRPpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 11:45:39 -0400
+Received: from lhreml722-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 8C3E2B9656467A8B2B83;
+        Tue, 18 Aug 2020 16:45:37 +0100 (IST)
 Received: from kstruczy-linux-box (10.204.65.138) by
  lhreml722-chm.china.huawei.com (10.201.108.73) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Tue, 18 Aug 2020 16:44:31 +0100
-Received: by kstruczy-linux-box (sSMTP sendmail emulation); Tue, 18 Aug 2020 17:44:33 +0200
+ 15.1.1913.5; Tue, 18 Aug 2020 16:45:35 +0100
+Received: by kstruczy-linux-box (sSMTP sendmail emulation); Tue, 18 Aug 2020 17:45:38 +0200
 From:   <krzysztof.struczynski@huawei.com>
 To:     <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <containers@lists.linux-foundation.org>,
@@ -29,9 +29,9 @@ CC:     <zohar@linux.ibm.com>, <stefanb@linux.vnet.ibm.com>,
         <jmorris@namei.org>, <christian@brauner.io>,
         <silviu.vlasceanu@huawei.com>, <roberto.sassu@huawei.com>,
         Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
-Subject: [RFC PATCH 14/30] ima: Add per namespace view of the measurement list
-Date:   Tue, 18 Aug 2020 17:42:14 +0200
-Message-ID: <20200818154230.14016-5-krzysztof.struczynski@huawei.com>
+Subject: [RFC PATCH 16/30] ima: Extend permissions to the ima securityfs entries
+Date:   Tue, 18 Aug 2020 17:42:16 +0200
+Message-ID: <20200818154230.14016-7-krzysztof.struczynski@huawei.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200818154230.14016-1-krzysztof.struczynski@huawei.com>
 References: <20200818154230.14016-1-krzysztof.struczynski@huawei.com>
@@ -49,161 +49,134 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
 
-Modify ima securityfs interface, so that only measurement list entries
-that belong to the given ima namespace are visible/counted. The initial
-ima namespace is an exception, its processes have access to all
-measurement list entries.
+Add "others" permissions to the namespaced ima securityfs entries. It
+is necessary so that the root in the user namespace that is the parent
+of the given ima namespace has access to the ima related data.
+
+Loosened DAC restrictrions are compensated by an extra check for
+SYS_ADMIN capabilities in the ima code. The access is given
+only to the namespaced data, e.g. root user in the new ima namespace
+will see measurement list entries collected for that namespace and not
+for the other existing namespaces. The only exception is made for the
+admin in the initial user namespace, who has access to all the data.
 
 Signed-off-by: Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
 ---
- include/linux/ima.h                |  1 +
- security/integrity/ima/ima_fs.c    | 57 ++++++++++++++++++++++++++----
- security/integrity/ima/ima_init.c  |  1 +
- security/integrity/ima/ima_ns.c    |  1 +
- security/integrity/ima/ima_queue.c |  8 +++++
- 5 files changed, 61 insertions(+), 7 deletions(-)
+ security/integrity/ima/ima.h    |  4 ++--
+ security/integrity/ima/ima_fs.c | 31 +++++++++++++++++++++++++++----
+ 2 files changed, 29 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/ima.h b/include/linux/ima.h
-index df22143ffe30..d59ed38a4305 100644
---- a/include/linux/ima.h
-+++ b/include/linux/ima.h
-@@ -203,6 +203,7 @@ struct ima_namespace {
- 	struct ima_policy_data *policy_data;
- 	struct integrity_iint_tree *iint_tree;
- 	struct list_head *measurements;
-+	atomic_long_t ml_len; /* number of stored measurements in the list */
- } __randomize_layout;
+diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+index e08f88aab0b5..7318fff3ccaa 100644
+--- a/security/integrity/ima/ima.h
++++ b/security/integrity/ima/ima.h
+@@ -523,9 +523,9 @@ static inline int ima_filter_rule_match(u32 secid, u32 field, u32 op,
+ #endif /* CONFIG_IMA_LSM_RULES */
  
- extern struct ima_namespace init_ima_ns;
+ #ifdef	CONFIG_IMA_READ_POLICY
+-#define	POLICY_FILE_FLAGS	(S_IWUSR | S_IRUSR)
++#define	POLICY_FILE_FLAGS	(S_IWUSR | S_IRUSR | S_IROTH | S_IWOTH)
+ #else
+-#define	POLICY_FILE_FLAGS	S_IWUSR
++#define	POLICY_FILE_FLAGS	(S_IWUSR | I_WOTH)
+ #endif /* CONFIG_IMA_READ_POLICY */
+ 
+ #endif /* __LINUX_IMA_H */
 diff --git a/security/integrity/ima/ima_fs.c b/security/integrity/ima/ima_fs.c
-index 4758e14c4a7b..e2893f0b0f31 100644
+index e2893f0b0f31..6d370874d80f 100644
 --- a/security/integrity/ima/ima_fs.c
 +++ b/security/integrity/ima/ima_fs.c
-@@ -63,7 +63,9 @@ static ssize_t ima_show_measurements_count(struct file *filp,
+@@ -59,6 +59,16 @@ static const struct file_operations ima_htable_violations_ops = {
+ 	.llseek = generic_file_llseek,
+ };
+ 
++static int ima_open_measurements_count(struct inode *inode, struct file *file)
++{
++	struct ima_namespace *ima_ns = get_current_ns();
++
++	if (!ns_capable(ima_ns->user_ns, CAP_SYS_ADMIN))
++		return -EPERM;
++
++	return 0;
++}
++
+ static ssize_t ima_show_measurements_count(struct file *filp,
  					   char __user *buf,
  					   size_t count, loff_t *ppos)
- {
--	return ima_show_htable_value(buf, count, ppos, &ima_htable.len);
-+	struct ima_namespace *ima_ns = get_current_ns();
-+
-+	return ima_show_htable_value(buf, count, ppos, &ima_ns->ml_len);
- 
+@@ -70,6 +80,7 @@ static ssize_t ima_show_measurements_count(struct file *filp,
  }
  
-@@ -77,10 +79,36 @@ static void *ima_measurements_start(struct seq_file *m, loff_t *pos)
- {
- 	loff_t l = *pos;
- 	struct ima_queue_entry *qe;
-+	struct ima_namespace *ima_ns = get_current_ns();
-+	unsigned int ns_id = get_ns_id(ima_ns);
-+
-+	if (ima_ns == &init_ima_ns) {
-+		/* we need a lock since pos could point beyond last element */
-+		rcu_read_lock();
-+		list_for_each_entry_rcu(qe, &ima_measurements, later) {
-+			if (!l--) {
-+				rcu_read_unlock();
-+				return qe;
-+			}
-+		}
-+		rcu_read_unlock();
-+		return NULL;
-+	}
- 
--	/* we need a lock since pos could point beyond last element */
- 	rcu_read_lock();
--	list_for_each_entry_rcu(qe, &ima_measurements, later) {
-+	qe = list_next_or_null_rcu(&ima_measurements,
-+				   ima_ns->measurements,
-+				   struct ima_queue_entry,
-+				   later);
-+	if (!qe) {
-+		rcu_read_unlock();
-+		return NULL;
-+	}
-+
-+	list_for_each_entry_from_rcu(qe, &ima_measurements, later) {
-+		if (ns_id != qe->entry->ns_id)
-+			continue;
-+
- 		if (!l--) {
- 			rcu_read_unlock();
- 			return qe;
-@@ -93,12 +121,27 @@ static void *ima_measurements_start(struct seq_file *m, loff_t *pos)
- static void *ima_measurements_next(struct seq_file *m, void *v, loff_t *pos)
- {
- 	struct ima_queue_entry *qe = v;
-+	struct ima_namespace *ima_ns = get_current_ns();
-+	unsigned int ns_id = get_ns_id(ima_ns);
-+
-+	if (ima_ns == &init_ima_ns) {
-+		/* lock protects when reading beyond last element
-+		 * against concurrent list-extension
-+		 */
-+		rcu_read_lock();
-+		qe = list_entry_rcu(qe->later.next, struct ima_queue_entry,
-+				    later);
-+		rcu_read_unlock();
-+		(*pos)++;
-+
-+		return (&qe->later == &ima_measurements) ? NULL : qe;
-+	}
- 
--	/* lock protects when reading beyond last element
--	 * against concurrent list-extension
--	 */
- 	rcu_read_lock();
--	qe = list_entry_rcu(qe->later.next, struct ima_queue_entry, later);
-+	list_for_each_entry_continue_rcu(qe, &ima_measurements, later) {
-+		if (ns_id == qe->entry->ns_id)
-+			break;
-+	}
- 	rcu_read_unlock();
- 	(*pos)++;
- 
-diff --git a/security/integrity/ima/ima_init.c b/security/integrity/ima/ima_init.c
-index 2100ee341dfc..ac9509d8c0f0 100644
---- a/security/integrity/ima/ima_init.c
-+++ b/security/integrity/ima/ima_init.c
-@@ -36,6 +36,7 @@ struct ima_namespace init_ima_ns = {
- 	.policy_data = &init_policy_data,
- 	.iint_tree = &init_iint_tree,
- 	.measurements = &ima_measurements,
-+	.ml_len = ATOMIC_LONG_INIT(0),
+ static const struct file_operations ima_measurements_count_ops = {
++	.open = ima_open_measurements_count,
+ 	.read = ima_show_measurements_count,
+ 	.llseek = generic_file_llseek,
  };
- EXPORT_SYMBOL(init_ima_ns);
+@@ -242,6 +253,11 @@ static const struct seq_operations ima_measurments_seqops = {
  
-diff --git a/security/integrity/ima/ima_ns.c b/security/integrity/ima/ima_ns.c
-index f331187a4d3c..81de492baa99 100644
---- a/security/integrity/ima/ima_ns.c
-+++ b/security/integrity/ima/ima_ns.c
-@@ -126,6 +126,7 @@ static struct ima_namespace *clone_ima_ns(struct user_namespace *user_ns,
- 	ns->user_ns = get_user_ns(user_ns);
- 	ns->ucounts = ucounts;
- 	ns->frozen = false;
-+	atomic_long_set(&ns->ml_len, 0);
- 
- 	rwlock_init(&ns->iint_tree->lock);
- 	ns->iint_tree->root = RB_ROOT;
-diff --git a/security/integrity/ima/ima_queue.c b/security/integrity/ima/ima_queue.c
-index bd890778c5be..ec5b3ca3ef92 100644
---- a/security/integrity/ima/ima_queue.c
-+++ b/security/integrity/ima/ima_queue.c
-@@ -227,6 +227,14 @@ int ima_add_template_entry(struct ima_template_entry *entry, int violation,
- 		goto out;
- 	}
- 
-+	/* Initial ima namespace has access to all measurement list entries,
-+	 * therefore always increment its measurement list length. Other
-+	 * namespaces can see only their own entries.
-+	 */
-+	if (ima_ns != &init_ima_ns)
-+		atomic_long_inc(&ima_ns->ml_len);
-+	atomic_long_inc(&init_ima_ns.ml_len);
+ static int ima_measurements_open(struct inode *inode, struct file *file)
+ {
++	struct ima_namespace *ima_ns = get_current_ns();
 +
- 	if (violation)		/* invalidate pcr */
- 		digests_arg = digests;
++	if (!ns_capable(ima_ns->user_ns, CAP_SYS_ADMIN))
++		return -EPERM;
++
+ 	return seq_open(file, &ima_measurments_seqops);
+ }
  
+@@ -308,6 +324,11 @@ static const struct seq_operations ima_ascii_measurements_seqops = {
+ 
+ static int ima_ascii_measurements_open(struct inode *inode, struct file *file)
+ {
++	struct ima_namespace *ima_ns = get_current_ns();
++
++	if (!ns_capable(ima_ns->user_ns, CAP_SYS_ADMIN))
++		return -EPERM;
++
+ 	return seq_open(file, &ima_ascii_measurements_seqops);
+ }
+ 
+@@ -429,13 +450,15 @@ static const struct seq_operations ima_policy_seqops = {
+  */
+ static int ima_open_policy(struct inode *inode, struct file *filp)
+ {
++	struct ima_namespace *ima_ns = get_current_ns();
++
+ 	if (!(filp->f_flags & O_WRONLY)) {
+ #ifndef	CONFIG_IMA_READ_POLICY
+ 		return -EACCES;
+ #else
+ 		if ((filp->f_flags & O_ACCMODE) != O_RDONLY)
+ 			return -EACCES;
+-		if (!capable(CAP_SYS_ADMIN))
++		if (!ns_capable(ima_ns->user_ns, CAP_SYS_ADMIN))
+ 			return -EPERM;
+ 		return seq_open(filp, &ima_policy_seqops);
+ #endif
+@@ -509,21 +532,21 @@ int __init ima_fs_init(void)
+ 
+ 	binary_runtime_measurements =
+ 	    securityfs_create_file("binary_runtime_measurements",
+-				   S_IRUSR | S_IRGRP, ima_dir, NULL,
++				   S_IRUSR | S_IRGRP | S_IROTH, ima_dir, NULL,
+ 				   &ima_measurements_ops);
+ 	if (IS_ERR(binary_runtime_measurements))
+ 		goto out;
+ 
+ 	ascii_runtime_measurements =
+ 	    securityfs_create_file("ascii_runtime_measurements",
+-				   S_IRUSR | S_IRGRP, ima_dir, NULL,
++				   S_IRUSR | S_IRGRP | S_IROTH, ima_dir, NULL,
+ 				   &ima_ascii_measurements_ops);
+ 	if (IS_ERR(ascii_runtime_measurements))
+ 		goto out;
+ 
+ 	runtime_measurements_count =
+ 	    securityfs_create_file("runtime_measurements_count",
+-				   S_IRUSR | S_IRGRP, ima_dir, NULL,
++				   S_IRUSR | S_IRGRP | S_IROTH, ima_dir, NULL,
+ 				   &ima_measurements_count_ops);
+ 	if (IS_ERR(runtime_measurements_count))
+ 		goto out;
 -- 
 2.20.1
 
