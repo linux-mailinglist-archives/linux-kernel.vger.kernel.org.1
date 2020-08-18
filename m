@@ -2,87 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 450B22481E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 11:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7991B2481FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 11:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbgHRJaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 05:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726145AbgHRJaH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 05:30:07 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44A7C061389
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 02:30:07 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id y134so11040692yby.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 02:30:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=481phWAt8mWnm/w37igX0FBuMwcl7pH6Y12b99av8uM=;
-        b=iB7njDfkGMWSB25RqCTukPDN6G8BUqT8FDIKPbEpQC0PPxPKPgNd8/0ZoLApCGD6ue
-         XnS3FZJTv1c66qJCmonlcde0qkn6fnGDolHBy4V4Iy7tRB5/nvEa3ADjeE6r1OeL48iU
-         bZm6hPBgkSg4uRDECLSbVnYWMtpvFFDbrSDHHGibZZOWZTeiklukC2lU14Zyk2rNFlHz
-         dnAUmQDjkrhjT1TdxXFGbYRAJLch4zTWjKgr88wZaXB03+Co74Q8FMdnvvjXDAizqCSs
-         Hw/G7Zg3SD6lJtnXyxAH74PdHYt4wZhmUPhRSGUqVf5nsS1UkbhyCIYnmbhEFumURfnd
-         etoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=481phWAt8mWnm/w37igX0FBuMwcl7pH6Y12b99av8uM=;
-        b=q/vmiY+Mh4wFpxhhkyMOYwAX4CKQiYebl0JhOM6dXu922K/3pIsQ8VT/8MeoMz9UKM
-         D76nNC/IPutU7ou6dJNht7kxUfZbkpEpTU+0MkZQHkJDGPkejAEFYDF9rK/S4PnvAozB
-         dyWYivi7F/z0eV7X7Kq3lqOBY2xMPh8uTYBw8rqWLnBgvnOVZNpDmbZLIMxPc2FtYmF+
-         6Z3xQAakWyfLiqlZiJbROX7Xd2xaM86g5o892168f8bf7/YlhtqnuwKoitPa5HLFp6he
-         SVRk0vq2nHtzEnVHyuXP9OWMD1LtyMsNXupZ73C8qZBNpZjapmXvztbCqHIBVvsXExeT
-         qaMA==
-X-Gm-Message-State: AOAM532Y8uendKYM2fPck7Ivj5s5+gSP+qnF3dhCdEwEccPZtgKPdzFB
-        WCP+zg46JfDGF0sfMO1JiSkXOvqHWUT6vMK+5qo=
-X-Google-Smtp-Source: ABdhPJxM39/++p6F5f8iE4zXgPZAJlZZwZ9z86P+Ell1ALaX6vv0I5U7iT8v0iQCnIO3MMPqEkRjotqjVYYM6yDylkc=
-X-Received: by 2002:a25:3b0d:: with SMTP id i13mr25465799yba.314.1597743004557;
- Tue, 18 Aug 2020 02:30:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <1594874393-23620-1-git-send-email-bmeng.cn@gmail.com> <edca7c9e9a8934fc66d09c7056e92a6aa7f0d645.camel@wdc.com>
-In-Reply-To: <edca7c9e9a8934fc66d09c7056e92a6aa7f0d645.camel@wdc.com>
-From:   Bin Meng <bmeng.cn@gmail.com>
-Date:   Tue, 18 Aug 2020 17:29:53 +0800
-Message-ID: <CAEUhbmW6S2TG14w0smXQ6foZvmSfVvcdYf4kgkLwT9ivXV+m0Q@mail.gmail.com>
-Subject: Re: [PATCH] riscv: Add SiFive drivers to rv32_defconfig
-To:     Alistair Francis <Alistair.Francis@wdc.com>
-Cc:     "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Anup Patel <Anup.Patel@wdc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bin.meng@windriver.com" <bin.meng@windriver.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726429AbgHRJfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 05:35:11 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:33990 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726145AbgHRJfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 05:35:10 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D58391A019F;
+        Tue, 18 Aug 2020 11:35:08 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 1F2241A1994;
+        Tue, 18 Aug 2020 11:35:05 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 07553402AD;
+        Tue, 18 Aug 2020 11:34:59 +0200 (CEST)
+From:   Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
+To:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com,
+        amurray@thegoodpenguin.co.uk, jingoohan1@gmail.com,
+        gustavo.pimentel@synopsys.com
+Cc:     Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+Subject: [PATCHv2] PCI: designware-ep: Fix the Header Type check
+Date:   Tue, 18 Aug 2020 17:27:46 +0800
+Message-Id: <20200818092746.24366-1-Zhiqiang.Hou@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 12:39 AM Alistair Francis
-<Alistair.Francis@wdc.com> wrote:
->
-> On Wed, 2020-07-15 at 21:39 -0700, Bin Meng wrote:
-> > From: Bin Meng <bin.meng@windriver.com>
-> >
-> > This adds SiFive drivers to rv32_defconfig, to keep in sync with the
-> > 64-bit config. This is useful when testing 32-bit kernel with QEMU
-> > 'sifive_u' 32-bit machine.
-> >
-> > Signed-off-by: Bin Meng <bin.meng@windriver.com>
->
-> Reviewed-by: Alistair Francis <alistair.francis@wdc.com>
->
+From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
 
-Ping?
+The current check will result in the multiple function device
+fails to initialize. So fix the check by masking out the
+multiple function bit.
 
-Is this patch applied anywhere? Thanks!
+Fixes: 0b24134f7888 ("PCI: dwc: Add validation that PCIe core is set to correct mode")
+Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+---
+V2:
+ - Add marco PCI_HEADER_TYPE_MASK and print the masked value.
 
-Regards,
-Bin
+ drivers/pci/controller/dwc/pcie-designware-ep.c | 3 ++-
+ include/uapi/linux/pci_regs.h                   | 1 +
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
+index 4680a51c49c0..0634bd3a0b96 100644
+--- a/drivers/pci/controller/dwc/pcie-designware-ep.c
++++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
+@@ -653,7 +653,8 @@ int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep)
+ 	u32 reg;
+ 	int i;
+ 
+-	hdr_type = dw_pcie_readb_dbi(pci, PCI_HEADER_TYPE);
++	hdr_type = dw_pcie_readb_dbi(pci, PCI_HEADER_TYPE) &
++		   PCI_HEADER_TYPE_MASK;
+ 	if (hdr_type != PCI_HEADER_TYPE_NORMAL) {
+ 		dev_err(pci->dev,
+ 			"PCIe controller is not set to EP mode (hdr_type:0x%x)!\n",
+diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
+index f9701410d3b5..57a222014cd2 100644
+--- a/include/uapi/linux/pci_regs.h
++++ b/include/uapi/linux/pci_regs.h
+@@ -76,6 +76,7 @@
+ #define PCI_CACHE_LINE_SIZE	0x0c	/* 8 bits */
+ #define PCI_LATENCY_TIMER	0x0d	/* 8 bits */
+ #define PCI_HEADER_TYPE		0x0e	/* 8 bits */
++#define  PCI_HEADER_TYPE_MASK		0x7f
+ #define  PCI_HEADER_TYPE_NORMAL		0
+ #define  PCI_HEADER_TYPE_BRIDGE		1
+ #define  PCI_HEADER_TYPE_CARDBUS	2
+-- 
+2.17.1
+
