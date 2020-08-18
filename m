@@ -2,60 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB199248CF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB23A248D0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728554AbgHRRbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 13:31:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726715AbgHRRbu (ORCPT
+        id S1728758AbgHRRe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 13:34:59 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:20695 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728494AbgHRRe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 13:31:50 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB98C061389;
-        Tue, 18 Aug 2020 10:31:49 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id v12so22339390ljc.10;
-        Tue, 18 Aug 2020 10:31:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=E6SkpU4jTKjuyYa1KoeZ1+SjC9XhD7REGKE6+aNvKF4=;
-        b=DmI0xcwUQ7Akv+E/NPE0adMGAvPlMHKBnBGKpP/23RJpUfmj++2MADef9mklcNdEuK
-         jNF19KPnUM1rUDYvNIf7qaY51RaVQy6HECRc7xLrudr+Kh8VU9iM5bM21SvY3DmJjPxF
-         7twf4dWwqpk9fE8uUQZZEfaiLNCnFeuyRIEIo4yHyrYFLRhN7JhKN+rJCuFLgmKTfQaX
-         mM54681ksd5ww4mWRx9zVqz5lt0NuQhg+5OwMzT3GF1thIYDkZOhbZiRmNMOeMijTea9
-         2BMw17iUm+thAB9OeCF9WfyGeso3r5S7BTFlxL60dsfKkWmIJHipW67nqBqUGZ4+abwl
-         DGMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=E6SkpU4jTKjuyYa1KoeZ1+SjC9XhD7REGKE6+aNvKF4=;
-        b=dXadAxn5RSD3WUX9fAHovQtmPSqXTxOaWkxT+i/QTRSye1tzHL+GjJCRUC22v6q4Wc
-         mWzbL0LyzSEEyNpyqK1c4z07K63ObUbevlDSKyEzZxFIzPY8qH4m+ZtH1BKkCvfPr3lZ
-         93edH/J++odON8Z1SrzVbJH2uYWL/Mr5x/l/8bHt216FLgAHrA0r94VEUhzqOL9N47tc
-         T6hO2FqEqeTcPEzO6KwBjniZfw9jlxZcXreXL6UuC05sRwi3vJxyNUjrs4CxqYclAz6a
-         PuZr46KFlk+Xn1JrCk36kEdBGo5Nqw2wE8m6sJonTNTcyXrvHhZrasMNaCIZWoBd1Got
-         vGPg==
-X-Gm-Message-State: AOAM531xwkCYfVTYv7mtzAddjoSZznHSAEYmagPpakc4xoCjXYE6E4tO
-        brxpob8hhUI1wd1N8gfhpvOpCvCgdSSqMKvWx4M=
-X-Google-Smtp-Source: ABdhPJwKFZCeKWwly2bWeYf/XxnCr2IqcfbTcuVmc3eyw7boAnql3cPwv02+GIlUZ5byYgzixuBBlFfvJGktFNlmD6Y=
-X-Received: by 2002:a2e:b174:: with SMTP id a20mr7001381ljm.200.1597771908025;
- Tue, 18 Aug 2020 10:31:48 -0700 (PDT)
+        Tue, 18 Aug 2020 13:34:29 -0400
+Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 07IHYF4N027894
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 02:34:15 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 07IHYF4N027894
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1597772056;
+        bh=ibuX60bW1flfxvenHkO0aZoK/IkeXv+RuWSadAaZDEs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Gwb6TKi1iKgTRQsLhwBd7S5KRqAEc4P3O1bXC+0BbEqUEzUbYffTqJoKuMzQfCanu
+         saq2Ea7LX455pD0nHeFrePP4sEWVRhfGtLg7h0sEQmdKRwZFcf7sqTT/JfUdvBM4jc
+         fr1dopLalIglyFxSlEpJmePO013+/EQdeg0sUmjf9aWVbZKvLhtTSyebopUZfBN3Hq
+         h/fH+ozIw3lUu+t1xovk8bnjqBbtvYAyWjHPDC6E48AIvCekdkq0yAR632xJacOArM
+         zSMPCXkpSrCP57WOSZ0NibsO5eCAKbg1bpcNrafUZPLYRYHpZnPKXP51RXiUynwmHs
+         bFGx4B6VJCpuA==
+X-Nifty-SrcIP: [209.85.221.173]
+Received: by mail-vk1-f173.google.com with SMTP id n12so273851vkk.11
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 10:34:15 -0700 (PDT)
+X-Gm-Message-State: AOAM532GWDd5heJEVoFbaq+up6S/sZNVFB31iNKii/md+f3bxgQOB4XR
+        X/MntO3lpuFVobhfbLpQTgAOR0YMnRk4SPfpAi4=
+X-Google-Smtp-Source: ABdhPJxPfLdpSx4d2/EJeZYS59VftNEmMih8yrwIf7lXzQbK53lpjtz3LU4gFPoinnGDUFSUn+NAxvNPm7rzSYodeOc=
+X-Received: by 2002:a1f:2b14:: with SMTP id r20mr7802154vkr.73.1597772054350;
+ Tue, 18 Aug 2020 10:34:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAHhAz+inPwKYx_4qaujQ=bGG9twashiuqLhQQ-+vgHWF7FLhRA@mail.gmail.com>
- <20200818143633.GA628293@kroah.com> <CAHhAz+hG5kS5rhph4SaSLOEc5PgcSOTPWpiANLNpwotY9Zy6qQ@mail.gmail.com>
- <20200818171457.GA736234@kroah.com>
-In-Reply-To: <20200818171457.GA736234@kroah.com>
-From:   Muni Sekhar <munisekharrms@gmail.com>
-Date:   Tue, 18 Aug 2020 23:01:35 +0530
-Message-ID: <CAHhAz+ggd4DPFfWPB+h6Obkjebf5mv5cV6307oKEkEYMhAB3wQ@mail.gmail.com>
-Subject: Re: Scheduler benchmarks
-To:     Greg KH <greg@kroah.com>
-Cc:     kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+References: <1c4d1da4-36a9-c83b-1a8a-95334aa62ce3@meinberg.de>
+In-Reply-To: <1c4d1da4-36a9-c83b-1a8a-95334aa62ce3@meinberg.de>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 19 Aug 2020 02:33:37 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARpC4GHnXoWM=JU=cYxMdamg5iUWGoXt5o6mhf81QkjLw@mail.gmail.com>
+Message-ID: <CAK7LNARpC4GHnXoWM=JU=cYxMdamg5iUWGoXt5o6mhf81QkjLw@mail.gmail.com>
+Subject: Re: Kernel build system broken in 5.8?
+To:     Martin Burnicki <martin.burnicki@meinberg.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
@@ -63,108 +51,166 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 10:44 PM Greg KH <greg@kroah.com> wrote:
+On Wed, Aug 19, 2020 at 1:14 AM Martin Burnicki
+<martin.burnicki@meinberg.de> wrote:
 >
-> On Tue, Aug 18, 2020 at 10:24:13PM +0530, Muni Sekhar wrote:
-> > On Tue, Aug 18, 2020 at 8:06 PM Greg KH <greg@kroah.com> wrote:
-> > >
-> > > On Tue, Aug 18, 2020 at 08:00:11PM +0530, Muni Sekhar wrote:
-> > > > Hi all,
-> > > >
-> > > > I=E2=80=99ve two identical Linux systems with only kernel differenc=
-es.
-> > >
-> > > What are the differences in the kernels?
+> Hi,
 >
-> You didn't answer this question, is this the same kernel source being
-> compared here?  Same version?  Same compiler?  Everything identical?
-Both systems are having exactly the same hardware configuration.
-Compiler and kernel versions are different. One system has Ubuntu
-16.04.4 LTS(4.4.0-66-generic kernel with gcc version 5.4.0) kernel and
-the other one has Ubuntu 18.04.4 LTS(4.15.0-91-generic kernel with gcc
-version 7.5.0).
+> I'm the maintainer of a driver package for some PCI cards (GPS receiver
+> cards, etc.). A read-only git repo of the driver package can be found her=
+e:
+> https://git.meinbergglobal.com/mbgtools-lx.git
+>
+> The kernel driver from that package is compiled as out-of-tree module,
+> and runs fine on kernels 2.6, 3.x, 4.x, and 5.x up to 5.7, actually
+> 5.7.15 on Ubuntu.
+>
+> However, if I try this on kernel 5.8.1, I get strange errors related to
+> autoconf.h, which make it impossible to compile or install the kernel
+> module.
+>
+> I usually build the kernel module as standard user, and only install the
+> new module as root, e.g.:
+>
+>   git checkout devel   # The 'devel' branch is appropriate for testing
+>   cd mbgclock          # the subdirectory of the kernel module
+>   git clean -fd; make  # or make V=3D1 for verbose output
+>   sudo make install
+
+
+This is a bad way for reporting a bug
+because your project is too big.
+
+mbgclock/Makefile include the top Makefile,
+which is more than 1000 lines.
+
+
+Please provide steps to reproduce it
+with a tiny test module.
+
+You state 5.7.15 was fine.
+So, could you also run git-bisect, please?
+
+
+> Also, I was under the impression that the kernel source tree should be
+> read-only, and kept clean, but this doesn't seem to be the case anymore.
+>
+>
+> For example:
+>
+> On Ubuntu 19.10 with kernel 5.8.1-050801-generic from
+> https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.1/
+
+
+I cannot try it since that is not what
+I install on my machine, sorry.
+
+
+Please provide steps to reproduce it
+for a person using a different environment.
 
 
 
->
-> > > > While doing kernel profiling with perf, I got the below mentioned
-> > > > metrics for Scheduler benchmarks.
-> > > >
-> > > > 1st system (older kernel version compared to the other system) benc=
-hmark result:
-> > > >
-> > > > $ perf bench sched messaging -g 64
-> > > > # Running 'sched/messaging' benchmark:
-> > > > # 20 sender and receiver processes per group
-> > > > # 64 groups =3D=3D 2560 processes run
-> > > >
-> > > >      Total time: 2.936 [sec]
-> > > >
-> > > >
-> > > > 2nd system benchmark result:
-> > > >
-> > > > $ perf bench sched messaging -g 64
-> > > > # Running 'sched/messaging' benchmark:
-> > > > # 20 sender and receiver processes per group
-> > > > # 64 groups =3D=3D 2560 processes run
-> > > >
-> > > >      Total time: 10.074 [sec]
-> > > >
-> > > >
-> > > > So as per scheduler benchmark results, clearly a huge difference
-> > > > between two systems.
-> > > > Can anyone suggest to me how to dive deeper to know the root cause =
-for
-> > > > it.
-> > >
-> > > Look a the differences between your different kernels, that would be =
-a
-> > > great start :)
-> > I created the difference between two kernel config files and then
-> > tried to spot the CONFIG*SCHED* differences.
-> > Interestingly I see the difference in I/O scheduler config, 1st system
-> > is set to =E2=80=9Cdeadline=E2=80=9D and other one is set to =E2=80=9Cc=
-fq=E2=80=9D. So I made it equal
-> > by echoing to =E2=80=9C/sys/block/<disk device>/queue/scheduler" but st=
-ill no
-> > change in scheduler benchmark metrics.
-> >
-> > Is it the correct way to find the differences between kernels? If so,
-> > what other important CONFIG_* variables need to consider?
-> >
-> >
-> > $ cat config.patch | grep -i sched
-> >
-> >  CONFIG_HAVE_UNSTABLE_SCHED_CLOCK=3Dy
-> >  CONFIG_CGROUP_SCHED=3Dy
-> >  CONFIG_FAIR_GROUP_SCHED=3Dy
-> >  # CONFIG_RT_GROUP_SCHED is not set
-> >  # IO Schedulers
-> > @@ -369,10 +434,14 @@ CONFIG_IOSCHED_NOOP=3Dy
-> >  CONFIG_IOSCHED_DEADLINE=3Dy
-> >  CONFIG_IOSCHED_CFQ=3Dy
-> >  CONFIG_CFQ_GROUP_IOSCHED=3Dy
-> > -CONFIG_DEFAULT_IOSCHED=3D"deadline"
-> > +CONFIG_DEFAULT_IOSCHED=3D"cfq"
-> > +CONFIG_MQ_IOSCHED_DEADLINE=3Dm
-> > +CONFIG_MQ_IOSCHED_KYBER=3Dm
-> > +CONFIG_IOSCHED_BFQ=3Dm
-> > +CONFIG_BFQ_GROUP_IOSCHED=3Dy
-> >  CONFIG_SCHED_SMT=3Dy
-> >  CONFIG_SCHED_MC=3Dy
-> > +CONFIG_SCHED_MC_PRIO=3Dy
-> > +# CONFIG_CPU_FREQ_DEFAULT_GOV_SCHEDUTIL is not set
-> > +CONFIG_CPU_FREQ_GOV_SCHEDUTIL=3Dy
->
-> There's lots of other options that affect performance, depending on your
-> specific benchmark, other than these.
->
-> good luck!
->
-> greg k-h
 
+> 'make' completes without error, even if run as normal user without write
+> permissions in the kernel source tree.
+>
+> 'sudo insmod ./mbgclock.ko' loads the module successfully, and the PCI
+> card can be accessed as usually, e.g. using the 'mbgstatus' program, so
+> the compiled kernel module  is OK.
+>
+> BUT: Once I run 'sudo make install', which calls the kernel build system
+> to make 'modules_install', I immediately get an error:
+>
+> -------------------------------------------------------------------------
+> Calling kernel build system to make "modules_install"
+> make[1]: Entering directory '/usr/src/linux-headers-5.8.1-050801-generic'
+>
+>   ERROR: Kernel configuration is invalid.
+>          include/generated/autoconf.h or include/config/auto.conf are
+> missing.
+>          Run 'make oldconfig && make prepare' on kernel src to fix it.
+>
+> make[1]: *** [Makefile:719: include/config/auto.conf] Error 1
+> make[1]: Leaving directory '/usr/src/linux-headers-5.8.1-050801-generic'
+> make: *** [/home/martin/projects/mbgtools-lx/mbgclock/../Makefile:834:
+> install_module] Error 2
+> -------------------------------------------------------------------------
+>
+> And once this has happened, this problem persists, i.e., if I run the
+> same commands
+>
+>   git clean -fd; make
+>
+> once more, as normal user as mentioned above, I get the error above
+> every time.
+>
+> Also, If I initially try to build the kernel kernel module as root, with
+> 'sudo':
+>
+>   git clean -fd; sudo make
+>
+> I immediately get this error, and the module is not built. Only after I
+> have re-installed the kernel headers package, I can compile the module
+> again.
+>
+>
+> A diff between the kernel header files before and after the kernel build
+> system has been messed up shows that the following files have changed:
+>
+> include/generated/autoconf.h
+> scripts/basic/.fixdep.cmd
+> scripts/basic/fixdep
+> scripts/kconfig/.conf.o.cmd
+> scripts/kconfig/.confdata.o.cmd
+> scripts/kconfig/.expr.o.cmd
+> scripts/kconfig/.lexer.lex.c.cmd
+> scripts/kconfig/conf.o
+> scripts/kconfig/confdata.o
+> scripts/kconfig/expr.o
+> scripts/kconfig/lexer.lex.c
+> scripts/kconfig/parser.tab.c
+>
+> Specifically, autoconf.h has been deleted even though some script
+> obviously still requires that the file is available.
+>
+>
+> With openSUSE Leap 15.2 and kernel 5.8.1 from
+> https://download.opensuse.org/repositories/Kernel:/stable/standard/
+>
+> I've encountered similar problems because include/generated/autoconf.h
+> is not even available after installation of the kernel headers package.
+>
+> Only on Arch Linux with kernel 5.8.1-arch1-1 I can build and install the
+> module as root or standard user, as it was possible with earlier kernel
+> versions.
+>
+> Can someone please shed some light on what's going on here?
+>
+>
+> Thanks,
+>
+> Martin
+> --
+> Martin Burnicki
+>
+> Senior Software Engineer
+>
+> MEINBERG Funkuhren GmbH & Co. KG
+> Email: martin.burnicki@meinberg.de
+> Phone: +49 5281 9309-414
+> Linkedin: https://www.linkedin.com/in/martinburnicki/
+>
+> Lange Wand 9, 31812 Bad Pyrmont, Germany
+> Amtsgericht Hannover 17HRA 100322
+> Gesch=C3=A4ftsf=C3=BChrer/Managing Directors: G=C3=BCnter Meinberg, Werne=
+r Meinberg,
+> Andre Hartmann, Heiko Gerstung
+> Websites: https://www.meinberg.de  https://www.meinbergglobal.com
+> Training: https://www.meinberg.academy
+>
 
 
 --=20
-Thanks,
-Sekhar
+Best Regards
+Masahiro Yamada
