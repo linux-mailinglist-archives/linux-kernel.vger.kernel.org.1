@@ -2,88 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0959024915D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 01:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F373249161
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 01:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727064AbgHRXJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 19:09:47 -0400
-Received: from sonic317-27.consmr.mail.bf2.yahoo.com ([74.6.129.82]:36026 "EHLO
-        sonic317-27.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726983AbgHRXJq (ORCPT
+        id S1726944AbgHRXPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 19:15:20 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:54751 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726934AbgHRXPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 19:09:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1597792185; bh=+NKq2YP/4c3bLm2HmGhxa/KCZOXr0NIUKHs/ECuC0yk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=o3R6dhx03IkpJodRn/fyLSs0iFyNPCaKLxMZamZYysjhkPyI6tUoZCRH+z1tZbUd2AurD9KWJL7Z6QGrk2rP0LME/wnz79+hVmBIX9fpH0FxOeg06wC1sNPtFS8ZIt2hkvTCRdaROAIt3cCZWV/7ahw98zYwOJb0VurDZdGYAzqiiarczKzBslPFMg6BYWNm9RL45w6OK6Gfn7B44cNhdlrmLApw3CISEiQ2zHVK499nQ2HEInI5ks+WAx6O12pbldNT1va/zkdnftNHmbZZH+gGzK1o+z03XvIxoHQNa9pkmgK4jqq79mjIgMs45azeIZnD41+6+2wypxE9K1vxMQ==
-X-YMail-OSG: Ih3Y1gsVM1kxydJpv1DUDjePcvDQD_L50u.YvfN7TT3AheDsKLYvmewF.9hk55p
- QPJHimUZ3SQII0oKqNkdf5DJCdQkEB1gdCobyp6IXvIDMgUQCXcd7EvvzIUQx5M8Xik3zsuPMhtt
- OeymQVKLThwZMmg1nZKEu7M1GjvjbDTKNOY1y91uEKr22yV.JQL112RwpUNh_s_ZGjvWjZR0NWj4
- tCGGe2hb1OeN.WDcrQ1phX8zBb2IjJ1pXsRaBg7DRhfZLT5lHVTP2Ekj2YjAnKRiT1uzSJJiRWf.
- LQVWgujUG0p4g2KO1_DapUFvAdalatsFCZMgHWpQBE_mfCBDHfB6IZGmJuuUwGewuKBNKx2Uz5RT
- 56OzwXPqv1gtFr2twEXsUnY_HkZICgl2Tg40QkalGJDL.1IJXHHkavctRVShFKn_1nwzk75w8lL4
- B5zz6Wq4SUJr67Y3VXHAD_poxkMreERwhzSN1t0lvvFkihk932MBeyV.2N9jh7p8i05HYJQUz9Rb
- 0sBb5NJONxz6D65NGfPaVlzvNkIWdlfUK0GxeSiCYtxh85XXl1MwFcMSQUqyJFRmy187UnJ0OCJa
- 2ScuJffOEw9HrgoUIQnnE04gUaaBbpZd.1Og7HG8oUOsnLvQkpGS2A2jIGPa.lAaniWbsW13emYO
- 8KuuUxTBPd15zbwG0jclJ5.sAdbAOhRRcNCQLLHsvhxQ9rRlWt7M_X3yVxWazMlVdGpgkOFW0Wnq
- rbFNhN12MZ_.snBnFavzwI.CwVIGomYP8E8YdcQ--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic317.consmr.mail.bf2.yahoo.com with HTTP; Tue, 18 Aug 2020 23:09:45 +0000
-Date:   Tue, 18 Aug 2020 23:09:43 +0000 (UTC)
-From:   "Mrs. Mina A. Brunel" <mrsminaaaliyahbrunel@gmail.com>
-Reply-To: mrsminaabrunel@myself.com
-Message-ID: <897355173.3040336.1597792183518@mail.yahoo.com>
-Subject: My Dear in the lord
+        Tue, 18 Aug 2020 19:15:15 -0400
+Received: by mail-io1-f69.google.com with SMTP id z25so12979060ioh.21
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 16:15:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=E4BHJHLXtNc8TZauQeJum4JuNvEC50LzEspiC76MB7w=;
+        b=URIPCyvq3jFH/T4cjngMhOf+pAz1YBgQXi3QaCnj8ZXsSEAqqjngjzR4g2YgEdTdCI
+         F2Am4sTTZqXiC6TgdjoM9310AEiSxT2G5BxdcsXTJVynTgWkvIKP+g/IioRpmKqNttWb
+         boIJYrhrMrMmVP0z/kZwEXAukdawUloaEczdaoKt38HJPt9vEE53WOB6T4NKLr0ge4lX
+         rjZR8DV6fH6hBV9yc5EzKSpHq+iE9enBTPQ6EASJtGvnrimrWdmEJAc05/SFRrPEn+nP
+         V8XwQ1woF+Jvs7B0jfKDn3KZnsI32YTB7/ifbats+tgG7L/9Owf1Pt1xIUz8bkHzHZPL
+         JWPA==
+X-Gm-Message-State: AOAM533DaGB78FmVCHYr80HPkFd9nZEjYRSw8VSYdIrAJ+VUp7xhF9pr
+        pomJvtFr7unUzFgiae+K5q+/UW8hp+m8zr6KbIzsa2/bx1oC
+X-Google-Smtp-Source: ABdhPJxgDvUT3inYOsUCzmNuPTrFGeU1nm10VjumbI4RN9urZdUY06Y80I/TgyDKodUyAbxPXwJINaeJ32YoH1OrvKk4XPFGCxDv
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <897355173.3040336.1597792183518.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16455 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0
-To:     unlisted-recipients:; (no To-header on input)
+X-Received: by 2002:a02:93c5:: with SMTP id z63mr21565598jah.70.1597792514447;
+ Tue, 18 Aug 2020 16:15:14 -0700 (PDT)
+Date:   Tue, 18 Aug 2020 16:15:14 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003fa34d05ad2f0f7d@google.com>
+Subject: WARNING in nsim_destroy
+From:   syzbot <syzbot+8f4ae52bf05388da0a8e@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    9123e3a7 Linux 5.9-rc1
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=166038ea900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3d400a47d1416652
+dashboard link: https://syzkaller.appspot.com/bug?extid=8f4ae52bf05388da0a8e
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8f4ae52bf05388da0a8e@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 31885 at net/core/dev.c:8856 dev_xdp_uninstall net/core/dev.c:8856 [inline]
+WARNING: CPU: 0 PID: 31885 at net/core/dev.c:8856 rollback_registered_many+0xe71/0x1210 net/core/dev.c:9276
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 31885 Comm: syz-executor.4 Not tainted 5.9.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ panic+0x2e3/0x75c kernel/panic.c:231
+ __warn.cold+0x20/0x4a kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:dev_xdp_uninstall net/core/dev.c:8856 [inline]
+RIP: 0010:rollback_registered_many+0xe71/0x1210 net/core/dev.c:9276
+Code: 8d 22 00 00 48 c7 c6 80 ee fe 88 48 c7 c7 c0 ee fe 88 c6 05 fc 0c 71 04 01 e8 7d 29 09 fb 0f 0b e9 db f7 ff ff e8 df 1a 38 fb <0f> 0b e9 48 fe ff ff 48 89 ef e9 a2 fb ff ff e8 cb 1a 38 fb 0f b6
+RSP: 0018:ffffc90008397428 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: ffff888048710bb8 RCX: ffffc90011ae4000
+RDX: 0000000000040000 RSI: ffffffff863c26a1 RDI: 0000000000000005
+RBP: 0000000000000001 R08: 0000000000000000 R09: ffffffff8a7e5be7
+R10: 0000000000000000 R11: 0000000000000001 R12: 00000000fffffff0
+R13: ffff888048710000 R14: dffffc0000000000 R15: ffffc9000102e000
+ rollback_registered net/core/dev.c:9326 [inline]
+ unregister_netdevice_queue+0x2dd/0x570 net/core/dev.c:10407
+ unregister_netdevice include/linux/netdevice.h:2774 [inline]
+ nsim_destroy+0x35/0x70 drivers/net/netdevsim/netdev.c:339
+ __nsim_dev_port_del+0x144/0x1e0 drivers/net/netdevsim/dev.c:946
+ nsim_dev_port_del_all drivers/net/netdevsim/dev.c:959 [inline]
+ nsim_dev_reload_destroy+0xff/0x1e0 drivers/net/netdevsim/dev.c:1135
+ nsim_dev_reload_down+0x6e/0xd0 drivers/net/netdevsim/dev.c:712
+ devlink_reload+0xc1/0x3a0 net/core/devlink.c:2974
+ devlink_nl_cmd_reload+0x346/0x820 net/core/devlink.c:3009
+ genl_family_rcv_msg_doit net/netlink/genetlink.c:669 [inline]
+ genl_family_rcv_msg net/netlink/genetlink.c:714 [inline]
+ genl_rcv_msg+0x61d/0x980 net/netlink/genetlink.c:731
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:742
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45d239
+Code: 5d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 2b b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f58abc86c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000027800 RCX: 000000000045d239
+RDX: 0000000000000000 RSI: 0000000020000800 RDI: 0000000000000003
+RBP: 000000000118cf80 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
+R13: 00007ffc33e71c6f R14: 00007f58abc879c0 R15: 000000000118cf4c
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
 
-My Dear in the lord
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
-gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
-February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
-llion Euro) Eight million, Five hundred thousand Euros in a bank in Ouagado=
-ugou the capital city of Burkina Faso in West Africa. The money was from th=
-e sale of his company and death benefits payment and entitlements of my dec=
-eased husband by his company.
-
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
-
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
-
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
-
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
-
-Thanks
-Mrs. Mina A. Brunel
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
