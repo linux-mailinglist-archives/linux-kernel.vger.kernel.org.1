@@ -2,74 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5728A24868D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 15:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A35C248691
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 15:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726931AbgHRN5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 09:57:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58328 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726788AbgHRN5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 09:57:38 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 060BB206B5;
-        Tue, 18 Aug 2020 13:57:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597759058;
-        bh=LmiV+VP1Db1N9hvNckueqBqLd8uBgy6Ev5UsaCvXUy0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RU7lzg9ftP9Sy6d9btxFSNP1GwXBHsSdeGS8L/2WaNvoTgguYPpUiYM7/oHHTr59l
-         iI8dSu03TRGsCG+p380TrKnPUVQMc47aC6VyKEqOyoNT3QmWqcUrqWWQgLacTASzfx
-         Euu3hjGRiM/h8ihrGhuf0KjWUA6dpFM9PCBDQE5g=
-Date:   Tue, 18 Aug 2020 15:58:02 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Aditya Bansal <adbansal99@gmail.com>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] staging: wfx: fixed misspelled word in comment
-Message-ID: <20200818135802.GA533736@kroah.com>
-References: <20200804145816.GA3823@aditya>
- <20200804124627.GA3348@aditya>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200804124627.GA3348@aditya>
+        id S1726956AbgHRN6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 09:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726880AbgHRN6X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 09:58:23 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E87AEC061342
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 06:58:22 -0700 (PDT)
+Received: by ozlabs.org (Postfix, from userid 1034)
+        id 4BWCDV0lgsz9sTR; Tue, 18 Aug 2020 23:58:17 +1000 (AEST)
+From:   Michael Ellerman <patch-notifications@ellerman.id.au>
+To:     Paul Mackerras <paulus@samba.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+In-Reply-To: <07884ed033c31e074747b7eb8eaa329d15db07ec.1596641219.git.christophe.leroy@csgroup.eu>
+References: <07884ed033c31e074747b7eb8eaa329d15db07ec.1596641219.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH] powerpc/32s: Fix is_module_segment() when MODULES_VADDR is defined
+Message-Id: <159775907962.1766076.11931243751061238558.b4-ty@ellerman.id.au>
+Date:   Tue, 18 Aug 2020 23:58:17 +1000 (AEST)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 06:17:47PM +0530, Aditya Bansal wrote:
-> From: Aditya Bansal <adbansal99@gmail.com>
-> 
-> Subject: [PATCH v2] fixed typo in driver/staging/wfx/hif_tx.c file
-> 
-> Correct the spelling of word function and careful
-> 
-> Signed-off-by: Aditya Bansal <adbansal99@gmail.com>
-> ---
-> 
-> diff --git a/drivers/staging/wfx/hif_tx.c b/drivers/staging/wfx/hif_tx.c
-> index 5110f9b93762..fc12f9dcefce 100644
-> --- a/drivers/staging/wfx/hif_tx.c
-> +++ b/drivers/staging/wfx/hif_tx.c
-> @@ -125,7 +125,7 @@ int wfx_cmd_send(struct wfx_dev *wdev, struct hif_msg *request,
->  
->  // This function is special. After HIF_REQ_ID_SHUT_DOWN, chip won't reply to any
->  // request anymore. We need to slightly hack struct wfx_hif_cmd for that job. Be
-> -// carefull to only call this funcion during device unregister.
-> +// careful to only call this function during device unregister.
->  int hif_shutdown(struct wfx_dev *wdev)
->  {
->         int ret;
-> _______________________________________________
-> devel mailing list
-> devel@linuxdriverproject.org
-> http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel
+On Wed, 5 Aug 2020 15:27:28 +0000 (UTC), Christophe Leroy wrote:
+> When MODULES_VADDR is defined, is_module_segment() shall check the
+> address against it instead of checking agains VMALLOC_START.
 
-Does not apply to my tree, can you please refresh and resend?
+Applied to powerpc/fixes.
 
-thanks,
+[1/1] powerpc/32s: Fix is_module_segment() when MODULES_VADDR is defined
+      https://git.kernel.org/powerpc/c/7bee31ad8e2f6c276f36993346ac70f4d4c80e45
 
-greg k-h
+cheers
