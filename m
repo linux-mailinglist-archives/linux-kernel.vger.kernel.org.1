@@ -2,110 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7E9247F55
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 09:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3186247F71
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 09:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726514AbgHRHZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 03:25:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52576 "EHLO mail.kernel.org"
+        id S1726754AbgHRH2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 03:28:17 -0400
+Received: from mga14.intel.com ([192.55.52.115]:53935 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726370AbgHRHZI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 03:25:08 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C541205CB;
-        Tue, 18 Aug 2020 07:25:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597735507;
-        bh=N2APiQQepxSYCzop4Qp1o77O54Y1HK1//Wr9CEjh4fI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ULGeP8jyfskRDwys6jK46JZVSeX56BII0NNgpCECczBC+KpvIXPogM4Q1HVJvnADo
-         5VJmaLBVinajow8/gOPXYUYoWqwOFTjugqSa6fvNspRq57ArW7izT0hMBa8h9/oTks
-         9tKe1cHeVM/V49yQNG2ZlweKwPAq5Xr04bK10aFs=
-Date:   Tue, 18 Aug 2020 09:25:31 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Joe Perches <joe@perches.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Yury Norov <yury.norov@gmail.com>, X86 ML <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Bruce Ashfield <bruce.ashfield@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>,
-        Andi Kleen <ak@suse.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?iso-8859-1?Q?D=E1vid_Bolvansk=FD?= <david.bolvansky@gmail.com>,
-        Eli Friedman <efriedma@quicinc.com>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>
-Subject: Re: [PATCH 1/4] Makefile: add -fno-builtin-stpcpy
-Message-ID: <20200818072531.GC9254@kroah.com>
-References: <20200817220212.338670-1-ndesaulniers@google.com>
- <20200817220212.338670-2-ndesaulniers@google.com>
- <CAMj1kXH0gRCaoF0NziC870=eSEy0ghi8b0b6A+LMu8PMd58C0Q@mail.gmail.com>
+        id S1726324AbgHRH2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 03:28:16 -0400
+IronPort-SDR: Pov9nzS9vx2mEpfuRSEg8ZyFR0zjKpEHl2PEmQspg4HqU15I/+eA9z8Bf0uoipN2n9gfoxsMO1
+ SD78ggcwdPnQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="154114728"
+X-IronPort-AV: E=Sophos;i="5.76,326,1592895600"; 
+   d="scan'208";a="154114728"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 00:28:15 -0700
+IronPort-SDR: uoxytRL5DoN/WFFOd/KhbsIuNFOqFF3c86pmgiZqpA5gEbqlj7fB4cyqkBGl/W1afXyK4Cft8a
+ iR/EjnVIqJIg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,326,1592895600"; 
+   d="scan'208";a="326652332"
+Received: from cqiang-mobl.ccr.corp.intel.com (HELO [10.238.2.93]) ([10.238.2.93])
+  by orsmga008.jf.intel.com with ESMTP; 18 Aug 2020 00:28:13 -0700
+Subject: Re: [RFC 2/7] KVM: VMX: Expose IA32_PKRS MSR
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20200807084841.7112-1-chenyi.qiang@intel.com>
+ <20200807084841.7112-3-chenyi.qiang@intel.com>
+ <CALMp9eQiyRxJ0jkvVi+fWMZcDQbvyCcuTwH1wrYV-u_E004Bhg@mail.gmail.com>
+ <34b083be-b9d5-fd85-b42d-af0549e3b002@intel.com>
+ <CALMp9eS=dO7=JvvmGp-nt-LBO9evH-bLd2LQMO9wdYJ5V6S0_Q@mail.gmail.com>
+From:   Chenyi Qiang <chenyi.qiang@intel.com>
+Message-ID: <268b0ee4-e56f-981c-c03e-6dca8a4e99da@intel.com>
+Date:   Tue, 18 Aug 2020 15:27:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXH0gRCaoF0NziC870=eSEy0ghi8b0b6A+LMu8PMd58C0Q@mail.gmail.com>
+In-Reply-To: <CALMp9eS=dO7=JvvmGp-nt-LBO9evH-bLd2LQMO9wdYJ5V6S0_Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 09:10:01AM +0200, Ard Biesheuvel wrote:
-> On Tue, 18 Aug 2020 at 00:02, Nick Desaulniers <ndesaulniers@google.com> wrote:
-> >
-> > LLVM implemented a recent "libcall optimization" that lowers calls to
-> > `sprintf(dest, "%s", str)` where the return value is used to
-> > `stpcpy(dest, str) - dest`. This generally avoids the machinery involved
-> > in parsing format strings. This optimization was introduced into
-> > clang-12. Because the kernel does not provide an implementation of
-> > stpcpy, we observe linkage failures for almost all targets when building
-> > with ToT clang.
-> >
-> > The interface is unsafe as it does not perform any bounds checking.
-> > Disable this "libcall optimization" via `-fno-builtin-stpcpy`.
-> >
-> > Unlike
-> > commit 5f074f3e192f ("lib/string.c: implement a basic bcmp")
-> > which cited failures with `-fno-builtin-*` flags being retained in LLVM
-> > LTO, that bug seems to have been fixed by
-> > https://reviews.llvm.org/D71193, so the above sha can now be reverted in
-> > favor of `-fno-builtin-bcmp`.
-> >
-> > Cc: stable@vger.kernel.org # 4.4
+
+
+On 8/14/2020 1:31 AM, Jim Mattson wrote:
+> On Wed, Aug 12, 2020 at 10:42 PM Chenyi Qiang <chenyi.qiang@intel.com> wrote:
+>>
+>>
+>>
+>> On 8/13/2020 5:21 AM, Jim Mattson wrote:
+>>> On Fri, Aug 7, 2020 at 1:46 AM Chenyi Qiang <chenyi.qiang@intel.com> wrote:
+>>>>
+>>>> Protection Keys for Supervisor Pages (PKS) uses IA32_PKRS MSR (PKRS) at
+>>>> index 0x6E1 to allow software to manage supervisor protection key
+>>>> rights. For performance consideration, PKRS intercept will be disabled
+>>>> so that the guest can access the PKRS without VM exits.
+>>>> PKS introduces dedicated control fields in VMCS to switch PKRS, which
+>>>> only does the retore part. In addition, every VM exit saves PKRS into
+>>>> the guest-state area in VMCS, while VM enter won't save the host value
+>>>> due to the expectation that the host won't change the MSR often. Update
+>>>> the host's value in VMCS manually if the MSR has been changed by the
+>>>> kernel since the last time the VMCS was run.
+>>>> The function get_current_pkrs() in arch/x86/mm/pkeys.c exports the
+>>>> per-cpu variable pkrs_cache to avoid frequent rdmsr of PKRS.
+>>>>
+>>>> Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
+>>>> ---
+>>>
+>>>> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+>>>> index 11e4df560018..df2c2e733549 100644
+>>>> --- a/arch/x86/kvm/vmx/nested.c
+>>>> +++ b/arch/x86/kvm/vmx/nested.c
+>>>> @@ -289,6 +289,7 @@ static void vmx_sync_vmcs_host_state(struct vcpu_vmx *vmx,
+>>>>           dest->ds_sel = src->ds_sel;
+>>>>           dest->es_sel = src->es_sel;
+>>>>    #endif
+>>>> +       dest->pkrs = src->pkrs;
+>>>
+>>> Why isn't this (and other PKRS code) inside the #ifdef CONFIG_X86_64?
+>>> PKRS isn't usable outside of long mode, is it?
+>>>
+>>
+>> Yes, I'm also thinking about whether to put all pks code into
+>> CONFIG_X86_64. The kernel implementation also wrap its pks code inside
+>> CONFIG_ARCH_HAS_SUPERVISOR_PKEYS which has dependency with CONFIG_X86_64.
+>> However, maybe this can help when host kernel disable PKS but the guest
+>> enable it. What do you think about this?
 > 
-> Why does a fix for Clang-12 have to be backported all the way to v4.4?
-> How does that meet the requirements for stable patches?
+> I see no problem in exposing PKRS to the guest even if the host
+> doesn't have CONFIG_ARCH_HAS_SUPERVISOR_PKEYS.
+> 
 
-Because people like to build older kernels with new compliler versions.
-
-And those "people" include me, who doesn't want to keep around old
-compilers just because my distro moved to the latest one...
-
-We've been doing this for the past 4+ years, for new versions of gcc,
-keeping 4.4.y building properly with the bleeding edge of that compiler,
-why is clang any different here?
-
-thanks,
-
-greg k-h
+Yes, but I would prefer to keep it outside CONFIG_X86_64. PKS code has 
+several code blocks and putting them under x86_64 may end up being a 
+mess. In addition, PKU KVM related code isn't under CONFIG_X86_64 as 
+well. So, is it really necessary to put inside?
