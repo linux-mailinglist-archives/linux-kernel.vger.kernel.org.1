@@ -2,111 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C899B247F33
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 09:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C40A7247F3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 09:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgHRHPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 03:15:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27148 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726476AbgHRHPG (ORCPT
+        id S1726228AbgHRHQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 03:16:50 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:52034 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726203AbgHRHQs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 03:15:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597734905;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VnkZLMte3116urPzW5jKDlxRd4vsRM7I0r+mSa2q174=;
-        b=MgsXpBMtXmMOJ0hyIw7fG34i/pFZBlY/c3tPAgPL3QDlViBcKKKXvymJatVimXD/Sa3yuZ
-        fIY0XO9CKD1blC5EmSqH2r+ON5e1tuQIstWc9og2P+C7xaeZTetcE4MJ2UUfo6NxmaZjvR
-        vgs/WBIJaCVNkEXDA2FxHm2J+zjrybI=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-200-Xy10gfRmMWWXdyFdRV1i0Q-1; Tue, 18 Aug 2020 03:15:02 -0400
-X-MC-Unique: Xy10gfRmMWWXdyFdRV1i0Q-1
-Received: by mail-wm1-f71.google.com with SMTP id q15so7030789wmj.6
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 00:15:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VnkZLMte3116urPzW5jKDlxRd4vsRM7I0r+mSa2q174=;
-        b=UOCnanfXTZq6IBIssE7kT3EHu7oDiu0zwfytKam+n3IBQr84Xwv75MPJ1bWb8MGy3a
-         jQgb6QGfzfJwXRrK+Uryk2bInr4nni0vajVIxEq4EeTCLnwhLgXZWadURIW3Rl3mDnDF
-         Z2o/uboKGZZitt1sFoRV4EJSQv2H0c5cjk3mt/4Q72+7yVf4nATx2KhVRjH/+ZYvBvi9
-         tyC0X7/RzcGwVbKI5Yv8tGECHXOUOSWA0BiNSJyO2krfJ1c/6HlvZ85KUYG/qy7l2iLO
-         aYIMkaLr5y5hS7Gh01FoR6HPLJaVClalJV5bu5MoDGk+Hx3MX5EkCFtH9GFdoFFD9Q5B
-         Fnig==
-X-Gm-Message-State: AOAM532S5+jY63qQs8LGVEcPA3bJh5izFnN4grU3kjNvpXbxBLIeCDcN
-        +5kqtiD/P6gWf+yw1fW+94g+rWyIx+q59WZ4/CjSXFKsyTiR4/3KkeSTlTARvqiF8lTPHiDCnN/
-        4kmw5yAyAPQn6zkdh6OlsbfVv
-X-Received: by 2002:adf:b312:: with SMTP id j18mr19499391wrd.142.1597734900805;
-        Tue, 18 Aug 2020 00:15:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxxDBVc6FNobMFPmLaQ8JBtEJ0j8nc00thHTm7+HAm5Z27/zTChbr9Q9OWX0Of8Uc7BLJHy1Q==
-X-Received: by 2002:adf:b312:: with SMTP id j18mr19499363wrd.142.1597734900475;
-        Tue, 18 Aug 2020 00:15:00 -0700 (PDT)
-Received: from [192.168.10.150] ([93.56.170.5])
-        by smtp.gmail.com with ESMTPSA id t14sm32631227wrv.14.2020.08.18.00.14.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Aug 2020 00:14:59 -0700 (PDT)
-Subject: Re: [PATCH v2 1/4] x86/cpufeatures: Add enumeration for SERIALIZE
- instruction
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Cathy Zhang <cathy.zhang@intel.com>,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kyung Min Park <kyung.min.park@intel.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>, fenghua.yu@intel.com
-References: <1594088183-7187-1-git-send-email-cathy.zhang@intel.com>
- <1594088183-7187-2-git-send-email-cathy.zhang@intel.com>
- <CALCETrWudiF8G8r57r5i4JefuP5biG1kHg==0O8YXb-bYS-0BA@mail.gmail.com>
- <20200708022102.GA25016@ranerica-svr.sc.intel.com>
- <87eep3ywz0.fsf@nanos.tec.linutronix.de>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <be322917-0f10-de4c-9b7c-308d667277eb@redhat.com>
-Date:   Tue, 18 Aug 2020 09:14:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Tue, 18 Aug 2020 03:16:48 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U67H3Vd_1597735003;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U67H3Vd_1597735003)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 18 Aug 2020 15:16:45 +0800
+Subject: Re: [PATCH 2/2] mm/pageblock: remove false sharing in pageblock_flags
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
+References: <1597549677-7480-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1597549677-7480-2-git-send-email-alex.shi@linux.alibaba.com>
+ <20200816041720.GG17456@casper.infradead.org>
+ <957eee62-1f46-49b6-4d5a-9671dc07c562@linux.alibaba.com>
+ <CAKgT0UeT0VK4zW+aXn0-6VcO0hYF9u+h+0Cb9kgjvChUQ0w=6g@mail.gmail.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <a604ab69-d5c6-42a7-4487-a2fe6915940b@linux.alibaba.com>
+Date:   Tue, 18 Aug 2020 15:15:43 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <87eep3ywz0.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <CAKgT0UeT0VK4zW+aXn0-6VcO0hYF9u+h+0Cb9kgjvChUQ0w=6g@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/07/20 01:02, Thomas Gleixner wrote:
->> I am cc'ing Fenghua, who has volunteered to work on this. Addind support
->> for SERIALIZE in sync_core() should not block merging these patches,
->> correct?
-> Come on. We are not serving KVM first before making this usable on bare
-> metal.
 
-This in the end was merged in 5.9, but: why not?  It is just an
-instruction with no other support code needed in the kernel (or KVM for
-that matter except for marking the CPUID bit as supported).  It is
-common to run hosts with an older kernel than the guests, and by this
-line of reasoning, we should not even have enabled support for FSGSBASE
-in KVM.
 
-Paolo
+在 2020/8/16 下午11:56, Alexander Duyck 写道:
+> On Sun, Aug 16, 2020 at 7:11 AM Alex Shi <alex.shi@linux.alibaba.com> wrote:
+>>
+>>
+>>
+>> 在 2020/8/16 下午12:17, Matthew Wilcox 写道:
+>>> On Sun, Aug 16, 2020 at 11:47:57AM +0800, Alex Shi wrote:
+>>>> Current pageblock_flags is only 4 bits, so it has to share a char size
+>>>> in cmpxchg when get set, the false sharing cause perf drop.
+>>>>
+>>>> If we incrase the bits up to 8, false sharing would gone in cmpxchg. and
+>>>> the only cost is half char per pageblock, which is half char per 128MB
+>>>> on x86, 4 chars in 1 GB.
+>>>
+>>> I don't believe this patch has that effect, mostly because it still does
+>>> cmpxchg() on words instead of bytes.
+>>
+>> Hi Matthew,
+>>
+>> Thank a lot for comments!
+>>
+>> Sorry, I must overlook sth, would you like point out why the cmpxchg is still
+>> on words after patch 1 applied?
+>>
+> 
+> I would take it one step further. You still have false sharing as the
+> pageblocks bits still occupy the same cacheline so you are going to
+> see them cache bouncing regardless.
 
+Right, there 2 level false sharing here, cacheline and cmpxchg comparsion range.
+this patch could fix the cmpxchg level with a very cheap price.
+the cacheline size is too huge to resovle here.
+
+> 
+> What it seems like you are attempting to address is the fact that
+> multiple threads could all be attempting to update the same long
+> value. As I pointed out for the migrate type it seems to be protected
+> by the zone lock, but for compaction the skip bit doesn't have the
+> same protection as there are some threads using the zone lock and
+> others using the LRU lock. I'm still not sure it makes much of a
+> difference though.
+
+It looks with this patch, lock are not needed anymore on the flags.
+
+> 
+>>>
+>>> But which functions would benefit?  It seems to me this cmpxchg() is
+>>> only called from the set_pageblock_migratetype() morass of functions,
+>>> none of which are called in hot paths as far as I can make out.
+>>>
+>>> So are you just reasoning by analogy with the previous patch where you
+>>> have measured a performance improvement, or did you send the wrong patch,
+>>> or did I overlook a hot path that calls one of the pageblock migration
+>>> functions?
+>>>
+>>
+>> Uh, I am reading compaction.c and found the following commit introduced
+>> test_and_set_skip under a lock. It looks like the pagelock_flags setting
+>> has false sharing in cmpxchg. but I have no valid data on this yet.
+>>
+>> Thanks
+>> Alex
+>>
+>> e380bebe4771548  mm, compaction: keep migration source private to a single compaction instance
+>>
+>>                 if (!locked) {
+>>                         locked = compact_trylock_irqsave(zone_lru_lock(zone),
+>>                                                                 &flags, cc);
+>> -                       if (!locked)
+>> +
+>> +                       /* Allow future scanning if the lock is contended */
+>> +                       if (!locked) {
+>> +                               clear_pageblock_skip(page);
+>>                                 break;
+>> +                       }
+>> +
+>> +                       /* Try get exclusive access under lock */
+>> +                       if (!skip_updated) {
+>> +                               skip_updated = true;
+>> +                               if (test_and_set_skip(cc, page, low_pfn))
+>> +                                       goto isolate_abort;
+>> +                       }
+>>
+> 
+> I'm not sure that is a good grounds for doubling the size of the
+> pageblock flags. If you look further down in the code there are bits
+> that are setting these bits without taking the lock. The assumption
+> here is that by taking the lock the test_and_set_skip will be
+> performed atomically since another thread cannot perform that while
+> the zone lock is held. If you look in the function itself it only does
+> anything if the skip bits are checked and if the page is the first
+> page in the pageblock.
+> 
+> I think you might be confusing some of my earlier comments. I still
+> believe the 3% regression you reported with my patch is not directly
+> related to the test_and_set_skip as the test you ran seems unlikely to
+> trigger compaction. However with that said one of the advantages of
+> using the locked section to perform these types of tests is that it
+> reduces the number of times the test is run since it will only be on
+> the first unlocked page in any batch of pages and the first page in
+> the pageblock is always going to be handled without the lock held
+> since it is the first page processed.
+> 
+> Until we can get a test up such as thpscale that does a good job of
+> stressing the compaction code I don't think we can rely on just
+> observations to say if this is an improvement or not.
+
+I still struggle on thpscale meaningful running. But if the patch is 
+clearly right in theory. Do we have to hang on a benchmark result?
+
+Thanks
+Alex
