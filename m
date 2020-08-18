@@ -2,160 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7D5248A5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 17:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50785248A5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 17:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgHRPrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 11:47:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728061AbgHRPqG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 11:46:06 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E887C061389
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 08:46:05 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id f193so10150549pfa.12
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 08:46:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LaWl8Zpiv/jFVXO3m0WashM5ldm/W64kfnal4k5ac3s=;
-        b=ee8Rbkby61dQq7lCcZOsAyUQIuSGcYEtLC0PiPpU+eKTVLvPY5Q9nFZK+at9upsFjw
-         xC7psyYAxV3H4XatlFiqQ3lZPTtMKxblP/lm6YmIOuL9f6naLRF1Bz7BOH/y0ffbWaUy
-         Zw8ByQbMF7ZoSYo3HlbbkWRGjV7/tizUURsy25OHGpqGS6LE/jm05t9RL1+Fok4afK60
-         U2t0dMWD4fD1XkZjx5Y8P16uezJ4REIRf49KSsJtAtUVAmYvkCB5stGCRSOQhkClunrq
-         3p1pNqEU+Vn+ghlFl/INrW8UOJbd5A/Ulie48CIvmDUtvEkxXiiTeNyImlRzPRbrjBzT
-         jLtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LaWl8Zpiv/jFVXO3m0WashM5ldm/W64kfnal4k5ac3s=;
-        b=VCSsL9jcBva/Cv+VnB4fpkDr8dctDLBTlKbH/FO3fmwG/1GXZ0mH31m7Vd+/EYLx4N
-         zCYqepB0IqAPM61NTuRfy1cdn6DfjCxHeTZpDAPDRo6x72h1MIYg+9O+Qq898q9dVt4a
-         if+GBT1xK8SzNczTSeLyIkPmdiIHxAhg8E+rSeKCx7rykMFw2aEBRPGS3xyQYPFl7EUT
-         bCHmSfrOML91GD8qosYCUju6gm/XyQ3F1wQp4ztiyM6T9jf1ZorMAUhXz1P7exf5zy2R
-         q9sbV1W9cMvwFaZf0pjkoLmmD1WS1kxhhIHPZf4BxGjuwmDn/HDMVTUHugG7CF5Zia7M
-         pMAA==
-X-Gm-Message-State: AOAM532MsvddhcSv7aEFQ6KKGK3yqb/s9zdmXZd70nwRynBUToMXr3zh
-        mfhm1XGBu/ZXubKCZZBhXIkXpajeL/kMg7BhSiWVeA==
-X-Google-Smtp-Source: ABdhPJwvek9/UE22iuTmUPANkh4gr6Kban+1Xge7EcyTlYgnVUC/xb5/ww37hGdor0eyhlS6u0Gg0Evh978FGWvgKVE=
-X-Received: by 2002:a65:680b:: with SMTP id l11mr7436248pgt.440.1597765563163;
- Tue, 18 Aug 2020 08:46:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200813151922.1093791-1-alex.popov@linux.com>
- <20200813151922.1093791-2-alex.popov@linux.com> <202008150939.A994680@keescook>
- <82edcbac-a856-cf9e-b86d-69a4315ea8e4@linux.com>
-In-Reply-To: <82edcbac-a856-cf9e-b86d-69a4315ea8e4@linux.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Tue, 18 Aug 2020 17:45:50 +0200
-Message-ID: <CAAeHK+z9FPc9dqHwLA7sXTdpjt-iQweaQGQjq8L=eTYe2WdJ+g@mail.gmail.com>
-Subject: Re: [PATCH RFC 1/2] mm: Extract SLAB_QUARANTINE from KASAN
-To:     Alexander Popov <alex.popov@linux.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Cc:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
-        Will Deacon <will@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Patrick Bellasi <patrick.bellasi@arm.com>,
-        David Howells <dhowells@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kernel-hardening@lists.openwall.com,
-        LKML <linux-kernel@vger.kernel.org>, notify@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1728182AbgHRPrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 11:47:18 -0400
+Received: from mga05.intel.com ([192.55.52.43]:61047 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728083AbgHRPqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 11:46:39 -0400
+IronPort-SDR: o7Jx+xhYr0uzkGnBRktiGla2EL5K9RZYZlohq3y5tFrLwbPp79eN6c9UgJ8z+pcni0qvKLRWK2
+ GPMH9qAr52pQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="239764578"
+X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
+   d="scan'208";a="239764578"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 08:46:38 -0700
+IronPort-SDR: bXhhCgaI4SpGafK6goF4Iy0xecS55diLmCWD2TpOYA2OMaSe8hh8Pniz6ZhcS2vFBU3gaMZDNK
+ g5qMnM9sw9oQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
+   d="scan'208";a="400530163"
+Received: from pg-nxl3.altera.com ([10.142.129.93])
+  by fmsmga001.fm.intel.com with ESMTP; 18 Aug 2020 08:46:36 -0700
+From:   "Ooi, Joyce" <joyce.ooi@intel.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dalon Westergreen <dalon.westergreen@linux.intel.com>,
+        Joyce Ooi <joyce.ooi@intel.com>,
+        Tan Ley Foon <ley.foon.tan@intel.com>,
+        See Chin Liang <chin.liang.see@intel.com>,
+        Dinh Nguyen <dinh.nguyen@intel.com>
+Subject: [PATCH v6 00/10] net: eth: altera: tse: Add PTP and mSGDMA prefetcher
+Date:   Tue, 18 Aug 2020 23:46:03 +0800
+Message-Id: <20200818154613.148921-1-joyce.ooi@intel.com>
+X-Mailer: git-send-email 2.13.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 7:32 PM Alexander Popov <alex.popov@linux.com> wrote:
->
-> On 15.08.2020 19:52, Kees Cook wrote:
-> > On Thu, Aug 13, 2020 at 06:19:21PM +0300, Alexander Popov wrote:
-> >> Heap spraying is an exploitation technique that aims to put controlled
-> >> bytes at a predetermined memory location on the heap. Heap spraying for
-> >> exploiting use-after-free in the Linux kernel relies on the fact that on
-> >> kmalloc(), the slab allocator returns the address of the memory that was
-> >> recently freed. Allocating a kernel object with the same size and
-> >> controlled contents allows overwriting the vulnerable freed object.
-> >>
-> >> Let's extract slab freelist quarantine from KASAN functionality and
-> >> call it CONFIG_SLAB_QUARANTINE. This feature breaks widespread heap
-> >> spraying technique used for exploiting use-after-free vulnerabilities
-> >> in the kernel code.
-> >>
-> >> If this feature is enabled, freed allocations are stored in the quarantine
-> >> and can't be instantly reallocated and overwritten by the exploit
-> >> performing heap spraying.
-> >
-> > It may be worth clarifying that this is specifically only direct UAF and
-> > doesn't help with spray-and-overflow-into-a-neighboring-object attacks
-> > (i.e. both tend to use sprays, but the former doesn't depend on a write
-> > overflow).
->
-> Andrey Konovalov wrote:
-> > If quarantine is to be used without the rest of KASAN, I'd prefer for
-> > it to be separated from KASAN completely: move to e.g. mm/quarantine.c
-> > and don't mention KASAN in function/config names.
->
-> Hmm, making quarantine completely separate from KASAN would bring troubles.
->
-> Currently, in many special places the allocator calls KASAN handlers:
->   kasan_cache_create()
->   kasan_slab_free()
->   kasan_kmalloc_large()
->   kasan_krealloc()
->   kasan_slab_alloc()
->   kasan_kmalloc()
->   kasan_cache_shrink()
->   kasan_cache_shutdown()
->   and some others.
-> These functions do a lot of interesting things and also work with the quarantine
-> using these helpers:
->   quarantine_put()
->   quarantine_reduce()
->   quarantine_remove_cache()
->
-> Making quarantine completely separate from KASAN would require to move some
-> internal logic of these KASAN handlers to allocator code.
+From: Joyce Ooi <joyce.ooi@intel.com>
 
-It doesn't look like there's quite a lot of KASAN-specific logic there.
+This patch series cleans up the Altera TSE driver and adds support
+for the newer msgdma prefetcher as well as ptp support when using
+the msgdma prefetcher.
 
-All those quarantine_*() calls are either at the beginning or at the
-end of some kasan annotations, so it should be quite easy to move
-those out. E.g. quarantine_reduce() can be moved together with the
-gfpflags_allow_blocking(flags) check and put before kasan_kmalloc()
-calls (or maybe also into some other places?), quarantine_put() can be
-put after kasan_slab_free(), etc.
+v2: Rename altera_ptp to intel_fpga_tod, modify msgdma and sgdma tx_buffer
+    functions to be of type netdev_tx_t, and minor suggested edits
+v3: Modify tx_buffer to stop queue before returning NETDEV_TX_BUSY
+v4: Fix build warnings
+v5: Rename 'ptp_enable' variable to 'has_ptp' and initialize hardware clock
+    to 0 in intel_fpga_tod, and make minor suggested changes
+v6: Fix build warning and remove return error to allow PHY with
+    timestamping support to pass through ioctl
 
-> In this patch I used another approach, that doesn't require changing the API
-> between allocators and KASAN. I added linux/mm/kasan/slab_quarantine.c with slim
-> KASAN handlers that implement the minimal functionality needed for quarantine.
->
-> Do you think that it's a bad solution?
+Dalon Westergreen (10):
+  net: eth: altera: tse_start_xmit ignores tx_buffer call response
+  net: eth: altera: set rx and tx ring size before init_dma call
+  net: eth: altera: fix altera_dmaops declaration
+  net: eth: altera: add optional function to start tx dma
+  net: eth: altera: Move common functions to altera_utils
+  net: eth: altera: Add missing identifier names to function
+    declarations
+  net: eth: altera: change tx functions to type netdev_tx_t
+  net: eth: altera: add support for ptp and timestamping
+  net: eth: altera: add msgdma prefetcher
+  net: eth: altera: update devicetree bindings documentation
 
-This solution doesn't look clean. Here you provide a second KASAN
-runtime implementation, parallel to the original one, which only does
-quarantine. It seems much cleaner to put quarantine logic into a
-separate module, which can be either used independently, or together
-with KASAN built on top of it.
+ .../devicetree/bindings/net/altera_tse.txt         | 103 ++++-
+ drivers/net/ethernet/altera/Kconfig                |   1 +
+ drivers/net/ethernet/altera/Makefile               |   3 +-
+ drivers/net/ethernet/altera/altera_msgdma.c        |   5 +-
+ drivers/net/ethernet/altera/altera_msgdma.h        |  30 +-
+ .../net/ethernet/altera/altera_msgdma_prefetcher.c | 431 +++++++++++++++++++++
+ .../net/ethernet/altera/altera_msgdma_prefetcher.h |  30 ++
+ .../ethernet/altera/altera_msgdmahw_prefetcher.h   |  87 +++++
+ drivers/net/ethernet/altera/altera_sgdma.c         |  22 +-
+ drivers/net/ethernet/altera/altera_sgdma.h         |  32 +-
+ drivers/net/ethernet/altera/altera_tse.h           |  98 ++---
+ drivers/net/ethernet/altera/altera_tse_ethtool.c   |  30 ++
+ drivers/net/ethernet/altera/altera_tse_main.c      | 200 ++++++++--
+ drivers/net/ethernet/altera/altera_utils.c         |  29 ++
+ drivers/net/ethernet/altera/altera_utils.h         |  51 +++
+ drivers/net/ethernet/altera/intel_fpga_tod.c       | 341 ++++++++++++++++
+ drivers/net/ethernet/altera/intel_fpga_tod.h       |  56 +++
+ 17 files changed, 1396 insertions(+), 153 deletions(-)
+ create mode 100644 drivers/net/ethernet/altera/altera_msgdma_prefetcher.c
+ create mode 100644 drivers/net/ethernet/altera/altera_msgdma_prefetcher.h
+ create mode 100644 drivers/net/ethernet/altera/altera_msgdmahw_prefetcher.h
+ create mode 100644 drivers/net/ethernet/altera/intel_fpga_tod.c
+ create mode 100644 drivers/net/ethernet/altera/intel_fpga_tod.h
 
-Maybe other KASAN contributors have an opinion on this?
+-- 
+2.13.0
+
