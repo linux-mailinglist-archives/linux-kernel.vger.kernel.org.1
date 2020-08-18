@@ -2,73 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45214248364
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 12:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C1124836C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 12:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726786AbgHRK4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 06:56:16 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:52974 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726588AbgHRK4L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 06:56:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597748170;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UpL2InzPOSY+bQye+qdcClD9XKYCEvbdiWiHNpwsbPE=;
-        b=PwjyIUoyVIHPgeCfr57jMWE4K6DQcxLPtPSBy64TuZjbkxvLlctOrgLx+jAIRzPuSr1ZFi
-        soyNCgcoPeuXf0rRMoiy4hZhkq6aJ90kfufm3mWNJQJy16cc/ymug0A+Qt1T5Y9fYIUvU4
-        ghfbRyaNLCSm9PfdF02JgqFi3Z/tT1k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-390-fBHkZSE1MzyT-5PAVYzBCg-1; Tue, 18 Aug 2020 06:56:09 -0400
-X-MC-Unique: fBHkZSE1MzyT-5PAVYzBCg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726830AbgHRK6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 06:58:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58710 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726473AbgHRK6B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 06:58:01 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 14B0B425CC;
-        Tue, 18 Aug 2020 10:56:08 +0000 (UTC)
-Received: from krava (unknown [10.40.193.152])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 94DD95C69A;
-        Tue, 18 Aug 2020 10:56:03 +0000 (UTC)
-Date:   Tue, 18 Aug 2020 12:56:02 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>, sdf@google.com,
-        andriin@fb.com
-Subject: Re: Kernel build error on BTFIDS vmlinux
-Message-ID: <20200818105602.GC177896@krava>
-References: <20200818105555.51fc6d62@carbon>
- <20200818091404.GB177896@krava>
+        by mail.kernel.org (Postfix) with ESMTPSA id C4525205CB;
+        Tue, 18 Aug 2020 10:58:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597748281;
+        bh=J7VxecJmS67J6UNrXJpkf+lwbw4VNoeGDUuCvboivXY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lIScz0mXjK2BB/sVSQNuTDkoLRJqX/tgDNBdkAiLyg626RVbpViuzUPqzL42AoBR4
+         beAW8jNZiedWuWQbaGxpU4WWNHQaQQFqBNhyHnVrfYCxcS3Yxzs7jrEgv1rdzgNagL
+         6s/wNJUB329gp4PGLxa/c0fdO+swSA4HNfeucw78=
+Date:   Tue, 18 Aug 2020 12:58:24 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v5] usb: typec: tcpm: Migrate workqueue to RT priority
+ for processing events
+Message-ID: <20200818105824.GA135059@kroah.com>
+References: <20200731065830.3744049-1-badhri@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200818091404.GB177896@krava>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200731065830.3744049-1-badhri@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 11:14:10AM +0200, Jiri Olsa wrote:
-> On Tue, Aug 18, 2020 at 10:55:55AM +0200, Jesper Dangaard Brouer wrote:
-> > 
-> > On latest DaveM net-git tree (06a4ec1d9dc652), after linking (LD vmlinux) the
-> > "BTFIDS vmlinux" fails. Are anybody else experiencing this? Are there already a
-> > fix? (just returned from vacation so not fully up-to-date on ML yet)
-> > 
-> > The tool which is called and error message:
-> >   ./tools/bpf/resolve_btfids/resolve_btfids vmlinux
-> >   FAILED elf_update(WRITE): invalid section alignment
+On Thu, Jul 30, 2020 at 11:58:30PM -0700, Badhri Jagan Sridharan wrote:
+> "tReceiverResponse 15 ms Section 6.6.2
+> The receiver of a Message requiring a response Shall respond
+> within tReceiverResponse in order to ensure that the
+> sender’s SenderResponseTimer does not expire."
 > 
-> hi,
-> could you send your .config as well?
+> When the cpu complex is busy running other lower priority
+> work items, TCPM's work queue sometimes does not get scheduled
+> on time to meet the above requirement from the spec.
+> Moving to kthread_work apis to run with real time priority.
+> Just lower than the default threaded irq priority,
+> MAX_USER_RT_PRIO/2 + 1. (Higher number implies lower priority).
+> 
+> Further, as observed in 1ff688209e2e, moving to hrtimers to
+> overcome scheduling latency while scheduling the delayed work.
+> 
+> TCPM has three work streams:
+> 1. tcpm_state_machine
+> 2. vdm_state_machine
+> 3. event_work
+> 
+> tcpm_state_machine and vdm_state_machine both schedule work in
+> future i.e. delayed. Hence each of them have a corresponding
+> hrtimer, tcpm_state_machine_timer & vdm_state_machine_timer.
+> 
+> When work is queued right away kthread_queue_work is used.
+> Else, the relevant timer is programmed and made to queue
+> the kthread_work upon timer expiry.
+> 
+> kthread_create_worker only creates one kthread worker thread,
+> hence single threadedness of workqueue is retained.
+> 
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> ---
 
-reproduced.. checking on fix
+With this patch applied I get the following build breakage:
+
+ERROR: modpost: "sched_setscheduler" [drivers/usb/typec/tcpm/tcpm.ko] undefined!
+
+Please fix up and resend against 5.9-rc1.
 
 thanks,
-jirka
 
+greg k-h
