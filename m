@@ -2,109 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A545E248CCE
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:20:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE83248CA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728749AbgHRRUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 13:20:42 -0400
-Received: from mga07.intel.com ([134.134.136.100]:25860 "EHLO mga07.intel.com"
+        id S1727768AbgHRRNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 13:13:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728626AbgHRRTf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 13:19:35 -0400
-IronPort-SDR: bV0i7oYOkdMvwPUo4qFYS8Yu4N3Ceubo7wT6M8FRb+99/Av/JoPCyvajyMFHd+zY+KVRUSDCJb
- 7dWxgryl5rzQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="219269706"
-X-IronPort-AV: E=Sophos;i="5.76,328,1592895600"; 
-   d="scan'208";a="219269706"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 10:19:34 -0700
-IronPort-SDR: 8J7Aa2Nrc0djSFRqGqEZJRldDbxlKUWMlH5U8Ia5SimZ5W1JVVcwwb5MQq2YgtnVSetNB5ey4T
- azlfOYcZWT2w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,328,1592895600"; 
-   d="scan'208";a="326798922"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 18 Aug 2020 10:19:31 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1k858I-009hcq-Fw; Tue, 18 Aug 2020 20:10:46 +0300
-Date:   Tue, 18 Aug 2020 20:10:46 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v7 1/3] devres: provide devm_krealloc()
-Message-ID: <20200818171046.GU1891694@smile.fi.intel.com>
-References: <20200817170535.17041-1-brgl@bgdev.pl>
- <20200817170535.17041-2-brgl@bgdev.pl>
- <20200817173908.GS1891694@smile.fi.intel.com>
- <CAMRc=MdaaWhV_ZKHgWy_Gxkp=jMuZcwqpoE8Ya_84n9ZT5O31A@mail.gmail.com>
- <20200818082500.GB1891694@smile.fi.intel.com>
- <CAMRc=Md5yrgxnPf=qwKYhwHACcq-XeKOKZ76OwYdMGO8SgYmzQ@mail.gmail.com>
+        id S1726715AbgHRRNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 13:13:30 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 346F52067C;
+        Tue, 18 Aug 2020 17:13:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597770810;
+        bh=TUcJHUCYZKFeroPccULNAY9f1YSGvr6oqEZPB1vP8GQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=pabJXaPIvMYE8ezv5FfCQmgZn2Q9NWeUcgzKl/PmHfj2NmOc7rbfegLe9wjdT0Opk
+         g7co0SeWYoxZsMI78QichjhDbtGUXqhpAt3Qup3p5L3wTTb3hPEshBYEOIWSzSJYjj
+         CpdknOUWquntpzotVmOK2oe/cG/l2R2jeggSoUdo=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 108E435228F5; Tue, 18 Aug 2020 10:13:30 -0700 (PDT)
+Date:   Tue, 18 Aug 2020 10:13:30 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
+Message-ID: <20200818171330.GH27891@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200814204140.GT4295@paulmck-ThinkPad-P72>
+ <20200814215206.GL3982@worktop.programming.kicks-ass.net>
+ <20200816225655.GA17869@pc636>
+ <20200817082849.GA28270@dhcp22.suse.cz>
+ <20200817222803.GE23602@paulmck-ThinkPad-P72>
+ <20200818074344.GL28270@dhcp22.suse.cz>
+ <20200818135327.GF23602@paulmck-ThinkPad-P72>
+ <87o8n8hv5p.fsf@nanos.tec.linutronix.de>
+ <20200818161355.GE27891@paulmck-ThinkPad-P72>
+ <87lfibj3m8.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=Md5yrgxnPf=qwKYhwHACcq-XeKOKZ76OwYdMGO8SgYmzQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <87lfibj3m8.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 06:27:12PM +0200, Bartosz Golaszewski wrote:
-> On Tue, Aug 18, 2020 at 10:40 AM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
+On Tue, Aug 18, 2020 at 06:55:11PM +0200, Thomas Gleixner wrote:
+> On Tue, Aug 18 2020 at 09:13, Paul E. McKenney wrote:
+> > On Tue, Aug 18, 2020 at 04:43:14PM +0200, Thomas Gleixner wrote:
+> >> On Tue, Aug 18 2020 at 06:53, Paul E. McKenney wrote:
+> >> > On Tue, Aug 18, 2020 at 09:43:44AM +0200, Michal Hocko wrote:
+> >> >> Thomas had a good point that it doesn't really make much sense to
+> >> >> optimize for flooders because that just makes them more effective.
+> >> >
+> >> > The point is not to make the flooders go faster, but rather for the
+> >> > system to be robust in the face of flooders.  Robust as in harder for
+> >> > a flooder to OOM the system.
+> >> >
+> >> > And reducing the number of post-grace-period cache misses makes it
+> >> > easier for the callback-invocation-time memory freeing to keep up with
+> >> > the flooder, thus avoiding (or at least delaying) the OOM.
+> >> 
+> >> Throttling the flooder is incresing robustness far more than reducing
+> >> cache misses.
 > >
-> > On Mon, Aug 17, 2020 at 10:02:05PM +0200, Bartosz Golaszewski wrote:
-> > > On Mon, Aug 17, 2020 at 7:43 PM Andy Shevchenko
-> > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > On Mon, Aug 17, 2020 at 07:05:33PM +0200, Bartosz Golaszewski wrote:
-> > > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >
-> > ...
-> >
-> > > > > +static struct devres *to_devres(void *data)
-> > > > > +{
-> > > > > +     return (struct devres *)((u8 *)data - ALIGN(sizeof(struct devres),
-> > > > > +                                                 ARCH_KMALLOC_MINALIGN));
-> > > >
-> > > > Do you really need both explicit castings?
-> > > >
-> > >
-> > > Yeah, we can probably drop the (struct devres *) here.
-> >
-> > void * -> u8 * here is also not needed, it is considered byte access IIRC.
-> >
+> > True, but it takes time to identify a flooding event that needs to be
+> > throttled (as in milliseconds).  This time cannot be made up.
 > 
-> Actually it turns out that while we don't need the (void *) -> (u8 *)
-> casting, we must cast to (struct devres *) or the following error is
-> produced:
-> 
-> drivers/base/devres.c: In function ‘to_devres’:
-> drivers/base/devres.c:41:21: error: returning ‘u8 *’ {aka ‘unsigned
-> char *’} from a function with incompatible return type ‘struct devres
-> *’ [-Werror=incompatible-pointer-types]
->   return ((u8 *)data - ALIGN(sizeof(struct devres),
->          ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->         ARCH_KMALLOC_MINALIGN));
->         ~~~~~~~~~~~~~~~~~~~~~~~
+> Not really. A flooding event will deplete your preallocated pages very
+> fast, so you have to go into the allocator and get new ones which
+> naturally throttles the offender.
 
-Of course, you have to drop u8 * casting as well.
+Should it turn out that we can in fact go into the allocator, completely
+agreed.
 
--- 
-With Best Regards,
-Andy Shevchenko
+> So if your open/close thing uses the new single argument free which has
+> to be called from sleepable context then the allocation either gives you
+> a page or that thing has to wait. No fancy extras.
 
+In the single-argument kvfree_rcu() case, completely agreed.
 
+> You still can have a page reserved for your other regular things and
+> once that it gone, you have to fall back to the linked list for
+> those. But when that happens the extra cache misses are not your main
+> problem anymore.
+
+The extra cache misses are a problem in that case because they throttle
+the reclamation, which anti-throttles the producer, especially in the
+case where callback invocation is offloaded.
+
+							Thanx, Paul
