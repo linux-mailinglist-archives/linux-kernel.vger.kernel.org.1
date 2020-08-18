@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE2C248139
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA44B248103
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726945AbgHRI6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 04:58:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37702 "EHLO mx2.suse.de"
+        id S1726689AbgHRI5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 04:57:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37714 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726398AbgHRI47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726587AbgHRI47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 18 Aug 2020 04:56:59 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7D5C6B02D;
+        by mx2.suse.de (Postfix) with ESMTP id A13EFB032;
         Tue, 18 Aug 2020 08:57:22 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 4/8] tty: fix kernel-doc
-Date:   Tue, 18 Aug 2020 10:56:51 +0200
-Message-Id: <20200818085655.12071-4-jslaby@suse.cz>
+Subject: [PATCH 5/8] tty: ldiscs, fix kernel-doc
+Date:   Tue, 18 Aug 2020 10:56:52 +0200
+Message-Id: <20200818085655.12071-5-jslaby@suse.cz>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200818085655.12071-1-jslaby@suse.cz>
 References: <20200818085655.12071-1-jslaby@suse.cz>
@@ -32,279 +32,303 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With W=1, the kernel-doc checker complains quite a lot in the tty layer.
-Over the time, many documented parameters were renamed, removed or
-switched from tty to tty_port and similar. Some were mistyped in the doc
-too.
-
-So fix all these in the tty core. (But do not add the missing ones which
-the checker complains about too. Not now.) The rest in the tty layer
-will follow in the next patches.
+As in the previous patch, fix kernel-doc in line disciplines.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/pty.c          |  2 +-
- drivers/tty/tty_baudrate.c |  6 +++---
- drivers/tty/tty_buffer.c   | 14 +++++++-------
- drivers/tty/tty_io.c       | 26 ++++++++++++--------------
- drivers/tty/tty_jobctrl.c  |  4 ++--
- drivers/tty/tty_ldisc.c    |  3 +--
- 6 files changed, 26 insertions(+), 29 deletions(-)
+ drivers/tty/n_gsm.c  | 23 +++++++-------
+ drivers/tty/n_hdlc.c | 72 ++++++++++++++++++++++----------------------
+ drivers/tty/n_tty.c  |  4 +--
+ 3 files changed, 49 insertions(+), 50 deletions(-)
 
-diff --git a/drivers/tty/pty.c b/drivers/tty/pty.c
-index 00099a8439d2..b6d8cc7f0f16 100644
---- a/drivers/tty/pty.c
-+++ b/drivers/tty/pty.c
-@@ -100,7 +100,7 @@ static void pty_unthrottle(struct tty_struct *tty)
-  *	pty_write		-	write to a pty
-  *	@tty: the tty we write from
-  *	@buf: kernel buffer of data
-- *	@count: bytes to write
-+ *	@c: bytes to write
-  *
-  *	Our "hardware" write method. Data is coming from the ldisc which
-  *	may be in a non sleeping state. We simply throw this at the other
-diff --git a/drivers/tty/tty_baudrate.c b/drivers/tty/tty_baudrate.c
-index 40207cab3b2a..84fec3c62d6a 100644
---- a/drivers/tty/tty_baudrate.c
-+++ b/drivers/tty/tty_baudrate.c
-@@ -119,8 +119,8 @@ EXPORT_SYMBOL(tty_termios_input_baud_rate);
- /**
-  *	tty_termios_encode_baud_rate
-  *	@termios: ktermios structure holding user requested state
-- *	@ispeed: input speed
-- *	@ospeed: output speed
-+ *	@ibaud: input speed
-+ *	@obaud: output speed
-  *
-  *	Encode the speeds set into the passed termios structure. This is
-  *	used as a library helper for drivers so that they can report back
-@@ -223,7 +223,7 @@ EXPORT_SYMBOL_GPL(tty_termios_encode_baud_rate);
- /**
-  *	tty_encode_baud_rate		-	set baud rate of the tty
-  *	@ibaud: input baud rate
-- *	@obad: output baud rate
-+ *	@obaud: output baud rate
-  *
-  *	Update the current termios data for the tty with the new speed
-  *	settings. The caller must hold the termios_rwsem for the tty in
-diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
-index ec145a59f199..bd2d91546e32 100644
---- a/drivers/tty/tty_buffer.c
-+++ b/drivers/tty/tty_buffer.c
-@@ -42,7 +42,7 @@
-  *	tty_buffer_lock_exclusive	-	gain exclusive access to buffer
-  *	tty_buffer_unlock_exclusive	-	release exclusive access
-  *
-- *	@port - tty_port owning the flip buffer
-+ *	@port: tty port owning the flip buffer
-  *
-  *	Guarantees safe use of the line discipline's receive_buf() method by
-  *	excluding the buffer work and any pending flush from using the flip
-@@ -78,7 +78,7 @@ EXPORT_SYMBOL_GPL(tty_buffer_unlock_exclusive);
+diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
+index 10f8fc07f23c..67baa884b0c5 100644
+--- a/drivers/tty/n_gsm.c
++++ b/drivers/tty/n_gsm.c
+@@ -76,10 +76,9 @@ module_param(debug, int, 0600);
  
  /**
-  *	tty_buffer_space_avail	-	return unused buffer space
-- *	@port - tty_port owning the flip buffer
-+ *	@port: tty port owning the flip buffer
+  *	struct gsm_mux_net	-	network interface
+- *	@struct gsm_dlci* dlci
   *
-  *	Returns the # of bytes which can be written by the driver without
-  *	reaching the buffer limit.
-@@ -107,7 +107,7 @@ static void tty_buffer_reset(struct tty_buffer *p, size_t size)
+  *	Created when net interface is initialized.
+- **/
++ */
+ struct gsm_mux_net {
+ 	struct kref ref;
+ 	struct gsm_dlci *dlci;
+@@ -399,7 +398,7 @@ static inline u8 gsm_fcs_add_block(u8 fcs, u8 *c, int len)
+ /**
+  *	gsm_read_ea		-	read a byte into an EA
+  *	@val: variable holding value
+- *	c: byte going into the EA
++ *	@c: byte going into the EA
+  *
+  *	Processes one byte of an EA. Updates the passed variable
+  *	and returns 1 if the EA is now completely read
+@@ -513,8 +512,8 @@ static void gsm_print_packet(const char *hdr, int addr, int cr,
  
  /**
-  *	tty_buffer_free_all		-	free buffers used by a tty
-- *	@tty: tty to free from
-+ *	@port: tty port to free from
+  *	gsm_stuff_packet	-	bytestuff a packet
+- *	@ibuf: input
+- *	@obuf: output
++ *	@input: input buffer
++ *	@output: output buffer
+  *	@len: length of input
   *
-  *	Remove all the buffers pending on a tty whether queued with data
-  *	or in the free ring. Must be called when the tty is no longer in use
-@@ -142,7 +142,7 @@ void tty_buffer_free_all(struct tty_port *port)
+  *	Expand a buffer by bytestuffing it. The worst case size change
+@@ -1304,7 +1303,7 @@ static void gsm_control_transmit(struct gsm_mux *gsm, struct gsm_control *ctrl)
  
  /**
-  *	tty_buffer_alloc	-	allocate a tty buffer
-- *	@tty: tty device
-+ *	@port: tty port
-  *	@size: desired size (characters)
+  *	gsm_control_retransmit	-	retransmit a control frame
+- *	@data: pointer to our gsm object
++ *	@t: timer contained in our gsm object
   *
-  *	Allocate a new tty buffer to hold the desired number of characters.
-@@ -184,7 +184,7 @@ static struct tty_buffer *tty_buffer_alloc(struct tty_port *port, size_t size)
+  *	Called off the T2 timer expiry in order to retransmit control frames
+  *	that have been lost in the system somewhere. The control_lock protects
+@@ -1341,7 +1340,7 @@ static void gsm_control_retransmit(struct timer_list *t)
+  *	@gsm: the GSM channel
+  *	@command: command  to send including CR bit
+  *	@data: bytes of data (must be kmalloced)
+- *	@len: length of the block to send
++ *	@clen: length of the block to send
+  *
+  *	Queue and dispatch a control command. Only one command can be
+  *	active at a time. In theory more can be outstanding but the matching
+@@ -1453,7 +1452,7 @@ static void gsm_dlci_open(struct gsm_dlci *dlci)
  
  /**
-  *	tty_buffer_free		-	free a tty buffer
-- *	@tty: tty owning the buffer
-+ *	@port: tty port owning the buffer
-  *	@b: the buffer to free
+  *	gsm_dlci_t1		-	T1 timer expiry
+- *	@dlci: DLCI that opened
++ *	@t: timer contained in the DLCI that opened
   *
-  *	Free a tty buffer, or add it to the free list according to our
-@@ -243,7 +243,7 @@ void tty_buffer_flush(struct tty_struct *tty, struct tty_ldisc *ld)
+  *	The T1 timer handles retransmits of control frames (essentially of
+  *	SABM and DISC). We resend the command until the retry count runs out
+@@ -1549,7 +1548,7 @@ static void gsm_dlci_begin_close(struct gsm_dlci *dlci)
+  *	gsm_dlci_data		-	data arrived
+  *	@dlci: channel
+  *	@data: block of bytes received
+- *	@len: length of received block
++ *	@clen: length of received block
+  *
+  *	A UI or UIH frame has arrived which contains data for a channel
+  *	other than the control channel. If the relevant virtual tty is
+@@ -1671,7 +1670,7 @@ static struct gsm_dlci *gsm_dlci_alloc(struct gsm_mux *gsm, int addr)
  
  /**
-  *	tty_buffer_request_room		-	grow tty buffer if needed
-- *	@tty: tty structure
-+ *	@port: tty port
-  *	@size: size desired
-  *	@flags: buffer flags if new buffer allocated (default = 0)
+  *	gsm_dlci_free		-	free DLCI
+- *	@dlci: DLCI to free
++ *	@port: tty port for DLCI to free
   *
-@@ -559,7 +559,7 @@ EXPORT_SYMBOL(tty_flip_buffer_push);
+  *	Free up a DLCI.
+  *
+@@ -2149,7 +2148,7 @@ static int gsm_activate_mux(struct gsm_mux *gsm)
  
  /**
-  *	tty_buffer_init		-	prepare a tty buffer structure
-- *	@tty: tty to initialise
-+ *	@port: tty port to initialise
+  *	gsm_free_mux		-	free up a mux
+- *	@mux: mux to free
++ *	@gsm: mux to free
   *
-  *	Set up the initial state of the buffer management for a tty device.
-  *	Must be called before the other tty buffer functions are used.
-diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
-index ceed72c9a88f..7a4c02548fb3 100644
---- a/drivers/tty/tty_io.c
-+++ b/drivers/tty/tty_io.c
-@@ -307,7 +307,7 @@ static int check_tty_count(struct tty_struct *tty, const char *routine)
- 
- /**
-  *	get_tty_driver		-	find device of a tty
-- *	@dev_t: device identifier
-+ *	@device: device identifier
-  *	@index: returns the index of the tty
-  *
-  *	This routine returns a tty driver structure, given a device number
-@@ -544,7 +544,7 @@ EXPORT_SYMBOL_GPL(tty_wakeup);
- 
- /**
-  *	__tty_hangup		-	actual handler for hangup events
-- *	@work: tty device
-+ *	@tty: tty device
-  *
-  *	This can be called by a "kworker" kernel thread.  That is process
-  *	synchronous but doesn't hold any locks, so we need to make sure we
-@@ -1232,7 +1232,7 @@ static int tty_driver_install_tty(struct tty_driver *driver,
- /**
-  *	tty_driver_remove_tty() - remove a tty from the driver tables
-  *	@driver: the driver for the tty
-- *	@idx:	 the minor number
-+ *	@tty: tty to remove
-  *
-  *	Remvoe a tty object from the driver tables. The tty->index field
-  *	will be set by the time this is called.
-@@ -1247,9 +1247,9 @@ static void tty_driver_remove_tty(struct tty_driver *driver, struct tty_struct *
- 		driver->ttys[tty->index] = NULL;
- }
- 
--/*
-- * 	tty_reopen()	- fast re-open of an open tty
-- * 	@tty	- the tty to open
-+/**
-+ *	tty_reopen()	- fast re-open of an open tty
-+ *	@tty: the tty to open
-  *
-  *	Return 0 on success, -errno on error.
-  *	Re-opens on master ptys are not allowed and return -EIO.
-@@ -1295,7 +1295,6 @@ static int tty_reopen(struct tty_struct *tty)
-  *	tty_init_dev		-	initialise a tty device
-  *	@driver: tty driver we are opening a device on
-  *	@idx: device index
-- *	@ret_tty: returned tty structure
-  *
-  *	Prepare a tty device. This may not be a "new" clean device but
-  *	could also be an active device. The pty drivers require special
-@@ -1313,6 +1312,8 @@ static int tty_reopen(struct tty_struct *tty)
-  * failed open.  The new code protects the open with a mutex, so it's
-  * really quite straightforward.  The mutex locking can probably be
-  * relaxed for the (most common) case of reopening a tty.
-+ *
-+ *	Return: returned tty structure
+  *	Dispose of allocated resources for a dead mux
   */
- 
- struct tty_struct *tty_init_dev(struct tty_driver *driver, int idx)
-@@ -1432,7 +1433,7 @@ static void tty_flush_works(struct tty_struct *tty)
+@@ -2162,7 +2161,7 @@ static void gsm_free_mux(struct gsm_mux *gsm)
  
  /**
-  *	release_one_tty		-	release tty structure memory
-- *	@kref: kref of tty we are obliterating
-+ *	@work: work of tty we are obliterating
+  *	gsm_free_muxr		-	free up a mux
+- *	@mux: mux to free
++ *	@ref: kreference to the mux to free
   *
-  *	Releases memory associated with a tty structure, and clears out the
-  *	driver table slots. This function is called when a device is no longer
-@@ -1528,7 +1529,6 @@ static void release_tty(struct tty_struct *tty, int idx)
- /**
-  *	tty_release_checks - check a tty before real release
-  *	@tty: tty to check
-- *	@o_tty: link of @tty (if any)
-  *	@idx: index of the tty
-  *
-  *	Performs some paranoid checking before true release of the @tty.
-@@ -2200,7 +2200,7 @@ static int tiocsti(struct tty_struct *tty, char __user *p)
+  *	Dispose of allocated resources for a dead mux
+  */
+diff --git a/drivers/tty/n_hdlc.c b/drivers/tty/n_hdlc.c
+index b09eac4b6d64..9ba967f8b7ca 100644
+--- a/drivers/tty/n_hdlc.c
++++ b/drivers/tty/n_hdlc.c
+@@ -123,13 +123,13 @@ struct n_hdlc_buf_list {
  
  /**
-  *	tiocgwinsz		-	implement window query ioctl
-- *	@tty; tty
-+ *	@tty: tty
-  *	@arg: user buffer for result
-  *
-  *	Copies the kernel idea of the window size into the user buffer.
-@@ -2223,8 +2223,7 @@ static int tiocgwinsz(struct tty_struct *tty, struct winsize __user *arg)
- /**
-  *	tty_do_resize		-	resize event
-  *	@tty: tty being resized
-- *	@rows: rows (character)
-- *	@cols: cols (character)
-+ *	@ws: new dimensions
-  *
-  *	Update the termios variables and send the necessary signals to
-  *	peform a terminal resize correctly
-@@ -2254,7 +2253,7 @@ EXPORT_SYMBOL(tty_do_resize);
+  * struct n_hdlc - per device instance data structure
+- * @magic - magic value for structure
+- * @tbusy - reentrancy flag for tx wakeup code
+- * @woke_up - tx wakeup needs to be run again as it was called while @tbusy
+- * @tx_buf_list - list of pending transmit frame buffers
+- * @rx_buf_list - list of received frame buffers
+- * @tx_free_buf_list - list unused transmit frame buffers
+- * @rx_free_buf_list - list unused received frame buffers
++ * @magic: magic value for structure
++ * @tbusy: reentrancy flag for tx wakeup code
++ * @woke_up: tx wakeup needs to be run again as it was called while @tbusy
++ * @tx_buf_list: list of pending transmit frame buffers
++ * @rx_buf_list: list of received frame buffers
++ * @tx_free_buf_list: list unused transmit frame buffers
++ * @rx_free_buf_list: list unused received frame buffers
+  */
+ struct n_hdlc {
+ 	int			magic;
+@@ -187,7 +187,7 @@ static void n_hdlc_free_buf_list(struct n_hdlc_buf_list *list)
  
  /**
-  *	tiocswinsz		-	implement window size set ioctl
-- *	@tty; tty side of tty
-+ *	@tty: tty side of tty
-  *	@arg: user buffer for result
+  * n_hdlc_tty_close - line discipline close
+- * @tty - pointer to tty info structure
++ * @tty: pointer to tty info structure
   *
-  *	Copies the user idea of the window size to the kernel. Traditionally
-@@ -2402,7 +2401,6 @@ static int send_break(struct tty_struct *tty, unsigned int duration)
- /**
-  *	tty_tiocmget		-	get modem status
-  *	@tty: tty device
-- *	@file: user file pointer
-  *	@p: pointer to result
-  *
-  *	Obtain the modem status bits from the tty driver if the feature
-diff --git a/drivers/tty/tty_jobctrl.c b/drivers/tty/tty_jobctrl.c
-index f8ed50a16848..28a23a0fef21 100644
---- a/drivers/tty/tty_jobctrl.c
-+++ b/drivers/tty/tty_jobctrl.c
-@@ -178,8 +178,8 @@ void session_clear_tty(struct pid *session)
+  * Called when the line discipline is changed to something
+  * else, the tty is closed, or the tty detects a hangup.
+@@ -218,7 +218,7 @@ static void n_hdlc_tty_close(struct tty_struct *tty)
  
  /**
-  *	tty_signal_session_leader	- sends SIGHUP to session leader
-- *	@tty		controlling tty
-- *	@exit_session	if non-zero, signal all foreground group processes
-+ *	@tty: controlling tty
-+ *	@exit_session: if non-zero, signal all foreground group processes
+  * n_hdlc_tty_open - called when line discipline changed to n_hdlc
+- * @tty - pointer to tty info structure
++ * @tty: pointer to tty info structure
   *
-  *	Send SIGHUP and SIGCONT to the session leader and its process group.
-  *	Optionally, signal all processes in the foreground process group.
-diff --git a/drivers/tty/tty_ldisc.c b/drivers/tty/tty_ldisc.c
-index ec1f6a48121e..fe37ec331289 100644
---- a/drivers/tty/tty_ldisc.c
-+++ b/drivers/tty/tty_ldisc.c
-@@ -79,7 +79,6 @@ EXPORT_SYMBOL(tty_register_ldisc);
+  * Returns 0 if success, otherwise error code
+  */
+@@ -255,8 +255,8 @@ static int n_hdlc_tty_open(struct tty_struct *tty)
+ 
  /**
-  *	tty_unregister_ldisc	-	unload a line discipline
-  *	@disc: ldisc number
-- *	@new_ldisc: pointer to the ldisc object
+  * n_hdlc_send_frames - send frames on pending send buffer list
+- * @n_hdlc - pointer to ldisc instance data
+- * @tty - pointer to tty instance data
++ * @n_hdlc: pointer to ldisc instance data
++ * @tty: pointer to tty instance data
   *
-  *	Remove a line discipline from the kernel providing it is not
-  *	currently in use.
-@@ -542,7 +541,7 @@ static void tty_ldisc_restore(struct tty_struct *tty, struct tty_ldisc *old)
+  * Send frames on pending send buffer list until the driver does not accept a
+  * frame (busy) this function is called after adding a frame to the send buffer
+@@ -335,7 +335,7 @@ static void n_hdlc_send_frames(struct n_hdlc *n_hdlc, struct tty_struct *tty)
+ 
  /**
-  *	tty_set_ldisc		-	set line discipline
-  *	@tty: the terminal to set
-- *	@ldisc: the line discipline
-+ *	@disc: the line discipline number
+  * n_hdlc_tty_wakeup - Callback for transmit wakeup
+- * @tty	- pointer to associated tty instance data
++ * @tty: pointer to associated tty instance data
   *
-  *	Set the discipline of a tty line. Must be called from a process
-  *	context. The ldisc change logic has to protect itself against any
+  * Called when low level device driver can accept more send data.
+  */
+@@ -348,10 +348,10 @@ static void n_hdlc_tty_wakeup(struct tty_struct *tty)
+ 
+ /**
+  * n_hdlc_tty_receive - Called by tty driver when receive data is available
+- * @tty	- pointer to tty instance data
+- * @data - pointer to received data
+- * @flags - pointer to flags for data
+- * @count - count of received data in bytes
++ * @tty: pointer to tty instance data
++ * @data: pointer to received data
++ * @flags: pointer to flags for data
++ * @count: count of received data in bytes
+  *
+  * Called by tty low level driver when receive data is available. Data is
+  * interpreted as one HDLC frame.
+@@ -408,10 +408,10 @@ static void n_hdlc_tty_receive(struct tty_struct *tty, const __u8 *data,
+ 
+ /**
+  * n_hdlc_tty_read - Called to retrieve one frame of data (if available)
+- * @tty - pointer to tty instance data
+- * @file - pointer to open file object
+- * @buf - pointer to returned data buffer
+- * @nr - size of returned data buffer
++ * @tty: pointer to tty instance data
++ * @file: pointer to open file object
++ * @buf: pointer to returned data buffer
++ * @nr: size of returned data buffer
+  *
+  * Returns the number of bytes returned or error code.
+  */
+@@ -479,10 +479,10 @@ static ssize_t n_hdlc_tty_read(struct tty_struct *tty, struct file *file,
+ 
+ /**
+  * n_hdlc_tty_write - write a single frame of data to device
+- * @tty	- pointer to associated tty device instance data
+- * @file - pointer to file object data
+- * @data - pointer to transmit data (one frame)
+- * @count - size of transmit frame in bytes
++ * @tty: pointer to associated tty device instance data
++ * @file: pointer to file object data
++ * @data: pointer to transmit data (one frame)
++ * @count: size of transmit frame in bytes
+  *
+  * Returns the number of bytes written (or error code).
+  */
+@@ -546,10 +546,10 @@ static ssize_t n_hdlc_tty_write(struct tty_struct *tty, struct file *file,
+ 
+ /**
+  * n_hdlc_tty_ioctl - process IOCTL system call for the tty device.
+- * @tty - pointer to tty instance data
+- * @file - pointer to open file object for device
+- * @cmd - IOCTL command code
+- * @arg - argument for IOCTL call (cmd dependent)
++ * @tty: pointer to tty instance data
++ * @file: pointer to open file object for device
++ * @cmd: IOCTL command code
++ * @arg: argument for IOCTL call (cmd dependent)
+  *
+  * Returns command dependent result.
+  */
+@@ -614,9 +614,9 @@ static int n_hdlc_tty_ioctl(struct tty_struct *tty, struct file *file,
+ 
+ /**
+  * n_hdlc_tty_poll - TTY callback for poll system call
+- * @tty - pointer to tty instance data
+- * @filp - pointer to open file object for device
+- * @poll_table - wait queue for operations
++ * @tty: pointer to tty instance data
++ * @filp: pointer to open file object for device
++ * @wait: wait queue for operations
+  *
+  * Determine which operations (read/write) will not block and return info
+  * to caller.
+@@ -703,8 +703,8 @@ static struct n_hdlc *n_hdlc_alloc(void)
+ 
+ /**
+  * n_hdlc_buf_return - put the HDLC buffer after the head of the specified list
+- * @buf_list - pointer to the buffer list
+- * @buf - pointer to the buffer
++ * @buf_list: pointer to the buffer list
++ * @buf: pointer to the buffer
+  */
+ static void n_hdlc_buf_return(struct n_hdlc_buf_list *buf_list,
+ 						struct n_hdlc_buf *buf)
+@@ -721,8 +721,8 @@ static void n_hdlc_buf_return(struct n_hdlc_buf_list *buf_list,
+ 
+ /**
+  * n_hdlc_buf_put - add specified HDLC buffer to tail of specified list
+- * @buf_list - pointer to buffer list
+- * @buf	- pointer to buffer
++ * @buf_list: pointer to buffer list
++ * @buf: pointer to buffer
+  */
+ static void n_hdlc_buf_put(struct n_hdlc_buf_list *buf_list,
+ 			   struct n_hdlc_buf *buf)
+@@ -739,7 +739,7 @@ static void n_hdlc_buf_put(struct n_hdlc_buf_list *buf_list,
+ 
+ /**
+  * n_hdlc_buf_get - remove and return an HDLC buffer from list
+- * @buf_list - pointer to HDLC buffer list
++ * @buf_list: pointer to HDLC buffer list
+  *
+  * Remove and return an HDLC buffer from the head of the specified HDLC buffer
+  * list.
+diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
+index 1794d84e7bf6..7e5e36315260 100644
+--- a/drivers/tty/n_tty.c
++++ b/drivers/tty/n_tty.c
+@@ -322,7 +322,7 @@ static inline void put_tty_queue(unsigned char c, struct n_tty_data *ldata)
+ 
+ /**
+  *	reset_buffer_flags	-	reset buffer state
+- *	@tty: terminal to reset
++ *	@ldata: line disc data to reset
+  *
+  *	Reset the read buffer counters and clear the flags.
+  *	Called from n_tty_open() and n_tty_flush_buffer().
+@@ -906,7 +906,7 @@ static void echo_erase_tab(unsigned int num_chars, int after_tab,
+ /**
+  *	echo_char_raw	-	echo a character raw
+  *	@c: unicode byte to echo
+- *	@tty: terminal device
++ *	@ldata: line disc data
+  *
+  *	Echo user input back onto the screen. This must be called only when
+  *	L_ECHO(tty) is true. Called from the driver receive_buf path.
 -- 
 2.28.0
 
