@@ -2,62 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A79248B00
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27328248B0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726796AbgHRQEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 12:04:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38740 "EHLO
+        id S1726888AbgHRQGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 12:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726640AbgHRQEc (ORCPT
+        with ESMTP id S1726640AbgHRQGT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 12:04:32 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1364C061389
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 09:04:31 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id k18so15486387qtm.10
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 09:04:31 -0700 (PDT)
+        Tue, 18 Aug 2020 12:06:19 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C96F6C061342
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 09:06:18 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id n129so18723490qkd.6
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 09:06:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=JB8EfdnBuDNW3fHekM4Xs0GCzNgvaZJmFr6FyOpr2v0=;
-        b=kt90pnhsyVARanjQ9njLpjrSBJ5NQfpD0etrNKhdcS8EIcHIyORlTTXv62fx4/6P8F
-         NG0N3+QsMlFjdXgO0Z7wjYzJmzot9eYRdjcdOqWMPJwpLo+UhB/xuESEIPbKAxIdPzNJ
-         9Mum08CkckVIRCx0SjmdPeIMUCmAmP/JJBj9XPVFsVgVUilemL5CSklA2qYsOKcLyxtV
-         VRW1nNLF9ZPp7jVIMHb0/DinKg8pqGdyrkUsWKnltnuIzfpnTj2DBFf92nBgyj7/qtbb
-         y2M5XVFdLvu6WDXgccYp5obPyE4kkyjeFLK/5V2Bqc0xEg3y8CkA9ZDUhxnzpIit2bZs
-         GPew==
+        bh=xb6+E88tPfrh7pXAb8/QpJmE56xGtpeHAmtdqNrSre8=;
+        b=iFWIrMUj1y8bl5vDvdxItFMkHBHiLl3hFAn4vTP5yUsEd5zLRXmh+2g+omU4U+PsKd
+         ee99TzJ1jI8wfz8gbK+n8amNNPa4BM4m25x5SEMFB8s6k+KAEEqLm2kpfBuz6v0Z1igh
+         JUNdY0Ls0lIakRjtBkbWpyNk3UhMy6iosG8ZRdlpLla/8eHCOGJ5MlmVgCFXKXicM79B
+         nZ37CP3fQjmGvzVhCh0J4kMhtWq03CzOGKXhL0rqxIZh7r23FxTc4E4scARgIXDjIEBG
+         0vZKTD60YSzvm4udK3cS4jsEKDaLMItlBQOXx5NupganU2WohItyk+nDZSoJ3ex9hqPg
+         L0ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JB8EfdnBuDNW3fHekM4Xs0GCzNgvaZJmFr6FyOpr2v0=;
-        b=kPiUYnwlhk0WiMMUOW95cm8LhqDcvYBg4EKzNmlk/aHLflthVMmlUDpdD//WCCOBel
-         BpOxSVIGQR4yF+ir0p0/F0x8a5CiIm8kMwMa5/pOklpB2c5TvesEQYw+Rdf/mCutccCv
-         KJtz8uDWSdKyS2cAFgKgyJwjGegDvJZBZaSZQF/VxWgCAItpGukjecI24vLCsgaaxswS
-         gQRb4Sln34/H8yCQDqUuWOKOLZ4Cn92+6spRDoURZqPPaE9g9B3pJ6Zyf1vC6BNaqYl2
-         fFk1K3S3VjodNIt5muMjP2jmf+2MHRZCGYp4MLyNLuyvc2Q/IRcVEX+hywPfJVQlnjQH
-         RV9A==
-X-Gm-Message-State: AOAM5327QjP3jcvImLMwMduRhKQj5EDbOvOM2XaaG391KChnV7KVqlFY
-        ZjzM4vn6UZZKPR3QTHLEIQo=
-X-Google-Smtp-Source: ABdhPJyN3RqmwVch/jVdOrb3MMghfcbvWv6DZDeEJvGVjV5qAzSgFkOtIKhqEi9jgO1lrjiwLv1eNQ==
-X-Received: by 2002:aed:2986:: with SMTP id o6mr18435372qtd.105.1597766671154;
-        Tue, 18 Aug 2020 09:04:31 -0700 (PDT)
-Received: from tong-desktop.local ([2601:5c0:c100:b9d:f9e2:64b4:fbc4:6485])
-        by smtp.googlemail.com with ESMTPSA id z17sm20732979qkj.62.2020.08.18.09.04.29
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xb6+E88tPfrh7pXAb8/QpJmE56xGtpeHAmtdqNrSre8=;
+        b=qDsOQ+9gwFkRmCnPdgGDuxApZWXKJ1bQH7vaTXWE2Z6XxnXEbZqKFNEKGRWx0BD1Wm
+         wyPc1q6tJU/CaAMNcmQil/DnV0eNEA/qIx5+AhiRMM3kyE6Doiq6oJfCJcGn44etsHQC
+         oDJMuwaCJ9Fq+8LGC0kBMa3Q5+l4N3Lr0BaCzuP8hEcvAtnTixG9JFgG9mNlXHe/3vVx
+         RmFrRvU2smNxNWoZG0So13bXhIMKO6yyVkV14Z9PiUWOR0zeu/TJhTmmvU64UbAnG3GM
+         ZPHcvHp73OtQ8VIbxh8euqXC33aTnKl2D6CBnN3AkEwzq621M9QmeFFL2CPENLRk+xm0
+         5WFA==
+X-Gm-Message-State: AOAM532+i+8wF3nNeznIG1AWnUqOGwalCvTB/LZwRrUF1X9GVGVUV57E
+        hD0CX/EvDTQTMIti41LDUhs5LA==
+X-Google-Smtp-Source: ABdhPJxRl+Vb8fTDjmbgOzk/DiCo6S63qpktDOPwsZIZMqiBL4j0ZZXaQ/Yn6ZwA2oXdSmuZOAKRew==
+X-Received: by 2002:a37:6644:: with SMTP id a65mr17827907qkc.4.1597766778037;
+        Tue, 18 Aug 2020 09:06:18 -0700 (PDT)
+Received: from localhost.localdomain ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id 128sm21198034qkk.101.2020.08.18.09.06.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 09:04:30 -0700 (PDT)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     jikos@kernel.org, dsterba@suse.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, ztong0001@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] tty: ipwireless: fix error handling
-Date:   Tue, 18 Aug 2020 12:03:58 -0400
-Message-Id: <20200818160401.4736-1-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <b360242d-f488-da51-9d47-36b2abdf90cd@kernel.org>
-References: <b360242d-f488-da51-9d47-36b2abdf90cd@kernel.org>
+        Tue, 18 Aug 2020 09:06:17 -0700 (PDT)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Wesley Cheng <wcheng@codeaurora.org>,
+        Jack Pham <jackp@codeaurora.org>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/3] arm64: dts: qcom: sm8150: fix up primary USB nodes
+Date:   Tue, 18 Aug 2020 12:04:43 -0400
+Message-Id: <20200818160445.14008-1-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -65,54 +69,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ipwireless_send_packet() can only return 0 on success and -ENOMEM on
-error, the caller should check non zero for error condition
+The compatible for hsphy has out of place indentation, and the assigned
+clock rate for GCC_USB30_PRIM_MASTER_CLK is incorrect, the clock doesn't
+support a rate of 150000000. Use a rate of 200000000 to match downstream.
 
-v2: - According to Jiri's comment, I made the checking consistent with
-the rest of the kernel. I also rebased the code using f684668a24ec.
-Thank you Jiri!
+Fixes: b33d2868e8d3 ("arm64: dts: qcom: sm8150: Add USB and PHY device nodes")
 
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 ---
- drivers/tty/ipwireless/network.c | 4 ++--
- drivers/tty/ipwireless/tty.c     | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/qcom/sm8150.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/ipwireless/network.c b/drivers/tty/ipwireless/network.c
-index cf20616340a1..fe569f6294a2 100644
---- a/drivers/tty/ipwireless/network.c
-+++ b/drivers/tty/ipwireless/network.c
-@@ -117,7 +117,7 @@ static int ipwireless_ppp_start_xmit(struct ppp_channel *ppp_channel,
- 					       skb->len,
- 					       notify_packet_sent,
- 					       network);
--			if (ret == -1) {
-+			if (ret < 0) {
- 				skb_pull(skb, 2);
- 				return 0;
- 			}
-@@ -134,7 +134,7 @@ static int ipwireless_ppp_start_xmit(struct ppp_channel *ppp_channel,
- 					       notify_packet_sent,
- 					       network);
- 			kfree(buf);
--			if (ret == -1)
-+			if (ret < 0)
- 				return 0;
- 		}
- 		kfree_skb(skb);
-diff --git a/drivers/tty/ipwireless/tty.c b/drivers/tty/ipwireless/tty.c
-index fad3401e604d..23584769fc29 100644
---- a/drivers/tty/ipwireless/tty.c
-+++ b/drivers/tty/ipwireless/tty.c
-@@ -218,7 +218,7 @@ static int ipw_write(struct tty_struct *linux_tty,
- 	ret = ipwireless_send_packet(tty->hardware, IPW_CHANNEL_RAS,
- 			       buf, count,
- 			       ipw_write_packet_sent_callback, tty);
--	if (ret == -1) {
-+	if (ret < 0) {
- 		mutex_unlock(&tty->ipw_tty_mutex);
- 		return 0;
- 	}
+diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+index b86a7ead3006..ab8680c6672e 100644
+--- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+@@ -767,7 +767,7 @@ glink-edge {
+ 
+ 		usb_1_hsphy: phy@88e2000 {
+ 			compatible = "qcom,sm8150-usb-hs-phy",
+-							"qcom,usb-snps-hs-7nm-phy";
++				     "qcom,usb-snps-hs-7nm-phy";
+ 			reg = <0 0x088e2000 0 0x400>;
+ 			status = "disabled";
+ 			#phy-cells = <0>;
+@@ -833,7 +833,7 @@ usb_1: usb@a6f8800 {
+ 
+ 			assigned-clocks = <&gcc GCC_USB30_PRIM_MOCK_UTMI_CLK>,
+ 					  <&gcc GCC_USB30_PRIM_MASTER_CLK>;
+-			assigned-clock-rates = <19200000>, <150000000>;
++			assigned-clock-rates = <19200000>, <200000000>;
+ 
+ 			interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 486 IRQ_TYPE_LEVEL_HIGH>,
 -- 
-2.25.1
+2.26.1
 
