@@ -2,60 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E31248411
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 13:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BAE248410
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 13:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726694AbgHRLng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 07:43:36 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9834 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726273AbgHRLnf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 07:43:35 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id C0F5E24294C07824C422;
-        Tue, 18 Aug 2020 19:43:33 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Tue, 18 Aug 2020
- 19:43:26 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <cl@linux.com>, <penberg@kernel.org>, <rientjes@google.com>,
-        <iamjoonsoo.kim@lge.com>, <akpm@linux-foundation.org>,
-        <guro@fb.com>, <shakeelb@google.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] mm: slab: Remove duplicate include
-Date:   Tue, 18 Aug 2020 19:43:23 +0800
-Message-ID: <20200818114323.58156-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1726685AbgHRLnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 07:43:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47638 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726483AbgHRLnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 07:43:18 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 10FBF206DA;
+        Tue, 18 Aug 2020 11:43:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597750997;
+        bh=usmfjuKyMHfX6KvZ1abtP2KSf349aqo4sVQLXIkJjsU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=18g4PfPtxhjt65zoA7BhbuFp/4u5zqTUPkjVygU9s76jFu0lv4ImVNrK2DLHdJ2HW
+         wr6krFvIaYVYsZLwsNbgTrWoPcd9TmHEQFDCiYHs0RGOUC3pjQ6Bct2ttUZtc6C8an
+         aKlSYUa6quZRLATROJcIYgyB0rTUQUBUPzFRkrQ8=
+Date:   Tue, 18 Aug 2020 13:43:41 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/16] vt: declare xy for get/putconsxy properly
+Message-ID: <20200818114341.GA343779@kroah.com>
+References: <20200818085706.12163-1-jslaby@suse.cz>
+ <20200818085706.12163-2-jslaby@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.108]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200818085706.12163-2-jslaby@suse.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove duplicate header which is included twice.
+On Tue, Aug 18, 2020 at 10:56:52AM +0200, Jiri Slaby wrote:
+> That is:
+> 1) call the parameter 'xy' to denote what it really is, not generic 'p'
+> 2) tell the compiler and users that we expect an array:
+>    * with at least 2 chars (static 2)
+>    * which we don't modify in putconsxy (const)
+> 
+> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+> ---
+>  drivers/tty/vt/vt.c       | 10 +++++-----
+>  include/linux/selection.h |  4 ++--
+>  2 files changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+> index 8f283221330e..a0da7771c327 100644
+> --- a/drivers/tty/vt/vt.c
+> +++ b/drivers/tty/vt/vt.c
+> @@ -4769,17 +4769,17 @@ unsigned short *screen_pos(const struct vc_data *vc, int w_offset, int viewed)
+>  }
+>  EXPORT_SYMBOL_GPL(screen_pos);
+>  
+> -void getconsxy(const struct vc_data *vc, unsigned char *p)
+> +void getconsxy(const struct vc_data *vc, unsigned char xy[static 2])
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- mm/slab.h | 1 -
- 1 file changed, 1 deletion(-)
+I didn't realize we could do "[static 2]" in the kernel now, is that
+thanks to the bump of the minimum gcc version?  If so, nice!
 
-diff --git a/mm/slab.h b/mm/slab.h
-index 6cc323f1313a..95e5cc1bb2a3 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -46,7 +46,6 @@ struct kmem_cache {
- #include <linux/kmemleak.h>
- #include <linux/random.h>
- #include <linux/sched/mm.h>
--#include <linux/kmemleak.h>
- 
- /*
-  * State of the slab allocator.
--- 
-2.17.1
+thanks,
 
-
+greg k-h
