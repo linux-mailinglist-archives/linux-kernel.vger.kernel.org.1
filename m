@@ -2,171 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EDE82484B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 14:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE302484BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 14:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726746AbgHRM15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 08:27:57 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9836 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726336AbgHRM1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 08:27:55 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id C640E5F3FC3BC6CABC40;
-        Tue, 18 Aug 2020 20:27:51 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Tue, 18 Aug 2020
- 20:27:41 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <idryomov@gmail.com>, <jlayton@kernel.org>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <grandmaster@al2klimov.de>
-CC:     <ceph-devel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
-Subject: [PATCH] libceph: Convert to use the preferred fallthrough macro
-Date:   Tue, 18 Aug 2020 08:26:37 -0400
-Message-ID: <20200818122637.21449-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S1726749AbgHRMau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 08:30:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726635AbgHRMar (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 08:30:47 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5BDD72065D;
+        Tue, 18 Aug 2020 12:30:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597753846;
+        bh=eHNv9FdwsK7uVxIPYmdOittfWJ5rJzEkrVPozM1SQu4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SKcxKtnJrC7cXoPgNbvfatsTcUqQhXRNKGPXtOc0RgH4w9KY00FBZqzp1j8kQ2QZw
+         ZzBaqCkEH4QbKmE2zV4HIk0defjdZ64vYVLhewYYIeqY7p994IAwXa/3ppqOTMNNGd
+         nMguyU5y+4CN7DYElJUpDnrUftjA7P8DWV1/7Uv4=
+Date:   Tue, 18 Aug 2020 13:30:15 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     heiko@sntech.de, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        sugar.zhang@rock-chips.com, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC PATCH v1 1/2] ASoC: rockchip-spdif: add description for
+ rk3308
+Message-ID: <20200818123015.GA5344@sirena.org.uk>
+References: <20200815112437.6662-1-jbx6244@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="45Z9DzgjV8m4Oswq"
+Content-Disposition: inline
+In-Reply-To: <20200815112437.6662-1-jbx6244@gmail.com>
+X-Cookie: Ma Bell is a mean mother!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the uses of fallthrough comments to fallthrough macro.
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- net/ceph/ceph_hash.c    | 20 ++++++++++----------
- net/ceph/crush/mapper.c |  2 +-
- net/ceph/messenger.c    |  4 ++--
- net/ceph/mon_client.c   |  2 +-
- net/ceph/osd_client.c   |  4 ++--
- 5 files changed, 16 insertions(+), 16 deletions(-)
+--45Z9DzgjV8m4Oswq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/net/ceph/ceph_hash.c b/net/ceph/ceph_hash.c
-index 81e1e006c540..16a47c0eef37 100644
---- a/net/ceph/ceph_hash.c
-+++ b/net/ceph/ceph_hash.c
-@@ -50,35 +50,35 @@ unsigned int ceph_str_hash_rjenkins(const char *str, unsigned int length)
- 	switch (len) {
- 	case 11:
- 		c = c + ((__u32)k[10] << 24);
--		/* fall through */
-+		fallthrough;
- 	case 10:
- 		c = c + ((__u32)k[9] << 16);
--		/* fall through */
-+		fallthrough;
- 	case 9:
- 		c = c + ((__u32)k[8] << 8);
- 		/* the first byte of c is reserved for the length */
--		/* fall through */
-+		fallthrough;
- 	case 8:
- 		b = b + ((__u32)k[7] << 24);
--		/* fall through */
-+		fallthrough;
- 	case 7:
- 		b = b + ((__u32)k[6] << 16);
--		/* fall through */
-+		fallthrough;
- 	case 6:
- 		b = b + ((__u32)k[5] << 8);
--		/* fall through */
-+		fallthrough;
- 	case 5:
- 		b = b + k[4];
--		/* fall through */
-+		fallthrough;
- 	case 4:
- 		a = a + ((__u32)k[3] << 24);
--		/* fall through */
-+		fallthrough;
- 	case 3:
- 		a = a + ((__u32)k[2] << 16);
--		/* fall through */
-+		fallthrough;
- 	case 2:
- 		a = a + ((__u32)k[1] << 8);
--		/* fall through */
-+		fallthrough;
- 	case 1:
- 		a = a + k[0];
- 		/* case 0: nothing left to add */
-diff --git a/net/ceph/crush/mapper.c b/net/ceph/crush/mapper.c
-index 07e5614eb3f1..7057f8db4f99 100644
---- a/net/ceph/crush/mapper.c
-+++ b/net/ceph/crush/mapper.c
-@@ -987,7 +987,7 @@ int crush_do_rule(const struct crush_map *map,
- 		case CRUSH_RULE_CHOOSELEAF_FIRSTN:
- 		case CRUSH_RULE_CHOOSE_FIRSTN:
- 			firstn = 1;
--			/* fall through */
-+			fallthrough;
- 		case CRUSH_RULE_CHOOSELEAF_INDEP:
- 		case CRUSH_RULE_CHOOSE_INDEP:
- 			if (wsize == 0)
-diff --git a/net/ceph/messenger.c b/net/ceph/messenger.c
-index 27d6ab11f9ee..bdfd66ba3843 100644
---- a/net/ceph/messenger.c
-+++ b/net/ceph/messenger.c
-@@ -412,7 +412,7 @@ static void ceph_sock_state_change(struct sock *sk)
- 	switch (sk->sk_state) {
- 	case TCP_CLOSE:
- 		dout("%s TCP_CLOSE\n", __func__);
--		/* fall through */
-+		fallthrough;
- 	case TCP_CLOSE_WAIT:
- 		dout("%s TCP_CLOSE_WAIT\n", __func__);
- 		con_sock_state_closing(con);
-@@ -2751,7 +2751,7 @@ static int try_read(struct ceph_connection *con)
- 			switch (ret) {
- 			case -EBADMSG:
- 				con->error_msg = "bad crc/signature";
--				/* fall through */
-+				fallthrough;
- 			case -EBADE:
- 				ret = -EIO;
- 				break;
-diff --git a/net/ceph/mon_client.c b/net/ceph/mon_client.c
-index 3d8c8015e976..d633a0aeaa55 100644
---- a/net/ceph/mon_client.c
-+++ b/net/ceph/mon_client.c
-@@ -1307,7 +1307,7 @@ static struct ceph_msg *mon_alloc_msg(struct ceph_connection *con,
- 		 * request had a non-zero tid.  Work around this weirdness
- 		 * by allocating a new message.
- 		 */
--		/* fall through */
-+		fallthrough;
- 	case CEPH_MSG_MON_MAP:
- 	case CEPH_MSG_MDS_MAP:
- 	case CEPH_MSG_OSD_MAP:
-diff --git a/net/ceph/osd_client.c b/net/ceph/osd_client.c
-index e4fbcad6e7d8..7901ab6c79fd 100644
---- a/net/ceph/osd_client.c
-+++ b/net/ceph/osd_client.c
-@@ -3854,7 +3854,7 @@ static void scan_requests(struct ceph_osd *osd,
- 			if (!force_resend && !force_resend_writes)
- 				break;
- 
--			/* fall through */
-+			fallthrough;
- 		case CALC_TARGET_NEED_RESEND:
- 			cancel_linger_map_check(lreq);
- 			/*
-@@ -3891,7 +3891,7 @@ static void scan_requests(struct ceph_osd *osd,
- 			     !force_resend_writes))
- 				break;
- 
--			/* fall through */
-+			fallthrough;
- 		case CALC_TARGET_NEED_RESEND:
- 			cancel_map_check(req);
- 			unlink_request(osd, req);
--- 
-2.19.1
+On Sat, Aug 15, 2020 at 01:24:36PM +0200, Johan Jonker wrote:
+> A test with the command below shows that the compatible string
+>=20
+> "rockchip,rk3308-spdif", "rockchip,rk3328-spdif"
 
+This doesn't apply against current code, please check and resend.
+
+--45Z9DzgjV8m4Oswq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl87ydcACgkQJNaLcl1U
+h9ATqAf+Kw1JpgjNUlPGU5ePMTxIX88Ulj71aDatZmH8W/yzzfj7Lq5d1Rd2SDTC
+e7WeRvDuKmtoPbccucFH0aNFO3ev07yvSzgyQEzjlnvEIWiYO7RTxSQaqWfwGYJJ
+NgJ22Gfro6WhWVyOE4Wj6SQ9lGk5AkdmBEIiExWBgudwa+m7rwnzY5zM3oaLWCnO
+5zvlTV1yglKX5xuYjO38wOmmq2c1ZyWs8qriuXShJGQr9R96wZEvstrJlExGn/V/
+gR5Y0HvcEnAkCGWj8vqoeeq+Ot8vwbIkF4LZoAJpKVSDW5NELwr6IX7aww6k9p7+
+jsmCl584BsniWd/wfF6j7sQSETp0DA==
+=ZzoW
+-----END PGP SIGNATURE-----
+
+--45Z9DzgjV8m4Oswq--
