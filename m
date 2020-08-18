@@ -2,82 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7991B2481FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 11:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 185B32481EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 11:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726429AbgHRJfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 05:35:11 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:33990 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726145AbgHRJfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 05:35:10 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D58391A019F;
-        Tue, 18 Aug 2020 11:35:08 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 1F2241A1994;
-        Tue, 18 Aug 2020 11:35:05 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 07553402AD;
-        Tue, 18 Aug 2020 11:34:59 +0200 (CEST)
-From:   Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
-To:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com,
-        amurray@thegoodpenguin.co.uk, jingoohan1@gmail.com,
-        gustavo.pimentel@synopsys.com
-Cc:     Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-Subject: [PATCHv2] PCI: designware-ep: Fix the Header Type check
-Date:   Tue, 18 Aug 2020 17:27:46 +0800
-Message-Id: <20200818092746.24366-1-Zhiqiang.Hou@nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726569AbgHRJas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 05:30:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726408AbgHRJao (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 05:30:44 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76BC6C061342
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 02:30:43 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id d6so21259000ejr.5
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 02:30:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G6i6GBK3wCZWsxoTDmOd3ySKBv/GJjmU+V1QuwmXmlk=;
+        b=ovlkGX8qod/bhtZAl4qKbrC5By2+6D1ouRJLhibBITDMjhaNSGfIZF8qD5afYOF5Nw
+         cV3HmxMj4H3TwTUZZL+0v5NHdrDqt/ZYDq/gwxcfRy2TrsVF+JbuOfSgvwm+uVCQwinw
+         +XSe4C1sN6eZB5AEceOR647X9E3OJg51aCnWA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G6i6GBK3wCZWsxoTDmOd3ySKBv/GJjmU+V1QuwmXmlk=;
+        b=F3ygRcNj3Ir2feGfup1LNwUdMXnPkt/1gPx2gfZdfikV/u88IIfFnoXKCCu7DncivV
+         iusQqIpCZ23hAULSjToLYGUpafDxWX1UvY1rDV2BQCS1wS0ACAtuFKRTkHBmw1MfJm3f
+         s44r/VpGRd4zAPDpPNv8JMfPEUcJsJhnYoPnbfxG3w9Ezr39ATXj67VJciRseJ2oxib9
+         85igd5jrwqWR7+fgX1RJfK38A6hjmdstBz2d+Qh9n6VDYqkTLnhgmlR8hK7a+ExTxUfl
+         F0JNVk2zxpErlw7b9xFJQYWO5GK+CNqL2WnfDfJ4miBL9N0iA6T5uBnCdG90N1cR83AJ
+         ZYMw==
+X-Gm-Message-State: AOAM533NtA0l0bm9GnhGzovcB9M7Ol8oFwzr2/OCeEjZGEYykZReHjUL
+        ew3C0lInH39Cr6zPFpnNyXDPkW4EjQE01TfE9QuKLQ==
+X-Google-Smtp-Source: ABdhPJyWhZ+Aimi0ZuSzLKiWku7A6fJlEGDRdk6YXN2wx1FCgab6GIvDYrRG/JdcRLqANDa9XagvVxIlvjL5Gz03FEI=
+X-Received: by 2002:a17:906:4e4f:: with SMTP id g15mr18796618ejw.443.1597743042044;
+ Tue, 18 Aug 2020 02:30:42 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAJfpeguh5VaDBdVkV3FJtRsMAvXHWUcBfEpQrYPEuX9wYzg9dA@mail.gmail.com>
+ <CAHk-=whE42mFLi8CfNcdB6Jc40tXsG3sR+ThWAFihhBwfUbczA@mail.gmail.com>
+ <CAJfpegtXtj2Q1wsR-3eUNA0S=_skzHF0CEmcK_Krd8dtKkWkGA@mail.gmail.com>
+ <20200812143957.GQ1236603@ZenIV.linux.org.uk> <CAJfpegvFBdp3v9VcCp-wNDjZnQF3q6cufb-8PJieaGDz14sbBg@mail.gmail.com>
+ <20200812150807.GR1236603@ZenIV.linux.org.uk> <CAJfpegsQF1aN4XJ_8j977rnQESxc=Kcn7Z2C+LnVDWXo4PKhTQ@mail.gmail.com>
+ <20200812163347.GS1236603@ZenIV.linux.org.uk> <CAJfpegv8MTnO9YAiFUJPjr3ryeT82=KWHUpLFmgRNOcQfeS17w@mail.gmail.com>
+ <20200812173911.GT1236603@ZenIV.linux.org.uk> <20200812183326.GU1236603@ZenIV.linux.org.uk>
+In-Reply-To: <20200812183326.GU1236603@ZenIV.linux.org.uk>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Tue, 18 Aug 2020 11:30:30 +0200
+Message-ID: <CAJfpegs2EkMNthnMvdr5NtLKxfQjTgJYSNhHOMROm0S98OJb4A@mail.gmail.com>
+Subject: Re: file metadata via fs API (was: [GIT PULL] Filesystem Information)
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Jann Horn <jannh@google.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Karel Zak <kzak@redhat.com>, Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Christian Brauner <christian@brauner.io>,
+        Lennart Poettering <lennart@poettering.net>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ian Kent <raven@themaw.net>,
+        LSM <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+On Wed, Aug 12, 2020 at 8:33 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> On Wed, Aug 12, 2020 at 06:39:11PM +0100, Al Viro wrote:
+> > On Wed, Aug 12, 2020 at 07:16:37PM +0200, Miklos Szeredi wrote:
+> > > On Wed, Aug 12, 2020 at 6:33 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> > > >
+> > > > On Wed, Aug 12, 2020 at 05:13:14PM +0200, Miklos Szeredi wrote:
+> > >
+> > > > > Why does it have to have a struct mount?  It does not have to use
+> > > > > dentry/mount based path lookup.
+> > > >
+> > > > What the fuck?  So we suddenly get an additional class of objects
+> > > > serving as kinda-sorta analogues of dentries *AND* now struct file
+> > > > might refer to that instead of a dentry/mount pair - all on the VFS
+> > > > level?  And so do all the syscalls you want to allow for such "pathnames"?
+> > >
+> > > The only syscall I'd want to allow is open, everything else would be
+> > > on the open files themselves.
+> > >
+> > > file->f_path can refer to an anon mount/inode, the real object is
+> > > referred to by file->private_data.
+> > >
+> > > The change to namei.c would be on the order of ~10 lines.  No other
+> > > parts of the VFS would be affected.
+> >
+> > If some of the things you open are directories (and you *have* said that
+> > directories will be among those just upthread, and used references to
+> > readdir() as argument in favour of your approach elsewhere in the thread),
+> > you will have to do something about fchdir().  And that's the least of
+> > the issues.
+>
+> BTW, what would such opened files look like from /proc/*/fd/* POV?  And
+> what would happen if you walk _through_ that symlink, with e.g. ".."
+> following it?  Or with names of those attributes, for that matter...
+> What about a normal open() of such a sucker?  It won't know where to
+> look for your ->private_data...
+>
+> FWIW, you keep refering to regularity of this stuff from the syscall
+> POV, but it looks like you have no real idea of what subset of the
+> things available for normal descriptors will be available for those.
 
-The current check will result in the multiple function device
-fails to initialize. So fix the check by masking out the
-multiple function bit.
+I have said that IMO using a non-seekable anon-file would be okay for
+those.   All the answers fall out of that:  nothing works on those
+fd's except read/write/getdents.  No fchdir(), no /proc/*/fd deref,
+etc...
 
-Fixes: 0b24134f7888 ("PCI: dwc: Add validation that PCIe core is set to correct mode")
-Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
----
-V2:
- - Add marco PCI_HEADER_TYPE_MASK and print the masked value.
+Starting with a very limited functionality and expanding on that if
+necessary is I think a good way to not get bogged down with the
+details.
 
- drivers/pci/controller/dwc/pcie-designware-ep.c | 3 ++-
- include/uapi/linux/pci_regs.h                   | 1 +
- 2 files changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-index 4680a51c49c0..0634bd3a0b96 100644
---- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-@@ -653,7 +653,8 @@ int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep)
- 	u32 reg;
- 	int i;
- 
--	hdr_type = dw_pcie_readb_dbi(pci, PCI_HEADER_TYPE);
-+	hdr_type = dw_pcie_readb_dbi(pci, PCI_HEADER_TYPE) &
-+		   PCI_HEADER_TYPE_MASK;
- 	if (hdr_type != PCI_HEADER_TYPE_NORMAL) {
- 		dev_err(pci->dev,
- 			"PCIe controller is not set to EP mode (hdr_type:0x%x)!\n",
-diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
-index f9701410d3b5..57a222014cd2 100644
---- a/include/uapi/linux/pci_regs.h
-+++ b/include/uapi/linux/pci_regs.h
-@@ -76,6 +76,7 @@
- #define PCI_CACHE_LINE_SIZE	0x0c	/* 8 bits */
- #define PCI_LATENCY_TIMER	0x0d	/* 8 bits */
- #define PCI_HEADER_TYPE		0x0e	/* 8 bits */
-+#define  PCI_HEADER_TYPE_MASK		0x7f
- #define  PCI_HEADER_TYPE_NORMAL		0
- #define  PCI_HEADER_TYPE_BRIDGE		1
- #define  PCI_HEADER_TYPE_CARDBUS	2
--- 
-2.17.1
-
+Thanks,
+Miklos
