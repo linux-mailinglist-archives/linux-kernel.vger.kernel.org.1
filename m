@@ -2,164 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0ED8247E93
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 08:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CF99247E9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 08:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgHRGmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 02:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726365AbgHRGmU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 02:42:20 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34300C061342
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 23:42:20 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id bo3so20681650ejb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 23:42:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=775qzk5G3HfBeCtXoCDJAjllre8IaZ3OdmJ8ASXAorY=;
-        b=Gm8Wbu1x1AJcq/l7haOdWUzinyv1kkATVYdGzJWyJQcZjzKNYg1Ceoc7QamWOiRX91
-         j/0Sna8XVp4tdn3iu0VN64uLGFwDrkD3QyXv9eZ+cvhtwJGdHLnG5sP27MCf6vnanRrq
-         5gnGGadcbWftINqgeB95FzjqX5kuYAs7PEACIhPN/F/J2f4kgkikmv5cyozGJsszhohH
-         9O1W9tcIdbx9BGbUE2adtJU/UP1+pYh5KX3jEF0vfHx9kmvKlFX3DvRXlbKtEJmKdNj5
-         x2iWTQveL9Vd8HlmozC5wtt3jHEijtH03aRcL2YumKTKbtJMjHfCk1hUFhrsB1zer9ns
-         QmTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=775qzk5G3HfBeCtXoCDJAjllre8IaZ3OdmJ8ASXAorY=;
-        b=kaub3n38Uj8SGohQ3AlrnNLwC6M+YQFVIxkJVtaflUc4+lScIEcovN9Ci5tk9naiG9
-         I2Y8ayOm7riUWkuFvVU54a0jVVfEaqo/5qRcADBeNEaTigzsU6+gDmnBPGNkPAMBq3oY
-         xOWsw97sidCndUowekDHgLo3wy4OEQlg2Jjpc43sVGVl1W96m0OsFQa/oc/UFB0/hpD0
-         6vT6He8fNnmCZ0+J5C7QDQDUP4NQt1FBqjNWM523r4s36gjT48TXHkPAwwZMFEx8uT4/
-         JhO7uADpw3F4cQ0q3ZUdtrJNAe2SFd7QznyUSanMYmbDLD+INNnobiVmkddaZozEEwvZ
-         PoEw==
-X-Gm-Message-State: AOAM533QjUf5/30hZ4O6hbVVdOttekOvtFQHEv7bbmN1aTxVtmbqAQjL
-        lSh/Iwm1gqNVuWftoM+bBFe1tfsWoTWP3ZNdAkHd/w==
-X-Google-Smtp-Source: ABdhPJy29eOQ86CGzmJWusJHfF6RcNYVtw9fGWL/sowtYAH8GGuqHcmp6fLJD+g3kpf9WgaFKI/wGXU5xQBuJFjMlew=
-X-Received: by 2002:a17:906:9399:: with SMTP id l25mr18532375ejx.212.1597732938235;
- Mon, 17 Aug 2020 23:42:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200818040317.5926-1-brookebasile@gmail.com> <20200818052957.GA2253299@ubuntu-n2-xlarge-x86>
-In-Reply-To: <20200818052957.GA2253299@ubuntu-n2-xlarge-x86>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Tue, 18 Aug 2020 08:42:06 +0200
-Message-ID: <CAMGffE=2m7XOdKS9xG1bNY7MYR2x6AgQm9YZFHm6D4biO860sw@mail.gmail.com>
-Subject: Re: [PATCH] block: rnbd: rnbd-srv: silence uninitialized variable warning
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Brooke Basile <brookebasile@gmail.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1726545AbgHRGp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 02:45:59 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:56474 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726648AbgHRGp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 02:45:57 -0400
+Received: from localhost (unknown [159.226.5.99])
+        by APP-03 (Coremail) with SMTP id rQCowAB3I0qbeDtf_vkgAw--.22999S2;
+        Tue, 18 Aug 2020 14:43:40 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     akpm@linux-foundation.org, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
+Subject: [PATCH] hugetlb_cgroup: convert comma to semicolon
+Date:   Tue, 18 Aug 2020 06:43:33 +0000
+Message-Id: <20200818064333.21759-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: rQCowAB3I0qbeDtf_vkgAw--.22999S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Jw4UZF15Zr4rKw4rJF45GFg_yoWktFc_Z3
+        45J34kJF4UZ34YkrWUXr15Aay29rs5JF1DWayfKFyxJFyDK34F93Z7Zr9FgFW3WFW5urWI
+        g3sxuw4fXrnF9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb4xFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
+        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jw0_WrylYx0Ex4A2jsIE14v26r4UJVWxJr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_
+        GF1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
+        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI
+        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
+        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JU489NUUU
+        UU=
+X-Originating-IP: [159.226.5.99]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCgUMA1z4i744eQABsR
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 7:30 AM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
->
-> On Tue, Aug 18, 2020 at 12:03:18AM -0400, Brooke Basile wrote:
-> > Clang warns:
-> >       drivers/block/rnbd/rnbd-srv.c:150:6: warning: variable 'err' is used
-> >       uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
-> >               if (IS_ERR(bio)) {
-> >               ^~~~~~~~~~~
-> >       drivers/block/rnbd/rnbd-srv.c:177:9: note: uninitialized use occurs here
-> >               return err;
-> >               ^~~
-> >       drivers/block/rnbd/rnbd-srv.c:126:9: note: initialize the variable 'err'
-> >       to silence this warning
-> >               int err;
-> >                       ^
-> >                       = 0
-> >
-> > Silence this by replacing `err` with `ret`, returning ret = 0 upon
-> > success.
-> >
-> > Signed-off-by: Brooke Basile <brookebasile@gmail.com>
-> > ---
-> >  drivers/block/rnbd/rnbd-srv.c | 8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
-> > index 0fb94843a495..f515d1a048a9 100644
-> > --- a/drivers/block/rnbd/rnbd-srv.c
-> > +++ b/drivers/block/rnbd/rnbd-srv.c
-> > @@ -123,10 +123,10 @@ static int process_rdma(struct rtrs_srv *sess,
-> >       struct rnbd_io_private *priv;
-> >       struct rnbd_srv_sess_dev *sess_dev;
-> >       u32 dev_id;
-> > -     int err;
-> >       struct rnbd_dev_blk_io *io;
-> >       struct bio *bio;
-> >       short prio;
-> > +     int ret = 0;
-> >
-> >       priv = kmalloc(sizeof(*priv), GFP_KERNEL);
-> >       if (!priv)
-> > @@ -138,7 +138,7 @@ static int process_rdma(struct rtrs_srv *sess,
-> >       if (IS_ERR(sess_dev)) {
-> >               pr_err_ratelimited("Got I/O request on session %s for unknown device id %d\n",
-> >                                  srv_sess->sessname, dev_id);
-> > -             err = -ENOTCONN;
-> > +             ret = -ENOTCONN;
-> >               goto err;
-> >       }
-> >
-> > @@ -168,13 +168,13 @@ static int process_rdma(struct rtrs_srv *sess,
-> >
-> >       submit_bio(bio);
-> >
-> > -     return 0;
-> > +     return ret;
-> >
-> >  sess_dev_put:
-> >       rnbd_put_sess_dev(sess_dev);
-> >  err:
-> >       kfree(priv);
-> > -     return err;
-> > +     return ret;
-> >  }
-> >
-> >  static void destroy_device(struct rnbd_srv_dev *dev)
-> > --
-> > 2.28.0
-> >
->
-> I don't think this is a proper fix since the root cause of the warning
-> appears to be that we are ignoring the return value of
-> rnbd_bio_map_kern. Should we not set err to that value like this
-> (completely untested)?
->
-> Cheers,
-> Nathan
-Thanks Nathan, thanks Brooke,
+Replace a comma between expression statements by a semicolon.
 
-I agree with Nathan, the problem is we forgot to set the err before
-"goto sess_dev_put".
-Nathan's patch is simpler, less code of change.
->
-> diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
-> index 0fb94843a495..1b71cb2a885d 100644
-> --- a/drivers/block/rnbd/rnbd-srv.c
-> +++ b/drivers/block/rnbd/rnbd-srv.c
-> @@ -148,7 +148,8 @@ static int process_rdma(struct rtrs_srv *sess,
->         /* Generate bio with pages pointing to the rdma buffer */
->         bio = rnbd_bio_map_kern(data, sess_dev->rnbd_dev->ibd_bio_set, datalen, GFP_KERNEL);
->         if (IS_ERR(bio)) {
-> -               rnbd_srv_err(sess_dev, "Failed to generate bio, err: %ld\n", PTR_ERR(bio));
-> +               err = PTR_ERR(bio);
-> +               rnbd_srv_err(sess_dev, "Failed to generate bio, err: %ld\n", err);
->                 goto sess_dev_put;
->         }
->
-Nathan, could you send a formal patch?
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ mm/hugetlb_cgroup.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks
+diff --git a/mm/hugetlb_cgroup.c b/mm/hugetlb_cgroup.c
+index aabf65d4d91b..1f87aec9ab5c 100644
+--- a/mm/hugetlb_cgroup.c
++++ b/mm/hugetlb_cgroup.c
+@@ -655,7 +655,7 @@ static void __init __hugetlb_cgroup_file_dfl_init(int idx)
+ 	snprintf(cft->name, MAX_CFTYPE_NAME, "%s.events", buf);
+ 	cft->private = MEMFILE_PRIVATE(idx, 0);
+ 	cft->seq_show = hugetlb_events_show;
+-	cft->file_offset = offsetof(struct hugetlb_cgroup, events_file[idx]),
++	cft->file_offset = offsetof(struct hugetlb_cgroup, events_file[idx]);
+ 	cft->flags = CFTYPE_NOT_ON_ROOT;
+ 
+ 	/* Add the events.local file */
+@@ -664,7 +664,7 @@ static void __init __hugetlb_cgroup_file_dfl_init(int idx)
+ 	cft->private = MEMFILE_PRIVATE(idx, 0);
+ 	cft->seq_show = hugetlb_events_local_show;
+ 	cft->file_offset = offsetof(struct hugetlb_cgroup,
+-				    events_local_file[idx]),
++				    events_local_file[idx]);
+ 	cft->flags = CFTYPE_NOT_ON_ROOT;
+ 
+ 	/* NULL terminate the last cft */
+-- 
+2.17.1
+
