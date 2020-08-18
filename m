@@ -2,113 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56FDB2487F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC3C2487F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727770AbgHROlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 10:41:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50948 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726585AbgHROlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 10:41:05 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 70C852083B;
-        Tue, 18 Aug 2020 14:41:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597761663;
-        bh=bJPOt4B5MgpMDT2n+zzNZ+rE9AaQj654FX1OxJw6sDk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AOCKY6z/atNldeFw82NlnljvDaIkZ1FqC+aSBMu3yFXm9qvkAyP1Gs4olwzL0n+JN
-         KtfqIK08IDgo0RkpYl8PMbUn6s3DUAhVyXc/EQOmH1F+zB4VF2sIxTbf7BWv2kFOUi
-         VkiNd596tsEYNkhmbOs65QaPxRz3BbwlGWmAiHAI=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1k82nN-003vcz-O3; Tue, 18 Aug 2020 15:41:01 +0100
+        id S1726905AbgHROlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 10:41:49 -0400
+Received: from pbmsgap02.intersil.com ([192.157.179.202]:53826 "EHLO
+        pbmsgap02.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726863AbgHROlr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 10:41:47 -0400
+Received: from pps.filterd (pbmsgap02.intersil.com [127.0.0.1])
+        by pbmsgap02.intersil.com (8.16.0.27/8.16.0.27) with SMTP id 07IEfTpg007666;
+        Tue, 18 Aug 2020 10:41:45 -0400
+Received: from pbmxdp02.intersil.corp (pbmxdp02.pb.intersil.com [132.158.200.223])
+        by pbmsgap02.intersil.com with ESMTP id 32x9vdhpvn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 18 Aug 2020 10:41:45 -0400
+Received: from pbmxdp03.intersil.corp (132.158.200.224) by
+ pbmxdp02.intersil.corp (132.158.200.223) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.1979.3; Tue, 18 Aug 2020 10:41:44 -0400
+Received: from localhost (132.158.202.109) by pbmxdp03.intersil.corp
+ (132.158.200.224) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Tue, 18 Aug 2020 10:41:43 -0400
+From:   <min.li.xe@renesas.com>
+To:     <richardcochran@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Min Li <min.li.xe@renesas.com>
+Subject: [PATCH v2 net] ptp: ptp_clockmatrix: use i2c_master_send for i2c write
+Date:   Tue, 18 Aug 2020 10:41:22 -0400
+Message-ID: <1597761682-31111-1-git-send-email-min.li.xe@renesas.com>
+X-Mailer: git-send-email 2.7.4
+X-TM-AS-MML: disable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 18 Aug 2020 15:41:01 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Keqian Zhu <zhukeqian1@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
-        Steven Price <steven.price@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        wanghaibin.wang@huawei.com
-Subject: Re: [RFC PATCH 0/5] KVM: arm64: Add pvtime LPT support
-In-Reply-To: <20200817084110.2672-1-zhukeqian1@huawei.com>
-References: <20200817084110.2672-1-zhukeqian1@huawei.com>
-User-Agent: Roundcube Webmail/1.4.7
-Message-ID: <8308f52e4c906cad710575724f9e3855@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: zhukeqian1@huawei.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, steven.price@arm.com, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com, wanghaibin.wang@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-18_10:2020-08-18,2020-08-18 signatures=0
+X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 suspectscore=4 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=823
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-2006250000 definitions=main-2008180107
+X-Proofpoint-Spam-Reason: mlx
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-17 09:41, Keqian Zhu wrote:
-> Hi all,
-> 
-> This patch series picks up the LPT pvtime feature originally developed
-> by Steven Price: https://patchwork.kernel.org/cover/10726499/
-> 
-> Backgroud:
-> 
-> There is demand for cross-platform migration, which means we have to
-> solve different CPU features and arch counter frequency between hosts.
-> This patch series can solve the latter problem.
-> 
-> About LPT:
-> 
-> This implements support for Live Physical Time (LPT) which provides the
-> guest with a method to derive a stable counter of time during which the
-> guest is executing even when the guest is being migrated between hosts
-> with different physical counter frequencies.
-> 
-> Changes on Steven Price's work:
-> 1. LPT structure: use symmatical semantics of scale multiplier, and use
->    fraction bits instead of "shift" to make everything clear.
-> 2. Structure allocation: host kernel does not allocates the LPT 
-> structure,
->    instead it is allocated by userspace through VM attributes. The 
-> save/restore
->    functionality can be removed.
-> 3. Since LPT structure just need update once for each guest run, add a 
-> flag to
->    indicate the update status. This has two benifits: 1) avoid multiple 
-> update
->    by each vCPUs. 2) If the update flag is not set, then return NOT 
-> SUPPORT for
->    coressponding guest HVC call.
-> 4. Add VM device attributes interface for userspace configuration.
-> 5. Add a base LPT read/write layer to reduce code.
-> 6. Support ptimer scaling.
-> 7. Support timer event stream translation.
-> 
-> Things need concern:
-> 1. https://developer.arm.com/docs/den0057/a needs update.
+From: Min Li <min.li.xe@renesas.com>
 
-LPT was explicitly removed from the spec because it doesn't really
-solve the problem, specially for the firmware: EFI knows
-nothing about this, for example. How is it going to work?
-Also, nobody was ever able to explain how this would work for
-nested virt.
+The old code for i2c write would break on some controllers, which fails
+at handling Repeated Start Condition. So we will just use i2c_master_send
+to handle write in one transanction.
 
-ARMv8.4 and ARMv8.6 have the feature set that is required to solve
-this problem without adding more PV to the kernel.
+Changes since v1:
+- Remove indentation change
 
-         M.
+Signed-off-by: Min Li <min.li.xe@renesas.com>
+---
+ drivers/ptp/ptp_clockmatrix.c | 56 +++++++++++++++++++++++++++++++++----------
+ drivers/ptp/ptp_clockmatrix.h |  2 ++
+ 2 files changed, 45 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatrix.c
+index 73aaae5..e020faf 100644
+--- a/drivers/ptp/ptp_clockmatrix.c
++++ b/drivers/ptp/ptp_clockmatrix.c
+@@ -142,16 +142,15 @@ static int idtcm_strverscmp(const char *ver1, const char *ver2)
+ 	return result;
+ }
+ 
+-static int idtcm_xfer(struct idtcm *idtcm,
+-		      u8 regaddr,
+-		      u8 *buf,
+-		      u16 count,
+-		      bool write)
++static int idtcm_xfer_read(struct idtcm *idtcm,
++			   u8 regaddr,
++			   u8 *buf,
++			   u16 count)
+ {
+ 	struct i2c_client *client = idtcm->client;
+ 	struct i2c_msg msg[2];
+ 	int cnt;
+-	char *fmt = "i2c_transfer failed at %d in %s for %s, at addr: %04X!\n";
++	char *fmt = "i2c_transfer failed at %d in %s, at addr: %04X!\n";
+ 
+ 	msg[0].addr = client->addr;
+ 	msg[0].flags = 0;
+@@ -159,7 +158,7 @@ static int idtcm_xfer(struct idtcm *idtcm,
+ 	msg[0].buf = &regaddr;
+ 
+ 	msg[1].addr = client->addr;
+-	msg[1].flags = write ? 0 : I2C_M_RD;
++	msg[1].flags = I2C_M_RD;
+ 	msg[1].len = count;
+ 	msg[1].buf = buf;
+ 
+@@ -170,7 +169,6 @@ static int idtcm_xfer(struct idtcm *idtcm,
+ 			fmt,
+ 			__LINE__,
+ 			__func__,
+-			write ? "write" : "read",
+ 			regaddr);
+ 		return cnt;
+ 	} else if (cnt != 2) {
+@@ -182,6 +180,37 @@ static int idtcm_xfer(struct idtcm *idtcm,
+ 	return 0;
+ }
+ 
++static int idtcm_xfer_write(struct idtcm *idtcm,
++			    u8 regaddr,
++			    u8 *buf,
++			    u16 count)
++{
++	struct i2c_client *client = idtcm->client;
++	/* we add 1 byte for device register */
++	u8 msg[IDTCM_MAX_WRITE_COUNT + 1];
++	int cnt;
++	char *fmt = "i2c_master_send failed at %d in %s, at addr: %04X!\n";
++
++	if (count > IDTCM_MAX_WRITE_COUNT)
++		return -EINVAL;
++
++	msg[0] = regaddr;
++	memcpy(&msg[1], buf, count);
++
++	cnt = i2c_master_send(client, msg, count + 1);
++
++	if (cnt < 0) {
++		dev_err(&client->dev,
++			fmt,
++			__LINE__,
++			__func__,
++			regaddr);
++		return cnt;
++	}
++
++	return 0;
++}
++
+ static int idtcm_page_offset(struct idtcm *idtcm, u8 val)
+ {
+ 	u8 buf[4];
+@@ -195,7 +224,7 @@ static int idtcm_page_offset(struct idtcm *idtcm, u8 val)
+ 	buf[2] = 0x10;
+ 	buf[3] = 0x20;
+ 
+-	err = idtcm_xfer(idtcm, PAGE_ADDR, buf, sizeof(buf), 1);
++	err = idtcm_xfer_write(idtcm, PAGE_ADDR, buf, sizeof(buf));
+ 
+ 	if (err) {
+ 		idtcm->page_offset = 0xff;
+@@ -223,11 +252,12 @@ static int _idtcm_rdwr(struct idtcm *idtcm,
+ 	err = idtcm_page_offset(idtcm, hi);
+ 
+ 	if (err)
+-		goto out;
++		return err;
+ 
+-	err = idtcm_xfer(idtcm, lo, buf, count, write);
+-out:
+-	return err;
++	if (write)
++		return idtcm_xfer_write(idtcm, lo, buf, count);
++
++	return idtcm_xfer_read(idtcm, lo, buf, count);
+ }
+ 
+ static int idtcm_read(struct idtcm *idtcm,
+diff --git a/drivers/ptp/ptp_clockmatrix.h b/drivers/ptp/ptp_clockmatrix.h
+index ffae56c..82840d7 100644
+--- a/drivers/ptp/ptp_clockmatrix.h
++++ b/drivers/ptp/ptp_clockmatrix.h
+@@ -55,6 +55,8 @@
+ 
+ #define PEROUT_ENABLE_OUTPUT_MASK		(0xdeadbeef)
+ 
++#define IDTCM_MAX_WRITE_COUNT			(512)
++
+ /* Values of DPLL_N.DPLL_MODE.PLL_MODE */
+ enum pll_mode {
+ 	PLL_MODE_MIN = 0,
 -- 
-Jazz is not dead. It just smells funny...
+2.7.4
+
