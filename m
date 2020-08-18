@@ -2,108 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DABB248677
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 15:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E633B248686
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 15:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726840AbgHRNyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 09:54:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55858 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726617AbgHRNx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 09:53:28 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14354206B5;
-        Tue, 18 Aug 2020 13:53:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597758808;
-        bh=khhIlOzhe+P+op+jQsBAHyQpvFYFO5Ig8H75yiOlkyY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=DGZvDskd3yzCExRRjA7bz2C5ch9eFf9VU5wK4Er9gSrk3IKxlbXB1kMxbDQWb3NGU
-         Te8xRuiDLYdmmtOnEKrC1nTEZ388TKPPWJJkwan3Joa7nluTl7zmraH+XsPvdGeoV0
-         gLOx/Msj0TyI1Pn+whvBhWYhZL0f1AKi3Kscn4tA=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id DBE773520891; Tue, 18 Aug 2020 06:53:27 -0700 (PDT)
-Date:   Tue, 18 Aug 2020 06:53:27 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
-Message-ID: <20200818135327.GF23602@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200814161106.GA13853@paulmck-ThinkPad-P72>
- <20200814174924.GI3982@worktop.programming.kicks-ass.net>
- <20200814180224.GQ4295@paulmck-ThinkPad-P72>
- <875z9lkoo4.fsf@nanos.tec.linutronix.de>
- <20200814204140.GT4295@paulmck-ThinkPad-P72>
- <20200814215206.GL3982@worktop.programming.kicks-ass.net>
- <20200816225655.GA17869@pc636>
- <20200817082849.GA28270@dhcp22.suse.cz>
- <20200817222803.GE23602@paulmck-ThinkPad-P72>
- <20200818074344.GL28270@dhcp22.suse.cz>
+        id S1726831AbgHRN4b convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 18 Aug 2020 09:56:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726739AbgHRN4T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 09:56:19 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD587C061342
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 06:56:18 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1k825w-0001mv-Mx; Tue, 18 Aug 2020 15:56:08 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1k825w-0001Hd-BR; Tue, 18 Aug 2020 15:56:08 +0200
+Message-ID: <94002fe8f460de93ab3d9ba7e5bae6ee2c1f6b64.camel@pengutronix.de>
+Subject: Re: [PATCH 2/7] media: coda: no need to check return value of
+ debugfs_create functions
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 18 Aug 2020 15:56:08 +0200
+In-Reply-To: <20200818133608.462514-2-gregkh@linuxfoundation.org>
+References: <20200818133608.462514-1-gregkh@linuxfoundation.org>
+         <20200818133608.462514-2-gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200818074344.GL28270@dhcp22.suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 09:43:44AM +0200, Michal Hocko wrote:
-> On Mon 17-08-20 15:28:03, Paul E. McKenney wrote:
-> > On Mon, Aug 17, 2020 at 10:28:49AM +0200, Michal Hocko wrote:
-> > > On Mon 17-08-20 00:56:55, Uladzislau Rezki wrote:
-> > 
-> > [ . . . ]
-> > 
-> > > > wget ftp://vps418301.ovh.net/incoming/1000000_kmalloc_kfree_rcu_proc_percpu_pagelist_fractio_is_8.png
-> > > 
-> > > 1/8 of the memory in pcp lists is quite large and likely not something
-> > > used very often.
-> > > 
-> > > Both these numbers just make me think that a dedicated pool of page
-> > > pre-allocated for RCU specifically might be a better solution. I still
-> > > haven't read through that branch of the email thread though so there
-> > > might be some pretty convincing argments to not do that.
-> > 
-> > To avoid the problematic corner cases, we would need way more dedicated
-> > memory than is reasonable, as in well over one hundred pages per CPU.
-> > Sure, we could choose a smaller number, but then we are failing to defend
-> > against flooding, even on systems that have more than enough free memory
-> > to be able to do so.  It would be better to live within what is available,
-> > taking the performance/robustness hit only if there isn't enough.
+On Tue, 2020-08-18 at 15:36 +0200, Greg Kroah-Hartman wrote:
+> When calling debugfs functions, there is no need to ever check the
+> return value.  The function can work or not, but the code logic should
+> never do something different based on this.
+>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: linux-media@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+Thank you,
+
+Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+
+regards
+Philipp
+
+> ---
+>  drivers/media/platform/coda/coda-common.c | 5 -----
+>  1 file changed, 5 deletions(-)
 > 
-> Thomas had a good point that it doesn't really make much sense to
-> optimize for flooders because that just makes them more effective.
+> diff --git a/drivers/media/platform/coda/coda-common.c b/drivers/media/platform/coda/coda-common.c
+> index 3ab3d976d8ca..9020be29d8f2 100644
+> --- a/drivers/media/platform/coda/coda-common.c
+> +++ b/drivers/media/platform/coda/coda-common.c
+> @@ -1937,9 +1937,6 @@ int coda_alloc_aux_buf(struct coda_dev *dev, struct coda_aux_buf *buf,
+>  		buf->blob.size = size;
+>  		buf->dentry = debugfs_create_blob(name, 0644, parent,
+>  						  &buf->blob);
+> -		if (!buf->dentry)
+> -			dev_warn(dev->dev,
+> -				 "failed to create debugfs entry %s\n", name);
+>  	}
+>  
+>  	return 0;
+> @@ -3211,8 +3208,6 @@ static int coda_probe(struct platform_device *pdev)
+>  	ida_init(&dev->ida);
+>  
+>  	dev->debugfs_root = debugfs_create_dir("coda", NULL);
+> -	if (!dev->debugfs_root)
+> -		dev_warn(&pdev->dev, "failed to create debugfs root\n");
+>  
+>  	/* allocate auxiliary per-device buffers for the BIT processor */
+>  	if (dev->devtype->product == CODA_DX6) {
 
-The point is not to make the flooders go faster, but rather for the
-system to be robust in the face of flooders.  Robust as in harder for
-a flooder to OOM the system.
-
-And reducing the number of post-grace-period cache misses makes it
-easier for the callback-invocation-time memory freeing to keep up with
-the flooder, thus avoiding (or at least delaying) the OOM.
-
-> > My current belief is that we need a combination of (1) either the
-> > GFP_NOLOCK flag or Peter Zijlstra's patch and
-> 
-> I must have missed the patch?
-
-If I am keeping track, this one:
-
-https://lore.kernel.org/lkml/20200814215206.GL3982@worktop.programming.kicks-ass.net/
-
-							Thanx, Paul
