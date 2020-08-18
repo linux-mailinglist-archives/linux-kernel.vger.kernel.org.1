@@ -2,122 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2E9248DB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 20:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2A1248DBC
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 20:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726685AbgHRSL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 14:11:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726435AbgHRSL1 (ORCPT
+        id S1726739AbgHRSMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 14:12:02 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:57704 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726588AbgHRSL7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 14:11:27 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40D9EC061389
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 11:11:27 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id ba10so16001251edb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 11:11:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=javigon-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=UJn2JSokJqI3bZ4orYuEJrjW3L7HkGjOPI8uUsExMI0=;
-        b=MqABaEddV5U7jNhWTNamW1+A8wcSXlLpQCJNnUuoQKGjYyrWrzW8LTsHUFA7RT+bSH
-         DF7X8MWOtpMq7uXTQw04MxtDSMVh1SxRfo0KdwfjvY2gt6YobioaGJ2neqr7IAI6SqGQ
-         NTNcD8L6vHWV7uEyH7kTiXBK7wBnMD+tvi2cPupLPWRA+8QO0DtZ0LiZGfjG7cHwNBRN
-         a/sT69GmrMRL2uecX2mSNBp/JYG8QCzg6mRIAwHn7xF+k1E7BhtgZhcKGE8gc9IuzMAy
-         129vfn8fxai1e8/i6u0mxY9iNo2O+EwQrGXqqdpDOQzHVFxMkdBE2NMRO2kUS1Sl78jY
-         aDzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=UJn2JSokJqI3bZ4orYuEJrjW3L7HkGjOPI8uUsExMI0=;
-        b=AhgFEB8VdYUKYfdLbDH83VGSrbxQkrGpy9q/OxICDp7Qez9mdvv6TqzT2TTUScUxmh
-         N5qpruryUsvGJUQvGYNrh1Ig87NoNGeVKyJ1xMr9ZTSCK2nLlQjjslKLruXoj1V99mpm
-         Y+Ju3VkuVN1QLsWckk1lAIW1kMVINBUYY/oHJ/8AscNzEqQNS4kv/JnuuqJSo3QB0Ly4
-         buOUan5q0Iol54GTrO0iFVBilplFHzwc2fIRRIrMc0Pqsi9+gM21EQq53tQ0XiV8CRuo
-         j+eHRQQ4KgWZt2LbvVKd0HxYX1AF2YRq3VrFYNXZw7Ohxd/WHVgqQMNKab/funsc6GuI
-         c//A==
-X-Gm-Message-State: AOAM533IerRXeG/Xw7XLjWHKxXhClWASi7zAMMHJwXN1mgCG5tlp5zxR
-        OqAY8G4MXZhzmpZMj30vcw4AzOpps95pJsFA
-X-Google-Smtp-Source: ABdhPJwmIpf0nigHCByv+fTuHCc4oxGRcbWfdXEg1x6hKKHOSCoLdKN/KTR7FfEZpqrl5cijFAL4nQ==
-X-Received: by 2002:aa7:c358:: with SMTP id j24mr20163939edr.377.1597774285947;
-        Tue, 18 Aug 2020 11:11:25 -0700 (PDT)
-Received: from localhost (5.186.127.235.cgn.fibianet.dk. [5.186.127.235])
-        by smtp.gmail.com with ESMTPSA id v23sm11594092ejh.84.2020.08.18.11.11.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 11:11:24 -0700 (PDT)
-Date:   Tue, 18 Aug 2020 20:11:24 +0200
-From:   Javier Gonzalez <javier@javigon.com>
-To:     Matias =?utf-8?B?QmrDuHJsaW5n?= <mb@lightnvm.io>
-Cc:     Christoph Hellwig <hch@lst.de>, axboe@kernel.dk,
-        Damien.LeMoal@wdc.com, SelvaKumar S <selvakuma.s1@samsung.com>,
-        sagi@grimberg.me, Kanchan Joshi <joshi.k@samsung.com>,
-        johannes.thumshirn@wdc.com, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, kbusch@kernel.org,
-        Nitesh Shetty <nj.shetty@samsung.com>
-Subject: Re: [PATCH 2/2] nvme: add emulation for zone-append
-Message-ID: <20200818181124.2ys5urtkodpkamsr@MacBook-Pro.localdomain>
-References: <20200818052936.10995-1-joshi.k@samsung.com>
- <CGME20200818053256epcas5p46d0b66b3702192eb6617c8bba334c15f@epcas5p4.samsung.com>
- <20200818052936.10995-3-joshi.k@samsung.com>
- <20200818071249.GB2544@lst.de>
- <20200818095033.h6ybdwiq3ljagl5a@mpHalley.local>
- <4ae89443-d8ae-4efb-581e-b635c21b27de@lightnvm.io>
+        Tue, 18 Aug 2020 14:11:59 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07IHvQ4w166027;
+        Tue, 18 Aug 2020 18:11:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=SViOGRVArP/KoUalqZ8HkB896YXmn3zWbyaQ3dkSGF0=;
+ b=m4aZNhMAiQoYHwr13aXjaOvwnRPuFK7m04YUi5w+drh/DcnlOHhpM1s7DjHDHP5dvavI
+ yh65ifgMa+tVKcSL7/SuRSIcB0Wbfepi09qYB3Yec9HIjdcOfbOIGrasmF0ThoGxzF9+
+ MzExASVfFXD63E0dekktr/wHC06OibTupvz2ywRG0kjSJ22F2ue2ZJXDiklm1cbuc9Jq
+ Ds74+j3V9C1ouiN3ysXAdAKBqEsqYJnZVWsiGWmNcEbOIGffZKR+vUoKj2Pxeanc0QKT
+ wivyxPgOuc4bbYcJh0VMAvx80XX5H+8TB62m5dp8ERRbi4wQDJX6gfm2CNY7hPrHEx/A Gg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 32x7nmeecy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 18 Aug 2020 18:11:46 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07IHwuD3040002;
+        Tue, 18 Aug 2020 18:11:45 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 32xsmxjcwt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 Aug 2020 18:11:45 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07IIBhFe026233;
+        Tue, 18 Aug 2020 18:11:43 GMT
+Received: from localhost (/10.159.135.24)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 18 Aug 2020 11:11:43 -0700
+Date:   Tue, 18 Aug 2020 11:11:41 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Yu Kuai <yukuai3@huawei.com>, hch@infradead.org,
+        david@fromorbit.com, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+Subject: Re: [RFC PATCH V2] iomap: add support to track dirty state of sub
+ pages
+Message-ID: <20200818181141.GE6090@magnolia>
+References: <20200818134618.2345884-1-yukuai3@huawei.com>
+ <20200818155305.GR17456@casper.infradead.org>
+ <20200818161229.GK6107@magnolia>
+ <20200818165019.GT17456@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4ae89443-d8ae-4efb-581e-b635c21b27de@lightnvm.io>
+In-Reply-To: <20200818165019.GT17456@casper.infradead.org>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9717 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 bulkscore=0
+ mlxlogscore=999 phishscore=0 mlxscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008180125
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9717 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
+ impostorscore=0 priorityscore=1501 adultscore=0 mlxscore=0 mlxlogscore=999
+ lowpriorityscore=0 bulkscore=0 phishscore=0 malwarescore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008180125
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.08.2020 12:51, Matias Bjørling wrote:
->On 18/08/2020 11.50, Javier Gonzalez wrote:
->>On 18.08.2020 09:12, Christoph Hellwig wrote:
->>>On Tue, Aug 18, 2020 at 10:59:36AM +0530, Kanchan Joshi wrote:
->>>>If drive does not support zone-append natively, enable emulation using
->>>>regular write.
->>>>Make emulated zone-append cmd write-lock the zone, preventing
->>>>concurrent append/write on the same zone.
->>>
->>>I really don't think we should add this.  ZNS and the Linux support
->>>were all designed with Zone Append in mind, and then your company did
->>>the nastiest possible move violating the normal NVMe procedures to make
->>>it optional.  But that doesn't change the fact the Linux should keep
->>>requiring it, especially with the amount of code added here and how it
->>>hooks in the fast path.
->>
->>I understand that the NVMe process was agitated and that the current ZNS
->>implementation in Linux relies in append support from the device
->>perspective. However, the current TP does allow for not implementing
->>append, and a number of customers are requiring the use of normal
->>writes, which we want to support.
->
->There is a lot of things that is specified in NVMe, but not 
->implemented in the Linux kernel. That your company is not able to 
->efficiently implement the Zone Append command (this is the only reason 
->I can think of that make you and your company cause such a fuss), 
+On Tue, Aug 18, 2020 at 05:50:19PM +0100, Matthew Wilcox wrote:
+> On Tue, Aug 18, 2020 at 09:12:29AM -0700, Darrick J. Wong wrote:
+> > On Tue, Aug 18, 2020 at 04:53:05PM +0100, Matthew Wilcox wrote:
+> > > It would be better to use the same wording as below:
+> > > 
+> > > > +	bitmap_zero(iop->state, PAGE_SIZE * 2 / SECTOR_SIZE);
+> > 
+> > ISTR there was some reason why '512' was hardcoded in here instead of
+> > SECTOR_SIZE.  I /think/ it was so that iomap.h did not then have a hard
+> > dependency on blkdev.h and everything else that requires...
+> 
+> That ship already sailed.  I over-trimmed this line:
+> 
+> -       bitmap_zero(iop->uptodate, PAGE_SIZE / SECTOR_SIZE);
+> 
+> Looks like Christoph changed his mind sometime between that message
+> and the first commit: 9dc55f1389f9569acf9659e58dd836a9c70df217
 
-This comment is out of place and I will choose to ignore it.
+Aha, I think the complaint was about SECTOR_SIZE use in iomap.h, not the
+fs/iomap/ code.  This patch doesn't touch the header.  I will stop
+babbling and go back to reading it. ;)
 
->shouldn't mean that everyone else has to suffer.
+--D
 
-This is not a quirk, nor a software work-around, This is a design
-decision affecting the storage stack of several OEMs. As such, I would
-like to find a way to implement this functionality.
-
-Last time we discussed this in the mailing list, you among others
-pointed to append emulation as the best way to enable this path and here
-we are. Can you explained what changed?
-
->
->In any case, SPDK offers adequate support and can be used today.
-
-We take the SPDK discussion in the appropriate mailing lists and slack
-channels.
-
+> My THP patches convert the bit array to be per-block rather than
+> per-sector, so this is all going to go away soon ;-)
+> 
+> > https://lore.kernel.org/linux-xfs/20181215105155.GD1575@lst.de/
