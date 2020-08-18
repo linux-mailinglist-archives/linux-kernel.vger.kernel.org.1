@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39DDE2486E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D175A2486E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727050AbgHROOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 10:14:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48994 "EHLO
+        id S1727030AbgHROO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 10:14:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726886AbgHROMv (ORCPT
+        with ESMTP id S1726943AbgHROMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 10:12:51 -0400
+        Tue, 18 Aug 2020 10:12:48 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEDB0C06134C
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE99FC061349
         for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 07:12:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=PfIDtm2QE+K/DkBlMYuOcQsFGoqkqG/xnPE/RJe+5QA=; b=aizfbu/apkc7bbadT5U2Da01oc
-        HWLH5juofXCX2laOI43m1bylseuT2jsZ9S+/idtVpCvUFvAfY37P50o62V6+dOzjb73ATBPphzneT
-        3jYJ0i6suHPe3QcNVc0NFt0zls+AkZxlST21kuOq6t+USR8KCR8pV5D+1Ww9jMYrFOD0fMXKDTnzC
-        mbuqoh/KR3RiSS80gObEppXWr4NExisUag0qB/SHYXNV34wWQVV0rIj63HqFZKD+nZIvwAzpqD25A
-        rFhPtK+VCHocpsBHn+dkm2eRDU79ukGpxHQD2yFRSlRdL8/8tz9om1GAEb+E5o5Y8f2iRaK2Spcz5
-        tOOjru6Q==;
+        bh=bWebdPWO2kZ+aSt51nW30p9g5yFg2ky94+FiGxSEiuw=; b=E9RFOP86wmNYHMSSfzrtshpypS
+        5wSP8cdgnppfFdSFwJNvoW0x152LJNhdRnUTJeCCEOpdm5+OSE9xVhzDrRt4Sl6vn1dR+9Bk3bRaR
+        1vHXXVQ5k9vAA1OjreWQN00RL1RbDyeee7z+dz/FiLfeLsbV7G2eQE04/kXosxARw+yOHNmTCTHGI
+        F5dt9wuA4R7QRmbdMYyDtnyeWLGrXW6NzTTBXu+Tr5ntK5y3X+o7HzojqBaE00nb7y+bOHblOGPnM
+        lab1ZLOqrCysxPZIz4DcGf/jEkXk/iiB1WMxurGj8xx0kG3L6uQnOC5eg0rn86atPt3itGKRN41oN
+        Ps1GXBFA==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k82LK-0006VE-Kz; Tue, 18 Aug 2020 14:12:04 +0000
+        id 1k82LK-0006VD-Kz; Tue, 18 Aug 2020 14:12:03 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AD294307974;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AF2B6307976;
         Tue, 18 Aug 2020 16:12:00 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id CF8B423D42C0D; Tue, 18 Aug 2020 16:11:59 +0200 (CEST)
-Message-ID: <20200818135805.042977182@infradead.org>
+        id D5E7123D42C0E; Tue, 18 Aug 2020 16:11:59 +0200 (CEST)
+Message-ID: <20200818135805.101186767@infradead.org>
 User-Agent: quilt/0.66
-Date:   Tue, 18 Aug 2020 15:57:48 +0200
+Date:   Tue, 18 Aug 2020 15:57:49 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     x86@kernel.org
 Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
@@ -47,7 +47,7 @@ Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
         hpa@zytor.com, luto@kernel.org, ard.biesheuvel@linaro.org,
         jpoimboe@redhat.com, pbonzini@redhat.com,
         mathieu.desnoyers@efficios.com, linux@rasmusvillemoes.dk
-Subject: [PATCH v7 13/18] static_call: Add static_call_cond()
+Subject: [PATCH v7 14/18] static_call: Handle tail-calls
 References: <20200818135735.948368560@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,249 +56,232 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend the static_call infrastructure to optimize the following common
-pattern:
+GCC can turn our static_call(name)(args...) into a tail call, in which
+case we get a JMP.d32 into the trampoline (which then does a further
+tail-call).
 
-	if (func_ptr)
-		func_ptr(args...)
-
-For the trampoline (which is in effect a tail-call), we patch the
-JMP.d32 into a RET, which then directly consumes the trampoline call.
-
-For the in-line sites we replace the CALL with a NOP5.
-
-NOTE: this is 'obviously' limited to functions with a 'void' return type.
-
-NOTE: DEFINE_STATIC_COND_CALL() only requires a typename, as opposed
-      to a full function.
+Teach objtool to recognise and mark these in .static_call_sites and
+adjust the code patching to deal with this.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/include/asm/static_call.h |   12 +++--
- arch/x86/kernel/static_call.c      |   42 +++++++++++++-----
- include/linux/static_call.h        |   86 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 127 insertions(+), 13 deletions(-)
+ arch/x86/kernel/static_call.c           |   21 ++++++++++++++++++---
+ include/linux/static_call.h             |    4 ++--
+ include/linux/static_call_types.h       |    7 +++++++
+ kernel/static_call.c                    |   21 +++++++++++++--------
+ tools/include/linux/static_call_types.h |    7 +++++++
+ tools/objtool/check.c                   |   18 +++++++++++++-----
+ 6 files changed, 60 insertions(+), 18 deletions(-)
 
---- a/arch/x86/include/asm/static_call.h
-+++ b/arch/x86/include/asm/static_call.h
-@@ -20,15 +20,21 @@
-  * it does tail-call optimization on the call; since you cannot compute the
-  * relative displacement across sections.
-  */
--#define ARCH_DEFINE_STATIC_CALL_TRAMP(name, func)			\
-+
-+#define __ARCH_DEFINE_STATIC_CALL_TRAMP(name, insns)			\
- 	asm(".pushsection .static_call.text, \"ax\"		\n"	\
- 	    ".align 4						\n"	\
- 	    ".globl " STATIC_CALL_TRAMP_STR(name) "		\n"	\
- 	    STATIC_CALL_TRAMP_STR(name) ":			\n"	\
--	    "	.byte 0xe9 # jmp.d32				\n"	\
--	    "	.long " #func " - (. + 4)			\n"	\
-+	    insns "						\n"	\
- 	    ".type " STATIC_CALL_TRAMP_STR(name) ", @function	\n"	\
- 	    ".size " STATIC_CALL_TRAMP_STR(name) ", . - " STATIC_CALL_TRAMP_STR(name) " \n" \
- 	    ".popsection					\n")
- 
-+#define ARCH_DEFINE_STATIC_CALL_TRAMP(name, func)			\
-+	__ARCH_DEFINE_STATIC_CALL_TRAMP(name, ".byte 0xe9; .long " #func " - (. + 4)")
-+
-+#define ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)			\
-+	__ARCH_DEFINE_STATIC_CALL_TRAMP(name, "ret; nop; nop; nop; nop")
-+
- #endif /* _ASM_STATIC_CALL_H */
 --- a/arch/x86/kernel/static_call.c
 +++ b/arch/x86/kernel/static_call.c
-@@ -4,19 +4,41 @@
- #include <linux/bug.h>
- #include <asm/text-patching.h>
- 
--static void __static_call_transform(void *insn, u8 opcode, void *func)
-+enum insn_type {
-+	CALL = 0, /* site call */
-+	NOP = 1,  /* site cond-call */
-+	JMP = 2,  /* tramp / site tail-call */
-+	RET = 3,  /* tramp / site cond-tail-call */
-+};
-+
-+static void __static_call_transform(void *insn, enum insn_type type, void *func)
- {
--	const void *code = text_gen_insn(opcode, insn, func);
-+	int size = CALL_INSN_SIZE;
-+	const void *code;
- 
--	if (WARN_ONCE(*(u8 *)insn != opcode,
--		      "unexpected static call insn opcode 0x%x at %pS\n",
--		      opcode, insn))
--		return;
-+	switch (type) {
-+	case CALL:
-+		code = text_gen_insn(CALL_INSN_OPCODE, insn, func);
-+		break;
-+
-+	case NOP:
-+		code = ideal_nops[NOP_ATOMIC5];
-+		break;
-+
-+	case JMP:
-+		code = text_gen_insn(JMP32_INSN_OPCODE, insn, func);
-+		break;
-+
-+	case RET:
-+		code = text_gen_insn(RET_INSN_OPCODE, insn, func);
-+		size = RET_INSN_SIZE;
-+		break;
-+	}
- 
--	if (memcmp(insn, code, CALL_INSN_SIZE) == 0)
-+	if (memcmp(insn, code, size) == 0)
- 		return;
- 
--	text_poke_bp(insn, code, CALL_INSN_SIZE, NULL);
-+	text_poke_bp(insn, code, size, NULL);
+@@ -41,15 +41,30 @@ static void __static_call_transform(void
+ 	text_poke_bp(insn, code, size, NULL);
  }
  
- void arch_static_call_transform(void *site, void *tramp, void *func)
-@@ -24,10 +46,10 @@ void arch_static_call_transform(void *si
+-void arch_static_call_transform(void *site, void *tramp, void *func)
++static inline enum insn_type __sc_insn(bool null, bool tail)
++{
++	/*
++	 * Encode the following table without branches:
++	 *
++	 *	tail	null	insn
++	 *	-----+-------+------
++	 *	  0  |   0   |  CALL
++	 *	  0  |   1   |  NOP
++	 *	  1  |   0   |  JMP
++	 *	  1  |   1   |  RET
++	 */
++	return 2*tail + null;
++}
++
++void arch_static_call_transform(void *site, void *tramp, void *func, bool tail)
+ {
  	mutex_lock(&text_mutex);
  
  	if (tramp)
--		__static_call_transform(tramp, JMP32_INSN_OPCODE, func);
-+		__static_call_transform(tramp, func ? JMP : RET, func);
+-		__static_call_transform(tramp, func ? JMP : RET, func);
++		__static_call_transform(tramp, __sc_insn(!func, true), func);
  
  	if (IS_ENABLED(CONFIG_HAVE_STATIC_CALL_INLINE) && site)
--		__static_call_transform(site, CALL_INSN_OPCODE, func);
-+		__static_call_transform(site, func ? CALL : NOP, func);
+-		__static_call_transform(site, func ? CALL : NOP, func);
++		__static_call_transform(site, __sc_insn(!func, tail), func);
  
  	mutex_unlock(&text_mutex);
  }
 --- a/include/linux/static_call.h
 +++ b/include/linux/static_call.h
-@@ -16,7 +16,9 @@
-  *
-  *   DECLARE_STATIC_CALL(name, func);
-  *   DEFINE_STATIC_CALL(name, func);
-+ *   DEFINE_STATIC_CALL_NULL(name, typename);
-  *   static_call(name)(args...);
-+ *   static_call_cond(name)(args...);
-  *   static_call_update(name, func);
-  *
-  * Usage example:
-@@ -52,6 +54,43 @@
-  *   rather than calling through the trampoline.  This requires objtool or a
-  *   compiler plugin to detect all the static_call() sites and annotate them
-  *   in the .static_call_sites section.
-+ *
-+ *
-+ * Notes on NULL function pointers:
-+ *
-+ *   Static_call()s support NULL functions, with many of the caveats that
-+ *   regular function pointers have.
-+ *
-+ *   Clearly calling a NULL function pointer is 'BAD', so too for
-+ *   static_call()s (although when HAVE_STATIC_CALL it might not be immediately
-+ *   fatal). A NULL static_call can be the result of:
-+ *
-+ *     DECLARE_STATIC_CALL_NULL(my_static_call, void (*)(int));
-+ *
-+ *   which is equivalent to declaring a NULL function pointer with just a
-+ *   typename:
-+ *
-+ *     void (*my_func_ptr)(int arg1) = NULL;
-+ *
-+ *   or using static_call_update() with a NULL function. In both cases the
-+ *   HAVE_STATIC_CALL implementation will patch the trampoline with a RET
-+ *   instruction, instead of an immediate tail-call JMP. HAVE_STATIC_CALL_INLINE
-+ *   architectures can patch the trampoline call to a NOP.
-+ *
-+ *   In all cases, any argument evaluation is unconditional. Unlike a regular
-+ *   conditional function pointer call:
-+ *
-+ *     if (my_func_ptr)
-+ *         my_func_ptr(arg1)
-+ *
-+ *   where the argument evaludation also depends on the pointer value.
-+ *
-+ *   When calling a static_call that can be NULL, use:
-+ *
-+ *     static_call_cond(name)(arg1);
-+ *
-+ *   which will include the required value tests to avoid NULL-pointer
-+ *   dereferences.
+@@ -103,7 +103,7 @@
+ /*
+  * Either @site or @tramp can be NULL.
   */
+-extern void arch_static_call_transform(void *site, void *tramp, void *func);
++extern void arch_static_call_transform(void *site, void *tramp, void *func, bool tail);
  
- #include <linux/types.h>
-@@ -120,7 +159,16 @@ extern int static_call_text_reserved(voi
- 	};								\
- 	ARCH_DEFINE_STATIC_CALL_TRAMP(name, _func)
+ #define STATIC_CALL_TRAMP_ADDR(name) &STATIC_CALL_TRAMP(name)
  
-+#define DEFINE_STATIC_CALL_NULL(name, _func)				\
-+	DECLARE_STATIC_CALL(name, _func);				\
-+	struct static_call_key STATIC_CALL_KEY(name) = {		\
-+		.func = NULL,						\
-+		.type = 1,						\
-+	};								\
-+	ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)
-+
- #define static_call(name)	__static_call(name)
-+#define static_call_cond(name)	(void)__static_call(name)
+@@ -206,7 +206,7 @@ void __static_call_update(struct static_
+ {
+ 	cpus_read_lock();
+ 	WRITE_ONCE(key->func, func);
+-	arch_static_call_transform(NULL, tramp, func);
++	arch_static_call_transform(NULL, tramp, func, false);
+ 	cpus_read_unlock();
+ }
  
- #define EXPORT_STATIC_CALL(name)					\
- 	EXPORT_SYMBOL(STATIC_CALL_KEY(name));				\
-@@ -143,7 +191,15 @@ struct static_call_key {
- 	};								\
- 	ARCH_DEFINE_STATIC_CALL_TRAMP(name, _func)
+--- a/include/linux/static_call_types.h
++++ b/include/linux/static_call_types.h
+@@ -17,6 +17,13 @@
+ #define STATIC_CALL_TRAMP_STR(name)	__stringify(STATIC_CALL_TRAMP(name))
  
-+#define DEFINE_STATIC_CALL_NULL(name, _func)				\
-+	DECLARE_STATIC_CALL(name, _func);				\
-+	struct static_call_key STATIC_CALL_KEY(name) = {		\
-+		.func = NULL,						\
-+	};								\
-+	ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)
-+
- #define static_call(name)	__static_call(name)
-+#define static_call_cond(name)	(void)__static_call(name)
- 
- static inline
- void __static_call_update(struct static_call_key *key, void *tramp, void *func)
-@@ -179,9 +235,39 @@ struct static_call_key {
- 		.func = _func,						\
- 	}
- 
-+#define DEFINE_STATIC_CALL_NULL(name, _func)				\
-+	DECLARE_STATIC_CALL(name, _func);				\
-+	struct static_call_key STATIC_CALL_KEY(name) = {		\
-+		.func = NULL,						\
-+	}
-+
- #define static_call(name)						\
- 	((typeof(STATIC_CALL_TRAMP(name))*)(STATIC_CALL_KEY(name).func))
- 
-+static inline void __static_call_nop(void) { }
+ /*
++ * Flags in the low bits of static_call_site::key.
++ */
++#define STATIC_CALL_SITE_TAIL 1UL	/* tail call */
++#define STATIC_CALL_SITE_INIT 2UL	/* init section */
++#define STATIC_CALL_SITE_FLAGS 3UL
 +
 +/*
-+ * This horrific hack takes care of two things:
-+ *
-+ *  - it ensures the compiler will only load the function pointer ONCE,
-+ *    which avoids a reload race.
-+ *
-+ *  - it ensures the argument evaluation is unconditional, similar
-+ *    to the HAVE_STATIC_CALL variant.
-+ *
-+ * Sadly current GCC/Clang (10 for both) do not optimize this properly
-+ * and will emit an indirect call for the NULL case :-(
-+ */
-+#define __static_call_cond(name)					\
-+({									\
-+	void *func = READ_ONCE(STATIC_CALL_KEY(name).func);		\
-+	if (!func)							\
-+		func = &__static_call_nop;				\
-+	(typeof(STATIC_CALL_TRAMP(name))*)func;				\
-+})
-+
-+#define static_call_cond(name)	(void)__static_call_cond(name)
-+
- static inline
- void __static_call_update(struct static_call_key *key, void *tramp, void *func)
+  * The static call site table needs to be created by external tooling (objtool
+  * or a compiler plugin).
+  */
+--- a/kernel/static_call.c
++++ b/kernel/static_call.c
+@@ -15,8 +15,6 @@ extern struct static_call_site __start_s
+ 
+ static bool static_call_initialized;
+ 
+-#define STATIC_CALL_INIT 1UL
+-
+ /* mutex to protect key modules/sites */
+ static DEFINE_MUTEX(static_call_mutex);
+ 
+@@ -39,18 +37,23 @@ static inline void *static_call_addr(str
+ static inline struct static_call_key *static_call_key(const struct static_call_site *site)
  {
+ 	return (struct static_call_key *)
+-		(((long)site->key + (long)&site->key) & ~STATIC_CALL_INIT);
++		(((long)site->key + (long)&site->key) & ~STATIC_CALL_SITE_FLAGS);
+ }
+ 
+ /* These assume the key is word-aligned. */
+ static inline bool static_call_is_init(struct static_call_site *site)
+ {
+-	return ((long)site->key + (long)&site->key) & STATIC_CALL_INIT;
++	return ((long)site->key + (long)&site->key) & STATIC_CALL_SITE_INIT;
++}
++
++static inline bool static_call_is_tail(struct static_call_site *site)
++{
++	return ((long)site->key + (long)&site->key) & STATIC_CALL_SITE_TAIL;
+ }
+ 
+ static inline void static_call_set_init(struct static_call_site *site)
+ {
+-	site->key = ((long)static_call_key(site) | STATIC_CALL_INIT) -
++	site->key = ((long)static_call_key(site) | STATIC_CALL_SITE_INIT) -
+ 		    (long)&site->key;
+ }
+ 
+@@ -104,7 +107,7 @@ void __static_call_update(struct static_
+ 
+ 	key->func = func;
+ 
+-	arch_static_call_transform(NULL, tramp, func);
++	arch_static_call_transform(NULL, tramp, func, false);
+ 
+ 	/*
+ 	 * If uninitialized, we'll not update the callsites, but they still
+@@ -154,7 +157,8 @@ void __static_call_update(struct static_
+ 				continue;
+ 			}
+ 
+-			arch_static_call_transform(site_addr, NULL, func);
++			arch_static_call_transform(site_addr, NULL, func,
++				static_call_is_tail(site));
+ 		}
+ 	}
+ 
+@@ -198,7 +202,8 @@ static int __static_call_init(struct mod
+ 			key->mods = site_mod;
+ 		}
+ 
+-		arch_static_call_transform(site_addr, NULL, key->func);
++		arch_static_call_transform(site_addr, NULL, key->func,
++				static_call_is_tail(site));
+ 	}
+ 
+ 	return 0;
+--- a/tools/include/linux/static_call_types.h
++++ b/tools/include/linux/static_call_types.h
+@@ -17,6 +17,13 @@
+ #define STATIC_CALL_TRAMP_STR(name)	__stringify(STATIC_CALL_TRAMP(name))
+ 
+ /*
++ * Flags in the low bits of static_call_site::key.
++ */
++#define STATIC_CALL_SITE_TAIL 1UL	/* tail call */
++#define STATIC_CALL_SITE_INIT 2UL	/* init section */
++#define STATIC_CALL_SITE_FLAGS 3UL
++
++/*
+  * The static call site table needs to be created by external tooling (objtool
+  * or a compiler plugin).
+  */
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -511,7 +511,7 @@ static int create_static_call_sections(s
+ 		}
+ 		memset(reloc, 0, sizeof(*reloc));
+ 		reloc->sym = key_sym;
+-		reloc->addend = 0;
++		reloc->addend = is_sibling_call(insn) ? STATIC_CALL_SITE_TAIL : 0;
+ 		reloc->type = R_X86_64_PC32;
+ 		reloc->offset = idx * sizeof(struct static_call_site) + 4;
+ 		reloc->sec = reloc_sec;
+@@ -720,6 +720,10 @@ static int add_jump_destinations(struct
+ 		} else {
+ 			/* external sibling call */
+ 			insn->call_dest = reloc->sym;
++			if (insn->call_dest->static_call_tramp) {
++				list_add_tail(&insn->static_call_node,
++					      &file->static_call_list);
++			}
+ 			continue;
+ 		}
+ 
+@@ -771,6 +775,10 @@ static int add_jump_destinations(struct
+ 
+ 				/* internal sibling call */
+ 				insn->call_dest = insn->jump_dest->func;
++				if (insn->call_dest->static_call_tramp) {
++					list_add_tail(&insn->static_call_node,
++						      &file->static_call_list);
++				}
+ 			}
+ 		}
+ 	}
+@@ -1639,6 +1647,10 @@ static int decode_sections(struct objtoo
+ 	if (ret)
+ 		return ret;
+ 
++	ret = read_static_call_tramps(file);
++	if (ret)
++		return ret;
++
+ 	ret = add_jump_destinations(file);
+ 	if (ret)
+ 		return ret;
+@@ -1671,10 +1683,6 @@ static int decode_sections(struct objtoo
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = read_static_call_tramps(file);
+-	if (ret)
+-		return ret;
+-
+ 	return 0;
+ }
+ 
 
 
