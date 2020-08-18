@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D79248481
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 14:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DECC2248482
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 14:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726838AbgHRMKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 08:10:36 -0400
-Received: from mga07.intel.com ([134.134.136.100]:58739 "EHLO mga07.intel.com"
+        id S1726879AbgHRMKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 08:10:42 -0400
+Received: from mga07.intel.com ([134.134.136.100]:58731 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726792AbgHRMKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 08:10:23 -0400
-IronPort-SDR: mss5JKyw5bR37BTig66GpIaVZ7J11/Xx/yxgLG9Syh8ia8Hjnx6nqYIn+dmrNOcdWoiMj8DHHc
- p5wZ/x6+mArA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="219200404"
+        id S1726688AbgHRMKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 08:10:32 -0400
+IronPort-SDR: dtl0N/mWoEBrTLaNd3t9iNpqtIWp4lTBNO+9/wH3xvxzLPGbBrDPlEKv7pEA6PQsODca/KqvTH
+ ZsED9yPESpbg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="219200410"
 X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
-   d="scan'208";a="219200404"
+   d="scan'208";a="219200410"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 05:10:22 -0700
-IronPort-SDR: zSuB06hyksvsmMMuIP6as8mjjlqkZ3hBWy5xVqaEyU84k1/Xie1+GafoiiGPM0liAP9IPuA/K9
- +4nwSTWMkFeg==
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 05:10:25 -0700
+IronPort-SDR: 5wiynQ+R3crV6FggJZEng6xVQF/YcRAlrD4oOCgWUK2XPNJa4tmQDFldvXCw+b6gun7Tglk/b+
+ 4P6azz3R6GBA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
-   d="scan'208";a="326713055"
+   d="scan'208";a="326713069"
 Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
-  by orsmga008.jf.intel.com with ESMTP; 18 Aug 2020 05:10:20 -0700
+  by orsmga008.jf.intel.com with ESMTP; 18 Aug 2020 05:10:22 -0700
 From:   Tomas Winkler <tomas.winkler@intel.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
         linux-kernel@vger.kernel.org,
         Tomas Winkler <tomas.winkler@intel.com>
-Subject: [char-misc-next 10/13] mei: bus: unconditionally enable clients with vtag support
-Date:   Tue, 18 Aug 2020 14:51:44 +0300
-Message-Id: <20200818115147.2567012-11-tomas.winkler@intel.com>
+Subject: [char-misc-next 11/13] mei: add connect with vtag ioctl
+Date:   Tue, 18 Aug 2020 14:51:45 +0300
+Message-Id: <20200818115147.2567012-12-tomas.winkler@intel.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200818115147.2567012-1-tomas.winkler@intel.com>
 References: <20200818115147.2567012-1-tomas.winkler@intel.com>
@@ -47,47 +47,375 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alexander Usyskin <alexander.usyskin@intel.com>
 
-The list of clients is only visible via mei client bus.
-Enabling vtag clients on the mei client bus allows user-space to
-enumerate clients with vtag support by traversing the mei bus on sysfs.
-This feature is required for ACRN device model service.
+This IOCTL is used to associate the current file descriptor
+with a FW Client (given by UUID), and virtual tag (vtag).
+The IOCTL opens a communication channel between a host client
+and a FW client on a tagged channel. From this point on,
+every reader  and write will communicate with the associated
+FW client on the tagged channel. Upon close() the communication
+is terminated.
+
+The IOCTL argument is a struct with a union that contains
+the input parameter and the output parameter for this IOCTL.
+
+The input parameter is UUID of the FW Client, a vtag [0,255]
+The output parameter is the properties of the FW client
+
+Clients that do not support tagged connection
+will respond with -EOPNOTSUPP
 
 Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
 Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
 ---
- drivers/misc/mei/bus-fixup.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/misc/mei/main.c  | 210 ++++++++++++++++++++++++++++++++++++---
+ include/uapi/linux/mei.h |  49 +++++++++
+ 2 files changed, 243 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/misc/mei/bus-fixup.c b/drivers/misc/mei/bus-fixup.c
-index 07ba16d46690..4e30fa98fe7d 100644
---- a/drivers/misc/mei/bus-fixup.c
-+++ b/drivers/misc/mei/bus-fixup.c
-@@ -463,6 +463,17 @@ static void mei_nfc(struct mei_cl_device *cldev)
- 	dev_dbg(bus->dev, "end of fixup match = %d\n", cldev->do_match);
+diff --git a/drivers/misc/mei/main.c b/drivers/misc/mei/main.c
+index 401bf8743689..9f6682033ed7 100644
+--- a/drivers/misc/mei/main.c
++++ b/drivers/misc/mei/main.c
+@@ -395,17 +395,18 @@ static ssize_t mei_write(struct file *file, const char __user *ubuf,
+  * mei_ioctl_connect_client - the connect to fw client IOCTL function
+  *
+  * @file: private data of the file object
+- * @data: IOCTL connect data, input and output parameters
++ * @in_client_uuid: requested UUID for connection
++ * @client: IOCTL connect data, output parameters
+  *
+  * Locking: called under "dev->device_lock" lock
+  *
+  * Return: 0 on success, <0 on failure.
+  */
+ static int mei_ioctl_connect_client(struct file *file,
+-			struct mei_connect_client_data *data)
++				    const uuid_le *in_client_uuid,
++				    struct mei_client *client)
+ {
+ 	struct mei_device *dev;
+-	struct mei_client *client;
+ 	struct mei_me_client *me_cl;
+ 	struct mei_cl *cl;
+ 	int rets;
+@@ -413,18 +414,15 @@ static int mei_ioctl_connect_client(struct file *file,
+ 	cl = file->private_data;
+ 	dev = cl->dev;
+ 
+-	if (dev->dev_state != MEI_DEV_ENABLED)
+-		return -ENODEV;
+-
+ 	if (cl->state != MEI_FILE_INITIALIZING &&
+ 	    cl->state != MEI_FILE_DISCONNECTED)
+ 		return  -EBUSY;
+ 
+ 	/* find ME client we're trying to connect to */
+-	me_cl = mei_me_cl_by_uuid(dev, &data->in_client_uuid);
++	me_cl = mei_me_cl_by_uuid(dev, in_client_uuid);
+ 	if (!me_cl) {
+ 		dev_dbg(dev->dev, "Cannot connect to FW Client UUID = %pUl\n",
+-			&data->in_client_uuid);
++			in_client_uuid);
+ 		rets = -ENOTTY;
+ 		goto end;
+ 	}
+@@ -434,7 +432,7 @@ static int mei_ioctl_connect_client(struct file *file,
+ 			 !dev->allow_fixed_address : !dev->hbm_f_fa_supported;
+ 		if (forbidden) {
+ 			dev_dbg(dev->dev, "Connection forbidden to FW Client UUID = %pUl\n",
+-				&data->in_client_uuid);
++				in_client_uuid);
+ 			rets = -ENOTTY;
+ 			goto end;
+ 		}
+@@ -448,7 +446,6 @@ static int mei_ioctl_connect_client(struct file *file,
+ 			me_cl->props.max_msg_length);
+ 
+ 	/* prepare the output buffer */
+-	client = &data->out_client_properties;
+ 	client->max_msg_length = me_cl->props.max_msg_length;
+ 	client->protocol_version = me_cl->props.protocol_version;
+ 	dev_dbg(dev->dev, "Can connect?\n");
+@@ -460,6 +457,135 @@ static int mei_ioctl_connect_client(struct file *file,
+ 	return rets;
  }
  
 +/**
-+ * vt_support - enable on bus clients with vtag support
++ * mei_vt_support_check - check if client support vtags
 + *
-+ * @cldev: me clients device
++ * Locking: called under "dev->device_lock" lock
++ *
++ * @dev: mei_device
++ * @uuid: client UUID
++ *
++ * Return:
++ *	0 - supported
++ *	-ENOTTY - no such client
++ *	-EOPNOTSUPP - vtags are not supported by client
 + */
-+static void vt_support(struct mei_cl_device *cldev)
++static int mei_vt_support_check(struct mei_device *dev, const uuid_le *uuid)
 +{
-+	if (cldev->me_cl->props.vt_supported == 1)
-+		cldev->do_match = 1;
++	struct mei_me_client *me_cl;
++	int ret;
++
++	if (!dev->hbm_f_vt_supported)
++		return -EOPNOTSUPP;
++
++	me_cl = mei_me_cl_by_uuid(dev, uuid);
++	if (!me_cl) {
++		dev_dbg(dev->dev, "Cannot connect to FW Client UUID = %pUl\n",
++			uuid);
++		return -ENOTTY;
++	}
++	ret = me_cl->props.vt_supported ? 0 : -EOPNOTSUPP;
++	mei_me_cl_put(me_cl);
++
++	return ret;
 +}
 +
- #define MEI_FIXUP(_uuid, _hook) { _uuid, _hook }
- 
- static struct mei_fixup {
-@@ -476,6 +487,7 @@ static struct mei_fixup {
- 	MEI_FIXUP(MEI_UUID_WD, mei_wd),
- 	MEI_FIXUP(MEI_UUID_MKHIF_FIX, mei_mkhi_fix),
- 	MEI_FIXUP(MEI_UUID_HDCP, whitelist),
-+	MEI_FIXUP(MEI_UUID_ANY, vt_support),
- };
- 
++/**
++ * mei_ioctl_connect_vtag - connect to fw client with vtag IOCTL function
++ *
++ * @file: private data of the file object
++ * @in_client_uuid: requested UUID for connection
++ * @client: IOCTL connect data, output parameters
++ * @vtag: vm tag
++ *
++ * Locking: called under "dev->device_lock" lock
++ *
++ * Return: 0 on success, <0 on failure.
++ */
++static int mei_ioctl_connect_vtag(struct file *file,
++				  const uuid_le *in_client_uuid,
++				  struct mei_client *client,
++				  u8 vtag)
++{
++	struct mei_device *dev;
++	struct mei_cl *cl;
++	struct mei_cl *pos;
++	struct mei_cl_vtag *cl_vtag;
++
++	cl = file->private_data;
++	dev = cl->dev;
++
++	dev_dbg(dev->dev, "FW Client %pUl vtag %d\n", in_client_uuid, vtag);
++
++	switch (cl->state) {
++	case MEI_FILE_DISCONNECTED:
++		if (mei_cl_vtag_by_fp(cl, file) != vtag) {
++			dev_err(dev->dev, "reconnect with different vtag\n");
++			return -EINVAL;
++		}
++		break;
++	case MEI_FILE_INITIALIZING:
++		/* malicious connect from another thread may push vtag */
++		if (!IS_ERR(mei_cl_fp_by_vtag(cl, vtag))) {
++			dev_err(dev->dev, "vtag already filled\n");
++			return -EINVAL;
++		}
++
++		list_for_each_entry(pos, &dev->file_list, link) {
++			if (pos == cl)
++				continue;
++			if (!pos->me_cl)
++				continue;
++
++			/* only search for same UUID */
++			if (uuid_le_cmp(*mei_cl_uuid(pos), *in_client_uuid))
++				continue;
++
++			/* if tag already exist try another fp */
++			if (!IS_ERR(mei_cl_fp_by_vtag(pos, vtag)))
++				continue;
++
++			/* replace cl with acquired one */
++			dev_dbg(dev->dev, "replacing with existing cl\n");
++			mei_cl_unlink(cl);
++			kfree(cl);
++			file->private_data = pos;
++			cl = pos;
++			break;
++		}
++
++		cl_vtag = mei_cl_vtag_alloc(file, vtag);
++		if (IS_ERR(cl_vtag))
++			return -ENOMEM;
++
++		list_add_tail(&cl_vtag->list, &cl->vtag_map);
++		break;
++	default:
++		return -EBUSY;
++	}
++
++	while (cl->state != MEI_FILE_INITIALIZING &&
++	       cl->state != MEI_FILE_DISCONNECTED &&
++	       cl->state != MEI_FILE_CONNECTED) {
++		mutex_unlock(&dev->device_lock);
++		wait_event_timeout(cl->wait,
++				   (cl->state == MEI_FILE_CONNECTED ||
++				    cl->state == MEI_FILE_DISCONNECTED ||
++				    cl->state == MEI_FILE_DISCONNECT_REQUIRED ||
++				    cl->state == MEI_FILE_DISCONNECT_REPLY),
++				   mei_secs_to_jiffies(MEI_CL_CONNECT_TIMEOUT));
++		mutex_lock(&dev->device_lock);
++	}
++
++	if (!mei_cl_is_connected(cl))
++		return mei_ioctl_connect_client(file, in_client_uuid, client);
++
++	client->max_msg_length = cl->me_cl->props.max_msg_length;
++	client->protocol_version = cl->me_cl->props.protocol_version;
++
++	return 0;
++}
++
  /**
+  * mei_ioctl_client_notify_request -
+  *     propagate event notification request to client
+@@ -516,7 +642,11 @@ static long mei_ioctl(struct file *file, unsigned int cmd, unsigned long data)
+ {
+ 	struct mei_device *dev;
+ 	struct mei_cl *cl = file->private_data;
+-	struct mei_connect_client_data connect_data;
++	struct mei_connect_client_data conn;
++	struct mei_connect_client_data_vtag conn_vtag;
++	const uuid_le *cl_uuid;
++	struct mei_client *props;
++	u8 vtag;
+ 	u32 notify_get, notify_req;
+ 	int rets;
+ 
+@@ -537,20 +667,68 @@ static long mei_ioctl(struct file *file, unsigned int cmd, unsigned long data)
+ 	switch (cmd) {
+ 	case IOCTL_MEI_CONNECT_CLIENT:
+ 		dev_dbg(dev->dev, ": IOCTL_MEI_CONNECT_CLIENT.\n");
+-		if (copy_from_user(&connect_data, (char __user *)data,
+-				   sizeof(connect_data))) {
++		if (copy_from_user(&conn, (char __user *)data, sizeof(conn))) {
++			dev_dbg(dev->dev, "failed to copy data from userland\n");
++			rets = -EFAULT;
++			goto out;
++		}
++		cl_uuid = &conn.in_client_uuid;
++		props = &conn.out_client_properties;
++		vtag = 0;
++
++		rets = mei_vt_support_check(dev, cl_uuid);
++		if (rets == -ENOTTY)
++			goto out;
++		if (!rets)
++			rets = mei_ioctl_connect_vtag(file, cl_uuid, props,
++						      vtag);
++		else
++			rets = mei_ioctl_connect_client(file, cl_uuid, props);
++		if (rets)
++			goto out;
++
++		/* if all is ok, copying the data back to user. */
++		if (copy_to_user((char __user *)data, &conn, sizeof(conn))) {
++			dev_dbg(dev->dev, "failed to copy data to userland\n");
++			rets = -EFAULT;
++			goto out;
++		}
++
++		break;
++
++	case IOCTL_MEI_CONNECT_CLIENT_VTAG:
++		dev_dbg(dev->dev, "IOCTL_MEI_CONNECT_CLIENT_VTAG\n");
++		if (copy_from_user(&conn_vtag, (char __user *)data,
++				   sizeof(conn_vtag))) {
+ 			dev_dbg(dev->dev, "failed to copy data from userland\n");
+ 			rets = -EFAULT;
+ 			goto out;
+ 		}
+ 
+-		rets = mei_ioctl_connect_client(file, &connect_data);
++		cl_uuid = &conn_vtag.connect.in_client_uuid;
++		props = &conn_vtag.out_client_properties;
++		vtag = conn_vtag.connect.vtag;
++
++		rets = mei_vt_support_check(dev, cl_uuid);
++		if (rets == -EOPNOTSUPP)
++			dev_dbg(dev->dev, "FW Client %pUl does not support vtags\n",
++				cl_uuid);
++		if (rets)
++			goto out;
++
++		if (!vtag) {
++			dev_dbg(dev->dev, "vtag can't be zero\n");
++			rets = -EINVAL;
++			goto out;
++		}
++
++		rets = mei_ioctl_connect_vtag(file, cl_uuid, props, vtag);
+ 		if (rets)
+ 			goto out;
+ 
+ 		/* if all is ok, copying the data back to user. */
+-		if (copy_to_user((char __user *)data, &connect_data,
+-				 sizeof(connect_data))) {
++		if (copy_to_user((char __user *)data, &conn_vtag,
++				 sizeof(conn_vtag))) {
+ 			dev_dbg(dev->dev, "failed to copy data to userland\n");
+ 			rets = -EFAULT;
+ 			goto out;
+diff --git a/include/uapi/linux/mei.h b/include/uapi/linux/mei.h
+index c6aec86cc5de..4f3638489d01 100644
+--- a/include/uapi/linux/mei.h
++++ b/include/uapi/linux/mei.h
+@@ -66,4 +66,53 @@ struct mei_connect_client_data {
+  */
+ #define IOCTL_MEI_NOTIFY_GET _IOR('H', 0x03, __u32)
+ 
++/**
++ * struct mei_connect_client_vtag - mei client information struct with vtag
++ *
++ * @in_client_uuid: UUID of client to connect
++ * @vtag: virtual tag
++ * @reserved: reserved for future use
++ */
++struct mei_connect_client_vtag {
++	uuid_le in_client_uuid;
++	__u8 vtag;
++	__u8 reserved[3];
++};
++
++/**
++ * struct mei_connect_client_data_vtag - IOCTL connect data union
++ *
++ * @connect: input connect data
++ * @out_client_properties: output client data
++ */
++struct mei_connect_client_data_vtag {
++	union {
++		struct mei_connect_client_vtag connect;
++		struct mei_client out_client_properties;
++	};
++};
++
++/**
++ * DOC:
++ * This IOCTL is used to associate the current file descriptor with a
++ * FW Client (given by UUID), and virtual tag (vtag).
++ * The IOCTL opens a communication channel between a host client and
++ * a FW client on a tagged channel. From this point on, every read
++ * and write will communicate with the associated FW client with
++ * on the tagged channel.
++ * Upone close() the communication is terminated.
++ *
++ * The IOCTL argument is a struct with a union that contains
++ * the input parameter and the output parameter for this IOCTL.
++ *
++ * The input parameter is UUID of the FW Client, a vtag [0,255]
++ * The output parameter is the properties of the FW client
++ * (FW protocool version and max message size).
++ *
++ * Clients that do not support tagged connection
++ * will respond with -EOPNOTSUPP.
++ */
++#define IOCTL_MEI_CONNECT_CLIENT_VTAG \
++	_IOWR('H', 0x04, struct mei_connect_client_data_vtag)
++
+ #endif /* _LINUX_MEI_H  */
 -- 
 2.25.4
 
