@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F722486E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E99B2486D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727041AbgHROOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 10:14:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48986 "EHLO
+        id S1726482AbgHROMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 10:12:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726945AbgHROMs (ORCPT
+        with ESMTP id S1726707AbgHROMb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 10:12:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE9F2C06134A
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 07:12:44 -0700 (PDT)
+        Tue, 18 Aug 2020 10:12:31 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B835C061346
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 07:12:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=iXfBC10z2guuYoMIFO27yM0olz1TLRsDuJVoFNKxfeg=; b=de/bJLOKjjdP/1TNw+7Z6hbvqM
-        6wEsPuYTH82KtYLUC02FrWiUs8dqrofAz+ry/i1tr6hlC8yM0GYcMGf5l9BoOpVg3jJgHpK4BUw/O
-        JIAVP/BYrG6Rfb5hgaKKdVBd0hBhMuPJEm1o/hAbgf7KSX0F/46Ey+ZYFJ/MDg5ZIAOVJ8+kdDBA6
-        oeu3eWZycb0blnlyTgjQfpIXWdVx2Jg3w9fWrRZn6BrD5KfnxQWEj9pmI4EkrAJDZD5HX9a5FPgdP
-        WKCdvl0QA5suVJiebJNk+PGKJFrgz6O8zV5AJjEO9afVC6n8h5kSiiIxqPN1+W39ZJAOFJgvib5/9
-        Cy+9HEdQ==;
+        bh=2Qsfk0HOB3x9nc2pqsOJnCHVpv340CkHcue6gSdP15s=; b=zShE9s4uzk4b4nJ/Aonj22H5Nf
+        hPXa+wt19F2zCMUqu1RkJeWvuA0/X07ozrg7lg4YIlTcissnlRcCeU7UGokgsZJwbmoEl+NqdFKrv
+        UNLTPna1JbdW3ozzCv2+7D945FXTvkse0yLmvQR6+cDs63rfozuICzOL81dMODdLQa5JTxOjU/4IP
+        sssAqgVMufxtM3hOiwIXBImu+AckrYRQpj8tx3pmF9PNzpfrfFPqNDcIQHUMj5VuSzS38X8+/WOEm
+        q6vaI2cDTBZs0x7ni0THxUOmU+cG2oh3d8GvUFFm8XPUW2coHB8gqxwV0M6u8kQuDbPo49yvXpk90
+        m/NuO6ew==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k82LI-0006Uz-Vz; Tue, 18 Aug 2020 14:12:01 +0000
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k82LJ-0000oB-OY; Tue, 18 Aug 2020 14:12:01 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BDB8B305DD1;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BC677305B23;
         Tue, 18 Aug 2020 16:11:59 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 9FC8F23D42C02; Tue, 18 Aug 2020 16:11:59 +0200 (CEST)
-Message-ID: <20200818135804.444372853@infradead.org>
+        id A649323D42C04; Tue, 18 Aug 2020 16:11:59 +0200 (CEST)
+Message-ID: <20200818135804.504501338@infradead.org>
 User-Agent: quilt/0.66
-Date:   Tue, 18 Aug 2020 15:57:38 +0200
+Date:   Tue, 18 Aug 2020 15:57:39 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     x86@kernel.org
 Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
@@ -46,9 +46,8 @@ Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
         tglx@linutronix.de, mingo@kernel.org, namit@vmware.com,
         hpa@zytor.com, luto@kernel.org, ard.biesheuvel@linaro.org,
         jpoimboe@redhat.com, pbonzini@redhat.com,
-        mathieu.desnoyers@efficios.com, linux@rasmusvillemoes.dk,
-        Miroslav Benes <mbenes@suse.cz>, Jessica Yu <jeyu@kernel.org>
-Subject: [PATCH v7 03/18] module: Properly propagate MODULE_STATE_COMING failure
+        mathieu.desnoyers@efficios.com, linux@rasmusvillemoes.dk
+Subject: [PATCH v7 04/18] jump_label,module: Fix module lifetime for __jump_label_mod_text_reserved
 References: <20200818135735.948368560@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,43 +56,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that notifiers got unbroken; use the proper interface to handle
-notifier errors and propagate them.
-
-There were already MODULE_STATE_COMING notifiers that failed; notably:
-
- - jump_label_module_notifier()
- - tracepoint_module_notify()
- - bpf_event_notify()
-
-By propagating this error, we fix those users.
+Nothing ensures the module exists while we're iterating
+mod->jump_entries in __jump_label_mod_text_reserved(), take a module
+reference to ensure the module sticks around.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Acked-by: Jessica Yu <jeyu@kernel.org>
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/module.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ kernel/jump_label.c |   10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -3751,9 +3751,13 @@ static int prepare_coming_module(struct
- 	if (err)
- 		return err;
+--- a/kernel/jump_label.c
++++ b/kernel/jump_label.c
+@@ -539,19 +539,25 @@ static void static_key_set_mod(struct st
+ static int __jump_label_mod_text_reserved(void *start, void *end)
+ {
+ 	struct module *mod;
++	int ret;
  
--	blocking_notifier_call_chain(&module_notify_list,
--				     MODULE_STATE_COMING, mod);
--	return 0;
-+	err = blocking_notifier_call_chain_robust(&module_notify_list,
-+			MODULE_STATE_COMING, MODULE_STATE_GOING, mod);
-+	err = notifier_to_errno(err);
-+	if (err)
-+		klp_module_going(mod);
+ 	preempt_disable();
+ 	mod = __module_text_address((unsigned long)start);
+ 	WARN_ON_ONCE(__module_text_address((unsigned long)end) != mod);
++	if (!try_module_get(mod))
++		mod = NULL;
+ 	preempt_enable();
+ 
+ 	if (!mod)
+ 		return 0;
+ 
+-
+-	return __jump_label_text_reserved(mod->jump_entries,
++	ret = __jump_label_text_reserved(mod->jump_entries,
+ 				mod->jump_entries + mod->num_jump_entries,
+ 				start, end);
 +
-+	return err;
++	module_put(mod);
++
++	return ret;
  }
  
- static int unknown_module_param_cb(char *param, char *val, const char *modname,
+ static void __jump_label_mod_update(struct static_key *key)
 
 
