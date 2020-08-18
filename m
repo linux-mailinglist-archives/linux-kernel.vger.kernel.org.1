@@ -2,123 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640FB24848F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 14:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0262484A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 14:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726647AbgHRMOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 08:14:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726357AbgHRMOE (ORCPT
+        id S1726689AbgHRMVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 08:21:09 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:42380 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726391AbgHRMVD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 08:14:04 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577D8C061389;
-        Tue, 18 Aug 2020 05:14:04 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id t7so16086729otp.0;
-        Tue, 18 Aug 2020 05:14:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ZLZsGwOqStOAc9UT8FnnDHlpy2hAXWka2kZ2YYDGBlk=;
-        b=oiBlNRbK57yHRqnpn43uvu7E8Mbnk5pt39udjQjm/kND3+la42YY+8bkFeOF1Zbm35
-         +vT+skBjb/iJ6wAtITvzbGvTmVBpvfdf5PhQ5b8RSGJj0nd/5JyevjaI6pPpK7F/fpgi
-         cOljBBQVbJXDgvRV0XlUQ2BALS1zBx1lBhb08sorqkY22rjJFnQA/i0n6DLXHWhOAhGF
-         syAzm/s8ZxJM+qJtIwGcMTTDjTJi95HT9TtbE14JJD42I4f1EdXkTXFtuzbegGd+40ge
-         AuIxWOqKkUpftZoNeS6YkCakIBptW6r6DhfDaT57k19CzPnm7Dx6cgvbvcabkWhxU1g9
-         Oy5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ZLZsGwOqStOAc9UT8FnnDHlpy2hAXWka2kZ2YYDGBlk=;
-        b=nB//SronFShfmoakiqwpNW74AQ7i+x2juxr+7tYT0khXq396+Y08CrUUFweCneATIW
-         4RKGJ20mPGMmGrjUFoe9IAfP+1cGlwoBobtWt0Wlmo9c38r99SnNwSMxlH+29GuUbCuT
-         w89Rvqn+2ZB2GBuZcjO6CZ11xAWf1cRAHTTgSRgB8293mza5whmHsJvZmDGLefr1gi2X
-         pGStVdYr/Bv36oJNzXZ+YFwndE0siJzBeq9lb+obfo+Nf4VjXp6H2oL6BBnhCs1V15KN
-         EHtzGZfEqGxyHLeeSrwD1dhd+I666wXBdxm0KKzPBMra1if4YRCeaLpvof/kOPtA3eXx
-         Um6g==
-X-Gm-Message-State: AOAM533JCLLjY9wNmRDBxSAbmVqrP9gy9tHiB07QUjCXnkELfLsp8eKD
-        EhVvWhgs+UDjL+NEpgqEvx/i45sMWR4+XgHfgn0=
-X-Google-Smtp-Source: ABdhPJxlNVOi9BDD1UMHiTz172Iz+TbCUaDI3/SA1o9z3Uj7F2KtOr0Xi8xZjuf0yRgF0xpkeN7X7s3jQTkDrqlVFtM=
-X-Received: by 2002:a05:6830:16d8:: with SMTP id l24mr14025157otr.89.1597752843678;
- Tue, 18 Aug 2020 05:14:03 -0700 (PDT)
+        Tue, 18 Aug 2020 08:21:03 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1k80bs-00031z-T9; Tue, 18 Aug 2020 12:21:00 +0000
+To:     Markus Mayer <mmayer@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Colin Ian King <colin.king@canonical.com>
+Autocrypt: addr=colin.king@canonical.com; prefer-encrypt=mutual; keydata=
+ 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
+Subject: out of bounds access on array error_text[] because of -ETIMEDOUT
+ return from __send_command()
+Message-ID: <38d00022-730c-948a-917c-d86382df8cb9@canonical.com>
+Date:   Tue, 18 Aug 2020 13:21:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200817170729.2605279-1-tweek@google.com> <20200817170729.2605279-4-tweek@google.com>
- <d8b1d7a2-2b8e-c714-77b6-d4e7f3fedf08@gmail.com> <6730ec4a-d11b-5c05-b64f-380104a86dab@sony.com>
-In-Reply-To: <6730ec4a-d11b-5c05-b64f-380104a86dab@sony.com>
-From:   Stephen Smalley <stephen.smalley.work@gmail.com>
-Date:   Tue, 18 Aug 2020 08:13:53 -0400
-Message-ID: <CAEjxPJ7k648nQxCDzcHc0h1vEfNhAJShG5iKmD52nuO5s9phsQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] selinux: add permission names to trace event
-To:     peter enderborg <peter.enderborg@sony.com>
-Cc:     =?UTF-8?Q?Thi=C3=A9baud_Weksteen?= <tweek@google.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Nick Kralevich <nnk@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Eric Paris <eparis@parisplace.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        SElinux list <selinux@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 4:11 AM peter enderborg
-<peter.enderborg@sony.com> wrote:
->
-> On 8/17/20 10:16 PM, Stephen Smalley wrote:
-> > On 8/17/20 1:07 PM, Thi=C3=A9baud Weksteen wrote:
-> >
-> >> From: Peter Enderborg <peter.enderborg@sony.com>
-> >>
-> >> In the print out add permissions, it will look like:
-> >>      <...>-1042  [007] ....   201.965142: selinux_audited:
-> >>      requested=3D0x4000000 denied=3D0x4000000 audited=3D0x4000000
-> >>      result=3D-13
-> >>      scontext=3Dsystem_u:system_r:cupsd_t:s0-s0:c0.c1023
-> >>      tcontext=3Dsystem_u:object_r:bin_t:s0
-> >>      tclass=3Dfile permissions=3D{ !entrypoint }
-> >>
-> >> This patch is adding the "permissions=3D{ !entrypoint }".
-> >> The permissions preceded by "!" have been denied and the permissions
-> >> without have been accepted.
-> >>
-> >> Note that permission filtering is done on the audited, denied or
-> >> requested attributes.
-> >>
-> >> Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-> >> Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-> >> Reviewed-by: Thi=C3=A9baud Weksteen <tweek@google.com>
-> >> Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
-> >> ---
-> >>   include/trace/events/avc.h | 11 +++++++++--
-> >>   security/selinux/avc.c     | 36 ++++++++++++++++++++++++++++++++++++
-> >>   2 files changed, 45 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/security/selinux/avc.c b/security/selinux/avc.c
-> >> index 7de5cc5169af..d585b68c2a50 100644
-> >> --- a/security/selinux/avc.c
-> >> +++ b/security/selinux/avc.c
-> >> @@ -695,6 +695,7 @@ static void avc_audit_pre_callback(struct audit_bu=
-ffer *ab, void *a)
-> >>       audit_log_format(ab, " } for ");
-> >>   }
-> >>   +
-> >>   /**
-> >>    * avc_audit_post_callback - SELinux specific information
-> >>    * will be called by generic audit code
-> >
-> > Also, drop the spurious whitespace change above.
-> >
-> >
-> Is there any other things we need to fix? A part 1&2 now OK?
+Hi,
 
-They looked ok to me, but Paul should review them.
+static analysis with coverity has found a buffer overflow issue with the
+brcmstb driver, I believe it may have been introduced with the following
+commit:
+
+commit a7c25759d8d84b64c437a78f05df7314b02934e5
+Author: Markus Mayer <mmayer@broadcom.com>
+Date:   Tue Apr 2 16:01:00 2019 -0700
+
+    memory: brcmstb: dpfe: wait for DCPU to be ready
+
+The static analysis is as follows for the source file
+/drivers/memory/brcmstb_dpfe.c :
+
+684 static ssize_t generic_show(unsigned int command, u32 response[],
+685                            struct brcmstb_dpfe_priv *priv, char *buf)
+686 {
+687        int ret;
+688
+   1. Condition !priv, taking false branch.
+
+689        if (!priv)
+690                return sprintf(buf, "ERROR: driver private data not
+set\n");
+691
+   2. return_constant: Function call __send_command(priv, command,
+response) may return -110.
+   3. assignment: Assigning: ret = __send_command(priv, command,
+response). The value of ret is now -110.
+
+692        ret = __send_command(priv, command, response);
+   4. Condition ret < 0, taking true branch.
+
+693        if (ret < 0)
+
+Out-of-bounds read (OVERRUN)
+   5. overrun-local: Overrunning array error_text of 6 8-byte elements
+at element index 110 (byte offset 887) using index -ret (which evaluates
+to 110).
+694                return sprintf(buf, "ERROR: %s\n", error_text[-ret]);
+695
+696        return 0;
+697 }
+
+
+Function __send_command() can return -ETIMEDOUT and this causes an
+out-of-bounds access on error_text[].
+
+Colin
