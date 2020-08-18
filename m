@@ -2,113 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AFEA248CC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10151248CC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728670AbgHRRTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 13:19:54 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:63725 "EHLO pegase1.c-s.fr"
+        id S1728644AbgHRRTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 13:19:43 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:63418 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728560AbgHRRTX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 13:19:23 -0400
+        id S1728563AbgHRRTY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 13:19:24 -0400
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4BWHhR02Vhz9vCy0;
-        Tue, 18 Aug 2020 19:19:19 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 4BWHhS09Ttz9vCxl;
+        Tue, 18 Aug 2020 19:19:20 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id QR2C2RWcSnPU; Tue, 18 Aug 2020 19:19:18 +0200 (CEST)
+        with ESMTP id kFOy8En8D3SV; Tue, 18 Aug 2020 19:19:19 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4BWHhQ6BFNz9vCxg;
-        Tue, 18 Aug 2020 19:19:18 +0200 (CEST)
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BWHhR6X75z9vCxg;
+        Tue, 18 Aug 2020 19:19:19 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id AC6038B7EC;
-        Tue, 18 Aug 2020 19:19:20 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id BCBA58B7EC;
+        Tue, 18 Aug 2020 19:19:21 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id vn9GlGY2W_gF; Tue, 18 Aug 2020 19:19:20 +0200 (CEST)
+        with ESMTP id idDfGtHJ5pca; Tue, 18 Aug 2020 19:19:21 +0200 (CEST)
 Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7BA928B7D7;
-        Tue, 18 Aug 2020 19:19:20 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 82E2C8B7D7;
+        Tue, 18 Aug 2020 19:19:21 +0200 (CEST)
 Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 5C71D65CF4; Tue, 18 Aug 2020 17:19:20 +0000 (UTC)
-Message-Id: <900b93744732ed0887f28f5b6a40730fb04a43fa.1597770847.git.christophe.leroy@csgroup.eu>
+        id 63FE465CF4; Tue, 18 Aug 2020 17:19:21 +0000 (UTC)
+Message-Id: <13ef6510ce30a4867e043157b93af5bb8c67fb3b.1597770847.git.christophe.leroy@csgroup.eu>
 In-Reply-To: <cover.1597770847.git.christophe.leroy@csgroup.eu>
 References: <cover.1597770847.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 08/25] powerpc/signal: Move access_ok() out of
- get_sigframe()
+Subject: [PATCH v2 09/25] powerpc/signal: Remove get_clean_sp()
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue, 18 Aug 2020 17:19:20 +0000 (UTC)
+Date:   Tue, 18 Aug 2020 17:19:21 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This access_ok() will soon be performed by user_access_begin().
-So move it out of get_sigframe().
+get_clean_sp() is only used once in kernel/signal.c .
+
+GCC is smart enough to see that x & 0xffffffff is a nop
+calculation on PPC32, no need of a special PPC32 trivial version.
+
+Include the logic from the PPC64 version of get_clean_sp() directly
+in get_sigframe().
 
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/kernel/signal.c    | 4 ----
- arch/powerpc/kernel/signal_32.c | 4 ++--
- arch/powerpc/kernel/signal_64.c | 2 +-
- 3 files changed, 3 insertions(+), 7 deletions(-)
+ arch/powerpc/include/asm/processor.h | 14 --------------
+ arch/powerpc/kernel/signal.c         |  5 ++++-
+ 2 files changed, 4 insertions(+), 15 deletions(-)
 
+diff --git a/arch/powerpc/include/asm/processor.h b/arch/powerpc/include/asm/processor.h
+index e20b0c5abe62..8320aedbdca3 100644
+--- a/arch/powerpc/include/asm/processor.h
++++ b/arch/powerpc/include/asm/processor.h
+@@ -406,20 +406,6 @@ static inline void prefetchw(const void *x)
+ 
+ #define HAVE_ARCH_PICK_MMAP_LAYOUT
+ 
+-#ifdef CONFIG_PPC64
+-static inline unsigned long get_clean_sp(unsigned long sp, int is_32)
+-{
+-	if (is_32)
+-		return sp & 0x0ffffffffUL;
+-	return sp;
+-}
+-#else
+-static inline unsigned long get_clean_sp(unsigned long sp, int is_32)
+-{
+-	return sp;
+-}
+-#endif
+-
+ /* asm stubs */
+ extern unsigned long isa300_idle_stop_noloss(unsigned long psscr_val);
+ extern unsigned long isa300_idle_stop_mayloss(unsigned long psscr_val);
 diff --git a/arch/powerpc/kernel/signal.c b/arch/powerpc/kernel/signal.c
-index 3b56db02b762..1be5fd01f866 100644
+index 1be5fd01f866..a295d482adec 100644
 --- a/arch/powerpc/kernel/signal.c
 +++ b/arch/powerpc/kernel/signal.c
-@@ -154,10 +154,6 @@ void __user *get_sigframe(struct ksignal *ksig, unsigned long sp,
+@@ -150,7 +150,10 @@ void __user *get_sigframe(struct ksignal *ksig, unsigned long sp,
+         unsigned long oldsp, newsp;
+ 
+         /* Default to using normal stack */
+-        oldsp = get_clean_sp(sp, is_32);
++	if (is_32)
++		oldsp = sp & 0x0ffffffffUL;
++	else
++		oldsp = sp;
  	oldsp = sigsp(oldsp, ksig);
  	newsp = (oldsp - frame_size) & ~0xFUL;
  
--	/* Check access */
--	if (!access_ok((void __user *)newsp, oldsp - newsp))
--		return NULL;
--
-         return (void __user *)newsp;
- }
- 
-diff --git a/arch/powerpc/kernel/signal_32.c b/arch/powerpc/kernel/signal_32.c
-index 8cbc9ac1343d..61621acacc63 100644
---- a/arch/powerpc/kernel/signal_32.c
-+++ b/arch/powerpc/kernel/signal_32.c
-@@ -768,7 +768,7 @@ int handle_rt_signal32(struct ksignal *ksig, sigset_t *oldset,
- 	/* Put a Real Time Context onto stack */
- 	rt_sf = get_sigframe(ksig, get_tm_stackpointer(tsk), sizeof(*rt_sf), 1);
- 	addr = rt_sf;
--	if (unlikely(rt_sf == NULL))
-+	if (!access_ok(rt_sf, sizeof(*rt_sf)))
- 		goto badframe;
- 
- 	/* Put the siginfo & fill in most of the ucontext */
-@@ -1227,7 +1227,7 @@ int handle_signal32(struct ksignal *ksig, sigset_t *oldset,
- 
- 	/* Set up Signal Frame */
- 	frame = get_sigframe(ksig, get_tm_stackpointer(tsk), sizeof(*frame), 1);
--	if (unlikely(frame == NULL))
-+	if (!access_ok(frame, sizeof(*frame)))
- 		goto badframe;
- 	sc = (struct sigcontext __user *) &frame->sctx;
- 
-diff --git a/arch/powerpc/kernel/signal_64.c b/arch/powerpc/kernel/signal_64.c
-index cae612bdde5f..d3db78732070 100644
---- a/arch/powerpc/kernel/signal_64.c
-+++ b/arch/powerpc/kernel/signal_64.c
-@@ -823,7 +823,7 @@ int handle_rt_signal64(struct ksignal *ksig, sigset_t *set,
- #endif
- 
- 	frame = get_sigframe(ksig, get_tm_stackpointer(tsk), sizeof(*frame), 0);
--	if (unlikely(frame == NULL))
-+	if (!access_ok(frame, sizeof(*frame)))
- 		goto badframe;
- 
- 	err |= __put_user(&frame->info, &frame->pinfo);
 -- 
 2.25.0
 
