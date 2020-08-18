@@ -2,247 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9ACF247F7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 09:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB6B5247F5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 09:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726570AbgHRH3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 03:29:03 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:8697 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726343AbgHRH3C (ORCPT
+        id S1726633AbgHRHZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 03:25:26 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:50367 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726357AbgHRHZX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 03:29:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1597735741; x=1629271741;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=qGKT1F1qVkIMFajZCvJm8BTClvxWeUPf3j13t8snc08=;
-  b=n10RdynXYotOdjAUi1KnNbgKumd6hblDvjDhJzOUEXTmE9JU3LGQitu8
-   a/+WLZp/rNbt8yp2glHZcv4AFBiGNwxnegTsI6S4T00FFh9MF7HksAAZt
-   zqmT4r6+0DB8mQAwbebPoi6uDNA9z9iFvo9WuKm6iMGbL5nxQaS4XlA0A
-   w=;
-X-IronPort-AV: E=Sophos;i="5.76,326,1592870400"; 
-   d="scan'208";a="67576751"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-53356bf6.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 18 Aug 2020 07:28:56 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-53356bf6.us-west-2.amazon.com (Postfix) with ESMTPS id 35C96A1D50;
-        Tue, 18 Aug 2020 07:28:53 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 18 Aug 2020 07:28:52 +0000
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.73) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 18 Aug 2020 07:28:35 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
-        <dwmw@amazon.com>, <fan.du@intel.com>, <foersleo@amazon.de>,
-        <gthelen@google.com>, <irogers@google.com>, <jolsa@redhat.com>,
-        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
-        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
-        <peterz@infradead.org>, <rdunlap@infradead.org>,
-        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
-        <rppt@kernel.org>, <sblbir@amazon.com>, <shakeelb@google.com>,
-        <shuah@kernel.org>, <sj38.park@gmail.com>, <snu@amazon.de>,
-        <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
-        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [RFC v7 10/10] Docs/DAMON: Document physical memory monitoring support
-Date:   Tue, 18 Aug 2020 09:25:01 +0200
-Message-ID: <20200818072501.30396-11-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200818072501.30396-1-sjpark@amazon.com>
-References: <20200818072501.30396-1-sjpark@amazon.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.43.162.73]
-X-ClientProxiedBy: EX13D38UWB002.ant.amazon.com (10.43.161.171) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+        Tue, 18 Aug 2020 03:25:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597735521;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
+        bh=92Ca05uy8jh6nULr3MA2yPy/bEf6QwrjQ+ISqlFQbww=;
+        b=X1MqwaV5TaAaqgoiDeJ4/TP7L9upwtUinKmxc5gA4P0FfHwzOMaPqVmWK+CTK4Yn369vh+
+        bzo1jzp6fmm7vE4EXHkgqeH0rCBf1+rHNCQ9a07pHkD3/A+6kG8Pb/LUTHayXWcGmH4JCQ
+        zsnJjHH4A55Tlp7IOg2j/F+3cNHwPzk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-377-Ga7orqJ2PjuSAubauhmWMQ-1; Tue, 18 Aug 2020 03:25:17 -0400
+X-MC-Unique: Ga7orqJ2PjuSAubauhmWMQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6B0BD1DDFD;
+        Tue, 18 Aug 2020 07:25:16 +0000 (UTC)
+Received: from sirius.home.kraxel.org (ovpn-112-195.ams2.redhat.com [10.36.112.195])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0BC8E10098A7;
+        Tue, 18 Aug 2020 07:25:12 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id 2FAAB9D59; Tue, 18 Aug 2020 09:25:12 +0200 (CEST)
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Daniel Vetter <daniel@ffwll.ch>, Gerd Hoffmann <kraxel@redhat.com>,
+        1882851@bugs.launchpad.net, David Airlie <airlied@linux.ie>,
+        Chia-I Wu <olvaffe@gmail.com>,
+        virtualization@lists.linux-foundation.org (open list:VIRTIO GPU DRIVER),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/2] drm/virtio: fix unblank
+Date:   Tue, 18 Aug 2020 09:25:10 +0200
+Message-Id: <20200818072511.6745-2-kraxel@redhat.com>
+In-Reply-To: <20200818072511.6745-1-kraxel@redhat.com>
+References: <20200818072511.6745-1-kraxel@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+When going through a disable/enable cycle without changing the
+framebuffer the optimization added by commit 3954ff10e06e ("drm/virtio:
+skip set_scanout if framebuffer didn't change") causes the screen stay
+blank.  Add a bool to force an update to fix that.
 
-This commit updates the DAMON documents for the physical memory
-monitoring support.
+v2: use drm_atomic_crtc_needs_modeset() (Daniel).
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
+Cc: 1882851@bugs.launchpad.net
+Fixes: 3954ff10e06e ("drm/virtio: skip set_scanout if framebuffer didn't change")
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
 ---
- Documentation/admin-guide/mm/damon/usage.rst | 42 ++++++++++++++++----
- Documentation/vm/damon/design.rst            | 29 +++++++++-----
- Documentation/vm/damon/faq.rst               |  5 +--
- 3 files changed, 54 insertions(+), 22 deletions(-)
+ drivers/gpu/drm/virtio/virtgpu_drv.h     |  1 +
+ drivers/gpu/drm/virtio/virtgpu_display.c | 11 +++++++++++
+ drivers/gpu/drm/virtio/virtgpu_plane.c   |  4 +++-
+ 3 files changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
-index cf0d44ce0ac9..3e2f1519c96a 100644
---- a/Documentation/admin-guide/mm/damon/usage.rst
-+++ b/Documentation/admin-guide/mm/damon/usage.rst
-@@ -10,15 +10,16 @@ DAMON provides below three interfaces for different users.
-   This is for privileged people such as system administrators who want a
-   just-working human-friendly interface.  Using this, users can use the DAMON’s
-   major features in a human-friendly way.  It may not be highly tuned for
--  special cases, though.  It supports only virtual address spaces monitoring.
-+  special cases, though.  It supports both virtual and physical address spaces
-+  monitoring.
- - *debugfs interface.*
-   This is for privileged user space programmers who want more optimized use of
-   DAMON.  Using this, users can use DAMON’s major features by reading
-   from and writing to special debugfs files.  Therefore, you can write and use
-   your personalized DAMON debugfs wrapper programs that reads/writes the
-   debugfs files instead of you.  The DAMON user space tool is also a reference
--  implementation of such programs.  It supports only virtual address spaces
--  monitoring.
-+  implementation of such programs.  It supports both virtual and physical
-+  address spaces monitoring.
- - *Kernel Space Programming Interface.*
-   This is for kernel space programmers.  Using this, users can utilize every
-   feature of DAMON most flexibly and efficiently by writing kernel space
-@@ -49,8 +50,10 @@ Recording Data Access Pattern
- 
- The ``record`` subcommand records the data access pattern of target workloads
- in a file (``./damon.data`` by default).  You can specify the target with 1)
--the command for execution of the monitoring target process, or 2) pid of
--running target process.  Below example shows a command target usage::
-+the command for execution of the monitoring target process, 2) pid of running
-+target process, or 3) the special keyword, 'paddr', if you want to monitor the
-+system's physical memory address space.  Below example shows a command target
-+usage::
- 
-     # cd <kernel>/tools/damon/
-     # damo record "sleep 5"
-@@ -61,6 +64,15 @@ of the process.  Below example shows a pid target usage::
-     # sleep 5 &
-     # damo record `pidof sleep`
- 
-+Finally, below example shows the use of the special keyword, 'paddr'::
+diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.h b/drivers/gpu/drm/virtio/virtgpu_drv.h
+index 9ff9f4ac0522..4ab1b0ba2925 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_drv.h
++++ b/drivers/gpu/drm/virtio/virtgpu_drv.h
+@@ -138,6 +138,7 @@ struct virtio_gpu_output {
+ 	int cur_x;
+ 	int cur_y;
+ 	bool enabled;
++	bool needs_modeset;
+ };
+ #define drm_crtc_to_virtio_gpu_output(x) \
+ 	container_of(x, struct virtio_gpu_output, crtc)
+diff --git a/drivers/gpu/drm/virtio/virtgpu_display.c b/drivers/gpu/drm/virtio/virtgpu_display.c
+index 2c2742b8d657..6c26b41f4e0d 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_display.c
++++ b/drivers/gpu/drm/virtio/virtgpu_display.c
+@@ -123,6 +123,17 @@ static int virtio_gpu_crtc_atomic_check(struct drm_crtc *crtc,
+ static void virtio_gpu_crtc_atomic_flush(struct drm_crtc *crtc,
+ 					 struct drm_crtc_state *old_state)
+ {
++	struct virtio_gpu_output *output = drm_crtc_to_virtio_gpu_output(crtc);
 +
-+    # damo record paddr
-+
-+In this case, the monitoring target regions defaults to the largetst 'System
-+RAM' region specified in '/proc/iomem' file.  Note that the initial monitoring
-+target region is maintained rather than dynamically updated like the virtual
-+memory address spaces monitoring case.
-+
- The location of the recorded file can be explicitly set using ``-o`` option.
- You can further tune this by setting the monitoring attributes.  To know about
- the monitoring attributes in detail, please refer to the
-@@ -319,20 +331,34 @@ check it again::
-     # cat target_ids
-     42 4242
++	/*
++	 * virtio-gpu can't do modeset and plane update operations
++	 * independant from each other.  So the actual modeset happens
++	 * in the plane update callback, and here we just check
++	 * whenever we must force the modeset.
++	 */
++	if (drm_atomic_crtc_needs_modeset(crtc->state)) {
++		output->needs_modeset = true;
++	}
+ }
  
-+Users can also monitor the physical memory address space of the system by
-+writing a special keyword, "``paddr\n``" to the file.  Because physical address
-+space monitoring doesn't support multiple targets, reading the file will show a
-+fake value, ``42``, as below::
-+
-+    # cd <debugfs>/damon
-+    # echo paddr > target_ids
-+    # cat target_ids
-+    42
-+
- Note that setting the target ids doesn't start the monitoring.
- 
- 
- Initial Monitoring Target Regions
- ---------------------------------
- 
--In case of the debugfs based monitoring, DAMON automatically sets and updates
--the monitoring target regions so that entire memory mappings of target
--processes can be covered. However, users might want to limit the monitoring
-+In case of the virtual address space monitoring, DAMON automatically sets and
-+updates the monitoring target regions so that entire memory mappings of target
-+processes can be covered.  However, users might want to limit the monitoring
- region to specific address ranges, such as the heap, the stack, or specific
- file-mapped area.  Or, some users might know the initial access pattern of
- their workloads and therefore want to set optimal initial regions for the
- 'adaptive regions adjustment'.
- 
-+In contrast, DAMON do not automatically sets and updates the monitoring target
-+regions in case of physical memory monitoring.  Therefore, users should set the
-+monitoring target regions by themselves.
-+
- In such cases, users can explicitly set the initial monitoring target regions
- as they want, by writing proper values to the ``init_regions`` file.  Each line
- of the input should represent one region in below form.::
-diff --git a/Documentation/vm/damon/design.rst b/Documentation/vm/damon/design.rst
-index 727d72093f8f..0666e19018fd 100644
---- a/Documentation/vm/damon/design.rst
-+++ b/Documentation/vm/damon/design.rst
-@@ -35,27 +35,34 @@ two parts:
- 1. Identification of the monitoring target address range for the address space.
- 2. Access check of specific address range in the target space.
- 
--DAMON currently provides the implementation of the primitives for only the
--virtual address spaces. Below two subsections describe how it works.
-+DAMON currently provides the implementations of the primitives for the physical
-+and virtual address spaces. Below two subsections describe how those work.
- 
- 
- PTE Accessed-bit Based Access Check
- -----------------------------------
- 
--The implementation for the virtual address space uses PTE Accessed-bit for
--basic access checks.  It finds the relevant PTE Accessed bit from the address
--by walking the page table for the target task of the address.  In this way, the
--implementation finds and clears the bit for next sampling target address and
--checks whether the bit set again after one sampling period.  This could disturb
--other kernel subsystems using the Accessed bits, namely Idle page tracking and
--the reclaim logic.  To avoid such disturbances, DAMON makes it mutually
--exclusive with Idle page tracking and uses ``PG_idle`` and ``PG_young`` page
--flags to solve the conflict with the reclaim logic, as Idle page tracking does.
-+Both of the implementations for physical and virtual address spaces use PTE
-+Accessed-bit for basic access checks.  Only one difference is the way of
-+finding the relevant PTE Accessed bit(s) from the address.  While the
-+implementation for the virtual address walks the page table for the target task
-+of the address, the implementation for the physical address walks every page
-+table having a mapping to the address.  In this way, the implementations find
-+and clear the bit(s) for next sampling target address and checks whether the
-+bit(s) set again after one sampling period.  This could disturb other kernel
-+subsystems using the Accessed bits, namely Idle page tracking and the reclaim
-+logic.  To avoid such disturbances, DAMON makes it mutually exclusive with Idle
-+page tracking and uses ``PG_idle`` and ``PG_young`` page flags to solve the
-+conflict with the reclaim logic, as Idle page tracking does.
- 
- 
- VMA-based Target Address Range Construction
- -------------------------------------------
- 
-+This is only for the virtual address space primitives implementation.  That for
-+the physical address space simply asks users to manually set the monitoring
-+target address ranges.
-+
- Only small parts in the super-huge virtual address space of the processes are
- mapped to the physical memory and accessed.  Thus, tracking the unmapped
- address regions is just wasteful.  However, because DAMON can deal with some
-diff --git a/Documentation/vm/damon/faq.rst b/Documentation/vm/damon/faq.rst
-index 088128bbf22b..6469d54c480f 100644
---- a/Documentation/vm/damon/faq.rst
-+++ b/Documentation/vm/damon/faq.rst
-@@ -43,10 +43,9 @@ constructions and actual access checks can be implemented and configured on the
- DAMON core by the users.  In this way, DAMON users can monitor any address
- space with any access check technique.
- 
--Nonetheless, DAMON provides vma tracking and PTE Accessed bit check based
-+Nonetheless, DAMON provides vma/rmap tracking and PTE Accessed bit check based
- implementations of the address space dependent functions for the virtual memory
--by default, for a reference and convenient use.  In near future, we will
--provide those for physical memory address space.
-+and the physical memory by default, for a reference and convenient use.
- 
- 
- Can I simply monitor page granularity?
+ static const struct drm_crtc_helper_funcs virtio_gpu_crtc_helper_funcs = {
+diff --git a/drivers/gpu/drm/virtio/virtgpu_plane.c b/drivers/gpu/drm/virtio/virtgpu_plane.c
+index 52d24179bcec..65757409d9ed 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_plane.c
++++ b/drivers/gpu/drm/virtio/virtgpu_plane.c
+@@ -163,7 +163,9 @@ static void virtio_gpu_primary_plane_update(struct drm_plane *plane,
+ 	    plane->state->src_w != old_state->src_w ||
+ 	    plane->state->src_h != old_state->src_h ||
+ 	    plane->state->src_x != old_state->src_x ||
+-	    plane->state->src_y != old_state->src_y) {
++	    plane->state->src_y != old_state->src_y ||
++	    output->needs_modeset) {
++		output->needs_modeset = false;
+ 		DRM_DEBUG("handle 0x%x, crtc %dx%d+%d+%d, src %dx%d+%d+%d\n",
+ 			  bo->hw_res_handle,
+ 			  plane->state->crtc_w, plane->state->crtc_h,
 -- 
-2.17.1
+2.18.4
 
