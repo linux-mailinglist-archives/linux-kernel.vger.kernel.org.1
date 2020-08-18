@@ -2,86 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9AC2248C9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A545E248CCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728446AbgHRRKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 13:10:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35208 "EHLO mail.kernel.org"
+        id S1728749AbgHRRUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 13:20:42 -0400
+Received: from mga07.intel.com ([134.134.136.100]:25860 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728220AbgHRRKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 13:10:42 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B4E6B2063A;
-        Tue, 18 Aug 2020 17:10:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597770642;
-        bh=J7IMCR9VGxvuNnH4wgPg8mBRpRL4cmvMOZY0WSvKWms=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ysoXPfr6h0TtHWQDqxjEXV3OXUQHVeGbdvyGy0t+gk0na63mYj7r8eFeo/OoDKS1r
-         HqU+rtl72t9ovmdK3W/1bRJ1ARPib1kT3jCg4uEdloCECPGU8fMCuyUmPy8b6SiQWI
-         O7h0pr9c4OiAVosG4cURUGfNoDcrJzpmV4EeeNZk=
-Date:   Tue, 18 Aug 2020 18:10:11 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "Lu, Brent" <brent.lu@intel.com>
-Cc:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?= 
-        <amadeuszx.slawinski@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] ASoC: hdac_hdmi: support 'ELD' mixer
-Message-ID: <20200818171011.GE5337@sirena.org.uk>
-References: <20200818004413.12852-1-brent.lu@intel.com>
- <20200818143632.16539-1-brent.lu@intel.com>
- <20200818150225.GC5337@sirena.org.uk>
- <DM6PR11MB36421674C19320503D26DABC975C0@DM6PR11MB3642.namprd11.prod.outlook.com>
+        id S1728626AbgHRRTf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 13:19:35 -0400
+IronPort-SDR: bV0i7oYOkdMvwPUo4qFYS8Yu4N3Ceubo7wT6M8FRb+99/Av/JoPCyvajyMFHd+zY+KVRUSDCJb
+ 7dWxgryl5rzQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="219269706"
+X-IronPort-AV: E=Sophos;i="5.76,328,1592895600"; 
+   d="scan'208";a="219269706"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 10:19:34 -0700
+IronPort-SDR: 8J7Aa2Nrc0djSFRqGqEZJRldDbxlKUWMlH5U8Ia5SimZ5W1JVVcwwb5MQq2YgtnVSetNB5ey4T
+ azlfOYcZWT2w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,328,1592895600"; 
+   d="scan'208";a="326798922"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 18 Aug 2020 10:19:31 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1k858I-009hcq-Fw; Tue, 18 Aug 2020 20:10:46 +0300
+Date:   Tue, 18 Aug 2020 20:10:46 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v7 1/3] devres: provide devm_krealloc()
+Message-ID: <20200818171046.GU1891694@smile.fi.intel.com>
+References: <20200817170535.17041-1-brgl@bgdev.pl>
+ <20200817170535.17041-2-brgl@bgdev.pl>
+ <20200817173908.GS1891694@smile.fi.intel.com>
+ <CAMRc=MdaaWhV_ZKHgWy_Gxkp=jMuZcwqpoE8Ya_84n9ZT5O31A@mail.gmail.com>
+ <20200818082500.GB1891694@smile.fi.intel.com>
+ <CAMRc=Md5yrgxnPf=qwKYhwHACcq-XeKOKZ76OwYdMGO8SgYmzQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3O1VwFp74L81IIeR"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <DM6PR11MB36421674C19320503D26DABC975C0@DM6PR11MB3642.namprd11.prod.outlook.com>
-X-Cookie: You're at Witt's End.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=Md5yrgxnPf=qwKYhwHACcq-XeKOKZ76OwYdMGO8SgYmzQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 18, 2020 at 06:27:12PM +0200, Bartosz Golaszewski wrote:
+> On Tue, Aug 18, 2020 at 10:40 AM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > On Mon, Aug 17, 2020 at 10:02:05PM +0200, Bartosz Golaszewski wrote:
+> > > On Mon, Aug 17, 2020 at 7:43 PM Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > > On Mon, Aug 17, 2020 at 07:05:33PM +0200, Bartosz Golaszewski wrote:
+> > > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >
+> > ...
+> >
+> > > > > +static struct devres *to_devres(void *data)
+> > > > > +{
+> > > > > +     return (struct devres *)((u8 *)data - ALIGN(sizeof(struct devres),
+> > > > > +                                                 ARCH_KMALLOC_MINALIGN));
+> > > >
+> > > > Do you really need both explicit castings?
+> > > >
+> > >
+> > > Yeah, we can probably drop the (struct devres *) here.
+> >
+> > void * -> u8 * here is also not needed, it is considered byte access IIRC.
+> >
+> 
+> Actually it turns out that while we don't need the (void *) -> (u8 *)
+> casting, we must cast to (struct devres *) or the following error is
+> produced:
+> 
+> drivers/base/devres.c: In function ‘to_devres’:
+> drivers/base/devres.c:41:21: error: returning ‘u8 *’ {aka ‘unsigned
+> char *’} from a function with incompatible return type ‘struct devres
+> *’ [-Werror=incompatible-pointer-types]
+>   return ((u8 *)data - ALIGN(sizeof(struct devres),
+>          ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>         ARCH_KMALLOC_MINALIGN));
+>         ~~~~~~~~~~~~~~~~~~~~~~~
 
---3O1VwFp74L81IIeR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Of course, you have to drop u8 * casting as well.
 
-On Tue, Aug 18, 2020 at 03:22:03PM +0000, Lu, Brent wrote:
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> > Please don't send new patches in the middle of existing threads, it makes it
-> > hard to keep track fo what is going on.
 
-> Sorry for the problem. Does it mean I should avoid using " --in-reply-to=" when
-> sending new patch set?
-
-Yes, please.
-
---3O1VwFp74L81IIeR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl88C3IACgkQJNaLcl1U
-h9BiEQf/ShKme+ABfZ554O96jaOy/4SG+HMYbjm8COsRqE0J48jxiWSVdjX8N7zA
-1biJiI3NRqPYVkZ34K6SXTF5tVrbogM5W2SVsyUBHTATywi+4xmY2vNq9gTup5dt
-tXsPXtV4jeaeDyVwkk9GnoIylgAx9BHJ7YytytwRZ/d1vok+iZrfWdRALuLpc2F2
-dIFwFIeJL0HNB2ClK3lhpyEjbYvXplo8asRpnC19YD6A43r3M/ZL1m0HRyiD18eL
-zWBEk9fSHqphMLDQEkPhJ27Dycc5I5BRXL3nKqmyc8jcniXUvII/U3GZ+uyR4Ntf
-XPR14ygpAbeMY13F6HmTDnSlCqkPgQ==
-=zVQK
------END PGP SIGNATURE-----
-
---3O1VwFp74L81IIeR--
