@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12F4524847D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 14:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFECD24847C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 14:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgHRMKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 08:10:17 -0400
-Received: from mga07.intel.com ([134.134.136.100]:58725 "EHLO mga07.intel.com"
+        id S1726817AbgHRMKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 08:10:14 -0400
+Received: from mga07.intel.com ([134.134.136.100]:58731 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726777AbgHRMKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 08:10:00 -0400
-IronPort-SDR: RErJTQlTU2iBh6UPn6Omu6lHhvv+BtfyOOrHfBrtKenOkEguDwHIaSlKYyTxL62V3qZa2KYQuC
- WrnGCkSf0DLA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="219200367"
+        id S1726366AbgHRMKD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 08:10:03 -0400
+IronPort-SDR: Vb4WhoP90+pfrCmcRghVJmCskn+8Avn47AVWc8Dp0c8ZY4MMywv3Epg5/jQqKyggwK0IdUEcnl
+ BvGXRlQ5IQjQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="219200369"
 X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
-   d="scan'208";a="219200367"
+   d="scan'208";a="219200369"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 05:10:00 -0700
-IronPort-SDR: +iKCCltdzJLdJZYxSjc5+vyenoLDVMO4wyJ1wTfwl9lUlYQOhPPyEM4y3hqhn1VRKc6N+nzCer
- ZPOktOmCnwkg==
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 05:10:02 -0700
+IronPort-SDR: O4Eo3EMmM5AzctLeRrnSdoVxslG4oAQRo73pzuzYw6PKP0aySqKUieDKUPtTk74SZuQPvXFGT5
+ h6euZM+8kwtQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
-   d="scan'208";a="326712937"
+   d="scan'208";a="326712951"
 Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
-  by orsmga008.jf.intel.com with ESMTP; 18 Aug 2020 05:09:59 -0700
+  by orsmga008.jf.intel.com with ESMTP; 18 Aug 2020 05:10:00 -0700
 From:   Tomas Winkler <tomas.winkler@intel.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
         linux-kernel@vger.kernel.org,
         Tomas Winkler <tomas.winkler@intel.com>
-Subject: [char-misc-next 02/13] mei: restrict vtag support to hbm version 2.2
-Date:   Tue, 18 Aug 2020 14:51:36 +0300
-Message-Id: <20200818115147.2567012-3-tomas.winkler@intel.com>
+Subject: [char-misc-next 03/13] mei: add vtag support bit in client properties
+Date:   Tue, 18 Aug 2020 14:51:37 +0300
+Message-Id: <20200818115147.2567012-4-tomas.winkler@intel.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200818115147.2567012-1-tomas.winkler@intel.com>
 References: <20200818115147.2567012-1-tomas.winkler@intel.com>
@@ -47,128 +47,154 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alexander Usyskin <alexander.usyskin@intel.com>
 
-The vtag allows partitioning the mei messages into virtual groups/channels.
-Vtags are supported for firmwares with HBM version 2.2 and newer
-and only when a firmware confirms the support via capability handshake.
-This change only define vtag restrictions in order to make
-the series bisectable. Everything will be enabled when driver HBM
-version is set to 2.2.
+Vtag support is on a client basis, meaning not every client
+supports it. The vtag capability is communicated via the client properties
+structure during client enumeration process.
+Export the propertiy via sysfs.
 
 Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
 Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
 ---
- drivers/misc/mei/debugfs.c |  1 +
- drivers/misc/mei/hbm.c     | 15 +++++++++++++++
- drivers/misc/mei/hw.h      |  9 +++++++++
- drivers/misc/mei/mei_dev.h |  2 ++
- 4 files changed, 27 insertions(+)
+ Documentation/ABI/testing/sysfs-bus-mei |  7 +++++++
+ drivers/misc/mei/bus.c                  | 11 +++++++++++
+ drivers/misc/mei/client.h               | 12 ++++++++++++
+ drivers/misc/mei/debugfs.c              |  7 ++++---
+ drivers/misc/mei/hw.h                   | 15 ++++++++++++++-
+ 5 files changed, 48 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/misc/mei/debugfs.c b/drivers/misc/mei/debugfs.c
-index 72ee572ad9b4..b98f6f9a4896 100644
---- a/drivers/misc/mei/debugfs.c
-+++ b/drivers/misc/mei/debugfs.c
-@@ -103,6 +103,7 @@ static int mei_dbgfs_devstate_show(struct seq_file *m, void *unused)
- 		seq_printf(m, "\tFA: %01d\n", dev->hbm_f_fa_supported);
- 		seq_printf(m, "\tOS: %01d\n", dev->hbm_f_os_supported);
- 		seq_printf(m, "\tDR: %01d\n", dev->hbm_f_dr_supported);
-+		seq_printf(m, "\tVT: %01d\n", dev->hbm_f_vt_supported);
- 		seq_printf(m, "\tCAP: %01d\n", dev->hbm_f_cap_supported);
- 	}
+diff --git a/Documentation/ABI/testing/sysfs-bus-mei b/Documentation/ABI/testing/sysfs-bus-mei
+index 3d37e2796d5a..6e9a105fe5cb 100644
+--- a/Documentation/ABI/testing/sysfs-bus-mei
++++ b/Documentation/ABI/testing/sysfs-bus-mei
+@@ -41,6 +41,13 @@ Contact:	Tomas Winkler <tomas.winkler@intel.com>
+ Description:	Stores mei client fixed address, if any
+ 		Format: %d
  
-diff --git a/drivers/misc/mei/hbm.c b/drivers/misc/mei/hbm.c
-index 3a227d9363d5..0513b8a4ea88 100644
---- a/drivers/misc/mei/hbm.c
-+++ b/drivers/misc/mei/hbm.c
-@@ -342,6 +342,8 @@ static int mei_hbm_capabilities_req(struct mei_device *dev)
- 
- 	memset(&req, 0, sizeof(req));
- 	req.hbm_cmd = MEI_HBM_CAPABILITIES_REQ_CMD;
-+	if (dev->hbm_f_vt_supported)
-+		req.capability_requested[0] = HBM_CAP_VT;
- 
- 	ret = mei_hbm_write_message(dev, &mei_hdr, &req);
- 	if (ret) {
-@@ -1074,6 +1076,14 @@ static void mei_hbm_config_features(struct mei_device *dev)
- 	     dev->version.minor_version >= HBM_MINOR_VERSION_DR))
- 		dev->hbm_f_dr_supported = 1;
- 
-+	/* VTag Support */
-+	dev->hbm_f_vt_supported = 0;
-+	if (dev->version.major_version > HBM_MAJOR_VERSION_VT ||
-+	    (dev->version.major_version == HBM_MAJOR_VERSION_VT &&
-+	     dev->version.minor_version >= HBM_MINOR_VERSION_VT))
-+		dev->hbm_f_vt_supported = 1;
++What:		/sys/bus/mei/devices/.../vtag
++Date:		Nov 2020
++KernelVersion:	5.9
++Contact:	Tomas Winkler <tomas.winkler@intel.com>
++Description:	Stores mei client vtag support status
++		Format: %d
 +
-+	/* Capability message Support */
- 	dev->hbm_f_cap_supported = 0;
- 	if (dev->version.major_version > HBM_MAJOR_VERSION_CAP ||
- 	    (dev->version.major_version == HBM_MAJOR_VERSION_CAP &&
-@@ -1112,6 +1122,7 @@ int mei_hbm_dispatch(struct mei_device *dev, struct mei_msg_hdr *hdr)
- 	struct hbm_host_enum_response *enum_res;
- 	struct hbm_dma_setup_response *dma_setup_res;
- 	struct hbm_add_client_request *add_cl_req;
-+	struct hbm_capability_response *capability_res;
- 	int ret;
+ What:		/sys/bus/mei/devices/.../max_len
+ Date:		Nov 2019
+ KernelVersion:	5.5
+diff --git a/drivers/misc/mei/bus.c b/drivers/misc/mei/bus.c
+index a6dfc3ce1db2..2e7ac53a4152 100644
+--- a/drivers/misc/mei/bus.c
++++ b/drivers/misc/mei/bus.c
+@@ -810,6 +810,16 @@ static ssize_t fixed_show(struct device *dev, struct device_attribute *a,
+ }
+ static DEVICE_ATTR_RO(fixed);
  
- 	struct mei_hbm_cl_cmd *cl_cmd;
-@@ -1214,6 +1225,10 @@ int mei_hbm_dispatch(struct mei_device *dev, struct mei_msg_hdr *hdr)
- 			return -EPROTO;
- 		}
- 
-+		capability_res = (struct hbm_capability_response *)mei_msg;
-+		if (!(capability_res->capability_granted[0] & HBM_CAP_VT))
-+			dev->hbm_f_vt_supported = 0;
++static ssize_t vtag_show(struct device *dev, struct device_attribute *a,
++			 char *buf)
++{
++	struct mei_cl_device *cldev = to_mei_cl_device(dev);
++	bool vt = mei_me_cl_vt(cldev->me_cl);
 +
- 		if (dev->hbm_f_dr_supported) {
- 			if (mei_dmam_ring_alloc(dev))
- 				dev_info(dev->dev, "running w/o dma ring\n");
-diff --git a/drivers/misc/mei/hw.h b/drivers/misc/mei/hw.h
-index 539d89ba1c61..13e4cb68a0e6 100644
---- a/drivers/misc/mei/hw.h
-+++ b/drivers/misc/mei/hw.h
-@@ -76,6 +76,12 @@
- #define HBM_MINOR_VERSION_DR               1
- #define HBM_MAJOR_VERSION_DR               2
++	return sprintf(buf, "%d", vt);
++}
++static DEVICE_ATTR_RO(vtag);
++
+ static ssize_t max_len_show(struct device *dev, struct device_attribute *a,
+ 			    char *buf)
+ {
+@@ -827,6 +837,7 @@ static struct attribute *mei_cldev_attrs[] = {
+ 	&dev_attr_modalias.attr,
+ 	&dev_attr_max_conn.attr,
+ 	&dev_attr_fixed.attr,
++	&dev_attr_vtag.attr,
+ 	&dev_attr_max_len.attr,
+ 	NULL,
+ };
+diff --git a/drivers/misc/mei/client.h b/drivers/misc/mei/client.h
+index 2f8954def591..0d0f36373a4b 100644
+--- a/drivers/misc/mei/client.h
++++ b/drivers/misc/mei/client.h
+@@ -93,6 +93,18 @@ static inline u8 mei_me_cl_fixed(const struct mei_me_client *me_cl)
+ 	return me_cl->props.fixed_address;
+ }
  
-+/*
-+ * MEI version with vm tag support
++/**
++ * mei_me_cl_vt - return me client vtag supported status
++ *
++ * @me_cl: me client
++ *
++ * Return: true if me client supports vt tagging
 + */
-+#define HBM_MINOR_VERSION_VT               2
-+#define HBM_MAJOR_VERSION_VT               2
-+
- /*
-  * MEI version with capabilities message support
-  */
-@@ -542,6 +548,9 @@ struct hbm_dma_ring_ctrl {
- 	u32 reserved4;
- } __packed;
- 
-+/* virtual tag supported */
-+#define HBM_CAP_VT BIT(0)
++static inline bool mei_me_cl_vt(const struct mei_me_client *me_cl)
++{
++	return me_cl->props.vt_supported == 1;
++}
 +
  /**
-  * struct hbm_capability_request - capability request from host to fw
+  * mei_me_cl_max_len - return me client max msg length
   *
-diff --git a/drivers/misc/mei/mei_dev.h b/drivers/misc/mei/mei_dev.h
-index e18af7dfd9ff..f80cc6463f18 100644
---- a/drivers/misc/mei/mei_dev.h
-+++ b/drivers/misc/mei/mei_dev.h
-@@ -426,6 +426,7 @@ struct mei_fw_version {
-  * @hbm_f_ie_supported  : hbm feature immediate reply to enum request
-  * @hbm_f_os_supported  : hbm feature support OS ver message
-  * @hbm_f_dr_supported  : hbm feature dma ring supported
-+ * @hbm_f_vt_supported  : hbm feature vtag supported
-  * @hbm_f_cap_supported : hbm feature capabilities message supported
-  *
-  * @fw_ver : FW versions
-@@ -511,6 +512,7 @@ struct mei_device {
- 	unsigned int hbm_f_ie_supported:1;
- 	unsigned int hbm_f_os_supported:1;
- 	unsigned int hbm_f_dr_supported:1;
-+	unsigned int hbm_f_vt_supported:1;
- 	unsigned int hbm_f_cap_supported:1;
+diff --git a/drivers/misc/mei/debugfs.c b/drivers/misc/mei/debugfs.c
+index b98f6f9a4896..3ab1a431d810 100644
+--- a/drivers/misc/mei/debugfs.c
++++ b/drivers/misc/mei/debugfs.c
+@@ -27,7 +27,7 @@ static int mei_dbgfs_meclients_show(struct seq_file *m, void *unused)
  
- 	struct mei_fw_version fw_ver[MEI_MAX_FW_VER_BLOCKS];
+ 	down_read(&dev->me_clients_rwsem);
+ 
+-	seq_puts(m, "  |id|fix|         UUID                       |con|msg len|sb|refc|\n");
++	seq_puts(m, "  |id|fix|         UUID                       |con|msg len|sb|refc|vt|\n");
+ 
+ 	/*  if the driver is not enabled the list won't be consistent */
+ 	if (dev->dev_state != MEI_DEV_ENABLED)
+@@ -37,14 +37,15 @@ static int mei_dbgfs_meclients_show(struct seq_file *m, void *unused)
+ 		if (!mei_me_cl_get(me_cl))
+ 			continue;
+ 
+-		seq_printf(m, "%2d|%2d|%3d|%pUl|%3d|%7d|%2d|%4d|\n",
++		seq_printf(m, "%2d|%2d|%3d|%pUl|%3d|%7d|%2d|%4d|%2d|\n",
+ 			   i++, me_cl->client_id,
+ 			   me_cl->props.fixed_address,
+ 			   &me_cl->props.protocol_name,
+ 			   me_cl->props.max_number_of_connections,
+ 			   me_cl->props.max_msg_length,
+ 			   me_cl->props.single_recv_buf,
+-			   kref_read(&me_cl->refcnt));
++			   kref_read(&me_cl->refcnt),
++			   me_cl->props.vt_supported);
+ 		mei_me_cl_put(me_cl);
+ 	}
+ 
+diff --git a/drivers/misc/mei/hw.h b/drivers/misc/mei/hw.h
+index 13e4cb68a0e6..ea0a2e459282 100644
+--- a/drivers/misc/mei/hw.h
++++ b/drivers/misc/mei/hw.h
+@@ -314,13 +314,26 @@ struct hbm_host_enum_response {
+ 	u8 valid_addresses[32];
+ } __packed;
+ 
++/**
++ * struct mei_client_properties - mei client properties
++ *
++ * @protocol_name: guid of the client
++ * @protocol_version: client protocol version
++ * @max_number_of_connections: number of possible connections.
++ * @fixed_address: fixed me address (0 if the client is dynamic)
++ * @single_recv_buf: 1 if all connections share a single receive buffer.
++ * @vt_supported: the client support vtag
++ * @reserved: reserved
++ * @max_msg_length: MTU of the client
++ */
+ struct mei_client_properties {
+ 	uuid_le protocol_name;
+ 	u8 protocol_version;
+ 	u8 max_number_of_connections;
+ 	u8 fixed_address;
+ 	u8 single_recv_buf:1;
+-	u8 reserved:7;
++	u8 vt_supported:1;
++	u8 reserved:6;
+ 	u32 max_msg_length;
+ } __packed;
+ 
 -- 
 2.25.4
 
