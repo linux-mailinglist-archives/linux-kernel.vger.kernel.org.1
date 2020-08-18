@@ -2,181 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 476A62488C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 17:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F9992488CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 17:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726778AbgHRPKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 11:10:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58620 "EHLO
+        id S1726890AbgHRPL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 11:11:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726570AbgHRPKh (ORCPT
+        with ESMTP id S1726570AbgHRPLj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 11:10:37 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E756C061389
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 08:10:36 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id f7so18630287wrw.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 08:10:36 -0700 (PDT)
+        Tue, 18 Aug 2020 11:11:39 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D59AEC061389
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 08:11:38 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id p20so18637243wrf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 08:11:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zxe+HJmIWMfQ1RElqmaY0GiV1Gl7b0KgtI/GKiLoLwc=;
-        b=UXlGAiGLTmMimNPojD1cHSTRsErRHNBbtrZT5pI3TeFxNQmf20CwFIdDFAcb0a7n4+
-         vmKVl8ds6JZwjQwoEtNGzQL7v/yP6SqgzMeGFesFIPLs4fKR2BNPUoR/6xUfk19656yl
-         JRTAGLhb+3nGmbMEI88v/pCOE7murI68EWPJQ=
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/TUviTxTr5RENHKS204/Amvu2wl72islAoTAztRD38o=;
+        b=kyXcab8PtKT5O5lVakr4loj+OMQcj8nCmqIZjBKRtV+t4CcXPuHW4hNfYc5nk6z6bo
+         jirtPaLC5ptB1rQ/DpBkYGJxkb76UeHDHlJBTzYMek/sJoU88ecQi+PibR5IkbCncqHc
+         a1vKyEy4lqWk2wPjbrlKzeVAKyZKsJOEcqyu0a9bi/JJHyCt5oY3wXhRP21/6owQi7al
+         YB9NVxB7eXyr6CAcU8BMCYiCqADWpW0D5BSkCcv6qZBt9BU6qGJvqy6JiFoHEXEk34uY
+         pVOHOtGaNE1OcPlMHgUKo9EQBv6FmzG+7ra/0YjZDVhsoAV+Bzda900niFw6lUowByu6
+         cA2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=zxe+HJmIWMfQ1RElqmaY0GiV1Gl7b0KgtI/GKiLoLwc=;
-        b=LgnWp2bPiipfZOIsU62kgVhYiAPwtCC33q17idO8ndwaiWWKR/Vs9Z6816WQthGl6e
-         q5q3icbdhth3ETePXqMnUeDi0RhhGfcbsPxeR8fKaazdJUoaJjluo1/SRCPDFqUL3fQr
-         PFpC0U68+ZsCerJhc4DOGIaVacL84gyFmU/6XfeJkWUdoy4joUJ3CvwLUS2Rhx0njMz0
-         /IOA/IH6at9kPvP8f4lXXT9XggX8ftHHlBp7GrkNWc1TyBjWP6BKSXBb8MgLXW7+hptX
-         DX7MUCh5OOhqfDaSr1laBB+ak12wXaRdeicErsU4ylR00NfJFRAMS3uMITj23r/XDb3I
-         Xv2w==
-X-Gm-Message-State: AOAM530hmOEQWQhQcbmhQuvkyGbupaoPY6c5N55hXGLhUd9LEF04CsMt
-        5I7T5n7GTwt23tVYgqbm1AkUEw==
-X-Google-Smtp-Source: ABdhPJwMZXOzExdHgzzwPRNZtVauhbOakNrr5oH3e0Yl8Lg/4VVrGTLwLZqELVDHQ2B0C62wz/T+gw==
-X-Received: by 2002:adf:e504:: with SMTP id j4mr21174389wrm.205.1597763435276;
-        Tue, 18 Aug 2020 08:10:35 -0700 (PDT)
-Received: from [192.168.2.66] ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id z6sm279421wml.41.2020.08.18.08.10.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Aug 2020 08:10:34 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v8 5/7] bpf: Implement bpf_local_storage for
- inodes
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>
-References: <20200803164655.1924498-1-kpsingh@chromium.org>
- <20200803164655.1924498-6-kpsingh@chromium.org>
- <20200818012758.4666zlknkr4x6cbl@kafai-mbp.dhcp.thefacebook.com>
-From:   KP Singh <kpsingh@chromium.org>
-Message-ID: <60344fad-f761-0fee-a6ef-4880c45c3e52@chromium.org>
-Date:   Tue, 18 Aug 2020 17:10:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=/TUviTxTr5RENHKS204/Amvu2wl72islAoTAztRD38o=;
+        b=NbTIqbE2ON58/ZyNG4jJr/yVjCU/0e3q5PelDe8+jpkQxlFvy/cv1RlgzyVn9jWo53
+         CB6kA1bkQaKoviguDmbcRFkwtVLaeq1EIrBqh0D7Jo32Q79mt86yE+Mm7Pj5nQbrY2qp
+         7dDkzelUS+0cYVVxDxYPn4IQzxbEtqjihTjsRJnqUtAxzOeIp4kMp6mAG2U6J1gxEutJ
+         5+lcqQ4o/RvIGpGpNJY9VRAdI1uR/gjN7u6NCMNNmuRDPWRfwxSyosHLysVJuFRhEPfy
+         ifR1uUBJQVWIvS4dUi7ig6hxxzj+XRtdAn9hds4m4g/rJivVnCrSgOsXSSS0YAaQEAvA
+         o3FA==
+X-Gm-Message-State: AOAM5323h9yJfQezqeRqb4740Dlet0QRaCgA0ipvAausVqaIzUuk4RrF
+        zOT3dCcyXo/mG0XenlflsDU=
+X-Google-Smtp-Source: ABdhPJz8jQ2UIZ0e4glv5rwM4+hhWPDfagKdjFGyY2wc2UVtfUyBEuZJPiHY3sdThsZ2Fy6iJYrkRw==
+X-Received: by 2002:a5d:5084:: with SMTP id a4mr21374691wrt.191.1597763497564;
+        Tue, 18 Aug 2020 08:11:37 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id x82sm299863wmb.30.2020.08.18.08.11.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Aug 2020 08:11:37 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: emxx_udc: Allow for building on !ARM
+Date:   Tue, 18 Aug 2020 16:11:29 +0100
+Message-Id: <20200818151133.583382-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200818012758.4666zlknkr4x6cbl@kafai-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently the module can only be test built on ARM, although it seems to
+build fine on x86. Change this to allow for broader test coverage.
 
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+---
+ drivers/staging/emxx_udc/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 8/18/20 3:27 AM, Martin KaFai Lau wrote:
-> On Mon, Aug 03, 2020 at 06:46:53PM +0200, KP Singh wrote:
->> From: KP Singh <kpsingh@google.com>
->>
->> Similar to bpf_local_storage for sockets, add local storage for inodes.
->> The life-cycle of storage is managed with the life-cycle of the inode.
->> i.e. the storage is destroyed along with the owning inode.
->>
->> The BPF LSM allocates an __rcu pointer to the bpf_local_storage in the
->> security blob which are now stackable and can co-exist with other LSMs.
->>
->> Signed-off-by: KP Singh <kpsingh@google.com>
->> ---
->>  include/linux/bpf_local_storage.h             |  10 +
->>  include/linux/bpf_lsm.h                       |  21 ++
->>  include/linux/bpf_types.h                     |   3 +
->>  include/uapi/linux/bpf.h                      |  38 +++
->>  kernel/bpf/Makefile                           |   1 +
+diff --git a/drivers/staging/emxx_udc/Kconfig b/drivers/staging/emxx_udc/Kconfig
+index ad1478c53e9e..e7a95b3b6a2f 100644
+--- a/drivers/staging/emxx_udc/Kconfig
++++ b/drivers/staging/emxx_udc/Kconfig
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ config USB_EMXX
+ 	tristate "EMXX USB Function Device Controller"
+-	depends on USB_GADGET && (ARCH_RENESAS || (ARM && COMPILE_TEST))
++	depends on USB_GADGET && (ARCH_RENESAS || COMPILE_TEST)
+ 	help
+ 	   The Emma Mobile series of SoCs from Renesas Electronics and
+ 	   former NEC Electronics include USB Function hardware.
+-- 
+2.28.0
 
-[...]
-
-ata *inode_storage_lookup(struct inode *inode,
->> +							   struct bpf_map *map,
->> +							   bool cacheit_lockit)
->> +{
->> +	struct bpf_local_storage *inode_storage;
->> +	struct bpf_local_storage_map *smap;
->> +	struct bpf_storage_blob *bsb;
->> +
->> +	bsb = bpf_inode(inode);
->> +	if (!bsb)
->> +		return ERR_PTR(-ENOENT);
-> ERR_PTR is returned here...
-> 
->> +
->> +	inode_storage = rcu_dereference(bsb->storage);
->> +	if (!inode_storage)
->> +		return NULL;
->> +
-
-[...]
-
->> +		kfree_rcu(local_storage, rcu);
->> +}
->> +
->> +
->> +static void *bpf_fd_inode_storage_lookup_elem(struct bpf_map *map, void *key)
->> +{
->> +	struct bpf_local_storage_data *sdata;
->> +	struct file *f;
->> +	int fd;
->> +
->> +	fd = *(int *)key;
->> +	f = fcheck(fd);
->> +	if (!f)
->> +		return ERR_PTR(-EINVAL);
->> +
->> +	get_file(f);
->> +	sdata = inode_storage_lookup(f->f_inode, map, true);
->> +	fput(f);
->> +	return sdata ? sdata->data : NULL;
-> sdata can be ERR_PTR here and a few other cases below.
-> 
-> May be inode_storage_lookup() should just return NULL.
-
-I think returning NULL is a better option. Thanks!
-
-> 
->> +}
->> +
->> +static int bpf_fd_inode_storage_update_elem(struct bpf_map *map, void *key,
->> +					 void *value, u64 map_flags)
->> +{
->> +	struct bpf_local_storage_data *sdata;
->> +	struct file *f;
->> +	int fd;
->> +
->> +	fd = *(int *)key;
->> +	f = fcheck(fd);
->> +	if (!f)
->> +		return -EINVAL;
->> +
->> +	get_file(f);> get_file() does atomic_long_inc() instead of atomic_long_inc_not_zero().
-> I don't see how that helps here.  Am I missing something?
-
-You are right, this should not not be an fcheck followed by a get_file
-rather fcheck followed by get_file_rcu:
-
-#define get_file_rcu_many(x, cnt)	\
-	atomic_long_add_unless(&(x)->f_count, (cnt), 0)
-#define get_file_rcu(x) get_file_rcu_many((x), 1)
-#define file_count(x)	atomic_long_read(&(x)->f_count)
-
-But there is an easier way than all of this and this is to use 
-fget_raw which also calls get_file_rcu_many 
-and ensures a non-zero count before getting a reference.
-
-- KP
-
-> 
->> +	sdata = bpf_local_storage_update(f->f_inode, map, value, map_flags);
->> +	fput(f);
->> +	return PTR_ERR_OR_ZERO(sdata);
->> +}
->> +
