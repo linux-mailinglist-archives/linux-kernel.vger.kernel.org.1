@@ -2,98 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 538B0247F48
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 09:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B36247F4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 09:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726451AbgHRHWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 03:22:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbgHRHWk (ORCPT
+        id S1726587AbgHRHXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 03:23:20 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:52322 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726420AbgHRHXU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 03:22:40 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA7AC061389;
-        Tue, 18 Aug 2020 00:22:40 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id t11so8810246plr.5;
-        Tue, 18 Aug 2020 00:22:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=ngrPbPBRbUsq6w+flBSZQV2nOcmo/y3wzfu+I9RjOwM=;
-        b=TSPQYiEu1Z3JAOqWBoqY0hkMurM6qzutlorBVGTCiYHNvCTc6oGO2lvpnf9ygeWYuk
-         /hGBax/Aor+9svcSrfngM0CKK3dbpDJc8onXTK9HHtR8G1nWkVBzOz/GzwYyI2Yydf0y
-         28NXnmPerG5D0pXpjDvuYp+cFFSYBQujB7GhYS9wU9QhpDn82QALLxrH4lMdBz4XlGEL
-         ZyWsXpMC/yMp1GmvYiGoqK5+pBRrbFENkDXjDALUFLx+piH1/xZ2McUr3DB0MXJB/zJR
-         Ev8G5+7QjObdSdOFB4uNtu0xANrJPcsSOfvdEN/I3bu5ZF5+xyaxjBcJno801fSmWgRr
-         yxkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=ngrPbPBRbUsq6w+flBSZQV2nOcmo/y3wzfu+I9RjOwM=;
-        b=kH4sSiZkvG3lgpfpA6m6pQZqax9CAYWEC4kXATYHvu2P8PsNCe2P5i1qGTcBvN/gGK
-         u9cac4MVGpaMTb+jOpxgOJkYORPXYU3jgGpySiuYwMEGqQ/XuCqn7LObN8WYQmYwXt4D
-         G4M23xlSuN/MfrOugPotPHLHFOfgfQ9aOVmf1iaE4Q9EWbJgl3BIE9IXYaPt3akKob8i
-         rwyrNRzp0hxoel1UeGeYA8TgSliKngCBEnETO5J8meGWpnIqRNuJ3mE7pD4EcurYxsBZ
-         eUvcVVX3XQBRsqFMbPflw6SNHqAHpxd3Y6iBeFoqthCn5r52ZDSqFAtVoHDCqTsxP/PF
-         S52w==
-X-Gm-Message-State: AOAM532xwEUMjEFrE2mkSTLl6JPsJSJzI5D13ftUWCRTaGfBZX+mzWJo
-        nGRX7ugDHnyA4TAV7/NceOE=
-X-Google-Smtp-Source: ABdhPJwWicVHjLC3nLnAfAzUswzycukvUhFKVQxdfOgfh/aUNHN6aaAIYbgqXGGLh0wn8G5+FzQeQw==
-X-Received: by 2002:a17:90a:e990:: with SMTP id v16mr16323320pjy.194.1597735359589;
-        Tue, 18 Aug 2020 00:22:39 -0700 (PDT)
-Received: from localhost (193-116-193-175.tpgi.com.au. [193.116.193.175])
-        by smtp.gmail.com with ESMTPSA id z26sm21152854pgc.44.2020.08.18.00.22.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 00:22:39 -0700 (PDT)
-Date:   Tue, 18 Aug 2020 17:22:33 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH 1/2] lockdep: improve current->(hard|soft)irqs_enabled
- synchronisation with actual irq state
-To:     peterz@infradead.org
-Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-References: <20200723105615.1268126-1-npiggin@gmail.com>
-        <20200807111126.GI2674@hirez.programming.kicks-ass.net>
-        <1597220073.mbvcty6ghk.astroid@bobo.none>
-        <20200812103530.GL2674@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200812103530.GL2674@hirez.programming.kicks-ass.net>
+        Tue, 18 Aug 2020 03:23:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597735397;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=OcV+C2ZGRLawXS8xBH4LRbibz87NwwD501W1V9YggXk=;
+        b=BNuA6pPX3y/WPY9OUKkeuI08ZLWjR2fIzTm+iydYj3RxYmH3TCbaBPLUN/GJwAIG+Nl+A3
+        cItwt98oA/88mnPuEUCq2FDkz3MVqOfu2ayQJeGxPnQCYolCQthnFwkUhJxiBNOUfBfybO
+        VBlydGsIXGvLhg6ZtRHxJwn74aqAM48=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-204-tZ01xwtXN0KinkOxi7BQqg-1; Tue, 18 Aug 2020 03:23:16 -0400
+X-MC-Unique: tZ01xwtXN0KinkOxi7BQqg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E4EA418B9ED8;
+        Tue, 18 Aug 2020 07:23:14 +0000 (UTC)
+Received: from [10.36.113.168] (ovpn-113-168.ams2.redhat.com [10.36.113.168])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 72B23756BA;
+        Tue, 18 Aug 2020 07:23:13 +0000 (UTC)
+Subject: Re: [PATCH] mm/page_reporting: the "page" must not be the list head
+To:     Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20200817084836.29216-1-richard.weiyang@linux.alibaba.com>
+ <fa97519b-a860-5fea-9511-2237f195caeb@redhat.com>
+ <aaa56d83-2444-d74e-025a-508a2be6b772@linux.intel.com>
+ <c362eb24-d4bc-82e8-e813-0951ce50b440@redhat.com>
+ <20200818030558.GC29756@L-31X9LVDL-1304.local>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <9656b6cb-23c7-7875-85e7-6aeea7c9dc2c@redhat.com>
+Date:   Tue, 18 Aug 2020 09:23:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Message-Id: <1597735273.s0usqkrlsk.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200818030558.GC29756@L-31X9LVDL-1304.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from peterz@infradead.org's message of August 12, 2020 8:35 pm:
-> On Wed, Aug 12, 2020 at 06:18:28PM +1000, Nicholas Piggin wrote:
->> Excerpts from peterz@infradead.org's message of August 7, 2020 9:11 pm:
->> >=20
->> > What's wrong with something like this?
->> >=20
->> > AFAICT there's no reason to actually try and add IRQ tracing here, it'=
-s
->> > just a hand full of instructions at the most.
->>=20
->> Because we may want to use that in other places as well, so it would
->> be nice to have tracing.
->>=20
->> Hmm... also, I thought NMI context was free to call local_irq_save/resto=
-re
->> anyway so the bug would still be there in those cases?
->=20
-> NMI code has in_nmi() true, in which case the IRQ tracing is disabled
-> (except for x86 which has CONFIG_TRACE_IRQFLAGS_NMI).
->=20
+On 18.08.20 05:05, Wei Yang wrote:
+> On Mon, Aug 17, 2020 at 07:07:04PM +0200, David Hildenbrand wrote:
+>> On 17.08.20 18:05, Alexander Duyck wrote:
+>>>
+>>>
+>>> On 8/17/2020 2:35 AM, David Hildenbrand wrote:
+>>>> On 17.08.20 10:48, Wei Yang wrote:
+>>>>> If "page" is the list head, list_for_each_entry_safe() would stop
+>>>>> iteration.
+>>>>>
+>>>>> Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+>>>>> ---
+>>>>>   mm/page_reporting.c | 2 +-
+>>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/mm/page_reporting.c b/mm/page_reporting.c
+>>>>> index 3bbd471cfc81..aaaa3605123d 100644
+>>>>> --- a/mm/page_reporting.c
+>>>>> +++ b/mm/page_reporting.c
+>>>>> @@ -178,7 +178,7 @@ page_reporting_cycle(struct page_reporting_dev_info *prdev, struct zone *zone,
+>>>>>   		 * the new head of the free list before we release the
+>>>>>   		 * zone lock.
+>>>>>   		 */
+>>>>> -		if (&page->lru != list && !list_is_first(&page->lru, list))
+>>>>> +		if (!list_is_first(&page->lru, list))
+>>>>>   			list_rotate_to_front(&page->lru, list);
+>>>>>   
+>>>>>   		/* release lock before waiting on report processing */
+>>>>>
+>>>>
+>>>> Is this a fix or a cleanup? If it's a fix, can this be reproduced easily
+>>>> and what ere the effects?
+>>>>
+>>>
+>>> This should be a clean-up. Since the &page->lru != list will always be true.
+>>>
+>>
+>> Makes sense, maybe we can make that a little bit clearer in the patch
+>> description.
+>>
+> 
+> Ok, do you have some suggestion on the description?
+> 
+>    A clean-up for commit xxx?
+> 
+> I would appreciate your suggestion :-)
+> 
 
-That doesn't help. It doesn't fix the lockdep irq state going out of
-synch with the actual irq state. The code which triggered this with the
-special powerpc irq disable has in_nmi() true as well.
+I'd go with something like
 
+"
+mm/page_reporting: drop stale list head check in page_reporting_cycle
+
+list_for_each_entry_safe() guarantees that we will never stumble over
+the list head; "&page->lru != list" will always evaluate to true. Let's
+simplify.
+"
+
+to stress that this is a pure simplifcation.
+
+Reviewed-by: David Hildenbrand <david@redhat.com>
+
+>>> If I recall at some point the that was a check for &next->lru != list 
+>>> but I think I pulled out an additional conditional check somewhere so 
+>>> that we just go through the start of the loop again and iterate over 
+>>> reported pages until we are guaranteed to have a non-reported page to 
+>>> rotate to the top of the list with the general idea being that we wanted 
+>>> the allocator to pull non-reported pages before reported pages.
+>>
+>> -- 
+>> Thanks,
+>>
+>> David / dhildenb
+> 
+
+
+-- 
 Thanks,
-Nick
+
+David / dhildenb
+
