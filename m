@@ -2,91 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6AA248027
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C17224802A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbgHRIHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 04:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726203AbgHRIHI (ORCPT
+        id S1726630AbgHRIH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 04:07:26 -0400
+Received: from smtprelay0016.hostedemail.com ([216.40.44.16]:39342 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726203AbgHRIHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 04:07:08 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ACD7C061389;
-        Tue, 18 Aug 2020 01:07:08 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id mw10so8894821pjb.2;
-        Tue, 18 Aug 2020 01:07:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=StFFVCyyrqOkn7U9cLGxAfuLpee/KXFwmS5u87kiIm4=;
-        b=iwISd+CWW2R7LQdicuTPCO4Djz+Ep8Wv035bwy+fTHpfPjAldOMn8249OlRIpvpyYZ
-         Es6G5h55Cgvnd5ZDOOavmtGyfZnD+VnPHVberGV9wsB8LFiNcn/CCEBvZihm+MMiKOkX
-         PfmRfyf3M4cNxWUJyD3RrKMTFpQ9FaIhU9R7OODxee8pa6G5EZAUreV2v6KCC+qgm3YY
-         EwdmAZMuo5VKfz2Sx/rmwABbnrjqwN4nR+MNGziHsy5iJIAd2Z5/XGrc3rrnE8wUfqnA
-         T0KRi/2W5GALncOgHIcHIwci8ERvgLydaFzAcNzFeG+BFq5lTQ8OdIDdcWIjCrGtuT44
-         HCTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=StFFVCyyrqOkn7U9cLGxAfuLpee/KXFwmS5u87kiIm4=;
-        b=TDb+jx0pDP3p5VDPnrONNz2imG8tIlQu0KppL6VzcxKq3qfNvE5YIvIyLvRDCmbnQW
-         ZhFzPDACYXZIXKng5Q/MZp53afYSTpM7E31vHBahiIRbr0nSGXlAQxBsPtDzAB34AYSR
-         2Gu8yegmzfNmzpYUHpdfjWsAFMVnsBxDKW+gGReQNYQy1EKm09L5IRGLzEV6sNglMnB2
-         lPCfzkoKcBTg29QVCNsYChcAjFv9I9rM+2P/wdUPX9MJlnfCwv9vUaV7XCGqaVcKB035
-         kNZznGNRQEw+dhiRmIZswxIWNkFWy2oLwxdeH4cntzXtVXi2Fbui6mTKh+tczxB+S70q
-         J2MA==
-X-Gm-Message-State: AOAM531MESycJtOOg0ZZuLb+tsWGWzFgycuG9sfk747GeICoIXZwkHWk
-        Y4K28LBU3DkhJjE4w6FOLjoOD1F9F1E=
-X-Google-Smtp-Source: ABdhPJz8H1EB4gkEEbz+CgswsYmcAgHxH1hWTh2rxtMgeriPdI0/FERnAKJJOo4zzNahWr410ikthA==
-X-Received: by 2002:a17:90a:8d85:: with SMTP id d5mr14752437pjo.45.1597738027502;
-        Tue, 18 Aug 2020 01:07:07 -0700 (PDT)
-Received: from oppo (69-172-89-151.static.imsbiz.com. [69.172.89.151])
-        by smtp.gmail.com with ESMTPSA id kb2sm20369902pjb.34.2020.08.18.01.07.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 01:07:06 -0700 (PDT)
-Date:   Tue, 18 Aug 2020 16:07:03 +0800
-From:   Qingyu Li <ieatmuttonchuan@gmail.com>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        Tue, 18 Aug 2020 04:07:21 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 0E7CE1277;
+        Tue, 18 Aug 2020 08:07:19 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1381:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2525:2553:2560:2563:2682:2685:2687:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3167:3352:3622:3653:3865:3866:3867:3868:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6691:9025:10004:10400:10848:11232:11658:11914:12043:12296:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21451:21627:21740:21939:30054:30062:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: talk96_520c0712701d
+X-Filterd-Recvd-Size: 1995
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf12.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 18 Aug 2020 08:07:18 +0000 (UTC)
+Message-ID: <f9803189e589cc719fc9a561003317a81d2da07e.camel@perches.com>
+Subject: Re: [PATCH v3] checkpatch: add --kconfig-prefix
+From:   Joe Perches <joe@perches.com>
+To:     Jerome Forissier <jerome@forissier.org>,
+        Andy Whitcroft <apw@canonical.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] net/bluetooth/bnep/sock.c: add CAP_NET_RAW check.
-Message-ID: <20200818080703.GA31526@oppo>
+Date:   Tue, 18 Aug 2020 01:07:17 -0700
+In-Reply-To: <266350d9-c770-6a29-b784-46de2b005e39@forissier.org>
+References: <20200817095056.31001-1-jerome@forissier.org>
+         <20200818074349.726778-1-jerome@forissier.org>
+         <266350d9-c770-6a29-b784-46de2b005e39@forissier.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When creating a raw PF_BLUETOOTH socket,
-CAP_NET_RAW needs to be checked first.
+On Tue, 2020-08-18 at 09:50 +0200, Jerome Forissier wrote:
+> 
+> On 8/18/20 9:43 AM, Jerome Forissier wrote:
+> > Kconfig allows to customize the CONFIG_ prefix via the $CONFIG_
+> > environment variable. Out-of-tree projects may therefore use Kconfig
+> > with a different prefix, or they may use a custom configuration tool
+> > which does not use the CONFIG_ prefix at all. Such projects may still
+> > want to adhere to the Linux kernel coding style and run checkpatch.pl.
+> > 
+> > One example is OP-TEE [1] which does not use Kconfig but does have
+> > configuration options prefixed with CFG_. It also mostly follows the
+> > kernel coding style and therefore being able to use checkpatch is quite
+> > valuable.
+> > 
+> > To make this possible, add the --kconfig-prefix command line option.
+> 
+> (Oh I forgot to add the link here :-/ sorry about that. Let me know if
+> you want me to resend.)
+> 
+> [1] https://github.com/OP-TEE/optee_os
 
-Signed-off-by: Qingyu Li <ieatmuttonchuan@gmail.com>
----
- net/bluetooth/bnep/sock.c | 3 +++
- 1 file changed, 3 insertions(+)
+It's probably not important enough to bother.
+A trivial search on "OP-TEE" works.
+So I think it's fine, but if you feel like it,
+go ahead.
 
-diff --git a/net/bluetooth/bnep/sock.c b/net/bluetooth/bnep/sock.c
-index d515571b2afb..e06787a3b5ce 100644
---- a/net/bluetooth/bnep/sock.c
-+++ b/net/bluetooth/bnep/sock.c
-@@ -204,6 +204,9 @@ static int bnep_sock_create(struct net *net, struct socket *sock, int protocol,
- 	if (sock->type != SOCK_RAW)
- 		return -ESOCKTNOSUPPORT;
+Joe
 
-+	if (!capable(CAP_NET_RAW))
-+		return -EPERM;
-+
- 	sk = sk_alloc(net, PF_BLUETOOTH, GFP_ATOMIC, &bnep_proto, kern);
- 	if (!sk)
- 		return -ENOMEM;
---
-2.17.1
 
