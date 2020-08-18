@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C47B2480DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D052480C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbgHRIkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 04:40:39 -0400
-Received: from mga06.intel.com ([134.134.136.31]:40470 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726451AbgHRIki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 04:40:38 -0400
-IronPort-SDR: T9R1fIU2ryonDXheVzsQIsdXIECAukWDZyc9KZWzhKhQVPqQVEb+Xt+LSlPnOikUPKaqBKa78I
- KBeF3WNjd21g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="216388157"
-X-IronPort-AV: E=Sophos;i="5.76,326,1592895600"; 
-   d="scan'208";a="216388157"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 01:40:37 -0700
-IronPort-SDR: IyUEvBF20eM7Hhc/CZ3qTnf0ZmrCmOt13gqRWqWoG9St1mIjB8NkWCQimi3/J5zs6pS031RCB1
- 4ol/IsdRznOg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,326,1592895600"; 
-   d="scan'208";a="471722425"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by orsmga005.jf.intel.com with ESMTP; 18 Aug 2020 01:40:32 -0700
-Date:   Tue, 18 Aug 2020 16:36:47 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     broonie@kernel.org, linux-kernel@vger.kernel.org, trix@redhat.com,
-        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
-        lgoncalv@redhat.com, hao.wu@intel.com
-Subject: Re: [PATCH v3 0/2] add regmap-spi-avmm & Intel Max10 BMC chip support
-Message-ID: <20200818083647.GE22873@yilunxu-OptiPlex-7050>
-References: <1596614456-20182-1-git-send-email-yilun.xu@intel.com>
- <20200817082410.GB19661@yilunxu-OptiPlex-7050>
- <20200817091252.GV4354@dell>
+        id S1726514AbgHRIhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 04:37:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726336AbgHRIhd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 04:37:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D345C061389
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 01:37:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=z+RycezjV2WVCujs2S8itL6PhqDnVUaq7qp6xVdLAo4=; b=sChHbAxde70X2xuGN/HW+28KHz
+        HI6YetzZL7SCINwQdD5+hHwkS6qWOP4voGDc8BYsONfhYhnkoQjB8JI7DJJ9WQFCYfhWEbCSaLAB/
+        omXVKQnx1SSatRgDqyYjcqU0OpvgaD2swot7bjhdFztT6gzNDrjEARqivLy9gDHU+rpvRWfZnA8TU
+        EXesWd61vo9k2yjd6ObDCJVrP1fhwDN5MYWt/fXfGTXqq8r+QJLiuZzA0MqYq9MFwmi9U6wOVFmOZ
+        0288DMbrkGzzFf92AljB7ECFX3C4q0e5AVJDUpv6hEAlOSfHWemTogfSP8tf0Sw1RswoQai5g6knN
+        CYOJR6QQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k7x7Q-0002kj-2n; Tue, 18 Aug 2020 08:37:20 +0000
+Date:   Tue, 18 Aug 2020 09:37:20 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Cho KyongHo <pullip.cho@samsung.com>, joro@8bytes.org,
+        catalin.marinas@arm.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        janghyuck.kim@samsung.com, hyesoo.yu@samsung.com
+Subject: Re: [PATCH 1/2] dma-mapping: introduce relaxed version of dma sync
+Message-ID: <20200818083720.GA9451@infradead.org>
+References: <CGME20200818075050epcas2p15c780650f5f6b4a54ce731c273d24c98@epcas2p1.samsung.com>
+ <1597736591-20457-1-git-send-email-pullip.cho@samsung.com>
+ <20200818082852.GA15145@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200817091252.GV4354@dell>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200818082852.GA15145@willie-the-truck>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 10:12:52AM +0100, Lee Jones wrote:
-> On Mon, 17 Aug 2020, Xu Yilun wrote:
+On Tue, Aug 18, 2020 at 09:28:53AM +0100, Will Deacon wrote:
+> On Tue, Aug 18, 2020 at 04:43:10PM +0900, Cho KyongHo wrote:
+> > Cache maintenance operations in the most of CPU architectures needs
+> > memory barrier after the cache maintenance for the DMAs to view the
+> > region of the memory correctly. The problem is that memory barrier is
+> > very expensive and dma_[un]map_sg() and dma_sync_sg_for_{device|cpu}()
+> > involves the memory barrier per every single cache sg entry. In some
+> > CPU micro-architecture, a single memory barrier consumes more time than
+> > cache clean on 4KiB. It becomes more serious if the number of CPU cores
+> > are larger.
 > 
-> > Hi Brown & jones:
-> > 
-> > I tried to refacor the regmap code and add comments in this patchset. I
-> > made big changes to the rx flow and remove some tricky parts in it.
-> > 
-> > Would it be more understandable than last version? I'm expecting your
-> > comments on it when you have time, thanks in advance.
+> Have you got higher-level performance data for this change? It's more likely
+> that the DSB is what actually forces the prior cache maintenance to
+> complete, so it's important to look at the bigger picture, not just the
+> apparent relative cost of these instructions.
 > 
-> Just resubmit please.  We can review the code itself.
+> Also, it's a miracle that non-coherent DMA even works, so I'm not sure
+> that we should be complicating the implementation like this to try to
+> make it "fast".
 
-Ok. I'll rebase it to 5.9-rc1 and resubmit it.
-
-Thanks,
-Yilun
-
-> 
-> -- 
-> Lee Jones [李琼斯]
-> Senior Technical Lead - Developer Services
-> Linaro.org │ Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+And without not just an important in-tree user but one that actually
+matters and can show how this is correct the whole proposal is complete
+nonstarter.
