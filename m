@@ -2,67 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D14248C07
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9301F248C0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:54:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728133AbgHRQwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 12:52:24 -0400
-Received: from smtprelay0107.hostedemail.com ([216.40.44.107]:51764 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726840AbgHRQwX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 12:52:23 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 2A3AF18029210;
-        Tue, 18 Aug 2020 16:52:22 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:421:599:800:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1381:1437:1515:1516:1518:1534:1540:1593:1594:1711:1714:1730:1747:1777:1792:2393:2525:2553:2560:2563:2682:2685:2828:2859:2895:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3351:3622:3865:3866:3867:3870:3871:3873:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:8957:9025:10004:10400:10848:11232:11658:11914:12043:12048:12297:12438:12555:12740:12760:12895:12986:13069:13311:13357:13439:13845:14181:14659:14721:21080:21451:21627:21811:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: join51_5b0c31127020
-X-Filterd-Recvd-Size: 1694
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf18.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 18 Aug 2020 16:52:21 +0000 (UTC)
-Message-ID: <15980e07c369b2cbfc7b06f58f3a521a5495bdf6.camel@perches.com>
-Subject: Re: [PATCH] clang-format: Fix: Maximum line length is now 100
-From:   Joe Perches <joe@perches.com>
-To:     Alex Dewar <alex.dewar90@gmail.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Date:   Tue, 18 Aug 2020 09:52:20 -0700
-In-Reply-To: <20200818162431.696423-1-alex.dewar90@gmail.com>
-References: <20200818162431.696423-1-alex.dewar90@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1728354AbgHRQy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 12:54:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34662 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726840AbgHRQyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 12:54:15 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C48A20786;
+        Tue, 18 Aug 2020 16:54:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597769650;
+        bh=PxM9+n8vVIqpRf0jfe4HVoCR3Hxu6WufuYAJnUBROT4=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=gUYGs4eMGo9kZaPbLsgoa9Ac73rnnbET5oal91nJ1x5zii7YwFryJq3BN3ZcuMXb4
+         +7MkNCsRLfFlMxKfJH0UR+bn9MXQ798+2obQ7OurbpMjqL7fO4qZuA+LxcrD+EYFGU
+         VqKfIY1uCkI02fGwhtF1gilroLiY3RAY5aRrR29U=
+Date:   Tue, 18 Aug 2020 17:53:39 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     devicetree@vger.kernel.org, robh+dt@kernel.org,
+        srinivas.kandagatla@linaro.org, tiwai@suse.com,
+        plai@codeaurora.org, Rohit kumar <rohitkr@codeaurora.org>,
+        lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+        bgoswami@codeaurora.org, bjorn.andersson@linaro.org,
+        agross@kernel.org, alsa-devel@alsa-project.org,
+        linux-arm-msm@vger.kernel.org, perex@perex.cz
+In-Reply-To: <1597402388-14112-1-git-send-email-rohitkr@codeaurora.org>
+References: <1597402388-14112-1-git-send-email-rohitkr@codeaurora.org>
+Subject: Re: [PATCH v6 00/12] ASoC: qcom: Add support for SC7180 lpass variant
+Message-Id: <159776961933.56094.17007093151985279828.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-08-18 at 17:24 +0100, Alex Dewar wrote:
-> Since commit bdc48fa11e46 ("checkpatch/coding-style: deprecate 80-column
-> warning") the kernel style is now for lines to be a maximum of 100 rather
-> than 80 columns. Update .clang-format accordingly.
-[]
-> diff --git a/.clang-format b/.clang-format
-[]
-> @@ -52,7 +52,7 @@ BreakConstructorInitializersBeforeComma: false
->  #BreakConstructorInitializers: BeforeComma # Unknown to clang-format-4.0
->  BreakAfterJavaFieldAnnotations: false
->  BreakStringLiterals: false
-> -ColumnLimit: 80
-> +ColumnLimit: 100
+On Fri, 14 Aug 2020 16:22:56 +0530, Rohit kumar wrote:
+> This patch chain add audio support for SC7180 soc by doing the required
+> modification in existing common lpass-cpu/lpass-platform driver.
+> This also fixes some concurrency issue.
+> 
+> This patch series is already tested by Srinivas on Dragon Board 410c.
+> Changes since v5:
+>         - Fixed remove api in lpass-sc7180.c
+>         - Addressed comments by Rob in yaml Documentation.
+> 
+> [...]
 
-No thank you.
+Applied to
 
-100 is used for exceptional line length, not
-for reformatting all lines up to 100 chars.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-See the previous discussion about the same patch
-submitted earlier in June:
+Thanks!
 
-https://lore.kernel.org/lkml/20200610125147.2782142-1-christian.brauner@ubuntu.com/
+[01/12] ASoC: qcom: Add common array to initialize soc based core clocks
+        commit: 1220f6a76e77af8ac14fe67a11fcd7806764ea46
+[02/12] ASoC: qcom: lpass-cpu: Move ahbix clk to platform specific function
+        commit: a503567d70eca91796a4ab23053d4c70df8e1e3e
+[03/12] ASoC: qcom: lpass-platform: Replace card->dev with component->dev
+        commit: 784771863abae5f8878c62e9c624111c51bebe7c
+[04/12] ASoC: qcom: lpass-platform: fix memory leak
+        commit: 5fd188215d4eb52703600d8986b22311099a5940
+[05/12] ASoC: qcom: lpass: Use regmap_field for i2sctl and dmactl registers
+        commit: b5022a36d28f6a99c1a57f54246e8b566cf094d5
+[06/12] ASoC: qcom: lpass-cpu: fix concurrency issue
+        commit: 753a6e17942f6f425ca622e1610625998312ad89
+[07/12] ASoC: Add sc7180 lpass cpu node
+        commit: 2a7a3797ed2de6a55e1467bd11002fa7b13e12f3
+[08/12] ASoC: Add sc7180-lpass bindings header
+        commit: 68d8904b25df28821425753eaebc8fe992dde236
+[09/12] ASoC: qcom: lpass-sc7180: Add platform driver for lpass audio
+        commit: 24caf8d9eb108c52e144bcc7af94bb1edcb70700
+[10/12] ASoC: qcom: lpass-cpu: Use platform_get_resource
+        commit: 93dbbd657167a796583506834cc03950ce25bce1
+[11/12] ASoC: qcom: lpass-platform: Use platform_get_irq
+        commit: b05372c84d61ad2a905274db7e3d63a65c835463
+[12/12] ASoC: lpass-cpu: Move to yaml format
+        commit: 4b381d7e86fd0b767456e07c49982fb4896e1166
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
