@@ -2,59 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E158248D65
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 230F6248D6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726746AbgHRRnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 13:43:08 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:59580 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726682AbgHRRnE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 13:43:04 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1k85dU-009wsH-DX; Tue, 18 Aug 2020 19:43:00 +0200
-Date:   Tue, 18 Aug 2020 19:43:00 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org, Vivien Didelot <vivien.didelot@gmail.com>,
+        id S1726585AbgHRRpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 13:45:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726569AbgHRRo5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 13:44:57 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5932EC061389;
+        Tue, 18 Aug 2020 10:44:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=VUwmIR+lImU3NRAfKAiYvoX2F1rNIteoEgPghMUy3n4=; b=fICQlLgf7nqw1v5EVdw+y4UkgP
+        kbIROvywOoijsDOmGkmor5zGA36mtA9nORnPdRV0+PY6SgIHRyUiYvquWKJzwh5dVSuVFAFvX3DME
+        uAmwFhMRtuIsHO7AxjC/Hf6i4yUHlUCTV0VhFn4FHFVQ71s5gGsrDviphLM3xYp35OmWKPBpLVRcf
+        hwpTdFcUGW3d/jWbjCTyNWqqxGNmLCqcnEhJLRysG1hkTFskpa06/7toKpSoT4Zo3bffiyMFfe8De
+        fS6X/+bj0bRKlbATWH2OR/lk0NRD8TCNYrCLq21TKS0tsjdfMcrFa8oUinpiBxN298K5q3iSTGAud
+        JKE97/QA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k85fD-0006aT-In; Tue, 18 Aug 2020 17:44:47 +0000
+Date:   Tue, 18 Aug 2020 18:44:47 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Christoph Hewllig <hch@infradead.org>,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: dsa: loop: Return VLAN table size through
- devlink
-Message-ID: <20200818174300.GI2330298@lunn.ch>
-References: <20200818040354.44736-1-f.fainelli@gmail.com>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kars de Jong <jongk@linux-m68k.org>,
+        Kees Cook <keescook@chromium.org>,
+        Greentime Hu <green.hu@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Xiao Yang <yangx.jy@cn.fujitsu.com>, linux-doc@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, sparclinux@vger.kernel.org,
+        kgdb-bugreport@lists.sourceforge.net,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 00/11] Introduce kernel_clone(), kill _do_fork()
+Message-ID: <20200818174447.GV17456@casper.infradead.org>
+References: <20200818173411.404104-1-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200818040354.44736-1-f.fainelli@gmail.com>
+In-Reply-To: <20200818173411.404104-1-christian.brauner@ubuntu.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 09:03:54PM -0700, Florian Fainelli wrote:
-> We return the VLAN table size through devlink as a simple parameter, we
-> do not support altering it at runtime:
-> 
-> devlink resource show mdio_bus/fixed-0:1f
-> mdio_bus/fixed-0:1f:
->   name VTU size 4096 occ 4096 unit entry dpipe_tables none
+On Tue, Aug 18, 2020 at 07:34:00PM +0200, Christian Brauner wrote:
+> The only remaining function callable outside of kernel/fork.c is
+> _do_fork(). It doesn't really follow the naming of kernel-internal
+> syscall helpers as Christoph righly pointed out. Switch all callers and
+> references to kernel_clone() and remove _do_fork() once and for all.
 
-Hi Florian
-
-The occ 4096 looks wrong. It is supposed to show the occupancy, how
-many are in use. 
-
-> +static u64 dsa_loop_devlink_vtu_get(void *priv)
-> +{
-> +	struct dsa_loop_priv *ps = priv;
-> +
-> +	return ARRAY_SIZE(ps->vlans);
-> +}
-
-So this should probably be looping over all vlan IDs and counting those
-with members?
-
-	Andrew
+My only concern is around return type.  long, int, pid_t ... can we
+choose one and stick to it?  pid_t is probably the right return type
+within the kernel, despite the return type of clone3().  It'll save us
+some work if we ever go through the hassle of growing pid_t beyond 31-bit.
