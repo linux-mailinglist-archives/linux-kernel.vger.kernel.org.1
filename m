@@ -2,114 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B148C247CB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 05:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7DEF247C60
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 05:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726875AbgHRDYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 23:24:02 -0400
-Received: from mga03.intel.com ([134.134.136.65]:63987 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726863AbgHRDX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 23:23:59 -0400
-IronPort-SDR: Sir+AYbbubVjGpS4RV+Sp5BxcPPzgs26QgbQJTAwPnSO+izn7Dq2ttmHg8TX9mVj60IfOc0P8U
- S8YuRwWksU9A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="154806530"
-X-IronPort-AV: E=Sophos;i="5.76,325,1592895600"; 
-   d="scan'208";a="154806530"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 20:23:59 -0700
-IronPort-SDR: /0Oiq2v7oEO84PBx8dCyDdQi/1XbxcWWPi6v556zk6rS9vG1ZN1eleiwG363IJlo5D8HsdMVSm
- gXzHDtA98TLw==
-X-IronPort-AV: E=Sophos;i="5.76,325,1592895600"; 
-   d="scan'208";a="441084704"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 20:23:55 -0700
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
-        broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        mengdong.lin@intel.com, bard.liao@intel.com
-Subject: [PATCH v2 12/12] soundwire: intel: refine runtime pm for SDW_INTEL_CLK_STOP_BUS_RESET
-Date:   Mon, 17 Aug 2020 23:29:23 +0800
-Message-Id: <20200817152923.3259-13-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200817152923.3259-1-yung-chuan.liao@linux.intel.com>
-References: <20200817152923.3259-1-yung-chuan.liao@linux.intel.com>
+        id S1726560AbgHRDDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 23:03:46 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:50941 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726302AbgHRDDp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 23:03:45 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U668E35_1597719823;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U668E35_1597719823)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 18 Aug 2020 11:03:43 +0800
+Date:   Tue, 18 Aug 2020 11:03:43 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Wei Yang <richard.weiyang@linux.alibaba.com>,
+        alexander.h.duyck@linux.intel.com, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/page_reporting: the "page" must not be the list head
+Message-ID: <20200818030343.GB29756@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20200817084836.29216-1-richard.weiyang@linux.alibaba.com>
+ <fa97519b-a860-5fea-9511-2237f195caeb@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fa97519b-a860-5fea-9511-2237f195caeb@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rander Wang <rander.wang@intel.com>
+On Mon, Aug 17, 2020 at 11:35:29AM +0200, David Hildenbrand wrote:
+>On 17.08.20 10:48, Wei Yang wrote:
+>> If "page" is the list head, list_for_each_entry_safe() would stop
+>> iteration.
+>> 
+>> Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+>> ---
+>>  mm/page_reporting.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>> 
+>> diff --git a/mm/page_reporting.c b/mm/page_reporting.c
+>> index 3bbd471cfc81..aaaa3605123d 100644
+>> --- a/mm/page_reporting.c
+>> +++ b/mm/page_reporting.c
+>> @@ -178,7 +178,7 @@ page_reporting_cycle(struct page_reporting_dev_info *prdev, struct zone *zone,
+>>  		 * the new head of the free list before we release the
+>>  		 * zone lock.
+>>  		 */
+>> -		if (&page->lru != list && !list_is_first(&page->lru, list))
+>> +		if (!list_is_first(&page->lru, list))
+>>  			list_rotate_to_front(&page->lru, list);
+>>  
+>>  		/* release lock before waiting on report processing */
+>> 
+>
+>Is this a fix or a cleanup? If it's a fix, can this be reproduced easily
+>and what ere the effects?
+>
 
-When all the links are suspended, the HDaudio controller may suspend
-and the power rails to the SoundWire IP may be disabled, requiring a
-complete re-initialization/enumeration on resume. However, if one or
-more Masters remained active, the HDaudio controller will remain active
-and the power rails will remain enabled. As a result, during the link
-resume step we can check if the context was preserved by verifying if
-the clock was stopped, and avoid doing a complete bus reset and
-re-enumeration.
+I think this is a cleanup.
 
-Signed-off-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/intel.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+I am not sure why you ask this, since the check must be true when the
+iteration continues.
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 2899445e2649..dbcbe2708563 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -1698,6 +1698,8 @@ static int intel_resume_runtime(struct device *dev)
- 	struct sdw_intel *sdw = cdns_to_intel(cdns);
- 	struct sdw_bus *bus = &cdns->bus;
- 	u32 clock_stop_quirks;
-+	bool clock_stop0;
-+	int status;
- 	int ret;
- 
- 	if (bus->prop.hw_disabled) {
-@@ -1739,11 +1741,24 @@ static int intel_resume_runtime(struct device *dev)
- 			return ret;
- 		}
- 
-+		/*
-+		 * An exception condition occurs for the CLK_STOP_BUS_RESET
-+		 * case if one or more masters remain active. In this condition,
-+		 * all the masters are powered on for they are in the same power
-+		 * domain. Master can preserve its context for clock stop0, so
-+		 * there is no need to clear slave status and reset bus.
-+		 */
-+		clock_stop0 = sdw_cdns_is_clock_stop(&sdw->cdns);
-+
- 		/*
- 		 * make sure all Slaves are tagged as UNATTACHED and
- 		 * provide reason for reinitialization
- 		 */
--		sdw_clear_slave_status(bus, SDW_UNATTACH_REQUEST_MASTER_RESET);
-+		if (!clock_stop0) {
-+			status = SDW_UNATTACH_REQUEST_MASTER_RESET;
-+			sdw_clear_slave_status(bus, status);
-+		}
-+
- 
- 		ret = sdw_cdns_enable_interrupt(cdns, true);
- 		if (ret < 0) {
-@@ -1751,7 +1766,7 @@ static int intel_resume_runtime(struct device *dev)
- 			return ret;
- 		}
- 
--		ret = sdw_cdns_clock_restart(cdns, true);
-+		ret = sdw_cdns_clock_restart(cdns, !clock_stop0);
- 		if (ret < 0) {
- 			dev_err(dev, "unable to restart clock during resume\n");
- 			return ret;
+>-- 
+>Thanks,
+>
+>David / dhildenb
+
 -- 
-2.17.1
-
+Wei Yang
+Help you, Help me
