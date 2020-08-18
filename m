@@ -2,124 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC0D248149
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 11:02:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11825248152
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 11:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726581AbgHRJCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 05:02:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbgHRJCz (ORCPT
+        id S1726476AbgHRJFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 05:05:31 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:50619 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726203AbgHRJFb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 05:02:55 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE3DC061389;
-        Tue, 18 Aug 2020 02:02:54 -0700 (PDT)
-Date:   Tue, 18 Aug 2020 09:02:48 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597741369;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=h4wqRwdS6S/rMMZ0V1KXv9qTHVRSZDZYPTwkqnmIat4=;
-        b=kSkjdapHvC0769w0zlx2uC3jx9xWvonSDAIOsFl9IhsDU+THtGQ5EKfKXsADL1gBbc08IY
-        udvtbao8maovqmZXgswgaNA6TcWpGkmvv9pKsFEDCpCOXtYiSnldsahhbyV777XmWKuSsS
-        GcjFyOM8ZWiupaF7qIY42vuFaGEko2BLyzEWd4wiqdw6spBoVvdCpkfDxcK8mHdmnZLjnE
-        B240UkOx1+SftlOeJN+pFd5ZQtnN2xxr4wBbYQ0eVGnA5ei0q6alhpzBJI6tkwUywOVWPR
-        XgDGUrdMkiHh6113/oC5rTOO1OtkmaddXzxqGOYl13oK8o9FbyRWcRWLJNElTw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597741369;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=h4wqRwdS6S/rMMZ0V1KXv9qTHVRSZDZYPTwkqnmIat4=;
-        b=p+ULuIdx2GXIZl/GxUWp4CyMDoGT5AsGCgQmNGVwvNBsNhiTcV6KNFItDs87Qaav5TTaAx
-        8g2m0ExI7os0czAg==
-From:   "tip-bot2 for Luca Stefani" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: ras/core] RAS/CEC: Fix cec_init() prototype
-Cc:     Luca Stefani <luca.stefani.ge1@gmail.com>,
-        Borislav Petkov <bp@suse.de>,
-        Sami Tolvanen <samitolvanen@google.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200805095708.83939-1-luca.stefani.ge1@gmail.com>
-References: <20200805095708.83939-1-luca.stefani.ge1@gmail.com>
+        Tue, 18 Aug 2020 05:05:31 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597741529; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=AKEs3FjP4gzSXoMLGbgZjGNeqGkQDTm0T08hGb1hPTA=;
+ b=PaqdYeZ8QNKo1w47fEe0jx+s+J3WfaxQ5tnWnmjQZPEkMjyds7m3ytgqjtbePFJjd3nvMR9w
+ GLXMjmRevoGYxuYQbqP4r7fIIrvqwbqN5Cd6mvsDGwJt37SIsrSY01NUNysG1j88bhN1Nt0F
+ V0XPx/nMjV//sWlkOn//K626tRA=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5f3b9959668ab3fef60a8606 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 18 Aug 2020 09:03:21
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 73540C43391; Tue, 18 Aug 2020 09:03:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4E090C433C6;
+        Tue, 18 Aug 2020 09:03:20 +0000 (UTC)
 MIME-Version: 1.0
-Message-ID: <159774136801.3192.8560665046309043144.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Tue, 18 Aug 2020 14:33:20 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Andy Gross <agross@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-kernel-owner@vger.kernel.org,
+        Kevin Hilman <khilman@kernel.org>,
+        linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [PATCH 1/2] PM / Domains: Add GENPD_FLAG_SUSPEND_ON flag
+In-Reply-To: <CAPDyKFoPEEvrBgs4D45027+HgdNPbcM+WVHm=QVrGWgWMR61Ng@mail.gmail.com>
+References: <20200811190252.10559-1-sibis@codeaurora.org>
+ <CAPDyKFqNMEtHwcJFxYQP5H1Yjrsr1T3UUZoXes69EthSjAYs2A@mail.gmail.com>
+ <1ba3e4d703dd0a52547d63fa014451eb@codeaurora.org>
+ <CAPDyKFrH9WTg4O5L+e1AijNvsagLYZ9QVTeoD0x0SQgYd3hkBg@mail.gmail.com>
+ <1ca666c336ebee569a429e729d5ae547@codeaurora.org>
+ <CAPDyKFrqxRrWSX5VaMy4DSjFNaMikKBYsZy5NiPMJvUybYttsw@mail.gmail.com>
+ <33169e221707a2456397e478b275cfa9@codeaurora.org>
+ <CAPDyKFoPEEvrBgs4D45027+HgdNPbcM+WVHm=QVrGWgWMR61Ng@mail.gmail.com>
+Message-ID: <de2cde2767d303a1334c7aa71d178aa2@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the ras/core branch of tip:
+On 2020-08-18 14:01, Ulf Hansson wrote:
+> On Mon, 17 Aug 2020 at 18:49, Sibi Sankar <sibis@codeaurora.org> wrote:
+>> 
+>> On 2020-08-17 14:14, Ulf Hansson wrote:
+>> > On Thu, 13 Aug 2020 at 19:26, Sibi Sankar <sibis@codeaurora.org> wrote:
+>> >>
+>> >> On 2020-08-13 18:04, Ulf Hansson wrote:
+>> >> > On Wed, 12 Aug 2020 at 19:03, Sibi Sankar <sibis@codeaurora.org> wrote:
+>> >> >>
+>> >> >> Uffe,
+>> >> >> Thanks for taking time to review the
+>> >> >> series!
+>> >> >>
+>> >> >> On 2020-08-12 15:15, Ulf Hansson wrote:
+>> >> >> > On Tue, 11 Aug 2020 at 21:03, Sibi Sankar <sibis@codeaurora.org> wrote:
+>> >> >> >>
+>> >> >> >> This is for power domains which needs to stay powered on for suspend
+>> >> >> >> but can be powered on/off as part of runtime PM. This flag is aimed at
+>> >> >> >> power domains coupled to remote processors which enter suspend states
+>> >> >> >> independent to that of the application processor. Such power domains
+>> >> >> >> are turned off only on remote processor crash/shutdown.
+>> >> >> >
+>> >> >> > As Kevin also requested, please elaborate more on the use case.
+>> >> >> >
+>> >> >> > Why exactly must the PM domain stay powered on during system suspend?
+>> >> >> > Is there a wakeup configured that needs to be managed - or is there a
+>> >> >> > co-processor/FW behaviour that needs to be obeyed to?
+>> >> >>
+>> >> >> Yes this is a co-processor behavior that
+>> >> >> needs to be obeyed. Specifically application
+>> >> >> processor notifies the Always on Subsystem
+>> >> >> (AOSS) that a particular co-processor is up
+>> >> >> using the power domains exposed by AOSS QMP
+>> >> >> driver. AOSS uses this information to wait
+>> >> >> for the co-processors to suspend before
+>> >> >> starting its sleep sequence. The application
+>> >> >> processor powers off these power domains only
+>> >> >> if the co-processor has crashed or powered
+>> >> >> off.
+>> >> >
+>> >> > Thanks for clarifying!
+>> >> >
+>> >> > Although, can you please elaborate a bit more on the actual use case?
+>> >> > What are the typical co-processor and what drivers are involved in
+>> >> > managing it?
+>> >>
+>> >> The co-processors using the power domains
+>> >> exposed by qcom_aoss driver are modem,
+>> >> audio dsp, compute dsp managed using
+>> >> qcom_q6v5_mss and qcom_q6v5_pas driver.
+>> >>
+>> >> >
+>> >> > As you may know, runtime PM becomes disabled during system suspend of
+>> >> > a device. Which means, if the driver tries to power off the
+>> >> > coprocessor (via calling pm_runtime_put() for example), somewhere in
+>> >> > the system suspend phase of the corresponding device, its attached PM
+>> >> > domain stays powered on when managed by genpd.
+>> >>
+>> >> The drivers aren't really expected
+>> >> do anything during suspend/resume
+>> >> pretty much because the co-processors
+>> >> enter low-power modes independent to
+>> >> that of the application processor. On
+>> >> co-processor crash the remoteproc core
+>> >> does a pm_stay_awake followed by a
+>> >> pm_relax after crash recovery.
+>> >
+>> > Okay, thanks again for clarifying. You have convinced me about the
+>> > need for a new flag to cope with these use cases.
+>> >
+>> > Would you mind updating the commit message with some of the
+>> > information you just provided?
+>> >
+>> > Additionally, to make it clear that the flag should be used to keep
+>> > the PM domain powered on during system suspend, but only if it's
+>> > already powered on - please rename the flag to GENPD_FLAG_NO_SUSPEND,
+>> > and update the corresponding description of it in the header file.
+>> 
+>> Thanks, naming it ^^ makes more sense :)
+>> 
+>> https://lore.kernel.org/lkml/340a7aafcf0301ff3158a4e211992041@codeaurora.org/
+>> 
+>> Also we wouldn't want to power on
+>> runtime suspended power domains with
+>> the NO_SUSPEND flag set, on resume as
+>> explained ^^. Do you agree with that
+>> as well?
+> 
+> Actually no.
+> 
+> Instead, I think that deserves a separate flag, as it may very well
+> turn out that resuming can be skipped for other cases than
+> "NO_SUSPEND".
+> 
+> Therefore, please add a GENPD_FLAG_NO_RESUME for this.
 
-Commit-ID:     71aefb9a89d4ad751726ff5b902896c35c7df5b9
-Gitweb:        https://git.kernel.org/tip/71aefb9a89d4ad751726ff5b902896c35c7df5b9
-Author:        Luca Stefani <luca.stefani.ge1@gmail.com>
-AuthorDate:    Wed, 05 Aug 2020 11:57:08 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 18 Aug 2020 10:50:07 +02:00
+Thanks I'll do that in v2
 
-RAS/CEC: Fix cec_init() prototype
+> 
+> Kind regards
+> Uffe
 
-late_initcall() expects a function that returns an integer. Update the
-function signature to match.
-
- [ bp: Massage commit message into proper sentences. ]
-
-Fixes: 9554bfe403nd ("x86/mce: Convert the CEC to use the MCE notifier")
-Signed-off-by: Luca Stefani <luca.stefani.ge1@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
-Tested-by: Sami Tolvanen <samitolvanen@google.com>
-Link: https://lkml.kernel.org/r/20200805095708.83939-1-luca.stefani.ge1@gmail.com
----
- drivers/ras/cec.c |  9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/ras/cec.c b/drivers/ras/cec.c
-index 569d9ad..6939aa5 100644
---- a/drivers/ras/cec.c
-+++ b/drivers/ras/cec.c
-@@ -553,20 +553,20 @@ static struct notifier_block cec_nb = {
- 	.priority	= MCE_PRIO_CEC,
- };
- 
--static void __init cec_init(void)
-+static int __init cec_init(void)
- {
- 	if (ce_arr.disabled)
--		return;
-+		return -ENODEV;
- 
- 	ce_arr.array = (void *)get_zeroed_page(GFP_KERNEL);
- 	if (!ce_arr.array) {
- 		pr_err("Error allocating CE array page!\n");
--		return;
-+		return -ENOMEM;
- 	}
- 
- 	if (create_debugfs_nodes()) {
- 		free_page((unsigned long)ce_arr.array);
--		return;
-+		return -ENOMEM;
- 	}
- 
- 	INIT_DELAYED_WORK(&cec_work, cec_work_fn);
-@@ -575,6 +575,7 @@ static void __init cec_init(void)
- 	mce_register_decode_chain(&cec_nb);
- 
- 	pr_info("Correctable Errors collector initialized.\n");
-+	return 0;
- }
- late_initcall(cec_init);
- 
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
