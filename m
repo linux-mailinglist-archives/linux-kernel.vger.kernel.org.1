@@ -2,88 +2,336 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9992488CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 17:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76ABB2488D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 17:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726890AbgHRPL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 11:11:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58786 "EHLO
+        id S1727882AbgHRPMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 11:12:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726570AbgHRPLj (ORCPT
+        with ESMTP id S1727095AbgHRPMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 11:11:39 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D59AEC061389
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 08:11:38 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id p20so18637243wrf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 08:11:38 -0700 (PDT)
+        Tue, 18 Aug 2020 11:12:21 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9198C061343
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 08:12:18 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id k25so10270044vsm.11
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 08:12:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/TUviTxTr5RENHKS204/Amvu2wl72islAoTAztRD38o=;
-        b=kyXcab8PtKT5O5lVakr4loj+OMQcj8nCmqIZjBKRtV+t4CcXPuHW4hNfYc5nk6z6bo
-         jirtPaLC5ptB1rQ/DpBkYGJxkb76UeHDHlJBTzYMek/sJoU88ecQi+PibR5IkbCncqHc
-         a1vKyEy4lqWk2wPjbrlKzeVAKyZKsJOEcqyu0a9bi/JJHyCt5oY3wXhRP21/6owQi7al
-         YB9NVxB7eXyr6CAcU8BMCYiCqADWpW0D5BSkCcv6qZBt9BU6qGJvqy6JiFoHEXEk34uY
-         pVOHOtGaNE1OcPlMHgUKo9EQBv6FmzG+7ra/0YjZDVhsoAV+Bzda900niFw6lUowByu6
-         cA2g==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9cwNj6jiS2head8n5mYo8172HJFHrdfK7H9omFC5dMU=;
+        b=YtEnc+zszperrGv/O+6rOzDigV1yPXEvtKJCEFdkYBKuKUOzLWpWyORAFXSIO136Cd
+         LGqJWm3kFy8SV4qZHA3MOK/0giLMlWI/7vEeqgRd78oUSDFH7HzesX3wzuHor18nRjQt
+         d7fDbV6+J6FFu+lhXhhs5iDVRn0vJBanmJEvc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/TUviTxTr5RENHKS204/Amvu2wl72islAoTAztRD38o=;
-        b=NbTIqbE2ON58/ZyNG4jJr/yVjCU/0e3q5PelDe8+jpkQxlFvy/cv1RlgzyVn9jWo53
-         CB6kA1bkQaKoviguDmbcRFkwtVLaeq1EIrBqh0D7Jo32Q79mt86yE+Mm7Pj5nQbrY2qp
-         7dDkzelUS+0cYVVxDxYPn4IQzxbEtqjihTjsRJnqUtAxzOeIp4kMp6mAG2U6J1gxEutJ
-         5+lcqQ4o/RvIGpGpNJY9VRAdI1uR/gjN7u6NCMNNmuRDPWRfwxSyosHLysVJuFRhEPfy
-         ifR1uUBJQVWIvS4dUi7ig6hxxzj+XRtdAn9hds4m4g/rJivVnCrSgOsXSSS0YAaQEAvA
-         o3FA==
-X-Gm-Message-State: AOAM5323h9yJfQezqeRqb4740Dlet0QRaCgA0ipvAausVqaIzUuk4RrF
-        zOT3dCcyXo/mG0XenlflsDU=
-X-Google-Smtp-Source: ABdhPJz8jQ2UIZ0e4glv5rwM4+hhWPDfagKdjFGyY2wc2UVtfUyBEuZJPiHY3sdThsZ2Fy6iJYrkRw==
-X-Received: by 2002:a5d:5084:: with SMTP id a4mr21374691wrt.191.1597763497564;
-        Tue, 18 Aug 2020 08:11:37 -0700 (PDT)
-Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id x82sm299863wmb.30.2020.08.18.08.11.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 08:11:37 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: emxx_udc: Allow for building on !ARM
-Date:   Tue, 18 Aug 2020 16:11:29 +0100
-Message-Id: <20200818151133.583382-1-alex.dewar90@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9cwNj6jiS2head8n5mYo8172HJFHrdfK7H9omFC5dMU=;
+        b=tKQhIX0uKYN2VzI3Bbg71/LA9d212bWkx6C472VNFsLxyW4Ky9fDVkV1gHshQhkXoN
+         S7NNeyMN6esxmv5ApG6RzfURwtT4m0IunooUu+/O0T27f92UUIOdoNslTfMNDcPKajwd
+         WfGEbGcXUBiRneV3E7BkDDoqwceNY63o3a/Co+QAcZ5R+rhqbVXoSPxZbtr5Jpm2+Lyt
+         M5y8Wu2HwIIyxobtBFBMh6AyD8n81kH3s7197UbnbRzBQ0p9X9RQ0Ot/YCU0QN4N7E6T
+         EDSbPwsHuABdRsQx8sLUD6IDAN8hJ0qwS7n4RpTc18LDd2S54w4YZwzWjTEtd0LX1oBz
+         AomA==
+X-Gm-Message-State: AOAM532XFrbKMG+YxpW8kEbJCELbwpIu1xuZdbKy/+FVUBsUf4sHnL43
+        TAIYE8GCKcTCQH7AGHRO69se9iRBKCQ/9g==
+X-Google-Smtp-Source: ABdhPJyqHRZPXWzl3xVcPy4AT6ql4xFIHdJUbSbVR/9MKoGyGkVqrXUx8p7ypsSzqGSSE4hjwoSS4w==
+X-Received: by 2002:a67:7c11:: with SMTP id x17mr12627748vsc.155.1597763537330;
+        Tue, 18 Aug 2020 08:12:17 -0700 (PDT)
+Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com. [209.85.217.45])
+        by smtp.gmail.com with ESMTPSA id h8sm2753098uab.13.2020.08.18.08.12.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Aug 2020 08:12:17 -0700 (PDT)
+Received: by mail-vs1-f45.google.com with SMTP id q13so10267986vsn.9
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 08:12:16 -0700 (PDT)
+X-Received: by 2002:a05:6102:213a:: with SMTP id f26mr11995699vsg.6.1597763534611;
+ Tue, 18 Aug 2020 08:12:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200817144722.6665-1-saiprakash.ranjan@codeaurora.org>
+ <CAD=FV=VE6vCPjDvvP0e73tnd8u5rPuMUa-mwvDazrfUpXP+bKQ@mail.gmail.com> <2a0c5fa189dbb2e810ba88f59621b65c@codeaurora.org>
+In-Reply-To: <2a0c5fa189dbb2e810ba88f59621b65c@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 18 Aug 2020 08:12:01 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=X8yS1gUNhhVNyfuRPzDUheG2Rco2g16KMegCG6fKJw7Q@mail.gmail.com>
+Message-ID: <CAD=FV=X8yS1gUNhhVNyfuRPzDUheG2Rco2g16KMegCG6fKJw7Q@mail.gmail.com>
+Subject: Re: [PATCHv2] soc: qcom: llcc: Support chipsets that can write to
+ llcc registers
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Isaac J. Manjarres" <isaacm@codeaurora.org>,
+        linux-arm-msm-owner@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the module can only be test built on ARM, although it seems to
-build fine on x86. Change this to allow for broader test coverage.
+Hi,
 
-Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
----
- drivers/staging/emxx_udc/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, Aug 18, 2020 at 2:40 AM Sai Prakash Ranjan
+<saiprakash.ranjan@codeaurora.org> wrote:
+>
+> Hi,
+>
+> On 2020-08-18 02:35, Doug Anderson wrote:
+> > Hi,
+> >
+> > On Mon, Aug 17, 2020 at 7:47 AM Sai Prakash Ranjan
+> > <saiprakash.ranjan@codeaurora.org> wrote:
+> >>
+> >> From: "Isaac J. Manjarres" <isaacm@codeaurora.org>
+> >>
+> >> Older chipsets may not be allowed to configure certain LLCC registers
+> >> as that is handled by the secure side software. However, this is not
+> >> the case for newer chipsets and they must configure these registers
+> >> according to the contents of the SCT table, while keeping in mind that
+> >> older targets may not have these capabilities. So add support to allow
+> >> such configuration of registers to enable capacity based allocation
+> >> and power collapse retention for capable chipsets.
+> >
+> > I have very little idea about what the above means.  That being said,
+> > what's broken that this patch fixes?  Please include this in the CL
+> > description.  It should answer, in the very least, the following two
+> > questions:
+> >
+>
+> As the commit message says about secure software configuring these LLCC
+> registers,
+> usually 2 things can happen in that case.
+>
+> 1) Accessing those registers in non secure world like Kernel would
+> result in a
+> fault which is trapped by secure side.
+>
+> 2) Access to those registers may be just ignored and there will be no
+> faults.
+>
+> So for older chipsets, this is a fix to not allow them to access those
+> registers.
+> For newer chipsets, we follow the recommended settings from HW/SW arch
+> teams.
+> But... upstream llcc driver only supports SDM845 currently which is not
+> required
+> to configure those registers and as per my testing, no crash is observed
+> on SDM845.
+> So we won't need fixes tag.
+>
+> > a) Were existing attempts to do capacity based allocation failing, or
+> > is capacity based allocation a new whizbang feature that a future
+> > patch will add and you need this one to land first?
+> >
+>
+> Capacity-based allocation and Way-based allocation are cache
+> partitioning
+> schemes/algorithms usually used in shared LLCs. Now which one to use or
+> why
+> one is preferred over the other are decided by HW/SW architecture teams
+> and are
+> recommended by them. So if the question is what is capacity based
+> allocation and
+> how it works, then I am afraid that I will not be able to explain that
+> algorithm
+> just like that.
 
-diff --git a/drivers/staging/emxx_udc/Kconfig b/drivers/staging/emxx_udc/Kconfig
-index ad1478c53e9e..e7a95b3b6a2f 100644
---- a/drivers/staging/emxx_udc/Kconfig
-+++ b/drivers/staging/emxx_udc/Kconfig
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- config USB_EMXX
- 	tristate "EMXX USB Function Device Controller"
--	depends on USB_GADGET && (ARCH_RENESAS || (ARM && COMPILE_TEST))
-+	depends on USB_GADGET && (ARCH_RENESAS || COMPILE_TEST)
- 	help
- 	   The Emma Mobile series of SoCs from Renesas Electronics and
- 	   former NEC Electronics include USB Function hardware.
--- 
-2.28.0
+I guess to start, it wasn't obvious (to me) that there were two
+choices and we were picking one.  Mentioning that the other
+alternative was way-based allocation would help a lot.  Even if you
+can't fully explain the differences between the two, adding something
+to the commit message indicating that this is a policy decision (in
+other words, both work but each have their tradeoffs) would help.
+Something like this, if it's correct:
 
+In general we try to enable capacity based allocation (instead of the
+default way based allocation) since that gives us better performance
+with the current software / hardware configuration.
+
+
+> > b) Why was it bad not to enable power collapse retention?  Was this
+> > causing things to get corrupted after resume?  Was this causing us to
+> > fail to suspend?  Were we burning too little power in S3 and the
+> > battery vendors are looking for an excuse to sell bigger batteries?
+> >
+> > I'm not very smart and am also lacking documentation for what the heck
+> > all this is, so I'm looking for the "why" of your patch.
+> >
+>
+> That's a fair point. I will try to dig through to find some context for
+> "question b"
+> and check if there were any battery vendors involved in this decision ;)
+
+Thanks!
+
+
+> >> Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
+> >> (sai: use table instead of dt property and minor commit msg change)
+> >> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> >> ---
+> >>
+> >> Changes in v2:
+> >>  * Fix build errors reported by kernel test robot.
+> >>
+> >> ---
+> >>  drivers/soc/qcom/llcc-qcom.c | 27 +++++++++++++++++++++++++++
+> >>  1 file changed, 27 insertions(+)
+> >>
+> >> diff --git a/drivers/soc/qcom/llcc-qcom.c
+> >> b/drivers/soc/qcom/llcc-qcom.c
+> >> index 429b5a60a1ba..865f607cf502 100644
+> >> --- a/drivers/soc/qcom/llcc-qcom.c
+> >> +++ b/drivers/soc/qcom/llcc-qcom.c
+> >> @@ -45,6 +45,9 @@
+> >>  #define LLCC_TRP_ATTR0_CFGn(n)        (0x21000 + SZ_8 * n)
+> >>  #define LLCC_TRP_ATTR1_CFGn(n)        (0x21004 + SZ_8 * n)
+> >>
+> >> +#define LLCC_TRP_SCID_DIS_CAP_ALLOC   0x21F00
+> >> +#define LLCC_TRP_PCB_ACT              0x21F04
+> >> +
+> >>  #define BANK_OFFSET_STRIDE           0x80000
+> >>
+> >>  /**
+> >> @@ -318,6 +321,11 @@ size_t llcc_get_slice_size(struct llcc_slice_desc
+> >> *desc)
+> >>  }
+> >>  EXPORT_SYMBOL_GPL(llcc_get_slice_size);
+> >>
+> >> +static const struct of_device_id __maybe_unused
+> >> qcom_llcc_configure_of_match[] = {
+> >> +       { .compatible = "qcom,sc7180-llcc" },
+> >> +       { }
+> >> +};
+> >
+> > Why are you introducing a whole second table?  Shouldn't you just add
+> > a field to "struct qcom_llcc_config" ?
+> >
+>
+> This was my 2nd option, first one was to have this based on the version
+> of LLCC
+> which are exposed by hw info registers. But that didn't turn out good
+> since I
+> couldn't find any relation of this property with LLCC version.
+>
+> Second option was as you mentioned to have a field to qcom_llcc_config.
+> Now this is good,
+> but then I thought that if we add LLCC support for 20(random number)
+> SoCs of which
+> 10 is capable of supporting cap_based_alloc and rest 10 are not, then we
+> will still be adding
+> 20 more lines to each SoC's llcc_config if we follow this 2nd option.
+
+If you do it right, you'd only need to add lines to the SoCs that need
+it.  Linux conventions in general are that it's OK (and encouraged) to
+rely on the fact that if you don't mention a variable in static
+initialization it's initted to 0/False/NULL.  So if the member
+variable is "need_llcc_config" then you only need to add this in
+places where you're setting it to true.  It only needs to be a boolean
+so if later someone really is worried about all the bytes that flags
+like this are taking up we can use a bitfield.  For now (presumably)
+just adding a boolean would be more efficient since (presumably) the
+extra code needed to access a bitfield would be more than the extra
+data bytes used.  In theory this could also be initdata probably, too.
+
+
+> So why not opt for a 3rd option with the table where you just need to
+> specify only the capable
+> targets which is just 10 in our sample case above.
+
+Are you trying to save space?  ...or complexity?  Sure a good compiler
+will probably pool the constant string here so you won't need to
+allocate it twice, but IMO having a second match table is more
+complex.  You also need at least a pointer + bool per entry.  Each
+probe will now need to parse through all these strings, too.  None of
+this is a big deal, but I'd bet just adding a field to the existing
+struct is lower overhead all around.
+
+
+> Am I just overthinking this too much and should just go with the 2nd
+> option as you mentioned?
+
+Someone could feel free to vote against me, but I'd just add to the
+existing config.
+
+
+> >> +
+> >>  static int qcom_llcc_cfg_program(struct platform_device *pdev)
+> >>  {
+> >>         int i;
+> >> @@ -327,13 +335,17 @@ static int qcom_llcc_cfg_program(struct
+> >> platform_device *pdev)
+> >>         u32 attr0_val;
+> >>         u32 max_cap_cacheline;
+> >>         u32 sz;
+> >> +       u32 disable_cap_alloc = 0, retain_pc = 0;
+> >
+> > Don't init to 0.  See below.
+> >
+> >
+> >>         int ret = 0;
+> >>         const struct llcc_slice_config *llcc_table;
+> >>         struct llcc_slice_desc desc;
+> >> +       const struct of_device_id *llcc_configure;
+> >>
+> >>         sz = drv_data->cfg_size;
+> >>         llcc_table = drv_data->cfg;
+> >>
+> >> +       llcc_configure = of_match_node(qcom_llcc_configure_of_match,
+> >> pdev->dev.of_node);
+> >> +
+> >
+> > As per above, just use the existing config.
+> >
+>
+> See above explanation.
+>
+> >
+> >>         for (i = 0; i < sz; i++) {
+> >>                 attr1_cfg =
+> >> LLCC_TRP_ATTR1_CFGn(llcc_table[i].slice_id);
+> >>                 attr0_cfg =
+> >> LLCC_TRP_ATTR0_CFGn(llcc_table[i].slice_id);
+> >> @@ -369,6 +381,21 @@ static int qcom_llcc_cfg_program(struct
+> >> platform_device *pdev)
+> >>                                         attr0_val);
+> >>                 if (ret)
+> >>                         return ret;
+> >> +
+> >> +               if (llcc_configure) {
+> >> +                       disable_cap_alloc |=
+> >> llcc_table[i].dis_cap_alloc << llcc_table[i].slice_id;
+> >
+> > Don't "|=".  You're the only place touching this variable.  Just set
+> > it.
+> >
+>
+> Ack, will change.
+>
+> >
+> >> +                       ret = regmap_write(drv_data->bcast_regmap,
+> >> +
+> >> LLCC_TRP_SCID_DIS_CAP_ALLOC, disable_cap_alloc);
+> >> +                       if (ret)
+> >> +                               return ret;
+> >> +
+> >> +                       retain_pc |= llcc_table[i].retain_on_pc <<
+> >> llcc_table[i].slice_id;
+> >
+> > Don't "|=".  You're the only place touching this variable.  Just set
+> > it.
+> >
+>
+> Ack, will change.
+>
+> Thanks,
+> Sai
+>
+> --
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+> member
+> of Code Aurora Forum, hosted by The Linux Foundation
