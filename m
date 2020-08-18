@@ -2,97 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9937A247C8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 05:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B889247C85
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 05:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726747AbgHRDNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 23:13:15 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:57790 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726738AbgHRDNO (ORCPT
+        id S1726715AbgHRDM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 23:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726694AbgHRDMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 23:13:14 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07I38RM6134878;
-        Tue, 18 Aug 2020 03:12:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=5yqBFvVmP7SjhOSQr96od3VpcBjEYTPTrY/Nozi0giY=;
- b=CV4M+oT9gFZ/4cLx2nRYuV+NF5q6hCIbtSlJ8q6q3Q9ERb1DEUbhsRDdex3LFs1VynU5
- FSz5pdOSVxsicyYqPFR3xXO4Q0iueEj3p4qJbThdX+9a75M8579YCKhOPBDuAdUDAm6Y
- vltGvZFdWlSME9ssHdfc+t4CgthOpHi7xDUkyw8Cz7HR1HCPhrGtui64EtP7EEEZPyts
- zfEaIAbs1nSIHahA/801pf5uH/V5tF2jqAzu5jx5btIZvEJ5zu5avgyz5vn+r6uXzToB
- 64YSHjzXNPFSMUA1tWj28j8lxC4Kk1jMRRab+Zv0o/hDrn4vTu8+DVGLHIjdev8uU3oe gg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 32x74r27dx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 18 Aug 2020 03:12:50 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07I37iiN111582;
-        Tue, 18 Aug 2020 03:12:49 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 32xsm1q4xt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 Aug 2020 03:12:49 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07I3CmlQ029865;
-        Tue, 18 Aug 2020 03:12:48 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 17 Aug 2020 20:12:48 -0700
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     linux-scsi@vger.kernel.org, bvanassche@acm.org,
-        avri.altman@wdc.com, jejb@linux.ibm.com, alim.akhtar@samsung.com,
-        Stanley Chu <stanley.chu@mediatek.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
-        chaotian.jing@mediatek.com, peter.wang@mediatek.com,
-        linux-arm-kernel@lists.infradead.org, cc.chou@mediatek.com,
-        kuohong.wang@mediatek.com, andy.teng@mediatek.com,
-        asutoshd@codeaurora.org, cang@codeaurora.org, beanhuo@micron.com,
-        linux-kernel@vger.kernel.org, chun-hung.wu@mediatek.com
-Subject: Re: [PATCH v3] scsi: ufs: Fix possible infinite loop in ufshcd_hold
-Date:   Mon, 17 Aug 2020 23:12:32 -0400
-Message-Id: <159772029325.19587.9193434104087348194.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200809050734.18740-1-stanley.chu@mediatek.com>
-References: <20200809050734.18740-1-stanley.chu@mediatek.com>
+        Mon, 17 Aug 2020 23:12:53 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C62A4C061389
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 20:12:52 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id w14so19782100ljj.4
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Aug 2020 20:12:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=NihYtCIO6WhZzTHul6qtL1AUFh4fMNj8uqbg43NcLX0NG8fM83sghw38jS2K/yhzO1
+         R77Hg9lawLT86fZGAHjZgvCuwXnX1vUEA4+ECoWIAO+qhSAJjGXbE07GVgMZlO/G89I1
+         F+NBshZNA7TkfUgronAhsRqyDEpnP6FDIQgdu3wYW1R6A9O+MKrkIa2L1Mlxi9AbgiRP
+         p/L2m57K4VaJDA50uW3AFeVBkRXCcKabYag+3zTZjWiBa3/BekhjHl3WADOKonOtGvY6
+         ahoe4r2/AiRxkAPgMQ1UULnccxo0/XJfOZw++U2aOHFJP+wxK/yjyzWv5UUwRVudKoWm
+         4TQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=SWR0hVxCJSkB5+85PTZvWA20zcg6Ap+54psrL1q4WghgZB4S+m0GLBS3cqAFC6hYpo
+         EMOP3sQ5Y9b/+v5FlnlN0Y2b8nsKFxp5rq7auBYXoqNutU//e+NMqiDX2nckE2bpNsgi
+         EYMYcl4+6vLxMXCL3cYyxiuhYlHsnZDHQBjOJu9dOwLhh2VquEg6alFGGA9nrSvd+lNU
+         tMNOb0Uv1n6Xy1T3jxYxApfXc/qfGQNMOx7Hpax5W7C4gEn6kkX3r0yLHGO0QIDgd7mK
+         QS2zAc7eh8G9oTUuyra7riWmFPnKx6W+0dIaNFp3Vfe6fZWtoQJybhIm+oY/PO/LXKnG
+         789g==
+X-Gm-Message-State: AOAM531cRpWu3jMaw8ws94s8euWzFx7gCvCjZ+n2QE8DMnqBomAYmvjF
+        /Z6ge85SscRG59D2JUqvBz8Q7olcnZeSk4/esig=
+X-Google-Smtp-Source: ABdhPJwfnBdyP0mURiW0GSdI/nmSRMX3zKESUs/aL2mgAj2s6vIUs2yl/IXxJuMVFodiqyqWOFmwwXUQ+Qq7VSJzK2s=
+X-Received: by 2002:a05:651c:1051:: with SMTP id x17mr9646291ljm.141.1597720370736;
+ Mon, 17 Aug 2020 20:12:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9716 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
- malwarescore=0 mlxscore=0 phishscore=0 spamscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008180022
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9716 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxlogscore=999
- priorityscore=1501 phishscore=0 spamscore=0 mlxscore=0 adultscore=0
- suspectscore=0 lowpriorityscore=0 bulkscore=0 malwarescore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008180022
+Received: by 2002:ab3:5702:0:0:0:0:0 with HTTP; Mon, 17 Aug 2020 20:12:49
+ -0700 (PDT)
+Reply-To: ayishagddafio@mail.ru
+From:   AISHA GADDAFI <mrs.rose1972@gmail.com>
+Date:   Mon, 17 Aug 2020 20:12:49 -0700
+Message-ID: <CAMZpd4rMD26sc9Ao1NZ94bstHxXzW=AEv5d0p37FvuKaq3Htiw@mail.gmail.com>
+Subject: Lieber Freund (Assalamu Alaikum),?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 9 Aug 2020 13:07:34 +0800, Stanley Chu wrote:
+--=20
+Lieber Freund (Assalamu Alaikum),
 
-> In ufshcd_suspend(), after clk-gating is suspended and link is set
-> as Hibern8 state, ufshcd_hold() is still possibly invoked before
-> ufshcd_suspend() returns. For example, MediaTek's suspend vops may
-> issue UIC commands which would call ufshcd_hold() during the command
-> issuing flow.
-> 
-> Now if UFSHCD_CAP_HIBERN8_WITH_CLK_GATING capability is enabled,
-> then ufshcd_hold() may enter infinite loops because there is no
-> clk-ungating work scheduled or pending. In this case, ufshcd_hold()
-> shall just bypass, and keep the link as Hibern8 state.
+Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
+Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
+Mutter und eine Witwe
+mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
+hen
+Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
 
-Applied to 5.9/scsi-fixes, thanks!
+Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
+f=C3=BCnfhunderttausend
+United State Dollar ($ 27.500.000.00) und ich brauche eine
+vertrauensw=C3=BCrdige Investition
+Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
+jedoch
+M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
+von
+Investitionsprojekten in Ihrem Land
+Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
+bauen.
 
-[1/1] scsi: ufs: Fix possible infinite loop in ufshcd_hold
-      https://git.kernel.org/mkp/scsi/c/93b6c5db0602
+Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
+n und
+Unternehmensgewinn zu verhandeln
+Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
+antworten Sie bitte dringend
+Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
+.
+
+Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
+esse (
+ayishagddafio@mail.ru ) zur weiteren Diskussion.
+
+Freundliche Gr=C3=BC=C3=9Fe
+Frau Aisha Al-Qaddafi
