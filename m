@@ -2,109 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3FA7248DC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 20:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1C7248DC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 20:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726788AbgHRSNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 14:13:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726588AbgHRSNW (ORCPT
+        id S1726673AbgHRSPd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 18 Aug 2020 14:15:33 -0400
+Received: from seldsegrel01.sonyericsson.com ([37.139.156.29]:11798 "EHLO
+        SELDSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726435AbgHRSPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 14:13:22 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E20B1C061389
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 11:13:21 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id a79so10352654pfa.8
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 11:13:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OPoLhWCuLlQUnGgkEzwWtnOhSRQmEhC1TsY+WB80aKc=;
-        b=U8MxrtiMjqpFFaQCHDS9rCBze3AlW09ghWWFKCMIPFTSVqEpViPeAhaVKCcTB8o05X
-         EtgOeHGeutGGY6dvi2+tEvlbyvYt0BlbUfFyrxRdocV4NPTY5EB/OLrQdrhG5ZLZNa2e
-         5zrHyFxQqhyIuGfsRMJ8QOZYr9vvLbXYFH36Ax6iWdYN9QB7Uwtx4Y1C1J17+2jXgBjT
-         qIWDvUYJe5k/qTHlXl1FGbwlPuxMZ8Eti9ePpmtGrkGnmgN1jFn9Bh5ksziJY+8BD/vW
-         gzThbyvsCKuLQim4aC2JG0FW14+DDY2Pa2sh+hhswLuX7w9PaqMF0d+qxMA5nfQxHfo3
-         FgCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OPoLhWCuLlQUnGgkEzwWtnOhSRQmEhC1TsY+WB80aKc=;
-        b=VTTF/NIGqwC1Av6PQR+SJ/kPekB/ozsvEjbkd3ychqVd8MIQm0nYErf8F3Ih0lJaS+
-         Jt0RwuRcgexZqZrhiZLjWTfDUURRWe7/YFJPkDd9Fq4ZKJ0MyraUmIHapSkvFQ6qJ79R
-         SP/Um3GqjjLDLZH/mVSe7t5YnK1JlQ4q8Bl9CpXLUsIAHnQjrGKnh9Hyaq++Jn0ZAMRT
-         dIQyJamHA8YgA47Ggnp+bBpEVhvmMtFsKzSFfhQF5KZUv2HO7jjhvMDM6vw55U76MEDQ
-         Yct+l3z+FTGTImioYjO9HgYQTj8SCOt3c+FatfR0ECMGBg+eYPvnxPSkieCDQR3do5H5
-         f9NQ==
-X-Gm-Message-State: AOAM533NSMxBW0t1DhBz9Ew+E31w3Cr/XT6nBKsp0EnsDrQa+YJpfJSN
-        toYbnDCCQBHS0KBrFjqqhJPX6sthbotrud+AoQcTIWb/kss=
-X-Google-Smtp-Source: ABdhPJy65D+w4GlpCgLmKF3fxX6AYxslK3vUHfaskdTjQH6k+Ivr7OLN81qH/LD5+sh62JIMdgX64pXSMGqVLxIYl9c=
-X-Received: by 2002:a05:6a00:14d0:: with SMTP id w16mr15947397pfu.39.1597774401186;
- Tue, 18 Aug 2020 11:13:21 -0700 (PDT)
+        Tue, 18 Aug 2020 14:15:31 -0400
+Subject: Re: Scheduler benchmarks
+To:     Muni Sekhar <munisekharrms@gmail.com>, Greg KH <greg@kroah.com>
+CC:     kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>
+References: <CAHhAz+inPwKYx_4qaujQ=bGG9twashiuqLhQQ-+vgHWF7FLhRA@mail.gmail.com>
+ <20200818143633.GA628293@kroah.com>
+ <CAHhAz+hG5kS5rhph4SaSLOEc5PgcSOTPWpiANLNpwotY9Zy6qQ@mail.gmail.com>
+ <20200818171457.GA736234@kroah.com>
+ <CAHhAz+ggd4DPFfWPB+h6Obkjebf5mv5cV6307oKEkEYMhAB3wQ@mail.gmail.com>
+ <20200818173656.GA748290@kroah.com>
+ <CAHhAz+hi9rh5w8hNyas0RkO4WwZXsSNh5g0nS710NSr6-ntioQ@mail.gmail.com>
+From:   peter enderborg <peter.enderborg@sony.com>
+Message-ID: <84362b8b-971f-fb89-115d-41d2457c24fd@sony.com>
+Date:   Tue, 18 Aug 2020 20:15:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200818170337.805624-1-alex.dewar90@gmail.com>
-In-Reply-To: <20200818170337.805624-1-alex.dewar90@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 18 Aug 2020 11:13:10 -0700
-Message-ID: <CAKwvOdk2fynn=-FGUniYLG+hCOkEFppRnAaTYe8DW=YRrT-siQ@mail.gmail.com>
-Subject: Re: [PATCH] sched/cputime: Mark function as __maybe_unused
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHhAz+hi9rh5w8hNyas0RkO4WwZXsSNh5g0nS710NSr6-ntioQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-GB
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=frmim2wf c=1 sm=1 tr=0 a=kIrCkORFHx6JeP9rmF/Kww==:117 a=IkcTkHD0fZMA:10 a=y4yBn9ojGxQA:10 a=2C6YHBdLAAAA:8 a=-lEIe7sNZIQA5pNoOQYA:9 a=QEXdDO2ut3YA:10 a=yxGMNg53M24zlVSZdvMH:22
+X-SEG-SpamProfiler-Score: 0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 10:04 AM Alex Dewar <alex.dewar90@gmail.com> wrote:
->
-> Depending on config options, account_other_time() may not be called
-> anywhere. Add __maybe_unused flag to fix clang warning.
+On 8/18/20 7:53 PM, Muni Sekhar wrote:
+> On Tue, Aug 18, 2020 at 11:06 PM Greg KH <greg@kroah.com> wrote:
+>> On Tue, Aug 18, 2020 at 11:01:35PM +0530, Muni Sekhar wrote:
+>>> On Tue, Aug 18, 2020 at 10:44 PM Greg KH <greg@kroah.com> wrote:
+>>>> On Tue, Aug 18, 2020 at 10:24:13PM +0530, Muni Sekhar wrote:
+>>>>> On Tue, Aug 18, 2020 at 8:06 PM Greg KH <greg@kroah.com> wrote:
+>>>>>> On Tue, Aug 18, 2020 at 08:00:11PM +0530, Muni Sekhar wrote:
+>>>>>>> Hi all,
+>>>>>>>
+>>>>>>> I’ve two identical Linux systems with only kernel differences.
+>>>>>> What are the differences in the kernels?
+>>>> You didn't answer this question, is this the same kernel source being
+>>>> compared here?  Same version?  Same compiler?  Everything identical?
+>>> Both systems are having exactly the same hardware configuration.
+>>> Compiler and kernel versions are different. One system has Ubuntu
+>>> 16.04.4 LTS(4.4.0-66-generic kernel with gcc version 5.4.0) kernel and
+>>> the other one has Ubuntu 18.04.4 LTS(4.15.0-91-generic kernel with gcc
+>>> version 7.5.0).
+>> Those are _very_ different kernel versions, with many years and tens of
+>> thousands of different changes between them.
+>>
+>> Hopefully the newer kernel is faster, so just stick with that :)
+> But unfortunately the newer kernel is very slow, that is the reason
+> for starting this investigation :)
+> Any type of help,  and guidelines to dive deeper will be highly appreciated.
 
-Just curious, would moving this definition to be within an existing
-preprocessor guard for a particular config also fix the issue? If so,
-prefer that. If not, __maybe_unused is the way to go.
+On the 4.4 kernel you dont have
 
->
-> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
-> ---
->  kernel/sched/cputime.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
-> index 5a55d2300452..43ede0d6661c 100644
-> --- a/kernel/sched/cputime.c
-> +++ b/kernel/sched/cputime.c
-> @@ -252,7 +252,7 @@ static __always_inline u64 steal_account_process_time(u64 maxtime)
->  /*
->   * Account how much elapsed time was spent in steal, irq, or softirq time.
->   */
-> -static inline u64 account_other_time(u64 max)
-> +static inline u64 __maybe_unused account_other_time(u64 max)
->  {
->         u64 accounted;
->
-> --
-> 2.28.0
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200818170337.805624-1-alex.dewar90%40gmail.com.
++CONFIG_RETPOLINE=y
++CONFIG_INTEL_RDT=y
+
+And your base is very different two.
+
+Try to use mainline on both system and see.
+
+You can also use the same base kernel version from ubuntu and
+
+run your test.
 
 
+>> greg k-h
+>
+>
 
--- 
-Thanks,
-~Nick Desaulniers
