@@ -2,53 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52046248C17
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 075F5248C1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728451AbgHRQzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 12:55:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36206 "EHLO mail.kernel.org"
+        id S1726987AbgHRQ4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 12:56:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726910AbgHRQzB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 12:55:01 -0400
+        id S1728414AbgHRQzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 12:55:06 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 700B5207DA;
-        Tue, 18 Aug 2020 16:55:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 614992080C;
+        Tue, 18 Aug 2020 16:55:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597769701;
-        bh=jKm2t81NtYjV40fRviXCJZukNmdxkXqUVLGa7N1IAnM=;
+        s=default; t=1597769705;
+        bh=Lq5bTC7AVJ/pYnGclAdQT8NAAoDP3wzNT792XtYvGt0=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=bHQOeTXib9+XN32Hhfn7nLtuMO3JpGzdl/Q5SxvbeXE627jk6OBNcSszTdCEGnVEj
-         MqlZ/gkWly6tf5+Ro715BYsnt5sphihRvsMnBt2ncDpL+J5PFCmBOt+bv1Jrq4GvHr
-         hKQ39ZsBjXJCt5MbN5Q4njHaNUYYYgqxbJ+8B0os=
-Date:   Tue, 18 Aug 2020 17:54:30 +0100
+        b=h/eLPdVztqPYvz3i0FiVZLoQieZTQHUlSF5VBt31kdMLlPUsF0foMPJT+pW3mciwv
+         iwjaa5lUSNBU0N618cwC1CROiRlDQw/zR7cPf2xd6V8KIjbRB3JSOlzoSTB923xYVR
+         LlyexTLnrCIyyz3L5u1utaL16rFXugaXP/Xm3GlM=
+Date:   Tue, 18 Aug 2020 17:54:35 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>, linux-kernel@vger.kernel.org,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
-In-Reply-To: <20200813084112.26205-1-dinghao.liu@zju.edu.cn>
-References: <20200813084112.26205-1-dinghao.liu@zju.edu.cn>
-Subject: Re: [PATCH] [v2] ASoC: intel: Fix memleak in sst_media_open
-Message-Id: <159776961932.56094.14732357136908133614.b4-ty@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     john.stultz@linaro.org, tiwai@suse.com, lgirdwood@gmail.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <20200811103452.20448-1-srinivas.kandagatla@linaro.org>
+References: <20200811103452.20448-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] ASoC: msm8916-wcd-analog: fix register Interrupt offset
+Message-Id: <159776961933.56094.9052363191985703080.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Aug 2020 16:41:10 +0800, Dinghao Liu wrote:
-> When power_up_sst() fails, stream needs to be freed
-> just like when try_module_get() fails. However, current
-> code is returning directly and ends up leaking memory.
+On Tue, 11 Aug 2020 11:34:52 +0100, Srinivas Kandagatla wrote:
+> For some reason interrupt set and clear register offsets are
+> not set correctly.
+> This patch corrects them!
 
 Applied to
 
@@ -56,8 +48,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: intel: Fix memleak in sst_media_open
-      commit: 062fa09f44f4fb3776a23184d5d296b0c8872eb9
+[1/1] ASoC: msm8916-wcd-analog: fix register Interrupt offset
+      commit: ff69c97ef84c9f7795adb49e9f07c9adcdd0c288
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
