@@ -2,107 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D928249044
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 23:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15EED249042
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 23:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726840AbgHRVil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 17:38:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726852AbgHRViU (ORCPT
+        id S1726953AbgHRVid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 17:38:33 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:34574 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726826AbgHRViT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 17:38:20 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D13FDC061348
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 14:38:18 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id k8so279916wma.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 14:38:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=melexis.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KGbYgC10yEAQ0N/WNh4ekyP+m4b8XDZy+5vjdPR5yp4=;
-        b=Q5dJyq9kIvH/s+LzOxf3acSRtCSjwRnYzmzPenCx+Kfw1xbvH5cXWbrQwhRa7CUTxe
-         sJQoq7jg6pEyh++m2GKDyixMuE5tk1xemCoc0XPpnFQkoRsZxOPbJxqw3XTO5flm62uB
-         ZoTVmg2M241qfE+HfdvxFB8VyyrYJ6kLRfAzY8BSAzMK4kzaOtR9fFMTZ7mAZ3+q7Bxp
-         JBK+NRv0dTxIs/YCfqPS0LNi6fXyYArsfBk18uPdrGqpRoYnty3caLiaV6ahfBeuPkps
-         elGRhNfajX5YNnnhgaJxmGLXjavt7GtIPktdH13cP1l4C9sSJvdlXNFbE3VcNskm8Tni
-         kDjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KGbYgC10yEAQ0N/WNh4ekyP+m4b8XDZy+5vjdPR5yp4=;
-        b=WEDkBlGFRMaiQlBWGjVfj+4Z6XMe3HC+D0TmeXgYbO+dwor0dW9wYbSg5Oxk96SuYp
-         rE8q+/+IMlbPhjdrHaS0764d2CgmfDzCd9GLi9S7ShYE8JoyzARP4r6bzE6WcRLU/1Zv
-         i6OWmrgNZxXng0/jj6FgX/VJ92kz5tgtIIsyWy37EwYLJhxRbc6i/FgwHKazUuECZA2Q
-         Q8k9AtfqDlyJGz5BuPsxrN9V9XHH/OU9YmbFRx75fDcihgMjqXaHZHWYskFQ9tdsWtKU
-         MdJeLquqJSDF4/UbP5eV3jvXKg1mC9nl3yS8K5EmFaJRDFwauplY8UMAB1I1iLp26z9g
-         uUXA==
-X-Gm-Message-State: AOAM531eU7yD1WR0baLSsllWLLELCZ4StIeQKJ/j3TAqAvr70yAuLskJ
-        jQ8oZd06vF+TTFwO8Cg824NCLg==
-X-Google-Smtp-Source: ABdhPJx63POYH5gXMHacZ8NmF7VSSR4RXWfPc1Q5bl7FQgmjkhB04gL1Q2InO4pZKZTdbCjIVlBz1Q==
-X-Received: by 2002:a1c:dc86:: with SMTP id t128mr1841138wmg.6.1597786697216;
-        Tue, 18 Aug 2020 14:38:17 -0700 (PDT)
-Received: from localhost.localdomain ([88.116.83.106])
-        by smtp.gmail.com with ESMTPSA id z207sm1797860wmc.2.2020.08.18.14.38.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 14:38:16 -0700 (PDT)
-From:   Crt Mori <cmo@melexis.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Crt Mori <cmo@melexis.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v6 5/5] iio:temperature:mlx90632: Some stylefixing leftovers
-Date:   Tue, 18 Aug 2020 23:37:37 +0200
-Message-Id: <20200818213737.140613-6-cmo@melexis.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200818213737.140613-1-cmo@melexis.com>
-References: <20200818213737.140613-1-cmo@melexis.com>
+        Tue, 18 Aug 2020 17:38:19 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 9FAF129480C
+Message-ID: <57e324f9e3e7e56aa634bcfa0aeebf08c118776d.camel@collabora.com>
+Subject: Re: [PATCH v3 16/19] media: rkvdec: Drop unneeded per_request
+ driver-specific control flag
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Jonas Karlman <jonas@kwiboo.se>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Jeffrey Kardatzke <jkardatzke@chromium.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Date:   Tue, 18 Aug 2020 18:38:07 -0300
+In-Reply-To: <7ce53e65-1a05-bef7-afe7-9a5113d5bd4f@kwiboo.se>
+References: <20200814133634.95665-1-ezequiel@collabora.com>
+         <20200814133634.95665-17-ezequiel@collabora.com>
+         <7ce53e65-1a05-bef7-afe7-9a5113d5bd4f@kwiboo.se>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is some inconsistency and whitespace cleanup performed in this
-patch. It was done on top of my other patches, but I can rebase to head
-of the togreg branch if it would go in sooner.
+On Tue, 2020-08-18 at 20:17 +0000, Jonas Karlman wrote:
+> Hi Ezequiel,
+> 
+> On 2020-08-14 15:36, Ezequiel Garcia wrote:
+> > Currently, the drivers makes no distinction between per_request
+> > and mandatory, as both are used in the same request validate check.
+> > 
+> > The driver only cares to know if a given control is
+> > required to be part of a request, so only one flag is needed.
+> 
+> This patch cause decoding issues with ffmpeg.
+> 
+> The removal of per_request makes DECODE_MODE and START_CODE ctrls
+> mandatory to be included in the request.
+> 
 
-Signed-off-by: Crt Mori <cmo@melexis.com>
----
- drivers/iio/temperature/mlx90632.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Ugh, I just failed boolean logic 101.
 
-diff --git a/drivers/iio/temperature/mlx90632.c b/drivers/iio/temperature/mlx90632.c
-index 94bca2b2866a..472a7fb20615 100644
---- a/drivers/iio/temperature/mlx90632.c
-+++ b/drivers/iio/temperature/mlx90632.c
-@@ -112,10 +112,10 @@
- #define MLX90632_DSP_VERSION	5 /* DSP version */
- #define MLX90632_DSP_MASK	GENMASK(7, 0) /* DSP version in EE_VERSION */
- #define MLX90632_RESET_CMD	0x0006 /* Reset sensor (address or global) */
--#define MLX90632_REF_12		12LL /**< ResCtrlRef value of Ch 1 or Ch 2 */
--#define MLX90632_REF_3		12LL /**< ResCtrlRef value of Channel 3 */
--#define MLX90632_MAX_MEAS_NUM	31 /**< Maximum measurements in list */
--#define MLX90632_SLEEP_DELAY_MS 3000 /**< Autosleep delay */
-+#define MLX90632_REF_12 	12LL /* ResCtrlRef value of Ch 1 or Ch 2 */
-+#define MLX90632_REF_3		12LL /* ResCtrlRef value of Channel 3 */
-+#define MLX90632_MAX_MEAS_NUM	31 /* Maximum measurements in list */
-+#define MLX90632_SLEEP_DELAY_MS 3000 /* Autosleep delay */
- #define MLX90632_EXTENDED_LIMIT 27000 /* Extended mode raw value limit */
- 
- /**
-@@ -889,7 +889,7 @@ static int mlx90632_probe(struct i2c_client *client,
- 		mlx90632->mtyp = MLX90632_MTYP_EXTENDED;
- 	} else if ((read & MLX90632_DSP_MASK) == MLX90632_DSP_VERSION) {
- 		dev_dbg(&client->dev,
--			"Detected Unknown EEPROM calibration %x\n", read);	
-+			"Detected Unknown EEPROM calibration %x\n", read);
- 	} else {
- 		dev_err(&client->dev,
- 			"Wrong DSP version %x (expected %x)\n",
--- 
-2.25.1
+Yeah, we those controls shouldn't be mandatory.
+
+I'll send a fix for that. Other than this, can I add your tested-by to the series?
+
+Thanks,
+Ezequiel
+
+> Best regards,
+> Jonas
+> 
+> > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> > ---
+> >  drivers/staging/media/rkvdec/rkvdec.c | 6 +-----
+> >  drivers/staging/media/rkvdec/rkvdec.h | 1 -
+> >  2 files changed, 1 insertion(+), 6 deletions(-)
+> > 
+> > diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
+> > index 7c5129593921..cd720d726d7f 100644
+> > --- a/drivers/staging/media/rkvdec/rkvdec.c
+> > +++ b/drivers/staging/media/rkvdec/rkvdec.c
+> > @@ -55,23 +55,19 @@ static const struct v4l2_ctrl_ops rkvdec_ctrl_ops = {
+> >  
+> >  static const struct rkvdec_ctrl_desc rkvdec_h264_ctrl_descs[] = {
+> >  	{
+> > -		.per_request = true,
+> >  		.mandatory = true,
+> >  		.cfg.id = V4L2_CID_MPEG_VIDEO_H264_DECODE_PARAMS,
+> >  	},
+> >  	{
+> > -		.per_request = true,
+> >  		.mandatory = true,
+> >  		.cfg.id = V4L2_CID_MPEG_VIDEO_H264_SPS,
+> >  		.cfg.ops = &rkvdec_ctrl_ops,
+> >  	},
+> >  	{
+> > -		.per_request = true,
+> >  		.mandatory = true,
+> >  		.cfg.id = V4L2_CID_MPEG_VIDEO_H264_PPS,
+> >  	},
+> >  	{
+> > -		.per_request = true,
+> >  		.mandatory = true,
+> >  		.cfg.id = V4L2_CID_MPEG_VIDEO_H264_SCALING_MATRIX,
+> >  	},
+> > @@ -615,7 +611,7 @@ static int rkvdec_request_validate(struct media_request *req)
+> >  		u32 id = ctrls->ctrls[i].cfg.id;
+> >  		struct v4l2_ctrl *ctrl;
+> >  
+> > -		if (!ctrls->ctrls[i].per_request || !ctrls->ctrls[i].mandatory)
+> > +		if (!ctrls->ctrls[i].mandatory)
+> >  			continue;
+> >  
+> >  		ctrl = v4l2_ctrl_request_hdl_ctrl_find(hdl, id);
+> > diff --git a/drivers/staging/media/rkvdec/rkvdec.h b/drivers/staging/media/rkvdec/rkvdec.h
+> > index 2fc9f46b6910..77a137cca88e 100644
+> > --- a/drivers/staging/media/rkvdec/rkvdec.h
+> > +++ b/drivers/staging/media/rkvdec/rkvdec.h
+> > @@ -25,7 +25,6 @@
+> >  struct rkvdec_ctx;
+> >  
+> >  struct rkvdec_ctrl_desc {
+> > -	u32 per_request : 1;
+> >  	u32 mandatory : 1;
+> >  	struct v4l2_ctrl_config cfg;
+> >  };
+> > 
+
 
