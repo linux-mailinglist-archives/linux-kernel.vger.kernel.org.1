@@ -2,87 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB34248F61
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 22:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 221C1248F71
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 22:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726689AbgHRUIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 16:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49090 "EHLO
+        id S1726783AbgHRUK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 16:10:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726539AbgHRUIb (ORCPT
+        with ESMTP id S1726617AbgHRUKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 16:08:31 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1902C061343
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 13:08:30 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id y206so10485221pfb.10
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 13:08:30 -0700 (PDT)
+        Tue, 18 Aug 2020 16:10:20 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E16A6C061348
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 13:10:18 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id y6so9739930plt.3
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 13:10:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=L5rgvljds/G/gY7M0g3ZdQCzMRXyD0pLsTTaDQidR0w=;
-        b=GgEG9rX0CVa7+ePbq5nMU/CNYUi+2BFK3ShbA/WmzDeaqQmywgCc13epPFdB6FGzJj
-         PvUunIk9PF/5CUEYbmg6f4sOwcmkbKu9OxYlJ6LaNwke2x+fD6sLSkFRzNClnnjeBX38
-         8Rgdk2DtkxLnI2lh1JKe4qna0fjXUs9peD4gY=
+        bh=TVHg8iic3jhifLJcBgUbuICf6X+/XJrx7XucziWHTh4=;
+        b=XJIRNe3GC5+ESqXN1Xu3abO5ZefKkTKOYHKBaOfb9ueeT+8D0u27nucOFMVEcVEIlU
+         jmvz6dATQFCtEO6g5yNeaZR33qILQindJ5FbeJ6y98srbza53yHyzyYR5Ae2HVSridP4
+         36Xq5I+k5oTWeayZlqu4WxkJBY7w5Y8AAm/NE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=L5rgvljds/G/gY7M0g3ZdQCzMRXyD0pLsTTaDQidR0w=;
-        b=DY377msuYhjKoZ6UCvRlPEOp0O+bqtUt77lqvu5rmuOMYH+TCxT5Rdv1643RoLFMIL
-         tqi/SPfuFGz3CRyq883llsLymNE2L49HN6aQ2SHo6ZX/4VyDnUH1GnYzNsXxVWhaC7EH
-         GW17jN58uP4nGcddJc6ubERIqnwaV7qj13FoTer86XC0++UU2Fo+lNpYoZDsV2+AYiC6
-         X9HdOYLIjOFHFEROM0W37/xY+LTleYeUGzWVhvppRBag67RKTkGJ+I/eqvr9le8LsHzV
-         LWIZc9BOaj60FRmri/w/svDFwFcKfhPdAkVbZMuUf9/SFkSQI3c5TGsyzl2y3a77vX/g
-         H7iQ==
-X-Gm-Message-State: AOAM532kypy/x8ZAHJ8VS7sfF2y2K3Iy/HKNQ5upfeyChNZcb3xMjnlM
-        ymqkcnmCAT9BYzl4vuLqxPOz7A==
-X-Google-Smtp-Source: ABdhPJyBLGaxMiD9h5m7lNfe0Fp88P8FDv0Rv1bI+H6lZvwzTGY3m5NIOU4EVZdC+BdDYxt8ElPefQ==
-X-Received: by 2002:a62:aa05:: with SMTP id e5mr16597138pff.159.1597781310313;
-        Tue, 18 Aug 2020 13:08:30 -0700 (PDT)
+        bh=TVHg8iic3jhifLJcBgUbuICf6X+/XJrx7XucziWHTh4=;
+        b=FedIosu+YhOmcQC2u8dZ/rTAAwMD3kiVrcPnAV7xYHqob9W710vaZLzM1pU1vkHTIC
+         F1q+7kiTFxYvqt8nCGNRZ1PEmmuaiYwsoClWbKnd8c1NSFQCj90BlGB/FPWYdNGD63P8
+         rm66vHtmXDzgYV9iUwv2vC/iiEIC4jLws42+Z7iXxwD+jeqyAnnCM7fWn0BTBpieVmFV
+         OI7m4Gp05oCl/zqz+325YJT3jqlQW12e0ZOF8+4KhQqEFamOJgGtYb3xrX4xGvoO/LV2
+         BFbJ8FmQmFVz9Qq2nu1unuEK/W+19DN8Q1rSCJiTxJFVvUnjZT5aEek0bFCeQqU5atU0
+         5JjQ==
+X-Gm-Message-State: AOAM532tJsnvDPzihXVfV7Cnkp8CfLaIWFYvG53M/4MRuk/c7DFzxFGV
+        LfjK/iSRF+XRghI1DStK7BhYfQ==
+X-Google-Smtp-Source: ABdhPJxuNmuIkhrqM6bpbnFGPMCC2Ooxj9YFPlaOufZ98RpuJ8EhlSYOLxahQ/MIWXdKo1mkyqnaIw==
+X-Received: by 2002:a17:902:6b05:: with SMTP id o5mr16351190plk.173.1597781417356;
+        Tue, 18 Aug 2020 13:10:17 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id m62sm738843pje.18.2020.08.18.13.08.28
+        by smtp.gmail.com with ESMTPSA id t25sm26530806pfl.198.2020.08.18.13.10.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 13:08:29 -0700 (PDT)
-Date:   Tue, 18 Aug 2020 13:08:28 -0700
+        Tue, 18 Aug 2020 13:10:15 -0700 (PDT)
+Date:   Tue, 18 Aug 2020 13:10:14 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 08/11] x86: make TASK_SIZE_MAX usable from assembly code
-Message-ID: <202008181308.A4A6674@keescook>
-References: <20200817073212.830069-1-hch@lst.de>
- <20200817073212.830069-9-hch@lst.de>
- <202008181244.BBDA7DAB@keescook>
- <20200818195539.GB32691@lst.de>
- <202008181258.CEC4B8B3@keescook>
- <20200818200016.GA681@lst.de>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Allen Pais <allen.cryptic@gmail.com>,
+        jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
+        3chas3@gmail.com, stefanr@s5r6.in-berlin.de, airlied@linux.ie,
+        daniel@ffwll.ch, sre@kernel.org, kys@microsoft.com, deller@gmx.de,
+        dmitry.torokhov@gmail.com, jassisinghbrar@gmail.com,
+        shawnguo@kernel.org, s.hauer@pengutronix.de,
+        maximlevitsky@gmail.com, oakad@yahoo.com, ulf.hansson@linaro.org,
+        mporter@kernel.crashing.org, alex.bou9@gmail.com,
+        broonie@kernel.org, martyn@welchs.me.uk, manohar.vanga@gmail.com,
+        mitch@sfgoth.com, davem@davemloft.net, kuba@kernel.org,
+        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux1394-devel@lists.sourceforge.net,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-hyperv@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-ntb@googlegroups.com, linux-s390@vger.kernel.org,
+        linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
+        Allen Pais <allen.lkml@gmail.com>,
+        Romain Perier <romain.perier@gmail.com>
+Subject: Re: [PATCH] block: convert tasklets to use new tasklet_setup() API
+Message-ID: <202008181309.FD3940A2D5@keescook>
+References: <20200817091617.28119-1-allen.cryptic@gmail.com>
+ <20200817091617.28119-2-allen.cryptic@gmail.com>
+ <b5508ca4-0641-7265-2939-5f03cbfab2e2@kernel.dk>
+ <202008171228.29E6B3BB@keescook>
+ <161b75f1-4e88-dcdf-42e8-b22504d7525c@kernel.dk>
+ <202008171246.80287CDCA@keescook>
+ <df645c06-c30b-eafa-4d23-826b84f2ff48@kernel.dk>
+ <1597780833.3978.3.camel@HansenPartnership.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200818200016.GA681@lst.de>
+In-Reply-To: <1597780833.3978.3.camel@HansenPartnership.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 10:00:16PM +0200, Christoph Hellwig wrote:
-> On Tue, Aug 18, 2020 at 12:59:05PM -0700, Kees Cook wrote:
-> > > I didn't see a problem bisecting, do you have something particular in
-> > > mind?
+On Tue, Aug 18, 2020 at 01:00:33PM -0700, James Bottomley wrote:
+> On Mon, 2020-08-17 at 13:02 -0700, Jens Axboe wrote:
+> > On 8/17/20 12:48 PM, Kees Cook wrote:
+> > > On Mon, Aug 17, 2020 at 12:44:34PM -0700, Jens Axboe wrote:
+> > > > On 8/17/20 12:29 PM, Kees Cook wrote:
+> > > > > On Mon, Aug 17, 2020 at 06:56:47AM -0700, Jens Axboe wrote:
+> > > > > > On 8/17/20 2:15 AM, Allen Pais wrote:
+> > > > > > > From: Allen Pais <allen.lkml@gmail.com>
+> > > > > > > 
+> > > > > > > In preparation for unconditionally passing the
+> > > > > > > struct tasklet_struct pointer to all tasklet
+> > > > > > > callbacks, switch to using the new tasklet_setup()
+> > > > > > > and from_tasklet() to pass the tasklet pointer explicitly.
+> > > > > > 
+> > > > > > Who came up with the idea to add a macro 'from_tasklet' that
+> > > > > > is just container_of? container_of in the code would be
+> > > > > > _much_ more readable, and not leave anyone guessing wtf
+> > > > > > from_tasklet is doing.
+> > > > > > 
+> > > > > > I'd fix that up now before everything else goes in...
+> > > > > 
+> > > > > As I mentioned in the other thread, I think this makes things
+> > > > > much more readable. It's the same thing that the timer_struct
+> > > > > conversion did (added a container_of wrapper) to avoid the
+> > > > > ever-repeating use of typeof(), long lines, etc.
+> > > > 
+> > > > But then it should use a generic name, instead of each sub-system 
+> > > > using some random name that makes people look up exactly what it
+> > > > does. I'm not huge fan of the container_of() redundancy, but
+> > > > adding private variants of this doesn't seem like the best way
+> > > > forward. Let's have a generic helper that does this, and use it
+> > > > everywhere.
+> > > 
+> > > I'm open to suggestions, but as things stand, these kinds of
+> > > treewide
 > > 
-> > Oh, I misunderstood this patch to be a fix for compilation. Is this just
-> > a correctness fix?
+> > On naming? Implementation is just as it stands, from_tasklet() is
+> > totally generic which is why I objected to it. from_member()? Not
+> > great with naming... But I can see this going further and then we'll
+> > suddenly have tons of these. It's not good for readability.
 > 
-> It prepares for using the definition from assembly, which is done in
-> the next patch.
+> Since both threads seem to have petered out, let me suggest in
+> kernel.h:
+> 
+> #define cast_out(ptr, container, member) \
+> 	container_of(ptr, typeof(*container), member)
+> 
+> It does what you want, the argument order is the same as container_of
+> with the only difference being you name the containing structure
+> instead of having to specify its type.
 
-Ah! Okay; thanks.
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
+I like this! Shall I send this to Linus to see if this can land in -rc2
+for use going forward?
 
 -- 
 Kees Cook
