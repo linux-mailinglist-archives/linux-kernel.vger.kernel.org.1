@@ -2,103 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB9F2487D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62E332487D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727929AbgHROho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 10:37:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53154 "EHLO
+        id S1727097AbgHROiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 10:38:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727905AbgHROhi (ORCPT
+        with ESMTP id S1727033AbgHROiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 10:37:38 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6582BC061342;
-        Tue, 18 Aug 2020 07:37:37 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id p24so22326012ejf.13;
-        Tue, 18 Aug 2020 07:37:37 -0700 (PDT)
+        Tue, 18 Aug 2020 10:38:01 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F67CC061389;
+        Tue, 18 Aug 2020 07:38:01 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id m8so10074144pfh.3;
+        Tue, 18 Aug 2020 07:38:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=qW/vPODydHKoIxWkakc/8MljLCi8kAbWI/+HlLycii8=;
-        b=uCU2VExUgkOdf0CSnU7p7Lwj0HwQv0QnvrEuM3Q4DtTmfgcqJv7lIMg6wtWsqdRNtr
-         g5qApET1RisUjddrmMDVQXhqZkK6RUrIg+S1ft2ZwrIEdCpyOHTTzGA/R5EGMsKRwzj4
-         SsCX3rMM8bGiFd+wOqh1oFq4CbRFWaVCVBrrUQDeKee+Pz58Bzul52OIZy27Wlrou1/g
-         ECjwdYXY1HW5YzJlKL4uu7XevB8c/LCNUHqQtYNviTU3EXem5NfnQcAJiDbq94SJ3owE
-         fDqvczWzkV4IwcqGoE3pAqhNbOppeAUqbJV6zwa33ANkAs+92H9Szw3wOmS0e3n3/6YG
-         3HNA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2r3YLIonviXk+yiTh2eL5fGwLG3nibOXqnr3jMeFSxw=;
+        b=vPDS6jyEFa2pVglVMhDsJUQB3MELfJ46P/i/Kx5bmZjr1wl0M1cBAfXE02msNjRehH
+         76vt2EQ44Wusv6N6rGb6Zyh3nbYbIlp04r8yzboE5YpsHEnqqDaIvKLe0E3ZlFsjHjLS
+         mgXHS9cePmDk4Ydxd7kHpKAkdVntxnylNRmF6QjOExWxBnxGuh41glOpahf9z1CiXYEf
+         QCIm5YBFoMQDns4qw8YCBKlc9eojA2XKdHlxjMUgknxV9IvTzchhAk+GTBEQ5tnB58bU
+         Vgo7urIRUdSba8NThKLzlbwEWiAO4IFllSZ9wXEw6b+C/OEKpiPITyiv/HM2155IHPqV
+         V1fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=qW/vPODydHKoIxWkakc/8MljLCi8kAbWI/+HlLycii8=;
-        b=e7rmFQTxaieWmrAADA3zqZ5Cop+wzjlaVuW1z9Jlw1HYUsRr2BhA2EqsewqoJMetEQ
-         RohJpUTEOcvvohm4X1nO4ZoiST1e+Vthf2tuC8kJPMgTbOIXMWxCCVwFvka+BzQIzH/x
-         /Fs6/mTHQ+3mXrJvvg0Hn1M9+4XIqAaMCraJ7zYE/emdY/7tTrzibaHNq+opu6dXJ47o
-         /aNdoMbnIECs5tPaK39UJXMU7dfAbQFeVylsgOhcFNgWPSxy5U4hH5D9n5kDji3ubuNc
-         ZzNm40ljQxLAqENpHvf2ISguu000X9U1ck3zHfyiL6DQKTQCur4nq7Pg/a8BUreqZkn+
-         6L2Q==
-X-Gm-Message-State: AOAM533fTgyjDU1tBVRY8U0s2cV8/aT7MnfCCz1O4HEOs5x/9AAVAswC
-        Rd9rJHkzgs1gHkTsdpzvKOYndTAjPy8=
-X-Google-Smtp-Source: ABdhPJwoKdEOnV0Xt2tgEw82my/fzFI9XtM+fHHICmtVeMhwZPUpUjoZ/RyxXNw3xpoCDJrZ+yHTpw==
-X-Received: by 2002:a17:906:a18e:: with SMTP id s14mr20008133ejy.168.1597761456090;
-        Tue, 18 Aug 2020 07:37:36 -0700 (PDT)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id r25sm16222575edy.93.2020.08.18.07.37.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 18 Aug 2020 07:37:35 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
-        sugar.zhang@rock-chips.com, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] arm64: dts: rockchip: change fallback string rockchip,rk3308-spdif
-Date:   Tue, 18 Aug 2020 16:37:27 +0200
-Message-Id: <20200818143727.5882-2-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200818143727.5882-1-jbx6244@gmail.com>
-References: <20200818143727.5882-1-jbx6244@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2r3YLIonviXk+yiTh2eL5fGwLG3nibOXqnr3jMeFSxw=;
+        b=g5o260hgAsj3diP/+8fW52OCsGwI3SQhwoPrm4ZlnIXwuVrjbJNOd9ZWOmocVZPp4Y
+         nYE53mo25zDCfemmOQ1RbYKjtvVOrk58iWk1CM/5Kd0S75qKx9Elp20OKUNtgD3MixgG
+         CYl+SzU7xkLVpQovRdxVWJnhAwmO50GfJ/xeCaibX3sEG5P1abiFe59T05balV1KQ6Vo
+         7TGL+KxgO6jG2YRVCICTt93dV8nRE6BagnvAgqHuH2epQ0wYNxtCMc+k2ZTDQsbGmb1J
+         vkNoV5LkeS2OrSqBmq5TXdQUMbbP+X/gE8mMMkne9+iAygSSml7icmLkWLuHjqCDXqJK
+         C1DQ==
+X-Gm-Message-State: AOAM530xtP1plJvYs6Hut0ltbeobSV7mNDyyQwPl9/6GWynQPTNDkL32
+        dImFQWznnKeR56arfIvnek75PPXm11o=
+X-Google-Smtp-Source: ABdhPJwUON8dwXpoGVKSYuYs9uPXS4HjS7ngwVT1Jae5RghclPIexe/+chXmz79GW1A5l7N72s0PJw==
+X-Received: by 2002:a65:58cf:: with SMTP id e15mr13720757pgu.59.1597761480619;
+        Tue, 18 Aug 2020 07:38:00 -0700 (PDT)
+Received: from sol (106-69-184-100.dyn.iinet.net.au. [106.69.184.100])
+        by smtp.gmail.com with ESMTPSA id z1sm158662pjn.34.2020.08.18.07.37.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Aug 2020 07:37:59 -0700 (PDT)
+Date:   Tue, 18 Aug 2020 22:37:54 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v4 12/20] gpiolib: cdev: support setting debounce
+Message-ID: <20200818143754.GB17809@sol>
+References: <20200814030257.135463-1-warthog618@gmail.com>
+ <20200814030257.135463-13-warthog618@gmail.com>
+ <CAMpxmJXxUD9HqkEAzMjJA6dOem9aAkPwdT4BKyPXb-C06dGkqw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMpxmJXxUD9HqkEAzMjJA6dOem9aAkPwdT4BKyPXb-C06dGkqw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A test with the command below shows that the compatible string
+On Mon, Aug 17, 2020 at 08:21:58PM +0200, Bartosz Golaszewski wrote:
+> On Fri, Aug 14, 2020 at 5:05 AM Kent Gibson <warthog618@gmail.com> wrote:
+> >
+> > Add support for setting debounce on a line via the GPIO uAPI.
+> > Where debounce is not supported by hardware, a software debounce is
+> > provided.
+> >
+> > Signed-off-by: Kent Gibson <warthog618@gmail.com>
+> > ---
 
-"rockchip,rk3308-spdif", "rockchip,rk3328-spdif"
+[snip]
 
-is already in use, but is not added to a document.
-The current fallback string "rockchip,rk3328-spdif" points to a data
-set enum RK_SPDIF_RK3366 in rockchip_spdif.c that is not used both
-in the mainline as in the manufacturer kernel.
-(Of the enum only RK_SPDIF_RK3288 is used.)
-So if the properties don't change we might as well use the first SoC
-in line as fallback string and add the description for rk3308 as:
+> > +       debounce_period = READ_ONCE(desc->debounce_period);
+> > +       if (debounce_period) {
+> > +               info->attrs[num_attrs].id = GPIO_V2_LINE_ATTR_ID_DEBOUNCE;
+> > +               info->attrs[num_attrs].debounce_period = debounce_period;
+> > +               num_attrs++;
+> > +       }
+> > +       info->num_attrs = num_attrs;
+> 
+> AFAICT this (reading it in gpio_desc_to_lineinfo) is the only reason
+> to store the debounce period in struct gpio_desc. I'm wondering if we
+> can avoid extending this struct only for such uncommon case and store
+> it elsewhere. In all other cases where you read or write to it - you
+> have access to the underlying edge detector. Would the single-line
+> struct line I suggested elsewhere be a good place? On the other hand
+> I'm not sure how to get it having only the desc. I need to think about
+> it more.
+> 
 
-"rockchip,rk3308-spdif", "rockchip,rk3066-spdif"
+Yeah, it is stored there so it can be returned by lineinfo_get() for the
+GPIO_V2_GET_LINEINFO_IOCTL and GPIO_V2_GET_LINEINFO_WATCH_IOCTL.
+And the same applies to any future config fields.
+I would also like to not pollute the desc, or anything else in gpiolib,
+but wasn't sure where else to put it.
 
-make ARCH=arm64 dtbs_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
+I'm open to suggestions.
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- arch/arm64/boot/dts/rockchip/rk3308.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3308.dtsi b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-index e8b754d41..2560b9877 100644
---- a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-@@ -574,7 +574,7 @@
- 	};
- 
- 	spdif_tx: spdif-tx@ff3a0000 {
--		compatible = "rockchip,rk3308-spdif", "rockchip,rk3328-spdif";
-+		compatible = "rockchip,rk3308-spdif", "rockchip,rk3066-spdif";
- 		reg = <0x0 0xff3a0000 0x0 0x1000>;
- 		interrupts = <GIC_SPI 55 IRQ_TYPE_LEVEL_HIGH>;
- 		clocks = <&cru SCLK_SPDIF_TX>, <&cru HCLK_SPDIFTX>;
--- 
-2.11.0
-
+Cheers,
+Kent.
