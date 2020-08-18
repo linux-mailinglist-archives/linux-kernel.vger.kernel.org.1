@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E4E2487AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47DF22487AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgHROfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 10:35:48 -0400
+        id S1727807AbgHROfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 10:35:50 -0400
 Received: from mga14.intel.com ([192.55.52.115]:33372 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727107AbgHROfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 10:35:43 -0400
-IronPort-SDR: x+BotgFK1/nT984Dxd5Hb1ukRWxPSisD0L12WPh8X/+7FoFaCI9f+Oyx9PzuD//DzjI0B8Ym+o
- nEGVaJkP4AFA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="154170530"
+        id S1727063AbgHROfr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 10:35:47 -0400
+IronPort-SDR: CxxeC/fU9l6/KsB7y5lHgBneR71xaup61SkWoRUnftRBoKVOCCTYukLuGNJKA9T5FfZ1ftN53s
+ Vdm9PnerUxNA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="154170542"
 X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
-   d="scan'208";a="154170530"
+   d="scan'208";a="154170542"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 07:35:42 -0700
-IronPort-SDR: Rd01k4E1jz1u2BQBSB1sC9wDF7umGbQerY8BfBGLcnjFmedBi+OCudLNXRyt/hHE9lw3vAo90N
- SdR/JrgtV0Qg==
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 07:35:46 -0700
+IronPort-SDR: twSiAiudEPC6ZAJzPOolKp8o4ELzJfqYKN2EkbCkXbi4EVJoKO3ywPtM5zQb+HtXCpMxrIBBC3
+ XYfn0uFXjoTA==
 X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
-   d="scan'208";a="471830647"
+   d="scan'208";a="471830696"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 07:35:39 -0700
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 07:35:43 -0700
 From:   Bard Liao <yung-chuan.liao@linux.intel.com>
 To:     alsa-devel@alsa-project.org, vkoul@kernel.org
 Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
@@ -34,9 +34,9 @@ Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
         ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
         pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
         mengdong.lin@intel.com, bard.liao@intel.com
-Subject: [PATCH 07/11] soundwire: intel: Only call sdw stream APIs for the first cpu_dai
-Date:   Tue, 18 Aug 2020 10:41:16 +0800
-Message-Id: <20200818024120.20721-8-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 08/11] soundwire: stream: enable hw_sync as needed by hardware
+Date:   Tue, 18 Aug 2020 10:41:17 +0800
+Message-Id: <20200818024120.20721-9-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200818024120.20721-1-yung-chuan.liao@linux.intel.com>
 References: <20200818024120.20721-1-yung-chuan.liao@linux.intel.com>
@@ -45,109 +45,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We should call these APIs once per stream. So we can only call it
-when the dai ops is invoked for the first cpu dai.
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
+Use platform-specific information to decide when to use hw_sync, not
+only a number of links > 1.
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 45 +++++++++++++++++++++++++++++++++------
- 1 file changed, 39 insertions(+), 6 deletions(-)
+ drivers/soundwire/stream.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 89a8ad1f80e8..7c63581270fd 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -941,11 +941,13 @@ static int intel_hw_params(struct snd_pcm_substream *substream,
- static int intel_prepare(struct snd_pcm_substream *substream,
- 			 struct snd_soc_dai *dai)
- {
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *first_cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
- 	struct sdw_intel *sdw = cdns_to_intel(cdns);
- 	struct sdw_cdns_dma_data *dma;
- 	int ch, dir;
--	int ret;
-+	int ret = 0;
+diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+index 37290a799023..e4cf484f5905 100644
+--- a/drivers/soundwire/stream.c
++++ b/drivers/soundwire/stream.c
+@@ -689,9 +689,9 @@ static int sdw_bank_switch(struct sdw_bus *bus, int m_rt_count)
  
- 	dma = snd_soc_dai_get_dma_data(dai, substream);
- 	if (!dma) {
-@@ -985,7 +987,13 @@ static int intel_prepare(struct snd_pcm_substream *substream,
- 			goto err;
- 	}
+ 	/*
+ 	 * Set the multi_link flag only when both the hardware supports
+-	 * and there is a stream handled by multiple masters
++	 * and hardware-based sync is required
+ 	 */
+-	multi_link = bus->multi_link && (m_rt_count > 1);
++	multi_link = bus->multi_link && (m_rt_count >= bus->hw_sync_min_links);
  
--	ret = sdw_prepare_stream(dma->stream);
-+	/*
-+	 * All cpu dais belong to a stream. To ensure sdw_prepare_stream
-+	 * is called once per stream, we should call it only when
-+	 * dai = first_cpu_dai.
-+	 */
-+	if (first_cpu_dai == dai)
-+		ret = sdw_prepare_stream(dma->stream);
+ 	if (multi_link)
+ 		ret = sdw_transfer_defer(bus, wr_msg, &bus->defer_msg);
+@@ -760,13 +760,16 @@ static int do_bank_switch(struct sdw_stream_runtime *stream)
+ 	const struct sdw_master_ops *ops;
+ 	struct sdw_bus *bus;
+ 	bool multi_link = false;
++	int m_rt_count;
+ 	int ret = 0;
  
- err:
- 	return ret;
-@@ -994,9 +1002,19 @@ static int intel_prepare(struct snd_pcm_substream *substream,
- static int intel_trigger(struct snd_pcm_substream *substream, int cmd,
- 			 struct snd_soc_dai *dai)
- {
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *first_cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	struct sdw_cdns_dma_data *dma;
- 	int ret;
- 
-+	/*
-+	 * All cpu dais belong to a stream. To ensure sdw_enable/disable_stream
-+	 * are called once per stream, we should call them only when
-+	 * dai = first_cpu_dai.
-+	 */
-+	if (first_cpu_dai != dai)
-+		return 0;
++	m_rt_count = stream->m_rt_count;
 +
- 	dma = snd_soc_dai_get_dma_data(dai, substream);
- 	if (!dma) {
- 		dev_err(dai->dev, "failed to get dma data in %s", __func__);
-@@ -1031,6 +1049,8 @@ static int intel_trigger(struct snd_pcm_substream *substream, int cmd,
- static int
- intel_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
- {
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *first_cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
- 	struct sdw_intel *sdw = cdns_to_intel(cdns);
- 	struct sdw_cdns_dma_data *dma;
-@@ -1040,12 +1060,25 @@ intel_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
- 	if (!dma)
- 		return -EIO;
+ 	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
+ 		bus = m_rt->bus;
+ 		ops = bus->ops;
  
--	ret = sdw_deprepare_stream(dma->stream);
--	if (ret) {
--		dev_err(dai->dev, "sdw_deprepare_stream: failed %d", ret);
--		return ret;
-+	/*
-+	 * All cpu dais belong to a stream. To ensure sdw_deprepare_stream
-+	 * is called once per stream, we should call it only when
-+	 * dai = first_cpu_dai.
-+	 */
-+	if (first_cpu_dai == dai) {
-+		ret = sdw_deprepare_stream(dma->stream);
-+		if (ret) {
-+			dev_err(dai->dev, "sdw_deprepare_stream: failed %d", ret);
-+			return ret;
-+		}
+-		if (bus->multi_link) {
++		if (bus->multi_link && m_rt_count >= bus->hw_sync_min_links) {
+ 			multi_link = true;
+ 			mutex_lock(&bus->msg_lock);
+ 		}
+@@ -787,7 +790,7 @@ static int do_bank_switch(struct sdw_stream_runtime *stream)
+ 		 * synchronized across all Masters and happens later as a
+ 		 * part of post_bank_switch ops.
+ 		 */
+-		ret = sdw_bank_switch(bus, stream->m_rt_count);
++		ret = sdw_bank_switch(bus, m_rt_count);
+ 		if (ret < 0) {
+ 			dev_err(bus->dev, "Bank switch failed: %d\n", ret);
+ 			goto error;
+@@ -813,7 +816,7 @@ static int do_bank_switch(struct sdw_stream_runtime *stream)
+ 					ret);
+ 				goto error;
+ 			}
+-		} else if (bus->multi_link && stream->m_rt_count > 1) {
++		} else if (multi_link) {
+ 			dev_err(bus->dev,
+ 				"Post bank switch ops not implemented\n");
+ 			goto error;
+@@ -831,7 +834,7 @@ static int do_bank_switch(struct sdw_stream_runtime *stream)
+ 			goto error;
+ 		}
+ 
+-		if (bus->multi_link)
++		if (multi_link)
+ 			mutex_unlock(&bus->msg_lock);
  	}
  
-+	/*
-+	 * The sdw stream state will transition to RELEASED when stream->
-+	 * master_list is empty. So the stream state will transition to
-+	 * DEPREPARED for the first cpu-dai and to RELEASED for the last
-+	 * cpu-dai.
-+	 */
- 	ret = sdw_stream_remove_master(&cdns->bus, dma->stream);
- 	if (ret < 0) {
- 		dev_err(dai->dev, "remove master from stream %s failed: %d\n",
 -- 
 2.17.1
 
