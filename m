@@ -2,79 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6191F2481A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 11:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC252481AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 11:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726715AbgHRJPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 05:15:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726165AbgHRJPQ (ORCPT
+        id S1726519AbgHRJQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 05:16:33 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46190 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726203AbgHRJQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 05:15:16 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD81BC061389;
-        Tue, 18 Aug 2020 02:15:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UBwdQabxborBnUE/RMGD20d7Ru/Oheb0wmXWjUiC0/E=; b=YbqYH54dJpbZukfJbcHBX5gIe6
-        4fGR1JnoO2J5ou9rqay98pZf09b2sJvtXYzco+ShIGTbQCUJanYELbMUIKzdUJp8m6gqGDh2Vy5dz
-        Z85kRmbOcs2R9yO6b+qiXnRvxaiEOIVu1SfG+AZ1aEeGjWd8zXPOHQnLG0G/xaBKWZcnjPHK5THwY
-        NUFDfGvip/hUyZNwCTe8rH2KlZoyzIbkjSr4WisborRSryZSeC0mSG/mHjMtr6YgsnrQ7qlP834T9
-        2AXdgEs4etYbr2acZv2wBRyLfyez9vj90z97qq/VvNlLitUCukARb3errqkqzDH0jEAYtn4LMlLjg
-        uY4c2NiA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k7xhs-000568-8H; Tue, 18 Aug 2020 09:15:00 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7C4093060F2;
-        Tue, 18 Aug 2020 11:14:53 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 293DB2BDBFE38; Tue, 18 Aug 2020 11:14:53 +0200 (CEST)
-Date:   Tue, 18 Aug 2020 11:14:53 +0200
-From:   peterz@infradead.org
-To:     Waiman Long <longman@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [RFC PATCH 0/8] memcg: Enable fine-grained per process memory
- control
-Message-ID: <20200818091453.GL2674@hirez.programming.kicks-ass.net>
-References: <20200817140831.30260-1-longman@redhat.com>
+        Tue, 18 Aug 2020 05:16:32 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07I93MQb177743;
+        Tue, 18 Aug 2020 05:16:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=1eliUMZTEbkWBf+VQBrm/YQjJEBrlLW04a4iyHZxDds=;
+ b=Od+3yT40b9LWYR89wCo4gH7As4E9LvfaHi0ToROvnk3au7H4YJfIiugv44RiJLGBqWVr
+ Y5S4cW1FrlKapHMPe+pQ+Gm4SKuOroBZzGY7u4KyvwKRvgygz+LF4C3z2Trf9eadrjs3
+ Mf53sx5zWn8vt6RDpAuiJNxxQaIIi+lLSdrVmKIqMKdLrmAh292FPhDNVa8IJHAvSUdl
+ qGZSKSZR3ht7EAXFDnk7jE6a256W/qn1Tc3+z8Tr89ii1VGPgLmD+CPyCKCbMTqc7Qa1
+ Ii3Yw3w0hCwyzt4xD862F1qcNJ5gS9AI1kqR81o2uBzaCJuiasT77BQ6j81KyJDHGilC Ww== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3304t1b4kv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Aug 2020 05:16:22 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07I93OU0177841;
+        Tue, 18 Aug 2020 05:16:21 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3304t1b4kg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Aug 2020 05:16:21 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07I9FDPk032481;
+        Tue, 18 Aug 2020 09:16:20 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma04dal.us.ibm.com with ESMTP id 3304uqb88s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Aug 2020 09:16:20 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07I9GJCX63701320
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 Aug 2020 09:16:19 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1A02C6A047;
+        Tue, 18 Aug 2020 09:16:19 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5F1636A054;
+        Tue, 18 Aug 2020 09:16:12 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.37.32])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 18 Aug 2020 09:16:11 +0000 (GMT)
+Subject: Re: [PATCH v5 1/3] perf jevents: Add support for parsing
+ perchip/percore events
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     acme@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        pc@us.ibm.com, jolsa@redhat.com, namhyung@kernel.org,
+        yao.jin@linux.intel.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, irogers@google.com,
+        maddy@linux.ibm.com, ravi.bangoria@linux.ibm.com,
+        anju@linux.vnet.ibm.com, kan.liang@linux.intel.com,
+        nasastry@in.ibm.com
+References: <20200816090719.72018-1-kjain@linux.ibm.com>
+ <20200816090719.72018-2-kjain@linux.ibm.com>
+ <20200816163521.GF1486171@tassilo.jf.intel.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <1265e9f4-fcfd-bb21-bf27-4ce56a04bcb9@linux.ibm.com>
+Date:   Tue, 18 Aug 2020 14:46:10 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200817140831.30260-1-longman@redhat.com>
+In-Reply-To: <20200816163521.GF1486171@tassilo.jf.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-18_06:2020-08-18,2020-08-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
+ suspectscore=0 mlxscore=0 lowpriorityscore=0 mlxlogscore=999
+ malwarescore=0 phishscore=0 priorityscore=1501 bulkscore=0 clxscore=1015
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008180060
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 10:08:23AM -0400, Waiman Long wrote:
-> Memory controller can be used to control and limit the amount of
-> physical memory used by a task. When a limit is set in "memory.high" in
-> a v2 non-root memory cgroup, the memory controller will try to reclaim
-> memory if the limit has been exceeded. Normally, that will be enough
-> to keep the physical memory consumption of tasks in the memory cgroup
-> to be around or below the "memory.high" limit.
+
+
+On 8/16/20 10:05 PM, Andi Kleen wrote:
+>> @@ -321,7 +331,7 @@ static void print_events_table_prefix(FILE *fp, const char *tblname)
+>>  static int print_events_table_entry(void *data, char *name, char *event,
+>>  				    char *desc, char *long_desc,
+>>  				    char *pmu, char *unit, char *perpkg,
+>> -				    char *metric_expr,
+>> +				    char *metric_expr, char *aggr_mode,
+>>  				    char *metric_name, char *metric_group,
+>>  				    char *deprecated, char *metric_constraint)
 > 
-> Sometimes, memory reclaim may not be able to recover memory in a rate
-> that can catch up to the physical memory allocation rate. In this case,
-> the physical memory consumption will keep on increasing. 
+> We should really define a struct now to pass the parameters,
+> the callback prototype is getting ridiculous.
+> 
+> I know it's my fault originally, but sorry you probably have to do it
+> because you are touching it last.
 
-Then slow down the allocator? That's what we do for dirty pages too, we
-slow down the dirtier when we run against the limits.
+Hi Andi,
+   I will look into it.
 
+Thanks,
+Kajol Jain
+> 
+> -Andi
+> 
