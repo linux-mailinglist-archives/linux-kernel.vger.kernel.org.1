@@ -2,118 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10DE9248418
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 13:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E9024841B
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 13:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726699AbgHRLp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 07:45:28 -0400
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:58567 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726273AbgHRLpZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 07:45:25 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 152A0B70;
-        Tue, 18 Aug 2020 07:45:23 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 18 Aug 2020 07:45:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=u0/uCy
-        /0jYOzVUR6bLEIJYYHx2p0pFbcL5YM13UhPbw=; b=kMS/bm7h9E8v793HxF5HlS
-        reFVSpsTJ9LRnb5in6cSE7CDNZCPkmoI5Gb+8ZAKAfCy4/Wrhlcc7S4gE842yc6t
-        37rYkXMerl4JbdInFdjeG0fM+9PYC4FgJViUnPTegInWSAdYPSqkjIZ6qmLv8264
-        RkT9CwBFBRlZFoprfE1155gOkgB8k3cifqfH3BwIB9A0lfIbsRZ/DrzzLrTbh429
-        hcoGlvsn/uP3JPxU/45N6XtsT6gREbGruWLEhuP1Z6WMQkCXzIpUp5xhUDHP/eSz
-        +MAU7UqNPVXDDWS9thoX7oe+dlq0ZwZeSZ8aqfXxAdwGQecyh5KnQx1rBfz+tNeg
-        ==
-X-ME-Sender: <xms:Ur87X731USiQLlJTdDBntxwlig2jdEDb0bLCC_JJVQjyZwY68_3igA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedruddtiedggeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforghrvghk
-    ucforghrtgiihihkohifshhkihdqifpkrhgvtghkihcuoehmrghrmhgrrhgvkhesihhnvh
-    hishhisghlvghthhhinhhgshhlrggsrdgtohhmqeenucggtffrrghtthgvrhhnpeetveff
-    iefghfekhffggeeffffhgeevieektedthfehveeiheeiiedtudegfeetffenucfkpheple
-    durdeigedrudejtddrkeelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
-    rghilhhfrhhomhepmhgrrhhmrghrvghksehinhhvihhsihgslhgvthhhihhnghhslhgrsg
-    drtghomh
-X-ME-Proxy: <xmx:Ur87X6GL34WQFUkFrb3xFf0fmNskIBHixMCifeOxvg7hF5YV-2l9EA>
-    <xmx:Ur87X75xbSUfYvUNU4Oyy8SAR2hmpqxqrcaqp2FH26vi_tUclutW0A>
-    <xmx:Ur87Xw2O1Schc_99pT6-FWa2nL-Lvf4X8PNMQmvxrIoYOwVlQryyMg>
-    <xmx:Ur87X5PIg2eleK1py02bENxJhXX4zDg0jcnduRdkQeC5FucSGTq2_w>
-Received: from mail-itl (ip5b40aa59.dynamic.kabel-deutschland.de [91.64.170.89])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 512F23280065;
-        Tue, 18 Aug 2020 07:45:21 -0400 (EDT)
-Date:   Tue, 18 Aug 2020 13:45:18 +0200
-From:   Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= 
-        <marmarek@invisiblethingslab.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-efi <linux-efi@vger.kernel.org>, norbert.kaminski@3mdeb.com,
-        xen-devel@lists.xenproject.org,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] efi: discover ESRT table on Xen PV too
-Message-ID: <20200818114518.GA226001@mail-itl>
-References: <20200816001949.595424-1-marmarek@invisiblethingslab.com>
- <CAMj1kXEQ2mpmcNke0K2MZPAAo9wGZ4h3pCmMg9Hm7CPXOCV7fQ@mail.gmail.com>
+        id S1726483AbgHRLq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 07:46:29 -0400
+Received: from mga02.intel.com ([134.134.136.20]:58488 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726422AbgHRLq2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 07:46:28 -0400
+IronPort-SDR: aMCHrtT7mIGUSXnqPHP7oXl9uWwXPKBkUx0aVH2MJjz7m6ow2wbY7EwZQC4BavZaE9Ft60pdnl
+ 8QeSJSwjMMcQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="142711297"
+X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
+   d="scan'208";a="142711297"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 04:46:27 -0700
+IronPort-SDR: j87VtALN7VSQc97EPgjRULRXw0y2yHJyT8gk7363BfV7YVOW5Fq/nlRvuUBILX0Rcgi5NKLmi0
+ 7Hd9QSeTXagA==
+X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
+   d="scan'208";a="471777754"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 04:46:25 -0700
+Date:   Tue, 18 Aug 2020 14:45:22 +0300 (EEST)
+From:   Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To:     Brent Lu <brent.lu@intel.com>
+cc:     alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        =?ISO-8859-2?Q?Amadeusz_S=B3awi=F1ski?= 
+        <amadeuszx.slawinski@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ASoC: hdac_hdmi: support 'ELD' mixer
+In-Reply-To: <20200818004413.12852-1-brent.lu@intel.com>
+Message-ID: <alpine.DEB.2.22.394.2008181311430.3186@eliteleevi.tm.intel.com>
+References: <20200814083436.19845-1-brent.lu@intel.com> <20200818004413.12852-1-brent.lu@intel.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="cWoXeonUoKmBZSoM"
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXEQ2mpmcNke0K2MZPAAo9wGZ4h3pCmMg9Hm7CPXOCV7fQ@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hey,
 
---cWoXeonUoKmBZSoM
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] efi: discover ESRT table on Xen PV too
+a general comment first. We are trying to move development to patch_hdmi, 
+but given we still have platforms using hdac_hdmi, this patch seems like a 
+useful addition.
 
-On Mon, Aug 17, 2020 at 10:16:07AM +0200, Ard Biesheuvel wrote:
-> > @@ -331,7 +333,8 @@ void __init efi_esrt_init(void)
-> >
-> >         end =3D esrt_data + size;
-> >         pr_info("Reserving ESRT space from %pa to %pa.\n", &esrt_data, =
-&end);
-> > -       if (md.type =3D=3D EFI_BOOT_SERVICES_DATA)
-> > +
-> > +       if (efi_enabled(EFI_MEMMAP) && md.type =3D=3D EFI_BOOT_SERVICES=
-_DATA)
-> >                 efi_mem_reserve(esrt_data, esrt_data_size);
-> >
->=20
-> This does not look correct to me. Why doesn't the region need to be
-> reserved on a Xen boot? The OS may overwrite it otherwise.
+On Tue, 18 Aug 2020, Brent Lu wrote:
 
-In case of Xen, it is Xen responsibility to do that. Otherwise even if dom0
-would not use it, Xen could allocate that physical memory to another
-guest.
+> Add an binary mixer 'ELD' to each HDMI PCM device so user space
+> could read the ELD data of external HDMI display.
 
---=20
-Best Regards,
-Marek Marczykowski-G=C3=B3recki
-Invisible Things Lab
-A: Because it messes up the order in which people normally read text.
-Q: Why is top-posting such a bad thing?
+Minor spelling fixes:
+"Add a binary mixer"
+"so user space can read"
 
---cWoXeonUoKmBZSoM
-Content-Type: application/pgp-signature; name="signature.asc"
+> +static int hdac_hdmi_eld_ctl_get(struct snd_kcontrol *kcontrol,
+> +			    struct snd_ctl_elem_value *ucontrol)
+> +{
+[...]
+> +	list_for_each_entry(port, &pcm->port_list, head) {
+> +		eld = &port->eld;
+> +
+[...]
+> +		memcpy(ucontrol->value.bytes.data, eld->eld_buffer,
+> +		       eld->eld_size);
+> +		break;
+> +	}
 
------BEGIN PGP SIGNATURE-----
+This is a bit iffy part. If same PCM is connected to multiple receivers, 
+you return ELD data for the first one and ignore the rest. OTOH, this is 
+inline with comment in hdac_hdmi_get_port_from_cvt() in that this 
+pcm-to-many routing is not really supported by the driver now. But
+jack status reporting is done a port basis, not per PCM/CVTs, so this is 
+not fully aligned.
 
-iQEzBAEBCAAdFiEEhrpukzGPukRmQqkK24/THMrX1ywFAl87v04ACgkQ24/THMrX
-1ywRDAgAgL6lTfIrcAbuddaDfuNoozejb/lFN0VlxjT6NKiJX9lpQRA/YRCe1TaL
-xq6ELDuC0y9T7tn8smiyhnZ4t1oXKvk85uQBGfozl2vW2Zb6EEsNQOwa7HQF2Eh0
-xvhMtxHrFWtWQk+KT0cVHnQHQ5lkNh0V4ARPUjN8Cbb4g285XMMo0DHzUYYUJOxj
-55eRZbrVZhCiQHgAXDcdjJVrhCoCEfXWhS9L++HWcCnR42elRBuaX5Mrzx6PrYIT
-xnWW37aUUO42wIeRiMw9unqAbyB6V34ApjF1zGGgvCKQDRES2I2mg7EidBkmMZaO
-fzRSp3FZxlTusI1ZV8EFQ+uAEAdEdg==
-=wVff
------END PGP SIGNATURE-----
+Hmm. Given the proposed patch is aligned with the user-space interface 
+exposed by patch_hdmi.c, I'm ok to go with this. Can you add an explicit 
+comment to explain what is happening above?
 
---cWoXeonUoKmBZSoM--
+Br, Kai
