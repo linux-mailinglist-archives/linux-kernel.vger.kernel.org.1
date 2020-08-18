@@ -2,110 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4565E247E03
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 07:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07177247E0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 07:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726772AbgHRFpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 01:45:42 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:59763 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726593AbgHRFpm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 01:45:42 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R721e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U66qVV-_1597729539;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0U66qVV-_1597729539)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 18 Aug 2020 13:45:39 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     axboe@kernel.dk
-Cc:     ming.lei@redhat.com, hch@lst.de, baolin.wang@linux.alibaba.com,
-        baolin.wang7@gmail.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] block: Remove blk_mq_attempt_merge() function
-Date:   Tue, 18 Aug 2020 13:45:30 +0800
-Message-Id: <5fa8de665d398cf49fd7c70fb427bb066556c764.1597727255.git.baolin.wang@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <cover.1597727255.git.baolin.wang@linux.alibaba.com>
-References: <cover.1597727255.git.baolin.wang@linux.alibaba.com>
-In-Reply-To: <cover.1597727255.git.baolin.wang@linux.alibaba.com>
-References: <cover.1597727255.git.baolin.wang@linux.alibaba.com>
+        id S1726587AbgHRFtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 01:49:15 -0400
+Received: from mga18.intel.com ([134.134.136.126]:48150 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726343AbgHRFtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 01:49:14 -0400
+IronPort-SDR: FxB8RwrW19hl0WaOyfQm+iLHWe386o/1tHoEtsUtfn3wNztn2B1cMcZ+8pV7DrjJ3jqn+Wcc7w
+ e6c00cYrN/Wg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="142474100"
+X-IronPort-AV: E=Sophos;i="5.76,326,1592895600"; 
+   d="scan'208";a="142474100"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 22:49:13 -0700
+IronPort-SDR: 7LFrpTXIbE7VBQNOg+PkBf4RrKVUPE5ldPSHtmlkHidlSm04A9JSkcjDnmZwMaF6qEolZ/c9AF
+ coAs1ei7IuLw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,326,1592895600"; 
+   d="scan'208";a="319972150"
+Received: from sgsxdev001.isng.intel.com (HELO localhost) ([10.226.88.11])
+  by fmsmga004.fm.intel.com with ESMTP; 17 Aug 2020 22:49:10 -0700
+From:   Rahul Tanwar <rahul.tanwar@linux.intel.com>
+To:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
+        lee.jones@linaro.org
+Cc:     thierry.reding@gmail.com, p.zabel@pengutronix.de,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, andriy.shevchenko@intel.com,
+        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, rahul.tanwar.linux@gmail.com,
+        rtanwar@maxlinear.com, Rahul Tanwar <rahul.tanwar@linux.intel.com>
+Subject: [PATCH v7 0/2] pwm: intel: Add PWM driver for a new SoC
+Date:   Tue, 18 Aug 2020 13:48:59 +0800
+Message-Id: <cover.1597729246.git.rahul.tanwar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The small blk_mq_attempt_merge() function is only called by
-__blk_mq_sched_bio_merge(), just open code it.
+Patch 1 adds dt binding document in YAML format.
+Patch 2 add PWM fan controller driver for LGM SoC.
 
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
----
- block/blk-mq-sched.c | 44 ++++++++++++++++----------------------------
- 1 file changed, 16 insertions(+), 28 deletions(-)
+v7:
+- Address code quality related review concerns.
+- Rename fan related property to pwm-*.
+- Fix one make dt_binding_check reported error.
 
-diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
-index 5e63ede..397029d 100644
---- a/block/blk-mq-sched.c
-+++ b/block/blk-mq-sched.c
-@@ -382,28 +382,6 @@ bool blk_mq_sched_try_merge(struct request_queue *q, struct bio *bio,
- }
- EXPORT_SYMBOL_GPL(blk_mq_sched_try_merge);
- 
--/*
-- * Reverse check our software queue for entries that we could potentially
-- * merge with. Currently includes a hand-wavy stop count of 8, to not spend
-- * too much time checking for merges.
-- */
--static bool blk_mq_attempt_merge(struct request_queue *q,
--				 struct blk_mq_hw_ctx *hctx,
--				 struct blk_mq_ctx *ctx, struct bio *bio,
--				 unsigned int nr_segs)
--{
--	enum hctx_type type = hctx->type;
--
--	lockdep_assert_held(&ctx->lock);
--
--	if (blk_bio_list_merge(q, &ctx->rq_lists[type], bio, nr_segs)) {
--		ctx->rq_merged++;
--		return true;
--	}
--
--	return false;
--}
--
- bool __blk_mq_sched_bio_merge(struct request_queue *q, struct bio *bio,
- 		unsigned int nr_segs)
- {
-@@ -417,14 +395,24 @@ bool __blk_mq_sched_bio_merge(struct request_queue *q, struct bio *bio,
- 		return e->type->ops.bio_merge(hctx, bio, nr_segs);
- 
- 	type = hctx->type;
--	if ((hctx->flags & BLK_MQ_F_SHOULD_MERGE) &&
--			!list_empty_careful(&ctx->rq_lists[type])) {
--		/* default per sw-queue merge */
--		spin_lock(&ctx->lock);
--		ret = blk_mq_attempt_merge(q, hctx, ctx, bio, nr_segs);
--		spin_unlock(&ctx->lock);
-+	if (!(hctx->flags & BLK_MQ_F_SHOULD_MERGE) ||
-+	    list_empty_careful(&ctx->rq_lists[type]))
-+		return false;
-+
-+	/* default per sw-queue merge */
-+	spin_lock(&ctx->lock);
-+	/*
-+	 * Reverse check our software queue for entries that we could
-+	 * potentially merge with. Currently includes a hand-wavy stop
-+	 * count of 8, to not spend too much time checking for merges.
-+	 */
-+	if (blk_bio_list_merge(q, &ctx->rq_lists[type], bio, nr_segs)) {
-+		ctx->rq_merged++;
-+		ret = true;
- 	}
- 
-+	spin_unlock(&ctx->lock);
-+
- 	return ret;
- }
- 
+v6:
+- Readjust .apply op as per review feedback.
+- Add back pwm-cells property to resolve make dt_binding_check error.
+  pwm-cells is a required property for PWM driver.
+- Add back fan related optional properties.
+
+v5:
+- Address below review concerns from Uwe Kleine-König.
+  * Improve comments about Limitations.
+  * Use return value of regmap_update_bits if container function returns
+    error code.
+  * Modify .apply op to have strict checking for fixed period supported
+    by PWM HW.
+  * Use u64 as type when use min_t for duty_cycle.
+  * Add reset_control_assert() in failure case in probe where it was missing
+    earlier.
+- Remove fan specific optional properties from pwm dt binding document (Rob Herring)
+
+v4:
+- Address below review concerns from Uwe Kleine-König.
+  * Improve notes and limitations comments.
+  * Add common prefixes for all #defines.
+  * Modify/Improve logic in .apply & .get_state ops as advised.
+  * Skip error messages in probe when error is -EPROBE_DEFER.
+  * Add dependencies in Kconfig (OF & HAS_IOMEM) and add select REGMAP_MMIO.
+  * Address other code quality related review concerns.
+- Fix make dt_binding_check reported error in YAML file.
+
+v3:
+- Address below review concerns from Uwe Kleine-König.
+  * Remove fan rpm calibration task from the driver.
+  * Modify apply op as per the review feedback.
+  * Add roundup & round down where necessary.
+  * Address other misc code quality related review concerns.
+  * Use devm_reset_control_get_exclusive(). (Philipp Zabel)
+  * Improve dt binding document.
+
+v2:
+- Address below review concerns from Uwe Kleine-König.
+  * Add notes and limitations about PWM HW.
+  * Rename all functions and structure to lgm_pwm_* 
+  * Readjust space aligninment in structure fields to single space.
+  * Switch to using apply instead of config/enable/disable.
+  * Address other code quality related concerns.
+  * Rebase to 5.8-rc1.
+- Address review concerns in dt binding YAML from Rob Herring.
+
+v1:
+- Initial version.
+
+
+Rahul Tanwar (2):
+  Add DT bindings YAML schema for PWM fan controller of LGM SoC
+  Add PWM fan controller driver for LGM SoC
+
+ .../devicetree/bindings/pwm/intel,lgm-pwm.yaml     |  54 +++++
+ drivers/pwm/Kconfig                                |  11 +
+ drivers/pwm/Makefile                               |   1 +
+ drivers/pwm/pwm-intel-lgm.c                        | 267 +++++++++++++++++++++
+ 4 files changed, 333 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
+ create mode 100644 drivers/pwm/pwm-intel-lgm.c
+
 -- 
-1.8.3.1
+2.11.0
 
