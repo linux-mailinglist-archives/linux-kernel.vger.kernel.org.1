@@ -2,71 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6297F247E96
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 08:43:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8AA247E83
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 08:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgHRGnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 02:43:40 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:40264 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726365AbgHRGnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 02:43:39 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id DFCE61A00E8;
-        Tue, 18 Aug 2020 08:43:37 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 363781A1047;
-        Tue, 18 Aug 2020 08:43:35 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 7AC41402AD;
-        Tue, 18 Aug 2020 08:43:31 +0200 (CEST)
-From:   Ran Wang <ran.wang_1@nxp.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peng Ma <peng.ma@nxp.com>, Ran Wang <ran.wang_1@nxp.com>
-Subject: [PATCH] rtc: fsl-ftm-alarm: update acpi device id
-Date:   Tue, 18 Aug 2020 14:36:09 +0800
-Message-Id: <20200818063609.39859-1-ran.wang_1@nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726628AbgHRGgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 02:36:51 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:35316 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726519AbgHRGgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 02:36:46 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id AB9B1CB4D72242937965;
+        Tue, 18 Aug 2020 14:36:43 +0800 (CST)
+Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.226) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 18 Aug 2020 14:36:34 +0800
+From:   Zenghui Yu <yuzenghui@huawei.com>
+To:     <lorenzo.pieralisi@arm.com>, <guohanjun@huawei.com>,
+        <sudeep.holla@arm.com>
+CC:     <linux-acpi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <wanghaibin.wang@huawei.com>,
+        Zenghui Yu <yuzenghui@huawei.com>
+Subject: [PATCH v2 0/2] ACPI/IORT: Code cleanups
+Date:   Tue, 18 Aug 2020 14:36:23 +0800
+Message-ID: <20200818063625.980-1-yuzenghui@huawei.com>
+X-Mailer: git-send-email 2.23.0.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.185.226]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Ma <peng.ma@nxp.com>
+* From v1 [1]:
+  - As pointed out by Hanjun, remove two now unused inline functions.
+    Compile tested with CONFIG_IOMMU_API is not selected.
 
-Original device id would conflict with crypto driver, change it.
+[1] https://lore.kernel.org/r/20200817105946.1511-1-yuzenghui@huawei.com
 
-Signed-off-by: Peng Ma <peng.ma@nxp.com>
-Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
----
- drivers/rtc/rtc-fsl-ftm-alarm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Zenghui Yu (2):
+  ACPI/IORT: Drop the unused @ops of iort_add_device_replay()
+  ACPI/IORT: Remove the unused inline functions
 
-diff --git a/drivers/rtc/rtc-fsl-ftm-alarm.c b/drivers/rtc/rtc-fsl-ftm-alarm.c
-index 68f0a18..48d3b38 100644
---- a/drivers/rtc/rtc-fsl-ftm-alarm.c
-+++ b/drivers/rtc/rtc-fsl-ftm-alarm.c
-@@ -3,7 +3,7 @@
-  * Freescale FlexTimer Module (FTM) alarm device driver.
-  *
-  * Copyright 2014 Freescale Semiconductor, Inc.
-- * Copyright 2019 NXP
-+ * Copyright 2019-2020 NXP
-  *
-  */
- 
-@@ -312,7 +312,7 @@ static const struct of_device_id ftm_rtc_match[] = {
- };
- 
- static const struct acpi_device_id ftm_imx_acpi_ids[] = {
--	{"NXP0011",},
-+	{"NXP0014",},
- 	{ }
- };
- MODULE_DEVICE_TABLE(acpi, ftm_imx_acpi_ids);
+ drivers/acpi/arm64/iort.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
+
 -- 
-2.7.4
+2.19.1
 
