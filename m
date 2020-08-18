@@ -2,43 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2072F248F3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 22:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E08248F80
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 22:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726751AbgHRUAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 16:00:22 -0400
-Received: from verein.lst.de ([213.95.11.211]:34952 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726739AbgHRUAU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 16:00:20 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 321F368AFE; Tue, 18 Aug 2020 22:00:17 +0200 (CEST)
-Date:   Tue, 18 Aug 2020 22:00:16 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 08/11] x86: make TASK_SIZE_MAX usable from assembly code
-Message-ID: <20200818200016.GA681@lst.de>
-References: <20200817073212.830069-1-hch@lst.de> <20200817073212.830069-9-hch@lst.de> <202008181244.BBDA7DAB@keescook> <20200818195539.GB32691@lst.de> <202008181258.CEC4B8B3@keescook>
+        id S1726796AbgHRUN2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 18 Aug 2020 16:13:28 -0400
+Received: from 203.196.19.25.static.zoot.jp ([203.196.19.25]:54365 "EHLO
+        h21.daiwa-hotcom.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726612AbgHRUN0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 16:13:26 -0400
+Received: from [192.34.109.177] (unknown [199.119.151.117])
+        by h21.daiwa-hotcom.com (Postfix) with ESMTP id DCF9C17E6375;
+        Wed, 19 Aug 2020 01:47:48 +0900 (JST)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202008181258.CEC4B8B3@keescook>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Covid 19 Recovery contract
+To:     Recipients <viola@h21.daiwa-hotcom.com>
+From:   "Mark Paulson" <viola@h21.daiwa-hotcom.com>
+Date:   Tue, 18 Aug 2020 09:52:59 -0700
+Reply-To: Frankkean123@protonmail.com
+Message-Id: <20200818164748.DCF9C17E6375@h21.daiwa-hotcom.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 12:59:05PM -0700, Kees Cook wrote:
-> > I didn't see a problem bisecting, do you have something particular in
-> > mind?
-> 
-> Oh, I misunderstood this patch to be a fix for compilation. Is this just
-> a correctness fix?
+Attention.
 
-It prepares for using the definition from assembly, which is done in
-the next patch.
+I work in a pharmaceutical company.
+
+I have a contract supply opportunity to be a contractor/Supplier to the pharmaceutical company.
+
+The company always pays in advance for contractors to supply raw materials to the company.
+
+These contract opportunities will help us to gain financial recovery from the negative effects of covid-19.
+
+I will send you comprehensive details as soon as I get a response from You.
+ 
+Thanks,
+Mark Paulson
