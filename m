@@ -2,215 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB23A248D0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57EB248CFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728758AbgHRRe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 13:34:59 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:20695 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728494AbgHRRe3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 13:34:29 -0400
-Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 07IHYF4N027894
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 02:34:15 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 07IHYF4N027894
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1597772056;
-        bh=ibuX60bW1flfxvenHkO0aZoK/IkeXv+RuWSadAaZDEs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Gwb6TKi1iKgTRQsLhwBd7S5KRqAEc4P3O1bXC+0BbEqUEzUbYffTqJoKuMzQfCanu
-         saq2Ea7LX455pD0nHeFrePP4sEWVRhfGtLg7h0sEQmdKRwZFcf7sqTT/JfUdvBM4jc
-         fr1dopLalIglyFxSlEpJmePO013+/EQdeg0sUmjf9aWVbZKvLhtTSyebopUZfBN3Hq
-         h/fH+ozIw3lUu+t1xovk8bnjqBbtvYAyWjHPDC6E48AIvCekdkq0yAR632xJacOArM
-         zSMPCXkpSrCP57WOSZ0NibsO5eCAKbg1bpcNrafUZPLYRYHpZnPKXP51RXiUynwmHs
-         bFGx4B6VJCpuA==
-X-Nifty-SrcIP: [209.85.221.173]
-Received: by mail-vk1-f173.google.com with SMTP id n12so273851vkk.11
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 10:34:15 -0700 (PDT)
-X-Gm-Message-State: AOAM532GWDd5heJEVoFbaq+up6S/sZNVFB31iNKii/md+f3bxgQOB4XR
-        X/MntO3lpuFVobhfbLpQTgAOR0YMnRk4SPfpAi4=
-X-Google-Smtp-Source: ABdhPJxPfLdpSx4d2/EJeZYS59VftNEmMih8yrwIf7lXzQbK53lpjtz3LU4gFPoinnGDUFSUn+NAxvNPm7rzSYodeOc=
-X-Received: by 2002:a1f:2b14:: with SMTP id r20mr7802154vkr.73.1597772054350;
- Tue, 18 Aug 2020 10:34:14 -0700 (PDT)
+        id S1728595AbgHRRdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 13:33:51 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:43470 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727773AbgHRRdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 13:33:50 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id F0524FB03;
+        Tue, 18 Aug 2020 19:33:46 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id SV7xgiVLbSXw; Tue, 18 Aug 2020 19:33:45 +0200 (CEST)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id 08CA94576F; Tue, 18 Aug 2020 19:33:44 +0200 (CEST)
+Date:   Tue, 18 Aug 2020 19:33:44 +0200
+From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] drm/panel: Add panel driver for the Mantix
+ MLAF057WE51-X DSI panel
+Message-ID: <20200818173344.GA382297@bogon.m.sigxcpu.org>
+References: <cover.1597652012.git.agx@sigxcpu.org>
+ <20200818170556.GA2291850@ravnborg.org>
 MIME-Version: 1.0
-References: <1c4d1da4-36a9-c83b-1a8a-95334aa62ce3@meinberg.de>
-In-Reply-To: <1c4d1da4-36a9-c83b-1a8a-95334aa62ce3@meinberg.de>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 19 Aug 2020 02:33:37 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARpC4GHnXoWM=JU=cYxMdamg5iUWGoXt5o6mhf81QkjLw@mail.gmail.com>
-Message-ID: <CAK7LNARpC4GHnXoWM=JU=cYxMdamg5iUWGoXt5o6mhf81QkjLw@mail.gmail.com>
-Subject: Re: Kernel build system broken in 5.8?
-To:     Martin Burnicki <martin.burnicki@meinberg.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200818170556.GA2291850@ravnborg.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 1:14 AM Martin Burnicki
-<martin.burnicki@meinberg.de> wrote:
->
-> Hi,
->
-> I'm the maintainer of a driver package for some PCI cards (GPS receiver
-> cards, etc.). A read-only git repo of the driver package can be found her=
-e:
-> https://git.meinbergglobal.com/mbgtools-lx.git
->
-> The kernel driver from that package is compiled as out-of-tree module,
-> and runs fine on kernels 2.6, 3.x, 4.x, and 5.x up to 5.7, actually
-> 5.7.15 on Ubuntu.
->
-> However, if I try this on kernel 5.8.1, I get strange errors related to
-> autoconf.h, which make it impossible to compile or install the kernel
-> module.
->
-> I usually build the kernel module as standard user, and only install the
-> new module as root, e.g.:
->
->   git checkout devel   # The 'devel' branch is appropriate for testing
->   cd mbgclock          # the subdirectory of the kernel module
->   git clean -fd; make  # or make V=3D1 for verbose output
->   sudo make install
+Hi Sam,
+On Tue, Aug 18, 2020 at 07:05:56PM +0200, Sam Ravnborg wrote:
+> Hi Guido.
+> 
+> On Mon, Aug 17, 2020 at 10:14:33AM +0200, Guido Günther wrote:
+> > 
+> > The panel uses a Focaltech FT8006p, the touch part is handled by the already
+> > existing edt-ft5x06. It can be found in e.g. the Librem 5.
+> > 
+> > Changes from v2:
+> > - Due to review comments by Sam Ravnborg, thanks!
+> >   https://lore.kernel.org/lkml/20200815212727.GA1244923@ravnborg.org/
+> >   - Drop unused header
+> >   - Use newline before comment
+> > - Add Reviewed/Acked-by by Sam Ravnborg, thanks!
+> >   https://lore.kernel.org/lkml/20200815212727.GA1244923@ravnborg.org/
+> >   https://lore.kernel.org/lkml/20200815212750.GB1244923@ravnborg.org/
+> >   https://lore.kernel.org/lkml/20200815212840.GC1244923@ravnborg.org/
+> > 
+> > Changes from v1:
+> > - Due to review comments by Sam Ravnborg, thanks!
+> >   https://lore.kernel.org/dri-devel/20200815083917.GA993113@ravnborg.org/
+> >   - Don't preserve newlines with '|' in description
+> >   - Use reset-gpios and backlight from panel-common.yaml
+> >   - Reindent example
+> >   https://lore.kernel.org/dri-devel/20200815093226.GB993113@ravnborg.org/
+> >   - Drop unused includes
+> >   - Use dev_* instead of DRM_* for printing
+> >   - Turn off regulators in reverse order from enable
+> >   - Silence errors in mantix_{shutdown,remove}
+> >   - Drop duplicate mipi_dsi_dcs_enter_sleep_mode()
+> >   https://lore.kernel.org/dri-devel/20200815100230.GA1002374@ravnborg.org/
+> >   - Use dev_err_probe()
+> > - Add delays when turning off panel as suggested by the data sheet
+> > 
+> > This series is against next-20200814.
+> > 
+> > Guido Günther (3):
+> >   dt-bindings: vendor-prefixes: Add mantix vendor prefix
+> >   dt-bindings: Add Mantix MLAF057WE51-X panel bindings
+> >   drm/panel: Add panel driver for the Mantix MLAF057WE51-X DSI panel
+> 
+> Maxime Ripard backmerged -rc1 to drm-misc-next so I went ahead and applied
+> this series to drm-misc-next, forgetting you got commit rights. As they are
+> already pushed out too late for you to do push them - sorry!
 
-
-This is a bad way for reporting a bug
-because your project is too big.
-
-mbgclock/Makefile include the top Makefile,
-which is more than 1000 lines.
-
-
-Please provide steps to reproduce it
-with a tiny test module.
-
-You state 5.7.15 was fine.
-So, could you also run git-bisect, please?
-
-
-> Also, I was under the impression that the kernel source tree should be
-> read-only, and kept clean, but this doesn't seem to be the case anymore.
->
->
-> For example:
->
-> On Ubuntu 19.10 with kernel 5.8.1-050801-generic from
-> https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.1/
-
-
-I cannot try it since that is not what
-I install on my machine, sorry.
-
-
-Please provide steps to reproduce it
-for a person using a different environment.
-
-
-
-
-> 'make' completes without error, even if run as normal user without write
-> permissions in the kernel source tree.
->
-> 'sudo insmod ./mbgclock.ko' loads the module successfully, and the PCI
-> card can be accessed as usually, e.g. using the 'mbgstatus' program, so
-> the compiled kernel module  is OK.
->
-> BUT: Once I run 'sudo make install', which calls the kernel build system
-> to make 'modules_install', I immediately get an error:
->
-> -------------------------------------------------------------------------
-> Calling kernel build system to make "modules_install"
-> make[1]: Entering directory '/usr/src/linux-headers-5.8.1-050801-generic'
->
->   ERROR: Kernel configuration is invalid.
->          include/generated/autoconf.h or include/config/auto.conf are
-> missing.
->          Run 'make oldconfig && make prepare' on kernel src to fix it.
->
-> make[1]: *** [Makefile:719: include/config/auto.conf] Error 1
-> make[1]: Leaving directory '/usr/src/linux-headers-5.8.1-050801-generic'
-> make: *** [/home/martin/projects/mbgtools-lx/mbgclock/../Makefile:834:
-> install_module] Error 2
-> -------------------------------------------------------------------------
->
-> And once this has happened, this problem persists, i.e., if I run the
-> same commands
->
->   git clean -fd; make
->
-> once more, as normal user as mentioned above, I get the error above
-> every time.
->
-> Also, If I initially try to build the kernel kernel module as root, with
-> 'sudo':
->
->   git clean -fd; sudo make
->
-> I immediately get this error, and the module is not built. Only after I
-> have re-installed the kernel headers package, I can compile the module
-> again.
->
->
-> A diff between the kernel header files before and after the kernel build
-> system has been messed up shows that the following files have changed:
->
-> include/generated/autoconf.h
-> scripts/basic/.fixdep.cmd
-> scripts/basic/fixdep
-> scripts/kconfig/.conf.o.cmd
-> scripts/kconfig/.confdata.o.cmd
-> scripts/kconfig/.expr.o.cmd
-> scripts/kconfig/.lexer.lex.c.cmd
-> scripts/kconfig/conf.o
-> scripts/kconfig/confdata.o
-> scripts/kconfig/expr.o
-> scripts/kconfig/lexer.lex.c
-> scripts/kconfig/parser.tab.c
->
-> Specifically, autoconf.h has been deleted even though some script
-> obviously still requires that the file is available.
->
->
-> With openSUSE Leap 15.2 and kernel 5.8.1 from
-> https://download.opensuse.org/repositories/Kernel:/stable/standard/
->
-> I've encountered similar problems because include/generated/autoconf.h
-> is not even available after installation of the kernel headers package.
->
-> Only on Arch Linux with kernel 5.8.1-arch1-1 I can build and install the
-> module as root or standard user, as it was possible with earlier kernel
-> versions.
->
-> Can someone please shed some light on what's going on here?
->
->
-> Thanks,
->
-> Martin
-> --
-> Martin Burnicki
->
-> Senior Software Engineer
->
-> MEINBERG Funkuhren GmbH & Co. KG
-> Email: martin.burnicki@meinberg.de
-> Phone: +49 5281 9309-414
-> Linkedin: https://www.linkedin.com/in/martinburnicki/
->
-> Lange Wand 9, 31812 Bad Pyrmont, Germany
-> Amtsgericht Hannover 17HRA 100322
-> Gesch=C3=A4ftsf=C3=BChrer/Managing Directors: G=C3=BCnter Meinberg, Werne=
-r Meinberg,
-> Andre Hartmann, Heiko Gerstung
-> Websites: https://www.meinberg.de  https://www.meinbergglobal.com
-> Training: https://www.meinberg.academy
->
-
-
---=20
-Best Regards
-Masahiro Yamada
+On the contrary: Thanks a lot for handling this so promptly!
+ -- Guido
