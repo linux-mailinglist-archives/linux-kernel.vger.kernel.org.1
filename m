@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF41248133
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37AFF24812D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726911AbgHRI62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 04:58:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37750 "EHLO mx2.suse.de"
+        id S1726888AbgHRI6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 04:58:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37982 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726620AbgHRI5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 04:57:00 -0400
+        id S1726701AbgHRI5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 04:57:11 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 27C55B036;
-        Tue, 18 Aug 2020 08:57:23 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 5B9B0B032;
+        Tue, 18 Aug 2020 08:57:33 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 8/8] tty: serial, fix kernel-doc
-Date:   Tue, 18 Aug 2020 10:56:55 +0200
-Message-Id: <20200818085655.12071-8-jslaby@suse.cz>
+Subject: [PATCH 06/16] vc_screen: sanitize types in vcs_write
+Date:   Tue, 18 Aug 2020 10:56:56 +0200
+Message-Id: <20200818085706.12163-6-jslaby@suse.cz>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200818085655.12071-1-jslaby@suse.cz>
-References: <20200818085655.12071-1-jslaby@suse.cz>
+In-Reply-To: <20200818085706.12163-1-jslaby@suse.cz>
+References: <20200818085706.12163-1-jslaby@suse.cz>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -32,93 +32,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As in the previous patches, fix kernel-doc in serial drivers.
+* ret can carry error codes, so make it signed, i.e. ssize_t
+* pos is derived from the passed ppos, so make it long enough, i.e.
+  loff_t
+* attr is a boolean, so...
+* size is limited by vcs_size() which returns an int
+* written, p, orig_count and this_round are always ">= 0" and "< size",
+  so uint is enough
+* col and max_col are derived from vc->vc_cols (uint) and p, so make
+  them uint too
+* place con_buf0 and con_buf declaration to a single line
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/serial/ifx6x60.c       | 7 +++----
- drivers/tty/serial/men_z135_uart.c | 8 ++++----
- 2 files changed, 7 insertions(+), 8 deletions(-)
+ drivers/tty/vt/vc_screen.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/tty/serial/ifx6x60.c b/drivers/tty/serial/ifx6x60.c
-index 7d16fe41932f..095ddd04370f 100644
---- a/drivers/tty/serial/ifx6x60.c
-+++ b/drivers/tty/serial/ifx6x60.c
-@@ -257,7 +257,7 @@ static void mrdy_assert(struct ifx_spi_device *ifx_dev)
+diff --git a/drivers/tty/vt/vc_screen.c b/drivers/tty/vt/vc_screen.c
+index 8aa0d50bcac7..2571d9067b08 100644
+--- a/drivers/tty/vt/vc_screen.c
++++ b/drivers/tty/vt/vc_screen.c
+@@ -459,14 +459,13 @@ vcs_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos)
+ {
+ 	struct inode *inode = file_inode(file);
+ 	struct vc_data *vc;
+-	long pos;
+-	long attr, size, written;
+-	char *con_buf0;
+-	int col, maxcol;
++	char *con_buf0, *con_buf;
+ 	u16 *org0 = NULL, *org = NULL;
+-	size_t ret;
+-	char *con_buf;
+-	bool viewed;
++	unsigned int written, col, maxcol;
++	int size;
++	ssize_t ret;
++	loff_t pos;
++	bool viewed, attr;
  
- /**
-  *	ifx_spi_timeout		-	SPI timeout
-- *	@arg: our SPI device
-+ *	@t: timer in our SPI device
-  *
-  *	The SPI has timed out: hang up the tty. Users will then see a hangup
-  *	and error events.
-@@ -277,7 +277,6 @@ static void ifx_spi_timeout(struct timer_list *t)
- /**
-  *	ifx_spi_tiocmget	-	get modem lines
-  *	@tty: our tty device
-- *	@filp: file handle issuing the request
-  *
-  *	Map the signal state into Linux modem flags and report the value
-  *	in Linux terms
-@@ -531,7 +530,7 @@ static int ifx_spi_chars_in_buffer(struct tty_struct *tty)
+ 	if (use_unicode(inode))
+ 		return -EOPNOTSUPP;
+@@ -500,9 +499,7 @@ vcs_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos)
+ 		count = size - pos;
+ 	written = 0;
+ 	while (count) {
+-		long this_round = count;
+-		size_t orig_count;
+-		long p;
++		unsigned int orig_count, p, this_round = count;
  
- /**
-  *	ifx_port_hangup
-- *	@port: our tty port
-+ *	@tty: our tty
-  *
-  *	tty port hang up. Called when tty_hangup processing is invoked either
-  *	by loss of carrier, or by software (eg vhangup). Serialized against
-@@ -611,7 +610,7 @@ static const struct tty_operations ifx_spi_serial_ops = {
- 
- /**
-  *	ifx_spi_insert_fip_string	-	queue received data
-- *	@ifx_ser: our SPI device
-+ *	@ifx_dev: our SPI device
-  *	@chars: buffer we have received
-  *	@size: number of chars reeived
-  *
-diff --git a/drivers/tty/serial/men_z135_uart.c b/drivers/tty/serial/men_z135_uart.c
-index 4f53a4caabf6..9acae5f8fc32 100644
---- a/drivers/tty/serial/men_z135_uart.c
-+++ b/drivers/tty/serial/men_z135_uart.c
-@@ -173,7 +173,7 @@ static void men_z135_reg_clr(struct men_z135_port *uart,
- 
- /**
-  * men_z135_handle_modem_status() - Handle change of modem status
-- * @port: The UART port
-+ * @uart: The UART port
-  *
-  * Handle change of modem status register. This is done by reading the "delta"
-  * versions of DCD (Data Carrier Detect) and CTS (Clear To Send).
-@@ -236,7 +236,7 @@ static u16 get_rx_fifo_content(struct men_z135_port *uart)
- 
- /**
-  * men_z135_handle_rx() - RX tasklet routine
-- * @arg: Pointer to struct men_z135_port
-+ * @uart: Pointer to struct men_z135_port
-  *
-  * Copy from RX FIFO and acknowledge number of bytes copied.
-  */
-@@ -287,7 +287,7 @@ static void men_z135_handle_rx(struct men_z135_port *uart)
- 
- /**
-  * men_z135_handle_tx() - TX tasklet routine
-- * @arg: Pointer to struct men_z135_port
-+ * @uart: Pointer to struct men_z135_port
-  *
-  */
- static void men_z135_handle_tx(struct men_z135_port *uart)
-@@ -596,7 +596,7 @@ static void men_z135_stop_rx(struct uart_port *port)
- 
- /**
-  * men_z135_enable_ms() - Enable Modem Status
-- * port:
-+ * @port: the port
-  *
-  * Enable Modem Status IRQ.
-  */
+ 		if (this_round > CON_BUF_SIZE)
+ 			this_round = CON_BUF_SIZE;
 -- 
 2.28.0
 
