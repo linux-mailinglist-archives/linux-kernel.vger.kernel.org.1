@@ -2,74 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71407247C7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 05:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F08D247C8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 05:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbgHRDLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 23:11:37 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:47424 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbgHRDLf (ORCPT
+        id S1726624AbgHRDOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 23:14:42 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:35082 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726328AbgHRDOl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 23:11:35 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07I37eB1032403;
-        Tue, 18 Aug 2020 03:11:24 GMT
+        Mon, 17 Aug 2020 23:14:41 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07I37XBM113875;
+        Tue, 18 Aug 2020 03:14:35 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2020-01-29;
- bh=NMjehyoRdwcaIKTxw+C37+A1+p2Llic4cJZHZZ59yG0=;
- b=dB1qOqVHCLAHOd+6Kb9zguVQKSeURvR7COp08LwBSIAaYBMyMnBy5+tMOZiMPgTtaZrY
- VCafWsNv2hLJ2lqlkHg8gjcMmA1F4joYRTINyfkPPPtB8Rb8cMkNoRPqV5OLoaO2GcmG
- X9YEe282JtIgI7j2Rg3hu+pGbsqMRGBPuEP2wkuPLCwbKZSgMnc+aOl1LxNLOKdX1PrO
- yb4v4vGS0cYs6XKGCwUe3iCfC3Touw7OwPO2nkmDI73nI4LIuoSICWWZ9pS+bP2NVnIX
- oOrcf/jNnrqWc8IpmF3rcWLUmi5KiBM5N2dxd1yHC14K2fGsR7JsB1enCiSTwcpfQVaX fA== 
+ bh=7QHkV/ES8zH95c7fmkSF5lFXc1zNQSjl4IUT86m6GQU=;
+ b=kjeYL54AOhbyFJ20YnaQ1/NBGPn9fBJ1YSqK1yqptWnywqKZQFOWyXapmnST3fPxEQBm
+ Vszyl7W1G2WfQzZ1fsU6NQQS/AlQT8yNK2Rj0B336XHNHSfVUJ5T4wA4SI1NEq0grhbw
+ E0Vp1Qq2q1UMRIvkdk46GiN1cNOfCCyz+sbIEVGLYVXxwHoxqkLYFUp0TqL668U7OwD1
+ 3cLu1MzKesYse4uj/h4Z1olq5bF5Kz0KzL39EKugJqUcgIKe3EHFZbYJuQEEhq7lAFnk
+ f6GQ83h7wS+jyrNf59V3oJQS5GXpEZtjIdG8hpb7r8VbDVxLNiclNA2UnjuyrV6njIVg IA== 
 Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 32x7nma5ba-1
+        by userp2120.oracle.com with ESMTP id 32x8bn22vh-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 18 Aug 2020 03:11:23 +0000
+        Tue, 18 Aug 2020 03:14:35 +0000
 Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07I387fC131285;
-        Tue, 18 Aug 2020 03:11:23 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 32xs9mf38t-1
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07I3863W131255;
+        Tue, 18 Aug 2020 03:12:34 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 32xs9mf4ab-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 Aug 2020 03:11:23 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07I3BLgB021986;
-        Tue, 18 Aug 2020 03:11:21 GMT
+        Tue, 18 Aug 2020 03:12:34 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07I3CY4o029796;
+        Tue, 18 Aug 2020 03:12:34 GMT
 Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 17 Aug 2020 20:11:21 -0700
+        with ESMTP ; Mon, 17 Aug 2020 20:12:33 -0700
 From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Avri Altman <avri.altman@wdc.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>
 Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Christoph Hellwig <hch@lst.de>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Can Guo <cang@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH] scsi: ufs-qcom: Remove unused msm bus scaling apis
-Date:   Mon, 17 Aug 2020 23:11:14 -0400
-Message-Id: <159772022967.19349.11710994023015024776.b4-ty@oracle.com>
+        linux-kernel@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
+        linux-scsi@vger.kernel.org, Alim Akhtar <alim.akhtar@samsung.com>
+Subject: Re: [PATCH] scsi: ufs-pci: Add quirk for broken auto-hibernate for Intel EHL
+Date:   Mon, 17 Aug 2020 23:12:22 -0400
+Message-Id: <159772029326.19587.8414026585786255595.b4-ty@oracle.com>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200804161033.15586-1-saiprakash.ranjan@codeaurora.org>
-References: <20200804161033.15586-1-saiprakash.ranjan@codeaurora.org>
+In-Reply-To: <20200810141024.28859-1-adrian.hunter@intel.com>
+References: <20200810141024.28859-1-adrian.hunter@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9716 signatures=668679
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 spamscore=0
- mlxscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0 bulkscore=0
+ mlxscore=0 mlxlogscore=998 suspectscore=0 malwarescore=0 bulkscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
  definitions=main-2008180022
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9716 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
- impostorscore=0 priorityscore=1501 adultscore=0 mlxscore=0 mlxlogscore=999
- lowpriorityscore=0 bulkscore=0 phishscore=0 malwarescore=0 clxscore=1011
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 lowpriorityscore=0
+ impostorscore=0 suspectscore=0 adultscore=0 spamscore=0 malwarescore=0
+ mlxlogscore=999 priorityscore=1501 bulkscore=0 clxscore=1015 phishscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
  definitions=main-2008180022
 Sender: linux-kernel-owner@vger.kernel.org
@@ -77,20 +71,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 4 Aug 2020 21:40:33 +0530, Sai Prakash Ranjan wrote:
+On Mon, 10 Aug 2020 17:10:24 +0300, Adrian Hunter wrote:
 
-> MSM bus scaling has moved on to use interconnect framework
-> and downstream bus scaling apis like msm_bus_scale*() does
-> not exist anymore in the kernel. Currently they are guarded
-> by a config which also does not exist and hence there are no
-> build failures reported. Remove these unused apis as they
-> are currently no-op anyways and the scaling support that may
-> be added in future will use interconnect apis.
+> Intel EHL UFS host controller advertises auto-hibernate capability but it
+> does not work correctly. Add a quirk for that.
 
-Applied to 5.10/scsi-queue, thanks!
+Applied to 5.9/scsi-fixes, thanks!
 
-[1/1] scsi: ufs-qcom: Remove unused MSM bus scaling APIs
-      https://git.kernel.org/mkp/scsi/c/d2cd212a2a54
+[1/1] scsi: ufs-pci: Add quirk for broken auto-hibernate for Intel EHL
+      https://git.kernel.org/mkp/scsi/c/8da76f71fef7
 
 -- 
 Martin K. Petersen	Oracle Linux Engineering
