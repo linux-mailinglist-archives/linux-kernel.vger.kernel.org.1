@@ -2,111 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A9A624809A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA3C248099
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726585AbgHRI3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 04:29:47 -0400
-Received: from mga04.intel.com ([192.55.52.120]:29035 "EHLO mga04.intel.com"
+        id S1726569AbgHRI3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 04:29:30 -0400
+Received: from muru.com ([72.249.23.125]:40706 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726043AbgHRI3q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 04:29:46 -0400
-IronPort-SDR: O+H3jEO6LcQZETTNZRvCczdYUg08cKoDS/dcXsQ8TaZO6Rx94v/ccCyxe7fk6VjD7j2TgjRPU5
- ZlN+1VoDmZ6A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="152272031"
-X-IronPort-AV: E=Sophos;i="5.76,326,1592895600"; 
-   d="scan'208";a="152272031"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 01:29:45 -0700
-IronPort-SDR: fhO4aQsUo9lOdKcpUe21R7LSa6ve5iULPzuKL8QgJ0Pol0BqK9qOYmKk2hlmFO0FV7L9r4RKVb
- m3T3+J6/V9lg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,326,1592895600"; 
-   d="scan'208";a="441147947"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.107])
-  by orsmga004.jf.intel.com with ESMTP; 18 Aug 2020 01:29:43 -0700
-Date:   Tue, 18 Aug 2020 16:29:43 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Borislav Petkov <bp@suse.de>
-Cc:     kernel test robot <rong.a.chen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-Subject: Re: [LKP] Re: [x86/mce] 1de08dccd3: will-it-scale.per_process_ops
- -14.1% regression
-Message-ID: <20200818082943.GA65567@shbuild999.sh.intel.com>
-References: <20200425114414.GU26573@shao2-debian>
- <20200425130136.GA28245@zn.tnic>
+        id S1726043AbgHRI31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 04:29:27 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 80DFF810D;
+        Tue, 18 Aug 2020 08:29:26 +0000 (UTC)
+Date:   Tue, 18 Aug 2020 11:29:53 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     linux-omap@vger.kernel.org, Santosh Shilimkar <ssantosh@kernel.org>
+Cc:     "Andrew F . Davis" <afd@ti.com>, Dave Gerlach <d-gerlach@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>, Suman Anna <s-anna@ti.com>,
+        Tero Kristo <t-kristo@ti.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, Keerthy <j-keerthy@ti.com>
+Subject: Re: [PATCH 0/3] Simplify PM for am3/4, drop RTC pdata for am3/4/dra7
+Message-ID: <20200818082953.GN2994@atomide.com>
+References: <20200703160731.53698-1-tony@atomide.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200425130136.GA28245@zn.tnic>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200703160731.53698-1-tony@atomide.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Borislav,
+Hi Santosh,
 
-On Sat, Apr 25, 2020 at 03:01:36PM +0200, Borislav Petkov wrote:
-> On Sat, Apr 25, 2020 at 07:44:14PM +0800, kernel test robot wrote:
-> > Greeting,
-> > 
-> > FYI, we noticed a -14.1% regression of will-it-scale.per_process_ops due to commit:
-> > 
-> > 
-> > commit: 1de08dccd383482a3e88845d3554094d338f5ff9 ("x86/mce: Add a struct mce.kflags field")
+* Tony Lindgren <tony@atomide.com> [200703 19:08]:
+> Hi all,
 > 
-> I don't see how a struct mce member addition will cause any performance
-> regression. Please check your test case.
+> Here are patches to simplify the RTC+DDR PM code for am3 and am4. We want
+> to do this to drop the RTC related legacy platform data for am3 and am4.
+> We also drop RTC legacy platform data for dra7.
+> 
+> Please test the RTC+DDR suspend on am437x-gp-evm if possible. I've tested
+> this series on am437x-sk-evm, but at least currently cannot do RTC+DDR
+> suspend and is limited to testing retention suspend only.
+> 
+> These patches depend on v5.8-rc3 for earlier suspend and resume related
+> fixes.
+> 
+> Additionally, for testing the LCD for suspend, the following patch is
+> needed for the missing omapdrm PM ops:
+> 
+> drm/omap: force runtime PM suspend on system suspend
 
-Sorry for the late response.
+Here's another series that was getting too late for v5.9 that I'd like to
+queue for v5.10. Care to take a look and ack if it looks OK?
 
-We've done more rounds of test, and the test results are consistent.
+Regards,
 
-Our suspect is the commit changes the data alignment of other kernel
-domains than mce, which causes the performance change to this malloc
-microbenchmark.
+Tony
 
-Without the patch, size of 'struct mce' is 120 bytes, while it will
-be 128 bytes after adding the '__u64 kflags' 
 
-And we also debugged further:
-
-* add "mce=off" to kernel cmdline, the performance change keeps. 
-
-* change the 'kflags' from __u64 to __u32 (the size of mce will
-  go back to 120 bytes), the performance change is gone
-
-* only comment off '__u64 kflags', peformance change is gone.
-
-We also tried perf c2c tool to capture some data, but the platform
-is a Xeon Phi which doesn't support it. Capturing raw HITM event
-also can not provide useful data.
-
-0day has reported quite some strange peformance bump like this,
-  https://lore.kernel.org/lkml/20200205123216.GO12867@shao2-debian/
-  https://lore.kernel.org/lkml/20200114085637.GA29297@shao2-debian/
-  https://lore.kernel.org/lkml/20200330011254.GA14393@feng-iot/
-for some of which, the bump could be gone if we hack to force all
-kernel functions to be aligned, but it doesn't work for this case.
-
-So together with the debugging above, we thought this could be a
-data alignment change caused performance bump.
-
-Thanks,
-Feng
-
-> Thx.
+> Tony Lindgren (3):
+>   soc: ti: pm33xx: Simplify RTC usage to prepare to drop platform data
+>   ARM: OMAP2+: Drop legacy platform data for am3 and am4 rtc
+>   ARM: OMAP2+: Drop legacy platform data for dra7 rtcss
+> 
+>  arch/arm/boot/dts/am33xx-l4.dtsi              |  1 -
+>  arch/arm/boot/dts/am437x-l4.dtsi              |  3 +-
+>  arch/arm/boot/dts/am43x-epos-evm.dts          |  4 ++
+>  arch/arm/boot/dts/dra7-l4.dtsi                |  1 -
+>  .../omap_hwmod_33xx_43xx_common_data.h        |  2 -
+>  .../omap_hwmod_33xx_43xx_interconnect_data.c  |  8 ----
+>  .../omap_hwmod_33xx_43xx_ipblock_data.c       | 37 ---------------
+>  arch/arm/mach-omap2/omap_hwmod_33xx_data.c    |  1 -
+>  arch/arm/mach-omap2/omap_hwmod_43xx_data.c    |  8 ----
+>  arch/arm/mach-omap2/omap_hwmod_7xx_data.c     | 44 -----------------
+>  arch/arm/mach-omap2/pm33xx-core.c             | 25 ----------
+>  drivers/soc/ti/pm33xx.c                       | 47 +++++++++++++++++--
+>  include/linux/platform_data/pm33xx.h          |  3 --
+>  13 files changed, 47 insertions(+), 137 deletions(-)
 > 
 > -- 
-> Regards/Gruss,
->     Boris.
+> 2.27.0
 > 
-> SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
-> _______________________________________________
-> LKP mailing list -- lkp@lists.01.org
-> To unsubscribe send an email to lkp-leave@lists.01.org
