@@ -2,103 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7CE2487BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 951A72487D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727880AbgHROhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 10:37:10 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:35789 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726145AbgHROhI (ORCPT
+        id S1727023AbgHROhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 10:37:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727899AbgHROhh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 10:37:08 -0400
-Received: by mail-pf1-f193.google.com with SMTP id d188so10063134pfd.2;
-        Tue, 18 Aug 2020 07:37:07 -0700 (PDT)
+        Tue, 18 Aug 2020 10:37:37 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A812BC061389;
+        Tue, 18 Aug 2020 07:37:36 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id o18so22356392eje.7;
+        Tue, 18 Aug 2020 07:37:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=2UQZEODYOVCRlh1QRejLi/WzuJNA7W+JKPrcqeoHOhY=;
+        b=aNH7Rb4UjQ427P0G/2djpJOYW+4jNcYTY5ueMZJdI+aPHwfi9IVWQ5lmpfsxgPoOyD
+         2TembDjnXLlrJ/a8M5UAgVp4WnapO1DdLv6Z9TXH+CUQY9aWYahxInWFDBtnf2ZckZuK
+         AXKdp/x2y4mmrDILUtOyZd5aSuFkRAX+X5z2oiFaOrCkQ0ZugqWmLtDxySXxGmQA2Yvz
+         tep14aDEZDuEhoOfzeyidXqBxarz8eiwUJhOMdkx0QuWKYJN61zxdkXc/CgACP5Oco+T
+         xJgT5p2ERAXYe45DoMXsh1b+c31xNrWX9ZRHjX+1wIklQj71eMW19I/v0zCKuEdPPIax
+         Q5Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=HgYZrAake/uzt3aJOUtpsteAt3DU0kmaugtquDlc2uA=;
-        b=gUviDmXxe9EVFUBbm6wdg+uNQvsQyG36aNt8aQg0HoiiMpdNNc3byIY+GAK6vZrDTy
-         SOnP64+liD3XOJCYWvMmc3XcYnpb7TRC1f+sSfvroHRBVAGppoMJHC1VU9InjEZsseOn
-         MbxgSscsW1yqdAmdP2UfU5dQJrB/3t5n42zBz2jNwNEIOXRlzcjFIao5QcZJSktU8prp
-         lEFfhyMSTvEVQNIN/SViWsBoVB1oegGn9UVbZWwZYABTB9SURRAAYStLC6scgCQxJBH3
-         74R4iUkZ0/BzOAvuwuc4mxIpBPZECW6v4T2Uz617eMIArwnd0ywdd9MBmT1QapZ4mm9z
-         Xs6g==
-X-Gm-Message-State: AOAM53254faawMusulcg2web0yFjBxs3TXu/eRYZmTt0OG7XVWveiwdP
-        BIj28znvuI5st0l6ko9r9a4sxlwquS4=
-X-Google-Smtp-Source: ABdhPJyFpNdallfN+1gSqlF42nMuiSAfZ8eegTyVOEzDTiCUqOGY28Dm3/KF7w7276pcT+RVygogvA==
-X-Received: by 2002:a63:ff0b:: with SMTP id k11mr6786701pgi.156.1597761426300;
-        Tue, 18 Aug 2020 07:37:06 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id a15sm24430330pfo.185.2020.08.18.07.37.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Aug 2020 07:37:04 -0700 (PDT)
-Subject: Re: [PATCH] scsi: ufs: Remove an unpaired
- ufshcd_scsi_unblock_requests() in err_handler()
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1597728047-39936-1-git-send-email-cang@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <ec9469e8-5b70-3457-fc2c-8fe018b697d6@acm.org>
-Date:   Tue, 18 Aug 2020 07:37:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <1597728047-39936-1-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=2UQZEODYOVCRlh1QRejLi/WzuJNA7W+JKPrcqeoHOhY=;
+        b=iOs1Z572zUB+R5AVCxiLLMu7MoonkL0VNt3t0giKWs6WUomSi09Tqel/K0BfaR9F8/
+         8cb9P6yiqvuc5QHy2ZTyNkUkQmtuwH/IWbYGdMFJrR+nijFbqzBOfXqDclxdaFTrB1Zs
+         LkRYo9nZOvnN+Bg2Onp7uLJJR7L9AEGeDneNWISwjMlYMVcyrnrBH0sz+0etJ0PjcPWy
+         sG095oCKi13tjDF3iOVKelBI2Pkvp0vxyKcjXKs3CSjEQGHt3w1z52G/4dwqYyzttt7e
+         ttu9ntmdkUglUU/IZ7AEkz3lOzut1QReytJJ+NxroxqExbD4SRSb9bVkhCrNy+yd1La3
+         G0HA==
+X-Gm-Message-State: AOAM532zLNKSQkXNTV//AvTvfsPnZ1kM0UsGDIdeA60JCR+y1/MgwfYb
+        mG7ABhAvwkmViyqBh5gmS8M=
+X-Google-Smtp-Source: ABdhPJzVRX6brDlwaMQejDzk4wxMr/TJ+2T1mXXnWNI34f1CAvmV4y0EPIUTLj8CH4kNb+vCaskauA==
+X-Received: by 2002:a17:907:20e6:: with SMTP id rh6mr20096569ejb.301.1597761455170;
+        Tue, 18 Aug 2020 07:37:35 -0700 (PDT)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id r25sm16222575edy.93.2020.08.18.07.37.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 18 Aug 2020 07:37:34 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+        sugar.zhang@rock-chips.com, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] ASoC: rockchip-spdif: add description for rk3308
+Date:   Tue, 18 Aug 2020 16:37:26 +0200
+Message-Id: <20200818143727.5882-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-17 22:20, Can Guo wrote:
-> Commit 5586dd8ea250a ("scsi: ufs: Fix a race condition between error
-> handler and runtime PM ops") moves the ufshcd_scsi_block_requests() inside
-> err_handler(), but forgets to remove the ufshcd_scsi_unblock_requests() in
-> the early return path. Correct the coding mistake.
-> 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
+A test with the command below shows that the compatible string
 
-Hi Can,
+"rockchip,rk3308-spdif", "rockchip,rk3328-spdif"
 
-Please add a "Fixes:" tag.
+is already in use, but is not added to a document.
+The current fallback string "rockchip,rk3328-spdif" points to a data
+set enum RK_SPDIF_RK3366 in rockchip_spdif.c that is not used both
+in the mainline as in the manufacturer kernel.
+(Of the enum only RK_SPDIF_RK3288 is used.)
+So if the properties don't change we might as well use the first SoC
+in line as fallback string and add the description for rk3308 as:
 
-Thanks,
+"rockchip,rk3308-spdif", "rockchip,rk3066-spdif"
 
-Bart.
+make ARCH=arm64 dtbs_check
+DT_SCHEMA_FILES=Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
+
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
+Changed V2:
+  rebase
+---
+ Documentation/devicetree/bindings/sound/rockchip-spdif.yaml | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml b/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
+index 7bad6f16f..62a61b68d 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
++++ b/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
+@@ -27,6 +27,7 @@ properties:
+           - enum:
+               - rockchip,rk3188-spdif
+               - rockchip,rk3288-spdif
++              - rockchip,rk3308-spdif
+           - const: rockchip,rk3066-spdif
+ 
+   reg:
+-- 
+2.11.0
+
