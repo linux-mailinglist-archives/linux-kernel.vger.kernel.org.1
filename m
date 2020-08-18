@@ -2,205 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD19724882B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 212AC248832
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727826AbgHROt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 10:49:27 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:37490 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726747AbgHROtW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 10:49:22 -0400
-Received: by mail-il1-f197.google.com with SMTP id u7so14527732ilj.4
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 07:49:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=XHgBkjzXNaJbC9aZkOW8kfREg5RuJLTicvWC13gR6lE=;
-        b=PI2wNnDTDvBGEe9hsBzCZeL+QbAO3tbG4pafRNCRD6/lAS0rDEV9uyJPYuK7WG/dJj
-         K2PqO3pcVAANx9GKiyg/ndXosq04BOCZetmU6Y0QhYSVVNz+SUTASNW0MpahZhjx7yrV
-         k3sGE8LKTfSih2r+8zm0v+nwz2gy6QYGLyFW2WoMo1WNqjF0iWdUxHtmrGyGFc7csl/C
-         Ipe76Hmy0+DtqF659H65YgrHn4iR0o5EXYQ2aVu0YERHAs2ErER0Ezz43NJyxqTa9QcO
-         wxs4FN6M5J/IwtEEVKTd3vG4lcbjtFPgxki1GXL/IaiGzcadNWNw3ElwOl2kzZbvbnxt
-         mIiw==
-X-Gm-Message-State: AOAM532EbPmRg9kARscB4LHUHbbi4ekxX2bCmOXZsqUQGqK9rFgKzgB9
-        y0PO00jZ6LUppjleaUoBN41rfIivp0NL6h7knx9HIlItLeBd
-X-Google-Smtp-Source: ABdhPJz8nkM9nFl38+T6GT2+Q2X7LiyxHFjjj8O7VSlPzKTH9mfL77o8DPQDj7f/i+qti579CjX8Yjf9d745psB5Gduu4vwBP+/S
+        id S1727845AbgHROt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 10:49:56 -0400
+Received: from mga03.intel.com ([134.134.136.65]:62220 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726766AbgHROtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 10:49:53 -0400
+IronPort-SDR: vjdPw7rMwlCJiz/o7F/+lZMwP2/izT+m4AOhW7cxRTnqjp2W5AwyGSwzG3Q+nLsX/Gif1rlPK6
+ HzZrZlotuNKA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="154889806"
+X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
+   d="scan'208";a="154889806"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 07:49:53 -0700
+IronPort-SDR: cPyiDPj+knOMUQttPDsj0wXUb7sTOSx6MjUq4LwO1nb16XCGfUPhavuZXq69OJG5BzJL0F9mH2
+ ObzFAV5KhBaQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,327,1592895600"; 
+   d="scan'208";a="497393959"
+Received: from orsmsx606-2.jf.intel.com (HELO ORSMSX606.amr.corp.intel.com) ([10.22.229.86])
+  by fmsmga005.fm.intel.com with ESMTP; 18 Aug 2020 07:49:52 -0700
+Received: from orsmsx606.amr.corp.intel.com (10.22.229.19) by
+ ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 18 Aug 2020 07:49:51 -0700
+Received: from orsmsx103.amr.corp.intel.com (10.22.225.130) by
+ orsmsx606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Tue, 18 Aug 2020 07:49:51 -0700
+Received: from ORSEDG001.ED.cps.intel.com (10.7.248.4) by
+ ORSMSX103.amr.corp.intel.com (10.22.225.130) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Tue, 18 Aug 2020 07:49:51 -0700
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com (104.47.45.58) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server (TLS) id
+ 14.3.439.0; Tue, 18 Aug 2020 07:49:51 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=e3SyTKOB0bLAnimhnRgUsVSVUVwW/Er8RZ3QYal70wvi+JovYuqDuvNZ8k9rHTg/PpMFcyvpu/rsLazBZAvemj52mkX9nMVn63R6ZRLyvAvNajrAIQzOmvBCaiGSLK9LEZEaFZixf7BUmzgAvE1rtNVkjEVt2/nA69BnNhQQlIv9IX7Ewso1/PXzck9rYv6No0MF/thFl1LHJIz6pPZ9ySxz5gKVq38QN9UyVjUmvLwHks2+fKu0WfniyW7eVtTifz2FbskLg4Dk6BAlVfsTRrqgJEUSzMyI84Qp6OVjhzKAHziLGbMOzRnkVIMBh/OW+7szVJCtPHppcnbLyK+mcw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=F9DJNCgMdXzvs3dNE0fBJIWiLlHaRuIUCV/6yqJvSkg=;
+ b=FsivVFCVmqM7fkdLtTyEnlfDT6no7FGGabiz7qPHmPPG2mL7dDD0nTbGIM9JUkw+P+oMMDK1BgMVDrXSvprIe5bEQcsFqO8HY88jIJP8z/cGJynx5JX64z+i6qg7/qrY4borTEVnRzUPQxyw3XYPBoUMYnpMMxi1bigomzHUBxngMgAYmj80HXVhUEbslTG+jduHIQsYZVKcadvii55CyqxZ/Ri26thaQE84H+QK6o4brPPanATq86axSJd+rlUngvD+vrlcspUppCJi8mg3SNu48tRfzy7R9NNTAPPC/M90DwGeu1DqfiOIE5sVcex+q27X9taCrpw1Mc0pIhYkjw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=F9DJNCgMdXzvs3dNE0fBJIWiLlHaRuIUCV/6yqJvSkg=;
+ b=ypDrSJOMDHPRJdVjUOpKFY7jkxV+cT02K0GS0zelTdDfYvY/7Ql8guFeMjtJP2CoNpILkMzAK0kB3D1laz7SX3p6jzjtnjFWhrV2Rv96lPQRovvp9Gx5QSO+Z8qqu8XaAUEkUU0NIGXyUS900uyOqkAzvnMDRYELmC6cpCc7i+M=
+Received: from DM6PR11MB3642.namprd11.prod.outlook.com (2603:10b6:5:138::26)
+ by DM5PR11MB1275.namprd11.prod.outlook.com (2603:10b6:3:15::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.24; Tue, 18 Aug
+ 2020 14:49:50 +0000
+Received: from DM6PR11MB3642.namprd11.prod.outlook.com
+ ([fe80::70a3:595c:6217:49c9]) by DM6PR11MB3642.namprd11.prod.outlook.com
+ ([fe80::70a3:595c:6217:49c9%7]) with mapi id 15.20.3305.024; Tue, 18 Aug 2020
+ 14:49:50 +0000
+From:   "Lu, Brent" <brent.lu@intel.com>
+To:     Kai Vehmanen <kai.vehmanen@linux.intel.com>
+CC:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        =?iso-8859-2?Q?Amadeusz_S=B3awi=F1ski?= 
+        <amadeuszx.slawinski@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2] ASoC: hdac_hdmi: support 'ELD' mixer
+Thread-Topic: [PATCH v2] ASoC: hdac_hdmi: support 'ELD' mixer
+Thread-Index: AQHWdPpg+cfNZMPg5UKpV0cEnnRyU6k9wCcAgAAzTVA=
+Date:   Tue, 18 Aug 2020 14:49:50 +0000
+Message-ID: <DM6PR11MB3642F2053B86CD4FE10383E1975C0@DM6PR11MB3642.namprd11.prod.outlook.com>
+References: <20200814083436.19845-1-brent.lu@intel.com>
+ <20200818004413.12852-1-brent.lu@intel.com>
+ <alpine.DEB.2.22.394.2008181311430.3186@eliteleevi.tm.intel.com>
+In-Reply-To: <alpine.DEB.2.22.394.2008181311430.3186@eliteleevi.tm.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [1.164.110.173]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0ba5c94f-c498-4537-d259-08d84385f5a7
+x-ms-traffictypediagnostic: DM5PR11MB1275:
+x-microsoft-antispam-prvs: <DM5PR11MB1275A03B3D260156BCF179BC975C0@DM5PR11MB1275.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3631;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: UQKFaiaex7QrxE4QllFxBPtvfu6gAKN16NdIi3NJEE0FUU42KLk+XnMU/4A2K85jwlDcAntkgz5bXVWfSbsfneEIR7cvtl7qTHzE5wwl9CI3Gb6NK3IqFkANugiKzhOUULUIq1MoNpTCjsA04HhomD/9eQwux4WMagKvZcm0y2cD3q/tkt9LfvKLr0iZzi49uHucepNdbNiADwtUByZHDs772mKY6V93DzVDcR8Yub64hkCdHZ8qJpBxlQ+06Xuyn8LKSD4t0tA0pwcCipV4+fmaE14riOPKRt05ifrRs8UwFdHLFzsla2i/0pm8Q/1A3r8asXQIe9LNhiNm0/ANLg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3642.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(376002)(136003)(396003)(346002)(26005)(86362001)(8676002)(8936002)(71200400001)(52536014)(5660300002)(4744005)(4326008)(7416002)(66946007)(64756008)(66446008)(478600001)(186003)(66556008)(6916009)(6506007)(54906003)(55016002)(7696005)(33656002)(76116006)(2906002)(66476007)(316002)(9686003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: 6zO4KSaQNFAcyYAR605nJe5CGyVNWE+NwppOhD/3wsSOxUWvUBl2NEeeMX3RWLhh9nHcM7VMXwgLHAjLUa6TlfosDS3E1rmmvD2ndEtgk0+gpGJNPfc1hM4vkQF50mH9056IMuCl7gBtOnDtRUipkWqNr1aSDRzanyR0vfRVmcxwjU2mxQ9R07/UjCYR64eX4UffHB87JWA90pe4gjoflS5BrCl+UB8Qy8X6nkQXUml7jpWZFTJ8zHk7htGU1QOG3oE/Zc3tiChGL2jq7PPSFg/Yk6uINTiSmysUZxtckJ2U8ikyjqBZgRXDO5vKQVtTF4kVgIqseI8mheoMXVXPfrfi2AEJxaBqCYAkAMuih7L3fsFZ4OKF/aCofIkZr4uKkUPlARel8BDe0S/Cwc4A3KNmAFtJeSIp3bE0wHfHK1XbeAJTePz1bdLxLdKZJpgn3wnao4qdlPZOF4h8i0JNG0g4pzEsGQjVqLQtx38qt1nvUOolcED6RWkG0iWNvS1SPL95x3TnbB7vxCGkv8czPlc7Fbk5WgPNvO9HPQbrvOBbt90fDsRZgrdfWhw1HTrpRSSyim30rpeNr+FrMpEQ71HVdqyVMINar+8RXHUQlCKJJDXzu6DmlZ6JGfYGIjDxWOo+9PJ2VvqhRLUunHaTDw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Received: by 2002:a6b:e70d:: with SMTP id b13mr16595725ioh.141.1597762161437;
- Tue, 18 Aug 2020 07:49:21 -0700 (PDT)
-Date:   Tue, 18 Aug 2020 07:49:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000011710f05ad27fe8a@google.com>
-Subject: KASAN: use-after-free Write in page_counter_cancel
-From:   syzbot <syzbot+b5ea6fb6f139c8b9482b@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3642.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0ba5c94f-c498-4537-d259-08d84385f5a7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Aug 2020 14:49:50.2833
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: M5FzE+2ugSQotKkCm8jgP0v9p0eeZdsfQMW3dLkJY2TJMti063oI3xzOtbFN4awYkM0W/3nJ2QK1TA5ura+86g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1275
+X-OriginatorOrg: intel.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+>=20
+> This is a bit iffy part. If same PCM is connected to multiple receivers, =
+you
+> return ELD data for the first one and ignore the rest. OTOH, this is inli=
+ne with
+> comment in hdac_hdmi_get_port_from_cvt() in that this pcm-to-many
+> routing is not really supported by the driver now. But jack status report=
+ing is
+> done a port basis, not per PCM/CVTs, so this is not fully aligned.
+>=20
+> Hmm. Given the proposed patch is aligned with the user-space interface
+> exposed by patch_hdmi.c, I'm ok to go with this. Can you add an explicit
+> comment to explain what is happening above?
+>=20
+> Br, Kai
 
-syzbot found the following issue on:
-
-HEAD commit:    4993e4fe Add linux-next specific files for 20200814
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=10d0d116900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2055bd0d83d5ee16
-dashboard link: https://syzkaller.appspot.com/bug?extid=b5ea6fb6f139c8b9482b
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b5ea6fb6f139c8b9482b@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: use-after-free in instrument_atomic_write include/linux/instrumented.h:71 [inline]
-BUG: KASAN: use-after-free in atomic64_sub_return include/asm-generic/atomic-instrumented.h:970 [inline]
-BUG: KASAN: use-after-free in atomic_long_sub_return include/asm-generic/atomic-long.h:113 [inline]
-BUG: KASAN: use-after-free in page_counter_cancel+0x1c/0x70 mm/page_counter.c:54
-Write of size 8 at addr ffff88804ad14148 by task syz-executor.5/2783
-
-CPU: 1 PID: 2783 Comm: syz-executor.5 Not tainted 5.8.0-next-20200814-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- check_memory_region_inline mm/kasan/generic.c:186 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
- instrument_atomic_write include/linux/instrumented.h:71 [inline]
- atomic64_sub_return include/asm-generic/atomic-instrumented.h:970 [inline]
- atomic_long_sub_return include/asm-generic/atomic-long.h:113 [inline]
- page_counter_cancel+0x1c/0x70 mm/page_counter.c:54
- page_counter_uncharge+0x2e/0x60 mm/page_counter.c:156
- uncharge_batch+0x67/0x450 mm/memcontrol.c:6764
- uncharge_page+0xfd/0x560 mm/memcontrol.c:6796
- uncharge_list mm/memcontrol.c:6835 [inline]
- mem_cgroup_uncharge_list+0xf6/0x180 mm/memcontrol.c:6877
- release_pages+0x637/0x17a0 mm/swap.c:912
- tlb_batch_pages_flush mm/mmu_gather.c:49 [inline]
- tlb_flush_mmu_free mm/mmu_gather.c:242 [inline]
- tlb_flush_mmu mm/mmu_gather.c:249 [inline]
- tlb_finish_mmu+0x165/0x8c0 mm/mmu_gather.c:328
- exit_mmap+0x2d1/0x530 mm/mmap.c:3200
- __mmput+0x122/0x470 kernel/fork.c:1075
- mmput+0x53/0x60 kernel/fork.c:1096
- exit_mm kernel/exit.c:483 [inline]
- do_exit+0xa8b/0x29f0 kernel/exit.c:793
- do_group_exit+0x125/0x310 kernel/exit.c:903
- __do_sys_exit_group kernel/exit.c:914 [inline]
- __se_sys_exit_group kernel/exit.c:912 [inline]
- __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:912
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45d239
-Code: Bad RIP value.
-RSP: 002b:00007ffdf9f90358 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 000000000000001e RCX: 000000000045d239
-RDX: 0000000000416b81 RSI: fffffffffffffff7 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 00000000c426f42b R09: 00007ffdf9f903b0
-R10: 00000000c426f427 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffdf9f903b0 R14: 0000000000000000 R15: 00007ffdf9f903c0
-
-Allocated by task 2685:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
- __do_kmalloc mm/slab.c:3655 [inline]
- __kmalloc+0x1a8/0x320 mm/slab.c:3664
- kmalloc include/linux/slab.h:559 [inline]
- kzalloc include/linux/slab.h:666 [inline]
- mem_cgroup_alloc mm/memcontrol.c:5210 [inline]
- mem_cgroup_css_alloc+0xc1/0x1bd0 mm/memcontrol.c:5278
- css_create kernel/cgroup/cgroup.c:5128 [inline]
- cgroup_apply_control_enable+0x478/0xc00 kernel/cgroup/cgroup.c:3059
- cgroup_apply_control kernel/cgroup/cgroup.c:3141 [inline]
- cgroup_subtree_control_write+0x7fc/0xcc0 kernel/cgroup/cgroup.c:3299
- cgroup_file_write+0x211/0x750 kernel/cgroup/cgroup.c:3697
- kernfs_fop_write+0x268/0x490 fs/kernfs/file.c:315
- vfs_write+0x2b0/0x730 fs/read_write.c:576
- ksys_write+0x12d/0x250 fs/read_write.c:631
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 20465:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
- kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
- __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
- __cache_free mm/slab.c:3418 [inline]
- kfree+0x103/0x2c0 mm/slab.c:3756
- css_free_rwork_fn+0xf2/0x10c0 kernel/cgroup/cgroup.c:4941
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Last call_rcu():
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_record_aux_stack+0x82/0xb0 mm/kasan/generic.c:346
- __call_rcu kernel/rcu/tree.c:2894 [inline]
- call_rcu+0x14f/0x7e0 kernel/rcu/tree.c:2968
- queue_rcu_work+0x82/0xa0 kernel/workqueue.c:1747
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Second to last call_rcu():
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_record_aux_stack+0x82/0xb0 mm/kasan/generic.c:346
- __call_rcu kernel/rcu/tree.c:2894 [inline]
- call_rcu+0x14f/0x7e0 kernel/rcu/tree.c:2968
- __percpu_ref_switch_to_atomic lib/percpu-refcount.c:192 [inline]
- __percpu_ref_switch_mode+0x365/0x700 lib/percpu-refcount.c:237
- percpu_ref_kill_and_confirm+0x94/0x350 lib/percpu-refcount.c:350
- kill_css+0x115/0x340 kernel/cgroup/cgroup.c:5451
- cgroup_apply_control_disable+0x3d8/0x500 kernel/cgroup/cgroup.c:3108
- cgroup_finalize_control kernel/cgroup/cgroup.c:3171 [inline]
- cgroup_subtree_control_write+0x83e/0xcc0 kernel/cgroup/cgroup.c:3300
- cgroup_file_write+0x211/0x750 kernel/cgroup/cgroup.c:3697
- kernfs_fop_write+0x268/0x490 fs/kernfs/file.c:315
- vfs_write+0x2b0/0x730 fs/read_write.c:576
- ksys_write+0x12d/0x250 fs/read_write.c:631
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff88804ad14000
- which belongs to the cache kmalloc-4k of size 4096
-The buggy address is located 328 bytes inside of
- 4096-byte region [ffff88804ad14000, ffff88804ad15000)
-The buggy address belongs to the page:
-page:000000002f31f80d refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x4ad14
-head:000000002f31f80d order:1 compound_mapcount:0
-flags: 0xfffe0000010200(slab|head)
-raw: 00fffe0000010200 ffffea0001274388 ffffea00023b4188 ffff8880aa040900
-raw: 0000000000000000 ffff88804ad14000 0000000100000001 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff88804ad14000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88804ad14080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88804ad14100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                              ^
- ffff88804ad14180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88804ad14200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+Fix it in v3. Thank you for the review.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Regards,
+Brent
