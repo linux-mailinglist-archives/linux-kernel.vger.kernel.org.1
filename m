@@ -2,158 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40A7247F3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 09:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93664247F45
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 09:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726228AbgHRHQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 03:16:50 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:52034 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726203AbgHRHQs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 03:16:48 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U67H3Vd_1597735003;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U67H3Vd_1597735003)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 18 Aug 2020 15:16:45 +0800
-Subject: Re: [PATCH 2/2] mm/pageblock: remove false sharing in pageblock_flags
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-References: <1597549677-7480-1-git-send-email-alex.shi@linux.alibaba.com>
- <1597549677-7480-2-git-send-email-alex.shi@linux.alibaba.com>
- <20200816041720.GG17456@casper.infradead.org>
- <957eee62-1f46-49b6-4d5a-9671dc07c562@linux.alibaba.com>
- <CAKgT0UeT0VK4zW+aXn0-6VcO0hYF9u+h+0Cb9kgjvChUQ0w=6g@mail.gmail.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <a604ab69-d5c6-42a7-4487-a2fe6915940b@linux.alibaba.com>
-Date:   Tue, 18 Aug 2020 15:15:43 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <CAKgT0UeT0VK4zW+aXn0-6VcO0hYF9u+h+0Cb9kgjvChUQ0w=6g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+        id S1726541AbgHRHUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 03:20:24 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:51702 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726043AbgHRHUX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 03:20:23 -0400
+Received: from localhost (unknown [159.226.5.99])
+        by APP-03 (Coremail) with SMTP id rQCowAD3O0hBgDtfCC8iAw--.22137S2;
+        Tue, 18 Aug 2020 15:16:17 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
+Subject: [PATCH] libbpf: convert comma to semicolon
+Date:   Tue, 18 Aug 2020 07:16:11 +0000
+Message-Id: <20200818071611.21923-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: rQCowAD3O0hBgDtfCC8iAw--.22137S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Jw4UZF15Zr47JFWDtw48Crg_yoW3GrX_Gw
+        1xJr48XrZ5KFWYyw43GrZa9a4Ut3Z5Wr4kGFW7Gr9xta4UCa1rXry3CF9rGFyaq3Z29Fy7
+        J3ykJrnrJF43CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb3xFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVW8Jr0_Cr1UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1lc2xSY4AK67AK6r4xMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+        b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+        vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1l
+        IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvf
+        C2KfnxnUUI43ZEXa7VUbJDG5UUUUU==
+X-Originating-IP: [159.226.5.99]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiAwUMA13qZTpJ6QAAsB
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Replace a comma between expression statements by a semicolon.
 
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ tools/lib/bpf/libbpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-在 2020/8/16 下午11:56, Alexander Duyck 写道:
-> On Sun, Aug 16, 2020 at 7:11 AM Alex Shi <alex.shi@linux.alibaba.com> wrote:
->>
->>
->>
->> 在 2020/8/16 下午12:17, Matthew Wilcox 写道:
->>> On Sun, Aug 16, 2020 at 11:47:57AM +0800, Alex Shi wrote:
->>>> Current pageblock_flags is only 4 bits, so it has to share a char size
->>>> in cmpxchg when get set, the false sharing cause perf drop.
->>>>
->>>> If we incrase the bits up to 8, false sharing would gone in cmpxchg. and
->>>> the only cost is half char per pageblock, which is half char per 128MB
->>>> on x86, 4 chars in 1 GB.
->>>
->>> I don't believe this patch has that effect, mostly because it still does
->>> cmpxchg() on words instead of bytes.
->>
->> Hi Matthew,
->>
->> Thank a lot for comments!
->>
->> Sorry, I must overlook sth, would you like point out why the cmpxchg is still
->> on words after patch 1 applied?
->>
-> 
-> I would take it one step further. You still have false sharing as the
-> pageblocks bits still occupy the same cacheline so you are going to
-> see them cache bouncing regardless.
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 5d20b2da4427..5055e1531e43 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -8594,7 +8594,7 @@ struct perf_buffer *perf_buffer__new(int map_fd, size_t page_cnt,
+ 	struct perf_buffer_params p = {};
+ 	struct perf_event_attr attr = { 0, };
+ 
+-	attr.config = PERF_COUNT_SW_BPF_OUTPUT,
++	attr.config = PERF_COUNT_SW_BPF_OUTPUT;
+ 	attr.type = PERF_TYPE_SOFTWARE;
+ 	attr.sample_type = PERF_SAMPLE_RAW;
+ 	attr.sample_period = 1;
+-- 
+2.17.1
 
-Right, there 2 level false sharing here, cacheline and cmpxchg comparsion range.
-this patch could fix the cmpxchg level with a very cheap price.
-the cacheline size is too huge to resovle here.
-
-> 
-> What it seems like you are attempting to address is the fact that
-> multiple threads could all be attempting to update the same long
-> value. As I pointed out for the migrate type it seems to be protected
-> by the zone lock, but for compaction the skip bit doesn't have the
-> same protection as there are some threads using the zone lock and
-> others using the LRU lock. I'm still not sure it makes much of a
-> difference though.
-
-It looks with this patch, lock are not needed anymore on the flags.
-
-> 
->>>
->>> But which functions would benefit?  It seems to me this cmpxchg() is
->>> only called from the set_pageblock_migratetype() morass of functions,
->>> none of which are called in hot paths as far as I can make out.
->>>
->>> So are you just reasoning by analogy with the previous patch where you
->>> have measured a performance improvement, or did you send the wrong patch,
->>> or did I overlook a hot path that calls one of the pageblock migration
->>> functions?
->>>
->>
->> Uh, I am reading compaction.c and found the following commit introduced
->> test_and_set_skip under a lock. It looks like the pagelock_flags setting
->> has false sharing in cmpxchg. but I have no valid data on this yet.
->>
->> Thanks
->> Alex
->>
->> e380bebe4771548  mm, compaction: keep migration source private to a single compaction instance
->>
->>                 if (!locked) {
->>                         locked = compact_trylock_irqsave(zone_lru_lock(zone),
->>                                                                 &flags, cc);
->> -                       if (!locked)
->> +
->> +                       /* Allow future scanning if the lock is contended */
->> +                       if (!locked) {
->> +                               clear_pageblock_skip(page);
->>                                 break;
->> +                       }
->> +
->> +                       /* Try get exclusive access under lock */
->> +                       if (!skip_updated) {
->> +                               skip_updated = true;
->> +                               if (test_and_set_skip(cc, page, low_pfn))
->> +                                       goto isolate_abort;
->> +                       }
->>
-> 
-> I'm not sure that is a good grounds for doubling the size of the
-> pageblock flags. If you look further down in the code there are bits
-> that are setting these bits without taking the lock. The assumption
-> here is that by taking the lock the test_and_set_skip will be
-> performed atomically since another thread cannot perform that while
-> the zone lock is held. If you look in the function itself it only does
-> anything if the skip bits are checked and if the page is the first
-> page in the pageblock.
-> 
-> I think you might be confusing some of my earlier comments. I still
-> believe the 3% regression you reported with my patch is not directly
-> related to the test_and_set_skip as the test you ran seems unlikely to
-> trigger compaction. However with that said one of the advantages of
-> using the locked section to perform these types of tests is that it
-> reduces the number of times the test is run since it will only be on
-> the first unlocked page in any batch of pages and the first page in
-> the pageblock is always going to be handled without the lock held
-> since it is the first page processed.
-> 
-> Until we can get a test up such as thpscale that does a good job of
-> stressing the compaction code I don't think we can rely on just
-> observations to say if this is an improvement or not.
-
-I still struggle on thpscale meaningful running. But if the patch is 
-clearly right in theory. Do we have to hang on a benchmark result?
-
-Thanks
-Alex
