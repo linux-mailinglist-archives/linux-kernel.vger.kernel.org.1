@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA0924862B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 15:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A55AF248631
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 15:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726836AbgHRNgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 09:36:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45610 "EHLO mail.kernel.org"
+        id S1726874AbgHRNgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 09:36:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726660AbgHRNgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 09:36:09 -0400
+        id S1726660AbgHRNgk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 09:36:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD6D22076D;
-        Tue, 18 Aug 2020 13:36:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D2E04206B5;
+        Tue, 18 Aug 2020 13:36:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597757769;
-        bh=qKMe8yvEZAbay72M2tJtP0TdwY4VnJuiqPFS8BMNa0I=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0/CpW8GIgXJ+2e+UUMPBIshWolNDL2nz14zrE9S5cvkhP5srhs5CEWVWhY3nV5XHv
-         Yk2FF9E1kWK/QPZWhzfCzdhVj2RhcDvXD2OSz1K3LfHOZdt9GyvFh+Ns6ZPRtPXgai
-         jby3SMBKDzcyew0UrS65uiFTfpNE7q59jTNi4MXk=
+        s=default; t=1597757799;
+        bh=RVyDQEUwJhH5RMxRj5OKU9DVJFQceIMcBQHgKS2zs18=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uaWb7VGKd1fYgkjVJUmdfBjhxrVAdaDQjIuUbJJ73gKChdu5JPpQ/t/HWbAitbrX3
+         CbVGmydUQhSvUOdhlB2RPrEvAqTJOC9enWxZDJXBCAzoCsiZwxSa5Nqw9QruXMppfM
+         Q5JEVn1CGGYdE922AyTubfSJR9KtZKdvtk5w4Vj4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-media@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 7/7] media: usb: uvc: no need to check return value of debugfs_create functions
-Date:   Tue, 18 Aug 2020 15:36:08 +0200
-Message-Id: <20200818133608.462514-7-gregkh@linuxfoundation.org>
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH] regulator: dbx500: no need to check return value of debugfs_create functions
+Date:   Tue, 18 Aug 2020 15:37:01 +0200
+Message-Id: <20200818133701.462958-1-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200818133608.462514-1-gregkh@linuxfoundation.org>
-References: <20200818133608.462514-1-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -46,54 +43,67 @@ When calling debugfs functions, there is no need to ever check the
 return value.  The function can work or not, but the code logic should
 never do something different based on this.
 
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: linux-media@vger.kernel.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/uvc/uvc_debugfs.c | 20 ++++----------------
- 1 file changed, 4 insertions(+), 16 deletions(-)
+ drivers/regulator/dbx500-prcmu.c | 24 +++++-------------------
+ 1 file changed, 5 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/media/usb/uvc/uvc_debugfs.c b/drivers/media/usb/uvc/uvc_debugfs.c
-index 2b8af4b54117..1a1258d4ffca 100644
---- a/drivers/media/usb/uvc/uvc_debugfs.c
-+++ b/drivers/media/usb/uvc/uvc_debugfs.c
-@@ -73,7 +73,6 @@ static struct dentry *uvc_debugfs_root_dir;
- void uvc_debugfs_init_stream(struct uvc_streaming *stream)
+diff --git a/drivers/regulator/dbx500-prcmu.c b/drivers/regulator/dbx500-prcmu.c
+index c3ad6aa6b5d3..7395ad2105ab 100644
+--- a/drivers/regulator/dbx500-prcmu.c
++++ b/drivers/regulator/dbx500-prcmu.c
+@@ -67,8 +67,6 @@ static int power_state_active_get(void)
+ 
+ static struct ux500_regulator_debug {
+ 	struct dentry *dir;
+-	struct dentry *status_file;
+-	struct dentry *power_state_cnt_file;
+ 	struct dbx500_regulator_info *regulator_array;
+ 	int num_regulators;
+ 	u8 *state_before_suspend;
+@@ -117,22 +115,14 @@ ux500_regulator_debug_init(struct platform_device *pdev,
  {
- 	struct usb_device *udev = stream->dev->udev;
--	struct dentry *dent;
- 	char dir_name[33];
+ 	/* create directory */
+ 	rdebug.dir = debugfs_create_dir("ux500-regulator", NULL);
+-	if (!rdebug.dir)
+-		goto exit_no_debugfs;
  
- 	if (uvc_debugfs_root_dir == NULL)
-@@ -82,22 +81,11 @@ void uvc_debugfs_init_stream(struct uvc_streaming *stream)
- 	snprintf(dir_name, sizeof(dir_name), "%u-%u-%u", udev->bus->busnum,
- 		 udev->devnum, stream->intfnum);
+ 	/* create "status" file */
+-	rdebug.status_file = debugfs_create_file("status",
+-		S_IRUGO, rdebug.dir, &pdev->dev,
+-		&ux500_regulator_status_fops);
+-	if (!rdebug.status_file)
+-		goto exit_destroy_dir;
++	debugfs_create_file("status", S_IRUGO, rdebug.dir, &pdev->dev,
++			    &ux500_regulator_status_fops);
  
--	dent = debugfs_create_dir(dir_name, uvc_debugfs_root_dir);
--	if (IS_ERR_OR_NULL(dent)) {
--		uvc_printk(KERN_INFO, "Unable to create debugfs %s "
--			   "directory.\n", dir_name);
--		return;
--	}
--
--	stream->debugfs_dir = dent;
-+	stream->debugfs_dir = debugfs_create_dir(dir_name,
-+						 uvc_debugfs_root_dir);
+ 	/* create "power-state-count" file */
+-	rdebug.power_state_cnt_file = debugfs_create_file("power-state-count",
+-		S_IRUGO, rdebug.dir, &pdev->dev,
+-		&ux500_regulator_power_state_cnt_fops);
+-	if (!rdebug.power_state_cnt_file)
+-		goto exit_destroy_status;
++	debugfs_create_file("power-state-count", S_IRUGO, rdebug.dir,
++			    &pdev->dev, &ux500_regulator_power_state_cnt_fops);
  
--	dent = debugfs_create_file("stats", 0444, stream->debugfs_dir,
--				   stream, &uvc_debugfs_stats_fops);
--	if (IS_ERR_OR_NULL(dent)) {
--		uvc_printk(KERN_INFO, "Unable to create debugfs stats file.\n");
--		uvc_debugfs_cleanup_stream(stream);
--		return;
--	}
-+	debugfs_create_file("stats", 0444, stream->debugfs_dir, stream,
-+			    &uvc_debugfs_stats_fops);
- }
- 
- void uvc_debugfs_cleanup_stream(struct uvc_streaming *stream)
+ 	rdebug.regulator_array = regulator_info;
+ 	rdebug.num_regulators = num_regulators;
+@@ -150,11 +140,7 @@ ux500_regulator_debug_init(struct platform_device *pdev,
+ exit_free:
+ 	kfree(rdebug.state_before_suspend);
+ exit_destroy_power_state:
+-	debugfs_remove(rdebug.power_state_cnt_file);
+-exit_destroy_status:
+-	debugfs_remove(rdebug.status_file);
+-exit_destroy_dir:
+-	debugfs_remove(rdebug.dir);
++	debugfs_remove_recursive(rdebug.dir);
+ exit_no_debugfs:
+ 	dev_err(&pdev->dev, "failed to create debugfs entries.\n");
+ 	return -ENOMEM;
 -- 
 2.28.0
 
