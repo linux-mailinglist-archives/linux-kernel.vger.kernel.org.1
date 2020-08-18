@@ -2,147 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E230247FA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 09:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A5A247FC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 09:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726582AbgHRHoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 03:44:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbgHRHoM (ORCPT
+        id S1726576AbgHRHsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 03:48:46 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:43671 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726043AbgHRHso (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 03:44:12 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86CB1C061389
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 00:44:12 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id c15so17254967wrs.11
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 00:44:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=forissier-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=A5pN3eJiHp9vz3E+RH+ObRVo3XkJaWoyYYlg3RDmk3E=;
-        b=mh0KQrRkKU4DzTcQ9iVzttgK9sKyMvaS3bdhIjI3pgd8eP3EzG7bsR8J5JDo9zObuv
-         DF40sjl1OTWshqTj+b9zPsMSZXccIXav7sVjatOG3T49rw7D6wo108e3JuaIUJqTqUmZ
-         m6Ej/GufkXQ2TP4cEIM2c3RG1s8WF6a67ez+xCUOhN51+GO0jEtVrXg2k6m1x4woPCBc
-         jCwTz0rbfmqhT0tfOdqd42Db/5ZKY4TfVzWScxVNJtGxmNAoScFQRlHx4PrCZImFvWrZ
-         jE1FHOyrNAbnEsnuwoIXr1ZRssM6nXd/zYSxLY1yNtBs/6HY0B3g07LH2i7N8utp+T/w
-         L3Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=A5pN3eJiHp9vz3E+RH+ObRVo3XkJaWoyYYlg3RDmk3E=;
-        b=rloU1NH5cAKI9djO8BLOPe19Q00Oq44cGdrOovIIQaps9x5gmHb2sitwPZSwiEvvpA
-         xm7pFp/TMRYRlAPVCxx9JcUbSgqLv7x+ucrEHDR3ql3UpdlNUManFgj8O7NOFGfBBPbX
-         bav+Jzy7or/y6eh6nnG0Qaqhn2yrJnSR9jEHBC8PKB+lsuGhUGX/Dkqz09asOu8xltXZ
-         Ec0obGjKLGbHGAYrAffNwHHIKDtxsk/14Hzxd7UDqQgmyGMaeS6UobzJK5xbBB3oo9VR
-         nbj/9Hi/AmvdOpC8I21/huWEAGKer8V5mnAngg4/O6wOzN9FYfZJRZjlDoGAue3nYOpr
-         AH6Q==
-X-Gm-Message-State: AOAM532xmWXk8BKFah7kfoQh+qf3UD77tI75jjuL/PWLyRvR5p8NVljN
-        0OmMP+2b7kwZ/0/0A81PLckd8rrLIXzWAvuC1qFspQ==
-X-Google-Smtp-Source: ABdhPJxW0rIGzvrU6uulZCHt9oY0DvpPITzfVDekF48UCvzk1URfmTLotKQ4p7bNDTK5G2fH2E6foA==
-X-Received: by 2002:a5d:414d:: with SMTP id c13mr13675181wrq.78.1597736651139;
-        Tue, 18 Aug 2020 00:44:11 -0700 (PDT)
-Received: from matebook.home ([2a01:e0a:3cb:7bb0:8875:d92:eae5:ceb5])
-        by smtp.gmail.com with ESMTPSA id j11sm32910182wrw.79.2020.08.18.00.44.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 00:44:10 -0700 (PDT)
-From:   Jerome Forissier <jerome@forissier.org>
-To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Jerome Forissier <jerome@forissier.org>
-Subject: [PATCH v3] checkpatch: add --kconfig-prefix
-Date:   Tue, 18 Aug 2020 09:43:49 +0200
-Message-Id: <20200818074349.726778-1-jerome@forissier.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200817095056.31001-1-jerome@forissier.org>
-References: <20200817095056.31001-1-jerome@forissier.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 18 Aug 2020 03:48:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597736921;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
+        bh=WanW9by5F/DHIgu66E+1I0NOXAa3iKuB6OXDjnbn69A=;
+        b=BOUS3RUAxA57ThAzFLslZrce4z0RW9Uj8Er1g0+Nmk4o6eEEYt/SKM16y9q4j4tBFWQcpc
+        tv3EBey9paiTfoV4CMSJGNcBFdo29QOgQJvSzacRwBXVAsyQQI9pRU+Aozu48ywsj7L3CO
+        p04eltZcaeOYFEMF5KnMtFZ6Q5g/wNI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-256-B9KZxgOsOPCS3WTw1IRtxQ-1; Tue, 18 Aug 2020 03:48:38 -0400
+X-MC-Unique: B9KZxgOsOPCS3WTw1IRtxQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8DBFB1005E5F;
+        Tue, 18 Aug 2020 07:48:34 +0000 (UTC)
+Received: from sirius.home.kraxel.org (ovpn-112-195.ams2.redhat.com [10.36.112.195])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3153B7B8F9;
+        Tue, 18 Aug 2020 07:48:30 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id 5DC849D74; Tue, 18 Aug 2020 09:48:29 +0200 (CEST)
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Gerd Hoffmann <kraxel@redhat.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Sandy Huang <hjc@rock-chips.com>,
+        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        amd-gfx@lists.freedesktop.org (open list:RADEON and AMDGPU DRM DRIVERS),
+        linux-kernel@vger.kernel.org (open list),
+        etnaviv@lists.freedesktop.org (moderated list:DRM DRIVERS FOR VIVANTE
+        GPU IP),
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU),
+        nouveau@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA
+        GEFORCE/QUADRO GPUS),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Rockchip SoC
+        support),
+        linux-rockchip@lists.infradead.org (open list:ARM/Rockchip SoC support),
+        linux-tegra@vger.kernel.org (open list:DRM DRIVERS FOR NVIDIA TEGRA),
+        xen-devel@lists.xenproject.org (moderated list:DRM DRIVERS FOR XEN)
+Subject: [PATCH 1/2] drm: allow limiting the scatter list size.
+Date:   Tue, 18 Aug 2020 09:48:27 +0200
+Message-Id: <20200818074828.9509-2-kraxel@redhat.com>
+In-Reply-To: <20200818074828.9509-1-kraxel@redhat.com>
+References: <20200818074828.9509-1-kraxel@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kconfig allows to customize the CONFIG_ prefix via the $CONFIG_
-environment variable. Out-of-tree projects may therefore use Kconfig
-with a different prefix, or they may use a custom configuration tool
-which does not use the CONFIG_ prefix at all. Such projects may still
-want to adhere to the Linux kernel coding style and run checkpatch.pl.
+Add max_segment argument to drm_prime_pages_to_sg().  When set pass it
+through to the __sg_alloc_table_from_pages() call, otherwise use
+SCATTERLIST_MAX_SEGMENT.
 
-One example is OP-TEE [1] which does not use Kconfig but does have
-configuration options prefixed with CFG_. It also mostly follows the
-kernel coding style and therefore being able to use checkpatch is quite
-valuable.
+Also add max_segment field to gem objects and pass it to
+drm_prime_pages_to_sg() calls in drivers and helpers.
 
-To make this possible, add the --kconfig-prefix command line option.
-
-Signed-off-by: Jerome Forissier <jerome@forissier.org>
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
 ---
- scripts/checkpatch.pl | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ include/drm/drm_gem.h                       |  8 ++++++++
+ include/drm/drm_prime.h                     |  3 ++-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c |  3 ++-
+ drivers/gpu/drm/drm_gem_shmem_helper.c      |  3 ++-
+ drivers/gpu/drm/drm_prime.c                 | 10 +++++++---
+ drivers/gpu/drm/etnaviv/etnaviv_gem.c       |  3 ++-
+ drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c |  3 ++-
+ drivers/gpu/drm/msm/msm_gem.c               |  3 ++-
+ drivers/gpu/drm/msm/msm_gem_prime.c         |  3 ++-
+ drivers/gpu/drm/nouveau/nouveau_prime.c     |  3 ++-
+ drivers/gpu/drm/radeon/radeon_prime.c       |  3 ++-
+ drivers/gpu/drm/rockchip/rockchip_drm_gem.c |  6 ++++--
+ drivers/gpu/drm/tegra/gem.c                 |  3 ++-
+ drivers/gpu/drm/vgem/vgem_drv.c             |  3 ++-
+ drivers/gpu/drm/xen/xen_drm_front_gem.c     |  3 ++-
+ 15 files changed, 43 insertions(+), 17 deletions(-)
 
-v3:
-- Use ${CONFIG_} instead of $CONFIG_.
-- Expand the commit message to mention OP-TEE.
-
-v2:
-- Use a command-line/.checkpatch.conf option instead of the _CONFIG
-  environment variable.
-- Changed the patch subject (was: "checkpatch: get CONFIG_ prefix from
-  the environment").
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 2cbeae6d9aee..fd65f8c774ed 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -65,6 +65,7 @@ my $allow_c99_comments = 1; # Can be overridden by --ignore C99_COMMENT_TOLERANC
- # git output parsing needs US English output, so first set backtick child process LANGUAGE
- my $git_command ='export LANGUAGE=en_US.UTF-8; git';
- my $tabsize = 8;
-+my ${CONFIG_} = "CONFIG_";
+diff --git a/include/drm/drm_gem.h b/include/drm/drm_gem.h
+index 337a48321705..dea5e92e745b 100644
+--- a/include/drm/drm_gem.h
++++ b/include/drm/drm_gem.h
+@@ -241,6 +241,14 @@ struct drm_gem_object {
+ 	 */
+ 	size_t size;
  
- sub help {
- 	my ($exitcode) = @_;
-@@ -127,6 +128,8 @@ Options:
-   --typedefsfile             Read additional types from this file
-   --color[=WHEN]             Use colors 'always', 'never', or only when output
-                              is a terminal ('auto'). Default is 'auto'.
-+  --kconfig-prefix=WORD      use WORD as a prefix for Kconfig symbols (default
-+                             ${CONFIG_})
-   -h, --help, --version      display this help and exit
++	/**
++	 * @max_segment:
++	 *
++	 * Max size for scatter list segments.  When unset the default
++	 * (SCATTERLIST_MAX_SEGMENT) is used.
++	 */
++	size_t max_segment;
++
+ 	/**
+ 	 * @name:
+ 	 *
+diff --git a/include/drm/drm_prime.h b/include/drm/drm_prime.h
+index 9af7422b44cf..2c3689435cb4 100644
+--- a/include/drm/drm_prime.h
++++ b/include/drm/drm_prime.h
+@@ -88,7 +88,8 @@ void drm_gem_dmabuf_vunmap(struct dma_buf *dma_buf, void *vaddr);
+ int drm_gem_prime_mmap(struct drm_gem_object *obj, struct vm_area_struct *vma);
+ int drm_gem_dmabuf_mmap(struct dma_buf *dma_buf, struct vm_area_struct *vma);
  
- When FILE is - read standard input.
-@@ -235,6 +238,7 @@ GetOptions(
- 	'color=s'	=> \$color,
- 	'no-color'	=> \$color,	#keep old behaviors of -nocolor
- 	'nocolor'	=> \$color,	#keep old behaviors of -nocolor
-+	'kconfig-prefix=s'	=> \${CONFIG_},
- 	'h|help'	=> \$help,
- 	'version'	=> \$help
- ) or help(1);
-@@ -6528,16 +6532,16 @@ sub process {
- 		}
+-struct sg_table *drm_prime_pages_to_sg(struct page **pages, unsigned int nr_pages);
++struct sg_table *drm_prime_pages_to_sg(struct page **pages, unsigned int nr_pages,
++				       size_t max_segment);
+ struct dma_buf *drm_gem_prime_export(struct drm_gem_object *obj,
+ 				     int flags);
  
- # check for IS_ENABLED() without CONFIG_<FOO> ($rawline for comments too)
--		if ($rawline =~ /\bIS_ENABLED\s*\(\s*(\w+)\s*\)/ && $1 !~ /^CONFIG_/) {
-+		if ($rawline =~ /\bIS_ENABLED\s*\(\s*(\w+)\s*\)/ && $1 !~ /^${CONFIG_}/) {
- 			WARN("IS_ENABLED_CONFIG",
--			     "IS_ENABLED($1) is normally used as IS_ENABLED(CONFIG_$1)\n" . $herecurr);
-+			     "IS_ENABLED($1) is normally used as IS_ENABLED(${CONFIG_}$1)\n" . $herecurr);
- 		}
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c
+index 519ce4427fce..5e8a9760b33f 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c
+@@ -303,7 +303,8 @@ static struct sg_table *amdgpu_dma_buf_map(struct dma_buf_attachment *attach,
+ 	switch (bo->tbo.mem.mem_type) {
+ 	case TTM_PL_TT:
+ 		sgt = drm_prime_pages_to_sg(bo->tbo.ttm->pages,
+-					    bo->tbo.num_pages);
++					    bo->tbo.num_pages,
++					    obj->max_segment);
+ 		if (IS_ERR(sgt))
+ 			return sgt;
  
- # check for #if defined CONFIG_<FOO> || defined CONFIG_<FOO>_MODULE
--		if ($line =~ /^\+\s*#\s*if\s+defined(?:\s*\(?\s*|\s+)(CONFIG_[A-Z_]+)\s*\)?\s*\|\|\s*defined(?:\s*\(?\s*|\s+)\1_MODULE\s*\)?\s*$/) {
-+		if ($line =~ /^\+\s*#\s*if\s+defined(?:\s*\(?\s*|\s+)(${CONFIG_}[A-Z_]+)\s*\)?\s*\|\|\s*defined(?:\s*\(?\s*|\s+)\1_MODULE\s*\)?\s*$/) {
- 			my $config = $1;
- 			if (WARN("PREFER_IS_ENABLED",
--				 "Prefer IS_ENABLED(<FOO>) to CONFIG_<FOO> || CONFIG_<FOO>_MODULE\n" . $herecurr) &&
-+				 "Prefer IS_ENABLED(<FOO>) to ${CONFIG_}<FOO> || ${CONFIG_}<FOO>_MODULE\n" . $herecurr) &&
- 			    $fix) {
- 				$fixed[$fixlinenr] = "\+#if IS_ENABLED($config)";
- 			}
+diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+index 4b7cfbac4daa..cfb979d808fd 100644
+--- a/drivers/gpu/drm/drm_gem_shmem_helper.c
++++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+@@ -656,7 +656,8 @@ struct sg_table *drm_gem_shmem_get_sg_table(struct drm_gem_object *obj)
+ 
+ 	WARN_ON(shmem->base.import_attach);
+ 
+-	return drm_prime_pages_to_sg(shmem->pages, obj->size >> PAGE_SHIFT);
++	return drm_prime_pages_to_sg(shmem->pages, obj->size >> PAGE_SHIFT,
++				     obj->max_segment);
+ }
+ EXPORT_SYMBOL_GPL(drm_gem_shmem_get_sg_table);
+ 
+diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
+index 1693aa7c14b5..27c783fd6633 100644
+--- a/drivers/gpu/drm/drm_prime.c
++++ b/drivers/gpu/drm/drm_prime.c
+@@ -802,7 +802,8 @@ static const struct dma_buf_ops drm_gem_prime_dmabuf_ops =  {
+  *
+  * This is useful for implementing &drm_gem_object_funcs.get_sg_table.
+  */
+-struct sg_table *drm_prime_pages_to_sg(struct page **pages, unsigned int nr_pages)
++struct sg_table *drm_prime_pages_to_sg(struct page **pages, unsigned int nr_pages,
++				       size_t max_segment)
+ {
+ 	struct sg_table *sg = NULL;
+ 	int ret;
+@@ -813,8 +814,11 @@ struct sg_table *drm_prime_pages_to_sg(struct page **pages, unsigned int nr_page
+ 		goto out;
+ 	}
+ 
+-	ret = sg_alloc_table_from_pages(sg, pages, nr_pages, 0,
+-				nr_pages << PAGE_SHIFT, GFP_KERNEL);
++	if (max_segment == 0 || max_segment > SCATTERLIST_MAX_SEGMENT)
++		max_segment = SCATTERLIST_MAX_SEGMENT;
++	ret = __sg_alloc_table_from_pages(sg, pages, nr_pages, 0,
++					  nr_pages << PAGE_SHIFT,
++					  max_segment, GFP_KERNEL);
+ 	if (ret)
+ 		goto out;
+ 
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem.c b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+index f06e19e7be04..e5b6e7996f80 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_gem.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+@@ -103,7 +103,8 @@ struct page **etnaviv_gem_get_pages(struct etnaviv_gem_object *etnaviv_obj)
+ 		int npages = etnaviv_obj->base.size >> PAGE_SHIFT;
+ 		struct sg_table *sgt;
+ 
+-		sgt = drm_prime_pages_to_sg(etnaviv_obj->pages, npages);
++		sgt = drm_prime_pages_to_sg(etnaviv_obj->pages, npages,
++					    etnaviv_obj->base.max_segment);
+ 		if (IS_ERR(sgt)) {
+ 			dev_err(dev->dev, "failed to allocate sgt: %ld\n",
+ 				PTR_ERR(sgt));
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c b/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
+index 6d9e5c3c4dd5..f327676450bd 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
+@@ -19,7 +19,8 @@ struct sg_table *etnaviv_gem_prime_get_sg_table(struct drm_gem_object *obj)
+ 	if (WARN_ON(!etnaviv_obj->pages))  /* should have already pinned! */
+ 		return ERR_PTR(-EINVAL);
+ 
+-	return drm_prime_pages_to_sg(etnaviv_obj->pages, npages);
++	return drm_prime_pages_to_sg(etnaviv_obj->pages, npages,
++				     obj->max_segment);
+ }
+ 
+ void *etnaviv_gem_prime_vmap(struct drm_gem_object *obj)
+diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
+index b2f49152b4d4..f805419bb84a 100644
+--- a/drivers/gpu/drm/msm/msm_gem.c
++++ b/drivers/gpu/drm/msm/msm_gem.c
+@@ -126,7 +126,8 @@ static struct page **get_pages(struct drm_gem_object *obj)
+ 
+ 		msm_obj->pages = p;
+ 
+-		msm_obj->sgt = drm_prime_pages_to_sg(p, npages);
++		msm_obj->sgt = drm_prime_pages_to_sg(p, npages,
++						     obj->max_segment);
+ 		if (IS_ERR(msm_obj->sgt)) {
+ 			void *ptr = ERR_CAST(msm_obj->sgt);
+ 
+diff --git a/drivers/gpu/drm/msm/msm_gem_prime.c b/drivers/gpu/drm/msm/msm_gem_prime.c
+index d7c8948427fe..a5a412564c7f 100644
+--- a/drivers/gpu/drm/msm/msm_gem_prime.c
++++ b/drivers/gpu/drm/msm/msm_gem_prime.c
+@@ -19,7 +19,8 @@ struct sg_table *msm_gem_prime_get_sg_table(struct drm_gem_object *obj)
+ 	if (WARN_ON(!msm_obj->pages))  /* should have already pinned! */
+ 		return NULL;
+ 
+-	return drm_prime_pages_to_sg(msm_obj->pages, npages);
++	return drm_prime_pages_to_sg(msm_obj->pages, npages,
++				     obj->max_segment);
+ }
+ 
+ void *msm_gem_prime_vmap(struct drm_gem_object *obj)
+diff --git a/drivers/gpu/drm/nouveau/nouveau_prime.c b/drivers/gpu/drm/nouveau/nouveau_prime.c
+index bae6a3eccee0..56a2e916d51a 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_prime.c
++++ b/drivers/gpu/drm/nouveau/nouveau_prime.c
+@@ -32,7 +32,8 @@ struct sg_table *nouveau_gem_prime_get_sg_table(struct drm_gem_object *obj)
+ 	struct nouveau_bo *nvbo = nouveau_gem_object(obj);
+ 	int npages = nvbo->bo.num_pages;
+ 
+-	return drm_prime_pages_to_sg(nvbo->bo.ttm->pages, npages);
++	return drm_prime_pages_to_sg(nvbo->bo.ttm->pages, npages,
++				     obj->max_segment);
+ }
+ 
+ void *nouveau_gem_prime_vmap(struct drm_gem_object *obj)
+diff --git a/drivers/gpu/drm/radeon/radeon_prime.c b/drivers/gpu/drm/radeon/radeon_prime.c
+index b906e8fbd5f3..503e35625045 100644
+--- a/drivers/gpu/drm/radeon/radeon_prime.c
++++ b/drivers/gpu/drm/radeon/radeon_prime.c
+@@ -36,7 +36,8 @@ struct sg_table *radeon_gem_prime_get_sg_table(struct drm_gem_object *obj)
+ 	struct radeon_bo *bo = gem_to_radeon_bo(obj);
+ 	int npages = bo->tbo.num_pages;
+ 
+-	return drm_prime_pages_to_sg(bo->tbo.ttm->pages, npages);
++	return drm_prime_pages_to_sg(bo->tbo.ttm->pages, npages,
++				     obj->max_segment);
+ }
+ 
+ void *radeon_gem_prime_vmap(struct drm_gem_object *obj)
+diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_gem.c b/drivers/gpu/drm/rockchip/rockchip_drm_gem.c
+index b9275ba7c5a5..444657e03c16 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_drm_gem.c
++++ b/drivers/gpu/drm/rockchip/rockchip_drm_gem.c
+@@ -85,7 +85,8 @@ static int rockchip_gem_get_pages(struct rockchip_gem_object *rk_obj)
+ 
+ 	rk_obj->num_pages = rk_obj->base.size >> PAGE_SHIFT;
+ 
+-	rk_obj->sgt = drm_prime_pages_to_sg(rk_obj->pages, rk_obj->num_pages);
++	rk_obj->sgt = drm_prime_pages_to_sg(rk_obj->pages, rk_obj->num_pages,
++					    rk_obj->base.max_segment);
+ 	if (IS_ERR(rk_obj->sgt)) {
+ 		ret = PTR_ERR(rk_obj->sgt);
+ 		goto err_put_pages;
+@@ -442,7 +443,8 @@ struct sg_table *rockchip_gem_prime_get_sg_table(struct drm_gem_object *obj)
+ 	int ret;
+ 
+ 	if (rk_obj->pages)
+-		return drm_prime_pages_to_sg(rk_obj->pages, rk_obj->num_pages);
++		return drm_prime_pages_to_sg(rk_obj->pages, rk_obj->num_pages,
++					     obj->max_segment);
+ 
+ 	sgt = kzalloc(sizeof(*sgt), GFP_KERNEL);
+ 	if (!sgt)
+diff --git a/drivers/gpu/drm/tegra/gem.c b/drivers/gpu/drm/tegra/gem.c
+index 723df142a981..8d98b02a8d21 100644
+--- a/drivers/gpu/drm/tegra/gem.c
++++ b/drivers/gpu/drm/tegra/gem.c
+@@ -284,7 +284,8 @@ static int tegra_bo_get_pages(struct drm_device *drm, struct tegra_bo *bo)
+ 
+ 	bo->num_pages = bo->gem.size >> PAGE_SHIFT;
+ 
+-	bo->sgt = drm_prime_pages_to_sg(bo->pages, bo->num_pages);
++	bo->sgt = drm_prime_pages_to_sg(bo->pages, bo->num_pages,
++					bo->gem.max_segment);
+ 	if (IS_ERR(bo->sgt)) {
+ 		err = PTR_ERR(bo->sgt);
+ 		goto put_pages;
+diff --git a/drivers/gpu/drm/vgem/vgem_drv.c b/drivers/gpu/drm/vgem/vgem_drv.c
+index 313339bbff90..d25c93b5a2c1 100644
+--- a/drivers/gpu/drm/vgem/vgem_drv.c
++++ b/drivers/gpu/drm/vgem/vgem_drv.c
+@@ -321,7 +321,8 @@ static struct sg_table *vgem_prime_get_sg_table(struct drm_gem_object *obj)
+ {
+ 	struct drm_vgem_gem_object *bo = to_vgem_bo(obj);
+ 
+-	return drm_prime_pages_to_sg(bo->pages, bo->base.size >> PAGE_SHIFT);
++	return drm_prime_pages_to_sg(bo->pages, bo->base.size >> PAGE_SHIFT,
++				     obj->max_segment);
+ }
+ 
+ static struct drm_gem_object* vgem_prime_import(struct drm_device *dev,
+diff --git a/drivers/gpu/drm/xen/xen_drm_front_gem.c b/drivers/gpu/drm/xen/xen_drm_front_gem.c
+index f0b85e094111..362fe5311b1b 100644
+--- a/drivers/gpu/drm/xen/xen_drm_front_gem.c
++++ b/drivers/gpu/drm/xen/xen_drm_front_gem.c
+@@ -179,7 +179,8 @@ struct sg_table *xen_drm_front_gem_get_sg_table(struct drm_gem_object *gem_obj)
+ 	if (!xen_obj->pages)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	return drm_prime_pages_to_sg(xen_obj->pages, xen_obj->num_pages);
++	return drm_prime_pages_to_sg(xen_obj->pages, xen_obj->num_pages,
++				     gem_obj->max_segment);
+ }
+ 
+ struct drm_gem_object *
 -- 
-2.25.1
+2.18.4
 
