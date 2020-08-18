@@ -2,97 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1339C248B9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88008248B97
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728192AbgHRQ3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 12:29:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728250AbgHRQ01 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 12:26:27 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC37C061389;
-        Tue, 18 Aug 2020 09:26:26 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id y11so9825661qvl.4;
-        Tue, 18 Aug 2020 09:26:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iIX0sNpmnJ6kXFsh0zKxLpYcQTRQO7AV2JMPqyWSiic=;
-        b=Bic/hW8DHiQT6NI9ZYD2pLUalLPzv43IhrECzIzAy1blLkWVMCvnvwwfyDaiES+8+h
-         c+Y16gYMVadeuQ1AQqjt05lsi7m2uHzKuYFVoNIFTkHuKdkiByM6epBC11bVKxykIyja
-         g64CzhD91jNskkR/oUyM/MVLgWWxnqw488Y35xkz9qJfNcAirZtdgSm76DbUSaHxPhEs
-         QX9ZiyNtrIyncv6FIoIYpQ/o4o5Wy6rI2wm+Lr9PXFwKG1Hpx95jztSCYvXqwoXV9fq/
-         7qkR6GyaKIv3FBdHmaHGu84rVwj4YT2KH8jUwSEqJ07LShZTq4j9JnVKyQD21t5thlHb
-         My5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iIX0sNpmnJ6kXFsh0zKxLpYcQTRQO7AV2JMPqyWSiic=;
-        b=HlWtDXySbjDIG53XuijPF+bp7KAUb8a46mbMH0fpCF9ySgfw330iNea5ax5+OEe83s
-         Brg3t+trfApIIPiuNjfGhKv7RSEQXhvHJ2zoOcJPBfn1r0Gv2ayB0I6CudR0Vbd2FgXo
-         mY+4uOU/Yk0IEvmM+dA38Tx1Kzm7CdsaQuulZ5zExsQCM9uLIxkajMzjtOajoVw1eFUP
-         Nq+Ki9Px9frU7qm6KBJsulqsbd3xfF4ehiHIspjuEEjdxrLGeODATb7fbk0HqGqCMcLy
-         D+OKMMSYJ8qfk9GEohl5BAHzdlVfZ/du7sjjOh+waHsGi/EiN/HWLrqsoiJK3re1nE4z
-         +Bhw==
-X-Gm-Message-State: AOAM532qINWlgboax2RAhFe/41PmO00J3Y3UcNggPSfWqd6QfMAI75Le
-        ceO+hmBmqImOqFoUWXywE18=
-X-Google-Smtp-Source: ABdhPJy8t33CnDNghotiO9kPZ14KObEgHCT8T7IzUxyWuvEpZJ6mUqWnxWZvLoD137JlGgSdlYORzg==
-X-Received: by 2002:a0c:f2c8:: with SMTP id c8mr19867270qvm.64.1597767986007;
-        Tue, 18 Aug 2020 09:26:26 -0700 (PDT)
-Received: from tong-desktop.local ([2601:5c0:c100:b9d:f9e2:64b4:fbc4:6485])
-        by smtp.googlemail.com with ESMTPSA id u8sm11928528qkj.9.2020.08.18.09.26.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 09:26:25 -0700 (PDT)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org, robh@kernel.org,
-        linux-serial@vger.kernel.org
-Cc:     ztong0001@gmail.com, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] tty: serial: earlycon dependency
-Date:   Tue, 18 Aug 2020 12:25:57 -0400
-Message-Id: <20200818162556.6621-1-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200818111954.GA283417@kroah.com>
-References: <20200818111954.GA283417@kroah.com>
+        id S1727986AbgHRQ2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 12:28:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59698 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727008AbgHRQ03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 12:26:29 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 048802067C;
+        Tue, 18 Aug 2020 16:26:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597767989;
+        bh=WoGVZDwIK/F9JyxPbF1fAg8BjUCeVwwHlyHeaJ96uK8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Reyv3GJbcCmGMohVyAFQuL23NBpyCL5QalSakoQYkh8b699H1N+5EXpw7G1L904Ag
+         7fYDD7/k29a6R4CAIWxpiRuk04htTdgr6Qlly24vvza++Vaf5YTdPCKxftssimNqwT
+         L45gOej0uJkpVB/vBAAyZghx0nVAy+YNYcbW/smc=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id D84E535228F5; Tue, 18 Aug 2020 09:26:28 -0700 (PDT)
+Date:   Tue, 18 Aug 2020 09:26:28 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] bitops, kcsan: Partially revert instrumentation for
+ non-atomic bitops
+Message-ID: <20200818162628.GG27891@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200813163859.1542009-1-elver@google.com>
+ <CANpmjNOvS2FbvAk+j8N0uSuUJgbi=L2_zfK_koOKvJCuys7r7Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNOvS2FbvAk+j8N0uSuUJgbi=L2_zfK_koOKvJCuys7r7Q@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-parse_options() in drivers/tty/serial/earlycon.c calls uart_parse_earlycon
-in drivers/tty/serial/serial_core.c therefore selecting SERIAL_EARLYCON
-should automatically select SERIAL_CORE, otherwise will result in symbol
-not found error during linking if SERIAL_CORE is not configured as builtin.
+On Tue, Aug 18, 2020 at 10:34:28AM +0200, Marco Elver wrote:
+> On Thu, 13 Aug 2020 at 18:39, Marco Elver <elver@google.com> wrote:
+> > Previous to the change to distinguish read-write accesses, when
+> > CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=y is set, KCSAN would consider
+> > the non-atomic bitops as atomic. We want to partially revert to this
+> > behaviour, but with one important distinction: report racing
+> > modifications, since lost bits due to non-atomicity are certainly
+> > possible.
+> >
+> > Given the operations here only modify a single bit, assuming
+> > non-atomicity of the writer is sufficient may be reasonable for certain
+> > usage (and follows the permissible nature of the "assume plain writes
+> > atomic" rule). In other words:
+> >
+> >         1. We want non-atomic read-modify-write races to be reported;
+> >            this is accomplished by kcsan_check_read(), where any
+> >            concurrent write (atomic or not) will generate a report.
+> >
+> >         2. We do not want to report races with marked readers, but -do-
+> >            want to report races with unmarked readers; this is
+> >            accomplished by the instrument_write() ("assume atomic
+> >            write" with Kconfig option set).
+> >
+> > With the above rules, when KCSAN_ASSUME_PLAIN_WRITES_ATOMIC is selected,
+> > it is hoped that KCSAN's reporting behaviour is better aligned with
+> > current expected permissible usage for non-atomic bitops.
+> >
+> > Note that, a side-effect of not telling KCSAN that the accesses are
+> > read-writes, is that this information is not displayed in the access
+> > summary in the report. It is, however, visible in inline-expanded stack
+> > traces. For now, it does not make sense to introduce yet another special
+> > case to KCSAN's runtime, only to cater to the case here.
+> >
+> > Signed-off-by: Marco Elver <elver@google.com>
+> > Cc: Dmitry Vyukov <dvyukov@google.com>
+> > Cc: Paul E. McKenney <paulmck@kernel.org>
+> > Cc: Will Deacon <will@kernel.org>
+> > ---
+> > As discussed, partially reverting behaviour for non-atomic bitops when
+> > KCSAN_ASSUME_PLAIN_WRITES_ATOMIC is selected.
+> >
+> > I'd like to avoid more special cases in KCSAN's runtime to cater to
+> > cases like this, not only because it adds more complexity, but it
+> > invites more special cases to be added. If there are other such
+> > primitives, we likely have to do it on a case-by-case basis as well, and
+> > justify carefully for each such case. But currently, as far as I can
+> > tell, the bitops are truly special, simply because we do know each op
+> > just touches a single bit.
+> > ---
+> >  .../bitops/instrumented-non-atomic.h          | 30 +++++++++++++++++--
+> >  1 file changed, 27 insertions(+), 3 deletions(-)
+> 
+> Paul, if it looks good to you, feel free to pick it up.
 
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
----
+Queued, thank you!
 
-Fixes: 9aac5887595b ("tty/serial: add generic serial earlycon")
-v2: I made an attempt to fix the commit log
-v3: I made another attempt to fix the commit log and I also changed
-select to depends according to Jiri's comment
-
- drivers/tty/serial/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index 8a0352eb337c..6aed721e9287 100644
---- a/drivers/tty/serial/Kconfig
-+++ b/drivers/tty/serial/Kconfig
-@@ -8,6 +8,7 @@ menu "Serial drivers"
- 
- config SERIAL_EARLYCON
- 	bool
-+	depends SERIAL_CORE
- 	help
- 	  Support for early consoles with the earlycon parameter. This enables
- 	  the console before standard serial driver is probed. The console is
--- 
-2.25.1
-
+							Thanx, Paul
