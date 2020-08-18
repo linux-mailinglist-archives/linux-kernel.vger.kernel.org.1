@@ -2,104 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F503248D49
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E37C1248D57
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728873AbgHRRgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 13:36:50 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:39323 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728889AbgHRRgf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 13:36:35 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 3494A10A8;
-        Tue, 18 Aug 2020 13:36:34 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Tue, 18 Aug 2020 13:36:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm1; bh=9
-        TlfznyxsMv5GMFDcfPOM5mcVt7VYPmD7P4p5Aa1ggA=; b=n/I/jA2sR7EdLT4fM
-        sdG8+/6f5iDm80zA9fnUvSoAe+dUsK94q3XUGCycovf4oIeDyYVAyHVh/JXLGfJC
-        yahhcQ2zWxL3srqei7NxqOZK0lz+2mmLS+QZKvsRtv9PfnqhTt6wPdagpV80d4e+
-        iLPzzTDlone/3uKJcSNXU3Ktth+Ua/Fm+JI7PY6vMX7x1jFuOvIWn3VTVLf+wwzS
-        H5N4/AiQxVRXvtfEFjJdsdWW2V5t+jrT3k89QZooxNrLvUYVbLcigf5u/zApyJKs
-        rk8p7cSnsZvwJnC1tFxoe2IaBFA07qFanpUrpjzkBEyMhPYXu39Z4+0DRARujkG3
-        ryyEw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=9TlfznyxsMv5GMFDcfPOM5mcVt7VYPmD7P4p5Aa1g
-        gA=; b=Gg4TdrQeB2iojmFKU7oK1ICjlmbsrX1Ru1wI0Uc2mGdq9OarkJHAUOMhD
-        z+siCAVbI1uSReLu4adjAcDNx46kCuADYZ/nlXxWlHFKtz2amNNX0CERhef/1w/h
-        d5V1uNeiEd7aQixuDKmYy/IRolckpqT0JExmCVf/6XUizADVEVchml3AG4IYI5Gw
-        dlxEpMYdo3swERA4HE8pDD6LfAlnH41s8AmmAfv4K09ebngM/WmIYGxPCld663Ym
-        RihXPTkqblSCclFI+U4uMpoDJ+Z5w83pma18GsTbjIKjjnzA1SrtLqU2f2YsGoTI
-        7voPF5A7qLNEc30xedntAKCqmrawg==
-X-ME-Sender: <xms:oRE8X_3osVoQ4g4vq8-lY1_6aDeZbIyRo37qQyXNW4LE0effnH-_ug>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedruddtiedgleefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggugfgjsehtke
-    ertddttdejnecuhfhrohhmpefirhgvghcumffjuceoghhrvghgsehkrhhorghhrdgtohhm
-    qeenucggtffrrghtthgvrhhnpeeuheekheelffefieduteefkeejffdvueehjeejffehle
-    dugfetkedvleekudduvdenucfkphepkeefrdekiedrkeelrddutdejnecuvehluhhsthgv
-    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
-    gtohhm
-X-ME-Proxy: <xmx:oRE8X-GdRey3VoRTH_FFEpSxg82SP2l2tYGyDAiU3lfOm_Z_WVRLWQ>
-    <xmx:oRE8X_62SMZdRXyMIsaGim_en4k1uVSPcSalIJxhq7n-trqUyj-nuQ>
-    <xmx:oRE8X02Kafx4DGYnvA9bd5kXv8ADhE0sJU1vGj9bJ8dfgjCPUlCE2A>
-    <xmx:oRE8X9N1ChapT9PIU622iyLJkerjQsZaZ46HOcar9JcQqy9WoWahBA>
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 2E2693060272;
-        Tue, 18 Aug 2020 13:36:33 -0400 (EDT)
-Date:   Tue, 18 Aug 2020 19:36:56 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Muni Sekhar <munisekharrms@gmail.com>
-Cc:     kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: Scheduler benchmarks
-Message-ID: <20200818173656.GA748290@kroah.com>
-References: <CAHhAz+inPwKYx_4qaujQ=bGG9twashiuqLhQQ-+vgHWF7FLhRA@mail.gmail.com>
- <20200818143633.GA628293@kroah.com>
- <CAHhAz+hG5kS5rhph4SaSLOEc5PgcSOTPWpiANLNpwotY9Zy6qQ@mail.gmail.com>
- <20200818171457.GA736234@kroah.com>
- <CAHhAz+ggd4DPFfWPB+h6Obkjebf5mv5cV6307oKEkEYMhAB3wQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHhAz+ggd4DPFfWPB+h6Obkjebf5mv5cV6307oKEkEYMhAB3wQ@mail.gmail.com>
+        id S1727096AbgHRRkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 13:40:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58130 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726691AbgHRRj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 13:39:58 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5ED2D20738;
+        Tue, 18 Aug 2020 17:39:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597772397;
+        bh=jw0rqgoKOxJjeFzL3PLrNSOLSmVzOndyFsCJBt1RmBE=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=JITDFbdXUSdL3CAO6S6oBsDueJ6T92UpvF2cvgIOiROsih1Att03rFWG8fDHlw8Kr
+         5gt3MWB6+E0LwEoKV+J6QXsnwHozg+mfEoWWSvEb1Q5SEj1klVTkoZKaAbgD8OMGnD
+         3qc8wxSPdiMVAh95d49Qx9j8IJ2vMKLzaQUYDKLo=
+Date:   Tue, 18 Aug 2020 18:39:27 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     heiko@sntech.de, Johan Jonker <jbx6244@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        lgirdwood@gmail.com, devicetree@vger.kernel.org,
+        sugar.zhang@rock-chips.com, linux-arm-kernel@lists.infradead.org,
+        alsa-devel@alsa-project.org, linux-rockchip@lists.infradead.org
+In-Reply-To: <20200818143727.5882-1-jbx6244@gmail.com>
+References: <20200818143727.5882-1-jbx6244@gmail.com>
+Subject: Re: [PATCH v2 1/2] ASoC: rockchip-spdif: add description for rk3308
+Message-Id: <159777235702.24785.2371871958311959848.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 11:01:35PM +0530, Muni Sekhar wrote:
-> On Tue, Aug 18, 2020 at 10:44 PM Greg KH <greg@kroah.com> wrote:
-> >
-> > On Tue, Aug 18, 2020 at 10:24:13PM +0530, Muni Sekhar wrote:
-> > > On Tue, Aug 18, 2020 at 8:06 PM Greg KH <greg@kroah.com> wrote:
-> > > >
-> > > > On Tue, Aug 18, 2020 at 08:00:11PM +0530, Muni Sekhar wrote:
-> > > > > Hi all,
-> > > > >
-> > > > > I’ve two identical Linux systems with only kernel differences.
-> > > >
-> > > > What are the differences in the kernels?
-> >
-> > You didn't answer this question, is this the same kernel source being
-> > compared here?  Same version?  Same compiler?  Everything identical?
-> Both systems are having exactly the same hardware configuration.
-> Compiler and kernel versions are different. One system has Ubuntu
-> 16.04.4 LTS(4.4.0-66-generic kernel with gcc version 5.4.0) kernel and
-> the other one has Ubuntu 18.04.4 LTS(4.15.0-91-generic kernel with gcc
-> version 7.5.0).
+On Tue, 18 Aug 2020 16:37:26 +0200, Johan Jonker wrote:
+> A test with the command below shows that the compatible string
+> 
+> "rockchip,rk3308-spdif", "rockchip,rk3328-spdif"
+> 
+> is already in use, but is not added to a document.
+> The current fallback string "rockchip,rk3328-spdif" points to a data
+> set enum RK_SPDIF_RK3366 in rockchip_spdif.c that is not used both
+> in the mainline as in the manufacturer kernel.
+> (Of the enum only RK_SPDIF_RK3288 is used.)
+> So if the properties don't change we might as well use the first SoC
+> in line as fallback string and add the description for rk3308 as:
+> 
+> [...]
 
-Those are _very_ different kernel versions, with many years and tens of
-thousands of different changes between them.
+Applied to
 
-Hopefully the newer kernel is faster, so just stick with that :)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-greg k-h
+Thanks!
+
+[1/1] ASoC: rockchip-spdif: add description for rk3308
+      commit: a8535ae7034e3547f4f7a8c7ca03a6ee72097fb0
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
