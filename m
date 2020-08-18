@@ -2,116 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCDCC248B9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D96D248B98
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728261AbgHRQ3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 12:29:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726793AbgHRQ1Y (ORCPT
+        id S1728105AbgHRQ2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 12:28:35 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:30217 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728254AbgHRQ1h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 12:27:24 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F574C061389
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 09:27:24 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id c6so18098633ilo.13
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 09:27:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=oryb9Gw/XAffWSWQvfMiaYrjBvPkCAMTzbIDIXNJbnI=;
-        b=lbSYVl4iccAlsHjqO4TXn8l7W42NVRbWABhoe/TSlReejliAxJF6mSRBLxDZNPJNZh
-         VId4k9ffeWPZhk7cbu1TO7cS/PNEVLwghIPT6w6bL9qC/JdbsNwj29BHb6Di8pjDYd6t
-         Mb2Tj5uHQalzN89CEw8MTgpDGxSlc9Qr6rOFCyrfhM2cJuE07faFRcVHPHcuNjNsYD8h
-         gn37CS6aTkVi9vjW3F+tGK72J0Xcltvu5GUZOJml8o8u07l9AaJo4Zwu5kdMWo9WTeex
-         bxkuSzPNLlN7W1jffzHdrMP5MTNsNLgCT2Qq6iS6IKQpIJZweyCvjyX90YIefZjzDyp2
-         IE1w==
+        Tue, 18 Aug 2020 12:27:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597768047;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=if9LpYICK0NhGXF5AA8XXB22L0fg+m6z8gcS1Q79zUU=;
+        b=c7TB2s4nJZZtfxADyn2lGRVDOg1erPbexqz5JyHkRdT+GVyKZIv8FYzpmAr1N2W1yhNfBo
+        WFTatipZ0ZxQuqde/DYFHWPh92se4d5i4khHQXSet1JybgZOjiQGC79wTJbqnebvWdl6oo
+        EAHIc2eh+REJPofVh8YIU9MWgLr50Bk=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-496-Zoh9695HN-WCqpbPCsQrtA-1; Tue, 18 Aug 2020 12:27:25 -0400
+X-MC-Unique: Zoh9695HN-WCqpbPCsQrtA-1
+Received: by mail-wm1-f72.google.com with SMTP id p23so6300665wmc.2
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 09:27:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=oryb9Gw/XAffWSWQvfMiaYrjBvPkCAMTzbIDIXNJbnI=;
-        b=RvlGillKtpUUhSHqCAmj6yaWyXhQURUnq/YymJRxXwP9D6gR5zA3IVvNyqTTt4jvHr
-         Hkw9/LuXxHE3Y5iq18z5LLUqIa6sQ+Sc8qYrcu31vUCig4NAmX5HuGN9DMLyxanIyW3k
-         knXxHhHsksGKLlkTTo+FhekjOqltIiKB/eKazpYiWZ35ViFDkAPrken3puu9WeQUBLtC
-         eMuKX7LcwE1GNKXlj94Fb4d6rI1nt13OUCKhEQdoDWVG7OPFfRTv69PMExFy/siVxXZg
-         boy5iiEhA4cADPw0p9P0gpJLwgheF48GqB4NRQ2SofS+wS0riNOphEjAHC6ys8bp2CwB
-         4AJg==
-X-Gm-Message-State: AOAM5337VkpnBcdqjD8VXE8zQUgsW5YZq957UX5HMUCpwZJeQERovM4y
-        I8tmzV9Vay5IOImqewCsUSbApM2g7L3WUQ3ob+u0WQ==
-X-Google-Smtp-Source: ABdhPJzG6Vqg4L5Wbx1ozdnU3GZmWNDJJUJs9j/zG7IUQgWN6QYwYtaA8cti9q2O+EPbmg1Ym7IzGb6KgGhztaQ6jQY=
-X-Received: by 2002:a92:d30a:: with SMTP id x10mr18640134ila.287.1597768043689;
- Tue, 18 Aug 2020 09:27:23 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=if9LpYICK0NhGXF5AA8XXB22L0fg+m6z8gcS1Q79zUU=;
+        b=CBRkvoqnIfNEkSSrpZQnxLsqAjH+383SiLud0NfnffSV/LXVvG4FVu1x4yAjZNuwWj
+         Pa5JVOXg56Gz8aa8FxisMbmb+MG0ORKzrohiHsKD9jpbvji9uVgKa9Q20AgqZ+Pcc8Bk
+         naWCI5UwEK0HJq9bsCjzYUjkrCXVqvLplk0UPuP6pKwoC4yXQ8Ob+P/bV4I+RIlHVFEi
+         R1oNLvVZNHCsOTqo6IAkTWuVUOc7/U7KQkU2x8OTkIfBCM92V4P/4Ot6ibbDbffLmSy5
+         uuANZT3UYYJTfB0nsCNe6RXgr8LuGERnuBKA5fVWDtCxiD/9FEigXkNS7MUwMvEfH4f3
+         1mAg==
+X-Gm-Message-State: AOAM531uqP5RbTZRCeViDNDZDK7UN/q+o/h4nHXK82z63Oo/piSfY4SM
+        Z48mTneWBayeL/ulpC60fGNKR71IeqnlWzz6oEUfWsL6SdPJJpGNLVo9m7eW2xH2Qti4L8BkOuj
+        CgAdzbSxOvQEZVDpekPxSP1nH
+X-Received: by 2002:a7b:cf29:: with SMTP id m9mr692508wmg.88.1597768044065;
+        Tue, 18 Aug 2020 09:27:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJykPaZdW75tblNPwohfUTSZAywU3pLEZHF86kgfsgbeUM6YEol+VFwyiwZdqftvl2orXJtznA==
+X-Received: by 2002:a7b:cf29:: with SMTP id m9mr692461wmg.88.1597768043853;
+        Tue, 18 Aug 2020 09:27:23 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:38e0:ccf8:ca85:3d9b? ([2001:b07:6468:f312:38e0:ccf8:ca85:3d9b])
+        by smtp.gmail.com with ESMTPSA id e5sm37696385wrc.37.2020.08.18.09.27.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Aug 2020 09:27:23 -0700 (PDT)
+Subject: Re: [PATCH RFC v2 00/18] Add VFIO mediated device support and DEV-MSI
+ support for the idxd driver
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Lin, Jing" <jing.lin@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "netanelg@mellanox.com" <netanelg@mellanox.com>,
+        "shahafs@mellanox.com" <shahafs@mellanox.com>,
+        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
+        "Hossain, Mona" <mona.hossain@intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+References: <20200721164527.GD2021248@mellanox.com>
+ <CY4PR11MB1638103EC73DD9C025F144C98C780@CY4PR11MB1638.namprd11.prod.outlook.com>
+ <20200724001930.GS2021248@mellanox.com> <20200805192258.5ee7a05b@x1.home>
+ <20200807121955.GS16789@nvidia.com>
+ <MWHPR11MB16452EBE866E330A7E000AFC8C440@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20200814133522.GE1152540@nvidia.com>
+ <MWHPR11MB16456D49F2F2E9646F0841488C5F0@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20200818004343.GG1152540@nvidia.com>
+ <MWHPR11MB164579D1BBBB0F7164B07A228C5C0@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20200818115003.GM1152540@nvidia.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <0711a4ce-1e64-a0cb-3e6d-f6653284e2e3@redhat.com>
+Date:   Tue, 18 Aug 2020 18:27:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <20200817170535.17041-1-brgl@bgdev.pl> <20200817170535.17041-2-brgl@bgdev.pl>
- <20200817173908.GS1891694@smile.fi.intel.com> <CAMRc=MdaaWhV_ZKHgWy_Gxkp=jMuZcwqpoE8Ya_84n9ZT5O31A@mail.gmail.com>
- <20200818082500.GB1891694@smile.fi.intel.com>
-In-Reply-To: <20200818082500.GB1891694@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 18 Aug 2020 18:27:12 +0200
-Message-ID: <CAMRc=Md5yrgxnPf=qwKYhwHACcq-XeKOKZ76OwYdMGO8SgYmzQ@mail.gmail.com>
-Subject: Re: [PATCH v7 1/3] devres: provide devm_krealloc()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200818115003.GM1152540@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 10:40 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Mon, Aug 17, 2020 at 10:02:05PM +0200, Bartosz Golaszewski wrote:
-> > On Mon, Aug 17, 2020 at 7:43 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Mon, Aug 17, 2020 at 07:05:33PM +0200, Bartosz Golaszewski wrote:
-> > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->
-> ...
->
-> > > > +static struct devres *to_devres(void *data)
-> > > > +{
-> > > > +     return (struct devres *)((u8 *)data - ALIGN(sizeof(struct dev=
-res),
-> > > > +                                                 ARCH_KMALLOC_MINA=
-LIGN));
-> > >
-> > > Do you really need both explicit castings?
-> > >
-> >
-> > Yeah, we can probably drop the (struct devres *) here.
->
-> void * -> u8 * here is also not needed, it is considered byte access IIRC=
-.
->
+On 18/08/20 13:50, Jason Gunthorpe wrote:
+> For instance, what about suspend/resume of containers using idxd?
+> Wouldn't you want to have the same basic approach of controlling the
+> wq from userspace that virtualization uses?
 
-Actually it turns out that while we don't need the (void *) -> (u8 *)
-casting, we must cast to (struct devres *) or the following error is
-produced:
+The difference is that VFIO more or less standardizes the approach you
+use for live migration.  With another interface you'd have to come up
+with something for every driver, and add support in CRIU for every
+driver as well.
 
-drivers/base/devres.c: In function =E2=80=98to_devres=E2=80=99:
-drivers/base/devres.c:41:21: error: returning =E2=80=98u8 *=E2=80=99 {aka =
-=E2=80=98unsigned
-char *=E2=80=99} from a function with incompatible return type =E2=80=98str=
-uct devres
-*=E2=80=99 [-Werror=3Dincompatible-pointer-types]
-  return ((u8 *)data - ALIGN(sizeof(struct devres),
-         ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        ARCH_KMALLOC_MINALIGN));
-        ~~~~~~~~~~~~~~~~~~~~~~~
+Paolo
 
-Bart
