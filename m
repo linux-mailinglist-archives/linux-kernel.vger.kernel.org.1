@@ -2,74 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079FE24813A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A052480F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726886AbgHRI7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 04:59:03 -0400
-Received: from smtp21.cstnet.cn ([159.226.251.21]:50616 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726341AbgHRI7D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 04:59:03 -0400
-Received: from localhost (unknown [159.226.5.99])
-        by APP-01 (Coremail) with SMTP id qwCowAD3lkRelztfI8eLAQ--.19298S2;
-        Tue, 18 Aug 2020 16:54:54 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     davem@davemloft.net, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
-        kuba@kernel.org, netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
-Subject: [PATCH] rpl_iptunnel: simplify the return expression of rpl_do_srh()
-Date:   Tue, 18 Aug 2020 08:54:54 +0000
-Message-Id: <20200818085454.12224-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: qwCowAD3lkRelztfI8eLAQ--.19298S2
-X-Coremail-Antispam: 1UD129KBjvdXoWruF47GF4DJrWfXFykAFWrXwb_yoW3JFg_CF
-        1vgFWxCrn3ur4FkanxCa1fAF9Fq3s2vF40g3s7KrW8t343KrZI9rnavFW5GrykWrWvkryU
-        Xa40kFyIyr1fWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbfxYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z2
-        80aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAK
-        zVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAFwI0_Cr1j6rxdMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjcxG6xCI17CEII8vrVW3JVW8
-        Jr1lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8ZwCF04k20xvY0x0EwIxGrw
-        CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
-        14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
-        IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxK
-        x2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0ziAR65UUUUU=
-X-Originating-IP: [159.226.5.99]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCwUMA1z4jXyoSgAAs2
+        id S1726420AbgHRIz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 04:55:57 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11644 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726145AbgHRIz4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 04:55:56 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07I8dTEU146527;
+        Tue, 18 Aug 2020 04:55:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : date : mime-version : in-reply-to : content-type :
+ content-transfer-encoding : message-id; s=pp1;
+ bh=ypMmPEUlq3Yxhzd7jzu+s7Sa9xrgm3qmWGDGHZc3Rh8=;
+ b=h2TvXiR43obexQKfP6a5I4bygDNU2o/mt/RKDe/cQzuboa35uvre8Df41Iiy5TsicMtW
+ i32TK3BdsdZfe0VzB/t89TeFS7qDOsSNmUrXLQHRo3/xSZDc43k1plhSZmcnplmVtE35
+ qzzlm2kxbNY3C+emIQ03MbkGH0ZtNK/9lqPNvS1FsEutZTNhVdyF3nnzTmXVLFI+1SSD
+ AxTk8vKgARZB7ys3T49TedWTDq/cfT2N29RDXbFqeCNZELu+ZxPbj3rutHbObyxEwduP
+ cjdjOroPCRwhhrsLHkKcdGUA3mjH/IsFA+FNQkuGSd5TqS0/ZaIoTR8t28O9Zp+8tg82 rw== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3304sc2ctm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Aug 2020 04:55:52 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07I8qBFl019374;
+        Tue, 18 Aug 2020 08:55:50 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 3304bt0e7f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Aug 2020 08:55:50 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07I8sJrR52494772
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 Aug 2020 08:54:19 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4D4C4A405F;
+        Tue, 18 Aug 2020 08:55:48 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ADC28A4062;
+        Tue, 18 Aug 2020 08:55:47 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.33.217])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 18 Aug 2020 08:55:47 +0000 (GMT)
+Subject: Re: [PATCH 2/2] tasks: Add task_struct addr for lx-ps cmd
+To:     Jan Kiszka <jan.kiszka@siemens.com>,
+        Kieran Bingham <kbingham@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <cover.1597721575.git.riteshh@linux.ibm.com>
+ <99e6236ed1b67140dae967dbf802c0eabd7b0eba.1597721575.git.riteshh@linux.ibm.com>
+ <1566dd81-a906-068d-ccc9-ed9cde8571d7@siemens.com>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Tue, 18 Aug 2020 14:25:46 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <1566dd81-a906-068d-ccc9-ed9cde8571d7@siemens.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Message-Id: <20200818085547.ADC28A4062@b06wcsmtp001.portsmouth.uk.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-18_06:2020-08-18,2020-08-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
+ bulkscore=0 adultscore=0 lowpriorityscore=0 mlxlogscore=999
+ impostorscore=0 phishscore=0 mlxscore=0 spamscore=0 clxscore=1015
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008180060
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify the return expression.
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- net/ipv6/rpl_iptunnel.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/net/ipv6/rpl_iptunnel.c b/net/ipv6/rpl_iptunnel.c
-index 5fdf3ebb953f..e58ad9ac987c 100644
---- a/net/ipv6/rpl_iptunnel.c
-+++ b/net/ipv6/rpl_iptunnel.c
-@@ -197,11 +197,7 @@ static int rpl_do_srh(struct sk_buff *skb, const struct rpl_lwt *rlwt)
- 
- 	tinfo = rpl_encap_lwtunnel(dst->lwtstate);
- 
--	err = rpl_do_srh_inline(skb, rlwt, tinfo->srh);
--	if (err)
--		return err;
--
--	return 0;
-+	return rpl_do_srh_inline(skb, rlwt, tinfo->srh);
- }
- 
- static int rpl_output(struct net *net, struct sock *sk, struct sk_buff *skb)
--- 
-2.17.1
+On 8/18/20 11:10 AM, Jan Kiszka wrote:
+> On 18.08.20 06:04, Ritesh Harjani wrote:
+>> task_struct addr in lx-ps cmd seems helpful
+>>
+>> <e.g. o/p>
+>>        TASK          PID    COMM
+>> 0xffffffff82c2b8c0   0   swapper/0
+>> 0xffff888a0ba20040   1   systemd
+>> 0xffff888a0ba24040   2   kthreadd
+>> 0xffff888a0ba28040   3   rcu_gp
+>>
+>> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+>> ---
+>>   scripts/gdb/linux/tasks.py | 9 +++++----
+>>   1 file changed, 5 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/scripts/gdb/linux/tasks.py b/scripts/gdb/linux/tasks.py
+>> index 0301dc1e0138..17ec19e9b5bf 100644
+>> --- a/scripts/gdb/linux/tasks.py
+>> +++ b/scripts/gdb/linux/tasks.py
+>> @@ -73,11 +73,12 @@ class LxPs(gdb.Command):
+>>           super(LxPs, self).__init__("lx-ps", gdb.COMMAND_DATA)
+>>   
+>>       def invoke(self, arg, from_tty):
+>> +        gdb.write("{:>10} {:>12} {:>7}\n".format("TASK", "PID", "COMM"))
+>>           for task in task_lists():
+>> -            gdb.write("{address} {pid} {comm}\n".format(
+>> -                address=task,
+>> -                pid=task["pid"],
+>> -                comm=task["comm"].string()))
+>> +            gdb.write("{} {:^5} {}\n".format(
+>> +                task.format_string().split()[0],
+>> +                task["pid"].format_string(),
+>> +                task["comm"].string()))
+>>   
+>>   
+>>   LxPs()
+>>
+> 
+> This patch is confusing me. We already dump the task address. What the
+> patch changes is adding a header and some conversions of the values. Can
+> you elaborate?
 
+You are right. Sorry for the confusion. I will update the commit msg (in
+v2) to reflect that this patch adds the header and formats the spacing.
+Without the patch we get it like this:-
+
+0xffffffff82c2b8c0 <init_task> 0 swapper/0
+0xffff888a0ba20040 1 systemd
+0xffff888a0ba24040 2 kthreadd
+0xffff888a0ba28040 3 rcu_gp
+
+-ritesh
