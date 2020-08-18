@@ -2,85 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B3024884A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C088D248855
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 16:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727837AbgHROxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 10:53:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:42834 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726145AbgHROxe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 10:53:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 908A631B;
-        Tue, 18 Aug 2020 07:53:33 -0700 (PDT)
-Received: from [10.57.40.122] (unknown [10.57.40.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C4F253F66B;
-        Tue, 18 Aug 2020 07:53:31 -0700 (PDT)
-Subject: Re: [PATCH v2 2/4] usb: dwc3: of-simple: Add compatible for rk3328
-To:     travelvia@airmail.cc, robh+dt@kernel.org, heiko@sntech.de,
-        balbi@kernel.org, gregkh@linuxfoundation.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Cc:     Cameron Nemo <cnemo@tutanota.com>
-References: <20200817031114.6107-1-travelvia@airmail.cc>
- <20200817031114.6107-2-travelvia@airmail.cc>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <8dd853c0-c908-9d2f-fabf-c8f4c97b37e1@arm.com>
-Date:   Tue, 18 Aug 2020 15:53:31 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1727022AbgHROz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 10:55:57 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:41783 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726675AbgHROzy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 10:55:54 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597762554; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=h7ieTAL6x5VkB6Wo/SxyyyfFM+5x9d9kB7SA6qlVaG0=; b=TLlcNKeuyA8mBrcnQzkCNCXGvVinbQD/fiKrkeiZSne9YJhI2ojI0JeIHGw9UE0WLGmuvWi7
+ Hxs2F2iGayW5lHRB9xIwwySKBY/+4CSKcHB0rPWtBtilYuV+Y8u789pz3wN6xpyUFoBD02rc
+ pVcRypjTjFJP9Wmuc7S61Dl4psA=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5f3bebe02889723bf845c375 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 18 Aug 2020 14:55:28
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 616A0C43387; Tue, 18 Aug 2020 14:55:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4FD5DC433CA;
+        Tue, 18 Aug 2020 14:55:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4FD5DC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCHv2] arm64: dts: qcom: sc7180: Fix the LLCC base register size
+Date:   Tue, 18 Aug 2020 20:25:14 +0530
+Message-Id: <20200818145514.16262-1-saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20200817031114.6107-2-travelvia@airmail.cc>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-17 04:11, travelvia@airmail.cc wrote:
-> From: Cameron Nemo <cnemo@tutanota.com>
-> 
-> Add a compatible to be hooked into by the Rockchip rk3328 device tree.
-> 
-> The rk3399 compatible cannot be reused because the rk3328 SoCs may
-> require a specialized driver in the future, and old device trees must
-> remain compatible with newer kernels.
-> 
-> Signed-off-by: Cameron Nemo <cnemo@tutanota.com>
-> ---
->   drivers/usb/dwc3/dwc3-of-simple.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/dwc3/dwc3-of-simple.c b/drivers/usb/dwc3/dwc3-of-simple.c
-> index 7df115012935..68d6e4fa0c6a 100644
-> --- a/drivers/usb/dwc3/dwc3-of-simple.c
-> +++ b/drivers/usb/dwc3/dwc3-of-simple.c
-> @@ -49,7 +49,8 @@ static int dwc3_of_simple_probe(struct platform_device *pdev)
->   	 * Some controllers need to toggle the usb3-otg reset before trying to
->   	 * initialize the PHY, otherwise the PHY times out.
->   	 */
-> -	if (of_device_is_compatible(np, "rockchip,rk3399-dwc3"))
-> +	if (of_device_is_compatible(np, "rockchip,rk3328-dwc3") ||
+There is one LLCC logical bank(LLCC0) on SC7180 SoC and the
+size of the LLCC0 base is 0x50000(320KB) not 2MB, so correct
+the size and fix copy paste mistake carried over from SDM845.
 
-Is this necessary? Even downstream there's no reset control in the DT, 
-so I can't see that it achieves anything.
+Fixes: 7cee5c742899 ("arm64: dts: qcom: sc7180: Fix node order")
+Fixes: c831fa299996 ("arm64: dts: qcom: sc7180: Add Last level cache controller node")
+Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+---
 
-Robin.
+Changes in v2:
+ * Edit commit msg to remove confusing references (Doug).
 
-> +	    of_device_is_compatible(np, "rockchip,rk3399-dwc3"))
->   		simple->need_reset = true;
->   
->   	simple->resets = of_reset_control_array_get(np, false, true,
-> @@ -171,6 +172,7 @@ static const struct dev_pm_ops dwc3_of_simple_dev_pm_ops = {
->   };
->   
->   static const struct of_device_id of_dwc3_simple_match[] = {
-> +	{ .compatible = "rockchip,rk3328-dwc3" },
->   	{ .compatible = "rockchip,rk3399-dwc3" },
->   	{ .compatible = "xlnx,zynqmp-dwc3" },
->   	{ .compatible = "cavium,octeon-7130-usb-uctl" },
-> 
+---
+ arch/arm64/boot/dts/qcom/sc7180.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+index d46b3833e52f..e875f6c3b663 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+@@ -2618,7 +2618,7 @@ dc_noc: interconnect@9160000 {
+ 
+ 		system-cache-controller@9200000 {
+ 			compatible = "qcom,sc7180-llcc";
+-			reg = <0 0x09200000 0 0x200000>, <0 0x09600000 0 0x50000>;
++			reg = <0 0x09200000 0 0x50000>, <0 0x09600000 0 0x50000>;
+ 			reg-names = "llcc_base", "llcc_broadcast_base";
+ 			interrupts = <GIC_SPI 582 IRQ_TYPE_LEVEL_HIGH>;
+ 		};
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
