@@ -2,65 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6BE248062
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52CDC248068
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 10:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726535AbgHRIT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 04:19:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49689 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726357AbgHRITZ (ORCPT
+        id S1726653AbgHRITr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 04:19:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726370AbgHRITl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 04:19:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597738764;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=u5BW4sttAkWqGg8PlkiSb/wzvzki2Fh+MHof6eikw/c=;
-        b=WIkTqJgu8Xiv+wJtPCFrOvgtlQHfKkzgIiSpM/WUnbw27OcW4wrrqQufLU94GlF6Zd4HG4
-        X57AabYMAdBR+BihNxxtvlBf+sxdoP22nW9WUIxq5Yq8PVZVHyy19Q4H2LMwLK4I5WgGxR
-        m5Y0KQ3YA4SQdkgJ+MFu+0NlKR3oXhQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-377-9aejwH2JN_etFEeUIAm9LA-1; Tue, 18 Aug 2020 04:19:22 -0400
-X-MC-Unique: 9aejwH2JN_etFEeUIAm9LA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D65E281F012;
-        Tue, 18 Aug 2020 08:19:20 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-127.rdu2.redhat.com [10.10.120.127])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A810C7A1E6;
-        Tue, 18 Aug 2020 08:19:19 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20200817090523.68692855@canb.auug.org.au>
-References: <20200817090523.68692855@canb.auug.org.au> <20200805163246.4df09c31@canb.auug.org.au>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     dhowells@redhat.com, Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the fsinfo tree with the kbuid tree
+        Tue, 18 Aug 2020 04:19:41 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2657CC061342
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 01:19:41 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id j23so9666690vsq.7
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 01:19:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7qc0PHRmHyAV4s08h+mPSQ2AKSM82PMkMzXSGAIjIyU=;
+        b=DGV+F2+cb52Nj0BMWEB9lOedhoMtfTPFWPkhPnUA07d4XhpQRQncJtBjzy9Qd4fQvO
+         wKMC5NqMbgse/bTlW2J66+51iNFlL5zsDgzZ+IHpo/YO18KOA7/VLYohfqy1geb6Hv2T
+         6AamAPl7j4a62C9ohOa3SKrwZwXb5kf0R/790=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7qc0PHRmHyAV4s08h+mPSQ2AKSM82PMkMzXSGAIjIyU=;
+        b=qQ4b4eWRUvH2YuZst1EYccHe5mQ7dUb2iigEApcRh8PA7tKlkS8ErHl89THm6ytlrt
+         ZcXUe71kwb/K1FlXe4umavhZxG6+FZmvhQjgETaryyHZRxfID2FFqV9hiuyYGClsIzmf
+         eQojyUsT0nCTfOUne3/wWk8VWgAIVC8Gzge6hLwih5h/kePbMv03KblIit57DrijMoba
+         XijLLGEpZLdrVdoF/MfOnDj/eMWnybMEBUHXUIp5dx1T3n0K9Q2j+QgVrH0xY+1xBIUf
+         w/GmcD7r5DOAGhWWvOj130QXDChu5WJVEuO1UXjmakdaWgPqB+gv0yoPinKc09Ge1QRv
+         xL2w==
+X-Gm-Message-State: AOAM5333GB1zQ4ZwxtU3ehP6BWijRCrwzpWf1qaJ4Peh8EOCRjF3+373
+        D4kNE8/1hqJPpnZroRn6/Nn655fj231uo8q6TFGvENn/RH0=
+X-Google-Smtp-Source: ABdhPJzreYfi0fbtitn2tr3QZ68MpwlV8vAMN6ra3gV3OoMTaqXKSc8vnlwpvhOn3Pco3m2Op2M0MAJHaVOIWKWSBNM=
+X-Received: by 2002:a67:68d2:: with SMTP id d201mr10537283vsc.186.1597738780361;
+ Tue, 18 Aug 2020 01:19:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2193239.1597738758.1@warthog.procyon.org.uk>
-Date:   Tue, 18 Aug 2020 09:19:18 +0100
-Message-ID: <2193240.1597738758@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20200710144747.RESEND.1.Ifae7abaacb81af1cdc6475986cc788d71de8a13c@changeid>
+In-Reply-To: <20200710144747.RESEND.1.Ifae7abaacb81af1cdc6475986cc788d71de8a13c@changeid>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Tue, 18 Aug 2020 16:19:29 +0800
+Message-ID: <CANMq1KAe5o8oxzTyVMNsoZXBuopVFQqFdKassu67Fssx0xk8Ww@mail.gmail.com>
+Subject: Re: [RESEND PATCH] media: camss: vfe: Use trace_printk for debugging only
+To:     Andy Gross <agross@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        linux-arm-msm@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+On Fri, Jul 10, 2020 at 2:48 PM Nicolas Boichat <drinkcat@chromium.org> wrote:
+>
+> trace_printk should not be used in production code. Since
+> tracing interrupts is presumably latency sensitive, pr_dbg is
+> not appropriate, so guard the call with a preprocessor symbol
+> that can be defined for debugging purpose.
+>
+> Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+> ---
+> Sent this before as part of a series (whose 4th patch was a
+> change that allows to detect such trace_printk), but maybe it's
+> easier to get individual maintainer attention by splitting it.
 
-> This is now a conflict between the fsinfo tree and Linus' tree.
+Mauro, can I get your attention on this patch? This still applies on
+the latest 5.9-rc1/linux-next.
 
-Please drop the fsinfo branch for now, thanks.
+Thanks!
 
-David
 
+>
+>  drivers/media/platform/qcom/camss/camss-vfe-4-1.c | 2 ++
+>  drivers/media/platform/qcom/camss/camss-vfe-4-7.c | 2 ++
+>  2 files changed, 4 insertions(+)
+>
+> diff --git a/drivers/media/platform/qcom/camss/camss-vfe-4-1.c b/drivers/media/platform/qcom/camss/camss-vfe-4-1.c
+> index 174a36be6f5d866..0c57171fae4f9e9 100644
+> --- a/drivers/media/platform/qcom/camss/camss-vfe-4-1.c
+> +++ b/drivers/media/platform/qcom/camss/camss-vfe-4-1.c
+> @@ -936,8 +936,10 @@ static irqreturn_t vfe_isr(int irq, void *dev)
+>
+>         vfe->ops->isr_read(vfe, &value0, &value1);
+>
+> +#ifdef CAMSS_VFE_TRACE_IRQ
+>         trace_printk("VFE: status0 = 0x%08x, status1 = 0x%08x\n",
+>                      value0, value1);
+> +#endif
+>
+>         if (value0 & VFE_0_IRQ_STATUS_0_RESET_ACK)
+>                 vfe->isr_ops.reset_ack(vfe);
+> diff --git a/drivers/media/platform/qcom/camss/camss-vfe-4-7.c b/drivers/media/platform/qcom/camss/camss-vfe-4-7.c
+> index 0dca8bf9281e774..307675925e5c779 100644
+> --- a/drivers/media/platform/qcom/camss/camss-vfe-4-7.c
+> +++ b/drivers/media/platform/qcom/camss/camss-vfe-4-7.c
+> @@ -1058,8 +1058,10 @@ static irqreturn_t vfe_isr(int irq, void *dev)
+>
+>         vfe->ops->isr_read(vfe, &value0, &value1);
+>
+> +#ifdef CAMSS_VFE_TRACE_IRQ
+>         trace_printk("VFE: status0 = 0x%08x, status1 = 0x%08x\n",
+>                      value0, value1);
+> +#endif
+>
+>         if (value0 & VFE_0_IRQ_STATUS_0_RESET_ACK)
+>                 vfe->isr_ops.reset_ack(vfe);
+> --
+> 2.27.0.383.g050319c2ae-goog
+>
