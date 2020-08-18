@@ -2,461 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42305247DC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 07:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE28247DD1
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 07:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgHRFMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 01:12:30 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:48394 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726306AbgHRFM3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 01:12:29 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597727548; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=Wpp1K1mdaUHbECDpp8LisJnQvFg2uw5FF2K93Olt5ko=; b=hE604CZrC7JlJiB2QYKmlwRTGvMfOfIeVr/Y612dbpcPAiZin9vPA6AeXUZBS1NaBjtoWbR4
- HQ+xxA94TWsV57ukA7NnV5quNkq3rpHGGvUcY/ML89TABC+tEYDDE2e3JfltVIn4M69qKX4D
- EatBcqa7DcorjzrI+ARKKMGn6tE=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 5f3b633c61f1d41834f38a71 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 18 Aug 2020 05:12:28
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E64C9C433AD; Tue, 18 Aug 2020 05:12:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from linuxdisplay-lab-04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tanmay)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 406F2C433A1;
-        Tue, 18 Aug 2020 05:12:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 406F2C433A1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=tanmay@codeaurora.org
-From:   Tanmay Shah <tanmay@codeaurora.org>
-To:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, robdclark@gmail.com
-Cc:     swboyd@chromium.org, linux-arm-msm@vger.kernel.org,
-        seanpaul@chromium.org, daniel@ffwll.ch, airlied@linux.ie,
-        aravindh@codeaurora.org, abhinavk@codeaurora.org,
-        khsieh@codeaurora.org, Tanmay Shah <tanmay@codeaurora.org>
-Subject: [PATCH v11 5/5] drm/msm/dp: Add Display Port HPD feature
-Date:   Mon, 17 Aug 2020 22:11:37 -0700
-Message-Id: <20200818051137.21478-6-tanmay@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200818051137.21478-1-tanmay@codeaurora.org>
-References: <20200818051137.21478-1-tanmay@codeaurora.org>
+        id S1726519AbgHRFRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 01:17:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726370AbgHRFRY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 01:17:24 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 083CCC061389;
+        Mon, 17 Aug 2020 22:17:24 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id c16so20508856ejx.12;
+        Mon, 17 Aug 2020 22:17:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=705PFNm/gGw5cISxo/mBa28/BdVOfVrbtfnHTQdTKxk=;
+        b=pt2+jYZzkGH2X6wSwEhWXPkM3WcCgKkoeP5Sn+GIUYQycqvMQNOnI1pWGAD4o0HAGY
+         J1mmsE5pHBKl8WMIEhOw0bugsjifGHvx2s1aInX2Mqlfm9iAQulB8akAX9dxw0AHuPze
+         wHvMN/BFKELTb5WgJSAznIDwGFbbXXAJdZC2SsWDf9nSNQIPv3W9iKlAMxKM5AUCMK4P
+         2sWfo4/9bScb8NwLzLEK3XuiJe7aWpCfrXaT6YQmvRWJlLxX1xvK8s6886TZPwTTBkJu
+         Vesw+iDU45G7Xg2/vFA8PIpFPtT+MTrnnfwkO2OoTEPx2pVgRSvgHaIddfPnfKFRaj4X
+         hy/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=705PFNm/gGw5cISxo/mBa28/BdVOfVrbtfnHTQdTKxk=;
+        b=lrvJ/pBDH0Qm/1vOt+mmQrHdUl/nuayyn9A/tWRDQC0KLSFuj6o0Gwj3q06+hc567m
+         b5YvrXDrS/QIROkjlkVmpIuEptqdrR+qA48helaJBrkZTIiKcLQ4n7kOuSo2CwCAExx8
+         ikUtBn4S4Is/MTKOiZ55o8QTkLGO9urZZ6CPOtsN/AFsHxPyaVHBTH9FgiNTZGS9eJYh
+         sLdOjZc7EP2/Eva2/zBtE/ZBSBm6BsY1yC+lRUuo/cd84AFQnsTd9OlIfI2YGUuGjICL
+         ehM2PYVo4DpljkpY9K1B6R9DfnCqgPZTj2Zi6c7TvwYHZUdiRVNgaIY0l6ldprst9gzW
+         Y8QQ==
+X-Gm-Message-State: AOAM53166C1ePriqREslPTqg0ZUp3HP0xGRFeCjI4AtcswUxtJxC2T3/
+        I0EbwFh1FgrlRu4wy1znuJo=
+X-Google-Smtp-Source: ABdhPJwKXufJTsBmCAWfcBLDfIQjZyXLv0fFUUBLnkVmChTwR/mnaZPhEDPNZEZhaAkrvTpkqYkBJw==
+X-Received: by 2002:a17:906:9392:: with SMTP id l18mr18130560ejx.357.1597727842650;
+        Mon, 17 Aug 2020 22:17:22 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id d16sm15635292ejb.8.2020.08.17.22.17.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Aug 2020 22:17:20 -0700 (PDT)
+Date:   Tue, 18 Aug 2020 07:17:17 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Pavel Machek <pavel@ucw.cz>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Witten <mfwitten@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        John Levon <john.levon@joyent.com>,
+        John Levon <levon@movementarian.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] Makefile: Yes. Finally remove
+ '-Wdeclaration-after-statement'
+Message-ID: <20200818051717.GA3134537@gmail.com>
+References: <c6fda26e8d134264b04fadc3386d6c32@gmail.com>
+ <20200816175303.GB1236603@ZenIV.linux.org.uk>
+ <20200817204223.GB12414@amd>
+ <87lfid6kpi.fsf@x220.int.ebiederm.org>
+ <CAHk-=wj04wKCjHz6b6d7N58xoS4AftnwTUBaXsEekQ5RhfWVnw@mail.gmail.com>
+ <20200817220908.GA3701@amd>
+ <CAHk-=wh7Rn=8mVi_KWV71ZaQ2HrCz240DbjEJMDdARTwB3CYvA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wh7Rn=8mVi_KWV71ZaQ2HrCz240DbjEJMDdARTwB3CYvA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Configure HPD registers in DP controller and
-enable HPD interrupt.
 
-Add interrupt to handle HPD connect and disconnect events.
+* Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-Changes in v8: None
+> On Mon, Aug 17, 2020 at 3:09 PM Pavel Machek <pavel@ucw.cz> wrote:
+> >
+> > Submitter believes "wild variable placement" can help with
+> > #ifdefs.. and that may be actually good tradeoff.
+> 
+> I agree that it can help in some cases.
+> 
+> But it can also make it really hard to find the variable declarations
+> in other cases. I've seen a lot of code that ends up actively
+> declaring the variable close to where it's used (because people find
+> that to be locally more legible) and then it just means that people
+> who arent' familiar with the code have a much harder time finding it.
+> 
+> I'd instead try to discourage people from using #ifdef's inside code.
 
-Signed-off-by: Tanmay Shah <tanmay@codeaurora.org>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c |  18 ++++
- drivers/gpu/drm/msm/dp/dp_catalog.c     |  63 ++++++++------
- drivers/gpu/drm/msm/dp/dp_catalog.h     |   5 +-
- drivers/gpu/drm/msm/dp/dp_ctrl.c        |   1 -
- drivers/gpu/drm/msm/dp/dp_display.c     | 108 ++++++++++++++++++++++--
- drivers/gpu/drm/msm/dp/dp_reg.h         |  12 +++
- drivers/gpu/drm/msm/msm_drv.h           |   6 ++
- 7 files changed, 180 insertions(+), 33 deletions(-)
+I'm a big fan of -Wdeclaration-after-statement and I think C++ style 
+mixed variables/statements code has several disadvantages:
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-index 62bc33cb0d3a..5e977d5ff341 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-@@ -752,6 +752,23 @@ static void dpu_irq_preinstall(struct msm_kms *kms)
- 	dpu_core_irq_preinstall(dpu_kms);
- }
- 
-+static int dpu_irq_postinstall(struct msm_kms *kms)
-+{
-+	struct msm_drm_private *priv;
-+	struct dpu_kms *dpu_kms = to_dpu_kms(kms);
-+
-+	if (!dpu_kms || !dpu_kms->dev)
-+		return -EINVAL;
-+
-+	priv = dpu_kms->dev->dev_private;
-+	if (!priv)
-+		return -EINVAL;
-+
-+	msm_dp_irq_postinstall(priv->dp);
-+
-+	return 0;
-+}
-+
- static void dpu_irq_uninstall(struct msm_kms *kms)
- {
- 	struct dpu_kms *dpu_kms = to_dpu_kms(kms);
-@@ -762,6 +779,7 @@ static void dpu_irq_uninstall(struct msm_kms *kms)
- static const struct msm_kms_funcs kms_funcs = {
- 	.hw_init         = dpu_kms_hw_init,
- 	.irq_preinstall  = dpu_irq_preinstall,
-+	.irq_postinstall = dpu_irq_postinstall,
- 	.irq_uninstall   = dpu_irq_uninstall,
- 	.irq             = dpu_irq,
- 	.enable_commit   = dpu_kms_enable_commit,
-diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp/dp_catalog.c
-index e506e0756e92..d186424044b1 100644
---- a/drivers/gpu/drm/msm/dp/dp_catalog.c
-+++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
-@@ -17,7 +17,6 @@
- #define POLLING_SLEEP_US			1000
- #define POLLING_TIMEOUT_US			10000
- 
--#define REFTIMER_DEFAULT_VALUE			0x20000
- #define SCRAMBLER_RESET_COUNT_VALUE		0xFC
- 
- #define DP_INTERRUPT_STATUS_ACK_SHIFT	1
-@@ -731,35 +730,51 @@ void dp_catalog_ctrl_enable_irq(struct dp_catalog *dp_catalog,
- 	}
- }
- 
--void dp_catalog_ctrl_hpd_config(struct dp_catalog *dp_catalog, bool en)
-+void dp_catalog_hpd_config_intr(struct dp_catalog *dp_catalog,
-+			u32 intr_mask, bool en)
- {
- 	struct dp_catalog_private *catalog = container_of(dp_catalog,
- 				struct dp_catalog_private, dp_catalog);
- 
--	if (en) {
--		u32 reftimer = dp_read_aux(catalog, REG_DP_DP_HPD_REFTIMER);
-+	u32 config = dp_read_aux(catalog, REG_DP_DP_HPD_INT_MASK);
- 
--		dp_write_aux(catalog, REG_DP_DP_HPD_INT_ACK,
--				DP_DP_HPD_PLUG_INT_ACK |
--				DP_DP_IRQ_HPD_INT_ACK |
--				DP_DP_HPD_REPLUG_INT_ACK |
--				DP_DP_HPD_UNPLUG_INT_ACK);
--		dp_write_aux(catalog, REG_DP_DP_HPD_INT_MASK,
--				DP_DP_HPD_PLUG_INT_MASK |
--				DP_DP_IRQ_HPD_INT_MASK |
--				DP_DP_HPD_REPLUG_INT_MASK |
--				DP_DP_HPD_UNPLUG_INT_MASK);
-+	config = (en ? config | intr_mask : config & ~intr_mask);
- 
--		/* Configure REFTIMER */
--		reftimer |= REFTIMER_DEFAULT_VALUE;
--		dp_write_aux(catalog, REG_DP_DP_HPD_REFTIMER, reftimer);
--		/* Enable HPD */
--		dp_write_aux(catalog, REG_DP_DP_HPD_CTRL,
--				DP_DP_HPD_CTRL_HPD_EN);
--	} else {
--		/* Disable HPD */
--		dp_write_aux(catalog, REG_DP_DP_HPD_CTRL, 0x0);
--	}
-+	dp_write_aux(catalog, REG_DP_DP_HPD_INT_MASK,
-+				config & DP_DP_HPD_INT_MASK);
-+}
-+
-+void dp_catalog_ctrl_hpd_config(struct dp_catalog *dp_catalog)
-+{
-+	struct dp_catalog_private *catalog = container_of(dp_catalog,
-+				struct dp_catalog_private, dp_catalog);
-+
-+	u32 reftimer = dp_read_aux(catalog, REG_DP_DP_HPD_REFTIMER);
-+
-+	/* enable HPD interrupts */
-+	dp_catalog_hpd_config_intr(dp_catalog,
-+		DP_DP_HPD_PLUG_INT_MASK | DP_DP_IRQ_HPD_INT_MASK
-+		| DP_DP_HPD_UNPLUG_INT_MASK, true);
-+
-+	/* Configure REFTIMER and enable it */
-+	reftimer |= DP_DP_HPD_REFTIMER_ENABLE;
-+	dp_write_aux(catalog, REG_DP_DP_HPD_REFTIMER, reftimer);
-+
-+	/* Enable HPD */
-+	dp_write_aux(catalog, REG_DP_DP_HPD_CTRL, DP_DP_HPD_CTRL_HPD_EN);
-+}
-+
-+u32 dp_catalog_hpd_get_intr_status(struct dp_catalog *dp_catalog)
-+{
-+	struct dp_catalog_private *catalog = container_of(dp_catalog,
-+				struct dp_catalog_private, dp_catalog);
-+	int isr = 0;
-+
-+	isr = dp_read_aux(catalog, REG_DP_DP_HPD_INT_STATUS);
-+	dp_write_aux(catalog, REG_DP_DP_HPD_INT_ACK,
-+				 (isr & DP_DP_HPD_INT_MASK));
-+
-+	return isr;
- }
- 
- int dp_catalog_ctrl_get_interrupt(struct dp_catalog *dp_catalog)
-diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.h b/drivers/gpu/drm/msm/dp/dp_catalog.h
-index 4cf9ad4206cc..bcd381bfc9cd 100644
---- a/drivers/gpu/drm/msm/dp/dp_catalog.h
-+++ b/drivers/gpu/drm/msm/dp/dp_catalog.h
-@@ -75,7 +75,10 @@ void dp_catalog_ctrl_reset(struct dp_catalog *dp_catalog);
- void dp_catalog_ctrl_usb_reset(struct dp_catalog *dp_catalog, bool flip);
- bool dp_catalog_ctrl_mainlink_ready(struct dp_catalog *dp_catalog);
- void dp_catalog_ctrl_enable_irq(struct dp_catalog *dp_catalog, bool enable);
--void dp_catalog_ctrl_hpd_config(struct dp_catalog *dp_catalog, bool enable);
-+void dp_catalog_hpd_config_intr(struct dp_catalog *dp_catalog,
-+			u32 intr_mask, bool en);
-+void dp_catalog_ctrl_hpd_config(struct dp_catalog *dp_catalog);
-+u32 dp_catalog_hpd_get_intr_status(struct dp_catalog *dp_catalog);
- void dp_catalog_ctrl_phy_reset(struct dp_catalog *dp_catalog);
- void dp_catalog_ctrl_phy_lane_cfg(struct dp_catalog *dp_catalog, bool flipped,
- 				u8 lane_cnt);
-diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-index 9a06cbf40af1..ae07e43b541b 100644
---- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
-+++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-@@ -1563,7 +1563,6 @@ int dp_ctrl_on(struct dp_ctrl *dp_ctrl)
- 	rate = ctrl->panel->link_info.rate;
- 
- 	dp_power_clk_enable(ctrl->power, DP_CORE_PM, true);
--	dp_catalog_ctrl_hpd_config(ctrl->catalog, true);
- 
- 	if (ctrl->link->sink_request & DP_TEST_LINK_PHY_TEST_PATTERN) {
- 		DRM_DEBUG_DP("using phy test link parameters\n");
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 86c958b21c97..36b6ee4131bb 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -17,6 +17,7 @@
- #include "dp_power.h"
- #include "dp_catalog.h"
- #include "dp_aux.h"
-+#include "dp_reg.h"
- #include "dp_link.h"
- #include "dp_panel.h"
- #include "dp_ctrl.h"
-@@ -36,6 +37,7 @@ struct dp_display_private {
- 	bool power_on;
- 	bool hpd_irq_on;
- 	bool audio_supported;
-+	atomic_t hpd_isr_status;
- 
- 	struct platform_device *pdev;
- 	struct dentry *root;
-@@ -54,6 +56,8 @@ struct dp_display_private {
- 	struct dp_usbpd_cb usbpd_cb;
- 	struct dp_display_mode dp_mode;
- 	struct msm_dp dp_display;
-+
-+	struct delayed_work config_hpd_work;
- };
- 
- static const struct of_device_id dp_dt_match[] = {
-@@ -64,6 +68,20 @@ static const struct of_device_id dp_dt_match[] = {
- static irqreturn_t dp_display_irq(int irq, void *dev_id)
- {
- 	struct dp_display_private *dp = dev_id;
-+	irqreturn_t ret = IRQ_HANDLED;
-+	u32 hpd_isr_status;
-+
-+	if (!dp) {
-+		DRM_ERROR("invalid data\n");
-+		return IRQ_NONE;
-+	}
-+
-+	hpd_isr_status = dp_catalog_hpd_get_intr_status(dp->catalog);
-+
-+	if (hpd_isr_status & DP_DP_HPD_INT_MASK) {
-+		atomic_set(&dp->hpd_isr_status, hpd_isr_status);
-+		ret = IRQ_WAKE_THREAD;
-+	}
- 
- 	/* DP controller isr */
- 	dp_ctrl_isr(dp->ctrl);
-@@ -71,6 +89,54 @@ static irqreturn_t dp_display_irq(int irq, void *dev_id)
- 	/* DP aux isr */
- 	dp_aux_isr(dp->aux);
- 
-+	return ret;
-+}
-+
-+static irqreturn_t dp_display_hpd_isr_work(int irq, void *data)
-+{
-+	struct dp_display_private *dp;
-+	struct dp_usbpd *hpd;
-+	u32 isr = 0;
-+
-+	dp = (struct dp_display_private *)data;
-+	if (!dp)
-+		return IRQ_NONE;
-+
-+	isr = atomic_read(&dp->hpd_isr_status);
-+
-+	/* reset to default */
-+	atomic_set(&dp->hpd_isr_status, 0);
-+
-+	hpd = dp->usbpd;
-+	if (!hpd)
-+		return IRQ_NONE;
-+
-+	if (isr & DP_DP_HPD_PLUG_INT_MASK &&
-+		isr & DP_DP_HPD_STATE_STATUS_CONNECTED) {
-+		hpd->hpd_high = 1;
-+		dp->usbpd_cb.configure(&dp->pdev->dev);
-+	} else if (isr & DP_DP_HPD_UNPLUG_INT_MASK &&
-+		(isr & DP_DP_HPD_STATE_STATUS_MASK) ==
-+			 DP_DP_HPD_STATE_STATUS_DISCONNECTED) {
-+
-+		/* disable HPD plug interrupt until disconnect is done
-+		 */
-+		dp_catalog_hpd_config_intr(dp->catalog,
-+			DP_DP_HPD_PLUG_INT_MASK | DP_DP_IRQ_HPD_INT_MASK,
-+			false);
-+
-+		hpd->hpd_high = 0;
-+
-+		/* We don't need separate work for disconnect as
-+		 * connect/attention interrupts are disabled
-+		 */
-+		dp->usbpd_cb.disconnect(&dp->pdev->dev);
-+
-+		dp_catalog_hpd_config_intr(dp->catalog,
-+			DP_DP_HPD_PLUG_INT_MASK | DP_DP_IRQ_HPD_INT_MASK,
-+			true);
-+	}
-+
- 	return IRQ_HANDLED;
- }
- 
-@@ -212,8 +278,6 @@ static int dp_display_process_hpd_high(struct dp_display_private *dp)
- 	int rc = 0;
- 	struct edid *edid;
- 
--	dp_aux_init(dp->aux);
--
- 	if (dp->link->psm_enabled)
- 		goto notify;
- 
-@@ -270,10 +334,6 @@ static void dp_display_host_deinit(struct dp_display_private *dp)
- 		return;
- 	}
- 
--	dp_ctrl_host_deinit(dp->ctrl);
--	dp_aux_deinit(dp->aux);
--	dp_power_deinit(dp->power);
--	disable_irq(dp->irq);
- 	dp->core_initialized = false;
- }
- 
-@@ -630,7 +690,8 @@ int dp_display_request_irq(struct msm_dp *dp_display)
- 		return rc;
- 	}
- 
--	rc = devm_request_irq(&dp->pdev->dev, dp->irq, dp_display_irq,
-+	rc = devm_request_threaded_irq(&dp->pdev->dev, dp->irq,
-+		dp_display_irq, dp_display_hpd_isr_work,
- 		IRQF_TRIGGER_HIGH, "dp_display_isr", dp);
- 	if (rc < 0) {
- 		DRM_ERROR("failed to request IRQ%u: %d\n",
-@@ -800,6 +861,39 @@ void __exit msm_dp_unregister(void)
- 	platform_driver_unregister(&dp_display_driver);
- }
- 
-+static void dp_display_config_hpd_work(struct work_struct *work)
-+{
-+	struct dp_display_private *dp;
-+	struct delayed_work *dw = to_delayed_work(work);
-+
-+	dp = container_of(dw, struct dp_display_private, config_hpd_work);
-+
-+	dp_display_host_init(dp);
-+	dp_catalog_ctrl_hpd_config(dp->catalog);
-+
-+	/* set default to 0 */
-+	atomic_set(&dp->hpd_isr_status, 0);
-+
-+	/* Enable interrupt first time
-+	 * we are leaving dp clocks on during disconnect
-+	 * and never disable interrupt
-+	 */
-+	enable_irq(dp->irq);
-+}
-+
-+void msm_dp_irq_postinstall(struct msm_dp *dp_display)
-+{
-+	struct dp_display_private *dp;
-+
-+	if (!dp_display)
-+		return;
-+
-+	dp = container_of(dp_display, struct dp_display_private, dp_display);
-+
-+	INIT_DELAYED_WORK(&dp->config_hpd_work, dp_display_config_hpd_work);
-+	queue_delayed_work(system_wq, &dp->config_hpd_work, HZ * 10);
-+}
-+
- int msm_dp_modeset_init(struct msm_dp *dp_display, struct drm_device *dev,
- 			struct drm_encoder *encoder)
- {
-diff --git a/drivers/gpu/drm/msm/dp/dp_reg.h b/drivers/gpu/drm/msm/dp/dp_reg.h
-index ad6f1760f893..6b3e297e4e04 100644
---- a/drivers/gpu/drm/msm/dp/dp_reg.h
-+++ b/drivers/gpu/drm/msm/dp/dp_reg.h
-@@ -54,10 +54,22 @@
- #define DP_DP_IRQ_HPD_INT_MASK			(0x00000002)
- #define DP_DP_HPD_REPLUG_INT_MASK		(0x00000004)
- #define DP_DP_HPD_UNPLUG_INT_MASK		(0x00000008)
-+#define DP_DP_HPD_INT_MASK			(DP_DP_HPD_PLUG_INT_MASK | \
-+						DP_DP_IRQ_HPD_INT_MASK | \
-+						DP_DP_HPD_REPLUG_INT_MASK | \
-+						DP_DP_HPD_UNPLUG_INT_MASK)
-+#define DP_DP_HPD_STATE_STATUS_CONNECTED	(0x40000000)
-+#define DP_DP_HPD_STATE_STATUS_PENDING		(0x20000000)
-+#define DP_DP_HPD_STATE_STATUS_DISCONNECTED	(0x00000000)
-+#define DP_DP_HPD_STATE_STATUS_MASK		(0xE0000000)
- 
- #define REG_DP_DP_HPD_REFTIMER			(0x00000018)
-+#define DP_DP_HPD_REFTIMER_ENABLE		(1 << 16)
-+
- #define REG_DP_DP_HPD_EVENT_TIME_0		(0x0000001C)
- #define REG_DP_DP_HPD_EVENT_TIME_1		(0x00000020)
-+#define DP_DP_HPD_EVENT_TIME_0_VAL		(0x3E800FA)
-+#define DP_DP_HPD_EVENT_TIME_1_VAL		(0x1F407D0)
- 
- #define REG_DP_AUX_CTRL				(0x00000030)
- #define DP_AUX_CTRL_ENABLE			(0x00000001)
-diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
-index 9360331a8f39..b4b213e57f99 100644
---- a/drivers/gpu/drm/msm/msm_drv.h
-+++ b/drivers/gpu/drm/msm/msm_drv.h
-@@ -390,6 +390,7 @@ int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder);
- void msm_dp_display_mode_set(struct msm_dp *dp, struct drm_encoder *encoder,
- 				struct drm_display_mode *mode,
- 				struct drm_display_mode *adjusted_mode);
-+void msm_dp_irq_postinstall(struct msm_dp *dp_display);
- 
- #else
- static inline int __init msm_dp_register(void)
-@@ -421,6 +422,11 @@ static inline void msm_dp_display_mode_set(struct msm_dp *dp,
- 				struct drm_display_mode *adjusted_mode)
- {
- }
-+
-+static inline void msm_dp_irq_postinstall(struct msm_dp *dp_display)
-+{
-+}
-+
- #endif
- 
- void __init msm_mdp_register(void);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+- One advantage of -Wdeclaration-after-statement is that it can detect 
+  mismerges that can happen with the 'patch' tool when it applies a 
+  patch with fuzz.
 
+- Also, enforcing -Wdeclaration-after-statement means we have the nice 
+  symmetry that local variable declarations are always at the 
+  beginning of curly brace blocks, which includes function 
+  definitions. This IMO is a very helpful visual clue that allows the 
+  quick reading of kernel code.
+
+- A third advantage is that the grouping of local variables at the 
+  beginning of curly brace blocks encourages smaller, better 
+  structured functions: a large function would look automatically ugly 
+  due to the many local variables crammed at the beginning of it.
+
+So the gentle code structure message is: you can declare new local 
+variables in a loop construct or branch, at the cost of losing one 
+level of indentation. If it gets too deep, you are encouraged to split 
+your logic up better with helper functions. The kind of run-on 
+mega-functions that C++ style mixed variables often allow looks 
+*automatically* uglier under -Wdeclaration-after-statement and quickly 
+breaks simple kernel style rules such as col80 or indentation level 
+depth or the too high visual complexity of variable definition lines.
+
+Basically the removal of -Wdeclaration-after-statement removes a 
+helpful symmetry & allows the addition of random noise to our code 
+base, with very little benefits offered. I'd be sad to see it go.
+
+Thanks,
+
+	Ingo
