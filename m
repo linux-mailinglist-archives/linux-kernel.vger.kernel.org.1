@@ -2,95 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17CFA247E6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 08:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B0D247E6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 08:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726495AbgHRG3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 02:29:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49352 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726381AbgHRG3T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 02:29:19 -0400
-Received: from localhost (unknown [122.171.38.130])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B24B20825;
-        Tue, 18 Aug 2020 06:29:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597732159;
-        bh=zBw9hFO+H66X4Rr03LngM7OaVXF0mK9y8qCEVNvyBVw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BdGkNHmLk2pD8vhckIj7kQXtI+aSrPKhj9pKMOHnMPS+QaPuN8td+x1ZzXfkOMgaz
-         Sb7XmZP1K4Y2i/7naBcfrKZXcR6wL2fzwmNgf9zTHsy2e1knLwsWsAJCa7SVWm3vvC
-         EkVIEdHbsKHoDTlzVRmPuqctTDKnKWBq0nx1oz/0=
-Date:   Tue, 18 Aug 2020 11:59:15 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
-        alsa-devel@alsa-project.org, tiwai@suse.de,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        broonie@kernel.org, srinivas.kandagatla@linaro.org,
-        jank@cadence.com, mengdong.lin@intel.com,
-        slawomir.blauciak@intel.com, sanyog.r.kale@intel.com,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-Subject: Re: [PATCH 00/13] soundwire: intel: add power management support
-Message-ID: <20200818062915.GT2639@vkoul-mobl>
-References: <20200721203723.18305-1-yung-chuan.liao@linux.intel.com>
- <20200817120841.GQ2639@vkoul-mobl>
- <d8f8f64f-34db-9c9a-c821-83dda3b2db9a@linux.intel.com>
- <093dcb7d-e2b7-b568-6a23-aeaf9bfb6004@linux.intel.com>
+        id S1726646AbgHRG3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 02:29:46 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:46766 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726519AbgHRG3p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 02:29:45 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 9AA41F6886A1652A6D0B;
+        Tue, 18 Aug 2020 14:29:42 +0800 (CST)
+Received: from [10.174.185.226] (10.174.185.226) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 18 Aug 2020 14:29:36 +0800
+Subject: Re: [PATCH] ACPI/IORT: Drop the unused @ops of
+ iort_add_device_replay()
+To:     Hanjun Guo <guohanjun@huawei.com>, <lorenzo.pieralisi@arm.com>,
+        <sudeep.holla@arm.com>
+CC:     <linux-acpi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <wanghaibin.wang@huawei.com>
+References: <20200817105946.1511-1-yuzenghui@huawei.com>
+ <8b15f022-8fb9-aa5c-fcd8-f92d4878a0a3@huawei.com>
+From:   Zenghui Yu <yuzenghui@huawei.com>
+Message-ID: <ae3a3b0e-ba0f-7ccc-7ddf-d0f0cf69a818@huawei.com>
+Date:   Tue, 18 Aug 2020 14:29:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <8b15f022-8fb9-aa5c-fcd8-f92d4878a0a3@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <093dcb7d-e2b7-b568-6a23-aeaf9bfb6004@linux.intel.com>
+X-Originating-IP: [10.174.185.226]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17-08-20, 11:10, Pierre-Louis Bossart wrote:
+On 2020/8/18 11:49, Hanjun Guo wrote:
+> On 2020/8/17 18:59, Zenghui Yu wrote:
+>> Since commit d2e1a003af56 ("ACPI/IORT: Don't call iommu_ops->add_device
+>> directly"), we use the IOMMU core API to replace a direct invoke of the
+>> specified callback. The parameter @ops has therefore became unused. Let's
+>> drop it.
+>>
+>> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+>> ---
+>>   drivers/acpi/arm64/iort.c | 8 +++-----
+>>   1 file changed, 3 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+>> index ec782e4a0fe4..a0ece0e201b2 100644
+>> --- a/drivers/acpi/arm64/iort.c
+>> +++ b/drivers/acpi/arm64/iort.c
+>> @@ -811,8 +811,7 @@ static inline const struct iommu_ops 
+>> *iort_fwspec_iommu_ops(struct device *dev)
+>>       return (fwspec && fwspec->ops) ? fwspec->ops : NULL;
+>>   }
+>> -static inline int iort_add_device_replay(const struct iommu_ops *ops,
+>> -                     struct device *dev)
+>> +static inline int iort_add_device_replay(struct device *dev)
+>>   {
+>>       int err = 0;
+>> @@ -1072,7 +1071,7 @@ const struct iommu_ops 
+>> *iort_iommu_configure_id(struct device *dev,
+>>        */
+>>       if (!err) {
+>>           ops = iort_fwspec_iommu_ops(dev);
+>> -        err = iort_add_device_replay(ops, dev);
+>> +        err = iort_add_device_replay(dev);
+>>       }
+>>       /* Ignore all other errors apart from EPROBE_DEFER */
+>> @@ -1089,8 +1088,7 @@ const struct iommu_ops 
+>> *iort_iommu_configure_id(struct device *dev,
+>>   #else
+>>   static inline const struct iommu_ops *iort_fwspec_iommu_ops(struct 
+>> device *dev)
+>>   { return NULL; }
+>> -static inline int iort_add_device_replay(const struct iommu_ops *ops,
+>> -                     struct device *dev)
+>> +static inline int iort_add_device_replay(struct device *dev)
 > 
-> 
-> > > I had applied except 3 & 9 (few skipped in middle due to conflict while
-> > > applying), BUT I get a build failure on patch 2 onwards :(
-> > > 
-> > > drivers/soundwire/intel_init.c: In function ‘sdw_intel_cleanup’:
-> > > drivers/soundwire/intel_init.c:72:4: error: implicit declaration of
-> > > function ‘pm_runtime_disable’
-> > > [-Werror=implicit-function-declaration]
-> > >     72 |    pm_runtime_disable(&link->pdev->dev);
-> > > 
-> > > I suspect due to missing header? I was on x64 build with allmodconfig
-> > > 
-> > > So only patch 1 is applied and pushed now
-> > 
-> > I just tried on these series applied on top of soundwire/next
-> > 
-> > commit 9b3b4b3f2f2af863d2f6dd65afd295a5a673afa2 (soundwire/next)
-> > 
-> >      soundwire: intel: Add basic power management support
-> > 
-> > And I don't see any issue?
-> 
-> Sorry, I misunderstood the issue. Yes indeed the #include
-> <linux/pm_runtime.h> is added to the wrong patch, I see Bard fixed this in
-> our tree. Not sure what happened here, I ran a patch-by-patch compilation
-> test a long time ago and kbuild was silent. Thanks for spotting this.
-> 
-> > If you want to double-check merge issues, I pushed the code here:
-> > https://github.com/plbossart/sound/tree/sdw/pm_runtime_soundwire_next
-> > 
-> > I am really not sure what conflicts you are referring to, git am worked
-> > fine for me, only skipped the first patch that's already applied.
-> 
-> But the point about conflicts does remain, I am not sure why you skipped
-> patches, I have no merge conflicts on my side.
+> inline functions iort_fwspec_iommu_ops() and iort_add_device_replay()
+> are not needed anymore after commit 8212688600ed ("ACPI/IORT: Fix build
+> error when IOMMU_SUPPORT is disabled"), could you please add another
+> patch to remove them as well?
 
-As noted above, I tried to apply except 3 & 9 due to questions on them.
-It is quite normal that dependencies fail to apply, not sure why you are
-confused.
+Sure, I will remove them in v2. Thanks for the reminder.
 
--- 
-~Vinod
+
+Zenghui
