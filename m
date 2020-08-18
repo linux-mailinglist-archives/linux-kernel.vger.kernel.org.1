@@ -2,130 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3EE248377
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 13:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6249824837B
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 13:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726592AbgHRLCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 07:02:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbgHRLCU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 07:02:20 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2461EC061389
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 04:02:20 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z18so17815311wrm.12
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 04:02:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5V8irRRRxRnwftdg2ujt2Pfnni+sPye5ForxfSVU5CI=;
-        b=lTziVxCtCNaxClvjURD4ZAxeMl9SLrTRlo3tg9crwli+r+Ce+zS9oaxdHt3NdqfTdI
-         5Fa86ptTQwsxUkO9bE4EJHhH7nFgmxcQtRPOtU0SkOeqHJEOYhhX0YrrKOkhCGWsoRWa
-         QKLpz1YxCI5P9F3dR1VL8yg0zvKFYE2imoLJba7ljEc/eaDsx9MtuMlQ6Vu3k7XPobXH
-         K5MO/spovlbi4X6oyPMcjijkDLT5/Y3C/XeU8q9UBIaXMScrHr98IzaxDssaZNSgb74h
-         pr21KG9upxRA892xblwe9bkCDcobrcUbshJgg2vA3e91W4CTOL4/2sHH7XdwqD+bwjfE
-         LTbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5V8irRRRxRnwftdg2ujt2Pfnni+sPye5ForxfSVU5CI=;
-        b=Acu1yomptHJJXHmey4x9f/CsCOTtWG4yd9g3gjjn6Xhv9xTCyt8mI7GUknCur4vINW
-         BF1WMHtP3YCffYticwGFR5CWbwLqRDClLokzItyrggMS1CpW//fBdDLd41bGXSv/FdiF
-         BSn+ITRm0EVpkwEOk4JArF36/FFiyHtPi+dLanPLuPVlBk1FzZbrcJDaHMUDA361Ag2M
-         J7Mnl4i7UHBKTCmW6GXoheHzMpaD6P3cA965AHNxT8qU/MCoZzL5uvO835kYXjQqSQgN
-         mOZxvlzydbczAmMGgW4ucCmtkCuZwFbLdUYIVoPi/FXZwUnAU93bfdmKzN3l7EKiM/N6
-         ISRg==
-X-Gm-Message-State: AOAM533tzLlmJieC4xYkyNyTBaZVTxRoNJtbBa8NRezRPC6MiCrsi5Hp
-        yoNNp25cGttRxDMbk/L02tI=
-X-Google-Smtp-Source: ABdhPJy8DXY4Vbv4PUXnsXfID1NxwZhTns7dkyJ8QzPTWi/bfGBErLVDBAM8XlBbATD4ev3Ku+l+yQ==
-X-Received: by 2002:adf:97d3:: with SMTP id t19mr18635202wrb.138.1597748538730;
-        Tue, 18 Aug 2020 04:02:18 -0700 (PDT)
-Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id k13sm32825220wmj.14.2020.08.18.04.02.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 04:02:10 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-To:     Markus Mayer <mmayer@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Alex Dewar <alex.dewar90@gmail.com>
-Subject: [PATCH] memory: brcmstb_dpfe: Fix memory leak
-Date:   Tue, 18 Aug 2020 12:02:01 +0100
-Message-Id: <20200818110201.69933-1-alex.dewar90@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        id S1726634AbgHRLD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 07:03:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60288 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726043AbgHRLDX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 07:03:23 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B109C2067C;
+        Tue, 18 Aug 2020 11:03:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597748602;
+        bh=aM76h0LVRWD/VLaNlIvaLamCRS32rZ9tXaBBf7SqjKM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Xz+KBqCsqtyyNaFLl9EC9cWvB075M+HVY4v7aNwfI6vFva6s2DbNBy3ym7dpepa/G
+         ODNgxQ8gjopHuSd1fg0KlxpT1DTBAl5NUYCcNKBK4VRJBV73kd6osQAXp161bnqMrQ
+         F66WXUNy9iNq54bXz8NiYpLKpBYgjX8be+T77SVM=
+Date:   Tue, 18 Aug 2020 13:03:32 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>, robh@kernel.org,
+        wahrenst@gmx.net, p.zabel@pengutronix.de,
+        andy.shevchenko@gmail.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com, tim.gover@raspberrypi.org,
+        linux-pci@vger.kernel.org, helgaas@kernel.org,
+        mathias.nyman@linux.intel.com, lorenzo.pieralisi@arm.com
+Subject: Re: [PATCH v5 0/9] Raspberry Pi 4 USB firmware initialization rework
+Message-ID: <20200818110332.GA167428@kroah.com>
+References: <20200629161845.6021-1-nsaenzjulienne@suse.de>
+ <a6aecb7a4d270cb23430d25850c85a332555af55.camel@suse.de>
+ <01e4b87c-d287-fd72-9f9c-545539127a50@gmail.com>
+ <20200814061105.GG1409566@kroah.com>
+ <21baf85fa476f62a56895d77fa76dc0d73c1b3a0.camel@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <21baf85fa476f62a56895d77fa76dc0d73c1b3a0.camel@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In brcmstb_dpfe_download_firmware(), memory is allocated to variable fw by
-firmware_request_nowarn(), but never released. Fix up to release fw on
-all return paths.
+On Fri, Aug 14, 2020 at 12:04:05PM +0200, Nicolas Saenz Julienne wrote:
+> On Fri, 2020-08-14 at 08:11 +0200, Greg KH wrote:
+> > On Thu, Aug 13, 2020 at 12:17:49PM -0700, Florian Fainelli wrote:
+> > > 
+> > > On 8/13/2020 3:01 AM, Nicolas Saenz Julienne wrote:
+> > > > Hi everyone.
+> > > > 
+> > > > On Mon, 2020-06-29 at 18:18 +0200, Nicolas Saenz Julienne wrote:
+> > > > > On the Raspberry Pi 4, after a PCI reset, VL805's firmware may either be
+> > > > > loaded directly from an EEPROM or, if not present, by the SoC's
+> > > > > co-processor, VideoCore. This series reworks how we handle this.
+> > > > > 
+> > > > > The previous solution makes use of PCI quirks and exporting platform
+> > > > > specific functions. Albeit functional it feels pretty shoehorned. This
+> > > > > proposes an alternative way of handling the triggering of the xHCI chip
+> > > > > initialization trough means of a reset controller.
+> > > > > 
+> > > > > The benefits are pretty evident: less platform churn in core xHCI code,
+> > > > > and no explicit device dependency management in pcie-brcmstb.
+> > > > > 
+> > > > > Note that patch #1 depends on another series[1], that was just applied
+> > > > > into the clk maintainer's tree.
+> > > > > 
+> > > > > The series is based on v5.8-rc3
+> > > > > 
+> > > > > v3: https://www.spinics.net/lists/arm-kernel/msg813612.html
+> > > > > v2: https://lkml.org/lkml/2020/6/9/875
+> > > > > v1: https://lore.kernel.org/linux-usb/20200608192701.18355-1-nsaenzjulienne@suse.de/T/#t
+> > > > > 
+> > > > > [1] https://lore.kernel.org/linux-clk/159304773261.62212.983376627029743900@swboyd.mtv.corp.google.com/T/#t
+> > > > > 
+> > > > > ---
+> > > > 
+> > > > We were waiting on a dependency to be merged upstream to get this. They are now
+> > > > in, so could we move things forward?
+> > > > 
+> > > > I can take the device tree patches, I guess philipp can take the reset
+> > > > controller code. But I'm not so sure who should be taking the PCI/USB
+> > > > counterparts.
+> > > 
+> > > Should we route everything through the USB tree since that is where the
+> > > changes that do require synchronization with other subsystems and DTS is
+> > > needed the most?
+> > > -- 
+> > > Florian
+> > 
+> > That's fine with me, if everyone else is ok with it :)
+> 
+> Sounds good to me.
 
-Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
----
- drivers/memory/brcmstb_dpfe.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+All now queued up, thanks for sticking with this!
 
-diff --git a/drivers/memory/brcmstb_dpfe.c b/drivers/memory/brcmstb_dpfe.c
-index 60e8633b1175..f24a9dc65f3c 100644
---- a/drivers/memory/brcmstb_dpfe.c
-+++ b/drivers/memory/brcmstb_dpfe.c
-@@ -616,7 +616,7 @@ static int brcmstb_dpfe_download_firmware(struct brcmstb_dpfe_priv *priv)
- 	const u32 *dmem, *imem;
- 	struct init_data init;
- 	const void *fw_blob;
--	int ret;
-+	int ret = 0;
- 
- 	/*
- 	 * Skip downloading the firmware if the DCPU is already running and
-@@ -647,8 +647,10 @@ static int brcmstb_dpfe_download_firmware(struct brcmstb_dpfe_priv *priv)
- 		return (ret == -ENOENT) ? -EPROBE_DEFER : ret;
- 
- 	ret = __verify_firmware(&init, fw);
--	if (ret)
--		return -EFAULT;
-+	if (ret) {
-+		ret = -EFAULT;
-+		goto release_fw;
-+	}
- 
- 	__disable_dcpu(priv);
- 
-@@ -667,18 +669,20 @@ static int brcmstb_dpfe_download_firmware(struct brcmstb_dpfe_priv *priv)
- 
- 	ret = __write_firmware(priv->dmem, dmem, dmem_size, is_big_endian);
- 	if (ret)
--		return ret;
-+		goto release_fw;
- 	ret = __write_firmware(priv->imem, imem, imem_size, is_big_endian);
- 	if (ret)
--		return ret;
-+		goto release_fw;
- 
- 	ret = __verify_fw_checksum(&init, priv, header, init.chksum);
- 	if (ret)
--		return ret;
-+		goto release_fw;
- 
- 	__enable_dcpu(priv);
- 
--	return 0;
-+release_fw:
-+	release_firmware(fw);
-+	return ret;
- }
- 
- static ssize_t generic_show(unsigned int command, u32 response[],
--- 
-2.28.0
-
+greg k-h
