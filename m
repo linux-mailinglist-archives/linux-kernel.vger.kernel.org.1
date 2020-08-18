@@ -2,97 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B43124820E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 11:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 981F1248216
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 11:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726576AbgHRJkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 05:40:33 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:48018 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726374AbgHRJk3 (ORCPT
+        id S1726630AbgHRJlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 05:41:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726370AbgHRJlo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 05:40:29 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id AC5A41C0BB6; Tue, 18 Aug 2020 11:40:26 +0200 (CEST)
-Date:   Tue, 18 Aug 2020 11:40:25 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        syzbot+96414aa0033c363d8458@syzkaller.appspotmail.com,
-        Lihong Kou <koulihong@huawei.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 027/168] Bluetooth: add a mutex lock to avoid UAF in
- do_enale_set
-Message-ID: <20200818094024.GB10974@amd>
-References: <20200817143733.692105228@linuxfoundation.org>
- <20200817143735.099152549@linuxfoundation.org>
+        Tue, 18 Aug 2020 05:41:44 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1D7C061342
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 02:41:42 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id qc22so21299484ejb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 02:41:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Dv1Xhl1bS+5jEQYbFML/aNrkT6FMSIT4YIWLINTkYuA=;
+        b=TKBIZQ9cEM0s7XlAhqk+9WuMaJ5WAzHt28fYx7z2YcY+Ky15uWjPK9XQAlE4GEUNqa
+         mV0SnmJ2Gpom5vx/h8sEIfNfZa5zbCrKs2dnoVh0T89qV+LR7R+5+3MROncxObXPQArg
+         /jnklxkh2Vw4IJ9BkaOQd5d8BqCmxE3VXbUS4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Dv1Xhl1bS+5jEQYbFML/aNrkT6FMSIT4YIWLINTkYuA=;
+        b=fJ5G3rqs6imjtTI2Qe2dubCZlzR9h6Ex26wUqMWLR9ED/GeRrt8DKHAj63pC603UZB
+         5ynBFG/SJITkkQOx9WUTDLgFNXoBwSUZQMiT86kKr6wTYb/T6BLufRFhvWf9Z/WtJKZZ
+         Y2LYyypuZx4SegGKDnKNz+aEG3guaX4SCduOVeU+Q2t+tBPmd7NA9lx+DzbMT95RslrT
+         TQ8kb5cEH2sqe7OjZiaOTZx9vuNQ6UlPRrdXd1oONTkZ79/bYD2jbH5IB8lRJYNOz7E6
+         +CQDOLuEE/Qi2+9XNdK3HowiSUR1sDg8Sl7eOwYTjsOoOAzibjDrd/FeZZD05k2qvAMU
+         /58w==
+X-Gm-Message-State: AOAM531p1ThMKIDgmC01Jn3JCMEULCSdG0Dbkty30C30OHRMJwj3J195
+        Haju2YQ906n2ABT0mFa68kXUAlUyvklF//6EJA4L6Q==
+X-Google-Smtp-Source: ABdhPJzt1EdcvKZCvCY2Z46UPxjvinPUBrda1Z9vw7Mvqcsu6bquKdK/yTIXHnA8ZslRVtZfcgEoy+b/s/oUX8tNtng=
+X-Received: by 2002:a17:907:94ca:: with SMTP id dn10mr19044858ejc.110.1597743701266;
+ Tue, 18 Aug 2020 02:41:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="98e8jtXdkpgskNou"
-Content-Disposition: inline
-In-Reply-To: <20200817143735.099152549@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <CAHk-=whE42mFLi8CfNcdB6Jc40tXsG3sR+ThWAFihhBwfUbczA@mail.gmail.com>
+ <CAJfpegtXtj2Q1wsR-3eUNA0S=_skzHF0CEmcK_Krd8dtKkWkGA@mail.gmail.com>
+ <20200812143957.GQ1236603@ZenIV.linux.org.uk> <CAJfpegvFBdp3v9VcCp-wNDjZnQF3q6cufb-8PJieaGDz14sbBg@mail.gmail.com>
+ <20200812150807.GR1236603@ZenIV.linux.org.uk> <CAJfpegsQF1aN4XJ_8j977rnQESxc=Kcn7Z2C+LnVDWXo4PKhTQ@mail.gmail.com>
+ <20200812163347.GS1236603@ZenIV.linux.org.uk> <CAJfpegv8MTnO9YAiFUJPjr3ryeT82=KWHUpLFmgRNOcQfeS17w@mail.gmail.com>
+ <20200812173911.GT1236603@ZenIV.linux.org.uk> <20200812183326.GU1236603@ZenIV.linux.org.uk>
+ <20200812213041.GV1236603@ZenIV.linux.org.uk>
+In-Reply-To: <20200812213041.GV1236603@ZenIV.linux.org.uk>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Tue, 18 Aug 2020 11:41:29 +0200
+Message-ID: <CAJfpeguyQhfxrSnaH1mZkncgfiLFB2yM2ZgdMBzuhAdKdmmuxA@mail.gmail.com>
+Subject: Re: file metadata via fs API (was: [GIT PULL] Filesystem Information)
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Jann Horn <jannh@google.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Karel Zak <kzak@redhat.com>, Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Christian Brauner <christian@brauner.io>,
+        Lennart Poettering <lennart@poettering.net>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ian Kent <raven@themaw.net>,
+        LSM <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 12, 2020 at 11:30 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> On Wed, Aug 12, 2020 at 07:33:26PM +0100, Al Viro wrote:
+>
+> > BTW, what would such opened files look like from /proc/*/fd/* POV?  And
+> > what would happen if you walk _through_ that symlink, with e.g. ".."
+> > following it?  Or with names of those attributes, for that matter...
+> > What about a normal open() of such a sucker?  It won't know where to
+> > look for your ->private_data...
+> >
+> > FWIW, you keep refering to regularity of this stuff from the syscall
+> > POV, but it looks like you have no real idea of what subset of the
+> > things available for normal descriptors will be available for those.
+>
+> Another question: what should happen with that sucker on umount of
+> the filesystem holding the underlying object?  Should it be counted
+> as pinning that fs?
 
---98e8jtXdkpgskNou
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Obviously yes.
 
-Hi!
+> Who controls what's in that tree?
 
-> From: Lihong Kou <koulihong@huawei.com>
->=20
-> [ Upstream commit f9c70bdc279b191da8d60777c627702c06e4a37d ]
->=20
-> In the case we set or free the global value listen_chan in
-> different threads, we can encounter the UAF problems because
-> the method is not protected by any lock, add one to avoid
-> this bug.
+It could be several entities:
 
-For this to be safe, bt_6lowpan_exit() needs same handling, no?
+ - global (like mount info)
+ - per inode (like xattr)
+ - per fs (fs specific inode attributes)
+ - etc..
 
-Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+>  If we plan to have xattrs there,
+> will they be in a flat tree, or should it mirror the hierarchy of
+> xattrs?  When is it populated?  open() time?  What happens if we
+> add/remove an xattr after that point?
 
-diff --git a/net/bluetooth/6lowpan.c b/net/bluetooth/6lowpan.c
-index 9a75f9b00b51..2402ef5ac072 100644
---- a/net/bluetooth/6lowpan.c
-+++ b/net/bluetooth/6lowpan.c
-@@ -1304,10 +1304,12 @@ static void __exit bt_6lowpan_exit(void)
- 	debugfs_remove(lowpan_enable_debugfs);
- 	debugfs_remove(lowpan_control_debugfs);
-=20
-+	mutex_lock(&set_lock);
- 	if (listen_chan) {
- 		l2cap_chan_close(listen_chan, 0);
- 		l2cap_chan_put(listen_chan);
- 	}
-+	mutex_unlock(&set_lock);
-=20
- 	disconnect_devices();
-=20
+From the interface perspective it would be dynamic (i.e. would get
+updated on open or read).  From an implementation POV it could have
+caching, but that's not how I'd start out.
 
+> If we open the same file several times, what should we get?  A full
+> copy of the tree every time, with all coherency being up to whatever's
+> putting attributes there?
+>
+> What are the permissions needed to do lookups in that thing?
 
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
+That would depend on what would need to be looked up.  Top level would
+be world readable, otherwise it would be up to the attribute/group.
 
---98e8jtXdkpgskNou
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+>
+> All of that is about semantics and the answers are needed before we
+> start looking into implementations.  "Whatever my implementation
+> does" is _not_ a good way to go, especially since that'll be cast
+> in stone as soon as API becomes exposed to userland...
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+Fine.
 
-iEYEARECAAYFAl87ogYACgkQMOfwapXb+vLXHQCdF5AaFPo+xALJJPE8kIFePbu0
-AqUAn3XCRYpjpqB671mtKEkGruvlVKB8
-=sLE0
------END PGP SIGNATURE-----
-
---98e8jtXdkpgskNou--
+Thanks,
+Miklos
