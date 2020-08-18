@@ -2,193 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B980247EB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 08:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E83E247EC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 08:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726341AbgHRGxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 02:53:17 -0400
-Received: from mga12.intel.com ([192.55.52.136]:12149 "EHLO mga12.intel.com"
+        id S1726480AbgHRGze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 02:55:34 -0400
+Received: from mga17.intel.com ([192.55.52.151]:4046 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726165AbgHRGxN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 02:53:13 -0400
-IronPort-SDR: iCRE8/yTGGxWFc50yOBIiJsxLGbjivM0PdBlY1EOS4ho4sDBpyPSc1kmdKRcFlXrDwbkudm4L9
- 2lJxNjgTKBuQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="134373703"
+        id S1726165AbgHRGzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 02:55:33 -0400
+IronPort-SDR: l5inDPIqLywGBiC2onxxXGt0TuEQnE2aBsQnN9vc0Eam1hEb3Hd6M2/8jbjEN/iF07P9q0MwnR
+ TRF+wYQvca4w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="134911872"
 X-IronPort-AV: E=Sophos;i="5.76,326,1592895600"; 
-   d="scan'208";a="134373703"
+   d="scan'208";a="134911872"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 23:53:12 -0700
-IronPort-SDR: BDfQ+H3/mW5WVADCzkX9OmoWX0ZyabG24ib7/I8otiEHyNG1h5cMPjNd+gfpwTCtoNSLYWzPne
- syyvhKz2JaFA==
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 23:55:31 -0700
+IronPort-SDR: mupB0hZ6tOkcr2+Qy/L/Wi/2FO9WGhIbB+Ir/jA+k9yT+HqkFJ72G8RLSLeS0dJwdo8T61azuK
+ RjkbzgtmvaEQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,326,1592895600"; 
-   d="scan'208";a="471693982"
-Received: from orsmsx602-2.jf.intel.com (HELO ORSMSX602.amr.corp.intel.com) ([10.22.229.82])
-  by orsmga005.jf.intel.com with ESMTP; 17 Aug 2020 23:53:08 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+   d="scan'208";a="326644146"
+Received: from unknown (HELO fmsmsx604.amr.corp.intel.com) ([10.18.84.214])
+  by orsmga008.jf.intel.com with ESMTP; 17 Aug 2020 23:55:30 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 17 Aug 2020 23:53:08 -0700
-Received: from orsmsx162.amr.corp.intel.com (10.22.240.85) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ 15.1.1713.5; Mon, 17 Aug 2020 23:55:29 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 17 Aug 2020 23:55:29 -0700
+Received: from FMSEDG001.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Mon, 17 Aug 2020 23:53:08 -0700
-Received: from ORSEDG002.ED.cps.intel.com (10.7.248.5) by
- ORSMSX162.amr.corp.intel.com (10.22.240.85) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Mon, 17 Aug 2020 23:53:07 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by edgegateway.intel.com (134.134.137.101) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Mon, 17 Aug 2020 23:53:07 -0700
+ via Frontend Transport; Mon, 17 Aug 2020 23:55:29 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.170)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server (TLS) id
+ 14.3.439.0; Mon, 17 Aug 2020 23:55:26 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CwHzeE1u5VJ4RsYnN9HKCmwxLFAniEqytrhfqQ1EcnvJtRXH5+TaweFQm88OS1nSEwAQlWTemT+DC735OnAp/WLlwzMeVrh2JWKPbkDknx7rtsX0k5inygfDhfKcFQI/AOqPm9M69DZQ0eBE01ooocU6JQmEufX81/EyjC8PG6uXTLBh7uGwyL7XGg3Ven28QrI/tJonleN1oYnY2+FycxEy1gNPgo00UQu6xtEnZpHW1DC1FyN898huOYFMWvJzUEnV4qowAz0q0WQLYJFvoOInOxRDTUURp93zVR1EqY0FM2O34tyxClNElN/hbF1gWQPHY4MVhbtCjvy7gj6Zhg==
+ b=dIWomMd9m7d8C0mNnIEX+9pT7Oxpij7GiBJMfo1GlG9wIfw+tDfLGKrKbHu5q4zS6CSQLAVMqG8S7L5f3JbQBQL0V+4zRkXGDXmpFNTxyCJ3FXwW1lIRAykHVoI1WEmIhr5Oqte6araT8IIubigcG9XKFpZl9PJhcOGr32UFd5jf2UjKTuwZSUujtyBNbqu5r1FBHw+XL9SaVsSwS79QFjscoJKq/FhxWXUPdLWuZ/w8eCWAJZrSRsQwkJvx3fqn+eA62br1ZH0hh4uWCW19x+sJicX3bFiH0/pNIXRvsLPme1X9ZzUVt9B5YgdoBytAS8DeYvWL/i+hcpj9pbw7RQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=caibVuZKzfJh0S0Hnqs9hLZGAMR2x3hXhmmiYbnpvoc=;
- b=Lwog5vHHo6TBH2aBulrt9ypWGebdJFGcx2G9zIQ34mg61BwIFoSso3ybIPJfkWqoC35X1el9sM6kOhBbTUhjkT00mPvmYbedWBJ/nlXhhsmXmy+7QH3L0T9/5Ia8Z51lG/N52mDsewlHOdSfsFEGCicSu39pcVR7lBt9HZOXNxgpe6r2PT9LPJ7irQbLGE9fzKrdLZG455DdfRM3wNaLKka/8o8Qc2WA+q6sQMs5SyxReyOWY7KlflJqGeXS2+ZKu6Iq8HLvO1Y+iyY+wIIwZCKaP5ZRMoTU9l0N1Xbv8gEAwimwBSUnefy45ag2bO5KAwWi+03B8Og60Mv5k53TeA==
+ bh=R0rfpY1Gd3+dxQjcUOVY0k8p5BtigtSS0qhXW6PIwak=;
+ b=SRJLPivqNwxIY0YOOIO+zLrozbu2m8QW+cSDu+DU3qqCFmmfBaTPZa8p4OzaQNhOtQemk3Ak+qlvWptsXxK6fs7X2gQJZm40MCE68p+8snUy8dNodTvbDN2YZ6Y2zCwscQw09lfPnnq4cIaxL2rc6M+0xEKSXLsBA3VSEpqTzMkaxt6lvpH3WzzSCbbIM09gLuemLroIAwltBIXH4MeagDsOi6rcupzPQ7UhmT2k1FI7Beq4lXqbR7yA29QR4RxNXci27EGUyWhNRIGj5thWU8fhVdYwZlrwt38+WE6Lz/36A8h+YaNxnYIsfowMIZrUmIS7sDGdOCJJvgGzGByMDA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
  s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=caibVuZKzfJh0S0Hnqs9hLZGAMR2x3hXhmmiYbnpvoc=;
- b=zRQv5bHR8jWFE7xj4qbjwABCSG/wvazXrqh9J9b1M6KXvr0dEYrCK7zipxKXJ3lANBxW5wkLypaKwl9rG9y9cLaVhfkdrmBd2tdufWflquOBoNzdqPKRNtwnuE+2Fdq+oaJiFbDzE7koqVVNXQmwBkpDAS/T+CikXiN7EP+biQs=
-Received: from DM6PR11MB4074.namprd11.prod.outlook.com (2603:10b6:5:5::11) by
- DM5PR1101MB2107.namprd11.prod.outlook.com (2603:10b6:4:5a::19) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3283.20; Tue, 18 Aug 2020 06:53:06 +0000
-Received: from DM6PR11MB4074.namprd11.prod.outlook.com
- ([fe80::a061:bd5e:c46a:fa40]) by DM6PR11MB4074.namprd11.prod.outlook.com
- ([fe80::a061:bd5e:c46a:fa40%3]) with mapi id 15.20.3283.028; Tue, 18 Aug 2020
- 06:53:06 +0000
-From:   "Liao, Bard" <bard.liao@intel.com>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>
-CC:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ bh=R0rfpY1Gd3+dxQjcUOVY0k8p5BtigtSS0qhXW6PIwak=;
+ b=xC5XG7wyTd0KGzchpyVwmXI3At+HAJH0VRhx2LVS11S3V8e29R8m9UgMENcKeoDhSeNGLd6BHtXcvqC5GdCfoTSptOqbsJXdHUdWq7bYNutfowKgWHCHwErZZA1vXQblLIGAPKo15n6xAYHne/Q35Q+BJ6Y6f/6hqN2/ZPGC3IY=
+Received: from MWHPR11MB1613.namprd11.prod.outlook.com (2603:10b6:301:e::21)
+ by MWHPR1101MB2077.namprd11.prod.outlook.com (2603:10b6:301:4d::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.20; Tue, 18 Aug
+ 2020 06:55:23 +0000
+Received: from MWHPR11MB1613.namprd11.prod.outlook.com
+ ([fe80::c075:135f:66a3:cf00]) by MWHPR11MB1613.namprd11.prod.outlook.com
+ ([fe80::c075:135f:66a3:cf00%6]) with mapi id 15.20.3283.028; Tue, 18 Aug 2020
+ 06:55:23 +0000
+From:   "Xia, Hui" <hui.xia@intel.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        lkp <lkp@intel.com>
+CC:     Hyun Kwon <hyun.kwon@xilinx.com>,
+        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "jank@cadence.com" <jank@cadence.com>,
-        "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
-        "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>,
-        "ranjani.sridharan@linux.intel.com" 
-        <ranjani.sridharan@linux.intel.com>,
-        "hui.wang@canonical.com" <hui.wang@canonical.com>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>,
-        "Kale, Sanyog R" <sanyog.r.kale@intel.com>,
-        "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: RE: [PATCH 1/2] soundwire: add definition for maximum number of ports
-Thread-Topic: [PATCH 1/2] soundwire: add definition for maximum number of
- ports
-Thread-Index: AQHWdSI8ybKAPOyQqUWJUXX/RtQZPKk9aU0AgAAEipA=
-Date:   Tue, 18 Aug 2020 06:53:05 +0000
-Message-ID: <DM6PR11MB4074A817AEBB4636095581F2FF5C0@DM6PR11MB4074.namprd11.prod.outlook.com>
-References: <20200817174727.15139-1-yung-chuan.liao@linux.intel.com>
- <20200817174727.15139-2-yung-chuan.liao@linux.intel.com>
- <20200818063538.GV2639@vkoul-mobl>
-In-Reply-To: <20200818063538.GV2639@vkoul-mobl>
+        Vinod Koul <vkoul@kernel.org>,
+        Tejas Upadhyay <tejasu@xilinx.com>,
+        Michal Simek <monstr@monstr.eu>
+Subject: RE: [kbuild-all] Re: drivers/dma/xilinx/xilinx_dpdma.c:1172
+ xilinx_dpdma_synchronize() error: double unlocked 'chan->vchan.lock' (orig
+ line 1170)
+Thread-Topic: [kbuild-all] Re: drivers/dma/xilinx/xilinx_dpdma.c:1172
+ xilinx_dpdma_synchronize() error: double unlocked 'chan->vchan.lock' (orig
+ line 1170)
+Thread-Index: AQHWcDHV3z0s7FSfcUeuCnrdc6Vs7qk9eLEQ
+Date:   Tue, 18 Aug 2020 06:55:23 +0000
+Message-ID: <MWHPR11MB161363A9420049706DEBB450E55C0@MWHPR11MB1613.namprd11.prod.outlook.com>
+References: <202008120657.drkFgIsC%lkp@intel.com>
+ <20200811225006.GF17446@pendragon.ideasonboard.com>
+In-Reply-To: <20200811225006.GF17446@pendragon.ideasonboard.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-reaction: no-action
 dlp-product: dlpe-windows
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [220.133.4.96]
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+authentication-results: ideasonboard.com; dkim=none (message not signed)
+ header.d=none;ideasonboard.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.147.215]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c32739f4-7b2b-40f3-029e-08d843435c1b
-x-ms-traffictypediagnostic: DM5PR1101MB2107:
+x-ms-office365-filtering-correlation-id: e3ba7835-856a-43f0-1722-08d84343ae1b
+x-ms-traffictypediagnostic: MWHPR1101MB2077:
 x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM5PR1101MB210758A06EDBF72154A7A5F9FF5C0@DM5PR1101MB2107.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4714;
+x-microsoft-antispam-prvs: <MWHPR1101MB2077C935D74A7A8523F06C3FE55C0@MWHPR1101MB2077.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:296;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: C9G4StQvuwrnIoGwjfKnyipoWIWA2lM/M9mARiGfEiL51ttwQXPvzZFPopaxaKBTgrv+OW+CSKkitsq776DaxlLgaU/t561IEw0kPsi4eTzC++As8jQxVyoapAjQD9/ot7GzqcyS/J/Yq79CTxr0VQ+s54ihxDgsrHNd1wad3TJFbk4y/3sdjmTBEXvA96iuOTiyOZHEuJxZuWymwQ7V8J5hMcgBqJeJTUnMbZo86ETb1U7NNrfRw2yaTOxejfBnU25ShrqJYAAB3eV+FDK6GtKGaF5qo+ztWMx51Fjdy6YEA3kBq6iskCS6P2ZU6DtdYZZrIA8bgf6JNJ14HyHukA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4074.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(136003)(366004)(39860400002)(316002)(4326008)(7696005)(26005)(54906003)(53546011)(6506007)(71200400001)(9686003)(52536014)(55016002)(186003)(110136005)(478600001)(66556008)(64756008)(66446008)(7416002)(86362001)(83380400001)(8676002)(2906002)(33656002)(76116006)(5660300002)(66476007)(66946007)(8936002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: O33brgqi6+54FfF12jfBCsszHnKwvuPOCVo2A7lTsftc5bYMeMjZwmU3LJyYg8fvVa2vjdgsU2wDNBqtDKU8SndTgwxX5E/DNfbKe/FDHL/X2Cah2fTeSgFz2JnopUxb487BpGSW1SfJwPgX9WR2FZqWfyWLmAhrNEYTONE4dgPJeY7r/nvtAP70PG/EYRSCgdMIzQfD6ZIftxhiAhnfixDFKUaEzMFW2hcdfHI3/Nuv1LxLT9gZvZ2VYtT0bB7DeTrT7o7z9aDfgOUNFnFEniPMLDHLL4K4SJQqCm6N1CPRSTRQVi1QSLr3rEYViRH9ON8IN/6WT4g5aKv7mOi2aBlybNAJ2gvBnDq7evczfiAhxKfYlrG78tEje5HkXhfhAua9PKtYBoDcv4U5b7K9/tJuKuDNBWrFM+rWBMq2WOAxWsPxNfVYHfkjJdtvgQcHt5gLUBZlblRznD4rYeu76zHU4nUekG5cBKLSyfSF5fQQJJ8RgpWw/sQ/FrOYM9E6mDYxN21csGB+OzTPd/OUDmzk1IL/z0xwi30p6jXGYzk0WNw6VzcglDQZjXI9lVdoJOvLKhrww77Jgih30nWFCBtFBDknb/KG7w3W2oaq5C+LHDj4vBLYeus2yVDl0pgqQV87sHcFHp0z3mcb88gpUw==
-Content-Type: text/plain; charset="us-ascii"
+x-microsoft-antispam-message-info: MBjgMLcaDOs3zyY+m1veMjAMAtTY+HtQEiBsXZiv+e/3yX0rRJnz1G9zMEhvUMU5uv3SZ7Gf23As03yuDuVQIywNaBgxQCvGb4V63rrEOgjBp3fze3iRr7avLWmNAFWQ9AjRn0nbaPH2udrvnPHUIDxlM8ZGJGmfmZ1Az2XPdxtdXX6tgYn5xUpmVQfYYBufzcig1rmNeW1erih59hEx82hQzb3SlMED3ShgDbjiasIcVm3Y+uACg7LudOajACVEPckvjuoGcailroN6RdizCrwHhcUqbPHEFO7vP6EBb/169hVzmywwEX0YlE5Yky+5a+8CkeIYZPcNA5EgFO+05/hCU4DVRTdcZvBeEz30FzqfYu9bMxRwQs0k1RHhaOMXOKVU/eSG1x27Ssvksi5OrA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1613.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(396003)(39860400002)(346002)(376002)(186003)(7696005)(2906002)(8936002)(26005)(64756008)(71200400001)(52536014)(76116006)(66446008)(478600001)(54906003)(6506007)(110136005)(55016002)(66556008)(966005)(9686003)(66476007)(66946007)(86362001)(6636002)(8676002)(316002)(4326008)(33656002)(5660300002)(83380400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: HLXWEyt6NrSyWqu5a5/ZXuILzwi9Yd1o6zXSCLosEkyOtN/pkV1Qhiup5RlknRGRGzBeLmq/BCTqEphmCHg5AEC8CqhKg55LtGb987cdKBlTOIRUpICVu61CgSsEqo0ZT7E21aTGpf6YKFJZORiBuNfOZ0ZX23B6wsj8k4rbfik8vXDhl357fWB7zCPTLEN01vaunbreMR0Bz63jgBhLtCHXcv10QEMntY52Am8dn2gxNRQsoA0yX2kbBKvRxTS99QUdCKPeMLTE1nVconcgsL7imP4+m6fD5hro1/Xsklo/0yWtdeIrhArxx3BR5iKL/MpadbkIZ7quZ4Sma8PrxvnL1DbYpLAJRxu3vJmy0RgX0avuMWw39CGjHnl49PiS5fd4i3q9tofioLpBy46iKh7gCmHj0y8+HjpgVF2HCtoOlr3mGNhBe4WQc+pO07O1g3PfwRPlBtNnPkz8sHJuBqIIHBAu4hzyt8Tlgfgfa+NzUoNRCFf4AWmR+Huc+Xyz9XPviMhaddhdIoF3YXAwpkirZkOD0qFw/N6ssEu0E/uSlssv3+a8S3K/9KOL/txUAJzDT/JZWeC+JxGESujM9pcGxZ4NXrNVYhTTEiRhePbeRKrR+vBOnmw7sz6u+yDKNavgRDuXml3idM6Rvh+h9w==
+Content-Type: text/plain; charset="iso-2022-jp"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4074.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c32739f4-7b2b-40f3-029e-08d843435c1b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Aug 2020 06:53:05.8320
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1613.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e3ba7835-856a-43f0-1722-08d84343ae1b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Aug 2020 06:55:23.4626
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: XO2yjdj4Ubcm/JIhzFuefpHzrSDGQ0Zb4yOJt3hBWqnA5pG/LuMz3n9lhJ84Jz3mtTIp/cmjI7LDbuuKeSuSrQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1101MB2107
+X-MS-Exchange-CrossTenant-userprincipalname: Z2xDQwhV+09fka3H+Rqb8wbw4RZXLjNM4FtQoFcy0BUKoM7gdXH0il/v+bTFW9MMmV90fPiEk+8pM8tXkK6rqw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1101MB2077
 X-OriginatorOrg: intel.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Vinod Koul <vkoul@kernel.org>
-> Sent: Tuesday, August 18, 2020 2:36 PM
-> To: Bard Liao <yung-chuan.liao@linux.intel.com>
-> Cc: alsa-devel@alsa-project.org; linux-kernel@vger.kernel.org; tiwai@suse=
-.de;
-> broonie@kernel.org; gregkh@linuxfoundation.org; jank@cadence.com;
-> srinivas.kandagatla@linaro.org; rander.wang@linux.intel.com;
-> ranjani.sridharan@linux.intel.com; hui.wang@canonical.com; pierre-
-> louis.bossart@linux.intel.com; Kale, Sanyog R <sanyog.r.kale@intel.com>; =
-Lin,
-> Mengdong <mengdong.lin@intel.com>; Liao, Bard <bard.liao@intel.com>
-> Subject: Re: [PATCH 1/2] soundwire: add definition for maximum number of
-> ports
->=20
-> On 18-08-20, 01:47, Bard Liao wrote:
-> > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> >
-> > A Device may have at most 15 physical ports (DP0, DP1..DP14).
-> >
-> > Signed-off-by: Pierre-Louis Bossart
-> > <pierre-louis.bossart@linux.intel.com>
-> > Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
-> > Reviewed-by: Guennadi Liakhovetski
-> > <guennadi.liakhovetski@linux.intel.com>
-> > Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> > ---
-> >  include/linux/soundwire/sdw.h | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/include/linux/soundwire/sdw.h
-> > b/include/linux/soundwire/sdw.h index 76052f12c9f7..0aa4c6af7554
-> > 100644
-> > --- a/include/linux/soundwire/sdw.h
-> > +++ b/include/linux/soundwire/sdw.h
-> > @@ -38,7 +38,8 @@ struct sdw_slave;
-> >  #define SDW_FRAME_CTRL_BITS		48
-> >  #define SDW_MAX_DEVICES			11
-> >
-> > -#define SDW_VALID_PORT_RANGE(n)		((n) <=3D 14 && (n) >=3D 1)
-> > +#define SDW_MAX_PORTS			15
-> > +#define SDW_VALID_PORT_RANGE(n)		((n) <
-> SDW_MAX_PORTS && (n) >=3D 1)
->=20
-> What is the use of this one if we are allocating all ports always, Also, =
-I dont
-> see it used in second patch?
 
-It is used in drivers/soundwire/stream.c and drivers/soundwire/debugfs.c.
 
->=20
-> >
-> >  enum {
-> >  	SDW_PORT_DIRN_SINK =3D 0,
-> > --
-> > 2.17.1
->=20
-> --
-> ~Vinod
+>-----Original Message-----
+>From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>Sent: 2020=1B$BG/=1B(B8=1B$B7n=1B(B12=1B$BF|=1B(B 6:50
+>To: kernel test robot <lkp@intel.com>
+>Cc: Hyun Kwon <hyun.kwon@xilinx.com>; kbuild-all@lists.01.org; linux-
+>kernel@vger.kernel.org; Vinod Koul <vkoul@kernel.org>; Tejas Upadhyay
+><tejasu@xilinx.com>; Michal Simek <monstr@monstr.eu>
+>Subject: [kbuild-all] Re: drivers/dma/xilinx/xilinx_dpdma.c:1172
+>xilinx_dpdma_synchronize() error: double unlocked 'chan->vchan.lock' (orig=
+ line
+>1170)
+>
+>On Wed, Aug 12, 2020 at 06:37:59AM +0800, kernel test robot wrote:
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.g=
+it master
+>> head:   c636eef2ee3696f261a35f34989842701a107895
+>> commit: 7cbb0c63de3fc218fd06ecfedb477772a4d12f76 dmaengine: xilinx:
+>dpdma: Add the Xilinx DisplayPort DMA engine driver
+>> date:   4 weeks ago
+>> config: h8300-randconfig-m031-20200811 (attached as .config)
+>> compiler: h8300-linux-gcc (GCC) 9.3.0
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> smatch warnings:
+>> drivers/dma/xilinx/xilinx_dpdma.c:1172 xilinx_dpdma_synchronize()
+>> error: double unlocked 'chan->vchan.lock' (orig line 1170)
+>
+>Unless I'm mistaken, this is a false positive. I'd appreciate if someone c=
+ould check
+>if I'm missing something obvious.
+
+Please ignore this report. It is a false positive.=20
+We have changed the rule to avoid send out this warning type directly. Sorr=
+y for inconvenient.
+
+Best Regards,
+Hui
+
+>
+>> vim +1172 drivers/dma/xilinx/xilinx_dpdma.c
+>>
+>>   1140
+>>   1141	/**
+>>   1142	 * xilinx_dpdma_synchronize - Synchronize callback execution
+>>   1143	 * @dchan: DMA channel
+>>   1144	 *
+>>   1145	 * Synchronizing callback execution ensures that all previously i=
+ssued
+>>   1146	 * transfers have completed and all associated callbacks have bee=
+n called
+>and
+>>   1147	 * have returned.
+>>   1148	 *
+>>   1149	 * This function waits for the DMA channel to stop. It assumes it=
+ has been
+>>   1150	 * paused by a previous call to dmaengine_terminate_async(), and =
+that
+>no new
+>>   1151	 * pending descriptors have been issued with dma_async_issue_pend=
+ing().
+>The
+>>   1152	 * behaviour is undefined otherwise.
+>>   1153	 */
+>>   1154	static void xilinx_dpdma_synchronize(struct dma_chan *dchan)
+>>   1155	{
+>>   1156		struct xilinx_dpdma_chan *chan =3D to_xilinx_chan(dchan);
+>>   1157		unsigned long flags;
+>>   1158
+>>   1159		xilinx_dpdma_chan_stop(chan);
+>>   1160
+>>   1161		spin_lock_irqsave(&chan->vchan.lock, flags);
+>>   1162		if (chan->desc.pending) {
+>>   1163			vchan_terminate_vdesc(&chan->desc.pending->vdesc);
+>>   1164			chan->desc.pending =3D NULL;
+>>   1165		}
+>>   1166		if (chan->desc.active) {
+>>   1167			vchan_terminate_vdesc(&chan->desc.active->vdesc);
+>>   1168			chan->desc.active =3D NULL;
+>>   1169		}
+>> > 1170		spin_unlock_irqrestore(&chan->vchan.lock, flags);
+>>   1171
+>> > 1172		vchan_synchronize(&chan->vchan);
+>>   1173	}
+>>   1174
+>>
+>
+>--
+>Regards,
+>
+>Laurent Pinchart
+>_______________________________________________
+>kbuild-all mailing list -- kbuild-all@lists.01.org To unsubscribe send an =
+email to
+>kbuild-all-leave@lists.01.org
