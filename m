@@ -2,135 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC369248B54
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 802EE248B5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 18:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726807AbgHRQSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 12:18:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726715AbgHRQSr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 12:18:47 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 398D42065D;
-        Tue, 18 Aug 2020 16:18:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597767526;
-        bh=ztQWIiCgI7Bq3K85J7yZF7Hq7f5Jor39R4CppN3X1vs=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=frqNPImMBZsrS2POlEYAWp11xdase4Bhk5jX6qkrtiPRUSP8dxGYrNlLoGxth2nO0
-         zXgGSEHbBPt5pa9kQ5cZXhbqVRj59fTn4+z1541HKuydA2wYTgz6JDgKUeAp/bX3AR
-         uozD4DhWsIfUEXHyQVcstK1PXZR5/O1H2Cb1ctuU=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 1837635228F5; Tue, 18 Aug 2020 09:18:46 -0700 (PDT)
-Date:   Tue, 18 Aug 2020 09:18:46 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
-Message-ID: <20200818161846.GF27891@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200814180224.GQ4295@paulmck-ThinkPad-P72>
- <875z9lkoo4.fsf@nanos.tec.linutronix.de>
- <20200814204140.GT4295@paulmck-ThinkPad-P72>
- <20200814215206.GL3982@worktop.programming.kicks-ass.net>
- <20200816225655.GA17869@pc636>
- <20200817082849.GA28270@dhcp22.suse.cz>
- <20200817222803.GE23602@paulmck-ThinkPad-P72>
- <20200818074344.GL28270@dhcp22.suse.cz>
- <20200818135327.GF23602@paulmck-ThinkPad-P72>
- <20200818150232.GQ28270@dhcp22.suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200818150232.GQ28270@dhcp22.suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1726947AbgHRQTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 12:19:33 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10194 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726482AbgHRQTa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 12:19:30 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07IG4TWP152846;
+        Tue, 18 Aug 2020 12:19:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : reply-to : to : cc : date : in-reply-to : references : content-type
+ : mime-version : content-transfer-encoding; s=pp1;
+ bh=quBROx0PPUmNUPal3IBeWBa32dTEExSGSpW/ECogBQQ=;
+ b=hccc7h6Cf0edFtWu1C8knXD/aazJBJEgCqrvoP7Zz1WXHYuP+bRe8GXNtVhzGkGfKIQZ
+ 2kyYmih1z+wbIV7iVSz6JQWFcL8pAgLZkwLeFTOv6N2h2Oc6ottld5QklShSUNvCP/fX
+ fO3aiR21ttVfEIvGMZxjPTbb7H1IXz6xPZQETmIN+rmHRe9a32zT0FLsaoA0C9//qbba
+ qNekH9YGZltOfkPKNoYy8sj4JEwM+i0vcxCtZYLILIUlEktySjipcTStCLB/hDORdxvH
+ 0zD8o/yzcTyqw4i2PGfM5KDj0psVVTz7eB1UhXCJHhnfp5UIKd8Ai3XnP9di0olKiRQ0 ig== 
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3304tdnewr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Aug 2020 12:19:24 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07IGAPlf009666;
+        Tue, 18 Aug 2020 16:19:24 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma03wdc.us.ibm.com with ESMTP id 3304cdw9cq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Aug 2020 16:19:23 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07IGJMRG1507970
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 Aug 2020 16:19:22 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A13317805F;
+        Tue, 18 Aug 2020 16:19:22 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D93DA7805C;
+        Tue, 18 Aug 2020 16:19:20 +0000 (GMT)
+Received: from [153.66.254.174] (unknown [9.80.233.55])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 18 Aug 2020 16:19:20 +0000 (GMT)
+Message-ID: <1597767558.3898.14.camel@linux.ibm.com>
+Subject: Re: [PATCH RESEND] docs: update trusted-encrypted.rst
+From:   James Bottomley <jejb@linux.ibm.com>
+Reply-To: jejb@linux.ibm.com
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     Coly Li <colyli@suse.de>, Stefan Berger <stefanb@linux.ibm.com>,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Date:   Tue, 18 Aug 2020 09:19:18 -0700
+In-Reply-To: <20200818154444.GA137138@linux.intel.com>
+References: <20200815075143.47082-1-colyli@suse.de>
+         <cf667ea0-dab7-a242-886c-938582c62ff6@linux.ibm.com>
+         <1597595769.8344.7.camel@linux.ibm.com>
+         <f9d4c4a9-5059-eae2-bc89-51f16e8ca4d9@suse.de>
+         <1597597933.8344.13.camel@linux.ibm.com>
+         <20200818154444.GA137138@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-18_10:2020-08-18,2020-08-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 bulkscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
+ adultscore=0 mlxlogscore=807 malwarescore=0 mlxscore=0 clxscore=1015
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008180112
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 05:02:32PM +0200, Michal Hocko wrote:
-> On Tue 18-08-20 06:53:27, Paul E. McKenney wrote:
-> > On Tue, Aug 18, 2020 at 09:43:44AM +0200, Michal Hocko wrote:
-> > > On Mon 17-08-20 15:28:03, Paul E. McKenney wrote:
-> > > > On Mon, Aug 17, 2020 at 10:28:49AM +0200, Michal Hocko wrote:
-> > > > > On Mon 17-08-20 00:56:55, Uladzislau Rezki wrote:
-> > > > 
-> > > > [ . . . ]
-> > > > 
-> > > > > > wget ftp://vps418301.ovh.net/incoming/1000000_kmalloc_kfree_rcu_proc_percpu_pagelist_fractio_is_8.png
+On Tue, 2020-08-18 at 18:44 +0300, Jarkko Sakkinen wrote:
+> On Sun, Aug 16, 2020 at 10:12:13AM -0700, James Bottomley wrote:
+> > On Mon, 2020-08-17 at 00:57 +0800, Coly Li wrote:
+> > > On 2020/8/17 00:36, James Bottomley wrote:
+> > > > On Sun, 2020-08-16 at 12:06 -0400, Stefan Berger wrote:
+> > > > [...]
+> > > > > A note in this file states this:
 > > > > > 
-> > > > > 1/8 of the memory in pcp lists is quite large and likely not something
-> > > > > used very often.
+> > > > > Note: When using a TPM 2.0 with a persistent key with handle
+> > > > > 0x81000001, append 'keyhandle=0x81000001' to statements
+> > > > > between quotes, such as "new 32 keyhandle=0x81000001".
 > > > > > 
-> > > > > Both these numbers just make me think that a dedicated pool of page
-> > > > > pre-allocated for RCU specifically might be a better solution. I still
-> > > > > haven't read through that branch of the email thread though so there
-> > > > > might be some pretty convincing argments to not do that.
+> > > > > Now if someone was (still) interested in TPM 1.2 
+> > > > > adapt the  note to state that these keyhandle=... should be
+> > > > > removed for the TPM 1.2 case.
 > > > > 
-> > > > To avoid the problematic corner cases, we would need way more dedicated
-> > > > memory than is reasonable, as in well over one hundred pages per CPU.
-> > > > Sure, we could choose a smaller number, but then we are failing to defend
-> > > > against flooding, even on systems that have more than enough free memory
-> > > > to be able to do so.  It would be better to live within what is available,
-> > > > taking the performance/robustness hit only if there isn't enough.
+> > > > Actually, I also have a plan to match what userspace does and
+> > > > simply assume a keyhandle of 40000001 (generate an EC Storage
+> > > > Primary Key on the fly) if it's not specified, which will make
+> > > > the TPM1.2 and 2.0 versions of this the same.  Unfortunately
+> > > > the necessary precursor patches are taking an age to get
+> > > > upstream.
 > > > 
-> > > Thomas had a good point that it doesn't really make much sense to
-> > > optimize for flooders because that just makes them more effective.
-> > 
-> > The point is not to make the flooders go faster, but rather for the
-> > system to be robust in the face of flooders.  Robust as in harder for
-> > a flooder to OOM the system.
-> 
-> Do we see this to be a practical problem? I am really confused because
-> the initial argument was revolving around an optimization now you are
-> suggesting that this is actually system stability measure. And I fail to
-> see how allowing an easy way to deplete pcp caches completely solves
-> any of that. Please do realize that if allow that then every user who
-> relies on pcp caches will have to take a slow(er) path and that will
-> have performance consequences. The pool is a global and a scarce
-> resource. That's why I've suggested a dedicated preallocated pool and
-> use it instead of draining global pcp caches.
-
-Both the optimization and the robustness are important.
-
-The problem with this thing is that I have to start describing it
-somewhere, and I have not yet come up with a description of the whole
-thing that isn't TL;DR.
-
-> > And reducing the number of post-grace-period cache misses makes it
-> > easier for the callback-invocation-time memory freeing to keep up with
-> > the flooder, thus avoiding (or at least delaying) the OOM.
-> > 
-> > > > My current belief is that we need a combination of (1) either the
-> > > > GFP_NOLOCK flag or Peter Zijlstra's patch and
+> > > Hi James,
 > > > 
-> > > I must have missed the patch?
+> > > Do you have a plan to push such patches into upstream soon? If
+> > > yes than I may wait for your patch and withdraw this one.
 > > 
-> > If I am keeping track, this one:
+> > Well, as I said above it depends on not yet upstream precursor
+> > patches.  They have been pending for about a year, so I've no real
+> > idea of the timeline.
 > > 
-> > https://lore.kernel.org/lkml/20200814215206.GL3982@worktop.programming.kicks-ass.net/
+> > James
 > 
-> OK, I have certainly noticed that one but didn't react but my response
-> would be similar to the dedicated gfp flag. This is less of a hack than
-> __GFP_NOLOCK  but it still exposes very internal parts of the allocator
-> and I find that a quite problematic from the future maintenance of the
-> allocator. The risk of an easy depletion of the pcp pool is also there
-> of course.
+> As far as I remember there was not much left in the previous version
+> to do. Some time has passed when it was discussed but I recall it was
+> mainly about documenting the key format.
 
-I had to ask.  ;-)
+Actually, no, unfortunately it's not in that update.  Generating an on-
+the-fly primary would involve the cryptographic security patch (same
+mechanism as used to generate the null primary).  I was thinking I'd
+extract just that piece and use it in a follow on.  So both the rework
+of the key format and this extra patch that's not yet even broken out
+of the TPM security series are required precursors.
 
-							Thanx, Paul
+James
+
