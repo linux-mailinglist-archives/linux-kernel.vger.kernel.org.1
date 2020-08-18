@@ -2,62 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B79247D2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 06:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 326AE247D27
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 06:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726374AbgHREMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 00:12:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39358 "EHLO
+        id S1726640AbgHREE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 00:04:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725800AbgHREMn (ORCPT
+        with ESMTP id S1726370AbgHREE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 00:12:43 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB52C061389;
-        Mon, 17 Aug 2020 21:12:42 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id d27so14216543qtg.4;
-        Mon, 17 Aug 2020 21:12:42 -0700 (PDT)
+        Tue, 18 Aug 2020 00:04:28 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01EBAC061389;
+        Mon, 17 Aug 2020 21:04:27 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id v15so9134918pgh.6;
+        Mon, 17 Aug 2020 21:04:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=hXLCDfrcY5+egor1E3ATfAy15D+Z8YefF1V4ZEaEKWs=;
-        b=CQFsAJKSDdLlK3EhRNv8Z+2s7zS5F6umJ9AQlthkXD6FPmHHIHJ0xmjQgnRIDPvjIK
-         LIDlw+c/jKJWU5j81LM7I3qDNXFytBw2i5gCvMP4Luu/00YfE+Sv2TOSFm+i1XaFoXzX
-         MgCZ4zOxi9UlsItvXwDU5pjAT5XzMEJZW/GG50wgPowfpvokDRqPX1D9OY2KAfmt05vA
-         XCu2lRg191aqx42qf9gTZlzPUddGOzGpHTVJrz7v4eX7lKb//h7JqmBHmbDaf04Bq+9G
-         PkXqIwAVE73e+Uz4y4T/w/JXFyENAzMhvah3QTgZb9FZu6sE9fgt4RUo1cRQVv306KDo
-         1pgA==
+        bh=GzZyrXpTY6F22/dmqRS9I8tt5+S2Aky6apouSMQ9NVw=;
+        b=aSnr6OU+Rcr5yj8twqOw5CZZOy9CgaFVgDjpMQiGxUTa4ZL7X1cwWlMXbUOjyhdr4l
+         eVKLDeF6vvGIQuY8I7ILh0qiejd09jiDlM3ZB9dYMmaYuQanxyJgaYXe7d5PjskpFgrW
+         DDI2pytXA5zwS8b89EGEzt3rIZXOl0ivwdtM14gLIEfJD77pFCuCyRFl7uiyIPvVZnTF
+         3EW367fHs/cs62n0b4OKxgyS+eW5ezO+O7ADcSse1cU55DAZUmCTtd4eXlCmTDEk/OTm
+         /nwxlYkhPzHLXKF7sD2OxETQBYnqyOIyb3rGhbEKPCZJEJrcY86ozTdyEqV0821dUh4Y
+         AIWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=hXLCDfrcY5+egor1E3ATfAy15D+Z8YefF1V4ZEaEKWs=;
-        b=XL5OOhsGRXgQ7ZFBwvIgG1FqiaEpVcfoRc4BGfA4Tjnt/Mf3eDdwNX52NOQ+KrcIVM
-         bEAkwV7xE7vXPI5xCn3CASYU+EsDhVflFbSBetQ797RNwtlowqQN01MhIqpHgGdEnOHL
-         +PX0WcFQO6Cx+1cUD3+/OA0NSkRicJeuthuNP3ZfiMHtxos3yDDjVhiTLSAvLcLHxTNV
-         MwGbY1C2HwdcHj0DBdWYf3Jep26nxgocwqdN3q262AGvzn0g9f03Ms9XzuO8Z704fCTA
-         JNTsskCMH3ih4aWs8NCw1/Vq1MQWk61IOCLDwpiWlv0eiJV0hGSEjTyZw9sAg5jqeG/h
-         wpTw==
-X-Gm-Message-State: AOAM533aCpDvdlY5ARSJUXRx5iCuxZb3XktkwJqeEpXqtAPQS+xBpE1j
-        d0v5Mn8aXcFAPb2fy7V6LvIX/VIo/TsBqQ==
-X-Google-Smtp-Source: ABdhPJzaOrgJhzGbXOnMQBgWRgj5jPoujDkofHqlBTpYElKd3yqJ8qhcCmgFn27KsFM9jDNkDTNmrQ==
-X-Received: by 2002:ac8:4519:: with SMTP id q25mr16754352qtn.29.1597723961327;
-        Mon, 17 Aug 2020 21:12:41 -0700 (PDT)
-Received: from magi.myfiosgateway.com (pool-173-75-208-99.phlapa.fios.verizon.net. [173.75.208.99])
-        by smtp.gmail.com with ESMTPSA id i65sm19592212qkf.126.2020.08.17.21.12.39
+        bh=GzZyrXpTY6F22/dmqRS9I8tt5+S2Aky6apouSMQ9NVw=;
+        b=oGd3VZwpCe28cF8xoW1VwX4+OoL1p/59ATSIlr991YngDAR2vMSR6mHD/ti6IrfDA9
+         AhCMex+l/AHEisHoMUA6amLHU4F6QYc8aagEiGOARmM9+2ZmzJmxNG8Bgkk+aZSAIg4M
+         Db7SghBFZYCKlSRh8lg4qPJ54o1tTNUQRavkudxYI954tewIBc4PxNy/wx18c0ixGMDL
+         lX/vZfITe0NCzq5ErOUt2YOTTv+YKM5XWVQCFEWZPF5tnRAYbhidZlABqkpmJjTMfJOY
+         f5SnOYjPmYwWCaKBA35fuRJZ8poTMvTVG4RJYvxYYg187dybWsb0xjhzT2S/qWrP7nl0
+         guUw==
+X-Gm-Message-State: AOAM5330jJPucAFNZNRRaOXqOuUz8jMq0ltUw5btunGG3ByTohLnuhhb
+        mgzrKMMnQ2lX1C3HVURtM9xQxnNNRHw=
+X-Google-Smtp-Source: ABdhPJydBIRGIt26gN3g3+zaU0kRrvec1KgF1/ruYxo/RTU9GmIyVdQOBmUs6tvE84ORhq894pk3FA==
+X-Received: by 2002:a62:8081:: with SMTP id j123mr14289522pfd.80.1597723466952;
+        Mon, 17 Aug 2020 21:04:26 -0700 (PDT)
+Received: from localhost.localdomain (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
+        by smtp.gmail.com with ESMTPSA id k21sm19595450pgl.0.2020.08.17.21.04.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 21:12:40 -0700 (PDT)
-From:   Brooke Basile <brookebasile@gmail.com>
-To:     danil.kipnis@cloud.ionos.com, jinpu.wang@cloud.ionos.com,
-        axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Brooke Basile <brookebasile@gmail.com>
-Subject: [PATCH] block: rnbd: rnbd-srv: silence uninitialized variable warning
-Date:   Tue, 18 Aug 2020 00:03:18 -0400
-Message-Id: <20200818040317.5926-1-brookebasile@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        Mon, 17 Aug 2020 21:04:25 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next] net: dsa: loop: Return VLAN table size through devlink
+Date:   Mon, 17 Aug 2020 21:03:54 -0700
+Message-Id: <20200818040354.44736-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -65,69 +67,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang warns:
-	drivers/block/rnbd/rnbd-srv.c:150:6: warning: variable 'err' is used
-	uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
-        	if (IS_ERR(bio)) {
-            	^~~~~~~~~~~
-	drivers/block/rnbd/rnbd-srv.c:177:9: note: uninitialized use occurs here
-		return err;
-		^~~
-	drivers/block/rnbd/rnbd-srv.c:126:9: note: initialize the variable 'err'
-	to silence this warning
-        	int err;
-               	^
-                	= 0
+We return the VLAN table size through devlink as a simple parameter, we
+do not support altering it at runtime:
 
-Silence this by replacing `err` with `ret`, returning ret = 0 upon
-success.
+devlink resource show mdio_bus/fixed-0:1f
+mdio_bus/fixed-0:1f:
+  name VTU size 4096 occ 4096 unit entry dpipe_tables none
 
-Signed-off-by: Brooke Basile <brookebasile@gmail.com>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- drivers/block/rnbd/rnbd-srv.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/dsa/dsa_loop.c | 47 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 46 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
-index 0fb94843a495..f515d1a048a9 100644
---- a/drivers/block/rnbd/rnbd-srv.c
-+++ b/drivers/block/rnbd/rnbd-srv.c
-@@ -123,10 +123,10 @@ static int process_rdma(struct rtrs_srv *sess,
- 	struct rnbd_io_private *priv;
- 	struct rnbd_srv_sess_dev *sess_dev;
- 	u32 dev_id;
--	int err;
- 	struct rnbd_dev_blk_io *io;
- 	struct bio *bio;
- 	short prio;
-+	int ret = 0;
+diff --git a/drivers/net/dsa/dsa_loop.c b/drivers/net/dsa/dsa_loop.c
+index eb600b3dbf26..474d0747d4ed 100644
+--- a/drivers/net/dsa/dsa_loop.c
++++ b/drivers/net/dsa/dsa_loop.c
+@@ -28,6 +28,45 @@ static struct dsa_loop_mib_entry dsa_loop_mibs[] = {
  
- 	priv = kmalloc(sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -138,7 +138,7 @@ static int process_rdma(struct rtrs_srv *sess,
- 	if (IS_ERR(sess_dev)) {
- 		pr_err_ratelimited("Got I/O request on session %s for unknown device id %d\n",
- 				   srv_sess->sessname, dev_id);
--		err = -ENOTCONN;
-+		ret = -ENOTCONN;
- 		goto err;
- 	}
+ static struct phy_device *phydevs[PHY_MAX_ADDR];
  
-@@ -168,13 +168,13 @@ static int process_rdma(struct rtrs_srv *sess,
++enum dsa_loop_devlink_resource_id {
++	DSA_LOOP_DEVLINK_PARAM_ID_VTU,
++};
++
++static u64 dsa_loop_devlink_vtu_get(void *priv)
++{
++	struct dsa_loop_priv *ps = priv;
++
++	return ARRAY_SIZE(ps->vlans);
++}
++
++static int dsa_loop_setup_devlink_resources(struct dsa_switch *ds)
++{
++	struct devlink_resource_size_params size_params;
++	struct dsa_loop_priv *ps = ds->priv;
++	int err;
++
++	devlink_resource_size_params_init(&size_params, ARRAY_SIZE(ps->vlans),
++					  ARRAY_SIZE(ps->vlans),
++					  1, DEVLINK_RESOURCE_UNIT_ENTRY);
++
++	err = dsa_devlink_resource_register(ds, "VTU", ARRAY_SIZE(ps->vlans),
++					    DSA_LOOP_DEVLINK_PARAM_ID_VTU,
++					    DEVLINK_RESOURCE_ID_PARENT_TOP,
++					    &size_params);
++	if (err)
++		goto out;
++
++	dsa_devlink_resource_occ_get_register(ds,
++					      DSA_LOOP_DEVLINK_PARAM_ID_VTU,
++					      dsa_loop_devlink_vtu_get, ps);
++
++	return 0;
++
++out:
++	dsa_devlink_resources_unregister(ds);
++	return err;
++}
++
+ static enum dsa_tag_protocol dsa_loop_get_protocol(struct dsa_switch *ds,
+ 						   int port,
+ 						   enum dsa_tag_protocol mp)
+@@ -48,7 +87,12 @@ static int dsa_loop_setup(struct dsa_switch *ds)
  
- 	submit_bio(bio);
+ 	dev_dbg(ds->dev, "%s\n", __func__);
  
 -	return 0;
-+	return ret;
- 
- sess_dev_put:
- 	rnbd_put_sess_dev(sess_dev);
- err:
- 	kfree(priv);
--	return err;
-+	return ret;
++	return dsa_loop_setup_devlink_resources(ds);
++}
++
++static void dsa_loop_teardown(struct dsa_switch *ds)
++{
++	dsa_devlink_resources_unregister(ds);
  }
  
- static void destroy_device(struct rnbd_srv_dev *dev)
+ static int dsa_loop_get_sset_count(struct dsa_switch *ds, int port, int sset)
+@@ -243,6 +287,7 @@ static int dsa_loop_port_max_mtu(struct dsa_switch *ds, int port)
+ static const struct dsa_switch_ops dsa_loop_driver = {
+ 	.get_tag_protocol	= dsa_loop_get_protocol,
+ 	.setup			= dsa_loop_setup,
++	.teardown		= dsa_loop_teardown,
+ 	.get_strings		= dsa_loop_get_strings,
+ 	.get_ethtool_stats	= dsa_loop_get_ethtool_stats,
+ 	.get_sset_count		= dsa_loop_get_sset_count,
 -- 
-2.28.0
+2.25.1
 
