@@ -2,191 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58ED9248D0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:35:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F503248D49
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728786AbgHRRfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 13:35:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42282 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728705AbgHRRel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 13:34:41 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15B5820674;
-        Tue, 18 Aug 2020 17:34:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597772080;
-        bh=nACaTkW7CDmrUJbnvOXm0y+Culo0AkO1X5rQHrNGYDo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=E4at6GP88PCCK3vA5rh6n3r6/gW2frOyrBE89rp/3bPNSK0gx9kSKNvLD/0UhYQk5
-         hLEREaQnbeWiUdmAMS5AHd7D3xvVJ0Rwznp992cOVvTZi1YazOoHdWhW4LYQS9wsO3
-         LUq35VYP0r/flJAWnGuB53UrSmRMH9D75hrM3gaE=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1k85VO-003yjs-IP; Tue, 18 Aug 2020 18:34:38 +0100
+        id S1728873AbgHRRgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 13:36:50 -0400
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:39323 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728889AbgHRRgf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 13:36:35 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 3494A10A8;
+        Tue, 18 Aug 2020 13:36:34 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Tue, 18 Aug 2020 13:36:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm1; bh=9
+        TlfznyxsMv5GMFDcfPOM5mcVt7VYPmD7P4p5Aa1ggA=; b=n/I/jA2sR7EdLT4fM
+        sdG8+/6f5iDm80zA9fnUvSoAe+dUsK94q3XUGCycovf4oIeDyYVAyHVh/JXLGfJC
+        yahhcQ2zWxL3srqei7NxqOZK0lz+2mmLS+QZKvsRtv9PfnqhTt6wPdagpV80d4e+
+        iLPzzTDlone/3uKJcSNXU3Ktth+Ua/Fm+JI7PY6vMX7x1jFuOvIWn3VTVLf+wwzS
+        H5N4/AiQxVRXvtfEFjJdsdWW2V5t+jrT3k89QZooxNrLvUYVbLcigf5u/zApyJKs
+        rk8p7cSnsZvwJnC1tFxoe2IaBFA07qFanpUrpjzkBEyMhPYXu39Z4+0DRARujkG3
+        ryyEw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=9TlfznyxsMv5GMFDcfPOM5mcVt7VYPmD7P4p5Aa1g
+        gA=; b=Gg4TdrQeB2iojmFKU7oK1ICjlmbsrX1Ru1wI0Uc2mGdq9OarkJHAUOMhD
+        z+siCAVbI1uSReLu4adjAcDNx46kCuADYZ/nlXxWlHFKtz2amNNX0CERhef/1w/h
+        d5V1uNeiEd7aQixuDKmYy/IRolckpqT0JExmCVf/6XUizADVEVchml3AG4IYI5Gw
+        dlxEpMYdo3swERA4HE8pDD6LfAlnH41s8AmmAfv4K09ebngM/WmIYGxPCld663Ym
+        RihXPTkqblSCclFI+U4uMpoDJ+Z5w83pma18GsTbjIKjjnzA1SrtLqU2f2YsGoTI
+        7voPF5A7qLNEc30xedntAKCqmrawg==
+X-ME-Sender: <xms:oRE8X_3osVoQ4g4vq8-lY1_6aDeZbIyRo37qQyXNW4LE0effnH-_ug>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedruddtiedgleefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggugfgjsehtke
+    ertddttdejnecuhfhrohhmpefirhgvghcumffjuceoghhrvghgsehkrhhorghhrdgtohhm
+    qeenucggtffrrghtthgvrhhnpeeuheekheelffefieduteefkeejffdvueehjeejffehle
+    dugfetkedvleekudduvdenucfkphepkeefrdekiedrkeelrddutdejnecuvehluhhsthgv
+    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
+    gtohhm
+X-ME-Proxy: <xmx:oRE8X-GdRey3VoRTH_FFEpSxg82SP2l2tYGyDAiU3lfOm_Z_WVRLWQ>
+    <xmx:oRE8X_62SMZdRXyMIsaGim_en4k1uVSPcSalIJxhq7n-trqUyj-nuQ>
+    <xmx:oRE8X02Kafx4DGYnvA9bd5kXv8ADhE0sJU1vGj9bJ8dfgjCPUlCE2A>
+    <xmx:oRE8X9N1ChapT9PIU622iyLJkerjQsZaZ46HOcar9JcQqy9WoWahBA>
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 2E2693060272;
+        Tue, 18 Aug 2020 13:36:33 -0400 (EDT)
+Date:   Tue, 18 Aug 2020 19:36:56 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Muni Sekhar <munisekharrms@gmail.com>
+Cc:     kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: Scheduler benchmarks
+Message-ID: <20200818173656.GA748290@kroah.com>
+References: <CAHhAz+inPwKYx_4qaujQ=bGG9twashiuqLhQQ-+vgHWF7FLhRA@mail.gmail.com>
+ <20200818143633.GA628293@kroah.com>
+ <CAHhAz+hG5kS5rhph4SaSLOEc5PgcSOTPWpiANLNpwotY9Zy6qQ@mail.gmail.com>
+ <20200818171457.GA736234@kroah.com>
+ <CAHhAz+ggd4DPFfWPB+h6Obkjebf5mv5cV6307oKEkEYMhAB3wQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 18 Aug 2020 18:34:38 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Android Kernel Team <kernel-team@android.com>
-Subject: Re: [PATCH 1/2] PCI: rockchip: Work around missing device_type
- property in DT
-In-Reply-To: <CAL_JsqL1_d2grS3Pz6NNeVAOMPbx_hAe+MrseQeQp=bHRQ7rfQ@mail.gmail.com>
-References: <20200815125112.462652-2-maz@kernel.org>
- <20200815232228.GA1325245@bjorn-Precision-5520>
- <87pn7qnabq.wl-maz@kernel.org>
- <CAL_Jsq+fDNa60+6+s9MwVjUFUPAuc43+uMx4Fm2nZhUgrV7LEg@mail.gmail.com>
- <e2cde177e82fbdf158732ad73ccdc6c5@kernel.org>
- <CAL_JsqL1_d2grS3Pz6NNeVAOMPbx_hAe+MrseQeQp=bHRQ7rfQ@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.7
-Message-ID: <72c10e43023289b9a4c36226fe3fd5d9@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: robh@kernel.org, helgaas@kernel.org, linux-pci@vger.kernel.org, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, lorenzo.pieralisi@arm.com, heiko@sntech.de, shawn.lin@rock-chips.com, bhelgaas@google.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHhAz+ggd4DPFfWPB+h6Obkjebf5mv5cV6307oKEkEYMhAB3wQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-18 15:23, Rob Herring wrote:
-> On Tue, Aug 18, 2020 at 1:35 AM Marc Zyngier <maz@kernel.org> wrote:
->> 
->> On 2020-08-17 17:12, Rob Herring wrote:
->> > On Sun, Aug 16, 2020 at 4:40 AM Marc Zyngier <maz@kernel.org> wrote:
->> >>
->> >> On Sun, 16 Aug 2020 00:22:28 +0100,
->> >> Bjorn Helgaas <helgaas@kernel.org> wrote:
->> >> >
->> >> > On Sat, Aug 15, 2020 at 01:51:11PM +0100, Marc Zyngier wrote:
->> >> > > Recent changes to the DT PCI bus parsing made it mandatory for
->> >> > > device tree nodes describing a PCI controller to have the
->> >> > > 'device_type = "pci"' property for the node to be matched.
->> >> > >
->> >> > > Although this follows the letter of the specification, it
->> >> > > breaks existing device-trees that have been working fine
->> >> > > for years.  Rockchip rk3399-based systems are a prime example
->> >> > > of such collateral damage, and have stopped discovering their
->> >> > > PCI bus.
->> >> > >
->> >> > > In order to paper over the blunder, let's add a workaround
->> >> > > to the pcie-rockchip driver, adding the missing property when
->> >> > > none is found at boot time. A warning will hopefully nudge the
->> >> > > user into updating their DT to a fixed version if they can, but
->> >> > > the insentive is obviously pretty small.
->> >> >
->> >> > s/insentive/incentive/ (Lorenzo or I can fix this up)
->> >> >
->> >> > > Fixes: 2f96593ecc37 ("of_address: Add bus type match for pci ranges parser")
->> >> > > Suggested-by: Roh Herring <robh+dt@kernel.org>
->> >> >
->> >> > s/Roh/Rob/ (similarly)
->> >>
->> >> Clearly not my day when it comes to proofreading commit messages.
->> >> Thanks for pointing this out, and in advance for fixing it up.
->> >>
->> >> >
->> >> > > Signed-off-by: Marc Zyngier <maz@kernel.org>
->> >> >
->> >> > This looks like a candidate for v5.9, since 2f96593ecc37 was merged
->> >> > during the v5.9 merge window, right?
->> >>
->> >> Absolutely.
->> >>
->> >> > I wonder how many other DTs are similarly broken?  Maybe Rob's DT
->> >> > checker has already looked?
->> >>
->> >> I've just managed to run the checker, which comes up with all kinds of
->> >> goodies. Apart from the above, it also spots the following:
->> >>
->> >> - arch/arm64/boot/dts/mediatek/mt7622.dtsi: Has a device_type property
->> >>   in its main PCIe node, but not in the child nodes. It isn't obvious
->> >>   to me whether that's a violation or not (the spec doesn't say
->> >>   whether the property should be set on a per-port basis). Rob?
->> >
->> > The rule is bridge nodes should have 'device_type = "pci"'. But what's
->> > needed to fix these cases is setting device_type where we are parsing
->> > ranges or dma-ranges which we're not doing on the child ndes.
->> > Otherwise, I don't think it matters in this case unless you have child
->> > (grandchild here) nodes for PCI devices. If you did have child nodes,
->> > the address translation was already broken before this change.
->> 
->> Fair enough.
->> 
->> >> - arch/arm64/boot/dts/qcom/msm8996.dtsi: Only one out of the three
->> >>   PCIe nodes has the device_type property, probably broken similarly
->> >>   to rk3399.
->> >
->> > The only upstream board is DB820c, so probably not as wide an impact...
->> >
->> > There are also 92 (lots of duplicates due to multiple boards) more
->> > cases in arch/arm/. A log is here[1].
->> 
->> Mostly Broadcom stuff, apparently. I'll see if I can have a stab
->> at it (although someone will have to test it).
->> 
->> >
->> >> I could move the workaround to drivers/pci/of.c, and have it called
->> >> from the individual drivers. I don't have the HW to test those though.
->> >>
->> >> Thoughts?
->> >
->> > I think we should go with my other suggestion of looking at the node
->> > name. Looks like just checking 'pcie' is enough. We can skip 'pci' as
->> > I don't see any cases.
->> 
->> I really dislike it.
->> 
->> Once we put this node name matching in, there is no incentive for
->> people to write their DT correctly at all. It also sound pretty
->> fragile (what if the PCIe node is named something else?).
-> 
-> That would require 2 wrongs. Both missing device_type and wrong node
-> name. You could still warn if we matched on node name.
+On Tue, Aug 18, 2020 at 11:01:35PM +0530, Muni Sekhar wrote:
+> On Tue, Aug 18, 2020 at 10:44 PM Greg KH <greg@kroah.com> wrote:
+> >
+> > On Tue, Aug 18, 2020 at 10:24:13PM +0530, Muni Sekhar wrote:
+> > > On Tue, Aug 18, 2020 at 8:06 PM Greg KH <greg@kroah.com> wrote:
+> > > >
+> > > > On Tue, Aug 18, 2020 at 08:00:11PM +0530, Muni Sekhar wrote:
+> > > > > Hi all,
+> > > > >
+> > > > > I’ve two identical Linux systems with only kernel differences.
+> > > >
+> > > > What are the differences in the kernels?
+> >
+> > You didn't answer this question, is this the same kernel source being
+> > compared here?  Same version?  Same compiler?  Everything identical?
+> Both systems are having exactly the same hardware configuration.
+> Compiler and kernel versions are different. One system has Ubuntu
+> 16.04.4 LTS(4.4.0-66-generic kernel with gcc version 5.4.0) kernel and
+> the other one has Ubuntu 18.04.4 LTS(4.15.0-91-generic kernel with gcc
+> version 7.5.0).
 
-OK. So how about something like this?
+Those are _very_ different kernel versions, with many years and tens of
+thousands of different changes between them.
 
-diff --git a/drivers/of/address.c b/drivers/of/address.c
-index 590493e04b01..a7a6ee599b14 100644
---- a/drivers/of/address.c
-+++ b/drivers/of/address.c
-@@ -134,9 +134,13 @@ static int of_bus_pci_match(struct device_node *np)
-   	 * "pciex" is PCI Express
-  	 * "vci" is for the /chaos bridge on 1st-gen PCI powermacs
-  	 * "ht" is hypertransport
-+	 *
-+	 * If none of the device_type match, and that the node name is
-+	 * "pcie", accept the device as PCI (with a warning).
-  	 */
-  	return of_node_is_type(np, "pci") || of_node_is_type(np, "pciex") ||
--		of_node_is_type(np, "vci") || of_node_is_type(np, "ht");
-+		of_node_is_type(np, "vci") || of_node_is_type(np, "ht") ||
-+		WARN_ON_ONCE(of_node_name_eq(np, "pcie"));
-  }
+Hopefully the newer kernel is faster, so just stick with that :)
 
-  static void of_bus_pci_count_cells(struct device_node *np,
-
-It should address all the drivers in one go, and yet tell users
-that something is amiss.
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+greg k-h
