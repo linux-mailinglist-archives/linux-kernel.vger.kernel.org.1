@@ -2,199 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1C4248D7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 850B3248D80
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 19:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726698AbgHRRte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 13:49:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55668 "EHLO
+        id S1726723AbgHRRv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 13:51:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726675AbgHRRtc (ORCPT
+        with ESMTP id S1726552AbgHRRvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 13:49:32 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C28C061342
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 10:49:31 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id u10so9561237plr.7
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 10:49:31 -0700 (PDT)
+        Tue, 18 Aug 2020 13:51:55 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C4AC061389
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 10:51:54 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id v9so22427670ljk.6
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 10:51:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=OMrT9C5AFoMvfd0icRmwdmikCEIc/NXJSQt8b1yXCkw=;
-        b=sAK+0rf9juJXiwHzeHjlRJRWIPHclN8Phlv51l+2QJIKpBcC34ipELa2VfI7E17BvK
-         m68XbGNzwGepUZZ1Pr0P9h9Jc/7bg6spmjHt5NSFaLNagz7dalWVtN1tKYuM5bOPi6Op
-         If24cwckYg9jm6rdn6n4Um6N2mlzxhZT+GRBTkAydj+iXoS0a+0v7+kWnPZcETMabcbp
-         iSUiSqH6yqjsQkeFOrUegOfeNTUVWwfScVhxUMh8qRsKYl1J7qDnzRi771PmHHAXZ0aU
-         TmfaTSiINFimh+dbuxpQwh+YY6+u3LnHrKoqOfAQe1o3Y7mTernmzlxHt7P9FeyD1YmS
-         ZbWA==
+        bh=vhYhvABHV2jddQfXOeFsKwuWkPnm9/K7ODsabnkqxyE=;
+        b=BFxNfqqTyERz8S3NIUgvZJCdbPrOEFBU1ekAkojzkd94vT++SS7yPoapxO2J4Ep9Hx
+         7/9N9PGSXkogaZXbMUoaSa3n4dXLXXnvFdDlfLdXjOSdzZaXcze/Uo+L7FgvmcmQ2/tx
+         kPWXT4EGNHd6mHTASbUu6qgRp1kqjS6UfPNDc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OMrT9C5AFoMvfd0icRmwdmikCEIc/NXJSQt8b1yXCkw=;
-        b=UgCBwl4fqaIqL6X/iwQanst3N9/oviTzWdZf7EOe7jaaha6XLnlK6AbbkiE2ujcIXv
-         IeHAEQud7LjDVQZHL+O0z3TRn/6qP6QfFUS+G5l5J9Qc7JtsWj89YMapdpIkqdSU6JZV
-         85XuJk0j0ZCaeCB0TuFL7hO2bk8vc1S36V4/3B+0tpbf8vck56gXM+rSd8WM3aq0WVnT
-         vucQwAQskBt8EwmQ4vINctESkKQY3Aymwx/q/eJKzki7bUHbRy2BvudlaHY8szDwFvVp
-         2kn6gATUczNOT7pFc9TU5vqjEPubsoK0j/0hygzXZ/dErVzGhcCNbQJPJbIkdupZ6NVY
-         gy+Q==
-X-Gm-Message-State: AOAM532nIFLGWnpO2TGuo84a4Xns13+bfZgp5FWs8zP7vfH9pL8FoGjj
-        05aTmeD+O/kcbwcGQVo43ERrpI/NqDmFTMht2VZNAg==
-X-Google-Smtp-Source: ABdhPJzVVyPcZ+7Gs0AXJVZxiCetyUr6nk23IoYNH1FZlus2gp2HDkcMI/FTOQ/mx9fK0t2ODFmqRjeqa113FBmxApY=
-X-Received: by 2002:a17:90a:f98e:: with SMTP id cq14mr871303pjb.51.1597772970220;
- Tue, 18 Aug 2020 10:49:30 -0700 (PDT)
+        bh=vhYhvABHV2jddQfXOeFsKwuWkPnm9/K7ODsabnkqxyE=;
+        b=O5p4yJBEzHlYqM/u+qR+fvLa/taYhUx1aXPhQUjlNI0PcLOKsGL3qMoZrjfWpEChKp
+         1p+UkcHClXlJcSN4WNvPIQ699rp/MCdxyIp5BuSeAoX8Pxoj9hVW0CwKq8fZVrU4yy4a
+         LP7gLD94AVbdulzECzxVEB9Z6M6iRoLSUcZos64xLGnh9h3ZzRZpDX9/pZXow21yvS35
+         pm/+f5cAEeUiXOio7Pcj2tqTuw9zlLJ415m2fC3FxTJjHdUANwGkFTtiWla7DGgUXVnj
+         8Tx6xlUThqK9WVtAvx4pQ1dL85HCBUoCM4S45ba2MJfPMnL73eEmodMe8OzlOf1mJSmq
+         3FCg==
+X-Gm-Message-State: AOAM533V2uoszuyvol0nIsD/FpgAOJKEViWAC3UcuCMHFfbl1Gm/QpYb
+        Cw45LWaKZ9w4DHuW6w3ZCj0DLAsPf7aiFg==
+X-Google-Smtp-Source: ABdhPJxH94TFgNU36lKvN96n7GphS8oPmszS6fc1u8y0aVxkXSTEBua92IWsZb/pahmnw4aFaypUOw==
+X-Received: by 2002:a2e:a28b:: with SMTP id k11mr10362682lja.405.1597773110786;
+        Tue, 18 Aug 2020 10:51:50 -0700 (PDT)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id a2sm6105810ljj.40.2020.08.18.10.51.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Aug 2020 10:51:49 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id v9so22427581ljk.6
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 10:51:49 -0700 (PDT)
+X-Received: by 2002:a2e:92d0:: with SMTP id k16mr9571203ljh.70.1597773109282;
+ Tue, 18 Aug 2020 10:51:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200815125112.462652-2-maz@kernel.org> <20200815232228.GA1325245@bjorn-Precision-5520>
- <87pn7qnabq.wl-maz@kernel.org> <CAL_Jsq+fDNa60+6+s9MwVjUFUPAuc43+uMx4Fm2nZhUgrV7LEg@mail.gmail.com>
- <e2cde177e82fbdf158732ad73ccdc6c5@kernel.org> <CAL_JsqL1_d2grS3Pz6NNeVAOMPbx_hAe+MrseQeQp=bHRQ7rfQ@mail.gmail.com>
- <72c10e43023289b9a4c36226fe3fd5d9@kernel.org>
-In-Reply-To: <72c10e43023289b9a4c36226fe3fd5d9@kernel.org>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 18 Aug 2020 10:48:54 -0700
-Message-ID: <CAGETcx-hkz8fyAHuhRi=JhBFu4YUmL2UpHfgs7doLHK-RdKA0A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] PCI: rockchip: Work around missing device_type
- property in DT
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Android Kernel Team <kernel-team@android.com>
+References: <875z9h9jkr.fsf@x220.int.ebiederm.org>
+In-Reply-To: <875z9h9jkr.fsf@x220.int.ebiederm.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 18 Aug 2020 10:51:33 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgcRsoQsPjOqwzH9ycmhp_SGpA9gZpOErHEk9Y076uefw@mail.gmail.com>
+Message-ID: <CAHk-=wgcRsoQsPjOqwzH9ycmhp_SGpA9gZpOErHEk9Y076uefw@mail.gmail.com>
+Subject: Re: [RFC][PATCH] seccomp: Fail immediately if any thread is
+ performing an exec
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 10:34 AM Marc Zyngier <maz@kernel.org> wrote:
+On Mon, Aug 17, 2020 at 12:11 PM Eric W. Biederman
+<ebiederm@xmission.com> wrote:
 >
-> On 2020-08-18 15:23, Rob Herring wrote:
-> > On Tue, Aug 18, 2020 at 1:35 AM Marc Zyngier <maz@kernel.org> wrote:
-> >>
-> >> On 2020-08-17 17:12, Rob Herring wrote:
-> >> > On Sun, Aug 16, 2020 at 4:40 AM Marc Zyngier <maz@kernel.org> wrote:
-> >> >>
-> >> >> On Sun, 16 Aug 2020 00:22:28 +0100,
-> >> >> Bjorn Helgaas <helgaas@kernel.org> wrote:
-> >> >> >
-> >> >> > On Sat, Aug 15, 2020 at 01:51:11PM +0100, Marc Zyngier wrote:
-> >> >> > > Recent changes to the DT PCI bus parsing made it mandatory for
-> >> >> > > device tree nodes describing a PCI controller to have the
-> >> >> > > 'device_type = "pci"' property for the node to be matched.
-> >> >> > >
-> >> >> > > Although this follows the letter of the specification, it
-> >> >> > > breaks existing device-trees that have been working fine
-> >> >> > > for years.  Rockchip rk3399-based systems are a prime example
-> >> >> > > of such collateral damage, and have stopped discovering their
-> >> >> > > PCI bus.
-> >> >> > >
-> >> >> > > In order to paper over the blunder, let's add a workaround
-> >> >> > > to the pcie-rockchip driver, adding the missing property when
-> >> >> > > none is found at boot time. A warning will hopefully nudge the
-> >> >> > > user into updating their DT to a fixed version if they can, but
-> >> >> > > the insentive is obviously pretty small.
-> >> >> >
-> >> >> > s/insentive/incentive/ (Lorenzo or I can fix this up)
-> >> >> >
-> >> >> > > Fixes: 2f96593ecc37 ("of_address: Add bus type match for pci ranges parser")
-> >> >> > > Suggested-by: Roh Herring <robh+dt@kernel.org>
-> >> >> >
-> >> >> > s/Roh/Rob/ (similarly)
-> >> >>
-> >> >> Clearly not my day when it comes to proofreading commit messages.
-> >> >> Thanks for pointing this out, and in advance for fixing it up.
-> >> >>
-> >> >> >
-> >> >> > > Signed-off-by: Marc Zyngier <maz@kernel.org>
-> >> >> >
-> >> >> > This looks like a candidate for v5.9, since 2f96593ecc37 was merged
-> >> >> > during the v5.9 merge window, right?
-> >> >>
-> >> >> Absolutely.
-> >> >>
-> >> >> > I wonder how many other DTs are similarly broken?  Maybe Rob's DT
-> >> >> > checker has already looked?
-> >> >>
-> >> >> I've just managed to run the checker, which comes up with all kinds of
-> >> >> goodies. Apart from the above, it also spots the following:
-> >> >>
-> >> >> - arch/arm64/boot/dts/mediatek/mt7622.dtsi: Has a device_type property
-> >> >>   in its main PCIe node, but not in the child nodes. It isn't obvious
-> >> >>   to me whether that's a violation or not (the spec doesn't say
-> >> >>   whether the property should be set on a per-port basis). Rob?
-> >> >
-> >> > The rule is bridge nodes should have 'device_type = "pci"'. But what's
-> >> > needed to fix these cases is setting device_type where we are parsing
-> >> > ranges or dma-ranges which we're not doing on the child ndes.
-> >> > Otherwise, I don't think it matters in this case unless you have child
-> >> > (grandchild here) nodes for PCI devices. If you did have child nodes,
-> >> > the address translation was already broken before this change.
-> >>
-> >> Fair enough.
-> >>
-> >> >> - arch/arm64/boot/dts/qcom/msm8996.dtsi: Only one out of the three
-> >> >>   PCIe nodes has the device_type property, probably broken similarly
-> >> >>   to rk3399.
-> >> >
-> >> > The only upstream board is DB820c, so probably not as wide an impact...
-> >> >
-> >> > There are also 92 (lots of duplicates due to multiple boards) more
-> >> > cases in arch/arm/. A log is here[1].
-> >>
-> >> Mostly Broadcom stuff, apparently. I'll see if I can have a stab
-> >> at it (although someone will have to test it).
-> >>
-> >> >
-> >> >> I could move the workaround to drivers/pci/of.c, and have it called
-> >> >> from the individual drivers. I don't have the HW to test those though.
-> >> >>
-> >> >> Thoughts?
-> >> >
-> >> > I think we should go with my other suggestion of looking at the node
-> >> > name. Looks like just checking 'pcie' is enough. We can skip 'pci' as
-> >> > I don't see any cases.
-> >>
-> >> I really dislike it.
-> >>
-> >> Once we put this node name matching in, there is no incentive for
-> >> people to write their DT correctly at all. It also sound pretty
-> >> fragile (what if the PCIe node is named something else?).
-> >
-> > That would require 2 wrongs. Both missing device_type and wrong node
-> > name. You could still warn if we matched on node name.
->
-> OK. So how about something like this?
->
-> diff --git a/drivers/of/address.c b/drivers/of/address.c
-> index 590493e04b01..a7a6ee599b14 100644
-> --- a/drivers/of/address.c
-> +++ b/drivers/of/address.c
-> @@ -134,9 +134,13 @@ static int of_bus_pci_match(struct device_node *np)
->          * "pciex" is PCI Express
->          * "vci" is for the /chaos bridge on 1st-gen PCI powermacs
->          * "ht" is hypertransport
-> +        *
-> +        * If none of the device_type match, and that the node name is
-> +        * "pcie", accept the device as PCI (with a warning).
->          */
->         return of_node_is_type(np, "pci") || of_node_is_type(np, "pciex") ||
-> -               of_node_is_type(np, "vci") || of_node_is_type(np, "ht");
-> +               of_node_is_type(np, "vci") || of_node_is_type(np, "ht") ||
-> +               WARN_ON_ONCE(of_node_name_eq(np, "pcie"));
+> +static void set_in_execve(bool in_execve)
+> +{
+> +       struct task_struct *me = current;
+> +       spinlock_t *lock = &me->sighand->siglock;
+> +
+> +       spin_lock_irq(lock);
+> +       me->in_execve = in_execve;
+> +       spin_unlock_irq(lock);
+> +}
 
-I don't think we need the _ONCE. Otherwise, it'd warn only for the
-first device that has this problem.
+No. This is complete voodoo programming. Code like this makes
+absolutely zero sense.
 
-How about?
-WARN(of_node_name_eq(np, "pcie"), "Missing device type in %pOF", np)
+Using a lock to serialize a single write is completely bogus. Yes, it
+can be required if the field is a bitfield and you want to protect the
+other bits in the word, but then you shouldn't be using a bitfield.
 
-That'll even tell them which node is bad.
+It adds zero serialization that a WRITE_ONCE/READ_ONCE pair doesn't
+add. The other side will get either the old or the new value
+regardless of the locking, so the locking is completely worthless
+garbage.
 
--Saravana
+At best it's just wasted CPU time. At worst, it confuses people about
+what the locking means and results in bugs down the line. Don't do
+things like this.
+
+Locking for reading or writing a single value makes no sense. Locking
+is only useful when there is a coherency issue and you have a
+*sequence* of writes.
+
+If you have a single value that acts as a flag, use
+READ_ONCE/WRITE_ONCE to show that there's no relevant locking. In
+fact, better yet, use "smp_store_release()" to set the flag and
+"smp_load_acquire()" to read it, and then you get the read/write once
+semantics _and_ an ordering between the "I have started doing X,
+everything I've done up until this point is now guaranteed to be
+visible to whoever reads this value".
+
+           Linus
+
+PS. Yes, there are situations where you want to lock around a single
+write because of the serialization it guarantees for things around the
+locked code. So you can have valid "lock-write-unlock" sequences. But
+then you'd better have a BIG HONKING COMMENT about what the hell
+you're really serializing, because it's not the single write, it's
+something bigger.
