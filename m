@@ -2,88 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB0D248E61
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 21:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE4F248E69
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 21:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726694AbgHRTCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 15:02:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726529AbgHRTCG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 15:02:06 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA5DEC061389
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 12:02:05 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id b30so10774127lfj.12
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 12:02:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nQVuZWCOnlFwQnX2Zqx0X5sy3pLItQeKoPELobHQVGQ=;
-        b=OdFylsapCoULupAOYKw2uxh3CBvd6ctb0Q+oE4KHDc7exoz8gPT0JzpVzCs2UFYloZ
-         pdfG98SZ4TKORf3pZEGIPjJidGca60aMQLOi2nen+7fHRK9fQJKdqmCu+AFXvUdhjWjx
-         E0UpiJcscdcfZTXaD9DYNr+NvdEPSVQoYZIRg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nQVuZWCOnlFwQnX2Zqx0X5sy3pLItQeKoPELobHQVGQ=;
-        b=XDq9LkdIJqK7VHLrLX+1BE52/jRNmnrf3qsSboJsjpupRFecT2hsAHwD6lVFINgOjF
-         CFaJVT9xjcTmZ2lKePKBHknqGDcfXJ1Zl1GEkQrkx26Q8ydfNueH2SadpOzykOpnXxW7
-         qn6TfbOU5aUKz8mjY19e/lG7PgWkesNIJ8PIg9ieHFbQ3W9FO3mUJukqLat4XZpTtli+
-         pw1l1lsb9STov1Sdi1of8qRQGxwTRycnaZ6mN98Dp55F6UtYlImMLyiY6eBKLbDf6cU4
-         9o4CHb7RKVIsI/SHSX0KvNFYer3Nr6FvvgvXuVeLtxLbF/CYb1VLyyvBKljY9V75tZPB
-         E8IQ==
-X-Gm-Message-State: AOAM530u6WW2+wr8PTomzNDpA4oFdWZIX9uyA6Hp4uP/hykaJ20RgEGG
-        wHflp8mp+DDzcN1uekBmAZkBKma28P2dXA==
-X-Google-Smtp-Source: ABdhPJw/V3r1lQUAQReVTFvOHAJaO+ZVna4FJ30ASNRtJN7uzHQzSMbcFNSYoBKmwW8GCL0yZkUt1g==
-X-Received: by 2002:a19:5c2:: with SMTP id 185mr10301706lff.38.1597777321118;
-        Tue, 18 Aug 2020 12:02:01 -0700 (PDT)
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
-        by smtp.gmail.com with ESMTPSA id j6sm6762278lfp.44.2020.08.18.12.01.59
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Aug 2020 12:01:59 -0700 (PDT)
-Received: by mail-lj1-f175.google.com with SMTP id t23so22663266ljc.3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 12:01:59 -0700 (PDT)
-X-Received: by 2002:a2e:7615:: with SMTP id r21mr9769511ljc.371.1597777319256;
- Tue, 18 Aug 2020 12:01:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200815043041.132195-1-shy828301@gmail.com>
-In-Reply-To: <20200815043041.132195-1-shy828301@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 18 Aug 2020 12:01:43 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjbaptBBKYS+XdCgdjU_RbFPaAd8EkT6_Un6CtNmezt9A@mail.gmail.com>
-Message-ID: <CAHk-=wjbaptBBKYS+XdCgdjU_RbFPaAd8EkT6_Un6CtNmezt9A@mail.gmail.com>
-Subject: Re: [v3 PATCH] mm/memory.c: skip spurious TLB flush for retried page fault
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Yu Xu <xuyu@linux.alibaba.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
+        id S1726778AbgHRTDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 15:03:54 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:36623 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726435AbgHRTDx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 15:03:53 -0400
+Received: from carbon-x1.hos.anvin.org ([IPv6:2601:646:8600:3280:61e8:d401:1991:f3df])
+        (authenticated bits=0)
+        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 07IJ2bvX2888434
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Tue, 18 Aug 2020 12:02:38 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 07IJ2bvX2888434
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2020072401; t=1597777361;
+        bh=cfOAXIuv0d1n/p0ol2GZ1qiMxIvr2XSR2TAgYuI9r3w=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=z6FSMv10XGVilhbjjXXiM0AVWKbJ7Fhzt0md6cIgU1Ohsv04ugdthB2lXdOawFp4G
+         /yIHdNmPHZoJCDgNTXPnJTtAPUBICrzszid60D+pV/4UicZbTfZbrRU0+BZ8RM9wQ7
+         35+zOHMSIK0jpi7uLcUHBcJWVVBeZ5kJHzSii4DCkNNkgF64tjR5yM5SQnJO97g4e0
+         TLtVUzXQFjyCrQUlr1DheafRH0JBDtqIMF2aHk+22UqWXF1TCLjag5KLD7muJd8VV/
+         HrTaRZAfyaXM5tK2841JwFpFsQImabhN3BWsuyiGhtf+WNri0flORDI4/EZYE6HGwH
+         89XyyKW8H1m/w==
+Subject: Re: [PATCH 0/4] -ffreestanding/-fno-builtin-* patches
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Joe Perches <joe@perches.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Bruce Ashfield <bruce.ashfield@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>,
+        Andi Kleen <ak@suse.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
+        Eli Friedman <efriedma@quicinc.com>
+References: <20200817220212.338670-1-ndesaulniers@google.com>
+ <fae91af3-4e08-a929-e5c3-25271ad7324b@zytor.com>
+ <CAKwvOdk6A4AqTtOsD34WNwxRjyTvXP8KCNj2xfNWYdPT+sLHwQ@mail.gmail.com>
+From:   "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <76071c24-ec6f-7f7a-4172-082bd574d581@zytor.com>
+Date:   Tue, 18 Aug 2020 12:02:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <CAKwvOdk6A4AqTtOsD34WNwxRjyTvXP8KCNj2xfNWYdPT+sLHwQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 2:04 PM Yang Shi <shy828301@gmail.com> wrote:
->
-> We could just skip the spurious TLB flush to mitigate the regression.
+On 2020-08-18 10:56, Nick Desaulniers wrote:
+>>
+>> The problem here is twofold:
+>>
+>> 1. The user would be expected to know what kind of the optimizations the
+>> compiler can do on what function, which is private knowledge to the
+>> compiler.
+>>
+>> 2. The only way to override -fno-builtin is by a header file with macros
+>> overriding the function names with __builtin, but that doesn't tell the
+>> compiler proper anything about the execution environment.
+>>
+>> So the Right Thing is for the compiler authors to change the way
+>> -ffreestanding works.
+> 
+> Sir, this is an Arby's
+> 
+> There are things all across the compilation landscape that make we
+> want to pontificate or even throw a tantrum in an Arby's.  Would I?
+> Well, no, I'm just trying to flip burgers or shovel the elephant
+> sh...or w/e they do at Arby's (I've never actually been; I detest
+> roast beef).
+> 
+> Would it be interesting to have a way of opting in, as you describe,
+> such that your compiler knew exactly what kind of embedded environment
+> it was targeting?  Maybe, but I'd argue that opting out is just the
+> other side of the same coin. Heads, I win; tails, you lose. That the
+> opt in or opt out list is shorter for a given project is not
+> particularly interesting.  Should we change the semantics of a fairly
+> commonly used compiler flag that multiple toolchains are in agreement
+> of, then fix all of the breakage in all of the code that relied on
+> those semantics?  I'm afraid that ship may have already
+> sailed...probably 20 or 30 years ago.
+> 
+>> -ffreestanding means, by definition, that there
+>> are no library calls (other than libgcc or whatever else is supplied
+>> with the compiler) that the compiler can call. That is currently an
+>> all-or-nothing choice, or at least one choice per C standard implemented.
+> 
+> Yes?
+> 
 
-Ok, this patch I will apply.
+I'm not saying "change the semantics", nor am I saying that playing
+whack-a-mole *for a limited time* is unreasonable. But I would like to go back
+to the compiler authors and get them to implement such a #pragma: "this
+freestanding implementation *does* support *this specific library function*,
+and you are free to call it." The only way we can get what we really need from
+the compilers is by speaking up and requesting it, and we have done so very
+successfully recently; further back we tended to get a lot of
+language-lawyering, but these days both the gcc and the clang teams have been
+wonderfully responsive.
 
-I still hope that arm64 fixes (maybe already fixed) their spurious TLB
-function, and I think we should rename it to make sure everybody
-understands it's local, but in the meantime this patch hides the
-regression and isn't wrong.
+	-hpa
 
-Thanks,
-
-                Linus
