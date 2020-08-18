@@ -2,261 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF84247BAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 02:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3319E247BA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 02:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726365AbgHRA4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Aug 2020 20:56:12 -0400
-Received: from mga17.intel.com ([192.55.52.151]:37049 "EHLO mga17.intel.com"
+        id S1726641AbgHRAxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Aug 2020 20:53:44 -0400
+Received: from mga03.intel.com ([134.134.136.65]:52267 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726135AbgHRA4L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Aug 2020 20:56:11 -0400
-IronPort-SDR: HtRH80udkDG6mg2fjzPBL2JRDwKcdZlizHDM2oO0gPO+4Ll679JY5cvl74MUcqpLl2l643ixFZ
- h/9lfs1xTHsQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="134878115"
+        id S1726314AbgHRAxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Aug 2020 20:53:43 -0400
+IronPort-SDR: wwvtp8RGHR0bPs+Lo2S3apx7O5jcd86uoRLnvxF3xS8HeMYRjFNc78vWQWgEHpdZv94ff3tmyp
+ w82W9JAPPEYA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9716"; a="154790858"
 X-IronPort-AV: E=Sophos;i="5.76,324,1592895600"; 
-   d="scan'208";a="134878115"
+   d="scan'208";a="154790858"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 17:56:10 -0700
-IronPort-SDR: +cRgIv89HL96sSmuryIQJos0iUOC3iKa4y7gEnpQim4/uCQFhmJO8lbrcHsk14+4dMnWw9K52g
- E7UU0pdud5hQ==
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2020 17:53:42 -0700
+IronPort-SDR: Tt0L9RBpJXdehq5/B7Z+OHcBeBKvyulQkQw9OfjGfvIXfU1ceyZ/ET8o/YLyZ4J9Z1fR0YMRQv
+ bYXlremJsdDw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,324,1592895600"; 
-   d="scan'208";a="328802745"
-Received: from brentlu-desk0.itwn.intel.com ([10.5.253.11])
-  by fmsmga002.fm.intel.com with ESMTP; 17 Aug 2020 17:56:08 -0700
-From:   Brent Lu <brent.lu@intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+   d="scan'208";a="441052508"
+Received: from orsmsx601-2.jf.intel.com (HELO ORSMSX601.amr.corp.intel.com) ([10.22.229.81])
+  by orsmga004.jf.intel.com with ESMTP; 17 Aug 2020 17:53:41 -0700
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 17 Aug 2020 17:53:41 -0700
+Received: from orsmsx115.amr.corp.intel.com (10.22.240.11) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Mon, 17 Aug 2020 17:53:41 -0700
+Received: from ORSEDG001.ED.cps.intel.com (10.7.248.4) by
+ ORSMSX115.amr.corp.intel.com (10.22.240.11) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Mon, 17 Aug 2020 17:53:41 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.175)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Mon, 17 Aug 2020 17:53:41 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XyUpf1HkHmEXrg0Y4GIb0JSqlWVWT6dXxaKU+Gk7RARt6P0t2P8ttzZ/IX8xewlNUZl2FvmPB14ClCjrBU9RLmx82hFjC35cXTsdTfwjUUzPBQoWQKEF/5ljzOadrRRp34YpdACL7oa0gGkE7ZQeIZdXCpuNTKV2UmwdeMJHh9ZerxGF4NNpYAujXY37WrPBTwycOiJ6QFr09/ER7pfyaviuDQ+AAv9i4Y5ncdtOr7fYerelZTJ+78BUV/ScrpB+PYJMXzSwByyXpkwFE3ZxK0SDl246NWRMUFTwthpq63zxNVecvhNeO7HkS0r8fpb3ESkmWiuU1G9A9zMGtdnr5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6g98zpgCBElH86aoOJl9f8TqFPofdYrhW7WHsamcU80=;
+ b=KmrDX/M4rz23MPSbHqoWmhcoJGP7zOhpA520iikQEGS7PzXCj3O/b/yjer0LXuetuf3LnWDo38Gd+dYxRdPXM83xfonW7JJIakSzBDcrNcLAlqAukSEeWlPhRtCzakgv3/LV+kc6JFbAOuMFmZASBVIC6Tu6DORCpMF6erd0wAi2BdGYQCxQ87+lQkij7TjujAC4O7DOSx1p0yTvdpZ2NjGh3Pxkvuoti8Q1ECoCoHK5yQiu9ed//LKGTrOAgU0htR7J+4AhNuBqFVyZOP/SHwL8SBJoZ6q/Szsmvm4/WBSoJtLqGNq+yu68/xzCSKSBRvggp5q7AUfabWa1+APqlg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6g98zpgCBElH86aoOJl9f8TqFPofdYrhW7WHsamcU80=;
+ b=VQg2GOOvfVwQqHM6lXMzi4gqlEZA4YhaD9BQnE3KZkCAfM5WizBgb3dOYjJg9s9nqyf3Wmwba8dmqoiT4Hp2RoCGD4myPJ+cFuk8TgRcFsuUnOxdoNcsI+qXlWIw6GvpsCuZcc3vUq23ccCArUJPm/HWeaAOBol/JErRk7keysM=
+Received: from DM6PR11MB3642.namprd11.prod.outlook.com (2603:10b6:5:138::26)
+ by DM5PR11MB1883.namprd11.prod.outlook.com (2603:10b6:3:10b::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.15; Tue, 18 Aug
+ 2020 00:53:39 +0000
+Received: from DM6PR11MB3642.namprd11.prod.outlook.com
+ ([fe80::70a3:595c:6217:49c9]) by DM6PR11MB3642.namprd11.prod.outlook.com
+ ([fe80::70a3:595c:6217:49c9%7]) with mapi id 15.20.3283.028; Tue, 18 Aug 2020
+ 00:53:39 +0000
+From:   "Lu, Brent" <brent.lu@intel.com>
+To:     Takashi Iwai <tiwai@suse.de>
+CC:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
         Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>,
         Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Brent Lu <brent.lu@intel.com>,
-        =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
+        =?iso-8859-2?Q?Amadeusz_S=B3awi=F1ski?= 
         <amadeuszx.slawinski@linux.intel.com>,
         Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
         Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ASoC: hdac_hdmi: support 'ELD' mixer
-Date:   Tue, 18 Aug 2020 08:44:13 +0800
-Message-Id: <20200818004413.12852-1-brent.lu@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200814083436.19845-1-brent.lu@intel.com>
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] ASoC: hdac_hdmi: support 'ELD' mixer
+Thread-Topic: [PATCH] ASoC: hdac_hdmi: support 'ELD' mixer
+Thread-Index: AQHWchd0wtLZqwnntUa3JdfJp7hiz6k6X7iAgAKv72A=
+Date:   Tue, 18 Aug 2020 00:53:39 +0000
+Message-ID: <DM6PR11MB36421D93BA72DFCC14F899AD975C0@DM6PR11MB3642.namprd11.prod.outlook.com>
 References: <20200814083436.19845-1-brent.lu@intel.com>
+ <s5hh7t3qbag.wl-tiwai@suse.de>
+In-Reply-To: <s5hh7t3qbag.wl-tiwai@suse.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: suse.de; dkim=none (message not signed)
+ header.d=none;suse.de; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [1.164.110.173]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fe66558f-70d1-41ba-e6fc-08d843112592
+x-ms-traffictypediagnostic: DM5PR11MB1883:
+x-microsoft-antispam-prvs: <DM5PR11MB18838ADF0DB1EA11E182C93C975C0@DM5PR11MB1883.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4502;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jkNrrNX0CAhI5UKxnYdyIEBX1kHnYYGfov7/roHhnEbY8g1AY/4a7PdCFNDKRfpNQrZyjKDNx7vW8rZpCttWGiImO0tZ2BnPWl3BNzrt4wFS8McjRHh5lHoFuvr8gA+lNDtwUc0MORQr4blbFfkmXEkuUHqSoCkwN3jf+2SFGizXyxxqcW4oV2EcaRUBAdcx1/mgC+zBqqG/ktPVirh21gmJl2ZFtazaxNJGDUnErZNqGw90rB1oUX/WysgSNnk9pehFJzJ44ywgEytbKsoGbEoT2WvenvNfrwlyktXGjEDiIUYsehipn03OeUwxO9CGODEgxRkd4PX0cHSzwg2GKA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3642.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(366004)(39860400002)(346002)(136003)(54906003)(52536014)(55016002)(5660300002)(76116006)(2906002)(316002)(66556008)(66446008)(478600001)(64756008)(66476007)(9686003)(66946007)(4744005)(7696005)(26005)(6916009)(6506007)(71200400001)(8936002)(33656002)(86362001)(4326008)(186003)(7416002)(8676002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: ziVuR4pBh6KCawf63cdSBnNB9YeVJd2GKxQ7KAs/xZqNmSyzJa9qB81qm940eU/5sIhCJn3xgTJy8fXSlzSxuCMUI31SMVceM8apvyqLd2nCUD9mtqio8oQNNHpCTH3tdYAEhZxvtCr2aOketxptVRWaM6y56VtxNoicbbK8XLKoiZsU6If9Ql973zfi/yMS7zGIgHzluWdU5/yZurGAPHwHslOt20gRzttFEhFj6rW3z2OLlQNalN3zj9XHeQgun9H2Il5QWT1nnNcyX+SK5TBD2LSSk3rr4zMAvdbg4BAU80MdUbYaGkMcIufChhIjl0k4lJlH1pohCQf9DzeongNeiMu8raOjcqP6FKmD94zhOYSoxybXrG8HRX+sUkTo3N6zYl2Fxgz1S97IAhiaV/zdx1A6xXctSM6Ul+RH2ISu/8SAhePpfZahGk5yEhWH2qne1j6beEY/FrNkCo3kJKIGfCCJGans40HLg3n9k9Gr9Xgpp6tpdMA+68b2lS5CM1WyQcbq6p0NxU/1lEQ1B2J72vOJ6hzpu0TJhKZAp7IrSgnrqVfa1LHR+6b4dkuMX3ei/NK9Lpd1jzLbdAchsazzaD6VvGorVHIF0nIBTN/c/5jMnQ0M6opkpKcJtVIrNkh7HE6S8P23TzOrx4UiNA==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3642.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fe66558f-70d1-41ba-e6fc-08d843112592
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Aug 2020 00:53:39.5145
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 0/cp1tDuOWLXzV9MPc/jEHwdOvoiLRrKt7D+HEeXkRq8sYiIwBkH0kIrqZ9OWocSIKN46jVXXNMMGuTmOryaJw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1883
+X-OriginatorOrg: intel.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an binary mixer 'ELD' to each HDMI PCM device so user space
-could read the ELD data of external HDMI display.
+> > +	/* add control for ELD Bytes */
+> > +	err =3D hdac_hdmi_create_eld_ctl(component, pcm);
+> > +	if (err < 0) {
+> > +		dev_err(&hdev->dev,
+> > +			"eld control add failed with err: %d for pcm: %d\n",
+> > +			err, device);
+> > +		kfree(pcm);
+>=20
+> pcm is allocated vida devm_kzalloc(), hence you shoudn't free it explicit=
+ly.
+Will fix it in v2. Thanks.
 
-Signed-off-by: Brent Lu <brent.lu@intel.com>
----
- sound/soc/codecs/hdac_hdmi.c | 138 +++++++++++++++++++++++++++++++++++
- 1 file changed, 138 insertions(+)
-
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index f26b77faed59..869d1547ae5d 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -9,6 +9,7 @@
-  *
-  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  */
-+
- #include <linux/init.h>
- #include <linux/delay.h>
- #include <linux/module.h>
-@@ -107,6 +108,7 @@ struct hdac_hdmi_pcm {
- 	unsigned char chmap[8]; /* ALSA API channel-map */
- 	struct mutex lock;
- 	int jack_event;
-+	struct snd_kcontrol *eld_ctl;
- };
- 
- struct hdac_hdmi_dai_port_map {
-@@ -1248,6 +1250,7 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin,
- 	struct hdac_hdmi_pcm *pcm;
- 	int size = 0;
- 	int port_id = -1;
-+	bool eld_valid, eld_changed;
- 
- 	if (!hdmi)
- 		return;
-@@ -1273,6 +1276,8 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin,
- 			size = -EINVAL;
- 	}
- 
-+	eld_valid = port->eld.eld_valid;
-+
- 	if (size > 0) {
- 		port->eld.eld_valid = true;
- 		port->eld.eld_size = size;
-@@ -1281,6 +1286,8 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin,
- 		port->eld.eld_size = 0;
- 	}
- 
-+	eld_changed = (eld_valid != port->eld.eld_valid);
-+
- 	pcm = hdac_hdmi_get_pcm(hdev, port);
- 
- 	if (!port->eld.monitor_present || !port->eld.eld_valid) {
-@@ -1313,6 +1320,12 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin,
- 
- 	}
- 	mutex_unlock(&hdmi->pin_mutex);
-+
-+	if (eld_changed && pcm)
-+		snd_ctl_notify(hdmi->card,
-+			       SNDRV_CTL_EVENT_MASK_VALUE |
-+			       SNDRV_CTL_EVENT_MASK_INFO,
-+			       &pcm->eld_ctl->id);
- }
- 
- static int hdac_hdmi_add_ports(struct hdac_device *hdev,
-@@ -1411,6 +1424,122 @@ static void hdac_hdmi_skl_enable_dp12(struct hdac_device *hdev)
- 
- }
- 
-+static int hdac_hdmi_eld_ctl_info(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_info *uinfo)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct hdac_hdmi_priv *hdmi = snd_soc_component_get_drvdata(component);
-+	struct hdac_hdmi_pcm *pcm;
-+	struct hdac_hdmi_port *port;
-+	struct hdac_hdmi_eld *eld;
-+
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
-+	uinfo->count = 0;
-+
-+	pcm = get_hdmi_pcm_from_id(hdmi, kcontrol->id.device);
-+	if (!pcm) {
-+		dev_dbg(component->dev, "%s: no pcm, device %d\n", __func__,
-+			kcontrol->id.device);
-+		return 0;
-+	}
-+
-+	if (list_empty(&pcm->port_list)) {
-+		dev_dbg(component->dev, "%s: empty port list, device %d\n",
-+			__func__, kcontrol->id.device);
-+		return 0;
-+	}
-+
-+	mutex_lock(&hdmi->pin_mutex);
-+
-+	list_for_each_entry(port, &pcm->port_list, head) {
-+		eld = &port->eld;
-+
-+		if (eld->eld_valid) {
-+			uinfo->count = eld->eld_size;
-+			break;
-+		}
-+	}
-+
-+	mutex_unlock(&hdmi->pin_mutex);
-+
-+	return 0;
-+}
-+
-+static int hdac_hdmi_eld_ctl_get(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct hdac_hdmi_priv *hdmi = snd_soc_component_get_drvdata(component);
-+	struct hdac_hdmi_pcm *pcm;
-+	struct hdac_hdmi_port *port;
-+	struct hdac_hdmi_eld *eld;
-+
-+	memset(ucontrol->value.bytes.data, 0, ARRAY_SIZE(ucontrol->value.bytes.data));
-+
-+	pcm = get_hdmi_pcm_from_id(hdmi, kcontrol->id.device);
-+	if (!pcm) {
-+		dev_dbg(component->dev, "%s: no pcm, device %d\n", __func__,
-+			kcontrol->id.device);
-+		return 0;
-+	}
-+
-+	if (list_empty(&pcm->port_list)) {
-+		dev_dbg(component->dev, "%s: empty port list, device %d\n",
-+			__func__, kcontrol->id.device);
-+		return 0;
-+	}
-+
-+	mutex_lock(&hdmi->pin_mutex);
-+
-+	list_for_each_entry(port, &pcm->port_list, head) {
-+		eld = &port->eld;
-+
-+		if (!eld->eld_valid)
-+			continue;
-+
-+		if (eld->eld_size > ARRAY_SIZE(ucontrol->value.bytes.data) ||
-+		    eld->eld_size > ELD_MAX_SIZE) {
-+			mutex_unlock(&hdmi->pin_mutex);
-+
-+			dev_err(component->dev, "%s: buffer too small, device %d eld_size %d\n",
-+				__func__, kcontrol->id.device, eld->eld_size);
-+			snd_BUG();
-+			return -EINVAL;
-+		}
-+
-+		memcpy(ucontrol->value.bytes.data, eld->eld_buffer,
-+		       eld->eld_size);
-+		break;
-+	}
-+
-+	mutex_unlock(&hdmi->pin_mutex);
-+
-+	return 0;
-+}
-+
-+static int hdac_hdmi_create_eld_ctl(struct snd_soc_component *component, struct hdac_hdmi_pcm *pcm)
-+{
-+	struct snd_kcontrol *kctl;
-+	struct snd_kcontrol_new hdmi_eld_ctl = {
-+		.access	= SNDRV_CTL_ELEM_ACCESS_READ |
-+			  SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.iface	= SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name	= "ELD",
-+		.info	= hdac_hdmi_eld_ctl_info,
-+		.get	= hdac_hdmi_eld_ctl_get,
-+		.device	= pcm->pcm_id,
-+	};
-+
-+	/* add ELD ctl with the device number corresponding to the PCM stream */
-+	kctl = snd_ctl_new1(&hdmi_eld_ctl, component);
-+	if (!kctl)
-+		return -ENOMEM;
-+
-+	pcm->eld_ctl = kctl;
-+
-+	return snd_ctl_add(component->card->snd_card, kctl);
-+}
-+
- static const struct snd_soc_dai_ops hdmi_dai_ops = {
- 	.startup = hdac_hdmi_pcm_open,
- 	.shutdown = hdac_hdmi_pcm_close,
-@@ -1784,6 +1913,15 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device,
- 		}
- 	}
- 
-+	/* add control for ELD Bytes */
-+	err = hdac_hdmi_create_eld_ctl(component, pcm);
-+	if (err < 0) {
-+		dev_err(&hdev->dev,
-+			"eld control add failed with err: %d for pcm: %d\n",
-+			err, device);
-+		return err;
-+	}
-+
- 	list_add_tail(&pcm->head, &hdmi->pcm_list);
- 
- 	return 0;
--- 
-2.17.1
-
+Brent
+>=20
+>=20
+> thanks,
+>=20
+> Takashi
