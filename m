@@ -2,64 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37078248330
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 12:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C33248324
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 12:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726829AbgHRKhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 06:37:21 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:39100 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726598AbgHRKhQ (ORCPT
+        id S1726826AbgHRKgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 06:36:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726746AbgHRKgc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 06:37:16 -0400
-Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k7yzS-00038F-Lb; Tue, 18 Aug 2020 10:37:14 +0000
-Date:   Tue, 18 Aug 2020 12:37:13 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        criu@openvz.org, bpf@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Jann Horn <jann@thejh.net>, Kees Cook <keescook@chromium.org>,
-        Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Matthew Wilcox <willy@debian.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Matthew Wilcox <matthew@wil.cx>,
-        Trond Myklebust <trond.myklebust@fys.uio.no>,
-        Chris Wright <chrisw@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [PATCH 06/17] file: Implement fcheck_task
-Message-ID: <20200818103713.aw46m7vprsy4vlve@wittgenstein>
-References: <87ft8l6ic3.fsf@x220.int.ebiederm.org>
- <20200817220425.9389-6-ebiederm@xmission.com>
+        Tue, 18 Aug 2020 06:36:32 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D0A7C061389
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 03:36:32 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f26be00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f26:be00:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 09D491EC0242;
+        Tue, 18 Aug 2020 12:36:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1597746985;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=oLuV1otE+FXjmTbf+3p7DVNs3egn/fXYLEmfGswqK8Q=;
+        b=hgduRtMdVqnlmKL/bI/1lMwTajg9X3GxtEQuufdoqkbHovXwrq8243OTAAqJbZ5/CIGmln
+        dZW+UwNOxlx0SlzgR4Bb4bm7h+/RcqWbhPsNBjb71MJQOpL0/NSzGptjbXHWHcp7z54NDI
+        VFWBseG0p3DkzlH8FiRDb36EITH6ppk=
+From:   Borislav Petkov <bp@alien8.de>
+To:     X86 ML <x86@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] x86/fsgsbase: Replace static_cpu_has() with boot_cpu_has()
+Date:   Tue, 18 Aug 2020 12:37:15 +0200
+Message-Id: <20200818103715.32736-1-bp@alien8.de>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200817220425.9389-6-ebiederm@xmission.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 05:04:14PM -0500, Eric W. Biederman wrote:
-> As a companion to fget_task implement fcheck_task for use for querying
-> a process about a specific file.
-> 
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> ---
+From: Borislav Petkov <bp@suse.de>
 
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+ptrace and prctl() are not really fast paths to warrant the use of
+static_cpu_has() and cause alternatives patching for no good reason.
+Replace with boot_cpu_has() which is simple and fast enough.
+
+No functional changes.
+
+Signed-off-by: Borislav Petkov <bp@suse.de>
+---
+ arch/x86/include/asm/fsgsbase.h | 4 ++--
+ arch/x86/kernel/process_64.c    | 8 ++++----
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/arch/x86/include/asm/fsgsbase.h b/arch/x86/include/asm/fsgsbase.h
+index d552646411a9..35cff5f2becf 100644
+--- a/arch/x86/include/asm/fsgsbase.h
++++ b/arch/x86/include/asm/fsgsbase.h
+@@ -57,7 +57,7 @@ static inline unsigned long x86_fsbase_read_cpu(void)
+ {
+ 	unsigned long fsbase;
+ 
+-	if (static_cpu_has(X86_FEATURE_FSGSBASE))
++	if (boot_cpu_has(X86_FEATURE_FSGSBASE))
+ 		fsbase = rdfsbase();
+ 	else
+ 		rdmsrl(MSR_FS_BASE, fsbase);
+@@ -67,7 +67,7 @@ static inline unsigned long x86_fsbase_read_cpu(void)
+ 
+ static inline void x86_fsbase_write_cpu(unsigned long fsbase)
+ {
+-	if (static_cpu_has(X86_FEATURE_FSGSBASE))
++	if (boot_cpu_has(X86_FEATURE_FSGSBASE))
+ 		wrfsbase(fsbase);
+ 	else
+ 		wrmsrl(MSR_FS_BASE, fsbase);
+diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
+index 9afefe325acb..df342bedea88 100644
+--- a/arch/x86/kernel/process_64.c
++++ b/arch/x86/kernel/process_64.c
+@@ -407,7 +407,7 @@ unsigned long x86_gsbase_read_cpu_inactive(void)
+ {
+ 	unsigned long gsbase;
+ 
+-	if (static_cpu_has(X86_FEATURE_FSGSBASE)) {
++	if (boot_cpu_has(X86_FEATURE_FSGSBASE)) {
+ 		unsigned long flags;
+ 
+ 		local_irq_save(flags);
+@@ -422,7 +422,7 @@ unsigned long x86_gsbase_read_cpu_inactive(void)
+ 
+ void x86_gsbase_write_cpu_inactive(unsigned long gsbase)
+ {
+-	if (static_cpu_has(X86_FEATURE_FSGSBASE)) {
++	if (boot_cpu_has(X86_FEATURE_FSGSBASE)) {
+ 		unsigned long flags;
+ 
+ 		local_irq_save(flags);
+@@ -439,7 +439,7 @@ unsigned long x86_fsbase_read_task(struct task_struct *task)
+ 
+ 	if (task == current)
+ 		fsbase = x86_fsbase_read_cpu();
+-	else if (static_cpu_has(X86_FEATURE_FSGSBASE) ||
++	else if (boot_cpu_has(X86_FEATURE_FSGSBASE) ||
+ 		 (task->thread.fsindex == 0))
+ 		fsbase = task->thread.fsbase;
+ 	else
+@@ -454,7 +454,7 @@ unsigned long x86_gsbase_read_task(struct task_struct *task)
+ 
+ 	if (task == current)
+ 		gsbase = x86_gsbase_read_cpu_inactive();
+-	else if (static_cpu_has(X86_FEATURE_FSGSBASE) ||
++	else if (boot_cpu_has(X86_FEATURE_FSGSBASE) ||
+ 		 (task->thread.gsindex == 0))
+ 		gsbase = task->thread.gsbase;
+ 	else
+-- 
+2.21.0
+
