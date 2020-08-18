@@ -2,182 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B85247EB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 08:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEAAF247EBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 08:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbgHRGve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 02:51:34 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:59555 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726228AbgHRGvb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 02:51:31 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R651e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0U67H.h6_1597733485;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U67H.h6_1597733485)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 18 Aug 2020 14:51:26 +0800
-Subject: Re: [RFC PATCH 2/3] mm: Drop use of test_and_set_skip in favor of
- just setting skip
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     yang.shi@linux.alibaba.com, lkp@intel.com, rong.a.chen@intel.com,
-        khlebnikov@yandex-team.ru, kirill@shutemov.name, hughd@google.com,
-        linux-kernel@vger.kernel.org, daniel.m.jordan@oracle.com,
-        linux-mm@kvack.org, shakeelb@google.com, willy@infradead.org,
-        hannes@cmpxchg.org, tj@kernel.org, cgroups@vger.kernel.org,
-        akpm@linux-foundation.org, richard.weiyang@gmail.com,
-        mgorman@techsingularity.net, iamjoonsoo.kim@lge.com
-References: <20200813035100.13054.25671.stgit@localhost.localdomain>
- <20200813040232.13054.82417.stgit@localhost.localdomain>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <176fae1b-b95b-51c3-d8cc-4380f0972666@linux.alibaba.com>
-Date:   Tue, 18 Aug 2020 14:50:25 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        id S1726617AbgHRGyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 02:54:02 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9828 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726353AbgHRGyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 02:54:01 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 2A4A0217B627E9D100EC;
+        Tue, 18 Aug 2020 14:53:56 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 18 Aug 2020 14:53:48 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
+        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
+        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
+        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
+CC:     <linuxarm@huawei.com>
+Subject: [PATCH drm/hisilicon 0/4] Use drv_err instead of DRM_ERROR in hibmc driver 
+Date:   Tue, 18 Aug 2020 14:51:40 +0800
+Message-ID: <1597733504-30812-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20200813040232.13054.82417.stgit@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+patch #1 is using the drv_err instead of DRM_ERROR in hibmc_ttm.c
+patch #2 is using the drv_err instead of DRM_ERROR in hibmc_drm_vdac.c
+patch #3 is using the drv_err and drm_dbg_atomic  instead of DRM_ERROR
+and DRM_DEBUG_ATOMIC  in hibmc_drm_de.c
+patch #4 is using the drv_err and drm_warn instead of DRM_ERROR and
+DRM_WARN in hibmc_drm_drv.c
 
+Tian Tao (4):
+  drm/hisilicon: Use drv_err instead of DRM_ERROR in hibmc_ttm
+  drm/hisilicon: Use drv_err instead of DRM_ERROR in hibmc_drm_vdac
+  drm/hisilicon: Use drv_err instead of DRM_ERROR in hibmc_drm_de
+  drm/hisilicon: Use drv_err instead of DRM_ERROR in hibmc_drm_drv
 
-在 2020/8/13 下午12:02, Alexander Duyck 写道:
-> From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> 
-> The only user of test_and_set_skip was isolate_migratepages_block and it
-> was using it after a call that was testing and clearing the LRU flag. As
-> such it really didn't need to be behind the LRU lock anymore as it wasn't
-> really fulfilling its purpose.
-> 
-> With that being the case we can simply drop the bit and instead directly
-> just call the set_pageblock_skip function if the page we are working on is
-> the valid_page at the start of the pageblock. It shouldn't be possible for
-> us to encounter the bit being set since we obtained the LRU flag for the
-> first page in the pageblock which means we would have exclusive access to
-> setting the skip bit. As such we don't need to worry about the abort case
-> since no other thread will be able to call what used to be
-> test_and_set_skip.
-> 
-> Since we have dropped the late abort case we can drop the code that was
-> clearing the LRU flag and calling page_put since the abort case will now
-> not be holding a reference to a page.
-> 
-> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c   | 14 +++++++-------
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c  | 24 ++++++++++++------------
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c |  4 ++--
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c      |  2 +-
+ 4 files changed, 22 insertions(+), 22 deletions(-)
 
-After my false sharing remove on pageblock_flags, this patch looks fine with
-a minor change
+-- 
+2.7.4
 
-> ---
->  mm/compaction.c |   50 +++++++-------------------------------------------
->  1 file changed, 7 insertions(+), 43 deletions(-)
-> 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 5021a18ef722..c1e9918f9dd4 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -399,29 +399,6 @@ void reset_isolation_suitable(pg_data_t *pgdat)
->  	}
->  }
->  
-> -/*
-> - * Sets the pageblock skip bit if it was clear. Note that this is a hint as
-> - * locks are not required for read/writers. Returns true if it was already set.
-> - */
-> -static bool test_and_set_skip(struct compact_control *cc, struct page *page,
-> -							unsigned long pfn)
-> -{
-> -	bool skip;
-> -
-> -	/* Do no update if skip hint is being ignored */
-> -	if (cc->ignore_skip_hint)
-> -		return false;
-> -
-> -	if (!IS_ALIGNED(pfn, pageblock_nr_pages))
-> -		return false;
-> -
-> -	skip = get_pageblock_skip(page);
-> -	if (!skip && !cc->no_set_skip_hint)
-> -		skip = !set_pageblock_skip(page);
-> -
-> -	return skip;
-> -}
-> -
->  static void update_cached_migrate(struct compact_control *cc, unsigned long pfn)
->  {
->  	struct zone *zone = cc->zone;
-> @@ -480,12 +457,6 @@ static inline void update_pageblock_skip(struct compact_control *cc,
->  static void update_cached_migrate(struct compact_control *cc, unsigned long pfn)
->  {
->  }
-> -
-> -static bool test_and_set_skip(struct compact_control *cc, struct page *page,
-> -							unsigned long pfn)
-> -{
-> -	return false;
-> -}
->  #endif /* CONFIG_COMPACTION */
->  
->  /*
-> @@ -895,7 +866,6 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  		if (!valid_page && IS_ALIGNED(low_pfn, pageblock_nr_pages)) {
->  			if (!cc->ignore_skip_hint && get_pageblock_skip(page)) {
->  				low_pfn = end_pfn;
-> -				page = NULL;
->  				goto isolate_abort;
->  			}
->  			valid_page = page;
-> @@ -991,6 +961,13 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  		if (!TestClearPageLRU(page))
->  			goto isolate_fail_put;
->  
-> +		/* Indicate that we want exclusive access to this pageblock */
-> +		if (page == valid_page) {
-> +			skip_updated = true;
-> +			if (!cc->ignore_skip_hint)
-
-                        if (!cc->ignore_skip_hint && !cc->no_set_skip_hint)
-no_set_skip_hint needs to add here.
-
-Thanks
-Alex
-
-> +				set_pageblock_skip(page);
-> +		}
-> +
->  		/* If we already hold the lock, we can skip some rechecking */
->  		if (!lruvec || !lruvec_holds_page_lru_lock(page, lruvec)) {
->  			if (lruvec)
-> @@ -1002,13 +979,6 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  
->  			lruvec_memcg_debug(lruvec, page);
->  
-> -			/* Try get exclusive access under lock */
-> -			if (!skip_updated) {
-> -				skip_updated = true;
-> -				if (test_and_set_skip(cc, page, low_pfn))
-> -					goto isolate_abort;
-> -			}
-> -
->  			/*
->  			 * Page become compound since the non-locked check,
->  			 * and it's on LRU. It can only be a THP so the order
-> @@ -1094,15 +1064,9 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  	if (unlikely(low_pfn > end_pfn))
->  		low_pfn = end_pfn;
->  
-> -	page = NULL;
-> -
->  isolate_abort:
->  	if (lruvec)
->  		unlock_page_lruvec_irqrestore(lruvec, flags);
-> -	if (page) {
-> -		SetPageLRU(page);
-> -		put_page(page);
-> -	}
->  
->  	/*
->  	 * Updated the cached scanner pfn once the pageblock has been scanned
-> 
