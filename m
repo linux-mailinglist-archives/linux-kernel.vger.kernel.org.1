@@ -2,155 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326AE247D27
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 06:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6BA247D2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Aug 2020 06:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbgHREE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 00:04:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726370AbgHREE2 (ORCPT
+        id S1726689AbgHREEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 00:04:55 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26938 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725800AbgHREEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 00:04:28 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01EBAC061389;
-        Mon, 17 Aug 2020 21:04:27 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id v15so9134918pgh.6;
-        Mon, 17 Aug 2020 21:04:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GzZyrXpTY6F22/dmqRS9I8tt5+S2Aky6apouSMQ9NVw=;
-        b=aSnr6OU+Rcr5yj8twqOw5CZZOy9CgaFVgDjpMQiGxUTa4ZL7X1cwWlMXbUOjyhdr4l
-         eVKLDeF6vvGIQuY8I7ILh0qiejd09jiDlM3ZB9dYMmaYuQanxyJgaYXe7d5PjskpFgrW
-         DDI2pytXA5zwS8b89EGEzt3rIZXOl0ivwdtM14gLIEfJD77pFCuCyRFl7uiyIPvVZnTF
-         3EW367fHs/cs62n0b4OKxgyS+eW5ezO+O7ADcSse1cU55DAZUmCTtd4eXlCmTDEk/OTm
-         /nwxlYkhPzHLXKF7sD2OxETQBYnqyOIyb3rGhbEKPCZJEJrcY86ozTdyEqV0821dUh4Y
-         AIWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GzZyrXpTY6F22/dmqRS9I8tt5+S2Aky6apouSMQ9NVw=;
-        b=oGd3VZwpCe28cF8xoW1VwX4+OoL1p/59ATSIlr991YngDAR2vMSR6mHD/ti6IrfDA9
-         AhCMex+l/AHEisHoMUA6amLHU4F6QYc8aagEiGOARmM9+2ZmzJmxNG8Bgkk+aZSAIg4M
-         Db7SghBFZYCKlSRh8lg4qPJ54o1tTNUQRavkudxYI954tewIBc4PxNy/wx18c0ixGMDL
-         lX/vZfITe0NCzq5ErOUt2YOTTv+YKM5XWVQCFEWZPF5tnRAYbhidZlABqkpmJjTMfJOY
-         f5SnOYjPmYwWCaKBA35fuRJZ8poTMvTVG4RJYvxYYg187dybWsb0xjhzT2S/qWrP7nl0
-         guUw==
-X-Gm-Message-State: AOAM5330jJPucAFNZNRRaOXqOuUz8jMq0ltUw5btunGG3ByTohLnuhhb
-        mgzrKMMnQ2lX1C3HVURtM9xQxnNNRHw=
-X-Google-Smtp-Source: ABdhPJydBIRGIt26gN3g3+zaU0kRrvec1KgF1/ruYxo/RTU9GmIyVdQOBmUs6tvE84ORhq894pk3FA==
-X-Received: by 2002:a62:8081:: with SMTP id j123mr14289522pfd.80.1597723466952;
-        Mon, 17 Aug 2020 21:04:26 -0700 (PDT)
-Received: from localhost.localdomain (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id k21sm19595450pgl.0.2020.08.17.21.04.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 21:04:25 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next] net: dsa: loop: Return VLAN table size through devlink
-Date:   Mon, 17 Aug 2020 21:03:54 -0700
-Message-Id: <20200818040354.44736-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 18 Aug 2020 00:04:52 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07I42UQ8194198;
+        Tue, 18 Aug 2020 00:04:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=/4oqOV4LYeWWZ79+QyApMKjx9ScJfNcJD9LWU04JZo8=;
+ b=JfCs+D1c9L8wuCRBlUDFiAO41fUP5lgq9seI4S+3bs40s5koxiDdamcC3quP3wx5B/gl
+ K1UCaMWMZZ98CSIBk1wyW5G1EPAuMJwXyQnXtnZ7gN6i8/nPkItfOSy32HPZ5IDiXjfp
+ 9RK2i6cX5vQ6TSTmQcsLFAtAXW3bNCMvIqdHVrUSLmjtc0K7hnAkfRTF1rE9k8v522q/
+ wR+1rjprVFMyPCnSScptyGXCza5vkS9fscgz8gBbEQjdJnbHNk3XOysMrRFm4cI+YYC/
+ HtxBQU6ObuvL5/ZRyqp2nkXPKagVioe4+nAvk419UKkBC7C1HAmqzbS6EjmY1hfYEX0F 6g== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3304r5bud3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Aug 2020 00:04:44 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07I3psaL028869;
+        Tue, 18 Aug 2020 04:04:42 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 3304bt05hk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Aug 2020 04:04:42 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07I44e6g61473256
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 Aug 2020 04:04:40 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 21A7CAE045;
+        Tue, 18 Aug 2020 04:04:40 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 35FD5AE04D;
+        Tue, 18 Aug 2020 04:04:39 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.199.33.217])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 18 Aug 2020 04:04:39 +0000 (GMT)
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     Jan Kiszka <jan.kiszka@siemens.com>,
+        Kieran Bingham <kbingham@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: [PATCH 0/2] scripts:gdb: Add few structs in gdb scripts
+Date:   Tue, 18 Aug 2020 09:34:29 +0530
+Message-Id: <cover.1597721575.git.riteshh@linux.ibm.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-18_01:2020-08-17,2020-08-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=894
+ malwarescore=0 suspectscore=0 impostorscore=0 mlxscore=0
+ lowpriorityscore=0 spamscore=0 clxscore=1011 phishscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008180026
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We return the VLAN table size through devlink as a simple parameter, we
-do not support altering it at runtime:
+I was using these structs info internally in my gdb scripts.
+So sending it out for merge to upstream.
 
-devlink resource show mdio_bus/fixed-0:1f
-mdio_bus/fixed-0:1f:
-  name VTU size 4096 occ 4096 unit entry dpipe_tables none
+Ritesh Harjani (2):
+  proc: Add struct mount & struct super_block addr in lx-mounts command
+  tasks: Add task_struct addr for lx-ps cmd
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/net/dsa/dsa_loop.c | 47 +++++++++++++++++++++++++++++++++++++-
- 1 file changed, 46 insertions(+), 1 deletion(-)
+ scripts/gdb/linux/lists.py | 43 ++++++++++++++++++++++++++++++++++++++
+ scripts/gdb/linux/proc.py  | 15 +++++++------
+ scripts/gdb/linux/tasks.py |  9 ++++----
+ 3 files changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/dsa/dsa_loop.c b/drivers/net/dsa/dsa_loop.c
-index eb600b3dbf26..474d0747d4ed 100644
---- a/drivers/net/dsa/dsa_loop.c
-+++ b/drivers/net/dsa/dsa_loop.c
-@@ -28,6 +28,45 @@ static struct dsa_loop_mib_entry dsa_loop_mibs[] = {
- 
- static struct phy_device *phydevs[PHY_MAX_ADDR];
- 
-+enum dsa_loop_devlink_resource_id {
-+	DSA_LOOP_DEVLINK_PARAM_ID_VTU,
-+};
-+
-+static u64 dsa_loop_devlink_vtu_get(void *priv)
-+{
-+	struct dsa_loop_priv *ps = priv;
-+
-+	return ARRAY_SIZE(ps->vlans);
-+}
-+
-+static int dsa_loop_setup_devlink_resources(struct dsa_switch *ds)
-+{
-+	struct devlink_resource_size_params size_params;
-+	struct dsa_loop_priv *ps = ds->priv;
-+	int err;
-+
-+	devlink_resource_size_params_init(&size_params, ARRAY_SIZE(ps->vlans),
-+					  ARRAY_SIZE(ps->vlans),
-+					  1, DEVLINK_RESOURCE_UNIT_ENTRY);
-+
-+	err = dsa_devlink_resource_register(ds, "VTU", ARRAY_SIZE(ps->vlans),
-+					    DSA_LOOP_DEVLINK_PARAM_ID_VTU,
-+					    DEVLINK_RESOURCE_ID_PARENT_TOP,
-+					    &size_params);
-+	if (err)
-+		goto out;
-+
-+	dsa_devlink_resource_occ_get_register(ds,
-+					      DSA_LOOP_DEVLINK_PARAM_ID_VTU,
-+					      dsa_loop_devlink_vtu_get, ps);
-+
-+	return 0;
-+
-+out:
-+	dsa_devlink_resources_unregister(ds);
-+	return err;
-+}
-+
- static enum dsa_tag_protocol dsa_loop_get_protocol(struct dsa_switch *ds,
- 						   int port,
- 						   enum dsa_tag_protocol mp)
-@@ -48,7 +87,12 @@ static int dsa_loop_setup(struct dsa_switch *ds)
- 
- 	dev_dbg(ds->dev, "%s\n", __func__);
- 
--	return 0;
-+	return dsa_loop_setup_devlink_resources(ds);
-+}
-+
-+static void dsa_loop_teardown(struct dsa_switch *ds)
-+{
-+	dsa_devlink_resources_unregister(ds);
- }
- 
- static int dsa_loop_get_sset_count(struct dsa_switch *ds, int port, int sset)
-@@ -243,6 +287,7 @@ static int dsa_loop_port_max_mtu(struct dsa_switch *ds, int port)
- static const struct dsa_switch_ops dsa_loop_driver = {
- 	.get_tag_protocol	= dsa_loop_get_protocol,
- 	.setup			= dsa_loop_setup,
-+	.teardown		= dsa_loop_teardown,
- 	.get_strings		= dsa_loop_get_strings,
- 	.get_ethtool_stats	= dsa_loop_get_ethtool_stats,
- 	.get_sset_count		= dsa_loop_get_sset_count,
 -- 
-2.25.1
+2.25.4
 
