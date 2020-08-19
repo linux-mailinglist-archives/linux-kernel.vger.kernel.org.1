@@ -2,87 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7FC24A225
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 16:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A4A24A208
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 16:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728572AbgHSOzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 10:55:44 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2673 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726899AbgHSOzn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 10:55:43 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id BE0AA37D166D367E32FE;
-        Wed, 19 Aug 2020 15:55:41 +0100 (IST)
-Received: from lhrphicprd00229.huawei.com (10.123.41.22) by
- lhreml710-chm.china.huawei.com (10.201.108.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Wed, 19 Aug 2020 15:55:41 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@huawei.com>
-To:     <linux-mm@kvack.org>, <linux-acpi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <x86@kernel.org>
-CC:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, <rafael@kernel.org>,
-        <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>, <linuxarm@huawei.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Brice Goglin <Brice.Goglin@inria.fr>,
-        Sean V Kelley <sean.v.kelley@linux.intel.com>,
-        <linux-api@vger.kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH v9 6/6] docs: mm: numaperf.rst Add brief description for access class 1.
-Date:   Wed, 19 Aug 2020 22:51:11 +0800
-Message-ID: <20200819145111.1715026-7-Jonathan.Cameron@huawei.com>
-X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20200819145111.1715026-1-Jonathan.Cameron@huawei.com>
-References: <20200819145111.1715026-1-Jonathan.Cameron@huawei.com>
+        id S1728549AbgHSOwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 10:52:01 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:54474 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727773AbgHSOwA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 10:52:00 -0400
+Received: from zn.tnic (p200300ec2f26be00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f26:be00:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C74781EC0246;
+        Wed, 19 Aug 2020 16:51:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1597848718;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=A70rq59A6Q3Nc/C3E+NfgmfDZGXvR0KV5Hb4Ux18h5c=;
+        b=f3ivnx419gP8w2Ml7xRmY8cWHYckXcQm9lm+DH4qBB1wRtNZN+P22KTZdObU3jRRZ+X89u
+        6FnD8a7EII2N6i3iYaHLEd4eE5xAU/i7oZkNDo8jU1Aklt7TCOU8vY4WzNuJcj5AGdunLB
+        nFndid/xRETUoa0a4qP6ckXTx0lZPMg=
+Date:   Wed, 19 Aug 2020 16:51:58 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Chris Down <chris@chrisdown.name>
+Cc:     linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kernel-team@fb.com,
+        sean.j.christopherson@intel.com, tony.luck@intel.com,
+        torvalds@linux-foundation.org, x86@kernel.org
+Subject: Re: [PATCH 2/2] x86: Make source of unrecognised MSR writes
+ unambiguous
+Message-ID: <20200819145158.GC19351@zn.tnic>
+References: <cover.1597677395.git.chris@chrisdown.name>
+ <df42b70ed20d616d7c2d7f42cd38300115584619.1597677395.git.chris@chrisdown.name>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.123.41.22]
-X-ClientProxiedBy: lhreml741-chm.china.huawei.com (10.201.108.191) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <df42b70ed20d616d7c2d7f42cd38300115584619.1597677395.git.chris@chrisdown.name>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Try to make minimal changes to the document which already describes
-access class 0 in a generic fashion (including IO initiatiors that
-are not CPUs).
+On Mon, Aug 17, 2020 at 04:24:36PM +0100, Chris Down wrote:
+> In many cases the comm enough isn't enough to distinguish the offender,
+> since for interpreted languages it's likely just going to be "python3"
+> or whatever. Add the pid to make it unambiguous.
+> 
+> Signed-off-by: Chris Down <chris@chrisdown.name>
+> Cc: Borislav Petkov <bp@suse.de>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> ---
+>  arch/x86/kernel/msr.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/msr.c b/arch/x86/kernel/msr.c
+> index 3babb0e58b0e..76b6b0011d62 100644
+> --- a/arch/x86/kernel/msr.c
+> +++ b/arch/x86/kernel/msr.c
+> @@ -99,8 +99,9 @@ static int filter_write(u32 reg)
+>  	if (!__ratelimit(&fw_rs) || reg == MSR_IA32_ENERGY_PERF_BIAS)
+>  		return 0;
+>  
+> -	pr_err("Write to unrecognized MSR 0x%x by %s\n"
+> -	       "Please report to x86@kernel.org\n", reg, current->comm);
+> +	pr_err("Write to unrecognized MSR 0x%x by pid %s:%d\n"
 
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
----
- Documentation/admin-guide/mm/numaperf.rst | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Perhaps make that "... by %s (pid: %d)\n".
 
-diff --git a/Documentation/admin-guide/mm/numaperf.rst b/Documentation/admin-guide/mm/numaperf.rst
-index 4d69ef1de830..b89bb85eac75 100644
---- a/Documentation/admin-guide/mm/numaperf.rst
-+++ b/Documentation/admin-guide/mm/numaperf.rst
-@@ -56,6 +56,11 @@ nodes' access characteristics share the same performance relative to other
- linked initiator nodes. Each target within an initiator's access class,
- though, do not necessarily perform the same as each other.
- 
-+The access class "1" is used to allow differentiation between initiators
-+that are CPUs and hence suitable for generic task scheduling, and
-+IO initiators such as GPUs and NICs.  Unlike access class 0, only
-+nodes containing CPUs are considered.
-+
- ================
- NUMA Performance
- ================
-@@ -88,6 +93,9 @@ The latency attributes are provided in nanoseconds.
- The values reported here correspond to the rated latency and bandwidth
- for the platform.
- 
-+Access class 1, takes the same form, but only includes values for CPU to
-+memory activity.
-+
- ==========
- NUMA Cache
- ==========
 -- 
-2.19.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
