@@ -2,119 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD50B24A041
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E32124A099
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728348AbgHSNmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 09:42:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55128 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727046AbgHSNmu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 09:42:50 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B3F5E204FD;
-        Wed, 19 Aug 2020 13:42:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597844569;
-        bh=nRHlZ1MnhuRCWEVlVgqtKUWgqsrlzs+w4Nj+dZAbawc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=X2p4tG/lI4UDoGQ0sW7iBjo5mfR7OsNSzk2uNq3Xhim97qLQo2BUAax5CH6LxWxQ3
-         SyLd/JY3Anlf1Vkm7UkfpDCr9hyV2G5dviys/6P/0z35NeRRb/G3vtxR+wiuYLfK9Q
-         CM9M4FOLugd4F74QfZ7XQFOx/6L3XtyEgHhh141s=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1k8OMa-004DzN-87; Wed, 19 Aug 2020 14:42:48 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 19 Aug 2020 14:42:48 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Cc:     alix.wu@mediatek.com, daniel@0x0f.com, devicetree@vger.kernel.org,
-        jason@lakedaemon.net, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        matthias.bgg@gmail.com, robh+dt@kernel.org, tglx@linutronix.de,
-        yj.chiang@mediatek.com
-Subject: Re: [PATCH 1/2] irqchip: irq-mst: Add MStar interrupt controller
- support
-In-Reply-To: <a8ee65eb4d86963bd2b56e86eec0ab3e@kernel.org> (raw)
-References: <a8ee65eb4d86963bd2b56e86eec0ab3e@kernel.org>
- <a8ee65eb4d86963bd2b56e86eec0ab3e@kernel.org> (raw)
-User-Agent: Roundcube Webmail/1.4.7
-Message-ID: <f593f5e395c8558657a3f265b7038ec3@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: mark-pk.tsai@mediatek.com, alix.wu@mediatek.com, daniel@0x0f.com, devicetree@vger.kernel.org, jason@lakedaemon.net, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com, robh+dt@kernel.org, tglx@linutronix.de, yj.chiang@mediatek.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        id S1728733AbgHSNuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 09:50:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727872AbgHSNn7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 09:43:59 -0400
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00BFDC061349
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:43:56 -0700 (PDT)
+Received: from ramsan ([84.195.186.194])
+        by baptiste.telenet-ops.be with bizsmtp
+        id HRjl2300T4C55Sk01RjlZi; Wed, 19 Aug 2020 15:43:54 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1k8ONV-0003Dm-Bo; Wed, 19 Aug 2020 15:43:45 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1k8ONV-0007FR-8G; Wed, 19 Aug 2020 15:43:45 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Kazuya Mizuguchi <kazuya.mizuguchi.ks@renesas.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Magnus Damm <magnus.damm@gmail.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v3 0/7] net/ravb: Add support for explicit internal clock delay configuration
+Date:   Wed, 19 Aug 2020 15:43:37 +0200
+Message-Id: <20200819134344.27813-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-19 14:31, Mark-PK Tsai wrote:
-> From: Marc Zyngier <maz@kernel.org>
-> 
->> > +
->> > +static int mst_intc_domain_alloc(struct irq_domain *domain, unsigned
->> > int virq,
->> > +				 unsigned int nr_irqs, void *data)
->> > +{
->> > +	int i;
->> > +	irq_hw_number_t hwirq;
->> > +	struct irq_fwspec parent_fwspec, *fwspec = data;
->> > +	struct mst_intc_chip_data *cd = (struct mst_intc_chip_data
->> > *)domain->host_data;
->> 
->> No cast necessary here.
->> 
->> > +
->> > +	/* Not GIC compliant */
->> > +	if (fwspec->param_count != 3)
->> > +		return -EINVAL;
->> > +
->> > +	/* No PPI should point to this domain */
->> > +	if (fwspec->param[0])
->> > +		return -EINVAL;
->> > +
->> > +	if (fwspec->param[1] >= cd->nr_irqs)
->> 
->> This condition is bogus, as it doesn't take into account the nr_irqs
->> parameter.
->> 
-> 
-> 
-> The hwirq number need to be in the irq map range. (property:
-> mstar,irqs-map-range)
-> If it's not, it must be incorrect configuration.
+	Hi all,
 
-I agree. And since you are checking whether the configuration is 
-correct,
-it'd better be completely correct.
+Some Renesas EtherAVB variants support internal clock delay
+configuration, which can add larger delays than the delays that are
+typically supported by the PHY (using an "rgmii-*id" PHY mode, and/or
+"[rt]xc-skew-ps" properties).
 
-> So how about use the condition as following?
-> 
-> if (hwirq >= cd->nr_irqs)
-> 	return -EINVAL;
+Historically, the EtherAVB driver configured these delays based on the
+"rgmii-*id" PHY mode.  This caused issues with PHY drivers that
+implement PHY internal delays properly[1].  Hence a backwards-compatible
+workaround was added by masking the PHY mode[2].
 
-Again, this says nothing of the validity of (hwirq + nr_irqs - 1)...
+This patch series implements the next step of the plan outlined in [3],
+and adds proper support for explicit configuration of the MAC internal
+clock delays using new "[rt]x-internal-delay-ps" properties.  If none of
+these properties is present, the driver falls back to the old handling.
 
-> 
->> > +		return -EINVAL;
->> > +
->> > +	hwirq = fwspec->param[1];
->> > +	for (i = 0; i < nr_irqs; i++)
->> > +		irq_domain_set_hwirq_and_chip(domain, virq + i, hwirq + i,
->> > +					      &mst_intc_chip,
->> > +					      domain->host_data);
+This can be considered the MAC counterpart of commit 9150069bf5fc0e86
+("dt-bindings: net: Add tx and rx internal delays"), which applies to
+the PHY.  Note that unlike commit 92252eec913b2dd5 ("net: phy: Add a
+helper to return the index for of the internal delay"), no helpers are
+provided to parse the DT properties, as so far there is a single user
+only, which supports only zero or a single fixed value.  Of course such
+helpers can be added later, when the need arises, or when deemed useful
+otherwise.
 
-... which you are using here.
+This series consists of 4 parts:
+  1. DT binding updates documenting the new properties, for both the
+     generic ethernet-controller and the EtherAVB-specific bindings,
+     => intended to be merged through net-next.
 
-         M.
+  2. Conversion to json-schema of the Renesas EtherAVB DT bindings.
+     Technically, the conversion is independent of all of the above.
+     I included it in this series, as it shows how all sanity checks on
+     "[rt]x-internal-delay-ps" values are implemented as DT binding
+     checks.
+     => intended to be merged through net-next, or devicetree (ignoring
+        any conflict due to 1.).
+
+  3. EtherAVB driver update implementing support for the new properties.
+     => intended to be merged through net-next.
+
+  4. DT updates, one for R-Car Gen3 and RZ/G2 SoC families each.
+     => intended to be merged through renesas-devel and arm-soc, but
+	only _after_ 3. has hit upstream.
+
+Changes compared to v2[4]:
+  - Update recently added board DTS files,
+  - Add Reviewed-by.
+
+Changes compared to v1[5]:
+  - Added "[PATCH 1/7] dt-bindings: net: ethernet-controller: Add
+    internal delay properties",
+  - Replace "renesas,[rt]xc-delay-ps" by "[rt]x-internal-delay-ps",
+  - Incorporated EtherAVB DT binding conversion to json-schema,
+  - Add Reviewed-by.
+
+Impacted, tested:
+  - Salvator-X(S) with R-Car H3 ES1.0 and ES2.0, M3-W, and M3-N.
+
+Not impacted, tested:
+  - Ebisu with R-Car E3.
+
+Impacted, not tested:
+  - Salvator-X(S) with other SoC variants,
+  - ULCB with R-Car H3/M3-W/M3-N variants,
+  - V3MSK and Eagle with R-Car V3M,
+  - Draak with R-Car V3H,
+  - HiHope RZ/G2[MN] with RZ/G2M or RZ/G2N,
+  - Beacon EmbeddedWorks RZ/G2M Development Kit.
+
+To ease testing, I have pushed this series to the
+topic/ravb-internal-clock-delays-v3 branch of my renesas-drivers
+repository at
+git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git.
+
+Thanks for your comments!
+
+References:
+  [1] Commit bcf3440c6dd78bfe ("net: phy: micrel: add phy-mode support
+      for the KSZ9031 PHY")
+  [2] Commit 9b23203c32ee02cd ("ravb: Mask PHY mode to avoid inserting
+      delays twice").
+      https://lore.kernel.org/r/20200529122540.31368-1-geert+renesas@glider.be/
+  [3] https://lore.kernel.org/r/CAMuHMdU+MR-2tr3-pH55G0GqPG9HwH3XUd=8HZxprFDMGQeWUw@mail.gmail.com/
+  [4] https://lore.kernel.org/linux-devicetree/20200706143529.18306-1-geert+renesas@glider.be/
+  [5] https://lore.kernel.org/linux-devicetree/20200619191554.24942-1-geert+renesas@glider.be/
+
+Geert Uytterhoeven (7):
+  dt-bindings: net: ethernet-controller: Add internal delay properties
+  dt-bindings: net: renesas,ravb: Document internal clock delay
+    properties
+  dt-bindings: net: renesas,etheravb: Convert to json-schema
+  ravb: Split delay handling in parsing and applying
+  ravb: Add support for explicit internal clock delay configuration
+  arm64: dts: renesas: rcar-gen3: Convert EtherAVB to explicit delay
+    handling
+  arm64: dts: renesas: rzg2: Convert EtherAVB to explicit delay handling
+
+ .../bindings/net/ethernet-controller.yaml     |  14 +
+ .../bindings/net/renesas,etheravb.yaml        | 261 ++++++++++++++++++
+ .../devicetree/bindings/net/renesas,ravb.txt  | 134 ---------
+ .../boot/dts/renesas/beacon-renesom-som.dtsi  |   3 +-
+ .../boot/dts/renesas/hihope-rzg2-ex.dtsi      |   2 +-
+ arch/arm64/boot/dts/renesas/r8a774a1.dtsi     |   2 +
+ arch/arm64/boot/dts/renesas/r8a774b1.dtsi     |   2 +
+ arch/arm64/boot/dts/renesas/r8a774c0.dtsi     |   1 +
+ arch/arm64/boot/dts/renesas/r8a774e1.dtsi     |   2 +
+ arch/arm64/boot/dts/renesas/r8a77951.dtsi     |   2 +
+ arch/arm64/boot/dts/renesas/r8a77960.dtsi     |   2 +
+ arch/arm64/boot/dts/renesas/r8a77961.dtsi     |   2 +
+ arch/arm64/boot/dts/renesas/r8a77965.dtsi     |   2 +
+ .../arm64/boot/dts/renesas/r8a77970-eagle.dts |   3 +-
+ .../arm64/boot/dts/renesas/r8a77970-v3msk.dts |   3 +-
+ arch/arm64/boot/dts/renesas/r8a77970.dtsi     |   2 +
+ arch/arm64/boot/dts/renesas/r8a77980.dtsi     |   2 +
+ arch/arm64/boot/dts/renesas/r8a77990.dtsi     |   1 +
+ arch/arm64/boot/dts/renesas/r8a77995.dtsi     |   1 +
+ .../boot/dts/renesas/salvator-common.dtsi     |   2 +-
+ arch/arm64/boot/dts/renesas/ulcb.dtsi         |   2 +-
+ drivers/net/ethernet/renesas/ravb.h           |   5 +-
+ drivers/net/ethernet/renesas/ravb_main.c      |  53 +++-
+ 23 files changed, 350 insertions(+), 153 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/renesas,etheravb.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/renesas,ravb.txt
+
 -- 
-Jazz is not dead. It just smells funny...
+2.17.1
+
