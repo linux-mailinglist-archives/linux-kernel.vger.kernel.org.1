@@ -2,93 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44160249C84
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 13:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16AE4249C8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 13:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728403AbgHSLvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 07:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728183AbgHSLuZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 07:50:25 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A1FC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 04:50:24 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id g15so6802182plj.6
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 04:50:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4uE3mQjF3izpWntHgMP6vzXZ5cqjVe0Hyv9OEz2QLD4=;
-        b=aFlJFEgS4xeWJD2USnflfp80bmbUTDHEtmHnXCE947VXz5EyeTPV3QRVW+wjvGX6+p
-         kJLcrMAvMhUpUU+ZRaC8s9Wc2BZGiahUizFe2oLRs1AwIZPC7A0h+t37Hu652e/FOP69
-         JI4I590AKuX/6ss/T8ym6gH/NVb/ylkC+OAahzpaqsCOw12mXVToJMelIvNUhBnYLXl5
-         UGsyMqvu0UZoG7TXh0dSzrWV/CIHux1nnvnVTKZYIXlR/sFY1ATdG7yI+cmEXpmS2fZV
-         S8mmFmUvevdy4RnkJVX+DwX7vyli5AS1X3mW3K4TPdITZf5uk3wrXtEFuJB0ECay34/5
-         06AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4uE3mQjF3izpWntHgMP6vzXZ5cqjVe0Hyv9OEz2QLD4=;
-        b=pn98FSqKH+kMrnaDE/b3hs+PLpcOUDjb+Tgdw+cSHCmIZ/68kOJ7NcKw0QG3JoUhlB
-         XxuZkWhgzCr/ImMt7A5fFTzsAU3ML6KHtTa+7GtmK7HdrZebXj9v++2D9ATcd6cWDFOd
-         CzKgvE3Pa6J1dpM7YuemaGjzwfh+cX3G7FJ+A0b+9OJByBq06CfOH+/Oq35EmTkgwbBQ
-         pF2CuP+Z+bv3UP2VdDhf1IaPY6BTistMxyFjg/l5hCmerNiAxcwhzG/vLiPzhpPjHQJd
-         P8pSgHWH0Sxscn4v/oM7xb7vU4n/25PYbLqhW3msLf6ZQatn9HWKZ4PC2mxZ6eWq2698
-         FJnA==
-X-Gm-Message-State: AOAM530kfouer8yqU3wBVd88hyhsgdUP4of25U2d7lwxTPh/CYh7sBBx
-        vWCtjstKnOY5jg2i8w/NdHYMn9GTu4a5kbd9KRo=
-X-Google-Smtp-Source: ABdhPJzay2TOShI6HEwUhVOocphRC+IKNraciZWhP6ouM49rNg5cerikDFqaFPjF2IkmYdWbcII3EWNJ7Qoe5sxEfeA=
-X-Received: by 2002:a17:902:4b:: with SMTP id 69mr19229334pla.18.1597837823309;
- Wed, 19 Aug 2020 04:50:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200819094437.GE1891694@smile.fi.intel.com> <CAK7LNATQ1oAQm19-mzCKdMQsiQsYT9BRH5H7zukpFSzJw5WZZQ@mail.gmail.com>
-In-Reply-To: <CAK7LNATQ1oAQm19-mzCKdMQsiQsYT9BRH5H7zukpFSzJw5WZZQ@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 19 Aug 2020 14:50:07 +0300
-Message-ID: <CAHp75VcKpkZQ78xygzWTQhNsy8aLBzKzqVJTtzygzTYnWeqmyQ@mail.gmail.com>
-Subject: Re: -Werror for `make W=0`
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>, X86 ML <x86@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728127AbgHSLvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 07:51:38 -0400
+Received: from mail.zju.edu.cn ([61.164.42.155]:41548 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728382AbgHSLuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 07:50:44 -0400
+Received: from localhost.localdomain (unknown [210.32.144.184])
+        by mail-app2 (Coremail) with SMTP id by_KCgBHF7z3ET1fwy8CAg--.51675S4;
+        Wed, 19 Aug 2020 19:50:19 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Ajay Singh <ajay.kathat@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: wilc1000: Fix memleak in wilc_sdio_probe
+Date:   Wed, 19 Aug 2020 19:50:14 +0800
+Message-Id: <20200819115014.28955-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgBHF7z3ET1fwy8CAg--.51675S4
+X-Coremail-Antispam: 1UD129KBjvdXoWruFWUJF4xAw47Ww1rAr4Dtwb_yoWkuFX_Cr
+        1xXFn2gr1xWw1jyr1UCrW5ZrZFyF1kuFn5Cwsaq3yfGa17ArZ7CF4fuF4fJwsIk3W0vF4U
+        Kw4DWF93Ar4FqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb-kFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK
+        67AK6r4kMxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxV
+        CFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r10
+        6r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxV
+        WUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG
+        6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JV
+        W8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbeT5PUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgcLBlZdtPihowAjsu
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 1:48 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> On Wed, Aug 19, 2020 at 6:44 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > Hi!
-> >
-> > Maybe silly idea, but would it make sense to enable -Werror for default warning
-> > level, let's say W=0, at some point?
-> >
->
-> Every GCC release adds new warning options.
->
-> Enabling -Werror by default means
-> the kernel build is suddenly broken
-> with new compilers, correct?
+When devm_clk_get() returns -EPROBE_DEFER, sdio_priv
+should be freed just like when wilc_cfg80211_init()
+fails.
 
-Probably, and at the same time we keep our hand on the pulse of the
-changes, right?
-Adding those warnings to W=1, 2, ... block might be not the bad idea after all.
+Fixes: 8692b047e86cf ("staging: wilc1000: look for rtc_clk clock")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/net/wireless/microchip/wilc1000/sdio.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Maybe some flag CONFIG_DEBUG_WERROR ? Then CIs or other early stage
-users can enable by default and be informed.
-
+diff --git a/drivers/net/wireless/microchip/wilc1000/sdio.c b/drivers/net/wireless/microchip/wilc1000/sdio.c
+index 3ece7b0b0392..351ff909ab1c 100644
+--- a/drivers/net/wireless/microchip/wilc1000/sdio.c
++++ b/drivers/net/wireless/microchip/wilc1000/sdio.c
+@@ -149,9 +149,10 @@ static int wilc_sdio_probe(struct sdio_func *func,
+ 	wilc->dev = &func->dev;
+ 
+ 	wilc->rtc_clk = devm_clk_get(&func->card->dev, "rtc");
+-	if (PTR_ERR_OR_ZERO(wilc->rtc_clk) == -EPROBE_DEFER)
++	if (PTR_ERR_OR_ZERO(wilc->rtc_clk) == -EPROBE_DEFER) {
++		kfree(sdio_priv);
+ 		return -EPROBE_DEFER;
+-	else if (!IS_ERR(wilc->rtc_clk))
++	} else if (!IS_ERR(wilc->rtc_clk))
+ 		clk_prepare_enable(wilc->rtc_clk);
+ 
+ 	dev_info(&func->dev, "Driver Initializing success\n");
 -- 
-With Best Regards,
-Andy Shevchenko
+2.17.1
+
