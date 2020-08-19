@@ -2,124 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6811249330
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 05:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 965E6249334
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 05:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgHSDFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 23:05:13 -0400
-Received: from mga14.intel.com ([192.55.52.115]:45388 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726605AbgHSDFM (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 23:05:12 -0400
-IronPort-SDR: f5CvnXkEXvNh3RIqMMQAyb2TORvQnyhh3GBv8vREkxUG5FMXFYYvnZkdUp5Lu6XZkQiWKfo1Sa
- c6wi2I9jjfcg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="154303446"
-X-IronPort-AV: E=Sophos;i="5.76,329,1592895600"; 
-   d="scan'208";a="154303446"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 20:05:12 -0700
-IronPort-SDR: s+saYji99ULqmAoVtci/uAy6Q6OAVxXDlPQIPfE9XSjw3yHMoiO7WpUm1bsKP3kIja8ArQq9jQ
- puitc8RCXNDw==
-X-IronPort-AV: E=Sophos;i="5.76,329,1592895600"; 
-   d="scan'208";a="472059985"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.128]) ([10.238.4.128])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 20:05:08 -0700
-Subject: Re: [PATCH v3] perf parse-events: Set exclude_guest=1 for user-space
- counting
-To:     "Jin, Yao" <yao.jin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-References: <20200814012120.16647-1-yao.jin@linux.intel.com>
- <20200814124722.GG13995@kernel.org>
- <b061052d-592d-67d7-045f-481974b0687a@linux.intel.com>
-From:   Like Xu <like.xu@linux.intel.com>
-Organization: Intel OTC
-Message-ID: <3521b375-6f00-e815-94e5-49eae2a7c989@linux.intel.com>
-Date:   Wed, 19 Aug 2020 11:05:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1727870AbgHSDFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 23:05:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726605AbgHSDFy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 23:05:54 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE79DC061389;
+        Tue, 18 Aug 2020 20:05:53 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id 77so20400651qkm.5;
+        Tue, 18 Aug 2020 20:05:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZuU80Z7VtjiOx9KYQrgsSGrMxc3EizeZUZWTydpUAn4=;
+        b=bVFkn7Jpptl33UIirsnQkeycmvNl+gvNzoYFkghC8+6LGL5udoY37qDPQN2nCnq1Q8
+         T58YXrbN4JyvG+RZkoxxlSeoX2I/CI19QvzMqFadCN7TYhE1y1N+nbG/bGDZ4vP/Kr6q
+         E2Ow4NFC9C923Y1Qai+wqjaZ5/kB5iFLLMgeXX6Z2MvyC4l/XVLo71WW2Od7wscGRqNP
+         jHq+bVWN5DXVgb+L0bk/aUCIoOM9k09jd8sLwDunWR1LD5d+i6BgZDUG158hj+Y4e8ZQ
+         PCnOeM7iPGTvFRvi3sZmvKShkK7JyBe2rnJdRHK4kkVA7pdCWJSQ0Ug5s9lpQu+CxzpA
+         nZNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZuU80Z7VtjiOx9KYQrgsSGrMxc3EizeZUZWTydpUAn4=;
+        b=MkX5yD9TaqIF4cdx4VbxfpnIpkPvBbXbigSuo4dW3hlarSk75Ouv5cpTPAfIaml1D6
+         7J1hFTjzVLX8V9oum+FOh2AETZ9XHwyGdEsJ3jcwFvtfgHFN5y3rBnkfcF8v4du3nlHi
+         VfY1WtYu8fFWgxugpghHnC3RY+Sq+BZOjUgNemfZR+oeuLg7XL9/5DgLdsJ/weUn4d6e
+         +lNgiiXLjDoG0F9JBza6SPMHKkNECxsecI6AjfMdiFZztiZiO9iupO8rAiYEkUid+I9k
+         aAe3w1XLdK+AMOBB1pVxxDH/4mZUW6U+FcrQbExm5OZ/GTpuAql6BXhvho99Yg8Qjl3l
+         J6Ng==
+X-Gm-Message-State: AOAM531vczUeqEQYR5feT7Y8CCY0j79SSqKq4Q0jMq+8XS6Mu4eYusQu
+        4+ODvU1updFrcabXRUXKBAk=
+X-Google-Smtp-Source: ABdhPJyuIl56o6bND7x75nor1iLa463PwWDbzhtM4fKJhOAT35dMU0ViE0ppxcixJye0CgD7MqivPA==
+X-Received: by 2002:a05:620a:63a:: with SMTP id 26mr20332775qkv.490.1597806353035;
+        Tue, 18 Aug 2020 20:05:53 -0700 (PDT)
+Received: from atris.xiphos.ca (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id m30sm27724520qtm.46.2020.08.18.20.05.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Aug 2020 20:05:52 -0700 (PDT)
+From:   Liam Beguin <liambeguin@gmail.com>
+To:     liambeguin@gmail.com, ysato@users.sourceforge.jp, dalias@libc.org
+Cc:     linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH 1/1] sh: add support for cmpxchg on u8 and u16 pointers
+Date:   Tue, 18 Aug 2020 23:05:11 -0400
+Message-Id: <20200819030511.1114-1-liambeguin@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <b061052d-592d-67d7-045f-481974b0687a@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+The kernel test bot reported[1] that using set_mask_bits on a u8 causes
+the following issue on SuperH:
 
-On 2020/8/17 10:32, Jin, Yao wrote:
-> Hi Arnaldo,
-> 
-> On 8/14/2020 8:47 PM, Arnaldo Carvalho de Melo wrote:
->> Em Fri, Aug 14, 2020 at 09:21:20AM +0800, Jin Yao escreveu:
->>> Currently if we run 'perf record -e cycles:u', exclude_guest=0.
->>>
->>> But it doesn't make sense in most cases that we request for
->>> user-space counting but we also get the guest report.
->>>
->>> Of course, we also need to consider perf kvm usage case that
->>> authorized perf users on the host may only want to count guest
->>> user space events. For example,
->>>
->>> perf kvm --guest record -e cycles:u
->> Ok, probably this works, but what if I want to record guest user samples
->> without using 'perf kvm'?
->>
->> Can we have a 'U' modifier, perhaps, for that?
->>
->> I.e.
->>
->> perf record -e cycles:uU would not set exclude_host not exclude_guest,
->> cycles:u excludes guest user, cycles:U excludes host user, would that be
->> possible?
->>
->> Anyway, I think that with what we have, your patch makes sense, having a
->> way to, without using 'perf kvm' still be able to sample the guest can
->> be done on top. of this.
->>
->> Xu, can we get your Reviewed-by if this addresses your concerns?
+    >> ERROR: modpost: "__cmpxchg_called_with_bad_pointer" [drivers/phy/ti/phy-tusb1210.ko] undefined!
 
-My concern is about do not break the perf kvm usages and Yao did it in v3.
+Add support for cmpxchg on u8 and u16 pointers.
 
-Tested-by: Like Xu <like.xu@linux.intel.com>
+[1] https://lore.kernel.org/patchwork/patch/1288894/#1485536
 
->>
->> - Arnaldo
-> 
-> Do you suggest we will create a new modifier 'U' as a follow-up patch?
-> 
-> cycles:u - Count host user space but it doesn't count the guest user space 
-> (exclude_host = 0, exclude_guest = 1, exclude_kernel = 1, exclude_user = 0, 
-> exclude_hv = 1)
-> 
-> cycles:U - Count the guest user space but it doesn't count the host user 
-> space (exclude_host = 1, exclude_guest = 0, exclude_kernel = 1, 
-> exclude_user = 0, exclude_hv = 1)
-> 
-> Is above understanding correct?
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Liam Beguin <liambeguin@gmail.com>
+---
 
-Do we really need to support sample guests without using perf kvm?
+Hi,
 
-If it's true, I would prefer "cycles:uG" to cover guest user space
-events only, "cycles:kG" to cover guest kernel space events only,
-and only host events are sampled without the ":G" modifier by default.
+This was reported by the kernel test bot on an architecture I can't
+really test on. I was only able to make sure the build succeeds, but
+nothing more.
+This patch is based on the __cmpxchg_u32 impletmentation and seems
+incomplete based on the different cmpxchg headers I can find.
 
-I am not sure if ":G" has been used in perf.
-
-At the very least, this v3 patch may not
-block the follow-up patch from Yao (if any).
+Do these function need to be impletmented in each header
+simulataneously?
 
 Thanks,
-Like Xu
+Liam
 
-> 
-> Thanks
-> Jin Yao
+ arch/sh/include/asm/cmpxchg-irq.h | 27 +++++++++++++++++++++++++++
+ arch/sh/include/asm/cmpxchg.h     |  5 +++--
+ 2 files changed, 30 insertions(+), 2 deletions(-)
+
+diff --git a/arch/sh/include/asm/cmpxchg-irq.h b/arch/sh/include/asm/cmpxchg-irq.h
+index 07d3e7f08389..918c4153a930 100644
+--- a/arch/sh/include/asm/cmpxchg-irq.h
++++ b/arch/sh/include/asm/cmpxchg-irq.h
+@@ -51,4 +51,31 @@ static inline unsigned long __cmpxchg_u32(volatile int *m, unsigned long old,
+ 	return retval;
+ }
+ 
++static inline unsigned long __cmpxchg_u16(volatile u16 *m, unsigned long old,
++	unsigned long new)
++{
++	u16 retval;
++	unsigned long flags;
++
++	local_irq_save(flags);
++	retval = *m;
++	if (retval == old)
++		*m = new;
++	local_irq_restore(flags);
++	return (unsigned long)retval;
++}
++
++static inline unsigned long __cmpxchg_u8(volatile u8 *m, unsigned long old,
++	unsigned long new)
++{
++	u8 retval;
++	unsigned long flags;
++
++	local_irq_save(flags);
++	retval = *m;
++	if (retval == old)
++		*m = new;
++	local_irq_restore(flags);
++	return (unsigned long)retval;
++}
+ #endif /* __ASM_SH_CMPXCHG_IRQ_H */
+diff --git a/arch/sh/include/asm/cmpxchg.h b/arch/sh/include/asm/cmpxchg.h
+index e9501d85c278..7d65d0fd1665 100644
+--- a/arch/sh/include/asm/cmpxchg.h
++++ b/arch/sh/include/asm/cmpxchg.h
+@@ -56,8 +56,9 @@ static inline unsigned long __cmpxchg(volatile void * ptr, unsigned long old,
+ 		unsigned long new, int size)
+ {
+ 	switch (size) {
+-	case 4:
+-		return __cmpxchg_u32(ptr, old, new);
++	case 4: return __cmpxchg_u32((int *)ptr, old, new);
++	case 2: return __cmpxchg_u16((u16 *)ptr, old, new);
++	case 1: return __cmpxchg_u8((u8 *)ptr, old, new);
+ 	}
+ 	__cmpxchg_called_with_bad_pointer();
+ 	return old;
+-- 
+2.27.0
 
