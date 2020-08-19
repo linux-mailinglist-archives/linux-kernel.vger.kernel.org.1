@@ -2,157 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF70B24A1DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 16:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3832224A1D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 16:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728477AbgHSOhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 10:37:13 -0400
-Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:54302 "EHLO
-        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727018AbgHSOhD (ORCPT
+        id S1728093AbgHSOgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 10:36:31 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:39635 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727926AbgHSOgb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 10:37:03 -0400
-Received: from pps.filterd (m0150242.ppops.net [127.0.0.1])
-        by mx0a-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07JESxB6012756;
-        Wed, 19 Aug 2020 14:36:59 GMT
-Received: from g9t5008.houston.hpe.com (g9t5008.houston.hpe.com [15.241.48.72])
-        by mx0a-002e3701.pphosted.com with ESMTP id 330m84fgur-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 Aug 2020 14:36:59 +0000
-Received: from stormcage.eag.rdlabs.hpecorp.net (stormcage.eag.rdlabs.hpecorp.net [128.162.236.70])
-        by g9t5008.houston.hpe.com (Postfix) with ESMTP id 5AE934F;
-        Wed, 19 Aug 2020 14:36:58 +0000 (UTC)
-Received: by stormcage.eag.rdlabs.hpecorp.net (Postfix, from userid 201855)
-        id ED1C7200FDA48; Wed, 19 Aug 2020 09:36:57 -0500 (CDT)
-From:   Alex Kluver <alex.kluver@hpe.com>
-To:     linux-edac@vger.kernel.org, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     ardb@kernel.org, mchehab@kernel.org, bp@alien8.de,
-        russ.anderson@hpe.com, dimitri.sivanich@hpe.com,
-        kluveralex@gmail.com, Alex Kluver <alex.kluver@hpe.com>
-Subject: [PATCH v2 2/2] cper,edac,efi: Memory Error Record: bank group/address and chip id
-Date:   Wed, 19 Aug 2020 09:35:44 -0500
-Message-Id: <20200819143544.155096-3-alex.kluver@hpe.com>
-X-Mailer: git-send-email 2.12.3
-In-Reply-To: <20200819143544.155096-1-alex.kluver@hpe.com>
-References: <20200819143544.155096-1-alex.kluver@hpe.com>
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-19_07:2020-08-19,2020-08-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- mlxlogscore=999 spamscore=0 clxscore=1015 suspectscore=0 bulkscore=0
- priorityscore=1501 malwarescore=0 adultscore=0 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008190127
+        Wed, 19 Aug 2020 10:36:31 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-259--oeJpW0MO4CI3-hi_wxXYA-1; Wed, 19 Aug 2020 15:36:26 +0100
+X-MC-Unique: -oeJpW0MO4CI3-hi_wxXYA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 19 Aug 2020 15:36:25 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 19 Aug 2020 15:36:25 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Bernd Petrovitsch' <bernd@petrovitsch.priv.at>,
+        Muni Sekhar <munisekharrms@gmail.com>
+CC:     peter enderborg <peter.enderborg@sony.com>,
+        Greg KH <greg@kroah.com>,
+        kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>
+Subject: RE: Scheduler benchmarks
+Thread-Topic: Scheduler benchmarks
+Thread-Index: AQHWdhhda8YDeK7akUe42i0mpbwe7qk/fn9w
+Date:   Wed, 19 Aug 2020 14:36:25 +0000
+Message-ID: <e8acd1a8444846b196d5fa1fe45806bb@AcuMS.aculab.com>
+References: <CAHhAz+inPwKYx_4qaujQ=bGG9twashiuqLhQQ-+vgHWF7FLhRA@mail.gmail.com>
+ <20200818143633.GA628293@kroah.com>
+ <CAHhAz+hG5kS5rhph4SaSLOEc5PgcSOTPWpiANLNpwotY9Zy6qQ@mail.gmail.com>
+ <20200818171457.GA736234@kroah.com>
+ <CAHhAz+ggd4DPFfWPB+h6Obkjebf5mv5cV6307oKEkEYMhAB3wQ@mail.gmail.com>
+ <20200818173656.GA748290@kroah.com>
+ <CAHhAz+hi9rh5w8hNyas0RkO4WwZXsSNh5g0nS710NSr6-ntioQ@mail.gmail.com>
+ <84362b8b-971f-fb89-115d-41d2457c24fd@sony.com>
+ <CAHhAz+iC_F5w5EoZP8-dBNm+DV0uNMva6Mr2uBdmZtejL1OH-w@mail.gmail.com>
+ <4a20a4bb-0bc7-edb1-bd27-217d8dafe87c@petrovitsch.priv.at>
+In-Reply-To: <4a20a4bb-0bc7-edb1-bd27-217d8dafe87c@petrovitsch.priv.at>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0.001
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Updates to the UEFI 2.8 Memory Error Record allow splitting the bank field
-into bank address and bank group, and using the last 3 bits of the extended
-field as a chip identifier.
-
-When needed, print correct version of bank field, bank group, and chip
-identification
-
-Based on UEFI 2.8 Table 299. Memory Error Record
-
-Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
-Reviewed-by: Kyle Meyer <kyle.meyer@hpe.com>
-Reviewed-by: Russ Anderson <russ.anderson@hpe.com>
-Signed-off-by: Alex Kluver <alex.kluver@hpe.com>
----
-
-v1 -> v2:
-   * Add static inline cper_get_mem_extension() to make it
-    more readable, as suggested by Borislav Petkov.
-
-   * Add second patch for bank field, bank group, and chip id.
-
----
- drivers/edac/ghes_edac.c    | 9 +++++++++
- drivers/firmware/efi/cper.c | 9 +++++++++
- include/linux/cper.h        | 8 ++++++++
- 3 files changed, 26 insertions(+)
-
-diff --git a/drivers/edac/ghes_edac.c b/drivers/edac/ghes_edac.c
-index 98fcdaf72a09..31eb72b67265 100644
---- a/drivers/edac/ghes_edac.c
-+++ b/drivers/edac/ghes_edac.c
-@@ -337,6 +337,12 @@ void ghes_edac_report_mem_error(int sev, struct cper_sec_mem_err *mem_err)
- 		p += sprintf(p, "rank:%d ", mem_err->rank);
- 	if (mem_err->validation_bits & CPER_MEM_VALID_BANK)
- 		p += sprintf(p, "bank:%d ", mem_err->bank);
-+	if (mem_err->validation_bits & CPER_MEM_VALID_BANK_GROUP)
-+		p += sprintf(p, "bank_group:%d ",
-+			     mem_err->bank >> CPER_MEM_BANK_GROUP_SHIFT);
-+	if (mem_err->validation_bits & CPER_MEM_VALID_BANK_ADDRESS)
-+		p += sprintf(p, "bank_address:%d ",
-+			     mem_err->bank & CPER_MEM_BANK_ADDRESS_MASK);
- 	if (mem_err->validation_bits & (CPER_MEM_VALID_ROW | CPER_MEM_VALID_ROW_EXT)) {
- 		u32 row = mem_err->row;
- 
-@@ -362,6 +368,9 @@ void ghes_edac_report_mem_error(int sev, struct cper_sec_mem_err *mem_err)
- 		if (index >= 0)
- 			e->top_layer = index;
- 	}
-+	if (mem_err->validation_bits & CPER_MEM_VALID_CHIP_ID)
-+		p += sprintf(p, "chipID: %d ",
-+			     mem_err->extended >> CPER_MEM_CHIP_ID_SHIFT);
- 	if (p > e->location)
- 		*(p - 1) = '\0';
- 
-diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
-index a60acd17bcaa..e15d484b6a5a 100644
---- a/drivers/firmware/efi/cper.c
-+++ b/drivers/firmware/efi/cper.c
-@@ -232,6 +232,12 @@ static int cper_mem_err_location(struct cper_mem_err_compact *mem, char *msg)
- 		n += scnprintf(msg + n, len - n, "rank: %d ", mem->rank);
- 	if (mem->validation_bits & CPER_MEM_VALID_BANK)
- 		n += scnprintf(msg + n, len - n, "bank: %d ", mem->bank);
-+	if (mem->validation_bits & CPER_MEM_VALID_BANK_GROUP)
-+		n += scnprintf(msg + n, len - n, "bank_group: %d ",
-+			       mem->bank >> CPER_MEM_BANK_GROUP_SHIFT);
-+	if (mem->validation_bits & CPER_MEM_VALID_BANK_ADDRESS)
-+		n += scnprintf(msg + n, len - n, "bank_address: %d ",
-+			       mem->bank & CPER_MEM_BANK_ADDRESS_MASK);
- 	if (mem->validation_bits & CPER_MEM_VALID_DEVICE)
- 		n += scnprintf(msg + n, len - n, "device: %d ", mem->device);
- 	if (mem->validation_bits & (CPER_MEM_VALID_ROW | CPER_MEM_VALID_ROW_EXT)) {
-@@ -254,6 +260,9 @@ static int cper_mem_err_location(struct cper_mem_err_compact *mem, char *msg)
- 	if (mem->validation_bits & CPER_MEM_VALID_TARGET_ID)
- 		scnprintf(msg + n, len - n, "target_id: 0x%016llx ",
- 			  mem->target_id);
-+	if (mem->validation_bits & CPER_MEM_VALID_CHIP_ID)
-+		scnprintf(msg + n, len - n, "chip_id: %d ",
-+			  mem->extended >> CPER_MEM_CHIP_ID_SHIFT);
- 
- 	msg[n] = '\0';
- 	return n;
-diff --git a/include/linux/cper.h b/include/linux/cper.h
-index bd2d8a77a784..6a511a1078ca 100644
---- a/include/linux/cper.h
-+++ b/include/linux/cper.h
-@@ -231,10 +231,18 @@ enum {
- #define CPER_MEM_VALID_CARD_HANDLE		0x10000
- #define CPER_MEM_VALID_MODULE_HANDLE		0x20000
- #define CPER_MEM_VALID_ROW_EXT			0x40000
-+#define CPER_MEM_VALID_BANK_GROUP		0x80000
-+#define CPER_MEM_VALID_BANK_ADDRESS		0x100000
-+#define CPER_MEM_VALID_CHIP_ID			0x200000
- 
- #define CPER_MEM_EXT_ROW_MASK			0x3
- #define CPER_MEM_EXT_ROW_SHIFT			16
- 
-+#define CPER_MEM_BANK_ADDRESS_MASK		0xff
-+#define CPER_MEM_BANK_GROUP_SHIFT		8
-+
-+#define CPER_MEM_CHIP_ID_SHIFT			5
-+
- #define CPER_PCIE_VALID_PORT_TYPE		0x0001
- #define CPER_PCIE_VALID_VERSION			0x0002
- #define CPER_PCIE_VALID_COMMAND_STATUS		0x0004
--- 
-2.26.2
+RnJvbTogQmVybmQgUGV0cm92aXRzY2gNCj4gU2VudDogMTkgQXVndXN0IDIwMjAgMTE6MjINCj4g
+DQo+IE9uIDE5LzA4LzIwMjAgMTA6MTYsIE11bmkgU2VraGFyIHdyb3RlOg0KPiA+IE9uIFR1ZSwg
+QXVnIDE4LCAyMDIwIGF0IDExOjQ1IFBNIHBldGVyIGVuZGVyYm9yZw0KPiA+IDxwZXRlci5lbmRl
+cmJvcmdAc29ueS5jb20+IHdyb3RlOg0KPiBbLi4uXQ0KPiA+PiBPbiB0aGUgNC40IGtlcm5lbCB5
+b3UgZG9udCBoYXZlDQo+ID4+DQo+ID4+ICtDT05GSUdfUkVUUE9MSU5FPXkNCj4gPj4gK0NPTkZJ
+R19JTlRFTF9SRFQ9eQ0KPiA+IFRoYW5rcyEgVGhhdCBpcyBoZWxwZnVsLiBZZXMsIEkgc2VlIDQu
+NCBrZXJuZWwgZG9uJ3QgaGF2ZSB0aGUgYWJvdmUNCj4gPiB0d28gY29uZmlnIG9wdGlvbnMuDQo+
+ID4gV2hhdCBhbmFseXNpcyBjYW4gYmUgZG9uZSB0byBuYXJyb3cgZG93biB0aGUgcm9vdCBjYXVz
+ZT8NCj4gPiBBbnkgZXhhbXBsZSBvZiByZWZlcmVuY2UgY291bGQgYmUgaGVscGZ1bCB0byB1bmRl
+cnN0YW5kLg0KPiANCj4gSSBoYXZlbid0IGNoZWNrZWQgdGhlIGRhdGUgb2YgdGhlIG9sZGVyIGtl
+cm5lbCBidXQgU3BlY3RyZSsNCj4gTWVsdGRvd24gbWl0aWdhdGlvbiBjb3N0cyBhIGxvdCAoMjAl
+LTMwJSBzcGVlZCBJSVJDLCBvdXQNCj4gb2YgdGhlIHRvcCBvZiBteSBoZWFkKS4NCg0KSXQgZGVw
+ZW5kcyBncmVhdGx5IG9uIHRoZSBiZW5jaG1hcmsuDQoNClBhZ2UgdGFibGUgc2VwYXJhdGlvbiBo
+YXMgYSBtYXNzaXZlIGVmZmVjdCBvbiBhbnl0aGluZyB0aGF0DQpkb2VzIGEgbG90IG9mIHNob3J0
+IHN5c3RlbSBjYWxscy4NClRoZXJlIG1heSBiZSBzb21lIG1pdGlnYXRpb24gaW4gdmVyeSByZWNl
+bnQgaGFyZHdhcmUuDQpBbmQgSSBjYW4ndCByZW1lbWJlciBpZiBpdCBnZXRzIGRpc2FibGVkIGZv
+ciAncm9vdCcgcHJvY2Vzc2VzDQood2hpY2ggY2FuIHJlYWQga2VybmVsIG1lbW9yeSBhbnl3YXkp
+Lg0KDQpJdCBpcyBkZWZpbml0ZWx5IHdvcnRoIGJ1aWxkaW5nIGEga2VybmVsIHdpdGggdGhlIG1p
+dGlnYXRpb25zDQpkaXNhYmxlZCAgLSBpZiBvbmx5IHRvIGNoZWNrIHRoYXQgdGhleSBhcmUgcmVz
+cG9uc2libGUuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJy
+YW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lz
+dHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
