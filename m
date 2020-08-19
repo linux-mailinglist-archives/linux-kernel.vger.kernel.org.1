@@ -2,130 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04941249A0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 12:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 752C9249A31
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 12:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727079AbgHSKQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 06:16:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726702AbgHSKQU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 06:16:20 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DDBDC061757;
-        Wed, 19 Aug 2020 03:16:20 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id f26so24733178ljc.8;
-        Wed, 19 Aug 2020 03:16:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=PmuNCA8C1J0O1Ha2312XfEb0igOWHqaUnPbG9bzLCNc=;
-        b=oT2sQNKHBwoqtocu5xss6pTe050xjKx7Xm6n8w1yeKBnDOZCKLy+jdONHu71a00DG4
-         NseI1U26kkBM6w4vofkOT1JKfYrhdieK9LoNp0+ceTS2+Fdx3mQUQXhxJ0Og2twf7poc
-         CBuDPmt2eQH38F0STOKfnsmXXamHU3tnxKRWNlse/6a9856MYEPo3Gnh0n77ILDxBML7
-         9gSPiyo4qSeUXfZ7jhZjJv/IjjON9M3vsBK1y5k2ICpYiSTpclDUMacCXnOily5TELuM
-         JDNchGPNrWUzPnfDbDKyi1TMZ9DGapn8gfavtBXg4RN6yAUXUIvUUcb1PlFCPZbHUxgu
-         oyQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PmuNCA8C1J0O1Ha2312XfEb0igOWHqaUnPbG9bzLCNc=;
-        b=Tks7G4B7PAsQcUOxvNZoHeFLOxocwCe6c4EQVnflNV5Q8VH4r9NnJ/6NfC8QGNTpEx
-         ptAzj1wzc72xJPt8ey//I5qU4LaR1glFOafBWrNnd454ExhOjF/cFLCfsyyVE8IZVh10
-         OK9EPSTxv0KmInTC/85SkNlYSm2Dqh61fwIubtxbwRZ8cYxLzMZr2bhTvo9RRIs7IT3t
-         4JRnbMv/FzL8jMNeLCEZloCRoTis6hgvlUJjHae0F12m/1BHL2pNRrqzwMakOf/N/6X2
-         8DcuGSBM4M3aIzxGEQ+wFyoDP5K2ZZnwdXpLjpPqXQ4bQyP3GB1u5ndUhitLpT5vgVlR
-         Z5BA==
-X-Gm-Message-State: AOAM530CVFScWv1/zRheoN6mrSXvRJCMSjlKdznkZRpQ81VMFxDG0Jea
-        eS7ljhrVqnSbk3ilsi8oGRyvZamNEy4qz0DHJQzQFuKBq0w=
-X-Google-Smtp-Source: ABdhPJymMkRsWLyrLUupkQlTO2L8iBAdAJQrdzlms9YSPIf/rtNURQO06yV37hNiopDdSxXVpDyuCOYzl1oLMJaUfDY=
-X-Received: by 2002:a2e:3817:: with SMTP id f23mr10937015lja.118.1597832178487;
- Wed, 19 Aug 2020 03:16:18 -0700 (PDT)
+        id S1727870AbgHSKWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 06:22:55 -0400
+Received: from mail.v3.sk ([167.172.186.51]:51946 "EHLO shell.v3.sk"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727837AbgHSKWw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 06:22:52 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zimbra.v3.sk (Postfix) with ESMTP id 38CDEDFA71;
+        Wed, 19 Aug 2020 10:21:56 +0000 (UTC)
+Received: from shell.v3.sk ([127.0.0.1])
+        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Y4GaEW2HgNJu; Wed, 19 Aug 2020 10:21:55 +0000 (UTC)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zimbra.v3.sk (Postfix) with ESMTP id 8F65DDFA44;
+        Wed, 19 Aug 2020 10:21:55 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at zimbra.v3.sk
+Received: from shell.v3.sk ([127.0.0.1])
+        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id ouZI2QwSDmE8; Wed, 19 Aug 2020 10:21:55 +0000 (UTC)
+Received: from localhost (unknown [109.183.109.54])
+        by zimbra.v3.sk (Postfix) with ESMTPSA id 2E486DEE69;
+        Wed, 19 Aug 2020 10:21:55 +0000 (UTC)
+From:   Lubomir Rintel <lkundrak@v3.sk>
+To:     Andrzej Hajda <a.hajda@samsung.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: 
+Date:   Wed, 19 Aug 2020 12:22:44 +0200
+Message-Id: <20200819102246.634039-1-lkundrak@v3.sk>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <[PATCH v4 0/2] drm/bridge: hx8837: add a Himax HX8837 display controller driver>
+References: <[PATCH v4 0/2] drm/bridge: hx8837: add a Himax HX8837 display controller driver>
 MIME-Version: 1.0
-References: <CAHhAz+inPwKYx_4qaujQ=bGG9twashiuqLhQQ-+vgHWF7FLhRA@mail.gmail.com>
- <20200818143633.GA628293@kroah.com> <CAHhAz+hG5kS5rhph4SaSLOEc5PgcSOTPWpiANLNpwotY9Zy6qQ@mail.gmail.com>
- <20200818171457.GA736234@kroah.com> <CAHhAz+ggd4DPFfWPB+h6Obkjebf5mv5cV6307oKEkEYMhAB3wQ@mail.gmail.com>
- <20200818173656.GA748290@kroah.com> <CAHhAz+hi9rh5w8hNyas0RkO4WwZXsSNh5g0nS710NSr6-ntioQ@mail.gmail.com>
- <84362b8b-971f-fb89-115d-41d2457c24fd@sony.com>
-In-Reply-To: <84362b8b-971f-fb89-115d-41d2457c24fd@sony.com>
-From:   Muni Sekhar <munisekharrms@gmail.com>
-Date:   Wed, 19 Aug 2020 15:46:06 +0530
-Message-ID: <CAHhAz+iC_F5w5EoZP8-dBNm+DV0uNMva6Mr2uBdmZtejL1OH-w@mail.gmail.com>
-Subject: Re: Scheduler benchmarks
-To:     peter enderborg <peter.enderborg@sony.com>
-Cc:     Greg KH <greg@kroah.com>,
-        kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 11:45 PM peter enderborg
-<peter.enderborg@sony.com> wrote:
->
-> On 8/18/20 7:53 PM, Muni Sekhar wrote:
-> > On Tue, Aug 18, 2020 at 11:06 PM Greg KH <greg@kroah.com> wrote:
-> >> On Tue, Aug 18, 2020 at 11:01:35PM +0530, Muni Sekhar wrote:
-> >>> On Tue, Aug 18, 2020 at 10:44 PM Greg KH <greg@kroah.com> wrote:
-> >>>> On Tue, Aug 18, 2020 at 10:24:13PM +0530, Muni Sekhar wrote:
-> >>>>> On Tue, Aug 18, 2020 at 8:06 PM Greg KH <greg@kroah.com> wrote:
-> >>>>>> On Tue, Aug 18, 2020 at 08:00:11PM +0530, Muni Sekhar wrote:
-> >>>>>>> Hi all,
-> >>>>>>>
-> >>>>>>> I=E2=80=99ve two identical Linux systems with only kernel differe=
-nces.
-> >>>>>> What are the differences in the kernels?
-> >>>> You didn't answer this question, is this the same kernel source bein=
-g
-> >>>> compared here?  Same version?  Same compiler?  Everything identical?
-> >>> Both systems are having exactly the same hardware configuration.
-> >>> Compiler and kernel versions are different. One system has Ubuntu
-> >>> 16.04.4 LTS(4.4.0-66-generic kernel with gcc version 5.4.0) kernel an=
-d
-> >>> the other one has Ubuntu 18.04.4 LTS(4.15.0-91-generic kernel with gc=
-c
-> >>> version 7.5.0).
-> >> Those are _very_ different kernel versions, with many years and tens o=
-f
-> >> thousands of different changes between them.
-> >>
-> >> Hopefully the newer kernel is faster, so just stick with that :)
-> > But unfortunately the newer kernel is very slow, that is the reason
-> > for starting this investigation :)
-> > Any type of help,  and guidelines to dive deeper will be highly appreci=
-ated.
->
-> On the 4.4 kernel you dont have
->
-> +CONFIG_RETPOLINE=3Dy
-> +CONFIG_INTEL_RDT=3Dy
-Thanks! That is helpful. Yes, I see 4.4 kernel don't have the above
-two config options.
-What analysis can be done to narrow down the root cause?
-Any example of reference could be helpful to understand.
+Hi,
 
->
-> And your base is very different two.
->
-> Try to use mainline on both system and see.
->
-> You can also use the same base kernel version from ubuntu and
->
-> run your test.
->
->
-> >> greg k-h
-> >
-> >
->
+please take a look at the patches chained to this messages and consider
+applying them. They add support for the controller that drives the panel
+on the OLPC XO laptops.
+
+Compared to the previous version the bindings have been converted to
+YAML and the driver itself has been rewritten without any fancy features
+such as the self-refresh so that the bare minimum works before the rest
+can be figured out. Detailed change logs are in individual patches.
+
+Tested on an OLPC XO-1.75 laptop.
+
+Thank you
+Lubo
 
 
---=20
-Thanks,
-Sekhar
