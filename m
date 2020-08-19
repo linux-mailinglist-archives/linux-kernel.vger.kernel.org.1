@@ -2,69 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 606C5249674
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 865802496BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:11:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728000AbgHSHGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 03:06:19 -0400
-Received: from sonic315-15.consmr.mail.bf2.yahoo.com ([74.6.134.125]:40935
-        "EHLO sonic315-15.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727034AbgHSHGN (ORCPT
+        id S1727943AbgHSHK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 03:10:59 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:35664 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727005AbgHSHJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 03:06:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1597820771; bh=OCp2NQ1DG8WDrE2HT9ykXjnTFISlxhUILAf78oJl1As=; h=Date:From:Reply-To:Subject:References:From:Subject; b=rXknsM00B0dTfAOvyBr+BDyCypIZ8ZvsCi01OY7qpczxa/0VsdhSkSsK+DmUl7jkMWDSrqNhHHnKqcrMwsqqcJI3nSElMtOVP1XYJOsOdaVbdwMKcIhcZYzwZSXNUZbFo2c+ARc8vIU1xpqYssaF9gVvr1swR6E7icbUUnre4wxw0SRoRx2DMOmn1Cs2MkI2jqoCeYbsbFR5VpsqwREYKzHs29Es9yWtbnfZHzVOu+SxEw7lTgAj3mGi7NomDD/p/BODVT+rhkfz8/hVfoUQM1f4I1miTwf9RSeCu4ZsDPqgYDoqwqoqzFeQEL/1qIyfQ/6Hh/QV5aWpAFZ5CItc5w==
-X-YMail-OSG: pi7zDmsVM1koEl39ekL3ahKNidG1Dm0OI37hybm1hTapsKZuGDCpZh_zV58gnY6
- lZqnOMpuq2zX3xXd42hOoqhUy0hPbjL0RtXYrYxFlavGHkVEq8hsFGdDcVRH3j2gmh6sxRBlwEjd
- af8CZP0G8flyfRewhUKauO9BImbCRG3ZOz9NFgrQVXZf4K3IKhpeki5LnrQxzDQA8YPRitEO9KNU
- 38BhZ3BZutj8EzqlWPrIcTf5lXCGVpvG6Qb5x2cs7r7aAUbZ8Sohkmsu7SmGpUU_b8c6BVCHv09A
- 94bbcX3_XlROkIKxl.lhUrUAhqSSwPxuccSB6Dy7VK.c2WU7Hb_uuwAANSLhS2swX7ECkTK41Uhv
- nATk611ROZ5yFiV5v3FNIzEHu7lqqGxUs3WQ1GBzAr4jshJlGAD5c0WMzFLEtIDRaz8zMp8aL9OV
- 1BtgZ.0tQTkpdBwrl_yBv1mSVZhvre1PqeD_IZcDpIx7rUPd5fUORHnuQMC.ozri7XuLFh5qUmbK
- SuVrY5hfSCLDh.fvV58biIzdMqLEkOH83LmIoV9QFUqVHMZiDdCzMhzsZR4Q_UqdULO_XfG_Hrr4
- ijzDITmCWE3bKd2xULFaLlwOnCF5Q1Qa488FbL.Grqtl42MADfKHbqWzTR0fwfC64.BJR6av1aUX
- gZd19DYfM9NPGxFclFLI5toH.WtIBqL.nWhevwZIZf6PEUxngXJ5JuQbldqLZ0tWkTeqhA7HAAJv
- TR9WNowqfkVmxYmtXaPJXZBNkKNeEr3A0TdGs2zhyk7TtB0i76bT6GprOuIxaX6Rm3rczIBrhZ1F
- vgCsxBNhq1pHVsknxNTyl34WOzLOK1qJ1njFh6CdU29fZxRUNTcNMsu_aTHZhxPyW0OQCz0r9JeN
- kCadr0LqgkbarXNGlNokOrB1ghBW9ggNB7.I7q4zlIjFz7Lw9gpvsR5W6rGdylX_MkhEjAuMDBAr
- rBcP5TY7a8Cg1afBeVJowdQ_v.YZ3tRoEFs3toqi9hXYK21dDLBKjiQv6yKpZTXlKW9EWI1B7Lwv
- UV9tPYOMmJ.v83iuAbj_BjiazcqmamP6JOz_6qkfmG8fcZ80CtBdlBqKAs0K_X225914zRzan2Fx
- 5XjfMVBsWMELCxpmlPbBmpWlnmj6e_CY4XczZS.4VqT7XJmqsfJ3eeip8F_MdpLYqTQz1jjCEhXn
- 9XOKNM4wZDMl..s9vYWRV8NdhCH.9wbpDOkE6Vwu8dXsJnbmbiSvcBcpyU1algyqj9ZPHnt2fA7J
- QZ6GIblWemuPuPonx1000_zTGOEiyBze0dciYn1XFw1mnOJUeerZuHJ83LUqI4ytwoR_VDmvdN7G
- uIh1X3aD4cJz6SCDYx_2MkYWorybmdg8Mlrt_sA.jJ9M-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.bf2.yahoo.com with HTTP; Wed, 19 Aug 2020 07:06:11 +0000
-Date:   Wed, 19 Aug 2020 07:06:10 +0000 (UTC)
-From:   Mrs Elodie Antoine <eodieantoine@gmail.com>
-Reply-To: elodieantoin678@yahoo.com
-Message-ID: <245912323.3151799.1597820770983@mail.yahoo.com>
-Subject: Greetings from Mrs Elodie Antoine,
+        Wed, 19 Aug 2020 03:09:07 -0400
+Received: by mail-ed1-f68.google.com with SMTP id m20so17238994eds.2;
+        Wed, 19 Aug 2020 00:09:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=fEkH4ZxpxTY42f36NAcppi2kiNk4M3AwqeTbG0SRAps=;
+        b=XMNlfuMgTF6xKPHeD7ii2g8uJGlt3u0JfKNKWQ9ZPkL9taZouE2W9RhhuFCqAPHdHr
+         dGospbZKYb0yYd8LeJqqKnWsbDeyp0hjDkGLcByuIU99Tz2ylDhv/cIBtfLMpMk+oaWl
+         sj5OllHnOq8+6G/hGbus3OvuzSLIogvpo5EACMT8sKpfoELXLLJ/vSisMklCNQI5ldy8
+         SLXfrAc0Uo6C0bKfN0Y6vJyxdS7yXzN970qkRW2Uhz8zCZQAyWNiSdnfUf5rhDGPFbl0
+         TcHPTodnFkSAauwilRpFlZ8RU1HdRcrwu+203l9v8fvBmC71gJtgEGTsrNYHIsymoPKU
+         cQgw==
+X-Gm-Message-State: AOAM531K4tTU6wxbZNkOUynE3jkR5Qr7tcRPh/fOVVn8jfWPwRSww5K5
+        gGNiPhRizyTpeNEhVuc2YxB9Fw/6iV4=
+X-Google-Smtp-Source: ABdhPJzZjN7yLJ+YMGWbIoHiOG2baBTgjcXtigIJw11DlVTj77AU08DC1d25Da8nBcT/V81rq9KKcg==
+X-Received: by 2002:a50:fd83:: with SMTP id o3mr22404496edt.170.1597820942993;
+        Wed, 19 Aug 2020 00:09:02 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
+        by smtp.gmail.com with ESMTPSA id t19sm17329336edw.63.2020.08.19.00.09.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Aug 2020 00:09:02 -0700 (PDT)
+Subject: Re: [PATCH 02/16] vt: declare xy for get/putconsxy properly
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200818085706.12163-1-jslaby@suse.cz>
+ <20200818085706.12163-2-jslaby@suse.cz> <20200818114341.GA343779@kroah.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jslaby@suse.cz; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <791f5ae5-134e-794d-903e-a39d5f6ac3e2@kernel.org>
+Date:   Wed, 19 Aug 2020 09:09:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20200818114341.GA343779@kroah.com>
+Content-Type: text/plain; charset=iso-8859-2
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-References: <245912323.3151799.1597820770983.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16455 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:79.0) Gecko/20100101 Firefox/79.0
-To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 18. 08. 20, 13:43, Greg KH wrote:
+> On Tue, Aug 18, 2020 at 10:56:52AM +0200, Jiri Slaby wrote:
+>> That is:
+>> 1) call the parameter 'xy' to denote what it really is, not generic 'p'
+>> 2) tell the compiler and users that we expect an array:
+>>    * with at least 2 chars (static 2)
+>>    * which we don't modify in putconsxy (const)
+>>
+>> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+>> ---
+>>  drivers/tty/vt/vt.c       | 10 +++++-----
+>>  include/linux/selection.h |  4 ++--
+>>  2 files changed, 7 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+>> index 8f283221330e..a0da7771c327 100644
+>> --- a/drivers/tty/vt/vt.c
+>> +++ b/drivers/tty/vt/vt.c
+>> @@ -4769,17 +4769,17 @@ unsigned short *screen_pos(const struct vc_data *vc, int w_offset, int viewed)
+>>  }
+>>  EXPORT_SYMBOL_GPL(screen_pos);
+>>  
+>> -void getconsxy(const struct vc_data *vc, unsigned char *p)
+>> +void getconsxy(const struct vc_data *vc, unsigned char xy[static 2])
+> 
+> I didn't realize we could do "[static 2]" in the kernel now, is that
+> thanks to the bump of the minimum gcc version?  If so, nice!
 
+gcc supports it since some time around 3.x (these kinds of declaration
+are defined in c99). So hopefully nothing breaks.
 
-Greetings from Mrs Elodie Antoine,
-
-Calvary Greetings in the name of the LORD Almighty and Our LORD JESUS CHRIST the giver of every good thing. Good day,i know this letter will definitely come to you as a huge surprise, but I implore you to take the time to go through it carefully as the decision you make will go off a long way to determine my future and continued existence. I am Mrs Elodie Antoine
-aging widow of 59 years old suffering from long time illness. I have some funds I inherited from my late husband,
-
-The sum of (US$4.5 Million Dollars) and I needed a very honest and God fearing who can withdraw this money then use the funds for Charity works. I WISH TO GIVE THIS FUNDS TO YOU FOR CHARITY WORKS. I found your email address from the internet after honest prayers to the LORD to bring me a helper and i decided to contact you if you may be willing and interested to handle these trust funds in good faith before anything happens to me.
-I accept this decision because I do not have any child who will inherit this money after I die. I want your urgent reply to me so that I will give you the deposit receipt which the COMPANY issued to me as next of kin for immediate transfer of the money to your account in your country, to start the good work of God, I want you to use the 15/percent of the total amount to help yourself in doing the project.
-
-
-I am desperately in keen need of assistance and I have summoned up courage to contact you for this task, you must not fail me and the millions of the poor people in our todays WORLD. This is no stolen money and there are no dangers involved,100% RISK FREE with full legal proof. Please if you would be able to use the funds for the Charity works kindly let me know immediately.I will appreciate your utmost confidentiality and trust in this matter to accomplish my heart desire, as I don't want anything that will jeopardize my last wish. I want you to take 15 percent of the total money for your personal use while 85% of the money will go to charity.I will appreciate your utmost confidentiality and trust in this matter to accomplish my heart desire, as I don't want anything that will jeopardize my last wish.
-
-
-kindly respond for further details.
-
-Thanks and God bless you,
-
-Mrs Elodie Antoine
+thanks,
+-- 
+js
+suse labs
