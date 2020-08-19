@@ -2,94 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6125624979F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 649372497AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726853AbgHSHoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 03:44:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726187AbgHSHoU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 03:44:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97393C061389;
-        Wed, 19 Aug 2020 00:44:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=J4VLIDE+jMck3vXa9rHkkbq93VX4dA7h042aAl3zgek=; b=GSbjxZPVDWY9S2GcrIk8B4gIZK
-        j92/xIYVxtuoQcdVQihAza5CL3O+d/4dVnYCOtqcw95X6MI1MCZZSH6hwnnNv59Rv6M/0DxxfI85Z
-        UetDLZWdWsUi0gxQgyvX8fGCj5GmxgkNMNSwgrePOzzo081IyNCOy8gMqm/f6tWnpCOgk7R6crldh
-        OlQrG9icVQmb7q55F07IEfNtZO5gIevhdDF5gCkOdzt7019673F7x8Bn8IOD8fbZrRBUSRYhjoZpr
-        mvZYw/yBuHHrZ3B/X+3SaSMawrw2fW9khhY7o7saT7DmXZNOoFnK3Bqb3KZy6UsHyVp/CwyDsiZsC
-        KS6aDo8Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k8Il4-0004Sk-Ty; Wed, 19 Aug 2020 07:43:44 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 033743003E1;
-        Wed, 19 Aug 2020 09:43:40 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D771C21A87267; Wed, 19 Aug 2020 09:43:40 +0200 (CEST)
-Date:   Wed, 19 Aug 2020 09:43:40 +0200
-From:   peterz@infradead.org
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Christoph Hewllig <hch@infradead.org>,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Kars de Jong <jongk@linux-m68k.org>,
-        Kees Cook <keescook@chromium.org>,
-        Greentime Hu <green.hu@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Xiao Yang <yangx.jy@cn.fujitsu.com>, linux-doc@vger.kernel.org,
-        uclinux-h8-devel@lists.sourceforge.jp, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, sparclinux@vger.kernel.org,
-        kgdb-bugreport@lists.sourceforge.net,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 00/11] Introduce kernel_clone(), kill _do_fork()
-Message-ID: <20200819074340.GW2674@hirez.programming.kicks-ass.net>
-References: <20200818173411.404104-1-christian.brauner@ubuntu.com>
- <20200818174447.GV17456@casper.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200818174447.GV17456@casper.infradead.org>
+        id S1726752AbgHSHtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 03:49:42 -0400
+Received: from mga14.intel.com ([192.55.52.115]:9374 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726685AbgHSHtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 03:49:41 -0400
+IronPort-SDR: P5Lp1VLoak9Za/YtpW2ji9L9zcyy5U7SWWYGuQpBdtuYNa3u4iMSHKirBzOEGc36zx69WrWVTk
+ oBT7jbIZrggw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="154329786"
+X-IronPort-AV: E=Sophos;i="5.76,330,1592895600"; 
+   d="scan'208";a="154329786"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2020 00:49:26 -0700
+IronPort-SDR: enJ5gyCCC4diey625K/oEuLFBc3ghTYUJsHBEqQqNZOpkRz5WQ5A3Ob0uxgdpJ4eOHNQpjr1Z/
+ EIK9fQPgs21w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,330,1592895600"; 
+   d="scan'208";a="334607666"
+Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
+  by FMSMGA003.fm.intel.com with ESMTP; 19 Aug 2020 00:49:24 -0700
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, Xu Yilun <yilun.xu@intel.com>
+Subject: [PATCH v7 0/3] Modularization of DFL private feature drivers
+Date:   Wed, 19 Aug 2020 15:45:18 +0800
+Message-Id: <1597823121-26424-1-git-send-email-yilun.xu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 06:44:47PM +0100, Matthew Wilcox wrote:
-> On Tue, Aug 18, 2020 at 07:34:00PM +0200, Christian Brauner wrote:
-> > The only remaining function callable outside of kernel/fork.c is
-> > _do_fork(). It doesn't really follow the naming of kernel-internal
-> > syscall helpers as Christoph righly pointed out. Switch all callers and
-> > references to kernel_clone() and remove _do_fork() once and for all.
-> 
-> My only concern is around return type.  long, int, pid_t ... can we
-> choose one and stick to it?  pid_t is probably the right return type
-> within the kernel, despite the return type of clone3().  It'll save us
-> some work if we ever go through the hassle of growing pid_t beyond 31-bit.
+This patchset makes it possible to develop independent driver modules
+for DFL private features. It also helps to leverage existing kernel
+drivers to enable some IP blocks in DFL.
 
-We have at least the futex ABI restricting PID space to 30 bits.
+Patch #1: Release the dfl mmio regions after enumeration, so that private
+          feature drivers could request mmio region in their own drivers.
+Patch #2: Introduce the dfl bus, then dfl devices could be supported by
+          independent dfl drivers.
+Patch #3: An example of the dfl driver for N3000 nios private feature.
+
+
+Main changes from v1:
+- Add the new Patch #1, to improve the feature id definition.
+- Change the dfl bus uevent format.
+- Change the dfl device's sysfs name format.
+- refactor dfl_dev_add()
+- Add the Patch #4 as an example of the dfl driver.
+- A lot of minor fixes for comments from Hao and Tom.
+
+Main changes from v2:
+- Add the doc for dfl-n3000-nios driver.
+- Minor fixes for comments from Tom.
+
+Main changes from v3:
+- improve the dfl devices' uevent format, 4 bits for type & 12 bits for id
+- change dfl_device->type to u8
+- A dedicate field in struct dfl_feature for dfl device instance.
+- error out if dfl_device already exist on dfl_devs_init().
+- Move the err log in regmap implementation, and delete
+   n3000_nios_writel/readl(), they have nothing to wrapper now.
+- Minor fixes and comments improvement.
+
+Main changes from v4:
+- The patch "fpga: dfl: change data type of feature id to u16" is already
+   applied to for-next
+- Unify the naming of some functions in dfl.c
+- Fix the output of fec_mode sysfs inf to "no" on 10G configuration, cause
+   no FEC mode could be configured for 10G.
+- Change the N3000 Nios driver name from "dfl-n3000-nios" to "n3000-nios",
+   and also rename some structures and functions from dfl_n3000_nios_* to
+   n3000_nios_*
+- Minor fixes and comments improvement.
+
+Main changes from v5:
+- Fix the output of fec_mode sysfs inf to "not supported" if in 10G,
+   or the firmware version major < 3.
+- The input param of dfl_devs_add() changes to
+   struct dfl_feature_platform_data.
+- Minor fixes and improves comments.
+
+Main changes from v6:
+- Rebased to 5.9-rc1.
+- Improves comments.
+
+Xu Yilun (3):
+  fpga: dfl: map feature mmio resources in their own feature drivers
+  fpga: dfl: create a dfl bus type to support DFL devices
+  fpga: dfl: add support for N3000 Nios private feature
+
+ Documentation/ABI/testing/sysfs-bus-dfl            |  15 +
+ .../ABI/testing/sysfs-bus-dfl-devices-n3000-nios   |  21 +
+ Documentation/fpga/dfl-n3000-nios.rst              |  80 +++
+ Documentation/fpga/index.rst                       |   1 +
+ drivers/fpga/Kconfig                               |  11 +
+ drivers/fpga/Makefile                              |   2 +
+ drivers/fpga/dfl-n3000-nios.c                      | 542 +++++++++++++++++++++
+ drivers/fpga/dfl-pci.c                             |  24 +-
+ drivers/fpga/dfl.c                                 | 449 ++++++++++++++---
+ drivers/fpga/dfl.h                                 |  93 +++-
+ 10 files changed, 1153 insertions(+), 85 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-n3000-nios
+ create mode 100644 Documentation/fpga/dfl-n3000-nios.rst
+ create mode 100644 drivers/fpga/dfl-n3000-nios.c
+
+-- 
+2.7.4
+
