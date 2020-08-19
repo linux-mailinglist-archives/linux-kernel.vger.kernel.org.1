@@ -2,114 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2CC249FC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131BF249FE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728312AbgHSN0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 09:26:39 -0400
-Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:58707 "EHLO
-        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727996AbgHSN0W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 09:26:22 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id 8O6dkcvKSuuXO8O6ekhGDC; Wed, 19 Aug 2020 15:26:20 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1597843580; bh=k4CyG5Qq54vxXk/1xGJbjzzlnEo+v6cUalGVdZ9UNHI=;
-        h=Subject:From:To:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=Oh6qt6EDQ/N1K0Nf0Lvo6MlJRK64on3esya29Q4qiPt8H+JwY7+T/gyqTquq1Lzf6
-         xsTVu8s5zg3BM7PonezxwJjkwji2siPgUgl0cqroCCwrXs9JLxBARiAIsyKXEb0HJs
-         KRrN7O5ThVEuiEAhyMlpPsYiyXcgLaLm0mW0R4AVsNNmF2ilHugsrsQ6viAA4EcJHo
-         YYauw7sCYo3Kq/EL0aLj++Pn0v1XqfOkvLS6z/UhYUdszTRxtO7JUo2x9Ose4BwvjB
-         BPYSZOeBv5Co1vCN0i//3eIkVWsg7zAZ6mgtrEl0Qgt1ss/4psW9q0WV6tmw9hy29O
-         O3E9BetpehQ7g==
-Subject: Re: [PATCH 1/2] media: Revert "media: exynos4-is: Add missed check
- for pinctrl_lookup_state()"
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        linux-media@vger.kernel.org
-Cc:     hslester96@gmail.com, krzk@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        b.zolnierkie@samsung.com, m.szyprowski@samsung.com
-References: <CGME20200810153301eucas1p2684476145e627ba124ba4740ef204712@eucas1p2.samsung.com>
- <20200810153240.23827-1-s.nawrocki@samsung.com>
- <bdcb0a29-8c7e-3736-9936-2b25460f9aef@xs4all.nl>
-Message-ID: <9b240ddb-0d03-5d51-386d-fce100a70aed@xs4all.nl>
-Date:   Wed, 19 Aug 2020 15:26:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728208AbgHSN3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 09:29:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34772 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726752AbgHSN3j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 09:29:39 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3E53AACC6;
+        Wed, 19 Aug 2020 13:30:03 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 3E33CDA703; Wed, 19 Aug 2020 15:28:31 +0200 (CEST)
+Date:   Wed, 19 Aug 2020 15:28:31 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Xianting Tian <tian.xianting@h3c.com>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: prevent hung check firing during long sync IO
+Message-ID: <20200819132831.GL2026@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Xianting Tian <tian.xianting@h3c.com>,
+        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200819101451.24266-1-tian.xianting@h3c.com>
 MIME-Version: 1.0
-In-Reply-To: <bdcb0a29-8c7e-3736-9936-2b25460f9aef@xs4all.nl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfM486MN3QSCAdJcP+Ut+D2oHitKpGHNGxmepL3N9f831HuqqJHNdoXtsQmci8D4T/woHOUOj/Y4tEkXWTThbCrveCo/4lwcmgdXXOtI11Djn9LwQrGnc
- bdg3COFSRvNHRlormPsU1tWbtFA5m8CLqgzkLxnhKp5TRDSPQmPQ+1JuRJZtOnhFiKA4lvMQ4aCL1mi/ZZv64d2x1zKaXY3kThs007JYEE20zlCTXSdKH6k2
- xqMGmUsM1Fbs06fSSjhmkY/wjMIyI+cCOUlJM+dBu8nNxMaPjHCwvShkAdz2bnKZGU2cSPSTmlgr4u+Wc1EWjuU5RHYQ3iaf38h79RnUhbuu/um967hHE1jX
- fw3VlqP/8w4O/V/kFEw6pwq1bZqyRq+wFJt0CF2/FH6tp9Ag7hxyTAMryBEJ8yJxMEriLXYim5Wo3hwwcY28qkWuS0Tq9ZpU6WDvlrWa6VN0N814eY8f6oum
- KD/DFSV6+YeLQFRsHvsYOnk94XjhplQ5w0mOG4K0yZ8vbKXOScm9aNvdJ6vbALhwNms8VhBsFk4diM4iTDvT3125IjBI+SpF/ZLfSDLqbL2JaCmg+0hoNU9m
- 0dE=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200819101451.24266-1-tian.xianting@h3c.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/08/2020 15:15, Hans Verkuil wrote:
-> Hi Sylwester,
-> 
-> Can you rebase this patch series on top of the media_tree master?
-> 
-> This series didn't apply anymore.
+On Wed, Aug 19, 2020 at 06:14:51PM +0800, Xianting Tian wrote:
+> For sync and flush io, it may take long time to complete.
+> So it's better to use wait_for_completion_io_timeout() in a
+> while loop to avoid prevent hung check and crash(when set
+> /proc/sys/kernel/hung_task_panic).
 
-Never mind, it was a conflict between this patch and this one:
+I wonder if long running IO should trigger the panic/kill of the task at
+all. A warning means that the system is under load but as long as it's
+making some progress it should be ok, and that seems to be a separate
+case from a task that's not making any progress (and terminating it is
+probably the best option).
 
-https://patchwork.linuxtv.org/project/linux-media/patch/20200807083548.204360-2-dwlsalmeida@gmail.com/
+> This is similar to prevent hung task check in submit_bio_wait(),
+> blk_execute_rq().
 
-I'll fix this up myself.
-
-Regards,
-
-	Hans
-
-> 
-> Thanks!
-> 
-> 	Hans
-> 
-> On 10/08/2020 17:32, Sylwester Nawrocki wrote:
->> The "idle" pinctrl state is optional as documented in the DT binding.
->> The change introduced by the commit being reverted makes that pinctrl state
->> mandatory and breaks initialization of the whole media driver, since the
->> "idle" state is not specified in any mainline dts.
->>
->> This reverts commit 18ffec750578f7447c288647d7282c7d12b1d969 to fix
->> the regression.
->>
->> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
->> ---
->>  drivers/media/platform/exynos4-is/media-dev.c | 4 +---
->>  1 file changed, 1 insertion(+), 3 deletions(-)
->>
->> diff --git a/drivers/media/platform/exynos4-is/media-dev.c b/drivers/media/platform/exynos4-is/media-dev.c
->> index 16dd660..9a57523 100644
->> --- a/drivers/media/platform/exynos4-is/media-dev.c
->> +++ b/drivers/media/platform/exynos4-is/media-dev.c
->> @@ -1268,11 +1268,9 @@ static int fimc_md_get_pinctrl(struct fimc_md *fmd)
->>  	if (IS_ERR(pctl->state_default))
->>  		return PTR_ERR(pctl->state_default);
->>  
->> +	/* PINCTRL_STATE_IDLE is optional */
->>  	pctl->state_idle = pinctrl_lookup_state(pctl->pinctrl,
->>  					PINCTRL_STATE_IDLE);
->> -	if (IS_ERR(pctl->state_idle))
->> -		return PTR_ERR(pctl->state_idle);
->> -
->>  	return 0;
->>  }
->>  
->>
-> 
-
+I see, adding that workaround to btrfs would be 3rd occurence and this
+should go into a wrapper, eg. wait_for_completion_io_nowarn with
+examples where this should be used.
