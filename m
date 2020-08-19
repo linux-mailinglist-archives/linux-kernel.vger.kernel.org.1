@@ -2,147 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA27249F02
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:04:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A664249EF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgHSNEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 09:04:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37320 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728471AbgHSNCd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 09:02:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 89FA0B023;
-        Wed, 19 Aug 2020 13:02:57 +0000 (UTC)
-Date:   Wed, 19 Aug 2020 15:02:30 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Baoquan He <bhe@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Oscar Salvador <osalvador@suse.de>
-Subject: Re: [PATCH v1 08/11] mm/memory_hotplug: simplify page onlining
-Message-ID: <20200819130230.GM5422@dhcp22.suse.cz>
-References: <20200819101157.12723-1-david@redhat.com>
- <20200819101157.12723-9-david@redhat.com>
+        id S1727022AbgHSNDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 09:03:48 -0400
+Received: from mail.v3.sk ([167.172.186.51]:54522 "EHLO shell.v3.sk"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728599AbgHSND3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 09:03:29 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zimbra.v3.sk (Postfix) with ESMTP id A815BDFA73;
+        Wed, 19 Aug 2020 13:02:23 +0000 (UTC)
+Received: from shell.v3.sk ([127.0.0.1])
+        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id SBg0Syt9oXLB; Wed, 19 Aug 2020 13:02:21 +0000 (UTC)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zimbra.v3.sk (Postfix) with ESMTP id 7095DDFA44;
+        Wed, 19 Aug 2020 13:02:21 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at zimbra.v3.sk
+Received: from shell.v3.sk ([127.0.0.1])
+        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id mtXcedEM5ITw; Wed, 19 Aug 2020 13:02:21 +0000 (UTC)
+Received: from localhost (unknown [77.240.177.143])
+        by zimbra.v3.sk (Postfix) with ESMTPSA id 07854DEE69;
+        Wed, 19 Aug 2020 13:02:20 +0000 (UTC)
+Date:   Wed, 19 Aug 2020 15:03:13 +0200
+From:   Lubomir Rintel <lkundrak@v3.sk>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     srk@48.io, Andrzej Hajda <a.hajda@samsung.com>,
+        devicetree@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        David Airlie <airlied@linux.ie>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Fabio Estevam <fabio.estevam@nxp.com>,
+        Sean Cross <xobs@kosagi.com>, Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [PATCH 2/2] drm/panel: simple: Add Innolux N133HSE panel support
+Message-ID: <20200819130313.GA152043@furthur.local>
+References: <20200509111834.26335-1-srk@48.io>
+ <20200509111834.26335-3-srk@48.io>
+ <20200511074708.GA2759@ravnborg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200819101157.12723-9-david@redhat.com>
+In-Reply-To: <20200511074708.GA2759@ravnborg.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 19-08-20 12:11:54, David Hildenbrand wrote:
-> We don't allow to offline memory with holes, all boot memory is online,
-> and all hotplugged memory cannot have holes.
+On Mon, May 11, 2020 at 09:47:08AM +0200, Sam Ravnborg wrote:
+> Hi Richard.
 > 
-> We can now simplify onlining of pages. As we only allow to online/offline
-> full sections and sections always span full MAX_ORDER_NR_PAGES, we can just
-> process MAX_ORDER - 1 pages without further special handling.
+> On Sat, May 09, 2020 at 01:18:34PM +0200, srk@48.io wrote:
+> > From: Sean Cross <xobs@kosagi.com>
+> > 
+> > The Innolux N133HSE panel is a 13.3" 1920x1080 panel that contains an
+> > integrated backlight, and connects via eDP.
+> > 
+> > It is used in the Kosagi Novena.
 > 
-> The number of onlined pages simply corresponds to the number of pages we
-> were requested to online.
+> Thanks for the patch.
 > 
-> While at it, refine the comment regarding the callback not exposing all
-> pages to the buddy.
 > 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-> Cc: Baoquan He <bhe@redhat.com>
-> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+> > 
+> > Signed-off-by: Sean Cross <xobs@kosagi.com>
+> > Signed-off-by: Richard Marko <srk@48.io>
+> > Cc: Shawn Guo <shawnguo@kernel.org>
+> > Cc: Fabio Estevam <fabio.estevam@nxp.com>
+> > Cc: Thierry Reding <thierry.reding@gmail.com>
+> > To: dri-devel@lists.freedesktop.org
+> > ---
+> >  drivers/gpu/drm/panel/panel-simple.c | 27 +++++++++++++++++++++++++++
+> >  1 file changed, 27 insertions(+)
+> > 
+> > diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+> > index 3ad828eaefe1..c8a93771d398 100644
+> > --- a/drivers/gpu/drm/panel/panel-simple.c
+> > +++ b/drivers/gpu/drm/panel/panel-simple.c
+> > @@ -1906,6 +1906,30 @@ static const struct panel_desc innolux_n116bge = {
+> >  	},
+> >  };
+> >  
+> > +static const struct drm_display_mode innolux_n133hse_ea1_mode = {
+> > +	.clock = 138500,
+> > +	.hdisplay = 1920,
+> > +	.hsync_start = 1920 + 46,
+> > +	.hsync_end = 1920 + 46 + 30,
+> > +	.htotal = 1920 + 46 + 30 + 84,
+> > +	.vdisplay = 1080,
+> > +	.vsync_start = 1080 + 2,
+> > +	.vsync_end = 1080 + 2 + 4,
+> > +	.vtotal = 1080 + 2 + 4 + 26,
+> > +	.vrefresh = 60,
+> > +};
+> > +
+> > +static const struct panel_desc innolux_n133hse_ea1 = {
+> > +	.modes = &innolux_n133hse_ea1_mode,
+> > +	.num_modes = 1,
+> > +	.bpc = 8,
+> > +	.size = {
+> > +		.width = 293,
+> > +		.height = 165,
+> > +	},
+> > +	.connector_type = DRM_MODE_CONNECTOR_eDP,
+> Please include .bus_format and .bus_flags info too.
+> 
+> We are relying more and more on this type of info so we need it to be
+> present.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+I am wondering which of the flags make sense for eDP and how the bus
+format should be described?
 
-> ---
->  mm/memory_hotplug.c | 38 ++++++++++----------------------------
->  1 file changed, 10 insertions(+), 28 deletions(-)
-> 
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index 0011a1115381c..3aba0d956f9b1 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -617,31 +617,22 @@ void generic_online_page(struct page *page, unsigned int order)
->  }
->  EXPORT_SYMBOL_GPL(generic_online_page);
->  
-> -static int online_pages_range(unsigned long start_pfn, unsigned long nr_pages,
-> -			void *arg)
-> +static void online_pages_range(unsigned long start_pfn, unsigned long nr_pages)
->  {
->  	const unsigned long end_pfn = start_pfn + nr_pages;
->  	unsigned long pfn;
-> -	int order;
->  
->  	/*
-> -	 * Online the pages. The callback might decide to keep some pages
-> -	 * PG_reserved (to add them to the buddy later), but we still account
-> -	 * them as being online/belonging to this zone ("present").
-> +	 * Online the pages in MAX_ORDER - 1 aligned chunks. The callback might
-> +	 * decide to not expose all pages to the buddy (e.g., expose them
-> +	 * later). We account all pages as being online and belonging to this
-> +	 * zone ("present").
->  	 */
-> -	for (pfn = start_pfn; pfn < end_pfn; pfn += 1ul << order) {
-> -		order = min(MAX_ORDER - 1, get_order(PFN_PHYS(end_pfn - pfn)));
-> -		/* __free_pages_core() wants pfns to be aligned to the order */
-> -		if (WARN_ON_ONCE(!IS_ALIGNED(pfn, 1ul << order)))
-> -			order = 0;
-> -		(*online_page_callback)(pfn_to_page(pfn), order);
-> -	}
-> +	for (pfn = start_pfn; pfn < end_pfn; pfn += MAX_ORDER_NR_PAGES)
-> +		(*online_page_callback)(pfn_to_page(pfn), MAX_ORDER - 1);
->  
->  	/* mark all involved sections as online */
->  	online_mem_sections(start_pfn, end_pfn);
-> -
-> -	*(unsigned long *)arg += nr_pages;
-> -	return 0;
->  }
->  
->  /* check which state of node_states will be changed when online memory */
-> @@ -795,7 +786,6 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
->  		       int online_type, int nid)
->  {
->  	unsigned long flags;
-> -	unsigned long onlined_pages = 0;
->  	struct zone *zone;
->  	int need_zonelists_rebuild = 0;
->  	int ret;
-> @@ -831,19 +821,11 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
->  		setup_zone_pageset(zone);
->  	}
->  
-> -	ret = walk_system_ram_range(pfn, nr_pages, &onlined_pages,
-> -		online_pages_range);
-> -	if (ret) {
-> -		/* not a single memory resource was applicable */
-> -		if (need_zonelists_rebuild)
-> -			zone_pcp_reset(zone);
-> -		goto failed_addition;
-> -	}
-> -
-> -	zone->present_pages += onlined_pages;
-> +	online_pages_range(pfn, nr_pages);
-> +	zone->present_pages += nr_pages;
->  
->  	pgdat_resize_lock(zone->zone_pgdat, &flags);
-> -	zone->zone_pgdat->node_present_pages += onlined_pages;
-> +	zone->zone_pgdat->node_present_pages += nr_pages;
->  	pgdat_resize_unlock(zone->zone_pgdat, &flags);
->  
->  	/*
-> -- 
-> 2.26.2
-> 
+Some eDP panels seems [1] to specify DRM_BUS_FLAG_DATA_MSB_TO_LSB and 
+DRM_BUS_FLAG_SYNC_DRIVE_NEGEDGE, but I am not sure what sense they make
+for packet data with embedded clock that eDP uses? (Unless, of course,
+my understanding of eDP is entirely missing the point.)
 
--- 
-Michal Hocko
-SUSE Labs
+This panel uses RGB888 data over two differential pairs. Would
+format = MEDIA_BUS_FMT_RGB888_1X24 be appropriate?
+
+[1] N133HSE-EA1 Datasheet
+    http://www.vslcd.com/specification/N133HSE-EA1.pdf
+
+> 	Sam
+
+Thank you,
+Lubo
