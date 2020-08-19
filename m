@@ -2,93 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF4A2249EF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DED2F249F03
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgHSND2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 09:03:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36490 "EHLO
+        id S1728613AbgHSNE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 09:04:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728493AbgHSNBB (ORCPT
+        with ESMTP id S1728523AbgHSNCK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 09:01:01 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8254C061383
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:01:00 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id ha11so1089655pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:01:00 -0700 (PDT)
+        Wed, 19 Aug 2020 09:02:10 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 391BDC06134B
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:01:20 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id kq25so26178113ejb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:01:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        d=chromium.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qNJVZUa8vOnjh3Y4FbI7cu96rnOZczrpWszoc4OM35E=;
-        b=ZtDUAentzHDOfXLt1WNpX0PqLZgZi3vnfEc6anllVjv7Z89UoKoCCMUiljAdsTAGBL
-         DEVHOWuWzMZeIuJcHwUlptWZjkCaOp1ZUKAoSs/2jyyTPejnx1zCbjPUY7C9na+Ftk+x
-         wpw/pPjI4UYNDosNdy4j7LcDWUJhwNxLapyy4W7f1U00+fT6jVYw1uO8CMpHCStxGd8w
-         JLOisGYqnJmeY5ie8I+x4A4vKZtwoQ6PsaOc8UAPD7eTAFlJwORflpx8o8EPJZR8cuSG
-         1j977OWh0YEI5r2DXie/ItwJ0iuosRobp25OObO0Ld6mXVix+wRg8r73enQ5lMOcXAoG
-         tjpA==
+        bh=S08efVGlFbnCRWAooQ5BgeOCyESGGd5F97xt8fYK1v0=;
+        b=gXzVlZtvnou0mDkrZAK2Fnuw9dSHO7Edi/cQP/i3F+AAbHgN3yCpdOvzogBHylOWmq
+         Qc0FKLbxNWpaTbSaQEuwm+ujFF001aQbadp4GYn5t3ogCQHV/SqT1EaYeGyGK5d1Zyc7
+         esDQ142rLIroj8edGg4TAizj7oV8OgZaOxosM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=qNJVZUa8vOnjh3Y4FbI7cu96rnOZczrpWszoc4OM35E=;
-        b=JAGob0EB+sPzL9OEWEP07X9ysZ9IlyNLHiDtZ1kN9gjNEk0mnbIGEzK65bRaw82oV2
-         Qj6RzqERjrYCRCdNOB8CdtjJ014XcqiP2GGR/2gj+DSVr4tPMtvgvHiHCs4dPGQXd5d3
-         qs5e+mIZWC8C0LbPn1h+y142N8ADvq7JGrW5yRd1OZubKjQVux21MDI3lh18+r1cd9BT
-         T++KBRHdyyA+V1myifNRVZ8Az6WP8BL6pJKZl7SEKl4YKe4wbGTr3J3JEJTLPLfu7uiC
-         11aXQq8yTuhj2CGwtZ5dGlUb6puw4bNXAW9OegXDYlX0J/3IGnikIuRVzQLsiGHHwcuH
-         zVCw==
-X-Gm-Message-State: AOAM533qH8YVwJczwgeMHLlAJiAwiqVvkqlxYrEjXUwzQZ8gxxET1xHb
-        ep3appFQy4diVjkfkBK4jtimUg==
-X-Google-Smtp-Source: ABdhPJwcWyLwqgVIDq5QVfeKWIJZ1zweeStVncOtMpfxCFFFEuEh0sSa6pW/Ah5NefbMm4I9GwEzLw==
-X-Received: by 2002:a17:90b:285:: with SMTP id az5mr3983315pjb.118.1597842058708;
-        Wed, 19 Aug 2020 06:00:58 -0700 (PDT)
-Received: from [192.168.1.182] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id d23sm20502027pgm.11.2020.08.19.06.00.54
+        bh=S08efVGlFbnCRWAooQ5BgeOCyESGGd5F97xt8fYK1v0=;
+        b=V2rcZ021wWFNBGii0a9IsbUPrFjnOOvG7zkzjRZmiRKxRzn2g9Kq+f1CYHtGTMP5E6
+         vlyrUX3HMoFjqbtSWhRxaWyG2IwcZB4psTDNQo1OA3DdSelNib6iWw2Ov43s8bjDn8je
+         3+u2zpZfiizVHklidLRP9MAkTq32tgI3rhVzM0uvzc7zmiT7b7cdem9vKGdiJfH4lty4
+         JknAGfE1YyUo8Gxa6mWcULpZhMI8xi/bwFwYgTiENz+Y5Z/37erCNOQcXERPNBsu02K2
+         AQJ9LI/d1l9vUNVo/QoiIBgCbnNvUEQat3Bnt2k9Ctjj89gfwc4yRppzgTPuk4BvWMGE
+         4j2Q==
+X-Gm-Message-State: AOAM5310Yf84r82I1HcZk4XzuEuuSPetcYPBI6x2m+viUHdaYM4ieKYF
+        UuCOBxfcECLlchFt7V/psxVQzw==
+X-Google-Smtp-Source: ABdhPJxS2tf0sP7AgOv/ZCmElHwH5nT7hhwed9Oh3Cg6C5L9jxDqiFxUJFEr130TB6JjA6KVwlTe4w==
+X-Received: by 2002:a17:906:1f15:: with SMTP id w21mr24281904ejj.152.1597842078291;
+        Wed, 19 Aug 2020 06:01:18 -0700 (PDT)
+Received: from [192.168.2.66] ([81.6.44.51])
+        by smtp.gmail.com with ESMTPSA id o25sm18529498ejm.34.2020.08.19.06.01.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Aug 2020 06:00:58 -0700 (PDT)
-Subject: Re: [PATCH] block: convert tasklets to use new tasklet_setup() API
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Allen Pais <allen.cryptic@gmail.com>, jdike@addtoit.com,
-        richard@nod.at, anton.ivanov@cambridgegreys.com, 3chas3@gmail.com,
-        stefanr@s5r6.in-berlin.de, airlied@linux.ie, daniel@ffwll.ch,
-        sre@kernel.org, kys@microsoft.com, deller@gmx.de,
-        dmitry.torokhov@gmail.com, jassisinghbrar@gmail.com,
-        shawnguo@kernel.org, s.hauer@pengutronix.de,
-        maximlevitsky@gmail.com, oakad@yahoo.com, ulf.hansson@linaro.org,
-        mporter@kernel.crashing.org, alex.bou9@gmail.com,
-        broonie@kernel.org, martyn@welchs.me.uk, manohar.vanga@gmail.com,
-        mitch@sfgoth.com, davem@davemloft.net, kuba@kernel.org,
-        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux1394-devel@lists.sourceforge.net,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-hyperv@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-ntb@googlegroups.com, linux-s390@vger.kernel.org,
-        linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
-        Allen Pais <allen.lkml@gmail.com>,
-        Romain Perier <romain.perier@gmail.com>
-References: <20200817091617.28119-1-allen.cryptic@gmail.com>
- <20200817091617.28119-2-allen.cryptic@gmail.com>
- <b5508ca4-0641-7265-2939-5f03cbfab2e2@kernel.dk>
- <202008171228.29E6B3BB@keescook>
- <161b75f1-4e88-dcdf-42e8-b22504d7525c@kernel.dk>
- <202008171246.80287CDCA@keescook>
- <df645c06-c30b-eafa-4d23-826b84f2ff48@kernel.dk>
- <1597780833.3978.3.camel@HansenPartnership.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <f3312928-430c-25f3-7112-76f2754df080@kernel.dk>
-Date:   Wed, 19 Aug 2020 07:00:53 -0600
+        Wed, 19 Aug 2020 06:01:17 -0700 (PDT)
+Subject: Re: [PATCH bpf-next v8 6/7] bpf: Allow local storage to be used from
+ LSM programs
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>
+References: <20200803164655.1924498-1-kpsingh@chromium.org>
+ <20200803164655.1924498-7-kpsingh@chromium.org>
+ <20200818041638.2dv5cewlgwerd7hm@kafai-mbp.dhcp.thefacebook.com>
+From:   KP Singh <kpsingh@chromium.org>
+Message-ID: <87e6c97f-5d72-ddb9-331a-4a79ccab11c1@chromium.org>
+Date:   Wed, 19 Aug 2020 15:01:17 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1597780833.3978.3.camel@HansenPartnership.com>
+In-Reply-To: <20200818041638.2dv5cewlgwerd7hm@kafai-mbp.dhcp.thefacebook.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -97,67 +73,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/18/20 1:00 PM, James Bottomley wrote:
-> On Mon, 2020-08-17 at 13:02 -0700, Jens Axboe wrote:
->> On 8/17/20 12:48 PM, Kees Cook wrote:
->>> On Mon, Aug 17, 2020 at 12:44:34PM -0700, Jens Axboe wrote:
->>>> On 8/17/20 12:29 PM, Kees Cook wrote:
->>>>> On Mon, Aug 17, 2020 at 06:56:47AM -0700, Jens Axboe wrote:
->>>>>> On 8/17/20 2:15 AM, Allen Pais wrote:
->>>>>>> From: Allen Pais <allen.lkml@gmail.com>
->>>>>>>
->>>>>>> In preparation for unconditionally passing the
->>>>>>> struct tasklet_struct pointer to all tasklet
->>>>>>> callbacks, switch to using the new tasklet_setup()
->>>>>>> and from_tasklet() to pass the tasklet pointer explicitly.
->>>>>>
->>>>>> Who came up with the idea to add a macro 'from_tasklet' that
->>>>>> is just container_of? container_of in the code would be
->>>>>> _much_ more readable, and not leave anyone guessing wtf
->>>>>> from_tasklet is doing.
->>>>>>
->>>>>> I'd fix that up now before everything else goes in...
->>>>>
->>>>> As I mentioned in the other thread, I think this makes things
->>>>> much more readable. It's the same thing that the timer_struct
->>>>> conversion did (added a container_of wrapper) to avoid the
->>>>> ever-repeating use of typeof(), long lines, etc.
->>>>
->>>> But then it should use a generic name, instead of each sub-system 
->>>> using some random name that makes people look up exactly what it
->>>> does. I'm not huge fan of the container_of() redundancy, but
->>>> adding private variants of this doesn't seem like the best way
->>>> forward. Let's have a generic helper that does this, and use it
->>>> everywhere.
->>>
->>> I'm open to suggestions, but as things stand, these kinds of
->>> treewide
+
+
+On 8/18/20 6:16 AM, Martin KaFai Lau wrote:
+> On Mon, Aug 03, 2020 at 06:46:54PM +0200, KP Singh wrote:
+>> From: KP Singh <kpsingh@google.com>
 >>
->> On naming? Implementation is just as it stands, from_tasklet() is
->> totally generic which is why I objected to it. from_member()? Not
->> great with naming... But I can see this going further and then we'll
->> suddenly have tons of these. It's not good for readability.
+>> Adds support for both bpf_{sk, inode}_storage_{get, delete} to be used
+>> in LSM programs. These helpers are not used for tracing programs
+
+[...]
+
+>> @@ -2823,6 +2823,10 @@ union bpf_attr {
+>>   *		"type". The bpf-local-storage "type" (i.e. the *map*) is
+>>   *		searched against all bpf-local-storages residing at *sk*.
+>>   *
+>> + *		For socket programs, *sk* should be a **struct bpf_sock** pointer
+>> + *		and an **ARG_PTR_TO_BTF_ID** of type **struct sock** for LSM
+>> + *		programs.
+> I found it a little vague on what "socket programs" is.  May be:
 > 
-> Since both threads seem to have petered out, let me suggest in
-> kernel.h:
+> *sk* is a kernel **struct sock** pointer for LSM program.
+> *sk* is a **struct bpf_sock** pointer for other program types.
+
+This is better, Thanks!
+
+- KP
+
 > 
-> #define cast_out(ptr, container, member) \
-> 	container_of(ptr, typeof(*container), member)
+> Others LGTM
 > 
-> It does what you want, the argument order is the same as container_of
-> with the only difference being you name the containing structure
-> instead of having to specify its type.
-
-Not to incessantly bike shed on the naming, but I don't like cast_out,
-it's not very descriptive. And it has connotations of getting rid of
-something, which isn't really true.
-
-FWIW, I like the from_ part of the original naming, as it has some clues
-as to what is being done here. Why not just from_container()? That
-should immediately tell people what it does without having to look up
-the implementation, even before this becomes a part of the accepted
-coding norm.
-
--- 
-Jens Axboe
-
+> Acked-by: Martin KaFai Lau <kafai@fb.com>
+> 
