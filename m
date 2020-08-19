@@ -2,116 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86C3249788
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D7C249791
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726612AbgHSHeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 03:34:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726570AbgHSHeK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 03:34:10 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C33C061389
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 00:34:07 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id 2so20748141qkf.10
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 00:34:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:in-reply-to:references:mime-version
-         :content-transfer-encoding:date:message-id;
-        bh=4V25VWVtltBCvoDctm/BLfmJBIJ+HmrsOxjPE64+VqQ=;
-        b=Nj3F3BC3xyKczep856g1h9CyMlJDYCs1YJNuTqR93+L98c+Pa9l7wcyG/eLo0gHbwy
-         GnGY9yFORoqKHgnC/mu8CxZj9Rs4s8QgsK0TIsEXCPbHpgmef+SxfDlUiZ8c77PqEl7G
-         1E5AfbjXwonMZHl4bSlJbHgpP6FzS8o1Cx5vOGs3zTY3WiLJQAEmgBdyaY2Zs31E7J/d
-         xYQNGG54DlMxpDDvQ9LN4nj4yHXreqYhYFEGXPidHmixmJs9TWE7yMUYp0o9m5rKsadp
-         jWfFtbcJmuiRlhclWFcTOfSHWxhWKQe9Nz3OryDsvTHHEQmvNs0tvJ22TOkM68+k1OW4
-         GvvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :mime-version:content-transfer-encoding:date:message-id;
-        bh=4V25VWVtltBCvoDctm/BLfmJBIJ+HmrsOxjPE64+VqQ=;
-        b=mGEVxeLx7fuX1BwYW1vopzsBdcuwxg5Jyfh7j+FhIX8S47esiVDYD4W7QerEayJXdm
-         eBOjTtE7YPoDoUBmfeIy4WHqusWxOJbif3TPIMRKwt6K9BOIUuYlbf6B3YyRXwMcwLSN
-         Y3O927rKnf7RzeMWF7c6Xt8D+qpmaZf7P2bqWOssOSVIi/OUFnSSrWItTto/TyvJ3UxU
-         Janrl0R6n+DALjvYQcvfUVPkUy0SBKjWeixA3qgvrjWPL7XNQRLI8hJfmevCynlOBnNS
-         k9n/4SYbuzCJHi4DzNE1sECqbRdVnP711RibwpdaIY5Ugg+VVvpWTeZLu5Ao8EDGXoj4
-         gkvQ==
-X-Gm-Message-State: AOAM530NgU08ttMtQHzl0GPyyDDEkfg4P/GBkhWxcVQjnxSe21haAAzm
-        ksXLu8EzoAP3udQCtPzfMWr7mA==
-X-Google-Smtp-Source: ABdhPJzxxwMT0A58bbawoYx+tooriUG/ayuWsBOo+fDqxMvTWjyv5RQiVULyZeNBeYSVgyFfcy0M6A==
-X-Received: by 2002:a37:47cc:: with SMTP id u195mr20561392qka.39.1597822446957;
-        Wed, 19 Aug 2020 00:34:06 -0700 (PDT)
-Received: from turing-police ([2601:5c0:c000:a8c1::359])
-        by smtp.gmail.com with ESMTPSA id 20sm26987224qtp.53.2020.08.19.00.34.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 00:34:05 -0700 (PDT)
-From:   "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Mark Starovoytov <mstarovoitov@marvell.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, paulmck@kernel.org,
-        peterz@infradead.org, rostedt@goodmis.org, tglx@linutronix.de,
-        will@kernel.org
-Subject: Re: [PATCH] Revert "seqlock: lockdep assert non-preemptibility on seqcount_t write"
-In-Reply-To: <20200819070022.semyxepadnvtmtcr@linutronix.de>
-References: <20200810085954.GA1591892@kroah.com> <20200810095428.2602276-1-a.darwish@linutronix.de> <20200810100502.GA2406768@kroah.com> <bcf94ea2-05e6-2212-f732-b9a79a142f7e@roeck-us.net> <169454.1597791078@turing-police> <fa442483-00b5-169e-dac2-71fbf8307117@roeck-us.net>
- <20200819070022.semyxepadnvtmtcr@linutronix.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1597822443_10889P";
-         micalg=pgp-sha1; protocol="application/pgp-signature"
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 19 Aug 2020 03:34:03 -0400
-Message-ID: <15863.1597822443@turing-police>
+        id S1726990AbgHSHi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 03:38:59 -0400
+Received: from mga09.intel.com ([134.134.136.24]:60300 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726685AbgHSHi6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 03:38:58 -0400
+IronPort-SDR: hwf4pIztlAGDGIklmYXjrBJ4w8RdapmbUvCpWAye8oTYQHfzNfqjn7P+4b4VEojDWnViPZW8/W
+ K1fr6gI4fBag==
+X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="156134590"
+X-IronPort-AV: E=Sophos;i="5.76,330,1592895600"; 
+   d="scan'208";a="156134590"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2020 00:38:50 -0700
+IronPort-SDR: 8iAcyLY+YR37E3XBgFHQHLv+I5UxVWpcX3kq8aOLjra+YbyU02yh5/eQqUzttYVAJ/kaZ283kb
+ dszAj1GKo2NQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,330,1592895600"; 
+   d="scan'208";a="441513782"
+Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
+  by orsmga004.jf.intel.com with ESMTP; 19 Aug 2020 00:38:48 -0700
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     broonie@kernel.org, lee.jones@linaro.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, yilun.xu@intel.com,
+        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
+        lgoncalv@redhat.com, hao.wu@intel.com
+Subject: [PATCH v4 0/2] add regmap-spi-avmm & Intel Max10 BMC chip support
+Date:   Wed, 19 Aug 2020 15:34:55 +0800
+Message-Id: <1597822497-25107-1-git-send-email-yilun.xu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---==_Exmh_1597822443_10889P
-Content-Type: text/plain; charset=us-ascii
+This patchset adds the regmap-spi-avmm to support the Intel SPI Slave to
+AVMM Bus Bridge (spi-avmm) IP block. It also implements the usercase - the
+driver of Intel Max10 BMC chip which integrates this IP block.
 
-On Wed, 19 Aug 2020 09:00:22 +0200, Sebastian Andrzej Siewior said:
-> On 2020-08-18 17:56:49 [-0700], Guenter Roeck wrote:
-> > Nice catch. FWIW, there is no obvious reason why this would need to be atomic.
-> > The calling code does not set a lock, meaning there can be two (or more)
-> > callers entering this code. Weird, especially since the code looks like it
-> > would actually need a mutex to work correctly. It might be interesting to
-> > see what happens if there are, say, half a dozen scripts/processes trying
-> > to read the hwmon attribute introduced by this patch at the same time.
->
-> => https://lkml.kernel.org/r/20200818161439.3dkf6jzp3vuwmvvh@linutronix.de
+Patch #1 implements the regmap-spi-avmm.
+Patch #2 implements the mfd driver of Intel Max10 BMC chip.
 
-Looks reasonable to me, though I've not verified that it's preemptible at that
-point...
+Main changes from v1:
+- Split out the regmap-spi-avmm module out of intel-m10-bmc module.
 
---==_Exmh_1597822443_10889P
-Content-Type: application/pgp-signature
+Main changes from v2:
+- Refactor the code of regmap-spi-avmm.
+   - Rewrites the rx flow and simplifies the implementation, collapse some
+     function calls.
+   - Add bounds checking every time we fill trans_buf & phy_buf.
+   - Try to configure spi mode on regmap init
+   - delete regmap_bus.reg_write/reg_read callbacks.
+   - Squash the bug fixing patch.
+- Add the sub devices in mfd_cell for Max10 bmc driver.
+- Improve comments and some minor fixes.
 
------BEGIN PGP SIGNATURE-----
-Comment: Exmh version 2.9.0 11/07/2018
+Main changes from v3:
+- Rebased to 5.9-rc1.
+- Collapse the phy buf padding code in br_pkt_phy_tx_prepare().
 
-iQIVAwUBXzzV6gdmEQWDXROgAQLTbhAAsvypcbMHOpJZyQfamYXGuY2lN7OfIdhc
-S5HWEeQpsT/KLRmXDTl65fpNYUcUkrtp7n56JYmIG7O5PHPx9fna2x2X/adqvE02
-FrNmboXuo4s0ajokOsA7N8Fgeebjz6+sfr4QNVnatPx71vaPUvZXVXuI1HLhw51M
-yq6r0eMBNl3JwqXLDcKVcsoAHqjK3WgbUNZnH+aOYUsgnoUb9YfgLLOFXWASd3bd
-F9griIUcY+Vp5M0z0TUmHR75BDriocvB/0ztg/ePKpuiaZVP7IOYskXYz+KZi6q4
-D+KojbYx9xIOWVFW7Op6q2j7Qq6P+9VRpjU7L9qwhKHyQ1fFcEgvrzcI4Wa3LUhN
-JvcPIo1N1W5FRWl19YBn6w9cLLcSoh4dmoKOeyNFgUP4moR6JqeSoH5hT32vY7js
-5IC1DxQ3PLsHSaqbPoTvBoabLvS8q/wcldxt21sZMSQF3Yj68CSQBqCM0ZJxiZEO
-Dy1POgrNg0rDUfJoEg5utx7Raai8VsUeZbfVc4ZxGdKRKc9mHmShNKzv0zLEcbmo
-u2e260jtzLr+cV+UaNek4IA2yUw9WvtopsXyYI3tt3octGGgEPjifYALxtJRwg6t
-DBx6N5tKLO6ROt2so5zSkssWzl9jjHuZ8NbID/dIp85gv7r8dK+49tB+NHU5sOcb
-CN2QI2uwknQ=
-=pX+Q
------END PGP SIGNATURE-----
+Xu Yilun (2):
+  regmap: add Intel SPI Slave to AVMM Bus Bridge support
+  mfd: intel-m10-bmc: add Max10 BMC chip support for Intel FPGA PAC
 
---==_Exmh_1597822443_10889P--
+ .../ABI/testing/sysfs-driver-intel-m10-bmc         |  15 +
+ drivers/base/regmap/Kconfig                        |   6 +-
+ drivers/base/regmap/Makefile                       |   1 +
+ drivers/base/regmap/regmap-spi-avmm.c              | 719 +++++++++++++++++++++
+ drivers/mfd/Kconfig                                |  13 +
+ drivers/mfd/Makefile                               |   2 +
+ drivers/mfd/intel-m10-bmc.c                        | 169 +++++
+ include/linux/mfd/intel-m10-bmc.h                  |  57 ++
+ include/linux/regmap.h                             |  36 ++
+ 9 files changed, 1017 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-intel-m10-bmc
+ create mode 100644 drivers/base/regmap/regmap-spi-avmm.c
+ create mode 100644 drivers/mfd/intel-m10-bmc.c
+ create mode 100644 include/linux/mfd/intel-m10-bmc.h
+
+-- 
+2.7.4
+
