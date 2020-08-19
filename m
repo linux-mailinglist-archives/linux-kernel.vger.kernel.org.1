@@ -2,80 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BDE2249328
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 05:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27370249362
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 05:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727053AbgHSDDK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 18 Aug 2020 23:03:10 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:59579 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726605AbgHSDDJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 23:03:09 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R411e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0U6BcqGk_1597806184;
-Received: from 30.27.116.4(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0U6BcqGk_1597806184)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 19 Aug 2020 11:03:05 +0800
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH v2 0/3] Build ORC fast lookup table in scripts/sorttable
- tool
-From:   changhuaixin <changhuaixin@linux.alibaba.com>
-In-Reply-To: <20200807041802.18639-1-changhuaixin@linux.alibaba.com>
-Date:   Wed, 19 Aug 2020 11:03:04 +0800
-Cc:     bp@alien8.de, hpa@zytor.com, jpoimboe@redhat.com,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luto@amacapital.net, michal.lkml@markovi.net, mingo@redhat.com,
-        peterz@infradead.org, tglx@linutronix.de, x86@kernel.org,
-        yamada.masahiro@socionext.com
-Content-Transfer-Encoding: 8BIT
-Message-Id: <C2FA85AC-12FD-4FC3-A955-31F0441D81CC@linux.alibaba.com>
-References: <20200723034643.33537-1-changhuaixin@linux.alibaba.com>
- <20200807041802.18639-1-changhuaixin@linux.alibaba.com>
-To:     Ingo Molnar <mingo@kernel.org>
-X-Mailer: Apple Mail (2.3445.104.11)
+        id S1727957AbgHSDVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 23:21:01 -0400
+Received: from mga04.intel.com ([192.55.52.120]:10777 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726605AbgHSDVA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 23:21:00 -0400
+IronPort-SDR: GBkVNO0CONaO1USmPbNkojQ3JYgA7nnb4rZoj8KbsAM7eq5l8z/j3yrV+YJULQk/qcJb4t0hAZ
+ AT+meMvGUJUQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="152456150"
+X-IronPort-AV: E=Sophos;i="5.76,329,1592895600"; 
+   d="scan'208";a="152456150"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 20:21:00 -0700
+IronPort-SDR: HF5Pud7n/Rwwx0gV7uLRLo15yUbgdHlxzuSQBLgPDrXIgyvlq7ylQNNTYOcbruKyu1fjuf/QNL
+ G56ig0xNVPvA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,329,1592895600"; 
+   d="scan'208";a="326938632"
+Received: from feng-iot.sh.intel.com (HELO localhost) ([10.239.13.114])
+  by orsmga008.jf.intel.com with ESMTP; 18 Aug 2020 20:20:58 -0700
+Date:   Wed, 19 Aug 2020 11:04:02 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     Borislav Petkov <bp@suse.de>,
+        "Chen, Rong A" <rong.a.chen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "lkp@lists.01.org" <lkp@lists.01.org>
+Subject: Re: [LKP] Re: [x86/mce] 1de08dccd3: will-it-scale.per_process_ops
+ -14.1% regression
+Message-ID: <20200819030402.GA7840@feng-iot>
+References: <20200425114414.GU26573@shao2-debian>
+ <20200425130136.GA28245@zn.tnic>
+ <20200818082943.GA65567@shbuild999.sh.intel.com>
+ <20200818200654.GA21494@agluck-desk2.amr.corp.intel.com>
+ <20200819020437.GA2605@shbuild999.sh.intel.com>
+ <149e0cfb5b7e48dfb9bea966c7741336@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <149e0cfb5b7e48dfb9bea966c7741336@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi，Ingo
+On Wed, Aug 19, 2020 at 10:23:11AM +0800, Luck, Tony wrote:
+> 	0000000000019260 D pqr_state
+> 
+> Do you have /sys/fs/resctrl mounted?  This variable is read on every context switch.
+> If your benchmark does a lot of context switching and this now shares a cache line
+> with something different (especially something that is sometimes modified from another
+> CPU) that could cause some cache line bouncing.
 
-This patchset reverts the hacks from patchset v1. Also it includes some other fixes upon v1 as suggested.
-Will you please have a look at this?
+No, the kernel doesn't has /sys/fs/resctrl mounted.
 
-The previous links are:
-https://lore.kernel.org/lkml/20200724135531.GB648324@gmail.com/
+And the test case is not context switch intensive. It just forks a task
+for each CPU which loops running malloc/free and counts the number of
+complted operations for 300 seconds.
 
 Thanks,
-huaixin
-
-> On Aug 7, 2020, at 12:17 PM, Huaixin Chang <changhuaixin@linux.alibaba.com> wrote:
-> 
-> Move building of fast lookup table from boot to sorttable tool. This saves us
-> 6380us boot time on Intel(R) Xeon(R) CPU E5-2682 v4 @ 2.50GHz with cores. It
-> adds a little more than 7ms to boot time when testing on the same CPU.
-> 
-> Changelog v2:
-> 1. Write .orc_lookup section header via objtool
-> 2. Move two ORC lookup table macro from orc_lookup.h into orc_types.h
-> 3. Spell 'ORC' in capitalized fashion
-> 
-> Huaixin Chang (3):
->  objtool: Write .orc_lookup section header
->  scripts/sorttable: Build ORC fast lookup table via sorttable tool
->  x86/unwind/orc: Simplify unwind_init() for x86 boot
-> 
-> arch/x86/include/asm/orc_lookup.h      | 16 ------
-> arch/x86/include/asm/orc_types.h       | 16 ++++++
-> arch/x86/kernel/unwind_orc.c           | 41 +--------------
-> arch/x86/kernel/vmlinux.lds.S          |  2 +-
-> scripts/sorttable.h                    | 96 +++++++++++++++++++++++++++++++---
-> tools/arch/x86/include/asm/orc_types.h | 16 ++++++
-> tools/objtool/orc_gen.c                |  4 ++
-> 7 files changed, 128 insertions(+), 63 deletions(-)
-> 
-> -- 
-> 2.14.4.44.g2045bb6
-
+Feng
