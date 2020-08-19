@@ -2,102 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC36B24A011
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF9C24A020
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728631AbgHSNey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 09:34:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27488 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728556AbgHSNeA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 09:34:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597844038;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1A3YVzHwJmiHNz1WhEQhMZMMatTxl2bdR9e5Zus2ktM=;
-        b=FB4REDJRLTLSWsOhnrXL/eVmelpVfXKCTkc21NLtVpChBOjwMyarNJfGYnW6oOVo++eFMi
-        /hq/+RtGvsaP8NaoiinmErr9fREV4inQPknJtb83O1TZfnOtHWFfDHJPkCs2cXnYxQplVy
-        F/fAaAjNbDYcock6lhpEQ6El9NhCfHQ=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-248-nq0xK8UGOIyj2ceLtNLSuw-1; Wed, 19 Aug 2020 09:33:56 -0400
-X-MC-Unique: nq0xK8UGOIyj2ceLtNLSuw-1
-Received: by mail-ot1-f70.google.com with SMTP id r18so10725318otq.6
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:33:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1A3YVzHwJmiHNz1WhEQhMZMMatTxl2bdR9e5Zus2ktM=;
-        b=UwmG/d7XIivXVaTCLytaxrmLXxeBL0xx/6rqOtYbWj8qNVnGaxDI6Zk5F1RxLc1DBz
-         47Abr8TdfWXeQe107uxxXWQakIJ1VZalJ6MWo7wdVhD5skoBgXBAyJ7KrjIK0YtNaI3z
-         pnVZ+6ntvDgxkMa8nwVTBUAelDukMqxkYpC3ITiTZjd4xqimTRNxkCgrHabuExTBN6PM
-         1+GWEsGgQ2UvLTfvclqrTej+BCmcF4dZvklCXbJuTRlUJ4CfJw6HHzFCNMQY7SlrmAls
-         1Pf6OMPki9snBCr9jo3on0I3bbeQpLDErM2N3IagGGviSpaV0Is3FAitis5oITbX49Tz
-         IITw==
-X-Gm-Message-State: AOAM5317Pe5afsyzXGRw6PXTSZcB+8/x5WlgUCFqzSzoZAHHP5UQ4W2k
-        5prWPo8QREkUSyArmsi8eKVUI5f8ZJ/LrjHK8qRHQCiaXwXI2g8rxf+ADQ3HtpqHMSGta6zDwEK
-        Y/9ZMn8TnELAuHAZ5NZF4eYD/tSc0vwPkHRtxwYMc
-X-Received: by 2002:a9d:6e1:: with SMTP id 88mr18165959otx.178.1597844036069;
-        Wed, 19 Aug 2020 06:33:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxDK4ZmVu++rFkaYtt43Tpk3Yf8PlFZGZT7z4I0jOccmzf4KD2leJPmhiIIUxoTN+497qRQJkjMR8MX0o9jLYk=
-X-Received: by 2002:a9d:6e1:: with SMTP id 88mr18165944otx.178.1597844035864;
- Wed, 19 Aug 2020 06:33:55 -0700 (PDT)
+        id S1728479AbgHSNfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 09:35:50 -0400
+Received: from foss.arm.com ([217.140.110.172]:36864 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727975AbgHSNda (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 09:33:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3B6421FB;
+        Wed, 19 Aug 2020 06:33:28 -0700 (PDT)
+Received: from monolith.localdoman (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1710E3F71F;
+        Wed, 19 Aug 2020 06:33:26 -0700 (PDT)
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     mark.rutland@arm.com, maz@kernel.org, will@kernel.org,
+        catalin.marinas@arm.com, swboyd@chromium.org, sumit.garg@linaro.org
+Subject: [PATCH v6 0/7] arm_pmu: Use NMI for perf interrupt
+Date:   Wed, 19 Aug 2020 14:34:12 +0100
+Message-Id: <20200819133419.526889-1-alexandru.elisei@arm.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200716135303.276442-1-jarkko.sakkinen@linux.intel.com>
- <20200716135303.276442-22-jarkko.sakkinen@linux.intel.com>
- <CAOASepOqRfUafSv_qjUv-jW_6n8G7kZ9yh-2z_Z9sjL_2zqNCg@mail.gmail.com>
- <20200810222317.GG14724@linux.intel.com> <20200818145234.GC132200@linux.intel.com>
- <20200818150627.GD132200@linux.intel.com> <CAOASepNxu0YtSPjXynLaVgyt-S0uSad8HVrNgMNWf+Z7iamPvQ@mail.gmail.com>
- <20200818164353.GH137138@linux.intel.com>
-In-Reply-To: <20200818164353.GH137138@linux.intel.com>
-From:   Nathaniel McCallum <npmccallum@redhat.com>
-Date:   Wed, 19 Aug 2020 09:33:45 -0400
-Message-ID: <CAOASepMABkAxMRY7fJr4bAqadYyVrhZkb0BmB8cTcXUL_VmwQw@mail.gmail.com>
-Subject: Re: [PATCH v36 21/24] x86/vdso: Implement a vDSO for Intel SGX
- enclave call
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        X86 ML <x86@kernel.org>, linux-sgx@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Cedric Xing <cedric.xing@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        chenalexchen@google.com, Conrad Parker <conradparker@google.com>,
-        cyhanish@google.com, Dave Hansen <dave.hansen@intel.com>,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Neil Horman <nhorman@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 12:44 PM Jarkko Sakkinen
-<jarkko.sakkinen@linux.intel.com> wrote:
->
-> On Tue, Aug 18, 2020 at 11:15:32AM -0400, Nathaniel McCallum wrote:
-> > That seems like overkill to me. I'm just asking for one additional mov
-> > instruction. :)
->
-> I started to consider eBPF since the complexity and constraints of the
-> callback look like an overkill and without doubt will be a burden to
-> maintain.
+The series makes the arm_pmu driver use NMIs for the perf interrupt when
+NMIs are available on the platform (currently, only arm64 + GICv3). To make
+it easier to play with the patches, I've pushed a branch at [1]:
 
-That feels to me like more complexity just to move the existing
-complexity from one place to another.
+$ git clone -b pmu-nmi-v6 git://linux-arm.org/linux-ae
+
+I've tested the series on an espressobin v7*. These are the results of
+running perf record -a -- sleep 60:
+
+1. Without the patches:
+
+    16.73%  [k] arch_local_irq_enable
+    12.20%  [k] arch_cpu_idle
+     8.61%  [k] _raw_spin_unlock_irqrestore
+     4.09%  [k] arch_local_irq_enable
+     2.25%  [k] arch_local_irq_enable
+     1.82%  [k] arch_counter_get_cntpct
+     [..]
+
+2. Using NMIs:
+
+     3.37%  [k] arch_counter_get_cntpct
+     2.62%  [.] _IO_fwrite
+     1.62%  [.] __gconv_transform_ascii_internal
+     1.49%  [.] __mbrtowc
+     1.44%  [k] el0_svc_common
+     1.31%  [.] strchr
+     [..]
+
+When running perf record -a -- iperf3 -c 127.0.0.1 -t 60:
+
+1. Without the patches:
+    24.25%  [k] __arch_copy_from_user
+    20.94%  [k] __arch_copy_to_user
+     5.71%  [k] arch_local_irq_enable
+     3.12%  [k] _raw_spin_unlock_irqrestore
+     2.01%  [k] __free_pages_ok
+     1.48%  [k] arch_cpu_idle
+     [..]
+
+2. Using NMIs:
+
+    23.15%  [k] __arch_copy_from_user
+    21.68%  [k] __arch_copy_to_user
+     1.23%  [k] tcp_ack
+     1.08%  [k] tcp_sendmsg_locked
+     0.97%  [k] rmqueue
+     0.91%  [k] __free_pages_ok
+     [..]
+
+I've ran the same tests in a VM when both host+guest use NMIs, and when
+neither use them. All of these tests were also ran on the model.  Similar
+results in all cases.
+
+* All the firmware versions for espressobin v7 that I've tried clear
+SCR_EL3.FIQ, which means that NMIs don't work. To make them work on the
+board, I modified the GICv3 driver. That's why I would really appreciate
+someone testing this series on a board where NMIs work without any GIC
+changes. For people who want to test the series, but don't have a board
+with firmware that sets SCR_EL3.FIQ, I've pushed a branch [2] with the
+GICv3 drivers changes necessary to make NMIs work:
+
+$ git clone -b pmu-nmi-v6-nmi-fiq-clear-v2 git://linux-arm.org/linux-ae
+
+Summary of the patches:
+* Patch 1 is a fix for a bug that Julien found during the review for v4.
+* Patches 2 and 3 remove locking from arm64 perf event code.
+* Patches 4 and 5 makes the arm64 PMU interrupt handler NMI safe.
+* Patches 6 and 7 enable the use of NMIs on arm64 with a GICv3 irqchip.
+
+Changes since v5 [3]:
+- Rebased on top of v5.9-rc1.
+- Typo fixes.
+- Added comments to the ISB added by patches #1 and #2.
+- Reworded message for patch #4, as per Mark's excellent suggestion.
+
+Changes since v4 [4]:
+- Rebased on top of v5.8-rc1 and dropped the Tested-by tags because it's
+  been almost a year since the series has been tested.
+- Dropped patch 3 because I couldn't find any instance where
+  armv7pmu_read_counter() was called with interrupts enabled. I've also
+  tested this by running several instances of perf for a few hours, and the
+  function was called every time with interrupts disabled.
+- Dropped patches 4 and 5 because the tradeoff wasn't worth it in my
+  opinion: the irq handler was slower all the time (because it
+  saved/restored the counter select register), in exchange for being
+  slightly faster on the rare ocassions when it triggered at the beginning
+  of the critical sections.
+- Minor changes here and there to address review comments.
+
+Changes since v3 [5]:
+- Added tags
+- Fix build issue for perf_event_v6
+- Don't disable preemption in pmu->enable()
+- Always rely on IPI_IRQ_WORK to run the queued work
+- Fixed typos + cleanups
+
+Changes since v2 [6]:
+- Rebased on recent linux-next (next-20190708)
+- Fixed a number of bugs with indices (reported by Wei)
+- Minor style fixes
+
+Changes since v1 [7]:
+- Rebased on v5.1-rc1
+- Pseudo-NMI has changed a lot since then, use the (now merged) NMI API
+- Remove locking from armv7 perf_event
+- Use locking only in armv6 perf_event
+- Use direct counter/type registers insted of selector register for armv8
+
+[1] http://www.linux-arm.org/git?p=linux-ae.git;a=shortlog;h=refs/heads/pmu-nmi-v6
+[2] http://www.linux-arm.org/git?p=linux-ae.git;a=shortlog;h=refs/heads/pmu-nmi-v6-nmi-fiq-clear-v2
+[3] https://www.spinics.net/lists/kernel/msg3554236.html
+[4] https://lists.infradead.org/pipermail/linux-arm-kernel/2019-July/666824.html
+[5] https://lists.infradead.org/pipermail/linux-arm-kernel/2019-July/665339.html
+[6] https://lists.infradead.org/pipermail/linux-arm-kernel/2019-March/640536.html
+[7] https://lists.infradead.org/pipermail/linux-arm-kernel/2018-January/554611.html
+
+Alexandru Elisei (1):
+  arm64: perf: Add missing ISB in armv8pmu_enable_event()
+
+Julien Thierry (5):
+  arm64: perf: Remove PMU locking
+  arm64: perf: Defer irq_work to IPI_IRQ_WORK
+  KVM: arm64: pmu: Make overflow handler NMI safe
+  arm_pmu: Introduce pmu_irq_ops
+  arm_pmu: arm64: Use NMIs for PMU
+
+Mark Rutland (1):
+  arm64: perf: Avoid PMXEV* indirection
+
+ arch/arm64/kernel/perf_event.c | 145 +++++++++++++++++++++------------
+ arch/arm64/kvm/pmu-emul.c      |  25 +++++-
+ drivers/perf/arm_pmu.c         | 142 +++++++++++++++++++++++++++-----
+ include/kvm/arm_pmu.h          |   1 +
+ 4 files changed, 241 insertions(+), 72 deletions(-)
+
+-- 
+2.28.0
 
