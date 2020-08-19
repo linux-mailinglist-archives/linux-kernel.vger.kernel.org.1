@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918FA249D71
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF314249D6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728160AbgHSMIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 08:08:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47176 "EHLO mail.kernel.org"
+        id S1728135AbgHSMHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 08:07:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728200AbgHSLrW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 07:47:22 -0400
+        id S1727896AbgHSLr0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 07:47:26 -0400
 Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CBE322D06;
+        by mail.kernel.org (Postfix) with ESMTPSA id 81A1A22D08;
         Wed, 19 Aug 2020 11:46:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1597837582;
-        bh=1sNGLXo9ZA3HXNAzNStAdZUhW9U41Rh3Ah+qraORED8=;
+        bh=x1jF4ONUI3WvdhnDAvjBBDqTSRAPdOHh78APakRS7W0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tsJsLql88Y/1AEn2ZXDiOpKhDnxy6ZK1VvV9RNezYwJlTCwxvdyuNHSwe6Z0G/iET
-         DmxS4UKEtSqcUTrzBgTXmUIoHrbM9MgEJ/LlUTxq/1TI9HWjHzd41OFEj7Z+clnzqd
-         2W2rQKu5MVjOmSkfS7W6QIzugan/dlj3Aib7Aflk=
+        b=TIsx9hgRPqwUt4i61QKXWJfm8XMR7IbUOrgog+qwyT6heCONf4T4S5VsPuwZlt0AJ
+         4Bmhg4+b1ubLcJLo2z8GeR4QDOMKNeY/dN86Kq2TndErlRdNM0w3xzv0ilI6OowPlA
+         NI4rlLhsFV4cCIAjSHsXYq3HwiyO9bfWNLeugR+M=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1k8MXs-00Eub5-DV; Wed, 19 Aug 2020 13:46:20 +0200
+        id 1k8MXs-00Eub7-EJ; Wed, 19 Aug 2020 13:46:20 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
@@ -36,11 +36,11 @@ Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         dri-devel <dri-devel@lists.freedesktop.org>,
         Xiubin Zhang <zhangxiubin1@huawei.com>,
         Liwei Cai <cailiwei@hisilicon.com>,
-        Chen Feng <puck.chen@hisilicon.com>,
+        Wanchun Zheng <zhengwanchun@hisilicon.com>,
         devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 26/49] staging: hikey9xx/gpu: use default GEM_CMA fops
-Date:   Wed, 19 Aug 2020 13:45:54 +0200
-Message-Id: <3defe6018773d9882fdf7daf70806cd23ca02cbd.1597833138.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 27/49] staging: hikey9xx/gpu: place vblank enable/disable at the right place
+Date:   Wed, 19 Aug 2020 13:45:55 +0200
+Message-Id: <64118ff9b67f151e72518d6b32694727a18ce30c.1597833138.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1597833138.git.mchehab+huawei@kernel.org>
 References: <cover.1597833138.git.mchehab+huawei@kernel.org>
@@ -51,39 +51,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of implementing it at the code, use the default
-methods from CMA helper
+Those methods belong to crtc fops
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.c | 14 +-------------
- 1 file changed, 1 insertion(+), 13 deletions(-)
+ .../staging/hikey9xx/gpu/kirin9xx_drm_dss.c   | 21 ++++++++++---------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.c b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.c
-index cede6ccc2dd5..44f7c15f386a 100644
---- a/drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.c
-+++ b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.c
-@@ -141,19 +141,7 @@ static int kirin_drm_kms_init(struct drm_device *dev)
- 	return ret;
+diff --git a/drivers/staging/hikey9xx/gpu/kirin9xx_drm_dss.c b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_dss.c
+index e7907a0b511c..e1f2557a6be1 100644
+--- a/drivers/staging/hikey9xx/gpu/kirin9xx_drm_dss.c
++++ b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_dss.c
+@@ -391,24 +391,26 @@ static void dss_power_down(struct dss_crtc *acrtc)
+ 	ctx->power_on = false;
  }
  
--static const struct file_operations kirin_drm_fops = {
--	.owner		= THIS_MODULE,
--	.open		= drm_open,
--	.release	= drm_release,
--	.unlocked_ioctl	= drm_ioctl,
--#ifdef CONFIG_COMPAT
--	.compat_ioctl	= drm_compat_ioctl,
--#endif
--	.poll		= drm_poll,
--	.read		= drm_read,
--	.llseek		= no_llseek,
--	.mmap		= drm_gem_cma_mmap,
--};
-+DEFINE_DRM_GEM_CMA_FOPS(kirin_drm_fops);
+-static int dss_enable_vblank(struct drm_device *dev, unsigned int pipe)
++static int dss_enable_vblank(struct drm_crtc *crtc)
+ {
+-	struct kirin_drm_private *priv = dev->dev_private;
+-	struct dss_crtc *acrtc = to_dss_crtc(priv->crtc[pipe]);
++	struct dss_crtc *acrtc = to_dss_crtc(crtc);
+ 	struct dss_hw_ctx *ctx = acrtc->ctx;
  
- static int kirin_gem_cma_dumb_create(struct drm_file *file,
- 				     struct drm_device *dev,
+-	if (!ctx->power_on)
++	DRM_INFO("%s\n", __func__);
++	if (!ctx->power_on) {
++		DRM_INFO("Enabling vblank\n");
+ 		(void)dss_power_up(acrtc);
++	}
+ 
+ 	return 0;
+ }
+ 
+-static void dss_disable_vblank(struct drm_device *dev, unsigned int pipe)
++static void dss_disable_vblank(struct drm_crtc *crtc)
+ {
+-	struct kirin_drm_private *priv = dev->dev_private;
+-	struct dss_crtc *acrtc = to_dss_crtc(priv->crtc[pipe]);
++	struct dss_crtc *acrtc = to_dss_crtc(crtc);
+ 	struct dss_hw_ctx *ctx = acrtc->ctx;
+ 
++	DRM_INFO("%s\n", __func__);
+ 	if (!ctx->power_on) {
+ 		DRM_ERROR("power is down! vblank disable fail\n");
+ 		return;
+@@ -545,6 +547,8 @@ static const struct drm_crtc_funcs dss_crtc_funcs = {
+ 	.reset		= drm_atomic_helper_crtc_reset,
+ 	.atomic_duplicate_state	= drm_atomic_helper_crtc_duplicate_state,
+ 	.atomic_destroy_state	= drm_atomic_helper_crtc_destroy_state,
++	.enable_vblank = dss_enable_vblank,
++	.disable_vblank = dss_disable_vblank,
+ };
+ 
+ static int dss_crtc_init(struct drm_device *dev, struct drm_crtc *crtc,
+@@ -928,9 +932,6 @@ static int dss_drm_init(struct drm_device *dev)
+ 
+ 	disable_irq(ctx->irq);
+ 
+-	dev->driver->enable_vblank = dss_enable_vblank;
+-	dev->driver->disable_vblank = dss_disable_vblank;
+-
+ 	return 0;
+ }
+ 
 -- 
 2.26.2
 
