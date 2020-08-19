@@ -2,62 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B0524971C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E2B24975E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727920AbgHSHZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 03:25:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40966 "EHLO
+        id S1728024AbgHSH3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 03:29:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726854AbgHSHYS (ORCPT
+        with ESMTP id S1726731AbgHSHYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 03:24:18 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2CF8C061350
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 00:24:13 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id g75so1116164wme.4
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 00:24:13 -0700 (PDT)
+        Wed, 19 Aug 2020 03:24:19 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C89AC061359
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 00:24:15 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id g8so1078959wmk.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 00:24:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=2BVsdrFO67l+LY2/RUcOBcwvHM2Wo8sTbd6g8xd/h5g=;
-        b=mujsbfdO8EPBn3dEm0AoUidJtUtgMIe3rCiUJTGjLX3Of158SoNm0koW6RMNXvRJ/8
-         lmzpDeWgkzzlsBh1dkX94BKJ3fyVLHI4T9Ilj1yREwQ+2unf4WiSBef0NTlTQIBSS52E
-         Y+J94jgeNaHh0/B/l2vklzeWB+Sh1oB4lQfFLe/+ItNVTU16zyLGgCkOuuHE+6fExHeF
-         Pg0C28K20jhWeJOlMn9pVb9Q/4HMZs0tmZFsGIcuYFOSAcGwBV80k25bzyzxhBkEYzLd
-         ixSGSFBGYU2yUcpV/njAISleaur9hsNtMbg1cJ0e5gqoSyLVKFUa/bk2UDRYTEAgllnE
-         9KPw==
+        bh=JMy0Elzxv6D70JA3ki/IhZMZdSeQ2746f7kuidJvSJA=;
+        b=KewUdkqIeiH999bep6LBPSowaQhIkhIKmDzotMinsOFwZ1b9eEVdgbQ9qhlSlP7ghz
+         qrhJon7dBHxLHyOEhb8qunfpMt10g/1IiTwNonnepmwhPkvwRsVhqr5gxHsqLPmu9u9B
+         FTbzj8uXY4h6oeAMuyz79Wdz6+pCzV3iG+CWq3JP0tw1o3Rwr/ardJlmASb6g0hct23x
+         4hTE8OLmwQhyNMNwED1LgxnjwTa1qGiIi9ebfM5Dsk/R/QG0CU3qv/gYXzBwdXbgdruO
+         w0pwhq/ldBbRfTuFUdlYHqmaDi8+YHJ0ECYagZNWZpfLIhVeLeD5w0iihdojw9T2uQRp
+         ZzWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=2BVsdrFO67l+LY2/RUcOBcwvHM2Wo8sTbd6g8xd/h5g=;
-        b=hhoUfnVHZ83iceHHAINKjtCpGxsNCvKrJsZWMdqjIFlBBZUWONQGESpkQ7G95OYin1
-         DcG57YlVbqh0hiQBX3KrgP6rbBrgob5IjRu1Y6Kswv5RdO3LUPTx9YUlnvqL7QT5EszX
-         OJizzrweukN2S9HivSt2Yp2kTewXMYzXVUaJH2QTXnxYWfFqSQOVcbkaTw5Qj9Ys9ryQ
-         oLVpS0bOB/9GZjIcDUyKQI8kvFyN1hnbg4DFOyeaYH4i6jIjfLhQPGEaZKg8MKQ+quI5
-         icoWLjGQ37Zv0pjYZFus1ewPGkOMLvTfBXEhtruOWEM6ywO9eoqlP3rwJSKXXskSOCsA
-         UJzQ==
-X-Gm-Message-State: AOAM533+ygVOMTt9G6SLMiF5iMCmmdpW4PRLEwBWWwm0vE0QuiemMlUD
-        fWUzMrzX6fSh3ZZJHzsNBEUe2A==
-X-Google-Smtp-Source: ABdhPJxIoUgrKQMpLoNqNQxcmnOWW8PzaBUbxjBOwkWVoTHhuCMKJfEJKdhkN/M7RLhyWURYk4tzzQ==
-X-Received: by 2002:a1c:286:: with SMTP id 128mr3361675wmc.37.1597821852427;
-        Wed, 19 Aug 2020 00:24:12 -0700 (PDT)
+        bh=JMy0Elzxv6D70JA3ki/IhZMZdSeQ2746f7kuidJvSJA=;
+        b=HrwaHhkhFDywo/2WEJ53RgBEinQ6arJG9IZhy8EFY2dCOd//cXPZL13N88IeEpioOE
+         2pGgAOjAne0OKQ9e9IL3qiE+rqWw+4f0j2taHmHjVwpzuYxOWXEA90vH+bTzAUDjkhxI
+         DnURjtG+0jo0MPX+0yMoAQVkI8qhZ4FoBFBSyJWmRPrrlmHcFNIlT3kir+dDJt5SazMy
+         EZkolI5OtkVUMYREwDGxQuMRRo/b6B9DdX/c0GgUiwTmkJkIvmWhcucAUXCDLZADdXMP
+         7IQETxlGUOaUOAG30VFI5soWXtUQSeQ3rVOr/5DBFViFJmmUA+cc87opiVUCjItFiiNP
+         GGBg==
+X-Gm-Message-State: AOAM5314q7gfCsRYa53hGhxLdTVATVqIaM7BFSrWLljnyuJ2CM/VznqT
+        rQE7fWPsFVnUJUYv4mu9Y+SO8vj2+po9kA==
+X-Google-Smtp-Source: ABdhPJx0sP8MG924kEf6+OIAY1Jj5GkNQ0h7vfu5QspVEITQS5Wui0ZSPoKkeGPnDpsYmB7w40HiPQ==
+X-Received: by 2002:a1c:96d7:: with SMTP id y206mr3485361wmd.9.1597821853823;
+        Wed, 19 Aug 2020 00:24:13 -0700 (PDT)
 Received: from dell.default ([95.149.164.62])
-        by smtp.gmail.com with ESMTPSA id c145sm3795808wmd.7.2020.08.19.00.24.11
+        by smtp.gmail.com with ESMTPSA id c145sm3795808wmd.7.2020.08.19.00.24.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 00:24:11 -0700 (PDT)
+        Wed, 19 Aug 2020 00:24:13 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
 Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Hari Nagalla <hnagalla@gmail.com>, Guy Mishol <guym@ti.com>,
-        Maital Hahn <maitalm@ti.com>,
-        Luciano Coelho <luciano.coelho@nokia.com>
-Subject: [PATCH 06/28] wireless: ti: wlcore: cmd: Fix some parameter description disparities
-Date:   Wed, 19 Aug 2020 08:23:40 +0100
-Message-Id: <20200819072402.3085022-7-lee.jones@linaro.org>
+        netdev@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 07/28] wireless: marvell: libertas_tf: Fix a bunch of function doc formatting issues
+Date:   Wed, 19 Aug 2020 08:23:41 +0100
+Message-Id: <20200819072402.3085022-8-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200819072402.3085022-1-lee.jones@linaro.org>
 References: <20200819072402.3085022-1-lee.jones@linaro.org>
@@ -68,53 +65,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Firstly a rename, then a split (there are 2 'len's that need documenting).
+Kerneldoc expects attributes/parameters to be in '@*.: ' format and
+gets confused if the variable does not follow the type/attribute
+definitions.
+
+Also demote one stray non-kernel-doc header.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/net/wireless/ti/wlcore/cmd.c:832: warning: Function parameter or member 'buf_len' not described in 'wl1271_cmd_test'
- drivers/net/wireless/ti/wlcore/cmd.c:832: warning: Excess function parameter 'len' description in 'wl1271_cmd_test'
- drivers/net/wireless/ti/wlcore/cmd.c:862: warning: Function parameter or member 'cmd_len' not described in 'wl1271_cmd_interrogate'
- drivers/net/wireless/ti/wlcore/cmd.c:862: warning: Function parameter or member 'res_len' not described in 'wl1271_cmd_interrogate'
- drivers/net/wireless/ti/wlcore/cmd.c:862: warning: Excess function parameter 'len' description in 'wl1271_cmd_interrogate'
+ drivers/net/wireless/marvell/libertas_tf/cmd.c:44: warning: Function parameter or member 'priv' not described in 'lbtf_cmd_copyback'
+ drivers/net/wireless/marvell/libertas_tf/cmd.c:44: warning: Function parameter or member 'extra' not described in 'lbtf_cmd_copyback'
+ drivers/net/wireless/marvell/libertas_tf/cmd.c:44: warning: Function parameter or member 'resp' not described in 'lbtf_cmd_copyback'
+ drivers/net/wireless/marvell/libertas_tf/cmd.c:80: warning: Function parameter or member 'priv' not described in 'lbtf_update_hw_spec'
+ drivers/net/wireless/marvell/libertas_tf/cmd.c:150: warning: Function parameter or member 'priv' not described in 'lbtf_set_channel'
+ drivers/net/wireless/marvell/libertas_tf/cmd.c:150: warning: Function parameter or member 'channel' not described in 'lbtf_set_channel'
+ drivers/net/wireless/marvell/libertas_tf/cmd.c:277: warning: Function parameter or member 'priv' not described in '__lbtf_cleanup_and_insert_cmd'
+ drivers/net/wireless/marvell/libertas_tf/cmd.c:277: warning: Function parameter or member 'cmdnode' not described in '__lbtf_cleanup_and_insert_cmd'
+ drivers/net/wireless/marvell/libertas_tf/cmd.c:442: warning: Function parameter or member 'priv' not described in 'lbtf_allocate_cmd_buffer'
+ drivers/net/wireless/marvell/libertas_tf/cmd.c:490: warning: Function parameter or member 'priv' not described in 'lbtf_free_cmd_buffer'
+ drivers/net/wireless/marvell/libertas_tf/cmd.c:527: warning: Function parameter or member 'priv' not described in 'lbtf_get_cmd_ctrl_node'
+ drivers/net/wireless/marvell/libertas_tf/cmd.c:561: warning: Function parameter or member 'priv' not described in 'lbtf_execute_next_command'
 
 Cc: Kalle Valo <kvalo@codeaurora.org>
 Cc: "David S. Miller" <davem@davemloft.net>
 Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Hari Nagalla <hnagalla@gmail.com>
-Cc: Guy Mishol <guym@ti.com>
-Cc: Maital Hahn <maitalm@ti.com>
-Cc: Luciano Coelho <luciano.coelho@nokia.com>
 Cc: linux-wireless@vger.kernel.org
 Cc: netdev@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/net/wireless/ti/wlcore/cmd.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ .../net/wireless/marvell/libertas_tf/cmd.c    | 22 +++++++++----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/wireless/ti/wlcore/cmd.c b/drivers/net/wireless/ti/wlcore/cmd.c
-index 6ef8fc9ae6271..745101633a3f1 100644
---- a/drivers/net/wireless/ti/wlcore/cmd.c
-+++ b/drivers/net/wireless/ti/wlcore/cmd.c
-@@ -825,7 +825,7 @@ int wl12xx_cmd_role_start_ibss(struct wl1271 *wl, struct wl12xx_vif *wlvif)
+diff --git a/drivers/net/wireless/marvell/libertas_tf/cmd.c b/drivers/net/wireless/marvell/libertas_tf/cmd.c
+index a0b4c9debc11f..efb98304555ad 100644
+--- a/drivers/net/wireless/marvell/libertas_tf/cmd.c
++++ b/drivers/net/wireless/marvell/libertas_tf/cmd.c
+@@ -32,10 +32,10 @@ static struct cmd_ctrl_node *lbtf_get_cmd_ctrl_node(struct lbtf_private *priv);
+ /**
+  *  lbtf_cmd_copyback - Simple callback that copies response back into command
   *
-  * @wl: wl struct
-  * @buf: buffer containing the command, with all headers, must work with dma
-- * @len: length of the buffer
-+ * @buf_len: length of the buffer
-  * @answer: is answer needed
+- *  @priv	A pointer to struct lbtf_private structure
+- *  @extra	A pointer to the original command structure for which
++ *  @priv:	A pointer to struct lbtf_private structure
++ *  @extra:	A pointer to the original command structure for which
+  *		'resp' is a response
+- *  @resp	A pointer to the command response
++ *  @resp:	A pointer to the command response
+  *
+  *  Returns: 0 on success, error on failure
   */
- int wl1271_cmd_test(struct wl1271 *wl, void *buf, size_t buf_len, u8 answer)
-@@ -855,7 +855,8 @@ EXPORT_SYMBOL_GPL(wl1271_cmd_test);
-  * @wl: wl struct
-  * @id: acx id
-  * @buf: buffer for the response, including all headers, must work with dma
-- * @len: length of buf
-+ * @cmd_len: length of command
-+ * @res_len: length of payload
+@@ -72,7 +72,7 @@ static void lbtf_geo_init(struct lbtf_private *priv)
+ /**
+  *  lbtf_update_hw_spec: Updates the hardware details.
+  *
+- *  @priv    	A pointer to struct lbtf_private structure
++ *  @priv:    	A pointer to struct lbtf_private structure
+  *
+  *  Returns: 0 on success, error on failure
   */
- int wl1271_cmd_interrogate(struct wl1271 *wl, u16 id, void *buf,
- 			   size_t cmd_len, size_t res_len)
+@@ -141,8 +141,8 @@ int lbtf_update_hw_spec(struct lbtf_private *priv)
+ /**
+  *  lbtf_set_channel: Set the radio channel
+  *
+- *  @priv	A pointer to struct lbtf_private structure
+- *  @channel	The desired channel, or 0 to clear a locked channel
++ *  @priv:	A pointer to struct lbtf_private structure
++ *  @channel:	The desired channel, or 0 to clear a locked channel
+  *
+  *  Returns: 0 on success, error on failure
+  */
+@@ -268,7 +268,7 @@ static void lbtf_submit_command(struct lbtf_private *priv,
+ 	lbtf_deb_leave(LBTF_DEB_HOST);
+ }
+ 
+-/**
++/*
+  *  This function inserts command node to cmdfreeq
+  *  after cleans it. Requires priv->driver_lock held.
+  */
+@@ -434,7 +434,7 @@ void lbtf_set_mac_control(struct lbtf_private *priv)
+ /**
+  *  lbtf_allocate_cmd_buffer - Allocates cmd buffer, links it to free cmd queue
+  *
+- *  @priv	A pointer to struct lbtf_private structure
++ *  @priv:	A pointer to struct lbtf_private structure
+  *
+  *  Returns: 0 on success.
+  */
+@@ -482,7 +482,7 @@ int lbtf_allocate_cmd_buffer(struct lbtf_private *priv)
+ /**
+  *  lbtf_free_cmd_buffer - Frees the cmd buffer.
+  *
+- *  @priv	A pointer to struct lbtf_private structure
++ *  @priv:	A pointer to struct lbtf_private structure
+  *
+  *  Returns: 0
+  */
+@@ -519,7 +519,7 @@ int lbtf_free_cmd_buffer(struct lbtf_private *priv)
+ /**
+  *  lbtf_get_cmd_ctrl_node - Gets free cmd node from free cmd queue.
+  *
+- *  @priv		A pointer to struct lbtf_private structure
++ *  @priv:		A pointer to struct lbtf_private structure
+  *
+  *  Returns: pointer to a struct cmd_ctrl_node or NULL if none available.
+  */
+@@ -553,7 +553,7 @@ static struct cmd_ctrl_node *lbtf_get_cmd_ctrl_node(struct lbtf_private *priv)
+ /**
+  *  lbtf_execute_next_command: execute next command in cmd pending queue.
+  *
+- *  @priv     A pointer to struct lbtf_private structure
++ *  @priv:     A pointer to struct lbtf_private structure
+  *
+  *  Returns: 0 on success.
+  */
 -- 
 2.25.1
 
