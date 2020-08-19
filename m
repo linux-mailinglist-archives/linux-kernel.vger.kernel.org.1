@@ -2,77 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6914249D6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 361D6249D7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728036AbgHSMHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 08:07:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45396 "EHLO mail.kernel.org"
+        id S1727896AbgHSMKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 08:10:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728254AbgHSMGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 08:06:45 -0400
-Received: from localhost (unknown [213.57.247.131])
+        id S1728200AbgHSMIe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 08:08:34 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 32B862063A;
-        Wed, 19 Aug 2020 12:06:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C9E36205CB;
+        Wed, 19 Aug 2020 12:08:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597838804;
-        bh=9+A5km3rBzonFlpdLOc0whd9dr9SchgC9q+8u5/c76o=;
-        h=From:To:Cc:Subject:Date:From;
-        b=EqviEmp8C9kRTc1t3ll7o04U9C+mageaSvMQi+eTgEkaJAfNO+/TmnpTtKM4Nvz4H
-         bxNgdgvqJkdTcKQzQkGRpyD4F9j4VO9dAwWKJ0xVSPlyt5SUUobxXDvLEKlZ5XTCkk
-         Jp+IfvNW6MUMRhr2/wHylrlkek3h+ytm1EFhLeks=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-fsdevel@vger.kernel.org,
+        s=default; t=1597838914;
+        bh=ds1bI2FNOetemI0iGOxjd//vmJ7FuX5vgPU2SVW5nOQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p/C6dXOhGr5YrrBD8slToXpFiWvIHbiPDOvXWigza0lxxRXRnLPlwHZI9paHkeb1N
+         M4gl2HAbv84kIqey4gd+t1DIqIUOzNWzBwTs+HjZfQOz2ZzOHlBj8j0wQzyRs7DuNg
+         Werlhf12WnCxzoLwZubGDmLmSuSP0vTLPYlyy/EY=
+Date:   Wed, 19 Aug 2020 14:08:56 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     penghao <penghao@uniontech.com>
+Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v1] fs: Add function declaration of simple_dname
-Date:   Wed, 19 Aug 2020 15:06:40 +0300
-Message-Id: <20200819120640.939889-1-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
+Subject: Re: [PATCH] USB HID: Add disabled wakeup from s3 by touchpad on byd
+ zhaoxin notebook
+Message-ID: <20200819120856.GA931936@kroah.com>
+References: <20200819115101.22532-1-penghao@uniontech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200819115101.22532-1-penghao@uniontech.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Wed, Aug 19, 2020 at 07:51:01PM +0800, penghao wrote:
+> BYD Notebook built-in touch pad, USB interface,so disabled,the touch pad
+> device idVendor 0x0c45 idProduct 0x7056
+> 
+> Signed-off-by: penghao <penghao@uniontech.com>
+> ---
+>  drivers/hid/usbhid/hid-core.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
+> index 492dd641a25d..630a3cad211f 100644
+> --- a/drivers/hid/usbhid/hid-core.c
+> +++ b/drivers/hid/usbhid/hid-core.c
+> @@ -1193,7 +1193,13 @@ static int usbhid_start(struct hid_device *hid)
+>  			interface->desc.bInterfaceProtocol ==
+>  				USB_INTERFACE_PROTOCOL_KEYBOARD) {
+>  		usbhid_set_leds(hid);
+> -		device_set_wakeup_enable(&dev->dev, 1);
+> +		/*
+> +		 * USB HID: Add disabled touchpad wakeup on byd zhaoxin notebook
+> +		 */
+> +		if ((hid->vendor == 0x0c45) && (hid->product == 0x7056))
+> +			device_set_wakeup_enable(&dev->dev, 0);
+> +		else
+> +			device_set_wakeup_enable(&dev->dev, 1);
 
-The simple_dname() is declared in internal header file but the
-declaration is missing in d_path.c.
+Shouldn't this be a quirk somewhere instead of this core check?
 
-The compilation with W=1 generates the following GCC warning.
+thanks,
 
-fs/d_path.c:311:7: warning: no previous prototype for 'simple_dname' [-Wmissing-prototypes]
-  311 | char *simple_dname(struct dentry *dentry, char *buffer, int buflen)
-      |       ^~~~~~~~~~~~
-
-Fixes: 7e5f7bb08b8c ("unexport simple_dname()")
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
-Changelog:
-v1: Dropped "extern" removal chunk
-v0: https://lore.kernel.org/lkml/20200819083259.919838-1-leon@kernel.org/
----
- fs/d_path.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/d_path.c b/fs/d_path.c
-index 0f1fc1743302..4b89448cc78e 100644
---- a/fs/d_path.c
-+++ b/fs/d_path.c
-@@ -8,6 +8,8 @@
- #include <linux/prefetch.h>
- #include "mount.h"
-
-+#include "internal.h"
-+
- static int prepend(char **buffer, int *buflen, const char *str, int namelen)
- {
- 	*buflen -= namelen;
---
-2.26.2
-
+greg k-h
