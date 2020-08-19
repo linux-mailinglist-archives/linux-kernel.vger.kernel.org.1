@@ -2,376 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DEE1249E4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C2E249E5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728208AbgHSMmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 08:42:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33436 "EHLO
+        id S1728373AbgHSMn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 08:43:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728189AbgHSMlz (ORCPT
+        with ESMTP id S1728301AbgHSMnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 08:41:55 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59078C061342
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 05:41:54 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id o18so26094871eje.7
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 05:41:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/y3jRYjISN6SJ5xQ83KSW3ddpwc4GdyAtPJH5CRfRJ0=;
-        b=MMwcAkNPoxSXmPkz0pR7sTwo66Xg5xE8uIJAgcgY7tIE1K+xayzXU/yLxzn1EmRPBz
-         cqK+MOxm4aZbhj43T3YSsPW3XM1y4yq7glyAHROQ4b1KQRxmH1gLlBRq+rhvyuZrYS+x
-         bdxpA7wELpjNG4SRngDWN43obystfj96snvms=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/y3jRYjISN6SJ5xQ83KSW3ddpwc4GdyAtPJH5CRfRJ0=;
-        b=kgo7fML64d9Qa1I178wQr32aLdEwOkt5fj/iwFr+vVOhaiyVQj1Av5rdi3tD03pdYK
-         JOynY1ZYkWKr8Er5d9Y87V/Z72hRIVBGbQxAkrd87L+AnSxd1w9gHIoV/xGOM/qze9tN
-         Tp2VOtCqnimrwtWWrwcAA8HkUNTnXBXqcHzBo94VBWROWvioFwm8ONpNg2LAFH9FTQSw
-         ySZI9qLMRn6Fsa1mlHssC3pIgYcNLpQqLMp79cwYeIUz1+m5DHqudzSOhoJAyel8bVU5
-         HnOxtwNekQR3WHu4bcm3lfzTLxig78Iw11Q1jiRRwLelpKApueQyMUPT4AFs+7hG0iTX
-         O8sQ==
-X-Gm-Message-State: AOAM5301dYtSUiH7tdMDzPw7eE9LqDWFIsuClHshr3eVuCH9RsAAuMIb
-        EO6bv//qPOMw01eb0+4cM9EGrw==
-X-Google-Smtp-Source: ABdhPJzARsZBOTQokn+pLPQqdAoHgnbmZAYTqgVRhFkyXjlQCLD8bRL5hnqaqrbxwy82mMtNYBxSig==
-X-Received: by 2002:a17:906:86c9:: with SMTP id j9mr24478953ejy.5.1597840912462;
-        Wed, 19 Aug 2020 05:41:52 -0700 (PDT)
-Received: from [192.168.2.66] ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id t3sm17820566edq.26.2020.08.19.05.41.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Aug 2020 05:41:51 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v8 3/7] bpf: Generalize bpf_sk_storage
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>
-References: <20200803164655.1924498-1-kpsingh@chromium.org>
- <20200803164655.1924498-4-kpsingh@chromium.org>
- <20200818010545.iix72le4tkhuyqe5@kafai-mbp.dhcp.thefacebook.com>
-From:   KP Singh <kpsingh@chromium.org>
-Message-ID: <6cb51fa0-61a5-2cf6-b44d-84d58d08c775@chromium.org>
-Date:   Wed, 19 Aug 2020 14:41:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200818010545.iix72le4tkhuyqe5@kafai-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Wed, 19 Aug 2020 08:43:06 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A099C061383
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 05:43:05 -0700 (PDT)
+Received: from ramsan ([84.195.186.194])
+        by laurent.telenet-ops.be with bizsmtp
+        id HQj4230084C55Sk01Qj4Eo; Wed, 19 Aug 2020 14:43:04 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1k8NQm-0002Mr-3U; Wed, 19 Aug 2020 14:43:04 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1k8NQm-0005D7-1w; Wed, 19 Aug 2020 14:43:04 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v4] dt-bindings: timer: renesas: tmu: Convert to json-schema
+Date:   Wed, 19 Aug 2020 14:43:02 +0200
+Message-Id: <20200819124302.19988-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Convert the Renesas R-Mobile/R-Car Timer Unit (TMU) Device Tree binding
+documentation to json-schema.
 
+Document missing properties.
+Update the example to match reality.
 
-On 8/18/20 3:05 AM, Martin KaFai Lau wrote:
-> On Mon, Aug 03, 2020 at 06:46:51PM +0200, KP Singh wrote:
->> From: KP Singh <kpsingh@google.com>
->>
->> Refactor the functionality in bpf_sk_storage.c so that concept of
->> storage linked to kernel objects can be extended to other objects like
->> inode, task_struct etc.
->>
->> Each new local storage will still be a separate map and provide its own
->> set of helpers. This allows for future object specific extensions and
->> still share a lot of the underlying implementation.
->>
->> This includes the changes suggested by Martin in:
->>
->>   https://lore.kernel.org/bpf/20200725013047.4006241-1-kafai@fb.com/
->>
->> which adds map_local_storage_charge, map_local_storage_uncharge,
->> and map_owner_storage_ptr.
-> A description will still be useful in the commit message to talk
-> about the new map_ops, e.g.
-> they allow kernel object to optionally have different mem-charge strategy.
-> 
->>
->> Co-developed-by: Martin KaFai Lau <kafai@fb.com>
->> Signed-off-by: KP Singh <kpsingh@google.com>
->> ---
->>  include/linux/bpf.h            |   9 ++
->>  include/net/bpf_sk_storage.h   |  51 +++++++
->>  include/uapi/linux/bpf.h       |   8 +-
->>  net/core/bpf_sk_storage.c      | 246 +++++++++++++++++++++------------
->>  tools/include/uapi/linux/bpf.h |   8 +-
->>  5 files changed, 233 insertions(+), 89 deletions(-)
->>
->> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->> index cef4ef0d2b4e..8e1e23c60dc7 100644
->> --- a/include/linux/bpf.h
->> +++ b/include/linux/bpf.h
->> @@ -34,6 +34,9 @@ struct btf_type;
->>  struct exception_table_entry;
->>  struct seq_operations;
->>  struct bpf_iter_aux_info;
->> +struct bpf_local_storage;
->> +struct bpf_local_storage_map;
->> +struct bpf_local_storage_elem;
-> "struct bpf_local_storage_elem" is not needed.
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+v4:
+  - Rebase on top of "dt-bindings: timer: renesas,tmu: Document r8a774e1
+    bindings",
 
-True, I moved it to bpf_sk_storage.h because it's needed there.
+v3:
+  - Remove unneeded 'allOf' container around '$ref',
 
-> 
->>  
->>  extern struct idr btf_idr;
->>  extern spinlock_t btf_idr_lock;
->> @@ -104,6 +107,12 @@ struct bpf_map_ops {
->>  	__poll_t (*map_poll)(struct bpf_map *map, struct file *filp,
->>  			     struct poll_table_struct *pts);
->>  
->> +	/* Functions called by bpf_local_storage maps */
->> +	int (*map_local_storage_charge)(struct bpf_local_storage_map *smap,
->> +					void *owner, u32 size);
->> +	void (*map_local_storage_uncharge)(struct bpf_local_storage_map *smap,
->> +					   void *owner, u32 size);
->> +	struct bpf_local_storage __rcu ** (*map_owner_storage_ptr)(void *owner);
+v2:
+  - Add missing "additionalProperties: false",
+  - Add Reviewed-by.
+---
+ .../devicetree/bindings/timer/renesas,tmu.txt | 50 ----------
+ .../bindings/timer/renesas,tmu.yaml           | 99 +++++++++++++++++++
+ 2 files changed, 99 insertions(+), 50 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/timer/renesas,tmu.txt
+ create mode 100644 Documentation/devicetree/bindings/timer/renesas,tmu.yaml
 
+diff --git a/Documentation/devicetree/bindings/timer/renesas,tmu.txt b/Documentation/devicetree/bindings/timer/renesas,tmu.txt
+deleted file mode 100644
+index a36cd61e74fba52e..0000000000000000
+--- a/Documentation/devicetree/bindings/timer/renesas,tmu.txt
++++ /dev/null
+@@ -1,50 +0,0 @@
+-* Renesas R-Mobile/R-Car Timer Unit (TMU)
+-
+-The TMU is a 32-bit timer/counter with configurable clock inputs and
+-programmable compare match.
+-
+-Channels share hardware resources but their counter and compare match value
+-are independent. The TMU hardware supports up to three channels.
+-
+-Required Properties:
+-
+-  - compatible: must contain one or more of the following:
+-    - "renesas,tmu-r8a7740" for the r8a7740 TMU
+-    - "renesas,tmu-r8a774a1" for the r8a774A1 TMU
+-    - "renesas,tmu-r8a774b1" for the r8a774B1 TMU
+-    - "renesas,tmu-r8a774c0" for the r8a774C0 TMU
+-    - "renesas,tmu-r8a774e1" for the r8a774E1 TMU
+-    - "renesas,tmu-r8a7778" for the r8a7778 TMU
+-    - "renesas,tmu-r8a7779" for the r8a7779 TMU
+-    - "renesas,tmu-r8a77970" for the r8a77970 TMU
+-    - "renesas,tmu-r8a77980" for the r8a77980 TMU
+-    - "renesas,tmu" for any TMU.
+-      This is a fallback for the above renesas,tmu-* entries
+-
+-  - reg: base address and length of the registers block for the timer module.
+-
+-  - interrupts: interrupt-specifier for the timer, one per channel.
+-
+-  - clocks: a list of phandle + clock-specifier pairs, one for each entry
+-    in clock-names.
+-  - clock-names: must contain "fck" for the functional clock.
+-
+-Optional Properties:
+-
+-  - #renesas,channels: number of channels implemented by the timer, must be 2
+-    or 3 (if not specified the value defaults to 3).
+-
+-
+-Example: R8A7779 (R-Car H1) TMU0 node
+-
+-	tmu0: timer@ffd80000 {
+-		compatible = "renesas,tmu-r8a7779", "renesas,tmu";
+-		reg = <0xffd80000 0x30>;
+-		interrupts = <0 32 IRQ_TYPE_LEVEL_HIGH>,
+-			     <0 33 IRQ_TYPE_LEVEL_HIGH>,
+-			     <0 34 IRQ_TYPE_LEVEL_HIGH>;
+-		clocks = <&mstp0_clks R8A7779_CLK_TMU0>;
+-		clock-names = "fck";
+-
+-		#renesas,channels = <3>;
+-	};
+diff --git a/Documentation/devicetree/bindings/timer/renesas,tmu.yaml b/Documentation/devicetree/bindings/timer/renesas,tmu.yaml
+new file mode 100644
+index 0000000000000000..c54188731a1bd7c1
+--- /dev/null
++++ b/Documentation/devicetree/bindings/timer/renesas,tmu.yaml
+@@ -0,0 +1,99 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/timer/renesas,tmu.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Renesas R-Mobile/R-Car Timer Unit (TMU)
++
++maintainers:
++  - Geert Uytterhoeven <geert+renesas@glider.be>
++  - Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
++
++description:
++  The TMU is a 32-bit timer/counter with configurable clock inputs and
++  programmable compare match.
++
++  Channels share hardware resources but their counter and compare match value
++  are independent. The TMU hardware supports up to three channels.
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - renesas,tmu-r8a7740  # R-Mobile A1
++          - renesas,tmu-r8a774a1 # RZ/G2M
++          - renesas,tmu-r8a774b1 # RZ/G2N
++          - renesas,tmu-r8a774c0 # RZ/G2E
++          - renesas,tmu-r8a774e1 # RZ/G2H
++          - renesas,tmu-r8a7778  # R-Car M1A
++          - renesas,tmu-r8a7779  # R-Car H1
++          - renesas,tmu-r8a77970 # R-Car V3M
++          - renesas,tmu-r8a77980 # R-Car V3H
++      - const: renesas,tmu
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    minItems: 2
++    maxItems: 3
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    const: fck
++
++  power-domains:
++    maxItems: 1
++
++  resets:
++    maxItems: 1
++
++  '#renesas,channels':
++    description:
++      Number of channels implemented by the timer.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [ 2, 3 ]
++    default: 3
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - power-domains
++
++if:
++  not:
++    properties:
++      compatible:
++        contains:
++          enum:
++            - renesas,tmu-r8a7740
++            - renesas,tmu-r8a7778
++            - renesas,tmu-r8a7779
++then:
++  required:
++    - resets
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/r8a7779-clock.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/power/r8a7779-sysc.h>
++    tmu0: timer@ffd80000 {
++            compatible = "renesas,tmu-r8a7779", "renesas,tmu";
++            reg = <0xffd80000 0x30>;
++            interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>,
++                         <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>,
++                         <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>;
++            clocks = <&mstp0_clks R8A7779_CLK_TMU0>;
++            clock-names = "fck";
++            power-domains = <&sysc R8A7779_PD_ALWAYS_ON>;
++            #renesas,channels = <3>;
++    };
+-- 
+2.17.1
 
-[...]
-
->> +			struct bpf_local_storage_map *smap,
->> +			struct bpf_local_storage_elem *first_selem);
->> +
->> +struct bpf_local_storage_data *
->> +bpf_local_storage_update(void *owner, struct bpf_map *map, void *value,
-> Nit.  It may be more consistent to take "struct bpf_local_storage_map *smap"
-> instead of "struct bpf_map *map" here.
-> 
-> bpf_local_storage_map_check_btf() will be the only one taking
-> "struct bpf_map *map".
-
-That's because it is used in map operations as map_check_btf which expects
-a bpf_map *map pointer. We can wrap it in another function but is that
-worth doing? 
-
-> 
->> +			 u64 map_flags);
->> +
->>  #ifdef CONFIG_BPF_SYSCALL
->>  int bpf_sk_storage_clone(const struct sock *sk, struct sock *newsk);
->>  struct bpf_sk_storage_diag *
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index b134e679e9db..35629752cec8 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
->> @@ -3647,9 +3647,13 @@ enum {
->>  	BPF_F_SYSCTL_BASE_NAME		= (1ULL << 0),
->>  };
->>  
->> -/* BPF_FUNC_sk_storage_get flags */
->> +/* BPF_FUNC_<local>_storage_get flags */
-> BPF_FUNC_<kernel_obj>_storage_get flags?
-> 
-
-Done.
-
->>  enum {
->> -	BPF_SK_STORAGE_GET_F_CREATE	= (1ULL << 0),
->> +	BPF_LOCAL_STORAGE_GET_F_CREATE	= (1ULL << 0),
->> +	/* BPF_SK_STORAGE_GET_F_CREATE is only kept for backward compatibility
->> +	 * and BPF_LOCAL_STORAGE_GET_F_CREATE must be used instead.
->> +	 */
->> +	BPF_SK_STORAGE_GET_F_CREATE  = BPF_LOCAL_STORAGE_GET_F_CREATE,
->>  };
->>  
->>  /* BPF_FUNC_read_branch_records flags. */
->> diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
->> index 99dde7b74767..bb2375769ca1 100644
->> --- a/net/core/bpf_sk_storage.c
->> +++ b/net/core/bpf_sk_storage.c
->> @@ -84,7 +84,7 @@ struct bpf_local_storage_elem {
->>  struct bpf_local_storage {
->>  	struct bpf_local_storage_data __rcu *cache[BPF_LOCAL_STORAGE_CACHE_SIZE];
->>  	struct hlist_head list; /* List of bpf_local_storage_elem */
->> -	struct sock *owner;	/* The object that owns the the above "list" of
-
-[...]
-
->>  }
->>  
->> -/* sk_storage->lock must be held and selem->sk_storage == sk_storage.
->> +/* local_storage->lock must be held and selem->sk_storage == sk_storage.
-> This name change belongs to patch 1.
-> 
-> Also,
-> selem->"local_"storage == "local_"storage
-
-Done.
-
-> 
->>   * The caller must ensure selem->smap is still valid to be
->>   * dereferenced for its smap->elem_size and smap->cache_idx.
->>   */
-> 
-> [ ... ]
-> 
->> @@ -367,7 +401,7 @@ static int sk_storage_alloc(struct sock *sk,
->>  		/* Note that even first_selem was linked to smap's
->>  		 * bucket->list, first_selem can be freed immediately
->>  		 * (instead of kfree_rcu) because
->> -		 * bpf_sk_storage_map_free() does a
->> +		 * bpf_local_storage_map_free() does a
-
-
-[...]
-
->>  			kfree(selem);
->> -			atomic_sub(smap->elem_size, &sk->sk_omem_alloc);
->> +			mem_uncharge(smap, owner, smap->elem_size);
->>  			return ERR_PTR(err);
->>  		}
->>  
->> @@ -430,8 +464,8 @@ bpf_local_storage_update(struct sock *sk, struct bpf_map *map, void *value,
->>  		 * such that it can avoid taking the local_storage->lock
->>  		 * and changing the lists.
->>  		 */
->> -		old_sdata =
->> -			bpf_local_storage_lookup(local_storage, smap, false);
->> +		old_sdata = bpf_local_storage_lookup(local_storage, smap,
->> +						     false);
-> Pure indentation change.  The same line has been changed in patch 1.  Please change
-> the identation in patch 1 if the above way is preferred.
-
-I removed this change. 
-
-> 
->>  		err = check_flags(old_sdata, map_flags);
->>  		if (err)
->>  			return ERR_PTR(err);
->> @@ -475,7 +509,7 @@ bpf_local_storage_update(struct sock *sk, struct bpf_map *map, void *value,
->>  	 * old_sdata will not be uncharged later during
->>  	 * bpf_selem_unlink_storage().
->>  	 */
->> -	selem = bpf_selem_alloc(smap, sk, value, !old_sdata);
->> +	selem = bpf_selem_alloc(smap, owner, value, !old_sdata);
->>  	if (!selem) {
->>  		err = -ENOMEM;
->>  		goto unlock_err;
->> @@ -567,7 +601,7 @@ void bpf_sk_storage_free(struct sock *sk)
->>  	 * Thus, no elem can be added-to or deleted-from the
->>  	 * sk_storage->list by the bpf_prog or by the bpf-map's syscall.
->>  	 *
->> -	 * It is racing with bpf_sk_storage_map_free() alone
->> +	 * It is racing with bpf_local_storage_map_free() alone
-> This name change belongs to patch 1 also.
-
-Done.
-
-> 
->>  	 * when unlinking elem from the sk_storage->list and
->>  	 * the map's bucket->list.
->>  	 */
->> @@ -587,17 +621,12 @@ void bpf_sk_storage_free(struct sock *sk)
->>  		kfree_rcu(sk_storage, rcu);
->>  }
->>  
->> -static void bpf_local_storage_map_free(struct bpf_map *map)
-
-[..]
-
->>  
->>  	/* bpf prog and the userspace can no longer access this map
->>  	 * now.  No new selem (of this map) can be added
->> -	 * to the sk->sk_bpf_storage or to the map bucket's list.
->> +	 * to the bpf_local_storage or to the map bucket's list.
-> s/bpf_local_storage/owner->storage/
-
-Done.
-
-> 
->>  	 *
->>  	 * The elem of this map can be cleaned up here
->>  	 * or
->> -	 * by bpf_sk_storage_free() during __sk_destruct().
->> +	 * by bpf_local_storage_free() during the destruction of the
->> +	 * owner object. eg. __sk_destruct.
-> This belongs to patch 1 also.
-
-
-In patch, 1, changed it to:
-
-	 * The elem of this map can be cleaned up here
-	 * or when the storage is freed e.g.
-	 * by bpf_sk_storage_free() during __sk_destruct().
-
-> 
->>  	 */
->>  	for (i = 0; i < (1U << smap->bucket_log); i++) {
->>  		b = &smap->buckets[i];
->> @@ -627,22 +657,31 @@ static void bpf_local_storage_map_free(struct bpf_map *map)
->>  		rcu_read_unlock();
->>  	}
->>  
->> -	/* bpf_sk_storage_free() may still need to access the map.
->> -	 * e.g. bpf_sk_storage_free() has unlinked selem from the map
->> +	/* bpf_local_storage_free() may still need to access the map.
-> It is confusing.  There is no bpf_local_storage_free().
-
-	/* While freeing the storage we may still need to access the map.
-	 *
-	 * e.g. when bpf_sk_storage_free() has unlinked selem from the map
-	 * which then made the above while((selem = ...)) loop
-	 * exited immediately.
-
-> 
->> +	 * e.g. bpf_local_storage_free() has unlinked selem from the map
->>  	 * which then made the above while((selem = ...)) loop
->>  	 * exited immediately.
->>  	 *
->> -	 * However, the bpf_sk_storage_free() still needs to access
->> +	 * However, the bpf_local_storage_free() still needs to access
-> Same here.
-
-With the change above, this can stay bpf_sk_storage_free
-
-> 
->>  	 * the smap->elem_size to do the uncharging in
->>  	 * bpf_selem_unlink_storage().
->>  	 *
->>  	 * Hence, wait another rcu grace period for the
->> -	 * bpf_sk_storage_free() to finish.
->> +	 * bpf_local_storage_free() to finish.
-> and here.
-
-and this too can stay bpf_sk_storage_free
-
-> 
->>  	 */
->>  	synchronize_rcu();
->>  
->>  	kvfree(smap->buckets);
->> -	kfree(map);
->> +	kfree(smap);
->> +}
->> +
->> +static void sk_storage_map_free(struct bpf_map *map)
->> +{
-
-[...]
-
-_attr *attr)
->>  		raw_spin_lock_init(&smap->buckets[i].lock);
->>  	}
->>  
->> -	smap->elem_size = sizeof(struct bpf_local_storage_elem) + attr->value_size;
->> -	smap->cache_idx = bpf_local_storage_cache_idx_get(&sk_cache);
->> +	smap->elem_size =
->> +		sizeof(struct bpf_local_storage_elem) + attr->value_size;
-> Same line has changed in patch 1.   Change the indentation in patch 1 also
-> if the above way is desired.
-
-Done.
-
-> Others LGTM.
-> 
