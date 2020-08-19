@@ -2,16 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF4824A9EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 01:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 167F924A9EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 01:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727931AbgHSX0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 19:26:47 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:42920 "EHLO
+        id S1727957AbgHSX0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 19:26:53 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:42932 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727772AbgHSX0g (ORCPT
+        with ESMTP id S1726342AbgHSX0h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 19:26:36 -0400
+        Wed, 19 Aug 2020 19:26:37 -0400
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1597879594;
@@ -19,21 +19,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9jFsknb75P8Ohiy67kUFniJeH036W1zSyNjXPZ5JEf0=;
-        b=zEJIlQU/IWvUbtZ7Cnqbc6HUGkLBmqUEnubivvwLyCvxm1jIZbJoVdOVqPuOb1zRZr2lWh
-        zLaGZikeEszfP8voJw3pGMpbS2W8dTiRmmo+cRGPfkQ0jtbWbymlzAqE84Lbyxv09ZRgBW
-        sqruxTa9WdVB0wD0NMLwaI9Njb+Ub4fMa/DICoCOgSezHcs9eatHzaea9mSKMtXEjk21mE
-        +l3mEx66zC3svKvfweaoe03ndN7CPrAT5nYUUiB4OZZrD5Xv8LTezdVAI9lt1Mw1bMM88h
-        sJu3a6kAdkVZ5B49n7WbY4/MCzq3M1BvstUdliKeLh5+W5GGXdNLANdhn/onmQ==
+        bh=zzgDTgaQF13WwunmjS+QAmrPF4x20ZczWnPrx7udlyc=;
+        b=KXT9ROlO+fDFmdzeua0UocoD88su1/jBZupV3KZJ9VNnX25CVUgDfu52rd6pyIZO5uz3Og
+        70tELPxftm4SFTS2/zbmRSBWpCyzaPrJ519MoLNekX+P6b0PSsOG/v9D9XkaERupqUILiq
+        u48GYwQt1d7A167z06C9I0WxJIBXGazaeO+BVE0nVUqY2EmMsf4cstsk+3EwJMJ/JOO1Be
+        mEVGGdc5HWPoWyoTIRAfCuw3bHv2rIpu1Z1NuO8jA00Qyt6OheLkiSN6hzpG/xROfhmlSi
+        4dW/fdqcsFRx/Eimf+zODkpgQUhM4QiDTzo+dnGvRgK/3bp07viIeBMaovfKgg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1597879594;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9jFsknb75P8Ohiy67kUFniJeH036W1zSyNjXPZ5JEf0=;
-        b=ki2w1u+etBhMuluB8Q/2M0ra+WgdJg9GEDlH9/vSfcEsxBqDowYqlQb4fgOGjmnB6006rO
-        ChnHTv9zlRmwHQCg==
+        bh=zzgDTgaQF13WwunmjS+QAmrPF4x20ZczWnPrx7udlyc=;
+        b=eSU9YRw0Njatw06MjpizQtouR+AuzOtX05FUvCsqCfdPK85sJGeTigecOk3ybtjpT/Fel6
+        ZGb9fiDpWWDypiCA==
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Petr Mladek <pmladek@suse.com>,
         Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
@@ -42,9 +42,9 @@ Cc:     Petr Mladek <pmladek@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 3/5] workqueue: use pr_cont_t for cont messages
-Date:   Thu, 20 Aug 2020 01:32:30 +0206
-Message-Id: <20200819232632.13418-4-john.ogness@linutronix.de>
+Subject: [RFC PATCH 4/5] locking/selftest: use pr_cont_t for cont messages
+Date:   Thu, 20 Aug 2020 01:32:31 +0206
+Message-Id: <20200819232632.13418-5-john.ogness@linutronix.de>
 In-Reply-To: <20200819232632.13418-1-john.ogness@linutronix.de>
 References: <20200819232632.13418-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -58,194 +58,264 @@ Use the new pr_cont_t mechanism.
 
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 ---
- kernel/workqueue.c | 71 +++++++++++++++++++++++++---------------------
- 1 file changed, 39 insertions(+), 32 deletions(-)
+ lib/locking-selftest.c | 85 ++++++++++++++++++++++--------------------
+ 1 file changed, 44 insertions(+), 41 deletions(-)
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index c41c3c17b86a..472370f02001 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -4645,32 +4645,34 @@ void print_worker_info(const char *log_lvl, struct task_struct *task)
- 	copy_from_kernel_nofault(desc, worker->desc, sizeof(desc) - 1);
+diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
+index 14f44f59e733..3131c517ae62 100644
+--- a/lib/locking-selftest.c
++++ b/lib/locking-selftest.c
+@@ -52,6 +52,7 @@ __setup("debug_locks_verbose=", setup_debug_locks_verbose);
  
- 	if (fn || name[0] || desc[0]) {
--		printk("%sWorkqueue: %s %ps", log_lvl, name, fn);
-+		pr_cont_t c;
-+
-+		pr_cont_begin(&c, "%sWorkqueue: %s %ps", log_lvl, name, fn);
- 		if (strcmp(name, desc))
--			pr_cont(" (%s)", desc);
--		pr_cont("\n");
-+			pr_cont_append(&c, " (%s)", desc);
-+		pr_cont_end(&c);
+ static struct ww_acquire_ctx t, t2;
+ static struct ww_mutex o, o2, o3;
++static pr_cont_t c;
+ 
+ /*
+  * Normal standalone locks, for the circular and irq-context
+@@ -1147,22 +1148,24 @@ static void dotest(void (*testcase_fn)(void), int expected, int lockclass_mask)
+ #ifndef CONFIG_PROVE_LOCKING
+ 	if (expected == FAILURE && debug_locks) {
+ 		expected_testcase_failures++;
+-		pr_cont("failed|");
++		pr_cont_append(&c, "failed|");
  	}
- }
- 
--static void pr_cont_pool_info(struct worker_pool *pool)
-+static void pr_cont_pool_info(pr_cont_t *c, struct worker_pool *pool)
- {
--	pr_cont(" cpus=%*pbl", nr_cpumask_bits, pool->attrs->cpumask);
-+	pr_cont_append(c, " cpus=%*pbl", nr_cpumask_bits, pool->attrs->cpumask);
- 	if (pool->node != NUMA_NO_NODE)
--		pr_cont(" node=%d", pool->node);
--	pr_cont(" flags=0x%x nice=%d", pool->flags, pool->attrs->nice);
-+		pr_cont_append(c, " node=%d", pool->node);
-+	pr_cont_append(c, " flags=0x%x nice=%d", pool->flags, pool->attrs->nice);
- }
- 
--static void pr_cont_work(bool comma, struct work_struct *work)
-+static void pr_cont_work(pr_cont_t *c, bool comma, struct work_struct *work)
- {
- 	if (work->func == wq_barrier_func) {
- 		struct wq_barrier *barr;
- 
- 		barr = container_of(work, struct wq_barrier, work);
- 
--		pr_cont("%s BAR(%d)", comma ? "," : "",
-+		pr_cont_append(c, "%s BAR(%d)", comma ? "," : "",
- 			task_pid_nr(barr->task));
+ 	else
+ #endif
+ 	if (debug_locks != expected) {
+ 		unexpected_testcase_failures++;
+-		pr_cont("FAILED|");
++		pr_cont_append(&c, "FAILED|");
  	} else {
--		pr_cont("%s %ps", comma ? "," : "", work->func);
-+		pr_cont_append(c, "%s %ps", comma ? "," : "", work->func);
+ 		testcase_successes++;
+-		pr_cont("  ok  |");
++		pr_cont_append(&c, "  ok  |");
  	}
+ 	testcase_total++;
+ 
+-	if (debug_locks_verbose)
+-		pr_cont(" lockclass mask: %x, debug_locks: %d, expected: %d\n",
++	if (debug_locks_verbose) {
++		pr_cont_append(&c, " lockclass mask: %x, debug_locks: %d, expected: %d",
+ 			lockclass_mask, debug_locks, expected);
++		pr_cont_flush(&c);
++	}
+ 	/*
+ 	 * Some tests (e.g. double-unlock) might corrupt the preemption
+ 	 * count, so restore it:
+@@ -1186,32 +1189,32 @@ static void dotest(void (*testcase_fn)(void), int expected, int lockclass_mask)
+ 
+ static inline void print_testname(const char *testname)
+ {
+-	printk("%33s:", testname);
++	pr_cont_begin(&c, "%33s:", testname);
  }
  
-@@ -4680,14 +4682,16 @@ static void show_pwq(struct pool_workqueue *pwq)
- 	struct work_struct *work;
- 	struct worker *worker;
- 	bool has_in_flight = false, has_pending = false;
-+	pr_cont_t c;
- 	int bkt;
- 
--	pr_info("  pwq %d:", pool->id);
--	pr_cont_pool_info(pool);
-+	pr_cont_begin(&c, KERN_INFO "  pwq %d:", pool->id);
-+	pr_cont_pool_info(&c, pool);
- 
--	pr_cont(" active=%d/%d refcnt=%d%s\n",
-+	pr_cont_append(&c, " active=%d/%d refcnt=%d%s",
- 		pwq->nr_active, pwq->max_active, pwq->refcnt,
- 		!list_empty(&pwq->mayday_node) ? " MAYDAY" : "");
+ #define DO_TESTCASE_1(desc, name, nr)				\
+ 	print_testname(desc"/"#nr);				\
+ 	dotest(name##_##nr, SUCCESS, LOCKTYPE_RWLOCK);		\
+-	pr_cont("\n");
 +	pr_cont_end(&c);
  
- 	hash_for_each(pool->busy_hash, bkt, worker, hentry) {
- 		if (worker->current_pwq == pwq) {
-@@ -4698,20 +4702,20 @@ static void show_pwq(struct pool_workqueue *pwq)
- 	if (has_in_flight) {
- 		bool comma = false;
+ #define DO_TESTCASE_1B(desc, name, nr)				\
+ 	print_testname(desc"/"#nr);				\
+ 	dotest(name##_##nr, FAILURE, LOCKTYPE_RWLOCK);		\
+-	pr_cont("\n");
++	pr_cont_end(&c);
  
--		pr_info("    in-flight:");
-+		pr_cont_begin(&c, KERN_INFO "    in-flight:");
- 		hash_for_each(pool->busy_hash, bkt, worker, hentry) {
- 			if (worker->current_pwq != pwq)
- 				continue;
+ #define DO_TESTCASE_3(desc, name, nr)				\
+ 	print_testname(desc"/"#nr);				\
+ 	dotest(name##_spin_##nr, FAILURE, LOCKTYPE_SPIN);	\
+ 	dotest(name##_wlock_##nr, FAILURE, LOCKTYPE_RWLOCK);	\
+ 	dotest(name##_rlock_##nr, SUCCESS, LOCKTYPE_RWLOCK);	\
+-	pr_cont("\n");
++	pr_cont_end(&c);
  
--			pr_cont("%s %d%s:%ps", comma ? "," : "",
-+			pr_cont_append(&c, "%s %d%s:%ps", comma ? "," : "",
- 				task_pid_nr(worker->task),
- 				worker->rescue_wq ? "(RESCUER)" : "",
- 				worker->current_func);
- 			list_for_each_entry(work, &worker->scheduled, entry)
--				pr_cont_work(false, work);
-+				pr_cont_work(&c, false, work);
- 			comma = true;
- 		}
--		pr_cont("\n");
-+		pr_cont_end(&c);
- 	}
+ #define DO_TESTCASE_3RW(desc, name, nr)				\
+ 	print_testname(desc"/"#nr);				\
+ 	dotest(name##_spin_##nr, FAILURE, LOCKTYPE_SPIN|LOCKTYPE_RWLOCK);\
+ 	dotest(name##_wlock_##nr, FAILURE, LOCKTYPE_RWLOCK);	\
+ 	dotest(name##_rlock_##nr, SUCCESS, LOCKTYPE_RWLOCK);	\
+-	pr_cont("\n");
++	pr_cont_end(&c);
  
- 	list_for_each_entry(work, &pool->worklist, entry) {
-@@ -4723,26 +4727,26 @@ static void show_pwq(struct pool_workqueue *pwq)
- 	if (has_pending) {
- 		bool comma = false;
+ #define DO_TESTCASE_6(desc, name)				\
+ 	print_testname(desc);					\
+@@ -1222,7 +1225,7 @@ static inline void print_testname(const char *testname)
+ 	dotest(name##_wsem, FAILURE, LOCKTYPE_RWSEM);		\
+ 	dotest(name##_rsem, FAILURE, LOCKTYPE_RWSEM);		\
+ 	dotest_rt(name##_rtmutex, FAILURE, LOCKTYPE_RTMUTEX);	\
+-	pr_cont("\n");
++	pr_cont_end(&c);
  
--		pr_info("    pending:");
-+		pr_cont_begin(&c, KERN_INFO "    pending:");
- 		list_for_each_entry(work, &pool->worklist, entry) {
- 			if (get_work_pwq(work) != pwq)
- 				continue;
+ #define DO_TESTCASE_6_SUCCESS(desc, name)			\
+ 	print_testname(desc);					\
+@@ -1233,7 +1236,7 @@ static inline void print_testname(const char *testname)
+ 	dotest(name##_wsem, SUCCESS, LOCKTYPE_RWSEM);		\
+ 	dotest(name##_rsem, SUCCESS, LOCKTYPE_RWSEM);		\
+ 	dotest_rt(name##_rtmutex, SUCCESS, LOCKTYPE_RTMUTEX);	\
+-	pr_cont("\n");
++	pr_cont_end(&c);
  
--			pr_cont_work(comma, work);
-+			pr_cont_work(&c, comma, work);
- 			comma = !(*work_data_bits(work) & WORK_STRUCT_LINKED);
- 		}
--		pr_cont("\n");
-+		pr_cont_end(&c);
- 	}
+ /*
+  * 'read' variant: rlocks must not trigger.
+@@ -1247,7 +1250,7 @@ static inline void print_testname(const char *testname)
+ 	dotest(name##_wsem, FAILURE, LOCKTYPE_RWSEM);		\
+ 	dotest(name##_rsem, FAILURE, LOCKTYPE_RWSEM);		\
+ 	dotest_rt(name##_rtmutex, FAILURE, LOCKTYPE_RTMUTEX);	\
+-	pr_cont("\n");
++	pr_cont_end(&c);
  
- 	if (!list_empty(&pwq->delayed_works)) {
- 		bool comma = false;
+ #define DO_TESTCASE_2I(desc, name, nr)				\
+ 	DO_TESTCASE_1("hard-"desc, name##_hard, nr);		\
+@@ -1900,25 +1903,25 @@ static void ww_tests(void)
+ 	dotest(ww_test_fail_acquire, SUCCESS, LOCKTYPE_WW);
+ 	dotest(ww_test_normal, SUCCESS, LOCKTYPE_WW);
+ 	dotest(ww_test_unneeded_slow, FAILURE, LOCKTYPE_WW);
+-	pr_cont("\n");
++	pr_cont_end(&c);
  
--		pr_info("    delayed:");
-+		pr_cont_begin(&c, KERN_INFO "    delayed:");
- 		list_for_each_entry(work, &pwq->delayed_works, entry) {
--			pr_cont_work(comma, work);
-+			pr_cont_work(&c, comma, work);
- 			comma = !(*work_data_bits(work) & WORK_STRUCT_LINKED);
- 		}
--		pr_cont("\n");
-+		pr_cont_end(&c);
- 	}
+ 	print_testname("ww contexts mixing");
+ 	dotest(ww_test_two_contexts, FAILURE, LOCKTYPE_WW);
+ 	dotest(ww_test_diff_class, FAILURE, LOCKTYPE_WW);
+-	pr_cont("\n");
++	pr_cont_end(&c);
+ 
+ 	print_testname("finishing ww context");
+ 	dotest(ww_test_context_done_twice, FAILURE, LOCKTYPE_WW);
+ 	dotest(ww_test_context_unlock_twice, FAILURE, LOCKTYPE_WW);
+ 	dotest(ww_test_context_fini_early, FAILURE, LOCKTYPE_WW);
+ 	dotest(ww_test_context_lock_after_done, FAILURE, LOCKTYPE_WW);
+-	pr_cont("\n");
++	pr_cont_end(&c);
+ 
+ 	print_testname("locking mismatches");
+ 	dotest(ww_test_object_unlock_twice, FAILURE, LOCKTYPE_WW);
+ 	dotest(ww_test_object_lock_unbalanced, FAILURE, LOCKTYPE_WW);
+ 	dotest(ww_test_object_lock_stale_context, FAILURE, LOCKTYPE_WW);
+-	pr_cont("\n");
++	pr_cont_end(&c);
+ 
+ 	print_testname("EDEADLK handling");
+ 	dotest(ww_test_edeadlk_normal, SUCCESS, LOCKTYPE_WW);
+@@ -1931,11 +1934,11 @@ static void ww_tests(void)
+ 	dotest(ww_test_edeadlk_acquire_more_edeadlk_slow, FAILURE, LOCKTYPE_WW);
+ 	dotest(ww_test_edeadlk_acquire_wrong, FAILURE, LOCKTYPE_WW);
+ 	dotest(ww_test_edeadlk_acquire_wrong_slow, FAILURE, LOCKTYPE_WW);
+-	pr_cont("\n");
++	pr_cont_end(&c);
+ 
+ 	print_testname("spinlock nest unlocked");
+ 	dotest(ww_test_spin_nest_unlocked, FAILURE, LOCKTYPE_WW);
+-	pr_cont("\n");
++	pr_cont_end(&c);
+ 
+ 	printk("  -----------------------------------------------------\n");
+ 	printk("                                 |block | try  |context|\n");
+@@ -1945,25 +1948,25 @@ static void ww_tests(void)
+ 	dotest(ww_test_context_block, FAILURE, LOCKTYPE_WW);
+ 	dotest(ww_test_context_try, SUCCESS, LOCKTYPE_WW);
+ 	dotest(ww_test_context_context, SUCCESS, LOCKTYPE_WW);
+-	pr_cont("\n");
++	pr_cont_end(&c);
+ 
+ 	print_testname("try");
+ 	dotest(ww_test_try_block, FAILURE, LOCKTYPE_WW);
+ 	dotest(ww_test_try_try, SUCCESS, LOCKTYPE_WW);
+ 	dotest(ww_test_try_context, FAILURE, LOCKTYPE_WW);
+-	pr_cont("\n");
++	pr_cont_end(&c);
+ 
+ 	print_testname("block");
+ 	dotest(ww_test_block_block, FAILURE, LOCKTYPE_WW);
+ 	dotest(ww_test_block_try, SUCCESS, LOCKTYPE_WW);
+ 	dotest(ww_test_block_context, FAILURE, LOCKTYPE_WW);
+-	pr_cont("\n");
++	pr_cont_end(&c);
+ 
+ 	print_testname("spinlock");
+ 	dotest(ww_test_spin_block, FAILURE, LOCKTYPE_WW);
+ 	dotest(ww_test_spin_try, SUCCESS, LOCKTYPE_WW);
+ 	dotest(ww_test_spin_context, FAILURE, LOCKTYPE_WW);
+-	pr_cont("\n");
++	pr_cont_end(&c);
  }
  
-@@ -4757,6 +4761,7 @@ void show_workqueue_state(void)
- 	struct workqueue_struct *wq;
- 	struct worker_pool *pool;
- 	unsigned long flags;
-+	pr_cont_t c;
- 	int pi;
+ void locking_selftest(void)
+@@ -2003,35 +2006,35 @@ void locking_selftest(void)
  
- 	rcu_read_lock();
-@@ -4800,20 +4805,20 @@ void show_workqueue_state(void)
- 		if (pool->nr_workers == pool->nr_idle)
- 			goto next_pool;
+ 	printk("  --------------------------------------------------------------------------\n");
+ 	print_testname("recursive read-lock");
+-	pr_cont("             |");
++	pr_cont_append(&c, "             |");
+ 	dotest(rlock_AA1, SUCCESS, LOCKTYPE_RWLOCK);
+-	pr_cont("             |");
++	pr_cont_append(&c, "             |");
+ 	dotest(rsem_AA1, FAILURE, LOCKTYPE_RWSEM);
+-	pr_cont("\n");
++	pr_cont_end(&c);
  
--		pr_info("pool %d:", pool->id);
--		pr_cont_pool_info(pool);
--		pr_cont(" hung=%us workers=%d",
-+		pr_cont_begin(&c, KERN_INFO "pool %d:", pool->id);
-+		pr_cont_pool_info(&c, pool);
-+		pr_cont_append(&c, " hung=%us workers=%d",
- 			jiffies_to_msecs(jiffies - pool->watchdog_ts) / 1000,
- 			pool->nr_workers);
- 		if (pool->manager)
--			pr_cont(" manager: %d",
-+			pr_cont_append(&c, " manager: %d",
- 				task_pid_nr(pool->manager->task));
- 		list_for_each_entry(worker, &pool->idle_list, entry) {
--			pr_cont(" %s%d", first ? "idle: " : "",
-+			pr_cont_append(&c, " %s%d", first ? "idle: " : "",
- 				task_pid_nr(worker->task));
- 			first = false;
- 		}
--		pr_cont("\n");
-+		pr_cont_end(&c);
- 	next_pool:
- 		raw_spin_unlock_irqrestore(&pool->lock, flags);
- 		/*
-@@ -5752,6 +5757,7 @@ static void wq_watchdog_timer_fn(struct timer_list *unused)
- 	unsigned long thresh = READ_ONCE(wq_watchdog_thresh) * HZ;
- 	bool lockup_detected = false;
- 	struct worker_pool *pool;
-+	pr_cont_t c;
- 	int pi;
+ 	print_testname("recursive read-lock #2");
+-	pr_cont("             |");
++	pr_cont_append(&c, "             |");
+ 	dotest(rlock_AA1B, SUCCESS, LOCKTYPE_RWLOCK);
+-	pr_cont("             |");
++	pr_cont_append(&c, "             |");
+ 	dotest(rsem_AA1B, FAILURE, LOCKTYPE_RWSEM);
+-	pr_cont("\n");
++	pr_cont_end(&c);
  
- 	if (!thresh)
-@@ -5785,10 +5791,11 @@ static void wq_watchdog_timer_fn(struct timer_list *unused)
- 		/* did we stall? */
- 		if (time_after(jiffies, ts + thresh)) {
- 			lockup_detected = true;
--			pr_emerg("BUG: workqueue lockup - pool");
--			pr_cont_pool_info(pool);
--			pr_cont(" stuck for %us!\n",
-+			pr_cont_begin(&c, KERN_EMERG "BUG: workqueue lockup - pool");
-+			pr_cont_pool_info(&c, pool);
-+			pr_cont_append(&c, " stuck for %us!",
- 				jiffies_to_msecs(jiffies - pool_ts) / 1000);
-+			pr_cont_end(&c);
- 		}
- 	}
+ 	print_testname("mixed read-write-lock");
+-	pr_cont("             |");
++	pr_cont_append(&c, "             |");
+ 	dotest(rlock_AA2, FAILURE, LOCKTYPE_RWLOCK);
+-	pr_cont("             |");
++	pr_cont_append(&c, "             |");
+ 	dotest(rsem_AA2, FAILURE, LOCKTYPE_RWSEM);
+-	pr_cont("\n");
++	pr_cont_end(&c);
  
+ 	print_testname("mixed write-read-lock");
+-	pr_cont("             |");
++	pr_cont_append(&c, "             |");
+ 	dotest(rlock_AA3, FAILURE, LOCKTYPE_RWLOCK);
+-	pr_cont("             |");
++	pr_cont_append(&c, "             |");
+ 	dotest(rsem_AA3, FAILURE, LOCKTYPE_RWSEM);
+-	pr_cont("\n");
++	pr_cont_end(&c);
+ 
+ 	print_testname("mixed read-lock/lock-write ABBA");
+-	pr_cont("             |");
++	pr_cont_append(&c, "             |");
+ 	dotest(rlock_ABBA1, FAILURE, LOCKTYPE_RWLOCK);
+ #ifdef CONFIG_PROVE_LOCKING
+ 	/*
+@@ -2041,19 +2044,19 @@ void locking_selftest(void)
+ 	unexpected_testcase_failures--;
+ #endif
+ 
+-	pr_cont("             |");
++	pr_cont_append(&c, "             |");
+ 	dotest(rwsem_ABBA1, FAILURE, LOCKTYPE_RWSEM);
+ 
+ 	print_testname("mixed read-lock/lock-read ABBA");
+-	pr_cont("             |");
++	pr_cont_append(&c, "             |");
+ 	dotest(rlock_ABBA2, SUCCESS, LOCKTYPE_RWLOCK);
+-	pr_cont("             |");
++	pr_cont_append(&c, "             |");
+ 	dotest(rwsem_ABBA2, FAILURE, LOCKTYPE_RWSEM);
+ 
+ 	print_testname("mixed write-lock/lock-write ABBA");
+-	pr_cont("             |");
++	pr_cont_append(&c, "             |");
+ 	dotest(rlock_ABBA3, FAILURE, LOCKTYPE_RWLOCK);
+-	pr_cont("             |");
++	pr_cont_append(&c, "             |");
+ 	dotest(rwsem_ABBA3, FAILURE, LOCKTYPE_RWSEM);
+ 
+ 	printk("  --------------------------------------------------------------------------\n");
 -- 
 2.20.1
 
