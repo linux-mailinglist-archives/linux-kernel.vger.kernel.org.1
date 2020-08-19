@@ -2,214 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE41249FE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B297C249FEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728060AbgHSN3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 09:29:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727854AbgHSN3H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 09:29:07 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1028C061342
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:29:06 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id i26so18102142edv.4
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:29:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IHGXNNBhd4HJZE+UUco/Ioky8evq1llGhhojDp3Tz5A=;
-        b=QnQKTNDdAvmUJURTxNgXtUKU94Vo6ZkK40Btldjv6ShlJGpEcsDsEbHGI76DE25bP6
-         e8xKWxpeDBUo+GeY+QykX4uYdGwChrO0mc8gOUbcN3yab99yDU/vk4DpMjhpZpMPGA18
-         JK6kxhnEYE7m3WtIAEjR0hPq2Rk0+cdZsa5hxK76oOh0qbm5GfaRQdnlh2f4g8390Hr+
-         0ozCIdvs17J6v5YifKlDIxNG06wFT3exK2xZU2UPwIrj3bHYlbrVzhTgQUExXRmvRyVq
-         i1rgYxFXPXRxDv3MFsbGz4GMHGNUAO/L+F6cjsZN5yUiTBibggHvWmxCpweyyWr/f9kS
-         QnIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IHGXNNBhd4HJZE+UUco/Ioky8evq1llGhhojDp3Tz5A=;
-        b=JmwsOe13A4qlhJHU2RnmK4aihmh5G7HCEZLv/R6gJQXF1YGVMbmJ8ZiqFrsqq62KI8
-         IL+eXVtcXSAqC3skv8NuN+gtO2dcag0Wd5Fh9TYOMcGuHbSzckJoh85lAFbH+om5l4Rv
-         7G677E78pTXwPIIkbm3qgE28ILADBunNgtDLr6Op67zijGepe469GvX4Ksrkx2tvDGS2
-         wb5eftIqLCwK7zkUehaiqnOTLIlvF2w5dfCA4q9KWlZthufR7wl/PHs95CeJnOO0AfTO
-         9x0Ydj3JDZuovtdZ3RseJsQ20tQKIrAWU3+LdalGMrzDz9egL2az8fkPrVxYI5IUW+U2
-         zATw==
-X-Gm-Message-State: AOAM533UT4etoCMR3Lr6rOAUdUJKO0OM5EzEc1fX95mqHmBPj3JqmREQ
-        +Otln3iLw6LckURO6GapsZ58zjkjq9D/lXgYaB73
-X-Google-Smtp-Source: ABdhPJxHdKJnQuCT/WbcNjbeyUYss3Y7YsKgZ3ELKYXffzJlILtWOEn8O+nqCTJIuXzv74Vj72smdOe+gwzJ0gKAjL8=
-X-Received: by 2002:a05:6402:3070:: with SMTP id bs16mr24206234edb.269.1597843744561;
- Wed, 19 Aug 2020 06:29:04 -0700 (PDT)
+        id S1728351AbgHSNaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 09:30:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41806 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726752AbgHSNaT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 09:30:19 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 42672205CB;
+        Wed, 19 Aug 2020 13:30:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597843817;
+        bh=c/KIC1N+AThogXaPD4LYqtNhwTUgeFy5H658qfX3o6Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ybzJlclj7PKty/unc+4cb9Wd4WHHmVOSQ6smTxURwMsk2udx7+cwI/ct/VWqBRcaK
+         TPHq+CA3SbHrkQu/Yr3Og03gF7ak5urBzCx3tlqFTNnNw+aON11BMaSWgLTxyquPrd
+         2nUrrz+cKds/3opgas5LKByGC0micQy3OPDbdyF4=
+Date:   Wed, 19 Aug 2020 15:30:39 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     ulf.hansson@linaro.org, jassisinghbrar@gmail.com,
+        s.hauer@pengutronix.de, manohar.vanga@gmail.com, airlied@linux.ie,
+        linux-hyperv@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        linux1394-devel@lists.sourceforge.net,
+        anton.ivanov@cambridgegreys.com, devel@driverdev.osuosl.org,
+        linux-s390@vger.kernel.org, maximlevitsky@gmail.com,
+        richard@nod.at, deller@gmx.de,
+        linux-atm-general@lists.sourceforge.net, 3chas3@gmail.com,
+        linux-input@vger.kernel.org, kuba@kernel.org,
+        mporter@kernel.crashing.org, jdike@addtoit.com,
+        Kees Cook <keescook@chromium.org>, oakad@yahoo.com,
+        intel-gfx@lists.freedesktop.org, linux-um@lists.infradead.org,
+        linux-block@vger.kernel.org, broonie@kernel.org,
+        openipmi-developer@lists.sourceforge.net, mitch@sfgoth.com,
+        linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
+        netdev@vger.kernel.org, martyn@welchs.me.uk,
+        dmitry.torokhov@gmail.com, linux-mmc@vger.kernel.org,
+        Allen Pais <allen.lkml@gmail.com>, linux-spi@vger.kernel.org,
+        alex.bou9@gmail.com, Allen Pais <allen.cryptic@gmail.com>,
+        stefanr@s5r6.in-berlin.de, daniel@ffwll.ch, sre@kernel.org,
+        linux-ntb@googlegroups.com,
+        Romain Perier <romain.perier@gmail.com>, shawnguo@kernel.org,
+        davem@davemloft.net
+Subject: Re: [PATCH] block: convert tasklets to use new tasklet_setup() API
+Message-ID: <20200819133039.GA3192753@kroah.com>
+References: <20200817091617.28119-2-allen.cryptic@gmail.com>
+ <b5508ca4-0641-7265-2939-5f03cbfab2e2@kernel.dk>
+ <202008171228.29E6B3BB@keescook>
+ <161b75f1-4e88-dcdf-42e8-b22504d7525c@kernel.dk>
+ <202008171246.80287CDCA@keescook>
+ <df645c06-c30b-eafa-4d23-826b84f2ff48@kernel.dk>
+ <1597780833.3978.3.camel@HansenPartnership.com>
+ <f3312928-430c-25f3-7112-76f2754df080@kernel.dk>
+ <20200819131158.GA2591006@kroah.com>
+ <4f5a225d-460f-978f-e3cf-3f505140a515@kernel.dk>
 MIME-Version: 1.0
-References: <CA+G9fYvdAUWHw7SUF6Da1bgDJ2Q=59nJLovrxz8Ke74DSFnG1g@mail.gmail.com>
- <543834b1-9e7e-187d-4f98-e8484362105b@gmail.com> <CAHC9VhS-AYYtdGx5Xy1UDoMaeLE3C6bJBXBOuFav-KSGuYXh0A@mail.gmail.com>
- <003ca06b-3ea9-1b58-5d46-cc09ec377609@gmail.com>
-In-Reply-To: <003ca06b-3ea9-1b58-5d46-cc09ec377609@gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 19 Aug 2020 09:28:53 -0400
-Message-ID: <CAHC9VhRH09a=zTY+FERjF1i_xZwMU5hLNNu-1VPqrRZCos1tbw@mail.gmail.com>
-Subject: Re: Linux-next: Kernel panic - not syncing: Fatal exception in
- interrupt - RIP: 0010:security_port_sid
-To:     Stephen Smalley <stephen.smalley.work@gmail.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        X86 ML <x86@kernel.org>, selinux@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        Eric Paris <eparis@parisplace.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>, rgb@redhat.com,
-        Kees Cook <keescook@chromium.org>, casey@schaufler-ca.com,
-        yuehaibing@huawei.com, jeffv@google.com, kent.overstreet@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4f5a225d-460f-978f-e3cf-3f505140a515@kernel.dk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 9:16 AM Stephen Smalley
-<stephen.smalley.work@gmail.com> wrote:
-> On 8/19/20 9:12 AM, Paul Moore wrote:
->
-> > On Wed, Aug 19, 2020 at 8:28 AM Stephen Smalley
-> > <stephen.smalley.work@gmail.com> wrote:
-> >> On 8/19/20 6:11 AM, Naresh Kamboju wrote:
-> >>> Kernel panic noticed on linux next 20200819 tag on x86_64 and i386.
+On Wed, Aug 19, 2020 at 07:17:19AM -0600, Jens Axboe wrote:
+> On 8/19/20 6:11 AM, Greg KH wrote:
+> > On Wed, Aug 19, 2020 at 07:00:53AM -0600, Jens Axboe wrote:
+> >> On 8/18/20 1:00 PM, James Bottomley wrote:
+> >>> On Mon, 2020-08-17 at 13:02 -0700, Jens Axboe wrote:
+> >>>> On 8/17/20 12:48 PM, Kees Cook wrote:
+> >>>>> On Mon, Aug 17, 2020 at 12:44:34PM -0700, Jens Axboe wrote:
+> >>>>>> On 8/17/20 12:29 PM, Kees Cook wrote:
+> >>>>>>> On Mon, Aug 17, 2020 at 06:56:47AM -0700, Jens Axboe wrote:
+> >>>>>>>> On 8/17/20 2:15 AM, Allen Pais wrote:
+> >>>>>>>>> From: Allen Pais <allen.lkml@gmail.com>
+> >>>>>>>>>
+> >>>>>>>>> In preparation for unconditionally passing the
+> >>>>>>>>> struct tasklet_struct pointer to all tasklet
+> >>>>>>>>> callbacks, switch to using the new tasklet_setup()
+> >>>>>>>>> and from_tasklet() to pass the tasklet pointer explicitly.
+> >>>>>>>>
+> >>>>>>>> Who came up with the idea to add a macro 'from_tasklet' that
+> >>>>>>>> is just container_of? container_of in the code would be
+> >>>>>>>> _much_ more readable, and not leave anyone guessing wtf
+> >>>>>>>> from_tasklet is doing.
+> >>>>>>>>
+> >>>>>>>> I'd fix that up now before everything else goes in...
+> >>>>>>>
+> >>>>>>> As I mentioned in the other thread, I think this makes things
+> >>>>>>> much more readable. It's the same thing that the timer_struct
+> >>>>>>> conversion did (added a container_of wrapper) to avoid the
+> >>>>>>> ever-repeating use of typeof(), long lines, etc.
+> >>>>>>
+> >>>>>> But then it should use a generic name, instead of each sub-system 
+> >>>>>> using some random name that makes people look up exactly what it
+> >>>>>> does. I'm not huge fan of the container_of() redundancy, but
+> >>>>>> adding private variants of this doesn't seem like the best way
+> >>>>>> forward. Let's have a generic helper that does this, and use it
+> >>>>>> everywhere.
+> >>>>>
+> >>>>> I'm open to suggestions, but as things stand, these kinds of
+> >>>>> treewide
+> >>>>
+> >>>> On naming? Implementation is just as it stands, from_tasklet() is
+> >>>> totally generic which is why I objected to it. from_member()? Not
+> >>>> great with naming... But I can see this going further and then we'll
+> >>>> suddenly have tons of these. It's not good for readability.
 > >>>
-> >>>    Kernel panic - not syncing: Fatal exception in interrupt
+> >>> Since both threads seem to have petered out, let me suggest in
+> >>> kernel.h:
 > >>>
-> >>> metadata:
-> >>>     git branch: master
-> >>>     git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-> >>>     git commit: 8eb858df0a5f6bcd371b5d5637255c987278b8c9
-> >>>     git describe: next-20200819
-> >>>     make_kernelversion: 5.9.0-rc1
-> >>>     kernel-config:
-> >>> https://builds.tuxbuild.com/izEMrcIH10iI6m0FU7O0LA/kernel.config
+> >>> #define cast_out(ptr, container, member) \
+> >>> 	container_of(ptr, typeof(*container), member)
 > >>>
-> >>> crash log:
-> >>> [    3.704578] BUG: kernel NULL pointer dereference, address: 00000000000001c8
-> >>> [    3.704865] #PF: supervisor read access in kernel mode
-> >>> [    3.704865] #PF: error_code(0x0000) - not-present page
-> >>> [    3.704865] PGD 0 P4D 0
-> >>> [    3.704865] Oops: 0000 [#1] SMP NOPTI
-> >>> [    3.704865] CPU: 0 PID: 1 Comm: systemd Not tainted
-> >>> 5.9.0-rc1-next-20200819 #1
-> >>> [    3.704865] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-> >>> BIOS 1.12.0-1 04/01/2014
-> >>> [    3.704865] RIP: 0010:security_port_sid+0x2f/0xb0
-> >>> [    3.704865] Code: 55 48 89 e5 41 57 49 89 ff 41 56 49 89 ce 41 55
-> >>> 41 89 d5 41 54 41 89 f4 53 48 8b 7f 40 e8 c9 ca 94 00 49 8b 47 40 48
-> >>> 8b 40 10 <48> 8b 98 c8 01 00 00 48 85 db 75 0e eb 65 48 8b 9b c0 00 00
-> >>> 00 48
-> >>> [    3.704865] RSP: 0018:ffffb607c0013d00 EFLAGS: 00010246
-> >>> [    3.704865] RAX: 0000000000000000 RBX: ffffffffaef076f8 RCX: ffffb607c0013d9c
-> >>> [    3.704865] RDX: 0000000000000016 RSI: 0000000000000006 RDI: ffffffffaef08d10
-> >>> [    3.704865] RBP: ffffb607c0013d28 R08: 0000000000000218 R09: 0000000000000016
-> >>> [    3.704865] R10: ffffb607c0013d9c R11: ffff988ff9665260 R12: 0000000000000006
-> >>> [    3.704865] R13: 0000000000000016 R14: ffffb607c0013d9c R15: ffffffffaef05820
-> >>> [    3.721157] FS:  00007f5ef4fec840(0000) GS:ffff988ffbc00000(0000)
-> >>> knlGS:0000000000000000
-> >>> [    3.721157] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >>> [    3.721157] CR2: 00000000000001c8 CR3: 000000013b04c000 CR4: 00000000003506f0
-> >>> [    3.721157] Call Trace:
-> >>> [    3.721157]  sel_netport_sid+0x120/0x1e0
-> >>> [    3.721157]  selinux_socket_bind+0x15a/0x250
-> >>> [    3.721157]  ? _raw_spin_trylock_bh+0x42/0x50
-> >>> [    3.721157]  ? __local_bh_enable_ip+0x46/0x70
-> >>> [    3.721157]  ? _raw_spin_unlock_bh+0x1a/0x20
-> >>> [    3.721157]  security_socket_bind+0x35/0x50
-> >>> [    3.721157]  __sys_bind+0xcf/0x110
-> >>> [    3.721157]  ? syscall_enter_from_user_mode+0x1f/0x1f0
-> >>> [    3.730888]  ? do_syscall_64+0x14/0x50
-> >>> [    3.730888]  ? trace_hardirqs_on+0x38/0xf0
-> >>> [    3.732120]  __x64_sys_bind+0x1a/0x20
-> >>> [    3.732120]  do_syscall_64+0x38/0x50
-> >>> [    3.732120]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >>> [    3.732120] RIP: 0033:0x7f5ef37f3057
-> >>> [    3.732120] Code: ff ff ff ff c3 48 8b 15 3f 9e 2b 00 f7 d8 64 89
-> >>> 02 b8 ff ff ff ff eb ba 66 2e 0f 1f 84 00 00 00 00 00 90 b8 31 00 00
-> >>> 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 11 9e 2b 00 f7 d8 64 89
-> >>> 01 48
-> >>> [    3.738888] RSP: 002b:00007ffe638fbbb8 EFLAGS: 00000246 ORIG_RAX:
-> >>> 0000000000000031
-> >>> [    3.738888] RAX: ffffffffffffffda RBX: 000055833cf9ef80 RCX: 00007f5ef37f3057
-> >>> [    3.738888] RDX: 000000000000001c RSI: 000055833cf9ef80 RDI: 000000000000002b
-> >>> [    3.743930] virtio_net virtio0 enp0s3: renamed from eth0
-> >>> [    3.738888] RBP: 000000000000002b R08: 0000000000000004 R09: 0000000000000000
-> >>> [    3.738888] R10: 00007ffe638fbbe4 R11: 0000000000000246 R12: 0000000000000000
-> >>> [    3.744849] R13: 00007ffe638fbbe4 R14: 0000000000000000 R15:
-> >>> 000000RIP: 0010:security_port_sid0000000000
-> >>> [    3.744849] Modules linked in:
-> >>> [    3.744849] CR2: 00000000000001c8
-> >>> [    3.744849] ---[ end trace 485eaaecdce54971 ]---
-> >>> [    3.744849] RIP: 0010:security_port_sid+0x2f/0xb0
-> >>> [    3.744849] Code: 55 48 89 e5 41 57 49 89 ff 41 56 49 89 ce 41 55
-> >>> 41 89 d5 41 54 41 89 f4 53 48 8b 7f 40 e8 c9 ca 94 00 49 8b 47 40 48
-> >>> 8b 40 10 <48> 8b 98 c8 01 00 00 48 85 db 75 0e eb 65 48 8b 9b c0 00 00
-> >>> 00 48
-> >>> [    3.744849] RSP: 0018:ffffb607c0013d00 EFLAGS: 00010246
-> >>> [    3.744849] RAX: 0000000000000000 RBX: ffffffffaef076f8 RCX: ffffb607c0013d9c
-> >>> [    3.744849] RDX: 0000000000000016 RSI: 0000000000000006 RDI: ffffffffaef08d10
-> >>> [    3.744849] RBP: ffffb607c0013d28 R08: 0000000000000218 R09: 0000000000000016
-> >>> [    3.744849] R10: ffffb607c0013d9c R11: ffff988ff9665260 R12: 0000000000000006
-> >>> [    3.744849] R13: 0000000000000016 R14: ffffb607c0013d9c R15: ffffffffaef05820
-> >>> [    3.744849] FS:  00007f5ef4fec840(0000) GS:ffff988ffbc00000(0000)
-> >>> knlGS:0000000000000000
-> >>> [    3.744849] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >>> [    3.744849] CR2: 00000000000001c8 CR3: 000000013b04c000 CR4: 00000000003506f0
-> >>> [    3.7RIP: 0010:security_port_sid44849] Kernel panic - not syncing:
-> >>> Fatal exception in interrupt
-> >>> [    3.744849] Kernel Offset: 0x2c000000 from 0xffffffff81000000
-> >>> (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
-> >>> [    3.744849] ---[ end Kernel panic - not syncing: Fatal exception in
-> >>> interrupt ]---
-> >>>
-> >>> full test log link,
-> >>> https://qa-reports.linaro.org/lkft/linux-next-oe/build/next-20200819/testrun/3084905/suite/linux-log-parser/test/check-kernel-panic-1682816/log
-> >>>
-> >>> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> >> Thank you for the report.  It appears from the log that you are enabling
-> >> SELinux but not loading any policy?  If that is correct, then I believe
-> >> I know the underlying cause and can create a patch.
-> > Yes, I'm guessing the bind() hook is the culprit.
-> >
-> > I'm beginning to think we should try forcing a run of the
-> > selinux-testsuite on a system with SELinux enabled but without a
-> > loaded policy.  The test suite will fail in spectacular fashion, but
-> > it will be a good way to shake out some of these corner cases.
->
-> It's due to the lack of explicit selinux_initialized(state) guards in
-> security_port_sid() and the rest of those functions. Previously, they
-> happened to work because the policydb was statically allocated and could
-> be accessed even before initial policy load.  With the encapsulation of
-> the policy state and dynamic allocation, they need to check
-> selinux_initialized() first and return immediately if it isn't 1.  I
-> have a patch in the works.
+> >>> It does what you want, the argument order is the same as container_of
+> >>> with the only difference being you name the containing structure
+> >>> instead of having to specify its type.
+> >>
+> >> Not to incessantly bike shed on the naming, but I don't like cast_out,
+> >> it's not very descriptive. And it has connotations of getting rid of
+> >> something, which isn't really true.
+> > 
+> > I agree, if we want to bike shed, I don't like this color either.
+> > 
+> >> FWIW, I like the from_ part of the original naming, as it has some clues
+> >> as to what is being done here. Why not just from_container()? That
+> >> should immediately tell people what it does without having to look up
+> >> the implementation, even before this becomes a part of the accepted
+> >> coding norm.
+> > 
+> > Why are people hating on the well-known and used container_of()?
+> > 
+> > If you really hate to type the type and want a new macro, what about
+> > 'container_from()'?  (noun/verb is nicer to sort symbols by...)
+> > 
+> > But really, why is this even needed?
+> 
+> container_from() or from_container(), either works just fine for me
+> in terms of naming.
+> 
+> I think people are hating on it because it makes for _really_ long
+> lines, and it's arguably cleaner/simpler to just pass in the pointer
+> type instead. Then you end up with lines like this:
+> 
+> 	struct request_queue *q =                                               
+> 		container_of(work, struct request_queue, requeue_work.work);  
+> 
+> But I'm not the one that started this addition of from_tasklet(), my
+> objection was adding a private macro for something that should be
+> generic functionality.
 
-Right.  I was just saying that I was pretty sure the code path came in
-via bind() ... which is obvious since it is in the backtrace and I
-missed that since I only looked at the location of the panic and
-worked the code path backwards looking for the initialization check :)
+Agreed.
 
-> With respect to testing, even just doing a
-> simple boot test with SELinux enabled but no policy would have detected
-> this one; it just isn't part of my usual workflow.
+> Hence I think we either need to provide that, or
+> tell the from_tasklet() folks that they should just use container_of().
 
-Which is fair as it isn't a use case that is really valid, but we've
-seen it pop up a few times now with everyone automating their testing
-without understanding how to use/test SELinux properly.  My thinking
-behind running the test suite w/o a policy is to try and catch all
-these cases where we aren't doing an initialization check before
-querying any of the policy data; I know we squashed a bunch of these,
-but I'm not convinced we caught them all (and of course we can always
-introduce new bugs).
+Also agreed, thanks.
 
--- 
-paul moore
-www.paul-moore.com
+greg k-h
