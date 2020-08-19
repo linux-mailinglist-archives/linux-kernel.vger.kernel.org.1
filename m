@@ -2,46 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1868C249C6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 13:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9BA249C7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 13:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728249AbgHSLsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 07:48:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45008 "EHLO mail.kernel.org"
+        id S1728364AbgHSLuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 07:50:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728028AbgHSLqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 07:46:22 -0400
+        id S1728110AbgHSLqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 07:46:43 -0400
 Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB59320897;
+        by mail.kernel.org (Postfix) with ESMTPSA id EBEC32184D;
         Wed, 19 Aug 2020 11:46:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597837581;
-        bh=sWOX5FKJVo25rvcaBRtNV8C2NIEpxpnCUg9AT1YPfsk=;
+        s=default; t=1597837582;
+        bh=yAx7vx/Gi4OL5Z9jtDRLnQsTuTRI/zDB6IS6y66utzQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GGOjksER+WVH39ZhhD4lUqDN11Z4YpQ+FAIihEHjewNmZzlQ9z/5xAFzOmPGBJm4c
-         6/nUj9eWSvK9la6CjHZVSPG25sHzdsI6X2/9et0QWTFYF4t+vvkTk1T4I42wCAAy4r
-         l1FRYJY/kzeiEFiTSTVy5wYFntgnmEekCJo4S5YI=
+        b=Fb00/H/gQeFpSgzVGaxUh38gPmsXFxy3RSZLa1v2BjJJhQREsBbwXdrHANPc3FjZO
+         +Fy9+VLr/sG3PW34VfF+au3s2gOpCo7YnOxz3Rn4eytb9HcLwzhkrx+UBKtKVfOYSL
+         UgX70btQuvk4LmLDynYuzYRu7/mHR0TA70WBASqs=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1k8MXr-00EuaO-PA; Wed, 19 Aug 2020 13:46:19 +0200
+        id 1k8MXr-00EuaT-Td; Wed, 19 Aug 2020 13:46:19 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Xiubin Zhang <zhangxiubin1@huawei.com>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         John Stultz <john.stultz@linaro.org>,
         Manivannan Sadhasivam <mani@kernel.org>,
         Daniel Vetter <daniel@ffwll.ch>,
         dri-devel <dri-devel@lists.freedesktop.org>,
+        Xiubin Zhang <zhangxiubin1@huawei.com>,
         Liwei Cai <cailiwei@hisilicon.com>,
-        Wanchun Zheng <zhengwanchun@hisilicon.com>,
+        Liuyao An <anliuyao@huawei.com>,
         Chen Feng <puck.chen@hisilicon.com>,
+        Wanchun Zheng <zhengwanchun@hisilicon.com>,
         devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 11/49] staging: hikey9xx/gpu: Add support 10.1 inch special HDMI displays.
-Date:   Wed, 19 Aug 2020 13:45:39 +0200
-Message-Id: <352fea9bd94aa12d603744f2b2f2de3fb297442f.1597833138.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 13/49] staging: hikey9xx/gpu: rename the Kirin9xx namespace
+Date:   Wed, 19 Aug 2020 13:45:41 +0200
+Message-Id: <f4c9e644ec5e3619153efc6b208b3bf910c61c17.1597833138.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1597833138.git.mchehab+huawei@kernel.org>
 References: <cover.1597833138.git.mchehab+huawei@kernel.org>
@@ -52,31 +53,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiubin Zhang <zhangxiubin1@huawei.com>
+There's already a driver with the same namespace
+for an older Kirin chipset. Rename this one, in order
+to make it clearer that this is the driver for
+Kirin 960/970.
 
-Adjust pixel clock for compatibility with 10.1 inch special displays.
-
-Signed-off-by: Xiubin Zhang <zhangxiubin1@huawei.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/staging/hikey9xx/gpu/kirin_drm_dss.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ .../staging/hikey9xx/gpu/{kirin_dpe_reg.h => kirin9xx_dpe_reg.h}  | 0
+ .../gpu/{kirin_drm_dpe_utils.c => kirin9xx_drm_dpe_utils.c}       | 0
+ .../gpu/{kirin_drm_dpe_utils.h => kirin9xx_drm_dpe_utils.h}       | 0
+ .../staging/hikey9xx/gpu/{kirin_drm_drv.c => kirin9xx_drm_drv.c}  | 0
+ .../staging/hikey9xx/gpu/{kirin_drm_drv.h => kirin9xx_drm_drv.h}  | 0
+ .../staging/hikey9xx/gpu/{kirin_drm_dss.c => kirin9xx_drm_dss.c}  | 0
+ .../{kirin_drm_overlay_utils.c => kirin9xx_drm_overlay_utils.c}   | 0
+ .../staging/hikey9xx/gpu/{dw_drm_dsi.c => kirin9xx_dw_drm_dsi.c}  | 0
+ .../staging/hikey9xx/gpu/{dw_dsi_reg.h => kirin9xx_dw_dsi_reg.h}  | 0
+ drivers/staging/hikey9xx/gpu/{kirin_fb.c => kirin9xx_fb.c}        | 0
+ .../hikey9xx/gpu/{kirin_fb_panel.h => kirin9xx_fb_panel.h}        | 0
+ drivers/staging/hikey9xx/gpu/{kirin_fbdev.c => kirin9xx_fbdev.c}  | 0
+ drivers/staging/hikey9xx/gpu/{kirin_pwm.c => kirin9xx_pwm.c}      | 0
+ 13 files changed, 0 insertions(+), 0 deletions(-)
+ rename drivers/staging/hikey9xx/gpu/{kirin_dpe_reg.h => kirin9xx_dpe_reg.h} (100%)
+ rename drivers/staging/hikey9xx/gpu/{kirin_drm_dpe_utils.c => kirin9xx_drm_dpe_utils.c} (100%)
+ rename drivers/staging/hikey9xx/gpu/{kirin_drm_dpe_utils.h => kirin9xx_drm_dpe_utils.h} (100%)
+ rename drivers/staging/hikey9xx/gpu/{kirin_drm_drv.c => kirin9xx_drm_drv.c} (100%)
+ rename drivers/staging/hikey9xx/gpu/{kirin_drm_drv.h => kirin9xx_drm_drv.h} (100%)
+ rename drivers/staging/hikey9xx/gpu/{kirin_drm_dss.c => kirin9xx_drm_dss.c} (100%)
+ rename drivers/staging/hikey9xx/gpu/{kirin_drm_overlay_utils.c => kirin9xx_drm_overlay_utils.c} (100%)
+ rename drivers/staging/hikey9xx/gpu/{dw_drm_dsi.c => kirin9xx_dw_drm_dsi.c} (100%)
+ rename drivers/staging/hikey9xx/gpu/{dw_dsi_reg.h => kirin9xx_dw_dsi_reg.h} (100%)
+ rename drivers/staging/hikey9xx/gpu/{kirin_fb.c => kirin9xx_fb.c} (100%)
+ rename drivers/staging/hikey9xx/gpu/{kirin_fb_panel.h => kirin9xx_fb_panel.h} (100%)
+ rename drivers/staging/hikey9xx/gpu/{kirin_fbdev.c => kirin9xx_fbdev.c} (100%)
+ rename drivers/staging/hikey9xx/gpu/{kirin_pwm.c => kirin9xx_pwm.c} (100%)
 
-diff --git a/drivers/staging/hikey9xx/gpu/kirin_drm_dss.c b/drivers/staging/hikey9xx/gpu/kirin_drm_dss.c
-index 11d847e2da3d..693f5499c8d0 100644
---- a/drivers/staging/hikey9xx/gpu/kirin_drm_dss.c
-+++ b/drivers/staging/hikey9xx/gpu/kirin_drm_dss.c
-@@ -270,6 +270,10 @@ static void dss_ldi_set_mode(struct dss_crtc *acrtc)
- 		else
- 			clk_Hz = mode->clock * 1000UL;
- 
-+		/* Adjust pixel clock for compatibility with 10.1 inch special displays. */
-+		if (mode->clock == 148500 && mode->width_mm == 532 && mode->height_mm == 299)
-+			clk_Hz = 152000 * 1000UL;
-+
- 		DRM_INFO("HDMI real need clock = %llu \n", clk_Hz);
- 		hdmi_pxl_ppll7_init(ctx, clk_Hz);
- 		adj_mode->clock = clk_Hz / 1000;
+diff --git a/drivers/staging/hikey9xx/gpu/kirin_dpe_reg.h b/drivers/staging/hikey9xx/gpu/kirin9xx_dpe_reg.h
+similarity index 100%
+rename from drivers/staging/hikey9xx/gpu/kirin_dpe_reg.h
+rename to drivers/staging/hikey9xx/gpu/kirin9xx_dpe_reg.h
+diff --git a/drivers/staging/hikey9xx/gpu/kirin_drm_dpe_utils.c b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_dpe_utils.c
+similarity index 100%
+rename from drivers/staging/hikey9xx/gpu/kirin_drm_dpe_utils.c
+rename to drivers/staging/hikey9xx/gpu/kirin9xx_drm_dpe_utils.c
+diff --git a/drivers/staging/hikey9xx/gpu/kirin_drm_dpe_utils.h b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_dpe_utils.h
+similarity index 100%
+rename from drivers/staging/hikey9xx/gpu/kirin_drm_dpe_utils.h
+rename to drivers/staging/hikey9xx/gpu/kirin9xx_drm_dpe_utils.h
+diff --git a/drivers/staging/hikey9xx/gpu/kirin_drm_drv.c b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.c
+similarity index 100%
+rename from drivers/staging/hikey9xx/gpu/kirin_drm_drv.c
+rename to drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.c
+diff --git a/drivers/staging/hikey9xx/gpu/kirin_drm_drv.h b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.h
+similarity index 100%
+rename from drivers/staging/hikey9xx/gpu/kirin_drm_drv.h
+rename to drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.h
+diff --git a/drivers/staging/hikey9xx/gpu/kirin_drm_dss.c b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_dss.c
+similarity index 100%
+rename from drivers/staging/hikey9xx/gpu/kirin_drm_dss.c
+rename to drivers/staging/hikey9xx/gpu/kirin9xx_drm_dss.c
+diff --git a/drivers/staging/hikey9xx/gpu/kirin_drm_overlay_utils.c b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_overlay_utils.c
+similarity index 100%
+rename from drivers/staging/hikey9xx/gpu/kirin_drm_overlay_utils.c
+rename to drivers/staging/hikey9xx/gpu/kirin9xx_drm_overlay_utils.c
+diff --git a/drivers/staging/hikey9xx/gpu/dw_drm_dsi.c b/drivers/staging/hikey9xx/gpu/kirin9xx_dw_drm_dsi.c
+similarity index 100%
+rename from drivers/staging/hikey9xx/gpu/dw_drm_dsi.c
+rename to drivers/staging/hikey9xx/gpu/kirin9xx_dw_drm_dsi.c
+diff --git a/drivers/staging/hikey9xx/gpu/dw_dsi_reg.h b/drivers/staging/hikey9xx/gpu/kirin9xx_dw_dsi_reg.h
+similarity index 100%
+rename from drivers/staging/hikey9xx/gpu/dw_dsi_reg.h
+rename to drivers/staging/hikey9xx/gpu/kirin9xx_dw_dsi_reg.h
+diff --git a/drivers/staging/hikey9xx/gpu/kirin_fb.c b/drivers/staging/hikey9xx/gpu/kirin9xx_fb.c
+similarity index 100%
+rename from drivers/staging/hikey9xx/gpu/kirin_fb.c
+rename to drivers/staging/hikey9xx/gpu/kirin9xx_fb.c
+diff --git a/drivers/staging/hikey9xx/gpu/kirin_fb_panel.h b/drivers/staging/hikey9xx/gpu/kirin9xx_fb_panel.h
+similarity index 100%
+rename from drivers/staging/hikey9xx/gpu/kirin_fb_panel.h
+rename to drivers/staging/hikey9xx/gpu/kirin9xx_fb_panel.h
+diff --git a/drivers/staging/hikey9xx/gpu/kirin_fbdev.c b/drivers/staging/hikey9xx/gpu/kirin9xx_fbdev.c
+similarity index 100%
+rename from drivers/staging/hikey9xx/gpu/kirin_fbdev.c
+rename to drivers/staging/hikey9xx/gpu/kirin9xx_fbdev.c
+diff --git a/drivers/staging/hikey9xx/gpu/kirin_pwm.c b/drivers/staging/hikey9xx/gpu/kirin9xx_pwm.c
+similarity index 100%
+rename from drivers/staging/hikey9xx/gpu/kirin_pwm.c
+rename to drivers/staging/hikey9xx/gpu/kirin9xx_pwm.c
 -- 
 2.26.2
 
