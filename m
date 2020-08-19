@@ -2,150 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965E6249334
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 05:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E078424933C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 05:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727870AbgHSDFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 23:05:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726605AbgHSDFy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 23:05:54 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE79DC061389;
-        Tue, 18 Aug 2020 20:05:53 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id 77so20400651qkm.5;
-        Tue, 18 Aug 2020 20:05:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZuU80Z7VtjiOx9KYQrgsSGrMxc3EizeZUZWTydpUAn4=;
-        b=bVFkn7Jpptl33UIirsnQkeycmvNl+gvNzoYFkghC8+6LGL5udoY37qDPQN2nCnq1Q8
-         T58YXrbN4JyvG+RZkoxxlSeoX2I/CI19QvzMqFadCN7TYhE1y1N+nbG/bGDZ4vP/Kr6q
-         E2Ow4NFC9C923Y1Qai+wqjaZ5/kB5iFLLMgeXX6Z2MvyC4l/XVLo71WW2Od7wscGRqNP
-         jHq+bVWN5DXVgb+L0bk/aUCIoOM9k09jd8sLwDunWR1LD5d+i6BgZDUG158hj+Y4e8ZQ
-         PCnOeM7iPGTvFRvi3sZmvKShkK7JyBe2rnJdRHK4kkVA7pdCWJSQ0Ug5s9lpQu+CxzpA
-         nZNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZuU80Z7VtjiOx9KYQrgsSGrMxc3EizeZUZWTydpUAn4=;
-        b=MkX5yD9TaqIF4cdx4VbxfpnIpkPvBbXbigSuo4dW3hlarSk75Ouv5cpTPAfIaml1D6
-         7J1hFTjzVLX8V9oum+FOh2AETZ9XHwyGdEsJ3jcwFvtfgHFN5y3rBnkfcF8v4du3nlHi
-         VfY1WtYu8fFWgxugpghHnC3RY+Sq+BZOjUgNemfZR+oeuLg7XL9/5DgLdsJ/weUn4d6e
-         +lNgiiXLjDoG0F9JBza6SPMHKkNECxsecI6AjfMdiFZztiZiO9iupO8rAiYEkUid+I9k
-         aAe3w1XLdK+AMOBB1pVxxDH/4mZUW6U+FcrQbExm5OZ/GTpuAql6BXhvho99Yg8Qjl3l
-         J6Ng==
-X-Gm-Message-State: AOAM531vczUeqEQYR5feT7Y8CCY0j79SSqKq4Q0jMq+8XS6Mu4eYusQu
-        4+ODvU1updFrcabXRUXKBAk=
-X-Google-Smtp-Source: ABdhPJyuIl56o6bND7x75nor1iLa463PwWDbzhtM4fKJhOAT35dMU0ViE0ppxcixJye0CgD7MqivPA==
-X-Received: by 2002:a05:620a:63a:: with SMTP id 26mr20332775qkv.490.1597806353035;
-        Tue, 18 Aug 2020 20:05:53 -0700 (PDT)
-Received: from atris.xiphos.ca (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id m30sm27724520qtm.46.2020.08.18.20.05.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 20:05:52 -0700 (PDT)
-From:   Liam Beguin <liambeguin@gmail.com>
-To:     liambeguin@gmail.com, ysato@users.sourceforge.jp, dalias@libc.org
-Cc:     linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH 1/1] sh: add support for cmpxchg on u8 and u16 pointers
-Date:   Tue, 18 Aug 2020 23:05:11 -0400
-Message-Id: <20200819030511.1114-1-liambeguin@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        id S1727887AbgHSDIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 23:08:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39056 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726605AbgHSDIg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 23:08:36 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 87E912065F;
+        Wed, 19 Aug 2020 03:08:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597806515;
+        bh=78bRBdzNhJujOebmg6DHCPilaIUZ2kw2kYPf/ZdhIoU=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=BfCO+1nvWe2PvoUyRco6OxFpDo9hk89LIVNNtHjbxejeXjYj8vKJ9vDWHt5lIlhfn
+         9GqAe9c4ZNMqtJbCHM+MMsWOMYAGyOGrli6I3I8SKm3FQwO4nGu/xw1GLKcSAWMhB+
+         +LD4DWrdsOPyHudVy5BWLH7/ShE1Xl7RO/GLQJwE=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200809144959.747986-1-christophe.jaillet@wanadoo.fr>
+References: <20200809144959.747986-1-christophe.jaillet@wanadoo.fr>
+Subject: Re: [PATCH] clk: davinci: Use the correct size when allocating memory
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        david@lechnology.com, mturquette@baylibre.com, nsekhar@ti.com
+Date:   Tue, 18 Aug 2020 20:08:34 -0700
+Message-ID: <159780651426.334488.4846081923924152334@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel test bot reported[1] that using set_mask_bits on a u8 causes
-the following issue on SuperH:
+Quoting Christophe JAILLET (2020-08-09 07:49:59)
+> 'sizeof(*pllen)' should be used in place of 'sizeof(*pllout)' to avoid a
+> small over-allocation.
+>=20
+> Fixes: 2d1726915159 ("clk: davinci: New driver for davinci PLL clocks")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
 
-    >> ERROR: modpost: "__cmpxchg_called_with_bad_pointer" [drivers/phy/ti/phy-tusb1210.ko] undefined!
-
-Add support for cmpxchg on u8 and u16 pointers.
-
-[1] https://lore.kernel.org/patchwork/patch/1288894/#1485536
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Liam Beguin <liambeguin@gmail.com>
----
-
-Hi,
-
-This was reported by the kernel test bot on an architecture I can't
-really test on. I was only able to make sure the build succeeds, but
-nothing more.
-This patch is based on the __cmpxchg_u32 impletmentation and seems
-incomplete based on the different cmpxchg headers I can find.
-
-Do these function need to be impletmented in each header
-simulataneously?
-
-Thanks,
-Liam
-
- arch/sh/include/asm/cmpxchg-irq.h | 27 +++++++++++++++++++++++++++
- arch/sh/include/asm/cmpxchg.h     |  5 +++--
- 2 files changed, 30 insertions(+), 2 deletions(-)
-
-diff --git a/arch/sh/include/asm/cmpxchg-irq.h b/arch/sh/include/asm/cmpxchg-irq.h
-index 07d3e7f08389..918c4153a930 100644
---- a/arch/sh/include/asm/cmpxchg-irq.h
-+++ b/arch/sh/include/asm/cmpxchg-irq.h
-@@ -51,4 +51,31 @@ static inline unsigned long __cmpxchg_u32(volatile int *m, unsigned long old,
- 	return retval;
- }
- 
-+static inline unsigned long __cmpxchg_u16(volatile u16 *m, unsigned long old,
-+	unsigned long new)
-+{
-+	u16 retval;
-+	unsigned long flags;
-+
-+	local_irq_save(flags);
-+	retval = *m;
-+	if (retval == old)
-+		*m = new;
-+	local_irq_restore(flags);
-+	return (unsigned long)retval;
-+}
-+
-+static inline unsigned long __cmpxchg_u8(volatile u8 *m, unsigned long old,
-+	unsigned long new)
-+{
-+	u8 retval;
-+	unsigned long flags;
-+
-+	local_irq_save(flags);
-+	retval = *m;
-+	if (retval == old)
-+		*m = new;
-+	local_irq_restore(flags);
-+	return (unsigned long)retval;
-+}
- #endif /* __ASM_SH_CMPXCHG_IRQ_H */
-diff --git a/arch/sh/include/asm/cmpxchg.h b/arch/sh/include/asm/cmpxchg.h
-index e9501d85c278..7d65d0fd1665 100644
---- a/arch/sh/include/asm/cmpxchg.h
-+++ b/arch/sh/include/asm/cmpxchg.h
-@@ -56,8 +56,9 @@ static inline unsigned long __cmpxchg(volatile void * ptr, unsigned long old,
- 		unsigned long new, int size)
- {
- 	switch (size) {
--	case 4:
--		return __cmpxchg_u32(ptr, old, new);
-+	case 4: return __cmpxchg_u32((int *)ptr, old, new);
-+	case 2: return __cmpxchg_u16((u16 *)ptr, old, new);
-+	case 1: return __cmpxchg_u8((u8 *)ptr, old, new);
- 	}
- 	__cmpxchg_called_with_bad_pointer();
- 	return old;
--- 
-2.27.0
-
+Applied to clk-fixes
