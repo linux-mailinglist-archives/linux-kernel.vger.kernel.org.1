@@ -2,113 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A14CC24A47E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 18:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3678B24A481
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 18:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726874AbgHSQ5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 12:57:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726734AbgHSQ5H (ORCPT
+        id S1727902AbgHSQ5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 12:57:39 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:41942 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727079AbgHSQ5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 12:57:07 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5BDC061383
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 09:57:06 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id x5so2761824wmi.2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 09:57:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=pYhO7PbSDe8dru1dk/4z1pXylH1/0mvxSDfzBAAOOrk=;
-        b=CCVFYUUES1mcKzrLyt3Uqs9hjoeY+tJL5sKDMD90jBM3CZHjqak1l36nSYdbzmwHiM
-         ShBiyCY0+gsgm2uPLeGH7G2dj9qmxT9SsE0Gr1R5exx5TeLVWfX6zkwSGuuAegx+feg9
-         cd+kDQto4FDMM8i0SIpIsYNdmSqqDHNglX9B9xFrE/aL/GgzJ52q3fO+bVw7zQvPgWSb
-         PvOzsN6j3X1nHaXqiW8Mx959AAaS7Hgg8/JFaY9LRnHCBDNWUHK0xgaeFzf6fqkFc0/e
-         j6OuefwpxT6vbWxzlisTrBHsiDSOsGTXRXtsFzWaDolcVpQrLKf/xLen8IASn9H5CKDj
-         y2EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=pYhO7PbSDe8dru1dk/4z1pXylH1/0mvxSDfzBAAOOrk=;
-        b=qN7ZezDB3C1d3HsNmmMhln1P6GAvy1jpAJJC8odxXvJQ04ThgE9v+DyCFMZmkgomUz
-         6dFYgTzu3eEy++qexSvFHq+la01//yrbYnBKmemhdYftaNcPp1Uf3ZU9rQ2lHfAJCtI6
-         j4tFapEsVD81JaBvlEcdOjqGDf2aL1n3U2CHnP+s24il/gTG547OE058pYWaZiyUXd6l
-         bGn+P57pgCvPjiww6JA2smahgwANIm4WkYRrcUII9+Vz1j9bRdtkphLxbG1P6vlRdIu9
-         OjGNSRJ6g+tl6d8LZvVf0K9/gllxGpKjHQaGHP8Z07Y0aqqef+4TPTA+Vt22Q6Hnioj9
-         79ow==
-X-Gm-Message-State: AOAM532jLycXIoKzhNlV/exr8gOhFvmvZi7ODDUyoVvGxxAF5rZ7KlR0
-        57bQlvhqVh2rxX+/1k7UiIORTA==
-X-Google-Smtp-Source: ABdhPJz8qA3JOjs+ieJsjG0S48f11108VeZdaRV17brCNc3yaDMVfbUHOgU27SWVv+InAy1PTRPfOw==
-X-Received: by 2002:a1c:448a:: with SMTP id r132mr5661262wma.158.1597856225352;
-        Wed, 19 Aug 2020 09:57:05 -0700 (PDT)
-Received: from dell ([95.149.164.62])
-        by smtp.gmail.com with ESMTPSA id c4sm41113675wrt.41.2020.08.19.09.57.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 09:57:04 -0700 (PDT)
-Date:   Wed, 19 Aug 2020 17:57:02 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Bryan Wu <cooloney@gmail.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Gyungoh Yoo <jack.yoo@skyworksinc.com>,
-        Jingoo Han <jingoohan1@gmail.com>, Kangjie Lu <kjlu@umn.edu>
-Subject: Re: [PATCH] video: backlight: sky81452-backlight: Fix reference
- count imbalance on error
-Message-ID: <20200819165702.GC3248864@dell>
-References: <321fb03d-2307-7f60-f437-cfb99184dfd6@web.de>
+        Wed, 19 Aug 2020 12:57:22 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 607D51C0BBB; Wed, 19 Aug 2020 18:57:17 +0200 (CEST)
+Date:   Wed, 19 Aug 2020 18:57:17 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Dave Airlie <airlied@gmail.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+Subject: Re: [Intel-gfx] 5.9-rc1: graphics regression moved from -next to
+ mainline
+Message-ID: <20200819165716.GA3803@amd>
+References: <20200817161132.GA4711@amd>
+ <CAHk-=wh6_eWwvpL=AhOeY0btf_dkpu+0joNzPZWfbBWgAeAhMA@mail.gmail.com>
+ <CAPM=9tw8LVWsuA6m_nkUDgm00iz2txYRNZY0b0WWZbyiUVzLEw@mail.gmail.com>
+ <CAHk-=wg34bw1ude07nC_XCPOJHZ21-v6117p4574d5S7iP4gxw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="oyUTqETQ0mS9luUI"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <321fb03d-2307-7f60-f437-cfb99184dfd6@web.de>
+In-Reply-To: <CAHk-=wg34bw1ude07nC_XCPOJHZ21-v6117p4574d5S7iP4gxw@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Aug 2020, Markus Elfring wrote:
 
-> > When of_property_read_u32_array() returns an error code,
-> > a pairing refcount decrement is needed to keep np's refcount balanced.
-> 
-> Can another imperative wording be helpful for the change description?
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=18445bf405cb331117bc98427b1ba6f12418ad17#n151
-> 
-> Would an other commit message be a bit nicer?
-> 
-> 
-> …
-> > +++ b/drivers/video/backlight/sky81452-backlight.c
-> > @@ -217,6 +217,7 @@ static struct sky81452_bl_platform_data *sky81452_bl_parse_dt(
-> >  					num_entry);
-> >  		if (ret < 0) {
-> >  			dev_err(dev, "led-sources node is invalid.\n");
-> > +			of_node_put(np);
-> >  			return ERR_PTR(-EINVAL);
-> >  		}
-> 
-> I propose to add the jump target “put_node” so that a bit of common exception
-> handling code can be better reused at the end of this function implementation.
-> 
-> Regards,
-> Markus
+--oyUTqETQ0mS9luUI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-You can safely ignore any review comments from Markus!
+Hi!
 
-However, this patch doesn't appear to be in my inbox.
+> > I think there's been some discussion about reverting that change for
+> > other reasons, but it's quite likely the culprit.
+>=20
+> Hmm. It reverts cleanly, but the end result doesn't work, because of
+> other changes.
+>=20
+> Reverting all of
+>=20
+>    763fedd6a216 ("drm/i915: Remove i915_gem_object_get_dirty_page()")
+>    7ac2d2536dfa ("drm/i915/gem: Delete unused code")
+>    9e0f9464e2ab ("drm/i915/gem: Async GPU relocations only")
+>=20
+> seems to at least build.
+>=20
+> Pavel, does doing those three reverts make things work for you?
 
-Any ideas as to why?
+Thanks.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+I got "[PATCH 1/2] drm/i915/gem: Replace reloc chain with terminator
+on..." in my inbox; I believe that's related. Let me try those, first.
+
+Best regards,
+								Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--oyUTqETQ0mS9luUI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl89WewACgkQMOfwapXb+vJnQACfYEYDrymKuDTAa+JArLe4U9Ld
+5xcAnjjWjwoOVl2xtpo/o+mbX+714h85
+=kU8f
+-----END PGP SIGNATURE-----
+
+--oyUTqETQ0mS9luUI--
