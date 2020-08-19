@@ -2,91 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753CA24A84D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 23:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCEED24A852
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 23:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgHSVOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 17:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56750 "EHLO
+        id S1727808AbgHSVQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 17:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727780AbgHSVOy (ORCPT
+        with ESMTP id S1726646AbgHSVQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 17:14:54 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 542AAC061383
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 14:14:54 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id g15so9685plj.6
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 14:14:54 -0700 (PDT)
+        Wed, 19 Aug 2020 17:16:54 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEEB0C061757;
+        Wed, 19 Aug 2020 14:16:53 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id w17so19265983edt.8;
+        Wed, 19 Aug 2020 14:16:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+umGhDcbGIZE1xFjxqU0bxabGlCttQLBQ+Y53ytOqC0=;
-        b=KJecqVZ9hLXEAzJJNx3+s6VztJjf7IdAGVe1xvxkaR3MIOOrRYV+x5q4PkAmG97E47
-         c9AfgbCo5kEgRCZ8hdbUxNjLSW4rUHKYJHgBYeI3No9tx1HVqRlWqvIUn26TUA+AX14V
-         oI6hp4R03d/+IOM+djlJ6fbgWl+wRl5B/Ynr1CRdTtUZSJ7mP1IA3WAWXKZbcoVTHxky
-         HJaON41XS9BzhwFiIwRDESb3MP5Zr4dLmn8S7gctlrq5qeF7GH/LTAl44vjXwKCSwhDZ
-         tdBh+2voGT5VV/9cixVn2JjqYAj65P2LXuMvq6ETnzRPAreAd+K1RuNRDQZm6Ax6r9/r
-         2LUg==
+        d=gmail.com; s=20161025;
+        h=subject:date:from:to:cc:message-id:in-reply-to:references;
+        bh=L+xw/TvXzS5DRJVpZyjyebx0Vc5+Vwu/ASyNp17Shxw=;
+        b=sXT5iDBPCqhvexexP0UNPc3NTSFzCnX6obN0oTekbXYys4YReg7gAGj4CZlHT5Wwpj
+         f2rsyl1WWZFv1TizDpw+ONIRN+WPoVPUJl8v50ORRkHZknOIxSDOCLvDGUAt9Gk8Bcq0
+         C8b6Mhyi0AHgEW/CG9jiEefdadwgwwKQkSlifmyCbx+wYFy56dF7XfPwOLqHr6pSl9gf
+         4VkddbdAgaqdZt8/Sz3JRbpt3WrIFfsOOPTSlB8b16KHQZEBc5/ufDkgMl7me21bJEMH
+         NYz3PL/aVuhIRisnGJTku+3Lgi1n3Qb4LlrRdqmKBW8MYCzrLwo+rVgrGlqNO5wCNnwx
+         7gbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+umGhDcbGIZE1xFjxqU0bxabGlCttQLBQ+Y53ytOqC0=;
-        b=gtCCA2TKHsdwgLuKGPLcgmqWq24LsRyQHbaEQFEVYwReMaVocsgeFECmfe0+MtqUPy
-         j1zoIQRinNe8+IB5RCUfDhRLpGXvIcs/kbnvG87KDTdJx/7yyq27+Xo2ewqozDixiQqK
-         9RlQgYCYVa/p+yMqA8JW9nHCScmwvSUV9tfhpj1cXDWpXcoHZV1coMFtRkOkw4+TuWhf
-         SUl39zz95ypmdkRFYL06P1eujkAt+D1m+zZ5+r8U5A5BAPQCrAWgQPYCnkCoVPSj8Byh
-         FqmEcy7b1GdCt4r1TYvSfhk5x1eiRlo3YcTisaXw9QQyvuK9fFLtUOjfpr2flUqve94V
-         Q5zg==
-X-Gm-Message-State: AOAM532ycjB81T5DM5PbU85tuehNkQ8yGcW/velSD0f6rjc3JrCEBpOJ
-        D27iQQ+33mSdRbOjlvKEQ2F6LOXwiKpaddJ8lQIjhA==
-X-Google-Smtp-Source: ABdhPJxD98fjtFT8GxHwT05Ahp/1ulXZG6efUm0uXvNqB6cqEVXrUsqo9M64hDCvdg13zcl6KOod3fU3jP+YqsQ4JBs=
-X-Received: by 2002:a17:90a:4603:: with SMTP id w3mr1306384pjg.20.1597871693322;
- Wed, 19 Aug 2020 14:14:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200729192357.477350-1-vitor@massaru.org>
-In-Reply-To: <20200729192357.477350-1-vitor@massaru.org>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Wed, 19 Aug 2020 14:14:42 -0700
-Message-ID: <CAFd5g45rRMDD8=wQOzh+cGHEM4WJ=4vSu44W+4yPCFNFM2SB9A@mail.gmail.com>
-Subject: Re: [PATCH] lib: kunit: add list_sort test conversion to KUnit
-To:     Vitor Massaru Iha <vitor@massaru.org>
-Cc:     KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        h=x-gm-message-state:subject:date:from:to:cc:message-id:in-reply-to
+         :references;
+        bh=L+xw/TvXzS5DRJVpZyjyebx0Vc5+Vwu/ASyNp17Shxw=;
+        b=PUpjslujFzHlFEmUnaNt/ukrE52XizrfncAem4uNLZ4RJlXC5qIHAOl6HR99Yr36lY
+         dgIWjO7CIznztX+ErQ2yjnAxB0WxHBzOG6gF6h6JsNTS3oNjVz6/NWrkHea9rm8ybIH0
+         1CYs7EeygxGsxPJPO3Gx9OocgPgfJMBW7tE8Q8FSswVYhQBNiCDMNpLfxn80NtttChTu
+         JLnpqGpQFfe5JQIGLdKOCoqaNf6Prtd+ArvB0UYgZQ63NdCqF+LzSWdZo0aV/nZQI0Ut
+         v0cm+JgZY9hRHYcauuwuIOS0lDEwFuQDHMUfvLITk10cA+bFUawa9G20YYMJVVis6GOx
+         20qQ==
+X-Gm-Message-State: AOAM532Fts2afU2UYS9qWWBImNrOtrqw9/xFItw4DdzD9q9zpwv86sT2
+        6O26bhkJqkVtVNpStYTFuRL6kBeYzquOdbvcShU=
+X-Google-Smtp-Source: ABdhPJyZ9Fpa9727PI1C6+RwTJZP1XISd5vH5YOM+f07DH3Ncyt2AUCjQtDSMUNBHgSUL4BKmLSrUA==
+X-Received: by 2002:aa7:c2c6:: with SMTP id m6mr27047423edp.118.1597871811854;
+        Wed, 19 Aug 2020 14:16:51 -0700 (PDT)
+Received: from gmail.com (relay4.tor.ian.sh. [51.75.64.187])
+        by smtp.gmail.com with ESMTPSA id fx15sm39815ejb.1.2020.08.19.14.16.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Aug 2020 14:16:51 -0700 (PDT)
+Subject: Re: [PATCH] Makefile: Yes. Finally remove '-Wdeclaration-after-statement'
+Date:   Wed, 19 Aug 2020 21:15:00 -0000
+From:   Michael Witten <mfwitten@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Ingo Molnar <mingo@kernel.org>,
+        Eric Biederman <ebiederm@xmission.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, elfring@users.sourceforge.net,
-        mhocko@suse.com
-Content-Type: text/plain; charset="UTF-8"
+        John Levon <john.levon@joyent.com>,
+        John Levon <levon@movementarian.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        David Laight <David.Laight@aculab.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Sam Ravnborg <sam@ravnborg.org>
+Message-ID: <3b508e7d9d2a44079d161707819dfd88@gmail.com>
+In-Reply-To: <5820d82432a0485b9a0d40bc093cfeb8@gmail.com>
+References: <c6fda26e8d134264b04fadc3386d6c32@gmail.com>
+  <20200816175303.GB1236603@ZenIV.linux.org.uk>
+  <20200817204223.GB12414@amd>
+  <87lfid6kpi.fsf@x220.int.ebiederm.org>
+  <CAHk-=wj04wKCjHz6b6d7N58xoS4AftnwTUBaXsEekQ5RhfWVnw@mail.gmail.com>
+  <20200817220908.GA3701@amd>
+  <CAHk-=wh7Rn=8mVi_KWV71ZaQ2HrCz240DbjEJMDdARTwB3CYvA@mail.gmail.com>
+  <20200818051717.GA3134537@gmail.com>
+  <e986450210154d49aee1a3885d76c862@AcuMS.aculab.com>
+  <61f8da080e5fac1bc23cdd68c43f199029c0a788.camel@perches.com>
+  <23e2e6c2d3a24954bccb67a3186019b9@gmail.com>
+  <5820d82432a0485b9a0d40bc093cfeb8@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 12:24 PM Vitor Massaru Iha <vitor@massaru.org> wrote:
->
-> This adds the conversion of the runtime tests of test_list_sort,
-> from `lib/test_list_sort.c` to KUnit tests.
->
-> Please apply this commit first (linux-kselftest/kunit-fixes):
-> 3f37d14b8a3152441f36b6bc74000996679f0998 kunit: kunit_config: Fix parsing of CONFIG options with space
->
-> Code Style Documentation: [0]
->
-> Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
-> Link: [0] https://lore.kernel.org/linux-kselftest/20200620054944.167330-1-davidgow@google.com/T/#u
+The quick RFC patch I just proposed in the parent email is
+broken in its implementation. I will submit an updated
+version soon.
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Michael Witten (Tue, 18 Aug 2020 22:05:00 -0000):
 
-It would still be good to get some of the original authors/reviewers
-to review this.
+> I think there's an important distinction to make between
+> the following 2 kinds of code:
+>
+>   * The curated code people just want to build.
+>   * The new patches that maintainers are reviewing.
+>
+> Certainly, maintainers should have a wide range of tools
+> at their disposal to probe the quality of a patch; then,
+> after bending rules of style to taste, the maintainers
+> declare the merged code to be curated, after which that
+> merged code need not be probed so invasively every time
+> it is built.
+>
+> To this end, I propose the following new patch, which
+> introduces some build-time switches that will help
+> people make this distinction.
+>
+>   As you know, you can save this email to some path:
+>
+>     /path/to/email.eml
+>
+>   Then apply and review the patch as follows:
+>
+>     $ cd /path/to/linux/repo
+>     $ git reset --hard HEAD
+>     $ git checkout --detach origin/master
+>     $ git am --scissors /path/to/email.eml
+>     $ git log -1 -p
+>
+> At this point, the patch is intended as a[n] RFC;
+> I haven't tested it, and just wanted to get the
+> idea out there.
+>
+> Sincerely,
+> Michael Witten
+>
+> ---8<------8<------8<------8<------8<------8<------8<------8<---
+> Subject: [PATCH] kbuild: Introduce "Warnings for maintainers"
+> This commit introduces the following new Kconfig options:
+>
+>   CONFIG_MAINTAINERS_WARNINGS
+>     |
+>     +-> CONFIG_WARN_DECLARATION_AFTER_STATEMENT
+>     |
+>     +-> CONFIG_WARN_MAYBE_UNINITIALIZED
+>
+> These produce the following menu items:
+>
+>   -> Kernel hacking
+>     -> Compile-time checks and compiler options
+>       -> Warnings for maintainers                                [NEW]
+>          * Warn about mixing variable definitions and statements [NEW]
+>          * Warn about use of potentially uninitialized variables [NEW]
+>
+> In short:
+>
+>   * CONFIG_MAINTAINERS_WARNINGS
+>       is the umbrella control.
+>
+>   * CONFIG_WARN_DECLARATION_AFTER_STATEMENT
+>       determines whether "-Wdeclaration-after-statement" is used.
+>
+>   * CONFIG_WARN_MAYBE_UNINITIALIZED
+>       determines whether "-Wmaybe-uninitialized" is used.
+>
+> Currently, the default is "y" for each, but it is expected that
+> eventually the default will be "n" for CONFIG_MAINTAINERS_WARNINGS.
+>
+> Running "make" with "W=2" should turn both warnings on, unless
+> they are thwarted by some other Kbuild logic.
+>
+> Signed-off-by: Michael Witten <mfwitten@gmail.com>
+>
+> [... PATCH ...]
