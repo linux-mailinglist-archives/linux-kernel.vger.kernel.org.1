@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 655AB24A571
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D6C24A574
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726947AbgHSSAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 14:00:52 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:29930 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726875AbgHSSAR (ORCPT
+        id S1726965AbgHSSBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 14:01:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26045 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726786AbgHSSAT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 14:00:17 -0400
+        Wed, 19 Aug 2020 14:00:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597860016;
+        s=mimecast20190719; t=1597860018;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=tvf3IO/qmQBV4+uWvLy6Z8GeAG7T6qvRNEQacP+vggM=;
-        b=GkfIbSsp6CIL9P1U5q+1oarH9e2WwJTnbRsnpMyqI8LvgD8nHGPbh3wodXoVabGZFhIKeB
-        EKoQebbJrhC+9quMz34FAIa+91YxIlw+HbhDZwWbj/q2UY2c53K6Gn4DG4fqQy8MsHoS1h
-        HxtWgqLgKsvlzm/gfClqJwgioNRU5Z0=
+        bh=MZKGgLwnrdaAkJVW/KINBUaSS2x46Iq1d00/GYBaqU0=;
+        b=LDPEWl6ajtFolB+h4xUos9vogSaNiF8XIAQq5tPLUs0IH8lt05adq9GmWPdvy6E/7EHC2A
+        zRvfjJREbdLQQMkyhOcB9qlXB+KLAjNbCFLSy8/ZgkCIYIPmb+gmkU9aVocIVVtiQB8iAk
+        uvtk4QxAAFE/3zWHd5lyR4rCxo9bTPs=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-52-KgNFG_4TO8inO_WrfRo3yg-1; Wed, 19 Aug 2020 14:00:14 -0400
-X-MC-Unique: KgNFG_4TO8inO_WrfRo3yg-1
+ us-mta-73-9gNmvcgoNUu979CaBVgtQQ-1; Wed, 19 Aug 2020 14:00:16 -0400
+X-MC-Unique: 9gNmvcgoNUu979CaBVgtQQ-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0F1688030B4;
-        Wed, 19 Aug 2020 18:00:13 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 332528030AB;
+        Wed, 19 Aug 2020 18:00:15 +0000 (UTC)
 Received: from t480s.redhat.com (ovpn-114-11.ams2.redhat.com [10.36.114.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 323741001281;
-        Wed, 19 Aug 2020 18:00:11 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5C79B100238E;
+        Wed, 19 Aug 2020 18:00:13 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
@@ -43,9 +43,9 @@ Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
         Baoquan He <bhe@redhat.com>,
         Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
         Oscar Salvador <osalvador@suse.de>
-Subject: [PATCH v2 04/10] mm/page_alloc: simplify __offline_isolated_pages()
-Date:   Wed, 19 Aug 2020 19:59:51 +0200
-Message-Id: <20200819175957.28465-5-david@redhat.com>
+Subject: [PATCH v2 05/10] mm/memory_hotplug: drop nr_isolate_pageblock in offline_pages()
+Date:   Wed, 19 Aug 2020 19:59:52 +0200
+Message-Id: <20200819175957.28465-6-david@redhat.com>
 In-Reply-To: <20200819175957.28465-1-david@redhat.com>
 References: <20200819175957.28465-1-david@redhat.com>
 MIME-Version: 1.0
@@ -56,12 +56,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-offline_pages() is the only user. __offline_isolated_pages() never gets
-called with ranges that contain memory holes and we no longer care about
-the return value. Drop the return value handling and all pfn_valid()
-checks.
+We make sure that we cannot have any memory holes right at the beginning
+of offline_pages() and we only support to online/offline full sections.
+Both, sections and pageblocks are a power of two in size, and sections
+always span full pageblocks.
 
-Update the documentation.
+We can directly calculate the number of isolated pageblocks from nr_pages.
 
 Acked-by: Michal Hocko <mhocko@suse.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
@@ -72,98 +72,42 @@ Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
 Cc: Oscar Salvador <osalvador@suse.de>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- include/linux/memory_hotplug.h |  4 ++--
- mm/page_alloc.c                | 27 ++++-----------------------
- 2 files changed, 6 insertions(+), 25 deletions(-)
+ mm/memory_hotplug.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
-index 375515803cd83..0b461691d1a49 100644
---- a/include/linux/memory_hotplug.h
-+++ b/include/linux/memory_hotplug.h
-@@ -103,8 +103,8 @@ extern int online_pages(unsigned long pfn, unsigned long nr_pages,
- 			int online_type, int nid);
- extern struct zone *test_pages_in_a_zone(unsigned long start_pfn,
- 					 unsigned long end_pfn);
--extern unsigned long __offline_isolated_pages(unsigned long start_pfn,
--						unsigned long end_pfn);
-+extern void __offline_isolated_pages(unsigned long start_pfn,
-+				     unsigned long end_pfn);
- 
- typedef void (*online_page_callback_t)(struct page *page, unsigned int order);
- 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index cf0b25161feae..03f585f95dc60 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -8692,35 +8692,21 @@ void zone_pcp_reset(struct zone *zone)
- 
- #ifdef CONFIG_MEMORY_HOTREMOVE
- /*
-- * All pages in the range must be in a single zone and isolated
-- * before calling this.
-+ * All pages in the range must be in a single zone, must not contain holes,
-+ * must span full sections, and must be isolated before calling this function.
-  */
--unsigned long
--__offline_isolated_pages(unsigned long start_pfn, unsigned long end_pfn)
-+void __offline_isolated_pages(unsigned long start_pfn, unsigned long end_pfn)
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index 50aa5df696e9d..098361fcb4504 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -1460,10 +1460,10 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
  {
-+	unsigned long pfn = start_pfn;
- 	struct page *page;
- 	struct zone *zone;
- 	unsigned int order;
--	unsigned long pfn;
+ 	const unsigned long end_pfn = start_pfn + nr_pages;
+ 	unsigned long pfn, system_ram_pages = 0;
+-	int ret, node, nr_isolate_pageblock;
  	unsigned long flags;
--	unsigned long offlined_pages = 0;
--
--	/* find the first valid pfn */
--	for (pfn = start_pfn; pfn < end_pfn; pfn++)
--		if (pfn_valid(pfn))
--			break;
--	if (pfn == end_pfn)
--		return offlined_pages;
+ 	struct zone *zone;
+ 	struct memory_notify arg;
++	int ret, node;
+ 	char *reason;
  
- 	offline_mem_sections(pfn, end_pfn);
- 	zone = page_zone(pfn_to_page(pfn));
- 	spin_lock_irqsave(&zone->lock, flags);
--	pfn = start_pfn;
- 	while (pfn < end_pfn) {
--		if (!pfn_valid(pfn)) {
--			pfn++;
--			continue;
--		}
- 		page = pfn_to_page(pfn);
- 		/*
- 		 * The HWPoisoned page may be not in buddy system, and
-@@ -8728,7 +8714,6 @@ __offline_isolated_pages(unsigned long start_pfn, unsigned long end_pfn)
- 		 */
- 		if (unlikely(!PageBuddy(page) && PageHWPoison(page))) {
- 			pfn++;
--			offlined_pages++;
- 			continue;
- 		}
- 		/*
-@@ -8739,20 +8724,16 @@ __offline_isolated_pages(unsigned long start_pfn, unsigned long end_pfn)
- 			BUG_ON(page_count(page));
- 			BUG_ON(PageBuddy(page));
- 			pfn++;
--			offlined_pages++;
- 			continue;
- 		}
- 
- 		BUG_ON(page_count(page));
- 		BUG_ON(!PageBuddy(page));
- 		order = page_order(page);
--		offlined_pages += 1 << order;
- 		del_page_from_free_list(page, zone, order);
- 		pfn += (1 << order);
+ 	/* We can only offline full sections (e.g., SECTION_IS_ONLINE) */
+@@ -1507,7 +1507,6 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
+ 		reason = "failure to isolate range";
+ 		goto failed_removal;
  	}
- 	spin_unlock_irqrestore(&zone->lock, flags);
--
--	return offlined_pages;
- }
- #endif
+-	nr_isolate_pageblock = ret;
  
+ 	arg.start_pfn = start_pfn;
+ 	arg.nr_pages = nr_pages;
+@@ -1569,7 +1568,7 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
+ 	 * pageblocks zone counter here.
+ 	 */
+ 	spin_lock_irqsave(&zone->lock, flags);
+-	zone->nr_isolate_pageblock -= nr_isolate_pageblock;
++	zone->nr_isolate_pageblock -= nr_pages / pageblock_nr_pages;
+ 	spin_unlock_irqrestore(&zone->lock, flags);
+ 
+ 	/* removal success */
 -- 
 2.26.2
 
