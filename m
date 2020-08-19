@@ -2,49 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ABF4249D99
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C3B249D9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727986AbgHSMQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 08:16:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53040 "EHLO mail.kernel.org"
+        id S1727941AbgHSMQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 08:16:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727079AbgHSMQC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 08:16:02 -0400
+        id S1727903AbgHSMQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 08:16:07 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 095C220738;
-        Wed, 19 Aug 2020 12:16:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 24871206FA;
+        Wed, 19 Aug 2020 12:16:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597839361;
-        bh=/MbaTQFZWMYuazygmw7csZlkRqCEGAQG/FDx2KXZmlo=;
+        s=default; t=1597839366;
+        bh=ecmZFbmjBgtZFzBQbq7gL6gCy7ddk1819UscZzDFstI=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=oSMIeWMXMrvFp4voxI5iMdujeB+Lp+HlOztmKzG8LZawk9CdEMwsC/ITDxW+mXFOU
-         kgcTmuGa0aYqB4rCCXpff0OZMhuWxZa5k6jZPJ2q0PM3NbYn5yAIgVkUWs92YGkz8g
-         N3+j40AOGRzS2R4pR4ks6AdvUV8kBedw64d/kxZ0=
-Date:   Wed, 19 Aug 2020 13:15:29 +0100
+        b=hbtL9rqc+f0ahjMfQ7jdq544edl5NKyL0HrVpeIQ9L/wztWBedr3Kzxl3MW+n+jbJ
+         47R4RlyxN3ixMxTBnVwL6hmxczc+XgEy4MTUOsst5+ZzP0TJT5ylvR3UnMVpBaVfvi
+         sGojJEHs2v72klVNkInXRY+K/7AM9YQIKlufeccs=
+Date:   Wed, 19 Aug 2020 13:15:35 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-samsung-soc@vger.kernel.org, Kukjin Kim <kgene@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Arnd Bergmann <arnd@arndb.de>
-In-Reply-To: <20200806182059.2431-1-krzk@kernel.org>
-References: <20200806181932.2253-1-krzk@kernel.org> <20200806182059.2431-1-krzk@kernel.org>
-Subject: Re: [PATCH v2 01/41] ARM: s3c: Remove unneeded machine header includes
-Message-Id: <159783932455.55025.7979458249415199743.b4-ty@kernel.org>
+To:     Samuel Holland <samuel@sholland.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Chen-Yu Tsai <wens@csie.org>
+In-Reply-To: <20200819034038.46418-1-samuel@sholland.org>
+References: <20200819113405.55582925@canb.auug.org.au> <20200819034038.46418-1-samuel@sholland.org>
+Subject: Re: [PATCH] ASoC: sun8i-codec: Hook up component probe function
+Message-Id: <159783932454.55025.7710161905600832608.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 6 Aug 2020 20:20:18 +0200, Krzysztof Kozlowski wrote:
-> Not all units use the contents of mach/hardware.h and
-> mach/dma.h.  Remove these includes when not needed.
+On Tue, 18 Aug 2020 22:40:38 -0500, Samuel Holland wrote:
+> Due to a mistake made while reordering patches, commit 90cac932976e
+> ("ASoC: sun8i-codec: Fix DAPM to match the hardware topology") added
+> the sun8i_codec_component_probe function without referencing it from
+> the component definition. Add the reference so the probe function gets
+> called as expected.
 
 Applied to
 
@@ -52,16 +54,8 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: samsung: h1940: turn into platform driver
-      commit: 2c5c4fdc710c5d3beff78ac5605c5732ebfa8ae5
-[2/5] ASoC: samsung: neo1973: turn into platform driver
-      commit: a65e8a320846b8c69f53a758dc3662e4b42e6a48
-[3/5] ASoC: samsung: rx1950: turn into platform driver
-      commit: a0f3315a2558e22e75873e1184d0c213c2f8315f
-[4/5] ASoC: samsung: s3c2412-i2s: avoid hardcoded S3C2410_PA_IIS
-      commit: 2f1525848844c996990aafd3104bddf0f0cb3a28
-[5/5] ARM: s3c24xx: move iis pinctrl config into boards
-      (no commit info)
+[1/1] ASoC: sun8i-codec: Hook up component probe function
+      commit: ed7f0fbc9dca0961ac9a713c778319b7f24315ae
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
