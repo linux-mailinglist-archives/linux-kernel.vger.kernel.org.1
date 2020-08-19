@@ -2,84 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81134249FAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C976249F77
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728529AbgHSNY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 09:24:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728143AbgHSNQd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 09:16:33 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E96C061383
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:16:30 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id o22so17653535qtt.13
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:16:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ukIFFNEkmWu6RobJHPqTePGGEQuwENadcCDhgJtfzhU=;
-        b=j3WFT+H6DJHS7Om7raw3H42KBCXviTCmnvdRJkrbff7AwxiK4dOo8ZsHPWI1xzVbMW
-         z4pnhgnMnJ8YISRBqVhlm6Fk/wjcTedAZUUHsJFLFumXcuCued1IwTvcCU6nAa+KkInI
-         whgvYFJ4LFbKrI8TvpI6x/FTQ2bRQCeQXVO9YNlfAnTuywtuKTj93pJwvcX9pxlFiOCG
-         ymS1/Wl7cjV5j1YrneNJRRE6vRc5sJU77xvKYDZcUvXUjXuALbXkMtk38meji6XYlCl2
-         MrkbPGeyOBqRP2fAZzk3zv9RpLrqnui89nc8EL6Kj/fKEZw43VrfGnFVh3V7lcuw5QXP
-         wqFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ukIFFNEkmWu6RobJHPqTePGGEQuwENadcCDhgJtfzhU=;
-        b=hN204Q4QsIwsb2mALHgwMyl+swkp51QD/NgbO/8JK1FW3+XORX8uEhZkmMu5ILO9X4
-         OVoXKuN8EBX6VyaigUX1QM+uh9LcxaZUf9dfx/ZGIsgLGICrSjUqXC86mASgobWvB9s5
-         aVCB5QIVDHcSXincCEt6H7nPMHfBILPrV64mX2Zo32p1eK87uIVIjbnqq/Sk9CXkljfK
-         nFlzppVavDaL5NcD5zNJWoblywYY7Ipo57CZRx7MRiV5kZmNfOlMprLnCDF0se7ji75W
-         Hrc7zTJidSinilDjw6nkdcNl04U2ephnxfQhkTfl9NIAfMJrQ5Y9JLhTWg4UyOopFT8w
-         1iyw==
-X-Gm-Message-State: AOAM532Zm6bFqp7H3gq6wydfAysF6gJFoc36T7ZttKkvPIfq+hhOQPK8
-        krbFIjqzs1N27ENjbbefHjA=
-X-Google-Smtp-Source: ABdhPJxjAVDucLlpJsFcN9VMNE8c4qYhCLipaYCs/n2o9ck1xUXg7Cd/tCNJ8HnylqqhsKF36TgRKg==
-X-Received: by 2002:aed:3728:: with SMTP id i37mr22703331qtb.347.1597842989944;
-        Wed, 19 Aug 2020 06:16:29 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id 3sm24856186qkm.117.2020.08.19.06.16.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 06:16:29 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Wed, 19 Aug 2020 09:16:27 -0400
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] lib/string.c: Disable tree-loop-distribute-patterns
-Message-ID: <20200819131627.GA3779903@rani.riverdale.lan>
-References: <20200818234307.3382306-1-nivedita@alum.mit.edu>
- <CAHk-=wik-oXnUpfZ6Hw37uLykc-_P0Apyn2XuX-odh-3Nzop8w@mail.gmail.com>
- <20200819030442.GA3396810@rani.riverdale.lan>
- <CAHk-=wiJLvqS1_O+yAQSZr-Lj49HdJyLpt3J_nW=otHLfEN4RA@mail.gmail.com>
+        id S1728553AbgHSNVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 09:21:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728156AbgHSNRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 09:17:25 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6982620738;
+        Wed, 19 Aug 2020 13:17:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597843026;
+        bh=7df/TUJeBHIe2mB9oBXeBkh+EQRwdiNjiD4KxxgBqo4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PiFLbqLVGPsc5ZLdPoBXadBWxwCXIuCXj+DLmeuRmAJbi0i4prTzbnKTFqxjvo2Jc
+         SOnV3SDpiYOhITUy1MUOizr4HKdYczHnqgaTeenFPoT6m3Qw1xrctuSouGv9UH4QNz
+         dQo8rz9ZIpHFAzXMOqElmv/oBQX2bSYCmqIKn5/o=
+Date:   Wed, 19 Aug 2020 14:16:35 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Lukasz Stelmach <l.stelmach@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>, Andi Shyti <andi@etezian.org>,
+        linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        m.szyprowski@samsung.com, b.zolnierkie@samsung.com
+Subject: Re: [PATCH 1/8] spi: spi-s3c64xx: swap s3c64xx_spi_set_cs() and
+ s3c64xx_enable_datapath()
+Message-ID: <20200819131635.GD5441@sirena.org.uk>
+References: <20200819123834.GB18122@kozik-lap>
+ <CGME20200819125150eucas1p1965fab59b6e75cf54cac262161c5695b@eucas1p1.samsung.com>
+ <dleftjtuwy23zk.fsf%l.stelmach@samsung.com>
+ <20200819125822.GA18970@kozik-lap>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="W5WqUoFLvi1M7tJE"
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wiJLvqS1_O+yAQSZr-Lj49HdJyLpt3J_nW=otHLfEN4RA@mail.gmail.com>
+In-Reply-To: <20200819125822.GA18970@kozik-lap>
+X-Cookie: I wish you were a Scotch on the rocks.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 08:32:58PM -0700, Linus Torvalds wrote:
-> On Tue, Aug 18, 2020 at 8:04 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
-> 
-> > Might be worth optimizing strnlen etc with the word-at-a-time thing though.
-> 
-> Yeah, possibly. Except the kernel almost never uses strnlen for
-> anything bigger. At least I haven't seen it very much in the profiles.
 
-strscpy could be implemented as strnlen+memcpy. I'd think that wouldn't
-be much slower, especially if strnlen is optimized and the arch has a
-good implementation of memcpy?
+--W5WqUoFLvi1M7tJE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Aug 19, 2020 at 02:58:22PM +0200, Krzysztof Kozlowski wrote:
+> On Wed, Aug 19, 2020 at 02:51:27PM +0200, Lukasz Stelmach wrote:
+
+> > Honestly, I don't know and I couldn't find out why. It makes stuff
+> > work. There has been a commit like this before
+
+> >     0f5a751ace25 spi/s3c64xx: Enable GPIO /CS prior to starting hardware
+
+> > Apparently, it was lost in
+
+> >     0732a9d2a155 spi/s3c64xx: Use core message handling
+
+> Then describe at least this... maybe Mark knows why he brough back old
+> code after refactoring?
+
+I'm not sure what's being referred to as being lost in the second commit
+TBH.  The first commit is simple code motion rather than a correctness
+thing, and more related to the handling of GPIO controlled chip selects
+according to the description (which people should be using with that
+controller anyway where possible IIRC, the native chip select has too
+many assumptions about what it's doing).  I don't know that I ever
+actually used a system that used the native chip select as the actual
+chip select.  Perhaps some quirk was introduced where the chip select
+signal does something?
+
+The commit is also lacking a description of what the issues that are
+being fixed are.
+
+--W5WqUoFLvi1M7tJE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl89JjIACgkQJNaLcl1U
+h9BNQwf8DubxsPLcMMxLcGFtVMDtvgwTAWvvC87/lyUd+XdYf3m9RPcpkI5Opjgx
+PWrzGQRqtWRJoGOSciM6ePbqWIHFg2Ip/JyLZj82ppSXtc37TtIdg9aY0EQLgT95
+iOUYZ97paaOoy7tZ1hM7aNqZT9ZhF/ChEJsv6Astxq2U9V6gVl3/CGXfhJ473RR9
+g1BzoJuSS2rTx4/mTepuKb4nw4paoWW6wClhHMUuwLfscRkys22Xuze0DW+xRCGw
+r8AF4Athe1vxECWZAsX1zkgEgo9BfBVx6A6WB1PqVVEgbewcFZbEF4Ih7sIYcnI9
+GM1ikUdE2Z1PkJR/gkZ6yEDnhs2X/A==
+=IS2d
+-----END PGP SIGNATURE-----
+
+--W5WqUoFLvi1M7tJE--
