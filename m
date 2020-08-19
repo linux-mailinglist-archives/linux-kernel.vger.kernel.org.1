@@ -2,80 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484D4249F34
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5DA0249F17
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728667AbgHSNHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 09:07:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35578 "EHLO
+        id S1728665AbgHSNGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 09:06:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728498AbgHSMzf (ORCPT
+        with ESMTP id S1728504AbgHSNAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 08:55:35 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3DCC061344
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 05:55:33 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id h12so11350454pgm.7
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 05:55:33 -0700 (PDT)
+        Wed, 19 Aug 2020 09:00:22 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F645C06135C;
+        Wed, 19 Aug 2020 05:59:35 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id v6so24467502iow.11;
+        Wed, 19 Aug 2020 05:59:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eJyS7BjK7wDUsKL2rCrjdhtuG6HRkdolBIn6enpoXLE=;
-        b=m9HbE6lZJ4RKqfEHA2yd1nXSFEowGn6oCKQcUNU65nF8hQGmOPewZkZ6KGsSzL0RQq
-         KSU3SQrky/XIK8WvGZ6WzlDk+845U83Fd1JJuPUHFU4TZDMneUimIwkT8GLzSxCyiqnb
-         0W2Qlbj2bo4KZXRLlLh41NttK+CYgPuCUHseECCcKLqN8NDiCnJ2UbiGd+vOcdvI0Mco
-         HexL34mg6xmXk4QRqTQ+KTwicqoumgGoMqDgamXuF+GwfIFT2puE5TO0j4INgkVfN6IB
-         RW/9SffGVPFme31bR8J9syJDiIWfeNX2brIrOCPNDQbdMnJsUbOQliFq4sUvQMBY7wmj
-         viSA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6oVAmZyNrEFZ/qRL/Go1FpkwND3iynaGyrQg/YaoVXg=;
+        b=H9uu9JET+dLKWqo7t/dWEJEOctZhL8wpGr2sXlW4Vb0wn6trZDEN53GJhvvjgJhZIP
+         659ezdEWF8Z4SwbFa/Asb8VX8m00ejalsigAVz8iJKnKyCI+Y14A0l9BpPcAIV61HTCV
+         uSfB7Cuztw8qjG9OfjCWkBcFv/MC/IwjzPQ7rRo//S533Jp0nMNsR7oulST+XzR+YwnC
+         kmSr1NWBD1FlYBqRwOimkgE9IAGSV+V5ZHP0kBvKwX1FPYgqHSh2pN5JijoMlxiTGLex
+         Fb+pWCudQGBLu2FCBxMHqDJ5M8C1HHIJQcVn0ocp9XUmG7NfOTi/5BXj5i9AOFw+Bd4a
+         43ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=eJyS7BjK7wDUsKL2rCrjdhtuG6HRkdolBIn6enpoXLE=;
-        b=YQZ75wvBxt/FvmwqqSWa1I3kcKlVLT7ct5u+2p/r3zIVwRgLV923cFFtSAQ8WM5Xcc
-         wzpO59HJOc0tcoEGpNpcklOlvrZE/dEjVb0gg33Lz6tq5qOjJ+QG95xrVM2nzt06P86o
-         P5PcXHXlv1B3o4RIRNv55C6uia+kvKm97wUlwDPKd3OceOeKH4fwSHwjppIPxv3ATMUn
-         JqheJfkyiZDnwCwxQVFGg/Spsaa6jnJPkCZjqvgRaYacqRMqA7ckhL24B/2hjE9bugNb
-         jfgW5mk0aVMv1b9AlYJzFvfb4lCPqybFzfr/wyX+hfMvo+DA0iAeq8qY8DNm4X4xSaCc
-         61GA==
-X-Gm-Message-State: AOAM533RYfheBNWP2KVsjINNhyj+5OVdl3heI11IKf/YfK0tkFOBFHXE
-        utEUfuUA0rYAeN+gDsaJT55ZFf/OBlthBbot
-X-Google-Smtp-Source: ABdhPJxvgfFos8NuS842i0OTcagtkYQEtKig33RmRzfeH4z0jn2Ve5ZHEgBBpsdZBttqkSJRo+2UHw==
-X-Received: by 2002:a63:c509:: with SMTP id f9mr16644768pgd.144.1597841732876;
-        Wed, 19 Aug 2020 05:55:32 -0700 (PDT)
-Received: from [192.168.1.182] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id n12sm29776266pfj.99.2020.08.19.05.55.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Aug 2020 05:55:32 -0700 (PDT)
-Subject: Re: [PATCH v2] MAINTAINERS: Add missing header files to BLOCK LAYER
- section
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200819123243.18983-1-geert+renesas@glider.be>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <fd76fcd0-83b2-cc16-952b-8fb4c960bf28@kernel.dk>
-Date:   Wed, 19 Aug 2020 06:55:31 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=6oVAmZyNrEFZ/qRL/Go1FpkwND3iynaGyrQg/YaoVXg=;
+        b=hC3xTUxk8dbKJbLSAJ5cq5eC2NBYH+7zkjdCZK5ryfZBp3yDIx/8fHl+B8eSIn82BG
+         h2S1NMtHB0NEJu5nE+1lAH5nz2cVqzzQd0WLfD0Mp6m/09usRuEcddKXz82nZgWOM5uh
+         UKcQIFa5zan5oMPH61NcGZtmLxwRYYpaQGr3EaIVRa2oPs2y4ScqhVClo6F+qPbk1Jgc
+         n/qR95vnTtTaCFPjS3d9I8/+Q5C1rtt1AaMO8K4sapJXsm/RoTxq1pcKZ+hum6JS/UAF
+         XcWfJNWsQ0vfaRtE0iEZV2WMXDFwvHNzDISYSjYjW1H4eEZFVK/1WoUSGCyKzzlVbwn2
+         gq5A==
+X-Gm-Message-State: AOAM5303v6hSnnkQgrXApLRptbjC4kGCePzazWBgrWjx2Aoyzj3oAXI/
+        gFpcJXnBqslN7mtqG8cgPWpwZZYd2dmDjmP1
+X-Google-Smtp-Source: ABdhPJy7SeHYcvfIBOyXe6sU4+ijHjrvIgF6d7n/mmqAgapcaRBQ/s4uRdGv3Qa2xUjeFQ0kgX8+iA==
+X-Received: by 2002:a02:3843:: with SMTP id v3mr24082031jae.23.1597841973657;
+        Wed, 19 Aug 2020 05:59:33 -0700 (PDT)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:b588:1a5f:55c3:870e])
+        by smtp.gmail.com with ESMTPSA id i5sm4138388ilc.69.2020.08.19.05.59.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Aug 2020 05:59:32 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-pm@vger.kernel.org
+Cc:     aford@beaconembedded.com, hns@goldelico.com,
+        Adam Ford <aford173@gmail.com>,
+        kernel test robot <lkp@intel.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Keerthy <j-keerthy@ti.com>, Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V2 1/2] thermal: ti-soc-thermal: Enable addition power management
+Date:   Wed, 19 Aug 2020 07:59:23 -0500
+Message-Id: <20200819125925.2119434-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200819123243.18983-1-geert+renesas@glider.be>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/19/20 5:32 AM, Geert Uytterhoeven wrote:
-> The various <linux/blk*.h> header files are part of the Block Layer.
-> Add them to the corresponding section in the MAINTAINERS file, so
-> scripts/get_maintainer.pl will pick them up.
+The bandgap sensor can be idled when the processor is too, but it
+isn't currently being done, so the power consumption of OMAP3
+boards can elevated if the bangap sensor is enabled.
 
-Applied, thanks.
+This patch attempts to use some additional power management
+to idle the clock to the bandgap when not needed.
 
+Signed-off-by: Adam Ford <aford173@gmail.com>
+Reported-by: kernel test robot <lkp@intel.com>
+---
+V2: Fix issue where variable stating the suspend mode isn't being
+    properly set and cleared.
+
+diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.c b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
+index ab19ceff6e2a..9404631bea4d 100644
+--- a/drivers/thermal/ti-soc-thermal/ti-bandgap.c
++++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
+@@ -25,10 +25,18 @@
+ #include <linux/of_platform.h>
+ #include <linux/of_irq.h>
+ #include <linux/io.h>
++#include <linux/cpu_pm.h>
++#include <linux/device.h>
++#include <linux/pm_runtime.h>
++#include <linux/pm.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
+ 
+ #include "ti-bandgap.h"
+ 
+ static int ti_bandgap_force_single_read(struct ti_bandgap *bgp, int id);
++static int bandgap_omap_cpu_notifier(struct notifier_block *nb,
++				  unsigned long cmd, void *v);
+ 
+ /***   Helper functions to access registers and their bitfields   ***/
+ 
+@@ -1008,6 +1016,9 @@ int ti_bandgap_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
++	bgp->nb.notifier_call = bandgap_omap_cpu_notifier;
++	cpu_pm_register_notifier(&bgp->nb);
++
+ 	return 0;
+ 
+ remove_last_cooling:
+@@ -1041,7 +1052,9 @@ int ti_bandgap_remove(struct platform_device *pdev)
+ 	struct ti_bandgap *bgp = platform_get_drvdata(pdev);
+ 	int i;
+ 
+-	/* First thing is to remove sensor interfaces */
++	cpu_pm_unregister_notifier(&bgp->nb);
++
++	/* Remove sensor interfaces */
+ 	for (i = 0; i < bgp->conf->sensor_count; i++) {
+ 		if (bgp->conf->sensors[i].unregister_cooling)
+ 			bgp->conf->sensors[i].unregister_cooling(bgp, i);
+@@ -1150,9 +1163,43 @@ static int ti_bandgap_suspend(struct device *dev)
+ 	if (TI_BANDGAP_HAS(bgp, CLK_CTRL))
+ 		clk_disable_unprepare(bgp->fclock);
+ 
++	bgp->is_suspended = true;
++
+ 	return err;
+ }
+ 
++static int bandgap_omap_cpu_notifier(struct notifier_block *nb,
++				  unsigned long cmd, void *v)
++{
++	struct ti_bandgap *bgp;
++
++	bgp = container_of(nb, struct ti_bandgap, nb);
++
++	spin_lock(&bgp->lock);
++	switch (cmd) {
++	case CPU_CLUSTER_PM_ENTER:
++		if (bgp->is_suspended)
++			break;
++		ti_bandgap_save_ctxt(bgp);
++		ti_bandgap_power(bgp, false);
++		if (TI_BANDGAP_HAS(bgp, CLK_CTRL))
++			clk_disable(bgp->fclock);
++		break;
++	case CPU_CLUSTER_PM_ENTER_FAILED:
++	case CPU_CLUSTER_PM_EXIT:
++		if (bgp->is_suspended)
++			break;
++		if (TI_BANDGAP_HAS(bgp, CLK_CTRL))
++			clk_enable(bgp->fclock);
++		ti_bandgap_power(bgp, true);
++		ti_bandgap_restore_ctxt(bgp);
++		break;
++	}
++	spin_unlock(&bgp->lock);
++
++	return NOTIFY_OK;
++}
++
+ static int ti_bandgap_resume(struct device *dev)
+ {
+ 	struct ti_bandgap *bgp = dev_get_drvdata(dev);
+@@ -1161,6 +1208,7 @@ static int ti_bandgap_resume(struct device *dev)
+ 		clk_prepare_enable(bgp->fclock);
+ 
+ 	ti_bandgap_power(bgp, true);
++	bgp->is_suspended = false;
+ 
+ 	return ti_bandgap_restore_ctxt(bgp);
+ }
+diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.h b/drivers/thermal/ti-soc-thermal/ti-bandgap.h
+index fce4657e9486..ed0ea4b17b25 100644
+--- a/drivers/thermal/ti-soc-thermal/ti-bandgap.h
++++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.h
+@@ -12,6 +12,10 @@
+ #include <linux/spinlock.h>
+ #include <linux/types.h>
+ #include <linux/err.h>
++#include <linux/cpu_pm.h>
++#include <linux/device.h>
++#include <linux/pm_runtime.h>
++#include <linux/pm.h>
+ 
+ struct gpio_desc;
+ 
+@@ -203,6 +207,8 @@ struct ti_bandgap {
+ 	int				irq;
+ 	struct gpio_desc		*tshut_gpiod;
+ 	u32				clk_rate;
++	struct notifier_block		nb;
++	unsigned int is_suspended:1;
+ };
+ 
+ /**
 -- 
-Jens Axboe
+2.25.1
 
