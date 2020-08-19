@@ -2,122 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 966792492D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 04:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B2E2492EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 04:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726841AbgHSCXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 22:23:45 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:48744 "EHLO huawei.com"
+        id S1727047AbgHSCfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 22:35:22 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:33778 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726372AbgHSCXo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 22:23:44 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id F059788C4DA54FD433DF;
-        Wed, 19 Aug 2020 10:23:18 +0800 (CST)
-Received: from huawei.com (10.90.52.227) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Wed, 19 Aug 2020
- 10:23:12 +0800
-From:   qiuguorui1 <qiuguorui1@huawei.com>
-To:     <tglx@linutronix.de>, <jason@lakedaemon.net>, <maz@kernel.org>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <zengweilin@huawei.com>,
-        <chenjianguo3@huawei.com>, <qiuguorui1@huawei.com>
-Subject: [PATCH] irqchip/stm32-exti: avoid interrupts losing due to clearing pending bit by mistake
-Date:   Wed, 19 Aug 2020 10:39:31 +0800
-Message-ID: <20200819023931.28997-1-qiuguorui1@huawei.com>
-X-Mailer: git-send-email 2.12.3
+        id S1726982AbgHSCfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 22:35:22 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id CBDD3FADFBFB5252C158;
+        Wed, 19 Aug 2020 10:35:19 +0800 (CST)
+Received: from huawei.com (10.175.113.133) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Wed, 19 Aug 2020
+ 10:35:18 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <ulli.kroll@googlemail.com>, <linus.walleij@linaro.org>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <mirq-linux@rere.qmqm.pl>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: [PATCH net v2] net: gemini: Fix missing free_netdev() in error path of gemini_ethernet_port_probe()
+Date:   Wed, 19 Aug 2020 10:33:09 +0800
+Message-ID: <20200819023309.31331-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.90.52.227]
+X-Originating-IP: [10.175.113.133]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the previous code, when the eoi handle of the exti clears the pending
-bit of the current interrupt, it will first read the values of fpr and
-rpr, then logically OR the corresponding bit of the interrupt number,
-and finally write back to fpr and rpr.
+Replace alloc_etherdev_mq with devm_alloc_etherdev_mqs. In this way,
+when probe fails, netdev can be freed automatically.
 
-We found through experiments that if two exti interrupts,
-we call them int1/int2, arrive almost at the same time. in our scenario,
-the time difference is 30 microseconds, assuming int1 is triggered first.
-
-there will be an extreme scenario: both int's pending bit are set to 1,
-the irq handle of int1 is executed first, and eoi handle is then executed,
-at this moment, all pending bits are cleared, but the int 2 has not
-finally been reported to the cpu yet, which eventually lost int2.
-
-According to stm32's TRM description about rpr and fpr: Writing a 1 to this
-bit will trigger a rising edge event on event x, Writing 0 has no
-effect.
-
-Therefore, when clearing the pending bit, we only need to clear the
-pending bit of the irq.
-
-Signed-off-by: qiuguorui1 <qiuguorui1@huawei.com>
+Fixes: 4d5ae32f5e1e ("net: ethernet: Add a driver for Gemini gigabit ethernet")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
 ---
- drivers/irqchip/irq-stm32-exti.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+v1->v2: Make use of devm_alloc_etherdev_mqs() to simplify the code
+ drivers/net/ethernet/cortina/gemini.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
-index 03a36be757d8..ee4faf5c90b8 100644
---- a/drivers/irqchip/irq-stm32-exti.c
-+++ b/drivers/irqchip/irq-stm32-exti.c
-@@ -26,6 +26,11 @@
+diff --git a/drivers/net/ethernet/cortina/gemini.c b/drivers/net/ethernet/cortina/gemini.c
+index 66e67b24a887..62e271aea4a5 100644
+--- a/drivers/net/ethernet/cortina/gemini.c
++++ b/drivers/net/ethernet/cortina/gemini.c
+@@ -2389,7 +2389,7 @@ static int gemini_ethernet_port_probe(struct platform_device *pdev)
  
- #define HWSPNLCK_TIMEOUT	1000 /* usec */
+ 	dev_info(dev, "probe %s ID %d\n", dev_name(dev), id);
  
-+enum reg_ops {
-+	REG_WRITE_ONLY,
-+	REG_READ_WRITE
-+};
-+
- struct stm32_exti_bank {
- 	u32 imr_ofst;
- 	u32 emr_ofst;
-@@ -416,13 +421,14 @@ static void stm32_irq_ack(struct irq_data *d)
- 	irq_gc_unlock(gc);
+-	netdev = alloc_etherdev_mq(sizeof(*port), TX_QUEUE_NUM);
++	netdev = devm_alloc_etherdev_mqs(dev, sizeof(*port), TX_QUEUE_NUM, TX_QUEUE_NUM);
+ 	if (!netdev) {
+ 		dev_err(dev, "Can't allocate ethernet device #%d\n", id);
+ 		return -ENOMEM;
+@@ -2521,7 +2521,6 @@ static int gemini_ethernet_port_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	port->netdev = NULL;
+-	free_netdev(netdev);
+ 	return ret;
  }
  
--static inline u32 stm32_exti_set_bit(struct irq_data *d, u32 reg)
-+static inline u32 stm32_exti_set_bit(struct irq_data *d, u32 reg, enum reg_ops op)
- {
- 	struct stm32_exti_chip_data *chip_data = irq_data_get_irq_chip_data(d);
- 	void __iomem *base = chip_data->host_data->base;
--	u32 val;
-+	u32 val = 0;
+@@ -2530,7 +2529,6 @@ static int gemini_ethernet_port_remove(struct platform_device *pdev)
+ 	struct gemini_ethernet_port *port = platform_get_drvdata(pdev);
  
--	val = readl_relaxed(base + reg);
-+	if (op == REG_READ_WRITE)
-+		val = readl_relaxed(base + reg);
- 	val |= BIT(d->hwirq % IRQS_PER_BANK);
- 	writel_relaxed(val, base + reg);
+ 	gemini_port_remove(port);
+-	free_netdev(port->netdev);
+ 	return 0;
+ }
  
-@@ -449,9 +455,9 @@ static void stm32_exti_h_eoi(struct irq_data *d)
- 
- 	raw_spin_lock(&chip_data->rlock);
- 
--	stm32_exti_set_bit(d, stm32_bank->rpr_ofst);
-+	stm32_exti_set_bit(d, stm32_bank->rpr_ofst, REG_WRITE_ONLY);
- 	if (stm32_bank->fpr_ofst != UNDEF_REG)
--		stm32_exti_set_bit(d, stm32_bank->fpr_ofst);
-+		stm32_exti_set_bit(d, stm32_bank->fpr_ofst, REG_WRITE_ONLY);
- 
- 	raw_spin_unlock(&chip_data->rlock);
- 
-@@ -478,7 +484,7 @@ static void stm32_exti_h_unmask(struct irq_data *d)
- 	const struct stm32_exti_bank *stm32_bank = chip_data->reg_bank;
- 
- 	raw_spin_lock(&chip_data->rlock);
--	chip_data->mask_cache = stm32_exti_set_bit(d, stm32_bank->imr_ofst);
-+	chip_data->mask_cache = stm32_exti_set_bit(d, stm32_bank->imr_ofst, REG_READ_WRITE);
- 	raw_spin_unlock(&chip_data->rlock);
- 
- 	if (d->parent_data->chip)
 -- 
-2.12.3
+2.17.1
 
