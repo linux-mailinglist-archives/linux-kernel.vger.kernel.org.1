@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55F02491FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 02:49:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDCB2249205
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 02:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727078AbgHSAtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 20:49:23 -0400
-Received: from mga03.intel.com ([134.134.136.65]:53238 "EHLO mga03.intel.com"
+        id S1727787AbgHSAuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 20:50:35 -0400
+Received: from mga05.intel.com ([192.55.52.43]:49880 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726717AbgHSAtW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 20:49:22 -0400
-IronPort-SDR: QodW6lTM88M5lb4s54hMdHAhQNa5TXL5qZsMxMmpA1A8TGkW7JXc5r66EwuCWcLslPzE4DIy/v
- eInnigaY387Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="154995741"
+        id S1726717AbgHSAuV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 20:50:21 -0400
+IronPort-SDR: ps7vmo5/Nmj8FlavEQYKzLkEtu+/5sT5AgFdX8Ev+zkNyuagSj0+AYGFxMpeQjzKm6jwPkTby8
+ 2YUAv/vny9iA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="239858342"
 X-IronPort-AV: E=Sophos;i="5.76,329,1592895600"; 
-   d="scan'208";a="154995741"
+   d="scan'208";a="239858342"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 17:49:14 -0700
-IronPort-SDR: Z3hh+sU+VOyEIFBqBMektvPydshYXLHR4bT5YxxiHa0OGI+c+8WQx+7JCCcTE8xJ+SQixnGAZn
- mVNfnQ20rF6A==
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 17:50:19 -0700
+IronPort-SDR: CAg67l55zwAcCcE4yUTG4N+lUp5rn206/Idf+MuuYf/md7YhK3uWpdhy3vIH6lHJpnI07kp5Bu
+ XUq4W8W26YYQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,329,1592895600"; 
-   d="scan'208";a="297034711"
+   d="scan'208";a="329155517"
 Received: from lkp-server02.sh.intel.com (HELO 2f0d8b563e65) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 18 Aug 2020 17:49:13 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 18 Aug 2020 17:50:18 -0700
 Received: from kbuild by 2f0d8b563e65 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1k8CHw-0001WB-Jc; Wed, 19 Aug 2020 00:49:12 +0000
-Date:   Wed, 19 Aug 2020 08:48:04 +0800
+        id 1k8CIz-0001Wb-HB; Wed, 19 Aug 2020 00:50:17 +0000
+Date:   Wed, 19 Aug 2020 08:49:20 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/boot] BUILD SUCCESS
- 527afc212231ea9d585b7709c0ab73263ecf0c85
-Message-ID: <5f3c76c4.WcMwmlV6Yqazx6yk%lkp@intel.com>
+Subject: [tip:x86/paravirt] BUILD SUCCESS
+ 7c9f80cb76ec9f14c3b25509168b1a2f7942e418
+Message-ID: <5f3c7710.e9+/d7K2IpuJcjey%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -46,13 +46,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/boot
-branch HEAD: 527afc212231ea9d585b7709c0ab73263ecf0c85  x86/boot: Check that there are no run-time relocations
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/paravirt
+branch HEAD: 7c9f80cb76ec9f14c3b25509168b1a2f7942e418  x86/paravirt: Avoid needless paravirt step clearing page table entries
 
-elapsed time: 4041m
+elapsed time: 4042m
 
-configs tested: 203
-configs skipped: 27
+configs tested: 199
+configs skipped: 23
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -124,6 +124,9 @@ mips                         cobalt_defconfig
 mips                malta_kvm_guest_defconfig
 arm                          pcm027_defconfig
 ia64                            zx1_defconfig
+sh                           se7206_defconfig
+riscv                    nommu_virt_defconfig
+m68k                             allyesconfig
 mips                         mpc30x_defconfig
 alpha                               defconfig
 arm                           tegra_defconfig
@@ -133,8 +136,6 @@ arm                        clps711x_defconfig
 mips                      pic32mzda_defconfig
 mips                      maltasmvp_defconfig
 arm                           sunxi_defconfig
-x86_64                           alldefconfig
-riscv                    nommu_virt_defconfig
 powerpc                      pmac32_defconfig
 arm                      footbridge_defconfig
 mips                        nlm_xlr_defconfig
@@ -150,10 +151,6 @@ sh                               j2_defconfig
 sh                             espt_defconfig
 h8300                    h8300h-sim_defconfig
 mips                  decstation_64_defconfig
-arm                       imx_v4_v5_defconfig
-arm                       omap2plus_defconfig
-powerpc64                           defconfig
-arm                          lpd270_defconfig
 sh                          kfr2r09_defconfig
 sh                          sdk7786_defconfig
 arm                           spitz_defconfig
@@ -168,7 +165,6 @@ ia64                             allmodconfig
 ia64                                defconfig
 m68k                             allmodconfig
 m68k                                defconfig
-m68k                             allyesconfig
 arc                              allyesconfig
 c6x                              allyesconfig
 nds32                               defconfig
