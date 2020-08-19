@@ -2,77 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBF7249EFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 323CB249F07
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728574AbgHSNEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 09:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36916 "EHLO
+        id S1728646AbgHSNFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 09:05:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728354AbgHSNDl (ORCPT
+        with ESMTP id S1728585AbgHSNEn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 09:03:41 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC061C061383
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:03:40 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id y6so10801851plt.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:03:40 -0700 (PDT)
+        Wed, 19 Aug 2020 09:04:43 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 658A7C061383;
+        Wed, 19 Aug 2020 06:04:42 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id 140so12011976lfi.5;
+        Wed, 19 Aug 2020 06:04:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ejN3I2ZufYX6NBqQUqeno+sm8YT/7Lwa4+bx/+FXbdA=;
-        b=RK3qgkhvRM2gvw0S8x5GDoJP8wGn2aiJDGRVphrf/MgMgy+YwgLX+dNT1C3wt6zrZg
-         zmUjFjUiuQ2TuCyjfBnDEy/K637MzELUaKf3W+14o3gGTFR8bC3vfmcNycj2vODDJt5R
-         02hxuPxiycQ3DqUe7rW4Rb/Dyv0/7NgOvf9Gww0kvS2mDoV9HeOcIRlcQ0cLS/hkF1oe
-         AsZZczxpJZ5MQvzlRZ0O5Gfyii3+Eu7Ee5CTvtaHrbdFescaR+ZyDvaLIUlkNB9dRo56
-         6xVVOHS9VdqXuXu1XcEQh35cyLIiipbGoV80IY2VS+QF+grdlkLFV8WzRLhohfzZ5Olv
-         UCjg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NDGVB4uc/9L8D6EYysA1otupkiXzJkfvAe8wQHNLxGA=;
+        b=Ard4s932bJYSYryZTKI5z99QM0+nDxvZnETpFePakQOdmcZu0nh6+SK4cSRXAWUpvy
+         DT5JwCtY1KAS+tkXlG6XVjhS2mg/4nCr2Qjud2UWkaVscXSfSV/6edu5jbYGw0CTNiZu
+         YU9/NpNTp42WF76ysCVoai4EnTX8RzIds09S22UUybPEbST6AChWpEjqb6t5yeWy3bIa
+         Kq5W7/lRoV2XtnFAWx+owWqLiAS/CuuXcwUSTcCPgIxwvKJ9GjeJ0Sg6UZr4Qe5aBK2x
+         4RTA0BTT1VTjDZqE2jtc5XJiaGqmzrTTLP7IbVPBneVpm8rHzRpvEe1y/RHD96dZlWqh
+         n4wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ejN3I2ZufYX6NBqQUqeno+sm8YT/7Lwa4+bx/+FXbdA=;
-        b=H9T9VILZ3Dm9DAcuxRN0EIRfEp0F0Z7+wSv+bkzjnfhYBmGbwPlndnpOCNuVjSb+FK
-         4TC4ln30DBGcucPwdKDQ4Cl3Mv1aqvi1+X1LIs+bR5U/m8OWLzU7bHWlH/v+inbAchUS
-         z790Ikk2dMlKVZEmnh8Cb2C70i50R5FIrzeJVEP+a39VIMK2xK031d6oQ+26mwUkDMH7
-         RznXx2pE8fejW0+BFvbtqaiOg1/jQMDkxxVmrT/unIj5c7Lf6VUk7nw9dEyNryew51GK
-         SOlHukSsLjvhjLQlSkpzM8SGgeBM5+vloTBCJTx/Bk7s4vanIpjQ2j5CQdkvK0QyJFHr
-         7D3Q==
-X-Gm-Message-State: AOAM532SgakZ7w85/98RuNLBCGiCSvg0gTBj11ljkb93DpoTZrml/MSL
-        EisvCV2A+qOz4w5ktPcOL0ioLVLiFDKnl4VT
-X-Google-Smtp-Source: ABdhPJzAxffViDj0kPIe6fi+J185UwCphUfnLI8xm2PJkJtQFETAiC9HfWQrFY9NWmRPeyH+Wm/7fA==
-X-Received: by 2002:a17:90b:4a4e:: with SMTP id lb14mr4089822pjb.228.1597842218449;
-        Wed, 19 Aug 2020 06:03:38 -0700 (PDT)
-Received: from [192.168.1.182] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id x9sm28536071pff.145.2020.08.19.06.03.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Aug 2020 06:03:37 -0700 (PDT)
-Subject: Re: [PATCH] block: Convert to use the preferred fallthrough macro
-To:     Miaohe Lin <linmiaohe@huawei.com>, paolo.valente@linaro.org
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200819085044.41887-1-linmiaohe@huawei.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <035265c0-29e5-059a-0625-ea27609fa38b@kernel.dk>
-Date:   Wed, 19 Aug 2020 07:03:34 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NDGVB4uc/9L8D6EYysA1otupkiXzJkfvAe8wQHNLxGA=;
+        b=pf41kKNNxH+3hDoKWNpnsQZaurQAPwUqzsj0cU/UDfeWUvLfIanRW5qG0UqriSl+dG
+         PNxNBAfzEE7t3pP6OaJ118hD7x4y/2yWlY0gWd5j7cs/Qz7krUNy+k+Omkixh2jizk21
+         bHt8BAShZZmVWp9pGlqSs2KhEokEf1rhG5ZWVlHwZoTu/Ly4BH1QGW2jjCc3TLSL4yGf
+         +QAj0CevjZl3RYP2nFTcLjchdf/rT5ROnpHJc5532Elj0Ct328A2pzlhVpiSk6hPboZW
+         rfm+W+rZT+cfWWBCn6CCeY+/tMI2sm83ptDwgp0xqz2UIytzHRhAbdLCDSbcvcrTiRHA
+         8pKg==
+X-Gm-Message-State: AOAM530IfzIU0Srkx4o0fCyE+Y+3mlmcnESoyY6gV+nVkCfoT1ttWAjS
+        LnvxoR/DWZBFAKgZGLyCHtmUQ/fE24Q3xY6WdgM=
+X-Google-Smtp-Source: ABdhPJyvznro++qCXyBYE7EoK74ppQEV9P6teSEM88ogypMzGoowstNWZ9Z5nzJX9vWeeM1LsWOd0NxqUwA+aqMfUjQ=
+X-Received: by 2002:a05:6512:3253:: with SMTP id c19mr11944089lfr.139.1597842280844;
+ Wed, 19 Aug 2020 06:04:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200819085044.41887-1-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200615154114.13184-1-mayflowerera@gmail.com>
+ <20200615.182343.221546986577273426.davem@davemloft.net> <CAMdQvKvJ7MXihELmPW2LC3PAgXMK2OG6bJjPNJkCgE6eZftDVw@mail.gmail.com>
+ <CAMdQvKtrzFtg9PwZhyMQ96S48ZLG5gAu3gk8m=k+tFVMHeshXQ@mail.gmail.com> <CAMdQvKubUYCMRt0V+koj8nKAq+nZNABJZMAXX7jB-_fRiPeJog@mail.gmail.com>
+In-Reply-To: <CAMdQvKubUYCMRt0V+koj8nKAq+nZNABJZMAXX7jB-_fRiPeJog@mail.gmail.com>
+From:   Era Mayflower <mayflowerera@gmail.com>
+Date:   Wed, 19 Aug 2020 13:03:37 +0000
+Message-ID: <CAMdQvKuDzSXpMRr9N4_jXJO4R5dp9UZ-+WByZW+KRBmCLubN_w@mail.gmail.com>
+Subject: Re: [PATCH] macsec: Support 32bit PN netlink attribute for XPN links
+To:     David Miller <davem@davemloft.net>
+Cc:     kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/19/20 1:50 AM, Miaohe Lin wrote:
-> Convert the uses of fallthrough comments to fallthrough macro.
+On Wed, Jun 24, 2020 at 10:23 AM Era Mayflower <mayflowerera@gmail.com> wrote:
+>
+> On Wed, Jun 17, 2020 at 1:32 AM Era Mayflower <mayflowerera@gmail.com> wrote:
+> >
+> > On Wed, Jun 17, 2020 at 10:02 AM Era Mayflower <mayflowerera@gmail.com> wrote:
+> > >
+> > > On Tue, Jun 16, 2020 at 1:23 AM David Miller <davem@davemloft.net> wrote:
+> > > >
+> > > > From: Era Mayflower <mayflowerera@gmail.com>
+> > > > Date: Tue, 16 Jun 2020 00:41:14 +0900
+> > > >
+> > > > > +     if (tb_sa[MACSEC_SA_ATTR_PN]) {
+> > > >
+> > > > validate_add_rxsa() requires that MACSET_SA_ATTR_PN be non-NULL, so
+> > > > you don't need to add this check here.
+> > > >
+> > >
+> > > validate_add_rxsa() did not originally contain that requirement.
+> > > It does exist in validate_add_txsa(), which means that providing a PN
+> > > is necessary only when creating TXSA.
+> > > When creating an RXSA without providing a PN it will be set to 1
+> > > (init_rx_sa+15).
+> > > This is the original behavior which of course can be changed.
+> > >
+> > > - Era.
+> >
+> > Sorry for the time issues, just noticed I sent the previous mail with
+> > future time.
+> > Fixed it permanently on my computer.
+>
+> Hello, is there any news?
+>
+> - Era.
 
-Applied, thanks.
+This patch is important to help projects like iproute2 use XPN macsec links.
+Please let me know if there is anything I need to fix.
 
--- 
-Jens Axboe
-
+- Era.
