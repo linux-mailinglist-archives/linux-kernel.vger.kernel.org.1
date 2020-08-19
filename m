@@ -2,61 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8E524A59B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE0324A5A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727097AbgHSSGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 14:06:16 -0400
-Received: from crapouillou.net ([89.234.176.41]:33286 "EHLO crapouillou.net"
+        id S1727115AbgHSSGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 14:06:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36212 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726970AbgHSSGL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 14:06:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1597860368; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:references; bh=kFohp8eC88p8KWDMpxZDQiAv/OkMPw3loVV19jqtTvA=;
-        b=al84feFAmhSNPEhXIv6AwIHQH41l3AOsy6cO/wJSIKsNR3q0ohDmvwY0I5cswWMd5Aqi6L
-        ThsE8WlKmx8MWN4qo+9lL6w3FXtbJmnHLItfI15BhNj1s6zoDqPeWzLRJgUscysQYnt6ZZ
-        N2ALTiIKQAk/xe/13pOSn/d1akKjHe4=
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     od@zcrc.me, linux-kernel@vger.kernel.org,
-        Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH] irqchip: ingenic: Leave parent IRQ unmasked on suspend
-Date:   Wed, 19 Aug 2020 20:06:02 +0200
-Message-Id: <20200819180602.136969-1-paul@crapouillou.net>
+        id S1726957AbgHSSGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 14:06:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7CFDCB790;
+        Wed, 19 Aug 2020 18:07:03 +0000 (UTC)
+Subject: Re: [PATCH drm/hisilicon v2 0/4] Use drm_err instead of DRM_ERROR in
+ hibmc driver
+To:     Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
+        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
+        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
+        xinliang.liu@linaro.org, linux-kernel@vger.kernel.org
+Cc:     linuxarm@huawei.com
+References: <1597829014-39942-1-git-send-email-tiantao6@hisilicon.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <50f37353-a4fb-9b93-c48f-897cb7c6914b@suse.de>
+Date:   Wed, 19 Aug 2020 20:06:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1597829014-39942-1-git-send-email-tiantao6@hisilicon.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="FyvNYwAnxF6sW6L71jwt75L6wO4E6DEIv"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All the wakeup sources we possibly want will go through the interrupt
-controller, so the parent IRQ must not be masked during suspend, or
-there won't be any way to wake up the system.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--FyvNYwAnxF6sW6L71jwt75L6wO4E6DEIv
+Content-Type: multipart/mixed; boundary="WN6idnxKUAyH6JFXQUM9ADxPzxqyh6B4d";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie, daniel@ffwll.ch,
+ kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
+ dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
+ linux-kernel@vger.kernel.org
+Cc: linuxarm@huawei.com
+Message-ID: <50f37353-a4fb-9b93-c48f-897cb7c6914b@suse.de>
+Subject: Re: [PATCH drm/hisilicon v2 0/4] Use drm_err instead of DRM_ERROR in
+ hibmc driver
+References: <1597829014-39942-1-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <1597829014-39942-1-git-send-email-tiantao6@hisilicon.com>
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- drivers/irqchip/irq-ingenic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--WN6idnxKUAyH6JFXQUM9ADxPzxqyh6B4d
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/irqchip/irq-ingenic.c b/drivers/irqchip/irq-ingenic.c
-index 9f3da4260ca6..b61a8901ef72 100644
---- a/drivers/irqchip/irq-ingenic.c
-+++ b/drivers/irqchip/irq-ingenic.c
-@@ -125,7 +125,7 @@ static int __init ingenic_intc_of_init(struct device_node *node,
- 		irq_reg_writel(gc, IRQ_MSK(32), JZ_REG_INTC_SET_MASK);
- 	}
- 
--	if (request_irq(parent_irq, intc_cascade, 0,
-+	if (request_irq(parent_irq, intc_cascade, IRQF_NO_SUSPEND,
- 			"SoC intc cascade interrupt", NULL))
- 		pr_err("Failed to register SoC intc cascade interrupt\n");
- 	return 0;
--- 
-2.28.0
+Hi
 
+Am 19.08.20 um 11:23 schrieb Tian Tao:
+> patch #1 is using the drm_err instead of DRM_ERROR in hibmc_ttm.c
+> patch #2 is using the drm_err instead of DRM_ERROR in hibmc_drm_vdac.c
+> patch #3 is using the drm_err and drm_dbg_atomic instead of DRM_ERROR
+> and DRM_DEBUG_ATOMIC in hibmc_drm_de.c
+> patch #4 is using the drm_err and drm_warn instead of DRM_ERROR and
+> DRM_WARN in hibmc_drm_drv.c
+>=20
+> Changes since v1:
+> -Fixed spelling errors in patch name.
+
+Just a few formal nits: it's common to also log the changes in the
+patches themselves. And as I already R-b'ed the patchset, the patches
+should contain the tag.
+
+So
+
+Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+
+for the whole series. If no one else has comments, it should be fine to
+merge the patches by the end of the week.
+
+Best regards
+Thomas
+
+>=20
+> Tian Tao (4):
+>   drm/hisilicon: Use drm_err instead of DRM_ERROR in hibmc_ttm
+>   drm/hisilicon: Use drm_err instead of DRM_ERROR in hibmc_drm_vdac
+>   drm/hisilicon: Use drm_err instead of DRM_ERROR in hibmc_drm_de
+>   drm/hisilicon: Use drm_err instead of DRM_ERROR in hibmc_drm_drv
+>=20
+>  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c   | 14 +++++++-------
+>  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c  | 24 ++++++++++++----=
+--------
+>  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c |  4 ++--
+>  drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c      |  2 +-
+>  4 files changed, 22 insertions(+), 22 deletions(-)
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--WN6idnxKUAyH6JFXQUM9ADxPzxqyh6B4d--
+
+--FyvNYwAnxF6sW6L71jwt75L6wO4E6DEIv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFIBAEBCAAyFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl89aikUHHR6aW1tZXJt
+YW5uQHN1c2UuZGUACgkQaA3BHVMLeiPYzAgAqN/EtFtij0zI+bAxmXk0iA2Hv10E
+2GKTG7OgOOAlt7VvL09ZVqLnggFpcQy/p8UKQ3uKGiCiwyc9DHQEDTog0wbld8v8
+N/nZB7iKhlqDoTPaSy/sQi0aN/ZCp9q4/W84ncnKXU9WD9M/3CYaKf4LEmRsX6b9
+deLy/fVV/UIuvvUdAgSWysmPkT9pbtpB3L73nfBdKjBlv/QcgWGWFxDZ2Lv+547S
+xY1xAMvZWAPtxVOUPwfA4KYzo7HV81vJnrb04LmeDzUT3AE3C5BjyPlPNJI22qZm
+sCmnIJ260/5EBISqPER55V3sxARCD47xDpDIRwAT0ry1f4tuLYxHPaw3kA==
+=56wm
+-----END PGP SIGNATURE-----
+
+--FyvNYwAnxF6sW6L71jwt75L6wO4E6DEIv--
