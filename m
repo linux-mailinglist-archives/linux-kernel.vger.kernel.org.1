@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC2324A12A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 16:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B0324A120
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 16:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728608AbgHSOF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 10:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46172 "EHLO
+        id S1728611AbgHSOFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 10:05:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728312AbgHSOCy (ORCPT
+        with ESMTP id S1728431AbgHSODX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 10:02:54 -0400
+        Wed, 19 Aug 2020 10:03:23 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 872FDC061346;
-        Wed, 19 Aug 2020 07:02:50 -0700 (PDT)
-Date:   Wed, 19 Aug 2020 14:02:48 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC27C061349;
+        Wed, 19 Aug 2020 07:02:52 -0700 (PDT)
+Date:   Wed, 19 Aug 2020 14:02:49 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597845768;
+        s=2020; t=1597845770;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6TjGySHKnltSS9pFao0dnMdxOAaO+vzMhuW0sa7+0fw=;
-        b=z8TzPdxp4xVvVXzGSVdgsm/wp0jOnRwn08MPT46yKskt3y43fjMVf2VyRK50521FzlsKWa
-        A4doM7RXLpOJ1qQRkjFMAxPWeSG3S3VrCpuVs3ugZJKUVb6Iu8Wlhr6rh3rxkSLHhALV+F
-        Oa84Vc+YdzR9d/KquUO5Z3GFFqowsmltoAW9v1n/vhUOuvZcPx/bAcmU6TlkhKZSGnUyul
-        V6ikAcoys5GiY7QgrOqtDcpP6z5B21lT6lRpnnBrRH0uNcMi4PoyQosD+JdD+iKtDgI5HB
-        FgCHTX3Mv+/CEIGAf5bmX1NKVRqs3eBrrlhSAvDRBRU0nFAQvhGoDVmNBiQ8rA==
+        bh=Lp2JEQ46ABH9UUeUBfFa5kDQ0nAWfB2UErHxVCaDHd8=;
+        b=ZaXPdN7JWksO/GBmCAZTv3zPvEQCNl9FLLOBRP61swzWGP2s5A7Xe8hQH2UHncu6RnAfFH
+        T66WG6OeXAcM/o81lSu2vrFttvqqIZFv3Moxquvj6RFypk+Yab85VN0/ZvM72xo+cBXMyt
+        ukv6sAfn7CuBGer5MIbO3nHVwYOP5hSe+UlPYyoC19nC6XfsMzfp+nWfHwdglzs7rgJb5c
+        XFYGRemNPCTlcUVLOZGwyhrT5c70eLeRtVC+DOo9HG4BWeP95hSXOo/nro81uMBn5dLTKz
+        B5U6pVQ9GFcpWNTjFwmzwmtB4Tlha5Cf+dy0F+xZsY++9AwrbGDcNQjWAo/2Wg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597845768;
+        s=2020e; t=1597845770;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6TjGySHKnltSS9pFao0dnMdxOAaO+vzMhuW0sa7+0fw=;
-        b=ZQpiSCSQHPj1kVXQebmIe6tBVwHwpYeOeNIEXJ3m0el7UuYh7B0QTGiX1nVOf3Ig2mRU9U
-        Iohz/aRrJbgg8zCw==
+        bh=Lp2JEQ46ABH9UUeUBfFa5kDQ0nAWfB2UErHxVCaDHd8=;
+        b=1OMESIzdfGbf+OWpbWzaq0QSh4vCcbBffduufghqbzhzztszjFXzhheJ8/NP7Erj4HVitP
+        fboMxQrzMJIV5kDw==
 From:   "tip-bot2 for Valentin Schneider" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/debug: Output SD flag names rather than their values
+Subject: [tip: sched/core] sched/topology: Define and assign sched_domain flag
+ metadata
 Cc:     Valentin Schneider <valentin.schneider@arm.com>,
         Ingo Molnar <mingo@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Peter Zijlstra <a.p.zijlstra@chello.nl>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200817113003.20802-7-valentin.schneider@arm.com>
-References: <20200817113003.20802-7-valentin.schneider@arm.com>
+In-Reply-To: <20200817113003.20802-5-valentin.schneider@arm.com>
+References: <20200817113003.20802-5-valentin.schneider@arm.com>
 MIME-Version: 1.0
-Message-ID: <159784576823.3192.8427103203948194710.tip-bot2@tip-bot2>
+Message-ID: <159784576960.3192.16699971783783936640.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,105 +64,250 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     5b9f8ff7b320a34af3dbcf04edb40d9b04f22f4a
-Gitweb:        https://git.kernel.org/tip/5b9f8ff7b320a34af3dbcf04edb40d9b04f22f4a
+Commit-ID:     b6e862f386722e0de6c37f85f1cf438a0efa7f93
+Gitweb:        https://git.kernel.org/tip/b6e862f386722e0de6c37f85f1cf438a0efa7f93
 Author:        Valentin Schneider <valentin.schneider@arm.com>
-AuthorDate:    Mon, 17 Aug 2020 12:29:52 +01:00
+AuthorDate:    Mon, 17 Aug 2020 12:29:50 +01:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Wed, 19 Aug 2020 10:49:48 +02:00
 
-sched/debug: Output SD flag names rather than their values
+sched/topology: Define and assign sched_domain flag metadata
 
-Decoding the output of /proc/sys/kernel/sched_domain/cpu*/domain*/flags has
-always been somewhat annoying, as one needs to go fetch the bit -> name
-mapping from the source code itself. This encoding can be saved in a script
-somewhere, but that isn't safe from flags being added, removed or even
-shuffled around.
+There are some expectations regarding how sched domain flags should be laid
+out, but none of them are checked or asserted in
+sched_domain_debug_one(). After staring at said flags for a while, I've
+come to realize there's two repeating patterns:
 
-What matters for debugging purposes is to get *which* flags are set in a
-given domain, their associated value is pretty much meaningless.
+- Shared with children: those flags are set from the base CPU domain
+  upwards. Any domain that has it set will have it set in its children. It
+  hints at "some property holds true / some behaviour is enabled until this
+  level".
 
-Make the sd flags debug file output flag names.
+- Shared with parents: those flags are set from the topmost domain
+  downwards. Any domain that has it set will have it set in its parents. It
+  hints at "some property isn't visible / some behaviour is disabled until
+  this level".
+
+There are two outliers that (currently) do not map to either of these:
+
+o SD_PREFER_SIBLING, which is cleared below levels with
+  SD_ASYM_CPUCAPACITY. The change was introduced by commit:
+
+    9c63e84db29b ("sched/core: Disable SD_PREFER_SIBLING on asymmetric CPU capacity domains")
+
+  as it could break misfit migration on some systems. In light of this, we
+  might want to change it back to make it fit one of the two categories and
+  fix the issue another way.
+
+o SD_ASYM_CPUCAPACITY, which gets set on a single level and isn't
+  propagated up nor down. From a topology description point of view, it
+  really wants to be SDF_SHARED_PARENT; this will be rectified in a later
+  patch.
+
+Tweak the sched_domain flag declaration to assign each flag an expected
+layout, and include the rationale for each flag "meta type" assignment as a
+comment. Consolidate the flag metadata into an array; the index of a flag's
+metadata can easily be found with log2(flag), IOW __ffs(flag).
 
 Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 Acked-by: Peter Zijlstra <a.p.zijlstra@chello.nl>
-Link: https://lore.kernel.org/r/20200817113003.20802-7-valentin.schneider@arm.com
+Link: https://lore.kernel.org/r/20200817113003.20802-5-valentin.schneider@arm.com
 ---
- kernel/sched/debug.c | 56 ++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 55 insertions(+), 1 deletion(-)
+ include/linux/sched/sd_flags.h | 147 ++++++++++++++++++++++++++------
+ include/linux/sched/topology.h |  15 ++-
+ 2 files changed, 134 insertions(+), 28 deletions(-)
 
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 36c5426..0655524 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -245,6 +245,60 @@ set_table_entry(struct ctl_table *entry,
- 	entry->proc_handler = proc_handler;
- }
+diff --git a/include/linux/sched/sd_flags.h b/include/linux/sched/sd_flags.h
+index 373dc45..c24a45b 100644
+--- a/include/linux/sched/sd_flags.h
++++ b/include/linux/sched/sd_flags.h
+@@ -7,29 +7,124 @@
+ # error "Incorrect import of SD flags definitions"
+ #endif
  
-+static int sd_ctl_doflags(struct ctl_table *table, int write,
-+			  void *buffer, size_t *lenp, loff_t *ppos)
-+{
-+	unsigned long flags = *(unsigned long *)table->data;
-+	size_t data_size = 0;
-+	size_t len = 0;
-+	char *tmp;
-+	int idx;
+-/* Balance when about to become idle */
+-SD_FLAG(SD_BALANCE_NEWIDLE)
+-/* Balance on exec */
+-SD_FLAG(SD_BALANCE_EXEC)
+-/* Balance on fork, clone */
+-SD_FLAG(SD_BALANCE_FORK)
+-/* Balance on wakeup */
+-SD_FLAG(SD_BALANCE_WAKE)
+-/* Wake task to waking CPU */
+-SD_FLAG(SD_WAKE_AFFINE)
+-/* Domain members have different CPU capacities */
+-SD_FLAG(SD_ASYM_CPUCAPACITY)
+-/* Domain members share CPU capacity */
+-SD_FLAG(SD_SHARE_CPUCAPACITY)
+-/* Domain members share CPU pkg resources */
+-SD_FLAG(SD_SHARE_PKG_RESOURCES)
+-/* Only a single load balancing instance */
+-SD_FLAG(SD_SERIALIZE)
+-/* Place busy groups earlier in the domain */
+-SD_FLAG(SD_ASYM_PACKING)
+-/* Prefer to place tasks in a sibling domain */
+-SD_FLAG(SD_PREFER_SIBLING)
+-/* sched_domains of this level overlap */
+-SD_FLAG(SD_OVERLAP)
+-/* cross-node balancing */
+-SD_FLAG(SD_NUMA)
++/*
++ * Expected flag uses
++ *
++ * SHARED_CHILD: These flags are meant to be set from the base domain upwards.
++ * If a domain has this flag set, all of its children should have it set. This
++ * is usually because the flag describes some shared resource (all CPUs in that
++ * domain share the same resource), or because they are tied to a scheduling
++ * behaviour that we want to disable at some point in the hierarchy for
++ * scalability reasons.
++ *
++ * In those cases it doesn't make sense to have the flag set for a domain but
++ * not have it in (some of) its children: sched domains ALWAYS span their child
++ * domains, so operations done with parent domains will cover CPUs in the lower
++ * child domains.
++ *
++ *
++ * SHARED_PARENT: These flags are meant to be set from the highest domain
++ * downwards. If a domain has this flag set, all of its parents should have it
++ * set. This is usually for topology properties that start to appear above a
++ * certain level (e.g. domain starts spanning CPUs outside of the base CPU's
++ * socket).
++ */
++#define SDF_SHARED_CHILD 0x1
++#define SDF_SHARED_PARENT 0x2
 +
-+	if (write)
-+		return 0;
++/*
++ * Balance when about to become idle
++ *
++ * SHARED_CHILD: Set from the base domain up to cpuset.sched_relax_domain_level.
++ */
++SD_FLAG(SD_BALANCE_NEWIDLE, SDF_SHARED_CHILD)
 +
-+	for_each_set_bit(idx, &flags, __SD_FLAG_CNT) {
-+		char *name = sd_flag_debug[idx].name;
++/*
++ * Balance on exec
++ *
++ * SHARED_CHILD: Set from the base domain up to the NUMA reclaim level.
++ */
++SD_FLAG(SD_BALANCE_EXEC, SDF_SHARED_CHILD)
 +
-+		/* Name plus whitespace */
-+		data_size += strlen(name) + 1;
-+	}
++/*
++ * Balance on fork, clone
++ *
++ * SHARED_CHILD: Set from the base domain up to the NUMA reclaim level.
++ */
++SD_FLAG(SD_BALANCE_FORK, SDF_SHARED_CHILD)
 +
-+	if (*ppos > data_size) {
-+		*lenp = 0;
-+		return 0;
-+	}
++/*
++ * Balance on wakeup
++ *
++ * SHARED_CHILD: Set from the base domain up to cpuset.sched_relax_domain_level.
++ */
++SD_FLAG(SD_BALANCE_WAKE, SDF_SHARED_CHILD)
 +
-+	tmp = kcalloc(data_size + 1, sizeof(*tmp), GFP_KERNEL);
-+	if (!tmp)
-+		return -ENOMEM;
++/*
++ * Consider waking task on waking CPU.
++ *
++ * SHARED_CHILD: Set from the base domain up to the NUMA reclaim level.
++ */
++SD_FLAG(SD_WAKE_AFFINE, SDF_SHARED_CHILD)
 +
-+	for_each_set_bit(idx, &flags, __SD_FLAG_CNT) {
-+		char *name = sd_flag_debug[idx].name;
++/*
++ * Domain members have different CPU capacities
++ */
++SD_FLAG(SD_ASYM_CPUCAPACITY, 0)
 +
-+		len += snprintf(tmp + len, strlen(name) + 2, "%s ", name);
-+	}
++/*
++ * Domain members share CPU capacity (i.e. SMT)
++ *
++ * SHARED_CHILD: Set from the base domain up until spanned CPUs no longer share
++ * CPU capacity.
++ */
++SD_FLAG(SD_SHARE_CPUCAPACITY, SDF_SHARED_CHILD)
 +
-+	tmp += *ppos;
-+	len -= *ppos;
++/*
++ * Domain members share CPU package resources (i.e. caches)
++ *
++ * SHARED_CHILD: Set from the base domain up until spanned CPUs no longer share
++ * the same cache(s).
++ */
++SD_FLAG(SD_SHARE_PKG_RESOURCES, SDF_SHARED_CHILD)
 +
-+	if (len > *lenp)
-+		len = *lenp;
-+	if (len)
-+		memcpy(buffer, tmp, len);
-+	if (len < *lenp) {
-+		((char *)buffer)[len] = '\n';
-+		len++;
-+	}
++/*
++ * Only a single load balancing instance
++ *
++ * SHARED_PARENT: Set for all NUMA levels above NODE. Could be set from a
++ * different level upwards, but it doesn't change that if a domain has this flag
++ * set, then all of its parents need to have it too (otherwise the serialization
++ * doesn't make sense).
++ */
++SD_FLAG(SD_SERIALIZE, SDF_SHARED_PARENT)
 +
-+	*lenp = len;
-+	*ppos += len;
++/*
++ * Place busy tasks earlier in the domain
++ *
++ * SHARED_CHILD: Usually set on the SMT level. Technically could be set further
++ * up, but currently assumed to be set from the base domain upwards (see
++ * update_top_cache_domain()).
++ */
++SD_FLAG(SD_ASYM_PACKING, SDF_SHARED_CHILD)
 +
-+	kfree(tmp);
++/*
++ * Prefer to place tasks in a sibling domain
++ *
++ * Set up until domains start spanning NUMA nodes. Close to being a SHARED_CHILD
++ * flag, but cleared below domains with SD_ASYM_CPUCAPACITY.
++ */
++SD_FLAG(SD_PREFER_SIBLING, 0)
 +
-+	return 0;
-+}
++/*
++ * sched_groups of this level overlap
++ *
++ * SHARED_PARENT: Set for all NUMA levels above NODE.
++ */
++SD_FLAG(SD_OVERLAP, SDF_SHARED_PARENT)
 +
- static struct ctl_table *
- sd_alloc_ctl_domain_table(struct sched_domain *sd)
++/*
++ * Cross-node balancing
++ *
++ * SHARED_PARENT: Set for all NUMA levels above NODE.
++ */
++SD_FLAG(SD_NUMA, SDF_SHARED_PARENT)
+diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+index 3e41c04..32f602f 100644
+--- a/include/linux/sched/topology.h
++++ b/include/linux/sched/topology.h
+@@ -12,19 +12,30 @@
+ #ifdef CONFIG_SMP
+ 
+ /* Generate SD flag indexes */
+-#define SD_FLAG(name) __##name,
++#define SD_FLAG(name, mflags) __##name,
+ enum {
+ 	#include <linux/sched/sd_flags.h>
+ 	__SD_FLAG_CNT,
+ };
+ #undef SD_FLAG
+ /* Generate SD flag bits */
+-#define SD_FLAG(name) name = 1 << __##name,
++#define SD_FLAG(name, mflags) name = 1 << __##name,
+ enum {
+ 	#include <linux/sched/sd_flags.h>
+ };
+ #undef SD_FLAG
+ 
++#ifdef CONFIG_SCHED_DEBUG
++#define SD_FLAG(_name, mflags) [__##_name] = { .meta_flags = mflags, .name = #_name },
++static const struct {
++	unsigned int meta_flags;
++	char *name;
++} sd_flag_debug[] = {
++#include <linux/sched/sd_flags.h>
++};
++#undef SD_FLAG
++#endif
++
+ #ifdef CONFIG_SCHED_SMT
+ static inline int cpu_smt_flags(void)
  {
-@@ -258,7 +312,7 @@ sd_alloc_ctl_domain_table(struct sched_domain *sd)
- 	set_table_entry(&table[2], "busy_factor",	  &sd->busy_factor,	    sizeof(int),  0644, proc_dointvec_minmax);
- 	set_table_entry(&table[3], "imbalance_pct",	  &sd->imbalance_pct,	    sizeof(int),  0644, proc_dointvec_minmax);
- 	set_table_entry(&table[4], "cache_nice_tries",	  &sd->cache_nice_tries,    sizeof(int),  0644, proc_dointvec_minmax);
--	set_table_entry(&table[5], "flags",		  &sd->flags,		    sizeof(int),  0444, proc_dointvec_minmax);
-+	set_table_entry(&table[5], "flags",		  &sd->flags,		    sizeof(int),  0444, sd_ctl_doflags);
- 	set_table_entry(&table[6], "max_newidle_lb_cost", &sd->max_newidle_lb_cost, sizeof(long), 0644, proc_doulongvec_minmax);
- 	set_table_entry(&table[7], "name",		  sd->name,	       CORENAME_MAX_SIZE, 0444, proc_dostring);
- 	/* &table[8] is terminator */
