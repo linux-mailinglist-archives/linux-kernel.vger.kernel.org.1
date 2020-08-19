@@ -2,117 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96337249370
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 05:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 108C0249371
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 05:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727053AbgHSDdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 23:33:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726627AbgHSDdT (ORCPT
+        id S1726560AbgHSDfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 23:35:05 -0400
+Received: from regular1.263xmail.com ([211.150.70.197]:52944 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725903AbgHSDfE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 23:33:19 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A516EC061389
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 20:33:18 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id v9so23793769ljk.6
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 20:33:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ao/sHNcaqVhQQMi80lMo4XF+FLR+4Bj6pKAQTXaD+hQ=;
-        b=gdBMzTnBa8XDbCmYcOweMIya67GSpSnewFl7/JVdiG3ga35lMroSKbu5zxClc6CsSK
-         mC0NDYzTvugO0jZSRW+hASL5tVSnWq5b9kvVZJqOclf0htIfy1fqdDwLG7+hPVSyXtdg
-         c9QdlMxtf3DkoyUME4EIoPQccF0B+9reRSqgA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ao/sHNcaqVhQQMi80lMo4XF+FLR+4Bj6pKAQTXaD+hQ=;
-        b=rol2ad5keOXqGRjcRGHHvPXebyyCFnMuay0CpshZlQ2IYFSvmUqbDy1bXTmucMLgqx
-         qewkO/VyJ4Z5CxtehmM+2iKiaVWK05V4IK5XUgtOq9LeFMIhvfmpnL5W2XcFkGphBFRe
-         wRZ7S61d7/vks+5i5zq0CkDVAQabv6vdkQYidG2V7UJl9N8M3/x7VvOL8qEBOaqoBsa3
-         ScCW3qrBZ2Qv1qy5NVnPWG8VChLeN7OIqW22VrkK3K+ks2hNZOxwwAwZKkme6l+3QE8L
-         vZsy13hkO3U+leR6iPhvkPoA5PpiNQllIlfb5wfsvQ29jYBvk6NsFah6bO3yyCkwNKUd
-         dnEA==
-X-Gm-Message-State: AOAM533V6ZsEpXlm287Tw1TzsFK72Uy3qG6oqCOY3ecLQqgNFtthi5dP
-        7l/9a1s297jzZtDYqQfYc6iRfidI7f4O3A==
-X-Google-Smtp-Source: ABdhPJygNjsMYU+/gt2+gzmAGYuRCeP4+cHGBMa8brJg5DkvTA8v4+FemLX2C0ccdh0XWt3eO55qcQ==
-X-Received: by 2002:a2e:b80b:: with SMTP id u11mr11707382ljo.286.1597807996437;
-        Tue, 18 Aug 2020 20:33:16 -0700 (PDT)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id x205sm6907898lfa.96.2020.08.18.20.33.15
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Aug 2020 20:33:15 -0700 (PDT)
-Received: by mail-lj1-f181.google.com with SMTP id v12so23767546ljc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 20:33:15 -0700 (PDT)
-X-Received: by 2002:a2e:7615:: with SMTP id r21mr10463304ljc.371.1597807994822;
- Tue, 18 Aug 2020 20:33:14 -0700 (PDT)
+        Tue, 18 Aug 2020 23:35:04 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by regular1.263xmail.com (Postfix) with ESMTP id C5764D3F;
+        Wed, 19 Aug 2020 11:34:50 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from localhost.localdomain (250.19.126.124.broad.bjtelecom.net [124.126.19.250])
+        by smtp.263.net (postfix) whith ESMTP id P25957T140260100654848S1597808091034256_;
+        Wed, 19 Aug 2020 11:34:51 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <a04c9f09ffb779a6d53edaaf716d81cf>
+X-RL-SENDER: penghao@uniontech.com
+X-SENDER: penghao@uniontech.com
+X-LOGIN-NAME: penghao@uniontech.com
+X-FST-TO: perex@perex.cz
+X-SENDER-IP: 124.126.19.250
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 5
+X-System-Flag: 0
+From:   penghao <penghao@uniontech.com>
+To:     perex@perex.cz, tiwai@suse.com
+Cc:     alexander@tsoy.me, dan.carpenter@oracle.com, crwulff@gmail.com,
+        penghao@uniontech.com, gustavoars@kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: usb-audio: Add prevent wakeup from s3 state trig by Lenovo ThinkCentre TI024Gen3 USB-audio
+Date:   Wed, 19 Aug 2020 11:34:46 +0800
+Message-Id: <20200819033446.7897-1-penghao@uniontech.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-References: <20200818234307.3382306-1-nivedita@alum.mit.edu>
- <CAHk-=wik-oXnUpfZ6Hw37uLykc-_P0Apyn2XuX-odh-3Nzop8w@mail.gmail.com> <20200819030442.GA3396810@rani.riverdale.lan>
-In-Reply-To: <20200819030442.GA3396810@rani.riverdale.lan>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 18 Aug 2020 20:32:58 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiJLvqS1_O+yAQSZr-Lj49HdJyLpt3J_nW=otHLfEN4RA@mail.gmail.com>
-Message-ID: <CAHk-=wiJLvqS1_O+yAQSZr-Lj49HdJyLpt3J_nW=otHLfEN4RA@mail.gmail.com>
-Subject: Re: [PATCH] lib/string.c: Disable tree-loop-distribute-patterns
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=yes
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 8:04 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
->
-> On Tue, Aug 18, 2020 at 05:44:03PM -0700, Linus Torvalds wrote:
-> > Using -fno-tree-loop-distribute-patterns seems to really be a bit too
-> > incestuous with internal compiler knowledge.
->
-> Fair enough -- you ok with just the -ffreestanding? That's what protects
-> the memset in arch/x86/boot/compressed/string.c.
+TI024Gen3 USB-audio is controlled by TI024Gen3,when TI024Gens
+enter sleep mode, USB-audio will disconnect from USB bus port,
+wakup form s3 state
 
-Yeah, I think -ffreestanding makes sense. It may not be optimal, but
-it doesn't smell wrong to me.
+Signed-off-by: penghao <penghao@uniontech.com>
+---
+ sound/usb/card.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-> > Looking at the implementation of "strscpy()" in the same file, and
-> > then comparing that to the ludicrously simplisting "memcpy()", I
-> > really get the feeling that that memcpy() is not worth having.
->
-> I don't think anything actually uses the generic memcpy, and I think
-> only c6x uses the generic memset.
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 696e788c5d31..6bdbb34009b3 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -658,6 +658,12 @@ static int usb_audio_probe(struct usb_interface *intf,
+ 	}
+ 
+ 	dev_set_drvdata(&dev->dev, chip);
++	/*
++	 *ALSA: usb-audio: Add prevent wakeup from s3 state trig by Lenovo
++	 *ThinkCentre TI024Gen3 usb-audio
++	 */
++	if ((usb_id->idVendor == 0x17ef) && (usb_id->idProduct == 0xa012))
++		device_set_wakeup_enable(＆dev->dev, 0);
+ 
+ 	/*
+ 	 * For devices with more than one control interface, we assume the
+-- 
+2.11.0
 
-I do think maybe we should just remove the generic memcpy and memset
-and say "hey people, you really do need to implement your own".
 
-Even if you don't have this "recognize and recurse" issue, you end up
-having other issues like just tracing etc. Yeah, we've hopefully
-turned everything like that off, but considering that no major
-architecture uses this, I wonder how many small details we've missed
-with ftrace recursion etc?
 
-> Might be worth optimizing strnlen etc with the word-at-a-time thing though.
-
-Yeah, possibly. Except the kernel almost never uses strnlen for
-anything bigger. At least I haven't seen it very much in the profiles.
-
-The "strncpy_from_user()" stuff shows up like a sore thumb on some
-loads (lots and lots of strings from user space for pathnames and
-execve), but the kernel itself tends to seldom deal a lot with any
-longer strings.  Stuff like device names etc, I  guess, but any time I
-see string handling in profiles, it tends to be in user space (GNU
-make spends all of its time in string handling, it sometimes seems).
-
-Of course, that may be just me looking at very particular profiles, so
-maybe I've just not seen the loads where the kernel strnlen matters.
-
-memcpy and memset? Those matter. A lot.
-
-            Linus
