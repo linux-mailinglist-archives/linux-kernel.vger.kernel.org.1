@@ -2,101 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45BA324A651
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F0524A659
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726874AbgHSSwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 14:52:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34586 "EHLO
+        id S1726837AbgHSSy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 14:54:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726729AbgHSSwR (ORCPT
+        with ESMTP id S1726211AbgHSSyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 14:52:17 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A3EEC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 11:52:17 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id h4so25821253ioe.5
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 11:52:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WB8mQxc0LogEyfIgqkmCRlvoxAmjS9EG+OsROE4agYE=;
-        b=HvNODI/vfs1WqDwKJepV1SCGJDZW7J1gsTlnsRrWx/mS1F07j2GxfYJ4FmzrC43QOG
-         CoDV4lBCeFhtkNUHQnvaFZHEE9g+wxOpwi2os8axiadx0sNy+3RcMeGiPWnjOvy13fys
-         FUl6sbm7XmD5NXrz1Uls+I7OrNJ01WSwPx1xQFZVSrX7e07meaZIRYoPmZdrBjxyTeZs
-         gobBGDOkKyOxcyplU0TG1eQY0RJ87SFUqzsabAKQlEojO9emfMqALJ9R6FkgcOQ+/3lh
-         veJrXx9llSGLXZ8qcrAUj+pW7uetXCRXQXS2s6U9MsNTPrmqH6gJMKM0kpvpHBI6ZtCw
-         NzCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WB8mQxc0LogEyfIgqkmCRlvoxAmjS9EG+OsROE4agYE=;
-        b=tRyhSyA/LKkbXHLLdOVIcGK/lkeLwukwarmIc6x/M0RNxAShbIEjpVUj5vfCGHJHTO
-         BmlD1mC8dtWqiic6g3IM7G98mgg/KxU3B0YlqdRRZo3v/4Kkf0eVGg1uf3BNmJRVIOMf
-         scAKApEbRv5Gw8W0Yr4cDxxWnn46Is9hse+8UtjmTUmUbX8L5TqRLFqiYt1s/zBy9xJP
-         8qdpTKOtJZETaDLkdnVV7zcgpLkov2HQL8bQ3enFRPFZSwW9uTgQnhutFq976iaete4u
-         5ZU8eto8IJLQmP8HsfIJLSAEzv0vSf2wDy8AoqHGe37ikp4qLO9frXr/8mJ2VkV7h2DM
-         uzLw==
-X-Gm-Message-State: AOAM532HqBAGf5L7s2Km6u0+2UxBpkl6xKcvT19fT9PrcpTef+yqxLev
-        2nXTOzOwSWi5mQwHEMCULGCosqAEZsneqfqOgVkmNQ==
-X-Google-Smtp-Source: ABdhPJx3+grKblNX4zGHAmxtgPBoo3hFJoCA06Ve/pIwbZYE4zdvNve2aCmMxuYsnYiu63e+jgeqXglEy+PzwTK0P4w=
-X-Received: by 2002:a6b:6c13:: with SMTP id a19mr21648139ioh.31.1597863136660;
- Wed, 19 Aug 2020 11:52:16 -0700 (PDT)
+        Wed, 19 Aug 2020 14:54:18 -0400
+Received: from smtp-42af.mail.infomaniak.ch (smtp-42af.mail.infomaniak.ch [IPv6:2001:1600:3:17::42af])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71633C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 11:54:17 -0700 (PDT)
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4BWxlD0kK1zlhQGJ;
+        Wed, 19 Aug 2020 20:54:00 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
+        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4BWxlB6m3Xzlh8TC;
+        Wed, 19 Aug 2020 20:53:58 +0200 (CEST)
+Subject: Re: [PATCH v1 0/4] [RFC] Implement Trampoline File Descriptor
+To:     Mark Rutland <mark.rutland@arm.com>,
+        "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Cc:     kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, oleg@redhat.com,
+        x86@kernel.org
+References: <aefc85852ea518982e74b233e11e16d2e707bc32>
+ <20200728131050.24443-1-madvenka@linux.microsoft.com>
+ <20200731180955.GC67415@C02TD0UTHF1T.local>
+ <6236adf7-4bed-534e-0956-fddab4fd96b6@linux.microsoft.com>
+ <20200804143018.GB7440@C02TD0UTHF1T.local>
+ <b3368692-afe6-89b5-d634-12f4f0a601f8@linux.microsoft.com>
+ <20200812100650.GB28154@C02TD0UTHF1T.local>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <41c4de64-68d0-6fcb-e5c3-63ebd459262e@digikod.net>
+Date:   Wed, 19 Aug 2020 20:53:42 +0200
+User-Agent: 
 MIME-Version: 1.0
-References: <20200721144832.750728-1-abanoubsameh@protonmail.com>
- <CAHp75VdFvAYR+z8c6R2J9Q2JK-WpHS4LU_-cWvsOa2g8+Gfk9w@mail.gmail.com>
- <CAMpxmJVW0yXdVVxYYiNjHw5XsKx+cyb6hV7KTeOQBxgFJWWx4w@mail.gmail.com> <CAHp75Vfc_5rS+MOL=WtvEpQ45RT5tHXe4aUiH1oMJn4Re4q3gg@mail.gmail.com>
-In-Reply-To: <CAHp75Vfc_5rS+MOL=WtvEpQ45RT5tHXe4aUiH1oMJn4Re4q3gg@mail.gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 19 Aug 2020 20:52:05 +0200
-Message-ID: <CAMRc=MeCOTPe5D8Ego4dAQD4-FVT7OWffORcdh5bUMrcvRqgJQ@mail.gmail.com>
-Subject: Re: [PATCH] gpio: gpio-crystalcove.c: changed every 'unsigned' to
- 'unsigned int'
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Abanoub Sameh <abanoubsameh8@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Abanoub Sameh <abanoubsameh@protonmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200812100650.GB28154@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Antivirus: Dr.Web (R) for Unix mail servers drweb plugin ver.6.0.2.8
+X-Antivirus-Code: 0x100000
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 8:50 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Wed, Aug 19, 2020 at 8:56 PM Bartosz Golaszewski
-> <bgolaszewski@baylibre.com> wrote:
-> >
-> > On Tue, Jul 21, 2020 at 6:05 PM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:
-> > >
-> > > On Tue, Jul 21, 2020 at 5:49 PM Abanoub Sameh <abanoubsameh8@gmail.com> wrote:
-> > > >
-> > > > Changed 'unsigned' to 'unsigned int'.
-> > > > This makes the code more uniform, and compliant with the kernel coding style.
-> > >
-> > > In all patches you wrongly added 'gpio-' and '.c' parts. Also you
-> > > missed the version of the patches (I have told you about) and
-> > > changelog.
-> > >
-> > > No need to resend, I fixed that this time for you. Be careful in the future.
->
-> > I was going through pending patches and noticed those from Abanoub:
-> > are you also the maintainer for gpio-crystalcove and gpio-msic? The
-> > MAINTAINERS entry for Intel GPIO drivers doesn't include those - do
-> > you want me to send a patch that adds them?
->
-> Hmm...
-> https://elixir.bootlin.com/linux/latest/source/MAINTAINERS#L8833
->
 
-Ah, I was grepping with "crystalcove" and didn't find anything.
-Strange I missed msic too though. Anyway: nevermind my email.
+On 12/08/2020 12:06, Mark Rutland wrote:
+> On Thu, Aug 06, 2020 at 12:26:02PM -0500, Madhavan T. Venkataraman wrote:
+>> Thanks for the lively discussion. I have tried to answer some of the
+>> comments below.
+>>
+>> On 8/4/20 9:30 AM, Mark Rutland wrote:
+>>>
+>>>> So, the context is - if security settings in a system disallow a page to have
+>>>> both write and execute permissions, how do you allow the execution of
+>>>> genuine trampolines that are runtime generated and placed in a data
+>>>> page or a stack page?
+>>> There are options today, e.g.
+>>>
+>>> a) If the restriction is only per-alias, you can have distinct aliases
+>>>    where one is writable and another is executable, and you can make it
+>>>    hard to find the relationship between the two.
+>>>
+>>> b) If the restriction is only temporal, you can write instructions into
+>>>    an RW- buffer, transition the buffer to R--, verify the buffer
+>>>    contents, then transition it to --X.
+>>>
+>>> c) You can have two processes A and B where A generates instrucitons into
+>>>    a buffer that (only) B can execute (where B may be restricted from
+>>>    making syscalls like write, mprotect, etc).
+>>
+>> The general principle of the mitigation is W^X. I would argue that
+>> the above options are violations of the W^X principle. If they are
+>> allowed today, they must be fixed. And they will be. So, we cannot
+>> rely on them.
+> 
+> Hold on.
+> 
+> Contemporary W^X means that a given virtual alias cannot be writeable
+> and executeable simultaneously, permitting (a) and (b). If you read the
+> references on the Wikipedia page for W^X you'll see the OpenBSD 3.3
+> release notes and related presentation make this clear, and further they
+> expect (b) to occur with JITS flipping W/X with mprotect().
 
-Bart
+W^X (with "permanent" mprotect restrictions [1]) goes back to 2000 with
+PaX [2] (which predates partial OpenBSD implementation from 2003).
+
+[1] https://pax.grsecurity.net/docs/mprotect.txt
+[2] https://undeadly.org/cgi?action=article;sid=20030417082752
+
+> 
+> Please don't conflate your assumed stronger semantics with the general
+> principle. It not matching you expectations does not necessarily mean
+> that it is wrong.
+> 
+> If you want a stronger W^X semantics, please refer to this specifically
+> with a distinct name.
+> 
+>> a) This requires a remap operation. Two mappings point to the same
+>>      physical page. One mapping has W and the other one has X. This
+>>      is a violation of W^X.
+>>
+>> b) This is again a violation. The kernel should refuse to give execute
+>>      permission to a page that was writeable in the past and refuse to
+>>      give write permission to a page that was executable in the past.
+>>
+>> c) This is just a variation of (a).
+> 
+> As above, this is not true.
+> 
+> If you have a rationale for why this is desirable or necessary, please
+> justify that before using this as justification for additional features.
+> 
+>> In general, the problem with user-level methods to map and execute
+>> dynamic code is that the kernel cannot tell if a genuine application is
+>> using them or an attacker is using them or piggy-backing on them.
+> 
+> Yes, and as I pointed out the same is true for trampfd unless you can
+> somehow authenticate the calls are legitimate (in both callsite and the
+> set of arguments), and I don't see any reasonable way of doing that.
+> 
+> If you relax your threat model to an attacker not being able to make
+> arbitrary syscalls, then your suggestion that userspace can perorm
+> chceks between syscalls may be sufficient, but as I pointed out that's
+> equally true for a sealed memfd or similar.
+> 
+>> Off the top of my head, I have tried to identify some examples
+>> where we can have more trust on dynamic code and have the kernel
+>> permit its execution.
+>>
+>> 1. If the kernel can do the job, then that is one safe way. Here, the kernel
+>>     is the code. There is no code generation involved. This is what I
+>>     have presented in the patch series as the first cut.
+> 
+> This is sleight-of-hand; it doesn't matter where the logic is performed
+> if the power is identical. Practically speaking this is equivalent to
+> some dynamic code generation.
+> 
+> I think that it's misleading to say that because the kernel emulates
+> something it is safe when the provenance of the syscall arguments cannot
+> be verified.
+> 
+> [...]
+> 
+>> Anyway, these are just examples. The principle is - if we can identify
+>> dynamic code that has a certain measure of trust, can the kernel
+>> permit their execution?
+> 
+> My point generally is that the kernel cannot identify this, and if
+> usrspace code is trusted to dynamically generate trampfd arguments it
+> can equally be trusted to dyncamilly generate code.
+> 
+> [...]
+> 
+>> As I have mentioned above, I intend to have the kernel generate code
+>> only if the code generation is simple enough. For more complicated cases,
+>> I plan to use a user-level code generator that is for exclusive kernel use.
+>> I have yet to work out the details on how this would work. Need time.
+> 
+> This reads to me like trampfd is only dealing with a few special cases
+> and we know that we need a more general solution.
+> 
+> I hope I am mistaken, but I get the strong impression that you're trying
+> to justify your existing solution rather than trying to understand the
+> problem space.
+> 
+> To be clear, my strong opinion is that we should not be trying to do
+> this sort of emulation or code generation within the kernel. I do think
+> it's worthwhile to look at mechanisms to make it harder to subvert
+> dynamic userspace code generation, but I think the code generation
+> itself needs to live in userspace (e.g. for ABI reasons I previously
+> mentioned).
+> 
+> Mark.
+> 
