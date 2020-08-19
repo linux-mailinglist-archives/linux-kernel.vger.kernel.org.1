@@ -2,107 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73F9324A4D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 19:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F39E24A4DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 19:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726466AbgHSRV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 13:21:57 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:44498 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726681AbgHSRVn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 13:21:43 -0400
-Received: from localhost.localdomain (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 910BD20B4916;
-        Wed, 19 Aug 2020 10:21:42 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 910BD20B4916
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1597857703;
-        bh=fljryF0I/Ht+D5c1kVdiKKq9Z25pMaEkJlo1mGLnMrI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fW6jb+tRnM1hq1xsXmMTfPba27XXydZeALzfXHrm2Yz77iPq3ats5hQmzDXrxWO2e
-         r+PawBNHgN14OiyzJ7bawFPgtgIWlX63fYJ9wqZKvDryzQOK0rDLdC4+zWfTw3dsZo
-         cO8OoxPlyUwFBS9Sjwo77ccDk1BWbC8PL5sh7s+c=
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-To:     zohar@linux.ibm.com, bauerman@linux.ibm.com, robh@kernel.org,
-        gregkh@linuxfoundation.org, james.morse@arm.com,
-        catalin.marinas@arm.com, sashal@kernel.org, will@kernel.org,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        robh+dt@kernel.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
-        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
-        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
-        christophe.leroy@c-s.fr
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, prsriva@linux.microsoft.com,
-        balajib@linux.microsoft.com
-Subject: [PATCH v4 5/5] arm64: Add IMA kexec buffer to DTB
-Date:   Wed, 19 Aug 2020 10:21:34 -0700
-Message-Id: <20200819172134.11243-6-nramas@linux.microsoft.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200819172134.11243-1-nramas@linux.microsoft.com>
-References: <20200819172134.11243-1-nramas@linux.microsoft.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726870AbgHSRWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 13:22:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726846AbgHSRWP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 13:22:15 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 757FC206FA;
+        Wed, 19 Aug 2020 17:22:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597857734;
+        bh=ns3QqN1GE86TyATblzqVP/NCI85PrE0w52RqoEnvbBg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=biwztO1ihUXf4Euv72Qr3Rri8ht6NKWGwsqFXckg/nbkuURUNgmIs3mw3wg/xmvKp
+         w9LlJlTBn2g0nRd+NYSiFy0nwZv5mnv3/883shiNjSOxvRLMBKParaJI2R4PnvHTDc
+         /AmICpbuSNWIxMgrOgeuPRS+J1+c+LrZZxUiSOoE=
+Date:   Wed, 19 Aug 2020 10:22:14 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Doug Berger <opendmb@gmail.com>, Jason Baron <jbaron@akamai.com>,
+        David Rientjes <rientjes@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm: include CMA pages in lowmem_reserve at boot
+Message-Id: <20200819102214.32238093b116ab6f1c5c7b73@linux-foundation.org>
+In-Reply-To: <e22cbcdc-e9ce-50b7-aa88-6a3579ffd509@gmail.com>
+References: <1597423766-27849-1-git-send-email-opendmb@gmail.com>
+        <20200818201817.351499e75cba2a84e8bf33e6@linux-foundation.org>
+        <e22cbcdc-e9ce-50b7-aa88-6a3579ffd509@gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The address and size of the current kernel's IMA measurement log
-need to be added to the device tree's IMA kexec buffer node for
-the log to be carried over to the next kernel on the kexec call.
+On Wed, 19 Aug 2020 10:15:53 -0700 Florian Fainelli <f.fainelli@gmail.com> wrote:
 
-Add the IMA measurement log buffer properties to the device tree for
-ARM64. Update CONFIG_KEXEC_FILE to select CONFIG_HAVE_IMA_KEXEC to
-indicate that the IMA measurement log information is present in
-the device tree.
+> >> In many cases the difference is not significant, but for example
+> >> an ARM platform with 1GB of memory and the following memory layout
+> >> [    0.000000] cma: Reserved 256 MiB at 0x0000000030000000
+> >> [    0.000000] Zone ranges:
+> >> [    0.000000]   DMA      [mem 0x0000000000000000-0x000000002fffffff]
+> >> [    0.000000]   Normal   empty
+> >> [    0.000000]   HighMem  [mem 0x0000000030000000-0x000000003fffffff]
+> >>
+> >> would result in 0 lowmem_reserve for the DMA zone. This would allow
+> >> userspace to deplete the DMA zone easily.
+> > 
+> > Sounds fairly serious for thos machines.  Was a cc:stable considered?
+> 
+> Since there is a Fixes: tag, it may have been assumed that the patch
+> would be picked up and as soon as it reaches Linus' tree it would be
+> picked up by the stable selection.
 
-Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
----
- arch/arm64/Kconfig                     |  1 +
- arch/arm64/kernel/machine_kexec_file.c | 11 +++++++++++
- 2 files changed, 12 insertions(+)
+It doesn't work that way - sometimes a fix isn't considered important
+enough to backport.  It could just fix a typo in a comment!
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 6d232837cbee..9f03c8245e5b 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1077,6 +1077,7 @@ config KEXEC
- config KEXEC_FILE
- 	bool "kexec file based system call"
- 	select KEXEC_CORE
-+	select HAVE_IMA_KEXEC
- 	help
- 	  This is new version of kexec system call. This system call is
- 	  file based and takes file descriptors as system call argument
-diff --git a/arch/arm64/kernel/machine_kexec_file.c b/arch/arm64/kernel/machine_kexec_file.c
-index 4c54723e7a04..8488f8e87d1a 100644
---- a/arch/arm64/kernel/machine_kexec_file.c
-+++ b/arch/arm64/kernel/machine_kexec_file.c
-@@ -153,6 +153,17 @@ static int setup_dtb(struct kimage *image,
- 				FDT_PROP_KASLR_SEED);
- 	}
- 
-+	/* add ima-kexec-buffer */
-+	if (image->arch.ima_buffer_size > 0) {
-+
-+		ret = fdt_appendprop_addrrange(dtb, 0, off,
-+				FDT_PROP_IMA_KEXEC_BUFFER,
-+				image->arch.ima_buffer_addr,
-+				image->arch.ima_buffer_size);
-+		if (ret)
-+			return (ret == -FDT_ERR_NOSPACE ? -ENOMEM : -EINVAL);
-+	}
-+
- 	/* add rng-seed */
- 	if (rng_is_initialized()) {
- 		void *rng_seed;
--- 
-2.28.0
+
 
