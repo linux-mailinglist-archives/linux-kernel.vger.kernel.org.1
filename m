@@ -2,407 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A86249CBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 13:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D495D249CD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 13:56:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728480AbgHSLxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 07:53:45 -0400
-Received: from foss.arm.com ([217.140.110.172]:33936 "EHLO foss.arm.com"
+        id S1727856AbgHSL4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 07:56:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728258AbgHSLv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 07:51:58 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 226371FB;
-        Wed, 19 Aug 2020 04:51:56 -0700 (PDT)
-Received: from [10.57.40.122] (unknown [10.57.40.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C9C7B3F71F;
-        Wed, 19 Aug 2020 04:51:44 -0700 (PDT)
-Subject: Re: [PATCH 05/28] media/v4l2: remove V4L2-FLAG-MEMORY-NON-CONSISTENT
-To:     Tomasz Figa <tfiga@chromium.org>, Christoph Hellwig <hch@lst.de>
-Cc:     alsa-devel@alsa-project.org, linux-ia64@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        nouveau@lists.freedesktop.org, linux-nvme@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        linux-mm@kvack.org, Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        linux-scsi@vger.kernel.org,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Pawel Osciak <pawel@osciak.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
+        id S1728259AbgHSLzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 07:55:09 -0400
+Received: from kernel.org (unknown [87.70.91.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7FB6322CB2;
+        Wed, 19 Aug 2020 11:53:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597838028;
+        bh=nB9SuwtUizzYREhBl09f96wwqfl+6v1Nki9XxEYxFmg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XzrjsD+88ReKpEKVPxcwBs0sO7/deF5YmgL8LgJvrSN6vKteBo3UksVlQ439kYefA
+         pqi62Er1Ztem1X6xeUf0PcjYSye7F9ZeTEP4gsLHxxhVLZS4GHJvJhgTJYf67ZgHza
+         yH2N2HWN3WZDusoyvsFWvEe6drqcLGHPLKWZz18o=
+Date:   Wed, 19 Aug 2020 14:53:35 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        linux-mips@vger.kernel.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org
-References: <20200819065555.1802761-1-hch@lst.de>
- <20200819065555.1802761-6-hch@lst.de>
- <CAAFQd5COLxjydDYrfx47ht8tj-aNPiaVnC+WyQA7nvpW4gs=ww@mail.gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <62e4f4fc-c8a5-3ee8-c576-fe7178cb4356@arm.com>
-Date:   Wed, 19 Aug 2020 12:51:42 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org
+Subject: Re: [PATCH v4 6/6] mm: secretmem: add ability to reserve memory at
+ boot
+Message-ID: <20200819115335.GU752365@kernel.org>
+References: <20200818141554.13945-1-rppt@kernel.org>
+ <20200818141554.13945-7-rppt@kernel.org>
+ <03ec586d-c00c-c57e-3118-7186acb7b823@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAAFQd5COLxjydDYrfx47ht8tj-aNPiaVnC+WyQA7nvpW4gs=ww@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <03ec586d-c00c-c57e-3118-7186acb7b823@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tomasz,
+On Wed, Aug 19, 2020 at 12:49:05PM +0200, David Hildenbrand wrote:
+> On 18.08.20 16:15, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > Taking pages out from the direct map and bringing them back may create
+> > undesired fragmentation and usage of the smaller pages in the direct
+> > mapping of the physical memory.
+> > 
+> > This can be avoided if a significantly large area of the physical memory
+> > would be reserved for secretmem purposes at boot time.
+> > 
+> > Add ability to reserve physical memory for secretmem at boot time using
+> > "secretmem" kernel parameter and then use that reserved memory as a global
+> > pool for secret memory needs.
+> 
+> Wouldn't something like CMA be the better fit? Just wondering. Then, the
+> memory can actually be reused for something else while not needed.
 
-On 2020-08-19 12:16, Tomasz Figa wrote:
-> Hi Christoph,
-> 
-> On Wed, Aug 19, 2020 at 8:56 AM Christoph Hellwig <hch@lst.de> wrote:
->>
->> The V4L2-FLAG-MEMORY-NON-CONSISTENT flag is entirely unused,
-> 
-> Could you explain what makes you think it's unused? It's a feature of
-> the UAPI generally supported by the videobuf2 framework and relied on
-> by Chromium OS to get any kind of reasonable performance when
-> accessing V4L2 buffers in the userspace.
-> 
->> and causes
->> weird gymanstics with the DMA_ATTR_NON_CONSISTENT flag, which is
->> unimplemented except on PARISC and some MIPS configs, and about to be
->> removed.
-> 
-> It is implemented by the generic DMA mapping layer [1], which is used
-> by a number of architectures including ARM64 and supposed to be used
-> by new architectures going forward.
+The memory allocated as secret is removed from the direct map and the
+boot time reservation is intended to reduce direct map fragmentatioan
+and to avoid splitting 1G pages there. So with CMA I'd still need to
+allocate 1G chunks for this and once 1G page is dropped from the direct
+map it still cannot be reused for anything else until it is freed.
 
-AFAICS all that V4L2_FLAG_MEMORY_NON_CONSISTENT does is end up 
-controling whether DMA_ATTR_NON_CONSISTENT is added to vb2_queue::dma_attrs.
+I could use CMA to do the boot time reservation, but doing the
+reservesion directly seemed simpler and more explicit to me.
 
-Please can you point to where DMA_ATTR_NON_CONSISTENT does anything at 
-all on arm64?
 
-Also, I posit that videobuf2 is not actually relying on 
-DMA_ATTR_NON_CONSISTENT anyway, since it's clearly not using it properly:
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > ---
+> >  mm/secretmem.c | 134 ++++++++++++++++++++++++++++++++++++++++++++++---
+> >  1 file changed, 126 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/mm/secretmem.c b/mm/secretmem.c
+> > index 333eb18fb483..54067ea62b2d 100644
+> > --- a/mm/secretmem.c
+> > +++ b/mm/secretmem.c
+> > @@ -14,6 +14,7 @@
+> >  #include <linux/pagemap.h>
+> >  #include <linux/genalloc.h>
+> >  #include <linux/syscalls.h>
+> > +#include <linux/memblock.h>
+> >  #include <linux/pseudo_fs.h>
+> >  #include <linux/set_memory.h>
+> >  #include <linux/sched/signal.h>
+> > @@ -45,6 +46,39 @@ struct secretmem_ctx {
+> >  	unsigned int mode;
+> >  };
+> >  
+> > +struct secretmem_pool {
+> > +	struct gen_pool *pool;
+> > +	unsigned long reserved_size;
+> > +	void *reserved;
+> > +};
+> > +
+> > +static struct secretmem_pool secretmem_pool;
+> > +
+> > +static struct page *secretmem_alloc_huge_page(gfp_t gfp)
+> > +{
+> > +	struct gen_pool *pool = secretmem_pool.pool;
+> > +	unsigned long addr = 0;
+> > +	struct page *page = NULL;
+> > +
+> > +	if (pool) {
+> > +		if (gen_pool_avail(pool) < PMD_SIZE)
+> > +			return NULL;
+> > +
+> > +		addr = gen_pool_alloc(pool, PMD_SIZE);
+> > +		if (!addr)
+> > +			return NULL;
+> > +
+> > +		page = virt_to_page(addr);
+> > +	} else {
+> > +		page = alloc_pages(gfp, PMD_PAGE_ORDER);
+> > +
+> > +		if (page)
+> > +			split_page(page, PMD_PAGE_ORDER);
+> > +	}
+> > +
+> > +	return page;
+> > +}
+> > +
+> >  static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
+> >  {
+> >  	unsigned long nr_pages = (1 << PMD_PAGE_ORDER);
+> > @@ -53,12 +87,11 @@ static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
+> >  	struct page *page;
+> >  	int err;
+> >  
+> > -	page = alloc_pages(gfp, PMD_PAGE_ORDER);
+> > +	page = secretmem_alloc_huge_page(gfp);
+> >  	if (!page)
+> >  		return -ENOMEM;
+> >  
+> >  	addr = (unsigned long)page_address(page);
+> > -	split_page(page, PMD_PAGE_ORDER);
+> >  
+> >  	err = gen_pool_add(pool, addr, PMD_SIZE, NUMA_NO_NODE);
+> >  	if (err) {
+> > @@ -267,11 +300,13 @@ SYSCALL_DEFINE1(memfd_secret, unsigned long, flags)
+> >  	return err;
+> >  }
+> >  
+> > -static void secretmem_cleanup_chunk(struct gen_pool *pool,
+> > -				    struct gen_pool_chunk *chunk, void *data)
+> > +static void secretmem_recycle_range(unsigned long start, unsigned long end)
+> > +{
+> > +	gen_pool_free(secretmem_pool.pool, start, PMD_SIZE);
+> > +}
+> > +
+> > +static void secretmem_release_range(unsigned long start, unsigned long end)
+> >  {
+> > -	unsigned long start = chunk->start_addr;
+> > -	unsigned long end = chunk->end_addr;
+> >  	unsigned long nr_pages, addr;
+> >  
+> >  	nr_pages = (end - start + 1) / PAGE_SIZE;
+> > @@ -281,6 +316,18 @@ static void secretmem_cleanup_chunk(struct gen_pool *pool,
+> >  		put_page(virt_to_page(addr));
+> >  }
+> >  
+> > +static void secretmem_cleanup_chunk(struct gen_pool *pool,
+> > +				    struct gen_pool_chunk *chunk, void *data)
+> > +{
+> > +	unsigned long start = chunk->start_addr;
+> > +	unsigned long end = chunk->end_addr;
+> > +
+> > +	if (secretmem_pool.pool)
+> > +		secretmem_recycle_range(start, end);
+> > +	else
+> > +		secretmem_release_range(start, end);
+> > +}
+> > +
+> >  static void secretmem_cleanup_pool(struct secretmem_ctx *ctx)
+> >  {
+> >  	struct gen_pool *pool = ctx->pool;
+> > @@ -320,14 +367,85 @@ static struct file_system_type secretmem_fs = {
+> >  	.kill_sb	= kill_anon_super,
+> >  };
+> >  
+> > +static int secretmem_reserved_mem_init(void)
+> > +{
+> > +	struct gen_pool *pool;
+> > +	struct page *page;
+> > +	void *addr;
+> > +	int err;
+> > +
+> > +	if (!secretmem_pool.reserved)
+> > +		return 0;
+> > +
+> > +	pool = gen_pool_create(PMD_SHIFT, NUMA_NO_NODE);
+> > +	if (!pool)
+> > +		return -ENOMEM;
+> > +
+> > +	err = gen_pool_add(pool, (unsigned long)secretmem_pool.reserved,
+> > +			   secretmem_pool.reserved_size, NUMA_NO_NODE);
+> > +	if (err)
+> > +		goto err_destroy_pool;
+> > +
+> > +	for (addr = secretmem_pool.reserved;
+> > +	     addr < secretmem_pool.reserved + secretmem_pool.reserved_size;
+> > +	     addr += PAGE_SIZE) {
+> > +		page = virt_to_page(addr);
+> > +		__ClearPageReserved(page);
+> > +		set_page_count(page, 1);
+> > +	}
+> > +
+> > +	secretmem_pool.pool = pool;
+> > +	page = virt_to_page(secretmem_pool.reserved);
+> > +	__kernel_map_pages(page, secretmem_pool.reserved_size / PAGE_SIZE, 0);
+> > +	return 0;
+> > +
+> > +err_destroy_pool:
+> > +	gen_pool_destroy(pool);
+> > +	return err;
+> > +}
+> > +
+> >  static int secretmem_init(void)
+> >  {
+> > -	int ret = 0;
+> > +	int ret;
+> > +
+> > +	ret = secretmem_reserved_mem_init();
+> > +	if (ret)
+> > +		return ret;
+> >  
+> >  	secretmem_mnt = kern_mount(&secretmem_fs);
+> > -	if (IS_ERR(secretmem_mnt))
+> > +	if (IS_ERR(secretmem_mnt)) {
+> > +		gen_pool_destroy(secretmem_pool.pool);
+> >  		ret = PTR_ERR(secretmem_mnt);
+> > +	}
+> >  
+> >  	return ret;
+> >  }
+> >  fs_initcall(secretmem_init);
+> > +
+> > +static int __init secretmem_setup(char *str)
+> > +{
+> > +	phys_addr_t align = PMD_SIZE;
+> > +	unsigned long reserved_size;
+> > +	void *reserved;
+> > +
+> > +	reserved_size = memparse(str, NULL);
+> > +	if (!reserved_size)
+> > +		return 0;
+> > +
+> > +	if (reserved_size * 2 > PUD_SIZE)
+> > +		align = PUD_SIZE;
+> > +
+> > +	reserved = memblock_alloc(reserved_size, align);
+> > +	if (!reserved) {
+> > +		pr_err("failed to reserve %lu bytes\n", secretmem_pool.reserved_size);
+> > +		return 0;
+> > +	}
+> > +
+> > +	secretmem_pool.reserved_size = reserved_size;
+> > +	secretmem_pool.reserved = reserved;
+> > +
+> > +	pr_info("reserved %luM\n", reserved_size >> 20);
+> > +
+> > +	return 1;
+> > +}
+> > +__setup("secretmem=", secretmem_setup);
+> > 
+> 
+> 
+> -- 
+> Thanks,
+> 
+> David / dhildenb
+> 
 
-"By using this API, you are guaranteeing to the platform
-that you have all the correct and necessary sync points for this memory
-in the driver should it choose to return non-consistent memory."
-
-$ git grep dma_cache_sync drivers/media
-$
-
-Robin.
-
-> [1] https://elixir.bootlin.com/linux/v5.9-rc1/source/kernel/dma/mapping.c#L341
-> 
-> When removing features from generic kernel code, I'd suggest first
-> providing viable alternatives for its users, rather than killing the
-> users altogether.
-> 
-> Given the above, I'm afraid I have to NAK this.
-> 
-> Best regards,
-> Tomasz
-> 
->>
->> Signed-off-by: Christoph Hellwig <hch@lst.de>
->> ---
->>   .../userspace-api/media/v4l/buffer.rst        | 17 ---------
->>   .../media/v4l/vidioc-reqbufs.rst              |  1 -
->>   .../media/common/videobuf2/videobuf2-core.c   | 36 +------------------
->>   .../common/videobuf2/videobuf2-dma-contig.c   | 19 ----------
->>   .../media/common/videobuf2/videobuf2-dma-sg.c |  3 +-
->>   .../media/common/videobuf2/videobuf2-v4l2.c   | 12 -------
->>   include/media/videobuf2-core.h                |  3 +-
->>   include/uapi/linux/videodev2.h                |  2 --
->>   8 files changed, 3 insertions(+), 90 deletions(-)
->>
->> diff --git a/Documentation/userspace-api/media/v4l/buffer.rst b/Documentation/userspace-api/media/v4l/buffer.rst
->> index 57e752aaf414a7..2044ed13cd9d7d 100644
->> --- a/Documentation/userspace-api/media/v4l/buffer.rst
->> +++ b/Documentation/userspace-api/media/v4l/buffer.rst
->> @@ -701,23 +701,6 @@ Memory Consistency Flags
->>       :stub-columns: 0
->>       :widths:       3 1 4
->>
->> -    * .. _`V4L2-FLAG-MEMORY-NON-CONSISTENT`:
->> -
->> -      - ``V4L2_FLAG_MEMORY_NON_CONSISTENT``
->> -      - 0x00000001
->> -      - A buffer is allocated either in consistent (it will be automatically
->> -       coherent between the CPU and the bus) or non-consistent memory. The
->> -       latter can provide performance gains, for instance the CPU cache
->> -       sync/flush operations can be avoided if the buffer is accessed by the
->> -       corresponding device only and the CPU does not read/write to/from that
->> -       buffer. However, this requires extra care from the driver -- it must
->> -       guarantee memory consistency by issuing a cache flush/sync when
->> -       consistency is needed. If this flag is set V4L2 will attempt to
->> -       allocate the buffer in non-consistent memory. The flag takes effect
->> -       only if the buffer is used for :ref:`memory mapping <mmap>` I/O and the
->> -       queue reports the :ref:`V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS
->> -       <V4L2-BUF-CAP-SUPPORTS-MMAP-CACHE-HINTS>` capability.
->> -
->>   .. c:type:: v4l2_memory
->>
->>   enum v4l2_memory
->> diff --git a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
->> index 75d894d9c36c42..3180c111d368ee 100644
->> --- a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
->> +++ b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
->> @@ -169,7 +169,6 @@ aborting or finishing any DMA in progress, an implicit
->>         - This capability is set by the driver to indicate that the queue supports
->>           cache and memory management hints. However, it's only valid when the
->>           queue is used for :ref:`memory mapping <mmap>` streaming I/O. See
->> -        :ref:`V4L2_FLAG_MEMORY_NON_CONSISTENT <V4L2-FLAG-MEMORY-NON-CONSISTENT>`,
->>           :ref:`V4L2_BUF_FLAG_NO_CACHE_INVALIDATE <V4L2-BUF-FLAG-NO-CACHE-INVALIDATE>` and
->>           :ref:`V4L2_BUF_FLAG_NO_CACHE_CLEAN <V4L2-BUF-FLAG-NO-CACHE-CLEAN>`.
->>
->> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
->> index f544d3393e9d6b..66a41cef33c1b1 100644
->> --- a/drivers/media/common/videobuf2/videobuf2-core.c
->> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
->> @@ -721,39 +721,14 @@ int vb2_verify_memory_type(struct vb2_queue *q,
->>   }
->>   EXPORT_SYMBOL(vb2_verify_memory_type);
->>
->> -static void set_queue_consistency(struct vb2_queue *q, bool consistent_mem)
->> -{
->> -       q->dma_attrs &= ~DMA_ATTR_NON_CONSISTENT;
->> -
->> -       if (!vb2_queue_allows_cache_hints(q))
->> -               return;
->> -       if (!consistent_mem)
->> -               q->dma_attrs |= DMA_ATTR_NON_CONSISTENT;
->> -}
->> -
->> -static bool verify_consistency_attr(struct vb2_queue *q, bool consistent_mem)
->> -{
->> -       bool queue_is_consistent = !(q->dma_attrs & DMA_ATTR_NON_CONSISTENT);
->> -
->> -       if (consistent_mem != queue_is_consistent) {
->> -               dprintk(q, 1, "memory consistency model mismatch\n");
->> -               return false;
->> -       }
->> -       return true;
->> -}
->> -
->>   int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
->>                       unsigned int flags, unsigned int *count)
->>   {
->>          unsigned int num_buffers, allocated_buffers, num_planes = 0;
->>          unsigned plane_sizes[VB2_MAX_PLANES] = { };
->> -       bool consistent_mem = true;
->>          unsigned int i;
->>          int ret;
->>
->> -       if (flags & V4L2_FLAG_MEMORY_NON_CONSISTENT)
->> -               consistent_mem = false;
->> -
->>          if (q->streaming) {
->>                  dprintk(q, 1, "streaming active\n");
->>                  return -EBUSY;
->> @@ -765,8 +740,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
->>          }
->>
->>          if (*count == 0 || q->num_buffers != 0 ||
->> -           (q->memory != VB2_MEMORY_UNKNOWN && q->memory != memory) ||
->> -           !verify_consistency_attr(q, consistent_mem)) {
->> +           (q->memory != VB2_MEMORY_UNKNOWN && q->memory != memory)) {
->>                  /*
->>                   * We already have buffers allocated, so first check if they
->>                   * are not in use and can be freed.
->> @@ -803,7 +777,6 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
->>          num_buffers = min_t(unsigned int, num_buffers, VB2_MAX_FRAME);
->>          memset(q->alloc_devs, 0, sizeof(q->alloc_devs));
->>          q->memory = memory;
->> -       set_queue_consistency(q, consistent_mem);
->>
->>          /*
->>           * Ask the driver how many buffers and planes per buffer it requires.
->> @@ -894,12 +867,8 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
->>   {
->>          unsigned int num_planes = 0, num_buffers, allocated_buffers;
->>          unsigned plane_sizes[VB2_MAX_PLANES] = { };
->> -       bool consistent_mem = true;
->>          int ret;
->>
->> -       if (flags & V4L2_FLAG_MEMORY_NON_CONSISTENT)
->> -               consistent_mem = false;
->> -
->>          if (q->num_buffers == VB2_MAX_FRAME) {
->>                  dprintk(q, 1, "maximum number of buffers already allocated\n");
->>                  return -ENOBUFS;
->> @@ -912,15 +881,12 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
->>                  }
->>                  memset(q->alloc_devs, 0, sizeof(q->alloc_devs));
->>                  q->memory = memory;
->> -               set_queue_consistency(q, consistent_mem);
->>                  q->waiting_for_buffers = !q->is_output;
->>          } else {
->>                  if (q->memory != memory) {
->>                          dprintk(q, 1, "memory model mismatch\n");
->>                          return -EINVAL;
->>                  }
->> -               if (!verify_consistency_attr(q, consistent_mem))
->> -                       return -EINVAL;
->>          }
->>
->>          num_buffers = min(*count, VB2_MAX_FRAME - q->num_buffers);
->> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
->> index ec3446cc45b8da..7b1b86ec942d7d 100644
->> --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
->> +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
->> @@ -42,11 +42,6 @@ struct vb2_dc_buf {
->>          struct dma_buf_attachment       *db_attach;
->>   };
->>
->> -static inline bool vb2_dc_buffer_consistent(unsigned long attr)
->> -{
->> -       return !(attr & DMA_ATTR_NON_CONSISTENT);
->> -}
->> -
->>   /*********************************************/
->>   /*        scatterlist table functions        */
->>   /*********************************************/
->> @@ -341,13 +336,6 @@ static int
->>   vb2_dc_dmabuf_ops_begin_cpu_access(struct dma_buf *dbuf,
->>                                     enum dma_data_direction direction)
->>   {
->> -       struct vb2_dc_buf *buf = dbuf->priv;
->> -       struct sg_table *sgt = buf->dma_sgt;
->> -
->> -       if (vb2_dc_buffer_consistent(buf->attrs))
->> -               return 0;
->> -
->> -       dma_sync_sg_for_cpu(buf->dev, sgt->sgl, sgt->nents, buf->dma_dir);
->>          return 0;
->>   }
->>
->> @@ -355,13 +343,6 @@ static int
->>   vb2_dc_dmabuf_ops_end_cpu_access(struct dma_buf *dbuf,
->>                                   enum dma_data_direction direction)
->>   {
->> -       struct vb2_dc_buf *buf = dbuf->priv;
->> -       struct sg_table *sgt = buf->dma_sgt;
->> -
->> -       if (vb2_dc_buffer_consistent(buf->attrs))
->> -               return 0;
->> -
->> -       dma_sync_sg_for_device(buf->dev, sgt->sgl, sgt->nents, buf->dma_dir);
->>          return 0;
->>   }
->>
->> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
->> index 0a40e00f0d7e5c..a86fce5d8ea8bf 100644
->> --- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
->> +++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
->> @@ -123,8 +123,7 @@ static void *vb2_dma_sg_alloc(struct device *dev, unsigned long dma_attrs,
->>          /*
->>           * NOTE: dma-sg allocates memory using the page allocator directly, so
->>           * there is no memory consistency guarantee, hence dma-sg ignores DMA
->> -        * attributes passed from the upper layer. That means that
->> -        * V4L2_FLAG_MEMORY_NON_CONSISTENT has no effect on dma-sg buffers.
->> +        * attributes passed from the upper layer.
->>           */
->>          buf->pages = kvmalloc_array(buf->num_pages, sizeof(struct page *),
->>                                      GFP_KERNEL | __GFP_ZERO);
->> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
->> index 30caad27281e1a..de83ad48783821 100644
->> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
->> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
->> @@ -722,20 +722,11 @@ static void fill_buf_caps(struct vb2_queue *q, u32 *caps)
->>   #endif
->>   }
->>
->> -static void clear_consistency_attr(struct vb2_queue *q,
->> -                                  int memory,
->> -                                  unsigned int *flags)
->> -{
->> -       if (!q->allow_cache_hints || memory != V4L2_MEMORY_MMAP)
->> -               *flags &= ~V4L2_FLAG_MEMORY_NON_CONSISTENT;
->> -}
->> -
->>   int vb2_reqbufs(struct vb2_queue *q, struct v4l2_requestbuffers *req)
->>   {
->>          int ret = vb2_verify_memory_type(q, req->memory, req->type);
->>
->>          fill_buf_caps(q, &req->capabilities);
->> -       clear_consistency_attr(q, req->memory, &req->flags);
->>          return ret ? ret : vb2_core_reqbufs(q, req->memory,
->>                                              req->flags, &req->count);
->>   }
->> @@ -769,7 +760,6 @@ int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create)
->>          unsigned i;
->>
->>          fill_buf_caps(q, &create->capabilities);
->> -       clear_consistency_attr(q, create->memory, &create->flags);
->>          create->index = q->num_buffers;
->>          if (create->count == 0)
->>                  return ret != -EBUSY ? ret : 0;
->> @@ -998,7 +988,6 @@ int vb2_ioctl_reqbufs(struct file *file, void *priv,
->>          int res = vb2_verify_memory_type(vdev->queue, p->memory, p->type);
->>
->>          fill_buf_caps(vdev->queue, &p->capabilities);
->> -       clear_consistency_attr(vdev->queue, p->memory, &p->flags);
->>          if (res)
->>                  return res;
->>          if (vb2_queue_is_busy(vdev, file))
->> @@ -1021,7 +1010,6 @@ int vb2_ioctl_create_bufs(struct file *file, void *priv,
->>
->>          p->index = vdev->queue->num_buffers;
->>          fill_buf_caps(vdev->queue, &p->capabilities);
->> -       clear_consistency_attr(vdev->queue, p->memory, &p->flags);
->>          /*
->>           * If count == 0, then just check if memory and type are valid.
->>           * Any -EBUSY result from vb2_verify_memory_type can be mapped to 0.
->> diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
->> index 52ef92049073e3..4c7f25b07e9375 100644
->> --- a/include/media/videobuf2-core.h
->> +++ b/include/media/videobuf2-core.h
->> @@ -744,8 +744,7 @@ void vb2_core_querybuf(struct vb2_queue *q, unsigned int index, void *pb);
->>    * vb2_core_reqbufs() - Initiate streaming.
->>    * @q:         pointer to &struct vb2_queue with videobuf2 queue.
->>    * @memory:    memory type, as defined by &enum vb2_memory.
->> - * @flags:     auxiliary queue/buffer management flags. Currently, the only
->> - *             used flag is %V4L2_FLAG_MEMORY_NON_CONSISTENT.
->> + * @flags:     auxiliary queue/buffer management flags.
->>    * @count:     requested buffer count.
->>    *
->>    * Videobuf2 core helper to implement VIDIOC_REQBUF() operation. It is called
->> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
->> index c7b70ff53bc1dd..5c00f63d9c1b58 100644
->> --- a/include/uapi/linux/videodev2.h
->> +++ b/include/uapi/linux/videodev2.h
->> @@ -191,8 +191,6 @@ enum v4l2_memory {
->>          V4L2_MEMORY_DMABUF           = 4,
->>   };
->>
->> -#define V4L2_FLAG_MEMORY_NON_CONSISTENT                (1 << 0)
->> -
->>   /* see also http://vektor.theorem.ca/graphics/ycbcr/ */
->>   enum v4l2_colorspace {
->>          /*
->> --
->> 2.28.0
->>
->> _______________________________________________
->> iommu mailing list
->> iommu@lists.linux-foundation.org
->> https://lists.linuxfoundation.org/mailman/listinfo/iommu
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+-- 
+Sincerely yours,
+Mike.
