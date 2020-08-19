@@ -2,80 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 830E8249706
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D4F249700
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727870AbgHSHVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 03:21:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54202 "EHLO mx2.suse.de"
+        id S1727820AbgHSHUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 03:20:36 -0400
+Received: from muru.com ([72.249.23.125]:40968 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727849AbgHSHVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 03:21:04 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 804ADB5C3;
-        Wed, 19 Aug 2020 07:21:26 +0000 (UTC)
-Subject: Re: [PATCH] efi: discover ESRT table on Xen PV too
-To:     =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>
-Cc:     =?UTF-8?Q?Marek_Marczykowski-G=c3=b3recki?= 
-        <marmarek@invisiblethingslab.com>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
-        norbert.kaminski@3mdeb.com, xen-devel@lists.xenproject.org,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200816001949.595424-1-marmarek@invisiblethingslab.com>
- <20200817090013.GN975@Air-de-Roger> <20200818120135.GK1679@mail-itl>
- <20200818124710.GK828@Air-de-Roger>
-From:   Jan Beulich <jbeulich@suse.com>
-Message-ID: <c04fd081-2a13-93bb-fa0b-f9781062fb58@suse.com>
-Date:   Wed, 19 Aug 2020 09:20:59 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726951AbgHSHUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 03:20:33 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id EFC9C8107;
+        Wed, 19 Aug 2020 07:20:32 +0000 (UTC)
+Date:   Wed, 19 Aug 2020 10:21:01 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     paul@pwsan.com, linux@armlinux.org.uk, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for v5.9] ARM: OMAP2+: hwmod: Replace HTTP links with
+ HTTPS ones
+Message-ID: <20200819072101.GZ2994@atomide.com>
+References: <20200719090903.57207-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-In-Reply-To: <20200818124710.GK828@Air-de-Roger>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200719090903.57207-1-grandmaster@al2klimov.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.08.2020 14:47, Roger Pau Monné wrote:
-> On Tue, Aug 18, 2020 at 02:01:35PM +0200, Marek Marczykowski-Górecki wrote:
->> On Mon, Aug 17, 2020 at 11:00:13AM +0200, Roger Pau Monné wrote:
->>> On Sun, Aug 16, 2020 at 02:19:49AM +0200, Marek Marczykowski-Górecki wrote:
->>>> In case of Xen PV dom0, Xen passes along info about system tables (see
->>>> arch/x86/xen/efi.c), but not the memory map from EFI.
->>>
->>> I think that's because the memory map returned by
->>> XENMEM_machine_memory_map is in e820 form, and doesn't contain the
->>> required information about the EFI regions due to the translation done
->>> by efi_arch_process_memory_map in Xen?
->>
->> Yes, I think so.
->>
->>>> This makes sense
->>>> as it is Xen responsible for managing physical memory address space.
->>>> In this case, it doesn't make sense to condition using ESRT table on
->>>> availability of EFI memory map, as it isn't Linux kernel responsible for
->>>> it.
->>>
->>> PV dom0 is kind of special in that regard as it can create mappings to
->>> (almost) any MMIO regions, and hence can change it's memory map
->>> substantially.
->>
->> Do you mean PV dom0 should receive full EFI memory map? Jan already
->> objected this as it would be a layering violation.
-> 
-> dom0 is already capable of getting the native e820 memory map using
-> XENMEM_machine_memory_map, I'm not sure why allowing to return the
-> memory map in EFI form would be any different (or a layering
-> violation in the PV dom0 case).
+* Alexander A. Klimov <grandmaster@al2klimov.de> [200719 12:09]:
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
 
-The EFI memory map exposes more information than the E820 one, and
-this extra information should remain private to Xen if at all
-possible. I actually think that exposing the raw E820 map was a
-layering violation, too. Instead hypercalls should have been added
-for the specific legitimate uses that Dom0 may have for the memmap.
+Thanks applying into omap-for-v5.10/soc.
 
-Jan
+Tony
