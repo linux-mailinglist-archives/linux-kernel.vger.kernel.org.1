@@ -2,111 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA4324A11A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 16:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0689F24A122
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 16:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728576AbgHSOEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 10:04:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728479AbgHSODu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 10:03:50 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D0FAC061383
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 07:03:46 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id i20so7430267qkk.8
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 07:03:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g6uVxpmjtJrh49bROR/GEwsOKP2TcklwbBBYVDi6akw=;
-        b=k40ZfWjhNmOpU2w4xEJdm6hYDexLqDT/XT/LZhLcfGTms42rQmhxdYak5ItY+rLPAz
-         YE6o6c69VVxhMZQ8PrAU7Lf3yYPZeUa8Y8VIi1vzNWmB+IuDu+YnHG8rEqkaodSJ89tI
-         QKGsuWe7VZu4zUwr9Jq+nJjCtUfmsMBCgNTXbwvqY4Gt3+meRIVaKm5OiwnG2+XhezGn
-         15vK/bG82LdWRR2CCQbuImgrbBwkXcXHROOa+he4ZIH944XGveontqahgE+lmKX61azb
-         cgGwtr+7TZhOjl/67qnhlIItNmjd4f2MxemxLUK+yItzvbfGS/ID51nularJ2zC/s02z
-         MLCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g6uVxpmjtJrh49bROR/GEwsOKP2TcklwbBBYVDi6akw=;
-        b=FbYjABoNA1jIWMVqKzpKjEsNTbcSm8WLtPoczahcEbCJxC4mUqYmHvNQgTAoRzP+2l
-         ZUSrPH4enR0iddEC9R0sQGAMQR5xYxhZaUNp06uf0kl7T4NdPN9LRukJEMJmb1S0i5dR
-         /ki5k1/bkx7vh+453oc16SmG0j9uDzr4fie752TFFJn5HQHvSP4bLHB89pnjeJbMIJkh
-         eURp0ikmJB4AXwE2+Mqz0E349qL07TcPgZz95JOdDUSOFCkxdtpXXb8zPNw0YhgYCW9/
-         6DXXnWcwW2Pro5mXjXbXszaIPOMxXdm6tcmdMDVg1AKXSNJz2WddZBk5orMzKlM+7RSf
-         foFA==
-X-Gm-Message-State: AOAM532y3YA5rAG3LaIVBWGWLta9OAtUSaiQjcM1Wz1emR3h35lOTjqC
-        AscRTZVxvkVbbY42vsWdP89vv/dnW9I5FqcAwIwCIg==
-X-Google-Smtp-Source: ABdhPJzTU07eK90u56ieNkfWEiPbP/yb2qqk/uvaOdJWRiNqHdKO0nVyVmzZ2bxLFNkDl7vPDYck14pkaFJl67yPxyY=
-X-Received: by 2002:a05:620a:15c9:: with SMTP id o9mr17316392qkm.8.1597845824618;
- Wed, 19 Aug 2020 07:03:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <000000000000568fc005ad3b57c3@google.com>
-In-Reply-To: <000000000000568fc005ad3b57c3@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 19 Aug 2020 16:03:33 +0200
-Message-ID: <CACT4Y+bxvHp9gq_OEBAYdMTsm9vxw3CuviuDpxHCXcZHv_A0nw@mail.gmail.com>
-Subject: Re: unregister_netdevice: waiting for DEV to become free (4)
-To:     syzbot <syzbot+df400f2f24a1677cd7e0@syzkaller.appspotmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728652AbgHSOFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 10:05:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:37978 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728625AbgHSOFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 10:05:21 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A0B861045;
+        Wed, 19 Aug 2020 07:05:20 -0700 (PDT)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0FF3F3F71F;
+        Wed, 19 Aug 2020 07:05:19 -0700 (PDT)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     broonie@kernel.org, cristian.marussi@arm.com
+Subject: [PATCH] regulator: core: add of_match_full_name boolean flag
+Date:   Wed, 19 Aug 2020 15:04:48 +0100
+Message-Id: <20200819140448.51373-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 3:54 PM syzbot
-<syzbot+df400f2f24a1677cd7e0@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    18445bf4 Merge tag 'spi-fix-v5.9-rc1' of git://git.kernel...
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1710d97a900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=bb68b9e8a8cc842f
-> dashboard link: https://syzkaller.appspot.com/bug?extid=df400f2f24a1677cd7e0
-> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15859986900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1228fea1900000
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+df400f2f24a1677cd7e0@syzkaller.appspotmail.com
->
-> unregister_netdevice: waiting for lo to become free. Usage count = 1
+When an .of_match non-null string is defined in struct regulator_desc, the
+regulator core searches for regulators trying to match, at first, such
+string against the 'regulator-compatible' property and then falls back to
+use the name of the node itself.
 
-Based on the repro, it looks bpf/bpf link related:
+Property 'regulator-compatible' is now deprecated (even if still widely
+used in the code base), and the node-name fallback works fine only as long
+as the nodes are named in an unique way; if it makes sense to use a common
+name and identifying them using an index through a 'reg' property the
+standard advices to use a naming in the form <common-name>@<unit>.
 
-syz_emit_ethernet(0x86, &(0x7f0000000000)={@local, @empty=[0x2],
-@void, {@ipv4={0x800, @udp={{0x5, 0x4, 0x0, 0x0, 0x78, 0x0, 0x0, 0x0,
-0x11, 0x0, @empty, @empty}, {0x0, 0x1b59, 0x64, 0x0,
-@wg=@response={0x5, 0x0, 0x0, "020000010865390406030500000000010900",
-"9384bbeb3018ad591b661fe808b21b77",
-{"694c875dfb1be5d2a0057a62022a1564",
-"a329d3a73b8268129e5fa4316a5d8c69"}}}}}}}, 0x0)
-mkdirat(0xffffffffffffff9c, &(0x7f0000000000)='./file0\x00', 0x0)
-mount(0x0, &(0x7f0000000080)='./file0\x00',
-&(0x7f0000000040)='cgroup2\x00', 0x0, 0x0)
-r0 = openat$cgroup_root(0xffffffffffffff9c, &(0x7f0000000000), 0x200002, 0x0)
-r1 = bpf$PROG_LOAD(0x5, &(0x7f0000000080)={0x9, 0x4,
-&(0x7f0000000000)=@framed={{}, [@alu={0x8000000201a7f19, 0x0, 0x6,
-0x2, 0x1}]}, &(0x7f0000000100)='GPL\x00', 0x0, 0x0, 0x0, 0x0, 0x0, [],
-0x0, 0x0, 0xffffffffffffffff, 0x8, 0x0, 0x0, 0x10, 0x0}, 0x70)
-bpf$BPF_LINK_CREATE(0x1c, &(0x7f0000000100)={r1, r0, 0x2}, 0x10)
+In this case the above matching mechanism based on the simple (common) name
+will fail and the only viable alternative would be to properly define the
+deprecrated 'regulator-compatible' property equal to the full name
+<common-name>@<unit>.
 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
+In order to address this case without using such deprecated property,
+define a new boolean flag .of_match_full_name in struct regulator_desc to
+force the core to match against the node full-name instead.
+
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+---
+ drivers/regulator/of_regulator.c | 3 ++-
+ include/linux/regulator/driver.h | 3 +++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/regulator/of_regulator.c b/drivers/regulator/of_regulator.c
+index 06c0b15fe4c0..f60cb0093b40 100644
+--- a/drivers/regulator/of_regulator.c
++++ b/drivers/regulator/of_regulator.c
+@@ -414,7 +414,8 @@ device_node *regulator_of_get_init_node(struct device *dev,
+ 	for_each_available_child_of_node(search, child) {
+ 		name = of_get_property(child, "regulator-compatible", NULL);
+ 		if (!name)
+-			name = child->name;
++			name = !desc->of_match_full_name ?
++				child->name : child->full_name;
+ 
+ 		if (!strcmp(desc->of_match, name)) {
+ 			of_node_put(search);
+diff --git a/include/linux/regulator/driver.h b/include/linux/regulator/driver.h
+index 8539f34ae42b..5d9b011fcef6 100644
+--- a/include/linux/regulator/driver.h
++++ b/include/linux/regulator/driver.h
+@@ -223,6 +223,8 @@ enum regulator_type {
+  * @name: Identifying name for the regulator.
+  * @supply_name: Identifying the regulator supply
+  * @of_match: Name used to identify regulator in DT.
++ * @of_match_full_name: A flag to indicate that the of_match string, if
++ *			present, should be matched against the node full_name.
+  * @regulators_node: Name of node containing regulator definitions in DT.
+  * @of_parse_cb: Optional callback called only if of_match is present.
+  *               Will be called for each regulator parsed from DT, during
+@@ -314,6 +316,7 @@ struct regulator_desc {
+ 	const char *name;
+ 	const char *supply_name;
+ 	const char *of_match;
++	bool of_match_full_name;
+ 	const char *regulators_node;
+ 	int (*of_parse_cb)(struct device_node *,
+ 			    const struct regulator_desc *,
+-- 
+2.17.1
+
