@@ -2,178 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A0ED2491D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 02:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D6A2491DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 02:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726834AbgHSAfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 20:35:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33752 "EHLO
+        id S1726938AbgHSAid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 20:38:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725554AbgHSAfN (ORCPT
+        with ESMTP id S1725554AbgHSAic (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 20:35:13 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA35C061389
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 17:35:12 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id j21so10523392pgi.9
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 17:35:12 -0700 (PDT)
+        Tue, 18 Aug 2020 20:38:32 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56AA2C061389
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 17:38:30 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id m22so23435109ljj.5
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 17:38:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Ir9zlPRO6ulJkS1ClGP8dughvLjcHTwT51vNND8Agxc=;
-        b=W5MxTVC3sdRTyvcpiy1o/54gA5IyInv/kudLtDP1IqKXBAuWYQwUkMQ9gGSGFr8dMd
-         BM+mRIzVYnr4bIvOPf6Q72yYuhWFUovSu2RfYT3r5hq14aHyr6Ureusp8dfSBTXGF8Hj
-         8peQzUxB7eStbNI8LbQswBQyA+pNtFP2HV2/8=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yd8RQiYd3lIlnveKq9AD3vAUL0UPw0snW7rgN+Ot8+A=;
+        b=YWKYVyFKZKU8Du8+0eku2p5ObHZXJkU0CbMfnVxdCIL9RSlgf5EBwXe+dKU14eyYUO
+         +iL7GeDnuanZIJgxOkMR4E8EbAjyPFiGvW6/wCGigLTZ8AKm6yL1sM1IyuikinZ8PyH4
+         d20kY/3xnxM/f+cb3jcvtnmo+t0BTkuumJlJ4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Ir9zlPRO6ulJkS1ClGP8dughvLjcHTwT51vNND8Agxc=;
-        b=lGPeI/tVImRDtZlPIY2SC+8VkKNbPmzUle8G+jTtwpnNsxr5gi4UJ/PQphoBNBzvxR
-         VILTc3RqasHg/G1fL9TfKih5aRhTXCE2hHzRajeLiryING5X/rUsPDJ1pcz0QLVEoqSH
-         zSntj52Zf15XBRvJexr16vZjKMrjqS8kZPtGGKcdLk02aLGsU5ZX/C87nH9jyj873Vg8
-         nZTWuC8Kji8skgqe4QbtvvSaSiftQKbxFch4rpooGZvlYw/f1tvfb8or7S6XecVzL6Nk
-         8Lwh+71UCxMt+eDnFgshm87xcKME4UpIEbsdlpi+/cebxXlh7EW5XaWxSRcfP5M1T7Ac
-         o4Xw==
-X-Gm-Message-State: AOAM531drWMKpDxpLza5phiT2FsuwbdUCEWXrfL0V0KKuuwVNuoUzyPx
-        ae/PmQDCMSUX75i1UB1W2fb31w==
-X-Google-Smtp-Source: ABdhPJwvEbS0unsXE4XYp2rnebRdk2moAa3ndhaXogLwKqpVvI9vErUTsHldOxLqvjrSUBishRYq9Q==
-X-Received: by 2002:a65:60cb:: with SMTP id r11mr15283051pgv.131.1597797311342;
-        Tue, 18 Aug 2020 17:35:11 -0700 (PDT)
-Received: from [10.136.13.65] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id f89sm1061044pjg.5.2020.08.18.17.35.07
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yd8RQiYd3lIlnveKq9AD3vAUL0UPw0snW7rgN+Ot8+A=;
+        b=l7IC0Hk2E7I12CE3qAApV33qU21MjqEhWd+JDo5yjkcHFkYube5tEyL993WRNIG5Sr
+         vNx2nOL9n73oT31En0FGG9UJMkkIQnXaRtdsS/Csm7N2/qOgsq9CeWR55GEpx8+2UFsY
+         Wl90FvgrSoz0BgQcVPxXE/0ZNdwhfVhiuNEc+UgkUgMU6drlPasf6i9f5RWIFUQ9RpRx
+         Jblq2/vUEh2a/hOycnKUzQ2LR+3UsyjDUfYDq8lOsoiiqTgYFCVqv/0IHbj85g/I78LR
+         FjDIn7JAsPDw0MyeJdGVV+XuQ5R8+95ootTok4H1fB4MmtJWpakk2CFYyo47deWrwaYr
+         PPgQ==
+X-Gm-Message-State: AOAM533ErZ8y5BbtCGA+jOYz5OfO1PPUANtuo4PjBQ8F4NT6N0RIX5Wm
+        r8yeqlNi12/mR/nUAai0BSBdP7hDViM/iA==
+X-Google-Smtp-Source: ABdhPJx/I6cohcq+yOufm83M6qFgbl4iSzmBSr3LE+VrzmwkVqTqx7EqzYw8Ew/DXqMhWtzpuwykQA==
+X-Received: by 2002:a2e:98ce:: with SMTP id s14mr10144964ljj.358.1597797508207;
+        Tue, 18 Aug 2020 17:38:28 -0700 (PDT)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id f3sm6417860ljo.81.2020.08.18.17.38.26
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Aug 2020 17:35:10 -0700 (PDT)
-Subject: Re: [PATCH v2 1/3] bcm-vk: add bcm_vk UAPI
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com
-References: <20200806004631.8102-1-scott.branden@broadcom.com>
- <20200806004631.8102-2-scott.branden@broadcom.com>
- <20200818135313.GB495837@kroah.com>
- <8894c3c4-4d5c-cb94-bc90-a26833ebf268@broadcom.com>
- <20200818174451.GA749919@kroah.com>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <4adbd70e-c49b-c2d4-84c7-5e910f05e449@broadcom.com>
-Date:   Tue, 18 Aug 2020 17:35:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 18 Aug 2020 17:38:27 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id t23so23480424ljc.3
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 17:38:26 -0700 (PDT)
+X-Received: by 2002:a2e:7615:: with SMTP id r21mr10229382ljc.371.1597797506311;
+ Tue, 18 Aug 2020 17:38:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200818174451.GA749919@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-CA
+References: <20200817161132.GA4711@amd>
+In-Reply-To: <20200817161132.GA4711@amd>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 18 Aug 2020 17:38:10 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh6_eWwvpL=AhOeY0btf_dkpu+0joNzPZWfbBWgAeAhMA@mail.gmail.com>
+Message-ID: <CAHk-=wh6_eWwvpL=AhOeY0btf_dkpu+0joNzPZWfbBWgAeAhMA@mail.gmail.com>
+Subject: Re: 5.9-rc1: graphics regression moved from -next to mainline
+To:     Pavel Machek <pavel@ucw.cz>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Ping on this?
 
+The code disassembles to
 
-On 2020-08-18 10:44 a.m., Greg Kroah-Hartman wrote:
-> On Tue, Aug 18, 2020 at 10:23:42AM -0700, Scott Branden wrote:
->> Hi Greg,
->>
->> On 2020-08-18 6:53 a.m., Greg Kroah-Hartman wrote:
->>> On Wed, Aug 05, 2020 at 05:46:29PM -0700, Scott Branden wrote:
->>>> Add user space api for bcm-vk driver.
->>>>
->>>> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
->>>> ---
->>>>  include/uapi/linux/misc/bcm_vk.h | 99 ++++++++++++++++++++++++++++++++
->>>>  1 file changed, 99 insertions(+)
->>>>  create mode 100644 include/uapi/linux/misc/bcm_vk.h
->>>>
->>>> diff --git a/include/uapi/linux/misc/bcm_vk.h b/include/uapi/linux/misc/bcm_vk.h
->>>> new file mode 100644
->>>> index 000000000000..783087b7c31f
->>>> --- /dev/null
->>>> +++ b/include/uapi/linux/misc/bcm_vk.h
->>>> @@ -0,0 +1,99 @@
->>>> +/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-2-Clause) */
->>>> +/*
->>>> + * Copyright 2018-2020 Broadcom.
->>>> + */
->>>> +
->>>> +#ifndef __UAPI_LINUX_MISC_BCM_VK_H
->>>> +#define __UAPI_LINUX_MISC_BCM_VK_H
->>>> +
->>>> +#include <linux/ioctl.h>
->>>> +#include <linux/types.h>
->>>> +
->>>> +#define BCM_VK_MAX_FILENAME 64
->>>> +
->>>> +struct vk_image {
->>>> +	__u32 type; /* Type of image */
->>>> +#define VK_IMAGE_TYPE_BOOT1 1 /* 1st stage (load to SRAM) */
->>>> +#define VK_IMAGE_TYPE_BOOT2 2 /* 2nd stage (load to DDR) */
->>>> +	char filename[BCM_VK_MAX_FILENAME]; /* Filename of image */
->>>> +};
->>>> +
->>>> +struct vk_reset {
->>>> +	__u32 arg1;
->>>> +	__u32 arg2;
->>>> +};
->>>> +
->>>> +#define VK_MAGIC		0x5e
->>>> +
->>>> +/* Load image to Valkyrie */
->>>> +#define VK_IOCTL_LOAD_IMAGE	_IOW(VK_MAGIC, 0x2, struct vk_image)
->>>> +
->>>> +/* Send Reset to Valkyrie */
->>>> +#define VK_IOCTL_RESET		_IOW(VK_MAGIC, 0x4, struct vk_reset)
->>>> +
->>>> +/*
->>>> + * message block - basic unit in the message where a message's size is always
->>>> + *		   N x sizeof(basic_block)
->>>> + */
->>>> +struct vk_msg_blk {
->>>> +	__u8 function_id;
->>>> +#define VK_FID_TRANS_BUF	5
->>>> +#define VK_FID_SHUTDOWN		8
->>>> +	__u8 size;
->>>> +	__u16 trans_id; /* transport id, queue & msg_id */
->>>> +	__u32 context_id;
->>>> +	__u32 args[2];
->>>> +#define VK_CMD_PLANES_MASK	0x000f /* number of planes to up/download */
->>>> +#define VK_CMD_UPLOAD		0x0400 /* memory transfer to vk */
->>>> +#define VK_CMD_DOWNLOAD		0x0500 /* memory transfer from vk */
->>>> +#define VK_CMD_MASK		0x0f00 /* command mask */
->>>> +};
->>>> +
->>>> +#define VK_BAR_FWSTS			0x41c
->>>> +#define VK_BAR_COP_FWSTS		0x428
->>>> +/* VK_FWSTS definitions */
->>>> +#define VK_FWSTS_RELOCATION_ENTRY	BIT(0)
->>> <snip>
->>>
->>> I thought BIT() was not allowed in uapi .h files, this really works
->>> properly???
->> I did some investigation and it looks like a few other header files in include/uapi also use the BIT() macro:
->> include/uapi/misc/uacce/uacce.h
->> include/uapi/linux/psci.h
->> include/uapi/linux/v4l2-subdev.h
-> Does the header install test target now fail for these?
-I do not understand the question above.  make headers_install works.
-But I guess the above headers would have similar issue with the BIT macro.
->
->> tools/include/uapi/linux/pkt_sched.h
-> That doesn't count :)
->
->> It does look like we end up defining the BIT() macro in our user space app that includes the header file.
->>
->> So, what is the proper thing to be done?
->> 1) Move the BIT() macro somewhere in include/uapi and include it in the necessary header files
->> 2) Use the _BITUL macro in include/uapi/linux/const.h instead?
->> 3) something else?
-> open-code it for now please, that's the best way as I am pretty sure we
-> can not contaminate the global C namespace with out BIT() macro, no
-> matter how much we would like to...
-OK, I will open-code it instead.
->
-> thanks,
->
-> greg k-h
+  24: 8b 85 d0 fd ff ff    mov    -0x230(%ebp),%eax
+  2a:* c7 03 01 00 40 10    movl   $0x10400001,(%ebx) <-- trapping instruction
+  30: 89 43 04              mov    %eax,0x4(%ebx)
+  33: 8b 85 b4 fd ff ff    mov    -0x24c(%ebp),%eax
+  39: 89 43 08              mov    %eax,0x8(%ebx)
+  3c: e9                    jmp ...
 
+which looks like is one of the cases in __reloc_entry_gpu(). I *think*
+it's this one:
+
+        } else if (gen >= 3 &&
+                   !(IS_I915G(eb->i915) || IS_I915GM(eb->i915))) {
+                *batch++ = MI_STORE_DWORD_IMM | MI_MEM_VIRTUAL;
+                *batch++ = addr;
+                *batch++ = target_addr;
+
+where that "batch" pointer is 0xf8601000, so it looks like it just
+overflowed into the next page that isn't there.
+
+The cleaned-up call trace is
+
+  drm_ioctl+0x1f4/0x38b ->
+    drm_ioctl_kernel+0x87/0xd0 ->
+      i915_gem_execbuffer2_ioctl+0xdd/0x360 ->
+        i915_gem_do_execbuffer+0xaab/0x2780 ->
+          eb_relocate_vma
+
+but there's a lot of inling going on, so..
+
+The obvious suspect is commit 9e0f9464e2ab ("drm/i915/gem: Async GPU
+relocations only") but that's going purely by "that seems to be the
+main relocation change this mmrge window".
+
+                     Linus
+
+On Mon, Aug 17, 2020 at 9:11 AM Pavel Machek <pavel@ucw.cz> wrote:
+>
+> Hi!
+>
+> After about half an hour of uptime, screen starts blinking on thinkpad
+> x60 and machine becomes unusable.
+>
+> I already reported this in -next, and now it is in mainline. It is
+> 32-bit x86 system.
+>
+>
+>                                                                 Pavel
+>
+>
+> Aug 17 17:36:04 amd ovpn-castor[2828]: UDPv4 link local (bound):
+> [undef]
+> Aug 17 17:36:04 amd ovpn-castor[2828]: UDPv4 link remote:
+> [AF_INET]87.138.219.28:1194
+> Aug 17 17:36:23 amd kernel: BUG: unable to handle page fault for
+> address: f8601000
+> Aug 17 17:36:23 amd kernel: #PF: supervisor write access in kernel
+> mode
+> Aug 17 17:36:23 amd kernel: #PF: error_code(0x0002) - not-present page
+> Aug 17 17:36:23 amd kernel: *pdpt = 00000000318f2001 *pde =
+> 0000000000000000
+> Aug 17 17:36:23 amd kernel: Oops: 0002 [#1] PREEMPT SMP PTI
+> Aug 17 17:36:23 amd kernel: CPU: 1 PID: 3004 Comm: Xorg Not tainted
+> 5.9.0-rc1+ #86
+> Aug 17 17:36:23 amd kernel: Hardware name: LENOVO 17097HU/17097HU,
+> BIOS 7BETD8WW (2.19 ) 03/31
+> /2011
+> Aug 17 17:36:23 amd kernel: EIP: eb_relocate_vma+0xcf6/0xf20
+> Aug 17 17:36:23 amd kernel: Code: e9 ff f7 ff ff c7 85 c0 fd ff ff ed
+> ff ff ff c7 85 c4 fd ff
+> ff ff ff ff ff 8b 85 c0 fd ff ff e9 a5 f8 ff ff 8b 85 d0 fd ff ff <c7>
+> 03 01 00 40 10 89 43 04
+>  8b 85 b4 fd ff ff 89 43 08 e9 9f f7 ff
+>  Aug 17 17:36:23 amd kernel: EAX: 003c306c EBX: f8601000 ECX: 00847000
+>  EDX: 00000000
+>  Aug 17 17:36:23 amd kernel: ESI: 00847000 EDI: 00000000 EBP: f1947c68
+>  ESP: f19479fc
+>  Aug 17 17:36:23 amd kernel: DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS:
+>  0068 EFLAGS: 00210246
+>  Aug 17 17:36:23 amd kernel: CR0: 80050033 CR2: f8601000 CR3: 31a1e000
+>  CR4: 000006b0
+>  Aug 17 17:36:23 amd kernel: Call Trace:
+>  Aug 17 17:36:23 amd kernel: ? i915_vma_pin+0xc5/0x8c0
+>  Aug 17 17:36:23 amd kernel: ? __mutex_unlock_slowpath+0x2b/0x280
+>  Aug 17 17:36:23 amd kernel: ? __active_retire+0x7e/0xd0
+>  Aug 17 17:36:23 amd kernel: ? mutex_unlock+0xb/0x10
+>  Aug 17 17:36:23 amd kernel: ? i915_vma_pin+0xc5/0x8c0
+>  Aug 17 17:36:23 amd kernel: ? __lock_acquire.isra.31+0x261/0x530
+>  Aug 17 17:36:23 amd kernel: ? eb_lookup_vmas+0x1f5/0x9e0
+>  Aug 17 17:36:23 amd kernel: i915_gem_do_execbuffer+0xaab/0x2780
+>  Aug 17 17:36:23 amd kernel: ? _raw_spin_unlock_irqrestore+0x27/0x40
+>  Aug 17 17:36:23 amd kernel: ? __lock_acquire.isra.31+0x261/0x530
+>  Aug 17 17:36:23 amd kernel: ? __lock_acquire.isra.31+0x261/0x530
+>  Aug 17 17:36:23 amd kernel: ? kvmalloc_node+0x69/0x70
+>  Aug 17 17:36:23 amd kernel: i915_gem_execbuffer2_ioctl+0xdd/0x360
+>  Aug 17 17:36:23 amd kernel: ? i915_gem_execbuffer_ioctl+0x2b0/0x2b0
+>  Aug 17 17:36:23 amd kernel: drm_ioctl_kernel+0x87/0xd0
+>  Aug 17 17:36:23 amd kernel: drm_ioctl+0x1f4/0x38b
+>  Aug 17 17:36:23 amd kernel: ? i915_gem_execbuffer_ioctl+0x2b0/0x2b0
+>  Aug 17 17:36:23 amd kernel: ? posix_get_monotonic_timespec+0x1c/0x90
+>  Aug 17 17:36:23 amd kernel: ? ktime_get_ts64+0x7a/0x1e0
+>  Aug 17 17:36:23 amd kernel: ? drm_ioctl_kernel+0xd0/0xd0
+>  Aug 17 17:36:23 amd kernel: __ia32_sys_ioctl+0x1ad/0x799
+>  Aug 17 17:36:23 amd kernel: ? debug_smp_processor_id+0x12/0x20
+>  Aug 17 17:36:23 amd kernel: ? exit_to_user_mode_prepare+0x4f/0x100
+>  Aug 17 17:36:23 amd kernel: do_int80_syscall_32+0x2c/0x40
+>  Aug 17 17:36:23 amd kernel: entry_INT80_32+0x111/0x111
+>  Aug 17 17:36:23 amd kernel: EIP: 0xb7fbc092
+>  Aug 17 17:36:23 amd kernel: Code: 00 00 00 e9 90 ff ff ff ff a3 24 00
+>  00 00 68 30 00 00 00 e9 80 ff ff ff ff a3 e8 ff ff ff 66 90 00 00 00
+>  00 00 00 00 00 cd 80 <c3> 8d b4 26 00 00 00 00 8d b6 00 00 00 00 8b
+>  1c 24 c3 8d b4 26 00
+>  Aug 17 17:36:23 amd kernel: EAX: ffffffda EBX: 0000000a ECX: c0406469
+>  EDX: bff0ae3c
+>  Aug 17 17:36:23 amd kernel: ESI: b73aa000 EDI: c0406469 EBP: 0000000a
+>  ESP: bff0adb4
+>  Aug 17 17:36:23 amd kernel: DS: 007b ES: 007b FS: 0000 GS: 0033 SS:
+>  007b EFLAGS: 00200296
+>  Aug 17 17:36:23 amd kernel: ? asm_exc_nmi+0xcc/0x2bc
+>  Aug 17 17:36:23 amd kernel: Modules linked in:
+>  Aug 17 17:36:23 amd kernel: CR2: 00000000f8601000
+>  Aug 17 17:36:23 amd kernel: ---[ end trace 2ca9775068bbac06 ]---
+>
+> --
+> (english) http://www.livejournal.com/~pavelmachek
+> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
