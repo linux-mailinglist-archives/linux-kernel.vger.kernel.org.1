@@ -2,78 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 846A024994B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 11:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C6F249953
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 11:28:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726967AbgHSJ1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 05:27:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726110AbgHSJ1B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 05:27:01 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10DD5C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 02:27:00 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id t14so1430041wmi.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 02:26:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lVH13tdAzC6mW/dwhV6wM3c3cw0w+EwXAkE9fSxw6kk=;
-        b=LiXoJqDEZa5lyE4ikb0YCl1GOpEyvF7YoJVZ3kOe+9PbwXYwTgsNunyBrTmnHpcwLS
-         AycdLYrvYIpvnEsRb768v0N/KWszt83KWkhoZzXjI3eH1VMUG6mbDoqEFLy1K6QxIMOC
-         1hVDWDu2nR1b+z89w6enM8EpzLNUN4QnBB2IY0SBnjvjtVM2P10D5cIoDVZgXGJh4GaL
-         j5U8omvfmoAHsNIrqNSuho6gPySbtyWgNfmPBHhew2sO50S7vkaRhIOltkVWhPE00LHW
-         0dxpLaSf4HgAo7voQQH0d2vcYfSwwFPXR98OGRdl9b6DxcDSL5Yt1dBGtfj1NMg51NKL
-         49Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lVH13tdAzC6mW/dwhV6wM3c3cw0w+EwXAkE9fSxw6kk=;
-        b=J+6TSS+ZngdlJFJaWT2bVrK9/ZKBaPAgUwRP8yfPAxHI68k/D8TegszJ+kRCvS2rq9
-         aECzUouQ5BeOt6bBrFG9ugUI9gPftVsUL8XK7SmDyjvts/ETam/XCTAEdHGNmIBlxn1C
-         uS56rN9WKeuStLDVz0o2BeM9NmNfrumqQckzpxAK9CMAloBnjLYBRiGgP26aReOUdQ5n
-         eVsTcW54vrxugSsuDsK2yDnA540d6y1dsdu6Fmy+ZCFtOhfQtB4rhwbPnoiWW/DR5Ypf
-         REku43/9gYWMQdNSDG6TbHxr5Y82zetIFX/49ESoT/HukOF/5IUZHgEmVF3bKCUNaXHd
-         ZH9Q==
-X-Gm-Message-State: AOAM533+ED3LoVPyeWZRsyIbYH3NbYo8tyEQryIZkx+Btj3EXa4YVpyT
-        7550qhclTEzA5orszVu/mTa98xCu+No9XplOfW8=
-X-Google-Smtp-Source: ABdhPJw+vfNm6gcyC15QGjAi/+l7apLAwW4FOchrK0YZEt7izxf65sSx5B4ycnxIWcXGiEbZh+MIcEEgwnJLJgGiw2I=
-X-Received: by 2002:a1c:32c3:: with SMTP id y186mr3986004wmy.15.1597829216005;
- Wed, 19 Aug 2020 02:26:56 -0700 (PDT)
+        id S1727116AbgHSJ2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 05:28:14 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9847 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726835AbgHSJ2O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 05:28:14 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id BF2C8A8F87271B5DAD12;
+        Wed, 19 Aug 2020 17:28:10 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Wed, 19 Aug 2020
+ 17:28:03 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <bfields@fieldses.org>, <chuck.lever@oracle.com>
+CC:     <linux-nfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] nfsd: Convert to use the preferred fallthrough macro
+Date:   Wed, 19 Aug 2020 05:26:58 -0400
+Message-ID: <20200819092658.35504-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-References: <20200818052936.10995-1-joshi.k@samsung.com> <CGME20200818053252epcas5p4ee61d64bba5f6a131105e40330984f5e@epcas5p4.samsung.com>
- <20200818052936.10995-2-joshi.k@samsung.com> <20200818071141.GA2544@lst.de>
-In-Reply-To: <20200818071141.GA2544@lst.de>
-From:   Kanchan Joshi <joshiiitr@gmail.com>
-Date:   Wed, 19 Aug 2020 14:56:29 +0530
-Message-ID: <CA+1E3rJg0QOX4YgwWJf8Sm=6C-un4TsRX00E31fbFFPT9LYhXg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] nvme: set io-scheduler requirement for ZNS
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Kanchan Joshi <joshi.k@samsung.com>, Jens Axboe <axboe@kernel.dk>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>, sagi@grimberg.me,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        Keith Busch <kbusch@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 12:46 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Tue, Aug 18, 2020 at 10:59:35AM +0530, Kanchan Joshi wrote:
-> > Set elevator feature ELEVATOR_F_ZBD_SEQ_WRITE required for ZNS.
->
-> No, it is not.
+Convert the uses of fallthrough comments to fallthrough macro.
 
-Are you saying MQ-Deadline (write-lock) is not needed for writes on ZNS?
-I see that null-block zoned and SCSI-ZBC both set this requirement. I
-wonder how it became different for NVMe.
+Signed-off-by: Hongxiang Lou <louhongxiang@huawei.com>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ fs/nfsd/nfs4callback.c | 2 +-
+ fs/nfsd/nfs4proc.c     | 2 +-
+ fs/nfsd/nfs4state.c    | 2 +-
+ fs/nfsd/nfsfh.c        | 2 +-
+ fs/nfsd/vfs.c          | 4 ++--
+ 5 files changed, 6 insertions(+), 6 deletions(-)
 
+diff --git a/fs/nfsd/nfs4callback.c b/fs/nfsd/nfs4callback.c
+index 7fbe9840a03e..052be5bf9ef5 100644
+--- a/fs/nfsd/nfs4callback.c
++++ b/fs/nfsd/nfs4callback.c
+@@ -1119,7 +1119,7 @@ static bool nfsd4_cb_sequence_done(struct rpc_task *task, struct nfsd4_callback
+ 		break;
+ 	case -ESERVERFAULT:
+ 		++session->se_cb_seq_nr;
+-		/* Fall through */
++		fallthrough;
+ 	case 1:
+ 	case -NFS4ERR_BADSESSION:
+ 		nfsd4_mark_cb_fault(cb->cb_clp, cb->cb_seq_status);
+diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
+index a527da3d8052..eaf50eafa935 100644
+--- a/fs/nfsd/nfs4proc.c
++++ b/fs/nfsd/nfs4proc.c
+@@ -428,7 +428,7 @@ nfsd4_open(struct svc_rqst *rqstp, struct nfsd4_compound_state *cstate,
+ 				goto out;
+ 			open->op_openowner->oo_flags |= NFS4_OO_CONFIRMED;
+ 			reclaim = true;
+-			/* fall through */
++			fallthrough;
+ 		case NFS4_OPEN_CLAIM_FH:
+ 		case NFS4_OPEN_CLAIM_DELEG_CUR_FH:
+ 			status = do_open_fhandle(rqstp, cstate, open);
+diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
+index 81ed8e8bab3f..2f77f4b66cbc 100644
+--- a/fs/nfsd/nfs4state.c
++++ b/fs/nfsd/nfs4state.c
+@@ -3117,7 +3117,7 @@ nfsd4_exchange_id(struct svc_rqst *rqstp, struct nfsd4_compound_state *cstate,
+ 		break;
+ 	default:				/* checked by xdr code */
+ 		WARN_ON_ONCE(1);
+-		/* fall through */
++		fallthrough;
+ 	case SP4_SSV:
+ 		status = nfserr_encr_alg_unsupp;
+ 		goto out_nolock;
+diff --git a/fs/nfsd/nfsfh.c b/fs/nfsd/nfsfh.c
+index 37bc8f5f4514..a0a8d27539ae 100644
+--- a/fs/nfsd/nfsfh.c
++++ b/fs/nfsd/nfsfh.c
+@@ -469,7 +469,7 @@ static bool fsid_type_ok_for_exp(u8 fsid_type, struct svc_export *exp)
+ 	case FSID_UUID16:
+ 		if (!is_root_export(exp))
+ 			return false;
+-		/* fall through */
++		fallthrough;
+ 	case FSID_UUID4_INUM:
+ 	case FSID_UUID16_INUM:
+ 		return exp->ex_uuid != NULL;
+diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
+index 7d2933b85b65..aba5af9df328 100644
+--- a/fs/nfsd/vfs.c
++++ b/fs/nfsd/vfs.c
+@@ -1456,7 +1456,7 @@ do_nfsd_create(struct svc_rqst *rqstp, struct svc_fh *fhp,
+ 					*created = true;
+ 				break;
+ 			}
+-			/* fall through */
++			fallthrough;
+ 		case NFS4_CREATE_EXCLUSIVE4_1:
+ 			if (   d_inode(dchild)->i_mtime.tv_sec == v_mtime
+ 			    && d_inode(dchild)->i_atime.tv_sec == v_atime
+@@ -1465,7 +1465,7 @@ do_nfsd_create(struct svc_rqst *rqstp, struct svc_fh *fhp,
+ 					*created = true;
+ 				goto set_attr;
+ 			}
+-			/* fall through */
++			fallthrough;
+ 		case NFS3_CREATE_GUARDED:
+ 			err = nfserr_exist;
+ 		}
 -- 
-Kanchan
+2.19.1
+
