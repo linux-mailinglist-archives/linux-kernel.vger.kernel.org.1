@@ -2,61 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 115EF2497AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62CA02497B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:50:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726879AbgHSHrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 03:47:40 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:47871 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgHSHri (ORCPT
+        id S1726949AbgHSHuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 03:50:21 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:41536 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726885AbgHSHt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 03:47:38 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1k8Iok-0002Tv-5u; Wed, 19 Aug 2020 07:47:30 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, ath11k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] ath11k: fix spelling mistake "moniter" -> "monitor"
-Date:   Wed, 19 Aug 2020 08:47:29 +0100
-Message-Id: <20200819074729.48591-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        Wed, 19 Aug 2020 03:49:59 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R411e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0U6D8MDL_1597823393;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U6D8MDL_1597823393)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 19 Aug 2020 15:49:54 +0800
+Subject: Re: [RFC PATCH v2 1/5] mm: Identify compound pages sooner in
+ isolate_migratepages_block
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     yang.shi@linux.alibaba.com, lkp@intel.com, rong.a.chen@intel.com,
+        khlebnikov@yandex-team.ru, kirill@shutemov.name, hughd@google.com,
+        linux-kernel@vger.kernel.org, daniel.m.jordan@oracle.com,
+        linux-mm@kvack.org, shakeelb@google.com, willy@infradead.org,
+        hannes@cmpxchg.org, tj@kernel.org, cgroups@vger.kernel.org,
+        akpm@linux-foundation.org, richard.weiyang@gmail.com,
+        mgorman@techsingularity.net, iamjoonsoo.kim@lge.com
+References: <20200819041852.23414.95939.stgit@localhost.localdomain>
+ <20200819042705.23414.84098.stgit@localhost.localdomain>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <660b71b7-7e4f-758d-70c8-d938dded5837@linux.alibaba.com>
+Date:   Wed, 19 Aug 2020 15:48:41 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20200819042705.23414.84098.stgit@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
 
-There is a spelling mistake in an ath11k_warn warning message. Fix it.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/wireless/ath/ath11k/debug.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+在 2020/8/19 下午12:27, Alexander Duyck 写道:
+> In addition by testing for PageCompound sooner we can avoid having the LRU
+> flag cleared and then reset in the exception case. As a result this should
+> prevent possible races where another thread might be attempting to pull the
+> LRU pages from the list.
+> 
+> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
 
-diff --git a/drivers/net/wireless/ath/ath11k/debug.c b/drivers/net/wireless/ath/ath11k/debug.c
-index 0a3cfa716390..0ba234ad99b2 100644
---- a/drivers/net/wireless/ath/ath11k/debug.c
-+++ b/drivers/net/wireless/ath/ath11k/debug.c
-@@ -1097,7 +1097,7 @@ static ssize_t ath11k_write_pktlog_filter(struct file *file,
- 						       DP_RX_BUFFER_SIZE, &tlv_filter);
- 
- 		if (ret) {
--			ath11k_warn(ab, "failed to set rx filter for moniter status ring\n");
-+			ath11k_warn(ab, "failed to set rx filter for monitor status ring\n");
- 			goto out;
- 		}
- 	}
--- 
-2.27.0
-
+Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
