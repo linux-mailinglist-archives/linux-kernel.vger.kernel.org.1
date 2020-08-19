@@ -2,141 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C9C524A60F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC9A24A61B
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726707AbgHSSfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 14:35:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60216 "EHLO
+        id S1726732AbgHSSk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 14:40:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725997AbgHSSfX (ORCPT
+        with ESMTP id S1726211AbgHSSkZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 14:35:23 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60483C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 11:35:23 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id f5so11229528plr.9
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 11:35:23 -0700 (PDT)
+        Wed, 19 Aug 2020 14:40:25 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0875C061383
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 11:40:25 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id mt12so1502499pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 11:40:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ap3wyF3ycynr5I2+EM8mbSJRoPdo5xTYvxy7Dp4qm24=;
-        b=hwETQq0wXaVfaizex/R8gHaGfoCM2GKQleOAKkwQ6JcAv+h5K3cXxq7qhaNR88U8co
-         FEOSTDj8hFl7Nxf93dGPDK9v0pc9hv61YWnrCu5cFE5CbDyUWrgeYjJqr7gNlFM2vz5n
-         iQRcXHgQJAad5F+qzfVQLAVx0mxEe0s9kpy4BjqtG9+AQhrOrIkneWE6imkC6KJhvT6I
-         2dJJqKiboeMgZevprsiOhpRtfcwJ41euOCJ6h8c/WyiZoKqAXBWB8ANhRfElKEl4JPbn
-         FqTkrr3KcwaDskmSOIJoIB290jpVhiMyK58M9iQYakKiVKXLoC1lADhUvu8WLR022+zT
-         ZMeg==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=S1EUhordtUMjel9FzBtn8TtSvL9SVNZ9uwAnsm6qFvw=;
+        b=e+mMmkTZHdUnOzUeVKsZZ9CczIEu12TU8Kve2CC8dc6MqNmTEWTaZ348q66vWBSfQF
+         GIklVGsrgvsTEi1Qo4eoBoX6yS36bEKuwLEDTe9RkBCSPbDnBBXP6W0qOW5001XEK0Qt
+         BkCV9STVWZ3StfyFgDVToDTKDhXjLPEHSiqjoDG8SYkTzLcjxMH4/00xiBfEgzz2mUTW
+         +JK9+Bh7w2UX6zSUKJnkIqT8hbNPAph1a/yxm3dqaYY30/wyoRpifLbnVPoVYkVOUGQD
+         v7S+6t27MltFWBp/vody+r29b/EGImRaMm5d0kwzHa/ke2SzSzF7lV3zpxK7bhO/2nf2
+         6Emw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ap3wyF3ycynr5I2+EM8mbSJRoPdo5xTYvxy7Dp4qm24=;
-        b=Zk3ON/Oa+pTQDAxfY3lAOel75DXUR5MxSZo8S7/owjRA4SZo2XWeeE0KrHbRkqBflt
-         cMEuNtnDq+45KJMj/Mb/7rNJ8/ancuwgUsTqkysEi6aslzAoYJ7S5jLv7u/Q5VUj4JQO
-         mBBB5XiOci3oWiI3cHGPWO/nIEkXHLEVjgHkzwZFQLtkG9JP05ZrbbiuYSG64BP87bPs
-         z3tSVDtCaeRPstyJWqeNIW7iufnk846RMjHeuJ2M5mgf4bOMLXTVLyslugSDDJ0QTFZz
-         jNoDbod8wrunp06SWupCiROJey6EOk9QKWIVh0uCQ242O6Mf19a1Mu6XDk2U3MVOVqep
-         bwcg==
-X-Gm-Message-State: AOAM530JpqEaqd7E5CaJMHk7w7KAi0fakFI5yla4qiGCUv0d8Xpw5kAI
-        SfLnvj4T3N+Y1TJS4z3y6U2PmIjvgQZX3MUGq0nkDHDMS9Ul+g==
-X-Google-Smtp-Source: ABdhPJzd63YN0/2X7zxtPO2NW9LgPl1WUs2+zFxGL00W4Rn/AphNiLe3DEe3YOYZeDHTubJarvPFD0yQaNX8q7QD2O0=
-X-Received: by 2002:a17:90b:4a42:: with SMTP id lb2mr2276677pjb.25.1597862122566;
- Wed, 19 Aug 2020 11:35:22 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=S1EUhordtUMjel9FzBtn8TtSvL9SVNZ9uwAnsm6qFvw=;
+        b=T86e2peUho7AjTqesw0xYfjt2ig7THvuu1YTHBKbQVEEh+8Olfsv7KunzJYmtk2G/R
+         UGUms0XjIZZg/oHk2U5vFDuDeWxAULW+VpI/O7oidVy36eDoJCBXnx01X63o4sz7MTS7
+         43SpjUPrJsw09ePHTibQwWTSPcJlbcnoP1t6x6mNomRY/+Rytfqr6vTg8G7H7FCLkZUo
+         H+Fw7DlvOt5yMNugIBomz2o51LnmWQkUE4OZe2ssg/6s3xqRcw0VOPQlijLvRG5z7/GF
+         UWL3pInirfUoE2omirjsHroJXv8MXcRPmUoosdNIHBIUWUstWpquO+mRwyu477UGBRs6
+         iTGw==
+X-Gm-Message-State: AOAM531BEfp8YEET8GmoOU6AR5nhX8GHBHvRxHd4o8dVavX6NmHvp53z
+        ahH+NRXErJx8g3O7p6QtSJSQng==
+X-Google-Smtp-Source: ABdhPJxp72MaH2m2nPgfUrred95nj+8zIrU+NNhgrwSD/P/pZgzig9Z2qyQTh3Wm88TgTsloY+2vBg==
+X-Received: by 2002:a17:90a:ab96:: with SMTP id n22mr5132823pjq.52.1597862424863;
+        Wed, 19 Aug 2020 11:40:24 -0700 (PDT)
+Received: from [192.168.1.182] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id y79sm28201877pfb.65.2020.08.19.11.40.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Aug 2020 11:40:23 -0700 (PDT)
+Subject: Re: [PATCH v3] ata: use generic power management
+To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Prabhakar Kushwaha <pkushwaha@marvell.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Jia-Ju Bai <baijiaju1990@gmail.com>,
+        Javier Martinez Canillas <javier@osg.samsung.com>,
+        Zhang Rui <rui.zhang@intel.com>, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20200817092245.10478-1-vaibhavgupta40@gmail.com>
+ <20200817092511.GA10566@gmail.com>
+ <11190a0b-1009-caf8-9cbe-6cf296b614bf@kernel.dk>
+ <20200818130329.GA39194@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <a1937b38-055f-0fc7-0d08-16af7c42660b@kernel.dk>
+Date:   Wed, 19 Aug 2020 12:40:20 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CAHk-=wiJLvqS1_O+yAQSZr-Lj49HdJyLpt3J_nW=otHLfEN4RA@mail.gmail.com>
- <20200819140816.3807604-1-nivedita@alum.mit.edu>
-In-Reply-To: <20200819140816.3807604-1-nivedita@alum.mit.edu>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 19 Aug 2020 11:35:11 -0700
-Message-ID: <CAKwvOdn-mv1D1GEk3pWnPYsyzQRRk5qZFhSi0CYn6tRDo1O_iw@mail.gmail.com>
-Subject: Re: [PATCH v2] lib/string.c: Use freestanding environment
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200818130329.GA39194@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 7:08 AM Arvind Sankar <nivedita@alum.mit.edu> wrote:
->
-> gcc can transform the loop in a naive implementation of memset/memcpy
-> etc into a call to the function itself. This optimization is enabled by
-> -ftree-loop-distribute-patterns.
->
-> This has been the case for a while (see eg [0]), but gcc-10.x enables
-> this option at -O2 rather than -O3 as in previous versions.
->
-> Add -ffreestanding, which implicitly disables this optimization with
-> gcc. It is unclear whether clang performs such optimizations, but
-> hopefully it will also not do so in a freestanding environment.
->
-> [0] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=56888
->
-> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+On 8/18/20 6:03 AM, Vaibhav Gupta wrote:
+> On Mon, Aug 17, 2020 at 07:06:03AM -0700, Jens Axboe wrote:
+>> On 8/17/20 2:25 AM, Vaibhav Gupta wrote:
+>>> Hello,
+>>>
+>>> I am working to upgrade power management framework support for PCI drivers, as
+>>> my project under the Linux Kernel Mentorship Program.
+>>>
+>>> The ultimate goal is to completely remove the legacy framework. And for this we
+>>> need to remove ".suspend" and ".resume" pointers from "struct pci_driver".
+>>>
+>>> The patch is doing the change for the same. The actual suspend() and
+>>> resume() callbacks are defined in drivers/ata/libata-core.c and are exported.
+>>> Which are then used by other files.
+>>>
+>>> Thus removing those pointers, included 54 files in this patch. Although, the
+>>> actual changes are done in few files only. The changes should work fine as I
+>>> have done similar changes for other drivers too which made their way into the
+>>> kernel. Still, tests on few ata devices are necessary.
+>>
+>> Didn't we agree to split this up into separate patches??
+>>
+>>> I tried but unfortunately, I couldn't find or arrange devices to test upon. I
+>>> have added the authors of the previous commit(s) for respective drivers as
+>>> recipients. It would be very helpful if someone can test it on a device.
+>>
+>> Does qemu support any of the affected drivers?
+>>
+> Hello Jens,
+> Yes we discussed about splitting it and I will surely do it. I just thought that
+> still it has not got tested and in that case keeping check on patch-series with
+> 55+ patches may become somewhat messy. Moreover, to test any driver one will
+> have to apply the patch for libata-core and then that of the driver.
+> So, I sent this v3 in order to get some help for the testing purpose. Once it
+> goes successful, I can split it and send it for the submission.
+> 
+> I am not sure about qemu, I haven't checked for it. Qemu will be appropriate
+> for testing power management for .suspend() and .resume() callbacks?
 
-For Clang:
-For x86_64 defconfig:
-This results in no change for the code generated.
-
-For aarch64 defconfig:
-This results in calls to bcmp being replaced with calls to memcmp in
-strstr and strnstr.  I plan on adding -fno-built-bcmp then removing
-bcmp anyways.  Not a bug either way, just noting the difference is
-disassembly.
-
-For arm defconfig:
-This results in no change for the code generated.
-
-I should check the other architectures we support, but my local build
-doesn't have all backends enabled currently; we'll catch it once it's
-being testing in -next if it's an issue, but I don't foresee it
-(knocks on wood, famous last words, ...)
-
-If it helps GCC not optimize these core functions into infinite
-recursion, I'm for that, especially since I'd bet these get called
-frequently and early on in boot, which is my least favorite time to
-debug.
-
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-
-> ---
->  lib/Makefile | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/lib/Makefile b/lib/Makefile
-> index e290fc5707ea..a4a4c6864f51 100644
-> --- a/lib/Makefile
-> +++ b/lib/Makefile
-> @@ -15,11 +15,16 @@ KCOV_INSTRUMENT_debugobjects.o := n
->  KCOV_INSTRUMENT_dynamic_debug.o := n
->  KCOV_INSTRUMENT_fault-inject.o := n
->
-> +# string.o implements standard library functions like memset/memcpy etc.
-> +# Use -ffreestanding to ensure that the compiler does not try to "optimize"
-> +# them into calls to themselves.
-> +CFLAGS_string.o := -ffreestanding
-> +
->  # Early boot use of cmdline, don't instrument it
->  ifdef CONFIG_AMD_MEM_ENCRYPT
->  KASAN_SANITIZE_string.o := n
->
-> -CFLAGS_string.o := -fno-stack-protector
-> +CFLAGS_string.o += -fno-stack-protector
->  endif
->
->  # Used by KCSAN while enabled, avoid recursion.
-> --
-> 2.26.2
->
-
+Well, that's your homework then, it seems pretty ideal for testing that
+kind of thing and way easier than getting your hands on hardware. It
+won't have support for everything, but so far you are at 0 things
+tested, so any piix and ahci testing would be a win as far as I'm
+concerned.
 
 -- 
-Thanks,
-~Nick Desaulniers
+Jens Axboe
+
