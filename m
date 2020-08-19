@@ -2,133 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B194324A2A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 17:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE0224A29F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 17:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726980AbgHSPR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 11:17:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726899AbgHSPR0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 11:17:26 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC3FC061342;
-        Wed, 19 Aug 2020 08:17:26 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id 2so1251757pjx.5;
-        Wed, 19 Aug 2020 08:17:26 -0700 (PDT)
+        id S1728644AbgHSPRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 11:17:07 -0400
+Received: from mail-bn7nam10on2044.outbound.protection.outlook.com ([40.107.92.44]:48186
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728446AbgHSPRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 11:17:01 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RaMGN2BFVY1sqUMLpMYpOOsMQPuRMI2/MKxKwMj+lNXIFZ6IEh/j1UvMmITCiPFGTeGFREpOgX7xyNXyWlXpBkiANYPWGblzSof8WZqoH9crzKPxu1X0L18AKEYHeSpeS7tNLMYBqPjSJ7591nZdttGEeTtMPJaTT5Z5fUe1E4Ban0NeEvpBcBRlxfukZ5fJV8Ir3UAdR7bd0visQtA7Xoezupk2zUWRg1C52YTfPvqYVAGbolyRvJaja1yLVAl70nuSa5akokbG0QjqjSu+BuLyCSk84zin+1M1RrXyZnUOwAVimfzcC/aPkIOu1HCfe04scrqW1O20QtZbTTUTvw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KaBwUVdU7124MaD/VHK1/mH0hgRrU5eEtfB/WJUuFHc=;
+ b=hmxiex7//xOr1IvbL5fUTv71RqALp/9TsQ/D5JZOBD5Afhtt+ryM5dD1AUznBtAYRXpu1W1T30MrK0yFAHhtiMCPNXN1nbf2i1VOcFg2pMV8w7YZZnVGcMjqahIqAT98yXFJ45AXoto7NGzQ42/buf/oG+PjQvvQE1el/mong5jtnk5EteG1H9kUlvK7uUdhMsANWNknxE+fJJ4U+JI6UEH01fe8O/8uEVygLBr1Y5BHQzsNO2Zy0MgXdsEo+0m4a3ITmtLsGOnRVinbOhzD1ZdE/fL0BZWAua1cfMRuEwiksyQD13Ib508FqsHsLf8OSoRY77FbhAzb/jU+Cpw+sQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zmZ0nR+0stasAUqGKga9eB9ZFWY9muOXfNZAhE4dBCo=;
-        b=cV1u7p0wvXmqtQLXfxc15Ws4Qo4Zt6uUGQKQdnWwMiD37QPnpsYZ35tUxZW0DLjC2F
-         +DRi5ji/RLdDM5HuTLrg/vCsSsZSIr6f5Y/sG6t3cHpJsMcZJABAyXLH0INlx2A1IQu1
-         3HOcqdKTiqaVmjLVvF1LqSYOn4IjbEqAfyzY5pVuanO01IeEzMcJGd0jBFJrjAbks2TV
-         PfbjuFX4KkVmeoNUatXXTq9sbXlWbvfmIGeCSCxKNMOnUN8ni6M9HyGDqjcD/PKfHVcr
-         haMoVmXzA9dWws5GrRZemCI1FNXhC+9VcZwhEnPuDE+Hj+0zrnjO1jE595bSr3jFEtiu
-         xrJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zmZ0nR+0stasAUqGKga9eB9ZFWY9muOXfNZAhE4dBCo=;
-        b=r3HQV7LH//YpR95iVvyTzHeljd+zdFa+hwiKNQIrs/3Op/kgg/ZkDyEDs9YpY2xBVT
-         lu3aZK8OOrwcrWTRTze3spz0G94OFAICPTzQ4OohiR+Wf8gqADiTPtStHfSCgUGGnKBO
-         9/BCM6SNNMkGsJHFWrDZIUclwb08F/OiXU0BS4WRs82gZ7HG9m0c2c3KLVhflcIr/aRJ
-         LBCF7+yDEbM97Qqn0eZFQOSu8hqLSCC1Wk/1npRvsTK9a1af6FXU7WsOV966DtAyYm9z
-         tM9qNJJx6gugiQyVjNkrnAonJcae+5Fti9pTaZJsbenR/XwUD5Y02xnlTF7Jd5F7hIf2
-         ZNbA==
-X-Gm-Message-State: AOAM533rHsTkFDpgbcFIr84q7nuBtTniIs7hHJZLroZefvIq3b8G4fht
-        jQMXoX+DeyeXadpHfBP9vw==
-X-Google-Smtp-Source: ABdhPJyIOb9pNzAosEPNXQ9tef9OxRKUmm6zMqaUbTiiSDJ2RtWwlz1pjDLcFQ9c9klXpmg53OhF9A==
-X-Received: by 2002:a17:902:eb51:: with SMTP id i17mr19791500pli.278.1597850246185;
-        Wed, 19 Aug 2020 08:17:26 -0700 (PDT)
-Received: from PWN ([2600:3c01::f03c:91ff:fe6e:64cd])
-        by smtp.gmail.com with ESMTPSA id g23sm28739438pfo.95.2020.08.19.08.17.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 08:17:25 -0700 (PDT)
-Date:   Wed, 19 Aug 2020 11:16:56 -0400
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees] [PATCH] v4l2-tpg: Fix
- global-out-of-bounds read in precalculate_color()
-Message-ID: <20200819151656.GA106705@PWN>
-References: <20200810050532.640075-1-yepeilin.cs@gmail.com>
- <774bcf2d-c8eb-086a-3569-c7e530d8a63d@xs4all.nl>
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KaBwUVdU7124MaD/VHK1/mH0hgRrU5eEtfB/WJUuFHc=;
+ b=m/ZSuiRACzEUwrPhyiQRX5eWLbKqOOKSdfZ0NZCPErsA9nq5YCKxoDSqhnhfSeJ+mG5ysDzP7056oA879JahnC1xdu+9CQPXD2Gb8DPwCbYaOIrUoAeUcREzZBGI05+aDCJL+/Qy5NapR+PEDldpSw1i0iAsd2T9jqNFZhCSaFc=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1307.namprd12.prod.outlook.com (2603:10b6:3:79::21) by
+ DM6PR12MB3227.namprd12.prod.outlook.com (2603:10b6:5:18d::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3305.24; Wed, 19 Aug 2020 15:16:56 +0000
+Received: from DM5PR12MB1307.namprd12.prod.outlook.com
+ ([fe80::15d7:c2da:d92a:2162]) by DM5PR12MB1307.namprd12.prod.outlook.com
+ ([fe80::15d7:c2da:d92a:2162%11]) with mapi id 15.20.3283.028; Wed, 19 Aug
+ 2020 15:16:56 +0000
+From:   eric van tassell <Eric.VanTassell@amd.com>
+To:     kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, bp@alien8.de, hpa@zytor.com,
+        mingo@redhat.com, jmattson@google.com, joro@8bytes.org,
+        pbonzini@redhat.com, sean.j.christopherson@intel.com,
+        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
+        x86@kernel.org, rientjes@google.com, junaids@google.com,
+        evantass@amd.com
+Subject: [Patch v2 0/4] Defer page pinning for SEV guests until guest pages touched
+Date:   Wed, 19 Aug 2020 10:17:38 -0500
+Message-Id: <20200819151742.7892-1-Eric.VanTassell@amd.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: DM5PR19CA0045.namprd19.prod.outlook.com
+ (2603:10b6:3:9a::31) To DM5PR12MB1307.namprd12.prod.outlook.com
+ (2603:10b6:3:79::21)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <774bcf2d-c8eb-086a-3569-c7e530d8a63d@xs4all.nl>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from evt-speedway-83bc.amd.com (165.204.78.2) by DM5PR19CA0045.namprd19.prod.outlook.com (2603:10b6:3:9a::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24 via Frontend Transport; Wed, 19 Aug 2020 15:16:55 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [165.204.78.2]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 2713e4a5-dca6-4693-e030-08d84452e929
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3227:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3227D1D7E32342BD8CB6B644E75D0@DM6PR12MB3227.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2201;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7ai97bf3FBBu3ri67OmUy/cdg5X5fTaGlLi016T+mDCKseA59wgCuZ7x5Vbn8cpi8+RAkVqObf8zfdptnEgiZoCXHzea0v/jTtGu2YsDv3/S3tsOtlSbiKN9EmP0VeZRzigQUnQEd7lLaK0uX+P/CWrtSpdyOvE5g1eBkDqEFtyCqChEGdcv7WTAfH9cTT/etam3Dill0QlXJcq1qf8bNGyzZYMoqDbxEF1UQQB0NOepVXB+6h+EckGFmgQjwWcu6kDfrQ+qXgvHzYuWiDIPmLx5yt4un9B04TuJmIyaqdRGZVGSEg2trwvAm3h5H+/iRla3p2LAtiZz7pUaJyYnVw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1307.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(396003)(366004)(39860400002)(66556008)(66476007)(8676002)(66946007)(26005)(86362001)(1076003)(5660300002)(478600001)(6486002)(36756003)(316002)(83380400001)(6666004)(7416002)(2906002)(8936002)(6916009)(4326008)(2616005)(7696005)(16526019)(52116002)(186003)(956004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: Kk+cJ4CKqf536MX6HlQEVwzkHUVgTcUycFx0FDEFUk5yRSfeyAjv7rv4mftbTEJcU7/wphbOKhdW3e/X7m5HH/9FnNWjpSoMIhrYA/n3FsVMYCVs9/a6VYD/QxnOpcAgt1A0pzJh/WxsIPTlDQZrLrxiRJTzeaCKeB64dalXAH1/1pM3zdHgzRh8X8u8QiPRSJbMknfmH0OT9ATE7NG9HppbbjAvOweeYg4ihZTVJJ/qmed5Vc5d1BYoSgwviZQ9+Pn0l7TkZK8u6/fWidD3H7IEb0tJj7pxX16DIOObb/5URd6lpFD8wr7ATX/2tDxfrPgjS4mZZaFGGUJ+ZUb8AmEt8bIgl1GJywUqlYRgJaYVqS2c01uDlmkRzY7zYKsn7t7xwNx0ItZxlqJ33iuyeuXaGb3m+wTMJ2JU46v+/wz+hTyFP8wPCerxBO/5cgozj0wkFC6v9SvNpngOw3MFhfYLR87jU4lRCYqXxkzi7cz2Zl85XzYnsiL7Vw9dqoBEnpb5BbGtfWqIrDJjlstR4yr5rcCdlH9FywUgOZghBOdYirkLa2xs6VmfS4tA6KGVm4XceN5W0N7rrN89woSSMMMYl4o6So7GI/8ToUgwf4frg+XUkjsPpTGJhfKeNKo+0n5Bm2iYXZXdqzUYrQTGVA==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2713e4a5-dca6-4693-e030-08d84452e929
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1307.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Aug 2020 15:16:56.5056
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yseAXuQq4HyJDqE98IaSFKSjBcs5gK7jSMYcGFb6/zHrX66qVTNayqkply1qEhYC+FxaObN5NHVrOfB8AMQj0w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3227
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mr. Verkuil,
+Overview
+========
+	Defer pinning of the guest's pages until nested page faults occur
+	to improve startup time and reduce memory pressure for SEV guests.
 
-On Wed, Aug 19, 2020 at 04:26:28PM +0200, Hans Verkuil wrote:
-> Hi Peilin,
-> 
-> On 10/08/2020 07:05, Peilin Ye wrote:
-> > precalculate_color() is reading out of `sin` since `tpg->hue` is not being
-> > properly checked. Fix it. `cos` is safe, as long as `tpg->hue` is higher
-> > than or equal to -192.
-> 
-> Thank you for this patch, but there is something I don't understand, namely
-> just *how* tpg->hue can be out-of-range.
-> 
-> From what I can see vivid sets hue via tpg_s_hue() when the V4L2_CID_HUE control
-> is set. But that control has a range of -128...128, so ctrl->val should always be in
-> that range.
-> 
-> I would really like to know 1) what the value of tpg->hue actually is when it goes
-> out of range, and 2) who is changing it to that value. Can you do a bit more digging?
+	Cease paying the computational cost of pinning all pages when an
+	encrypted region is registered, before it is known if they will be accessed.
 
-Sure, of course! I will try to figure that out first.
+	Cease creating the memory pressure due to  pinning all pages when an
+	encrypted region is registered before, it is known if they will be accessed.
 
-Thank you,
-Peilin
+Timing Results
+==========
+All timings are done by hand with and Android stopwatch app
 
-> That said, it makes sense that precalculate_color() avoids reading out-of-bounds.
-> 
-> > 
-> > Fixes: 63881df94d3e ("[media] vivid: add the Test Pattern Generator")
-> > Reported-and-tested-by: syzbot+02d9172bf4c43104cd70@syzkaller.appspotmail.com
-> > Link: https://syzkaller.appspot.com/bug?id=db50123c788e2cc5a9d90de569c398b66293ee48
-> > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-> > ---
-> >  drivers/media/common/v4l2-tpg/v4l2-tpg-core.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
-> > index 50f1e0b28b25..52205fe096f7 100644
-> > --- a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
-> > +++ b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
-> > @@ -930,6 +930,9 @@ static void precalculate_color(struct tpg_data *tpg, int k)
-> >  		/* Implement these operations */
-> >  		int tmp_cb, tmp_cr;
-> >  
-> > +		if (tpg->hue < -128 || tpg->hue > 128)
-> > +			return;
-> 
-> Rather than returning here, I prefer to just clamp tpg->hue to the valid range.
-> 
-> I'd be willing to merge a patch that clamps tpg->hue (it certainly doesn't hurt),
-> but I also would like to understand how it can be out of range in the first place.
-> I have the feeling that this is a symptom of another problem elsewhere.
-> 
-> Regards,
-> 
-> 	Hans
-> 
-> > +
-> >  		/* First convert to YCbCr */
-> >  
-> >  		color_to_ycbcr(tpg, r, g, b, &y, &cb, &cr);
-> > 
-> 
+SEV guest size(GiB)  	     |  4 |  8 | 16 | 32 | 60 |
+without patch series(sec)    |  2 |  3 |  4 |  8 | 14 |
+with patch series (sec)      |  1 |  1 |  1 |  1 |  1 |
+
+Patch Series Changelog
+==============
+	1 -> 2:
+		* mmio checks move from sev_pin_page() to caller and the
+		  set_spte_notify* symbols are renamed to pin_page().
+
+		* sev_get_page() warns on failures which should not happen.
+		
+		* kvm->srcu is used to avoid any possibility of a race in
+		  sev_launch_update_data()
+Applies To:
+===========
+	This patch applies top of this commit from the <next> branch of
+	the kvm tree:
+	    c34b26b98cac   Tianjia Zhang : KVM: MIPS: clean up redundant 'kvm_run' parameters
+
+eric van tassell (4):
+  KVM:MMU: Introduce the pin_page() callback
+  KVM:SVM: Implement pin_page support
+  KVM:SVM: Pin sev_launch_update_data() pages via sev_get_page()
+  KVM:SVM: Remove struct enc_region and associated pinned page tracking.
+
+ arch/x86/include/asm/kvm_host.h |   3 +
+ arch/x86/kvm/mmu/mmu.c          |  30 +++-
+ arch/x86/kvm/mmu/paging_tmpl.h  |  27 ++--
+ arch/x86/kvm/svm/sev.c          | 238 +++++++++++++++++---------------
+ arch/x86/kvm/svm/svm.c          |   2 +
+ arch/x86/kvm/svm/svm.h          |   4 +-
+ 6 files changed, 174 insertions(+), 130 deletions(-)
+
+-- 
+2.17.1
+
