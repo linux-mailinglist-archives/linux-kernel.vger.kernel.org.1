@@ -2,83 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF882497B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D772497D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726978AbgHSHua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 03:50:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726617AbgHSHua (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 03:50:30 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5281C061389;
-        Wed, 19 Aug 2020 00:50:29 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id u10so10422024plr.7;
-        Wed, 19 Aug 2020 00:50:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ke+wFCJWvMAP2+w0IdS/4S5iRQrwezKZ5RtTFmjUQBA=;
-        b=ll89NYVbW1bVNVi/IhBgduKZYfYR6hzxQFxy5h+jb5/5FqiPqYdShpyzlBVvUmjIdg
-         al7qRr7ln8bD0cNQ31/19TceKoI55k4TmwJprVcBP0wfOiOppn4bAQT4NjXwDf0Bgbx4
-         jJdiLd6aq0g7AWEIllQNE+jNP4bzBvJTOe/BVAGfSCkPbH/w84F5qUVQDYIs16vu83Nj
-         iUmieID+X+lLha+LtxueDQh1fzK4p9xjm2DepQoENKKOCcxNm5McKBwg5aIHIXiKf1qA
-         o1B5AxHNAwdHbNPDNauWJv9+g2C6koHVJdbaDsRGecLoGuZoRilAWVsWcRH0q76np0c1
-         mf8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ke+wFCJWvMAP2+w0IdS/4S5iRQrwezKZ5RtTFmjUQBA=;
-        b=bmxc0FcQPSHYQa1mw2dxSLmab0/67MCm1AyrMmHMr31DQdyyr50nXhl1dqx5sFHllk
-         9HOYuwkzNTqFsG/WanumcWjK0MhI8jsTBF5kQArCuEP1BlTWd0z12GtvJ0yum2Y9Ipva
-         gVQFOmcUQyq7IZeXq335AzoICnEvfolHhLDA0d11cQ9rGqMCVDRLDEJjT0DhUBLRIwT/
-         QUpuQg4AKBRGCGHSc9UiEGo/Bp+J3mFMJsjFzNlIlj19K0w1g8ZHHKzpC34/X8RORBL1
-         u4An57s30IfMMnXmXiKaIxKbU2UiRP6l/X4xKRqwUwRh6062O2O/XcNhmWbL8J1iIH9+
-         86mw==
-X-Gm-Message-State: AOAM531Ah3ubvQky+BHeRkZThmN5aDo0Zn6bVPwHvTMUzKkEzn9p3FDS
-        28TQBDpWwdeptoPaMB/wGstXJLFt/bEMWHDPoAgLZt5sbmB2NQ==
-X-Google-Smtp-Source: ABdhPJzguy6Y47uqQoTztAlR1Ib+TDOaev40sCIeYf0eQCMUO4xIa6Al45JJW1//72glFVcXMnB7DuWOkT0WRWiIwUs=
-X-Received: by 2002:a17:90a:bc41:: with SMTP id t1mr3003273pjv.181.1597823429126;
- Wed, 19 Aug 2020 00:50:29 -0700 (PDT)
+        id S1726896AbgHSH6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 03:58:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47824 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726570AbgHSH5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 03:57:53 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1817920772;
+        Wed, 19 Aug 2020 07:57:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597823872;
+        bh=46Afa7lxXaQ42q0RivTpZdxjVSSKrIctrmkKL9xdz2M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=i+MQYRnW5CZzsLaOjHss3rw7hf9udYydqoUupa6xGDzflVgwvsHZgkdKdALKBfXML
+         mAKdRb1ZblwzAt9METwq1jdGpffGgXlI4IvjtrBkwDX4cfzYkZsmXJCajX+JaPsRgO
+         xqlgtAyUA38wZQRVsOMhK5jpf3lQkiTMwjHwEoD8=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND] fs: Delete always true compilation define
+Date:   Wed, 19 Aug 2020 10:50:27 +0300
+Message-Id: <20200819075027.916526-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200818180223.14282-1-kenneth.t.chan@gmail.com>
-In-Reply-To: <20200818180223.14282-1-kenneth.t.chan@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 19 Aug 2020 10:50:12 +0300
-Message-ID: <CAHp75VdWhSTqCikgnF5vvgw5x96QV5MXBDOWnL4gWt+Z-QK0MQ@mail.gmail.com>
-Subject: Re: [PATCH] add support for battery charging threshold, mute.
- correctly save ac/dc brightness to hardware registers
-To:     Kenneth Chan <kenneth.t.chan@gmail.com>
-Cc:     Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Harald Welte <laforge@gnumonks.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 9:03 PM Kenneth Chan <kenneth.t.chan@gmail.com> wrote:
->
+From: Leon Romanovsky <leonro@mellanox.com>
 
-Thank you for a patch, but it misses few crucial points:
- - it should have good description as commit message (body of this letter)
- - it should have signature of origin (Signed-off-by tag) that I can
-proceed (I see, it's in wrong position, use `git commit -s` to fix
-this)
- - it should be split per one logical change in a patch, e.g. 1)
-replacing ACPI prints by pr_*() macros, 2) split MODULE_AUTHOR() by
-one author per macro call, 3) etc...
+In commit 1027abe8827b ("[PATCH] merge locate_fd() and get_unused_fd()")
+the existing "#if 1" was moved from one place to another. Originally
+that compilation define was set for the sanity check and more than 12
+years later it is safe to remove it.
 
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+ fs/file.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-> Signed-off-by: Kenneth Chan <kenneth.t.chan@gmail.com>
+diff --git a/fs/file.c b/fs/file.c
+index 21c0893f2f1d..13a89df7c74e 100644
+--- a/fs/file.c
++++ b/fs/file.c
+@@ -535,13 +535,11 @@ int __alloc_fd(struct files_struct *files,
+ 	else
+ 		__clear_close_on_exec(fd, fdt);
+ 	error = fd;
+-#if 1
+ 	/* Sanity check */
+ 	if (rcu_access_pointer(fdt->fd[fd]) != NULL) {
+ 		printk(KERN_WARNING "alloc_fd: slot %d not NULL!\n", fd);
+ 		rcu_assign_pointer(fdt->fd[fd], NULL);
+ 	}
+-#endif
 
+ out:
+ 	spin_unlock(&files->file_lock);
+--
+2.26.2
 
-
--- 
-With Best Regards,
-Andy Shevchenko
