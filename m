@@ -2,217 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B880324A2B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 17:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B0824A2D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 17:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728699AbgHSPUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 11:20:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58898 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728481AbgHSPUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 11:20:10 -0400
-Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D544E207FF;
-        Wed, 19 Aug 2020 15:20:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597850410;
-        bh=+CZjqAP9BwS+oTcWjIBCOd8FUJx3ft6iDVH+DtcWMB4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=djUeEd0jYaP/1UoT2NFZF8s/WQ4NPOTacoHKkkpD4kZ9FgvDB9EjDoeG7NyVfe2mZ
-         /ZGkTWx/FIMDIMYavM8CTiyzJ3C23ott1fbGAo50wvQGwsBhIAwct8aM5bVYK6edEZ
-         kIjkD2z8dZ3LpLvDpMdHtSDhsaFQbc6O+JP5nGt4=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1k8Psl-00F4N9-H5; Wed, 19 Aug 2020 17:20:07 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Josh Cartwright <joshc@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: convert spmi.txt to spmi.yaml
-Date:   Wed, 19 Aug 2020 17:20:06 +0200
-Message-Id: <94b055687143c9593cd4311f8bcda99a743a619f.1597850327.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1728790AbgHSPZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 11:25:32 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:38870 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728212AbgHSPZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 11:25:09 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 88887990BD3CA5378D3B;
+        Wed, 19 Aug 2020 23:24:58 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 19 Aug 2020 23:24:47 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <axboe@kernel.dk>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <don.brace@microsemi.com>,
+        <kashyap.desai@broadcom.com>, <ming.lei@redhat.com>,
+        <bvanassche@acm.org>, <dgilbert@interlog.com>,
+        <paolo.valente@linaro.org>, <hare@suse.de>, <hch@lst.de>
+CC:     <sumit.saxena@broadcom.com>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <esc.storagedev@microsemi.com>, <megaraidlinux.pdl@broadcom.com>,
+        <chenxiang66@hisilicon.com>, <luojiaxing@huawei.com>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCH v8 00/18] blk-mq/scsi: Provide hostwide shared tags for SCSI HBAs
+Date:   Wed, 19 Aug 2020 23:20:18 +0800
+Message-ID: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the SPMI bus documentation to JSON/yaml.
+Hi all,
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
+Here is v8 of the patchset.
 
-Rob,
+In this version of the series, we keep the shared sbitmap for driver tags,
+and introduce changes to fix up the tag budgeting across request queues.
+We also have a change to count requests per-hctx for when an elevator is
+enabled, as an optimisation. I also dropped the debugfs changes - more on
+that below.
 
-As promissed, this patch converts the spmi.txt generic bus bindings to
-html.
+Some performance figures:
 
- .../bindings/mfd/qcom,spmi-pmic.txt           |  2 +-
- .../bindings/spmi/qcom,spmi-pmic-arb.txt      |  4 +-
- .../devicetree/bindings/spmi/spmi.txt         | 41 ------------
- .../devicetree/bindings/spmi/spmi.yaml        | 62 +++++++++++++++++++
- 4 files changed, 65 insertions(+), 44 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/spmi/spmi.txt
- create mode 100644 Documentation/devicetree/bindings/spmi/spmi.yaml
+Using 12x SAS SSDs on hisi_sas v3 hw. mq-deadline results are included,
+but it is not always an appropriate scheduler to use.
 
-diff --git a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
-index fffc8fde3302..79367a43b27d 100644
---- a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
-+++ b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
-@@ -37,7 +37,7 @@ Required properties:
-                    or generalized "qcom,spmi-pmic".
- - reg:             Specifies the SPMI USID slave address for this device.
-                    For more information see:
--                   Documentation/devicetree/bindings/spmi/spmi.txt
-+                   Documentation/devicetree/bindings/spmi/spmi.yaml
- 
- Required properties for peripheral child nodes:
- - compatible:      Should contain "qcom,xxx", where "xxx" is a peripheral name.
-diff --git a/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.txt b/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.txt
-index e16b9b5afc70..ca645e21fe47 100644
---- a/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.txt
-+++ b/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.txt
-@@ -7,8 +7,8 @@ devices to control a single SPMI master.
- The PMIC Arbiter can also act as an interrupt controller, providing interrupts
- to slave devices.
- 
--See spmi.txt for the generic SPMI controller binding requirements for child
--nodes.
-+See Documentation/devicetree/bindings/spmi/spmi.yaml for the generic SPMI
-+controller binding requirements for child nodes.
- 
- See Documentation/devicetree/bindings/interrupt-controller/interrupts.txt for
- generic interrupt controller binding documentation.
-diff --git a/Documentation/devicetree/bindings/spmi/spmi.txt b/Documentation/devicetree/bindings/spmi/spmi.txt
-deleted file mode 100644
-index 4bb10d161a27..000000000000
---- a/Documentation/devicetree/bindings/spmi/spmi.txt
-+++ /dev/null
-@@ -1,41 +0,0 @@
--System Power Management Interface (SPMI) Controller
--
--This document defines a generic set of bindings for use by SPMI controllers.  A
--controller is modelled in device tree as a node with zero or more child nodes,
--each representing a unique slave on the bus.
--
--Required properties:
--- #address-cells : must be set to 2
--- #size-cells : must be set to 0
--
--Child nodes:
--
--An SPMI controller node can contain zero or more child nodes representing slave
--devices on the bus.  Child 'reg' properties are specified as an address, type
--pair.  The address must be in the range 0-15 (4 bits).  The type must be one of
--SPMI_USID (0) or SPMI_GSID (1) for Unique Slave ID or Group Slave ID respectively.
--These are the identifiers "statically assigned by the system integrator", as
--per the SPMI spec.
--
--Each child node must have one and only one 'reg' entry of type SPMI_USID.
--
--#include <dt-bindings/spmi/spmi.h>
--
--	spmi@.. {
--		compatible = "...";
--		reg = <...>;
--
--		#address-cells = <2>;
--		#size-cells = <0>;
--
--		child@0 {
--			compatible = "...";
--			reg = <0 SPMI_USID>;
--		};
--
--		child@7 {
--			compatible = "...";
--			reg = <7 SPMI_USID
--			       3 SPMI_GSID>;
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/spmi/spmi.yaml b/Documentation/devicetree/bindings/spmi/spmi.yaml
-new file mode 100644
-index 000000000000..8d72796b9bec
---- /dev/null
-+++ b/Documentation/devicetree/bindings/spmi/spmi.yaml
-@@ -0,0 +1,62 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/spmi/spmi.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: System Power Management Interface (SPMI) Controller
-+
-+maintainers:
-+  - Josh Cartwright <joshc@codeaurora.org>
-+
-+description: |
-+  The System Power Management (SPMI) controller is a 2-wire bus defined
-+  by the MIPI Alliance for power management control to be used on SoC designs.
-+
-+  SPMI controllers are modelled in device tree using a generic set of
-+  bindings defined here, plus any bus controller specific properties, if
-+  needed.
-+
-+  Each SPMI controller has zero or more child nodes (up to 16 ones), each
-+  one representing an unique slave at the bus.
-+
-+properties:
-+  $nodename:
-+    pattern: "spmi@[0-9a-f]+"
-+
-+  compatible:
-+    description: filled by the SPMI bus controller
-+
-+  reg:
-+    maxItems: 1
-+
-+patternProperties:
-+  "@([0-9]|1[0-5])$":
-+    description: up to 16 child PMIC nodes
-+
-+required:
-+  - compatible
-+  - reg
-+
-+examples:
-+  - |
-+    #include <dt-bindings/spmi/spmi.h>
-+
-+    spmi@.. {
-+      compatible = "...";
-+      reg = <...>;
-+
-+      #address-cells = <2>;
-+      #size-cells = <0>;
-+
-+      child@0 {
-+        compatible = "...";
-+        reg = <0 SPMI_USID>;
-+      };
-+
-+      child@7 {
-+        compatible = "...";
-+        reg = <7 SPMI_USID
-+               3 SPMI_GSID>;
-+      };
-+    };
+Tag depth 		4000 (default)			260**
+
+Baseline (v5.9-rc1):
+none sched:		2094K IOPS			513K
+mq-deadline sched:	2145K IOPS			1336K
+
+Final, host_tagset=0 in LLDD *, ***:
+none sched:		2120K IOPS			550K
+mq-deadline sched:	2121K IOPS			1309K
+
+Final ***:
+none sched:		2132K IOPS			1185			
+mq-deadline sched:	2145K IOPS			2097	
+
+* this is relevant as this is the performance in supporting but not
+  enabling the feature
+** depth=260 is relevant as some point where we are regularly waiting for
+   tags to be available. Figures were are a bit unstable here.
+*** Included "[PATCH V4] scsi: core: only re-run queue in
+    scsi_end_request() if device queue is busy"
+
+A copy of the patches can be found here:
+https://github.com/hisilicon/kernel-dev/tree/private-topic-blk-mq-shared-tags-v8
+
+The hpsa patch depends on:
+https://lore.kernel.org/linux-scsi/20200430131904.5847-1-hare@suse.de/
+
+And the smartpqi patch is not to be accepted.
+
+Comments (and testing) welcome, thanks!
+
+Differences to v7:
+- Add null_blk and scsi_debug support
+- Drop debugfs tags patch - it's too difficult to be the same between
+hostwide and non-hostwide, as discussed:
+https://lore.kernel.org/linux-scsi/1591810159-240929-1-git-send-email-john.garry@huawei.com/T/#mb3eb462d8be40273718505989abd12f8228c15fd
+And from commit 6bf0eb550452 ("sbitmap: Consider cleared bits in
+sbitmap_bitmap_show()"), I guess not many used this anyway...
+- Add elevator per-hctx request count for optimisation
+- Break up "blk-mq: rename blk_mq_update_tag_set_depth()" into 2x patches
+- Pass flags for avoid per-hq queue tags init/free for hostwide tags
+- Add Don's reviewed-tag and tested-by tags to appropiate patches
+	- (@Don, please let me know if issue with how I did this)
+- Add "scsi: core: Show nr_hw_queues in sysfs"
+- Rework megaraid SAS patch to have module param (Kashyap)
+- rebase
+
+V7 is here for more info:
+https://lore.kernel.org/linux-scsi/1591810159-240929-1-git-send-email-john.garry@huawei.com/T/#t
+
+Hannes Reinecke (5):
+  blk-mq: Rename blk_mq_update_tag_set_depth()
+  blk-mq: Free tags in blk_mq_init_tags() upon error
+  scsi: Add host and host template flag 'host_tagset'
+  hpsa: enable host_tagset and switch to MQ
+  smartpqi: enable host tagset
+
+John Garry (10):
+  blk-mq: Pass flags for tag init/free
+  blk-mq: Use pointers for blk_mq_tags bitmap tags
+  blk-mq: Facilitate a shared sbitmap per tagset
+  blk-mq: Relocate hctx_may_queue()
+  blk-mq: Record nr_active_requests per queue for when using shared
+    sbitmap
+  blk-mq: Record active_queues_shared_sbitmap per tag_set for when using
+    shared sbitmap
+  null_blk: Support shared tag bitmap
+  scsi: core: Show nr_hw_queues in sysfs
+  scsi: hisi_sas: Switch v3 hw to MQ
+  scsi: scsi_debug: Support host tagset
+
+Kashyap Desai (2):
+  blk-mq, elevator: Count requests per hctx to improve performance
+  scsi: megaraid_sas: Added support for shared host tagset for
+    cpuhotplug
+
+Ming Lei (1):
+  blk-mq: Rename BLK_MQ_F_TAG_SHARED as BLK_MQ_F_TAG_QUEUE_SHARED
+
+ block/bfq-iosched.c                         |   9 +-
+ block/blk-core.c                            |   2 +
+ block/blk-mq-debugfs.c                      |  10 +-
+ block/blk-mq-sched.c                        |  13 +-
+ block/blk-mq-tag.c                          | 149 ++++++++++++++------
+ block/blk-mq-tag.h                          |  56 +++-----
+ block/blk-mq.c                              |  81 +++++++----
+ block/blk-mq.h                              |  76 +++++++++-
+ block/kyber-iosched.c                       |   4 +-
+ block/mq-deadline.c                         |   6 +
+ drivers/block/null_blk_main.c               |   6 +
+ drivers/block/rnbd/rnbd-clt.c               |   2 +-
+ drivers/scsi/hisi_sas/hisi_sas.h            |   3 +-
+ drivers/scsi/hisi_sas/hisi_sas_main.c       |  36 ++---
+ drivers/scsi/hisi_sas/hisi_sas_v3_hw.c      |  87 +++++-------
+ drivers/scsi/hosts.c                        |   1 +
+ drivers/scsi/hpsa.c                         |  44 +-----
+ drivers/scsi/hpsa.h                         |   1 -
+ drivers/scsi/megaraid/megaraid_sas_base.c   |  39 +++++
+ drivers/scsi/megaraid/megaraid_sas_fusion.c |  29 ++--
+ drivers/scsi/scsi_debug.c                   |  28 ++--
+ drivers/scsi/scsi_lib.c                     |   2 +
+ drivers/scsi/scsi_sysfs.c                   |  11 ++
+ drivers/scsi/smartpqi/smartpqi_init.c       |  45 ++++--
+ include/linux/blk-mq.h                      |  13 +-
+ include/linux/blkdev.h                      |   3 +
+ include/scsi/scsi_host.h                    |   9 +-
+ 27 files changed, 484 insertions(+), 281 deletions(-)
+
 -- 
 2.26.2
-
 
