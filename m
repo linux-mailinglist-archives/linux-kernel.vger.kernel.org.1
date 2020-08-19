@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29ECF24A6B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 21:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBDF524A6BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 21:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727042AbgHSTRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 15:17:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38538 "EHLO
+        id S1726731AbgHSTR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 15:17:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726874AbgHSTRQ (ORCPT
+        with ESMTP id S1727012AbgHSTRT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 15:17:16 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4980C061383
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 12:17:15 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id r1so27192210ybg.4
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 12:17:15 -0700 (PDT)
+        Wed, 19 Aug 2020 15:17:19 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25BB8C061343
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 12:17:19 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id f7so14866546plj.16
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 12:17:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=G8ovRmWPY2eQRm47H6TIcE569Ii4rdR2xUKKDLx0xDw=;
-        b=f+1YdzdbnkY01Pd/XYpVHaD7EAlrtO9o1mqgVX3oLPHx/Z792m3feItpAM1uCZKM5Z
-         3OHZXnaEfnVJasRQIYFL47vXV28lja2DfwwSkfM1PeelFbEGLA8m5KNjWGbiK8gx43xs
-         A7OyFY/vF+3FIkW8hJ1M5iw/Cw9gJzmt6lbZioPhP5xoRqa3E/0VCeIA0Gx9xnq3h53F
-         63mraLAdmwu/r42O86ItTteBSJ6AsNhCADk/PUC2wzLpRFvqFC+Yt1u85x6Zp4WcWMWN
-         9oeDse8CDkhlS2eDIt1rkFdG9oBT3asrqJaAY42oHIat6X6YD2LDWxbBc7yFsAvA+d08
-         n7CA==
+        bh=r84xcQbgubHprmQGHdhEie+FBaGO0N4EWuKx2nze9kk=;
+        b=gmxsTeXyOkvZXDCuGg2KHf5O47wmcxetM6gPsB3gToKAyGX+XYovB86AzMOWnjdw9Z
+         adCND0Oa3n+jwU+LXuL4qWJvHjRWDjBENCVb+P9n9RLRZTt0ZpbW44GSXgBVluwwlOPE
+         2sqbGcM+5uDuDxEXwCvTEFXVthhlNnbcix119RUIlOKXpYqVeDZdYUlhiJVsLy4VQD8F
+         VydTQqW9K2iN9TjyU9AA603yAo3BsyhmgrP8URp5f6tVo2oPSLflYRIHHFhtUw7lVBBC
+         iko4NA+N48dFyc4Z7VaXxlF7HX1xOmQmr3wzCCJLnLiHhd1mbsF+SUh8Inpe20wqVWEA
+         NIDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=G8ovRmWPY2eQRm47H6TIcE569Ii4rdR2xUKKDLx0xDw=;
-        b=fsaHaBspC3KWZ89iQ3HbgeQCyjwQSkA6LPALhSuD3zNmUhCXt/5DNtvKrDHA52eYfU
-         MHvA47pSqJeG1JxoiZ2bNxDdXYxzWgFGhf7bDELR7nBWB3kqZo8Vcx2Ps2tqhadOClAS
-         JT2m1/IzP4IJEhGQpKiufjIXFyQ42KWCXQ6+NlSV65ZddZejvKwu/+5mwKKC7CfcNytM
-         dryu95RYRC78UWHbWnrfcQO/GPRLihJXvK3UL+He1U6f4Q9R7xnrAt5hYTvdWKxUrceL
-         Fp0pymKeegT9O4Wv2mcpUSOofDRDAD5MPl3ThrY44GJV+qoyXn7ehP9xTW8FCrnUMTUD
-         +72w==
-X-Gm-Message-State: AOAM533t+BdKNtCWBY6YmVYawZd8xLGAXhZdA0RlxpasvQkJCJSKyFW0
-        VHWERQE4+e8NpOUvB3tZWJeMXCcExwYCp/15pnY=
-X-Google-Smtp-Source: ABdhPJxebFBr0V9uyPj7gam8rQ7tQWQYUw52l6hiIAwQkCgQg2ecyY0cl/X05nt6T3z7kD96UyI7rJ2SUevAe92Z0d4=
-X-Received: by 2002:a25:502:: with SMTP id 2mr34973593ybf.6.1597864635052;
- Wed, 19 Aug 2020 12:17:15 -0700 (PDT)
-Date:   Wed, 19 Aug 2020 12:16:51 -0700
+        bh=r84xcQbgubHprmQGHdhEie+FBaGO0N4EWuKx2nze9kk=;
+        b=tc0dRhOpnZz0ENOwPwSjhUSUAvqUzSO5LH0xjSsG6j+ExdiysTYHv9JyzxToNmIDt3
+         pKDe4XE/uXlyxuLk1m5g6OS3nlInjqYM9G2BR+oTW/oEyKljwCORdl0ssizhfBa8At96
+         Ip+CpRZhWCSZmlb1LihCOVjgzTB0R01e2Q1y0FqF+vpZgEVuFrl+9zX/bFARL2kl/knx
+         3WnaTGzvvqwDyIDOjvGlxWq+AI8U3p+1miCs9XtaWih1AJK1714Hh8rcnqvktJU+ScvB
+         /7gGg8iO9CcgPCd/UGDI4whL5NHF1Um7o7Jk5/apEOvAwPYoP7OP45GD0+mUs6yHS6Yh
+         Mv4w==
+X-Gm-Message-State: AOAM532RaVoBGtCDXjU6iDrgWZLmi+mDEKsI06tv7dSMhgmjJoEXNt12
+        wzSmISiHo/YmBhAeZfJTvQOHM7lAYj0acwFesJI=
+X-Google-Smtp-Source: ABdhPJzj+vobFpRvf1bfd/iF3/8RTnjkeRzHLSF1auGiUuWpv+qFNCVSlRyMOj/B6agWqaCoODouhD0YAJhAwrj2ysI=
+X-Received: by 2002:a17:902:c151:: with SMTP id 17mr19141781plj.228.1597864638521;
+ Wed, 19 Aug 2020 12:17:18 -0700 (PDT)
+Date:   Wed, 19 Aug 2020 12:16:52 -0700
 In-Reply-To: <20200819191654.1130563-1-ndesaulniers@google.com>
-Message-Id: <20200819191654.1130563-3-ndesaulniers@google.com>
+Message-Id: <20200819191654.1130563-4-ndesaulniers@google.com>
 Mime-Version: 1.0
 References: <20200819191654.1130563-1-ndesaulniers@google.com>
 X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
-Subject: [PATCH v2 2/5] Makefile: add -fno-builtin-bcmp
+Subject: [PATCH v2 3/5] Revert "lib/string.c: implement a basic bcmp"
 From:   Nick Desaulniers <ndesaulniers@google.com>
 To:     Masahiro Yamada <masahiroy@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -88,34 +88,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The issue with using `-fno-builtin-*` flags was that they were not
-retained during an LTO link with LLVM.  This was fixed in clang-11 by
-https://reviews.llvm.org/D71193
-(0508c994f0b14144041f2cfd3ba9f9a80f03de08), which is also the minimum
-supported version of clang for LTO.  Use `-fno-builtin-bcmp` instead.
+This reverts commit 5f074f3e192f10c9fade898b9b3b8812e3d83342.
 
-With this applid, we can cleanly revert
-commit 5f074f3e192f ("lib/string.c: implement a basic bcmp")
+An earlier commit in the series prevents the compiler from emitting
+calls to bcmp as part of "libcall optimization," and there are no
+explicit callers, so we can now safely remove this interface.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
 Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 ---
- Makefile | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/string.h |  3 ---
+ lib/string.c           | 20 --------------------
+ 2 files changed, 23 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index e523dc8d30e0..def590b743a9 100644
---- a/Makefile
-+++ b/Makefile
-@@ -579,6 +579,7 @@ CLANG_FLAGS	+= -no-integrated-as
- endif
- CLANG_FLAGS	+= -Werror=unknown-warning-option
- CLANG_FLAGS	+= -fno-builtin-stpcpy
-+CLANG_FLAGS	+= -fno-builtin-bcmp
- KBUILD_CFLAGS	+= $(CLANG_FLAGS)
- KBUILD_AFLAGS	+= $(CLANG_FLAGS)
- export CLANG_FLAGS
+diff --git a/include/linux/string.h b/include/linux/string.h
+index b1f3894a0a3e..f3bdb74bc230 100644
+--- a/include/linux/string.h
++++ b/include/linux/string.h
+@@ -155,9 +155,6 @@ extern void * memscan(void *,int,__kernel_size_t);
+ #ifndef __HAVE_ARCH_MEMCMP
+ extern int memcmp(const void *,const void *,__kernel_size_t);
+ #endif
+-#ifndef __HAVE_ARCH_BCMP
+-extern int bcmp(const void *,const void *,__kernel_size_t);
+-#endif
+ #ifndef __HAVE_ARCH_MEMCHR
+ extern void * memchr(const void *,int,__kernel_size_t);
+ #endif
+diff --git a/lib/string.c b/lib/string.c
+index 6012c385fb31..69328b8353e1 100644
+--- a/lib/string.c
++++ b/lib/string.c
+@@ -922,26 +922,6 @@ __visible int memcmp(const void *cs, const void *ct, size_t count)
+ EXPORT_SYMBOL(memcmp);
+ #endif
+ 
+-#ifndef __HAVE_ARCH_BCMP
+-/**
+- * bcmp - returns 0 if and only if the buffers have identical contents.
+- * @a: pointer to first buffer.
+- * @b: pointer to second buffer.
+- * @len: size of buffers.
+- *
+- * The sign or magnitude of a non-zero return value has no particular
+- * meaning, and architectures may implement their own more efficient bcmp(). So
+- * while this particular implementation is a simple (tail) call to memcmp, do
+- * not rely on anything but whether the return value is zero or non-zero.
+- */
+-#undef bcmp
+-int bcmp(const void *a, const void *b, size_t len)
+-{
+-	return memcmp(a, b, len);
+-}
+-EXPORT_SYMBOL(bcmp);
+-#endif
+-
+ #ifndef __HAVE_ARCH_MEMSCAN
+ /**
+  * memscan - Find a character in an area of memory.
 -- 
 2.28.0.297.g1956fa8f8d-goog
 
