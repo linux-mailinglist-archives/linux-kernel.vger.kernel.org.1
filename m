@@ -2,99 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC3A24935D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 05:18:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9683B249361
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 05:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727924AbgHSDST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 23:18:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51168 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726605AbgHSDSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 23:18:18 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD21E20639;
-        Wed, 19 Aug 2020 03:18:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597807097;
-        bh=N1Hg73ubDcpjGJDJGT5jZegR8KHLiNUqoVxQYzYXmq0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=q4eHZB3jmK/o9r6C1qNxrrxqLIH78fh4WBV77DiWbC19R0kSzYG3STISlPhVNbmiK
-         i6Zs6UNH1nD2G0nchzqbdrLDLucUm9JyiI11URqvXFlwwvA1fF26qvrYztOHNFlB5k
-         YUM70z4OfHIlxGcPCAehnPaV2ZnIMGbBe8cOcrU0=
-Date:   Tue, 18 Aug 2020 20:18:17 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Doug Berger <opendmb@gmail.com>
-Cc:     Jason Baron <jbaron@akamai.com>,
-        David Rientjes <rientjes@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm: include CMA pages in lowmem_reserve at boot
-Message-Id: <20200818201817.351499e75cba2a84e8bf33e6@linux-foundation.org>
-In-Reply-To: <1597423766-27849-1-git-send-email-opendmb@gmail.com>
-References: <1597423766-27849-1-git-send-email-opendmb@gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727921AbgHSDUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 23:20:40 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9843 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726605AbgHSDUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 23:20:40 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 21940A4336C8D4369D32;
+        Wed, 19 Aug 2020 11:20:38 +0800 (CST)
+Received: from euler.huawei.com (10.175.124.27) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 19 Aug 2020 11:20:29 +0800
+From:   Wei Li <liwei391@huawei.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>
+CC:     <huawei.libin@huawei.com>, <guohanjun@huawei.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] perf record: Correct the help info of option "--no-bpf-event"
+Date:   Wed, 19 Aug 2020 11:19:47 +0800
+Message-ID: <20200819031947.12115-1-liwei391@huawei.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 Aug 2020 09:49:26 -0700 Doug Berger <opendmb@gmail.com> wrote:
+The help info of option "--no-bpf-event" is wrongly described as
+"record bpf events", correct it.
 
-> The lowmem_reserve arrays provide a means of applying pressure
-> against allocations from lower zones that were targeted at
-> higher zones. Its values are a function of the number of pages
-> managed by higher zones and are assigned by a call to the
-> setup_per_zone_lowmem_reserve() function.
-> 
-> The function is initially called at boot time by the function
-> init_per_zone_wmark_min() and may be called later by accesses
-> of the /proc/sys/vm/lowmem_reserve_ratio sysctl file.
-> 
-> The function init_per_zone_wmark_min() was moved up from a
-> module_init to a core_initcall to resolve a sequencing issue
-> with khugepaged. Unfortunately this created a sequencing issue
-> with CMA page accounting.
-> 
-> The CMA pages are added to the managed page count of a zone
-> when cma_init_reserved_areas() is called at boot also as a
-> core_initcall. This makes it uncertain whether the CMA pages
-> will be added to the managed page counts of their zones before
-> or after the call to init_per_zone_wmark_min() as it becomes
-> dependent on link order. With the current link order the pages
-> are added to the managed count after the lowmem_reserve arrays
-> are initialized at boot.
-> 
-> This means the lowmem_reserve values at boot may be lower than
-> the values used later if /proc/sys/vm/lowmem_reserve_ratio is
-> accessed even if the ratio values are unchanged.
-> 
-> In many cases the difference is not significant, but for example
-> an ARM platform with 1GB of memory and the following memory layout
-> [    0.000000] cma: Reserved 256 MiB at 0x0000000030000000
-> [    0.000000] Zone ranges:
-> [    0.000000]   DMA      [mem 0x0000000000000000-0x000000002fffffff]
-> [    0.000000]   Normal   empty
-> [    0.000000]   HighMem  [mem 0x0000000030000000-0x000000003fffffff]
-> 
-> would result in 0 lowmem_reserve for the DMA zone. This would allow
-> userspace to deplete the DMA zone easily.
+Fixes: 71184c6ab7e6 ("perf record: Replace option --bpf-event with --no-bpf-event")
+Signed-off-by: Wei Li <liwei391@huawei.com>
+---
+ tools/perf/builtin-record.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Sounds fairly serious for thos machines.  Was a cc:stable considered?
-
-> Funnily enough
-> $ cat /proc/sys/vm/lowmem_reserve_ratio
-> would fix up the situation because it forces
-> setup_per_zone_lowmem_reserve as a side effect.
-> 
-> This commit breaks the link order dependency by invoking
-> init_per_zone_wmark_min() as a postcore_initcall so that the
-> CMA pages have the chance to be properly accounted in their
-> zone(s) and allowing the lowmem_reserve arrays to receive
-> consistent values.
-> 
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index f91352f847c0..772f1057647f 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -2452,7 +2452,7 @@ static struct option __record_options[] = {
+ 	OPT_BOOLEAN(0, "tail-synthesize", &record.opts.tail_synthesize,
+ 		    "synthesize non-sample events at the end of output"),
+ 	OPT_BOOLEAN(0, "overwrite", &record.opts.overwrite, "use overwrite mode"),
+-	OPT_BOOLEAN(0, "no-bpf-event", &record.opts.no_bpf_event, "record bpf events"),
++	OPT_BOOLEAN(0, "no-bpf-event", &record.opts.no_bpf_event, "do not record bpf events"),
+ 	OPT_BOOLEAN(0, "strict-freq", &record.opts.strict_freq,
+ 		    "Fail if the specified frequency can't be used"),
+ 	OPT_CALLBACK('F', "freq", &record.opts, "freq or 'max'",
+-- 
+2.17.1
 
