@@ -2,174 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 890B2249EC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C02EF249EC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728511AbgHSMyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 08:54:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728445AbgHSMyK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 08:54:10 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE2EC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 05:54:10 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id a79so11626785pfa.8
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 05:54:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PnRFKRAedDIcgPdVOrDHp5lHsOtzTanDbhe4IRPxP8c=;
-        b=LKqpsTCNNWud5otkV6T5Gl5AekemUr7F96//2IxrvX3NNPAtJz+npMbpX0qHnVBj12
-         BLP4+aWV3uG5rd2DL2h3EqsGuU2twiLFLuvfMrSVouQWdeMyCNgtTAjpTfwjFrjOEcYK
-         XeACCj6r08YWcckRGHcVbisWLNWaxwLPCXCSvr0v2j3iYN5odNu6b9JcF7hJX48YWVqW
-         FuBe/SPHmuc5CekDaeMdgKedJg9Y7bWMDRu/L54pQJYw2bGhroUJZyrpu2bhpANLA+Kt
-         ycgJ8n9UwqBh88t0JZXiBKKBrpHc85DXXL69fTsBGrFTMkE1eaRFssxBtdx+LWWfvprz
-         pMrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PnRFKRAedDIcgPdVOrDHp5lHsOtzTanDbhe4IRPxP8c=;
-        b=G4RyI1x0jlHoIrxZLFqbylNcktf1QSFsmV6IhqrKwTzb6dKVZqO2WgZzBhgr1him3M
-         DHOP6AdiPJcIfjjo7uFyXE5d4mx35e+iq39L4IJc/spi1rY+hv1uP+N8yBNa0IPFIi6o
-         DlHgkWKIk6VUAxv/yf6DNQfpn6rM+h4eVScMrOZrsl6P2XFxdwRLlTQMOHYmAoY4WOYE
-         LO2nQpxZnEc3aoFeSfm+nKJPglAE3TlCoRESqPfitWoGbZabHCaKYVs4ng8/NKD3+1yP
-         ef4ph7ZP74RSuIeYz/o8+DMg3mgQCBb7D859/ek+gjAWAdD3kyqqgwZrHpjQSDbrivTV
-         hCeA==
-X-Gm-Message-State: AOAM533TOrRUW3fGqFLIqMk1A30tEwqMxsUdzoyMn4Kaq8nlHpD0FerU
-        syLRDYds1CAI3tN8xkszs9g=
-X-Google-Smtp-Source: ABdhPJynmTgB9JqM7CUZrJw0aqDD1TaenZHzXqIb7z6sRPvOrLwgGp4XYR87l38q2708D4T+VhlkCg==
-X-Received: by 2002:a05:6a00:22c9:: with SMTP id f9mr19142584pfj.212.1597841650118;
-        Wed, 19 Aug 2020 05:54:10 -0700 (PDT)
-Received: from bobo.ozlabs.ibm.com (193-116-193-175.tpgi.com.au. [193.116.193.175])
-        by smtp.gmail.com with ESMTPSA id o16sm30903203pfu.188.2020.08.19.05.54.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 05:54:09 -0700 (PDT)
-From:   Nicholas Piggin <npiggin@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Anton Blanchard <anton@ozlabs.org>
-Subject: [PATCH RFC] mm: increase page waitqueue hash size
-Date:   Wed, 19 Aug 2020 22:53:49 +1000
-Message-Id: <20200819125349.558249-1-npiggin@gmail.com>
-X-Mailer: git-send-email 2.23.0
+        id S1728378AbgHSMxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 08:53:54 -0400
+Received: from muru.com ([72.249.23.125]:41134 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728124AbgHSMxw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 08:53:52 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 6B952807A;
+        Wed, 19 Aug 2020 12:53:49 +0000 (UTC)
+Date:   Wed, 19 Aug 2020 15:54:17 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Linux-OMAP <linux-omap@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Keerthy <j-keerthy@ti.com>, Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH 1/2] thermal: ti-soc-thermal: Enable addition power
+ management
+Message-ID: <20200819125417.GG2994@atomide.com>
+References: <20200818154633.5421-1-aford173@gmail.com>
+ <20200819045914.GS2994@atomide.com>
+ <CAHCN7xKBzRfByvdYBPS=uWF2QvECAOf5zGZE0-pxjJ6A2-d95g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHCN7xKBzRfByvdYBPS=uWF2QvECAOf5zGZE0-pxjJ6A2-d95g@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The page waitqueue hash is a bit small (256 entries) on very big systems. A
-16 socket 1536 thread POWER9 system was found to encounter hash collisions
-and excessive time in waitqueue locking at times. This was intermittent and
-hard to reproduce easily with the setup we had (very little real IO
-capacity). The thought is some important pages happened to collide in the
-hash, slowing down page locking, causing the problem to snowball.
+* Adam Ford <aford173@gmail.com> [200819 12:21]:
+> On Tue, Aug 18, 2020 at 11:58 PM Tony Lindgren <tony@atomide.com> wrote:
+> >
+> > * Adam Ford <aford173@gmail.com> [200818 15:46]:
+> > > @@ -1153,6 +1166,38 @@ static int ti_bandgap_suspend(struct device *dev)
+> > >       return err;
+> > >  }
+> > >
+> > > +static int bandgap_omap_cpu_notifier(struct notifier_block *nb,
+> > > +                               unsigned long cmd, void *v)
+> > > +{
+> > > +     struct ti_bandgap *bgp;
+> > > +
+> > > +     bgp = container_of(nb, struct ti_bandgap, nb);
+> > > +
+> > > +     spin_lock(&bgp->lock);
+> > > +     switch (cmd) {
+> > > +     case CPU_CLUSTER_PM_ENTER:
+> > > +             if (bgp->is_suspended)
+> > > +                     break;
+> > > +             ti_bandgap_save_ctxt(bgp);
+> > > +             ti_bandgap_power(bgp, false);
+> > > +             if (TI_BANDGAP_HAS(bgp, CLK_CTRL))
+> > > +                     clk_disable(bgp->fclock);
+> > > +             break;
+> > > +     case CPU_CLUSTER_PM_ENTER_FAILED:
+> > > +     case CPU_CLUSTER_PM_EXIT:
+> > > +             if (bgp->is_suspended)
+> > > +                     break;
+> > > +             if (TI_BANDGAP_HAS(bgp, CLK_CTRL))
+> > > +                     clk_enable(bgp->fclock);
+> > > +             ti_bandgap_power(bgp, true);
+> > > +             ti_bandgap_restore_ctxt(bgp);
+> > > +             break;
+> > > +     }
+> > > +     spin_unlock(&bgp->lock);
+> > > +
+> > > +     return NOTIFY_OK;
+> > > +}
+> >
+> > Hmm to me it looks like is_suspended is not used right now?
+> > I guess you want to set it in ti_bandgap_suspend() and clear
+> > it in ti_bandgap_resume()?
+> >
+> > Otherwise looks good to me, I can't test the power consumption
+> > right now though so you may want to check it to make sure
+> > device still hits off mode during idle.
+> 
+> I have a V2.  Do you want me to re-post 2/2 with V2 as no change, or
+> should I just submit this patch alone?
 
-An small test case was made where threads would write and fsync different
-pages, generating just a small amount of contention across many pages.
+Up to you, might make it easier for other folks to follow if the
+whole series is reposted.
 
-Increasing page waitqueue hash size to 262144 entries increased throughput
-by 182% while also reducing standard deviation 3x. perf before the increase:
+Regards,
 
-  36.23%  [k] _raw_spin_lock_irqsave                -      -
-              |
-              |--34.60%--wake_up_page_bit
-              |          0
-              |          iomap_write_end.isra.38
-              |          iomap_write_actor
-              |          iomap_apply
-              |          iomap_file_buffered_write
-              |          xfs_file_buffered_aio_write
-              |          new_sync_write
-
-  17.93%  [k] native_queued_spin_lock_slowpath      -      -
-              |
-              |--16.74%--_raw_spin_lock_irqsave
-              |          |
-              |           --16.44%--wake_up_page_bit
-              |                     iomap_write_end.isra.38
-              |                     iomap_write_actor
-              |                     iomap_apply
-              |                     iomap_file_buffered_write
-              |                     xfs_file_buffered_aio_write
-
-This patch uses alloc_large_system_hash to allocate a bigger system hash
-that scales somewhat with memory size.
-
-This hash could be made per-node, which should help reduce remote accesses
-on well localised workloads, but that adds some complexity with hotplug,
-so until we get a less artificial workload to test with, let's keep it
-simple.
-
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
----
-
- mm/filemap.c | 24 +++++++++++++++++++++---
- 1 file changed, 21 insertions(+), 3 deletions(-)
-
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 1aaea26556cc..d3cd158f0c3f 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -34,6 +34,7 @@
- #include <linux/security.h>
- #include <linux/cpuset.h>
- #include <linux/hugetlb.h>
-+#include <linux/memblock.h>
- #include <linux/memcontrol.h>
- #include <linux/cleancache.h>
- #include <linux/shmem_fs.h>
-@@ -969,19 +970,36 @@ EXPORT_SYMBOL(__page_cache_alloc);
-  * at a cost of "thundering herd" phenomena during rare hash
-  * collisions.
-  */
--#define PAGE_WAIT_TABLE_BITS 8
--#define PAGE_WAIT_TABLE_SIZE (1 << PAGE_WAIT_TABLE_BITS)
-+#define PAGE_WAIT_TABLE_SIZE (1 << page_wait_table_bits)
-+#if CONFIG_BASE_SMALL
-+static const unsigned int page_wait_table_bits = 4;
- static wait_queue_head_t page_wait_table[PAGE_WAIT_TABLE_SIZE] __cacheline_aligned;
-+#else
-+static unsigned int page_wait_table_bits __ro_after_init;
-+static wait_queue_head_t *page_wait_table __ro_after_init;
-+#endif
- 
- static wait_queue_head_t *page_waitqueue(struct page *page)
- {
--	return &page_wait_table[hash_ptr(page, PAGE_WAIT_TABLE_BITS)];
-+	return &page_wait_table[hash_ptr(page, page_wait_table_bits)];
- }
- 
- void __init pagecache_init(void)
- {
- 	int i;
- 
-+	if (!CONFIG_BASE_SMALL) {
-+		page_wait_table = alloc_large_system_hash("Page waitqueue hash",
-+							sizeof(wait_queue_head_t),
-+							0,
-+							21,
-+							0,
-+							&page_wait_table_bits,
-+							NULL,
-+							0,
-+							0);
-+	}
-+
- 	for (i = 0; i < PAGE_WAIT_TABLE_SIZE; i++)
- 		init_waitqueue_head(&page_wait_table[i]);
- 
--- 
-2.23.0
-
+Tony
