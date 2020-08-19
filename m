@@ -2,342 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04A6A249A9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 12:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DF5F249AA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 12:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727941AbgHSKlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 06:41:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727811AbgHSKlb (ORCPT
+        id S1727976AbgHSKmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 06:42:38 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:54191 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727807AbgHSKmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 06:41:31 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA21FC061345
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 03:41:29 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id v12so24811437ljc.10
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 03:41:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9RMBVqpjUp8MGjjw2ybmtBG8DxRTJjmlR17pvN82CuE=;
-        b=VjJV+eVo8zaCYQaKgtgJ0pUzGTNQijAvgEEQ6SitMzyLgqskQq3J0ZhTOPboxiT83f
-         DuCyLIadompPwaiq7TB+9l5MNiaM6p1Kw4io95V0RsgHMalVKgnTAoj7f4d8ML27u8Pz
-         xWHqcSkbsEEXewcTWfsH9KdRazv403T9IWUZqYMDoHdpnHE21tvKLs71/9dTkMBB6Hcd
-         Ct5yHtcrVHOVQO0KtalxoHYrlHTksbPN6iKwSJBQFnJ+5l7KI0tQDAl74Z+f009qIuVG
-         lZ97CSGxeuCpXGnYwGWG/yniCkiytwIGjIavaqgtjp/xnFE+/4V0oCdugxjv6LwF3hde
-         /KeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9RMBVqpjUp8MGjjw2ybmtBG8DxRTJjmlR17pvN82CuE=;
-        b=EHXhEVYGrEJvg8o3uX0DBYEF56rKoR+bXG+hAx9u3YO2VbEVXI7WoBu6sR1cBFstmx
-         tv8x8+EDFxsAPMqWD3wZQKdFj+DsXV88pYBtXjCUMoka9vPEKWSy0mNIdNPTKt5kJLva
-         a0MpjKPEtro5XxolgOrcRyFyY+yVpRCbzPmZv//BXtKW0GbQO6WOe6j+FyH/9S1O4ilV
-         4c4V+12gmHHrsZNvSiVmXm7V6d4OY+UM/P/O8IdvltqJdcJEvXj6AjwZ27y5Z44DbAp+
-         wlZEvUxkGPdf7UGN+k6p7aggf1NZB6EQ7I40wTuc4cM672C3E0fpeBWB/06pffhB61yP
-         WqFQ==
-X-Gm-Message-State: AOAM5304DCEsAlOw39EKLNIwa+c8p5MB/jJyTRcu6LYIeRbADYPNqeby
-        5H4Lzc/xSwlnmEkibuZ+lfW2Pg==
-X-Google-Smtp-Source: ABdhPJxB5YJT6wbIN36q7Ogrzvwu7k1N2Xfq47t7Mi/SsWYgztmona1BE9Qt2h8uCQrQlUSbQFRrGA==
-X-Received: by 2002:a2e:8844:: with SMTP id z4mr11265188ljj.124.1597833688226;
-        Wed, 19 Aug 2020 03:41:28 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-180-79.NA.cust.bahnhof.se. [98.128.180.79])
-        by smtp.gmail.com with ESMTPSA id y13sm6534822ljd.19.2020.08.19.03.41.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 03:41:27 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>, linux-pm@vger.kernel.org
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Benjamin Gaignard <benjamin.gaignard@st.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] PM / Domains: Add support for PM domain on/off notifiers for genpd
-Date:   Wed, 19 Aug 2020 12:40:57 +0200
-Message-Id: <20200819104057.318230-4-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200819104057.318230-1-ulf.hansson@linaro.org>
-References: <20200819104057.318230-1-ulf.hansson@linaro.org>
+        Wed, 19 Aug 2020 06:42:33 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id DA20F5C008F;
+        Wed, 19 Aug 2020 06:42:31 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 19 Aug 2020 06:42:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm1; bh=G
+        rhlYBHahFUnfdeextaZfRwniN2kk8VF9Pt6+h/0TuI=; b=AQNYrbOw0aMP2QXnQ
+        MxiJwCO0NtYEIuSS7CTcvGrEQGtpaXYYB/V4qn1314029uZLK3DN8WxJtFYNtIHv
+        vhiS4qVv2Hk9hVrudXu2FQ2lgkW8XrMwhvlBBOsai4BcuLyzycL+lqUhjygZni8K
+        /E9yi3Xqbt3TV327d8VrHxaLskSMRCcaNfYuKtbkOSop8H0WMrBYhLbDIxf5aCmI
+        dj6PgfujAxbYK3QSg85ylTxsAwPcpLDQk+sp9pC9eYQBETsuLXQ1kxS6WTBZAYx/
+        x6UJpD42oQ1coGOlYdhDcwv9soS47MwivXfLFqyiXYr5jUDCrdmO2h3K7Oy0OI80
+        kt9aA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=GrhlYBHahFUnfdeextaZfRwniN2kk8VF9Pt6+h/0T
+        uI=; b=TKWgKTRt1bliMpQJSGf1O8FjBHHZBZ9H2JPyejT+pUzpdPpgEbpEwRxat
+        k4GxdGGT8kauIcaEyOMAqG0QDbPB5GEyBN13iFNT98j/sRWuEoLfTaRkWflx3VaX
+        7ImPEZFL+5rJmDBdJPFNRwPBgy0L6ax1fV+s2KI8Y3Ln4/bmN6CxGJnRlX1vVBgA
+        U+5qdPLxRF3Q5cA18BOS3bx2fEDRpMh/JxhkdxT/YqYU9vV7VxAVq7CTHg/azOFk
+        Jjym2bwM/xukMynCiaKwZZ4unIWFJrvC7uVRqX7UuNSjR8+X0m1B+WQHy5ce8ChM
+        Qg0JfkZjHx/N1iVm+eUwGvEEQYwsg==
+X-ME-Sender: <xms:FwI9X16ENOIG2m0lkRUp4qWsnKGKyGOY-6Mrm96Ks49dcBU6WdGrcA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedruddtkedgvdehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepueehke
+    ehlefffeeiudetfeekjeffvdeuheejjeffheeludfgteekvdelkeduuddvnecukfhppeek
+    fedrkeeirdekledruddtjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:FwI9Xy7s5lG-00CtzeRBB3kBcuNgiLBJBR_jp1Bx_JLc2nmOJHv83w>
+    <xmx:FwI9X8c7TO3tppmN_-z3FOXFs2tzHMWYHtG1PPi6n3UzF_kDhkH4SA>
+    <xmx:FwI9X-KpgXlpVLpAKMXisqPJglUyp-_Ue69FAWYgehrl1bv2ivZA6A>
+    <xmx:FwI9X3hPOzmSZb82UkoyTdW-NkeQs2tDoMo5NOXllOoS3VPn6sAbMw>
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 440153280059;
+        Wed, 19 Aug 2020 06:42:31 -0400 (EDT)
+Date:   Wed, 19 Aug 2020 12:42:54 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Muni Sekhar <munisekharrms@gmail.com>
+Cc:     peter enderborg <peter.enderborg@sony.com>,
+        kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: Scheduler benchmarks
+Message-ID: <20200819104254.GA41946@kroah.com>
+References: <CAHhAz+inPwKYx_4qaujQ=bGG9twashiuqLhQQ-+vgHWF7FLhRA@mail.gmail.com>
+ <20200818143633.GA628293@kroah.com>
+ <CAHhAz+hG5kS5rhph4SaSLOEc5PgcSOTPWpiANLNpwotY9Zy6qQ@mail.gmail.com>
+ <20200818171457.GA736234@kroah.com>
+ <CAHhAz+ggd4DPFfWPB+h6Obkjebf5mv5cV6307oKEkEYMhAB3wQ@mail.gmail.com>
+ <20200818173656.GA748290@kroah.com>
+ <CAHhAz+hi9rh5w8hNyas0RkO4WwZXsSNh5g0nS710NSr6-ntioQ@mail.gmail.com>
+ <84362b8b-971f-fb89-115d-41d2457c24fd@sony.com>
+ <CAHhAz+iC_F5w5EoZP8-dBNm+DV0uNMva6Mr2uBdmZtejL1OH-w@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHhAz+iC_F5w5EoZP8-dBNm+DV0uNMva6Mr2uBdmZtejL1OH-w@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A device may have specific HW constraints that must be obeyed to, before
-its corresponding PM domain (genpd) can be powered off - and vice verse at
-power on. These constraints can't be managed through the regular runtime PM
-based deployment for a device, because the access pattern for it, isn't
-always request based. In other words, using the runtime PM callbacks to
-deal with the constraints doesn't work for these cases.
+On Wed, Aug 19, 2020 at 03:46:06PM +0530, Muni Sekhar wrote:
+> On Tue, Aug 18, 2020 at 11:45 PM peter enderborg
+> <peter.enderborg@sony.com> wrote:
+> >
+> > On 8/18/20 7:53 PM, Muni Sekhar wrote:
+> > > On Tue, Aug 18, 2020 at 11:06 PM Greg KH <greg@kroah.com> wrote:
+> > >> On Tue, Aug 18, 2020 at 11:01:35PM +0530, Muni Sekhar wrote:
+> > >>> On Tue, Aug 18, 2020 at 10:44 PM Greg KH <greg@kroah.com> wrote:
+> > >>>> On Tue, Aug 18, 2020 at 10:24:13PM +0530, Muni Sekhar wrote:
+> > >>>>> On Tue, Aug 18, 2020 at 8:06 PM Greg KH <greg@kroah.com> wrote:
+> > >>>>>> On Tue, Aug 18, 2020 at 08:00:11PM +0530, Muni Sekhar wrote:
+> > >>>>>>> Hi all,
+> > >>>>>>>
+> > >>>>>>> I’ve two identical Linux systems with only kernel differences.
+> > >>>>>> What are the differences in the kernels?
+> > >>>> You didn't answer this question, is this the same kernel source being
+> > >>>> compared here?  Same version?  Same compiler?  Everything identical?
+> > >>> Both systems are having exactly the same hardware configuration.
+> > >>> Compiler and kernel versions are different. One system has Ubuntu
+> > >>> 16.04.4 LTS(4.4.0-66-generic kernel with gcc version 5.4.0) kernel and
+> > >>> the other one has Ubuntu 18.04.4 LTS(4.15.0-91-generic kernel with gcc
+> > >>> version 7.5.0).
+> > >> Those are _very_ different kernel versions, with many years and tens of
+> > >> thousands of different changes between them.
+> > >>
+> > >> Hopefully the newer kernel is faster, so just stick with that :)
+> > > But unfortunately the newer kernel is very slow, that is the reason
+> > > for starting this investigation :)
+> > > Any type of help,  and guidelines to dive deeper will be highly appreciated.
+> >
+> > On the 4.4 kernel you dont have
+> >
+> > +CONFIG_RETPOLINE=y
+> > +CONFIG_INTEL_RDT=y
+> Thanks! That is helpful. Yes, I see 4.4 kernel don't have the above
+> two config options.
+> What analysis can be done to narrow down the root cause?
 
-For these reasons, let's instead add a PM domain power on/off notification
-mechanism to genpd. To add/remove a notifier for a device, the device must
-already have been attached to the genpd, which also means that it needs to
-be a part of the PM domain topology.
+"root cause" is you are comparing a kernel without any spectre/meltdown
+mitigations, with one that has it.
 
-To add/remove a notifier, let's introduce two genpd specific functions:
- - dev_pm_genpd_add|remove_notifier()
+Those mitigations are known to have a huge slowdown on some
+benchmarks/workloads, as you have shown here.
 
-Note that, to further clarify when genpd power on/off notifiers may be
-used, one can compare with the existing CPU_CLUSTER_PM_ENTER|EXIT
-notifiers. In the long run, the genpd power on/off notifiers should be able
-to replace them, but that requires additional genpd based platform support
-for the current users.
+If you don't like this, you can disable these changes on newer kernels,
+if you really really know what you are doing, but I strongly do not
+recommend it.
 
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
----
- drivers/base/power/domain.c | 130 ++++++++++++++++++++++++++++++++++--
- include/linux/pm_domain.h   |  15 +++++
- 2 files changed, 141 insertions(+), 4 deletions(-)
+Also you can complain to your hardware vendors for selling you broken
+hardware :)
 
-diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-index 4b787e1ff188..9cb85a5e8342 100644
---- a/drivers/base/power/domain.c
-+++ b/drivers/base/power/domain.c
-@@ -545,13 +545,21 @@ static int genpd_power_off(struct generic_pm_domain *genpd, bool one_dev_on,
- 	if (!genpd->gov)
- 		genpd->state_idx = 0;
- 
-+	/* Notify consumers that we are about to power off. */
-+	ret = raw_notifier_call_chain(&genpd->power_notifiers, GENPD_STATE_OFF,
-+				      NULL);
-+	if (ret)
-+		return ret;
-+
- 	/* Don't power off, if a child domain is waiting to power on. */
--	if (atomic_read(&genpd->sd_count) > 0)
--		return -EBUSY;
-+	if (atomic_read(&genpd->sd_count) > 0) {
-+		ret = -EBUSY;
-+		goto busy;
-+	}
- 
- 	ret = _genpd_power_off(genpd, true);
- 	if (ret)
--		return ret;
-+		goto busy;
- 
- 	genpd->status = GENPD_STATE_OFF;
- 	genpd_update_accounting(genpd);
-@@ -564,6 +572,9 @@ static int genpd_power_off(struct generic_pm_domain *genpd, bool one_dev_on,
- 	}
- 
- 	return 0;
-+busy:
-+	raw_notifier_call_chain(&genpd->power_notifiers, GENPD_STATE_ON, NULL);
-+	return ret;
- }
- 
- /**
-@@ -606,6 +617,9 @@ static int genpd_power_on(struct generic_pm_domain *genpd, unsigned int depth)
- 	if (ret)
- 		goto err;
- 
-+	/* Inform consumers that we have powered on. */
-+	raw_notifier_call_chain(&genpd->power_notifiers, GENPD_STATE_ON, NULL);
-+
- 	genpd->status = GENPD_STATE_ON;
- 	genpd_update_accounting(genpd);
- 
-@@ -948,9 +962,18 @@ static void genpd_sync_power_off(struct generic_pm_domain *genpd, bool use_lock,
- 
- 	/* Choose the deepest state when suspending */
- 	genpd->state_idx = genpd->state_count - 1;
--	if (_genpd_power_off(genpd, false))
-+
-+	/* Notify consumers that we are about to power off. */
-+	if (raw_notifier_call_chain(&genpd->power_notifiers,
-+				    GENPD_STATE_OFF, NULL))
- 		return;
- 
-+	if (_genpd_power_off(genpd, false)) {
-+		raw_notifier_call_chain(&genpd->power_notifiers,
-+					GENPD_STATE_ON, NULL);
-+		return;
-+	}
-+
- 	genpd->status = GENPD_STATE_OFF;
- 
- 	list_for_each_entry(link, &genpd->child_links, child_node) {
-@@ -998,6 +1021,9 @@ static void genpd_sync_power_on(struct generic_pm_domain *genpd, bool use_lock,
- 
- 	_genpd_power_on(genpd, false);
- 
-+	/* Inform consumers that we have powered on. */
-+	raw_notifier_call_chain(&genpd->power_notifiers, GENPD_STATE_ON, NULL);
-+
- 	genpd->status = GENPD_STATE_ON;
- }
- 
-@@ -1593,6 +1619,101 @@ int pm_genpd_remove_device(struct device *dev)
- }
- EXPORT_SYMBOL_GPL(pm_genpd_remove_device);
- 
-+/**
-+ * dev_pm_genpd_add_notifier - Add a genpd power on/off notifier for @dev
-+ *
-+ * @dev: Device that should be associated with the notifier
-+ * @nb: The notifier block to register
-+ *
-+ * Users may call this function to add a genpd power on/off notifier for an
-+ * attached @dev. Only one notifier per device is allowed. The notifier is
-+ * sent when genpd is powering on/off the PM domain.
-+ *
-+ * It is assumed that the user guarantee that the genpd wouldn't be detached
-+ * while this routine is getting called.
-+ *
-+ * Returns 0 on success and negative error values on failures.
-+ */
-+int dev_pm_genpd_add_notifier(struct device *dev, struct notifier_block *nb)
-+{
-+	struct generic_pm_domain *genpd;
-+	struct generic_pm_domain_data *gpd_data;
-+	int ret;
-+
-+	genpd = dev_to_genpd_safe(dev);
-+	if (!genpd)
-+		return -ENODEV;
-+
-+	if (WARN_ON(!dev->power.subsys_data ||
-+		     !dev->power.subsys_data->domain_data))
-+		return -EINVAL;
-+
-+	gpd_data = to_gpd_data(dev->power.subsys_data->domain_data);
-+	if (gpd_data->power_nb)
-+		return -EEXIST;
-+
-+	genpd_lock(genpd);
-+	ret = raw_notifier_chain_register(&genpd->power_notifiers, nb);
-+	genpd_unlock(genpd);
-+
-+	if (ret) {
-+		dev_warn(dev, "failed to add notifier for PM domain %s\n",
-+			 genpd->name);
-+		return ret;
-+	}
-+
-+	gpd_data->power_nb = nb;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(dev_pm_genpd_add_notifier);
-+
-+/**
-+ * dev_pm_genpd_remove_notifier - Remove a genpd power on/off notifier for @dev
-+ *
-+ * @dev: Device that is associated with the notifier
-+ *
-+ * Users may call this function to remove a genpd power on/off notifier for an
-+ * attached @dev.
-+ *
-+ * It is assumed that the user guarantee that the genpd wouldn't be detached
-+ * while this routine is getting called.
-+ *
-+ * Returns 0 on success and negative error values on failures.
-+ */
-+int dev_pm_genpd_remove_notifier(struct device *dev)
-+{
-+	struct generic_pm_domain *genpd;
-+	struct generic_pm_domain_data *gpd_data;
-+	int ret;
-+
-+	genpd = dev_to_genpd_safe(dev);
-+	if (!genpd)
-+		return -ENODEV;
-+
-+	if (WARN_ON(!dev->power.subsys_data ||
-+		     !dev->power.subsys_data->domain_data))
-+		return -EINVAL;
-+
-+	gpd_data = to_gpd_data(dev->power.subsys_data->domain_data);
-+	if (!gpd_data->power_nb)
-+		return -ENODEV;
-+
-+	genpd_lock(genpd);
-+	ret = raw_notifier_chain_unregister(&genpd->power_notifiers,
-+					    gpd_data->power_nb);
-+	genpd_unlock(genpd);
-+
-+	if (ret) {
-+		dev_warn(dev, "failed to remove notifier for PM domain %s\n",
-+			 genpd->name);
-+		return ret;
-+	}
-+
-+	gpd_data->power_nb = NULL;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(dev_pm_genpd_remove_notifier);
-+
- static int genpd_add_subdomain(struct generic_pm_domain *genpd,
- 			       struct generic_pm_domain *subdomain)
- {
-@@ -1763,6 +1884,7 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
- 	INIT_LIST_HEAD(&genpd->parent_links);
- 	INIT_LIST_HEAD(&genpd->child_links);
- 	INIT_LIST_HEAD(&genpd->dev_list);
-+	RAW_INIT_NOTIFIER_HEAD(&genpd->power_notifiers);
- 	genpd_lock_init(genpd);
- 	genpd->gov = gov;
- 	INIT_WORK(&genpd->power_off_work, genpd_power_off_work_fn);
-diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
-index 66f3c5d64d81..3b2b561ce846 100644
---- a/include/linux/pm_domain.h
-+++ b/include/linux/pm_domain.h
-@@ -112,6 +112,7 @@ struct generic_pm_domain {
- 	cpumask_var_t cpus;		/* A cpumask of the attached CPUs */
- 	int (*power_off)(struct generic_pm_domain *domain);
- 	int (*power_on)(struct generic_pm_domain *domain);
-+	struct raw_notifier_head power_notifiers; /* Power on/off notifiers */
- 	struct opp_table *opp_table;	/* OPP table of the genpd */
- 	unsigned int (*opp_to_performance_state)(struct generic_pm_domain *genpd,
- 						 struct dev_pm_opp *opp);
-@@ -178,6 +179,7 @@ struct generic_pm_domain_data {
- 	struct pm_domain_data base;
- 	struct gpd_timing_data td;
- 	struct notifier_block nb;
-+	struct notifier_block *power_nb;
- 	int cpu;
- 	unsigned int performance_state;
- 	void *data;
-@@ -204,6 +206,8 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
- 		  struct dev_power_governor *gov, bool is_off);
- int pm_genpd_remove(struct generic_pm_domain *genpd);
- int dev_pm_genpd_set_performance_state(struct device *dev, unsigned int state);
-+int dev_pm_genpd_add_notifier(struct device *dev, struct notifier_block *nb);
-+int dev_pm_genpd_remove_notifier(struct device *dev);
- 
- extern struct dev_power_governor simple_qos_governor;
- extern struct dev_power_governor pm_domain_always_on_gov;
-@@ -251,6 +255,17 @@ static inline int dev_pm_genpd_set_performance_state(struct device *dev,
- 	return -ENOTSUPP;
- }
- 
-+static inline int dev_pm_genpd_add_notifier(struct device *dev,
-+					    struct notifier_block *nb)
-+{
-+	return -ENOTSUPP;
-+}
-+
-+static inline int dev_pm_genpd_remove_notifier(struct device *dev)
-+{
-+	return -ENOTSUPP;
-+}
-+
- #define simple_qos_governor		(*(struct dev_power_governor *)(NULL))
- #define pm_domain_always_on_gov		(*(struct dev_power_governor *)(NULL))
- #endif
--- 
-2.25.1
+> Any example of reference could be helpful to understand.
 
+Look up Spectre and Meltdown for many many examples of what happened and
+what went wrong with chip designs and how we had to fix these things in
+the kernel a few years ago.
+
+greg k-h
