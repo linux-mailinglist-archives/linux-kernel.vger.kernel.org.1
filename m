@@ -2,102 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58BD249BBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 13:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D482E249BC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 13:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728081AbgHSL2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 07:28:41 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:43158 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728087AbgHSL2Q (ORCPT
+        id S1727818AbgHSLaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 07:30:03 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:40514 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727019AbgHSL3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 07:28:16 -0400
-Received: by mail-io1-f72.google.com with SMTP id f19so14011449iol.10
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 04:28:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=fZ+jHgbDVnTePiqQLf+qDPU79cvKlvXb87FOaXtnhP4=;
-        b=Zb9yA8a19zdq5w9ohsC36wWjutLWejKB7av4oBBSY6YsgtJuCdBCJDAjrPAxKhHh+H
-         7PCBGXcXPPv7gulvqYgvSnfClniRRudzqD1YYIbq6zLNaWfNUXB8o6Ug/Zw4jYcru+5J
-         n3xm0jmJbroSsMmp4XEuIJBjCUlnrKDYrhTMTiuyLwqitFs0VvLYfECLnPFjrhTQKqrH
-         SIisxanDAqoKpUM/asOeT5p75U7d+DyG12u1XYNQG+A0+pNfutMjT6X+JFyD9JMD3rFv
-         rWziaTAmGFdwCxat2srJxH+RBrb8ZUSWfGIJw7KByS6r92Y3MLE3hdAgtjAYWRspFSuW
-         oK7w==
-X-Gm-Message-State: AOAM530ETpJwav/S7krBqWMOFcxErOuZnGv3ouPMdASuczMcLWYEzS+9
-        IcN+Y/jz97BocP5tIBB8gP6gn9Dmbmc4tAQfWxRZKJqgkMgf
-X-Google-Smtp-Source: ABdhPJyYxCaTjoXI5lwBslHbXVUaP0mdunUILc4ZtNELRPRKvkHL8k2pW1d50vmUXXUCxuPOh/VozsgqiR+8Aerk512vkbZi4J8M
+        Wed, 19 Aug 2020 07:29:52 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07JBTXxs022945;
+        Wed, 19 Aug 2020 06:29:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1597836573;
+        bh=uS246ZYUJqNZhzlIuMgrKNWH9MlogOcLDXgYSwY6hDs=;
+        h=Subject:To:References:From:Date:In-Reply-To;
+        b=sdrnjhxyGwBIRLsx9ey1CcGNuzwCbU4h+jQG4q4rSvBX8t3P7A5KsVmZVFkwe9SOU
+         AIEtcV1Aoc80nM3DLjL5tPrnc850kQC8w21CDnpyheTbYZNTkc+TswSYJensvvoE8h
+         x++qF+h4G3sv4WBwOxrlnEcpfFGe/D1uB2aJSIWA=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07JBTXTQ059446;
+        Wed, 19 Aug 2020 06:29:33 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 19
+ Aug 2020 06:29:33 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 19 Aug 2020 06:29:33 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07JBTTcq129102;
+        Wed, 19 Aug 2020 06:29:30 -0500
+Subject: Re: [PATCH] gpio: omap: improve coding style for pin config flags
+To:     Drew Fustini <drew@beagleboard.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        <linux-omap@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+References: <20200722120755.230741-1-drew@beagleboard.org>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <220612cc-8f76-cb7a-a98f-0464b7728e83@ti.com>
+Date:   Wed, 19 Aug 2020 14:29:29 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:d7cd:: with SMTP id g13mr9475062ilq.51.1597836495670;
- Wed, 19 Aug 2020 04:28:15 -0700 (PDT)
-Date:   Wed, 19 Aug 2020 04:28:15 -0700
-In-Reply-To: <0000000000008e983905ac9d0182@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bbd1ff05ad394c92@google.com>
-Subject: Re: KASAN: use-after-free Read in rtl_fw_do_work
-From:   syzbot <syzbot+ff4b26b0bfbff2dc7960@syzkaller.appspotmail.com>
-To:     andreyknvl@google.com, davem@davemloft.net, kuba@kernel.org,
-        kvalo@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, pkshih@realtek.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200722120755.230741-1-drew@beagleboard.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
 
-HEAD commit:    28157b8c USB: Better name for __check_usb_generic()
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-console output: https://syzkaller.appspot.com/x/log.txt?x=1064697a900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ccafc70ac3d5f49c
-dashboard link: https://syzkaller.appspot.com/bug?extid=ff4b26b0bfbff2dc7960
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f0a00e900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=162bc289900000
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ff4b26b0bfbff2dc7960@syzkaller.appspotmail.com
+On 22/07/2020 15:07, Drew Fustini wrote:
+> Change the handling of pin config flags from if/else to switch
+> statement to make the code more readable and cleaner.
+> 
+> Suggested-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> ---
+>   drivers/gpio/gpio-omap.c | 13 +++++++++----
+>   1 file changed, 9 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpio/gpio-omap.c b/drivers/gpio/gpio-omap.c
+> index e0eada82178c..7fbe0c9e1fc1 100644
+> --- a/drivers/gpio/gpio-omap.c
+> +++ b/drivers/gpio/gpio-omap.c
+> @@ -899,13 +899,18 @@ static int omap_gpio_set_config(struct gpio_chip *chip, unsigned offset,
+>   	u32 debounce;
+>   	int ret = -ENOTSUPP;
+>   
+> -	if ((pinconf_to_config_param(config) == PIN_CONFIG_BIAS_DISABLE) ||
+> -	    (pinconf_to_config_param(config) == PIN_CONFIG_BIAS_PULL_UP) ||
+> -	    (pinconf_to_config_param(config) == PIN_CONFIG_BIAS_PULL_DOWN)) {
+> +	switch (pinconf_to_config_param(config)) {
+> +	case PIN_CONFIG_BIAS_DISABLE:
+> +	case PIN_CONFIG_BIAS_PULL_UP:
+> +	case PIN_CONFIG_BIAS_PULL_DOWN:
+>   		ret = gpiochip_generic_config(chip, offset, config);
+> -	} else if (pinconf_to_config_param(config) == PIN_CONFIG_INPUT_DEBOUNCE) {
+> +		break;
+> +	case PIN_CONFIG_INPUT_DEBOUNCE:
+>   		debounce = pinconf_to_config_argument(config);
+>   		ret = omap_gpio_debounce(chip, offset, debounce);
+> +		break;
+> +	default:
+> +		break;
+>   	}
+>   
+>   	return ret;
+> 
 
-usb 6-1: Direct firmware load for rtlwifi/rtl8192cufw_TMSC.bin failed with error -2
-usb 6-1: Direct firmware load for rtlwifi/rtl8192cufw.bin failed with error -2
-==================================================================
-BUG: KASAN: use-after-free in rtl_fw_do_work+0x407/0x430 drivers/net/wireless/realtek/rtlwifi/core.c:87
-Read of size 8 at addr ffff8881ca9aff38 by task kworker/0:1/328
+Thank you.
+Acked-by: Grygorii Strashko <grygorii.strashko@ti.com>
 
-CPU: 0 PID: 328 Comm: kworker/0:1 Not tainted 5.9.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events request_firmware_work_func
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0xf6/0x16e lib/dump_stack.c:118
- print_address_description.constprop.0+0x1c/0x210 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x37/0x7c mm/kasan/report.c:530
- rtl_fw_do_work+0x407/0x430 drivers/net/wireless/realtek/rtlwifi/core.c:87
- request_firmware_work_func+0x126/0x250 drivers/base/firmware_loader/main.c:1001
- process_one_work+0x94c/0x15f0 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x392/0x470 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-The buggy address belongs to the page:
-page:00000000fcdef481 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1ca9af
-flags: 0x200000000000000()
-raw: 0200000000000000 0000000000000000 ffffea00072a6bc8 0000000000000000
-raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff8881ca9afe00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff8881ca9afe80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->ffff8881ca9aff00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                                        ^
- ffff8881ca9aff80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff8881ca9b0000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
-
+-- 
+Best regards,
+grygorii
