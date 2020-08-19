@@ -2,125 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C9E624A48F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 19:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C389524A491
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 19:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726646AbgHSRCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 13:02:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726482AbgHSRCG (ORCPT
+        id S1726786AbgHSRCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 13:02:50 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:37204 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726703AbgHSRCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 13:02:06 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5069AC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 10:02:05 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id g13so11184699ioo.9
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 10:02:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c5R0bKLD4IQJAxbXV/MHy5oB2ZKOef13BK1brjzJ63Q=;
-        b=Il4mUn2KElTQdKcXtaNWURCYaRHxLSwjgiUP5m1oe7/nNMPk3by8+5BUYv52G22R9c
-         g7BTGrNNW6WBMf2aIXKP7uTyJRrgbLDQ0lIW4dFwtp8SoIAY0vpZkh/TlqIe4o73ye0a
-         0yWWxkBtp0WUT6dGO855eUjmVjnJRQXI6MjENle0kyb0I1c9uWSatRY1Zd8J1J3CAr5z
-         dsnJgvWWdcRSbry8lnt4BaRfwbuWX046gwBGDd0HHZlUBjr7fXlZgCSGjgAeJLNbyS0p
-         hVFvhgK+gTr3jXAMqfr5n+Sxezdk4w7HEVfDJYClNLuM0ZZLsFXRSgtzWNIy6wXApI6X
-         A9gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c5R0bKLD4IQJAxbXV/MHy5oB2ZKOef13BK1brjzJ63Q=;
-        b=dZkinArVfJvg6KGUaPJhfZl7V4zEUBerxDAaMi+gTiioXxXsTlZya1HweqKaeVP/rV
-         bOplle05o9jULuQIRcLyQUqloVybAK+wv5cee/egw9f8OEshqxCeaYl794vqJjMo8Ji3
-         FuZSCIk2tTcIEFdxkE0nzwrw4mPP/d3XioqHQH/o6zF0V2H4hGLF/sKaOxBD4u8/DX4i
-         uplU/r6UmWAg06Gvmmryg69SKEjjLLCy/EUPvNkaFyFVXo+8Lx8iXS1PuKB7xqWfgLaw
-         NCmPmcZwacNnwlh4eV86CG7tVZs/YYvwLL3y9muXmwxIaQDrracY0qISit/uhDulYjki
-         UxOw==
-X-Gm-Message-State: AOAM531kJrOlTe8iiRMEf2P8Mxz7YYVnioLtDOJx1YR9o5GYn8T5vS3n
-        eYmJGo/EU9z/0Z2fwNdltEBZieW5qjbPLaFDN2kPRA==
-X-Google-Smtp-Source: ABdhPJz6U3qxfQY7FyyjwoYDmcSIZxEIGX20jsPbcikmWABU8VgSxQUtwLuL76KK7Ncz4aahl8skE/4PZ2aPsssIy2c=
-X-Received: by 2002:a05:6638:d95:: with SMTP id l21mr23962229jaj.98.1597856524486;
- Wed, 19 Aug 2020 10:02:04 -0700 (PDT)
+        Wed, 19 Aug 2020 13:02:45 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07JGxhRT014140;
+        Wed, 19 Aug 2020 10:02:23 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=facebook;
+ bh=ZcFOSzU6RUdfSJBC5hlVZ/GUeek/NMMrBPm1OAI6qso=;
+ b=ZDJ0ZjKL74Iy+uQLPRC0iv16AjfqVSa4zvy3V1UJ2SM/DqINQXI0RpAuYTKEJdTPrRE2
+ o4NfCnv9XKcC7G0PxVkJ4GA04pLFXINAP/A1CCn+L70IZBNuOFpbesQZQ+7s54h+eYPl
+ T8UK79wttqUzVhWpr/53uwITAkXHYH7SsSA= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3304p81reh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 19 Aug 2020 10:02:22 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 19 Aug 2020 10:02:20 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D3OyvA2OgyAUvbo4os7uBU1fY/0UKyg/t1/22xWK66IlSJhsJpq4Ix4R98yohSoKAdaPz+ri86LvFJtKKF60Hjaa/vjDLW9l3XA5LN8MdXVE1CijqBMjxwjdK0TVZ/euThhsD0UH1eJJ3ffLAToILJHkA8WTnK3OdSboQvyfIB1GojRHW6mbag+1+IfirNudPjukr9q5kMPUnYoM1TmfF+kD3UhtTgRVGv8qa7Qc7HaHO3bCtBeBQDMpM7L5oNDYRiWIwIWT2scNe/3mlQPzkk4lI2ia7w1VhmNngTK8lgu84XHaGDKQoKtJc8pIQieuVxTpKlTyYK5zWIsMgFmu8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZcFOSzU6RUdfSJBC5hlVZ/GUeek/NMMrBPm1OAI6qso=;
+ b=mtoBA5h/eksNSKE+UlOUm6LkacuWTwCfQHSiHcQ3VT8bTjPXXSGHlnf/UEy8LMkpBd5xrWMtmhK2jN9QNmdOzx6vvqtLbcbqlt7yJyCT3G01GHikkxk+veritB7Y7Dkq1xByDnqQJWt3cVX8YoDy4ChQYuy/Z0dssM1vmy1Fs4bx81Bx+hCp1WpHDqVD4sj/1F96bzthV0TNqPDF66OX2Y7ab+dDBtgaGpK/T7NSkuaO8yAgv7nbu72DYltnvYpeWqX+8/JNvC9h4PipgS60VLoCm4oWy53AGwiCnFu0omR0VuDqPlAFwMP1hrgcLSr8STe7PB6ceM4pA+TmDsrpjg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZcFOSzU6RUdfSJBC5hlVZ/GUeek/NMMrBPm1OAI6qso=;
+ b=iCCbBwu7q1fwb8yMChQsNNcqlidUidW34Go2/c67gevB14p+uyXtiUN+2bVvaEubXCutmhE9gCTasSDN94IMJUTJomXRGE91kjm3FaXtk6CXUsxHF3BZaNxOSmOnzQQmdjDmm5re4K7im4ME25lNYb/EUDj+X4iREyT6UlvpC9E=
+Authentication-Results: vivo.com; dkim=none (message not signed)
+ header.d=none;vivo.com; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB3191.namprd15.prod.outlook.com (2603:10b6:a03:107::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.15; Wed, 19 Aug
+ 2020 17:02:19 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::d489:8f7f:614e:1b99]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::d489:8f7f:614e:1b99%7]) with mapi id 15.20.3283.018; Wed, 19 Aug 2020
+ 17:02:19 +0000
+Date:   Wed, 19 Aug 2020 10:02:13 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     =?utf-8?B?5rGf56a5?= <jyu.jiang@vivo.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        zhanglin <zhang.lin16@zte.com.cn>,
+        Kees Cook <keescook@chromium.org>,
+        Andrey Ignatov <rdna@fb.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <opensource.kernel@vivo.com>
+Subject: Re: [PATCH] bpf: Add bpf_skb_get_sock_comm() helper
+Message-ID: <20200819170213.ji7a4bwpeiei24i6@kafai-mbp.dhcp.thefacebook.com>
+References: <20200810175529.qdsbziyoo6myw2dr@kafai-mbp.dhcp.thefacebook.com>
+ <AFoAPQBqDUaFCjrcrhfZkKrn.3.1597817456174.Hmail.jyu.jiang@vivo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <AFoAPQBqDUaFCjrcrhfZkKrn.3.1597817456174.Hmail.jyu.jiang@vivo.com>
+X-ClientProxiedBy: BY5PR20CA0002.namprd20.prod.outlook.com
+ (2603:10b6:a03:1f4::15) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
 MIME-Version: 1.0
-References: <20200817193140.3659956-1-mathieu.poirier@linaro.org> <ede047ea-ad6a-1f7e-d597-b47bc87271c3@huawei.com>
-In-Reply-To: <ede047ea-ad6a-1f7e-d597-b47bc87271c3@huawei.com>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Wed, 19 Aug 2020 11:01:38 -0600
-Message-ID: <CANLsYkw2aBJmrHV+8_bDUtgD-Jfvndqz2kOfNNcBBMM+vztkug@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: Add entries for CoreSight and Arm SPE
-To:     John Garry <john.garry@huawei.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>, Leo Yan <leo.yan@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:af4e) by BY5PR20CA0002.namprd20.prod.outlook.com (2603:10b6:a03:1f4::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24 via Frontend Transport; Wed, 19 Aug 2020 17:02:18 +0000
+X-Originating-IP: [2620:10d:c090:400::5:af4e]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 88292ce6-0662-4e96-a863-08d84461a1ce
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3191:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB31912095D0C9C0B445F73692D55D0@BYAPR15MB3191.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8PYG0BtLBNSEtbGsojLMo+OsZlKMip16iumb8fYMQZcZS07Ekcs8KTJAyUz5Gsuvm27+NtMtiMwg2tJ62C/gx4RoclyxJuaRzC8cEBJkUxUH0h2RMeYt+syfJXxf33AsA11sR9T27SVN5Nj4iEcE9zYFUf9vnMoMKBAm2QGxNIUFix1G4HtHRQ2e6UraHFEsPNfuFUsb07bg/rF7wya1vwJMgczXidTRNjcMwKaQnm+PMAr2owBpVYyjvIgFy+Vv98Nu6o8OMpnJuTyc2bWUkUSA4z3db3UN9qcYurf2qPNG1qWYTojG3+RKLjsARMHS
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(39860400002)(346002)(376002)(396003)(55016002)(52116002)(2906002)(4326008)(83380400001)(6666004)(478600001)(7696005)(9686003)(66476007)(1076003)(8936002)(8676002)(66946007)(5660300002)(316002)(186003)(66556008)(54906003)(6916009)(16526019)(7416002)(6506007)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: NvH47Q97WK2s+BxE7eZd72bL/hcQ37BYzc2gLiIa2oefYVuYw+1hHLltaZkwUDygHZBrUplD9rt2y6wUF39NpWcvMgMssDnOusjNMgoB9epgr+04jZkRwqA0VBcCzPdC2aSUMsDMQreSfSRUr+1KGQHUYQoyyDnElZEcady+KgOVgB/BU9vBbOAuICNxorFLiVJjdW+Npaf07COw2GkenPuEDnjlbhvuYt2lnESmhTSPHuIkyiVlWEpfVt7olAw/gaW850QFkFHAso6MD6lzsAxK3sAD3goK/OSm3a297qnJMq+DxqVyBvFzh4pbKbad46ZKfW51zzArpqbvgUOVLufk4N6/aKZc/+SbQ0bWd8yexR6X/b6hLtsgOSi/BBfp1ge2jek8epZezYxAwat4fRa6KxggIKEzKVvRKW2F28bD+RpYpZAIMY9FwVjrcboaKLUv62EtIvdMc0Yro2sDUbjCKVJdLVTBOik+QBpMek+1w9haxBF0WFpEkqDUH0coJOkpYGoy0/YIg8ogJcFe5+uoGykUJr2/r/IDdnetOrYcBt621Ody1QVJ0bf+jJ5IQtWcK7rXkraKHjopH7R1Gn0IAJSll1Ijk6qnGDMtEW27dQFtxipdm6KW6sQovrlp7DeVx44JCUqRosxQJvs7/qAbM4csmxUO1LHBTEc9SaM=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 88292ce6-0662-4e96-a863-08d84461a1ce
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Aug 2020 17:02:19.4484
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: D9g/opFVvHgGhwXoxkFFvQyYDJn2pfWZ+8Yx2N+jVVqjY1nl7wBPhCO1QqGZrXQv
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3191
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-19_10:2020-08-19,2020-08-19 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=1
+ adultscore=0 priorityscore=1501 malwarescore=0 mlxlogscore=999
+ clxscore=1015 spamscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0
+ phishscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2008190142
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Aug 2020 at 11:56, John Garry <john.garry@huawei.com> wrote:
->
-> On 17/08/2020 20:31, Mathieu Poirier wrote:
-> > Add entries for perf tools elements related to the support of
-> > Arm CoreSight and Arm SPE.
->
-> Thanks for doing this...
->
-> >
-> > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > ---
-> >   MAINTAINERS | 10 ++++++++++
-> >   1 file changed, 10 insertions(+)
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 4e2698cc7e23..f9bb76baeec9 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -13427,8 +13427,18 @@ F:   tools/perf/
-> >   PERFORMANCE EVENTS SUBSYSTEM ARM64 PMU EVENTS
-> >   R:  John Garry <john.garry@huawei.com>
-> >   R:  Will Deacon <will@kernel.org>
-> > +R:   Mathieu Poirier <mathieu.poirier@linaro.org>
-> > +R:   Leo Yan <leo.yan@linaro.org>
-> >   L:  linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-> >   S:  Supported
-> > +F:   tools/build/feature/test-libopencsd.c
-> > +F:   tools/perf/arch/arm/util/auxtrace.c
-> > +F:   tools/perf/arch/arm/util/cs-etm.*
-> > +F:   tools/perf/arch/arm/util/pmu.c
-> > +F:   tools/perf/arch/arm64/util/arm-spe.c
-> > +F:   tools/perf/util/arm-spe.h
-> > +F:   tools/perf/util/cs-etm-decoder/*
-> > +F:   tools/perf/util/cs-etm.*
->
-> But from the previous discussion, I thought that we wanted an entry to
-> cover all tools/perf/arch/arm64/ and other related folders. Or was it
-> just put all special interest parts (like SPE support) under one entry
-> and leave the other arm/arm64 parts to be caught by "PERFORMANCE EVENTS
-> SUBSYSTEM" entry?
+On Wed, Aug 19, 2020 at 02:10:56PM +0800, 江禹 wrote:
+> Dear Martin,
+> 
+> 
+> > One possibility is to use the "sk_bpf_storage" member immediately above
+> > instead of adding "sk_task_com[]".
+> > 
+> > It is an extensible sk storage for bpf.  There are examples in selftests,
+> > e.g tools/testing/selftests/bpf/progs/udp_limits.c which creates sk storage
+> > at socket creation time.  Another hook point option could be "connect()"
+> > for tcp, i.e. "cgroup/connect[46]".
+> > 
+> > Search "BPF_MAP_TYPE_SK_STORAGE" under the selftests/bpf for other examples.
+> > 
+> > It seems there is already a "bpf_get_current_comm()" helper which
+> > could be used to initialize the task comm string in the bpf sk storage.
+> > 
+> > btw, bpf-next is still closed.
+> 
+> 
+> I have rewrite my code according to your suggestion.  In general,it works as designed.
+> 
+> 
+> But the task comm string got from "bpf_get_current_comm()" helper is belong to specific thread.
+> It is not a obvious label for skb tracing. More reasonable tracing key is the task comm of process
+> which this skb belongs.
+>  
+> It seems a new bpf helper is still needed.
+May be.  It is not clear to me whether it is better to account this skb
+to its process or to its thread.  I think this depends on the
+use-case/assumption.
 
-I do not have the time to maintain anything outside of coresight -
-listing individual files as I did removes any ambiguity on that front.
-I'm happy to add tools/perf/arch/arm and tools/perf/arch/arm64/ if you
-agree to maintain them.  In that case you will have to be more
-specific about the "other related folders" you are referring to above.
+If bpf_get_current_comm() does not get what you need,
+then another helper may be added to get the process comm.
+This new helper may be useful for other use cases also.
 
-Thanks,
-Mathieu
-
->
-> Cheers,
-> John
->
-> >   F:  tools/perf/pmu-events/arch/arm64/
-> >
-> >   PERSONALITY HANDLING
-> >
->
+btw, Have your thought about tracing at the sendmsg time?
+e.g. tcp_sendmsg()?
