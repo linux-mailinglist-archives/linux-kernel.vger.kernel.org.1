@@ -2,121 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F6124A1E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 16:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A022424A1E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 16:38:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728648AbgHSOiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 10:38:13 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:45700 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727854AbgHSOiJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 10:38:09 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id A4F2128CF67
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
+        id S1728619AbgHSOiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 10:38:08 -0400
+Received: from mail.ispras.ru ([83.149.199.84]:58214 "EHLO mail.ispras.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726792AbgHSOiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 10:38:04 -0400
+Received: from kleverstation.intra.ispras.ru (unknown [10.10.2.220])
+        by mail.ispras.ru (Postfix) with ESMTPS id 59B7440A206D;
+        Wed, 19 Aug 2020 14:37:59 +0000 (UTC)
+From:   Nadezda Lutovinova <lutovinova@ispras.ru>
+To:     Peter Senna Tschudin <peter.senna@gmail.com>
+Cc:     Nadezda Lutovinova <lutovinova@ispras.ru>,
+        Martin Donnelly <martin.donnelly@ge.com>,
+        Martyn Welch <martyn.welch@collabora.co.uk>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
         Jonas Karlman <jonas@kwiboo.se>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Jeffrey Kardatzke <jkardatzke@chromium.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
         Jernej Skrabec <jernej.skrabec@siol.net>,
-        Ezequiel Garcia <ezequiel@collabora.com>
-Subject: [PATCH v4] media: rkvdec: Drop unneeded per_request driver-specific control flag
-Date:   Wed, 19 Aug 2020 11:37:55 -0300
-Message-Id: <20200819143755.243103-1-ezequiel@collabora.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200814133634.95665-17-ezequiel@collabora.com>
-References: <20200814133634.95665-17-ezequiel@collabora.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        ldv-project@linuxtesting.org
+Subject: [PATCH] drm/brige/megachips: Add checking if ge_b850v3_lvds_init() is working correctly
+Date:   Wed, 19 Aug 2020 17:37:56 +0300
+Message-Id: <20200819143756.30626-1-lutovinova@ispras.ru>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the drivers makes no distinction between per_request
-and mandatory, as both are used in the same request validate check.
+If ge_b850v3_lvds_init() does not allocate memory for ge_b850v3_lvds_ptr,
+then a null pointer dereference is accessed.
 
-The driver only cares to know if a given control is
-required to be part of a request, so only one flag is needed.
+The patch adds checking of the return value of ge_b850v3_lvds_init().
 
-Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
 ---
-v4:
-* Drop 'mandatory' from DECODE_MODE and START_MODE.
----
- drivers/staging/media/rkvdec/rkvdec.c | 8 +-------
- drivers/staging/media/rkvdec/rkvdec.h | 1 -
- 2 files changed, 1 insertion(+), 8 deletions(-)
+ drivers/gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
-index 7c5129593921..9f59dfb62d3f 100644
---- a/drivers/staging/media/rkvdec/rkvdec.c
-+++ b/drivers/staging/media/rkvdec/rkvdec.c
-@@ -55,35 +55,29 @@ static const struct v4l2_ctrl_ops rkvdec_ctrl_ops = {
+diff --git a/drivers/gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c b/drivers/gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c
+index 6200f12..ab81748 100644
+--- a/drivers/gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c
++++ b/drivers/gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c
+@@ -302,8 +302,12 @@ static int stdp4028_ge_b850v3_fw_probe(struct i2c_client *stdp4028_i2c,
+ 				       const struct i2c_device_id *id)
+ {
+ 	struct device *dev = &stdp4028_i2c->dev;
++	int ret;
++
++	ret = ge_b850v3_lvds_init(dev);
  
- static const struct rkvdec_ctrl_desc rkvdec_h264_ctrl_descs[] = {
- 	{
--		.per_request = true,
- 		.mandatory = true,
- 		.cfg.id = V4L2_CID_MPEG_VIDEO_H264_DECODE_PARAMS,
- 	},
- 	{
--		.per_request = true,
- 		.mandatory = true,
- 		.cfg.id = V4L2_CID_MPEG_VIDEO_H264_SPS,
- 		.cfg.ops = &rkvdec_ctrl_ops,
- 	},
- 	{
--		.per_request = true,
- 		.mandatory = true,
- 		.cfg.id = V4L2_CID_MPEG_VIDEO_H264_PPS,
- 	},
- 	{
--		.per_request = true,
- 		.mandatory = true,
- 		.cfg.id = V4L2_CID_MPEG_VIDEO_H264_SCALING_MATRIX,
- 	},
- 	{
--		.mandatory = true,
- 		.cfg.id = V4L2_CID_MPEG_VIDEO_H264_DECODE_MODE,
- 		.cfg.min = V4L2_MPEG_VIDEO_H264_DECODE_MODE_FRAME_BASED,
- 		.cfg.max = V4L2_MPEG_VIDEO_H264_DECODE_MODE_FRAME_BASED,
- 		.cfg.def = V4L2_MPEG_VIDEO_H264_DECODE_MODE_FRAME_BASED,
- 	},
- 	{
--		.mandatory = true,
- 		.cfg.id = V4L2_CID_MPEG_VIDEO_H264_START_CODE,
- 		.cfg.min = V4L2_MPEG_VIDEO_H264_START_CODE_ANNEX_B,
- 		.cfg.def = V4L2_MPEG_VIDEO_H264_START_CODE_ANNEX_B,
-@@ -615,7 +609,7 @@ static int rkvdec_request_validate(struct media_request *req)
- 		u32 id = ctrls->ctrls[i].cfg.id;
- 		struct v4l2_ctrl *ctrl;
+-	ge_b850v3_lvds_init(dev);
++	if (ret)
++		return ret;
  
--		if (!ctrls->ctrls[i].per_request || !ctrls->ctrls[i].mandatory)
-+		if (!ctrls->ctrls[i].mandatory)
- 			continue;
+ 	ge_b850v3_lvds_ptr->stdp4028_i2c = stdp4028_i2c;
+ 	i2c_set_clientdata(stdp4028_i2c, ge_b850v3_lvds_ptr);
+@@ -361,8 +365,12 @@ static int stdp2690_ge_b850v3_fw_probe(struct i2c_client *stdp2690_i2c,
+ 				       const struct i2c_device_id *id)
+ {
+ 	struct device *dev = &stdp2690_i2c->dev;
++	int ret;
++
++	ret = ge_b850v3_lvds_init(dev);
  
- 		ctrl = v4l2_ctrl_request_hdl_ctrl_find(hdl, id);
-diff --git a/drivers/staging/media/rkvdec/rkvdec.h b/drivers/staging/media/rkvdec/rkvdec.h
-index 2fc9f46b6910..77a137cca88e 100644
---- a/drivers/staging/media/rkvdec/rkvdec.h
-+++ b/drivers/staging/media/rkvdec/rkvdec.h
-@@ -25,7 +25,6 @@
- struct rkvdec_ctx;
+-	ge_b850v3_lvds_init(dev);
++	if (ret)
++		return ret;
  
- struct rkvdec_ctrl_desc {
--	u32 per_request : 1;
- 	u32 mandatory : 1;
- 	struct v4l2_ctrl_config cfg;
- };
+ 	ge_b850v3_lvds_ptr->stdp2690_i2c = stdp2690_i2c;
+ 	i2c_set_clientdata(stdp2690_i2c, ge_b850v3_lvds_ptr);
 -- 
-2.27.0
+1.9.1
 
