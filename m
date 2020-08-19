@@ -2,114 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFD5249E11
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD69E249E02
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728398AbgHSMek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 08:34:40 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39074 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728230AbgHSMdX (ORCPT
+        id S1728356AbgHSMeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 08:34:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728169AbgHSMeH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 08:33:23 -0400
-Date:   Wed, 19 Aug 2020 12:33:13 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597840394;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TsI/rhy/8f4Hvtj1f9EJtnH1VWuaJfzJEaYXJUkvKPw=;
-        b=NabiQ+mutOIdWwZYVlexpiQIXKL82EaRWGC6ACY/+bDi5k43x6U1cZuJvXjHb58s3uNNgA
-        bFpDFU0/qgju//r9zJoN9I/cSewRvyvhhGRZNFmkGNKQO/3QqVFCiNkFm7Ch/PVTQXEjTe
-        hR6cX/1UhB7frc/HDcS+bKvINnHIKh2tVNP1AQNox+omW1P6zUAXGghvD48yMkBiOkmCct
-        wsufShjpPW3DeZ3arW57ImZrJhmZGYd76EKdW5FIWx9p1slIZbhZpX23ZrSNxBQtbCxqfl
-        NxaheJw7dr5t4HNZxb7x8bi7Fp0L4GpsT4L6fI03CqQvSa0BTgncdMwx4CmnfQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597840394;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TsI/rhy/8f4Hvtj1f9EJtnH1VWuaJfzJEaYXJUkvKPw=;
-        b=3FoGRte/stjjlzf/Wq5z24QlYjz4m2Qc5HfEV1iJKaXFQE9RaE0O3eKlHFgUeju2mtCA40
-        +QQBushohXN9pFBg==
-From:   "tip-bot2 for James Morse" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cache] x86/resctrl: Remove unused struct mbm_state::chunks_bw
-Cc:     James Morse <james.morse@arm.com>, Borislav Petkov <bp@suse.de>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200708163929.2783-2-james.morse@arm.com>
-References: <20200708163929.2783-2-james.morse@arm.com>
-MIME-Version: 1.0
-Message-ID: <159784039364.3192.17266951701377723520.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Wed, 19 Aug 2020 08:34:07 -0400
+X-Greylist: delayed 79 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 19 Aug 2020 05:34:06 PDT
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B45CC061383
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 05:34:05 -0700 (PDT)
+Received: from ramsan ([84.195.186.194])
+        by laurent.telenet-ops.be with bizsmtp
+        id HQa42300H4C55Sk01Qa4fQ; Wed, 19 Aug 2020 14:34:04 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1k8NI4-0002EB-9D; Wed, 19 Aug 2020 14:34:04 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1k8NI4-0004zN-6W; Wed, 19 Aug 2020 14:34:04 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Bart Van Assche <bvanassche@acm.org>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v3] block: Make request_queue.rpm_status an enum
+Date:   Wed, 19 Aug 2020 14:34:03 +0200
+Message-Id: <20200819123403.19136-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cache branch of tip:
+request_queue.rpm_status is assigned values of the rpm_status enum only,
+so reflect that in its type.
 
-Commit-ID:     abe8f12b44250d02937665033a8b750c1bfeb26e
-Gitweb:        https://git.kernel.org/tip/abe8f12b44250d02937665033a8b750c1bfeb26e
-Author:        James Morse <james.morse@arm.com>
-AuthorDate:    Wed, 08 Jul 2020 16:39:20 
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 18 Aug 2020 16:51:55 +02:00
+Note that including <linux/pm.h> is (currently) a no-op, as it is
+already included through <linux/genhd.h> and <linux/device.h>, but it is
+better to play it safe.
 
-x86/resctrl: Remove unused struct mbm_state::chunks_bw
-
-Nothing reads struct mbm_states's chunks_bw value, its a copy of
-chunks. Remove it.
-
-Signed-off-by: James Morse <james.morse@arm.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-Link: https://lkml.kernel.org/r/20200708163929.2783-2-james.morse@arm.com
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
- arch/x86/kernel/cpu/resctrl/internal.h | 2 --
- arch/x86/kernel/cpu/resctrl/monitor.c  | 3 +--
- 2 files changed, 1 insertion(+), 4 deletions(-)
+v3:
+  - #include <linux/pm.h>, as requested by Bart,
 
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index 5ffa322..72bb210 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -283,7 +283,6 @@ struct rftype {
-  * struct mbm_state - status for each MBM counter in each domain
-  * @chunks:	Total data moved (multiply by rdt_group.mon_scale to get bytes)
-  * @prev_msr	Value of IA32_QM_CTR for this RMID last time we read it
-- * @chunks_bw	Total local data moved. Used for bandwidth calculation
-  * @prev_bw_msr:Value of previous IA32_QM_CTR for bandwidth counting
-  * @prev_bw	The most recent bandwidth in MBps
-  * @delta_bw	Difference between the current and previous bandwidth
-@@ -292,7 +291,6 @@ struct rftype {
- struct mbm_state {
- 	u64	chunks;
- 	u64	prev_msr;
--	u64	chunks_bw;
- 	u64	prev_bw_msr;
- 	u32	prev_bw;
- 	u32	delta_bw;
-diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-index 837d7d0..d6b92d7 100644
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -279,8 +279,7 @@ static void mbm_bw_count(u32 rmid, struct rmid_read *rr)
- 		return;
+v2:
+  - Add Acked-by.
+---
+ include/linux/blkdev.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index bb5636cc17b91a75..0a1730b30ad210b4 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -24,6 +24,7 @@
+ #include <linux/percpu-refcount.h>
+ #include <linux/scatterlist.h>
+ #include <linux/blkzoned.h>
++#include <linux/pm.h>
  
- 	chunks = mbm_overflow_count(m->prev_bw_msr, tval, rr->r->mbm_width);
--	m->chunks_bw += chunks;
--	m->chunks = m->chunks_bw;
-+	m->chunks += chunks;
- 	cur_bw = (chunks * r->mon_scale) >> 20;
+ struct module;
+ struct scsi_ioctl_command;
+@@ -458,7 +459,7 @@ struct request_queue {
  
- 	if (m->delta_comp)
+ #ifdef CONFIG_PM
+ 	struct device		*dev;
+-	int			rpm_status;
++	enum rpm_status		rpm_status;
+ 	unsigned int		nr_pending;
+ #endif
+ 
+-- 
+2.17.1
+
