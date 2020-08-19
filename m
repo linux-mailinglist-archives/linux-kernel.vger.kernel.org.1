@@ -2,157 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2942E24A304
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 17:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E31B824A2B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 17:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728909AbgHSP1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 11:27:07 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9851 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726894AbgHSPZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 11:25:16 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 97823174EF24E6297F9B;
-        Wed, 19 Aug 2020 23:25:03 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 19 Aug 2020 23:24:54 +0800
-From:   John Garry <john.garry@huawei.com>
-To:     <axboe@kernel.dk>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <don.brace@microsemi.com>,
-        <kashyap.desai@broadcom.com>, <ming.lei@redhat.com>,
-        <bvanassche@acm.org>, <dgilbert@interlog.com>,
-        <paolo.valente@linaro.org>, <hare@suse.de>, <hch@lst.de>
-CC:     <sumit.saxena@broadcom.com>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <esc.storagedev@microsemi.com>, <megaraidlinux.pdl@broadcom.com>,
-        <chenxiang66@hisilicon.com>, <luojiaxing@huawei.com>,
-        John Garry <john.garry@huawei.com>
-Subject: [PATCH v8 18/18] smartpqi: enable host tagset
-Date:   Wed, 19 Aug 2020 23:20:36 +0800
-Message-ID: <1597850436-116171-19-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
-References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
+        id S1728732AbgHSPVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 11:21:36 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:41544 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726894AbgHSPVf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 11:21:35 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id 362B180487;
+        Wed, 19 Aug 2020 17:21:22 +0200 (CEST)
+Date:   Wed, 19 Aug 2020 17:21:20 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Wanchun Zheng <zhengwanchun@hisilicon.com>,
+        linuxarm@huawei.com, dri-devel <dri-devel@lists.freedesktop.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        devel@driverdev.osuosl.org, Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Xiubin Zhang <zhangxiubin1@huawei.com>,
+        Wei Xu <xuwei5@hisilicon.com>, David Airlie <airlied@linux.ie>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Bogdan Togorean <bogdan.togorean@analog.com>,
+        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        Liwei Cai <cailiwei@hisilicon.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        linaro-mm-sig@lists.linaro.org, Rob Herring <robh+dt@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, mauro.chehab@huawei.com,
+        Rob Clark <robdclark@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Liuyao An <anliuyao@huawei.com>,
+        Rongrong Zou <zourongrong@gmail.com>, bpf@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 00/49] DRM driver for Hikey 970
+Message-ID: <20200819152120.GA106437@ravnborg.org>
+References: <cover.1597833138.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1597833138.git.mchehab+huawei@kernel.org>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=aP3eV41m c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=0DMDbjpnAAAA:20 a=e5mUnYsNAAAA:8
+        a=wgkdfqopUnWM4JvIQe8A:9 a=CjuIK1q_8ugA:10 a=Vxmtnl_E_bksehYqCbjh:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+Hi Mauro.
 
-Enable host tagset for smartpqi; with this we can use the request
-tag to look command from the pool avoiding the list iteration in
-the hot path.
+On Wed, Aug 19, 2020 at 01:45:28PM +0200, Mauro Carvalho Chehab wrote:
+> This patch series port the out-of-tree driver for Hikey 970 (which
+> should also support Hikey 960) from the official 96boards tree:
+> 
+>    https://github.com/96boards-hikey/linux/tree/hikey970-v4.9
+> 
+> Based on his history, this driver seems to be originally written
+> for Kernel 4.4, and was later ported to Kernel 4.9. The original
+> driver used to depend on ION (from Kernel 4.4) and had its own
+> implementation for FB dev API.
+> 
+> As I need to preserve the original history (with has patches from
+> both HiSilicon and from Linaro),  I'm starting from the original
+> patch applied there. The remaining patches are incremental,
+> and port this driver to work with upstream Kernel.
+> 
+> This driver doesn't depend on any firmware or on any special
+> userspace code. It works as-is with both X11 and Wayland.
+> 
+> Yet, I'm submitting it via staging due to the following reasons:
+> 
+> - It depends on the LDO3 power supply, which is provided by
+>   a regulator driver that it is currently on staging;
+> - Due to legal reasons, I need to preserve the authorship of
+>   each one responsbile for each patch. So, I need to start from
+>   the original patch from Kernel 4.4;
+> - There are still some problems I need to figure out how to solve:
+>    - The adv7535 can't get EDID data. Maybe it is a timing issue,
+>      but it requires more research to be sure about how to solve it;
+>    - The driver only accept resolutions on a defined list, as there's
+>      a known bug that this driver may have troubles with random
+>      resolutions. Probably due to a bug at the pixel clock settings;
+>    - Sometimes (at least with 1080p), it generates LDI underflow
+>      errors, which in turn causes the DRM to stop working. That
+>      happens for example when using gdm on Wayland and
+>      gnome on X11;
+>    - Probably related to the previous issue, when the monitor
+>      suspends due to DPMS, it doesn't return back to life.
+> 
+> So, IMO, the best is to keep it on staging for a while, until those
+> remaining bugs gets solved.
+> 
+> I added this series, together with the regulator driver and
+> a few other patches (including a hack to fix a Kernel 5.8 
+> regression at WiFi ) at:
+> 
+> 	https://gitlab.freedesktop.org/mchehab_kernel/hikey-970/-/commits/master
+> 
+> 
+> Chen Feng (1):
+>   staging: hikey9xx: Add hisilicon DRM driver for hikey960/970
+> 
+> John Stultz (1):
+>   staging: hikey9xx/gpu: port it to work with Kernel v4.9
+> 
+> Liwei Cai (2):
+>   staging: hikey9xx/gpu: solve tearing issue of display
+>   staging: hikey9xx/gpu: resolve the performance issue by interrupt
+>     mechanism
+> 
+> Mauro Carvalho Chehab (38):
+>   staging: hikey9xx/gpu: get rid of adv7535 fork
+Very good - I was in my mind starting a rant why we needed a fork of
+this driver, but I see it gets deleted again.
 
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-[jpg: Mod ctrl_info->next_io_request_slot calc]
-Signed-off-by: John Garry <john.garry@huawei.com>
----
- drivers/scsi/smartpqi/smartpqi_init.c | 45 ++++++++++++++++++---------
- 1 file changed, 31 insertions(+), 14 deletions(-)
+I do acknowledge you need to preserve history and all -
+but this patchset is not easy to review.
 
-diff --git a/drivers/scsi/smartpqi/smartpqi_init.c b/drivers/scsi/smartpqi/smartpqi_init.c
-index bd38c8cea56e..870ed1400a9e 100644
---- a/drivers/scsi/smartpqi/smartpqi_init.c
-+++ b/drivers/scsi/smartpqi/smartpqi_init.c
-@@ -575,22 +575,33 @@ static inline void pqi_reinit_io_request(struct pqi_io_request *io_request)
- }
- 
- static struct pqi_io_request *pqi_alloc_io_request(
--	struct pqi_ctrl_info *ctrl_info)
-+	struct pqi_ctrl_info *ctrl_info, struct scsi_cmnd *scmd)
- {
- 	struct pqi_io_request *io_request;
--	u16 i = ctrl_info->next_io_request_slot;	/* benignly racy */
-+	unsigned int limit = PQI_RESERVED_IO_SLOTS;
-+	u16 i;
- 
--	while (1) {
-+	if (scmd) {
-+		u32 blk_tag = blk_mq_unique_tag(scmd->request);
-+
-+		i = blk_mq_unique_tag_to_tag(blk_tag) + limit;
- 		io_request = &ctrl_info->io_request_pool[i];
--		if (atomic_inc_return(&io_request->refcount) == 1)
--			break;
--		atomic_dec(&io_request->refcount);
--		i = (i + 1) % ctrl_info->max_io_slots;
-+		if (WARN_ON(atomic_inc_return(&io_request->refcount) > 1)) {
-+			atomic_dec(&io_request->refcount);
-+			return NULL;
-+		}
-+	} else {
-+		i = ctrl_info->next_io_request_slot;	/* benignly racy */
-+		while (1) {
-+			io_request = &ctrl_info->io_request_pool[i];
-+			if (atomic_inc_return(&io_request->refcount) == 1)
-+				break;
-+			atomic_dec(&io_request->refcount);
-+			i = (i + 1) % limit;
-+		}
-+		ctrl_info->next_io_request_slot = (i + 1) % limit;
- 	}
- 
--	/* benignly racy */
--	ctrl_info->next_io_request_slot = (i + 1) % ctrl_info->max_io_slots;
--
- 	pqi_reinit_io_request(io_request);
- 
- 	return io_request;
-@@ -4075,7 +4086,7 @@ static int pqi_submit_raid_request_synchronous(struct pqi_ctrl_info *ctrl_info,
- 
- 	atomic_inc(&ctrl_info->sync_cmds_outstanding);
- 
--	io_request = pqi_alloc_io_request(ctrl_info);
-+	io_request = pqi_alloc_io_request(ctrl_info, NULL);
- 
- 	put_unaligned_le16(io_request->index,
- 		&(((struct pqi_raid_path_request *)request)->request_id));
-@@ -5032,7 +5043,9 @@ static inline int pqi_raid_submit_scsi_cmd(struct pqi_ctrl_info *ctrl_info,
- {
- 	struct pqi_io_request *io_request;
- 
--	io_request = pqi_alloc_io_request(ctrl_info);
-+	io_request = pqi_alloc_io_request(ctrl_info, scmd);
-+	if (!io_request)
-+		return SCSI_MLQUEUE_HOST_BUSY;
- 
- 	return pqi_raid_submit_scsi_cmd_with_io_request(ctrl_info, io_request,
- 		device, scmd, queue_group);
-@@ -5230,7 +5243,10 @@ static int pqi_aio_submit_io(struct pqi_ctrl_info *ctrl_info,
- 	struct pqi_io_request *io_request;
- 	struct pqi_aio_path_request *request;
- 
--	io_request = pqi_alloc_io_request(ctrl_info);
-+	io_request = pqi_alloc_io_request(ctrl_info, scmd);
-+	if (!io_request)
-+		return SCSI_MLQUEUE_HOST_BUSY;
-+
- 	io_request->io_complete_callback = pqi_aio_io_complete;
- 	io_request->scmd = scmd;
- 	io_request->raid_bypass = raid_bypass;
-@@ -5657,7 +5673,7 @@ static int pqi_lun_reset(struct pqi_ctrl_info *ctrl_info,
- 	DECLARE_COMPLETION_ONSTACK(wait);
- 	struct pqi_task_management_request *request;
- 
--	io_request = pqi_alloc_io_request(ctrl_info);
-+	io_request = pqi_alloc_io_request(ctrl_info, NULL);
- 	io_request->io_complete_callback = pqi_lun_reset_complete;
- 	io_request->context = &wait;
- 
-@@ -6504,6 +6520,7 @@ static struct scsi_host_template pqi_driver_template = {
- 	.map_queues = pqi_map_queues,
- 	.sdev_attrs = pqi_sdev_attrs,
- 	.shost_attrs = pqi_shost_attrs,
-+	.host_tagset = 1,
- };
- 
- static int pqi_register_scsi(struct pqi_ctrl_info *ctrl_info)
--- 
-2.26.2
+Could you follow-up with a review-able set of patches as a follow-up
+for this?
+I spotted some wrong bridge handling in one patch but I do not know if
+this got changed in a later patch. And I lost the motivation to go
+looking for it.
 
+
+>   staging: hikey9xx/gpu: rename the Kirin9xx namespace
+>   staging: hikey9xx/gpu: get rid of kirin9xx_fbdev.c
+>   staging: hikey9xx/gpu: get rid of some ifdefs
+>   staging: hikey9xx/gpu: rename the config option for Kirin970
+>   staging: hikey9xx/gpu: change the includes to reflect upstream
+>   staging: hikey9xx/gpu: port driver to upstream kAPIs
+>   staging: hikey9xx/gpu: add a copy of set_reg() function there
+>   staging: hikey9xx/gpu: get rid of ION headers
+>   staging: hikey9xx/gpu: add support for using a reserved CMA memory
+>   staging: hikey9xx/gpu: cleanup encoder attach logic
+>   staging: hikey9xx/gpu: Change the logic which sets the burst mode
+>   staging: hikey9xx/gpu: fix the DRM setting logic
+>   staging: hikey9xx/gpu: do some code cleanups
+>   staging: hikey9xx/gpu: use default GEM_CMA fops
+>   staging: hikey9xx/gpu: place vblank enable/disable at the right place
+>   staging: hikey9xx/gpu: remove an uneeded hack
+>   staging: hikey9xx/gpu: add a possible implementation for
+>     atomic_disable
+>   staging: hikey9xx/gpu: register connector
+>   staging: hikey9xx/gpu: fix driver name
+>   staging: hikey9xx/gpu: get rid of iommu_format
+>   staging: hikey9xx/gpu: re-work the mode validation code
+>   staging: hikey9xx/gpu: add support for enable/disable ldo3 regulator
+>   staging: hikey9xx/gpu: add SPMI headers
+>   staging: hikey9xx/gpu: solve most coding style issues
+>   staging: hikey9xx/gpu: don't use iommu code
+>   staging: hikey9xx/gpu: add kirin9xx driver to the building system
+>   staging: hikey9xx/gpu: get rid of typedefs
+>   staging: hikey9xx/gpu: get rid of input/output macros
+>   staging: hikey9xx/gpu: get rid of some unused data
+>   staging: hikey9xx/gpu: place common definitions at kirin9xx_dpe.h
+>   staging: hikey9xx/gpu: get rid of DRM_HISI_KIRIN970
+>   dts: hisilicon: hi3670.dtsi: add I2C settings
+>   dts: hikey970-pinctrl.dtsi: add missing pinctrl settings
+>   dt: hisilicon: add support for the PMIC found on Hikey 970
+>   dts: add support for Hikey 970 DRM
+>   staging: hikey9xx/gpu: drop kirin9xx_pwm
+>   dt: display: Add binds for the DPE and DSI controller for Kirin
+>     960/970
+> 
+> Xiubin Zhang (7):
+>   staging: hikey9xx/gpu: add support to hikey970 HDMI and panel
+>   staging: hikey9xx/gpu: Solve SR Cannot Display Problems.
+>   staging: hikey9xx/gpu: Solve HDMI compatibility Problem.
+>   staging: hikey9xx/gpu: Support MIPI DSI 3 lanes for hikey970.
+>   staging: hikey9xx/gpu: Solve SR test reset problem for hikey970.
+>   staging: hikey9xx/gpu: add debug prints for this driver
+>   staging: hikey9xx/gpu: Add support 10.1 inch special HDMI displays.
+> 
+>  .../display/hisilicon,hi3660-dpe.yaml         |   99 +
+>  .../display/hisilicon,hi3660-dsi.yaml         |  102 +
+>  .../boot/dts/hisilicon/hi3670-hikey970.dts    |   56 +-
+>  arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |   77 +
+>  .../boot/dts/hisilicon/hikey970-drm.dtsi      |   93 +
+>  .../boot/dts/hisilicon/hikey970-pinctrl.dtsi  |  548 +++-
+>  .../boot/dts/hisilicon/hikey970-pmic.dtsi     |  197 ++
+>  drivers/staging/hikey9xx/Kconfig              |    3 +
+>  drivers/staging/hikey9xx/Makefile             |    1 +
+>  drivers/staging/hikey9xx/gpu/Kconfig          |   22 +
+>  drivers/staging/hikey9xx/gpu/Makefile         |    9 +
+>  drivers/staging/hikey9xx/gpu/kirin960_defs.c  |  378 +++
+>  .../staging/hikey9xx/gpu/kirin960_dpe_reg.h   |  233 ++
+>  drivers/staging/hikey9xx/gpu/kirin970_defs.c  |  381 +++
+>  .../staging/hikey9xx/gpu/kirin970_dpe_reg.h   | 1188 ++++++++
+>  drivers/staging/hikey9xx/gpu/kirin9xx_dpe.h   | 2437 +++++++++++++++++
+>  .../hikey9xx/gpu/kirin9xx_drm_dpe_utils.c     | 1178 ++++++++
+>  .../hikey9xx/gpu/kirin9xx_drm_dpe_utils.h     |  286 ++
+>  .../staging/hikey9xx/gpu/kirin9xx_drm_drv.c   |  368 +++
+>  .../staging/hikey9xx/gpu/kirin9xx_drm_drv.h   |   57 +
+>  .../staging/hikey9xx/gpu/kirin9xx_drm_dss.c   | 1063 +++++++
+>  .../hikey9xx/gpu/kirin9xx_drm_overlay_utils.c | 1005 +++++++
+>  .../hikey9xx/gpu/kirin9xx_dw_drm_dsi.c        | 2132 ++++++++++++++
+>  .../hikey9xx/gpu/kirin9xx_dw_dsi_reg.h        |  146 +
+>  .../staging/hikey9xx/gpu/kirin9xx_fb_panel.h  |  191 ++
+>  25 files changed, 12229 insertions(+), 21 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/display/hisilicon,hi3660-dpe.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/hisilicon,hi3660-dsi.yaml
+
+Patch that intropduce new bindings must following the submitting patches
+guidelines for bindings. For once the subject is "dt-bindings: bla bla".
+
+	Sam
+
+>  create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-drm.dtsi
+>  create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+>  create mode 100644 drivers/staging/hikey9xx/gpu/Kconfig
+>  create mode 100644 drivers/staging/hikey9xx/gpu/Makefile
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin960_defs.c
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin960_dpe_reg.h
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin970_defs.c
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin970_dpe_reg.h
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_dpe.h
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_drm_dpe_utils.c
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_drm_dpe_utils.h
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.c
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.h
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_drm_dss.c
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_drm_overlay_utils.c
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_dw_drm_dsi.c
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_dw_dsi_reg.h
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_fb_panel.h
+> 
+> -- 
+> 2.26.2
+> 
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
