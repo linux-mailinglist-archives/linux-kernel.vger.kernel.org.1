@@ -2,86 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66FC9249E2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC9C249E34
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728146AbgHSMhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 08:37:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48386 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726752AbgHSMhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 08:37:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E54ADAF92;
-        Wed, 19 Aug 2020 12:38:10 +0000 (UTC)
-Date:   Wed, 19 Aug 2020 14:37:43 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Baoquan He <bhe@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Oscar Salvador <osalvador@suse.de>
-Subject: Re: [PATCH v1 02/11] mm/memory_hotplug: enforce section granularity
- when onlining/offlining
-Message-ID: <20200819123743.GF5422@dhcp22.suse.cz>
-References: <20200819101157.12723-1-david@redhat.com>
- <20200819101157.12723-3-david@redhat.com>
+        id S1728143AbgHSMiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 08:38:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728249AbgHSMiB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 08:38:01 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D3CC061757;
+        Wed, 19 Aug 2020 05:38:01 -0700 (PDT)
+Date:   Wed, 19 Aug 2020 14:37:58 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597840679;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=lwW59TWfLQL9/3bZCi/CgmH2rjvRhAnceBj2jd3SReo=;
+        b=imGxWJhrhkFrnQ6z3tR+Tn958XvlBhli27vWGVVlvnb5U7529LWEvoBmnFzBrt9h+KvJzb
+        J/Mi16BTNBaP0RDORRxDLgpxddkXb5gD+rmjgvE2WIrTdPdl4cfYYEZ/9QzGi7IQZ1FYMM
+        XLzWdkNdAHqgU7t/6dZaHSTT3veW0NELHlDBrdVD++uBEW6+Puo6LPhvtFwOMLcWk2oAuC
+        Zf1OB9ZrA8yFytDcs/+GHiWmniFMZMMIJkANU4Pd7D4JA05/OjLdNtd+KB6TLGHQRkx9bY
+        L7Gbmdxj1Dh5CM+oK32cn0Ak6bA9oEQ1grOtb+lgIgQwe0aI8OORV+NWMyrV7w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597840679;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=lwW59TWfLQL9/3bZCi/CgmH2rjvRhAnceBj2jd3SReo=;
+        b=L96aS3EG2/dopYg65zffBoCQs2OJ3KlrwOAI5sFEBi2GymemUk0tDk5n9DAPYbj0sZWHE1
+        U8+k+5QFGSljGJCg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Jens Axboe <axboe@kernel.dk>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [RFC PATCH] sched: Invoke io_wq_worker_sleeping() with enabled
+ preemption
+Message-ID: <20200819123758.6v45rj2gvojddsnn@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200819101157.12723-3-david@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 19-08-20 12:11:48, David Hildenbrand wrote:
-> Already two people (including me) tried to offline subsections, because
-> the function looks like it can deal with it. But we really can only
-> online/offline full sections (e.g., we can only mark full sections
-> online/offline via SECTION_IS_ONLINE).
-> 
-> Add a simple safety net that to document the restriction now. Current users
-> (core and powernv/memtrace) respect these restrictions.
+During a context switch the scheduler invokes wq_worker_sleeping() with
+disabled preemption. Disabling preemption is needed because it protects
+access to `worker->sleeping'. As an optimisation it avoids invoking
+schedule() within the schedule path as part of possible wake up (thus
+preempt_enable_no_resched() afterwards).
 
-I do agree with the warning because it clarifies our expectations
-indeed. Se below for more questions.
+The io-wq has been added to the mix in the same section with disabled
+preemption. This breaks on PREEMPT_RT because io_wq_worker_sleeping()
+acquires a spinlock_t. Also within the schedule() the spinlock_t must be
+acquired after tsk_is_pi_blocked() otherwise it will block on the sleeping lock
+again while scheduling out.
 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-> Cc: Baoquan He <bhe@redhat.com>
-> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  mm/memory_hotplug.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index c781d386d87f9..6856702af68d9 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -801,6 +801,11 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
->  	int ret;
->  	struct memory_notify arg;
->  
-> +	/* We can only online full sections (e.g., SECTION_IS_ONLINE) */
-> +	if (WARN_ON_ONCE(!nr_pages ||
-> +			 !IS_ALIGNED(pfn | nr_pages, PAGES_PER_SECTION)))
-> +		return -EINVAL;
+While playing with `io_uring-bench' I didn't notice a significant
+latency spike after converting io_wqe::lock to a raw_spinlock_t. The
+latency was more or less the same.
 
-This looks looks unnecessarily cryptic to me. Do you want to catch full
-section operation that doesn't start at the usual section boundary? If
-yes the above doesn't work work unless I am missing something.
+I don't see a significant reason why this lock should become a
+raw_spinlock_t therefore I suggest to move it after the
+tsk_is_pi_blocked() check.
+The io_worker::flags are usually modified under the lock except in the
+scheduler path. Ideally the lock is always acquired since the
+IO_WORKER_F_UP flag is set early in the startup and IO_WORKER_F_RUNNING
+should be set unless the task loops within schedule(). I *think* ::flags
+requires the same protection like workqueue's ::sleeping and therefore I
+move the check within the locked section.
 
-Why don't you simply WARN_ON_ONCE(nr_pages % PAGES_PER_SECTION).
-!nr_pages doesn't sound like something interesting to care about or why
-do we care?
+Any feedback on this vs raw_spinlock_t?
 
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ fs/io-wq.c          |  8 ++++----
+ kernel/sched/core.c | 10 +++++-----
+ 2 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/fs/io-wq.c b/fs/io-wq.c
+index e92c4724480ca..a7e07b3ac5b95 100644
+--- a/fs/io-wq.c
++++ b/fs/io-wq.c
+@@ -623,15 +623,15 @@ void io_wq_worker_sleeping(struct task_struct *tsk)
+ 	struct io_worker *worker = kthread_data(tsk);
+ 	struct io_wqe *wqe = worker->wqe;
+ 
++	spin_lock_irq(&wqe->lock);
+ 	if (!(worker->flags & IO_WORKER_F_UP))
+-		return;
++		goto out;
+ 	if (!(worker->flags & IO_WORKER_F_RUNNING))
+-		return;
++		goto out;
+ 
+ 	worker->flags &= ~IO_WORKER_F_RUNNING;
+-
+-	spin_lock_irq(&wqe->lock);
+ 	io_wqe_dec_running(wqe, worker);
++out:
+ 	spin_unlock_irq(&wqe->lock);
+ }
+ 
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 3bbb60b97c73c..b76c0f27bd95e 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4694,18 +4694,18 @@ static inline void sched_submit_work(struct task_struct *tsk)
+ 	 * in the possible wakeup of a kworker and because wq_worker_sleeping()
+ 	 * requires it.
+ 	 */
+-	if (tsk->flags & (PF_WQ_WORKER | PF_IO_WORKER)) {
++	if (tsk->flags & PF_WQ_WORKER) {
+ 		preempt_disable();
+-		if (tsk->flags & PF_WQ_WORKER)
+-			wq_worker_sleeping(tsk);
+-		else
+-			io_wq_worker_sleeping(tsk);
++		wq_worker_sleeping(tsk);
+ 		preempt_enable_no_resched();
+ 	}
+ 
+ 	if (tsk_is_pi_blocked(tsk))
+ 		return;
+ 
++	if (tsk->flags & PF_IO_WORKER)
++		io_wq_worker_sleeping(tsk);
++
+ 	/*
+ 	 * If we are going to sleep and we have plugged IO queued,
+ 	 * make sure to submit it to avoid deadlocks.
 -- 
-Michal Hocko
-SUSE Labs
+2.28.0
+
