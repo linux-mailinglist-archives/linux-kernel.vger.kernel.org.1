@@ -2,476 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1AF5249ED4
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D4EE249EA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728060AbgHSM6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 08:58:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728540AbgHSM46 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 08:56:58 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B67C061346
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 05:56:46 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id l23so17997130edv.11
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 05:56:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/8mQpJkcnsgnPloItRkRvFOphW3Kj/7Iryr9yxC3INM=;
-        b=feRzGw6jr3XDwlqXwnnZWR0R7rp7gCw+4QtPJu3mXu7LKV4TL7SWhddnfWdoDO3hOw
-         Ja7pClp5u9GpLQUkNmlU2czeEk+oOWM9ssgtrqbWNy7Wn9lxNeuSoYJ4mVi9JnQgW75w
-         r+vfa0tb2z3u/6F3jJluacCoOPwphvFrsSe3Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/8mQpJkcnsgnPloItRkRvFOphW3Kj/7Iryr9yxC3INM=;
-        b=ix+P/+X6jjmxKTMgD02U5Lud8u0LI/h5Nuu0D2LLhaF9LlZY2AMBx0MFi5oTVRfpqk
-         x/McCyWOgEm8Sh/oOanEA35W3WtF6AI3i8qhEoFRZGiGB9EWEkR1/m1NuFS32XuMOqTb
-         wWv6Be68qWZdsxZPp4zyrDJdOMPfIT/4S3engNr7xFsUyaN+NIL5ruU9LtPyF9s33UaB
-         CoLbd8iJ9wAf+1hjplf7CsxcFZ7jfUgwcHccsfqNzLJJ6Uf5zzqTReMOtUuMN/KAsDes
-         NJY/c7otZCsouiKY2O4aEaPqXxyT6aWYsZh2TvLkChrFoU6VBN+HTVIsSOSIAIxSPGGN
-         XZhw==
-X-Gm-Message-State: AOAM532pppcoqmjFeLPikBsklKVf2FltWWIlhPl+9ZdWgxpIVdz4LuS3
-        QcJhHwUbYP4+zAhoD7f2bQVpHbMySRNrbA==
-X-Google-Smtp-Source: ABdhPJxUMvdkiHUJh8uY0ZERC05MPRJwYAlZ1nfGELx7Og1QNKhdGK+hJt5vgUh32zmoYYCril+rLQ==
-X-Received: by 2002:a05:6402:13d9:: with SMTP id a25mr24874724edx.141.1597841800627;
-        Wed, 19 Aug 2020 05:56:40 -0700 (PDT)
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com. [209.85.128.49])
-        by smtp.gmail.com with ESMTPSA id sd17sm18929856ejb.93.2020.08.19.05.56.40
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Aug 2020 05:56:40 -0700 (PDT)
-Received: by mail-wm1-f49.google.com with SMTP id k8so2099867wma.2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 05:56:40 -0700 (PDT)
-X-Received: by 2002:a1c:5581:: with SMTP id j123mr4862561wmb.11.1597841357601;
- Wed, 19 Aug 2020 05:49:17 -0700 (PDT)
+        id S1728204AbgHSMuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 08:50:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36520 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727022AbgHSMuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 08:50:03 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AA259206B5;
+        Wed, 19 Aug 2020 12:50:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597841403;
+        bh=P21DRI9STOTIFsWr47hmn9m9qjEUq3E/mYyBNBX8UOI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=VX/GTRhnbdHthYMlFoowaeaJCyFs+EBVlWF99bP8AhPZLOBEK1WOGMNhyY9dXHqXN
+         CtGoGN/iCs+UoniA4UCGRxKlli9kYwyLxlS7vs01lj9Gq8h/16d7C8LeB2Z71/clIq
+         o3AHykiyne4ca6lefsjcb017pUBn2gJ60W5h8hq4=
+From:   Mark Brown <broonie@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH v2 0/3] arm64: Convert to ARCH_STACKWALK
+Date:   Wed, 19 Aug 2020 13:49:10 +0100
+Message-Id: <20200819124913.37261-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20200819065555.1802761-1-hch@lst.de> <20200819065555.1802761-6-hch@lst.de>
- <CAAFQd5COLxjydDYrfx47ht8tj-aNPiaVnC+WyQA7nvpW4gs=ww@mail.gmail.com> <62e4f4fc-c8a5-3ee8-c576-fe7178cb4356@arm.com>
-In-Reply-To: <62e4f4fc-c8a5-3ee8-c576-fe7178cb4356@arm.com>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Wed, 19 Aug 2020 14:49:01 +0200
-X-Gmail-Original-Message-ID: <CAAFQd5AcCTDguB2C9KyDiutXWoEvBL8tL7+a==Uo8vj_8CLOJw@mail.gmail.com>
-Message-ID: <CAAFQd5AcCTDguB2C9KyDiutXWoEvBL8tL7+a==Uo8vj_8CLOJw@mail.gmail.com>
-Subject: Re: [PATCH 05/28] media/v4l2: remove V4L2-FLAG-MEMORY-NON-CONSISTENT
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Christoph Hellwig <hch@lst.de>, alsa-devel@alsa-project.org,
-        linux-ia64@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        nouveau@lists.freedesktop.org, linux-nvme@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        linux-mm@kvack.org, Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        linux-scsi@vger.kernel.org,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Pawel Osciak <pawel@osciak.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        linux-mips@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 1:51 PM Robin Murphy <robin.murphy@arm.com> wrote:
->
-> Hi Tomasz,
->
-> On 2020-08-19 12:16, Tomasz Figa wrote:
-> > Hi Christoph,
-> >
-> > On Wed, Aug 19, 2020 at 8:56 AM Christoph Hellwig <hch@lst.de> wrote:
-> >>
-> >> The V4L2-FLAG-MEMORY-NON-CONSISTENT flag is entirely unused,
-> >
-> > Could you explain what makes you think it's unused? It's a feature of
-> > the UAPI generally supported by the videobuf2 framework and relied on
-> > by Chromium OS to get any kind of reasonable performance when
-> > accessing V4L2 buffers in the userspace.
-> >
-> >> and causes
-> >> weird gymanstics with the DMA_ATTR_NON_CONSISTENT flag, which is
-> >> unimplemented except on PARISC and some MIPS configs, and about to be
-> >> removed.
-> >
-> > It is implemented by the generic DMA mapping layer [1], which is used
-> > by a number of architectures including ARM64 and supposed to be used
-> > by new architectures going forward.
->
-> AFAICS all that V4L2_FLAG_MEMORY_NON_CONSISTENT does is end up
-> controling whether DMA_ATTR_NON_CONSISTENT is added to vb2_queue::dma_attrs.
->
-> Please can you point to where DMA_ATTR_NON_CONSISTENT does anything at
-> all on arm64?
->
+This series updates the arm64 stacktrace code to use the newer and much
+simpler arch_stack_walk() interface, the main benefit being a single
+entry point to the arch code with no need for the arch code to worry
+about skipping frames. Along the way I noticed that the reliable
+parameter to the arch_stack_walk() callback appears to be redundant
+so there's also a patch here removing that from the existing code to
+simplify the interface.
 
-With the default config it doesn't, but with
-CONFIG_DMA_NONCOHERENT_CACHE_SYNC enabled it makes dma_pgprot() keep
-the pgprot value as is, without enforcing coherence attributes.
+This is preparatory work for implementing reliable stack trace for
+arm64.
 
+v2: Rebase onto v5.9-rc1.
 
-> Also, I posit that videobuf2 is not actually relying on
-> DMA_ATTR_NON_CONSISTENT anyway, since it's clearly not using it properly:
->
-> "By using this API, you are guaranteeing to the platform
-> that you have all the correct and necessary sync points for this memory
-> in the driver should it choose to return non-consistent memory."
->
-> $ git grep dma_cache_sync drivers/media
-> $
+Mark Brown (3):
+  stacktrace: Remove reliable argument from arch_stack_walk() callback
+  arm64: stacktrace: Make stack walk callback consistent with generic
+    code
+  arm64: stacktrace: Convert to ARCH_STACKWALK
 
-AFAIK dma_cache_sync() isn't the only way to perform the cache
-synchronization. The earlier patch series that I reviewed relied on
-dma_get_sgtable() and then dma_sync_sg_*() (which existed in the
-vb2-dc since forever [1]). However, it looks like with the final code
-the sgtable isn't acquired and the synchronization isn't happening, so
-you have a point.
+ arch/arm64/Kconfig                  |  1 +
+ arch/arm64/include/asm/stacktrace.h |  2 +-
+ arch/arm64/kernel/perf_callchain.c  |  6 +--
+ arch/arm64/kernel/return_address.c  |  8 +--
+ arch/arm64/kernel/stacktrace.c      | 84 ++++-------------------------
+ arch/s390/kernel/stacktrace.c       |  4 +-
+ arch/x86/kernel/stacktrace.c        | 10 ++--
+ include/linux/stacktrace.h          |  5 +-
+ kernel/stacktrace.c                 |  8 ++-
+ 9 files changed, 30 insertions(+), 98 deletions(-)
 
-FWIW, I asked back in time what the plan is for non-coherent
-allocations and it seemed like DMA_ATTR_NON_CONSISTENT and
-dma_sync_*() was supposed to be the right thing to go with. [2] The
-same thread also explains why dma_alloc_pages() isn't suitable for the
-users of dma_alloc_attrs() and DMA_ATTR_NON_CONSISTENT.
+-- 
+2.20.1
 
-I think we could make a deal here. We could revert back the parts
-using DMA_ATTR_NON_CONSISTENT, keeping the UAPI intact, but just
-rendering it no-op, since it's just a hint after all. Then, you would
-propose a proper, functionally equivalent and working for ARM64,
-replacement for dma_alloc_attrs(..., DMA_ATTR_NON_CONSISTENT), which
-we could then use to enable the functionality expected by this UAPI.
-Does it sound like something that could work as a way forward here?
-
-By the way, as a videobuf2 reviewer, I'd appreciate being CC'd on any
-series related to the subsystem-facing DMA API changes, since
-videobuf2 is one of the biggest users of it.
-
-[1] https://elixir.bootlin.com/linux/v5.9-rc1/source/drivers/media/common/videobuf2/videobuf2-dma-contig.c#L98
-[2] https://patchwork.kernel.org/comment/23312203/
-
-Best regards,
-Tomasz
-
-
->
-> Robin.
->
-> > [1] https://elixir.bootlin.com/linux/v5.9-rc1/source/kernel/dma/mapping.c#L341
-> >
-> > When removing features from generic kernel code, I'd suggest first
-> > providing viable alternatives for its users, rather than killing the
-> > users altogether.
-> >
-> > Given the above, I'm afraid I have to NAK this.
-> >
-> > Best regards,
-> > Tomasz
-> >
-> >>
-> >> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> >> ---
-> >>   .../userspace-api/media/v4l/buffer.rst        | 17 ---------
-> >>   .../media/v4l/vidioc-reqbufs.rst              |  1 -
-> >>   .../media/common/videobuf2/videobuf2-core.c   | 36 +------------------
-> >>   .../common/videobuf2/videobuf2-dma-contig.c   | 19 ----------
-> >>   .../media/common/videobuf2/videobuf2-dma-sg.c |  3 +-
-> >>   .../media/common/videobuf2/videobuf2-v4l2.c   | 12 -------
-> >>   include/media/videobuf2-core.h                |  3 +-
-> >>   include/uapi/linux/videodev2.h                |  2 --
-> >>   8 files changed, 3 insertions(+), 90 deletions(-)
-> >>
-> >> diff --git a/Documentation/userspace-api/media/v4l/buffer.rst b/Documentation/userspace-api/media/v4l/buffer.rst
-> >> index 57e752aaf414a7..2044ed13cd9d7d 100644
-> >> --- a/Documentation/userspace-api/media/v4l/buffer.rst
-> >> +++ b/Documentation/userspace-api/media/v4l/buffer.rst
-> >> @@ -701,23 +701,6 @@ Memory Consistency Flags
-> >>       :stub-columns: 0
-> >>       :widths:       3 1 4
-> >>
-> >> -    * .. _`V4L2-FLAG-MEMORY-NON-CONSISTENT`:
-> >> -
-> >> -      - ``V4L2_FLAG_MEMORY_NON_CONSISTENT``
-> >> -      - 0x00000001
-> >> -      - A buffer is allocated either in consistent (it will be automatically
-> >> -       coherent between the CPU and the bus) or non-consistent memory. The
-> >> -       latter can provide performance gains, for instance the CPU cache
-> >> -       sync/flush operations can be avoided if the buffer is accessed by the
-> >> -       corresponding device only and the CPU does not read/write to/from that
-> >> -       buffer. However, this requires extra care from the driver -- it must
-> >> -       guarantee memory consistency by issuing a cache flush/sync when
-> >> -       consistency is needed. If this flag is set V4L2 will attempt to
-> >> -       allocate the buffer in non-consistent memory. The flag takes effect
-> >> -       only if the buffer is used for :ref:`memory mapping <mmap>` I/O and the
-> >> -       queue reports the :ref:`V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS
-> >> -       <V4L2-BUF-CAP-SUPPORTS-MMAP-CACHE-HINTS>` capability.
-> >> -
-> >>   .. c:type:: v4l2_memory
-> >>
-> >>   enum v4l2_memory
-> >> diff --git a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
-> >> index 75d894d9c36c42..3180c111d368ee 100644
-> >> --- a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
-> >> +++ b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
-> >> @@ -169,7 +169,6 @@ aborting or finishing any DMA in progress, an implicit
-> >>         - This capability is set by the driver to indicate that the queue supports
-> >>           cache and memory management hints. However, it's only valid when the
-> >>           queue is used for :ref:`memory mapping <mmap>` streaming I/O. See
-> >> -        :ref:`V4L2_FLAG_MEMORY_NON_CONSISTENT <V4L2-FLAG-MEMORY-NON-CONSISTENT>`,
-> >>           :ref:`V4L2_BUF_FLAG_NO_CACHE_INVALIDATE <V4L2-BUF-FLAG-NO-CACHE-INVALIDATE>` and
-> >>           :ref:`V4L2_BUF_FLAG_NO_CACHE_CLEAN <V4L2-BUF-FLAG-NO-CACHE-CLEAN>`.
-> >>
-> >> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-> >> index f544d3393e9d6b..66a41cef33c1b1 100644
-> >> --- a/drivers/media/common/videobuf2/videobuf2-core.c
-> >> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
-> >> @@ -721,39 +721,14 @@ int vb2_verify_memory_type(struct vb2_queue *q,
-> >>   }
-> >>   EXPORT_SYMBOL(vb2_verify_memory_type);
-> >>
-> >> -static void set_queue_consistency(struct vb2_queue *q, bool consistent_mem)
-> >> -{
-> >> -       q->dma_attrs &= ~DMA_ATTR_NON_CONSISTENT;
-> >> -
-> >> -       if (!vb2_queue_allows_cache_hints(q))
-> >> -               return;
-> >> -       if (!consistent_mem)
-> >> -               q->dma_attrs |= DMA_ATTR_NON_CONSISTENT;
-> >> -}
-> >> -
-> >> -static bool verify_consistency_attr(struct vb2_queue *q, bool consistent_mem)
-> >> -{
-> >> -       bool queue_is_consistent = !(q->dma_attrs & DMA_ATTR_NON_CONSISTENT);
-> >> -
-> >> -       if (consistent_mem != queue_is_consistent) {
-> >> -               dprintk(q, 1, "memory consistency model mismatch\n");
-> >> -               return false;
-> >> -       }
-> >> -       return true;
-> >> -}
-> >> -
-> >>   int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
-> >>                       unsigned int flags, unsigned int *count)
-> >>   {
-> >>          unsigned int num_buffers, allocated_buffers, num_planes = 0;
-> >>          unsigned plane_sizes[VB2_MAX_PLANES] = { };
-> >> -       bool consistent_mem = true;
-> >>          unsigned int i;
-> >>          int ret;
-> >>
-> >> -       if (flags & V4L2_FLAG_MEMORY_NON_CONSISTENT)
-> >> -               consistent_mem = false;
-> >> -
-> >>          if (q->streaming) {
-> >>                  dprintk(q, 1, "streaming active\n");
-> >>                  return -EBUSY;
-> >> @@ -765,8 +740,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
-> >>          }
-> >>
-> >>          if (*count == 0 || q->num_buffers != 0 ||
-> >> -           (q->memory != VB2_MEMORY_UNKNOWN && q->memory != memory) ||
-> >> -           !verify_consistency_attr(q, consistent_mem)) {
-> >> +           (q->memory != VB2_MEMORY_UNKNOWN && q->memory != memory)) {
-> >>                  /*
-> >>                   * We already have buffers allocated, so first check if they
-> >>                   * are not in use and can be freed.
-> >> @@ -803,7 +777,6 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
-> >>          num_buffers = min_t(unsigned int, num_buffers, VB2_MAX_FRAME);
-> >>          memset(q->alloc_devs, 0, sizeof(q->alloc_devs));
-> >>          q->memory = memory;
-> >> -       set_queue_consistency(q, consistent_mem);
-> >>
-> >>          /*
-> >>           * Ask the driver how many buffers and planes per buffer it requires.
-> >> @@ -894,12 +867,8 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
-> >>   {
-> >>          unsigned int num_planes = 0, num_buffers, allocated_buffers;
-> >>          unsigned plane_sizes[VB2_MAX_PLANES] = { };
-> >> -       bool consistent_mem = true;
-> >>          int ret;
-> >>
-> >> -       if (flags & V4L2_FLAG_MEMORY_NON_CONSISTENT)
-> >> -               consistent_mem = false;
-> >> -
-> >>          if (q->num_buffers == VB2_MAX_FRAME) {
-> >>                  dprintk(q, 1, "maximum number of buffers already allocated\n");
-> >>                  return -ENOBUFS;
-> >> @@ -912,15 +881,12 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
-> >>                  }
-> >>                  memset(q->alloc_devs, 0, sizeof(q->alloc_devs));
-> >>                  q->memory = memory;
-> >> -               set_queue_consistency(q, consistent_mem);
-> >>                  q->waiting_for_buffers = !q->is_output;
-> >>          } else {
-> >>                  if (q->memory != memory) {
-> >>                          dprintk(q, 1, "memory model mismatch\n");
-> >>                          return -EINVAL;
-> >>                  }
-> >> -               if (!verify_consistency_attr(q, consistent_mem))
-> >> -                       return -EINVAL;
-> >>          }
-> >>
-> >>          num_buffers = min(*count, VB2_MAX_FRAME - q->num_buffers);
-> >> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> >> index ec3446cc45b8da..7b1b86ec942d7d 100644
-> >> --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> >> +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> >> @@ -42,11 +42,6 @@ struct vb2_dc_buf {
-> >>          struct dma_buf_attachment       *db_attach;
-> >>   };
-> >>
-> >> -static inline bool vb2_dc_buffer_consistent(unsigned long attr)
-> >> -{
-> >> -       return !(attr & DMA_ATTR_NON_CONSISTENT);
-> >> -}
-> >> -
-> >>   /*********************************************/
-> >>   /*        scatterlist table functions        */
-> >>   /*********************************************/
-> >> @@ -341,13 +336,6 @@ static int
-> >>   vb2_dc_dmabuf_ops_begin_cpu_access(struct dma_buf *dbuf,
-> >>                                     enum dma_data_direction direction)
-> >>   {
-> >> -       struct vb2_dc_buf *buf = dbuf->priv;
-> >> -       struct sg_table *sgt = buf->dma_sgt;
-> >> -
-> >> -       if (vb2_dc_buffer_consistent(buf->attrs))
-> >> -               return 0;
-> >> -
-> >> -       dma_sync_sg_for_cpu(buf->dev, sgt->sgl, sgt->nents, buf->dma_dir);
-> >>          return 0;
-> >>   }
-> >>
-> >> @@ -355,13 +343,6 @@ static int
-> >>   vb2_dc_dmabuf_ops_end_cpu_access(struct dma_buf *dbuf,
-> >>                                   enum dma_data_direction direction)
-> >>   {
-> >> -       struct vb2_dc_buf *buf = dbuf->priv;
-> >> -       struct sg_table *sgt = buf->dma_sgt;
-> >> -
-> >> -       if (vb2_dc_buffer_consistent(buf->attrs))
-> >> -               return 0;
-> >> -
-> >> -       dma_sync_sg_for_device(buf->dev, sgt->sgl, sgt->nents, buf->dma_dir);
-> >>          return 0;
-> >>   }
-> >>
-> >> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-> >> index 0a40e00f0d7e5c..a86fce5d8ea8bf 100644
-> >> --- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-> >> +++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-> >> @@ -123,8 +123,7 @@ static void *vb2_dma_sg_alloc(struct device *dev, unsigned long dma_attrs,
-> >>          /*
-> >>           * NOTE: dma-sg allocates memory using the page allocator directly, so
-> >>           * there is no memory consistency guarantee, hence dma-sg ignores DMA
-> >> -        * attributes passed from the upper layer. That means that
-> >> -        * V4L2_FLAG_MEMORY_NON_CONSISTENT has no effect on dma-sg buffers.
-> >> +        * attributes passed from the upper layer.
-> >>           */
-> >>          buf->pages = kvmalloc_array(buf->num_pages, sizeof(struct page *),
-> >>                                      GFP_KERNEL | __GFP_ZERO);
-> >> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> >> index 30caad27281e1a..de83ad48783821 100644
-> >> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> >> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> >> @@ -722,20 +722,11 @@ static void fill_buf_caps(struct vb2_queue *q, u32 *caps)
-> >>   #endif
-> >>   }
-> >>
-> >> -static void clear_consistency_attr(struct vb2_queue *q,
-> >> -                                  int memory,
-> >> -                                  unsigned int *flags)
-> >> -{
-> >> -       if (!q->allow_cache_hints || memory != V4L2_MEMORY_MMAP)
-> >> -               *flags &= ~V4L2_FLAG_MEMORY_NON_CONSISTENT;
-> >> -}
-> >> -
-> >>   int vb2_reqbufs(struct vb2_queue *q, struct v4l2_requestbuffers *req)
-> >>   {
-> >>          int ret = vb2_verify_memory_type(q, req->memory, req->type);
-> >>
-> >>          fill_buf_caps(q, &req->capabilities);
-> >> -       clear_consistency_attr(q, req->memory, &req->flags);
-> >>          return ret ? ret : vb2_core_reqbufs(q, req->memory,
-> >>                                              req->flags, &req->count);
-> >>   }
-> >> @@ -769,7 +760,6 @@ int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create)
-> >>          unsigned i;
-> >>
-> >>          fill_buf_caps(q, &create->capabilities);
-> >> -       clear_consistency_attr(q, create->memory, &create->flags);
-> >>          create->index = q->num_buffers;
-> >>          if (create->count == 0)
-> >>                  return ret != -EBUSY ? ret : 0;
-> >> @@ -998,7 +988,6 @@ int vb2_ioctl_reqbufs(struct file *file, void *priv,
-> >>          int res = vb2_verify_memory_type(vdev->queue, p->memory, p->type);
-> >>
-> >>          fill_buf_caps(vdev->queue, &p->capabilities);
-> >> -       clear_consistency_attr(vdev->queue, p->memory, &p->flags);
-> >>          if (res)
-> >>                  return res;
-> >>          if (vb2_queue_is_busy(vdev, file))
-> >> @@ -1021,7 +1010,6 @@ int vb2_ioctl_create_bufs(struct file *file, void *priv,
-> >>
-> >>          p->index = vdev->queue->num_buffers;
-> >>          fill_buf_caps(vdev->queue, &p->capabilities);
-> >> -       clear_consistency_attr(vdev->queue, p->memory, &p->flags);
-> >>          /*
-> >>           * If count == 0, then just check if memory and type are valid.
-> >>           * Any -EBUSY result from vb2_verify_memory_type can be mapped to 0.
-> >> diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
-> >> index 52ef92049073e3..4c7f25b07e9375 100644
-> >> --- a/include/media/videobuf2-core.h
-> >> +++ b/include/media/videobuf2-core.h
-> >> @@ -744,8 +744,7 @@ void vb2_core_querybuf(struct vb2_queue *q, unsigned int index, void *pb);
-> >>    * vb2_core_reqbufs() - Initiate streaming.
-> >>    * @q:         pointer to &struct vb2_queue with videobuf2 queue.
-> >>    * @memory:    memory type, as defined by &enum vb2_memory.
-> >> - * @flags:     auxiliary queue/buffer management flags. Currently, the only
-> >> - *             used flag is %V4L2_FLAG_MEMORY_NON_CONSISTENT.
-> >> + * @flags:     auxiliary queue/buffer management flags.
-> >>    * @count:     requested buffer count.
-> >>    *
-> >>    * Videobuf2 core helper to implement VIDIOC_REQBUF() operation. It is called
-> >> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-> >> index c7b70ff53bc1dd..5c00f63d9c1b58 100644
-> >> --- a/include/uapi/linux/videodev2.h
-> >> +++ b/include/uapi/linux/videodev2.h
-> >> @@ -191,8 +191,6 @@ enum v4l2_memory {
-> >>          V4L2_MEMORY_DMABUF           = 4,
-> >>   };
-> >>
-> >> -#define V4L2_FLAG_MEMORY_NON_CONSISTENT                (1 << 0)
-> >> -
-> >>   /* see also http://vektor.theorem.ca/graphics/ycbcr/ */
-> >>   enum v4l2_colorspace {
-> >>          /*
-> >> --
-> >> 2.28.0
-> >>
-> >> _______________________________________________
-> >> iommu mailing list
-> >> iommu@lists.linux-foundation.org
-> >> https://lists.linuxfoundation.org/mailman/listinfo/iommu
-> >
-> > _______________________________________________
-> > linux-arm-kernel mailing list
-> > linux-arm-kernel@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> >
