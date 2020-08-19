@@ -2,72 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B1624A56A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 19:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB29324A570
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726887AbgHSR7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 13:59:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35940 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726858AbgHSR7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 13:59:24 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726950AbgHSSAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 14:00:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50665 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726858AbgHSSAR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 14:00:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597860012;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Fq+L0FZ4E9O8B1gKyErYfXmAA9+wPlbWuNN02iDq7Jw=;
+        b=HzaCsIRbx1uLXamhqEMW1OIOPMyz+xnar+VAlVnU19OofvjJUIrZravyr2WHygfimFSP8f
+        pNOTtQXoIfd6Sv9bqWGGJSvrP/frehOqUHotf54KvczJkFLOzJvZT04ImkZwj1btMWbMZk
+        jfOA2899CPc3ZkRwoBYhXYtRaT1XXck=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-105-EOCKc3dONAGr4GU_Uvxa4A-1; Wed, 19 Aug 2020 14:00:06 -0400
+X-MC-Unique: EOCKc3dONAGr4GU_Uvxa4A-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 42183207DE;
-        Wed, 19 Aug 2020 17:59:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597859964;
-        bh=oxZuekvIPEtXM6zB/IiVbn+wXbPMFca/PZzTAFdxW30=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rza4KyGjkhaSeuTHw/gId1REqwnFuO1JZPzIYTt2vAkisBamb6jRtWgvbHG1UJQ3m
-         90x7E45t9u0VjIr8fWxKrmFfqnGpaHaMgNVLyMjKLbPGHzFv5bX83scFjoWtg59CHU
-         2DQKwfaimFtmmbpwqneci5aekMqDHvaWlH9pLv78=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Barry Song <baohua@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Mans Rullgard <mans@mansr.com>, Jun Nie <jun.nie@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [RESEND PATCH 5/5] ARM: dts: zx: Align L2 cache-controller nodename with dtschema
-Date:   Wed, 19 Aug 2020 19:58:53 +0200
-Message-Id: <20200819175853.21492-5-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200819175853.21492-1-krzk@kernel.org>
-References: <20200819175853.21492-1-krzk@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 608308030AF;
+        Wed, 19 Aug 2020 18:00:04 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-114-11.ams2.redhat.com [10.36.114.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E22F310027A6;
+        Wed, 19 Aug 2020 17:59:57 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Baoquan He <bhe@redhat.com>,
+        Charan Teja Reddy <charante@codeaurora.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: [PATCH v2 00/10] mm/memory_hotplug: online_pages()/offline_pages() cleanups
+Date:   Wed, 19 Aug 2020 19:59:47 +0200
+Message-Id: <20200819175957.28465-1-david@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix dtschema validator warnings like:
-    l2-cache-controller@c00000: $nodename:0:
-        'l2-cache-controller@c00000' does not match '^(cache-controller|cpu)(@[0-9a-f,]+)*$'
+These are a bunch of cleanups for online_pages()/offline_pages() and
+related code, mostly getting rid of memory hole handling that is no longer
+necessary. There is only a single walk_system_ram_range() call left in
+offline_pages(), to make sure we don't have any memory holes. I had some
+of these patches lying around for a longer time but didn't have time to
+polish them.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arm/boot/dts/zx296702.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+In addition, the last patch marks all pageblocks of memory to get onlined
+MIGRATE_ISOLATE, so pages that have just been exposed to the buddy cannot
+get allocated before onlining is complete. Once heavy lifting is done,
+the pageblocks are set to MIGRATE_MOVABLE, such that allocations are
+possible.
 
-diff --git a/arch/arm/boot/dts/zx296702.dtsi b/arch/arm/boot/dts/zx296702.dtsi
-index afd98de029be..f378c661b3bf 100644
---- a/arch/arm/boot/dts/zx296702.dtsi
-+++ b/arch/arm/boot/dts/zx296702.dtsi
-@@ -58,7 +58,7 @@
- 			clocks = <&topclk ZX296702_A9_PERIPHCLK>;
- 		};
- 
--		l2cc: l2-cache-controller@c00000 {
-+		l2cc: cache-controller@c00000 {
- 			compatible = "arm,pl310-cache";
- 			reg = <0x00c00000 0x1000>;
- 			cache-unified;
+I played with DIMMs and virtio-mem on x86-64 and didn't spot any surprises.
+I verified that the numer of isolated pageblocks is correctly handled when
+onlining/offlining.
+
+v1 -> v2:
+- "mm/memory_hotplug: enforce section granularity when onlining/offlining"
+-- Extended the patch description regarding alignment requirements
+-- Fixed a typo
+- Squashed "mm/memory_hotplug: simplify offlining of pages in
+  offline_pages()" and "mm/memory_hotplug: simplify checking if all pages are
+  isolated in offline_pages()", resulting in "mm/memory_hotplug: simplify page
+  offlining"
+- Added ACKs
+
+David Hildenbrand (10):
+  mm/memory_hotplug: inline __offline_pages() into offline_pages()
+  mm/memory_hotplug: enforce section granularity when onlining/offlining
+  mm/memory_hotplug: simplify page offlining
+  mm/page_alloc: simplify __offline_isolated_pages()
+  mm/memory_hotplug: drop nr_isolate_pageblock in offline_pages()
+  mm/page_isolation: simplify return value of start_isolate_page_range()
+  mm/memory_hotplug: simplify page onlining
+  mm/page_alloc: drop stale pageblock comment in memmap_init_zone*()
+  mm: pass migratetype into memmap_init_zone() and
+    move_pfn_range_to_zone()
+  mm/memory_hotplug: mark pageblocks MIGRATE_ISOLATE while onlining
+    memory
+
+ arch/ia64/mm/init.c            |   4 +-
+ include/linux/memory_hotplug.h |   7 +-
+ include/linux/mm.h             |   3 +-
+ mm/Kconfig                     |   2 +-
+ mm/memory_hotplug.c            | 156 ++++++++++++++-------------------
+ mm/memremap.c                  |   3 +-
+ mm/page_alloc.c                |  64 ++++----------
+ mm/page_isolation.c            |   7 +-
+ 8 files changed, 98 insertions(+), 148 deletions(-)
+
 -- 
-2.17.1
+2.26.2
 
