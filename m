@@ -2,158 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 196DF2498DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 10:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 303E72498D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 10:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727068AbgHSI47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 04:56:59 -0400
-Received: from mail-bn8nam11on2084.outbound.protection.outlook.com ([40.107.236.84]:38912
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727030AbgHSIxf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 04:53:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m1ojHyA0f9UH/lQbu5SFWY1+Y7Nrv0gWKspUVOi33Ib894MHFqWXN1HNLOB3gsxK3NLPFlbZDwbhprIDRVQFzpUQquIz2Jdb6RgqLy7QDbvDOML3KzX1ZFrAVUaZPmb4ULrTsS4zV7P09xIeCXzQJWFVKLRTr7QSQYJClb/ieXrBuCw+uzDycE6QRiqFuZTjZETbiCmbiRh+Cu7QtvPImqw9Yq/RJ4TBqW+Z/twlPSBor4KGYxQMRrhghUPFdfEkXyS8PgfiKjAHU4f3og/3b0DyKcGej6QHpAjbibpDHQWsbEvHTLZ2pNdzNIyQfNdkQBNPaUKKoLqcA+tLiXemWw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7yWUwJ2QSDzT31n1fgcr/KzMGfevNyFHrTSdWUcr8sY=;
- b=dLnSpxLuoc+IfRIuL+XrM/Bn3Ep/57UXNFf7IkMkjbslwH0vwtiEEvv4A9PK9eCkdoQaEQHTBK38sNo0oHDdG41lqWpJsDJAx9OjVJeIzOYkxbiNnLuaI2DqkLoI8tNT3brehDifqet3NGVLoUP3e5MuP9BIdrqveIvLnHGVXuN3cz8fwXpBJLGoMpodsA3Ch/2Ope35hGPb4SiRJkezAClvQt6OL5PSO0VEniLMSsaV7vxJxx9nKhwvIJw10xGhvknUESGxDSMLMqcY/raHDJThIbsT3OOvrxfVm5P2+qBpmrH6iaiYnxE1kD3NAjnIXzcLk7rSUqLsBLFgIY7RsA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7yWUwJ2QSDzT31n1fgcr/KzMGfevNyFHrTSdWUcr8sY=;
- b=PXVzsnh8k7uw9g1FA+66jhXXGsGil2HchBke1HbXSimPUsfvgnsc+I/yZ8CWeUdMiRNJE0MI9w4KX7yyRWu0HoJY4+DVXc14Y9DisWjG6bW+59ncw5dG7dUNSGBksPLiyaHAOd4AVXjOufZmVgpaP/m89lWd/ZgZmIXtjmv0yVs=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by BL0PR12MB2418.namprd12.prod.outlook.com (2603:10b6:207:4d::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.16; Wed, 19 Aug
- 2020 08:53:30 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::a16e:8812:b4c0:918d]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::a16e:8812:b4c0:918d%6]) with mapi id 15.20.3283.028; Wed, 19 Aug 2020
- 08:53:30 +0000
-Subject: Re: [PATCH] drm/amd/display: remove unintended executable mode
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Dennis Li <Dennis.Li@amd.com>, Jerry Zuo <Jerry.Zuo@amd.com>
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Guchun Chen <guchun.chen@amd.com>,
-        Hersen Wu <hersenxs.wu@amd.com>
-References: <20200819081808.26796-1-lukas.bulwahn@gmail.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <f0d3f57c-416c-6a6a-0e9e-d3dc308f2b52@amd.com>
-Date:   Wed, 19 Aug 2020 10:53:22 +0200
+        id S1726974AbgHSI4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 04:56:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:58728 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726630AbgHSIys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 04:54:48 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 30EB231B;
+        Wed, 19 Aug 2020 01:54:47 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C32DD3F6CF;
+        Wed, 19 Aug 2020 01:54:45 -0700 (PDT)
+Subject: Re: [RFC PATCH 0/5] KVM: arm64: Add pvtime LPT support
+To:     Marc Zyngier <maz@kernel.org>, Keqian Zhu <zhukeqian1@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        wanghaibin.wang@huawei.com
+References: <20200817084110.2672-1-zhukeqian1@huawei.com>
+ <8308f52e4c906cad710575724f9e3855@kernel.org>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <f14cfd5b-c103-5d56-82fb-59d0371c6f21@arm.com>
+Date:   Wed, 19 Aug 2020 09:54:40 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
-In-Reply-To: <20200819081808.26796-1-lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: AM4PR0902CA0001.eurprd09.prod.outlook.com
- (2603:10a6:200:9b::11) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM4PR0902CA0001.eurprd09.prod.outlook.com (2603:10a6:200:9b::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24 via Frontend Transport; Wed, 19 Aug 2020 08:53:27 +0000
-X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 74719b00-290b-426e-aa36-08d8441d57cd
-X-MS-TrafficTypeDiagnostic: BL0PR12MB2418:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB2418C4DFDB948C6A3A18EBB4835D0@BL0PR12MB2418.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: khdSjkSe6nCAUpg+n/Zg8Vg/a5Od56e2Rwf8N2WHjrUY63mQ+uxzU75ECFmZzSSYI7U8yJ16uDxgMBt+yL7KXGHQlQe8oxdjFzYRHxQSYSh4XQsCsm7ektrYE914DvVAMW+fyQwSuJX9QY9Z4FpAujMFdEHBLTgWpVaEFPFTLntaLUSoTsyLV6U+1n/YDvhMvMoW5sXxS+oSHEQxDckMYoRZI4TlRg8sKFPyn9M9HEiEHSzt5ui7o8XE0pzXL+XP/PM/txC7GZVu44c6azoCng0qFQXrx0UwN97JWiuTWl2UwWmAUMT4EA4toAYKaCpVkPJmUThRjBtaYGqGLdjmc9V/nvIfKKScuif57r/zFWyqXixxpYtNhsuPxx9Trbx8
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(366004)(396003)(376002)(346002)(2906002)(316002)(16526019)(52116002)(186003)(54906003)(8676002)(478600001)(36756003)(83380400001)(6666004)(8936002)(6486002)(86362001)(5660300002)(4326008)(110136005)(6636002)(31696002)(66476007)(66556008)(2616005)(31686004)(66946007)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 5zBfEyDOE/L1lrsYamXrkS+zcq1ilu3wtt/T0D3ohnmdoJY9x7JGSy5jJom2TQOFEWR4D3tZOb1CjLcAlBrWDIVgltH2L41dJ8UpDtA03KixK5Gue8xZfKXVvkZ+xFIwFEYrYFpq/WTAMZeVWtF+vaN+wfhi5uREK3NgSKRKQrHM6vBSLOyUT7d95/xxP1R+ifTx/UPzSgQeMp67QIcTEARuwWj0eBNL4I2INBw4NcP2pisCZQMMkVcaPv5JdvbKzEHQXllP9iZ4nz4VmLiVp8PV8tsxsdh8kQUcNREw4q6T+RooI2Q0lhWavGdMQwAnElTQ73F//XC4f6WFjaQ6pmPMduFkBJLFFPKq2bn3rNbSK3bUc1Ewo2EezKTGfV2h6L6tS3WSwM8+MYaHIDA+pKR0ahcWO8gUCC2E/NQct9SoGcath6OFlTEF1wqUVD3qQPyEg2VgtUYChGHgsYItM8C/5+rpDQ5uDHp2o6t3P1D2upbTkM/YSYZmnKqHLXYoxzG5BmJiE49oReJTfqo+UAJDwyLyiuR/CDDghPOsfZBg6LJEfmrfMTozECGpNEDJt1P3yMi09zyrYbb4Y2cpLpqmZ4BmN7/dVXlGi1xlmMPBkuu7Hxy7K+/F5YZAdGa6JUn9Ajss3gqUclZftaw8ohhvvylaPcyT08uSowIMDZTDZgkD5FYuoN16c0acF62aUNwgiv8vMfNkJLLfXtFq7A==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 74719b00-290b-426e-aa36-08d8441d57cd
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Aug 2020 08:53:30.5543
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wOnTY4LDCcpcioFYkZQ/HwtndVGwm5RJmKtve10WmLcBBIYu7ThnekwbKZJXO3c/
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2418
+In-Reply-To: <8308f52e4c906cad710575724f9e3855@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 19.08.20 um 10:18 schrieb Lukas Bulwahn:
-> Besides the intended change, commit 4cc1178e166a ("drm/amdgpu: replace DRM
-> prefix with PCI device info for gfx/mmhub") also set the source files
-> mmhub_v1_0.c and gfx_v9_4.c to be executable, i.e., changed fromold mode
-> 644 to new mode 755.
->
-> Commit 241b2ec9317e ("drm/amd/display: Add dcn30 Headers (v2)") added the
-> four header files {dpcs,dcn}_3_0_0_{offset,sh_mask}.h as executable, i.e.,
-> mode 755.
->
-> Set to the usual modes for source and headers files and clean up those
-> mistakes. No functional change.
->
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+On 18/08/2020 15:41, Marc Zyngier wrote:
+> On 2020-08-17 09:41, Keqian Zhu wrote:
+>> Hi all,
+>>
+>> This patch series picks up the LPT pvtime feature originally developed
+>> by Steven Price: https://patchwork.kernel.org/cover/10726499/
+>>
+>> Backgroud:
+>>
+>> There is demand for cross-platform migration, which means we have to
+>> solve different CPU features and arch counter frequency between hosts.
+>> This patch series can solve the latter problem.
+>>
+>> About LPT:
+>>
+>> This implements support for Live Physical Time (LPT) which provides the
+>> guest with a method to derive a stable counter of time during which the
+>> guest is executing even when the guest is being migrated between hosts
+>> with different physical counter frequencies.
+>>
+>> Changes on Steven Price's work:
+>> 1. LPT structure: use symmatical semantics of scale multiplier, and use
+>>    fraction bits instead of "shift" to make everything clear.
+>> 2. Structure allocation: host kernel does not allocates the LPT 
+>> structure,
+>>    instead it is allocated by userspace through VM attributes. The 
+>> save/restore
+>>    functionality can be removed.
+>> 3. Since LPT structure just need update once for each guest run, add a 
+>> flag to
+>>    indicate the update status. This has two benifits: 1) avoid 
+>> multiple update
+>>    by each vCPUs. 2) If the update flag is not set, then return NOT 
+>> SUPPORT for
+>>    coressponding guest HVC call.
+>> 4. Add VM device attributes interface for userspace configuration.
+>> 5. Add a base LPT read/write layer to reduce code.
+>> 6. Support ptimer scaling.
+>> 7. Support timer event stream translation.
+>>
+>> Things need concern:
+>> 1. https://developer.arm.com/docs/den0057/a needs update.
+> 
+> LPT was explicitly removed from the spec because it doesn't really
+> solve the problem, specially for the firmware: EFI knows
+> nothing about this, for example. How is it going to work?
+> Also, nobody was ever able to explain how this would work for
+> nested virt.
+> 
+> ARMv8.4 and ARMv8.6 have the feature set that is required to solve
+> this problem without adding more PV to the kernel.
 
-Reviewed-by: Christian König <christian.koenig@amd.com>
+Hi Marc,
 
-> ---
-> applies cleanly on current master and next-20200819
->
-> Alex, Christian, please pick this minor non-urgent cleanup patch.
+These are good points, however we do still have the situation that CPUs 
+that don't have ARMv8.4/8.6 clearly cannot implement this. I presume the 
+use-case Keqian is looking at predates the necessary support in the CPU 
+- Keqian if you can provide more details on the architecture(s) involved 
+that would be helpful.
 
-Alex is usually the one picking those up. If he misses something feel 
-free to ping us once more.
+Nested virt is indeed more of an issue - we did have some ideas around 
+using SDEI that never made it to the spec. However I would argue that 
+the most pragmatic approach would be to not support the combination of 
+nested virt and LPT. Hopefully that can wait until the counter scaling 
+support is available and not require PV.
+
+We are discussing (re-)releasing the spec with the LPT parts added. If 
+you have fundamental objections then please me know.
 
 Thanks,
-Christian.
 
->
-> Dennis, Jerry, please ack.
->
-> Dennis, Jerry, you might want to check your development environment
-> introducing those executable modes on files.
->
->   drivers/gpu/drm/amd/amdgpu/gfx_v9_4.c                         | 0
->   drivers/gpu/drm/amd/amdgpu/mmhub_v1_0.c                       | 0
->   drivers/gpu/drm/amd/include/asic_reg/dcn/dcn_3_0_0_offset.h   | 0
->   drivers/gpu/drm/amd/include/asic_reg/dcn/dcn_3_0_0_sh_mask.h  | 0
->   drivers/gpu/drm/amd/include/asic_reg/dcn/dpcs_3_0_0_offset.h  | 0
->   drivers/gpu/drm/amd/include/asic_reg/dcn/dpcs_3_0_0_sh_mask.h | 0
->   6 files changed, 0 insertions(+), 0 deletions(-)
->   mode change 100755 => 100644 drivers/gpu/drm/amd/amdgpu/gfx_v9_4.c
->   mode change 100755 => 100644 drivers/gpu/drm/amd/amdgpu/mmhub_v1_0.c
->   mode change 100755 => 100644 drivers/gpu/drm/amd/include/asic_reg/dcn/dcn_3_0_0_offset.h
->   mode change 100755 => 100644 drivers/gpu/drm/amd/include/asic_reg/dcn/dcn_3_0_0_sh_mask.h
->   mode change 100755 => 100644 drivers/gpu/drm/amd/include/asic_reg/dcn/dpcs_3_0_0_offset.h
->   mode change 100755 => 100644 drivers/gpu/drm/amd/include/asic_reg/dcn/dpcs_3_0_0_sh_mask.h
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v9_4.c b/drivers/gpu/drm/amd/amdgpu/gfx_v9_4.c
-> old mode 100755
-> new mode 100644
-> diff --git a/drivers/gpu/drm/amd/amdgpu/mmhub_v1_0.c b/drivers/gpu/drm/amd/amdgpu/mmhub_v1_0.c
-> old mode 100755
-> new mode 100644
-> diff --git a/drivers/gpu/drm/amd/include/asic_reg/dcn/dcn_3_0_0_offset.h b/drivers/gpu/drm/amd/include/asic_reg/dcn/dcn_3_0_0_offset.h
-> old mode 100755
-> new mode 100644
-> diff --git a/drivers/gpu/drm/amd/include/asic_reg/dcn/dcn_3_0_0_sh_mask.h b/drivers/gpu/drm/amd/include/asic_reg/dcn/dcn_3_0_0_sh_mask.h
-> old mode 100755
-> new mode 100644
-> diff --git a/drivers/gpu/drm/amd/include/asic_reg/dcn/dpcs_3_0_0_offset.h b/drivers/gpu/drm/amd/include/asic_reg/dcn/dpcs_3_0_0_offset.h
-> old mode 100755
-> new mode 100644
-> diff --git a/drivers/gpu/drm/amd/include/asic_reg/dcn/dpcs_3_0_0_sh_mask.h b/drivers/gpu/drm/amd/include/asic_reg/dcn/dpcs_3_0_0_sh_mask.h
-> old mode 100755
-> new mode 100644
-
+Steve
