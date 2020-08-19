@@ -2,101 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA0B24938C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 05:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B71249395
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 05:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbgHSDmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 23:42:51 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:14811 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726318AbgHSDms (ORCPT
+        id S1726707AbgHSDoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 23:44:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726617AbgHSDoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 23:42:48 -0400
-X-UUID: 5160d2c900fd46c3838dbea551d4a832-20200819
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=kpBsxONTkkbc5bOYHR9hFMap17MiXFktP1dZs/pBlQA=;
-        b=RfSu+rcZUd3Cub/Xyz1jxH+TTd6MqM4ZtiXa3/zxdvv76GbCWgR25ZQ35bQz/wG0L+4OInFwm6XTG7K1ADSxbeQYBv0hhl/4SsyVGEOuGarLMt9RlMQKbKO4hmOFIo0lRk//LBHrIkXyvEBCXtrg30LGtwwra3NtPjCdbSLVEC4=;
-X-UUID: 5160d2c900fd46c3838dbea551d4a832-20200819
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <mark-pk.tsai@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1897202186; Wed, 19 Aug 2020 11:42:45 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 19 Aug 2020 11:42:43 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 19 Aug 2020 11:42:40 +0800
-From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-To:     <maz@kernel.org>
-CC:     <tglx@linutronix.de>, <jason@lakedaemon.net>, <robh+dt@kernel.org>,
-        <matthias.bgg@gmail.com>, <mark-pk.tsai@mediatek.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <yj.chiang@mediatek.com>,
-        <alix.wu@mediatek.com>, <daniel@0x0f.com>
-Subject: [PATCH 2/2] dt-bindings: interrupt-controller: Add MStar interrupt controller
-Date:   Wed, 19 Aug 2020 11:42:31 +0800
-Message-ID: <20200819034231.20726-3-mark-pk.tsai@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20200819034231.20726-1-mark-pk.tsai@mediatek.com>
-References: <20200819034231.20726-1-mark-pk.tsai@mediatek.com>
+        Tue, 18 Aug 2020 23:44:00 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E41C061389
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 20:43:58 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id i92so566446pje.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 20:43:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=LM6WEk9ZkbFt6Qg2UpRFNU3bLjYzPUz6PTE3Cs+whU4=;
+        b=FA4/UU2gVgjS/rjFwfGsWgyT+dH+LvVeCqbFb0OUeI/gWzIGoXU3gQBgpbuyKlQv1S
+         vY0apjSOiH5Lmx9d0Sdve7ESWLk1aZ9Odq7o4p8SeYfjhXQE+rqoEw212IS1yE/nbqH5
+         nb+EQqH1uyhEGYhD4HnH/3sBRgbmW9+WeJlLA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=LM6WEk9ZkbFt6Qg2UpRFNU3bLjYzPUz6PTE3Cs+whU4=;
+        b=aG6r+m3oJs2ZA/pelLeKdPuIqfXAFPlin9Y4GrEskVM1cClRkK8GsBbyhi2RYuBuBa
+         insSVp9nzB7H6ICXlkTttde3dDy1PHnWGuX6vJ7/YMq405KydkykDdkD19xa0dQ4lgNZ
+         aCCyXcUvVHJDrLOPI9u9eDif021n9EEbxqez9DeIh8bntm7JzRwHHEZXSIM2uJjx911C
+         b6e4beMz68YPHZ91h7yX/QxEgYmip2M75HlBjWDArhI5AJ2d49CMkEPIcgOBTvfNEGVN
+         M9fdpKnidAUF/KpD38RxY9J7mDDTOOuUKF5lOP7mzrSK40oR3ds7EcLQ1GEmp5ZeK8fY
+         38AA==
+X-Gm-Message-State: AOAM531H0RG/a6EZzP+/Rx4wSnZAL4DsdQcxGPQiJik3gB2w5FvmSyNu
+        oSl9EmZskz9b+yGRxtcKT5to6A==
+X-Google-Smtp-Source: ABdhPJw1IsJubYX++BUAswOcW/LVMXJ7mvqrysqRZbiBHWRN6AL/0ifU2M3IpMSDGi5didlOHQuO3w==
+X-Received: by 2002:a17:90a:c593:: with SMTP id l19mr2507622pjt.20.1597808638416;
+        Tue, 18 Aug 2020 20:43:58 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id o14sm255147pjw.11.2020.08.18.20.43.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Aug 2020 20:43:57 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200814095540.32115-3-rojay@codeaurora.org>
+References: <20200814095540.32115-1-rojay@codeaurora.org> <20200814095540.32115-3-rojay@codeaurora.org>
+Subject: Re: [PATCH 2/2] i2c: i2c-qcom-geni: Add shutdown callback for i2c
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     dianders@chromium.org, saiprakash.ranjan@codeaurora.org,
+        gregkh@linuxfoundation.org, mka@chromium.org,
+        akashast@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        Roja Rani Yarubandi <rojay@codeaurora.org>
+To:     Roja Rani Yarubandi <rojay@codeaurora.org>, wsa@kernel.org
+Date:   Tue, 18 Aug 2020 20:43:56 -0700
+Message-ID: <159780863669.334488.18038785498966010175@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QWRkIGJpbmRpbmcgZm9yIE1TdGFyIGludGVycnVwdCBjb250cm9sbGVyLg0KDQpTaWduZWQtb2Zm
-LWJ5OiBNYXJrLVBLIFRzYWkgPG1hcmstcGsudHNhaUBtZWRpYXRlay5jb20+DQotLS0NCiAuLi4v
-aW50ZXJydXB0LWNvbnRyb2xsZXIvbXN0YXIsbXN0LWludGMueWFtbCAgfCA4MiArKysrKysrKysr
-KysrKysrKysrDQogMSBmaWxlIGNoYW5nZWQsIDgyIGluc2VydGlvbnMoKykNCiBjcmVhdGUgbW9k
-ZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2ludGVycnVwdC1jb250
-cm9sbGVyL21zdGFyLG1zdC1pbnRjLnlhbWwNCg0KZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24v
-ZGV2aWNldHJlZS9iaW5kaW5ncy9pbnRlcnJ1cHQtY29udHJvbGxlci9tc3Rhcixtc3QtaW50Yy55
-YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2ludGVycnVwdC1jb250cm9s
-bGVyL21zdGFyLG1zdC1pbnRjLnlhbWwNCm5ldyBmaWxlIG1vZGUgMTAwNjQ0DQppbmRleCAwMDAw
-MDAwMDAwMDAuLjZlMzgzMzE1ZTUyOQ0KLS0tIC9kZXYvbnVsbA0KKysrIGIvRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL2ludGVycnVwdC1jb250cm9sbGVyL21zdGFyLG1zdC1pbnRj
-LnlhbWwNCkBAIC0wLDAgKzEsODIgQEANCisjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwt
-Mi4wDQorJVlBTUwgMS4yDQorLS0tDQorJGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1h
-cy9pbnRlcnJ1cHQtY29udHJvbGxlci9tc3Rhcixtc3QtaW50Yy55YW1sIw0KKyRzY2hlbWE6IGh0
-dHA6Ly9kZXZpY2V0cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29yZS55YW1sIw0KKw0KK3RpdGxlOiBN
-U3RhciBJbnRlcnJ1cHQgQ29udHJvbGxlcg0KKw0KK21haW50YWluZXJzOg0KKyAgLSBNYXJrLVBL
-IFRzYWkgPG1hcmstcGsudHNhaUBtZWRpYXRlay5jb20+DQorDQorZGVzY3JpcHRpb246IHwrDQor
-ICBNU3RhciwgU2lnbWFTdGFyIGFuZCBNZWRpYXRlayBEVFYgU29DcyBjb250YWluIG11bHRpcGxl
-IGxlZ2FjeQ0KKyAgaW50ZXJydXB0IGNvbnRyb2xsZXJzIHRoYXQgcm91dGVzIGludGVycnVwdHMg
-dG8gdGhlIEdJQy4NCisNCisgIFRoZSBIVyBibG9jayBleHBvc2VzIGEgbnVtYmVyIG9mIGludGVy
-cnVwdCBjb250cm9sbGVycywgZWFjaA0KKyAgY2FuIHN1cHBvcnQgdXAgdG8gNjQgaW50ZXJydXB0
-cy4NCisNCithbGxPZjoNCisgIC0gJHJlZjogL3NjaGVtYXMvaW50ZXJydXB0LWNvbnRyb2xsZXIu
-eWFtbCMNCisNCitwcm9wZXJ0aWVzOg0KKyAgY29tcGF0aWJsZToNCisgICAgaXRlbXM6DQorICAg
-ICAgLSBjb25zdDogbXN0YXIsbXN0LWludGMNCisgICAgICAtIGVudW06DQorICAgICAgICAgIC0g
-bWVkaWF0ZWssbXQ1OHh4LWludGMNCisNCisgIGludGVycnVwdC1jb250cm9sbGVyOiB0cnVlDQor
-DQorICAiI2FkZHJlc3MtY2VsbHMiOg0KKyAgICBlbnVtOiBbIDAsIDEsIDIgXQ0KKw0KKyAgIiNz
-aXplLWNlbGxzIjoNCisgICAgZW51bTogWyAxLCAyIF0NCisNCisgICIjaW50ZXJydXB0LWNlbGxz
-IjoNCisgICAgY29uc3Q6IDMNCisgICAgZGVzY3JpcHRpb246IHwNCisgICAgICBVc2UgdGhlIHNh
-bWUgZm9ybWF0IGFzIHNwZWNpZmllZCBieSBHSUMgaW4gYXJtLGdpYy55YW1sLg0KKw0KKyAgcmVn
-Og0KKyAgICBkZXNjcmlwdGlvbjogfA0KKyAgICAgIFBoeXNpY2FsIGJhc2UgYWRkcmVzcyBvZiB0
-aGUgbXN0YXIgaW50ZXJydXB0IGNvbnRyb2xsZXINCisgICAgICByZWdpc3RlcnMgYW5kIGxlbmd0
-aCBvZiBtZW1vcnkgbWFwcGVkIHJlZ2lvbi4NCisgICAgbWluSXRlbXM6IDENCisNCisgIG1zdGFy
-LGlycXMtbWFwLXJhbmdlOg0KKyAgICBkZXNjcmlwdGlvbjogfA0KKyAgICAgIFRoZSByYW5nZSBv
-ZiBwYXJlbnQgaW50ZXJydXB0IGNvbnRyb2xsZXIncyBpbnRlcnJ1cHQgbGluZXMNCisgICAgICB0
-aGF0IGFyZSBoYXJkd2lyZWQgdG8gbXN0YXIgaW50ZXJydXB0IGNvbnRyb2xsZXIuDQorICAgICRy
-ZWY6IC9zY2hlbWFzL3R5cGVzLnlhbWwjL2RlZmluaXRpb25zL3VpbnQzMi1tYXRyaXgNCisgICAg
-aXRlbXM6DQorICAgICAgbWluSXRlbXM6IDINCisgICAgICBtYXhJdGVtczogMg0KKw0KKyAgbXN0
-YXIsaW50Yy1uby1lb2k6DQorICAgIGRlc2NyaXB0aW9uOiB8DQorICAgICAgTWFyayB0aGlzIGNv
-bnRyb2xsZXIgaGFzIG5vIEVuZCBPZiBJbnRlcnJ1cHQoRU9JKSBpbXBsZW1lbnRhdGlvbi4NCisg
-ICAgICBUaGlzIGlzIGEgZW1wdHksIGJvb2xlYW4gcHJvcGVydHkuDQorICAgIHR5cGU6IGJvb2xl
-YW4NCisNCityZXF1aXJlZDoNCisgIC0gY29tcGF0aWJsZQ0KKyAgLSByZWcNCisgIC0gbXN0YXIs
-aXJxcy1tYXAtcmFuZ2UNCisNCithZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UNCisNCitleGFt
-cGxlczoNCisgIC0gfA0KKyAgICBtc3RfaW50YzA6IGludGVycnVwdC1jb250cm9sbGVyQDFmMjAz
-MmQwIHsNCisgICAgICBjb21wYXRpYmxlID0gIm1zdGFyLG1zdC1pbnRjIiwgIm1lZGlhdGVrLG10
-NTh4eC1pbnRjIjsNCisgICAgICBpbnRlcnJ1cHQtY29udHJvbGxlcjsNCisgICAgICAjaW50ZXJy
-dXB0LWNlbGxzID0gPDM+Ow0KKyAgICAgICNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KKyAgICAgICNz
-aXplLWNlbGxzID0gPDE+Ow0KKyAgICAgIGludGVycnVwdC1wYXJlbnQgPSA8JmdpYz47DQorICAg
-ICAgcmVnID0gPDB4MWYyMDMyZDAgMHgzMD47DQorICAgICAgbXN0YXIsaXJxcy1tYXAtcmFuZ2Ug
-PSA8MCA2Mz47DQorICAgIH07DQorLi4uDQotLSANCjIuMTguMA0K
+Quoting Roja Rani Yarubandi (2020-08-14 02:55:40)
+> If the hardware is still accessing memory after SMMU translation
+> is disabled(as part of smmu shutdown callback), then the
 
+Put a space before (
+
+> IOVAs(I/O virtual address) which it was using will go on the bus
+
+Put a space before (
+
+> as the physical addresses which will result in unknown crashes
+> like NoC/interconnect errors.
+>=20
+> So, adding shutdown callback to i2c driver to unmap DMA mappings
+> during system "reboot" or "shutdown".
+>=20
+
+Deserves a Fixes: tag if it's fixing a problem, which it looks like it
+is.
+
+> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+> ---
+>  drivers/i2c/busses/i2c-qcom-geni.c | 36 ++++++++++++++++++++++++++++++
+>  include/linux/qcom-geni-se.h       |  5 +++++
+
+I'd prefer this is squashed with the previous patch. The first patch
+doesn't really stand on its own anyway.
+
+>  2 files changed, 41 insertions(+)
+>=20
+> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-=
+qcom-geni.c
+> index 53ca41f76080..749c225f95c4 100644
+> --- a/drivers/i2c/busses/i2c-qcom-geni.c
+> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
+> @@ -613,6 +613,41 @@ static int geni_i2c_remove(struct platform_device *p=
+dev)
+>         return 0;
+>  }
+> =20
+> +static void geni_i2c_shutdown(struct platform_device *pdev)
+> +{
+> +       int ret;
+> +       struct geni_i2c_dev *gi2c =3D platform_get_drvdata(pdev);
+> +       struct geni_se *se =3D &gi2c->se;
+> +       u32 dma;
+> +       u32 dma_dbg_reg;
+
+Typically this is just called 'val'.
+
+> +
+> +       ret =3D pm_runtime_get_sync(gi2c->se.dev);
+> +       if (ret < 0) {
+> +               dev_err(gi2c->se.dev, "Failed to resume device:%d\n", ret=
+);
+
+Maybe just write: "Failed to resume device\n"? Not sure anyone cares
+what the error code is. And if they did, it would be connected to the
+colon so it will be hard to read. Add a space after colon if you want to
+keep the return value please.
+
+> +               return;
+> +       }
+> +
+> +       dma =3D readl_relaxed(se->base + SE_GENI_DMA_MODE_EN);
+> +       if (dma) {
+> +               dma_dbg_reg =3D readl_relaxed(gi2c->se.base + SE_DMA_DEBU=
+G_REG0);
+> +               if (dma_dbg_reg & DMA_TX_ACTIVE) {
+> +                       geni_i2c_abort_xfer(gi2c);
+> +                       gi2c->cur_wr =3D 0;
+> +                       if (gi2c->err)
+> +                               geni_i2c_tx_fsm_rst(gi2c);
+> +                       geni_se_tx_dma_unprep(se, gi2c->tx_dma, gi2c->xfe=
+r_len);
+> +               }
+> +               if (dma_dbg_reg & DMA_RX_ACTIVE) {
+> +                       geni_i2c_abort_xfer(gi2c);
+> +                       gi2c->cur_rd =3D 0;
+> +                       if (gi2c->err)
+> +                               geni_i2c_rx_fsm_rst(gi2c);
+> +                       geni_se_rx_dma_unprep(se, gi2c->rx_dma, gi2c->xfe=
+r_len);
+> +               }
+
+Can this be a function? It sort of seems like we should be doing the
+same sort of stuff if we're canceling a DMA transaction in flight.
+
+> +       }
+> +       pm_runtime_put_sync_suspend(gi2c->se.dev);
+> +}
+> +
+>  static int __maybe_unused geni_i2c_runtime_suspend(struct device *dev)
+>  {
+>         int ret;
+> diff --git a/include/linux/qcom-geni-se.h b/include/linux/qcom-geni-se.h
+> index dd464943f717..acad69be747d 100644
+> --- a/include/linux/qcom-geni-se.h
+> +++ b/include/linux/qcom-geni-se.h
+> @@ -77,6 +77,7 @@ struct geni_se {
+>  #define SE_DMA_RX_FSM_RST              0xd58
+>  #define SE_HW_PARAM_0                  0xe24
+>  #define SE_HW_PARAM_1                  0xe28
+> +#define SE_DMA_DEBUG_REG0              0xe40
+> =20
+>  /* GENI_FORCE_DEFAULT_REG fields */
+>  #define FORCE_DEFAULT  BIT(0)
+> @@ -207,6 +208,10 @@ struct geni_se {
+>  #define RX_GENI_CANCEL_IRQ             BIT(11)
+>  #define RX_GENI_GP_IRQ_EXT             GENMASK(13, 12)
+> =20
+> +/* DMA DEBUG Register fields */
+
+Please follow other style, ie. SE_DMA_DEBUG_REG0 fields
+
+> +#define DMA_TX_ACTIVE                  BIT(0)
+> +#define DMA_RX_ACTIVE                  BIT(1)
+> +
+>  /* SE_HW_PARAM_0 fields */
+>  #define TX_FIFO_WIDTH_MSK              GENMASK(29, 24)
+>  #define TX_FIFO_WIDTH_SHFT             24
