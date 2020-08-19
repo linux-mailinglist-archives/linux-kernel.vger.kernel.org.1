@@ -2,102 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CAEA24A42D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 18:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8438C24A42F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 18:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726951AbgHSQiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 12:38:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726754AbgHSQiG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 12:38:06 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A94C061343;
-        Wed, 19 Aug 2020 09:38:05 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id o18so27054896eje.7;
-        Wed, 19 Aug 2020 09:38:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/sBNZIVGdpsExbmAK17EOc2jU9uNs2C63Dzg+2DnKUU=;
-        b=sbHDR1IdgBeNMBrndxtD9Ie/gtQUjryy8WHCMHoxKNQxJsbYZogATWd+OZro6tAvdp
-         dKsmF7bLRFiDuVYQFsEfd4aJc2SPHo0owBPv0fgnX5Dadjh/o5L4Q/Ec5YmZHrrxO8eg
-         HdTy+/E/GkrtaEY4lvgsiafCFX6+XKp8u7+lMZ9jo4VHkbPpLCiO086zatUMuePr0oCz
-         IVCyCKKlZCj8zWgj6k/QZsv+vIMN4N2hLenG9fcB5e+MJsr1H2m+Tpp/4js7lk7hO4Zr
-         Bzgepemm5gUOvrLEqCD505CesgWZPidpQPegvdNCGS9LTdxBdGIr5uZoI0zqzzt6n9TP
-         ZV5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/sBNZIVGdpsExbmAK17EOc2jU9uNs2C63Dzg+2DnKUU=;
-        b=uIaP6hyHZYKV/ozthW8KIkJuPSxaIVelkQ/MiyQGB/Qd6t25E9DmRwAkPnT4+nmpnY
-         QHzOeODTsePtFeBXSGA+D8kIu+RNHE/nnNCv4xJUFDV7naKpwVhgRGA3T6LqmOoFXVf2
-         Xv75S3Ze1cFHXYsYS0b3pyG0Gfuhu0g0EJZibfXn5pZqSTLuuvEKJVgrOWEHptUmW9jk
-         e0O8iL8O/vaMw7cg3+77VG09R2098CD9FudyXSrFH47oIRvLorN9v1YwVrVlUBkk21eI
-         RHhqJ4wocyJHsOoTXUiiUu8qQoFTxfM3GLLpIomEYmo0rU4x6AtjT0Ug06Jacs5mSnut
-         IJHA==
-X-Gm-Message-State: AOAM5318PTJOWpq8SjMc5lI9PWK08CJ96rzaCw6GOQrkE/CfX6cwHBI2
-        kCABq9swowXvS+q4P9zTFFA=
-X-Google-Smtp-Source: ABdhPJyBtVvuvLAXE6EtK5Nhs/MtSRGBJwgKXZ19qO8rP/n8tMgh1zkLyHgA/IAvcbATnEhcPIrj/g==
-X-Received: by 2002:a17:906:3911:: with SMTP id f17mr27148550eje.56.1597855084560;
-        Wed, 19 Aug 2020 09:38:04 -0700 (PDT)
-Received: from localhost.localdomain ([188.24.144.238])
-        by smtp.gmail.com with ESMTPSA id m13sm18310774edi.89.2020.08.19.09.38.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 09:38:04 -0700 (PDT)
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org
-Subject: [PATCH v5 3/3] MAINTAINERS: Add entries for Actions Semi Owl SIRQ controller
-Date:   Wed, 19 Aug 2020 19:37:58 +0300
-Message-Id: <b37f8a78daa3d6fdadd081ef536e415814d38880.1597852360.git.cristian.ciocaltea@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <cover.1597852360.git.cristian.ciocaltea@gmail.com>
-References: <cover.1597852360.git.cristian.ciocaltea@gmail.com>
+        id S1725275AbgHSQjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 12:39:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726846AbgHSQj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 12:39:26 -0400
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC2902177B
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 16:39:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597855164;
+        bh=YBQweXlYaqGhLcDScYSGPb42S6SBKpFxhlPfTH4uPqQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oRhm6fqQ2WLuLWqiJJxFHA04YDf9kcIFyaB+Pn4tyNfap8ovWsoBCbbdci6MRexpv
+         RBdf67VHkfbzoGCP+83KpxRDEo6YG3t+ZpyomrTZHkEoVQnuexEcVf/XcEr98ZCwKZ
+         1vs1rBPfTR1r4HYkjDHvVfftHP6JRTvhhzdVgo04=
+Received: by mail-wr1-f50.google.com with SMTP id y3so22189195wrl.4
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 09:39:23 -0700 (PDT)
+X-Gm-Message-State: AOAM531IcdEWVge9bgRtsgQaMmVL0FYgTMOvtAszYk3Gl+Bu81vhkAYP
+        VVy/PTi1PQ4Y6IFdaQklEL4rQrAAH39lw0iMAYESZg==
+X-Google-Smtp-Source: ABdhPJyVDjVJbjdWY7LaBMzY59DmMkweYA6s0bUlh6pZYqljr1gOAS5O6rAAX4Q1E1daa0buos6BLQHObVgX35yOMIc=
+X-Received: by 2002:a5d:400e:: with SMTP id n14mr25248054wrp.75.1597855162321;
+ Wed, 19 Aug 2020 09:39:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <f12e7d3cecf41b2c29734ea45a393be21d4a8058.1597848273.git.jpoimboe@redhat.com>
+In-Reply-To: <f12e7d3cecf41b2c29734ea45a393be21d4a8058.1597848273.git.jpoimboe@redhat.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 19 Aug 2020 09:39:10 -0700
+X-Gmail-Original-Message-ID: <CALCETrVUgHHW=q3R9jQxU4JTf2m493FhOa3L-iQnHMcH7dgQFg@mail.gmail.com>
+Message-ID: <CALCETrVUgHHW=q3R9jQxU4JTf2m493FhOa3L-iQnHMcH7dgQFg@mail.gmail.com>
+Subject: Re: [PATCH] x86/uaccess: Use pointer masking to limit uaccess speculation
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Will Deacon <will@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add entries for Actions Semi Owl SIRQ controller binding and driver.
+On Wed, Aug 19, 2020 at 7:50 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> +/*
+> + * Sanitize a uaccess pointer such that it becomes NULL if it's not a valid
+> + * user pointer.  This blocks speculative dereferences of user-controlled
+> + * pointers.
+> + */
+> +#define uaccess_mask_ptr(ptr) \
+> +       (__typeof__(ptr)) array_index_nospec((__force unsigned long)ptr, user_addr_max())
+> +
 
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
----
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
+If I dug through all the macros correctly, this is generating a fairly
+complex pile of math to account for the fact that user_addr_max() is
+variable and that it's a nasty number.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index db97d048a92e..e28d8ad47d03 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1525,6 +1525,7 @@ F:	Documentation/devicetree/bindings/arm/actions.yaml
- F:	Documentation/devicetree/bindings/clock/actions,owl-cmu.txt
- F:	Documentation/devicetree/bindings/dma/owl-dma.txt
- F:	Documentation/devicetree/bindings/i2c/i2c-owl.txt
-+F:	Documentation/devicetree/bindings/interrupt-controller/actions,owl-sirq.yaml
- F:	Documentation/devicetree/bindings/mmc/owl-mmc.yaml
- F:	Documentation/devicetree/bindings/pinctrl/actions,*
- F:	Documentation/devicetree/bindings/power/actions,owl-sps.txt
-@@ -1536,6 +1537,7 @@ F:	drivers/clk/actions/
- F:	drivers/clocksource/timer-owl*
- F:	drivers/dma/owl-dma.c
- F:	drivers/i2c/busses/i2c-owl.c
-+F:	drivers/irqchip/irq-owl-sirq.c
- F:	drivers/mmc/host/owl-mmc.c
- F:	drivers/pinctrl/actions/*
- F:	drivers/soc/actions/
--- 
-2.28.0
+But I don't think there's any particular need to use the real maximum
+user address here.  Allowing a mis-speculated user access to a
+non-canonical address or to the top guard page of the lower canonical
+region is harmless.  With current kernels, a sequence like:
 
+if (likely((long)addr > 0) {
+  masked_addr = addr & 0x7FFFFFFFFFFFFFFFUL;
+} else {
+  if (kernel fs) {
+    masked_addr = addr;
+  } else {
+    EFAULT;
+  }
+}
+
+could plausibly be better.  But Christoph's series fixes this whole
+mess, and I think that this should be:
+
+#define uaccess_mask_ptr(ptr) ((__typeof___(ptr)) (__force unsigned
+long)ptr & USER_ADDR_MASK))
+
+where USER_ADDR_MASK is the appropriate value for 32-bit or 64-bit.
