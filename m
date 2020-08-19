@@ -2,164 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB9B24A5E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE1A24A5EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726798AbgHSSXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 14:23:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47076 "EHLO mail.kernel.org"
+        id S1726673AbgHSSYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 14:24:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44006 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726646AbgHSSXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 14:23:09 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB6BE20758;
-        Wed, 19 Aug 2020 18:23:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597861388;
-        bh=qy/ZEjEhG1i+wvQPbJtGZ9T5kPpw8NHao4bG1dxNlns=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JPzbGLOI8lD/e6rSmRoXD3w+zE23xhVb8yRK2e9oKUHzr8OR98pJFBbBmA0Nj2Aiy
-         cZW+xhiPKr9jpgAH2uRYwykye0AJi+f8RkpVzVNL9NOGgf4Ek+/Bm25GGJqmXmDI2j
-         r3FExyclO1T94xuXOTBfHDN8iugHJ72WxtziqkXg=
-Received: by pali.im (Postfix)
-        id 9552E582; Wed, 19 Aug 2020 20:23:06 +0200 (CEST)
-Date:   Wed, 19 Aug 2020 20:23:06 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc:     Joseph Hwang <josephsih@chromium.org>,
-        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Joseph Hwang <josephsih@google.com>,
-        ChromeOS Bluetooth Upstreaming 
-        <chromeos-bluetooth-upstreaming@chromium.org>,
-        Alain Michaud <alainm@chromium.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v1 2/2] Bluetooth: sco: expose WBS packet length in
- socket option
-Message-ID: <20200819182306.wvyht6ocyqpo75tp@pali>
-References: <20200813084129.332730-1-josephsih@chromium.org>
- <20200813164059.v1.2.I03247d3813c6dcbcdbeab26d068f9fd765edb1f5@changeid>
- <CABBYNZJ-nBXeujF2WkMEPYPQhXAphqKCV39gr-QYFdTC3GvjXg@mail.gmail.com>
- <20200819143716.iimo4l3uul7lrpjn@pali>
- <CABBYNZJVDk6LWqyY7h8=KwpA4Oub+aCb3WEWnxk_AGWPvgmatg@mail.gmail.com>
+        id S1725804AbgHSSYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 14:24:47 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CF93BAC85;
+        Wed, 19 Aug 2020 18:25:12 +0000 (UTC)
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     f.fainelli@gmail.com, hch@lst.de,
+        linux-rpi-kernel@lists.infradead.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [RFC] arm64: mm: Do not use both DMA zones when 30-bit address space unavailable
+Date:   Wed, 19 Aug 2020 20:24:33 +0200
+Message-Id: <20200819182434.28196-1-nsaenzjulienne@suse.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABBYNZJVDk6LWqyY7h8=KwpA4Oub+aCb3WEWnxk_AGWPvgmatg@mail.gmail.com>
-User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 19 August 2020 11:21:00 Luiz Augusto von Dentz wrote:
-> Hi Pali,
-> 
-> On Wed, Aug 19, 2020 at 7:37 AM Pali Rohár <pali@kernel.org> wrote:
-> >
-> > On Friday 14 August 2020 12:56:05 Luiz Augusto von Dentz wrote:
-> > > Hi Joseph,
-> > >
-> > > On Thu, Aug 13, 2020 at 1:42 AM Joseph Hwang <josephsih@chromium.org> wrote:
-> > > >
-> > > > It is desirable to expose the wideband speech packet length via
-> > > > a socket option to the user space so that the user space can set
-> > > > the value correctly in configuring the sco connection.
-> > > >
-> > > > Reviewed-by: Alain Michaud <alainm@chromium.org>
-> > > > Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> > > > Signed-off-by: Joseph Hwang <josephsih@chromium.org>
-> > > > ---
-> > > >
-> > > >  include/net/bluetooth/bluetooth.h | 2 ++
-> > > >  net/bluetooth/sco.c               | 8 ++++++++
-> > > >  2 files changed, 10 insertions(+)
-> > > >
-> > > > diff --git a/include/net/bluetooth/bluetooth.h b/include/net/bluetooth/bluetooth.h
-> > > > index 9125effbf4483d..922cc03143def4 100644
-> > > > --- a/include/net/bluetooth/bluetooth.h
-> > > > +++ b/include/net/bluetooth/bluetooth.h
-> > > > @@ -153,6 +153,8 @@ struct bt_voice {
-> > > >
-> > > >  #define BT_SCM_PKT_STATUS      0x03
-> > > >
-> > > > +#define BT_SCO_PKT_LEN         17
-> > > > +
-> > > >  __printf(1, 2)
-> > > >  void bt_info(const char *fmt, ...);
-> > > >  __printf(1, 2)
-> > > > diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
-> > > > index dcf7f96ff417e6..97e4e7c7b8cf62 100644
-> > > > --- a/net/bluetooth/sco.c
-> > > > +++ b/net/bluetooth/sco.c
-> > > > @@ -67,6 +67,7 @@ struct sco_pinfo {
-> > > >         __u32           flags;
-> > > >         __u16           setting;
-> > > >         __u8            cmsg_mask;
-> > > > +       __u32           pkt_len;
-> > > >         struct sco_conn *conn;
-> > > >  };
-> > > >
-> > > > @@ -267,6 +268,8 @@ static int sco_connect(struct sock *sk)
-> > > >                 sco_sock_set_timer(sk, sk->sk_sndtimeo);
-> > > >         }
-> > > >
-> > > > +       sco_pi(sk)->pkt_len = hdev->sco_pkt_len;
-> > > > +
-> > > >  done:
-> > > >         hci_dev_unlock(hdev);
-> > > >         hci_dev_put(hdev);
-> > > > @@ -1001,6 +1004,11 @@ static int sco_sock_getsockopt(struct socket *sock, int level, int optname,
-> > > >                         err = -EFAULT;
-> > > >                 break;
-> > > >
-> > > > +       case BT_SCO_PKT_LEN:
-> > > > +               if (put_user(sco_pi(sk)->pkt_len, (u32 __user *)optval))
-> > > > +                       err = -EFAULT;
-> > > > +               break;
-> > >
-> > > Couldn't we expose this via BT_SNDMTU/BT_RCVMTU?
-> >
-> > Hello!
-> >
-> > There is already SCO_OPTIONS sock option, uses struct sco_options and
-> > contains 'mtu' member.
-> >
-> > I think that instead of adding new sock option, existing SCO_OPTIONS
-> > option should be used.
-> 
-> We are moving away from type specific options to so options like
-> BT_SNDMTU/BT_RCVMTU should be supported in all socket types.
+There is no benefit in splitting the 32-bit address space into two
+distinct DMA zones when the 30-bit address space isn't even available on
+a device. If that is the case, default to one big ZONE_DMA spanning the
+whole 32-bit address space.
 
-Yes, this make sense.
+This will help reduce some of the issues we've seen with big crash
+kernel allocations.
 
-But I guess that SCO_OPTIONS should be provided for backward
-compatibility as it is already used by lot of userspace applications.
+Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+---
 
-So for me it looks like that BT_SNDMTU/BT_RCVMTU should return same
-value as SCO_OPTIONS.
+Whith this patch, on a 8GB RPi4 the setup looks like this:
 
-> >
-> > > >         default:
-> > > >                 err = -ENOPROTOOPT;
-> > > >                 break;
-> > > > --
-> > > > 2.28.0.236.gb10cc79966-goog
-> > > >
-> > >
-> > >
-> > > --
-> > > Luiz Augusto von Dentz
-> 
-> 
-> 
-> -- 
-> Luiz Augusto von Dentz
+	DMA      [mem 0x0000000000000000-0x000000003fffffff]
+	DMA32    [mem 0x0000000040000000-0x00000000ffffffff]
+	Normal   [mem 0x0000000100000000-0x00000001ffffffff]
+
+And stock 8GB virtme/qemu:
+
+	DMA      [mem 0x0000000040000000-0x00000000ffffffff]
+	DMA32    empty
+	Normal   [mem 0x0000000100000000-0x000000023fffffff]
+
+ arch/arm64/mm/init.c | 29 +++++++++++++++++++++++++----
+ 1 file changed, 25 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index b6881d61b818..857a62611d7a 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -183,13 +183,20 @@ static void __init reserve_elfcorehdr(void)
+ 
+ /*
+  * Return the maximum physical address for a zone with a given address size
+- * limit. It currently assumes that for memory starting above 4G, 32-bit
+- * devices will use a DMA offset.
++ * limit or zero if memory starts from an address higher than the zone targeted.
++ * It currently assumes that for memory starting above 4G, 32-bit devices will
++ * use a DMA offset.
+  */
+ static phys_addr_t __init max_zone_phys(unsigned int zone_bits)
+ {
+-	phys_addr_t offset = memblock_start_of_DRAM() & GENMASK_ULL(63, zone_bits);
+-	return min(offset + (1ULL << zone_bits), memblock_end_of_DRAM());
++	phys_addr_t base = memblock_start_of_DRAM();
++	phys_addr_t offset = base & GENMASK_ULL(63, 32);
++	s64 zone_size = (1ULL << zone_bits) - (base & DMA_BIT_MASK(32));
++
++	if (zone_size <= 0)
++		return 0;
++
++	return min(base + zone_size + offset, memblock_end_of_DRAM());
+ }
+ 
+ static void __init zone_sizes_init(unsigned long min, unsigned long max)
+@@ -390,6 +397,20 @@ void __init arm64_memblock_init(void)
+ 	if (IS_ENABLED(CONFIG_ZONE_DMA)) {
+ 		zone_dma_bits = ARM64_ZONE_DMA_BITS;
+ 		arm64_dma_phys_limit = max_zone_phys(ARM64_ZONE_DMA_BITS);
++
++		/*
++		 * We don't want to split the 32 bit address space into two DMA
++		 * zones when the target lower physical address range doesn't
++		 * exist. For example, if memory starts at 0x80000000 it's
++		 * pointless to create a ZONE_DMA distinct of ZONE_DMA32 as
++		 * there's no way to access the 30-bit address space. If that's
++		 * the case just expand ZONE_DMA to cover the whole 32-bit
++		 * address space.
++		 */
++		if (!arm64_dma_phys_limit) {
++			zone_dma_bits = 32;
++			arm64_dma_phys_limit = max_zone_phys(32);
++		}
+ 	}
+ 
+ 	if (IS_ENABLED(CONFIG_ZONE_DMA32))
+-- 
+2.28.0
+
