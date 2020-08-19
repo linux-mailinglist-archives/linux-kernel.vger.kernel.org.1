@@ -2,100 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2F824A647
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C7924A64B
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726973AbgHSSto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 14:49:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34090 "EHLO
+        id S1726946AbgHSSui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 14:50:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726820AbgHSStG (ORCPT
+        with ESMTP id S1726211AbgHSSug (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 14:49:06 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09EADC061342;
-        Wed, 19 Aug 2020 11:49:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=7+YSI5YaFA7nV1yaE7i/RW3xZbJtF/8x3LDr4io57Q8=; b=QBZEY6GNdSOmnF4ujehB7tIL/+
-        8WlFkWpSxuLPFzkGOnnhlBlJavyO4Z+T0yXOfXgJgAGvoDk+Cf1m8ak9wPM8AkhSIMWn8nFA51xkD
-        WHXh1JSEJrwxa10n1dsaReCF4jaEG4ACDpvQROgOqopHoed3BHKh9cV153/2lHtDBdHzNGvzALDwt
-        xhCJjd4YgCOtHb28bEt8UYDUq80/QJIuQXJRj9csQ+VHnOkdnIJ+SSvdZLDIr692dGd7QtGw5TKT0
-        kT9IZJattIKOxBcoS1wr/w22x9PoXKBXAMBPZyBB/EKkYK4S922ZQv2l+P8miuoSBxQIRrrF5OJXs
-        10W3+YmQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k8T8q-0006UR-DL; Wed, 19 Aug 2020 18:48:56 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-mm@kvack.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Huang Ying <ying.huang@intel.com>,
-        intel-gfx@lists.freedesktop.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 8/8] mm: Hoist find_subpage call further up in pagecache_get_page
-Date:   Wed, 19 Aug 2020 19:48:50 +0100
-Message-Id: <20200819184850.24779-9-willy@infradead.org>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20200819184850.24779-1-willy@infradead.org>
-References: <20200819184850.24779-1-willy@infradead.org>
+        Wed, 19 Aug 2020 14:50:36 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA354C061757;
+        Wed, 19 Aug 2020 11:50:36 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id o13so11847244pgf.0;
+        Wed, 19 Aug 2020 11:50:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qKUSdz5ggJgCypvtvcoqf17QPlT56IKgrCYcfygaIN8=;
+        b=R7KYxRkk71vLqZDlr39ocA+2OcxdE0vDd8Tj8OVtAPw7SX/ewu8C/4QQFDGAR+b57v
+         OVcbkV6Fs5gGVrJLPFpPSs9FyKHcgIECnDATyhPNJC49qyfmV/6bWOJ1NRwpKVU9Rkj/
+         DI4osLbC2V50gbrSmgY7+XOplCo4ehHkvTai3l8z9ycX81bNOQAGrMEP1lMZb2oG8tu8
+         j/W+rfwMiXaTYKd32wJAXlB/8T7SySab3v4xtXnYmWBMJpwZpXl18JajmuYxKgZtqaq8
+         3mR9dVZGeulmGkTppTpWRA33QnU78xUc5MF1Y9yvDtUThNjDpVMQCvQvJntcyu4q4tXm
+         l8ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qKUSdz5ggJgCypvtvcoqf17QPlT56IKgrCYcfygaIN8=;
+        b=MJq/3ExoEvNg84rESRaAA7PiAOKcX4iUq0tnoilmQyWO+RKqs90u3EtQfJ2wT63KBi
+         QQQ9XeFhD222fPSC4/sJWXKY6KtXk/KuVCm3EFgXhu/yzRb2fytBuNSbLAbfMXs6dNYw
+         GKBrHtsQ7/8vIIC211s3wx+V+eb+LVD236EcKnFzfzJHZhFlIOhqzINQowCGrHqgFbXj
+         Msop+bv2tpSb6uu3BEKOeSL0lP7Ili2q5dhgEoF+xaM61yEybhwgLLb2F1FAQ7K5msxW
+         eQeGPyfil3s8DqZjGV0Fcho+0AWj23wT+mlLEDAIIIK/tygQK50WmdgGPnFeIhyiKKbf
+         i9SA==
+X-Gm-Message-State: AOAM533SDc23xYA54cgs2Lsc879eNWMo5foi1QrthYB2TYVMFutvtZM4
+        BaKQNqbPUNxUYo00ZyCVltqHPnNciTvRZ39yhT4=
+X-Google-Smtp-Source: ABdhPJyuiEsn1JK6nAvJdb0jwvTaK4WDrHiuuH7K+3u8kFAw0ttV27uqoXwuzhjKL0T+613XCm8a3SOn3811MvIfX8U=
+X-Received: by 2002:a63:9dc2:: with SMTP id i185mr295542pgd.203.1597863036114;
+ Wed, 19 Aug 2020 11:50:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200721144832.750728-1-abanoubsameh@protonmail.com>
+ <CAHp75VdFvAYR+z8c6R2J9Q2JK-WpHS4LU_-cWvsOa2g8+Gfk9w@mail.gmail.com> <CAMpxmJVW0yXdVVxYYiNjHw5XsKx+cyb6hV7KTeOQBxgFJWWx4w@mail.gmail.com>
+In-Reply-To: <CAMpxmJVW0yXdVVxYYiNjHw5XsKx+cyb6hV7KTeOQBxgFJWWx4w@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 19 Aug 2020 21:50:19 +0300
+Message-ID: <CAHp75Vfc_5rS+MOL=WtvEpQ45RT5tHXe4aUiH1oMJn4Re4q3gg@mail.gmail.com>
+Subject: Re: [PATCH] gpio: gpio-crystalcove.c: changed every 'unsigned' to
+ 'unsigned int'
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Abanoub Sameh <abanoubsameh8@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Abanoub Sameh <abanoubsameh@protonmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This avoids a call to compound_head().
+On Wed, Aug 19, 2020 at 8:56 PM Bartosz Golaszewski
+<bgolaszewski@baylibre.com> wrote:
+>
+> On Tue, Jul 21, 2020 at 6:05 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> >
+> > On Tue, Jul 21, 2020 at 5:49 PM Abanoub Sameh <abanoubsameh8@gmail.com> wrote:
+> > >
+> > > Changed 'unsigned' to 'unsigned int'.
+> > > This makes the code more uniform, and compliant with the kernel coding style.
+> >
+> > In all patches you wrongly added 'gpio-' and '.c' parts. Also you
+> > missed the version of the patches (I have told you about) and
+> > changelog.
+> >
+> > No need to resend, I fixed that this time for you. Be careful in the future.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- mm/filemap.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> I was going through pending patches and noticed those from Abanoub:
+> are you also the maintainer for gpio-crystalcove and gpio-msic? The
+> MAINTAINERS entry for Intel GPIO drivers doesn't include those - do
+> you want me to send a patch that adds them?
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 6594baae7cd2..8c354277108d 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -1667,7 +1667,6 @@ struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
- 		page = NULL;
- 	if (!page)
- 		goto no_page;
--	page = find_subpage(page, index);
- 
- 	if (fgp_flags & FGP_LOCK) {
- 		if (fgp_flags & FGP_NOWAIT) {
-@@ -1680,12 +1679,12 @@ struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
- 		}
- 
- 		/* Has the page been truncated? */
--		if (unlikely(compound_head(page)->mapping != mapping)) {
-+		if (unlikely(page->mapping != mapping)) {
- 			unlock_page(page);
- 			put_page(page);
- 			goto repeat;
- 		}
--		VM_BUG_ON_PAGE(page->index != index, page);
-+		VM_BUG_ON_PAGE(!thp_valid_index(page, index), page);
- 	}
- 
- 	if (fgp_flags & FGP_ACCESSED)
-@@ -1695,6 +1694,7 @@ struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
- 		if (page_is_idle(page))
- 			clear_page_idle(page);
- 	}
-+	page = find_subpage(page, index);
- 
- no_page:
- 	if (!page && (fgp_flags & FGP_CREAT)) {
+Hmm...
+https://elixir.bootlin.com/linux/latest/source/MAINTAINERS#L8833
+
+
 -- 
-2.28.0
-
+With Best Regards,
+Andy Shevchenko
