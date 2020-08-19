@@ -2,83 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9767C249CD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 13:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BFE9249CD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 13:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727818AbgHSL4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 07:56:23 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:41910 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728063AbgHSLys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 07:54:48 -0400
-Received: from localhost.localdomain (unknown [210.32.144.184])
-        by mail-app2 (Coremail) with SMTP id by_KCgBXWZzyEj1fPjQCAg--.62095S4;
-        Wed, 19 Aug 2020 19:54:30 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Ajay Singh <ajay.kathat@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Adham Abozaeid <adham.abozaeid@microchip.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: wilc1000: Fix memleak in wilc_bus_probe
-Date:   Wed, 19 Aug 2020 19:54:26 +0800
-Message-Id: <20200819115426.29852-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: by_KCgBXWZzyEj1fPjQCAg--.62095S4
-X-Coremail-Antispam: 1UD129KBjvdXoWruFWUAw4fWF4UZrykJrWxCrg_yoWkWwb_Cr
-        18XFnay34xur1jvryjkrW5ZrZIyFykuFn5Gw4Iq3yfCa1UArZ7CFWfuF43JwsIk3W09F4j
-        kr4DWFyfAr4SqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb-xFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_
-        JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK
-        67AK6r4kMxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxV
-        CFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r10
-        6r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxV
-        WUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG
-        6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r
-        4UJbIYCTnIWIevJa73UjIFyTuYvjfUOKsjUUUUU
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgcLBlZdtPihowAlso
+        id S1728357AbgHSLz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 07:55:58 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:56292 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728002AbgHSLzj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 07:55:39 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4277629E;
+        Wed, 19 Aug 2020 13:55:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1597838133;
+        bh=KzVb1fFBrc4D3CpXPB/y2PaHs6HIL9FLa7DoMoLBT1U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f5TRPH6XyEUfU9v55IuMb7bltOPaw4Ibt5/GPJo6QJNs+bqUAhG+I7+3Hu7UYx1CK
+         TkntTuAVp7BwXttNIS5Q0GiIn9r60HWD6uDdXzi0bdUUfdbMYlQAYMYinsg6lHgOHO
+         35juPps5e2lCkmHrmPjGUjLqjDZYAGVk4nLnzXyA=
+Date:   Wed, 19 Aug 2020 14:55:15 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     kjlu@umn.edu,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Mahesh Kumar <mahesh1.kumar@intel.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/crc-debugfs: Fix memleak in crc_control_write
+Message-ID: <20200819115515.GC6049@pendragon.ideasonboard.com>
+References: <20200819082228.26847-1-dinghao.liu@zju.edu.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200819082228.26847-1-dinghao.liu@zju.edu.cn>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When devm_clk_get() returns -EPROBE_DEFER, spi_priv
-should be freed just like when wilc_cfg80211_init()
-fails.
+Hi Dinghao,
 
-Fixes: 854d66df74aed ("staging: wilc1000: look for rtc_clk clock in spi mode")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/net/wireless/microchip/wilc1000/spi.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Thank you for the patch.
 
-diff --git a/drivers/net/wireless/microchip/wilc1000/spi.c b/drivers/net/wireless/microchip/wilc1000/spi.c
-index 3f19e3f38a39..a18dac0aa6b6 100644
---- a/drivers/net/wireless/microchip/wilc1000/spi.c
-+++ b/drivers/net/wireless/microchip/wilc1000/spi.c
-@@ -112,9 +112,10 @@ static int wilc_bus_probe(struct spi_device *spi)
- 	wilc->dev_irq_num = spi->irq;
- 
- 	wilc->rtc_clk = devm_clk_get(&spi->dev, "rtc_clk");
--	if (PTR_ERR_OR_ZERO(wilc->rtc_clk) == -EPROBE_DEFER)
-+	if (PTR_ERR_OR_ZERO(wilc->rtc_clk) == -EPROBE_DEFER) {
-+		kfree(spi_priv);
- 		return -EPROBE_DEFER;
--	else if (!IS_ERR(wilc->rtc_clk))
-+	} else if (!IS_ERR(wilc->rtc_clk))
- 		clk_prepare_enable(wilc->rtc_clk);
- 
- 	return 0;
+On Wed, Aug 19, 2020 at 04:22:28PM +0800, Dinghao Liu wrote:
+> When verify_crc_source() fails, source needs to be freed.
+> However, current code is returning directly and ends up
+> leaking memory.
+> 
+> Fixes: c0811a7d5befe ("drm/crc: Cleanup crtc_crc_open function")
+
+I think the issue was introduced in d5cc15a0c66e ("drm: crc: Introduce
+verify_crc_source callback"). Apart from that,
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
+>  drivers/gpu/drm/drm_debugfs_crc.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_debugfs_crc.c b/drivers/gpu/drm/drm_debugfs_crc.c
+> index 5d67a41f7c3a..3dd70d813f69 100644
+> --- a/drivers/gpu/drm/drm_debugfs_crc.c
+> +++ b/drivers/gpu/drm/drm_debugfs_crc.c
+> @@ -144,8 +144,10 @@ static ssize_t crc_control_write(struct file *file, const char __user *ubuf,
+>  		source[len - 1] = '\0';
+>  
+>  	ret = crtc->funcs->verify_crc_source(crtc, source, &values_cnt);
+> -	if (ret)
+> +	if (ret) {
+> +		kfree(source);
+>  		return ret;
+> +	}
+>  
+>  	spin_lock_irq(&crc->lock);
+>  
+
 -- 
-2.17.1
+Regards,
 
+Laurent Pinchart
