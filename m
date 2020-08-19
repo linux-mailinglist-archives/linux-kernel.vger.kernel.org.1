@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F5DE249DFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 527E0249DF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728298AbgHSMdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 08:33:53 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38984 "EHLO
+        id S1728267AbgHSMdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 08:33:44 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39014 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727846AbgHSMdP (ORCPT
+        with ESMTP id S1728022AbgHSMdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 08:33:15 -0400
-Date:   Wed, 19 Aug 2020 12:33:08 -0000
+        Wed, 19 Aug 2020 08:33:14 -0400
+Date:   Wed, 19 Aug 2020 12:33:09 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597840389;
+        s=2020; t=1597840390;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xnbYGpJ74gcTFWcOUDCAetN/HzUoEVlhxXAKT9TO5MY=;
-        b=ipZ2QBKkaHyDiLsjL1AvTBJVQirWYRQp2QUzU5eM8QWQhz0CVQ6LyOG+w4M63E0uBF3/LA
-        IKARb5rBU4VCM8pHR7PR+KJWcEU7/lJboPQcHFRTRoXy32W8Ufm7/hSic6N/4LcUSItY87
-        vFd3ddqtFzqDPNZT4oxya1U6f04IVZWxiV0KuSmR6fXanac16urgUj472t0ELfkgHC1Ju7
-        b2aYa3G5qqOSqMZGpirVpo63wQ1fBDgSINtItgVeIAMKsAS7jZFzYvNaiv73oVZarDCgDq
-        oKsqV3JDUKuW12Jd9gNTMSzEImOEOJhxRL4Gi5rOAc7iHL6UEmdVNe42qW/4Ig==
+        bh=3u3kLp4sAK5g6kqOKqttRQub8cj8+jsysGqclBHbZ14=;
+        b=oEydEtGuJ+4hmvtngmlwjmoqrdrkgHUZLrMzdGA20lOcYv56NcN/mwieSZVMkTT7ub7ZJ0
+        KBgGkwcBCQAyP3jiAO/CaWS+Jet0gXJ2iRoRQ7Yl7E/J75sqkbalkNj7Mn7hvwJVvcA1FT
+        ekKryLS790nWWO9AzM5qsX6UB8VHb7MuYY9be2D8SiwAcklRVI3Om9do5+JAI6zpjdQwWI
+        bPvmSAo1uXKcgcyHv9ldC0/mds04dnrAY3VREh9oyAfwx33nxi2hbr5ALQcyPdA9jNWWNO
+        LjqW69CtJ/EHprqGWVutMrYW7VjX+gUuBLzNnFGTcKRAVk6qk/GLquQDhU5New==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597840389;
+        s=2020e; t=1597840390;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xnbYGpJ74gcTFWcOUDCAetN/HzUoEVlhxXAKT9TO5MY=;
-        b=LG6BWzaOqSaNt5R3OKLuL6IEnqJsn3dDg5V9KBPVaxWAfsaE5rKcM2wiuM3iagWTeZ6yvl
-        2looV26g8NFgabBA==
+        bh=3u3kLp4sAK5g6kqOKqttRQub8cj8+jsysGqclBHbZ14=;
+        b=fDlGQij27xnrzZgpeSXFMJRMLUdUK8SEPFKKxj4KDstIgBfrKQKofuDfP62IPKwCWq38G1
+        x/Vin/3yVNs/jqCA==
 From:   "tip-bot2 for James Morse" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cache] x86/resctrl: Add struct rdt_cache::arch_has_{sparse,
- empty}_bitmaps
+Subject: [tip: x86/cache] x86/resctrl: Add struct rdt_membw::arch_needs_linear
+ to explain AMD/Intel MBA difference
 Cc:     James Morse <james.morse@arm.com>, Borislav Petkov <bp@suse.de>,
-        Babu Moger <babu.moger@amd.com>,
         Reinette Chatre <reinette.chatre@intel.com>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200708163929.2783-10-james.morse@arm.com>
-References: <20200708163929.2783-10-james.morse@arm.com>
+        Babu Moger <babu.moger@amd.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200708163929.2783-8-james.morse@arm.com>
+References: <20200708163929.2783-8-james.morse@arm.com>
 MIME-Version: 1.0
-Message-ID: <159784038840.3192.17148158844840208920.tip-bot2@tip-bot2>
+Message-ID: <159784038975.3192.16283518251900554647.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,203 +60,119 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/cache branch of tip:
 
-Commit-ID:     316e7f901f5aedb415c72d1eedd7de0846238dd0
-Gitweb:        https://git.kernel.org/tip/316e7f901f5aedb415c72d1eedd7de0846238dd0
+Commit-ID:     41215b7947f1b1b86fd77a7bebd2320599aea7bd
+Gitweb:        https://git.kernel.org/tip/41215b7947f1b1b86fd77a7bebd2320599aea7bd
 Author:        James Morse <james.morse@arm.com>
-AuthorDate:    Wed, 08 Jul 2020 16:39:28 
+AuthorDate:    Wed, 08 Jul 2020 16:39:26 
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 19 Aug 2020 10:41:40 +02:00
+CommitterDate: Wed, 19 Aug 2020 09:34:51 +02:00
 
-x86/resctrl: Add struct rdt_cache::arch_has_{sparse, empty}_bitmaps
+x86/resctrl: Add struct rdt_membw::arch_needs_linear to explain AMD/Intel MBA difference
 
-Intel CPUs expect the cache bitmap provided by user-space to have on a
-single span of 1s, whereas AMD can support bitmaps like 0xf00f. Arm's
-MPAM support also allows sparse bitmaps.
+The configuration values user-space provides to the resctrl filesystem
+are ABI. To make this work on another architecture, all the ABI bits
+should be moved out of /arch/x86 and under /fs.
 
-Similarly, Intel CPUs check at least one bit set, whereas AMD CPUs are
-quite happy with an empty bitmap. Arm's MPAM allows an empty bitmap.
+To do this, the differences between AMD and Intel CPUs needs to be
+explained to resctrl via resource properties, instead of function
+pointers that let the arch code accept subtly different values on
+different platforms/architectures.
 
-To move resctrl out to /fs/, platform differences like this need to be
-explained.
+For MBA, Intel CPUs reject configuration attempts for non-linear
+resources, whereas AMD ignore this field as its MBA resource is never
+linear. To merge the parse/validate functions, this difference needs to
+be explained.
 
-Add two resource properties arch_has_{empty,sparse}_bitmaps. Test these
-around the relevant parts of cbm_validate().
+Add struct rdt_membw::arch_needs_linear to indicate the arch code needs
+the linear property to be true to configure this resource. AMD can set
+this and delay_linear to false. Intel can set arch_needs_linear to
+true to keep the existing "No support for non-linear MB domains" error
+message for affected platforms.
 
-Merging the validate calls causes AMD to gain the min_cbm_bits test
-needed for Haswell, but as it always sets this value to 1, it will never
-match.
-
- [ bp: Massage commit message. ]
+ [ bp: convert "we" etc to passive voice. ]
 
 Signed-off-by: James Morse <james.morse@arm.com>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Babu Moger <babu.moger@amd.com>
 Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-Link: https://lkml.kernel.org/r/20200708163929.2783-10-james.morse@arm.com
+Reviewed-by: Babu Moger <babu.moger@amd.com>
+Link: https://lkml.kernel.org/r/20200708163929.2783-8-james.morse@arm.com
 ---
- arch/x86/kernel/cpu/resctrl/core.c        | 14 ++++----
- arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 39 +++++-----------------
- arch/x86/kernel/cpu/resctrl/internal.h    |  8 ++---
- 3 files changed, 22 insertions(+), 39 deletions(-)
+ arch/x86/kernel/cpu/resctrl/core.c        | 3 +++
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 8 +++++++-
+ arch/x86/kernel/cpu/resctrl/internal.h    | 2 ++
+ 3 files changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-index 10a52d1..cbbd751 100644
+index 9225ee5..52b8991 100644
 --- a/arch/x86/kernel/cpu/resctrl/core.c
 +++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -922,9 +922,10 @@ static __init void rdt_init_res_defs_intel(void)
- 		    r->rid == RDT_RESOURCE_L3CODE ||
- 		    r->rid == RDT_RESOURCE_L2 ||
- 		    r->rid == RDT_RESOURCE_L2DATA ||
--		    r->rid == RDT_RESOURCE_L2CODE)
--			r->cbm_validate = cbm_validate_intel;
--		else if (r->rid == RDT_RESOURCE_MBA) {
-+		    r->rid == RDT_RESOURCE_L2CODE) {
-+			r->cache.arch_has_sparse_bitmaps = false;
-+			r->cache.arch_has_empty_bitmaps = false;
-+		} else if (r->rid == RDT_RESOURCE_MBA) {
- 			r->msr_base = MSR_IA32_MBA_THRTL_BASE;
- 			r->msr_update = mba_wrmsr_intel;
- 		}
-@@ -941,9 +942,10 @@ static __init void rdt_init_res_defs_amd(void)
- 		    r->rid == RDT_RESOURCE_L3CODE ||
- 		    r->rid == RDT_RESOURCE_L2 ||
- 		    r->rid == RDT_RESOURCE_L2DATA ||
--		    r->rid == RDT_RESOURCE_L2CODE)
--			r->cbm_validate = cbm_validate_amd;
--		else if (r->rid == RDT_RESOURCE_MBA) {
-+		    r->rid == RDT_RESOURCE_L2CODE) {
-+			r->cache.arch_has_sparse_bitmaps = true;
-+			r->cache.arch_has_empty_bitmaps = true;
-+		} else if (r->rid == RDT_RESOURCE_MBA) {
- 			r->msr_base = MSR_IA32_MBA_BW_BASE;
- 			r->msr_update = mba_wrmsr_amd;
- 		}
+@@ -260,6 +260,7 @@ static bool __get_mem_config_intel(struct rdt_resource *r)
+ 	r->num_closid = edx.split.cos_max + 1;
+ 	max_delay = eax.split.max_delay + 1;
+ 	r->default_ctrl = MAX_MBA_BW;
++	r->membw.arch_needs_linear = true;
+ 	if (ecx & MBA_IS_LINEAR) {
+ 		r->membw.delay_linear = true;
+ 		r->membw.min_bw = MAX_MBA_BW - max_delay;
+@@ -267,6 +268,7 @@ static bool __get_mem_config_intel(struct rdt_resource *r)
+ 	} else {
+ 		if (!rdt_get_mb_table(r))
+ 			return false;
++		r->membw.arch_needs_linear = false;
+ 	}
+ 	r->data_width = 3;
+ 
+@@ -288,6 +290,7 @@ static bool __rdt_get_mem_config_amd(struct rdt_resource *r)
+ 
+ 	/* AMD does not use delay */
+ 	r->membw.delay_linear = false;
++	r->membw.arch_needs_linear = false;
+ 
+ 	r->membw.min_bw = 0;
+ 	r->membw.bw_gran = 1;
 diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-index b0e24cb..c877642 100644
+index 934c8fb..e3bcd77 100644
 --- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
 +++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-@@ -76,12 +76,14 @@ int parse_bw(struct rdt_parse_data *data, struct rdt_resource *r,
- }
+@@ -33,6 +33,12 @@ static bool bw_validate_amd(char *buf, unsigned long *data,
+ 	unsigned long bw;
+ 	int ret;
  
- /*
-- * Check whether a cache bit mask is valid. The SDM says:
-+ * Check whether a cache bit mask is valid.
-+ * For Intel the SDM says:
-  *	Please note that all (and only) contiguous '1' combinations
-  *	are allowed (e.g. FFFFH, 0FF0H, 003CH, etc.).
-  * Additionally Haswell requires at least two bits set.
-+ * AMD allows non-contiguous bitmasks.
-  */
--bool cbm_validate_intel(char *buf, u32 *data, struct rdt_resource *r)
-+static bool cbm_validate(char *buf, u32 *data, struct rdt_resource *r)
- {
- 	unsigned long first_bit, zero_bit, val;
- 	unsigned int cbm_len = r->cache.cbm_len;
-@@ -93,7 +95,8 @@ bool cbm_validate_intel(char *buf, u32 *data, struct rdt_resource *r)
++	/* temporary: always false on AMD */
++	if (!r->membw.delay_linear && r->membw.arch_needs_linear) {
++		rdt_last_cmd_puts("No support for non-linear MB domains\n");
++		return false;
++	}
++
+ 	ret = kstrtoul(buf, 10, &bw);
+ 	if (ret) {
+ 		rdt_last_cmd_printf("Non-decimal digit in MB value %s\n", buf);
+@@ -82,7 +88,7 @@ static bool bw_validate(char *buf, unsigned long *data, struct rdt_resource *r)
+ 	/*
+ 	 * Only linear delay values is supported for current Intel SKUs.
+ 	 */
+-	if (!r->membw.delay_linear) {
++	if (!r->membw.delay_linear && r->membw.arch_needs_linear) {
+ 		rdt_last_cmd_puts("No support for non-linear MB domains\n");
  		return false;
  	}
- 
--	if (val == 0 || val > r->default_ctrl) {
-+	if ((!r->cache.arch_has_empty_bitmaps && val == 0) ||
-+	    val > r->default_ctrl) {
- 		rdt_last_cmd_puts("Mask out of range\n");
- 		return false;
- 	}
-@@ -101,7 +104,9 @@ bool cbm_validate_intel(char *buf, u32 *data, struct rdt_resource *r)
- 	first_bit = find_first_bit(&val, cbm_len);
- 	zero_bit = find_next_zero_bit(&val, cbm_len, first_bit);
- 
--	if (find_next_bit(&val, cbm_len, zero_bit) < cbm_len) {
-+	/* Are non-contiguous bitmaps allowed? */
-+	if (!r->cache.arch_has_sparse_bitmaps &&
-+	    (find_next_bit(&val, cbm_len, zero_bit) < cbm_len)) {
- 		rdt_last_cmd_printf("The mask %lx has non-consecutive 1-bits\n", val);
- 		return false;
- 	}
-@@ -117,30 +122,6 @@ bool cbm_validate_intel(char *buf, u32 *data, struct rdt_resource *r)
- }
- 
- /*
-- * Check whether a cache bit mask is valid. AMD allows non-contiguous
-- * bitmasks
-- */
--bool cbm_validate_amd(char *buf, u32 *data, struct rdt_resource *r)
--{
--	unsigned long val;
--	int ret;
--
--	ret = kstrtoul(buf, 16, &val);
--	if (ret) {
--		rdt_last_cmd_printf("Non-hex character in the mask %s\n", buf);
--		return false;
--	}
--
--	if (val > r->default_ctrl) {
--		rdt_last_cmd_puts("Mask out of range\n");
--		return false;
--	}
--
--	*data = val;
--	return true;
--}
--
--/*
-  * Read one cache bit mask (hex). Check that it is valid for the current
-  * resource type.
-  */
-@@ -165,7 +146,7 @@ int parse_cbm(struct rdt_parse_data *data, struct rdt_resource *r,
- 		return -EINVAL;
- 	}
- 
--	if (!r->cbm_validate(data->buf, &cbm_val, r))
-+	if (!cbm_validate(data->buf, &cbm_val, r))
- 		return -EINVAL;
- 
- 	if ((rdtgrp->mode == RDT_MODE_EXCLUSIVE ||
 diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index 21f4399..0b48294 100644
+index 1eb39bd..7b00723 100644
 --- a/arch/x86/kernel/cpu/resctrl/internal.h
 +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -358,6 +358,8 @@ struct msr_param {
-  *			in a cache bit mask
-  * @shareable_bits:	Bitmask of shareable resource with other
-  *			executing entities
-+ * @arch_has_sparse_bitmaps:	True if a bitmap like f00f is valid.
-+ * @arch_has_empty_bitmaps:	True if the '0' bitmap is valid.
+@@ -372,6 +372,7 @@ struct rdt_cache {
+  * @min_bw:		Minimum memory bandwidth percentage user can request
+  * @bw_gran:		Granularity at which the memory bandwidth is allocated
+  * @delay_linear:	True if memory B/W delay is in linear scale
++ * @arch_needs_linear:	True if we can't configure non-linear resources
+  * @mba_sc:		True if MBA software controller(mba_sc) is enabled
+  * @mb_map:		Mapping of memory B/W percentage to memory B/W delay
   */
- struct rdt_cache {
- 	unsigned int	cbm_len;
-@@ -365,6 +367,8 @@ struct rdt_cache {
- 	unsigned int	cbm_idx_mult;
- 	unsigned int	cbm_idx_offset;
- 	unsigned int	shareable_bits;
-+	bool		arch_has_sparse_bitmaps;
-+	bool		arch_has_empty_bitmaps;
+@@ -379,6 +380,7 @@ struct rdt_membw {
+ 	u32		min_bw;
+ 	u32		bw_gran;
+ 	u32		delay_linear;
++	bool		arch_needs_linear;
+ 	bool		mba_sc;
+ 	u32		*mb_map;
  };
- 
- /**
-@@ -434,7 +438,6 @@ struct rdt_parse_data {
-  * @cache:		Cache allocation related data
-  * @format_str:		Per resource format string to show domain value
-  * @parse_ctrlval:	Per resource function pointer to parse control values
-- * @cbm_validate	Cache bitmask validate function
-  * @evt_list:		List of monitoring events
-  * @num_rmid:		Number of RMIDs available
-  * @mon_scale:		cqm counter * mon_scale = occupancy in bytes
-@@ -461,7 +464,6 @@ struct rdt_resource {
- 	int (*parse_ctrlval)(struct rdt_parse_data *data,
- 			     struct rdt_resource *r,
- 			     struct rdt_domain *d);
--	bool (*cbm_validate)(char *buf, u32 *data, struct rdt_resource *r);
- 	struct list_head	evt_list;
- 	int			num_rmid;
- 	unsigned int		mon_scale;
-@@ -604,8 +606,6 @@ void cqm_setup_limbo_handler(struct rdt_domain *dom, unsigned long delay_ms);
- void cqm_handle_limbo(struct work_struct *work);
- bool has_busy_rmid(struct rdt_resource *r, struct rdt_domain *d);
- void __check_limbo(struct rdt_domain *d, bool force_free);
--bool cbm_validate_intel(char *buf, u32 *data, struct rdt_resource *r);
--bool cbm_validate_amd(char *buf, u32 *data, struct rdt_resource *r);
- void rdt_domain_reconfigure_cdp(struct rdt_resource *r);
- 
- #endif /* _ASM_X86_RESCTRL_INTERNAL_H */
