@@ -2,117 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A83524A8FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 00:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FDE624A931
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 00:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727791AbgHSWTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 18:19:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726681AbgHSWTr (ORCPT
+        id S1727993AbgHSWV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 18:21:59 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:36253 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727905AbgHSWVM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 18:19:47 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C90F7C061383
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 15:19:46 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id d6so292844ejr.5
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 15:19:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=c+nD+6rOSt5uemBROilNSHXJdZPlPNIu2EDTx+MPmGY=;
-        b=Ef522J+HKC9VQ3bXTdQCKpaISrqMAApkaMt0vil8OTOF7bGl/toU8qGdBGUstpcOqL
-         7TvPKLv3ULgx8c5b25OU0ONXCq5g193Cxas0ff1KGyXSKNqk3GB+VuXaMUfUh3k1AT+s
-         t0tZroI67koT3PQ7a/dFTvQC3LLqKlUymmTV0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=c+nD+6rOSt5uemBROilNSHXJdZPlPNIu2EDTx+MPmGY=;
-        b=Ugt0WZYKykmeVKEiND4v4X394TtSpisXy8MNzE5D8CgAmOyNImwWivlLpJtbBwj6Am
-         7X9Z3WtnYfhh0VIPYWhtQVl9Uw4EB8clzERBYeEVQrYniJ/9GteKOH6VVJekKfisuUu/
-         +AQqPphWsOhyQjoRXs9+UV7imf2xwMayEEErFcRQYeDPDP5mmBPS1pHZma4gLRprosMZ
-         C4p/M+pkasS1EkaZ8mC2sk4PmC2sI313xBw13dIzW6HVQIEQ+Iyb+wOKikjq9JMAJPGY
-         d8ZNq9j3IHo/wjFDXQPlyI2kJb0Bigvm3mwrSHC1GW59S22GelFEcWoleM/vY4LNduaw
-         bDnQ==
-X-Gm-Message-State: AOAM5328r3ZXSG1UVFqi3PCYXtJV8vM7T2EYhSW5N0bc9mix+wQscGVg
-        FbQi9sKrXH1E+UUbmIFvmjTquQ==
-X-Google-Smtp-Source: ABdhPJx1M6OHslbrJYzGQRpPTSSNnbD5cIdvwVw/gDhCC4OwGBD5G3lDSoEC9VQuL0+As3CMMoNHHw==
-X-Received: by 2002:a17:906:6d59:: with SMTP id a25mr453935ejt.193.1597875585467;
-        Wed, 19 Aug 2020 15:19:45 -0700 (PDT)
-Received: from kpsingh-macbookpro2.roam.corp.google.com ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id x16sm47545edr.25.2020.08.19.15.19.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Aug 2020 15:19:44 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v8 3/7] bpf: Generalize bpf_sk_storage
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>
-References: <20200803164655.1924498-1-kpsingh@chromium.org>
- <20200803164655.1924498-4-kpsingh@chromium.org>
- <20200818010545.iix72le4tkhuyqe5@kafai-mbp.dhcp.thefacebook.com>
- <6cb51fa0-61a5-2cf6-b44d-84d58d08c775@chromium.org>
- <20200819171215.lcgoon3fbm4kvkpc@kafai-mbp.dhcp.thefacebook.com>
-From:   KP Singh <kpsingh@chromium.org>
-Message-ID: <a69e6bdf-7a1b-3152-f26b-20175451d9c2@chromium.org>
-Date:   Thu, 20 Aug 2020 00:19:44 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
+        Wed, 19 Aug 2020 18:21:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597875670;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FE1t/TwDu4PMDFPS8TRkGpVdFOvXwiHJwlwFE0ieZjw=;
+        b=fYdZ/Iulfe9rabSC0pEVRvnNtYMf4C2Yme8YNcF2C948ZD+6bCIAjUUgy5iV54jCPE/sgJ
+        yHOJTtQx5Uz+ihhppyG7YUosaUA23XO146PyK4bk7LH/4plvPwy6WhQiU3pGvpFI0bESSH
+        JYR5u2OL8hDBB0//9cPktbjRjmJfn6I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-424-kvCFBVM0N6m5rIVDDpSkww-1; Wed, 19 Aug 2020 18:21:08 -0400
+X-MC-Unique: kvCFBVM0N6m5rIVDDpSkww-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75029425DB;
+        Wed, 19 Aug 2020 22:21:07 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-115-197.rdu2.redhat.com [10.10.115.197])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7777A5D9D5;
+        Wed, 19 Aug 2020 22:21:01 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id E76AC2256E4; Wed, 19 Aug 2020 18:20:53 -0400 (EDT)
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, virtio-fs@redhat.com
+Cc:     vgoyal@redhat.com, miklos@szeredi.hu, stefanha@redhat.com,
+        dgilbert@redhat.com, dan.j.williams@intel.com
+Subject: [PATCH v3 06/18] virtiofs: Provide a helper function for virtqueue initialization
+Date:   Wed, 19 Aug 2020 18:19:44 -0400
+Message-Id: <20200819221956.845195-7-vgoyal@redhat.com>
+In-Reply-To: <20200819221956.845195-1-vgoyal@redhat.com>
+References: <20200819221956.845195-1-vgoyal@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200819171215.lcgoon3fbm4kvkpc@kafai-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This reduces code duplication and make it little easier to read code.
 
+Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+---
+ fs/fuse/virtio_fs.c | 50 +++++++++++++++++++++++++++------------------
+ 1 file changed, 30 insertions(+), 20 deletions(-)
 
-On 19.08.20 19:12, Martin KaFai Lau wrote:
-> On Wed, Aug 19, 2020 at 02:41:50PM +0200, KP Singh wrote:
->> On 8/18/20 3:05 AM, Martin KaFai Lau wrote:
->>> On Mon, Aug 03, 2020 at 06:46:51PM +0200, KP Singh wrote:
->>>> From: KP Singh <kpsingh@google.com>
->>>>
->>>> Refactor the functionality in bpf_sk_storage.c so that concept of
+diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+index 104f35de5270..ed8da4825b70 100644
+--- a/fs/fuse/virtio_fs.c
++++ b/fs/fuse/virtio_fs.c
+@@ -24,6 +24,8 @@ enum {
+ 	VQ_REQUEST
+ };
+ 
++#define VQ_NAME_LEN	24
++
+ /* Per-virtqueue state */
+ struct virtio_fs_vq {
+ 	spinlock_t lock;
+@@ -36,7 +38,7 @@ struct virtio_fs_vq {
+ 	bool connected;
+ 	long in_flight;
+ 	struct completion in_flight_zero; /* No inflight requests */
+-	char name[24];
++	char name[VQ_NAME_LEN];
+ } ____cacheline_aligned_in_smp;
+ 
+ /* A virtio-fs device instance */
+@@ -596,6 +598,26 @@ static void virtio_fs_vq_done(struct virtqueue *vq)
+ 	schedule_work(&fsvq->done_work);
+ }
+ 
++static void virtio_fs_init_vq(struct virtio_fs_vq *fsvq, char *name,
++			      int vq_type)
++{
++	strncpy(fsvq->name, name, VQ_NAME_LEN);
++	spin_lock_init(&fsvq->lock);
++	INIT_LIST_HEAD(&fsvq->queued_reqs);
++	INIT_LIST_HEAD(&fsvq->end_reqs);
++	init_completion(&fsvq->in_flight_zero);
++
++	if (vq_type == VQ_REQUEST) {
++		INIT_WORK(&fsvq->done_work, virtio_fs_requests_done_work);
++		INIT_DELAYED_WORK(&fsvq->dispatch_work,
++				  virtio_fs_request_dispatch_work);
++	} else {
++		INIT_WORK(&fsvq->done_work, virtio_fs_hiprio_done_work);
++		INIT_DELAYED_WORK(&fsvq->dispatch_work,
++				  virtio_fs_hiprio_dispatch_work);
++	}
++}
++
+ /* Initialize virtqueues */
+ static int virtio_fs_setup_vqs(struct virtio_device *vdev,
+ 			       struct virtio_fs *fs)
+@@ -611,7 +633,7 @@ static int virtio_fs_setup_vqs(struct virtio_device *vdev,
+ 	if (fs->num_request_queues == 0)
+ 		return -EINVAL;
+ 
+-	fs->nvqs = 1 + fs->num_request_queues;
++	fs->nvqs = VQ_REQUEST + fs->num_request_queues;
+ 	fs->vqs = kcalloc(fs->nvqs, sizeof(fs->vqs[VQ_HIPRIO]), GFP_KERNEL);
+ 	if (!fs->vqs)
+ 		return -ENOMEM;
+@@ -625,29 +647,17 @@ static int virtio_fs_setup_vqs(struct virtio_device *vdev,
+ 		goto out;
+ 	}
+ 
++	/* Initialize the hiprio/forget request virtqueue */
+ 	callbacks[VQ_HIPRIO] = virtio_fs_vq_done;
+-	snprintf(fs->vqs[VQ_HIPRIO].name, sizeof(fs->vqs[VQ_HIPRIO].name),
+-			"hiprio");
++	virtio_fs_init_vq(&fs->vqs[VQ_HIPRIO], "hiprio", VQ_HIPRIO);
+ 	names[VQ_HIPRIO] = fs->vqs[VQ_HIPRIO].name;
+-	INIT_WORK(&fs->vqs[VQ_HIPRIO].done_work, virtio_fs_hiprio_done_work);
+-	INIT_LIST_HEAD(&fs->vqs[VQ_HIPRIO].queued_reqs);
+-	INIT_LIST_HEAD(&fs->vqs[VQ_HIPRIO].end_reqs);
+-	INIT_DELAYED_WORK(&fs->vqs[VQ_HIPRIO].dispatch_work,
+-			virtio_fs_hiprio_dispatch_work);
+-	init_completion(&fs->vqs[VQ_HIPRIO].in_flight_zero);
+-	spin_lock_init(&fs->vqs[VQ_HIPRIO].lock);
+ 
+ 	/* Initialize the requests virtqueues */
+ 	for (i = VQ_REQUEST; i < fs->nvqs; i++) {
+-		spin_lock_init(&fs->vqs[i].lock);
+-		INIT_WORK(&fs->vqs[i].done_work, virtio_fs_requests_done_work);
+-		INIT_DELAYED_WORK(&fs->vqs[i].dispatch_work,
+-				  virtio_fs_request_dispatch_work);
+-		INIT_LIST_HEAD(&fs->vqs[i].queued_reqs);
+-		INIT_LIST_HEAD(&fs->vqs[i].end_reqs);
+-		init_completion(&fs->vqs[i].in_flight_zero);
+-		snprintf(fs->vqs[i].name, sizeof(fs->vqs[i].name),
+-			 "requests.%u", i - VQ_REQUEST);
++		char vq_name[VQ_NAME_LEN];
++
++		snprintf(vq_name, VQ_NAME_LEN, "requests.%u", i - VQ_REQUEST);
++		virtio_fs_init_vq(&fs->vqs[i], vq_name, VQ_REQUEST);
+ 		callbacks[i] = virtio_fs_vq_done;
+ 		names[i] = fs->vqs[i].name;
+ 	}
+-- 
+2.25.4
 
-[...]
-
->>>> +			struct bpf_local_storage_map *smap,
->>>> +			struct bpf_local_storage_elem *first_selem);
->>>> +
->>>> +struct bpf_local_storage_data *
->>>> +bpf_local_storage_update(void *owner, struct bpf_map *map, void *value,
->>> Nit.  It may be more consistent to take "struct bpf_local_storage_map *smap"
->>> instead of "struct bpf_map *map" here.
->>>
->>> bpf_local_storage_map_check_btf() will be the only one taking
->>> "struct bpf_map *map".
->>
->> That's because it is used in map operations as map_check_btf which expects
->> a bpf_map *map pointer. We can wrap it in another function but is that
->> worth doing?
-> Agree.  bpf_local_storage_map_check_btf() should stay as is.
-> 
-> I meant to only change the "bpf_local_storage_update()" to take
-> "struct bpf_local_storage_map *smap".
-> 
-
-Apologies, I misread that. Updated.
-
-- KP
-
- up here
->> 	 * or when the storage is freed e.g.
->> 	 * by bpf_sk_storage_free() during __sk_destruct().
->>
-> +1
-> 
