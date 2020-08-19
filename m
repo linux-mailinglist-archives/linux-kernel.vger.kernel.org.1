@@ -2,115 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C2B24949A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 07:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A75D24949C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 07:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726585AbgHSFsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 01:48:12 -0400
-Received: from [115.28.160.31] ([115.28.160.31]:58282 "EHLO
-        mailbox.box.xen0n.name" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S1725883AbgHSFsK (ORCPT
+        id S1726700AbgHSFse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 01:48:34 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:44626 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726531AbgHSFsb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 01:48:10 -0400
-Received: from hanazono.local (unknown [140.206.66.42])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 203536009E;
-        Wed, 19 Aug 2020 13:47:48 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=xen0n.name; s=mail;
-        t=1597816068; bh=KRrHwfUQuKjAb85/oLK3ZUF0M9g04e+91BLM9g/wlMs=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=tPi4mYXHmiuOAuKaFwBNtsdr5U02fwW3w1htFvAszZB68OljMlR04sbip5fMIv8Y7
-         jFdHvcKj2WihUyCSoBgtKpkd3ZtUUiQo3oCzFhkMguYlK0DbUm9Pp2qDBu/73tj3CS
-         ny1O4WJ1Y0YIWB+2yg1eJ/1IdVhNMBaf++j8c+yQ=
-Subject: Re: [PATCH] MIPS: Loongson64: Fix build error about redeclaration of
- enumerator 'VIRTUAL' and "CONFIG_DM_THIN_PROVISIONING"
-To:     Youling Tang <tangyouling@loongson.cn>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1597750368-14086-1-git-send-email-tangyouling@loongson.cn>
-From:   WANG Xuerui <kernel@xen0n.name>
-Message-ID: <a3a3dfc1-1148-e6db-9ea3-2405c3fe5329@xen0n.name>
-Date:   Wed, 19 Aug 2020 13:47:47 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:81.0)
- Gecko/20100101 Thunderbird/81.0a1
-MIME-Version: 1.0
-In-Reply-To: <1597750368-14086-1-git-send-email-tangyouling@loongson.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        Wed, 19 Aug 2020 01:48:31 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07425;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U6CFft4_1597816103;
+Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U6CFft4_1597816103)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 19 Aug 2020 13:48:24 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] mm/pageblock: mitigation cmpxchg false sharing in pageblock flags
+Date:   Wed, 19 Aug 2020 13:47:54 +0800
+Message-Id: <1597816075-61091-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Youling,
+pageblock_flags is used as long, since every pageblock_flags is just 4
+bits, 'long' size will include 8(32bit machine) or 16 pageblocks' flags,
+that flag setting has to sync in cmpxchg with 7 or 15 other pageblock
+flags. It would cause long waiting for sync.
 
+If we could change the pageblock_flags variable as char, we could use
+char size cmpxchg, which just sync up with 2 pageblock flags. it could
+relief much false sharing in cmpxchg.
 
-On 2020/8/18 19:32, Youling Tang wrote:
-> After commit 39c1485c8baa (MIPS: KVM: Add kvm guestsupport for Loongson-3)
->
-> Fix the following build error:
->
-> drivers/md/dm-thin.c:116:2: error: redeclaration of enumerator ‘VIRTUAL’
->   VIRTUAL,
->   ^
-> In file included from ./arch/mips/include/asm/mach-loongson64/mmzone.h:12:0,
->                  from ./arch/mips/include/asm/mmzone.h:12,
->                  from ./include/linux/mmzone.h:962,
->                  from ./include/linux/gfp.h:6,
->                  from ./include/linux/slab.h:15,
->                  from ./include/linux/genhd.h:16,
->                  from ./include/linux/blkdev.h:8,
->                  from drivers/md/persistent-data/dm-block-manager.h:11,
->                  from drivers/md/dm-thin-metadata.h:10,
->                  from drivers/md/dm-thin.c:7:
-> ./arch/mips/include/asm/mach-loongson64/boot_param.h:198:2: note: previous
-> definition of ‘VIRTUAL’ was here VIRTUAL = 3
->                                  ^
-> scripts/Makefile.build:283: recipe for target 'drivers/md/dm-thin.o' failed
-> make[2]: *** [drivers/md/dm-thin.o] Error 1
->
-> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
-> ---
->  arch/mips/include/asm/mach-loongson64/boot_param.h | 2 +-
->  arch/mips/loongson64/env.c                         | 4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/mips/include/asm/mach-loongson64/boot_param.h b/arch/mips/include/asm/mach-loongson64/boot_param.h
-> index afc92b7..a4ef4ac 100644
-> --- a/arch/mips/include/asm/mach-loongson64/boot_param.h
-> +++ b/arch/mips/include/asm/mach-loongson64/boot_param.h
-> @@ -195,7 +195,7 @@ struct boot_params {
->  enum loongson_bridge_type {
->  	LS7A = 1,
->  	RS780E = 2,
-> -	VIRTUAL = 3
-> +	VIRT = 3
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+---
+ include/linux/mmzone.h          |  6 +++---
+ include/linux/pageblock-flags.h |  2 +-
+ mm/page_alloc.c                 | 38 +++++++++++++++++++-------------------
+ 3 files changed, 23 insertions(+), 23 deletions(-)
 
-I believe this is only masking the root cause, which is redundant
-#include directives inside mach-specific headers. I'll send my version
-of fix shortly.
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 0ed520954843..c92d6d24527d 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -438,7 +438,7 @@ struct zone {
+ 	 * Flags for a pageblock_nr_pages block. See pageblock-flags.h.
+ 	 * In SPARSEMEM, this map is stored in struct mem_section
+ 	 */
+-	unsigned long		*pageblock_flags;
++	unsigned char		*pageblock_flags;
+ #endif /* CONFIG_SPARSEMEM */
+ 
+ 	/* zone_start_pfn == zone_start_paddr >> PAGE_SHIFT */
+@@ -1159,7 +1159,7 @@ struct mem_section_usage {
+ 	DECLARE_BITMAP(subsection_map, SUBSECTIONS_PER_SECTION);
+ #endif
+ 	/* See declaration of similar field in struct zone */
+-	unsigned long pageblock_flags[0];
++	unsigned char	pageblock_flags[0];
+ };
+ 
+ void subsection_map_init(unsigned long pfn, unsigned long nr_pages);
+@@ -1212,7 +1212,7 @@ struct mem_section {
+ extern struct mem_section mem_section[NR_SECTION_ROOTS][SECTIONS_PER_ROOT];
+ #endif
+ 
+-static inline unsigned long *section_to_usemap(struct mem_section *ms)
++static inline unsigned char *section_to_usemap(struct mem_section *ms)
+ {
+ 	return ms->usage->pageblock_flags;
+ }
+diff --git a/include/linux/pageblock-flags.h b/include/linux/pageblock-flags.h
+index fff52ad370c1..d189441568eb 100644
+--- a/include/linux/pageblock-flags.h
++++ b/include/linux/pageblock-flags.h
+@@ -54,7 +54,7 @@ enum pageblock_bits {
+ /* Forward declaration */
+ struct page;
+ 
+-unsigned long get_pfnblock_flags_mask(struct page *page,
++unsigned char get_pfnblock_flags_mask(struct page *page,
+ 				unsigned long pfn,
+ 				unsigned long mask);
+ 
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index c0b0b32de50e..f60071e8a4e1 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -445,7 +445,7 @@ static inline bool defer_init(int nid, unsigned long pfn, unsigned long end_pfn)
+ #endif
+ 
+ /* Return a pointer to the bitmap storing bits affecting a block of pages */
+-static inline unsigned long *get_pageblock_bitmap(struct page *page,
++static inline unsigned char *get_pageblock_bitmap(struct page *page,
+ 							unsigned long pfn)
+ {
+ #ifdef CONFIG_SPARSEMEM
+@@ -474,24 +474,24 @@ static inline int pfn_to_bitidx(struct page *page, unsigned long pfn)
+  * Return: pageblock_bits flags
+  */
+ static __always_inline
+-unsigned long __get_pfnblock_flags_mask(struct page *page,
++unsigned char __get_pfnblock_flags_mask(struct page *page,
+ 					unsigned long pfn,
+ 					unsigned long mask)
+ {
+-	unsigned long *bitmap;
+-	unsigned long bitidx, word_bitidx;
+-	unsigned long word;
++	unsigned char *bitmap;
++	unsigned long bitidx, byte_bitidx;
++	unsigned char byte;
+ 
+ 	bitmap = get_pageblock_bitmap(page, pfn);
+ 	bitidx = pfn_to_bitidx(page, pfn);
+-	word_bitidx = bitidx / BITS_PER_LONG;
+-	bitidx &= (BITS_PER_LONG-1);
++	byte_bitidx = bitidx / BITS_PER_BYTE;
++	bitidx &= (BITS_PER_BYTE-1);
+ 
+-	word = bitmap[word_bitidx];
+-	return (word >> bitidx) & mask;
++	byte = bitmap[byte_bitidx];
++	return (byte >> bitidx) & mask;
+ }
+ 
+-unsigned long get_pfnblock_flags_mask(struct page *page, unsigned long pfn,
++unsigned char get_pfnblock_flags_mask(struct page *page, unsigned long pfn,
+ 					unsigned long mask)
+ {
+ 	return __get_pfnblock_flags_mask(page, pfn, mask);
+@@ -513,29 +513,29 @@ void set_pfnblock_flags_mask(struct page *page, unsigned long flags,
+ 					unsigned long pfn,
+ 					unsigned long mask)
+ {
+-	unsigned long *bitmap;
+-	unsigned long bitidx, word_bitidx;
+-	unsigned long old_word, word;
++	unsigned char *bitmap;
++	unsigned long bitidx, byte_bitidx;
++	unsigned char old_byte, byte;
+ 
+ 	BUILD_BUG_ON(NR_PAGEBLOCK_BITS != 4);
+ 	BUILD_BUG_ON(MIGRATE_TYPES > (1 << PB_migratetype_bits));
+ 
+ 	bitmap = get_pageblock_bitmap(page, pfn);
+ 	bitidx = pfn_to_bitidx(page, pfn);
+-	word_bitidx = bitidx / BITS_PER_LONG;
+-	bitidx &= (BITS_PER_LONG-1);
++	byte_bitidx = bitidx / BITS_PER_BYTE;
++	bitidx &= (BITS_PER_BYTE-1);
+ 
+ 	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
+ 
+ 	mask <<= bitidx;
+ 	flags <<= bitidx;
+ 
+-	word = READ_ONCE(bitmap[word_bitidx]);
++	byte = READ_ONCE(bitmap[byte_bitidx]);
+ 	for (;;) {
+-		old_word = cmpxchg(&bitmap[word_bitidx], word, (word & ~mask) | flags);
+-		if (word == old_word)
++		old_byte = cmpxchg(&bitmap[byte_bitidx], byte, (byte & ~mask) | flags);
++		if (byte == old_byte)
+ 			break;
+-		word = old_word;
++		byte = old_byte;
+ 	}
+ }
+ 
+-- 
+1.8.3.1
 
-Anyway, thanks for your help!
-
->  };
->  
->  struct loongson_system_configuration {
-> diff --git a/arch/mips/loongson64/env.c b/arch/mips/loongson64/env.c
-> index 134cb8e..623b3f1 100644
-> --- a/arch/mips/loongson64/env.c
-> +++ b/arch/mips/loongson64/env.c
-> @@ -180,8 +180,8 @@ void __init prom_init_env(void)
->  		loongson_sysconf.early_config = rs780e_early_config;
->  		break;
->  	default:
-> -		pr_info("The bridge chip is VIRTUAL\n");
-> -		loongson_sysconf.bridgetype = VIRTUAL;
-> +		pr_info("The bridge chip is VIRT\n");
-> +		loongson_sysconf.bridgetype = VIRT;
->  		loongson_sysconf.early_config = virtual_early_config;
->  		loongson_fdt_blob = __dtb_loongson64v_4core_virtio_begin;
->  		break;
