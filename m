@@ -2,95 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF3D249880
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 10:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C6F2249882
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 10:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726992AbgHSIrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 04:47:02 -0400
-Received: from mga18.intel.com ([134.134.136.126]:7927 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726710AbgHSIrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 04:47:01 -0400
-IronPort-SDR: NtMXpUc5Du7joJk6kDh5/E8+2aiKmErhqybp4OZhRg34NiA7U1DroZer4hU/FEdatHkvfmmlvj
- 7Kv+PfyEsimQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="142702420"
-X-IronPort-AV: E=Sophos;i="5.76,330,1592895600"; 
-   d="scan'208";a="142702420"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2020 01:47:00 -0700
-IronPort-SDR: RYAH+K/pkHTPZiI8w1HkUJPP8dvjwEmvCVdfPCwcyoRY95UawtTuXLMCNTXXGBfBb6tWL/+oEQ
- RursUpawwOOw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,330,1592895600"; 
-   d="scan'208";a="497681371"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga005.fm.intel.com with ESMTP; 19 Aug 2020 01:46:59 -0700
-Received: from [10.213.152.90] (rtanwar-MOBL.gar.corp.intel.com [10.213.152.90])
-        by linux.intel.com (Postfix) with ESMTP id 9FF86580628;
-        Wed, 19 Aug 2020 01:46:55 -0700 (PDT)
-Subject: Re: [PATCH v7 0/2] pwm: intel: Add PWM driver for a new SoC
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        linux-pwm@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>, songjun.Wu@intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
-        rahul.tanwar.linux@gmail.com, rtanwar@maxlinear.com
-References: <cover.1597729246.git.rahul.tanwar@linux.intel.com>
- <20200818083852.GC1891694@smile.fi.intel.com>
- <37f7526e-5a04-1d27-347c-772fe085771e@linux.intel.com>
- <CAHp75VfDq7bRe6YQdUQyv=8jK737-QwpxZjGZ2HxCJ7iaQPwMg@mail.gmail.com>
-From:   "Tanwar, Rahul" <rahul.tanwar@linux.intel.com>
-Message-ID: <8fba2174-9010-19f3-29bf-0a31219d3793@linux.intel.com>
-Date:   Wed, 19 Aug 2020 16:46:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1727022AbgHSIrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 04:47:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726782AbgHSIrc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 04:47:32 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34FAC061757;
+        Wed, 19 Aug 2020 01:47:31 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id a5so23841226ioa.13;
+        Wed, 19 Aug 2020 01:47:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2lLTCczrQh62kbn0LV4P/GWYE36PPuwRyteP+zzX8wk=;
+        b=McYBa+sSZfjCaQIc93lGAw+k/ndlaabNewGv30b6LXpCync6L5z8r9ImHnUSlpklJy
+         NUUMOYznxFZuN5sVFdbCVfqA375t/McRjJkBEDG/XkTT92S2PoI7L3zjHiQr0xYAiHND
+         8z7RRZPlHzwhEdBfgm90GckDUuywceWVq/U1xlvWjgQHTVHlgBoilk85pN3rf3FTOYGv
+         etpvUCxjmmda7BvZedieH1C/IIAPNaIA9Nkvv8Px0VGJzKIisEEILwE3C1t4VrjPaGnM
+         x7LqUElinnzm31XGUH6cV/3dAqzHH4mjFFjnjxxWMJBOEOF72jnH5WiHPHAiRP+f8TzK
+         8YXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2lLTCczrQh62kbn0LV4P/GWYE36PPuwRyteP+zzX8wk=;
+        b=sO6iBK9Ur6eNbbgaB3/8nLTT4XbSVtmYak5/HbmUI1+ksOpI+rIIoJouD+RsOGXXVN
+         LG8PuMzmH9Jq/hNniMg/GoiCMA2nVznxgE8z67xhZ9TiXeLUNTkTtW/YsxvsWQmfK515
+         CSU6h5GuKwt5r9zmFJWYR/qFnEtEvGBFQhR2HC1WjjJCw0cbe2SuxHRRtM7GLQYptkdO
+         U5f2Ig44QLzyPV1Kct+iFqBS2anAoTZQctYbgIe/lJLo0R/h9M4ENqPR1yPi/PdMw2eY
+         oweZhzjgb2k2Rek/UWgosImydLdXYalhpIo5kD6Zg+pu0p/c+NmC/K0rO26GbWB7P1mo
+         93jg==
+X-Gm-Message-State: AOAM5317Y3pEJKziE5Lb5m0wa6ldWZoYHmjRLGX8x4cbuuo1M4WY3Scg
+        UU7pIcJHXyWlBz3PE5PhrzqA9IkDFe1uivj0MW9C7imd4Ic=
+X-Google-Smtp-Source: ABdhPJxbARu2oDv7gtMAcmoO6et/ys63EyOqykbjAxHUUc1m4TcHwBMrqiCVyDECRdnHffOMPGZupite8FjNHspI1Gg=
+X-Received: by 2002:a05:6638:12c4:: with SMTP id v4mr21973953jas.11.1597826850919;
+ Wed, 19 Aug 2020 01:47:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfDq7bRe6YQdUQyv=8jK737-QwpxZjGZ2HxCJ7iaQPwMg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20200819075747.917595-1-leon@kernel.org>
+In-Reply-To: <20200819075747.917595-1-leon@kernel.org>
+From:   Ilya Dryomov <idryomov@gmail.com>
+Date:   Wed, 19 Aug 2020 10:47:38 +0200
+Message-ID: <CAOi1vP-54DybxncMy0tyyy62nsgvQEn0DysbOTpmk_tnxnbv-g@mail.gmail.com>
+Subject: Re: [RFC PATCH] ceph: Delete features that are not used in the kernel
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Ceph Development <ceph-devel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 19, 2020 at 9:57 AM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> From: Leon Romanovsky <leonro@nvidia.com>
+>
+> The ceph_features.h has declaration of features that are not in-use
+> in kernel code. This causes to seeing such compilation warnings in
+> almost every kernel compilation.
+>
+> ./include/linux/ceph/ceph_features.h:14:24: warning: 'CEPH_FEATURE_UID' defined but not used [-Wunused-const-variable=]
+>    14 |  static const uint64_t CEPH_FEATURE_##name = (1ULL<<bit);  \
+>       |                        ^~~~~~~~~~~~~
+> ./include/linux/ceph/ceph_features.h:75:1: note: in expansion of macro 'DEFINE_CEPH_FEATURE'
+>    75 | DEFINE_CEPH_FEATURE( 0, 1, UID)
+>       | ^~~~~~~~~~~~~~~~~~~
+>
+> The upstream kernel indeed doesn't have any use of them, so delete it.
+>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+> I'm sending this as RFC because probably the patch is wrong, but I
+> would like to bring your attention to the existing problem and asking
+> for an acceptable solution.
 
-Hi Andy,
+Hi Leon,
 
-On 19/8/2020 3:54 pm, Andy Shevchenko wrote:
-> On Wed, Aug 19, 2020 at 7:18 AM Tanwar, Rahul
-> <rahul.tanwar@linux.intel.com> wrote:
->>
->> Hi Andy,
->>
->> On 18/8/2020 4:38 pm, Andy Shevchenko wrote:
->>> On Tue, Aug 18, 2020 at 01:48:59PM +0800, Rahul Tanwar wrote:
->>>> Patch 1 adds dt binding document in YAML format.
->>>> Patch 2 add PWM fan controller driver for LGM SoC.
->>>>
->>>> v7:
->>>> - Address code quality related review concerns.
->>>> - Rename fan related property to pwm-*.
->>>> - Fix one make dt_binding_check reported error.
->>> I guess it misses the answer why pwm-fan can't be integrated into the soup?
->>>
->> Can you please elaborate more? I could not understand your point clearly.
-> It's not mine, it's Uwe's. There is an hwmon module called pwm-fan. As
-> far as *I* understand this, it can be utilized to control fans via PWM
-> APIs. And Uwe asked you if you considered that and why you don't
-> integrated  (coupled) it here.
+Yes, removing unused feature definitions is wrong.  Annotating them
+as potentially unused would be much better -- I'll send a patch.
 
-Thanks for clarification. I now understand what Rob, Uwe & you mean by
-pwm-fan. I will check in detail about it if we can integrate it with
-pwm-fan hwmon driver.
+I don't think any of us builds with W=1, so these things don't get
+noticed.
 
-Regards,
-Rahul
+Thanks,
 
+                Ilya
