@@ -2,188 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14DBF2496EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BFC32496F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726861AbgHSHQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 03:16:17 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:31834 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726711AbgHSHQL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 03:16:11 -0400
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07J7DqbN023277;
-        Wed, 19 Aug 2020 03:15:58 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 3304kcmfu5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 Aug 2020 03:15:58 -0400
-Received: from SCSQMBX10.ad.analog.com (scsqmbx10.ad.analog.com [10.77.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 07J7FuDc031747
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Wed, 19 Aug 2020 03:15:57 -0400
-Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
- SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 19 Aug 2020 00:15:55 -0700
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 19 Aug 2020 00:15:55 -0700
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Wed, 19 Aug 2020 00:15:55 -0700
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 07J7Fg90020449;
-        Wed, 19 Aug 2020 03:15:51 -0400
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <vkoul@kernel.org>, <lars@metafoo.de>, <dan.j.williams@intel.com>,
-        <ardeleanalex@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH 5/5] dmaengine: axi-dmac: add support for reading bus attributes from registers
-Date:   Wed, 19 Aug 2020 10:16:33 +0300
-Message-ID: <20200819071633.76494-5-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200819071633.76494-1-alexandru.ardelean@analog.com>
-References: <20200819071633.76494-1-alexandru.ardelean@analog.com>
+        id S1727022AbgHSHRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 03:17:34 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:38460 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726837AbgHSHR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 03:17:29 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4BWfHT3GNGz9tx31;
+        Wed, 19 Aug 2020 09:17:25 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 00Qb-dSzLs7G; Wed, 19 Aug 2020 09:17:25 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BWfHT2MxBz9tx30;
+        Wed, 19 Aug 2020 09:17:25 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2C25B8B7F5;
+        Wed, 19 Aug 2020 09:17:26 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id XHszll2otBUV; Wed, 19 Aug 2020 09:17:26 +0200 (CEST)
+Received: from [172.25.230.104] (po15451.idsi0.si.c-s.fr [172.25.230.104])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E3D3B8B767;
+        Wed, 19 Aug 2020 09:17:25 +0200 (CEST)
+Subject: Re: remove the last set_fs() in common code, and remove it for x86
+ and powerpc
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-arch@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <20200817073212.830069-1-hch@lst.de>
+ <319d15b1-cb4a-a7b4-3082-12bb30eb5143@csgroup.eu>
+ <20200818180555.GA29185@lst.de>
+ <e3781661-2e13-4f46-d892-181907a2e768@csgroup.eu>
+Message-ID: <f2e31c89-dd9e-f0f8-ef5c-e930d01a3b65@csgroup.eu>
+Date:   Wed, 19 Aug 2020 09:16:59 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-19_04:2020-08-18,2020-08-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 adultscore=0 clxscore=1015 suspectscore=25 phishscore=0
- impostorscore=0 priorityscore=1501 bulkscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008190060
+In-Reply-To: <e3781661-2e13-4f46-d892-181907a2e768@csgroup.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Starting with core version 4.3.a the DMA bus attributes can (and should) be
-read from the INTERFACE_DESCRIPTION (0x10) register.
 
-For older core versions, this will still need to be provided from the
-device-tree.
 
-The bus-type values are identical to the ones stored in the device-trees,
-so we just need to read them. Bus-width values are stored in log2 values,
-so we just need to use them as shift values to make them equivalent to the
-current format.
+Le 18/08/2020 à 20:23, Christophe Leroy a écrit :
+> 
+> 
+> Le 18/08/2020 à 20:05, Christoph Hellwig a écrit :
+>> On Tue, Aug 18, 2020 at 07:46:22PM +0200, Christophe Leroy wrote:
+>>> I gave it a go on my powerpc mpc832x. I tested it on top of my newest
+>>> series that reworks the 32 bits signal handlers (see
+>>> https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=196278) with 
+>>>
+>>> the microbenchmark test used is that series.
+>>>
+>>> With KUAP activated, on top of signal32 rework, performance is 
+>>> boosted as
+>>> system time for the microbenchmark goes from 1.73s down to 1.56s, 
+>>> that is
+>>> 10% quicker
+>>>
+>>> Surprisingly, with the kernel as is today without my signal's series, 
+>>> your
+>>> series degrades performance slightly (from 2.55s to 2.64s ie 3.5% 
+>>> slower).
+>>>
+>>>
+>>> I also observe, in both cases, a degradation on
+>>>
+>>>     dd if=/dev/zero of=/dev/null count=1M
+>>>
+>>> Without your series, it runs in 5.29 seconds.
+>>> With your series, it runs in 5.82 seconds, that is 10% more time.
+>>
+>> That's pretty strage, I wonder if some kernel text cache line
+>> effects come into play here?
+>>
+>> The kernel access side is only used in slow path code, so it should
+>> not make a difference, and the uaccess code is simplified and should be
+>> (marginally) faster.
+>>
+>> Btw, was this with the __{get,put}_user_allowed cockup that you noticed
+>> fixed?
+>>
+> 
+> Yes it is with the __get_user_size() replaced by __get_user_size_allowed().
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/dma/dma-axi-dmac.c | 66 ++++++++++++++++++++++++++++++++++++--
- 1 file changed, 63 insertions(+), 3 deletions(-)
+I made a test with only the first patch of your series: That's 
+definitely the culprit. With only that patch applies, the duration is 
+6.64 seconds, that's a 25% degradation.
 
-diff --git a/drivers/dma/dma-axi-dmac.c b/drivers/dma/dma-axi-dmac.c
-index 95aea2b423ac..417735b6e97b 100644
---- a/drivers/dma/dma-axi-dmac.c
-+++ b/drivers/dma/dma-axi-dmac.c
-@@ -6,6 +6,7 @@
-  *  Author: Lars-Peter Clausen <lars@metafoo.de>
-  */
- 
-+#include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/device.h>
- #include <linux/dma-mapping.h>
-@@ -45,6 +46,16 @@
-  * there is no address than can or needs to be configured for the device side.
-  */
- 
-+#define AXI_DMAC_REG_INTERFACE_DESC	0x10
-+#define   AXI_DMAC_DMA_SRC_TYPE_MSK	GENMASK(13, 12)
-+#define   AXI_DMAC_DMA_SRC_TYPE_GET(x)	FIELD_GET(AXI_DMAC_DMA_SRC_TYPE_MSK, x)
-+#define   AXI_DMAC_DMA_SRC_WIDTH_MSK	GENMASK(11, 8)
-+#define   AXI_DMAC_DMA_SRC_WIDTH_GET(x)	FIELD_GET(AXI_DMAC_DMA_SRC_WIDTH_MSK, x)
-+#define   AXI_DMAC_DMA_DST_TYPE_MSK	GENMASK(5, 4)
-+#define   AXI_DMAC_DMA_DST_TYPE_GET(x)	FIELD_GET(AXI_DMAC_DMA_DST_TYPE_MSK, x)
-+#define   AXI_DMAC_DMA_DST_WIDTH_MSK	GENMASK(3, 0)
-+#define   AXI_DMAC_DMA_DST_WIDTH_GET(x)	FIELD_GET(AXI_DMAC_DMA_DST_WIDTH_MSK, x)
-+
- #define AXI_DMAC_REG_IRQ_MASK		0x80
- #define AXI_DMAC_REG_IRQ_PENDING	0x84
- #define AXI_DMAC_REG_IRQ_SOURCE		0x88
-@@ -801,6 +812,51 @@ static int axi_dmac_parse_dt(struct device *dev, struct axi_dmac *dmac)
- 	return 0;
- }
- 
-+static int axi_dmac_read_chan_config(struct device *dev, struct axi_dmac *dmac)
-+{
-+	struct axi_dmac_chan *chan = &dmac->chan;
-+	unsigned int val, desc;
-+
-+	desc = axi_dmac_read(dmac, AXI_DMAC_REG_INTERFACE_DESC);
-+	if (desc == 0) {
-+		dev_err(dev, "DMA interface register reads zero\n");
-+		return -EFAULT;
-+	}
-+
-+	val = AXI_DMAC_DMA_SRC_TYPE_GET(desc);
-+	if (val > AXI_DMAC_BUS_TYPE_FIFO) {
-+		dev_err(dev, "Invalid source bus type read: %d\n", val);
-+		return -EINVAL;
-+	}
-+	chan->src_type = val;
-+
-+	val = AXI_DMAC_DMA_DST_TYPE_GET(desc);
-+	if (val > AXI_DMAC_BUS_TYPE_FIFO) {
-+		dev_err(dev, "Invalid destination bus type read: %d\n", val);
-+		return -EINVAL;
-+	}
-+	chan->dest_type = val;
-+
-+	val = AXI_DMAC_DMA_SRC_WIDTH_GET(desc);
-+	if (val == 0) {
-+		dev_err(dev, "Source bus width is zero\n");
-+		return -EINVAL;
-+	}
-+	/* widths are stored in log2 */
-+	chan->src_width = 1 << val;
-+
-+	val = AXI_DMAC_DMA_DST_WIDTH_GET(desc);
-+	if (val == 0) {
-+		dev_err(dev, "Destination bus width is zero\n");
-+		return -EINVAL;
-+	}
-+	chan->dest_width = 1 << val;
-+
-+	axi_dmac_adjust_chan_params(chan);
-+
-+	return 0;
-+}
-+
- static int axi_dmac_detect_caps(struct axi_dmac *dmac, unsigned int version)
- {
- 	struct axi_dmac_chan *chan = &dmac->chan;
-@@ -882,7 +938,13 @@ static int axi_dmac_probe(struct platform_device *pdev)
- 
- 	INIT_LIST_HEAD(&dmac->chan.active_descs);
- 
--	ret = axi_dmac_parse_dt(&pdev->dev, dmac);
-+	version = axi_dmac_read(dmac, ADI_AXI_REG_VERSION);
-+
-+	if (version >= ADI_AXI_PCORE_VER(4, 3, 'a'))
-+		ret = axi_dmac_read_chan_config(&pdev->dev, dmac);
-+	else
-+		ret = axi_dmac_parse_dt(&pdev->dev, dmac);
-+
- 	if (ret < 0)
- 		return ret;
- 
-@@ -912,8 +974,6 @@ static int axi_dmac_probe(struct platform_device *pdev)
- 	dmac->chan.vchan.desc_free = axi_dmac_desc_free;
- 	vchan_init(&dmac->chan.vchan, dma_dev);
- 
--	version = axi_dmac_read(dmac, ADI_AXI_REG_VERSION);
--
- 	ret = axi_dmac_detect_caps(dmac, version);
- 	if (ret)
- 		goto err_clk_disable;
--- 
-2.17.1
+A perf record provides the following without the patch:
+     41.91%  dd       [kernel.kallsyms]  [k] __arch_clear_user
+      7.02%  dd       [kernel.kallsyms]  [k] vfs_read
+      6.86%  dd       [kernel.kallsyms]  [k] new_sync_read
+      6.68%  dd       [kernel.kallsyms]  [k] iov_iter_zero
+      6.03%  dd       [kernel.kallsyms]  [k] transfer_to_syscall
+      3.39%  dd       [kernel.kallsyms]  [k] memset
+      3.07%  dd       [kernel.kallsyms]  [k] __fsnotify_parent
+      2.68%  dd       [kernel.kallsyms]  [k] ksys_read
+      2.09%  dd       [kernel.kallsyms]  [k] read_iter_zero
+      2.01%  dd       [kernel.kallsyms]  [k] __fget_light
+      1.84%  dd       [kernel.kallsyms]  [k] __fdget_pos
+      1.35%  dd       [kernel.kallsyms]  [k] rw_verify_area
+      1.32%  dd       libc-2.23.so       [.] __GI___libc_write
+      1.21%  dd       [kernel.kallsyms]  [k] vfs_write
+...
+      0.03%  dd       [kernel.kallsyms]  [k] write_null
 
+And the following with the patch:
+
+     15.54%  dd       [kernel.kallsyms]  [k] __arch_clear_user
+      9.17%  dd       [kernel.kallsyms]  [k] vfs_read
+      6.54%  dd       [kernel.kallsyms]  [k] new_sync_write
+      6.31%  dd       [kernel.kallsyms]  [k] transfer_to_syscall
+      6.29%  dd       [kernel.kallsyms]  [k] __fsnotify_parent
+      6.20%  dd       [kernel.kallsyms]  [k] new_sync_read
+      5.47%  dd       [kernel.kallsyms]  [k] memset
+      5.13%  dd       [kernel.kallsyms]  [k] vfs_write
+      4.44%  dd       [kernel.kallsyms]  [k] iov_iter_zero
+      2.95%  dd       [kernel.kallsyms]  [k] write_iter_null
+      2.82%  dd       [kernel.kallsyms]  [k] ksys_read
+      2.46%  dd       [kernel.kallsyms]  [k] __fget_light
+      2.34%  dd       libc-2.23.so       [.] __GI___libc_read
+      1.89%  dd       [kernel.kallsyms]  [k] iov_iter_advance
+      1.76%  dd       [kernel.kallsyms]  [k] __fdget_pos
+      1.65%  dd       [kernel.kallsyms]  [k] rw_verify_area
+      1.63%  dd       [kernel.kallsyms]  [k] read_iter_zero
+      1.60%  dd       [kernel.kallsyms]  [k] iov_iter_init
+      1.22%  dd       [kernel.kallsyms]  [k] ksys_write
+      1.14%  dd       libc-2.23.so       [.] __GI___libc_write
+
+Christophe
+
+> 
+> Christophe
