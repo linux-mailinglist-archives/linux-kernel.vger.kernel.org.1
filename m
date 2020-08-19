@@ -2,95 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2777B24A44D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 18:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1AE24A458
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 18:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726809AbgHSQrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 12:47:17 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:46643 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725939AbgHSQrP (ORCPT
+        id S1726886AbgHSQvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 12:51:32 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20126 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726211AbgHSQvL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 12:47:15 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 49B04246;
-        Wed, 19 Aug 2020 12:47:14 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Wed, 19 Aug 2020 12:47:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm1; bh=p
-        wYXF6UAfi/NEMDJzpGN/PpRVDdHjhNorcnozan73zc=; b=MnWLKAp9cULxS82Vu
-        xp72GcvzC+EMKXvXfR3dKNDdevka/fSEK7j0ditjhWXmpfrNyEOHLxpBQfBnemBL
-        58skJuZz3C+roifCbwFJc8HPUNZP1nEOusCVytdKFWQo+GUS/EbTQp9h+5Ehcvzo
-        QxPdCwyicO4fZ1IZElfT2NGMAkiz5fBdsjjq03uRtWbtPgxv0V+lPTLTQO6GKOcn
-        brgQaHK3OsQQ3pjJSOHlCMv+qdpNLyUB7quqd6oibuJzH87H4zebf9zcfHBL1jNY
-        j2RX6vmZneco+AuK60C+sjiQ94bNUsazbKDEP0AGvXHneVICDS81w7snXnS6c0me
-        DsNIg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=pwYXF6UAfi/NEMDJzpGN/PpRVDdHjhNorcnozan73
-        zc=; b=snbqwbHiM1gFDTOdLrPGUTlB4/AZ6s7pfhu5md2Mx/sBGpKj8+L9dI9D6
-        DhIdTWMKfF0AMsv55G8zcAHXP+24aiuzcPsKgbRSP5078SvlnZBc4X4M0f+YYD86
-        s7Kz4J4TdYuPDJ0RUtWJYmDTVPq47ZofQYvvuRgJe1KuoZCKpGfgxiVZZ8Tdct1p
-        Tjt0eAciSVynJgEQvghV8Hdx86PiwgC9euEkuxaoabvLXVH0NbCSa0h12/zMVxpm
-        m60dtf+8ZSd2l35Is2nb1DVK8k2AxfRzJRQfsbI9NUdX4h9DC7mnuBjRjOufcjge
-        xn0Ank1dwWKmhT5IaMpTSpPGKSdIg==
-X-ME-Sender: <xms:kVc9X9YEPkI8jcY-YyyTnmwxbshYd8U7Nr0H4mLOOqroEqIunf0nFw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedruddtkedgkeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepueehke
-    ehlefffeeiudetfeekjeffvdeuheejjeffheeludfgteekvdelkeduuddvnecukfhppeek
-    fedrkeeirdekledruddtjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:kVc9X0Zv_j2-MFkXnN8_Y0SbT1hUsyvuRwfkoiInhpuNFQOu7yyyMA>
-    <xmx:kVc9X_-cNj1eOpol0y9UYda5Q2M25kaJCYHbLKzUqNucHlQGM-_XSA>
-    <xmx:kVc9X7peRUN7Wq2rSCUODlmapUVJh0lnypEI2bMmKAFk_DGQ5CTiPg>
-    <xmx:kVc9X_2pZDA8538S2PtAWsnxSp7z9rWPnOSJAJ91aQFeaJCTUJmAKQ>
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        by mail.messagingengine.com (Postfix) with ESMTPA id C409130600B9;
-        Wed, 19 Aug 2020 12:47:12 -0400 (EDT)
-Date:   Wed, 19 Aug 2020 18:47:35 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>
-Cc:     Muni Sekhar <munisekharrms@gmail.com>,
-        peter enderborg <peter.enderborg@sony.com>,
-        kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: Scheduler benchmarks
-Message-ID: <20200819164735.GA3698439@kroah.com>
-References: <20200818143633.GA628293@kroah.com>
- <CAHhAz+hG5kS5rhph4SaSLOEc5PgcSOTPWpiANLNpwotY9Zy6qQ@mail.gmail.com>
- <20200818171457.GA736234@kroah.com>
- <CAHhAz+ggd4DPFfWPB+h6Obkjebf5mv5cV6307oKEkEYMhAB3wQ@mail.gmail.com>
- <20200818173656.GA748290@kroah.com>
- <CAHhAz+hi9rh5w8hNyas0RkO4WwZXsSNh5g0nS710NSr6-ntioQ@mail.gmail.com>
- <84362b8b-971f-fb89-115d-41d2457c24fd@sony.com>
- <CAHhAz+iC_F5w5EoZP8-dBNm+DV0uNMva6Mr2uBdmZtejL1OH-w@mail.gmail.com>
- <20200819104254.GA41946@kroah.com>
- <135393.1597855432@turing-police>
+        Wed, 19 Aug 2020 12:51:11 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07JGWpjh074353;
+        Wed, 19 Aug 2020 12:50:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=tqJsL3NOrZOpVuHKMhwEymWTkIxr1YpclBsxqWSalzQ=;
+ b=sLx9zKbj7U7tJhda2zJeJPEJuwI8ggCh38319LJjZEsCAQM8KuNL/C1zHPbnFstaTTCY
+ JHGTbgSY9Ud5PklEwhC3/OzTahMCCdpzot3SWKICHX6iLaJZL5JQTR68F/DzipCvK2fQ
+ 7U8pzVCegj4JZTlDiC322gAF3B7qpUCB3OjWNx+nwQuF5cNGoe877c+Fw9KIkHDKaUJU
+ 8kIYNDCaP2dunh7Sy7wuzj9DolaJ5Smg8JkiJImCr8QGMYyG+B3NH3fzkquAIWczfwja
+ FMf3rpxcLuJ+KYRr/BkFpIZD3wtGSv4p8OtVD/VuMEdgbQ/TKemxbgkED5xBUhbHWYxw eQ== 
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 330ccb8m0r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 Aug 2020 12:50:41 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07JGodv2019248;
+        Wed, 19 Aug 2020 16:50:39 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma04wdc.us.ibm.com with ESMTP id 3304uenck9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 Aug 2020 16:50:39 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07JGodUj54329768
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 Aug 2020 16:50:39 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5D95CAE05C;
+        Wed, 19 Aug 2020 16:50:39 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 33B75AE062;
+        Wed, 19 Aug 2020 16:50:36 +0000 (GMT)
+Received: from morokweng.localdomain (unknown [9.211.41.171])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Wed, 19 Aug 2020 16:50:35 +0000 (GMT)
+References: <20200818221126.391073-1-bauerman@linux.ibm.com> <20200819044351.GA19391@lst.de>
+User-agent: mu4e 1.2.0; emacs 26.3
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     iommu@lists.linux-foundation.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Ram Pai <linuxram@us.ibm.com>,
+        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
+Subject: Re: [PATCH v3] powerpc/pseries/svm: Allocate SWIOTLB buffer anywhere in memory
+In-reply-to: <20200819044351.GA19391@lst.de>
+Date:   Wed, 19 Aug 2020 13:50:31 -0300
+Message-ID: <87lfiaeg14.fsf@morokweng.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <135393.1597855432@turing-police>
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-19_09:2020-08-19,2020-08-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
+ suspectscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
+ malwarescore=0 clxscore=1015 phishscore=0 priorityscore=1501 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008190138
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 12:43:52PM -0400, Valdis Klētnieks wrote:
-> On Wed, 19 Aug 2020 12:42:54 +0200, Greg KH said:
-> > Look up Spectre and Meltdown for many many examples of what happened and
-> > what went wrong with chip designs and how we had to fix these things in
-> > the kernel a few years ago.
-> 
-> And I'm sure that nobody sane thinks we're done with security holes
-> caused by speculative execution... :)
 
-Hah, not at all, the patches keep flowing in, as do the microcode
-updates...
+Christoph Hellwig <hch@lst.de> writes:
+
+> On Tue, Aug 18, 2020 at 07:11:26PM -0300, Thiago Jung Bauermann wrote:
+>> POWER secure guests (i.e., guests which use the Protection Execution
+>> Facility) need to use SWIOTLB to be able to do I/O with the hypervisor, but
+>> they don't need the SWIOTLB memory to be in low addresses since the
+>> hypervisor doesn't have any addressing limitation.
+>> 
+>> This solves a SWIOTLB initialization problem we are seeing in secure guests
+>> with 128 GB of RAM: they are configured with 4 GB of crashkernel reserved
+>> memory, which leaves no space for SWIOTLB in low addresses.
+>> 
+>> To do this, we use mostly the same code as swiotlb_init(), but allocate the
+>> buffer using memblock_alloc() instead of memblock_alloc_low().
+>> 
+>> Signed-off-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+>
+> Looks fine to me (except for the pointlessly long comment lines, but I've
+> been told that's the powerpc way).
+
+Thanks! Do I have your Reviewed-by?
+
+-- 
+Thiago Jung Bauermann
+IBM Linux Technology Center
