@@ -2,191 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E73249F42
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F71249F4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728129AbgHSNLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 09:11:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727018AbgHSNLL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 09:11:11 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 415C3C061757;
-        Wed, 19 Aug 2020 06:11:11 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id x7so11185055qvi.5;
-        Wed, 19 Aug 2020 06:11:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Ow6DP5YKlPSxiKQIWxdVWz4BWaoxYYX3NXc+pEt29YU=;
-        b=WgDCuZlCTSPVJ14+4FatM1GCxs88zL1Yu57fUA6ZqwJCE8sLovZJbRQPM4lv9/N9/Z
-         gt7XVMN5qnTx866zfU87H4N1hH/EtVObggArQcXU1e+mmV/Nf6TsyAIDhQ8P/dA8qXKE
-         R1Gtl4h1qXWTVya6GZJogtRIoaZOQje+6n5w0WmbiGZchfNAWU9+fiYiFPuZtVyMtMaw
-         LGCthWdyZqO/Wydc2ySXeL6Zh5Ul8sHzGw5exllc07uqNUTW6jWzLsEMR0g/UPf8UEIW
-         7DH/M0UH2NZ89Sm9g2Tf2gBoZ5osSN7snVv/imvFvy7FaunMmdV+XPbAfh7K9Wd8YIKl
-         rJEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Ow6DP5YKlPSxiKQIWxdVWz4BWaoxYYX3NXc+pEt29YU=;
-        b=uTpaSsHVq7E2H4RKY5T8BiyIQ44mAaUB3RBL8Iyb4ABktbGQaPhBXydQ+hfaENIUi/
-         Pz6w8w1Z/JmmjkKDYJ8Ozy/kEhR3huKiGnhzqSHEQACYRLTKlbWkUaVN1AxFaKJ3vQct
-         bSnMd+/oEo3UzsnCcW2g93WZnKQSQWUlS9625/IO6KSm9I2NTMKcRcgh6plbOfGLu7kv
-         tIWKSf5XPQYFsoAwNN1SqsF1VNEPnBbTenFGUk1FovMjyuFqchMssdORUSIiZ4Cl6G/E
-         +WYAHY8/mBuKBmlyOZYRc3E7hGAj/36QclC3cxP88CRu49VwG/hux8lc7Ogg3d27AmBr
-         RGoQ==
-X-Gm-Message-State: AOAM53146YPf8MeCX01CSyTiRd3kA4VUusB0I1upR9VeXlWXhkj7hDuN
-        14O21gmwIRCYtUrNRrz+P8Q194ubOPE=
-X-Google-Smtp-Source: ABdhPJwmI9U05SvdaDv/+Pgnw3CoOXb1l9WFX1XxnkobI9capGvu35l0s/rnagZ3Y4nDn6zHHqtVHw==
-X-Received: by 2002:a0c:bd0c:: with SMTP id m12mr23968451qvg.49.1597842669970;
-        Wed, 19 Aug 2020 06:11:09 -0700 (PDT)
-Received: from [192.168.1.190] (pool-68-134-6-11.bltmmd.fios.verizon.net. [68.134.6.11])
-        by smtp.gmail.com with ESMTPSA id x50sm28963887qtb.10.2020.08.19.06.11.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Aug 2020 06:11:09 -0700 (PDT)
-Subject: Re: [PATCH v3 3/3] selinux: add permission names to trace event
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     =?UTF-8?Q?Thi=c3=a9baud_Weksteen?= <tweek@google.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Nick Kralevich <nnk@google.com>,
-        Peter Enderborg <peter.enderborg@sony.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        selinux@vger.kernel.org
-References: <20200817170729.2605279-1-tweek@google.com>
- <20200817170729.2605279-4-tweek@google.com>
- <0bb62de9-1020-a7c4-3a7f-48ae2f78e3b7@gmail.com>
- <20200817162933.79f69c66@oasis.local.home>
- <20200818120948.1a428da9@oasis.local.home>
-From:   Stephen Smalley <stephen.smalley.work@gmail.com>
-Message-ID: <66e6d84e-20b5-1bd3-e107-322f42ce35d3@gmail.com>
-Date:   Wed, 19 Aug 2020 09:11:08 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728335AbgHSNLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 09:11:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56402 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728149AbgHSNLh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 09:11:37 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6BC432065F;
+        Wed, 19 Aug 2020 13:11:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597842695;
+        bh=vxq1i+5+rO8RGMcDRwl1Kl6llTi6GXYX5kfyPA4jblo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=skOvnyoi/s8DCceKzmupkt1jYOaWtFdAAqlQ/MFXOrVpqmMQl+hsMEEjs4HBhOLQu
+         0c0ztyi4uXIKad6aYvYHUv3AbWF2jtioPUcwcQoAVMj74KG+/FMhByNjrec9UmAV0D
+         o/Yb0Ae9Hr3NDLzjtRMcTZ4PqnDnfMAucqQAMsmk=
+Date:   Wed, 19 Aug 2020 15:11:58 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Kees Cook <keescook@chromium.org>, ulf.hansson@linaro.org,
+        linux-atm-general@lists.sourceforge.net, manohar.vanga@gmail.com,
+        airlied@linux.ie, Allen Pais <allen.lkml@gmail.com>,
+        linux-hyperv@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, anton.ivanov@cambridgegreys.com,
+        devel@driverdev.osuosl.org, linux-s390@vger.kernel.org,
+        linux1394-devel@lists.sourceforge.net, maximlevitsky@gmail.com,
+        richard@nod.at, deller@gmx.de, jassisinghbrar@gmail.com,
+        3chas3@gmail.com, intel-gfx@lists.freedesktop.org, kuba@kernel.org,
+        mporter@kernel.crashing.org, jdike@addtoit.com, oakad@yahoo.com,
+        s.hauer@pengutronix.de, linux-input@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-block@vger.kernel.org,
+        broonie@kernel.org, openipmi-developer@lists.sourceforge.net,
+        mitch@sfgoth.com, linux-arm-kernel@lists.infradead.org,
+        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
+        martyn@welchs.me.uk, dmitry.torokhov@gmail.com,
+        linux-mmc@vger.kernel.org, sre@kernel.org,
+        linux-spi@vger.kernel.org, alex.bou9@gmail.com,
+        Allen Pais <allen.cryptic@gmail.com>,
+        stefanr@s5r6.in-berlin.de, daniel@ffwll.ch,
+        linux-ntb@googlegroups.com,
+        Romain Perier <romain.perier@gmail.com>, shawnguo@kernel.org,
+        davem@davemloft.net
+Subject: Re: [PATCH] block: convert tasklets to use new tasklet_setup() API
+Message-ID: <20200819131158.GA2591006@kroah.com>
+References: <20200817091617.28119-1-allen.cryptic@gmail.com>
+ <20200817091617.28119-2-allen.cryptic@gmail.com>
+ <b5508ca4-0641-7265-2939-5f03cbfab2e2@kernel.dk>
+ <202008171228.29E6B3BB@keescook>
+ <161b75f1-4e88-dcdf-42e8-b22504d7525c@kernel.dk>
+ <202008171246.80287CDCA@keescook>
+ <df645c06-c30b-eafa-4d23-826b84f2ff48@kernel.dk>
+ <1597780833.3978.3.camel@HansenPartnership.com>
+ <f3312928-430c-25f3-7112-76f2754df080@kernel.dk>
 MIME-Version: 1.0
-In-Reply-To: <20200818120948.1a428da9@oasis.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f3312928-430c-25f3-7112-76f2754df080@kernel.dk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/18/20 12:09 PM, Steven Rostedt wrote:
+On Wed, Aug 19, 2020 at 07:00:53AM -0600, Jens Axboe wrote:
+> On 8/18/20 1:00 PM, James Bottomley wrote:
+> > On Mon, 2020-08-17 at 13:02 -0700, Jens Axboe wrote:
+> >> On 8/17/20 12:48 PM, Kees Cook wrote:
+> >>> On Mon, Aug 17, 2020 at 12:44:34PM -0700, Jens Axboe wrote:
+> >>>> On 8/17/20 12:29 PM, Kees Cook wrote:
+> >>>>> On Mon, Aug 17, 2020 at 06:56:47AM -0700, Jens Axboe wrote:
+> >>>>>> On 8/17/20 2:15 AM, Allen Pais wrote:
+> >>>>>>> From: Allen Pais <allen.lkml@gmail.com>
+> >>>>>>>
+> >>>>>>> In preparation for unconditionally passing the
+> >>>>>>> struct tasklet_struct pointer to all tasklet
+> >>>>>>> callbacks, switch to using the new tasklet_setup()
+> >>>>>>> and from_tasklet() to pass the tasklet pointer explicitly.
+> >>>>>>
+> >>>>>> Who came up with the idea to add a macro 'from_tasklet' that
+> >>>>>> is just container_of? container_of in the code would be
+> >>>>>> _much_ more readable, and not leave anyone guessing wtf
+> >>>>>> from_tasklet is doing.
+> >>>>>>
+> >>>>>> I'd fix that up now before everything else goes in...
+> >>>>>
+> >>>>> As I mentioned in the other thread, I think this makes things
+> >>>>> much more readable. It's the same thing that the timer_struct
+> >>>>> conversion did (added a container_of wrapper) to avoid the
+> >>>>> ever-repeating use of typeof(), long lines, etc.
+> >>>>
+> >>>> But then it should use a generic name, instead of each sub-system 
+> >>>> using some random name that makes people look up exactly what it
+> >>>> does. I'm not huge fan of the container_of() redundancy, but
+> >>>> adding private variants of this doesn't seem like the best way
+> >>>> forward. Let's have a generic helper that does this, and use it
+> >>>> everywhere.
+> >>>
+> >>> I'm open to suggestions, but as things stand, these kinds of
+> >>> treewide
+> >>
+> >> On naming? Implementation is just as it stands, from_tasklet() is
+> >> totally generic which is why I objected to it. from_member()? Not
+> >> great with naming... But I can see this going further and then we'll
+> >> suddenly have tons of these. It's not good for readability.
+> > 
+> > Since both threads seem to have petered out, let me suggest in
+> > kernel.h:
+> > 
+> > #define cast_out(ptr, container, member) \
+> > 	container_of(ptr, typeof(*container), member)
+> > 
+> > It does what you want, the argument order is the same as container_of
+> > with the only difference being you name the containing structure
+> > instead of having to specify its type.
+> 
+> Not to incessantly bike shed on the naming, but I don't like cast_out,
+> it's not very descriptive. And it has connotations of getting rid of
+> something, which isn't really true.
 
-> On Mon, 17 Aug 2020 16:29:33 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
->
->> On Mon, 17 Aug 2020 16:13:29 -0400
->> Stephen Smalley <stephen.smalley.work@gmail.com> wrote:
->>
->>> Does this require a corresponding patch to userspace?  Otherwise, I get
->>> the following:
->>>
->>> libtraceevent: No such file or directory
->>>     [avc:selinux_audited] function avc_trace_perm_to_name not defined
->> Yes, we need to add a plugin to libtraceevent that will add that
->> function.
->>
->> I could possibly write one up real quick.
-> Something like this (this is patched on top of trace-cmd, but will work
-> for tools/lib/traceevent too).
->
-> With CONFIG_TRACE_EVENT_INJECT enabled (to test events), I did the following:
->
->   # echo 'utclass=1 audited=1 denied=0' > /sys/kernel/tracing/events/avc/selinux_audited/inject
->   # trace-cmd extract
->   # trace-cmd report
-> cpus=8
->             <...>-1685  [005]  1607.612032: selinux_audited:      requested=0x0 denied=0x0 audited=0x1 result=0 scontext= tcontext= tclass= permissions={ compute_av }
->
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
->
-> ---
-> diff --git a/lib/traceevent/plugins/Makefile b/lib/traceevent/plugins/Makefile
-> index 21e933af..13cbcb92 100644
-> --- a/lib/traceevent/plugins/Makefile
-> +++ b/lib/traceevent/plugins/Makefile
-> @@ -16,6 +16,7 @@ PLUGIN_OBJS += plugin_scsi.o
->   PLUGIN_OBJS += plugin_cfg80211.o
->   PLUGIN_OBJS += plugin_blk.o
->   PLUGIN_OBJS += plugin_tlb.o
-> +PLUGIN_OBJS += plugin_avc.o
->   
->   PLUGIN_OBJS := $(PLUGIN_OBJS:%.o=$(bdir)/%.o)
->   PLUGIN_BUILD := $(PLUGIN_OBJS:$(bdir)/%.o=$(bdir)/%.so)
-> diff --git a/lib/traceevent/plugins/plugin_avc.c b/lib/traceevent/plugins/plugin_avc.c
-> new file mode 100644
-> index 00000000..76af23b9
-> --- /dev/null
-> +++ b/lib/traceevent/plugins/plugin_avc.c
-> @@ -0,0 +1,312 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <stdio.h>
-> +#include <string.h>
-> +#include "event-parse.h"
-> +
-> +#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
-> +
-> +typedef unsigned short u16;
-> +
-> +/* Class/perm mapping support */
-> +struct security_class_mapping {
-> +	const char *name;
-> +	const char *perms[sizeof(unsigned) * 8 + 1];
-> +};
-> +
-> +#define COMMON_FILE_SOCK_PERMS "ioctl", "read", "write", "create", \
-> +    "getattr", "setattr", "lock", "relabelfrom", "relabelto", "append", "map"
-> +
-> +#define COMMON_FILE_PERMS COMMON_FILE_SOCK_PERMS, "unlink", "link", \
-> +    "rename", "execute", "quotaon", "mounton", "audit_access", \
-> +	"open", "execmod", "watch", "watch_mount", "watch_sb", \
-> +	"watch_with_perm", "watch_reads"
-> +
-> +#define COMMON_SOCK_PERMS COMMON_FILE_SOCK_PERMS, "bind", "connect", \
-> +    "listen", "accept", "getopt", "setopt", "shutdown", "recvfrom",  \
-> +    "sendto", "name_bind"
-> +
-> +#define COMMON_IPC_PERMS "create", "destroy", "getattr", "setattr", "read", \
-> +	    "write", "associate", "unix_read", "unix_write"
-> +
-> +#define COMMON_CAP_PERMS  "chown", "dac_override", "dac_read_search", \
-> +	    "fowner", "fsetid", "kill", "setgid", "setuid", "setpcap", \
-> +	    "linux_immutable", "net_bind_service", "net_broadcast", \
-> +	    "net_admin", "net_raw", "ipc_lock", "ipc_owner", "sys_module", \
-> +	    "sys_rawio", "sys_chroot", "sys_ptrace", "sys_pacct", "sys_admin", \
-> +	    "sys_boot", "sys_nice", "sys_resource", "sys_time", \
-> +	    "sys_tty_config", "mknod", "lease", "audit_write", \
-> +	    "audit_control", "setfcap"
-> +
-> +#define COMMON_CAP2_PERMS  "mac_override", "mac_admin", "syslog", \
-> +		"wake_alarm", "block_suspend", "audit_read", "perfmon", "bpf"
-> +
-> +/*
-> + * Note: The name for any socket class should be suffixed by "socket",
-> + *	 and doesn't contain more than one substr of "socket".
-> + */
-> +struct security_class_mapping secclass_map[] = {
-> +	{ "security",
-> +	  { "compute_av", "compute_create", "compute_member",
-> +	    "check_context", "load_policy", "compute_relabel",
-> +	    "compute_user", "setenforce", "setbool", "setsecparam",
-> +	    "setcheckreqprot", "read_policy", "validate_trans", NULL } },
->
-So we'll need to update this plugin whenever we modify 
-security/selinux/include/classmap.h to keep them in sync.  Is that a 
-concern?  I don't suppose the plugin could directly include classmap.h?  
-I guess we'd have to export it as a public header. It isn't considered 
-to be part of the kernel API/ABI and can change anytime (but in practice 
-changes are not that frequent, and usually just additive in nature).
+I agree, if we want to bike shed, I don't like this color either.
 
+> FWIW, I like the from_ part of the original naming, as it has some clues
+> as to what is being done here. Why not just from_container()? That
+> should immediately tell people what it does without having to look up
+> the implementation, even before this becomes a part of the accepted
+> coding norm.
+
+Why are people hating on the well-known and used container_of()?
+
+If you really hate to type the type and want a new macro, what about
+'container_from()'?  (noun/verb is nicer to sort symbols by...)
+
+But really, why is this even needed?
+
+thanks,
+
+greg k-h
