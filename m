@@ -2,133 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 865802496BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:11:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7A22496D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727943AbgHSHK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 03:10:59 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:35664 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727005AbgHSHJH (ORCPT
+        id S1726792AbgHSHMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 03:12:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728012AbgHSHLl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 03:09:07 -0400
-Received: by mail-ed1-f68.google.com with SMTP id m20so17238994eds.2;
-        Wed, 19 Aug 2020 00:09:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=fEkH4ZxpxTY42f36NAcppi2kiNk4M3AwqeTbG0SRAps=;
-        b=XMNlfuMgTF6xKPHeD7ii2g8uJGlt3u0JfKNKWQ9ZPkL9taZouE2W9RhhuFCqAPHdHr
-         dGospbZKYb0yYd8LeJqqKnWsbDeyp0hjDkGLcByuIU99Tz2ylDhv/cIBtfLMpMk+oaWl
-         sj5OllHnOq8+6G/hGbus3OvuzSLIogvpo5EACMT8sKpfoELXLLJ/vSisMklCNQI5ldy8
-         SLXfrAc0Uo6C0bKfN0Y6vJyxdS7yXzN970qkRW2Uhz8zCZQAyWNiSdnfUf5rhDGPFbl0
-         TcHPTodnFkSAauwilRpFlZ8RU1HdRcrwu+203l9v8fvBmC71gJtgEGTsrNYHIsymoPKU
-         cQgw==
-X-Gm-Message-State: AOAM531K4tTU6wxbZNkOUynE3jkR5Qr7tcRPh/fOVVn8jfWPwRSww5K5
-        gGNiPhRizyTpeNEhVuc2YxB9Fw/6iV4=
-X-Google-Smtp-Source: ABdhPJzZjN7yLJ+YMGWbIoHiOG2baBTgjcXtigIJw11DlVTj77AU08DC1d25Da8nBcT/V81rq9KKcg==
-X-Received: by 2002:a50:fd83:: with SMTP id o3mr22404496edt.170.1597820942993;
-        Wed, 19 Aug 2020 00:09:02 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id t19sm17329336edw.63.2020.08.19.00.09.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Aug 2020 00:09:02 -0700 (PDT)
-Subject: Re: [PATCH 02/16] vt: declare xy for get/putconsxy properly
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200818085706.12163-1-jslaby@suse.cz>
- <20200818085706.12163-2-jslaby@suse.cz> <20200818114341.GA343779@kroah.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jslaby@suse.cz; prefer-encrypt=mutual; keydata=
- mQINBE6S54YBEACzzjLwDUbU5elY4GTg/NdotjA0jyyJtYI86wdKraekbNE0bC4zV+ryvH4j
- rrcDwGs6tFVrAHvdHeIdI07s1iIx5R/ndcHwt4fvI8CL5PzPmn5J+h0WERR5rFprRh6axhOk
- rSD5CwQl19fm4AJCS6A9GJtOoiLpWn2/IbogPc71jQVrupZYYx51rAaHZ0D2KYK/uhfc6neJ
- i0WqPlbtIlIrpvWxckucNu6ZwXjFY0f3qIRg3Vqh5QxPkojGsq9tXVFVLEkSVz6FoqCHrUTx
- wr+aw6qqQVgvT/McQtsI0S66uIkQjzPUrgAEtWUv76rM4ekqL9stHyvTGw0Fjsualwb0Gwdx
- ReTZzMgheAyoy/umIOKrSEpWouVoBt5FFSZUyjuDdlPPYyPav+hpI6ggmCTld3u2hyiHji2H
- cDpcLM2LMhlHBipu80s9anNeZhCANDhbC5E+NZmuwgzHBcan8WC7xsPXPaiZSIm7TKaVoOcL
- 9tE5aN3jQmIlrT7ZUX52Ff/hSdx/JKDP3YMNtt4B0cH6ejIjtqTd+Ge8sSttsnNM0CQUkXps
- w98jwz+Lxw/bKMr3NSnnFpUZaxwji3BC9vYyxKMAwNelBCHEgS/OAa3EJoTfuYOK6wT6nadm
- YqYjwYbZE5V/SwzMbpWu7Jwlvuwyfo5mh7w5iMfnZE+vHFwp/wARAQABtBtKaXJpIFNsYWJ5
- IDxqc2xhYnlAc3VzZS5jej6JAjgEEwECACIFAk6S6NgCGwMGCwkIBwMCBhUIAgkKCwQWAgMB
- Ah4BAheAAAoJEL0lsQQGtHBJgDsP/j9wh0vzWXsOPO3rDpHjeC3BT5DKwjVN/KtP7uZttlkB
- duReCYMTZGzSrmK27QhCflZ7Tw0Naq4FtmQSH8dkqVFugirhlCOGSnDYiZAAubjTrNLTqf7e
- 5poQxE8mmniH/Asg4KufD9bpxSIi7gYIzaY3hqvYbVF1vYwaMTujojlixvesf0AFlE4x8WKs
- wpk43fmo0ZLcwObTnC3Hl1JBsPujCVY8t4E7zmLm7kOB+8EHaHiRZ4fFDWweuTzRDIJtVmrH
- LWvRDAYg+IH3SoxtdJe28xD9KoJw4jOX1URuzIU6dklQAnsKVqxz/rpp1+UVV6Ky6OBEFuoR
- 613qxHCFuPbkRdpKmHyE0UzmniJgMif3v0zm/+1A/VIxpyN74cgwxjhxhj/XZWN/LnFuER1W
- zTHcwaQNjq/I62AiPec5KgxtDeV+VllpKmFOtJ194nm9QM9oDSRBMzrG/2AY/6GgOdZ0+qe+
- 4BpXyt8TmqkWHIsVpE7I5zVDgKE/YTyhDuqYUaWMoI19bUlBBUQfdgdgSKRMJX4vE72dl8BZ
- +/ONKWECTQ0hYntShkmdczcUEsWjtIwZvFOqgGDbev46skyakWyod6vSbOJtEHmEq04NegUD
- al3W7Y/FKSO8NqcfrsRNFWHZ3bZ2Q5X0tR6fc6gnZkNEtOm5fcWLY+NVz4HLaKrJuQINBE6S
- 54YBEADPnA1iy/lr3PXC4QNjl2f4DJruzW2Co37YdVMjrgXeXpiDvneEXxTNNlxUyLeDMcIQ
- K8obCkEHAOIkDZXZG8nr4mKzyloy040V0+XA9paVs6/ice5l+yJ1eSTs9UKvj/pyVmCAY1Co
- SNN7sfPaefAmIpduGacp9heXF+1Pop2PJSSAcCzwZ3PWdAJ/w1Z1Dg/tMCHGFZ2QCg4iFzg5
- Bqk4N34WcG24vigIbRzxTNnxsNlU1H+tiB81fngUp2pszzgXNV7CWCkaNxRzXi7kvH+MFHu2
- 1m/TuujzxSv0ZHqjV+mpJBQX/VX62da0xCgMidrqn9RCNaJWJxDZOPtNCAWvgWrxkPFFvXRl
- t52z637jleVFL257EkMI+u6UnawUKopa+Tf+R/c+1Qg0NHYbiTbbw0pU39olBQaoJN7JpZ99
- T1GIlT6zD9FeI2tIvarTv0wdNa0308l00bas+d6juXRrGIpYiTuWlJofLMFaaLYCuP+e4d8x
- rGlzvTxoJ5wHanilSE2hUy2NSEoPj7W+CqJYojo6wTJkFEiVbZFFzKwjAnrjwxh6O9/V3O+Z
- XB5RrjN8hAf/4bSo8qa2y3i39cuMT8k3nhec4P9M7UWTSmYnIBJsclDQRx5wSh0Mc9Y/psx9
- B42WbV4xrtiiydfBtO6tH6c9mT5Ng+d1sN/VTSPyfQARAQABiQIfBBgBAgAJBQJOkueGAhsM
- AAoJEL0lsQQGtHBJN7UQAIDvgxaW8iGuEZZ36XFtewH56WYvVUefs6+Pep9ox/9ZXcETv0vk
- DUgPKnQAajG/ViOATWqADYHINAEuNvTKtLWmlipAI5JBgE+5g9UOT4i69OmP/is3a/dHlFZ3
- qjNk1EEGyvioeycJhla0RjakKw5PoETbypxsBTXk5EyrSdD/I2Hez9YGW/RcI/WC8Y4Z/7FS
- ITZhASwaCOzy/vX2yC6iTx4AMFt+a6Z6uH/xGE8pG5NbGtd02r+m7SfuEDoG3Hs1iMGecPyV
- XxCVvSV6dwRQFc0UOZ1a6ywwCWfGOYqFnJvfSbUiCMV8bfRSWhnNQYLIuSv/nckyi8CzCYIg
- c21cfBvnwiSfWLZTTj1oWyj5a0PPgGOdgGoIvVjYXul3yXYeYOqbYjiC5t99JpEeIFupxIGV
- ciMk6t3pDrq7n7Vi/faqT+c4vnjazJi0UMfYnnAzYBa9+NkfW0w5W9Uy7kW/v7SffH/2yFiK
- 9HKkJqkN9xYEYaxtfl5pelF8idoxMZpTvCZY7jhnl2IemZCBMs6s338wS12Qro5WEAxV6cjD
- VSdmcD5l9plhKGLmgVNCTe8DPv81oDn9s0cIRLg9wNnDtj8aIiH8lBHwfUkpn32iv0uMV6Ae
- sLxhDWfOR4N+wu1gzXWgLel4drkCJcuYK5IL1qaZDcuGR8RPo3jbFO7Y
-Message-ID: <791f5ae5-134e-794d-903e-a39d5f6ac3e2@kernel.org>
-Date:   Wed, 19 Aug 2020 09:09:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Wed, 19 Aug 2020 03:11:41 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F15C061389;
+        Wed, 19 Aug 2020 00:11:41 -0700 (PDT)
+Date:   Wed, 19 Aug 2020 09:11:38 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597821099;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9LpC0XaRf4DGoIdiCEBe93B/70c29C6ZKL34lno4gEY=;
+        b=UXqfqdhf3Nhc9cOurrtA2TRVB6hnQsJeLc4jDdGaJls1pj/UsfWp+nGO/gwk5XDW0Iu8tO
+        RVoOH4Vga+sEvnrLZmAUHMdrlpBkWRGmXH+5hh34iT48YYmNGeoDQ8rxwQtUh1A8CA1tYD
+        NP4DEWE6NsL1zok6BvhOiKnhJHAL/hCvc1UT933OjtS0wC6yfYLifyi51vj5ChOhhNd8hj
+        L4ZxGPfb2gzWAf842Pua2ljeoqxvjjZp5JYU/rXA2zKpMOAfocuEW6To/qWTc429MnOrgM
+        MUl7DATUcska8ZGULDPv58gkPUBtYWYQGYnFsp5zAj3xEwDuuLkrMpMmwSacEg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597821099;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9LpC0XaRf4DGoIdiCEBe93B/70c29C6ZKL34lno4gEY=;
+        b=mGmT0S3ySWU3Bb20vrlRlEUdsOchhjk/u4nsbuHBDIZ1O9b0/EizMooUkP9DSV0AITT7um
+        XzuYUqq/jYVDGkCQ==
+From:   'Sebastian Andrzej Siewior' <bigeasy@linutronix.de>
+To:     Thomas Graziadei <thomas.graziadei@omicronenergy.com>
+Cc:     Mark Marshall <markmarshall14@gmail.com>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Mark Marshall <mark.marshall@omicronenergy.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>
+Subject: Re: Kernel crash due to memory corruption with v5.4.26-rt17 and
+ PowerPC e500
+Message-ID: <20200819071138.bypg3slqhw7r577r@linutronix.de>
+References: <CAD4b4WK9W+dNZZ_WPt-9ZNpSHvyxdwPW86Rtq4AKOONuvyR37A@mail.gmail.com>
+ <20200529131452.pgj7mx7xaz7n4kz3@linutronix.de>
+ <CAD4b4WLS36JKepz31m98Z3Ve05d63GnfBGsuuWRXpjXZqPoBrA@mail.gmail.com>
+ <20200529161518.svpxhkeljafbtdz2@linutronix.de>
+ <20200529163722.mdxzrj4n3lyzjtfu@linutronix.de>
+ <20200706165004.7m57fvspmwnjcjxh@linutronix.de>
+ <eeeae7d9-c028-47f0-ab5b-7983e32f36cb@EXC03-ATKLA.omicron.at>
+ <c1ef757b-4cd6-410e-a647-a3303cef4b1b@EXC03-ATKLA.omicron.at>
 MIME-Version: 1.0
-In-Reply-To: <20200818114341.GA343779@kroah.com>
-Content-Type: text/plain; charset=iso-8859-2
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <c1ef757b-4cd6-410e-a647-a3303cef4b1b@EXC03-ATKLA.omicron.at>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18. 08. 20, 13:43, Greg KH wrote:
-> On Tue, Aug 18, 2020 at 10:56:52AM +0200, Jiri Slaby wrote:
->> That is:
->> 1) call the parameter 'xy' to denote what it really is, not generic 'p'
->> 2) tell the compiler and users that we expect an array:
->>    * with at least 2 chars (static 2)
->>    * which we don't modify in putconsxy (const)
->>
->> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
->> ---
->>  drivers/tty/vt/vt.c       | 10 +++++-----
->>  include/linux/selection.h |  4 ++--
->>  2 files changed, 7 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
->> index 8f283221330e..a0da7771c327 100644
->> --- a/drivers/tty/vt/vt.c
->> +++ b/drivers/tty/vt/vt.c
->> @@ -4769,17 +4769,17 @@ unsigned short *screen_pos(const struct vc_data *vc, int w_offset, int viewed)
->>  }
->>  EXPORT_SYMBOL_GPL(screen_pos);
->>  
->> -void getconsxy(const struct vc_data *vc, unsigned char *p)
->> +void getconsxy(const struct vc_data *vc, unsigned char xy[static 2])
-> 
-> I didn't realize we could do "[static 2]" in the kernel now, is that
-> thanks to the bump of the minimum gcc version?  If so, nice!
+On 2020-08-12 14:45:22 [+0200], Thomas Graziadei wrote:
+> Hi Sebastian,
+Hi Thomas,
 
-gcc supports it since some time around 3.x (these kinds of declaration
-are defined in c99). So hopefully nothing breaks.
+> any progress on your side?
 
-thanks,
--- 
-js
-suse labs
+due to lack of time none. But I am on it=E2=80=A6
+
+> Do you think the patch could be applied for the next versions?
+
+So I had a theory why it happens but then you said no so now I need
+to figure out why it happens so I can write it in the changelog.
+
+I believe you made it happen in qemu and you sent a .config and
+everything so I will stare into it as soon as I can.
+
+> Regards,
+> Thomas
+
+Sebastian
