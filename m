@@ -2,98 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EEFD249714
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E96A24976D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726974AbgHSHYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 03:24:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40914 "EHLO
+        id S1726964AbgHSHaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 03:30:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726731AbgHSHYI (ORCPT
+        with ESMTP id S1726815AbgHSHYK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 03:24:08 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D854EC061345
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 00:24:07 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z18so20435851wrm.12
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 00:24:07 -0700 (PDT)
+        Wed, 19 Aug 2020 03:24:10 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 117F0C061349
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 00:24:09 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id k20so1112479wmi.5
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 00:24:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4oTMRepDWAwvEG4gP7KM4XWzXr1eKKBuCn5XU6f/p3c=;
-        b=xQMDxP40oi3eBNc7Z3Xh8ZZ0nMN8DIhN4T8xH85Xsm9iNdWmnZXm/ZacjDGeA5/lZp
-         8J9KeASsvVw6L9nuo/M08nb8BL6pxwOzjKxpv3VR1E2sgB9PQE5PVpiBgR0WNSMBzLwe
-         C2+pRvFC194BLywESVmUchHD+cAbjWSp0xJkjNQE0D/EHQg3dCa6eMy8eSmSMtKxQHH3
-         eVYlDOWMnc3D4GluUOh+YHHuNhJ6N/1ECcenz13QCZ3y1E4jZJ/1hhMUuFtxbBS1dw9h
-         Nd88JhHg5VbirFMOeN4O8YWOuaD+5rLX5+RVZykRnjnNpD7+/RRyIQ8xuJyJvcAEjI0d
-         B6Fw==
+        bh=XPyf3pY78NKZpAoCqUMShqns3N3Vter41E+TCH98irs=;
+        b=pO/tZJ717SIL5qmd78VkicWaF6vFD6SXo8MiuqwrS81DIISf2fmFvV/0SNNkbW2fYi
+         P/E8KCf7dPHNYE0+w2CKdB5QVkmTFfGZEWpHNaWULVE70e8UBxLR/33YDVYmQw0du/5q
+         HG6eho9ClpzTuzi9w98+U1mvCcLbx9Arm0ONOAxw/nAMaSuuv+UN+bVrxXgqyO+zC5Aq
+         8Suz3ZVpr4gBMxVhAIIT27NOUg/VIBE/yQYQoIrsr+ev90YMnUO3kWtJvvrTI9GrvoWD
+         ZQ4aNofJmylhzMjyFGAZ9xx6EhXJDZ36DncwSc22Mtx0S9GNohnyY3Ja2QSPukE6B1xI
+         F9nQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4oTMRepDWAwvEG4gP7KM4XWzXr1eKKBuCn5XU6f/p3c=;
-        b=gaAjGhE0YkQtmEBbkmEF45XUQzgcHxRB3udZbA22sSrx3AH5YoLyVPCbiVDMRyro9C
-         6JUbYHqjWxKIGpaXgrm33ov0WjyEh+MPxNdGxBcoeCEViopIb1/MW0TmJg5A7dtFVz+T
-         O+olWCPnXD3VK4pH7eMfdKDVw0iNAUP03L+6YknDhKa5OUNnNNiBfwCVl2wnqppbDxxF
-         5xammWK8zgZwj4TnlHdJJeli/nbX0ib08bUkvxdaiqNF95oUC4RH2QiuJHCl1qJrIFiJ
-         pGF0ydV6nxJfRjzDITnQtnAMZrXrwvmyHfnzn7lT9h7caPR4WjsQYl/cRQVXXn7OhPk7
-         KfqA==
-X-Gm-Message-State: AOAM532PnQFYPIvPDaopt6yXX/elEnNba2VGJJUq4QkeoMWsMTC+0vUN
-        sFVDl7HBgJXszAppsHUGQU9GCg==
-X-Google-Smtp-Source: ABdhPJz4i/nOOv5dyCQ2pLbOgF5zC3v94kASka1DzykL10DVWGIgCT/Y9WW0yTSg2OuK7xwmQmfTJQ==
-X-Received: by 2002:a5d:6992:: with SMTP id g18mr23221572wru.15.1597821846494;
-        Wed, 19 Aug 2020 00:24:06 -0700 (PDT)
+        bh=XPyf3pY78NKZpAoCqUMShqns3N3Vter41E+TCH98irs=;
+        b=CO3jMjXSJ9o7kY/yHnY9AMIm3R2yQtVLFQmhZ0SXjs27xFcEc8zT04N2VE2QeAsDtm
+         ytCpOHNAmZwe3WgXlV/t9074TrOo8191t7xzDx+34fpJn7qJQDeTKIQuAnPgpYCrWJzc
+         LdwputVRLczSMripQgSlYwmoPLxqcQ4GgZk7fyWSVGNBVe0IWhXiD53ddpnJJ8vSKCRq
+         sUZg5p9A4QW9cxgoGiYSi9ojxYYV6AfuE6KdAsY+lg7tCsIencl8u/2oI/JRVHGqiyxq
+         Jdcd8p9xf1bSi9wogawquU8s+6UrOwRHvnt1PTLa8Y9WGflpOEq6mC/17g2VSSFvCdna
+         bHIw==
+X-Gm-Message-State: AOAM530oW0Xs+wRcnRl/Jd2ISI2cBaze6tEquxH7jjGxOTRsQJBDrI1R
+        hSeua6xBAOfaLJgEhWxzZ9KtNg==
+X-Google-Smtp-Source: ABdhPJwQbTJrfV/44Lpom+61UBCm4AdTRe3330us7wYdmYxtjAvw93xalHuDW23gup9fnULbIMEiVA==
+X-Received: by 2002:a1c:4c0e:: with SMTP id z14mr3537549wmf.54.1597821847752;
+        Wed, 19 Aug 2020 00:24:07 -0700 (PDT)
 Received: from dell.default ([95.149.164.62])
-        by smtp.gmail.com with ESMTPSA id c145sm3795808wmd.7.2020.08.19.00.24.05
+        by smtp.gmail.com with ESMTPSA id c145sm3795808wmd.7.2020.08.19.00.24.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 00:24:05 -0700 (PDT)
+        Wed, 19 Aug 2020 00:24:07 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
 Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
         netdev@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Jouni Malinen <j@w1.fi>
-Subject: [PATCH 01/28] wireless: intersil: hostap: Mark 'freq_list' as __maybe_unused
-Date:   Wed, 19 Aug 2020 08:23:35 +0100
-Message-Id: <20200819072402.3085022-2-lee.jones@linaro.org>
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Siva Rebbagondla <siva8118@gmail.com>
+Subject: [PATCH 02/28] wireless: rsi_91x_main: Fix some kernel-doc issues
+Date:   Wed, 19 Aug 2020 08:23:36 +0100
+Message-Id: <20200819072402.3085022-3-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200819072402.3085022-1-lee.jones@linaro.org>
 References: <20200819072402.3085022-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'freq_list' is used in some source files which include hostap.h, but
-not all.  The compiler complains about the times it's not used.  Mark
-it as __maybe_used to tell the compiler that this is not only okay,
-it's expected.
+The file header should not be kernel-doc.  Add missing 'rec_pkt'
+description.  Update 'rsi_91x_init()'s parameter description.
 
 Fixes the following W=1 kernel build warning(s):
 
- In file included from drivers/net/wireless/intersil/hostap/hostap_80211_tx.c:9:
- drivers/net/wireless/intersil/hostap/hostap.h:11:19: warning: ‘freq_list’ defined but not used [-Wunused-const-variable=]
- In file included from drivers/net/wireless/intersil/hostap/hostap_main.c:31:
- drivers/net/wireless/intersil/hostap/hostap.h:11:19: warning: ‘freq_list’ defined but not used [-Wunused-const-variable=]
- In file included from drivers/net/wireless/intersil/hostap/hostap_proc.c:10:
- drivers/net/wireless/intersil/hostap/hostap.h:11:19: warning: ‘freq_list’ defined but not used [-Wunused-const-variable=]
- In file included from drivers/net/wireless/intersil/hostap/hostap_hw.c:50,
- from drivers/net/wireless/intersil/hostap/hostap_cs.c:196:
- At top level:
- drivers/net/wireless/intersil/hostap/hostap.h:11:19: warning: ‘freq_list’ defined but not used [-Wunused-const-variable=]
- In file included from drivers/net/wireless/intersil/hostap/hostap_hw.c:50,
- from drivers/net/wireless/intersil/hostap/hostap_pci.c:221:
- At top level:
- drivers/net/wireless/intersil/hostap/hostap.h:11:19: warning: ‘freq_list’ defined but not used [-Wunused-const-variable=]
- In file included from drivers/net/wireless/intersil/hostap/hostap_hw.c:50,
- from drivers/net/wireless/intersil/hostap/hostap_plx.c:264:
- At top level:
- drivers/net/wireless/intersil/hostap/hostap.h:11:19: warning: ‘freq_list’ defined but not used [-Wunused-const-variable=]
+ drivers/net/wireless/rsi/rsi_91x_main.c:17: warning: Function parameter or member 'fmt' not described in 'pr_fmt'
+ drivers/net/wireless/rsi/rsi_91x_main.c:156: warning: Function parameter or member 'rx_pkt' not described in 'rsi_read_pkt'
+ drivers/net/wireless/rsi/rsi_91x_main.c:287: warning: Function parameter or member 'oper_mode' not described in 'rsi_91x_init'
+ drivers/net/wireless/rsi/rsi_91x_main.c:287: warning: Excess function parameter 'void' description in 'rsi_91x_init'
 
-Cc: Jouni Malinen <j@w1.fi>
+Cc: Amitkumar Karwar <amitkarwar@gmail.com>
+Cc: Siva Rebbagondla <siva8118@gmail.com>
 Cc: Kalle Valo <kvalo@codeaurora.org>
 Cc: "David S. Miller" <davem@davemloft.net>
 Cc: Jakub Kicinski <kuba@kernel.org>
@@ -101,26 +86,36 @@ Cc: linux-wireless@vger.kernel.org
 Cc: netdev@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/net/wireless/intersil/hostap/hostap.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/wireless/rsi/rsi_91x_main.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/intersil/hostap/hostap.h b/drivers/net/wireless/intersil/hostap/hostap.h
-index 8130d29c7989c..c4b81ff7d7e47 100644
---- a/drivers/net/wireless/intersil/hostap/hostap.h
-+++ b/drivers/net/wireless/intersil/hostap/hostap.h
-@@ -8,8 +8,10 @@
- #include "hostap_wlan.h"
- #include "hostap_ap.h"
+diff --git a/drivers/net/wireless/rsi/rsi_91x_main.c b/drivers/net/wireless/rsi/rsi_91x_main.c
+index 29d83049c5f56..576f51f9b4a7e 100644
+--- a/drivers/net/wireless/rsi/rsi_91x_main.c
++++ b/drivers/net/wireless/rsi/rsi_91x_main.c
+@@ -1,4 +1,4 @@
+-/**
++/*
+  * Copyright (c) 2014 Redpine Signals Inc.
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
+@@ -148,6 +148,7 @@ static struct sk_buff *rsi_prepare_skb(struct rsi_common *common,
+ /**
+  * rsi_read_pkt() - This function reads frames from the card.
+  * @common: Pointer to the driver private structure.
++ * @rcv_pkt: Received pkt.
+  * @rcv_pkt_len: Received pkt length. In case of USB it is 0.
+  *
+  * Return: 0 on success, -1 on failure.
+@@ -279,7 +280,7 @@ void rsi_set_bt_context(void *priv, void *bt_context)
  
--static const long freq_list[] = { 2412, 2417, 2422, 2427, 2432, 2437, 2442,
--				  2447, 2452, 2457, 2462, 2467, 2472, 2484 };
-+static const long __maybe_unused freq_list[] = {
-+	2412, 2417, 2422, 2427, 2432, 2437, 2442,
-+	2447, 2452, 2457, 2462, 2467, 2472, 2484
-+};
- #define FREQ_COUNT ARRAY_SIZE(freq_list)
- 
- /* hostap.c */
+ /**
+  * rsi_91x_init() - This function initializes os interface operations.
+- * @void: Void.
++ * @oper_mode: One of DEV_OPMODE_*.
+  *
+  * Return: Pointer to the adapter structure on success, NULL on failure .
+  */
 -- 
 2.25.1
 
