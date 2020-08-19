@@ -2,186 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AEFA24A7F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 22:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3DF24A801
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 22:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727774AbgHSUtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 16:49:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52896 "EHLO
+        id S1727111AbgHSUv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 16:51:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725997AbgHSUtu (ORCPT
+        with ESMTP id S1726617AbgHSUvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 16:49:50 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC22C061757;
-        Wed, 19 Aug 2020 13:49:50 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id l23so19223130edv.11;
-        Wed, 19 Aug 2020 13:49:50 -0700 (PDT)
+        Wed, 19 Aug 2020 16:51:25 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE4CC061757;
+        Wed, 19 Aug 2020 13:51:25 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id y6so11422598plt.3;
+        Wed, 19 Aug 2020 13:51:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=K2zgoWJMVJSa/TNQOYcMLprt+kXYKK8dtG0LjjuZCoc=;
-        b=Pdzwz1e2rv9Embus7JEws1HnUGspCVHG2cS3m11g1KQ7xcV/CBtajPnm8coQB3M8Cf
-         lFzjr1HHim02CnT2r0i1136TYAY7qOgXMUoVu4Pc8R7FE/Kg+b0o4fGL/TcyXNkL4ZKI
-         69vu+99/3MGyT/t8D/O7kCf/gkQzpOtK1YxyZTB/G4+JKG2+qnNed+69aeo9m9SgqZHe
-         fJ5TPAymerYIAWI8wnmTRVB8A0fM4QqW+IWb9vmj329aImTdA0NqNMSMXeFI8ThY40Gi
-         YHJevJr2UTHfRtQi+2b1CyKgMUVxa14HV8YipEcfar2H46JMRg+MPgRoscW0wPQph/kf
-         LFPw==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=9TX9XzKRN7dNPcsRS3b4Jd5+wB3kzX0sXoNzZYYwbG4=;
+        b=I4J73SbBRdIhrd9K2yU3DltmtJFSlUPZownUuVKUKUGA80qDd0RWE1bkktpsiibkFg
+         2rNg7/EbcELJ8poBqgTUXPQBFWv1yKe188Xel2ff4F3fYp4MbnmXqVxzHwqT5yT4IDOO
+         w1r7Ii+hFCyZ/rdAeOS/diB03vXEeWzY7+IBxZhnkNmc4uR/ZbSdBHo1j+t3afJeIR6x
+         KZfnliAJI3XKkvTFyLO1PEU9XoGKm68+0xKm0jmNoKd2cBtAaDj7KSHPX52uQD7V+luH
+         GWzIlodVVmlMoRvpgTSnNvXT3hkJpTQDTo2M0UTjke8AiiYegPrGAjB77w6wHOxMVWYa
+         CHcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=K2zgoWJMVJSa/TNQOYcMLprt+kXYKK8dtG0LjjuZCoc=;
-        b=a19VQ6oo4aVwOVT7nv4u/V7V4b1eHywCzviG/9WT9IQNA02776oHCvp0ihAfzuToZ8
-         92Yr1FUaiST//ocqUGslhOldbt2WErL3VTsGOD3Z5jsDsD+nnavA34a0QRfsfSPev7Rh
-         2GNCM1vAESEqYG1jEAvqsN6aMiFjbal+sJD4UMAlJ23KXcutB7WNLE8XiU0gS84JgILi
-         kb751npnUAPE9LVyWVOsEDmncKKewTJCXqGMu75fEL3O0uXYZz+5k9OwGgAb95eOVelW
-         2P64mgwPG9oVBLHLilEopUzXl42UQFbNevupn992CVoAVxzaV8qyytYqj8rKrBtZBxyb
-         zAIw==
-X-Gm-Message-State: AOAM532oO2rAZCCoH81y4AtIQ+vvVfvbq416zZ6WxRagPvrNQJvciLll
-        Zm3Mug7UeIBwx2EVw9K+qSN2kO7Anuc=
-X-Google-Smtp-Source: ABdhPJyZmpCyVYq9115eormBuLkTdxhAUGIEG4kLQKfecG2vG8kdFo0MwgmrSWxjpY6tMR+Ul2uyMg==
-X-Received: by 2002:aa7:ccd5:: with SMTP id y21mr25745238edt.91.1597870189025;
-        Wed, 19 Aug 2020 13:49:49 -0700 (PDT)
-Received: from [10.67.50.75] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id l7sm18338674eds.47.2020.08.19.13.49.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Aug 2020 13:49:48 -0700 (PDT)
-Subject: Re: [PATCH] ARM: dts: BCM5301X: Fix pin controller node
-To:     Christian Lamparter <chunkeey@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Hauke Mehrtens <hauke@hauke-m.de>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        "maintainer:BROADCOM BCM5301X ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200819042308.19043-1-f.fainelli@gmail.com>
- <7501cb2f-ea5a-8339-40a0-6706fea32a06@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
- 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
- G10n8gCguORqNGMsVRxrlLs7/himep7MrCc=
-Message-ID: <62f89d06-e6ef-9476-1797-bec153d8e6db@gmail.com>
-Date:   Wed, 19 Aug 2020 13:49:45 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <7501cb2f-ea5a-8339-40a0-6706fea32a06@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=9TX9XzKRN7dNPcsRS3b4Jd5+wB3kzX0sXoNzZYYwbG4=;
+        b=J2tFn/xJxZtaWZkjY2cvxkPKXE9mRJIGTpJgX5wtvIXFWOvNvueDW7KHOT+YaOFRIw
+         gmImRnmy59VauTveS5Kj1Lu6TaymlRrPbMbgYdjUcL4938VYloUb/1U3dK2QtfdQV0L1
+         TmjFtNWUnx4vEbT1G6XaGrBRsIPL6WFmECPLQ0MM7ve35UNtkMy7K3OBc0BUbHDiHbYF
+         1kUdW7lWilZVokWsfqikThKmrCc6h0JcB6ffxu10B0r9Ne4aMUG/DHfZftYrLmheRVme
+         g/CudwHJYvEK+MgiRWULbIP2Wp1E3XzcgWDp5H5f8kSqylUk9nOKRIw0Z6IqNtxMg93Y
+         Opzg==
+X-Gm-Message-State: AOAM531Lt96EEReeLMej6MHVAMk/VCYp/BMZhqwqrLmcO0WSstNYlA+f
+        VwMmFhiRkq2RJHe445Erzh5d5GLmT+6xhA==
+X-Google-Smtp-Source: ABdhPJxS5VQCC6i1Wt07RlUEsHrnlVzTLdCoR6eMOpbKPKiR4OqLNTj0eciwumkt74USs713xXbh1Q==
+X-Received: by 2002:a17:90a:7f8a:: with SMTP id m10mr3374481pjl.47.1597870284645;
+        Wed, 19 Aug 2020 13:51:24 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id l78sm98024pfd.130.2020.08.19.13.51.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Aug 2020 13:51:24 -0700 (PDT)
+Date:   Wed, 19 Aug 2020 13:51:16 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>, jakub@cloudflare.com,
+        john.fastabend@gmail.com, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Message-ID: <5f3d90c432246_2c9b2adeefb585bc89@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200819092436.58232-5-lmb@cloudflare.com>
+References: <20200819092436.58232-1-lmb@cloudflare.com>
+ <20200819092436.58232-5-lmb@cloudflare.com>
+Subject: RE: [PATCH bpf-next 4/6] bpf: override the meaning of
+ ARG_PTR_TO_MAP_VALUE for sockmap and sockhash
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/19/20 1:48 PM, Christian Lamparter wrote:
-> On 2020-08-19 06:23, Florian Fainelli wrote:
->> The pin controller resources start at 0xc0 from the CRU base which is at
->> 0x100 from th DMU base, for a final address of 0x1800_c1c0, whereas we
->> are currently off by 0x100. The resource size of the CRU is also
->> incorrect and should end at 0x248 bytes from 0x100 which is the start
->> address. Finally, the compatibility strings defined for the
->> pin-controller node should reflect the SoC being used.
->>
->> Fixes: 9994241ac97c ("ARM: dts: BCM5301X: Describe Northstar pins mux
->> controller")
->> Reported-by: Christian Lamparter <chunkeey@gmail.com>
->> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
->> ---
->> Christian, can you test this as a preliminary patch for your Cisco
->> Meraki MR32 series? Thanks!
+Lorenz Bauer wrote:
+> The verifier assumes that map values are simple blobs of memory, and
+> therefore treats ARG_PTR_TO_MAP_VALUE, etc. as such. However, there are
+> map types where this isn't true. For example, sockmap and sockhash store
+> sockets. In general this isn't a big problem: we can just
+> write helpers that explicitly requests PTR_TO_SOCKET instead of
+> ARG_PTR_TO_MAP_VALUE.
 > 
-> Hm, it looks like this is more complicated than this. We should have
-> looked at pinctrl-ns.c's ns_pinctrl_probe() [0] before calling it.
+> The one exception are the standard map helpers like map_update_elem,
+> map_lookup_elem, etc. Here it would be nice we could overload the
+> function prototype for different kinds of maps. Unfortunately, this
+> isn't entirely straight forward:
+> We only know the type of the map once we have resolved meta->map_ptr
+> in check_func_arg. This means we can't swap out the prototype
+> in check_helper_call until we're half way through the function.
 > 
-> |    ns_pinctrl->regmap = syscon_node_to_regmap(of_get_parent(np));
-> |    if (IS_ERR(ns_pinctrl->regmap)) {
-> |        int err = PTR_ERR(ns_pinctrl->regmap);
-> |
-> |        dev_err(dev, "Failed to map pinctrl regs: %d\n", err);
-> |
-> |        return err;
-> |    }
-> |
-> |    if (of_property_read_u32(np, "offset", &ns_pinctrl->offset)) {
-> |        dev_err(dev, "Failed to get register offset\n");
-> |        return -ENOENT;
-> |    }
+> Instead, modify check_func_arg to treat ARG_PTR_TO_MAP_VALUE* to
+> mean "the native type for the map" instead of "pointer to memory"
+> for sockmap and sockhash. This means we don't have to modify the
+> function prototype at all
 > 
-> So, the ns_pinctrl_probe() takes the address of the parent node (cru)
-> and then looks for a "offset" property to add to this (which is missing
-> in the bcm5301x.dtsi [1]).
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> ---
+>  kernel/bpf/verifier.c | 40 ++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 40 insertions(+)
 > 
-> Thing is, for this to work, the parent-node should be a "simple-mfd" (so
-> a regmap is created for the reg), right? This would also mean that the
-> "reg" property in the pin-controller node is just cosmetic.
-> 
-> I guess the reason why this sort-of-works for me is because I'm using
-> this MR32 with OpenWrt (Rafał Miłecki is probably using it too ;) ).
-> 
-> (Note: We should not forget to update the binding-documentation as well!)
-> 
-> BTW: I'll reply my findings for the i2c issue with the MR32 in the other
-> mail.
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index b6ccfce3bf4c..47f9b94bb9d4 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -3872,6 +3872,38 @@ static int int_ptr_type_to_size(enum bpf_arg_type type)
+>  	return -EINVAL;
+>  }
+>  
+> +static int override_map_arg_type(struct bpf_verifier_env *env,
+> +				 const struct bpf_call_arg_meta *meta,
+> +				 enum bpf_arg_type *arg_type)
 
-Rafal, has this driver ever worked to begin with? None of this should be
-necessary, we should just be using a simple platform device resource here.
--- 
-Florian
+One nit can we rename this to refine_map_arg_type or resolve_map_arg_type I
+don't like the name "override" we are getting a more precise type here.
+
+> +{
+> +	if (!meta->map_ptr) {
+> +		/* kernel subsystem misconfigured verifier */
+> +		verbose(env, "invalid map_ptr to access map->type\n");
+> +		return -EACCES;
+> +	}
+> +
+> +	switch (meta->map_ptr->map_type) {
+> +	case BPF_MAP_TYPE_SOCKMAP:
+> +	case BPF_MAP_TYPE_SOCKHASH:
+> +		switch (*arg_type) {
+> +		case ARG_PTR_TO_MAP_VALUE:
+> +			*arg_type = ARG_PTR_TO_SOCKET;
+> +			break;
+> +		case ARG_PTR_TO_MAP_VALUE_OR_NULL:
+> +			*arg_type = ARG_PTR_TO_SOCKET_OR_NULL;
+> +			break;
+> +		default:
+> +			verbose(env, "invalid arg_type for sockmap/sockhash\n");
+
+Might be worth pushing the arg_type into the verbose message so its obvious
+where the types went wrong. We will probably "know" just based on the
+switch in front of this, but users in general wont. Just a suggestion if
+you think its overkill go ahead and skip.
+
+> +			return -EINVAL;
+> +		}
+> +		break;
+> +
+> +	default:
+> +		break;
+> +	}
+> +	return 0;
+> +}
+> +
+
+Otherwise LGTM.
+
+>  static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>  			  struct bpf_call_arg_meta *meta,
+>  			  const struct bpf_func_proto *fn)
+> @@ -3904,6 +3936,14 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>  		return -EACCES;
+>  	}
+>  
+> +	if (arg_type == ARG_PTR_TO_MAP_VALUE ||
+> +	    arg_type == ARG_PTR_TO_UNINIT_MAP_VALUE ||
+> +	    arg_type == ARG_PTR_TO_MAP_VALUE_OR_NULL) {
+> +		err = override_map_arg_type(env, meta, &arg_type);
+> +		if (err)
+> +			return err;
+> +	}
+> +
+>  	if (arg_type == ARG_PTR_TO_MAP_KEY ||
+>  	    arg_type == ARG_PTR_TO_MAP_VALUE ||
+>  	    arg_type == ARG_PTR_TO_UNINIT_MAP_VALUE ||
+> -- 
+> 2.25.1
+> 
