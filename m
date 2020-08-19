@@ -2,106 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7592224A64C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A64524A654
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbgHSSvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 14:51:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34424 "EHLO
+        id S1726806AbgHSSxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 14:53:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726211AbgHSSvP (ORCPT
+        with ESMTP id S1726211AbgHSSxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 14:51:15 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 984C7C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 11:51:15 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id t23so26576041ljc.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 11:51:15 -0700 (PDT)
+        Wed, 19 Aug 2020 14:53:07 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82680C061757;
+        Wed, 19 Aug 2020 11:53:07 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id g15so7364816plj.6;
+        Wed, 19 Aug 2020 11:53:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hGVzfbKpKFG7FgQ+mRgouJYalcSPr/oWhs8I8+UWA04=;
-        b=P6TdUNNyLEXtFN3uf+RNMJ6AJnnQDaj2fwlveK85TDnO6kTKE2aWywSdXf0Fd6nMsj
-         N/SUAOdz1SI8dkcAwDk6zKkR7ZyE9xH1fT73gwVBVp9KJ89+0V5NKZUUY2Aq1/h18TI6
-         /LfluIVBo9DtpjCjw4egKswukidd9I3fMNX4c=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ojo0vVfxMF4kGimsv0YT84fT9cZgWR2PgPBwNlWXlnI=;
+        b=skCBsF03o+nKy1/X62nQs3ZlUExK97yXVDTlRaA8GO72wwa24H1C7qm2MuhrUyaALi
+         mpZzXM9DozoVnhGuFMyeGT4y/xG3sviD5GzhhEOku6+iKvJK4t3So16vPlCDSBVw1Y6E
+         vjyslNPnU+Ku+7fni24xc9moG9pHb+l08VL1GcDp6yualyjc5WbW86Z2cQQ1FYvroIo/
+         0o0CG8HvML5rh5X5QEYPitjvapemHzuaNan08+aYY8bdP+uzd3ROmHemiDph51bwCjl1
+         q2yzBJcwp9rpY6gC++vSo4O3mJqFqAYF6o8JaTp7NuP3hY7sEZs06cKm1I+D/ivrvMTT
+         YNRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hGVzfbKpKFG7FgQ+mRgouJYalcSPr/oWhs8I8+UWA04=;
-        b=lmN7q6YKs2C9D2S+0XpjCUSZ6fYv2PEKdZv7RqLNsAg7xDnhRADF/Qs4zfVqbNhvbb
-         MikKb3cADi8Aq/0J8+SF0u+ePedIQDifKo3VxUirRzvvT+a1CBudbHJMLMgNKnynS4o6
-         K+7/NUzTVwtMvRX5K/wnFg+if+YqUuhatj7Agwate5kU9a9l1I8KOpQUCed97TxSJNeb
-         BLyaQyvRy8wb1uvdUnYbpPXU4snpvFiNm3ClZ7jltXTs3F6Z5csmpWSFc5+EXzzDCaFw
-         ZgxVRFiAlL85hDg9hSl8NDZVF7sxS+q7E/NxRWV5Nc+o+ewunEAJjvY8RXEjJsOUDk3F
-         n1OA==
-X-Gm-Message-State: AOAM532JT1JtbCGR6AbMKm7bGTnrhAAUokeIw5nce7uIWEZSDGmKk9Dx
-        pT5Gp1ZsVrvH+iKJ+HD4ExkmaOMzmzbB5Q==
-X-Google-Smtp-Source: ABdhPJz6Gy+KKIckjXXOMee/IIzJEhe/ACWqzs3kmFg+2sosXLN0W+IFTGui/b/dmP8u2egQuz6uVw==
-X-Received: by 2002:a2e:3615:: with SMTP id d21mr13228896lja.333.1597863073462;
-        Wed, 19 Aug 2020 11:51:13 -0700 (PDT)
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
-        by smtp.gmail.com with ESMTPSA id o7sm7456031lfa.88.2020.08.19.11.51.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Aug 2020 11:51:12 -0700 (PDT)
-Received: by mail-lf1-f48.google.com with SMTP id i80so12582780lfi.13
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 11:51:11 -0700 (PDT)
-X-Received: by 2002:ac2:58d5:: with SMTP id u21mr12805418lfo.31.1597863071540;
- Wed, 19 Aug 2020 11:51:11 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ojo0vVfxMF4kGimsv0YT84fT9cZgWR2PgPBwNlWXlnI=;
+        b=DjHSs7YCNcMY4VkW81fefWhTA0JkxpfHejLYBRSGnSh/DzR/126NkNy2DwyCwaX5ec
+         d6SYQZGto6xOEOyzedEgwYVoQ3GoR589S381CNJYPjSvOvdcFPj4a597UksEa7TU8x2K
+         x9sAbzhxNdJIyuc8PqW6mp697imbwQK9PaVXrReYxFeazH+Ii+EteHaOuxrBD37sb2Ol
+         ebOKxoujR52LLATM+0RKro7XQaAUcYLW/Dp9pc8a9RRfHaS/2TG3uq3yMyChsSIY8ChF
+         PPAKTD6xKHn6xr0N6m7HZJI8xyEDsyGz9tst8L66IWw9U3OgyYNKcerv11mIwBlmQVvD
+         qLiQ==
+X-Gm-Message-State: AOAM533t4ZHp5T+YLlHSoTDDkSb7ay+5IBColmh7EOTAz/rOYRARFp7E
+        f00j7uGQ9sK1l1d/uLIzZWE=
+X-Google-Smtp-Source: ABdhPJz8qgSUSMAh8sRZsex9BAVPb7wEOcm30G8p5x+PLRkaNGEKbLX19pSFlFe30lZkVGjNFsyTWw==
+X-Received: by 2002:a17:902:968d:: with SMTP id n13mr10893239plp.260.1597863186960;
+        Wed, 19 Aug 2020 11:53:06 -0700 (PDT)
+Received: from gmail.com ([103.105.152.86])
+        by smtp.gmail.com with ESMTPSA id x6sm25815940pge.61.2020.08.19.11.52.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Aug 2020 11:53:06 -0700 (PDT)
+Date:   Thu, 20 Aug 2020 00:21:08 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Prabhakar Kushwaha <pkushwaha@marvell.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Jia-Ju Bai <baijiaju1990@gmail.com>,
+        Javier Martinez Canillas <javier@osg.samsung.com>,
+        Zhang Rui <rui.zhang@intel.com>, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH v3] ata: use generic power management
+Message-ID: <20200819184738.GA108131@gmail.com>
+References: <20200817092245.10478-1-vaibhavgupta40@gmail.com>
+ <20200817092511.GA10566@gmail.com>
+ <11190a0b-1009-caf8-9cbe-6cf296b614bf@kernel.dk>
+ <20200818130329.GA39194@gmail.com>
+ <a1937b38-055f-0fc7-0d08-16af7c42660b@kernel.dk>
 MIME-Version: 1.0
-References: <20200818105102.926463950@infradead.org> <20200818112418.460474861@infradead.org>
- <20200818162542.GB27196@lst.de> <20200819072209.GU2674@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200819072209.GU2674@hirez.programming.kicks-ass.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 19 Aug 2020 11:50:55 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgMATDQQxLSsgmxCoCqApVXVeRnGOf6iWjnYdTJY_R3aw@mail.gmail.com>
-Message-ID: <CAHk-=wgMATDQQxLSsgmxCoCqApVXVeRnGOf6iWjnYdTJY_R3aw@mail.gmail.com>
-Subject: Re: [RFC][PATCH v2 08/10] smp,irq_work: Use the new irq_work API
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Ingo Molnar <mingo@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        =?UTF-8?B?RnLDqWTDqXJpYyBXZWlzYmVja2Vy?= <fweisbec@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a1937b38-055f-0fc7-0d08-16af7c42660b@kernel.dk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 12:22 AM <peterz@infradead.org> wrote:
->
-> That is, the external serialization comes from the non-atomic
-> test-and-set they both have. This works nicely when there is external
-> state that already serializes things, but totally comes apart (and
-> causes trivial list corruption) when you get it wrong.
+On Wed, Aug 19, 2020 at 12:40:20PM -0600, Jens Axboe wrote:
+> On 8/18/20 6:03 AM, Vaibhav Gupta wrote:
+> > On Mon, Aug 17, 2020 at 07:06:03AM -0700, Jens Axboe wrote:
+> >> On 8/17/20 2:25 AM, Vaibhav Gupta wrote:
+> >>> Hello,
+> >>>
+> >>> I am working to upgrade power management framework support for PCI drivers, as
+> >>> my project under the Linux Kernel Mentorship Program.
+> >>>
+> >>> The ultimate goal is to completely remove the legacy framework. And for this we
+> >>> need to remove ".suspend" and ".resume" pointers from "struct pci_driver".
+> >>>
+> >>> The patch is doing the change for the same. The actual suspend() and
+> >>> resume() callbacks are defined in drivers/ata/libata-core.c and are exported.
+> >>> Which are then used by other files.
+> >>>
+> >>> Thus removing those pointers, included 54 files in this patch. Although, the
+> >>> actual changes are done in few files only. The changes should work fine as I
+> >>> have done similar changes for other drivers too which made their way into the
+> >>> kernel. Still, tests on few ata devices are necessary.
+> >>
+> >> Didn't we agree to split this up into separate patches??
+> >>
+> >>> I tried but unfortunately, I couldn't find or arrange devices to test upon. I
+> >>> have added the authors of the previous commit(s) for respective drivers as
+> >>> recipients. It would be very helpful if someone can test it on a device.
+> >>
+> >> Does qemu support any of the affected drivers?
+> >>
+> > Hello Jens,
+> > Yes we discussed about splitting it and I will surely do it. I just thought that
+> > still it has not got tested and in that case keeping check on patch-series with
+> > 55+ patches may become somewhat messy. Moreover, to test any driver one will
+> > have to apply the patch for libata-core and then that of the driver.
+> > So, I sent this v3 in order to get some help for the testing purpose. Once it
+> > goes successful, I can split it and send it for the submission.
+> > 
+> > I am not sure about qemu, I haven't checked for it. Qemu will be appropriate
+> > for testing power management for .suspend() and .resume() callbacks?
+> 
+> Well, that's your homework then, it seems pretty ideal for testing that
+> kind of thing and way easier than getting your hands on hardware. It
+> won't have support for everything, but so far you are at 0 things
+> tested, so any piix and ahci testing would be a win as far as I'm
+> concerned.
+> 
+Okay. Thanks for hinting about qemu. I will get started with it then.
 
-Quite often, there just isn't any *need* for serialization, because
-there is only ever one op active.
-
-That can be either because the csd is fundamentally a single thing ("I
-will transfer this object to another CPU"), or it can be because the
-CSD is already per-cpu (ie smp_call_function_single).
-
-You seem to make that common situation much worse.
-
-Not only do you add that expensive atomic op, you add that expensive
-"use irq_work queues" for something that doesn't _need_ to use them.
-
-I have to say, I'm not a fan. What are the real advantages? Your
-listed disadvantages are very very questionable.
-
-IOW, what are the actual examples of "totally comes apart" that justifies this?
-
-If the example is theoretical ("if you use csd's wrong") then I think
-they are worthless.
-
-             Linus
+Vaibhav Gupta
+> -- 
+> Jens Axboe
+> 
