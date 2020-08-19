@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDFF924981D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 10:18:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBEB324981E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 10:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726698AbgHSISe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 04:18:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49204 "EHLO
+        id S1726795AbgHSISV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 04:18:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726612AbgHSISD (ORCPT
+        with ESMTP id S1726617AbgHSISE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 04:18:03 -0400
-Received: from mxout4.routing.net (mxout4.routing.net [IPv6:2a03:2900:1:a::9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC25C061344
+        Wed, 19 Aug 2020 04:18:04 -0400
+Received: from mxout2.routing.net (mxout2.routing.net [IPv6:2a03:2900:1:a::b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF48C061345
         for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 01:18:03 -0700 (PDT)
 Received: from mxbox2.masterlogin.de (unknown [192.168.10.89])
-        by mxout4.routing.net (Postfix) with ESMTP id 742481014B3;
-        Wed, 19 Aug 2020 08:18:01 +0000 (UTC)
+        by mxout2.routing.net (Postfix) with ESMTP id 58E385FA8E;
+        Wed, 19 Aug 2020 08:18:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
-        s=20200217; t=1597825081;
+        s=20200217; t=1597825082;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Tvt7koxlgmMWFSYlV9RwSNCWybA13LVEGNqsglV8N/o=;
-        b=xoykxp/XbV/PvzxMAHTHFOW/uuihX5MXhUi3YJG3M91OxzHrW8bYyyDNtq0SqvzFYTUELP
-        Asz89iZbCbUm+L4QyeQ9AGFbNi+7qe3v72OYuvSRzYPdd2kgg7yqsFUMqCf+39bdkmWgIN
-        0NPaRhz3wbuVGiyP8wkisrL/44qvy0Y=
+        bh=fCnnVcg/G7GdQeEsbRfkh+kAyhmqBcsohyCq/tDvKFE=;
+        b=vjUoPMp+9XfEPRWmYrmUWhu6Uw/jLdSKBUxWfiu4QLed6scFY7gTJfFYXacf99d/9LiUm6
+        TNUC/lAVlEisZIkgneLnPrXoLs18FN5Ks8XAnp7CBpv/4Bg8zWx84/j3cDhFirFLD0Gk7K
+        VAHFEqyTe/4daKSB82ass/Sec6QmSXc=
 Received: from localhost.localdomain (fttx-pool-185.76.97.101.bambit.de [185.76.97.101])
-        by mxbox2.masterlogin.de (Postfix) with ESMTPSA id 99F9A10054E;
-        Wed, 19 Aug 2020 08:18:00 +0000 (UTC)
+        by mxbox2.masterlogin.de (Postfix) with ESMTPSA id 7409610058A;
+        Wed, 19 Aug 2020 08:18:01 +0000 (UTC)
 From:   Frank Wunderlich <linux@fw-web.de>
 To:     linux-mediatek@lists.infradead.org
 Cc:     Frank Wunderlich <frank-w@public-files.de>,
@@ -40,10 +40,10 @@ Cc:     Frank Wunderlich <frank-w@public-files.de>,
         dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
         Matthias Brugger <matthias.bgg@gmail.com>,
         linux-arm-kernel@lists.infradead.org,
-        chunhui dai <chunhui.dai@mediatek.com>
-Subject: [PATCH v5 3/7] drm/mediatek: disable tmds on mt2701
-Date:   Wed, 19 Aug 2020 10:17:48 +0200
-Message-Id: <20200819081752.4805-4-linux@fw-web.de>
+        Stu Hsieh <stu.hsieh@mediatek.com>
+Subject: [PATCH v5 4/7] drm/mediatek: Add get_possible_crtc API for dpi, dsi
+Date:   Wed, 19 Aug 2020 10:17:49 +0200
+Message-Id: <20200819081752.4805-5-linux@fw-web.de>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200819081752.4805-1-linux@fw-web.de>
 References: <20200819081752.4805-1-linux@fw-web.de>
@@ -54,57 +54,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: chunhui dai <chunhui.dai@mediatek.com>
+From: Stu Hsieh <stu.hsieh@mediatek.com>
 
-disable tmds on phy on mt2701 to support other resolutions like 1280x1024
+For current mediatek dsi encoder, its possible crtc is fixed in crtc
+0, and mediatek dpi encoder's possible crtc is fixed in crtc 1. In
+some SoC the possible crtc is not fixed in this case, so search
+pipeline information to find out the correct possible crtc.
 
-Signed-off-by: chunhui dai <chunhui.dai@mediatek.com>
+Signed-off-by: Stu Hsieh <stu.hsieh@mediatek.com>
 Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-Tested-by: Frank Wunderlich <frank-w@public-files.de>
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 ---
- drivers/gpu/drm/mediatek/mtk_hdmi_phy.c        | 3 +++
- drivers/gpu/drm/mediatek/mtk_hdmi_phy.h        | 1 +
- drivers/gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c | 1 +
- 3 files changed, 5 insertions(+)
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 42 +++++++++++++++++++++
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h |  2 +
+ 2 files changed, 44 insertions(+)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi_phy.c b/drivers/gpu/drm/mediatek/mtk_hdmi_phy.c
-index 5223498502c4..edadb7a700f1 100644
---- a/drivers/gpu/drm/mediatek/mtk_hdmi_phy.c
-+++ b/drivers/gpu/drm/mediatek/mtk_hdmi_phy.c
-@@ -184,6 +184,9 @@ static int mtk_hdmi_phy_probe(struct platform_device *pdev)
- 		return PTR_ERR(phy_provider);
- 	}
- 
-+	if (hdmi_phy->conf->pll_default_off)
-+		hdmi_phy->conf->hdmi_phy_disable_tmds(hdmi_phy);
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+index 57c88de9a329..a5f2ff6bea93 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+@@ -13,6 +13,8 @@
+ #include <linux/of_platform.h>
+ #include <linux/platform_device.h>
+ #include <linux/soc/mediatek/mtk-cmdq.h>
++#include <drm/drm_print.h>
 +
- 	return of_clk_add_provider(dev->of_node, of_clk_src_simple_get,
- 				   hdmi_phy->pll);
+ #include "mtk_drm_drv.h"
+ #include "mtk_drm_plane.h"
+ #include "mtk_drm_ddp_comp.h"
+@@ -412,6 +414,22 @@ static const struct mtk_ddp_comp_match mtk_ddp_matches[DDP_COMPONENT_ID_MAX] = {
+ 	[DDP_COMPONENT_WDMA1]	= { MTK_DISP_WDMA,	1, NULL },
+ };
+ 
++static bool mtk_drm_find_comp_in_ddp(struct mtk_ddp_comp ddp_comp,
++					 const enum mtk_ddp_comp_id *path,
++					 unsigned int path_len)
++{
++	unsigned int i;
++
++	if (path == NULL)
++		return false;
++
++	for (i = 0U; i < path_len; i++)
++		if (ddp_comp.id == path[i])
++			return true;
++
++	return false;
++}
++
+ int mtk_ddp_comp_get_id(struct device_node *node,
+ 			enum mtk_ddp_comp_type comp_type)
+ {
+@@ -427,6 +445,30 @@ int mtk_ddp_comp_get_id(struct device_node *node,
+ 	return -EINVAL;
  }
-diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi_phy.h b/drivers/gpu/drm/mediatek/mtk_hdmi_phy.h
-index 2d8b3182470d..f472fdeb63dc 100644
---- a/drivers/gpu/drm/mediatek/mtk_hdmi_phy.h
-+++ b/drivers/gpu/drm/mediatek/mtk_hdmi_phy.h
-@@ -22,6 +22,7 @@ struct mtk_hdmi_phy;
- struct mtk_hdmi_phy_conf {
- 	bool tz_disabled;
- 	unsigned long flags;
-+	bool pll_default_off;
- 	const struct clk_ops *hdmi_phy_clk_ops;
- 	void (*hdmi_phy_enable_tmds)(struct mtk_hdmi_phy *hdmi_phy);
- 	void (*hdmi_phy_disable_tmds)(struct mtk_hdmi_phy *hdmi_phy);
-diff --git a/drivers/gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c b/drivers/gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c
-index d3cc4022e988..6fbedacfc1e8 100644
---- a/drivers/gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c
-+++ b/drivers/gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c
-@@ -239,6 +239,7 @@ static void mtk_hdmi_phy_disable_tmds(struct mtk_hdmi_phy *hdmi_phy)
- struct mtk_hdmi_phy_conf mtk_hdmi_phy_2701_conf = {
- 	.tz_disabled = true,
- 	.flags = CLK_SET_RATE_GATE,
-+	.pll_default_off = true,
- 	.hdmi_phy_clk_ops = &mtk_hdmi_phy_pll_ops,
- 	.hdmi_phy_enable_tmds = mtk_hdmi_phy_enable_tmds,
- 	.hdmi_phy_disable_tmds = mtk_hdmi_phy_disable_tmds,
+ 
++unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
++						struct mtk_ddp_comp ddp_comp)
++{
++	struct mtk_drm_private *private = drm->dev_private;
++	unsigned int ret;
++
++	if (mtk_drm_find_comp_in_ddp(ddp_comp, private->data->main_path,
++		private->data->main_len) == true) {
++		ret = BIT(0);
++	} else if (mtk_drm_find_comp_in_ddp(ddp_comp,
++		private->data->ext_path,
++		private->data->ext_len) == true) {
++		ret = BIT(1);
++	} else if (mtk_drm_find_comp_in_ddp(ddp_comp,
++		private->data->third_path,
++		private->data->third_len) == true) {
++		ret = BIT(2);
++	} else {
++		DRM_INFO("Failed to find comp in ddp table\n");
++		ret = 0;
++	}
++	return ret;
++}
++
+ int mtk_ddp_comp_init(struct device *dev, struct device_node *node,
+ 		      struct mtk_ddp_comp *comp, enum mtk_ddp_comp_id comp_id,
+ 		      const struct mtk_ddp_comp_funcs *funcs)
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+index debe36395fe7..1d9e00b69462 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
++++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+@@ -202,6 +202,8 @@ static inline void mtk_ddp_ctm_set(struct mtk_ddp_comp *comp,
+ 
+ int mtk_ddp_comp_get_id(struct device_node *node,
+ 			enum mtk_ddp_comp_type comp_type);
++unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
++						struct mtk_ddp_comp ddp_comp);
+ int mtk_ddp_comp_init(struct device *dev, struct device_node *comp_node,
+ 		      struct mtk_ddp_comp *comp, enum mtk_ddp_comp_id comp_id,
+ 		      const struct mtk_ddp_comp_funcs *funcs);
 -- 
 2.25.1
 
