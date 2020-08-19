@@ -2,150 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D34C249822
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 10:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8E0249817
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 10:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726949AbgHSITN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 04:19:13 -0400
-Received: from relay3.mymailcheap.com ([217.182.66.161]:57046 "EHLO
-        relay3.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726435AbgHSITL (ORCPT
+        id S1726700AbgHSISF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 04:18:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725275AbgHSISD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 04:19:11 -0400
-Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
-        by relay3.mymailcheap.com (Postfix) with ESMTPS id 3DFDB3F15F;
-        Wed, 19 Aug 2020 10:19:02 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by filter2.mymailcheap.com (Postfix) with ESMTP id 208BD2A51B;
-        Wed, 19 Aug 2020 10:19:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1597825142;
-        bh=02CPVV5u+adQWdduGIzzC9teWV2zrSCiBOhEyqwvl2s=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=FOdigWJF3zNOydYEzEUphq0zxb1f9hVZBVMd36regPQS3L83nWyNsNzsHVg6aVFtu
-         tMnldaZ+eVY3l698+v6p101Yd8HIVUkxyyDqxRyroN5z+qfg1ZOhOlfFsuRhqvMqm0
-         yvN7ZlBgOFbskn8vJR0ZFzPPwkj2fXpqd2+U0lAw=
-X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
-Received: from filter2.mymailcheap.com ([127.0.0.1])
-        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id fXVo7zClVh5P; Wed, 19 Aug 2020 10:19:00 +0200 (CEST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter2.mymailcheap.com (Postfix) with ESMTPS;
-        Wed, 19 Aug 2020 10:19:00 +0200 (CEST)
-Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 7AD804119C;
-        Wed, 19 Aug 2020 08:18:59 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="JtAY3f9X";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from ice-e5v2.lan (unknown [59.41.160.120])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id AFA914119C;
-        Wed, 19 Aug 2020 08:16:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1597824967; bh=02CPVV5u+adQWdduGIzzC9teWV2zrSCiBOhEyqwvl2s=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=JtAY3f9XdbTXM+9aC8nnBoQs8oGdR2cmVuiO4jwcCKMFPrC3Gj6arvz7R9+7H8PEI
-         /M3p4AUq20UVBJgtZEOZqqkeHZvAb8wfBBpL2OySedQI9Klp5SI3BIFVIuWo/NRXQA
-         u/GokGFh4tJxPMMPMQVKUIjCCQEnirskERmWU7b0=
-Message-ID: <3b0ba1c95efa2ac465d9b6312b8e0e2c8fb461b5.camel@aosc.io>
-Subject: Re: [PATCH] mfd: core: Fix handle of OF disabled MFD cells
-From:   Icenowy Zheng <icenowy@aosc.io>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org
-Date:   Wed, 19 Aug 2020 16:16:01 +0800
-In-Reply-To: <20200819081122.GB4354@dell>
-References: <20200801070130.3323112-1-icenowy@aosc.io>
-         <20200819081122.GB4354@dell>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4 
+        Wed, 19 Aug 2020 04:18:03 -0400
+X-Greylist: delayed 148804 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 19 Aug 2020 01:18:02 PDT
+Received: from mxout1.routing.net (mxout1.routing.net [IPv6:2a03:2900:1:a::a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9799DC061389
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 01:18:02 -0700 (PDT)
+Received: from mxbox2.masterlogin.de (unknown [192.168.10.89])
+        by mxout1.routing.net (Postfix) with ESMTP id 2E6FE3FD3D;
+        Wed, 19 Aug 2020 08:17:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
+        s=20200217; t=1597825079;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=FiBKRQX0Yu/oUfxbfaNVaqDxRl64gER3PIg7jU21vW4=;
+        b=hZeHVyHF2XrQ/a58hJfkW4rkNI7zUHPiGly8MkwO/TUBgNGu0YQ5rEIrPPwL5MqCYICJIP
+        0E0rFzS+RS8MOHHgeSqX66Ocsb8Lq8XDCiT4buZ0mFishA4OHmPDDJhooTQ/x6VgZQ6L8r
+        vqdRqbO/TWkphgOvqTCW/Cv/nVKYyT0=
+Received: from localhost.localdomain (fttx-pool-185.76.97.101.bambit.de [185.76.97.101])
+        by mxbox2.masterlogin.de (Postfix) with ESMTPSA id 4F837100539;
+        Wed, 19 Aug 2020 08:17:58 +0000 (UTC)
+From:   Frank Wunderlich <linux@fw-web.de>
+To:     linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v5 0/7] make hdmi work on bananapi-r2
+Date:   Wed, 19 Aug 2020 10:17:45 +0200
+Message-Id: <20200819081752.4805-1-linux@fw-web.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 7AD804119C
-X-Spamd-Result: default: False [-0.10 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.160.120:received];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.00)[aosc.io];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         ML_SERVERS(-3.10)[148.251.23.173];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCPT_COUNT_TWO(0.00)[2];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
-X-Rspamd-Server: mail20.mymailcheap.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2020-08-19星期三的 09:11 +0100，Lee Jones写道：
-> On Sat, 01 Aug 2020, Icenowy Zheng wrote:
-> 
-> > When rewriting the OF match code of MFD core, addition of cells
-> > disabled
-> > in OF will result in a failure with error -ENODEV. This is an
-> > unexpected
-> > behavior, as the previous behavior is silently ignore the cell. On
-> > SBCs with AXP20x PMICs, this leads to boot failure if AXP20x PMIC
-> > support is built-in and some cells (especially power supply ones)
-> > are
-> > disabled.
-> 
-> Thanks for reporting this.
-> 
-> Do you mind if I fix this another way?  I plan to reinstate the old
-> code that was removed as part of the offending patch.  I will of
-> course add your Reported-by tag.
+From: Frank Wunderlich <frank-w@public-files.de>
 
-I think it's okay.
+This Patch-Series adds missing Patches/Bugfixes to get hdmi working
+on BPI-R2
 
-I will test it once it's out.
+v4->v5:
+ - rebased on 5.9-rc1
+ - move existing display-related dts nodes to new mt7623n.dtsi
+   because mt7623a does not have gpu
+ - add new display nodes to this new dtsi
+v3->v4:
+ - fix removed const in "add ddp routing for mt7623"
+ - change subjects to "drm/mediatek:..."
+ - add documentation for mt7623-* compatibles
+ - dropped redundant display_components node (mmsys compatible)
+ - add reviewd-by collected in v3
+v2->v3:
+ - use own mmsys-routing for mt7623 instead of code getting different
+   routing from dts
+ - remove ddp routing bls -> dpi from bpir2/rfb dts
+ - updated some commit-Messages as suggested by CK Hu
+v1->v2:
+ - using get_possible_crtc API instead of hardcoded
+ - drop unused dts-nodes
+ - refine commit-messages as far as i can :)
+   "config component output by device node port" is needed to fix a WARN_ON()
+   "fix boot up for 720 and 480 but 1080" fixes flickering, 
+     which may cause also some resolutions not working on some TFT (had some pr>
 
-> 
-> > Silently ignore the cell when -ENODEV occurs.
-> > 
-> > Fixes: e49aa9a9bd22 ("mfd: core: Make a best effort attempt to
-> > match devices with the correct of_nodes")
-> > Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
-> > ---
-> >  drivers/mfd/mfd-core.c | 7 ++++++-
-> >  1 file changed, 6 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/mfd/mfd-core.c b/drivers/mfd/mfd-core.c
-> > index c3ef58a802bee..31b363c64f4b4 100644
-> > --- a/drivers/mfd/mfd-core.c
-> > +++ b/drivers/mfd/mfd-core.c
-> > @@ -215,8 +215,13 @@ static int mfd_add_device(struct device
-> > *parent, int id,
-> >  				ret = mfd_match_of_node_to_dev(pdev,
-> > np, cell);
-> >  				if (ret == -EAGAIN)
-> >  					continue;
-> > -				if (ret)
-> > +				if (ret) {
-> > +					if (ret == -ENODEV) {
-> > +						/* Ignore disabled
-> > devices error free */
-> > +						ret = 0;
-> > +					}
-> >  					goto fail_alias;
-> > +				}
-> >  
-> >  				break;
-> >  			}
+Frank Wunderlich (3):
+  dt-bindings: mediatek: add mt7623 display-nodes
+  drm/mediatek: add ddp routing for mt7623
+  arm: dts: mt7623: move display nodes to separate mt7623n.dtsi
+
+Jitao Shi (1):
+  drm/mediatek: dpi/dsi: change the getting possible_crtc way
+
+Ryder Lee (1):
+  arm: dts: mt7623: add display subsystem related device nodes
+
+Stu Hsieh (1):
+  drm/mediatek: Add get_possible_crtc API for dpi, dsi
+
+chunhui dai (1):
+  drm/mediatek: disable tmds on mt2701
+
+ .../display/mediatek/mediatek,disp.txt        |   2 +-
+ .../display/mediatek/mediatek,dpi.txt         |   2 +-
+ .../display/mediatek/mediatek,dsi.txt         |   4 +-
+ .../display/mediatek/mediatek,hdmi.txt        |   4 +
+ arch/arm/boot/dts/mt7623.dtsi                 | 123 -------
+ arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts |  74 ++++-
+ arch/arm/boot/dts/mt7623n-rfb-emmc.dts        |  74 ++++-
+ arch/arm/boot/dts/mt7623n.dtsi                | 305 ++++++++++++++++++
+ drivers/gpu/drm/mediatek/mtk_dpi.c            |   3 +-
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c   |  42 +++
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h   |   2 +
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c        |  23 ++
+ drivers/gpu/drm/mediatek/mtk_dsi.c            |   3 +-
+ drivers/gpu/drm/mediatek/mtk_hdmi_phy.c       |   3 +
+ drivers/gpu/drm/mediatek/mtk_hdmi_phy.h       |   1 +
+ .../gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c    |   1 +
+ 16 files changed, 535 insertions(+), 131 deletions(-)
+ create mode 100644 arch/arm/boot/dts/mt7623n.dtsi
+
+-- 
+2.25.1
+
