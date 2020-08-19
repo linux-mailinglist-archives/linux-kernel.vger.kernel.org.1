@@ -2,75 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1649B24927B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 03:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79853249286
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 03:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbgHSBkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 21:40:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41822 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726367AbgHSBkh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 21:40:37 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7EC3E20657;
-        Wed, 19 Aug 2020 01:40:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597801236;
-        bh=mV68+4Pd6yCvEKHkuHjpTE4a0Mc6MZs8y2WBZe4O2os=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=r1zPxyH2TFURT8AISrODsgAqDEGPOgYNhZQKoXmZoix5XSKNX1TMG54xeNkaTHJwl
-         x1OlPuQGE3IbdW4rHA29NUHHgyoImOM8Err6aV4f7/OFn8kqGweDNk58q8KOW+XjwE
-         ZWLG7G5ytzom5QNx9MZXQ58D/bQodaTMj7OMxsF8=
-Date:   Tue, 18 Aug 2020 18:40:36 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Xu Wang <vulab@iscas.ac.cn>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>
-Subject: Re: [PATCH] hugetlb_cgroup: convert comma to semicolon
-Message-Id: <20200818184036.d6c479446b2c3b231d1e3bff@linux-foundation.org>
-In-Reply-To: <20200818064333.21759-1-vulab@iscas.ac.cn>
-References: <20200818064333.21759-1-vulab@iscas.ac.cn>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727912AbgHSBsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 21:48:23 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3068 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726703AbgHSBsU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 21:48:20 -0400
+Received: from dggeme704-chm.china.huawei.com (unknown [172.30.72.57])
+        by Forcepoint Email with ESMTP id A1CB0E09B342EE1E188F;
+        Wed, 19 Aug 2020 09:48:17 +0800 (CST)
+Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
+ dggeme704-chm.china.huawei.com (10.1.199.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Wed, 19 Aug 2020 09:48:16 +0800
+Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
+ dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
+ Wed, 19 Aug 2020 09:48:15 +0800
+From:   linmiaohe <linmiaohe@huawei.com>
+To:     Eric Dumazet <edumazet@google.com>
+CC:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "martin.varghese@nokia.com" <martin.varghese@nokia.com>,
+        Florian Westphal <fw@strlen.de>,
+        Pravin B Shelar <pshelar@ovn.org>,
+        Davide Caratti <dcaratti@redhat.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        "Paolo Abeni" <pabeni@redhat.com>,
+        "shmulik@metanetworks.com" <shmulik@metanetworks.com>,
+        "kyk.segfault@gmail.com" <kyk.segfault@gmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] net: Relax the npages test against MAX_SKB_FRAGS
+Thread-Topic: [PATCH] net: Relax the npages test against MAX_SKB_FRAGS
+Thread-Index: AdZ1yocb4TumB20X+kO1y6lKjHGROQ==
+Date:   Wed, 19 Aug 2020 01:48:15 +0000
+Message-ID: <c6f895470c8c4c36ad1ed2c5ebfbe82c@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.142]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Aug 2020 06:43:33 +0000 Xu Wang <vulab@iscas.ac.cn> wrote:
-
-> Replace a comma between expression statements by a semicolon.
-> 
-> ...
->
-> --- a/mm/hugetlb_cgroup.c
-> +++ b/mm/hugetlb_cgroup.c
-> @@ -655,7 +655,7 @@ static void __init __hugetlb_cgroup_file_dfl_init(int idx)
->  	snprintf(cft->name, MAX_CFTYPE_NAME, "%s.events", buf);
->  	cft->private = MEMFILE_PRIVATE(idx, 0);
->  	cft->seq_show = hugetlb_events_show;
-> -	cft->file_offset = offsetof(struct hugetlb_cgroup, events_file[idx]),
-> +	cft->file_offset = offsetof(struct hugetlb_cgroup, events_file[idx]);
->  	cft->flags = CFTYPE_NOT_ON_ROOT;
->  
->  	/* Add the events.local file */
-> @@ -664,7 +664,7 @@ static void __init __hugetlb_cgroup_file_dfl_init(int idx)
->  	cft->private = MEMFILE_PRIVATE(idx, 0);
->  	cft->seq_show = hugetlb_events_local_show;
->  	cft->file_offset = offsetof(struct hugetlb_cgroup,
-> -				    events_local_file[idx]),
-> +				    events_local_file[idx]);
->  	cft->flags = CFTYPE_NOT_ON_ROOT;
->  
->  	/* NULL terminate the last cft */
-
-Fixes: faced7e0806cf4 ("mm: hugetlb controller for cgroups v2")
-
-Wow, why does this code even work.  Presumably the initial value of
-cft->file_offset simply doesn't matter.  Giuseppe, could you please
-check?  We might have some unneeded code in there.
+RXJpYyBEdW1hemV0IDxlZHVtYXpldEBnb29nbGUuY29tPiB3cm90ZToNCj5PbiBUdWUsIEF1ZyAx
+OCwgMjAyMCBhdCA0OjU4IEFNIE1pYW9oZSBMaW4gPGxpbm1pYW9oZUBodWF3ZWkuY29tPiB3cm90
+ZToNCj4+DQo+PiBUaGUgbnBhZ2VzIHRlc3QgYWdhaW5zdCBNQVhfU0tCX0ZSQUdTIGNhbiBiZSBy
+ZWxheGVkIGlmIHdlIHN1Y2NlZWQgdG8gDQo+PiBhbGxvY2F0ZSBoaWdoIG9yZGVyIHBhZ2VzIGFz
+IHRoZSBub3RlIGluIGNvbW1lbnQgc2FpZC4NCj4+DQo+DQo+DQo+V2UgZG8gbm90IHdhbnQgdGhp
+cyBjaGFuZ2UuDQo+DQo+VGhpcyBpbnRlcmZhY2UgaXMgdXNlZCBieSBkYXRhZ3JhbSBwcm92aWRl
+cnMsIHdlIGRvIG5vdCB3YW50IHRvIGNsYWltIHRoZXkgY2FuIHNhZmVseSB1c2Ugc2tiIGFsbG9j
+YXRpb25zIG92ZXIgNjRLQi4NCj4NCj5SZXR1cm5pbmcgLUVNU0dTSVpFIHNob3VsZCBub3QgZGVw
+ZW5kIG9uIGF2YWlsYWJpbGl0eSBvZiBoaWdoLW9yZGVyIHBhZ2VzLg0KPg0KPlRoZSBjb21tZW50
+IHdhcyBhIGhpbnQsIGJ1dCB3ZSBuZWVkIGZpcnN0IGEgdmFsaWQgdXNlciBiZWZvcmUgY29uc2lk
+ZXJpbmcgZXhwYW5kaW5nIHRoZSBpbnRlcmZhY2UuDQoNCkkgc2VlLiBNYW55IHRoYW5rcyBmb3Ig
+cmVwbHkgYW5kIGV4cGxhaW5hdGlvbi4gOikNCg0K
