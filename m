@@ -2,69 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10412249DDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7284249E04
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728106AbgHSMaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 08:30:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726752AbgHSMaJ (ORCPT
+        id S1728374AbgHSMeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 08:34:21 -0400
+Received: from auth-smtp.nebula.fi ([217.149.52.145]:39688 "EHLO
+        auth-smtp.nebula.fi" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728306AbgHSMeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 08:30:09 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4ACC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 05:30:08 -0700 (PDT)
-Received: from ramsan ([84.195.186.194])
-        by michel.telenet-ops.be with bizsmtp
-        id HQW62300y4C55Sk06QW6nb; Wed, 19 Aug 2020 14:30:06 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1k8NEE-0002D9-5l; Wed, 19 Aug 2020 14:30:06 +0200
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1k8NEE-0004ry-4J; Wed, 19 Aug 2020 14:30:06 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Michal Simek <monstr@monstr.eu>
-Cc:     linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2] microblaze: Replace <linux/clk-provider.h> by <linux/of_clk.h>
-Date:   Wed, 19 Aug 2020 14:30:04 +0200
-Message-Id: <20200819123004.18677-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.17.1
+        Wed, 19 Aug 2020 08:34:01 -0400
+Received: from developer-Precision-3630-Tower (82-203-173-204.bb.dnainternet.fi [82.203.173.204])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: xipheracom)
+        by auth-smtp.nebula.fi (Postfix) with ESMTPSA id 386C5444D;
+        Wed, 19 Aug 2020 15:22:03 +0300 (EEST)
+From:   Atte Tommiska <atte.tommiska@xiphera.com>
+To:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Atte Tommiska <atte.tommiska@xiphera.com>
+Subject: [PATCH 0/3] hwrng: add support for Xiphera XIP8001B
+Date:   Wed, 19 Aug 2020 15:21:32 +0300
+Message-Id: <20200819122135.25316-1-atte.tommiska@xiphera.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.0 required=8.0 tests=none autolearn=unavailable
+        autolearn_force=no version=3.4.0
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        authsmtp1-hki2.nebula.fi
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MicroBlaze platform code is not a clock provider, and just needs to
-call of_clk_init().
+This patchset introduces a linux driver for Xiphera's XIP8001B IP.
+The IP is an FPGA-based TRNG which can be used in various FPGA families.
+The IP is in use in multiple customer projects and in Xiphera's own products.
 
-Hence it can include <linux/of_clk.h> instead of <linux/clk-provider.h>.
+Atte Tommiska (3):
+  dt-bindings: vendor-prefixes: Add Xiphera vendor prefix
+  dt-bindings: rng: add bindings for Xiphera XIP8001B hwnrg
+  hwrng: xiphera-trng: add support for XIP8001B hwrng
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
----
-v2:
-  - Add Reviewed-by.
----
- arch/microblaze/kernel/setup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../bindings/rng/xiphera,xip8001b-trng.yaml   |  30 ++++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ drivers/char/hw_random/Kconfig                |  10 ++
+ drivers/char/hw_random/Makefile               |   1 +
+ drivers/char/hw_random/xiphera-trng.c         | 151 ++++++++++++++++++
+ 5 files changed, 194 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/rng/xiphera,xip8001b-trng.yaml
+ create mode 100644 drivers/char/hw_random/xiphera-trng.c
 
-diff --git a/arch/microblaze/kernel/setup.c b/arch/microblaze/kernel/setup.c
-index 2310daff1f8a9565..c288e3e0205f8694 100644
---- a/arch/microblaze/kernel/setup.c
-+++ b/arch/microblaze/kernel/setup.c
-@@ -9,7 +9,7 @@
-  */
- 
- #include <linux/init.h>
--#include <linux/clk-provider.h>
-+#include <linux/of_clk.h>
- #include <linux/clocksource.h>
- #include <linux/string.h>
- #include <linux/seq_file.h>
+
+base-commit: 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5
 -- 
-2.17.1
+2.28.0
 
