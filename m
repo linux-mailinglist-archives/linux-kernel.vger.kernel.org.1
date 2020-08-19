@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 641F5249C74
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 13:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE3B249C78
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 13:49:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728272AbgHSLtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 07:49:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47474 "EHLO mail.kernel.org"
+        id S1728306AbgHSLtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 07:49:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728137AbgHSLqy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 07:46:54 -0400
+        id S1728134AbgHSLqw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 07:46:52 -0400
 Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 317FC22BEA;
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DFCF22B49;
         Wed, 19 Aug 2020 11:46:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1597837582;
-        bh=wHvrnGSBf44aSfNbbWy1EhP6lE/jd7H3OnEElcdJj6c=;
+        bh=2yQjdvyRlegxhP3g7Ww09HkpPA50NKlkwbqSSbfz3Bk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=chRc1MjSdEc+pBFsBSFlt0c6LOTES8NiKSFRyTcQ3vTfF4kxIF6uH2O963ARyGhWH
-         c+5u879UsDsC504iM2En/9cLVeWCVIlB/zVTxRxzR7sEF0ixOzfmca/j1KV5i8Eld0
-         RDs7ydPcxDsbtzs54zm2GDCjA1tyZAZnNj6zHNhs=
+        b=L8gwwe9Mb1Pjem3EbtG1gQA62R5MrWxIbVz0rdlyzmoWdbw9/6rNg93zczReSjsZC
+         aVD6mSZUdws0YLOPBUmQFdw/LGGQwBl2fSmz49BhUc5yDzrG0Bbk2xo9oWyYzeHH68
+         8YVN2k5bqWCSaOhRCqjtx9NnDQ+ABfnfXGbeIZHM=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1k8MXs-00Euad-2q; Wed, 19 Aug 2020 13:46:20 +0200
+        id 1k8MXs-00Euak-5K; Wed, 19 Aug 2020 13:46:20 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
@@ -35,14 +35,11 @@ Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Daniel Vetter <daniel@ffwll.ch>,
         dri-devel <dri-devel@lists.freedesktop.org>,
         Xiubin Zhang <zhangxiubin1@huawei.com>,
-        Liwei Cai <cailiwei@hisilicon.com>,
-        Wanchun Zheng <zhengwanchun@hisilicon.com>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Liuyao An <anliuyao@huawei.com>, devel@driverdev.osuosl.org,
+        Liwei Cai <cailiwei@hisilicon.com>, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 17/49] staging: hikey9xx/gpu: change the includes to reflect upstream
-Date:   Wed, 19 Aug 2020 13:45:45 +0200
-Message-Id: <c39d02b40d01b1c86156393a41dc37ca14616fec.1597833138.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 19/49] staging: hikey9xx/gpu: add a copy of set_reg() function there
+Date:   Wed, 19 Aug 2020 13:45:47 +0200
+Message-Id: <a92be25fef54fc7f339417861e2bd8ead90ac5cb.1597833138.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1597833138.git.mchehab+huawei@kernel.org>
 References: <cover.1597833138.git.mchehab+huawei@kernel.org>
@@ -53,254 +50,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The includes there reflect a downstream version back on v4.4
-times. change them to reflect the current upstream and to
-avoid the need of using a -I flag at the Makefile.
+This function has a too generic name to export it as a
+symbol. Also, we should likely use some other macro instead.
+
+So, for now, just copy it into the Kirin9xx dsi module, in order
+for the driver to build.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- ...{kirin9xx_dpe_reg.h => kirin960_dpe_reg.h} |  3 +++
- .../staging/hikey9xx/gpu/kirin970_dpe_reg.h   |  3 +++
- .../hikey9xx/gpu/kirin9xx_drm_dpe_utils.c     |  6 +++---
- .../hikey9xx/gpu/kirin9xx_drm_dpe_utils.h     |  4 ++--
- .../staging/hikey9xx/gpu/kirin9xx_drm_drv.c   | 11 ++++++----
- .../staging/hikey9xx/gpu/kirin9xx_drm_drv.h   | 10 +++++-----
- .../staging/hikey9xx/gpu/kirin9xx_drm_dss.c   | 20 ++++++++++---------
- .../hikey9xx/gpu/kirin9xx_drm_overlay_utils.c | 15 +++++++-------
- .../hikey9xx/gpu/kirin9xx_dw_drm_dsi.c        |  2 ++
- drivers/staging/hikey9xx/gpu/kirin9xx_pwm.c   | 12 ++++++-----
- 10 files changed, 51 insertions(+), 35 deletions(-)
- rename drivers/staging/hikey9xx/gpu/{kirin9xx_dpe_reg.h => kirin960_dpe_reg.h} (99%)
+ .../staging/hikey9xx/gpu/kirin9xx_dw_drm_dsi.c  | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/staging/hikey9xx/gpu/kirin9xx_dpe_reg.h b/drivers/staging/hikey9xx/gpu/kirin960_dpe_reg.h
-similarity index 99%
-rename from drivers/staging/hikey9xx/gpu/kirin9xx_dpe_reg.h
-rename to drivers/staging/hikey9xx/gpu/kirin960_dpe_reg.h
-index 282ba9b55e43..995ab8f7c9f4 100644
---- a/drivers/staging/hikey9xx/gpu/kirin9xx_dpe_reg.h
-+++ b/drivers/staging/hikey9xx/gpu/kirin960_dpe_reg.h
-@@ -24,6 +24,9 @@
- #include <linux/regulator/driver.h>
- #include <linux/regulator/machine.h>
- 
-+#include <drm/drm_plane.h>
-+#include <drm/drm_crtc.h>
-+
- #include <linux/ion.h>
- #include <linux/hisi/hisi_ion.h>
- 
-diff --git a/drivers/staging/hikey9xx/gpu/kirin970_dpe_reg.h b/drivers/staging/hikey9xx/gpu/kirin970_dpe_reg.h
-index 59e43722de56..ece49b99dca7 100644
---- a/drivers/staging/hikey9xx/gpu/kirin970_dpe_reg.h
-+++ b/drivers/staging/hikey9xx/gpu/kirin970_dpe_reg.h
-@@ -24,6 +24,9 @@
- #include <linux/regulator/driver.h>
- #include <linux/regulator/machine.h>
- 
-+#include <drm/drm_plane.h>
-+#include <drm/drm_crtc.h>
-+
- #include <linux/ion.h>
- #include <linux/hisi/hisi_ion.h>
- 
-diff --git a/drivers/staging/hikey9xx/gpu/kirin9xx_drm_dpe_utils.c b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_dpe_utils.c
-index fe8372838bb3..a15c335da026 100644
---- a/drivers/staging/hikey9xx/gpu/kirin9xx_drm_dpe_utils.c
-+++ b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_dpe_utils.c
-@@ -10,10 +10,10 @@
-  * GNU General Public License for more details.
-  *
-  */
--#include <drm/drmP.h>
-+#include <drm/drm_drv.h>
-+#include <drm/drm_mipi_dsi.h>
- 
--#include "drm_mipi_dsi.h"
--#include "kirin_drm_dpe_utils.h"
-+#include "kirin9xx_drm_dpe_utils.h"
- 
- int g_debug_set_reg_val = 0;
- 
-diff --git a/drivers/staging/hikey9xx/gpu/kirin9xx_drm_dpe_utils.h b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_dpe_utils.h
-index 89aaf6691f1d..0c5681d0a5ac 100644
---- a/drivers/staging/hikey9xx/gpu/kirin9xx_drm_dpe_utils.h
-+++ b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_dpe_utils.h
-@@ -17,9 +17,9 @@
- #if defined (CONFIG_DRM_HISI_KIRIN970)
- #include "kirin970_dpe_reg.h"
- #else
--#include "kirin_dpe_reg.h"
-+#include "kirin960_dpe_reg.h"
- #endif
--#include "kirin_drm_drv.h"
-+#include "kirin9xx_drm_drv.h"
- 
- void set_reg(char __iomem *addr, uint32_t val, uint8_t bw, uint8_t bs);
- uint32_t set_bits32(uint32_t old_val, uint32_t val, uint8_t bw, uint8_t bs);
-diff --git a/drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.c b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.c
-index f5b05b26bc18..616fa7ca9c77 100644
---- a/drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.c
-+++ b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.c
-@@ -18,13 +18,16 @@
- #include <linux/component.h>
- #include <linux/of_graph.h>
- 
--#include <drm/drmP.h>
--#include <drm/drm_gem_cma_helper.h>
--#include <drm/drm_fb_cma_helper.h>
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_crtc_helper.h>
-+#include <drm/drm_drv.h>
-+#include <drm/drm_fb_cma_helper.h>
-+#include <drm/drm_gem_cma_helper.h>
-+#include <drm/drm_gem_framebuffer_helper.h>
-+#include <drm/drm_probe_helper.h>
-+#include <drm/drm_vblank.h>
- 
--#include "kirin_drm_drv.h"
-+#include "kirin9xx_drm_drv.h"
- 
- #ifdef CONFIG_DRM_FBDEV_EMULATION
- static bool fbdev = true;
-diff --git a/drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.h b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.h
-index 18a7478fee10..15ef96840e9f 100644
---- a/drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.h
-+++ b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.h
-@@ -11,18 +11,18 @@
- #ifndef __KIRIN_DRM_DRV_H__
- #define __KIRIN_DRM_DRV_H__
- 
--#include <drm/drmP.h>
-+#include <drm/drm_crtc.h>
-+#include <drm/drm_drv.h>
-+#include <drm/drm_fb_helper.h>
-+#include <drm/drm_print.h>
-+
- #include <linux/iommu.h>
- #include <linux/ion.h>
- #include <linux/hisi/hisi_ion.h>
- #include <linux/hisi/hisi-iommu.h>
- 
--#include "drm_crtc.h"
--#include "drm_fb_helper.h"
--
- #define MAX_CRTC	2
- 
--//#define CMA_BUFFER_USED
- #define to_kirin_fbdev(x) container_of(x, struct kirin_fbdev, fb_helper)
- 
- /* display controller init/cleanup ops */
-diff --git a/drivers/staging/hikey9xx/gpu/kirin9xx_drm_dss.c b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_dss.c
-index b4c1bb8288de..fd0ccbaebd3f 100644
---- a/drivers/staging/hikey9xx/gpu/kirin9xx_drm_dss.c
-+++ b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_dss.c
-@@ -25,22 +25,24 @@
- #include <linux/of.h>
- #include <linux/of_irq.h>
- 
--#include <drm/drmP.h>
--#include <drm/drm_crtc.h>
--#include <drm/drm_crtc_helper.h>
- #include <drm/drm_atomic.h>
- #include <drm/drm_atomic_helper.h>
--#include <drm/drm_plane_helper.h>
--#include <drm/drm_gem_cma_helper.h>
-+#include <drm/drm_crtc.h>
-+#include <drm/drm_crtc_helper.h>
-+#include <drm/drm_drv.h>
- #include <drm/drm_fb_cma_helper.h>
-+#include <drm/drm_fourcc.h>
-+#include <drm/drm_gem_cma_helper.h>
-+#include <drm/drm_plane_helper.h>
-+#include <drm/drm_vblank.h>
-+#include <drm/drm_modeset_helper_vtables.h>
- 
--#include "kirin_drm_drv.h"
--
--#include "kirin_drm_dpe_utils.h"
-+#include "kirin9xx_drm_drv.h"
-+#include "kirin9xx_drm_dpe_utils.h"
- #if defined (CONFIG_DRM_HISI_KIRIN970)
- #include "kirin970_dpe_reg.h"
- #else
--#include "kirin_dpe_reg.h"
-+#include "kirin960_dpe_reg.h"
- #endif
- 
- //#define DSS_POWER_UP_ON_UEFI
-diff --git a/drivers/staging/hikey9xx/gpu/kirin9xx_drm_overlay_utils.c b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_overlay_utils.c
-index 342a7f6fc964..4e79f630de96 100644
---- a/drivers/staging/hikey9xx/gpu/kirin9xx_drm_overlay_utils.c
-+++ b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_overlay_utils.c
-@@ -16,17 +16,18 @@
-  *
-  */
- 
--#include <drm/drmP.h>
--#include <drm/drm_crtc.h>
--#include <drm/drm_crtc_helper.h>
- #include <drm/drm_atomic.h>
- #include <drm/drm_atomic_helper.h>
--#include <drm/drm_plane_helper.h>
--#include <drm/drm_gem_cma_helper.h>
-+#include <drm/drm_crtc.h>
-+#include <drm/drm_crtc_helper.h>
-+#include <drm/drm_drv.h>
- #include <drm/drm_fb_cma_helper.h>
-+#include <drm/drm_fourcc.h>
-+#include <drm/drm_gem_cma_helper.h>
-+#include <drm/drm_plane_helper.h>
- 
--#include "kirin_drm_dpe_utils.h"
--#include "kirin_drm_drv.h"
-+#include "kirin9xx_drm_dpe_utils.h"
-+#include "kirin9xx_drm_drv.h"
- 
- static int mid_array[DSS_CHN_MAX_DEFINE] = {0xb, 0xa, 0x9, 0x8, 0x7, 0x6, 0x5, 0x4, 0x2, 0x1, 0x3, 0x0};
- 
 diff --git a/drivers/staging/hikey9xx/gpu/kirin9xx_dw_drm_dsi.c b/drivers/staging/hikey9xx/gpu/kirin9xx_dw_drm_dsi.c
-index 4fef154cd701..21fddeaa3c66 100644
+index cfb6bfd1c338..cba81ee2639d 100644
 --- a/drivers/staging/hikey9xx/gpu/kirin9xx_dw_drm_dsi.c
 +++ b/drivers/staging/hikey9xx/gpu/kirin9xx_dw_drm_dsi.c
-@@ -28,6 +28,8 @@
- #include <drm/drm_encoder_slave.h>
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_panel.h>
-+#include <drm/drm_probe_helper.h>
+@@ -37,7 +37,6 @@
+ #else
+ #include "kirin960_dpe_reg.h"
+ #endif
+-#include "kirin9xx_drm_dpe_utils.h"
+ #include "kirin9xx_drm_drv.h"
+ 
+ #if defined (CONFIG_DRM_HISI_KIRIN970)
+@@ -270,6 +269,22 @@ static const struct dsi_phy_range dphy_range_info[] = {
+ 	{ 1000000,  1500000,   0,    0 }
+ };
+ 
++/*
++ * Except for debug, this is identical to the one defined at
++ * kirin9xx_drm_dpe_utils.h.
++ */
++static void set_reg(char __iomem *addr, uint32_t val, uint8_t bw,
++		    uint8_t bs)
++{
++	u32 mask = (1UL << bw) - 1UL;
++	u32 tmp = 0;
 +
- 
- #include "dw_dsi_reg.h"
- #if defined (CONFIG_HISI_FB_970)
-diff --git a/drivers/staging/hikey9xx/gpu/kirin9xx_pwm.c b/drivers/staging/hikey9xx/gpu/kirin9xx_pwm.c
-index 3d25c48f0769..bb540f5d77a6 100644
---- a/drivers/staging/hikey9xx/gpu/kirin9xx_pwm.c
-+++ b/drivers/staging/hikey9xx/gpu/kirin9xx_pwm.c
-@@ -10,18 +10,20 @@
- * GNU General Public License for more details.
- *
- */
--#include <drm/drmP.h>
-+#include <drm/drm_drv.h>
-+#include <drm/drm_mipi_dsi.h>
++	tmp = inp32(addr);
++	tmp &= ~(mask << bs);
 +
- #include <linux/clk.h>
- #include <linux/regmap.h>
- #include <linux/reset.h>
- #include <linux/of_address.h>
- #include <linux/of.h>
- #include <linux/of_irq.h>
-+#include <linux/pinctrl/consumer.h>
- 
--#include "drm_mipi_dsi.h"
--#include "kirin_drm_dpe_utils.h"
--#include "kirin_fb_panel.h"
--#include "dw_dsi_reg.h"
-+#include "kirin9xx_drm_dpe_utils.h"
-+#include "kirin9xx_fb_panel.h"
-+#include "kirin9xx_dw_dsi_reg.h"
- 
- /* default pwm clk */
- #define DEFAULT_PWM_CLK_RATE	(80 * 1000000L)
++	outp32(addr, tmp | ((val & mask) << bs));
++}
++
+ void dsi_set_output_client(struct drm_device *dev)
+ {
+ 	struct drm_connector_list_iter conn_iter;
 -- 
 2.26.2
 
