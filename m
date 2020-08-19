@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C85D2491FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 02:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA55C2491FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 02:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726944AbgHSAuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1727118AbgHSAuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 18 Aug 2020 20:50:22 -0400
-Received: from mga14.intel.com ([192.55.52.115]:33061 "EHLO mga14.intel.com"
+Received: from mga11.intel.com ([192.55.52.93]:24261 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726600AbgHSAuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726862AbgHSAuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 18 Aug 2020 20:50:20 -0400
-IronPort-SDR: Q8am2GJxJiQrJJu8x8oPo4QNw09jDNv9B4kQOBJUKt+/oqmm8uHjU8UowhXB3Qn/hzB30ml557
- KTL74P4MG50g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="154290318"
+IronPort-SDR: KVfiauIKacfAoCvg33mCTgrJB/TdrVF6iXplsfAWmXeyRz8fvzHHWHfEpIVp82euI5PdXeOcWX
+ 2drNsDOfbZLw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="152647393"
 X-IronPort-AV: E=Sophos;i="5.76,329,1592895600"; 
-   d="scan'208";a="154290318"
+   d="scan'208";a="152647393"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 17:50:19 -0700
-IronPort-SDR: G4B8uxAKyfIGWkYdFAo1TRJQk1LUdzgz2XWM8ZCwBuD7CF4XzvAxSOoRxftGX55Gq7Jy5RzXCD
- g7xwcYCJeENA==
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 17:50:20 -0700
+IronPort-SDR: 9mioBtq8rPtEvZYpvQ6c6FBZSVcag7D1fvDRnZahhahO5XJqQnyNY7c+itkBxOOKOwT7mNRjC6
+ InmoxQ2afDyQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,329,1592895600"; 
-   d="scan'208";a="279553657"
+   d="scan'208";a="278192820"
 Received: from lkp-server02.sh.intel.com (HELO 2f0d8b563e65) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 18 Aug 2020 17:50:18 -0700
+  by fmsmga007.fm.intel.com with ESMTP; 18 Aug 2020 17:50:18 -0700
 Received: from kbuild by 2f0d8b563e65 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1k8CIz-0001Wf-LL; Wed, 19 Aug 2020 00:50:17 +0000
-Date:   Wed, 19 Aug 2020 08:49:24 +0800
+        id 1k8CJ0-0001Wu-Az; Wed, 19 Aug 2020 00:50:18 +0000
+Date:   Wed, 19 Aug 2020 08:49:31 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/urgent] BUILD SUCCESS
- cc172ff301d8079e941a6eb31758951a6d764084
-Message-ID: <5f3c7714.w3kigECmkgSI/9R4%lkp@intel.com>
+Subject: [tip:perf/urgent] BUILD SUCCESS
+ 24633d901ea44fe99bc9a2d01a3881fa097b78b3
+Message-ID: <5f3c771b.WcMp6q5esY9c/ti/%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -46,13 +46,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  sched/urgent
-branch HEAD: cc172ff301d8079e941a6eb31758951a6d764084  sched/debug: Fix the alignment of the show-state debug output
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  perf/urgent
+branch HEAD: 24633d901ea44fe99bc9a2d01a3881fa097b78b3  perf/x86/intel/uncore: Add BW counters for GT, IA and IO breakdown
 
 elapsed time: 4042m
 
-configs tested: 137
-configs skipped: 13
+configs tested: 151
+configs skipped: 85
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -70,11 +70,14 @@ mips                malta_qemu_32r6_defconfig
 mips                          malta_defconfig
 arm                          ep93xx_defconfig
 arm                         lpc32xx_defconfig
-mips                           gcw0_defconfig
-powerpc                     pseries_defconfig
+sh                        apsh4ad0a_defconfig
+arm                            hisi_defconfig
+ia64                             allyesconfig
+sh                          urquell_defconfig
+sh                        edosk7760_defconfig
+sh                           se7712_defconfig
 arm                         s5pv210_defconfig
-arm                           h5000_defconfig
-mips                           ip32_defconfig
+arm                        mvebu_v7_defconfig
 um                           x86_64_defconfig
 sh                           se7724_defconfig
 sh                          r7780mp_defconfig
@@ -92,10 +95,11 @@ ia64                             alldefconfig
 mips                malta_kvm_guest_defconfig
 arm                          pcm027_defconfig
 ia64                            zx1_defconfig
-powerpc                         ps3_defconfig
-arm                        shmobile_defconfig
-arm                       aspeed_g4_defconfig
+mips                         mpc30x_defconfig
+alpha                               defconfig
 arm                           tegra_defconfig
+arm                         s3c2410_defconfig
+arm                       aspeed_g4_defconfig
 mips                          ath79_defconfig
 nios2                               defconfig
 arm                        spear6xx_defconfig
@@ -108,7 +112,6 @@ powerpc                        cell_defconfig
 powerpc                      ppc44x_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
-ia64                             allyesconfig
 m68k                             allmodconfig
 m68k                                defconfig
 m68k                             allyesconfig
@@ -117,7 +120,6 @@ c6x                              allyesconfig
 nds32                               defconfig
 nios2                            allyesconfig
 csky                                defconfig
-alpha                               defconfig
 alpha                            allyesconfig
 xtensa                           allyesconfig
 h8300                            allyesconfig
@@ -128,8 +130,8 @@ s390                             allyesconfig
 parisc                           allyesconfig
 s390                                defconfig
 i386                             allyesconfig
-sparc                            allyesconfig
 i386                                defconfig
+sparc                            allyesconfig
 mips                             allyesconfig
 mips                             allmodconfig
 powerpc                             defconfig
@@ -145,21 +147,27 @@ i386                 randconfig-a004-20200816
 i386                 randconfig-a005-20200818
 i386                 randconfig-a002-20200818
 i386                 randconfig-a001-20200818
+i386                 randconfig-a006-20200818
 i386                 randconfig-a003-20200818
 i386                 randconfig-a004-20200818
-i386                 randconfig-a006-20200818
 i386                 randconfig-a005-20200817
 i386                 randconfig-a001-20200817
 i386                 randconfig-a002-20200817
 i386                 randconfig-a003-20200817
 i386                 randconfig-a006-20200817
 i386                 randconfig-a004-20200817
-x86_64               randconfig-a016-20200818
-x86_64               randconfig-a014-20200818
-x86_64               randconfig-a015-20200818
+x86_64               randconfig-a006-20200817
+x86_64               randconfig-a001-20200817
+x86_64               randconfig-a005-20200817
+x86_64               randconfig-a003-20200817
+x86_64               randconfig-a002-20200817
+x86_64               randconfig-a004-20200817
 x86_64               randconfig-a013-20200818
+x86_64               randconfig-a016-20200818
 x86_64               randconfig-a012-20200818
 x86_64               randconfig-a011-20200818
+x86_64               randconfig-a014-20200818
+x86_64               randconfig-a015-20200818
 x86_64               randconfig-a013-20200816
 x86_64               randconfig-a012-20200816
 x86_64               randconfig-a016-20200816
@@ -172,18 +180,24 @@ i386                 randconfig-a013-20200816
 i386                 randconfig-a015-20200816
 i386                 randconfig-a014-20200816
 i386                 randconfig-a012-20200816
+i386                 randconfig-a016-20200818
+i386                 randconfig-a011-20200818
+i386                 randconfig-a015-20200818
+i386                 randconfig-a013-20200818
+i386                 randconfig-a012-20200818
+i386                 randconfig-a014-20200818
 i386                 randconfig-a016-20200817
 i386                 randconfig-a011-20200817
 i386                 randconfig-a013-20200817
 i386                 randconfig-a015-20200817
 i386                 randconfig-a014-20200817
 i386                 randconfig-a012-20200817
-i386                 randconfig-a011-20200818
-i386                 randconfig-a013-20200818
-i386                 randconfig-a012-20200818
-i386                 randconfig-a016-20200818
-i386                 randconfig-a015-20200818
-i386                 randconfig-a014-20200818
+x86_64               randconfig-a006-20200819
+x86_64               randconfig-a001-20200819
+x86_64               randconfig-a003-20200819
+x86_64               randconfig-a005-20200819
+x86_64               randconfig-a004-20200819
+x86_64               randconfig-a002-20200819
 riscv                            allyesconfig
 riscv                             allnoconfig
 riscv                               defconfig
