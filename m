@@ -2,76 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EBC624A8E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 00:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB83A24A8E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 00:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727111AbgHSWJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 18:09:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726209AbgHSWJS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 18:09:18 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD57C061383
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 15:09:16 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id a65so20327633otc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 15:09:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P2aZms47v6extSBzv//sF/AtrAyAelQrYrDctYBpr04=;
-        b=KEYsVedFdZOQOSKvm37iFMygyWYKzyeKVhW7GTGsl2VQmKBUg/hkZq15rfVRQfC5eu
-         dUtnTcGVi3clYiP8Mj5/69CXlvkgXFTYDkUlcWkoQ9qBcKDdXnK7v5CcO25kpXzKE5xS
-         UoFKnLSkqfQ+sQDk6RybtzVcijHxCY5agHtf1D0MUFmQi8DMQy/bw26109HhW7KpI7KN
-         F0tQYmHfj9dQhoyiwlrrYHPfIlB78enPqA7h59oq5DS6DdzqdUwcmXqOjNqtzotEtrrQ
-         vgk5zbQjOqe3nwzXchl3hOB6/KvfHZuUlrSKoIgZyzXCwG73zgJnYCtd14yyyX7tvkYG
-         /gXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P2aZms47v6extSBzv//sF/AtrAyAelQrYrDctYBpr04=;
-        b=mMHEEbUK8+2ry4mxc4L/WRCmZ4H3i19O8akeK5Airwggim4TJj7DqRIOGO8JN3HKHA
-         QiQvBRglZC/8cp5gjZUZLrVETYANBxTJd11V7vmzas9P+yYvuGXPckkR9tV2oFPUtoZo
-         a/C8rP8L66iZue8SuWYR+eKKXfPYUhuxwDK6riEq2AaZZVTD709ByObZLjKXXtHfEdoo
-         d2u3DUHQYNYB7yYiijPZP4/SykodA0E9uU4WfhpGHy3sf6ovvBQ49VQBMcZOLC9IEZca
-         DUDq1pKBBjUbzsKvl7j+yqdragyTZVwQSIhHCmIbk936fJV5SSjRo1Dt9yisrL5CE+df
-         prhQ==
-X-Gm-Message-State: AOAM533ZXykl7IRIgsixgqZ7VgpsNgs4oFzcQfCfPqt22ybiwjjyQFJa
-        ta/83bCroWhlSJF6z+Wj5oOauUCIxv+jus1b2YH/Kg==
-X-Google-Smtp-Source: ABdhPJzt1m4Jk/Vfsw/369PYrT54BgnJK9X0NCnwn7bI4EEVd9vbywxvaU0LIHS+rgWiI+SfMc+IIrkD07Q745+LHBc=
-X-Received: by 2002:a9d:ae9:: with SMTP id 96mr18674otq.241.1597874955900;
- Wed, 19 Aug 2020 15:09:15 -0700 (PDT)
+        id S1727780AbgHSWK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 18:10:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38124 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726209AbgHSWK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 18:10:57 -0400
+Received: from dhcp-10-100-145-180.wdl.wdc.com (unknown [199.255.45.60])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A70A20658;
+        Wed, 19 Aug 2020 22:10:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597875056;
+        bh=YCqLLdMlClmtbX7ozswq1RrxODCoI7jS14uTBQkK9lU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l2KAf9hWOD5P1WCcGocpelxUAm0L0iUSL1V2bOxQE1gPLzi7zcPtv7wFPSjDiaZlm
+         O7aZKNAhexykXE80reGA5RIoIXt4WoUx46s8mFjd3z3IYD6psCgA3YpS+yYWYJc+17
+         DE/HtAqlkkDW3zRIEliFkbN9IeIVVxczRyDqtqXs=
+Date:   Wed, 19 Aug 2020 15:10:54 -0700
+From:   Keith Busch <kbusch@kernel.org>
+To:     David Fugate <david.fugate@linux.intel.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Kanchan Joshi <joshi.k@samsung.com>,
+        "Damien.LeMoal@wdc.com" <Damien.LeMoal@wdc.com>,
+        "sagi@grimberg.me" <sagi@grimberg.me>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "johannes.thumshirn@wdc.com" <johannes.thumshirn@wdc.com>,
+        Nitesh Shetty <nj.shetty@samsung.com>,
+        SelvaKumar S <selvakuma.s1@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        david.fugate@intel.com
+Subject: Re: [PATCH 2/2] nvme: add emulation for zone-append
+Message-ID: <20200819221054.GB26818@dhcp-10-100-145-180.wdl.wdc.com>
+References: <20200818052936.10995-1-joshi.k@samsung.com>
+ <CGME20200818053256epcas5p46d0b66b3702192eb6617c8bba334c15f@epcas5p4.samsung.com>
+ <20200818052936.10995-3-joshi.k@samsung.com>
+ <20200818071249.GB2544@lst.de>
+ <b52854fe11640a5a5f54e08b1d3c7a556f97aad5.camel@linux.intel.com>
+ <9fa64efe-8477-5d33-20ed-9619a9fe8d70@kernel.dk>
+ <d19605da52eb7aa3eb4132ad1781b5fbf636a8a0.camel@linux.intel.com>
 MIME-Version: 1.0
-References: <20200803211423.29398-1-graf@amazon.com> <CALMp9eRHmhmKP21jmBr13n3DvttPg9OQEn5Zn0LxyiKiq2uTkA@mail.gmail.com>
- <B0FD5408-E2C1-444C-AFCE-7C622EA75F66@amazon.de>
-In-Reply-To: <B0FD5408-E2C1-444C-AFCE-7C622EA75F66@amazon.de>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Wed, 19 Aug 2020 15:09:04 -0700
-Message-ID: <CALMp9eS5+mV2SC-v4gusocrWtXpm-QzGoOTDGhFS9NEmuVNTDw@mail.gmail.com>
-Subject: Re: [PATCH v4 0/3] Allow user space to restrict and augment MSR emulation
-To:     "Graf (AWS), Alexander" <graf@amazon.de>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Raslan, KarimAllah" <karahmed@amazon.de>,
-        Aaron Lewis <aaronlewis@google.com>,
-        kvm list <kvm@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d19605da52eb7aa3eb4132ad1781b5fbf636a8a0.camel@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 2:46 PM Graf (AWS), Alexander <graf@amazon.de> wrote:
+On Wed, Aug 19, 2020 at 03:54:20PM -0600, David Fugate wrote:
+> On Wed, 2020-08-19 at 13:25 -0600, Jens Axboe wrote:
+> > It's not required, the driver will function quite fine without it. If
+> > you
+> > want to use ZNS it's required. 
+> 
+> The NVMe spec does not require Zone Append for ZNS; a *vendor-neutral*
+> Linux driver should not either. 
 
-> Special MSRs like EFER also irritate me a bit. We can't really trap on them - most code paths just know they're handled in kernel. Maybe I'll add some sanity checks as well...
+The spec was developed over the course of years with your employer's
+involvement, and the software enabling efforts occurred in parallel. The
+"optional" part was made that way at the final hour, so please align
+your expectations accordingly.
+ 
+> Agreed, but this standard needs to be applied equally to everyone.
+> E.g., harmless contributions such as 
+> https://lore.kernel.org/linux-nvme/20200611054156.GB3518@lst.de/ get
+> rejected yet clear spec violations from maintainers are accepted?
+> type of behavior encourages forking, vendor-specific drivers, etc.
+> which is somewhere I hope none of us want to go.
 
-Why can't we intercept EFER?
+You're the one who left that thread dangling. You offered to have your
+firmware accommodate the Intel sponsored feature that makes your patch
+unnecessary in the first place. Your follow up made no sense and you
+have not responded to the queries about it.
