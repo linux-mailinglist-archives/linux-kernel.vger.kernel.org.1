@@ -2,111 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE052497FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 10:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A07F249800
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 10:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgHSILE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 04:11:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48122 "EHLO
+        id S1726786AbgHSILe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 04:11:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgHSILB (ORCPT
+        with ESMTP id S1726642AbgHSIL0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 04:11:01 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B10E6C061389;
-        Wed, 19 Aug 2020 01:11:01 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id 17so11281971pfw.9;
-        Wed, 19 Aug 2020 01:11:01 -0700 (PDT)
+        Wed, 19 Aug 2020 04:11:26 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E3F8C061389
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 01:11:26 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id f7so20588299wrw.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 01:11:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6eW4MwS4/ZcmscmxUur+7e24yfagUuECZt51JTFEZE4=;
-        b=D/MN65gncpOrLHlDCcfAkW0iADTVpM/7zFielzmSOIAWfNHE+RrvFCgMEJrxaoSZBA
-         o8kyMYhQwHRruVsVwkUNBsPIfSUQC1/Sw88nF/z2BWnH/z/gYLAru7h1dM3/JnClzf6A
-         /o0gLjVtfHVaJjJQ1JqbD2hMDy2pK6Hij+FZqBNntOp3m33xxlurA1WsPDfKmxX+ZPai
-         ho0CxHuDw3zWFrAukkTqBLoqdi6eK9MaRC6FOZYfXCHHNyW8wUGXf2IWt2RVgwQMF+PK
-         +vMJzIMbRwJIGMAMQdqN1IF218r6XV2SunTk1xq+RDLcQ3hU1xyUlyh07AyWleZFHbTF
-         Vr5w==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=RW+DAA6feyP/FiHoBpI4e2XS7e1awJ4EyauOZLhTca0=;
+        b=ent9lxsgR8B25Us1IxxrVoCxUZkujlohpoSFC35rQ5YqhG+sVG52IQm65m2uJyjHdK
+         qOpJ/EtShKh8zp3DurcTKs/t03tAt65pQP6U98Sq3tn/AwOEN40ilzWofb2ANh3vXhNC
+         Xm58+jUsXFJ5f8AfmQGkaKvkguqtHx+3aicTgS8B1P218+UovGqHC0VqKHGutsj0pBAQ
+         ek8KeEtaudqryCXg1ZnIUDUJvmt0IQH1z6oIEa/k8O0Wmb0+otzrdCBKEK2LflqPnUWP
+         B4BUxp1SVecYHfqRi3SuQo3i6Yk/hRha8kaMQCecq46eUhJgtt/9kx3foJdTLwgSDHuU
+         faLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6eW4MwS4/ZcmscmxUur+7e24yfagUuECZt51JTFEZE4=;
-        b=r0A8Uzp3Vky0sX4eV3sajObcHITRpcNI3jARNuJ4nVzi3C0jUq2dkmEPBqs6CCoo/w
-         nfskknoDzGRiW4lRKu8xe2RlMOCrdwcWzw5mPfIThl+7ndCHGeZXc3Y3fqzMNVybiu1k
-         8+bA9GfMX0NZljFtiSH/7TOsDh3aLBIxW5J2nAdUP1mlSrAbECNKPsdxxwWPCKsHiO/+
-         mE7fjm2WHyZJ/A2qtImd+a2HUFIXp23ntD9W8a2xs5r7N8AXriyrlV5IZ9jsa7+W2He2
-         ejmrk6VYYIgeJmRhF23AqXqHXPCxQS1fJ8HtlHra0gN5rD2eTc7slK5vNmOJX2wZHQzn
-         njqw==
-X-Gm-Message-State: AOAM530rcBocTDT0JDj562F5UHck3HHG2tKi0fi3T/qOMYWZQJI+a2xm
-        e0E5hrurUTGgptiwKJhLctnxzdyZZjgdxNOVtRY=
-X-Google-Smtp-Source: ABdhPJxfw9u8DV2Jegy85AeZ/eMFQYKwKGg0Vd29sLVV0cQA1YXNxbF9Z7KHZb3HqFVyWPkPBPT5zkenOHt4cwBsU8E=
-X-Received: by 2002:a63:f24a:: with SMTP id d10mr15901942pgk.4.1597824660723;
- Wed, 19 Aug 2020 01:11:00 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=RW+DAA6feyP/FiHoBpI4e2XS7e1awJ4EyauOZLhTca0=;
+        b=Ok51ySYJwYxXlYMf7gGEUhjz4QuwD2Ur/NL3BIIveB5rkjeJN4g6kHVMNlLpiG+mEe
+         4cmTVYVdMatcuKF2L0TrDtuDwHP2U4JHLG7MPW6DZV0E/BSs9NxdrpBpUjqBUodYO4/F
+         qgBlToB7iMOHrVS5iXsaivWZBhXO0Gc8IzpQekgSLF6gEMIPpaI2s6WXz5nYJBkTGG2+
+         kNzc/t7+ey0iuUqypBNDWYorgw5XKb6f2kuq6KuZCK5UJfROGDnC8zspgKj3UpeW8Ve2
+         Xc/kolyN3K/fJKDXayAfj7r3LSJSylJ70aN0HNTdSFpvReDN1f0Y4ml3AyzrIFo8bh5x
+         w+og==
+X-Gm-Message-State: AOAM530KTxu0+bwr0eJAGj6TYqk/VHJGs/CnVYtZRcwvzHpjXsocn8x0
+        5ESX8XLkx6hjCrNKC0/xwP/ZINYyVoP0Sg==
+X-Google-Smtp-Source: ABdhPJyGdL/sFSIVJskE89ixIODXNR42VHxIMZaaOc18/vGEAYbnYCF6tYdHVzE89lifDbZPksBwwg==
+X-Received: by 2002:a5d:420b:: with SMTP id n11mr23384750wrq.11.1597824685187;
+        Wed, 19 Aug 2020 01:11:25 -0700 (PDT)
+Received: from dell ([95.149.164.62])
+        by smtp.gmail.com with ESMTPSA id z8sm3498020wmf.10.2020.08.19.01.11.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Aug 2020 01:11:24 -0700 (PDT)
+Date:   Wed, 19 Aug 2020 09:11:22 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Icenowy Zheng <icenowy@aosc.io>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mfd: core: Fix handle of OF disabled MFD cells
+Message-ID: <20200819081122.GB4354@dell>
+References: <20200801070130.3323112-1-icenowy@aosc.io>
 MIME-Version: 1.0
-References: <20200818213737.140613-1-cmo@melexis.com> <20200818213737.140613-6-cmo@melexis.com>
-In-Reply-To: <20200818213737.140613-6-cmo@melexis.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 19 Aug 2020 11:10:44 +0300
-Message-ID: <CAHp75VfYCR3Xkm=70_kY+Fp1xmCj_UvHNLB5h2Zs8myf2A8a=A@mail.gmail.com>
-Subject: Re: [PATCH v6 5/5] iio:temperature:mlx90632: Some stylefixing leftovers
-To:     Crt Mori <cmo@melexis.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200801070130.3323112-1-icenowy@aosc.io>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 12:38 AM Crt Mori <cmo@melexis.com> wrote:
->
-> There is some inconsistency and whitespace cleanup performed in this
-> patch. It was done on top of my other patches, but I can rebase to head
-> of the togreg branch if it would go in sooner.
+On Sat, 01 Aug 2020, Icenowy Zheng wrote:
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> When rewriting the OF match code of MFD core, addition of cells disabled
+> in OF will result in a failure with error -ENODEV. This is an unexpected
+> behavior, as the previous behavior is silently ignore the cell. On
+> SBCs with AXP20x PMICs, this leads to boot failure if AXP20x PMIC
+> support is built-in and some cells (especially power supply ones) are
+> disabled.
 
-> Signed-off-by: Crt Mori <cmo@melexis.com>
+Thanks for reporting this.
+
+Do you mind if I fix this another way?  I plan to reinstate the old
+code that was removed as part of the offending patch.  I will of
+course add your Reported-by tag.
+
+> Silently ignore the cell when -ENODEV occurs.
+> 
+> Fixes: e49aa9a9bd22 ("mfd: core: Make a best effort attempt to match devices with the correct of_nodes")
+> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
 > ---
->  drivers/iio/temperature/mlx90632.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/iio/temperature/mlx90632.c b/drivers/iio/temperature/mlx90632.c
-> index 94bca2b2866a..472a7fb20615 100644
-> --- a/drivers/iio/temperature/mlx90632.c
-> +++ b/drivers/iio/temperature/mlx90632.c
-> @@ -112,10 +112,10 @@
->  #define MLX90632_DSP_VERSION   5 /* DSP version */
->  #define MLX90632_DSP_MASK      GENMASK(7, 0) /* DSP version in EE_VERSION */
->  #define MLX90632_RESET_CMD     0x0006 /* Reset sensor (address or global) */
-> -#define MLX90632_REF_12                12LL /**< ResCtrlRef value of Ch 1 or Ch 2 */
-> -#define MLX90632_REF_3         12LL /**< ResCtrlRef value of Channel 3 */
-> -#define MLX90632_MAX_MEAS_NUM  31 /**< Maximum measurements in list */
-> -#define MLX90632_SLEEP_DELAY_MS 3000 /**< Autosleep delay */
-> +#define MLX90632_REF_12        12LL /* ResCtrlRef value of Ch 1 or Ch 2 */
-> +#define MLX90632_REF_3         12LL /* ResCtrlRef value of Channel 3 */
-> +#define MLX90632_MAX_MEAS_NUM  31 /* Maximum measurements in list */
-> +#define MLX90632_SLEEP_DELAY_MS 3000 /* Autosleep delay */
->  #define MLX90632_EXTENDED_LIMIT 27000 /* Extended mode raw value limit */
->
->  /**
-> @@ -889,7 +889,7 @@ static int mlx90632_probe(struct i2c_client *client,
->                 mlx90632->mtyp = MLX90632_MTYP_EXTENDED;
->         } else if ((read & MLX90632_DSP_MASK) == MLX90632_DSP_VERSION) {
->                 dev_dbg(&client->dev,
-> -                       "Detected Unknown EEPROM calibration %x\n", read);
-> +                       "Detected Unknown EEPROM calibration %x\n", read);
->         } else {
->                 dev_err(&client->dev,
->                         "Wrong DSP version %x (expected %x)\n",
-> --
-> 2.25.1
->
+>  drivers/mfd/mfd-core.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mfd/mfd-core.c b/drivers/mfd/mfd-core.c
+> index c3ef58a802bee..31b363c64f4b4 100644
+> --- a/drivers/mfd/mfd-core.c
+> +++ b/drivers/mfd/mfd-core.c
+> @@ -215,8 +215,13 @@ static int mfd_add_device(struct device *parent, int id,
+>  				ret = mfd_match_of_node_to_dev(pdev, np, cell);
+>  				if (ret == -EAGAIN)
+>  					continue;
+> -				if (ret)
+> +				if (ret) {
+> +					if (ret == -ENODEV) {
+> +						/* Ignore disabled devices error free */
+> +						ret = 0;
+> +					}
+>  					goto fail_alias;
+> +				}
+>  
+>  				break;
+>  			}
 
-
---
-With Best Regards,
-Andy Shevchenko
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
