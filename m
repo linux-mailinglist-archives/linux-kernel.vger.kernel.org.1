@@ -2,77 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A9C2491DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 02:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4DDF2491E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 02:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726853AbgHSAiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 20:38:17 -0400
-Received: from mga17.intel.com ([192.55.52.151]:47301 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725554AbgHSAiQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 20:38:16 -0400
-IronPort-SDR: 89Q37X6ws2imSc10k4HBJcbF5TF6q6C8VE3YBbGKLzDNs6h9cvKgnEHhMViA2P3U6IEaqemFGh
- /52ylZED0mkw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="135093419"
-X-IronPort-AV: E=Sophos;i="5.76,329,1592895600"; 
-   d="scan'208";a="135093419"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 17:38:16 -0700
-IronPort-SDR: z+ryxSXWekjTNsVBa2eKrkv1pBi82hpSvhsBcfhMh/sPqoqTGC3HEYXY1cwPCYhrloH8EDWRId
- 3lfixg7qrWFw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,329,1592895600"; 
-   d="scan'208";a="279551279"
-Received: from otcwcpicx6.sc.intel.com ([172.25.55.29])
-  by fmsmga008.fm.intel.com with ESMTP; 18 Aug 2020 17:38:15 -0700
-Date:   Wed, 19 Aug 2020 00:38:15 +0000
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     Fenghua Yu <fenghua.yu@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        Babu Moger <babu.moger@amd.com>, H Peter Anvin <hpa@zytor.com>,
-        x86 <x86@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/2] x86/resctrl: Enable user to view thread or core
- throttling mode
-Message-ID: <20200819003815.GA358477@otcwcpicx6.sc.intel.com>
-References: <1594921994-66192-1-git-send-email-fenghua.yu@intel.com>
+        id S1726871AbgHSAoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 20:44:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726486AbgHSAoY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 20:44:24 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F6A6C061389
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 17:44:23 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id x24so11153047lfe.11
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 17:44:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z2DynlYRISsaYGNYsitlwb4+khyZlyAf5FIqSKM75Sw=;
+        b=ZWjTUpPqeNDFZ5App1PKI3BTysWeld/2SgkPFZEQq11iPN7vO/wNK5oKv6EG7MF+QJ
+         7xi0n1OxTlKsaQFzGElnBMPOv4og7mbxTlw5Au6CKtjV9v4dQJ1BJYjehwKKf75/ulbt
+         DPWNZloSONUhqNB49PEiskUtNkKaIzAiBDQr4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z2DynlYRISsaYGNYsitlwb4+khyZlyAf5FIqSKM75Sw=;
+        b=NWqKkpf+0I2WvNdvjprhos5Zu4r2gbOIahIIUKpvdZ62/Ox10XWc0iuHlJqRO74+0w
+         fVfebyuCnHrGBoX7z9vefadrIe8k/hzAtqVu48E7OdEhRcjw65FKAlh9MW98/6Oh2NrL
+         zZwfO5hlXMV2gI8HAI54eBjRDH2kyrbMb/jPhX+djAyCaKqhm8HR03rQuKGDuQZx2UoC
+         vP5SrH7oFwCoyZlWAg/9JRxmNU3bxgF4t+SFORMZBPZAE5XrhnQQ9gTWEe/cVmJ8Hm7h
+         JiXa5/CL/YiDD0m618SdWfCxdAEBQv7OMCoVRvjx6qgFHonEmz+K9E4gOHCK78fdxArK
+         uB0g==
+X-Gm-Message-State: AOAM530adj3hR0c+oX4Bcu+tQua9trxFQO1bM5Kkt95jC4iKU8MMNt/A
+        tsU+fz9MEP4jmnjAeIRT7cv8UjzwlG2tgA==
+X-Google-Smtp-Source: ABdhPJzKqS29ScFzqBxjgVt3SJZ35SO9y9KETdnBLu4MKMNu2hV8pYaLULRWwDi+1J2FRlEaWO4jjg==
+X-Received: by 2002:a19:c1d7:: with SMTP id r206mr11003926lff.2.1597797861009;
+        Tue, 18 Aug 2020 17:44:21 -0700 (PDT)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id x17sm6388105ljm.0.2020.08.18.17.44.19
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Aug 2020 17:44:19 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id d2so11183074lfj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 17:44:19 -0700 (PDT)
+X-Received: by 2002:ac2:46d0:: with SMTP id p16mr11162480lfo.142.1597797859441;
+ Tue, 18 Aug 2020 17:44:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1594921994-66192-1-git-send-email-fenghua.yu@intel.com>
+References: <20200818234307.3382306-1-nivedita@alum.mit.edu>
+In-Reply-To: <20200818234307.3382306-1-nivedita@alum.mit.edu>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 18 Aug 2020 17:44:03 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wik-oXnUpfZ6Hw37uLykc-_P0Apyn2XuX-odh-3Nzop8w@mail.gmail.com>
+Message-ID: <CAHk-=wik-oXnUpfZ6Hw37uLykc-_P0Apyn2XuX-odh-3Nzop8w@mail.gmail.com>
+Subject: Re: [PATCH] lib/string.c: Disable tree-loop-distribute-patterns
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, X86 maintainers,
+On Tue, Aug 18, 2020 at 4:43 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> This by itself is insufficient for gcc if the optimization was
+> explicitly enabled by CFLAGS, so also add a flag to explicitly disable
+> it.
 
-On Thu, Jul 16, 2020 at 10:53:12AM -0700, Fenghua Yu wrote:
-> This series enumerates Memory Bandwidth Allocation (MBA) per-thread
-> feature and introduces a new resctrl file "thread_throttle_mode".
-> The file shows either "per-thread" on newer systems that implement the MBA
-> per-thread feature or "max" on other systems that allocate maximum
-> throttling per-core.
-> 
-> Details about the feature can be found in the commit description and
-> in Chapter 9 of the most recent Intel ISE available from
-> https://software.intel.com/sites/default/files/managed/c5/15/architecture-instruction-set-extensions-programming-reference.pdf
-> 
-> This series replaces the original MBA thread throttling patch series
-> found at
-> https://lore.kernel.org/lkml/cover.1592841671.git.reinette.chatre@intel.com/
-> 
-> This is a simplified version of the previous series that skips the
-> min/max mode and just provides the per-core vs. per-thread indicator.
-> 
+Using -fno-tree-loop-distribute-patterns seems to really be a bit too
+incestuous with internal compiler knowledge.
 
-Any comment on this series? Could you please help push to upstream?
+That generic memcpy implementation is horrible anyway. It should never be used.
 
-Thanks.
+So I'd rather see this either removed entirely, ot possibly rewritten
+to be a somewhat proper memcpy implementation, and in the process made
+to not be recognizable by the compiler (possibly by adding a dummy
+barrier() or something like that).
 
--Fenghua
+Looking at the implementation of "strscpy()" in the same file, and
+then comparing that to the ludicrously simplisting "memcpy()", I
+really get the feeling that that memcpy() is not worth having.
+
+              Linus
