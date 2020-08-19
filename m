@@ -2,174 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8872A24A1C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 16:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C30924A1D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 16:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728626AbgHSOau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 10:30:50 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:43334 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728120AbgHSOab (ORCPT
+        id S1728212AbgHSOgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 10:36:54 -0400
+Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:29190 "EHLO
+        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727018AbgHSOgx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 10:30:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1597847430; x=1629383430;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=5lhoalPfLZwfYbnBN5/CZyt8ZrJ+63q3RaCX+V8ERS4=;
-  b=Z+t3YNBTIqMEtUIl/IhjgeasNYHGYzk9a6sgoRHS1usqK5MfmhfTGKnv
-   5y0UIAccnQGt5bvrai59aO96mmmHAw1FlqKk9B/B2pBrhu5s91QzIIhl7
-   lzKVT82bngrwdXc28cwFAGdcrwAQLJSBevzxgPzvyePzzhxp8mWwZQivi
-   A=;
-X-IronPort-AV: E=Sophos;i="5.76,331,1592870400"; 
-   d="scan'208";a="67997637"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 19 Aug 2020 14:30:26 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id BBAF0225302;
-        Wed, 19 Aug 2020 14:30:24 +0000 (UTC)
-Received: from EX13D16EUB003.ant.amazon.com (10.43.166.99) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 19 Aug 2020 14:30:24 +0000
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.160.100) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 19 Aug 2020 14:30:15 +0000
-Subject: Re: [PATCH v7 00/18] Add support for Nitro Enclaves
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Alexander Graf <graf@amazon.de>
-CC:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        David Duncan <davdunc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        "Frank van der Linden" <fllinden@amazon.com>,
-        Karen Noel <knoel@redhat.com>,
-        "Martin Pohlack" <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        Uwe Dannowski <uwed@amazon.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>
-References: <20200817131003.56650-1-andraprs@amazon.com>
- <14477cc7-926e-383d-527b-b53d088ca13d@amazon.de>
- <20200819112657.GA475121@kroah.com>
-From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-Message-ID: <3c0923a0-7676-0d19-9b32-f2648e7966ca@amazon.com>
-Date:   Wed, 19 Aug 2020 17:30:05 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.1.1
-MIME-Version: 1.0
-In-Reply-To: <20200819112657.GA475121@kroah.com>
-Content-Language: en-US
-X-Originating-IP: [10.43.160.100]
-X-ClientProxiedBy: EX13D17UWC001.ant.amazon.com (10.43.162.188) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+        Wed, 19 Aug 2020 10:36:53 -0400
+Received: from pps.filterd (m0134424.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07JEV5TL009552;
+        Wed, 19 Aug 2020 14:36:42 GMT
+Received: from g2t2354.austin.hpe.com (g2t2354.austin.hpe.com [15.233.44.27])
+        by mx0b-002e3701.pphosted.com with ESMTP id 3304mkfhff-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 Aug 2020 14:36:42 +0000
+Received: from stormcage.eag.rdlabs.hpecorp.net (stormcage.eag.rdlabs.hpecorp.net [128.162.236.70])
+        by g2t2354.austin.hpe.com (Postfix) with ESMTP id 7FA41AE;
+        Wed, 19 Aug 2020 14:36:41 +0000 (UTC)
+Received: by stormcage.eag.rdlabs.hpecorp.net (Postfix, from userid 201855)
+        id 19608200FDA48; Wed, 19 Aug 2020 09:36:41 -0500 (CDT)
+From:   Alex Kluver <alex.kluver@hpe.com>
+To:     linux-edac@vger.kernel.org, linux-efi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     ardb@kernel.org, mchehab@kernel.org, bp@alien8.de,
+        russ.anderson@hpe.com, dimitri.sivanich@hpe.com,
+        kluveralex@gmail.com, Alex Kluver <alex.kluver@hpe.com>
+Subject: [PATCH v2 0/2] UEFI v2.8 Memory Error Record Updates
+Date:   Wed, 19 Aug 2020 09:35:42 -0500
+Message-Id: <20200819143544.155096-1-alex.kluver@hpe.com>
+X-Mailer: git-send-email 2.12.3
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-19_07:2020-08-19,2020-08-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ malwarescore=0 phishscore=0 mlxlogscore=567 spamscore=0 clxscore=1011
+ adultscore=0 suspectscore=0 bulkscore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008190128
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAxOS8wOC8yMDIwIDE0OjI2LCBHcmVnIEtIIHdyb3RlOgo+Cj4gT24gV2VkLCBBdWcgMTks
-IDIwMjAgYXQgMDE6MTU6NTlQTSArMDIwMCwgQWxleGFuZGVyIEdyYWYgd3JvdGU6Cj4+Cj4+IE9u
-IDE3LjA4LjIwIDE1OjA5LCBBbmRyYSBQYXJhc2NoaXYgd3JvdGU6Cj4+PiBOaXRybyBFbmNsYXZl
-cyAoTkUpIGlzIGEgbmV3IEFtYXpvbiBFbGFzdGljIENvbXB1dGUgQ2xvdWQgKEVDMikgY2FwYWJp
-bGl0eQo+Pj4gdGhhdCBhbGxvd3MgY3VzdG9tZXJzIHRvIGNhcnZlIG91dCBpc29sYXRlZCBjb21w
-dXRlIGVudmlyb25tZW50cyB3aXRoaW4gRUMyCj4+PiBpbnN0YW5jZXMgWzFdLgo+Pj4KPj4+IEZv
-ciBleGFtcGxlLCBhbiBhcHBsaWNhdGlvbiB0aGF0IHByb2Nlc3NlcyBzZW5zaXRpdmUgZGF0YSBh
-bmQgcnVucyBpbiBhIFZNLAo+Pj4gY2FuIGJlIHNlcGFyYXRlZCBmcm9tIG90aGVyIGFwcGxpY2F0
-aW9ucyBydW5uaW5nIGluIHRoZSBzYW1lIFZNLiBUaGlzCj4+PiBhcHBsaWNhdGlvbiB0aGVuIHJ1
-bnMgaW4gYSBzZXBhcmF0ZSBWTSB0aGFuIHRoZSBwcmltYXJ5IFZNLCBuYW1lbHkgYW4gZW5jbGF2
-ZS4KPj4+Cj4+PiBBbiBlbmNsYXZlIHJ1bnMgYWxvbmdzaWRlIHRoZSBWTSB0aGF0IHNwYXduZWQg
-aXQuIFRoaXMgc2V0dXAgbWF0Y2hlcyBsb3cgbGF0ZW5jeQo+Pj4gYXBwbGljYXRpb25zIG5lZWRz
-LiBUaGUgcmVzb3VyY2VzIHRoYXQgYXJlIGFsbG9jYXRlZCBmb3IgdGhlIGVuY2xhdmUsIHN1Y2gg
-YXMKPj4+IG1lbW9yeSBhbmQgQ1BVcywgYXJlIGNhcnZlZCBvdXQgb2YgdGhlIHByaW1hcnkgVk0u
-IEVhY2ggZW5jbGF2ZSBpcyBtYXBwZWQgdG8gYQo+Pj4gcHJvY2VzcyBydW5uaW5nIGluIHRoZSBw
-cmltYXJ5IFZNLCB0aGF0IGNvbW11bmljYXRlcyB3aXRoIHRoZSBORSBkcml2ZXIgdmlhIGFuCj4+
-PiBpb2N0bCBpbnRlcmZhY2UuCj4+Pgo+Pj4gSW4gdGhpcyBzZW5zZSwgdGhlcmUgYXJlIHR3byBj
-b21wb25lbnRzOgo+Pj4KPj4+IDEuIEFuIGVuY2xhdmUgYWJzdHJhY3Rpb24gcHJvY2VzcyAtIGEg
-dXNlciBzcGFjZSBwcm9jZXNzIHJ1bm5pbmcgaW4gdGhlIHByaW1hcnkKPj4+IFZNIGd1ZXN0IHRo
-YXQgdXNlcyB0aGUgcHJvdmlkZWQgaW9jdGwgaW50ZXJmYWNlIG9mIHRoZSBORSBkcml2ZXIgdG8g
-c3Bhd24gYW4KPj4+IGVuY2xhdmUgVk0gKHRoYXQncyAyIGJlbG93KS4KPj4+Cj4+PiBUaGVyZSBp
-cyBhIE5FIGVtdWxhdGVkIFBDSSBkZXZpY2UgZXhwb3NlZCB0byB0aGUgcHJpbWFyeSBWTS4gVGhl
-IGRyaXZlciBmb3IgdGhpcwo+Pj4gbmV3IFBDSSBkZXZpY2UgaXMgaW5jbHVkZWQgaW4gdGhlIE5F
-IGRyaXZlci4KPj4+Cj4+PiBUaGUgaW9jdGwgbG9naWMgaXMgbWFwcGVkIHRvIFBDSSBkZXZpY2Ug
-Y29tbWFuZHMgZS5nLiB0aGUgTkVfU1RBUlRfRU5DTEFWRSBpb2N0bAo+Pj4gbWFwcyB0byBhbiBl
-bmNsYXZlIHN0YXJ0IFBDSSBjb21tYW5kLiBUaGUgUENJIGRldmljZSBjb21tYW5kcyBhcmUgdGhl
-bgo+Pj4gdHJhbnNsYXRlZCBpbnRvICBhY3Rpb25zIHRha2VuIG9uIHRoZSBoeXBlcnZpc29yIHNp
-ZGU7IHRoYXQncyB0aGUgTml0cm8KPj4+IGh5cGVydmlzb3IgcnVubmluZyBvbiB0aGUgaG9zdCB3
-aGVyZSB0aGUgcHJpbWFyeSBWTSBpcyBydW5uaW5nLiBUaGUgTml0cm8KPj4+IGh5cGVydmlzb3Ig
-aXMgYmFzZWQgb24gY29yZSBLVk0gdGVjaG5vbG9neS4KPj4+Cj4+PiAyLiBUaGUgZW5jbGF2ZSBp
-dHNlbGYgLSBhIFZNIHJ1bm5pbmcgb24gdGhlIHNhbWUgaG9zdCBhcyB0aGUgcHJpbWFyeSBWTSB0
-aGF0Cj4+PiBzcGF3bmVkIGl0LiBNZW1vcnkgYW5kIENQVXMgYXJlIGNhcnZlZCBvdXQgb2YgdGhl
-IHByaW1hcnkgVk0gYW5kIGFyZSBkZWRpY2F0ZWQKPj4+IGZvciB0aGUgZW5jbGF2ZSBWTS4gQW4g
-ZW5jbGF2ZSBkb2VzIG5vdCBoYXZlIHBlcnNpc3RlbnQgc3RvcmFnZSBhdHRhY2hlZC4KPj4+Cj4+
-PiBUaGUgbWVtb3J5IHJlZ2lvbnMgY2FydmVkIG91dCBvZiB0aGUgcHJpbWFyeSBWTSBhbmQgZ2l2
-ZW4gdG8gYW4gZW5jbGF2ZSBuZWVkIHRvCj4+PiBiZSBhbGlnbmVkIDIgTWlCIC8gMSBHaUIgcGh5
-c2ljYWxseSBjb250aWd1b3VzIG1lbW9yeSByZWdpb25zIChvciBtdWx0aXBsZSBvZgo+Pj4gdGhp
-cyBzaXplIGUuZy4gOCBNaUIpLiBUaGUgbWVtb3J5IGNhbiBiZSBhbGxvY2F0ZWQgZS5nLiBieSB1
-c2luZyBodWdldGxiZnMgZnJvbQo+Pj4gdXNlciBzcGFjZSBbMl1bM10uIFRoZSBtZW1vcnkgc2l6
-ZSBmb3IgYW4gZW5jbGF2ZSBuZWVkcyB0byBiZSBhdCBsZWFzdCA2NCBNaUIuCj4+PiBUaGUgZW5j
-bGF2ZSBtZW1vcnkgYW5kIENQVXMgbmVlZCB0byBiZSBmcm9tIHRoZSBzYW1lIE5VTUEgbm9kZS4K
-Pj4+Cj4+PiBBbiBlbmNsYXZlIHJ1bnMgb24gZGVkaWNhdGVkIGNvcmVzLiBDUFUgMCBhbmQgaXRz
-IENQVSBzaWJsaW5ncyBuZWVkIHRvIHJlbWFpbgo+Pj4gYXZhaWxhYmxlIGZvciB0aGUgcHJpbWFy
-eSBWTS4gQSBDUFUgcG9vbCBoYXMgdG8gYmUgc2V0IGZvciBORSBwdXJwb3NlcyBieSBhbgo+Pj4g
-dXNlciB3aXRoIGFkbWluIGNhcGFiaWxpdHkuIFNlZSB0aGUgY3B1IGxpc3Qgc2VjdGlvbiBmcm9t
-IHRoZSBrZXJuZWwKPj4+IGRvY3VtZW50YXRpb24gWzRdIGZvciBob3cgYSBDUFUgcG9vbCBmb3Jt
-YXQgbG9va3MuCj4+Pgo+Pj4gQW4gZW5jbGF2ZSBjb21tdW5pY2F0ZXMgd2l0aCB0aGUgcHJpbWFy
-eSBWTSB2aWEgYSBsb2NhbCBjb21tdW5pY2F0aW9uIGNoYW5uZWwsCj4+PiB1c2luZyB2aXJ0aW8t
-dnNvY2sgWzVdLiBUaGUgcHJpbWFyeSBWTSBoYXMgdmlydGlvLXBjaSB2c29jayBlbXVsYXRlZCBk
-ZXZpY2UsCj4+PiB3aGlsZSB0aGUgZW5jbGF2ZSBWTSBoYXMgYSB2aXJ0aW8tbW1pbyB2c29jayBl
-bXVsYXRlZCBkZXZpY2UuIFRoZSB2c29jayBkZXZpY2UKPj4+IHVzZXMgZXZlbnRmZCBmb3Igc2ln
-bmFsaW5nLiBUaGUgZW5jbGF2ZSBWTSBzZWVzIHRoZSB1c3VhbCBpbnRlcmZhY2VzIC0gbG9jYWwK
-Pj4+IEFQSUMgYW5kIElPQVBJQyAtIHRvIGdldCBpbnRlcnJ1cHRzIGZyb20gdmlydGlvLXZzb2Nr
-IGRldmljZS4gVGhlIHZpcnRpby1tbWlvCj4+PiBkZXZpY2UgaXMgcGxhY2VkIGluIG1lbW9yeSBi
-ZWxvdyB0aGUgdHlwaWNhbCA0IEdpQi4KPj4+Cj4+PiBUaGUgYXBwbGljYXRpb24gdGhhdCBydW5z
-IGluIHRoZSBlbmNsYXZlIG5lZWRzIHRvIGJlIHBhY2thZ2VkIGluIGFuIGVuY2xhdmUKPj4+IGlt
-YWdlIHRvZ2V0aGVyIHdpdGggdGhlIE9TICggZS5nLiBrZXJuZWwsIHJhbWRpc2ssIGluaXQgKSB0
-aGF0IHdpbGwgcnVuIGluIHRoZQo+Pj4gZW5jbGF2ZSBWTS4gVGhlIGVuY2xhdmUgVk0gaGFzIGl0
-cyBvd24ga2VybmVsIGFuZCBmb2xsb3dzIHRoZSBzdGFuZGFyZCBMaW51eAo+Pj4gYm9vdCBwcm90
-b2NvbC4KPj4+Cj4+PiBUaGUga2VybmVsIGJ6SW1hZ2UsIHRoZSBrZXJuZWwgY29tbWFuZCBsaW5l
-LCB0aGUgcmFtZGlzayhzKSBhcmUgcGFydCBvZiB0aGUKPj4+IEVuY2xhdmUgSW1hZ2UgRm9ybWF0
-IChFSUYpOyBwbHVzIGFuIEVJRiBoZWFkZXIgaW5jbHVkaW5nIG1ldGFkYXRhIHN1Y2ggYXMgbWFn
-aWMKPj4+IG51bWJlciwgZWlmIHZlcnNpb24sIGltYWdlIHNpemUgYW5kIENSQy4KPj4+Cj4+PiBI
-YXNoIHZhbHVlcyBhcmUgY29tcHV0ZWQgZm9yIHRoZSBlbnRpcmUgZW5jbGF2ZSBpbWFnZSAoRUlG
-KSwgdGhlIGtlcm5lbCBhbmQKPj4+IHJhbWRpc2socykuIFRoYXQncyB1c2VkLCBmb3IgZXhhbXBs
-ZSwgdG8gY2hlY2sgdGhhdCB0aGUgZW5jbGF2ZSBpbWFnZSB0aGF0IGlzCj4+PiBsb2FkZWQgaW4g
-dGhlIGVuY2xhdmUgVk0gaXMgdGhlIG9uZSB0aGF0IHdhcyBpbnRlbmRlZCB0byBiZSBydW4uCj4+
-Pgo+Pj4gVGhlc2UgY3J5cHRvIG1lYXN1cmVtZW50cyBhcmUgaW5jbHVkZWQgaW4gYSBzaWduZWQg
-YXR0ZXN0YXRpb24gZG9jdW1lbnQKPj4+IGdlbmVyYXRlZCBieSB0aGUgTml0cm8gSHlwZXJ2aXNv
-ciBhbmQgZnVydGhlciB1c2VkIHRvIHByb3ZlIHRoZSBpZGVudGl0eSBvZiB0aGUKPj4+IGVuY2xh
-dmU7IEtNUyBpcyBhbiBleGFtcGxlIG9mIHNlcnZpY2UgdGhhdCBORSBpcyBpbnRlZ3JhdGVkIHdp
-dGggYW5kIHRoYXQgY2hlY2tzCj4+PiB0aGUgYXR0ZXN0YXRpb24gZG9jLgo+Pj4KPj4+IFRoZSBl
-bmNsYXZlIGltYWdlIChFSUYpIGlzIGxvYWRlZCBpbiB0aGUgZW5jbGF2ZSBtZW1vcnkgYXQgb2Zm
-c2V0IDggTWlCLiBUaGUKPj4+IGluaXQgcHJvY2VzcyBpbiB0aGUgZW5jbGF2ZSBjb25uZWN0cyB0
-byB0aGUgdnNvY2sgQ0lEIG9mIHRoZSBwcmltYXJ5IFZNIGFuZCBhCj4+PiBwcmVkZWZpbmVkIHBv
-cnQgLSA5MDAwIC0gdG8gc2VuZCBhIGhlYXJ0YmVhdCB2YWx1ZSAtIDB4YjcuIFRoaXMgbWVjaGFu
-aXNtIGlzCj4+PiB1c2VkIHRvIGNoZWNrIGluIHRoZSBwcmltYXJ5IFZNIHRoYXQgdGhlIGVuY2xh
-dmUgaGFzIGJvb3RlZC4KPj4+Cj4+PiBJZiB0aGUgZW5jbGF2ZSBWTSBjcmFzaGVzIG9yIGdyYWNl
-ZnVsbHkgZXhpdHMsIGFuIGludGVycnVwdCBldmVudCBpcyByZWNlaXZlZCBieQo+Pj4gdGhlIE5F
-IGRyaXZlci4gVGhpcyBldmVudCBpcyBzZW50IGZ1cnRoZXIgdG8gdGhlIHVzZXIgc3BhY2UgZW5j
-bGF2ZSBwcm9jZXNzCj4+PiBydW5uaW5nIGluIHRoZSBwcmltYXJ5IFZNIHZpYSBhIHBvbGwgbm90
-aWZpY2F0aW9uIG1lY2hhbmlzbS4gVGhlbiB0aGUgdXNlciBzcGFjZQo+Pj4gZW5jbGF2ZSBwcm9j
-ZXNzIGNhbiBleGl0Lgo+Pj4KPj4+IFRoYW5rIHlvdS4KPj4+Cj4+IFRoaXMgdmVyc2lvbiByZWFk
-cyB2ZXJ5IHdlbGwsIHRoYW5rcyBhIGxvdCBBbmRyYSEKCkdsYWQgdGhhdCB0aGUgcmV2aWV3IGV4
-cGVyaWVuY2UgaGFzIGJlZW4gaW1wcm92ZWQgYW5kIHRoZSBwYXRjaCBzZXJpZXMgCmlzIGluIGEg
-YmV0dGVyIHNoYXBlLgoKPj4KPj4gR3JlZywgd291bGQgeW91IG1pbmQgdG8gaGF2ZSBhbm90aGVy
-IGxvb2sgb3ZlciBpdD8KPiBXaWxsIGRvLCBpdCdzIGluIG15IHRvLXJldmlldyBxdWV1ZSwgYmVo
-aW5kIGxvdHMgb2Ygb3RoZXIgcGF0Y2hlcy4uLgo+CgoKVGhhbmtzIGJvdGggZm9yIHRha2luZyB0
-aW1lIHRvIGdvIHRocm91Z2ggdGhlIHBhdGNoIHNlcmllcy4KCkFuZHJhCgoKCkFtYXpvbiBEZXZl
-bG9wbWVudCBDZW50ZXIgKFJvbWFuaWEpIFMuUi5MLiByZWdpc3RlcmVkIG9mZmljZTogMjdBIFNm
-LiBMYXphciBTdHJlZXQsIFVCQzUsIGZsb29yIDIsIElhc2ksIElhc2kgQ291bnR5LCA3MDAwNDUs
-IFJvbWFuaWEuIFJlZ2lzdGVyZWQgaW4gUm9tYW5pYS4gUmVnaXN0cmF0aW9uIG51bWJlciBKMjIv
-MjYyMS8yMDA1Lgo=
+The UEFI Specification v2.8, Table 299, Memory Error Record has
+several changes from previous versions. Bits 18 through 21 have been
+added to the memory validation bits to include an extended version
+of row, an option to print bank address and group separately, and chip id.
+These patches implement bits 18 through 21 into the Memory Error Record.
+
+Change reserved field to extended field in cper_sec_mem_err structure
+and added the extended field to the cper_mem_err_compact structure.
+
+Print correct versions of row, bank, and chip ID.
+---
+v1 -> v2:
+   * Add static inline cper_get_mem_extension to make
+     it more readable, as suggested by Borislav Petkov
+
+   * Add second patch for bank field, bank group, and chip id.
+---
+Alex Kluver (2):
+  edac,ghes,cper: Add Row Extension to Memory Error Record
+  cper,edac,efi: Memory Error Record: bank group/address and chip id
+
+ drivers/edac/ghes_edac.c    | 17 +++++++++++++++--
+ drivers/firmware/efi/cper.c | 18 ++++++++++++++++--
+ include/linux/cper.h        | 24 ++++++++++++++++++++++--
+ 3 files changed, 53 insertions(+), 6 deletions(-)
+
+-- 
+2.26.2
 
