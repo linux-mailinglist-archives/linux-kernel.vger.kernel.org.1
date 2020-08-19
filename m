@@ -2,209 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6397024A95C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 00:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC1A24A965
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 00:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728129AbgHSWZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 18:25:15 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:16020 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727937AbgHSWY4 (ORCPT
+        id S1726691AbgHSWag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 18:30:36 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:39611 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726342AbgHSWaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 18:24:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1597875897; x=1629411897;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=zACmpNxMVkpKW6XFtwU9imKwJIzxQN1bq0wJXy/9ILY=;
-  b=bx9vDkpGtdAsg3+ohp97Q8jISRVw2uLybAtvkymfGPnfE4v19sjFg1xm
-   7b73HxFXz18jvVOZLAQCmnE0txuzBdH2Cd++lI74YbA2dYRLxVcst9CzI
-   lx0B95tX9JRJjRhOPnYU8mHbJnKuHVnaI7Ow6XCc27FmY8u1F7ixXHNni
-   d4G1BcMQiIg2HJKAVSqQxIlxXNs737nECjb9xgOr5Ar39YxyIi3n3sTFn
-   v6xtM06vUavghxsBpcX9DzjsWRDO5sndXYWkwbecLHD1rPzxgqG/4T+Jm
-   eYPSly3cU2qDjEpYEZKlx1a4RpuBjPWPORum98Z0PV5C1ZFb5ky7sZhW0
-   Q==;
-IronPort-SDR: K3uO0ualYksNaWtA1KmtuhsqubSRckleeOewSbOw7CoaDjNDouc0dx4haf7LiILtlV5EUhr+TL
- lMPY5+Dg8CmI5nBpsCFtSG3bvAx90P/XCj8Sgh8RVsu3PdnXyb7DIRFmSaypL/5XsDOtqkSf7U
- CggtDsr43KHvE3fte/oCj3+BKwlyEnSFsKEXhqL0pOcr/qHaTAm2/x/OJZ1t17QPNkBsizZxiB
- RG2YWAQgL6AZrb4JuR+skoeWYVF+yHR+nUnJtrzr/iOzOEQFNHUYy+QNcanuICDbfEdSssDwwN
- KXs=
-X-IronPort-AV: E=Sophos;i="5.76,332,1592841600"; 
-   d="scan'208";a="145373624"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 20 Aug 2020 06:24:40 +0800
-IronPort-SDR: I8Tv5nn5SXRQoc3rN34BXtYeB68jjtcZV7KCDVjvFeKpdnDpGcTXXV4QE/td3r5296OTWDeI2U
- HyrfkTCbYAAw==
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2020 15:12:22 -0700
-IronPort-SDR: qeASOcpsC5tETXVvFIaf3jgrXLlmjsFJeBHh+JrZXvJm4MzlaZ4rUzKfhLKqp83wnyK6axFW5O
- pBEe93zZ0aVQ==
-WDCIronportException: Internal
-Received: from 6hj08h2.ad.shared (HELO jedi-01.hgst.com) ([10.86.59.62])
-  by uls-op-cesaip01.wdc.com with ESMTP; 19 Aug 2020 15:24:39 -0700
-From:   Atish Patra <atish.patra@wdc.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Anup Patel <anup@brainfault.org>,
-        Alistair Francis <alistair.francis@wdc.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>, linux-efi@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Steven Price <steven.price@arm.com>,
-        Waiman Long <longman@redhat.com>, Zong Li <zong.li@sifive.com>,
-        Daniel Schaefer <daniel.schaefer@hpe.com>,
-        "abner.chang@hpe.com" <abner.chang@hpe.com>
-Subject: [PATCH v6 9/9] RISC-V: Add page table dump support for uefi
-Date:   Wed, 19 Aug 2020 15:24:25 -0700
-Message-Id: <20200819222425.30721-10-atish.patra@wdc.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20200819222425.30721-1-atish.patra@wdc.com>
-References: <20200819222425.30721-1-atish.patra@wdc.com>
+        Wed, 19 Aug 2020 18:30:35 -0400
+Received: by mail-io1-f68.google.com with SMTP id z6so375913iow.6;
+        Wed, 19 Aug 2020 15:30:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TPAgoF6CS6LHb79mBEQMdU6QynqQNT4ADYnbP9+wi74=;
+        b=Iy3eq/WA8d3tP56uIU8z31H/+gJFoshRuzJlQVlwM8uC7l+yminCpJO5C1lxhPdqJr
+         HExhMNpxUSYz1AwLaICvNTZp8ixGXIVH6DEntjlHJnM9qgOUhW+yRTe7AK6xPEYo54YY
+         CwhIJwr/cjaZS4wIJs0K0Hz3JB5YOG1gKo5pFgHBSKScx0OWwJuBWAfrXFcDEk8/oumR
+         JaB1O8ryX0Q8L/TuSfv6P78a9J/1HS3XGLeMjM5Sl1Hb9iWDG24/z6D15E+Yc9/1IYwx
+         IcTf2o2SnahMKS8tyg4UeqY4C9+fnRJVpBQAOcAeZhN4Wn3V9z2FkzVWMfYr9RuLqTeh
+         RFVQ==
+X-Gm-Message-State: AOAM531qUo+t6ZuP5PJ3Judh1M/u0Q35r0iGZUaiSS7h5YIEpajSKrWf
+        PGNRrjZ9bZJx75dDHX/GPA==
+X-Google-Smtp-Source: ABdhPJzOVbOE3td6fQsaX3GtZOf+rgr1VvqINzVc5EPIlkHCXVE0LtV3YFDHep9Apf5exI1W+VesoQ==
+X-Received: by 2002:a02:8806:: with SMTP id r6mr533184jai.88.1597876234835;
+        Wed, 19 Aug 2020 15:30:34 -0700 (PDT)
+Received: from xps15 ([64.188.179.249])
+        by smtp.gmail.com with ESMTPSA id z26sm243083ilf.60.2020.08.19.15.30.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Aug 2020 15:30:34 -0700 (PDT)
+Received: (nullmailer pid 2077672 invoked by uid 1000);
+        Wed, 19 Aug 2020 22:30:32 -0000
+Date:   Wed, 19 Aug 2020 16:30:31 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>, kernel-team@android.com,
+        Heiko Stuebner <heiko@sntech.de>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        linux-rockchip@lists.infradead.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v2] of: address: Work around missing device_type property
+ in pcie nodes
+Message-ID: <20200819223031.GA2077542@bogus>
+References: <20200819094255.474565-1-maz@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200819094255.474565-1-maz@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend the current page table dump support in RISC-V to include efi
-pages as well.
+On Wed, 19 Aug 2020 10:42:55 +0100, Marc Zyngier wrote:
+> Recent changes to the DT PCI bus parsing made it mandatory for
+> device tree nodes describing a PCI controller to have the
+> 'device_type = "pci"' property for the node to be matched.
+> 
+> Although this follows the letter of the specification, it
+> breaks existing device-trees that have been working fine
+> for years.  Rockchip rk3399-based systems are a prime example
+> of such collateral damage, and have stopped discovering their
+> PCI bus.
+> 
+> In order to paper over it, let's add a workaround to the code
+> matching the device type, and accept as PCI any node that is
+> named "pcie",
+> 
+> A warning will hopefully nudge the user into updating their
+> DT to a fixed version if they can, but the incentive is
+> obviously pretty small.
+> 
+> Fixes: 2f96593ecc37 ("of_address: Add bus type match for pci ranges parser")
+> Suggested-by: Rob Herring <robh+dt@kernel.org>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>  drivers/of/address.c | 16 +++++++++++++++-
+>  1 file changed, 15 insertions(+), 1 deletion(-)
+> 
 
-Here is the output of efi runtime page table mappings.
-
----[ UEFI runtime start ]---
-0x0000000020002000-0x0000000020003000 0x00000000be732000 4K PTE D A . . . W R V
-0x0000000020018000-0x0000000020019000 0x00000000be738000 4K PTE D A . . . W R V
-0x000000002002c000-0x000000002002d000 0x00000000be73c000 4K PTE D A . . . W R V
-0x0000000020031000-0x0000000020032000 0x00000000bff61000 4K PTE D A . . X W R V
----[ UEFI runtime end ]---
-
-Signed-off-by: Atish Patra <atish.patra@wdc.com>
-Reviewed-by: Anup Patel <anup@brainfault.org>
----
- arch/riscv/mm/ptdump.c | 48 ++++++++++++++++++++++++++++++++++++------
- 1 file changed, 42 insertions(+), 6 deletions(-)
-
-diff --git a/arch/riscv/mm/ptdump.c b/arch/riscv/mm/ptdump.c
-index 0831c2e61a8f..ace74dec7492 100644
---- a/arch/riscv/mm/ptdump.c
-+++ b/arch/riscv/mm/ptdump.c
-@@ -3,6 +3,7 @@
-  * Copyright (C) 2019 SiFive
-  */
- 
-+#include <linux/efi.h>
- #include <linux/init.h>
- #include <linux/debugfs.h>
- #include <linux/seq_file.h>
-@@ -49,6 +50,14 @@ struct addr_marker {
- 	const char *name;
- };
- 
-+/* Private information for debugfs */
-+struct ptd_mm_info {
-+	struct mm_struct		*mm;
-+	const struct addr_marker	*markers;
-+	unsigned long base_addr;
-+	unsigned long end;
-+};
-+
- static struct addr_marker address_markers[] = {
- #ifdef CONFIG_KASAN
- 	{KASAN_SHADOW_START,	"Kasan shadow start"},
-@@ -68,6 +77,28 @@ static struct addr_marker address_markers[] = {
- 	{-1, NULL},
- };
- 
-+static struct ptd_mm_info kernel_ptd_info = {
-+	.mm		= &init_mm,
-+	.markers	= address_markers,
-+	.base_addr	= KERN_VIRT_START,
-+	.end		= ULONG_MAX,
-+};
-+
-+#ifdef CONFIG_EFI
-+static struct addr_marker efi_addr_markers[] = {
-+		{ 0,		"UEFI runtime start" },
-+		{ SZ_1G,	"UEFI runtime end" },
-+		{ -1,		NULL }
-+};
-+
-+static struct ptd_mm_info efi_ptd_info = {
-+	.mm		= &efi_mm,
-+	.markers	= efi_addr_markers,
-+	.base_addr	= 0,
-+	.end		= SZ_2G,
-+};
-+#endif
-+
- /* Page Table Entry */
- struct prot_bits {
- 	u64 mask;
-@@ -245,22 +276,22 @@ static void note_page(struct ptdump_state *pt_st, unsigned long addr,
- 	}
- }
- 
--static void ptdump_walk(struct seq_file *s)
-+static void ptdump_walk(struct seq_file *s, struct ptd_mm_info *pinfo)
- {
- 	struct pg_state st = {
- 		.seq = s,
--		.marker = address_markers,
-+		.marker = pinfo->markers,
- 		.level = -1,
- 		.ptdump = {
- 			.note_page = note_page,
- 			.range = (struct ptdump_range[]) {
--				{KERN_VIRT_START, ULONG_MAX},
-+				{pinfo->base_addr, pinfo->end},
- 				{0, 0}
- 			}
- 		}
- 	};
- 
--	ptdump_walk_pgd(&st.ptdump, &init_mm, NULL);
-+	ptdump_walk_pgd(&st.ptdump, pinfo->mm, NULL);
- }
- 
- void ptdump_check_wx(void)
-@@ -293,7 +324,7 @@ void ptdump_check_wx(void)
- 
- static int ptdump_show(struct seq_file *m, void *v)
- {
--	ptdump_walk(m);
-+	ptdump_walk(m, m->private);
- 
- 	return 0;
- }
-@@ -308,8 +339,13 @@ static int ptdump_init(void)
- 		for (j = 0; j < ARRAY_SIZE(pte_bits); j++)
- 			pg_level[i].mask |= pte_bits[j].mask;
- 
--	debugfs_create_file("kernel_page_tables", 0400, NULL, NULL,
-+	debugfs_create_file("kernel_page_tables", 0400, NULL, &kernel_ptd_info,
- 			    &ptdump_fops);
-+#ifdef CONFIG_EFI
-+	if (efi_enabled(EFI_RUNTIME_SERVICES))
-+		debugfs_create_file("efi_page_tables", 0400, NULL, &efi_ptd_info,
-+				    &ptdump_fops);
-+#endif
- 
- 	return 0;
- }
--- 
-2.24.0
-
+Applied, thanks!
