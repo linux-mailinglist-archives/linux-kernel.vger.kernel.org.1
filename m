@@ -2,82 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3054524A5FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EABCF24A5E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726934AbgHSS1h convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 19 Aug 2020 14:27:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59024 "EHLO
+        id S1726731AbgHSSWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 14:22:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgHSS1g (ORCPT
+        with ESMTP id S1726689AbgHSSWm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 14:27:36 -0400
-X-Greylist: delayed 313 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 19 Aug 2020 11:27:35 PDT
-Received: from unicorn.mansr.com (unicorn.mansr.com [IPv6:2001:8b0:ca0d:8d8e::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11456C061757;
-        Wed, 19 Aug 2020 11:27:35 -0700 (PDT)
-Received: from raven.mansr.com (raven.mansr.com [81.2.72.235])
-        by unicorn.mansr.com (Postfix) with ESMTPS id D67C915360;
-        Wed, 19 Aug 2020 19:22:15 +0100 (BST)
-Received: by raven.mansr.com (Postfix, from userid 51770)
-        id 9535A21A6F2; Wed, 19 Aug 2020 19:22:15 +0100 (BST)
-From:   =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Barry Song <baohua@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Jun Nie <jun.nie@linaro.org>, Shawn Guo <shawnguo@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [RESEND PATCH 4/5] ARM: dts: tango: Align L2 cache-controller nodename with dtschema
-References: <20200819175853.21492-1-krzk@kernel.org>
-        <20200819175853.21492-4-krzk@kernel.org>
-Date:   Wed, 19 Aug 2020 19:22:15 +0100
-In-Reply-To: <20200819175853.21492-4-krzk@kernel.org> (Krzysztof Kozlowski's
-        message of "Wed, 19 Aug 2020 19:58:52 +0200")
-Message-ID: <yw1x5z9eqyw8.fsf@mansr.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        Wed, 19 Aug 2020 14:22:42 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC09C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 11:22:42 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id v4so26499047ljd.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 11:22:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=79ev9ikbUTXiBlx8BAwL5pB8K3ajpVCqOFOleujXdPo=;
+        b=IDQGdL/5id8GNxENSsHI2wxK4/GZ5xngsW+Eha1nuNKPmJGlqmvPbb8du9ZPBCBRRn
+         gcwhHklx3dYgYVG5/IFLJAyq1IPOCPogblQ93UEr+8YMf1+mOELzQ2caUs5F4LoUFBf2
+         VLUHHA3n+6lCCXPn0GEIie4bewzMlUNpn7IrM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=79ev9ikbUTXiBlx8BAwL5pB8K3ajpVCqOFOleujXdPo=;
+        b=dVAfmqetchPQGxwH8vbYFtFjZFko8ncKrgLe+HO9iWQOMoIMZeQcr0pQmHHzoi6E3d
+         FyL4OLbJdLDjY4B7vlyHg2+0GCaf4rbsHIvCG7tnhFtfxClvu0h7J3zyQpdPb82eynlj
+         3/BNbD76BFkWGuWzspOAQElewTrHB9/U/7eiqGDAoCUwyaYm9yBdJvnTjl3XUOhbkQ0G
+         u0ae/gHj4HRFenh8F3vbxoW1EGo79Zlv4k3kG2ajCdj5iP7OHjZfBUuuwHLaXiVpW8il
+         hsBgOt6s8m7jvzoaKv4k3FsiQ3RvXvMcnKz8YabOX3IhvksZkzDR0u73P+MOqq73X4Uy
+         fLDQ==
+X-Gm-Message-State: AOAM530fDXVR8UftefoVQwUncghrRsAH3/s+KP7bNJeitYbd77yXKkU5
+        nL9m897jbEreqcADFnCpyOSgs+gN9k9/SA==
+X-Google-Smtp-Source: ABdhPJzq9kxpzO+Hi27Q0pCcavAcHLlHRa7QpPW5Y8OTgj3G/LaNY8KnFoeDSrQG5e+TKxuuTXrR1w==
+X-Received: by 2002:a2e:7006:: with SMTP id l6mr11088897ljc.107.1597861359648;
+        Wed, 19 Aug 2020 11:22:39 -0700 (PDT)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id g21sm6796298ljh.103.2020.08.19.11.22.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Aug 2020 11:22:38 -0700 (PDT)
+Received: by mail-lf1-f45.google.com with SMTP id b11so12580988lfe.10
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 11:22:38 -0700 (PDT)
+X-Received: by 2002:ac2:522b:: with SMTP id i11mr12977840lfl.30.1597861357867;
+ Wed, 19 Aug 2020 11:22:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8BIT
+References: <9753118F-84DD-44C4-8B8C-F45B8EE0FC14@fb.com> <20200804234817.3922187-1-nivedita@alum.mit.edu>
+ <20200804234817.3922187-2-nivedita@alum.mit.edu> <202008191111.4244B09D26@keescook>
+In-Reply-To: <202008191111.4244B09D26@keescook>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 19 Aug 2020 11:22:22 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiC4jj3j9TViftsS97cdTKaM_7=e98WgaqojPk+EVTMxw@mail.gmail.com>
+Message-ID: <CAHk-=wiC4jj3j9TViftsS97cdTKaM_7=e98WgaqojPk+EVTMxw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] x86/boot/compressed: Use builtin mem functions for decompressor
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nick Terrell <nickrterrell@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yann Collet <yann.collet.73@gmail.com>,
+        Gao Xiang <xiang@kernel.org>,
+        Sven Schmidt <4sschmid@informatik.uni-hamburg.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Krzysztof Kozlowski <krzk@kernel.org> writes:
-
-> Fix dtschema validator warnings like:
->     l2-cache-controller@20100000: $nodename:0:
->         'l2-cache-controller@20100000' does not match '^(cache-controller|cpu)(@[0-9a-f,]+)*$'
+On Wed, Aug 19, 2020 at 11:14 AM Kees Cook <keescook@chromium.org> wrote:
 >
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Did anyone pick this up? (Ingo can you snag it, or maybe akpm who took
+> the LZ4-specific patch already?) This looks sane to me and provides some
+> surprising performance benefits. :)
 
-Acked-by: Mans Rullgard <mans@mansr.com>
+I'll take this and Arvind's freestanding patch too.
 
-> ---
->  arch/arm/boot/dts/tango4-common.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/arm/boot/dts/tango4-common.dtsi b/arch/arm/boot/dts/tango4-common.dtsi
-> index 54fd522badfc..d584da314500 100644
-> --- a/arch/arm/boot/dts/tango4-common.dtsi
-> +++ b/arch/arm/boot/dts/tango4-common.dtsi
-> @@ -51,7 +51,7 @@
->  		};
->  	};
->
-> -	l2cc: l2-cache-controller@20100000 {
-> +	l2cc: cache-controller@20100000 {
->  		compatible = "arm,pl310-cache";
->  		reg = <0x20100000 0x1000>;
->  		cache-level = <2>;
-> -- 
-> 2.17.1
->
-
--- 
-Måns Rullgård
+             Linus
