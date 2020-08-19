@@ -2,142 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A283924952C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 08:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF8D249538
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 08:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727043AbgHSGrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 02:47:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56360 "EHLO mail.kernel.org"
+        id S1727031AbgHSGse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 02:48:34 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:6791 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727013AbgHSGr0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 02:47:26 -0400
-Received: from kernel.org (unknown [87.70.91.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D03CF2063A;
-        Wed, 19 Aug 2020 06:47:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597819645;
-        bh=gyXXT4D4VYYaIOu1+gQnW//kuaEEXVrmB2ft+K3ew70=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iF574zjF4YALNQMlPIlYyUhMlOaowp0aKXeBobiMvul/9VebVzPb0GGL2pL6IrOfO
-         biszHrPoThMJ8qaY9wBHRZEXPInyq/UK06/Ftx+cpClRBnctvE0kAc4ZdaGx85SamP
-         /aqnKXglUaQQcpUzJBj/EPMyDqj/degt0zaMtzTc=
-Date:   Wed, 19 Aug 2020 09:47:18 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Andi Kleen <ak@linux.intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jessica Yu <jeyu@kernel.org>, Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH v5 5/6] kprobes: Use text_alloc() and text_free()
-Message-ID: <20200819064718.GR752365@kernel.org>
-References: <20200724050553.1724168-1-jarkko.sakkinen@linux.intel.com>
- <20200724050553.1724168-6-jarkko.sakkinen@linux.intel.com>
- <20200724092746.GD517988@gmail.com>
- <20200725031648.GG17052@linux.intel.com>
- <20200726081408.GB2927915@kernel.org>
- <20200818053029.GE44714@linux.intel.com>
- <20200818115141.GO752365@kernel.org>
- <20200818163033.GF137138@linux.intel.com>
+        id S1727807AbgHSGsS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 02:48:18 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4BWddn6Dxpz9tx2t;
+        Wed, 19 Aug 2020 08:48:13 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id sLh0Bt0UnGdV; Wed, 19 Aug 2020 08:48:13 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BWddn5CFsz9tx2s;
+        Wed, 19 Aug 2020 08:48:13 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B40318B7F3;
+        Wed, 19 Aug 2020 08:48:14 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id qM2bDxTqw8S9; Wed, 19 Aug 2020 08:48:14 +0200 (CEST)
+Received: from [172.25.230.104] (po15451.idsi0.si.c-s.fr [172.25.230.104])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 86F238B767;
+        Wed, 19 Aug 2020 08:48:14 +0200 (CEST)
+Subject: Re: [PATCH v3] soc: fsl: enable acpi support
+To:     Ran Wang <ran.wang_1@nxp.com>, Li Yang <leoyang.li@nxp.com>
+Cc:     Peng Ma <peng.ma@nxp.com>, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20200819040031.40204-1-ran.wang_1@nxp.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <02fa05ad-6d39-e16d-ad02-7472d28b6627@csgroup.eu>
+Date:   Wed, 19 Aug 2020 08:48:06 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200818163033.GF137138@linux.intel.com>
+In-Reply-To: <20200819040031.40204-1-ran.wang_1@nxp.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 07:30:33PM +0300, Jarkko Sakkinen wrote:
-> On Tue, Aug 18, 2020 at 02:51:41PM +0300, Mike Rapoport wrote:
-> > On Tue, Aug 18, 2020 at 08:30:29AM +0300, Jarkko Sakkinen wrote:
-> > > On Sun, Jul 26, 2020 at 11:14:08AM +0300, Mike Rapoport wrote:
-> > > > > 
-> > > > > I'm not still sure that I fully understand this feedback as I don't see
-> > > > > any inherent and obvious difference to the v4. In that version fallbacks
-> > > > > are to module_alloc() and module_memfree() and text_alloc() and
-> > > > > text_memfree() can be overridden by arch.
-> > > > 
-> > > > The major difference between your v4 and my suggestion is that I'm not
-> > > > trying to impose a single ARCH_HAS_TEXT_ALLOC as an alternative to
-> > > > MODULES but rather to use per subsystem config option, e.g.
-> > > > HAVE_KPROBES_TEXT_ALLOC.
-> > > > 
-> > > > Another thing, which might be worth doing regardless of the outcome of
-> > > > this discussion is to rename alloc_insn_pages() to text_alloc_kprobes()
-> > > > because the former is way too generic and does not emphasize that the 
-> > > > instruction page is actually used by kprobes only.
-> > > 
-> > > What if we in kernel/kprobes.c just:
-> > > 
-> > > #ifndef CONFIG_ARCH_HAS_TEXT_ALLOC
-> > 
-> > I don't think that CONFIG_ARCH_HAS_TEXT_ALLOC will work for all
-> > architectures.
-> > 
-> > If an architecture has different restrictions for allocation of text
-> > for, say, modules, kprobes, bfp, it won't be able to use a single
-> > ARCH_HAS_TEXT_ALLOC. Which means that this architecture is stuck with
-> > dependency of kprobes on MODULES until the next rework.
+
+
+Le 19/08/2020 à 06:00, Ran Wang a écrit :
+> From: Peng Ma <peng.ma@nxp.com>
 > 
-> I was thinking to name it as CONFIG_HAS_KPROBES_ALLOC_PAGE, alogn the
-> lines described below, so it is merely a glitch in my example.
- 
-IMHO, it would be better to emphasize that this is text page. I liked
-Mark's idea [1] to have text_alloc_<subsys>() naming for the allocation
-functions. The Kconfig options then would become
-HAVE_TEXT_ALLOC_<SUBSYS>.
+> This patch enables ACPI support in RCPM driver.
 
-[1] https://lore.kernel.org/linux-riscv/20200714133314.GA67386@C02TD0UTHF1T.local/
+Can you change the subject to "soc: fsl: enable acpi support in RCPM 
+driver" ?
 
-
-> > > void __weak *alloc_insn_page(void)
-> > > {
-> > > 	return module_alloc(PAGE_SIZE);
-> > > }
-> > > 
-> > > void __weak free_insn_page(void *page)
-> > > {
-> > > 	module_memfree(page);
-> > > }
-> > > #endif
-> > > 
-> > > In Kconfig (as in v5):
-> > > 
-> > > config KPROBES
-> > > 	bool "Kprobes"
-> > > 	depends on MODULES || ARCH_HAS_TEXT_ALLOC
-> > > 
-> > > I checked architectures that override alloc_insn_page(). With the
-> > > exception of x86, they do not call module_alloc().
-> > > 
-> > > If no rename was done, then with this approach a more consistent.
-> > > config flag name would be CONFIG_ARCH_HAS_ALLOC_INSN_PAGE.
-> > > 
-> > > I'd call the function just as kprobes_alloc_page(). Then the
-> > > config flag would become CONFIG_HAS_KPROBES_ALLOC_PAGE.
-> > > 
-> > > > -- 
-> > > > Sincerely yours,
-> > > > Mike.
-> > > 
-> > > Thanks for the feedback!
-> > > 
-> > > /Jarkko
-> > 
 > 
-> > -- 
-> > Sincerely yours,
-> > Mike.
+> Signed-off-by: Peng Ma <peng.ma@nxp.com>
+> Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
+> ---
+> Change in v3:
+>   - Add #ifdef CONFIG_ACPI for acpi_device_id
+>   - Rename rcpm_acpi_imx_ids to rcpm_acpi_ids
 > 
-> BR,
-> /Jarkko
+> Change in v2:
+>   - Update acpi_device_id to fix conflict with other driver
+> 
+>   drivers/soc/fsl/rcpm.c | 13 ++++++++++++-
+>   1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soc/fsl/rcpm.c b/drivers/soc/fsl/rcpm.c
+> index a093dbe..55d1d73 100644
+> --- a/drivers/soc/fsl/rcpm.c
+> +++ b/drivers/soc/fsl/rcpm.c
+> @@ -2,7 +2,7 @@
+>   //
+>   // rcpm.c - Freescale QorIQ RCPM driver
+>   //
+> -// Copyright 2019 NXP
+> +// Copyright 2019-2020 NXP
+>   //
+>   // Author: Ran Wang <ran.wang_1@nxp.com>
+>   
+> @@ -13,6 +13,7 @@
+>   #include <linux/slab.h>
+>   #include <linux/suspend.h>
+>   #include <linux/kernel.h>
+> +#include <linux/acpi.h>
+>   
+>   #define RCPM_WAKEUP_CELL_MAX_SIZE	7
+>   
+> @@ -125,6 +126,7 @@ static int rcpm_probe(struct platform_device *pdev)
+>   
+>   	ret = device_property_read_u32(&pdev->dev,
+>   			"#fsl,rcpm-wakeup-cells", &rcpm->wakeup_cells);
+> +
 
--- 
-Sincerely yours,
-Mike.
+This blank line addition is unrelated to the patch and shouldn't be there.
+
+Christophe
+
+>   	if (ret)
+>   		return ret;
+>   
+> @@ -139,10 +141,19 @@ static const struct of_device_id rcpm_of_match[] = {
+>   };
+>   MODULE_DEVICE_TABLE(of, rcpm_of_match);
+>   
+> +#ifdef CONFIG_ACPI
+> +static const struct acpi_device_id rcpm_acpi_ids[] = {
+> +	{"NXP0015",},
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(acpi, rcpm_acpi_ids);
+> +#endif
+> +
+>   static struct platform_driver rcpm_driver = {
+>   	.driver = {
+>   		.name = "rcpm",
+>   		.of_match_table = rcpm_of_match,
+> +		.acpi_match_table = ACPI_PTR(rcpm_acpi_ids),
+>   		.pm	= &rcpm_pm_ops,
+>   	},
+>   	.probe = rcpm_probe,
+> 
