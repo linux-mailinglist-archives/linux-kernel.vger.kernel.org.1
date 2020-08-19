@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C143E249753
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED87824972C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726732AbgHSH26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 03:28:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
+        id S1728113AbgHSH0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 03:26:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726854AbgHSHZJ (ORCPT
+        with ESMTP id S1726817AbgHSHZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 03:25:09 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4542FC06136C
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 00:24:27 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id l2so20443970wrc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 00:24:27 -0700 (PDT)
+        Wed, 19 Aug 2020 03:25:15 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E075FC06136F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 00:24:28 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id a14so20467073wra.5
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 00:24:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4rLwtBvMkow5I5GDEjyJuOU5JzSfmTUQSvGDHlfWV2k=;
-        b=p2YS8erqOU/gjRtz4iVLLaMMKfXmVFvrRVi+3sc8ekfq/H7rh07Ky8kWW8qm0xOl7H
-         gICMIUqThUQIq3Aj/P84e9220rP4seaClfp6TMWzMKTx9I2Ety6ePlpWYYv/utFTZsu1
-         f2/fvNKQsuhAz2wlvL7xLEdinCCwVSsBIgKuCbEhIC7LAQAIFGEZi70S8Rdrn96JDPUK
-         f9hnU3tzZ923q8b5VmYM+HniJ0SpwLYOmE+L+Fbo/pgx6qnGENDwbVdr+zRlE/ilG9bN
-         SuntGeq2+BPuuCZAszBdrXBYL7/mzh8XwphBNHQCuRc9i0ANcXv3Xhp1njCVJTMkztza
-         Mieg==
+        bh=OmSKHzIzkJi68F2fKwgFCX3ILOuvM+7+kNq4/3nmwoQ=;
+        b=vBNBtXIZSWF7g27W+eeXxr7ZjwuIqe6jFQIMTyxVridWuKQOwrbwEeyB835OdGK1AZ
+         YT4VAcdYpQggD5sWVnsFlZ3avb1db8mOMmF8paflWmNkkgqPxXA9hbLBcZ0BIYkvg9UD
+         qQO+NOvhJzOqGHQt4uQN9s7e3YYfPsAqQTx0Z7RDCa0UTH2zWeonkDJRquXo9hy1UwKd
+         Lxx1sR70MKCwaXOKz6IpLk0t/RGVWverH5HLZBP8OfBp48NlmwWSjOTjLFI8jVWj/SH8
+         Jo9WrdBRUL4n7pAyKcYPMcTro9QmpVtXoctyEetp/61ed1wBlqkFW/h5UgnQMS+jVulL
+         qIQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4rLwtBvMkow5I5GDEjyJuOU5JzSfmTUQSvGDHlfWV2k=;
-        b=N0GKbIuQeWb5hHH5YBDz6YiOhqEEpE3CtGg6JnyJMqXEPUydTOmZ97nMI6TV1OSSMe
-         hs0WljkvdZremZjAIseqQYgrz7tpMzuw3+0Z/O/ZOafUYOlwBh7wKu82RidJxoCl2+Ei
-         mHS9hd16xMXNNFRItBM+vsylnCxPyjap5OCtT1ZhehIBTCzTL8JhIiqx2mQ4AoWm89eC
-         cJgy+sy+5uQ64W52091CTOyiWb6N6KWjN5joA/f3c3SPdEo2oACsqKf7ISzie1wIY6e+
-         u4ECH9jVDRNyNzTHN6spU9XdXUQ35dtk1Jq7SdtoQQ58kAIAZhPmHAp9DLmfkhlrEF/0
-         FA7A==
-X-Gm-Message-State: AOAM533wy2hzZaUmTN4+PWLEOprGWDvk6C3vFL4tne7YpoFQEZ2LQc6C
-        WNWucIzhGw8/nLu+U9q3NbQSYQ==
-X-Google-Smtp-Source: ABdhPJzXBn1IXHXSUSbWLBLOHC10XUr5FZWPQa6flhRI76F8vknBKoswuQD38N8iOhXv4eE0P0x7Og==
-X-Received: by 2002:adf:bc4b:: with SMTP id a11mr22292936wrh.381.1597821865954;
-        Wed, 19 Aug 2020 00:24:25 -0700 (PDT)
+        bh=OmSKHzIzkJi68F2fKwgFCX3ILOuvM+7+kNq4/3nmwoQ=;
+        b=P0OXwzZrazu1W0NQMTUPN2LB9B2FF6WXjUVAujnOzQNiCmbIxRdaPvmrdDLFK8tnih
+         YdHx0FJ0Zu7MgU6aevuZwHuKt83cFuykE8JC7dHYuERx0qhHeLikWrz72xgzqKYn/RDu
+         5ZDv6ON55NY2UMotIuI6e36ot2KpbAIvXr6mCEc4GT0XVkZDteCaRGXPz4CZea/LCJhq
+         Asn/zfbw6zjoptcZDndjq6rtqfiRnOMGtWWpAMLcI0/w5rDZV7OMpllFysCZ/bwK+36Z
+         zYTdraxBrX7kv6SE0crSr/QdSRRLooy5oZqUii6BRx5MwoflfcJVec2VkBB+upOcRcPa
+         niYw==
+X-Gm-Message-State: AOAM530doLttHgS4Y7uMKVQMgXycr1Z9TvqmTZPA5I26+LYDwt/VYZMY
+        ddkCFts02XcZ+B3rlTgGmLtSOg==
+X-Google-Smtp-Source: ABdhPJyfOF3Q1D/IOxq7KP8+D1xDF7iLQJJIEb/pu6aOZR1FBQagN9KKg3Tos6kds0DO+TYqxC3p5g==
+X-Received: by 2002:adf:c981:: with SMTP id f1mr23428625wrh.14.1597821867580;
+        Wed, 19 Aug 2020 00:24:27 -0700 (PDT)
 Received: from dell.default ([95.149.164.62])
-        by smtp.gmail.com with ESMTPSA id c145sm3795808wmd.7.2020.08.19.00.24.25
+        by smtp.gmail.com with ESMTPSA id c145sm3795808wmd.7.2020.08.19.00.24.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 00:24:25 -0700 (PDT)
+        Wed, 19 Aug 2020 00:24:26 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
 Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
         netdev@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
         Amitkumar Karwar <amitkarwar@gmail.com>,
         Siva Rebbagondla <siva8118@gmail.com>
-Subject: [PATCH 17/28] wireless: rsi: rsi_91x_main: Fix misnamed function parameter 'rx_pkt'
-Date:   Wed, 19 Aug 2020 08:23:51 +0100
-Message-Id: <20200819072402.3085022-18-lee.jones@linaro.org>
+Subject: [PATCH 18/28] wireless: rsi: rsi_91x_mac80211: Fix a few kerneldoc misdemeanours
+Date:   Wed, 19 Aug 2020 08:23:52 +0100
+Message-Id: <20200819072402.3085022-19-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200819072402.3085022-1-lee.jones@linaro.org>
 References: <20200819072402.3085022-1-lee.jones@linaro.org>
@@ -67,10 +67,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+ - File headers should not be kernel-doc
+ - Misnaming issues
+ - Missing function parameter documentation
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/net/wireless/rsi/rsi_91x_main.c:157: warning: Function parameter or member 'rx_pkt' not described in 'rsi_read_pkt'
- drivers/net/wireless/rsi/rsi_91x_main.c:157: warning: Excess function parameter 'rcv_pkt' description in 'rsi_read_pkt'
+ drivers/net/wireless/rsi/rsi_91x_mac80211.c:24: warning: cannot understand function prototype: 'const struct ieee80211_channel rsi_2ghz_channels[] = '
+ drivers/net/wireless/rsi/rsi_91x_mac80211.c:739: warning: Function parameter or member 'vif' not described in 'rsi_get_connected_channel'
+ drivers/net/wireless/rsi/rsi_91x_mac80211.c:739: warning: Excess function parameter 'adapter' description in 'rsi_get_connected_channel'
+ drivers/net/wireless/rsi/rsi_91x_mac80211.c:868: warning: Function parameter or member 'changed_flags' not described in 'rsi_mac80211_conf_filter'
+ drivers/net/wireless/rsi/rsi_91x_mac80211.c:868: warning: Excess function parameter 'changed' description in 'rsi_mac80211_conf_filter'
+ drivers/net/wireless/rsi/rsi_91x_mac80211.c:946: warning: Function parameter or member 'sta' not described in 'rsi_hal_key_config'
+ drivers/net/wireless/rsi/rsi_91x_mac80211.c:1245: warning: Function parameter or member 'vif' not described in 'rsi_perform_cqm'
 
 Cc: Amitkumar Karwar <amitkarwar@gmail.com>
 Cc: Siva Rebbagondla <siva8118@gmail.com>
@@ -81,22 +90,61 @@ Cc: linux-wireless@vger.kernel.org
 Cc: netdev@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/net/wireless/rsi/rsi_91x_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/rsi/rsi_91x_mac80211.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/rsi/rsi_91x_main.c b/drivers/net/wireless/rsi/rsi_91x_main.c
-index 576f51f9b4a7e..9a3d2439a8e7a 100644
---- a/drivers/net/wireless/rsi/rsi_91x_main.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_main.c
-@@ -148,7 +148,7 @@ static struct sk_buff *rsi_prepare_skb(struct rsi_common *common,
- /**
-  * rsi_read_pkt() - This function reads frames from the card.
-  * @common: Pointer to the driver private structure.
-- * @rcv_pkt: Received pkt.
-+ * @rx_pkt: Received pkt.
-  * @rcv_pkt_len: Received pkt length. In case of USB it is 0.
+diff --git a/drivers/net/wireless/rsi/rsi_91x_mac80211.c b/drivers/net/wireless/rsi/rsi_91x_mac80211.c
+index 5c0adb0efc5d6..ce223e680cba6 100644
+--- a/drivers/net/wireless/rsi/rsi_91x_mac80211.c
++++ b/drivers/net/wireless/rsi/rsi_91x_mac80211.c
+@@ -1,4 +1,4 @@
+-/**
++/*
+  * Copyright (c) 2014 Redpine Signals Inc.
   *
-  * Return: 0 on success, -1 on failure.
+  * Permission to use, copy, modify, and/or distribute this software for any
+@@ -731,7 +731,7 @@ static int rsi_mac80211_config(struct ieee80211_hw *hw,
+ /**
+  * rsi_get_connected_channel() - This function is used to get the current
+  *				 connected channel number.
+- * @adapter: Pointer to the adapter structure.
++ * @vif: Pointer to the ieee80211_vif structure.
+  *
+  * Return: Current connected AP's channel number is returned.
+  */
+@@ -855,7 +855,7 @@ static void rsi_mac80211_bss_info_changed(struct ieee80211_hw *hw,
+ /**
+  * rsi_mac80211_conf_filter() - This function configure the device's RX filter.
+  * @hw: Pointer to the ieee80211_hw structure.
+- * @changed: Changed flags set.
++ * @changed_flags: Changed flags set.
+  * @total_flags: Total initial flags set.
+  * @multicast: Multicast.
+  *
+@@ -936,6 +936,7 @@ static int rsi_mac80211_conf_tx(struct ieee80211_hw *hw,
+  * @hw: Pointer to the ieee80211_hw structure.
+  * @vif: Pointer to the ieee80211_vif structure.
+  * @key: Pointer to the ieee80211_key_conf structure.
++ * @sta: Pointer to the ieee80211_sta structure.
+  *
+  * Return: status: 0 on success, negative error codes on failure.
+  */
+@@ -1008,7 +1009,6 @@ static int rsi_hal_key_config(struct ieee80211_hw *hw,
+  * @hw: Pointer to the ieee80211_hw structure.
+  * @cmd: enum set_key_cmd.
+  * @vif: Pointer to the ieee80211_vif structure.
+- * @sta: Pointer to the ieee80211_sta structure.
+  * @key: Pointer to the ieee80211_key_conf structure.
+  *
+  * Return: status: 0 on success, negative error code on failure.
+@@ -1237,6 +1237,7 @@ static int rsi_mac80211_set_rate_mask(struct ieee80211_hw *hw,
+  * @common: Pointer to the driver private structure.
+  * @bssid: pointer to the bssid.
+  * @rssi: RSSI value.
++ * @vif: Pointer to the ieee80211_vif structure.
+  */
+ static void rsi_perform_cqm(struct rsi_common *common,
+ 			    u8 *bssid,
 -- 
 2.25.1
 
