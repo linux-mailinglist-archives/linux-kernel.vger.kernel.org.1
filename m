@@ -2,178 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A8B24A274
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 17:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAC5524A25B
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 17:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728710AbgHSPFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 11:05:42 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:52586 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728610AbgHSPFY (ORCPT
+        id S1727018AbgHSPCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 11:02:35 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:44832 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726689AbgHSPCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 11:05:24 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1k8PeB-008bgu-Nh; Wed, 19 Aug 2020 09:05:03 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1k8Pdz-0002ES-Gb; Wed, 19 Aug 2020 09:04:58 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, peterz@infradead.org,
-        Christoph Hewllig <hch@infradead.org>,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Kars de Jong <jongk@linux-m68k.org>,
-        Kees Cook <keescook@chromium.org>,
-        Greentime Hu <green.hu@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Xiao Yang <yangx.jy@cn.fujitsu.com>, linux-doc@vger.kernel.org,
-        uclinux-h8-devel@lists.sourceforge.jp, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, sparclinux@vger.kernel.org,
-        kgdb-bugreport@lists.sourceforge.net,
-        linux-kselftest@vger.kernel.org
-References: <20200818173411.404104-1-christian.brauner@ubuntu.com>
-        <20200818174447.GV17456@casper.infradead.org>
-        <20200819074340.GW2674@hirez.programming.kicks-ass.net>
-        <20200819084556.im5zfpm2iquzvzws@wittgenstein>
-        <20200819111851.GY17456@casper.infradead.org>
-        <87a6yq222c.fsf@x220.int.ebiederm.org>
-        <20200819134629.mvd4nupme7q2hmtz@wittgenstein>
-Date:   Wed, 19 Aug 2020 10:01:16 -0500
-In-Reply-To: <20200819134629.mvd4nupme7q2hmtz@wittgenstein> (Christian
-        Brauner's message of "Wed, 19 Aug 2020 15:46:29 +0200")
-Message-ID: <87mu2qznlv.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 19 Aug 2020 11:02:22 -0400
+Received: by mail-io1-f72.google.com with SMTP id m12so14378545iov.11
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 08:02:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=67Gh75A1TSpN6NtiARVGU9hWjZqJ15XNNQGywFVosG0=;
+        b=HdbD5IbshU4KmntjWmjX+4C2v9XPv3jwXKSxuB2SE+TETVU7y5UJI51uUN+l9V5AIy
+         Bg0KUjTePhNKkCCPpbwh1zEDyPkEIqIzPRT3BsQiz3hPe/orwf/LaidQaUEtQ1mcCvvB
+         Ni2RCehqzUTkWWvtEGVvmU5vc5ArnfRkZOQW3hdkCfDQvqnnRv0ngmaGX7EAW1RHM+wx
+         tQrxfnyFW8JVe+M1x7pWmt5VVhCbKpO0cMg50coPis+imAkyBtT2D0bXtMgOeg8w96SS
+         Z9Cl9qaV8Z5FGdo0keMj5VUfOvNSffQvzPVHwpOjs5fglhh2jyt0edg8+6Bvv2FiU7HQ
+         4bKg==
+X-Gm-Message-State: AOAM531sGffb4EyF1+VUAL0dJqsaR93hEKwMVx7AkIXEUX1JmLQj4UH/
+        mYOSGq4eQMuFK0zXPDm8RuInTGYdq1lmF2CftDx9aWK7TyXG
+X-Google-Smtp-Source: ABdhPJyvN4+7Tvk6NZpG6almeZlIMGgzU5iWuaJVJIQJxIvHiNKvtJVyzgAjNmdVi5jHIVN0cpxmVvEtulJN3SDb4OQLAnh8xQ5A
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1k8Pdz-0002ES-Gb;;;mid=<87mu2qznlv.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+7Z/n5uynSvWoygLfaQ9ENNpj25p3/XJs=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: ***
-X-Spam-Status: No, score=3.2 required=8.0 tests=ALL_TRUSTED,BAYES_40,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,T_TooManySym_03,T_TooManySym_04,XMGppyBdWords,
-        XMNoVowels,XM_B_SpammyWords autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
-        *      [score: 0.2682]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  2.5 XMGppyBdWords BODY: Gappy or l33t words
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
-        *  0.0 T_TooManySym_04 7+ unique symbols in subject
-        *  0.0 T_TooManySym_03 6+ unique symbols in subject
-X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ***;Christian Brauner <christian.brauner@ubuntu.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 6658 ms - load_scoreonly_sql: 0.08 (0.0%),
-        signal_user_changed: 54 (0.8%), b_tie_ro: 52 (0.8%), parse: 4.4 (0.1%),
-         extract_message_metadata: 396 (5.9%), get_uri_detail_list: 51 (0.8%),
-        tests_pri_-1000: 298 (4.5%), tests_pri_-950: 2.0 (0.0%),
-        tests_pri_-900: 2.2 (0.0%), tests_pri_-90: 760 (11.4%), check_bayes:
-        758 (11.4%), b_tokenize: 400 (6.0%), b_tok_get_all: 107 (1.6%),
-        b_comp_prob: 6 (0.1%), b_tok_touch_all: 199 (3.0%), b_finish: 11
-        (0.2%), tests_pri_0: 4936 (74.1%), check_dkim_signature: 3.8 (0.1%),
-        check_dkim_adsp: 203 (3.0%), poll_dns_idle: 24 (0.4%), tests_pri_10:
-        24 (0.4%), tests_pri_500: 112 (1.7%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 00/11] Introduce kernel_clone(), kill _do_fork()
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+X-Received: by 2002:a92:d782:: with SMTP id d2mr24126782iln.167.1597849341396;
+ Wed, 19 Aug 2020 08:02:21 -0700 (PDT)
+Date:   Wed, 19 Aug 2020 08:02:21 -0700
+In-Reply-To: <000000000000a7e38a05a997edb2@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000660e9a05ad3c4ace@google.com>
+Subject: Re: WARNING in __cfg80211_connect_result
+From:   syzbot <syzbot+cc4c0f394e2611edba66@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christian Brauner <christian.brauner@ubuntu.com> writes:
+syzbot has found a reproducer for the following issue on:
 
-> On Wed, Aug 19, 2020 at 08:32:59AM -0500, Eric W. Biederman wrote:
->> Matthew Wilcox <willy@infradead.org> writes:
->> 
->> > On Wed, Aug 19, 2020 at 10:45:56AM +0200, Christian Brauner wrote:
->> >> On Wed, Aug 19, 2020 at 09:43:40AM +0200, peterz@infradead.org wrote:
->> >> > On Tue, Aug 18, 2020 at 06:44:47PM +0100, Matthew Wilcox wrote:
->> >> > > On Tue, Aug 18, 2020 at 07:34:00PM +0200, Christian Brauner wrote:
->> >> > > > The only remaining function callable outside of kernel/fork.c is
->> >> > > > _do_fork(). It doesn't really follow the naming of kernel-internal
->> >> > > > syscall helpers as Christoph righly pointed out. Switch all callers and
->> >> > > > references to kernel_clone() and remove _do_fork() once and for all.
->> >> > > 
->> >> > > My only concern is around return type.  long, int, pid_t ... can we
->> >> > > choose one and stick to it?  pid_t is probably the right return type
->> >> > > within the kernel, despite the return type of clone3().  It'll save us
->> >> > > some work if we ever go through the hassle of growing pid_t beyond 31-bit.
->> >> > 
->> >> > We have at least the futex ABI restricting PID space to 30 bits.
->> >> 
->> >> Ok, looking into kernel/futex.c I see 
->> >> 
->> >> pid_t pid = uval & FUTEX_TID_MASK;
->> >> 
->> >> which is probably what this referes to and /proc/sys/kernel/threads-max
->> >> is restricted to FUTEX_TID_MASK.
->> >> 
->> >> Afaict, that doesn't block switching kernel_clone() to return pid_t. It
->> >> can't create anything > FUTEX_TID_MASK anyway without yelling EAGAIN at
->> >> userspace. But it means that _if_ we were to change the size of pid_t
->> >> we'd likely need a new futex API. 
->> >
->> > Yes, there would be a lot of work to do to increase the size of pid_t.
->> > I'd just like to not do anything to make that harder _now_.  Stick to
->> > using pid_t within the kernel.
->> 
->> Just so people are aware.  If you look in include/linux/threads.h you
->> can see that the maximum value of PID_MAX_LIMIT limits pids to 22 bits.
->> 
->> Further the design decisions of pids keeps us densly using pids.  So I
->> expect it will be a while before we even come close to using 30 bits of
->> pid space.
->
-> Also because it's simply annoying to have to type really large pid
-> numbers on the shell. Yes yes, that's a very privileged
-> developer-centric complaint but it matters when you have to do a quick
-> kill -9. Chromebook users obviously won't care about how large their
-> pids are for sure.
+HEAD commit:    e3ec1e8c net: eliminate meaningless memcpy to data in pskb..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1664ac89900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3d400a47d1416652
+dashboard link: https://syzkaller.appspot.com/bug?extid=cc4c0f394e2611edba66
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d9de91900000
 
-Actually that is one of the reasons (possibly the primary reason) that
-we have chosen to keep pid numbers dense.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+cc4c0f394e2611edba66@syzkaller.appspotmail.com
 
-There may be fewer users of unix shells then their used to be, and we
-may now have pidfds.  But until people stop using pids in shells it is a
-very valid reason to keep them densly packed.
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 234 at net/wireless/sme.c:757 __cfg80211_connect_result+0xf71/0x13a0 net/wireless/sme.c:757
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 234 Comm: kworker/u4:5 Not tainted 5.9.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: cfg80211 cfg80211_event_work
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ panic+0x2e3/0x75c kernel/panic.c:231
+ __warn.cold+0x20/0x4a kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:__cfg80211_connect_result+0xf71/0x13a0 net/wireless/sme.c:757
+Code: 89 be ac 02 00 00 48 c7 c7 60 0f 18 89 c6 05 ef ba 2b 03 01 e8 f5 4a d9 f9 e9 4f f6 ff ff e8 d6 cc f2 f9 0f 0b e8 cf cc f2 f9 <0f> 0b e9 0c f2 ff ff e8 c3 cc f2 f9 e8 2e bb 71 00 31 ff 89 c3 89
+RSP: 0018:ffffc900019c7bb8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88808ae13000 RCX: ffffffff87816922
+RDX: ffff8880a8b0a540 RSI: ffffffff878174b1 RDI: 0000000000000005
+RBP: ffff88807be34818 R08: 0000000000000001 R09: ffffffff8c5f1a3f
+R10: 0000000000000000 R11: 1ffffffff1835405 R12: 0000000000000000
+R13: ffff88807be34828 R14: ffff88808ae13200 R15: ffff88807be34820
+ cfg80211_process_wdev_events+0x2c6/0x5b0 net/wireless/util.c:893
+ cfg80211_process_rdev_events+0x6e/0x100 net/wireless/util.c:934
+ cfg80211_event_work+0x1a/0x20 net/wireless/core.c:320
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
-> Tbf, related to discussions last year, systemd now actually raises the
-> default limit from ~33000 to 4194304. Which seems like an ok compromise.
-
-Intereseting.  I had not heard of that.  That seems a strange choice
-for systemd rather than a system administrator to make.  Of course any
-design decision that requires manual intervention to get large systems
-to work is probably a bad one. 
-
-Eric
