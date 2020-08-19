@@ -2,175 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5DA924A260
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 17:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E53824A26A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 17:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727975AbgHSPEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 11:04:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726187AbgHSPEG (ORCPT
+        id S1728605AbgHSPEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 11:04:49 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:47160 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728445AbgHSPE0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 11:04:06 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13443C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 08:04:06 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id t6so11416871qvw.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 08:04:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=poorly.run; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vzojOIjXWxLiO6TIP3hVvjZj3nBXkO4u+Tv0gqgyYy4=;
-        b=bF4X2rLiQ6gYsVqzGCpAtaMbPgC9tg9k7pWmdfdP7jhYjOW2lKP3GTqUtVfsNaZd8d
-         +tqW/r6n8N1HbXApppScuxmidM2ViNHo/ZeAXiHiaLoQy3WPkXNNO7mPSQVydyqLXIuW
-         XnpqxpmORbSAJVeFgOj201zzexuifWp1jNNvr321eHINNv2s3M1eX+wmoZA2L7kR6V6M
-         SIW/RrePFN/BaiNWuUtMLtaEBR3/6yBkaBbGlru0XyWD9BdZxfHPGCoKhFB/ej+cb6+M
-         vFTlEJzSyW8pN3j8a3+0/RXeGMps73CZtPy4yrelYf1bea10mWj7LectS+ERxQyNF0Kb
-         +k1Q==
+        Wed, 19 Aug 2020 11:04:26 -0400
+Received: by mail-il1-f199.google.com with SMTP id e12so16933432ile.14
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 08:04:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vzojOIjXWxLiO6TIP3hVvjZj3nBXkO4u+Tv0gqgyYy4=;
-        b=e5OoBmfP2xfT6Shvxy/JMCKVDP0PENW4B3vv20GL0Pupnk3sf+1eiXDqiPs1m+Qhi2
-         YTm+CucmORVVyR3Cni//MKGyoD2gAE38jwawYAyHfbWVZ/ckzzPMCE7bM+UPpyzW0KN2
-         gj8tPVkUQyuXhNtk4tAtLJpAUIZH9Il1yQNJFQGHvpxPKlwh7VkiVNv2mphBRhYS1qVi
-         P8qyqu8JKjYU7Tjw4bjBkcA0Ugn+vgl9eCz7kZfoB/APtb0weLQX/J1FmrX5IGhZ55jZ
-         prMloVdXTX3JGneDutK20psddOKAMvFZ/JbNuBR8Cn8BDcawxsHMHDIgqsnFFRzXE279
-         dmTA==
-X-Gm-Message-State: AOAM533tLW7CzPQc6QKJR4DPfwz5WZxvw6qWEmGrvb4qpxt+mwQeAJPO
-        heYn07iW2QIW/1Z+dLN9ZE/fEQ==
-X-Google-Smtp-Source: ABdhPJwgu8q8F0w+plBznp44QJ9D3FkKDpwk9b2oLbAg5Cc6+iUfzHSItu7Rm2kLrjAYixGSkmEQNw==
-X-Received: by 2002:ad4:46ad:: with SMTP id br13mr24285816qvb.234.1597849444454;
-        Wed, 19 Aug 2020 08:04:04 -0700 (PDT)
-Received: from localhost (mobile-166-177-185-175.mycingular.net. [166.177.185.175])
-        by smtp.gmail.com with ESMTPSA id s56sm25374308qtk.72.2020.08.19.08.04.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 19 Aug 2020 08:04:03 -0700 (PDT)
-Date:   Wed, 19 Aug 2020 11:03:59 -0400
-From:   Sean Paul <sean@poorly.run>
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        =?iso-8859-1?Q?Jos=E9?= Roberto de Souza 
-        <jose.souza@intel.com>, Wambui Karuga <wambui.karugax@gmail.com>
-Subject: Re: [RFC 09/20] drm/i915/dp: Extract drm_dp_has_mst()
-Message-ID: <20200819150359.GA46474@art_vandelay>
-References: <20200811200457.134743-1-lyude@redhat.com>
- <20200811200457.134743-10-lyude@redhat.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=VDNiVmoVHM/EAgrPMdZuxSNbn4Cv7QjczVTKlAQSEmk=;
+        b=IdOd40v5Ve+GKnakE4vk6pMpMXaXzLB2oWSNMBOCbtK2xpN68C0ADXERlQeZ+l1Mpc
+         /zZwZDlnCbWHQwVzhE4lR58Mx5p/+kCSQLnBG8IEddqPnkTUGAZpeEB2fSp0AqS/68vc
+         ZxRC/7M988TjEn1eFpnDEXCtLftl6tnZSDhAI6cDVrZXDcwK7HzgAEczpIwKO5u0xGij
+         dHmMCQs0sWZOXK+13mewaoxt8itqshfy4CeO9r00uWdLr4WbeklkDt2IHxceNIUsbrQb
+         19b8ONmzqgnFXIKRPz68/DjIl+ug8M0D7JggJI8mOrWCZO7gm24fu+me8j0NyP1M9Ibp
+         dWBA==
+X-Gm-Message-State: AOAM533UXJucs29ncwunTYKu+Cf6Gpmyv0ittjyNkBmLDd0Szoqn8hKH
+        qTo6hqXYfEqR5uVc3J37CYTVwduHlaxaZ+1XT11K6UQvlfG1
+X-Google-Smtp-Source: ABdhPJzeo74koGhSSSorznRH6H8AtESLASRNC7zQ8Md7nTE1JsONxbQConiM86dPAk4WOiflAjYv1YIace83+WiDrjid6uQT0mQE
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200811200457.134743-10-lyude@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Received: by 2002:a05:6638:1614:: with SMTP id x20mr23864466jas.92.1597849465083;
+ Wed, 19 Aug 2020 08:04:25 -0700 (PDT)
+Date:   Wed, 19 Aug 2020 08:04:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c560bd05ad3c5187@google.com>
+Subject: WARNING in rtnl_dellink
+From:   syzbot <syzbot+b3b5c64f4880403edd36@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
+        hawk@kernel.org, jiri@mellanox.com, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@chromium.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        roopa@cumulusnetworks.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 04:04:46PM -0400, Lyude Paul wrote:
-> Just a tiny drive-by cleanup, we can consolidate i915's code for
-> checking for MST support into a helper to be shared across drivers.
-> 
+Hello,
 
-Reviewed-by: Sean Paul <sean@poorly.run>
+syzbot found the following issue on:
 
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-> ---
->  drivers/gpu/drm/i915/display/intel_dp.c | 18 ++----------------
->  include/drm/drm_dp_mst_helper.h         | 22 ++++++++++++++++++++++
->  2 files changed, 24 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-> index 79c27f91f42c0..1e29d3a012856 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
-> @@ -4699,20 +4699,6 @@ intel_dp_get_dpcd(struct intel_dp *intel_dp)
->  	return true;
->  }
->  
-> -static bool
-> -intel_dp_sink_can_mst(struct intel_dp *intel_dp)
-> -{
-> -	u8 mstm_cap;
-> -
-> -	if (intel_dp->dpcd[DP_DPCD_REV] < 0x12)
-> -		return false;
-> -
-> -	if (drm_dp_dpcd_readb(&intel_dp->aux, DP_MSTM_CAP, &mstm_cap) != 1)
-> -		return false;
-> -
-> -	return mstm_cap & DP_MST_CAP;
-> -}
-> -
->  static bool
->  intel_dp_can_mst(struct intel_dp *intel_dp)
->  {
-> @@ -4720,7 +4706,7 @@ intel_dp_can_mst(struct intel_dp *intel_dp)
->  
->  	return i915->params.enable_dp_mst &&
->  		intel_dp->can_mst &&
-> -		intel_dp_sink_can_mst(intel_dp);
-> +		drm_dp_has_mst(&intel_dp->aux, intel_dp->dpcd);
->  }
->  
->  static void
-> @@ -4729,7 +4715,7 @@ intel_dp_configure_mst(struct intel_dp *intel_dp)
->  	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
->  	struct intel_encoder *encoder =
->  		&dp_to_dig_port(intel_dp)->base;
-> -	bool sink_can_mst = intel_dp_sink_can_mst(intel_dp);
-> +	bool sink_can_mst = drm_dp_has_mst(&intel_dp->aux, intel_dp->dpcd);
->  
->  	drm_dbg_kms(&i915->drm,
->  		    "[ENCODER:%d:%s] MST support: port: %s, sink: %s, modparam: %s\n",
-> diff --git a/include/drm/drm_dp_mst_helper.h b/include/drm/drm_dp_mst_helper.h
-> index 8b9eb4db3381c..2d8983a713e8c 100644
-> --- a/include/drm/drm_dp_mst_helper.h
-> +++ b/include/drm/drm_dp_mst_helper.h
-> @@ -911,4 +911,26 @@ __drm_dp_mst_state_iter_get(struct drm_atomic_state *state,
->  	for ((__i) = 0; (__i) < (__state)->num_private_objs; (__i)++) \
->  		for_each_if(__drm_dp_mst_state_iter_get((__state), &(mgr), NULL, &(new_state), (__i)))
->  
-> +/**
-> + * drm_dp_has_mst() - check whether or not a sink supports MST
-> + * @aux: The DP AUX channel to use
-> + * @dpcd: A cached copy of the DPCD capabilities for this sink
-> + *
-> + * Returns: %True if the sink supports MST, %false otherwise
-> + */
-> +static inline bool
-> +drm_dp_has_mst(struct drm_dp_aux *aux,
-> +	       const u8 dpcd[DP_RECEIVER_CAP_SIZE])
-> +{
-> +	u8 mstm_cap;
-> +
-> +	if (dpcd[DP_DPCD_REV] < DP_DPCD_REV_12)
-> +		return false;
-> +
-> +	if (drm_dp_dpcd_readb(aux, DP_MSTM_CAP, &mstm_cap) != 1)
-> +		return false;
-> +
-> +	return !!(mstm_cap & DP_MST_CAP);
-> +}
-> +
->  #endif
-> -- 
-> 2.26.2
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+HEAD commit:    4ca0d9ac bonding: show saner speed for broadcast mode
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=13c21516900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9c89856ae5fc8b6
+dashboard link: https://syzkaller.appspot.com/bug?extid=b3b5c64f4880403edd36
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119f99f6900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10fe8fbe900000
 
--- 
-Sean Paul, Software Engineer, Google / Chromium OS
+Bisection is inconclusive: the issue happens on the oldest tested release.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11516872900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=13516872900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15516872900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b3b5c64f4880403edd36@syzkaller.appspotmail.com
+
+bond1 (unregistering): Released all slaves
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 7280 at net/core/dev.c:9304 rollback_registered_many+0xecd/0x1210 net/core/dev.c:9304
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 7280 Comm: syz-executor543 Not tainted 5.8.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ panic+0x2e3/0x75c kernel/panic.c:231
+ __warn.cold+0x20/0x4a kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:rollback_registered_many+0xecd/0x1210 net/core/dev.c:9304
+Code: 0a 1b 00 00 48 c7 c6 40 d7 fe 88 48 c7 c7 80 d7 fe 88 c6 05 b6 e1 71 04 01 e8 71 18 0a fb 0f 0b e9 13 fc ff ff e8 d3 14 39 fb <0f> 0b e9 ea fb ff ff e8 c7 14 39 fb 0f 0b e9 29 fc ff ff e8 3b 25
+RSP: 0018:ffffc90002df7290 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 00000000a650bd01 RCX: ffffffff863b3396
+RDX: ffff8880874fc540 RSI: ffffffff863b37ad RDI: 0000000000000001
+RBP: ffff8880a5edef80 R08: 0000000000000000 R09: ffffffff8a7e4067
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff8880925b0000 R14: dffffc0000000000 R15: ffff8880a5edef80
+ unregister_netdevice_many.part.0+0x1a/0x2f0 net/core/dev.c:10426
+ unregister_netdevice_many+0x36/0x50 net/core/dev.c:10425
+ rtnl_delete_link net/core/rtnetlink.c:3055 [inline]
+ rtnl_dellink+0x34a/0xa60 net/core/rtnetlink.c:3107
+ rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5563
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x44b1a9
+Code: e8 9c 14 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 4b 05 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f8155c28d98 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000006e7a58 RCX: 000000000044b1a9
+RDX: 0000000000000000 RSI: 00000000200002c0 RDI: 0000000000000009
+RBP: 00000000006e7a50 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006e7a5c
+R13: 0000000000000000 R14: 0000000000000000 R15: 068500100000003c
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
