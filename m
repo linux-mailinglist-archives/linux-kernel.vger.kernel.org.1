@@ -2,57 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC13249307
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 04:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E80249302
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 04:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727839AbgHSCtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 22:49:01 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9841 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727063AbgHSCtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 22:49:00 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id CFA3CEE5B3BF5EC6AD4D;
-        Wed, 19 Aug 2020 10:48:58 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Wed, 19 Aug 2020
- 10:48:54 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <elder@kernel.org>, <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next] net: ipa: remove duplicate include
-Date:   Wed, 19 Aug 2020 10:46:45 +0800
-Message-ID: <20200819024645.17107-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727823AbgHSCsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 22:48:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727793AbgHSCsP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 22:48:15 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 501C4C061342
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 19:48:15 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id x24so17966512otp.3
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 19:48:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lXeL2NqENRyGepDGalfKTgrjgpPAYVjCiCWgtC+osv8=;
+        b=a4omXrGFt2mE73+iut1A5IhTEFfx6pamQME9IhWd57cwGlHU0WCx/xyCsDMW9oCRx/
+         r5Je+Jnqvv1oGb7qtzaDv7HdK8PFQzuo5T1zxSjyPR57HwOTgkaLE65klwpLM+bA3M/d
+         6UjCbZvUpey/j0kaj3lyZFqRoIQMTdTLmSwIY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lXeL2NqENRyGepDGalfKTgrjgpPAYVjCiCWgtC+osv8=;
+        b=htIN5iCL65ZEXBr58nReIPD1I6h4PxMziRJ6NNIu9uPR5bvZ6e+VQ3MN9Cg3OPImyo
+         e6rSfNcIUntHBIQHivey1haNzMNjFlW6kq9U8naPtLhu/pFb3dxpZWh38ZhddhLMyQ4W
+         u9p9C/I7jGc+BoWeUg7vuV/HdS7s/Dx17lbpcoAtjuZ7bNZwlqyCG92ZEOT6Z1Nzklee
+         NUEWY/6oKTIgwuLktjVSSVBys9E8e7qvvZYxr4/ZNz06wwvCXh5bdQ0kFYy4MVw5bDJ4
+         Lp5gH7tOXDVf+FP/zZRqLfkIygTVZsZBy775CuXUJHNMbJDRd+JUiOV4UBPOU53eGuwO
+         q23g==
+X-Gm-Message-State: AOAM530mU+L3+wdHmY7zPXD9puHMWYBw3qMcQ5JH2DSyZwldQbYmKyGU
+        6OS7vs4zqsdoOOtMxJHx6wLMQxPrs9vD5VfvVqGSNQ==
+X-Google-Smtp-Source: ABdhPJx7w/5ngmosBOb0nMnQpaaLLJ1ixcBwEM2m0noWsqACqIeFsrPmFWmcpoi9Um2KGR21e//49yJBL9TQ+yUx080=
+X-Received: by 2002:a9d:6f85:: with SMTP id h5mr17108737otq.81.1597805294630;
+ Tue, 18 Aug 2020 19:48:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+References: <20200813084129.332730-1-josephsih@chromium.org>
+In-Reply-To: <20200813084129.332730-1-josephsih@chromium.org>
+From:   Shyh-In Hwang <josephsih@chromium.org>
+Date:   Wed, 19 Aug 2020 10:48:03 +0800
+Message-ID: <CAC9bf3SZKuCan1uDLZ55e0kHychy=6BHb1Cn4O0e5yJwBe1Wzg@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] To support the HFP WBS, a chip vendor may choose a particular
+To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
+        luiz.dentz@gmail.com
+Cc:     Joseph Hwang <josephsih@google.com>,
+        chromeos-bluetooth-upstreaming@chromium.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove linux/notifier.h which is included more than once
+Dear maintainers:
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- drivers/net/ipa/ipa.h | 1 -
- 1 file changed, 1 deletion(-)
+These two patches are to expose the WBS sco packet length to the user
+space. Since different vendors may choose different USB alternate
+settings which result in different packet lengths, we need the kernel
+to expose the lengths to the user space to handle the packets
+properly.
 
-diff --git a/drivers/net/ipa/ipa.h b/drivers/net/ipa/ipa.h
-index 55115cfb2972..407fee841a9a 100644
---- a/drivers/net/ipa/ipa.h
-+++ b/drivers/net/ipa/ipa.h
-@@ -10,7 +10,6 @@
- #include <linux/device.h>
- #include <linux/notifier.h>
- #include <linux/pm_wakeup.h>
--#include <linux/notifier.h>
- 
- #include "ipa_version.h"
- #include "gsi.h"
--- 
-2.17.1
+Thanks!
 
+Joseph
+
+
+On Thu, Aug 13, 2020 at 4:42 PM Joseph Hwang <josephsih@chromium.org> wrote:
+>
+> USB alternate seeting of which the packet size is distinct.
+> The patches are to expose the packet size to user space so that
+> the user space does not need to hard code those values.
+>
+> We have verified this patch on Chromebooks which use
+> - Realtek 8822CE controller with USB alt setting 1
+> - Intel controller with USB alt setting 6
+> Our user space audio server, cras, can get the correct
+> packet length from the socket option.
+>
+>
+> Joseph Hwang (2):
+>   Bluetooth: btusb: define HCI packet sizes of USB Alts
+>   Bluetooth: sco: expose WBS packet length in socket option
+>
+>  drivers/bluetooth/btusb.c         | 43 +++++++++++++++++++++++--------
+>  include/net/bluetooth/bluetooth.h |  2 ++
+>  include/net/bluetooth/hci_core.h  |  1 +
+>  net/bluetooth/sco.c               |  8 ++++++
+>  4 files changed, 43 insertions(+), 11 deletions(-)
+>
+> --
+> 2.28.0.236.gb10cc79966-goog
+>
