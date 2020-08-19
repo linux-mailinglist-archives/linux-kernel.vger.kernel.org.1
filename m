@@ -2,71 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F2F249F05
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 455A6249F11
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728518AbgHSNFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 09:05:01 -0400
-Received: from mail.v3.sk ([167.172.186.51]:54584 "EHLO shell.v3.sk"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728605AbgHSNE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 09:04:56 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 3D74DDFA44;
-        Wed, 19 Aug 2020 13:04:00 +0000 (UTC)
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id cWLOxwqKPIt6; Wed, 19 Aug 2020 13:03:59 +0000 (UTC)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id A93C3DFA74;
-        Wed, 19 Aug 2020 13:03:59 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at zimbra.v3.sk
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id wl2dX1KjOX-V; Wed, 19 Aug 2020 13:03:59 +0000 (UTC)
-Received: from localhost (unknown [77.240.177.143])
-        by zimbra.v3.sk (Postfix) with ESMTPSA id 7F439DFA44;
-        Wed, 19 Aug 2020 13:03:59 +0000 (UTC)
-Date:   Wed, 19 Aug 2020 15:04:52 +0200
-From:   Lubomir Rintel <lkundrak@v3.sk>
-To:     Andrzej Hajda <a.hajda@samsung.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 0/2] dt-bindings: display: himax,hx8837: Add Himax HX8837
- bindings
-Message-ID: <20200819130452.GB152043@furthur.local>
-References: <20200819102246.634039-1-lkundrak@v3.sk>
+        id S1728631AbgHSNFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 09:05:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728433AbgHSNFd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 09:05:33 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB5FC061342
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:05:32 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id h19so25275439ljg.13
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:05:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=UOr65DEC+2TW/zt7uOWWliltVKZ89UsSxVAE/jQE1oM=;
+        b=ig0Gowk5bmmRlwDUQnO4y6TgS8TPTr7rVwwcxXCQXtPl9HhW8NkXHIv6B+duOf3lp+
+         gZutF2zFShkzk3CYvXCAeuEulGsoslBHGNBCkbZ0TFRBc/2Ut0qPqg866dt7JyzfnpIJ
+         68MXFvQRcMsKqEVR4y3VTJ8rtpMbgZLWt9J6jDkIWlQW65MyZaERS9MyqVWX9fy2Isez
+         xsZ5vi3MHowaVKhMg33qFIcX7/quCIco+02R77UBUKxvHC/xluOIqC/Lr5qYci7AMVZf
+         PyXAFBj4/F7uT7Y3iuvrL7XB97GjkJ7iLwjZ3dF8czzNndQEsJq65DDKMcngHG6f3kPe
+         i80g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=UOr65DEC+2TW/zt7uOWWliltVKZ89UsSxVAE/jQE1oM=;
+        b=eEiT+foDrSW/0YbFkIYLEddN8L56bRyEpg7ajNXpUvLvm4mrezkakW7QzhwQ0Rs+Pb
+         E/1NjHxTBYXvZ9mFiZhc5ntqJTbAwsp9o5+AJy9j0Pj4itj5jJVlBCttjw45VmZNoLn6
+         siGyeNgcg8qxQGskUJ6Wwc+yN9HuDUWQ3FG/ykA67sWYj1W3iytO/D5QG3hSlJEqbLvG
+         5827/Ru1gsJfDXCloMZIqoCnH/VPl11RuTKOyj9hX1hCTISMRgSdLuYAgQ7jWHEsfaed
+         wDoWauwjmGqCOSJTVINjkCLv+nRCkk/a9ELjr4WhULM+kHQIKqZKiQ8ds9J/YKRnVsbQ
+         Aa0A==
+X-Gm-Message-State: AOAM5327qRPkuPg2Ky32Hr8zpwkYEMk6Vw257JcLUvMTvUHLchscRKrL
+        tlfkobadA9UV8QgKpS/Gth6WdQrT7Js9C5lW5H0=
+X-Google-Smtp-Source: ABdhPJzTFitFWyqH5VgBxrEeiqQ4A1POexli1AXmA+RrBIO5haBPhDqi2mygN5Tr7sNOxSaOFMqW2cDUGzlZZDUdK9Y=
+X-Received: by 2002:a2e:9ed4:: with SMTP id h20mr12179547ljk.82.1597842330702;
+ Wed, 19 Aug 2020 06:05:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200819102246.634039-1-lkundrak@v3.sk>
-X-Mailer: git-send-email 2.26.2
+Reply-To: mrahmedmuzashah@gmail.com
+Received: by 2002:a19:4c57:0:0:0:0:0 with HTTP; Wed, 19 Aug 2020 06:05:29
+ -0700 (PDT)
+From:   "Mr.Ahmed Muzashah" <ahmedmuzashah@gmail.com>
+Date:   Wed, 19 Aug 2020 14:05:29 +0100
+X-Google-Sender-Auth: lVrhDL8Mzkfaw7v4sU_7WkA5sWQ
+Message-ID: <CA+ANWpm8x4guuGELAxYevxXhqEEr=BWtq6-82y7LV1LmfG2PzQ@mail.gmail.com>
+Subject: =?UTF-8?B?U2Now7ZuZW4gVGFn?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(Re-sending the cover letter here, because I left the subject empty and
-the archive didn't pick it up. Sorry.)
+Sch=C3=B6nen Tag,
 
-Hi,
+Bitte entschuldigen Sie, dass Sie einen =C3=9Cberraschungsbrief geschrieben
+haben. Ich bin Herr Ahmed Muzashah, Account Manager bei einer
+Investmentbank hier in Burkina Faso. Ich habe ein sehr wichtiges
+Gesch=C3=A4ft, das ich mit Ihnen besprechen m=C3=B6chte. In meinem Konto is=
+t ein
+Kontoentwurf er=C3=B6ffnet Ich habe die M=C3=B6glichkeit, den verbleibenden
+Fonds (15,8 Millionen US-Dollar) von f=C3=BCnfzehn Millionen
+achthunderttausend US-Dollar eines meiner Bankkunden zu =C3=BCbertragen,
+der beim Zusammenbruch der Welt gestorben ist Handelszentrum in den
+Vereinigten Staaten am 11. September 2001.
 
-please take a look at the patches chained to this messages and consider
-applying them. They add support for the controller that drives the panel
-on the OLPC XO laptops.
+Ich m=C3=B6chte diese Mittel investieren und Sie unserer Bank f=C3=BCr dies=
+en
+Deal vorstellen. Alles, was ich ben=C3=B6tige, ist Ihre ehrliche
+Zusammenarbeit und ich garantiere Ihnen, dass dies unter einer
+legitimen Vereinbarung durchgef=C3=BChrt wird, die uns vor
+Gesetzesverst=C3=B6=C3=9Fen sch=C3=BCtzt Ich bin damit einverstanden, dass =
+40% dieses
+Geldes f=C3=BCr Sie als meinen ausl=C3=A4ndischen Partner, 50% f=C3=BCr mic=
+h und 10%
+f=C3=BCr die Schaffung der Grundlage f=C3=BCr die weniger Privilegien in Ih=
+rem
+Land bestimmt sind. Wenn Sie wirklich an meinem Vorschlag interessiert
+sind, werden weitere Einzelheiten der =C3=9Cbertragung ber=C3=BCcksichtigt =
+Sie
+werden an Sie weitergeleitet, sobald ich Ihre Bereitschaftsmail f=C3=BCr
+eine erfolgreiche =C3=9Cberweisung erhalte.
 
-Compared to the previous version the bindings have been converted to
-YAML and the driver itself has been rewritten without any fancy features
-such as the self-refresh so that the bare minimum works before the rest
-can be figured out. Detailed change logs are in individual patches.
-
-Tested on an OLPC XO-1.75 laptop.
-
-Thank you
-Lubo
+Dein,
+Mr.Ahmed Muzashah,
