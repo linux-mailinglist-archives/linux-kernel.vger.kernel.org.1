@@ -2,98 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C87532494FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 08:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 412E9249502
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 08:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726711AbgHSGaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 02:30:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726646AbgHSGap (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 02:30:45 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13467C061389;
-        Tue, 18 Aug 2020 23:30:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=UgSZNlUuKgU2XUXlOtW6UXW0y0qV6J6pfHHe7gP/Sl4=; b=w5IZhdb/A8fGlvpqumPxnZyxGa
-        eA9F4+irb6pQJYTnyUPw4+aoVgc86Cc6ihlMmXVfWGWb4I9gY8g4M1HKuBCQArL+lGGm6EWAPwpI5
-        eISXZCE4CxKBYdQnDLfvGP2nETM9VMKlicekO7MxHQGZbN4ZMmm1Lr5BhDY/UdrlT3ODDQxtnVbrf
-        JNsyeN7llL3OoY8tFFKHoODmR6HmqfqvohPj3E4zm7yPQVebL87UocHSUyoEVeD/S1UN0Q9ApAHtn
-        2HtJ3ckALaClJmpdaKvI1pzReu2Q8VtWrZQCwhtUBXaVzmxNssJU7jZ1dlropWtK9PJMgumRNA9is
-        T39nu3eg==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k8HcP-0002A9-LH; Wed, 19 Aug 2020 06:30:42 +0000
-Subject: Re: linux-next: Tree for Aug 19 (scsi/libsas/)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-References: <20200819155742.1793a180@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <dbbf8037-1e6c-5e66-39e1-3a5f4b0f3249@infradead.org>
-Date:   Tue, 18 Aug 2020 23:30:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726734AbgHSGdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 02:33:09 -0400
+Received: from mga11.intel.com ([192.55.52.93]:54924 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726685AbgHSGdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 02:33:08 -0400
+IronPort-SDR: VR+3QcAulfk/HIxfCiq8T2S1bybY+5vQK8lxbQRkQNUGpEV2tQfeUNAqVZZRweEBOv/QS7Of1T
+ 5LPkzzBzO9zQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="152675316"
+X-IronPort-AV: E=Sophos;i="5.76,330,1592895600"; 
+   d="scan'208";a="152675316"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 23:30:57 -0700
+IronPort-SDR: yWGynPXoF/ygcZzdiuq4SnHzVEviyzMnEv8e3E0nomUDhYzbJYzVNCN8LMryjRcCns9bAmMmcb
+ nwLn6d8Wq2LQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,330,1592895600"; 
+   d="scan'208";a="400730444"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 18 Aug 2020 23:30:54 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 19 Aug 2020 09:30:54 +0300
+Date:   Wed, 19 Aug 2020 09:30:54 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2 v4] tcpm: During PR_SWAP, source caps should be sent
+ only after tSwapSourceStart
+Message-ID: <20200819063054.GA2772165@kuha.fi.intel.com>
+References: <20200817183828.1895015-1-badhri@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20200819155742.1793a180@canb.auug.org.au>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200817183828.1895015-1-badhri@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/18/20 10:57 PM, Stephen Rothwell wrote:
-> Hi all,
+On Mon, Aug 17, 2020 at 11:38:27AM -0700, Badhri Jagan Sridharan wrote:
+> The patch addresses the compliance test failures while running
+> TD.PD.CP.E3, TD.PD.CP.E4, TD.PD.CP.E5 of the "Deterministic PD
+> Compliance MOI" test plan published in https://www.usb.org/usbc.
+> For a product to be Type-C compliant, it's expected that these tests
+> are run on usb.org certified Type-C compliance tester as mentioned in
+> https://www.usb.org/usbc.
 > 
-> Changes since 20200818:
+> The purpose of the tests TD.PD.CP.E3, TD.PD.CP.E4, TD.PD.CP.E5 is to
+> verify the PR_SWAP response of the device. While doing so, the test
+> asserts that Source Capabilities message is NOT received from the test
+> device within tSwapSourceStart min (20 ms) from the time the last bit
+> of GoodCRC corresponding to the RS_RDY message sent by the UUT was
+> sent. If it does then the test fails.
 > 
+> This is in line with the requirements from the USB Power Delivery
+> Specification Revision 3.0, Version 1.2:
+> "6.6.8.1 SwapSourceStartTimer
+> The SwapSourceStartTimer Shall be used by the new Source, after a
+> Power Role Swap or Fast Role Swap, to ensure that it does not send
+> Source_Capabilities Message before the new Sink is ready to receive
+> the
+> Source_Capabilities Message. The new Source Shall Not send the
+> Source_Capabilities Message earlier than tSwapSourceStart after the
+> last bit of the EOP of GoodCRC Message sent in response to the PS_RDY
+> Message sent by the new Source indicating that its power supply is
+> ready."
+> 
+> The patch makes sure that TCPM does not send the Source_Capabilities
+> Message within tSwapSourceStart(20ms) by transitioning into
+> SRC_STARTUP only after  tSwapSourceStart(20ms).
+> 
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-Is this some kind of mis-merge?
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-In sas_discover.c:
+> ---
+> Changes since V1:
+> - Comment on the permissible values of tSwapSourceStart
+> 
+> Changes since V2:
+> - Fixing alignment issue pointed out by Guenter.
+> - Added Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> 
+> Changes since V3:
+> - Updated commit description and made it elaborate to address Heikki's
+>   suggestion.
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 2 +-
+>  include/linux/usb/pd.h        | 1 +
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 3ef37202ee37..d38347bd3335 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -3555,7 +3555,7 @@ static void run_state_machine(struct tcpm_port *port)
+>  		 */
+>  		tcpm_set_pwr_role(port, TYPEC_SOURCE);
+>  		tcpm_pd_send_control(port, PD_CTRL_PS_RDY);
+> -		tcpm_set_state(port, SRC_STARTUP, 0);
+> +		tcpm_set_state(port, SRC_STARTUP, PD_T_SWAP_SRC_START);
+>  		break;
+>  
+>  	case VCONN_SWAP_ACCEPT:
+> diff --git a/include/linux/usb/pd.h b/include/linux/usb/pd.h
+> index b6c233e79bd4..1df895e4680b 100644
+> --- a/include/linux/usb/pd.h
+> +++ b/include/linux/usb/pd.h
+> @@ -473,6 +473,7 @@ static inline unsigned int rdo_max_power(u32 rdo)
+>  #define PD_T_ERROR_RECOVERY	100	/* minimum 25 is insufficient */
+>  #define PD_T_SRCSWAPSTDBY      625     /* Maximum of 650ms */
+>  #define PD_T_NEWSRC            250     /* Maximum of 275ms */
+> +#define PD_T_SWAP_SRC_START	20	/* Minimum of 20ms */
+>  
+>  #define PD_T_DRP_TRY		100	/* 75 - 150 ms */
+>  #define PD_T_DRP_TRYWAIT	600	/* 400 - 800 ms */
 
-	case SAS_SATA_DEV:
-	case SAS_SATA_PM:
-#ifdef CONFIG_SCSI_SAS_ATA
-		error = sas_discover_sata(dev);
-		break;
-#else
-		pr_notice("ATA device seen but CONFIG_SCSI_SAS_ATA=N so cannot attach\n");
-		fallthrough;
-#endif
-		fallthrough;	/* only for the #else condition above */
-
-
-
-
-  CC [M]  drivers/scsi/libsas/sas_discover.o
-In file included from ./../include/linux/compiler_types.h:65:0,
-                 from <command-line>:0:
-../drivers/scsi/libsas/sas_discover.c: In function 'sas_discover_domain':
-../include/linux/compiler_attributes.h:214:41: warning: attribute 'fallthrough' not preceding a case label or default label
- # define fallthrough                    __attribute__((__fallthrough__))
-                                         ^
-../drivers/scsi/libsas/sas_discover.c:469:3: note: in expansion of macro 'fallthrough'
-   fallthrough;
-   ^~~~~~~~~~~
-  CC      drivers/ide/ide-eh.o
-../include/linux/compiler_attributes.h:214:41: error: invalid use of attribute 'fallthrough'
- # define fallthrough                    __attribute__((__fallthrough__))
-                                         ^
-../drivers/scsi/libsas/sas_discover.c:471:3: note: in expansion of macro 'fallthrough'
-   fallthrough; /* only for the #else condition above */
-   ^~~~~~~~~~~
-
-
+thanks,
 
 -- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+heikki
