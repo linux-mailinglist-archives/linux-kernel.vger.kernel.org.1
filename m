@@ -2,82 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0248324949B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 07:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB2A2494A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 07:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726675AbgHSFs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 01:48:28 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:40044 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726531AbgHSFs1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 01:48:27 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U6CFft4_1597816103;
-Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U6CFft4_1597816103)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 19 Aug 2020 13:48:24 +0800
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH v2 2/2] mm/pageblock: remove false sharing in pageblock_flags
-Date:   Wed, 19 Aug 2020 13:47:55 +0800
-Message-Id: <1597816075-61091-2-git-send-email-alex.shi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1597816075-61091-1-git-send-email-alex.shi@linux.alibaba.com>
-References: <1597816075-61091-1-git-send-email-alex.shi@linux.alibaba.com>
+        id S1726531AbgHSFwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 01:52:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725883AbgHSFwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 01:52:49 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 271F9207DA;
+        Wed, 19 Aug 2020 05:52:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597816369;
+        bh=eDYPmryot5vJDEr3Oa+VhUcnmO1H55HLBUwMGfZDMQE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qyp9M/VjLa/uZ+FA7mKFQ/n0NCtR4ezHk+Oldywlz/o7NBeLE16Y0WrK1rU1NmQ6D
+         MotSV9JCrq6FrLR0RJX9U4yWHsjFVB43wTDKuq8WFDY5+E2N/BbU7kkMl0Q5ixVbz8
+         jv2BixQUMd+XBPj3ODo6oFEFvWSCJ0uq4SW1a4pk=
+Date:   Wed, 19 Aug 2020 07:53:10 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Scott Branden <scott.branden@broadcom.com>,
+        linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com
+Subject: Re: [PATCH v2 0/3] Add Broadcom VK driver
+Message-ID: <20200819055310.GA853200@kroah.com>
+References: <20200806004631.8102-1-scott.branden@broadcom.com>
+ <202008181251.1CA80429@keescook>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202008181251.1CA80429@keescook>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current pageblock_flags is only 4 bits, so it has to share a char size
-in cmpxchg when get set, the false sharing cause perf drop.
+On Tue, Aug 18, 2020 at 12:52:54PM -0700, Kees Cook wrote:
+> On Wed, Aug 05, 2020 at 05:46:28PM -0700, Scott Branden wrote:
+> > This patch series drops previous patches in [1]
+> > that were incorporated by Kees Cook into patch series
+> > "Introduce partial kernel_read_file() support" [2].
+> > 
+> > Remaining patches are contained in this series to add Broadcom VK driver.
+> > (which depends on request_firmware_into_buf API addition in
+> > other patch series [2] being applied first).
+> > 
+> > Please note this patch series will not compile without [2].
+> > 
+> > [1] https://lore.kernel.org/lkml/20200706232309.12010-1-scott.branden@broadcom.com/
+> > [2] https://lore.kernel.org/lkml/20200729175845.1745471-1-keescook@chromium.org/
+> 
+> Greg, is your intention to take [2] into your tree? AFAICT, it's got the
+> appropriate Acks, etc.
 
-If we incrase the bits up to 8, false sharing would gone in cmpxchg. and
-the only cost is half char per pageblock, which is half char per 128MB
-on x86, 4 chars in 1 GB.
+Yes, it is in my queue to do so, hopefully soon, digging out now from
+the big -rc1 patch-submission-pile...
 
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org
----
- include/linux/pageblock-flags.h | 2 +-
- mm/page_alloc.c                 | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/pageblock-flags.h b/include/linux/pageblock-flags.h
-index d189441568eb..f785c9d6d68c 100644
---- a/include/linux/pageblock-flags.h
-+++ b/include/linux/pageblock-flags.h
-@@ -25,7 +25,7 @@ enum pageblock_bits {
- 	 * Assume the bits will always align on a word. If this assumption
- 	 * changes then get/set pageblock needs updating.
- 	 */
--	NR_PAGEBLOCK_BITS
-+	NR_PAGEBLOCK_BITS = BITS_PER_BYTE
- };
- 
- #ifdef CONFIG_HUGETLB_PAGE
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index f60071e8a4e1..65f692c762d5 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -517,7 +517,7 @@ void set_pfnblock_flags_mask(struct page *page, unsigned long flags,
- 	unsigned long bitidx, byte_bitidx;
- 	unsigned char old_byte, byte;
- 
--	BUILD_BUG_ON(NR_PAGEBLOCK_BITS != 4);
-+	BUILD_BUG_ON(NR_PAGEBLOCK_BITS != BITS_PER_BYTE);
- 	BUILD_BUG_ON(MIGRATE_TYPES > (1 << PB_migratetype_bits));
- 
- 	bitmap = get_pageblock_bitmap(page, pfn);
--- 
-1.8.3.1
-
+greg k-h
