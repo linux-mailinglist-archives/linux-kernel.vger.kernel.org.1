@@ -2,146 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E5C249A02
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 12:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89DA9249A29
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 12:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728024AbgHSKNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 06:13:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:60026 "EHLO foss.arm.com"
+        id S1727811AbgHSKWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 06:22:21 -0400
+Received: from smtp.h3c.com ([60.191.123.56]:17713 "EHLO h3cspam01-ex.h3c.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727845AbgHSKMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 06:12:23 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6DCFD101E;
-        Wed, 19 Aug 2020 03:12:22 -0700 (PDT)
-Received: from [10.57.40.122] (unknown [10.57.40.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E7F1D3F6CF;
-        Wed, 19 Aug 2020 03:12:19 -0700 (PDT)
-Subject: Re: [PATCH 00/16] IOMMU driver for Kirin 960/970
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Joerg Roedel <jroedel@suse.de>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Chenfeng <puck.chen@hisilicon.com>, linuxarm@huawei.com,
-        Wei Xu <xuwei5@hisilicon.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, Rob Herring <robh+dt@kernel.org>,
-        mauro.chehab@huawei.com, Suzhuangluan <suzhuangluan@hisilicon.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-References: <cover.1597650455.git.mchehab+huawei@kernel.org>
- <5c7918b6-c506-680b-cb0f-9e5f6a7038d9@arm.com>
- <20200818172909.71f5243a@coco.lan>
- <79f40595-7769-aa6a-fbba-53adcffca327@arm.com>
- <CALAqxLXBYvwZ9kiKSGBeO5f-eKi2DD14QtoZgFGyGd-B7EOPQA@mail.gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <3c058393-9ad2-3786-f68c-a54698ad3691@arm.com>
-Date:   Wed, 19 Aug 2020 11:12:18 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726923AbgHSKWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 06:22:20 -0400
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
+        by h3cspam01-ex.h3c.com with ESMTPS id 07JALZed012120
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 19 Aug 2020 18:21:35 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from localhost.localdomain (10.99.212.201) by
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 19 Aug 2020 18:21:38 +0800
+From:   Xianting Tian <tian.xianting@h3c.com>
+To:     <clm@fb.com>, <josef@toxicpanda.com>, <dsterba@suse.com>
+CC:     <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Xianting Tian <tian.xianting@h3c.com>
+Subject: [PATCH] btrfs: prevent hung check firing during long sync IO
+Date:   Wed, 19 Aug 2020 18:14:51 +0800
+Message-ID: <20200819101451.24266-1-tian.xianting@h3c.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <CALAqxLXBYvwZ9kiKSGBeO5f-eKi2DD14QtoZgFGyGd-B7EOPQA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.99.212.201]
+X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
+X-DNSRBL: 
+X-MAIL: h3cspam01-ex.h3c.com 07JALZed012120
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-18 23:02, John Stultz wrote:
-> On Tue, Aug 18, 2020 at 9:26 AM Robin Murphy <robin.murphy@arm.com> wrote:
->> On 2020-08-18 16:29, Mauro Carvalho Chehab wrote:
->>> Em Tue, 18 Aug 2020 15:47:55 +0100
->>> Basically, the DT binding has this, for IOMMU:
->>>
->>>
->>>        smmu_lpae {
->>>                compatible = "hisilicon,smmu-lpae";
->>>        };
->>>
->>> ...
->>>        dpe: dpe@e8600000 {
->>>                compatible = "hisilicon,kirin970-dpe";
->>>                memory-region = <&drm_dma_reserved>;
->>> ...
->>>                iommu_info {
->>>                        start-addr = <0x8000>;
->>>                        size = <0xbfff8000>;
->>>                };
->>>        }
->>>
->>> This is used by kirin9xx_drm_dss.c in order to enable and use
->>> the iommu:
->>>
->>>
->>>        static int dss_enable_iommu(struct platform_device *pdev, struct dss_hw_ctx *ctx)
->>>        {
->>>                struct device *dev = NULL;
->>>
->>>                dev = &pdev->dev;
->>>
->>>                /* create iommu domain */
->>>                ctx->mmu_domain = iommu_domain_alloc(dev->bus);
->>>                if (!ctx->mmu_domain) {
->>>                        pr_err("iommu_domain_alloc failed!\n");
->>>                        return -EINVAL;
->>>                }
->>>
->>>                iommu_attach_device(ctx->mmu_domain, dev);
->>>
->>>                return 0;
->>>        }
->>>
->>> The only place where the IOMMU domain is used is on this part of the
->>> code(error part simplified here) [1]:
->>>
->>>        void hisi_dss_smmu_on(struct dss_hw_ctx *ctx)
->>>        {
->>>                uint64_t fama_phy_pgd_base;
->>>                uint32_t phy_pgd_base;
->>> ...
->>>                fama_phy_pgd_base = iommu_iova_to_phys(ctx->mmu_domain, 0);
->>>                phy_pgd_base = (uint32_t)fama_phy_pgd_base;
->>>                if (WARN_ON(!phy_pgd_base))
->>>                        return;
->>>
->>>                set_reg(smmu_base + SMMU_CB_TTBR0, phy_pgd_base, 32, 0);
->>>        }
->>>
->>> [1] https://github.com/mchehab/linux/commit/36da105e719b47bbe9d6cb7e5619b30c7f3eb1bd
->>>
->>> In other words, the driver needs to get the physical address of the frame
->>> buffer (mapped via iommu) in order to set some DRM-specific register.
->>>
->>> Yeah, the above code is somewhat hackish. I would love to replace
->>> this part by a more standard approach.
->>
->> OK, so from a quick look at that, my impression is that your display
->> controller has its own MMU and you don't need to pretend to use the
->> IOMMU API at all. Just have the DRM driver use io-pgtable directly to
->> run its own set of ARM_32_LPAE_S1 pagetables - see Panfrost for an
->> example (but try to ignore the wacky "Mali LPAE" format).
-> 
-> Yea. For the HiKey960, there was originally a similar patch series but
-> it was refactored out and the (still out of tree) DRM driver I'm
-> carrying doesn't seem to need it (though looking we still have the
-> iommu_info subnode in the dts that maybe needs to be cleaned up).
+For sync and flush io, it may take long time to complete.
+So it's better to use wait_for_completion_io_timeout() in a
+while loop to avoid prevent hung check and crash(when set
+/proc/sys/kernel/hung_task_panic).
 
-Indeed, I'd assume it's possible to leave the MMU off and just use CMA 
-buffers instead, but wiring it up properly without the downstream 
-mis-design should be pretty clean, so maybe that could ultimately be 
-shared with 960 too (assuming the hardware isn't wildly dissimilar).
+This is similar to prevent hung task check in submit_bio_wait(),
+blk_execute_rq().
 
-I notice there's already a whole load of MMU configuration hard-coded 
-into the DRM driver - does iommu_info even need to be in the DT, or 
-could that also be decided directly by the driver? (Most other MMU-aware 
-DRM drivers seem to hard-code their drm_mm dimensions.) I can't imagine 
-the *virtual* address space limits need to vary on a per-board basis, 
-and they could easily be tied to the compatible if they legitimately 
-differ across SoCs and a simple lowest-common-denominator approach 
-wouldn't suffice for whatever reason.
+Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+---
+ fs/btrfs/disk-io.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-Robin.
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 9ae25f632..1eb560de0 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -17,6 +17,7 @@
+ #include <linux/error-injection.h>
+ #include <linux/crc32c.h>
+ #include <linux/sched/mm.h>
++#include <linux/sched/sysctl.h>
+ #include <asm/unaligned.h>
+ #include <crypto/hash.h>
+ #include "ctree.h"
+@@ -3699,12 +3700,21 @@ static void write_dev_flush(struct btrfs_device *device)
+ static blk_status_t wait_dev_flush(struct btrfs_device *device)
+ {
+ 	struct bio *bio = device->flush_bio;
++	unsigned long hang_check;
+ 
+ 	if (!test_bit(BTRFS_DEV_STATE_FLUSH_SENT, &device->dev_state))
+ 		return BLK_STS_OK;
+ 
+ 	clear_bit(BTRFS_DEV_STATE_FLUSH_SENT, &device->dev_state);
+-	wait_for_completion_io(&device->flush_wait);
++
++	/* Prevent hang_check timer from firing at us during very long I/O */
++	hang_check = sysctl_hung_task_timeout_secs;
++	if (hang_check)
++		while (!wait_for_completion_io_timeout(&device->flush_wait,
++						hang_check * (HZ/2)))
++			;
++	else
++		wait_for_completion_io(&device->flush_wait);
+ 
+ 	return bio->bi_status;
+ }
+-- 
+2.17.1
+
