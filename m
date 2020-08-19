@@ -2,87 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30323249847
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 10:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E89DE24984D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 10:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726731AbgHSIdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 04:33:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45762 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726531AbgHSIdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 04:33:09 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BEE4B20772;
-        Wed, 19 Aug 2020 08:33:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597825988;
-        bh=KU8VLF79bhQTCzQXXN9H8OZHwlDn6KKht6tavPyIl3Q=;
-        h=From:To:Cc:Subject:Date:From;
-        b=PcqTf5VHcbuId2XaVZ1YeNooY9oBdbdwwMc2tvuZYo8e6DOi++Qr9pU9lbIIKpT08
-         5oGW5GXYAVZ3useuKbpdGnKr67wTxO0/INvrZmut4t7Cox6abcceg7/OnzoQD4Jb8i
-         yJHjHZXrEDfE49XG3sNV7hk+nNrzIkvvLG6cvP44=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] fs: Add function declaration of simple_dname
-Date:   Wed, 19 Aug 2020 11:32:59 +0300
-Message-Id: <20200819083259.919838-1-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726840AbgHSIeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 04:34:50 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9770 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726482AbgHSIes (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 04:34:48 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id BBB24E4CCA2E7D39B94A;
+        Wed, 19 Aug 2020 16:34:44 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Wed, 19 Aug 2020
+ 16:34:37 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <willy@infradead.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
+Subject: [PATCH v2] mm/migrate: Avoid possible unnecessary process right check in kernel_move_pages()
+Date:   Wed, 19 Aug 2020 04:33:31 -0400
+Message-ID: <20200819083331.19012-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+There is no need to check if this process has the right to modify the
+specified process when they are same. And we could also skip the security
+hook call if a process is modifying its own pages. Add helper function to
+handle these.
 
-The simple_dname() is declared in internal header file as extern
-and this generates the following GCC warning.
-
-fs/d_path.c:311:7: warning: no previous prototype for 'simple_dname' [-Wmissing-prototypes]
-  311 | char *simple_dname(struct dentry *dentry, char *buffer, int buflen)
-      |       ^~~~~~~~~~~~
-
-Instead of that extern, reuse the fact that internal.h file is internal to fs/* and
-declare simple_dname() like any other function.
-
-Fixes: 7e5f7bb08b8c ("unexport simple_dname()")
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Suggested-by: Matthew Wilcox <willy@infradead.org>
+Signed-off-by: Hongxiang Lou <louhongxiang@huawei.com>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 ---
- fs/d_path.c   | 2 ++
- fs/internal.h | 2 +-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ mm/migrate.c | 71 +++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 43 insertions(+), 28 deletions(-)
 
-diff --git a/fs/d_path.c b/fs/d_path.c
-index 0f1fc1743302..4b89448cc78e 100644
---- a/fs/d_path.c
-+++ b/fs/d_path.c
-@@ -8,6 +8,8 @@
- #include <linux/prefetch.h>
- #include "mount.h"
-
-+#include "internal.h"
-+
- static int prepend(char **buffer, int *buflen, const char *str, int namelen)
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 34a842a8eb6a..9026876a27dc 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -1869,33 +1869,27 @@ static int do_pages_stat(struct mm_struct *mm, unsigned long nr_pages,
+ 	return nr_pages ? -EFAULT : 0;
+ }
+ 
+-/*
+- * Move a list of pages in the address space of the currently executing
+- * process.
+- */
+-static int kernel_move_pages(pid_t pid, unsigned long nr_pages,
+-			     const void __user * __user *pages,
+-			     const int __user *nodes,
+-			     int __user *status, int flags)
++static struct mm_struct *find_mm_struct(pid_t pid, nodemask_t *mem_nodes)
  {
- 	*buflen -= namelen;
-diff --git a/fs/internal.h b/fs/internal.h
-index 10517ece4516..2def264272f4 100644
---- a/fs/internal.h
-+++ b/fs/internal.h
-@@ -164,7 +164,7 @@ extern int d_set_mounted(struct dentry *dentry);
- extern long prune_dcache_sb(struct super_block *sb, struct shrink_control *sc);
- extern struct dentry *d_alloc_cursor(struct dentry *);
- extern struct dentry * d_alloc_pseudo(struct super_block *, const struct qstr *);
--extern char *simple_dname(struct dentry *, char *, int);
-+char *simple_dname(struct dentry *d, char *buf, int len);
- extern void dput_to_list(struct dentry *, struct list_head *);
- extern void shrink_dentry_list(struct list_head *);
-
---
-2.26.2
+ 	struct task_struct *task;
+ 	struct mm_struct *mm;
+-	int err;
+-	nodemask_t task_nodes;
+-
+-	/* Check flags */
+-	if (flags & ~(MPOL_MF_MOVE|MPOL_MF_MOVE_ALL))
+-		return -EINVAL;
+ 
+-	if ((flags & MPOL_MF_MOVE_ALL) && !capable(CAP_SYS_NICE))
+-		return -EPERM;
++	/*
++	 * There is no need to check if current process has the right to modify
++	 * the specified process when they are same.
++	 */
++	if (!pid) {
++		mmget(current->mm);
++		*mem_nodes = cpuset_mems_allowed(current);
++		return current->mm;
++	}
+ 
+ 	/* Find the mm_struct */
+ 	rcu_read_lock();
+-	task = pid ? find_task_by_vpid(pid) : current;
++	task = find_task_by_vpid(pid);
+ 	if (!task) {
+ 		rcu_read_unlock();
+-		return -ESRCH;
++		return ERR_PTR(-ESRCH);
+ 	}
+ 	get_task_struct(task);
+ 
+@@ -1905,22 +1899,47 @@ static int kernel_move_pages(pid_t pid, unsigned long nr_pages,
+ 	 */
+ 	if (!ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS)) {
+ 		rcu_read_unlock();
+-		err = -EPERM;
++		mm = ERR_PTR(-EPERM);
+ 		goto out;
+ 	}
+ 	rcu_read_unlock();
+ 
+- 	err = security_task_movememory(task);
+- 	if (err)
++	mm = ERR_PTR(security_task_movememory(task));
++	if (IS_ERR(mm))
+ 		goto out;
+-
+-	task_nodes = cpuset_mems_allowed(task);
++	*mem_nodes = cpuset_mems_allowed(task);
+ 	mm = get_task_mm(task);
++out:
+ 	put_task_struct(task);
+-
+ 	if (!mm)
++		mm = ERR_PTR(-EINVAL);
++	return mm;
++}
++
++/*
++ * Move a list of pages in the address space of the currently executing
++ * process.
++ */
++static int kernel_move_pages(pid_t pid, unsigned long nr_pages,
++			     const void __user * __user *pages,
++			     const int __user *nodes,
++			     int __user *status, int flags)
++{
++	struct mm_struct *mm;
++	int err;
++	nodemask_t task_nodes;
++
++	/* Check flags */
++	if (flags & ~(MPOL_MF_MOVE|MPOL_MF_MOVE_ALL))
+ 		return -EINVAL;
+ 
++	if ((flags & MPOL_MF_MOVE_ALL) && !capable(CAP_SYS_NICE))
++		return -EPERM;
++
++	mm = find_mm_struct(pid, &task_nodes);
++	if (IS_ERR(mm))
++		return PTR_ERR(mm);
++
+ 	if (nodes)
+ 		err = do_pages_move(mm, task_nodes, nr_pages, pages,
+ 				    nodes, status, flags);
+@@ -1929,10 +1948,6 @@ static int kernel_move_pages(pid_t pid, unsigned long nr_pages,
+ 
+ 	mmput(mm);
+ 	return err;
+-
+-out:
+-	put_task_struct(task);
+-	return err;
+ }
+ 
+ SYSCALL_DEFINE6(move_pages, pid_t, pid, unsigned long, nr_pages,
+-- 
+2.19.1
 
