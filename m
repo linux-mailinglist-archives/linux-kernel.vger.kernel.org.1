@@ -2,139 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD7F8249F93
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A82249F7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728310AbgHSNXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 09:23:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728060AbgHSNSy (ORCPT
+        id S1728447AbgHSNVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 09:21:54 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:60790 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728437AbgHSNUQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 09:18:54 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A90AC061350
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:18:15 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id mw10so1108880pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:18:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EmsrMsejrteUQOaXizHGkEi5KXQjT4dl2svL7ypPlBc=;
-        b=NDiJILiosqIAscQE8wZykt6DbpS7YBnnC+G3dZiskRWDg56ceYJOsQGdMhN8aJ4v1s
-         eHtvgj/ZL8A6RoCJXjYGmEYhfXmChtBRxTJh+UMFZz0aeP1OXPlfuYqfHga4NDkZFxL0
-         GBL7tBDtP5vCG5nmKKHK5L/WJ0VcgLapSq4BYLtZ4LVj/FCx3VTQN9zaDe7EFZbvc8Mz
-         SMwVHM8sTcJNWruEnCVdBaUOPDvmnwYyRYSPbTKMq5/90/nz+ym7LR/rfGTQorWOlkh+
-         H3m+gUJTPN9DK1nksrYMnmY9YKoE7PsnMs5/zysG/SoRwSZ8WVfHvXoajcrNEtAu0F+7
-         +pTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EmsrMsejrteUQOaXizHGkEi5KXQjT4dl2svL7ypPlBc=;
-        b=W3TlEV9dHX5XCgfOfqmuGsqhHNMP4wdymYi1sldXEqGDZ3NmsKefEbzaY+cvTeCaA7
-         34YqNbJuUBiql0vSMPQ1UG/spqINZs4AueEfz9tN16YyN2ciFgYYU5IeJXXTkF84BJze
-         x/oiDZ53Bv3Iqbn+TgVRxvPMkDMtxuHQHXBmHRR7yvgOSsEhhudy5pFfG4+xXr3Stz8c
-         y8HJcdHV3HpbgjrcimJavG92iVjQMHum2DJtZdR2sHzmYnr5yxrTh2O/+r1/+54abmPr
-         8h2JLDkBh6bfB1Tdwab8fVZOi+CoFnxByV+VVD8XSYp2zkVSACOjcznRIDYllHKoSduO
-         eg3g==
-X-Gm-Message-State: AOAM5319JMFfM8Fvo+F5CDb4+y+xD7yI68MjB+miXeu4a1ouyCfQ4I8b
-        69p2DpnRa+QMXwfukZm6+tCb9yOLFWlL8tlXfbo=
-X-Google-Smtp-Source: ABdhPJyNNi7hvHginyDtQT0al1nbw/1nudCMk8Buqpi5CRRYPre01hagxHuWYAwWwaYdZCciL1m4xg==
-X-Received: by 2002:a17:90a:630c:: with SMTP id e12mr3989898pjj.17.1597843094764;
-        Wed, 19 Aug 2020 06:18:14 -0700 (PDT)
-Received: from [192.168.1.182] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id l22sm3010080pjy.31.2020.08.19.06.18.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Aug 2020 06:18:14 -0700 (PDT)
-Subject: Re: [RFC PATCH] sched: Invoke io_wq_worker_sleeping() with enabled
- preemption
-To:     peterz@infradead.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20200819123758.6v45rj2gvojddsnn@linutronix.de>
- <20200819131507.GC2674@hirez.programming.kicks-ass.net>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <f26205ac-9da9-253e-ea43-db2417714a94@kernel.dk>
-Date:   Wed, 19 Aug 2020 07:18:12 -0600
+        Wed, 19 Aug 2020 09:20:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597843200;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=DAxxNo82t1la8Tp/PsDFiyeZhmprhHLj0fAW4mfxxhY=;
+        b=esYtx/5zWzuW8iPJkiT4IYYmWVZy98TdFCF0qgAbY/UhfYXCyiYLaAgxI5sjU93D8wA515
+        Xdw9xSMMNMD2Svwtbg26ZdUoGwuLqzuQ/tlAtuF1emc4r72uFmDEWwZL0QY9aztZcLW44t
+        qyjgwBea/IMC9n24zw+9rmEBdvxHtMo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-369-YbiMeIMqMgmkc1x1UpXIzg-1; Wed, 19 Aug 2020 09:19:57 -0400
+X-MC-Unique: YbiMeIMqMgmkc1x1UpXIzg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F17A7640C3;
+        Wed, 19 Aug 2020 13:19:55 +0000 (UTC)
+Received: from [10.36.114.11] (ovpn-114-11.ams2.redhat.com [10.36.114.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0AB525D9E8;
+        Wed, 19 Aug 2020 13:19:53 +0000 (UTC)
+Subject: Re: [PATCH v1 11/11] mm/memory_hotplug: mark pageblocks
+ MIGRATE_ISOLATE while onlining memory
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Baoquan He <bhe@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Charan Teja Reddy <charante@codeaurora.org>
+References: <20200819101157.12723-1-david@redhat.com>
+ <20200819101157.12723-12-david@redhat.com>
+ <20200819131615.GP5422@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <c6e92b64-abf4-6049-3eb2-a252327d200d@redhat.com>
+Date:   Wed, 19 Aug 2020 15:19:53 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200819131507.GC2674@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200819131615.GP5422@dhcp22.suse.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/19/20 6:15 AM, peterz@infradead.org wrote:
-> On Wed, Aug 19, 2020 at 02:37:58PM +0200, Sebastian Andrzej Siewior wrote:
-> 
->> I don't see a significant reason why this lock should become a
->> raw_spinlock_t therefore I suggest to move it after the
->> tsk_is_pi_blocked() check.
-> 
->> Any feedback on this vs raw_spinlock_t?
+On 19.08.20 15:16, Michal Hocko wrote:
+> On Wed 19-08-20 12:11:57, David Hildenbrand wrote:
+>> Currently, it can happen that pages are allocated (and freed) via the buddy
+>> before we finished basic memory onlining.
 >>
->> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
->> ---
->>  fs/io-wq.c          |  8 ++++----
->>  kernel/sched/core.c | 10 +++++-----
->>  2 files changed, 9 insertions(+), 9 deletions(-)
+>> For example, pages are exposed to the buddy and can be allocated before
+>> we actually mark the sections online. Allocated pages could suddenly
+>> fail pfn_to_online_page() checks. We had similar issues with pcp
+>> handling, when pages are allocated+freed before we reach
+>> zone_pcp_update() in online_pages() [1].
 >>
+>> Instead, mark all pageblocks MIGRATE_ISOLATE, such that allocations are
+>> impossible. Once done with the heavy lifting, use
+>> undo_isolate_page_range() to move the pages to the MIGRATE_MOVABLE
+>> freelist, marking them ready for allocation. Similar to offline_pages(),
+>> we have to manually adjust zone->nr_isolate_pageblock.
+>>
+>> [1] https://lkml.kernel.org/r/1597150703-19003-1-git-send-email-charante@codeaurora.org
+>>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Michal Hocko <mhocko@suse.com>
+>> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+>> Cc: Baoquan He <bhe@redhat.com>
+>> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+>> Cc: Oscar Salvador <osalvador@suse.de>
+>> Cc: Charan Teja Reddy <charante@codeaurora.org>
+>> Signed-off-by: David Hildenbrand <david@redhat.com>
 > 
->> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
->> index 3bbb60b97c73c..b76c0f27bd95e 100644
->> --- a/kernel/sched/core.c
->> +++ b/kernel/sched/core.c
->> @@ -4694,18 +4694,18 @@ static inline void sched_submit_work(struct task_struct *tsk)
->>  	 * in the possible wakeup of a kworker and because wq_worker_sleeping()
->>  	 * requires it.
->>  	 */
->> -	if (tsk->flags & (PF_WQ_WORKER | PF_IO_WORKER)) {
->> +	if (tsk->flags & PF_WQ_WORKER) {
->>  		preempt_disable();
->> -		if (tsk->flags & PF_WQ_WORKER)
->> -			wq_worker_sleeping(tsk);
->> -		else
->> -			io_wq_worker_sleeping(tsk);
->> +		wq_worker_sleeping(tsk);
->>  		preempt_enable_no_resched();
->>  	}
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> 
+> Yes this looks very sensible and we should have done that from the
+> beginning. I just have one minor comment below
+>> @@ -816,6 +816,14 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
+>>  	if (ret)
+>>  		goto failed_addition;
 >>  
->>  	if (tsk_is_pi_blocked(tsk))
->>  		return;
->>  
->> +	if (tsk->flags & PF_IO_WORKER)
->> +		io_wq_worker_sleeping(tsk);
+>> +	/*
+>> +	 * Fixup the number of isolated pageblocks before marking the sections
+>> +	 * onlining, such that undo_isolate_page_range() works correctly.
+>> +	 */
+>> +	spin_lock_irqsave(&zone->lock, flags);
+>> +	zone->nr_isolate_pageblock += nr_pages / pageblock_nr_pages;
+>> +	spin_unlock_irqrestore(&zone->lock, flags);
 >> +
 > 
-> Urgh, so this adds a branch in what is normally considered a fairly hot
-> path.
->
-> 
-> I'm thinking that the raw_spinlock_t option would permit leaving that
-> single:
-> 
-> 	if (tsk->flags & (PF_WQ_WORKER | PF_IO_WORKER))
-> 
-> branch intact?
+> I am not entirely happy about this. I am wondering whether it would make
+> more sense to keep the counter in sync already in memmap_init_zone. Sure
+> we add a branch to the boot time initialization - and it always fails
+> there - but the code would be cleaner and we wouldn't have to do tricks
+> like this in caller(s).
 
-Yes, the raw spinlock would do it, and leave the single branch intact
-in the hot path. I'd be fine with going that route for io-wq.
+I had that in mind initially. The issue is that we have to fixup in case
+onlining fails, which I consider even more ugly. Also
 
+1. It's the complete reverse of the offlining path now.
+2. pageblock flags are essentially stale unless the section is online,
+my approach moves the handling to the point where nothing else will go
+wrong and we are just about to mark sections online. That looks a little
+cleaner to me.
+
+Unless there are strong opinions, I'd prefer to keep it like this.
+
+Thanks for the very fast review Michal!
 
 -- 
-Jens Axboe
+Thanks,
+
+David / dhildenb
 
