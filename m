@@ -2,154 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4588249F10
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4A2249EF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728635AbgHSNF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 09:05:59 -0400
-Received: from relay2.mymailcheap.com ([217.182.66.162]:58758 "EHLO
-        relay2.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728433AbgHSNFn (ORCPT
+        id S1726641AbgHSND2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 09:03:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728493AbgHSNBB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 09:05:43 -0400
-Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
-        by relay2.mymailcheap.com (Postfix) with ESMTPS id 6D8CA3E90B;
-        Wed, 19 Aug 2020 15:05:40 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by filter2.mymailcheap.com (Postfix) with ESMTP id 462BE2A51B;
-        Wed, 19 Aug 2020 15:05:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1597842340;
-        bh=xgLkVUqX1IfZYjssicJSiWH/uVLGQkqOteQNJcfZxgg=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=mbKaFtKy06YKcGxwccQ4lrKzs9lbShJ7nRHdJ3t+LLYF3rJCXs1Lry3vRlHPH+KC2
-         Qlb2vd2ovJTRAfRonEACZY2CnuTisJt70G3smrjIpgcYDqLFeYP+UK/I6SRHvNFa+X
-         OaDTpUtUIRnW3m3JhJwFC0Q+gmzNb+DYEtHpdUCQ=
-X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
-Received: from filter2.mymailcheap.com ([127.0.0.1])
-        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ZluiADmQ2_V1; Wed, 19 Aug 2020 15:05:39 +0200 (CEST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter2.mymailcheap.com (Postfix) with ESMTPS;
-        Wed, 19 Aug 2020 15:05:39 +0200 (CEST)
-Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id A99B84117F;
-        Wed, 19 Aug 2020 13:05:38 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="vY6KQW15";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from ice-e5v2.lan (unknown [59.41.160.120])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 9B86F4132F;
-        Wed, 19 Aug 2020 13:00:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1597842048; bh=xgLkVUqX1IfZYjssicJSiWH/uVLGQkqOteQNJcfZxgg=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=vY6KQW15+Bs4w4Wzy8Zdqr5c+13OR24BLC6YsCxKoSgG68J3sNHveU2HqPkzw/qTY
-         pQcEnfHyqxsspkZks3DYPkzNAR6fXZ5QJniWPQN3srJvqdyBFXbMJjT8wygm6iYgwx
-         Iz8bV06TfFQ4rhEpo25OhOA4AA0+VD7wGdYKFDMw=
-Message-ID: <6cff597419622f78321bf18528ca22020e7835c5.camel@aosc.io>
-Subject: Re: [PATCH 1/1] mfd: mfd-core: Ensure disabled devices are ignored
- without error
-From:   Icenowy Zheng <icenowy@aosc.io>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Date:   Wed, 19 Aug 2020 21:00:41 +0800
-In-Reply-To: <20200819105406.3249846-1-lee.jones@linaro.org>
-References: <20200819105406.3249846-1-lee.jones@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4 
+        Wed, 19 Aug 2020 09:01:01 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8254C061383
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:01:00 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id ha11so1089655pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:01:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qNJVZUa8vOnjh3Y4FbI7cu96rnOZczrpWszoc4OM35E=;
+        b=ZtDUAentzHDOfXLt1WNpX0PqLZgZi3vnfEc6anllVjv7Z89UoKoCCMUiljAdsTAGBL
+         DEVHOWuWzMZeIuJcHwUlptWZjkCaOp1ZUKAoSs/2jyyTPejnx1zCbjPUY7C9na+Ftk+x
+         wpw/pPjI4UYNDosNdy4j7LcDWUJhwNxLapyy4W7f1U00+fT6jVYw1uO8CMpHCStxGd8w
+         JLOisGYqnJmeY5ie8I+x4A4vKZtwoQ6PsaOc8UAPD7eTAFlJwORflpx8o8EPJZR8cuSG
+         1j977OWh0YEI5r2DXie/ItwJ0iuosRobp25OObO0Ld6mXVix+wRg8r73enQ5lMOcXAoG
+         tjpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qNJVZUa8vOnjh3Y4FbI7cu96rnOZczrpWszoc4OM35E=;
+        b=JAGob0EB+sPzL9OEWEP07X9ysZ9IlyNLHiDtZ1kN9gjNEk0mnbIGEzK65bRaw82oV2
+         Qj6RzqERjrYCRCdNOB8CdtjJ014XcqiP2GGR/2gj+DSVr4tPMtvgvHiHCs4dPGQXd5d3
+         qs5e+mIZWC8C0LbPn1h+y142N8ADvq7JGrW5yRd1OZubKjQVux21MDI3lh18+r1cd9BT
+         T++KBRHdyyA+V1myifNRVZ8Az6WP8BL6pJKZl7SEKl4YKe4wbGTr3J3JEJTLPLfu7uiC
+         11aXQq8yTuhj2CGwtZ5dGlUb6puw4bNXAW9OegXDYlX0J/3IGnikIuRVzQLsiGHHwcuH
+         zVCw==
+X-Gm-Message-State: AOAM533qH8YVwJczwgeMHLlAJiAwiqVvkqlxYrEjXUwzQZ8gxxET1xHb
+        ep3appFQy4diVjkfkBK4jtimUg==
+X-Google-Smtp-Source: ABdhPJwcWyLwqgVIDq5QVfeKWIJZ1zweeStVncOtMpfxCFFFEuEh0sSa6pW/Ah5NefbMm4I9GwEzLw==
+X-Received: by 2002:a17:90b:285:: with SMTP id az5mr3983315pjb.118.1597842058708;
+        Wed, 19 Aug 2020 06:00:58 -0700 (PDT)
+Received: from [192.168.1.182] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id d23sm20502027pgm.11.2020.08.19.06.00.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Aug 2020 06:00:58 -0700 (PDT)
+Subject: Re: [PATCH] block: convert tasklets to use new tasklet_setup() API
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Allen Pais <allen.cryptic@gmail.com>, jdike@addtoit.com,
+        richard@nod.at, anton.ivanov@cambridgegreys.com, 3chas3@gmail.com,
+        stefanr@s5r6.in-berlin.de, airlied@linux.ie, daniel@ffwll.ch,
+        sre@kernel.org, kys@microsoft.com, deller@gmx.de,
+        dmitry.torokhov@gmail.com, jassisinghbrar@gmail.com,
+        shawnguo@kernel.org, s.hauer@pengutronix.de,
+        maximlevitsky@gmail.com, oakad@yahoo.com, ulf.hansson@linaro.org,
+        mporter@kernel.crashing.org, alex.bou9@gmail.com,
+        broonie@kernel.org, martyn@welchs.me.uk, manohar.vanga@gmail.com,
+        mitch@sfgoth.com, davem@davemloft.net, kuba@kernel.org,
+        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux1394-devel@lists.sourceforge.net,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-hyperv@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-ntb@googlegroups.com, linux-s390@vger.kernel.org,
+        linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
+        Allen Pais <allen.lkml@gmail.com>,
+        Romain Perier <romain.perier@gmail.com>
+References: <20200817091617.28119-1-allen.cryptic@gmail.com>
+ <20200817091617.28119-2-allen.cryptic@gmail.com>
+ <b5508ca4-0641-7265-2939-5f03cbfab2e2@kernel.dk>
+ <202008171228.29E6B3BB@keescook>
+ <161b75f1-4e88-dcdf-42e8-b22504d7525c@kernel.dk>
+ <202008171246.80287CDCA@keescook>
+ <df645c06-c30b-eafa-4d23-826b84f2ff48@kernel.dk>
+ <1597780833.3978.3.camel@HansenPartnership.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <f3312928-430c-25f3-7112-76f2754df080@kernel.dk>
+Date:   Wed, 19 Aug 2020 07:00:53 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: A99B84117F
-X-Spamd-Result: default: False [-0.10 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.160.120:received];
-         FROM_HAS_DN(0.00)[];
-         RCPT_COUNT_THREE(0.00)[3];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.00)[aosc.io];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         ML_SERVERS(-3.10)[148.251.23.173];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
-X-Rspamd-Server: mail20.mymailcheap.com
+In-Reply-To: <1597780833.3978.3.camel@HansenPartnership.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2020-08-19星期三的 11:54 +0100，Lee Jones写道：
-> Commit e49aa9a9bd22 ("mfd: core: Make a best effort attempt to match
-> devices with the correct of_nodes") changed the semantics for
-> disabled
-> devices in mfd_add_device().  Instead of silently ignoring a disabled
-> child device, an error was returned.  On receipt of the error
-> mfd_add_devices() the precedes to remove *all* child devices and
-> returns an all-failed error to the caller, which will inevitably fail
-> the parent device as well.
+On 8/18/20 1:00 PM, James Bottomley wrote:
+> On Mon, 2020-08-17 at 13:02 -0700, Jens Axboe wrote:
+>> On 8/17/20 12:48 PM, Kees Cook wrote:
+>>> On Mon, Aug 17, 2020 at 12:44:34PM -0700, Jens Axboe wrote:
+>>>> On 8/17/20 12:29 PM, Kees Cook wrote:
+>>>>> On Mon, Aug 17, 2020 at 06:56:47AM -0700, Jens Axboe wrote:
+>>>>>> On 8/17/20 2:15 AM, Allen Pais wrote:
+>>>>>>> From: Allen Pais <allen.lkml@gmail.com>
+>>>>>>>
+>>>>>>> In preparation for unconditionally passing the
+>>>>>>> struct tasklet_struct pointer to all tasklet
+>>>>>>> callbacks, switch to using the new tasklet_setup()
+>>>>>>> and from_tasklet() to pass the tasklet pointer explicitly.
+>>>>>>
+>>>>>> Who came up with the idea to add a macro 'from_tasklet' that
+>>>>>> is just container_of? container_of in the code would be
+>>>>>> _much_ more readable, and not leave anyone guessing wtf
+>>>>>> from_tasklet is doing.
+>>>>>>
+>>>>>> I'd fix that up now before everything else goes in...
+>>>>>
+>>>>> As I mentioned in the other thread, I think this makes things
+>>>>> much more readable. It's the same thing that the timer_struct
+>>>>> conversion did (added a container_of wrapper) to avoid the
+>>>>> ever-repeating use of typeof(), long lines, etc.
+>>>>
+>>>> But then it should use a generic name, instead of each sub-system 
+>>>> using some random name that makes people look up exactly what it
+>>>> does. I'm not huge fan of the container_of() redundancy, but
+>>>> adding private variants of this doesn't seem like the best way
+>>>> forward. Let's have a generic helper that does this, and use it
+>>>> everywhere.
+>>>
+>>> I'm open to suggestions, but as things stand, these kinds of
+>>> treewide
+>>
+>> On naming? Implementation is just as it stands, from_tasklet() is
+>> totally generic which is why I objected to it. from_member()? Not
+>> great with naming... But I can see this going further and then we'll
+>> suddenly have tons of these. It's not good for readability.
 > 
-> This patch reverts back to the old semantics and ignores child
-> devices
-> which are disabled in Device Tree.
+> Since both threads seem to have petered out, let me suggest in
+> kernel.h:
 > 
-> Fixes: e49aa9a9bd22 ("mfd: core: Make a best effort attempt to match
-> devices with the correct of_nodes")
-> Reported-by: Icenowy Zheng <icenowy@aosc.io>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> #define cast_out(ptr, container, member) \
+> 	container_of(ptr, typeof(*container), member)
+> 
+> It does what you want, the argument order is the same as container_of
+> with the only difference being you name the containing structure
+> instead of having to specify its type.
 
-Tested-by: Icenowy Zheng <icenowy@aosc.io>
+Not to incessantly bike shed on the naming, but I don't like cast_out,
+it's not very descriptive. And it has connotations of getting rid of
+something, which isn't really true.
 
-> ---
->  drivers/mfd/mfd-core.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mfd/mfd-core.c b/drivers/mfd/mfd-core.c
-> index c3651f06684fa..30f90a15ceaab 100644
-> --- a/drivers/mfd/mfd-core.c
-> +++ b/drivers/mfd/mfd-core.c
-> @@ -126,10 +126,6 @@ static int mfd_match_of_node_to_dev(struct
-> platform_device *pdev,
->  	const __be32 *reg;
->  	u64 of_node_addr;
->  
-> -	/* Skip devices 'disabled' by Device Tree */
-> -	if (!of_device_is_available(np))
-> -		return -ENODEV;
-> -
->  	/* Skip if OF node has previously been allocated to a device */
->  	list_for_each_entry(of_entry, &mfd_of_node_list, list)
->  		if (of_entry->np == np)
-> @@ -212,6 +208,12 @@ static int mfd_add_device(struct device *parent,
-> int id,
->  	if (IS_ENABLED(CONFIG_OF) && parent->of_node && cell-
-> >of_compatible) {
->  		for_each_child_of_node(parent->of_node, np) {
->  			if (of_device_is_compatible(np, cell-
-> >of_compatible)) {
-> +				/* Ignore 'disabled' devices error free
-> */
-> +				if (!of_device_is_available(np)) {
-> +					ret = 0;
-> +					goto fail_alias;
-> +				}
-> +
->  				ret = mfd_match_of_node_to_dev(pdev,
-> np, cell);
->  				if (ret == -EAGAIN)
->  					continue;
+FWIW, I like the from_ part of the original naming, as it has some clues
+as to what is being done here. Why not just from_container()? That
+should immediately tell people what it does without having to look up
+the implementation, even before this becomes a part of the accepted
+coding norm.
+
+-- 
+Jens Axboe
+
