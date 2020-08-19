@@ -2,304 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6A9249310
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 04:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC2D24931E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 04:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727850AbgHSCwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 22:52:10 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:35726 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726632AbgHSCwJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 22:52:09 -0400
-Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com [209.85.217.53]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 07J2pprt030370
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 11:51:51 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 07J2pprt030370
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1597805512;
-        bh=2WrbbbfKgF3susbAV9hWN0or0trbeWhxb9mZYyMcJfw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FxvNF7sDLP+lHfQDJWWNgigHBdtyUyx3NhCGE9xt5ipLimQYjCSd08dumTTAa2OYZ
-         2q8Sv91WLBPzXzZU2md9+pMD3tQW8SbQnGrCYzPm52OYc5sTWrEKM1A39IyNacudOX
-         oye4pGBvS43DKiJh/Zgo8id49aFJJXID/DUzQZgsELwwKRz3Nf2FcqEmtButHyNCaq
-         3z4DSGVYxFopGyYZvXGGLise1G5t/d6u1Ljkc1kaC3xF/Z8lpbndPQrJCrkb4uo/gs
-         v3Q42d/q8s+LcxP22jr3iEKnQEmYKmJY6iIR+xyU7xBPjS6SQwdmFQ0ey4x6UrCXzz
-         +5P2sVDBA8fRA==
-X-Nifty-SrcIP: [209.85.217.53]
-Received: by mail-vs1-f53.google.com with SMTP id n25so11215489vsq.6
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Aug 2020 19:51:51 -0700 (PDT)
-X-Gm-Message-State: AOAM531wAR4EtVwLwiuBdin6Tq4U/EghVmft9zDgl5HWc29Jz3CVF677
-        DRCz75THEUkd1bfnLRx/WsXqMStqut6/ZtzN1u0=
-X-Google-Smtp-Source: ABdhPJwCPfXxdGhtRq7wbAGHersu73VU8uUGQkzREk9LZ9W2yXzSW34htlLPfAM54nr5w1oc+4rmZDOUTMI3aXX6T4k=
-X-Received: by 2002:a67:7c11:: with SMTP id x17mr14433648vsc.155.1597805510290;
- Tue, 18 Aug 2020 19:51:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <1c4d1da4-36a9-c83b-1a8a-95334aa62ce3@meinberg.de>
- <CAK7LNARpC4GHnXoWM=JU=cYxMdamg5iUWGoXt5o6mhf81QkjLw@mail.gmail.com> <092a70e9-12c1-29fd-1fb0-fd851024de39@meinberg.de>
-In-Reply-To: <092a70e9-12c1-29fd-1fb0-fd851024de39@meinberg.de>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 19 Aug 2020 11:51:13 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAS6nddyJh-mzZbY1NTRK6oT+0OZf9FiqTXmAqhvf869Mw@mail.gmail.com>
-Message-ID: <CAK7LNAS6nddyJh-mzZbY1NTRK6oT+0OZf9FiqTXmAqhvf869Mw@mail.gmail.com>
-Subject: Re: Kernel build system broken in 5.8?
-To:     Martin Burnicki <martin.burnicki@meinberg.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1727895AbgHSCz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 22:55:58 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:39748 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726632AbgHSCz5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 22:55:57 -0400
+Received: from localhost (unknown [159.226.5.99])
+        by APP-03 (Coremail) with SMTP id rQCowADHzhozlDxffb5EAw--.5934S2;
+        Wed, 19 Aug 2020 10:53:39 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
+Subject: [PATCH bpf-next] libbpf: simplify the return expression of build_map_pin_path()
+Date:   Wed, 19 Aug 2020 02:53:24 +0000
+Message-Id: <20200819025324.14680-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: rQCowADHzhozlDxffb5EAw--.5934S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruF47GF4DJFy3Jr4xXr1DKFg_yoWfWFg_C3
+        48XFWxGrWUGFWak3sYkrZ0vr97AFyDGr1DuF4vqrnxGFyj9ay5CrZrAFZ5JF90gw4fKF1x
+        AF9avrWUZF47ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb3kFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
+        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r4UJVWxJr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02
+        628vn2kIc2xKxwCY02Avz4vE14v_Gr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
+        v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
+        1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
+        AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0D
+        MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
+        VFxhVjvjDU0xZFpf9x0JUJrcfUUUUU=
+X-Originating-IP: [159.226.5.99]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiAwkNA13qZTxtpwAAsg
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi.
+Simplify the return expression.
+
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ tools/lib/bpf/libbpf.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 5d20b2da4427..cd59e237ca96 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -1924,7 +1924,7 @@ static bool get_map_field_int(const char *map_name, const struct btf *btf,
+ static int build_map_pin_path(struct bpf_map *map, const char *path)
+ {
+ 	char buf[PATH_MAX];
+-	int err, len;
++	int len;
+ 
+ 	if (!path)
+ 		path = "/sys/fs/bpf";
+@@ -1935,11 +1935,7 @@ static int build_map_pin_path(struct bpf_map *map, const char *path)
+ 	else if (len >= PATH_MAX)
+ 		return -ENAMETOOLONG;
+ 
+-	err = bpf_map__set_pin_path(map, buf);
+-	if (err)
+-		return err;
+-
+-	return 0;
++	return bpf_map__set_pin_path(map, buf);
+ }
+ 
+ 
+-- 
+2.17.1
 
-
-On Wed, Aug 19, 2020 at 5:50 AM Martin Burnicki
-<martin.burnicki@meinberg.de> wrote:
->
-> Hello Masahiro,
->
-> Masahiro Yamada wrote:
-> > On Wed, Aug 19, 2020 at 1:14 AM Martin Burnicki
-> > <martin.burnicki@meinberg.de> wrote:
-> [...]
-> >> I usually build the kernel module as standard user, and only install t=
-he
-> >> new module as root, e.g.:
-> >>
-> >>   git checkout devel   # The 'devel' branch is appropriate for testing
-> >>   cd mbgclock          # the subdirectory of the kernel module
-> >>   git clean -fd; make  # or make V=3D1 for verbose output
-> >>   sudo make install
-> >
-> >
-> > This is a bad way for reporting a bug
-> > because your project is too big.
->
-> Sorry for this. I wasn't sure which was the best way to get a contact to
-> folks who are more familiar with details of the kernel build system, and
-> what may have been changed.
-
-Sorry, if my response was too harsh.
-
-> A possibility could have
->
-> > mbgclock/Makefile include the top Makefile,
-> > which is more than 1000 lines.
->
-> If you run 'make' in the mbgclock subdirectory then the kernel build
-> system is just called as usual, i.e.
->
->   make -C <path-to-the-kernel-build-system> M=3D$PWD <some EXTRA_CFLAGS>
-
-
-I know.
-
-I tried this, and then
-"sudo make modules_install -C <path-to-the-kernel-build-system> M=3D$PWD"
-but I did not see the issue.
-
-So, I have no idea what the root-cause is
-at this point.
-
-
-> This has been working without problems for many years, for many popular
-> distros, and all kernels from 2.6 up to 5.7 (except that for older
-> kernels SUBDIRS=3D$PWD was used instead of M=3D$PWD).
->
-> > Please provide steps to reproduce it
-> > with a tiny test module.
->
-> I was just hoping that someone had an idea like "Oh, this is because xyz
-> has changed in kernel 5.18" when he read what I've observed.
->
-> In the past I've seen cases where folks e.g. from RedHat or SuSE had
-> backported patches from newer kernels to older ones, causing build
-> errors in my driver code, and I was able to apply workarounds to my
-> source code.
->
-> However, this case is different because obviously the kernel source tree
-> is modified under certain circumstances. Is my assumption correct that
-> this should not happen if I install Linux header packages for a distro,
-> that have been pre-configured according to the running kernel?
-
-Right.
-External modules should never ever attempt
-to modify the kernel tree since it is often read-only.
-
-I did not change that behavior
-(unless I was doing a horrible mistake)
-
-
-
->
-> Anyway, I'm going to try to set up an example which makes it easier to
-> duplicate the problem.
->
-> > You state 5.7.15 was fine.
->
-> Yes.
->
-> > So, could you also run git-bisect, please?
->
-> Sorry, I've just recently started using git, and yet I'm not too
-> familiar with some of the commands. How could git-bisect help in this cas=
-e?
-
-
-
-"git bisect" is really useful to find the first bad commit.
-If you have not tried it yet,
-it is worth learning the usage.
-
-
-
-Can you reproduce the issue in the linux-stable source tree
-instead of the ubuntu kernel?
-
-
-You can get the stable kernel repository, like follows:
-
-$ git clone git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le.git
-$ cd linux-stable
-$ git checkout v5.8.1
-
-
-Once you find how to reproduce the bug
-in the git repository,
-it is pretty easy to start bisecting
-with "git bisect start <bad> <good>"
-
-For example,
-
-git bisect start v5.8.1  v5.7.15
-
-Then, repeat "git bisect good" or "git bisect bad",
-depending on whether the bug happens.
-
-
-
-
-
-
-> >> Also, I was under the impression that the kernel source tree should be
-> >> read-only, and kept clean, but this doesn't seem to be the case anymor=
-e.
-> >>
-> >>
-> >> For example:
-> >>
-> >> On Ubuntu 19.10 with kernel 5.8.1-050801-generic from
-> >> https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.1/
-> >
-> >
-> > I cannot try it since that is not what
-> > I install on my machine, sorry.
->
-> What distro are you using? Or do you only run kernels you have compiled
-> yourself? ;-)
-
-
-I also use Ubuntu, but my one is 5.4.0-42-generic.
-
-
-I am not sure if 5.8.1-050801-generic
-is exactly the same as v5.8.1, though.
-
-
-
-
->
-> > Please provide steps to reproduce it
-> > for a person using a different environment.
->
-> I'm going to try to do this. Do you have any hints what this should look
-> like?
-
-
-I'd like to know the steps to reproduce the bug
-in the kernel source tree instead of the distro's one.
-(See above to get the stable kernel tree)
-
-
-
-We could use your project to debug this, but
-if this is purely a problem of the kernel build system,
-it is easier and faster to use a small hello-world module.
-
-
-For example, the minimal Makefile
-of an external module will look like follows:
-
-
-
------------------------->8---------------------------
-KERNEL=3D$(HOME)/workspace/linux-stable
-
-.PHONY: __default
-__default:
-        $(MAKE) -C $(KERNEL) M=3D$(CURDIR)
-
-.PHONY: $(MAKECMDGOALS)
-$(MAKECMDGOALS):
-        $(MAKE) -C $(KERNEL) M=3D$(CURDIR) $@
-
-obj-m :=3D helloworld.o
------------------------->8---------------------------
-
-
-
-
-
-
->
-> Should this topic be continued on linux-kernel@, or better on
-> linux-kbuild@, or elsewhere?
-
-
-Please include both lists in To or Cc.
-
-linux-kernel@ is a large amount.
-
-I often miss mails if they are only
-sent to linux-kernel@.
-
-
-
-
-Thanks.
-
-
-
-
->
->
-> Thanks,
->
-> Martin
-> --
-> Martin Burnicki
->
-> Senior Software Engineer
->
-> MEINBERG Funkuhren GmbH & Co. KG
-> Email: martin.burnicki@meinberg.de
-> Phone: +49 5281 9309-414
-> Linkedin: https://www.linkedin.com/in/martinburnicki/
->
-> Lange Wand 9, 31812 Bad Pyrmont, Germany
-> Amtsgericht Hannover 17HRA 100322
-> Gesch=C3=A4ftsf=C3=BChrer/Managing Directors: G=C3=BCnter Meinberg, Werne=
-r Meinberg,
-> Andre Hartmann, Heiko Gerstung
-> Websites: https://www.meinberg.de  https://www.meinbergglobal.com
-> Training: https://www.meinberg.academy
->
-
-
---=20
-Best Regards
-Masahiro Yamada
