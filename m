@@ -2,82 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD8724A834
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 23:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C5824A83A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 23:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbgHSVJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 17:09:32 -0400
-Received: from mga14.intel.com ([192.55.52.115]:30132 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727107AbgHSVJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 17:09:30 -0400
-IronPort-SDR: sAGR8TTRwhVSeCwFOpz4X1iNgpNghWkk7bwytvltvMsH4CMNNHGqMaj35QLXkkVcBwPPtewcWT
- jQAYhT9Ot+5Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9718"; a="154460928"
-X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
-   d="scan'208";a="154460928"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2020 14:09:30 -0700
-IronPort-SDR: 5cndTTZ4xWxk+PWXpH3ISKClr+XpZCZ8FvZ0yYib9YUt7SijssSWQhjDU7bAbvZdWB0or30SXt
- NAhYutfpCumg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
-   d="scan'208";a="320622515"
-Received: from abojanow-mobl4.ger.corp.intel.com (HELO localhost) ([10.252.52.107])
-  by fmsmga004.fm.intel.com with ESMTP; 19 Aug 2020 14:09:27 -0700
-Date:   Thu, 20 Aug 2020 00:09:27 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Masahisa Kojima <masahisa.kojima@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Rob Herring <robh+dt@kernel.org>, Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v5 2/2] dt-bindings: Add SynQucer TPM MMIO as a trivial
- device
-Message-ID: <20200819210927.GF9942@linux.intel.com>
-References: <20200728031433.3370-1-masahisa.kojima@linaro.org>
- <20200728031433.3370-3-masahisa.kojima@linaro.org>
- <20200817211440.GB44714@linux.intel.com>
- <CAMj1kXG2h-yk_hw-HZvhAPfYRVHq=LgNp5FB1J4SmnN82Zm9jA@mail.gmail.com>
+        id S1727830AbgHSVKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 17:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726841AbgHSVKX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 17:10:23 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3319C061383
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 14:10:23 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id ep8so8672pjb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 14:10:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ISHsgRR5gl1O/B06PdWuntMjm3+ExqlO30Mr+J1G2xE=;
+        b=PQ/fSMj0XrmkoZzKZR0CPMZehNvw/44Weg4jc42HK+CIyf5qjE1PYJfGFJVOPM81+V
+         XdTT7clkmFaPSu7YXUD0ZrfauGexDDFjQjV2cRtF26zDONqog/mxRakacI8dVVzSozhX
+         xMfKADktTXL/7dktq6oytc9ioxlRzGZozrNUm+Ay1xRnBee+78WPtV2QzQFd2S4DmN31
+         gPNqhIeFbPzbxsn9voCo03tsh1ZQl3mke4fF6i4t4CS62rSxrpLOZ/1RG4KnCAGFd0vG
+         tkMLJgOofjISqXRv3MvFCFM48r5gZP80UDhEtmIk1N8a+SFWyIxnGU2SKV7aOrJW3+HL
+         lPDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ISHsgRR5gl1O/B06PdWuntMjm3+ExqlO30Mr+J1G2xE=;
+        b=aBSLpfLWmLx36e+MS9yg9SFykkIWdmDii58RayJdhCYO0TnEWpRz6rxjlWinnt2JS7
+         K1XEWPKiFX4R8FNmrJa6T56zJVeBW1s/TdKJxFP09aL2zsnHR0TAFFiUFJHL0JBMb7Xk
+         Y8di7dR2zoH9rw6fsPFMp7DvZ7KeIs9GSrbuVNDiLwvxpoxQzPdVndS7OyKLI+AbER/R
+         RRY41i5MHg5BvCbp4yYfbKxGWl//T9m3/grtXClfnhZBp7rKkDZMT1YMXpD/e44OWu5u
+         LrfCWHtcyeprwtKXS4rzxY3Fm1NGXkfjmBL0hGqp96vNVa6oyRPYp3McUvwcrUvSfScK
+         +M5A==
+X-Gm-Message-State: AOAM532EXHNDkxbZNh+UAIu7sQheDx3bGVrCzwi1STCHiJUrZbrpFwOn
+        nXmUjmhFVNlIBu3WnLKMMUdVfqjM0CUp8LKs9z+HpQ==
+X-Google-Smtp-Source: ABdhPJw3rds3hFHXZBmb2t1NM0mWnTXuiGc2v5dZ5hD8649AwV9NTlXL0gWQVpT+9K7Iz9ak0hBsrTEyeAh4Vu5T6LI=
+X-Received: by 2002:a17:90a:d317:: with SMTP id p23mr3682356pju.217.1597871423161;
+ Wed, 19 Aug 2020 14:10:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXG2h-yk_hw-HZvhAPfYRVHq=LgNp5FB1J4SmnN82Zm9jA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20200729175849.148332-1-vitor@massaru.org>
+In-Reply-To: <20200729175849.148332-1-vitor@massaru.org>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Wed, 19 Aug 2020 14:10:11 -0700
+Message-ID: <CAFd5g47s09BfsqNx2RY1Zdp-TC4KbKgsMgr9-SHv1Nf6P9vAMQ@mail.gmail.com>
+Subject: Re: [PATCH] lib: kunit: add bitfield test conversion to KUnit
+To:     Vitor Massaru Iha <vitor@massaru.org>
+Cc:     KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>, kvalo@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 12:22:52PM +0200, Ard Biesheuvel wrote:
-> On Mon, 17 Aug 2020 at 23:14, Jarkko Sakkinen
-> <jarkko.sakkinen@linux.intel.com> wrote:
-> >
-> > On Tue, Jul 28, 2020 at 12:14:32PM +0900, Masahisa Kojima wrote:
-> > > Add a compatible string for the SynQuacer TPM to the binding for a
-> > > TPM exposed via a memory mapped TIS frame. The MMIO window behaves
-> > > slightly differently on this hardware, so it requires its own
-> > > identifier.
-> > >
-> > > Cc: Rob Herring <robh+dt@kernel.org>
-> > > Cc: Ard Biesheuvel <ardb@kernel.org>
-> > > Acked-by: Rob Herring <robh@kernel.org>
-> > > Signed-off-by: Masahisa Kojima <masahisa.kojima@linaro.org>
-> >
-> > I applied these patches:
-> >
-> > http://git.infradead.org/users/jjs/linux-tpmdd.git/log/refs/heads/master
-> >
-> 
-> Thanks Jarkko
+On Wed, Jul 29, 2020 at 10:58 AM Vitor Massaru Iha <vitor@massaru.org> wrote:
+>
+> This adds the conversion of the runtime tests of test_bitfield,
+> from `lib/test_bitfield.c` to KUnit tests.
+>
+> Please apply this commit first (linux-kselftest/kunit-fixes):
+> 3f37d14b8a3152441f36b6bc74000996679f0998 kunit: kunit_config: Fix parsing of CONFIG options with space
+>
+> Code Style Documentation: [0]
+>
+> Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+> Link: [0] https://lore.kernel.org/linux-kselftest/20200620054944.167330-1-davidgow@google.com/T/#u
 
-Yeah, sorry for taking this long. I was on vacation for couple of weeks.
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
 
-/Jarkko
+Probably still want a review from Johannes though.
