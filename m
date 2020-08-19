@@ -2,156 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E82024A499
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 19:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2665224A490
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 19:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726435AbgHSRDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 13:03:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726646AbgHSRDN (ORCPT
+        id S1726697AbgHSRCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 13:02:41 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:25293 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725804AbgHSRCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 13:03:13 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F05C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 10:03:13 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id d27so18314004qtg.4
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 10:03:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ktYpsCxiLWJOQgFpjU6rm698Y/qLm2dIO8jCJsadEOU=;
-        b=Cf6w4ypyePA72N9OwZ/X/gIqgQ3/Z2O3rsVEAnbMsPXxSteDXfBbrAJ2YKaLKzi+2G
-         eJlNvZyKM6mcCsbB8rTNwjE0zNlCUOU27vLJyO1vH/Kf6P5hVdc0XLNeLzE0ilaNzTIL
-         c/q/2eCUoXXxQCiuP4bqs7wWJmNaxuO94MGUY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ktYpsCxiLWJOQgFpjU6rm698Y/qLm2dIO8jCJsadEOU=;
-        b=DeUJWFyBCBnLOG6kqqAbHNiOUpKKP6wzzAsf8ps2XG/4eBOyOLzTVMKBU3SRhxhGVk
-         0AK/T4RFUgCtisDeWJ1DyB9LScWDbYx6Aoy3+oJnyq3bvhm6tGDqEgBeWOoxc5nepD8M
-         gXffdCOViDUzd2MAO1Xpydr47NFbLZ1rsiNVokUoz59+oOwHQmcoUb5XLmy1UOcAr1dZ
-         Ec+0hJ2zNF9NloOs5SEY9eRZCruH08/AdQ0/iVFMVIXEanzQb85/mFY9SaxqafxZGLRk
-         lScj3WJw1IaP0cfjq/cSmumxuGLDasx2buIkxammqbsb3hd1W5PffMasA3UqayVGkvUC
-         r3Tw==
-X-Gm-Message-State: AOAM530zMBUi2osP72yO4dnAHZ+1JoN/cReyVULyuUc217nZwTzcB6ml
-        315Prk4fKyw+mmF6MOlJkz2g+2TKkeT/MA==
-X-Google-Smtp-Source: ABdhPJy4uqFrlp9JscWi0V5Z8TjsGzwyx/NT/ji6LdQToECbBmsHAUCw0a7qS6c6YGT3X7JKDSNLmg==
-X-Received: by 2002:aed:3461:: with SMTP id w88mr23201340qtd.180.1597856592326;
-        Wed, 19 Aug 2020 10:03:12 -0700 (PDT)
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
-        by smtp.gmail.com with ESMTPSA id 73sm16526360qtf.74.2020.08.19.10.02.35
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Aug 2020 10:02:41 -0700 (PDT)
-Received: by mail-yb1-f181.google.com with SMTP id a34so13689796ybj.9
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 10:02:35 -0700 (PDT)
-X-Received: by 2002:a25:d802:: with SMTP id p2mr37420399ybg.446.1597856554388;
- Wed, 19 Aug 2020 10:02:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200817220238.603465-1-robdclark@gmail.com> <20200817220238.603465-11-robdclark@gmail.com>
-In-Reply-To: <20200817220238.603465-11-robdclark@gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 19 Aug 2020 10:02:20 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VzYSL-3q0oFPPSP7FiEdLeTEN6Zy=kp-73B=8LAavmVw@mail.gmail.com>
-Message-ID: <CAD=FV=VzYSL-3q0oFPPSP7FiEdLeTEN6Zy=kp-73B=8LAavmVw@mail.gmail.com>
-Subject: Re: [PATCH 10/20] dt-bindings: arm-smmu: Add compatible string for
- Adreno GPU SMMU
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Wed, 19 Aug 2020 13:02:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597856557;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cHu72fh1fFkkjp/hOIC1Y0NnDw8ZT+1uUdQ3/2I1wFY=;
+        b=iyYZ/UQdDjPSUnaA2pwumpmuLdEGFU0JeGYEcJcXDKnA5wG0cx3fFRarvA+fR+kMjHJRNv
+        FWvQzVJIhI8gSbRHCtn9BUem+AgkkYWJKZE+F7jW7eF+1D73DW3n+EhnCCrBifzceuV1WV
+        YHK+wT3LZXIosoM5N5ZjlPhj+4Y226s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-576-BzVCQt0pN7qIorN9J_YkMw-1; Wed, 19 Aug 2020 13:02:33 -0400
+X-MC-Unique: BzVCQt0pN7qIorN9J_YkMw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8084910054FF;
+        Wed, 19 Aug 2020 17:02:31 +0000 (UTC)
+Received: from treble (ovpn-117-70.rdu2.redhat.com [10.10.117.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4C39F5D9E8;
+        Wed, 19 Aug 2020 17:02:25 +0000 (UTC)
+Date:   Wed, 19 Aug 2020 12:02:23 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
         Will Deacon <will@kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Vivek Gautam <vivek.gautam@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Herring <robh@kernel.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:ARM SMMU DRIVERS" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH] x86/uaccess: Use pointer masking to limit uaccess
+ speculation
+Message-ID: <20200819170223.nmv7dekvpc5yk4rm@treble>
+References: <f12e7d3cecf41b2c29734ea45a393be21d4a8058.1597848273.git.jpoimboe@redhat.com>
+ <CALCETrVUgHHW=q3R9jQxU4JTf2m493FhOa3L-iQnHMcH7dgQFg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CALCETrVUgHHW=q3R9jQxU4JTf2m493FhOa3L-iQnHMcH7dgQFg@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Aug 19, 2020 at 09:39:10AM -0700, Andy Lutomirski wrote:
+> On Wed, Aug 19, 2020 at 7:50 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> > +/*
+> > + * Sanitize a uaccess pointer such that it becomes NULL if it's not a valid
+> > + * user pointer.  This blocks speculative dereferences of user-controlled
+> > + * pointers.
+> > + */
+> > +#define uaccess_mask_ptr(ptr) \
+> > +       (__typeof__(ptr)) array_index_nospec((__force unsigned long)ptr, user_addr_max())
+> > +
+> 
+> If I dug through all the macros correctly, this is generating a fairly
+> complex pile of math to account for the fact that user_addr_max() is
+> variable and that it's a nasty number.
 
-On Mon, Aug 17, 2020 at 3:03 PM Rob Clark <robdclark@gmail.com> wrote:
->
-> From: Jordan Crouse <jcrouse@codeaurora.org>
->
-> Every Qcom Adreno GPU has an embedded SMMU for its own use. These
-> devices depend on unique features such as split pagetables,
-> different stall/halt requirements and other settings. Identify them
-> with a compatible string so that they can be identified in the
-> arm-smmu implementation specific code.
->
-> Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
->  Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-> index 503160a7b9a0..5ec5d0d691f6 100644
-> --- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-> +++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-> @@ -40,6 +40,10 @@ properties:
->                - qcom,sm8150-smmu-500
->                - qcom,sm8250-smmu-500
->            - const: arm,mmu-500
-> +      - description: Qcom Adreno GPUs implementing "arm,smmu-v2"
-> +        items:
-> +          - const: qcom,adreno-smmu
-> +          - const: qcom,smmu-v2
+The math is actually pretty simple.  It's identical to what getuser.S is
+doing:
 
-I know I'm kinda late to the game, but this seems weird to me,
-especially given the later patches in the series like:
+	cmp TASK_addr_limit(%_ASM_DX),%_ASM_AX
+	sbb %_ASM_DX, %_ASM_DX
+	and %_ASM_DX, %_ASM_AX
 
-https://lore.kernel.org/r/20200817220238.603465-19-robdclark@gmail.com
+> But I don't think there's any particular need to use the real maximum
+> user address here.  Allowing a mis-speculated user access to a
+> non-canonical address or to the top guard page of the lower canonical
+> region is harmless.  With current kernels, a sequence like:
+> 
+> if (likely((long)addr > 0) {
+>   masked_addr = addr & 0x7FFFFFFFFFFFFFFFUL;
+> } else {
+>   if (kernel fs) {
+>     masked_addr = addr;
+>   } else {
+>     EFAULT;
+>   }
+> }
 
-Specifically in that patch you can see that this IOMMU already had a
-compatible string and we're changing it and throwing away the
-model-specific string?  I'm guessing that you're just trying to make
-it easier for code to identify the adreno iommu, but it seems like a
-better way would have been to just add the adreno compatible in the
-middle, like:
+The masking has to be done without conditional branches, otherwise it
+defeats the point.
 
-      - description: Qcom Adreno GPUs implementing "arm,smmu-v2"
-        items:
-          - enum:
-              - qcom,msm8996-smmu-v2
-              - qcom,msm8998-smmu-v2
-              - qcom,sc7180-smmu-v2
-              - qcom,sdm845-smmu-v2
-        - const: qcom,adreno-smmu
-        - const: qcom,smmu-v2
+> could plausibly be better.  But Christoph's series fixes this whole
+> mess, and I think that this should be:
+> 
+> #define uaccess_mask_ptr(ptr) ((__typeof___(ptr)) (__force unsigned
+> long)ptr & USER_ADDR_MASK))
+> 
+> where USER_ADDR_MASK is the appropriate value for 32-bit or 64-bit.
 
-Then we still have the SoC-specific compatible string in case we need
-it but we also have the generic one?  It also means that we're not
-deleting the old compatible string...
+Yeah, we could do that.  Though in the meantime, the simple merge
+conflict resolution with Christoph's patches would be
+s/user_addr_max/TASK_SIZE_MAX/ in my uaccess_mask_ptr() macro.
 
--Doug
+-- 
+Josh
 
-
->        - description: Marvell SoCs implementing "arm,mmu-500"
->          items:
->            - const: marvell,ap806-smmu-500
-> --
-> 2.26.2
->
