@@ -2,102 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E952E2495FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31EC72496CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728116AbgHSG7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 02:59:53 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:35234 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727064AbgHSG7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 02:59:51 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6D0091A02FF;
-        Wed, 19 Aug 2020 08:59:48 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 3F2EB1A0311;
-        Wed, 19 Aug 2020 08:59:44 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 5199F4024E;
-        Wed, 19 Aug 2020 08:59:34 +0200 (CEST)
-From:   Ran Wang <ran.wang_1@nxp.com>
-To:     Li Yang <leoyang.li@nxp.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Ma <peng.ma@nxp.com>, Ran Wang <ran.wang_1@nxp.com>
-Subject: [PATCH v4] soc: fsl: enable acpi support in RCPM driver
-Date:   Wed, 19 Aug 2020 14:52:07 +0800
-Message-Id: <20200819065207.43930-1-ran.wang_1@nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1728152AbgHSHLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 03:11:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726697AbgHSG41 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 02:56:27 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF59FC061389;
+        Tue, 18 Aug 2020 23:56:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=yG7qWXKBUIxg7RQ3+cci8dpYxavPbFHR4ZLuySoica4=; b=QIUBzW0L+6A9SSAc6/gO+tDQ+b
+        OxXtbUbEFqlmm0USEC/IXSplued4C+C6F0ZF30aKjG8eHH9Hw09fN5oDweD3DjZhb8ZVyBa3oNCMt
+        gHqvdLdvetFUsHVA2naOyxN49WiwYumPj0OJ9vWKMBhULQu9DljH3ttkuIFc8Xzwt6Kk9NdAWGMVc
+        M/hFcqjB5X000cNsrLFGiT0ucDiSShmdbC+Iz8B0HGkVX82jI1lTPPtC7Yho4FRHWN0jDXHB+oQYg
+        jtcO/Q7MNp4OEwi61wxBreFz6GJBwroT31V+Pbx43dXQbOQjKpB13S5G4CjWrDHb//3KK5l+B0jlz
+        QH4CysFQ==;
+Received: from [2001:4bb8:198:f3b2:86b6:2277:f429:37a1] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k8I0s-0008Kv-H4; Wed, 19 Aug 2020 06:55:58 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        iommu@lists.linux-foundation.org
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, nouveau@lists.freedesktop.org,
+        netdev@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
+        alsa-devel@alsa-project.org
+Subject: [PATCH 01/28] mm: turn alloc_pages into an inline function
+Date:   Wed, 19 Aug 2020 08:55:28 +0200
+Message-Id: <20200819065555.1802761-2-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200819065555.1802761-1-hch@lst.de>
+References: <20200819065555.1802761-1-hch@lst.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Ma <peng.ma@nxp.com>
+To prevent a compiler error when a method call alloc_pages is
+added (which I plan to for the dma_map_ops).
 
-This patch enables ACPI support in RCPM driver.
-
-Signed-off-by: Peng Ma <peng.ma@nxp.com>
-Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
-Change in v4:
- - Make commit subject more accurate
- - Remove unrelated new blank line
+ include/linux/gfp.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Change in v3:
- - Add #ifdef CONFIG_ACPI for acpi_device_id
- - Rename rcpm_acpi_imx_ids to rcpm_acpi_ids
-
-Change in v2:
- - Update acpi_device_id to fix conflict with other driver
-
- drivers/soc/fsl/rcpm.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/soc/fsl/rcpm.c b/drivers/soc/fsl/rcpm.c
-index a093dbe..b5aa6db 100644
---- a/drivers/soc/fsl/rcpm.c
-+++ b/drivers/soc/fsl/rcpm.c
-@@ -2,7 +2,7 @@
- //
- // rcpm.c - Freescale QorIQ RCPM driver
- //
--// Copyright 2019 NXP
-+// Copyright 2019-2020 NXP
- //
- // Author: Ran Wang <ran.wang_1@nxp.com>
- 
-@@ -13,6 +13,7 @@
- #include <linux/slab.h>
- #include <linux/suspend.h>
- #include <linux/kernel.h>
-+#include <linux/acpi.h>
- 
- #define RCPM_WAKEUP_CELL_MAX_SIZE	7
- 
-@@ -139,10 +140,19 @@ static const struct of_device_id rcpm_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, rcpm_of_match);
- 
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id rcpm_acpi_ids[] = {
-+	{"NXP0015",},
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(acpi, rcpm_acpi_ids);
-+#endif
-+
- static struct platform_driver rcpm_driver = {
- 	.driver = {
- 		.name = "rcpm",
- 		.of_match_table = rcpm_of_match,
-+		.acpi_match_table = ACPI_PTR(rcpm_acpi_ids),
- 		.pm	= &rcpm_pm_ops,
- 	},
- 	.probe = rcpm_probe,
+diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+index 67a0774e080b98..dd2577c5407112 100644
+--- a/include/linux/gfp.h
++++ b/include/linux/gfp.h
+@@ -550,8 +550,10 @@ extern struct page *alloc_pages_vma(gfp_t gfp_mask, int order,
+ #define alloc_hugepage_vma(gfp_mask, vma, addr, order) \
+ 	alloc_pages_vma(gfp_mask, order, vma, addr, numa_node_id(), true)
+ #else
+-#define alloc_pages(gfp_mask, order) \
+-		alloc_pages_node(numa_node_id(), gfp_mask, order)
++static inline struct page *alloc_pages(gfp_t gfp_mask, unsigned int order)
++{
++	return alloc_pages_node(numa_node_id(), gfp_mask, order);
++}
+ #define alloc_pages_vma(gfp_mask, order, vma, addr, node, false)\
+ 	alloc_pages(gfp_mask, order)
+ #define alloc_hugepage_vma(gfp_mask, vma, addr, order) \
 -- 
-2.7.4
+2.28.0
 
