@@ -2,75 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 270F22492BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 04:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0582492BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 04:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727781AbgHSCF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 22:05:59 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9839 "EHLO huawei.com"
+        id S1727798AbgHSCGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 22:06:24 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9769 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726876AbgHSCFt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 22:05:49 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id A6539BF6B7B2A3CC8183;
-        Wed, 19 Aug 2020 10:05:45 +0800 (CST)
-Received: from DESKTOP-C3MD9UG.china.huawei.com (10.174.177.253) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 19 Aug 2020 10:05:35 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Oliver O'Halloran <oohall@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Dave Jiang" <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v2 4/4] libnvdimm/region: reduce an unnecessary if branch in nd_region_create()
-Date:   Wed, 19 Aug 2020 10:05:03 +0800
-Message-ID: <20200819020503.3079-5-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20200819020503.3079-1-thunder.leizhen@huawei.com>
-References: <20200819020503.3079-1-thunder.leizhen@huawei.com>
+        id S1726884AbgHSCGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 22:06:24 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id D466F3F041F0498E387F;
+        Wed, 19 Aug 2020 10:06:19 +0800 (CST)
+Received: from localhost (10.174.179.108) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Wed, 19 Aug 2020
+ 10:06:12 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <hare@suse.de>, <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH v2] scsi: libfc: Fix passing zero to 'PTR_ERR' warning
+Date:   Wed, 19 Aug 2020 10:05:46 +0800
+Message-ID: <20200819020546.59172-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
+In-Reply-To: <20200818114235.51052-1-yuehaibing@huawei.com>
+References: <20200818114235.51052-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.253]
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.108]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "else" branch can only be entered when ndr_desc->flush is NULL. After
-replaced "NULL" with "ndr_desc->flush", we will find that the statements
-in "if..else.." are the same.
+drivers/scsi/libfc/fc_disc.c:304
+ fc_disc_error() warn: passing zero to 'PTR_ERR'
 
-No functional change.
+fp maybe NULL in fc_disc_error(), use IS_ERR to handle this.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- drivers/nvdimm/region_devs.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+v2: use IS_ERR in fc_disc_error()
+---
+ drivers/scsi/libfc/fc_disc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/nvdimm/region_devs.c b/drivers/nvdimm/region_devs.c
-index ef23119db574663..7cf9c7d857909ce 100644
---- a/drivers/nvdimm/region_devs.c
-+++ b/drivers/nvdimm/region_devs.c
-@@ -1131,10 +1131,7 @@ static struct nd_region *nd_region_create(struct nvdimm_bus *nvdimm_bus,
- 	nd_region->ndr_size = resource_size(ndr_desc->res);
- 	nd_region->ndr_start = ndr_desc->res->start;
- 	nd_region->align = default_align(nd_region);
--	if (ndr_desc->flush)
--		nd_region->flush = ndr_desc->flush;
--	else
--		nd_region->flush = NULL;
-+	nd_region->flush = ndr_desc->flush;
+diff --git a/drivers/scsi/libfc/fc_disc.c b/drivers/scsi/libfc/fc_disc.c
+index d8cbc9c0e766..574e842cefed 100644
+--- a/drivers/scsi/libfc/fc_disc.c
++++ b/drivers/scsi/libfc/fc_disc.c
+@@ -302,7 +302,7 @@ static void fc_disc_error(struct fc_disc *disc, struct fc_frame *fp)
+ 	unsigned long delay = 0;
  
- 	nd_device_register(dev);
+ 	FC_DISC_DBG(disc, "Error %ld, retries %d/%d\n",
+-		    PTR_ERR(fp), disc->retry_count,
++		    IS_ERR(fp) ? PTR_ERR(fp) : 0, disc->retry_count,
+ 		    FC_DISC_RETRY_LIMIT);
  
+ 	if (!fp || PTR_ERR(fp) == -FC_EX_TIMEOUT) {
 -- 
-1.8.3
+2.17.1
 
 
