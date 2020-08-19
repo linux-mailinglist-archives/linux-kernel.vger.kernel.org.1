@@ -2,158 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B98124A9CD
+	by mail.lfdr.de (Postfix) with ESMTP id 984A624A9CE
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 01:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727824AbgHSXGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 19:06:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726209AbgHSXGp (ORCPT
+        id S1727859AbgHSXH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 19:07:27 -0400
+Received: from smtprelay0001.hostedemail.com ([216.40.44.1]:45566 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726209AbgHSXH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 19:06:45 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F28BC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 16:06:45 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id w17so158863edt.8
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 16:06:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ApV9u1cflFzKSz0A3fkLXqLOVXOpSp0i2qXFnaEVB0A=;
-        b=hcq8WVW8xePVrqUmTs403JmomWiUUftXEuk5T7jqx3OlIcvOpqtxDeKPOPywIsZkxi
-         hOhLV8OOnaQ9BjRJivGjvkszhZwrKDd+KBmdpuErOmrkRXCNSIGJHKRZYZmB4sfK0Eh1
-         q0m3sOBtnx8d5y2U1UXbLKAiH47CT0QYko1Ikptj8+SWjD3xh1FszNf7BEUVqs9oADSY
-         CR+vN6lYMQJj9JBvUZ+yDBvndF58uFe+FzWtA/si0/tQMWXuXLsmP8liPEOsDgqHBmiK
-         Qv54nkglqbMlD5fw0jjqCMkZ+Fvofc6JZfvkuOf1sFcRWNbTFRA4bylFxnRVA9d+zLz/
-         p/bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ApV9u1cflFzKSz0A3fkLXqLOVXOpSp0i2qXFnaEVB0A=;
-        b=VaJKXyTFwmLruC6L6GdlLj/7IiINOy9pR0igIJ6TmuLO/nO/mkej4fpEwJ8v6F37M4
-         SSJyt6ZVAiehswaJicWbWuCI4k+5g9OmwApEOPofmH6hM51dzkH6qxrsj925cEQJkmh+
-         zS0oGHCp+osib0yFHTf7Dg48HOZyx4/j6ug+uDjJ8BXNDnasAnnHmQd0Gndqebt7RCjM
-         L8ozUaJvT03DkCMddzWN6Fl/2hDsvcqEYfAyTRCbf2yrqh9e8oqdvMXbzhZ0IugtnXZa
-         qCJhHRui6vmsEg0fk5faFMAjb1ipYgQ4hCzrE0CwLPgqWHvPF7qhQ7b8k01rV5DlGvOT
-         F9+Q==
-X-Gm-Message-State: AOAM5319KhogtalPaibEPBywmp4frU9lVGGptMWDN101jmHhSM97y4q1
-        RcwEQrcj1Bt+yJs6ZRCO8uw9g+dNY6SsWhohEQc=
-X-Google-Smtp-Source: ABdhPJwrYR6MygaEFcuQnXf1LsPhEernaupCXvsGu3zoQTvrEgm3ZWt2iE+S59WWL/VMOZfhG4XHAoLmbljxvKTiOUk=
-X-Received: by 2002:a05:6402:1d92:: with SMTP id dk18mr315695edb.206.1597878404099;
- Wed, 19 Aug 2020 16:06:44 -0700 (PDT)
+        Wed, 19 Aug 2020 19:07:26 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 9A0AF181D3030;
+        Wed, 19 Aug 2020 23:07:25 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3866:3867:3870:3871:3872:3874:4321:5007:7903:7974:9010:10004:10400:10471:10848:11026:11232:11658:11914:12043:12296:12297:12438:12740:12760:12895:13069:13071:13255:13311:13357:13439:14096:14097:14180:14181:14659:14721:21060:21080:21627:21740:21990:30054:30056:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: veil80_52063782702b
+X-Filterd-Recvd-Size: 2464
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf05.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 19 Aug 2020 23:07:24 +0000 (UTC)
+Message-ID: <b0fd63e4b379eda69ee85ab098353582b8c054bb.camel@perches.com>
+Subject: coccinelle: Convert comma to semicolons (was Re: [PATCH]
+ checkpatch: Add test for comma use that should be semicolon)
+From:   Joe Perches <joe@perches.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Julia Lawall <julia.lawall@lip6.fr>,
+        cocci <cocci@systeme.lip6.fr>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Whitcroft <apw@shadowen.org>,
+        Giuseppe Scrivano <gscrivan@redhat.com>
+Date:   Wed, 19 Aug 2020 16:07:23 -0700
+In-Reply-To: <3bf27caf462007dfa75647b040ab3191374a59de.camel@perches.com>
+References: <20200818184107.f8af232fb58b17160c570874@linux-foundation.org>
+         <3bf27caf462007dfa75647b040ab3191374a59de.camel@perches.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-References: <20200818184704.3625199-1-yuzhao@google.com> <20200818184704.3625199-3-yuzhao@google.com>
-In-Reply-To: <20200818184704.3625199-3-yuzhao@google.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 19 Aug 2020 16:06:32 -0700
-Message-ID: <CAHbLzkr7oPFtUog1zJWs54dsS8dhwkWp6ET_Zk71nXmRMtGvDQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] mm: remove superfluous __ClearPageWaiters()
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Huang Ying <ying.huang@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>, Qian Cai <cai@lca.pw>,
-        Mel Gorman <mgorman@suse.de>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Hugh Dickins <hughd@google.com>, Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 11:47 AM Yu Zhao <yuzhao@google.com> wrote:
->
-> Presumably __ClearPageWaiters() was added to follow the previously
-> removed __ClearPageActive() pattern.
->
-> Only flags that are in PAGE_FLAGS_CHECK_AT_FREE needs to be properly
-> cleared because otherwise we think there may be some kind of leak.
-> PG_waiters is not one of those flags and leaving the clearing to
-> PAGE_FLAGS_CHECK_AT_PREP is more appropriate.
+On Wed, 2020-08-19 at 14:22 -0700, Joe Perches wrote:
+> There are commas used as statement terminations that should typically
+> have used semicolons instead.  Only direct assignments or use of a single
+> function or value on a single line are detected by this test.
+> 
+> e.g.:
+> 	foo = bar(),		/* typical use is semicolon not comma */
+> 	bar = baz();
+> 
+> Add an imperfect test to detect these comma uses.
+> 
+> No false positives were found in testing, but many types of false negatives
+> are possible.
+> 
+> e.g.:
+> 	foo = bar() + 1,	/* comma use, but not direct assignment */
+> 	bar = baz();
 
-Actually TBH I'm not very keen to this change, it seems the clearing
-is just moved around and the allocation side pays for that instead of
-free side.
+Hi.
 
->
-> Signed-off-by: Yu Zhao <yuzhao@google.com>
-> ---
->  include/linux/page-flags.h | 2 +-
->  mm/filemap.c               | 2 ++
->  mm/memremap.c              | 2 --
->  mm/swap.c                  | 3 ---
->  4 files changed, 3 insertions(+), 6 deletions(-)
->
-> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-> index 6be1aa559b1e..dba80a2bdfba 100644
-> --- a/include/linux/page-flags.h
-> +++ b/include/linux/page-flags.h
-> @@ -318,7 +318,7 @@ static inline int TestClearPage##uname(struct page *page) { return 0; }
->         TESTSETFLAG_FALSE(uname) TESTCLEARFLAG_FALSE(uname)
->
->  __PAGEFLAG(Locked, locked, PF_NO_TAIL)
-> -PAGEFLAG(Waiters, waiters, PF_ONLY_HEAD) __CLEARPAGEFLAG(Waiters, waiters, PF_ONLY_HEAD)
-> +PAGEFLAG(Waiters, waiters, PF_ONLY_HEAD)
->  PAGEFLAG(Error, error, PF_NO_TAIL) TESTCLEARFLAG(Error, error, PF_NO_TAIL)
->  PAGEFLAG(Referenced, referenced, PF_HEAD)
->         TESTCLEARFLAG(Referenced, referenced, PF_HEAD)
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 1aaea26556cc..75240c7ef73f 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -1079,6 +1079,8 @@ static void wake_up_page_bit(struct page *page, int bit_nr)
->                  * other pages on it.
->                  *
->                  * That's okay, it's a rare case. The next waker will clear it.
-> +                * Otherwise the bit will be cleared by PAGE_FLAGS_CHECK_AT_PREP
-> +                * when the page is being freed.
->                  */
->         }
->         spin_unlock_irqrestore(&q->lock, flags);
-> diff --git a/mm/memremap.c b/mm/memremap.c
-> index 3a06eb91cb59..a9d02ffaf9e3 100644
-> --- a/mm/memremap.c
-> +++ b/mm/memremap.c
-> @@ -451,8 +451,6 @@ void free_devmap_managed_page(struct page *page)
->                 return;
->         }
->
-> -       __ClearPageWaiters(page);
-> -
->         mem_cgroup_uncharge(page);
->
->         /*
-> diff --git a/mm/swap.c b/mm/swap.c
-> index 999a84dbe12c..40bf20a75278 100644
-> --- a/mm/swap.c
-> +++ b/mm/swap.c
-> @@ -90,7 +90,6 @@ static void __page_cache_release(struct page *page)
->                 del_page_from_lru_list(page, lruvec, page_off_lru(page));
->                 spin_unlock_irqrestore(&pgdat->lru_lock, flags);
->         }
-> -       __ClearPageWaiters(page);
->  }
->
->  static void __put_single_page(struct page *page)
-> @@ -900,8 +899,6 @@ void release_pages(struct page **pages, int nr)
->                         del_page_from_lru_list(page, lruvec, page_off_lru(page));
->                 }
->
-> -               __ClearPageWaiters(page);
-> -
->                 list_add(&page->lru, &pages_to_free);
->         }
->         if (locked_pgdat)
-> --
-> 2.28.0.220.ged08abb693-goog
->
->
+I recently added a test for this condition to linux's checkpatch.
+
+A similar coccinelle script might be:
+
+$ cat comma.cocci
+@@
+expression e1;
+expression e2;
+@@
+
+	e1
+-	,
++	;
+	e2;
+$
+
+This works reasonably well but it has several false positives
+for declarations like:
+
+$ spatch --sp-file comma.cocci mm/huge_memory.c
+diff -u -p a/huge_memory.c b/huge_memory.c
+--- a/huge_memory.c
++++ b/huge_memory.c
+@@ -2778,7 +2778,7 @@ static unsigned long deferred_split_scan
+ 	struct pglist_data *pgdata = NODE_DATA(sc->nid);
+ 	struct deferred_split *ds_queue = &pgdata->deferred_split_queue;
+ 	unsigned long flags;
+-	LIST_HEAD(list), *pos, *next;
++	LIST_HEAD(list), *pos; *next;
+ 	struct page *page;
+ 	int split = 0;
+$
+
+Any script improvement suggestions?
+
+
