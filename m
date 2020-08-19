@@ -2,206 +2,456 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D910249410
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 06:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B585F249421
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 06:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726745AbgHSE1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 00:27:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726698AbgHSE1m (ORCPT
+        id S1726675AbgHSEaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 00:30:25 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:22871 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725306AbgHSEaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 00:27:42 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F96AC061389;
-        Tue, 18 Aug 2020 21:27:42 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id h21so16878775qtp.11;
-        Tue, 18 Aug 2020 21:27:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=taoylAfZ50RvbeR+qDxRIBM5RKgvtzNS5VKzJspUyB8=;
-        b=Z+DDR3MmkmAOpsWWDpyXeYNgIGzTgK9Ddb7UhBT/vJrDAZuGC7IlYskyQk03tzEygi
-         hg0yvwJORukjN33wkxhvlIHH+zvaP6U6lypz2wcfStTBHY8CmTz2F7TgzrpOR/fJm1M7
-         EFODaa5/wquuu3op5FFYJRBLf5S9RBmRBvBOB54DJqk3ofigrbivIJ1NXhgI5tnxk9EX
-         VX77DTOK8ANaygFl9DWT0sOHN+dtc1RaB7H+Xn9h5/7jP/Epn+84BTlG6LRCCUFBnKKo
-         Ikfqq6/wFEvz43BPxSR6OKSjvmmyvtPFx/O6FVNMW3b4ApIC1B4o5rqHt+Vy/0CELP6F
-         R4ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=taoylAfZ50RvbeR+qDxRIBM5RKgvtzNS5VKzJspUyB8=;
-        b=FkVIOa3lJy5IAZXMidlFCtRVM6ZLQ++akq1rZhTeYsD//y1rvmrFuBkopfkZvFqFL7
-         216f+92ElU/enL45RKgMKKIxMvL7hcAuGGin3IEvsrmcusYhSBc7MvhEUZ9TkgxTZBaK
-         yZR91NCGtAjBptZiiiNesnHkKlYu2+mU0ML57l3mjRtbTZuroNpRCCbE8CSMSU8FB2Vb
-         SZ0JRXXS5NhsNo8DVnKQ8HtaLNe0d4MCs/QmsxysaRybVe1yODtqnYtl98O/7zldByIZ
-         0rTU3HgIRszek2071C6OkpMIDVnuCjU13INK5IFH6517K5wKcJO7UgAb7RSOKyU3/yFX
-         K4Ag==
-X-Gm-Message-State: AOAM5337EFZtOXCFAcFYrOxcg9cu634NtiPCzJohvHvFGWTM+pCY3HL5
-        D6JBaAFEYZH4u3m0X7+aSlg=
-X-Google-Smtp-Source: ABdhPJyDanWGHvp3JCIJhebJK8Z+qpciCv8gSBa8JKVjUZllBLCq+m9VK5Y9O/7JNh540/o4GxDybA==
-X-Received: by 2002:ac8:5146:: with SMTP id h6mr21244001qtn.290.1597811261609;
-        Tue, 18 Aug 2020 21:27:41 -0700 (PDT)
-Received: from localhost.localdomain ([2001:470:b:9c3:9e5c:8eff:fe4f:f2d0])
-        by smtp.gmail.com with ESMTPSA id g129sm24061413qkb.39.2020.08.18.21.27.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 18 Aug 2020 21:27:41 -0700 (PDT)
-Subject: [RFC PATCH v2 5/5] mm: Split move_pages_to_lru into 3 separate
- passes
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-To:     alex.shi@linux.alibaba.com
-Cc:     yang.shi@linux.alibaba.com, lkp@intel.com, rong.a.chen@intel.com,
-        khlebnikov@yandex-team.ru, kirill@shutemov.name, hughd@google.com,
-        linux-kernel@vger.kernel.org, alexander.duyck@gmail.com,
-        daniel.m.jordan@oracle.com, linux-mm@kvack.org,
-        shakeelb@google.com, willy@infradead.org, hannes@cmpxchg.org,
-        tj@kernel.org, cgroups@vger.kernel.org, akpm@linux-foundation.org,
-        richard.weiyang@gmail.com, mgorman@techsingularity.net,
-        iamjoonsoo.kim@lge.com
-Date:   Tue, 18 Aug 2020 21:27:38 -0700
-Message-ID: <20200819042738.23414.60815.stgit@localhost.localdomain>
-In-Reply-To: <20200819041852.23414.95939.stgit@localhost.localdomain>
-References: <20200819041852.23414.95939.stgit@localhost.localdomain>
-User-Agent: StGit/0.17.1-dirty
+        Wed, 19 Aug 2020 00:30:21 -0400
+Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 07J4TruC030125;
+        Wed, 19 Aug 2020 13:29:53 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 07J4TruC030125
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1597811394;
+        bh=tnH/SuU4NrEiRkFzg/a5riUNX3UasG3bSl0KD9O1hi4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DbydqHW4C2TP8uaNyn+m8CYcfEN/6R20qxViYIjalXVR54a0jJjBclhxpxKkh3GYF
+         in1w8dD2b2EdkQ5z9LgrXO7h3yQy20DFpwyZoRH5j7aDCGzUQqScxHAqHWh+2xNOGS
+         zlT/8pp58+H7aKwXJi1BYfIidtXq+lu8ttdpNBWyT1jPGyC0iHV6Fb0CYbBIK3zjWX
+         20P7EGoIUNJLXcThPBtSPHOndR18R44vWMCaGYNXk6MPT4LLd5CPEvEN3uhuIm7npP
+         gFkMLgHXSArsAfx/b6eeNvRvH6TGGSI8IPqxEbpzzOgX5XBHJLhvCRBD35VDwHAk0t
+         hNx/dd04OeRRQ==
+X-Nifty-SrcIP: [209.85.222.54]
+Received: by mail-ua1-f54.google.com with SMTP id q68so6512887uaq.0;
+        Tue, 18 Aug 2020 21:29:53 -0700 (PDT)
+X-Gm-Message-State: AOAM530ZEy2yp3Pk1jZsa71NpxxgFXj29zH0sdaIPVcJBaEEyVj9jsFx
+        szvJ7B3xImjFhh/nXBGryZtRbLOmyHd26GEhUm8=
+X-Google-Smtp-Source: ABdhPJwAHOdXFDwEsS4dO9yH21gskXjd6JK9Ug0TL9+bdIDhD7nwW+ntzHQTxPTqoUyM1jCd64glJtV29z6VDLb3AD4=
+X-Received: by 2002:ab0:623:: with SMTP id f32mr13420750uaf.121.1597811392439;
+ Tue, 18 Aug 2020 21:29:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20200812173958.2307251-1-masahiroy@kernel.org>
+ <20200812173958.2307251-3-masahiroy@kernel.org> <CAKwvOdkL=667+cw_Rxq_5zaOKeTTptsMaxkkSXBic9QxozOWVg@mail.gmail.com>
+ <CAK7LNAS4EjGchNzqhEcTPTU0mOUqAk8nF9QYW3qwfOp572uCHA@mail.gmail.com>
+In-Reply-To: <CAK7LNAS4EjGchNzqhEcTPTU0mOUqAk8nF9QYW3qwfOp572uCHA@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 19 Aug 2020 13:29:15 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARPAB+UBcYJTauPRksOb1zVbicUt7z39szaO3o70vD1RQ@mail.gmail.com>
+Message-ID: <CAK7LNARPAB+UBcYJTauPRksOb1zVbicUt7z39szaO3o70vD1RQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] gen_compile_commands: wire up build rule to Makefile
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Nathan Huckleberry <nhuck@google.com>,
+        Tom Roeder <tmroeder@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Hi Nick,
 
-The current code for move_pages_to_lru is meant to release the LRU lock
-every time it encounters an unevictable page or a compound page that must
-be freed. This results in a fair amount of code bulk because the lruvec has
-to be reacquired every time the lock is released and reacquired.
+On Fri, Aug 14, 2020 at 2:10 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Thu, Aug 13, 2020 at 7:30 AM 'Nick Desaulniers' via Clang Built
+> Linux <clang-built-linux@googlegroups.com> wrote:
+> >
+> > On Wed, Aug 12, 2020 at 10:40 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > >
+> > > Currently, you need to explicitly run scripts/gen_compile_commands.py
+> > > to create compile_commands.json. It traverses the object tree
+> > > (you need to pass the -d option to deal with a separate output tree),
+> > > and parses all the .*.cmd file found.
+> > >
+> > > If you rebuild the kernel over again without 'make clean', stale
+> > > .*.cmd files from older builds will create invalid entries in
+> > > compile_commands.json.
+> >
+> > Definitely a problem; happy to see compile_commands.json added to
+> > `make clean` target, too.
+> >
+> > >
+> > > This commit wires up the compile_commands.json rule to the top
+> > > Makefile, and makes it parse .*.cmd files only from the current build
+> > > to avoid stale entries.
+> > >
+> > > It is possible to extract only relevant .*.cmd files by checking
+> > > $(KBUILD_VMLINUX_OBJS), $(KBUILD_VMLINUX_LIBS), and modules.order.
+> > > The objects or archives linked to vmlinux are listed in
+> > > $(KBUILD_VMLINUX_OBJS) or $(KBUILD_VMLINUX_LIBS). All the modules are
+> > > listed in modules.order.
+> > >
+> > > You can create compile_commands.json from Make:
+> > >
+> > >   $ make -j$(nproc) CC=clang compile_commands.json
+> > >
+> > > Of course, you can build vmlinux, modules, and compile_commands.json
+> > > all together in a single command:
+> > >
+> > >   $ make -j$(nproc) CC=clang all compile_commands.json
+> > >
+> > > It works also for M= builds. In this case, compile_commands.json
+> > > is created in the top directory of the external module.
+> > >
+> > > I hope this will be overall improvements, but it has a drawback;
+> > > the coverage of the compile_commands.json is reduced because only
+> > > the objects linked to vmlinux or modules are handled. For example,
+> > > the following C files are not included in compile_commands.json:
+> > >
+> > >  - Decompressor source files (arch/*/boot/compressed/)
+> > >  - VDSO source files
+> > >  - C files used to generate intermediates (e.g. kernel/bounds.c)
+> > >  - standalone host programs
+> >
+> > Oof, for an x86_64 defconfig, the difference in line count of
+> > compile_commands.json
+> > before: 12826
+>
+>
+> I think some lines of 'before'
+> are not so important.
+>
+> Files suffixed with *.mod.c
+> are generated sources for modules.
+> There is no point to check them by Clang tools.
+>
+>
+> Some entries appear twice:
+>
+> For example, 'before' contains two entries of
+> "file": "lib/cmdline.c"
+> Which entry is used by 'clang-tidy lib/cmdline.c',
+> the first one, the second one, or both?
+>
+>
+>
+> Having said that, there is still a loss of more than 3%, yes.
+>
+>
+> > after: 12351
+> >
+> > That's a loss of 475 (3.7% of 12826) coverage. Is there something more
+> > we can do to preserve this functionality, while avoiding stale .cmd
+> > files?
+>
+>
+> I have no idea how to do this correctly.
+>
+> > Is it that those aren't specified by `$(KBUILD_VMLINUX_OBJS)
+> > $(KBUILD_VMLINUX_LIBS)` ?
+>
+> These variables contain only objects and archives
+> linked to vmlinux.
+>
+>
+>
+>
+> For example, VDSO is built as a prerequisite of
+> another object that wraps it.
+>
+> See line 61 of arch/arm64/kernel/vdso/Makefile:
+> $(obj)/vdso.o : $(obj)/vdso.so
+>
+>
+> I do not know how to get the full list of active objects,
+> some of which are built on demand
+> in the dependency chain.
+>
+>
+> Idea 1)
+> Merge this series, and accept the loss.
+>
+>
+> Idea 2)
+> Add Makefile targets,
+> and also keep the previous work-flow.
+>
+> When you run it from Make,
+> only objects for vmlinux and modules are handled.
+>
+> When you need the full coverage, including non-kernel-space
+> sources, run scripts manually:
+>
+> $ scripts/clang-tools/gen_compile_commands.py
+> $ scripts/clang-tools/run-clang-tools.py clang-tidy
 
-Instead of doing this I believe we can break the code up into 3 passes. The
-first pass will identify the pages we can move to LRU and move those. In
-addition it will sort the list out leaving the unevictable pages in the
-list and moving those pages that have dropped to a reference count of 0 to
-pages_to_free. The second pass will return the unevictable pages to the
-LRU. The final pass will free any compound pages we have in the
-pages_to_free list before we merge it back with the original list and
-return from the function.
 
-The advantage of doing it this way is that we only have to release the lock
-between pass 1 and 2, and then we reacquire the lock after pass 3 after we
-merge the pages_to_free back into the original list. As such we only have
-to release the lock at most once in an entire call instead of having to
-test to see if we need to relock with each page.
 
-Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
----
- mm/vmscan.c |   68 ++++++++++++++++++++++++++++++++++-------------------------
- 1 file changed, 39 insertions(+), 29 deletions(-)
+Do you have any idea to cope with
+the 3% loss problem?
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 3ebe3f9b653b..6a2bdbc1a9eb 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1850,22 +1850,21 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
- {
- 	int nr_pages, nr_moved = 0;
- 	LIST_HEAD(pages_to_free);
--	struct page *page;
--	struct lruvec *orig_lruvec = lruvec;
-+	struct page *page, *next;
- 	enum lru_list lru;
- 
--	while (!list_empty(list)) {
--		page = lru_to_page(list);
-+	list_for_each_entry_safe(page, next, list, lru) {
- 		VM_BUG_ON_PAGE(PageLRU(page), page);
--		list_del(&page->lru);
--		if (unlikely(!page_evictable(page))) {
--			if (lruvec) {
--				spin_unlock_irq(&lruvec->lru_lock);
--				lruvec = NULL;
--			}
--			putback_lru_page(page);
-+
-+		/*
-+		 * if page is unevictable leave it on the list to be returned
-+		 * to the LRU after we have finished processing the other
-+		 * entries in the list.
-+		 */
-+		if (unlikely(!page_evictable(page)))
- 			continue;
--		}
-+
-+		list_del(&page->lru);
- 
- 		/*
- 		 * The SetPageLRU needs to be kept here for list intergrity.
-@@ -1878,20 +1877,14 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
- 		 *     list_add(&page->lru,)
- 		 *                                        list_add(&page->lru,)
- 		 */
--		lruvec = relock_page_lruvec_irq(page, lruvec);
- 		SetPageLRU(page);
- 
- 		if (unlikely(put_page_testzero(page))) {
- 			__ClearPageLRU(page);
- 			__ClearPageActive(page);
- 
--			if (unlikely(PageCompound(page))) {
--				spin_unlock_irq(&lruvec->lru_lock);
--				lruvec = NULL;
--				destroy_compound_page(page);
--			} else
--				list_add(&page->lru, &pages_to_free);
--
-+			/* defer freeing until we can release lru_lock */
-+			list_add(&page->lru, &pages_to_free);
- 			continue;
- 		}
- 
-@@ -1904,16 +1897,33 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
- 		if (PageActive(page))
- 			workingset_age_nonresident(lruvec, nr_pages);
- 	}
--	if (orig_lruvec != lruvec) {
--		if (lruvec)
--			spin_unlock_irq(&lruvec->lru_lock);
--		spin_lock_irq(&orig_lruvec->lru_lock);
--	}
- 
--	/*
--	 * To save our caller's stack, now use input list for pages to free.
--	 */
--	list_splice(&pages_to_free, list);
-+	if (unlikely(!list_empty(list) || !list_empty(&pages_to_free))) {
-+		spin_unlock_irq(&lruvec->lru_lock);
-+
-+		/* return any unevictable pages to the LRU list */
-+		while (!list_empty(list)) {
-+			page = lru_to_page(list);
-+			list_del(&page->lru);
-+			putback_lru_page(page);
-+		}
-+
-+		/*
-+		 * To save our caller's stack use input
-+		 * list for pages to free.
-+		 */
-+		list_splice(&pages_to_free, list);
-+
-+		/* free any compound pages we have in the list */
-+		list_for_each_entry_safe(page, next, list, lru) {
-+			if (likely(!PageCompound(page)))
-+				continue;
-+			list_del(&page->lru);
-+			destroy_compound_page(page);
-+		}
-+
-+		spin_lock_irq(&lruvec->lru_lock);
-+	}
- 
- 	return nr_moved;
- }
+If it is a problem, maybe I should try Idea 2).
 
+
+Thanks.
+
+
+
+
+
+
+
+
+>
+> Idea 3)
+> Give up supporting it from Makefile.
+> Instead, improve gen_scripts_commands.py
+> as a standalone program.
+>
+>
+> Maybe we can check whether the compiler is Clang or not.
+> We can run '<compiler> --version' and drop the
+> entry if it is GCC.
+>
+> Usually, the compiler is the first word of
+> the "command" field in compile_commands.json,
+> but there are exceptions because
+> people may do CC="ccache clang".
+>
+>
+> If there are still stale entries causing troubles,
+> you need to run 'make clean', and rebuild the tree.
+>
+>
+> We were trying to have separate scripts,
+> gen_compile_commands.py and run-clang-tools.py,
+> and to add Makefile targets to run them in a row.
+>
+> I think unifying the two scripts
+> might be handier.
+>
+>
+> Add two options, -t, -a,
+> to scripts/gen_compile_commands.py
+>
+> If they are given,
+> scripts/gen_compilile_commands.py
+> generates compile_commands.json,
+> and immediately runs clang-tidy against it.
+>
+>
+> -t, --tidy
+>    Run 'clang-tidy -checks=-*,linuxkernel-*' after generating
+> compilation database
+> -a, --analyzer
+>    Run 'clang-tidy -checks=-*,clang-analyzer-*' after generating
+> compilation database
+>
+>
+> Both -a and -t are given,
+> it runs
+> 'clang-tidy -checks=-*,linuxkernel-*,clang-analyzer-*'
+>
+> This works more efficiently
+> if you want to check everything.
+>
+>
+> 'make clang-tidy clang-analyzer'
+> will invoke clang-tidy twice for each file,
+> which is not very efficient.
+>
+>
+>
+>
+> > >  clean-dirs := $(KBUILD_EXTMOD)
+> > > -clean: rm-files := $(KBUILD_EXTMOD)/Module.symvers $(KBUILD_EXTMOD)/modules.nsdeps
+> > > +clean: rm-files := $(KBUILD_EXTMOD)/Module.symvers $(KBUILD_EXTMOD)/modules.nsdeps \
+> > > +       $(KBUILD_EXTMOD)/compile_commands.json
+> >
+> > So the `clean` target doesn't make use of `CLEAN_FILES`? It looks like
+> > there's some duplication there?  Oh, this is dependent on
+> > !KBUILD_EXTMOD, and is a new `clean` target. Do I understand that
+> > correctly?
+>
+> Correct.
+>
+> We can move CLEAN_FILES to a common part
+> so external module builds can use it.
+>
+> > >      """
+> > >      usage = 'Creates a compile_commands.json database from kernel .cmd files'
+> > >      parser = argparse.ArgumentParser(description=usage)
+> > >
+> > > -    directory_help = ('Path to the kernel source directory to search '
+> > > -                      '(defaults to the working directory)')
+> > > -    parser.add_argument('-d', '--directory', type=str, help=directory_help)
+> > > +    ar_help = 'command used for parsing .a archives'
+> > > +    parser.add_argument('-a', '--ar', type=str, default='ar', help=ar_help)
+> >
+> > Might be nice to warn if run with no arguments? In case someone does:
+> > $ ./scripts/clang-tools/gen_compile_commands.py
+>
+> Right.
+>
+> nargs='+' seems to work.
+>
+>
+>
+> > > +    # Collect objects compiled for vmlinux or modules
+> > > +    objects = []
+> > > +    for file in files:
+> > > +        if file.endswith('.o'):
+> > > +            # Some objects (head-y) are linked to vmlinux directly
+> > > +            objects.append(file)
+> > > +        elif file.endswith('.a'):
+> > > +            # Most of built-in objects are linked via built-in.a or lib.a.
+> > > +            # Use 'ar -t' to get the list of the contained objects.
+> > > +            objects += subprocess.check_output([ar, '-t', file]).decode().split()
+> > > +        elif file.endswith('modules.order'):
+> > > +           # modules.order lists all the modules.
+> > > +            with open(file) as f:
+> >
+> > `file` is another builtin (or at least was in Python2), perhaps `filename`?
+> >
+> > > +                for line in f:
+> > > +                    ko = line.rstrip()
+> > > +                    base, ext = os.path.splitext(ko)
+> > > +                    if ext != '.ko':
+> > > +                        sys.exit('{}: mobule path must end with .ko'.format(ko))
+> > > +                    mod = base + '.mod'
+> > > +                   # The first line of *.mod lists the objects that
+> > > +                   # compose the module.
+> >
+> > This comment and the one above it uses tabs for indentation vs spaces
+> > for the rest of the file.  I use
+> > https://github.com/nickdesaulniers/dotfiles/blob/a90865a9ea48bbefa0082f7508607fdeb361e801/.vimrc#L37-L43
+> > to help me catch these.
+>
+> Awesome. Copied to mine.
+>
+>
+>
+> > > +                    with open(mod) as mod_f:
+> > > +                        objects += mod_f.readline().split()
+> > > +        else:
+> > > +            sys.exit('{}: unknown file type'.format(file))
+> >
+> > Consider breaking up this one long function into multiple, perhaps the
+> > above could just return `objects`?
+>
+>
+>
+> I thought that returning a big list causes needless memory-copy.
+> If we do not need to be worried too much,
+> I can make it a helper function.
+>
+>
+> >
+> > >
+> > >      compile_commands = []
+> > > -    for dirpath, _, filenames in os.walk(directory):
+> > > -        for filename in filenames:
+> > > -            if not filename_matcher.match(filename):
+> > > -                continue
+> > > -            filepath = os.path.join(dirpath, filename)
+> > > -
+> > > -            with open(filepath, 'rt') as f:
+> > > -                line = f.readline()
+> > > -                result = line_matcher.match(line)
+> > > -                if result:
+> > > -                    try:
+> > > -                        entry = process_line(directory, dirpath,
+> > > -                                             result.group(1), result.group(2))
+> > > -                        compile_commands.append(entry)
+> > > -                    except ValueError as err:
+> > > -                        logging.info('Could not add line from %s: %s',
+> > > -                                     filepath, err)
+> > > +    cwd = os.getcwd()
+> > > +    for object in objects:
+> > > +        dir, notdir = os.path.split(object)
+> >
+> > `object` is a builtin Class in python.  I'm not sure if it's quite
+> > considered a keyword, but maybe a different identifier would be nicer,
+> > like `object_file` or something?
+>
+>
+> Not a keyword, but 'object' is a class, yes.
+> Not sure about 'file'.
+>
+>
+> $ python
+> Python 3.8.2 (default, Jul 16 2020, 14:00:26)
+> [GCC 9.3.0] on linux
+> Type "help", "copyright", "credits" or "license" for more information.
+> >>> import keyword
+> >>> keyword.iskeyword("import")
+> True
+> >>> keyword.iskeyword("if")
+> True
+> >>> keyword.iskeyword("file")
+> False
+> >>> keyword.iskeyword("object")
+> False
+> >>> object
+> <class 'object'>
+> >>> file
+> Traceback (most recent call last):
+>   File "<stdin>", line 1, in <module>
+> NameError: name 'file' is not defined
+> >>>
+>
+>
+> If this is a problem, I can rename it.
+>
+>
+>
+>
+> > > +        cmd_file = os.path.join(dir, '.' + notdir + '.cmd')
+> > > +        with open(cmd_file, 'rt') as f:
+> > > +            line = f.readline()
+> > > +            result = line_matcher.match(line)
+> >
+> > ^ combine statements.
+>
+> OK.
+>
+>
+> > > +            if result:
+> > > +                entry = process_line(cwd, result.group(1), result.group(2))
+> > > +                compile_commands.append(entry)
+> > >
+> > >      with open(output, 'wt') as f:
+> > >          json.dump(compile_commands, f, indent=2, sort_keys=True)
+> > >
+> > > -    count = len(compile_commands)
+> > > -    if count < _LOW_COUNT_THRESHOLD:
+> > > -        logging.warning(
+> > > -            'Found %s entries. Have you compiled the kernel?', count)
+> > > -
+> > > -
+> > >  if __name__ == '__main__':
+> > >      main()
+> > > --
+> > > 2.25.1
+> > >
+> >
+> > Thank you for your assistance and help enabling these tools.
+> >
+> > --
+> > Thanks,
+> > ~Nick Desaulniers
+> >
+> > --
+> > You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> > To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> > To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAKwvOdkL%3D667%2Bcw_Rxq_5zaOKeTTptsMaxkkSXBic9QxozOWVg%40mail.gmail.com.
+>
+>
+>
+> --
+> Best Regards
+> Masahiro Yamada
+
+
+
+--
+Best Regards
+Masahiro Yamada
