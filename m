@@ -2,65 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3B524A6F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 21:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1FE324A6FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 21:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726841AbgHSThQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 15:37:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47876 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726435AbgHSThO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 15:37:14 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 283BB207BB;
-        Wed, 19 Aug 2020 19:37:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597865834;
-        bh=FSqnN4eyzzekQI8QmT0uMExpMLfdw+JltxvAtUnqXgo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=sXBor1SafBP+oLCCppMCOKcFNPi3DJMASjl+uB1WLxVq7KRGp76oq08t+OSFzxmRZ
-         jsIWryqeU+FGIDsYM0RVCrFLjT1KDQQhW54jBxl6Mq84LAYaouHYxHkS/veJJyMB66
-         0y74lEiqQ5QQOMPfIVEk8XRQBbGyjn9dmAo8JLoY=
-Date:   Wed, 19 Aug 2020 12:37:13 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     <wuyun.wu@huawei.com>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        "David Rientjes" <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, <liu.xiang6@zte.com.cn>,
-        "open list:SLAB ALLOCATOR" <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm/slub: make add_full() condition more explicit
-Message-Id: <20200819123713.38a2509a2b7651f14db33e61@linux-foundation.org>
-In-Reply-To: <20200811020240.1231-1-wuyun.wu@huawei.com>
-References: <20200811020240.1231-1-wuyun.wu@huawei.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726912AbgHSTiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 15:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726466AbgHSTiI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 15:38:08 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49909C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 12:38:08 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id kq25so27692816ejb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 12:38:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=doOVIJAl8aLbOgFBDKcIqb/ccFDrxWvGVJaNvG3le54=;
+        b=Tcdqs2SGsYZ0JWSHaz3cq9atV1buOc/Z3S7+pouyoYfnhhaFd5rMUYsopHHjbbwUPj
+         0G3UxSPWgoPBo4+bz5IXvoJGkZiYOo71TMJJWsTbtEWp63hs6rFIlKtiCcjKF9DhC2uH
+         t2EXW/ivJ/6qFfVYyvp372hQX0ykJz4IozOHLKWzIgq+/cLJAbN8f9pbppPlS0J15HaC
+         rNkuZW7zBnNy/Kbqu+t85E7PfPRSoxM3v4ImEoksBxKsyjP3MhSwWvRh35F7/T2WMDbY
+         jPh5sAmKTwd2HF4dum2Yj3HjwqOKn39sD+61lwjQCKj0+tsJujkvYq4BWcqSgdH2KjaE
+         J8rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=doOVIJAl8aLbOgFBDKcIqb/ccFDrxWvGVJaNvG3le54=;
+        b=Mpxr37pfwo1PLy7HEcvpg/hRUKenjbFKT0JXtqtmP4oT+aOhd7Qrs4XYmaa8LlSS1u
+         ZpGhzUzQvhMbewwpkkzKYPe+NF0dKv0oAFQ3NAHE8FNI88jI3fxszIEX0AufHBYQT4VT
+         7fcoa9VwXQDXg5DfEnTiEATB9/IZZBuXQsWe0nOkOTWZDL7DvgnV+fd/C4fdYK2KD6Nm
+         F0HhyRbgpO6zqBr4Tu3XmS8Fbq4PfC1aS/HEllldhFF5MH4liAX3ef01T9D3tWuaWyoQ
+         d7wUTmrWaK8tYEykV/1SmuUZaaGSyAtNxbIHU1q3Hw0eXabElAcgFw/rxBmmQYNCmhm/
+         bPJA==
+X-Gm-Message-State: AOAM530TmnHExGmqsMDmyicgMd1wbKvvpVld0Y0yPqSsiU7uhraKJQfv
+        hVmAnlIdDIXyyjwinEZex1Q=
+X-Google-Smtp-Source: ABdhPJxmx3IkW3gTtNbDIal0hKTHsYWoX6DaIFrxkZ9x+FUQvRGrfHzoGsS6nFJi9uayR13xyljY6A==
+X-Received: by 2002:a17:906:d054:: with SMTP id bo20mr28105958ejb.9.1597865887048;
+        Wed, 19 Aug 2020 12:38:07 -0700 (PDT)
+Received: from tsnow (IGLD-83-130-68-114.inter.net.il. [83.130.68.114])
+        by smtp.gmail.com with ESMTPSA id hk14sm19573503ejb.88.2020.08.19.12.38.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Aug 2020 12:38:06 -0700 (PDT)
+Date:   Wed, 19 Aug 2020 22:37:58 +0300
+From:   Tomer Samara <tomersamara98@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Riley Andrews <riandrews@android.com>,
+        Laura Abbott <labbott@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        devel@driverdev.osuosl.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] staging: android: Remove BUG/BUG_ONs
+Message-ID: <cover.1597865771.git.tomersamara98@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 Aug 2020 10:02:36 +0800 <wuyun.wu@huawei.com> wrote:
+Remove BUG/BUG_ONs from androind/ion allocator and add error handling to
+calling functions
 
-> From: Abel Wu <wuyun.wu@huawei.com>
-> 
-> The commit below is incomplete, as it didn't handle the add_full() part.
-> commit a4d3f8916c65 ("slub: remove useless kmem_cache_debug() before remove_full()")
-> 
-> This patch checks for SLAB_STORE_USER instead of kmem_cache_debug(),
-> since that should be the only context in which we need the list_lock for
-> add_full().
-> 
+Tomer Samara (2):
+  staging: android: Remove BUG_ON from ion_page_pool.c
+  staging: android: Remove BUG from ion_system_heap.c
 
-Does this contradict what the comment tells us?
+ drivers/staging/android/ion/ion_page_pool.c   | 14 ++++++++++----
+ drivers/staging/android/ion/ion_system_heap.c | 15 ++++++++++++---
+ 2 files changed, 22 insertions(+), 7 deletions(-)
 
-* This also ensures that the scanning of full
-* slabs from diagnostic functions will not see
-* any frozen slabs.
-
+-- 
+2.25.1
 
