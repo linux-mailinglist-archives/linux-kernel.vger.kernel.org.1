@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F17F249AA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 12:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A6A249A9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 12:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727956AbgHSKmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 06:42:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43158 "EHLO
+        id S1727941AbgHSKlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 06:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727846AbgHSKld (ORCPT
+        with ESMTP id S1727811AbgHSKlb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 06:41:33 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E20C061346
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 03:41:31 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id j15so29080lfg.7
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 03:41:31 -0700 (PDT)
+        Wed, 19 Aug 2020 06:41:31 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA21FC061345
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 03:41:29 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id v12so24811437ljc.10
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 03:41:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6AfisJdiJUtL2PXoC9gz6YzWImXc+sSWUPeXDWlUbHI=;
-        b=FDmP20zScS9Lp7NKqKhHNqZWR3liO/ZnL7w+TyagTnjUgOnvbWYGP2viYAlT07dtf9
-         tzK3xWyFoLgHKBhueu6FnaKkhTojI9LUqKWVL8IsUd5nmJLNd8CZzvGMPbbwzwm9iW8z
-         O087glIP1Z7zeJKFKxZwBIOC3bJlf/NudjYGq4tcFESU3ROywqhOTSrQ83v+uqDEZe3k
-         D59T/x538Q36zAC1Q7SAWFT0byDw1FjFnmfs484p02nBj2CKmFOizB29nOJ4Zm1GroJr
-         xiorhamZgN4JM/GM+2+jfuXcACWB3Wj12pb9iBlAZE4okK13c3vLRwcrOb8Z6+36YDAQ
-         0boA==
+        bh=9RMBVqpjUp8MGjjw2ybmtBG8DxRTJjmlR17pvN82CuE=;
+        b=VjJV+eVo8zaCYQaKgtgJ0pUzGTNQijAvgEEQ6SitMzyLgqskQq3J0ZhTOPboxiT83f
+         DuCyLIadompPwaiq7TB+9l5MNiaM6p1Kw4io95V0RsgHMalVKgnTAoj7f4d8ML27u8Pz
+         xWHqcSkbsEEXewcTWfsH9KdRazv403T9IWUZqYMDoHdpnHE21tvKLs71/9dTkMBB6Hcd
+         Ct5yHtcrVHOVQO0KtalxoHYrlHTksbPN6iKwSJBQFnJ+5l7KI0tQDAl74Z+f009qIuVG
+         lZ97CSGxeuCpXGnYwGWG/yniCkiytwIGjIavaqgtjp/xnFE+/4V0oCdugxjv6LwF3hde
+         /KeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6AfisJdiJUtL2PXoC9gz6YzWImXc+sSWUPeXDWlUbHI=;
-        b=WzTG9M7e/U9h+aAXyOM93TDx+4pm59A7yKvoNDLIRwNhx4ynDXHYvX30bS8fjvbadm
-         Xxs9TfXXjR25vWlrF4e4cucHEUl+kbSejyI06RemS6HAxTe88AEEYneoWVcGgD7Fh2y/
-         1j7BEC0plqZR3wS5Sniq34LTj1HfVGgogNtAFloNW+7kufqOmFnXfZ4K+kSt6wVfHC9s
-         ZRMMrceYH7qnMqX+n0GjQBKhdPzcupzibsJgRwZ5BOrvXr5v2PWYh22PHbEdIb5vaWzX
-         IX4AKKAIs9uotVJRYUpcSrENIPHVFFJ0N8yxxUP67m9Ni9nga1J8KM/+jai8wSg5e6j+
-         eSPQ==
-X-Gm-Message-State: AOAM531gw1ktsQ40mzUwAfoX//8P++1RBOD/Wz8O6Oa5MoMAjp7agH/W
-        g1poBos1WkYJ1W31X7L3aJsWOw==
-X-Google-Smtp-Source: ABdhPJygHSyy3z4agvjAxmYVV4QRQjCkH5wyaAw1ePZcKIW+aup9SWYdYaWUsgZtrrWbS9OSPi9VCQ==
-X-Received: by 2002:a19:cb53:: with SMTP id b80mr11846376lfg.77.1597833686628;
-        Wed, 19 Aug 2020 03:41:26 -0700 (PDT)
+        bh=9RMBVqpjUp8MGjjw2ybmtBG8DxRTJjmlR17pvN82CuE=;
+        b=EHXhEVYGrEJvg8o3uX0DBYEF56rKoR+bXG+hAx9u3YO2VbEVXI7WoBu6sR1cBFstmx
+         tv8x8+EDFxsAPMqWD3wZQKdFj+DsXV88pYBtXjCUMoka9vPEKWSy0mNIdNPTKt5kJLva
+         a0MpjKPEtro5XxolgOrcRyFyY+yVpRCbzPmZv//BXtKW0GbQO6WOe6j+FyH/9S1O4ilV
+         4c4V+12gmHHrsZNvSiVmXm7V6d4OY+UM/P/O8IdvltqJdcJEvXj6AjwZ27y5Z44DbAp+
+         wlZEvUxkGPdf7UGN+k6p7aggf1NZB6EQ7I40wTuc4cM672C3E0fpeBWB/06pffhB61yP
+         WqFQ==
+X-Gm-Message-State: AOAM5304DCEsAlOw39EKLNIwa+c8p5MB/jJyTRcu6LYIeRbADYPNqeby
+        5H4Lzc/xSwlnmEkibuZ+lfW2Pg==
+X-Google-Smtp-Source: ABdhPJxB5YJT6wbIN36q7Ogrzvwu7k1N2Xfq47t7Mi/SsWYgztmona1BE9Qt2h8uCQrQlUSbQFRrGA==
+X-Received: by 2002:a2e:8844:: with SMTP id z4mr11265188ljj.124.1597833688226;
+        Wed, 19 Aug 2020 03:41:28 -0700 (PDT)
 Received: from localhost.localdomain (h-98-128-180-79.NA.cust.bahnhof.se. [98.128.180.79])
-        by smtp.gmail.com with ESMTPSA id y13sm6534822ljd.19.2020.08.19.03.41.25
+        by smtp.gmail.com with ESMTPSA id y13sm6534822ljd.19.2020.08.19.03.41.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 03:41:25 -0700 (PDT)
+        Wed, 19 Aug 2020 03:41:27 -0700 (PDT)
 From:   Ulf Hansson <ulf.hansson@linaro.org>
 To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
         Kevin Hilman <khilman@kernel.org>, linux-pm@vger.kernel.org
@@ -62,9 +62,9 @@ Cc:     Sudeep Holla <sudeep.holla@arm.com>,
         Benjamin Gaignard <benjamin.gaignard@st.com>,
         Ulf Hansson <ulf.hansson@linaro.org>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] PM / Domains: Allow to abort power off when no ->power_off() callback
-Date:   Wed, 19 Aug 2020 12:40:56 +0200
-Message-Id: <20200819104057.318230-3-ulf.hansson@linaro.org>
+Subject: [PATCH 3/3] PM / Domains: Add support for PM domain on/off notifiers for genpd
+Date:   Wed, 19 Aug 2020 12:40:57 +0200
+Message-Id: <20200819104057.318230-4-ulf.hansson@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200819104057.318230-1-ulf.hansson@linaro.org>
 References: <20200819104057.318230-1-ulf.hansson@linaro.org>
@@ -75,64 +75,269 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In genpd_power_off() we may decide to abort the power off of the PM domain,
-even beyond the point when the governor would accept it. The abort is done
-if it turns out that a child domain has been requested to be powered on,
-which means it's waiting for the lock of the parent to be released.
+A device may have specific HW constraints that must be obeyed to, before
+its corresponding PM domain (genpd) can be powered off - and vice verse at
+power on. These constraints can't be managed through the regular runtime PM
+based deployment for a device, because the access pattern for it, isn't
+always request based. In other words, using the runtime PM callbacks to
+deal with the constraints doesn't work for these cases.
 
-However, the abort is currently only considered if the genpd in question
-has a ->power_off() callback assigned. This is unnecessary limiting,
-especially if the genpd would have a parent of its own. Let's remove the
-limitation and make the behaviour consistent.
+For these reasons, let's instead add a PM domain power on/off notification
+mechanism to genpd. To add/remove a notifier for a device, the device must
+already have been attached to the genpd, which also means that it needs to
+be a part of the PM domain topology.
+
+To add/remove a notifier, let's introduce two genpd specific functions:
+ - dev_pm_genpd_add|remove_notifier()
+
+Note that, to further clarify when genpd power on/off notifiers may be
+used, one can compare with the existing CPU_CLUSTER_PM_ENTER|EXIT
+notifiers. In the long run, the genpd power on/off notifiers should be able
+to replace them, but that requires additional genpd based platform support
+for the current users.
 
 Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
- drivers/base/power/domain.c | 24 +++++++-----------------
- 1 file changed, 7 insertions(+), 17 deletions(-)
+ drivers/base/power/domain.c | 130 ++++++++++++++++++++++++++++++++++--
+ include/linux/pm_domain.h   |  15 +++++
+ 2 files changed, 141 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-index 2ea99032b658..4b787e1ff188 100644
+index 4b787e1ff188..9cb85a5e8342 100644
 --- a/drivers/base/power/domain.c
 +++ b/drivers/base/power/domain.c
-@@ -497,6 +497,7 @@ static int genpd_power_off(struct generic_pm_domain *genpd, bool one_dev_on,
- 	struct pm_domain_data *pdd;
- 	struct gpd_link *link;
- 	unsigned int not_suspended = 0;
-+	int ret;
- 
- 	/*
- 	 * Do not try to power off the domain in the following situations:
-@@ -544,24 +545,13 @@ static int genpd_power_off(struct generic_pm_domain *genpd, bool one_dev_on,
+@@ -545,13 +545,21 @@ static int genpd_power_off(struct generic_pm_domain *genpd, bool one_dev_on,
  	if (!genpd->gov)
  		genpd->state_idx = 0;
  
--	if (genpd->power_off) {
--		int ret;
--
--		if (atomic_read(&genpd->sd_count) > 0)
--			return -EBUSY;
-+	/* Don't power off, if a child domain is waiting to power on. */
-+	if (atomic_read(&genpd->sd_count) > 0)
-+		return -EBUSY;
- 
--		/*
--		 * If sd_count > 0 at this point, one of the subdomains hasn't
--		 * managed to call genpd_power_on() for the parent yet after
--		 * incrementing it.  In that case genpd_power_on() will wait
--		 * for us to drop the lock, so we can call .power_off() and let
--		 * the genpd_power_on() restore power for us (this shouldn't
--		 * happen very often).
--		 */
--		ret = _genpd_power_off(genpd, true);
--		if (ret)
--			return ret;
--	}
-+	ret = _genpd_power_off(genpd, true);
++	/* Notify consumers that we are about to power off. */
++	ret = raw_notifier_call_chain(&genpd->power_notifiers, GENPD_STATE_OFF,
++				      NULL);
 +	if (ret)
 +		return ret;
++
+ 	/* Don't power off, if a child domain is waiting to power on. */
+-	if (atomic_read(&genpd->sd_count) > 0)
+-		return -EBUSY;
++	if (atomic_read(&genpd->sd_count) > 0) {
++		ret = -EBUSY;
++		goto busy;
++	}
+ 
+ 	ret = _genpd_power_off(genpd, true);
+ 	if (ret)
+-		return ret;
++		goto busy;
  
  	genpd->status = GENPD_STATE_OFF;
  	genpd_update_accounting(genpd);
+@@ -564,6 +572,9 @@ static int genpd_power_off(struct generic_pm_domain *genpd, bool one_dev_on,
+ 	}
+ 
+ 	return 0;
++busy:
++	raw_notifier_call_chain(&genpd->power_notifiers, GENPD_STATE_ON, NULL);
++	return ret;
+ }
+ 
+ /**
+@@ -606,6 +617,9 @@ static int genpd_power_on(struct generic_pm_domain *genpd, unsigned int depth)
+ 	if (ret)
+ 		goto err;
+ 
++	/* Inform consumers that we have powered on. */
++	raw_notifier_call_chain(&genpd->power_notifiers, GENPD_STATE_ON, NULL);
++
+ 	genpd->status = GENPD_STATE_ON;
+ 	genpd_update_accounting(genpd);
+ 
+@@ -948,9 +962,18 @@ static void genpd_sync_power_off(struct generic_pm_domain *genpd, bool use_lock,
+ 
+ 	/* Choose the deepest state when suspending */
+ 	genpd->state_idx = genpd->state_count - 1;
+-	if (_genpd_power_off(genpd, false))
++
++	/* Notify consumers that we are about to power off. */
++	if (raw_notifier_call_chain(&genpd->power_notifiers,
++				    GENPD_STATE_OFF, NULL))
+ 		return;
+ 
++	if (_genpd_power_off(genpd, false)) {
++		raw_notifier_call_chain(&genpd->power_notifiers,
++					GENPD_STATE_ON, NULL);
++		return;
++	}
++
+ 	genpd->status = GENPD_STATE_OFF;
+ 
+ 	list_for_each_entry(link, &genpd->child_links, child_node) {
+@@ -998,6 +1021,9 @@ static void genpd_sync_power_on(struct generic_pm_domain *genpd, bool use_lock,
+ 
+ 	_genpd_power_on(genpd, false);
+ 
++	/* Inform consumers that we have powered on. */
++	raw_notifier_call_chain(&genpd->power_notifiers, GENPD_STATE_ON, NULL);
++
+ 	genpd->status = GENPD_STATE_ON;
+ }
+ 
+@@ -1593,6 +1619,101 @@ int pm_genpd_remove_device(struct device *dev)
+ }
+ EXPORT_SYMBOL_GPL(pm_genpd_remove_device);
+ 
++/**
++ * dev_pm_genpd_add_notifier - Add a genpd power on/off notifier for @dev
++ *
++ * @dev: Device that should be associated with the notifier
++ * @nb: The notifier block to register
++ *
++ * Users may call this function to add a genpd power on/off notifier for an
++ * attached @dev. Only one notifier per device is allowed. The notifier is
++ * sent when genpd is powering on/off the PM domain.
++ *
++ * It is assumed that the user guarantee that the genpd wouldn't be detached
++ * while this routine is getting called.
++ *
++ * Returns 0 on success and negative error values on failures.
++ */
++int dev_pm_genpd_add_notifier(struct device *dev, struct notifier_block *nb)
++{
++	struct generic_pm_domain *genpd;
++	struct generic_pm_domain_data *gpd_data;
++	int ret;
++
++	genpd = dev_to_genpd_safe(dev);
++	if (!genpd)
++		return -ENODEV;
++
++	if (WARN_ON(!dev->power.subsys_data ||
++		     !dev->power.subsys_data->domain_data))
++		return -EINVAL;
++
++	gpd_data = to_gpd_data(dev->power.subsys_data->domain_data);
++	if (gpd_data->power_nb)
++		return -EEXIST;
++
++	genpd_lock(genpd);
++	ret = raw_notifier_chain_register(&genpd->power_notifiers, nb);
++	genpd_unlock(genpd);
++
++	if (ret) {
++		dev_warn(dev, "failed to add notifier for PM domain %s\n",
++			 genpd->name);
++		return ret;
++	}
++
++	gpd_data->power_nb = nb;
++	return 0;
++}
++EXPORT_SYMBOL_GPL(dev_pm_genpd_add_notifier);
++
++/**
++ * dev_pm_genpd_remove_notifier - Remove a genpd power on/off notifier for @dev
++ *
++ * @dev: Device that is associated with the notifier
++ *
++ * Users may call this function to remove a genpd power on/off notifier for an
++ * attached @dev.
++ *
++ * It is assumed that the user guarantee that the genpd wouldn't be detached
++ * while this routine is getting called.
++ *
++ * Returns 0 on success and negative error values on failures.
++ */
++int dev_pm_genpd_remove_notifier(struct device *dev)
++{
++	struct generic_pm_domain *genpd;
++	struct generic_pm_domain_data *gpd_data;
++	int ret;
++
++	genpd = dev_to_genpd_safe(dev);
++	if (!genpd)
++		return -ENODEV;
++
++	if (WARN_ON(!dev->power.subsys_data ||
++		     !dev->power.subsys_data->domain_data))
++		return -EINVAL;
++
++	gpd_data = to_gpd_data(dev->power.subsys_data->domain_data);
++	if (!gpd_data->power_nb)
++		return -ENODEV;
++
++	genpd_lock(genpd);
++	ret = raw_notifier_chain_unregister(&genpd->power_notifiers,
++					    gpd_data->power_nb);
++	genpd_unlock(genpd);
++
++	if (ret) {
++		dev_warn(dev, "failed to remove notifier for PM domain %s\n",
++			 genpd->name);
++		return ret;
++	}
++
++	gpd_data->power_nb = NULL;
++	return 0;
++}
++EXPORT_SYMBOL_GPL(dev_pm_genpd_remove_notifier);
++
+ static int genpd_add_subdomain(struct generic_pm_domain *genpd,
+ 			       struct generic_pm_domain *subdomain)
+ {
+@@ -1763,6 +1884,7 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
+ 	INIT_LIST_HEAD(&genpd->parent_links);
+ 	INIT_LIST_HEAD(&genpd->child_links);
+ 	INIT_LIST_HEAD(&genpd->dev_list);
++	RAW_INIT_NOTIFIER_HEAD(&genpd->power_notifiers);
+ 	genpd_lock_init(genpd);
+ 	genpd->gov = gov;
+ 	INIT_WORK(&genpd->power_off_work, genpd_power_off_work_fn);
+diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
+index 66f3c5d64d81..3b2b561ce846 100644
+--- a/include/linux/pm_domain.h
++++ b/include/linux/pm_domain.h
+@@ -112,6 +112,7 @@ struct generic_pm_domain {
+ 	cpumask_var_t cpus;		/* A cpumask of the attached CPUs */
+ 	int (*power_off)(struct generic_pm_domain *domain);
+ 	int (*power_on)(struct generic_pm_domain *domain);
++	struct raw_notifier_head power_notifiers; /* Power on/off notifiers */
+ 	struct opp_table *opp_table;	/* OPP table of the genpd */
+ 	unsigned int (*opp_to_performance_state)(struct generic_pm_domain *genpd,
+ 						 struct dev_pm_opp *opp);
+@@ -178,6 +179,7 @@ struct generic_pm_domain_data {
+ 	struct pm_domain_data base;
+ 	struct gpd_timing_data td;
+ 	struct notifier_block nb;
++	struct notifier_block *power_nb;
+ 	int cpu;
+ 	unsigned int performance_state;
+ 	void *data;
+@@ -204,6 +206,8 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
+ 		  struct dev_power_governor *gov, bool is_off);
+ int pm_genpd_remove(struct generic_pm_domain *genpd);
+ int dev_pm_genpd_set_performance_state(struct device *dev, unsigned int state);
++int dev_pm_genpd_add_notifier(struct device *dev, struct notifier_block *nb);
++int dev_pm_genpd_remove_notifier(struct device *dev);
+ 
+ extern struct dev_power_governor simple_qos_governor;
+ extern struct dev_power_governor pm_domain_always_on_gov;
+@@ -251,6 +255,17 @@ static inline int dev_pm_genpd_set_performance_state(struct device *dev,
+ 	return -ENOTSUPP;
+ }
+ 
++static inline int dev_pm_genpd_add_notifier(struct device *dev,
++					    struct notifier_block *nb)
++{
++	return -ENOTSUPP;
++}
++
++static inline int dev_pm_genpd_remove_notifier(struct device *dev)
++{
++	return -ENOTSUPP;
++}
++
+ #define simple_qos_governor		(*(struct dev_power_governor *)(NULL))
+ #define pm_domain_always_on_gov		(*(struct dev_power_governor *)(NULL))
+ #endif
 -- 
 2.25.1
 
