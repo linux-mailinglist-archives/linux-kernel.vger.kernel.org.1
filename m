@@ -2,238 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF8F24A31B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 17:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 362C824A31F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 17:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728479AbgHSPap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 11:30:45 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:50250 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726570AbgHSPao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 11:30:44 -0400
-IronPort-SDR: oFZJ1H6ZcItnLIZshHTl77Xx9dkifph+pmlUEKxjSYWtI35Yn2Nm06TwYsgPgysmD8AMpABAuy
- b8j0cMrnPTaRGE0ncDb4yr9O+mVqgc7lFQ51WPUU5kbFXpVWUdQ92bxPlRg/bKzty9aXF/VyQd
- JfUs/sP89W2G6kgqgGG8ms6Q01SmiNazlNjO9cfTGHTAzhM08YX8jdOp+RXU5VqFcTq0WXmtxK
- E+2OoRMNM//JY3evYc1awThvT1+QokX43yCWUb70MA7qjivltq7xECgTo9MFBX6Pa558tkb84z
- A1I=
-X-IronPort-AV: E=Sophos;i="5.76,331,1592863200"; 
-   d="scan'208";a="13527450"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 19 Aug 2020 17:30:39 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Wed, 19 Aug 2020 17:30:39 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Wed, 19 Aug 2020 17:30:39 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1597851039; x=1629387039;
-  h=from:to:cc:subject:date:message-id;
-  bh=vBqZ0zGw5NluF+dYthXe4dg6vcsvfsa5wcIWZoz69is=;
-  b=OycrMALrHBymYxz/YdXqBUuphGQf5lbpfgjJ+7V1uIpUqJTTK4jtE4cE
-   0AtxSuKdHlzTScKdKz67bDG5Gcb0IOVhGw3r9N4pu4enElE+GePn+Y7m6
-   vN19NHnsRVCFj4E05nghzHe3E+ViuQOOGt+gSiyjoPy1o8+nc7+UU+feY
-   ikmYB9zTG/mvbUIVhejRYHVvix6jJtTKTU9JOijdoSP6mdNPV5M7T7RJj
-   saujycP3rhpUcLXMi77eEOmqAx0Aw9FWl0mmf5VCqrWYEHjUZGPWR0gEm
-   VylbkyQWJJPy11Jiq9EMy8GQaJQHpLqWgsPqIrZCHHI5sOSy7zW4so7rG
-   w==;
-IronPort-SDR: v9eY0hlrS9CrFgkikDigBx9/f4cfFpnPzeCNKgdroeUAnaXggSgHVCM1B3X92CqbX+VIjdiyt+
- yDUhYmJSIPORRfTMbvvyk8J8c1nUABzGOL+1o7m8pAw4Kg6SaPsfU0j+J7TLXNolgBJ6TTNRSl
- fESZxdyKOsUdbUYyWz+10V6cEsx1yI37sRzJYAXHZjJd1Yyu0C6RmcLI5XuAngwMb3G0kZlcWv
- K12TrZEIAJMu3e8STNPTPfWbRynzN+LaMkZPOsAafJGaoGsUMJy3vISQnWrfAu96a75vwviUQU
- vPE=
-X-IronPort-AV: E=Sophos;i="5.76,331,1592863200"; 
-   d="scan'208";a="13527449"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 19 Aug 2020 17:30:39 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 373AC280065;
-        Wed, 19 Aug 2020 17:30:39 +0200 (CEST)
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH mmc-next] mmc: allow setting slot index via device tree alias
-Date:   Wed, 19 Aug 2020 17:30:28 +0200
-Message-Id: <20200819153028.29721-1-matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728747AbgHSPbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 11:31:10 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:60072 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726570AbgHSPbI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 11:31:08 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D205F29E;
+        Wed, 19 Aug 2020 17:31:02 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1597851063;
+        bh=DVs19L0VhTXPW2QTvGxXKfAP7MNmvNDtF8FLDixJwXI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YTWpYxMUFWq/HkzThpPGRLXevQIo6ltyyqaFIjS0BTu/E3WAJAfGMN6nDh16BrBfh
+         osiPwb5zNiVh+z/IgnIXMg1tjG9CHVOm1gKRuCZLViqVpxI9GYzsi+9M1jJn/XcsH+
+         ceXo7IQkWFgTtIgKrYX5c9MpRw8J0Qazzepv3tJE=
+Date:   Wed, 19 Aug 2020 18:30:45 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Wanchun Zheng <zhengwanchun@hisilicon.com>,
+        linuxarm@huawei.com, dri-devel <dri-devel@lists.freedesktop.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        devel@driverdev.osuosl.org, Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Xiubin Zhang <zhangxiubin1@huawei.com>,
+        Wei Xu <xuwei5@hisilicon.com>, David Airlie <airlied@linux.ie>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Bogdan Togorean <bogdan.togorean@analog.com>,
+        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        Liwei Cai <cailiwei@hisilicon.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        linaro-mm-sig@lists.linaro.org, Rob Herring <robh+dt@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, mauro.chehab@huawei.com,
+        Rob Clark <robdclark@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Liuyao An <anliuyao@huawei.com>,
+        Rongrong Zou <zourongrong@gmail.com>, bpf@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 00/49] DRM driver for Hikey 970
+Message-ID: <20200819153045.GA18469@pendragon.ideasonboard.com>
+References: <cover.1597833138.git.mchehab+huawei@kernel.org>
+ <20200819152120.GA106437@ravnborg.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200819152120.GA106437@ravnborg.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As with GPIO, UART and others, allow specifying the device index via the
-aliases node in the device tree.
+On Wed, Aug 19, 2020 at 05:21:20PM +0200, Sam Ravnborg wrote:
+> Hi Mauro.
+> 
+> On Wed, Aug 19, 2020 at 01:45:28PM +0200, Mauro Carvalho Chehab wrote:
+> > This patch series port the out-of-tree driver for Hikey 970 (which
+> > should also support Hikey 960) from the official 96boards tree:
+> > 
+> >    https://github.com/96boards-hikey/linux/tree/hikey970-v4.9
+> > 
+> > Based on his history, this driver seems to be originally written
+> > for Kernel 4.4, and was later ported to Kernel 4.9. The original
+> > driver used to depend on ION (from Kernel 4.4) and had its own
+> > implementation for FB dev API.
+> > 
+> > As I need to preserve the original history (with has patches from
+> > both HiSilicon and from Linaro),  I'm starting from the original
+> > patch applied there. The remaining patches are incremental,
+> > and port this driver to work with upstream Kernel.
+> > 
+> > This driver doesn't depend on any firmware or on any special
+> > userspace code. It works as-is with both X11 and Wayland.
+> > 
+> > Yet, I'm submitting it via staging due to the following reasons:
+> > 
+> > - It depends on the LDO3 power supply, which is provided by
+> >   a regulator driver that it is currently on staging;
+> > - Due to legal reasons, I need to preserve the authorship of
+> >   each one responsbile for each patch. So, I need to start from
+> >   the original patch from Kernel 4.4;
+> > - There are still some problems I need to figure out how to solve:
+> >    - The adv7535 can't get EDID data. Maybe it is a timing issue,
+> >      but it requires more research to be sure about how to solve it;
+> >    - The driver only accept resolutions on a defined list, as there's
+> >      a known bug that this driver may have troubles with random
+> >      resolutions. Probably due to a bug at the pixel clock settings;
+> >    - Sometimes (at least with 1080p), it generates LDI underflow
+> >      errors, which in turn causes the DRM to stop working. That
+> >      happens for example when using gdm on Wayland and
+> >      gnome on X11;
+> >    - Probably related to the previous issue, when the monitor
+> >      suspends due to DPMS, it doesn't return back to life.
+> > 
+> > So, IMO, the best is to keep it on staging for a while, until those
+> > remaining bugs gets solved.
+> > 
+> > I added this series, together with the regulator driver and
+> > a few other patches (including a hack to fix a Kernel 5.8 
+> > regression at WiFi ) at:
+> > 
+> > 	https://gitlab.freedesktop.org/mchehab_kernel/hikey-970/-/commits/master
+> > 
+> > 
+> > Chen Feng (1):
+> >   staging: hikey9xx: Add hisilicon DRM driver for hikey960/970
+> > 
+> > John Stultz (1):
+> >   staging: hikey9xx/gpu: port it to work with Kernel v4.9
+> > 
+> > Liwei Cai (2):
+> >   staging: hikey9xx/gpu: solve tearing issue of display
+> >   staging: hikey9xx/gpu: resolve the performance issue by interrupt
+> >     mechanism
+> > 
+> > Mauro Carvalho Chehab (38):
+> >   staging: hikey9xx/gpu: get rid of adv7535 fork
+> Very good - I was in my mind starting a rant why we needed a fork of
+> this driver, but I see it gets deleted again.
+> 
+> I do acknowledge you need to preserve history and all -
+> but this patchset is not easy to review.
 
-On embedded devices, there is often a combination of removable (e.g.
-SD card) and non-removable MMC devices (e.g. eMMC).
-Therefore the index might change depending on
+Why do we need to preserve history ? Adding relevant Signed-off-by and
+Co-developed-by should be enough, shouldn't it ? Having a public branch
+that contains the history is useful if anyone is interested, but I don't
+think it's required in mainline.
 
-* host of removable device
-* removable card present or not
+> Could you follow-up with a review-able set of patches as a follow-up
+> for this?
+> I spotted some wrong bridge handling in one patch but I do not know if
+> this got changed in a later patch. And I lost the motivation to go
+> looking for it.
+> 
+> >   staging: hikey9xx/gpu: rename the Kirin9xx namespace
+> >   staging: hikey9xx/gpu: get rid of kirin9xx_fbdev.c
+> >   staging: hikey9xx/gpu: get rid of some ifdefs
+> >   staging: hikey9xx/gpu: rename the config option for Kirin970
+> >   staging: hikey9xx/gpu: change the includes to reflect upstream
+> >   staging: hikey9xx/gpu: port driver to upstream kAPIs
+> >   staging: hikey9xx/gpu: add a copy of set_reg() function there
+> >   staging: hikey9xx/gpu: get rid of ION headers
+> >   staging: hikey9xx/gpu: add support for using a reserved CMA memory
+> >   staging: hikey9xx/gpu: cleanup encoder attach logic
+> >   staging: hikey9xx/gpu: Change the logic which sets the burst mode
+> >   staging: hikey9xx/gpu: fix the DRM setting logic
+> >   staging: hikey9xx/gpu: do some code cleanups
+> >   staging: hikey9xx/gpu: use default GEM_CMA fops
+> >   staging: hikey9xx/gpu: place vblank enable/disable at the right place
+> >   staging: hikey9xx/gpu: remove an uneeded hack
+> >   staging: hikey9xx/gpu: add a possible implementation for
+> >     atomic_disable
+> >   staging: hikey9xx/gpu: register connector
+> >   staging: hikey9xx/gpu: fix driver name
+> >   staging: hikey9xx/gpu: get rid of iommu_format
+> >   staging: hikey9xx/gpu: re-work the mode validation code
+> >   staging: hikey9xx/gpu: add support for enable/disable ldo3 regulator
+> >   staging: hikey9xx/gpu: add SPMI headers
+> >   staging: hikey9xx/gpu: solve most coding style issues
+> >   staging: hikey9xx/gpu: don't use iommu code
+> >   staging: hikey9xx/gpu: add kirin9xx driver to the building system
+> >   staging: hikey9xx/gpu: get rid of typedefs
+> >   staging: hikey9xx/gpu: get rid of input/output macros
+> >   staging: hikey9xx/gpu: get rid of some unused data
+> >   staging: hikey9xx/gpu: place common definitions at kirin9xx_dpe.h
+> >   staging: hikey9xx/gpu: get rid of DRM_HISI_KIRIN970
+> >   dts: hisilicon: hi3670.dtsi: add I2C settings
+> >   dts: hikey970-pinctrl.dtsi: add missing pinctrl settings
+> >   dt: hisilicon: add support for the PMIC found on Hikey 970
+> >   dts: add support for Hikey 970 DRM
+> >   staging: hikey9xx/gpu: drop kirin9xx_pwm
+> >   dt: display: Add binds for the DPE and DSI controller for Kirin
+> >     960/970
+> > 
+> > Xiubin Zhang (7):
+> >   staging: hikey9xx/gpu: add support to hikey970 HDMI and panel
+> >   staging: hikey9xx/gpu: Solve SR Cannot Display Problems.
+> >   staging: hikey9xx/gpu: Solve HDMI compatibility Problem.
+> >   staging: hikey9xx/gpu: Support MIPI DSI 3 lanes for hikey970.
+> >   staging: hikey9xx/gpu: Solve SR test reset problem for hikey970.
+> >   staging: hikey9xx/gpu: add debug prints for this driver
+> >   staging: hikey9xx/gpu: Add support 10.1 inch special HDMI displays.
+> > 
+> >  .../display/hisilicon,hi3660-dpe.yaml         |   99 +
+> >  .../display/hisilicon,hi3660-dsi.yaml         |  102 +
+> >  .../boot/dts/hisilicon/hi3670-hikey970.dts    |   56 +-
+> >  arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |   77 +
+> >  .../boot/dts/hisilicon/hikey970-drm.dtsi      |   93 +
+> >  .../boot/dts/hisilicon/hikey970-pinctrl.dtsi  |  548 +++-
+> >  .../boot/dts/hisilicon/hikey970-pmic.dtsi     |  197 ++
+> >  drivers/staging/hikey9xx/Kconfig              |    3 +
+> >  drivers/staging/hikey9xx/Makefile             |    1 +
+> >  drivers/staging/hikey9xx/gpu/Kconfig          |   22 +
+> >  drivers/staging/hikey9xx/gpu/Makefile         |    9 +
+> >  drivers/staging/hikey9xx/gpu/kirin960_defs.c  |  378 +++
+> >  .../staging/hikey9xx/gpu/kirin960_dpe_reg.h   |  233 ++
+> >  drivers/staging/hikey9xx/gpu/kirin970_defs.c  |  381 +++
+> >  .../staging/hikey9xx/gpu/kirin970_dpe_reg.h   | 1188 ++++++++
+> >  drivers/staging/hikey9xx/gpu/kirin9xx_dpe.h   | 2437 +++++++++++++++++
+> >  .../hikey9xx/gpu/kirin9xx_drm_dpe_utils.c     | 1178 ++++++++
+> >  .../hikey9xx/gpu/kirin9xx_drm_dpe_utils.h     |  286 ++
+> >  .../staging/hikey9xx/gpu/kirin9xx_drm_drv.c   |  368 +++
+> >  .../staging/hikey9xx/gpu/kirin9xx_drm_drv.h   |   57 +
+> >  .../staging/hikey9xx/gpu/kirin9xx_drm_dss.c   | 1063 +++++++
+> >  .../hikey9xx/gpu/kirin9xx_drm_overlay_utils.c | 1005 +++++++
+> >  .../hikey9xx/gpu/kirin9xx_dw_drm_dsi.c        | 2132 ++++++++++++++
+> >  .../hikey9xx/gpu/kirin9xx_dw_dsi_reg.h        |  146 +
+> >  .../staging/hikey9xx/gpu/kirin9xx_fb_panel.h  |  191 ++
+> >  25 files changed, 12229 insertions(+), 21 deletions(-)
+> >  create mode 100644 Documentation/devicetree/bindings/display/hisilicon,hi3660-dpe.yaml
+> >  create mode 100644 Documentation/devicetree/bindings/display/hisilicon,hi3660-dsi.yaml
+> 
+> Patch that intropduce new bindings must following the submitting patches
+> guidelines for bindings. For once the subject is "dt-bindings: bla bla".
+> 
+> >  create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-drm.dtsi
+> >  create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+> >  create mode 100644 drivers/staging/hikey9xx/gpu/Kconfig
+> >  create mode 100644 drivers/staging/hikey9xx/gpu/Makefile
+> >  create mode 100644 drivers/staging/hikey9xx/gpu/kirin960_defs.c
+> >  create mode 100644 drivers/staging/hikey9xx/gpu/kirin960_dpe_reg.h
+> >  create mode 100644 drivers/staging/hikey9xx/gpu/kirin970_defs.c
+> >  create mode 100644 drivers/staging/hikey9xx/gpu/kirin970_dpe_reg.h
+> >  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_dpe.h
+> >  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_drm_dpe_utils.c
+> >  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_drm_dpe_utils.h
+> >  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.c
+> >  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.h
+> >  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_drm_dss.c
+> >  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_drm_overlay_utils.c
+> >  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_dw_drm_dsi.c
+> >  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_dw_dsi_reg.h
+> >  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_fb_panel.h
 
-This makes it difficult to hardcode the root device, if it is on the
-non-removable device. E.g. if SD card is present eMMC will be mmcblk1,
-if SD card is not present at boot, eMMC will be mmcblk0.
-
-All indices defined in the aliases node will be reserved for use by the
-respective MMC device, moving the indices of devices that don't have an
-alias up into the non-reserved range. If the aliases node is not found,
-the driver will act as before.
-
-This is a rebased and slightly cleaned up version of
-https://www.spinics.net/lists/linux-mmc/msg26588.html .
-
-Based-on-patch-by: Sascha Hauer <s.hauer@pengutronix.de>
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Link: https://lkml.org/lkml/2020/8/5/194
----
- drivers/mmc/core/block.c | 13 +++++++++++--
- drivers/mmc/core/core.c  | 38 ++++++++++++++++++++++++++++++++++++++
- drivers/mmc/core/core.h  |  3 +++
- drivers/mmc/core/host.c  | 15 +++++++++++++--
- 4 files changed, 65 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-index 7896952de1ac..4620afaf0e50 100644
---- a/drivers/mmc/core/block.c
-+++ b/drivers/mmc/core/block.c
-@@ -38,6 +38,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/idr.h>
- #include <linux/debugfs.h>
-+#include <linux/of.h>
- 
- #include <linux/mmc/ioctl.h>
- #include <linux/mmc/card.h>
-@@ -2260,9 +2261,17 @@ static struct mmc_blk_data *mmc_blk_alloc_req(struct mmc_card *card,
- 					      int area_type)
- {
- 	struct mmc_blk_data *md;
--	int devidx, ret;
-+	int rsvidx, devidx = -1, ret;
-+
-+	rsvidx = mmc_get_reserved_index(card->host);
-+	if (rsvidx >= 0)
-+		devidx = ida_simple_get(&mmc_blk_ida, rsvidx, rsvidx + 1,
-+					GFP_KERNEL);
-+	if (devidx < 0)
-+		devidx = ida_simple_get(&mmc_blk_ida,
-+					mmc_first_nonreserved_index(),
-+					max_devices, GFP_KERNEL);
- 
--	devidx = ida_simple_get(&mmc_blk_ida, 0, max_devices, GFP_KERNEL);
- 	if (devidx < 0) {
- 		/*
- 		 * We get -ENOSPC because there are no more any available
-diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-index 8ccae6452b9c..39aca8adacd1 100644
---- a/drivers/mmc/core/core.c
-+++ b/drivers/mmc/core/core.c
-@@ -2419,10 +2419,48 @@ void mmc_unregister_pm_notifier(struct mmc_host *host)
- }
- #endif
- 
-+static int mmc_max_reserved_idx = -1;
-+
-+/**
-+ * mmc_first_nonreserved_index() - get the first index that is not reserved
-+ */
-+int mmc_first_nonreserved_index(void)
-+{
-+	return mmc_max_reserved_idx + 1;
-+}
-+
-+/**
-+ * mmc_get_reserved_index() - get the index reserved for this MMC host
-+ *
-+ * Returns:
-+ *   The index reserved for this host on success,
-+ *   negative error if no index is reserved for this host
-+ */
-+int mmc_get_reserved_index(struct mmc_host *host)
-+{
-+	return of_alias_get_id(host->parent->of_node, "mmc");
-+}
-+
-+static void __init mmc_of_reserve_idx(void)
-+{
-+	int max;
-+
-+	max = of_alias_get_highest_id("mmc");
-+	if (max < 0)
-+		return;
-+
-+	mmc_max_reserved_idx = max;
-+
-+	pr_debug("MMC: reserving %d slots for OF aliases\n",
-+		 mmc_max_reserved_idx + 1);
-+}
-+
- static int __init mmc_init(void)
- {
- 	int ret;
- 
-+	mmc_of_reserve_idx();
-+
- 	ret = mmc_register_bus();
- 	if (ret)
- 		return ret;
-diff --git a/drivers/mmc/core/core.h b/drivers/mmc/core/core.h
-index 575ac0257af2..6aef6cf4e90f 100644
---- a/drivers/mmc/core/core.h
-+++ b/drivers/mmc/core/core.h
-@@ -79,6 +79,9 @@ int mmc_attach_mmc(struct mmc_host *host);
- int mmc_attach_sd(struct mmc_host *host);
- int mmc_attach_sdio(struct mmc_host *host);
- 
-+int mmc_first_nonreserved_index(void);
-+int mmc_get_reserved_index(struct mmc_host *host);
-+
- /* Module parameters */
- extern bool use_spi_crc;
- 
-diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
-index ce43f7573d80..386e15afde83 100644
---- a/drivers/mmc/core/host.c
-+++ b/drivers/mmc/core/host.c
-@@ -387,6 +387,7 @@ struct mmc_host *mmc_alloc_host(int extra, struct device *dev)
- {
- 	int err;
- 	struct mmc_host *host;
-+	int alias_id, min_idx, max_idx;
- 
- 	host = kzalloc(sizeof(struct mmc_host) + extra, GFP_KERNEL);
- 	if (!host)
-@@ -395,7 +396,18 @@ struct mmc_host *mmc_alloc_host(int extra, struct device *dev)
- 	/* scanning will be enabled when we're ready */
- 	host->rescan_disable = 1;
- 
--	err = ida_simple_get(&mmc_host_ida, 0, 0, GFP_KERNEL);
-+	host->parent = dev;
-+
-+	alias_id = mmc_get_reserved_index(host);
-+	if (alias_id >= 0) {
-+		min_idx = alias_id;
-+		max_idx = alias_id + 1;
-+	} else {
-+		min_idx = mmc_first_nonreserved_index();
-+		max_idx = 0;
-+	}
-+
-+	err = ida_simple_get(&mmc_host_ida, min_idx, max_idx, GFP_KERNEL);
- 	if (err < 0) {
- 		kfree(host);
- 		return NULL;
-@@ -406,7 +418,6 @@ struct mmc_host *mmc_alloc_host(int extra, struct device *dev)
- 	dev_set_name(&host->class_dev, "mmc%d", host->index);
- 	host->ws = wakeup_source_register(NULL, dev_name(&host->class_dev));
- 
--	host->parent = dev;
- 	host->class_dev.parent = dev;
- 	host->class_dev.class = &mmc_host_class;
- 	device_initialize(&host->class_dev);
 -- 
-2.17.1
+Regards,
 
+Laurent Pinchart
