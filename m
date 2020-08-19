@@ -2,173 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09605249945
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 11:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 846A024994B
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 11:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727064AbgHSJZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 05:25:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59554 "EHLO
+        id S1726967AbgHSJ1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 05:27:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727036AbgHSJZS (ORCPT
+        with ESMTP id S1726110AbgHSJ1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 05:25:18 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 653B3C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 02:25:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/Tmew4iAwtBYwVZISs1GtiPEnJ/BkpieLAisaLIoEYI=; b=HdpYrxEBp+Dr+hT7QoXbk8xJfU
-        S3b9yoRSQagVkLGDmt/cDenSdmM9XYws2b3wu90KlmoJ32x1eyuepgl4LjuLGgXGp/3VoeRJURblg
-        vZVAMVoJMNPCdSQJT0CFIFWSsiu9ZOLRc4J3jRWmUALnrNk7TVgyjVdCyYIxZsdovbAbR56LXbAdT
-        vZGqZgswXHmlw0TTHx9Sf8DE9KRRok98kuo6VO5mgu9jT5T3V9HlwfStCDGUpCfpQ2yJuA1voPWQU
-        WBxsUOxCKP5I9bVAGD8HNl09ovZdl8yf8Mt+ahwtSvquFBh0ap9K1GVs+vQrD7CY/y29uhSToM//z
-        v6fEcKmg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k8KLJ-0002s0-1q; Wed, 19 Aug 2020 09:25:13 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D8A64301A66;
-        Wed, 19 Aug 2020 11:25:11 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BB6552BA27CF9; Wed, 19 Aug 2020 11:25:11 +0200 (CEST)
-Date:   Wed, 19 Aug 2020 11:25:11 +0200
-From:   peterz@infradead.org
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v2] seqlock: <linux/seqlock.h>: fix multiple kernel-doc
- warnings
-Message-ID: <20200819092511.GA2674@hirez.programming.kicks-ass.net>
-References: <20200817000200.20993-1-rdunlap@infradead.org>
+        Wed, 19 Aug 2020 05:27:01 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10DD5C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 02:27:00 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id t14so1430041wmi.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 02:26:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lVH13tdAzC6mW/dwhV6wM3c3cw0w+EwXAkE9fSxw6kk=;
+        b=LiXoJqDEZa5lyE4ikb0YCl1GOpEyvF7YoJVZ3kOe+9PbwXYwTgsNunyBrTmnHpcwLS
+         AycdLYrvYIpvnEsRb768v0N/KWszt83KWkhoZzXjI3eH1VMUG6mbDoqEFLy1K6QxIMOC
+         1hVDWDu2nR1b+z89w6enM8EpzLNUN4QnBB2IY0SBnjvjtVM2P10D5cIoDVZgXGJh4GaL
+         j5U8omvfmoAHsNIrqNSuho6gPySbtyWgNfmPBHhew2sO50S7vkaRhIOltkVWhPE00LHW
+         0dxpLaSf4HgAo7voQQH0d2vcYfSwwFPXR98OGRdl9b6DxcDSL5Yt1dBGtfj1NMg51NKL
+         49Fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lVH13tdAzC6mW/dwhV6wM3c3cw0w+EwXAkE9fSxw6kk=;
+        b=J+6TSS+ZngdlJFJaWT2bVrK9/ZKBaPAgUwRP8yfPAxHI68k/D8TegszJ+kRCvS2rq9
+         aECzUouQ5BeOt6bBrFG9ugUI9gPftVsUL8XK7SmDyjvts/ETam/XCTAEdHGNmIBlxn1C
+         uS56rN9WKeuStLDVz0o2BeM9NmNfrumqQckzpxAK9CMAloBnjLYBRiGgP26aReOUdQ5n
+         eVsTcW54vrxugSsuDsK2yDnA540d6y1dsdu6Fmy+ZCFtOhfQtB4rhwbPnoiWW/DR5Ypf
+         REku43/9gYWMQdNSDG6TbHxr5Y82zetIFX/49ESoT/HukOF/5IUZHgEmVF3bKCUNaXHd
+         ZH9Q==
+X-Gm-Message-State: AOAM533+ED3LoVPyeWZRsyIbYH3NbYo8tyEQryIZkx+Btj3EXa4YVpyT
+        7550qhclTEzA5orszVu/mTa98xCu+No9XplOfW8=
+X-Google-Smtp-Source: ABdhPJw+vfNm6gcyC15QGjAi/+l7apLAwW4FOchrK0YZEt7izxf65sSx5B4ycnxIWcXGiEbZh+MIcEEgwnJLJgGiw2I=
+X-Received: by 2002:a1c:32c3:: with SMTP id y186mr3986004wmy.15.1597829216005;
+ Wed, 19 Aug 2020 02:26:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200817000200.20993-1-rdunlap@infradead.org>
+References: <20200818052936.10995-1-joshi.k@samsung.com> <CGME20200818053252epcas5p4ee61d64bba5f6a131105e40330984f5e@epcas5p4.samsung.com>
+ <20200818052936.10995-2-joshi.k@samsung.com> <20200818071141.GA2544@lst.de>
+In-Reply-To: <20200818071141.GA2544@lst.de>
+From:   Kanchan Joshi <joshiiitr@gmail.com>
+Date:   Wed, 19 Aug 2020 14:56:29 +0530
+Message-ID: <CA+1E3rJg0QOX4YgwWJf8Sm=6C-un4TsRX00E31fbFFPT9LYhXg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] nvme: set io-scheduler requirement for ZNS
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Kanchan Joshi <joshi.k@samsung.com>, Jens Axboe <axboe@kernel.dk>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>, sagi@grimberg.me,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        Keith Busch <kbusch@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 16, 2020 at 05:02:00PM -0700, Randy Dunlap wrote:
+On Tue, Aug 18, 2020 at 12:46 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Tue, Aug 18, 2020 at 10:59:35AM +0530, Kanchan Joshi wrote:
+> > Set elevator feature ELEVATOR_F_ZBD_SEQ_WRITE required for ZNS.
+>
+> No, it is not.
 
-> --- lnx-59-rc1.orig/include/linux/seqlock.h
-> +++ lnx-59-rc1/include/linux/seqlock.h
+Are you saying MQ-Deadline (write-lock) is not needed for writes on ZNS?
+I see that null-block zoned and SCSI-ZBC both set this requirement. I
+wonder how it became different for NVMe.
 
-> @@ -173,7 +173,6 @@ seqcount_##lockname##_init(seqcount_##lo
->  	seqcount_init(&s->seqcount);					\
->  	__SEQ_LOCK(s->lock = lock);					\
->  }									\
-> -									\
->  static __always_inline seqcount_t *					\
->  __seqcount_##lockname##_ptr(seqcount_##lockname##_t *s)			\
->  {									\
-
-I think I'd rather like that empty line there..
-
-> @@ -218,9 +217,9 @@ SEQCOUNT_LOCKTYPE(struct mutex,		mutex,
->  SEQCOUNT_LOCKTYPE(struct ww_mutex,	ww_mutex,	true,	&s->lock->base)
->  
->  /**
-> - * SEQCNT_LOCKNAME_ZERO - static initializer for seqcount_LOCKNAME_t
-> - * @name:	Name of the seqcount_LOCKNAME_t instance
-> - * @lock:	Pointer to the associated LOCKTYPE
-> + * SEQCOUNT_LOCKTYPE_ZERO - static initializer for seqcount_LOCKNAME_t
-> + * @seq_name:	Name of the seqcount_LOCKNAME_t instance
-> + * @assoc_lock:	Pointer to the associated LOCKTYPE
->   */
->  
->  #define SEQCOUNT_LOCKTYPE_ZERO(seq_name, assoc_lock) {			\
-
-And this hunk seems wrong, SEQCOUNT_LOCKTYPE_ZERO() is not the intended
-API, SEQCNT_*_ZERO() are.
-
-
-I've edited the patch like below, is that OK with you?
-
----
-Subject: seqlock: Fix multiple kernel-doc warnings
-From: Randy Dunlap <rdunlap@infradead.org>
-Date: Sun, 16 Aug 2020 17:02:00 -0700
-
-From: Randy Dunlap <rdunlap@infradead.org>
-
-Fix kernel-doc warnings in <linux/seqlock.h>.
-
-../include/linux/seqlock.h:152: warning: Incorrect use of kernel-doc format:  * seqcount_LOCKNAME_init() - runtime initializer for seqcount_LOCKNAME_t
-../include/linux/seqlock.h:164: warning: Incorrect use of kernel-doc format:  * SEQCOUNT_LOCKTYPE() - Instantiate seqcount_LOCKNAME_t and helpers
-../include/linux/seqlock.h:229: warning: Function parameter or member 'seq_name' not described in 'SEQCOUNT_LOCKTYPE_ZERO'
-../include/linux/seqlock.h:229: warning: Function parameter or member 'assoc_lock' not described in 'SEQCOUNT_LOCKTYPE_ZERO'
-../include/linux/seqlock.h:229: warning: Excess function parameter 'name' description in 'SEQCOUNT_LOCKTYPE_ZERO'
-../include/linux/seqlock.h:229: warning: Excess function parameter 'lock' description in 'SEQCOUNT_LOCKTYPE_ZERO'
-../include/linux/seqlock.h:695: warning: duplicate section name 'NOTE'
-
-Demote kernel-doc notation for the macros "seqcount_LOCKNAME_init()" and
-"SEQCOUNT_LOCKTYPE()"; scripts/kernel-doc does not handle them correctly.
-
-Rename function parameters in SEQCNT_LOCKNAME_ZERO() documentation
-to match the macro's argument names. Change the macro name in the
-documentation to SEQCOUNT_LOCKTYPE_ZERO() to match the macro's name.
-
-For raw_write_seqcount_latch(), rename the second NOTE: to NOTE2:
-to prevent a kernel-doc warning. However, the generated output is not
-quite as nice as it could be for this.
-
-Fix a typo: s/LOCKTYPR/LOCKTYPE/
-
-Fixes: 0efc94c5d15c ("seqcount: Compress SEQCNT_LOCKNAME_ZERO()")
-Fixes: e4e9ab3f9f91 ("seqlock: Fold seqcount_LOCKNAME_init() definition")
-Fixes: a8772dccb2ec ("seqlock: Fold seqcount_LOCKNAME_t definition")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200817000200.20993-1-rdunlap@infradead.org
----
-v2: do not move the definition of seqcount_LOCKNAME_init().
-Fix build errors reported by kernel test robot.
-Actually build a kernel with these changes.
-
- include/linux/seqlock.h |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -138,7 +138,7 @@ static inline void seqcount_lockdep_read
- #endif
- 
- /**
-- * typedef seqcount_LOCKNAME_t - sequence counter with LOCKTYPR associated
-+ * typedef seqcount_LOCKNAME_t - sequence counter with LOCKTYPE associated
-  * @seqcount:	The real sequence counter
-  * @lock:	Pointer to the associated spinlock
-  *
-@@ -148,7 +148,7 @@ static inline void seqcount_lockdep_read
-  * that the write side critical section is properly serialized.
-  */
- 
--/**
-+/*
-  * seqcount_LOCKNAME_init() - runtime initializer for seqcount_LOCKNAME_t
-  * @s:		Pointer to the seqcount_LOCKNAME_t instance
-  * @lock:	Pointer to the associated LOCKTYPE
-@@ -217,7 +217,7 @@ SEQCOUNT_LOCKTYPE(rwlock_t,		rwlock,		fa
- SEQCOUNT_LOCKTYPE(struct mutex,		mutex,		true,	s->lock)
- SEQCOUNT_LOCKTYPE(struct ww_mutex,	ww_mutex,	true,	&s->lock->base)
- 
--/**
-+/*
-  * SEQCNT_LOCKNAME_ZERO - static initializer for seqcount_LOCKNAME_t
-  * @name:	Name of the seqcount_LOCKNAME_t instance
-  * @lock:	Pointer to the associated LOCKTYPE
-@@ -688,7 +688,7 @@ static inline int raw_read_seqcount_t_la
-  *	to miss an entire modification sequence, once it resumes it might
-  *	observe the new entry.
-  *
-- * NOTE:
-+ * NOTE2:
-  *
-  *	When data is a dynamic data structure; one should use regular RCU
-  *	patterns to manage the lifetimes of the objects within.
+-- 
+Kanchan
