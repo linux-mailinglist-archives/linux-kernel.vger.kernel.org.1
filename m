@@ -2,101 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFDC424A5F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E4124A5FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbgHSS1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 14:27:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58906 "EHLO
+        id S1726947AbgHSS2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 14:28:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726817AbgHSS0x (ORCPT
+        with ESMTP id S1725804AbgHSS2R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 14:26:53 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7DF1C061383
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 11:26:52 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id j13so1502555pjd.4
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 11:26:52 -0700 (PDT)
+        Wed, 19 Aug 2020 14:28:17 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D2D1C061757;
+        Wed, 19 Aug 2020 11:28:17 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id o18so27449758eje.7;
+        Wed, 19 Aug 2020 11:28:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fvIFX0if5musGR/AuULcq2bjqGRTVsjqU+8CFLDy+hw=;
-        b=HfCIuaUTEFVRCg2xF4Xl2CLjgnUSrDLPxH/LNGSnFxEGH64THvX9qUz3m4bt8HSp5A
-         5IOSlR76HwB4xah21PaZoxVCk/d5M2Fet5xlwBPpGNFA8wnWRG9OyQNkRg8KituxX3NV
-         MTPc1JXnrxUn7fsZcRSXehWMmRr7FpBpWz7sU=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DAFrfmMUg74vNoUHMs0A4U/tj8SEmRiHnkanfthFN8w=;
+        b=SCaE8UOc/sScWPTAst0WydslWM8MHDbH3k9g9+hsFBLuD6/ezHGAL3xa++CcFZ7zCE
+         YH2frdaU3vJGbFaLsDiiJk1BRPaecOZkZeRtxUhDlCBB/n0tN/3BjuITyqvoDR8OWurF
+         ULhkobW7hLD5fUupSxkZW8Og3mKKlCt0z+6ippeUGKi234j1f7Yc98wjHbB4L/xsLn5L
+         amW53jka/kO5edj7nNLR8eph8aaitB95fOXGtK9BjbLzzn1M7jt2HU/5A06nhwlmNPcD
+         Csk+5Y7z9lnr1C+NouOEwS/XBd3TDEJBL/r/2Ybln1dMEENsT/j0Fe39q85f04vcCTeZ
+         soRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fvIFX0if5musGR/AuULcq2bjqGRTVsjqU+8CFLDy+hw=;
-        b=O8y2KmGrPPHnSMzh4Bh3x+4hTr84DJ46lcnsDa8FzfRqjzfo/oeEa+elYwWqs5fwwz
-         1/2wLm0JJti05y4xfp1UFpivq/f5wsjn0dkmPHXOhcM6VDS1wvA9LAyTs7pFCbNETf/p
-         XCGcDmw4vuVLshxqnC+7d5RX3XV2au/TRDqZJ4dfM+m6pDzD7YYODyNHCChOf0L7Yr7r
-         c7nG1rFWTASzR9/UekBaUDoltP09bN55FoBFUE24OIsi3bX4gL/9KnNTyQ1Ei84eJ2f/
-         DdJK5X2034bdEpCmPl0yVKVc/kDU85csmTMbQ4hx/aDVIgXua9CiC5NkyQlRT/CuYuzP
-         /73g==
-X-Gm-Message-State: AOAM533zCv+hXABNn1dC0zjOe3oFaaU/lVk/euIfqxsSC6lQWhH4efPO
-        1shIgYokMzzNBKSmSrlTuwroJA==
-X-Google-Smtp-Source: ABdhPJwxgsz0D4aicIwYdouVEzk6AM/3p47+iWecIKeauBam4yUoUFDdg69JVb1+UpjSN7L/1wYAnQ==
-X-Received: by 2002:a17:902:a58a:: with SMTP id az10mr19250739plb.329.1597861612317;
-        Wed, 19 Aug 2020 11:26:52 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z29sm29495220pfj.182.2020.08.19.11.26.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 11:26:49 -0700 (PDT)
-Date:   Wed, 19 Aug 2020 11:26:48 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Paul Turner <pjt@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tim Chen <tim.c.chen@intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        fweisbec@gmail.com, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH RFC 00/12] Core-sched v6+: kernel protection and hotplug
- fixes
-Message-ID: <202008191116.1A1F51186D@keescook>
-References: <20200815031908.1015049-1-joel@joelfernandes.org>
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=DAFrfmMUg74vNoUHMs0A4U/tj8SEmRiHnkanfthFN8w=;
+        b=TE1Vi0bB3zrgo3nm1bUolhLO3SCvC/sdj4ZXuG6qA8LdGqYMbOTjoriDBlIAQ72223
+         s2sSOHqDiRzLkm1BeYdrqfgTDE1NDdY0uHuc0PR46EMkzCeYQk+62tDbDwmoF0HWWXd4
+         qeKaou3TiOfpb2bTqbBD8ku08xCH3G1meER2QCfel3Gp0JrhLZtyhO2uhgwOTHxYE4rB
+         /tQyksl+SIsZWiaQCKBhoSeOg//A/XoRNyBwe3hmsxXox5UuD7uw/8MrHO6iLqsl+DuN
+         ZWcYYG11Hu4lcrPMEJ9GDD1mN08vGVydtHNyoy3XOB8YWrb+Yp7HrA8LbJ4O5Rs7hwIJ
+         j74Q==
+X-Gm-Message-State: AOAM5302M7mS3BGll/FTU+JYMDH3rFOoSYKjdmGzZdZvmDsBP1uUPYVj
+        qOal/5KKWRbOMN45XfOKn7y9UuZeIuY=
+X-Google-Smtp-Source: ABdhPJx/7UPm2274qHiKt+xzkXnwpR58I7x3Y9KGd+gY1XVIECN0JkDysSmx1Wymd7Hs2iPaOkEQuQ==
+X-Received: by 2002:a17:906:7715:: with SMTP id q21mr5494053ejm.251.1597861695640;
+        Wed, 19 Aug 2020 11:28:15 -0700 (PDT)
+Received: from [10.67.50.75] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id x1sm18953465ejc.119.2020.08.19.11.28.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Aug 2020 11:28:14 -0700 (PDT)
+Subject: Re: [PATCH] ARM: dts: BCM5301X: Fix pin controller node
+To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Christian Lamparter <chunkeey@gmail.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        "maintainer:BROADCOM BCM5301X ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200819042308.19043-1-f.fainelli@gmail.com>
+ <CACna6ryhQ=pY0LgpgwbBo5WGXSSfserc3V1ELzD3WLgnTv3n+g@mail.gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
+ 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
+ G10n8gCguORqNGMsVRxrlLs7/himep7MrCc=
+Message-ID: <8771fd4f-23ca-3685-47f6-b310faa18629@gmail.com>
+Date:   Wed, 19 Aug 2020 11:28:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200815031908.1015049-1-joel@joelfernandes.org>
+In-Reply-To: <CACna6ryhQ=pY0LgpgwbBo5WGXSSfserc3V1ELzD3WLgnTv3n+g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 11:18:56PM -0400, Joel Fernandes (Google) wrote:
-> This series is continuation of main core-sched v6 series [1] and adds support
+On 8/19/20 8:36 AM, Rafał Miłecki wrote:
+> On Wed, 19 Aug 2020 at 06:23, Florian Fainelli <f.fainelli@gmail.com> wrote:
+>> The pin controller resources start at 0xc0 from the CRU base which is at
+>> 0x100 from th DMU base, for a final address of 0x1800_c1c0, whereas we
+>> are currently off by 0x100. The resource size of the CRU is also
+>> incorrect and should end at 0x248 bytes from 0x100 which is the start
+>> address. Finally, the compatibility strings defined for the
+>> pin-controller node should reflect the SoC being used.
+>>
+>> Fixes: 9994241ac97c ("ARM: dts: BCM5301X: Describe Northstar pins mux controller")
+> 
+> Let me verify that fix. I'm confused as I believe I got pinctrl
+> working for uart1 :|
 
-- Is this really "RFC"? Seeing multiple authors implies this is looking
-  to get merged. :)
-
-- Is this on top of the v6 core-sched series (or instead of)? (That
-  series doesn't seem to be RFC any more either, IMO, if it's at v6.) If
-  this replaces that series, isn't this v7? I don't see the v6
-  core-sched series in -next anywhere?
-
-- Whatever the case, please include the series version in the "[PATCH vN ...]"
-  portion of the Subject, otherwise things like "b4" don't really know what's
-  happening.
-
-Sorry for the drive-by comments, but I was really confused trying to
-understand how this fit together. :)
-
+Sure, please let me know what you find. Chances are that UART1 was
+already pinmuxed corectly by the boot loader for your device and this
+could have turned out as a no-op.
 -- 
-Kees Cook
+Florian
