@@ -2,146 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E274B24A2CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 17:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB1C24A309
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 17:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727854AbgHSPY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 11:24:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35280 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726636AbgHSPYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 11:24:20 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E18B220897;
-        Wed, 19 Aug 2020 15:24:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597850660;
-        bh=hHa5rHHEdmaLPV8IAAgl2hoR1WMKnusCrOaK/4DnvIM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SzbRLU6uplI9w6fF5ALOG9qTdPUx4A/TcBFXF5MUcMy7oWkEp2G5W2+VgF7Jwd7fn
-         Ktrm0XTFXwDXpE1EcWltK4ppy8NwfHG9YElNZ5Wyc7T1xGGOzPNAF9wK59JeqeOP8C
-         tFbNuQD+Eq5tGugI17/6zzsdxmKZcc49JnubXs+Y=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1k8Pwn-004Fc2-Tn; Wed, 19 Aug 2020 16:24:18 +0100
+        id S1728922AbgHSP10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 11:27:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728619AbgHSPZM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 11:25:12 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA33C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 08:25:12 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id 2so21892883qkf.10
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 08:25:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=poorly.run; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=+A2+59kSj+DX9Rd94ppIvrv6gKF33YuW5sgvbibtK8o=;
+        b=DAz3p7rvAKv+rEtw7ziZcs1CbUb15JgAvkng7iuNUguAUs+2SlaMd1Eb9JS8/ypdDD
+         jDq2qHwEv21m/4lKf6lpxwg8OUDx0d6vPuNejy3Hg/NxuVdPNZQ6h1dJ/F4punH3baHX
+         4265Q3qIPsoGRMb+GmG9MsDVnLVSefoRlVK4Apb7d9w2YuWmNrVfaoZ+0MgBwCxPlkvx
+         vLG3CsDvm+r5hLjzbxqgKVhlnvUZ4oyUdEkLW/vPLS4DxeKe0b/gNdQapuu0beaVfee4
+         pfsJFk2ssLc7x5Akesh4zeZ2J75YtdylBt8SDN/P7IVAUJw6NCtqYmBPnl9TcPKpRAEk
+         cwiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+A2+59kSj+DX9Rd94ppIvrv6gKF33YuW5sgvbibtK8o=;
+        b=YlUbne1QtxuJx+KU8MSuLVD3iN6P9Bfa7UgUhkQQ0011xD0rMunIQpzY54mkLTkr1D
+         5ClPFlsviC6H0sSo5Va5kH+Q9UL5+NVnPNXaw9Vxt5r/S77sN47Kk/MylzPSSJehHIuk
+         9Z+KbB6cVt/AmNuBfxWCXyycxjlNBVoQJaoDKeeMLfZSbXXau3lhZU0uONeHE/mIn0D2
+         IvY+xmt0RskMcljeQ2cwxWC1b+l5ppNn0VSzHVC7r50QqSmOj/nRf5vlNPXebUnpX1YE
+         Tw/cdHG9mh5Xei8TFRuuq6kRq4DUZewR/fJQyH7t+CFR+3Gnx94Yl4m/HhWhI+VtoB4i
+         GqoA==
+X-Gm-Message-State: AOAM533BfXcPPXFWeuVk01oqT8gmeTDb4pMk+Sf3g4ADLFcM63Oy20q0
+        Fp5unO0KnjO3HwKsYJn3lNQKoQ==
+X-Google-Smtp-Source: ABdhPJwaOxJ5IQr4GSKj/8qzLxI7nwuxjhN1J7QQtHVAV0pVgF8h9m9O+HTZ4RHcMiTLdumoYIDa0Q==
+X-Received: by 2002:a37:44b:: with SMTP id 72mr22031222qke.494.1597850711106;
+        Wed, 19 Aug 2020 08:25:11 -0700 (PDT)
+Received: from localhost (mobile-166-177-185-175.mycingular.net. [166.177.185.175])
+        by smtp.gmail.com with ESMTPSA id k134sm24399096qke.60.2020.08.19.08.25.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 19 Aug 2020 08:25:10 -0700 (PDT)
+Date:   Wed, 19 Aug 2020 11:25:09 -0400
+From:   Sean Paul <sean@poorly.run>
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
+        Manasi Navare <manasi.d.navare@intel.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        =?iso-8859-1?Q?Jos=E9?= Roberto de Souza 
+        <jose.souza@intel.com>, Wambui Karuga <wambui.karugax@gmail.com>
+Subject: Re: [RFC 16/20] drm/i915/dp: Extract drm_dp_get_sink_count()
+Message-ID: <20200819152509.GD46474@art_vandelay>
+References: <20200811200457.134743-1-lyude@redhat.com>
+ <20200811200457.134743-17-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 19 Aug 2020 16:24:17 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Cc:     alix.wu@mediatek.com, daniel@0x0f.com, devicetree@vger.kernel.org,
-        jason@lakedaemon.net, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        matthias.bgg@gmail.com, robh+dt@kernel.org, tglx@linutronix.de,
-        yj.chiang@mediatek.com
-Subject: Re: [PATCH 1/2] irqchip: irq-mst: Add MStar interrupt controller
- support
-In-Reply-To: <20200819145525.26315-1-mark-pk.tsai@mediatek.com>
-References: <f593f5e395c8558657a3f265b7038ec3@kernel.org>
- <20200819145525.26315-1-mark-pk.tsai@mediatek.com>
-User-Agent: Roundcube Webmail/1.4.7
-Message-ID: <85749ec80ad0b9c85e3984c808d02b9c@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: mark-pk.tsai@mediatek.com, alix.wu@mediatek.com, daniel@0x0f.com, devicetree@vger.kernel.org, jason@lakedaemon.net, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com, robh+dt@kernel.org, tglx@linutronix.de, yj.chiang@mediatek.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200811200457.134743-17-lyude@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-19 15:55, Mark-PK Tsai wrote:
-> From: Marc Zyngier <maz@kernel.org>
+On Tue, Aug 11, 2020 at 04:04:53PM -0400, Lyude Paul wrote:
+> And of course, we'll also need to read the sink count from other drivers
+> as well if we're checking whether or not it's supported. So, let's
+> extract the code for this into another helper.
 > 
->> On 2020-08-19 14:31, Mark-PK Tsai wrote:
->>> From: Marc Zyngier <maz@kernel.org>
->>> 
->>>> > +
->>>> > +static int mst_intc_domain_alloc(struct irq_domain *domain, unsigned
->>>> > int virq,
->>>> > +				 unsigned int nr_irqs, void *data)
->>>> > +{
->>>> > +	int i;
->>>> > +	irq_hw_number_t hwirq;
->>>> > +	struct irq_fwspec parent_fwspec, *fwspec = data;
->>>> > +	struct mst_intc_chip_data *cd = (struct mst_intc_chip_data
->>>> > *)domain->host_data;
->>>> 
->>>> No cast necessary here.
->>>> 
->>>> > +
->>>> > +	/* Not GIC compliant */
->>>> > +	if (fwspec->param_count != 3)
->>>> > +		return -EINVAL;
->>>> > +
->>>> > +	/* No PPI should point to this domain */
->>>> > +	if (fwspec->param[0])
->>>> > +		return -EINVAL;
->>>> > +
->>>> > +	if (fwspec->param[1] >= cd->nr_irqs)
->>>> 
->>>> This condition is bogus, as it doesn't take into account the nr_irqs
->>>> parameter.
->>>> 
->>> 
->>> 
->>> The hwirq number need to be in the irq map range. (property:
->>> mstar,irqs-map-range)
->>> If it's not, it must be incorrect configuration.
->> 
->> I agree. And since you are checking whether the configuration is
->> correct,
->> it'd better be completely correct.
->> 
->>> So how about use the condition as following?
->>> 
->>> if (hwirq >= cd->nr_irqs)
->>> 	return -EINVAL;
->> 
->> Again, this says nothing of the validity of (hwirq + nr_irqs - 1)...
->> 
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> ---
+>  drivers/gpu/drm/drm_dp_helper.c         | 20 ++++++++++++++++++++
+>  drivers/gpu/drm/i915/display/intel_dp.c | 17 +++++------------
+>  include/drm/drm_dp_helper.h             |  1 +
+>  3 files changed, 26 insertions(+), 12 deletions(-)
 > 
-> How about move this to mst_intc_domain_translate? Then all the 
-> irq_fwspec
-> point to domain mst_intc should be valid.
-> 
-> The mst_intc_domain_translate will be as following:
-> 
-> static int mst_intc_domain_translate(struct irq_domain *d,
-> 				     struct irq_fwspec *fwspec,
-> 				     unsigned long *hwirq,
-> 				     unsigned int *type)
-> {
-> 	struct mst_intc_chip_data *cd = d->host_data;
-> 
-> 	if (is_of_node(fwspec->fwnode)) {
-> 		if (fwspec->param_count != 3)
-> 			return -EINVAL;
-> 
-> 		/* No PPI should point to this domain */
-> 		if (fwspec->param[0] != 0)
-> 			return -EINVAL;
-> 
-> 		if (fwspec->param[1] >= cd->nr_irqs)
-> 			return -EINVAL;
-> 
-> 		*hwirq = fwspec->param[1];
-> 		*type = fwspec->param[2] & IRQ_TYPE_SENSE_MASK;
-> 		return 0;
-> 	}
-> 
-> 	return -EINVAL;
-> }
+> diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
+> index 05bb47e589731..0ff2959c8f8e8 100644
+> --- a/drivers/gpu/drm/drm_dp_helper.c
+> +++ b/drivers/gpu/drm/drm_dp_helper.c
+> @@ -722,6 +722,26 @@ bool drm_dp_has_sink_count(struct drm_connector *connector,
+>  }
+>  EXPORT_SYMBOL(drm_dp_has_sink_count);
+>  
+> +/**
+> + * drm_dp_get_sink_count() - Retrieve the sink count for a given sink
+> + * @aux: The DP AUX channel to use
+> + *
+> + * Returns: The current sink count reported by @aux, or a negative error code
+> + * otherwise.
+> + */
+> +int drm_dp_get_sink_count(struct drm_dp_aux *aux)
+> +{
+> +	u8 count;
+> +	int ret;
+> +
+> +	ret = drm_dp_dpcd_readb(aux, DP_SINK_COUNT, &count);
+> +	if (ret < 1)
+> +		return -EIO;
 
-It would make more sense.
+This should probably be:
+        if (ret < 0)
+                return ret;
+        else if (ret != 1)
+                return -EIO;
 
-         M.
+
+> +
+> +	return DP_GET_SINK_COUNT(count);
+> +}
+> +EXPORT_SYMBOL(drm_dp_get_sink_count);
+> +
+>  /*
+>   * I2C-over-AUX implementation
+>   */
+> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+> index 35a4779a442e2..e343965a483df 100644
+> --- a/drivers/gpu/drm/i915/display/intel_dp.c
+> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
+> @@ -4648,6 +4648,8 @@ intel_dp_has_sink_count(struct intel_dp *intel_dp)
+>  static bool
+>  intel_dp_get_dpcd(struct intel_dp *intel_dp)
+>  {
+> +	int ret;
+> +
+>  	if (!intel_dp_read_dpcd(intel_dp))
+>  		return false;
+>  
+> @@ -4664,20 +4666,10 @@ intel_dp_get_dpcd(struct intel_dp *intel_dp)
+>  	}
+>  
+>  	if (intel_dp_has_sink_count(intel_dp)) {
+> -		u8 count;
+> -		ssize_t r;
+> -
+> -		r = drm_dp_dpcd_readb(&intel_dp->aux, DP_SINK_COUNT, &count);
+> -		if (r < 1)
+> +		ret = drm_dp_get_sink_count(&intel_dp->aux);
+> +		if (ret < 0)
+>  			return false;
+>  
+> -		/*
+> -		 * Sink count can change between short pulse hpd hence
+> -		 * a member variable in intel_dp will track any changes
+> -		 * between short pulse interrupts.
+> -		 */
+
+I think you could probably keep this comment and relocate the intel_dp->sink_count
+assignment back.
+
+With these nits (or something like them),
+
+Reviewed-by: Sean Paul <sean@poorly.run>
+
+> -		intel_dp->sink_count = DP_GET_SINK_COUNT(count);
+> -
+>  		/*
+>  		 * SINK_COUNT == 0 and DOWNSTREAM_PORT_PRESENT == 1 implies that
+>  		 * a dongle is present but no display. Unless we require to know
+> @@ -4685,6 +4677,7 @@ intel_dp_get_dpcd(struct intel_dp *intel_dp)
+>  		 * downstream port information. So, an early return here saves
+>  		 * time from performing other operations which are not required.
+>  		 */
+> +		intel_dp->sink_count = ret;
+>  		if (!intel_dp->sink_count)
+>  			return false;
+>  	}
+> diff --git a/include/drm/drm_dp_helper.h b/include/drm/drm_dp_helper.h
+> index a1413a531eaf4..0c141fc81aaa8 100644
+> --- a/include/drm/drm_dp_helper.h
+> +++ b/include/drm/drm_dp_helper.h
+> @@ -1635,6 +1635,7 @@ struct drm_dp_desc;
+>  bool drm_dp_has_sink_count(struct drm_connector *connector,
+>  			   const u8 dpcd[DP_RECEIVER_CAP_SIZE],
+>  			   const struct drm_dp_desc *desc);
+> +int drm_dp_get_sink_count(struct drm_dp_aux *aux);
+>  
+>  void drm_dp_remote_aux_init(struct drm_dp_aux *aux);
+>  void drm_dp_aux_init(struct drm_dp_aux *aux);
+> -- 
+> 2.26.2
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
 -- 
-Jazz is not dead. It just smells funny...
+Sean Paul, Software Engineer, Google / Chromium OS
