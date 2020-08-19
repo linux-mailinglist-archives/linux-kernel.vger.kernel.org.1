@@ -2,71 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0532F249915
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 11:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6B82249906
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 11:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727016AbgHSJLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 05:11:35 -0400
-Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.20]:34040 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726630AbgHSJL2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 05:11:28 -0400
-X-Greylist: delayed 358 seconds by postgrey-1.27 at vger.kernel.org; Wed, 19 Aug 2020 05:11:27 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1597828286;
-        s=strato-dkim-0002; d=aepfle.de;
-        h=Message-Id:Date:Subject:Cc:To:From:X-RZG-CLASS-ID:X-RZG-AUTH:From:
-        Subject:Sender;
-        bh=aJbBiqqEcgkxYh/T/PAcF1pQQBq2TFSlGmE/iQkN4AU=;
-        b=YhDLlpk0RvsGMyC1bR29eKjke/B6YZbj2YxYyQ6AiGjI/hczq1+izba1UcgbjOykj8
-        ooWA3i+3TLnYuuGJlwm5U1H/2PKWf4RCymVjbhhGiPGPzVluICqV/gxRv/A4FhXDg2qm
-        GHr55Qt+qsga1i8CLW/1GrJvXE6vgaAnjPQB1HdkHm/h91gpt6uQ+xwGn13LhP/oHa+j
-        oL8TqcZnPzP+oIac+20XXOwg8oxylyOEuN/5e1aIRG8z/XSBoTmrEeScIMiBfM2utbNA
-        e+SktiYlFScZUp4ox+UGTSpebOsEukf8C4Yi4GYPL7BNnFgKAYiWFKBWbC9DHBSCb/Cx
-        jkGw==
-X-RZG-AUTH: ":P2EQZWCpfu+qG7CngxMFH1J+3q8wa/QXkBR9MXjAuzBW/OdlBZQ4AHSS3mkg"
-X-RZG-CLASS-ID: mo00
-Received: from sender
-        by smtp.strato.de (RZmta 46.10.7 DYNA|AUTH)
-        with ESMTPSA id 60ad29w7J95I0WU
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256 bits))
-        (Client did not present a certificate);
-        Wed, 19 Aug 2020 11:05:18 +0200 (CEST)
-From:   Olaf Hering <olaf@aepfle.de>
-To:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Olaf Hering <olaf@aepfle.de>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>
-Subject: [PATCH v1] tools: hv: remove cast from hyperv_die_event
-Date:   Wed, 19 Aug 2020 11:05:09 +0200
-Message-Id: <20200819090510.28995-1-olaf@aepfle.de>
-X-Mailer: git-send-email 2.26.2
+        id S1726983AbgHSJGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 05:06:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725903AbgHSJGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 05:06:42 -0400
+Received: from localhost (unknown [122.171.38.130])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 402C02072D;
+        Wed, 19 Aug 2020 09:06:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597828002;
+        bh=+kIGh7xNBLq4Soui5QZSxxZW3BSSpRBV2ViZULaNly4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lMW0n5iy8gqO/oeV3/AQHudp+ujLkQsnrje1maisElRLR1vFN2nGaPgkfP2/2S63f
+         HsDwTO6PMmcB4QBY0dZXybGjOXPfdYarCusMqw/k9x+vlDkVjKDuXdk1fsy88Ax6pF
+         UnKKYkXVmH2B72+FnyavT0pdHRvDq3gGDzI4SSYc=
+Date:   Wed, 19 Aug 2020 14:36:37 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org,
+        jank@cadence.com, srinivas.kandagatla@linaro.org,
+        rander.wang@linux.intel.com, ranjani.sridharan@linux.intel.com,
+        hui.wang@canonical.com, pierre-louis.bossart@linux.intel.com,
+        sanyog.r.kale@intel.com, mengdong.lin@intel.com,
+        bard.liao@intel.com
+Subject: Re: [PATCH] soundwire: cadence: fix race condition between suspend
+ and Slave device alerts
+Message-ID: <20200819090637.GE2639@vkoul-mobl>
+References: <20200817222340.18042-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200817222340.18042-1-yung-chuan.liao@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No need to cast a void pointer.
+On 18-08-20, 06:23, Bard Liao wrote:
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> 
+> In system suspend stress cases, the SOF CI reports timeouts. The root
+> cause is that an alert is generated while the system suspends. The
+> interrupt handling generates transactions on the bus that will never
+> be handled because the interrupts are disabled in parallel.
+> 
+> As a result, the transaction never completes and times out on resume.
+> This error doesn't seem too problematic since it happens in a work
+> queue, and the system recovers without issues.
+> 
+> Nevertheless, this race condition should not happen. When doing a
+> system suspend, or when disabling interrupts, we should make sure the
+> current transaction can complete, and prevent new work from being
+> queued.
+> 
+> BugLink: https://github.com/thesofproject/linux/issues/2344
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
+> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> ---
+>  drivers/soundwire/cadence_master.c | 24 +++++++++++++++++++++++-
+>  drivers/soundwire/cadence_master.h |  1 +
+>  2 files changed, 24 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+> index 24eafe0aa1c3..1330ffc47596 100644
+> --- a/drivers/soundwire/cadence_master.c
+> +++ b/drivers/soundwire/cadence_master.c
+> @@ -791,7 +791,16 @@ irqreturn_t sdw_cdns_irq(int irq, void *dev_id)
+>  			     CDNS_MCP_INT_SLAVE_MASK, 0);
+>  
+>  		int_status &= ~CDNS_MCP_INT_SLAVE_MASK;
+> -		schedule_work(&cdns->work);
+> +
+> +		/*
+> +		 * Deal with possible race condition between interrupt
+> +		 * handling and disabling interrupts on suspend.
+> +		 *
+> +		 * If the master is in the process of disabling
+> +		 * interrupts, don't schedule a workqueue
+> +		 */
+> +		if (cdns->interrupt_enabled)
+> +			schedule_work(&cdns->work);
 
-Signed-off-by: Olaf Hering <olaf@aepfle.de>
----
- drivers/hv/vmbus_drv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+would it not make sense to mask the interrupts first and then cancel the
+work? that way you are guaranteed that after this call you dont have
+interrupts and work scheduled?
 
-diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-index 910b6e90866c..187809977360 100644
---- a/drivers/hv/vmbus_drv.c
-+++ b/drivers/hv/vmbus_drv.c
-@@ -83,7 +83,7 @@ static int hyperv_panic_event(struct notifier_block *nb, unsigned long val,
- static int hyperv_die_event(struct notifier_block *nb, unsigned long val,
- 			    void *args)
- {
--	struct die_args *die = (struct die_args *)args;
-+	struct die_args *die = args;
- 	struct pt_regs *regs = die->regs;
- 
- 	/* Don't notify Hyper-V if the die event is other than oops */
+>  	}
+>  
+>  	cdns_writel(cdns, CDNS_MCP_INTSTAT, int_status);
+> @@ -924,6 +933,19 @@ int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns, bool state)
+>  		slave_state = cdns_readl(cdns, CDNS_MCP_SLAVE_INTSTAT1);
+>  		cdns_writel(cdns, CDNS_MCP_SLAVE_INTSTAT1, slave_state);
+>  	}
+> +	cdns->interrupt_enabled = state;
+> +
+> +	/*
+> +	 * Complete any on-going status updates before updating masks,
+> +	 * and cancel queued status updates.
+> +	 *
+> +	 * There could be a race with a new interrupt thrown before
+> +	 * the 3 mask updates below are complete, so in the interrupt
+> +	 * we use the 'interrupt_enabled' status to prevent new work
+> +	 * from being queued.
+> +	 */
+> +	if (!state)
+> +		cancel_work_sync(&cdns->work);
+>  
+>  	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK0, slave_intmask0);
+>  	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK1, slave_intmask1);
+> diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
+> index fdec62b912d3..4d1aab5b5ec2 100644
+> --- a/drivers/soundwire/cadence_master.h
+> +++ b/drivers/soundwire/cadence_master.h
+> @@ -133,6 +133,7 @@ struct sdw_cdns {
+>  
+>  	bool link_up;
+>  	unsigned int msg_count;
+> +	bool interrupt_enabled;
+>  
+>  	struct work_struct work;
+>  
+> -- 
+> 2.17.1
+
+-- 
+~Vinod
