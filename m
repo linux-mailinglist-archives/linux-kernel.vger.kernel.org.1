@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E67F2499EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 12:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8B92499FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 12:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727858AbgHSKMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 06:12:23 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:43867 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726873AbgHSKMR (ORCPT
+        id S1727882AbgHSKM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 06:12:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50558 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727798AbgHSKMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 06:12:17 -0400
+        Wed, 19 Aug 2020 06:12:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597831936;
+        s=mimecast20190719; t=1597831937;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vlCKAT62+8+U0+wxP9CvYzTk2kxwxQCQMREWprhcu2g=;
-        b=c48MpyW7M6j6VxhHd/Xcf+ScK0PleQn+65i1dliH13WWG0N0IWB4n4pYwKULJBe6v68IHG
-        vXHxipRlc9RlSGrrVxmDYjR0Hr3oyFKUePMSeLMeFhcnv21xv83BVxpA+u8XxX1e5addxK
-        uzD8TJEgXHvK40M/YqpmuUJfD9r8DhI=
+        bh=ygYF8AfHKYq7FFtUYuO8Zbjd9G+c4jkdgGgMMa4Az1w=;
+        b=ABeyLQRlrySpz2CPcN2hpQwjuhFBOB0qmbDJHWWjRqmacgaJI75wkvHD7/eUcghDd/VYQe
+        U/Nu/6snuZPks92QDswY59G/8GOccjyDiod8cHeUFAA4M3hfxIXz80E3Zm6XNCHdjQrnK5
+        6yrAXLvC2Y9aS6J3s6Pu54EBJJRJVR8=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-305-iCd5QS9IOBSLJycLNxIPiQ-1; Wed, 19 Aug 2020 06:12:12 -0400
-X-MC-Unique: iCd5QS9IOBSLJycLNxIPiQ-1
+ us-mta-258-XJQTw8nvM5OudnJKj_bo_w-1; Wed, 19 Aug 2020 06:12:14 -0400
+X-MC-Unique: XJQTw8nvM5OudnJKj_bo_w-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7CC1B186A563;
-        Wed, 19 Aug 2020 10:12:10 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A69811DDFD;
+        Wed, 19 Aug 2020 10:12:12 +0000 (UTC)
 Received: from t480s.redhat.com (ovpn-114-11.ams2.redhat.com [10.36.114.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9F5DA16597;
-        Wed, 19 Aug 2020 10:12:08 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CA105277B7;
+        Wed, 19 Aug 2020 10:12:10 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
@@ -43,9 +43,9 @@ Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
         Baoquan He <bhe@redhat.com>,
         Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
         Oscar Salvador <osalvador@suse.de>
-Subject: [PATCH v1 02/11] mm/memory_hotplug: enforce section granularity when onlining/offlining
-Date:   Wed, 19 Aug 2020 12:11:48 +0200
-Message-Id: <20200819101157.12723-3-david@redhat.com>
+Subject: [PATCH v1 03/11] mm/memory_hotplug: simplify checking if all pages are isolated in offline_pages()
+Date:   Wed, 19 Aug 2020 12:11:49 +0200
+Message-Id: <20200819101157.12723-4-david@redhat.com>
 In-Reply-To: <20200819101157.12723-1-david@redhat.com>
 References: <20200819101157.12723-1-david@redhat.com>
 MIME-Version: 1.0
@@ -56,13 +56,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Already two people (including me) tried to offline subsections, because
-the function looks like it can deal with it. But we really can only
-online/offline full sections (e.g., we can only mark full sections
-online/offline via SECTION_IS_ONLINE).
-
-Add a simple safety net that to document the restriction now. Current users
-(core and powernv/memtrace) respect these restrictions.
+We make sure that we cannot have any memory holes right at the beginning
+of offline_pages(). We no longer need walk_system_ram_range() and can
+call test_pages_isolated() directly.
 
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Michal Hocko <mhocko@suse.com>
@@ -72,37 +68,43 @@ Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
 Cc: Oscar Salvador <osalvador@suse.de>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- mm/memory_hotplug.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ mm/memory_hotplug.c | 16 +---------------
+ 1 file changed, 1 insertion(+), 15 deletions(-)
 
 diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index c781d386d87f9..6856702af68d9 100644
+index 6856702af68d9..f64478349148d 100644
 --- a/mm/memory_hotplug.c
 +++ b/mm/memory_hotplug.c
-@@ -801,6 +801,11 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
- 	int ret;
- 	struct memory_notify arg;
+@@ -1384,17 +1384,6 @@ offline_isolated_pages_cb(unsigned long start, unsigned long nr_pages,
+ 	return 0;
+ }
  
-+	/* We can only online full sections (e.g., SECTION_IS_ONLINE) */
-+	if (WARN_ON_ONCE(!nr_pages ||
-+			 !IS_ALIGNED(pfn | nr_pages, PAGES_PER_SECTION)))
-+		return -EINVAL;
-+
- 	mem_hotplug_begin();
+-/*
+- * Check all pages in range, recorded as memory resource, are isolated.
+- */
+-static int
+-check_pages_isolated_cb(unsigned long start_pfn, unsigned long nr_pages,
+-			void *data)
+-{
+-	return test_pages_isolated(start_pfn, start_pfn + nr_pages,
+-				   MEMORY_OFFLINE);
+-}
+-
+ static int __init cmdline_parse_movable_node(char *p)
+ {
+ 	movable_node_enabled = true;
+@@ -1579,10 +1568,7 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
+ 			reason = "failure to dissolve huge pages";
+ 			goto failed_removal_isolated;
+ 		}
+-		/* check again */
+-		ret = walk_system_ram_range(start_pfn, end_pfn - start_pfn,
+-					    NULL, check_pages_isolated_cb);
+-	} while (ret);
++	} while (test_pages_isolated(start_pfn, end_pfn, MEMORY_OFFLINE));
  
- 	/* associate pfn range with the zone */
-@@ -1483,6 +1488,11 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
- 	struct memory_notify arg;
- 	char *reason;
- 
-+	/* We can only offline full sections (e.g., SECTION_IS_ONLINE) */
-+	if (WARN_ON_ONCE(!nr_pages ||
-+			 !IS_ALIGNED(start_pfn | nr_pages, PAGES_PER_SECTION)))
-+		return -EINVAL;
-+
- 	mem_hotplug_begin();
- 
- 	/*
+ 	/* Ok, all of our target is isolated.
+ 	   We cannot do rollback at this point. */
 -- 
 2.26.2
 
