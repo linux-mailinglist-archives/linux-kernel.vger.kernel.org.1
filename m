@@ -2,96 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C42249F72
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7F8249F93
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728325AbgHSNTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 09:19:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39268 "EHLO
+        id S1728310AbgHSNXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 09:23:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728343AbgHSNSe (ORCPT
+        with ESMTP id S1728060AbgHSNSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 09:18:34 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63184C061348
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:17:26 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id p37so11392225pgl.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:17:26 -0700 (PDT)
+        Wed, 19 Aug 2020 09:18:54 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A90AC061350
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:18:15 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id mw10so1108880pjb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:18:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jVlnd4GIq1avq9wCVX6yvVGrSg3V4B5anM3I74fUF2c=;
-        b=aq3Djs+JYVFJOgH8pCYQM/bCFdYvnEX3r7XcOPyLDVvHQpULWghKapBRR7Mrnjk+lL
-         ZI936ShOp4TWkrvbMHBKCEvkIKqzyiyTin6m81a9jqdlrP2+OEDYJcHB58jIeNBDbd8m
-         9LbaNp3X/lBLFmvrut25w3ySdH9n0CHAUyDtUTBXXzVjGYQHigaJt+6Xuk9JIUYNhp/p
-         FgUt/Jog4wUzADpawAKv0o63MNRr6Ve3N2jd4wS1pAFyLst7H23CtCfU8iM/CPRbUYHd
-         itGN5mv4ExGtnYKFutLBYvVPG9eTW7mTEeiT/7xAmimuqFCHO0Ra40o4kXsfEZ2Savv/
-         bwyA==
+        bh=EmsrMsejrteUQOaXizHGkEi5KXQjT4dl2svL7ypPlBc=;
+        b=NDiJILiosqIAscQE8wZykt6DbpS7YBnnC+G3dZiskRWDg56ceYJOsQGdMhN8aJ4v1s
+         eHtvgj/ZL8A6RoCJXjYGmEYhfXmChtBRxTJh+UMFZz0aeP1OXPlfuYqfHga4NDkZFxL0
+         GBL7tBDtP5vCG5nmKKHK5L/WJ0VcgLapSq4BYLtZ4LVj/FCx3VTQN9zaDe7EFZbvc8Mz
+         SMwVHM8sTcJNWruEnCVdBaUOPDvmnwYyRYSPbTKMq5/90/nz+ym7LR/rfGTQorWOlkh+
+         H3m+gUJTPN9DK1nksrYMnmY9YKoE7PsnMs5/zysG/SoRwSZ8WVfHvXoajcrNEtAu0F+7
+         +pTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=jVlnd4GIq1avq9wCVX6yvVGrSg3V4B5anM3I74fUF2c=;
-        b=qRnjoH6ULcnuEA3Z0G74lFX8jct+caMsOdUWJdGP2ozhj+Nriy73YiqWNPwWcyTwSB
-         m0I8ZW2LMarCToZ2NDrVY6TyPiaPy+h+2Fl6ZCOWh2Yoh2JA1GjGlqdlZ4xFjgInMDf6
-         zUe6AmzgyVqhrbvK7tA2peCmf5UUu0zwGymqzA/LFCwScmKzONsZqU3lQ6DDwey2I1L/
-         qQ3UZxvoTd+llnFZ6woDOmmZFogfBMsRzEf9CDX2gF+yoK+PBz5kOZfk70MVCYu/H+0j
-         4LMQkaadYQ8W5g+AMeXemac2muOI8aGSJtUDyJsbwdB0TA9nJsPWZ6IAv/R0FFHPUjYw
-         uG5A==
-X-Gm-Message-State: AOAM531A50+TqEaS4CPKguC/1UbC4e4BjQDUMP+a8v06umnEsmYLQ3oh
-        JUSa259huGe9YKO4NBSBbo0Ofw==
-X-Google-Smtp-Source: ABdhPJxi299Hddd0S85ysgsMNI/X0B8d1WB7DsNIxo+ERAydDALt/5xQKxlJ2AQYnw532AABOTNI4Q==
-X-Received: by 2002:a62:5214:: with SMTP id g20mr19509095pfb.168.1597843045329;
-        Wed, 19 Aug 2020 06:17:25 -0700 (PDT)
+        bh=EmsrMsejrteUQOaXizHGkEi5KXQjT4dl2svL7ypPlBc=;
+        b=W3TlEV9dHX5XCgfOfqmuGsqhHNMP4wdymYi1sldXEqGDZ3NmsKefEbzaY+cvTeCaA7
+         34YqNbJuUBiql0vSMPQ1UG/spqINZs4AueEfz9tN16YyN2ciFgYYU5IeJXXTkF84BJze
+         x/oiDZ53Bv3Iqbn+TgVRxvPMkDMtxuHQHXBmHRR7yvgOSsEhhudy5pFfG4+xXr3Stz8c
+         y8HJcdHV3HpbgjrcimJavG92iVjQMHum2DJtZdR2sHzmYnr5yxrTh2O/+r1/+54abmPr
+         8h2JLDkBh6bfB1Tdwab8fVZOi+CoFnxByV+VVD8XSYp2zkVSACOjcznRIDYllHKoSduO
+         eg3g==
+X-Gm-Message-State: AOAM5319JMFfM8Fvo+F5CDb4+y+xD7yI68MjB+miXeu4a1ouyCfQ4I8b
+        69p2DpnRa+QMXwfukZm6+tCb9yOLFWlL8tlXfbo=
+X-Google-Smtp-Source: ABdhPJyNNi7hvHginyDtQT0al1nbw/1nudCMk8Buqpi5CRRYPre01hagxHuWYAwWwaYdZCciL1m4xg==
+X-Received: by 2002:a17:90a:630c:: with SMTP id e12mr3989898pjj.17.1597843094764;
+        Wed, 19 Aug 2020 06:18:14 -0700 (PDT)
 Received: from [192.168.1.182] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id 193sm28368540pfu.169.2020.08.19.06.17.21
+        by smtp.gmail.com with ESMTPSA id l22sm3010080pjy.31.2020.08.19.06.18.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Aug 2020 06:17:24 -0700 (PDT)
-Subject: Re: [PATCH] block: convert tasklets to use new tasklet_setup() API
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Kees Cook <keescook@chromium.org>, ulf.hansson@linaro.org,
-        linux-atm-general@lists.sourceforge.net, manohar.vanga@gmail.com,
-        airlied@linux.ie, Allen Pais <allen.lkml@gmail.com>,
-        linux-hyperv@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, anton.ivanov@cambridgegreys.com,
-        devel@driverdev.osuosl.org, linux-s390@vger.kernel.org,
-        linux1394-devel@lists.sourceforge.net, maximlevitsky@gmail.com,
-        richard@nod.at, deller@gmx.de, jassisinghbrar@gmail.com,
-        3chas3@gmail.com, intel-gfx@lists.freedesktop.org, kuba@kernel.org,
-        mporter@kernel.crashing.org, jdike@addtoit.com, oakad@yahoo.com,
-        s.hauer@pengutronix.de, linux-input@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-block@vger.kernel.org,
-        broonie@kernel.org, openipmi-developer@lists.sourceforge.net,
-        mitch@sfgoth.com, linux-arm-kernel@lists.infradead.org,
-        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
-        martyn@welchs.me.uk, dmitry.torokhov@gmail.com,
-        linux-mmc@vger.kernel.org, sre@kernel.org,
-        linux-spi@vger.kernel.org, alex.bou9@gmail.com,
-        Allen Pais <allen.cryptic@gmail.com>,
-        stefanr@s5r6.in-berlin.de, daniel@ffwll.ch,
-        linux-ntb@googlegroups.com,
-        Romain Perier <romain.perier@gmail.com>, shawnguo@kernel.org,
-        davem@davemloft.net
-References: <20200817091617.28119-1-allen.cryptic@gmail.com>
- <20200817091617.28119-2-allen.cryptic@gmail.com>
- <b5508ca4-0641-7265-2939-5f03cbfab2e2@kernel.dk>
- <202008171228.29E6B3BB@keescook>
- <161b75f1-4e88-dcdf-42e8-b22504d7525c@kernel.dk>
- <202008171246.80287CDCA@keescook>
- <df645c06-c30b-eafa-4d23-826b84f2ff48@kernel.dk>
- <1597780833.3978.3.camel@HansenPartnership.com>
- <f3312928-430c-25f3-7112-76f2754df080@kernel.dk>
- <20200819131158.GA2591006@kroah.com>
+        Wed, 19 Aug 2020 06:18:14 -0700 (PDT)
+Subject: Re: [RFC PATCH] sched: Invoke io_wq_worker_sleeping() with enabled
+ preemption
+To:     peterz@infradead.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <20200819123758.6v45rj2gvojddsnn@linutronix.de>
+ <20200819131507.GC2674@hirez.programming.kicks-ass.net>
 From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <4f5a225d-460f-978f-e3cf-3f505140a515@kernel.dk>
-Date:   Wed, 19 Aug 2020 07:17:19 -0600
+Message-ID: <f26205ac-9da9-253e-ea43-db2417714a94@kernel.dk>
+Date:   Wed, 19 Aug 2020 07:18:12 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200819131158.GA2591006@kroah.com>
+In-Reply-To: <20200819131507.GC2674@hirez.programming.kicks-ass.net>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -100,92 +78,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/19/20 6:11 AM, Greg KH wrote:
-> On Wed, Aug 19, 2020 at 07:00:53AM -0600, Jens Axboe wrote:
->> On 8/18/20 1:00 PM, James Bottomley wrote:
->>> On Mon, 2020-08-17 at 13:02 -0700, Jens Axboe wrote:
->>>> On 8/17/20 12:48 PM, Kees Cook wrote:
->>>>> On Mon, Aug 17, 2020 at 12:44:34PM -0700, Jens Axboe wrote:
->>>>>> On 8/17/20 12:29 PM, Kees Cook wrote:
->>>>>>> On Mon, Aug 17, 2020 at 06:56:47AM -0700, Jens Axboe wrote:
->>>>>>>> On 8/17/20 2:15 AM, Allen Pais wrote:
->>>>>>>>> From: Allen Pais <allen.lkml@gmail.com>
->>>>>>>>>
->>>>>>>>> In preparation for unconditionally passing the
->>>>>>>>> struct tasklet_struct pointer to all tasklet
->>>>>>>>> callbacks, switch to using the new tasklet_setup()
->>>>>>>>> and from_tasklet() to pass the tasklet pointer explicitly.
->>>>>>>>
->>>>>>>> Who came up with the idea to add a macro 'from_tasklet' that
->>>>>>>> is just container_of? container_of in the code would be
->>>>>>>> _much_ more readable, and not leave anyone guessing wtf
->>>>>>>> from_tasklet is doing.
->>>>>>>>
->>>>>>>> I'd fix that up now before everything else goes in...
->>>>>>>
->>>>>>> As I mentioned in the other thread, I think this makes things
->>>>>>> much more readable. It's the same thing that the timer_struct
->>>>>>> conversion did (added a container_of wrapper) to avoid the
->>>>>>> ever-repeating use of typeof(), long lines, etc.
->>>>>>
->>>>>> But then it should use a generic name, instead of each sub-system 
->>>>>> using some random name that makes people look up exactly what it
->>>>>> does. I'm not huge fan of the container_of() redundancy, but
->>>>>> adding private variants of this doesn't seem like the best way
->>>>>> forward. Let's have a generic helper that does this, and use it
->>>>>> everywhere.
->>>>>
->>>>> I'm open to suggestions, but as things stand, these kinds of
->>>>> treewide
->>>>
->>>> On naming? Implementation is just as it stands, from_tasklet() is
->>>> totally generic which is why I objected to it. from_member()? Not
->>>> great with naming... But I can see this going further and then we'll
->>>> suddenly have tons of these. It's not good for readability.
->>>
->>> Since both threads seem to have petered out, let me suggest in
->>> kernel.h:
->>>
->>> #define cast_out(ptr, container, member) \
->>> 	container_of(ptr, typeof(*container), member)
->>>
->>> It does what you want, the argument order is the same as container_of
->>> with the only difference being you name the containing structure
->>> instead of having to specify its type.
+On 8/19/20 6:15 AM, peterz@infradead.org wrote:
+> On Wed, Aug 19, 2020 at 02:37:58PM +0200, Sebastian Andrzej Siewior wrote:
+> 
+>> I don't see a significant reason why this lock should become a
+>> raw_spinlock_t therefore I suggest to move it after the
+>> tsk_is_pi_blocked() check.
+> 
+>> Any feedback on this vs raw_spinlock_t?
 >>
->> Not to incessantly bike shed on the naming, but I don't like cast_out,
->> it's not very descriptive. And it has connotations of getting rid of
->> something, which isn't really true.
+>> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+>> ---
+>>  fs/io-wq.c          |  8 ++++----
+>>  kernel/sched/core.c | 10 +++++-----
+>>  2 files changed, 9 insertions(+), 9 deletions(-)
+>>
 > 
-> I agree, if we want to bike shed, I don't like this color either.
+>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>> index 3bbb60b97c73c..b76c0f27bd95e 100644
+>> --- a/kernel/sched/core.c
+>> +++ b/kernel/sched/core.c
+>> @@ -4694,18 +4694,18 @@ static inline void sched_submit_work(struct task_struct *tsk)
+>>  	 * in the possible wakeup of a kworker and because wq_worker_sleeping()
+>>  	 * requires it.
+>>  	 */
+>> -	if (tsk->flags & (PF_WQ_WORKER | PF_IO_WORKER)) {
+>> +	if (tsk->flags & PF_WQ_WORKER) {
+>>  		preempt_disable();
+>> -		if (tsk->flags & PF_WQ_WORKER)
+>> -			wq_worker_sleeping(tsk);
+>> -		else
+>> -			io_wq_worker_sleeping(tsk);
+>> +		wq_worker_sleeping(tsk);
+>>  		preempt_enable_no_resched();
+>>  	}
+>>  
+>>  	if (tsk_is_pi_blocked(tsk))
+>>  		return;
+>>  
+>> +	if (tsk->flags & PF_IO_WORKER)
+>> +		io_wq_worker_sleeping(tsk);
+>> +
 > 
->> FWIW, I like the from_ part of the original naming, as it has some clues
->> as to what is being done here. Why not just from_container()? That
->> should immediately tell people what it does without having to look up
->> the implementation, even before this becomes a part of the accepted
->> coding norm.
+> Urgh, so this adds a branch in what is normally considered a fairly hot
+> path.
+>
 > 
-> Why are people hating on the well-known and used container_of()?
+> I'm thinking that the raw_spinlock_t option would permit leaving that
+> single:
 > 
-> If you really hate to type the type and want a new macro, what about
-> 'container_from()'?  (noun/verb is nicer to sort symbols by...)
+> 	if (tsk->flags & (PF_WQ_WORKER | PF_IO_WORKER))
 > 
-> But really, why is this even needed?
+> branch intact?
 
-container_from() or from_container(), either works just fine for me
-in terms of naming.
+Yes, the raw spinlock would do it, and leave the single branch intact
+in the hot path. I'd be fine with going that route for io-wq.
 
-I think people are hating on it because it makes for _really_ long
-lines, and it's arguably cleaner/simpler to just pass in the pointer
-type instead. Then you end up with lines like this:
-
-	struct request_queue *q =                                               
-		container_of(work, struct request_queue, requeue_work.work);  
-
-But I'm not the one that started this addition of from_tasklet(), my
-objection was adding a private macro for something that should be
-generic functionality. Hence I think we either need to provide that, or
-tell the from_tasklet() folks that they should just use container_of().
 
 -- 
 Jens Axboe
