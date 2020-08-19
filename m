@@ -2,266 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A1A249BB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 13:26:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B950249BBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 13:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728023AbgHSL05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 07:26:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727884AbgHSL0m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 07:26:42 -0400
-Received: from mxout012.mail.hostpoint.ch (mxout012.mail.hostpoint.ch [IPv6:2a00:d70:0:e::312])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F30C061757;
-        Wed, 19 Aug 2020 04:26:42 -0700 (PDT)
-Received: from [10.0.2.45] (helo=asmtp012.mail.hostpoint.ch)
-        by mxout012.mail.hostpoint.ch with esmtp (Exim 4.92.3 (FreeBSD))
-        (envelope-from <code@reto-schneider.ch>)
-        id 1k8MEa-000Pg6-IN; Wed, 19 Aug 2020 13:26:24 +0200
-Received: from [2a02:168:6182:1:2c96:ee1d:6a9a:1f33] (helo=ryzen2700.dss.husqvarnagroup.com)
-        by asmtp012.mail.hostpoint.ch with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3 (FreeBSD))
-        (envelope-from <code@reto-schneider.ch>)
-        id 1k8MEa-000HJu-FM; Wed, 19 Aug 2020 13:26:24 +0200
-X-Authenticated-Sender-Id: reto-schneider@reto-schneider.ch
-From:   Reto Schneider <code@reto-schneider.ch>
-To:     linux-arm-kernel@lists.infradead.org, alexandre.belloni@bootlin.com
-Cc:     Reto Schneider <reto.schneider@husqvarnagroup.com>,
-        Stefan Roese <sr@denx.de>,
-        Michael Zimmermann <michael.zimmermann@grandcentrix.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Kamel Bouhara <kamel.bouhara@bootlin.com>,
-        Cristian Birsan <cristian.birsan@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] ARM: at91: Add GARDENA smart Gateway (Art. 19000) board
-Date:   Wed, 19 Aug 2020 13:25:47 +0200
-Message-Id: <20200819112550.16494-1-code@reto-schneider.ch>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200810171921.8679-1-code@reto-schneider.ch>
-References: <20200810171921.8679-1-code@reto-schneider.ch>
+        id S1728120AbgHSL2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 07:28:55 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9776 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728106AbgHSL2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 07:28:33 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 65B808222144AFFC17C0;
+        Wed, 19 Aug 2020 19:28:32 +0800 (CST)
+Received: from huawei.com (10.175.113.133) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Wed, 19 Aug 2020
+ 19:28:27 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <ysato@users.sourceforge.jp>, <dalias@libc.org>,
+        <linux-sh@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] sh: mach-sh03: remove duplicate include
+Date:   Wed, 19 Aug 2020 19:26:17 +0800
+Message-ID: <20200819112617.6015-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.133]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Reto Schneider <reto.schneider@husqvarnagroup.com>
+Remove linux/rtc.h which is included more than once
 
-This patch adds support for the GARDENA smart Gateway, which is based on
-the Atmel AT91SAM9G25. It is equipped with 128 MiB of DDR2 RAM and
-256 MiB NAND storage.
-
-Please note that this gateway is not actually based on a AT91SAM9x5 EK
-board, but is close enough to allow its DT to be used.
-
-Co-developed-by: Stefan Roese <sr@denx.de>
-Signed-off-by: Stefan Roese <sr@denx.de>
-Co-developed-by: Michael Zimmermann <michael.zimmermann@grandcentrix.net>
-Signed-off-by: Michael Zimmermann <michael.zimmermann@grandcentrix.net>
-Signed-off-by: Reto Schneider <reto.schneider@husqvarnagroup.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
 ---
- .../devicetree/bindings/arm/atmel-at91.yaml   |   2 +
- arch/arm/boot/dts/Makefile                    |   1 +
- .../dts/at91sam9g25-gardena-smart-gateway.dts | 157 ++++++++++++++++++
- 3 files changed, 160 insertions(+)
- create mode 100644 arch/arm/boot/dts/at91sam9g25-gardena-smart-gateway.dts
+ arch/sh/boards/mach-sh03/rtc.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/arm/atmel-at91.yaml b/Documentation/devicetree/bindings/arm/atmel-at91.yaml
-index 31b0c54fa2cf..b8da32f5d0a7 100644
---- a/Documentation/devicetree/bindings/arm/atmel-at91.yaml
-+++ b/Documentation/devicetree/bindings/arm/atmel-at91.yaml
-@@ -41,6 +41,8 @@ properties:
-               - overkiz,kizboxmini-mb   # Overkiz kizbox Mini Mother Board
-               - overkiz,kizboxmini-rd   # Overkiz kizbox Mini RailDIN
-               - overkiz,smartkiz        # Overkiz SmartKiz Board
-+              - gardena,smart-gateway-at91sam" # GARDENA smart Gateway (Article
-+                                               # No. 19000)
-           - const: atmel,at91sam9g25
-           - const: atmel,at91sam9x5
-           - const: atmel,at91sam9
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index e6a1cac0bfc7..6368dac016dd 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -44,6 +44,7 @@ dtb-$(CONFIG_SOC_AT91SAM9) += \
- 	at91-wb45n.dtb \
- 	at91sam9g15ek.dtb \
- 	at91sam9g25ek.dtb \
-+	at91sam9g25-gardena-smart-gateway.dtb \
- 	at91sam9g35ek.dtb \
- 	at91sam9x25ek.dtb \
- 	at91sam9x35ek.dtb
-diff --git a/arch/arm/boot/dts/at91sam9g25-gardena-smart-gateway.dts b/arch/arm/boot/dts/at91sam9g25-gardena-smart-gateway.dts
-new file mode 100644
-index 000000000000..6dc6e14b5f58
---- /dev/null
-+++ b/arch/arm/boot/dts/at91sam9g25-gardena-smart-gateway.dts
-@@ -0,0 +1,157 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Device Tree file for the GARDENA smart Gateway (Article No. 19000)
-+ *
-+ *  Copyright (C) 2020 GARDENA GmbH
-+ */
-+
-+/dts-v1/;
-+
-+#include "at91sam9g25.dtsi"
-+#include "at91sam9x5ek.dtsi"
-+#include <dt-bindings/input/input.h>
-+
-+/ {
-+	model = "GARDENA smart Gateway (Article No. 19000)";
-+	compatible = "gardena,smart-gateway-at91sam", "atmel,at91sam9g25", "atmel,at91sam9x5", "atmel,at91sam9";
-+
-+	aliases {
-+		serial1 = &usart3;
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+
-+		user_btn1 {
-+			label = "USER_BTN1";
-+			gpios = <&pioA 24 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_PROG1>;
-+		};
-+	};
-+
-+	1wire_cm {
-+		status = "disabled";
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		power_blue {
-+			label = "smartgw:power:blue";
-+			gpios = <&pioC 21 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+
-+		power_green {
-+			label = "smartgw:power:green";
-+			gpios = <&pioC 20 GPIO_ACTIVE_HIGH>;
-+			default-state = "on";
-+		};
-+
-+		power_red {
-+			label = "smartgw:power:red";
-+			gpios = <&pioC 19 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+
-+		radio_blue {
-+			label = "smartgw:radio:blue";
-+			gpios = <&pioC 18 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+
-+		radio_green {
-+			label = "smartgw:radio:green";
-+			gpios = <&pioC 17 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+
-+		radio_red {
-+			label = "smartgw:radio:red";
-+			gpios = <&pioC 16 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+
-+		internet_blue {
-+			label = "smartgw:internet:blue";
-+			gpios = <&pioC 15 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+
-+		internet_green {
-+			label = "smartgw:internet:green";
-+			gpios = <&pioC 14 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+
-+		internet_red {
-+			label = "smartgw:internet:red";
-+			gpios = <&pioC 13 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+
-+		heartbeat {
-+			label = "smartgw:heartbeat";
-+			gpios = <&pioB 8 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+
-+		pb18 {
-+			status = "disabled";
-+		};
-+
-+		pd21 {
-+			status = "disabled";
-+		};
-+	};
-+};
-+
-+&macb0 {
-+	phy-mode = "rmii";
-+	status = "okay";
-+};
-+
-+&usart0 {
-+	status = "disabled";
-+};
-+
-+&usart2 {
-+	status = "disabled";
-+};
-+
-+&usart3 {
-+	status = "okay";
-+
-+	pinctrl-0 = <&pinctrl_usart3
-+		     &pinctrl_usart3_rts
-+		     &pinctrl_usart3_cts
-+		    >;
-+};
-+
-+&watchdog {
-+	status = "okay";
-+};
-+
-+&mmc0 {
-+	status = "disabled";
-+};
-+
-+&mmc1 {
-+	status = "disabled";
-+};
-+
-+&spi0 {
-+	status = "disabled";
-+};
-+
-+&i2c0 {
-+	status = "disabled";
-+};
-+
-+&adc0 {
-+	status = "disabled";
-+};
-+
-+&ssc0 {
-+	status = "disabled";
-+};
+diff --git a/arch/sh/boards/mach-sh03/rtc.c b/arch/sh/boards/mach-sh03/rtc.c
+index 8b23ed7c201c..165e2ccaab4d 100644
+--- a/arch/sh/boards/mach-sh03/rtc.c
++++ b/arch/sh/boards/mach-sh03/rtc.c
+@@ -14,7 +14,6 @@
+ #include <linux/rtc.h>
+ #include <linux/spinlock.h>
+ #include <linux/io.h>
+-#include <linux/rtc.h>
+ #include <linux/platform_device.h>
+ 
+ #define RTC_BASE	0xb0000000
 -- 
-2.27.0
+2.17.1
 
