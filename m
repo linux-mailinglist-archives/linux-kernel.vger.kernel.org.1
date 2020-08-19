@@ -2,99 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2672624A627
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D96424A645
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726751AbgHSSrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 14:47:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41948 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726578AbgHSSrR (ORCPT
+        id S1726952AbgHSSt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 14:49:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726854AbgHSStH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 14:47:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597862836;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=n1r99O9sF3KmCtBpBDuUEdXHcIRahMGRsJ4wLhKM7X4=;
-        b=P5E+REp7gRU3eJF6KCLNr5qmrvKi4g+HZL3CqDBoDpLIvK/fVGdNwjtwqbeeGdLro++uqL
-        KXXpMWh+n+NUlqOOIgsLLHB326BvN8fEaGJru5Lj+o5semlbLGMDa2eV0bjCbujbrgKWy/
-        cxAqc66L1zPJWuQkBsXcATmeXu9X5CQ=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-40-ZO-WHR5lMhmP7f-a6deGHg-1; Wed, 19 Aug 2020 14:47:13 -0400
-X-MC-Unique: ZO-WHR5lMhmP7f-a6deGHg-1
-Received: by mail-qt1-f200.google.com with SMTP id m88so17346059qtd.15
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 11:47:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=n1r99O9sF3KmCtBpBDuUEdXHcIRahMGRsJ4wLhKM7X4=;
-        b=XnpfB4At09b2phdoMgfs/nRf6hN7gvNrutd4u84slSXeiiZipHzKHJY0z2l7QD+blD
-         JMrShzeNlQTgNAqW9trRkOF/wlNICKXInXiKaA5dAjaUv5Zlbyi/JxZ7J9EyzOPd6QzA
-         Iie295ukYuNamvTS78N/rTeafcqZ6ZF6f+8VR1WNmguWPnuCnuBRiLJMrCBXoT1KYzEP
-         Isf/KCYepbBXY4pK13yl0mG8GUxMN3ECO0KG0rFg3Q0AuSp4FkCEkiu3oYAenP0nWG88
-         s/0ripuzvCqWeWHvAiMieSqT9u/y6rlGOZbVgzv+IkeE40NKEKYBVMcHxrBNX9mL9lzs
-         oI8w==
-X-Gm-Message-State: AOAM532kNKSzQxQU0BN+PJzGC95r54hFxkwRfFmG2DDINphLVWqVEio9
-        bVLm8N0n82Om6pikNh06D+DyDjh1A4AQZu0W+pqkr0HMVKRvea7yfIHxEGNJa4nI8phBg5K9t2s
-        +8TdYnq/P0xX+0HWGlYr+bPOV
-X-Received: by 2002:ac8:568a:: with SMTP id h10mr23862123qta.239.1597862832926;
-        Wed, 19 Aug 2020 11:47:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxzBbFyRJFyOM+0EEV33sP7wXkBj/aJZVelGHRYuIOT/f/OlA76miUUwSBAv7jlSbeVETUZcw==
-X-Received: by 2002:ac8:568a:: with SMTP id h10mr23862108qta.239.1597862832688;
-        Wed, 19 Aug 2020 11:47:12 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 20sm29006673qtp.53.2020.08.19.11.47.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 11:47:12 -0700 (PDT)
-From:   trix@redhat.com
-To:     agross@kernel.org, bjorn.andersson@linaro.org, sibis@codeaurora.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] soc: qcom: initialize local variable
-Date:   Wed, 19 Aug 2020 11:46:37 -0700
-Message-Id: <20200819184637.15648-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        Wed, 19 Aug 2020 14:49:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABFEC061383;
+        Wed, 19 Aug 2020 11:49:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=w+HVqr4efGoD6sO5rh6jBUm19i4nXIWL4lYqxm6m+Dw=; b=ZmtYcgiZ5LdbDSIKoVXUG1ouFg
+        /hfkSHtfH3uHd26x5DjGqRysCKmmFZ9MCgamFq9q3hfGzI8pECzDcZV9/Nq4ICmOUp0D4/9zRsJb8
+        kIixebqo4HfYXJGK7bYVSwORjoUKlHeD68WpP+Yr8GaLfd+gblrSY+C7I1H2PGW/bbSx3NAW72duE
+        uDBfPYyqJ3SL/9LtMwu4H1SAx5sI40Rrelt5nfF+kX0367TC4hz0v++1/aFxyPDIhEFDv+Y0HyOG3
+        XX9Uttsq1ZrFRlbcEGnwRwLXA1c1OOi5+STQo4WqHMNi0W+Hl0c7U82skzW23ti+d3yK6kof329hs
+        9846SOKg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k8T8m-0006Sk-C1; Wed, 19 Aug 2020 18:48:52 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-mm@kvack.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Huang Ying <ying.huang@intel.com>,
+        intel-gfx@lists.freedesktop.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/8] Return head pages from find_get_entry and find_lock_entry
+Date:   Wed, 19 Aug 2020 19:48:42 +0100
+Message-Id: <20200819184850.24779-1-willy@infradead.org>
+X-Mailer: git-send-email 2.21.3
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+This patch seris started out as part of the THP patch set, but it has
+some nice effects along the way and it seems worth splitting it out and
+submitting separately.
 
-clang static analysis reports this problem
+Currently find_get_entry() and find_lock_entry() return the page
+corresponding to the requested index, but the first thing most callers do
+is find the head page, which we just threw away.  As part of auditing
+all the callers, I found some misuses of the APIs and some plain
+inefficiencies that I've fixed.
 
-pdr_interface.c:596:6: warning: Branch condition evaluates
-  to a garbage value
-        if (!req.service_path[0])
-            ^~~~~~~~~~~~~~~~~~~~
+The diffstat is unflattering, but I added more kernel-doc.
 
-This check that req.service_path was set in an earlier loop.
-However req is a stack variable and its initial value
-is undefined.
+Matthew Wilcox (Oracle) (8):
+  mm: Factor find_get_swap_page out of mincore_page
+  mm: Use find_get_swap_page in memcontrol
+  mm: Optimise madvise WILLNEED
+  proc: Optimise smaps for shmem entries
+  i915: Use find_lock_page instead of find_lock_entry
+  mm: Convert find_get_entry to return the head page
+  mm: Return head page from find_lock_entry
+  mm: Hoist find_subpage call further up in pagecache_get_page
 
-So initialize req to 0.
+ drivers/gpu/drm/i915/gem/i915_gem_shmem.c |  4 +--
+ fs/proc/task_mmu.c                        |  8 +----
+ include/linux/pagemap.h                   | 16 +++++++--
+ include/linux/swap.h                      |  7 ++++
+ mm/filemap.c                              | 41 +++++++++++------------
+ mm/madvise.c                              | 21 +++++++-----
+ mm/memcontrol.c                           | 25 ++------------
+ mm/mincore.c                              | 28 ++--------------
+ mm/shmem.c                                | 15 +++++----
+ mm/swap_state.c                           | 31 +++++++++++++++++
+ 10 files changed, 98 insertions(+), 98 deletions(-)
 
-Fixes: fbe639b44a82 ("soc: qcom: Introduce Protection Domain Restart helpers")
-
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/soc/qcom/pdr_interface.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/soc/qcom/pdr_interface.c b/drivers/soc/qcom/pdr_interface.c
-index 088dc99f77f3..f63135c09667 100644
---- a/drivers/soc/qcom/pdr_interface.c
-+++ b/drivers/soc/qcom/pdr_interface.c
-@@ -569,7 +569,7 @@ EXPORT_SYMBOL(pdr_add_lookup);
- int pdr_restart_pd(struct pdr_handle *pdr, struct pdr_service *pds)
- {
- 	struct servreg_restart_pd_resp resp;
--	struct servreg_restart_pd_req req;
-+	struct servreg_restart_pd_req req = { 0 };
- 	struct sockaddr_qrtr addr;
- 	struct pdr_service *tmp;
- 	struct qmi_txn txn;
 -- 
-2.18.1
+2.28.0
 
