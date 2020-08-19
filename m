@@ -2,98 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610D624A72B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 21:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE73F24A730
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 21:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726868AbgHSTs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 15:48:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43458 "EHLO
+        id S1726982AbgHSTtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 15:49:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725997AbgHSTsx (ORCPT
+        with ESMTP id S1725275AbgHSTto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 15:48:53 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 439A7C061757;
-        Wed, 19 Aug 2020 12:48:53 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id v6so25879283iow.11;
-        Wed, 19 Aug 2020 12:48:53 -0700 (PDT)
+        Wed, 19 Aug 2020 15:49:44 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75219C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 12:49:44 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id h2so915272plr.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 12:49:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dbyMcmvoDSVMfgZuxjO+oDADjCPCdht3Erl74BB7i7U=;
-        b=eCf7mY5VQ1lJZ1+6XwoRX21POkc12BLUnkujL6SHqNFm6rtkTmFXRgm8ODYzWn+aKC
-         diSfG3xMxaNRqlzKBWb5Ih9FYogjRu7u1FZXsUMsU0g1Mix/adoaA/dSx30glgj3d8tc
-         0BVjF41Z87qQrQkMwR4CIq9MNDHlfqX0UZOs2UL8HqrjH5XvVD5xHhe9j7iD9FnGPN76
-         UH1MEpk1NFdQvRHP35PlrcRG5KOqDQho0jGY6fRQj9Vr+Uq4HcCWNF6DDgpNZZXB0mbT
-         FtROBEkJ4vuYoYkPIhsNF4+vgrcfX68YQvymHYX5F3LkQzYp2kWCbu8Rqurzv/2oJToc
-         BA7w==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=biruROHiIJoBrFPsYBUZoikKtJ2eCnO2qeHRGaltBcU=;
+        b=S4cxq+/23btjfJqTOIoctnTTrzafOwK+AK0UgBnnQJ8dzI+MER6IOpcF80ATe8N2VM
+         3GTBoqW6wrKt4PxIk6buBrFMN77DpQMMTMzZs5pTNOUYPq4oF3RR+l+eK/oWciHJ2CbD
+         tiCZSm8XQDLGtiHVzWXbaUgOid2o99jKItqIk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dbyMcmvoDSVMfgZuxjO+oDADjCPCdht3Erl74BB7i7U=;
-        b=URqKbz8RnlgKXugrbm9SGV9yHcGax3sRYs6tW0XAD6qA1flarFZDYp+rDReKruQX0U
-         mlFPBoxi9Huzcu9vTNW6fZ1Ib9sWNAFFwGGv890Jzo4M9a/unUhyZOljJeDN2mStGKzB
-         +SSHvVcOBckfsvxoIue2CJAbUro7Qq5XP0a0a/Ob2uHS38hnypru3j9X2CNgNMp7vQte
-         zRuXVxdJsddMIGyiGagyqAHPfKH5wsNOPgBFjpVY3hYdqP2g+VDddhuy/DeMuwC7xRiM
-         GZCQAPGw99jC02xBco61q559tlOewr3BW0iOtQXqtcsS3pdrCjV2Isqen2usnQXmjei/
-         eDrg==
-X-Gm-Message-State: AOAM530A/d72QoOZ15tPbhG3MNuagL0Q/33jK63/03jtoPyhbgpOEI1d
-        g3CVeOBWpp0Lr5rI+dGYT30=
-X-Google-Smtp-Source: ABdhPJwUY1KrT5Y0/Nm87NaMqnYCy4hVHrqZSz9XFRE38R5GJao0eRP3+6XjkwwZ5LM0JpKrXxfdyw==
-X-Received: by 2002:a6b:b246:: with SMTP id b67mr21885541iof.54.1597866532486;
-        Wed, 19 Aug 2020 12:48:52 -0700 (PDT)
-Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:b588:1a5f:55c3:870e])
-        by smtp.gmail.com with ESMTPSA id e1sm14285525ilq.40.2020.08.19.12.48.51
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=biruROHiIJoBrFPsYBUZoikKtJ2eCnO2qeHRGaltBcU=;
+        b=eJ0bt8SQh4m39yGp2GIx2WtJHgLbDVOX5OLs4T/Xpmmn+hgk1L9sWTyNIG2UoP8t0R
+         XeS+gfdSl1iFgREZUjvBqFYKpsadLl2M0JYpbWleoQvN8Z0O9bxpj5EVkf/xS+Uq8n7W
+         O5hp2nQn5s1FGLjhJeNfQmaW7FkEn08B1B0PTFRrmMUit2CTWUxsV4cq2k+WP2w7PcKn
+         stC1Gk1RZRp/hKvZMq+FrVcJjOoOO1k6szTUz9kbQPWg/wkfVVfQYu3zlizBfVNmuioZ
+         MSB/9UTCyoLC54DVXcx4dtoPAsDFBxvjE8/V7iXWNTuWnvYqDrElPTz8Um4zcEW1JZvG
+         wt6A==
+X-Gm-Message-State: AOAM533vEicQK8oZupNXyFJ6ATOQVg1+ZAxz0HtWCTTYGMUjxzAWTSHv
+        +FzCsQ7dvqwlAS+WxlJDVs0qGA==
+X-Google-Smtp-Source: ABdhPJwurA8GPQepaNU2riEn7gHqyBjnaoiGi8guJwsjtYM8I8F+E56yfB75AYB7nT5y26qpRqUmpw==
+X-Received: by 2002:a17:902:7d94:: with SMTP id a20mr19921995plm.174.1597866584026;
+        Wed, 19 Aug 2020 12:49:44 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u3sm3009933pjn.29.2020.08.19.12.49.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 12:48:51 -0700 (PDT)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, devicetree@vger.kernel.org,
+        Wed, 19 Aug 2020 12:49:43 -0700 (PDT)
+Date:   Wed, 19 Aug 2020 12:49:41 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V2] ARM: dts: imx6q-logicpd: Fix broken PWM
-Date:   Wed, 19 Aug 2020 14:48:44 -0500
-Message-Id: <20200819194845.2866317-1-aford173@gmail.com>
-X-Mailer: git-send-email 2.25.1
+Subject: Re: [PATCH] MAINTAINERS: mention documentation maintainer entry
+ profile
+Message-ID: <202008191248.9C653130F@keescook>
+References: <20200815102658.12236-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200815102658.12236-1-lukas.bulwahn@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DTC doesn't like the default PWM settings, because it's expecting
-three cells.  This patch reduces adds the extra entry of 0 to the PWM
-reference.
+On Sat, Aug 15, 2020 at 12:26:58PM +0200, Lukas Bulwahn wrote:
+> Since commit 53b7f3aa411b ("Add a maintainer entry profile for
+> documentation"), the documentation "subsystem" has a maintainer entry
+> profile, and it deserves to be mentioned in MAINTAINERS with a suitable
+> P: entry.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+> applies cleanly on docs-next, and was checkpatch-ed.
+> 
+> Jonathan, please pick this patch.
+> 
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index f520202fa1ef..8aa1369d5926 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -5178,6 +5178,7 @@ DOCUMENTATION
+>  M:	Jonathan Corbet <corbet@lwn.net>
+>  L:	linux-doc@vger.kernel.org
+>  S:	Maintained
+> +P:	Documentation/doc-guide/maintainer-profile.rst
+>  T:	git git://git.lwn.net/linux.git docs-next
+>  F:	Documentation/
+>  F:	scripts/documentation-file-ref-check
+> -- 
+> 2.17.1
 
-Fixes:  fa28d8212ede ("ARM: dts: imx: default to #pwm-cells = <3> in the SoC dtsi files")
----
-V2:  Don't change HDMI
+Oh excellent! I missed this file going in originally; I need to get
+similar done for seccomp, etc.
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-diff --git a/arch/arm/boot/dts/imx6q-logicpd.dts b/arch/arm/boot/dts/imx6q-logicpd.dts
-index 7a3d1d3e54a9..8f94364ba484 100644
---- a/arch/arm/boot/dts/imx6q-logicpd.dts
-+++ b/arch/arm/boot/dts/imx6q-logicpd.dts
-@@ -13,7 +13,7 @@ / {
- 
- 	backlight: backlight-lvds {
- 		compatible = "pwm-backlight";
--		pwms = <&pwm3 0 20000>;
-+		pwms = <&pwm3 0 20000 0>;
- 		brightness-levels = <0 4 8 16 32 64 128 255>;
- 		default-brightness-level = <6>;
- 		power-supply = <&reg_lcd>;
 -- 
-2.25.1
-
+Kees Cook
