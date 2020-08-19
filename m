@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D183249D63
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93BAD249D5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728252AbgHSMG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 08:06:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49294 "EHLO mail.kernel.org"
+        id S1728090AbgHSMFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 08:05:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728215AbgHSLrk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 07:47:40 -0400
+        id S1728218AbgHSLrn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 07:47:43 -0400
 Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A427A22D6E;
+        by mail.kernel.org (Postfix) with ESMTPSA id ADE2922D75;
         Wed, 19 Aug 2020 11:46:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1597837582;
-        bh=AplyS5ahJiDqgsjYpd/jC+3AT97g9u4ZTna2SJacBFM=;
+        bh=U1Fn6R3HH/nCSOGEI8Nq0OF9Epnu4lU5x3hp5T2IvBA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sqfyjKCQjF+itcV0BTVmvJI7N0arDtNR3lzIWAIjq8bgi6fCzysL/K+Q+Esm4nH+9
-         W97EQfekA9GOfwCqLaZMSzwfvOlYwi6HEykdVMUY4fp5CcEZ/Tp4KreWoJujw11tZn
-         2V/3z/XDsv9Le+FN2p0MzgF3nDroRsKOT4cvivOk=
+        b=TileK6/o3AqFkzLVtx5iczylaFoJqwGC1tfmpvA2PoRr6hsRwO+q4FnCKsGcLfhRV
+         tecOMMRhwEm0m7Z7zpBHroLLZHKmeRooJN4h45vN2vrufJF1G9Fvk4DGtuaaRFCjwQ
+         pKxudLioPgVDcxiltIqqWJl0XVBo4gFI2/lrv+9w=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1k8MXs-00EubJ-IH; Wed, 19 Aug 2020 13:46:20 +0200
+        id 1k8MXs-00EubL-J6; Wed, 19 Aug 2020 13:46:20 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
@@ -34,12 +34,14 @@ Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Manivannan Sadhasivam <mani@kernel.org>,
         Daniel Vetter <daniel@ffwll.ch>,
         dri-devel <dri-devel@lists.freedesktop.org>,
+        Liwei Cai <cailiwei@hisilicon.com>,
         Xiubin Zhang <zhangxiubin1@huawei.com>,
-        Liwei Cai <cailiwei@hisilicon.com>, devel@driverdev.osuosl.org,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Liuyao An <anliuyao@huawei.com>, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 31/49] staging: hikey9xx/gpu: fix driver name
-Date:   Wed, 19 Aug 2020 13:45:59 +0200
-Message-Id: <14e05c0ea88671dc2e40282a4e5a0833117e673d.1597833138.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 32/49] staging: hikey9xx/gpu: get rid of iommu_format
+Date:   Wed, 19 Aug 2020 13:46:00 +0200
+Message-Id: <22b04b229a090821671eafaec635d4feff205afb.1597833138.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1597833138.git.mchehab+huawei@kernel.org>
 References: <cover.1597833138.git.mchehab+huawei@kernel.org>
@@ -50,24 +52,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Those aren't needed anymore.
+
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/staging/hikey9xx/gpu/kirin9xx_dw_drm_dsi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/hikey9xx/gpu/kirin960_dpe_reg.h | 1 -
+ drivers/staging/hikey9xx/gpu/kirin970_dpe_reg.h | 1 -
+ drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.h | 2 --
+ 3 files changed, 4 deletions(-)
 
-diff --git a/drivers/staging/hikey9xx/gpu/kirin9xx_dw_drm_dsi.c b/drivers/staging/hikey9xx/gpu/kirin9xx_dw_drm_dsi.c
-index 09d035038c1a..99be8dfe05e6 100644
---- a/drivers/staging/hikey9xx/gpu/kirin9xx_dw_drm_dsi.c
-+++ b/drivers/staging/hikey9xx/gpu/kirin9xx_dw_drm_dsi.c
-@@ -2074,7 +2074,7 @@ static struct platform_driver dsi_driver = {
- 	.probe = dsi_probe,
- 	.remove = dsi_remove,
- 	.driver = {
--		.name = "dw-dsi",
-+		.name = "kirin9xx-dw-dsi",
- 		.of_match_table = dsi_of_match,
- 	},
- };
+diff --git a/drivers/staging/hikey9xx/gpu/kirin960_dpe_reg.h b/drivers/staging/hikey9xx/gpu/kirin960_dpe_reg.h
+index a0f7732063a3..7b9da796a671 100644
+--- a/drivers/staging/hikey9xx/gpu/kirin960_dpe_reg.h
++++ b/drivers/staging/hikey9xx/gpu/kirin960_dpe_reg.h
+@@ -3087,7 +3087,6 @@ struct dss_hw_ctx {
+ 	struct iommu_domain *mmu_domain;
+ 	struct ion_client *ion_client;
+ 	struct ion_handle *ion_handle;
+-	struct iommu_map_format iommu_format;
+ 	char __iomem *screen_base;
+ 	unsigned long smem_start;
+ 	unsigned long screen_size;
+diff --git a/drivers/staging/hikey9xx/gpu/kirin970_dpe_reg.h b/drivers/staging/hikey9xx/gpu/kirin970_dpe_reg.h
+index 84293d2d462e..9c1b62831733 100644
+--- a/drivers/staging/hikey9xx/gpu/kirin970_dpe_reg.h
++++ b/drivers/staging/hikey9xx/gpu/kirin970_dpe_reg.h
+@@ -4100,7 +4100,6 @@ struct dss_hw_ctx {
+ 	struct iommu_domain *mmu_domain;
+ 	struct ion_client *ion_client;
+ 	struct ion_handle *ion_handle;
+-	struct iommu_map_format iommu_format;
+ 	char __iomem *screen_base;
+ 	unsigned long smem_start;
+ 	unsigned long screen_size;
+diff --git a/drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.h b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.h
+index 261259cb8f5f..54b4ddc2fe42 100644
+--- a/drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.h
++++ b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.h
+@@ -18,7 +18,6 @@
+ #include <drm/drm_print.h>
+ 
+ #include <linux/iommu.h>
+-#include <linux/hisi/hisi-iommu.h>
+ 
+ #define MAX_CRTC	2
+ 
+@@ -41,7 +40,6 @@ struct kirin_fbdev {
+ 
+ 	struct ion_client *ion_client;
+ 	struct ion_handle *ion_handle;
+-	struct iommu_map_format iommu_format;
+ 	void *screen_base;
+ 	unsigned long smem_start;
+ 	unsigned long screen_size;
 -- 
 2.26.2
 
