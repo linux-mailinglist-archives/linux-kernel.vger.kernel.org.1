@@ -2,83 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E363624A70F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 21:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 633E724A714
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 21:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726798AbgHSToo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 15:44:44 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41642 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725997AbgHSTom (ORCPT
+        id S1726870AbgHSTpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 15:45:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726964AbgHSTox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 15:44:42 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597866280;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AINU1esGzcrRIOW7eRcehsH4H2erF0S2S1Nr8oelaiM=;
-        b=zgRpru0vafpXj5BMCd7J2XXIbj9JmCHA/x/xf8v1SLaFIcORODsOUP+Hah5ni1URQYvnmD
-        H36wCkZSZsZumqjBN+RI5FpOR0yVbO79TkM4TcPI0XBuCCOTZzM6tSze1FI2BJhqq8XUBx
-        pfW7Y1qxZZo4MwdWfuU5FHnLvhqv3aaNogcBRoRpEz5B7w6ofbGkHShG2HznNlSkakl3Uj
-        T0TsS31u8SDSnp2WAaf1f8xiIHVKBCqzGo92izKj/za64AtUeKKiN5AX+bcHZgIJ6u0zGX
-        AMQ6XwWOJBYIIb1813u5dEfv/yntcQcaKRDCLRCk1FJnDm+BXSumGgnMGvmyog==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597866280;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AINU1esGzcrRIOW7eRcehsH4H2erF0S2S1Nr8oelaiM=;
-        b=DK2436jfqzsF8GCaoE1iVXsDyO84/rePl1qZE9MDMxjw4bG0NcbW6vsHPt/66S2tMAtN9p
-        8uT28wC//hyxNeDA==
-To:     Kyle Huey <me@kylehuey.com>, Kees Cook <keescook@chromium.org>
-Cc:     Robert O'Callahan <rocallahan@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
-        linux-arch@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        kvm list <kvm@vger.kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: [REGRESSION] x86/entry: Tracer no longer has opportunity to change the syscall number at entry via orig_ax
-In-Reply-To: <CAP045Arc1Vdh+n2j2ELE3q7XfagLjyqXji9ZD0jqwVB-yuzq-g@mail.gmail.com>
-References: <CAP045Arc1Vdh+n2j2ELE3q7XfagLjyqXji9ZD0jqwVB-yuzq-g@mail.gmail.com>
-Date:   Wed, 19 Aug 2020 21:44:39 +0200
-Message-ID: <87blj6ifo8.fsf@nanos.tec.linutronix.de>
+        Wed, 19 Aug 2020 15:44:53 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2431AC061757;
+        Wed, 19 Aug 2020 12:44:53 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id i10so26737946ljn.2;
+        Wed, 19 Aug 2020 12:44:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E0UfOuh7cDb+wZe62bSKwsSBp/aO8BCgxv52BBuf4cU=;
+        b=lbIOSD1oIauZDpxA5QvPKSCX9E33WgWFlOHKsPF/9ojJ0Eh8VbPHn40QDvnGhKaoIf
+         aFuOoXy/PMjeHGFgJSTNnt5Unc3977KHCDioF3fslCgBTkT++SwX8STKKPa5pAhRZhNu
+         8Fiji6X1VtQHhVtE+oCBMyvJMqGsqZEAJPFwLhBs2ETRZPTzN/jhmDGTxs5MpHY4B1Db
+         NAyzr5e4iQg1nTiycnTOgmlAGkwpt3UA8WlnkJRuNrsx+cVqcD5y0P5VgW5t84EWZX4y
+         2gnLV4eNnM70VC32QGX56lxuYfqq+drDYLJg8h2rT5GvvJh2uX+5mMfOc2jUfpp6yPts
+         iP2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E0UfOuh7cDb+wZe62bSKwsSBp/aO8BCgxv52BBuf4cU=;
+        b=kgAFgSvEedDaNCCytdL5uZ5d7P9c2K7X3LlNjt4NFZZ4+BJNOijlD4Z5kLgDkCcNDo
+         pbmBXZ0zhWt76JbE+XGT+KRQArLqkayzNoT4c6kUElTtFYAHNJuNfp7k3D+iSO+y6xKy
+         x0yEW1U82lIT+qYTGTg8Psc48S0hzt7GAqeVp4BrlAy8LySvfc4ZY/6jqTZOl/samTYQ
+         Clh/O6H6xla+hH5exFknQ/zK8xrV4QE+Gi7uFXFC0LgmjCdh2I6baFNTt3ydlO9keVlW
+         Im1f4WLrX0FBUpKsk593k7BYMPVXFzeaX+w7FbuiCgSf3ni9h/4tr/vIAg/k0xDGUZiy
+         GOhA==
+X-Gm-Message-State: AOAM530vWzsoFu0/GRAfEop4mgr+WYLWZWP6uHlN386njmjMAwuvS570
+        3wA1iCTf0Lf0b5/XvT4Yqr82QcyqY4HFfkRNiLs=
+X-Google-Smtp-Source: ABdhPJw6tL+wyIp0MDHfKSdcmHhYe6qsiXh4e7Drz7scl0ADjMdYpEwN8mEw7EV7H2/5kImwDaHtNdjArIttcSjXPU8=
+X-Received: by 2002:a2e:9899:: with SMTP id b25mr11649110ljj.178.1597866291520;
+ Wed, 19 Aug 2020 12:44:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200819193559.2865826-1-aford173@gmail.com>
+In-Reply-To: <20200819193559.2865826-1-aford173@gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Wed, 19 Aug 2020 16:44:40 -0300
+Message-ID: <CAOMZO5Cz+v_isXs1mH6kmF0Ubs5mN08QTMO9m4HuP7mqggz-wQ@mail.gmail.com>
+Subject: Re: [PATCH] ARM: dts: imx6q-logicpd: Fix broken PWM
+To:     Adam Ford <aford173@gmail.com>
+Cc:     "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19 2020 at 10:14, Kyle Huey wrote:
-> tl;dr: after 27d6b4d14f5c3ab21c4aef87dd04055a2d7adf14 ptracer
-> modifications to orig_ax in a syscall entry trace stop are not honored
-> and this breaks our code.
+Hi Adam,
 
-My fault and I have no idead why none of the silly test cases
-noticed. Fix below.
+On Wed, Aug 19, 2020 at 4:36 PM Adam Ford <aford173@gmail.com> wrote:
 
-Thanks,
+>  &hdmi {
+>         ddc-i2c-bus = <&i2c3>;
+> -       status = "okay";
+> +       status = "disabled";
 
-        tglx
----
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index 9852e0d62d95..fcae019158ca 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -65,7 +65,8 @@ static long syscall_trace_enter(struct pt_regs *regs, long syscall,
- 
- 	syscall_enter_audit(regs, syscall);
- 
--	return ret ? : syscall;
-+	/* The above might have changed the syscall number */
-+	return ret ? : syscall_get_nr(current, regs);
- }
- 
- noinstr long syscall_enter_from_user_mode(struct pt_regs *regs, long syscall)
+Looks like an unrelated change.
