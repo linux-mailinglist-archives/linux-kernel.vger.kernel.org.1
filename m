@@ -2,185 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D11249F56
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56405249FA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727975AbgHSNNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 09:13:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728393AbgHSNMa (ORCPT
+        id S1726641AbgHSNQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 09:16:51 -0400
+Received: from esa1.mentor.iphmx.com ([68.232.129.153]:2433 "EHLO
+        esa1.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728467AbgHSNMk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 09:12:30 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CDD1C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:12:29 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id d6so26226300ejr.5
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:12:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4GEnIifXnUIGCGSPFdr9mfUlgu60edli2IHsMNjCzkI=;
-        b=Y+D28+BjFKTKTkHq2lmTaZTs14vIEPpaC06Q619WMitna1nffYkuH3yen418/0l2aL
-         38fRG7Yu043zi6lFApCGDsQqWPXbW9l5CCqp+n5QZkbzwlduAJ4b0R1z72hp+LgsWoF9
-         YLAcy/hNvE0PIhka7dPsuoEUzrDFH+y2FOjMIocye1+WM7/kqIyOmdxNJQ2u45hxaTuk
-         92aMq68kOesUXxXbSV/MvBo8Jimzq9gDktMioYp9aRs//7PKENQZioBJPCKubqL4PPvK
-         aBPsv/4gSfTXcwsO+f6XGvQh0hRYNkUskUPRFV/pSl9wr7XN7CW8qszEFg08G70YDNYw
-         Dd/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4GEnIifXnUIGCGSPFdr9mfUlgu60edli2IHsMNjCzkI=;
-        b=KoPFGBEJW7WDf6R7JWYjkwqRzR5YRF7FSEmISiqyRIAyw8q4SdKHgYb7H6IlubZOaU
-         YHmLbmSzMd+MJKhCsjQwcXk74JZvTDmRtT0C0DURYLMTmgR0LsIdxO0VT3JIGZW5EuIG
-         YRZgHL/ZTvYVMTcSrk3xPdTxPjLg7BM8jy28JdNOe0+cVa5ab48q1oWm4yt8Ic0hesaF
-         lQ44tzMo5tU5jX5TOjs2ZaPcfgN1+Jr9b7WYgRDvqSwfk+CY0m7fpShuoOtyneBmRyxr
-         A1n7FO5MJN6FTVb9TKvEV7rffwfjc4b2Abk++j4r5gxdj8dHe26dGWqXPs03WHZYq41d
-         Fr6A==
-X-Gm-Message-State: AOAM530Wpk5OcP8ekmZ7fyKtwfx46fP6X4auG3ZQ5B9ifZMsQrwsj6bX
-        lQOCVLD7VEcGwgClxmFUt2h0PhhIYD476actkpJI
-X-Google-Smtp-Source: ABdhPJwtv3QMYwKjqnbdEQba7Eaxc/RwnitCMa3Jv5pCuT9i3PmzHHGB3L0WFYgqwcOtnL97Jer8iJj7gAh6UVEMxLE=
-X-Received: by 2002:a17:906:c1d8:: with SMTP id bw24mr24779757ejb.91.1597842747808;
- Wed, 19 Aug 2020 06:12:27 -0700 (PDT)
+        Wed, 19 Aug 2020 09:12:40 -0400
+IronPort-SDR: sgnuXoSGnZA8kGpvGIJRHMLbPKb87irF5jERhhiuQ4E53DLWD/wc/7AuVYiuwkD4awUdrM06vS
+ +K28wDIOL2VRQ1TT/dxMWXIftGcIVFH9NP9YlzPxgppY2gXfeU2f4kLntSkm3iff3QNp/a+mBP
+ bK3rWLvzwSRhI6qrmngYIJhCIfzWDlB9IhpGiroWr28f4bOMLYh9J6U52NNYtmiGw72DT38yVh
+ g2pp33Mst8231BvuWs8jAM+HL9rqyDRfSUFH0OnVXkrzZ285gsEnyZE9TCRjf1SdT6ft3prO4K
+ XEs=
+X-IronPort-AV: E=Sophos;i="5.76,331,1592899200"; 
+   d="scan'208";a="54241395"
+Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
+  by esa1.mentor.iphmx.com with ESMTP; 19 Aug 2020 05:12:30 -0800
+IronPort-SDR: ESPCdr3PB5nacUlfmLmN0RuCzcFWoXVmFTtIbiTTLRwe7ondCoy5uD3yMmdCR5+pGO962D9+rh
+ g/NAgyTcsAK+gOnQy/2cyTDWJAPCaBAtAQmXHnk56xNzuSvZEMLMvxzQ4Vkx4VTdxYOj3Q9S65
+ bTq8Lz9NBfWOXVxjnoyT5pyICOxgKsfiOYfFb9+7jeAknZHsMS2WEATQ2qLd+A3tvB7OEOYT+F
+ 0N3bL90Mf3vp/LrPQ030ufzyA5F55orpIzuA8SwsZeymuFofeWyPtQAkoa7omoXaWhmiGXfnsK
+ ud0=
+Subject: Re: PROBLEM: Long Workqueue delays V2
+From:   Jim Baxter <jim_baxter@mentor.com>
+To:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-block@vger.kernel.org>
+CC:     "Resch Carsten (CM/ESO6)" <Carsten.Resch@de.bosch.com>,
+        "Rosca, Eugeniu (ADITG/ESB)" <erosca@de.adit-jv.com>
+References: <625615f2-3a6b-3136-35f9-2f2fb3c110cf@mentor.com>
+Message-ID: <066753ec-eddc-d7f6-5cc8-fe282baba6ec@mentor.com>
+Date:   Wed, 19 Aug 2020 14:12:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CA+G9fYvdAUWHw7SUF6Da1bgDJ2Q=59nJLovrxz8Ke74DSFnG1g@mail.gmail.com>
- <543834b1-9e7e-187d-4f98-e8484362105b@gmail.com>
-In-Reply-To: <543834b1-9e7e-187d-4f98-e8484362105b@gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 19 Aug 2020 09:12:16 -0400
-Message-ID: <CAHC9VhS-AYYtdGx5Xy1UDoMaeLE3C6bJBXBOuFav-KSGuYXh0A@mail.gmail.com>
-Subject: Re: Linux-next: Kernel panic - not syncing: Fatal exception in
- interrupt - RIP: 0010:security_port_sid
-To:     Stephen Smalley <stephen.smalley.work@gmail.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        X86 ML <x86@kernel.org>, selinux@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        Eric Paris <eparis@parisplace.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>, rgb@redhat.com,
-        Kees Cook <keescook@chromium.org>, casey@schaufler-ca.com,
-        yuehaibing@huawei.com, jeffv@google.com, kent.overstreet@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <625615f2-3a6b-3136-35f9-2f2fb3c110cf@mentor.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [137.202.0.90]
+X-ClientProxiedBy: SVR-IES-MBX-08.mgc.mentorg.com (139.181.222.8) To
+ SVR-IES-MBX-03.mgc.mentorg.com (139.181.222.3)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 8:28 AM Stephen Smalley
-<stephen.smalley.work@gmail.com> wrote:
-> On 8/19/20 6:11 AM, Naresh Kamboju wrote:
-> > Kernel panic noticed on linux next 20200819 tag on x86_64 and i386.
-> >
-> >   Kernel panic - not syncing: Fatal exception in interrupt
-> >
-> > metadata:
-> >    git branch: master
-> >    git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-> >    git commit: 8eb858df0a5f6bcd371b5d5637255c987278b8c9
-> >    git describe: next-20200819
-> >    make_kernelversion: 5.9.0-rc1
-> >    kernel-config:
-> > https://builds.tuxbuild.com/izEMrcIH10iI6m0FU7O0LA/kernel.config
-> >
-> > crash log:
-> > [    3.704578] BUG: kernel NULL pointer dereference, address: 00000000000001c8
-> > [    3.704865] #PF: supervisor read access in kernel mode
-> > [    3.704865] #PF: error_code(0x0000) - not-present page
-> > [    3.704865] PGD 0 P4D 0
-> > [    3.704865] Oops: 0000 [#1] SMP NOPTI
-> > [    3.704865] CPU: 0 PID: 1 Comm: systemd Not tainted
-> > 5.9.0-rc1-next-20200819 #1
-> > [    3.704865] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-> > BIOS 1.12.0-1 04/01/2014
-> > [    3.704865] RIP: 0010:security_port_sid+0x2f/0xb0
-> > [    3.704865] Code: 55 48 89 e5 41 57 49 89 ff 41 56 49 89 ce 41 55
-> > 41 89 d5 41 54 41 89 f4 53 48 8b 7f 40 e8 c9 ca 94 00 49 8b 47 40 48
-> > 8b 40 10 <48> 8b 98 c8 01 00 00 48 85 db 75 0e eb 65 48 8b 9b c0 00 00
-> > 00 48
-> > [    3.704865] RSP: 0018:ffffb607c0013d00 EFLAGS: 00010246
-> > [    3.704865] RAX: 0000000000000000 RBX: ffffffffaef076f8 RCX: ffffb607c0013d9c
-> > [    3.704865] RDX: 0000000000000016 RSI: 0000000000000006 RDI: ffffffffaef08d10
-> > [    3.704865] RBP: ffffb607c0013d28 R08: 0000000000000218 R09: 0000000000000016
-> > [    3.704865] R10: ffffb607c0013d9c R11: ffff988ff9665260 R12: 0000000000000006
-> > [    3.704865] R13: 0000000000000016 R14: ffffb607c0013d9c R15: ffffffffaef05820
-> > [    3.721157] FS:  00007f5ef4fec840(0000) GS:ffff988ffbc00000(0000)
-> > knlGS:0000000000000000
-> > [    3.721157] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [    3.721157] CR2: 00000000000001c8 CR3: 000000013b04c000 CR4: 00000000003506f0
-> > [    3.721157] Call Trace:
-> > [    3.721157]  sel_netport_sid+0x120/0x1e0
-> > [    3.721157]  selinux_socket_bind+0x15a/0x250
-> > [    3.721157]  ? _raw_spin_trylock_bh+0x42/0x50
-> > [    3.721157]  ? __local_bh_enable_ip+0x46/0x70
-> > [    3.721157]  ? _raw_spin_unlock_bh+0x1a/0x20
-> > [    3.721157]  security_socket_bind+0x35/0x50
-> > [    3.721157]  __sys_bind+0xcf/0x110
-> > [    3.721157]  ? syscall_enter_from_user_mode+0x1f/0x1f0
-> > [    3.730888]  ? do_syscall_64+0x14/0x50
-> > [    3.730888]  ? trace_hardirqs_on+0x38/0xf0
-> > [    3.732120]  __x64_sys_bind+0x1a/0x20
-> > [    3.732120]  do_syscall_64+0x38/0x50
-> > [    3.732120]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > [    3.732120] RIP: 0033:0x7f5ef37f3057
-> > [    3.732120] Code: ff ff ff ff c3 48 8b 15 3f 9e 2b 00 f7 d8 64 89
-> > 02 b8 ff ff ff ff eb ba 66 2e 0f 1f 84 00 00 00 00 00 90 b8 31 00 00
-> > 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 11 9e 2b 00 f7 d8 64 89
-> > 01 48
-> > [    3.738888] RSP: 002b:00007ffe638fbbb8 EFLAGS: 00000246 ORIG_RAX:
-> > 0000000000000031
-> > [    3.738888] RAX: ffffffffffffffda RBX: 000055833cf9ef80 RCX: 00007f5ef37f3057
-> > [    3.738888] RDX: 000000000000001c RSI: 000055833cf9ef80 RDI: 000000000000002b
-> > [    3.743930] virtio_net virtio0 enp0s3: renamed from eth0
-> > [    3.738888] RBP: 000000000000002b R08: 0000000000000004 R09: 0000000000000000
-> > [    3.738888] R10: 00007ffe638fbbe4 R11: 0000000000000246 R12: 0000000000000000
-> > [    3.744849] R13: 00007ffe638fbbe4 R14: 0000000000000000 R15:
-> > 000000RIP: 0010:security_port_sid0000000000
-> > [    3.744849] Modules linked in:
-> > [    3.744849] CR2: 00000000000001c8
-> > [    3.744849] ---[ end trace 485eaaecdce54971 ]---
-> > [    3.744849] RIP: 0010:security_port_sid+0x2f/0xb0
-> > [    3.744849] Code: 55 48 89 e5 41 57 49 89 ff 41 56 49 89 ce 41 55
-> > 41 89 d5 41 54 41 89 f4 53 48 8b 7f 40 e8 c9 ca 94 00 49 8b 47 40 48
-> > 8b 40 10 <48> 8b 98 c8 01 00 00 48 85 db 75 0e eb 65 48 8b 9b c0 00 00
-> > 00 48
-> > [    3.744849] RSP: 0018:ffffb607c0013d00 EFLAGS: 00010246
-> > [    3.744849] RAX: 0000000000000000 RBX: ffffffffaef076f8 RCX: ffffb607c0013d9c
-> > [    3.744849] RDX: 0000000000000016 RSI: 0000000000000006 RDI: ffffffffaef08d10
-> > [    3.744849] RBP: ffffb607c0013d28 R08: 0000000000000218 R09: 0000000000000016
-> > [    3.744849] R10: ffffb607c0013d9c R11: ffff988ff9665260 R12: 0000000000000006
-> > [    3.744849] R13: 0000000000000016 R14: ffffb607c0013d9c R15: ffffffffaef05820
-> > [    3.744849] FS:  00007f5ef4fec840(0000) GS:ffff988ffbc00000(0000)
-> > knlGS:0000000000000000
-> > [    3.744849] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [    3.744849] CR2: 00000000000001c8 CR3: 000000013b04c000 CR4: 00000000003506f0
-> > [    3.7RIP: 0010:security_port_sid44849] Kernel panic - not syncing:
-> > Fatal exception in interrupt
-> > [    3.744849] Kernel Offset: 0x2c000000 from 0xffffffff81000000
-> > (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
-> > [    3.744849] ---[ end Kernel panic - not syncing: Fatal exception in
-> > interrupt ]---
-> >
-> > full test log link,
-> > https://qa-reports.linaro.org/lkft/linux-next-oe/build/next-20200819/testrun/3084905/suite/linux-log-parser/test/check-kernel-panic-1682816/log
-> >
-> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
->
-> Thank you for the report.  It appears from the log that you are enabling
-> SELinux but not loading any policy?  If that is correct, then I believe
-> I know the underlying cause and can create a patch.
+Added linux-block List which may also be relevant to this issue.
 
-Yes, I'm guessing the bind() hook is the culprit.
+-------- Original Message --------
+Subject: PROBLEM: Long Workqueue delays V2
+From: Jim Baxter <jim_baxter@mentor.com>
+To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+CC: "Resch Carsten (CM/ESO6)" <Carsten.Resch@de.bosch.com>, "Rosca, Eugeniu (ADITG/ESB)" <erosca@de.adit-jv.com>
+Date: Tue, 18 Aug 2020 12:58:13 +0100
 
-I'm beginning to think we should try forcing a run of the
-selinux-testsuite on a system with SELinux enabled but without a
-loaded policy.  The test suite will fail in spectacular fashion, but
-it will be a good way to shake out some of these corner cases.
-
--- 
-paul moore
-www.paul-moore.com
+> I am asking this question again to include the fs-devel list.
+> 
+> 
+> We have issues with the workqueue of the kernel overloading the CPU 0 
+> when we we disconnect a USB stick.
+> 
+> This results in other items on the shared workqueue being delayed by
+> around 6.5 seconds with a default kernel configuration and 2.3 seconds
+> on a config tailored for our RCar embedded platform.
+> 
+> 
+> 
+> We first noticed this issue on custom hardware and we have recreated it
+> on an RCar Starter Kit using a test module [1] to replicate the
+> behaviour, the test module outputs any delays of greater then 9ms.
+> 
+> To run the test we have a 4GB random file on a USB stick and perform
+> the following test.
+> The stick is mounted as R/O and we are copying data from the stick:
+> 
+> - Mount the stick.
+> mount -o ro,remount /dev/sda1
+> 
+> - Load the Module:
+> # taskset -c 0 modprobe latency-mon
+> 
+> - Copy large amount of data from the stick:
+> # dd if=/run/media/sda1/sample.txt of=/dev/zero
+> [ 1437.517603] DELAY: 10
+> 8388607+1 records in
+> 8388607+1 records out
+> 
+> 
+> - Disconnect the USB stick:
+> [ 1551.796792] usb 2-1: USB disconnect, device number 2
+> [ 1558.625517] DELAY: 6782
+> 
+> 
+> The Delay output 6782 is in milliseconds.
+> 
+> 
+> 
+> Using umount stops the issue occurring but is unfortunately not guaranteed
+> in our particular system.
+> 
+> 
+> From my analysis the hub_event workqueue kworker/0:1+usb thread uses around
+> 98% of the CPU.
+> 
+> I have traced the workqueue:workqueue_queue_work function while unplugging the USB
+> and there is no particular workqueue function being executed a lot more then the 
+> others for the kworker/0:1+usb thread.
+> 
+> 
+> Using perf I identified the hub_events workqueue was spending a lot of time in
+> invalidate_partition(), I have included a cut down the captured data from perf in
+> [2] which shows the additional functions where the kworker spends most of its time.
+> 
+> 
+> I am aware there will be delays on the shared workqueue, are the delays
+> we are seeing considered normal?
+> 
+> 
+> Is there any way to mitigate or identify where the delay is?
+> I am unsure if this is a memory or filesystem subsystem issue.
+> 
+> 
+> Thank you for you help.
+> 
+> Thanks,
+> Jim Baxter
+> 
+> [1] Test Module:
+> // SPDX-License-Identifier: GPL-2.0
+> /*
+>  * Simple WQ latency monitoring
+>  *
+>  * Copyright (C) 2020 Advanced Driver Information Technology.
+>  */
+> 
+> #include <linux/init.h>
+> #include <linux/ktime.h>
+> #include <linux/module.h>
+> 
+> #define PERIOD_MS 100
+> 
+> static struct delayed_work wq;
+> static u64 us_save;
+> 
+> static void wq_cb(struct work_struct *work)
+> {
+> 	u64 us = ktime_to_us(ktime_get());
+> 	u64 us_diff = us - us_save;
+> 	u64 us_print = 0;
+> 
+> 	if (!us_save)
+> 		goto skip_print;
+> 
+> 
+> 	us_print = us_diff / 1000 - PERIOD_MS;
+> 	if (us_print > 9)
+> 		pr_crit("DELAY: %lld\n", us_print);
+> 
+> skip_print:
+> 	us_save = us;
+> 	schedule_delayed_work(&wq, msecs_to_jiffies(PERIOD_MS));
+> }
+> 
+> static int latency_mon_init(void)
+> {
+> 	us_save = 0;
+> 	INIT_DELAYED_WORK(&wq, wq_cb);
+> 	schedule_delayed_work(&wq, msecs_to_jiffies(PERIOD_MS));
+> 
+> 	return 0;
+> }
+> 
+> static void latency_mon_exit(void)
+> {
+> 	cancel_delayed_work_sync(&wq);
+> 	pr_info("%s\n", __func__);
+> }
+> 
+> module_init(latency_mon_init);
+> module_exit(latency_mon_exit);
+> MODULE_AUTHOR("Eugeniu Rosca <erosca@de.adit-jv.com>");
+> MODULE_LICENSE("GPL");
+> 
+> 
+> [2] perf trace:
+>     95.22%     0.00%  kworker/0:2-eve  [kernel.kallsyms]
+>     |
+>     ---ret_from_fork
+>        kthread
+>        worker_thread
+>        |          
+>         --95.15%--process_one_work
+> 		  |          
+> 		   --94.99%--hub_event
+> 			 |          
+> 			  --94.99%--usb_disconnect
+> 			  <snip>
+> 				|  
+> 				--94.90%--invalidate_partition
+> 				   __invalidate_device
+> 				   |          
+> 				   |--64.55%--invalidate_bdev
+> 				   |  |          
+> 				   |   --64.13%--invalidate_mapping_pages
+> 				   |     |          
+> 				   |     |--24.09%--invalidate_inode_page
+> 				   |     |   |          
+> 				   |     |   --23.44%--remove_mapping
+> 				   |     |     |          
+> 				   |     |      --23.20%--__remove_mapping
+> 				   |     |        |          
+> 				   |     |         --21.90%--arch_local_irq_restore
+> 				   |     |          
+> 				   |     |--22.44%--arch_local_irq_enable
+> 				   |          
+> 					--30.35%--shrink_dcache_sb 
+> 					<snip>
+> 					  |      
+> 					  --30.17%--truncate_inode_pages_range
+> 
