@@ -2,263 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4FD4249E2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4FFC249E30
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728133AbgHSMhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 08:37:41 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:55681 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726752AbgHSMhd (ORCPT
+        id S1728259AbgHSMh7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 19 Aug 2020 08:37:59 -0400
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:41099 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727018AbgHSMhh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 08:37:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597840650;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xyJv9f30kmkUETLE2cVJf3IGYOx0OtHQLaHP3thyrbY=;
-        b=MkdMkc7rzdHcLQrU1vT2Z49lMRXmTWaYDsKUoNSZbMLzYqflxHddhu4wyOQpLDmk2a/cDA
-        LGAVky5jbh5otjTmYT6Dg0IXicULOCzl91QLIuFSzKvQYo/a8ce0IdzGdIKr5NwyA6/lno
-        R+WU4/xCgkqHG9p7qJCki+BC2L9CFFI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-109-txA31vqLOcWwQTsEob-CMw-1; Wed, 19 Aug 2020 08:37:24 -0400
-X-MC-Unique: txA31vqLOcWwQTsEob-CMw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CB4D31015DCF;
-        Wed, 19 Aug 2020 12:37:22 +0000 (UTC)
-Received: from dhcp-128-65.nay.redhat.com (ovpn-13-194.pek2.redhat.com [10.72.13.194])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EA3495D9F1;
-        Wed, 19 Aug 2020 12:37:16 +0000 (UTC)
-Date:   Wed, 19 Aug 2020 20:37:13 +0800
-From:   Dave Young <dyoung@redhat.com>
-To:     James Morse <james.morse@arm.com>
-Cc:     Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Sang Yan <sangyan@huawei.com>,
-        kexec mailing list <kexec@lists.infradead.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        LKML <linux-kernel@vger.kernel.org>, xiexiuqi@huawei.com,
-        guohanjun@huawei.com, luanjianhai@huawei.com, zhuling8@huawei.com,
-        luchunhua@huawei.com
-Subject: Re: [PATCH 1/2] kexec: Add quick kexec support for kernel
-Message-ID: <20200819123713.GB13727@dhcp-128-65.nay.redhat.com>
-References: <20200814055239.47348-1-sangyan@huawei.com>
- <20200814065845.GA18234@dhcp-128-65.nay.redhat.com>
- <ad098e21-d689-f655-1e32-c93adcf0cb2d@huawei.com>
- <20200814112413.GA8097@dhcp-128-65.nay.redhat.com>
- <CA+CK2bDG9mzzpLhyQS=MiyNNcYsUdV=VQt9LufL7VrqKH8cK_g@mail.gmail.com>
- <a6e8de9c-06fa-75c4-b975-457877226f49@arm.com>
+        Wed, 19 Aug 2020 08:37:37 -0400
+Received: by mail-ej1-f65.google.com with SMTP id t10so26087374ejs.8;
+        Wed, 19 Aug 2020 05:37:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=6FCKFOV4tXuhe4ALaKK45GgE/rtv2KFtTsBAHakWHm4=;
+        b=CocKN0U5OmS0A9cRNxM7XxA7kFlY1XGFx/vS47SaPi+ke1XyjYcuyi84gaHrjyvkh/
+         dvPCBmaVxEFZKYWYoT/fSALggJBilw9EpuMBcxuZbffjIHIPoJQy5z0TWM/uOQrU77X4
+         +7uKkrakBmB98YCmfhsvGprQ5exW+z9neYLOD+41qTYSRb8B1Ep+kgbwERT1NVgc91dz
+         WA0nNFcNWEUdk4oz1H5Mpz4lUsGcNHsCTnqvxNm+gKLWoV+t5nK9ENXD8vhMS9e1hFZU
+         Z1q7OW+ldGcO//JpkTmDUXDMLKuq6VnHv10RbpIArho++lzE6s79kgmRDpU47wFnORKq
+         QV6A==
+X-Gm-Message-State: AOAM5327rMf1eoWeNlrjJoxqEPQusspEMU7OljDXBFgKJIUbUxb3gea6
+        zSMTbtd8CWWgQ4PMYblmT4U=
+X-Google-Smtp-Source: ABdhPJw9xEf2bvQxWdoKfV7GBCyYJK5pCq04/DM+3vXVGjGug31Euua3pze+tmiaLYIlaBLh8/tQsA==
+X-Received: by 2002:a17:906:cc51:: with SMTP id mm17mr25546416ejb.137.1597840654741;
+        Wed, 19 Aug 2020 05:37:34 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.216])
+        by smtp.googlemail.com with ESMTPSA id pv28sm18391843ejb.71.2020.08.19.05.37.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 19 Aug 2020 05:37:34 -0700 (PDT)
+Date:   Wed, 19 Aug 2020 14:37:32 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
+Cc:     Kukjin Kim <kgene@kernel.org>, Andi Shyti <andi@etezian.org>,
+        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        m.szyprowski@samsung.com, b.zolnierkie@samsung.com
+Subject: Re: [PATCH 5/8] spi: spi-s3c64xx: Fix doc comment for struct
+ s3c64xx_spi_driver_data
+Message-ID: <20200819123732.GA18122@kozik-lap>
+References: <20200819123208.12337-1-l.stelmach@samsung.com>
+ <CGME20200819123227eucas1p11cd47cf281a035ed02d5fc819a0370c1@eucas1p1.samsung.com>
+ <20200819123208.12337-6-l.stelmach@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <a6e8de9c-06fa-75c4-b975-457877226f49@arm.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200819123208.12337-6-l.stelmach@samsung.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/17/20 at 01:14pm, James Morse wrote:
-> Hi guys,
-> 
-> On 14/08/2020 20:22, Pavel Tatashin wrote:
-> > On Fri, Aug 14, 2020 at 7:24 AM Dave Young <dyoung@redhat.com> wrote:
-> >> On 08/14/20 at 04:21pm, Sang Yan wrote:
-> >>> On 08/14/20 14:58, Dave Young wrote:
-> >>>> On 08/14/20 at 01:52am, Sang Yan wrote:
-> >>> Yes, it's particularly obvious on arm64. I will add it to the patch log,
-> >>> and test how long it takes on x86 and other arch.
-> 
-> Earlier versions of kexec-tools had the in-purgatory checksum enabled unconditionally.
-> More recent versions let you disable it, I think the parameter is called no-checks. This
-> saves some time, but the relocations still have to be done.
-> 
-> 
-> >>>> About the arm64 problem, I know Pavel Tatashin is working on a patchset
-> >>>> to improve the performance with enabling mmu.
-> >>>>
-> >>>> I added Pavel in cc, can you try his patches?
-> >>>>
-> >>> Thanks for your tips, I will try these patches. @Pavel.
-> >>> Disable mmu after finishing copying pages?
-> 
-> >>>>> We introduce quick kexec to save time of copying memory as above,
-> >>>>> just like kdump(kexec on crash), by using reserved memory
-> >>>>> "Quick Kexec".
-> >>>>
-> >>>> This approach may have gain, but it also introduce extra requirements to
-> >>>> pre-reserve a memory region.  I wonder how Eric thinks about the idea.
-> >>>>
-> >>>> Anyway the "quick" name sounds not very good, I would suggest do not
-> >>>> introduce a new param, and the code can check if pre-reserved region
-> >>>> exist then use it, if not then fallback to old way.
-> >>>>
-> >>> aha. I agree with it, but I thought it may change the old behaviors of
-> >>> kexec_load.
-> >>>
-> >>> I will update a new patch without introducing new flags and new params.
-> >>
-> >> Frankly I'm still not sure it is worth to introduce a new interface if the
-> >> improvement can be done in arch code like Pavel is doing.  Can you try
-> >> that first?
-> 
-> > My patches will fix this issue. This is an ARM64 specific problem and
-> > I did not see this to be performance problem on x86 during kexec
-> > relocation. This happens because on ARM64 relocation is performed with
-> > MMU disabled, and when MMU is disabled the caching is disabled as
-> > well.
-> 
-> > I have a patch series that fixes this entirely, but James Morse
-> > (+CCed) and I still have not agreed on the final approach. We had an
-> > off-list conversation about it, and we need to continue it in public
-> > ML.
-> > 
-> > Here is some history:
-> > 
-> > This is the original series that I sent a year ago. It basically
-> > proposes the same thing as this series from Sang Yan:
-> > https://lore.kernel.org/lkml/20190709182014.16052-1-pasha.tatashin@soleen.com/
-> > 
-> > Once, I realized that with enabling MMU the relocation is issue is
-> > gone completely, I sent a new series, and this is the latest version
-> > of that series:
-> > https://lore.kernel.org/lkml/20200326032420.27220-1-pasha.tatashin@soleen.com/
-> > 
-> > It has been tested in production, and several people from different
-> > companies commented to me that they are using it as well.
-> > 
-> > After my patch series was sent out, James created a new branch in his
-> > tree with his approach of enabling MMU without having a new VA space,
-> > but instead re-use what the kernel  has now. I have not tested that
-> > branch yet.
-> 
-> For context, that is here:
-> http://www.linux-arm.org/git?p=linux-jm.git;a=shortlog;h=refs/heads/kexec%2Bmmu/v0
-> 
-> I think we can maintain this approach, but it doesn't work for Pavel, as he has extra
-> requirements. I stopped looking at it because it became a solution no-one needed.
-> 
-> 
-> > Here are some comments from James Morse and the off-list discussion we had:
-> > -------
-> > It sounds like you are depending on write streaming mode to meet your
-> > target performance.
-> > This isn't even CPU specific, its cache and firmware configuration specific!
-> > I don't think we should optimise a general purpose operating system
-> > based on things like this.
-> > ..
-> > I think the best approach is going to be to eliminate the relocations entirely.> ...
-> > I'm afraid I view this kexec-map thing as high-risk duct-tape over the
-> > kexec core code
-> > deliberately scattering the kexec payload.
-> > I'd prefer any approach that causes the payload to be stored in-place
-> > from the beginning
-> > as that benefits other architectures too.
-> > -------
-> 
-> The 'eliminate relocations' comment goes with some of the context you removed.
-> 
-> 
-> > It appears James is leaning to the approach of not performing
-> > relocation at all and use what is proposed by Sang Yan and me during
-> > my first approach for this problem.
-> 
-> The background to that is Pavel's timing requirements: Enabling the MMU isn't enough, from
-> his description he also depends on re-arranging the memory so the CPU only sees increasing
-> virtual addresses. This is what my 'write streaming' comment refers to.
-> Doing this requires rewriting the relocation assembly code.
-> 
-> If we enable the MMU during kexec relocation, I expect someone on a memory constrained
-> system to come out of the woodwork screaming 'regression'. Systems with insufficient
-> memory to allocate the page tables will no longer be able to kexec.
-> 
-> If we keep the relocation assembly code as it is, its possible for it to handle MMU-on and
-> MMU-off relocations with a very small adjustment. It just won't work for Pavel, as
-> enabling the MMU is not enough.
-> 
-> I'm confident we won't get a second copy of the relocation code, that only runs on some
-> platforms, past the arch code maintainer.
-> 
-> 
-> > However, I have several issues
-> > with this take, which if addressed would be OK for me.
-> > 1. The newer, more secure kexec syscall kexec_file_load(), which
-> > allows to check the IMA integrity of the loaded file does not have a
-> > way to specify the area in memory where to place the kernel. We are
-> > using this syscall in production, and cannot go back to kexec_load()
-> > for security reasons.
-> > 2. Reserving memory means wasting memory during run-time. Our machine
-> > has only 8G of RAM, and reserving even 128M 
-> 
-> You're loading a 128M kernel!?
-> 
-> 
-> > for the next kernel is an
-> > expensive proposition. Now we start loading the next kernel after some
-> > non essential processes are stopped, but before essential processes
-> > are stopped for the lowest downtime possible.
-> 
-> > 3. Disabling relocation means changes in the common code, which I am
-> > not sure actually helps any other platform beside ARM64, so I am
-> > worried it won't be accepted into upstream.
-> 
-> I'm happy to post the MMU-enabled series, it needs to be maintainable and solve someone's
-> problem.
-> 
-> To chip away at the rest of Pavel's problem, my suggestions were:
->  * Allocate things in place. If we can allocate any 2MB hugepage, we can place the DTB
->   there and not need to relocate it.
-> 
->  * use huge pages more generally in the core code. With the MMU enabled, this might keep
->    the core in write-streaming-mode for longer. (might, because this is very platform
->    specific).
-> 
->  * Store the kexec payload in the crashkernel carveout, to eliminate the relocations
->    completely. This is the bit Pavel quoted.
-> 
-> To expand on the carveout:
-> The crashkernel carveout is sized to load the payload, and memory to run the kdump kernel
-> entirely from within the carveout. Its obviously bigger than the payload it contains.
-> 
-> If you load your kexec kernel into the 'memory' part of the carveout, it won't overwrite
-> the kdump payload, and it wont require relocation, as its already stored in place. arm64's
-> arch code will spot these in-place buffers, and skip the relocation.
-> 
-> If you kdump even after doing this, the kdump kernel sees the kexec payload as
-> uninitialised memory, and will overwrite it.
-> 
-> If we did this, we wouldn't need to enable the MMU, and it should skip most of the
-> relocation code on all architectures without any changes to the arch code.
+On Wed, Aug 19, 2020 at 02:32:05PM +0200, Łukasz Stelmach wrote:
+> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
 
-I'm not very confident about this approach.  
+Hi,
 
-Kdump usually goes with a minimum initramfs, but for kexec reboot the
-normal initramfs generated by distribution could be larger, and there
-could be some other cases which can cause troubles.
+Missing commit msg - fix what exactly?
 
-Another way, maybe one can copy the kernel, dtb, initrd etc with the
-very early boot code. And the later kernel code just use the kexec_file_load
-function to load them, since they are already in kernel buffers so the
-relocations are not necessary.
+You need to rebase your patch as most of these were already fixed by Lee
+Jones.
 
-Current kexec_file_load use 'fd' to load file content, we can have some
-interface to load from memory buffers.
+However he did not remove the @rx_dmach and tx entries...
 
-Anyway this is just a wild idea.
+Best regards,
+Krzysztof
 
+> ---
+>  drivers/spi/spi-s3c64xx.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
 > 
-> On arm64 the kernel and initramfs only need relocating because their physical addresses
-> are baked into the DTB. The DTB's physical address is then passed to the new kernel.
-> From memory: 'relocatable kernel' is detectable from the image header, and the support
-> predates arm64's kexec support.
-> 
-> 
-> James
-> 
-
-Thanks
-Dave
-
+> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
+> index 6fe896f2be18..505789f91fdf 100644
+> --- a/drivers/spi/spi-s3c64xx.c
+> +++ b/drivers/spi/spi-s3c64xx.c
+> @@ -155,19 +155,21 @@ struct s3c64xx_spi_port_config {
+>   * @clk: Pointer to the spi clock.
+>   * @src_clk: Pointer to the clock used to generate SPI signals.
+>   * @ioclk: Pointer to the i/o clock between master and slave
+> + * @pdev: Pointer to the SPI controller platform device
+>   * @master: Pointer to the SPI Protocol master.
+>   * @cntrlr_info: Platform specific data for the controller this driver manages.
+>   * @lock: Controller specific lock.
+>   * @state: Set of FLAGS to indicate status.
+> - * @rx_dmach: Controller's DMA channel for Rx.
+> - * @tx_dmach: Controller's DMA channel for Tx.
+> + * @rx_dma: Controller's DMA channel for Rx.
+> + * @tx_dma: Controller's DMA channel for Tx.
+>   * @sfr_start: BUS address of SPI controller regs.
+>   * @regs: Pointer to ioremap'ed controller registers.
+> - * @irq: interrupt
+>   * @xfer_completion: To indicate completion of xfer task.
+>   * @cur_mode: Stores the active configuration of the controller.
+>   * @cur_bpw: Stores the active bits per word settings.
+>   * @cur_speed: Stores the active xfer clock speed.
+> + * @port_conf: Pointer to the SPI port configuration
+> + * @port_id: SPI port ID number
+>   */
