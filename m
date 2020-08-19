@@ -2,84 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E3624994F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 11:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D23B4249957
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 11:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727064AbgHSJ1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 05:27:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59892 "EHLO
+        id S1727822AbgHSJ2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 05:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726835AbgHSJ13 (ORCPT
+        with ESMTP id S1726974AbgHSJ2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 05:27:29 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3955C061757;
-        Wed, 19 Aug 2020 02:27:29 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id g15so6634078plj.6;
-        Wed, 19 Aug 2020 02:27:29 -0700 (PDT)
+        Wed, 19 Aug 2020 05:28:43 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E0CCC061757;
+        Wed, 19 Aug 2020 02:28:43 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id 128so11112244pgd.5;
+        Wed, 19 Aug 2020 02:28:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/x+ioxj0OECDWfuZ/8cLiBt08ZEEJV9C/RwFT59ZAOY=;
-        b=qlHcNEPNB5wNQZEWyxFpsV2++SFSMZh1dkF7Pyba7MLEMg3mkx3NQwLviJdrWE0EPz
-         MbV8sUmZnqEOpclkWErN1k6jtF7+iJnXTNBC5aOFOW5CaxPm+wYWXjGYES/peopTxTvo
-         sT2R9RjdVTa+xAFWGxTFBMxcaXsXOSf2lbbSNs+D/u5zNzZw9Ejozsg+GBNDVerdT+RB
-         6YegFcEtE49I32y9ESkVWu5d5WCvOx+GLXgXA5A1Sg/ULBdPECPUXCpBeDN169pBLUe2
-         MzxCR4DWc7g2pCkJ/D5u5CmuhtV14V82NDmFxKbsiMF/zrME9zPFmf0X1FVLe7/OlIyg
-         YhqA==
+        h=from:to:cc:subject:date:message-id;
+        bh=sfALJ3tnvI7h4k/zG4r6toxyODZkz1A4RL+TTCxV1MQ=;
+        b=UJg96UPNkqjdaV4Z8G1IDr8c6TPIWfXOxPYd3O0SO5WoJKuI7jCmUbACjWzBZHo9U7
+         0c7nnXAgDABQEBuR0un7P4giAqlg814vs3v74WUKa4O3jHlp5d9Peg+8lpFHu6SmfEBX
+         T8OsGUc+M40aP4W28v0M6kqxwGgTcZDzMTgzPm2JLXfUdp+3cII65MNQJdmQl8cWud4Z
+         k3F0lqNF8NUMnE5OQdYexzBoLJ2mSWn/W7hs6/zxeYfNl58kw70iZIseA4f0limFxE47
+         Smr+gNjgXUG+xFLsiOrrxvcHlpMjISJ9qMWHeHAqYXd6oxHVdWktrACBujKwqcrj972f
+         mkgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/x+ioxj0OECDWfuZ/8cLiBt08ZEEJV9C/RwFT59ZAOY=;
-        b=ssFJFvPVjTBkHDkvHdMVvx8EuytEg+Lvrlr9YoaS6lN8HG5oCQ8Zkk2iUVhFFP/uv2
-         n3msHOwQScc5YodSIAZJmyOzu3vqbVhqTjk0uoacQLS2D9/vbogWTzmGwLVkVpwaM7XO
-         hw9l65DHXxQPzvuXYsqIMWXruHZdqQSoEg7zmY6vnn+8Xy9nMkg3lOoOwecKdc9gt9bb
-         /IAnJyPITGoJeK+y5kb17iuSx0gzgN/tpUKlFk+yqzH9dYfnYKfG7zvoIwt/F2RbKFDb
-         BWi9nSv8ZH0payAFrtP+f0rPNGI/4dssnvLTAYlbSDRJZRGHq7go0HRhnuWuZud1f37f
-         AWYg==
-X-Gm-Message-State: AOAM532kiW2CVPooMdoEqoN5xXLgLyJTa5PQPvIWqYjEcm5wb9obOEYQ
-        dLx6V0Ektf2DMXSMr1VdtbM=
-X-Google-Smtp-Source: ABdhPJwoeJen/PV/xW1fP54d8Ex6WgD3SAgVdfzKFi8WkN+xy6V2pQqgMCP8FmW+r9hrzRGiROSg+A==
-X-Received: by 2002:a17:902:5991:: with SMTP id p17mr18666350pli.78.1597829248871;
-        Wed, 19 Aug 2020 02:27:28 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id v1sm1334067pjh.16.2020.08.19.02.27.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 02:27:28 -0700 (PDT)
-Date:   Wed, 19 Aug 2020 18:27:26 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Petr Mladek <pmladek@suse.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Tony Lindgren <tony@atomide.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Raul Rangel <rrangel@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-serial@vger.kernel.org
-Subject: Re: [PATCHv2] serial: 8250: change lock order in
- serial8250_do_startup()
-Message-ID: <20200819092726.GB3302@jagdpanzerIV.localdomain>
-References: <20200817022646.1484638-1-sergey.senozhatsky@gmail.com>
- <20200819092106.GA4353@alley>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200819092106.GA4353@alley>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=sfALJ3tnvI7h4k/zG4r6toxyODZkz1A4RL+TTCxV1MQ=;
+        b=IPyyRhnzb1UVApTLyYKUQ/t+YopR3LVLXnLpwE6tvtmfhSFyGhfYHnEaDP3aNRMruE
+         Xt2JedL9FxVsuvGcANAGVPzfyvfh1x86gvAICQybO1XsoVyt5n5p+4+geyFNsGxHzvsb
+         IijhAQ9MA0XY+CbEtPIuIe+FeX49zwK/usOXJqBCPhHD4MpKqzKvrwH5vZyF+O9KStgD
+         3YFZzMjGbk9dZTcav9ZqQ03IjR6vKUqp+voe4+3oRLcdOJMvPSMAgEQ4hFXCGAgUBXGN
+         ys0Au3Gu3LmN96xApNpKALxOQr/94GByOKEcBsQ16jbCpqOwo/7R5WXV6AP/tbh35v18
+         POdQ==
+X-Gm-Message-State: AOAM531B6gldqAib0bJLeryEO5g4WPumqQFmnMAU0Fyh9t0vFqCojbZ2
+        TjNI1njgRbNukjjVT+yaZWo=
+X-Google-Smtp-Source: ABdhPJx7gzRQZ4ej9DhjQf8YqJN5RJv4x/cQ7y4ijPpmhsFEfzKb+5fPtlTWpjDM8h6ry27HPjOUUg==
+X-Received: by 2002:a63:ff18:: with SMTP id k24mr16640114pgi.109.1597829323025;
+        Wed, 19 Aug 2020 02:28:43 -0700 (PDT)
+Received: from linux-691t.suse.de ([124.11.22.254])
+        by smtp.gmail.com with ESMTPSA id y1sm27060156pfl.136.2020.08.19.02.28.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 19 Aug 2020 02:28:42 -0700 (PDT)
+From:   "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
+X-Google-Original-From: "Lee, Chun-Yi" <jlee@suse.com>
+To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Lee, Chun-Yi" <jlee@suse.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH] efi/efivars: create efivars mount point when get variable services are available
+Date:   Wed, 19 Aug 2020 17:28:38 +0800
+Message-Id: <20200819092838.11290-1-jlee@suse.com>
+X-Mailer: git-send-email 2.16.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/08/19 11:21), Petr Mladek wrote:
-> 
-> The patch is committed in printk/linux.git, branch for-5.10.
+The efivars filesystem depends on GetVariable or GetNextVariable EFI
+runtime services. So the /sys/firmware/efi/efivars does not need to be
+created when GetVariable and GetNextVariable are not available.
 
-Petr, as far as I can tell, Greg has applied it to gregkh/tty.git
+It is useful for userland to determine the availability of efivars
+filesystem.
 
-	-ss
+Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
+---
+ drivers/firmware/efi/efi.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
+index fdd1db025dbf..929fbf4dfd5d 100644
+--- a/drivers/firmware/efi/efi.c
++++ b/drivers/firmware/efi/efi.c
+@@ -404,11 +404,14 @@ static int __init efisubsys_init(void)
+ 	if (error)
+ 		goto err_remove_group;
+ 
+-	/* and the standard mountpoint for efivarfs */
+-	error = sysfs_create_mount_point(efi_kobj, "efivars");
+-	if (error) {
+-		pr_err("efivars: Subsystem registration failed.\n");
+-		goto err_remove_group;
++	if (efi_rt_services_supported(EFI_RT_SUPPORTED_GET_VARIABLE |
++				      EFI_RT_SUPPORTED_GET_NEXT_VARIABLE_NAME)) {
++		/* and the standard mountpoint for efivarfs */
++		error = sysfs_create_mount_point(efi_kobj, "efivars");
++		if (error) {
++			pr_err("efivars: Subsystem registration failed.\n");
++			goto err_remove_group;
++		}
+ 	}
+ 
+ 	if (efi_enabled(EFI_DBG) && efi_enabled(EFI_PRESERVE_BS_REGIONS))
+-- 
+2.16.4
+
