@@ -2,86 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD07E249B7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 13:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DF8D249B85
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 13:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728005AbgHSLQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 07:16:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49942 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727995AbgHSLQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 07:16:37 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5684C206DA;
-        Wed, 19 Aug 2020 11:16:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597835796;
-        bh=7W9fpcvvq7j01lnjxB+ot2Sjfmr0kSAadp/9/zh9zI8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KYFycYPrBmWJam7NZKlptYCrkATXPMfUZP8OeD/6IsUDDnwM3EZ+M8LtZo3dxa5MM
-         o/70hVNLqh/t6/PFzXCYwmcyA3H0CDzXRx746GYHbFq1+Abwss1s56TFmWKJCwjlzU
-         AkugyyZ82ocFQMeBShPmU03BW3dtBoaed886yk5U=
-Date:   Wed, 19 Aug 2020 12:16:05 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Allen <allen.lkml@gmail.com>
-Cc:     Takashi Iwai <tiwai@suse.de>, Allen Pais <allen.cryptic@gmail.com>,
-        perex@perex.cz, tiwai@suse.com, clemens@ladisch.de,
-        o-takashi@sakamocchi.jp, timur@kernel.org, nicoleotsuka@gmail.com,
-        Xiubo.Lee@gmail.com, Kees Cook <keescook@chromium.org>,
-        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/10] sound: convert tasklets to use new tasklet_setup()
-Message-ID: <20200819111605.GC5441@sirena.org.uk>
-References: <20200817085703.25732-1-allen.cryptic@gmail.com>
- <s5hsgckl084.wl-tiwai@suse.de>
- <20200818104432.GB5337@sirena.org.uk>
- <CAOMdWSK79WWsmsxJH9zUMZMfkBNRWXbmEHg-haxNZopHjC1cGw@mail.gmail.com>
+        id S1727120AbgHSLSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 07:18:05 -0400
+Received: from www381.your-server.de ([78.46.137.84]:32772 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727074AbgHSLRi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 07:17:38 -0400
+X-Greylist: delayed 536 seconds by postgrey-1.27 at vger.kernel.org; Wed, 19 Aug 2020 07:17:36 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=PXfvSPFtBMluQAvegskJOAm1wzYdd4jMhbecJAC6wAU=; b=eDfFoTCTutJK03cocRFF/wbbfM
+        SByYmpX/VD0vY8KaiLXkjKN7HC8di6RtXVYJlnsS4H1UIPOVMcTo2/trf5pk2FtB5z2JIQBfQ6Klr
+        X70rQ8xlemViWOrfZ7GHbh1y1G4bX4MybvPG23VoshRJzO6+YL8gfPUMLyEEkA8AamHFVxegAtRqt
+        nxye+EAbYC63R8wim37mjuJYgAjKJlqW4rYVVR6W+8m3R9Rw8UBPXGZwpVOB44UjvnbgN6C+I1nm2
+        4HBSIkteQhbk1LfpDech8i9EaYT2AUv/j7vdvDwzNnUP5x/5OjbDh5pCk5ncyfspxe8l6j6ubxv1Z
+        RKU9aOZQ==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1k8M5J-0008CP-SV; Wed, 19 Aug 2020 13:16:49 +0200
+Received: from [2001:a61:25dc:8101:9e5c:8eff:fe01:8578]
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1k8M5J-000JL2-LY; Wed, 19 Aug 2020 13:16:49 +0200
+Subject: Re: pcm|dmaengine|imx-sdma race condition on i.MX6
+From:   Lars-Peter Clausen <lars@metafoo.de>
+To:     Benjamin Bara - SKIDATA <Benjamin.Bara@skidata.com>,
+        Robin Gong <yibin.gong@nxp.com>
+Cc:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "timur@kernel.org" <timur@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Richard Leitner - SKIDATA <Richard.Leitner@skidata.com>
+References: <20200813112258.GA327172@pcleri>
+ <VE1PR04MB6638EE5BDBE2C65FF50B7DB889400@VE1PR04MB6638.eurprd04.prod.outlook.com>
+ <61498763c60e488a825e8dd270732b62@skidata.com>
+ <16942794-1e03-6da0-b8e5-c82332a217a5@metafoo.de>
+Message-ID: <7a16b532-6edd-83b3-6a57-c0b471b9401a@metafoo.de>
+Date:   Wed, 19 Aug 2020 13:16:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="XWOWbaMNXpFDWE00"
-Content-Disposition: inline
-In-Reply-To: <CAOMdWSK79WWsmsxJH9zUMZMfkBNRWXbmEHg-haxNZopHjC1cGw@mail.gmail.com>
-X-Cookie: I wish you were a Scotch on the rocks.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <16942794-1e03-6da0-b8e5-c82332a217a5@metafoo.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25904/Mon Aug 17 15:02:24 2020)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/19/20 1:08 PM, Lars-Peter Clausen wrote:
+> On 8/17/20 9:28 AM, Benjamin Bara - SKIDATA wrote:
+>> We think this is not an i.MX6-specific problem, but a problem of the 
+>> DMAengine usage from the PCM.
+>> In case of a XRUN, the DMA channel is never closed but first a 
+>> SNDRV_PCM_TRIGGER_STOP next a
+>> SNDRV_PCM_TRIGGER_START is triggered.
+>> The SNDRV_PCM_TRIGGER_STOP simply executes a 
+>> dmaengine_terminate_async() [1]
+>> but does not await the termination by calling dmaengine_synchronize(),
+>> which is required as stated by the docu [2].
+>> Anyways, we are not able to fix it in the pcm_dmaengine layer either 
+>> at the end of
+>> SNDRV_PCM_TRIGGER_STOP (called from the DMA on complete interrupt 
+>> handler)
+>> or at the beginning of SNDRV_PCM_TRIGGER_START (called from a PCM 
+>> ioctl),
+>> since the dmaengine_synchronize() requires a non-atomic context.
+>
+> I think this might be an sdma specific problem after all. 
+> dmaengine_terminate_async() will issue a request to stop the DMA. But 
+> it is still safe to issue the next transfer, even without calling 
+> dmaengine_synchronize(). The DMA should start the new transfer at its 
+> earliest convenience in that case.
+>
+> dmaegine_synchronize() is so that the consumer has a guarantee that 
+> the DMA is finished using the resources (e.g. the memory buffers) 
+> associated with the DMA transfer so it can safely free them. 
 
---XWOWbaMNXpFDWE00
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+You can think of dmaengine_terminate_async() and 
+dmaengine_issue_pending() as adding operations to a command queue. The 
+DMA is responsible that the operations are executed in the same order 
+that they were added to the queue and to make sure that their execution 
+does not conflict.
 
-On Wed, Aug 19, 2020 at 04:21:58PM +0530, Allen wrote:
+dmaegine_synchronize() is for external consumers to wait until all 
+operations in the command queue have been completed.
 
-> > These patches which I wasn't CCed on and which need their subject lines
-> > fixing :( .  With the subject lines fixed I guess so so
-
-> Extremely sorry. I thought I had it covered. How would you like it
-> worded?
-
-ASoC:
-
-In general you should try to follow the style for the code you're
-modifying, this applies to things like commit logs as well as the code
-itself.
-
---XWOWbaMNXpFDWE00
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl89CfQACgkQJNaLcl1U
-h9Cifwf+ImKkN4bcgAsq1FQIuFfGzOK1C2rJvwO1FF9QMBqoSLWbU+XXMm8B+dmp
-BUuRn3yv2s26q5SMpU1EvotzyTnEdeAhS8rvA+hpUMw7E+lz9v2qz/2m553Hap6U
-R1REKNzVtqstijAyYycjHID0ZsOPK+T5wBISb2fY38cJlgGRMQXh0ZgvHq54sfVK
-aLts4u4J72HMFLuxPbgTfiO8CX46MjLoH0eoRzPu7R44dvzqUfzdu5B/7Fp5amcC
-Sd6731MDQYarYhge1gBJ84arpbSB6Qsr1LQNh8hh2q0cXEpwNcXjnDMsYKjcoxPl
-D2VS/Gxp0eqmBwQXcSE5+AGsdYKdOQ==
-=XARi
------END PGP SIGNATURE-----
-
---XWOWbaMNXpFDWE00--
