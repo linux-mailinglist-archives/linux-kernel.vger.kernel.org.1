@@ -2,90 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51FA224A1DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 16:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0343E24A1E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 16:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728480AbgHSOiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 10:38:05 -0400
-Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:44285 "EHLO
-        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727000AbgHSOiD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 10:38:03 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id 8PE0kdShfuuXO8PE1khbsC; Wed, 19 Aug 2020 16:38:01 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1597847881; bh=ZCCtfWWwbC+xmzzR83OhJZTEWK6QQn8jjpzmrcAeEqo=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=ZkihLY9qrlW1OU5Q12mGO5KUwgY42fO1fBmQb2UWDMidlXxka6ypkfIUgocS8agPZ
-         8+oTmpUFAGNfr+Fw8mNQfqf3KfGmrFx/7j/XcHK+o6Ru+QU0aQcjWcykssfcBQbHM0
-         u0atx3ZcnTqS6eUsMqkTYQVvwBWpIj9sdMdM5iqCWy5NQ7DAi5Dfb9L9miYTVY1oxj
-         hfZgp+0pzi2BQd7rvHXp1KCmi1LCj45OzH0m2Jihq1QL421JswXKMgSQEW+n/KnmbO
-         aXo5jzQUk3r2t2ffU9ekFfa1epc7T10Yp/2+XzMWmGu8X8mScVgbxgijZdBNisAwwu
-         G/ur+uz6Q+Ocg==
-Subject: Re: [PATCH] media: pvrusb2: fix parsing error
-To:     Tong Zhang <ztong0001@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, mchehab@kernel.org, isely@pobox.com
-References: <20200816064901.977682-1-ztong0001@gmail.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <75b8354b-362a-0215-8038-45bd68be7de5@xs4all.nl>
-Date:   Wed, 19 Aug 2020 16:38:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728681AbgHSOiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 10:38:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727854AbgHSOiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 10:38:24 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C7E052078D;
+        Wed, 19 Aug 2020 14:38:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597847903;
+        bh=8xz/VjRVV4BpGcOZYP02Lbcq6ZGKUYnAY0ghh4zsOlA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eENPuUx2UY0IrjTdTM+/L7V8UqEKWGH2WGYUTFjbzG/Ea4EG5FsYa0nRgUxtjYZ8w
+         c45HBvCYS1DyuV0dlQm2+fLYexE8iLDTpRICGxjhqvoMmnPofCqtiASu85cilezjaM
+         ywPixZjl7BrbKBWJudG8d/5zKpGhtJULKOGyvyQA=
+Received: by pali.im (Postfix)
+        id 197E4582; Wed, 19 Aug 2020 16:38:21 +0200 (CEST)
+Date:   Wed, 19 Aug 2020 16:38:21 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc:     Joseph Hwang <josephsih@chromium.org>,
+        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Joseph Hwang <josephsih@google.com>,
+        ChromeOS Bluetooth Upstreaming 
+        <chromeos-bluetooth-upstreaming@chromium.org>,
+        Alain Michaud <alainm@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
+Subject: Re: [PATCH v1 1/2] Bluetooth: btusb: define HCI packet sizes of USB
+ Alts
+Message-ID: <20200819143821.qptlcrshcamlk4x3@pali>
+References: <20200813084129.332730-1-josephsih@chromium.org>
+ <20200813164059.v1.1.I56de28ec171134cb9f97062e2c304a72822ca38b@changeid>
+ <CABBYNZ+GPmHuVe_TCUwCVYuOzH8m0=Nmwv48Tn-by_5PnqqwOg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200816064901.977682-1-ztong0001@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfHBMkT9YYsm1Z+wBgCVQqK/RITDoBMSaHCcElI+SP3gEA+4WuWQvrO+BAfDvPtuTQ2KwE3ANSM3Jy/EmuP+CiEljDI5C0ZTqmr2YgzbNqz6jLJJKJ7BF
- E8eXmk8xbB+2jTwlUl84VX2uZlgw0Nt0c0V5f59qqYWtYNKz+ZSWBnJnRsspakBYW3Y0W8blUDthIu2/io2LMuSo+HPTNEgCj4E0COzXgnbRb44J8rUIfdFm
- v5R+csIEJ6Me3zkwDMlLCEJryNgqooEXtPysFsRaAYykauNryG0NLplEvVF9q236bGMwa4PEBJMqgCasn5nIobIYAdttDXRm53mb+7pgL1b3k9FyQ1S0W2v1
- HxHIgyic01HxTSBk0yXiscsEgYNyTTgRBreqsMj0+KmMT6Eqvxs=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABBYNZ+GPmHuVe_TCUwCVYuOzH8m0=Nmwv48Tn-by_5PnqqwOg@mail.gmail.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tong,
-
-On 16/08/2020 08:49, Tong Zhang wrote:
-> pvr2_std_str_to_id() returns 0 on failure and 1 on success,
-> however the caller is checking failure case using <0
+On Friday 14 August 2020 13:07:25 Luiz Augusto von Dentz wrote:
+> Hi Joseph,
 > 
-> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-> ---
->  drivers/media/usb/pvrusb2/pvrusb2-hdw.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> On Thu, Aug 13, 2020 at 1:42 AM Joseph Hwang <josephsih@chromium.org> wrote:
+> >
+> > It is desirable to define the HCI packet payload sizes of
+> > USB alternate settings so that they can be exposed to user
+> > space.
+> >
+> > Reviewed-by: Alain Michaud <alainm@chromium.org>
+> > Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> > Signed-off-by: Joseph Hwang <josephsih@chromium.org>
+> > ---
+> >
+> >  drivers/bluetooth/btusb.c        | 43 ++++++++++++++++++++++++--------
+> >  include/net/bluetooth/hci_core.h |  1 +
+> >  2 files changed, 33 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> > index 8d2608ddfd0875..df7cadf6385868 100644
+> > --- a/drivers/bluetooth/btusb.c
+> > +++ b/drivers/bluetooth/btusb.c
+> > @@ -459,6 +459,22 @@ static const struct dmi_system_id btusb_needs_reset_resume_table[] = {
+> >  #define BTUSB_WAKEUP_DISABLE   14
+> >  #define BTUSB_USE_ALT1_FOR_WBS 15
+> >
+> > +/* Per core spec 5, vol 4, part B, table 2.1,
+> > + * list the hci packet payload sizes for various ALT settings.
+> > + * This is used to set the packet length for the wideband speech.
+> > + * If a controller does not probe its usb alt setting, the default
+> > + * value will be 0. Any clients at upper layers should interpret it
+> > + * as a default value and set a proper packet length accordingly.
+> > + *
+> > + * To calculate the HCI packet payload length:
+> > + *   for alternate settings 1 - 5:
+> > + *     hci_packet_size = suggested_max_packet_size * 3 (packets) -
+> > + *                       3 (HCI header octets)
+> > + *   for alternate setting 6:
+> > + *     hci_packet_size = suggested_max_packet_size - 3 (HCI header octets)
+> > + */
+> > +static const int hci_packet_size_usb_alt[] = { 0, 24, 48, 72, 96, 144, 60 };
+> > +
+> >  struct btusb_data {
+> >         struct hci_dev       *hdev;
+> >         struct usb_device    *udev;
+> > @@ -3958,6 +3974,15 @@ static int btusb_probe(struct usb_interface *intf,
+> >         hdev->notify = btusb_notify;
+> >         hdev->prevent_wake = btusb_prevent_wake;
+> >
+> > +       if (id->driver_info & BTUSB_AMP) {
+> > +               /* AMP controllers do not support SCO packets */
+> > +               data->isoc = NULL;
+> > +       } else {
+> > +               /* Interface orders are hardcoded in the specification */
+> > +               data->isoc = usb_ifnum_to_if(data->udev, ifnum_base + 1);
+> > +               data->isoc_ifnum = ifnum_base + 1;
+> > +       }
+> > +
+> >  #ifdef CONFIG_PM
+> >         err = btusb_config_oob_wake(hdev);
+> >         if (err)
+> > @@ -4021,6 +4046,10 @@ static int btusb_probe(struct usb_interface *intf,
+> >                 hdev->set_diag = btintel_set_diag;
+> >                 hdev->set_bdaddr = btintel_set_bdaddr;
+> >                 hdev->cmd_timeout = btusb_intel_cmd_timeout;
+> > +
+> > +               if (btusb_find_altsetting(data, 6))
+> > +                       hdev->sco_pkt_len = hci_packet_size_usb_alt[6];
+> > +
+> >                 set_bit(HCI_QUIRK_STRICT_DUPLICATE_FILTER, &hdev->quirks);
+> >                 set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
+> >                 set_bit(HCI_QUIRK_NON_PERSISTENT_DIAG, &hdev->quirks);
+> > @@ -4062,15 +4091,6 @@ static int btusb_probe(struct usb_interface *intf,
+> >                 btusb_check_needs_reset_resume(intf);
+> >         }
+> >
+> > -       if (id->driver_info & BTUSB_AMP) {
+> > -               /* AMP controllers do not support SCO packets */
+> > -               data->isoc = NULL;
+> > -       } else {
+> > -               /* Interface orders are hardcoded in the specification */
+> > -               data->isoc = usb_ifnum_to_if(data->udev, ifnum_base + 1);
+> > -               data->isoc_ifnum = ifnum_base + 1;
+> > -       }
+> > -
+> >         if (IS_ENABLED(CONFIG_BT_HCIBTUSB_RTL) &&
+> >             (id->driver_info & BTUSB_REALTEK)) {
+> >                 hdev->setup = btrtl_setup_realtek;
+> > @@ -4082,9 +4102,10 @@ static int btusb_probe(struct usb_interface *intf,
+> >                  * (DEVICE_REMOTE_WAKEUP)
+> >                  */
+> >                 set_bit(BTUSB_WAKEUP_DISABLE, &data->flags);
+> > -               if (btusb_find_altsetting(data, 1))
+> > +               if (btusb_find_altsetting(data, 1)) {
+> >                         set_bit(BTUSB_USE_ALT1_FOR_WBS, &data->flags);
+> > -               else
+> > +                       hdev->sco_pkt_len = hci_packet_size_usb_alt[1];
+> > +               } else
+> >                         bt_dev_err(hdev, "Device does not support ALT setting 1");
+> >         }
+> >
+> > diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+> > index 8caac20556b499..0624496328fc09 100644
+> > --- a/include/net/bluetooth/hci_core.h
+> > +++ b/include/net/bluetooth/hci_core.h
+> > @@ -417,6 +417,7 @@ struct hci_dev {
+> >         unsigned int    acl_pkts;
+> >         unsigned int    sco_pkts;
+> >         unsigned int    le_pkts;
+> > +       unsigned int    sco_pkt_len;
 > 
-> diff --git a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-> index 1cfb7cf64131..db5aa66c1936 100644
-> --- a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-> +++ b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-> @@ -867,7 +867,8 @@ static int ctrl_std_sym_to_val(struct pvr2_ctrl *cptr,
->  	int ret;
->  	v4l2_std_id id;
->  	ret = pvr2_std_str_to_id(&id,bufPtr,bufSize);
-> -	if (ret < 0) return ret;
-> +	if (ret == 0)
-> +		return ret;
-
-But now you return 0 instead of an error when pvr2_std_str_to_id failed.
-
-Just do this:
-
-	if (!pvr2_std_str_to_id(&id,bufPtr,bufSize))
-		return -EINVAL;
-
-And you can drop the ret variable as well since that's no longer needed.
-
-Regards,
-
-	Hans
-
->  	if (mskp) *mskp = id;
->  	if (valp) *valp = id;
->  	return 0;
+> Id use sco_mtu to so the following check actually does what it intended to do:
 > 
+> https://git.kernel.org/pub/scm/linux/kernel/git/bluetooth/bluetooth-next.git/tree/net/bluetooth/sco.c#n283
+> 
+> Right now it seems we are using the buffer length as MTU but I think
+> we should actually use the packet length if it is lower than the
+> buffer length, actually it doesn't seems SCO packets can be fragmented
+> so the buffer length must always be big enough to carry a full packet
+> so I assume setting the packet length as conn->mtu will always be
+> correct.
 
+I agree. We should use sco mtu for this purpose.
+
+> >
+> >         __u16           block_len;
+> >         __u16           block_mtu;
+> > --
+> > 2.28.0.236.gb10cc79966-goog
+> >
+> 
+> 
+> -- 
+> Luiz Augusto von Dentz
