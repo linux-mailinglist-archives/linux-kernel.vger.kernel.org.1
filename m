@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8B92499FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 12:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF5292499F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 12:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727882AbgHSKM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 06:12:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50558 "EHLO
+        id S1727896AbgHSKMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 06:12:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36031 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727798AbgHSKMS (ORCPT
+        by vger.kernel.org with ESMTP id S1727807AbgHSKMT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 06:12:18 -0400
+        Wed, 19 Aug 2020 06:12:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597831937;
+        s=mimecast20190719; t=1597831938;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ygYF8AfHKYq7FFtUYuO8Zbjd9G+c4jkdgGgMMa4Az1w=;
-        b=ABeyLQRlrySpz2CPcN2hpQwjuhFBOB0qmbDJHWWjRqmacgaJI75wkvHD7/eUcghDd/VYQe
-        U/Nu/6snuZPks92QDswY59G/8GOccjyDiod8cHeUFAA4M3hfxIXz80E3Zm6XNCHdjQrnK5
-        6yrAXLvC2Y9aS6J3s6Pu54EBJJRJVR8=
+        bh=P5BwOp0hs0cGirzCiMB7Wivc0LM0Y2eMEhvclJKfJbc=;
+        b=dOup0pfWn1TFaW8cbinhXscCwarjSpdecGqTj1yC+nrm+RWTAZ0ST254TZjWSktAGdHyqS
+        PgI4PgumUY5rSE4fkchujDaQpAgYolQKxU5fWSaJK4maSZ+WLFEPssghT2/NauQ2iZBffN
+        vRkcNwqKJM5HpCj2Jyl4A3JutZH1eL4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-258-XJQTw8nvM5OudnJKj_bo_w-1; Wed, 19 Aug 2020 06:12:14 -0400
-X-MC-Unique: XJQTw8nvM5OudnJKj_bo_w-1
+ us-mta-304-hE5cNfm8NKCqttB_B-pqRQ-1; Wed, 19 Aug 2020 06:12:16 -0400
+X-MC-Unique: hE5cNfm8NKCqttB_B-pqRQ-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A69811DDFD;
-        Wed, 19 Aug 2020 10:12:12 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CC934800466;
+        Wed, 19 Aug 2020 10:12:14 +0000 (UTC)
 Received: from t480s.redhat.com (ovpn-114-11.ams2.redhat.com [10.36.114.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CA105277B7;
-        Wed, 19 Aug 2020 10:12:10 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0277E16597;
+        Wed, 19 Aug 2020 10:12:12 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
@@ -43,9 +43,9 @@ Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
         Baoquan He <bhe@redhat.com>,
         Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
         Oscar Salvador <osalvador@suse.de>
-Subject: [PATCH v1 03/11] mm/memory_hotplug: simplify checking if all pages are isolated in offline_pages()
-Date:   Wed, 19 Aug 2020 12:11:49 +0200
-Message-Id: <20200819101157.12723-4-david@redhat.com>
+Subject: [PATCH v1 04/11] mm/memory_hotplug: simplify offlining of pages in offline_pages()
+Date:   Wed, 19 Aug 2020 12:11:50 +0200
+Message-Id: <20200819101157.12723-5-david@redhat.com>
 In-Reply-To: <20200819101157.12723-1-david@redhat.com>
 References: <20200819101157.12723-1-david@redhat.com>
 MIME-Version: 1.0
@@ -58,7 +58,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 We make sure that we cannot have any memory holes right at the beginning
 of offline_pages(). We no longer need walk_system_ram_range() and can
-call test_pages_isolated() directly.
+call __offline_isolated_pages() directly.
+
+offlined_pages always corresponds to nr_pages, so we can simplify that.
 
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Michal Hocko <mhocko@suse.com>
@@ -68,43 +70,71 @@ Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
 Cc: Oscar Salvador <osalvador@suse.de>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- mm/memory_hotplug.c | 16 +---------------
- 1 file changed, 1 insertion(+), 15 deletions(-)
+ mm/memory_hotplug.c | 28 ++++++++--------------------
+ 1 file changed, 8 insertions(+), 20 deletions(-)
 
 diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index 6856702af68d9..f64478349148d 100644
+index f64478349148d..50aa5df696e9d 100644
 --- a/mm/memory_hotplug.c
 +++ b/mm/memory_hotplug.c
-@@ -1384,17 +1384,6 @@ offline_isolated_pages_cb(unsigned long start, unsigned long nr_pages,
- 	return 0;
+@@ -1373,17 +1373,6 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
+ 	return ret;
  }
  
--/*
-- * Check all pages in range, recorded as memory resource, are isolated.
-- */
+-/* Mark all sections offline and remove all free pages from the buddy. */
 -static int
--check_pages_isolated_cb(unsigned long start_pfn, unsigned long nr_pages,
+-offline_isolated_pages_cb(unsigned long start, unsigned long nr_pages,
 -			void *data)
 -{
--	return test_pages_isolated(start_pfn, start_pfn + nr_pages,
--				   MEMORY_OFFLINE);
+-	unsigned long *offlined_pages = (unsigned long *)data;
+-
+-	*offlined_pages += __offline_isolated_pages(start, start + nr_pages);
+-	return 0;
 -}
 -
  static int __init cmdline_parse_movable_node(char *p)
  {
  	movable_node_enabled = true;
-@@ -1579,10 +1568,7 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
- 			reason = "failure to dissolve huge pages";
- 			goto failed_removal_isolated;
+@@ -1470,7 +1459,7 @@ static int count_system_ram_pages_cb(unsigned long start_pfn,
+ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
+ {
+ 	const unsigned long end_pfn = start_pfn + nr_pages;
+-	unsigned long pfn, system_ram_pages = 0, offlined_pages = 0;
++	unsigned long pfn, system_ram_pages = 0;
+ 	int ret, node, nr_isolate_pageblock;
+ 	unsigned long flags;
+ 	struct zone *zone;
+@@ -1570,11 +1559,10 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
  		}
--		/* check again */
--		ret = walk_system_ram_range(start_pfn, end_pfn - start_pfn,
--					    NULL, check_pages_isolated_cb);
--	} while (ret);
-+	} while (test_pages_isolated(start_pfn, end_pfn, MEMORY_OFFLINE));
+ 	} while (test_pages_isolated(start_pfn, end_pfn, MEMORY_OFFLINE));
  
- 	/* Ok, all of our target is isolated.
- 	   We cannot do rollback at this point. */
+-	/* Ok, all of our target is isolated.
+-	   We cannot do rollback at this point. */
+-	walk_system_ram_range(start_pfn, end_pfn - start_pfn,
+-			      &offlined_pages, offline_isolated_pages_cb);
+-	pr_info("Offlined Pages %ld\n", offlined_pages);
++	/* Mark all sections offline and remove free pages from the buddy. */
++	__offline_isolated_pages(start_pfn, end_pfn);
++	pr_info("Offlined Pages %ld\n", nr_pages);
++
+ 	/*
+ 	 * Onlining will reset pagetype flags and makes migrate type
+ 	 * MOVABLE, so just need to decrease the number of isolated
+@@ -1585,11 +1573,11 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
+ 	spin_unlock_irqrestore(&zone->lock, flags);
+ 
+ 	/* removal success */
+-	adjust_managed_page_count(pfn_to_page(start_pfn), -offlined_pages);
+-	zone->present_pages -= offlined_pages;
++	adjust_managed_page_count(pfn_to_page(start_pfn), -nr_pages);
++	zone->present_pages -= nr_pages;
+ 
+ 	pgdat_resize_lock(zone->zone_pgdat, &flags);
+-	zone->zone_pgdat->node_present_pages -= offlined_pages;
++	zone->zone_pgdat->node_present_pages -= nr_pages;
+ 	pgdat_resize_unlock(zone->zone_pgdat, &flags);
+ 
+ 	init_per_zone_wmark_min();
 -- 
 2.26.2
 
