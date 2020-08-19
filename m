@@ -2,77 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A8524A52E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 19:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C815B24A533
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 19:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726738AbgHSRsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 13:48:14 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:35630 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726578AbgHSRsK (ORCPT
+        id S1726698AbgHSRtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 13:49:42 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:38683 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725804AbgHSRtm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 13:48:10 -0400
-Received: by mail-ed1-f68.google.com with SMTP id m20so18822787eds.2;
-        Wed, 19 Aug 2020 10:48:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zX9jwCX/Eaov1Rw6oFqsIG12piAHTYmOUPZHGAVnJAM=;
-        b=K4Qaob3pt4AeRlN2YNKstr686T33OyAo7wDY9LlLeWRiVEbYNB7srl3MLkaLCpBZdq
-         kFyfQWe5T2oKKl1svHOm4FYXmzlq+ke172bkVwH5tMPG+0mPz9IHqGN3Fo0xxcCFns5p
-         WNFJRFDOAI+fqdSQaM/FBSPs79sN2dw38/6k6C4bjw7pDblYVybGPfPXtmW23Dmaq7wC
-         6123QEOAQjlgx52D18V3/FLr/z3Ksmdl0W4L40986vw0wb+N/hncaYIEFgafQaeZa1mH
-         VGmo2iEf8bk9DhcUMhe85fexEk/vGNAsFDT/ZUtPYdN461Dpa2EG/6T0GCqhPxnYg7UX
-         aONA==
-X-Gm-Message-State: AOAM532Wvew9dANV4CZh+YQcpA6O/toettmmp/Nkd2yP6hid0aWDVV8c
-        9afmEtNZXMmf1mjG8kYzB7Y=
-X-Google-Smtp-Source: ABdhPJy7a8YQ6srCJ1yH086NTSH3EFod8CrU7Hoeaw8blgh1KR6D2HT1o1RXpPDLZA9IO0ZezxtWUg==
-X-Received: by 2002:aa7:d8d7:: with SMTP id k23mr26744142eds.54.1597859289105;
-        Wed, 19 Aug 2020 10:48:09 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.216])
-        by smtp.googlemail.com with ESMTPSA id i9sm19116548ejb.48.2020.08.19.10.48.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 19 Aug 2020 10:48:08 -0700 (PDT)
-Date:   Wed, 19 Aug 2020 19:48:05 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 1/2] soc: mediatek: mtk-infracfg: Fix kerneldoc
-Message-ID: <20200819174805.GA394@kozik-lap>
-References: <20200729074415.28393-1-krzk@kernel.org>
- <92ac7165-765e-da75-4c0b-3b232521b5e9@gmail.com>
+        Wed, 19 Aug 2020 13:49:42 -0400
+Received: from callcc.thunk.org (pool-108-49-65-20.bstnma.fios.verizon.net [108.49.65.20])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 07JHnPOv028075
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 Aug 2020 13:49:25 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 0505342010C; Wed, 19 Aug 2020 13:49:24 -0400 (EDT)
+Date:   Wed, 19 Aug 2020 13:49:24 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Cc:     Ritesh Harjani <riteshh@linux.ibm.com>,
+        kernel test robot <rong.a.chen@intel.com>,
+        kbuild test robot <lkp@intel.com>, Jan Kara <jack@suse.cz>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+Subject: Re: [LKP] Re: [ext4] d3b6f23f71: stress-ng.fiemap.ops_per_sec -60.5%
+ regression
+Message-ID: <20200819174924.GB5561@mit.edu>
+References: <20200407080036.GA8179@shao2-debian>
+ <20200715110437.7D0A3AE051@d06av26.portsmouth.uk.ibm.com>
+ <705b788f-aac3-f622-a286-ecd99deb5ca9@linux.intel.com>
+ <b29f6c18-f9c7-7e43-5b13-b5724fbf8d1a@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <92ac7165-765e-da75-4c0b-3b232521b5e9@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <b29f6c18-f9c7-7e43-5b13-b5724fbf8d1a@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 09:53:59AM +0200, Matthias Brugger wrote:
-> 
-> 
-> On 29/07/2020 09:44, Krzysztof Kozlowski wrote:
-> > Fix W=1 compile warnings (invalid kerneldoc):
-> > 
-> >      drivers/soc/mediatek/mtk-infracfg.c:34: warning: Function parameter or member 'infracfg' not described in 'mtk_infracfg_set_bus_protection'
-> >      drivers/soc/mediatek/mtk-infracfg.c:34: warning: Excess function parameter 'regmap' description in 'mtk_infracfg_set_bus_protection'
-> > 
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> Queued for v5.9-next/soc
+Looking at what the stress-ng fiemap workload is doing, and
+it's.... interesting.
 
-Hi,
+It is running 4 processes which are calling FIEMAP on a particular
+file in a loop, with a 25ms sleep every 64 times.  And then there is a
+fifth process which is randomly writing to the file and calling
+punch_hole to random offsets in the file.
 
-It looks like this missed the merge window. Do you plan to keep it for
-v5.10?
+So this is quite different from what Ritesh has been benchmarking
+which is fiemap in isolation, as opposed to fiemap racing against a 3
+other fiemap processes plus a process which is actively modifying the
+file.
 
-Best regards,
-Krzysztof
+In the original code, if I remember correctly, we were using a shared
+reader/writer lock to look at the extent tree blocks directly, but we
+hold the i_data_sem rw_sempahore for the duration of the fiemap call.
+
+In the new code, we're going through the extent_status cache, which is
+grabbing the rw_spinlock each time we do a lookup in the extents
+status tree.  So this is a much finer-grained locking and that is
+probably the explanation for the increased time for running fiemap in
+the contended case.
+
+If this theory is correct, we would probably get back the performance
+by wrapping the calls to iomap_fiemap() with {up,down}_read(&ei->i_data_sem)
+in ext4_fiemap().
+
+That being said, however ---- it's clear what real-life workload cares
+about FIEMAP performance, especially with multiple threads all calling
+FIEMAP racing against a file which is being actively modified.  Having
+stress-ng do this to find potential kernel bugs is a great thing, so I
+understand why stress-ng might be doing this as a QA tool.  Why we
+should care about stress-ng as a performance benchmark, at least in
+this case, is much less clear to me.
+
+Cheers,
+
+					- Ted
