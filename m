@@ -2,148 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D59D24A00C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 140DA24A013
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728599AbgHSNd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 09:33:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:36996 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728558AbgHSNds (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 09:33:48 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 649E71435;
-        Wed, 19 Aug 2020 06:33:43 -0700 (PDT)
-Received: from monolith.localdoman (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E42F63F71F;
-        Wed, 19 Aug 2020 06:33:41 -0700 (PDT)
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     mark.rutland@arm.com, maz@kernel.org, will@kernel.org,
-        catalin.marinas@arm.com, swboyd@chromium.org,
-        sumit.garg@linaro.org, Julien Thierry <julien.thierry@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Will Deacon <will.deacon@arm.com>
-Subject: [PATCH v6 7/7] arm_pmu: arm64: Use NMIs for PMU
-Date:   Wed, 19 Aug 2020 14:34:19 +0100
-Message-Id: <20200819133419.526889-8-alexandru.elisei@arm.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200819133419.526889-1-alexandru.elisei@arm.com>
-References: <20200819133419.526889-1-alexandru.elisei@arm.com>
+        id S1728652AbgHSNe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 09:34:59 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9778 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728625AbgHSNet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 09:34:49 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id B2FF87F951F8EE11FFAA;
+        Wed, 19 Aug 2020 21:34:44 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.253) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Wed, 19 Aug 2020
+ 21:34:39 +0800
+Subject: Re: [PATCH v2 1/4] libnvdimm: Fix memory leaks in of_pmem.c
+To:     Markus Elfring <Markus.Elfring@web.de>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>
+CC:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Vishal Verma <vishal.l.verma@intel.com>
+References: <20200819020503.3079-1-thunder.leizhen@huawei.com>
+ <20200819020503.3079-2-thunder.leizhen@huawei.com>
+ <5cc26ce3-963e-3ab6-6f97-706cea00c5f3@web.de>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <57fac381-20e5-ce89-7b69-1f2c576e709e@huawei.com>
+Date:   Wed, 19 Aug 2020 21:34:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <5cc26ce3-963e-3ab6-6f97-706cea00c5f3@web.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.253]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julien Thierry <julien.thierry@arm.com>
 
-Add required PMU interrupt operations for NMIs. Request interrupt lines as
-NMIs when possible, otherwise fall back to normal interrupts.
 
-NMIs are only supported on the arm64 architecture with a GICv3 irqchip.
+On 8/19/2020 8:28 PM, Markus Elfring wrote:
+>> The memory priv->bus_desc.provider_name allocated by kstrdup() is not
+>> freed correctly.
+> 
+> How do you think about to choose an imperative wording for
+> a corresponding change description?
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=18445bf405cb331117bc98427b1ba6f12418ad17#n151
 
-Cc: Julien Thierry <julien.thierry.kdev@gmail.com>
-Cc: Will Deacon <will.deacon@arm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Signed-off-by: Julien Thierry <julien.thierry@arm.com>
-[Added that NMIs only work on arm64 + GICv3]
-Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
----
- drivers/perf/arm_pmu.c | 62 ++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 56 insertions(+), 6 deletions(-)
+OK, thanks. I think I known what "imperative wording" means now.
+I will rewrite the descriptions.
 
-diff --git a/drivers/perf/arm_pmu.c b/drivers/perf/arm_pmu.c
-index 17e5952d21e4..dd9d7f61ee29 100644
---- a/drivers/perf/arm_pmu.c
-+++ b/drivers/perf/arm_pmu.c
-@@ -45,6 +45,17 @@ static const struct pmu_irq_ops pmuirq_ops = {
- 	.free_pmuirq = armpmu_free_pmuirq
- };
- 
-+static void armpmu_free_pmunmi(unsigned int irq, int cpu, void __percpu *devid)
-+{
-+	free_nmi(irq, per_cpu_ptr(devid, cpu));
-+}
-+
-+static const struct pmu_irq_ops pmunmi_ops = {
-+	.enable_pmuirq = enable_nmi,
-+	.disable_pmuirq = disable_nmi_nosync,
-+	.free_pmuirq = armpmu_free_pmunmi
-+};
-+
- static void armpmu_enable_percpu_pmuirq(unsigned int irq)
- {
- 	enable_percpu_irq(irq, IRQ_TYPE_NONE);
-@@ -63,6 +74,31 @@ static const struct pmu_irq_ops percpu_pmuirq_ops = {
- 	.free_pmuirq = armpmu_free_percpu_pmuirq
- };
- 
-+static void armpmu_enable_percpu_pmunmi(unsigned int irq)
-+{
-+	if (!prepare_percpu_nmi(irq))
-+		enable_percpu_nmi(irq, IRQ_TYPE_NONE);
-+}
-+
-+static void armpmu_disable_percpu_pmunmi(unsigned int irq)
-+{
-+	disable_percpu_nmi(irq);
-+	teardown_percpu_nmi(irq);
-+}
-+
-+static void armpmu_free_percpu_pmunmi(unsigned int irq, int cpu,
-+				      void __percpu *devid)
-+{
-+	if (armpmu_count_irq_users(irq) == 1)
-+		free_percpu_nmi(irq, devid);
-+}
-+
-+static const struct pmu_irq_ops percpu_pmunmi_ops = {
-+	.enable_pmuirq = armpmu_enable_percpu_pmunmi,
-+	.disable_pmuirq = armpmu_disable_percpu_pmunmi,
-+	.free_pmuirq = armpmu_free_percpu_pmunmi
-+};
-+
- static DEFINE_PER_CPU(struct arm_pmu *, cpu_armpmu);
- static DEFINE_PER_CPU(int, cpu_irq);
- static DEFINE_PER_CPU(const struct pmu_irq_ops *, cpu_irq_ops);
-@@ -633,15 +669,29 @@ int armpmu_request_irq(int irq, int cpu)
- 			    IRQF_NO_THREAD;
- 
- 		irq_set_status_flags(irq, IRQ_NOAUTOEN);
--		err = request_irq(irq, handler, irq_flags, "arm-pmu",
-+
-+		err = request_nmi(irq, handler, irq_flags, "arm-pmu",
- 				  per_cpu_ptr(&cpu_armpmu, cpu));
- 
--		irq_ops = &pmuirq_ops;
-+		/* If cannot get an NMI, get a normal interrupt */
-+		if (err) {
-+			err = request_irq(irq, handler, irq_flags, "arm-pmu",
-+					  per_cpu_ptr(&cpu_armpmu, cpu));
-+			irq_ops = &pmuirq_ops;
-+		} else {
-+			irq_ops = &pmunmi_ops;
-+		}
- 	} else if (armpmu_count_irq_users(irq) == 0) {
--		err = request_percpu_irq(irq, handler, "arm-pmu",
--					 &cpu_armpmu);
--
--		irq_ops = &percpu_pmuirq_ops;
-+		err = request_percpu_nmi(irq, handler, "arm-pmu", &cpu_armpmu);
-+
-+		/* If cannot get an NMI, get a normal interrupt */
-+		if (err) {
-+			err = request_percpu_irq(irq, handler, "arm-pmu",
-+						 &cpu_armpmu);
-+			irq_ops = &percpu_pmuirq_ops;
-+		} else {
-+			irq_ops = &percpu_pmunmi_ops;
-+		}
- 	} else {
- 		/* Per cpudevid irq was already requested by another CPU */
- 		irq_ops = armpmu_find_irq_ops(irq);
--- 
-2.28.0
+> 
+> Regards,
+> Markus
+> 
+> 
 
