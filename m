@@ -2,166 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A4324A507
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 19:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD45524A518
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 19:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbgHSRgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 13:36:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726703AbgHSRgv (ORCPT
+        id S1726707AbgHSRkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 13:40:43 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:54770 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725804AbgHSRkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 13:36:51 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DF0C061757;
-        Wed, 19 Aug 2020 10:36:51 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id z18so22306159wrm.12;
-        Wed, 19 Aug 2020 10:36:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+bhGv6x9d7Md61hsuFNIkfPq3bcxtQviu/6k9haxoN4=;
-        b=Y4Yn43JUJRrnzNlVJ+qfW7bTGDlgp2KtAFgWc1ZC9OPN4PtPcF9CK1XSQ8U3PFJ1Tu
-         Bsm+r/sys5RMoWP28GmgJYpsd37KV1EcicLfj3QOLnX3TPMxtYJJVk1yCM3Y0w3kIfhY
-         EmQpu3G85KwwwpgqHDimPq1NhbMCE0REYYYcDYMlfiMBhnyGJSOPmgpqKDb6bTqvXRAm
-         VcjvxvQwfzAM+GBK2aL091eP/ab/HYq1kim9ftBGy5zXWJLGTve5gyYsJ6xOvtaphH+n
-         k6y63OsFV5RRYbksUcCsack5Rbaa1ukiRgAA0dZwr3rmhwOi/ViiIumPfhNQjS0qK2jj
-         mTXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+bhGv6x9d7Md61hsuFNIkfPq3bcxtQviu/6k9haxoN4=;
-        b=cy+VuMKoK461oslcLqi7nfRIXENYL4U4p3j96s0fek8ItSJhmlADzLh8zAv63+M05T
-         92g8apjq9+koiB6IdtPP8dcmluUrsGOBSg0TlaA6O5NQFsQi5AhTfmdHcyi81Fkbtyqz
-         XeLfZ5Zcfvfw3KSnJLkpu9sdXcGpLRNb8rfWtcykTRdBaHS4xcGOU0NYgOPR1NY3huUf
-         cz8PQaIhpy6R1Abxv2ChEridV5DVBVnCI/1orH/9DAf9Tc4Di7LNY/vrfsRPeMQEhqFt
-         uKwMBVz87m8PmnSTCyG1Jx+lUOjhD7w1bVdGmRlJcDbQzaYu6ujlAPLkrL4LChddNfdq
-         BohQ==
-X-Gm-Message-State: AOAM5305918VcDsvnv6RPD0H8DT9jhdC88F/GUBq7koSnXo4xXCitrff
-        ph26w1JSVaZJkOBFmaXl/w2gUDAOD3XVyoGJu7w=
-X-Google-Smtp-Source: ABdhPJzglAj2zEcuSTfR/ApGNCwL58mvFBlYw3kwcRHOHl7jcRz0JgVZV5GKXtIiD8j0Ohle/G/9WooWDkBOpUVFHgw=
-X-Received: by 2002:a5d:4a8a:: with SMTP id o10mr4835046wrq.327.1597858609658;
- Wed, 19 Aug 2020 10:36:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200817220238.603465-1-robdclark@gmail.com> <20200817220238.603465-11-robdclark@gmail.com>
- <CAD=FV=VzYSL-3q0oFPPSP7FiEdLeTEN6Zy=kp-73B=8LAavmVw@mail.gmail.com>
-In-Reply-To: <CAD=FV=VzYSL-3q0oFPPSP7FiEdLeTEN6Zy=kp-73B=8LAavmVw@mail.gmail.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Wed, 19 Aug 2020 10:36:38 -0700
-Message-ID: <CAF6AEGt=tGe3WQfyF_NuvJVXRbMH1=fnNK63MLpz0zxjZ9cwgQ@mail.gmail.com>
-Subject: Re: [PATCH 10/20] dt-bindings: arm-smmu: Add compatible string for
- Adreno GPU SMMU
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Will Deacon <will@kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Vivek Gautam <vivek.gautam@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Herring <robh@kernel.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:ARM SMMU DRIVERS" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 19 Aug 2020 13:40:41 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07JHbmTo002866;
+        Wed, 19 Aug 2020 17:40:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=aJ0lUCXdyfNTjXmXrU81lxUeJv9n2ZYKi+LgxXWycLA=;
+ b=CRMBno42IJuj0Pw4iHyQyTMY6lXlIdlwZTIddMrwfcyCMOVlHCIf4hYIk5LtNJADCN0r
+ /QZSOmLvEWDzldoN1zl2DTkRo65AbTz3PL44YyrxpTJgmhTdrYEFrJfCC02IKuHJJs9G
+ x9gIoh2SRobBO/Tih1akw5nPr7EZ6Z9/eDxcQMaeOb6f99THBPJPDbJCGQVjEF+K33Ix
+ dA9iWdZeSX6RmNM0rpX5eFh8HkO5nG9paqMvGmqV3YbYtpMPXmj/4NEfu+CU4u7aBmxw
+ uKJ8aP/+pGrjGAa71q0/hPh3QbP0ZiWxQFlRKrBnOrV0NzhUhW/nr2n94ps8JMczsH0q SA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 32x7nmkyja-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 19 Aug 2020 17:40:10 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07JHcISp107375;
+        Wed, 19 Aug 2020 17:40:09 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 32xsftruej-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 Aug 2020 17:40:09 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07JHe4Me015033;
+        Wed, 19 Aug 2020 17:40:04 GMT
+Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 19 Aug 2020 10:40:04 -0700
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: [PATCH net-next] SUNRPC: remove duplicate include
+From:   Chuck Lever <chuck.lever@oracle.com>
+In-Reply-To: <20200819024943.26850-1-wanghai38@huawei.com>
+Date:   Wed, 19 Aug 2020 13:40:01 -0400
+Cc:     Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Bruce Fields <bfields@fieldses.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <EFE54752-7DA7-465C-908B-F46B89DC3C2A@oracle.com>
+References: <20200819024943.26850-1-wanghai38@huawei.com>
+To:     Wang Hai <wanghai38@huawei.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9718 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
+ spamscore=0 suspectscore=0 mlxscore=0 phishscore=0 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008190145
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9718 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
+ impostorscore=0 priorityscore=1501 adultscore=0 mlxscore=0 mlxlogscore=999
+ lowpriorityscore=0 bulkscore=0 phishscore=0 malwarescore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008190145
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 10:03 AM Doug Anderson <dianders@chromium.org> wrote:
->
-> Hi,
->
-> On Mon, Aug 17, 2020 at 3:03 PM Rob Clark <robdclark@gmail.com> wrote:
-> >
-> > From: Jordan Crouse <jcrouse@codeaurora.org>
-> >
-> > Every Qcom Adreno GPU has an embedded SMMU for its own use. These
-> > devices depend on unique features such as split pagetables,
-> > different stall/halt requirements and other settings. Identify them
-> > with a compatible string so that they can be identified in the
-> > arm-smmu implementation specific code.
-> >
-> > Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > ---
-> >  Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-> > index 503160a7b9a0..5ec5d0d691f6 100644
-> > --- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-> > +++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-> > @@ -40,6 +40,10 @@ properties:
-> >                - qcom,sm8150-smmu-500
-> >                - qcom,sm8250-smmu-500
-> >            - const: arm,mmu-500
-> > +      - description: Qcom Adreno GPUs implementing "arm,smmu-v2"
-> > +        items:
-> > +          - const: qcom,adreno-smmu
-> > +          - const: qcom,smmu-v2
->
-> I know I'm kinda late to the game, but this seems weird to me,
-> especially given the later patches in the series like:
->
-> https://lore.kernel.org/r/20200817220238.603465-19-robdclark@gmail.com
->
-> Specifically in that patch you can see that this IOMMU already had a
-> compatible string and we're changing it and throwing away the
-> model-specific string?  I'm guessing that you're just trying to make
-> it easier for code to identify the adreno iommu, but it seems like a
-> better way would have been to just add the adreno compatible in the
-> middle, like:
->
->       - description: Qcom Adreno GPUs implementing "arm,smmu-v2"
->         items:
->           - enum:
->               - qcom,msm8996-smmu-v2
->               - qcom,msm8998-smmu-v2
->               - qcom,sc7180-smmu-v2
->               - qcom,sdm845-smmu-v2
->         - const: qcom,adreno-smmu
->         - const: qcom,smmu-v2
->
-> Then we still have the SoC-specific compatible string in case we need
-> it but we also have the generic one?  It also means that we're not
-> deleting the old compatible string...
 
-I did bring up the thing about removing the compat string in an
-earlier revision of the series.. but then we realized that
-qcom,sc7180-smmu-v2 was never actually used anywhere.
 
-But I guess we could:  compatible = "qcom,sc7180-smmu-v2",
-"qcom,adreno-smmu", "qcom,smmu-v2";
+> On Aug 18, 2020, at 10:49 PM, Wang Hai <wanghai38@huawei.com> wrote:
+> 
+> Remove linux/sunrpc/auth_gss.h which is included more than once
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
 
-BR,
--R
+I've reviewed and compile-tested this, so no objection from me.
+
+Since this duplicate was introduced in nfsd-5.9, I can take this
+for an nfsd-5.9-rc pull, if there are no other objections.
+
+
+> ---
+> net/sunrpc/auth_gss/trace.c | 1 -
+> 1 file changed, 1 deletion(-)
+> 
+> diff --git a/net/sunrpc/auth_gss/trace.c b/net/sunrpc/auth_gss/trace.c
+> index d26036a57443..76685abba60f 100644
+> --- a/net/sunrpc/auth_gss/trace.c
+> +++ b/net/sunrpc/auth_gss/trace.c
+> @@ -9,7 +9,6 @@
+> #include <linux/sunrpc/svc_xprt.h>
+> #include <linux/sunrpc/auth_gss.h>
+> #include <linux/sunrpc/gss_err.h>
+> -#include <linux/sunrpc/auth_gss.h>
+> 
+> #define CREATE_TRACE_POINTS
+> #include <trace/events/rpcgss.h>
+> -- 
+> 2.17.1
+> 
+
+--
+Chuck Lever
 
 
 
-
->
-> -Doug
->
->
-> >        - description: Marvell SoCs implementing "arm,mmu-500"
-> >          items:
-> >            - const: marvell,ap806-smmu-500
-> > --
-> > 2.26.2
-> >
