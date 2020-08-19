@@ -2,59 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3615D249BEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 13:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40389249BE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 13:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728095AbgHSLgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 07:36:38 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9848 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728063AbgHSLge (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 07:36:34 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 700FE160379AF6C74599;
-        Wed, 19 Aug 2020 19:36:22 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Wed, 19 Aug 2020
- 19:36:18 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <evan.quan@amd.com>, <alexander.deucher@amd.com>,
-        <christian.koenig@amd.com>, <airlied@linux.ie>, <daniel@ffwll.ch>
-CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] drm/amd/powerplay: remove duplicate include
-Date:   Wed, 19 Aug 2020 19:34:09 +0800
-Message-ID: <20200819113409.10137-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728015AbgHSLel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 07:34:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726820AbgHSLea (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 07:34:30 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A5DC061757;
+        Wed, 19 Aug 2020 04:34:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7yVfV8jmwfeaLjZjiHvvFJk+lpL/q6/SRgz1/vjVSa8=; b=W8u29Do1kwEZJ7t63grpX5Jg5F
+        kFBInhhDX0kCur8w1uTzPJ7dpwPfh/zkqz93CTWOBGnDUK+msXqyR8uNd9ikxOCtk/LdA4P7bkrEX
+        8NkomztzxzlAZ1X6lbvqdyK5GVCuyudCvdryQmomsemLbgy0bf1ieqmssFm6YYUzNJoU6imzVShKJ
+        Jt0F+xJ6+Nuqb13Jvd9SHVw3QnWRtZ/21M3FYeQwLMrUerQzpmlM0EjxzpjzCjxuAZbn3T9wond7r
+        P9NslT3QBeadiwJEFrrPA9G4w+jtIZlC5cyjYEpXPQT0V3f4E4i6mPxbtPu8fr3gERarcuPN+lAwP
+        CXzurXmQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k8MMK-00020G-TN; Wed, 19 Aug 2020 11:34:25 +0000
+Date:   Wed, 19 Aug 2020 12:34:24 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs: Add function declaration of simple_dname
+Message-ID: <20200819113424.GA17456@casper.infradead.org>
+References: <20200819083259.919838-1-leon@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200819083259.919838-1-leon@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove asic_reg/nbio/nbio_6_1_offset.h which is included more than once
+On Wed, Aug 19, 2020 at 11:32:59AM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> The simple_dname() is declared in internal header file as extern
+> and this generates the following GCC warning.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- drivers/gpu/drm/amd/powerplay/hwmgr/vega12_inc.h | 1 -
- 1 file changed, 1 deletion(-)
+The fact that it's declared as extern doesn't matter.  You don't need
+the change to internal.h at all.  The use of 'extern' on a function
+declaration is purely decorative:
 
-diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/vega12_inc.h b/drivers/gpu/drm/amd/powerplay/hwmgr/vega12_inc.h
-index e6d9e84059e1..0d08c57d3bca 100644
---- a/drivers/gpu/drm/amd/powerplay/hwmgr/vega12_inc.h
-+++ b/drivers/gpu/drm/amd/powerplay/hwmgr/vega12_inc.h
-@@ -34,7 +34,6 @@
- #include "asic_reg/gc/gc_9_2_1_offset.h"
- #include "asic_reg/gc/gc_9_2_1_sh_mask.h"
- 
--#include "asic_reg/nbio/nbio_6_1_offset.h"
- #include "asic_reg/nbio/nbio_6_1_offset.h"
- #include "asic_reg/nbio/nbio_6_1_sh_mask.h"
- 
--- 
-2.17.1
+  5 If the declaration of an identifier for a function has no
+  storage-class specifier, its linkage is determined exactly as if it
+  were declared with the storage-class specifier extern.
 
+I'd drop the change to internal.h and fix the changelog.
+
+> fs/d_path.c:311:7: warning: no previous prototype for 'simple_dname' [-Wmissing-prototypes]
+>   311 | char *simple_dname(struct dentry *dentry, char *buffer, int buflen)
+>       |       ^~~~~~~~~~~~
+> 
+> Instead of that extern, reuse the fact that internal.h file is internal to fs/* and
+> declare simple_dname() like any other function.
+> 
+> Fixes: 7e5f7bb08b8c ("unexport simple_dname()")
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  fs/d_path.c   | 2 ++
+>  fs/internal.h | 2 +-
+>  2 files changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/d_path.c b/fs/d_path.c
+> index 0f1fc1743302..4b89448cc78e 100644
+> --- a/fs/d_path.c
+> +++ b/fs/d_path.c
+> @@ -8,6 +8,8 @@
+>  #include <linux/prefetch.h>
+>  #include "mount.h"
+> 
+> +#include "internal.h"
+> +
+>  static int prepend(char **buffer, int *buflen, const char *str, int namelen)
+>  {
+>  	*buflen -= namelen;
+> diff --git a/fs/internal.h b/fs/internal.h
+> index 10517ece4516..2def264272f4 100644
+> --- a/fs/internal.h
+> +++ b/fs/internal.h
+> @@ -164,7 +164,7 @@ extern int d_set_mounted(struct dentry *dentry);
+>  extern long prune_dcache_sb(struct super_block *sb, struct shrink_control *sc);
+>  extern struct dentry *d_alloc_cursor(struct dentry *);
+>  extern struct dentry * d_alloc_pseudo(struct super_block *, const struct qstr *);
+> -extern char *simple_dname(struct dentry *, char *, int);
+> +char *simple_dname(struct dentry *d, char *buf, int len);
+>  extern void dput_to_list(struct dentry *, struct list_head *);
+>  extern void shrink_dentry_list(struct list_head *);
+> 
+> --
+> 2.26.2
+> 
