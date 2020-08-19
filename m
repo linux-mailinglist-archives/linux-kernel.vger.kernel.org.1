@@ -2,77 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D30924951B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 08:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 660B724951F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 08:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726911AbgHSGka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 02:40:30 -0400
-Received: from muru.com ([72.249.23.125]:40890 "EHLO muru.com"
+        id S1726920AbgHSGmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 02:42:47 -0400
+Received: from mga18.intel.com ([134.134.136.126]:58361 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726840AbgHSGk2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 02:40:28 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id C82A6807A;
-        Wed, 19 Aug 2020 06:40:27 +0000 (UTC)
-Date:   Wed, 19 Aug 2020 09:40:55 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH] n_gsm: Fix write handling for zero bytes written
-Message-ID: <20200819064055.GV2994@atomide.com>
-References: <20200817135454.28505-1-tony@atomide.com>
- <1b8538a8-d8b6-4287-36e1-aa1e0863ff2d@kernel.org>
- <20200818095609.GQ2994@atomide.com>
- <ea5e0639-4419-c60b-059a-8fbd057fc6e3@kernel.org>
- <20200818104714.GR2994@atomide.com>
- <34dd61d2-01c3-dcc1-21bd-494eb90759ac@kernel.org>
+        id S1726826AbgHSGmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 02:42:46 -0400
+IronPort-SDR: i3Z6khEu3kG9KvH0vuNrgY1WFjN/TF97R86XmSuJhxf8OY3VvCi6R4jZaroUMwx1cSquEcwkur
+ DRO+kDnv2gOw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="142687539"
+X-IronPort-AV: E=Sophos;i="5.76,330,1592895600"; 
+   d="scan'208";a="142687539"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 23:42:11 -0700
+IronPort-SDR: Zorn6HVfNrAeaUsF53O8jXCn++Sf0eupDOahlzS05Rs7T1VOI9/OBOqtBfUlujET6yreslrTF9
+ 9vEg0LWAaFaw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,330,1592895600"; 
+   d="scan'208";a="279626306"
+Received: from lkp-server01.sh.intel.com (HELO 4cedd236b688) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 18 Aug 2020 23:42:08 -0700
+Received: from kbuild by 4cedd236b688 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1k8HnU-0000B6-Lp; Wed, 19 Aug 2020 06:42:08 +0000
+Date:   Wed, 19 Aug 2020 14:41:30 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:for-linus/kspp] BUILD SUCCESS
+ 58e813cceabdcd9af6ae6cd2824a46f83de79db3
+Message-ID: <5f3cc99a.HgvOW3rH0mD0RmkM%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <34dd61d2-01c3-dcc1-21bd-494eb90759ac@kernel.org>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Jiri Slaby <jirislaby@kernel.org> [200819 06:20]:
-> On 18. 08. 20, 12:47, Tony Lindgren wrote:
-> > * Jiri Slaby <jirislaby@kernel.org> [200818 10:14]:
-> >> On 18. 08. 20, 11:56, Tony Lindgren wrote:
-> >>> Hi,
-> >>>
-> >>> * Jiri Slaby <jirislaby@kernel.org> [200818 08:24]:
-> >>>> On 17. 08. 20, 15:54, Tony Lindgren wrote:
-> >>>>> If write returns zero we currently end up removing the message
-> >>>>> from the queue. Instead of removing the message, we want to just
-> >>>>> break out of the loop just like we already do for error codes.
-> >>>>
-> >>>> When exactly does the only writer (gsmld_output) return zero for
-> >>>> non-zero len parameter?
-> >>>
-> >>> I ran into this when testing with the WIP serial core PM runtime
-> >>> changes from Andy Shevchenko earlier. If there are also other
-> >>> cases where we have serial drivers return 0, I don't know about
-> >>> them.
-> >>
-> >> Sorry, I don't understand: my gsmld_output() ignores the return value
-> >> from drivers' write and returns something greater than zero or a
-> >> negative error. What tree/SHA do you run?
-> > 
-> > Oh right, good catch. I also had my WIP serdev-ngsm patches applied
-> > that uses gsm_serdev_output() and returns the bytes written. Andy's
-> > patches do not touch n_gsm.c.
-> > 
-> > Hmm sounds like we should also start returning value also from
-> > gsmld_output()? Any objections to making that change?
-> 
-> No objections here.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  for-linus/kspp
+branch HEAD: 58e813cceabdcd9af6ae6cd2824a46f83de79db3  treewide: Use fallthrough pseudo-keyword
 
-OK thanks, I'll post an updated patch.
+elapsed time: 724m
 
-Regards,
+configs tested: 72
+configs skipped: 1
 
-Tony
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nios2                               defconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+i386                 randconfig-a005-20200818
+i386                 randconfig-a002-20200818
+i386                 randconfig-a001-20200818
+i386                 randconfig-a006-20200818
+i386                 randconfig-a003-20200818
+i386                 randconfig-a004-20200818
+x86_64               randconfig-a013-20200818
+x86_64               randconfig-a016-20200818
+x86_64               randconfig-a012-20200818
+x86_64               randconfig-a011-20200818
+x86_64               randconfig-a014-20200818
+x86_64               randconfig-a015-20200818
+i386                 randconfig-a016-20200818
+i386                 randconfig-a015-20200818
+i386                 randconfig-a011-20200818
+i386                 randconfig-a013-20200818
+i386                 randconfig-a012-20200818
+i386                 randconfig-a014-20200818
+x86_64               randconfig-a006-20200819
+x86_64               randconfig-a001-20200819
+x86_64               randconfig-a003-20200819
+x86_64               randconfig-a005-20200819
+x86_64               randconfig-a004-20200819
+x86_64               randconfig-a002-20200819
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
