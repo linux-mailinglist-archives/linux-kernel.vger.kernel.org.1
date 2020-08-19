@@ -2,94 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 455A6249F11
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E730249F13
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728631AbgHSNFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 09:05:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728433AbgHSNFd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 09:05:33 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB5FC061342
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:05:32 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id h19so25275439ljg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 06:05:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=UOr65DEC+2TW/zt7uOWWliltVKZ89UsSxVAE/jQE1oM=;
-        b=ig0Gowk5bmmRlwDUQnO4y6TgS8TPTr7rVwwcxXCQXtPl9HhW8NkXHIv6B+duOf3lp+
-         gZutF2zFShkzk3CYvXCAeuEulGsoslBHGNBCkbZ0TFRBc/2Ut0qPqg866dt7JyzfnpIJ
-         68MXFvQRcMsKqEVR4y3VTJ8rtpMbgZLWt9J6jDkIWlQW65MyZaERS9MyqVWX9fy2Isez
-         xsZ5vi3MHowaVKhMg33qFIcX7/quCIco+02R77UBUKxvHC/xluOIqC/Lr5qYci7AMVZf
-         PyXAFBj4/F7uT7Y3iuvrL7XB97GjkJ7iLwjZ3dF8czzNndQEsJq65DDKMcngHG6f3kPe
-         i80g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=UOr65DEC+2TW/zt7uOWWliltVKZ89UsSxVAE/jQE1oM=;
-        b=eEiT+foDrSW/0YbFkIYLEddN8L56bRyEpg7ajNXpUvLvm4mrezkakW7QzhwQ0Rs+Pb
-         E/1NjHxTBYXvZ9mFiZhc5ntqJTbAwsp9o5+AJy9j0Pj4itj5jJVlBCttjw45VmZNoLn6
-         siGyeNgcg8qxQGskUJ6Wwc+yN9HuDUWQ3FG/ykA67sWYj1W3iytO/D5QG3hSlJEqbLvG
-         5827/Ru1gsJfDXCloMZIqoCnH/VPl11RuTKOyj9hX1hCTISMRgSdLuYAgQ7jWHEsfaed
-         wDoWauwjmGqCOSJTVINjkCLv+nRCkk/a9ELjr4WhULM+kHQIKqZKiQ8ds9J/YKRnVsbQ
-         Aa0A==
-X-Gm-Message-State: AOAM5327qRPkuPg2Ky32Hr8zpwkYEMk6Vw257JcLUvMTvUHLchscRKrL
-        tlfkobadA9UV8QgKpS/Gth6WdQrT7Js9C5lW5H0=
-X-Google-Smtp-Source: ABdhPJzTFitFWyqH5VgBxrEeiqQ4A1POexli1AXmA+RrBIO5haBPhDqi2mygN5Tr7sNOxSaOFMqW2cDUGzlZZDUdK9Y=
-X-Received: by 2002:a2e:9ed4:: with SMTP id h20mr12179547ljk.82.1597842330702;
- Wed, 19 Aug 2020 06:05:30 -0700 (PDT)
+        id S1728361AbgHSNGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 09:06:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41006 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727932AbgHSNFy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 09:05:54 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 09CA8AEE8;
+        Wed, 19 Aug 2020 13:06:14 +0000 (UTC)
+Date:   Wed, 19 Aug 2020 15:05:46 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Baoquan He <bhe@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Mel Gorman <mgorman@suse.de>
+Subject: Re: [PATCH v1 09/11] mm/page_alloc: drop stale pageblock comment in
+ memmap_init_zone*()
+Message-ID: <20200819130546.GN5422@dhcp22.suse.cz>
+References: <20200819101157.12723-1-david@redhat.com>
+ <20200819101157.12723-10-david@redhat.com>
 MIME-Version: 1.0
-Reply-To: mrahmedmuzashah@gmail.com
-Received: by 2002:a19:4c57:0:0:0:0:0 with HTTP; Wed, 19 Aug 2020 06:05:29
- -0700 (PDT)
-From:   "Mr.Ahmed Muzashah" <ahmedmuzashah@gmail.com>
-Date:   Wed, 19 Aug 2020 14:05:29 +0100
-X-Google-Sender-Auth: lVrhDL8Mzkfaw7v4sU_7WkA5sWQ
-Message-ID: <CA+ANWpm8x4guuGELAxYevxXhqEEr=BWtq6-82y7LV1LmfG2PzQ@mail.gmail.com>
-Subject: =?UTF-8?B?U2Now7ZuZW4gVGFn?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200819101157.12723-10-david@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sch=C3=B6nen Tag,
+On Wed 19-08-20 12:11:55, David Hildenbrand wrote:
+> Commit ac5d2539b238 ("mm: meminit: reduce number of times pageblocks are
+> set during struct page init") moved the actual zone range check, leaving
+> only the alignment check for pageblocks.
+> 
+> Let's drop the stale comment and make the pageblock check easier to read.
 
-Bitte entschuldigen Sie, dass Sie einen =C3=9Cberraschungsbrief geschrieben
-haben. Ich bin Herr Ahmed Muzashah, Account Manager bei einer
-Investmentbank hier in Burkina Faso. Ich habe ein sehr wichtiges
-Gesch=C3=A4ft, das ich mit Ihnen besprechen m=C3=B6chte. In meinem Konto is=
-t ein
-Kontoentwurf er=C3=B6ffnet Ich habe die M=C3=B6glichkeit, den verbleibenden
-Fonds (15,8 Millionen US-Dollar) von f=C3=BCnfzehn Millionen
-achthunderttausend US-Dollar eines meiner Bankkunden zu =C3=BCbertragen,
-der beim Zusammenbruch der Welt gestorben ist Handelszentrum in den
-Vereinigten Staaten am 11. September 2001.
+I do agree athat IS_ALIGNED is easier to read in this case.
 
-Ich m=C3=B6chte diese Mittel investieren und Sie unserer Bank f=C3=BCr dies=
-en
-Deal vorstellen. Alles, was ich ben=C3=B6tige, ist Ihre ehrliche
-Zusammenarbeit und ich garantiere Ihnen, dass dies unter einer
-legitimen Vereinbarung durchgef=C3=BChrt wird, die uns vor
-Gesetzesverst=C3=B6=C3=9Fen sch=C3=BCtzt Ich bin damit einverstanden, dass =
-40% dieses
-Geldes f=C3=BCr Sie als meinen ausl=C3=A4ndischen Partner, 50% f=C3=BCr mic=
-h und 10%
-f=C3=BCr die Schaffung der Grundlage f=C3=BCr die weniger Privilegien in Ih=
-rem
-Land bestimmt sind. Wenn Sie wirklich an meinem Vorschlag interessiert
-sind, werden weitere Einzelheiten der =C3=9Cbertragung ber=C3=BCcksichtigt =
-Sie
-werden an Sie weitergeleitet, sobald ich Ihre Bereitschaftsmail f=C3=BCr
-eine erfolgreiche =C3=9Cberweisung erhalte.
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+> Cc: Baoquan He <bhe@redhat.com>
+> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Mel Gorman <mgorman@suse.de>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-Dein,
-Mr.Ahmed Muzashah,
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+> ---
+>  mm/page_alloc.c | 14 ++------------
+>  1 file changed, 2 insertions(+), 12 deletions(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 848664352dfe2..5db0b35f95e20 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -6022,13 +6022,8 @@ void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
+>  		 * to reserve their blocks rather than leaking throughout
+>  		 * the address space during boot when many long-lived
+>  		 * kernel allocations are made.
+> -		 *
+> -		 * bitmap is created for zone's valid pfn range. but memmap
+> -		 * can be created for invalid pages (for alignment)
+> -		 * check here not to call set_pageblock_migratetype() against
+> -		 * pfn out of zone.
+>  		 */
+> -		if (!(pfn & (pageblock_nr_pages - 1))) {
+> +		if (IS_ALIGNED(pfn, pageblock_nr_pages)) {
+>  			set_pageblock_migratetype(page, MIGRATE_MOVABLE);
+>  			cond_resched();
+>  		}
+> @@ -6091,15 +6086,10 @@ void __ref memmap_init_zone_device(struct zone *zone,
+>  		 * the address space during boot when many long-lived
+>  		 * kernel allocations are made.
+>  		 *
+> -		 * bitmap is created for zone's valid pfn range. but memmap
+> -		 * can be created for invalid pages (for alignment)
+> -		 * check here not to call set_pageblock_migratetype() against
+> -		 * pfn out of zone.
+> -		 *
+>  		 * Please note that MEMMAP_HOTPLUG path doesn't clear memmap
+>  		 * because this is done early in section_activate()
+>  		 */
+> -		if (!(pfn & (pageblock_nr_pages - 1))) {
+> +		if (IS_ALIGNED(pfn, pageblock_nr_pages)) {
+>  			set_pageblock_migratetype(page, MIGRATE_MOVABLE);
+>  			cond_resched();
+>  		}
+> -- 
+> 2.26.2
+> 
+
+-- 
+Michal Hocko
+SUSE Labs
