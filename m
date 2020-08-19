@@ -2,71 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5FF8249F3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA27249F02
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728063AbgHSNLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 09:11:31 -0400
-Received: from forward1-smtp.messagingengine.com ([66.111.4.223]:48273 "EHLO
-        forward1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726560AbgHSNLL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 09:11:11 -0400
-X-Greylist: delayed 573 seconds by postgrey-1.27 at vger.kernel.org; Wed, 19 Aug 2020 09:11:10 EDT
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailforward.nyi.internal (Postfix) with ESMTP id E241C194197D;
-        Wed, 19 Aug 2020 09:01:35 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 19 Aug 2020 09:01:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=FQUJJ4
-        ivYQ+lk1mPpagdjqu+O8nCipPJWuj36SsFCY8=; b=ik2wmMPArMQsS7GdM799dW
-        Z2d7Jqw88uy8Q1YKkJUccVx9oleK92RoarvxWT3BJTawhoyK3Rrhf6J1dyAPnAGC
-        wflBwIxaiBC2+Cr02FsneZdxWTKggcBzH7/MLbevMe+h77yh7xEDiTXjW90ICasI
-        9mCloktwVu7D+hQ0IDdsztPiJFVpwsXcQfDeShwBTo1LuOsOv1Rs05hliuhmwfsT
-        /Hpp7nlkN6tT6JK19il2dB+x3dkbk0RyYukPyUI/HjbdX+uh4se3+Sv/vxjcglKY
-        IlDb97chqQxiauPZJJe5olrfi+sZ6o9Y/4fZuba5+F6uPVFBjZTfdHwFSL2odPpA
-        ==
-X-ME-Sender: <xms:rCI9X1-qI_GjNoEW-SK559H8NZSLZvyZWQl7zqOOyWFqhuS_y_zLqg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedruddtkedggeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefrvghkkhgr
-    ucfgnhgsvghrghcuoehpvghnsggvrhhgsehikhhirdhfiheqnecuggftrfgrthhtvghrnh
-    epgfffgeekteetvdejledufeelleeuudeigfevvdeileeludehiedugefhleehvdeunecu
-    kfhppeeivddrjeekrddujeelrddufedunecuvehluhhsthgvrhfuihiivgeptdenucfrrg
-    hrrghmpehmrghilhhfrhhomhepphgvnhgsvghrghesihhkihdrfhhi
-X-ME-Proxy: <xmx:rCI9X5sAy3BG4lCuP7996cLCL14do5WCDdJcpESgK8BJDmT1fGnfbg>
-    <xmx:rCI9XzDcPll05dprsTKe9FFd_DJXB-M9ymUY_1cYZLlADyJNdNgTIQ>
-    <xmx:rCI9X5dMulrIK9WUNRF0VxW2LQYCnPRsg-k_3pLUNIYJZFgxG-IlOw>
-    <xmx:ryI9X2Bl3P9yFxoYQAVe5Iy5X8ik_69m80XArRpfZWSe4UqnyUo-mA>
-Received: from localhost (62-78-179-131.bb.dnainternet.fi [62.78.179.131])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 0AF87328005D;
-        Wed, 19 Aug 2020 09:01:31 -0400 (EDT)
-Date:   Wed, 19 Aug 2020 16:01:30 +0300
-From:   Pekka Enberg <penberg@iki.fi>
-To:     Wang Hai <wanghai38@huawei.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        penberg@kernel.org, rppt@kernel.org, eert@linux-m68k.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] x86/mpparse: remove duplicate include
-Message-ID: <20200819130130.GA1903671@nero>
-References: <20200819112910.7629-1-wanghai38@huawei.com>
+        id S1726752AbgHSNEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 09:04:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37320 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728471AbgHSNCd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 09:02:33 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 89FA0B023;
+        Wed, 19 Aug 2020 13:02:57 +0000 (UTC)
+Date:   Wed, 19 Aug 2020 15:02:30 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Baoquan He <bhe@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Oscar Salvador <osalvador@suse.de>
+Subject: Re: [PATCH v1 08/11] mm/memory_hotplug: simplify page onlining
+Message-ID: <20200819130230.GM5422@dhcp22.suse.cz>
+References: <20200819101157.12723-1-david@redhat.com>
+ <20200819101157.12723-9-david@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200819112910.7629-1-wanghai38@huawei.com>
+In-Reply-To: <20200819101157.12723-9-david@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 07:29:10PM +0800, Wang Hai wrote:
-> Remove asm/io_apic.h which is included more than once
+On Wed 19-08-20 12:11:54, David Hildenbrand wrote:
+> We don't allow to offline memory with holes, all boot memory is online,
+> and all hotplugged memory cannot have holes.
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+> We can now simplify onlining of pages. As we only allow to online/offline
+> full sections and sections always span full MAX_ORDER_NR_PAGES, we can just
+> process MAX_ORDER - 1 pages without further special handling.
+> 
+> The number of onlined pages simply corresponds to the number of pages we
+> were requested to online.
+> 
+> While at it, refine the comment regarding the callback not exposing all
+> pages to the buddy.
+> 
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+> Cc: Baoquan He <bhe@redhat.com>
+> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-Reviewed-by: Pekka Enberg <penberg@kernel.org>
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+> ---
+>  mm/memory_hotplug.c | 38 ++++++++++----------------------------
+>  1 file changed, 10 insertions(+), 28 deletions(-)
+> 
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index 0011a1115381c..3aba0d956f9b1 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -617,31 +617,22 @@ void generic_online_page(struct page *page, unsigned int order)
+>  }
+>  EXPORT_SYMBOL_GPL(generic_online_page);
+>  
+> -static int online_pages_range(unsigned long start_pfn, unsigned long nr_pages,
+> -			void *arg)
+> +static void online_pages_range(unsigned long start_pfn, unsigned long nr_pages)
+>  {
+>  	const unsigned long end_pfn = start_pfn + nr_pages;
+>  	unsigned long pfn;
+> -	int order;
+>  
+>  	/*
+> -	 * Online the pages. The callback might decide to keep some pages
+> -	 * PG_reserved (to add them to the buddy later), but we still account
+> -	 * them as being online/belonging to this zone ("present").
+> +	 * Online the pages in MAX_ORDER - 1 aligned chunks. The callback might
+> +	 * decide to not expose all pages to the buddy (e.g., expose them
+> +	 * later). We account all pages as being online and belonging to this
+> +	 * zone ("present").
+>  	 */
+> -	for (pfn = start_pfn; pfn < end_pfn; pfn += 1ul << order) {
+> -		order = min(MAX_ORDER - 1, get_order(PFN_PHYS(end_pfn - pfn)));
+> -		/* __free_pages_core() wants pfns to be aligned to the order */
+> -		if (WARN_ON_ONCE(!IS_ALIGNED(pfn, 1ul << order)))
+> -			order = 0;
+> -		(*online_page_callback)(pfn_to_page(pfn), order);
+> -	}
+> +	for (pfn = start_pfn; pfn < end_pfn; pfn += MAX_ORDER_NR_PAGES)
+> +		(*online_page_callback)(pfn_to_page(pfn), MAX_ORDER - 1);
+>  
+>  	/* mark all involved sections as online */
+>  	online_mem_sections(start_pfn, end_pfn);
+> -
+> -	*(unsigned long *)arg += nr_pages;
+> -	return 0;
+>  }
+>  
+>  /* check which state of node_states will be changed when online memory */
+> @@ -795,7 +786,6 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
+>  		       int online_type, int nid)
+>  {
+>  	unsigned long flags;
+> -	unsigned long onlined_pages = 0;
+>  	struct zone *zone;
+>  	int need_zonelists_rebuild = 0;
+>  	int ret;
+> @@ -831,19 +821,11 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
+>  		setup_zone_pageset(zone);
+>  	}
+>  
+> -	ret = walk_system_ram_range(pfn, nr_pages, &onlined_pages,
+> -		online_pages_range);
+> -	if (ret) {
+> -		/* not a single memory resource was applicable */
+> -		if (need_zonelists_rebuild)
+> -			zone_pcp_reset(zone);
+> -		goto failed_addition;
+> -	}
+> -
+> -	zone->present_pages += onlined_pages;
+> +	online_pages_range(pfn, nr_pages);
+> +	zone->present_pages += nr_pages;
+>  
+>  	pgdat_resize_lock(zone->zone_pgdat, &flags);
+> -	zone->zone_pgdat->node_present_pages += onlined_pages;
+> +	zone->zone_pgdat->node_present_pages += nr_pages;
+>  	pgdat_resize_unlock(zone->zone_pgdat, &flags);
+>  
+>  	/*
+> -- 
+> 2.26.2
+> 
+
+-- 
+Michal Hocko
+SUSE Labs
