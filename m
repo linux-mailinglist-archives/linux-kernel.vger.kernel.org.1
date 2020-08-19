@@ -2,141 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E7724A6B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 21:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF47624A6B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 21:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727053AbgHSTRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 15:17:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726870AbgHSTR3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 15:17:29 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF99C061343
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 12:17:28 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id c4so16314431qvq.15
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 12:17:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=OuLK0vtF0dRJLQuNywRonpISXfPNRGHrBGFIst0MHFI=;
-        b=it6ogAFiEgasFY/BOPvy6O/Foy17MRI7R1IECbMRIf/jTsP/cJ8JIoaqKYcyVT/ZBV
-         b1hQzk31FQy+8iEkpytd3nthZ4jbovIrYjVMxYqnS3+HY0NwULL8R+8tK1cHvD6Ax5Xz
-         OK41QXEI4IIlv6ox/0AdHB/75aC3klHvhCvZlrQaDevBAsaq4BTSbiHCV5joVCPgZKTU
-         dggAMLqVkzlK0H44SClcB43UOTcZtdO19cjVuEZNo5PBpiLqCZJD4Wf6BuPdmT38j4FE
-         Hu1iP1w8Hm2m2x/vOll7mtQWtz/bA6DW3HFwMoIc3JSCheg8w4pfdCxSVLhSvLe/WKxs
-         RsRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=OuLK0vtF0dRJLQuNywRonpISXfPNRGHrBGFIst0MHFI=;
-        b=i3AXZNX2R7AbKREEiSdnOgE9khJuFt/5/0MCEQHjkS4XKVbv+trsy4VAFsXQ/MYzFS
-         MME79hQNB0ZQv4wvQ166E+kWgpqLhPFijpdgOwcgjGb3HrREt1kLcuNdb2qPaditWbof
-         /6FgeIbTR6bC21ekFDQd6OQrgsOYCUZtJZz4VyIaDMooY2kU1u5OmB6wUXZKiglvAfaU
-         4XmGTy3W6XZii96UoqHW+Qh61mZTKuGNBdxL0nTIkbjERhwuuvVnUGvmYBWk0q2D8Z9S
-         887yv81o0warzHzBFGbojJ6emjwcnxEsoJaTW3y7BTqz6uhtWAjgYtytVCc7sVI7TW9p
-         c5og==
-X-Gm-Message-State: AOAM532Nx0rjnTgByjaJ1XVL+N+McgYwDuNAm+5pMsZ9xZC1bdotdgnF
-        yEqIIQPLtS00nw/xPux/sjABo6n+h8arWKCzKlw=
-X-Google-Smtp-Source: ABdhPJybzC2cRIjyVbTGIcAbbyv/3nL+YTTCv6sTjuWenHOvyLQE3ASARbEAL9G5mwIYU92auG+3ArLd6RP5ciEy9Po=
-X-Received: by 2002:a0c:f84b:: with SMTP id g11mr3652053qvo.184.1597864646404;
- Wed, 19 Aug 2020 12:17:26 -0700 (PDT)
-Date:   Wed, 19 Aug 2020 12:16:54 -0700
-In-Reply-To: <20200819191654.1130563-1-ndesaulniers@google.com>
-Message-Id: <20200819191654.1130563-6-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <20200819191654.1130563-1-ndesaulniers@google.com>
-X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
-Subject: [PATCH v2 5/5] x86: don't build CONFIG_X86_32 as -ffreestanding
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Joe Perches <joe@perches.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Yury Norov <yury.norov@gmail.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Bruce Ashfield <bruce.ashfield@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>,
-        Andi Kleen <ak@suse.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "=?UTF-8?q?D=C3=A1vid=20Bolvansk=C3=BD?=" <david.bolvansky@gmail.com>,
-        Eli Friedman <efriedma@quicinc.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727006AbgHSTRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 15:17:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726731AbgHSTRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 15:17:05 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B4592078D;
+        Wed, 19 Aug 2020 19:17:03 +0000 (UTC)
+Date:   Wed, 19 Aug 2020 15:17:01 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        linux- stable <stable@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>, <lkft-triage@lists.linaro.org>,
+        LTP List <ltp@lists.linux.it>
+Subject: Re: NETDEV WATCHDOG: WARNING: at net/sched/sch_generic.c:442
+ dev_watchdog
+Message-ID: <20200819151701.747769ce@oasis.local.home>
+In-Reply-To: <20200819102909.000016ac@intel.com>
+References: <CA+G9fYtS_nAX=sPV8zTTs-nOdpJ4uxk9sqeHOZNuS4WLvBcPGg@mail.gmail.com>
+        <20200819125732.1c296ce7@oasis.local.home>
+        <20200819102909.000016ac@intel.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--ffreestanding typically inhibits "libcall optimizations" where calls to
-certain library functions can be replaced by the compiler in certain
-cases to calls to other library functions that may be more efficient.
-This can be problematic for embedded targets that don't provide full
-libc implementations.
+On Wed, 19 Aug 2020 10:29:09 -0700
+Jesse Brandeburg <jesse.brandeburg@intel.com> wrote:
 
--ffreestanding inhibits all optimizations, which
-is the safe choice, but generally we want the optimizations that are
-performed. The Linux kernel does implement a fair amount of libc
-routines. Instead of -ffreestanding (which makes more sense in smaller
-images like kexec's purgatory image), prefer -fno-builtin-* flags to
-disable the compiler from emitting calls to functions which may not be
-defined.
 
-If you see a linkage failure due to a missing symbol that's typically
-defined in a libc, and not explicitly called from the source code, then
-the compiler may have done such a transform.  You can either implement
-such a function (ie. in lib/string.c) or disable the transform outright
-via -fno-builtin-* flag (where * is the name of the library routine, ie.
--fno-builtin-bcmp).
+> What I don't understand in the stack trace is this:
+> > > [  107.654661] Call Trace:
+> > > [  107.657735]  <IRQ>
+> > > [  107.663155]  ? ftrace_graph_caller+0xc0/0xc0
+> > > [  107.667929]  call_timer_fn+0x3b/0x1b0
+> > > [  107.672238]  ? netif_carrier_off+0x70/0x70
+> > > [  107.677771]  ? netif_carrier_off+0x70/0x70
+> > > [  107.682656]  ? ftrace_graph_caller+0xc0/0xc0
+> > > [  107.687379]  run_timer_softirq+0x3e8/0xa10
+> > > [  107.694653]  ? call_timer_fn+0x1b0/0x1b0
+> > > [  107.699382]  ? trace_event_raw_event_softirq+0xdd/0x150
+> > > [  107.706768]  ? ring_buffer_unlock_commit+0xf5/0x210
+> > > [  107.712213]  ? call_timer_fn+0x1b0/0x1b0
+> > > [  107.716625]  ? __do_softirq+0x155/0x467  
+> 
+> 
+> If the carrier was turned off by something, that could cause the stack
+> to timeout since it appears the driver didn't call this itself after
+> finishing all transmits like it normally would have.
+> 
+> Is the trace above correct? Usually the ? indicate unsure backtrace due
+> to missing symbols, right?
 
-i386_defconfig build+boot tested with GCC and Clang. Removes a pretty
-old TODO from the codebase.
+The "?" means that there wasn't a stack frame to confirm that this was
+the true call stack. What happens is that the scan of the stack will
+look for any address in the stack that is for a function. If it finds
+one, it will print it and add a "?" to that address. Basically, those
+functions with the "?" are just addresses found in the stack but was not
+part of a stack frame link.
 
-Fixes: 6edfba1b33c7 ("x86_64: Don't define string functions to builtin")
-Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
-Might be nice to have
-https://lore.kernel.org/lkml/CAKwvOdn-mv1D1GEk3pWnPYsyzQRRk5qZFhSi0CYn6tRDo1O_iw@mail.gmail.com/T/#u
-first.
-
- arch/x86/Makefile | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index 4346ffb2e39f..2383a96cf4fd 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -80,9 +80,6 @@ ifeq ($(CONFIG_X86_32),y)
-         # CPU-specific tuning. Anything which can be shared with UML should go here.
-         include arch/x86/Makefile_32.cpu
-         KBUILD_CFLAGS += $(cflags-y)
--
--        # temporary until string.h is fixed
--        KBUILD_CFLAGS += -ffreestanding
- else
-         BITS := 64
-         UTS_MACHINE := x86_64
--- 
-2.28.0.297.g1956fa8f8d-goog
-
+-- Steve
