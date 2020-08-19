@@ -2,110 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7122499F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 12:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E5C249A02
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 12:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727968AbgHSKMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 06:12:46 -0400
-Received: from mail.v3.sk ([167.172.186.51]:51760 "EHLO shell.v3.sk"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727811AbgHSKMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728024AbgHSKNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 06:13:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:60026 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727845AbgHSKMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 19 Aug 2020 06:12:23 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 13571DEE69;
-        Wed, 19 Aug 2020 10:11:25 +0000 (UTC)
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id pcraDX_E9eNT; Wed, 19 Aug 2020 10:11:24 +0000 (UTC)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 27933DFA72;
-        Wed, 19 Aug 2020 10:11:24 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at zimbra.v3.sk
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 4-cUkoOugQ41; Wed, 19 Aug 2020 10:11:23 +0000 (UTC)
-Received: from localhost (unknown [109.183.109.54])
-        by zimbra.v3.sk (Postfix) with ESMTPSA id 6C0D5DFA71;
-        Wed, 19 Aug 2020 10:11:23 +0000 (UTC)
-From:   Lubomir Rintel <lkundrak@v3.sk>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>
-Subject: [PATCH 2/2] drm/panel: simple: Add support for Innolux LS075AT011
-Date:   Wed, 19 Aug 2020 12:12:06 +0200
-Message-Id: <20200819101206.633253-3-lkundrak@v3.sk>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200819101206.633253-1-lkundrak@v3.sk>
-References: <20200819101206.633253-1-lkundrak@v3.sk>
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6DCFD101E;
+        Wed, 19 Aug 2020 03:12:22 -0700 (PDT)
+Received: from [10.57.40.122] (unknown [10.57.40.122])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E7F1D3F6CF;
+        Wed, 19 Aug 2020 03:12:19 -0700 (PDT)
+Subject: Re: [PATCH 00/16] IOMMU driver for Kirin 960/970
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Joerg Roedel <jroedel@suse.de>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Chenfeng <puck.chen@hisilicon.com>, linuxarm@huawei.com,
+        Wei Xu <xuwei5@hisilicon.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Rob Herring <robh+dt@kernel.org>,
+        mauro.chehab@huawei.com, Suzhuangluan <suzhuangluan@hisilicon.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+References: <cover.1597650455.git.mchehab+huawei@kernel.org>
+ <5c7918b6-c506-680b-cb0f-9e5f6a7038d9@arm.com>
+ <20200818172909.71f5243a@coco.lan>
+ <79f40595-7769-aa6a-fbba-53adcffca327@arm.com>
+ <CALAqxLXBYvwZ9kiKSGBeO5f-eKi2DD14QtoZgFGyGd-B7EOPQA@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <3c058393-9ad2-3786-f68c-a54698ad3691@arm.com>
+Date:   Wed, 19 Aug 2020 11:12:18 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CALAqxLXBYvwZ9kiKSGBeO5f-eKi2DD14QtoZgFGyGd-B7EOPQA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds support for the Innolux LS075AT011 7.5" 1200x900 panel. There's
-no public data sheet for the panel -- the values have been taken from Ope=
-n
-Firmware and the documentation for the display controller that drives
-the panel and tested on the OLPC laptop.
+On 2020-08-18 23:02, John Stultz wrote:
+> On Tue, Aug 18, 2020 at 9:26 AM Robin Murphy <robin.murphy@arm.com> wrote:
+>> On 2020-08-18 16:29, Mauro Carvalho Chehab wrote:
+>>> Em Tue, 18 Aug 2020 15:47:55 +0100
+>>> Basically, the DT binding has this, for IOMMU:
+>>>
+>>>
+>>>        smmu_lpae {
+>>>                compatible = "hisilicon,smmu-lpae";
+>>>        };
+>>>
+>>> ...
+>>>        dpe: dpe@e8600000 {
+>>>                compatible = "hisilicon,kirin970-dpe";
+>>>                memory-region = <&drm_dma_reserved>;
+>>> ...
+>>>                iommu_info {
+>>>                        start-addr = <0x8000>;
+>>>                        size = <0xbfff8000>;
+>>>                };
+>>>        }
+>>>
+>>> This is used by kirin9xx_drm_dss.c in order to enable and use
+>>> the iommu:
+>>>
+>>>
+>>>        static int dss_enable_iommu(struct platform_device *pdev, struct dss_hw_ctx *ctx)
+>>>        {
+>>>                struct device *dev = NULL;
+>>>
+>>>                dev = &pdev->dev;
+>>>
+>>>                /* create iommu domain */
+>>>                ctx->mmu_domain = iommu_domain_alloc(dev->bus);
+>>>                if (!ctx->mmu_domain) {
+>>>                        pr_err("iommu_domain_alloc failed!\n");
+>>>                        return -EINVAL;
+>>>                }
+>>>
+>>>                iommu_attach_device(ctx->mmu_domain, dev);
+>>>
+>>>                return 0;
+>>>        }
+>>>
+>>> The only place where the IOMMU domain is used is on this part of the
+>>> code(error part simplified here) [1]:
+>>>
+>>>        void hisi_dss_smmu_on(struct dss_hw_ctx *ctx)
+>>>        {
+>>>                uint64_t fama_phy_pgd_base;
+>>>                uint32_t phy_pgd_base;
+>>> ...
+>>>                fama_phy_pgd_base = iommu_iova_to_phys(ctx->mmu_domain, 0);
+>>>                phy_pgd_base = (uint32_t)fama_phy_pgd_base;
+>>>                if (WARN_ON(!phy_pgd_base))
+>>>                        return;
+>>>
+>>>                set_reg(smmu_base + SMMU_CB_TTBR0, phy_pgd_base, 32, 0);
+>>>        }
+>>>
+>>> [1] https://github.com/mchehab/linux/commit/36da105e719b47bbe9d6cb7e5619b30c7f3eb1bd
+>>>
+>>> In other words, the driver needs to get the physical address of the frame
+>>> buffer (mapped via iommu) in order to set some DRM-specific register.
+>>>
+>>> Yeah, the above code is somewhat hackish. I would love to replace
+>>> this part by a more standard approach.
+>>
+>> OK, so from a quick look at that, my impression is that your display
+>> controller has its own MMU and you don't need to pretend to use the
+>> IOMMU API at all. Just have the DRM driver use io-pgtable directly to
+>> run its own set of ARM_32_LPAE_S1 pagetables - see Panfrost for an
+>> example (but try to ignore the wacky "Mali LPAE" format).
+> 
+> Yea. For the HiKey960, there was originally a similar patch series but
+> it was refactored out and the (still out of tree) DRM driver I'm
+> carrying doesn't seem to need it (though looking we still have the
+> iommu_info subnode in the dts that maybe needs to be cleaned up).
 
-Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
----
- drivers/gpu/drm/panel/panel-simple.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+Indeed, I'd assume it's possible to leave the MMU off and just use CMA 
+buffers instead, but wiring it up properly without the downstream 
+mis-design should be pretty clean, so maybe that could ultimately be 
+shared with 960 too (assuming the hardware isn't wildly dissimilar).
 
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel=
-/panel-simple.c
-index cb6550d37e858..dfc69457ed2d4 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -2121,6 +2121,30 @@ static const struct panel_desc innolux_g121x1_l03 =
-=3D {
- 	},
- };
-=20
-+static const struct display_timing innolux_ls075at011_timing =3D {
-+	.pixelclock =3D { 56000000, 57000000, 58000000 },
-+	.hactive =3D { 1200, 1200, 1200 },
-+	.hfront_porch =3D { 26, 26, 26 },
-+	.hback_porch =3D { 24, 24, 24 },
-+	.hsync_len =3D { 6, 6, 6 },
-+	.vactive =3D { 900, 900, 900 },
-+	.vfront_porch =3D { 4, 4, 4 },
-+	.vback_porch =3D { 5, 5, 5 },
-+	.vsync_len =3D { 3, 3, 3 },
-+	.flags =3D DISPLAY_FLAGS_VSYNC_LOW | DISPLAY_FLAGS_HSYNC_LOW,
-+};
-+
-+static const struct panel_desc innolux_ls075at011 =3D {
-+	.timings =3D &innolux_ls075at011_timing,
-+	.num_timings =3D 1,
-+	.bpc =3D 8,
-+	.size =3D {
-+		.width =3D 152,
-+		.height =3D 115,
-+	},
-+	.connector_type =3D DRM_MODE_CONNECTOR_LVDS,
-+};
-+
- /*
-  * Datasheet specifies that at 60 Hz refresh rate:
-  * - total horizontal time: { 1506, 1592, 1716 }
-@@ -3907,6 +3931,9 @@ static const struct of_device_id platform_of_match[=
-] =3D {
- 	}, {
- 		.compatible =3D "innolux,g121x1-l03",
- 		.data =3D &innolux_g121x1_l03,
-+	}, {
-+		.compatible =3D "innolux,ls075at011",
-+		.data =3D &innolux_ls075at011,
- 	}, {
- 		.compatible =3D "innolux,n116bge",
- 		.data =3D &innolux_n116bge,
---=20
-2.26.2
+I notice there's already a whole load of MMU configuration hard-coded 
+into the DRM driver - does iommu_info even need to be in the DT, or 
+could that also be decided directly by the driver? (Most other MMU-aware 
+DRM drivers seem to hard-code their drm_mm dimensions.) I can't imagine 
+the *virtual* address space limits need to vary on a per-board basis, 
+and they could easily be tied to the compatible if they legitimately 
+differ across SoCs and a simple lowest-common-denominator approach 
+wouldn't suffice for whatever reason.
 
+Robin.
