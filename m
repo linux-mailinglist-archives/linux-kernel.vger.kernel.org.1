@@ -2,100 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C02EF249EC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7A7249EC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 14:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728378AbgHSMxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 08:53:54 -0400
-Received: from muru.com ([72.249.23.125]:41134 "EHLO muru.com"
+        id S1728481AbgHSMyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 08:54:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59652 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728124AbgHSMxw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 08:53:52 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 6B952807A;
-        Wed, 19 Aug 2020 12:53:49 +0000 (UTC)
-Date:   Wed, 19 Aug 2020 15:54:17 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     Linux-OMAP <linux-omap@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Keerthy <j-keerthy@ti.com>, Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH 1/2] thermal: ti-soc-thermal: Enable addition power
- management
-Message-ID: <20200819125417.GG2994@atomide.com>
-References: <20200818154633.5421-1-aford173@gmail.com>
- <20200819045914.GS2994@atomide.com>
- <CAHCN7xKBzRfByvdYBPS=uWF2QvECAOf5zGZE0-pxjJ6A2-d95g@mail.gmail.com>
+        id S1728496AbgHSMyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 08:54:32 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 53506ADC4;
+        Wed, 19 Aug 2020 12:54:53 +0000 (UTC)
+Date:   Wed, 19 Aug 2020 14:54:25 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Baoquan He <bhe@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Oscar Salvador <osalvador@suse.de>
+Subject: Re: [PATCH v1 02/11] mm/memory_hotplug: enforce section granularity
+ when onlining/offlining
+Message-ID: <20200819125425.GJ5422@dhcp22.suse.cz>
+References: <20200819101157.12723-1-david@redhat.com>
+ <20200819101157.12723-3-david@redhat.com>
+ <20200819123743.GF5422@dhcp22.suse.cz>
+ <d9e82d2e-0786-ebfd-acc3-7dcc5ec6ad9b@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHCN7xKBzRfByvdYBPS=uWF2QvECAOf5zGZE0-pxjJ6A2-d95g@mail.gmail.com>
+In-Reply-To: <d9e82d2e-0786-ebfd-acc3-7dcc5ec6ad9b@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Adam Ford <aford173@gmail.com> [200819 12:21]:
-> On Tue, Aug 18, 2020 at 11:58 PM Tony Lindgren <tony@atomide.com> wrote:
-> >
-> > * Adam Ford <aford173@gmail.com> [200818 15:46]:
-> > > @@ -1153,6 +1166,38 @@ static int ti_bandgap_suspend(struct device *dev)
-> > >       return err;
-> > >  }
-> > >
-> > > +static int bandgap_omap_cpu_notifier(struct notifier_block *nb,
-> > > +                               unsigned long cmd, void *v)
-> > > +{
-> > > +     struct ti_bandgap *bgp;
-> > > +
-> > > +     bgp = container_of(nb, struct ti_bandgap, nb);
-> > > +
-> > > +     spin_lock(&bgp->lock);
-> > > +     switch (cmd) {
-> > > +     case CPU_CLUSTER_PM_ENTER:
-> > > +             if (bgp->is_suspended)
-> > > +                     break;
-> > > +             ti_bandgap_save_ctxt(bgp);
-> > > +             ti_bandgap_power(bgp, false);
-> > > +             if (TI_BANDGAP_HAS(bgp, CLK_CTRL))
-> > > +                     clk_disable(bgp->fclock);
-> > > +             break;
-> > > +     case CPU_CLUSTER_PM_ENTER_FAILED:
-> > > +     case CPU_CLUSTER_PM_EXIT:
-> > > +             if (bgp->is_suspended)
-> > > +                     break;
-> > > +             if (TI_BANDGAP_HAS(bgp, CLK_CTRL))
-> > > +                     clk_enable(bgp->fclock);
-> > > +             ti_bandgap_power(bgp, true);
-> > > +             ti_bandgap_restore_ctxt(bgp);
-> > > +             break;
-> > > +     }
-> > > +     spin_unlock(&bgp->lock);
-> > > +
-> > > +     return NOTIFY_OK;
-> > > +}
-> >
-> > Hmm to me it looks like is_suspended is not used right now?
-> > I guess you want to set it in ti_bandgap_suspend() and clear
-> > it in ti_bandgap_resume()?
-> >
-> > Otherwise looks good to me, I can't test the power consumption
-> > right now though so you may want to check it to make sure
-> > device still hits off mode during idle.
+On Wed 19-08-20 14:43:28, David Hildenbrand wrote:
+> On 19.08.20 14:37, Michal Hocko wrote:
+> > On Wed 19-08-20 12:11:48, David Hildenbrand wrote:
+> >> Already two people (including me) tried to offline subsections, because
+> >> the function looks like it can deal with it. But we really can only
+> >> online/offline full sections (e.g., we can only mark full sections
+> >> online/offline via SECTION_IS_ONLINE).
+> >>
+> >> Add a simple safety net that to document the restriction now. Current users
+> >> (core and powernv/memtrace) respect these restrictions.
+> > 
+> > I do agree with the warning because it clarifies our expectations
+> > indeed. Se below for more questions.
+> > 
+> >> Cc: Andrew Morton <akpm@linux-foundation.org>
+> >> Cc: Michal Hocko <mhocko@suse.com>
+> >> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+> >> Cc: Baoquan He <bhe@redhat.com>
+> >> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+> >> Cc: Oscar Salvador <osalvador@suse.de>
+> >> Signed-off-by: David Hildenbrand <david@redhat.com>
+> >> ---
+> >>  mm/memory_hotplug.c | 10 ++++++++++
+> >>  1 file changed, 10 insertions(+)
+> >>
+> >> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> >> index c781d386d87f9..6856702af68d9 100644
+> >> --- a/mm/memory_hotplug.c
+> >> +++ b/mm/memory_hotplug.c
+> >> @@ -801,6 +801,11 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
+> >>  	int ret;
+> >>  	struct memory_notify arg;
+> >>  
+> >> +	/* We can only online full sections (e.g., SECTION_IS_ONLINE) */
+> >> +	if (WARN_ON_ONCE(!nr_pages ||
+> >> +			 !IS_ALIGNED(pfn | nr_pages, PAGES_PER_SECTION)))
+> >> +		return -EINVAL;
+> > 
+> > This looks looks unnecessarily cryptic to me. Do you want to catch full
+> > section operation that doesn't start at the usual section boundary? If
+> > yes the above doesn't work work unless I am missing something.
+> > 
+> > Why don't you simply WARN_ON_ONCE(nr_pages % PAGES_PER_SECTION).
+> > !nr_pages doesn't sound like something interesting to care about or why
+> > do we care?
+> > 
 > 
-> I have a V2.  Do you want me to re-post 2/2 with V2 as no change, or
-> should I just submit this patch alone?
+> Also the start pfn has to be section aligned, so we always cover fully
+> aligned sections (e.g., not two partial ones).
 
-Up to you, might make it easier for other folks to follow if the
-whole series is reposted.
+OK, I've misread your intention. I thought that we check for the start
+pfn prior to this warning but we only do that after.
 
-Regards,
-
-Tony
+Acked-by: Michal Hocko <mhocko@suse.com>
+-- 
+Michal Hocko
+SUSE Labs
