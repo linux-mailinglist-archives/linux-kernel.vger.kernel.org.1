@@ -2,72 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4CE24A61F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B3324A624
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 20:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726759AbgHSSmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 14:42:15 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:41423 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725997AbgHSSmI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 14:42:08 -0400
-Received: by mail-il1-f199.google.com with SMTP id l71so17323579ild.8
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 11:42:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=P/Bc9IGKthyb4/4Equ8PDcO5t+DRavD5Kty3CCCxkvw=;
-        b=sMAPD1USXDHiSqGYXAFb4pxJxsNu0HRPyLgYZR8sOT7upWnSr763do85S7XngRaFZG
-         t3hzZ6Djzei2Uf6lNm4G1r8tFaDBbcKLc77nu6lB3Lckpo4kKEQAQ0mL++GJ/3D7WvhA
-         upDD8tERyyt2PPgi0kfol5hMDWCCf8GLnnuoMUieMwH94IMoAYwysOQqGDV9RlfOqNNs
-         kvBKxIQzHhiH8SzsMJys66K2+t2Dhnwb3mw/SvENcTAjrCrmYv2YvoAyzsexOvJt8hFT
-         OwdN7Ol0Kd51bOdQESsFntwNU9xRGqksQy+IVHw2e9GVKb7BkV1LiFU7Od1doJqhNMSi
-         R0NQ==
-X-Gm-Message-State: AOAM5323iDBmpsn0lN9XL5KY9PvjzL8TNONW61mJkT+rage2h/851JEa
-        2Nraw9Gq5c61lEdKPUI/grh+hp4opP5xa7/k7tYgvfmIDzbD
-X-Google-Smtp-Source: ABdhPJxBnOT/Zs8AQMPWL8g/vwMMvZSe9QJsKh8x44da5tnVZga3SiM38KDJZgB6PtqMxFubNhPzkTmpJxSO7cgDTe17jRpUgh+y
+        id S1726689AbgHSSqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 14:46:38 -0400
+Received: from mga01.intel.com ([192.55.52.88]:45245 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726466AbgHSSqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 14:46:37 -0400
+IronPort-SDR: 1Pt1KSvK1MDVVu7g8k+5NHse/g/Mo/ImBXKLdsgfPR3r287hcxv7bvi/RnJqxrAaBDZhLIMzaC
+ kHHjqsRFIygw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9718"; a="173228504"
+X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
+   d="scan'208";a="173228504"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2020 11:46:37 -0700
+IronPort-SDR: ShbvnrbxkE77kMqrMHLfmvz1a61Ot9qOqUVuu8SjJXc/kO7gOj5EmtpWY4P69YfL8zlUhy6kmV
+ IYRMI4Mp7Apg==
+X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
+   d="scan'208";a="472339351"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2020 11:46:36 -0700
+From:   ira.weiny@intel.com
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Ira Weiny <ira.weiny@intel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/highmem: Clean up endif comments
+Date:   Wed, 19 Aug 2020 11:46:35 -0700
+Message-Id: <20200819184635.112579-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
 MIME-Version: 1.0
-X-Received: by 2002:a02:682:: with SMTP id 124mr26096197jav.110.1597862527633;
- Wed, 19 Aug 2020 11:42:07 -0700 (PDT)
-Date:   Wed, 19 Aug 2020 11:42:07 -0700
-In-Reply-To: <000000000000a7e38a05a997edb2@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005c13f505ad3f5c42@google.com>
-Subject: Re: WARNING in __cfg80211_connect_result
-From:   syzbot <syzbot+cc4c0f394e2611edba66@syzkaller.appspotmail.com>
-To:     Jason@zx2c4.com, davem@davemloft.net, jason@zx2c4.com,
-        johannes@sipsolutions.net, krzk@kernel.org, kuba@kernel.org,
-        kvalo@codeaurora.org, leon@kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        shuah@kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+From: Ira Weiny <ira.weiny@intel.com>
 
-commit e7096c131e5161fa3b8e52a650d7719d2857adfd
-Author: Jason A. Donenfeld <Jason@zx2c4.com>
-Date:   Sun Dec 8 23:27:34 2019 +0000
+The #endif at the end of the file matches up with the '#if
+defined(HASHED_PAGE_VIRTUAL)' on line 374.  Not the CONFIG_HIGHMEM #if
+earlier.
 
-    net: WireGuard secure network tunnel
+Fix comments on both of the #endif's to indicate the correct end of
+blocks for each.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=175ad8b1900000
-start commit:   e3ec1e8c net: eliminate meaningless memcpy to data in pskb..
-git tree:       net-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=14dad8b1900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=10dad8b1900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3d400a47d1416652
-dashboard link: https://syzkaller.appspot.com/bug?extid=cc4c0f394e2611edba66
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d9de91900000
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+---
+ mm/highmem.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Reported-by: syzbot+cc4c0f394e2611edba66@syzkaller.appspotmail.com
-Fixes: e7096c131e51 ("net: WireGuard secure network tunnel")
+diff --git a/mm/highmem.c b/mm/highmem.c
+index 64d8dea47dd1..1352a27951e3 100644
+--- a/mm/highmem.c
++++ b/mm/highmem.c
+@@ -369,7 +369,7 @@ void kunmap_high(struct page *page)
+ }
+ 
+ EXPORT_SYMBOL(kunmap_high);
+-#endif
++#endif	/* CONFIG_HIGHMEM */
+ 
+ #if defined(HASHED_PAGE_VIRTUAL)
+ 
+@@ -481,4 +481,4 @@ void __init page_address_init(void)
+ 	}
+ }
+ 
+-#endif	/* defined(CONFIG_HIGHMEM) && !defined(WANT_PAGE_VIRTUAL) */
++#endif	/* defined(HASHED_PAGE_VIRTUAL) */
+-- 
+2.25.1
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
