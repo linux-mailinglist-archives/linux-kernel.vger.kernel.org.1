@@ -2,52 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D760A24A0F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:59:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CAC424A11D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 16:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728124AbgHSN7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 09:59:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49166 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726961AbgHSN7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 09:59:40 -0400
-Received: from dragon (unknown [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF183204FD;
-        Wed, 19 Aug 2020 13:59:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597845580;
-        bh=+D3smgI5UYuv8+FESQ5SimLMUbGU6pQoXa4AqKQ/NqA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=thKHKVpxE4xIxBVCsNSKxL+COHpxzGkgG2RIzPmzOX2RPGHCGOtcpSoWa2ZiQgskx
-         MWeJAdNAHrLqwC/1HYmDJc37ALy6NanHmMYn1rKfaJ8U5z4tjBiM63hAkzw7KJfIqo
-         NQuObG8ZsrFfsiLFhJ2uKHI6LjagB4tQH0DcmZco=
-Date:   Wed, 19 Aug 2020 21:59:27 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     peng.fan@nxp.com
-Cc:     s.hauer@pengutronix.de, arnd@arndb.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: imx_v6_v7_defconfig: Support i.MX8MN/P/Q
-Message-ID: <20200819135926.GF7114@dragon>
-References: <1595926504-6121-1-git-send-email-peng.fan@nxp.com>
+        id S1728589AbgHSOFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 10:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727975AbgHSOEO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 10:04:14 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C30C061342
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 07:04:14 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id i6so18195429edy.5
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 07:04:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6xkguvOzsgzZf/2nZcmiUdLktaalZbMKG8kwCTKJnbQ=;
+        b=m4IkKgPlDJh9Ow/m1Q5dtgZrYLnaRCS7od5vd7CevPl4aSkNJcXDYSbofI9IVrnSM1
+         T0Nk8lAEv28vGxYfqJpLVc+ygPg3eNS610ZSiKpYmXTIZXUzbw+fr6qoGPkql89ad0SH
+         sz82upHUpsjkfyqDK6oYGAHuFg3NLWv3KpWnw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6xkguvOzsgzZf/2nZcmiUdLktaalZbMKG8kwCTKJnbQ=;
+        b=NESrA8L2xNT+Qlmm1TVALPKDa/AfCiw/m6C0xZbDp0DfiZPtcn/2qwDIMg/71dVQ8T
+         xlfHS8FtbWwZE9eDeecL3GTQBWhBBadHRxYKzGHR9/A7SAtBrY0vNZI5EznMD9wlF8AD
+         DmrJyqzLIYlSJfq7AQFOPMmggBESateRMtZoFhSQUJ9GaCJciCu7u4AxB49pailAKju0
+         MhVwclJ1h2I0CtFKjT5a2Dq/hMaiwV2UdpDw0fpRzBa/DFscAo70xwnYFNVHii6uDlyJ
+         9DTLQDXhagV3DEv70EJTByF3CzR5+nvof2O6zrpLX+sD0XWVIfnXqn4FirIrGUwRIhdC
+         2a8w==
+X-Gm-Message-State: AOAM533ePTN9oikohCPtllF2GMRWORNVHVfokx7hMkFDgi2ZVJrRogGm
+        i0Zj2yvHgoLcU301x3GEP5duSPwnbDCU4Q==
+X-Google-Smtp-Source: ABdhPJx4PZ/dAFOeWZx7ZrTkWIejoQhU8/TQeJsLJBIkX0x0UQ5YwVp9NB98m5NkTdvescnU2UDhfg==
+X-Received: by 2002:aa7:ce0b:: with SMTP id d11mr24107861edv.357.1597845853226;
+        Wed, 19 Aug 2020 07:04:13 -0700 (PDT)
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com. [209.85.128.47])
+        by smtp.gmail.com with ESMTPSA id t3sm19138142eje.82.2020.08.19.07.04.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Aug 2020 07:04:13 -0700 (PDT)
+Received: by mail-wm1-f47.google.com with SMTP id k8so2341008wma.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 07:04:12 -0700 (PDT)
+X-Received: by 2002:a1c:5581:: with SMTP id j123mr5137250wmb.11.1597845489930;
+ Wed, 19 Aug 2020 06:58:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1595926504-6121-1-git-send-email-peng.fan@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200819065555.1802761-1-hch@lst.de> <20200819065555.1802761-6-hch@lst.de>
+ <CAAFQd5COLxjydDYrfx47ht8tj-aNPiaVnC+WyQA7nvpW4gs=ww@mail.gmail.com> <20200819135454.GA17098@lst.de>
+In-Reply-To: <20200819135454.GA17098@lst.de>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Wed, 19 Aug 2020 15:57:53 +0200
+X-Gmail-Original-Message-ID: <CAAFQd5BuXP7t3d-Rwft85j=KTyXq7y4s24mQxLr=VoY9krEGZw@mail.gmail.com>
+Message-ID: <CAAFQd5BuXP7t3d-Rwft85j=KTyXq7y4s24mQxLr=VoY9krEGZw@mail.gmail.com>
+Subject: Re: [PATCH 05/28] media/v4l2: remove V4L2-FLAG-MEMORY-NON-CONSISTENT
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        alsa-devel@alsa-project.org,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-ia64@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-parisc@vger.kernel.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        nouveau@lists.freedesktop.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvme@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 04:55:04PM +0800, peng.fan@nxp.com wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> i.MX8MN/P/Q is built with AArch64 hardware, this is to support
-> it could run in AArch32 mode with clock and pinctrl driver enabled.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+On Wed, Aug 19, 2020 at 3:55 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Wed, Aug 19, 2020 at 01:16:51PM +0200, Tomasz Figa wrote:
+> > Hi Christoph,
+> >
+> > On Wed, Aug 19, 2020 at 8:56 AM Christoph Hellwig <hch@lst.de> wrote:
+> > >
+> > > The V4L2-FLAG-MEMORY-NON-CONSISTENT flag is entirely unused,
+> >
+> > Could you explain what makes you think it's unused? It's a feature of
+> > the UAPI generally supported by the videobuf2 framework and relied on
+> > by Chromium OS to get any kind of reasonable performance when
+> > accessing V4L2 buffers in the userspace.
+>
+> Because it doesn't do anything except on PARISC and non-coherent MIPS,
+> so by definition it isn't used by any of these media drivers.
 
-Applied, thanks. 
+It's still an UAPI feature, so we can't simply remove the flag, it
+must stay there as a no-op, until the problem is resolved.
+
+Also, it of course might be disputable as an out-of-tree usage, but
+selecting CONFIG_DMA_NONCOHERENT_CACHE_SYNC makes the flag actually do
+something on other platforms, including ARM64.
+
+Best regards,
+Tomasz
