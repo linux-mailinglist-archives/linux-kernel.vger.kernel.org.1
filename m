@@ -2,118 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8B8249723
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE7DA249755
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727994AbgHSHZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 03:25:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40964 "EHLO
+        id S1727900AbgHSH3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 03:29:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727824AbgHSHYt (ORCPT
+        with ESMTP id S1727843AbgHSHYv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 03:24:49 -0400
+        Wed, 19 Aug 2020 03:24:51 -0400
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753E9C06134B
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 00:24:21 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id r15so10540682wrp.13
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 00:24:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B37EC061364
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 00:24:22 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id c15so20427340wrs.11
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 00:24:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Zkp7Qawe8Rxm7rdSdovVzLB4vK2dfikmYIjnToE95fQ=;
-        b=fBVItS+8uy4PAXVGRqKYqcnn9vyXIUkhYylVMPeahGvVrQto2p/kFHnE+EcYz8Ok5U
-         0EptKYfI49bLYwsG662WDdFSVeqWNpy97/8Sny+D87UA+KwPnTCRIAR9EsOFKILlnA/Y
-         7ocVDTmDlbuuCImjyvNzHsVM7FNVjvugAXJE6vv688eHXV4ASY4SPSbC1kbHPQHML8hG
-         DjyK/P1ZEi3fDD30U2G8O46bBOX8i2yXFGoZGbibtjrZ4Ya+LMZTWP2HaiV70lEqTZM2
-         mTuabOI+q0FndjZ/4xpKFuIGJro9fL46/+WJda9KOOHv6zRw5Uz6scFS2ha+5RE5euaS
-         805g==
+        bh=bfE7YUSssid0azom0g6vClz47uYcy21+hGTRmt0JTBI=;
+        b=dxRVNmi7LtW/7lmGHRjFCjuxQP1F9s/8kvSh4etZPkfq8exwIAqqPNFL0aK3SmVfDB
+         fHrTrRMVtzuGPBrfz4+XBqHTclM6+fKesqjtjlM2VmRdsOTqBfwh5E+hUcfV6zwLp92b
+         fH2nmZpRtlLMovLVRE2Q9NvPh5Gm4KCpaSZpkxEVqoFQX8WhvR+uCaJn+AOy2H2IRgBE
+         idK19g+Z6/PGsCXH8WA1yRYhKbziLejExH4d1tqRZ3+3G4i2NlG5KHwpM2tG4KFI77hR
+         IcGyMdysPTTn9rGjtpo4ymfWtopmI6cAdfums19zH6QW4KngP6oO2kQIIXzJgAvGGYUb
+         Tb2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Zkp7Qawe8Rxm7rdSdovVzLB4vK2dfikmYIjnToE95fQ=;
-        b=OcuBFAsImj9Cie+ivgMDp4uZRsHxJp64MVQIj+zqHzFXUDC5tmKKnhDS9kSkVpYRto
-         k4+ZNECFVXAxOMyXoqeQcKo326ZpO2koWulvpD4mcS7rs8D7Q5W8Jex0nNvdHNEd50tA
-         t1SDx/nZ8ulONmkbdtN2spAUS0+RSb+fmV+xluNA12/iwLyDHfYvFwbKHBq2O2zh2cCC
-         SpPkfflb7+2bn6MGf+MO/zUlRbtTa+on088nqGZW2hu6NwPAWM2mY9R2NfAnqW6NLvNq
-         U1njU6J2cHMehWAoZSLdu3x3nqebKhMHtDZdUkEZo0N1ns7bD2QY3G1L0IJuPbt/tb7y
-         v1EA==
-X-Gm-Message-State: AOAM532BRzInYu5sQAcPXUeu/JL3aOp6KPtPCDkLlcCq2cSH65qTMQZX
-        5WX28mnKBDmwBGyuWPu+VgV3Ww==
-X-Google-Smtp-Source: ABdhPJxSZ+TVjacVOaXJET7sX7pS2ZMFGfwgWGTctOu11RcWXc/86twvo3Hbv9eAa3q10tv3lzLa/Q==
-X-Received: by 2002:adf:8445:: with SMTP id 63mr2657230wrf.375.1597821860190;
-        Wed, 19 Aug 2020 00:24:20 -0700 (PDT)
+        bh=bfE7YUSssid0azom0g6vClz47uYcy21+hGTRmt0JTBI=;
+        b=jR0wYbV2ZZQPE4tqAx7wVEU/Anw3nsyugr89dbTmATE7/PQx5+iNJ9RAdjmtH3DzO5
+         9MYSBMPjhJDxsdBBKyv5c/Mnx49nUCOMQegeT44L4uriAz+naoWzp0ucRtxEJkpkUKc1
+         yg3HQzUx7MVXqK/i31YDt5wM52gabklUkD3FYjUa3/NwtDq9K/NA5revnVl1wYHqjPGG
+         lJwcZAUJZwa8IvzQSNd+ZBpXD5m6NbR5hQDu851+YhG9Hc/JLv4CW2bDQCxYC2kleWJc
+         w4T9Pt51vtpwQfUmmfmVXz7AEXpgR2xu0LfKqxLv3Qe+3HKnPwUolVBRpMpFicwbZ3Km
+         6Oaw==
+X-Gm-Message-State: AOAM531yUtJYzx5E0vyNOyGxRO0rub2FK/MATQrUI2lrHFc9CiuXqGy9
+        G7NapmSr95bRxib2Nd1HwPkwog==
+X-Google-Smtp-Source: ABdhPJzRWBnbNFHIjAgUYgqM4NWDUtxLUBkI0z4KY8VqkEYCch07riiASN+lmqbrHFo7MFbLN2tOzA==
+X-Received: by 2002:a5d:6401:: with SMTP id z1mr23375743wru.272.1597821861337;
+        Wed, 19 Aug 2020 00:24:21 -0700 (PDT)
 Received: from dell.default ([95.149.164.62])
-        by smtp.gmail.com with ESMTPSA id c145sm3795808wmd.7.2020.08.19.00.24.19
+        by smtp.gmail.com with ESMTPSA id c145sm3795808wmd.7.2020.08.19.00.24.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 00:24:19 -0700 (PDT)
+        Wed, 19 Aug 2020 00:24:20 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
 Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
         netdev@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Intel Linux Wireless <linuxwifi@intel.com>
-Subject: [PATCH 12/28] wireless: intel: iwlwifi: dvm: lib: Demote non-compliant kernel-doc headers
-Date:   Wed, 19 Aug 2020 08:23:46 +0100
-Message-Id: <20200819072402.3085022-13-lee.jones@linaro.org>
+        Solomon Peachy <pizza@shaftnet.org>,
+        Dmitry Tarnyagin <dmitry.tarnyagin@lockless.no>
+Subject: [PATCH 13/28] wireless: st: cw1200: wsm: Remove 'dummy' variables
+Date:   Wed, 19 Aug 2020 08:23:47 +0100
+Message-Id: <20200819072402.3085022-14-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200819072402.3085022-1-lee.jones@linaro.org>
 References: <20200819072402.3085022-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Neither of these headers attempt to document any function parameters.
+They're never read, so there is no reason for them to exist.
+
+They just cause the compiler to complain.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/net/wireless/intel/iwlwifi/dvm/lib.c:121: warning: Function parameter or member 'priv' not described in 'iwlagn_txfifo_flush'
- drivers/net/wireless/intel/iwlwifi/dvm/lib.c:121: warning: Function parameter or member 'scd_q_msk' not described in 'iwlagn_txfifo_flush'
- drivers/net/wireless/intel/iwlwifi/dvm/lib.c:779: warning: Function parameter or member 'priv' not described in 'iwlagn_set_rxon_chain'
- drivers/net/wireless/intel/iwlwifi/dvm/lib.c:779: warning: Function parameter or member 'ctx' not described in 'iwlagn_set_rxon_chain'
+ drivers/net/wireless/st/cw1200/wsm.c: In function ‘wsm_ba_timeout_indication’:
+ drivers/net/wireless/st/cw1200/wsm.c:1033:5: warning: variable ‘dummy2’ set but not used [-Wunused-but-set-variable]
+ drivers/net/wireless/st/cw1200/wsm.c:1031:6: warning: variable ‘dummy’ set but not used [-Wunused-but-set-variable]
 
-Cc: Johannes Berg <johannes.berg@intel.com>
-Cc: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
-Cc: Luca Coelho <luciano.coelho@intel.com>
-Cc: Intel Linux Wireless <linuxwifi@intel.com>
+Cc: Solomon Peachy <pizza@shaftnet.org>
 Cc: Kalle Valo <kvalo@codeaurora.org>
 Cc: "David S. Miller" <davem@davemloft.net>
 Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Dmitry Tarnyagin <dmitry.tarnyagin@lockless.no>
 Cc: linux-wireless@vger.kernel.org
 Cc: netdev@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/net/wireless/intel/iwlwifi/dvm/lib.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/st/cw1200/wsm.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/lib.c b/drivers/net/wireless/intel/iwlwifi/dvm/lib.c
-index eab94d2f46b1e..3b937a7dd4032 100644
---- a/drivers/net/wireless/intel/iwlwifi/dvm/lib.c
-+++ b/drivers/net/wireless/intel/iwlwifi/dvm/lib.c
-@@ -110,7 +110,7 @@ int iwlagn_manage_ibss_station(struct iwl_priv *priv,
- 				  vif->bss_conf.bssid);
- }
+diff --git a/drivers/net/wireless/st/cw1200/wsm.c b/drivers/net/wireless/st/cw1200/wsm.c
+index c86f31dcc9817..d9b6147bbb528 100644
+--- a/drivers/net/wireless/st/cw1200/wsm.c
++++ b/drivers/net/wireless/st/cw1200/wsm.c
+@@ -1028,14 +1028,12 @@ static int wsm_find_complete_indication(struct cw1200_common *priv,
+ static int wsm_ba_timeout_indication(struct cw1200_common *priv,
+ 				     struct wsm_buf *buf)
+ {
+-	u32 dummy;
+ 	u8 tid;
+-	u8 dummy2;
+ 	u8 addr[ETH_ALEN];
  
--/**
-+/*
-  * iwlagn_txfifo_flush: send REPLY_TXFIFO_FLUSH command to uCode
-  *
-  * pre-requirements:
-@@ -769,7 +769,7 @@ static u8 iwl_count_chain_bitmap(u32 chain_bitmap)
- 	return res;
- }
+-	dummy = WSM_GET32(buf);
++	WSM_GET32(buf);
+ 	tid = WSM_GET8(buf);
+-	dummy2 = WSM_GET8(buf);
++	WSM_GET8(buf);
+ 	WSM_GET(buf, addr, ETH_ALEN);
  
--/**
-+/*
-  * iwlagn_set_rxon_chain - Set up Rx chain usage in "staging" RXON image
-  *
-  * Selects how many and which Rx receivers/antennas/chains to use.
+ 	pr_info("BlockACK timeout, tid %d, addr %pM\n",
 -- 
 2.25.1
 
