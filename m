@@ -2,70 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C0D249300
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 04:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A213F24930E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 04:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727791AbgHSCrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Aug 2020 22:47:47 -0400
-Received: from mga06.intel.com ([134.134.136.31]:15030 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727047AbgHSCrp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Aug 2020 22:47:45 -0400
-IronPort-SDR: L6pEgruXE4aIiFCpbNo2xc1LQGzJPGqaQEjFiMwADumXCSP/Q5mwpN0k/Fy74MuNnGRvNbGiuT
- qBn0XIf6/Stw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="216562473"
-X-IronPort-AV: E=Sophos;i="5.76,329,1592895600"; 
-   d="scan'208";a="216562473"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 19:47:44 -0700
-IronPort-SDR: HTPu3kc4NDfnQNpcql8xFm6h7Bcvs/ijovcCEMgk88lATFsD/VWz2NgT1MF8RUnPoQA28XFtl2
- q0wEHbI0ZNow==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,329,1592895600"; 
-   d="scan'208";a="320315331"
-Received: from chenyu-office.sh.intel.com ([10.239.158.173])
-  by fmsmga004.fm.intel.com with ESMTP; 18 Aug 2020 19:47:43 -0700
-Date:   Wed, 19 Aug 2020 10:48:58 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH][RFC] ACPI: processor: Print more information when
- acpi_processor_evaluate_cst() failed
-Message-ID: <20200819024858.GA25038@chenyu-office.sh.intel.com>
-References: <20200816151230.14524-1-yu.c.chen@intel.com>
- <CAJZ5v0jz5EH7bB5Goia=qd_P5eVLoONbscSvvEAqU7svodg_MA@mail.gmail.com>
+        id S1727813AbgHSCv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Aug 2020 22:51:57 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:54444 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726632AbgHSCv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 18 Aug 2020 22:51:56 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 1A2B7CC76AF6B949AB7F;
+        Wed, 19 Aug 2020 10:51:54 +0800 (CST)
+Received: from huawei.com (10.175.113.133) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Wed, 19 Aug 2020
+ 10:51:52 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <trond.myklebust@hammerspace.com>, <anna.schumaker@netapp.com>,
+        <bfields@fieldses.org>, <chuck.lever@oracle.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <linux-nfs@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH net-next] SUNRPC: remove duplicate include
+Date:   Wed, 19 Aug 2020 10:49:43 +0800
+Message-ID: <20200819024943.26850-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0jz5EH7bB5Goia=qd_P5eVLoONbscSvvEAqU7svodg_MA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.133]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 12:46:12PM +0200, Rafael J. Wysocki wrote:
-> On Sun, Aug 16, 2020 at 5:12 PM Chen Yu <yu.c.chen@intel.com> wrote:
-> >
-> > Some platforms have bogus _CST which might cause expectd behavior
-> > in the cpu idle driver. Some bogus _CST might be unable to be
-> > disassembled by acpica-tools due to broken format.
-> > Print extra log if the _CST extraction/verification failed.
-> > This can be used to help the user narrow down why the cpu
-> > idle driver fails to behave as expected.
-> >
-> > Suggested-by: Zhang Rui <rui.zhang@intel.com>
-> > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> 
-> This is fine by me as a general idea, but please change the log level to "info".
->
-Okay, I will send a new version. Thanks!
+Remove linux/sunrpc/auth_gss.h which is included more than once
 
-thanks,
-Chenyu
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+ net/sunrpc/auth_gss/trace.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/sunrpc/auth_gss/trace.c b/net/sunrpc/auth_gss/trace.c
+index d26036a57443..76685abba60f 100644
+--- a/net/sunrpc/auth_gss/trace.c
++++ b/net/sunrpc/auth_gss/trace.c
+@@ -9,7 +9,6 @@
+ #include <linux/sunrpc/svc_xprt.h>
+ #include <linux/sunrpc/auth_gss.h>
+ #include <linux/sunrpc/gss_err.h>
+-#include <linux/sunrpc/auth_gss.h>
+ 
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/rpcgss.h>
+-- 
+2.17.1
+
