@@ -2,222 +2,404 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2ABB249B84
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 13:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D21A249B8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 13:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728023AbgHSLRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 07:17:53 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:13164 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728016AbgHSLRh (ORCPT
+        id S1727019AbgHSLSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 07:18:42 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:55798 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726710AbgHSLSh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 07:17:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1597835856; x=1629371856;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=hMq1oiVQRLzX4TC47DOEFHh+3BdCoKTIm0tRO0xUSTA=;
-  b=DhrsVQLtO+0AKgE54zASUCUqWUONxBLQWjCvbOf9IoUaYrZgc2ZguzJI
-   XsOaS0vQHMSmWiAC45Kmzt270XU8NpmuBOHwqoCoV6luNpGtDJR9sbYgT
-   KX+/dXKqCUwMVPXlMnGvpUY8Iqtl0C25loJ6AFF5D3HdqThsm1z5IH1gL
-   jYS0xGwE1I6jZyehJeWEbTD5tUnCVCihjoX9T2s1nnIqNmr4bqcuVB/4b
-   Mc/dTW3cyuxhbM1nl0ekywRRU/nWW6Ia/nAkRqf1P3+XMHdm5qPb6VE+D
-   Iu/JXnf9KSmFr5EPOdPSX93cRNrgdYQoeovCbq7Hp2yWglQGeSi+wA/IG
-   Q==;
-IronPort-SDR: P4IOIpyGx9el8iX1nFq7xBrJXrtIJSJsnyXfPJNG+Dhtva4PpEIxTH59c9FhxQ5ZtWjuxI3gqf
- A6YsArfYYeR3dm0bqUtjzxxN9vJr908COeKY2Fg8o7/rgevZl0K7cTkfKpDN3HXgELHw595JDd
- x4GqBB9le2YuuyD8mlgGa9UfroeAm7C/SIMZtcheQqvoin95KnDuLRFGwgRwvSpGMpYIcVtclu
- NjV1yD60ivweXFpFOC4LpRk4/sY1us/z8Yy00To3j5TGcBBfIVBSQ3zoXt7wjtoAKN1TtTVXMB
- LmQ=
-X-IronPort-AV: E=Sophos;i="5.76,331,1592841600"; 
-   d="scan'208";a="149636131"
-Received: from mail-bn7nam10lp2105.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.105])
-  by ob1.hgst.iphmx.com with ESMTP; 19 Aug 2020 19:17:33 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PigMxY2/oQz1q4OqSoqNdFkGm5Fj5F7xaBOFIhQOOGQUrDtRZgQWbIhEHZwlCduJ5rJbp/5HiOB5q6bex/hvoZKhXmKRW85Us3Qm9CwdYIiF5eZRF+kZ0TPP2tbs2QSgIXjv02HC2PzpMl5GOqgqwdvm4iIbf0CadMY29ZneD3FgNCNbMwFay27xda2Mi5uEFfReaff1RHDhh9iFRPUAGhQRQqc/YpqxcktRXEPOhJZzxiZxSVxiW5+M5leYRbONyUlKjrFn+M4ETS3Sams2dgLCT3e1ChnoFYr1e9LEHJNV80otAbHP25Z1oWJUJKE3VlSHKCF7GvzQQ+J3mD3GDA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bbF80ekpXZTXVthrpQxMqWZlcOOKaCnyZOvc/iPj5uE=;
- b=LD5mtAx0bahm/3vm441kRJ1oOAKNQk+OcRZeNRyiYg88NvBESN6moxf+iuEE7djZwDCVxg5QRiqPx8pKuRU/Ix7OKgCg6/uIRu6FJJrw0ikaigwAiaTFQMVY2jl/k6rX2QsSB2assfqgugbYinktR4a7GJXM7N1z0teFAImdBSxyMvbQHBMn3cPF96HkrRyt1HQa9xmX+Qfyc1cZxPpahvLCwcxeWzpR0/o+gJ+qq1AwVNRj+yuAR0l8Mt+Ow5y7TsbNbcn8gAy4xqXuyANFe26I2hEGx9CA0G/ILZkPjWzyl48/jScrn70LoJMz7ZUNmRAu/61PoclRyAWn3e0SEQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bbF80ekpXZTXVthrpQxMqWZlcOOKaCnyZOvc/iPj5uE=;
- b=vnpUlvO2924LXqUgJgBY4N3WSxnztfPV59Eow0psXotD79O+Jj5uwijVRyWpEir04z8Rqylolm9bHPu/0Q/YlcThLxkpksDPLj1vkvOT3fkNMaA5tqgEQkeilP67A17Y/X16UhhuUEO9dCYXVNUQXU/TFDrZ6XN9ouoKG21hs6w=
-Received: from CY4PR04MB3751.namprd04.prod.outlook.com (2603:10b6:903:ec::14)
- by CY4PR04MB1175.namprd04.prod.outlook.com (2603:10b6:903:bf::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.25; Wed, 19 Aug
- 2020 11:17:30 +0000
-Received: from CY4PR04MB3751.namprd04.prod.outlook.com
- ([fe80::7d15:9936:4b3b:f8a2]) by CY4PR04MB3751.namprd04.prod.outlook.com
- ([fe80::7d15:9936:4b3b:f8a2%12]) with mapi id 15.20.3283.028; Wed, 19 Aug
- 2020 11:17:30 +0000
-From:   Damien Le Moal <Damien.LeMoal@wdc.com>
-To:     Kanchan Joshi <joshiiitr@gmail.com>
-CC:     Christoph Hellwig <hch@lst.de>,
-        Kanchan Joshi <joshi.k@samsung.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "sagi@grimberg.me" <sagi@grimberg.me>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Wed, 19 Aug 2020 07:18:37 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4DCF729E;
+        Wed, 19 Aug 2020 13:18:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1597835909;
+        bh=hkatmFK6TNssdvpmOliWG7jZiujJcNsDQMNskvTNaIE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oLvZ3x6JmMMbx32UI5Q8OOfU9bXJpjs25SOmU5rBooKAexL+p8YMqIGEjYHBhOfod
+         d8BGQ1JhAMhptSVcHuM91DnN0TznuB8iUm2O7oODwxhlbhYJC/g4nBkooVjP1EQ0zi
+         YYSEmhEPgPOwydkw40gJML7uZOE80AtAxmqkU1Xg=
+Date:   Wed, 19 Aug 2020 14:18:11 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        Keith Busch <kbusch@kernel.org>,
-        Selvakumar S <selvakuma.s1@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Nitesh Shetty <nj.shetty@samsung.com>
-Subject: Re: [PATCH 1/2] nvme: set io-scheduler requirement for ZNS
-Thread-Topic: [PATCH 1/2] nvme: set io-scheduler requirement for ZNS
-Thread-Index: AQHWdSEIMmCxi6h3l0CfpdyAr+vLMA==
-Date:   Wed, 19 Aug 2020 11:17:29 +0000
-Message-ID: <CY4PR04MB3751B077D152A80B19236C20E75D0@CY4PR04MB3751.namprd04.prod.outlook.com>
-References: <20200818052936.10995-1-joshi.k@samsung.com>
- <CGME20200818053252epcas5p4ee61d64bba5f6a131105e40330984f5e@epcas5p4.samsung.com>
- <20200818052936.10995-2-joshi.k@samsung.com> <20200818071141.GA2544@lst.de>
- <CA+1E3rJg0QOX4YgwWJf8Sm=6C-un4TsRX00E31fbFFPT9LYhXg@mail.gmail.com>
- <CY4PR04MB375148979AA403CF47EADE0BE75D0@CY4PR04MB3751.namprd04.prod.outlook.com>
- <CA+1E3r+C2KQENu=fO_+FZoUEvqZrAQcxziwSGt=FVidv85KQxA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.182.57]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 105a9491-3659-4dac-9636-08d844317647
-x-ms-traffictypediagnostic: CY4PR04MB1175:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CY4PR04MB1175D09396A2BD8FE9B84838E75D0@CY4PR04MB1175.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: rtfN/YdFtJ9xqXtYL/V9umhdluOkYYv581DTB9HSKIpJ02ucGaocX2j6RPKaSlvVhJoPiCdwUViM551aszPWmUm/cTM+7Hks6YbLW4KXNzcP474yqK7KoI+bbV17WMJ2POcifXzGjzht9mhhFxZyWhnW49QIZXXJeMqqV8j11ilWxyNBR5lgb+FNA5Lrn2ao8PYJ51/hRiYIHSFse+HgKcUcdiLpejlTEvktv4amg4rmK3Rt7UlNc3j1NE7smgaBh5ylfgYrM7Iyz6XrgmFjc1ZIlLkGa8XfZ8egX0J3p+WUQCh1xKzFZm3whnVcLehgunIpQKTH9PkY5eUHB5lIEA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR04MB3751.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(366004)(39860400002)(376002)(136003)(186003)(54906003)(71200400001)(26005)(6506007)(53546011)(83380400001)(316002)(7696005)(55016002)(6916009)(9686003)(76116006)(4326008)(33656002)(2906002)(5660300002)(52536014)(66446008)(66556008)(66946007)(64756008)(66476007)(7416002)(91956017)(478600001)(86362001)(8676002)(8936002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: ZUGclRIfuxoo2HHMX7t7PBJuNs5DveWG6FPm3Wzcw3t/DionWo1vYdwSEVP3KDASPm1lLRNs4GIMc0Zvr/ZQb1XSyOv4TRDr/H/2Ing+VM2lz96dOS6FvHP221a3zd4axdHKLCTjZLXMvR1TKjDRvxm/gktYQv9DNk7NBGUjKapXApHu/PtZDrLr1+wiV8SqBrTZy46kXzHhTBxeXl9o+B55PZ7JPfLuXHy6PvZeEr3LfnhyRVp+3JG0TSFVRCIIWTR50oIMk/xUrJQlAV0PUIHIGlHOCMHjrh0nKVdqMSMCeHtknooDYYJTWJ1aKoGpI1T2R7e1TgUtR7wvpnj189XnH5oo/uWmp0qOEhHxV4va7vohQIk8rZpsAWe2gBhWGqkZObJeIySdr8wBavUaKFlb90bVor+xNsNScxEerTgOGXBKjZPB8fIs+MqDw+6iR5XRb6UDRvdWC3WmldKHtCT2ObfkJFquHkyKRM3Px6bvV5bOwWokT3eNyXFflJwEBuuVCow0oA4SkGfb4C1KI7/61Z6nWNSs3iItEcP5krBefIhPSYj5wsmzYhcPbknkQmgHjZqnGY0VFJhS6Kx3Q91bix7DfXyvbiKyLWeuvnBFDk7QN2QBkidn7aOoDVo4ycK3bCaLlgk2x2EpE33a7g==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Alan Stern <stern@rowland.harvard.edu>,
+        linux-media@vger.kernel.org, linux-uvc-devel@lists.sourceforge.net,
+        Sakari Ailus <sakari.ailus@iki.fi>
+Subject: Re: Protecting uvcvideo againt USB device disconnect [Was: Re:
+ Protecting usb_set_interface() against device removal]
+Message-ID: <20200819111811.GA6049@pendragon.ideasonboard.com>
+References: <b0a7247c-bed3-934b-2c73-7f4b0adb5e75@roeck-us.net>
+ <20200815020739.GB52242@rowland.harvard.edu>
+ <20200816003315.GA13826@roeck-us.net>
+ <20200816121816.GC32174@pendragon.ideasonboard.com>
+ <9bb20ed7-b156-f6c2-4d25-6acac1a0021b@roeck-us.net>
+ <20200816235155.GA7729@pendragon.ideasonboard.com>
+ <0684b71c-8ac5-8962-cbd5-c0bcaa8b6881@xs4all.nl>
+ <20200819013002.GL2360@pendragon.ideasonboard.com>
+ <96cc3d39-ff23-8def-e199-9c4cb22cc02f@xs4all.nl>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR04MB3751.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 105a9491-3659-4dac-9636-08d844317647
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Aug 2020 11:17:30.0115
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 05sTsFfxoea8zZQ3g7SkRGx7BdHr5lCVm4iF5ZazoswAnp6zyevD31kzvNFGOe8+MpqQyz8IEFWps4M8EY2qpg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR04MB1175
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <96cc3d39-ff23-8def-e199-9c4cb22cc02f@xs4all.nl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/08/19 19:32, Kanchan Joshi wrote:=0A=
-> On Wed, Aug 19, 2020 at 3:08 PM Damien Le Moal <Damien.LeMoal@wdc.com> wr=
-ote:=0A=
->>=0A=
->> On 2020/08/19 18:27, Kanchan Joshi wrote:=0A=
->>> On Tue, Aug 18, 2020 at 12:46 PM Christoph Hellwig <hch@lst.de> wrote:=
-=0A=
->>>>=0A=
->>>> On Tue, Aug 18, 2020 at 10:59:35AM +0530, Kanchan Joshi wrote:=0A=
->>>>> Set elevator feature ELEVATOR_F_ZBD_SEQ_WRITE required for ZNS.=0A=
->>>>=0A=
->>>> No, it is not.=0A=
->>>=0A=
->>> Are you saying MQ-Deadline (write-lock) is not needed for writes on ZNS=
-?=0A=
->>> I see that null-block zoned and SCSI-ZBC both set this requirement. I=
-=0A=
->>> wonder how it became different for NVMe.=0A=
->>=0A=
->> It is not required for an NVMe ZNS drive that has zone append native sup=
-port.=0A=
->> zonefs and upcoming btrfs do not use regular writes, removing the requir=
-ement=0A=
->> for zone write locking.=0A=
-> =0A=
-> I understand that if a particular user (zonefs, btrfs etc) is not=0A=
-> sending regular-write and sending append instead, write-lock is not=0A=
-> required.=0A=
-> But if that particular user or some other user (say F2FS) sends=0A=
-> regular write(s), write-lock is needed.=0A=
-=0A=
-And that can be trivially enabled by setting the drive elevator to mq-deadl=
-ine.=0A=
-=0A=
-> Above block-layer, both the opcodes REQ_OP_WRITE and=0A=
-> REQ_OP_ZONE_APPEND are available to be used by users. And I thought=0A=
-> write-lock is taken or not is a per-opcode thing and not per-user (FS,=0A=
-> MD/DM, user-space etc.), is not that correct? And MQ-deadline can=0A=
-> cater to both the opcodes, while other schedulers cannot serve=0A=
-> REQ_OP_WRITE well for zoned-device.=0A=
-=0A=
-mq-deadline ignores zone append commands. No zone lock is taken for these. =
-In=0A=
-scsi, the emulation takes the zone lock before transforming the zone append=
- into=0A=
-a regular write. That locking is consistent with the mq-scheduler level loc=
-king=0A=
-since the same lock bitmap is used. So if the user only issues zone append=
-=0A=
-writes, mq-deadline is not needed and there is no reasons to force its use =
-by=0A=
-setting ELEVATOR_F_ZBD_SEQ_WRITE. E.g. the user may want to use kyber...=0A=
-=0A=
->> In the context of your patch series, ELEVATOR_F_ZBD_SEQ_WRITE should be =
-set only=0A=
->> and only if the drive does not have native zone append support.=0A=
-> =0A=
-> Sure I can keep it that way, once I get it right. If it is really not=0A=
-> required for native-append drive, it should not be here at the place=0A=
-> where I added.=0A=
-> =0A=
->> And even in that=0A=
->> case, since for an emulated zone append the zone write lock is taken and=
-=0A=
->> released by the emulation driver itself, ELEVATOR_F_ZBD_SEQ_WRITE is req=
-uired=0A=
->> only if the user will also be issuing regular writes at high QD. And tha=
-t is=0A=
->> trivially controllable by the user by simply setting the drive elevator =
-to=0A=
->> mq-deadline. Conclusion: setting ELEVATOR_F_ZBD_SEQ_WRITE is not needed.=
-=0A=
-> =0A=
-> Are we saying applications should switch schedulers based on the write=0A=
-> QD  (use any-scheduler for QD1 and mq-deadline for QD-N).=0A=
-> Even if it does that, it does not know what other applications would=0A=
-> be doing. That seems hard-to-get-right and possible only in a=0A=
-> tightly-controlled environment.=0A=
-=0A=
-Even for SMR, the user is free to set the elevator to none, which disables =
-zone=0A=
-write locking. Issuing writes correctly then becomes the responsibility of =
-the=0A=
-application. This can be useful for settings that for instance use NCQ I/O=
-=0A=
-priorities, which give better results when "none" is used.=0A=
-=0A=
-As far as I know, zoned drives are always used in tightly controlled=0A=
-environments. Problems like "does not know what other applications would be=
-=0A=
-doing" are non-existent. Setting up the drive correctly for the use case at=
- hand=0A=
-is a sysadmin/server setup problem, based on *the* application (singular)=
-=0A=
-requirements.=0A=
-=0A=
-=0A=
--- =0A=
-Damien Le Moal=0A=
-Western Digital Research=0A=
+Hi Hans,
+
+On Wed, Aug 19, 2020 at 09:27:05AM +0200, Hans Verkuil wrote:
+> On 19/08/2020 03:30, Laurent Pinchart wrote:
+> > On Mon, Aug 17, 2020 at 01:00:49PM +0200, Hans Verkuil wrote:
+> >> On 17/08/2020 01:51, Laurent Pinchart wrote:
+> >>> On Sun, Aug 16, 2020 at 08:54:18AM -0700, Guenter Roeck wrote:
+> >>>> On 8/16/20 5:18 AM, Laurent Pinchart wrote:
+> >>>>> CC'ing Hans Verkuil and Sakari Ailus for the discussion about handling
+> >>>>> file operations and disconnect in V4L2.
+> >>>>>
+> >>>>> On Sat, Aug 15, 2020 at 05:33:15PM -0700, Guenter Roeck wrote:
+> >>>>>> + linux-uvc-devel@lists.sourceforge.net
+> >>>>>> + linux-media@vger.kernel.org
+> >>>>>> + laurent.pinchart@ideasonboard.com
+> >>>>>>
+> >>>>>> and changed subject
+> >>>>>>
+> >>>>>> On Fri, Aug 14, 2020 at 10:07:39PM -0400, Alan Stern wrote:
+> >>>>>>> On Fri, Aug 14, 2020 at 04:07:03PM -0700, Guenter Roeck wrote:
+> >>>>>>>> Hi all,
+> >>>>>>>>
+> >>>>>>>> over time, there have been a number of reports of crashes in usb_ifnum_to_if(),
+> >>>>>>>> called from usb_hcd_alloc_bandwidth, which is in turn called from usb_set_interface().
+> >>>>>>>> Examples are [1] [2] [3]. A typical backtrace is:
+> >>>>>>>>
+> >>>>>>>> <3>[ 3489.445468] intel_sst_acpi 808622A8:00: sst: Busy wait failed, cant send this msg
+> >>>>>>>> <6>[ 3490.507273] usb 1-4: USB disconnect, device number 3
+> >>>>>>>> <1>[ 3490.516670] BUG: unable to handle kernel NULL pointer dereference at 0000000000000000
+> >>>>>>>> <6>[ 3490.516680] PGD 0 P4D 0
+> >>>>>>>> <4>[ 3490.516687] Oops: 0000 [#1] PREEMPT SMP PTI
+> >>>>>>>> <4>[ 3490.516693] CPU: 0 PID: 5633 Comm: V4L2CaptureThre Not tainted 4.19.113-08536-g5d29ca36db06 #1
+> >>>>>>>> <4>[ 3490.516696] Hardware name: GOOGLE Edgar, BIOS Google_Edgar.7287.167.156 03/25/2019
+> >>>>>>>> <4>[ 3490.516706] RIP: 0010:usb_ifnum_to_if+0x29/0x40
+> >>>>>>>> <4>[ 3490.516710] Code: ee 0f 1f 44 00 00 55 48 89 e5 48 8b 8f f8 03 00 00 48 85 c9 74 27 44 0f b6 41 04 4d 85 c0 74 1d 31 ff 48 8b 84 f9 98 00 00 00 <48> 8b 10 0f b6 52 02 39 f2 74 0a 48 ff c7 4c 39 c7 72 e5 31 c0 5d
+> >>>>>>>> <4>[ 3490.516714] RSP: 0018:ffffa46f42a47a80 EFLAGS: 00010246
+> >>>>>>>> <4>[ 3490.516718] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff904a396c9000
+> >>>>>>>> <4>[ 3490.516721] RDX: ffff904a39641320 RSI: 0000000000000001 RDI: 0000000000000000
+> >>>>>>>> <4>[ 3490.516724] RBP: ffffa46f42a47a80 R08: 0000000000000002 R09: 0000000000000000
+> >>>>>>>> <4>[ 3490.516727] R10: 0000000000009975 R11: 0000000000000009 R12: 0000000000000000
+> >>>>>>>> <4>[ 3490.516731] R13: ffff904a396b3800 R14: ffff904a39e88000 R15: 0000000000000000
+> >>>>>>>> <4>[ 3490.516735] FS: 00007f396448e700(0000) GS:ffff904a3ba00000(0000) knlGS:0000000000000000
+> >>>>>>>> <4>[ 3490.516738] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >>>>>>>> <4>[ 3490.516742] CR2: 0000000000000000 CR3: 000000016cb46000 CR4: 00000000001006f0
+> >>>>>>>> <4>[ 3490.516745] Call Trace:
+> >>>>>>>> <4>[ 3490.516756] usb_hcd_alloc_bandwidth+0x1ee/0x30f
+> >>>>>>>> <4>[ 3490.516762] usb_set_interface+0x1a3/0x2b7
+> >>>>>>>> <4>[ 3490.516773] uvc_video_start_transfer+0x29b/0x4b8 [uvcvideo]
+> >>>>>>>> <4>[ 3490.516781] uvc_video_start_streaming+0x91/0xdd [uvcvideo]
+> >>>>>>>> <4>[ 3490.516787] uvc_start_streaming+0x28/0x5d [uvcvideo]
+> >>>>>>>> <4>[ 3490.516795] vb2_start_streaming+0x61/0x143 [videobuf2_common]
+> >>>>>>>> <4>[ 3490.516801] vb2_core_streamon+0xf7/0x10f [videobuf2_common]
+> >>>>>>>> <4>[ 3490.516807] uvc_queue_streamon+0x2e/0x41 [uvcvideo]
+> >>>>>>>> <4>[ 3490.516814] uvc_ioctl_streamon+0x42/0x5c [uvcvideo]
+> >>>>>>>> <4>[ 3490.516820] __video_do_ioctl+0x33d/0x42a
+> >>>>>>>> <4>[ 3490.516826] video_usercopy+0x34e/0x5ff
+> >>>>>>>> <4>[ 3490.516831] ? video_ioctl2+0x16/0x16
+> >>>>>>>> <4>[ 3490.516837] v4l2_ioctl+0x46/0x53
+> >>>>>>>> <4>[ 3490.516843] do_vfs_ioctl+0x50a/0x76f
+> >>>>>>>> <4>[ 3490.516848] ksys_ioctl+0x58/0x83
+> >>>>>>>> <4>[ 3490.516853] __x64_sys_ioctl+0x1a/0x1e
+> >>>>>>>> <4>[ 3490.516858] do_syscall_64+0x54/0xde
+> >>>>>>>>
+> >>>>>>>> I have been able to reproduce the problem on a Chromebook by strategically placing
+> >>>>>>>> msleep() calls into usb_set_interface() and usb_disable_device(). Ultimately, the
+> >>>>>>>> problem boils down to lack of protection against device removal in usb_set_interface()
+> >>>>>>>> [and/or possibly other callers of usb_ifnum_to_if()].
+> >>>>>>>>
+> >>>>>>>> Sequence of events is roughly as follows:
+> >>>>>>>>
+> >>>>>>>> - usb_set_interface() is called and proceeds to some point, possibly to
+> >>>>>>>>   mutex_lock(hcd->bandwidth_mutex);
+> >>>>>>>> - Device removal event is detected, and usb_disable_device() is called
+> >>>>>>>
+> >>>>>>> At this point all interface drivers get unbound (their disconnect 
+> >>>>>>> routines are called).
+> >>>>>>>
+> >>>>>>>> - usb_disable_device() starts removing actconfig data. It has removed
+> >>>>>>>>   and cleared dev->actconfig->interface[i], but not dev->actconfig
+> >>>>>>>> - usb_set_interface() calls usb_hcd_alloc_bandwidth(), which calls
+> >>>>>>>>   usb_ifnum_to_if()
+> >>>>>>>> - In usb_ifnum_to_if(), dev->actconfig is not NULL, but
+> >>>>>>>>   dev->actconfig->interface[i] is NULL
+> >>>>>>>> - crash
+> >>>>>>>>
+> >>>>>>>> Question is what we can do about this. Checking if dev->state != USB_STATE_NOTATTACHED
+> >>>>>>>> in usb_ifnum_to_if() might be a possible approach, but strictly speaking it would
+> >>>>>>>> still be racy since there is still no lock against device removal. I have not tried
+> >>>>>>>> calling usb_lock_device() in usb_set_interface() - would that possibly be an option ?
+> >>>>>>>
+> >>>>>>> As far as I know, protecting against these races is the responsibility 
+> >>>>>>> of the USB interface drivers.  They must make sure that their disconnect 
+> >>>>>>> routines block until all outstanding calls to usb_set_interface return 
+> >>>>>>> (in fact, until all outstanding device accesses have finished).
+> >>>>>>>
+> >>>>>>> For instance, in the log extract you showed, it's obvious that the 
+> >>>>>>> uvc_start_streaming routine was running after the disconnect routine had 
+> >>>>>>> returned, which looks like a bug in itself: Once the disconnect routine 
+> >>>>>>> returns, the driver is not supposed to try to access the device at all 
+> >>>>>>> because some other driver may now be bound to it.
+> >>>>>>>
+> >>>>>>> We can't just call usb_lock_device from within usb_set_interface, 
+> >>>>>>> because usb_set_interface is often called with that lock already held.
+> >>>>>>>
+> >>>>>> I had a closer look into the uvcvideo driver and compared it to other usb
+> >>>>>> drivers, including drivers in drivers/media/usb/ which connect to the video
+> >>>>>> subsystem.
+> >>>>>>
+> >>>>>> The usbvideo driver lacks protection against calls to uvc_disconnect() while
+> >>>>>
+> >>>>> Are you confusing usbvideo and uvcvideo ? Both exist, and uvcvideo would
+> >>>>> have been called usbvideo if the former hadn't already been in use.
+> >>>>
+> >>>> Yes, sorry :-(. I am not sure how s/uvc/usb/ happened.
+> >>>
+> >>> No worries.
+> >>>
+> >>>>>> calls into file operations are ongoing. This is pretty widespread, and not
+> >>>>>> even limited to file operations (for example, there is a worker which is only
+> >>>>>> canceled in uvc_delete, not in ucv_disconnect). The existing protection only
+> >>>>>> ensures that no file operations are started after the call to ucv_disconnect,
+> >>>>>> but that is insufficient.
+> >>>>>>
+> >>>>>> Other drivers do have that protection and make sure that no usb operations
+> >>>>>> can happen after the disconnect call.
+> >>>>>>
+> >>>>>> The only remedy I can see is to rework the usbvideo driver and add the
+> >>>>>> necessary protections. At first glance, it looks like this may be a
+> >>>>>> substantial amount of work. I'd sign up for that, but before I start,
+> >>>>>> I would like to get input from the usbvideo community. Is such an effort
+> >>>>>> already going on ? If yes, how can I help ? If not, is the problem
+> >>>>>> understood and accepted ? Are there any ideas on how to solve it ?
+> >>>>>
+> >>>>> This is something that has been discussed before, and needs to be solved
+> >>>>> in the V4L2 framework itself, not in individual drivers. Not only would
+> >>>>> this avoid rolling out the same code manually everywhere (in different
+> >>>>> incorrect ways, as races are difficult to solve and implementations are
+> >>>>> more often wrong than right), but it will also avoid similar issues for
+> >>>>> non-USB devices.
+> >>>>
+> >>>> You mean code that ensures that no user-space v4l2 operation is in progress
+> >>>> after video_device_unregister / v4l2_device_unregister return ? I agree,
+> >>>> that would simplify the necessary changes on the uvc side.
+> >>>
+> >>> I was thinking about adding a new function to be called from the
+> >>> disconnect handler to implement the wait on end of userspace access, but
+> >>> video_device_unregister() seems an even better idea.
+> >>> v4l2_device_unregister() is probably not very useful as v4l2_device
+> >>> isn't exposed to userspace, only video_device is (and v4l2_subdev and
+> >>> media_device, but that's a different story, although probably still an
+> >>> issue for the latter in the UVC driver).
+> >>
+> >> Actually, all that is needed is to take the ioctl serialization lock in the disconnect
+> >> function.
+> > 
+> > It's not just ioctls though, the other file operations also need to be
+> > handled (read, write, mmap).
+> 
+> Correct. And AFAIK all vb2-based drivers do take that serialization lock in
+> the file ops.
+> 
+> >> See last paragraph in 1.4.1 here:
+> >>
+> >> https://hverkuil.home.xs4all.nl/spec/driver-api/v4l2-dev.html
+> >>
+> >> Since uvc uses its own lock, you need to take that one.
+> > 
+> > Drivers that use their own lock do so to avoid serializing all ioctls.
+> 
+> Let's agree to disagree :-)
+> 
+> In my experience it is just too hard to keep track of locking and with
+> very little advantages. You are the only developer that I know of that
+> insists on doing your own locking. Luckily you are very good at your
+> job, but everyone else uses the v4l2/vb2 core locking.
+> 
+> > This means that different ioctls may be covered by different locks
+> > (possibly with part of some ioctls running without locking). I don't
+> > think we can just dismiss the issue saying those drivers need to
+> > implement the disconnection manually. It would be much better to
+> > integrate handling of userspace access with video_device_unregister()
+> > like proposed above, as that will work for all drivers in a transparent
+> > way. It would also be fairly simple to implement in the V4L2 core.
+> 
+> I'm not really sure what you want. Should video_unregister_device()
+> take the core lock (i.e. vdev->lock)?
+
+struct video_device {
+	...
+	wait_queue_head_t uapi_wait;
+	bool uapi_call_in_progress;
+	bool unregister_in_progress;
+	...
+};
+
+static inline int video_device_uapi_call_enter(struct video_device *vdev)
+{
+	int ret = 0;
+
+	spin_lock(&vdev->uapi_wait.lock);
+	if (likely(!vdev->unregister_in_progress)) {
+		vdev->uapi_call_in_progress = true;
+	} else {
+		ret = -ENOTCONN;
+	}
+	spin_unlock(&vdev->uapi_wait.lock);
+
+	return ret;
+}
+
+static inline void video_device_uapi_call_exit(struct video_device *vdev)
+{
+	spin_lock(&vdev->uapi_wait.lock);
+	vdev->uapi_call_in_progress = false;
+	wake_up_locked(&vdev->uapi_wait);
+	spin_unlock(&vdev->uapi_wait.lock);
+}
+
+void video_unregister_device(struct video_device *vdev)
+{
+	...
+
+
+	...
+}
+
+ void video_unregister_device(struct video_device *vdev)
+ {
+ 	/* Check if vdev was ever registered at all */
+ 	if (!vdev || !video_is_registered(vdev))
+ 		return;
+ 
++	spin_lock(&vdev->uapi_wait.lock);
++	vdev->unregister_in_progress = true;
++	if (vdev->uapi_call_in_progress)
++		wait_event_interruptible_locked(vdev->uapi_wait,
++						!vdev->uapi_call_in_progress);
++	spin_unlock(&vdev->uapi_wait.lock);
++
+ 	mutex_lock(&videodev_lock);
+ 	/* This must be in a critical section to prevent a race with v4l2_open.
+ 	 * Once this bit has been cleared video_get may never be called again.
+ 	 */
+ 	clear_bit(V4L2_FL_REGISTERED, &vdev->flags);
+ 	mutex_unlock(&videodev_lock);
+ 	device_unregister(&vdev->dev);
+ }
+
+ static long v4l2_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ {
+ 	struct video_device *vdev = video_devdata(filp);
+-	int ret = -ENODEV;
++	int ret;
+ 
++	ret = video_device_uapi_call_enter(vdev);
++	if (ret)
++		return ret;
++
+ 	if (vdev->fops->unlocked_ioctl) {
+ 		if (video_is_registered(vdev))
+ 			ret = vdev->fops->unlocked_ioctl(filp, cmd, arg);
++		else
++			ret = -ENODEV;
+ 	} else
+ 		ret = -ENOTTY;
+ 
++	video_device_uapi_call_exit(vdev);
++
+ 	return ret;
+ }
+
+and similarly for the other fops. A bit more work is needed to merge
+unregister_in_progress with the V4L2_FL_REGISTERED bit.
+
+> >>> We also have a v4l2_device_disconnect() function which is supposed to
+> >>> handle hot-pluggable device disconnection, but it's fairly useless (I'd
+> >>> even say harmful as it gives the illusion that hotplugging is correctly
+> >>> handled, while in reality the media subsystem is plagged by hot-unplug
+> >>> issues :-S).
+> >>
+> >> The v4l2_device_disconnect() is there to remove a v4l2_dev reference to
+> >> the device that is about to be removed when the disconnect() exists.
+> >> Otherwise v4l2_dev->dev would point to a missing device.
+> >>
+> >> However, I wonder if it is still needed: commit 236c5441d703 from 2011 added
+> >> code to take a reference to v4l2_dev->dev in v4l2_device_register(). This
+> >> should prevent the device from disappearing until v4l2_device_unregister() is
+> >> called. I suspect that v4l2_device_disconnect() can be removed completely, and
+> >> instead v4l2_device_unregister() just calls put_device(v4l2_dev->dev).
+> >>
+> >> I don't like v4l2_device_disconnect() either, so if this works, then that would
+> >> be a nice simplification.
+> >>
+> >>>> I actually came from the other side - I assumed that there is a reason
+> >>>> that is not already the case, and that the problem therefore has to be
+> >>>> resolved on the driver side.
+> >>>>
+> >>>> So I guess the next question is: Is this already being addressed on the
+> >>>> v4l2 side ?
+> >>>
+> >>> I'm not aware of anyone working on this.
+> >>>
+> >>>>> It shouldn't take more than two flags (to track user-space operations in
+> >>>>> progress and disconnection), a spinlock and a wait queue entry. I'm not
+> >>>>> sure if someone has already given it a try, and don't recall why this
+> >>>>> hasn't been done yet, as it should be fairly straightforward.
+> >>>>>
+> >>>>> On the UVC side, the work queue probably has to be flushed in
+> >>>>> uvc_disconnect(). I'd keep the destroy call in uvc_delete() though.
+> >>>>> Please make sure to look for potential race conditions between the URB
+> >>>>> completion handler and the .disconnect() handler (they shouldn't be any,
+> >>>>> but I haven't checked lately myself).
+> >>>>
+> >>>> My current solution for this problem is to call uvc_ctrl_cleanup_device()
+> >>>> from uvc_disconnect(), after uvc_unregister_video().
+> >>>
+> >>> I'd rather avoid that, as the cleanup functions in the UVC driver are
+> >>> generally meant to free memory when the last user disappears. While no
+> >>> new userspace operation will be started after disconnection once the
+> >>> above fix will be in place, there's one operation we can't avoid: the
+> >>> file release. This will access some of the memory allocated by the
+> >>> driver, and while the current implementation probably doesn't access in
+> >>> .release() any memory freed by uvc_ctrl_cleanup_device(), I think it's a
+> >>> good practice to only shut down the userspace API in .disconnect(), and
+> >>> free memory when the last reference is released.
+> >>>
+> >>>> An alternative might
+> >>>> be to add a uvc_ctrl_stop_device() function which would just cancel the
+> >>>> worker.
+> >>>
+> >>> I think that would be best. Should stream->async_wq (in uvc_video.c) be
+> >>> similarly flushed ? The driver does so in stream->async_wq(), called
+> >>> from uvc_video_stop_transfer(), itself called from
+> >>> uvc_video_stop_streaming() (among other places, that are either error
+> >>> paths or system suspend handling). The call stack goes to
+> >>> uvc_stop_streaming(), and, through the videobuf2 helpers, to
+> >>> vb2_queue_release() called by uvc_queue_release() itself called by
+> >>> uvc_v4l2_release() (in the non-disconnect case,
+> >>> uvc_video_stop_streaming() will be called through videobuf2 by
+> >>> uvc_queue_streamoff(), in response to a VIDIOC_STREAMOFF ioctl). We thus
+> >>> flush the workqueue too late, and also access the device in
+> >>> uvc_video_stop_streaming() long after .disconnect() returns.
+> >>>
+> >>> I think uvc_video_stop_streaming() could be called in uvc_disconnect()
+> >>> after uvc_unregister_video().
+
+-- 
+Regards,
+
+Laurent Pinchart
