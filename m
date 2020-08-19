@@ -2,303 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD87C24A712
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 21:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B19224A717
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 21:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726934AbgHSTov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 15:44:51 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41670 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725997AbgHSTos (ORCPT
+        id S1726977AbgHSTpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 15:45:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726816AbgHSTpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 15:44:48 -0400
-Date:   Wed, 19 Aug 2020 21:44:43 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597866285;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ph4AV42sXpm7h1oWvi7gXQwMp6v8BCIenBHSbkZYXMo=;
-        b=UBWBZmtz1FCbOTG/QrXMYwSNQ71+b+qx1D3dnKgyZfh+VGlxtA5ASOm0v/Qxfo+Kb34hsv
-        qfJ+YXJ5iqqH4mIm8y4z8d6fuQREUSpKSRriXsaCjUQDTZQX5Px6ala50/DAM/BUjZ+nQA
-        e+JB5/CJBusSscqBMTRUo5zfDb2eGZbuOqlt70lDNIb7Tg75vwUmLB5kwVI5h+hyCxZTbf
-        6kWvMWBd+gpcoIg/7F5C54vqUhimnzHpqGq/iBdlsYEf4cY2E8UwtYSPPY5+o0IJgMOpNK
-        Aijrhhkw5rRVgyezqNPvmptp1bbB5zHhVaL1T4S6rKq54HPQWJjbpT0Rt/7t8w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597866285;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ph4AV42sXpm7h1oWvi7gXQwMp6v8BCIenBHSbkZYXMo=;
-        b=1w/aY5Ve3FeiZQ9hbF0NdOeN7uCXkinec6hPyEbNVfjawFbgAUXqVkWc3lclFCwDkBsYH6
-        2jRhON8Emk8fyEBA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH] io_wq: Make io_wqe::lock a raw_spinlock_t
-Message-ID: <20200819194443.eabkhlkocvkgifyh@linutronix.de>
-References: <20200819123758.6v45rj2gvojddsnn@linutronix.de>
- <20200819131507.GC2674@hirez.programming.kicks-ass.net>
- <f26205ac-9da9-253e-ea43-db2417714a94@kernel.dk>
+        Wed, 19 Aug 2020 15:45:07 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF94C061384
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 12:45:07 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id a79so12191197pfa.8
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 12:45:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sF9UY16dXmm5cOO3jSka0z0v5TSuaKu0zT9caFSv5L4=;
+        b=My0adgqfzPQIKRYv/F8WnEALcwwBJO517cDOIum5P/tFkJOrho4xIdJRi1k4zJ/iGQ
+         0p/NIeSfLlcShfD5CGgNISVf0dYc54DeIXBi2b30RWGcovKY3m5uVjO2zPe8wTf2sz/k
+         Xt0o2e5e4BNeooKNq7vL6VHTxR6TyXFpKe0KMZ8JKIm3wEe6aAtfKkUhI0MSVepeY/0p
+         lKX7xXPxzRJW2pX2fTj/mdkl6bUXDavqLxJR8tS+oYHM2be6+cE6OS+gI2UMTZD8tNEL
+         POCLpdcuDZ0tCU7KgcRD2V4W2exQo57YWgIo/f+W32dGujkTCLAbRjWl7R5fVwLmr5Yf
+         f8hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sF9UY16dXmm5cOO3jSka0z0v5TSuaKu0zT9caFSv5L4=;
+        b=COg5rIJ27Gu+49VX2A+Q2VzjaxIyP4gb6jlfZDOOURwJLlX8J1OSSM6XCQMpBwr4Qw
+         6HNxk+CTMkCFe3tb11U0nMzEpRoY+/aFRsqfk1LhqrEH5yoNS1WnHOiji8gn2PFMvCNB
+         28jbLycN114+1pL5waz+86y6n9PVp2z/X4lCSfMPsRc7CICqmaNFdnkvddq262Frb+hb
+         o9I7fq+e/r4Yv9zfNRprDi1Kp7XnCl0kumXRNYUIf0L0dNxqVRLVtlTix1/EFTYK4mNz
+         ISLXZcsLz8PdSAdHwEiY2Ttn5h8moCfrB6PHIFz9azIu5bv2+z264pCJy8HoSiYc5FTX
+         +1lQ==
+X-Gm-Message-State: AOAM530r/6fG1CjIw7U0PQEvVDgE+ei880DsAZNlCPW5OP0fpKOhU4p8
+        P58RGqhGpqzkeZKVXJrAGr3ZDw==
+X-Google-Smtp-Source: ABdhPJxF0ffkstbdtPGkrxJ6MGDk67Qcr5yO9dllut/Ch0wpl9p24HmbGjB45ynS/uBatcVWygxZaQ==
+X-Received: by 2002:a63:161a:: with SMTP id w26mr11429964pgl.211.1597866306882;
+        Wed, 19 Aug 2020 12:45:06 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id l24sm16620pff.20.2020.08.19.12.45.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Aug 2020 12:45:06 -0700 (PDT)
+Date:   Wed, 19 Aug 2020 13:45:04 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Peng Fan <peng.fan@nxp.com>
+Cc:     "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 04/10] remoteproc: imx_rproc: make syscon optional
+Message-ID: <20200819194504.GB3845366@xps15>
+References: <20200724080813.24884-1-peng.fan@nxp.com>
+ <20200724080813.24884-5-peng.fan@nxp.com>
+ <20200818214350.GA3822080@xps15>
+ <DB6PR0402MB276017AA0C124172D9BC3483885D0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f26205ac-9da9-253e-ea43-db2417714a94@kernel.dk>
+In-Reply-To: <DB6PR0402MB276017AA0C124172D9BC3483885D0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During a context switch the scheduler invokes wq_worker_sleeping() with
-disabled preemption. Disabling preemption is needed because it protects
-access to `worker->sleeping'. As an optimisation it avoids invoking
-schedule() within the schedule path as part of possible wake up (thus
-preempt_enable_no_resched() afterwards).
+On Wed, Aug 19, 2020 at 12:51:27AM +0000, Peng Fan wrote:
+> > Subject: Re: [PATCH 04/10] remoteproc: imx_rproc: make syscon optional
+> > 
+> > Hi Peng,
+> > 
+> > On Fri, Jul 24, 2020 at 04:08:07PM +0800, Peng Fan wrote:
+> > > Make syscon optional, since i.MX8QM/QXP/7ULP not have SRC to control
+> > M4.
+> > > But currently i.MX8QM/QXP/7ULP not added, so still check regmap when
+> > > start/stop to avoid unhappy things.
+> > 
+> > On the i.MX8QM/QXP/7ULP processors, the remote processors are not
+> > handled by the remoteproc cores, as implemented in this patch.  In such a
+> > scenario how does the remoteproc core know the remote processor has
+> > crashed and how does it recover from such a condition?
+> 
+> For 7ULP dual boot case, A7 is under control of M4, so if m4 crash, I suppose
+> A7 would not work properly.
 
-The io-wq has been added to the mix in the same section with disabled
-preemption. This breaks on PREEMPT_RT because io_wq_worker_sleeping()
-acquires a spinlock_t. Also within the schedule() the spinlock_t must be
-acquired after tsk_is_pi_blocked() otherwise it will block on the
-sleeping lock again while scheduling out.
+In that case I assume the whole system gets rebooted, which puts the A7 in a
+state where it can "attach" with the M4 again.
 
-While playing with `io_uring-bench' I didn't notice a significant
-latency spike after converting io_wqe::lock to a raw_spinlock_t. The
-latency was more or less the same.
+> 
+> For 8QM/QXP partition case, M4 is in a standalone partition, if M4 crash or
+> reboot, the system controller unit will restart M4 and notify Acore that M4
+> restart.
 
-In order to keep the spinlock_t it would have to be moved after the
-tsk_is_pi_blocked() check which would introduce a branch instruction
-into the hot path.
+And how does that notification work exactly?  Does rproc_report_crash() get
+called somewhere in that process in order for the remoteproc core to attach to
+the M4 again?
 
-The lock is used to maintain the `work_list' and wakes one task up at
-most.
-Should io_wqe_cancel_pending_work() cause latency spikes, while
-searching for a specific item, then it would need to drop the lock
-during iterations.
-revert_creds() is also invoked under the lock. According to debug
-cred::non_rcu is 0. Otherwise it should be moved outside of the locked
-section because put_cred_rcu()->free_uid() acquires a sleeping lock.
+Many thanks for the help,
+Mathieu
 
-Convert io_wqe::lock to a raw_spinlock_t.c
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- fs/io-wq.c | 52 ++++++++++++++++++++++++++--------------------------
- 1 file changed, 26 insertions(+), 26 deletions(-)
-
-diff --git a/fs/io-wq.c b/fs/io-wq.c
-index e92c4724480ca..16dd3a5534a06 100644
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -87,7 +87,7 @@ enum {
-  */
- struct io_wqe {
- 	struct {
--		spinlock_t lock;
-+		raw_spinlock_t lock;
- 		struct io_wq_work_list work_list;
- 		unsigned long hash_map;
- 		unsigned flags;
-@@ -148,7 +148,7 @@ static bool __io_worker_unuse(struct io_wqe *wqe, struct io_worker *worker)
- 
- 	if (current->files != worker->restore_files) {
- 		__acquire(&wqe->lock);
--		spin_unlock_irq(&wqe->lock);
-+		raw_spin_unlock_irq(&wqe->lock);
- 		dropped_lock = true;
- 
- 		task_lock(current);
-@@ -166,7 +166,7 @@ static bool __io_worker_unuse(struct io_wqe *wqe, struct io_worker *worker)
- 	if (worker->mm) {
- 		if (!dropped_lock) {
- 			__acquire(&wqe->lock);
--			spin_unlock_irq(&wqe->lock);
-+			raw_spin_unlock_irq(&wqe->lock);
- 			dropped_lock = true;
- 		}
- 		__set_current_state(TASK_RUNNING);
-@@ -220,17 +220,17 @@ static void io_worker_exit(struct io_worker *worker)
- 	worker->flags = 0;
- 	preempt_enable();
- 
--	spin_lock_irq(&wqe->lock);
-+	raw_spin_lock_irq(&wqe->lock);
- 	hlist_nulls_del_rcu(&worker->nulls_node);
- 	list_del_rcu(&worker->all_list);
- 	if (__io_worker_unuse(wqe, worker)) {
- 		__release(&wqe->lock);
--		spin_lock_irq(&wqe->lock);
-+		raw_spin_lock_irq(&wqe->lock);
- 	}
- 	acct->nr_workers--;
- 	nr_workers = wqe->acct[IO_WQ_ACCT_BOUND].nr_workers +
- 			wqe->acct[IO_WQ_ACCT_UNBOUND].nr_workers;
--	spin_unlock_irq(&wqe->lock);
-+	raw_spin_unlock_irq(&wqe->lock);
- 
- 	/* all workers gone, wq exit can proceed */
- 	if (!nr_workers && refcount_dec_and_test(&wqe->wq->refs))
-@@ -504,7 +504,7 @@ static void io_worker_handle_work(struct io_worker *worker)
- 		else if (!wq_list_empty(&wqe->work_list))
- 			wqe->flags |= IO_WQE_FLAG_STALLED;
- 
--		spin_unlock_irq(&wqe->lock);
-+		raw_spin_unlock_irq(&wqe->lock);
- 		if (!work)
- 			break;
- 		io_assign_current_work(worker, work);
-@@ -538,17 +538,17 @@ static void io_worker_handle_work(struct io_worker *worker)
- 				io_wqe_enqueue(wqe, linked);
- 
- 			if (hash != -1U && !next_hashed) {
--				spin_lock_irq(&wqe->lock);
-+				raw_spin_lock_irq(&wqe->lock);
- 				wqe->hash_map &= ~BIT_ULL(hash);
- 				wqe->flags &= ~IO_WQE_FLAG_STALLED;
- 				/* skip unnecessary unlock-lock wqe->lock */
- 				if (!work)
- 					goto get_next;
--				spin_unlock_irq(&wqe->lock);
-+				raw_spin_unlock_irq(&wqe->lock);
- 			}
- 		} while (work);
- 
--		spin_lock_irq(&wqe->lock);
-+		raw_spin_lock_irq(&wqe->lock);
- 	} while (1);
- }
- 
-@@ -563,7 +563,7 @@ static int io_wqe_worker(void *data)
- 	while (!test_bit(IO_WQ_BIT_EXIT, &wq->state)) {
- 		set_current_state(TASK_INTERRUPTIBLE);
- loop:
--		spin_lock_irq(&wqe->lock);
-+		raw_spin_lock_irq(&wqe->lock);
- 		if (io_wqe_run_queue(wqe)) {
- 			__set_current_state(TASK_RUNNING);
- 			io_worker_handle_work(worker);
-@@ -574,7 +574,7 @@ static int io_wqe_worker(void *data)
- 			__release(&wqe->lock);
- 			goto loop;
- 		}
--		spin_unlock_irq(&wqe->lock);
-+		raw_spin_unlock_irq(&wqe->lock);
- 		if (signal_pending(current))
- 			flush_signals(current);
- 		if (schedule_timeout(WORKER_IDLE_TIMEOUT))
-@@ -586,11 +586,11 @@ static int io_wqe_worker(void *data)
- 	}
- 
- 	if (test_bit(IO_WQ_BIT_EXIT, &wq->state)) {
--		spin_lock_irq(&wqe->lock);
-+		raw_spin_lock_irq(&wqe->lock);
- 		if (!wq_list_empty(&wqe->work_list))
- 			io_worker_handle_work(worker);
- 		else
--			spin_unlock_irq(&wqe->lock);
-+			raw_spin_unlock_irq(&wqe->lock);
- 	}
- 
- 	io_worker_exit(worker);
-@@ -630,9 +630,9 @@ void io_wq_worker_sleeping(struct task_struct *tsk)
- 
- 	worker->flags &= ~IO_WORKER_F_RUNNING;
- 
--	spin_lock_irq(&wqe->lock);
-+	raw_spin_lock_irq(&wqe->lock);
- 	io_wqe_dec_running(wqe, worker);
--	spin_unlock_irq(&wqe->lock);
-+	raw_spin_unlock_irq(&wqe->lock);
- }
- 
- static bool create_io_worker(struct io_wq *wq, struct io_wqe *wqe, int index)
-@@ -656,7 +656,7 @@ static bool create_io_worker(struct io_wq *wq, struct io_wqe *wqe, int index)
- 		return false;
- 	}
- 
--	spin_lock_irq(&wqe->lock);
-+	raw_spin_lock_irq(&wqe->lock);
- 	hlist_nulls_add_head_rcu(&worker->nulls_node, &wqe->free_list);
- 	list_add_tail_rcu(&worker->all_list, &wqe->all_list);
- 	worker->flags |= IO_WORKER_F_FREE;
-@@ -665,7 +665,7 @@ static bool create_io_worker(struct io_wq *wq, struct io_wqe *wqe, int index)
- 	if (!acct->nr_workers && (worker->flags & IO_WORKER_F_BOUND))
- 		worker->flags |= IO_WORKER_F_FIXED;
- 	acct->nr_workers++;
--	spin_unlock_irq(&wqe->lock);
-+	raw_spin_unlock_irq(&wqe->lock);
- 
- 	if (index == IO_WQ_ACCT_UNBOUND)
- 		atomic_inc(&wq->user->processes);
-@@ -720,12 +720,12 @@ static int io_wq_manager(void *data)
- 			if (!node_online(node))
- 				continue;
- 
--			spin_lock_irq(&wqe->lock);
-+			raw_spin_lock_irq(&wqe->lock);
- 			if (io_wqe_need_worker(wqe, IO_WQ_ACCT_BOUND))
- 				fork_worker[IO_WQ_ACCT_BOUND] = true;
- 			if (io_wqe_need_worker(wqe, IO_WQ_ACCT_UNBOUND))
- 				fork_worker[IO_WQ_ACCT_UNBOUND] = true;
--			spin_unlock_irq(&wqe->lock);
-+			raw_spin_unlock_irq(&wqe->lock);
- 			if (fork_worker[IO_WQ_ACCT_BOUND])
- 				create_io_worker(wq, wqe, IO_WQ_ACCT_BOUND);
- 			if (fork_worker[IO_WQ_ACCT_UNBOUND])
-@@ -821,10 +821,10 @@ static void io_wqe_enqueue(struct io_wqe *wqe, struct io_wq_work *work)
- 	}
- 
- 	work_flags = work->flags;
--	spin_lock_irqsave(&wqe->lock, flags);
-+	raw_spin_lock_irqsave(&wqe->lock, flags);
- 	io_wqe_insert_work(wqe, work);
- 	wqe->flags &= ~IO_WQE_FLAG_STALLED;
--	spin_unlock_irqrestore(&wqe->lock, flags);
-+	raw_spin_unlock_irqrestore(&wqe->lock, flags);
- 
- 	if ((work_flags & IO_WQ_WORK_CONCURRENT) ||
- 	    !atomic_read(&acct->nr_running))
-@@ -933,14 +933,14 @@ static void io_wqe_cancel_pending_work(struct io_wqe *wqe,
- 	unsigned long flags;
- 
- retry:
--	spin_lock_irqsave(&wqe->lock, flags);
-+	raw_spin_lock_irqsave(&wqe->lock, flags);
- 	wq_list_for_each(node, prev, &wqe->work_list) {
- 		work = container_of(node, struct io_wq_work, list);
- 		if (!match->fn(work, match->data))
- 			continue;
- 
- 		wq_list_del(&wqe->work_list, node, prev);
--		spin_unlock_irqrestore(&wqe->lock, flags);
-+		raw_spin_unlock_irqrestore(&wqe->lock, flags);
- 		io_run_cancel(work, wqe);
- 		match->nr_pending++;
- 		if (!match->cancel_all)
-@@ -949,7 +949,7 @@ static void io_wqe_cancel_pending_work(struct io_wqe *wqe,
- 		/* not safe to continue after unlock */
- 		goto retry;
- 	}
--	spin_unlock_irqrestore(&wqe->lock, flags);
-+	raw_spin_unlock_irqrestore(&wqe->lock, flags);
- }
- 
- static void io_wqe_cancel_running_work(struct io_wqe *wqe,
-@@ -1057,7 +1057,7 @@ struct io_wq *io_wq_create(unsigned bounded, struct io_wq_data *data)
- 		}
- 		atomic_set(&wqe->acct[IO_WQ_ACCT_UNBOUND].nr_running, 0);
- 		wqe->wq = wq;
--		spin_lock_init(&wqe->lock);
-+		raw_spin_lock_init(&wqe->lock);
- 		INIT_WQ_LIST(&wqe->work_list);
- 		INIT_HLIST_NULLS_HEAD(&wqe->free_list, 0);
- 		INIT_LIST_HEAD(&wqe->all_list);
--- 
-2.28.0
-
+> 
+> Thanks,
+> Peng.
+> 
+> > 
+> > Thanks,
+> > Mathieu
+> > 
+> > >
+> > > Reviewed-by: Richard Zhu <hongxing.zhu@nxp.com>
+> > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > > ---
+> > >  drivers/remoteproc/imx_rproc.c | 11 +++++++++--
+> > >  1 file changed, 9 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/remoteproc/imx_rproc.c
+> > > b/drivers/remoteproc/imx_rproc.c index 82594a800a1b..4fad5c0b1c05
+> > > 100644
+> > > --- a/drivers/remoteproc/imx_rproc.c
+> > > +++ b/drivers/remoteproc/imx_rproc.c
+> > > @@ -162,6 +162,9 @@ static int imx_rproc_start(struct rproc *rproc)
+> > >  	struct device *dev = priv->dev;
+> > >  	int ret;
+> > >
+> > > +	if (!priv->regmap)
+> > > +		return -EOPNOTSUPP;
+> > > +
+> > >  	ret = regmap_update_bits(priv->regmap, dcfg->src_reg,
+> > >  				 dcfg->src_mask, dcfg->src_start);
+> > >  	if (ret)
+> > > @@ -177,6 +180,9 @@ static int imx_rproc_stop(struct rproc *rproc)
+> > >  	struct device *dev = priv->dev;
+> > >  	int ret;
+> > >
+> > > +	if (!priv->regmap)
+> > > +		return -EOPNOTSUPP;
+> > > +
+> > >  	ret = regmap_update_bits(priv->regmap, dcfg->src_reg,
+> > >  				 dcfg->src_mask, dcfg->src_stop);
+> > >  	if (ret)
+> > > @@ -325,9 +331,10 @@ static int imx_rproc_probe(struct platform_device
+> > *pdev)
+> > >  	regmap = syscon_regmap_lookup_by_phandle(np, "syscon");
+> > >  	if (IS_ERR(regmap)) {
+> > >  		dev_err(dev, "failed to find syscon\n");
+> > > -		return PTR_ERR(regmap);
+> > > +		regmap = NULL;
+> > > +	} else {
+> > > +		regmap_attach_dev(dev, regmap, &config);
+> > >  	}
+> > > -	regmap_attach_dev(dev, regmap, &config);
+> > >
+> > >  	/* set some other name then imx */
+> > >  	rproc = rproc_alloc(dev, "imx-rproc", &imx_rproc_ops,
+> > > --
+> > > 2.16.4
+> > >
