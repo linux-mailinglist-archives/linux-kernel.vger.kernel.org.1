@@ -2,138 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 557B424A4A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 19:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D746624A4B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 19:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726211AbgHSRMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 13:12:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47448 "EHLO
+        id S1726707AbgHSROZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 13:14:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgHSRMe (ORCPT
+        with ESMTP id S1726211AbgHSROT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 13:12:34 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC2EC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 10:12:33 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id p20so22278153wrf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 10:12:33 -0700 (PDT)
+        Wed, 19 Aug 2020 13:14:19 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F032AC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 10:14:18 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id l23so18728295edv.11
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 10:14:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=P/BxB6Tk9AqvsGBqiTBEZmxawpSGqW2VpShvG8egiLE=;
-        b=aOT8FZXVbYAg7wGPDj6bcP9F+iWPGFAHwmYImaZXz4dUZFvLGzdMD5+6ayifi72/FH
-         21dd5Set+gYeTPzss4RyBymKDuogTsC0beZM4OvOL+ezO23pv46w1CIc/RsIQ6PMUPoL
-         k1P3ymaMirYfMEx6WQ6qQv6OKryMX2mOn99eiEABq5HfSSCwULPH0sV5/UOEvfxjCdcI
-         hsf5z7wcQ7vzqqZNsEj1ft73UrkozG8GecNNKYKCNl8IJU525hQnfL14HmWvmCdnCaYw
-         PZqzYQ6UK5hq3eiWw6FU2yVpuc54RspJhyBq/IXuIJjyuWIy89lFl10O02gOtcOZMCd3
-         +7Vw==
+        d=kylehuey.com; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=lxWQpzEJBRxFWn4dOvs/9NY97u5lA3hOWcxGQWOxLjs=;
+        b=jVxm6/oUDida23iZYrjKJtAjmMhRD0e2p/PFTP5RagnlyLpe2G3kUYAPDI2Q4Bm22E
+         qZQBpZDzkoRg0Roy3eU3FzNjDQkT/W0zkOKehErGd8mufcZ9Q5tH2IQaXoslMMZfnpgO
+         vZykzKDr4SVqY9uDD1noPfutJV33VKlPTqXQC9P0Aw40i/uQB7fMKa5WFatVJODNjseU
+         777vyJYRFfU3ZOICebBV2T+dbcAorrFMxD85BHeSzJK4z7nUklQr1cmX7DeiWPLvhC0J
+         /wCteY/71o1AXJ610CoveefVw9Aec3bsVlJSi3YfqZRVBp96ljVlEqSrTERjIG9UwKjQ
+         wJcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=P/BxB6Tk9AqvsGBqiTBEZmxawpSGqW2VpShvG8egiLE=;
-        b=UrqObzUAcnqddoFu1qahhUS7GPOabxePOeJ9+YmN7wRxfs08mLF/4LEjD3U0j8L4mS
-         QydlKQeDc4PPmGLQ+30thqT+m0BfHAtf9t3fgwNEMI6ru988VduHmCBF8Ujq0H1xYCoJ
-         4oKpRJlI80hoAPIE4efo4VpBkdV50UbDWqm6srQ8Keq8D5ppn53PL99OZyuazgitIxLy
-         oMRALHu7Qc6FdbKpzBAWhul8+yANU59Gt6D3VGSBYZXqKXrO+/r3mqHbP7psKdlIwpad
-         oOclac+zx/OiKexVi10rSQ4/W2FiKoPIPDmxuZRtVd0Zj280t7jEWdbvqwpKirFB3iyN
-         y4gg==
-X-Gm-Message-State: AOAM530DkO3woaHFq9MzPpv316YPrGjYkOB5z1DtbshNRg68DYTmC+wx
-        3GhpldHvpRicFuY2NQ/h5wBwSP11HFQXIg==
-X-Google-Smtp-Source: ABdhPJxbMdMiABMczUJpbzVpjiKzWMQlXai3V6kLN1aQ5/US5xWa8crZteCDS1MmrXTkNtT+nkvzHQ==
-X-Received: by 2002:adf:9c8c:: with SMTP id d12mr4884761wre.369.1597857151947;
-        Wed, 19 Aug 2020 10:12:31 -0700 (PDT)
-Received: from ziggy.stardust ([93.176.180.54])
-        by smtp.gmail.com with ESMTPSA id s2sm20811016wrr.55.2020.08.19.10.12.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Aug 2020 10:12:31 -0700 (PDT)
-Subject: Re: [PATCH v5 3/7] drm/mediatek: disable tmds on mt2701
-To:     Frank Wunderlich <linux@fw-web.de>,
-        linux-mediatek@lists.infradead.org
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-kernel@lists.infradead.org,
-        chunhui dai <chunhui.dai@mediatek.com>
-References: <20200819081752.4805-1-linux@fw-web.de>
- <20200819081752.4805-4-linux@fw-web.de>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <f68cf4c2-6c79-fe46-b7b4-bcc49e0b6b69@gmail.com>
-Date:   Wed, 19 Aug 2020 19:12:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=lxWQpzEJBRxFWn4dOvs/9NY97u5lA3hOWcxGQWOxLjs=;
+        b=Mbmdtv8hNjNBEEHcWQuCTW1xuqP5ydaJlUdANC7TDIgTF9lZ2iA+l1rO33/yn5arLp
+         FtKxRQzqdX3ahn42P++VGXbGzCni3rUkPe6Hrp5VO8RyHPiyADQ1YIp1s4f29R872Xpm
+         o++KG9BZ/G0WP2CeBdZWBE/+K8G4vMfwpQbGVdxec4QyIcfRsuEyxPJhaxDdPESz5JL0
+         9HUO631j0+jTfo3S6jJpNbuB2qxcd+8cY3KyiwCC2lJqPZG+8nPXDXV6hbkgk1NeATH5
+         bv2RpNrov/8BxGeLcp5h6gR4KRhbpKCHxpBA41Cy0UCSpqDiTbKRBc0qLzVFfzQxnU0s
+         WQdw==
+X-Gm-Message-State: AOAM533xYb28P3uhrCeuISPPdNHMjlsq+zal+O8vyy2ahO23A29uuv9o
+        nfPHLX8KXAfho0O3TL4THo15Lshxd4G1GgTmZX0LNw==
+X-Google-Smtp-Source: ABdhPJwBq/IJpNmKU01Vbvw68YKifhG/5x5RhndnYLaMJW1Fx62abFTCNjPNM6I4B+T450H7iUk2pV1GiSXi5avskBg=
+X-Received: by 2002:a05:6402:38c:: with SMTP id o12mr26516518edv.271.1597857257546;
+ Wed, 19 Aug 2020 10:14:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200819081752.4805-4-linux@fw-web.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   Kyle Huey <me@kylehuey.com>
+Date:   Wed, 19 Aug 2020 10:14:03 -0700
+Message-ID: <CAP045Arc1Vdh+n2j2ELE3q7XfagLjyqXji9ZD0jqwVB-yuzq-g@mail.gmail.com>
+Subject: [REGRESSION] x86/entry: Tracer no longer has opportunity to change
+ the syscall number at entry via orig_ax
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Kees Cook <keescook@chromium.org>
+Cc:     "Robert O'Callahan" <rocallahan@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        linux-arch@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tl;dr: after 27d6b4d14f5c3ab21c4aef87dd04055a2d7adf14 ptracer
+modifications to orig_ax in a syscall entry trace stop are not honored
+and this breaks our code.
 
+rr, a userspace record and replay debugger[0], redirects syscalls of
+its ptracee through an in-process LD_PRELOAD-injected solib. To do
+this, it ptraces the tracee to a syscall entry event, and then, if the
+syscall instruction is not our redirected syscall instruction, it
+examines the tracee's code and pattern matches against a set of
+syscall invocations that it knows how to rewrite. If that succeeds, rr
+hijacks[1] the current syscall entry by setting orig_ax to something
+innocuous like SYS_gettid, runs the hijacked syscall, and then
+restores program state to before the syscall entry trace event and
+allows the tracee to execute forwards, through the newly patched code
+and into our injected solib.
 
-On 19/08/2020 10:17, Frank Wunderlich wrote:
-> From: chunhui dai <chunhui.dai@mediatek.com>
-> 
-> disable tmds on phy on mt2701 to support other resolutions like 1280x1024
-> 
+Before 27d6b4d14f5c3ab21c4aef87dd04055a2d7adf14 modifications to
+orig_ax were honored by x86's syscall_enter_trace[2]. The generic arch
+code however does not honor any modifications to the syscall number[3]
+(presumably because on most architectures syscall results clobber the
+first argument and not the syscall number, so there is no equivalent
+to orig_rax).
 
-Isn't that worth a Fixes tag?
+Note that the above is just one example of when rr changes the syscall
+number this way. This is done in many places in our code and rr is
+largely broken on 5.9-rc1 at the moment because of this bug.
 
-Regards,
-Matthias
+- Kyle
 
-> Signed-off-by: chunhui dai <chunhui.dai@mediatek.com>
-> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-> Tested-by: Frank Wunderlich <frank-w@public-files.de>
-> ---
->   drivers/gpu/drm/mediatek/mtk_hdmi_phy.c        | 3 +++
->   drivers/gpu/drm/mediatek/mtk_hdmi_phy.h        | 1 +
->   drivers/gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c | 1 +
->   3 files changed, 5 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi_phy.c b/drivers/gpu/drm/mediatek/mtk_hdmi_phy.c
-> index 5223498502c4..edadb7a700f1 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_hdmi_phy.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_hdmi_phy.c
-> @@ -184,6 +184,9 @@ static int mtk_hdmi_phy_probe(struct platform_device *pdev)
->   		return PTR_ERR(phy_provider);
->   	}
->   
-> +	if (hdmi_phy->conf->pll_default_off)
-> +		hdmi_phy->conf->hdmi_phy_disable_tmds(hdmi_phy);
-> +
->   	return of_clk_add_provider(dev->of_node, of_clk_src_simple_get,
->   				   hdmi_phy->pll);
->   }
-> diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi_phy.h b/drivers/gpu/drm/mediatek/mtk_hdmi_phy.h
-> index 2d8b3182470d..f472fdeb63dc 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_hdmi_phy.h
-> +++ b/drivers/gpu/drm/mediatek/mtk_hdmi_phy.h
-> @@ -22,6 +22,7 @@ struct mtk_hdmi_phy;
->   struct mtk_hdmi_phy_conf {
->   	bool tz_disabled;
->   	unsigned long flags;
-> +	bool pll_default_off;
->   	const struct clk_ops *hdmi_phy_clk_ops;
->   	void (*hdmi_phy_enable_tmds)(struct mtk_hdmi_phy *hdmi_phy);
->   	void (*hdmi_phy_disable_tmds)(struct mtk_hdmi_phy *hdmi_phy);
-> diff --git a/drivers/gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c b/drivers/gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c
-> index d3cc4022e988..6fbedacfc1e8 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c
-> @@ -239,6 +239,7 @@ static void mtk_hdmi_phy_disable_tmds(struct mtk_hdmi_phy *hdmi_phy)
->   struct mtk_hdmi_phy_conf mtk_hdmi_phy_2701_conf = {
->   	.tz_disabled = true,
->   	.flags = CLK_SET_RATE_GATE,
-> +	.pll_default_off = true,
->   	.hdmi_phy_clk_ops = &mtk_hdmi_phy_pll_ops,
->   	.hdmi_phy_enable_tmds = mtk_hdmi_phy_enable_tmds,
->   	.hdmi_phy_disable_tmds = mtk_hdmi_phy_disable_tmds,
-> 
+[0] https://rr-project.org/
+[1] https://github.com/mozilla/rr/blob/cd61ba22ccc05b426691312784674c0eb8e654ef/src/Task.cc#L872
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/x86/entry/common.c?h=v5.8&id=bcf876870b95592b52519ed4aafcf9d95999bc9c#n204
+[3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/entry/common.c?h=v5.8&id=27d6b4d14f5c3ab21c4aef87dd04055a2d7adf14#n44
