@@ -2,157 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB98249B5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 13:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CBB2249B65
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 13:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727992AbgHSLFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 07:05:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727901AbgHSLFg (ORCPT
+        id S1727846AbgHSLIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 07:08:42 -0400
+Received: from www381.your-server.de ([78.46.137.84]:49214 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726710AbgHSLIk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 07:05:36 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C87DAC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 04:05:35 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id t23so24917804ljc.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 04:05:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=CNNvZSrpZe1na795UzZLdD0f0kb59Zd5OOwEuyJTVrM=;
-        b=DF06F1w9ZkJlAhGKWH6IUQ9TDRzCqoxf9CllIH+0YcuG2PkhPXrEN81KsUe0qcnpBo
-         sXsg3st6w21SrII+tovrMoiiWgdy09H+tasrcJmD7NPVnA80ABx/8l5D0o1uIfF0zWzG
-         sOLMDlAaKqEwgpr7KePGYR45fD6BiZp2M5aAE77jp+uMvLNjNgit3Q/bI9tIMvCaGNjf
-         DX1aS9dUkp33pMowVizRR9AyT2/IEh1ajbJiyfAE7HURqCEUag4A+VpJBAhQkfHDZOHx
-         nUf0TMWwp0zcUzNB+JBfc0qfAOONMeUfcMUdscO82X6Rg4mesUcUrUHYy6y08CEIoey1
-         w/Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=CNNvZSrpZe1na795UzZLdD0f0kb59Zd5OOwEuyJTVrM=;
-        b=foWJFBP9bHVgMMmXaHQMP/8g74tTtD41BJKHL8W+tNb12nRtApm+nftSXVTh68zVu9
-         Xp4/v0W3Q0ZOL3mHH9Etqy8ZMF9BRRWsWjMmqxDX1cKLAaEogJwT73ckHFS7YWPMscXQ
-         AtU8yxTsSuR3bEyZPto/ByevzeHNVs753oXHgfqxVt94r9ZzgPeQK0ouw+rMdvjtYDff
-         3ErzKQx80Y5pmdlfBWrOK9COtpFYPCQqqDelxBQjIuMcsDJjen2otCy/PR9IBF6tut/j
-         6QVh8GYtVJZWPRFCDKgAn86XysjcxwhN++m+n/AqlHeki//0kYFeP9vY5YAtgOY96X5G
-         0ZkQ==
-X-Gm-Message-State: AOAM530q5KNOncB4itGl51ThlPM8lbjHcCC1TTs8O1Awp44CzXCjVTPt
-        i77IcqxVceeIg1YU31u3SKlGtFz/FovotLjdrhnvUA==
-X-Google-Smtp-Source: ABdhPJzj95wPmXG9dKhKiBcVHM02iqWsgBEupdaLJ2JF3f1Juk80QhgVehC2mukFJSq9dnQ0MDuq7HAxVujA2vaoBA0=
-X-Received: by 2002:a2e:b045:: with SMTP id d5mr12619588ljl.111.1597835134136;
- Wed, 19 Aug 2020 04:05:34 -0700 (PDT)
+        Wed, 19 Aug 2020 07:08:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=Yizu0B+kldphRZQIsd5F3k8rBmn/SxqZl5tpjkKKWuU=; b=V9m5ZcC+q6oJS018Hh+tssQ+Vg
+        ZvJc6AT32vijPRa8TOeZ5l1EEeGNXvnp2gcM2kiKaf+/GKuCPcSzAdD8UiHZQb0J9J9mnZSsh5naR
+        CyfJOIqVcbanGG5qBTTJQghzBVsHA9/yiWDivmVsjq/2hSK7QGtgsjVyd6qtQgvaWkSbydYT25p7o
+        e9I5uZx4NIQR+WppTKQJzq9tR2vUFvFMQKG5cTJOBarH5oBA3MiGykeh9YiUXGYO7+jGTgSepyche
+        YUE6jKt/4qsj6KbMUlJTEZBmxMjGGkWsG9oPMfVlzIjJDK6GAs5ZYleLgXs6K+Ln4tfLu6/rKRvrP
+        qGVNvJ5g==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1k8LxG-0007cU-PW; Wed, 19 Aug 2020 13:08:31 +0200
+Received: from [2001:a61:25dc:8101:9e5c:8eff:fe01:8578]
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1k8LxG-0009JP-HA; Wed, 19 Aug 2020 13:08:30 +0200
+Subject: Re: pcm|dmaengine|imx-sdma race condition on i.MX6
+To:     Benjamin Bara - SKIDATA <Benjamin.Bara@skidata.com>,
+        Robin Gong <yibin.gong@nxp.com>
+Cc:     "timur@kernel.org" <timur@kernel.org>,
+        "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        Richard Leitner - SKIDATA <Richard.Leitner@skidata.com>
+References: <20200813112258.GA327172@pcleri>
+ <VE1PR04MB6638EE5BDBE2C65FF50B7DB889400@VE1PR04MB6638.eurprd04.prod.outlook.com>
+ <61498763c60e488a825e8dd270732b62@skidata.com>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <16942794-1e03-6da0-b8e5-c82332a217a5@metafoo.de>
+Date:   Wed, 19 Aug 2020 13:08:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200801023248.90104-1-benbjiang@gmail.com> <5ed0fd46-3a3d-3c1a-5d75-03a74864e640@arm.com>
- <592F24A7-BF43-457D-AC40-DC5E35279730@tencent.com> <8bef1f94-f9bf-08a5-2ff3-3485d7796a96@arm.com>
- <8629CB9F-AFC8-43D6-BD14-B60A0B85ADB3@tencent.com> <5f870781-1648-b4ac-6026-557dfc347109@arm.com>
- <CCA1D942-3669-4216-92BD-768967B1ECE5@tencent.com> <4964e359-afc5-a256-4950-853a9485eeff@arm.com>
- <70236E62-AA36-48C1-9382-86353649253C@tencent.com> <3a1047fc-a86a-014a-b17a-eae71f669da1@arm.com>
- <643B0ECE-D758-4D08-8B1B-C70F34DD9943@tencent.com> <55f04582-69d6-aeb4-85be-3e46a3b15beb@arm.com>
- <755BFAD0-9072-4D73-9CD7-AF4F74A79D21@tencent.com> <729675a2-b083-4211-62c0-f7ed7f483ae2@arm.com>
-In-Reply-To: <729675a2-b083-4211-62c0-f7ed7f483ae2@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 19 Aug 2020 13:05:22 +0200
-Message-ID: <CAKfTPtATf94n4t6EnB5_76ygox26xd9EwvEHiv5cGN=E9BdLgg@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: reduce preemption with IDLE tasks
- runable(Internet mail)
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     =?UTF-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>,
-        Jiang Biao <benbjiang@gmail.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <61498763c60e488a825e8dd270732b62@skidata.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25904/Mon Aug 17 15:02:24 2020)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Aug 2020 at 12:46, Dietmar Eggemann <dietmar.eggemann@arm.com> w=
-rote:
->
-> On 17/08/2020 14:05, benbjiang(=E8=92=8B=E5=BD=AA) wrote:
-> >
-> >
-> >> On Aug 17, 2020, at 4:57 PM, Dietmar Eggemann <dietmar.eggemann@arm.co=
-m> wrote:
-> >>
-> >> On 14/08/2020 01:55, benbjiang(=E8=92=8B=E5=BD=AA) wrote:
-> >>> Hi,
-> >>>
-> >>>> On Aug 13, 2020, at 2:39 AM, Dietmar Eggemann <dietmar.eggemann@arm.=
-com> wrote:
-> >>>>
-> >>>> On 12/08/2020 05:19, benbjiang(=E8=92=8B=E5=BD=AA) wrote:
-> >>>>> Hi,
-> >>>>>
-> >>>>>> On Aug 11, 2020, at 11:54 PM, Dietmar Eggemann <dietmar.eggemann@a=
-rm.com> wrote:
-> >>>>>>
-> >>>>>> On 11/08/2020 02:41, benbjiang(=E8=92=8B=E5=BD=AA) wrote:
-> >>>>>>> Hi,
-> >>>>>>>
-> >>>>>>>> On Aug 10, 2020, at 9:24 PM, Dietmar Eggemann <dietmar.eggemann@=
-arm.com> wrote:
-> >>>>>>>>
-> >>>>>>>> On 06/08/2020 17:52, benbjiang(=E8=92=8B=E5=BD=AA) wrote:
-> >>>>>>>>> Hi,
-> >>>>>>>>>
-> >>>>>>>>>> On Aug 6, 2020, at 9:29 PM, Dietmar Eggemann <dietmar.eggemann=
-@arm.com> wrote:
-> >>>>>>>>>>
-> >>>>>>>>>> On 03/08/2020 13:26, benbjiang(=E8=92=8B=E5=BD=AA) wrote:
-> >>>>>>>>>>>
-> >>>>>>>>>>>
-> >>>>>>>>>>>> On Aug 3, 2020, at 4:16 PM, Dietmar Eggemann <dietmar.eggema=
-nn@arm.com> wrote:
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> On 01/08/2020 04:32, Jiang Biao wrote:
-> >>>>>>>>>>>>> From: Jiang Biao <benbjiang@tencent.com>
->
-> [...]
->
-> >> Are you sure about this?
-> > Yes. :)
-> >>
-> >> The math is telling me for the:
-> >>
-> >> idle task:      (3 / (1024 + 1024 + 3))^(-1) * 4ms =3D 2735ms
-> >>
-> >> normal task: (1024 / (1024 + 1024 + 3))^(-1) * 4ms =3D    8ms
-> >>
-> >> (4ms - 250 Hz)
-> > My tick is 1ms - 1000HZ, which seems reasonable for 600ms? :)
->
-> OK, I see.
->
-> But here the different sched slices (check_preempt_tick()->
-> sched_slice()) between normal tasks and the idle task play a role to.
->
-> Normal tasks get ~3ms whereas the idle task gets <0.01ms.
+On 8/17/20 9:28 AM, Benjamin Bara - SKIDATA wrote:
+> We think this is not an i.MX6-specific problem, but a problem of the DMAengine usage from the PCM.
+> In case of a XRUN, the DMA channel is never closed but first a SNDRV_PCM_TRIGGER_STOP next a
+> SNDRV_PCM_TRIGGER_START is triggered.
+> The SNDRV_PCM_TRIGGER_STOP simply executes a dmaengine_terminate_async() [1]
+> but does not await the termination by calling dmaengine_synchronize(),
+> which is required as stated by the docu [2].
+> Anyways, we are not able to fix it in the pcm_dmaengine layer either at the end of
+> SNDRV_PCM_TRIGGER_STOP (called from the DMA on complete interrupt handler)
+> or at the beginning of SNDRV_PCM_TRIGGER_START (called from a PCM ioctl),
+> since the dmaengine_synchronize() requires a non-atomic context.
 
-In fact that depends on the number of CPUs on the system
-:sysctl_sched_latency =3D 6ms * (1 + ilog(ncpus)) . On a 8 cores system,
-normal task will run around 12ms in one shoot and the idle task still
-one tick period
+I think this might be an sdma specific problem after all. 
+dmaengine_terminate_async() will issue a request to stop the DMA. But it 
+is still safe to issue the next transfer, even without calling 
+dmaengine_synchronize(). The DMA should start the new transfer at its 
+earliest convenience in that case.
 
-Also, you can increase even more the period between 2 runs of idle
-task by using cgroups and min shares value : 2
+dmaegine_synchronize() is so that the consumer has a guarantee that the 
+DMA is finished using the resources (e.g. the memory buffers) associated 
+with the DMA transfer so it can safely free them.
 
 >
-> So the idle task runs every ~680ms but only for 1 tick (1ms) (4 times
-> less than the normal tasks). The condition 'if (delta_exec >
-> ideal_runtime)' in check_preempt_tick() is only true at the 4th tick
-> when a normal task runs even though the slice is 3ms.
+> Based on my understanding, most of the DMA implementations don't even implement device_synchronize
+> and if they do, it might not really be necessary since the terminate_all operation is synchron.
+There are a lot of buggy DMAengine drivers :) Pretty much all of them 
+need device_synchronize() to get this right.
 >
-> In the 250 Hz example the sched slice diffs are hidden behind the 4ms tic=
-k.
+> With the i.MX6, it looks a bit different:
+> Since [4], the terminate_all operation really schedules a worker which waits the required ~1ms and
+> then does the context freeing.
+> Now, the ioctl(SNDRV_PCM_IOCTL_PREPARE) and the following ioctl(SNDRV_PCM_IOCTL_READI_FRAMES),
+> which are called from US to handle/recover from a XRUN, are in a race with the terminate_worker.
+> If the terminate_worker finishes earlier, everything is fine.
+> Otherwise, the sdma_prep_dma_cyclic() is called, sets up everything and
+> as soon as it is scheduled out to wait for data, the terminate_worker is scheduled and kills it.
+> In this case, we wait in [5] until the timeout is reached and return with -EIO.
 >
-> [...]
+> Based on our understanding, there exist two different fixing approaches:
+> We thought that the pcm_dmaengine should handle this by either synchronizing the DMA on a trigger or
+> terminating it synchronously.
+> However, as we are in an atomic context, we either have to give up the atomic context of the PCM
+> to finish the termination or we have to design a synchronous terminate variant which is callable
+> from an atomic context.
+>
+> For the first option, which is potentially more performant, we have to leave the atomic PCM context
+> and we are not sure if we are allowed to.
+> For the second option, we would have to divide the dma_device terminate_all into an atomic sync and
+> an async one, which would align with the dmaengine API, giving it the option to ensure termination
+> in an atomic context.
+> Based on my understanding, most of them are synchronous anyways, for the currently async ones we
+> would have to implement busy waits.
+> However, with this approach, we reach the WARN_ON [6] inside of an atomic context,
+> indicating we might not do the right thing.
+
+I don't know how feasible this is to implement in the SDMA dmaengine 
+driver. But I think what is should do is to have some flag to indicate 
+if a terminate is in progress. If a new transfer is issued while 
+terminate is in progress the transfer should go on a list. Once 
+terminate finishes it should check the list and start the transfer if 
+there are any on the list.
+
+- Lars
+
