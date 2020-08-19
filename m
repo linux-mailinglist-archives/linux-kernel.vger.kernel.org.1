@@ -2,93 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD025249434
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 06:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB7224943B
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 06:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726211AbgHSEwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 00:52:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53654 "EHLO mail.kernel.org"
+        id S1726422AbgHSE6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 00:58:52 -0400
+Received: from muru.com ([72.249.23.125]:40838 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725275AbgHSEwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 00:52:31 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D100220738;
-        Wed, 19 Aug 2020 04:52:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597812750;
-        bh=GLznDUKKZKgi2aEq0Zy87y3ImtPsM7YwW72FNOaxyOY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=0O5cKw3BqHP71o2mkV1jzg3Fsh8EnMW0S+yAqD5Wc7Tprcks77TG1uf7KHbpow1fj
-         6gwgmz2YIgL8hblkwvwc4pgzL7A4huihBYYCeYhQXeMIFi2Z9FAK7JncElBiqD1dUt
-         r9CDw89Rz/UZdXhI5EYPAjArRR5rGc3VO26/SYf8=
-Date:   Tue, 18 Aug 2020 23:58:13 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Robert Richter <rric@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Liangliang Huang <huanglllzu@gmail.com>
-Cc:     oprofile-list@lists.sf.net, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH] MIPS: op_model_mipsxx: Fix non-executable code bug
-Message-ID: <20200819045813.GA24181@embeddedor>
+        id S1725280AbgHSE6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 00:58:50 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 2718F810D;
+        Wed, 19 Aug 2020 04:58:46 +0000 (UTC)
+Date:   Wed, 19 Aug 2020 07:59:14 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-omap@vger.kernel.org, aford@beaconembedded.com,
+        Russell King <linux@armlinux.org.uk>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Keerthy <j-keerthy@ti.com>, Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH 1/2] thermal: ti-soc-thermal: Enable addition power
+ management
+Message-ID: <20200819045914.GS2994@atomide.com>
+References: <20200818154633.5421-1-aford173@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200818154633.5421-1-aford173@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The fallthrough pseudo-keyword is being wrongly used and is causing
-the non-executable code error below:
+* Adam Ford <aford173@gmail.com> [200818 15:46]:
+> @@ -1153,6 +1166,38 @@ static int ti_bandgap_suspend(struct device *dev)
+>  	return err;
+>  }
+>  
+> +static int bandgap_omap_cpu_notifier(struct notifier_block *nb,
+> +				  unsigned long cmd, void *v)
+> +{
+> +	struct ti_bandgap *bgp;
+> +
+> +	bgp = container_of(nb, struct ti_bandgap, nb);
+> +
+> +	spin_lock(&bgp->lock);
+> +	switch (cmd) {
+> +	case CPU_CLUSTER_PM_ENTER:
+> +		if (bgp->is_suspended)
+> +			break;
+> +		ti_bandgap_save_ctxt(bgp);
+> +		ti_bandgap_power(bgp, false);
+> +		if (TI_BANDGAP_HAS(bgp, CLK_CTRL))
+> +			clk_disable(bgp->fclock);
+> +		break;
+> +	case CPU_CLUSTER_PM_ENTER_FAILED:
+> +	case CPU_CLUSTER_PM_EXIT:
+> +		if (bgp->is_suspended)
+> +			break;
+> +		if (TI_BANDGAP_HAS(bgp, CLK_CTRL))
+> +			clk_enable(bgp->fclock);
+> +		ti_bandgap_power(bgp, true);
+> +		ti_bandgap_restore_ctxt(bgp);
+> +		break;
+> +	}
+> +	spin_unlock(&bgp->lock);
+> +
+> +	return NOTIFY_OK;
+> +}
 
-arch/mips/oprofile/op_model_mipsxx.c: In function ‘mipsxx_perfcount_handler’:
-./include/linux/compiler_attributes.h:214:41: warning: statement will never be executed [-Wswitch-unreachable]
- # define fallthrough                    __attribute__((__fallthrough__))
-                                         ^
-arch/mips/oprofile/op_model_mipsxx.c:248:2: note: in expansion of macro ‘fallthrough’
-  fallthrough;       \
-  ^~~~~~~~~~~
-arch/mips/oprofile/op_model_mipsxx.c:258:2: note: in expansion of macro ‘HANDLE_COUNTER’
-  HANDLE_COUNTER(3)
-  ^~~~~~~~~~~~~~
+Hmm to me it looks like is_suspended is not used right now?
+I guess you want to set it in ti_bandgap_suspend() and clear
+it in ti_bandgap_resume()?
 
-Fix this by placing the fallthrough macro at the proper place.
+Otherwise looks good to me, I can't test the power consumption
+right now though so you may want to check it to make sure
+device still hits off mode during idle.
 
-Fixes: c9b029903466 ("MIPS: Use fallthrough for arch/mips")
-Cc: stable@vger.kernel.org
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- arch/mips/oprofile/op_model_mipsxx.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Regards,
 
-diff --git a/arch/mips/oprofile/op_model_mipsxx.c b/arch/mips/oprofile/op_model_mipsxx.c
-index 1493c49ca47a..f200b97bdef7 100644
---- a/arch/mips/oprofile/op_model_mipsxx.c
-+++ b/arch/mips/oprofile/op_model_mipsxx.c
-@@ -245,7 +245,6 @@ static int mipsxx_perfcount_handler(void)
- 
- 	switch (counters) {
- #define HANDLE_COUNTER(n)						\
--	fallthrough;							\
- 	case n + 1:							\
- 		control = r_c0_perfctrl ## n();				\
- 		counter = r_c0_perfcntr ## n();				\
-@@ -254,7 +253,8 @@ static int mipsxx_perfcount_handler(void)
- 			oprofile_add_sample(get_irq_regs(), n);		\
- 			w_c0_perfcntr ## n(reg.counter[n]);		\
- 			handled = IRQ_HANDLED;				\
--		}
-+		}							\
-+	fallthrough;
- 	HANDLE_COUNTER(3)
- 	HANDLE_COUNTER(2)
- 	HANDLE_COUNTER(1)
--- 
-2.27.0
-
+Tony
