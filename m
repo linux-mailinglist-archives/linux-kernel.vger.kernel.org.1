@@ -2,661 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B968249605
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE8924965C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 09:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbgHSHC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 03:02:59 -0400
-Received: from smtp12.smtpout.orange.fr ([80.12.242.134]:49142 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727005AbgHSHCE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 03:02:04 -0400
-Received: from localhost.localdomain ([92.140.170.113])
-        by mwinf5d35 with ME
-        id HK1v230092T8iuL03K1v2A; Wed, 19 Aug 2020 09:01:58 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 19 Aug 2020 09:01:58 +0200
-X-ME-IP: 92.140.170.113
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     amitkarwar@gmail.com, ganapathi.bhat@nxp.com,
-        huxinming820@gmail.com, kvalo@codeaurora.org, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] mwifiex: switch from 'pci_' to 'dma_' API
-Date:   Wed, 19 Aug 2020 09:01:52 +0200
-Message-Id: <20200819070152.111522-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
+        id S1727779AbgHSHFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 03:05:40 -0400
+Received: from mail-eopbgr680123.outbound.protection.outlook.com ([40.107.68.123]:58889
+        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728027AbgHSHF1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 03:05:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eoyRhYyUCyeMmkcC14PV+OrSB2k09aAjPwCovhENep/gXDvmwXiloDxn4KC4I7ybaUpXLPbDzpWSPkzznCNqu6UCuh2H/A8UMI0Yl9QdnT7kqxKTIajD9V17CUOLHbS08zvhx2G3CF2MQuLg6IsE4KZUSVJXy9hGWnDUpzKDE5WHRkD0AkuC21+Bx9RzAPsSY6DNhkaJA4p8Rc5cwOCp0SUxR+2TGVfPc2fbfGK0zuJzvqOhPbjlTXL9X0KpQVOomHS5wY0p7GKLqINuBLu5R53XJXzBVxHWKkbKKJkOQTJ9NMiuZiBBWAq3ih/gqR7oRuzXdJdhWkmVq+s6CpJnvA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FYWTiegyVIRDwQDyKiMoHHLE7nzFGm2qXIdWmFcvSs8=;
+ b=m8VvMPSmec9k4GAvh+0PBUQKRaPxBQtD4J9mE+qfN3qvfl6elBaMMpx/EZPwo3SLhp89spHfzQX+E4NBusyQf3C60o82jpw6msnWedLqVuVIR4PUK3ZDkdMDQ9J+mwcre5AuOU96FVIU4mAaayP4/OzNc5UwHWAdrlwpgidVlPLly5yPcRE0L8pwLbAcT/jfSgpnYpW/cwNlOJNODcOS8eZK3AwhCOxYhg4C3qj15TiTeSFw6hJDJJMA0oglL+GDO+tQF39LjxMFO/Sqt+cgRi7iaxJwfZxWwkisZgYpclAs6GDT82gbMcYUnn7SyPdLF+ijZDTUJ09o1y73ySwAzg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FYWTiegyVIRDwQDyKiMoHHLE7nzFGm2qXIdWmFcvSs8=;
+ b=Cq4Szb2bqsMjleUqqAKm6imQ723CVTc7U6xj+g6aFgbM7UMi3mwmaaGBDZatPucb0j6QAXwTk1yfdKlIDnaMutuIzMMkSfzpQj0uWzhADuqODGbfubbRLywWrs4bRMaHjdaMg5931/xrq1p7m6U61P9eITaxTPO8aHYV3lIkEPg=
+Authentication-Results: analogixsemi.com; dkim=none (message not signed)
+ header.d=none;analogixsemi.com; dmarc=none action=none
+ header.from=analogixsemi.com;
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
+ by BY5PR04MB6868.namprd04.prod.outlook.com (2603:10b6:a03:21a::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24; Wed, 19 Aug
+ 2020 07:05:23 +0000
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::6845:5e8c:51b:db77]) by BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::6845:5e8c:51b:db77%9]) with mapi id 15.20.3283.028; Wed, 19 Aug 2020
+ 07:05:23 +0000
+Date:   Wed, 19 Aug 2020 15:05:13 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>, Sam Ravnborg <sam@ravnborg.org>
+Cc:     devel@driverdev.osuosl.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Sheng Pan <span@analogixsemi.com>
+Subject: Re: Fwd: [PATCH v14 0/2] Add initial support for slimport anx7625
+Message-ID: <20200819070513.GA8965@xin-VirtualBox>
+References: <cover.1594283160.git.xji@analogixsemi.com>
+ <20200810203546.GA421906@ravnborg.org>
+ <CAJMQK-h1BLDS_-q9n9vuOyYimqG7qonGsy7f5w8M=A_pffxHBQ@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJMQK-h1BLDS_-q9n9vuOyYimqG7qonGsy7f5w8M=A_pffxHBQ@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-ClientProxiedBy: HK0PR01CA0069.apcprd01.prod.exchangelabs.com
+ (2603:1096:203:a6::33) To BY5PR04MB6739.namprd04.prod.outlook.com
+ (2603:10b6:a03:229::8)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xin-VirtualBox (114.247.245.254) by HK0PR01CA0069.apcprd01.prod.exchangelabs.com (2603:1096:203:a6::33) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3305.24 via Frontend Transport; Wed, 19 Aug 2020 07:05:22 +0000
+X-Originating-IP: [114.247.245.254]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d18fd61c-6242-49fd-65ed-08d8440e3d8e
+X-MS-TrafficTypeDiagnostic: BY5PR04MB6868:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR04MB6868E8A1EE4C975A9FD00581C75D0@BY5PR04MB6868.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: unLxwYZaQXl1D46mBVpQwtBQ2Pn7FHaFnQ4N8CrVYjZFbVmjDi5KZVmibIgxm4dvwi9TjF+dpRX1Zs+l30m5BLsZUnKsiaHbQoHAg/GrEytPTmr3aFs0KxRdGOJKNAyhE0HQwLLQdq/Jorix6fd2Hzhx9A7mfs6oFEnF9Ser02BaAQ/lL5dMg1Y1xaGYMXjAvJFEBAz8+L5UdWoqH0oHe51IF7i9nnz59v9NZCIe9xDNrMcIQ7ENhLjYLZv4CGuTFPbqAuhyhKMmqPpaKMk7dHR3XydOht6bD+snZwUkyEdsKVOUPrfC82fmd+7EKQQLuWd9WTSSnsH4kHAlowPJ1tKmg8AODf/DJ6aKcyRrY4o=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39840400004)(376002)(136003)(396003)(366004)(52116002)(110136005)(55016002)(6666004)(316002)(66556008)(66476007)(26005)(16526019)(8676002)(9686003)(478600001)(966005)(2906002)(83380400001)(5660300002)(33656002)(107886003)(956004)(186003)(33716001)(86362001)(4326008)(54906003)(7416002)(8936002)(53546011)(66946007)(6496006)(1076003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: au6w/B4atshzW0B/LosvhSQlv9a3xUujrm9riOyvju7bQp7JKYXpnAa7X4eCod6LeC45Vx0GCll9HqVW3MEFkMyUYbwrWEHH1qqsgYe7msYtMBHUJeDw/fcF5qrIqQnNOdFvXo2/DK33kLi9wqtB/LMbgRNHIoYyk5ijRkU2oepzYAY726g4NuSmvgUttcGQ8+qRJ51Itk3j4Y4wBxvfqWrwMREZjFvekyhdolabjGq3bIF7dlQo5ev10EkiF+ZK/uhqxhrFkbUsQLJO4MuY6QjItDuphG1wo/KY3/bRUinBJkmyhxqW7PUtjrNQB1cc5bDH5lnE7yVHWdmIUtZNKUomRTAoUVfouppTxYlt9aEvKZuD6eLQdVIjs426qg3cKYcAPmyeVvp6VzUeE46j2LjR7WT1UUmyBWyyG9cBKeWu7xPxn4Iq4lcfbRgkMlMLQ6KXWNZoQqA9ZVP4f/mcrdmLEOp5mT4A1CU++hNa7NLdjtLA8IQFZ6lPhaEdygDpPtJJcaSW/oyJbE4J1qc2Bsm8J3dH92+h/6zBaLEjAhMBci0opz1JTjoiwlDJXJuHy2ACcQe+7XJtrFnar3EEKrWUJVecew0/qOl+GCq+Z813qDJhi+6iaMUkLcA4193anVAobPch58Spg+trmfi+hw==
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d18fd61c-6242-49fd-65ed-08d8440e3d8e
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Aug 2020 07:05:22.9084
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QSiqR3UVSaDfKtcXpluY1tynDH9NNm+HooHn4suLu7Qvs1S1oYEMwv+Noe4yesJoeIXApg2bFbSqHtRh9+0alw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6868
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+On Wed, Aug 19, 2020 at 02:57:14PM +0800, Hsin-Yi Wang wrote:
+> I think you missed this email :)
+> 
+> ---------- Forwarded message ---------
+> From: Sam Ravnborg <sam@ravnborg.org>
+> Date: Tue, Aug 11, 2020 at 4:35 AM
+> Subject: Re: [PATCH v14 0/2] Add initial support for slimport anx7625
+> To: Xin Ji <xji@analogixsemi.com>
+> Cc: <devel@driverdev.osuosl.org>, Laurent Pinchart
+> <laurent.pinchart@ideasonboard.com>, Andrzej Hajda
+> <a.hajda@samsung.com>, Nicolas Boichat <drinkcat@google.com>, Jernej
+> Skrabec <jernej.skrabec@siol.net>, Nicolas Boichat
+> <drinkcat@chromium.org>, Pi-Hsun Shih <pihsun@chromium.org>, Jonas
+> Karlman <jonas@kwiboo.se>, David Airlie <airlied@linux.ie>, Neil
+> Armstrong <narmstrong@baylibre.com>, <linux-kernel@vger.kernel.org>,
+> <dri-devel@lists.freedesktop.org>, Sheng Pan <span@analogixsemi.com>,
+> Hsin-Yi Wang <hsinyi@chromium.org>, Dan Carpenter
+> <dan.carpenter@oracle.com>
+> 
+Hi Sam, I missed this email.
+> 
+> Hi Xin Ji.
+> 
+> On Thu, Jul 09, 2020 at 04:31:09PM +0800, Xin Ji wrote:
+> > Hi all,
+> >
+> > The following series add support for the Slimport ANX7625 transmitter, a
+> > ultra-low power Full-HD 4K MIPI to DP transmitter designed for portable device.
+> >
+> >
+> > This is the v14 version, any mistakes, please let me know, I will fix it in
+> > the next series.
+> >
+> > Change history:
+> > v14: Fix comments from Sam and Nicolas
+> >  - Check flags at drm_bridge_attach
+> >  - Use panel_bridge instead of drm_panel
+> >  - Fix not correct return value
+> 
+> Sorry for ignoring this for so long time.
+> The patch applies but no longer builds.
+> 
+> I could fix it locally but wanted to know if you have a later version to
+> be applied?
+> 
+>         Sam
+Hi Sam, there is no new version patch. We have another patch for other
+project, so we will upstream new patch after this patch has been merged.
 
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
+Thanks,
+Xin
 
-When memory is allocated in 'mwifiex_pcie_alloc_buffers()' (see details in
-the call chain below) GFP_KERNEL can be used because both
-'mwifiex_register()' and 'mwifiex_reinit_sw()' already use GFP_KERNEL.
-(for 'mwifiex_reinit_sw()', it is hidden in a call to 'alloc_workqueue()')
-
-The call chain is:
-  mwifiex_register
-    --> mwifiex_init_pcie        (.init_if function, see mwifiex_if_ops)
-   [ or ]
-  mwifiex_reinit_sw
-    -->mwifiex_pcie_up_dev       (.up_dev function, see mwifiex_if_ops)
-
-    [ then in both case ]
-      -->mwifiex_pcie_alloc_buffers
-        --> mwifiex_pcie_create_txbd_ring
-        --> mwifiex_pcie_create_rxbd_ring
-        --> mwifiex_pcie_create_evtbd_ring
-        --> mwifiex_pcie_alloc_sleep_cookie_buf
-
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/net/wireless/marvell/mwifiex/pcie.c | 153 ++++++++++----------
- 1 file changed, 78 insertions(+), 75 deletions(-)
-
-diff --git a/drivers/net/wireless/marvell/mwifiex/pcie.c b/drivers/net/wireless/marvell/mwifiex/pcie.c
-index 87b4ccca4b9a..94fe121bc45f 100644
---- a/drivers/net/wireless/marvell/mwifiex/pcie.c
-+++ b/drivers/net/wireless/marvell/mwifiex/pcie.c
-@@ -58,8 +58,8 @@ mwifiex_map_pci_memory(struct mwifiex_adapter *adapter, struct sk_buff *skb,
- 	struct pcie_service_card *card = adapter->card;
- 	struct mwifiex_dma_mapping mapping;
- 
--	mapping.addr = pci_map_single(card->dev, skb->data, size, flags);
--	if (pci_dma_mapping_error(card->dev, mapping.addr)) {
-+	mapping.addr = dma_map_single(&card->dev->dev, skb->data, size, flags);
-+	if (dma_mapping_error(&card->dev->dev, mapping.addr)) {
- 		mwifiex_dbg(adapter, ERROR, "failed to map pci memory!\n");
- 		return -1;
- 	}
-@@ -75,7 +75,7 @@ static void mwifiex_unmap_pci_memory(struct mwifiex_adapter *adapter,
- 	struct mwifiex_dma_mapping mapping;
- 
- 	mwifiex_get_mapping(skb, &mapping);
--	pci_unmap_single(card->dev, mapping.addr, mapping.len, flags);
-+	dma_unmap_single(&card->dev->dev, mapping.addr, mapping.len, flags);
- }
- 
- /*
-@@ -461,10 +461,9 @@ static void mwifiex_delay_for_sleep_cookie(struct mwifiex_adapter *adapter,
- 	struct sk_buff *cmdrsp = card->cmdrsp_buf;
- 
- 	for (count = 0; count < max_delay_loop_cnt; count++) {
--		pci_dma_sync_single_for_cpu(card->dev,
--					    MWIFIEX_SKB_DMA_ADDR(cmdrsp),
--					    sizeof(sleep_cookie),
--					    PCI_DMA_FROMDEVICE);
-+		dma_sync_single_for_cpu(&card->dev->dev,
-+					MWIFIEX_SKB_DMA_ADDR(cmdrsp),
-+					sizeof(sleep_cookie), DMA_FROM_DEVICE);
- 		buffer = cmdrsp->data;
- 		sleep_cookie = get_unaligned_le32(buffer);
- 
-@@ -473,10 +472,10 @@ static void mwifiex_delay_for_sleep_cookie(struct mwifiex_adapter *adapter,
- 				    "sleep cookie found at count %d\n", count);
- 			break;
- 		}
--		pci_dma_sync_single_for_device(card->dev,
--					       MWIFIEX_SKB_DMA_ADDR(cmdrsp),
--					       sizeof(sleep_cookie),
--					       PCI_DMA_FROMDEVICE);
-+		dma_sync_single_for_device(&card->dev->dev,
-+					   MWIFIEX_SKB_DMA_ADDR(cmdrsp),
-+					   sizeof(sleep_cookie),
-+					   DMA_FROM_DEVICE);
- 		usleep_range(20, 30);
- 	}
- 
-@@ -630,7 +629,7 @@ static int mwifiex_init_rxq_ring(struct mwifiex_adapter *adapter)
- 
- 		if (mwifiex_map_pci_memory(adapter, skb,
- 					   MWIFIEX_RX_DATA_BUF_SIZE,
--					   PCI_DMA_FROMDEVICE))
-+					   DMA_FROM_DEVICE))
- 			return -1;
- 
- 		buf_pa = MWIFIEX_SKB_DMA_ADDR(skb);
-@@ -687,7 +686,7 @@ static int mwifiex_pcie_init_evt_ring(struct mwifiex_adapter *adapter)
- 		skb_put(skb, MAX_EVENT_SIZE);
- 
- 		if (mwifiex_map_pci_memory(adapter, skb, MAX_EVENT_SIZE,
--					   PCI_DMA_FROMDEVICE)) {
-+					   DMA_FROM_DEVICE)) {
- 			kfree_skb(skb);
- 			kfree(card->evtbd_ring_vbase);
- 			return -1;
-@@ -730,7 +729,7 @@ static void mwifiex_cleanup_txq_ring(struct mwifiex_adapter *adapter)
- 			if (card->tx_buf_list[i]) {
- 				skb = card->tx_buf_list[i];
- 				mwifiex_unmap_pci_memory(adapter, skb,
--							 PCI_DMA_TODEVICE);
-+							 DMA_TO_DEVICE);
- 				dev_kfree_skb_any(skb);
- 			}
- 			memset(desc2, 0, sizeof(*desc2));
-@@ -739,7 +738,7 @@ static void mwifiex_cleanup_txq_ring(struct mwifiex_adapter *adapter)
- 			if (card->tx_buf_list[i]) {
- 				skb = card->tx_buf_list[i];
- 				mwifiex_unmap_pci_memory(adapter, skb,
--							 PCI_DMA_TODEVICE);
-+							 DMA_TO_DEVICE);
- 				dev_kfree_skb_any(skb);
- 			}
- 			memset(desc, 0, sizeof(*desc));
-@@ -769,7 +768,7 @@ static void mwifiex_cleanup_rxq_ring(struct mwifiex_adapter *adapter)
- 			if (card->rx_buf_list[i]) {
- 				skb = card->rx_buf_list[i];
- 				mwifiex_unmap_pci_memory(adapter, skb,
--							 PCI_DMA_FROMDEVICE);
-+							 DMA_FROM_DEVICE);
- 				dev_kfree_skb_any(skb);
- 			}
- 			memset(desc2, 0, sizeof(*desc2));
-@@ -778,7 +777,7 @@ static void mwifiex_cleanup_rxq_ring(struct mwifiex_adapter *adapter)
- 			if (card->rx_buf_list[i]) {
- 				skb = card->rx_buf_list[i];
- 				mwifiex_unmap_pci_memory(adapter, skb,
--							 PCI_DMA_FROMDEVICE);
-+							 DMA_FROM_DEVICE);
- 				dev_kfree_skb_any(skb);
- 			}
- 			memset(desc, 0, sizeof(*desc));
-@@ -804,7 +803,7 @@ static void mwifiex_cleanup_evt_ring(struct mwifiex_adapter *adapter)
- 		if (card->evt_buf_list[i]) {
- 			skb = card->evt_buf_list[i];
- 			mwifiex_unmap_pci_memory(adapter, skb,
--						 PCI_DMA_FROMDEVICE);
-+						 DMA_FROM_DEVICE);
- 			dev_kfree_skb_any(skb);
- 		}
- 		card->evt_buf_list[i] = NULL;
-@@ -845,9 +844,10 @@ static int mwifiex_pcie_create_txbd_ring(struct mwifiex_adapter *adapter)
- 	mwifiex_dbg(adapter, INFO,
- 		    "info: txbd_ring: Allocating %d bytes\n",
- 		    card->txbd_ring_size);
--	card->txbd_ring_vbase = pci_alloc_consistent(card->dev,
--						     card->txbd_ring_size,
--						     &card->txbd_ring_pbase);
-+	card->txbd_ring_vbase = dma_alloc_coherent(&card->dev->dev,
-+						   card->txbd_ring_size,
-+						   &card->txbd_ring_pbase,
-+						   GFP_KERNEL);
- 	if (!card->txbd_ring_vbase) {
- 		mwifiex_dbg(adapter, ERROR,
- 			    "allocate consistent memory (%d bytes) failed!\n",
-@@ -871,9 +871,9 @@ static int mwifiex_pcie_delete_txbd_ring(struct mwifiex_adapter *adapter)
- 	mwifiex_cleanup_txq_ring(adapter);
- 
- 	if (card->txbd_ring_vbase)
--		pci_free_consistent(card->dev, card->txbd_ring_size,
--				    card->txbd_ring_vbase,
--				    card->txbd_ring_pbase);
-+		dma_free_coherent(&card->dev->dev, card->txbd_ring_size,
-+				  card->txbd_ring_vbase,
-+				  card->txbd_ring_pbase);
- 	card->txbd_ring_size = 0;
- 	card->txbd_wrptr = 0;
- 	card->txbd_rdptr = 0 | reg->tx_rollover_ind;
-@@ -909,9 +909,10 @@ static int mwifiex_pcie_create_rxbd_ring(struct mwifiex_adapter *adapter)
- 	mwifiex_dbg(adapter, INFO,
- 		    "info: rxbd_ring: Allocating %d bytes\n",
- 		    card->rxbd_ring_size);
--	card->rxbd_ring_vbase = pci_alloc_consistent(card->dev,
--						     card->rxbd_ring_size,
--						     &card->rxbd_ring_pbase);
-+	card->rxbd_ring_vbase = dma_alloc_coherent(&card->dev->dev,
-+						   card->rxbd_ring_size,
-+						   &card->rxbd_ring_pbase,
-+						   GFP_KERNEL);
- 	if (!card->rxbd_ring_vbase) {
- 		mwifiex_dbg(adapter, ERROR,
- 			    "allocate consistent memory (%d bytes) failed!\n",
-@@ -939,9 +940,9 @@ static int mwifiex_pcie_delete_rxbd_ring(struct mwifiex_adapter *adapter)
- 	mwifiex_cleanup_rxq_ring(adapter);
- 
- 	if (card->rxbd_ring_vbase)
--		pci_free_consistent(card->dev, card->rxbd_ring_size,
--				    card->rxbd_ring_vbase,
--				    card->rxbd_ring_pbase);
-+		dma_free_coherent(&card->dev->dev, card->rxbd_ring_size,
-+				  card->rxbd_ring_vbase,
-+				  card->rxbd_ring_pbase);
- 	card->rxbd_ring_size = 0;
- 	card->rxbd_wrptr = 0;
- 	card->rxbd_rdptr = 0 | reg->rx_rollover_ind;
-@@ -973,9 +974,10 @@ static int mwifiex_pcie_create_evtbd_ring(struct mwifiex_adapter *adapter)
- 	mwifiex_dbg(adapter, INFO,
- 		    "info: evtbd_ring: Allocating %d bytes\n",
- 		card->evtbd_ring_size);
--	card->evtbd_ring_vbase = pci_alloc_consistent(card->dev,
--						      card->evtbd_ring_size,
--						      &card->evtbd_ring_pbase);
-+	card->evtbd_ring_vbase = dma_alloc_coherent(&card->dev->dev,
-+						    card->evtbd_ring_size,
-+						    &card->evtbd_ring_pbase,
-+						    GFP_KERNEL);
- 	if (!card->evtbd_ring_vbase) {
- 		mwifiex_dbg(adapter, ERROR,
- 			    "allocate consistent memory (%d bytes) failed!\n",
-@@ -1003,9 +1005,9 @@ static int mwifiex_pcie_delete_evtbd_ring(struct mwifiex_adapter *adapter)
- 	mwifiex_cleanup_evt_ring(adapter);
- 
- 	if (card->evtbd_ring_vbase)
--		pci_free_consistent(card->dev, card->evtbd_ring_size,
--				    card->evtbd_ring_vbase,
--				    card->evtbd_ring_pbase);
-+		dma_free_coherent(&card->dev->dev, card->evtbd_ring_size,
-+				  card->evtbd_ring_vbase,
-+				  card->evtbd_ring_pbase);
- 	card->evtbd_wrptr = 0;
- 	card->evtbd_rdptr = 0 | reg->evt_rollover_ind;
- 	card->evtbd_ring_size = 0;
-@@ -1032,7 +1034,7 @@ static int mwifiex_pcie_alloc_cmdrsp_buf(struct mwifiex_adapter *adapter)
- 	}
- 	skb_put(skb, MWIFIEX_UPLD_SIZE);
- 	if (mwifiex_map_pci_memory(adapter, skb, MWIFIEX_UPLD_SIZE,
--				   PCI_DMA_FROMDEVICE)) {
-+				   DMA_FROM_DEVICE)) {
- 		kfree_skb(skb);
- 		return -1;
- 	}
-@@ -1056,14 +1058,14 @@ static int mwifiex_pcie_delete_cmdrsp_buf(struct mwifiex_adapter *adapter)
- 
- 	if (card && card->cmdrsp_buf) {
- 		mwifiex_unmap_pci_memory(adapter, card->cmdrsp_buf,
--					 PCI_DMA_FROMDEVICE);
-+					 DMA_FROM_DEVICE);
- 		dev_kfree_skb_any(card->cmdrsp_buf);
- 		card->cmdrsp_buf = NULL;
- 	}
- 
- 	if (card && card->cmd_buf) {
- 		mwifiex_unmap_pci_memory(adapter, card->cmd_buf,
--					 PCI_DMA_TODEVICE);
-+					 DMA_TO_DEVICE);
- 		dev_kfree_skb_any(card->cmd_buf);
- 		card->cmd_buf = NULL;
- 	}
-@@ -1078,8 +1080,10 @@ static int mwifiex_pcie_alloc_sleep_cookie_buf(struct mwifiex_adapter *adapter)
- 	struct pcie_service_card *card = adapter->card;
- 	u32 tmp;
- 
--	card->sleep_cookie_vbase = pci_alloc_consistent(card->dev, sizeof(u32),
--						     &card->sleep_cookie_pbase);
-+	card->sleep_cookie_vbase = dma_alloc_coherent(&card->dev->dev,
-+						      sizeof(u32),
-+						      &card->sleep_cookie_pbase,
-+						      GFP_KERNEL);
- 	if (!card->sleep_cookie_vbase) {
- 		mwifiex_dbg(adapter, ERROR,
- 			    "pci_alloc_consistent failed!\n");
-@@ -1109,9 +1113,9 @@ static int mwifiex_pcie_delete_sleep_cookie_buf(struct mwifiex_adapter *adapter)
- 	card = adapter->card;
- 
- 	if (card && card->sleep_cookie_vbase) {
--		pci_free_consistent(card->dev, sizeof(u32),
--				    card->sleep_cookie_vbase,
--				    card->sleep_cookie_pbase);
-+		dma_free_coherent(&card->dev->dev, sizeof(u32),
-+				  card->sleep_cookie_vbase,
-+				  card->sleep_cookie_pbase);
- 		card->sleep_cookie_vbase = NULL;
- 	}
- 
-@@ -1183,7 +1187,7 @@ static int mwifiex_pcie_send_data_complete(struct mwifiex_adapter *adapter)
- 				    "SEND COMP: Detach skb %p at txbd_rdidx=%d\n",
- 				    skb, wrdoneidx);
- 			mwifiex_unmap_pci_memory(adapter, skb,
--						 PCI_DMA_TODEVICE);
-+						 DMA_TO_DEVICE);
- 
- 			unmap_count++;
- 
-@@ -1276,7 +1280,7 @@ mwifiex_pcie_send_data(struct mwifiex_adapter *adapter, struct sk_buff *skb,
- 		put_unaligned_le16(MWIFIEX_TYPE_DATA, payload + 2);
- 
- 		if (mwifiex_map_pci_memory(adapter, skb, skb->len,
--					   PCI_DMA_TODEVICE))
-+					   DMA_TO_DEVICE))
- 			return -1;
- 
- 		wrindx = (card->txbd_wrptr & reg->tx_mask) >> reg->tx_start_ptr;
-@@ -1358,7 +1362,7 @@ mwifiex_pcie_send_data(struct mwifiex_adapter *adapter, struct sk_buff *skb,
- 
- 	return -EINPROGRESS;
- done_unmap:
--	mwifiex_unmap_pci_memory(adapter, skb, PCI_DMA_TODEVICE);
-+	mwifiex_unmap_pci_memory(adapter, skb, DMA_TO_DEVICE);
- 	card->tx_buf_list[wrindx] = NULL;
- 	atomic_dec(&adapter->tx_hw_pending);
- 	if (reg->pfu_enabled)
-@@ -1412,7 +1416,7 @@ static int mwifiex_pcie_process_recv_data(struct mwifiex_adapter *adapter)
- 		if (!skb_data)
- 			return -ENOMEM;
- 
--		mwifiex_unmap_pci_memory(adapter, skb_data, PCI_DMA_FROMDEVICE);
-+		mwifiex_unmap_pci_memory(adapter, skb_data, DMA_FROM_DEVICE);
- 		card->rx_buf_list[rd_index] = NULL;
- 
- 		/* Get data length from interface header -
-@@ -1450,7 +1454,7 @@ static int mwifiex_pcie_process_recv_data(struct mwifiex_adapter *adapter)
- 
- 		if (mwifiex_map_pci_memory(adapter, skb_tmp,
- 					   MWIFIEX_RX_DATA_BUF_SIZE,
--					   PCI_DMA_FROMDEVICE))
-+					   DMA_FROM_DEVICE))
- 			return -1;
- 
- 		buf_pa = MWIFIEX_SKB_DMA_ADDR(skb_tmp);
-@@ -1527,7 +1531,7 @@ mwifiex_pcie_send_boot_cmd(struct mwifiex_adapter *adapter, struct sk_buff *skb)
- 		return -1;
- 	}
- 
--	if (mwifiex_map_pci_memory(adapter, skb, skb->len, PCI_DMA_TODEVICE))
-+	if (mwifiex_map_pci_memory(adapter, skb, skb->len, DMA_TO_DEVICE))
- 		return -1;
- 
- 	buf_pa = MWIFIEX_SKB_DMA_ADDR(skb);
-@@ -1539,7 +1543,7 @@ mwifiex_pcie_send_boot_cmd(struct mwifiex_adapter *adapter, struct sk_buff *skb)
- 		mwifiex_dbg(adapter, ERROR,
- 			    "%s: failed to write download command to boot code.\n",
- 			    __func__);
--		mwifiex_unmap_pci_memory(adapter, skb, PCI_DMA_TODEVICE);
-+		mwifiex_unmap_pci_memory(adapter, skb, DMA_TO_DEVICE);
- 		return -1;
- 	}
- 
-@@ -1551,7 +1555,7 @@ mwifiex_pcie_send_boot_cmd(struct mwifiex_adapter *adapter, struct sk_buff *skb)
- 		mwifiex_dbg(adapter, ERROR,
- 			    "%s: failed to write download command to boot code.\n",
- 			    __func__);
--		mwifiex_unmap_pci_memory(adapter, skb, PCI_DMA_TODEVICE);
-+		mwifiex_unmap_pci_memory(adapter, skb, DMA_TO_DEVICE);
- 		return -1;
- 	}
- 
-@@ -1560,7 +1564,7 @@ mwifiex_pcie_send_boot_cmd(struct mwifiex_adapter *adapter, struct sk_buff *skb)
- 		mwifiex_dbg(adapter, ERROR,
- 			    "%s: failed to write command len to cmd_size scratch reg\n",
- 			    __func__);
--		mwifiex_unmap_pci_memory(adapter, skb, PCI_DMA_TODEVICE);
-+		mwifiex_unmap_pci_memory(adapter, skb, DMA_TO_DEVICE);
- 		return -1;
- 	}
- 
-@@ -1569,7 +1573,7 @@ mwifiex_pcie_send_boot_cmd(struct mwifiex_adapter *adapter, struct sk_buff *skb)
- 			      CPU_INTR_DOOR_BELL)) {
- 		mwifiex_dbg(adapter, ERROR,
- 			    "%s: failed to assert door-bell intr\n", __func__);
--		mwifiex_unmap_pci_memory(adapter, skb, PCI_DMA_TODEVICE);
-+		mwifiex_unmap_pci_memory(adapter, skb, DMA_TO_DEVICE);
- 		return -1;
- 	}
- 
-@@ -1628,7 +1632,7 @@ mwifiex_pcie_send_cmd(struct mwifiex_adapter *adapter, struct sk_buff *skb)
- 	put_unaligned_le16((u16)skb->len, &payload[0]);
- 	put_unaligned_le16(MWIFIEX_TYPE_CMD, &payload[2]);
- 
--	if (mwifiex_map_pci_memory(adapter, skb, skb->len, PCI_DMA_TODEVICE))
-+	if (mwifiex_map_pci_memory(adapter, skb, skb->len, DMA_TO_DEVICE))
- 		return -1;
- 
- 	card->cmd_buf = skb;
-@@ -1728,17 +1732,16 @@ static int mwifiex_pcie_process_cmd_complete(struct mwifiex_adapter *adapter)
- 		    "info: Rx CMD Response\n");
- 
- 	if (adapter->curr_cmd)
--		mwifiex_unmap_pci_memory(adapter, skb, PCI_DMA_FROMDEVICE);
-+		mwifiex_unmap_pci_memory(adapter, skb, DMA_FROM_DEVICE);
- 	else
--		pci_dma_sync_single_for_cpu(card->dev,
--					    MWIFIEX_SKB_DMA_ADDR(skb),
--					    MWIFIEX_UPLD_SIZE,
--					    PCI_DMA_FROMDEVICE);
-+		dma_sync_single_for_cpu(&card->dev->dev,
-+					MWIFIEX_SKB_DMA_ADDR(skb),
-+					MWIFIEX_UPLD_SIZE, DMA_FROM_DEVICE);
- 
- 	/* Unmap the command as a response has been received. */
- 	if (card->cmd_buf) {
- 		mwifiex_unmap_pci_memory(adapter, card->cmd_buf,
--					 PCI_DMA_TODEVICE);
-+					 DMA_TO_DEVICE);
- 		dev_kfree_skb_any(card->cmd_buf);
- 		card->cmd_buf = NULL;
- 	}
-@@ -1749,10 +1752,10 @@ static int mwifiex_pcie_process_cmd_complete(struct mwifiex_adapter *adapter)
- 
- 	if (!adapter->curr_cmd) {
- 		if (adapter->ps_state == PS_STATE_SLEEP_CFM) {
--			pci_dma_sync_single_for_device(card->dev,
--						MWIFIEX_SKB_DMA_ADDR(skb),
--						MWIFIEX_SLEEP_COOKIE_SIZE,
--						PCI_DMA_FROMDEVICE);
-+			dma_sync_single_for_device(&card->dev->dev,
-+						   MWIFIEX_SKB_DMA_ADDR(skb),
-+						   MWIFIEX_SLEEP_COOKIE_SIZE,
-+						   DMA_FROM_DEVICE);
- 			if (mwifiex_write_reg(adapter,
- 					      PCIE_CPU_INT_EVENT,
- 					      CPU_INTR_SLEEP_CFM_DONE)) {
-@@ -1763,7 +1766,7 @@ static int mwifiex_pcie_process_cmd_complete(struct mwifiex_adapter *adapter)
- 			mwifiex_delay_for_sleep_cookie(adapter,
- 						       MWIFIEX_MAX_DELAY_COUNT);
- 			mwifiex_unmap_pci_memory(adapter, skb,
--						 PCI_DMA_FROMDEVICE);
-+						 DMA_FROM_DEVICE);
- 			skb_pull(skb, adapter->intf_hdr_len);
- 			while (reg->sleep_cookie && (count++ < 10) &&
- 			       mwifiex_pcie_ok_to_access_hw(adapter))
-@@ -1779,7 +1782,7 @@ static int mwifiex_pcie_process_cmd_complete(struct mwifiex_adapter *adapter)
- 		       min_t(u32, MWIFIEX_SIZE_OF_CMD_BUFFER, skb->len));
- 		skb_push(skb, adapter->intf_hdr_len);
- 		if (mwifiex_map_pci_memory(adapter, skb, MWIFIEX_UPLD_SIZE,
--					   PCI_DMA_FROMDEVICE))
-+					   DMA_FROM_DEVICE))
- 			return -1;
- 	} else if (mwifiex_pcie_ok_to_access_hw(adapter)) {
- 		skb_pull(skb, adapter->intf_hdr_len);
-@@ -1821,7 +1824,7 @@ static int mwifiex_pcie_cmdrsp_complete(struct mwifiex_adapter *adapter,
- 		card->cmdrsp_buf = skb;
- 		skb_push(card->cmdrsp_buf, adapter->intf_hdr_len);
- 		if (mwifiex_map_pci_memory(adapter, skb, MWIFIEX_UPLD_SIZE,
--					   PCI_DMA_FROMDEVICE))
-+					   DMA_FROM_DEVICE))
- 			return -1;
- 	}
- 
-@@ -1876,7 +1879,7 @@ static int mwifiex_pcie_process_event_ready(struct mwifiex_adapter *adapter)
- 		mwifiex_dbg(adapter, INFO,
- 			    "info: Read Index: %d\n", rdptr);
- 		skb_cmd = card->evt_buf_list[rdptr];
--		mwifiex_unmap_pci_memory(adapter, skb_cmd, PCI_DMA_FROMDEVICE);
-+		mwifiex_unmap_pci_memory(adapter, skb_cmd, DMA_FROM_DEVICE);
- 
- 		/* Take the pointer and set it to event pointer in adapter
- 		   and will return back after event handling callback */
-@@ -1956,7 +1959,7 @@ static int mwifiex_pcie_event_complete(struct mwifiex_adapter *adapter,
- 		skb_put(skb, MAX_EVENT_SIZE - skb->len);
- 		if (mwifiex_map_pci_memory(adapter, skb,
- 					   MAX_EVENT_SIZE,
--					   PCI_DMA_FROMDEVICE))
-+					   DMA_FROM_DEVICE))
- 			return -1;
- 		card->evt_buf_list[rdptr] = skb;
- 		desc = card->evtbd_ring[rdptr];
-@@ -2238,7 +2241,7 @@ static int mwifiex_prog_fw_w_helper(struct mwifiex_adapter *adapter,
- 					    "interrupt status during fw dnld.\n",
- 					    __func__);
- 				mwifiex_unmap_pci_memory(adapter, skb,
--							 PCI_DMA_TODEVICE);
-+							 DMA_TO_DEVICE);
- 				ret = -1;
- 				goto done;
- 			}
-@@ -2250,12 +2253,12 @@ static int mwifiex_prog_fw_w_helper(struct mwifiex_adapter *adapter,
- 			mwifiex_dbg(adapter, ERROR, "%s: Card failed to ACK download\n",
- 				    __func__);
- 			mwifiex_unmap_pci_memory(adapter, skb,
--						 PCI_DMA_TODEVICE);
-+						 DMA_TO_DEVICE);
- 			ret = -1;
- 			goto done;
- 		}
- 
--		mwifiex_unmap_pci_memory(adapter, skb, PCI_DMA_TODEVICE);
-+		mwifiex_unmap_pci_memory(adapter, skb, DMA_TO_DEVICE);
- 
- 		offset += txlen;
- 	} while (true);
-@@ -2925,13 +2928,13 @@ static int mwifiex_init_pcie(struct mwifiex_adapter *adapter)
- 
- 	pci_set_master(pdev);
- 
--	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+	ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
- 	if (ret) {
- 		pr_err("set_dma_mask(32) failed: %d\n", ret);
- 		goto err_set_dma_mask;
- 	}
- 
--	ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
-+	ret = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32));
- 	if (ret) {
- 		pr_err("set_consistent_dma_mask(64) failed\n");
- 		goto err_set_dma_mask;
--- 
-2.25.1
-
+> 
+> 
+> >
+> > v13: Fix comments from Launrent Pinchart and Rob Herring
+> >  - Picked up Rob's Reviewed-By
+> >  - Add .detect and .get_edid interface in bridge funcs.
+> >
+> > v12: Fix comments from Hsin-Yi Wang
+> >  - Rebase the code on kernel 5.7, fix DRM interface not match issue.
+> >
+> > v11: Fix comments from Rob Herring
+> >  - Update commit message.
+> >  - Remove unused label.
+> >
+> > v10: Fix comments from Rob Herring, Daniel.
+> >  - Fix dt_binding_check warning.
+> >  - Update description.
+> >
+> > v9: Fix comments from Sam, Nicolas, Daniel
+> >  - Remove extcon interface.
+> >  - Remove DPI support.
+> >  - Fix dt_binding_check complains.
+> >  - Code clean up and update description.
+> >
+> > v8: Fix comments from Nicolas.
+> >  - Fix several coding format.
+> >  - Update description.
+> >
+> > v7:
+> >  - Fix critical timing(eg:odd hfp/hbp) in "mode_fixup" interface,
+> >    enhance MIPI RX tolerance by setting register MIPI_DIGITAL_ADJ_1 to 0x3D.
+> >
+> >
+> > Xin Ji (2):
+> >   dt-bindings: drm/bridge: anx7625: MIPI to DP transmitter DT schema
+> >   drm/bridge: anx7625: Add anx7625 MIPI DSI/DPI to DP
+> >
+> >  .../bindings/display/bridge/analogix,anx7625.yaml  |   95 +
+> >  drivers/gpu/drm/bridge/analogix/Kconfig            |    9 +
+> >  drivers/gpu/drm/bridge/analogix/Makefile           |    1 +
+> >  drivers/gpu/drm/bridge/analogix/anx7625.c          | 1939 ++++++++++++++++++++
+> >  drivers/gpu/drm/bridge/analogix/anx7625.h          |  391 ++++
+> >  5 files changed, 2435 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> >  create mode 100644 drivers/gpu/drm/bridge/analogix/anx7625.c
+> >  create mode 100644 drivers/gpu/drm/bridge/analogix/anx7625.h
+> >
+> > --
+> > 2.7.4
+> >
+> > _______________________________________________
+> > dri-devel mailing list
+> > dri-devel@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
