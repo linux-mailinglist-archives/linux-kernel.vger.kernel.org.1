@@ -2,67 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D4B24983A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 10:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BEE324984A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 10:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726741AbgHSI1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 04:27:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725903AbgHSI1x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 04:27:53 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8306C20738;
-        Wed, 19 Aug 2020 08:27:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597825673;
-        bh=xkrOW1eiodxf6e55kbWanf+5qeDDwj1oob7ZKgc2bX4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fbutXiAaMlm/H9YbBaBayrJHz65E2rmbWgxqxuAdUYACLzGZK6lRujSRmkHg6MBoT
-         jkPxKn2GE0mKyF++r7fCvlhIJSNDTQcpbUNxAFV9oO15FPtc09hhUgH/hTAm9Ueu5o
-         xhq/e/O3Z4iYD7DK533RIYA+NrqZcpkxHyKy533M=
-Date:   Wed, 19 Aug 2020 09:27:47 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Yang Shi <shy828301@gmail.com>, Yu Xu <xuyu@linux.alibaba.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Subject: Re: [v3 PATCH] mm/memory.c: skip spurious TLB flush for retried page
- fault
-Message-ID: <20200819082747.GA17345@willie-the-truck>
-References: <20200815043041.132195-1-shy828301@gmail.com>
- <CAHk-=wjbaptBBKYS+XdCgdjU_RbFPaAd8EkT6_Un6CtNmezt9A@mail.gmail.com>
+        id S1726810AbgHSIdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 04:33:36 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:60512 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726735AbgHSIdc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 04:33:32 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id C50E1FCE6321FB2555C7;
+        Wed, 19 Aug 2020 16:33:23 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Wed, 19 Aug 2020
+ 16:33:13 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <edumazet@google.com>,
+        <kafai@fb.com>, <daniel@iogearbox.net>, <jakub@cloudflare.com>,
+        <keescook@chromium.org>, <zhang.lin16@zte.com.cn>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH v2] net: Stop warning about SO_BSDCOMPAT usage
+Date:   Wed, 19 Aug 2020 04:32:08 -0400
+Message-ID: <20200819083208.17825-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjbaptBBKYS+XdCgdjU_RbFPaAd8EkT6_Un6CtNmezt9A@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 12:01:43PM -0700, Linus Torvalds wrote:
-> On Mon, Aug 17, 2020 at 2:04 PM Yang Shi <shy828301@gmail.com> wrote:
-> >
-> > We could just skip the spurious TLB flush to mitigate the regression.
-> 
-> Ok, this patch I will apply.
+We've been warning about SO_BSDCOMPAT usage for many years. We may remove
+this code completely now.
 
-Cheers.
+Suggested-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ net/core/sock.c | 14 --------------
+ 1 file changed, 14 deletions(-)
 
-> I still hope that arm64 fixes (maybe already fixed) their spurious TLB
-> function, and I think we should rename it to make sure everybody
-> understands it's local, but in the meantime this patch hides the
-> regression and isn't wrong.
+diff --git a/net/core/sock.c b/net/core/sock.c
+index e4f40b175acb..64d2aec5ed45 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -413,18 +413,6 @@ static int sock_set_timeout(long *timeo_p, sockptr_t optval, int optlen,
+ 	return 0;
+ }
+ 
+-static void sock_warn_obsolete_bsdism(const char *name)
+-{
+-	static int warned;
+-	static char warncomm[TASK_COMM_LEN];
+-	if (strcmp(warncomm, current->comm) && warned < 5) {
+-		strcpy(warncomm,  current->comm);
+-		pr_warn("process `%s' is using obsolete %s SO_BSDCOMPAT\n",
+-			warncomm, name);
+-		warned++;
+-	}
+-}
+-
+ static bool sock_needs_netstamp(const struct sock *sk)
+ {
+ 	switch (sk->sk_family) {
+@@ -984,7 +972,6 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
+ 		break;
+ 
+ 	case SO_BSDCOMPAT:
+-		sock_warn_obsolete_bsdism("setsockopt");
+ 		break;
+ 
+ 	case SO_PASSCRED:
+@@ -1387,7 +1374,6 @@ int sock_getsockopt(struct socket *sock, int level, int optname,
+ 		break;
+ 
+ 	case SO_BSDCOMPAT:
+-		sock_warn_obsolete_bsdism("getsockopt");
+ 		break;
+ 
+ 	case SO_TIMESTAMP_OLD:
+-- 
+2.19.1
 
-I'll look at it for 5.10.
-
-Will
