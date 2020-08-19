@@ -2,175 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA5824A123
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 16:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA4324A11A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 16:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728605AbgHSOFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 10:05:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46254 "EHLO
+        id S1728576AbgHSOEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 10:04:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728433AbgHSODX (ORCPT
+        with ESMTP id S1728479AbgHSODu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 10:03:23 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 450EDC06134A;
-        Wed, 19 Aug 2020 07:02:54 -0700 (PDT)
-Date:   Wed, 19 Aug 2020 14:02:51 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597845772;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t+equZZer+4pX+ZwoGMAtp4n/hgCG0a1e6eTnS0gIDc=;
-        b=afch/HeZk+7c9vVe5hVlSrFp3BZw0ZpCd2hLR1bD9wYooTn0aSzMsNY02UzffC3NJwdq1G
-        Rmn/t2zjoi7Zlf6iOcHpXIZUv8cfKSbWjsTHkc3LgcakBiyzhWnGn01wYtvbkyYpHJr5TO
-        DQpf1DWPQap1GKrnsBE5Y86IOz0mdn/XJyfGCDs8OTxKr/boqPnzBIMOiX+JKomXo05UNf
-        JE4QdBSq2YJks7gTtyAp7nDpNBLpHaJvVLd+gcrWxnUWy4jH+oaIM1IFNYxrPAsdfhcOfS
-        U4JB8P8m4oWk6as2gVdcg0RCNDOXwaS2XpctBA/+QChvP1HGGWGNySwQshgNJw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597845772;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t+equZZer+4pX+ZwoGMAtp4n/hgCG0a1e6eTnS0gIDc=;
-        b=P6I/EpNNl8EnPLGmXF3gFQm/nqZDNap3Y/J53wif2KmYo+bkRx8pOzlrh4vEQumEynLXLY
-        4GTAoTR8Wf9cE8Bg==
-From:   "tip-bot2 for Valentin Schneider" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] ARM, sched/topology: Remove SD_SHARE_POWERDOMAIN
-Cc:     Morten Rasmussen <morten.rasmussen@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200817113003.20802-2-valentin.schneider@arm.com>
-References: <20200817113003.20802-2-valentin.schneider@arm.com>
+        Wed, 19 Aug 2020 10:03:50 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D0FAC061383
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 07:03:46 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id i20so7430267qkk.8
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 07:03:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g6uVxpmjtJrh49bROR/GEwsOKP2TcklwbBBYVDi6akw=;
+        b=k40ZfWjhNmOpU2w4xEJdm6hYDexLqDT/XT/LZhLcfGTms42rQmhxdYak5ItY+rLPAz
+         YE6o6c69VVxhMZQ8PrAU7Lf3yYPZeUa8Y8VIi1vzNWmB+IuDu+YnHG8rEqkaodSJ89tI
+         QKGsuWe7VZu4zUwr9Jq+nJjCtUfmsMBCgNTXbwvqY4Gt3+meRIVaKm5OiwnG2+XhezGn
+         15vK/bG82LdWRR2CCQbuImgrbBwkXcXHROOa+he4ZIH944XGveontqahgE+lmKX61azb
+         cgGwtr+7TZhOjl/67qnhlIItNmjd4f2MxemxLUK+yItzvbfGS/ID51nularJ2zC/s02z
+         MLCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g6uVxpmjtJrh49bROR/GEwsOKP2TcklwbBBYVDi6akw=;
+        b=FbYjABoNA1jIWMVqKzpKjEsNTbcSm8WLtPoczahcEbCJxC4mUqYmHvNQgTAoRzP+2l
+         ZUSrPH4enR0iddEC9R0sQGAMQR5xYxhZaUNp06uf0kl7T4NdPN9LRukJEMJmb1S0i5dR
+         /ki5k1/bkx7vh+453oc16SmG0j9uDzr4fie752TFFJn5HQHvSP4bLHB89pnjeJbMIJkh
+         eURp0ikmJB4AXwE2+Mqz0E349qL07TcPgZz95JOdDUSOFCkxdtpXXb8zPNw0YhgYCW9/
+         6DXXnWcwW2Pro5mXjXbXszaIPOMxXdm6tcmdMDVg1AKXSNJz2WddZBk5orMzKlM+7RSf
+         foFA==
+X-Gm-Message-State: AOAM532y3YA5rAG3LaIVBWGWLta9OAtUSaiQjcM1Wz1emR3h35lOTjqC
+        AscRTZVxvkVbbY42vsWdP89vv/dnW9I5FqcAwIwCIg==
+X-Google-Smtp-Source: ABdhPJzTU07eK90u56ieNkfWEiPbP/yb2qqk/uvaOdJWRiNqHdKO0nVyVmzZ2bxLFNkDl7vPDYck14pkaFJl67yPxyY=
+X-Received: by 2002:a05:620a:15c9:: with SMTP id o9mr17316392qkm.8.1597845824618;
+ Wed, 19 Aug 2020 07:03:44 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <159784577154.3192.17872359236913870114.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <000000000000568fc005ad3b57c3@google.com>
+In-Reply-To: <000000000000568fc005ad3b57c3@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 19 Aug 2020 16:03:33 +0200
+Message-ID: <CACT4Y+bxvHp9gq_OEBAYdMTsm9vxw3CuviuDpxHCXcZHv_A0nw@mail.gmail.com>
+Subject: Re: unregister_netdevice: waiting for DEV to become free (4)
+To:     syzbot <syzbot+df400f2f24a1677cd7e0@syzkaller.appspotmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+On Wed, Aug 19, 2020 at 3:54 PM syzbot
+<syzbot+df400f2f24a1677cd7e0@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    18445bf4 Merge tag 'spi-fix-v5.9-rc1' of git://git.kernel...
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1710d97a900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=bb68b9e8a8cc842f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=df400f2f24a1677cd7e0
+> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15859986900000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1228fea1900000
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+df400f2f24a1677cd7e0@syzkaller.appspotmail.com
+>
+> unregister_netdevice: waiting for lo to become free. Usage count = 1
 
-Commit-ID:     cfe7ddcbd72dc67ce5749cc6f451a2b0c6aec5b5
-Gitweb:        https://git.kernel.org/tip/cfe7ddcbd72dc67ce5749cc6f451a2b0c6aec5b5
-Author:        Valentin Schneider <valentin.schneider@arm.com>
-AuthorDate:    Mon, 17 Aug 2020 12:29:47 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 19 Aug 2020 10:49:47 +02:00
+Based on the repro, it looks bpf/bpf link related:
 
-ARM, sched/topology: Remove SD_SHARE_POWERDOMAIN
+syz_emit_ethernet(0x86, &(0x7f0000000000)={@local, @empty=[0x2],
+@void, {@ipv4={0x800, @udp={{0x5, 0x4, 0x0, 0x0, 0x78, 0x0, 0x0, 0x0,
+0x11, 0x0, @empty, @empty}, {0x0, 0x1b59, 0x64, 0x0,
+@wg=@response={0x5, 0x0, 0x0, "020000010865390406030500000000010900",
+"9384bbeb3018ad591b661fe808b21b77",
+{"694c875dfb1be5d2a0057a62022a1564",
+"a329d3a73b8268129e5fa4316a5d8c69"}}}}}}}, 0x0)
+mkdirat(0xffffffffffffff9c, &(0x7f0000000000)='./file0\x00', 0x0)
+mount(0x0, &(0x7f0000000080)='./file0\x00',
+&(0x7f0000000040)='cgroup2\x00', 0x0, 0x0)
+r0 = openat$cgroup_root(0xffffffffffffff9c, &(0x7f0000000000), 0x200002, 0x0)
+r1 = bpf$PROG_LOAD(0x5, &(0x7f0000000080)={0x9, 0x4,
+&(0x7f0000000000)=@framed={{}, [@alu={0x8000000201a7f19, 0x0, 0x6,
+0x2, 0x1}]}, &(0x7f0000000100)='GPL\x00', 0x0, 0x0, 0x0, 0x0, 0x0, [],
+0x0, 0x0, 0xffffffffffffffff, 0x8, 0x0, 0x0, 0x10, 0x0}, 0x70)
+bpf$BPF_LINK_CREATE(0x1c, &(0x7f0000000100)={r1, r0, 0x2}, 0x10)
 
-This flag was introduced in 2014 by commit:
-
-  d77b3ed5c9f8 ("sched: Add a new SD_SHARE_POWERDOMAIN for sched_domain")
-
-but AFAIA it was never leveraged by the scheduler. The closest thing I can
-think of is EAS caring about frequency domains, and it does that by
-leveraging performance domains.
-
-Remove the flag. No change in functionality is expected.
-
-Suggested-by: Morten Rasmussen <morten.rasmussen@arm.com>
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Acked-by: Peter Zijlstra <a.p.zijlstra@chello.nl>
-Link: https://lore.kernel.org/r/20200817113003.20802-2-valentin.schneider@arm.com
----
- arch/arm/kernel/topology.c     |  2 +-
- include/linux/sched/topology.h | 13 ++++++-------
- kernel/sched/topology.c        | 10 +++-------
- 3 files changed, 10 insertions(+), 15 deletions(-)
-
-diff --git a/arch/arm/kernel/topology.c b/arch/arm/kernel/topology.c
-index b5adaf7..353f3ee 100644
---- a/arch/arm/kernel/topology.c
-+++ b/arch/arm/kernel/topology.c
-@@ -243,7 +243,7 @@ topology_populated:
- 
- static inline int cpu_corepower_flags(void)
- {
--	return SD_SHARE_PKG_RESOURCES  | SD_SHARE_POWERDOMAIN;
-+	return SD_SHARE_PKG_RESOURCES;
- }
- 
- static struct sched_domain_topology_level arm_topology[] = {
-diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-index 8205112..6ec7d7c 100644
---- a/include/linux/sched/topology.h
-+++ b/include/linux/sched/topology.h
-@@ -18,13 +18,12 @@
- #define SD_WAKE_AFFINE		0x0010	/* Wake task to waking CPU */
- #define SD_ASYM_CPUCAPACITY	0x0020  /* Domain members have different CPU capacities */
- #define SD_SHARE_CPUCAPACITY	0x0040	/* Domain members share CPU capacity */
--#define SD_SHARE_POWERDOMAIN	0x0080	/* Domain members share power domain */
--#define SD_SHARE_PKG_RESOURCES	0x0100	/* Domain members share CPU pkg resources */
--#define SD_SERIALIZE		0x0200	/* Only a single load balancing instance */
--#define SD_ASYM_PACKING		0x0400  /* Place busy groups earlier in the domain */
--#define SD_PREFER_SIBLING	0x0800	/* Prefer to place tasks in a sibling domain */
--#define SD_OVERLAP		0x1000	/* sched_domains of this level overlap */
--#define SD_NUMA			0x2000	/* cross-node balancing */
-+#define SD_SHARE_PKG_RESOURCES	0x0080	/* Domain members share CPU pkg resources */
-+#define SD_SERIALIZE		0x0100	/* Only a single load balancing instance */
-+#define SD_ASYM_PACKING		0x0200  /* Place busy groups earlier in the domain */
-+#define SD_PREFER_SIBLING	0x0400	/* Prefer to place tasks in a sibling domain */
-+#define SD_OVERLAP		0x0800	/* sched_domains of this level overlap */
-+#define SD_NUMA			0x1000	/* cross-node balancing */
- 
- #ifdef CONFIG_SCHED_SMT
- static inline int cpu_smt_flags(void)
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 007b0a6..fe03969 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -148,8 +148,7 @@ static int sd_degenerate(struct sched_domain *sd)
- 			 SD_BALANCE_EXEC |
- 			 SD_SHARE_CPUCAPACITY |
- 			 SD_ASYM_CPUCAPACITY |
--			 SD_SHARE_PKG_RESOURCES |
--			 SD_SHARE_POWERDOMAIN)) {
-+			 SD_SHARE_PKG_RESOURCES)) {
- 		if (sd->groups != sd->groups->next)
- 			return 0;
- 	}
-@@ -180,8 +179,7 @@ sd_parent_degenerate(struct sched_domain *sd, struct sched_domain *parent)
- 			    SD_ASYM_CPUCAPACITY |
- 			    SD_SHARE_CPUCAPACITY |
- 			    SD_SHARE_PKG_RESOURCES |
--			    SD_PREFER_SIBLING |
--			    SD_SHARE_POWERDOMAIN);
-+			    SD_PREFER_SIBLING);
- 		if (nr_node_ids == 1)
- 			pflags &= ~SD_SERIALIZE;
- 	}
-@@ -1292,7 +1290,6 @@ int __read_mostly		node_reclaim_distance = RECLAIM_DISTANCE;
-  *   SD_SHARE_CPUCAPACITY   - describes SMT topologies
-  *   SD_SHARE_PKG_RESOURCES - describes shared caches
-  *   SD_NUMA                - describes NUMA topologies
-- *   SD_SHARE_POWERDOMAIN   - describes shared power domain
-  *
-  * Odd one out, which beside describing the topology has a quirk also
-  * prescribes the desired behaviour that goes along with it:
-@@ -1303,8 +1300,7 @@ int __read_mostly		node_reclaim_distance = RECLAIM_DISTANCE;
- 	(SD_SHARE_CPUCAPACITY	|	\
- 	 SD_SHARE_PKG_RESOURCES |	\
- 	 SD_NUMA		|	\
--	 SD_ASYM_PACKING	|	\
--	 SD_SHARE_POWERDOMAIN)
-+	 SD_ASYM_PACKING)
- 
- static struct sched_domain *
- sd_init(struct sched_domain_topology_level *tl,
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> syzbot can test patches for this issue, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
