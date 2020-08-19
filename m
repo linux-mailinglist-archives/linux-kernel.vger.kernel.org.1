@@ -2,70 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C41024A8EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 00:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 341EC24A8F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 00:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727826AbgHSWML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 18:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726209AbgHSWMK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 18:12:10 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE49C061757;
-        Wed, 19 Aug 2020 15:12:10 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id 128so158556pgd.5;
-        Wed, 19 Aug 2020 15:12:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=jR3JT70rmRNM6vsO8qmX1MbKYQ90OTWT9h+SWIytADw=;
-        b=q5UB2sjLxDm0IylzVL6BvBt0cPKA/8nfCCV2ROgK1nfLwssmLIwPIdUU/IHtvC5sIt
-         zKPCx7epGg8Sm1KloWuj4fxITyh7/zjuSM31N6gTJYEzc5hD7S88dWJ62hed82iIIuTU
-         0uQwe3q4HLFinJAhFp0nkRZFYNiz2kFwq58t6BUQEt93H+6XphYzzPeCRdZEm6IGRRnN
-         p46fYmUahLYW0mE72mqoDHLYuThQUiQS9pJcmwONZWwQ9+oPW07CHWIKPA9U8WN3bCua
-         c2xDMZrSfcCA2G8qGtxJn8FRkH82LEKJxn3Bwa8fHon55G65iQCAW2pP4FgyvKDJowzX
-         LGig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=jR3JT70rmRNM6vsO8qmX1MbKYQ90OTWT9h+SWIytADw=;
-        b=rbwsdXLXmGrKVkCAnNzUUFbpK1AzhU2NwQjBcEzBt6SmJWpVd+08bTFJ9+5ttreSCR
-         RPPPfVodQksJfdjMkvuUqweIqGFPe0iBTQxPlX4heiCFzMrlHrltq5wmo8tkeORycJlR
-         7Q7LTbQb1Yi4mRZmTzIE8VJvCAS6jdf1t8R8Rw5yVhgyvWGVf7voaZrF/FthizqFwhW3
-         mgsE6NmsvSKq5ZZfZZ6pS9OTZhOgVnIq3LWHn32MBHvkeaxbshl2j7KxE+Pzb6LN1FsS
-         AxN+bkqypB5AbrZXf0MWMyam7jjwy9UmqgPDaVWZfGBHVCdYlyrUa86OeQf/U5R98htM
-         +4lA==
-X-Gm-Message-State: AOAM532S1J6f6IQI4bIYEjomnsll6pUUinTicAsZlpFOjeMpzEQJqAid
-        SFQo0kNDWkJRJD2ggw5uS1ws1cGBGq3aEoQLqeLXY0HG
-X-Google-Smtp-Source: ABdhPJxJDl2cDJ5gosHpfhAos2FeQKIohDmzjuLkI1GtQsb9aMG6Ob5gV3nOn7ayiqGrhDlEhUaRACjhQ79SLoAdfE8=
-X-Received: by 2002:a63:1116:: with SMTP id g22mr362141pgl.63.1597875129790;
- Wed, 19 Aug 2020 15:12:09 -0700 (PDT)
+        id S1726868AbgHSWPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 18:15:11 -0400
+Received: from ozlabs.org ([203.11.71.1]:50469 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726435AbgHSWPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 18:15:11 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BX2CJ4HS0z9sRK;
+        Thu, 20 Aug 2020 08:15:08 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1597875308;
+        bh=nX2hdTvfs4aPcM/yy7/DxwQEg+DUf2RDrImd5dGnL2o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WAP2Rt5B1mO19s+zSkyJHQXTE9HuXY2L1jhSPDbDAeLa53OWh4lEZEvgN87r2mSRX
+         nd/kkDteslImgkBsSv3YZ1iYQzO9L4TYdsKpHm1anhDgLEqwNMFRkVW2J+QUiRCHFb
+         fQSHfT8t6KT/T5Bto7MpB3fHiiQzaqWjzW+Lg11/tipWFWbUlZdB2hsow6lgmocuBf
+         YmC4YW5cL2LrbmbboDOsNvuxhjic04qx7Mtx7v+W36trAFsq9eWGCjt8L5m0lm09DJ
+         NezHsnJRxfBO/1FPgGLwYIEob9mqWQoJydI4sPVpxpedE/SwLvSztAH/ep6f05n0km
+         nB4i3vI/E12yw==
+Date:   Thu, 20 Aug 2020 08:15:07 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Nishanth Menon <nm@ti.com>
+Cc:     Tero Kristo <t-kristo@ti.com>, <linux-next@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: Request: Add Transition TI Tree to linux-next
+Message-ID: <20200820081507.04eb71a0@canb.auug.org.au>
+In-Reply-To: <20200819121137.4v3rfabbrleohoc7@akan>
+References: <20200819121137.4v3rfabbrleohoc7@akan>
 MIME-Version: 1.0
-References: <20200808175251.582781-1-xie.he.0141@gmail.com>
-In-Reply-To: <20200808175251.582781-1-xie.he.0141@gmail.com>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Wed, 19 Aug 2020 15:11:58 -0700
-Message-ID: <CAJht_EMQSfU17tpJzyKmi7QcpVYgDuxf-1V+csfsVmVzgDmGcg@mail.gmail.com>
-Subject: Re: [PATCH net] drivers/net/wan/lapbether: Added needed_tailroom
-To:     Martin Schiller <ms@dev.tdt.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/.1_2w5Ty7Koy+qYv4=GcUea";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin Schiller,
+--Sig_/.1_2w5Ty7Koy+qYv4=GcUea
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Can you help review this patch? Thanks! It is a very simple patch that
-adds the "needed_tailroom" setting for this driver.
+Hi all,
 
-Thank you!
-Xie He
+On Wed, 19 Aug 2020 07:11:37 -0500 Nishanth Menon <nm@ti.com> wrote:
+>=20
+> Could you add my ti-k3-next branch to linux-next? You can find it
+> here:
+>=20
+> git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git#ti-k3-next
+>=20
+> NOTE: This tree will eventually supersede Tero's tree[1] which is
+> currently in linux-next.
+
+Added from today.  I have called it ti-k3-new for now.
+
+Thanks for adding your subsystem tree as a participant of linux-next.  As
+you may know, this is not a judgement of your code.  The purpose of
+linux-next is for integration testing and to lower the impact of
+conflicts between subsystems in the next merge window.=20
+
+You will need to ensure that the patches/commits in your tree/series have
+been:
+     * submitted under GPL v2 (or later) and include the Contributor's
+        Signed-off-by,
+     * posted to the relevant mailing list,
+     * reviewed by you (or another maintainer of your subsystem tree),
+     * successfully unit tested, and=20
+     * destined for the current or next Linux merge window.
+
+Basically, this should be just what you would send to Linus (or ask him
+to fetch).  It is allowed to be rebased if you deem it necessary.
+
+--=20
+Cheers,
+Stephen Rothwell=20
+sfr@canb.auug.org.au
+
+--Sig_/.1_2w5Ty7Koy+qYv4=GcUea
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl89pGsACgkQAVBC80lX
+0GwDfwf9FvyV1EGUpJlpgzJ+Ok3i1cxqiUq2XkogDZlAwrFd/7I/YcpxwBtIj3AS
+AuszFQhRsgeCIgPFuGU+B/O7SaCky+XrCk+yly7Ibv2B2eDEqIRw0Plj6YfPCyfc
+EBWg4b8kO+SUPemIGZM8LyPzWkunEgCD9jMYoG9I6S6wZ2COuuKMRNBedj/EduSS
+r20pLXWS48I4uj/MzTMLxmysG/SFCCKctugXYBaDNQRvGvmP4G1lnbbdeRAGzfHQ
+8jdBt0UOfIUOgZGxGmwU1rT/3swnUO1OwwN97dKs/EM3WvSvY0xyF1Wkvz1FJ/NT
+wW5Beu0CDq34qfnFpPYEQDklOSmz1g==
+=3/5v
+-----END PGP SIGNATURE-----
+
+--Sig_/.1_2w5Ty7Koy+qYv4=GcUea--
