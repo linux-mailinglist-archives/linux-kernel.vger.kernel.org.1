@@ -2,174 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C0A24A1BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 16:29:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8872A24A1C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 16:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728437AbgHSO3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 10:29:13 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:58488 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726794AbgHSO3F (ORCPT
+        id S1728626AbgHSOau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 10:30:50 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:43334 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728120AbgHSOab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 10:29:05 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07JESq9h061954;
-        Wed, 19 Aug 2020 09:28:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1597847332;
-        bh=otgbGWwb3UhDFUjBDSNCt0tc9BFNVg6jezhPK5rBtvs=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=rj+vboY7Qk7a04Sc54mBzQhcy5l/J3ufrpLb99EZBcmpseX5MONXa8RgO/nWlCwAc
-         BmYw92X0OYMOihS9jV3XBqnSvWWMTQFEhctL6o5s015eh08HG7f+MLcLxvQlcoWKIr
-         UD9m4Ng1Ndx5+JZYcQIgS2o5/ayL1Q3E1A80qnfc=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07JESqBp068440;
-        Wed, 19 Aug 2020 09:28:52 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 19
- Aug 2020 09:28:52 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 19 Aug 2020 09:28:52 -0500
-Received: from [192.168.2.14] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07JESoYv050647;
-        Wed, 19 Aug 2020 09:28:50 -0500
-Subject: Re: [PATCH v4 3/3] phy: omap-usb2-phy: disable PHY charger detect
-To:     Jan Kiszka <jan.kiszka@siemens.com>, <kishon@ti.com>
-CC:     <robh+dt@kernel.org>, <nsekhar@ti.com>, <vigneshr@ti.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Bin Liu <b-liu@ti.com>
-References: <20200716082252.21266-1-rogerq@ti.com>
- <20200716082252.21266-4-rogerq@ti.com>
- <ef391fb2-c75e-5b35-b3e2-96db21c66ab3@siemens.com>
-From:   Roger Quadros <rogerq@ti.com>
-Message-ID: <5961c75e-f0a5-6493-7d4a-7113ebea14dc@ti.com>
-Date:   Wed, 19 Aug 2020 17:28:49 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 19 Aug 2020 10:30:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1597847430; x=1629383430;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=5lhoalPfLZwfYbnBN5/CZyt8ZrJ+63q3RaCX+V8ERS4=;
+  b=Z+t3YNBTIqMEtUIl/IhjgeasNYHGYzk9a6sgoRHS1usqK5MfmhfTGKnv
+   5y0UIAccnQGt5bvrai59aO96mmmHAw1FlqKk9B/B2pBrhu5s91QzIIhl7
+   lzKVT82bngrwdXc28cwFAGdcrwAQLJSBevzxgPzvyePzzhxp8mWwZQivi
+   A=;
+X-IronPort-AV: E=Sophos;i="5.76,331,1592870400"; 
+   d="scan'208";a="67997637"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 19 Aug 2020 14:30:26 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id BBAF0225302;
+        Wed, 19 Aug 2020 14:30:24 +0000 (UTC)
+Received: from EX13D16EUB003.ant.amazon.com (10.43.166.99) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 19 Aug 2020 14:30:24 +0000
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.160.100) by
+ EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 19 Aug 2020 14:30:15 +0000
+Subject: Re: [PATCH v7 00/18] Add support for Nitro Enclaves
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Alexander Graf <graf@amazon.de>
+CC:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        David Duncan <davdunc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        "Frank van der Linden" <fllinden@amazon.com>,
+        Karen Noel <knoel@redhat.com>,
+        "Martin Pohlack" <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        kvm <kvm@vger.kernel.org>,
+        ne-devel-upstream <ne-devel-upstream@amazon.com>
+References: <20200817131003.56650-1-andraprs@amazon.com>
+ <14477cc7-926e-383d-527b-b53d088ca13d@amazon.de>
+ <20200819112657.GA475121@kroah.com>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Message-ID: <3c0923a0-7676-0d19-9b32-f2648e7966ca@amazon.com>
+Date:   Wed, 19 Aug 2020 17:30:05 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.1.1
 MIME-Version: 1.0
-In-Reply-To: <ef391fb2-c75e-5b35-b3e2-96db21c66ab3@siemens.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20200819112657.GA475121@kroah.com>
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Originating-IP: [10.43.160.100]
+X-ClientProxiedBy: EX13D17UWC001.ant.amazon.com (10.43.162.188) To
+ EX13D16EUB003.ant.amazon.com (10.43.166.99)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/08/2020 12:02, Jan Kiszka wrote:
-> On 16.07.20 10:22, Roger Quadros wrote:
->> AM654x PG1.0 has a silicon bug that D+ is pulled high after POR, which
->> could cause enumeration failure with some USB hubs.  Disabling the
->> USB2_PHY Charger Detect function will put D+ into the normal state.
->>
->> Using property "ti,disable-charger-det" in the DT usb2-phy node to
->> enable this workaround for AM654x PG1.0.
->>
->> This addresses Silicon Errata:
->> i2075 - "USB2PHY: USB2PHY Charger Detect is Enabled by Default Without VBUS
->> Presence"
->>
->> Signed-off-by: Bin Liu <b-liu@ti.com>
->> Signed-off-by: Sekhar Nori <nsekhar@ti.com>
->> Signed-off-by: Roger Quadros <rogerq@ti.com>
->> ---
->>   drivers/phy/ti/phy-omap-usb2.c | 35 +++++++++++++++++++++++++++-------
->>   1 file changed, 28 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/phy/ti/phy-omap-usb2.c b/drivers/phy/ti/phy-omap-usb2.c
->> index cb2dd3230fa7..21c3904d4efc 100644
->> --- a/drivers/phy/ti/phy-omap-usb2.c
->> +++ b/drivers/phy/ti/phy-omap-usb2.c
->> @@ -26,6 +26,10 @@
->>   #define USB2PHY_ANA_CONFIG1		0x4c
->>   #define USB2PHY_DISCON_BYP_LATCH	BIT(31)
->>   
->> +#define USB2PHY_CHRG_DET			0x14
->> +#define USB2PHY_CHRG_DET_USE_CHG_DET_REG	BIT(29)
->> +#define USB2PHY_CHRG_DET_DIS_CHG_DET		BIT(28)
->> +
->>   /* SoC Specific USB2_OTG register definitions */
->>   #define AM654_USB2_OTG_PD		BIT(8)
->>   #define AM654_USB2_VBUS_DET_EN		BIT(5)
->> @@ -43,6 +47,7 @@
->>   #define OMAP_USB2_HAS_START_SRP			BIT(0)
->>   #define OMAP_USB2_HAS_SET_VBUS			BIT(1)
->>   #define OMAP_USB2_CALIBRATE_FALSE_DISCONNECT	BIT(2)
->> +#define OMAP_USB2_DISABLE_CHRG_DET		BIT(3)
->>   
->>   struct omap_usb {
->>   	struct usb_phy		phy;
->> @@ -236,6 +241,13 @@ static int omap_usb_init(struct phy *x)
->>   		omap_usb_writel(phy->phy_base, USB2PHY_ANA_CONFIG1, val);
->>   	}
->>   
->> +	if (phy->flags & OMAP_USB2_DISABLE_CHRG_DET) {
->> +		val = omap_usb_readl(phy->phy_base, USB2PHY_CHRG_DET);
->> +		val |= USB2PHY_CHRG_DET_USE_CHG_DET_REG |
->> +		       USB2PHY_CHRG_DET_DIS_CHG_DET;
->> +		omap_usb_writel(phy->phy_base, USB2PHY_CHRG_DET, val);
->> +	}
->> +
->>   	return 0;
->>   }
->>   
->> @@ -366,14 +378,12 @@ static int omap_usb2_probe(struct platform_device *pdev)
->>   	phy->mask		= phy_data->mask;
->>   	phy->power_on		= phy_data->power_on;
->>   	phy->power_off		= phy_data->power_off;
->> +	phy->flags		= phy_data->flags;
->>   
->> -	if (phy_data->flags & OMAP_USB2_CALIBRATE_FALSE_DISCONNECT) {
->> -		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> -		phy->phy_base = devm_ioremap_resource(&pdev->dev, res);
->> -		if (IS_ERR(phy->phy_base))
->> -			return PTR_ERR(phy->phy_base);
->> -		phy->flags |= OMAP_USB2_CALIBRATE_FALSE_DISCONNECT;
->> -	}
->> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> +	phy->phy_base = devm_ioremap_resource(&pdev->dev, res);
->> +	if (IS_ERR(phy->phy_base))
->> +		return PTR_ERR(phy->phy_base);
->>   
->>   	phy->syscon_phy_power = syscon_regmap_lookup_by_phandle(node,
->>   							"syscon-phy-power");
->> @@ -405,6 +415,17 @@ static int omap_usb2_probe(struct platform_device *pdev)
->>   		}
->>   	}
->>   
->> +	/*
->> +	 * Errata i2075: USB2PHY: USB2PHY Charger Detect is Enabled by
->> +	 * Default Without VBUS Presence.
->> +	 *
->> +	 * AM654x SR1.0 has a silicon bug due to which D+ is pulled high after
->> +	 * POR, which could cause enumeration failure with some USB hubs.
->> +	 * Disabling the USB2_PHY Charger Detect function will put D+
->> +	 * into the normal state.
->> +	 */
->> +	if (of_property_read_bool(node, "ti,disable-charger-det"))
->> +		phy->flags |= OMAP_USB2_DISABLE_CHRG_DET;
->>   
->>   	phy->wkupclk = devm_clk_get(phy->dev, "wkupclk");
->>   	if (IS_ERR(phy->wkupclk)) {
->>
-> 
-> Why a property, rather than SoC detection like in [1] and your previous
-> downstream version?
+CgpPbiAxOS8wOC8yMDIwIDE0OjI2LCBHcmVnIEtIIHdyb3RlOgo+Cj4gT24gV2VkLCBBdWcgMTks
+IDIwMjAgYXQgMDE6MTU6NTlQTSArMDIwMCwgQWxleGFuZGVyIEdyYWYgd3JvdGU6Cj4+Cj4+IE9u
+IDE3LjA4LjIwIDE1OjA5LCBBbmRyYSBQYXJhc2NoaXYgd3JvdGU6Cj4+PiBOaXRybyBFbmNsYXZl
+cyAoTkUpIGlzIGEgbmV3IEFtYXpvbiBFbGFzdGljIENvbXB1dGUgQ2xvdWQgKEVDMikgY2FwYWJp
+bGl0eQo+Pj4gdGhhdCBhbGxvd3MgY3VzdG9tZXJzIHRvIGNhcnZlIG91dCBpc29sYXRlZCBjb21w
+dXRlIGVudmlyb25tZW50cyB3aXRoaW4gRUMyCj4+PiBpbnN0YW5jZXMgWzFdLgo+Pj4KPj4+IEZv
+ciBleGFtcGxlLCBhbiBhcHBsaWNhdGlvbiB0aGF0IHByb2Nlc3NlcyBzZW5zaXRpdmUgZGF0YSBh
+bmQgcnVucyBpbiBhIFZNLAo+Pj4gY2FuIGJlIHNlcGFyYXRlZCBmcm9tIG90aGVyIGFwcGxpY2F0
+aW9ucyBydW5uaW5nIGluIHRoZSBzYW1lIFZNLiBUaGlzCj4+PiBhcHBsaWNhdGlvbiB0aGVuIHJ1
+bnMgaW4gYSBzZXBhcmF0ZSBWTSB0aGFuIHRoZSBwcmltYXJ5IFZNLCBuYW1lbHkgYW4gZW5jbGF2
+ZS4KPj4+Cj4+PiBBbiBlbmNsYXZlIHJ1bnMgYWxvbmdzaWRlIHRoZSBWTSB0aGF0IHNwYXduZWQg
+aXQuIFRoaXMgc2V0dXAgbWF0Y2hlcyBsb3cgbGF0ZW5jeQo+Pj4gYXBwbGljYXRpb25zIG5lZWRz
+LiBUaGUgcmVzb3VyY2VzIHRoYXQgYXJlIGFsbG9jYXRlZCBmb3IgdGhlIGVuY2xhdmUsIHN1Y2gg
+YXMKPj4+IG1lbW9yeSBhbmQgQ1BVcywgYXJlIGNhcnZlZCBvdXQgb2YgdGhlIHByaW1hcnkgVk0u
+IEVhY2ggZW5jbGF2ZSBpcyBtYXBwZWQgdG8gYQo+Pj4gcHJvY2VzcyBydW5uaW5nIGluIHRoZSBw
+cmltYXJ5IFZNLCB0aGF0IGNvbW11bmljYXRlcyB3aXRoIHRoZSBORSBkcml2ZXIgdmlhIGFuCj4+
+PiBpb2N0bCBpbnRlcmZhY2UuCj4+Pgo+Pj4gSW4gdGhpcyBzZW5zZSwgdGhlcmUgYXJlIHR3byBj
+b21wb25lbnRzOgo+Pj4KPj4+IDEuIEFuIGVuY2xhdmUgYWJzdHJhY3Rpb24gcHJvY2VzcyAtIGEg
+dXNlciBzcGFjZSBwcm9jZXNzIHJ1bm5pbmcgaW4gdGhlIHByaW1hcnkKPj4+IFZNIGd1ZXN0IHRo
+YXQgdXNlcyB0aGUgcHJvdmlkZWQgaW9jdGwgaW50ZXJmYWNlIG9mIHRoZSBORSBkcml2ZXIgdG8g
+c3Bhd24gYW4KPj4+IGVuY2xhdmUgVk0gKHRoYXQncyAyIGJlbG93KS4KPj4+Cj4+PiBUaGVyZSBp
+cyBhIE5FIGVtdWxhdGVkIFBDSSBkZXZpY2UgZXhwb3NlZCB0byB0aGUgcHJpbWFyeSBWTS4gVGhl
+IGRyaXZlciBmb3IgdGhpcwo+Pj4gbmV3IFBDSSBkZXZpY2UgaXMgaW5jbHVkZWQgaW4gdGhlIE5F
+IGRyaXZlci4KPj4+Cj4+PiBUaGUgaW9jdGwgbG9naWMgaXMgbWFwcGVkIHRvIFBDSSBkZXZpY2Ug
+Y29tbWFuZHMgZS5nLiB0aGUgTkVfU1RBUlRfRU5DTEFWRSBpb2N0bAo+Pj4gbWFwcyB0byBhbiBl
+bmNsYXZlIHN0YXJ0IFBDSSBjb21tYW5kLiBUaGUgUENJIGRldmljZSBjb21tYW5kcyBhcmUgdGhl
+bgo+Pj4gdHJhbnNsYXRlZCBpbnRvICBhY3Rpb25zIHRha2VuIG9uIHRoZSBoeXBlcnZpc29yIHNp
+ZGU7IHRoYXQncyB0aGUgTml0cm8KPj4+IGh5cGVydmlzb3IgcnVubmluZyBvbiB0aGUgaG9zdCB3
+aGVyZSB0aGUgcHJpbWFyeSBWTSBpcyBydW5uaW5nLiBUaGUgTml0cm8KPj4+IGh5cGVydmlzb3Ig
+aXMgYmFzZWQgb24gY29yZSBLVk0gdGVjaG5vbG9neS4KPj4+Cj4+PiAyLiBUaGUgZW5jbGF2ZSBp
+dHNlbGYgLSBhIFZNIHJ1bm5pbmcgb24gdGhlIHNhbWUgaG9zdCBhcyB0aGUgcHJpbWFyeSBWTSB0
+aGF0Cj4+PiBzcGF3bmVkIGl0LiBNZW1vcnkgYW5kIENQVXMgYXJlIGNhcnZlZCBvdXQgb2YgdGhl
+IHByaW1hcnkgVk0gYW5kIGFyZSBkZWRpY2F0ZWQKPj4+IGZvciB0aGUgZW5jbGF2ZSBWTS4gQW4g
+ZW5jbGF2ZSBkb2VzIG5vdCBoYXZlIHBlcnNpc3RlbnQgc3RvcmFnZSBhdHRhY2hlZC4KPj4+Cj4+
+PiBUaGUgbWVtb3J5IHJlZ2lvbnMgY2FydmVkIG91dCBvZiB0aGUgcHJpbWFyeSBWTSBhbmQgZ2l2
+ZW4gdG8gYW4gZW5jbGF2ZSBuZWVkIHRvCj4+PiBiZSBhbGlnbmVkIDIgTWlCIC8gMSBHaUIgcGh5
+c2ljYWxseSBjb250aWd1b3VzIG1lbW9yeSByZWdpb25zIChvciBtdWx0aXBsZSBvZgo+Pj4gdGhp
+cyBzaXplIGUuZy4gOCBNaUIpLiBUaGUgbWVtb3J5IGNhbiBiZSBhbGxvY2F0ZWQgZS5nLiBieSB1
+c2luZyBodWdldGxiZnMgZnJvbQo+Pj4gdXNlciBzcGFjZSBbMl1bM10uIFRoZSBtZW1vcnkgc2l6
+ZSBmb3IgYW4gZW5jbGF2ZSBuZWVkcyB0byBiZSBhdCBsZWFzdCA2NCBNaUIuCj4+PiBUaGUgZW5j
+bGF2ZSBtZW1vcnkgYW5kIENQVXMgbmVlZCB0byBiZSBmcm9tIHRoZSBzYW1lIE5VTUEgbm9kZS4K
+Pj4+Cj4+PiBBbiBlbmNsYXZlIHJ1bnMgb24gZGVkaWNhdGVkIGNvcmVzLiBDUFUgMCBhbmQgaXRz
+IENQVSBzaWJsaW5ncyBuZWVkIHRvIHJlbWFpbgo+Pj4gYXZhaWxhYmxlIGZvciB0aGUgcHJpbWFy
+eSBWTS4gQSBDUFUgcG9vbCBoYXMgdG8gYmUgc2V0IGZvciBORSBwdXJwb3NlcyBieSBhbgo+Pj4g
+dXNlciB3aXRoIGFkbWluIGNhcGFiaWxpdHkuIFNlZSB0aGUgY3B1IGxpc3Qgc2VjdGlvbiBmcm9t
+IHRoZSBrZXJuZWwKPj4+IGRvY3VtZW50YXRpb24gWzRdIGZvciBob3cgYSBDUFUgcG9vbCBmb3Jt
+YXQgbG9va3MuCj4+Pgo+Pj4gQW4gZW5jbGF2ZSBjb21tdW5pY2F0ZXMgd2l0aCB0aGUgcHJpbWFy
+eSBWTSB2aWEgYSBsb2NhbCBjb21tdW5pY2F0aW9uIGNoYW5uZWwsCj4+PiB1c2luZyB2aXJ0aW8t
+dnNvY2sgWzVdLiBUaGUgcHJpbWFyeSBWTSBoYXMgdmlydGlvLXBjaSB2c29jayBlbXVsYXRlZCBk
+ZXZpY2UsCj4+PiB3aGlsZSB0aGUgZW5jbGF2ZSBWTSBoYXMgYSB2aXJ0aW8tbW1pbyB2c29jayBl
+bXVsYXRlZCBkZXZpY2UuIFRoZSB2c29jayBkZXZpY2UKPj4+IHVzZXMgZXZlbnRmZCBmb3Igc2ln
+bmFsaW5nLiBUaGUgZW5jbGF2ZSBWTSBzZWVzIHRoZSB1c3VhbCBpbnRlcmZhY2VzIC0gbG9jYWwK
+Pj4+IEFQSUMgYW5kIElPQVBJQyAtIHRvIGdldCBpbnRlcnJ1cHRzIGZyb20gdmlydGlvLXZzb2Nr
+IGRldmljZS4gVGhlIHZpcnRpby1tbWlvCj4+PiBkZXZpY2UgaXMgcGxhY2VkIGluIG1lbW9yeSBi
+ZWxvdyB0aGUgdHlwaWNhbCA0IEdpQi4KPj4+Cj4+PiBUaGUgYXBwbGljYXRpb24gdGhhdCBydW5z
+IGluIHRoZSBlbmNsYXZlIG5lZWRzIHRvIGJlIHBhY2thZ2VkIGluIGFuIGVuY2xhdmUKPj4+IGlt
+YWdlIHRvZ2V0aGVyIHdpdGggdGhlIE9TICggZS5nLiBrZXJuZWwsIHJhbWRpc2ssIGluaXQgKSB0
+aGF0IHdpbGwgcnVuIGluIHRoZQo+Pj4gZW5jbGF2ZSBWTS4gVGhlIGVuY2xhdmUgVk0gaGFzIGl0
+cyBvd24ga2VybmVsIGFuZCBmb2xsb3dzIHRoZSBzdGFuZGFyZCBMaW51eAo+Pj4gYm9vdCBwcm90
+b2NvbC4KPj4+Cj4+PiBUaGUga2VybmVsIGJ6SW1hZ2UsIHRoZSBrZXJuZWwgY29tbWFuZCBsaW5l
+LCB0aGUgcmFtZGlzayhzKSBhcmUgcGFydCBvZiB0aGUKPj4+IEVuY2xhdmUgSW1hZ2UgRm9ybWF0
+IChFSUYpOyBwbHVzIGFuIEVJRiBoZWFkZXIgaW5jbHVkaW5nIG1ldGFkYXRhIHN1Y2ggYXMgbWFn
+aWMKPj4+IG51bWJlciwgZWlmIHZlcnNpb24sIGltYWdlIHNpemUgYW5kIENSQy4KPj4+Cj4+PiBI
+YXNoIHZhbHVlcyBhcmUgY29tcHV0ZWQgZm9yIHRoZSBlbnRpcmUgZW5jbGF2ZSBpbWFnZSAoRUlG
+KSwgdGhlIGtlcm5lbCBhbmQKPj4+IHJhbWRpc2socykuIFRoYXQncyB1c2VkLCBmb3IgZXhhbXBs
+ZSwgdG8gY2hlY2sgdGhhdCB0aGUgZW5jbGF2ZSBpbWFnZSB0aGF0IGlzCj4+PiBsb2FkZWQgaW4g
+dGhlIGVuY2xhdmUgVk0gaXMgdGhlIG9uZSB0aGF0IHdhcyBpbnRlbmRlZCB0byBiZSBydW4uCj4+
+Pgo+Pj4gVGhlc2UgY3J5cHRvIG1lYXN1cmVtZW50cyBhcmUgaW5jbHVkZWQgaW4gYSBzaWduZWQg
+YXR0ZXN0YXRpb24gZG9jdW1lbnQKPj4+IGdlbmVyYXRlZCBieSB0aGUgTml0cm8gSHlwZXJ2aXNv
+ciBhbmQgZnVydGhlciB1c2VkIHRvIHByb3ZlIHRoZSBpZGVudGl0eSBvZiB0aGUKPj4+IGVuY2xh
+dmU7IEtNUyBpcyBhbiBleGFtcGxlIG9mIHNlcnZpY2UgdGhhdCBORSBpcyBpbnRlZ3JhdGVkIHdp
+dGggYW5kIHRoYXQgY2hlY2tzCj4+PiB0aGUgYXR0ZXN0YXRpb24gZG9jLgo+Pj4KPj4+IFRoZSBl
+bmNsYXZlIGltYWdlIChFSUYpIGlzIGxvYWRlZCBpbiB0aGUgZW5jbGF2ZSBtZW1vcnkgYXQgb2Zm
+c2V0IDggTWlCLiBUaGUKPj4+IGluaXQgcHJvY2VzcyBpbiB0aGUgZW5jbGF2ZSBjb25uZWN0cyB0
+byB0aGUgdnNvY2sgQ0lEIG9mIHRoZSBwcmltYXJ5IFZNIGFuZCBhCj4+PiBwcmVkZWZpbmVkIHBv
+cnQgLSA5MDAwIC0gdG8gc2VuZCBhIGhlYXJ0YmVhdCB2YWx1ZSAtIDB4YjcuIFRoaXMgbWVjaGFu
+aXNtIGlzCj4+PiB1c2VkIHRvIGNoZWNrIGluIHRoZSBwcmltYXJ5IFZNIHRoYXQgdGhlIGVuY2xh
+dmUgaGFzIGJvb3RlZC4KPj4+Cj4+PiBJZiB0aGUgZW5jbGF2ZSBWTSBjcmFzaGVzIG9yIGdyYWNl
+ZnVsbHkgZXhpdHMsIGFuIGludGVycnVwdCBldmVudCBpcyByZWNlaXZlZCBieQo+Pj4gdGhlIE5F
+IGRyaXZlci4gVGhpcyBldmVudCBpcyBzZW50IGZ1cnRoZXIgdG8gdGhlIHVzZXIgc3BhY2UgZW5j
+bGF2ZSBwcm9jZXNzCj4+PiBydW5uaW5nIGluIHRoZSBwcmltYXJ5IFZNIHZpYSBhIHBvbGwgbm90
+aWZpY2F0aW9uIG1lY2hhbmlzbS4gVGhlbiB0aGUgdXNlciBzcGFjZQo+Pj4gZW5jbGF2ZSBwcm9j
+ZXNzIGNhbiBleGl0Lgo+Pj4KPj4+IFRoYW5rIHlvdS4KPj4+Cj4+IFRoaXMgdmVyc2lvbiByZWFk
+cyB2ZXJ5IHdlbGwsIHRoYW5rcyBhIGxvdCBBbmRyYSEKCkdsYWQgdGhhdCB0aGUgcmV2aWV3IGV4
+cGVyaWVuY2UgaGFzIGJlZW4gaW1wcm92ZWQgYW5kIHRoZSBwYXRjaCBzZXJpZXMgCmlzIGluIGEg
+YmV0dGVyIHNoYXBlLgoKPj4KPj4gR3JlZywgd291bGQgeW91IG1pbmQgdG8gaGF2ZSBhbm90aGVy
+IGxvb2sgb3ZlciBpdD8KPiBXaWxsIGRvLCBpdCdzIGluIG15IHRvLXJldmlldyBxdWV1ZSwgYmVo
+aW5kIGxvdHMgb2Ygb3RoZXIgcGF0Y2hlcy4uLgo+CgoKVGhhbmtzIGJvdGggZm9yIHRha2luZyB0
+aW1lIHRvIGdvIHRocm91Z2ggdGhlIHBhdGNoIHNlcmllcy4KCkFuZHJhCgoKCkFtYXpvbiBEZXZl
+bG9wbWVudCBDZW50ZXIgKFJvbWFuaWEpIFMuUi5MLiByZWdpc3RlcmVkIG9mZmljZTogMjdBIFNm
+LiBMYXphciBTdHJlZXQsIFVCQzUsIGZsb29yIDIsIElhc2ksIElhc2kgQ291bnR5LCA3MDAwNDUs
+IFJvbWFuaWEuIFJlZ2lzdGVyZWQgaW4gUm9tYW5pYS4gUmVnaXN0cmF0aW9uIG51bWJlciBKMjIv
+MjYyMS8yMDA1Lgo=
 
-I agree, that SoC detection is better way. Will spin a v5.
-
-> 
-> Jan
-> 
-> [1] https://patchwork.kernel.org/patch/11710643/
-> 
-
-cheers,
--roger
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
