@@ -2,125 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BAEA249F1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4588249F10
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Aug 2020 15:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728693AbgHSNGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 09:06:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36084 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728560AbgHSNAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 09:00:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 80BE3B007;
-        Wed, 19 Aug 2020 13:00:41 +0000 (UTC)
-Date:   Wed, 19 Aug 2020 15:00:14 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Baoquan He <bhe@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Oscar Salvador <osalvador@suse.de>
-Subject: Re: [PATCH v1 07/11] mm/page_isolation: simplify return value of
- start_isolate_page_range()
-Message-ID: <20200819130014.GL5422@dhcp22.suse.cz>
-References: <20200819101157.12723-1-david@redhat.com>
- <20200819101157.12723-8-david@redhat.com>
+        id S1728635AbgHSNF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 09:05:59 -0400
+Received: from relay2.mymailcheap.com ([217.182.66.162]:58758 "EHLO
+        relay2.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728433AbgHSNFn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 09:05:43 -0400
+Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
+        by relay2.mymailcheap.com (Postfix) with ESMTPS id 6D8CA3E90B;
+        Wed, 19 Aug 2020 15:05:40 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by filter2.mymailcheap.com (Postfix) with ESMTP id 462BE2A51B;
+        Wed, 19 Aug 2020 15:05:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1597842340;
+        bh=xgLkVUqX1IfZYjssicJSiWH/uVLGQkqOteQNJcfZxgg=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=mbKaFtKy06YKcGxwccQ4lrKzs9lbShJ7nRHdJ3t+LLYF3rJCXs1Lry3vRlHPH+KC2
+         Qlb2vd2ovJTRAfRonEACZY2CnuTisJt70G3smrjIpgcYDqLFeYP+UK/I6SRHvNFa+X
+         OaDTpUtUIRnW3m3JhJwFC0Q+gmzNb+DYEtHpdUCQ=
+X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
+Received: from filter2.mymailcheap.com ([127.0.0.1])
+        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ZluiADmQ2_V1; Wed, 19 Aug 2020 15:05:39 +0200 (CEST)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter2.mymailcheap.com (Postfix) with ESMTPS;
+        Wed, 19 Aug 2020 15:05:39 +0200 (CEST)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id A99B84117F;
+        Wed, 19 Aug 2020 13:05:38 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="vY6KQW15";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from ice-e5v2.lan (unknown [59.41.160.120])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 9B86F4132F;
+        Wed, 19 Aug 2020 13:00:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1597842048; bh=xgLkVUqX1IfZYjssicJSiWH/uVLGQkqOteQNJcfZxgg=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=vY6KQW15+Bs4w4Wzy8Zdqr5c+13OR24BLC6YsCxKoSgG68J3sNHveU2HqPkzw/qTY
+         pQcEnfHyqxsspkZks3DYPkzNAR6fXZ5QJniWPQN3srJvqdyBFXbMJjT8wygm6iYgwx
+         Iz8bV06TfFQ4rhEpo25OhOA4AA0+VD7wGdYKFDMw=
+Message-ID: <6cff597419622f78321bf18528ca22020e7835c5.camel@aosc.io>
+Subject: Re: [PATCH 1/1] mfd: mfd-core: Ensure disabled devices are ignored
+ without error
+From:   Icenowy Zheng <icenowy@aosc.io>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Date:   Wed, 19 Aug 2020 21:00:41 +0800
+In-Reply-To: <20200819105406.3249846-1-lee.jones@linaro.org>
+References: <20200819105406.3249846-1-lee.jones@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200819101157.12723-8-david@redhat.com>
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: A99B84117F
+X-Spamd-Result: default: False [-0.10 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.160.120:received];
+         FROM_HAS_DN(0.00)[];
+         RCPT_COUNT_THREE(0.00)[3];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(0.00)[aosc.io];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
+X-Rspamd-Server: mail20.mymailcheap.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 19-08-20 12:11:53, David Hildenbrand wrote:
-> Callers no longer need the number of isolated pageblocks. Let's
-> simplify.
+在 2020-08-19星期三的 11:54 +0100，Lee Jones写道：
+> Commit e49aa9a9bd22 ("mfd: core: Make a best effort attempt to match
+> devices with the correct of_nodes") changed the semantics for
+> disabled
+> devices in mfd_add_device().  Instead of silently ignoring a disabled
+> child device, an error was returned.  On receipt of the error
+> mfd_add_devices() the precedes to remove *all* child devices and
+> returns an all-failed error to the caller, which will inevitably fail
+> the parent device as well.
 > 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-> Cc: Baoquan He <bhe@redhat.com>
-> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+> This patch reverts back to the old semantics and ignores child
+> devices
+> which are disabled in Device Tree.
+> 
+> Fixes: e49aa9a9bd22 ("mfd: core: Make a best effort attempt to match
+> devices with the correct of_nodes")
+> Reported-by: Icenowy Zheng <icenowy@aosc.io>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Tested-by: Icenowy Zheng <icenowy@aosc.io>
 
 > ---
->  mm/memory_hotplug.c | 2 +-
->  mm/page_alloc.c     | 2 +-
->  mm/page_isolation.c | 7 ++-----
->  3 files changed, 4 insertions(+), 7 deletions(-)
+>  drivers/mfd/mfd-core.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
 > 
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index 098361fcb4504..0011a1115381c 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -1503,7 +1503,7 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
->  	ret = start_isolate_page_range(start_pfn, end_pfn,
->  				       MIGRATE_MOVABLE,
->  				       MEMORY_OFFLINE | REPORT_FAILURE);
-> -	if (ret < 0) {
-> +	if (ret) {
->  		reason = "failure to isolate range";
->  		goto failed_removal;
->  	}
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 03f585f95dc60..848664352dfe2 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -8456,7 +8456,7 @@ int alloc_contig_range(unsigned long start, unsigned long end,
+> diff --git a/drivers/mfd/mfd-core.c b/drivers/mfd/mfd-core.c
+> index c3651f06684fa..30f90a15ceaab 100644
+> --- a/drivers/mfd/mfd-core.c
+> +++ b/drivers/mfd/mfd-core.c
+> @@ -126,10 +126,6 @@ static int mfd_match_of_node_to_dev(struct
+> platform_device *pdev,
+>  	const __be32 *reg;
+>  	u64 of_node_addr;
 >  
->  	ret = start_isolate_page_range(pfn_max_align_down(start),
->  				       pfn_max_align_up(end), migratetype, 0);
-> -	if (ret < 0)
-> +	if (ret)
->  		return ret;
->  
->  	/*
-> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
-> index 242c03121d731..b066c860e606e 100644
-> --- a/mm/page_isolation.c
-> +++ b/mm/page_isolation.c
-> @@ -170,8 +170,7 @@ __first_valid_page(unsigned long pfn, unsigned long nr_pages)
->   * pageblocks we may have modified and return -EBUSY to caller. This
->   * prevents two threads from simultaneously working on overlapping ranges.
->   *
-> - * Return: the number of isolated pageblocks on success and -EBUSY if any part
-> - * of range cannot be isolated.
-> + * Return: 0 on success and -EBUSY if any part of range cannot be isolated.
->   */
->  int start_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
->  			     unsigned migratetype, int flags)
-> @@ -179,7 +178,6 @@ int start_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
->  	unsigned long pfn;
->  	unsigned long undo_pfn;
->  	struct page *page;
-> -	int nr_isolate_pageblock = 0;
->  
->  	BUG_ON(!IS_ALIGNED(start_pfn, pageblock_nr_pages));
->  	BUG_ON(!IS_ALIGNED(end_pfn, pageblock_nr_pages));
-> @@ -193,10 +191,9 @@ int start_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
->  				undo_pfn = pfn;
->  				goto undo;
->  			}
-> -			nr_isolate_pageblock++;
->  		}
->  	}
-> -	return nr_isolate_pageblock;
-> +	return 0;
->  undo:
->  	for (pfn = start_pfn;
->  	     pfn < undo_pfn;
-> -- 
-> 2.26.2
-
--- 
-Michal Hocko
-SUSE Labs
+> -	/* Skip devices 'disabled' by Device Tree */
+> -	if (!of_device_is_available(np))
+> -		return -ENODEV;
+> -
+>  	/* Skip if OF node has previously been allocated to a device */
+>  	list_for_each_entry(of_entry, &mfd_of_node_list, list)
+>  		if (of_entry->np == np)
+> @@ -212,6 +208,12 @@ static int mfd_add_device(struct device *parent,
+> int id,
+>  	if (IS_ENABLED(CONFIG_OF) && parent->of_node && cell-
+> >of_compatible) {
+>  		for_each_child_of_node(parent->of_node, np) {
+>  			if (of_device_is_compatible(np, cell-
+> >of_compatible)) {
+> +				/* Ignore 'disabled' devices error free
+> */
+> +				if (!of_device_is_available(np)) {
+> +					ret = 0;
+> +					goto fail_alias;
+> +				}
+> +
+>  				ret = mfd_match_of_node_to_dev(pdev,
+> np, cell);
+>  				if (ret == -EAGAIN)
+>  					continue;
