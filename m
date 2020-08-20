@@ -2,68 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E9A924B0C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 10:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 425E324B0D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 10:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbgHTIId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 04:08:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46744 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725834AbgHTIIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 04:08:30 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1495C2080C;
-        Thu, 20 Aug 2020 08:08:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597910910;
-        bh=SaSN7/f0bbXOStkF+otn1zt3UQ5bPw5JBNpwMHhvnr0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=vRw+eWi1aTA+FCOcukYGo6P8y8JEENTHKYvP/kqVJRmsvLKbn589IRJB5Cfh8M/QL
-         NoVx3aDqDoVvsYgIiFs+bNRnS07DIw8+Ru101tC01D7JRpu5uM9CrnyoTMF7wpMSrd
-         bo+tzwOtLmPhggFtah7A2ybCMDu3MlXqUO47OfH0=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1k8fca-004SFh-Is; Thu, 20 Aug 2020 09:08:28 +0100
+        id S1726376AbgHTIOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 04:14:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726723AbgHTIMZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 04:12:25 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A464C061383
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 01:12:24 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id w2so596436edv.7
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 01:12:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ao9uhoBJZm/xzm5bKKTXsoRUgxvi4hYl2frDiL3p6Ek=;
+        b=xB4h7JJ1N0TNQ7ccwTGda/uwX30dzaQW5NnWf9el3AW1DeORgfo/iTGZKpfEwQEPvt
+         c7s/4IUb5KoXBSEeXZvDxPOlRAWuUk8TM1jwTHF7o2GOnWL5GWu8fuPlOuzqT9Ex3skL
+         5jEB/TK0abmd+6njhUP775D+frBCR05Jh4GVD+JKevh5caE3bd+nmi6J1wHVGlzLGMHs
+         /UNOdQhM7Ar6nWoOkar4YsGJgi4X/xGiE6/tIwV7CFpBSIeqtC05CLJbECjcu8MHhfJp
+         QA64/dur1Ik+ACO9OTnFizYfhlYFn5sgHOeQ+WO8ZI3JRkxbWB0kPaphZ807rAGVTN8Q
+         BnKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ao9uhoBJZm/xzm5bKKTXsoRUgxvi4hYl2frDiL3p6Ek=;
+        b=lH+KtpEmTL0fzstOhR/sVXDAJu3KkpgxugN+eJbqP+M+sz7WcNB1OAsHjHyHEZ6Q0g
+         esyml9NkW/LAm63eqvcTHBdvMVHzKLtm/q/Rr4UaVwk5nnF/QDukwnsklLsitrxglqEl
+         Q0D6I+PjYwmAaCLgnYx6D6Kbt9Cbo3QyU+vIIb1pExxKQGyJMPt26qmvr3VVoUT/WCYk
+         93Vmv2TaFxwFYawcX4UtoOJ1Xd+hTgBtN2wHDvF90c5za073KwVmmjX7jyUnmxLIjh6d
+         TCXJquIa/8KMRTSF/6ppvsmWX+CVJC4re/Iz318rCEbRl52VpJhJJ0O4do2XoP9StU9j
+         xIbg==
+X-Gm-Message-State: AOAM531Dl3VwzUq1rmnxUSkQAsflPFrO1n2GS3AKHR/70nckp5STUwEQ
+        /QnGn7yPXe/U8JjD2jtb6o43OLPC3nCisxrAhLCbgQ==
+X-Google-Smtp-Source: ABdhPJxcdsGXyoTp69C+mH9LjdkzFmHGs/y3HoUdXM9GRe6Aie7IX6MMciYGWBoZES0c7c6DY7NSnyYyR3qa9d3C274=
+X-Received: by 2002:a05:6402:17c2:: with SMTP id s2mr1739529edy.188.1597911142916;
+ Thu, 20 Aug 2020 01:12:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 20 Aug 2020 09:08:28 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>, od@zcrc.me,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] irqchip: ingenic: Leave parent IRQ unmasked on suspend
-In-Reply-To: <20200819180602.136969-1-paul@crapouillou.net>
-References: <20200819180602.136969-1-paul@crapouillou.net>
-User-Agent: Roundcube Webmail/1.4.7
-Message-ID: <b7b89ed757b6731198c14f8561696b20@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: paul@crapouillou.net, tglx@linutronix.de, jason@lakedaemon.net, od@zcrc.me, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20200818111057.19755-1-tingwei@codeaurora.org>
+In-Reply-To: <20200818111057.19755-1-tingwei@codeaurora.org>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Thu, 20 Aug 2020 09:12:12 +0100
+Message-ID: <CAJ9a7VjCX1Gmw0b8rTK8extrc6_mmbRn2BRXNK-+sSN9_6BMtw@mail.gmail.com>
+Subject: Re: [PATCH] coresight: cti: disclaim device only when it's claimed
+To:     Tingwei Zhang <tingwei@codeaurora.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        tsoni@codeaurora.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-19 19:06, Paul Cercueil wrote:
-> All the wakeup sources we possibly want will go through the interrupt
-> controller, so the parent IRQ must not be masked during suspend, or
-> there won't be any way to wake up the system.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+On Tue, 18 Aug 2020 at 12:11, Tingwei Zhang <tingwei@codeaurora.org> wrote:
+>
+> Coresight_claim_device() is called in cti_starting_cpu() only
+> when CTI is enabled while coresight_disclaim_device() is called
+> uncontionally in cti_dying_cpu(). This triggered below WARNING.
+> Only call disclaim device when CTI device is enabled to fix it.
+>
+> [   75.989643] WARNING: CPU: 1 PID: 14 at
+> kernel/drivers/hwtracing/coresight/coresight.c:209
+> coresight_disclaim_device_unlocked+0x10/0x24
+> [   75.989697] CPU: 1 PID: 14 Comm: migration/1 Not tainted
+> 5.9.0-rc1-gff1304be0a05-dirty #21
+> [   75.989709] Hardware name: Thundercomm Dragonboard 845c (DT)
+> [   75.989737] pstate: 80c00085 (Nzcv daIf +PAN +UAO BTYPE=--)
+> [   75.989758] pc : coresight_disclaim_device_unlocked+0x10/0x24
+> [   75.989775] lr : coresight_disclaim_device+0x24/0x38
+> [   75.989783] sp : ffff800011cd3c90
+> .
+> [   75.990018] Call trace:
+> [   75.990041]  coresight_disclaim_device_unlocked+0x10/0x24
+> [   75.990066]  cti_dying_cpu+0x34/0x4c
+> [   75.990101]  cpuhp_invoke_callback+0x84/0x1e0
+> [   75.990121]  take_cpu_down+0x90/0xe0
+> [   75.990154]  multi_cpu_stop+0x134/0x160
+> [   75.990171]  cpu_stopper_thread+0xb0/0x13c
+> [   75.990196]  smpboot_thread_fn+0x1c4/0x270
+> [   75.990222]  kthread+0x128/0x154
+> [   75.990251]  ret_from_fork+0x10/0x18
+>
+> Fixes: e9b880581d55 ("coresight: cti: Add CPU Hotplug handling to CTI driver")
+> Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
+> ---
+>  drivers/hwtracing/coresight/coresight-cti.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/hwtracing/coresight/coresight-cti.c b/drivers/hwtracing/coresight/coresight-cti.c
+> index 3ccc703dc940..d6fea6efec71 100644
+> --- a/drivers/hwtracing/coresight/coresight-cti.c
+> +++ b/drivers/hwtracing/coresight/coresight-cti.c
+> @@ -742,7 +742,8 @@ static int cti_dying_cpu(unsigned int cpu)
+>
+>         spin_lock(&drvdata->spinlock);
+>         drvdata->config.hw_powered = false;
+> -       coresight_disclaim_device(drvdata->base);
+> +       if (drvdata->config.hw_enabled)
+> +               coresight_disclaim_device(drvdata->base);
+>         spin_unlock(&drvdata->spinlock);
+>         return 0;
+>  }
+> --
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+>
+Reviewed-by: Mike Leach <mike.leach@linaro.org>
 
-Do you have a Fixes: tag? Does it need to be Cc: to stable?
-
-Thanks,
-
-         M.
 -- 
-Jazz is not dead. It just smells funny...
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
