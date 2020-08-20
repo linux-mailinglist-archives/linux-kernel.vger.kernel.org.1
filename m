@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 086C224B27A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0907A24B2F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727833AbgHTJat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:30:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41544 "EHLO mail.kernel.org"
+        id S1728845AbgHTJji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:39:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728169AbgHTJaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:30:30 -0400
+        id S1728943AbgHTJjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:39:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D1FDE20855;
-        Thu, 20 Aug 2020 09:30:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C03920724;
+        Thu, 20 Aug 2020 09:39:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915830;
-        bh=vUMlRPXZX8LWcxjNTSMNJN5QyXqT7sG8LtdI37FiEJg=;
+        s=default; t=1597916364;
+        bh=8xb+Gv2zVXgerD4FU1n/Tb5A6ZPUmJJhP1tj6t/q9gw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GjYlkHjqXdGJd7msDAHoN3DUSE8fAYDzdgIkBYVpjR8JdhpxQcK+I+x5nY6jXSLEB
-         fwR6iCgNqMUm1aMaZc6Rhm/8UCrto3KvBCyON83H5DHvVUscJVHzSMndybc/EjgEKC
-         890j0+aRWwClrCh5Yep4Kbyg4mClPolAv82EUmwc=
+        b=WvcMxVmUd2cEnwMxu9RXkHG9IYNiN5XBH4jNhrzsgot3jWvxunrzAWqlDPeA3q4cG
+         CcYhy76PWPL03ALs86kfRAv0G1wz4Znj7oLiNeTEAiLmjbmr1ykg17QSa7JtkpUADI
+         BVI/JhSU4HTMolpFsDOSKOG8oz0/2FZJW+vzuMe0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
+        stable@vger.kernel.org, Kamal Dasu <kdasu.kdev@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 148/232] dm rq: dont call blk_mq_queue_stopped() in dm_stop_queue()
-Date:   Thu, 20 Aug 2020 11:19:59 +0200
-Message-Id: <20200820091619.981973887@linuxfoundation.org>
+Subject: [PATCH 5.7 103/204] mtd: rawnand: brcmnand: ECC error handling on EDU transfers
+Date:   Thu, 20 Aug 2020 11:20:00 +0200
+Message-Id: <20200820091611.466364001@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
-References: <20200820091612.692383444@linuxfoundation.org>
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +44,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Kamal Dasu <kdasu.kdev@gmail.com>
 
-[ Upstream commit e766668c6cd49d741cfb49eaeb38998ba34d27bc ]
+[ Upstream commit 4551e78ad98add1f16b70cf286d5aad3ce7bcd4c ]
 
-dm_stop_queue() only uses blk_mq_quiesce_queue() so it doesn't
-formally stop the blk-mq queue; therefore there is no point making the
-blk_mq_queue_stopped() check -- it will never be stopped.
+Implement ECC correctable and uncorrectable error handling for EDU
+reads. If ECC correctable bitflips are encountered on EDU transfer,
+read page again using PIO. This is needed due to a NAND controller
+limitation where corrected data is not transferred to the DMA buffer
+on ECC error. This applies to ECC correctable errors that are reported
+by the controller hardware based on set number of bitflips threshold in
+the controller threshold register, bitflips below the threshold are
+corrected silently and are not reported by the controller hardware.
 
-In addition, even though dm_stop_queue() actually tries to quiesce hw
-queues via blk_mq_quiesce_queue(), checking with blk_queue_quiesced()
-to avoid unnecessary queue quiesce isn't reliable because: the
-QUEUE_FLAG_QUIESCED flag is set before synchronize_rcu() and
-dm_stop_queue() may be called when synchronize_rcu() from another
-blk_mq_quiesce_queue() is in-progress.
-
-Fixes: 7b17c2f7292ba ("dm: Fix a race condition related to stopping and starting queues")
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Fixes: a5d53ad26a8b ("mtd: rawnand: brcmnand: Add support for flash-edu for dma transfers")
+Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20200612212902.21347-3-kdasu.kdev@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/dm-rq.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 26 ++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/drivers/md/dm-rq.c b/drivers/md/dm-rq.c
-index 85e0daabad49c..20745e2e34b94 100644
---- a/drivers/md/dm-rq.c
-+++ b/drivers/md/dm-rq.c
-@@ -70,9 +70,6 @@ void dm_start_queue(struct request_queue *q)
+diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+index cdae2311a3b69..0b1ea965cba08 100644
+--- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+@@ -1859,6 +1859,22 @@ static int brcmnand_edu_trans(struct brcmnand_host *host, u64 addr, u32 *buf,
+ 	edu_writel(ctrl, EDU_STOP, 0); /* force stop */
+ 	edu_readl(ctrl, EDU_STOP);
  
- void dm_stop_queue(struct request_queue *q)
- {
--	if (blk_mq_queue_stopped(q))
--		return;
--
- 	blk_mq_quiesce_queue(q);
++	if (!ret && edu_cmd == EDU_CMD_READ) {
++		u64 err_addr = 0;
++
++		/*
++		 * check for ECC errors here, subpage ECC errors are
++		 * retained in ECC error address register
++		 */
++		err_addr = brcmnand_get_uncorrecc_addr(ctrl);
++		if (!err_addr) {
++			err_addr = brcmnand_get_correcc_addr(ctrl);
++			if (err_addr)
++				ret = -EUCLEAN;
++		} else
++			ret = -EBADMSG;
++	}
++
+ 	return ret;
  }
  
+@@ -2065,6 +2081,7 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
+ 	u64 err_addr = 0;
+ 	int err;
+ 	bool retry = true;
++	bool edu_err = false;
+ 
+ 	dev_dbg(ctrl->dev, "read %llx -> %p\n", (unsigned long long)addr, buf);
+ 
+@@ -2082,6 +2099,10 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
+ 			else
+ 				return -EIO;
+ 		}
++
++		if (has_edu(ctrl) && err_addr)
++			edu_err = true;
++
+ 	} else {
+ 		if (oob)
+ 			memset(oob, 0x99, mtd->oobsize);
+@@ -2129,6 +2150,11 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
+ 	if (mtd_is_bitflip(err)) {
+ 		unsigned int corrected = brcmnand_count_corrected(ctrl);
+ 
++		/* in case of EDU correctable error we read again using PIO */
++		if (edu_err)
++			err = brcmnand_read_by_pio(mtd, chip, addr, trans, buf,
++						   oob, &err_addr);
++
+ 		dev_dbg(ctrl->dev, "corrected error at 0x%llx\n",
+ 			(unsigned long long)err_addr);
+ 		mtd->ecc_stats.corrected += corrected;
 -- 
 2.25.1
 
