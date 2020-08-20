@@ -2,152 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C5324B508
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0395724B535
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730821AbgHTKQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:16:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36728 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730374AbgHTKQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:16:28 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0BCDCAD19;
-        Thu, 20 Aug 2020 10:16:53 +0000 (UTC)
-Date:   Thu, 20 Aug 2020 12:16:25 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/5] printk: implement pr_cont_t
-Message-ID: <20200820101625.GE4353@alley>
-References: <20200819232632.13418-1-john.ogness@linutronix.de>
- <20200819232632.13418-2-john.ogness@linutronix.de>
+        id S1731482AbgHTKUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:20:47 -0400
+Received: from esa2.hc3370-68.iphmx.com ([216.71.145.153]:6917 "EHLO
+        esa2.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731463AbgHTKUZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:20:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1597918825;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=Sv68RoNLXVff/6n8GJVDTzUndQIzSGsto9tYosUgXbw=;
+  b=AznunsBUonXknv9jqFhp3YXSxxZ1uxt+H2KvV61dWsm3G53n7J9AZfB1
+   qI5+ZDDA2P2NSnYRnXsek+Mw1LrafRrGJ/GzDe9OYYJTzOq6F5tXg5Cum
+   gFvG5mX5UVjPLVpFrvTPq9CfnVmyHE5f/Mqv16VHSh2ZO3g3qs5XjbrxI
+   4=;
+Authentication-Results: esa2.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: g5He4ply494ZRa/EGg7MaC71UzA0BjHI1c7YSwZBTDzTp9vpey0jdtGIFSsbMxA1X6JsEBAvkw
+ B26jNrEgbiFdR1wvCVK0z3EhFmTTq4XgjmQ4hJTQKN/YHmJkqr3oqEq7fo7nByDE/78nF//jET
+ ail+DgQVD5LgeIS6TGXJHGPHn3r/NmlyoYNxzeNv9wZ5nmrHZHIqKJpLTa/azaYJygb0agovIt
+ sOBNqo3hgPUzC/dFP+lUPEmbSTg+MmbWcdS+RPQkTjx3SN4flHaKnhszEvO84y4Le8Yy5jVL1n
+ qaI=
+X-SBRS: 2.7
+X-MesageID: 24943558
+X-Ironport-Server: esa2.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.76,332,1592884800"; 
+   d="scan'208";a="24943558"
+Date:   Thu, 20 Aug 2020 12:20:16 +0200
+From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To:     Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= 
+        <marmarek@invisiblethingslab.com>
+CC:     Norbert Kaminski <norbert.kaminski@3mdeb.com>,
+        Ard Biesheuvel <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
+        <xen-devel@lists.xenproject.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Maciej Pijanowski <maciej.pijanowski@3mdeb.com>,
+        <piotr.krol@3mdeb.com>
+Subject: Re: [PATCH] efi: discover ESRT table on Xen PV too
+Message-ID: <20200820102016.GU828@Air-de-Roger>
+References: <20200817090013.GN975@Air-de-Roger>
+ <20200818120135.GK1679@mail-itl>
+ <20200818124710.GK828@Air-de-Roger>
+ <20200818150020.GL1679@mail-itl>
+ <20200818172114.GO828@Air-de-Roger>
+ <20200818184018.GN1679@mail-itl>
+ <20200819081930.GQ828@Air-de-Roger>
+ <3d405b0c-4e2b-0d29-56bb-e315f4c21d03@3mdeb.com>
+ <20200820093025.GT828@Air-de-Roger>
+ <20200820093454.GS1626@mail-itl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <20200819232632.13418-2-john.ogness@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200820093454.GS1626@mail-itl>
+X-ClientProxiedBy: AMSPEX02CAS02.citrite.net (10.69.22.113) To
+ AMSPEX02CL02.citrite.net (10.69.22.126)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2020-08-20 01:32:28, John Ogness wrote:
-> Implement a new buffering mechanism for pr_cont messages.
+On Thu, Aug 20, 2020 at 11:34:54AM +0200, Marek Marczykowski-Górecki wrote:
+> On Thu, Aug 20, 2020 at 11:30:25AM +0200, Roger Pau Monné wrote:
+> > Right, so you only need access to the ESRT table, that's all. Then I
+> > think we need to make sure Xen doesn't use this memory for anything
+> > else, which will require some changes in Xen (or at least some
+> > checks?).
+> > 
+> > We also need to decide what to do if the table turns out to be placed
+> > in a wrong region. How are we going to prevent dom0 from using it
+> > then? My preference would be to completely hide it from dom0 in that
+> > case, such that it believes there's no ESRT at all if possible.
 > 
-> Old mechanism syntax:
-> 
->     printk(KERN_INFO "text");
->     printk(KERN_CONT " continued");
->     printk(KERN_CONT "\n");
-> 
-> New mechanism syntax:
-> 
->     pr_cont_t c;
-> 
->     pr_cont_begin(&c, KERN_INFO "text");
->     pr_cont_append(&c, " continued");
->     pr_cont_end(&c);
-> 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
-> ---
->  include/linux/printk.h |  19 ++++++
->  kernel/printk/printk.c | 137 +++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 156 insertions(+)
-> 
-> diff --git a/include/linux/printk.h b/include/linux/printk.h
-> index 34c1a7be3e01..4d9ce18e4afa 100644
-> --- a/include/linux/printk.h
-> +++ b/include/linux/printk.h
-> @@ -380,6 +380,25 @@ extern int kptr_restrict;
->  #define pr_cont(fmt, ...) \
->  	printk(KERN_CONT fmt, ##__VA_ARGS__)
->  
-> +/* opaque handle for continuous printk messages */
-> +typedef struct {
-> +	u8	index;
-> +	u8	loglevel;
-> +	u16	text_len;
-> +} pr_cont_t;
-> +
-> +/* initialize handle, provide loglevel and initial message text */
-> +int pr_cont_begin(pr_cont_t *c, const char *fmt, ...);
-> +
-> +/* append message text */
-> +int pr_cont_append(pr_cont_t *c, const char *fmt, ...);
-> +
-> +/* flush message to kernel buffer */
-> +void pr_cont_flush(pr_cont_t *c);
-> +
-> +/* flush message to kernel buffer, cleanup handle */
-> +void pr_cont_end(pr_cont_t *c);
-> +
->  /**
->   * pr_devel - Print a debug-level message conditionally
->   * @fmt: format string
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index ad8d1dfe5fbe..10113e7ea350 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -3495,3 +3495,140 @@ void kmsg_dump_rewind(struct kmsg_dumper *dumper)
->  EXPORT_SYMBOL_GPL(kmsg_dump_rewind);
->  
->  #endif
-> +
-> +#define CONT_LINE_MAX LOG_LINE_MAX
-> +#define CONT_BUF_COUNT 10
-> +static char cont_buf[CONT_BUF_COUNT][CONT_LINE_MAX];
-> +static DECLARE_BITMAP(cont_buf_map, CONT_BUF_COUNT);
-> +
-> +static int get_cont_buf(void)
-> +{
-> +	int bit;
-> +
-> +	do {
-> +		bit = find_first_zero_bit(cont_buf_map, CONT_BUF_COUNT);
-> +		if (bit == CONT_BUF_COUNT)
-> +			break;
-> +	} while (test_and_set_bit(bit, cont_buf_map));
-> +
-> +	return bit;
-> +}
+> Yes, that makes sense. As discussed earlier, that probably means
+> re-constructing SystemTable before giving it to dom0. We'd need to do
+> that in PVH case anyway, to adjust addresses, right?
 
-My big problem with this solution is a forgotten pr_cont_end(). It
-will cause:
+Not really, on PVH dom0 we should be able to identity map the required
+EFI regions in the dom0 p2m, so the only difference between a classic
+PV dom0 is that we need to assure that those regions are correctly
+identity mapped in the p2m, but that shouldn't require any change to
+the SystemTable unless we need to craft custom tables (see below).
 
-   + the message will never get printed
+> Is there something
+> like this in the Xen codebase already, or it needs to be written from
+> scratch?
 
-   + several calls into such a broken code will exhaust the pool of
-     cont buffers and it will stop working for the entire system
+AFAICT it needs to be written for EFI. For the purposes here I think
+you could copy the SystemTable and modify the NumberOfTableEntries and
+ConfigurationTable fields in the copy in order to delete the ESRT if
+found to be placed in a non suitable region?
 
-The above might be solved with some fallback mechanism (timer,
-watchdog) but then it needs some synchronization.
+At that point we can remove the checks from Linux since Xen will
+assert that whatever gets passed to dom0 is in a suitable region. It
+would be nice to have a way to signal that the placement of the ESRT
+has been checked, but I'm not sure how to do this, do you have any
+ideas?
 
-Why is it so bad?
-
-   + it will happen like other bugs
-
-   + it is hard to notice; it is easier to notice hard-lockup than
-     a missing message
-
-
-Now that I think about it. This is the biggest problem with any temporary buffer
-for pr_cont() lines. I am more and more convinced that we should just
-_keep the current behavior_. It is not ideal. But sometimes mixed
-messages are always better than lost ones.
-
-
-That said, some printk() API using local buffer would be still
-valuable for pieces of code where people really want to avoid
-mixed lines. But it should be optional and people should be
-aware of the risks.
-
-Best Regards,
-Petr
+Roger.
