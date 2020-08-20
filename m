@@ -2,83 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D870224C484
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 19:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500CF24C480
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 19:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730623AbgHTR2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 13:28:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46398 "EHLO
+        id S1730607AbgHTR1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 13:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730441AbgHTR2o (ORCPT
+        with ESMTP id S1729448AbgHTR1n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 13:28:44 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 543CDC061386
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:28:42 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id w9so1754150qts.6
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:28:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BGSTy2S11pQaFof1yGnLyVAv1YOvYkkwg2xvJjtqeUQ=;
-        b=B0zXn8r/1mchT7VpWpZ+mN4JB+LQTOAcThKwvNYAguEIUDOZHwwTrdR6gzmQZ5tubZ
-         nadwJJP0FhhTUc6qtozlaIcQuD/FFdRoOqCSSFPC20808u50MokVC+zzcj74bSNK3564
-         K2rPaPV6/LqFSt2EYvyidWPeBNnkH5k+UUHnDDp7LsHM+QUZl4RIfl0sMDasq2fgoDTh
-         aEiFbkQ9IhmoLjkYAaQc2VPQYaxtLY7ONExn+cDWgW0LH7qwa/cgM2WtSkYRhS29jGEn
-         +HZQ+jI+GqR+PBIfIjicJ0wnOj2ML6oSYHPVNMYabbRVYTlqLboSPlY8YiNQkmtdg/2E
-         7wZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BGSTy2S11pQaFof1yGnLyVAv1YOvYkkwg2xvJjtqeUQ=;
-        b=SEdaBxZlZUkg41PaAlPREptAb/bdmTSSxuK366r/OWIArB54eaW1hJozTU055rxMbF
-         eAORcr/OQffWBcHbV2IZcC1mEQZgsQ9Zybkm1TS27JVLMdZSZrj8tG7+aVeJQAv5WSkg
-         Socegeoolz5sn3nub9VUwgaQB1t0uuiwOeiictXKyI6PbD5G7HfRkohqEMdoFKwjpsCf
-         FZVRL4fruDtAORzrs23S9lcxjFCP5NI16ziBTupmTZBsMXHHm5HKB9G0bv8KTA2faW4W
-         uPQyCepWszT02RJS84UcdBEuaNPU0csXf2Xq9eG0RWEsTM44oqxV9EnesMDTrs3XLcn8
-         NCpg==
-X-Gm-Message-State: AOAM533OkkgI0gc2Z00Y7I1LqYrqsVXogsitR6iw+JzkJZ1x00qpXMyx
-        sKLZFmXx5lwPmD8pOpKqqT4EWg==
-X-Google-Smtp-Source: ABdhPJzxECzP6spyILQOPgtHzJiSltg/hxxoXq1qcxUwEjRfqOCr081RyncGF5PD5joh3rhL7RCH+w==
-X-Received: by 2002:ac8:7c87:: with SMTP id y7mr3692080qtv.375.1597944521618;
-        Thu, 20 Aug 2020 10:28:41 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:3cdd])
-        by smtp.gmail.com with ESMTPSA id r188sm2708541qkb.122.2020.08.20.10.28.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 10:28:40 -0700 (PDT)
-Date:   Thu, 20 Aug 2020 13:27:26 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Roman Gushchin <guro@fb.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH 1/3] mm/memcg: Clean up obsolete enum charge_type
-Message-ID: <20200820172726.GA912520@cmpxchg.org>
-References: <20200820130350.3211-1-longman@redhat.com>
- <20200820130350.3211-2-longman@redhat.com>
+        Thu, 20 Aug 2020 13:27:43 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3639FC061385;
+        Thu, 20 Aug 2020 10:27:43 -0700 (PDT)
+Date:   Thu, 20 Aug 2020 17:27:37 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597944460;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EneEtsyJ/gl6AXrGRnO0QcF3H1K2WoJHKidgfUg0wQM=;
+        b=JO2qFpcLfaw2e7CQG8qBpIU5ajkaIH7TSbjiWeWBVe16AhmbqN5ygzDsIBuO21RANeE3kH
+        hntYaWntVq4YcaxksqwiDP7uq59HXmD8/sesbOX0GJkyeeIqotkjSTyBhC/+Y5fuq4P6zE
+        RAfC25kkZocEI3FWWZv5AB2pP57apm5+XvG9AQvwQBBW0BUFJOaTAegc4qCbARjlOxoRbI
+        eTX9VfIKVtLm/f/BiLhFeuclDvdcszt2kg67M18SCnSV/hlpqt8OePaZFXoa9S8umsLEpq
+        LW16MwV7FhczcSVoOZm3rsEUnYsykVbPwTZ7ppqNpNYWJblB6NvPNKt320tS8w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597944460;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EneEtsyJ/gl6AXrGRnO0QcF3H1K2WoJHKidgfUg0wQM=;
+        b=kaDmGAGYnIJwVEYgwYd4NkSIeiGxZJoIR7LazPueHUMVkgLa6qxFq6ES2Fhm1O20EtgEvu
+        Xz8YDVq3EWEXjrDg==
+From:   "tip-bot2 for Brendan Shanks" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cpu] x86/umip: Add emulation/spoofing for SLDT and STR instructions
+Cc:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Andreas Rammhold <andi@notmuch.email>,
+        Brendan Shanks <bshanks@codeweavers.com>,
+        Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200710224525.21966-1-bshanks@codeweavers.com>
+References: <20200710224525.21966-1-bshanks@codeweavers.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200820130350.3211-2-longman@redhat.com>
+Message-ID: <159794445764.3192.12431631641611015648.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 09:03:48AM -0400, Waiman Long wrote:
-> Since commit 0a31bc97c80c ("mm: memcontrol: rewrite uncharge API") and
-> commit 00501b531c47 ("mm: memcontrol: rewrite charge API") in v3.17, the
-> enum charge_type was no longer used anywhere. However, the enum itself
-> was not removed at that time. Remove the obsolete enum charge_type now.
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
+The following commit has been merged into the x86/cpu branch of tip:
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Commit-ID:     b91e7089ae70d2f7c81a4456e5b78fef498663d9
+Gitweb:        https://git.kernel.org/tip/b91e7089ae70d2f7c81a4456e5b78fef498663d9
+Author:        Brendan Shanks <bshanks@codeweavers.com>
+AuthorDate:    Fri, 10 Jul 2020 15:45:25 -07:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 20 Aug 2020 19:10:26 +02:00
+
+x86/umip: Add emulation/spoofing for SLDT and STR instructions
+
+Add emulation/spoofing of SLDT and STR for both 32- and 64-bit
+processes.
+
+Wine users have found a small number of Windows apps using SLDT that
+were crashing when run on UMIP-enabled systems.
+
+Originally-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Reported-by: Andreas Rammhold <andi@notmuch.email>
+Signed-off-by: Brendan Shanks <bshanks@codeweavers.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Andy Lutomirski <luto@kernel.org>
+Reviewed-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Tested-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Link: https://lkml.kernel.org/r/20200710224525.21966-1-bshanks@codeweavers.com
+---
+ arch/x86/kernel/umip.c | 40 +++++++++++++++++++++++++++-------------
+ 1 file changed, 27 insertions(+), 13 deletions(-)
+
+diff --git a/arch/x86/kernel/umip.c b/arch/x86/kernel/umip.c
+index 8d5cbe1..2c304fd 100644
+--- a/arch/x86/kernel/umip.c
++++ b/arch/x86/kernel/umip.c
+@@ -45,11 +45,12 @@
+  * value that, lies close to the top of the kernel memory. The limit for the GDT
+  * and the IDT are set to zero.
+  *
+- * Given that SLDT and STR are not commonly used in programs that run on WineHQ
+- * or DOSEMU2, they are not emulated.
+- *
+- * The instruction smsw is emulated to return the value that the register CR0
++ * The instruction SMSW is emulated to return the value that the register CR0
+  * has at boot time as set in the head_32.
++ * SLDT and STR are emulated to return the values that the kernel programmatically
++ * assigns:
++ * - SLDT returns (GDT_ENTRY_LDT * 8) if an LDT has been set, 0 if not.
++ * - STR returns (GDT_ENTRY_TSS * 8).
+  *
+  * Emulation is provided for both 32-bit and 64-bit processes.
+  *
+@@ -244,16 +245,34 @@ static int emulate_umip_insn(struct insn *insn, int umip_inst,
+ 		*data_size += UMIP_GDT_IDT_LIMIT_SIZE;
+ 		memcpy(data, &dummy_limit, UMIP_GDT_IDT_LIMIT_SIZE);
+ 
+-	} else if (umip_inst == UMIP_INST_SMSW) {
+-		unsigned long dummy_value = CR0_STATE;
++	} else if (umip_inst == UMIP_INST_SMSW || umip_inst == UMIP_INST_SLDT ||
++		   umip_inst == UMIP_INST_STR) {
++		unsigned long dummy_value;
++
++		if (umip_inst == UMIP_INST_SMSW) {
++			dummy_value = CR0_STATE;
++		} else if (umip_inst == UMIP_INST_STR) {
++			dummy_value = GDT_ENTRY_TSS * 8;
++		} else if (umip_inst == UMIP_INST_SLDT) {
++#ifdef CONFIG_MODIFY_LDT_SYSCALL
++			down_read(&current->mm->context.ldt_usr_sem);
++			if (current->mm->context.ldt)
++				dummy_value = GDT_ENTRY_LDT * 8;
++			else
++				dummy_value = 0;
++			up_read(&current->mm->context.ldt_usr_sem);
++#else
++			dummy_value = 0;
++#endif
++		}
+ 
+ 		/*
+-		 * Even though the CR0 register has 4 bytes, the number
++		 * For these 3 instructions, the number
+ 		 * of bytes to be copied in the result buffer is determined
+ 		 * by whether the operand is a register or a memory location.
+ 		 * If operand is a register, return as many bytes as the operand
+ 		 * size. If operand is memory, return only the two least
+-		 * siginificant bytes of CR0.
++		 * siginificant bytes.
+ 		 */
+ 		if (X86_MODRM_MOD(insn->modrm.value) == 3)
+ 			*data_size = insn->opnd_bytes;
+@@ -261,7 +280,6 @@ static int emulate_umip_insn(struct insn *insn, int umip_inst,
+ 			*data_size = 2;
+ 
+ 		memcpy(data, &dummy_value, *data_size);
+-	/* STR and SLDT  are not emulated */
+ 	} else {
+ 		return -EINVAL;
+ 	}
+@@ -383,10 +401,6 @@ bool fixup_umip_exception(struct pt_regs *regs)
+ 	umip_pr_warn(regs, "%s instruction cannot be used by applications.\n",
+ 			umip_insns[umip_inst]);
+ 
+-	/* Do not emulate (spoof) SLDT or STR. */
+-	if (umip_inst == UMIP_INST_STR || umip_inst == UMIP_INST_SLDT)
+-		return false;
+-
+ 	umip_pr_warn(regs, "For now, expensive software emulation returns the result.\n");
+ 
+ 	if (emulate_umip_insn(&insn, umip_inst, dummy_data, &dummy_data_size,
