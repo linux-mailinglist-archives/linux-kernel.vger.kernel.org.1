@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F73B24BFC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BC424BFCB
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729180AbgHTNyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:54:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35958 "EHLO mail.kernel.org"
+        id S1730995AbgHTNyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:54:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727929AbgHTJ0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:26:47 -0400
+        id S1727931AbgHTJ0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:26:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8DD5822D04;
-        Thu, 20 Aug 2020 09:26:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5562122D0B;
+        Thu, 20 Aug 2020 09:26:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915607;
-        bh=6Ph9bjp28ZJvGhNXbLdFvK04Ec5xSbH1QX9g4Ch7iaQ=;
+        s=default; t=1597915609;
+        bh=HMeLencfP79QnOTHpQu9SCQ8crUYfKYEweeJFlkvMmY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YAOlR8l2asklr49WHkOpiIiDsLgUtAtDIcKSW34tRdZnjPT0DuuAb8ZJdQzcqse3e
-         KV1uK8ukdsVm6XoIBr+3J32ndHl/kNIX26ertlUpfVn/SgkVJZIbWamlH1lS1J7Qkt
-         J9CNgS1Njl+0jmF+DSba/1t4Kj2mPGZnUTZY3Nd8=
+        b=YT/zfQBXHi3eFcJYXFTYgXIVV8X0QlZLNEnTzWQsWdGWQ7P7skGRsUHcOr0n1+RnJ
+         3Pp8xJZjxwkylvvfR6twVHanuqs2H000zcrQgQXcu+5rlZ+vkl+2MHq3A6w48Kizx8
+         yQNUImnpwNKuDOq8VrcIa5VgheWjmIbIV/Daof5w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: [PATCH 5.8 073/232] MIPS: CPU#0 is not hotpluggable
-Date:   Thu, 20 Aug 2020 11:18:44 +0200
-Message-Id: <20200820091616.342176412@linuxfoundation.org>
+Subject: [PATCH 5.8 074/232] MIPS: qi_lb60: Fix routing to audio amplifier
+Date:   Thu, 20 Aug 2020 11:18:45 +0200
+Message-Id: <20200820091616.393166982@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
 References: <20200820091612.692383444@linuxfoundation.org>
@@ -43,32 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huacai Chen <chenhc@lemote.com>
+From: Paul Cercueil <paul@crapouillou.net>
 
-commit 9cce844abf07b683cff5f0273977d5f8d0af94c7 upstream.
+commit 0889a67a9e7a56ba39af223d536630b20b877fda upstream.
 
-Now CPU#0 is not hotpluggable on MIPS, so prevent to create /sys/devices
-/system/cpu/cpu0/online which confuses some user-space tools.
+The ROUT (right channel output of audio codec) was connected to INL
+(left channel of audio amplifier) instead of INR (right channel of audio
+amplifier).
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Huacai Chen <chenhc@lemote.com>
+Fixes: 8ddebad15e9b ("MIPS: qi_lb60: Migrate to devicetree")
+Cc: stable@vger.kernel.org # v5.3
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/mips/kernel/topology.c |    2 +-
+ arch/mips/boot/dts/ingenic/qi_lb60.dts |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/mips/kernel/topology.c
-+++ b/arch/mips/kernel/topology.c
-@@ -20,7 +20,7 @@ static int __init topology_init(void)
- 	for_each_present_cpu(i) {
- 		struct cpu *c = &per_cpu(cpu_devices, i);
+--- a/arch/mips/boot/dts/ingenic/qi_lb60.dts
++++ b/arch/mips/boot/dts/ingenic/qi_lb60.dts
+@@ -69,7 +69,7 @@
+ 			"Speaker", "OUTL",
+ 			"Speaker", "OUTR",
+ 			"INL", "LOUT",
+-			"INL", "ROUT";
++			"INR", "ROUT";
  
--		c->hotpluggable = 1;
-+		c->hotpluggable = !!i;
- 		ret = register_cpu(c, i);
- 		if (ret)
- 			printk(KERN_WARNING "topology_init: register_cpu %d "
+ 		simple-audio-card,aux-devs = <&amp>;
+ 
 
 
