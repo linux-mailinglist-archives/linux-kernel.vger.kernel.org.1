@@ -2,42 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B0D24BBA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3D7424BCB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730111AbgHTMbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:31:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57788 "EHLO mail.kernel.org"
+        id S1730222AbgHTMvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:51:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42314 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729722AbgHTJuV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:50:21 -0400
+        id S1729275AbgHTJnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:43:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 368A12173E;
-        Thu, 20 Aug 2020 09:50:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C4C4208E4;
+        Thu, 20 Aug 2020 09:43:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917020;
-        bh=vlgI/GcQFDEuwsf31liFVaSoA4yqFdptOoUDqNhNW0E=;
+        s=default; t=1597916634;
+        bh=FqX3ETxhU8N3LCpbWmdfKReQF+8WQzGphHHJ/fzIQk0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EOVV68XIU1E2L4s5qVbPzT1/+iWFdPsEtSg1c7NDqLL7nl4czlbhbosap3TBaJc3q
-         EkpgIzNHKvwE4O+Qpy0oli0oolPqyCEgHKEGDy2dEe/ljPwCLpLDWk20tY+AxlTQfd
-         G7g+3AzKHjymPlfBM1OofhsfRlRSPejKpfAnCQGg=
+        b=GtG0jRkDZr+2YpU2JHs4loa36RZQmvkx+gZm0Un9perCVxREac/mCg09QniiEkyBA
+         5iHLLZY1BWdZ6tLmSQaKqYEYbvUeQJfg+bJl0zV63tkN3O0a1+3lwtwSqJKW8lSWu2
+         D6Va3KMv9hss77izewqjvtR3iBV58jQ1foal9SwI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Gregory Herrero <gregory.herrero@oracle.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 127/152] recordmcount: Fix build failure on non arm64
-Date:   Thu, 20 Aug 2020 11:21:34 +0200
-Message-Id: <20200820091600.309833017@linuxfoundation.org>
+        stable@vger.kernel.org, Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Tony Lindgren <tony@atomide.com>
+Subject: [PATCH 5.7 198/204] drm/omap: force runtime PM suspend on system suspend
+Date:   Thu, 20 Aug 2020 11:21:35 +0200
+Message-Id: <20200820091616.069352228@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
-References: <20200820091553.615456912@linuxfoundation.org>
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,48 +43,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Tomi Valkeinen <tomi.valkeinen@ti.com>
 
-[ Upstream commit 3df14264ad9930733a8166e5bd0eccc1727564bb ]
+commit ecfdedd7da5d54416db5ca0f851264dca8736f59 upstream.
 
-Commit ea0eada45632 leads to the following build failure on powerpc:
+Use SET_LATE_SYSTEM_SLEEP_PM_OPS in DSS submodules to force runtime PM
+suspend and resume.
 
-  HOSTCC  scripts/recordmcount
-scripts/recordmcount.c: In function 'arm64_is_fake_mcount':
-scripts/recordmcount.c:440: error: 'R_AARCH64_CALL26' undeclared (first use in this function)
-scripts/recordmcount.c:440: error: (Each undeclared identifier is reported only once
-scripts/recordmcount.c:440: error: for each function it appears in.)
-make[2]: *** [scripts/recordmcount] Error 1
+We use suspend late version so that omapdrm's system suspend callback is
+called first, as that will disable all the display outputs after which
+it's safe to force DSS into suspend.
 
-Make sure R_AARCH64_CALL26 is always defined.
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200618095153.611071-1-tomi.valkeinen@ti.com
+Acked-by: Tony Lindgren <tony@atomide.com>
+Fixes: cef766300353 ("drm/omap: Prepare DSS for probing without legacy platform data")
+Cc: stable@vger.kernel.org # v5.7+
+Tested-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: ea0eada45632 ("recordmcount: only record relocation of type R_AARCH64_CALL26 on arm64.")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Acked-by: Gregory Herrero <gregory.herrero@oracle.com>
-Cc: Gregory Herrero <gregory.herrero@oracle.com>
-Link: https://lore.kernel.org/r/5ca1be21fa6ebf73203b45fd9aadd2bafb5e6b15.1597049145.git.christophe.leroy@csgroup.eu
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/recordmcount.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/omapdrm/dss/dispc.c |    1 +
+ drivers/gpu/drm/omapdrm/dss/dsi.c   |    1 +
+ drivers/gpu/drm/omapdrm/dss/dss.c   |    1 +
+ drivers/gpu/drm/omapdrm/dss/venc.c  |    1 +
+ 4 files changed, 4 insertions(+)
 
-diff --git a/scripts/recordmcount.c b/scripts/recordmcount.c
-index e59022b3f1254..b9c2ee7ab43fa 100644
---- a/scripts/recordmcount.c
-+++ b/scripts/recordmcount.c
-@@ -42,6 +42,8 @@
- #define R_ARM_THM_CALL		10
- #define R_ARM_CALL		28
+--- a/drivers/gpu/drm/omapdrm/dss/dispc.c
++++ b/drivers/gpu/drm/omapdrm/dss/dispc.c
+@@ -4936,6 +4936,7 @@ static int dispc_runtime_resume(struct d
+ static const struct dev_pm_ops dispc_pm_ops = {
+ 	.runtime_suspend = dispc_runtime_suspend,
+ 	.runtime_resume = dispc_runtime_resume,
++	SET_LATE_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend, pm_runtime_force_resume)
+ };
  
-+#define R_AARCH64_CALL26	283
-+
- static int fd_map;	/* File descriptor for file being modified. */
- static int mmap_failed; /* Boolean flag. */
- static char gpfx;	/* prefix for global symbol name (sometimes '_') */
--- 
-2.25.1
-
+ struct platform_driver omap_dispchw_driver = {
+--- a/drivers/gpu/drm/omapdrm/dss/dsi.c
++++ b/drivers/gpu/drm/omapdrm/dss/dsi.c
+@@ -5467,6 +5467,7 @@ static int dsi_runtime_resume(struct dev
+ static const struct dev_pm_ops dsi_pm_ops = {
+ 	.runtime_suspend = dsi_runtime_suspend,
+ 	.runtime_resume = dsi_runtime_resume,
++	SET_LATE_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend, pm_runtime_force_resume)
+ };
+ 
+ struct platform_driver omap_dsihw_driver = {
+--- a/drivers/gpu/drm/omapdrm/dss/dss.c
++++ b/drivers/gpu/drm/omapdrm/dss/dss.c
+@@ -1614,6 +1614,7 @@ static int dss_runtime_resume(struct dev
+ static const struct dev_pm_ops dss_pm_ops = {
+ 	.runtime_suspend = dss_runtime_suspend,
+ 	.runtime_resume = dss_runtime_resume,
++	SET_LATE_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend, pm_runtime_force_resume)
+ };
+ 
+ struct platform_driver omap_dsshw_driver = {
+--- a/drivers/gpu/drm/omapdrm/dss/venc.c
++++ b/drivers/gpu/drm/omapdrm/dss/venc.c
+@@ -945,6 +945,7 @@ static int venc_runtime_resume(struct de
+ static const struct dev_pm_ops venc_pm_ops = {
+ 	.runtime_suspend = venc_runtime_suspend,
+ 	.runtime_resume = venc_runtime_resume,
++	SET_LATE_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend, pm_runtime_force_resume)
+ };
+ 
+ static const struct of_device_id venc_of_match[] = {
 
 
