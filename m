@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A655124BD1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D5424BC0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728400AbgHTM6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:58:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33426 "EHLO mail.kernel.org"
+        id S1729465AbgHTJrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:47:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729055AbgHTJkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:40:49 -0400
+        id S1729403AbgHTJrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:47:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1912320855;
-        Thu, 20 Aug 2020 09:40:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5E7152078D;
+        Thu, 20 Aug 2020 09:47:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916448;
-        bh=d/jGMt1oCsLc4aGnO5K2JI8v956XOiQWLDA7FUVXzRI=;
+        s=default; t=1597916836;
+        bh=+fJwRTyns06hXFK4BvTzsMhQN5gMjSMZkemNI/FmMYY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d7RNM4jB2icLYVOPnBWayqmihC+2iN/DX5bs6kKY1T3pvSNsdTG0rSxUgBK4DBlXh
-         Yf0Dy/vYCGwR2iZo71e8l4NY37kBlaHv/VuErWFbTz9t2aef9+rLYzJQ72i99WfZ6d
-         oqVJ9UbLUsGY9YPFd6uiL0jceu1r4CRpoTHrCaMI=
+        b=TsXYYircPlzQMxsIMlHmobUS61jXqc6aH3vY7w+lPEUyHB5T8PG0en9LG3Nj3duBk
+         MPteuj6CjJx3BuPS+UYLy3ABX0nygCiEXDEqxbaumyrkOhfjO7Mm+5R1+0DmkmJUjA
+         hLQrZIoQjbcwp18VazJeIKxKO0Q3OU41cPVNW24s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 132/204] f2fs: compress: fix to avoid memory leak on cc->cpages
-Date:   Thu, 20 Aug 2020 11:20:29 +0200
-Message-Id: <20200820091612.871866317@linuxfoundation.org>
+        stable@vger.kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Subject: [PATCH 5.4 063/152] watchdog: f71808e_wdt: remove use of wrong watchdog_info option
+Date:   Thu, 20 Aug 2020 11:20:30 +0200
+Message-Id: <20200820091556.956963832@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
-References: <20200820091606.194320503@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <yuchao0@huawei.com>
+From: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-[ Upstream commit 02772fbfcba8597eef9d5c5f7f94087132d0c1d4 ]
+commit 802141462d844f2e6a4d63a12260d79b7afc4c34 upstream.
 
-Memory allocated for storing compressed pages' poitner should be
-released after f2fs_write_compressed_pages(), otherwise it will
-cause memory leak issue.
+The flags that should be or-ed into the watchdog_info.options by drivers
+all start with WDIOF_, e.g. WDIOF_SETTIMEOUT, which indicates that the
+driver's watchdog_ops has a usable set_timeout.
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
-Fixes: 4c8ff7095bef ("f2fs: support data compression")
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+WDIOC_SETTIMEOUT was used instead, which expands to 0xc0045706, which
+equals:
+
+   WDIOF_FANFAULT | WDIOF_EXTERN1 | WDIOF_PRETIMEOUT | WDIOF_ALARMONLY |
+   WDIOF_MAGICCLOSE | 0xc0045000
+
+These were so far indicated to userspace on WDIOC_GETSUPPORT.
+As the driver has not yet been migrated to the new watchdog kernel API,
+the constant can just be dropped without substitute.
+
+Fixes: 96cb4eb019ce ("watchdog: f71808e_wdt: new watchdog driver for Fintek F71808E and F71882FG")
+Cc: stable@vger.kernel.org
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20200611191750.28096-4-a.fatoum@pengutronix.de
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/f2fs/compress.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/watchdog/f71808e_wdt.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index a5b2e72174bb1..527d50edcb956 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -1250,6 +1250,8 @@ int f2fs_write_multi_pages(struct compress_ctx *cc,
- 		err = f2fs_write_compressed_pages(cc, submitted,
- 							wbc, io_type);
- 		cops->destroy_compress_ctx(cc);
-+		kfree(cc->cpages);
-+		cc->cpages = NULL;
- 		if (!err)
- 			return 0;
- 		f2fs_bug_on(F2FS_I_SB(cc->inode), err != -EAGAIN);
--- 
-2.25.1
-
+--- a/drivers/watchdog/f71808e_wdt.c
++++ b/drivers/watchdog/f71808e_wdt.c
+@@ -689,8 +689,7 @@ static int __init watchdog_init(int sioa
+ 	 * into the module have been registered yet.
+ 	 */
+ 	watchdog.sioaddr = sioaddr;
+-	watchdog.ident.options = WDIOC_SETTIMEOUT
+-				| WDIOF_MAGICCLOSE
++	watchdog.ident.options = WDIOF_MAGICCLOSE
+ 				| WDIOF_KEEPALIVEPING
+ 				| WDIOF_CARDRESET;
+ 
 
 
