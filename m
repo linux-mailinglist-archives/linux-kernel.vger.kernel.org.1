@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C936924B30A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5019124B311
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729067AbgHTJkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:40:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32784 "EHLO mail.kernel.org"
+        id S1729072AbgHTJk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:40:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729038AbgHTJkc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:40:32 -0400
+        id S1728626AbgHTJki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:40:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31C482075E;
-        Thu, 20 Aug 2020 09:40:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B93E20724;
+        Thu, 20 Aug 2020 09:40:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916431;
-        bh=8IqWyfEDnx2H1Au+cCDuG8ozinL/2n49sbIicse6ffo=;
+        s=default; t=1597916437;
+        bh=xIWhDWnMtprZ575A1uCdjon2U3PFJGPff7fZSyx6LAw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=enHCwiQd6LdHyFKw5mPh6JfDVZbz49oR90IK2rPgddody83WS8dfPazJZ0E/fEnhD
-         naDF4SYkNH6F4QnFcW7xdq824FcTlzK+o89mk/Dopel9LWxMC4DGbPmLz7CD6CfnZk
-         WBON7DBM2NwVKAap2NV0mw1WQ0qweuocraISHdNQ=
+        b=wbhPSJ0xBS08HlKkKTqX2/jBx1y34ZFEMfjgSbJwyxnTCNAp6GfusEX/IaEksJcEB
+         Mq34mpX9Maeyhmtu2IvgH6ix2V/tAnhjarVHK6I7iTkwU9Xe7oCEoZJ3ngbDqbnOoV
+         gjCzHLE8lhZoVnttd6vH7WGD47DSIswJOFPX/01w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sibi Sankar <sibis@codeaurora.org>
-Subject: [PATCH 5.7 095/204] remoteproc: qcom_q6v5_mss: Validate MBA firmware size before load
-Date:   Thu, 20 Aug 2020 11:19:52 +0200
-Message-Id: <20200820091611.078303806@linuxfoundation.org>
+        stable@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Liu Ying <victor.liu@nxp.com>
+Subject: [PATCH 5.7 097/204] drm/imx: imx-ldb: Disable both channels for split mode in enc->disable()
+Date:   Thu, 20 Aug 2020 11:19:54 +0200
+Message-Id: <20200820091611.171356635@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
 References: <20200820091606.194320503@linuxfoundation.org>
@@ -44,60 +46,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sibi Sankar <sibis@codeaurora.org>
+From: Liu Ying <victor.liu@nxp.com>
 
-commit e013f455d95add874f310dc47c608e8c70692ae5 upstream.
+commit 3b2a999582c467d1883716b37ffcc00178a13713 upstream.
 
-The following mem abort is observed when the mba firmware size exceeds
-the allocated mba region. MBA firmware size is restricted to a maximum
-size of 1M and remaining memory region is used by modem debug policy
-firmware when available. Hence verify whether the MBA firmware size lies
-within the allocated memory region and is not greater than 1M before
-loading.
+Both of the two LVDS channels should be disabled for split mode
+in the encoder's ->disable() callback, because they are enabled
+in the encoder's ->enable() callback.
 
-Err Logs:
-Unable to handle kernel paging request at virtual address
-Mem abort info:
-...
-Call trace:
-  __memcpy+0x110/0x180
-  rproc_start+0x40/0x218
-  rproc_boot+0x5b4/0x608
-  state_store+0x54/0xf8
-  dev_attr_store+0x44/0x60
-  sysfs_kf_write+0x58/0x80
-  kernfs_fop_write+0x140/0x230
-  vfs_write+0xc4/0x208
-  ksys_write+0x74/0xf8
-  __arm64_sys_write+0x24/0x30
-...
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Fixes: 051fb70fd4ea4 ("remoteproc: qcom: Driver for the self-authenticating Hexagon v5")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-Link: https://lore.kernel.org/r/20200722201047.12975-2-sibis@codeaurora.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Fixes: 6556f7f82b9c ("drm: imx: Move imx-drm driver out of staging")
+Cc: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Liu Ying <victor.liu@nxp.com>
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/remoteproc/qcom_q6v5_mss.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/gpu/drm/imx/imx-ldb.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/drivers/remoteproc/qcom_q6v5_mss.c
-+++ b/drivers/remoteproc/qcom_q6v5_mss.c
-@@ -408,6 +408,12 @@ static int q6v5_load(struct rproc *rproc
+--- a/drivers/gpu/drm/imx/imx-ldb.c
++++ b/drivers/gpu/drm/imx/imx-ldb.c
+@@ -303,18 +303,19 @@ static void imx_ldb_encoder_disable(stru
  {
- 	struct q6v5 *qproc = rproc->priv;
+ 	struct imx_ldb_channel *imx_ldb_ch = enc_to_imx_ldb_ch(encoder);
+ 	struct imx_ldb *ldb = imx_ldb_ch->ldb;
++	int dual = ldb->ldb_ctrl & LDB_SPLIT_MODE_EN;
+ 	int mux, ret;
  
-+	/* MBA is restricted to a maximum size of 1M */
-+	if (fw->size > qproc->mba_size || fw->size > SZ_1M) {
-+		dev_err(qproc->dev, "MBA firmware load failed\n");
-+		return -EINVAL;
-+	}
-+
- 	memcpy(qproc->mba_region, fw->data, fw->size);
+ 	drm_panel_disable(imx_ldb_ch->panel);
  
- 	return 0;
+-	if (imx_ldb_ch == &ldb->channel[0])
++	if (imx_ldb_ch == &ldb->channel[0] || dual)
+ 		ldb->ldb_ctrl &= ~LDB_CH0_MODE_EN_MASK;
+-	else if (imx_ldb_ch == &ldb->channel[1])
++	if (imx_ldb_ch == &ldb->channel[1] || dual)
+ 		ldb->ldb_ctrl &= ~LDB_CH1_MODE_EN_MASK;
+ 
+ 	regmap_write(ldb->regmap, IOMUXC_GPR2, ldb->ldb_ctrl);
+ 
+-	if (ldb->ldb_ctrl & LDB_SPLIT_MODE_EN) {
++	if (dual) {
+ 		clk_disable_unprepare(ldb->clk[0]);
+ 		clk_disable_unprepare(ldb->clk[1]);
+ 	}
 
 
