@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825B224BCAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F16F124BBA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729634AbgHTMvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:51:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45718 "EHLO mail.kernel.org"
+        id S1729712AbgHTMcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:32:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729195AbgHTJpQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:45:16 -0400
+        id S1729710AbgHTJuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:50:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2F8722D04;
-        Thu, 20 Aug 2020 09:44:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C1D9A20724;
+        Thu, 20 Aug 2020 09:50:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916667;
-        bh=IUdl4LSAPkAcHLf7yKtnIwaTi7lhz1VhW2dasR7m3KU=;
+        s=default; t=1597917011;
+        bh=VEvNQNqKm62xvEsep9xrnDsoUlwfW7KDTVBzKhVrnrE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aI6lN2cio4hdmuTWvq/+dRJdieopDlcQbfZJn1zizuQDzSIwjJ3V84TsGbyuknfGJ
-         WYighinnjy1HPGCATHlMKVzyG+JJJ6iT5kp2qvHlDJJyj5K7uj4y6b8sx2LJTGSHeA
-         y9QYQGjnj+S0p+Z9LHx7fHK3gih7ExfZ5dbPqjiQ=
+        b=IWGx+f+9yjgo24l4/2bWKOCVrTQWc+AHC2HL9xBGYA5lzJz1SQB/UUN1LlXvZwpBh
+         YflfxTqGYKPqjT3GaxoHwqwRvQb5hXH6/BmOZ849hcFHml2/1y3tW93L95jve6vaf4
+         vuaAFp9Fxy4LfnYKXHtaGOtgAkfxxdsT77WewI8o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
-        stable@kernel.org, Mika Kuoppala <mika.kuoppala@linux.intel.com>
-Subject: [PATCH 5.7 194/204] drm/i915/gt: Force the GT reset on shutdown
-Date:   Thu, 20 Aug 2020 11:21:31 +0200
-Message-Id: <20200820091615.881205586@linuxfoundation.org>
+        stable@vger.kernel.org, Dilip Kota <eswara.kota@linux.intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 125/152] x86/tsr: Fix tsc frequency enumeration bug on Lightning Mountain SoC
+Date:   Thu, 20 Aug 2020 11:21:32 +0200
+Message-Id: <20200820091600.202943354@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
-References: <20200820091606.194320503@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +45,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: Dilip Kota <eswara.kota@linux.intel.com>
 
-commit 7c4541a37bbbf83c0f16f779e85eb61d9348ed29 upstream.
+[ Upstream commit 7d98585860d845e36ee612832a5ff021f201dbaf ]
 
-Before we return control to the system, and letting it reuse all the
-pages being accessed by HW, we must disable the HW. At the moment, we
-dare not reset the GPU if it will clobber the display, but once we know
-the display has been disabled, we can proceed with the reset as we
-shutdown the module. We know the next user must reinitialise the HW for
-their purpose.
+Frequency descriptor of Lightning Mountain SoC doesn't have all the
+frequency entries so resulting in the below failure causing a kernel hang:
 
-Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/489
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: stable@kernel.org
-Reviewed-by: Mika Kuoppala <mika.kuoppala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200525151459.12083-1-chris@chris-wilson.co.uk
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Error MSR_FSB_FREQ index 15 is unknown
+    tsc: Fast TSC calibration failed
 
+So, add all the frequency entries in the Lightning Mountain SoC frequency
+descriptor.
+
+Fixes: 0cc5359d8fd45 ("x86/cpu: Update init data for new Airmont CPU model")
+Fixes: 812c2d7506fd ("x86/tsc_msr: Use named struct initializers")
+Signed-off-by: Dilip Kota <eswara.kota@linux.intel.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/211c643ae217604b46cbec43a2c0423946dc7d2d.1596440057.git.eswara.kota@linux.intel.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/i915/gt/intel_gt.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ arch/x86/kernel/tsc_msr.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
---- a/drivers/gpu/drm/i915/gt/intel_gt.c
-+++ b/drivers/gpu/drm/i915/gt/intel_gt.c
-@@ -656,6 +656,11 @@ void intel_gt_driver_unregister(struct i
- void intel_gt_driver_release(struct intel_gt *gt)
- {
- 	struct i915_address_space *vm;
-+	intel_wakeref_t wakeref;
-+
-+	/* Scrub all HW state upon release */
-+	with_intel_runtime_pm(gt->uncore->rpm, wakeref)
-+		__intel_gt_reset(gt, ALL_ENGINES);
+diff --git a/arch/x86/kernel/tsc_msr.c b/arch/x86/kernel/tsc_msr.c
+index c65adaf813848..41200706e6da1 100644
+--- a/arch/x86/kernel/tsc_msr.c
++++ b/arch/x86/kernel/tsc_msr.c
+@@ -133,10 +133,15 @@ static const struct freq_desc freq_desc_ann = {
+ 	.mask = 0x0f,
+ };
  
- 	vm = fetch_and_zero(&gt->vm);
- 	if (vm) /* FIXME being called twice on error paths :( */
+-/* 24 MHz crystal? : 24 * 13 / 4 = 78 MHz */
++/*
++ * 24 MHz crystal? : 24 * 13 / 4 = 78 MHz
++ * Frequency step for Lightning Mountain SoC is fixed to 78 MHz,
++ * so all the frequency entries are 78000.
++ */
+ static const struct freq_desc freq_desc_lgm = {
+ 	.use_msr_plat = true,
+-	.freqs = { 78000, 78000, 78000, 78000, 78000, 78000, 78000, 78000 },
++	.freqs = { 78000, 78000, 78000, 78000, 78000, 78000, 78000, 78000,
++		   78000, 78000, 78000, 78000, 78000, 78000, 78000, 78000 },
+ 	.mask = 0x0f,
+ };
+ 
+-- 
+2.25.1
+
 
 
