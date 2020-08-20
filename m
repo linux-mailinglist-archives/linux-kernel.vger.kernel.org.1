@@ -2,47 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF18724B2AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E14D224B32C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbgHTJfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:35:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43432 "EHLO mail.kernel.org"
+        id S1728889AbgHTJmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:42:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727822AbgHTJba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:31:30 -0400
+        id S1729132AbgHTJl6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:41:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C284B208E4;
-        Thu, 20 Aug 2020 09:31:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14776207DE;
+        Thu, 20 Aug 2020 09:41:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915889;
-        bh=x7h681IlolzOdL7F1weUGqr7IZLFaG+yAVLcUGiSZWo=;
+        s=default; t=1597916517;
+        bh=nibtvUdmYlYfzAmksvOuc+YpD990OolnyT4nsyqRArQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cnzBBvTdzi5tEank9BHLCXjYRQ4ja7+e23q+Q19HIw3LhzSA15g75c0qVxSQ0jzyf
-         B1Lakafo23nwev2LR8ARPpr/XZG8BGjEHU4gU+wNbmVPUxFy+qmyPJaTq/0fQ99y9m
-         cUj+u78ctmTRRJaerqi/bq8EIVErpFqWlV9zccnM=
+        b=HwR1SFkRB9OoJm6k78RspePjp+zc0QfgYoLMfXKwG1SzaCciGkx2HDbnI0Evu6uQt
+         JTAcbx1S0wrFv9DZwJVm5HpbCXTPmgYaQlkLvwKSnJLAjkAuPYzFjt0UFIvXb5msiH
+         y+4/VijYw2+7ubBkr+VBNc/6G0yUFpMfURbJAY3Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Hebb <tommyhebb@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        David Carrillo-Cisneros <davidcc@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Song Liu <songliubraving@fb.com>,
-        Stephane Eranian <eranian@google.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 171/232] tools build feature: Use CC and CXX from parent
-Date:   Thu, 20 Aug 2020 11:20:22 +0200
-Message-Id: <20200820091621.101308451@linuxfoundation.org>
+Subject: [PATCH 5.7 126/204] rtc: pl031: fix set_alarm by adding back call to alarm_irq_enable
+Date:   Thu, 20 Aug 2020 11:20:23 +0200
+Message-Id: <20200820091612.583800658@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
-References: <20200820091612.692383444@linuxfoundation.org>
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,89 +46,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Hebb <tommyhebb@gmail.com>
+From: Sudeep Holla <sudeep.holla@arm.com>
 
-[ Upstream commit e3232c2f39acafd5a29128425bc30b9884642cfa ]
+[ Upstream commit 4df2ef85f0efe44505f511ca5e4455585f53a2da ]
 
-commit c8c188679ccf ("tools build: Use the same CC for feature detection
-and actual build") changed these assignments from unconditional (:=) to
-conditional (?=) so that they wouldn't clobber values from the
-environment. However, conditional assignment does not work properly for
-variables that Make implicitly sets, among which are CC and CXX. To
-quote tools/scripts/Makefile.include, which handles this properly:
+Commit c8ff5841a90b ("rtc: pl031: switch to rtc_time64_to_tm/rtc_tm_to_time64")
+seemed to have accidentally removed the call to pl031_alarm_irq_enable
+from pl031_set_alarm while switching to 64-bit apis.
 
-  # Makefiles suck: This macro sets a default value of $(2) for the
-  # variable named by $(1), unless the variable has been set by
-  # environment or command line. This is necessary for CC and AR
-  # because make sets default values, so the simpler ?= approach
-  # won't work as expected.
+Let us add back the same to get the set alarm functionality back.
 
-In other words, the conditional assignments will not run even if the
-variables are not overridden in the environment; Make will set CC to
-"cc" and CXX to "g++" when it starts[1], meaning the variables are not
-empty by the time the conditional assignments are evaluated. This breaks
-cross-compilation when CROSS_COMPILE is set but CC isn't, since "cc"
-gets used for feature detection instead of the cross compiler (and
-likewise for CXX).
-
-To fix the issue, just pass down the values of CC and CXX computed by
-the parent Makefile, which gets included by the Makefile that actually
-builds whatever we're detecting features for and so is guaranteed to
-have good values. This is a better solution anyway, since it means we
-aren't trying to replicate the logic of the parent build system and so
-don't risk it getting out of sync.
-
-Leave PKG_CONFIG alone, since 1) there's no common logic to compute it
-in Makefile.include, and 2) it's not an implicit variable, so
-conditional assignment works properly.
-
-[1] https://www.gnu.org/software/make/manual/html_node/Implicit-Variables.html
-
-Fixes: c8c188679ccf ("tools build: Use the same CC for feature detection and actual build")
-Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Cc: David Carrillo-Cisneros <davidcc@google.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Igor Lubashev <ilubashe@akamai.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Quentin Monnet <quentin@isovalent.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: thomas hebb <tommyhebb@gmail.com>
-Link: http://lore.kernel.org/lkml/0a6e69d1736b0fa231a648f50b0cce5d8a6734ef.1595822871.git.tommyhebb@gmail.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: c8ff5841a90b ("rtc: pl031: switch to rtc_time64_to_tm/rtc_tm_to_time64")
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Tested-by: Valentin Schneider <valentin.schneider@arm.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/20200714124556.20294-1-sudeep.holla@arm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/build/Makefile.feature | 2 +-
- tools/build/feature/Makefile | 2 --
- 2 files changed, 1 insertion(+), 3 deletions(-)
+ drivers/rtc/rtc-pl031.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-index cb152370fdefd..774f0b0ca28ac 100644
---- a/tools/build/Makefile.feature
-+++ b/tools/build/Makefile.feature
-@@ -8,7 +8,7 @@ endif
+diff --git a/drivers/rtc/rtc-pl031.c b/drivers/rtc/rtc-pl031.c
+index 40d7450a1ce49..c6b89273feba8 100644
+--- a/drivers/rtc/rtc-pl031.c
++++ b/drivers/rtc/rtc-pl031.c
+@@ -275,6 +275,7 @@ static int pl031_set_alarm(struct device *dev, struct rtc_wkalrm *alarm)
+ 	struct pl031_local *ldata = dev_get_drvdata(dev);
  
- feature_check = $(eval $(feature_check_code))
- define feature_check_code
--  feature-$(1) := $(shell $(MAKE) OUTPUT=$(OUTPUT_FEATURES) CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" -C $(feature_dir) $(OUTPUT_FEATURES)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
-+  feature-$(1) := $(shell $(MAKE) OUTPUT=$(OUTPUT_FEATURES) CC=$(CC) CXX=$(CXX) CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" -C $(feature_dir) $(OUTPUT_FEATURES)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
- endef
+ 	writel(rtc_tm_to_time64(&alarm->time), ldata->base + RTC_MR);
++	pl031_alarm_irq_enable(dev, alarm->enabled);
  
- feature_set = $(eval $(feature_set_code))
-diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-index b1f0321180f5c..93b590d81209c 100644
---- a/tools/build/feature/Makefile
-+++ b/tools/build/feature/Makefile
-@@ -74,8 +74,6 @@ FILES=                                          \
- 
- FILES := $(addprefix $(OUTPUT),$(FILES))
- 
--CC ?= $(CROSS_COMPILE)gcc
--CXX ?= $(CROSS_COMPILE)g++
- PKG_CONFIG ?= $(CROSS_COMPILE)pkg-config
- LLVM_CONFIG ?= llvm-config
- CLANG ?= clang
+ 	return 0;
+ }
 -- 
 2.25.1
 
