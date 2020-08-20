@@ -2,83 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C3A24AD90
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 06:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE5D624AD96
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 06:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725916AbgHTELO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 00:11:14 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:34754 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725793AbgHTELM (ORCPT
+        id S1726723AbgHTELn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 00:11:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726132AbgHTELm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 00:11:12 -0400
-Received: by mail-pl1-f193.google.com with SMTP id v16so451923plo.1;
-        Wed, 19 Aug 2020 21:11:12 -0700 (PDT)
+        Thu, 20 Aug 2020 00:11:42 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7F08C061757;
+        Wed, 19 Aug 2020 21:11:41 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id r25so274653lfe.5;
+        Wed, 19 Aug 2020 21:11:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=0nvDXpUHYyrFXqiJEgVmctUAZQeXchyr8nPgGxgcWW4=;
+        b=AA+KBoksk+3bdhNPirXE5NVQMpFgmxwgFd1rIFteGs//isYAsnnmOKhahi1tt1cW3w
+         oImLAOdfjZfYOAvm70WmD9pg1aOWsk/uAdv0ZsdE34CyFMnYb5LLA/ku4Zijgw1iYZfs
+         2V3uCqSZ5/lpshylygLh2WpLZ6myiVHqjbf+/zjERcKKZQDAPfA4/S0Qi7aJjFuAy3NF
+         BBMz6BN+1AxsPgzSbWgRALE5DED7UYYXzm/FyLJ4kx7fSympj0XjiCIDdspg95Ps9zck
+         4MeVwi9a1yTMZ5t6I/E7qUM+XF7t5H/h5G9FPYnBQBDpxu078ibwtJnDPeuIeLf9+69f
+         7eGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3jelrt2iE0YOKS7d/Ac3pVBTbS/TCz2oa2R5iJqNekE=;
-        b=ixwB9b0NlW8aX7EGMzYVJ2eFuaG8/Wu/M5R9pPbV8p6Ri3vyKg4sf4VoKcnppB1F0C
-         M9w8eXxdEpqsG0yArI6KnOBus756/B19UISXc6RMd622B+ZW7JQd2UxBgiR6YRFb5j8c
-         CKfiuA4HHXpUHOdEGM/sjZaVIVfcBMWDz8LlZxqgDBFPJnP/Ak27NYPc2BdZ4J7C3BoI
-         hZLvm+D5AguKiK0LvhrkxQHN+WTcn+nctjvPlxGfcXupmHxxKUpg+o7CpU/M0F5dXNOW
-         HsoTfIB0+ZEDfP5fWZR5QKRXHRtUHpoQ3VuTpuWsoBF15Y2HREPJtFtu0SmbDmr4tgLq
-         +Bzg==
-X-Gm-Message-State: AOAM532ay9DVTPQOYe7AN2iRr3VUXfAttC1Vj4seGLs2ZpUT6rVKHLo4
-        FNJdwvx8g2N6TcZwcvp4bu8=
-X-Google-Smtp-Source: ABdhPJwndfVpHf63YhpLbuaU+SdHRPI1cyxMdBW0xoO6xFHpnlYZ8N8PtDWP2p55t/WXQe+yNCGfRA==
-X-Received: by 2002:a17:90a:e551:: with SMTP id ei17mr909773pjb.224.1597896672013;
-        Wed, 19 Aug 2020 21:11:12 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id 196sm847592pfc.178.2020.08.19.21.11.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 21:11:11 -0700 (PDT)
-Date:   Wed, 19 Aug 2020 21:11:10 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Luca Ceresoli <luca@lucaceresoli.net>
-Cc:     linux-fpga@vger.kernel.org, Moritz Fischer <mdf@kernel.org>,
-        Tom Rix <trix@redhat.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Anatolij Gustschin <agust@denx.de>
-Subject: Re: [PATCH 1/3] fpga manager: xilinx-spi: remove stray comment
-Message-ID: <20200820041110.GA4022@epycbox.lan>
-References: <20200817165911.32589-1-luca@lucaceresoli.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0nvDXpUHYyrFXqiJEgVmctUAZQeXchyr8nPgGxgcWW4=;
+        b=MmH3rDllL3zSRYPCUerE8neSjFrhMz0ydU9G+i+TfWudH2WyFXQmLWlzgzU62Fn/MX
+         SND9JGFxhDt+81O0BUcSEfgk1N4yYMx88olrn76kZvwet5k4fXILHRtegZ2RWm4GZL/c
+         iA1hvVLgveMWc6hH0dsMi0XjHrmVBHN6ie67pvakp40/FQRI9c4zty6JdGPgGMLOoaZ8
+         grifKH3PJJuMuw2clSkPmXT/jLBJYiXMwPt9SUVoIIcIkgekmECkS1561o+z/1hv8FdU
+         nGnOBU4qq/pdH4TiGEIQokqmUGkSm3QZ4U08v8+cicPsdzoJK3eiqvQI2AKpbnNi6N6Q
+         tBng==
+X-Gm-Message-State: AOAM531Q08Wx9GTCJEb/WeWd3OIZuhlaM27FMbKytNa68Cwr9/XRi0eX
+        xymUtK8DYhM0zoJCo9/fgyTgv/56FGfb1PedJWQ=
+X-Google-Smtp-Source: ABdhPJy2/GeHjbpEQW5WLqhwV8Q1aByRAXrNwdzw3GOo2jSoOuRHDsnzsIVlpgW45YpR851BOuVbIVgaLv4O/9whFRY=
+X-Received: by 2002:a05:6512:3156:: with SMTP id s22mr642666lfi.140.1597896700160;
+ Wed, 19 Aug 2020 21:11:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200817165911.32589-1-luca@lucaceresoli.net>
+References: <cover.1596025057.git.agx@sigxcpu.org> <a98acb7a0ed2ee6af78ba08354740d69b63b8c53.1596025057.git.agx@sigxcpu.org>
+In-Reply-To: <a98acb7a0ed2ee6af78ba08354740d69b63b8c53.1596025057.git.agx@sigxcpu.org>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Thu, 20 Aug 2020 01:11:28 -0300
+Message-ID: <CAOMZO5Dg5NGpJ0SQkYny04Kv3ky0619J7YwT-0eE1dsK19o1-w@mail.gmail.com>
+Subject: Re: [PATCH v1 3/3] arm64: defconfig: Enable imx8mq-librem5-devkit
+ display stack
+To:     =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Martin Kepplinger <martink@posteo.de>,
+        "Angus Ainslie (Purism)" <angus@akkea.ca>,
+        Anson Huang <Anson.Huang@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>,
+        Li Jun <jun.li@nxp.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Li Yang <leoyang.li@nxp.com>, Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Walle <michael@walle.cc>,
+        Olof Johansson <olof@lixom.net>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 06:59:09PM +0200, Luca Ceresoli wrote:
-> Remove comment committed by mistake.
-> 
-> Fixes: dd2784c01d93 ("fpga manager: xilinx-spi: check INIT_B pin during write_init")
-> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+Hi Guido,
+
+On Wed, Jul 29, 2020 at 9:19 AM Guido G=C3=BCnther <agx@sigxcpu.org> wrote:
+>
+> Enable the panel, NWL DSI host controller and dphy. This
+> also needs the reset controller.
+>
+> Signed-off-by: Guido G=C3=BCnther <agx@sigxcpu.org>
 > ---
->  drivers/fpga/xilinx-spi.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/fpga/xilinx-spi.c b/drivers/fpga/xilinx-spi.c
-> index 2967aa2a74e2..502fae0d1d85 100644
-> --- a/drivers/fpga/xilinx-spi.c
-> +++ b/drivers/fpga/xilinx-spi.c
-> @@ -57,7 +57,6 @@ static int wait_for_init_b(struct fpga_manager *mgr, int value,
->  
->  	if (conf->init_b) {
->  		while (time_before(jiffies, timeout)) {
-> -			/* dump_state(conf, "wait for init_d .."); */
->  			if (gpiod_get_value(conf->init_b) == value)
->  				return 0;
->  			usleep_range(100, 400);
-> -- 
-> 2.28.0
-> 
+>  arch/arm64/configs/defconfig | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index e0f33826819f..608019f6408d 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -640,10 +640,12 @@ CONFIG_DRM_MSM=3Dm
+>  CONFIG_DRM_TEGRA=3Dm
+>  CONFIG_DRM_PANEL_LVDS=3Dm
+>  CONFIG_DRM_PANEL_SIMPLE=3Dm
+> -CONFIG_DRM_SIMPLE_BRIDGE=3Dm
+> +CONFIG_DRM_PANEL_SITRONIX_ST7703=3Dm
+>  CONFIG_DRM_PANEL_TRULY_NT35597_WQXGA=3Dm
+>  CONFIG_DRM_DISPLAY_CONNECTOR=3Dm
+> +CONFIG_DRM_NWL_MIPI_DSI=3Dm
+>  CONFIG_DRM_SII902X=3Dm
+> +CONFIG_DRM_SIMPLE_BRIDGE=3Dm
 
-Applied to for-next,
+One nit: I suppose the CONFIG_DRM_SIMPLE_BRIDGE=3Dm move comes from a
+defconfig re-sync.
 
-Thanks
+Maybe this re-sync could be part of a separate patch?
+
+Thanks for adding these options to the defconfig so that we could have
+MIPI DSI working by default on i.MX8M:
+
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
