@@ -2,111 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9009224B1C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D03324B1CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726781AbgHTJNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:13:20 -0400
-Received: from mail-bn8nam11on2046.outbound.protection.outlook.com ([40.107.236.46]:6177
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725820AbgHTJNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:13:13 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H3mtckPi0a2h511UkiWeKUZvFLD3r7nh2mRyFtBYT0cZMg/cTnsTIRTHt4b0PTbIKM47EcQAsH3cxmEGuCphYtZBkbYr6um/t/aIWgw6SpilKW8JH+LcjZ/1dtCx3SArU5oSHL4KlAkaqO0DACQOnYPYsg+7J+t7XOL6lg+zVGKrhx1jPJ+fkbTEVvW3ln+za4Wh/D4LO6z0u8MPNnUESwCy6uTSZ+2Vp4b1DH5lEgA6gWoLIgtnhx5SMuzu4VPJJGMngg9wsN+CviY6YteZHJYSrmvtaU7vWmW6Mg5R6VTg/d35aGDHaHYTNhJ4J505jebylSsxpQWZJIaNgLkDow==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TuShWgbGVevNfvlxB8L0dXqg61kae6KDDNAZZApS9Ms=;
- b=PaxSgCGetvaRvCfVlEGv/uATkXkSyFtOGdiCNN4gjhMZKVLn8DXMZEcCoYk3CqAEoLhqq+gsnkdEMaqQdl0Sx1uAgVKnl9a21TY+XbXvwyiNZ34xMCfCLF82hQELkOO1o27Du50MJKl8QrjaK9XavXRqgDAxCgKE9wS5ompgV1gIKvsYGeDuwfh1646JLLj1SdRVwsL6Mh5KDV7iKlCbqlQTrE6P58CtS5ybRNQs6erkuFjYGAKop88NlRySj/pzatbClfZrkb3O4L5+6wUME6mQ27U2j+kSn7uMUJGlOf6zV+5YumSji+5EmtRd1+b0tNaScQjvmH2n+vTKwPcyNQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
- dkim=pass header.d=silabs.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TuShWgbGVevNfvlxB8L0dXqg61kae6KDDNAZZApS9Ms=;
- b=b3w2jNsOHzv6xMQARO1XkanDwKm4VvYzsbNchiX3YpkTu987OwxWnXcgUBjQGqEFeDnFQKXwvYoKXqQ3Hj9XyUPfaWxuuXdABAtoWk1tyWnC7f1ZdBWK2IqiUdJuYvnWUO0uLcWaVMnXoyiWZKc3KWlk9csGogY1/XriatY9vF4=
-Authentication-Results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=silabs.com;
-Received: from SN6PR11MB2718.namprd11.prod.outlook.com (2603:10b6:805:63::18)
- by SA0PR11MB4544.namprd11.prod.outlook.com (2603:10b6:806:92::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.25; Thu, 20 Aug
- 2020 09:13:11 +0000
-Received: from SN6PR11MB2718.namprd11.prod.outlook.com
- ([fe80::85c9:1aa9:aeab:3fa6]) by SN6PR11MB2718.namprd11.prod.outlook.com
- ([fe80::85c9:1aa9:aeab:3fa6%4]) with mapi id 15.20.3305.026; Thu, 20 Aug 2020
- 09:13:11 +0000
-From:   =?ISO-8859-1?Q?J=E9r=F4me?= Pouiller <jerome.pouiller@silabs.com>
-To:     gregkh@linuxfoundation.org, Suraj Upadhyay <usuraj35@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 4/6] staging: wfx/debug.c: Fix spelling mistake "carefull" => "careful"
-Date:   Thu, 20 Aug 2020 11:13:05 +0200
-Message-ID: <3146523.GL6Gmh1C2x@pc-42>
-Organization: Silicon Labs
-In-Reply-To: <ec3e765875adfe59f1d8d8ef2c610d6423116f55.1597913333.git.usuraj35@gmail.com>
-References: <834139101223e627665c939388cd7c542920c531.1597913333.git.usuraj35@gmail.com> <ec3e765875adfe59f1d8d8ef2c610d6423116f55.1597913333.git.usuraj35@gmail.com>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-ClientProxiedBy: PR0P264CA0106.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:19::22) To SN6PR11MB2718.namprd11.prod.outlook.com
- (2603:10b6:805:63::18)
+        id S1726846AbgHTJNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:13:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36499 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726792AbgHTJNh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:13:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597914816;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=A3aFtdgeFbcYR03wKrWlf344PhwxLiPdlKO9qqCpcnY=;
+        b=fuo/QEJuz+YkSDag8JooAPqlkwvrfGQPu2hSCGSI6zDV3dQH5WSKGnVfNTHxDtSxoiXmYo
+        X9KLfksQ99KlNSI741yot/L60y6zzlvztrzFnKss7QMGYORnt6PGUiCs/NO/mmNyBtnjgV
+        7BJZhpDC72YWTmaHlnu17se449eT95M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-497-zyT1cK7ZMwSTsNDtTeLzcw-1; Thu, 20 Aug 2020 05:13:34 -0400
+X-MC-Unique: zyT1cK7ZMwSTsNDtTeLzcw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B72B4425D2;
+        Thu, 20 Aug 2020 09:13:32 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.35.206.173])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BEBE27E309;
+        Thu, 20 Aug 2020 09:13:28 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
+        64-BIT)),
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        Ingo Molnar <mingo@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH 0/8] KVM: nSVM: ondemand nested state allocation + nested
+ guest state caching
+Date:   Thu, 20 Aug 2020 12:13:19 +0300
+Message-Id: <20200820091327.197807-1-mlevitsk@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 255.255.255.255 (255.255.255.255) by PR0P264CA0106.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:19::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24 via Frontend Transport; Thu, 20 Aug 2020 09:13:10 +0000
-X-Originating-IP: [37.71.187.125]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 26006554-8232-4707-23ca-08d844e942d1
-X-MS-TrafficTypeDiagnostic: SA0PR11MB4544:
-X-Microsoft-Antispam-PRVS: <SA0PR11MB4544B6EB3587130DC899B9A4935A0@SA0PR11MB4544.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:175;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hZ3RoOQCHBg48le9A+70DAPzkitr10MpWIUMib9O/P0gNJ4PDJ0bBweEC7dd3biK534uHUbZxh4e9pcawnAzbNgcOXplMQZkTiERwArPKy/+oTtMKPb8bF7on/GcVpiGwalBgu0B4DtzSeve/dZn6n1oT05Y+0eW7iPTsCu75CAfiXnbjGengDtLoI3OYCsIxF5FBFduJMg0lXYYIVe5c4tDfvUQA3tGNmYJlPjUSzYAFdS2dZPTG8o/OugK+84ynyHR22Hy4BEYhs7oJ2otfrAofgbBsxiAdPBcxy896AIHyPmpzQvnDw/IyPwFDWoaGywfTA/loumcGgzxDFWaEmmnAd4gmJ8rI8AeM+JP8lp0TNBvXeBBlIttbfpdT7DxUTZaKiwyl8KyHlD0Gb7MZA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB2718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(136003)(39850400004)(376002)(366004)(346002)(396003)(186003)(4744005)(6916009)(8936002)(8676002)(956004)(9686003)(478600001)(86362001)(2906002)(5660300002)(66556008)(4326008)(33716001)(66946007)(66476007)(16576012)(6666004)(6486002)(110011004)(83380400001)(316002)(52116002)(36916002)(66574015)(26005)(39026012);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: kz+6SNhkDibcpLYimjN8BDfC6w6+5DzQv6JaRNWQY/iDGt3nSNPVgsGxMGrQznyTxnHh22WL27mFcZHBqlXtmD8xnoQTjRRzAqHAIfGJVv3rzAce25XMZCeyybdulCY0E7s/G6DBodSi10QmBPqk3dW+blYTYjFTIDmOJJi9lGboCCAdcbq7SLsFzSkZwf3Wnuk40mMjvv1oH6bJ2ARydYIcqPN+uyLkThIJCA7V6R1VxJtWOBh2UYVqrJZBb3T6B9LjnAdQduDqoYSHtFq3JBqT+qhve2dCARntLrvnyup0WVuZBxwcze1MsBPN94YzYYF5eEhwlGO7AlCBw82W2HlQuBOXRx4dIHFoO/ii0pRMR14awDe926fsY1x/TtEQrVx4xUQD+S1/NhjEpzFbyVMzTO79bPS8GO1kcJemk0Q2ue89KaEfW8lfmbRsggxMNgjOAZaDmHbeLIrQpLGUB/mFacVqmRRiLpaC9uA40MzD2f/C7TXaJeEGOTo3NoVU8rx8QwzcmMNaPA98GO7yne2z8lpSBFK5o/o57seAJMDcEjf0bYrW28MVmz5sai3bRqt02qEH+slSXofUsvTSQoCs4VJF7bF7O3S3iYa5U6+fd3Vaw3/TLWMfy1l/1o5ecHYZKcyQnnQ6S0UztY2yQQ==
-X-OriginatorOrg: silabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 26006554-8232-4707-23ca-08d844e942d1
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB2718.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2020 09:13:11.4035
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 54dbd822-5231-4b20-944d-6f4abcd541fb
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9GOsBDE42q6ie8WDd5O5KYm9NU1z3zqkel2TDgVOUiWhEqCXojuz1RiTjnAOEVw19oBY9ovHKaFrLr90Jn4sZA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4544
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 20 August 2020 10:50:57 CEST Suraj Upadhyay wrote:
->=20
-> Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
-> ---
->  drivers/staging/wfx/debug.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/staging/wfx/debug.c b/drivers/staging/wfx/debug.c
-> index 3f1712b7c919..5772e2375370 100644
-> --- a/drivers/staging/wfx/debug.c
-> +++ b/drivers/staging/wfx/debug.c
-> @@ -299,7 +299,7 @@ static ssize_t wfx_send_hif_msg_read(struct file *fil=
-e, char __user *user_buf,
->                 return ret;
->         if (context->ret < 0)
->                 return context->ret;
-> -       // Be carefull, write() is waiting for a full message while read(=
-)
-> +       // Be careful, write() is waiting for a full message while read()
-
-Already fixed by commit c9638363f02d ("staging: wfx: fix a handful of
-spelling mistakes").
-
---=20
-J=E9r=F4me Pouiller
-
+Hi!=0D
+=0D
+This patch series implements caching of the whole nested guest vmcb=0D
+as opposed to current code that only caches its control area.=0D
+This allows us to avoid race in which guest changes the data area=0D
+while we are verifying it.=0D
+=0D
+In adddition to that I also implemented on demand nested state area=0D
+to compensate a bit for memory usage increase from this caching.=0D
+This way at least guests that don't use nesting won't waste memory=0D
+on nested state.=0D
+=0D
+Patches 1,2,3 are just refactoring,=0D
+=0D
+Patches 4,5 are for ondemand nested state, while patches 6,7,8 are=0D
+for caching of the nested state.=0D
+=0D
+Patch 8 is more of an optimization and can be dropped if you like to.=0D
+=0D
+The series was tested with various nested guests, in one case even with=0D
+L3 running, but note that due to unrelated issue, migration with nested=0D
+guest running didn't work for me with or without this series.=0D
+I am investigating this currently.=0D
+=0D
+Best regards,=0D
+	Maxim Levitsky=0D
+=0D
+Maxim Levitsky (8):=0D
+  KVM: SVM: rename a variable in the svm_create_vcpu=0D
+  KVM: nSVM: rename nested 'vmcb' to vmcb_gpa in few places=0D
+  KVM: SVM: refactor msr permission bitmap allocation=0D
+  KVM: x86: allow kvm_x86_ops.set_efer to return a value=0D
+  KVM: nSVM: implement ondemand allocation of the nested state=0D
+  SVM: nSVM: cache whole nested vmcb instead of only its control area=0D
+  KVM: nSVM: implement caching of nested vmcb save area=0D
+  KVM: nSVM: read only changed fields of the nested guest data area=0D
+=0D
+ arch/x86/include/asm/kvm_host.h |   2 +-=0D
+ arch/x86/kvm/svm/nested.c       | 296 +++++++++++++++++++++++---------=0D
+ arch/x86/kvm/svm/svm.c          | 129 +++++++-------=0D
+ arch/x86/kvm/svm/svm.h          |  32 ++--=0D
+ arch/x86/kvm/vmx/vmx.c          |   5 +-=0D
+ arch/x86/kvm/x86.c              |   3 +-=0D
+ 6 files changed, 312 insertions(+), 155 deletions(-)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
