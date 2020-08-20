@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1CE24B411
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B94A524B307
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729884AbgHTJ47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:56:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39810 "EHLO mail.kernel.org"
+        id S1728107AbgHTJkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:40:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730095AbgHTJ4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:56:24 -0400
+        id S1728092AbgHTJk0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:40:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 74635207FB;
-        Thu, 20 Aug 2020 09:56:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B516207DE;
+        Thu, 20 Aug 2020 09:40:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917384;
-        bh=M+1+zlegeMYvTNTb3WfSmsAd4BXj05tPC2metWwEjtw=;
+        s=default; t=1597916425;
+        bh=kWnBaufKUqvCtbG/HZ7TugvbLVyRRBhbOYdabkB1sKc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SGuuyoOab/4q8CXU6pYrbqjv0YEZW1feGJnKZU2H5Sqzlh+eHADlLvCMYIAMbjtCE
-         s5cuDMPFzI9xQi+ukvcOUDncfNA6m2VLCJQjSJedHykulefL1BCTwrJk+X1FLyHUjM
-         XkMz/ZEL2aNTRjHa6QJQy6oxH4wijqt5MuafgNyc=
+        b=sJFmLOTczel5mXZp09kp30eN0IeRjIKeutUylYvc/Y67UCsSZoxSdM3o4BENSvjgm
+         UAYYbCpzBBG8BFcDhlzroue2JTXbuWeFuZJLihLdVbAOVr+tzrvAiOXulVD4RuEqxo
+         YSBR4pqcdVpRxHy7q4x9gU8vsX2yh9PoCjQ1vL50=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 013/212] f2fs: check memory boundary by insane namelen
-Date:   Thu, 20 Aug 2020 11:19:46 +0200
-Message-Id: <20200820091603.001144682@linuxfoundation.org>
+        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: [PATCH 5.7 093/204] gfs2: Never call gfs2_block_zero_range with an open transaction
+Date:   Thu, 20 Aug 2020 11:19:50 +0200
+Message-Id: <20200820091610.978944493@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
-References: <20200820091602.251285210@linuxfoundation.org>
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +43,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jaegeuk Kim <jaegeuk@kernel.org>
+From: Bob Peterson <rpeterso@redhat.com>
 
-[ Upstream commit 4e240d1bab1ead280ddf5eb05058dba6bbd57d10 ]
+commit 70499cdfeb3625c87eebe4f7a7ea06fa7447e5df upstream.
 
-If namelen is corrupted to have very long value, fill_dentries can copy
-wrong memory area.
+Before this patch, some functions started transactions then they called
+gfs2_block_zero_range. However, gfs2_block_zero_range, like writes, can
+start transactions, which results in a recursive transaction error.
+For example:
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+do_shrink
+   trunc_start
+      gfs2_trans_begin <------------------------------------------------
+         gfs2_block_zero_range
+            iomap_zero_range(inode, from, length, NULL, &gfs2_iomap_ops);
+               iomap_apply ... iomap_zero_range_actor
+                  iomap_begin
+                     gfs2_iomap_begin
+                        gfs2_iomap_begin_write
+                  actor (iomap_zero_range_actor)
+		     iomap_zero
+			iomap_write_begin
+			   gfs2_iomap_page_prepare
+			      gfs2_trans_begin <------------------------
+
+This patch reorders the callers of gfs2_block_zero_range so that they
+only start their transactions after the call. It also adds a BUG_ON to
+ensure this doesn't happen again.
+
+Fixes: 2257e468a63b ("gfs2: implement gfs2_block_zero_range using iomap_zero_range")
+Cc: stable@vger.kernel.org # v5.5+
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/f2fs/dir.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ fs/gfs2/bmap.c |   69 ++++++++++++++++++++++++++++++++-------------------------
+ 1 file changed, 39 insertions(+), 30 deletions(-)
 
-diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-index b414892be08b7..79d138756acb5 100644
---- a/fs/f2fs/dir.c
-+++ b/fs/f2fs/dir.c
-@@ -843,6 +843,16 @@ bool f2fs_fill_dentries(struct dir_context *ctx, struct f2fs_dentry_ptr *d,
- 		de_name.name = d->filename[bit_pos];
- 		de_name.len = le16_to_cpu(de->name_len);
+--- a/fs/gfs2/bmap.c
++++ b/fs/gfs2/bmap.c
+@@ -1351,9 +1351,15 @@ int gfs2_extent_map(struct inode *inode,
+ 	return ret;
+ }
  
-+		/* check memory boundary before moving forward */
-+		bit_pos += GET_DENTRY_SLOTS(le16_to_cpu(de->name_len));
-+		if (unlikely(bit_pos > d->max)) {
-+			f2fs_msg(F2FS_I_SB(d->inode)->sb, KERN_WARNING,
-+				"%s: corrupted namelen=%d, run fsck to fix.",
-+				__func__, le16_to_cpu(de->name_len));
-+			set_sbi_flag(F2FS_I_SB(d->inode)->sb->s_fs_info, SBI_NEED_FSCK);
-+			return -EINVAL;
++/*
++ * NOTE: Never call gfs2_block_zero_range with an open transaction because it
++ * uses iomap write to perform its actions, which begin their own transactions
++ * (iomap_begin, page_prepare, etc.)
++ */
+ static int gfs2_block_zero_range(struct inode *inode, loff_t from,
+ 				 unsigned int length)
+ {
++	BUG_ON(current->journal_info);
+ 	return iomap_zero_range(inode, from, length, NULL, &gfs2_iomap_ops);
+ }
+ 
+@@ -1414,6 +1420,16 @@ static int trunc_start(struct inode *ino
+ 	u64 oldsize = inode->i_size;
+ 	int error;
+ 
++	if (!gfs2_is_stuffed(ip)) {
++		unsigned int blocksize = i_blocksize(inode);
++		unsigned int offs = newsize & (blocksize - 1);
++		if (offs) {
++			error = gfs2_block_zero_range(inode, newsize,
++						      blocksize - offs);
++			if (error)
++				return error;
 +		}
-+
- 		if (f2fs_encrypted_inode(d->inode)) {
- 			int save_len = fstr->len;
- 			int err;
-@@ -861,7 +871,6 @@ bool f2fs_fill_dentries(struct dir_context *ctx, struct f2fs_dentry_ptr *d,
- 					le32_to_cpu(de->ino), d_type))
- 			return true;
++	}
+ 	if (journaled)
+ 		error = gfs2_trans_begin(sdp, RES_DINODE + RES_JDATA, GFS2_JTRUNC_REVOKES);
+ 	else
+@@ -1427,19 +1443,10 @@ static int trunc_start(struct inode *ino
  
--		bit_pos += GET_DENTRY_SLOTS(le16_to_cpu(de->name_len));
- 		ctx->pos = start_pos + bit_pos;
+ 	gfs2_trans_add_meta(ip->i_gl, dibh);
+ 
+-	if (gfs2_is_stuffed(ip)) {
++	if (gfs2_is_stuffed(ip))
+ 		gfs2_buffer_clear_tail(dibh, sizeof(struct gfs2_dinode) + newsize);
+-	} else {
+-		unsigned int blocksize = i_blocksize(inode);
+-		unsigned int offs = newsize & (blocksize - 1);
+-		if (offs) {
+-			error = gfs2_block_zero_range(inode, newsize,
+-						      blocksize - offs);
+-			if (error)
+-				goto out;
+-		}
++	else
+ 		ip->i_diskflags |= GFS2_DIF_TRUNC_IN_PROG;
+-	}
+ 
+ 	i_size_write(inode, newsize);
+ 	ip->i_inode.i_mtime = ip->i_inode.i_ctime = current_time(&ip->i_inode);
+@@ -2448,25 +2455,7 @@ int __gfs2_punch_hole(struct file *file,
+ 	loff_t start, end;
+ 	int error;
+ 
+-	start = round_down(offset, blocksize);
+-	end = round_up(offset + length, blocksize) - 1;
+-	error = filemap_write_and_wait_range(inode->i_mapping, start, end);
+-	if (error)
+-		return error;
+-
+-	if (gfs2_is_jdata(ip))
+-		error = gfs2_trans_begin(sdp, RES_DINODE + 2 * RES_JDATA,
+-					 GFS2_JTRUNC_REVOKES);
+-	else
+-		error = gfs2_trans_begin(sdp, RES_DINODE, 0);
+-	if (error)
+-		return error;
+-
+-	if (gfs2_is_stuffed(ip)) {
+-		error = stuffed_zero_range(inode, offset, length);
+-		if (error)
+-			goto out;
+-	} else {
++	if (!gfs2_is_stuffed(ip)) {
+ 		unsigned int start_off, end_len;
+ 
+ 		start_off = offset & (blocksize - 1);
+@@ -2489,6 +2478,26 @@ int __gfs2_punch_hole(struct file *file,
+ 		}
  	}
- 	return false;
--- 
-2.25.1
-
+ 
++	start = round_down(offset, blocksize);
++	end = round_up(offset + length, blocksize) - 1;
++	error = filemap_write_and_wait_range(inode->i_mapping, start, end);
++	if (error)
++		return error;
++
++	if (gfs2_is_jdata(ip))
++		error = gfs2_trans_begin(sdp, RES_DINODE + 2 * RES_JDATA,
++					 GFS2_JTRUNC_REVOKES);
++	else
++		error = gfs2_trans_begin(sdp, RES_DINODE, 0);
++	if (error)
++		return error;
++
++	if (gfs2_is_stuffed(ip)) {
++		error = stuffed_zero_range(inode, offset, length);
++		if (error)
++			goto out;
++	}
++
+ 	if (gfs2_is_jdata(ip)) {
+ 		BUG_ON(!current->journal_info);
+ 		gfs2_journaled_truncate_range(inode, offset, length);
 
 
