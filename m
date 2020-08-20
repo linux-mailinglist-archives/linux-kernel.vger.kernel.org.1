@@ -2,105 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6340E24BCB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AFE724BCDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729673AbgHTMvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:51:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728981AbgHTMvT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 08:51:19 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED19C061385
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 05:51:19 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id j22so877563lfm.2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 05:51:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jbR4Pr9PsKUZJNbETq29ZnQQtrCssVvEEQi3ARZG9nQ=;
-        b=NSQ0BROBMUCayc3T1MEpDkx4BHFB0Fa2GAnXsMWQfpc9Mxm8RXXYi5lIXrgPw4T8gp
-         RrcHrHqBxLMy+phmJVsyJet4JVoixJY1EjWaOcUoJvARS+Kogk3jxHOvaOiTFiBv3ON2
-         bYGM6rcx03city4YXeyfQ/Exg15Ql39gfEj/ZVmi7IgGGQahzsKTrbDi5x4T57w0PULJ
-         ImKs6d/eNQvxJatm0TZRsDK7swAfzws9tQp49r7cjdcJqKeVXudGfcWJKNPJE04EuSDR
-         jrUdNU0I6aCSVwBAtlNxgXAcPQN8HKPWpaKgNeHj0JneqqX0ENOv2kTcp+zf8bHyK1UC
-         pdbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jbR4Pr9PsKUZJNbETq29ZnQQtrCssVvEEQi3ARZG9nQ=;
-        b=HiLXEMQNUYFwapVkgijfkDyrywfUFrXHjhdx+xWCvpD2dsm/dN0D/sUa8NPN0TCR9I
-         IPSFl2/WMKC2MLcLwH9g7Cv5ojbNcDJXaMG3RMMe8FD9/+YswvLeiL4n8db9Ml132LiO
-         Wcl+Bhy+6MXtnxXXsgA8xMvMw2rG6V17CAeGSlsdclRU1gfMoeBYABcHThIAGWEkHXUM
-         U6fYEXWD3GEngHxIe+kZD93Sp8eO0U+HGRBdXcJPp2nbMqDjIK1j9n8X/Tr/gtLX1e3k
-         2kQ7DnNJlynNxCoxuKIOwPkho5HJe7ULVO6sDK75nrDJ2efcDsPDanjk6hGfGBv5C5V/
-         kaPA==
-X-Gm-Message-State: AOAM531iLxxKN+NuQ0Jr4CfvtcFxXpP8bSW+VDzTPrTAwFsZ88VJu9b3
-        3gGATHgL/wJ1gIo5XbO4ll//wcM12O/UmJEg2K6a3g==
-X-Google-Smtp-Source: ABdhPJyEfF3Cf/9HBpWEcyPwTPo5dMAoeC6NBCQNEMnYl5vYAY5FrV4DpuBgxEshfquiH7b1BGXzndIiHYrezc8JbBQ=
-X-Received: by 2002:ac2:42cd:: with SMTP id n13mr500476lfl.190.1597927877625;
- Thu, 20 Aug 2020 05:51:17 -0700 (PDT)
+        id S1730325AbgHTMym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:54:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43960 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730541AbgHTMxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 08:53:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3ECC6B0BA;
+        Thu, 20 Aug 2020 12:53:28 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id CCF4A1E1312; Thu, 20 Aug 2020 14:53:00 +0200 (CEST)
+Date:   Thu, 20 Aug 2020 14:53:00 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org, jack@suse.cz, tytso@mit.edu,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [RFC 1/1] ext4: Optimize ext4 DAX overwrites
+Message-ID: <20200820125300.GK1902@quack2.suse.cz>
+References: <cover.1597855360.git.riteshh@linux.ibm.com>
+ <696f5386f1c306e769be409c8b1d90a3358bbf8d.1597855360.git.riteshh@linux.ibm.com>
 MIME-Version: 1.0
-References: <20200820120025.74460-1-benbjiang@tencent.com>
-In-Reply-To: <20200820120025.74460-1-benbjiang@tencent.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 20 Aug 2020 14:51:06 +0200
-Message-ID: <CAKfTPtABCbEuYf3uup5ZODyPXpUqBjgM8A5gBQqM0cQGxWk5zw@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: avoid vruntime compensation for SCHED_IDLE task
-To:     Jiang Biao <benbjiang@gmail.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jiang Biao <benbjiang@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <696f5386f1c306e769be409c8b1d90a3358bbf8d.1597855360.git.riteshh@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Aug 2020 at 14:00, Jiang Biao <benbjiang@gmail.com> wrote:
->
-> From: Jiang Biao <benbjiang@tencent.com>
->
-> Vruntime compensation has been down in place_entity() to
-> boot the waking procedure for fair tasks. There is no need to
+On Thu 20-08-20 17:06:28, Ritesh Harjani wrote:
+> Currently in case of DAX, we are starting a transaction
+> everytime for IOMAP_WRITE case. This can be optimized
+> away in case of an overwrite (where the blocks were already
+> allocated). This could give a significant performance boost
+> for multi-threaded random writes.
+> 
+> Reported-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
 
-s/boot/boost/ ?
+Thanks for returning to this and I'm glad to see how much this helped :)
+BTW, I'd suspect there could be also significant contention and cache line
+bouncing on j_state_lock and transaction's atomic counters...
 
-> do that for SCHED_IDLE task actually.
->
-> Not compensating vruntime for SCHED_IDLE task could make
-> SCHED_IDLE task more harmless for normal tasks.
->
-> Signed-off-by: Jiang Biao <benbjiang@tencent.com>
 > ---
->  kernel/sched/fair.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 1a68a0536add..adff77676a0a 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -4115,7 +4115,7 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int initial)
->                 vruntime += sched_vslice(cfs_rq, se);
->
->         /* sleeps up to a single latency don't count. */
-> -       if (!initial) {
-> +       if (!initial && likely(!task_has_idle_policy(task_of(se)))) {
+>  fs/ext4/ext4.h  | 1 +
+>  fs/ext4/file.c  | 2 +-
+>  fs/ext4/inode.c | 8 +++++++-
+>  3 files changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 42f5060f3cdf..9a2138afc751 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -3232,6 +3232,7 @@ extern const struct dentry_operations ext4_dentry_ops;
+>  extern const struct inode_operations ext4_file_inode_operations;
+>  extern const struct file_operations ext4_file_operations;
+>  extern loff_t ext4_llseek(struct file *file, loff_t offset, int origin);
+> +extern bool ext4_overwrite_io(struct inode *inode, loff_t pos, loff_t len);
+>  
+>  /* inline.c */
+>  extern int ext4_get_max_inline_size(struct inode *inode);
+> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+> index 2a01e31a032c..51cd92ac1758 100644
+> --- a/fs/ext4/file.c
+> +++ b/fs/ext4/file.c
+> @@ -188,7 +188,7 @@ ext4_extending_io(struct inode *inode, loff_t offset, size_t len)
+>  }
+>  
+>  /* Is IO overwriting allocated and initialized blocks? */
+> -static bool ext4_overwrite_io(struct inode *inode, loff_t pos, loff_t len)
+> +bool ext4_overwrite_io(struct inode *inode, loff_t pos, loff_t len)
+>  {
+>  	struct ext4_map_blocks map;
+>  	unsigned int blkbits = inode->i_blkbits;
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 10dd470876b3..f0ac0ee9e991 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -3423,6 +3423,7 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+>  	int ret;
+>  	struct ext4_map_blocks map;
+>  	u8 blkbits = inode->i_blkbits;
+> +	bool overwrite = false;
+>  
+>  	if ((offset >> blkbits) > EXT4_MAX_LOGICAL_BLOCK)
+>  		return -EINVAL;
+> @@ -3430,6 +3431,9 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+>  	if (WARN_ON_ONCE(ext4_has_inline_data(inode)))
+>  		return -ERANGE;
+>  
+> +	if (IS_DAX(inode) && (flags & IOMAP_WRITE) &&
+> +	    ext4_overwrite_io(inode, offset, length))
+> +		overwrite = true;
 
-What if se is not a task ?
+So the patch looks correct but using ext4_overwrite_io() seems a bit
+foolish since under the hood it does ext4_map_blocks() only to be able to
+decide whether to call ext4_map_blocks() once again with exactly the same
+arguments :). So I'd rather slightly refactor the code in
+ext4_iomap_begin() to avoid this double calling of ext4_map_blocks() for
+the fast path.
 
->                 unsigned long thresh = sysctl_sched_latency;
->
->                 /*
-> --
-> 2.21.0
->
+								Honza
+
+>  	/*
+>  	 * Calculate the first and last logical blocks respectively.
+>  	 */
+> @@ -3437,13 +3441,15 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+>  	map.m_len = min_t(loff_t, (offset + length - 1) >> blkbits,
+>  			  EXT4_MAX_LOGICAL_BLOCK) - map.m_lblk + 1;
+>  
+> -	if (flags & IOMAP_WRITE)
+> +	if ((flags & IOMAP_WRITE) && !overwrite)
+>  		ret = ext4_iomap_alloc(inode, &map, flags);
+>  	else
+>  		ret = ext4_map_blocks(NULL, inode, &map, 0);
+>  
+>  	if (ret < 0)
+>  		return ret;
+> +	if (IS_DAX(inode) && overwrite)
+> +		WARN_ON(!(map.m_flags & EXT4_MAP_MAPPED));
+>  
+>  	ext4_set_iomap(inode, iomap, &map, offset, length);
+>  
+> -- 
+> 2.25.4
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
