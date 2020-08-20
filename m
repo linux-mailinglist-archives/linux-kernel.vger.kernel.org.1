@@ -2,178 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF33724B72C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB1C24B734
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731552AbgHTKss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:48:48 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:55312 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731423AbgHTKrj (ORCPT
+        id S1727820AbgHTKtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:49:45 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:33814 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731233AbgHTKsx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:47:39 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200820104737euoutp024167e954dbac73b66a38f16b8f9bcaf2~s9DCwhMMZ0602806028euoutp02n;
-        Thu, 20 Aug 2020 10:47:37 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200820104737euoutp024167e954dbac73b66a38f16b8f9bcaf2~s9DCwhMMZ0602806028euoutp02n
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1597920457;
-        bh=7WJ9ipRlkuaJUk4o4grQFz2PxaIdJoQh60sHhV0DFT4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jz6FCIM9l9v5yrnVaHYzsAfNR1PLrwbB56fpFAovrgwit935SydBZbUeiM/N1lO/L
-         PbIiKFEX7fqvxux7t/lW7K3C0I2hDGFu2u1eegyHH8kMQx+Tnlr9Q5xPa3h3bPsjq7
-         rolhTjQvkY+0mv9oiHJQkaNoohdSBmr/mY60/s4k=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200820104737eucas1p112881b83eab752b80042953a38074886~s9DCbEQ3b0275402754eucas1p11;
-        Thu, 20 Aug 2020 10:47:37 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 32.CD.06318.9C45E3F5; Thu, 20
-        Aug 2020 11:47:37 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200820104737eucas1p140e3c575eb692a1de54c5a702951ebfe~s9DCGoE9e1948319483eucas1p1B;
-        Thu, 20 Aug 2020 10:47:37 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200820104737eusmtrp1b8657180ba1a19d55ba927dcfeb41838~s9DCGAWmc2448524485eusmtrp1y;
-        Thu, 20 Aug 2020 10:47:37 +0000 (GMT)
-X-AuditID: cbfec7f5-38bff700000018ae-a8-5f3e54c98637
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id B8.77.06017.8C45E3F5; Thu, 20
-        Aug 2020 11:47:36 +0100 (BST)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20200820104736eusmtip1ebfd77e5ae922d9acda4cc440279da19~s9DB51x7W2890228902eusmtip1R;
-        Thu, 20 Aug 2020 10:47:36 +0000 (GMT)
-From:   Lukasz Stelmach <l.stelmach@samsung.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>, Andi Shyti <andi@etezian.org>,
-        linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        m.szyprowski@samsung.com, b.zolnierkie@samsung.com
-Subject: Re: [PATCH 2/8] spi: spi-s3s64xx: Add S3C64XX_SPI_QUIRK_CS_AUTO for
- Exynos3250
-Date:   Thu, 20 Aug 2020 12:47:26 +0200
-In-Reply-To: <20200819193816.GB38371@sirena.org.uk> (Mark Brown's message of
-        "Wed, 19 Aug 2020 20:38:16 +0100")
-Message-ID: <dleftjd03lzj9d.fsf%l.stelmach@samsung.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 20 Aug 2020 06:48:53 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 3A701223;
+        Thu, 20 Aug 2020 13:48:50 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1597920530;
+        bh=9cTYIIJs4bB6m90q1Q33yf9+CsB+AZVqOTe8LJv4/ww=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=aVOB/NFoG4pG0LP5c29U+0JbKiEmNLTgguYMcNnw8D/mSNHFjhy86Frui5j9mCU4B
+         x0jgGpZW/4eUidx3C0zPQbegivfE93OMslZzvamvQtg0qT5BjfxFpV0wRB14lCxG5n
+         aWSXN7XhoMwCZUDeNtxZRyvL02/gtiAqN4dgIF4g=
+Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Thu, 20 Aug 2020 13:48:49 +0300
+Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
+ by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
+ id 15.01.1847.003; Thu, 20 Aug 2020 13:48:49 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     "dsterba@suse.cz" <dsterba@suse.cz>
+CC:     "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: RE: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
+ Software.
+Thread-Topic: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
+ Software.
+Thread-Index: AdZyNcmjSkpkGje7R9K6YobJrVDyZwA6EcIAAPAHtmA=
+Date:   Thu, 20 Aug 2020 10:48:49 +0000
+Message-ID: <a8fa5b2b31b349f2858306af01269eda@paragon-software.com>
+References: <2911ac5cd20b46e397be506268718d74@paragon-software.com>
+ <20200815190642.GZ2026@twin.jikos.cz>
+In-Reply-To: <20200815190642.GZ2026@twin.jikos.cz>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.30.8.36]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
-        protocol="application/pgp-signature"
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPKsWRmVeSWpSXmKPExsWy7djPc7onQ+ziDf6uErdY/OM5k8XGGetZ
-        LaY+fMJm0f/4NbPF+fMb2C02Pb7GanF51xw2ixnn9zFZNH68yW6x9shddgcuj+tLPjF7bFrV
-        yeaxeUm9R9+WVYwenzfJBbBGcdmkpOZklqUW6dslcGX8nn+OqWCBWMWaV8+ZGhjPCnUxcnJI
-        CJhIHFm5lq2LkYtDSGAFo8Sk9bNYIZwvjBLbN3UzQTifGSXm/jkL5HCAtSzuK4aIL2eUaN10
-        kglklJDAc0aJR9PlQWrYBPQk1q6NAAmLCChLXP2+lwWknllgDZPE7IdrGUESwgKREreXT2AB
-        sVkEVCXOrtjPDmJzChRKzD51FszmFTCXWHliH1iNqIClxJYX96HighInZz4BizML5ErMPP+G
-        EWSBhMAtdol1fz6zQvzmInF11QsoW1ji1fEt7BC2jMTpyT0sEM/US0yeZAbR28MosW3ODxaI
-        GmuJO+d+sUHYjhK/Dz5ig6jnk7jxVhBiL5/EpG3TmSHCvBIdbdAQVZFY178HaoqURO+rFYwQ
-        JR4S7XOgwdbGKLF172S2CYwKs5B8MwvJN7OAWpgFNCXW79KHCGtLLFv4mhnCtpVYt+49ywJG
-        1lWM4qmlxbnpqcXGeanlesWJucWleel6yfm5mxiBSev0v+NfdzDu+5N0iFGAg1GJhzdAyTZe
-        iDWxrLgy9xCjCtCkRxtWX2CUYsnLz0tVEuF1Ons6Tog3JbGyKrUoP76oNCe1+BCjNAeLkjiv
-        8aKXsUIC6YklqdmpqQWpRTBZJg5OqQbGzQ7/WEpX7pBq23hX9GyCUTJ3zLEzpocv3509q/nX
-        6Xn/ni/6LWFY9G6qI5/nv04H78gztucctlqxz7ike8B3uTjfSqFp2RvdY/cEVHy59KIu68Ci
-        H4v0qlyDpHKuGBc59rpapB0ItfSdJVP28dQtgy2/s4olTlWuPZvjverHc0WtuVt87N7+VWIp
-        zkg01GIuKk4EANNLIrViAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrOIsWRmVeSWpSXmKPExsVy+t/xu7onQuziDXYesLZY/OM5k8XGGetZ
-        LaY+fMJm0f/4NbPF+fMb2C02Pb7GanF51xw2ixnn9zFZNH68yW6x9shddgcuj+tLPjF7bFrV
-        yeaxeUm9R9+WVYwenzfJBbBG6dkU5ZeWpCpk5BeX2CpFG1oY6RlaWugZmVjqGRqbx1oZmSrp
-        29mkpOZklqUW6dsl6GX8nn+OqWCBWMWaV8+ZGhjPCnUxcnBICJhILO4r7mLk4hASWMoocbHj
-        BxNEXEpi5dz0LkZOIFNY4s+1LjaImqeMEiuXrmIBqWET0JNYuzYCpEZEQFni6ve9LCA2s8BS
-        Jon3d11BbGGBcInfh1eBxYUEjCR+NvWwgtgsAqoSZ1fsZwexOQUKJWafOgtm8wqYS6w8sQ+s
-        XlTAUmLLi/tQcUGJkzOfQM3Plvi6+jnzBEaBWUhSs5CkZgFdxyygKbF+lz5EWFti2cLXzBC2
-        rcS6de9ZFjCyrmIUSS0tzk3PLTbSK07MLS7NS9dLzs/dxAiMuG3Hfm7Zwdj1LvgQowAHoxIP
-        b4CSbbwQa2JZcWXuIUYVoDGPNqy+wCjFkpefl6okwut09nScEG9KYmVValF+fFFpTmrxIUZT
-        oD8nMkuJJucDk0ReSbyhqaG5haWhubG5sZmFkjhvh8DBGCGB9MSS1OzU1ILUIpg+Jg5OqQZG
-        t7ZFNTKPbP1eCFqLCMtH8/Ql5srMLpohwZQ0361OeM3ZSaX9vCZ7g6UfemT5Xt6+7FTSMVWp
-        h+c+f2pnN36eZeztdXt7Y9X86wcO9qw5p2FaXvmo5mnbe5OZhuUTZG4JGTfvCnFM13C+zmS0
-        PixOQk5iyxb/T/omCwt4p+uGRxUKH3IquqLEUpyRaKjFXFScCAAKbWWM2gIAAA==
-X-CMS-MailID: 20200820104737eucas1p140e3c575eb692a1de54c5a702951ebfe
-X-Msg-Generator: CA
-X-RootMTR: 20200820104737eucas1p140e3c575eb692a1de54c5a702951ebfe
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200820104737eucas1p140e3c575eb692a1de54c5a702951ebfe
-References: <20200819193816.GB38371@sirena.org.uk>
-        <CGME20200820104737eucas1p140e3c575eb692a1de54c5a702951ebfe@eucas1p1.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+From: David Sterba <dsterba@suse.cz>
+Sent: Saturday, August 15, 2020 10:07 PM
+>=20
+> 1. check existing support in kernel
+>=20
+> There is fs/ntfs with read-only support from Tuxera, last change in the
+> git tree is 3 years ago. The driver lacks read-write support so there's
+> not 100% functionality duplication but there's still driver for the same
+> filesystem.
+>=20
+> I don't know what's the feature parity, how much the in-kernel driver is
+> used (or what are business relations of Tuxera and Paragon), compared to
+> the FUSE-based driver, but ideally there's just one NTFS driver in linux
+> kernel.
+>=20
+> The question I'd ask:
+>=20
+> - what are users of current fs/ntfs driver going to lose, if the driver
+>   is going to be completely replaced by your driver
+>=20
+>   If the answer is 'nothing' then, the straightfowrad plan is to just
+>   replace it. Otherwise, we'll have to figure that out.
 
-It was <2020-08-19 =C5=9Bro 20:38>, when Mark Brown wrote:
-> On Wed, Aug 19, 2020 at 03:01:21PM +0200, Lukasz Stelmach wrote:
->> It was <2020-08-19 =C5=9Bro 14:39>, when Krzysztof Kozlowski wrote:
->
->>> There is here no commit msg, no explanation.
->
->> As I wrote in the cover letter, this and previous commits make things
->> work on Exynos3250 (ARTIK5 precisely). I can't explain why. I read
->> everything I could about this HW and there were no details about
->> automatic CS handling other than how to turn it on and off.
->
-> What is similar about those other SoCs - could you be more specific
-> here, or what goes wrong if you don't set this?
+Hi! Regarding the comparison with fs/ntfs driver - we of course did the ana=
+lysis. There are two main points which make the difference: full read-write=
+ support (including compressed/sparse files) and journal replaying. The one=
+ thing which is missing in fs/ntfs3 in the inital patch is the appropriate =
+processing of hybernated volumes (mounting them read-only to avoid corrupti=
+ons). This, however, is considered as trivial change and will be added eith=
+er in v2, or in v3. In general, we want to have the community's feedback on=
+ the topic, and if it's more suitable for the Linux Kernel not to have two =
+implementations in Kernel, then the 'fs/ntfs' may be replaced. =20
 
-Without the quirk set DMA transfers longer than 512 bytes fail. They
-simply stop and hit the timeout with a few (<20) bytes pending.
+>=20
+> 2. split the patch
+>=20
+> One patch of 27k lines of code is way too much to anybody to look at.
 
-As far as I can tell the SPI controller is the same in different Exynos
-SoCs.
+The patch will be splitted in v2 file-wise. Wasn't clear initially which wa=
+y will be more convenient to review.
 
-> The auto mode (or at least the auto mode that was on the Exynos7) is
-> not compatible with many SPI devices if the controller chip select is
-> actually in use, the quirk was added for controllers that just don't
-> have the manual mode.
+> 3. determine support status
+>=20
+> You state intentions to work on the driver and there's a new entry in
+> MAINTAINERS file with 'Supported', so that's a good sign that it's not
+> just one-time dump of code. Fixing bugs or adding functionality is
+> expected.
+>=20
+> 4. development git tree
+>=20
+> Once the filesystem is merged, you'd be getting mails from people
+> running eg. static checkers, build tests, sending cleanups or other
+> tree-wide changes.  The entry in MAINTAINER file does not point to any
+> git tree, so that's not clear to me what's the expected way to get the
+> fixes to Linus' tree or where are people supposed to look for 'is this
+> fixed already'.
 
-According to the manual the auto mode makes the controller toggle CS
-between SPI packets (bytes?).
+The external git repo for the code is currently being prepared, so it's the=
+ matter of time to have it. Will add the appropriate links to the MAINTERS =
+once done.
 
-I=C2=A0didn't have any problem transferring data (>512 bytes) from the SPI
-device in the polling mode. Only the DMA caused problems.
-> See also:
->
->   https://lore.kernel.org/linux-spi/CAAgF-BfGwcNzMx0meFVkJqNMTbQ4_PP1PZ3i=
-6edOm6U3bc26_Q@mail.gmail.com/
->
-> for an explanation of the quirk.
->
-
->> CS can also be controlled automatically by setting AUTO_N_MANUAL to 1
->> in CS_CFG. When it is auto CS automatically toggles between packet to
->> packet. NCS_TIME_COUNT in CS_CFG controls the inactive period. The
->> driver by default uses manual mode. But on exynos7 the manual mode is
->> removed.
-
-I *suspect* that the automatic CS toggling between packets gives better
-(?) synchronisation between the SPI device and the controller's
-internals and prevents some kind of a deadlock inside the
-controller. These are just speculations.
-
-=2D-=20
-=C5=81ukasz Stelmach
-Samsung R&D Institute Poland
-Samsung Electronics
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAl8+VL4ACgkQsK4enJil
-gBCobwf+LjO7fiQ+cGZHf8IsqYN/VyXQSsG+kaaGX4m/CYUMGTVs1GZpTWJnAZvM
-vCJgkQvHZZN5gWgkKmeH9Bkj91Frzv2zXlW304h2Vg9V5suiF58Xuqi3ynnecAhk
-QsYFb1c7X2LCvFhgpCAu0y39iODVafDIFAomUc+7HDRAFHy5rN8od+3HTzd/U46x
-s0AnNvJUt/diwApiv9aCpyJphgfMu2I+NXJdfMaFvs5Npp1rtlWGq+U5Z11Yc2VD
-UW657sr6135wlHEQPbcCOr7rB5D2Utwq8eM2zciOA5iIumidEpkR5g2GtWDgZM5V
-RZIWmtKeVCI4bKveBkkPEvxqpEhJdw==
-=aDU8
------END PGP SIGNATURE-----
---=-=-=--
