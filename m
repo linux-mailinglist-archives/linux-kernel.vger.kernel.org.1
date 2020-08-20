@@ -2,205 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F40A24B9E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B28BD24B9A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729576AbgHTL4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:56:36 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:23709 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729888AbgHTKBP (ORCPT
+        id S1730645AbgHTLwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:52:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730528AbgHTKCo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:01:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597917667;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IkYwOmHnLpCancNxzMEHI9LdEgKbJ7uxe1e/me7Jq88=;
-        b=K5+Tt2q4Ret+Mb39VcY92wcqonm5nyeaGUAhlRtdB8Stgy55eqEcLcDG4rJW9TxuVidbKP
-        BusKUsln0KebCipqdkDc7skqvTwCvHM0u4pezTJIHIyUtaB8MRX9TSknTjvUlcSuRduBBc
-        IXTtffAyYym1aWfPihlmmxFNocpetDk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-380-a4m2N7j5MqeK4ROu0uGqqQ-1; Thu, 20 Aug 2020 06:01:06 -0400
-X-MC-Unique: a4m2N7j5MqeK4ROu0uGqqQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2D6451885D89;
-        Thu, 20 Aug 2020 10:01:04 +0000 (UTC)
-Received: from starship (unknown [10.35.206.173])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D95BE5DA76;
-        Thu, 20 Aug 2020 10:01:00 +0000 (UTC)
-Message-ID: <608fe03082dc5e4db142afe3c0eb5f7c165f342b.camel@redhat.com>
-Subject: Re: [PATCH 2/8] KVM: nSVM: rename nested 'vmcb' to vmcb_gpa in few
- places
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Date:   Thu, 20 Aug 2020 13:00:59 +0300
-In-Reply-To: <f6bf9494-f337-2e53-6e6c-e0b8a847ec8d@redhat.com>
-References: <20200820091327.197807-1-mlevitsk@redhat.com>
-         <20200820091327.197807-3-mlevitsk@redhat.com>
-         <f6bf9494-f337-2e53-6e6c-e0b8a847ec8d@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        Thu, 20 Aug 2020 06:02:44 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B25FC061757;
+        Thu, 20 Aug 2020 03:02:42 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4E5E323D;
+        Thu, 20 Aug 2020 12:02:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1597917743;
+        bh=UdZW/gWpeBR8Fp2uswR4BNeR1AZf83I2Xerix6/McmU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ItMFiAGpy+m799SAJlmxoBALpCUTcBMW2ZU7dxHv3+rwmOEr6obhEyMEeRR1DmtU5
+         w83NTD2V6detNxAnQkYHTyfm7GYG23NbpofX1u6znoMCAcfcbBJQgrORodryscgxWx
+         WciTsmZ7pXmG36Axz5Ekh/zrHURi1ohdX/kph6gI=
+Date:   Thu, 20 Aug 2020 13:02:05 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        David Airlie <airlied@linux.ie>,
+        Wanchun Zheng <zhengwanchun@hisilicon.com>,
+        linuxarm@huawei.com, dri-devel <dri-devel@lists.freedesktop.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Xiubin Zhang <zhangxiubin1@huawei.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Bogdan Togorean <bogdan.togorean@analog.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Liwei Cai <cailiwei@hisilicon.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        mauro.chehab@huawei.com, Rob Clark <robdclark@chromium.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Liuyao An <anliuyao@huawei.com>,
+        Network Development <netdev@vger.kernel.org>,
+        Rongrong Zou <zourongrong@gmail.com>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 00/49] DRM driver for Hikey 970
+Message-ID: <20200820100205.GA5962@pendragon.ideasonboard.com>
+References: <cover.1597833138.git.mchehab+huawei@kernel.org>
+ <20200819152120.GA106437@ravnborg.org>
+ <20200819153045.GA18469@pendragon.ideasonboard.com>
+ <CALAqxLUXnPRec3UYbMKge8yNKBagLOatOeRCagF=JEyPEfWeKA@mail.gmail.com>
+ <20200820090326.3f400a15@coco.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200820090326.3f400a15@coco.lan>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-08-20 at 11:56 +0200, Paolo Bonzini wrote:
-> On 20/08/20 11:13, Maxim Levitsky wrote:
-> > No functional changes.
+Hi Mauro,
+
+On Thu, Aug 20, 2020 at 09:03:26AM +0200, Mauro Carvalho Chehab wrote:
+> Em Wed, 19 Aug 2020 12:52:06 -0700 John Stultz escreveu:
+> > On Wed, Aug 19, 2020 at 8:31 AM Laurent Pinchart wrote:
+> > > On Wed, Aug 19, 2020 at 05:21:20PM +0200, Sam Ravnborg wrote:  
+> > > > On Wed, Aug 19, 2020 at 01:45:28PM +0200, Mauro Carvalho Chehab wrote:  
+> > > > > This patch series port the out-of-tree driver for Hikey 970 (which
+> > > > > should also support Hikey 960) from the official 96boards tree:
+> > > > >
+> > > > >    https://github.com/96boards-hikey/linux/tree/hikey970-v4.9
+> > > > >
+> > > > > Based on his history, this driver seems to be originally written
+> > > > > for Kernel 4.4, and was later ported to Kernel 4.9. The original
+> > > > > driver used to depend on ION (from Kernel 4.4) and had its own
+> > > > > implementation for FB dev API.
+> > > > >
+> > > > > As I need to preserve the original history (with has patches from
+> > > > > both HiSilicon and from Linaro),  I'm starting from the original
+> > > > > patch applied there. The remaining patches are incremental,
+> > > > > and port this driver to work with upstream Kernel.
+> > > > >  
+> > ...
+> > > > > - Due to legal reasons, I need to preserve the authorship of
+> > > > >   each one responsbile for each patch. So, I need to start from
+> > > > >   the original patch from Kernel 4.4;  
+> > ...
+> > > > I do acknowledge you need to preserve history and all -
+> > > > but this patchset is not easy to review.  
+> > >
+> > > Why do we need to preserve history ? Adding relevant Signed-off-by and
+> > > Co-developed-by should be enough, shouldn't it ? Having a public branch
+> > > that contains the history is useful if anyone is interested, but I don't
+> > > think it's required in mainline.  
 > > 
-> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> > ---
-> >  arch/x86/kvm/svm/nested.c | 10 +++++-----
-> >  arch/x86/kvm/svm/svm.c    | 13 +++++++------
-> >  arch/x86/kvm/svm/svm.h    |  2 +-
-> >  3 files changed, 13 insertions(+), 12 deletions(-)
+> > Yea. I concur with Laurent here. I'm not sure what legal reasoning you
+> > have on this but preserving the "absolute" history here is actively
+> > detrimental for review and understanding of the patch set.
 > > 
-> > diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-> > index fb68467e6049..d9755eab2199 100644
-> > --- a/arch/x86/kvm/svm/nested.c
-> > +++ b/arch/x86/kvm/svm/nested.c
-> > @@ -431,7 +431,7 @@ int enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb_gpa,
-> >  {
-> >  	int ret;
-> >  
-> > -	svm->nested.vmcb = vmcb_gpa;
-> > +	svm->nested.vmcb_gpa = vmcb_gpa;
-> >  	load_nested_vmcb_control(svm, &nested_vmcb->control);
-> >  	nested_prepare_vmcb_save(svm, nested_vmcb);
-> >  	nested_prepare_vmcb_control(svm);
-> > @@ -568,7 +568,7 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
-> >  	struct vmcb *vmcb = svm->vmcb;
-> >  	struct kvm_host_map map;
-> >  
-> > -	rc = kvm_vcpu_map(&svm->vcpu, gpa_to_gfn(svm->nested.vmcb), &map);
-> > +	rc = kvm_vcpu_map(&svm->vcpu, gpa_to_gfn(svm->nested.vmcb_gpa), &map);
-> >  	if (rc) {
-> >  		if (rc == -EINVAL)
-> >  			kvm_inject_gp(&svm->vcpu, 0);
-> > @@ -579,7 +579,7 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
-> >  
-> >  	/* Exit Guest-Mode */
-> >  	leave_guest_mode(&svm->vcpu);
-> > -	svm->nested.vmcb = 0;
-> > +	svm->nested.vmcb_gpa = 0;
-> >  	WARN_ON_ONCE(svm->nested.nested_run_pending);
-> >  
-> >  	/* in case we halted in L2 */
-> > @@ -1018,7 +1018,7 @@ static int svm_get_nested_state(struct kvm_vcpu *vcpu,
-> >  
-> >  	/* First fill in the header and copy it out.  */
-> >  	if (is_guest_mode(vcpu)) {
-> > -		kvm_state.hdr.svm.vmcb_pa = svm->nested.vmcb;
-> > +		kvm_state.hdr.svm.vmcb_pa = svm->nested.vmcb_gpa;
-> >  		kvm_state.size += KVM_STATE_NESTED_SVM_VMCB_SIZE;
-> >  		kvm_state.flags |= KVM_STATE_NESTED_GUEST_MODE;
-> >  
-> > @@ -1128,7 +1128,7 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
-> >  	copy_vmcb_control_area(&hsave->control, &svm->vmcb->control);
-> >  	hsave->save = save;
-> >  
-> > -	svm->nested.vmcb = kvm_state->hdr.svm.vmcb_pa;
-> > +	svm->nested.vmcb_gpa = kvm_state->hdr.svm.vmcb_pa;
-> >  	load_nested_vmcb_control(svm, &ctl);
-> >  	nested_prepare_vmcb_control(svm);
-> >  
-> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> > index 562a79e3e63a..4338d2a2596e 100644
-> > --- a/arch/x86/kvm/svm/svm.c
-> > +++ b/arch/x86/kvm/svm/svm.c
-> > @@ -1102,7 +1102,7 @@ static void init_vmcb(struct vcpu_svm *svm)
-> >  	}
-> >  	svm->asid_generation = 0;
-> >  
-> > -	svm->nested.vmcb = 0;
-> > +	svm->nested.vmcb_gpa = 0;
-> >  	svm->vcpu.arch.hflags = 0;
-> >  
-> >  	if (!kvm_pause_in_guest(svm->vcpu.kvm)) {
-> > @@ -3884,7 +3884,7 @@ static int svm_pre_enter_smm(struct kvm_vcpu *vcpu, char *smstate)
-> >  		/* FED8h - SVM Guest */
-> >  		put_smstate(u64, smstate, 0x7ed8, 1);
-> >  		/* FEE0h - SVM Guest VMCB Physical Address */
-> > -		put_smstate(u64, smstate, 0x7ee0, svm->nested.vmcb);
-> > +		put_smstate(u64, smstate, 0x7ee0, svm->nested.vmcb_gpa);
-> >  
-> >  		svm->vmcb->save.rax = vcpu->arch.regs[VCPU_REGS_RAX];
-> >  		svm->vmcb->save.rsp = vcpu->arch.regs[VCPU_REGS_RSP];
-> > @@ -3903,17 +3903,18 @@ static int svm_pre_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
-> >  	struct vmcb *nested_vmcb;
-> >  	struct kvm_host_map map;
-> >  	u64 guest;
-> > -	u64 vmcb;
-> > +	u64 vmcb_gpa;
-> >  	int ret = 0;
-> >  
-> >  	guest = GET_SMSTATE(u64, smstate, 0x7ed8);
-> > -	vmcb = GET_SMSTATE(u64, smstate, 0x7ee0);
-> > +	vmcb_gpa = GET_SMSTATE(u64, smstate, 0x7ee0);
-> >  
-> >  	if (guest) {
-> > -		if (kvm_vcpu_map(&svm->vcpu, gpa_to_gfn(vmcb), &map) == -EINVAL)
-> > +		if (kvm_vcpu_map(&svm->vcpu, gpa_to_gfn(vmcb_gpa), &map) == -EINVAL)
-> >  			return 1;
-> > +
-> >  		nested_vmcb = map.hva;
-> > -		ret = enter_svm_guest_mode(svm, vmcb, nested_vmcb);
-> > +		ret = enter_svm_guest_mode(svm, vmcb_gpa, nested_vmcb);
-> >  		kvm_vcpu_unmap(&svm->vcpu, &map, true);
-> >  	}
-> >  
-> > diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> > index a798e1731709..03f2f082ef10 100644
-> > --- a/arch/x86/kvm/svm/svm.h
-> > +++ b/arch/x86/kvm/svm/svm.h
-> > @@ -85,7 +85,7 @@ struct svm_nested_state {
-> >  	struct vmcb *hsave;
-> >  	u64 hsave_msr;
-> >  	u64 vm_cr_msr;
-> > -	u64 vmcb;
-> > +	u64 vmcb_gpa;
-> >  	u32 host_intercept_exceptions;
-> >  
-> >  	/* These are the merged vectors */
-> > 
+> > Preserving Authorship, Signed-off-by lines and adding Co-developed-by
+> > lines should be sufficient to provide both atribution credit and DCO
+> > history.
 > 
-> Please use vmcb12_gpa, and svm->nested.vmcb12 for the VMCB in patch 6.
+> I'm not convinced that, from legal standpoint, folding things would
+> be enough. See, there are at least 3 legal systems involved here
+> among the different patch authors:
 > 
-> (You probably also what to have local variables named vmcb12 in patch 6
-> to avoid too-long lines).
-The limit was raised to 100 chars recently, thats why I allowed some lines to
-go over 80 characters to avoid adding too much noise.
-
+> 	- civil law;
+> 	- common law;
+> 	- customary law + common law.
 > 
-> Paolo
-
-I was thinking to to this, but since this field already sits in ->nested I was
-thinking that this is a bit redundant, but I don't have anything against doing it.
-
-Best regards,
-	Maxim Levitsky
-
+> Merging stuff altogether from different law systems can be problematic,
+> and trying to discuss this with experienced IP property lawyers will
+> for sure take a lot of time and efforts. I also bet that different
+> lawyers will have different opinions, because laws are subject to 
+> interpretation. With that matter I'm not aware of any court rules 
+> with regards to folded patches. So, it sounds to me that folding 
+> patches is something that has yet to be proofed in courts around
+> the globe.
 > 
+> At least for US legal system, it sounds that the Country of
+> origin of a patch is relevant, as they have a concept of
+> "national technology" that can be subject to export regulations.
+> 
+> From my side, I really prefer to play safe and stay out of any such
+> legal discussions.
 
+Let's be serious for a moment. If you think there are legal issues in
+taking GPL-v2.0-only patches and squashing them while retaining
+authorship information through tags, the Linux kernel if *full* of that.
+You also routinely modify patches that you commit to the media subsystem
+to fix "small issues".
 
+The country of origin argument makes no sense either, the kernel code
+base if full of code coming from pretty much all country on the planet.
+
+Keeping the patches separate make this hard to review. Please squash
+them.
+
+-- 
+Regards,
+
+Laurent Pinchart
