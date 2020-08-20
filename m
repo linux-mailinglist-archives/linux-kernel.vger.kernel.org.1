@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 730CD24B065
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:50:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A6724B069
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726874AbgHTHui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 03:50:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41546 "EHLO
+        id S1726879AbgHTHuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 03:50:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726846AbgHTHuM (ORCPT
+        with ESMTP id S1726759AbgHTHuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 03:50:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EBDC061384
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 00:50:11 -0700 (PDT)
+        Thu, 20 Aug 2020 03:50:19 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C772C061343
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 00:50:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=ITgDh+A97BmoqfyyGbHad1EUnV3jhWwFuwLPgOVpr2M=; b=DU0iu3B29nHJTBIP6e69BODeLf
-        jmwkp257JxSBl9s4Fq/leQ4PeOomDFZXsxwLLWLlg0KsUK+z7Dev8Jjsi8hownbHcdLRAEfHKVGk0
-        Cr4P3qBqwC2ORP7RzcepQVeczuQJur1UzfKUMB6Jbp5ZCPO5WoOPh3Eo/9npa4r3T6RAumbwbdhVn
-        bK0MGft9J6UVNAf/6zVDQP3zEQrdHybuEVbySkXIMGwjncxpOsQY1UFrUGJH5mJ5IAgEbzCVWaINb
-        +6n9qS1vrR7racFZhd4/MHc16WnSvbfGXI5a4wH1KmTSr9QTlwbI8XF6UF1/27dKMR9l+qY3f4ZUM
-        pAWk7+hA==;
+        bh=u2prpppSLhgpCB4/6lrQJoIXnF0YxjjunjyyoCu+8lU=; b=tHUh3eh2GVHnP+iMBbByFYyD9x
+        8dfT0uGfXDkR36IBWuog6134Wwl3NO+b9XjmoDnT/Dl9WoHI5rRHDyUmxBgwkOPXbQZKHoup/Rp+y
+        HA6LGD2O++N+rJ7zZ2CWMYvfhfiLyjo+yZsHc17F+msFXqZHOB/21YXZxeGE/FlihhILTOyBJemfL
+        2cUe7iuXqId+fMKyuQA6XNx2N0puqpkhmRc7oqLHs4xXLkK5YctLPiqlS8YJbdU8qaKtzKNapcolY
+        HzSM+2L0j7F8ozR7i0DHTuj5RKULdkHDq9ESoxq/IOimnZciGU4GGCc/d7JDEE711MHnbCxMhFlyo
+        h8+UwxFw==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k8fKX-0000Mk-6R; Thu, 20 Aug 2020 07:49:49 +0000
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k8fKW-0007DI-2R; Thu, 20 Aug 2020 07:49:48 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E4BC7306099;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E7D663060F2;
         Thu, 20 Aug 2020 09:49:43 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 63F7D28B7E843; Thu, 20 Aug 2020 09:49:43 +0200 (CEST)
-Message-ID: <20200820074640.576863250@infradead.org>
+        id 6A8A428B7E846; Thu, 20 Aug 2020 09:49:43 +0200 (CEST)
+Message-ID: <20200820074640.634854227@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 20 Aug 2020 09:30:36 +0200
+Date:   Thu, 20 Aug 2020 09:30:37 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     linux-kernel@vger.kernel.org, mingo@kernel.org, will@kernel.org
 Cc:     npiggin@gmail.com, elver@google.com, jgross@suse.com,
         paulmck@kernel.org, rostedt@goodmis.org, rjw@rjwysocki.net,
         joel@joelfernandes.org, svens@linux.ibm.com, tglx@linutronix.de,
         peterz@infradead.org
-Subject: [PATCH 5/9] x86/entry: Remove unused THUNKs
+Subject: [PATCH 6/9] locking/lockdep: Cleanup
 References: <20200820073031.886217423@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,23 +53,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unused remnants
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
---- a/arch/x86/entry/thunk_32.S
-+++ b/arch/x86/entry/thunk_32.S
-@@ -29,11 +29,6 @@ SYM_CODE_START_NOALIGN(\name)
- SYM_CODE_END(\name)
- 	.endm
+---
+ include/linux/irqflags.h |   54 ++++++++++++++++++++++++++---------------------
+ 1 file changed, 30 insertions(+), 24 deletions(-)
+
+--- a/include/linux/irqflags.h
++++ b/include/linux/irqflags.h
+@@ -49,10 +49,11 @@ struct irqtrace_events {
+ DECLARE_PER_CPU(int, hardirqs_enabled);
+ DECLARE_PER_CPU(int, hardirq_context);
  
--#ifdef CONFIG_TRACE_IRQFLAGS
--	THUNK trace_hardirqs_on_thunk,trace_hardirqs_on_caller,1
--	THUNK trace_hardirqs_off_thunk,trace_hardirqs_off_caller,1
--#endif
+-  extern void trace_hardirqs_on_prepare(void);
+-  extern void trace_hardirqs_off_finish(void);
+-  extern void trace_hardirqs_on(void);
+-  extern void trace_hardirqs_off(void);
++extern void trace_hardirqs_on_prepare(void);
++extern void trace_hardirqs_off_finish(void);
++extern void trace_hardirqs_on(void);
++extern void trace_hardirqs_off(void);
++
+ # define lockdep_hardirq_context()	(raw_cpu_read(hardirq_context))
+ # define lockdep_softirq_context(p)	((p)->softirq_context)
+ # define lockdep_hardirqs_enabled()	(this_cpu_read(hardirqs_enabled))
+@@ -120,17 +121,17 @@ do {						\
+ #else
+ # define trace_hardirqs_on_prepare()		do { } while (0)
+ # define trace_hardirqs_off_finish()		do { } while (0)
+-# define trace_hardirqs_on()		do { } while (0)
+-# define trace_hardirqs_off()		do { } while (0)
+-# define lockdep_hardirq_context()	0
+-# define lockdep_softirq_context(p)	0
+-# define lockdep_hardirqs_enabled()	0
+-# define lockdep_softirqs_enabled(p)	0
+-# define lockdep_hardirq_enter()	do { } while (0)
+-# define lockdep_hardirq_threaded()	do { } while (0)
+-# define lockdep_hardirq_exit()		do { } while (0)
+-# define lockdep_softirq_enter()	do { } while (0)
+-# define lockdep_softirq_exit()		do { } while (0)
++# define trace_hardirqs_on()			do { } while (0)
++# define trace_hardirqs_off()			do { } while (0)
++# define lockdep_hardirq_context()		0
++# define lockdep_softirq_context(p)		0
++# define lockdep_hardirqs_enabled()		0
++# define lockdep_softirqs_enabled(p)		0
++# define lockdep_hardirq_enter()		do { } while (0)
++# define lockdep_hardirq_threaded()		do { } while (0)
++# define lockdep_hardirq_exit()			do { } while (0)
++# define lockdep_softirq_enter()		do { } while (0)
++# define lockdep_softirq_exit()			do { } while (0)
+ # define lockdep_hrtimer_enter(__hrtimer)	false
+ # define lockdep_hrtimer_exit(__context)	do { } while (0)
+ # define lockdep_posixtimer_enter()		do { } while (0)
+@@ -181,17 +182,25 @@ do {						\
+  * if !TRACE_IRQFLAGS.
+  */
+ #ifdef CONFIG_TRACE_IRQFLAGS
+-#define local_irq_enable() \
+-	do { trace_hardirqs_on(); raw_local_irq_enable(); } while (0)
+-#define local_irq_disable() \
+-	do { raw_local_irq_disable(); trace_hardirqs_off(); } while (0)
++
++#define local_irq_enable()				\
++	do {						\
++		trace_hardirqs_on();			\
++		raw_local_irq_enable();			\
++	} while (0)
++
++#define local_irq_disable()				\
++	do {						\
++		raw_local_irq_disable();		\
++		trace_hardirqs_off();			\
++	} while (0)
++
+ #define local_irq_save(flags)				\
+ 	do {						\
+ 		raw_local_irq_save(flags);		\
+ 		trace_hardirqs_off();			\
+ 	} while (0)
+ 
 -
- #ifdef CONFIG_PREEMPTION
- 	THUNK preempt_schedule_thunk, preempt_schedule
- 	THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
+ #define local_irq_restore(flags)			\
+ 	do {						\
+ 		if (raw_irqs_disabled_flags(flags)) {	\
+@@ -214,10 +223,7 @@ do {						\
+ 
+ #define local_irq_enable()	do { raw_local_irq_enable(); } while (0)
+ #define local_irq_disable()	do { raw_local_irq_disable(); } while (0)
+-#define local_irq_save(flags)					\
+-	do {							\
+-		raw_local_irq_save(flags);			\
+-	} while (0)
++#define local_irq_save(flags)	do { raw_local_irq_save(flags); } while (0)
+ #define local_irq_restore(flags) do { raw_local_irq_restore(flags); } while (0)
+ #define safe_halt()		do { raw_safe_halt(); } while (0)
+ 
 
 
