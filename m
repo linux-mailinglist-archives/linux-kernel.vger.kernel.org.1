@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A5624B2C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C5A24B2BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728647AbgHTJgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:36:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51814 "EHLO mail.kernel.org"
+        id S1728461AbgHTJge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:36:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728615AbgHTJgj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:36:39 -0400
+        id S1728135AbgHTJgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:36:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 87A7220724;
-        Thu, 20 Aug 2020 09:36:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0389F207DE;
+        Thu, 20 Aug 2020 09:36:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916199;
-        bh=jGRWsaqRLoqev79/Xwgz7bNFRX+HkBGl7u0ryE7d7hc=;
+        s=default; t=1597916175;
+        bh=A5/9brDvRPF70ERveEC5pLTQSGpg8dEFelBfyXyhmX8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XanOR9F5wVE3CceZ5M6m3WIVGcASKsjKeLML5aslTzI0oN9VAu04jXSbIS0cZAY3w
-         pQAtw3EnWkFAG0o7xBfw7cQppOUXdNfQw3xDbZj0AH2xQgy5v3ayPiqu/8FFt9sddj
-         h9olyEHJZGgpvhdaQTAp0utZgT/SX47nWD0bWY68=
+        b=BZbahDrovj1TARmE3l48Xp2FBXEvoy7tXPsEZpYhmU5tzQAWRq3oXHxeKFt0zAins
+         x66jH+WcQQde00wb/ZBUaHoXgAyfhcn7DY50bumPFvKIDDEDfadrDoGdN5d9D+Wule
+         emJy/jf9/7yt8mhNXdMpCpWIE/fZZe3DTafgZ4jM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.7 027/204] btrfs: dont WARN if we abort a transaction with EROFS
-Date:   Thu, 20 Aug 2020 11:18:44 +0200
-Message-Id: <20200820091607.624205450@linuxfoundation.org>
+        stable@vger.kernel.org, Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH 5.7 037/204] arm64: perf: Correct the event index in sysfs
+Date:   Thu, 20 Aug 2020 11:18:54 +0200
+Message-Id: <20200820091608.123251565@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
 References: <20200820091606.194320503@linuxfoundation.org>
@@ -43,37 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Shaokun Zhang <zhangshaokun@hisilicon.com>
 
-commit f95ebdbed46a4d8b9fdb7bff109fdbb6fc9a6dc8 upstream.
+commit 539707caa1a89ee4efc57b4e4231c20c46575ccc upstream.
 
-If we got some sort of corruption via a read and call
-btrfs_handle_fs_error() we'll set BTRFS_FS_STATE_ERROR on the fs and
-complain.  If a subsequent trans handle trips over this it'll get EROFS
-and then abort.  However at that point we're not aborting for the
-original reason, we're aborting because we've been flipped read only.
-We do not need to WARN_ON() here.
+When PMU event ID is equal or greater than 0x4000, it will be reduced
+by 0x4000 and it is not the raw number in the sysfs. Let's correct it
+and obtain the raw event ID.
 
-CC: stable@vger.kernel.org # 5.4+
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Before this patch:
+cat /sys/bus/event_source/devices/armv8_pmuv3_0/events/sample_feed
+event=0x001
+After this patch:
+cat /sys/bus/event_source/devices/armv8_pmuv3_0/events/sample_feed
+event=0x4001
+
+Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/1592487344-30555-3-git-send-email-zhangshaokun@hisilicon.com
+[will: fixed formatting of 'if' condition]
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/ctree.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/kernel/perf_event.c |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3198,7 +3198,7 @@ do {								\
- 	/* Report first abort since mount */			\
- 	if (!test_and_set_bit(BTRFS_FS_STATE_TRANS_ABORTED,	\
- 			&((trans)->fs_info->fs_state))) {	\
--		if ((errno) != -EIO) {				\
-+		if ((errno) != -EIO && (errno) != -EROFS) {		\
- 			WARN(1, KERN_DEBUG				\
- 			"BTRFS: Transaction aborted (error %d)\n",	\
- 			(errno));					\
+--- a/arch/arm64/kernel/perf_event.c
++++ b/arch/arm64/kernel/perf_event.c
+@@ -155,7 +155,7 @@ armv8pmu_events_sysfs_show(struct device
+ 
+ 	pmu_attr = container_of(attr, struct perf_pmu_events_attr, attr);
+ 
+-	return sprintf(page, "event=0x%03llx\n", pmu_attr->id);
++	return sprintf(page, "event=0x%04llx\n", pmu_attr->id);
+ }
+ 
+ #define ARMV8_EVENT_ATTR(name, config)						\
+@@ -244,10 +244,13 @@ armv8pmu_event_attr_is_visible(struct ko
+ 	    test_bit(pmu_attr->id, cpu_pmu->pmceid_bitmap))
+ 		return attr->mode;
+ 
+-	pmu_attr->id -= ARMV8_PMUV3_EXT_COMMON_EVENT_BASE;
+-	if (pmu_attr->id < ARMV8_PMUV3_MAX_COMMON_EVENTS &&
+-	    test_bit(pmu_attr->id, cpu_pmu->pmceid_ext_bitmap))
+-		return attr->mode;
++	if (pmu_attr->id >= ARMV8_PMUV3_EXT_COMMON_EVENT_BASE) {
++		u64 id = pmu_attr->id - ARMV8_PMUV3_EXT_COMMON_EVENT_BASE;
++
++		if (id < ARMV8_PMUV3_MAX_COMMON_EVENTS &&
++		    test_bit(id, cpu_pmu->pmceid_ext_bitmap))
++			return attr->mode;
++	}
+ 
+ 	return 0;
+ }
 
 
