@@ -2,154 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD5A24AEEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 08:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C714D24AF0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 08:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726985AbgHTGGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 02:06:10 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:10199 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726967AbgHTGGF (ORCPT
+        id S1727833AbgHTGHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 02:07:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727106AbgHTGH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 02:06:05 -0400
-X-UUID: f5430831322b42dd9770035fcdee6c98-20200820
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=VClb/Kq3fd5kbThEcOCKcrw4DxbEnAvW+xXoghjqqSM=;
-        b=B7ELcvTHEyuTHJYfA1JwKPRc+3BROt/DeSx1M4jNbfdG6zIV3BIRt4+gQjQ7k+bqWq0LQ+Y3K+pAY3z5xjm7cfbtrJwnNkKfNbm6NQi5SOZegZ7ZPbgQqhul8Lvj+7z20Xt93y6in4NIufkRI/JNwT6wMh/McKW1DngvjfOxv9A=;
-X-UUID: f5430831322b42dd9770035fcdee6c98-20200820
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <yongqiang.niu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1279973583; Thu, 20 Aug 2020 14:06:01 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 20 Aug 2020 14:05:59 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 20 Aug 2020 14:05:58 +0800
-From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
-To:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>
-Subject: [PATCH v1 21/21] arm64: dts: mt8192: add display node
-Date:   Thu, 20 Aug 2020 14:04:18 +0800
-Message-ID: <1597903458-8055-22-git-send-email-yongqiang.niu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1597903458-8055-1-git-send-email-yongqiang.niu@mediatek.com>
-References: <1597903458-8055-1-git-send-email-yongqiang.niu@mediatek.com>
+        Thu, 20 Aug 2020 02:07:27 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB2BC061757;
+        Wed, 19 Aug 2020 23:07:26 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id k13so435189plk.13;
+        Wed, 19 Aug 2020 23:07:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TEwV+gAKUnRj1mZL3fDfuQy8JyNw5xNO138gnCj19os=;
+        b=rtRjDmt5UUfqpo78XbWEZ0IEW77Ap958XcFh9IZO8Hib9H8QEMwK7C51gmFTGrZfCM
+         CZHHmTNMZGdFyOsts960HDKghxtIW9DtASK5kkSFqmo6fCQq/w9uqgthLq9JtGhJ5wYL
+         /vOu79veUaG9At6gwBacYEywMAZFFN5FT4ssaCys8bp2kfpuOkJ8ulLy1HLY3ythM9Nq
+         SKqAvKtK6TxUqGdXKHyCk5PSx/jPiby4IO8AQDusBcqJvdb61eeeBT5X4Ds/LXIWtFL7
+         LuvYF5/yGBnQtzSrJsD7k3FT2z7u0YPd8WxI5cpOpYmdcZEEt+MoquiOY/sCNvEi0Dyi
+         4vzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TEwV+gAKUnRj1mZL3fDfuQy8JyNw5xNO138gnCj19os=;
+        b=RJb8qS5RsTJkDIeRPHLeKljAocsSBusYo86/tqPVihTXj4j6PTGLTQfmlhLwG9+2f5
+         5x8aCFZb7DTw+qnzvMK3TI6ujJcB0wETvCmWUd/0y5xiFoSt+27R9mcBlGs8OsqSVp5U
+         ba79JpMkq4H6OXksCvqA++Ooi3AMAMtDN3znVSimzP3x3Zuup0504Kne2DLdQBsRbJ3U
+         puWcRLgnzEIv8037yhULPTtFQ04ldSLg47vszfOa5FXAdsz2QhutXKplUMQIaCvcAK0S
+         LFEabS+7MR2R2lQV3SRDsY1ErW1FFVqXCRpZ2DXBj1upPfLqDIeqYD9JD2rcJHC0oq5p
+         PXJA==
+X-Gm-Message-State: AOAM533z3LNKNOui/ghXuSArlWtN2k5B/j0socSvbdADMxRoiuu4/gWh
+        1pTrzS44nh+QiCAW7hVuY9o=
+X-Google-Smtp-Source: ABdhPJysPg7llFDXEbdNkggy0Zx6PGaskljQ8fbdAgXP/6VPUKIjhm441S5NYlkXYmxsHbjfymoimw==
+X-Received: by 2002:a17:902:b589:: with SMTP id a9mr1395800pls.98.1597903646343;
+        Wed, 19 Aug 2020 23:07:26 -0700 (PDT)
+Received: from localhost ([2001:e42:102:1532:160:16:113:140])
+        by smtp.gmail.com with ESMTPSA id g1sm1250773pfr.97.2020.08.19.23.07.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Aug 2020 23:07:25 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
+Date:   Thu, 20 Aug 2020 14:07:13 +0800
+To:     syzbot <syzbot+dd768a260f7358adbaf9@syzkaller.appspotmail.com>
+Cc:     abhishekpandit@chromium.org, davem@davemloft.net,
+        gregkh@linuxfoundation.org, johan.hedberg@gmail.com,
+        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, marcel@holtmann.org,
+        netdev@vger.kernel.org, rafael@kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: BUG: corrupted list in kobject_add_internal
+Message-ID: <20200820060713.smilfw3otuunnepe@Rk>
+References: <000000000000c57f2d05ac4c5b8e@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <000000000000c57f2d05ac4c5b8e@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-YWRkIGRpc3BsYXkgbm9kZQ0KDQpTaWduZWQtb2ZmLWJ5OiBZb25ncWlhbmcgTml1IDx5b25ncWlh
-bmcubml1QG1lZGlhdGVrLmNvbT4NCi0tLQ0KIGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsv
-bXQ4MTkyLmR0c2kgfCAxMjYgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0KIDEgZmls
-ZSBjaGFuZ2VkLCAxMjYgaW5zZXJ0aW9ucygrKQ0KDQpkaWZmIC0tZ2l0IGEvYXJjaC9hcm02NC9i
-b290L2R0cy9tZWRpYXRlay9tdDgxOTIuZHRzaSBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0
-ZWsvbXQ4MTkyLmR0c2kNCmluZGV4IDkzMWUxY2EuLmQyYTgxNGQgMTAwNjQ0DQotLS0gYS9hcmNo
-L2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5Mi5kdHNpDQorKysgYi9hcmNoL2FybTY0L2Jv
-b3QvZHRzL21lZGlhdGVrL210ODE5Mi5kdHNpDQpAQCAtMTcsNiArMTcsMTMgQEANCiAJI2FkZHJl
-c3MtY2VsbHMgPSA8Mj47DQogCSNzaXplLWNlbGxzID0gPDI+Ow0KIA0KKyAgICAgICAgYWxpYXNl
-cyB7DQorCQlvdmwwID0gJm92bDA7DQorCQlvdmxfMmwwID0gJm92bF8ybDA7DQorCQlvdmxfMmwy
-ID0gJm92bF8ybDI7DQorCQlyZG1hMCA9ICZyZG1hMDsNCisJCXJkbWE0ID0gJnJkbWE0Ow0KKwl9
-Ow0KIAljbGsyNm06IG9zY2lsbGF0b3JAMCB7DQogCQljb21wYXRpYmxlID0gImZpeGVkLWNsb2Nr
-IjsNCiAJCSNjbG9jay1jZWxscyA9IDwwPjsNCkBAIC00NDksNiArNDU2LDEyNSBAQA0KIAkJCSNj
-bG9jay1jZWxscyA9IDwxPjsNCiAJCX07DQogDQorICAgICAgICAgICAgICAgIG11dGV4OiBtdXRl
-eEAxNDAwMTAwMCB7DQorCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxOTItZGlzcC1tdXRl
-eCI7DQorCQkJcmVnID0gPDAgMHgxNDAwMTAwMCAwIDB4MTAwMD47DQorCQkJaW50ZXJydXB0cyA9
-IDxHSUNfU1BJIDI1MiBJUlFfVFlQRV9MRVZFTF9ISUdIIDA+Ow0KKwkJCWNsb2NrcyA9IDwmbW1z
-eXMgQ0xLX01NX0RJU1BfQ09ORklHPiwNCisJCQkgICAgICAgICA8Jm1tc3lzIENMS19NTV8yNk1I
-Wj4sDQorCQkJICAgICAgICAgPCZtbXN5cyBDTEtfTU1fRElTUF9NVVRFWDA+Ow0KKwkJfTsNCisJ
-CW92bDA6IG92bEAxNDAwNTAwMCB7DQorCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxOTIt
-ZGlzcC1vdmwiOw0KKwkJCXJlZyA9IDwwIDB4MTQwMDUwMDAgMCAweDEwMDA+Ow0KKwkJCWludGVy
-cnVwdHMgPSA8R0lDX1NQSSAyNTQgSVJRX1RZUEVfTEVWRUxfSElHSCAwPjsNCisJCQljbG9ja3Mg
-PSA8Jm1tc3lzIENMS19NTV9ESVNQX09WTDA+Ow0KKwkJCS8vaW9tbXVzID0gPCZpb21tdTAgTTRV
-X1BPUlRfTDBfT1ZMX1JETUEwPiwNCisJCQkvLwkgPCZpb21tdTAgTTRVX1BPUlRfTDBfT1ZMX1JE
-TUEwX0hEUj47DQorCQkJcG93ZXItZG9tYWlucyA9IDwmc2Nwc3lzIE1UODE5Ml9QT1dFUl9ET01B
-SU5fRElTUD47DQorCQkJLy9tZWRpYXRlayxnY2UtY2xpZW50LXJlZyA9IDwmZ2NlIFNVQlNZU18x
-NDAwWFhYWCAweDUwMDAgMHgxMDAwPjsNCisJCX07DQorDQorCQlvdmxfMmwwOiBvdmxAMTQwMDYw
-MDAgew0KKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTkyLWRpc3Atb3ZsLTJsIjsNCisJ
-CQlyZWcgPSA8MCAweDE0MDA2MDAwIDAgMHgxMDAwPjsNCisJCQlpbnRlcnJ1cHRzID0gPEdJQ19T
-UEkgMjU1IElSUV9UWVBFX0xFVkVMX0hJR0ggMD47DQorCQkJcG93ZXItZG9tYWlucyA9IDwmc2Nw
-c3lzIE1UODE5Ml9QT1dFUl9ET01BSU5fRElTUD47DQorCQkJY2xvY2tzID0gPCZtbXN5cyBDTEtf
-TU1fRElTUF9PVkwwXzJMPjsNCisJCQkvL2lvbW11cyA9IDwmaW9tbXUwIE00VV9QT1JUX0wxX09W
-TF8yTF9SRE1BMD4sDQorCQkJLy8JIDwmaW9tbXUwIE00VV9QT1JUX0wxX09WTF8yTF9SRE1BMF9I
-RFI+Ow0KKwkJCS8vbWVkaWF0ZWssZ2NlLWNsaWVudC1yZWcgPSA8JmdjZSBTVUJTWVNfMTQwMFhY
-WFggMHg2MDAwIDB4MTAwMD47DQorCQl9Ow0KKw0KKwkJcmRtYTA6IHJkbWFAMTQwMDcwMDAgew0K
-KwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTkyLWRpc3AtcmRtYSI7DQorCQkJcmVnID0g
-PDAgMHgxNDAwNzAwMCAwIDB4MTAwMD47DQorCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDI1NiBJ
-UlFfVFlQRV9MRVZFTF9ISUdIIDA+Ow0KKwkJCWNsb2NrcyA9IDwmbW1zeXMgQ0xLX01NX0RJU1Bf
-UkRNQTA+Ow0KKwkJCS8vaW9tbXVzID0gPCZpb21tdTAgTTRVX1BPUlRfTDBfRElTUF9SRE1BMD47
-DQorCQkJbWVkaWF0ZWsscmRtYV9maWZvX3NpemUgPSA8NT47DQorCQkJcG93ZXItZG9tYWlucyA9
-IDwmc2Nwc3lzIE1UODE5Ml9QT1dFUl9ET01BSU5fRElTUD47DQorCQkJLy9tZWRpYXRlayxnY2Ut
-Y2xpZW50LXJlZyA9IDwmZ2NlIFNVQlNZU18xNDAwWFhYWCAweDcwMDAgMHgxMDAwPjsNCisJCX07
-DQorDQorCQljb2xvcjA6IGNvbG9yQDE0MDA5MDAwIHsNCisJCQljb21wYXRpYmxlID0gIm1lZGlh
-dGVrLG10ODE5Mi1kaXNwLWNvbG9yIiwNCisJCQkJICAgICAibWVkaWF0ZWssbXQ4MTczLWRpc3At
-Y29sb3IiOw0KKwkJCXJlZyA9IDwwIDB4MTQwMDkwMDAgMCAweDEwMDA+Ow0KKwkJCWludGVycnVw
-dHMgPSA8R0lDX1NQSSAyNTggSVJRX1RZUEVfTEVWRUxfSElHSCAwPjsNCisJCQlwb3dlci1kb21h
-aW5zID0gPCZzY3BzeXMgTVQ4MTkyX1BPV0VSX0RPTUFJTl9ESVNQPjsNCisJCQljbG9ja3MgPSA8
-Jm1tc3lzIENMS19NTV9ESVNQX0NPTE9SMD47DQorCQkJLy9tZWRpYXRlayxnY2UtY2xpZW50LXJl
-ZyA9IDwmZ2NlIFNVQlNZU18xNDAwWFhYWCAweDkwMDAgMHgxMDAwPjsNCisJCX07DQorDQorCQlj
-Y29ycjA6IGNjb3JyQDE0MDBhMDAwIHsNCisJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE5
-Mi1kaXNwLWNjb3JyIjsNCisJCQlyZWcgPSA8MCAweDE0MDBhMDAwIDAgMHgxMDAwPjsNCisJCQlp
-bnRlcnJ1cHRzID0gPEdJQ19TUEkgMjU5IElSUV9UWVBFX0xFVkVMX0hJR0ggMD47DQorCQkJcG93
-ZXItZG9tYWlucyA9IDwmc2Nwc3lzIE1UODE5Ml9QT1dFUl9ET01BSU5fRElTUD47DQorCQkJY2xv
-Y2tzID0gPCZtbXN5cyBDTEtfTU1fRElTUF9DQ09SUjA+Ow0KKwkJCS8vbWVkaWF0ZWssZ2NlLWNs
-aWVudC1yZWcgPSA8JmdjZSBTVUJTWVNfMTQwMFhYWFggMHhhMDAwIDB4MTAwMD47DQorCQl9Ow0K
-Kw0KKwkJYWFsMDogYWFsQDE0MDBiMDAwIHsNCisJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10
-ODE5Mi1kaXNwLWFhbCI7DQorCQkJcmVnID0gPDAgMHgxNDAwYjAwMCAwIDB4MTAwMD47DQorCQkJ
-aW50ZXJydXB0cyA9IDxHSUNfU1BJIDI2MCBJUlFfVFlQRV9MRVZFTF9ISUdIIDA+Ow0KKwkJCXBv
-d2VyLWRvbWFpbnMgPSA8JnNjcHN5cyBNVDgxOTJfUE9XRVJfRE9NQUlOX0RJU1A+Ow0KKwkJCWNs
-b2NrcyA9IDwmbW1zeXMgQ0xLX01NX0RJU1BfQUFMMD47DQorCQkJLy9tZWRpYXRlayxnY2UtY2xp
-ZW50LXJlZyA9IDwmZ2NlIFNVQlNZU18xNDAwWFhYWCAweGIwMDAgMHgxMDAwPjsNCisJCX07DQor
-DQorCQlnYW1tYTA6IGdhbW1hQDE0MDBjMDAwIHsNCisJCQljb21wYXRpYmxlID0gIm1lZGlhdGVr
-LG10ODE5Mi1kaXNwLWdhbW1hIjsNCisJCQlyZWcgPSA8MCAweDE0MDBjMDAwIDAgMHgxMDAwPjsN
-CisJCQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMjYxIElSUV9UWVBFX0xFVkVMX0hJR0ggMD47DQor
-CQkJcG93ZXItZG9tYWlucyA9IDwmc2Nwc3lzIE1UODE5Ml9QT1dFUl9ET01BSU5fRElTUD47DQor
-CQkJY2xvY2tzID0gPCZtbXN5cyBDTEtfTU1fRElTUF9HQU1NQTA+Ow0KKwkJCS8vbWVkaWF0ZWss
-Z2NlLWNsaWVudC1yZWcgPSA8JmdjZSBTVUJTWVNfMTQwMFhYWFggMHhjMDAwIDB4MTAwMD47DQor
-CQl9Ow0KKw0KKwkJcG9zdG1hc2swOiBwb3N0bWFza0AxNDAwZDAwMCB7DQorCQkJY29tcGF0aWJs
-ZSA9ICJtZWRpYXRlayxtdDgxOTItZGlzcC1wb3N0bWFzayI7DQorCQkJcmVnID0gPDAgMHgxNDAw
-ZDAwMCAwIDB4MTAwMD47DQorCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDI2MiBJUlFfVFlQRV9M
-RVZFTF9ISUdIIDA+Ow0KKwkJCXBvd2VyLWRvbWFpbnMgPSA8JnNjcHN5cyBNVDgxOTJfUE9XRVJf
-RE9NQUlOX0RJU1A+Ow0KKwkJCWNsb2NrcyA9IDwmbW1zeXMgQ0xLX01NX0RJU1BfUE9TVE1BU0sw
-PjsNCisJCQkvL2lvbW11cyA9IDwmaW9tbXUwIE00VV9QT1JUX0wwX0RJU1BfUE9TVE1BU0swPjsN
-CisJCQkvL21lZGlhdGVrLGdjZS1jbGllbnQtcmVnID0gPCZnY2UgU1VCU1lTXzE0MDBYWFhYIDB4
-ZDAwMCAweDEwMDA+Ow0KKwkJfTsNCisNCisJCWRpdGhlcjA6IGRpdGhlckAxNDAwZTAwMCB7DQor
-CQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxOTItZGlzcC1kaXRoZXIiOw0KKwkJCXJlZyA9
-IDwwIDB4MTQwMGUwMDAgMCAweDEwMDA+Ow0KKwkJCWludGVycnVwdHMgPSA8R0lDX1NQSSAyNjMg
-SVJRX1RZUEVfTEVWRUxfSElHSCAwPjsNCisJCQlwb3dlci1kb21haW5zID0gPCZzY3BzeXMgTVQ4
-MTkyX1BPV0VSX0RPTUFJTl9ESVNQPjsNCisJCQljbG9ja3MgPSA8Jm1tc3lzIENMS19NTV9ESVNQ
-X0RJVEhFUjA+Ow0KKwkJCS8vbWVkaWF0ZWssZ2NlLWNsaWVudC1yZWcgPSA8JmdjZSBTVUJTWVNf
-MTQwMFhYWFggMHhlMDAwIDB4MTAwMD47DQorCQl9Ow0KKw0KKwkJb3ZsXzJsMjogb3ZsQDE0MDE0
-MDAwIHsNCisJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE5Mi1kaXNwLW92bC0ybCI7DQor
-CQkJcmVnID0gPDAgMHgxNDAxNDAwMCAwIDB4MTAwMD47DQorCQkJaW50ZXJydXB0cyA9IDxHSUNf
-U1BJIDI2OCBJUlFfVFlQRV9MRVZFTF9ISUdIIDA+Ow0KKwkJCXBvd2VyLWRvbWFpbnMgPSA8JnNj
-cHN5cyBNVDgxOTJfUE9XRVJfRE9NQUlOX0RJU1A+Ow0KKwkJCWNsb2NrcyA9IDwmbW1zeXMgQ0xL
-X01NX0RJU1BfT1ZMMl8yTD47DQorCQkJLy9pb21tdXMgPSA8JmlvbW11MCBNNFVfUE9SVF9MMV9P
-VkxfMkxfUkRNQTI+LA0KKwkJCS8vCSA8JmlvbW11MCBNNFVfUE9SVF9MMV9PVkxfMkxfUkRNQTJf
-SERSPjsNCisJCQkvL21lZGlhdGVrLGdjZS1jbGllbnQtcmVnID0gPCZnY2UgU1VCU1lTXzE0MDFY
-WFhYIDB4NDAwMCAweDEwMDA+Ow0KKwkJfTsNCisNCisJCXJkbWE0OiByZG1hQDE0MDE1MDAwIHsN
-CisJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE5Mi1kaXNwLXJkbWEiOw0KKwkJCXJlZyA9
-IDwwIDB4MTQwMTUwMDAgMCAweDEwMDA+Ow0KKwkJCWludGVycnVwdHMgPSA8R0lDX1NQSSAyNjkg
-SVJRX1RZUEVfTEVWRUxfSElHSCAwPjsNCisJCQlwb3dlci1kb21haW5zID0gPCZzY3BzeXMgTVQ4
-MTkyX1BPV0VSX0RPTUFJTl9ESVNQPjsNCisJCQljbG9ja3MgPSA8Jm1tc3lzIENMS19NTV9ESVNQ
-X1JETUE0PjsNCisJCQkvL2lvbW11cyA9IDwmaW9tbXUwIE00VV9QT1JUX0wxX0RJU1BfUkRNQTQ+
-Ow0KKwkJCW1lZGlhdGVrLHJkbWFfZmlmb19zaXplID0gPDI+Ow0KKwkJCS8vbWVkaWF0ZWssZ2Nl
-LWNsaWVudC1yZWcgPSA8JmdjZSBTVUJTWVNfMTQwMVhYWFggMHg1MDAwIDB4MTAwMD47DQorCQl9
-Ow0KKw0KIAkJaW1nc3lzOiBpbWdzeXNAMTUwMjAwMDAgew0KIAkJCWNvbXBhdGlibGUgPSAibWVk
-aWF0ZWssbXQ4MTkyLWltZ3N5cyIsICJzeXNjb24iOw0KIAkJCXJlZyA9IDwwIDB4MTUwMjAwMDAg
-MCAweDEwMDA+Ow0KLS0gDQoxLjguMS4xLmRpcnR5DQo=
+On Fri, Aug 07, 2020 at 09:47:20AM -0700, syzbot wrote:
+>Hello,
+>
+>syzbot found the following issue on:
+>
+>HEAD commit:    5a30a789 Merge tag 'x86-urgent-2020-08-02' of git://git.ke..
+>git tree:       upstream
+>console output: https://syzkaller.appspot.com/x/log.txt?x=1660c858900000
+>kernel config:  https://syzkaller.appspot.com/x/.config?x=c0cfcf935bcc94d2
+>dashboard link: https://syzkaller.appspot.com/bug?extid=dd768a260f7358adbaf9
+>compiler:       gcc (GCC) 10.1.0-syz 20200507
+>syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14b73afc900000
+>C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=124893a4900000
+>
+>The issue was bisected to:
+>
+>commit 4f40afc6c76451daff7d0dcfc8a3d113ccf65bfc
+>Author: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+>Date:   Wed Mar 11 15:54:01 2020 +0000
+>
+>    Bluetooth: Handle BR/EDR devices during suspend
+>
+>bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11cb1e0a900000
+>final oops:     https://syzkaller.appspot.com/x/report.txt?x=13cb1e0a900000
+>console output: https://syzkaller.appspot.com/x/log.txt?x=15cb1e0a900000
+>
+>IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>Reported-by: syzbot+dd768a260f7358adbaf9@syzkaller.appspotmail.com
+>Fixes: 4f40afc6c764 ("Bluetooth: Handle BR/EDR devices during suspend")
+>
+>debugfs: Directory '200' with parent 'hci0' already present!
+>list_add double add: new=ffff88808e9b6418, prev=ffff88808e9b6418, next=ffff8880a973ef00.
+>------------[ cut here ]------------
+>kernel BUG at lib/list_debug.c:29!
+>invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+>CPU: 1 PID: 6882 Comm: kworker/u5:1 Not tainted 5.8.0-rc7-syzkaller #0
+>Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>Workqueue: hci0 hci_rx_work
+>RIP: 0010:__list_add_valid.cold+0x26/0x3c lib/list_debug.c:29
+>Code: 57 ff ff ff 4c 89 e1 48 c7 c7 20 92 93 88 e8 b1 f1 c1 fd 0f 0b 48 89 f2 4c 89 e1 48 89 ee 48 c7 c7 60 93 93 88 e8 9a f1 c1 fd <0f> 0b 48 89 f1 48 c7 c7 e0 92 93 88 4c 89 e6 e8 86 f1 c1 fd 0f 0b
+>RSP: 0018:ffffc90001777830 EFLAGS: 00010282
+>RAX: 0000000000000058 RBX: ffff8880a973ef00 RCX: 0000000000000000
+>RDX: ffff888094f1c200 RSI: ffffffff815d4ef7 RDI: fffff520002eeef8
+>RBP: ffff88808e9b6418 R08: 0000000000000058 R09: ffff8880ae7318e7
+>R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880a973ef00
+>R13: ffff888087315270 R14: ffff88808e9b6430 R15: ffff88808e9b6418
+>FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+>CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>CR2: 00007ffdcd6db747 CR3: 000000009ba09000 CR4: 00000000001406e0
+>DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>Call Trace:
+> __list_add include/linux/list.h:67 [inline]
+> list_add_tail include/linux/list.h:100 [inline]
+> kobj_kset_join lib/kobject.c:196 [inline]
+> kobject_add_internal+0x18d/0x940 lib/kobject.c:246
+> kobject_add_varg lib/kobject.c:390 [inline]
+> kobject_add+0x150/0x1c0 lib/kobject.c:442
+> device_add+0x35a/0x1be0 drivers/base/core.c:2633
+> hci_conn_add_sysfs+0x84/0xe0 net/bluetooth/hci_sysfs.c:53
+> hci_conn_complete_evt net/bluetooth/hci_event.c:2607 [inline]
+> hci_event_packet+0xe0b/0x86f5 net/bluetooth/hci_event.c:6033
+> hci_rx_work+0x22e/0xb10 net/bluetooth/hci_core.c:4705
+> process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+> worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+> kthread+0x3b5/0x4a0 kernel/kthread.c:291
+> ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+>Modules linked in:
+>---[ end trace b1bcc552c32d25e9 ]---
+>RIP: 0010:__list_add_valid.cold+0x26/0x3c lib/list_debug.c:29
+>Code: 57 ff ff ff 4c 89 e1 48 c7 c7 20 92 93 88 e8 b1 f1 c1 fd 0f 0b 48 89 f2 4c 89 e1 48 89 ee 48 c7 c7 60 93 93 88 e8 9a f1 c1 fd <0f> 0b 48 89 f1 48 c7 c7 e0 92 93 88 4c 89 e6 e8 86 f1 c1 fd 0f 0b
+>RSP: 0018:ffffc90001777830 EFLAGS: 00010282
+>RAX: 0000000000000058 RBX: ffff8880a973ef00 RCX: 0000000000000000
+>RDX: ffff888094f1c200 RSI: ffffffff815d4ef7 RDI: fffff520002eeef8
+>RBP: ffff88808e9b6418 R08: 0000000000000058 R09: ffff8880ae7318e7
+>R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880a973ef00
+>R13: ffff888087315270 R14: ffff88808e9b6430 R15: ffff88808e9b6418
+>FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+>CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>CR2: 00007ffdcd6db747 CR3: 0000000009a79000 CR4: 00000000001406e0
+>DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>
+>
+>---
+>This report is generated by a bot. It may contain errors.
+>See https://goo.gl/tpsmEJ for more information about syzbot.
+>syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+>syzbot will keep track of this issue. See:
+>https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+>syzbot can test patches for this issue, for details see:
+>https://goo.gl/tpsmEJ#testing-patches
+>
+>--
+>You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+>To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+>To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000c57f2d05ac4c5b8e%40google.com.
 
+This problem occurs because the HCI_EV_CONN_COMPLETE event packet is sent
+twice for the same HCI connection,
+
+     struct hci_ev_conn_complete complete;
+     memset(&complete, 0, sizeof(complete));
+     complete.status = 0;
+     complete.handle = HCI_HANDLE_1;
+     memset(&complete.bdaddr, 0xaa, 6);
+     *(uint8_t*)&complete.bdaddr.b[5] = 0x10;
+     complete.link_type = ACL_LINK;
+     complete.encr_mode = 0;
+     hci_send_event_packet(vhci_fd, HCI_EV_CONN_COMPLETE, &complete,
+                             sizeof(complete));
+
+which leads to kobject_add being called twice. Thus duplicate
+(struct hci_conn *conn)->dev.kobj.entry is inserted into
+(struct hci_conn *conn)->dev.kobj.kset->list.
+
+But if it's the HCI connection creator's responsibility to
+not send the HCI_EV_CONN_COMPLETE event packet twice, then it's not a
+valid bug. Or should we make the kernel more robust by defending against
+this case?
+
+--
+Best regards,
+Coiby
