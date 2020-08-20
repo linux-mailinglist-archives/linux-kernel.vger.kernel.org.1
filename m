@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01DCD24B3C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 752E824B39D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729874AbgHTJv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:51:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32992 "EHLO mail.kernel.org"
+        id S1729191AbgHTJtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:49:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729706AbgHTJv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:51:56 -0400
+        id S1729661AbgHTJtd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:49:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6EB18207FB;
-        Thu, 20 Aug 2020 09:51:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B77A620724;
+        Thu, 20 Aug 2020 09:49:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917115;
-        bh=LMiae1U7sCrEkyBTJq4l9as5KsraOux3Y5DAUgpWP90=;
+        s=default; t=1597916973;
+        bh=ywxkViXDSf4Hxd7HA+Y658fe5xz6Ys2MM0vs3KLzo+c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zGz/9O7FCxeLFA5c0FHLxLeBh5ivTl1bOMQZMJ1ChZKWm1EuAb4RvpopvQxeTV+OR
-         q1k1mETaz0diWrwt0Da3Mdyi1yr5PEyM6c2oMQqpCfYuTt7wPGlcOZSQJRwECK4zkY
-         BC+pluXDgoyGqGs9ioHUZXqo4PLpQ7gDQjevfva8=
+        b=ZCulpbHLVOqZ8CAlmgNZvejbyaXyKvstohuLOK8VS8gPjHIrikdoRDpGA97llVdj/
+         NnBWdD0aQg68FOM0iwFQXlZM0yjBlI63lSXhaTH8BOgPKqiBoWwMtPCpmQ6hi67Rtj
+         3cab0qlB0Dy7labFsO10KrVKdE/YVufdXzKr8PFE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Steve French <stfrench@microsoft.com>
-Subject: [PATCH 4.19 01/92] smb3: warn on confusing error scenario with sec=krb5
-Date:   Thu, 20 Aug 2020 11:20:46 +0200
-Message-Id: <20200820091537.573589092@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 080/152] mtd: rawnand: fsl_upm: Remove unused mtd var
+Date:   Thu, 20 Aug 2020 11:20:47 +0200
+Message-Id: <20200820091557.831204711@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
-References: <20200820091537.490965042@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -44,35 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve French <stfrench@microsoft.com>
+From: Boris Brezillon <boris.brezillon@collabora.com>
 
-commit 0a018944eee913962bce8ffebbb121960d5125d9 upstream.
+[ Upstream commit ccc49eff77bee2885447a032948959a134029fe3 ]
 
-When mounting with Kerberos, users have been confused about the
-default error returned in scenarios in which either keyutils is
-not installed or the user did not properly acquire a krb5 ticket.
-Log a warning message in the case that "ENOKEY" is returned
-from the get_spnego_key upcall so that users can better understand
-why mount failed in those two cases.
+The mtd var in fun_wait_rnb() is now unused, let's get rid of it and
+fix the warning resulting from this unused var.
 
-CC: Stable <stable@vger.kernel.org>
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 50a487e7719c ("mtd: rawnand: Pass a nand_chip object to chip->dev_ready()")
+Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20200603134922.1352340-2-boris.brezillon@collabora.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/smb2pdu.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/mtd/nand/raw/fsl_upm.c | 1 -
+ 1 file changed, 1 deletion(-)
 
---- a/fs/cifs/smb2pdu.c
-+++ b/fs/cifs/smb2pdu.c
-@@ -1132,6 +1132,8 @@ SMB2_auth_kerberos(struct SMB2_sess_data
- 	spnego_key = cifs_get_spnego_key(ses);
- 	if (IS_ERR(spnego_key)) {
- 		rc = PTR_ERR(spnego_key);
-+		if (rc == -ENOKEY)
-+			cifs_dbg(VFS, "Verify user has a krb5 ticket and keyutils is installed\n");
- 		spnego_key = NULL;
- 		goto out;
- 	}
+diff --git a/drivers/mtd/nand/raw/fsl_upm.c b/drivers/mtd/nand/raw/fsl_upm.c
+index 1054cc070747e..20b0ee174dc61 100644
+--- a/drivers/mtd/nand/raw/fsl_upm.c
++++ b/drivers/mtd/nand/raw/fsl_upm.c
+@@ -62,7 +62,6 @@ static int fun_chip_ready(struct nand_chip *chip)
+ static void fun_wait_rnb(struct fsl_upm_nand *fun)
+ {
+ 	if (fun->rnb_gpio[fun->mchip_number] >= 0) {
+-		struct mtd_info *mtd = nand_to_mtd(&fun->chip);
+ 		int cnt = 1000000;
+ 
+ 		while (--cnt && !fun_chip_ready(&fun->chip))
+-- 
+2.25.1
+
 
 
