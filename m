@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DED124BD0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E95EA24BC1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729939AbgHTM5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:57:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34454 "EHLO mail.kernel.org"
+        id S1729540AbgHTMkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:40:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727033AbgHTJlQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:41:16 -0400
+        id S1729384AbgHTJrC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:47:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BBF242075E;
-        Thu, 20 Aug 2020 09:41:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F29782173E;
+        Thu, 20 Aug 2020 09:47:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916476;
-        bh=8Nx+WniPGYDtKfMVx4hJjYH84RdLwha1VvyMXy5JftU=;
+        s=default; t=1597916821;
+        bh=nDS9YM9aJxkFu5ZzfkTqvZdFAxXbEzlO2tlYmVHlIJo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=scFszwih5LAZuLClvzDPb5aGZY9BMoaP0d6EjPVycu8fHf4yRoG8blH+jQ7sxq1uW
-         HbMujNzzzxSVYU+5hxhoRAq3oxvxCf9SWGiJ4KUurbJxg+0dyIuBbOW6ag3WfC7TKS
-         kzqg9dtCLzYJEr8ayB6E8SOKwCMpcVCDOsUBnjGc=
+        b=SE9wXRPTO27aesx1js2jlZyefnqIGIkN+LAds6BVRS/Z5Ot7vT7hzvNndnazFN11B
+         wPOHPmmIFaDPP1JblaKOExD71dq2uyOwNLLVodSsnjuMFQ/fMKFnrpHLJLBIJqbdG5
+         FvNiW7GokOgO4Kw3Qr8T2BIjerKxi744ucfMATto=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 124/204] mmc: renesas_sdhi_internal_dmac: clean up the code for dma complete
-Date:   Thu, 20 Aug 2020 11:20:21 +0200
-Message-Id: <20200820091612.485945522@linuxfoundation.org>
+        stable@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Kevin Hao <haokexin@gmail.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.4 059/152] tracing/hwlat: Honor the tracing_cpumask
+Date:   Thu, 20 Aug 2020 11:20:26 +0200
+Message-Id: <20200820091556.747022048@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
-References: <20200820091606.194320503@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,64 +44,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+From: Kevin Hao <haokexin@gmail.com>
 
-[ Upstream commit 2b26e34e9af3fa24fa1266e9ea2d66a1f7d62dc0 ]
+commit 96b4833b6827a62c295b149213c68b559514c929 upstream.
 
-To add end() operation in the future, clean the code of
-renesas_sdhi_internal_dmac_complete_tasklet_fn(). No behavior change.
+In calculation of the cpu mask for the hwlat kernel thread, the wrong
+cpu mask is used instead of the tracing_cpumask, this causes the
+tracing/tracing_cpumask useless for hwlat tracer. Fixes it.
 
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Link: https://lore.kernel.org/r/1590044466-28372-3-git-send-email-yoshihiro.shimoda.uh@renesas.com
-Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lkml.kernel.org/r/20200730082318.42584-2-haokexin@gmail.com
+
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: stable@vger.kernel.org
+Fixes: 0330f7aa8ee6 ("tracing: Have hwlat trace migrate across tracing_cpumask CPUs")
+Signed-off-by: Kevin Hao <haokexin@gmail.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/mmc/host/renesas_sdhi_internal_dmac.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ kernel/trace/trace_hwlat.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mmc/host/renesas_sdhi_internal_dmac.c b/drivers/mmc/host/renesas_sdhi_internal_dmac.c
-index 47ac53e912411..201b8ed37f2e0 100644
---- a/drivers/mmc/host/renesas_sdhi_internal_dmac.c
-+++ b/drivers/mmc/host/renesas_sdhi_internal_dmac.c
-@@ -229,15 +229,12 @@ static void renesas_sdhi_internal_dmac_issue_tasklet_fn(unsigned long arg)
- 					    DTRAN_CTRL_DM_START);
- }
- 
--static void renesas_sdhi_internal_dmac_complete_tasklet_fn(unsigned long arg)
-+static bool renesas_sdhi_internal_dmac_complete(struct tmio_mmc_host *host)
+--- a/kernel/trace/trace_hwlat.c
++++ b/kernel/trace/trace_hwlat.c
+@@ -270,6 +270,7 @@ static bool disable_migrate;
+ static void move_to_next_cpu(void)
  {
--	struct tmio_mmc_host *host = (struct tmio_mmc_host *)arg;
- 	enum dma_data_direction dir;
+ 	struct cpumask *current_mask = &save_cpumask;
++	struct trace_array *tr = hwlat_trace;
+ 	int next_cpu;
  
--	spin_lock_irq(&host->lock);
--
- 	if (!host->data)
--		goto out;
-+		return false;
+ 	if (disable_migrate)
+@@ -283,7 +284,7 @@ static void move_to_next_cpu(void)
+ 		goto disable;
  
- 	if (host->data->flags & MMC_DATA_READ)
- 		dir = DMA_FROM_DEVICE;
-@@ -250,6 +247,17 @@ static void renesas_sdhi_internal_dmac_complete_tasklet_fn(unsigned long arg)
- 	if (dir == DMA_FROM_DEVICE)
- 		clear_bit(SDHI_INTERNAL_DMAC_RX_IN_USE, &global_flags);
+ 	get_online_cpus();
+-	cpumask_and(current_mask, cpu_online_mask, tracing_buffer_mask);
++	cpumask_and(current_mask, cpu_online_mask, tr->tracing_cpumask);
+ 	next_cpu = cpumask_next(smp_processor_id(), current_mask);
+ 	put_online_cpus();
  
-+	return true;
-+}
-+
-+static void renesas_sdhi_internal_dmac_complete_tasklet_fn(unsigned long arg)
-+{
-+	struct tmio_mmc_host *host = (struct tmio_mmc_host *)arg;
-+
-+	spin_lock_irq(&host->lock);
-+	if (!renesas_sdhi_internal_dmac_complete(host))
-+		goto out;
-+
- 	tmio_mmc_do_data_irq(host);
- out:
- 	spin_unlock_irq(&host->lock);
--- 
-2.25.1
-
+@@ -360,7 +361,7 @@ static int start_kthread(struct trace_ar
+ 	/* Just pick the first CPU on first iteration */
+ 	current_mask = &save_cpumask;
+ 	get_online_cpus();
+-	cpumask_and(current_mask, cpu_online_mask, tracing_buffer_mask);
++	cpumask_and(current_mask, cpu_online_mask, tr->tracing_cpumask);
+ 	put_online_cpus();
+ 	next_cpu = cpumask_first(current_mask);
+ 
 
 
