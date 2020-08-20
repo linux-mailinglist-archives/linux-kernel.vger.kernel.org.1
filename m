@@ -2,217 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FFBD24BE8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C054524BE71
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728200AbgHTN1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:27:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36774 "EHLO mail.kernel.org"
+        id S1730242AbgHTN0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:26:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38602 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728122AbgHTNXy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 09:23:54 -0400
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 25EA722B47;
-        Thu, 20 Aug 2020 13:23:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597929832;
-        bh=S0XMEVf2aAQ3IiYG7eOURhdsLOivgIMyT7tA6HisgHs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jIbFDbvKf1LKfEz1PAe5BHtw0D3gtcKxDyHF6BpQYmu9zRaFWSw6l4DaI8PLfmjC0
-         jkHOBxdB0Hql2UpP9CiEAb4a5elCgqB/wu0zt6qUxXJkc0809OUaJSYradCp0i3dl8
-         h54YWie3tOWixj6Mav8bOxGGR7n+8HxHWEZ/Blos=
-Received: by mail-ot1-f42.google.com with SMTP id r21so1407605ota.10;
-        Thu, 20 Aug 2020 06:23:52 -0700 (PDT)
-X-Gm-Message-State: AOAM5305GimIlIrcoo++m5jHnAG2xc2zSVCwdwkmXUsz4FpC0RxxJqYM
-        C1i55MZjb3eGlodz6WsaFmtaOpYk1EXJxkeDZw==
-X-Google-Smtp-Source: ABdhPJy4Fpviz3cjhVdHhhI5/I15s9IDqxEnlJNHzLguk6qFyLHNnIlZuwb5D0ctTnUeBkXCLYg81ebaPBQ23C3ysz8=
-X-Received: by 2002:a9d:7f84:: with SMTP id t4mr2189699otp.192.1597929831438;
- Thu, 20 Aug 2020 06:23:51 -0700 (PDT)
+        id S1729419AbgHTN0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 09:26:34 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3467EB5F9;
+        Thu, 20 Aug 2020 13:26:59 +0000 (UTC)
+Date:   Thu, 20 Aug 2020 15:26:31 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        christian.brauner@ubuntu.com, mingo@kernel.org,
+        peterz@infradead.org, tglx@linutronix.de, esyr@redhat.com,
+        christian@kellner.me, areber@redhat.com, shakeelb@google.com,
+        cyphar@cyphar.com, oleg@redhat.com, adobriyan@gmail.com,
+        akpm@linux-foundation.org, gladkov.alexey@gmail.com,
+        walken@google.com, daniel.m.jordan@oracle.com, avagin@gmail.com,
+        bernd.edlinger@hotmail.de, john.johansen@canonical.com,
+        laoar.shao@gmail.com, timmurray@google.com, minchan@kernel.org,
+        kernel-team@android.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 1/1] mm, oom_adj: don't loop through tasks in
+ __set_oom_adj when not necessary
+Message-ID: <20200820132631.GK5033@dhcp22.suse.cz>
+References: <20200820002053.1424000-1-surenb@google.com>
+ <87zh6pxzq6.fsf@x220.int.ebiederm.org>
+ <20200820124241.GJ5033@dhcp22.suse.cz>
+ <87lfi9xz7y.fsf@x220.int.ebiederm.org>
+ <87d03lxysr.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-References: <1597903458-8055-1-git-send-email-yongqiang.niu@mediatek.com> <1597903458-8055-22-git-send-email-yongqiang.niu@mediatek.com>
-In-Reply-To: <1597903458-8055-22-git-send-email-yongqiang.niu@mediatek.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 20 Aug 2020 07:23:39 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKy3kNOVuU3dbGmXBWuggzxx_NQpQL2wEvRQRVrn3pKgA@mail.gmail.com>
-Message-ID: <CAL_JsqKy3kNOVuU3dbGmXBWuggzxx_NQpQL2wEvRQRVrn3pKgA@mail.gmail.com>
-Subject: Re: [PATCH v1 21/21] arm64: dts: mt8192: add display node
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87d03lxysr.fsf@x220.int.ebiederm.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 12:06 AM Yongqiang Niu
-<yongqiang.niu@mediatek.com> wrote:
->
-> add display node
->
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> ---
->  arch/arm64/boot/dts/mediatek/mt8192.dtsi | 126 +++++++++++++++++++++++++++++++
->  1 file changed, 126 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-> index 931e1ca..d2a814d 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-> @@ -17,6 +17,13 @@
->         #address-cells = <2>;
->         #size-cells = <2>;
->
-> +        aliases {
-> +               ovl0 = &ovl0;
-> +               ovl_2l0 = &ovl_2l0;
-> +               ovl_2l2 = &ovl_2l2;
-> +               rdma0 = &rdma0;
-> +               rdma4 = &rdma4;
+On Thu 20-08-20 07:54:44, Eric W. Biederman wrote:
+> ebiederm@xmission.com (Eric W. Biederman) writes:
+> 
+> 2> Michal Hocko <mhocko@suse.com> writes:
+> >
+> >> On Thu 20-08-20 07:34:41, Eric W. Biederman wrote:
+> >>> Suren Baghdasaryan <surenb@google.com> writes:
+> >>> 
+> >>> > Currently __set_oom_adj loops through all processes in the system to
+> >>> > keep oom_score_adj and oom_score_adj_min in sync between processes
+> >>> > sharing their mm. This is done for any task with more that one mm_users,
+> >>> > which includes processes with multiple threads (sharing mm and signals).
+> >>> > However for such processes the loop is unnecessary because their signal
+> >>> > structure is shared as well.
+> >>> > Android updates oom_score_adj whenever a tasks changes its role
+> >>> > (background/foreground/...) or binds to/unbinds from a service, making
+> >>> > it more/less important. Such operation can happen frequently.
+> >>> > We noticed that updates to oom_score_adj became more expensive and after
+> >>> > further investigation found out that the patch mentioned in "Fixes"
+> >>> > introduced a regression. Using Pixel 4 with a typical Android workload,
+> >>> > write time to oom_score_adj increased from ~3.57us to ~362us. Moreover
+> >>> > this regression linearly depends on the number of multi-threaded
+> >>> > processes running on the system.
+> >>> > Mark the mm with a new MMF_PROC_SHARED flag bit when task is created with
+> >>> > CLONE_VM and !CLONE_SIGHAND. Change __set_oom_adj to use MMF_PROC_SHARED
+> >>> > instead of mm_users to decide whether oom_score_adj update should be
+> >>> > synchronized between multiple processes. To prevent races between clone()
+> >>> > and __set_oom_adj(), when oom_score_adj of the process being cloned might
+> >>> > be modified from userspace, we use oom_adj_mutex. Its scope is changed to
+> >>> > global and it is renamed into oom_adj_lock for naming consistency with
+> >>> > oom_lock. Since the combination of CLONE_VM and !CLONE_SIGHAND is rarely
+> >>> > used the additional mutex lock in that path of the clone() syscall should
+> >>> > not affect its overall performance. Clearing the MMF_PROC_SHARED flag
+> >>> > (when the last process sharing the mm exits) is left out of this patch to
+> >>> > keep it simple and because it is believed that this threading model is
+> >>> > rare. Should there ever be a need for optimizing that case as well, it
+> >>> > can be done by hooking into the exit path, likely following the
+> >>> > mm_update_next_owner pattern.
+> >>> > With the combination of CLONE_VM and !CLONE_SIGHAND being quite rare, the
+> >>> > regression is gone after the change is applied.
+> >>> 
+> >>> So I am confused.
+> >>> 
+> >>> Is there any reason why we don't simply move signal->oom_score_adj to
+> >>> mm->oom_score_adj and call it a day?
+> >>
+> >> Yes. Please read through 44a70adec910 ("mm, oom_adj: make sure processes
+> >> sharing mm have same view of oom_score_adj")
+> >
+> > That explains why the scores are synchronized.
+> >
+> > It doesn't explain why we don't do the much simpler thing and move
+> > oom_score_adj from signal_struct to mm_struct. Which is my question.
+> >
+> > Why not put the score where we need it to ensure that the oom score
+> > is always synchronized?  AKA on the mm_struct, not the signal_struct.
+> 
+> Apologies.  That 44a70adec910 does describe that some people have seen
+> vfork users set oom_score.  No details unfortunately.
+> 
+> I will skip the part where posix calls this undefined behavior.  It
+> breaks userspace to change.
+> 
+> It still seems like the code should be able to buffer oom_adj during
+> vfork, and only move the value onto mm_struct during exec.
 
-No, please don't add a bunch of custom aliases that you probably don't need.
-
-> +       };
->         clk26m: oscillator@0 {
->                 compatible = "fixed-clock";
->                 #clock-cells = <0>;
-> @@ -449,6 +456,125 @@
->                         #clock-cells = <1>;
->                 };
->
-> +                mutex: mutex@14001000 {
-> +                       compatible = "mediatek,mt8192-disp-mutex";
-> +                       reg = <0 0x14001000 0 0x1000>;
-> +                       interrupts = <GIC_SPI 252 IRQ_TYPE_LEVEL_HIGH 0>;
-> +                       clocks = <&mmsys CLK_MM_DISP_CONFIG>,
-> +                                <&mmsys CLK_MM_26MHZ>,
-> +                                <&mmsys CLK_MM_DISP_MUTEX0>;
-> +               };
-> +               ovl0: ovl@14005000 {
-> +                       compatible = "mediatek,mt8192-disp-ovl";
-> +                       reg = <0 0x14005000 0 0x1000>;
-> +                       interrupts = <GIC_SPI 254 IRQ_TYPE_LEVEL_HIGH 0>;
-> +                       clocks = <&mmsys CLK_MM_DISP_OVL0>;
-> +                       //iommus = <&iommu0 M4U_PORT_L0_OVL_RDMA0>,
-> +                       //       <&iommu0 M4U_PORT_L0_OVL_RDMA0_HDR>;
-> +                       power-domains = <&scpsys MT8192_POWER_DOMAIN_DISP>;
-> +                       //mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0x5000 0x1000>;
-> +               };
-> +
-> +               ovl_2l0: ovl@14006000 {
-> +                       compatible = "mediatek,mt8192-disp-ovl-2l";
-> +                       reg = <0 0x14006000 0 0x1000>;
-> +                       interrupts = <GIC_SPI 255 IRQ_TYPE_LEVEL_HIGH 0>;
-> +                       power-domains = <&scpsys MT8192_POWER_DOMAIN_DISP>;
-> +                       clocks = <&mmsys CLK_MM_DISP_OVL0_2L>;
-> +                       //iommus = <&iommu0 M4U_PORT_L1_OVL_2L_RDMA0>,
-> +                       //       <&iommu0 M4U_PORT_L1_OVL_2L_RDMA0_HDR>;
-> +                       //mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0x6000 0x1000>;
-> +               };
-> +
-> +               rdma0: rdma@14007000 {
-> +                       compatible = "mediatek,mt8192-disp-rdma";
-> +                       reg = <0 0x14007000 0 0x1000>;
-> +                       interrupts = <GIC_SPI 256 IRQ_TYPE_LEVEL_HIGH 0>;
-> +                       clocks = <&mmsys CLK_MM_DISP_RDMA0>;
-> +                       //iommus = <&iommu0 M4U_PORT_L0_DISP_RDMA0>;
-> +                       mediatek,rdma_fifo_size = <5>;
-> +                       power-domains = <&scpsys MT8192_POWER_DOMAIN_DISP>;
-> +                       //mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0x7000 0x1000>;
-> +               };
-> +
-> +               color0: color@14009000 {
-> +                       compatible = "mediatek,mt8192-disp-color",
-> +                                    "mediatek,mt8173-disp-color";
-> +                       reg = <0 0x14009000 0 0x1000>;
-> +                       interrupts = <GIC_SPI 258 IRQ_TYPE_LEVEL_HIGH 0>;
-> +                       power-domains = <&scpsys MT8192_POWER_DOMAIN_DISP>;
-> +                       clocks = <&mmsys CLK_MM_DISP_COLOR0>;
-> +                       //mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0x9000 0x1000>;
-> +               };
-> +
-> +               ccorr0: ccorr@1400a000 {
-> +                       compatible = "mediatek,mt8192-disp-ccorr";
-> +                       reg = <0 0x1400a000 0 0x1000>;
-> +                       interrupts = <GIC_SPI 259 IRQ_TYPE_LEVEL_HIGH 0>;
-> +                       power-domains = <&scpsys MT8192_POWER_DOMAIN_DISP>;
-> +                       clocks = <&mmsys CLK_MM_DISP_CCORR0>;
-> +                       //mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xa000 0x1000>;
-> +               };
-> +
-> +               aal0: aal@1400b000 {
-> +                       compatible = "mediatek,mt8192-disp-aal";
-> +                       reg = <0 0x1400b000 0 0x1000>;
-> +                       interrupts = <GIC_SPI 260 IRQ_TYPE_LEVEL_HIGH 0>;
-> +                       power-domains = <&scpsys MT8192_POWER_DOMAIN_DISP>;
-> +                       clocks = <&mmsys CLK_MM_DISP_AAL0>;
-> +                       //mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xb000 0x1000>;
-> +               };
-> +
-> +               gamma0: gamma@1400c000 {
-> +                       compatible = "mediatek,mt8192-disp-gamma";
-> +                       reg = <0 0x1400c000 0 0x1000>;
-> +                       interrupts = <GIC_SPI 261 IRQ_TYPE_LEVEL_HIGH 0>;
-> +                       power-domains = <&scpsys MT8192_POWER_DOMAIN_DISP>;
-> +                       clocks = <&mmsys CLK_MM_DISP_GAMMA0>;
-> +                       //mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xc000 0x1000>;
-> +               };
-> +
-> +               postmask0: postmask@1400d000 {
-> +                       compatible = "mediatek,mt8192-disp-postmask";
-> +                       reg = <0 0x1400d000 0 0x1000>;
-> +                       interrupts = <GIC_SPI 262 IRQ_TYPE_LEVEL_HIGH 0>;
-> +                       power-domains = <&scpsys MT8192_POWER_DOMAIN_DISP>;
-> +                       clocks = <&mmsys CLK_MM_DISP_POSTMASK0>;
-> +                       //iommus = <&iommu0 M4U_PORT_L0_DISP_POSTMASK0>;
-> +                       //mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xd000 0x1000>;
-> +               };
-> +
-> +               dither0: dither@1400e000 {
-> +                       compatible = "mediatek,mt8192-disp-dither";
-> +                       reg = <0 0x1400e000 0 0x1000>;
-> +                       interrupts = <GIC_SPI 263 IRQ_TYPE_LEVEL_HIGH 0>;
-> +                       power-domains = <&scpsys MT8192_POWER_DOMAIN_DISP>;
-> +                       clocks = <&mmsys CLK_MM_DISP_DITHER0>;
-> +                       //mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xe000 0x1000>;
-> +               };
-> +
-> +               ovl_2l2: ovl@14014000 {
-> +                       compatible = "mediatek,mt8192-disp-ovl-2l";
-> +                       reg = <0 0x14014000 0 0x1000>;
-> +                       interrupts = <GIC_SPI 268 IRQ_TYPE_LEVEL_HIGH 0>;
-> +                       power-domains = <&scpsys MT8192_POWER_DOMAIN_DISP>;
-> +                       clocks = <&mmsys CLK_MM_DISP_OVL2_2L>;
-> +                       //iommus = <&iommu0 M4U_PORT_L1_OVL_2L_RDMA2>,
-> +                       //       <&iommu0 M4U_PORT_L1_OVL_2L_RDMA2_HDR>;
-> +                       //mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0x4000 0x1000>;
-> +               };
-> +
-> +               rdma4: rdma@14015000 {
-> +                       compatible = "mediatek,mt8192-disp-rdma";
-> +                       reg = <0 0x14015000 0 0x1000>;
-> +                       interrupts = <GIC_SPI 269 IRQ_TYPE_LEVEL_HIGH 0>;
-> +                       power-domains = <&scpsys MT8192_POWER_DOMAIN_DISP>;
-> +                       clocks = <&mmsys CLK_MM_DISP_RDMA4>;
-> +                       //iommus = <&iommu0 M4U_PORT_L1_DISP_RDMA4>;
-> +                       mediatek,rdma_fifo_size = <2>;
-> +                       //mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0x5000 0x1000>;
-> +               };
-> +
->                 imgsys: imgsys@15020000 {
->                         compatible = "mediatek,mt8192-imgsys", "syscon";
->                         reg = <0 0x15020000 0 0x1000>;
-> --
-> 1.8.1.1.dirty
+If you can handle vfork by other means then I am all for it. There were
+no patches in that regard proposed yet. Maybe it will turn out simpler
+then the heavy lifting we have to do in the oom specific code.
+-- 
+Michal Hocko
+SUSE Labs
