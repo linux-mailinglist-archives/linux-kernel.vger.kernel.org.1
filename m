@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B6624B529
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E346824B4E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731314AbgHTKTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:19:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38972 "EHLO mail.kernel.org"
+        id S1730529AbgHTKNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:13:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731050AbgHTKRe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:17:34 -0400
+        id S1731026AbgHTKNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:13:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AFBC020885;
-        Thu, 20 Aug 2020 10:17:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1FC8020724;
+        Thu, 20 Aug 2020 10:13:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918654;
-        bh=srXWZiN4UvRjQoGJzlyOEKNDr9gqff2/ELi12xw0MRM=;
+        s=default; t=1597918389;
+        bh=j7dy0bSZdJMy0fQ8xfWCUsGcJ0bQlI1YyTEiGg3ult0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xaN4BIIRiD5cCeyyFCW1uxLuIBnuXvkEHoqpqmO+mgPFIfnLoY5BgsStsN+hFiyq6
-         gY7AI2mSSiEMfeSoUpj5wqcppkuNuXqvbPwMPRW1p28drwGIOCOnpIYQcYyU2l0D9f
-         WTCsVcGW23MB1FmP8Y6KZd3OdrSv8vM8+yKDSYZU=
+        b=d42NyCBxsgZjexirkAop6GJeTgyrWzaAeLGe1fxEPcCc18lz9iMtoQkcnjcOPXfLF
+         jtLcMT9rC6P3C5hCvATkp9giLUpeVjdovzGWj74RzYoz/8hauz9CCEp8jBwSzuoRLp
+         12gEuV68RxJps09YV3S+CZtsLoI2F7v7FaIld5TQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Woojung.Huh@microchip.com" <Woojung.Huh@microchip.com>,
-        Johan Hovold <johan@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Hanjun Guo <guohanjun@huawei.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 019/149] net: lan78xx: fix transfer-buffer memory leak
-Date:   Thu, 20 Aug 2020 11:21:36 +0200
-Message-Id: <20200820092126.635106821@linuxfoundation.org>
+Subject: [PATCH 4.14 122/228] PCI: Release IVRS table in AMD ACS quirk
+Date:   Thu, 20 Aug 2020 11:21:37 +0200
+Message-Id: <20200820091613.689102252@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
-References: <20200820092125.688850368@linuxfoundation.org>
+In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
+References: <20200820091607.532711107@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,33 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Hanjun Guo <guohanjun@huawei.com>
 
-[ Upstream commit 63634aa679ba8b5e306ad0727120309ae6ba8a8e ]
+[ Upstream commit 090688fa4e448284aaa16136372397d7d10814db ]
 
-The interrupt URB transfer-buffer was never freed on disconnect or after
-probe errors.
+The acpi_get_table() should be coupled with acpi_put_table() if the mapped
+table is not used at runtime to release the table mapping.
 
-Fixes: 55d7de9de6c3 ("Microchip's LAN7800 family USB 2/3 to 10/100/1000 Ethernet device driver")
-Cc: Woojung.Huh@microchip.com <Woojung.Huh@microchip.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+In pci_quirk_amd_sb_acs(), IVRS table is just used for checking AMD IOMMU
+is supported, not used at runtime, so put the table after using it.
+
+Fixes: 15b100dfd1c9 ("PCI: Claim ACS support for AMD southbridge devices")
+Link: https://lore.kernel.org/r/1595411068-15440-1-git-send-email-guohanjun@huawei.com
+Signed-off-by: Hanjun Guo <guohanjun@huawei.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/lan78xx.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/pci/quirks.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/usb/lan78xx.c b/drivers/net/usb/lan78xx.c
-index 3f2f524c338d6..1fb5d5f3475cf 100644
---- a/drivers/net/usb/lan78xx.c
-+++ b/drivers/net/usb/lan78xx.c
-@@ -3006,6 +3006,7 @@ static int lan78xx_probe(struct usb_interface *intf,
- 			usb_fill_int_urb(dev->urb_intr, dev->udev,
- 					 dev->pipe_intr, buf, maxp,
- 					 intr_complete, dev, period);
-+			dev->urb_intr->transfer_flags |= URB_FREE_BUFFER;
- 		}
- 	}
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 243b16ce0c8eb..da790f26d2950 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -4307,6 +4307,8 @@ static int pci_quirk_amd_sb_acs(struct pci_dev *dev, u16 acs_flags)
+ 	if (ACPI_FAILURE(status))
+ 		return -ENODEV;
+ 
++	acpi_put_table(header);
++
+ 	/* Filter out flags not applicable to multifunction */
+ 	acs_flags &= (PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_EC | PCI_ACS_DT);
  
 -- 
 2.25.1
