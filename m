@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0FE24C433
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 19:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E1F24C423
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 19:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730390AbgHTRKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 13:10:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43022 "EHLO
+        id S1730319AbgHTRI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 13:08:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730398AbgHTRGy (ORCPT
+        with ESMTP id S1729582AbgHTRG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 13:06:54 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0AADC061347
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:05:52 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id r9so1986575qtp.7
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:05:52 -0700 (PDT)
+        Thu, 20 Aug 2020 13:06:58 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7DAAC061349
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:05:54 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id l10so1788936qvw.22
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:05:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=Iv89Xj9r4G2AFHTvNFTUszt55oudaNNsbG7Jzt5MM3M=;
-        b=JAoLsfvQ4br/TgUsmWn9DiWKTa+gHnJlRKDqSlFzX5V673qRD69mVU//vMYNLqeytr
-         rhFyPscW3spdsfTlmOmV0nDCn+n1FekpqqrNOrpaPaUUDFPyK2yaaGgjnubuGAFXfgOZ
-         4RN2pffxWbl/Vt9OuWgk4OiLFRcn+ZneSYLa3l8/scg3+pGjlXbiE0IEgtCx62jc46ib
-         dtjdcsceajNguBonA3n67SB27pzahfP4nEEXTjzZUXBgq6Cze40JodWRpNDL1p68sZMo
-         4pt1nbmOJkkOV9mUv901MxLQQu5ovydCHcUgt1ALfMQw7OjMdo6PynVY+OtkRA0EdKUh
-         uRLA==
+        bh=TSLmEPwlFccaRVuUrhKv3FaWDdmO/JVWcm6IHHbjArg=;
+        b=IQxhLKQzVwP0KfRd3Pxusat2zuJXNWxSnetqcoJjEmjg6JYB5IlUOQbPP/AoZyFPkq
+         WT7YDdzd9pR675DhQ7Jv2wWLSbjv95xYAi/Q1SnDTc67zJHbvGwHMDwOD+D60a53Xm5G
+         m+qmz4GM91iSdhxOX6FJ8SKJizHlgiBu6fpxwUCDggo2KKVUJfWWgjXLwuUMPQRdQhYc
+         mLEY+xaTMF0LajircdB5xwjhf+my/lFMchNajJn7yPIXaZJi7iK23yJ1H4n4Wg4+gkCr
+         Uu4zr0coaktldxBJNc1wcvhs8glYdWdURQUh9yqXoXDEz/p0X8w55uUyi4fzSSDuXf3y
+         5lqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=Iv89Xj9r4G2AFHTvNFTUszt55oudaNNsbG7Jzt5MM3M=;
-        b=GLjjR9P655pio+aupDQ227UPRijcIb4l1eBTE9ZE5VQLeXDIeaoPwXTQ9P8vhzvRKW
-         hwPduXc2EL9VLLoJXZkH4zRQJS0QWJsfD/KfIS6lsIY324qB1BLCYBO6U/7bIRwrLdJi
-         Ah8STpf0T1R+6x0NAroedMA7Y5iWIxLtlCn2cwijwA4oUBi+lmqRFioCXWR3ManUmRPt
-         WwpVmGUFpzGiP+jvJ/JBPXrlSFczHDc4YAXhuuwwGkaBXi/3WLnlRrYO9ZdGwDRlW3Wl
-         v8P3pNjSVez+GB1iaL6+pLISjV+Z5RJQwqurV2RPpd0ax4mqj7HzZ2KENObJbIwxty52
-         +h5g==
-X-Gm-Message-State: AOAM533pzdI/wU3pZBbs+wHJXgGDfQspZso1aTsh7z6c1W8eB6PdzRUm
-        ih1F5kNJuZy/3VXPz6MXaRXs6Ls/s9vVlfU=
-X-Google-Smtp-Source: ABdhPJyAeDAmjp/cOMLYBlzKs+yr6QsVC8gvT2N9bGSimDFXyKsgrBOjYXHKDZ2UXbzrYoObhj6uF80NWOzZdd4=
+        bh=TSLmEPwlFccaRVuUrhKv3FaWDdmO/JVWcm6IHHbjArg=;
+        b=lYBr7k6wj/E58uKNGDyvpuTPAlry4+gOJFqmtYXhZHYRQFe01y4OT5dZbrQpImVfjV
+         gMfRNrIi/i9xemI13B2E//FahOikNYgacOZesoFgZ0Xe/cXIrnPwCCliEZuMbpiJiv+O
+         kqeGxDqXxaFQ1hkKyWT3RGqK2GB4hd9GzOjj3y4AFW6SI3LnvczeXgw7pEadWOL8/7Id
+         bpBW/4zpnRLNRITwOHEc1kAt3AxOYJJCrepeBPQxKyZqp0pIkQDg7jGpt0u76e2JoWTQ
+         XKsuCtiHW9TeCZkiAssOeEVHWj5GhII0zeLLyBQGf31+y1nW06XfBL8i1cnh9dw7J4cd
+         S+OQ==
+X-Gm-Message-State: AOAM531/5m4rKFRivkbwzSmGxi9QvjYoNvMGxFcd6EnOPmHfvjc/ET/o
+        07pGXBa/taiwc34stJz7KSip39Z0QJNeQA4=
+X-Google-Smtp-Source: ABdhPJygXfncfS/0/GMyGN6IEog77U5++V0HYUNA1HpjGL1sVvQW+wDkctEyZr/Lj2VhjuVrDzHMWkVPFzeqx24=
 X-Received: from ckennelly28.nyc.corp.google.com ([2620:0:1003:1003:3e52:82ff:fe5a:a91a])
- (user=ckennelly job=sendgmr) by 2002:a05:6214:1910:: with SMTP id
- er16mr3766114qvb.228.1597943152055; Thu, 20 Aug 2020 10:05:52 -0700 (PDT)
-Date:   Thu, 20 Aug 2020 13:05:40 -0400
+ (user=ckennelly job=sendgmr) by 2002:a05:6214:108a:: with SMTP id
+ o10mr3962299qvr.239.1597943153890; Thu, 20 Aug 2020 10:05:53 -0700 (PDT)
+Date:   Thu, 20 Aug 2020 13:05:41 -0400
 In-Reply-To: <20200820170541.1132271-1-ckennelly@google.com>
-Message-Id: <20200820170541.1132271-2-ckennelly@google.com>
+Message-Id: <20200820170541.1132271-3-ckennelly@google.com>
 Mime-Version: 1.0
 References: <20200820170541.1132271-1-ckennelly@google.com>
 X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
-Subject: [PATCH v3 1/2] fs/binfmt_elf: Use PT_LOAD p_align values for suitable
- start address.
+Subject: [PATCH v3 2/2] Add self-test for verifying load alignment.
 From:   Chris Kennelly <ckennelly@google.com>
 To:     Alexander Viro <viro@zeniv.linux.org.uk>,
         Alexey Dobriyan <adobriyan@gmail.com>,
@@ -73,75 +72,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current ELF loading mechancism provides page-aligned mappings.  This
-can lead to the program being loaded in a way unsuitable for
-file-backed, transparent huge pages when handling PIE executables.
+This produces a PIE binary with a variety of p_align requirements,
+suitable for verifying that the load address meets that alignment
+requirement.
 
-For binaries built with increased alignment, this limits the number of
-bits usable for ASLR, but provides some randomization over using fixed
-load addresses/non-PIE binaries.
-
-Tested: verified program with -Wl,-z,max-page-size=0x200000 loading
 Signed-off-by: Chris Kennelly <ckennelly@google.com>
 ---
- fs/binfmt_elf.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ tools/testing/selftests/exec/.gitignore     |  1 +
+ tools/testing/selftests/exec/Makefile       |  9 ++-
+ tools/testing/selftests/exec/load_address.c | 68 +++++++++++++++++++++
+ 3 files changed, 76 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/exec/load_address.c
 
-diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-index 13d053982dd73..a980dc3704639 100644
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -13,6 +13,7 @@
- #include <linux/module.h>
- #include <linux/kernel.h>
- #include <linux/fs.h>
-+#include <linux/log2.h>
- #include <linux/mm.h>
- #include <linux/mman.h>
- #include <linux/errno.h>
-@@ -421,6 +422,24 @@ static int elf_read(struct file *file, void *buf, size_t len, loff_t pos)
- 	return 0;
- }
+diff --git a/tools/testing/selftests/exec/.gitignore b/tools/testing/selftests/exec/.gitignore
+index 344a99c6da1b7..9e2f00343f15f 100644
+--- a/tools/testing/selftests/exec/.gitignore
++++ b/tools/testing/selftests/exec/.gitignore
+@@ -7,6 +7,7 @@ execveat.moved
+ execveat.path.ephemeral
+ execveat.ephemeral
+ execveat.denatured
++/load_address_*
+ /recursion-depth
+ xxxxxxxx*
+ pipe
+diff --git a/tools/testing/selftests/exec/Makefile b/tools/testing/selftests/exec/Makefile
+index 0a13b110c1e66..cf69b2fcce59e 100644
+--- a/tools/testing/selftests/exec/Makefile
++++ b/tools/testing/selftests/exec/Makefile
+@@ -4,7 +4,7 @@ CFLAGS += -Wno-nonnull
+ CFLAGS += -D_GNU_SOURCE
  
-+static unsigned long maximum_alignment(struct elf_phdr *cmds, int nr)
+ TEST_PROGS := binfmt_script non-regular
+-TEST_GEN_PROGS := execveat
++TEST_GEN_PROGS := execveat load_address_4096 load_address_2097152 load_address_16777216
+ TEST_GEN_FILES := execveat.symlink execveat.denatured script subdir pipe
+ # Makefile is a run-time dependency, since it's accessed by the execveat test
+ TEST_FILES := Makefile
+@@ -27,4 +27,9 @@ $(OUTPUT)/execveat.symlink: $(OUTPUT)/execveat
+ $(OUTPUT)/execveat.denatured: $(OUTPUT)/execveat
+ 	cp $< $@
+ 	chmod -x $@
+-
++$(OUTPUT)/load_address_4096: load_address.c
++	$(CC) $(CFLAGS) $(LDFLAGS) -Wl,-z,max-page-size=0x1000 -pie $< -o $@
++$(OUTPUT)/load_address_2097152: load_address.c
++	$(CC) $(CFLAGS) $(LDFLAGS) -Wl,-z,max-page-size=0x200000 -pie $< -o $@
++$(OUTPUT)/load_address_16777216: load_address.c
++	$(CC) $(CFLAGS) $(LDFLAGS) -Wl,-z,max-page-size=0x1000000 -pie $< -o $@
+diff --git a/tools/testing/selftests/exec/load_address.c b/tools/testing/selftests/exec/load_address.c
+new file mode 100644
+index 0000000000000..d487c2f6a6150
+--- /dev/null
++++ b/tools/testing/selftests/exec/load_address.c
+@@ -0,0 +1,68 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#ifndef _GNU_SOURCE
++#define _GNU_SOURCE
++#endif
++#include <link.h>
++#include <stdio.h>
++#include <stdlib.h>
++
++struct Statistics {
++	unsigned long long load_address;
++	unsigned long long alignment;
++};
++
++int ExtractStatistics(struct dl_phdr_info *info, size_t size, void *data)
 +{
-+	unsigned long alignment = 0;
++	struct Statistics *stats = (struct Statistics *) data;
 +	int i;
 +
-+	for (i = 0; i < nr; i++) {
-+		if (cmds[i].p_type == PT_LOAD) {
-+			/* skip non-power of two alignments */
-+			if (!is_power_of_2(cmds[i].p_align))
-+				continue;
-+			alignment = max(alignment, cmds[i].p_align);
-+		}
++	if (info->dlpi_name != NULL && info->dlpi_name[0] != '\0') {
++		// Ignore headers from other than the executable.
++		return 2;
 +	}
 +
-+	/* ensure we align to at least one page */
-+	return ELF_PAGEALIGN(alignment);
++	stats->load_address = (unsigned long long) info->dlpi_addr;
++	stats->alignment = 0;
++
++	for (i = 0; i < info->dlpi_phnum; i++) {
++		if (info->dlpi_phdr[i].p_type != PT_LOAD)
++			continue;
++
++		if (info->dlpi_phdr[i].p_align > stats->alignment)
++			stats->alignment = info->dlpi_phdr[i].p_align;
++	}
++
++	return 1;  // Terminate dl_iterate_phdr.
 +}
 +
- /**
-  * load_elf_phdrs() - load ELF program headers
-  * @elf_ex:   ELF header of the binary whose program headers should be loaded
-@@ -1008,6 +1027,7 @@ static int load_elf_binary(struct linux_binprm *bprm)
- 		int elf_prot, elf_flags;
- 		unsigned long k, vaddr;
- 		unsigned long total_size = 0;
-+		unsigned long alignment;
- 
- 		if (elf_ppnt->p_type != PT_LOAD)
- 			continue;
-@@ -1086,6 +1106,9 @@ static int load_elf_binary(struct linux_binprm *bprm)
- 				load_bias = ELF_ET_DYN_BASE;
- 				if (current->flags & PF_RANDOMIZE)
- 					load_bias += arch_mmap_rnd();
-+				alignment = maximum_alignment(elf_phdata, elf_ex->e_phnum);
-+				if (alignment)
-+					load_bias &= ~(alignment - 1);
- 				elf_flags |= MAP_FIXED;
- 			} else
- 				load_bias = 0;
++int main(int argc, char **argv)
++{
++	struct Statistics extracted;
++	unsigned long long misalign;
++	int ret;
++
++	ret = dl_iterate_phdr(ExtractStatistics, &extracted);
++	if (ret != 1) {
++		fprintf(stderr, "FAILED\n");
++		return 1;
++	}
++
++	if (extracted.alignment == 0) {
++		fprintf(stderr, "No alignment found\n");
++		return 1;
++	} else if (extracted.alignment & (extracted.alignment - 1)) {
++		fprintf(stderr, "Alignment is not a power of 2\n");
++		return 1;
++	}
++
++	misalign = extracted.load_address & (extracted.alignment - 1);
++	if (misalign) {
++		printf("alignment = %llu, load_address = %llu\n",
++			extracted.alignment, extracted.load_address);
++		fprintf(stderr, "FAILED\n");
++		return 1;
++	}
++
++	fprintf(stderr, "PASS\n");
++	return 0;
++}
 -- 
 2.28.0.297.g1956fa8f8d-goog
 
