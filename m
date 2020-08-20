@@ -2,75 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382E724B6A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC7F24B672
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731551AbgHTKiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:38:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730963AbgHTKSD (ORCPT
+        id S1731806AbgHTKf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:35:56 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:51481 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731388AbgHTKSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:18:03 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 376A1C061757;
-        Thu, 20 Aug 2020 03:18:01 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id w14so1470935ljj.4;
-        Thu, 20 Aug 2020 03:18:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kYwjflgRQVoui32eapBhBFxV9IoHyH7UykeWpPqQmtM=;
-        b=YUCUJvfrTEooGe2XmrcE5ooa0JrwV+Mh0xPCIgP0m4H3+6vDf4NkhTLQmKh322gIa7
-         y5EdIV0jnmdsV/BsN9zhxZBk2UnrRxTTKYU5Fg6pOXUGkEceJt3FK1uBmEPe0O6EZD4m
-         jxVmBi6A2rR492QA2Kdce72+QUA0XLeh3l8kHpIMy7NZqGq4p/CkGsw5SyRqov6ydrgh
-         26i3+kV0DS2CEoMpWYwj/l48eLpF6QMwCJXFt0nknR51Kf3yLPmkDbXbrC8/wSDimJ0R
-         pzOk4cjzaQzSm1E68kujkeGofsy0Z0JFM490+h698hLK6ZQznCqJzw7XTZwvqEig0QG1
-         gQTw==
+        Thu, 20 Aug 2020 06:18:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597918717;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ks6Vmm7jkQp97PF98e15DQTqLGcM4ICVk2CkEB67KBg=;
+        b=Ex6EaKKRNuhFIIi9yHUiqPwuFWdb11cR1N5iVYAzQbSjo8cJVm8gSYlPxZhzgt9NK0gH18
+        TKqBHmKll31jnf2TolCrkd+M0ZLtsfpfnumt0dPteLyvYAe70xzt/mJgTyB6y9BhrB0aOo
+        TAKh2bVTfnJDGg7ngki4HBWMTrwMl2I=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-346-9Y_U1lzmMXSnv3QjdmgnNA-1; Thu, 20 Aug 2020 06:18:35 -0400
+X-MC-Unique: 9Y_U1lzmMXSnv3QjdmgnNA-1
+Received: by mail-wr1-f71.google.com with SMTP id m7so486294wrb.20
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:18:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=kYwjflgRQVoui32eapBhBFxV9IoHyH7UykeWpPqQmtM=;
-        b=XB/db52PCEVlUKXtqjdd5u6ItwEonbhOWKMqrE4vS719nR3Wl5fUsAT17K2+ZxJt/+
-         LeqEnMxGMMvJIXWTb9wlApO8Qa9ayG5SK+OQCfEpx5MkPJ4uwY8xqqvIPc4yuW78Ki+Y
-         xwoDGE2/c0qBRc38XOCTiDD4tKl15PBe5/NHZY8RYaa7q8M/OXQ3F3Rgieyu0TtXzBzz
-         dJfZ3LeSOFQIkNS87gNDaeU+6zmxlZXU+qTz4WZaf1vBmmOpKYx02JMyW2baCpxMmboW
-         bPV/NHnOE3ElHWbA2gCDae/eKPpLFagMWA/JiMJKMTB8wnSlCfT5FPGl2iRWYAqVxzMq
-         DNaQ==
-X-Gm-Message-State: AOAM532H1gMXCG/wjpEpmRrGhHlsdUMHpL3FAwNalARYkVrzg5RDc98K
-        mT5NHUXADjxHmxKxdWQ4ZF0=
-X-Google-Smtp-Source: ABdhPJwjqkY0cuKDRZWTWyb21YTWtVQeguRgHHXFYAGtSOBhfdTWpQwdx2DJIDTAdHIjmI9++VNqjw==
-X-Received: by 2002:a2e:9d17:: with SMTP id t23mr1247335lji.456.1597918679697;
-        Thu, 20 Aug 2020 03:17:59 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:42ab:a165:4cb2:5f04:a1e8:63b? ([2a00:1fa0:42ab:a165:4cb2:5f04:a1e8:63b])
-        by smtp.gmail.com with ESMTPSA id p8sm403098lfh.64.2020.08.20.03.17.58
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ks6Vmm7jkQp97PF98e15DQTqLGcM4ICVk2CkEB67KBg=;
+        b=kpONtRmdqg5MLDGN2mDDKV4eRexQaqCWaRB0+sSbaZ4zalQFyLWU3ok4+9Iqb9eipf
+         twACZWyK3wpZMvvKHHBo25wnzr1zWAzMzLL2L0AMFC7j5JhparrD+p0YRjvQO25MvpXS
+         Su7a6oFKgKPBrJosgb9ly85pI9je4WprM7Q3Y8GL5Nk4/Ij4QQ71vt9xFC+pahT69Gth
+         EacuUhrDkEeVfkbUysByZZ7p39YHdcbWhLUGT9y5mMCpfL2IebFgqFDy9ryWfpFrWG3X
+         LcmOTP+60q30kSX8vEU3Tz1EiWkFoPSHKtkdRci9IhAoM882meMNbUt8+ed/8pv91jvU
+         Y7rA==
+X-Gm-Message-State: AOAM5321sKOmJVUxrgDeFX5ezX3DBMb3m3Zhz0uQm8YYHvbEJE449zxC
+        a4l+EUDDjIsz6NMDYfWv8ExhrYq+Y/CsHUM4Lighi8IJ8w/SaObl5bZRVL/apdQgtCzKmGKThOS
+        5NRwbSUmDCaLGc28eUPTxfEaD
+X-Received: by 2002:a1c:de41:: with SMTP id v62mr2939596wmg.163.1597918711321;
+        Thu, 20 Aug 2020 03:18:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwbot6hubXE5I5zNDOSnTrvtsfmtrg53QJyDVNw19vVjiZS7ReblTt/IIGb0cMLxSkI2HCmCw==
+X-Received: by 2002:a1c:de41:: with SMTP id v62mr2939573wmg.163.1597918711112;
+        Thu, 20 Aug 2020 03:18:31 -0700 (PDT)
+Received: from [192.168.10.150] ([93.56.170.5])
+        by smtp.gmail.com with ESMTPSA id m14sm3267389wrx.76.2020.08.20.03.18.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Aug 2020 03:17:59 -0700 (PDT)
-Subject: Re: [PATCH v2 09/11] usb: phy: phy-mv-usb: convert to
- readl_poll_timeout_atomic()
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Lee Jones <lee.jones@linaro.org>
-References: <1597902349-8998-1-git-send-email-chunfeng.yun@mediatek.com>
- <1597902349-8998-9-git-send-email-chunfeng.yun@mediatek.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <c28a906c-ed1a-8884-3016-b8664a313331@gmail.com>
-Date:   Thu, 20 Aug 2020 13:17:49 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Thu, 20 Aug 2020 03:18:30 -0700 (PDT)
+Subject: Re: [PATCH 8/8] KVM: nSVM: read only changed fields of the nested
+ guest data area
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <20200820091327.197807-1-mlevitsk@redhat.com>
+ <20200820091327.197807-9-mlevitsk@redhat.com>
+ <53afbfba-427e-72f5-73a6-faea7606e78e@redhat.com>
+ <33166884f54569ab47cc17a4c3e01f9dbc96401a.camel@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <be88aaae-c776-32d2-fa69-00c6aace787d@redhat.com>
+Date:   Thu, 20 Aug 2020 12:18:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <1597902349-8998-9-git-send-email-chunfeng.yun@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <33166884f54569ab47cc17a4c3e01f9dbc96401a.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -78,56 +85,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.08.2020 8:45, Chunfeng Yun wrote:
-
-> Use readl_poll_timeout_atomic() to simplify code
+On 20/08/20 12:05, Maxim Levitsky wrote:
+>> You probably should set clean to 0 also if the guest doesn't have the
+>> VMCBCLEAN feature (so, you first need an extra patch to add the
+>> VMCBCLEAN feature to cpufeatures.h).  It's probably best to cache the
+>> guest vmcbclean in struct vcpu_svm, too.
+> Right, I totally forgot about this one.
 > 
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> ---
-> v2: udelay 10us instead of 20us according to kerneldoc
-> ---
->   drivers/usb/phy/phy-mv-usb.c | 16 +++++++---------
->   1 file changed, 7 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/usb/phy/phy-mv-usb.c b/drivers/usb/phy/phy-mv-usb.c
-> index ce767ec..e801569 100644
-> --- a/drivers/usb/phy/phy-mv-usb.c
-> +++ b/drivers/usb/phy/phy-mv-usb.c
-> @@ -8,6 +8,7 @@
->   #include <linux/module.h>
->   #include <linux/kernel.h>
->   #include <linux/io.h>
-> +#include <linux/iopoll.h>
->   #include <linux/uaccess.h>
->   #include <linux/device.h>
->   #include <linux/proc_fs.h>
-> @@ -135,8 +136,8 @@ static int mv_otg_set_timer(struct mv_otg *mvotg, unsigned int id,
->   
->   static int mv_otg_reset(struct mv_otg *mvotg)
->   {
-> -	unsigned int loops;
->   	u32 tmp;
-> +	int ret;
->   
->   	/* Stop the controller */
->   	tmp = readl(&mvotg->op_regs->usbcmd);
-> @@ -146,15 +147,12 @@ static int mv_otg_reset(struct mv_otg *mvotg)
->   	/* Reset the controller to get default values */
->   	writel(USBCMD_CTRL_RESET, &mvotg->op_regs->usbcmd);
->   
-> -	loops = 500;
-> -	while (readl(&mvotg->op_regs->usbcmd) & USBCMD_CTRL_RESET) {
-> -		if (loops == 0) {
-> -			dev_err(&mvotg->pdev->dev,
-> +	ret = readl_poll_timeout_atomic(&mvotg->op_regs->usbcmd, tmp,
-> +				(tmp & USBCMD_CTRL_RESET), 10, 10000);
-> +	if (ret < 0) {
-> +		dev_err(&mvotg->pdev->dev,
->   				"Wait for RESET completed TIMEOUT\n");
+> One thing why I made this patch optional, is that I can instead drop it,
+> and not 'read back' the saved area on vmexit, this will probably be faster
+> that what this optimization does. What do you think? Is this patch worth it?
+> (I submitted it because I already implemented this and wanted to hear opinion
+> on this).
 
-    You forgot to re-align this argument, it should start under & on the 
-previous line...
+Yeah, good point.  It's one copy either way, either on vmexit (and
+partly on vmentry depending on clean bits) or on vmentry.  I had not
+considered the need to copy from vmcb02 to the cached vmcb12 on vmexit. :(
 
-[...]
+Let's shelve this for a bit, and revisit it once we have separate vmcb01
+and vmcb02.  Then we might still use the clean bits to avoid copying
+data from vmcb12 to vmcb02, including avoiding consistency checks
+because we know the vmcb02 data is legit.
 
-MBR, Sergei
+Patches 1-5 are still worthwhile, so you can clean them up and send them.
+
+Paolo
+
