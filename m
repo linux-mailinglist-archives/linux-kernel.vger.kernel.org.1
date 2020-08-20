@@ -2,55 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E18E24C883
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 01:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0CB524C898
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 01:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728749AbgHTX12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 19:27:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49830 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728498AbgHTX11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 19:27:27 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 183F620748;
-        Thu, 20 Aug 2020 23:27:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597966046;
-        bh=ss+qpo3s8H/goxNown6WFKCEXAfAK/KOd3YGrJXIk1c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ILPKEenDNolJ3VS1E+Asq+j+onbm+edbHtt07iPn9ViEgua0toDi1/Shbp6cbaved
-         YFBQl7UhZY+nAjJwfy4smXlrc5QTK9BYsgU6E32gE7qS6LA0Y89MeSb0VjS2ijlSrY
-         28zBMoRJh/KI3k7AGy421zKB8F01WivBIW6oJNN4=
-Date:   Thu, 20 Aug 2020 18:33:13 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     keescook@chromium.org, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, clang-built-linux@googlegroups.com,
-        natechancellor@gmail.com, miguel.ojeda.sandonis@gmail.com
-Subject: Re: fallthrough pseudo-keyword macro conversions for 5.9-rc2
-Message-ID: <20200820233313.GA5113@embeddedor>
-References: <20200820220210.GA14894@embeddedor>
- <20200820221511.3328330-1-ndesaulniers@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200820221511.3328330-1-ndesaulniers@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1728857AbgHTXb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 19:31:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728498AbgHTXbY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 19:31:24 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36BABC061385;
+        Thu, 20 Aug 2020 16:31:24 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id k13so22642plk.13;
+        Thu, 20 Aug 2020 16:31:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=a01gZFrrhASVB9tqjIfzMvLjyL0nIzhC/aFyYzXQbCA=;
+        b=kgrTuR+JKFYitMZQ1XluiCdLpkdKqQPQdqR0xyH6B2zpRN9wJmd1dSDXDm+K9xQY6I
+         Fb+wXh8wAA+rKyO6EjjJ/kXe1SjtPB9R/q6F0oFKz6RhVL1TB6kzdJhgHoOE7JlrICrg
+         rEQBPgEdtOzm1+F55P0AO+dpRl1G382iEoEG6MjJCw89Cw2ZF2AHj5gU6G43CsJKWoht
+         aU59gMN+ZuBoKPtSBjYolZJwgukCYXx5QN0gUGzcy028O2HJ5nHSk87+YLuWc1QA0zUK
+         xmb8n6JNXFyOB9ver1LkksOzrr8Eg8cHAMXbsZaTViJF7c2jcLGtkdmLzPWD8ZNsMIkY
+         dxpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=a01gZFrrhASVB9tqjIfzMvLjyL0nIzhC/aFyYzXQbCA=;
+        b=W27eAxSfQe1rx4pPmwaqkGvnltrKGQWkTFl5fIcygAwVqFFSYDdUQpA5ZWJ4YDI8Cq
+         jr7FfqvexjHff60oja06/oZSqNp9RKKgdJnYZHzNIcj2eJ+/aC2Ngz9zoy+kepaNdOMU
+         aFNNl/r3TeFW45o7b5v2AB4CzY4usiETWW9VwyLb5jd1w0LfOaFNlBO+pVFOxuxvsSCs
+         8PwAtRexKQMiG8X9FDUImdmJhq9KOPWTcAthne5Sey/3tM5Qg77Y0Sg8DECfDDh7QFKd
+         o7cTbGeBmlheEgzWlsZ+Ily1MG5kVTfgR2MbQa/ElKaKASO3UoaFa+Edbv0+x9CMiYy8
+         fEsg==
+X-Gm-Message-State: AOAM530KISe9cFFqxv2LwTmG/8kkupXivRlw7SaKRpCkwMxtzAUKMm0A
+        raxPtMLBCffKriTXnDbnAR4UO7eaHT0=
+X-Google-Smtp-Source: ABdhPJzwNJMsL/Pz3OaZ+PwEpSsgST4M5xXPP+d+HfMcIXE5U62U4TqFh7FYAwI6UnI04ijWk4/sXQ==
+X-Received: by 2002:a17:90a:6881:: with SMTP id a1mr213133pjd.208.1597966283255;
+        Thu, 20 Aug 2020 16:31:23 -0700 (PDT)
+Received: from stbirv-lnx-3.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id q207sm122399pgq.71.2020.08.20.16.31.19
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 20 Aug 2020 16:31:22 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Grant Likely <grant.likely@linaro.org>,
+        Pantelis Antoniou <panto@antoniou-consulting.com>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE)
+Subject: [PATCH] of: Export of_node_ktype for modular use of of_init_node
+Date:   Thu, 20 Aug 2020 16:31:06 -0700
+Message-Id: <1597966267-33614-1-git-send-email-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nick,
+To permit the use of of_init_node() by kernel modules, we must export
+of_node_ktype which is directly referenced by kobject_init() called from
+of_init_node() otherwise modules would be getting linking failures.
 
-On Thu, Aug 20, 2020 at 03:15:11PM -0700, Nick Desaulniers wrote:
-> Just noticed this on lore.  I'm curious if you'd had a chance to test your PR
-> with e2079e93f562c reverted?
+Fixes: 0829f6d1f69e ("of: device_node kobject lifecycle fixes")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ drivers/of/kobj.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Yep; it builds just fine with Clang 11.0.0 :)
+diff --git a/drivers/of/kobj.c b/drivers/of/kobj.c
+index a32e60b024b8..d7bbd156a671 100644
+--- a/drivers/of/kobj.c
++++ b/drivers/of/kobj.c
+@@ -27,6 +27,7 @@ static void of_node_release(struct kobject *kobj)
+ struct kobj_type of_node_ktype = {
+ 	.release = of_node_release,
+ };
++EXPORT_SYMBOL_GPL(of_node_ktype);
+ 
+ static ssize_t of_node_property_read(struct file *filp, struct kobject *kobj,
+ 				struct bin_attribute *bin_attr, char *buf,
+-- 
+2.7.4
 
-Thanks
---
-Gustavo
