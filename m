@@ -2,81 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B0B24BBED
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D6724BB8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730320AbgHTMf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:35:58 -0400
-Received: from mail.zx2c4.com ([192.95.5.64]:39071 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729515AbgHTJsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:48:07 -0400
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 2a71feb8;
-        Thu, 20 Aug 2020 09:21:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
-        :references:in-reply-to:from:date:message-id:subject:to:cc
-        :content-type; s=mail; bh=cC4XKmjMItkWu82Ddd4N3/mfNJY=; b=aH3z0j
-        ih2A6UbHCt3IxPb9cGURoW1AdUF79cwHzp+slOvV8CXFkpZjl6EwYEA+JlKT5gjg
-        zXUFARHfV2sFXTmSREd8NhJunCIHY4nLafXpXu1CpMGAdsfYq1ZI7Ulbh+f6nFuU
-        GLpyQGqn20N+3jb0blAVWJ4mBsKgajaVO0bu5fJURP7VRaYN89n0QypNDmBbRufv
-        ee0CyvIMq5UV+mGRrzaGLR7yKNhLsfMBrsRgpAAPY0ix1nrsuR83acVzKS7914El
-        0vW2TT1WjeT+Ulx5s/6fFxHTTSITqe0SO9LaYWBs5aRN38VHZxd5DoUNpQtc1oJx
-        mQHl+eYy/l9WTo+Q==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 18dd5401 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Thu, 20 Aug 2020 09:21:41 +0000 (UTC)
-Received: by mail-io1-f50.google.com with SMTP id z17so385964ioi.6;
-        Thu, 20 Aug 2020 02:48:06 -0700 (PDT)
-X-Gm-Message-State: AOAM533pN3W79s134djddKcgXm3DtAhueZEDHWNsMOx+g89DE9LGy6Z0
-        nvgqpWN0nwu7SaecnD3KF0JrCiBgFDzwFZD/hPw=
-X-Google-Smtp-Source: ABdhPJwxqXuh3zpZ+vXV6pG3wfV26J+WMkYRDPSnD0jh7SwXM3vLbJ0QIOl7CaiQOrNMVRuAQnK6mTMYW9n8YZipXUs=
-X-Received: by 2002:a05:6638:138a:: with SMTP id w10mr2407389jad.36.1597916885689;
- Thu, 20 Aug 2020 02:48:05 -0700 (PDT)
+        id S1730068AbgHTMay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:30:54 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:49010 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729791AbgHTJvL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:51:11 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R611e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0U6IvpVk_1597917064;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U6IvpVk_1597917064)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 20 Aug 2020 17:51:05 +0800
+Subject: Re: [RFC PATCH v2 4/5] mm: Split release_pages work into 3 passes
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Yang Shi <yang.shi@linux.alibaba.com>,
+        kbuild test robot <lkp@intel.com>,
+        Rong Chen <rong.a.chen@intel.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+References: <20200819041852.23414.95939.stgit@localhost.localdomain>
+ <20200819042730.23414.41309.stgit@localhost.localdomain>
+ <15edf807-ce03-83f7-407d-5929341b2b4e@linux.alibaba.com>
+ <CAKgT0UepdfjXn=j8e4xEBFmsNJdzJyN57em8dscr-Er4OBZCOg@mail.gmail.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <a88eef1b-242d-78c6-fecb-35ea00cd739b@linux.alibaba.com>
+Date:   Thu, 20 Aug 2020 17:49:49 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <000000000000a7e38a05a997edb2@google.com> <0000000000005c13f505ad3f5c42@google.com>
-In-Reply-To: <0000000000005c13f505ad3f5c42@google.com>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Thu, 20 Aug 2020 11:47:54 +0200
-X-Gmail-Original-Message-ID: <CAHmME9rd+54EOO-b=wmVxtzbvckET2WSMm-3q8LJmfp38A9ceg@mail.gmail.com>
-Message-ID: <CAHmME9rd+54EOO-b=wmVxtzbvckET2WSMm-3q8LJmfp38A9ceg@mail.gmail.com>
-Subject: Re: WARNING in __cfg80211_connect_result
-To:     syzbot <syzbot+cc4c0f394e2611edba66@syzkaller.appspotmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, kvalo@codeaurora.org,
-        leon@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAKgT0UepdfjXn=j8e4xEBFmsNJdzJyN57em8dscr-Er4OBZCOg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 8:42 PM syzbot
-<syzbot+cc4c0f394e2611edba66@syzkaller.appspotmail.com> wrote:
->
-> syzbot has bisected this issue to:
->
-> commit e7096c131e5161fa3b8e52a650d7719d2857adfd
-> Author: Jason A. Donenfeld <Jason@zx2c4.com>
-> Date:   Sun Dec 8 23:27:34 2019 +0000
->
->     net: WireGuard secure network tunnel
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=175ad8b1900000
-> start commit:   e3ec1e8c net: eliminate meaningless memcpy to data in pskb..
-> git tree:       net-next
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=14dad8b1900000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=10dad8b1900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3d400a47d1416652
-> dashboard link: https://syzkaller.appspot.com/bug?extid=cc4c0f394e2611edba66
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d9de91900000
->
-> Reported-by: syzbot+cc4c0f394e2611edba66@syzkaller.appspotmail.com
-> Fixes: e7096c131e51 ("net: WireGuard secure network tunnel")
 
-Having trouble linking this back to wireguard... Those oopses don't
-have anything to do with it either. Bisection error?
+
+在 2020/8/19 下午10:57, Alexander Duyck 写道:
+>>>       lruvec = relock_page_lruvec_irqsave(page, lruvec, &flags);
+>> the lock bounce is better with the patch, would you like to do further
+>> like using add_lruvecs to reduce bounce more?
+>>
+>> Thanks
+>> Alex
+> I'm not sure how much doing something like that would add. In my case
+> I had a very specific issue that this is addressing which is the fact
+> that every compound page was taking the LRU lock and zone lock
+> separately. With this patch that is reduced to one LRU lock per 15
+> pages and then the zone lock per page. By adding or sorting pages by
+> lruvec I am not sure there will be much benefit as I am not certain
+> how often we will end up with pages being interleaved between multiple
+> lruvecs. In addition as I am limiting the quantity to a pagevec which
+> limits the pages to 15 I am not sure there will be much benefit to be
+> seen for sorting the pages beforehand.
+> 
+
+the relock will unlock and get another lock again, the cost in that, the 2nd
+lock need to wait for fairness for concurrency lruvec locking.
+If we can do sort before, we should remove the fairness waiting here. Of course, 
+perf result depends on scenarios.
+
+Thanks
+Alex
