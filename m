@@ -2,65 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F2824B24F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A7E24B2BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726938AbgHTJ1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:27:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59310 "EHLO mx2.suse.de"
+        id S1728555AbgHTJgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:36:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727866AbgHTJ0N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:26:13 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 11E3EAC7D;
-        Thu, 20 Aug 2020 09:26:39 +0000 (UTC)
-Date:   Thu, 20 Aug 2020 11:26:11 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        id S1728080AbgHTJfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:35:44 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 45EB0207DE;
+        Thu, 20 Aug 2020 09:35:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597916142;
+        bh=9wY0bvHnP823z5bTKju7vuT8yhn2NEW7Ay9LUlzPZQQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=s0E+xcpYL3bPW/iMRmO+cOtLXxaiQ2SuW2zkKWmUU/4A2rk1XKcUB1DtPyPdg6NYM
+         n6Lyn4XO2uXWIL2sOpz/HmSiEBJwyu50blC+JRrX5HwmllS9/hGqIlrbVj/SH2xaIC
+         gRHI3lXKm5o9oPe1JInaeANk7XoZIFZjryiihey4=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Luca Stefani <luca.stefani.ge1@gmail.com>
-Subject: Re: linux-next: Fixes tag needs some work in the tip tree
-Message-ID: <20200820092611.GD17365@zn.tnic>
-References: <20200820161239.25a9b3f4@canb.auug.org.au>
- <20200820082149.GB17365@zn.tnic>
- <20200820191502.1df900be@canb.auug.org.au>
- <20200820092221.GU2026@twin.jikos.cz>
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.7 003/204] genirq/PM: Always unlock IRQ descriptor in rearm_wake_irq()
+Date:   Thu, 20 Aug 2020 11:18:20 +0200
+Message-Id: <20200820091606.374065369@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200820092221.GU2026@twin.jikos.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 11:22:21AM +0200, David Sterba wrote:
-> (Dunno why not an alias but it works the same way.)
+From: Guenter Roeck <linux@roeck-us.net>
 
-I have this alias:
+commit e27b1636e9337d1a1d174b191e53d0f86421a822 upstream.
 
-	one = show -s --pretty='format:%h (\"%s\")'
+rearm_wake_irq() does not unlock the irq descriptor if the interrupt
+is not suspended or if wakeup is not enabled on it.
 
-and so I do
+Restucture the exit conditions so the unlock is always ensured.
 
-$ git one <sha1>
+Fixes: 3a79bc63d9075 ("PCI: irq: Introduce rearm_wake_irq()")
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200811180001.80203-1-linux@roeck-us.net
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-and then paste it after Fixes:
+---
+ kernel/irq/pm.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-I have it this way because quoting commits is kinda very frequent
-operation, not only for Fixes: tags.
+--- a/kernel/irq/pm.c
++++ b/kernel/irq/pm.c
+@@ -185,14 +185,18 @@ void rearm_wake_irq(unsigned int irq)
+ 	unsigned long flags;
+ 	struct irq_desc *desc = irq_get_desc_buslock(irq, &flags, IRQ_GET_DESC_CHECK_GLOBAL);
+ 
+-	if (!desc || !(desc->istate & IRQS_SUSPENDED) ||
+-	    !irqd_is_wakeup_set(&desc->irq_data))
++	if (!desc)
+ 		return;
+ 
++	if (!(desc->istate & IRQS_SUSPENDED) ||
++	    !irqd_is_wakeup_set(&desc->irq_data))
++		goto unlock;
++
+ 	desc->istate &= ~IRQS_SUSPENDED;
+ 	irqd_set(&desc->irq_data, IRQD_WAKEUP_ARMED);
+ 	__enable_irq(desc);
+ 
++unlock:
+ 	irq_put_desc_busunlock(desc, flags);
+ }
+ 
 
-:-)
 
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
