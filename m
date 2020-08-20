@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB2124B4A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1943924B4CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730846AbgHTKKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:10:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44532 "EHLO mail.kernel.org"
+        id S1731024AbgHTKL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:11:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730823AbgHTKJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:09:43 -0400
+        id S1729797AbgHTKLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:11:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F6BF2067C;
-        Thu, 20 Aug 2020 10:09:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C532206DA;
+        Thu, 20 Aug 2020 10:11:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918182;
-        bh=ZggMMTMHoNTy+o2CYZza7OGzVqtZQ7zgC04I0GCgkZg=;
+        s=default; t=1597918312;
+        bh=iJSfOu5xXFIHOTc9+QzvzLzsYl0R+SLT14vGfz3hFts=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pMjcog5jwomOYCML90T67uMPGL3OKZU80GRJ6eAq+QxjbJC+MdVHJxIDYRqjPwjkQ
-         if5zf70hkQuOw6gj7+w3dNeP4Y8fcaKE0VZ/bR1t6EF9S4zBq+zu1K0G2Pr9pauHJr
-         vMyr49tOyVTf1CRd/Ey14D69gPb0D0ubUggQjMDQ=
+        b=kfSJWIvzS2nHBGDhp8QzGQxiIBOffPg8JA0rhsurBbFnFk8cBjnJBgpPLcYmd6l2L
+         w2K0BfXfPi/xjAXgk+Ys50LUoJTAMfzZimp/JoltTjpkP/ZIFcA9iTFeRPifngEk67
+         flmQGp4S2S8pdM76EMSVzHzWwH9SmLXGDCMi9qVM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
+        stable@vger.kernel.org,
+        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 081/228] agp/intel: Fix a memory leak on module initialisation failure
-Date:   Thu, 20 Aug 2020 11:20:56 +0200
-Message-Id: <20200820091611.658383725@linuxfoundation.org>
+Subject: [PATCH 4.14 085/228] iio: improve IIO_CONCENTRATION channel type description
+Date:   Thu, 20 Aug 2020 11:21:00 +0200
+Message-Id: <20200820091611.862981888@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
 References: <20200820091607.532711107@linuxfoundation.org>
@@ -44,41 +46,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Tomasz Duszynski <tomasz.duszynski@octakon.com>
 
-[ Upstream commit b975abbd382fe442713a4c233549abb90e57c22b ]
+[ Upstream commit df16c33a4028159d1ba8a7061c9fa950b58d1a61 ]
 
-In intel_gtt_setup_scratch_page(), pointer "page" is not released if
-pci_dma_mapping_error() return an error, leading to a memory leak on
-module initialisation failure.  Simply fix this issue by freeing "page"
-before return.
+IIO_CONCENTRATION together with INFO_RAW specifier is used for reporting
+raw concentrations of pollutants. Raw value should be meaningless
+before being properly scaled. Because of that description shouldn't
+mention raw value unit whatsoever.
 
-Fixes: 0e87d2b06cb46 ("intel-gtt: initialize our own scratch page")
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Reviewed-by: Chris Wilson <chris@chris-wilson.co.uk>
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200522083451.7448-1-chris@chris-wilson.co.uk
+Fix this by rephrasing existing description so it follows conventions
+used throughout IIO ABI docs.
+
+Fixes: 8ff6b3bc94930 ("iio: chemical: Add IIO_CONCENTRATION channel type")
+Signed-off-by: Tomasz Duszynski <tomasz.duszynski@octakon.com>
+Acked-by: Matt Ranostay <matt.ranostay@konsulko.com>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/agp/intel-gtt.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ Documentation/ABI/testing/sysfs-bus-iio | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/char/agp/intel-gtt.c b/drivers/char/agp/intel-gtt.c
-index 7516ba981b635..34cc853772bc4 100644
---- a/drivers/char/agp/intel-gtt.c
-+++ b/drivers/char/agp/intel-gtt.c
-@@ -304,8 +304,10 @@ static int intel_gtt_setup_scratch_page(void)
- 	if (intel_private.needs_dmar) {
- 		dma_addr = pci_map_page(intel_private.pcidev, page, 0,
- 				    PAGE_SIZE, PCI_DMA_BIDIRECTIONAL);
--		if (pci_dma_mapping_error(intel_private.pcidev, dma_addr))
-+		if (pci_dma_mapping_error(intel_private.pcidev, dma_addr)) {
-+			__free_page(page);
- 			return -EINVAL;
-+		}
+diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
+index 64e65450f4833..e21e2ca3e4f91 100644
+--- a/Documentation/ABI/testing/sysfs-bus-iio
++++ b/Documentation/ABI/testing/sysfs-bus-iio
+@@ -1524,7 +1524,8 @@ What:		/sys/bus/iio/devices/iio:deviceX/in_concentrationX_voc_raw
+ KernelVersion:	4.3
+ Contact:	linux-iio@vger.kernel.org
+ Description:
+-		Raw (unscaled no offset etc.) percentage reading of a substance.
++		Raw (unscaled no offset etc.) reading of a substance. Units
++		after application of scale and offset are percents.
  
- 		intel_private.scratch_page_dma = dma_addr;
- 	} else
+ What:		/sys/bus/iio/devices/iio:deviceX/in_resistance_raw
+ What:		/sys/bus/iio/devices/iio:deviceX/in_resistanceX_raw
 -- 
 2.25.1
 
