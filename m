@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CEC924BD84
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A60724BD77
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728067AbgHTJiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:38:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55478 "EHLO mail.kernel.org"
+        id S1728009AbgHTJi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:38:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728871AbgHTJiI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:38:08 -0400
+        id S1728895AbgHTJik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:38:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF5A020724;
-        Thu, 20 Aug 2020 09:38:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D37E2173E;
+        Thu, 20 Aug 2020 09:38:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916288;
-        bh=OtKfn/HlWE2VGNAHgPxYKsaEjKVIIibS5w9DplZNHZE=;
+        s=default; t=1597916320;
+        bh=leFGFO6VIFJLxyhjNyZWZnKHXhV2UKbC1qbZhu5S6/w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EV6VwD5wiDNZeSetZa6kNrQBmEhTA3H0pyZhcSlspYTwwcm3KyLROL/hpeAEtL4gY
-         JSqKqFxTyHFB/gL0yPTO8KQ+EEJ0Yr+GL0f4Pz8UIbd8UwY5126fPXKquPeluv11aG
-         SMMsdKPUx5dVkbuCeEO91sNS9hW1+J+AxSGjyOj0=
+        b=nHH5m4KsLOxxEgerZZMYSJYzQy7KKYQfX0vl+3sEzN3g0lmuKysEV9i7sLYl3VGQO
+         tfpAHHfMwR7r2AFHdRqyKc/dQEbbtNG3SHo9Dw0tn0okMYd1FWZ3L9oUKOHNxc9Fxm
+         sfYgPoErO0sGR+5xLsidVBNkKhCZpLWI8Z3L/184=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Coly Li <colyli@suse.de>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.7 059/204] bcache: allocate meta data pages as compound pages
-Date:   Thu, 20 Aug 2020 11:19:16 +0200
-Message-Id: <20200820091609.217109868@linuxfoundation.org>
+        Jens Axboe <axboe@kernel.dk>, Ken Raeburn <raeburn@redhat.com>
+Subject: [PATCH 5.7 060/204] bcache: fix overflow in offset_to_stripe()
+Date:   Thu, 20 Aug 2020 11:19:17 +0200
+Message-Id: <20200820091609.265726854@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
 References: <20200820091606.194320503@linuxfoundation.org>
@@ -45,78 +45,134 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Coly Li <colyli@suse.de>
 
-commit 5fe48867856367142d91a82f2cbf7a57a24cbb70 upstream.
+commit 7a1481267999c02abf4a624515c1b5c7c1fccbd6 upstream.
 
-There are some meta data of bcache are allocated by multiple pages,
-and they are used as bio bv_page for I/Os to the cache device. for
-example cache_set->uuids, cache->disk_buckets, journal_write->data,
-bset_tree->data.
+offset_to_stripe() returns the stripe number (in type unsigned int) from
+an offset (in type uint64_t) by the following calculation,
+	do_div(offset, d->stripe_size);
+For large capacity backing device (e.g. 18TB) with small stripe size
+(e.g. 4KB), the result is 4831838208 and exceeds UINT_MAX. The actual
+returned value which caller receives is 536870912, due to the overflow.
 
-For such meta data memory, all the allocated pages should be treated
-as a single memory block. Then the memory management and underlying I/O
-code can treat them more clearly.
+Indeed in bcache_device_init(), bcache_device->nr_stripes is limited in
+range [1, INT_MAX]. Therefore all valid stripe numbers in bcache are
+in range [0, bcache_dev->nr_stripes - 1].
 
-This patch adds __GFP_COMP flag to all the location allocating >0 order
-pages for the above mentioned meta data. Then their pages are treated
-as compound pages now.
+This patch adds a upper limition check in offset_to_stripe(): the max
+valid stripe number should be less than bcache_device->nr_stripes. If
+the calculated stripe number from do_div() is equal to or larger than
+bcache_device->nr_stripe, -EINVAL will be returned. (Normally nr_stripes
+is less than INT_MAX, exceeding upper limitation doesn't mean overflow,
+therefore -EOVERFLOW is not used as error code.)
 
+This patch also changes nr_stripes' type of struct bcache_device from
+'unsigned int' to 'int', and return value type of offset_to_stripe()
+from 'unsigned int' to 'int', to match their exact data ranges.
+
+All locations where bcache_device->nr_stripes and offset_to_stripe() are
+referenced also get updated for the above type change.
+
+Reported-and-tested-by: Ken Raeburn <raeburn@redhat.com>
 Signed-off-by: Coly Li <colyli@suse.de>
 Cc: stable@vger.kernel.org
+Link: https://bugzilla.redhat.com/show_bug.cgi?id=1783075
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/bcache/bset.c    |    2 +-
- drivers/md/bcache/btree.c   |    2 +-
- drivers/md/bcache/journal.c |    4 ++--
- drivers/md/bcache/super.c   |    2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/md/bcache/bcache.h    |    2 +-
+ drivers/md/bcache/writeback.c |   14 +++++++++-----
+ drivers/md/bcache/writeback.h |   19 +++++++++++++++++--
+ 3 files changed, 27 insertions(+), 8 deletions(-)
 
---- a/drivers/md/bcache/bset.c
-+++ b/drivers/md/bcache/bset.c
-@@ -322,7 +322,7 @@ int bch_btree_keys_alloc(struct btree_ke
+--- a/drivers/md/bcache/bcache.h
++++ b/drivers/md/bcache/bcache.h
+@@ -264,7 +264,7 @@ struct bcache_device {
+ #define BCACHE_DEV_UNLINK_DONE		2
+ #define BCACHE_DEV_WB_RUNNING		3
+ #define BCACHE_DEV_RATE_DW_RUNNING	4
+-	unsigned int		nr_stripes;
++	int			nr_stripes;
+ 	unsigned int		stripe_size;
+ 	atomic_t		*stripe_sectors_dirty;
+ 	unsigned long		*full_dirty_stripes;
+--- a/drivers/md/bcache/writeback.c
++++ b/drivers/md/bcache/writeback.c
+@@ -523,15 +523,19 @@ void bcache_dev_sectors_dirty_add(struct
+ 				  uint64_t offset, int nr_sectors)
+ {
+ 	struct bcache_device *d = c->devices[inode];
+-	unsigned int stripe_offset, stripe, sectors_dirty;
++	unsigned int stripe_offset, sectors_dirty;
++	int stripe;
  
- 	b->page_order = page_order;
+ 	if (!d)
+ 		return;
  
--	t->data = (void *) __get_free_pages(gfp, b->page_order);
-+	t->data = (void *) __get_free_pages(__GFP_COMP|gfp, b->page_order);
- 	if (!t->data)
- 		goto err;
++	stripe = offset_to_stripe(d, offset);
++	if (stripe < 0)
++		return;
++
+ 	if (UUID_FLASH_ONLY(&c->uuids[inode]))
+ 		atomic_long_add(nr_sectors, &c->flash_dev_dirty_sectors);
  
---- a/drivers/md/bcache/btree.c
-+++ b/drivers/md/bcache/btree.c
-@@ -785,7 +785,7 @@ int bch_btree_cache_alloc(struct cache_s
- 	mutex_init(&c->verify_lock);
+-	stripe = offset_to_stripe(d, offset);
+ 	stripe_offset = offset & (d->stripe_size - 1);
  
- 	c->verify_ondisk = (void *)
--		__get_free_pages(GFP_KERNEL, ilog2(bucket_pages(c)));
-+		__get_free_pages(GFP_KERNEL|__GFP_COMP, ilog2(bucket_pages(c)));
+ 	while (nr_sectors) {
+@@ -571,12 +575,12 @@ static bool dirty_pred(struct keybuf *bu
+ static void refill_full_stripes(struct cached_dev *dc)
+ {
+ 	struct keybuf *buf = &dc->writeback_keys;
+-	unsigned int start_stripe, stripe, next_stripe;
++	unsigned int start_stripe, next_stripe;
++	int stripe;
+ 	bool wrapped = false;
  
- 	c->verify_data = mca_bucket_alloc(c, &ZERO_KEY, GFP_KERNEL);
+ 	stripe = offset_to_stripe(&dc->disk, KEY_OFFSET(&buf->last_scanned));
+-
+-	if (stripe >= dc->disk.nr_stripes)
++	if (stripe < 0)
+ 		stripe = 0;
  
---- a/drivers/md/bcache/journal.c
-+++ b/drivers/md/bcache/journal.c
-@@ -999,8 +999,8 @@ int bch_journal_alloc(struct cache_set *
- 	j->w[1].c = c;
- 
- 	if (!(init_fifo(&j->pin, JOURNAL_PIN, GFP_KERNEL)) ||
--	    !(j->w[0].data = (void *) __get_free_pages(GFP_KERNEL, JSET_BITS)) ||
--	    !(j->w[1].data = (void *) __get_free_pages(GFP_KERNEL, JSET_BITS)))
-+	    !(j->w[0].data = (void *) __get_free_pages(GFP_KERNEL|__GFP_COMP, JSET_BITS)) ||
-+	    !(j->w[1].data = (void *) __get_free_pages(GFP_KERNEL|__GFP_COMP, JSET_BITS)))
- 		return -ENOMEM;
- 
- 	return 0;
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -1775,7 +1775,7 @@ void bch_cache_set_unregister(struct cac
+ 	start_stripe = stripe;
+--- a/drivers/md/bcache/writeback.h
++++ b/drivers/md/bcache/writeback.h
+@@ -52,10 +52,22 @@ static inline uint64_t bcache_dev_sector
+ 	return ret;
  }
  
- #define alloc_bucket_pages(gfp, c)			\
--	((void *) __get_free_pages(__GFP_ZERO|gfp, ilog2(bucket_pages(c))))
-+	((void *) __get_free_pages(__GFP_ZERO|__GFP_COMP|gfp, ilog2(bucket_pages(c))))
- 
- struct cache_set *bch_cache_set_alloc(struct cache_sb *sb)
+-static inline unsigned int offset_to_stripe(struct bcache_device *d,
++static inline int offset_to_stripe(struct bcache_device *d,
+ 					uint64_t offset)
  {
+ 	do_div(offset, d->stripe_size);
++
++	/* d->nr_stripes is in range [1, INT_MAX] */
++	if (unlikely(offset >= d->nr_stripes)) {
++		pr_err("Invalid stripe %llu (>= nr_stripes %d).\n",
++			offset, d->nr_stripes);
++		return -EINVAL;
++	}
++
++	/*
++	 * Here offset is definitly smaller than INT_MAX,
++	 * return it as int will never overflow.
++	 */
+ 	return offset;
+ }
+ 
+@@ -63,7 +75,10 @@ static inline bool bcache_dev_stripe_dir
+ 					   uint64_t offset,
+ 					   unsigned int nr_sectors)
+ {
+-	unsigned int stripe = offset_to_stripe(&dc->disk, offset);
++	int stripe = offset_to_stripe(&dc->disk, offset);
++
++	if (stripe < 0)
++		return false;
+ 
+ 	while (1) {
+ 		if (atomic_read(dc->disk.stripe_sectors_dirty + stripe))
 
 
