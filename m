@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E28324B601
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C027524B6ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731498AbgHTKUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:20:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46046 "EHLO mail.kernel.org"
+        id S1731636AbgHTKoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:44:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731303AbgHTKUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:20:40 -0400
+        id S1730673AbgHTKQQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:16:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5F6BF206DA;
-        Thu, 20 Aug 2020 10:20:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 54B2920658;
+        Thu, 20 Aug 2020 10:16:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918839;
-        bh=H4lOMUjgYZwWlmf4jRSv9cJKqKrsfE2ELDh2LqDv/nc=;
+        s=default; t=1597918573;
+        bh=J56mPR7oQ8513EtmCO8rcounAcUp4cDDY4KfNZJ+gQA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=npE9sif+4P3radQrHkqF8x13LslwnOMNNHdM9z9C7ELBmaTRMxoyvge4Dwivi0zCd
-         wa69/Wpi4XE4i6qrDBL9yvezdc1zluJ8xkPIA169P2/NkIsbs9UJcjL0znKEfiJ91+
-         f0kT4diLO+p8yqciEyiNW4eTFRDWOLZq+U/0Fr1E=
+        b=h6GOZ59F9Up/neWCj+Nf7qZZIjiJ3FdoBGN0cec/SSTB4mICxK9khyd6njxY9FYYc
+         EbcMQPasnwjPktWqqFCsdktnhcIriDh6yGSnfAaftEDYcEYpZGCzwSTYxT6W14dGXD
+         alNVfGt0938HY+bb8jt8Qnm2PLOCAroAJQ/IRmjU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 086/149] scsi: powertec: Fix different dev_id between request_irq() and free_irq()
-Date:   Thu, 20 Aug 2020 11:22:43 +0200
-Message-Id: <20200820092129.892016356@linuxfoundation.org>
+        stable@vger.kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Subject: [PATCH 4.14 189/228] watchdog: f71808e_wdt: indicate WDIOF_CARDRESET support in watchdog_info.options
+Date:   Thu, 20 Aug 2020 11:22:44 +0200
+Message-Id: <20200820091617.017255435@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
-References: <20200820092125.688850368@linuxfoundation.org>
+In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
+References: <20200820091607.532711107@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,37 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-[ Upstream commit d179f7c763241c1dc5077fca88ddc3c47d21b763 ]
+commit e871e93fb08a619dfc015974a05768ed6880fd82 upstream.
 
-The dev_id used in request_irq() and free_irq() should match. Use 'info' in
-both cases.
+The driver supports populating bootstatus with WDIOF_CARDRESET, but so
+far userspace couldn't portably determine whether absence of this flag
+meant no watchdog reset or no driver support. Or-in the bit to fix this.
 
-Link: https://lore.kernel.org/r/20200626035948.944148-1-christophe.jaillet@wanadoo.fr
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: b97cb21a4634 ("watchdog: f71808e_wdt: Fix WDTMOUT_STS register read")
+Cc: stable@vger.kernel.org
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20200611191750.28096-3-a.fatoum@pengutronix.de
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/scsi/arm/powertec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/watchdog/f71808e_wdt.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/arm/powertec.c b/drivers/scsi/arm/powertec.c
-index 5e1b73e1b743e..b6724ba9b36e7 100644
---- a/drivers/scsi/arm/powertec.c
-+++ b/drivers/scsi/arm/powertec.c
-@@ -382,7 +382,7 @@ static int powertecscsi_probe(struct expansion_card *ec,
+--- a/drivers/watchdog/f71808e_wdt.c
++++ b/drivers/watchdog/f71808e_wdt.c
+@@ -690,7 +690,8 @@ static int __init watchdog_init(int sioa
+ 	watchdog.sioaddr = sioaddr;
+ 	watchdog.ident.options = WDIOC_SETTIMEOUT
+ 				| WDIOF_MAGICCLOSE
+-				| WDIOF_KEEPALIVEPING;
++				| WDIOF_KEEPALIVEPING
++				| WDIOF_CARDRESET;
  
- 	if (info->info.scsi.dma != NO_DMA)
- 		free_dma(info->info.scsi.dma);
--	free_irq(ec->irq, host);
-+	free_irq(ec->irq, info);
- 
-  out_release:
- 	fas216_release(host);
--- 
-2.25.1
-
+ 	snprintf(watchdog.ident.identity,
+ 		sizeof(watchdog.ident.identity), "%s watchdog",
 
 
