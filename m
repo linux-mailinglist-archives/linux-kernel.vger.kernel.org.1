@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1140124BD41
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D60524BD40
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728073AbgHTNCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:02:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60362 "EHLO mail.kernel.org"
+        id S1729060AbgHTNCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:02:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728528AbgHTJkO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:40:14 -0400
+        id S1729032AbgHTJkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:40:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6043F2075E;
-        Thu, 20 Aug 2020 09:40:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5EC3D2075E;
+        Thu, 20 Aug 2020 09:40:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916413;
-        bh=5AckTXm0iPCXnCFpyigvpzwr1s+pozYsuJuIRPH0wgk=;
+        s=default; t=1597916435;
+        bh=TR0u0Tg/4wUTCtl8JfcQ5s5qtVO/WCoEmg9siCooIaY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BgTp/A7pWnJXvp1tTOm0QUuySRSOmuAjqgwUVCgPIHtB3BHeG/aSoRqhKv0LduqFf
-         zxD5notlbFuAnfL/n9K0MJAYsfld7TCLWN1K4d+u2l2DOzPrbifkXj8lxn9dQNc3N8
-         TxGPE20kCG9LND0e1GMwCTNVRI8BUIoOS8OEWCyo=
+        b=tbp/Yf8zqSmf56Wx7HHTFgQRRrK9mi41I/UP5n3dUm74nDxo/GHPJ1K7YQQuSAV5x
+         lTR9p2ViYmyBcbzVDA/kmhyN0mPwC4miDbYHvgCCf2Y/VJadn1ehH3wqrGWcf9xDKl
+         30go38LluMgcrEacVtcLtLYm1RcQZ8tuJPi3iI3g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>
-Subject: [PATCH 5.7 092/204] perf intel-pt: Fix duplicate branch after CBR
-Date:   Thu, 20 Aug 2020 11:19:49 +0200
-Message-Id: <20200820091610.928636133@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sibi Sankar <sibis@codeaurora.org>
+Subject: [PATCH 5.7 096/204] remoteproc: qcom_q6v5_mss: Validate modem blob firmware size before load
+Date:   Thu, 20 Aug 2020 11:19:53 +0200
+Message-Id: <20200820091611.127579684@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
 References: <20200820091606.194320503@linuxfoundation.org>
@@ -45,77 +44,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Sibi Sankar <sibis@codeaurora.org>
 
-commit a58a057ce65b52125dd355b7d8b0d540ea267a5f upstream.
+commit 135b9e8d1cd8ba5ac9ad9bcf24b464b7b052e5b8 upstream.
 
-CBR events can result in a duplicate branch event, because the state
-type defaults to a branch. Fix by clearing the state type.
+The following mem abort is observed when one of the modem blob firmware
+size exceeds the allocated mpss region. Fix this by restricting the copy
+size to segment size using request_firmware_into_buf before load.
 
-Example: trace 'sleep' and hope for a frequency change
+Err Logs:
+Unable to handle kernel paging request at virtual address
+Mem abort info:
+...
+Call trace:
+  __memcpy+0x110/0x180
+  rproc_start+0xd0/0x190
+  rproc_boot+0x404/0x550
+  state_store+0x54/0xf8
+  dev_attr_store+0x44/0x60
+  sysfs_kf_write+0x58/0x80
+  kernfs_fop_write+0x140/0x230
+  vfs_write+0xc4/0x208
+  ksys_write+0x74/0xf8
+...
 
- Before:
-
-   $ perf record -e intel_pt//u sleep 0.1
-   [ perf record: Woken up 1 times to write data ]
-   [ perf record: Captured and wrote 0.034 MB perf.data ]
-   $ perf script --itrace=bpe > before.txt
-
- After:
-
-   $ perf script --itrace=bpe > after.txt
-   $ diff -u before.txt after.txt
-#  --- before.txt  2020-07-07 14:42:18.191508098 +0300
-#  +++ after.txt   2020-07-07 14:42:36.587891753 +0300
-   @@ -29673,7 +29673,6 @@
-               sleep 93431 [007] 15411.619905:          1  branches:u:                 0 [unknown] ([unknown]) =>     7f0818abb2e0 clock_nanosleep@@GLIBC_2.17+0x0 (/usr/lib/x86_64-linux-gnu/libc-2.31.so)
-               sleep 93431 [007] 15411.619905:          1  branches:u:      7f0818abb30c clock_nanosleep@@GLIBC_2.17+0x2c (/usr/lib/x86_64-linux-gnu/libc-2.31.so) =>                0 [unknown] ([unknown])
-               sleep 93431 [007] 15411.720069:         cbr:  cbr: 15 freq: 1507 MHz ( 56%)         7f0818abb30c clock_nanosleep@@GLIBC_2.17+0x2c (/usr/lib/x86_64-linux-gnu/libc-2.31.so)
-   -           sleep 93431 [007] 15411.720069:          1  branches:u:      7f0818abb30c clock_nanosleep@@GLIBC_2.17+0x2c (/usr/lib/x86_64-linux-gnu/libc-2.31.so) =>                0 [unknown] ([unknown])
-               sleep 93431 [007] 15411.720076:          1  branches:u:                 0 [unknown] ([unknown]) =>     7f0818abb30e clock_nanosleep@@GLIBC_2.17+0x2e (/usr/lib/x86_64-linux-gnu/libc-2.31.so)
-               sleep 93431 [007] 15411.720077:          1  branches:u:      7f0818abb323 clock_nanosleep@@GLIBC_2.17+0x43 (/usr/lib/x86_64-linux-gnu/libc-2.31.so) =>     7f0818ac0eb7 __nanosleep+0x17 (/usr/lib/x86_64-linux-gnu/libc-2.31.so)
-               sleep 93431 [007] 15411.720077:          1  branches:u:      7f0818ac0ebf __nanosleep+0x1f (/usr/lib/x86_64-linux-gnu/libc-2.31.so) =>     55cb7e4c2827 rpl_nanosleep+0x97 (/usr/bin/sleep)
-
-Fixes: 91de8684f1cff ("perf intel-pt: Cater for CBR change in PSB+")
-Fixes: abe5a1d3e4bee ("perf intel-pt: Decoder to output CBR changes immediately")
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Fixes: 051fb70fd4ea4 ("remoteproc: qcom: Driver for the self-authenticating Hexagon v5")
 Cc: stable@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20200710151104.15137-3-adrian.hunter@intel.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+Link: https://lore.kernel.org/r/20200722201047.12975-3-sibis@codeaurora.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- tools/perf/util/intel-pt-decoder/intel-pt-decoder.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/remoteproc/qcom_q6v5_mss.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-+++ b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-@@ -1977,8 +1977,10 @@ next:
- 			 * possibility of another CBR change that gets caught up
- 			 * in the PSB+.
- 			 */
--			if (decoder->cbr != decoder->cbr_seen)
-+			if (decoder->cbr != decoder->cbr_seen) {
-+				decoder->state.type = 0;
- 				return 0;
-+			}
- 			break;
+--- a/drivers/remoteproc/qcom_q6v5_mss.c
++++ b/drivers/remoteproc/qcom_q6v5_mss.c
+@@ -1145,15 +1145,14 @@ static int q6v5_mpss_load(struct q6v5 *q
+ 		} else if (phdr->p_filesz) {
+ 			/* Replace "xxx.xxx" with "xxx.bxx" */
+ 			sprintf(fw_name + fw_name_len - 3, "b%02d", i);
+-			ret = request_firmware(&seg_fw, fw_name, qproc->dev);
++			ret = request_firmware_into_buf(&seg_fw, fw_name, qproc->dev,
++							ptr, phdr->p_filesz);
+ 			if (ret) {
+ 				dev_err(qproc->dev, "failed to load %s\n", fw_name);
+ 				iounmap(ptr);
+ 				goto release_firmware;
+ 			}
  
- 		case INTEL_PT_PIP:
-@@ -2019,8 +2021,10 @@ next:
+-			memcpy(ptr, seg_fw->data, seg_fw->size);
+-
+ 			release_firmware(seg_fw);
+ 		}
  
- 		case INTEL_PT_CBR:
- 			intel_pt_calc_cbr(decoder);
--			if (decoder->cbr != decoder->cbr_seen)
-+			if (decoder->cbr != decoder->cbr_seen) {
-+				decoder->state.type = 0;
- 				return 0;
-+			}
- 			break;
- 
- 		case INTEL_PT_MODE_EXEC:
 
 
