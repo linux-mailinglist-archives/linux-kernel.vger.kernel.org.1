@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56BAB24B47F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 714E724B47D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728218AbgHTKH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:07:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36162 "EHLO mail.kernel.org"
+        id S1730676AbgHTKHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:07:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730305AbgHTKGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:06:51 -0400
+        id S1730667AbgHTKGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:06:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 398AF20724;
-        Thu, 20 Aug 2020 10:06:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 178C0206DA;
+        Thu, 20 Aug 2020 10:06:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918010;
-        bh=APNPFDFVpjqGfhmPy6ABPkto89gHqoC2FFE9vTszl0I=;
+        s=default; t=1597917990;
+        bh=sB3O8RsK+WNH9GoiGeAlv0G4heZHl6LbPgI8bJi86mo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A+MTFJXLUqQhi/W/8E5eHIaFzRFpxTMO6XaUBDFb6hugZ12p6QMQCCxOtRJ3GFagO
-         8waZV3JxDmYu7EIQhP2Dthu0N9+XsSoeic8wOyHFAGoG2ztXfCibLZBji5poggJ9eu
-         eANhtWLNMpRwhobbJXBkRlqAt1LfpWbfQS3oH1iI=
+        b=tK/qHgq6ZRpESF9NoH+gt8gp7AFjBeU6jmayOG6SzpbTSsxycprNKlngV9Zi4Rwxa
+         hTV5xu8TgzpJyYgnMn1QVmQE5Sx1iFu/8gQYYM3pSK/AVrBo5A/A+RRciS+MaiiDFO
+         gYDbaN5ZjqmOoZSAioheskfB+GXlRjRqWw++/vWg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Forest Crossman <cyrozap@gmail.com>
-Subject: [PATCH 4.14 005/228] usb: xhci: Fix ASMedia ASM1142 DMA addressing
-Date:   Thu, 20 Aug 2020 11:19:40 +0200
-Message-Id: <20200820091607.798981964@linuxfoundation.org>
+        stable@vger.kernel.org, Amitoj Kaur Chawla <amitoj1606@gmail.com>,
+        Johan Hovold <johan@kernel.org>, Pavel Machek <pavel@ucw.cz>
+Subject: [PATCH 4.14 015/228] leds: wm831x-status: fix use-after-free on unbind
+Date:   Thu, 20 Aug 2020 11:19:50 +0200
+Message-Id: <20200820091608.294236424@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
 References: <20200820091607.532711107@linuxfoundation.org>
@@ -44,45 +43,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Forest Crossman <cyrozap@gmail.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit ec37198acca7b4c17b96247697406e47aafe0605 upstream.
+commit 47a459ecc800a17109d0c496a4e21e478806ee40 upstream.
 
-I've confirmed that the ASMedia ASM1142 has the same problem as the
-ASM2142/ASM3142, in that it too reports that it supports 64-bit DMA
-addresses when in fact it does not. As with the ASM2142/ASM3142, this
-can cause problems on systems where the upper bits matter, and adding
-the XHCI_NO_64BIT_SUPPORT quirk completely fixes the issue.
+Several MFD child drivers register their class devices directly under
+the parent device. This means you cannot blindly do devres conversions
+so that deregistration ends up being tied to the parent device,
+something which leads to use-after-free on driver unbind when the class
+device is released while still being registered.
 
-Acked-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Signed-off-by: Forest Crossman <cyrozap@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200728042408.180529-3-cyrozap@gmail.com
+Fixes: 8d3b6a4001ce ("leds: wm831x-status: Use devm_led_classdev_register")
+Cc: stable <stable@vger.kernel.org>     # 4.6
+Cc: Amitoj Kaur Chawla <amitoj1606@gmail.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/host/xhci-pci.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/leds/leds-wm831x-status.c |   14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/host/xhci-pci.c
-+++ b/drivers/usb/host/xhci-pci.c
-@@ -61,6 +61,7 @@
- #define PCI_DEVICE_ID_AMD_PROMONTORYA_1			0x43bc
- #define PCI_DEVICE_ID_ASMEDIA_1042_XHCI			0x1042
- #define PCI_DEVICE_ID_ASMEDIA_1042A_XHCI		0x1142
-+#define PCI_DEVICE_ID_ASMEDIA_1142_XHCI			0x1242
- #define PCI_DEVICE_ID_ASMEDIA_2142_XHCI			0x2142
+--- a/drivers/leds/leds-wm831x-status.c
++++ b/drivers/leds/leds-wm831x-status.c
+@@ -283,12 +283,23 @@ static int wm831x_status_probe(struct pl
+ 	drvdata->cdev.blink_set = wm831x_status_blink_set;
+ 	drvdata->cdev.groups = wm831x_status_groups;
  
- static const char hcd_name[] = "xhci_hcd";
-@@ -238,7 +239,8 @@ static void xhci_pci_quirks(struct devic
- 		pdev->device == PCI_DEVICE_ID_ASMEDIA_1042A_XHCI)
- 		xhci->quirks |= XHCI_TRUST_TX_LENGTH;
- 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
--		pdev->device == PCI_DEVICE_ID_ASMEDIA_2142_XHCI)
-+	    (pdev->device == PCI_DEVICE_ID_ASMEDIA_1142_XHCI ||
-+	     pdev->device == PCI_DEVICE_ID_ASMEDIA_2142_XHCI))
- 		xhci->quirks |= XHCI_NO_64BIT_SUPPORT;
+-	ret = devm_led_classdev_register(wm831x->dev, &drvdata->cdev);
++	ret = led_classdev_register(wm831x->dev, &drvdata->cdev);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "Failed to register LED: %d\n", ret);
+ 		return ret;
+ 	}
  
- 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
++	platform_set_drvdata(pdev, drvdata);
++
++	return 0;
++}
++
++static int wm831x_status_remove(struct platform_device *pdev)
++{
++	struct wm831x_status *drvdata = platform_get_drvdata(pdev);
++
++	led_classdev_unregister(&drvdata->cdev);
++
+ 	return 0;
+ }
+ 
+@@ -297,6 +308,7 @@ static struct platform_driver wm831x_sta
+ 		   .name = "wm831x-status",
+ 		   },
+ 	.probe = wm831x_status_probe,
++	.remove = wm831x_status_remove,
+ };
+ 
+ module_platform_driver(wm831x_status_driver);
 
 
