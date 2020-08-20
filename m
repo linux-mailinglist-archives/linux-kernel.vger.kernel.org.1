@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2174024B3B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8765D24B3D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729799AbgHTJvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:51:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59514 "EHLO mail.kernel.org"
+        id S1729981AbgHTJxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:53:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729780AbgHTJu7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:50:59 -0400
+        id S1729942AbgHTJxP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:53:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 199152078D;
-        Thu, 20 Aug 2020 09:50:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4AF2F2067C;
+        Thu, 20 Aug 2020 09:53:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917058;
-        bh=tl+cUgc5OR6puSRkQCFPVS3w587cIlAO4ks3kHm9LrM=;
+        s=default; t=1597917194;
+        bh=C/84CIoJYHv4E/FABQ0fh8uf1gdQweNA4EgZRAF4Klc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qTmbOP36OIeH9m49W+QzSbJekQyHhTQHAdJt8rWDagZZRtD6EFApAkNxesMfQWZKj
-         Qo5RTRyT4gyZzJcwHZllapAZJT6UM5C1d12GWVLoBClMYXZhjEwa401d4dCQRGhr4e
-         oNuGd4ab6FCZFkRMmvdfycgs/3HV5BZ2xr6iH1vA=
+        b=W3KJ90pMJ48T4uwLaY3IEvaG9NmMWR+kSnMadnw/5PrHmWtZulO2a0U2jge7y8pVV
+         2Bsmt5X0y3kgZIclPmN5RqLcR4+UFmqJV4OoIc6jjydqpwOPrbHD69nxtyjOeAD3Dr
+         RaPyYiRtHr+PWECFAhTL4DeBlVx8CoutPV8HmnZw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Ray Jui <ray.jui@broadcom.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 112/152] pwm: bcm-iproc: handle clk_get_rate() return
-Date:   Thu, 20 Aug 2020 11:21:19 +0200
-Message-Id: <20200820091559.505653909@linuxfoundation.org>
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 36/92] mm/page_counter.c: fix protection usage propagation
+Date:   Thu, 20 Aug 2020 11:21:21 +0200
+Message-Id: <20200820091539.474561462@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
-References: <20200820091553.615456912@linuxfoundation.org>
+In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
+References: <20200820091537.490965042@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,52 +49,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+From: Michal Koutný <mkoutny@suse.com>
 
-[ Upstream commit 6ced5ff0be8e94871ba846dfbddf69d21363f3d7 ]
+commit a6f23d14ec7d7d02220ad8bb2774be3322b9aeec upstream.
 
-Handle clk_get_rate() returning 0 to avoid possible division by zero.
+When workload runs in cgroups that aren't directly below root cgroup and
+their parent specifies reclaim protection, it may end up ineffective.
 
-Fixes: daa5abc41c80 ("pwm: Add support for Broadcom iProc PWM controller")
-Signed-off-by: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-Signed-off-by: Scott Branden <scott.branden@broadcom.com>
-Reviewed-by: Ray Jui <ray.jui@broadcom.com>
-Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The reason is that propagate_protected_usage() is not called in all
+hierarchy up.  All the protected usage is incorrectly accumulated in the
+workload's parent.  This means that siblings_low_usage is overestimated
+and effective protection underestimated.  Even though it is transitional
+phenomenon (uncharge path does correct propagation and fixes the wrong
+children_low_usage), it can undermine the intended protection
+unexpectedly.
+
+We have noticed this problem while seeing a swap out in a descendant of a
+protected memcg (intermediate node) while the parent was conveniently
+under its protection limit and the memory pressure was external to that
+hierarchy.  Michal has pinpointed this down to the wrong
+siblings_low_usage which led to the unwanted reclaim.
+
+The fix is simply updating children_low_usage in respective ancestors also
+in the charging path.
+
+Fixes: 230671533d64 ("mm: memory.low hierarchical behavior")
+Signed-off-by: Michal Koutný <mkoutny@suse.com>
+Signed-off-by: Michal Hocko <mhocko@suse.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: <stable@vger.kernel.org>	[4.18+]
+Link: http://lkml.kernel.org/r/20200803153231.15477-1-mhocko@kernel.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/pwm/pwm-bcm-iproc.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ mm/page_counter.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pwm/pwm-bcm-iproc.c b/drivers/pwm/pwm-bcm-iproc.c
-index 1f829edd8ee70..d392a828fc493 100644
---- a/drivers/pwm/pwm-bcm-iproc.c
-+++ b/drivers/pwm/pwm-bcm-iproc.c
-@@ -85,8 +85,6 @@ static void iproc_pwmc_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
- 	u64 tmp, multi, rate;
- 	u32 value, prescale;
+--- a/mm/page_counter.c
++++ b/mm/page_counter.c
+@@ -77,7 +77,7 @@ void page_counter_charge(struct page_cou
+ 		long new;
  
--	rate = clk_get_rate(ip->clk);
--
- 	value = readl(ip->base + IPROC_PWM_CTRL_OFFSET);
- 
- 	if (value & BIT(IPROC_PWM_CTRL_EN_SHIFT(pwm->hwpwm)))
-@@ -99,6 +97,13 @@ static void iproc_pwmc_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
- 	else
- 		state->polarity = PWM_POLARITY_INVERSED;
- 
-+	rate = clk_get_rate(ip->clk);
-+	if (rate == 0) {
-+		state->period = 0;
-+		state->duty_cycle = 0;
-+		return;
-+	}
-+
- 	value = readl(ip->base + IPROC_PWM_PRESCALE_OFFSET);
- 	prescale = value >> IPROC_PWM_PRESCALE_SHIFT(pwm->hwpwm);
- 	prescale &= IPROC_PWM_PRESCALE_MAX;
--- 
-2.25.1
-
+ 		new = atomic_long_add_return(nr_pages, &c->usage);
+-		propagate_protected_usage(counter, new);
++		propagate_protected_usage(c, new);
+ 		/*
+ 		 * This is indeed racy, but we can live with some
+ 		 * inaccuracy in the watermark.
+@@ -121,7 +121,7 @@ bool page_counter_try_charge(struct page
+ 		new = atomic_long_add_return(nr_pages, &c->usage);
+ 		if (new > c->max) {
+ 			atomic_long_sub(nr_pages, &c->usage);
+-			propagate_protected_usage(counter, new);
++			propagate_protected_usage(c, new);
+ 			/*
+ 			 * This is racy, but we can live with some
+ 			 * inaccuracy in the failcnt.
+@@ -130,7 +130,7 @@ bool page_counter_try_charge(struct page
+ 			*fail = c;
+ 			goto failed;
+ 		}
+-		propagate_protected_usage(counter, new);
++		propagate_protected_usage(c, new);
+ 		/*
+ 		 * Just like with failcnt, we can live with some
+ 		 * inaccuracy in the watermark.
 
 
