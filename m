@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4E0524BB0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0368624BADE
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730180AbgHTJzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:55:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37832 "EHLO mail.kernel.org"
+        id S1730216AbgHTJzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:55:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730178AbgHTJy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:54:58 -0400
+        id S1729777AbgHTJzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:55:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 98CED2067C;
-        Thu, 20 Aug 2020 09:54:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 96962207FB;
+        Thu, 20 Aug 2020 09:55:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917298;
-        bh=yyE+nWCDLiFzg8TXH1V6lIX1NecfxIOE1OLjTtT2LvM=;
+        s=default; t=1597917306;
+        bh=yQHTfJGTG1oXfFMvYb/hVHTVR3T7k0IztaZU2NlQ/XI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vAiD96o9i+qGerl6vfacZ5LV+BcZhGFO5LmGoJ/TOHH2XQcz3teMGB3/Oo2lAx8jw
-         e/maAU4iw9SYlD5dvgTTiuU4/q0uNWHVY4ZNjSrxntS7k2cOOFkNzSl6aeoPcBK9PW
-         XB7OjNqAzHYfGDUXxhrjezTKZ12k7JKrFghhpZ9c=
+        b=nGhs2P5+wsqXYMJ1jHvV3YLNRxKitDlTef4JHCe5fyrnX6YAIEnCKjs5tVmB23HNv
+         bgOIL3DI6BOJP687NYdQERDOTlQ2X6RLBkHC07hJEXM72ndJ4L2pY0EqYMAOup2764
+         0epnfcbTpNOt3jZ+e/iWAOEw3z/Eeyf265JS0PCU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Roland Scheidegger <sroland@vmware.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 73/92] Input: sentelic - fix error return when fsp_reg_write fails
-Date:   Thu, 20 Aug 2020 11:21:58 +0200
-Message-Id: <20200820091541.476797643@linuxfoundation.org>
+Subject: [PATCH 4.19 75/92] drm/vmwgfx: Fix two list_for_each loop exit tests
+Date:   Thu, 20 Aug 2020 11:22:00 +0200
+Message-Id: <20200820091541.571565375@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
 References: <20200820091537.490965042@linuxfoundation.org>
@@ -44,37 +44,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit ea38f06e0291986eb93beb6d61fd413607a30ca4 ]
+[ Upstream commit 4437c1152ce0e57ab8f401aa696ea6291cc07ab1 ]
 
-Currently when the call to fsp_reg_write fails -EIO is not being returned
-because the count is being returned instead of the return value in retval.
-Fix this by returning the value in retval instead of count.
+These if statements are supposed to be true if we ended the
+list_for_each_entry() loops without hitting a break statement but they
+don't work.
 
-Addresses-Coverity: ("Unused value")
-Fixes: fc69f4a6af49 ("Input: add new driver for Sentelic Finger Sensing Pad")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20200603141218.131663-1-colin.king@canonical.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+In the first loop, we increment "i" after the "if (i == unit)" condition
+so we don't necessarily know that "i" is not equal to unit at the end of
+the loop.
+
+In the second loop we exit when mode is not pointing to a valid
+drm_display_mode struct so it doesn't make sense to check "mode->type".
+
+Fixes: a278724aa23c ("drm/vmwgfx: Implement fbdev on kms v2")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Roland Scheidegger <sroland@vmware.com>
+Signed-off-by: Roland Scheidegger <sroland@vmware.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/mouse/sentelic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/input/mouse/sentelic.c b/drivers/input/mouse/sentelic.c
-index 1d6010d463e2c..022a8cb58a066 100644
---- a/drivers/input/mouse/sentelic.c
-+++ b/drivers/input/mouse/sentelic.c
-@@ -454,7 +454,7 @@ static ssize_t fsp_attr_set_setreg(struct psmouse *psmouse, void *data,
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
+index 6a712a8d59e93..e486b6517ac55 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
+@@ -2861,7 +2861,7 @@ int vmw_kms_fbdev_init_data(struct vmw_private *dev_priv,
+ 		++i;
+ 	}
  
- 	fsp_reg_write_enable(psmouse, false);
+-	if (i != unit) {
++	if (&con->head == &dev_priv->dev->mode_config.connector_list) {
+ 		DRM_ERROR("Could not find initial display unit.\n");
+ 		ret = -EINVAL;
+ 		goto out_unlock;
+@@ -2885,13 +2885,13 @@ int vmw_kms_fbdev_init_data(struct vmw_private *dev_priv,
+ 			break;
+ 	}
  
--	return count;
-+	return retval;
- }
+-	if (mode->type & DRM_MODE_TYPE_PREFERRED)
+-		*p_mode = mode;
+-	else {
++	if (&mode->head == &con->modes) {
+ 		WARN_ONCE(true, "Could not find initial preferred mode.\n");
+ 		*p_mode = list_first_entry(&con->modes,
+ 					   struct drm_display_mode,
+ 					   head);
++	} else {
++		*p_mode = mode;
+ 	}
  
- PSMOUSE_DEFINE_WO_ATTR(setreg, S_IWUSR, NULL, fsp_attr_set_setreg);
+  out_unlock:
 -- 
 2.25.1
 
