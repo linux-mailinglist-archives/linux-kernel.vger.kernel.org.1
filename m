@@ -2,119 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C054524BE71
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64ACD24BEA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730242AbgHTN0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:26:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38602 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729419AbgHTN0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 09:26:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3467EB5F9;
-        Thu, 20 Aug 2020 13:26:59 +0000 (UTC)
-Date:   Thu, 20 Aug 2020 15:26:31 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        christian.brauner@ubuntu.com, mingo@kernel.org,
-        peterz@infradead.org, tglx@linutronix.de, esyr@redhat.com,
-        christian@kellner.me, areber@redhat.com, shakeelb@google.com,
-        cyphar@cyphar.com, oleg@redhat.com, adobriyan@gmail.com,
-        akpm@linux-foundation.org, gladkov.alexey@gmail.com,
-        walken@google.com, daniel.m.jordan@oracle.com, avagin@gmail.com,
-        bernd.edlinger@hotmail.de, john.johansen@canonical.com,
-        laoar.shao@gmail.com, timmurray@google.com, minchan@kernel.org,
-        kernel-team@android.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 1/1] mm, oom_adj: don't loop through tasks in
- __set_oom_adj when not necessary
-Message-ID: <20200820132631.GK5033@dhcp22.suse.cz>
-References: <20200820002053.1424000-1-surenb@google.com>
- <87zh6pxzq6.fsf@x220.int.ebiederm.org>
- <20200820124241.GJ5033@dhcp22.suse.cz>
- <87lfi9xz7y.fsf@x220.int.ebiederm.org>
- <87d03lxysr.fsf@x220.int.ebiederm.org>
+        id S1729372AbgHTN3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:29:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42240 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729301AbgHTN1l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 09:27:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597930060;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DAGecdZwlkCmWN+ue1t4x/y2+dJaBtvVkYDbnFL2ArE=;
+        b=DJj2ffV5GMFskZvUpCs+SXgswY2KApFmfdwxi+7MZey2Dl8LqAVhSVFVTc/CPddQNNupHi
+        5lwbBXTVTxJOXJZc6GcZKHTSt1hY0rlY8+FMVRm2+6XbyyCdWFk1IpVRhZYl9ElqJn/J+8
+        sXMGLGK4Uf6SrA+SPaEk1mqxy0DokZ0=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-547-yxxGaQzqMcq_kYE18BaPXw-1; Thu, 20 Aug 2020 09:27:39 -0400
+X-MC-Unique: yxxGaQzqMcq_kYE18BaPXw-1
+Received: by mail-qk1-f198.google.com with SMTP id n128so1250214qke.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 06:27:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=DAGecdZwlkCmWN+ue1t4x/y2+dJaBtvVkYDbnFL2ArE=;
+        b=ajNCuiBJubvJsQMvg0qenl1Zij678KKnlNnNaNfVmkHnatHXhfLyJe4iNJjnunjSGl
+         A1tywggZWrjfaJAxfu3zPy7ApG9WiCFoTjFfvBvkNeYuyYrmdw9WtkZ7yBl+rtN9WYjy
+         DVHdZC7TLlLGi2hRV3LCS5r4knlunnLA2CyGibcAwQdB0323IVUvEbiCDQH3ERy8HGwf
+         AZmlWXlvRbDnNrlo+lULODdR/HKcigiDyuNRudRwwMmmqSmcabnWO8jofV8pYvN4rJO8
+         UpdE6mu9L1f7JO0xH174Y9jz33cGz9Ogt73G6wgUH0GprlP8DTbjEXtrtpckRfqwuWd3
+         qrpQ==
+X-Gm-Message-State: AOAM530viX6dskgvpAuIz7rZNbSynCEg/7zqt59Lkx9gWMSYqSUWrF03
+        UOaVO4XYYhd0DeGJ3MBqEnGp96OYtAtP82Gt1Dn8HdOF31Tc0L0hyKVQGisTgMtNUk43whGz070
+        XiT+g4sS3gzGJ21Nykl9TKf2N
+X-Received: by 2002:ac8:564d:: with SMTP id 13mr2688673qtt.101.1597930058349;
+        Thu, 20 Aug 2020 06:27:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw8usGhxVEOYqYVa3I9N6+A3QyxTwJoJ2mZHFFTPor1LOox137u/l6oZfaIOPqyX556p76xjA==
+X-Received: by 2002:ac8:564d:: with SMTP id 13mr2688660qtt.101.1597930058111;
+        Thu, 20 Aug 2020 06:27:38 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id k31sm2798255qtd.60.2020.08.20.06.27.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Aug 2020 06:27:37 -0700 (PDT)
+Subject: Re: [PATCH] crypto: drbg: check blocklen is non zero
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     davem@davemloft.net, smueller@chronox.de,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200802171247.16558-1-trix@redhat.com>
+ <20200820071522.GA21511@gondor.apana.org.au>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <97371bc7-ebb6-92f2-bbaa-6b444e27cb8b@redhat.com>
+Date:   Thu, 20 Aug 2020 06:27:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87d03lxysr.fsf@x220.int.ebiederm.org>
+In-Reply-To: <20200820071522.GA21511@gondor.apana.org.au>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 20-08-20 07:54:44, Eric W. Biederman wrote:
-> ebiederm@xmission.com (Eric W. Biederman) writes:
-> 
-> 2> Michal Hocko <mhocko@suse.com> writes:
-> >
-> >> On Thu 20-08-20 07:34:41, Eric W. Biederman wrote:
-> >>> Suren Baghdasaryan <surenb@google.com> writes:
-> >>> 
-> >>> > Currently __set_oom_adj loops through all processes in the system to
-> >>> > keep oom_score_adj and oom_score_adj_min in sync between processes
-> >>> > sharing their mm. This is done for any task with more that one mm_users,
-> >>> > which includes processes with multiple threads (sharing mm and signals).
-> >>> > However for such processes the loop is unnecessary because their signal
-> >>> > structure is shared as well.
-> >>> > Android updates oom_score_adj whenever a tasks changes its role
-> >>> > (background/foreground/...) or binds to/unbinds from a service, making
-> >>> > it more/less important. Such operation can happen frequently.
-> >>> > We noticed that updates to oom_score_adj became more expensive and after
-> >>> > further investigation found out that the patch mentioned in "Fixes"
-> >>> > introduced a regression. Using Pixel 4 with a typical Android workload,
-> >>> > write time to oom_score_adj increased from ~3.57us to ~362us. Moreover
-> >>> > this regression linearly depends on the number of multi-threaded
-> >>> > processes running on the system.
-> >>> > Mark the mm with a new MMF_PROC_SHARED flag bit when task is created with
-> >>> > CLONE_VM and !CLONE_SIGHAND. Change __set_oom_adj to use MMF_PROC_SHARED
-> >>> > instead of mm_users to decide whether oom_score_adj update should be
-> >>> > synchronized between multiple processes. To prevent races between clone()
-> >>> > and __set_oom_adj(), when oom_score_adj of the process being cloned might
-> >>> > be modified from userspace, we use oom_adj_mutex. Its scope is changed to
-> >>> > global and it is renamed into oom_adj_lock for naming consistency with
-> >>> > oom_lock. Since the combination of CLONE_VM and !CLONE_SIGHAND is rarely
-> >>> > used the additional mutex lock in that path of the clone() syscall should
-> >>> > not affect its overall performance. Clearing the MMF_PROC_SHARED flag
-> >>> > (when the last process sharing the mm exits) is left out of this patch to
-> >>> > keep it simple and because it is believed that this threading model is
-> >>> > rare. Should there ever be a need for optimizing that case as well, it
-> >>> > can be done by hooking into the exit path, likely following the
-> >>> > mm_update_next_owner pattern.
-> >>> > With the combination of CLONE_VM and !CLONE_SIGHAND being quite rare, the
-> >>> > regression is gone after the change is applied.
-> >>> 
-> >>> So I am confused.
-> >>> 
-> >>> Is there any reason why we don't simply move signal->oom_score_adj to
-> >>> mm->oom_score_adj and call it a day?
-> >>
-> >> Yes. Please read through 44a70adec910 ("mm, oom_adj: make sure processes
-> >> sharing mm have same view of oom_score_adj")
-> >
-> > That explains why the scores are synchronized.
-> >
-> > It doesn't explain why we don't do the much simpler thing and move
-> > oom_score_adj from signal_struct to mm_struct. Which is my question.
-> >
-> > Why not put the score where we need it to ensure that the oom score
-> > is always synchronized?  AKA on the mm_struct, not the signal_struct.
-> 
-> Apologies.  That 44a70adec910 does describe that some people have seen
-> vfork users set oom_score.  No details unfortunately.
-> 
-> I will skip the part where posix calls this undefined behavior.  It
-> breaks userspace to change.
-> 
-> It still seems like the code should be able to buffer oom_adj during
-> vfork, and only move the value onto mm_struct during exec.
+There are many divide by 0 reports.  This one got attention because it is in crypto, where i believe problems, even false positives, should be fixed.
 
-If you can handle vfork by other means then I am all for it. There were
-no patches in that regard proposed yet. Maybe it will turn out simpler
-then the heavy lifting we have to do in the oom specific code.
--- 
-Michal Hocko
-SUSE Labs
+Tom
+
+On 8/20/20 12:15 AM, Herbert Xu wrote:
+> On Sun, Aug 02, 2020 at 10:12:47AM -0700, trix@redhat.com wrote:
+>> From: Tom Rix <trix@redhat.com>
+>>
+>> Clang static analysis reports this error
+>>
+>> crypto/drbg.c:441:40: warning: Division by zero
+>>         padlen = (inputlen + sizeof(L_N) + 1) % (drbg_blocklen(drbg));
+>>                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+>>
+>> When drbg_bocklen fails it returns 0.
+>>
+>> 	if (drbg && drbg->core)
+>> 		return drbg->core->blocklen_bytes;
+>> 	return 0;
+> Yes but it can only fail if the drbg is not instantiated.  If
+> you're hitting the generate path with an uninstantiated drbg you've
+> got bigger problems than a divide by zero.
+>
+> So how is this even possible?
+>
+> Cheers,
+
