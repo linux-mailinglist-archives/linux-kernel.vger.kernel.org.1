@@ -2,99 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B50AB24C078
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBCE924C070
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727970AbgHTOUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 10:20:20 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:61461 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727903AbgHTOUD (ORCPT
+        id S1727125AbgHTOT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 10:19:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726947AbgHTOTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 10:20:03 -0400
-Received: from fsav403.sakura.ne.jp (fsav403.sakura.ne.jp [133.242.250.102])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 07KEIi5Q077845;
-        Thu, 20 Aug 2020 23:18:45 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav403.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav403.sakura.ne.jp);
- Thu, 20 Aug 2020 23:18:44 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav403.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 07KEIigG077841
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Thu, 20 Aug 2020 23:18:44 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH 1/1] mm, oom_adj: don't loop through tasks in
- __set_oom_adj when not necessary
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Suren Baghdasaryan <surenb@google.com>, timmurray@google.com,
-        mingo@kernel.org, peterz@infradead.org, tglx@linutronix.de,
-        esyr@redhat.com, christian@kellner.me, areber@redhat.com,
-        shakeelb@google.com, cyphar@cyphar.com, oleg@redhat.com,
-        adobriyan@gmail.com, akpm@linux-foundation.org,
-        gladkov.alexey@gmail.com, walken@google.com,
-        daniel.m.jordan@oracle.com, avagin@gmail.com,
-        bernd.edlinger@hotmail.de, john.johansen@canonical.com,
-        laoar.shao@gmail.com, minchan@kernel.org, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20200820002053.1424000-1-surenb@google.com>
- <87zh6pxzq6.fsf@x220.int.ebiederm.org> <20200820124241.GJ5033@dhcp22.suse.cz>
- <87lfi9xz7y.fsf@x220.int.ebiederm.org> <87d03lxysr.fsf@x220.int.ebiederm.org>
- <20200820132631.GK5033@dhcp22.suse.cz>
- <20200820133454.ch24kewh42ax4ebl@wittgenstein>
- <dcb62b67-5ad6-f63a-a909-e2fa70b240fc@i-love.sakura.ne.jp>
- <20200820140054.fdkbotd4tgfrqpe6@wittgenstein>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <637ab0e7-e686-0c94-753b-b97d24bb8232@i-love.sakura.ne.jp>
-Date:   Thu, 20 Aug 2020 23:18:40 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Thu, 20 Aug 2020 10:19:19 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4841C061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 07:19:19 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id j188so1156118vsd.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 07:19:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZnDxdkuxYRmNtyk7Y2huayEumQNpEwRvmtnxfMXB4XU=;
+        b=ycvUl+MIZkhh4i8WXE15mw8LqxN3ey4UI3XKE1PFm+ioTX5Rxxs+bUZCMNTmMhB6Yo
+         +OyB4iENr/YC0+7OkuV1mdJL8vkMNBAuYS27Zb3CMuhpLDUtztBi07B3oHaHAAlw4LAv
+         faPtW4aLGLuDBfUflYkU+HQlompO0tg0AGLkCj0AP+bAJWs6tRSMjaGkrHq6OOY/tncy
+         BNxP1x+p0RKupWOa0A5i7DKeLHY/+GX8xnh1UGwsFhZhQTAlqI3i365iYGvFMCzQg+qs
+         gPqFOssA/diIZdAwWejMobS56aGInUxXfr6vX3f3NjBZwZJZzMUPveJu32uGeqOAQu6l
+         +1VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZnDxdkuxYRmNtyk7Y2huayEumQNpEwRvmtnxfMXB4XU=;
+        b=DuajESu/taELGYNm136xTXcoFQS8cem7fzh1hLaqEbfWczfoBORBnowED/gIkpllZ6
+         nC3cRrUvrIsYirsOoinV4DLducmejUkg4JfJkuvkELsz9K8RaBPK8y/BBhaIxSbIb9Y6
+         Ra+nkrckMnemq9GCKCfS/PB5oAdZYc15OniSInrjcclfGUxvwg8p8Ku3auab3ZN6HJJJ
+         fv7jC8c6dj6z8gR0lTUJtcWWemoBNZSDSJsuRDOCzgUm6wSWABo1VS03B1BzFow8fOy5
+         v35atilz6Ka+iqzqhhTwqXU0/QbMuR3nnRJcX9fAW6ZhyNhVOwCrUlCW5Xc44LN+m7Lb
+         arNw==
+X-Gm-Message-State: AOAM5322DrV+UmoF3yQyQlpt6KveIxLYVE/5bmCoh6wANdPaXzoNCs8r
+        dBIzfhZBp/lCY7YZe8/Jrr7CVon5wkhR0LRE67pqMg==
+X-Google-Smtp-Source: ABdhPJwuYHKqDHqKwLv8/8PxuHVAGY/r1uoCFi8obd0CL6NZntClddlPGruInNtIRyyIkgjWiazXUfLgaWFjk+pxu8Y=
+X-Received: by 2002:a67:6996:: with SMTP id e144mr2120745vsc.185.1597933157760;
+ Thu, 20 Aug 2020 07:19:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200820140054.fdkbotd4tgfrqpe6@wittgenstein>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200820092125.688850368@linuxfoundation.org>
+In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 20 Aug 2020 19:49:06 +0530
+Message-ID: <CA+G9fYsxQEnACmjP+CUtBq9P+0nWU_19oG62tpCbKtdcGAStfA@mail.gmail.com>
+Subject: Re: [PATCH 4.4 000/149] 4.4.233-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>,
+        Willy Tarreau <w@1wt.eu>, Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/08/20 23:00, Christian Brauner wrote:
-> On Thu, Aug 20, 2020 at 10:48:43PM +0900, Tetsuo Handa wrote:
->> On 2020/08/20 22:34, Christian Brauner wrote:
->>> On Thu, Aug 20, 2020 at 03:26:31PM +0200, Michal Hocko wrote:
->>>> If you can handle vfork by other means then I am all for it. There were
->>>> no patches in that regard proposed yet. Maybe it will turn out simpler
->>>> then the heavy lifting we have to do in the oom specific code.
->>>
->>> Eric's not wrong. I fiddled with this too this morning but since
->>> oom_score_adj is fiddled with in a bunch of places this seemed way more
->>> code churn then what's proposed here.
->>
->> I prefer simply reverting commit 44a70adec910d692 ("mm, oom_adj: make sure
->> processes sharing mm have same view of oom_score_adj").
->>
->>   https://lore.kernel.org/patchwork/patch/1037208/
-> 
-> I guess this is a can of worms but just or the sake of getting more
-> background: the question seems to be whether the oom adj score is a
-> property of the task/thread-group or a property of the mm. I always
-> thought the oom score is a property of the task/thread-group and not the
-> mm which is also why it lives in struct signal_struct and not in struct
-> mm_struct. But
-> 
-> 44a70adec910 ("mm, oom_adj: make sure processes sharing mm have same view of oom_score_adj")
-> 
-> reads like it is supposed to be a property of the mm or at least the
-> change makes it so.
+On Thu, 20 Aug 2020 at 15:47, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.4.233 release.
+> There are 149 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 22 Aug 2020 09:21:01 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.233-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Yes, 44a70adec910 is trying to go towards changing from a property of the task/thread-group
-to a property of mm. But I don't think we need to do it at the cost of "__set_oom_adj() latency
-Yong-Taek Lee and Tim Murray have reported" and "complicity for supporting
-vfork() => __set_oom_adj() => execve() sequence".
+i386 build failed on stable-rc 4.4 branch
 
+make -sk KBUILD_BUILD_USER=TuxBuild -C/linux -j16 ARCH=i386 HOSTCC=gcc
+CC="sccache gcc" O=build
+#
+In file included from ../samples/seccomp/bpf-direct.c:19:
+/usr/include/linux/types.h:5:10: fatal error: asm/types.h: No such
+file or directory
+    5 | #include <asm/types.h>
+      |          ^~~~~~~~~~~~~
+compilation terminated.
+In file included from /usr/include/linux/filter.h:10,
+                 from ../samples/seccomp/bpf-fancy.c:12:
+/usr/include/linux/types.h:5:10: fatal error: asm/types.h: No such
+file or directory
+    5 | #include <asm/types.h>
+      |          ^~~~~~~~~~~~~
+compilation terminated.
+make[3]: *** [scripts/Makefile.host:108: samples/seccomp/bpf-direct.o] Error 1
+make[3]: *** [scripts/Makefile.host:108: samples/seccomp/bpf-fancy.o] Error 1
+In file included from /usr/include/bits/errno.h:26,
+                 from /usr/include/errno.h:28,
+                 from ../samples/seccomp/dropper.c:17:
+/usr/include/linux/errno.h:1:10: fatal error: asm/errno.h: No such
+file or directory
+    1 | #include <asm/errno.h>
+      |          ^~~~~~~~~~~~~
+compilation terminated.
+make[3]: *** [scripts/Makefile.host:108: samples/seccomp/dropper.o] Error 1
+In file included from ../samples/seccomp/bpf-helper.c:16:
+../samples/seccomp/bpf-helper.h:17:10: fatal error: asm/bitsperlong.h:
+No such file or directory
+   17 | #include <asm/bitsperlong.h> /* for __BITS_PER_LONG */
+      |          ^~~~~~~~~~~~~~~~~~~
+
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
