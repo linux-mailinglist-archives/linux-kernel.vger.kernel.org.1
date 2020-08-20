@@ -2,100 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5537F24C5F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 20:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FDD524C621
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 21:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727888AbgHTS40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 14:56:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726387AbgHTS4Z (ORCPT
+        id S1728033AbgHTTGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 15:06:13 -0400
+Received: from mx0a-00190b01.pphosted.com ([67.231.149.131]:57632 "EHLO
+        mx0a-00190b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726772AbgHTTGJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 14:56:25 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF83EC061385;
-        Thu, 20 Aug 2020 11:56:24 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id l2so3147269wrc.7;
-        Thu, 20 Aug 2020 11:56:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=D2knyK2NI/0zEQhqBEmeYzCiqIf2nh2bPQqBRntv250=;
-        b=L9rMDH8oLiXXtnMRb71uBQEgwEYdT4SmnwHQx7cYgBlDWxuaTcQCVtpMEnl9uJS5qs
-         LPkgzZ64LGJEEBiyQC5xuTQMTYWYfB3fKvXUM7QH5u5tvcs8r00h8W5HeZ20lkB2+Dyp
-         7PMtAj0ISWB8MSK9nrP2uGnmEebAf2wND8O9yOPRFxHbxGmqRNDjK0gJSkRtgQ+5OYXG
-         xVAetHKQCXde5uZOlIhcl1ZGv4Xv+kQtX7yOtsbmSmiaiDHcILNlXvD1We2HVxQdgaof
-         XUhactJxk2tEbs2EUqnGjg3SiSYb4v00kfkEDR9uCDRLKGB+iVR7v6A9cfcG39NyFsH+
-         LWpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=D2knyK2NI/0zEQhqBEmeYzCiqIf2nh2bPQqBRntv250=;
-        b=pZ8tuHeWYBQAER+1YGt5VMoPikvVTjbF1eKaopUD6zUZldEGKHny30DicNorhQcXZz
-         1sNwnZ4GVgwXsUzJSiO6RO3k7tzGvA8p+47enfwrd2zWUzZ3qmuqqp0QjfJ80K26PeWZ
-         a5Z0+EN9mUTQWaS/XDMwQFCB9vHAeGWSMY9gPSQabr860QZlMDqTTv61RKOBdXJoSVZR
-         zRRmR5VzpZNjJBmz+lFnoe7gmroaZf4t0nEczEaZIF9qZmDG0TN66HieesdhrVDVejas
-         tQAtJ5+eFHHlqTESHR6zDHiFmzWKQs62ZngHyqKd+X9iVU7s1KYXedQBwVCteYKBTG/c
-         QJCQ==
-X-Gm-Message-State: AOAM530YW/i0bTEc/wgEXtaWZ8eQg8GWFWOPQZt7hP82+tZW7Y7Wsf5x
-        8G6uB/1fsSjqeCsCEhtvifxT1r4qYWMtPfT6
-X-Google-Smtp-Source: ABdhPJwffCaCdS+J4D1IlMtWs13gBhzP2wByzriIfwKQ4zXneAL7WWyECZkTmYUryu821q1xxKLb6A==
-X-Received: by 2002:adf:fb87:: with SMTP id a7mr117350wrr.390.1597949783580;
-        Thu, 20 Aug 2020 11:56:23 -0700 (PDT)
-Received: from medion (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id 124sm5800326wmd.31.2020.08.20.11.56.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 11:56:23 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-X-Google-Original-From: Alex Dewar <alex.dewar@gmx.co.uk>
-Date:   Thu, 20 Aug 2020 19:56:20 +0100
-To:     Joe Perches <joe@perches.com>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: mptfusion: Remove unnecessarily casts
-Message-ID: <20200820185620.ysfdpzjj4qrquqbz@medion>
-References: <20200820180552.853289-1-alex.dewar90@gmail.com>
- <a99fde707b367b0cee126b596b2dc7a74dbb84e7.camel@perches.com>
+        Thu, 20 Aug 2020 15:06:09 -0400
+X-Greylist: delayed 3036 seconds by postgrey-1.27 at vger.kernel.org; Thu, 20 Aug 2020 15:06:09 EDT
+Received: from pps.filterd (m0122332.ppops.net [127.0.0.1])
+        by mx0a-00190b01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07KID7hr012646;
+        Thu, 20 Aug 2020 19:13:30 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=jan2016.eng;
+ bh=2H2U0bUzfzUQI2EwcnLmDOGu7A2f0Nk6jcVUHu0KIR4=;
+ b=DCpO1J0qltxZE6OUrYuqD2jB8y5SuEslvWabCZf70G2oVyGZeMlv5qLAqH1wcxw0K4J/
+ VaEwr5mXYAgP7eXdJbbNHV4bOJ/s+wsd02Qg6RN5rF/Jiajd84NDq7Oz72bk2vLF5HDg
+ Y8PvRHRGKGFBsh3R4Eo1SN9ju8quTfh3CFtd74PbR8NsKcDH69pRJQZqdoc9vT02o74n
+ 2f/m3RR8hLqJR/DmFWvQVEs9KJZy7qcf0FAmVSMGkV+AUV0E++6xLl+WSInzMp/Ql/RL
+ ujoeOHYdHylLF2IB9r+kHlprLyr4EgvaNUFASc3n+R3kAMw6wsh1in8VriB1fmV1V82q nw== 
+Received: from prod-mail-ppoint8 (a72-247-45-34.deploy.static.akamaitechnologies.com [72.247.45.34] (may be forged))
+        by mx0a-00190b01.pphosted.com with ESMTP id 331cy2tkr6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Aug 2020 19:13:30 +0100
+Received: from pps.filterd (prod-mail-ppoint8.akamai.com [127.0.0.1])
+        by prod-mail-ppoint8.akamai.com (8.16.0.42/8.16.0.42) with SMTP id 07KI5SRP005048;
+        Thu, 20 Aug 2020 14:13:29 -0400
+Received: from prod-mail-relay19.dfw02.corp.akamai.com ([172.27.165.173])
+        by prod-mail-ppoint8.akamai.com with ESMTP id 32xb1yke91-1;
+        Thu, 20 Aug 2020 14:13:29 -0400
+Received: from [0.0.0.0] (prod-ssh-gw01.bos01.corp.akamai.com [172.27.119.138])
+        by prod-mail-relay19.dfw02.corp.akamai.com (Postfix) with ESMTP id AE0D26015C;
+        Thu, 20 Aug 2020 18:13:27 +0000 (GMT)
+Subject: Re: Packet gets stuck in NOLOCK pfifo_fast qdisc
+To:     Jike Song <albcamus@gmail.com>
+Cc:     Paolo Abeni <pabeni@redhat.com>,
+        Jonas Bonn <jonas.bonn@netrounds.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Michael Zhivich <mzhivich@akamai.com>,
+        David Miller <davem@davemloft.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        kehuan.feng@gmail.com
+References: <465a540e-5296-32e7-f6a6-79942dfe2618@netrounds.com>
+ <20200623134259.8197-1-mzhivich@akamai.com>
+ <1849b74f-163c-8cfa-baa5-f653159fefd4@akamai.com>
+ <CAM_iQpX1+dHB0kJF8gRfuDeAb9TsA9mB9H_Og8n8Hr19+EMLJA@mail.gmail.com>
+ <CAM_iQpWjQiG-zVs+e-V=8LvTFbRwgC4y4eoGERjezfAT0Fmm8g@mail.gmail.com>
+ <7fd86d97-6785-0b5f-1e95-92bc1da9df35@netrounds.com>
+ <500b4843cb7c425ea5449fe199095edd5f7feb0c.camel@redhat.com>
+ <25ca46e4-a8c1-1c88-d6a9-603289ff44c3@akamai.com>
+ <CANE52Ki8rZGDPLZkxY--RPeEG+0=wFeyCD6KKkeG1WREUwramw@mail.gmail.com>
+From:   Josh Hunt <johunt@akamai.com>
+Message-ID: <74921739-d344-38eb-aa19-c078783b6328@akamai.com>
+Date:   Thu, 20 Aug 2020 11:13:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a99fde707b367b0cee126b596b2dc7a74dbb84e7.camel@perches.com>
+In-Reply-To: <CANE52Ki8rZGDPLZkxY--RPeEG+0=wFeyCD6KKkeG1WREUwramw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-20_03:2020-08-19,2020-08-20 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
+ mlxscore=0 spamscore=0 mlxlogscore=907 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008200146
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-20_03:2020-08-19,2020-08-20 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0
+ lowpriorityscore=0 adultscore=0 impostorscore=0 mlxlogscore=769
+ clxscore=1011 bulkscore=0 phishscore=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008200147
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 11:53:58AM -0700, Joe Perches wrote:
-> On Thu, 2020-08-20 at 19:05 +0100, Alex Dewar wrote:
-> > In a number of places, the value returned from pci_alloc_consistent() is
-> > unnecessarily cast from void*. Remove these casts.
-> []
-> > diff --git a/drivers/message/fusion/mptbase.c b/drivers/message/fusion/mptbase.c
-> []
-> > @@ -4975,7 +4975,7 @@ GetLanConfigPages(MPT_ADAPTER *ioc)
-> >  
-> >  	if (hdr.PageLength > 0) {
-> >  		data_sz = hdr.PageLength * 4;
-> > -		ppage0_alloc = (LANPage0_t *) pci_alloc_consistent(ioc->pcidev, data_sz, &page0_dma);
-> > +		ppage0_alloc = pci_alloc_consistent(ioc->pcidev, data_sz, &page0_dma);
-> >  		rc = -ENOMEM;
-> >  		if (ppage0_alloc) {
-> >  			memset((u8 *)ppage0_alloc, 0, data_sz);
+Hi Jike
+
+On 8/20/20 12:43 AM, Jike Song wrote:
+> Hi Josh,
 > 
-> If you are removing unnecessary casts, it'd be better to remove
-> all of them in the same file or subsystem at once.
 > 
-> Also this memset and cast isn't actually necessary any more
-> as pci_alloc_consistent already zeros memory.
+> We met possibly the same problem when testing nvidia/mellanox's
+> GPUDirect RDMA product, we found that changing NET_SCH_DEFAULT to
+> DEFAULT_FQ_CODEL mitigated the problem, having no idea why. Maybe you
+> can also have a try?
+
+We also did something similar where we've switched over to using the fq 
+scheduler everywhere for now. We believe the bug is in the nolock code 
+which only pfifo_fast uses atm, but we've been unable to come up with a 
+satisfactory solution.
+
 > 
-> etc...
+> Besides, our testing is pretty complex, do you have a quick test to
+> reproduce it?
 > 
 
-Good suggestion. Thanks for the feedback :-)
+Unfortunately we don't have a simple test case either. Our current 
+reproducer is complex as well, although it would seem like we should be 
+able to come up with something where you have maybe 2 threads trying to 
+send on the same tx queue running pfifo_fast every few hundred 
+milliseconds and not much else/no other tx traffic on that queue. IIRC 
+we believe the scenario is when one thread is in the process of 
+dequeuing a packet while another is enqueuing, the enqueue-er (word? :)) 
+sees the dequeue is in progress and so does not xmit the packet assuming 
+the dequeue operation will take care of it. However b/c the dequeue is 
+in the process of completing it doesn't and the newly enqueued packet 
+stays in the qdisc until another packet is enqueued pushing both out.
+
+Given that we have a workaround with using fq or any other qdisc not 
+named pfifo_fast this has gotten bumped down in priority for us. I would 
+like to work on a reproducer at some point, but won't likely be for a 
+few weeks :(
+
+Josh
