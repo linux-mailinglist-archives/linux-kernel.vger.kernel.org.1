@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0686824B092
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E30324B07B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgHTHz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 03:55:26 -0400
-Received: from mail-dm6nam10on2083.outbound.protection.outlook.com ([40.107.93.83]:24237
+        id S1727000AbgHTHwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 03:52:30 -0400
+Received: from mail-dm6nam10on2058.outbound.protection.outlook.com ([40.107.93.58]:52487
         "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725798AbgHTHzW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 03:55:22 -0400
+        id S1726911AbgHTHwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 03:52:25 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VBW0Qm/523wbbtMxI4KWgnwZmWElDfDIk4DAmAmn9l669E5lc3pz7nB8X4eyTnM1ix6D7NSblM8LWjdNMKXZ+GTR5TQj5IWLCzRhqdU28/eDrZShcz22c/sabSNV4c+0ZkgbgYvd7uLNYdZb4DkhZcrq6HO+I9EbkcNqN+IhWasXZ4+9P/BedJi+fmZfj1LzYcBhLWTkmz9MFGB+N2JGMMXIx0OaQZR+D2roaxYVD10GV2Bl7bRCb/gK9TTwA8w7JDr+ir3Rb9RGEbR9p8tObgGfbRip4qwRhKsSNCkttAUtwQLlkjR0/w2k3q+cmt576U4xaeAngQmbRF6W2635xA==
+ b=oN2w27agZnqgEA9oa3EDc+TZussk50ocX/lb7i85iRbxkOQJ3B6N2dPwnufv/f68oztEPmV0TpD7vAtN25pI4Oxby/HYLqE4p6LWBCod8dIi3ZgnoMdaIVQBB8zJRmrYB67y4lBGtng3uc9B3peTIGO8zedtHNt/HhjVea+m6dVo3oh+mK6ZN1Ec+rAZ5itbZjfZUfFpRRmBUGDvO0NPqMtE+qKfDRsGlAO5XhP8uzPXonPx5zVxSq3i7GCDAaAUowHLAbffoehiaNnywPOGbC9hI4FFMkU7h+seISFDIWvLPwacNuSRHvddJuqhTcXHRxPemZDSwDqdVa3l5vSlgw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O3zdwZEIEY3QYW7SGpQYmAMFrLLvTDP6gpCky+gDaWE=;
- b=Wg7gtw3Z7YilNOZQeAchoVAojKo4BbPxc+re0CQKzRid/3Wgq6SElGOYN4vq1Ql9XJRZw7Oaop7/jAaGmUTmHdag7fgfyTSYNJAgDAYfvxccpXCtTHgH/5Rtf6/G+vxfk7YRqPWP68cY2klX79EPc7ECSNmNDgjSp+bAN32KyZA+xOwRHMIWM7B+3cGS/+joAQRgANpPg0zm2W/N3V9oInGro1f8kAJfyjwTPp37HtUkB0j/mPH0zoCQCGg/Apu/g0ho667TcUOP/z3ip2h/Ac+LOkdASmnolMxFe2GeVp+OgyPDSt3vyhTcQHXpUkQEhZmU8qVcaL89lcXyki5Yzg==
+ bh=cY98/iL0igA9aI5KOwzSk23gsLJVoLsPK3WGTOCE19k=;
+ b=Qrj1A982jvDR3L/vDTJ3KstETCDQGsfIxVk+8gg1TzdALFiATTXaHK/H6F1qUomb25Bo/Wfv+C77kFd4YtPzjl8KTBt4Ud3q8fx3b7nDXKFMp0Pt82cwUUD8Cxv+xRHTAAl5sdA5bx+xkeC0NNNNGgWRNqA3tKdMKAq5MC5uPPkSCHJ/kNxk3XiDTmi3r4Log5MSLDxfNF+qR3jALJNksbDebKWuYaBrwinhpJZrF+u6LLDoHoW38B7cn4zZafhdGvDYd6HewvFE9oaKWH8sUPQu3EwdSgt3UBeUekIrnn7d5Lu0Un1hc0ak7e6hrX2wfSzoGZMBc+Ae/NzHASoCIw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=synaptics.com; dmarc=pass action=none
  header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O3zdwZEIEY3QYW7SGpQYmAMFrLLvTDP6gpCky+gDaWE=;
- b=hbfQDW7cck1d6pmGNKRxjX6twkLJG46OAs7MVO9RfFKOJDMSmbgjwU0BMqHiC6djT5W79FvfYQ5YtuoAweoi5O7Er03SU41Fgf5moHV6JCZsaznUX15NgEY7wdwV33XHOeO3pUPdJtuGNM/bijJwJiOmG5c5C7o0SNTJC1VVxz0=
+ bh=cY98/iL0igA9aI5KOwzSk23gsLJVoLsPK3WGTOCE19k=;
+ b=bjOyaqr7+w1nUwvFKx5C9R0mq54GiwRFgSwXjYDfh1nywbgG1eM4xG4ErPvzJM06JR1M+XIuAqzHotKcbJP3UpVJBV+3ovNIhYCDec0swYRvysMuJ6wxurrLGqAqp3RZ7OcgaYDz1K39qB+Cr65uxs7GwO7/73063UHPuQhr2/Q=
 Authentication-Results: gmail.com; dkim=none (message not signed)
  header.d=none;gmail.com; dmarc=none action=none header.from=synaptics.com;
 Received: from BN7PR03MB4547.namprd03.prod.outlook.com (2603:10b6:408:9::22)
  by BN7PR03MB4563.namprd03.prod.outlook.com (2603:10b6:408:36::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.16; Thu, 20 Aug
- 2020 07:55:20 +0000
+ 2020 07:52:22 +0000
 Received: from BN7PR03MB4547.namprd03.prod.outlook.com
  ([fe80::3cda:7634:5802:df5f]) by BN7PR03MB4547.namprd03.prod.outlook.com
  ([fe80::3cda:7634:5802:df5f%7]) with mapi id 15.20.3305.024; Thu, 20 Aug 2020
- 07:55:20 +0000
-Date:   Thu, 20 Aug 2020 15:37:00 +0800
+ 07:52:22 +0000
+Date:   Thu, 20 Aug 2020 15:37:29 +0800
 From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -49,9 +49,9 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
 Cc:     linux-kernel@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 07/12] regulator: max1586: Fix W=1 build warning when
+Subject: [PATCH 08/12] regulator: max77826: Fix W=1 build warning when
  CONFIG_OF=n
-Message-ID: <20200820153700.21be8ff4@xhacker.debian>
+Message-ID: <20200820153729.4bee7e48@xhacker.debian>
 In-Reply-To: <20200820152926.42c48840@xhacker.debian>
 References: <20200820152926.42c48840@xhacker.debian>
 X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
@@ -61,29 +61,29 @@ X-ClientProxiedBy: TY1PR01CA0194.jpnprd01.prod.outlook.com (2603:1096:403::24)
  To BN7PR03MB4547.namprd03.prod.outlook.com (2603:10b6:408:9::22)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 255.255.255.255 (255.255.255.255) by TY1PR01CA0194.jpnprd01.prod.outlook.com (2603:1096:403::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24 via Frontend Transport; Thu, 20 Aug 2020 07:55:17 +0000
+Received: from 255.255.255.255 (255.255.255.255) by TY1PR01CA0194.jpnprd01.prod.outlook.com (2603:1096:403::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24 via Frontend Transport; Thu, 20 Aug 2020 07:52:19 +0000
 X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 X-Originating-IP: [124.74.246.114]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 53f4a4b4-d5d6-4990-5fbf-08d844de629a
+X-MS-Office365-Filtering-Correlation-Id: 39989689-7188-493e-6047-08d844ddf87e
 X-MS-TrafficTypeDiagnostic: BN7PR03MB4563:
-X-Microsoft-Antispam-PRVS: <BN7PR03MB4563A9CE13267201B4AEB6FAED5A0@BN7PR03MB4563.namprd03.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <BN7PR03MB456327E806361D7C5321AF47ED5A0@BN7PR03MB4563.namprd03.prod.outlook.com>
 X-MS-Oob-TLC-OOBClassifiers: OLM:449;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: g9le9ZTYwdlgs7VKCacD0J7pDyRyw81FV+y3OA1OJGtlD1zwgHJ/HvLH6Kh1E6Nmivkbs59RglAzyQhBMeC+5ofxqkBYaoBycsCXzDrBOojt/XJ3sSZBgGfI9FBdAUN0Kkjm5XBo3geL1kN6rsjOepD40x8MDKnv+Xbop47CC+kchDADE6p6DtM5Oyrg3JsEo7R1i6R1GK9iK2qY8//EwuFVqoUO+zQzwfVa+7lWgIO7QVzxZ//iNia+TV2dAXJjndm3PmcotxB4A06uZgKAuGNrg4Y340IbH0wYa2rYBSWpeTq/QG+4KorVV7/SGD9hKo1HEr574mKOLLCOsIw285FTYdjiFnqO1ptqDs99/K49FvhiNFdNqP7JOL2iRsz7
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR03MB4547.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(396003)(346002)(136003)(376002)(1076003)(4744005)(4326008)(2906002)(5660300002)(6666004)(478600001)(956004)(9686003)(83380400001)(26005)(316002)(86362001)(52116002)(8676002)(66946007)(16576012)(66556008)(6486002)(110011004)(8936002)(66476007)(110136005)(186003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: UmCF4udFDTyQmvRodyyfDvvVOHlhVOIZhgPfZM2bg92dryaXfHc3e0s36YdP3FbCDhhhiE2D72kwojG1ZzCB/CPO6efXYJDEyCOafLEMW9THFe/Sct3/sxOHzdBmkQcMJD07Blyh8HYXodofqN3HQ4vM54zJBx0pTFti2kDq4EdGBIcsQJfD1ONIoFO9KNjXe/j0AfUWCD7WBcXfOn5eK7KDVoMDx2gG4SjDnIp0TScOET+ZPByu0KO7bHBxn79JhRFZF/knnJlOiKLqoaqsKAfAWOqMI1Y00rU8YaeZKhxQM2kFLPT+Idt+Dd23LiSeHX7+xatgVmfJROxsTaNMuyqWruf9VAwfezHUJO3wchtx/RdGfScdjx7ONfKme8RFkCb6iwMbp82lqEmERx+pRD1jmU47P8ySQnveB2PxJ9P0xTFxDeYSagcK5UUk0QBVLfn9m8/elGgXqJvOhH1ZMcpaE8xEMydPedrfcPzsEglUqfyy+G5/n6nYt8xq5dH58SMlFM7XpYNRZmyYdXalghTR69ZwakxVLim6p/RPLiGqibFZfpTe+HdKRoz2JaYrF3jga5KvaE21rvCtNOmraaj8Ok2/9QN+rnI0VTWWV8zgmf14P0XLKYW4CMyuFhbLwC7PqXY0uHExkkZb4NT1dA==
+X-Microsoft-Antispam-Message-Info: l5glhRY6cYMwHxVlCZO/Pw23Mn66kjd4aKjkuZyrS8fiyKq3ixCAVhOdqDg69PRsb4mU5SaKuFcPmJEktQJLeHOcZ3zrS1imw8jswEPA63qAQwhDhS+XQEMpFFFNL20qvicNaxQyo5ACvi0yDxsQf7HVuyH5xNHe61XJRRC699nPKaDsHpsA1Nb0T8P1UrY2Th5uYCji4gsAE7HECWmcCzM7iF9T3Gf3logQy3OO3xy1pb3NIW24hmF6ZbYVYScxkEVdZFrXkEL9swpi3Li43ucPGJQ89q531uuZoY6bU+kGcaXIzHNO62kWAC/ma4WAZbfGVfsSuYFQlXn6PODpJRNeKpIbJ+Fy/CCTGzwNQXv6lVsnMZDwFzajIVzmCl9X
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR03MB4547.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(396003)(346002)(136003)(376002)(1076003)(4326008)(2906002)(5660300002)(6666004)(478600001)(956004)(9686003)(83380400001)(26005)(316002)(86362001)(52116002)(8676002)(66946007)(16576012)(66556008)(6486002)(110011004)(8936002)(66476007)(110136005)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 0C1RznXcXqwL+LTr4MfdOC7wZ9fuIX9wILv25biXbSxxpoYTnSvtqsj2IT5quk6QMnS7Kj0ED6W7eVwmCgmx+tyrXBH4XU58EAODmaNGfg8HiDBtwxs3pp+8g56ApLTdXqqdESm+b4CH4M+kH5nc776h3D++cIG9WaejGIfT9oWYtwC/BStNon87u2cBb+B7fu0ElREdepH16Bei5N6qxHiFvtXcNjKXriGObmLSUUp/vc1EBVcXwO3VQOOC+QAxdlA2BfjcMePLQX/+VYSQFYWX4zTYb/9b4tbzkzpGBzTac+VfiCOlQRTxgUHPG6cLUh5jRw32SBxfQe8bRraoMUhLSJlmeL4tL58qzhU4RnpQu4a7VnUF78nslf9UQhlbF3HtYvegYlDxl+jgiaWX/lXWc11NExC2sPVy1y9QoW/1i8we3/hMwRcfBlAKdAVOX+rC3eYJcf22oB6Hwau59iX1AbKKofVkf47dqDm2t9DWakSHmLEKujiY1b+u+tyeROqzi3nBXbxAoPXgEc6YkjU54nPw1BusMgQQlfsvomXniOrcm0Qen2mwMxyjxKzijRk4fJw6eTWyklxytCXJFN6pTayR1/EEWBMjve9jmpv/zVG/BxfEWGAkkw6nS9PkXv76xCw4OFlFo53RoYgbQA==
 X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 53f4a4b4-d5d6-4990-5fbf-08d844de629a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 39989689-7188-493e-6047-08d844ddf87e
 X-MS-Exchange-CrossTenant-AuthSource: BN7PR03MB4547.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2020 07:55:20.3336
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2020 07:52:22.3186
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TvrZsZjJnH3ozfg+uNQrEf/0de8fEhL4r0dglJg8DOBpuyzip1EKDDH6iOweL2sE0oCOq4sL+2ouS1pj9M9vWQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: Uk8iTm89XHsAtHoM1pEL/YGsE/5Rk0q9H0VTNycwR01TySthq9bcAlpKN7s9l5weTB2lH7WI7SOP/AKcsR48zg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR03MB4563
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -92,35 +92,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fix below warning when CONFIG_OF=3Dn:
 
-drivers/regulator/max1586.c:204:34: warning: =E2=80=98max1586_of_match=E2=
-=80=99 defined but not used [-Wunused-const-variable=3D]
-  204 | static const struct of_device_id max1586_of_match[] =3D {
-      |                                  ^~~~~~~~~~~~~~~~
+drivers/regulator/max77826-regulator.c:277:34: warning: =E2=80=98max77826_o=
+f_match=E2=80=99 defined but not used [-Wunused-const-variable=3D]
+  277 | static const struct of_device_id max77826_of_match[] =3D {
+      |                                  ^~~~~~~~~~~~~~~~~
 
 Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 ---
- drivers/regulator/max1586.c | 2 ++
+ drivers/regulator/max77826-regulator.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/regulator/max1586.c b/drivers/regulator/max1586.c
-index f8941025780b..2ddcdd2908b1 100644
---- a/drivers/regulator/max1586.c
-+++ b/drivers/regulator/max1586.c
-@@ -201,11 +201,13 @@ static int of_get_max1586_platform_data(struct device=
- *dev,
- 	return 0;
+diff --git a/drivers/regulator/max77826-regulator.c b/drivers/regulator/max=
+77826-regulator.c
+index 502ab6afc814..7fbdcd7118a8 100644
+--- a/drivers/regulator/max77826-regulator.c
++++ b/drivers/regulator/max77826-regulator.c
+@@ -274,11 +274,13 @@ static int max77826_i2c_probe(struct i2c_client *clie=
+nt)
+ 	return max77826_read_device_id(regmap, dev);
  }
 =20
 +#ifdef CONFIG_OF
- static const struct of_device_id max1586_of_match[] =3D {
- 	{ .compatible =3D "maxim,max1586", },
- 	{},
+ static const struct of_device_id max77826_of_match[] =3D {
+ 	{ .compatible =3D "maxim,max77826" },
+ 	{ /* sentinel */ }
  };
- MODULE_DEVICE_TABLE(of, max1586_of_match);
+ MODULE_DEVICE_TABLE(of, max77826_of_match);
 +#endif
 =20
- static int max1586_pmic_probe(struct i2c_client *client,
- 					const struct i2c_device_id *i2c_id)
+ static const struct i2c_device_id max77826_id[] =3D {
+ 	{ "max77826-regulator" },
 --=20
 2.28.0
 
