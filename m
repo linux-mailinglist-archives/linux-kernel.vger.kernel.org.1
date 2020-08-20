@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8340024B7E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B2D324B7DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729660AbgHTLGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:06:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53072 "EHLO mail.kernel.org"
+        id S1729382AbgHTLFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:05:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731033AbgHTKMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:12:14 -0400
+        id S1731049AbgHTKMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:12:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 170DF20855;
-        Thu, 20 Aug 2020 10:12:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 924702067C;
+        Thu, 20 Aug 2020 10:12:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918333;
-        bh=t61jwuK9c/0Mg7iGYiC2yw7aT9JYBCX/0Vi2GCe+e9E=;
+        s=default; t=1597918342;
+        bh=OhCnyEGNkDaKfgca2OXRG6T83JJkSQNLRIyv8z42H40=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IjO6sxVi7oY3rfVaGGPI7S6c7Tke5YmgaKDrm6/5RVp1qyicqK2xiVrp9ECBGggpb
-         Of0aKaIIINPk0M7rxSo/zWBrng/bFQGwkbuhvg8kfsoJ/04zC/a4kaGkMA+QctiQeI
-         Vs9E5xxVJcZa4UdtlEhtwofbsYe8WuCwv3FCmiCk=
+        b=qCVAgVO2whUUT6YVkDxFWEBfkBNTpfR+DXmLutSZZX/4Odpn+H+ISWXaNAVOtjccC
+         OW5od4Z9Ot3O712IPooom3I/WvCisOsB8rJa/ZK93sfPbcrPl06KmDW9XlFb7eUR0g
+         OwG3fbzcGcQO0GsVwgwtGbmz4OjDmAiWXzgJM9kY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Florinel Iordache <florinel.iordache@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Drew Fustini <drew@beagleboard.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 133/228] fsl/fman: check dereferencing null pointer
-Date:   Thu, 20 Aug 2020 11:21:48 +0200
-Message-Id: <20200820091614.232851282@linuxfoundation.org>
+Subject: [PATCH 4.14 136/228] pinctrl-single: fix pcs_parse_pinconf() return value
+Date:   Thu, 20 Aug 2020 11:21:51 +0200
+Message-Id: <20200820091614.384399253@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
 References: <20200820091607.532711107@linuxfoundation.org>
@@ -45,70 +45,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florinel Iordache <florinel.iordache@nxp.com>
+From: Drew Fustini <drew@beagleboard.org>
 
-[ Upstream commit cc5d229a122106733a85c279d89d7703f21e4d4f ]
+[ Upstream commit f46fe79ff1b65692a65266a5bec6dbe2bf7fc70f ]
 
-Add a safe check to avoid dereferencing null pointer
+This patch causes pcs_parse_pinconf() to return -ENOTSUPP when no
+pinctrl_map is added.  The current behavior is to return 0 when
+!PCS_HAS_PINCONF or !nconfs.  Thus pcs_parse_one_pinctrl_entry()
+incorrectly assumes that a map was added and sets num_maps = 2.
 
-Fixes: 57ba4c9b56d8 ("fsl/fman: Add FMan MAC support")
-Signed-off-by: Florinel Iordache <florinel.iordache@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Analysis:
+=========
+The function pcs_parse_one_pinctrl_entry() calls pcs_parse_pinconf()
+if PCS_HAS_PINCONF is enabled.  The function pcs_parse_pinconf()
+returns 0 to indicate there was no error and num_maps is then set to 2:
+
+ 980 static int pcs_parse_one_pinctrl_entry(struct pcs_device *pcs,
+ 981                                                 struct device_node *np,
+ 982                                                 struct pinctrl_map **map,
+ 983                                                 unsigned *num_maps,
+ 984                                                 const char **pgnames)
+ 985 {
+<snip>
+1053         (*map)->type = PIN_MAP_TYPE_MUX_GROUP;
+1054         (*map)->data.mux.group = np->name;
+1055         (*map)->data.mux.function = np->name;
+1056
+1057         if (PCS_HAS_PINCONF && function) {
+1058                 res = pcs_parse_pinconf(pcs, np, function, map);
+1059                 if (res)
+1060                         goto free_pingroups;
+1061                 *num_maps = 2;
+1062         } else {
+1063                 *num_maps = 1;
+1064         }
+
+However, pcs_parse_pinconf() will also return 0 if !PCS_HAS_PINCONF or
+!nconfs.  I believe these conditions should indicate that no map was
+added by returning -ENOTSUPP. Otherwise pcs_parse_one_pinctrl_entry()
+will set num_maps = 2 even though no maps were successfully added, as
+it does not reach "m++" on line 940:
+
+ 895 static int pcs_parse_pinconf(struct pcs_device *pcs, struct device_node *np,
+ 896                              struct pcs_function *func,
+ 897                              struct pinctrl_map **map)
+ 898
+ 899 {
+ 900         struct pinctrl_map *m = *map;
+<snip>
+ 917         /* If pinconf isn't supported, don't parse properties in below. */
+ 918         if (!PCS_HAS_PINCONF)
+ 919                 return 0;
+ 920
+ 921         /* cacluate how much properties are supported in current node */
+ 922         for (i = 0; i < ARRAY_SIZE(prop2); i++) {
+ 923                 if (of_find_property(np, prop2[i].name, NULL))
+ 924                         nconfs++;
+ 925         }
+ 926         for (i = 0; i < ARRAY_SIZE(prop4); i++) {
+ 927                 if (of_find_property(np, prop4[i].name, NULL))
+ 928                         nconfs++;
+ 929         }
+ 930         if (!nconfs)
+ 919                 return 0;
+ 932
+ 933         func->conf = devm_kcalloc(pcs->dev,
+ 934                                   nconfs, sizeof(struct pcs_conf_vals),
+ 935                                   GFP_KERNEL);
+ 936         if (!func->conf)
+ 937                 return -ENOMEM;
+ 938         func->nconfs = nconfs;
+ 939         conf = &(func->conf[0]);
+ 940         m++;
+
+This situtation will cause a boot failure [0] on the BeagleBone Black
+(AM3358) when am33xx_pinmux node in arch/arm/boot/dts/am33xx-l4.dtsi
+has compatible = "pinconf-single" instead of "pinctrl-single".
+
+The patch fixes this issue by returning -ENOSUPP when !PCS_HAS_PINCONF
+or !nconfs, so that pcs_parse_one_pinctrl_entry() will know that no
+map was added.
+
+Logic is also added to pcs_parse_one_pinctrl_entry() to distinguish
+between -ENOSUPP and other errors.  In the case of -ENOSUPP, num_maps
+is set to 1 as it is valid for pinconf to be enabled and a given pin
+group to not any pinconf properties.
+
+[0] https://lore.kernel.org/linux-omap/20200529175544.GA3766151@x1/
+
+Fixes: 9dddb4df90d1 ("pinctrl: single: support generic pinconf")
+Signed-off-by: Drew Fustini <drew@beagleboard.org>
+Acked-by: Tony Lindgren <tony@atomide.com>
+Link: https://lore.kernel.org/r/20200608125143.GA2789203@x1
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/fman/fman_dtsec.c | 4 ++--
- drivers/net/ethernet/freescale/fman/fman_memac.c | 2 +-
- drivers/net/ethernet/freescale/fman/fman_tgec.c  | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/pinctrl/pinctrl-single.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/freescale/fman/fman_dtsec.c b/drivers/net/ethernet/freescale/fman/fman_dtsec.c
-index 7af31ddd093f8..61238b3af2041 100644
---- a/drivers/net/ethernet/freescale/fman/fman_dtsec.c
-+++ b/drivers/net/ethernet/freescale/fman/fman_dtsec.c
-@@ -1159,7 +1159,7 @@ int dtsec_del_hash_mac_address(struct fman_mac *dtsec, enet_addr_t *eth_addr)
- 		list_for_each(pos,
- 			      &dtsec->multicast_addr_hash->lsts[bucket]) {
- 			hash_entry = ETH_HASH_ENTRY_OBJ(pos);
--			if (hash_entry->addr == addr) {
-+			if (hash_entry && hash_entry->addr == addr) {
- 				list_del_init(&hash_entry->node);
- 				kfree(hash_entry);
- 				break;
-@@ -1172,7 +1172,7 @@ int dtsec_del_hash_mac_address(struct fman_mac *dtsec, enet_addr_t *eth_addr)
- 		list_for_each(pos,
- 			      &dtsec->unicast_addr_hash->lsts[bucket]) {
- 			hash_entry = ETH_HASH_ENTRY_OBJ(pos);
--			if (hash_entry->addr == addr) {
-+			if (hash_entry && hash_entry->addr == addr) {
- 				list_del_init(&hash_entry->node);
- 				kfree(hash_entry);
- 				break;
-diff --git a/drivers/net/ethernet/freescale/fman/fman_memac.c b/drivers/net/ethernet/freescale/fman/fman_memac.c
-index 1fbeb991bcdf1..460f9e58e9877 100644
---- a/drivers/net/ethernet/freescale/fman/fman_memac.c
-+++ b/drivers/net/ethernet/freescale/fman/fman_memac.c
-@@ -956,7 +956,7 @@ int memac_del_hash_mac_address(struct fman_mac *memac, enet_addr_t *eth_addr)
+diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
+index b8b3d932cd73a..f751b5c3bf7e8 100644
+--- a/drivers/pinctrl/pinctrl-single.c
++++ b/drivers/pinctrl/pinctrl-single.c
+@@ -888,7 +888,7 @@ static int pcs_parse_pinconf(struct pcs_device *pcs, struct device_node *np,
  
- 	list_for_each(pos, &memac->multicast_addr_hash->lsts[hash]) {
- 		hash_entry = ETH_HASH_ENTRY_OBJ(pos);
--		if (hash_entry->addr == addr) {
-+		if (hash_entry && hash_entry->addr == addr) {
- 			list_del_init(&hash_entry->node);
- 			kfree(hash_entry);
- 			break;
-diff --git a/drivers/net/ethernet/freescale/fman/fman_tgec.c b/drivers/net/ethernet/freescale/fman/fman_tgec.c
-index e575259d20f40..c8ad9b8a75f8e 100644
---- a/drivers/net/ethernet/freescale/fman/fman_tgec.c
-+++ b/drivers/net/ethernet/freescale/fman/fman_tgec.c
-@@ -585,7 +585,7 @@ int tgec_del_hash_mac_address(struct fman_mac *tgec, enet_addr_t *eth_addr)
+ 	/* If pinconf isn't supported, don't parse properties in below. */
+ 	if (!PCS_HAS_PINCONF)
+-		return 0;
++		return -ENOTSUPP;
  
- 	list_for_each(pos, &tgec->multicast_addr_hash->lsts[hash]) {
- 		hash_entry = ETH_HASH_ENTRY_OBJ(pos);
--		if (hash_entry->addr == addr) {
-+		if (hash_entry && hash_entry->addr == addr) {
- 			list_del_init(&hash_entry->node);
- 			kfree(hash_entry);
- 			break;
+ 	/* cacluate how much properties are supported in current node */
+ 	for (i = 0; i < ARRAY_SIZE(prop2); i++) {
+@@ -900,7 +900,7 @@ static int pcs_parse_pinconf(struct pcs_device *pcs, struct device_node *np,
+ 			nconfs++;
+ 	}
+ 	if (!nconfs)
+-		return 0;
++		return -ENOTSUPP;
+ 
+ 	func->conf = devm_kzalloc(pcs->dev,
+ 				  sizeof(struct pcs_conf_vals) * nconfs,
+@@ -1024,9 +1024,12 @@ static int pcs_parse_one_pinctrl_entry(struct pcs_device *pcs,
+ 
+ 	if (PCS_HAS_PINCONF) {
+ 		res = pcs_parse_pinconf(pcs, np, function, map);
+-		if (res)
++		if (res == 0)
++			*num_maps = 2;
++		else if (res == -ENOTSUPP)
++			*num_maps = 1;
++		else
+ 			goto free_pingroups;
+-		*num_maps = 2;
+ 	} else {
+ 		*num_maps = 1;
+ 	}
 -- 
 2.25.1
 
