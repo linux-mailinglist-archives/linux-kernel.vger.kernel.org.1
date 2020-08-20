@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE7624B422
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E8F24B28A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730411AbgHTJ6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:58:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42502 "EHLO mail.kernel.org"
+        id S1728197AbgHTJc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:32:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729948AbgHTJ6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:58:23 -0400
+        id S1728246AbgHTJbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:31:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B17D21775;
-        Thu, 20 Aug 2020 09:58:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B664822B4E;
+        Thu, 20 Aug 2020 09:31:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917503;
-        bh=JviOPlayrNp5TUqYGsqdv/rzayIkoShqBQoDfszUVDA=;
+        s=default; t=1597915904;
+        bh=E9us+8P+2swPNnKOpTkvu4a59RwLHeKEXwH8xJTtIMc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RN/URKmOx5Q9u30oCE+POPRwRID3UT2x4tBo2U9Xfqe7BZjvkmrW3SBgS0LfH2aPx
-         D4HsuTnxhEmwrDWH+4qjHBply8NUBhA/+yDxLCbUCLBH5GpLxGO7RIhyrAfULl9N+c
-         zfeg4iUEGF41ui+j3//ep7ZlQg7IxhAMZMQSujIs=
+        b=bcuOoSX+A/ihrwHO8L9jpMKZbcOFYlggaer586//rAi+h2iutHFR6X6ioOIDf09Ot
+         8i4hEg+aWLLKB/533Jov3WKsz+2IRq9U/ayEy3uxSNrZ1HLV4AJOoZSwgEKpWnjax7
+         HK67Ib3N8ql3Ql1X3jho6utmeOjVPnC1IH1EQdCs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+1a54a94bd32716796edd@syzkaller.appspotmail.com,
-        syzbot+9d2abfef257f3e2d4713@syzkaller.appspotmail.com,
-        Hillf Danton <hdanton@sina.com>, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.9 053/212] ALSA: seq: oss: Serialize ioctls
+        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
+        Richard Weinberger <richard@nod.at>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 175/232] ubi: fastmap: Free fastmap next anchor peb during detach
 Date:   Thu, 20 Aug 2020 11:20:26 +0200
-Message-Id: <20200820091605.051906512@linuxfoundation.org>
+Message-Id: <20200820091621.294484832@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
-References: <20200820091602.251285210@linuxfoundation.org>
+In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
+References: <20200820091612.692383444@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,51 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-commit 80982c7e834e5d4e325b6ce33757012ecafdf0bb upstream.
+[ Upstream commit c3fc1a3919e35a9d8157ed3ae6fd0a478293ba2c ]
 
-Some ioctls via OSS sequencer API may race and lead to UAF when the
-port create and delete are performed concurrently, as spotted by a
-couple of syzkaller cases.  This patch is an attempt to address it by
-serializing the ioctls with the existing register_mutex.
+ubi_wl_entry related with the fm_next_anchor PEB is not freed during
+detach, which causes a memory leak.
+Don't forget to release fm_next_anchor PEB while detaching ubi from
+mtd when CONFIG_MTD_UBI_FASTMAP is enabled.
 
-Basically OSS sequencer API is an obsoleted interface and was designed
-without much consideration of the concurrency.  There are very few
-applications with it, and the concurrent performance isn't asked,
-hence this "big hammer" approach should be good enough.
-
-Reported-by: syzbot+1a54a94bd32716796edd@syzkaller.appspotmail.com
-Reported-by: syzbot+9d2abfef257f3e2d4713@syzkaller.appspotmail.com
-Suggested-by: Hillf Danton <hdanton@sina.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200804185815.2453-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Fixes: 4b68bf9a69d22d ("ubi: Select fastmap anchor PEBs considering...")
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/seq/oss/seq_oss.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/mtd/ubi/fastmap-wl.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/sound/core/seq/oss/seq_oss.c
-+++ b/sound/core/seq/oss/seq_oss.c
-@@ -181,10 +181,16 @@ static long
- odev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- {
- 	struct seq_oss_devinfo *dp;
-+	long rc;
-+
- 	dp = file->private_data;
- 	if (snd_BUG_ON(!dp))
- 		return -ENXIO;
--	return snd_seq_oss_ioctl(dp, cmd, arg);
-+
-+	mutex_lock(&register_mutex);
-+	rc = snd_seq_oss_ioctl(dp, cmd, arg);
-+	mutex_unlock(&register_mutex);
-+	return rc;
- }
+diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
+index 83afc00e365a5..28f55f9cf7153 100644
+--- a/drivers/mtd/ubi/fastmap-wl.c
++++ b/drivers/mtd/ubi/fastmap-wl.c
+@@ -381,6 +381,11 @@ static void ubi_fastmap_close(struct ubi_device *ubi)
+ 		ubi->fm_anchor = NULL;
+ 	}
  
- #ifdef CONFIG_COMPAT
++	if (ubi->fm_next_anchor) {
++		return_unused_peb(ubi, ubi->fm_next_anchor);
++		ubi->fm_next_anchor = NULL;
++	}
++
+ 	if (ubi->fm) {
+ 		for (i = 0; i < ubi->fm->used_blocks; i++)
+ 			kfree(ubi->fm->e[i]);
+-- 
+2.25.1
+
 
 
