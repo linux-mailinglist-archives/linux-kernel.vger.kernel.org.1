@@ -2,45 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 807B424BB40
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:26:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E1324BB7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728250AbgHTMZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:25:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34938 "EHLO mail.kernel.org"
+        id S1729345AbgHTJv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:51:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729956AbgHTJxN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:53:13 -0400
+        id S1729786AbgHTJvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:51:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6AF012075E;
-        Thu, 20 Aug 2020 09:53:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 74E492067C;
+        Thu, 20 Aug 2020 09:51:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917192;
-        bh=Rmv470bmgUS7+vIi8DvLOsrP7vf16lYWdL3eGMa12cg=;
+        s=default; t=1597917063;
+        bh=vp8BnTJ2uFZ7zoLlqc3T/mqGtaHvxNXAEQUbZEGRpiU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P/Sz8vnVWV2H21V61Al9weCRbiH6ZhryBh40U0icNrv0e+Q/bPFcYB6e7Ocv1oCmR
-         HjJjot+TKaAsBRmv/9UBU/AsQJJuS3rl94RQJ8PexhjeV0x8l1eotcwX1pTTtny0v9
-         zpHAIKKmXEx7UZtqikpMHnY78gqImsIQwgjXePdg=
+        b=GOnljQUBKw/Fyz+bWcc2QQ19tfyGM7gfjZWoN4JH8pNFcHyPMq1AWfbHI/+uP4rGW
+         HYo/2HQr5erResDxvJlbzbFvxLvGvfWMEKVPJMR+/AQ3sU+akb/vg2gj45W5saqkPj
+         WCki8J3aqAXVi3SvY7l/v1NsXKtHCDK6bxxmqjQA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Junxiao Bi <junxiao.bi@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Gang He <ghe@suse.com>, Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Changwei Ge <gechangwei@live.cn>,
-        Jun Piao <piaojun@huawei.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 35/92] ocfs2: change slot number type s16 to u16
-Date:   Thu, 20 Aug 2020 11:21:20 +0200
-Message-Id: <20200820091539.424033180@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 114/152] i2c: rcar: avoid race when unregistering slave
+Date:   Thu, 20 Aug 2020 11:21:21 +0200
+Message-Id: <20200820091559.604020719@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
-References: <20200820091537.490965042@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,87 +46,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Junxiao Bi <junxiao.bi@oracle.com>
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-commit 38d51b2dd171ad973afc1f5faab825ed05a2d5e9 upstream.
+[ Upstream commit c7c9e914f9a0478fba4dc6f227cfd69cf84a4063 ]
 
-Dan Carpenter reported the following static checker warning.
+Due to the lockless design of the driver, it is theoretically possible
+to access a NULL pointer, if a slave interrupt was running while we were
+unregistering the slave. To make this rock solid, disable the interrupt
+for a short time while we are clearing the interrupt_enable register.
+This patch is purely based on code inspection. The OOPS is super-hard to
+trigger because clearing SAR (the address) makes interrupts even more
+unlikely to happen as well. While here, reinit SCR to SDBS because this
+bit should always be set according to documentation. There is no effect,
+though, because the interface is disabled.
 
-	fs/ocfs2/super.c:1269 ocfs2_parse_options() warn: '(-1)' 65535 can't fit into 32767 'mopt->slot'
-	fs/ocfs2/suballoc.c:859 ocfs2_init_inode_steal_slot() warn: '(-1)' 65535 can't fit into 32767 'osb->s_inode_steal_slot'
-	fs/ocfs2/suballoc.c:867 ocfs2_init_meta_steal_slot() warn: '(-1)' 65535 can't fit into 32767 'osb->s_meta_steal_slot'
-
-That's because OCFS2_INVALID_SLOT is (u16)-1. Slot number in ocfs2 can be
-never negative, so change s16 to u16.
-
-Fixes: 9277f8334ffc ("ocfs2: fix value of OCFS2_INVALID_SLOT")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Junxiao Bi <junxiao.bi@oracle.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Reviewed-by: Gang He <ghe@suse.com>
-Cc: Mark Fasheh <mark@fasheh.com>
-Cc: Joel Becker <jlbec@evilplan.org>
-Cc: Junxiao Bi <junxiao.bi@oracle.com>
-Cc: Changwei Ge <gechangwei@live.cn>
-Cc: Jun Piao <piaojun@huawei.com>
-Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r/20200627001259.19757-1-junxiao.bi@oracle.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 7b814d852af6 ("i2c: rcar: avoid race when unregistering slave client")
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ocfs2/ocfs2.h    |    4 ++--
- fs/ocfs2/suballoc.c |    4 ++--
- fs/ocfs2/super.c    |    4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ drivers/i2c/busses/i2c-rcar.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
---- a/fs/ocfs2/ocfs2.h
-+++ b/fs/ocfs2/ocfs2.h
-@@ -338,8 +338,8 @@ struct ocfs2_super
- 	spinlock_t osb_lock;
- 	u32 s_next_generation;
- 	unsigned long osb_flags;
--	s16 s_inode_steal_slot;
--	s16 s_meta_steal_slot;
-+	u16 s_inode_steal_slot;
-+	u16 s_meta_steal_slot;
- 	atomic_t s_num_inodes_stolen;
- 	atomic_t s_num_meta_stolen;
+diff --git a/drivers/i2c/busses/i2c-rcar.c b/drivers/i2c/busses/i2c-rcar.c
+index 3ea6013a3d68a..0b90aa0318df3 100644
+--- a/drivers/i2c/busses/i2c-rcar.c
++++ b/drivers/i2c/busses/i2c-rcar.c
+@@ -863,12 +863,14 @@ static int rcar_unreg_slave(struct i2c_client *slave)
  
---- a/fs/ocfs2/suballoc.c
-+++ b/fs/ocfs2/suballoc.c
-@@ -893,9 +893,9 @@ static void __ocfs2_set_steal_slot(struc
- {
- 	spin_lock(&osb->osb_lock);
- 	if (type == INODE_ALLOC_SYSTEM_INODE)
--		osb->s_inode_steal_slot = slot;
-+		osb->s_inode_steal_slot = (u16)slot;
- 	else if (type == EXTENT_ALLOC_SYSTEM_INODE)
--		osb->s_meta_steal_slot = slot;
-+		osb->s_meta_steal_slot = (u16)slot;
- 	spin_unlock(&osb->osb_lock);
- }
+ 	WARN_ON(!priv->slave);
  
---- a/fs/ocfs2/super.c
-+++ b/fs/ocfs2/super.c
-@@ -92,7 +92,7 @@ struct mount_options
- 	unsigned long	commit_interval;
- 	unsigned long	mount_opt;
- 	unsigned int	atime_quantum;
--	signed short	slot;
-+	unsigned short	slot;
- 	int		localalloc_opt;
- 	unsigned int	resv_level;
- 	int		dir_resv_level;
-@@ -1384,7 +1384,7 @@ static int ocfs2_parse_options(struct su
- 				goto bail;
- 			}
- 			if (option)
--				mopt->slot = (s16)option;
-+				mopt->slot = (u16)option;
- 			break;
- 		case Opt_commit:
- 			if (match_int(&args[0], &option)) {
+-	/* disable irqs and ensure none is running before clearing ptr */
++	/* ensure no irq is running before clearing ptr */
++	disable_irq(priv->irq);
+ 	rcar_i2c_write(priv, ICSIER, 0);
+-	rcar_i2c_write(priv, ICSCR, 0);
++	rcar_i2c_write(priv, ICSSR, 0);
++	enable_irq(priv->irq);
++	rcar_i2c_write(priv, ICSCR, SDBS);
+ 	rcar_i2c_write(priv, ICSAR, 0); /* Gen2: must be 0 if not using slave */
+ 
+-	synchronize_irq(priv->irq);
+ 	priv->slave = NULL;
+ 
+ 	pm_runtime_put(rcar_i2c_priv_to_dev(priv));
+-- 
+2.25.1
+
 
 
