@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA9224B42A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6111624B36C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729888AbgHTJ7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:59:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44266 "EHLO mail.kernel.org"
+        id S1729031AbgHTJrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:47:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730346AbgHTJ67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:58:59 -0400
+        id S1729344AbgHTJql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:46:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 329BB20855;
-        Thu, 20 Aug 2020 09:58:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 409132173E;
+        Thu, 20 Aug 2020 09:46:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917538;
-        bh=eMP58QO9Rlabxhp3ZpKPfysVhjN0uuIbRwVWnL00Zh4=;
+        s=default; t=1597916800;
+        bh=ERX7nxT/qU+q9mUGONITiBEF8Kuwqk6p+kmLb994YJc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o74BG9OWG+5w2UAc/dk1/cerNIV1VOjgTVReOjlpbN9/vDGJiaGUXwoRz+dbHkYZk
-         M1K1SEJWDAehIxsQdeN4vSpe6iBnyCTE8WPqfJHr+Ji374CQ4o05wqAhIcwqYPSIjg
-         K3Lmaj4igOFw8/Z+wXzCBIr0RsDO/crjKkL/qfRw=
+        b=Ik0C3WUat7X1RcKMQ8sub/UuLeVIEmHqlSuVKR8fzdjY9xTtTz+kKvJd75Q8OllQT
+         wUtT+wRlpZp288ygXo68Ml8bX9xCDpvJ+sAgoq02r8L2SAJ/U+o5thLBL4ngtXWgki
+         X90Ed8fzQB8g49wQV+HLsk5c0XzAAMyX9FQFBKZs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Laurence Oberman <loberman@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 037/212] qed: Disable "MFW indication via attention" SPAM every 5 minutes
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH 5.4 043/152] net/compat: Add missing sock updates for SCM_RIGHTS
 Date:   Thu, 20 Aug 2020 11:20:10 +0200
-Message-Id: <20200820091604.243009894@linuxfoundation.org>
+Message-Id: <20200820091555.874277038@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
-References: <20200820091602.251285210@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,38 +46,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurence Oberman <loberman@redhat.com>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 1d61e21852d3161f234b9656797669fe185c251b ]
+commit d9539752d23283db4692384a634034f451261e29 upstream.
 
-This is likely firmware causing this but its starting to annoy customers.
-Change the message level to verbose to prevent the spam.
-Note that this seems to only show up with ISCSI enabled on the HBA via the
-qedi driver.
+Add missed sock updates to compat path via a new helper, which will be
+used more in coming patches. (The net/core/scm.c code is left as-is here
+to assist with -stable backports for the compat path.)
 
-Signed-off-by: Laurence Oberman <loberman@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Sargun Dhillon <sargun@sargun.me>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: stable@vger.kernel.org
+Fixes: 48a87cc26c13 ("net: netprio: fd passed in SCM_RIGHTS datagram not set correctly")
+Fixes: d84295067fc7 ("net: net_cls: fd passed in SCM_RIGHTS datagram not set correctly")
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/ethernet/qlogic/qed/qed_int.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/net/sock.h |    4 ++++
+ net/compat.c       |    1 +
+ net/core/sock.c    |   21 +++++++++++++++++++++
+ 3 files changed, 26 insertions(+)
 
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_int.c b/drivers/net/ethernet/qlogic/qed/qed_int.c
-index fd19372db2f86..6e1d38041d0ac 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_int.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_int.c
-@@ -2158,7 +2158,8 @@ static int qed_int_attentions(struct qed_hwfn *p_hwfn)
- 			index, attn_bits, attn_acks, asserted_bits,
- 			deasserted_bits, p_sb_attn_sw->known_attn);
- 	} else if (asserted_bits == 0x100) {
--		DP_INFO(p_hwfn, "MFW indication via attention\n");
-+		DP_VERBOSE(p_hwfn, NETIF_MSG_INTR,
-+			   "MFW indication via attention\n");
- 	} else {
- 		DP_VERBOSE(p_hwfn, NETIF_MSG_INTR,
- 			   "MFW indication [deassertion]\n");
--- 
-2.25.1
-
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -849,6 +849,8 @@ static inline int sk_memalloc_socks(void
+ {
+ 	return static_branch_unlikely(&memalloc_socks_key);
+ }
++
++void __receive_sock(struct file *file);
+ #else
+ 
+ static inline int sk_memalloc_socks(void)
+@@ -856,6 +858,8 @@ static inline int sk_memalloc_socks(void
+ 	return 0;
+ }
+ 
++static inline void __receive_sock(struct file *file)
++{ }
+ #endif
+ 
+ static inline gfp_t sk_gfp_mask(const struct sock *sk, gfp_t gfp_mask)
+--- a/net/compat.c
++++ b/net/compat.c
+@@ -291,6 +291,7 @@ void scm_detach_fds_compat(struct msghdr
+ 			break;
+ 		}
+ 		/* Bump the usage count and install the file. */
++		__receive_sock(fp[i]);
+ 		fd_install(new_fd, get_file(fp[i]));
+ 	}
+ 
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -2736,6 +2736,27 @@ int sock_no_mmap(struct file *file, stru
+ }
+ EXPORT_SYMBOL(sock_no_mmap);
+ 
++/*
++ * When a file is received (via SCM_RIGHTS, etc), we must bump the
++ * various sock-based usage counts.
++ */
++void __receive_sock(struct file *file)
++{
++	struct socket *sock;
++	int error;
++
++	/*
++	 * The resulting value of "error" is ignored here since we only
++	 * need to take action when the file is a socket and testing
++	 * "sock" for NULL is sufficient.
++	 */
++	sock = sock_from_file(file, &error);
++	if (sock) {
++		sock_update_netprioidx(&sock->sk->sk_cgrp_data);
++		sock_update_classid(&sock->sk->sk_cgrp_data);
++	}
++}
++
+ ssize_t sock_no_sendpage(struct socket *sock, struct page *page, int offset, size_t size, int flags)
+ {
+ 	ssize_t res;
 
 
