@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B333424B789
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 730DE24B631
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731146AbgHTKNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:13:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56520 "EHLO mail.kernel.org"
+        id S1730500AbgHTKTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:19:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730876AbgHTKNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:13:09 -0400
+        id S1731291AbgHTKS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:18:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85F6D2067C;
-        Thu, 20 Aug 2020 10:13:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B35A520658;
+        Thu, 20 Aug 2020 10:18:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918387;
-        bh=298ivzhcBLRyRA38lYcnrq2YKbioF13wTBksvqrIRYs=;
+        s=default; t=1597918737;
+        bh=6KMASYgSY9mZsiOFd5G1ReOXX0yDHm7t+VKPImhwBiA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nAIko872TiG7r6u/OvZ4PsSPCR+HgKbwayAXA8nydmBUL85oZywSbJ8hqA2klau9L
-         fkzWVRimqcMvhg/7wQlBVaKK5oT24IzF7f1TTaXyYf1OD2IPDkRH/jx1Ea5sBf9I9M
-         FYiEXtiaiFhJ8sHfpCzxzU55WHZpUbSrwEwukRpM=
+        b=s4dKzQodZ8eXVWXvFrpRbddQVPXnG1vbpOAzvVsqEQ6JQV7U+3e+h0Hnl/+o/5mjv
+         LViWnZ73ubWk8FVhUsk9IKyCegKouszwd+9ti3O6IMwzu4278YeOaaYYOMVZu22pz+
+         cxbvSrS9EQbl42cYQMqVYljPE0PL2a6I/lbdR1lI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Allen <john.allen@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 4.14 150/228] crypto: ccp - Fix use of merged scatterlists
+        stable@vger.kernel.org, ch3332xr@gmail.com,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.4 048/149] ipv6: fix memory leaks on IPV6_ADDRFORM path
 Date:   Thu, 20 Aug 2020 11:22:05 +0200
-Message-Id: <20200820091615.074888787@linuxfoundation.org>
+Message-Id: <20200820092128.066065707@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
-References: <20200820091607.532711107@linuxfoundation.org>
+In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
+References: <20200820092125.688850368@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,176 +44,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Allen <john.allen@amd.com>
+From: Cong Wang <xiyou.wangcong@gmail.com>
 
-commit 8a302808c60d441d9884cb00ea7f2b534f2e3ca5 upstream.
+[ Upstream commit 8c0de6e96c9794cb523a516c465991a70245da1c ]
 
-Running the crypto manager self tests with
-CONFIG_CRYPTO_MANAGER_EXTRA_TESTS may result in several types of errors
-when using the ccp-crypto driver:
+IPV6_ADDRFORM causes resource leaks when converting an IPv6 socket
+to IPv4, particularly struct ipv6_ac_socklist. Similar to
+struct ipv6_mc_socklist, we should just close it on this path.
 
-alg: skcipher: cbc-des3-ccp encryption failed on test vector 0; expected_error=0, actual_error=-5 ...
+This bug can be easily reproduced with the following C program:
 
-alg: skcipher: ctr-aes-ccp decryption overran dst buffer on test vector 0 ...
+  #include <stdio.h>
+  #include <string.h>
+  #include <sys/types.h>
+  #include <sys/socket.h>
+  #include <arpa/inet.h>
 
-alg: ahash: sha224-ccp test failed (wrong result) on test vector ...
+  int main()
+  {
+    int s, value;
+    struct sockaddr_in6 addr;
+    struct ipv6_mreq m6;
 
-These errors are the result of improper processing of scatterlists mapped
-for DMA.
+    s = socket(AF_INET6, SOCK_DGRAM, 0);
+    addr.sin6_family = AF_INET6;
+    addr.sin6_port = htons(5000);
+    inet_pton(AF_INET6, "::ffff:192.168.122.194", &addr.sin6_addr);
+    connect(s, (struct sockaddr *)&addr, sizeof(addr));
 
-Given a scatterlist in which entries are merged as part of mapping the
-scatterlist for DMA, the DMA length of a merged entry will reflect the
-combined length of the entries that were merged. The subsequent
-scatterlist entry will contain DMA information for the scatterlist entry
-after the last merged entry, but the non-DMA information will be that of
-the first merged entry.
+    inet_pton(AF_INET6, "fe80::AAAA", &m6.ipv6mr_multiaddr);
+    m6.ipv6mr_interface = 5;
+    setsockopt(s, SOL_IPV6, IPV6_JOIN_ANYCAST, &m6, sizeof(m6));
 
-The ccp driver does not take this scatterlist merging into account. To
-address this, add a second scatterlist pointer to track the current
-position in the DMA mapped representation of the scatterlist. Both the DMA
-representation and the original representation of the scatterlist must be
-tracked as while most of the driver can use just the DMA representation,
-scatterlist_map_and_copy() must use the original representation and
-expects the scatterlist pointer to be accurate to the original
-representation.
+    value = AF_INET;
+    setsockopt(s, SOL_IPV6, IPV6_ADDRFORM, &value, sizeof(value));
 
-In order to properly walk the original scatterlist, the scatterlist must
-be walked until the combined lengths of the entries seen is equal to the
-DMA length of the current entry being processed in the DMA mapped
-representation.
+    close(s);
+    return 0;
+  }
 
-Fixes: 63b945091a070 ("crypto: ccp - CCP device driver and interface support")
-Signed-off-by: John Allen <john.allen@amd.com>
-Cc: stable@vger.kernel.org
-Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Reported-by: ch3332xr@gmail.com
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/crypto/ccp/ccp-dev.h |    1 +
- drivers/crypto/ccp/ccp-ops.c |   37 ++++++++++++++++++++++++++-----------
- 2 files changed, 27 insertions(+), 11 deletions(-)
+ include/net/addrconf.h   |    1 +
+ net/ipv6/anycast.c       |   17 ++++++++++++-----
+ net/ipv6/ipv6_sockglue.c |    1 +
+ 3 files changed, 14 insertions(+), 5 deletions(-)
 
---- a/drivers/crypto/ccp/ccp-dev.h
-+++ b/drivers/crypto/ccp/ccp-dev.h
-@@ -471,6 +471,7 @@ struct ccp_sg_workarea {
- 	unsigned int sg_used;
+--- a/include/net/addrconf.h
++++ b/include/net/addrconf.h
+@@ -239,6 +239,7 @@ int ipv6_sock_ac_join(struct sock *sk, i
+ 		      const struct in6_addr *addr);
+ int ipv6_sock_ac_drop(struct sock *sk, int ifindex,
+ 		      const struct in6_addr *addr);
++void __ipv6_sock_ac_close(struct sock *sk);
+ void ipv6_sock_ac_close(struct sock *sk);
  
- 	struct scatterlist *dma_sg;
-+	struct scatterlist *dma_sg_head;
- 	struct device *dma_dev;
- 	unsigned int dma_count;
- 	enum dma_data_direction dma_dir;
---- a/drivers/crypto/ccp/ccp-ops.c
-+++ b/drivers/crypto/ccp/ccp-ops.c
-@@ -67,7 +67,7 @@ static u32 ccp_gen_jobid(struct ccp_devi
- static void ccp_sg_free(struct ccp_sg_workarea *wa)
- {
- 	if (wa->dma_count)
--		dma_unmap_sg(wa->dma_dev, wa->dma_sg, wa->nents, wa->dma_dir);
-+		dma_unmap_sg(wa->dma_dev, wa->dma_sg_head, wa->nents, wa->dma_dir);
- 
- 	wa->dma_count = 0;
+ int __ipv6_dev_ac_inc(struct inet6_dev *idev, const struct in6_addr *addr);
+--- a/net/ipv6/anycast.c
++++ b/net/ipv6/anycast.c
+@@ -170,7 +170,7 @@ int ipv6_sock_ac_drop(struct sock *sk, i
+ 	return 0;
  }
-@@ -96,6 +96,7 @@ static int ccp_init_sg_workarea(struct c
- 		return 0;
  
- 	wa->dma_sg = sg;
-+	wa->dma_sg_head = sg;
- 	wa->dma_dev = dev;
- 	wa->dma_dir = dma_dir;
- 	wa->dma_count = dma_map_sg(dev, sg, wa->nents, dma_dir);
-@@ -108,14 +109,28 @@ static int ccp_init_sg_workarea(struct c
- static void ccp_update_sg_workarea(struct ccp_sg_workarea *wa, unsigned int len)
+-void ipv6_sock_ac_close(struct sock *sk)
++void __ipv6_sock_ac_close(struct sock *sk)
  {
- 	unsigned int nbytes = min_t(u64, len, wa->bytes_left);
-+	unsigned int sg_combined_len = 0;
+ 	struct ipv6_pinfo *np = inet6_sk(sk);
+ 	struct net_device *dev = NULL;
+@@ -178,10 +178,7 @@ void ipv6_sock_ac_close(struct sock *sk)
+ 	struct net *net = sock_net(sk);
+ 	int	prev_index;
  
- 	if (!wa->sg)
- 		return;
+-	if (!np->ipv6_ac_list)
+-		return;
+-
+-	rtnl_lock();
++	ASSERT_RTNL();
+ 	pac = np->ipv6_ac_list;
+ 	np->ipv6_ac_list = NULL;
  
- 	wa->sg_used += nbytes;
- 	wa->bytes_left -= nbytes;
--	if (wa->sg_used == wa->sg->length) {
--		wa->sg = sg_next(wa->sg);
-+	if (wa->sg_used == sg_dma_len(wa->dma_sg)) {
-+		/* Advance to the next DMA scatterlist entry */
-+		wa->dma_sg = sg_next(wa->dma_sg);
-+
-+		/* In the case that the DMA mapped scatterlist has entries
-+		 * that have been merged, the non-DMA mapped scatterlist
-+		 * must be advanced multiple times for each merged entry.
-+		 * This ensures that the current non-DMA mapped entry
-+		 * corresponds to the current DMA mapped entry.
-+		 */
-+		do {
-+			sg_combined_len += wa->sg->length;
-+			wa->sg = sg_next(wa->sg);
-+		} while (wa->sg_used > sg_combined_len);
-+
- 		wa->sg_used = 0;
+@@ -198,6 +195,16 @@ void ipv6_sock_ac_close(struct sock *sk)
+ 		sock_kfree_s(sk, pac, sizeof(*pac));
+ 		pac = next;
  	}
++}
++
++void ipv6_sock_ac_close(struct sock *sk)
++{
++	struct ipv6_pinfo *np = inet6_sk(sk);
++
++	if (!np->ipv6_ac_list)
++		return;
++	rtnl_lock();
++	__ipv6_sock_ac_close(sk);
+ 	rtnl_unlock();
  }
-@@ -304,7 +319,7 @@ static unsigned int ccp_queue_buf(struct
- 	/* Update the structures and generate the count */
- 	buf_count = 0;
- 	while (sg_wa->bytes_left && (buf_count < dm_wa->length)) {
--		nbytes = min(sg_wa->sg->length - sg_wa->sg_used,
-+		nbytes = min(sg_dma_len(sg_wa->dma_sg) - sg_wa->sg_used,
- 			     dm_wa->length - buf_count);
- 		nbytes = min_t(u64, sg_wa->bytes_left, nbytes);
  
-@@ -336,11 +351,11 @@ static void ccp_prepare_data(struct ccp_
- 	 * and destination. The resulting len values will always be <= UINT_MAX
- 	 * because the dma length is an unsigned int.
- 	 */
--	sg_src_len = sg_dma_len(src->sg_wa.sg) - src->sg_wa.sg_used;
-+	sg_src_len = sg_dma_len(src->sg_wa.dma_sg) - src->sg_wa.sg_used;
- 	sg_src_len = min_t(u64, src->sg_wa.bytes_left, sg_src_len);
+--- a/net/ipv6/ipv6_sockglue.c
++++ b/net/ipv6/ipv6_sockglue.c
+@@ -207,6 +207,7 @@ static int do_ipv6_setsockopt(struct soc
  
- 	if (dst) {
--		sg_dst_len = sg_dma_len(dst->sg_wa.sg) - dst->sg_wa.sg_used;
-+		sg_dst_len = sg_dma_len(dst->sg_wa.dma_sg) - dst->sg_wa.sg_used;
- 		sg_dst_len = min_t(u64, src->sg_wa.bytes_left, sg_dst_len);
- 		op_len = min(sg_src_len, sg_dst_len);
- 	} else {
-@@ -370,7 +385,7 @@ static void ccp_prepare_data(struct ccp_
- 		/* Enough data in the sg element, but we need to
- 		 * adjust for any previously copied data
- 		 */
--		op->src.u.dma.address = sg_dma_address(src->sg_wa.sg);
-+		op->src.u.dma.address = sg_dma_address(src->sg_wa.dma_sg);
- 		op->src.u.dma.offset = src->sg_wa.sg_used;
- 		op->src.u.dma.length = op_len & ~(block_size - 1);
+ 			fl6_free_socklist(sk);
+ 			__ipv6_sock_mc_close(sk);
++			__ipv6_sock_ac_close(sk);
  
-@@ -391,7 +406,7 @@ static void ccp_prepare_data(struct ccp_
- 			/* Enough room in the sg element, but we need to
- 			 * adjust for any previously used area
- 			 */
--			op->dst.u.dma.address = sg_dma_address(dst->sg_wa.sg);
-+			op->dst.u.dma.address = sg_dma_address(dst->sg_wa.dma_sg);
- 			op->dst.u.dma.offset = dst->sg_wa.sg_used;
- 			op->dst.u.dma.length = op->src.u.dma.length;
- 		}
-@@ -2034,7 +2049,7 @@ ccp_run_passthru_cmd(struct ccp_cmd_queu
- 	dst.sg_wa.sg_used = 0;
- 	for (i = 1; i <= src.sg_wa.dma_count; i++) {
- 		if (!dst.sg_wa.sg ||
--		    (dst.sg_wa.sg->length < src.sg_wa.sg->length)) {
-+		    (sg_dma_len(dst.sg_wa.sg) < sg_dma_len(src.sg_wa.sg))) {
- 			ret = -EINVAL;
- 			goto e_dst;
- 		}
-@@ -2060,8 +2075,8 @@ ccp_run_passthru_cmd(struct ccp_cmd_queu
- 			goto e_dst;
- 		}
- 
--		dst.sg_wa.sg_used += src.sg_wa.sg->length;
--		if (dst.sg_wa.sg_used == dst.sg_wa.sg->length) {
-+		dst.sg_wa.sg_used += sg_dma_len(src.sg_wa.sg);
-+		if (dst.sg_wa.sg_used == sg_dma_len(dst.sg_wa.sg)) {
- 			dst.sg_wa.sg = sg_next(dst.sg_wa.sg);
- 			dst.sg_wa.sg_used = 0;
- 		}
+ 			/*
+ 			 * Sock is moving from IPv6 to IPv4 (sk_prot), so
 
 
