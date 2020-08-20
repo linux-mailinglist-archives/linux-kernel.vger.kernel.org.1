@@ -2,127 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A66624BD63
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71E3024BD79
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730078AbgHTNEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:04:45 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:32223 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730028AbgHTNET (ORCPT
+        id S1729097AbgHTNGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:06:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728871AbgHTNGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 09:04:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597928658;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=CJnfEEPsHTayufcqPRv869AJ8y4aZylFQ/z6R8psu84=;
-        b=UPxACiMBxNxZKKUPQFu+PLJNdf7byO6EDqF1XmvvgISBNLd4RcyIIY3j1O05xec/rlwGOg
-        Lo5AscxcF7r31vtNX+sv3ib4NmEcgDCHJ/daVBpFbn2Jfuf3+/11mVQMu6FbJfJ9EsuTyF
-        gqIjrQX6qCANDD9GEET7IWzHHgzU2Lg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-457-VVfH2K2cNdKSB7y61NNuZA-1; Thu, 20 Aug 2020 09:04:16 -0400
-X-MC-Unique: VVfH2K2cNdKSB7y61NNuZA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4B42A81F02B;
-        Thu, 20 Aug 2020 13:04:14 +0000 (UTC)
-Received: from llong.com (unknown [10.10.115.249])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CAC0A600DD;
-        Thu, 20 Aug 2020 13:04:12 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Roman Gushchin <guro@fb.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH 3/3] mm/memcg: Unify swap and memsw page counters
-Date:   Thu, 20 Aug 2020 09:03:50 -0400
-Message-Id: <20200820130350.3211-4-longman@redhat.com>
-In-Reply-To: <20200820130350.3211-1-longman@redhat.com>
-References: <20200820130350.3211-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        Thu, 20 Aug 2020 09:06:01 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59459C061385;
+        Thu, 20 Aug 2020 06:06:01 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id g15so1008628plj.6;
+        Thu, 20 Aug 2020 06:06:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=diWOF1th57LrHj7EG5tnoK7CBPOeUfDwxvRZ4lqQiP0=;
+        b=DeUdFyknlpSmv5kkr6H1ATJsndaWr8MvMFne3KWTmGJG2YERGgiOrFBxV8km9lA2JU
+         Oa6V7i+KP6qIv/FWA1Np283lXNOL3vRdGSIfwsFfjMhZKMY0/wcj28w6WCZAlYqMricd
+         Be3+/O982WCiUXb4tsZAS9OEr/KdI9lmibNYy3XMw9HIowe2Rcv/4LpCoaBXo9dP8yXh
+         CRznHv/OOUqYi5+iTNJzawAu6SO/kUXt4h3YBtZjIChyxiaFt77BG+zh/9lOdN6NSMog
+         sVhkkOprbhTKlcnllopmB/AHS/eMfTPZmxPZ3XGQs2b2kqpFwjs1pyjTdZrCAtPc062G
+         wvig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=diWOF1th57LrHj7EG5tnoK7CBPOeUfDwxvRZ4lqQiP0=;
+        b=e//lRh9AMYuQTZVwCmflB4EyxTOOHT/7Onqa91elCj610CNrtA3bod7IeRBtwSDEGF
+         sHNq9qpd4SLqvsfppmieYjXA8Db2tVoKnD3r7OyODmFLU6QqMcbuxorlMiUCQ4L7rIFH
+         bHfGQ/56RrDfVAemhXD+iDNFvL+WJprfrYXIOeZfydVzrBPZt0fpREqsfoSjxHpmFms0
+         9w6Cci7qAQ51+QvuFXFTErR85EO8XupODV7Pk+5Q2hoqeZWyX3sD7ZboeyRUfXjzMQnG
+         M+gnQxmAfmkL8lG4iRKyj/sUOZVOHQb1VZbKyX4vs9T9ZeWyxYBtUR0ErPzCiBRMAi1u
+         87/A==
+X-Gm-Message-State: AOAM533griJg3l0fI7SoYTGrwcsvbhPzBQp6HZK/av8Huz8A/nCUgS+l
+        Z83WmxuqKqZHM1ifYxkQFVuijs31fV5ktcDoTNg=
+X-Google-Smtp-Source: ABdhPJxA7srVMSku0uu1P5zHAAAti2hEfo+ytXQ/cTrfBTaGNEDKCsEeSr7WtE6tLnyFBWb9/IWKQ2RbXaPhzu0Togo=
+X-Received: by 2002:a17:90a:bc41:: with SMTP id t1mr2333932pjv.181.1597928760579;
+ Thu, 20 Aug 2020 06:06:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <1597892486-3236-1-git-send-email-tiantao6@hisilicon.com> <CA+U=DsojNXFxT812=i-0ceRGUV3gJXhMMb-ungP=DO166jjZMA@mail.gmail.com>
+In-Reply-To: <CA+U=DsojNXFxT812=i-0ceRGUV3gJXhMMb-ungP=DO166jjZMA@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 20 Aug 2020 16:05:44 +0300
+Message-ID: <CAHp75VdqrczNjsgR7JZTsK8+=RmgFopGJ1VZdD4+BYxBHMHukg@mail.gmail.com>
+Subject: Re: [PATCH] iio: adc: adi-axi-adc: Use kobj_to_dev() instead of container_of()
+To:     Alexandru Ardelean <ardeleanalex@gmail.com>
+Cc:     Tian Tao <tiantao6@hisilicon.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The swap page counter is v2 only while memsw is v1 only. As v1 and v2
-controllers cannot be active at the same time, there is no point to keep
-both swap and memsw page counters in mem_cgroup. The previous patch has
-made sure that memsw page counter is updated and accessed only when in
-v1 code paths. So it is now safe to alias the v1 memsw page counter to v2
-swap page counter. This saves 14 long's in the size of mem_cgroup. This
-is a saving of 112 bytes for 64-bit archs.
+On Thu, Aug 20, 2020 at 12:10 PM Alexandru Ardelean
+<ardeleanalex@gmail.com> wrote:
+> On Thu, Aug 20, 2020 at 6:04 AM Tian Tao <tiantao6@hisilicon.com> wrote:
+> >
+> > Use kobj_to_dev() instead of container_of()
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- include/linux/memcontrol.h | 3 +--
- mm/memcontrol.c            | 8 +++++---
- 2 files changed, 6 insertions(+), 5 deletions(-)
+> Good point.
+>
+> Acked-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index d0b036123c6a..d2a819d7db70 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -216,10 +216,9 @@ struct mem_cgroup {
- 
- 	/* Accounted resources */
- 	struct page_counter memory;
--	struct page_counter swap;
-+	struct page_counter swap;	/* memsw (memory+swap) for v1 */
- 
- 	/* Legacy consumer-oriented counters */
--	struct page_counter memsw;
- 	struct page_counter kmem;
- 	struct page_counter tcpmem;
- 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index d219dca5239f..04c3794cdc98 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -68,6 +68,11 @@
- 
- #include <trace/events/vmscan.h>
- 
-+/*
-+ * The v1 memsw page counter is aliased to the v2 swap page counter.
-+ */
-+#define memsw	swap
-+
- struct cgroup_subsys memory_cgrp_subsys __read_mostly;
- EXPORT_SYMBOL(memory_cgrp_subsys);
- 
-@@ -5279,13 +5284,11 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
- 		memcg->use_hierarchy = true;
- 		page_counter_init(&memcg->memory, &parent->memory);
- 		page_counter_init(&memcg->swap, &parent->swap);
--		page_counter_init(&memcg->memsw, &parent->memsw);
- 		page_counter_init(&memcg->kmem, &parent->kmem);
- 		page_counter_init(&memcg->tcpmem, &parent->tcpmem);
- 	} else {
- 		page_counter_init(&memcg->memory, NULL);
- 		page_counter_init(&memcg->swap, NULL);
--		page_counter_init(&memcg->memsw, NULL);
- 		page_counter_init(&memcg->kmem, NULL);
- 		page_counter_init(&memcg->tcpmem, NULL);
- 		/*
-@@ -5414,7 +5417,6 @@ static void mem_cgroup_css_reset(struct cgroup_subsys_state *css)
- 
- 	page_counter_set_max(&memcg->memory, PAGE_COUNTER_MAX);
- 	page_counter_set_max(&memcg->swap, PAGE_COUNTER_MAX);
--	page_counter_set_max(&memcg->memsw, PAGE_COUNTER_MAX);
- 	page_counter_set_max(&memcg->kmem, PAGE_COUNTER_MAX);
- 	page_counter_set_max(&memcg->tcpmem, PAGE_COUNTER_MAX);
- 	page_counter_set_min(&memcg->memory, 0);
+...
+
+> > -       struct device *dev = container_of(kobj, struct device, kobj);
+> > +       struct device *dev = kobj_to_dev(kobj);
+> >         struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+
+And now this can be one line since dev is not used separately.
+
+> >         struct adi_axi_adc_state *st = iio_priv(indio_dev);
+> >         struct adi_axi_adc_conv *conv = &st->client->conv;
+
 -- 
-2.18.1
-
+With Best Regards,
+Andy Shevchenko
