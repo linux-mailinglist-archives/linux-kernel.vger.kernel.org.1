@@ -2,111 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB0924AD8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 06:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B38624AD92
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 06:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725859AbgHTEII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 00:08:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35772 "EHLO
+        id S1726364AbgHTELR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 00:11:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725290AbgHTEIG (ORCPT
+        with ESMTP id S1725852AbgHTELP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 00:08:06 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29FF1C061757;
-        Wed, 19 Aug 2020 21:08:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=WmtpAyrOA4FNl/DzMNF6BC2DOQ6KxPXZ7lYWa9s+4RI=; b=VhClpoNayNggIskH4KYA/2gjpq
-        8CRQIlSfkOcazgLZzjoaXLal48fioUKxGp4HTIn/7cR0HJTGaDDN3oG7UR+oL3/aQzqps4yG4gMpT
-        v4Ku7BjMjtle8IQmv63/UFe7dTKg5M97APX2X3oZIH5qyXEGng2Imymm24OkHZMjDOGfpbDwZk4vF
-        TNM/yV4ipesWvORZLWFfxYQ29gxADn17KBppzv/FxOAGDWDiU8E1y7VxbG5raUpGJ6qRSyN5CYH40
-        ftBCnAtnhsgoa46/XOzHxTVTSvAVDiV8v/jbqJLhNIcGYRQhyNygSeuWPVPrpvDzGBQ6m89s9K0rd
-        T/MR/Fyw==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k8brp-0006ak-Gn; Thu, 20 Aug 2020 04:07:58 +0000
-Subject: Re: [PATCH] x86/pci: fix intel_mid_pci.c build error when ACPI is not
- enabled
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Arjan van de Ven <arjan@linux.intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Len Brown <lenb@kernel.org>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-References: <20952e3e-6b06-11e4-aff7-07dfbdc5ee18@infradead.org>
- <810f1b0e-0adf-c316-f23c-172338f9ef0a@linux.intel.com>
- <CAHp75VcJCjJJvbkSiGHC+3_shWRwoqeZHE2KNDLQBjneW=02dg@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <2b14b6be-a031-a28b-6585-8307d2fdae21@infradead.org>
-Date:   Wed, 19 Aug 2020 21:07:51 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 20 Aug 2020 00:11:15 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667A6C061757;
+        Wed, 19 Aug 2020 21:11:15 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id r11so396541pfl.11;
+        Wed, 19 Aug 2020 21:11:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cDJDuKtqbHnC796AeNDtkydt/+nMCLENJLcgWPgKcQA=;
+        b=FiPpQdouEXK6VeEe9kXvQd6AlUhoKIUnly9H8vEzYRX6dpw/kifEXBclWcuhASodGk
+         5pBBDbsDsUJUdyysZgSEfsEayRBghrrTSoQYGTCL2jmt3Kbx22oErUozmlqRTgQ9LMyQ
+         UJwtlr0U9aa9iLYV6Lzpz6LXVdomWWE3i0eK5oEeTefzDVbp2MvqUV/6fMvwOA1YRz1p
+         KhtacN0Sq+j1vuOYydpn6dkczCjENlCgZtHnrHHJ/973hRw92EcUTFZUpBHKWAw/JTBy
+         O7hszoyEG9Qc9mQtO/qjK/B4uP8xc6XHcueCNF4jitZ+a+eNYpay8Sa+JfOvEh6jDNEe
+         c8WA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cDJDuKtqbHnC796AeNDtkydt/+nMCLENJLcgWPgKcQA=;
+        b=Akb5mvOblD/aAQp5LgY6cq1BMG4bLR2wTHRxvMgW8bxC3gXZpIroBsLHnfek2pMXVb
+         9z9N5wp4ITT6/PcSMO9v4U2pz5tLH9bmzl/LCDEVQCxrV1wNkWGVLZFFUcgGMKWc3LI3
+         gxR+4VXf88WZu1rX01z5S+ts3ixaW4gOlxOYt5QJ2s6y9EKYEQPFqNUd6BrnsDCfLDwh
+         GITa7K+A6auG74hSZu4O8A+/UnzDZ74DsFDYOKLD896JNDcLJeT3M5zax2I3lhsY8TT/
+         FAhN6uhdoCvH9q/qbMxYFd+x2EoWS8ot3LPRporAcd/6YvLkUToY6eWY/N5JqXUUJ/TT
+         Uzig==
+X-Gm-Message-State: AOAM533vC5tzwe4xadXkEySQWhtZUzwKvVt4F5puaaJv4iiFaYs6AZIO
+        mNPSQngE1dWdbeNMVpRLqBg=
+X-Google-Smtp-Source: ABdhPJyEObQUFNlfFMiPl9DoKI9qG80cCF2W6A1Y0MZ7u6rMFknZKroy8E3vCjH3dZFgCJS8rRKIGA==
+X-Received: by 2002:a62:ea01:: with SMTP id t1mr868193pfh.125.1597896674617;
+        Wed, 19 Aug 2020 21:11:14 -0700 (PDT)
+Received: from localhost.localdomain.com ([2605:e000:160b:911f:722f:a74:437d:fd3c])
+        by smtp.gmail.com with ESMTPSA id b20sm847811pfp.140.2020.08.19.21.11.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Aug 2020 21:11:13 -0700 (PDT)
+From:   Chris Healy <cphealy@gmail.com>
+X-Google-Original-From: Chris Healy <cphealy@gmail.com
+To:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        stefan@agner.ch, robh+dt@kernel.org, andrew.smirnov@gmail.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, festevam@gmail.com,
+        stable@vger.kernel.org
+Cc:     Chris Healy <cphealy@gmail.com>
+Subject: [PATCH v2] ARM: dts: vfxxx: Add syscon compatible with ocotp
+Date:   Wed, 19 Aug 2020 21:10:55 -0700
+Message-Id: <20200820041055.75848-1-cphealy@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VcJCjJJvbkSiGHC+3_shWRwoqeZHE2KNDLQBjneW=02dg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/13/20 1:55 PM, Andy Shevchenko wrote:
-> On Thu, Aug 13, 2020 at 11:31 PM Arjan van de Ven <arjan@linux.intel.com> wrote:
->> On 8/13/2020 12:58 PM, Randy Dunlap wrote:
->>> From: Randy Dunlap <rdunlap@infradead.org>
->>>
->>> Fix build error when CONFIG_ACPI is not set/enabled by adding
->>> the header file <asm/acpi.h> which contains a stub for the function
->>> in the build error.
->>>
->>> ../arch/x86/pci/intel_mid_pci.c: In function ‘intel_mid_pci_init’:
->>> ../arch/x86/pci/intel_mid_pci.c:303:2: error: implicit declaration of function ‘acpi_noirq_set’; did you mean ‘acpi_irq_get’? [-Werror=implicit-function-declaration]
->>>    acpi_noirq_set();
-> 
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Thanks!
+From: Chris Healy <cphealy@gmail.com>
 
-also:
-Reviewed-by: Jesse Barnes <jsbarnes@google.com>
+Add syscon compatibility with Vybrid ocotp node. This is required to
+access the UID.
 
-> 
->>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->>> Cc: Jacob Pan <jacob.jun.pan@linux.intel.com>
->>> Cc: Len Brown <lenb@kernel.org>
->>> Cc: Bjorn Helgaas <bhelgaas@google.com>
->>> Cc: Jesse Barnes <jsbarnes@google.com>
->>> Cc: Arjan van de Ven <arjan@linux.intel.com>
->>> Cc: linux-pci@vger.kernel.org
->>> ---
->>> Found in linux-next, but applies to/exists in mainline also.
->>>
->>> Alternative.1: X86_INTEL_MID depends on ACPI
->>> Alternative.2: drop X86_INTEL_MID support
->>
->> at this point I'd suggest Alternative 2; the products that needed that (past tense, that technology
->> is no longer need for any newer products) never shipped in any form where a 4.x or 5.x kernel could
->> work, and they are also all locked down...
-> 
-> This is not true. We have Intel Edison which runs nicely on vanilla
-> (not everything, some is still requiring a couple of patches, but most
-> of it works out-of-the-box).
-> 
-> And for the record, I have been working on removing quite a pile of
-> code (~13kLOCs to the date IIRC) in MID area. Just need some time to
-> fix Edison watchdog for that.
+Fixes: fa8d20c8dbb77 ("ARM: dts: vfxxx: Add node corresponding to OCOTP")
+Cc: stable@vger.kernel.org
+Signed-off-by: Chris Healy <cphealy@gmail.com>
+---
+Changes in v2:
+ - Add Fixes line to commit message
 
+ arch/arm/boot/dts/vfxxx.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I didn't see a consensus on this patch, although Andy says it's still needed,
-so it shouldn't be removed (yet). Maybe his big removal patch can remove it
-later. For now can we just fix the build error?
-
-
+diff --git a/arch/arm/boot/dts/vfxxx.dtsi b/arch/arm/boot/dts/vfxxx.dtsi
+index 0fe03aa0367f..2259d11af721 100644
+--- a/arch/arm/boot/dts/vfxxx.dtsi
++++ b/arch/arm/boot/dts/vfxxx.dtsi
+@@ -495,7 +495,7 @@ edma1: dma-controller@40098000 {
+ 			};
+ 
+ 			ocotp: ocotp@400a5000 {
+-				compatible = "fsl,vf610-ocotp";
++				compatible = "fsl,vf610-ocotp", "syscon";
+ 				reg = <0x400a5000 0x1000>;
+ 				clocks = <&clks VF610_CLK_OCOTP>;
+ 			};
 -- 
-~Randy
+2.26.2
 
