@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4367624BB72
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6899524BB70
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729817AbgHTJvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:51:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59806 "EHLO mail.kernel.org"
+        id S1728897AbgHTJvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:51:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729788AbgHTJvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:51:07 -0400
+        id S1729789AbgHTJvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:51:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F16472078D;
-        Thu, 20 Aug 2020 09:51:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 49B3F2067C;
+        Thu, 20 Aug 2020 09:51:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917066;
-        bh=7HHKGc3ZY9MsR7dZjfof1I8hHOlnpQN05gY57xtXUoE=;
+        s=default; t=1597917068;
+        bh=EqK1nmioHLRXP/FPoASKUhIIOzl5voHdIypZ8eFMvrU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SOcZPb0EJ5b/9U7ODZxFb0NWs8exh0oyzsgfRT5ka+zlNKYEko4hNjNL8SL3J5HHn
-         0RCV8+eN25d0QRyVX6VbH+ZEQlOJb6kXul4lWQa/Ug1C3ITGLAgobSQovFwTAzXpxj
-         WQPPUCoqk87Wwkz6H2s1vdFlvKkMSVPS/ILeUPcM=
+        b=TbcolSkwpipLw2o0k6w/qTEMtslLWpTCdDAWcg8ZmXRyswTo8sPEnofQg+Gqi2hnx
+         7Ghj724wdI/c150vSnW4e3IISCrw7VtkPpHDmsoCI0MYyp4c7RwQPRzV+5pvfXGgFC
+         81SoebcTeZIW+wGj1csTmeMjR8SYipl1SMcQtLlE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Scott Mayhew <smayhew@redhat.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
+        Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 115/152] nfs: ensure correct writeback errors are returned on close()
-Date:   Thu, 20 Aug 2020 11:21:22 +0200
-Message-Id: <20200820091559.647346613@linuxfoundation.org>
+Subject: [PATCH 5.4 116/152] ubifs: Fix wrong orphan node deletion in ubifs_jnl_update|rename
+Date:   Thu, 20 Aug 2020 11:21:23 +0200
+Message-Id: <20200820091559.703357874@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
 References: <20200820091553.615456912@linuxfoundation.org>
@@ -44,74 +44,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Scott Mayhew <smayhew@redhat.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-[ Upstream commit 67dd23f9e6fbaf163431912ef5599c5e0693476c ]
+[ Upstream commit 094b6d1295474f338201b846a1f15e72eb0b12cf ]
 
-nfs_wb_all() calls filemap_write_and_wait(), which uses
-filemap_check_errors() to determine the error to return.
-filemap_check_errors() only looks at the mapping->flags and will
-therefore only return either -ENOSPC or -EIO.  To ensure that the
-correct error is returned on close(), nfs{,4}_file_flush() should call
-filemap_check_wb_err() which looks at the errseq value in
-mapping->wb_err without consuming it.
+There a wrong orphan node deleting in error handling path in
+ubifs_jnl_update() and ubifs_jnl_rename(), which may cause
+following error msg:
 
-Fixes: 6fbda89b257f ("NFS: Replace custom error reporting mechanism with
-generic one")
-Signed-off-by: Scott Mayhew <smayhew@redhat.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+  UBIFS error (ubi0:0 pid 1522): ubifs_delete_orphan [ubifs]:
+  missing orphan ino 65
+
+Fix this by checking whether the node has been operated for
+adding to orphan list before being deleted,
+
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Fixes: 823838a486888cf484e ("ubifs: Add hashes to the tree node cache")
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/file.c     | 5 ++++-
- fs/nfs/nfs4file.c | 5 ++++-
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ fs/ubifs/journal.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/fs/nfs/file.c b/fs/nfs/file.c
-index 95dc90570786c..348f67c8f3224 100644
---- a/fs/nfs/file.c
-+++ b/fs/nfs/file.c
-@@ -140,6 +140,7 @@ static int
- nfs_file_flush(struct file *file, fl_owner_t id)
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 826dad0243dcc..a6ae2428e4c96 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -539,7 +539,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+ 		     const struct fscrypt_name *nm, const struct inode *inode,
+ 		     int deletion, int xent)
  {
- 	struct inode	*inode = file_inode(file);
-+	errseq_t since;
+-	int err, dlen, ilen, len, lnum, ino_offs, dent_offs;
++	int err, dlen, ilen, len, lnum, ino_offs, dent_offs, orphan_added = 0;
+ 	int aligned_dlen, aligned_ilen, sync = IS_DIRSYNC(dir);
+ 	int last_reference = !!(deletion && inode->i_nlink == 0);
+ 	struct ubifs_inode *ui = ubifs_inode(inode);
+@@ -630,6 +630,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+ 			goto out_finish;
+ 		}
+ 		ui->del_cmtno = c->cmt_no;
++		orphan_added = 1;
+ 	}
  
- 	dprintk("NFS: flush(%pD2)\n", file);
+ 	err = write_head(c, BASEHD, dent, len, &lnum, &dent_offs, sync);
+@@ -702,7 +703,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+ 	kfree(dent);
+ out_ro:
+ 	ubifs_ro_mode(c, err);
+-	if (last_reference)
++	if (orphan_added)
+ 		ubifs_delete_orphan(c, inode->i_ino);
+ 	finish_reservation(c);
+ 	return err;
+@@ -1217,7 +1218,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 	void *p;
+ 	union ubifs_key key;
+ 	struct ubifs_dent_node *dent, *dent2;
+-	int err, dlen1, dlen2, ilen, lnum, offs, len;
++	int err, dlen1, dlen2, ilen, lnum, offs, len, orphan_added = 0;
+ 	int aligned_dlen1, aligned_dlen2, plen = UBIFS_INO_NODE_SZ;
+ 	int last_reference = !!(new_inode && new_inode->i_nlink == 0);
+ 	int move = (old_dir != new_dir);
+@@ -1333,6 +1334,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 			goto out_finish;
+ 		}
+ 		new_ui->del_cmtno = c->cmt_no;
++		orphan_added = 1;
+ 	}
  
-@@ -148,7 +149,9 @@ nfs_file_flush(struct file *file, fl_owner_t id)
- 		return 0;
- 
- 	/* Flush writes to the server and return any errors */
--	return nfs_wb_all(inode);
-+	since = filemap_sample_wb_err(file->f_mapping);
-+	nfs_wb_all(inode);
-+	return filemap_check_wb_err(file->f_mapping, since);
- }
- 
- ssize_t
-diff --git a/fs/nfs/nfs4file.c b/fs/nfs/nfs4file.c
-index fb55c04cdc6bd..534b6fd70ffdb 100644
---- a/fs/nfs/nfs4file.c
-+++ b/fs/nfs/nfs4file.c
-@@ -109,6 +109,7 @@ static int
- nfs4_file_flush(struct file *file, fl_owner_t id)
- {
- 	struct inode	*inode = file_inode(file);
-+	errseq_t since;
- 
- 	dprintk("NFS: flush(%pD2)\n", file);
- 
-@@ -124,7 +125,9 @@ nfs4_file_flush(struct file *file, fl_owner_t id)
- 		return filemap_fdatawrite(file->f_mapping);
- 
- 	/* Flush writes to the server and return any errors */
--	return nfs_wb_all(inode);
-+	since = filemap_sample_wb_err(file->f_mapping);
-+	nfs_wb_all(inode);
-+	return filemap_check_wb_err(file->f_mapping, since);
- }
- 
- #ifdef CONFIG_NFS_V4_2
+ 	err = write_head(c, BASEHD, dent, len, &lnum, &offs, sync);
+@@ -1414,7 +1416,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 	release_head(c, BASEHD);
+ out_ro:
+ 	ubifs_ro_mode(c, err);
+-	if (last_reference)
++	if (orphan_added)
+ 		ubifs_delete_orphan(c, new_inode->i_ino);
+ out_finish:
+ 	finish_reservation(c);
 -- 
 2.25.1
 
