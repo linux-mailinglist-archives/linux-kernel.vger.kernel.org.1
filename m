@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9728B24BE1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CCC724BDF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730163AbgHTNUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:20:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47224 "EHLO mail.kernel.org"
+        id S1728532AbgHTJfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:35:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728016AbgHTJeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:34:20 -0400
+        id S1728341AbgHTJeX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:34:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 647AB21775;
-        Thu, 20 Aug 2020 09:34:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 84C4222B3F;
+        Thu, 20 Aug 2020 09:34:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916060;
-        bh=mdP55MQ5hZd+LjwfofX9mTruh9HHZctyninsRPIAus0=;
+        s=default; t=1597916063;
+        bh=JmvoH12REXjL9EBO/7KCFCSOXI0pWy/npFzouLzuJbQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r0aEcGUSLd8OH0OnXhQKjoeBGaExbm68S0a01nLEktVbz1FVJZQzJgNvn8QauEBlX
-         N0BIHLEy4c19TfvuEc0LV0WaS4t++ksrdCQ2GkUo1vkbjYjycuRoAdKGd/pMJ+51tJ
-         EQ7mTjtaKfyJ+4ByKHRofS9Q5wxjVMpESeFiS+6M=
+        b=2Bptu01YFBhu4anD7ZF6DtuJwO+WYNJbU+pbi9bdoc11WkioiNjEH7z8NxiMFY3Tn
+         aCk4K5ThN+bWDVhtyZMwFV9mgPQFa2gKmXYXlyDhsfj88OaTbuXZsKDpA/37y7FDyw
+         u0BTm1z3H+2v2sRSp1EN3nentQXaSjRBNO6zdFwE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sandeep Raghuraman <sandy.8925@gmail.com>,
+        stable@vger.kernel.org, Stylon Wang <stylon.wang@amd.com>,
+        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
+        Eryk Brol <eryk.brol@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.8 230/232] drm/amdgpu: Fix bug where DPM is not enabled after hibernate and resume
-Date:   Thu, 20 Aug 2020 11:21:21 +0200
-Message-Id: <20200820091623.916974874@linuxfoundation.org>
+Subject: [PATCH 5.8 231/232] drm/amd/display: Fix dmesg warning from setting abm level
+Date:   Thu, 20 Aug 2020 11:21:22 +0200
+Message-Id: <20200820091623.965829893@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
 References: <20200820091612.692383444@linuxfoundation.org>
@@ -43,60 +45,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sandeep Raghuraman <sandy.8925@gmail.com>
+From: Stylon Wang <stylon.wang@amd.com>
 
-commit f87812284172a9809820d10143b573d833cd3f75 upstream.
+commit c5892a10218214d729699ab61bad6fc109baf0ce upstream.
 
-Reproducing bug report here:
-After hibernating and resuming, DPM is not enabled. This remains the case
-even if you test hibernate using the steps here:
-https://www.kernel.org/doc/html/latest/power/basic-pm-debugging.html
+[Why]
+Setting abm level does not correctly update CRTC state. As a result
+no surface update is added to dc stream state and triggers warning.
 
-I debugged the problem, and figured out that in the file hardwaremanager.c,
-in the function, phm_enable_dynamic_state_management(), the check
-'if (!hwmgr->pp_one_vf && smum_is_dpm_running(hwmgr) && !amdgpu_passthrough(adev) && adev->in_suspend)'
-returns true for the hibernate case, and false for the suspend case.
+[How]
+Correctly update CRTC state when setting abm level property.
 
-This means that for the hibernate case, the AMDGPU driver doesn't enable DPM
-(even though it should) and simply returns from that function.
-In the suspend case, it goes ahead and enables DPM, even though it doesn't need to.
-
-I debugged further, and found out that in the case of suspend, for the
-CIK/Hawaii GPUs, smum_is_dpm_running(hwmgr) returns false, while in the case of
-hibernate, smum_is_dpm_running(hwmgr) returns true.
-
-For CIK, the ci_is_dpm_running() function calls the ci_is_smc_ram_running() function,
-which is ultimately used to determine if DPM is currently enabled or not,
-and this seems to provide the wrong answer.
-
-I've changed the ci_is_dpm_running() function to instead use the same method that
-some other AMD GPU chips do (e.g Fiji), which seems to read the voltage controller.
-I've tested on my R9 390 and it seems to work correctly for both suspend and
-hibernate use cases, and has been stable so far.
-
-Bug: https://bugzilla.kernel.org/show_bug.cgi?id=208839
-Signed-off-by: Sandeep Raghuraman <sandy.8925@gmail.com>
+CC: Stable <stable@vger.kernel.org>
+Signed-off-by: Stylon Wang <stylon.wang@amd.com>
+Reviewed-by: Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>
+Acked-by: Eryk Brol <eryk.brol@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |   23 ++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
---- a/drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c
-+++ b/drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c
-@@ -2725,7 +2725,10 @@ static int ci_initialize_mc_reg_table(st
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -8686,6 +8686,29 @@ static int amdgpu_dm_atomic_check(struct
+ 		if (ret)
+ 			goto fail;
  
- static bool ci_is_dpm_running(struct pp_hwmgr *hwmgr)
- {
--	return ci_is_smc_ram_running(hwmgr);
-+	return (1 == PHM_READ_INDIRECT_FIELD(hwmgr->device,
-+					     CGS_IND_REG__SMC, FEATURE_STATUS,
-+					     VOLTAGE_CONTROLLER_ON))
-+		? true : false;
- }
- 
- static int ci_smu_init(struct pp_hwmgr *hwmgr)
++	/* Check connector changes */
++	for_each_oldnew_connector_in_state(state, connector, old_con_state, new_con_state, i) {
++		struct dm_connector_state *dm_old_con_state = to_dm_connector_state(old_con_state);
++		struct dm_connector_state *dm_new_con_state = to_dm_connector_state(new_con_state);
++
++		/* Skip connectors that are disabled or part of modeset already. */
++		if (!old_con_state->crtc && !new_con_state->crtc)
++			continue;
++
++		if (!new_con_state->crtc)
++			continue;
++
++		new_crtc_state = drm_atomic_get_crtc_state(state, new_con_state->crtc);
++		if (IS_ERR(new_crtc_state)) {
++			ret = PTR_ERR(new_crtc_state);
++			goto fail;
++		}
++
++		if (dm_old_con_state->abm_level !=
++		    dm_new_con_state->abm_level)
++			new_crtc_state->connectors_changed = true;
++	}
++
+ #if defined(CONFIG_DRM_AMD_DC_DCN)
+ 		if (!compute_mst_dsc_configs_for_state(state, dm_state->context))
+ 			goto fail;
 
 
