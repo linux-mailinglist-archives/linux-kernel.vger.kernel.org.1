@@ -2,179 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2F124C371
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 18:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8AAC24C36C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 18:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730020AbgHTQjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 12:39:21 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:41938 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728987AbgHTQjL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 12:39:11 -0400
-Received: from 89-64-87-57.dynamic.chello.pl (89.64.87.57) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.459)
- id 48e50a6e30a2fd8e; Thu, 20 Aug 2020 18:39:06 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Doug Smythies <dsmythies@telus.net>
-Subject: [PATCH 4/4] cpufreq: intel_pstate: Free memory only when turning off
-Date:   Thu, 20 Aug 2020 18:38:40 +0200
-Message-ID: <5545992.MujegtMJko@kreacher>
-In-Reply-To: <2283366.Lr8yYYnyev@kreacher>
-References: <2283366.Lr8yYYnyev@kreacher>
+        id S1729977AbgHTQic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 12:38:32 -0400
+Received: from foss.arm.com ([217.140.110.172]:42636 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728753AbgHTQiN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 12:38:13 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C367E31B;
+        Thu, 20 Aug 2020 09:38:09 -0700 (PDT)
+Received: from e119603-lin.cambridge.arm.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 120893F6CF;
+        Thu, 20 Aug 2020 09:38:08 -0700 (PDT)
+Date:   Thu, 20 Aug 2020 17:38:44 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] regulator: core: add of_match_full_name boolean flag
+Message-ID: <20200820163844.GA7292@e119603-lin.cambridge.arm.com>
+References: <20200819140448.51373-1-cristian.marussi@arm.com>
+ <20200819182245.GE5441@sirena.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200819182245.GE5441@sirena.org.uk>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Hi Mark 
 
-When intel_pstate switches the operation mode from "active" to
-"passive" or the other way around, freeing its data structures
-representing CPUs and allocating them again from scratch is not
-necessary and wasteful.  Moreover, if these data structures are
-preserved, the cached HWP Request MSR value from there may be
-written to the MSR to start with to reinitialize it and help to
-restore the EPP value set previously (it is set to 0xFF when CPUs
-go offline to allow their SMT siblings to use the full range of
-EPP values and that also happens when the driver gets unregistered).
+thanks for the review.
 
-Accordingly, modify the driver to only do a full cleanup on driver
-object registration errors and when its status is changed to "off"
-via sysfs and to write the cached HWP Request MSR value back to
-the MSR on CPU init if the data structure representing the given
-CPU is still there.
+On Wed, Aug 19, 2020 at 07:22:45PM +0100, Mark Brown wrote:
+> On Wed, Aug 19, 2020 at 03:04:48PM +0100, Cristian Marussi wrote:
+> 
+> > Property 'regulator-compatible' is now deprecated (even if still widely
+> > used in the code base), and the node-name fallback works fine only as long
+> 
+> I'm seeing a very small number of DTs using it, the majority of which
+> are pretty old - the arm64 ones are just mistakes on the part of
+> reviewers.
+> 
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/cpufreq/intel_pstate.c | 51 +++++++++++++---------------------
- 1 file changed, 19 insertions(+), 32 deletions(-)
+Yes indeed 'widely' was a bit of an exaggeration, what I (poorly) meant to point
+out was that beside still used is deprecated and so not a viable option to solve
+my issue.
 
-diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-index aca0587b176f..a7c6491f2b4a 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -2091,30 +2091,32 @@ static int intel_pstate_init_cpu(unsigned int cpunum)
- 
- 	cpu = all_cpu_data[cpunum];
- 
--	if (!cpu) {
-+	if (cpu) {
-+		if (hwp_active)
-+			wrmsrl_on_cpu(cpunum, MSR_HWP_REQUEST,
-+				      cpu->hwp_req_cached);
-+	} else {
- 		cpu = kzalloc(sizeof(*cpu), GFP_KERNEL);
- 		if (!cpu)
- 			return -ENOMEM;
- 
- 		all_cpu_data[cpunum] = cpu;
- 
-+		cpu->cpu = cpunum;
-+
- 		cpu->epp_default = -EINVAL;
- 		cpu->epp_powersave = -EINVAL;
- 		cpu->epp_saved = -EINVAL;
--	}
--
--	cpu = all_cpu_data[cpunum];
- 
--	cpu->cpu = cpunum;
-+		if (hwp_active) {
-+			const struct x86_cpu_id *id;
- 
--	if (hwp_active) {
--		const struct x86_cpu_id *id;
-+			intel_pstate_hwp_enable(cpu);
- 
--		intel_pstate_hwp_enable(cpu);
--
--		id = x86_match_cpu(intel_pstate_hwp_boost_ids);
--		if (id && intel_pstate_acpi_pm_profile_server())
--			hwp_boost = true;
-+			id = x86_match_cpu(intel_pstate_hwp_boost_ids);
-+			if (id && intel_pstate_acpi_pm_profile_server())
-+				hwp_boost = true;
-+		}
- 	}
- 
- 	intel_pstate_get_cpu_pstates(cpu);
-@@ -2701,9 +2703,6 @@ static void intel_pstate_driver_cleanup(void)
- 	}
- 	put_online_cpus();
- 
--	if (intel_pstate_driver == &intel_pstate)
--		intel_pstate_sysfs_hide_hwp_dynamic_boost();
--
- 	intel_pstate_driver = NULL;
- }
- 
-@@ -2729,14 +2728,6 @@ static int intel_pstate_register_driver(struct cpufreq_driver *driver)
- 	return 0;
- }
- 
--static int intel_pstate_unregister_driver(void)
--{
--	cpufreq_unregister_driver(intel_pstate_driver);
--	intel_pstate_driver_cleanup();
--
--	return 0;
--}
--
- static ssize_t intel_pstate_show_status(char *buf)
- {
- 	if (!intel_pstate_driver)
-@@ -2748,8 +2739,6 @@ static ssize_t intel_pstate_show_status(char *buf)
- 
- static int intel_pstate_update_status(const char *buf, size_t size)
- {
--	int ret;
--
- 	if (size == 3 && !strncmp(buf, "off", size)) {
- 		if (!intel_pstate_driver)
- 			return -EINVAL;
-@@ -2757,7 +2746,8 @@ static int intel_pstate_update_status(const char *buf, size_t size)
- 		if (hwp_active)
- 			return -EBUSY;
- 
--		return intel_pstate_unregister_driver();
-+		cpufreq_unregister_driver(intel_pstate_driver);
-+		intel_pstate_driver_cleanup();
- 	}
- 
- 	if (size == 6 && !strncmp(buf, "active", size)) {
-@@ -2765,9 +2755,7 @@ static int intel_pstate_update_status(const char *buf, size_t size)
- 			if (intel_pstate_driver == &intel_pstate)
- 				return 0;
- 
--			ret = intel_pstate_unregister_driver();
--			if (ret)
--				return ret;
-+			cpufreq_unregister_driver(intel_pstate_driver);
- 		}
- 
- 		return intel_pstate_register_driver(&intel_pstate);
-@@ -2778,9 +2766,8 @@ static int intel_pstate_update_status(const char *buf, size_t size)
- 			if (intel_pstate_driver == &intel_cpufreq)
- 				return 0;
- 
--			ret = intel_pstate_unregister_driver();
--			if (ret)
--				return ret;
-+			cpufreq_unregister_driver(intel_pstate_driver);
-+			intel_pstate_sysfs_hide_hwp_dynamic_boost();
- 		}
- 
- 		return intel_pstate_register_driver(&intel_cpufreq);
--- 
-2.26.2
+> > as the nodes are named in an unique way; if it makes sense to use a common
+> > name and identifying them using an index through a 'reg' property the
+> > standard advices to use a naming in the form <common-name>@<unit>.
+> 
+> > In this case the above matching mechanism based on the simple (common) name
+> > will fail and the only viable alternative would be to properly define the
+> > deprecrated 'regulator-compatible' property equal to the full name
+> > <common-name>@<unit>.
+> 
+> This seems like a massive jump.  You appear to be saying that the reg
+> property is unusable which doesn't seem right to me?
+> 
 
+The 'issue' I observed while working on another series was that with the
+following example DT:
 
+firmware {
+	scmi {
+		...
+		scmi_voltage: scmi_protocol@17 {
+			reg = <0x17>;
+			
+			regulators {
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				regulator_scmi_discrete: regulator_scmi_discrete@0 {
+					reg = <0>;
+				};
+				
+				regulator_scmi_range: regulator_scmi_range@2 {
+					reg = <2>;
+				};
+				
+				regulator_scmi_vd3: regulator_scmi@3 {
+					reg = <3>;
+				};
+
+				regulator_scmi_vd4: regulator_scmi@4 {
+					reg = <4>;
+				};
+			};
+		};
+};
+
+and the struct regulator_desc configured roughly as:
+
+	sreg->desc.regulators_node = "regulators";
+	sreg->desc.of_match = sreg->of_node->name;    <<< This being the regulator_* nodes
+
+the regulator framework standard initialization routines were able to match univocally the
+first two regulators above (and parse autonomously the constraints without me explicitly
+calling of_get_regulator_init_data() as in a previous version of the series), but got fooled
+by the last two since the node name is the same and they differ only by the index, which in
+turn anyway seemed to me a sensible thing to be able to do when a node uses reg indexing.
+
+Note that with these SCMI regulators this .of_match configuration happens dynamically at
+run-time (as above) since it is defined by the DT and the SCMI fw platform which regulators are
+visible and defined and the common SCMI regulator driver handles them all if defined in the DT
+and known to the SCMI fw, while with the normal regulators the .of_match setup happens statically
+at compile time with macros driver by driver, since the DT defines what is present and the driver
+declares what can support.
+
+With this patch you could support both the above naming instead configuring like:
+
+	sreg->desc.regulators_node = "regulators";
+	sreg->desc.of_match_full_name = true;
+	sreg->desc.of_match = sreg->of_node->full_name;
+
+but I'm not sure that this is needed and worth the effort sincerely at this point,
+and probably makes more sense to look at this possible naming issue after I post
+the whole original series (without this patch) just to be sure I'm not getting
+something wrong somewhere else instead.
+
+> > In order to address this case without using such deprecated property,
+> > define a new boolean flag .of_match_full_name in struct regulator_desc to
+> > force the core to match against the node full-name instead.
+> 
+> I can't tell from this description what this change is intended to do,
+> and I suspect it'd be difficult for anyone trying to figure out if they
+> should use this or not.  What is a full name and what should people put
+> in there?  What would one look like for example?  I have to look at the
+> code to see that this is changing to compare against the full_name field
+> in the node and there's no kerneldoc for struct device_node.
+> 
+
+Yes I agree it is hard to understand how to use this from the commit log and if
+it is useful or not in a specific use case.
+
+> I'm also wondering why we can't just add this to the list of fallbacks
+> rather than requiring some custom per driver thing?
+> 
+
+It's an option but it would have doubled the following strncmp() if we just started
+checking against full_name every time we fail to find against name so I thought
+to make it configurable with the new of_match_full_name....but, given it is far from
+clear with this proposed patch, maybe it's better to use a default fallback as you said.
+
+> > -			name = child->name;
+> > +			name = !desc->of_match_full_name ?
+> > +				child->name : child->full_name;
+> 
+> Please write normal conditional statements for the benefits of people
+> who have to read this code, the extra ! in there isn't adding anything
+> here either.
+
+At this point I could just hold this patch and post the original series ignoring
+the above issue at first and discuss around that code if this is needed at all
+(so to have more context to discuss this), or simplify the patch as above if you
+think this fix is still worth.
+
+Regards
+
+Cristian
 
 
