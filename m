@@ -2,82 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C581224B90F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEAC424B90D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728176AbgHTLiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:38:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730849AbgHTLfD (ORCPT
+        id S1730651AbgHTLhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:37:40 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:30148 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730790AbgHTLgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 07:35:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E88C061385;
-        Thu, 20 Aug 2020 04:35:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=t84+Z949JCHOIrLVWyab10y1aUar8zezYlYXe5c2wbk=; b=Vah+zRC10NBMvc8xBtg+tjZiTo
-        FG7tUUZHI4+gor8Ux3uZza/5rQmRIf34CLhjWtUc4glJBovY5Zt8tMIGwnOKg026bwsrH9lojI7bL
-        E2pXK2kM1ZFDkhxnJx44Kyexr0FfrbS+K7Ic7AF3qsysKTCBWa9tiIRJMbzNOvApL0RROg2bxNoiN
-        6l383zlJUyuwUumLjB0w/Xi3RreLD+9ipEDkwtIPtksBVSBgUyyKSjP/UK9C5QsuGrs9rETzxjkXA
-        bQzIO195RJBmwBnXAb4ZRT4fRC0sG82WYMpiMOZx0aoZqJ1SqMeFV4vEG9SCc8Nl39JQVEhWdA03e
-        DTE5yHTQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k8iqG-0002He-GO; Thu, 20 Aug 2020 11:34:48 +0000
-Date:   Thu, 20 Aug 2020 12:34:48 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Gao Xiang <hsiangkao@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Thu, 20 Aug 2020 07:36:48 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07KB3UlD136298;
+        Thu, 20 Aug 2020 07:36:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=k7KfW0RZAjPIFH/IRXudnl5GCxnyZfPjYnmTz1S/C5Y=;
+ b=S6S/ND16urnI16ekC35Bzim6ncR9qjSNgBt1bQCUxuLhulf81CqteDAov5rK0Ni37LiP
+ yV4TUjgZ93y/cbhvLuDk5ydNxpp3klztxCn6SHypliuaMi/aGQD8gPVcBT3XH82Rnzmo
+ IBoj4l8qR0VJRORlP1hO6gC0qsMV2FdkoLRcTwUuYAtai32QUaS4strshSYKyEMAlem/
+ OstswIVmO34E953Y+tQdVcaT1sU/7f9X50NiWUP9F/TNw2PawHNKFr+v3lBQ5FuLbgye
+ okW6m/foRGI2J9iJeb9HZE0f/YDXv6yqt4zkb8urvmeVaYL1iFFfmy2/eqo9jmnfEOP8 pA== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3317ab369v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Aug 2020 07:36:43 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07KBW3hb019650;
+        Thu, 20 Aug 2020 11:36:41 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 330tbvsseu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Aug 2020 11:36:41 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07KBadUD26804618
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 20 Aug 2020 11:36:39 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 17C1CA4051;
+        Thu, 20 Aug 2020 11:36:39 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DD2F5A4059;
+        Thu, 20 Aug 2020 11:36:37 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.199.33.217])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 20 Aug 2020 11:36:37 +0000 (GMT)
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     jack@suse.cz, tytso@mit.edu, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Carlos Maiolino <cmaiolino@redhat.com>,
-        Eric Sandeen <esandeen@redhat.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Rafael Aquini <aquini@redhat.com>,
-        Dave Chinner <david@fromorbit.com>,
-        stable <stable@vger.kernel.org>
-Subject: Re: [PATCH v2] mm, THP, swap: fix allocating cluster for swapfile by
- mistake
-Message-ID: <20200820113448.GM17456@casper.infradead.org>
-References: <20200820045323.7809-1-hsiangkao@redhat.com>
+        Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: [RFC 0/1] Optimize ext4 DAX overwrites
+Date:   Thu, 20 Aug 2020 17:06:27 +0530
+Message-Id: <cover.1597855360.git.riteshh@linux.ibm.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200820045323.7809-1-hsiangkao@redhat.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-20_02:2020-08-19,2020-08-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
+ malwarescore=0 suspectscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
+ bulkscore=0 mlxlogscore=825 phishscore=0 clxscore=1015 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008200093
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 12:53:23PM +0800, Gao Xiang wrote:
-> SWP_FS is used to make swap_{read,write}page() go through
-> the filesystem, and it's only used for swap files over
-> NFS. So, !SWP_FS means non NFS for now, it could be either
-> file backed or device backed. Something similar goes with
-> legacy SWP_FILE.
-> 
-> So in order to achieve the goal of the original patch,
-> SWP_BLKDEV should be used instead.
+In case of dax writes, currently we start a journal txn irrespective of whether
+it's an overwrite or not. In case of an overwrite we don't need to start a
+jbd2 txn since the blocks are already allocated.
+So this patch optimizes away the txn start in case of DAX overwrites.
+This could significantly boost performance for multi-threaded random write
+(overwrite). Fio script used to collect perf numbers is mentioned below.
 
-This is clearly confusing.  I think we need to rename SWP_FS to SWP_FS_OPS.
+Below numbers were calculated on a QEMU setup on ppc64 box with simulated
+pmem device.
 
-More generally, the swap code seems insane.  I appreciate that it's an
-inherited design from over twenty-five years ago, and nobody wants to
-touch it, but it's crazy that it cares about how the filesystem has
-mapped file blocks to disk blocks.  I understand that the filesystem
-has to know not to allocate memory in order to free memory, but this
-is already something filesystems have to understand.  It's also useful
-for filesystems to know that this is data which has no meaning after a
-power cycle (so it doesn't need to be journalled or snapshotted or ...),
-but again, that's useful functionality which we could stand to present
-to userspace anyway.
+Performance numbers with different threads - (~10x improvement)
+==========================================
 
-I suppose the tricky thing about it is that working on the swap code is
-not as sexy as working on a filesystem, and doing the swap code right
-is essentially writing a filesystem, so everybody who's capable already
-has something better to do.
+vanilla_kernel(kIOPS)
+ 60 +-+---------------+-------+--------+--------+--------+-------+------+-+   
+     |                 +       +        +        +**      +       +        |   
+  55 +-+                                          **                     +-+   
+     |                                   **       **                       |   
+     |                                   **       **                       |   
+  50 +-+                                 **       **                     +-+   
+     |                                   **       **                       |   
+  45 +-+                                 **       **                     +-+   
+     |                                   **       **                       |   
+     |                                   **       **                       |   
+  40 +-+                                 **       **                     +-+   
+     |                                   **       **                       |   
+  35 +-+                        **       **       **                     +-+   
+     |                          **       **       **               **      |   
+     |                          **       **       **      **       **      |   
+  30 +-+               **       **       **       **      **       **    +-+   
+     |                 **      +**      +**      +**      **      +**      |   
+  25 +-+---------------**------+**------+**------+**------**------+**----+-+   
+                       1       2        4        8       12      16            
+                                     Threads                                   
+patched_kernel(kIOPS)
+  600 +-+--------------+--------+--------+-------+--------+-------+------+-+   
+      |                +        +        +       +        +       +**      |   
+      |                                                            **      |   
+  500 +-+                                                          **    +-+   
+      |                                                            **      |   
+      |                                                    **      **      |   
+  400 +-+                                                  **      **    +-+   
+      |                                                    **      **      |   
+  300 +-+                                         **       **      **    +-+   
+      |                                           **       **      **      |   
+      |                                           **       **      **      |   
+  200 +-+                                         **       **      **    +-+   
+      |                                  **       **       **      **      |   
+      |                                  **       **       **      **      |   
+  100 +-+                        **      **       **       **      **    +-+   
+      |                          **      **       **       **      **      |   
+      |                +**      +**      **      +**      +**     +**      |   
+    0 +-+--------------+**------+**------**------+**------+**-----+**----+-+   
+                       1        2        4       8       12      16            
+                                     Threads                                   
+fio script
+==========
+[global]
+rw=randwrite
+norandommap=1
+invalidate=0
+bs=4k
+numjobs=16 		--> changed this for different thread options
+time_based=1
+ramp_time=30
+runtime=60
+group_reporting=1
+ioengine=psync
+direct=1
+size=16G
+filename=file1.0.0:file1.0.1:file1.0.2:file1.0.3:file1.0.4:file1.0.5:file1.0.6:file1.0.7:file1.0.8:file1.0.9:file1.0.10:file1.0.11:file1.0.12:file1.0.13:file1.0.14:file1.0.15:file1.0.16:file1.0.17:file1.0.18:file1.0.19:file1.0.20:file1.0.21:file1.0.22:file1.0.23:file1.0.24:file1.0.25:file1.0.26:file1.0.27:file1.0.28:file1.0.29:file1.0.30:file1.0.31
+file_service_type=random
+nrfiles=32
+directory=/mnt/
 
-Anyway, Gao, please can you submit a follow-on patch to rename SWP_FS?
+[name]
+directory=/mnt/
+direct=1
+
+NOTE:
+======
+1. Looking at ~10x perf delta, I probed a bit deeper to understand what's causing
+this scalability problem. It seems when we are starting a jbd2 txn then slab
+alloc code is observing some serious contention around spinlock.
+
+Even though the spinlock contention could be related to some other
+issue (looking into it internally). But I could still see the perf improvement
+of close to ~2x on QEMU setup on x86 with simulated pmem device with the
+patched_kernel v/s vanilla_kernel with same fio workload.
+
+perf report from vanilla_kernel (this is not seen with patched kernel) (ppc64)
+=======================================================================
+
+  47.86%  fio              [kernel.vmlinux]            [k] do_raw_spin_lock
+             |
+             ---do_raw_spin_lock
+                |
+                |--19.43%--_raw_spin_lock
+                |          |
+                |           --19.31%--0
+                |                     |
+                |                     |--9.77%--deactivate_slab.isra.61
+                |                     |          ___slab_alloc
+                |                     |          __slab_alloc
+                |                     |          kmem_cache_alloc
+                |                     |          jbd2__journal_start
+                |                     |          __ext4_journal_start_sb
+<...>
+
+2. Kept this as RFC, since maybe using the ext4_iomap_overwrite_ops,
+will be better here. We could check for overwrite in ext4_dax_write_iter(),
+like how we do for DIO writes. Thoughts?
+
+3. This problem was reported by Dan Williams at [1]
+
+Links
+======
+[1]: https://lore.kernel.org/linux-ext4/20190802144304.GP25064@quack2.suse.cz/T/
+
+Ritesh Harjani (1):
+  ext4: Optimize ext4 DAX overwrites
+
+ fs/ext4/ext4.h  | 1 +
+ fs/ext4/file.c  | 2 +-
+ fs/ext4/inode.c | 8 +++++++-
+ 3 files changed, 9 insertions(+), 2 deletions(-)
+
+-- 
+2.25.4
+
