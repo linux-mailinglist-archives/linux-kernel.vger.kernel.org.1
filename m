@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41DA524B421
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE97024B2A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730400AbgHTJ60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:58:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42330 "EHLO mail.kernel.org"
+        id S1727950AbgHTJed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:34:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730393AbgHTJ6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:58:17 -0400
+        id S1728241AbgHTJbl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:31:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F4F120855;
-        Thu, 20 Aug 2020 09:58:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B19C207DE;
+        Thu, 20 Aug 2020 09:31:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917497;
-        bh=K1xhDAwcr1pkUBiTyzmneGxC31Quu0OUGPHPH6RjErU=;
+        s=default; t=1597915900;
+        bh=KkTpjo3ubxOjKtyVT6Vor4FVC+SUr0Oso39gyEFrEDs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sobJxSzA79TOppFGtF4ZAbLUZk3miQ6ke+ev4iW38CpttzyY68mp2UkeiNFC8+4Gx
-         oquBTXLIPogPtrmvmSUaTzhBc0hrIvFJXGf1XbL3nOK7yBp0wJCITSkM/c8OLVpoXf
-         ShEPE/XNh/LuWST42lISRnCLYuOB1W4QcivPUlMk=
+        b=hVhDLkCspo1RVxZ0AAtugtVlUP8nxU5TZ/MP9u6HJ0htFn4AVwAZq4SXpKkV+Z4ap
+         uL4GHkwth4eb48Fpy/fQPvj4UFKtNNU7exiNeo+A9ECWE9wGd3+66y13cOssQYagwK
+         AMr9BlFMgQ8IcVuPO8uFtxjdUpa0kcSJazufQOlg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Remi Pommarel <repk@triplefau.lt>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Jonathan Marek <jonathan@marek.ca>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 034/212] mac80211: mesh: Free pending skb when destroying a mpath
-Date:   Thu, 20 Aug 2020 11:20:07 +0200
-Message-Id: <20200820091604.086908070@linuxfoundation.org>
+Subject: [PATCH 5.8 157/232] clk: qcom: clk-alpha-pll: remove unused/incorrect PLL_CAL_VAL
+Date:   Thu, 20 Aug 2020 11:20:08 +0200
+Message-Id: <20200820091620.415414589@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
-References: <20200820091602.251285210@linuxfoundation.org>
+In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
+References: <20200820091612.692383444@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,72 +45,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Remi Pommarel <repk@triplefau.lt>
+From: Jonathan Marek <jonathan@marek.ca>
 
-[ Upstream commit 5e43540c2af0a0c0a18e39579b1ad49541f87506 ]
+[ Upstream commit c8b9002f44e4a1d2771b2f59f6de900864b1f9d7 ]
 
-A mpath object can hold reference on a list of skb that are waiting for
-mpath resolution to be sent. When destroying a mpath this skb list
-should be cleaned up in order to not leak memory.
+0x44 isn't a register offset, it is the value that goes into CAL_L_VAL.
 
-Fixing that kind of leak:
-
-unreferenced object 0xffff0000181c9300 (size 1088):
-  comm "openvpn", pid 1782, jiffies 4295071698 (age 80.416s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 f9 80 36 00 00 00 00 00  ..........6.....
-    02 00 07 40 00 00 00 00 00 00 00 00 00 00 00 00  ...@............
-  backtrace:
-    [<000000004bc6a443>] kmem_cache_alloc+0x1a4/0x2f0
-    [<000000002caaef13>] sk_prot_alloc.isra.39+0x34/0x178
-    [<00000000ceeaa916>] sk_alloc+0x34/0x228
-    [<00000000ca1f1d04>] inet_create+0x198/0x518
-    [<0000000035626b1c>] __sock_create+0x134/0x328
-    [<00000000a12b3a87>] __sys_socket+0xb0/0x158
-    [<00000000ff859f23>] __arm64_sys_socket+0x40/0x58
-    [<00000000263486ec>] el0_svc_handler+0xd0/0x1a0
-    [<0000000005b5157d>] el0_svc+0x8/0xc
-unreferenced object 0xffff000012973a40 (size 216):
-  comm "openvpn", pid 1782, jiffies 4295082137 (age 38.660s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 c0 06 16 00 00 ff ff 00 93 1c 18 00 00 ff ff  ................
-  backtrace:
-    [<000000004bc6a443>] kmem_cache_alloc+0x1a4/0x2f0
-    [<0000000023c8c8f9>] __alloc_skb+0xc0/0x2b8
-    [<000000007ad950bb>] alloc_skb_with_frags+0x60/0x320
-    [<00000000ef90023a>] sock_alloc_send_pskb+0x388/0x3c0
-    [<00000000104fb1a3>] sock_alloc_send_skb+0x1c/0x28
-    [<000000006919d2dd>] __ip_append_data+0xba4/0x11f0
-    [<0000000083477587>] ip_make_skb+0x14c/0x1a8
-    [<0000000024f3d592>] udp_sendmsg+0xaf0/0xcf0
-    [<000000005aabe255>] inet_sendmsg+0x5c/0x80
-    [<000000008651ea08>] __sys_sendto+0x15c/0x218
-    [<000000003505c99b>] __arm64_sys_sendto+0x74/0x90
-    [<00000000263486ec>] el0_svc_handler+0xd0/0x1a0
-    [<0000000005b5157d>] el0_svc+0x8/0xc
-
-Fixes: 2bdaf386f99c (mac80211: mesh: move path tables into if_mesh)
-Signed-off-by: Remi Pommarel <repk@triplefau.lt>
-Link: https://lore.kernel.org/r/20200704135419.27703-1-repk@triplefau.lt
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: 548a909597d5 ("clk: qcom: clk-alpha-pll: Add support for Trion PLLs")
+Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Link: https://lore.kernel.org/r/20200709135251.643-3-jonathan@marek.ca
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/mesh_pathtbl.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/clk/qcom/clk-alpha-pll.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/net/mac80211/mesh_pathtbl.c b/net/mac80211/mesh_pathtbl.c
-index 8c17d498df301..7c409ba1ddc74 100644
---- a/net/mac80211/mesh_pathtbl.c
-+++ b/net/mac80211/mesh_pathtbl.c
-@@ -555,6 +555,7 @@ static void mesh_path_free_rcu(struct mesh_table *tbl,
- 	del_timer_sync(&mpath->timer);
- 	atomic_dec(&sdata->u.mesh.mpaths);
- 	atomic_dec(&tbl->entries);
-+	mesh_path_flush_pending(mpath);
- 	kfree_rcu(mpath, rcu);
- }
+diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
+index 9b2dfa08acb2a..1325139173c95 100644
+--- a/drivers/clk/qcom/clk-alpha-pll.c
++++ b/drivers/clk/qcom/clk-alpha-pll.c
+@@ -56,7 +56,6 @@
+ #define PLL_STATUS(p)		((p)->offset + (p)->regs[PLL_OFF_STATUS])
+ #define PLL_OPMODE(p)		((p)->offset + (p)->regs[PLL_OFF_OPMODE])
+ #define PLL_FRAC(p)		((p)->offset + (p)->regs[PLL_OFF_FRAC])
+-#define PLL_CAL_VAL(p)		((p)->offset + (p)->regs[PLL_OFF_CAL_VAL])
  
+ const u8 clk_alpha_pll_regs[][PLL_OFF_MAX_REGS] = {
+ 	[CLK_ALPHA_PLL_TYPE_DEFAULT] =  {
+@@ -115,7 +114,6 @@ const u8 clk_alpha_pll_regs[][PLL_OFF_MAX_REGS] = {
+ 		[PLL_OFF_STATUS] = 0x30,
+ 		[PLL_OFF_OPMODE] = 0x38,
+ 		[PLL_OFF_ALPHA_VAL] = 0x40,
+-		[PLL_OFF_CAL_VAL] = 0x44,
+ 	},
+ 	[CLK_ALPHA_PLL_TYPE_LUCID] =  {
+ 		[PLL_OFF_L_VAL] = 0x04,
 -- 
 2.25.1
 
