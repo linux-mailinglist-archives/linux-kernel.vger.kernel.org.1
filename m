@@ -2,280 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2BDD24BA02
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A07724BA14
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730086AbgHTL6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:58:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730320AbgHTL6U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 07:58:20 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35B1C061385
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 04:58:19 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id b22so1595967oic.8
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 04:58:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WYTZ5oggGW4vnzG+aCQEqmegKWwKj3jml6L7NHXjNYI=;
-        b=PbHlW3SVBwPWT6+JRJN2hRCld4WOZY3LufJi+ZUjHgO7SHb8ZadSRR5VI/+sG/8kq3
-         Vs/Djz3hkKLDwPtYDjJ1Ldm2wll4UIRbjwalRzWoSB/3cGRWrxBmYSmhZGDLy1Lh2UgJ
-         oSB7vNuDglyUp4UxSkWaTOPZAX8HVOnuueN1Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WYTZ5oggGW4vnzG+aCQEqmegKWwKj3jml6L7NHXjNYI=;
-        b=tuEvH5sMW3vgdCR89hnZ1zIFo9F37a54n1cbKgln34lQwuWrMOvZa9gvYXzQaNAXr1
-         JPoVMbWcNjcl95sNWJmInMM6p+pRa85JFif3IEGFF4o8cD0Y69IV37VJKrcjg70QTR4Z
-         U7iyfQTIG9dHCam3ELVXOkjhzsscWuThpIPdK7pS7gatjDl3FPYwOMQFDaXbeiRKRMZr
-         zJWnSlyC88jiAK3XS+ZgaFVWNcv+S6IdllGpmmVRCe4UlRaDam7kTxZsNy5DG9UlhU5p
-         Bq7A+GSoOMp2Ha0SGxJFAqdaVlCYRv6P+pmEue6M/G14+8O0yY8FLw87Ve4iTRdNOF0/
-         fRdA==
-X-Gm-Message-State: AOAM532FXuCHdsFKoaRs4Q3ApaewEhiUQ2I8dLy8vVehMRgZqwfSJmxr
-        tYkPiBmYeDNHgOAnlNfv6AQ9EnLDrCQcn2OZNlkJ5A==
-X-Google-Smtp-Source: ABdhPJxtaCKs7uJ1rcTpGij31O041fZY6yd8YrzYEQJZp4JbbiPOA8mscbMD5ZiT845VViNeDV7NvyTljs97E5UPVZ8=
-X-Received: by 2002:aca:a88e:: with SMTP id r136mr1516559oie.110.1597924699316;
- Thu, 20 Aug 2020 04:58:19 -0700 (PDT)
+        id S1727858AbgHTL74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:59:56 -0400
+Received: from crapouillou.net ([89.234.176.41]:45940 "EHLO crapouillou.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730471AbgHTL7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 07:59:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1597924774; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kB2wGLDuU6aSHvN4xthqcKsE4uQqughcC0pSUs3BWBU=;
+        b=prx1avjqa0Ec51djNOI7gQDIPqvrOlAPUI7yPDnkvY580F1LFMbGawsak00Ou/nO9a0UWN
+        3d3DtzU5B+oepNoiQrT4clwIKAnw4yO/pMifbAFDcAFpXOvjJHAPknTYYFM6wOlYa5kq+P
+        NdU8DgqFntO9IBnHFyjFnr+Qa13EEtk=
+Date:   Thu, 20 Aug 2020 13:59:23 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] drivers/dma/dma-jz4780: Fix race condition between probe
+ and irq handler
+To:     madhuparnabhowmik10@gmail.com
+Cc:     dan.j.williams@intel.com, vkoul@kernel.org,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andrianov@ispras.ru, ldv-project@linuxtesting.org
+Message-Id: <ZM2DFQ.KQQJYLJ02WTD3@crapouillou.net>
+In-Reply-To: <20200816072253.13817-1-madhuparnabhowmik10@gmail.com>
+References: <20200816072253.13817-1-madhuparnabhowmik10@gmail.com>
 MIME-Version: 1.0
-References: <20200819092436.58232-1-lmb@cloudflare.com> <20200819092436.58232-7-lmb@cloudflare.com>
- <1ad29823-1925-01ee-f042-20b422a62a73@fb.com>
-In-Reply-To: <1ad29823-1925-01ee-f042-20b422a62a73@fb.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Thu, 20 Aug 2020 12:58:07 +0100
-Message-ID: <CACAyw9-ORs29Gt0c02qsco9ah_h88OqQh5cq36SpDCD19x89uw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 6/6] selftests: bpf: test sockmap update from BPF
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        kernel-team <kernel-team@cloudflare.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Aug 2020 at 21:46, Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 8/19/20 2:24 AM, Lorenz Bauer wrote:
-> > Add a test which copies a socket from a sockmap into another sockmap
-> > or sockhash. This excercises bpf_map_update_elem support from BPF
-> > context. Compare the socket cookies from source and destination to
-> > ensure that the copy succeeded.
-> >
-> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> > ---
-> >   .../selftests/bpf/prog_tests/sockmap_basic.c  | 76 +++++++++++++++++++
-> >   .../selftests/bpf/progs/test_sockmap_copy.c   | 48 ++++++++++++
-> >   2 files changed, 124 insertions(+)
-> >   create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_copy.c
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-> > index 96e7b7f84c65..d30cabc00e9e 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-> > @@ -4,6 +4,7 @@
-> >
-> >   #include "test_progs.h"
-> >   #include "test_skmsg_load_helpers.skel.h"
-> > +#include "test_sockmap_copy.skel.h"
-> >
-> >   #define TCP_REPAIR          19      /* TCP sock is under repair right now */
-> >
-> > @@ -101,6 +102,77 @@ static void test_skmsg_helpers(enum bpf_map_type map_type)
-> >       test_skmsg_load_helpers__destroy(skel);
-> >   }
-> >
-> > +static void test_sockmap_copy(enum bpf_map_type map_type)
-> > +{
-> > +     struct bpf_prog_test_run_attr attr;
-> > +     struct test_sockmap_copy *skel;
-> > +     __u64 src_cookie, dst_cookie;
-> > +     int err, prog, s, src, dst;
-> > +     const __u32 zero = 0;
-> > +     char dummy[14] = {0};
-> > +
-> > +     s = connected_socket_v4();
->
-> Maybe change variable name to "sk" for better clarity?
+Hi,
 
-Yup!
+Le dim. 16 ao=FBt 2020 =E0 12:52, madhuparnabhowmik10@gmail.com a =E9crit :
+> From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+>=20
+> In probe IRQ is requested before zchan->id is initialized which can be
+> read in the irq handler. Hence, shift request irq and enable clock=20
+> after
+> other initializations complete. Here, enable clock part is not part of
+> the race, it is just shifted down after request_irq to keep the error
+> path same as before.
+>=20
+> Found by Linux Driver Verification project (linuxtesting.org).
+>=20
+> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
->
-> > +     if (CHECK_FAIL(s == -1))
-> > +             return;
-> > +
-> > +     skel = test_sockmap_copy__open_and_load();
-> > +     if (CHECK_FAIL(!skel)) {
-> > +             close(s);
-> > +             perror("test_sockmap_copy__open_and_load");
-> > +             return;
-> > +     }
->
-> Could you use CHECK instead of CHECK_FAIL?
-> With CHECK, you can print additional information without perror.
+I don't think there is a race at all, the interrupt handler won't be=20
+called before the DMA is registered.
 
-I avoid CHECK because it requires `duration`, which doesn't make sense
-for most things that I call CHECK_FAIL on here. So either it outputs 0
-nsec (which is bogus) or it outputs the value from the last
-bpf_prog_test_run call (which is also bogus). How do other tests
-handle this? Just ignore it?
+More importantly, this patch will break things, as there are now=20
+register writes in the probe before the clock is enabled.
 
->
->
-> > +
-> > +     prog = bpf_program__fd(skel->progs.copy_sock_map);
-> > +     src = bpf_map__fd(skel->maps.src);
-> > +     if (map_type == BPF_MAP_TYPE_SOCKMAP)
-> > +             dst = bpf_map__fd(skel->maps.dst_sock_map);
-> > +     else
-> > +             dst = bpf_map__fd(skel->maps.dst_sock_hash);
-> > +
-> > +     err = bpf_map_update_elem(src, &zero, &s, BPF_NOEXIST);
->
-> The map defined in bpf program is __u64 and here "s" is int.
-> Any potential issues?
+Cheers,
+-Paul
 
-Hm, good point. This is a quirk of the sockmap API, I need to dig into
-this a bit.
-
->
-> > +     if (CHECK_FAIL(err)) {
-> > +             perror("bpf_map_update");
-> > +             goto out;
-> > +     }
-> > +
-> > +     err = bpf_map_lookup_elem(src, &zero, &src_cookie);
-> > +     if (CHECK_FAIL(err)) {
-> > +             perror("bpf_map_lookup_elem(src)");
-> > +             goto out;
-> > +     }
-> > +
-> > +     attr = (struct bpf_prog_test_run_attr){
-> > +             .prog_fd = prog,
-> > +             .repeat = 1,
-> > +             .data_in = dummy,
-> > +             .data_size_in = sizeof(dummy),
-> > +     };
-> > +
-> > +     err = bpf_prog_test_run_xattr(&attr);
-> > +     if (err) {
->
-> You can use CHECK macro here.
->
-> > +             test__fail();
-> > +             perror("bpf_prog_test_run");
-> > +             goto out;
-> > +     } else if (!attr.retval) {
-> > +             PRINT_FAIL("bpf_prog_test_run: program returned %u\n",
-> > +                        attr.retval);
-> > +             goto out;
-> > +     }
-> > +
-> > +     err = bpf_map_lookup_elem(dst, &zero, &dst_cookie);
-> > +     if (CHECK_FAIL(err)) {
-> > +             perror("bpf_map_lookup_elem(dst)");
-> > +             goto out;
-> > +     }
-> > +
-> > +     if (dst_cookie != src_cookie)
-> > +             PRINT_FAIL("cookie %llu != %llu\n", dst_cookie, src_cookie);
->
-> Just replace the whole if statement with a CHECK macro.
-
-See above, re duration.
-
->
-> > +
-> > +out:
-> > +     close(s);
-> > +     test_sockmap_copy__destroy(skel);
-> > +}
-> > +
-> >   void test_sockmap_basic(void)
-> >   {
-> >       if (test__start_subtest("sockmap create_update_free"))
-> > @@ -111,4 +183,8 @@ void test_sockmap_basic(void)
-> >               test_skmsg_helpers(BPF_MAP_TYPE_SOCKMAP);
-> >       if (test__start_subtest("sockhash sk_msg load helpers"))
-> >               test_skmsg_helpers(BPF_MAP_TYPE_SOCKHASH);
-> > +     if (test__start_subtest("sockmap copy"))
-> > +             test_sockmap_copy(BPF_MAP_TYPE_SOCKMAP);
-> > +     if (test__start_subtest("sockhash copy"))
-> > +             test_sockmap_copy(BPF_MAP_TYPE_SOCKHASH);
-> >   }
-> > diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_copy.c b/tools/testing/selftests/bpf/progs/test_sockmap_copy.c
-> > new file mode 100644
-> > index 000000000000..9d0c9f28cab2
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/test_sockmap_copy.c
-> > @@ -0,0 +1,48 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +// Copyright (c) 2020 Cloudflare
-> > +#include "vmlinux.h"
-> > +#include <bpf/bpf_helpers.h>
-> > +
-> > +struct {
-> > +     __uint(type, BPF_MAP_TYPE_SOCKMAP);
-> > +     __uint(max_entries, 1);
-> > +     __type(key, __u32);
-> > +     __type(value, __u64);
-> > +} src SEC(".maps");
-> > +
-> > +struct {
-> > +     __uint(type, BPF_MAP_TYPE_SOCKMAP);
-> > +     __uint(max_entries, 1);
-> > +     __type(key, __u32);
-> > +     __type(value, __u64);
-> > +} dst_sock_map SEC(".maps");
-> > +
-> > +struct {
-> > +     __uint(type, BPF_MAP_TYPE_SOCKHASH);
-> > +     __uint(max_entries, 1);
-> > +     __type(key, __u32);
-> > +     __type(value, __u64);
-> > +} dst_sock_hash SEC(".maps");
-> > +
-> > +SEC("classifier/copy_sock_map")
-> > +int copy_sock_map(void *ctx)
-> > +{
-> > +     struct bpf_sock *sk;
-> > +     bool failed = false;
-> > +     __u32 key = 0;
-> > +
-> > +     sk = bpf_map_lookup_elem(&src, &key);
-> > +     if (!sk)
-> > +             return SK_DROP;
-> > +
-> > +     if (bpf_map_update_elem(&dst_sock_map, &key, sk, 0))
-> > +             failed = true;
-> > +
-> > +     if (bpf_map_update_elem(&dst_sock_hash, &key, sk, 0))
-> > +             failed = true;
-> > +
-> > +     bpf_sk_release(sk);
-> > +     return failed ? SK_DROP : SK_PASS;
-> > +}
-> > +
-> > +char _license[] SEC("license") = "GPL";
-> >
+> ---
+>  drivers/dma/dma-jz4780.c | 44=20
+> ++++++++++++++++++++--------------------
+>  1 file changed, 22 insertions(+), 22 deletions(-)
+>=20
+> diff --git a/drivers/dma/dma-jz4780.c b/drivers/dma/dma-jz4780.c
+> index 448f663da89c..5cbc8c3bd6c7 100644
+> --- a/drivers/dma/dma-jz4780.c
+> +++ b/drivers/dma/dma-jz4780.c
+> @@ -879,28 +879,6 @@ static int jz4780_dma_probe(struct=20
+> platform_device *pdev)
+>  		return -EINVAL;
+>  	}
+>=20
+> -	ret =3D platform_get_irq(pdev, 0);
+> -	if (ret < 0)
+> -		return ret;
+> -
+> -	jzdma->irq =3D ret;
+> -
+> -	ret =3D request_irq(jzdma->irq, jz4780_dma_irq_handler, 0,=20
+> dev_name(dev),
+> -			  jzdma);
+> -	if (ret) {
+> -		dev_err(dev, "failed to request IRQ %u!\n", jzdma->irq);
+> -		return ret;
+> -	}
+> -
+> -	jzdma->clk =3D devm_clk_get(dev, NULL);
+> -	if (IS_ERR(jzdma->clk)) {
+> -		dev_err(dev, "failed to get clock\n");
+> -		ret =3D PTR_ERR(jzdma->clk);
+> -		goto err_free_irq;
+> -	}
+> -
+> -	clk_prepare_enable(jzdma->clk);
+> -
+>  	/* Property is optional, if it doesn't exist the value will remain=20
+> 0. */
+>  	of_property_read_u32_index(dev->of_node,=20
+> "ingenic,reserved-channels",
+>  				   0, &jzdma->chan_reserved);
+> @@ -949,6 +927,28 @@ static int jz4780_dma_probe(struct=20
+> platform_device *pdev)
+>  		jzchan->vchan.desc_free =3D jz4780_dma_desc_free;
+>  	}
+>=20
+> +	ret =3D platform_get_irq(pdev, 0);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	jzdma->irq =3D ret;
+> +
+> +	ret =3D request_irq(jzdma->irq, jz4780_dma_irq_handler, 0,=20
+> dev_name(dev),
+> +			  jzdma);
+> +	if (ret) {
+> +		dev_err(dev, "failed to request IRQ %u!\n", jzdma->irq);
+> +		return ret;
+> +	}
+> +
+> +	jzdma->clk =3D devm_clk_get(dev, NULL);
+> +	if (IS_ERR(jzdma->clk)) {
+> +		dev_err(dev, "failed to get clock\n");
+> +		ret =3D PTR_ERR(jzdma->clk);
+> +		goto err_free_irq;
+> +	}
+> +
+> +	clk_prepare_enable(jzdma->clk);
+> +
+>  	ret =3D dmaenginem_async_device_register(dd);
+>  	if (ret) {
+>  		dev_err(dev, "failed to register device\n");
+> --
+> 2.17.1
+>=20
 
 
-
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
