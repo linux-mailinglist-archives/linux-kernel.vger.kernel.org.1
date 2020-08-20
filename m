@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E95124B42F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3531D24B300
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730404AbgHTJ7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:59:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44748 "EHLO mail.kernel.org"
+        id S1729021AbgHTJkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:40:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729977AbgHTJ7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:59:08 -0400
+        id S1728600AbgHTJkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:40:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 42C5B20855;
-        Thu, 20 Aug 2020 09:59:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B9DBC2173E;
+        Thu, 20 Aug 2020 09:40:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917547;
-        bh=AfPknJHdAKb1a61IvJ8rVc97ePVa5CPPTQ/JFx7t1yw=;
+        s=default; t=1597916411;
+        bh=RHqDz9lR5Du0csNXTtFqx68ndUQQKIhitffvzRzCYBU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NKdOM1iSeznX+CzyAvPnQ/zXzQfW/YBjLEA9bX0U88JF+hgMJjUAC5EY41iDVwWvX
-         hu3L5ii4mnQYChDC3uHegGFdX4iN87CVnaEW0mvgzUjV92/m1TUIEX4r8JmpNWmsuQ
-         PysQiljIQVJP//JzeFIDuvYbk6dJmoILmtHlrIag=
+        b=m4fENWd6Vji4eqCwVQAPK7stbzZPZA8VnE8lchb6pnlQOhsKgJYU+QL71lw3Lk1S8
+         ryWGj34JxvWwoQp7QSBUrK1tfS/t3x580st9ru54hxwKRoUuohxjS78BxOi0A8ZKzq
+         nTcsM0U0VuOeyGWBUUUvHS/TkBDfUXaxjts1HjaA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dirk Behme <dirk.behme@de.bosch.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 040/212] net: ethernet: ravb: exit if re-initialization fails in tx timeout
-Date:   Thu, 20 Aug 2020 11:20:13 +0200
-Message-Id: <20200820091604.386819049@linuxfoundation.org>
+Subject: [PATCH 5.7 118/204] USB: serial: ftdi_sio: clean up receive processing
+Date:   Thu, 20 Aug 2020 11:20:15 +0200
+Message-Id: <20200820091612.202744208@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
-References: <20200820091602.251285210@linuxfoundation.org>
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,89 +43,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit 015c5d5e6aa3523c758a70eb87b291cece2dbbb4 ]
+[ Upstream commit ce054039ba5e47b75a3be02a00274e52b06a6456 ]
 
-According to the report of [1], this driver is possible to cause
-the following error in ravb_tx_timeout_work().
+Clean up receive processing by dropping the character pointer and
+keeping the length argument unchanged throughout the function.
 
-ravb e6800000.ethernet ethernet: failed to switch device to config mode
+Also make it more apparent that sysrq processing can consume a
+characters by adding an explicit continue.
 
-This error means that the hardware could not change the state
-from "Operation" to "Configuration" while some tx and/or rx queue
-are operating. After that, ravb_config() in ravb_dmac_init() will fail,
-and then any descriptors will be not allocaled anymore so that NULL
-pointer dereference happens after that on ravb_start_xmit().
-
-To fix the issue, the ravb_tx_timeout_work() should check
-the return values of ravb_stop_dma() and ravb_dmac_init().
-If ravb_stop_dma() fails, ravb_tx_timeout_work() re-enables TX and RX
-and just exits. If ravb_dmac_init() fails, just exits.
-
-[1]
-https://lore.kernel.org/linux-renesas-soc/20200518045452.2390-1-dirk.behme@de.bosch.com/
-
-Reported-by: Dirk Behme <dirk.behme@de.bosch.com>
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/renesas/ravb_main.c | 26 ++++++++++++++++++++++--
- 1 file changed, 24 insertions(+), 2 deletions(-)
+ drivers/usb/serial/ftdi_sio.c | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-index 545cb6262cffd..93d3152752ff4 100644
---- a/drivers/net/ethernet/renesas/ravb_main.c
-+++ b/drivers/net/ethernet/renesas/ravb_main.c
-@@ -1444,6 +1444,7 @@ static void ravb_tx_timeout_work(struct work_struct *work)
- 	struct ravb_private *priv = container_of(work, struct ravb_private,
- 						 work);
- 	struct net_device *ndev = priv->ndev;
-+	int error;
+diff --git a/drivers/usb/serial/ftdi_sio.c b/drivers/usb/serial/ftdi_sio.c
+index 96b9e2768ac5c..33f1cca7eaa61 100644
+--- a/drivers/usb/serial/ftdi_sio.c
++++ b/drivers/usb/serial/ftdi_sio.c
+@@ -2483,7 +2483,6 @@ static int ftdi_process_packet(struct usb_serial_port *port,
+ 		struct ftdi_private *priv, unsigned char *buf, int len)
+ {
+ 	unsigned char status;
+-	unsigned char *ch;
+ 	int i;
+ 	char flag;
  
- 	netif_tx_stop_all_queues(ndev);
+@@ -2526,8 +2525,7 @@ static int ftdi_process_packet(struct usb_serial_port *port,
+ 	else
+ 		priv->transmit_empty = 0;
  
-@@ -1452,15 +1453,36 @@ static void ravb_tx_timeout_work(struct work_struct *work)
- 		ravb_ptp_stop(ndev);
+-	len -= 2;
+-	if (!len)
++	if (len == 2)
+ 		return 0;	/* status only */
  
- 	/* Wait for DMA stopping */
--	ravb_stop_dma(ndev);
-+	if (ravb_stop_dma(ndev)) {
-+		/* If ravb_stop_dma() fails, the hardware is still operating
-+		 * for TX and/or RX. So, this should not call the following
-+		 * functions because ravb_dmac_init() is possible to fail too.
-+		 * Also, this should not retry ravb_stop_dma() again and again
-+		 * here because it's possible to wait forever. So, this just
-+		 * re-enables the TX and RX and skip the following
-+		 * re-initialization procedure.
-+		 */
-+		ravb_rcv_snd_enable(ndev);
-+		goto out;
-+	}
+ 	/*
+@@ -2556,19 +2554,20 @@ static int ftdi_process_packet(struct usb_serial_port *port,
+ 		}
+ 	}
  
- 	ravb_ring_free(ndev, RAVB_BE);
- 	ravb_ring_free(ndev, RAVB_NC);
+-	port->icount.rx += len;
+-	ch = buf + 2;
++	port->icount.rx += len - 2;
  
- 	/* Device init */
--	ravb_dmac_init(ndev);
-+	error = ravb_dmac_init(ndev);
-+	if (error) {
-+		/* If ravb_dmac_init() fails, descriptors are freed. So, this
-+		 * should return here to avoid re-enabling the TX and RX in
-+		 * ravb_emac_init().
-+		 */
-+		netdev_err(ndev, "%s: ravb_dmac_init() failed, error %d\n",
-+			   __func__, error);
-+		return;
-+	}
- 	ravb_emac_init(ndev);
+ 	if (port->port.console && port->sysrq) {
+-		for (i = 0; i < len; i++, ch++) {
+-			if (!usb_serial_handle_sysrq_char(port, *ch))
+-				tty_insert_flip_char(&port->port, *ch, flag);
++		for (i = 2; i < len; i++) {
++			if (usb_serial_handle_sysrq_char(port, buf[i]))
++				continue;
++			tty_insert_flip_char(&port->port, buf[i], flag);
+ 		}
+ 	} else {
+-		tty_insert_flip_string_fixed_flag(&port->port, ch, flag, len);
++		tty_insert_flip_string_fixed_flag(&port->port, buf + 2, flag,
++				len - 2);
+ 	}
  
-+out:
- 	/* Initialise PTP Clock driver */
- 	if (priv->chip_id == RCAR_GEN2)
- 		ravb_ptp_init(ndev, priv->pdev);
+-	return len;
++	return len - 2;
+ }
+ 
+ static void ftdi_process_read_urb(struct urb *urb)
 -- 
 2.25.1
 
