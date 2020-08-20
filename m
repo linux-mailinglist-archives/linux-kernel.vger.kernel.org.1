@@ -2,131 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E30724C8CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 01:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C1924C8D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 01:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbgHTXxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 19:53:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726347AbgHTXxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 19:53:45 -0400
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3586422B3F;
-        Thu, 20 Aug 2020 23:48:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597967322;
-        bh=0+j/6QA0LygchhDILln1yfm2HCDRr0a88PJAPwRl+xo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=N+Qu4TRQ6I7L3UpaNQexsvv1BxlVF9FL/w9CTaKc1TkL+sYA14R3lE5YU2/F2TOXW
-         o63nm/yHlj80bBCLzUTPL3kFiAYQzbIWHBu9QKWQHoHazVpN1wNYJuhu+V3kE5qI4i
-         0mkvVoGLDRYSC88tpmH6zvH7FChQIVsjQ5lG8WIE=
-Received: by mail-ej1-f41.google.com with SMTP id o18so246933eje.7;
-        Thu, 20 Aug 2020 16:48:42 -0700 (PDT)
-X-Gm-Message-State: AOAM533wInGiJTAbUKr3XHiGk8aQb0nnbpsyRkHpmgXIAe3p5GmQaA1v
-        l0wgtE0wF214/9R923nqS5g6WPMKupzALVAYtA==
-X-Google-Smtp-Source: ABdhPJxWafAaj3k7lPbaruLTEUXILZXHlJiOWiA943fk40qr+NDtlxb9h2KyFzZEAanAf5GUY6rk5v906+J7wgBQIpo=
-X-Received: by 2002:a17:906:7492:: with SMTP id e18mr193241ejl.375.1597967320752;
- Thu, 20 Aug 2020 16:48:40 -0700 (PDT)
+        id S1727894AbgHTX5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 19:57:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726995AbgHTX4P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 19:56:15 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 788C8C061343
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 16:48:31 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id j7so83679oij.9
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 16:48:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9uGyMrw33yyhGegWP6BmwqpFM8yRbxnIVbZ2SWMKUmE=;
+        b=ZNnMHRgebTN450UsDfLkrghESFEw+aARdiKwrAd75mE34IyhxAPeQ6kjShKImqpJXC
+         CtccYsB9jMJxjxKD0eqDan4QJA1qBlAxlGOxCkqwZ7UqgTk7WINtDDY6Tg+GaNEocqhC
+         bpFr/mPOmIqMjS5074u0piR6K09002Ka/0ftU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9uGyMrw33yyhGegWP6BmwqpFM8yRbxnIVbZ2SWMKUmE=;
+        b=teg1J8/uA5xUF/TRFH5SJtRUA44JTxkuFfUaihSjee101iuUwDPkwwH7gJuVEjwC3q
+         lm7wfByQ2ED0AJf14CsJLPSEvSDtYkHgkd/AV1c5ZYQNwPXUmAjyaVW4nWnJ5+Bc2i8k
+         NPmELJqEIwDNvkvUK0oja0j3c2o7Ke6zd1Z+19dOfpS3vzlxXzAkZYEzu3m3iLdn7/hC
+         i1N344PtdOXbh7gpc+yMUGuVTvFJGaNUdq2ab2t74d8urJbbBjhz56gF29zFSnmEl/iA
+         CfSaJo1AGuJHvBEdNVeLPOXNzwwG3AHuw/m8NFibYMNAGumkUGZZCIrtxYWSdlT+qVA2
+         m2LA==
+X-Gm-Message-State: AOAM531LvEopJMPHD50JeCSMojKsDBA9LXdlQayWCg8nwOp/8pUBJni1
+        /Dvcb/ULF4A9tpI69MT+ogGjtw==
+X-Google-Smtp-Source: ABdhPJzU8rD3OU7sHs/RuDxl1HsFpLL/ld1LkoijEsv1ja1A3ZhwfzkBId87G/6Ywa9lx3pCYK1CVw==
+X-Received: by 2002:aca:504f:: with SMTP id e76mr157677oib.87.1597967310932;
+        Thu, 20 Aug 2020 16:48:30 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id h68sm30460otb.50.2020.08.20.16.48.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Aug 2020 16:48:30 -0700 (PDT)
+Subject: Re: [PATCH 5.7 000/204] 5.7.17-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <f8a27d7e-c326-8ee5-12e9-c04f4ec2771f@linuxfoundation.org>
+Date:   Thu, 20 Aug 2020 17:48:29 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1597903458-8055-1-git-send-email-yongqiang.niu@mediatek.com> <1597903458-8055-15-git-send-email-yongqiang.niu@mediatek.com>
-In-Reply-To: <1597903458-8055-15-git-send-email-yongqiang.niu@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Fri, 21 Aug 2020 07:48:28 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9xdn3VnU3nSBc4dvxcVOG34VSaDwxHga8=29GPW3zFsw@mail.gmail.com>
-Message-ID: <CAAOTY_9xdn3VnU3nSBc4dvxcVOG34VSaDwxHga8=29GPW3zFsw@mail.gmail.com>
-Subject: Re: [PATCH v1 14/21] drm/mediatek: add bypass shadow register
- function call for ddp component
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        devicetree@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Yongqiang:
+On 8/20/20 3:18 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.7.17 release.
+> There are 204 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 22 Aug 2020 09:15:09 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.7.17-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.7.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2020=E5=B9=B48=E6=9C=
-=8820=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=882:18=E5=AF=AB=E9=81=93=
-=EF=BC=9A
->
-> the shadow register for mt8192 ddp component is enable,
-> we need disable it before enable ddp component
+Compiled and booted on my test system. No dmesg regressions.
 
-MT2701 has shadow register and use it. Why MT8192 have shadow register
-but disable it? I would like to use shadow register like MT2701.
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-Regards,
-Chun-Kuang.
-
->
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_drm_crtc.c     | 3 +++
->  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h | 7 +++++++
->  2 files changed, 10 insertions(+)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/me=
-diatek/mtk_drm_crtc.c
-> index fe46c4b..16e9b88 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> @@ -299,6 +299,9 @@ static int mtk_crtc_ddp_hw_init(struct mtk_drm_crtc *=
-mtk_crtc)
->                 goto err_mutex_unprepare;
->         }
->
-> +       for (i =3D 0; i < mtk_crtc->ddp_comp_nr; i++)
-> +               mtk_ddp_comp_bypass_shadow(mtk_crtc->ddp_comp[i]);
-> +
->         DRM_DEBUG_DRIVER("mediatek_ddp_ddp_path_setup\n");
->         for (i =3D 0; i < mtk_crtc->ddp_comp_nr - 1; i++) {
->                 mtk_mmsys_ddp_connect(mtk_crtc->mmsys_dev,
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h b/drivers/gpu/dr=
-m/mediatek/mtk_drm_ddp_comp.h
-> index ae11b46..1f25705 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-> @@ -45,6 +45,7 @@ struct mtk_ddp_comp_funcs {
->                        unsigned int bpc, struct cmdq_pkt *cmdq_pkt);
->         void (*start)(struct mtk_ddp_comp *comp);
->         void (*stop)(struct mtk_ddp_comp *comp);
-> +       void (*bypass_shadow)(struct mtk_ddp_comp *comp);
->         void (*enable_vblank)(struct mtk_ddp_comp *comp, struct drm_crtc =
-*crtc);
->         void (*disable_vblank)(struct mtk_ddp_comp *comp);
->         unsigned int (*supported_rotations)(struct mtk_ddp_comp *comp);
-> @@ -169,6 +170,12 @@ static inline void mtk_ddp_ctm_set(struct mtk_ddp_co=
-mp *comp,
->                 comp->funcs->ctm_set(comp, state);
->  }
->
-> +static inline void mtk_ddp_comp_bypass_shadow(struct mtk_ddp_comp *comp)
-> +{
-> +       if (comp->funcs && comp->funcs->bypass_shadow)
-> +               comp->funcs->bypass_shadow(comp);
-> +}
-> +
->  int mtk_ddp_comp_get_id(struct device_node *node,
->                         enum mtk_ddp_comp_type comp_type);
->  int mtk_ddp_comp_init(struct device *dev, struct device_node *comp_node,
-> --
-> 1.8.1.1.dirty
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+thanks,
+-- Shuah
