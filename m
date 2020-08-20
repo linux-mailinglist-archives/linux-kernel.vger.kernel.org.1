@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2108F24B29F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6EE724B37D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728312AbgHTJeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:34:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44430 "EHLO mail.kernel.org"
+        id S1729091AbgHTJrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:47:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728063AbgHTJcI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:32:08 -0400
+        id S1729459AbgHTJrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:47:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 61A04207DE;
-        Thu, 20 Aug 2020 09:32:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B587C20724;
+        Thu, 20 Aug 2020 09:47:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915927;
-        bh=4fzfIvN+NcbSnlAg6+7Q33xB9C/POBwhAntdAp9XSBs=;
+        s=default; t=1597916851;
+        bh=PNCLyphAMtbUMpwWPAZS1VpRriUsfSVeorKX42UKzhA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jYHl9dT+tbx59+MQ2N5LxVaIw1RxzbH5s9hrIrxvwn7a6g+wMtfKJLbR/7W76BSYr
-         gVG1AYtZzctKGBTk4Zr6Yfdhsmg3kHE1+xKfslKrUqmqWclBZq8aY4MfCL8HNkazs8
-         GDkL/TkI80EkIXXQ5q70nRa+bcPaEzfhJIHPhyZ0=
+        b=gx/BMzZ2ofHBbaBmpY9i2soSWiAkXmVx3mwsk/zOixgGW+8Zr1Ti3kMGxqtADoa2E
+         mEZxmkcFjCvVFwQEx66muYGsp7xqbnHm+ZOx0ZVKv161PnlnjkzzcW9VXxfmIg0b99
+         NRWJtV8A1iMWhGChzrbxGeB5BqpKDShAISOZf+AA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Smart <james.smart@broadcom.com>,
-        "Ewan D. Milne" <emilne@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 183/232] scsi: lpfc: nvmet: Avoid hang / use-after-free again when destroying targetport
-Date:   Thu, 20 Aug 2020 11:20:34 +0200
-Message-Id: <20200820091621.668630975@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Jessica Yu <jeyu@kernel.org>, Kees Cook <keescook@chromium.org>
+Subject: [PATCH 5.4 068/152] module: Correctly truncate sysfs sections output
+Date:   Thu, 20 Aug 2020 11:20:35 +0200
+Message-Id: <20200820091557.210709757@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
-References: <20200820091612.692383444@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,47 +43,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ewan D. Milne <emilne@redhat.com>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit af6de8c60fe9433afa73cea6fcccdccd98ad3e5e ]
+commit 11990a5bd7e558e9203c1070fc52fb6f0488e75b upstream.
 
-We cannot wait on a completion object in the lpfc_nvme_targetport structure
-in the _destroy_targetport() code path because the NVMe/fc transport will
-free that structure immediately after the .targetport_delete() callback.
-This results in a use-after-free, and a crash if slub_debug=FZPU is
-enabled.
+The only-root-readable /sys/module/$module/sections/$section files
+did not truncate their output to the available buffer size. While most
+paths into the kernfs read handlers end up using PAGE_SIZE buffers,
+it's possible to get there through other paths (e.g. splice, sendfile).
+Actually limit the output to the "count" passed into the read function,
+and report it back correctly. *sigh*
 
-An earlier fix put put the completion on the stack, but commit 2a0fb340fcc8
-("scsi: lpfc: Correct localport timeout duration error") subsequently
-changed the code to reference the completion through a pointer in the
-object rather than the local stack variable.  Fix this by using the stack
-variable directly.
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/lkml/20200805002015.GE23458@shao2-debian
+Fixes: ed66f991bb19 ("module: Refactor section attr into bin attribute")
+Cc: stable@vger.kernel.org
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Acked-by: Jessica Yu <jeyu@kernel.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Link: https://lore.kernel.org/r/20200729231011.13240-1-emilne@redhat.com
-Fixes: 2a0fb340fcc8 ("scsi: lpfc: Correct localport timeout duration error")
-Reviewed-by: James Smart <james.smart@broadcom.com>
-Signed-off-by: Ewan D. Milne <emilne@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/lpfc/lpfc_nvmet.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/module.c |   22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_nvmet.c b/drivers/scsi/lpfc/lpfc_nvmet.c
-index 88760416a8cbd..fcd9d4c2f1ee0 100644
---- a/drivers/scsi/lpfc/lpfc_nvmet.c
-+++ b/drivers/scsi/lpfc/lpfc_nvmet.c
-@@ -2112,7 +2112,7 @@ lpfc_nvmet_destroy_targetport(struct lpfc_hba *phba)
- 		}
- 		tgtp->tport_unreg_cmp = &tport_unreg_cmp;
- 		nvmet_fc_unregister_targetport(phba->targetport);
--		if (!wait_for_completion_timeout(tgtp->tport_unreg_cmp,
-+		if (!wait_for_completion_timeout(&tport_unreg_cmp,
- 					msecs_to_jiffies(LPFC_NVMET_WAIT_TMO)))
- 			lpfc_printf_log(phba, KERN_ERR, LOG_NVME,
- 					"6179 Unreg targetport x%px timeout "
--- 
-2.25.1
-
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -1517,18 +1517,34 @@ struct module_sect_attrs {
+ 	struct module_sect_attr attrs[0];
+ };
+ 
++#define MODULE_SECT_READ_SIZE (3 /* "0x", "\n" */ + (BITS_PER_LONG / 4))
+ static ssize_t module_sect_read(struct file *file, struct kobject *kobj,
+ 				struct bin_attribute *battr,
+ 				char *buf, loff_t pos, size_t count)
+ {
+ 	struct module_sect_attr *sattr =
+ 		container_of(battr, struct module_sect_attr, battr);
++	char bounce[MODULE_SECT_READ_SIZE + 1];
++	size_t wrote;
+ 
+ 	if (pos != 0)
+ 		return -EINVAL;
+ 
+-	return sprintf(buf, "0x%px\n",
+-		       kallsyms_show_value(file->f_cred) ? (void *)sattr->address : NULL);
++	/*
++	 * Since we're a binary read handler, we must account for the
++	 * trailing NUL byte that sprintf will write: if "buf" is
++	 * too small to hold the NUL, or the NUL is exactly the last
++	 * byte, the read will look like it got truncated by one byte.
++	 * Since there is no way to ask sprintf nicely to not write
++	 * the NUL, we have to use a bounce buffer.
++	 */
++	wrote = scnprintf(bounce, sizeof(bounce), "0x%px\n",
++			 kallsyms_show_value(file->f_cred)
++				? (void *)sattr->address : NULL);
++	count = min(count, wrote);
++	memcpy(buf, bounce, count);
++
++	return count;
+ }
+ 
+ static void free_sect_attrs(struct module_sect_attrs *sect_attrs)
+@@ -1577,7 +1593,7 @@ static void add_sect_attrs(struct module
+ 			goto out;
+ 		sect_attrs->nsections++;
+ 		sattr->battr.read = module_sect_read;
+-		sattr->battr.size = 3 /* "0x", "\n" */ + (BITS_PER_LONG / 4);
++		sattr->battr.size = MODULE_SECT_READ_SIZE;
+ 		sattr->battr.attr.mode = 0400;
+ 		*(gattr++) = &(sattr++)->battr;
+ 	}
 
 
