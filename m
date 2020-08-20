@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D8F24B9E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF3124B976
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730406AbgHTL4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:56:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48998 "EHLO mail.kernel.org"
+        id S1729644AbgHTKDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:03:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730088AbgHTKBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:01:19 -0400
+        id S1730490AbgHTKBs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:01:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 51A3B2067C;
-        Thu, 20 Aug 2020 10:01:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C5D8E22BED;
+        Thu, 20 Aug 2020 10:01:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917678;
-        bh=DmdG/bHokmLdRs93LHOjww+JEXTHyUySZ26OQc0iFYc=;
+        s=default; t=1597917707;
+        bh=BQTI3+tiI15DcT22dfSVE6yp8o122jIZ19LZBh6aKMw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dnIZVXHr91o8x3tMtqSCN0bXB0xBuL7tpsmb6s3NlYr5FOAcKtmjQHgKgR8dKQAp5
-         m1sO0XJTadN7KU5IUeFvu2ByBK3HOOtrLEKCkU9LklDto3/FBsmEMd1A4zS4SGimqf
-         BQ0FNhpBZ9VFn1BIYCgWxzCTDbNZM7lRaHdae400=
+        b=ZVEvLjZRGVx3P4jPKSywdGW2YNiCD5bzgbQBiiD4CZjiz1uVa3uDv6F+pK4Bx1rYq
+         qJDJUrRratM0O+eaw2+3ec+wK8S8YLjwfxmp8WeROO37xn8FVGx2C4Bt0kvvwOIfZ3
+         QNMdjydmVpbmfta6jnmOHarKS/nadMyTT3P0P7MM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 117/212] drm/radeon: fix array out-of-bounds read and write issues
-Date:   Thu, 20 Aug 2020 11:21:30 +0200
-Message-Id: <20200820091608.260104874@linuxfoundation.org>
+Subject: [PATCH 4.9 127/212] mwifiex: Prevent memory corruption handling keys
+Date:   Thu, 20 Aug 2020 11:21:40 +0200
+Message-Id: <20200820091608.764536979@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
 References: <20200820091602.251285210@linuxfoundation.org>
@@ -44,37 +45,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 7ee78aff9de13d5dccba133f4a0de5367194b243 ]
+[ Upstream commit e18696786548244914f36ec3c46ac99c53df99c3 ]
 
-There is an off-by-one bounds check on the index into arrays
-table->mc_reg_address and table->mc_reg_table_entry[k].mc_data[j] that
-can lead to reads and writes outside of arrays. Fix the bound checking
-off-by-one error.
+The length of the key comes from the network and it's a 16 bit number.  It
+needs to be capped to prevent a buffer overflow.
 
-Addresses-Coverity: ("Out-of-bounds read/write")
-Fixes: cc8dbbb4f62a ("drm/radeon: add dpm support for CI dGPUs (v2)")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: 5e6e3a92b9a4 ("wireless: mwifiex: initial commit for Marvell mwifiex driver")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Ganapathi Bhat <ganapathi.bhat@nxp.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200708115857.GA13729@mwanda
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/radeon/ci_dpm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../wireless/marvell/mwifiex/sta_cmdresp.c    | 22 +++++++++++++------
+ 1 file changed, 15 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/radeon/ci_dpm.c b/drivers/gpu/drm/radeon/ci_dpm.c
-index be43582811dfc..50bad42527b1c 100644
---- a/drivers/gpu/drm/radeon/ci_dpm.c
-+++ b/drivers/gpu/drm/radeon/ci_dpm.c
-@@ -4348,7 +4348,7 @@ static int ci_set_mc_special_registers(struct radeon_device *rdev,
- 					table->mc_reg_table_entry[k].mc_data[j] |= 0x100;
- 			}
- 			j++;
--			if (j > SMU7_DISCRETE_MC_REGISTER_ARRAY_SIZE)
-+			if (j >= SMU7_DISCRETE_MC_REGISTER_ARRAY_SIZE)
- 				return -EINVAL;
+diff --git a/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c b/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c
+index 8548027abf71b..1e26936c0d727 100644
+--- a/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c
++++ b/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c
+@@ -586,6 +586,11 @@ static int mwifiex_ret_802_11_key_material_v1(struct mwifiex_private *priv,
+ {
+ 	struct host_cmd_ds_802_11_key_material *key =
+ 						&resp->params.key_material;
++	int len;
++
++	len = le16_to_cpu(key->key_param_set.key_len);
++	if (len > sizeof(key->key_param_set.key))
++		return -EINVAL;
  
- 			if (!pi->mem_gddr5) {
+ 	if (le16_to_cpu(key->action) == HostCmd_ACT_GEN_SET) {
+ 		if ((le16_to_cpu(key->key_param_set.key_info) & KEY_MCAST)) {
+@@ -599,9 +604,8 @@ static int mwifiex_ret_802_11_key_material_v1(struct mwifiex_private *priv,
+ 
+ 	memset(priv->aes_key.key_param_set.key, 0,
+ 	       sizeof(key->key_param_set.key));
+-	priv->aes_key.key_param_set.key_len = key->key_param_set.key_len;
+-	memcpy(priv->aes_key.key_param_set.key, key->key_param_set.key,
+-	       le16_to_cpu(priv->aes_key.key_param_set.key_len));
++	priv->aes_key.key_param_set.key_len = cpu_to_le16(len);
++	memcpy(priv->aes_key.key_param_set.key, key->key_param_set.key, len);
+ 
+ 	return 0;
+ }
+@@ -616,9 +620,14 @@ static int mwifiex_ret_802_11_key_material_v2(struct mwifiex_private *priv,
+ 					      struct host_cmd_ds_command *resp)
+ {
+ 	struct host_cmd_ds_802_11_key_material_v2 *key_v2;
+-	__le16 len;
++	int len;
+ 
+ 	key_v2 = &resp->params.key_material_v2;
++
++	len = le16_to_cpu(key_v2->key_param_set.key_params.aes.key_len);
++	if (len > WLAN_KEY_LEN_CCMP)
++		return -EINVAL;
++
+ 	if (le16_to_cpu(key_v2->action) == HostCmd_ACT_GEN_SET) {
+ 		if ((le16_to_cpu(key_v2->key_param_set.key_info) & KEY_MCAST)) {
+ 			mwifiex_dbg(priv->adapter, INFO, "info: key: GTK is set\n");
+@@ -634,10 +643,9 @@ static int mwifiex_ret_802_11_key_material_v2(struct mwifiex_private *priv,
+ 	memset(priv->aes_key_v2.key_param_set.key_params.aes.key, 0,
+ 	       WLAN_KEY_LEN_CCMP);
+ 	priv->aes_key_v2.key_param_set.key_params.aes.key_len =
+-				key_v2->key_param_set.key_params.aes.key_len;
+-	len = priv->aes_key_v2.key_param_set.key_params.aes.key_len;
++				cpu_to_le16(len);
+ 	memcpy(priv->aes_key_v2.key_param_set.key_params.aes.key,
+-	       key_v2->key_param_set.key_params.aes.key, le16_to_cpu(len));
++	       key_v2->key_param_set.key_params.aes.key, len);
+ 
+ 	return 0;
+ }
 -- 
 2.25.1
 
