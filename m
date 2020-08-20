@@ -2,91 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F6D24BBC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E4D24BBD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729756AbgHTMdd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 20 Aug 2020 08:33:33 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:27665 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729745AbgHTMd2 (ORCPT
+        id S1729474AbgHTMe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:34:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730105AbgHTMeK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 08:33:28 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-193-nhtq2MljN_maCPHdjtnu_A-1; Thu, 20 Aug 2020 13:33:23 +0100
-X-MC-Unique: nhtq2MljN_maCPHdjtnu_A-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 20 Aug 2020 13:33:23 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 20 Aug 2020 13:33:23 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Petr Mladek' <pmladek@suse.com>,
-        John Ogness <john.ogness@linutronix.de>
-CC:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC PATCH 1/5] printk: implement pr_cont_t
-Thread-Topic: [RFC PATCH 1/5] printk: implement pr_cont_t
-Thread-Index: AQHWdtr1XzVvufyPxEOt+PNltcCbQKlA7OUQ
-Date:   Thu, 20 Aug 2020 12:33:23 +0000
-Message-ID: <fb47baa77ff940e99224feac85a2f2d7@AcuMS.aculab.com>
-References: <20200819232632.13418-1-john.ogness@linutronix.de>
- <20200819232632.13418-2-john.ogness@linutronix.de>
- <20200820101625.GE4353@alley>
-In-Reply-To: <20200820101625.GE4353@alley>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 20 Aug 2020 08:34:10 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0491C061387
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 05:34:09 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id h16so1298417oti.7
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 05:34:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BIs6d/jQFwGlnkZ5L4RtC3BBouLuQNHRbQqNyXKW5UA=;
+        b=XPae7+krQuaIKLfqBwHPdeeqh4BCT2yAY1Kx/KY4xCqMP8r+sRNyl0bTAEA1mCUV/6
+         W6JulKNVZzjnr/6wCrVOicF//Ednj9hvSSv9Y2pP3FVoJpWIRv3zJ9+vZCTYlPkLOo0W
+         BtfK4tT9nkXPhvzon3pOhchSSBcJxqBNfiHZ0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BIs6d/jQFwGlnkZ5L4RtC3BBouLuQNHRbQqNyXKW5UA=;
+        b=r5CCibQMiC/XFwqUrIk4x29w1IMxNjHh9aWdZNeUZGo4E1VFLU5h0ReRIQMtdLrnKt
+         /7BfIFRLn4+49nf/Qgm+6BgitpJjm/RodYYg0qTgCKOGh1gbdBdnBVKrZWY6p/epVlHn
+         A+Ii1h+YQaSQwPQSxGpyt8En2uIVegEp/D3ZVAl1kQ6JtqOTuNU7wG/EjlLaT8Iuf/GR
+         rJEveGmzIO8rFIxT4zkNXkZ+1km9ue3qoCkewDekpAhZeeu0UB9+gaqCmlACTldbjSp4
+         JmZzda/y++RMhkEivF5zAX0eoHbzlFXOVO/2k1eQL9tJ318NGdIiMn7YjfMO694PTciG
+         Ox6g==
+X-Gm-Message-State: AOAM5300I0yvZgkoiTVSow2WftuU6KPVBxOAXx1pcGp0ut72ntdbx1IV
+        qNmKpCHepatIU5rjdyOwiv59JeLdnItwuyXkM+jNqw==
+X-Google-Smtp-Source: ABdhPJzN7dBfvBuuP0F4Tco7q0JAyPALhhyXQWprRuputnZqvXCVX5jNbqueDmKE8m8pQCaVCnop35OD4eN2Ba1w4w4=
+X-Received: by 2002:a9d:6e18:: with SMTP id e24mr1890875otr.132.1597926848493;
+ Thu, 20 Aug 2020 05:34:08 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0.001
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20200819092436.58232-1-lmb@cloudflare.com> <20200819092436.58232-5-lmb@cloudflare.com>
+ <5d64158b-35ed-d28d-9857-6ee725d287f2@fb.com>
+In-Reply-To: <5d64158b-35ed-d28d-9857-6ee725d287f2@fb.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Thu, 20 Aug 2020 13:33:57 +0100
+Message-ID: <CACAyw9_4_PZ1bHd0W-mAN5b0i-ZriTZSxWtoS59baXdRg6wk0g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/6] bpf: override the meaning of
+ ARG_PTR_TO_MAP_VALUE for sockmap and sockhash
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Mladek
-> Sent: 20 August 2020 11:16
-...
-> Now that I think about it. This is the biggest problem with any temporary buffer
-> for pr_cont() lines. I am more and more convinced that we should just
-> _keep the current behavior_. It is not ideal. But sometimes mixed
-> messages are always better than lost ones.
+On Wed, 19 Aug 2020 at 21:13, Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 8/19/20 2:24 AM, Lorenz Bauer wrote:
+> > The verifier assumes that map values are simple blobs of memory, and
+> > therefore treats ARG_PTR_TO_MAP_VALUE, etc. as such. However, there are
+> > map types where this isn't true. For example, sockmap and sockhash store
+> > sockets. In general this isn't a big problem: we can just
+> > write helpers that explicitly requests PTR_TO_SOCKET instead of
+> > ARG_PTR_TO_MAP_VALUE.
+> >
+> > The one exception are the standard map helpers like map_update_elem,
+> > map_lookup_elem, etc. Here it would be nice we could overload the
+> > function prototype for different kinds of maps. Unfortunately, this
+> > isn't entirely straight forward:
+> > We only know the type of the map once we have resolved meta->map_ptr
+> > in check_func_arg. This means we can't swap out the prototype
+> > in check_helper_call until we're half way through the function.
+> >
+> > Instead, modify check_func_arg to treat ARG_PTR_TO_MAP_VALUE* to
+> > mean "the native type for the map" instead of "pointer to memory"
+> > for sockmap and sockhash. This means we don't have to modify the
+> > function prototype at all
+> >
+> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> > ---
+> >   kernel/bpf/verifier.c | 40 ++++++++++++++++++++++++++++++++++++++++
+> >   1 file changed, 40 insertions(+)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index b6ccfce3bf4c..47f9b94bb9d4 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -3872,6 +3872,38 @@ static int int_ptr_type_to_size(enum bpf_arg_type type)
+> >       return -EINVAL;
+> >   }
+> >
+> > +static int override_map_arg_type(struct bpf_verifier_env *env,
+> > +                              const struct bpf_call_arg_meta *meta,
+> > +                              enum bpf_arg_type *arg_type)
+> > +{
+> > +     if (!meta->map_ptr) {
+> > +             /* kernel subsystem misconfigured verifier */
+> > +             verbose(env, "invalid map_ptr to access map->type\n");
+> > +             return -EACCES;
+> > +     }
+> > +
+> > +     switch (meta->map_ptr->map_type) {
+> > +     case BPF_MAP_TYPE_SOCKMAP:
+> > +     case BPF_MAP_TYPE_SOCKHASH:
+> > +             switch (*arg_type) {
+> > +             case ARG_PTR_TO_MAP_VALUE:
+> > +                     *arg_type = ARG_PTR_TO_SOCKET;
+> > +                     break;
+> > +             case ARG_PTR_TO_MAP_VALUE_OR_NULL:
+> > +                     *arg_type = ARG_PTR_TO_SOCKET_OR_NULL;
+> > +                     break;
+> > +             default:
+> > +                     verbose(env, "invalid arg_type for sockmap/sockhash\n");
+> > +                     return -EINVAL;
+> > +             }
+> > +             break;
+> > +
+> > +     default:
+> > +             break;
+> > +     }
+> > +     return 0;
+> > +}
+> > +
+> >   static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> >                         struct bpf_call_arg_meta *meta,
+> >                         const struct bpf_func_proto *fn)
+> > @@ -3904,6 +3936,14 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> >               return -EACCES;
+> >       }
+> >
+> > +     if (arg_type == ARG_PTR_TO_MAP_VALUE ||
+> > +         arg_type == ARG_PTR_TO_UNINIT_MAP_VALUE ||
+> > +         arg_type == ARG_PTR_TO_MAP_VALUE_OR_NULL) {
+>
+> We probably do not need ARG_PTR_TO_UNINIT_MAP_VALUE here.
+>
+> Do we need ARG_PTR_TO_MAP_VALUE_OR_NULL? bpf_map_update_elem arg type
+> is ARG_PTR_TO_MAP_VALUE.
 
-Maybe a marker to say 'more expected' might be useful.
-OTOH lack of a trailing '\n' probably signifies that a
-pr_cont() is likely to be next.
+I did this to be consistent: in a single function definition you
+either get the map specific
+types or the regular semantics. You don't get to mix and match them.
+For the same
+reason I included ARG_PTR_TO_UNINIT_MAP_VALUE: the semantics don't make
+sense for sockmap, so a function using this doesn't make sense either.
 
-Unexpected pr_cont() could be output with a leading "... "
-to help indicate the message is a continuation.
+>
+> > +             err = override_map_arg_type(env, meta, &arg_type);
+> > +             if (err)
+> > +                     return err;
+> > +     }
+> > +
+> >       if (arg_type == ARG_PTR_TO_MAP_KEY ||
+> >           arg_type == ARG_PTR_TO_MAP_VALUE ||
+> >           arg_type == ARG_PTR_TO_UNINIT_MAP_VALUE ||
+> >
 
-> That said, some printk() API using local buffer would be still
-> valuable for pieces of code where people really want to avoid
-> mixed lines. But it should be optional and people should be
-> aware of the risks.
 
-That could be very useful if it supported multi-line output.
-Thing like the stack backtrace code could use it avoid
-the mess that happens when multiple processes generate
-tracebacks at the same time.
 
-	David
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+www.cloudflare.com
