@@ -2,142 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE77A24B060
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BED2224B05C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726786AbgHTHt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 03:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgHTHtZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 03:49:25 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABFF7C061384
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 00:49:24 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id y3so1059793wrl.4
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 00:49:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=XgD7oAraMYDOqNsfZffx0IqUVAmFZfcgzGRKvwI8mIc=;
-        b=XlaONjDnEdsYg/6xqFFyWyTH0yWrgNaxkmvE+JWcDVZbLe+f/V7HKdjYROy7dyRpgD
-         0dP7O6uThUl2ocYIR33bisbTsV7PY13WDhwdzpoG+1juP2BKSoKiEUd4Vt3PTFRroRgA
-         CKWIaTIqQLz/3rnEaEMJlfnH2LOTDEFgtejdx0YcZnIibXmUIW8mrTOAvdg1MlPqsu01
-         n4D3DHqkiUh/PUQcvUhn/MDFi/qLIJr1VljuscrpP3WooR3pcPufopgFHfsC1aJqsMPG
-         YS204VOVM7RsVE5k9miArRNcssfkXrf1ORtWY/QTAhKAThyjJpNspv/DCPSgCLSS8wMB
-         aMUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=XgD7oAraMYDOqNsfZffx0IqUVAmFZfcgzGRKvwI8mIc=;
-        b=B5x9U1GvVYQ3DrCztIHQeUiqPy0QS9cbunBxqDrx32XkBDVd7B0X3bIMrzH8hgub8d
-         jOoFlrNTSxMlr6ezJCpoWhylVtrLP5SQmC8Wu+zg7O3l/rNTvy4+xWfH4OYU2aQ9gr6x
-         ApxMXu2tkeI7AXAFDcVZ96JnwJ6XU/yeEFRX4k3khPg16CCZ59TDT/H3v1Zm/nq1VCQ+
-         jP3+R+IQ5M0A/0uW1XpatEprnnCKKkogss9OpHYvZhmqUgcJDQ73ETfT+sLCPMYt69i7
-         7021MR2TY/XQy5HoAqNyKkXix6Av51IYWMmpgwMUMaLyxXCORBtAMD/uz+LLub9f1Jg8
-         lUKQ==
-X-Gm-Message-State: AOAM531PrywwQS5ZcbTMV35IRrzhcZEL/bnSAUTb8nDLsvQyYu8NOpXN
-        tbezKuRsvcLYEmNAmcKwFnOhBg==
-X-Google-Smtp-Source: ABdhPJyboEGZAaF6RXm5GpaE/mKR6TYvk3Fye/goK+ikDC5z1N0gxsGJDDrfdepMKqxed6kq885b0w==
-X-Received: by 2002:a5d:60cb:: with SMTP id x11mr1737733wrt.281.1597909761789;
-        Thu, 20 Aug 2020 00:49:21 -0700 (PDT)
-Received: from dell ([95.149.164.62])
-        by smtp.gmail.com with ESMTPSA id s2sm2438068wrr.55.2020.08.20.00.49.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 00:49:21 -0700 (PDT)
-Date:   Thu, 20 Aug 2020 08:49:16 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     dinghao.liu@zju.edu.cn
-Cc:     Markus Elfring <Markus.Elfring@web.de>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        id S1726752AbgHTHtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 03:49:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59436 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726309AbgHTHtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 03:49:12 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD8062076E;
+        Thu, 20 Aug 2020 07:49:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597909752;
+        bh=VINLwS3DBjghohvueceeLnHG2G40JRtPDdK6W1zz2MU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HvHATzEchtfziuqRwibKGmT2Pe3qxv2LBDdYEhnfFaUe31O+UlnlTUzKQXX1XCWe/
+         /XO9uk1XnOE8+hvmilJoLLvMedmH/mzJ3avUmH/KYhCn4u0PTc9Me7lg2GPH7gV0a2
+         5sllFoN/fTZJFF2MS0DgS5AY43cjoTtJj10+cgGw=
+Date:   Thu, 20 Aug 2020 09:49:32 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        kernel@pengutronix.de,
         Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Bryan Wu <cooloney@gmail.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Gyungoh Yoo <jack.yoo@skyworksinc.com>,
-        Jingoo Han <jingoohan1@gmail.com>, Kangjie Lu <kjlu@umn.edu>
-Subject: Re: Re: Re: [PATCH] video: backlight: sky81452-backlight: Fix
- reference count imbalance on error
-Message-ID: <20200820074916.GE3248864@dell>
-References: <321fb03d-2307-7f60-f437-cfb99184dfd6@web.de>
- <20200819165702.GC3248864@dell>
- <217e3c0c.b58c.17409fd7496.Coremail.dinghao.liu@zju.edu.cn>
- <20200820062301.GD3248864@dell>
- <3f9fbdb1.bc96.1740a9560d5.Coremail.dinghao.liu@zju.edu.cn>
+        Sven Schneider <s.schneider@arkona-technologies.de>
+Subject: Re: [PATCH RESEND] lib/fonts: add font 6x8 for oled display
+Message-ID: <20200820074932.GA3834397@kroah.com>
+References: <20200820074214.30214-1-s.hauer@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3f9fbdb1.bc96.1740a9560d5.Coremail.dinghao.liu@zju.edu.cn>
+In-Reply-To: <20200820074214.30214-1-s.hauer@pengutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Aug 2020, dinghao.liu@zju.edu.cn wrote:
-
-> > On Thu, 20 Aug 2020, dinghao.liu@zju.edu.cn wrote:
-> > 
-> > > > On Wed, 19 Aug 2020, Markus Elfring wrote:
-> > > > 
-> > > > > > When of_property_read_u32_array() returns an error code,
-> > > > > > a pairing refcount decrement is needed to keep np's refcount balanced.
-> > > > > 
-> > > > > Can another imperative wording be helpful for the change description?
-> > > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=18445bf405cb331117bc98427b1ba6f12418ad17#n151
-> > > > > 
-> > > > > Would an other commit message be a bit nicer?
-> > > > > 
-> > > > > 
-> > > > > …
-> > > > > > +++ b/drivers/video/backlight/sky81452-backlight.c
-> > > > > > @@ -217,6 +217,7 @@ static struct sky81452_bl_platform_data *sky81452_bl_parse_dt(
-> > > > > >  					num_entry);
-> > > > > >  		if (ret < 0) {
-> > > > > >  			dev_err(dev, "led-sources node is invalid.\n");
-> > > > > > +			of_node_put(np);
-> > > > > >  			return ERR_PTR(-EINVAL);
-> > > > > >  		}
-> > > > > 
-> > > > > I propose to add the jump target “put_node” so that a bit of common exception
-> > > > > handling code can be better reused at the end of this function implementation.
-> > > > > 
-> > > > > Regards,
-> > > > > Markus
-> > > > 
-> > > > You can safely ignore any review comments from Markus!
-> > > > 
-> > > > However, this patch doesn't appear to be in my inbox.
-> > > > 
-> > > > Any ideas as to why?
-> > > > 
-> > > 
-> > > Thank you for your advice. My outbox shows that this patch
-> > > has reached your email server successfully. Maybe this
-> > > ended up in your junk mail file?
-> > 
-> > This has happened recently, so I was sure to check.
-> > 
-> > Not there either unfortunately.
-> > 
-> > Would you be kind enough to bounce/resend please?
+On Thu, Aug 20, 2020 at 09:42:14AM +0200, Sascha Hauer wrote:
+> From: Sven Schneider <s.schneider@arkona-technologies.de>
 > 
-> Sure.
+> This font is derived from lib/fonts/font_6x10.c and is useful for small OLED
+> displays.
+> ---
+> 
 
-Looks like you sent it *only* to me.  Please keep everyone else in Cc
-when doing that, or I can't respond to everyone.
+No signed-off-by: line?  :(
 
-Anyway, besides the subject line (which I can fix easily), the patch
-looks good to me, but Daniel T must review.
+Always use scripts/checkpatch.pl on your patch to find stuff like this,
+and other errors that this patch has.
 
-Reviewed-by: Lee Jones <lee.jones@linaro.org>
+> Hi All,
+> 
+> I am not sure any new fonts are desired in the kernel. If yes, please consider
+> for inclusion, otherwise some "go away, there are enough fonts in the kernel
+> already" would be nice as well so I can stop trying getting it in :)
+> 
+> Sascha
+> 
+>  include/linux/font.h |    4 +-
+>  lib/fonts/Kconfig    |    7 +
+>  lib/fonts/Makefile   |    1 +
+>  lib/fonts/font_6x8.c | 2575 ++++++++++++++++++++++++++++++++++++++++++
+>  lib/fonts/fonts.c    |    3 +
+>  5 files changed, 2589 insertions(+), 1 deletion(-)
+>  mode change 100644 => 100755 include/linux/font.h
 
---
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+You changed a .h file to be executable???
+
+> diff --git a/lib/fonts/fonts.c b/lib/fonts/fonts.c
+> index e7258d8c252b2..760f2e6893bdb 100644
+> --- a/lib/fonts/fonts.c
+> +++ b/lib/fonts/fonts.c
+> @@ -57,6 +57,9 @@ static const struct font_desc *fonts[] = {
+>  #ifdef CONFIG_FONT_TER16x32
+>  	&font_ter_16x32,
+>  #endif
+> +#ifdef CONFIG_FONT_6x8
+> +    &font_6x8,
+
+Tabs please.
+
+As for "do we take new fonts?", sure, why not?
+
+thanks,
+
+greg k-h
