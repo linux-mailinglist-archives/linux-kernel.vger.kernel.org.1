@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC4624BBBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA62F24BB88
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729427AbgHTMda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:33:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55390 "EHLO mail.kernel.org"
+        id S1729936AbgHTMam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:30:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729647AbgHTJtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:49:24 -0400
+        id S1728589AbgHTJvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:51:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C5EA92173E;
-        Thu, 20 Aug 2020 09:49:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0051C2075E;
+        Thu, 20 Aug 2020 09:51:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916964;
-        bh=X1qMVao/5KKJV39PIjzU6kC2W0LVzuByCFI84PxYJEU=;
+        s=default; t=1597917071;
+        bh=5zDIADOTLQKE0vCNuwOkqvRT7Efysr/y1egeJ9G6Vnc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fm9RddmTGFryI3+k4JvxqYilZgyE9O9k3wtTxhvAuI9E6qdB7394P78q00usuNJM4
-         uUKWpkThr9LUE3NVByxGa2jnbLZ4G6yDPS9IBwv3r6sser8SV0CxEX/LRdRAysQ0Xs
-         +96hzYvJhU/3tFTL8vlGRYE81j3wgftLgcQ7eyuE=
+        b=EHqe7KLeT/apgf0tos8niFCMXyFgEJeoATsXKhDFyDTqlyMOHQ8o1Du19blVo2V7a
+         UuCtcCEFkdhixyEI3fLKZV242AHskK0+xgom0WZg69sNdFWDBTLg4Z7bLUp4150NXP
+         BjhOQlLUkxoU+z5T+RnPtEhHmgQg3l7c4GNKEq2Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,9 +30,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
         Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 106/152] clk: qcom: gcc: fix sm8150 GPU and NPU clocks
-Date:   Thu, 20 Aug 2020 11:21:13 +0200
-Message-Id: <20200820091559.195226911@linuxfoundation.org>
+Subject: [PATCH 5.4 107/152] clk: qcom: clk-alpha-pll: remove unused/incorrect PLL_CAL_VAL
+Date:   Thu, 20 Aug 2020 11:21:14 +0200
+Message-Id: <20200820091559.245470303@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
 References: <20200820091553.615456912@linuxfoundation.org>
@@ -47,74 +47,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jonathan Marek <jonathan@marek.ca>
 
-[ Upstream commit 667f39b59b494d96ae70f4217637db2ebbee3df0 ]
+[ Upstream commit c8b9002f44e4a1d2771b2f59f6de900864b1f9d7 ]
 
-Fix the parents and set BRANCH_HALT_SKIP. From the downstream driver it
-should be a 500us delay and not skip, however this matches what was done
-for other clocks that had 500us delay in downstream.
+0x44 isn't a register offset, it is the value that goes into CAL_L_VAL.
 
-Fixes: f73a4230d5bb ("clk: qcom: gcc: Add GPU and NPU clocks for SM8150")
+Fixes: 548a909597d5 ("clk: qcom: clk-alpha-pll: Add support for Trion PLLs")
 Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Link: https://lore.kernel.org/r/20200709135251.643-2-jonathan@marek.ca
+Link: https://lore.kernel.org/r/20200709135251.643-3-jonathan@marek.ca
 Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/qcom/gcc-sm8150.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/clk/qcom/clk-alpha-pll.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/clk/qcom/gcc-sm8150.c b/drivers/clk/qcom/gcc-sm8150.c
-index fad42897a7a7f..ee908fbfeab17 100644
---- a/drivers/clk/qcom/gcc-sm8150.c
-+++ b/drivers/clk/qcom/gcc-sm8150.c
-@@ -1616,6 +1616,7 @@ static struct clk_branch gcc_gpu_cfg_ahb_clk = {
- };
+diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
+index 055318f979915..a69f53e435ed5 100644
+--- a/drivers/clk/qcom/clk-alpha-pll.c
++++ b/drivers/clk/qcom/clk-alpha-pll.c
+@@ -55,7 +55,6 @@
+ #define PLL_STATUS(p)		((p)->offset + (p)->regs[PLL_OFF_STATUS])
+ #define PLL_OPMODE(p)		((p)->offset + (p)->regs[PLL_OFF_OPMODE])
+ #define PLL_FRAC(p)		((p)->offset + (p)->regs[PLL_OFF_FRAC])
+-#define PLL_CAL_VAL(p)		((p)->offset + (p)->regs[PLL_OFF_CAL_VAL])
  
- static struct clk_branch gcc_gpu_gpll0_clk_src = {
-+	.halt_check = BRANCH_HALT_SKIP,
- 	.clkr = {
- 		.enable_reg = 0x52004,
- 		.enable_mask = BIT(15),
-@@ -1631,13 +1632,14 @@ static struct clk_branch gcc_gpu_gpll0_clk_src = {
+ const u8 clk_alpha_pll_regs[][PLL_OFF_MAX_REGS] = {
+ 	[CLK_ALPHA_PLL_TYPE_DEFAULT] =  {
+@@ -114,7 +113,6 @@ const u8 clk_alpha_pll_regs[][PLL_OFF_MAX_REGS] = {
+ 		[PLL_OFF_STATUS] = 0x30,
+ 		[PLL_OFF_OPMODE] = 0x38,
+ 		[PLL_OFF_ALPHA_VAL] = 0x40,
+-		[PLL_OFF_CAL_VAL] = 0x44,
+ 	},
  };
- 
- static struct clk_branch gcc_gpu_gpll0_div_clk_src = {
-+	.halt_check = BRANCH_HALT_SKIP,
- 	.clkr = {
- 		.enable_reg = 0x52004,
- 		.enable_mask = BIT(16),
- 		.hw.init = &(struct clk_init_data){
- 			.name = "gcc_gpu_gpll0_div_clk_src",
- 			.parent_hws = (const struct clk_hw *[]){
--				&gcc_gpu_gpll0_clk_src.clkr.hw },
-+				&gpll0_out_even.clkr.hw },
- 			.num_parents = 1,
- 			.flags = CLK_SET_RATE_PARENT,
- 			.ops = &clk_branch2_ops,
-@@ -1728,6 +1730,7 @@ static struct clk_branch gcc_npu_cfg_ahb_clk = {
- };
- 
- static struct clk_branch gcc_npu_gpll0_clk_src = {
-+	.halt_check = BRANCH_HALT_SKIP,
- 	.clkr = {
- 		.enable_reg = 0x52004,
- 		.enable_mask = BIT(18),
-@@ -1743,13 +1746,14 @@ static struct clk_branch gcc_npu_gpll0_clk_src = {
- };
- 
- static struct clk_branch gcc_npu_gpll0_div_clk_src = {
-+	.halt_check = BRANCH_HALT_SKIP,
- 	.clkr = {
- 		.enable_reg = 0x52004,
- 		.enable_mask = BIT(19),
- 		.hw.init = &(struct clk_init_data){
- 			.name = "gcc_npu_gpll0_div_clk_src",
- 			.parent_hws = (const struct clk_hw *[]){
--				&gcc_npu_gpll0_clk_src.clkr.hw },
-+				&gpll0_out_even.clkr.hw },
- 			.num_parents = 1,
- 			.flags = CLK_SET_RATE_PARENT,
- 			.ops = &clk_branch2_ops,
+ EXPORT_SYMBOL_GPL(clk_alpha_pll_regs);
 -- 
 2.25.1
 
