@@ -2,250 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 253F724C89B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 01:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9242124C8B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 01:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728869AbgHTXbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 19:31:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51732 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728860AbgHTXba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 19:31:30 -0400
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F9CC2072D
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 23:31:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597966289;
-        bh=siMyYw8rX8N1Dhqk3gnghjjgdALtTTya5eY3c3s8Zy0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JcuNwaBRAoqhrx2qo4spB8Kq/A7SLb7/2Wr64flZdSgIGbowfiryUT+VqxB15nuI4
-         bbA4A4xW38bZCIajmyWfgn53y4+OuhJW6TDn9gRG2vSA2MImH0UkMum0thETf+86Lx
-         G0YBA73OSCaklrcrDtUS0s447aHeP17DBupLHQ+w=
-Received: by mail-ed1-f42.google.com with SMTP id w2so2714588edv.7
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 16:31:28 -0700 (PDT)
-X-Gm-Message-State: AOAM530pCOFLEJoFRUqC19RlrBFKtZ8ROZU4CHqTbEa1BXI1+ft2WKN0
-        x/khC5TcRhJhYVS8iVRhcEAGG8gFFt8DC0B4qQ==
-X-Google-Smtp-Source: ABdhPJxHhOTvvDw994kMrLUKQlvnI8puRCe+1TL8jGYVtqHWewKlN2sgdfCX6J2E7VXx0eWM8FVrOr2ur+JfL2a5StE=
-X-Received: by 2002:a50:e109:: with SMTP id h9mr259119edl.47.1597966287544;
- Thu, 20 Aug 2020 16:31:27 -0700 (PDT)
+        id S1728874AbgHTXj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 19:39:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728746AbgHTXjz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 19:39:55 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D1DC061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 16:39:54 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id t6so3971995ljk.9
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 16:39:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yLsHxNY14nYfsmOcH0Wmsm+uJTY/HQXjErhm/+DBOIM=;
+        b=UYwaeNYbl6ONJY+uj1aPnbq4RonZdvr6c0g/dIaT7MEKE5ZHlUPU1a0W9mzWMnnlq0
+         LYCnfmFVjndAWdQCVMEuvCifSqbfjsZQFpLH3BhJhZEqpjbz+hc/gbmL/ktiyv9mbSaJ
+         jade3mOlBkspOHfdEfYJQRJvz3EL50Yw/xHsw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yLsHxNY14nYfsmOcH0Wmsm+uJTY/HQXjErhm/+DBOIM=;
+        b=sUJIrVmdpGPeJiZErlvXPD++a6uKLm9kf6YY/Hm8jJFzP3LilRKc6h2s4HMTsYcTKu
+         JDlOi3/3m2dEQY/LctDFFkP2kHy/eIb2EMSXf1Snp0o+7LMaSTSAiQBo2L41skX+Dl7w
+         JcsjB6AJOQm0+pVLkRB1LPtK3zcXVKNtz3mrcVpOy9qwHpo3cPx7MnzVFXR5Rg7+1d7G
+         yP+Zbcel38nDPYeZdXRtUZJOVqJSb8xKc9/4zaJjuE3BbHl5jtCRgUc/v72Oma5eIaqS
+         PvEwZdiJnv7D+T1mYyCDmjkkiMwKooumUDlQjKpb24LdZymTlP7UQGZkDOCkr7neTPPg
+         RTDw==
+X-Gm-Message-State: AOAM531Q6BzQtGeDtaCzJHrR8pU9mvk51lhHVh6/DgOPpoB2UWU21tgu
+        O5GG+mfPfR2P/SAOx/dcT/IS7931gT2l3g==
+X-Google-Smtp-Source: ABdhPJzSR5UMfebObxoRi/X8wzVcc1DF3jsa0Vlg8G7WmsmLqCNggHAh1NB6U8qxjaraLHokt2dzTw==
+X-Received: by 2002:a2e:9ce:: with SMTP id 197mr168891ljj.369.1597966792872;
+        Thu, 20 Aug 2020 16:39:52 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id m15sm22974ljh.62.2020.08.20.16.39.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Aug 2020 16:39:52 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id c15so45819lfi.3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 16:39:52 -0700 (PDT)
+X-Received: by 2002:a2e:545:: with SMTP id 66mr168592ljf.285.1597966399329;
+ Thu, 20 Aug 2020 16:33:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200819154421.7013-1-chunkuang.hu@kernel.org>
- <20200819154421.7013-4-chunkuang.hu@kernel.org> <20200819160434.GA2655@ravnborg.org>
-In-Reply-To: <20200819160434.GA2655@ravnborg.org>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Fri, 21 Aug 2020 07:31:15 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-BUecBKf=ZbNns2Mh=gbtRkJgH2_6wbQVpJNvt4vs8Pw@mail.gmail.com>
-Message-ID: <CAAOTY_-BUecBKf=ZbNns2Mh=gbtRkJgH2_6wbQVpJNvt4vs8Pw@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] phy: mediatek: Move mtk_hdmi_phy driver into
- drivers/phy/mediatek folder
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>
+References: <20200817220212.338670-1-ndesaulniers@google.com>
+ <fae91af3-4e08-a929-e5c3-25271ad7324b@zytor.com> <CAKwvOdk6A4AqTtOsD34WNwxRjyTvXP8KCNj2xfNWYdPT+sLHwQ@mail.gmail.com>
+ <76071c24-ec6f-7f7a-4172-082bd574d581@zytor.com> <CAHk-=wiPeRQU_5JXCN0TLoW-xHZHp7dmrhx0wyXUSKxiCxE02Q@mail.gmail.com>
+ <20200818202407.GA3143683@rani.riverdale.lan> <CAKwvOdnfh9nWwu1xV=WDbETGiabwDxXxQDRCAfpa-+kSZijb9w@mail.gmail.com>
+ <CAKwvOdkA4SC==vGZ4e7xqFG3Zo=fnhU=FgnSazmWkkVWhkaSYw@mail.gmail.com>
+ <20200818214146.GA3196105@rani.riverdale.lan> <df6c1da4-b910-ecb8-0de2-6156dd651be6@rasmusvillemoes.dk>
+ <20200820175617.GA604994@rani.riverdale.lan>
+In-Reply-To: <20200820175617.GA604994@rani.riverdale.lan>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 20 Aug 2020 16:33:03 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whn91ar+EbcBXQb9UXad00Q5WjU-TCB6UBzVba682a4ew@mail.gmail.com>
+Message-ID: <CAHk-=whn91ar+EbcBXQb9UXad00Q5WjU-TCB6UBzVba682a4ew@mail.gmail.com>
+Subject: Re: [PATCH 0/4] -ffreestanding/-fno-builtin-* patches
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        =?UTF-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
+        Eli Friedman <efriedma@quicinc.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Joe Perches <joe@perches.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Bruce Ashfield <bruce.ashfield@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Sam:
+On Thu, Aug 20, 2020 at 10:56 AM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> Clang's interpretation is more useful for embedded, since you can use
+> -fno-builtin-foo and avoid calling __builtin_foo directly, and be
+> guaranteed that there will be no calls to foo that you didn't write
+> explicitly (outside of memcpy/memset/memcmp). In this case you are free
+> to implement foo with non-standard semantics, or avoid implementing it
+> altogether, and be reasonably confident that it will all work.
 
-Sam Ravnborg <sam@ravnborg.org> =E6=96=BC 2020=E5=B9=B48=E6=9C=8820=E6=97=
-=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=8812:04=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Hi Chun-Kuang
->
-> Two small details below.
->
->         Sam
->
-> On Wed, Aug 19, 2020 at 11:44:20PM +0800, Chun-Kuang Hu wrote:
-> > From: CK Hu <ck.hu@mediatek.com>
-> >
-> > mtk_hdmi_phy is currently placed inside mediatek drm driver, but it's
-> > more suitable to place a phy driver into phy driver folder, so move
-> > mtk_hdmi_phy driver into phy driver folder.
-> >
-> > Signed-off-by: CK Hu <ck.hu@mediatek.com>
-> > Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> > Reviewed-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> > Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-> > ---
-> >  drivers/gpu/drm/mediatek/Kconfig                           | 7 -------
-> >  drivers/gpu/drm/mediatek/Makefile                          | 6 ------
-> >  drivers/phy/mediatek/Kconfig                               | 7 +++++++
-> >  drivers/phy/mediatek/Makefile                              | 6 ++++++
-> >  .../mediatek/phy-mtk-hdmi-mt2701.c}                        | 2 +-
-> >  .../mediatek/phy-mtk-hdmi-mt8173.c}                        | 2 +-
-> >  .../mtk_hdmi_phy.c =3D> phy/mediatek/phy-mtk-hdmi.c}         | 2 +-
-> >  .../mtk_hdmi_phy.h =3D> phy/mediatek/phy-mtk-hdmi.h}         | 0
-> >  8 files changed, 16 insertions(+), 16 deletions(-)
-> >  rename drivers/{gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c =3D> phy/mediat=
-ek/phy-mtk-hdmi-mt2701.c} (99%)
-> >  rename drivers/{gpu/drm/mediatek/mtk_mt8173_hdmi_phy.c =3D> phy/mediat=
-ek/phy-mtk-hdmi-mt8173.c} (99%)
-> >  rename drivers/{gpu/drm/mediatek/mtk_hdmi_phy.c =3D> phy/mediatek/phy-=
-mtk-hdmi.c} (99%)
-> >  rename drivers/{gpu/drm/mediatek/mtk_hdmi_phy.h =3D> phy/mediatek/phy-=
-mtk-hdmi.h} (100%)
-> >
-> > diff --git a/drivers/gpu/drm/mediatek/Kconfig b/drivers/gpu/drm/mediate=
-k/Kconfig
-> > index ca3cd871a350..65cd03a4be29 100644
-> > --- a/drivers/gpu/drm/mediatek/Kconfig
-> > +++ b/drivers/gpu/drm/mediatek/Kconfig
-> > @@ -27,10 +27,3 @@ config DRM_MEDIATEK_HDMI
-> >       select PHY_MTK_HDMI
-> >       help
-> >         DRM/KMS HDMI driver for Mediatek SoCs
-> > -
-> > -config PHY_MTK_HDMI
-> > -    tristate "MediaTek HDMI-PHY Driver"
-> > -    depends on ARCH_MEDIATEK && OF
-> > -    select GENERIC_PHY
-> > -    help
-> > -          Enable this to support HDMI-PHY
-> > diff --git a/drivers/gpu/drm/mediatek/Makefile b/drivers/gpu/drm/mediat=
-ek/Makefile
-> > index fcbef23aa6ce..77b0fd86063d 100644
-> > --- a/drivers/gpu/drm/mediatek/Makefile
-> > +++ b/drivers/gpu/drm/mediatek/Makefile
-> > @@ -22,9 +22,3 @@ mediatek-drm-hdmi-objs :=3D mtk_cec.o \
-> >                         mtk_hdmi_ddc.o
-> >
-> >  obj-$(CONFIG_DRM_MEDIATEK_HDMI) +=3D mediatek-drm-hdmi.o
-> > -
-> > -phy-mtk-hdmi-drv-objs :=3D mtk_hdmi_phy.o \
-> > -                      mtk_mt2701_hdmi_phy.o \
-> > -                      mtk_mt8173_hdmi_phy.o
-> > -
-> > -obj-$(CONFIG_PHY_MTK_HDMI) +=3D phy-mtk-hdmi-drv.o
-> > diff --git a/drivers/phy/mediatek/Kconfig b/drivers/phy/mediatek/Kconfi=
-g
-> > index dee757c957f2..10f0ec2d5b54 100644
-> > --- a/drivers/phy/mediatek/Kconfig
-> > +++ b/drivers/phy/mediatek/Kconfig
-> > @@ -35,3 +35,10 @@ config PHY_MTK_XSPHY
-> >         Enable this to support the SuperSpeedPlus XS-PHY transceiver fo=
-r
-> >         USB3.1 GEN2 controllers on MediaTek chips. The driver supports
-> >         multiple USB2.0, USB3.1 GEN2 ports.
-> > +
-> > +config PHY_MTK_HDMI
-> > +    tristate "MediaTek HDMI-PHY Driver"
-> > +    depends on ARCH_MEDIATEK && OF
-> > +    select GENERIC_PHY
-> > +    help
-> > +          Enable this to support HDMI-PHY
-> This helptext could use a bit more love and care - it is not obvious
-> from the help text what this option does.
->
+Honestly, I think concentrating on whether __builtin_foo() works or
+not misses the point entirely.
 
-OK, would add more detail information.
+That has never _ever_ been a problem for us, and I doubt it has been a
+problem for anybody else either.
 
->
-> > diff --git a/drivers/phy/mediatek/Makefile b/drivers/phy/mediatek/Makef=
-ile
-> > index 08a8e6a97b1e..c9a3641f0b16 100644
-> > --- a/drivers/phy/mediatek/Makefile
-> > +++ b/drivers/phy/mediatek/Makefile
-> > @@ -6,3 +6,9 @@
-> >  obj-$(CONFIG_PHY_MTK_TPHY)           +=3D phy-mtk-tphy.o
-> >  obj-$(CONFIG_PHY_MTK_UFS)            +=3D phy-mtk-ufs.o
-> >  obj-$(CONFIG_PHY_MTK_XSPHY)          +=3D phy-mtk-xsphy.o
-> > +
-> > +phy-mtk-hdmi-drv-objs :=3D phy-mtk-hdmi.o \
-> > +                      phy-mtk-hdmi-mt2701.o \
-> > +                      phy-mtk-hdmi-mt8173.o
-> > +
-> The modern syntax is to use -y and not -objs.
-> And getting rid of '\' would also be nice.
-> So something like this:
->
-> phy-mtk-hdmi-drv-y :=3D phy-mtk-hdmi.o
-> phy-mtk-hdmi-drv-y +=3D phy-mtk-hdmi-mt2701.o
-> phy-mtk-hdmi-drv-y +=3D phy-mtk-hdmi-mt8173.o
->
-> Looks much more readable to me.
->
+If you use __builtin_memcpy() in your source tree, then why would you
+possibly ever want to disable it? And if you _don't_ use it, then
+again - why would you ever want to disable it?
 
-OK,
+No, the real (and only) problem has always been about the compilers
+magically and silently "recognizing" certain source patterns, and
+turning them into function calls behind the users back.
 
-Regards,
-Chun-Kuang.
+And that has nothing to do with __builtin_foo(). At least it
+_shouldn't_ have anything to do with it.
 
-> > +obj-$(CONFIG_PHY_MTK_HDMI) +=3D phy-mtk-hdmi-drv.o
-> > diff --git a/drivers/gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c b/drivers/p=
-hy/mediatek/phy-mtk-hdmi-mt2701.c
-> > similarity index 99%
-> > rename from drivers/gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c
-> > rename to drivers/phy/mediatek/phy-mtk-hdmi-mt2701.c
-> > index 99fe05cd3598..a6cb1dea3d0c 100644
-> > --- a/drivers/gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c
-> > +++ b/drivers/phy/mediatek/phy-mtk-hdmi-mt2701.c
-> > @@ -4,7 +4,7 @@
-> >   * Author: Chunhui Dai <chunhui.dai@mediatek.com>
-> >   */
-> >
-> > -#include "mtk_hdmi_phy.h"
-> > +#include "phy-mtk-hdmi.h"
-> >
-> >  #define HDMI_CON0    0x00
-> >  #define RG_HDMITX_DRV_IBIAS          0
-> > diff --git a/drivers/gpu/drm/mediatek/mtk_mt8173_hdmi_phy.c b/drivers/p=
-hy/mediatek/phy-mtk-hdmi-mt8173.c
-> > similarity index 99%
-> > rename from drivers/gpu/drm/mediatek/mtk_mt8173_hdmi_phy.c
-> > rename to drivers/phy/mediatek/phy-mtk-hdmi-mt8173.c
-> > index 827b93786fac..6cdfdf5a698a 100644
-> > --- a/drivers/gpu/drm/mediatek/mtk_mt8173_hdmi_phy.c
-> > +++ b/drivers/phy/mediatek/phy-mtk-hdmi-mt8173.c
-> > @@ -4,7 +4,7 @@
-> >   * Author: Jie Qiu <jie.qiu@mediatek.com>
-> >   */
-> >
-> > -#include "mtk_hdmi_phy.h"
-> > +#include "phy-mtk-hdmi.h"
-> >
-> >  #define HDMI_CON0            0x00
-> >  #define RG_HDMITX_PLL_EN             BIT(31)
-> > diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi_phy.c b/drivers/phy/medi=
-atek/phy-mtk-hdmi.c
-> > similarity index 99%
-> > rename from drivers/gpu/drm/mediatek/mtk_hdmi_phy.c
-> > rename to drivers/phy/mediatek/phy-mtk-hdmi.c
-> > index fe022acddbef..8fc83f01a720 100644
-> > --- a/drivers/gpu/drm/mediatek/mtk_hdmi_phy.c
-> > +++ b/drivers/phy/mediatek/phy-mtk-hdmi.c
-> > @@ -4,7 +4,7 @@
-> >   * Author: Jie Qiu <jie.qiu@mediatek.com>
-> >   */
-> >
-> > -#include "mtk_hdmi_phy.h"
-> > +#include "phy-mtk-hdmi.h"
-> >
-> >  static int mtk_hdmi_phy_power_on(struct phy *phy);
-> >  static int mtk_hdmi_phy_power_off(struct phy *phy);
-> > diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi_phy.h b/drivers/phy/medi=
-atek/phy-mtk-hdmi.h
-> > similarity index 100%
-> > rename from drivers/gpu/drm/mediatek/mtk_hdmi_phy.h
-> > rename to drivers/phy/mediatek/phy-mtk-hdmi.h
-> > --
-> > 2.17.1
-> >
-> > _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+So this is things like the compiler silently seeing "oh, you called
+your function 'free()', so we know that the stores you did to it are
+dead and we'll remove them".
+
+Or this is the compiler doing "Oh, you did four stores of zero in a
+row, and and you asked for size optimizations, so we'll turn those
+into a 'bzero()' call".
+
+Or the compiler doing completely broken things, and turning a
+"!memcmp()" expression into a "!bcmp()" because the compilier
+incorrectly assumes it's faster.
+
+Notice? Not a single one of those had any __builtin_xyz() pattern in
+them. Quite the reverse. The compiler took something completely
+different, and assumed builtin semantics without us having told it to.
+
+So I think "-fno-builtin-xyz" is barking *completely* up the wrong
+tree. It's missing the problem. The problem is not "I have some
+builtin patterns, here, you can use them".
+
+It's the same as all the vector intrinsics. Those don't hurt anybody -
+as long as they only get used when people use the intrinsics. If the
+compiler starts to suddenly use vector intrinsics without being told
+to, *THAT* can be a problem. But there is never any reson to turn off
+any particular intrinsic otherwise.
+
+If you don't want it used, don't use it. And if you do use it, the
+compiler generates the vector code sequence. It's that simple.
+
+So to me, a compiler flag like "-fno-builtin-memcpy" is completely
+insane. The flag adds absolutely no value.
+
+The real value would be "-fno-magic-bcmp" which turns off stupid
+optimizations that magically turn non-bcmp things into bcmp. But it
+should not turn off *actual* __builtin_bcmp() if such a thing exists
+and people want to explicitly use it.
+
+             Linus
