@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B84D124B61A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5533D24B750
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731670AbgHTKcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:32:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45042 "EHLO mail.kernel.org"
+        id S1730197AbgHTKOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:14:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728578AbgHTKUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:20:15 -0400
+        id S1731069AbgHTKOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:14:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC5CF2067C;
-        Thu, 20 Aug 2020 10:20:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 099BC206DA;
+        Thu, 20 Aug 2020 10:14:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918815;
-        bh=De2zk7qjFmsbhkJJUIbIDk8nhAWIFH4lcx20Cc9CYWk=;
+        s=default; t=1597918446;
+        bh=gMAJQySplqK3LODlD+yqkkSZmARBSR3jSggcw7cFqr8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I+C/v0X57C5kxIoS4TT8c4mCYUijyQIskFCqEG04ihOujka7Wceq4C63IpierEoMe
-         CQVlAcMuNIOGjTd2YmqGn3dRO1dRqBdkfb45xRcHYK55EFNtLE8RH42YJv54y8JLey
-         3OIxZgIivXWAsF0nS9PRgbU/+FJNaiMKZjr4jdHc=
+        b=CzqX82Ybgy6fKmY3PbUrKKv/GWdgmnisvZFclaSPJxCPqW7VTNJF3vCHm0EJ3/tQm
+         5Azf8nasiHA5AQ01z24vG3gXX2aVbNtDdYU5lqYATKO3L3JKHvSd5SBhp143eewi4M
+         4aywLMxkCir01EvwmD58uX7k+9k5pEXHagc8ws90=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 069/149] mm/mmap.c: Add cond_resched() for exit_mmap() CPU stalls
-Date:   Thu, 20 Aug 2020 11:22:26 +0200
-Message-Id: <20200820092129.076571262@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Rosin <peda@axentia.se>,
+        Christian Eggers <ceggers@arri.de>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH 4.14 172/228] dt-bindings: iio: io-channel-mux: Fix compatible string in example code
+Date:   Thu, 20 Aug 2020 11:22:27 +0200
+Message-Id: <20200820091616.179163271@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
-References: <20200820092125.688850368@linuxfoundation.org>
+In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
+References: <20200820091607.532711107@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,83 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul E. McKenney <paulmck@kernel.org>
+From: Christian Eggers <ceggers@arri.de>
 
-[ Upstream commit 0a3b3c253a1eb2c7fe7f34086d46660c909abeb3 ]
+commit add48ba425192c6e04ce70549129cacd01e2a09e upstream.
 
-A large process running on a heavily loaded system can encounter the
-following RCU CPU stall warning:
+The correct compatible string is "gpio-mux" (see
+bindings/mux/gpio-mux.txt).
 
-  rcu: INFO: rcu_sched self-detected stall on CPU
-  rcu: 	3-....: (20998 ticks this GP) idle=4ea/1/0x4000000000000002 softirq=556558/556558 fqs=5190
-  	(t=21013 jiffies g=1005461 q=132576)
-  NMI backtrace for cpu 3
-  CPU: 3 PID: 501900 Comm: aio-free-ring-w Kdump: loaded Not tainted 5.2.9-108_fbk12_rc3_3858_gb83b75af7909 #1
-  Hardware name: Wiwynn   HoneyBadger/PantherPlus, BIOS HBM6.71 02/03/2016
-  Call Trace:
-   <IRQ>
-   dump_stack+0x46/0x60
-   nmi_cpu_backtrace.cold.3+0x13/0x50
-   ? lapic_can_unplug_cpu.cold.27+0x34/0x34
-   nmi_trigger_cpumask_backtrace+0xba/0xca
-   rcu_dump_cpu_stacks+0x99/0xc7
-   rcu_sched_clock_irq.cold.87+0x1aa/0x397
-   ? tick_sched_do_timer+0x60/0x60
-   update_process_times+0x28/0x60
-   tick_sched_timer+0x37/0x70
-   __hrtimer_run_queues+0xfe/0x270
-   hrtimer_interrupt+0xf4/0x210
-   smp_apic_timer_interrupt+0x5e/0x120
-   apic_timer_interrupt+0xf/0x20
-   </IRQ>
-  RIP: 0010:kmem_cache_free+0x223/0x300
-  Code: 88 00 00 00 0f 85 ca 00 00 00 41 8b 55 18 31 f6 f7 da 41 f6 45 0a 02 40 0f 94 c6 83 c6 05 9c 41 5e fa e8 a0 a7 01 00 41 56 9d <49> 8b 47 08 a8 03 0f 85 87 00 00 00 65 48 ff 08 e9 3d fe ff ff 65
-  RSP: 0018:ffffc9000e8e3da8 EFLAGS: 00000206 ORIG_RAX: ffffffffffffff13
-  RAX: 0000000000020000 RBX: ffff88861b9de960 RCX: 0000000000000030
-  RDX: fffffffffffe41e8 RSI: 000060777fe3a100 RDI: 000000000001be18
-  RBP: ffffea00186e7780 R08: ffffffffffffffff R09: ffffffffffffffff
-  R10: ffff88861b9dea28 R11: ffff88887ffde000 R12: ffffffff81230a1f
-  R13: ffff888854684dc0 R14: 0000000000000206 R15: ffff8888547dbc00
-   ? remove_vma+0x4f/0x60
-   remove_vma+0x4f/0x60
-   exit_mmap+0xd6/0x160
-   mmput+0x4a/0x110
-   do_exit+0x278/0xae0
-   ? syscall_trace_enter+0x1d3/0x2b0
-   ? handle_mm_fault+0xaa/0x1c0
-   do_group_exit+0x3a/0xa0
-   __x64_sys_exit_group+0x14/0x20
-   do_syscall_64+0x42/0x100
-   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Cc: stable@vger.kernel.org # v4.13+
+Reviewed-by: Peter Rosin <peda@axentia.se>
+Signed-off-by: Christian Eggers <ceggers@arri.de>
+Link: https://lore.kernel.org/r/20200727101605.24384-1-ceggers@arri.de
+Signed-off-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-And on a PREEMPT=n kernel, the "while (vma)" loop in exit_mmap() can run
-for a very long time given a large process.  This commit therefore adds
-a cond_resched() to this loop, providing RCU any needed quiescent states.
-
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: <linux-mm@kvack.org>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/mmap.c | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/devicetree/bindings/iio/multiplexer/io-channel-mux.txt |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/mmap.c b/mm/mmap.c
-index a24e424770012..135cccce41f88 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -2954,6 +2954,7 @@ void exit_mmap(struct mm_struct *mm)
- 		if (vma->vm_flags & VM_ACCOUNT)
- 			nr_accounted += vma_pages(vma);
- 		vma = remove_vma(vma);
-+		cond_resched();
- 	}
- 	vm_unacct_memory(nr_accounted);
- }
--- 
-2.25.1
-
+--- a/Documentation/devicetree/bindings/iio/multiplexer/io-channel-mux.txt
++++ b/Documentation/devicetree/bindings/iio/multiplexer/io-channel-mux.txt
+@@ -21,7 +21,7 @@ controller state. The mux controller sta
+ 
+ Example:
+ 	mux: mux-controller {
+-		compatible = "mux-gpio";
++		compatible = "gpio-mux";
+ 		#mux-control-cells = <0>;
+ 
+ 		mux-gpios = <&pioA 0 GPIO_ACTIVE_HIGH>,
 
 
