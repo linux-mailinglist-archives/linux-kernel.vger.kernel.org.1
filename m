@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0368624BADE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:20:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E3E24BAD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730216AbgHTJzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:55:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37972 "EHLO mail.kernel.org"
+        id S1730472AbgHTMSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:18:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729777AbgHTJzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:55:06 -0400
+        id S1730251AbgHTJ4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:56:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 96962207FB;
-        Thu, 20 Aug 2020 09:55:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F2A982067C;
+        Thu, 20 Aug 2020 09:56:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917306;
-        bh=yQHTfJGTG1oXfFMvYb/hVHTVR3T7k0IztaZU2NlQ/XI=;
+        s=default; t=1597917369;
+        bh=QjGe+u4Tj7ppzgognTnADJBAxd+Zn8/zcCRRhTVVB4U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nGhs2P5+wsqXYMJ1jHvV3YLNRxKitDlTef4JHCe5fyrnX6YAIEnCKjs5tVmB23HNv
-         bgOIL3DI6BOJP687NYdQERDOTlQ2X6RLBkHC07hJEXM72ndJ4L2pY0EqYMAOup2764
-         0epnfcbTpNOt3jZ+e/iWAOEw3z/Eeyf265JS0PCU=
+        b=ug4G9XYRRLCWNOtv2qReeHzYohXUBA0JOrIPC4ZP2qz+S1k7/lsFcVPnwwnehOhUu
+         Ss2j1+AVb+/LJCUA+nR3/p7CHdnM1XTLCYUft1WfNTNI6oMJc7tDBOz4kdTlTFkeYi
+         FP/bf4MpAM+QA9DinhmPBJpKyR18EwKhtTRXK7ok=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Roland Scheidegger <sroland@vmware.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>, Timur Tabi <timur@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 75/92] drm/vmwgfx: Fix two list_for_each loop exit tests
-Date:   Thu, 20 Aug 2020 11:22:00 +0200
-Message-Id: <20200820091541.571565375@linuxfoundation.org>
+Subject: [PATCH 4.19 76/92] net: qcom/emac: add missed clk_disable_unprepare in error path of emac_clks_phase1_init
+Date:   Thu, 20 Aug 2020 11:22:01 +0200
+Message-Id: <20200820091541.622531436@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
 References: <20200820091537.490965042@linuxfoundation.org>
@@ -44,60 +45,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit 4437c1152ce0e57ab8f401aa696ea6291cc07ab1 ]
+[ Upstream commit 50caa777a3a24d7027748e96265728ce748b41ef ]
 
-These if statements are supposed to be true if we ended the
-list_for_each_entry() loops without hitting a break statement but they
-don't work.
+Fix the missing clk_disable_unprepare() before return
+from emac_clks_phase1_init() in the error handling case.
 
-In the first loop, we increment "i" after the "if (i == unit)" condition
-so we don't necessarily know that "i" is not equal to unit at the end of
-the loop.
-
-In the second loop we exit when mode is not pointing to a valid
-drm_display_mode struct so it doesn't make sense to check "mode->type".
-
-Fixes: a278724aa23c ("drm/vmwgfx: Implement fbdev on kms v2")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Roland Scheidegger <sroland@vmware.com>
-Signed-off-by: Roland Scheidegger <sroland@vmware.com>
+Fixes: b9b17debc69d ("net: emac: emac gigabit ethernet controller driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Acked-by: Timur Tabi <timur@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/qualcomm/emac/emac.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
-index 6a712a8d59e93..e486b6517ac55 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
-@@ -2861,7 +2861,7 @@ int vmw_kms_fbdev_init_data(struct vmw_private *dev_priv,
- 		++i;
- 	}
+diff --git a/drivers/net/ethernet/qualcomm/emac/emac.c b/drivers/net/ethernet/qualcomm/emac/emac.c
+index 2a0cbc535a2ed..19673ed929e68 100644
+--- a/drivers/net/ethernet/qualcomm/emac/emac.c
++++ b/drivers/net/ethernet/qualcomm/emac/emac.c
+@@ -493,13 +493,24 @@ static int emac_clks_phase1_init(struct platform_device *pdev,
  
--	if (i != unit) {
-+	if (&con->head == &dev_priv->dev->mode_config.connector_list) {
- 		DRM_ERROR("Could not find initial display unit.\n");
- 		ret = -EINVAL;
- 		goto out_unlock;
-@@ -2885,13 +2885,13 @@ int vmw_kms_fbdev_init_data(struct vmw_private *dev_priv,
- 			break;
- 	}
+ 	ret = clk_prepare_enable(adpt->clk[EMAC_CLK_CFG_AHB]);
+ 	if (ret)
+-		return ret;
++		goto disable_clk_axi;
  
--	if (mode->type & DRM_MODE_TYPE_PREFERRED)
--		*p_mode = mode;
--	else {
-+	if (&mode->head == &con->modes) {
- 		WARN_ONCE(true, "Could not find initial preferred mode.\n");
- 		*p_mode = list_first_entry(&con->modes,
- 					   struct drm_display_mode,
- 					   head);
-+	} else {
-+		*p_mode = mode;
- 	}
+ 	ret = clk_set_rate(adpt->clk[EMAC_CLK_HIGH_SPEED], 19200000);
+ 	if (ret)
+-		return ret;
++		goto disable_clk_cfg_ahb;
++
++	ret = clk_prepare_enable(adpt->clk[EMAC_CLK_HIGH_SPEED]);
++	if (ret)
++		goto disable_clk_cfg_ahb;
  
-  out_unlock:
+-	return clk_prepare_enable(adpt->clk[EMAC_CLK_HIGH_SPEED]);
++	return 0;
++
++disable_clk_cfg_ahb:
++	clk_disable_unprepare(adpt->clk[EMAC_CLK_CFG_AHB]);
++disable_clk_axi:
++	clk_disable_unprepare(adpt->clk[EMAC_CLK_AXI]);
++
++	return ret;
+ }
+ 
+ /* Enable clocks; needs emac_clks_phase1_init to be called before */
 -- 
 2.25.1
 
