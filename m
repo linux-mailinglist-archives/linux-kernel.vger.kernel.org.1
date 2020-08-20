@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E3D24B4CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4F524B4D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731045AbgHTKMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:12:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53252 "EHLO mail.kernel.org"
+        id S1731066AbgHTKMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:12:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728160AbgHTKMQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:12:16 -0400
+        id S1731048AbgHTKMT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:12:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91838206DA;
-        Thu, 20 Aug 2020 10:12:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B886920738;
+        Thu, 20 Aug 2020 10:12:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918336;
-        bh=IzTK1brHvbzYGCLGKWtVUX/++/DgFMolRIjMEhdKywU=;
+        s=default; t=1597918339;
+        bh=sysaVeh2EdH/GQLRY7NDAYHNoH+duUNyIpglnn51t0Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hBHDD41Qg+qSC+pNhskUYmTAIcDLPHJQ21pVo2XM0klxFuqvXm4tS5gjzQyFZ6c+o
-         z0371RLGjOn+RSsanGgrMcxb6KzdCQXwfrvfci1r2sDFhoP2iSAqoUJmzohbw5kmkB
-         5lxBU6eW1GfTPTJCCKL9g5QXoX9UZ7Sf7dh6pvV4=
+        b=TnnFvLHccyfUVa3I1oAGb25aZDU0MmbYH3cG50W+vRbXvQWSxg+LmFaQqMYjQeNIv
+         OX3gJJjxwraZFtvbADPfm0KWsscYS46bdF6wV3i9a9b3dZC+Gusc8Jcpkd4ZoBR+iC
+         qPoPAHj84m0zeBlg5b9Gs1yhTN4f9pcD2kE5Dqdk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Florinel Iordache <florinel.iordache@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        David Teigland <teigland@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 134/228] fsl/fman: fix eth hash table allocation
-Date:   Thu, 20 Aug 2020 11:21:49 +0200
-Message-Id: <20200820091614.281959075@linuxfoundation.org>
+Subject: [PATCH 4.14 135/228] dlm: Fix kobject memleak
+Date:   Thu, 20 Aug 2020 11:21:50 +0200
+Message-Id: <20200820091614.334426704@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
 References: <20200820091607.532711107@linuxfoundation.org>
@@ -45,36 +45,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florinel Iordache <florinel.iordache@nxp.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit 3207f715c34317d08e798e11a10ce816feb53c0f ]
+[ Upstream commit 0ffddafc3a3970ef7013696e7f36b3d378bc4c16 ]
 
-Fix memory allocation for ethernet address hash table.
-The code was wrongly allocating an array for eth hash table which
-is incorrect because this is the main structure for eth hash table
-(struct eth_hash_t) that contains inside a number of elements.
+Currently the error return path from kobject_init_and_add() is not
+followed by a call to kobject_put() - which means we are leaking
+the kobject.
 
-Fixes: 57ba4c9b56d8 ("fsl/fman: Add FMan MAC support")
-Signed-off-by: Florinel Iordache <florinel.iordache@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Set do_unreg = 1 before kobject_init_and_add() to ensure that
+kobject_put() can be called in its error patch.
+
+Fixes: 901195ed7f4b ("Kobject: change GFS2 to use kobject_init_and_add")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: David Teigland <teigland@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/fman/fman_mac.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/dlm/lockspace.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/freescale/fman/fman_mac.h b/drivers/net/ethernet/freescale/fman/fman_mac.h
-index dd6d0526f6c1f..19f327efdaff3 100644
---- a/drivers/net/ethernet/freescale/fman/fman_mac.h
-+++ b/drivers/net/ethernet/freescale/fman/fman_mac.h
-@@ -252,7 +252,7 @@ static inline struct eth_hash_t *alloc_hash_table(u16 size)
- 	struct eth_hash_t *hash;
+diff --git a/fs/dlm/lockspace.c b/fs/dlm/lockspace.c
+index 9c8c9a09b4a6d..7a6b0327ceb0b 100644
+--- a/fs/dlm/lockspace.c
++++ b/fs/dlm/lockspace.c
+@@ -633,6 +633,9 @@ static int new_lockspace(const char *name, const char *cluster,
+ 	wait_event(ls->ls_recover_lock_wait,
+ 		   test_bit(LSFL_RECOVER_LOCK, &ls->ls_flags));
  
- 	/* Allocate address hash table */
--	hash = kmalloc_array(size, sizeof(struct eth_hash_t *), GFP_KERNEL);
-+	hash = kmalloc(sizeof(*hash), GFP_KERNEL);
- 	if (!hash)
- 		return NULL;
++	/* let kobject handle freeing of ls if there's an error */
++	do_unreg = 1;
++
+ 	ls->ls_kobj.kset = dlm_kset;
+ 	error = kobject_init_and_add(&ls->ls_kobj, &dlm_ktype, NULL,
+ 				     "%s", ls->ls_name);
+@@ -640,9 +643,6 @@ static int new_lockspace(const char *name, const char *cluster,
+ 		goto out_recoverd;
+ 	kobject_uevent(&ls->ls_kobj, KOBJ_ADD);
  
+-	/* let kobject handle freeing of ls if there's an error */
+-	do_unreg = 1;
+-
+ 	/* This uevent triggers dlm_controld in userspace to add us to the
+ 	   group of nodes that are members of this lockspace (managed by the
+ 	   cluster infrastructure.)  Once it's done that, it tells us who the
 -- 
 2.25.1
 
