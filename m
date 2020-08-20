@@ -2,96 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C414024BFA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4774024C00C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730426AbgHTNu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:50:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56850 "EHLO mail.kernel.org"
+        id S1725838AbgHTN75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:59:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728807AbgHTNut (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 09:50:49 -0400
+        id S1726738AbgHTJXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:23:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 99CAC206DA;
-        Thu, 20 Aug 2020 13:50:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7D85F22CB2;
+        Thu, 20 Aug 2020 09:23:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597931449;
-        bh=dS8dzhEVE5Nj4hXt/7nG5Xj6Ci9DebYbCbAd8yx4FHA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gMloImExGVBFf8YTArNooTXh+sdXLqklIX4766SFRMbXpKrzvsS/vgRPyIzFFAZ6G
-         7L6c11hsVfNMi9dnbRPY2pULwc9LLR+wweGgedbzvmWcU5EIylOcekyrMVaEy9OJXu
-         CTbNwkD14pbK3B7jjCss4EJhd+ZmMjWzReskyuV4=
-Date:   Thu, 20 Aug 2020 15:51:09 +0200
+        s=default; t=1597915431;
+        bh=Yorda5NEuOnH2beBNjDJoc7hFJMtvtZsSMq3am5igzE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dvniVskyPWxktis5VPzyMSgCGhzCgQHbIlQwwvom9ceAiZJOPKsvN+oF4HZwaNeoN
+         zEzQ2qVWfjda5hbgkJJ+PXP/0JkXn0YbN6J38vxIvq6WwCKTxOLHtOYsyyTfbPw6E6
+         zRCiIzB0SZhUF9XkQUCiTLCSr9LcqAftNFOu+HvA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, ben.hutchings@codethink.co.uk,
-        lkft-triage@lists.linaro.org, stable@vger.kernel.org,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH 4.14 000/228] 4.14.194-rc1 review
-Message-ID: <20200820135109.GA1533948@kroah.com>
-References: <20200820091607.532711107@linuxfoundation.org>
- <a6b632f8-b327-3f8d-5306-12989cfaf4e3@nvidia.com>
- <20200820123828.GA1465682@kroah.com>
- <20200820124445.GB1482630@kroah.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Ansuel Smith <ansuelsmth@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>
+Subject: [PATCH 5.8 011/232] PCI: qcom: Define some PARF params needed for ipq8064 SoC
+Date:   Thu, 20 Aug 2020 11:17:42 +0200
+Message-Id: <20200820091613.264473965@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
+References: <20200820091612.692383444@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200820124445.GB1482630@kroah.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 02:44:45PM +0200, Greg Kroah-Hartman wrote:
-> On Thu, Aug 20, 2020 at 02:38:28PM +0200, Greg Kroah-Hartman wrote:
-> > On Thu, Aug 20, 2020 at 12:57:36PM +0100, Jon Hunter wrote:
-> > > 
-> > > On 20/08/2020 10:19, Greg Kroah-Hartman wrote:
-> > > > This is the start of the stable review cycle for the 4.14.194 release.
-> > > > There are 228 patches in this series, all will be posted as a response
-> > > > to this one.  If anyone has any issues with these being applied, please
-> > > > let me know.
-> > > > 
-> > > > Responses should be made by Sat, 22 Aug 2020 09:15:09 +0000.
-> > > > Anything received after that time might be too late.
-> > > > 
-> > > > The whole patch series can be found in one patch at:
-> > > > 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.194-rc1.gz
-> > > > or in the git tree and branch at:
-> > > > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> > > > and the diffstat can be found below.
-> > > > 
-> > > > thanks,
-> > > > 
-> > > > greg k-h
-> > > > 
-> > > > -------------
-> > > > Pseudo-Shortlog of commits:
-> > > 
-> > > ...
-> > > 
-> > > > Tomasz Maciej Nowak <tmn505@gmail.com>
-> > > >     arm64: dts: marvell: espressobin: add ethernet alias
-> > > 
-> > > 
-> > > The above change is causing the following build failure for ARM64 ...
-> > > 
-> > > arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtb: ERROR (path_references): Reference to non-existent node or label "uart1"
-> > > ERROR: Input tree has errors, aborting (use -f to force output)
-> > > scripts/Makefile.lib:317: recipe for target 'arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtb' failed
-> > > make[3]: *** [arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtb] Error 2
-> > > 
-> > > Reverting this fixes the problem.
-> > 
-> > Thanks, now dropping it.  Sad as it said it was to be backported here...
-> > 
-> > Will go push out a -rc2 with that fixed.
-> 
-> Well, will push out -rc2 once kernel.org's maintenance is finished,
-> might be an hour or so...
+From: Ansuel Smith <ansuelsmth@gmail.com>
 
-Now pushed out!
+commit 5149901e9e6deca487c01cc434a3ac4125c7b00b upstream.
+
+Set some specific value for Tx De-Emphasis, Tx Swing and Rx equalization
+needed on some ipq8064 based device (Netgear R7800 for example). Without
+this the system locks on kernel load.
+
+Link: https://lore.kernel.org/r/20200615210608.21469-8-ansuelsmth@gmail.com
+Fixes: 82a823833f4e ("PCI: qcom: Add Qualcomm PCIe controller driver")
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Stanimir Varbanov <svarbanov@mm-sol.com>
+Cc: stable@vger.kernel.org # v4.5+
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ drivers/pci/controller/dwc/pcie-qcom.c |   24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+--- a/drivers/pci/controller/dwc/pcie-qcom.c
++++ b/drivers/pci/controller/dwc/pcie-qcom.c
+@@ -77,6 +77,18 @@
+ #define DBI_RO_WR_EN				1
+ 
+ #define PERST_DELAY_US				1000
++/* PARF registers */
++#define PCIE20_PARF_PCS_DEEMPH			0x34
++#define PCS_DEEMPH_TX_DEEMPH_GEN1(x)		((x) << 16)
++#define PCS_DEEMPH_TX_DEEMPH_GEN2_3_5DB(x)	((x) << 8)
++#define PCS_DEEMPH_TX_DEEMPH_GEN2_6DB(x)	((x) << 0)
++
++#define PCIE20_PARF_PCS_SWING			0x38
++#define PCS_SWING_TX_SWING_FULL(x)		((x) << 8)
++#define PCS_SWING_TX_SWING_LOW(x)		((x) << 0)
++
++#define PCIE20_PARF_CONFIG_BITS		0x50
++#define PHY_RX0_EQ(x)				((x) << 24)
+ 
+ #define PCIE20_v3_PARF_SLV_ADDR_SPACE_SIZE	0x358
+ #define SLV_ADDR_SPACE_SZ			0x10000000
+@@ -286,6 +298,7 @@ static int qcom_pcie_init_2_1_0(struct q
+ 	struct qcom_pcie_resources_2_1_0 *res = &pcie->res.v2_1_0;
+ 	struct dw_pcie *pci = pcie->pci;
+ 	struct device *dev = pci->dev;
++	struct device_node *node = dev->of_node;
+ 	u32 val;
+ 	int ret;
+ 
+@@ -330,6 +343,17 @@ static int qcom_pcie_init_2_1_0(struct q
+ 	val &= ~BIT(0);
+ 	writel(val, pcie->parf + PCIE20_PARF_PHY_CTRL);
+ 
++	if (of_device_is_compatible(node, "qcom,pcie-ipq8064")) {
++		writel(PCS_DEEMPH_TX_DEEMPH_GEN1(24) |
++			       PCS_DEEMPH_TX_DEEMPH_GEN2_3_5DB(24) |
++			       PCS_DEEMPH_TX_DEEMPH_GEN2_6DB(34),
++		       pcie->parf + PCIE20_PARF_PCS_DEEMPH);
++		writel(PCS_SWING_TX_SWING_FULL(120) |
++			       PCS_SWING_TX_SWING_LOW(120),
++		       pcie->parf + PCIE20_PARF_PCS_SWING);
++		writel(PHY_RX0_EQ(4), pcie->parf + PCIE20_PARF_CONFIG_BITS);
++	}
++
+ 	/* enable external reference clock */
+ 	val = readl(pcie->parf + PCIE20_PARF_PHY_REFCLK);
+ 	val |= BIT(16);
+
+
