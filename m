@@ -2,242 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27BC324B038
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6763024B073
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726325AbgHTHgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 03:36:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725834AbgHTHgA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 03:36:00 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B274C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 00:36:00 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id v9so1000831ljk.6
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 00:36:00 -0700 (PDT)
+        id S1726884AbgHTHv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 03:51:56 -0400
+Received: from mail-dm6nam10on2063.outbound.protection.outlook.com ([40.107.93.63]:12768
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725819AbgHTHvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 03:51:51 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DpFZ/lHg6fh6FNOZ8DQEiusROr7lhERNEAzSpk7qwMGyh7/BDs8AgBkBf7C4Pge0CY6qfWSfrK+WiXET7Od7NpTcxhRBiyKmY/QXxdwvI+5PtpdaKpl/Q/TiyeUIpvOWmr1JW+9AaB6Ru3ut+Uc7hlJALIDMHTzRv50jtpB/7zgZHarf58FiK7ImBMaCLWdl6NU5Yb2G1hZsjKVMEJ21Mq5ZFU5iihgg8yGSSjBnXbkgM14zm5M2ejVPi5NjC1Boxs/o5fFDtOXPv9MybcR4LkKZbvmY8sfagcOMrgQ8q6FL9OpptQQkuXGl0u4koed67jHxlpIixcuXOK1okQ+v2A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G6r3a7f5HXta43l3bKvwm/ztY7DNODH815tZybl7iU8=;
+ b=LpAPsWc/rMQsgYZV3MXF2bWitjzE5C6dXqyvf2LaY3lX+FMYlNhgUT/ZCi1r7FbhrGFhE8TRzUkqawpHWLCwqOt7eiwTlj14nl3I4iaiOnVkeffA6Cb72MSHATzf+hyFEwXM9Ebeuv466qbQaUGB593Ag0Z4kwepwlrYK8tWk4YGii8HlmESlW3AwD+FY22kYGZWiFNR3HoVSi5yFzqgw/mT4y9ULK49oOn7p+a4M5Yt+4SL/kG17vlAU9j9vciyuFBQlN0ckmD+Bnv/fB3IoxuPWO3dTU2B1FZR2Ios3qutLbCibrCExlMKZKTItIS+7tm7aziE4VYFAjGdypg7nQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=jhY7jQSIRXqAqE/qK3hnmZGj7G68p1VfW36/dFGhyXo=;
-        b=qYE/2AT4aPIVrosYiM+YX8IPsRzTrnXm57n+ZSXVc9NtQHEMTVvZMoVdlJ+UM7xJgh
-         DNLn6wM2unFXOTfR1z8Kap3wPcv0Ld79fgjSo3u1GGgBO42Ldtei1nPlBZoOYzvcRnta
-         75R8piKkarTy5uGIH9SAqY88zqu09RSH6ggCjQKw3H5GAVzSr4iOy/5UMD0fapDL8Maw
-         j/ax1VOpaMKH9DbT9NdIzCY0u9kRRuRcU8niZsXh3Ksj9RsMm2HvN5FHqFQidJyynoo1
-         woL29iLTMcyy4d7k6F8SDre62kA6psjIUzZ4XUCofG7qzpUxPz5WMu2FEOCHU188qBxG
-         084g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=jhY7jQSIRXqAqE/qK3hnmZGj7G68p1VfW36/dFGhyXo=;
-        b=J0tnme0onFJtAWtWPREVVOV+LQ/p54txIcbFcg288H0xL0/T4E7RGkMMJdL5hIPL/Z
-         kKSyn7XCqi+Vd1L52/5cqxlMxIeRCDmWZ7VHuUM5Bm6QBCRlnTKPoNhYLjmGYncR5CNe
-         iRdu3Hno56OAoHCr2Z1Ii3oxK6GN6yt9JGdiQJDjwvqoTEyxushnd+qzXivTnqIhrqEV
-         pSpPHVxNydMEIaS7XCiv/DlyMk6iRrWn5BpFBs556Zedtg4K9XGu0NONmXJBeouY4RbN
-         Ht2KINZE4LCBee5vFdOmqr44FJ9Us+pXuwF/hna0EwE/+P+FuSlk4p0anEnQg35XDc8B
-         KYsg==
-X-Gm-Message-State: AOAM533NGZbYjULjHPTmmR5XffoqrExe/C9th+tZev2LgnNdA2rO0Lp8
-        a8rmXHlX3x2+BMs+fmGvf4sIl55/3O1JnmC3jA4dYg==
-X-Google-Smtp-Source: ABdhPJxIueGc9nT7kqP8k7xAIe2QKuKZ5D5HUHao0VW6Ra7yIL/hn7C/Dy7sNSaXCrtse1u4dNmJQiQF8a58xGAC8ZY=
-X-Received: by 2002:a2e:9990:: with SMTP id w16mr929513lji.156.1597908958592;
- Thu, 20 Aug 2020 00:35:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200801023248.90104-1-benbjiang@gmail.com> <5ed0fd46-3a3d-3c1a-5d75-03a74864e640@arm.com>
- <592F24A7-BF43-457D-AC40-DC5E35279730@tencent.com> <8bef1f94-f9bf-08a5-2ff3-3485d7796a96@arm.com>
- <8629CB9F-AFC8-43D6-BD14-B60A0B85ADB3@tencent.com> <5f870781-1648-b4ac-6026-557dfc347109@arm.com>
- <CCA1D942-3669-4216-92BD-768967B1ECE5@tencent.com> <4964e359-afc5-a256-4950-853a9485eeff@arm.com>
- <70236E62-AA36-48C1-9382-86353649253C@tencent.com> <3a1047fc-a86a-014a-b17a-eae71f669da1@arm.com>
- <643B0ECE-D758-4D08-8B1B-C70F34DD9943@tencent.com> <55f04582-69d6-aeb4-85be-3e46a3b15beb@arm.com>
- <755BFAD0-9072-4D73-9CD7-AF4F74A79D21@tencent.com> <729675a2-b083-4211-62c0-f7ed7f483ae2@arm.com>
- <CAKfTPtATf94n4t6EnB5_76ygox26xd9EwvEHiv5cGN=E9BdLgg@mail.gmail.com>
- <bb7456af-6a4d-874c-e635-8d21e1ab3efc@arm.com> <A8E52241-0206-447D-9EA0-699F8F82AFAB@tencent.com>
- <CAKfTPtBiZHwkhCkMQs9iOF=eBLgubsJkARN5zOKZzmfo_jTJzg@mail.gmail.com> <3A85DD77-2A4B-466F-A1F4-1BF2AF02CF58@tencent.com>
-In-Reply-To: <3A85DD77-2A4B-466F-A1F4-1BF2AF02CF58@tencent.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 20 Aug 2020 09:35:46 +0200
-Message-ID: <CAKfTPtATpDB+ihpMf854nTdDfy4Bw_BU=21PRHVczEcE42271Q@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: reduce preemption with IDLE tasks
- runable(Internet mail)
-To:     =?UTF-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Jiang Biao <benbjiang@gmail.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G6r3a7f5HXta43l3bKvwm/ztY7DNODH815tZybl7iU8=;
+ b=ZJj2qSa7YpQGZPYdbd4iIFy+Lc93+ctBEzl9ED0ZICFm5GGh2BSVFE3wsrzWo+pJiqeACc/BnghpdLmKxrQv+UIIEO7icf2lTxtkd7Ze8ATNA+2JL+U3v+0zGQZmPksdazOSpI93WUECpspD0l11LV9Qwbw1hQfdp4tLYqhGPOw=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=synaptics.com;
+Received: from BN7PR03MB4547.namprd03.prod.outlook.com (2603:10b6:408:9::22)
+ by BN7PR03MB4563.namprd03.prod.outlook.com (2603:10b6:408:36::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.16; Thu, 20 Aug
+ 2020 07:51:49 +0000
+Received: from BN7PR03MB4547.namprd03.prod.outlook.com
+ ([fe80::3cda:7634:5802:df5f]) by BN7PR03MB4547.namprd03.prod.outlook.com
+ ([fe80::3cda:7634:5802:df5f%7]) with mapi id 15.20.3305.024; Thu, 20 Aug 2020
+ 07:51:49 +0000
+Date:   Thu, 20 Aug 2020 15:36:15 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Icenowy Zheng <icenowy@aosc.io>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 06/12] regulator: ltc3676: Fix W=1 build warning when
+ CONFIG_OF=n
+Message-ID: <20200820153615.352947f6@xhacker.debian>
+In-Reply-To: <20200820152926.42c48840@xhacker.debian>
+References: <20200820152926.42c48840@xhacker.debian>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: TY1PR01CA0194.jpnprd01.prod.outlook.com (2603:1096:403::24)
+ To BN7PR03MB4547.namprd03.prod.outlook.com (2603:10b6:408:9::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from 255.255.255.255 (255.255.255.255) by TY1PR01CA0194.jpnprd01.prod.outlook.com (2603:1096:403::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24 via Frontend Transport; Thu, 20 Aug 2020 07:51:45 +0000
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+X-Originating-IP: [124.74.246.114]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 11172cbc-63d1-4e41-f2c7-08d844dde493
+X-MS-TrafficTypeDiagnostic: BN7PR03MB4563:
+X-Microsoft-Antispam-PRVS: <BN7PR03MB4563B3E97BBD373C9C6B3EFFED5A0@BN7PR03MB4563.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:449;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mH0ydswDHdNYylQwBRv75mKUuCWrlGXV0i2byJ178GNHZso6tFTnBrmez5aSXrrEHn+BgeJ3v7MCvFNrt4gdFdVrgGR+x/+xXf3Bbo+9hGDN6BHgcjVoF7ciWcSKUKqH2hBIBIRg20wUPpxyxkFlWkl4TgF+rt6+zIOOrdHvgUinkKjHB9w287zc2yzYRn1o/jlFSIpFC/gekQCQa/31UlBaiEZNALO3oE0AX5YcjgbRY168dcQq4LdsX2y2+oYMi5mGjHOxFrMP+VLOTjx88QAc/A/jliA1dlU0oDToaKlzFgQ1RBtGhgMaitXPlb4LIBNIkMrHXxBxiKK6xfIRgWfA5qVA9gQMTgY2RShqkXhF0TtCiXUdfCnp0s29T/E3
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR03MB4547.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(396003)(346002)(136003)(376002)(1076003)(4744005)(4326008)(2906002)(5660300002)(6666004)(478600001)(956004)(9686003)(83380400001)(26005)(316002)(86362001)(52116002)(8676002)(66946007)(16576012)(66556008)(6486002)(110011004)(8936002)(66476007)(110136005)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 6NFwbL6CJIYazAISo/bnG3r+Ds6Wg9sfYCz03SHgYnOFzI82O7XHLHkH0jYeV0IB5P5qAL0w1AvoHMU8irvoY4P2KLdL7rLHwtLUEWYgDMKaYMxdvfdmoqsAxEQ2ZmTDjK6wM0gkDX9/sEcbKcLLdZ7ZcyeC2v6VvBNGzpBomo1Jg/Ff7nT10E9KAd0KDd+AzlXV0+OLBso3z5kb/r4HKsUZsCjWzj1uTgUoRgbfDYjl1pse6mzU34Q8JyuPei9JrQktCWre+B00VtqD8c2537PzF71FeUcvMUVrNamVT9Kv8R1AZekirT0XB/rXL5/TzjBwkZDRNt7/0PFWMAZONcwR8bqpPWrW/hAEJWBwjCrSylvXMe0t4SIPcXf8Xy/fYPXq+Y7rIswPgBgNJ2BGulervlD7oPV9+EUSSHvdFS0KIJZfFpAFDtKaw5ZWCXd47Hh/1FwQH/drQfvcniyEVvrE/GS5vQbrnaY1/gGvIaIbQvlObqvMPJ8NQ69bbmmTTkd0NMwTRIeMFqOpAXLO2dHd24rPDdftDrvJ3RQhWS2ZzjnYqwxeSDYpTgabxtn5tXbkDQUgy7U+ClvlL9siaJFSTwLNRMW0Hm9uvk4DBpnLzA91ARLTvNitphV6ragWndNXg7WCDY+0lO7W8gz5cw==
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 11172cbc-63d1-4e41-f2c7-08d844dde493
+X-MS-Exchange-CrossTenant-AuthSource: BN7PR03MB4547.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2020 07:51:48.9055
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qGPBBTSz2wThhp54meTkCN2myFjZ5Pesw18aKK/dEuJ4jr+rqzNJydq/SnX2Z6plgzndecBPQwIq6/YFkT3D7g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR03MB4563
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Aug 2020 at 02:13, benbjiang(=E8=92=8B=E5=BD=AA) <benbjiang@tenc=
-ent.com> wrote:
->
->
->
-> > On Aug 19, 2020, at 10:55 PM, Vincent Guittot <vincent.guittot@linaro.o=
-rg> wrote:
-> >
-> > On Wed, 19 Aug 2020 at 16:27, benbjiang(=E8=92=8B=E5=BD=AA) <benbjiang@=
-tencent.com> wrote:
-> >>
-> >>
-> >>
-> >>> On Aug 19, 2020, at 7:55 PM, Dietmar Eggemann <dietmar.eggemann@arm.c=
-om> wrote:
-> >>>
-> >>> On 19/08/2020 13:05, Vincent Guittot wrote:
-> >>>> On Wed, 19 Aug 2020 at 12:46, Dietmar Eggemann <dietmar.eggemann@arm=
-.com> wrote:
-> >>>>>
-> >>>>> On 17/08/2020 14:05, benbjiang(=E8=92=8B=E5=BD=AA) wrote:
-> >>>>>>
-> >>>>>>
-> >>>>>>> On Aug 17, 2020, at 4:57 PM, Dietmar Eggemann <dietmar.eggemann@a=
-rm.com> wrote:
-> >>>>>>>
-> >>>>>>> On 14/08/2020 01:55, benbjiang(=E8=92=8B=E5=BD=AA) wrote:
-> >>>>>>>> Hi,
-> >>>>>>>>
-> >>>>>>>>> On Aug 13, 2020, at 2:39 AM, Dietmar Eggemann <dietmar.eggemann=
-@arm.com> wrote:
-> >>>>>>>>>
-> >>>>>>>>> On 12/08/2020 05:19, benbjiang(=E8=92=8B=E5=BD=AA) wrote:
-> >>>>>>>>>> Hi,
-> >>>>>>>>>>
-> >>>>>>>>>>> On Aug 11, 2020, at 11:54 PM, Dietmar Eggemann <dietmar.eggem=
-ann@arm.com> wrote:
-> >>>>>>>>>>>
-> >>>>>>>>>>> On 11/08/2020 02:41, benbjiang(=E8=92=8B=E5=BD=AA) wrote:
-> >>>>>>>>>>>> Hi,
-> >>>>>>>>>>>>
-> >>>>>>>>>>>>> On Aug 10, 2020, at 9:24 PM, Dietmar Eggemann <dietmar.egge=
-mann@arm.com> wrote:
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> On 06/08/2020 17:52, benbjiang(=E8=92=8B=E5=BD=AA) wrote:
-> >>>>>>>>>>>>>> Hi,
-> >>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>> On Aug 6, 2020, at 9:29 PM, Dietmar Eggemann <dietmar.egg=
-emann@arm.com> wrote:
-> >>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>> On 03/08/2020 13:26, benbjiang(=E8=92=8B=E5=BD=AA) wrote:
-> >>>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>>>> On Aug 3, 2020, at 4:16 PM, Dietmar Eggemann <dietmar.e=
-ggemann@arm.com> wrote:
-> >>>>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>>>> On 01/08/2020 04:32, Jiang Biao wrote:
-> >>>>>>>>>>>>>>>>>> From: Jiang Biao <benbjiang@tencent.com>
-> >>>>>
-> >>>>> [...]
-> >>>>>
-> >>>>>>> Are you sure about this?
-> >>>>>> Yes. :)
-> >>>>>>>
-> >>>>>>> The math is telling me for the:
-> >>>>>>>
-> >>>>>>> idle task:      (3 / (1024 + 1024 + 3))^(-1) * 4ms =3D 2735ms
-> >>>>>>>
-> >>>>>>> normal task: (1024 / (1024 + 1024 + 3))^(-1) * 4ms =3D    8ms
-> >>>>>>>
-> >>>>>>> (4ms - 250 Hz)
-> >>>>>> My tick is 1ms - 1000HZ, which seems reasonable for 600ms? :)
-> >>>>>
-> >>>>> OK, I see.
-> >>>>>
-> >>>>> But here the different sched slices (check_preempt_tick()->
-> >>>>> sched_slice()) between normal tasks and the idle task play a role t=
-o.
-> >>>>>
-> >>>>> Normal tasks get ~3ms whereas the idle task gets <0.01ms.
-> >>>>
-> >>>> In fact that depends on the number of CPUs on the system
-> >>>> :sysctl_sched_latency =3D 6ms * (1 + ilog(ncpus)) . On a 8 cores sys=
-tem,
-> >>>> normal task will run around 12ms in one shoot and the idle task stil=
-l
-> >>>> one tick period
-> >>>
-> >>> True. This is on a single CPU.
-> >> Agree. :)
-> >>
-> >>>
-> >>>> Also, you can increase even more the period between 2 runs of idle
-> >>>> task by using cgroups and min shares value : 2
-> >>>
-> >>> Ah yes, maybe this is what Jiang wants to do then? If his runtime doe=
-s
-> >>> not have other requirements preventing this.
-> >> That could work for increasing the period between 2 runs. But could no=
-t
-> >> reduce the single runtime of idle task I guess, which means normal tas=
-k
-> >> could have 1-tick schedule latency because of idle task.
-> >
-> > Yes.  An idle task will preempt an always running task during 1 tick
-> > every 680ms. But also you should keep in mind that a waking normal
-> > task will preempt the idle task immediately which means that it will
-> > not add scheduling latency to a normal task but "steal" 0.14% of
-> > normal task throughput (1/680) at most
-> That=E2=80=99s true. But in the VM case, when VM are busy(MWAIT passthrou=
-gh
-> or running cpu eating works), the 1-tick scheduling latency could be
-> detected by cyclictest running in the VM.
->
-> OTOH, we compensate vruntime in place_entity() to boot waking
-> without distinguish SCHED_IDLE task, do you think it=E2=80=99s necessary =
-to
-> do that? like
->
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -4115,7 +4115,7 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_en=
-tity *se, int initial)
->                 vruntime +=3D sched_vslice(cfs_rq, se);
->
->         /* sleeps up to a single latency don't count. */
-> -       if (!initial) {
-> +       if (!initial && likely(!task_has_idle_policy(task_of(se)))) {
->                 unsigned long thresh =3D sysctl_sched_latency;
+Fix below warning when CONFIG_OF=3Dn:
 
-Yeah, this is a good improvement.
-Does it solve your problem ?
+drivers/regulator/ltc3676.c:371:34: warning: =E2=80=98ltc3676_of_match=E2=
+=80=99 defined but not used [-Wunused-const-variable=3D]
+  371 | static const struct of_device_id ltc3676_of_match[] =3D {
+      |                                  ^~~~~~~~~~~~~~~~
 
->
-> >
-> >> OTOH, cgroups(shares) could introduce extra complexity. :)
-> >>
-> >> I wonder if there=E2=80=99s any possibility to make SCHED_IDLEs=E2=80=
-=99 priorities absolutely
-> >> lower than SCHED_NORMAL(OTHER), which means no weights/shares
-> >> for them, and they run only when no other task=E2=80=99s runnable.
-> >> I guess there may be priority inversion issue if we do that. But maybe=
- we
-> >
-> > Exactly, that's why we must ensure a minimum running time for sched_idl=
-e task
->
-> Still for VM case, different VMs have been much isolated from each other,
-> priority inversion issue could be very rare, we=E2=80=99re trying to make=
- offline tasks
-> absoultly harmless to online tasks. :)
->
-> Thanks a lot for your time.
-> Regards,
-> Jiang
->
-> >
-> >> could avoid it by load-balance more aggressively, or it(priority inver=
-sion)
-> >> could be ignored in some special case.
-> >>
-> >>>
->
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+---
+ drivers/regulator/ltc3676.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/regulator/ltc3676.c b/drivers/regulator/ltc3676.c
+index 093b3e4a6303..0778d5bb7559 100644
+--- a/drivers/regulator/ltc3676.c
++++ b/drivers/regulator/ltc3676.c
+@@ -368,11 +368,13 @@ static const struct i2c_device_id ltc3676_i2c_id[] =
+=3D {
+ };
+ MODULE_DEVICE_TABLE(i2c, ltc3676_i2c_id);
+=20
++#ifdef CONFIG_OF
+ static const struct of_device_id ltc3676_of_match[] =3D {
+ 	{ .compatible =3D "lltc,ltc3676" },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(of, ltc3676_of_match);
++#endif
+=20
+ static struct i2c_driver ltc3676_driver =3D {
+ 	.driver =3D {
+--=20
+2.28.0
+
