@@ -2,210 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 801C424BE25
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D9224BE2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728728AbgHTNVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:21:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47334 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728350AbgHTJe1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:34:27 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4367D22B43;
-        Thu, 20 Aug 2020 09:34:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916065;
-        bh=+kH4ogI01XWXBJxV5v3pH33kZ3F0o0zBZ5/4elUM6ks=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z9qN0alDV2Dcia5y5jcxYex229S687YdMtRRAVNy3HDJWqbV1HPCTZ3Nx1EFfircQ
-         PwKKWPkP9wo8+xjbC320EjFqFh/PAAGEOtiWErCV0xiopMz7ad6oEUyLVKFZpR98wU
-         OIeHpYPQrHs4xIY/CF+Zmk2xnWErcm7uonp/8M/g=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hersen Wu <hersenxs.wu@amd.com>,
-        Aric Cyr <Aric.Cyr@amd.com>, Eryk Brol <eryk.brol@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.8 232/232] drm/amd/display: dchubbub p-state warning during surface planes switch
-Date:   Thu, 20 Aug 2020 11:21:23 +0200
-Message-Id: <20200820091624.014227105@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
-References: <20200820091612.692383444@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1729007AbgHTNU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:20:26 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:44945 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728439AbgHTJfA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:35:00 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id BA2BA5C00E2;
+        Thu, 20 Aug 2020 05:34:59 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Thu, 20 Aug 2020 05:34:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=KlpKEu
+        wCoUOMNODDk2NCxK/d+w7GprnH5JN5nth+uqI=; b=GxjAAHVEytKq/BXRBWsDxY
+        Dxd+QGSxNyMLn8B6w2bmBHtKm0VvhbkJfRUN+wyQ76fLyGOXps4Bp6lYyc4OslUw
+        CviOtRimIJz9e2GPwAWHPkkz3VZaVHMy2Z6/iya0NhhpWD5ntBeJ90TymbMmOduH
+        3krwawSMZhRk62Fen4KFAIwaFpKwtMjkHuPsycm80afeY8OO2MMdzaVumezTlJuR
+        KNdi/GebTHioOcjUAw+WHIL42E1ecSYrMhFzPEmoMIHdf2zRwB0mvdaIyXsWN/X3
+        Y3J3scEeV/uBB9xAOB9U+m+IL8p1ufOJM6tCcD6E2OXIw8nHg8Q0JAp/YVuc6/DA
+        ==
+X-ME-Sender: <xms:w0M-X1DHNrYONv3eKsbyxF6ogxOn86preXDIu8-vS1TG9SLjSV9H_Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedruddutddgudegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforghrvghk
+    ucforghrtgiihihkohifshhkihdqifpkrhgvtghkihcuoehmrghrmhgrrhgvkhesihhnvh
+    hishhisghlvghthhhinhhgshhlrggsrdgtohhmqeenucggtffrrghtthgvrhhnpeetveff
+    iefghfekhffggeeffffhgeevieektedthfehveeiheeiiedtudegfeetffenucfkpheple
+    durdeigedrudejtddrkeelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
+    rghilhhfrhhomhepmhgrrhhmrghrvghksehinhhvihhsihgslhgvthhhihhnghhslhgrsg
+    drtghomh
+X-ME-Proxy: <xmx:w0M-XzjZGjLAp3n9_azWu0HJ-2LvhXEr0Nw-aGIfzOfEUa-iC2utxg>
+    <xmx:w0M-XwkllzvvDnn213E9uwXCMcpLM26j6UTX6b_kkAMDZan5hXrRSA>
+    <xmx:w0M-X_xG0GH2nOXoQYwBW64vVgXzNJnUgZ3q0__ohYa9b3uWuoJnZg>
+    <xmx:w0M-X4efRSIXmsgZm_bWKk2FYgEeFvwbXRzwjLNLAlD7ehekjMRMOw>
+Received: from mail-itl (ip5b40aa59.dynamic.kabel-deutschland.de [91.64.170.89])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 60BFA3280060;
+        Thu, 20 Aug 2020 05:34:58 -0400 (EDT)
+Date:   Thu, 20 Aug 2020 11:34:54 +0200
+From:   Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= 
+        <marmarek@invisiblethingslab.com>
+To:     Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+Cc:     Norbert Kaminski <norbert.kaminski@3mdeb.com>,
+        Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Maciej Pijanowski <maciej.pijanowski@3mdeb.com>,
+        piotr.krol@3mdeb.com
+Subject: Re: [PATCH] efi: discover ESRT table on Xen PV too
+Message-ID: <20200820093454.GS1626@mail-itl>
+References: <20200816001949.595424-1-marmarek@invisiblethingslab.com>
+ <20200817090013.GN975@Air-de-Roger>
+ <20200818120135.GK1679@mail-itl>
+ <20200818124710.GK828@Air-de-Roger>
+ <20200818150020.GL1679@mail-itl>
+ <20200818172114.GO828@Air-de-Roger>
+ <20200818184018.GN1679@mail-itl>
+ <20200819081930.GQ828@Air-de-Roger>
+ <3d405b0c-4e2b-0d29-56bb-e315f4c21d03@3mdeb.com>
+ <20200820093025.GT828@Air-de-Roger>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="pssgfZQbIK00CPi6"
+Content-Disposition: inline
+In-Reply-To: <20200820093025.GT828@Air-de-Roger>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: hersen wu <hersenxs.wu@amd.com>
 
-commit 8b0379a85762b516c7b46aed7dbf2a4947c00564 upstream.
+--pssgfZQbIK00CPi6
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] efi: discover ESRT table on Xen PV too
 
-[Why]
-ramp_up_dispclk_with_dpp is to change dispclk, dppclk and dprefclk
-according to bandwidth requirement. call stack: rv1_update_clocks -->
-update_clocks --> dcn10_prepare_bandwidth / dcn10_optimize_bandwidth
---> prepare_bandwidth / optimize_bandwidth. before change dcn hw,
-prepare_bandwidth will be called first to allow enough clock,
-watermark for change, after end of dcn hw change, optimize_bandwidth
-is executed to lower clock to save power for new dcn hw settings.
+On Thu, Aug 20, 2020 at 11:30:25AM +0200, Roger Pau Monn=C3=A9 wrote:
+> Right, so you only need access to the ESRT table, that's all. Then I
+> think we need to make sure Xen doesn't use this memory for anything
+> else, which will require some changes in Xen (or at least some
+> checks?).
+>=20
+> We also need to decide what to do if the table turns out to be placed
+> in a wrong region. How are we going to prevent dom0 from using it
+> then? My preference would be to completely hide it from dom0 in that
+> case, such that it believes there's no ESRT at all if possible.
 
-below is sequence of commit_planes_for_stream:
-step 1: prepare_bandwidth - raise clock to have enough bandwidth
-step 2: lock_doublebuffer_enable
-step 3: pipe_control_lock(true) - make dchubp register change will
-not take effect right way
-step 4: apply_ctx_for_surface - program dchubp
-step 5: pipe_control_lock(false) - dchubp register change take effect
-step 6: optimize_bandwidth --> dc_post_update_surfaces_to_stream
-for full_date, optimize clock to save power
+Yes, that makes sense. As discussed earlier, that probably means
+re-constructing SystemTable before giving it to dom0. We'd need to do
+that in PVH case anyway, to adjust addresses, right? Is there something
+like this in the Xen codebase already, or it needs to be written from
+scratch?
 
-at end of step 1, dcn clocks (dprefclk, dispclk, dppclk) may be
-changed for new dchubp configuration. but real dcn hub dchubps are
-still running with old configuration until end of step 5. this need
-clocks settings at step 1 should not less than that before step 1.
-this is checked by two conditions: 1. if (should_set_clock(safe_to_lower
-, new_clocks->dispclk_khz, clk_mgr_base->clks.dispclk_khz) ||
-new_clocks->dispclk_khz == clk_mgr_base->clks.dispclk_khz)
-2. request_dpp_div = new_clocks->dispclk_khz > new_clocks->dppclk_khz
+--=20
+Best Regards,
+Marek Marczykowski-G=C3=B3recki
+Invisible Things Lab
+A: Because it messes up the order in which people normally read text.
+Q: Why is top-posting such a bad thing?
 
-the second condition is based on new dchubp configuration. dppclk
-for new dchubp may be different from dppclk before step 1.
-for example, before step 1, dchubps are as below:
-pipe 0: recout=(0,40,1920,980) viewport=(0,0,1920,979)
-pipe 1: recout=(0,0,1920,1080) viewport=(0,0,1920,1080)
-for dppclk for pipe0 need dppclk = dispclk
+--pssgfZQbIK00CPi6
+Content-Type: application/pgp-signature; name="signature.asc"
 
-new dchubp pipe split configuration:
-pipe 0: recout=(0,0,960,1080) viewport=(0,0,960,1080)
-pipe 1: recout=(960,0,960,1080) viewport=(960,0,960,1080)
-dppclk only needs dppclk = dispclk /2.
+-----BEGIN PGP SIGNATURE-----
 
-dispclk, dppclk are not lock by otg master lock. they take effect
-after step 1. during this transition, dispclk are the same, but
-dppclk is changed to half of previous clock for old dchubp
-configuration between step 1 and step 6. This may cause p-state
-warning intermittently.
+iQEzBAEBCAAdFiEEhrpukzGPukRmQqkK24/THMrX1ywFAl8+Q74ACgkQ24/THMrX
+1yw4EQgAk4AIcF8Tu2i2t9vctatIRr4NIxuooAyuGeLDLt9gHLT6RnXWj19wse+9
+mkWk5O2lq9WtIrO4gWqBScO0uPAbH9EV6RapfhhGHc/gTtG2rXieaCOiwOW1QKuA
+1QhKHmzSWb16MAQD30cNvyThc7CWEtDz87/gPzxYSOzSEtPIRp3SwJDXifNOPAUK
+w5rzHYjmANwxAw2kNmGuF+AmwZgHQhGkCLzUMMkZ7hPEGxnKRferTQHmU2Hs3WBC
+hDiq05yOY5i4YUsJiPJrkGLuhwRRjbq38Rb3CWlwhLRMEzQhw4i6+T/EETRy8MZm
+2t/zlNB3JyO+sFY32S+zBBXoYBe+lg==
+=7TLR
+-----END PGP SIGNATURE-----
 
-[How]
-for new_clocks->dispclk_khz == clk_mgr_base->clks.dispclk_khz, we
-need make sure dppclk are not changed to less between step 1 and 6.
-for new_clocks->dispclk_khz > clk_mgr_base->clks.dispclk_khz,
-new display clock is raised, but we do not know ratio of
-new_clocks->dispclk_khz and clk_mgr_base->clks.dispclk_khz,
-new_clocks->dispclk_khz /2 does not guarantee equal or higher than
-old dppclk. we could ignore power saving different between
-dppclk = displck and dppclk = dispclk / 2 between step 1 and step 6.
-as long as safe_to_lower = false, set dpclk = dispclk to simplify
-condition check.
-
-CC: Stable <stable@vger.kernel.org>
-Signed-off-by: Hersen Wu <hersenxs.wu@amd.com>
-Reviewed-by: Aric Cyr <Aric.Cyr@amd.com>
-Acked-by: Eryk Brol <eryk.brol@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/gpu/drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr.c |   69 ++++++++++++-
- 1 file changed, 67 insertions(+), 2 deletions(-)
-
---- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr.c
-+++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr.c
-@@ -85,12 +85,77 @@ static int rv1_determine_dppclk_threshol
- 	return disp_clk_threshold;
- }
- 
--static void ramp_up_dispclk_with_dpp(struct clk_mgr_internal *clk_mgr, struct dc *dc, struct dc_clocks *new_clocks)
-+static void ramp_up_dispclk_with_dpp(
-+		struct clk_mgr_internal *clk_mgr,
-+		struct dc *dc,
-+		struct dc_clocks *new_clocks,
-+		bool safe_to_lower)
- {
- 	int i;
- 	int dispclk_to_dpp_threshold = rv1_determine_dppclk_threshold(clk_mgr, new_clocks);
- 	bool request_dpp_div = new_clocks->dispclk_khz > new_clocks->dppclk_khz;
- 
-+	/* this function is to change dispclk, dppclk and dprefclk according to
-+	 * bandwidth requirement. Its call stack is rv1_update_clocks -->
-+	 * update_clocks --> dcn10_prepare_bandwidth / dcn10_optimize_bandwidth
-+	 * --> prepare_bandwidth / optimize_bandwidth. before change dcn hw,
-+	 * prepare_bandwidth will be called first to allow enough clock,
-+	 * watermark for change, after end of dcn hw change, optimize_bandwidth
-+	 * is executed to lower clock to save power for new dcn hw settings.
-+	 *
-+	 * below is sequence of commit_planes_for_stream:
-+	 *
-+	 * step 1: prepare_bandwidth - raise clock to have enough bandwidth
-+	 * step 2: lock_doublebuffer_enable
-+	 * step 3: pipe_control_lock(true) - make dchubp register change will
-+	 * not take effect right way
-+	 * step 4: apply_ctx_for_surface - program dchubp
-+	 * step 5: pipe_control_lock(false) - dchubp register change take effect
-+	 * step 6: optimize_bandwidth --> dc_post_update_surfaces_to_stream
-+	 * for full_date, optimize clock to save power
-+	 *
-+	 * at end of step 1, dcn clocks (dprefclk, dispclk, dppclk) may be
-+	 * changed for new dchubp configuration. but real dcn hub dchubps are
-+	 * still running with old configuration until end of step 5. this need
-+	 * clocks settings at step 1 should not less than that before step 1.
-+	 * this is checked by two conditions: 1. if (should_set_clock(safe_to_lower
-+	 * , new_clocks->dispclk_khz, clk_mgr_base->clks.dispclk_khz) ||
-+	 * new_clocks->dispclk_khz == clk_mgr_base->clks.dispclk_khz)
-+	 * 2. request_dpp_div = new_clocks->dispclk_khz > new_clocks->dppclk_khz
-+	 *
-+	 * the second condition is based on new dchubp configuration. dppclk
-+	 * for new dchubp may be different from dppclk before step 1.
-+	 * for example, before step 1, dchubps are as below:
-+	 * pipe 0: recout=(0,40,1920,980) viewport=(0,0,1920,979)
-+	 * pipe 1: recout=(0,0,1920,1080) viewport=(0,0,1920,1080)
-+	 * for dppclk for pipe0 need dppclk = dispclk
-+	 *
-+	 * new dchubp pipe split configuration:
-+	 * pipe 0: recout=(0,0,960,1080) viewport=(0,0,960,1080)
-+	 * pipe 1: recout=(960,0,960,1080) viewport=(960,0,960,1080)
-+	 * dppclk only needs dppclk = dispclk /2.
-+	 *
-+	 * dispclk, dppclk are not lock by otg master lock. they take effect
-+	 * after step 1. during this transition, dispclk are the same, but
-+	 * dppclk is changed to half of previous clock for old dchubp
-+	 * configuration between step 1 and step 6. This may cause p-state
-+	 * warning intermittently.
-+	 *
-+	 * for new_clocks->dispclk_khz == clk_mgr_base->clks.dispclk_khz, we
-+	 * need make sure dppclk are not changed to less between step 1 and 6.
-+	 * for new_clocks->dispclk_khz > clk_mgr_base->clks.dispclk_khz,
-+	 * new display clock is raised, but we do not know ratio of
-+	 * new_clocks->dispclk_khz and clk_mgr_base->clks.dispclk_khz,
-+	 * new_clocks->dispclk_khz /2 does not guarantee equal or higher than
-+	 * old dppclk. we could ignore power saving different between
-+	 * dppclk = displck and dppclk = dispclk / 2 between step 1 and step 6.
-+	 * as long as safe_to_lower = false, set dpclk = dispclk to simplify
-+	 * condition check.
-+	 * todo: review this change for other asic.
-+	 **/
-+	if (!safe_to_lower)
-+		request_dpp_div = false;
-+
- 	/* set disp clk to dpp clk threshold */
- 
- 	clk_mgr->funcs->set_dispclk(clk_mgr, dispclk_to_dpp_threshold);
-@@ -209,7 +274,7 @@ static void rv1_update_clocks(struct clk
- 	/* program dispclk on = as a w/a for sleep resume clock ramping issues */
- 	if (should_set_clock(safe_to_lower, new_clocks->dispclk_khz, clk_mgr_base->clks.dispclk_khz)
- 			|| new_clocks->dispclk_khz == clk_mgr_base->clks.dispclk_khz) {
--		ramp_up_dispclk_with_dpp(clk_mgr, dc, new_clocks);
-+		ramp_up_dispclk_with_dpp(clk_mgr, dc, new_clocks, safe_to_lower);
- 		clk_mgr_base->clks.dispclk_khz = new_clocks->dispclk_khz;
- 		send_request_to_lower = true;
- 	}
-
-
+--pssgfZQbIK00CPi6--
