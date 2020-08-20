@@ -2,99 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BEC124C469
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 19:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 602CE24C46D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 19:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730566AbgHTRVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 13:21:43 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:31154 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730544AbgHTRVc (ORCPT
+        id S1730448AbgHTRYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 13:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728132AbgHTRX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 13:21:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597944089;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rvDNF5Q3wwtznjdzEy9L2Cc3y4PlB8JtkjTiFM9v96o=;
-        b=DkpdICMe113oxxJXIOehcL4LNQRw8VTuKvnZzLwRbEukHCy1ZemG0oJUdSfpWm39cDi9qW
-        1yd1AXYB31TtFZm9/jW5Kz0mEFevum7+0zoYaPPWbwI58cgH+T6DpCmf6F7T351LJM3aPy
-        MgU63+Cwaj2yBVY/HYSpx/Cp081sUnM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-172-DJeVJEdTNtK3jEvIg62OwQ-1; Thu, 20 Aug 2020 13:21:25 -0400
-X-MC-Unique: DJeVJEdTNtK3jEvIg62OwQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 824E8873155;
-        Thu, 20 Aug 2020 17:21:23 +0000 (UTC)
-Received: from treble (ovpn-117-70.rdu2.redhat.com [10.10.117.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A46305C893;
-        Thu, 20 Aug 2020 17:21:20 +0000 (UTC)
-Date:   Thu, 20 Aug 2020 12:21:18 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     peterz@infradead.org, Brian Gerst <brgerst@gmail.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kyle Huey <me@kylehuey.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Robert O'Callahan <rocallahan@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [RFC][PATCH 4/7] x86/debug: Move historical SYSENTER junk into
- exc_debug_kernel()
-Message-ID: <20200820172118.n5injemo3ic63x6j@treble>
-References: <20200820163453.GE1362448@hirez.programming.kicks-ass.net>
- <156769F5-0BCC-4FB8-A56D-0E92601F558A@amacapital.net>
+        Thu, 20 Aug 2020 13:23:59 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB5D7C061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:23:58 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id kq25so3454708ejb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:23:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FSEoi89dHfhzP32ddR5j968nwd71ucC9yk+h6uBOV28=;
+        b=FxtAaQHphv14xbyM7ngVPajpiRbWySCAkBgXGB3jsIyE2OrnpIDSuLLNPHbwWREaNi
+         viUeJr9a0BpFBvV8kooP7S7PxLqua3ElF/xNUAqGdzEzycHzxJtqeUS0EHuN9jEvUUkL
+         7WDFeQ72BQkrRIhIwqay7/HZQ81jZDjZQn+sc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FSEoi89dHfhzP32ddR5j968nwd71ucC9yk+h6uBOV28=;
+        b=NFEBwh5ApFA8DOc7n0yfMDI7tsONOZ7uEsoea8RymIpS/Oq64yEswGljPlAhNkX2WD
+         BCLh1t2c7pew2Q8VFFe3Xw8RAGcpwewAFbREOXbcpuGX7o5qT2nTAPuKFrdyCNrouUIe
+         DuD0I00J3r8LR1TXmlkzwV3K5YXwsJRHKUavdKsWLuQ2wVgZFuSoUXGyLfE0PGO2wNrl
+         Ky+OEz2bTL7iqKaF49XocFAUspApH6FKxDZVCY04+o5fLnk5uGlESH9jVm/3UJogbH+8
+         KMhLIAtXfvAtgidkc1/WTxp3DeCZPN24Mzwh4uyvDYaOVDd8NgT8RAdIbnV8au9htkwP
+         hxKg==
+X-Gm-Message-State: AOAM531TZuHsGD1gpXvOpzVkuZgLmmWPy6Cbt5+E8kGXkbwSXInPIB2M
+        ZgLgOFhLcKyLawYacr5EKGBimsUMO5R2xQWYb18qCQ==
+X-Google-Smtp-Source: ABdhPJyao9He4BbnUXPa54gIMkC0Vw0O31b5BxC+Mk8grEr1dPsR5gmYR2tWBo3RzyIyQzdoUNQ3Zp+iwi3aLaIgu1A=
+X-Received: by 2002:a17:906:d187:: with SMTP id c7mr4444516ejz.196.1597944236714;
+ Thu, 20 Aug 2020 10:23:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <156769F5-0BCC-4FB8-A56D-0E92601F558A@amacapital.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <38d00022-730c-948a-917c-d86382df8cb9@canonical.com> <4acc34c4-9c17-41f7-2e39-7eda16792572@gmail.com>
+In-Reply-To: <4acc34c4-9c17-41f7-2e39-7eda16792572@gmail.com>
+From:   Markus Mayer <mmayer@broadcom.com>
+Date:   Thu, 20 Aug 2020 10:23:45 -0700
+Message-ID: <CAGt4E5s_=Tai=fTB37VibaCF=2F69vO3ZbVAsBCZXLK2CNiVAQ@mail.gmail.com>
+Subject: Re: out of bounds access on array error_text[] because of -ETIMEDOUT
+ return from __send_command()
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Colin Ian King <colin.king@canonical.com>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Linux ARM Kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 09:43:15AM -0700, Andy Lutomirski wrote:
-> 
-> 
-> > On Aug 20, 2020, at 9:35 AM, peterz@infradead.org wrote:
-> > 
-> > ﻿On Thu, Aug 20, 2020 at 11:17:29AM -0500, Josh Poimboeuf wrote:
-> >> On Thu, Aug 20, 2020 at 05:21:11PM +0200, peterz@infradead.org wrote:
-> > 
-> >>> qemu-gdb stub should eat the event before it lands in the guest
-> >> 
-> >> Are we sure about that?  I triggered the warning just now, stepping
-> >> through the debug handler.
-> > 
-> > Not sure at all, that's what seemed reasonable, but since when did that
-> > stop virt ;-)
-> > 
-> > Also, can you trigger that same with upstream? Because I suspect this
-> > ought to tickle the old code too.
-> 
-> I’ve lost track of how many bugs QEMU and KVM have in this space.
-> Let’s keep it as a warning, but a bug. But let’s get rid of the
-> totally bogus TIF_SINGLESTEP manipulation.
+On Wed, 19 Aug 2020 at 11:34, Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+> On 8/18/20 5:21 AM, Colin Ian King wrote:
+> > Hi,
+> >
+> > static analysis with coverity has found a buffer overflow issue with the
+> > brcmstb driver, I believe it may have been introduced with the following
+> > commit:
+> >
+> > commit a7c25759d8d84b64c437a78f05df7314b02934e5
+> > Author: Markus Mayer <mmayer@broadcom.com>
+> > Date:   Tue Apr 2 16:01:00 2019 -0700
+> >
+> >     memory: brcmstb: dpfe: wait for DCPU to be ready
+> >
+> > The static analysis is as follows for the source file
+> > /drivers/memory/brcmstb_dpfe.c :
+> >
+> > 684 static ssize_t generic_show(unsigned int command, u32 response[],
+> > 685                            struct brcmstb_dpfe_priv *priv, char *buf)
+> > 686 {
+> > 687        int ret;
+> > 688
+> >    1. Condition !priv, taking false branch.
+> >
+> > 689        if (!priv)
+> > 690                return sprintf(buf, "ERROR: driver private data not
+> > set\n");
+> > 691
+> >    2. return_constant: Function call __send_command(priv, command,
+> > response) may return -110.
+> >    3. assignment: Assigning: ret = __send_command(priv, command,
+> > response). The value of ret is now -110.
+> >
+> > 692        ret = __send_command(priv, command, response);
+> >    4. Condition ret < 0, taking true branch.
+> >
+> > 693        if (ret < 0)
+> >
+> > Out-of-bounds read (OVERRUN)
+> >    5. overrun-local: Overrunning array error_text of 6 8-byte elements
+> > at element index 110 (byte offset 887) using index -ret (which evaluates
+> > to 110).
+> > 694                return sprintf(buf, "ERROR: %s\n", error_text[-ret]);
+> > 695
+> > 696        return 0;
+> > 697 }
+> >
+> >
+> > Function __send_command() can return -ETIMEDOUT and this causes an
+> > out-of-bounds access on error_text[].
+>
+> Markus, what do you think of this:
+>
+> diff --git a/drivers/memory/brcmstb_dpfe.c b/drivers/memory/brcmstb_dpfe.c
+> index 60e8633b1175..b41c6251ddc3 100644
+> --- a/drivers/memory/brcmstb_dpfe.c
+> +++ b/drivers/memory/brcmstb_dpfe.c
+> @@ -445,7 +445,7 @@ static int __send_command(struct brcmstb_dpfe_priv
+> *priv, unsigned int cmd,
+>         }
+>         if (resp != 0) {
+>                 mutex_unlock(&priv->lock);
+> -               return -ETIMEDOUT;
+> +               return -ffs(DCPU_RET_ERR_TIMEDOUT);
+>         }
+>
+>         /* Compute checksum over the message */
+>
+> That way we only return DCPU-style error code from __send_command and we
+> de-reference error_text accordingly? Or we could just introduce a proper
+> lookup with a function instead of a direct array de-reference.
 
-By "but a bug", I assume you mean "not a bug" :-)
+Let me do some experiments. What you are proposing should work and is
+in line with the current code. A lookup function might be cleaner,
+though.
 
--- 
-Josh
+Thanks,
+-Markus
 
+> --
+> Florian
