@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D644024B7DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6573124B8CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729296AbgHTLFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:05:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54080 "EHLO mail.kernel.org"
+        id S1730569AbgHTKFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:05:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731052AbgHTKM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:12:28 -0400
+        id S1730409AbgHTKBe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:01:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3835E20724;
-        Thu, 20 Aug 2020 10:12:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A83F12173E;
+        Thu, 20 Aug 2020 10:01:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918347;
-        bh=OlvRdynhD5MxoW4Rkw37ENzyZiTNek9I+fsnj0/KSD8=;
+        s=default; t=1597917694;
+        bh=vrOyQnGK/t2OkbAq8wY4LopWCiFIowqmS7MRxb2aC70=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g2dWc6qHt/hb3+IzxaXn2khCIfyrtxjD94c9Ojv0y9TskRQXavr0tHaPMSRQ4TQAe
-         qvyAjFzpo4zk7pmawAs9pf3iC+aoWQ++p66EgXU5DdnOFwPpxapsI2Oz4AQjGZ6asl
-         Dg1WpajRHXQTyVxPZ5baNX93mB/obcZQxyr5HKAg=
+        b=DYwdm+0a1+FINRkLMMSjpLWQy0z7rov726L1GAkLiyYX2dUvsvvcEE7ev8A7GfkAz
+         A01FTMp0Pa0GKN/a0lLxpWy0QLh4Kv/tqHL9qSMQshRLxp2hk71+OCqkLUrPFbg6YD
+         Q/Aw5lAhWSJhDqooNIvT6Iy9wrYZjaMeFmLXSSTs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicolas Boichat <drinkcat@chromium.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Xiang Zheng <zhengxiang9@huawei.com>,
+        Heyi Guo <guoheyi@huawei.com>,
+        Biaoxiang Ye <yebiaoxiang@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 120/228] Bluetooth: hci_serdev: Only unregister device if it was registered
-Date:   Thu, 20 Aug 2020 11:21:35 +0200
-Message-Id: <20200820091613.588638899@linuxfoundation.org>
+Subject: [PATCH 4.9 123/212] PCI: Fix pci_cfg_wait queue locking problem
+Date:   Thu, 20 Aug 2020 11:21:36 +0200
+Message-Id: <20200820091608.566213752@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
-References: <20200820091607.532711107@linuxfoundation.org>
+In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
+References: <20200820091602.251285210@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,35 +46,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Boichat <drinkcat@chromium.org>
+From: Bjorn Helgaas <bhelgaas@google.com>
 
-[ Upstream commit 202798db9570104728dce8bb57dfeed47ce764bc ]
+[ Upstream commit 2a7e32d0547f41c5ce244f84cf5d6ca7fccee7eb ]
 
-We should not call hci_unregister_dev if the device was not
-successfully registered.
+The pci_cfg_wait queue is used to prevent user-space config accesses to
+devices while they are recovering from reset.
 
-Fixes: c34dc3bfa7642fd ("Bluetooth: hci_serdev: Introduce hci_uart_unregister_device()")
-Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Previously we used these operations on pci_cfg_wait:
+
+  __add_wait_queue(&pci_cfg_wait, ...)
+  __remove_wait_queue(&pci_cfg_wait, ...)
+  wake_up_all(&pci_cfg_wait)
+
+The wake_up acquires the wait queue lock, but the add and remove do not.
+
+Originally these were all protected by the pci_lock, but cdcb33f98244
+("PCI: Avoid possible deadlock on pci_lock and p->pi_lock"), moved
+wake_up_all() outside pci_lock, so it could race with add/remove
+operations, which caused occasional kernel panics, e.g., during vfio-pci
+hotplug/unplug testing:
+
+  Unable to handle kernel read from unreadable memory at virtual address ffff802dac469000
+
+Resolve this by using wait_event() instead of __add_wait_queue() and
+__remove_wait_queue().  The wait queue lock is held by both wait_event()
+and wake_up_all(), so it provides mutual exclusion.
+
+Fixes: cdcb33f98244 ("PCI: Avoid possible deadlock on pci_lock and p->pi_lock")
+Link: https://lore.kernel.org/linux-pci/79827f2f-9b43-4411-1376-b9063b67aee3@huawei.com/T/#u
+Based-on: https://lore.kernel.org/linux-pci/20191210031527.40136-1-zhengxiang9@huawei.com/
+Based-on-patch-by: Xiang Zheng <zhengxiang9@huawei.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Tested-by: Xiang Zheng <zhengxiang9@huawei.com>
+Cc: Heyi Guo <guoheyi@huawei.com>
+Cc: Biaoxiang Ye <yebiaoxiang@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/hci_serdev.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/pci/access.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/bluetooth/hci_serdev.c b/drivers/bluetooth/hci_serdev.c
-index 69c00a3db5382..72cf2d97b682c 100644
---- a/drivers/bluetooth/hci_serdev.c
-+++ b/drivers/bluetooth/hci_serdev.c
-@@ -361,7 +361,8 @@ void hci_uart_unregister_device(struct hci_uart *hu)
- 	struct hci_dev *hdev = hu->hdev;
+diff --git a/drivers/pci/access.c b/drivers/pci/access.c
+index 7b5cf6d1181a9..6f2a07567532d 100644
+--- a/drivers/pci/access.c
++++ b/drivers/pci/access.c
+@@ -185,17 +185,13 @@ EXPORT_SYMBOL(pci_bus_set_ops);
+ static DECLARE_WAIT_QUEUE_HEAD(pci_cfg_wait);
  
- 	clear_bit(HCI_UART_PROTO_READY, &hu->flags);
--	hci_unregister_dev(hdev);
-+	if (test_bit(HCI_UART_REGISTERED, &hu->flags))
-+		hci_unregister_dev(hdev);
- 	hci_free_dev(hdev);
+ static noinline void pci_wait_cfg(struct pci_dev *dev)
++	__must_hold(&pci_lock)
+ {
+-	DECLARE_WAITQUEUE(wait, current);
+-
+-	__add_wait_queue(&pci_cfg_wait, &wait);
+ 	do {
+-		set_current_state(TASK_UNINTERRUPTIBLE);
+ 		raw_spin_unlock_irq(&pci_lock);
+-		schedule();
++		wait_event(pci_cfg_wait, !dev->block_cfg_access);
+ 		raw_spin_lock_irq(&pci_lock);
+ 	} while (dev->block_cfg_access);
+-	__remove_wait_queue(&pci_cfg_wait, &wait);
+ }
  
- 	cancel_work_sync(&hu->write_work);
+ /* Returns 0 on success, negative values indicate error. */
 -- 
 2.25.1
 
