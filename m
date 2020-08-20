@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFAA124B29B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D516324B341
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728433AbgHTJdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:33:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43982 "EHLO mail.kernel.org"
+        id S1729255AbgHTJng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:43:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728255AbgHTJbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:31:50 -0400
+        id S1729145AbgHTJmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:42:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A7FEA21775;
-        Thu, 20 Aug 2020 09:31:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E738620724;
+        Thu, 20 Aug 2020 09:42:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915910;
-        bh=7/xGhS2jXg70AQL+LrjRaZ6SVzc0mVFtwhK0uFYVNso=;
+        s=default; t=1597916531;
+        bh=MDDyBPpHCPkjL6gnxEy7Y1yVEhWZUKASThmRxTHfrlk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aNIUOCv0Sfp579sMuTCU8chBMCn4CZVB7cHqQkrhnovB5A5dTGZNf90FH+/Kp7Mrn
-         pTqca48eZDC+ClonahCvqcI9S+7YNKht+bWew2rXl6hQbpRpdejkBHqExfias+PORN
-         PeTyicvpqUgPbrS/MrlT0E9QawL3s87w3eFFy18Q=
+        b=w73rahNLUgJxiBtDMvu1oeR3M7MvmoEAt4inrHFI2nUPrSu3S0sWxmk/wKAl6Qu4F
+         BwrVrYUCoASkl65AT4peDOu/QfPqhYk5GjQk34qH06LgQJ/qFF68IyND9FMprBRDGK
+         ueGErDXYl6i7sk6eubacRwNu2F3hPuY0m6j8Ps3M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 177/232] clk: hsdk: Fix bad dependency on IOMEM
+Subject: [PATCH 5.7 131/204] ima: Fail rule parsing when appraise_flag=blacklist is unsupportable
 Date:   Thu, 20 Aug 2020 11:20:28 +0200
-Message-Id: <20200820091621.388674950@linuxfoundation.org>
+Message-Id: <20200820091612.823232441@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
-References: <20200820091612.692383444@linuxfoundation.org>
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,35 +45,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Tyler Hicks <tyhicks@linux.microsoft.com>
 
-[ Upstream commit bd8548d0dcdab514e08e35a3451667486d879dae ]
+[ Upstream commit 5f3e92657bbfb63ad3109433d843c89996114b03 ]
 
-CONFIG_IOMEM does not exist.  The correct symbol to depend on is
-CONFIG_HAS_IOMEM.
+Verifying that a file hash is not blacklisted is currently only
+supported for files with appended signatures (modsig).  In the future,
+this might change.
 
-Fixes: 1e7468bd9d30a21e ("clk: Specify IOMEM dependency for HSDK pll driver")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/20200803084835.21838-1-geert+renesas@glider.be
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+For now, the "appraise_flag" option is only appropriate for appraise
+actions and its "blacklist" value is only appropriate when
+CONFIG_IMA_APPRAISE_MODSIG is enabled and "appraise_flag=blacklist" is
+only appropriate when "appraise_type=imasig|modsig" is also present.
+Make this clear at policy load so that IMA policy authors don't assume
+that other uses of "appraise_flag=blacklist" are supported.
+
+Fixes: 273df864cf74 ("ima: Check against blacklisted hashes for files with modsig")
+Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Reivewed-by: Nayna Jain <nayna@linux.ibm.com>
+Tested-by: Nayna Jain <nayna@linux.ibm.com>
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ security/integrity/ima/ima_policy.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
-index 326f91b2dda9f..5f952e111ab5a 100644
---- a/drivers/clk/Kconfig
-+++ b/drivers/clk/Kconfig
-@@ -50,7 +50,7 @@ source "drivers/clk/versatile/Kconfig"
- config CLK_HSDK
- 	bool "PLL Driver for HSDK platform"
- 	depends on OF || COMPILE_TEST
--	depends on IOMEM
-+	depends on HAS_IOMEM
- 	help
- 	  This driver supports the HSDK core, system, ddr, tunnel and hdmi PLLs
- 	  control.
+diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+index 3e3e568c81309..a59bf2f5b2d4f 100644
+--- a/security/integrity/ima/ima_policy.c
++++ b/security/integrity/ima/ima_policy.c
+@@ -1035,6 +1035,11 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
+ 		return false;
+ 	}
+ 
++	/* Ensure that combinations of flags are compatible with each other */
++	if (entry->flags & IMA_CHECK_BLACKLIST &&
++	    !(entry->flags & IMA_MODSIG_ALLOWED))
++		return false;
++
+ 	return true;
+ }
+ 
+@@ -1371,9 +1376,17 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
+ 				result = -EINVAL;
+ 			break;
+ 		case Opt_appraise_flag:
++			if (entry->action != APPRAISE) {
++				result = -EINVAL;
++				break;
++			}
++
+ 			ima_log_string(ab, "appraise_flag", args[0].from);
+-			if (strstr(args[0].from, "blacklist"))
++			if (IS_ENABLED(CONFIG_IMA_APPRAISE_MODSIG) &&
++			    strstr(args[0].from, "blacklist"))
+ 				entry->flags |= IMA_CHECK_BLACKLIST;
++			else
++				result = -EINVAL;
+ 			break;
+ 		case Opt_permit_directio:
+ 			entry->flags |= IMA_PERMIT_DIRECTIO;
 -- 
 2.25.1
 
