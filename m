@@ -2,110 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 013B224B1F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 192B824B203
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727047AbgHTJQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54602 "EHLO
+        id S1726844AbgHTJSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:18:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727087AbgHTJPP (ORCPT
+        with ESMTP id S1726754AbgHTJSI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:15:15 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD652C061387;
-        Thu, 20 Aug 2020 02:15:14 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Thu, 20 Aug 2020 05:18:08 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 580D4C061383
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 02:18:07 -0700 (PDT)
+Received: from zn.tnic (p2e584b51.dip0.t-ipconnect.de [46.88.75.81])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BXJrm56R0z9sR4;
-        Thu, 20 Aug 2020 19:15:04 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1597914906;
-        bh=Dv9vUBhSxsnmV3d3q+uzCLLaquUdA8Kpp/gZoa4RjJE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gQYrI0Lt52lfmhYAST+7UHE3pqw+v57FhBC6G82IbfDWZR6Xh7d6XXd44q0WB4Gw1
-         w2VP8xN2RUwZgy0G/byoJF/qQDyrjJDmJiU0MJUgxhmOXN4twv640qZ6zu/suOumzv
-         v0EL6DZ9ztljIu5qxG3bsrVnqiZVYAwsIqNEoBF+iDOhNkIXcF31yHgH99AsnqiNAD
-         d5zMcJNa0068hfimIrfZf7Erd85KqyCYX8a2suZEb0nIvU2O50kmrpSDUYNpdZDHps
-         +PfFnDpC4N+a0aVtqsNP1wVspnWESm36/S5Mtir/1Fz74xervzvJ0Z+KnK3Nx97X1I
-         LIXSu7dicBdDA==
-Date:   Thu, 20 Aug 2020 19:15:02 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Borislav Petkov <bp@suse.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Luca Stefani <luca.stefani.ge1@gmail.com>
-Subject: Re: linux-next: Fixes tag needs some work in the tip tree
-Message-ID: <20200820191502.1df900be@canb.auug.org.au>
-In-Reply-To: <20200820082149.GB17365@zn.tnic>
-References: <20200820161239.25a9b3f4@canb.auug.org.au>
-        <20200820082149.GB17365@zn.tnic>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EE5871EC036E;
+        Thu, 20 Aug 2020 11:18:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1597915082;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=zWu7GXpPGp9gtFU0JqALmskyRmOOBg9d4rIoS5+QQz0=;
+        b=PMjmKdLLoJIYTUWVoC8IfC8pHY8rPbaa0JFiP4q3sg/CxarXXaI6426vX+rym4M+zCJ31a
+        Jp+WRhNz5W6oKZ/cdAXXMVtG5nSzaZmXIa2YnwyvTcCEx08nKSPceomLnNrXLespNtXr5O
+        QCx3TIZVBvrHcTpBs9otRa9oWByS42M=
+From:   Borislav Petkov <bp@alien8.de>
+To:     X86 ML <x86@kernel.org>
+Cc:     "Chang S . Bae" <chang.seok.bae@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] x86/entry/64: Add an LFENCE after SAVE_AND_SET_GSBASE
+Date:   Thu, 20 Aug 2020 11:15:44 +0200
+Message-Id: <20200820091544.26564-1-bp@alien8.de>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ln/hvUN3hVQKJYpGK=y1pWs";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ln/hvUN3hVQKJYpGK=y1pWs
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Borislav Petkov <bp@suse.de>
 
-Hi Borislav,
+The FSGSBASE macro to swap current GSBASE with the kernel GSBASE
+probably had a speculation-stopping MSR write at some point but not
+anymore.
 
-On Thu, 20 Aug 2020 10:21:49 +0200 Borislav Petkov <bp@suse.de> wrote:
->
-> On Thu, Aug 20, 2020 at 04:12:39PM +1000, Stephen Rothwell wrote:
-> >=20
-> > Fixes tag
-> >=20
-> >   Fixes: 9554bfe403nd ("x86/mce: Convert the CEC to use the MCE notifie=
-r") =20
->=20
-> Hmm, this came from the original patch submission:
->=20
-> https://lkml.kernel.org/r/20200805095708.83939-1-luca.stefani.ge1@gmail.c=
-om
->=20
-> the 'n' is already there.
+Therefore, a fence is needed to stop speculation. Add it.
 
-yeah, I wish people would just generate these lines:
+Fixes: c82965f9e530 ("x86/entry/64: Handle FSGSBASE enabled paranoid entry/exit")
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: <stable@vger.kernel.org>
+---
+ arch/x86/entry/entry_64.S | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-git log -1 --format=3D'Fixes: %h ("%s")' <commit-id>
+diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+index 26fc9b42fadc..3931d47cdd83 100644
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -839,11 +839,9 @@ SYM_CODE_START_LOCAL(paranoid_entry)
+ 	 * Read the current GSBASE and store it in %rbx unconditionally,
+ 	 * retrieve and set the current CPUs kernel GSBASE. The stored value
+ 	 * has to be restored in paranoid_exit unconditionally.
+-	 *
+-	 * The MSR write ensures that no subsequent load is based on a
+-	 * mispredicted GSBASE. No extra FENCE required.
+ 	 */
+ 	SAVE_AND_SET_GSBASE scratch_reg=%rax save_reg=%rbx
++	FENCE_SWAPGS_KERNEL_ENTRY
+ 	ret
+ 
+ .Lparanoid_entry_checkgs:
+-- 
+2.21.0
 
-> > has these problem(s):
-> >=20
-> >   - The SHA1 is not all hex =20
->=20
-> If your script which verifies that is in python, per chance, you could
-> give it to me so that I can add it to my patch massaging script. :-)
-
-Is a shell script OK?
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ln/hvUN3hVQKJYpGK=y1pWs
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8+PxYACgkQAVBC80lX
-0GySsggAmP2Kt8kxBQXsj3ObEgFbPyGXjk6PB8j1ejcFIa2g6CNrDqAzhcnYvkSU
-kH8h5XCsk4xkF/lNaLsMHeT1za3X0RjV2yy5rcd3b4GSmYOC3MGWZEMq7KVoBEld
-VJiNQQYRwgpvbWf/MGRHcAau4wa4ONA+SbJuT5VLL9Ogp4tKMOODZ56nsxSJ0NWJ
-4ABG4UXHkCk3/SKbsSjlxzW1gvwjYivNihVAoU4wIW9s3VFpMn+GLEd5pgxYjAo5
-K423vlOD3jc5J8A9Jqk4JU2B0LLBxrWi3/2ZVnytyei/KL0Q7xrmVkSP0JUVJsVe
-ZnHg/srs5RqtOKPFsCzYjGiEsBvfrw==
-=Z9DU
------END PGP SIGNATURE-----
-
---Sig_/ln/hvUN3hVQKJYpGK=y1pWs--
