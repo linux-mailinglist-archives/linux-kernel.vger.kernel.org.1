@@ -2,239 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71FFE24B76A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ACD424B787
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731058AbgHTKxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:53:23 -0400
-Received: from mga06.intel.com ([134.134.136.31]:52351 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731514AbgHTKxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:53:02 -0400
-IronPort-SDR: mTFY2IsmrTjA6seb/afrZwNU1L7tes2q0eqeR3QSAyZloyQIdIKO/+12EJNW19vwwFNoiriWL6
- iFtHE447+Vlg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9718"; a="216814278"
-X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
-   d="scan'208";a="216814278"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2020 03:53:01 -0700
-IronPort-SDR: F/MSpuvDJb0c+Fl311bQpLMxkIGXF5XvQ6IQk4EsJbAiffqOx9xUzw79vymMv2eshLsNtJO8RA
- U7BalIxgzuLw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
-   d="scan'208";a="327392777"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 20 Aug 2020 03:52:58 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1k8iBj-00A5k8-Ra; Thu, 20 Aug 2020 13:52:55 +0300
-Date:   Thu, 20 Aug 2020 13:52:55 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Rahul Tanwar <rahul.tanwar@linux.intel.com>
-Cc:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
-        lee.jones@linaro.org, thierry.reding@gmail.com,
-        p.zabel@pengutronix.de, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com, rahul.tanwar.linux@gmail.com,
-        rtanwar@maxlinear.com
-Subject: Re: [PATCH v8 2/2] Add PWM fan controller driver for LGM SoC
-Message-ID: <20200820105255.GB1891694@smile.fi.intel.com>
-References: <cover.1597898872.git.rahul.tanwar@linux.intel.com>
- <b6d0a65625a2bc231c649c970c0a1af1ff3a5dd5.1597898872.git.rahul.tanwar@linux.intel.com>
+        id S1731380AbgHTK4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:56:30 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:56169 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731309AbgHTK4R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:56:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597920976;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zXZn0ptz4OdIcD8qJiz0sPtwyG4FrJg7hkfvx+FDmUI=;
+        b=Tl+eqpzMq8xCFHLkgOHKU/ajmyruQ71vpw/yhFc0gFDjvWAzjTtIsabEyLml1rdkGe9HZt
+        a3p1r63051d3A05sZR2vKNBOGOppwiux6+LcS3S7VK8Y99kCnDS/6x6LU5kP6OIKVValVQ
+        +ekdk7LvGzqM3TAX/y1pP/Cml1i/hzg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-558-P_V1LyLiOz2MfwMupSW5mw-1; Thu, 20 Aug 2020 06:56:12 -0400
+X-MC-Unique: P_V1LyLiOz2MfwMupSW5mw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 29506871803;
+        Thu, 20 Aug 2020 10:56:07 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.73])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 5E00C5D9F1;
+        Thu, 20 Aug 2020 10:55:57 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 20 Aug 2020 12:56:06 +0200 (CEST)
+Date:   Thu, 20 Aug 2020 12:55:56 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     mhocko@suse.com, christian.brauner@ubuntu.com, mingo@kernel.org,
+        peterz@infradead.org, tglx@linutronix.de, esyr@redhat.com,
+        christian@kellner.me, areber@redhat.com, shakeelb@google.com,
+        cyphar@cyphar.com, adobriyan@gmail.com, akpm@linux-foundation.org,
+        ebiederm@xmission.com, gladkov.alexey@gmail.com, walken@google.com,
+        daniel.m.jordan@oracle.com, avagin@gmail.com,
+        bernd.edlinger@hotmail.de, john.johansen@canonical.com,
+        laoar.shao@gmail.com, timmurray@google.com, minchan@kernel.org,
+        kernel-team@android.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        Michal Hocko <mhocko@kernel.org>
+Subject: Re: [PATCH 1/1] mm, oom_adj: don't loop through tasks in
+ __set_oom_adj when not necessary
+Message-ID: <20200820105555.GA4546@redhat.com>
+References: <20200820002053.1424000-1-surenb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b6d0a65625a2bc231c649c970c0a1af1ff3a5dd5.1597898872.git.rahul.tanwar@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200820002053.1424000-1-surenb@google.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 12:50:46PM +0800, Rahul Tanwar wrote:
-> Intel Lightning Mountain(LGM) SoC contains a PWM fan controller.
-> This PWM controller does not have any other consumer, it is a
-> dedicated PWM controller for fan attached to the system. Add
-> driver for this PWM fan controller.
+On 08/19, Suren Baghdasaryan wrote:
+>
+> Since the combination of CLONE_VM and !CLONE_SIGHAND is rarely
+> used the additional mutex lock in that path of the clone() syscall should
+> not affect its overall performance. Clearing the MMF_PROC_SHARED flag
+> (when the last process sharing the mm exits) is left out of this patch to
+> keep it simple and because it is believed that this threading model is
+> rare.
 
-...
+vfork() ?
 
-> +config PWM_INTEL_LGM
-> +	tristate "Intel LGM PWM support"
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -1403,6 +1403,15 @@ static int copy_mm(unsigned long clone_flags, struct task_struct *tsk)
+>  	if (clone_flags & CLONE_VM) {
+>  		mmget(oldmm);
+>  		mm = oldmm;
+> +		if (!(clone_flags & CLONE_SIGHAND)) {
 
-> +	depends on OF && HAS_IOMEM
-> +	depends on X86 || COMPILE_TEST
+I agree with Christian, you need CLONE_THREAD
 
-For better test coverage you may rewrite this
+> +			/* We need to synchronize with __set_oom_adj */
+> +			mutex_lock(&oom_adj_lock);
+> +			set_bit(MMF_PROC_SHARED, &mm->flags);
+> +			/* Update the values in case they were changed after copy_signal */
+> +			tsk->signal->oom_score_adj = current->signal->oom_score_adj;
+> +			tsk->signal->oom_score_adj_min = current->signal->oom_score_adj_min;
+> +			mutex_unlock(&oom_adj_lock);
 
-	depends on HAS_IOMEM
-	depends on (OF && X86) || COMPILE_TEST
+I don't understand how this can close the race with __set_oom_adj...
 
-> +	select REGMAP_MMIO
-> +	help
-> +	  Generic PWM fan controller driver for LGM SoC.
-> +
-> +	  To compile this driver as a module, choose M here: the module
-> +	  will be called pwm-intel-lgm.
+What if __set_oom_adj() is called right after mutex_unlock() ? It will see
+MMF_PROC_SHARED, but for_each_process() won't find the new child until
+copy_process() does list_add_tail_rcu(&p->tasks, &init_task.tasks) ?
 
-...
-
-> +#include <linux/bitfield.h>
-> +#include <linux/clk.h>
-> +#include <linux/module.h>
-
-> +#include <linux/of_device.h>
-
-This should be mod_devicetable.h.
-
-> +#include <linux/pwm.h>
-> +#include <linux/regmap.h>
-> +#include <linux/reset.h>
-
-...
-
-> +#define LGM_PWM_PERIOD_2WIRE_NSECS	40000000
-
-NSECS -> NS
-40000000 -> (40 * NSEC_PER_MSEC)
-
-...
-
-> +	if (state->polarity != PWM_POLARITY_NORMAL ||
-> +	    state->period < pc->period)
-
-It can be one line.
-
-> +		return -EINVAL;
-
-...
-
-> +	if (!state->enabled) {
-
-> +		ret = lgm_pwm_enable(chip, 0);
-> +		return ret;
-
-What is the point?
-
-> +	}
-
-...
-
-> +	ret = lgm_pwm_enable(chip, 1);
-> +
-> +	return ret;
-
-Ditto.
-
-...
-
-> +	state->duty_cycle = DIV_ROUND_UP(duty * pc->period,
-> +					 LGM_PWM_MAX_DUTY_CYCLE);
-
-One line?
-
-...
-
-> +	struct lgm_pwm_chip *pc;
-> +	struct device *dev = &pdev->dev;
-
-Use reversed xmas tree order.
-
-> +	void __iomem *io_base;
-> +	int ret;
-
-...
-
-> +	pc->regmap = devm_regmap_init_mmio(dev, io_base, &lgm_pwm_regmap_config);
-> +	if (IS_ERR(pc->regmap)) {
-
-> +		ret = PTR_ERR(pc->regmap);
-> +		if (ret != -EPROBE_DEFER)
-> +			dev_err(dev, "failed to init register map: %pe\n",
-> +				pc->regmap);
-> +		return ret;
-
-dev_err_probe()
-
-> +	}
-
-...
-
-> +	pc->clk = devm_clk_get(dev, NULL);
-> +	if (IS_ERR(pc->clk)) {
-> +		ret = PTR_ERR(pc->clk);
-> +		if (ret != -EPROBE_DEFER)
-> +			dev_err(dev, "failed to get clock: %pe\n", pc->clk);
-> +		return ret;
-
-Ditto.
-
-> +	}
-> +
-> +	pc->rst = devm_reset_control_get_exclusive(dev, NULL);
-> +	if (IS_ERR(pc->rst)) {
-> +		ret = PTR_ERR(pc->rst);
-> +		if (ret != -EPROBE_DEFER)
-> +			dev_err(dev, "failed to get reset control: %pe\n",
-> +				pc->rst);
-> +		return ret;
-
-Ditto.
-
-> +	}
-> +
-> +	ret = reset_control_deassert(pc->rst);
-> +	if (ret) {
-> +		if (ret != -EPROBE_DEFER)
-> +			dev_err(dev, "cannot deassert reset control: %pe\n",
-> +				ERR_PTR(ret));
-> +		return ret;
-
-Ditto.
-
-> +	}
-
-...
-
-> +	ret = clk_prepare_enable(pc->clk);
-
-Wrap it with devm_add_action_or_reset(). Same for reset_control_deassert().
-You probably can even put them under one function.
-
-> +	if (ret) {
-> +		dev_err(dev, "failed to enable clock\n");
-> +		reset_control_assert(pc->rst);
-> +		return ret;
-> +	}
-
-...
-
-> +	ret = pwmchip_add(&pc->chip);
-
-> +	if (ret < 0) {
-
-Does ' < 0' have any meaning?
-
-> +		dev_err(dev, "failed to add PWM chip: %pe\n", ERR_PTR(ret));
-> +		clk_disable_unprepare(pc->clk);
-> +		reset_control_assert(pc->rst);
-> +		return ret;
-> +	}
-
-...
-
-> +	ret = pwmchip_remove(&pc->chip);
-> +	if (ret < 0)
-
-Ditto.
-
-> +		return ret;
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Oleg.
 
