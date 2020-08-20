@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4547724BBB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7533124BB94
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729615AbgHTJtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:49:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55698 "EHLO mail.kernel.org"
+        id S1728927AbgHTJuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:50:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729654AbgHTJta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:49:30 -0400
+        id S1729680AbgHTJtj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:49:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B34D92173E;
-        Thu, 20 Aug 2020 09:49:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 92FB120724;
+        Thu, 20 Aug 2020 09:49:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916970;
-        bh=mHCLShJIyONqXrwZHOovab7y/jig8WvlVqeHasDla7s=;
+        s=default; t=1597916979;
+        bh=/c93ZfB+XrmMLeM8TvHb1bxs80RE4wBz1BARLnLMhDc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gaGrwXc+PfV14/SUwxOHhWRLZkGEZxSenFtHEeyV6I7fgtspVKMogPJl2edHLmHGf
-         7sfQb65Orjs/o/Uex62iI1W47Vh4F7vP7YAzx7Lu3TqpfKcpucTkoGNS/smqHJq/UX
-         8Rpon7K7fToUtG4LwKiOHHyds1AFHXKJtTdtlTGo=
+        b=kILkSOYuurXYrd5VhqMR/JTHk9fa37VJxbBODlvxWGz7d/72aG+drwHHhfZUTvy2A
+         m+WwIwzBflZ0FQwwh9JUDbBBgEDKa57pC7LodBIMinF3tjF+bqd3g+k7qVqH/jH/sp
+         0hUBLHLFIDdLGwz23ivm62aDxW3O76GFYiKJtRgE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Kamal Heib <kamalheib1@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 079/152] octeontx2-af: change (struct qmem)->entry_sz from u8 to u16
-Date:   Thu, 20 Aug 2020 11:20:46 +0200
-Message-Id: <20200820091557.777626013@linuxfoundation.org>
+Subject: [PATCH 5.4 082/152] RDMA/ipoib: Return void from ipoib_ib_dev_stop()
+Date:   Thu, 20 Aug 2020 11:20:49 +0200
+Message-Id: <20200820091557.943194392@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
 References: <20200820091553.615456912@linuxfoundation.org>
@@ -45,37 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Kamal Heib <kamalheib1@gmail.com>
 
-[ Upstream commit 393415203f5c916b5907e0a7c89f4c2c5a9c5505 ]
+[ Upstream commit 95a5631f6c9f3045f26245e6045244652204dfdb ]
 
-We need to increase TSO_HEADER_SIZE from 128 to 256.
+The return value from ipoib_ib_dev_stop() is always 0 - change it to be
+void.
 
-Since otx2_sq_init() calls qmem_alloc() with TSO_HEADER_SIZE,
-we need to change (struct qmem)->entry_sz to avoid truncation to 0.
-
-Fixes: 7a37245ef23f ("octeontx2-af: NPA block admin queue init")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Sunil Goutham <sgoutham@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/r/20200623105236.18683-1-kamalheib1@gmail.com
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/octeontx2/af/common.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/ulp/ipoib/ipoib.h    | 2 +-
+ drivers/infiniband/ulp/ipoib/ipoib_ib.c | 4 +---
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/common.h b/drivers/net/ethernet/marvell/octeontx2/af/common.h
-index 413c3f254cf85..c881a573da662 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/common.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/common.h
-@@ -43,7 +43,7 @@ struct qmem {
- 	void            *base;
- 	dma_addr_t	iova;
- 	int		alloc_sz;
--	u8		entry_sz;
-+	u16		entry_sz;
- 	u8		align;
- 	u32		qsize;
- };
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib.h b/drivers/infiniband/ulp/ipoib/ipoib.h
+index 0e5f27caf2b2d..50a3557386090 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib.h
++++ b/drivers/infiniband/ulp/ipoib/ipoib.h
+@@ -515,7 +515,7 @@ void ipoib_ib_dev_cleanup(struct net_device *dev);
+ 
+ int ipoib_ib_dev_open_default(struct net_device *dev);
+ int ipoib_ib_dev_open(struct net_device *dev);
+-int ipoib_ib_dev_stop(struct net_device *dev);
++void ipoib_ib_dev_stop(struct net_device *dev);
+ void ipoib_ib_dev_up(struct net_device *dev);
+ void ipoib_ib_dev_down(struct net_device *dev);
+ int ipoib_ib_dev_stop_default(struct net_device *dev);
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib_ib.c b/drivers/infiniband/ulp/ipoib/ipoib_ib.c
+index da3c5315bbb51..6ee64c25aaff4 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib_ib.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_ib.c
+@@ -846,7 +846,7 @@ int ipoib_ib_dev_stop_default(struct net_device *dev)
+ 	return 0;
+ }
+ 
+-int ipoib_ib_dev_stop(struct net_device *dev)
++void ipoib_ib_dev_stop(struct net_device *dev)
+ {
+ 	struct ipoib_dev_priv *priv = ipoib_priv(dev);
+ 
+@@ -854,8 +854,6 @@ int ipoib_ib_dev_stop(struct net_device *dev)
+ 
+ 	clear_bit(IPOIB_FLAG_INITIALIZED, &priv->flags);
+ 	ipoib_flush_ah(dev);
+-
+-	return 0;
+ }
+ 
+ int ipoib_ib_dev_open_default(struct net_device *dev)
 -- 
 2.25.1
 
