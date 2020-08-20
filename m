@@ -2,104 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42AAC24AE09
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 06:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A33524AE10
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 06:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725850AbgHTEuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 00:50:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725768AbgHTEut (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 00:50:49 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 088F2C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 21:50:48 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id t11so483196plr.5
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 21:50:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=CAQyVimWJ9WHY20IwK77VrKVM6sP38l0qgrrAA5OY2s=;
-        b=JyFvunh5Qg3y12yFQAvL/e4P5UgoOEZ30z1X824W7lJIml9rMARbVbJlPrBas1rzuu
-         1cAl3zjIhxzy3lOjYMBLMcurPFUi7y/LJacf8Xz9Ec4+1TENZbNiB1OStC6qx8g6mwwG
-         UpTeYpCNCyxJvw9/1PXT7mKN0Qv+r5wce8cH6qaRn/pFi2YnokweYViQJGkG32TQAy67
-         QrdkjFN5BIWcooD8FR5nW2Ddfmgfs+qSYtTvKgECOiiDeYmSs0n7FWKDq4TW6wFC8ZXh
-         PyPXJZ9BYwDAJVwUkrRNbI7L/IhqxrhCgQxrY7dtGcJfKtJ8399eRuYKaE9J7qM3F5uc
-         RFSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CAQyVimWJ9WHY20IwK77VrKVM6sP38l0qgrrAA5OY2s=;
-        b=RhXZW7nBt7VY9s2c3xnBbP5pEUUP53lpHXBzJ1KXam9DQuSKWzdi5+XWnkklWIE4Gi
-         cuoH6sijy3iu50CjydfqVc0n/RGNmE5bg2lwNa9ijiVWTNu4ymsscNGj1ydA01vzgMnr
-         IgJ/sWHBJvq9OWe++h69wv9GEx73RkO0OHBLFcoqmfyVo97AkgLauOlf4TRlATM8reGW
-         HStpy1PT/VYXFaYz4PuijSVTqn+x5oTZpsaKV4v9Wy4oSgXPRPdUKAvm2cGJ53LDM1PA
-         H9XoXOTZKhnulRwKaBQ4PDYCC2+MZ36WhJR2Y96gYPbYve83vmzCpIFCfFWvM6TYZF1y
-         tyog==
-X-Gm-Message-State: AOAM532XC8IhVovyh3+jteBLGpq3KD/wIsVibfQvhHjqJ+W8T5/DpQMt
-        wbouuZhJFBYwTFocafPBOAMYkA==
-X-Google-Smtp-Source: ABdhPJzFWFtO/XgUriC6NiGEMrtDeB/+HxfF2CKo0Nogv8xWkYI65+dOTjh0M1zXA7z5WXEywaMT/A==
-X-Received: by 2002:a17:902:8a82:: with SMTP id p2mr1279400plo.184.1597899048167;
-        Wed, 19 Aug 2020 21:50:48 -0700 (PDT)
-Received: from localhost ([122.172.43.13])
-        by smtp.gmail.com with ESMTPSA id q13sm654643pjj.36.2020.08.19.21.50.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 19 Aug 2020 21:50:47 -0700 (PDT)
-Date:   Thu, 20 Aug 2020 10:20:45 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Barry Song <baohua@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Mans Rullgard <mans@mansr.com>, Jun Nie <jun.nie@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [RESEND PATCH 3/5] ARM: dts: spear: Align L2 cache-controller
- nodename with dtschema
-Message-ID: <20200820045045.2clqfw624bqc2cza@vireshk-i7>
-References: <20200819175853.21492-1-krzk@kernel.org>
- <20200819175853.21492-3-krzk@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200819175853.21492-3-krzk@kernel.org>
-User-Agent: NeoMutt/20180716-391-311a52
+        id S1726723AbgHTEvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 00:51:00 -0400
+Received: from mga07.intel.com ([134.134.136.100]:52441 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725768AbgHTEu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 00:50:58 -0400
+IronPort-SDR: sA/bHdyT1Q82d+WGsMmSx9AQfUi1KHPoSncj1K7W3581qlcPb/1pZoU7LfQMNWT96KjlFa1mqJ
+ mxVPVxCyUFpA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9718"; a="219544087"
+X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
+   d="scan'208";a="219544087"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2020 21:50:57 -0700
+IronPort-SDR: RHg2M/08/090QtQpP2oVZ0CA8gDa1dzLRQ4EU/7sXEFayoFxQj+l1xekg5Og6jnzjvpntgv+lb
+ IxsO9AwPrdhg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
+   d="scan'208";a="279876777"
+Received: from sgsxdev001.isng.intel.com (HELO localhost) ([10.226.88.11])
+  by fmsmga008.fm.intel.com with ESMTP; 19 Aug 2020 21:50:54 -0700
+From:   Rahul Tanwar <rahul.tanwar@linux.intel.com>
+To:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
+        lee.jones@linaro.org
+Cc:     thierry.reding@gmail.com, p.zabel@pengutronix.de,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, andriy.shevchenko@intel.com,
+        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, rahul.tanwar.linux@gmail.com,
+        rtanwar@maxlinear.com, Rahul Tanwar <rahul.tanwar@linux.intel.com>
+Subject: [PATCH v8 1/2] Add DT bindings YAML schema for PWM fan controller of LGM SoC
+Date:   Thu, 20 Aug 2020 12:50:45 +0800
+Message-Id: <cb86a768550b592b5fc4713bd07689bf84ba044b.1597898872.git.rahul.tanwar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <cover.1597898872.git.rahul.tanwar@linux.intel.com>
+References: <cover.1597898872.git.rahul.tanwar@linux.intel.com>
+In-Reply-To: <cover.1597898872.git.rahul.tanwar@linux.intel.com>
+References: <cover.1597898872.git.rahul.tanwar@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-08-20, 19:58, Krzysztof Kozlowski wrote:
-> Fix dtschema validator warnings like:
->     l2-cache: $nodename:0: 'l2-cache' does not match '^(cache-controller|cpu)(@[0-9a-f,]+)*$'
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  arch/arm/boot/dts/spear13xx.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/boot/dts/spear13xx.dtsi b/arch/arm/boot/dts/spear13xx.dtsi
-> index f187da4485f4..c87b881b2c8b 100644
-> --- a/arch/arm/boot/dts/spear13xx.dtsi
-> +++ b/arch/arm/boot/dts/spear13xx.dtsi
-> @@ -43,7 +43,7 @@
->  			      0 7 0x04>;
->  	};
->  
-> -	L2: l2-cache {
-> +	L2: cache-controller {
->  		    compatible = "arm,pl310-cache";
->  		    reg = <0xed000000 0x1000>;
->  		    cache-unified;
+Intel's LGM(Lightning Mountain) SoC contains a PWM fan controller
+which is only used to control the fan attached to the system. This
+PWM controller does not have any other consumer other than fan.
+Add DT bindings documentation for this PWM fan controller.
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
+---
+ .../devicetree/bindings/pwm/intel,lgm-pwm.yaml     | 44 ++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
 
+diff --git a/Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml b/Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
+new file mode 100644
+index 000000000000..11a606536169
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
+@@ -0,0 +1,44 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pwm/intel,lgm-pwm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: LGM SoC PWM fan controller
++
++maintainers:
++  - Rahul Tanwar <rtanwar@maxlinear.com>
++
++properties:
++  compatible:
++    const: intel,lgm-pwm
++
++  reg:
++    maxItems: 1
++
++  "#pwm-cells":
++    const: 2
++
++  clocks:
++    maxItems: 1
++
++  resets:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - resets
++
++additionalProperties: false
++
++examples:
++  - |
++    pwm: pwm@e0d00000 {
++        compatible = "intel,lgm-pwm";
++        reg = <0xe0d00000 0x30>;
++        #pwm-cells = <2>;
++        clocks = <&cgu0 126>;
++        resets = <&rcu0 0x30 21>;
++    };
 -- 
-viresh
+2.11.0
+
