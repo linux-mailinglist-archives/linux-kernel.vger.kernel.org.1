@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0900124B2B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A5624B2C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728535AbgHTJfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:35:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49232 "EHLO mail.kernel.org"
+        id S1728647AbgHTJgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:36:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728341AbgHTJfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:35:34 -0400
+        id S1728615AbgHTJgj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:36:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A58CC20724;
-        Thu, 20 Aug 2020 09:35:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 87A7220724;
+        Thu, 20 Aug 2020 09:36:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916134;
-        bh=+iu7Ap2ptMWD3TekcfG5/6x2zhfygQLXp2wM0sPiqD0=;
+        s=default; t=1597916199;
+        bh=jGRWsaqRLoqev79/Xwgz7bNFRX+HkBGl7u0ryE7d7hc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=azgzkq7uKDJeoJ17HhBb1nKks/CMXaoBFnr5DSR17TGN1vhNoOmjjA9D8ZptK2x+C
-         u8CegL+AuQDZDnVnjfrlg0M2ZHx+2Z3QlYchqpMqpNlV/qeInQzndKFNb1YvHsNSL9
-         LjTxUr5qxqbv4E2Me/0OtMa722xH4HeSA93gcEIA=
+        b=XanOR9F5wVE3CceZ5M6m3WIVGcASKsjKeLML5aslTzI0oN9VAu04jXSbIS0cZAY3w
+         pQAtw3EnWkFAG0o7xBfw7cQppOUXdNfQw3xDbZj0AH2xQgy5v3ayPiqu/8FFt9sddj
+         h9olyEHJZGgpvhdaQTAp0utZgT/SX47nWD0bWY68=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.7 022/204] btrfs: relocation: review the call sites which can be interrupted by signal
-Date:   Thu, 20 Aug 2020 11:18:39 +0200
-Message-Id: <20200820091607.369022615@linuxfoundation.org>
+Subject: [PATCH 5.7 027/204] btrfs: dont WARN if we abort a transaction with EROFS
+Date:   Thu, 20 Aug 2020 11:18:44 +0200
+Message-Id: <20200820091607.624205450@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
 References: <20200820091606.194320503@linuxfoundation.org>
@@ -43,104 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-commit 44d354abf33e92a5e73b965c84caf5a5d5e58a0b upstream.
+commit f95ebdbed46a4d8b9fdb7bff109fdbb6fc9a6dc8 upstream.
 
-Since most metadata reservation calls can return -EINTR when get
-interrupted by fatal signal, we need to review the all the metadata
-reservation call sites.
-
-In relocation code, the metadata reservation happens in the following
-sites:
-
-- btrfs_block_rsv_refill() in merge_reloc_root()
-  merge_reloc_root() is a pretty critical section, we don't want to be
-  interrupted by signal, so change the flush status to
-  BTRFS_RESERVE_FLUSH_LIMIT, so it won't get interrupted by signal.
-  Since such change can be ENPSPC-prone, also shrink the amount of
-  metadata to reserve least amount avoid deadly ENOSPC there.
-
-- btrfs_block_rsv_refill() in reserve_metadata_space()
-  It calls with BTRFS_RESERVE_FLUSH_LIMIT, which won't get interrupted
-  by signal.
-
-- btrfs_block_rsv_refill() in prepare_to_relocate()
-
-- btrfs_block_rsv_add() in prepare_to_relocate()
-
-- btrfs_block_rsv_refill() in relocate_block_group()
-
-- btrfs_delalloc_reserve_metadata() in relocate_file_extent_cluster()
-
-- btrfs_start_transaction() in relocate_block_group()
-
-- btrfs_start_transaction() in create_reloc_inode()
-  Can be interrupted by fatal signal and we can handle it easily.
-  For these call sites, just catch the -EINTR value in btrfs_balance()
-  and count them as canceled.
+If we got some sort of corruption via a read and call
+btrfs_handle_fs_error() we'll set BTRFS_FS_STATE_ERROR on the fs and
+complain.  If a subsequent trans handle trips over this it'll get EROFS
+and then abort.  However at that point we're not aborting for the
+original reason, we're aborting because we've been flipped read only.
+We do not need to WARN_ON() here.
 
 CC: stable@vger.kernel.org # 5.4+
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/relocation.c |   12 ++++++++++--
- fs/btrfs/volumes.c    |   17 ++++++++++++++++-
- 2 files changed, 26 insertions(+), 3 deletions(-)
+ fs/btrfs/ctree.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -2402,12 +2402,20 @@ static noinline_for_stack int merge_relo
- 		btrfs_unlock_up_safe(path, 0);
- 	}
- 
--	min_reserved = fs_info->nodesize * (BTRFS_MAX_LEVEL - 1) * 2;
-+	/*
-+	 * In merge_reloc_root(), we modify the upper level pointer to swap the
-+	 * tree blocks between reloc tree and subvolume tree.  Thus for tree
-+	 * block COW, we COW at most from level 1 to root level for each tree.
-+	 *
-+	 * Thus the needed metadata size is at most root_level * nodesize,
-+	 * and * 2 since we have two trees to COW.
-+	 */
-+	min_reserved = fs_info->nodesize * btrfs_root_level(root_item) * 2;
- 	memset(&next_key, 0, sizeof(next_key));
- 
- 	while (1) {
- 		ret = btrfs_block_rsv_refill(root, rc->block_rsv, min_reserved,
--					     BTRFS_RESERVE_FLUSH_ALL);
-+					     BTRFS_RESERVE_FLUSH_LIMIT);
- 		if (ret) {
- 			err = ret;
- 			goto out;
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -4154,7 +4154,22 @@ int btrfs_balance(struct btrfs_fs_info *
- 	mutex_lock(&fs_info->balance_mutex);
- 	if (ret == -ECANCELED && atomic_read(&fs_info->balance_pause_req))
- 		btrfs_info(fs_info, "balance: paused");
--	else if (ret == -ECANCELED && atomic_read(&fs_info->balance_cancel_req))
-+	/*
-+	 * Balance can be canceled by:
-+	 *
-+	 * - Regular cancel request
-+	 *   Then ret == -ECANCELED and balance_cancel_req > 0
-+	 *
-+	 * - Fatal signal to "btrfs" process
-+	 *   Either the signal caught by wait_reserve_ticket() and callers
-+	 *   got -EINTR, or caught by btrfs_should_cancel_balance() and
-+	 *   got -ECANCELED.
-+	 *   Either way, in this case balance_cancel_req = 0, and
-+	 *   ret == -EINTR or ret == -ECANCELED.
-+	 *
-+	 * So here we only check the return value to catch canceled balance.
-+	 */
-+	else if (ret == -ECANCELED || ret == -EINTR)
- 		btrfs_info(fs_info, "balance: canceled");
- 	else
- 		btrfs_info(fs_info, "balance: ended with status: %d", ret);
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -3198,7 +3198,7 @@ do {								\
+ 	/* Report first abort since mount */			\
+ 	if (!test_and_set_bit(BTRFS_FS_STATE_TRANS_ABORTED,	\
+ 			&((trans)->fs_info->fs_state))) {	\
+-		if ((errno) != -EIO) {				\
++		if ((errno) != -EIO && (errno) != -EROFS) {		\
+ 			WARN(1, KERN_DEBUG				\
+ 			"BTRFS: Transaction aborted (error %d)\n",	\
+ 			(errno));					\
 
 
