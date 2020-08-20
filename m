@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C49A424BA8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6217624BA90
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730297AbgHTJ5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:57:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40674 "EHLO mail.kernel.org"
+        id S1730321AbgHTJ5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:57:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729553AbgHTJ5C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:57:02 -0400
+        id S1729684AbgHTJ5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:57:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 99C2B2067C;
-        Thu, 20 Aug 2020 09:57:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1FF39207FB;
+        Thu, 20 Aug 2020 09:57:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917422;
-        bh=QG+9dxGsIKi3If5pONGdBxr2CB5gnvr30BE7fpx6EuY=;
+        s=default; t=1597917424;
+        bh=p6TsHCvvkp3SLABaDg9z5pQt9RWPKGLg3o7T1fgNJ4E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=deqaabDxbbGf0yXv3CH3gGTiBD19VtQnrZ7KWfcytiGp5tZ4ZFeCjWGkuHYvS1RUs
-         qaCWMX9XvvcwWN6DTUFRvdiu3s/fTpq6OHwJjseVSJTTd3OKm+lioa4nHPoS1zDw8Y
-         KIqyU710RvXVStX2kbGrKhlLcco0hnIrn1zvFfwY=
+        b=sWBxhVCm5/oz3ZK7spiqxA2/9zD5tAcCOx7H1fyDrSQpSVSq0CY0ZtSHEgnfeJSd+
+         IHbhcnWAC69r+nLKAn9OUbo0f4Gw7s05UlNOrcjNg3nsmbWyj6dAQoVk9hnSQLC7z9
+         ue60B/8mMpWOTJnWSw5B3PeF7bJCEBRf331OpXds=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+6db548b615e5aeefdce2@syzkaller.appspotmail.com,
-        YueHaibing <yuehaibing@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 025/212] net/x25: Fix null-ptr-deref in x25_disconnect
-Date:   Thu, 20 Aug 2020 11:19:58 +0200
-Message-Id: <20200820091603.611810789@linuxfoundation.org>
+        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Rich Felker <dalias@libc.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 026/212] sh: Fix validation of system call number
+Date:   Thu, 20 Aug 2020 11:19:59 +0200
+Message-Id: <20200820091603.663937357@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
 References: <20200820091602.251285210@linuxfoundation.org>
@@ -45,66 +45,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
 
-commit 8999dc89497ab1c80d0718828e838c7cd5f6bffe upstream.
+[ Upstream commit 04a8a3d0a73f51c7c2da84f494db7ec1df230e69 ]
 
-We should check null before do x25_neigh_put in x25_disconnect,
-otherwise may cause null-ptr-deref like this:
+The slow path for traced system call entries accessed a wrong memory
+location to get the number of the maximum allowed system call number.
+Renumber the numbered "local" label for the correct location to avoid
+collisions with actual local labels.
 
- #include <sys/socket.h>
- #include <linux/x25.h>
-
- int main() {
-    int sck_x25;
-    sck_x25 = socket(AF_X25, SOCK_SEQPACKET, 0);
-    close(sck_x25);
-    return 0;
- }
-
-BUG: kernel NULL pointer dereference, address: 00000000000000d8
-CPU: 0 PID: 4817 Comm: t2 Not tainted 5.7.0-rc3+ #159
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.9.3-
-RIP: 0010:x25_disconnect+0x91/0xe0
-Call Trace:
- x25_release+0x18a/0x1b0
- __sock_release+0x3d/0xc0
- sock_close+0x13/0x20
- __fput+0x107/0x270
- ____fput+0x9/0x10
- task_work_run+0x6d/0xb0
- exit_to_usermode_loop+0x102/0x110
- do_syscall_64+0x23c/0x260
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-
-Reported-by: syzbot+6db548b615e5aeefdce2@syzkaller.appspotmail.com
-Fixes: 4becb7ee5b3d ("net/x25: Fix x25_neigh refcnt leak when x25 disconnect")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
+Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Fixes: f3a8308864f920d2 ("sh: Add a few missing irqflags tracing markers.")
+Signed-off-by: Rich Felker <dalias@libc.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/x25/x25_subr.c |   10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ arch/sh/kernel/entry-common.S | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/net/x25/x25_subr.c
-+++ b/net/x25/x25_subr.c
-@@ -368,10 +368,12 @@ void x25_disconnect(struct sock *sk, int
- 		sk->sk_state_change(sk);
- 		sock_set_flag(sk, SOCK_DEAD);
- 	}
--	read_lock_bh(&x25_list_lock);
--	x25_neigh_put(x25->neighbour);
--	x25->neighbour = NULL;
--	read_unlock_bh(&x25_list_lock);
-+	if (x25->neighbour) {
-+		read_lock_bh(&x25_list_lock);
-+		x25_neigh_put(x25->neighbour);
-+		x25->neighbour = NULL;
-+		read_unlock_bh(&x25_list_lock);
-+	}
- }
- 
- /*
+diff --git a/arch/sh/kernel/entry-common.S b/arch/sh/kernel/entry-common.S
+index 28cc61216b649..ed5b758c650d7 100644
+--- a/arch/sh/kernel/entry-common.S
++++ b/arch/sh/kernel/entry-common.S
+@@ -203,7 +203,7 @@ syscall_trace_entry:
+ 	mov.l	@(OFF_R7,r15), r7   ! arg3
+ 	mov.l	@(OFF_R3,r15), r3   ! syscall_nr
+ 	!
+-	mov.l	2f, r10			! Number of syscalls
++	mov.l	6f, r10			! Number of syscalls
+ 	cmp/hs	r10, r3
+ 	bf	syscall_call
+ 	mov	#-ENOSYS, r0
+@@ -357,7 +357,7 @@ ENTRY(system_call)
+ 	tst	r9, r8
+ 	bf	syscall_trace_entry
+ 	!
+-	mov.l	2f, r8			! Number of syscalls
++	mov.l	6f, r8			! Number of syscalls
+ 	cmp/hs	r8, r3
+ 	bt	syscall_badsys
+ 	!
+@@ -396,7 +396,7 @@ syscall_exit:
+ #if !defined(CONFIG_CPU_SH2)
+ 1:	.long	TRA
+ #endif
+-2:	.long	NR_syscalls
++6:	.long	NR_syscalls
+ 3:	.long	sys_call_table
+ 7:	.long	do_syscall_trace_enter
+ 8:	.long	do_syscall_trace_leave
+-- 
+2.25.1
+
 
 
