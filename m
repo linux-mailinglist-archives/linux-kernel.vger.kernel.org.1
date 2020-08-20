@@ -2,74 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD3BA24B40A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F6424B27F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729836AbgHTJ4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:56:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38806 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730217AbgHTJzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:55:42 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4C6592173E;
-        Thu, 20 Aug 2020 09:55:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917339;
-        bh=SriRrDedMudRpYmWo2kpmKuWSF9BDf4K95kArhbHnPQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kPpDSE+BpKbDIp5dMdmz9ew8r3lsmsZvV1KwEbH8xLOTG367A777DIC1UztT1rnjv
-         Fh3wMaksUX8fgcWPT/UTh/qNXYuQ+0+vw+r499AfeLe/FmvNS1ktwaTe04mECd23Tn
-         LaSFa1IM7nYxL+7Nk5DKlNE4Htwyz7QlPL5cgYuY=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Denis Efremov <efremov@linux.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 4.19 90/92] drm/radeon: fix fb_div check in ni_init_smc_spll_table()
-Date:   Thu, 20 Aug 2020 11:22:15 +0200
-Message-Id: <20200820091542.324851351@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
-References: <20200820091537.490965042@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1728220AbgHTJbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:31:31 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:33543 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727034AbgHTJa6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:30:58 -0400
+Received: by mail-wm1-f66.google.com with SMTP id f18so3370707wmc.0;
+        Thu, 20 Aug 2020 02:30:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Hma56AddZUeGIsGjGqDeo/64eZyNigdifLybdInzONE=;
+        b=aXG8m8gjj/HQ7d5ZXshy23qFDkdPBCx0tb1dI6169BpbZdl5cSU0yy4ycEQgK/ZpEq
+         NkJwIg+GIlJTC22rYoEHoAHqzwWhNrZ8t8LFoXgusyaxBASEJHp6L742USCRYu7S8UGY
+         fVYFjdbhPML2eq8aYF4cYBSPpgb8qUM6oOQKs/wRmlpSQdVFZicpw5E2FzcWB1LdBG5d
+         ckEyEwro8MkuqkbyMOetahTHjFoaewHPDsh42+rXQPuOCKqYEQF/Oj43SYN1PhlPL4lM
+         pjvyEZxvxDe3Y7TZlJ22SeiRZlaaC78fIUbagdLAsojHb9jqQhDg8XD6WvBU7fc1a7wJ
+         tjTg==
+X-Gm-Message-State: AOAM533CbU/uuw3EI7tJeCnhHELKuFx/cQZ5fGjdp5EUNbDWIRbFizue
+        7mzvg5d2OuRR/+fTDuUhNik=
+X-Google-Smtp-Source: ABdhPJyiElaHdN2+8uTn/ho88gakS51vNHVG2yKIz9lnSP1m0ZXbYQwctmo3vc2ZlQAAm6cuIn5Lnw==
+X-Received: by 2002:a7b:c35a:: with SMTP id l26mr2680443wmj.42.1597915856718;
+        Thu, 20 Aug 2020 02:30:56 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.216])
+        by smtp.googlemail.com with ESMTPSA id g145sm4136444wmg.23.2020.08.20.02.30.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 20 Aug 2020 02:30:56 -0700 (PDT)
+Date:   Thu, 20 Aug 2020 11:30:53 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Barry Song <baohua@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Mans Rullgard <mans@mansr.com>, Jun Nie <jun.nie@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [RESEND PATCH 1/5] ARM: dts: prima: Align L2 cache-controller
+ nodename with dtschema
+Message-ID: <20200820093053.GB15884@kozik-lap>
+References: <20200819175853.21492-1-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200819175853.21492-1-krzk@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Denis Efremov <efremov@linux.com>
+On Wed, Aug 19, 2020 at 07:58:49PM +0200, Krzysztof Kozlowski wrote:
+> Fix dtschema validator warnings like:
+>     l2-cache-controller@80040000: $nodename:0:
+>         'l2-cache-controller@80040000' does not match '^(cache-controller|cpu)(@[0-9a-f,]+)*$'
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  arch/arm/boot/dts/prima2.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
 
-commit f29aa08852e1953e461f2d47ab13c34e14bc08b3 upstream.
+I forgot to add the tag provided on previous submission:
+Acked-by: Barry Song <baohua@kernel.org>
 
-clk_s is checked twice in a row in ni_init_smc_spll_table().
-fb_div should be checked instead.
-
-Fixes: 69e0b57a91ad ("drm/radeon/kms: add dpm support for cayman (v5)")
-Cc: stable@vger.kernel.org
-Signed-off-by: Denis Efremov <efremov@linux.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/gpu/drm/radeon/ni_dpm.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/drivers/gpu/drm/radeon/ni_dpm.c
-+++ b/drivers/gpu/drm/radeon/ni_dpm.c
-@@ -2123,7 +2123,7 @@ static int ni_init_smc_spll_table(struct
- 		if (p_div & ~(SMC_NISLANDS_SPLL_DIV_TABLE_PDIV_MASK >> SMC_NISLANDS_SPLL_DIV_TABLE_PDIV_SHIFT))
- 			ret = -EINVAL;
- 
--		if (clk_s & ~(SMC_NISLANDS_SPLL_DIV_TABLE_CLKS_MASK >> SMC_NISLANDS_SPLL_DIV_TABLE_CLKS_SHIFT))
-+		if (fb_div & ~(SMC_NISLANDS_SPLL_DIV_TABLE_FBDIV_MASK >> SMC_NISLANDS_SPLL_DIV_TABLE_FBDIV_SHIFT))
- 			ret = -EINVAL;
- 
- 		if (fb_div & ~(SMC_NISLANDS_SPLL_DIV_TABLE_FBDIV_MASK >> SMC_NISLANDS_SPLL_DIV_TABLE_FBDIV_SHIFT))
-
-
+Best regards,
+Krzysztof
