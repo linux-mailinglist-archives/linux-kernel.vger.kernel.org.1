@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF22224B38C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0E624B3E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729326AbgHTJtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:49:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54430 "EHLO mail.kernel.org"
+        id S1730098AbgHTJyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:54:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729599AbgHTJs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:48:59 -0400
+        id S1729669AbgHTJxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:53:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CAB0A2078D;
-        Thu, 20 Aug 2020 09:48:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 371F62078D;
+        Thu, 20 Aug 2020 09:53:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916938;
-        bh=sL0968/HFFbREq/hgGicNt4OaxmzlMEkH2rS4F4Lc48=;
+        s=default; t=1597917233;
+        bh=fkOJEgxnlLfFoY4VoR+l/3xqMq5UzsO9nPMTzem0mjU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dTTJ+g4z7YjuoheVZ2iLXPWHPFH4RrUF+0KWipiV1Fqu3JlyBQZY4YfF6p/nIlnHM
-         O+tJkrWP9SJhGTe6kiVHrMaDLKmGEsJwonx1Kh+iekWa49IkUUbdy8DGFLmtwhqNgp
-         0mgmhMUe4DtNPqe9jz5VbPazz74JYOsy+83gw1e4=
+        b=myLi8l6SSSh7tIIpoR2rzsLs/sQBoq9ay6seyIcF30xXkeTdNtacPV4/r+MZRn4S2
+         AY+gNJRy3YD2m49NFCliBHemWGA4jgVAZoG0Ev1X4xefHoroqLZJEzxp+36dApCYnB
+         pNjFSurRnqNQm/JHigwExAWgB3DRrnM27QJWSh0E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Steve Longerbeam <slongerbeam@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 098/152] gpu: ipu-v3: image-convert: Combine rotate/no-rotate irq handlers
+        stable@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>
+Subject: [PATCH 4.19 20/92] xtensa: fix xtensa_pmu_setup prototype
 Date:   Thu, 20 Aug 2020 11:21:05 +0200
-Message-Id: <20200820091558.776719205@linuxfoundation.org>
+Message-Id: <20200820091538.607550543@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
-References: <20200820091553.615456912@linuxfoundation.org>
+In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
+References: <20200820091537.490965042@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,118 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve Longerbeam <slongerbeam@gmail.com>
+From: Max Filippov <jcmvbkbc@gmail.com>
 
-[ Upstream commit 0f6245f42ce9b7e4d20f2cda8d5f12b55a44d7d1 ]
+commit 6d65d3769d1910379e1cfa61ebf387efc6bfb22c upstream.
 
-Combine the rotate_irq() and norotate_irq() handlers into a single
-eof_irq() handler.
+Fix the following build error in configurations with
+CONFIG_XTENSA_VARIANT_HAVE_PERF_EVENTS=y:
 
-Signed-off-by: Steve Longerbeam <slongerbeam@gmail.com>
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  arch/xtensa/kernel/perf_event.c:420:29: error: passing argument 3 of
+  ‘cpuhp_setup_state’ from incompatible pointer type
+
+Cc: stable@vger.kernel.org
+Fixes: 25a77b55e74c ("xtensa/perf: Convert the hotplug notifier to state machine callbacks")
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/ipu-v3/ipu-image-convert.c | 58 +++++++++-----------------
- 1 file changed, 20 insertions(+), 38 deletions(-)
+ arch/xtensa/kernel/perf_event.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/ipu-v3/ipu-image-convert.c b/drivers/gpu/ipu-v3/ipu-image-convert.c
-index eeca50d9a1ee4..f8b031ded3cf2 100644
---- a/drivers/gpu/ipu-v3/ipu-image-convert.c
-+++ b/drivers/gpu/ipu-v3/ipu-image-convert.c
-@@ -1709,9 +1709,10 @@ static irqreturn_t do_irq(struct ipu_image_convert_run *run)
- 	return IRQ_WAKE_THREAD;
- }
+--- a/arch/xtensa/kernel/perf_event.c
++++ b/arch/xtensa/kernel/perf_event.c
+@@ -404,7 +404,7 @@ static struct pmu xtensa_pmu = {
+ 	.read = xtensa_pmu_read,
+ };
  
--static irqreturn_t norotate_irq(int irq, void *data)
-+static irqreturn_t eof_irq(int irq, void *data)
+-static int xtensa_pmu_setup(int cpu)
++static int xtensa_pmu_setup(unsigned int cpu)
  {
- 	struct ipu_image_convert_chan *chan = data;
-+	struct ipu_image_convert_priv *priv = chan->priv;
- 	struct ipu_image_convert_ctx *ctx;
- 	struct ipu_image_convert_run *run;
- 	unsigned long flags;
-@@ -1728,45 +1729,26 @@ static irqreturn_t norotate_irq(int irq, void *data)
+ 	unsigned i;
  
- 	ctx = run->ctx;
- 
--	if (ipu_rot_mode_is_irt(ctx->rot_mode)) {
--		/* this is a rotation operation, just ignore */
--		spin_unlock_irqrestore(&chan->irqlock, flags);
--		return IRQ_HANDLED;
--	}
--
--	ret = do_irq(run);
--out:
--	spin_unlock_irqrestore(&chan->irqlock, flags);
--	return ret;
--}
--
--static irqreturn_t rotate_irq(int irq, void *data)
--{
--	struct ipu_image_convert_chan *chan = data;
--	struct ipu_image_convert_priv *priv = chan->priv;
--	struct ipu_image_convert_ctx *ctx;
--	struct ipu_image_convert_run *run;
--	unsigned long flags;
--	irqreturn_t ret;
--
--	spin_lock_irqsave(&chan->irqlock, flags);
--
--	/* get current run and its context */
--	run = chan->current_run;
--	if (!run) {
-+	if (irq == chan->out_eof_irq) {
-+		if (ipu_rot_mode_is_irt(ctx->rot_mode)) {
-+			/* this is a rotation op, just ignore */
-+			ret = IRQ_HANDLED;
-+			goto out;
-+		}
-+	} else if (irq == chan->rot_out_eof_irq) {
-+		if (!ipu_rot_mode_is_irt(ctx->rot_mode)) {
-+			/* this was NOT a rotation op, shouldn't happen */
-+			dev_err(priv->ipu->dev,
-+				"Unexpected rotation interrupt\n");
-+			ret = IRQ_HANDLED;
-+			goto out;
-+		}
-+	} else {
-+		dev_err(priv->ipu->dev, "Received unknown irq %d\n", irq);
- 		ret = IRQ_NONE;
- 		goto out;
- 	}
- 
--	ctx = run->ctx;
--
--	if (!ipu_rot_mode_is_irt(ctx->rot_mode)) {
--		/* this was NOT a rotation operation, shouldn't happen */
--		dev_err(priv->ipu->dev, "Unexpected rotation interrupt\n");
--		spin_unlock_irqrestore(&chan->irqlock, flags);
--		return IRQ_HANDLED;
--	}
--
- 	ret = do_irq(run);
- out:
- 	spin_unlock_irqrestore(&chan->irqlock, flags);
-@@ -1859,7 +1841,7 @@ static int get_ipu_resources(struct ipu_image_convert_chan *chan)
- 						  chan->out_chan,
- 						  IPU_IRQ_EOF);
- 
--	ret = request_threaded_irq(chan->out_eof_irq, norotate_irq, do_bh,
-+	ret = request_threaded_irq(chan->out_eof_irq, eof_irq, do_bh,
- 				   0, "ipu-ic", chan);
- 	if (ret < 0) {
- 		dev_err(priv->ipu->dev, "could not acquire irq %d\n",
-@@ -1872,7 +1854,7 @@ static int get_ipu_resources(struct ipu_image_convert_chan *chan)
- 						     chan->rotation_out_chan,
- 						     IPU_IRQ_EOF);
- 
--	ret = request_threaded_irq(chan->rot_out_eof_irq, rotate_irq, do_bh,
-+	ret = request_threaded_irq(chan->rot_out_eof_irq, eof_irq, do_bh,
- 				   0, "ipu-ic", chan);
- 	if (ret < 0) {
- 		dev_err(priv->ipu->dev, "could not acquire irq %d\n",
--- 
-2.25.1
-
 
 
