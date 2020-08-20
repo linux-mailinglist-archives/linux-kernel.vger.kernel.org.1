@@ -2,123 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A37E24C4C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 19:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2405224C4CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 19:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727779AbgHTRob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 13:44:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48856 "EHLO
+        id S1727118AbgHTRrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 13:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725977AbgHTRo2 (ORCPT
+        with ESMTP id S1726745AbgHTRrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 13:44:28 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B57CEC061385
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:44:27 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id qc22so3525472ejb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:44:27 -0700 (PDT)
+        Thu, 20 Aug 2020 13:47:47 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70020C061385;
+        Thu, 20 Aug 2020 10:47:46 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id r2so2873943wrs.8;
+        Thu, 20 Aug 2020 10:47:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FU6En4qmUD/ctr2fUy1I8lCvKwxV26SbLYN3IPmoL2U=;
-        b=QwF4Uq6J4cmVOnKjgQDO/Gh3pml1zUPeAoraxo2RNrIbPPRDvep+UY2dX7pO441H1D
-         btJSyb48CH82FjuGDC9p1aH5Cm7BK5CZY+W1kkP9RlBPQgkeC/WgxLlD6gWHDZvQPW2j
-         ovQO4XQ2YXedgC/iD4BZsVdsZ33tDEwygryjg=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fk/SGva3wWZfGU3gf3Sv9kCw+jo4I9saj87ClFJhRJ0=;
+        b=RMcUsxYzOS4wFYyb+sWGcbhU9tt8IJhVvuIa4+Bj1Y2fea3W4oYsGhz+07/yqcxNLR
+         Bw1RXCUlpPzSxnWU7EtjR3lxTEbIVczNiMOBhHWK6AZugnwZJgzZwSigTbg5wPD5fyD4
+         k492vxOqhMsjEoJn8HdEJ9T51FGjlhREqERbvyNstUWj5nVevQ4oEzt7r7MKyxzNzipU
+         Z0f1fmO8UZFBgrVAEhTwndhP0VTyEJnRYM5U9b09Rk31ZnSt/2rZmMmrtDhI2CmlYdUO
+         hx73sCmneCp8f9q6BN5JObY7TmMGOB4slNQFzBFqeMtOL+aN60HwfLCYa5W1evV1xlZ1
+         OB1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FU6En4qmUD/ctr2fUy1I8lCvKwxV26SbLYN3IPmoL2U=;
-        b=Y1bzAy2PajojbZobnXjWU5WzJmOPrlGK5BCBMbbO+W3JvTvnkPmJPHFu8Zs2d83s+X
-         HG4kfBcq64nPQdoyZznqNyPZGTrvAhUbRlvp1zP+So0XX0b8EQRiEblubdvspmBX7xuC
-         ZhI2l+fzBSWN72cqgAQ/DzxpdzUV9rHHh4sJaRLj67CCLFmkia0/9rMIdcc7SiPzLje8
-         qkcVbiKRt7ZLVQrSqK4UjV1HSrFEWwJPq0BmafMfMLYQZtVT4k4QsON3O9ah8DJErfyD
-         /AeO9qyQneRj5uTwCOEK/1ymWtQjt6+Q0u20afz6a5wUDyw19Ldf72nCpkq9OBv5xHtm
-         JtYg==
-X-Gm-Message-State: AOAM532KAJENnf//wvTBVPh2sZkEOORbW4Dn4W5YKlXlCoBfB5VqPXbw
-        jeY0+NZZ4ikj1MawFYtwRSF7ZJnIYj5tdc/P6qR66g==
-X-Google-Smtp-Source: ABdhPJw5nNWB5ZG8Fw9y4cBwRus7mZTqyj52PsGl0eJZhC0hG3MDp3dg8ri3m89nH3J9gHXDGPwkf/uRd0hYUKxXIRY=
-X-Received: by 2002:a17:906:8748:: with SMTP id hj8mr4482012ejb.477.1597945466273;
- Thu, 20 Aug 2020 10:44:26 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fk/SGva3wWZfGU3gf3Sv9kCw+jo4I9saj87ClFJhRJ0=;
+        b=JtJ0YftLEZ3C1gmC6eCjvKareNrQlYhK7F3vgIADRBVJRvxepquWFYy7H/dkEBz2Vs
+         q+6tBd3KrtqTdK52TIigfw6WMpQ2Vok50symQwfdzfaSb6Ux2CAW1a9JE08+fDcOt48x
+         jolFCMlBPxXntEIopFH0UEh2XRX4aiHTCN5yF9ykgyZ/7nUHd4PT0pKw8HCVjSIsgYtO
+         fKOG9PDdqUQQbwNI0Nb3zMgUEGx28Kp4n4h8f9//FX+jmxKHy/DkyXk2CHMoEi5DAv9C
+         yDlSh83gJt1FN8WteeFSgGhaFRvhhnbADgSf6nBwXPuJCFvBgfeeuOruc9U/+28OyAt4
+         G/RQ==
+X-Gm-Message-State: AOAM530kBu+tO5wqWyt1BZuHH7fYOPeyKQolsj6A+QQ3ITDy4KuQygFy
+        lAG6JtnOLA/AQGqdiTcciVQ=
+X-Google-Smtp-Source: ABdhPJyOIFHOMkHKNMf3DG9SR12YnxRsY6B5NKFQmWsKkCYTchqUz4CTtGemsf1taqGwR7fE/V8Lcg==
+X-Received: by 2002:a5d:6541:: with SMTP id z1mr4063117wrv.320.1597945665131;
+        Thu, 20 Aug 2020 10:47:45 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id b123sm5373801wme.20.2020.08.20.10.47.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Aug 2020 10:47:44 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+To:     Ariel Elior <aelior@marvell.com>, GR-everest-linux-l2@marvell.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Alex Dewar <alex.dewar90@gmail.com>
+Subject: [PATCH] net: qed: Remove unnecessary cast
+Date:   Thu, 20 Aug 2020 18:47:25 +0100
+Message-Id: <20200820174725.823353-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200820172118.781324-1-alex.dewar90@gmail.com>
-In-Reply-To: <20200820172118.781324-1-alex.dewar90@gmail.com>
-From:   Markus Mayer <markus.mayer@broadcom.com>
-Date:   Thu, 20 Aug 2020 10:44:15 -0700
-Message-ID: <CAGt4E5uTUnC+QQBWe_VV0keNYNjBDtPpzneq+nfRJncGauzECg@mail.gmail.com>
-Subject: Re: [PATCH v2] memory: brcmstb_dpfe: Fix memory leak
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Linux ARM Kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Aug 2020 at 10:21, Alex Dewar <alex.dewar90@gmail.com> wrote:
->
-> In brcmstb_dpfe_download_firmware(), memory is allocated to variable fw by
-> firmware_request_nowarn(), but never released. Fix up to release fw on
-> all return paths.
+In qed_rdma_destroy_cq() the result of dma_alloc_coherent() is cast from
+void* unnecessarily. Remove cast.
 
-Thanks for the fix!
+Issue identified with Coccinelle.
 
-Acked-by: Markus Mayer <mmayer@broadcom.com>
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+---
+ drivers/net/ethernet/qlogic/qed/qed_rdma.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
-> ---
-> v2: Don't assign ret unnecessarily (Krzysztof)
-> ---
->  drivers/memory/brcmstb_dpfe.c | 16 ++++++++++------
->  1 file changed, 10 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/memory/brcmstb_dpfe.c b/drivers/memory/brcmstb_dpfe.c
-> index 60e8633b1175..e08528b12cbd 100644
-> --- a/drivers/memory/brcmstb_dpfe.c
-> +++ b/drivers/memory/brcmstb_dpfe.c
-> @@ -647,8 +647,10 @@ static int brcmstb_dpfe_download_firmware(struct brcmstb_dpfe_priv *priv)
->                 return (ret == -ENOENT) ? -EPROBE_DEFER : ret;
->
->         ret = __verify_firmware(&init, fw);
-> -       if (ret)
-> -               return -EFAULT;
-> +       if (ret) {
-> +               ret = -EFAULT;
-> +               goto release_fw;
-> +       }
->
->         __disable_dcpu(priv);
->
-> @@ -667,18 +669,20 @@ static int brcmstb_dpfe_download_firmware(struct brcmstb_dpfe_priv *priv)
->
->         ret = __write_firmware(priv->dmem, dmem, dmem_size, is_big_endian);
->         if (ret)
-> -               return ret;
-> +               goto release_fw;
->         ret = __write_firmware(priv->imem, imem, imem_size, is_big_endian);
->         if (ret)
-> -               return ret;
-> +               goto release_fw;
->
->         ret = __verify_fw_checksum(&init, priv, header, init.chksum);
->         if (ret)
-> -               return ret;
-> +               goto release_fw;
->
->         __enable_dcpu(priv);
->
-> -       return 0;
-> +release_fw:
-> +       release_firmware(fw);
-> +       return ret;
->  }
->
->  static ssize_t generic_show(unsigned int command, u32 response[],
-> --
-> 2.28.0
->
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_rdma.c b/drivers/net/ethernet/qlogic/qed/qed_rdma.c
+index a4bcde522cdf..4394a4d77224 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_rdma.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_rdma.c
+@@ -1151,7 +1151,6 @@ qed_rdma_destroy_cq(void *rdma_cxt,
+ 	DP_VERBOSE(p_hwfn, QED_MSG_RDMA, "icid = %08x\n", in_params->icid);
+ 
+ 	p_ramrod_res =
+-	    (struct rdma_destroy_cq_output_params *)
+ 	    dma_alloc_coherent(&p_hwfn->cdev->pdev->dev,
+ 			       sizeof(struct rdma_destroy_cq_output_params),
+ 			       &ramrod_res_phys, GFP_KERNEL);
+-- 
+2.28.0
+
