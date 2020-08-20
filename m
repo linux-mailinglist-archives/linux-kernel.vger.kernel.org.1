@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE81524B41E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA72724B373
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730392AbgHTJ6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:58:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42012 "EHLO mail.kernel.org"
+        id S1729429AbgHTJrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:47:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726796AbgHTJ6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:58:12 -0400
+        id S1729376AbgHTJq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:46:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DBB972067C;
-        Thu, 20 Aug 2020 09:58:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D5AA12224D;
+        Thu, 20 Aug 2020 09:46:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917491;
-        bh=B9I86CKSfEkWeYcKIy1EwsYk+OARDO/f2z7E9feAlY0=;
+        s=default; t=1597916816;
+        bh=mBruYFmI5oOlHdrSeRPr+j93XbsAw7qF/kEu5vjxUD4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GlIUtJMwzvGRN04NkHsfNsJ1WbeuRyXWum3ATxaG2TtJzhUfKsAQl31Wu1Gwo9818
-         D582SD722ixq5tWczw9Rp8l4toYWHaC8XsEkE/PEz6lvk40+s7QJC3BQElc/0ym/B9
-         baWfN2yKa+LuMgLGBp0goFEjTGAyjXoEo1xLWTJI=
+        b=MiAnAk7IZA89OgSxbYKqkCdcSc+d3aBtJMLjMAId0QvexhUI3LOPUb1SMxjDVT3If
+         WL3d17q35IBJSig5ZBSir1nOFdeDmijrazvFj0pMEcM0WEC29XWzoYUMJO/mqsgYrw
+         6Sac1nL1nEedDReyn1j4cKCQuqvslAqkgIsXqKgs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Wang Long <wanglong19@meituan.com>,
-        Jiang Ying <jiangying8582@126.com>
-Subject: [PATCH 4.9 050/212] ext4: fix direct I/O read error
-Date:   Thu, 20 Aug 2020 11:20:23 +0200
-Message-Id: <20200820091604.894804916@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Chengming Zhou <zhouchengming@bytedance.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.4 057/152] ftrace: Setup correct FTRACE_FL_REGS flags for module
+Date:   Thu, 20 Aug 2020 11:20:24 +0200
+Message-Id: <20200820091556.646336482@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
-References: <20200820091602.251285210@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,139 +45,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiang Ying <jiangying8582@126.com>
+From: Chengming Zhou <zhouchengming@bytedance.com>
 
-This patch is used to fix ext4 direct I/O read error when
-the read size is not aligned with block size.
+commit 8a224ffb3f52b0027f6b7279854c71a31c48fc97 upstream.
 
-Then, I will use a test to explain the error.
+When module loaded and enabled, we will use __ftrace_replace_code
+for module if any ftrace_ops referenced it found. But we will get
+wrong ftrace_addr for module rec in ftrace_get_addr_new, because
+rec->flags has not been setup correctly. It can cause the callback
+function of a ftrace_ops has FTRACE_OPS_FL_SAVE_REGS to be called
+with pt_regs set to NULL.
+So setup correct FTRACE_FL_REGS flags for rec when we call
+referenced_filters to find ftrace_ops references it.
 
-(1) Make a file that is not aligned with block size:
-	$dd if=/dev/zero of=./test.jar bs=1000 count=3
+Link: https://lkml.kernel.org/r/20200728180554.65203-1-zhouchengming@bytedance.com
 
-(2) I wrote a source file named "direct_io_read_file.c" as following:
-
-	#include <stdio.h>
-	#include <stdlib.h>
-	#include <unistd.h>
-	#include <sys/file.h>
-	#include <sys/types.h>
-	#include <sys/stat.h>
-	#include <string.h>
-	#define BUF_SIZE 1024
-
-	int main()
-	{
-		int fd;
-		int ret;
-
-		unsigned char *buf;
-		ret = posix_memalign((void **)&buf, 512, BUF_SIZE);
-		if (ret) {
-			perror("posix_memalign failed");
-			exit(1);
-		}
-		fd = open("./test.jar", O_RDONLY | O_DIRECT, 0755);
-		if (fd < 0){
-			perror("open ./test.jar failed");
-			exit(1);
-		}
-
-		do {
-			ret = read(fd, buf, BUF_SIZE);
-			printf("ret=%d\n",ret);
-			if (ret < 0) {
-				perror("write test.jar failed");
-			}
-		} while (ret > 0);
-
-		free(buf);
-		close(fd);
-	}
-
-(3) Compile the source file:
-	$gcc direct_io_read_file.c -D_GNU_SOURCE
-
-(4) Run the test program:
-	$./a.out
-
-	The result is as following:
-	ret=1024
-	ret=1024
-	ret=952
-	ret=-1
-	write test.jar failed: Invalid argument.
-
-I have tested this program on XFS filesystem, XFS does not have
-this problem, because XFS use iomap_dio_rw() to do direct I/O
-read. And the comparing between read offset and file size is done
-in iomap_dio_rw(), the code is as following:
-
-	if (pos < size) {
-		retval = filemap_write_and_wait_range(mapping, pos,
-				pos + iov_length(iov, nr_segs) - 1);
-
-		if (!retval) {
-			retval = mapping->a_ops->direct_IO(READ, iocb,
-						iov, pos, nr_segs);
-		}
-		...
-	}
-
-...only when "pos < size", direct I/O can be done, or 0 will be return.
-
-I have tested the fix patch on Ext4, it is up to the mustard of
-EINVAL in man2(read) as following:
-	#include <unistd.h>
-	ssize_t read(int fd, void *buf, size_t count);
-
-	EINVAL
-		fd is attached to an object which is unsuitable for reading;
-		or the file was opened with the O_DIRECT flag, and either the
-		address specified in buf, the value specified in count, or the
-		current file offset is not suitably aligned.
-
-So I think this patch can be applied to fix ext4 direct I/O error.
-
-However Ext4 introduces direct I/O read using iomap infrastructure
-on kernel 5.5, the patch is commit <b1b4705d54ab>
-("ext4: introduce direct I/O read using iomap infrastructure"),
-then Ext4 will be the same as XFS, they all use iomap_dio_rw() to do direct
-I/O read. So this problem does not exist on kernel 5.5 for Ext4.
-
->From above description, we can see this problem exists on all the kernel
-versions between kernel 3.14 and kernel 5.4. It will cause the Applications
-to fail to read. For example, when the search service downloads a new full
-index file, the search engine is loading the previous index file and is
-processing the search request, it can not use buffer io that may squeeze
-the previous index file in use from pagecache, so the serch service must
-use direct I/O read.
-
-Please apply this patch on these kernel versions, or please use the method
-on kernel 5.5 to fix this problem.
-
-Fixes: 9fe55eea7e4b ("Fix race when checking i_size on direct i/o read")
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Wang Long <wanglong19@meituan.com>
-Signed-off-by: Jiang Ying <jiangying8582@126.com>
+Cc: stable@vger.kernel.org
+Fixes: 8c4f3c3fa9681 ("ftrace: Check module functions being traced on reload")
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/ext4/inode.c |    5 +++++
- 1 file changed, 5 insertions(+)
 
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -3575,6 +3575,11 @@ static ssize_t ext4_direct_IO_read(struc
- 	struct address_space *mapping = iocb->ki_filp->f_mapping;
- 	struct inode *inode = mapping->host;
- 	ssize_t ret;
-+	loff_t offset = iocb->ki_pos;
-+	loff_t size = i_size_read(inode);
-+
-+	if (offset >= size)
-+		return 0;
+---
+ kernel/trace/ftrace.c |   11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -5699,8 +5699,11 @@ static int referenced_filters(struct dyn
+ 	int cnt = 0;
  
- 	/*
- 	 * Shared inode_lock is enough for us - it protects against concurrent
+ 	for (ops = ftrace_ops_list; ops != &ftrace_list_end; ops = ops->next) {
+-		if (ops_references_rec(ops, rec))
+-		    cnt++;
++		if (ops_references_rec(ops, rec)) {
++			cnt++;
++			if (ops->flags & FTRACE_OPS_FL_SAVE_REGS)
++				rec->flags |= FTRACE_FL_REGS;
++		}
+ 	}
+ 
+ 	return cnt;
+@@ -5877,8 +5880,8 @@ void ftrace_module_enable(struct module
+ 		if (ftrace_start_up)
+ 			cnt += referenced_filters(rec);
+ 
+-		/* This clears FTRACE_FL_DISABLED */
+-		rec->flags = cnt;
++		rec->flags &= ~FTRACE_FL_DISABLED;
++		rec->flags += cnt;
+ 
+ 		if (ftrace_start_up && cnt) {
+ 			int failed = __ftrace_replace_code(rec, 1);
 
 
