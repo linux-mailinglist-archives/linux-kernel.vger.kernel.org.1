@@ -2,102 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B592124AAB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 02:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C64A124ABD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 02:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728495AbgHTAEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 20:04:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728461AbgHTAEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 20:04:21 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9EFB2208E4;
-        Thu, 20 Aug 2020 00:04:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597881861;
-        bh=4hK1erPQRlP1+oL9gdRiB7F0rzjISyPy6USi40HgIjg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MHl8AiitCyMT5o22zzMs6WH0nBbCEEVqgeTSJwXferqYd16qjN7sZ2CCDZHqaq1JK
-         hipKFNCohFVI8CU0rgbplR7z2tp5Z9anAdUnvzLzJzBvBIsj9by08nJ60bcKafqpkN
-         EMWtrZC5Bfu6OWO5Djrtg0hLBUCtPCwLoE9GLXL8=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        kernel test robot <lkp@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>, linux-alpha@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 10/10] alpha: fix annotation of io{read,write}{16,32}be()
-Date:   Wed, 19 Aug 2020 20:04:06 -0400
-Message-Id: <20200820000406.216050-10-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200820000406.216050-1-sashal@kernel.org>
-References: <20200820000406.216050-1-sashal@kernel.org>
+        id S1728781AbgHTANu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 20:13:50 -0400
+Received: from mail6.tencent.com ([220.249.245.26]:55002 "EHLO
+        mail6.tencent.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728756AbgHTANq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 20:13:46 -0400
+Received: from EX-SZ018.tencent.com (unknown [10.28.6.39])
+        by mail6.tencent.com (Postfix) with ESMTP id F2274CC0E4;
+        Thu, 20 Aug 2020 08:14:57 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tencent.com;
+        s=s202002; t=1597882498;
+        bh=pHuwCrLe1sBhm51cikXT2DxdNdb9NoGJcRejdWLGfL4=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=h0DD8RBq+1TFM3zr20/mzenLOQIBXiPdGN+VvXJVk+/G4GTneql6Da26FzrsM3MaE
+         K7XRcDVgTdQZjAxrlvABS4uNTMfbF5m1VqqkVzuZv9vN9zlNvqfUYJ9eFmDwhQOClv
+         ak0Cp3tLkURMLUxlFPninBMGbd2fsf/tUi6evbo4=
+Received: from EX-SZ008.tencent.com (10.28.6.32) by EX-SZ018.tencent.com
+ (10.28.6.39) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Thu, 20 Aug
+ 2020 08:13:42 +0800
+Received: from EX-SZ012.tencent.com (10.28.6.36) by EX-SZ008.tencent.com
+ (10.28.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Thu, 20 Aug
+ 2020 08:13:41 +0800
+Received: from EX-SZ012.tencent.com ([fe80::f57b:8971:e6d4:fe6b]) by
+ EX-SZ012.tencent.com ([fe80::f57b:8971:e6d4:fe6b%3]) with mapi id
+ 15.01.1847.007; Thu, 20 Aug 2020 08:13:41 +0800
+From:   =?utf-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+CC:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Jiang Biao <benbjiang@gmail.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] sched/fair: reduce preemption with IDLE tasks
+ runable(Internet mail)
+Thread-Topic: [PATCH] sched/fair: reduce preemption with IDLE tasks
+ runable(Internet mail)
+Thread-Index: AQHWZ6wckGsZD+WUv0OJdOJkfcOxRKklh1uAgAA1DACABNlRgIAAJ90AgAYgFwCAAL04gIAA/wuAgAC/bYCAAQDpAIAB6mEAgAVOvgCAADR0AIADDqgAgAAFTwCAAA4SAIAAKm2AgAAH5ICAAJvdgA==
+Date:   Thu, 20 Aug 2020 00:13:41 +0000
+Message-ID: <3A85DD77-2A4B-466F-A1F4-1BF2AF02CF58@tencent.com>
+References: <20200801023248.90104-1-benbjiang@gmail.com>
+ <5ed0fd46-3a3d-3c1a-5d75-03a74864e640@arm.com>
+ <592F24A7-BF43-457D-AC40-DC5E35279730@tencent.com>
+ <8bef1f94-f9bf-08a5-2ff3-3485d7796a96@arm.com>
+ <8629CB9F-AFC8-43D6-BD14-B60A0B85ADB3@tencent.com>
+ <5f870781-1648-b4ac-6026-557dfc347109@arm.com>
+ <CCA1D942-3669-4216-92BD-768967B1ECE5@tencent.com>
+ <4964e359-afc5-a256-4950-853a9485eeff@arm.com>
+ <70236E62-AA36-48C1-9382-86353649253C@tencent.com>
+ <3a1047fc-a86a-014a-b17a-eae71f669da1@arm.com>
+ <643B0ECE-D758-4D08-8B1B-C70F34DD9943@tencent.com>
+ <55f04582-69d6-aeb4-85be-3e46a3b15beb@arm.com>
+ <755BFAD0-9072-4D73-9CD7-AF4F74A79D21@tencent.com>
+ <729675a2-b083-4211-62c0-f7ed7f483ae2@arm.com>
+ <CAKfTPtATf94n4t6EnB5_76ygox26xd9EwvEHiv5cGN=E9BdLgg@mail.gmail.com>
+ <bb7456af-6a4d-874c-e635-8d21e1ab3efc@arm.com>
+ <A8E52241-0206-447D-9EA0-699F8F82AFAB@tencent.com>
+ <CAKfTPtBiZHwkhCkMQs9iOF=eBLgubsJkARN5zOKZzmfo_jTJzg@mail.gmail.com>
+In-Reply-To: <CAKfTPtBiZHwkhCkMQs9iOF=eBLgubsJkARN5zOKZzmfo_jTJzg@mail.gmail.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [9.19.161.78]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A3A8FBEAB9AFC14199A586421B71A731@tencent.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-
-[ Upstream commit bd72866b8da499e60633ff28f8a4f6e09ca78efe ]
-
-These accessors must be used to read/write a big-endian bus.  The value
-returned or written is native-endian.
-
-However, these accessors are defined using be{16,32}_to_cpu() or
-cpu_to_be{16,32}() to make the endian conversion but these expect a
-__be{16,32} when none is present.  Keeping them would need a force cast
-that would solve nothing at all.
-
-So, do the conversion using swab{16,32}, like done in asm-generic for
-similar situations.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Richard Henderson <rth@twiddle.net>
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: Matt Turner <mattst88@gmail.com>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Link: http://lkml.kernel.org/r/20200622114232.80039-1-luc.vanoostenryck@gmail.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/alpha/include/asm/io.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
-index ff4049155c840..355aec0867f4d 100644
---- a/arch/alpha/include/asm/io.h
-+++ b/arch/alpha/include/asm/io.h
-@@ -491,10 +491,10 @@ extern inline void writeq(u64 b, volatile void __iomem *addr)
- }
- #endif
- 
--#define ioread16be(p) be16_to_cpu(ioread16(p))
--#define ioread32be(p) be32_to_cpu(ioread32(p))
--#define iowrite16be(v,p) iowrite16(cpu_to_be16(v), (p))
--#define iowrite32be(v,p) iowrite32(cpu_to_be32(v), (p))
-+#define ioread16be(p) swab16(ioread16(p))
-+#define ioread32be(p) swab32(ioread32(p))
-+#define iowrite16be(v,p) iowrite16(swab16(v), (p))
-+#define iowrite32be(v,p) iowrite32(swab32(v), (p))
- 
- #define inb_p		inb
- #define inw_p		inw
--- 
-2.25.1
-
+DQoNCj4gT24gQXVnIDE5LCAyMDIwLCBhdCAxMDo1NSBQTSwgVmluY2VudCBHdWl0dG90IDx2aW5j
+ZW50Lmd1aXR0b3RAbGluYXJvLm9yZz4gd3JvdGU6DQo+IA0KPiBPbiBXZWQsIDE5IEF1ZyAyMDIw
+IGF0IDE2OjI3LCBiZW5iamlhbmco6JKL5b2qKSA8YmVuYmppYW5nQHRlbmNlbnQuY29tPiB3cm90
+ZToNCj4+IA0KPj4gDQo+PiANCj4+PiBPbiBBdWcgMTksIDIwMjAsIGF0IDc6NTUgUE0sIERpZXRt
+YXIgRWdnZW1hbm4gPGRpZXRtYXIuZWdnZW1hbm5AYXJtLmNvbT4gd3JvdGU6DQo+Pj4gDQo+Pj4g
+T24gMTkvMDgvMjAyMCAxMzowNSwgVmluY2VudCBHdWl0dG90IHdyb3RlOg0KPj4+PiBPbiBXZWQs
+IDE5IEF1ZyAyMDIwIGF0IDEyOjQ2LCBEaWV0bWFyIEVnZ2VtYW5uIDxkaWV0bWFyLmVnZ2VtYW5u
+QGFybS5jb20+IHdyb3RlOg0KPj4+Pj4gDQo+Pj4+PiBPbiAxNy8wOC8yMDIwIDE0OjA1LCBiZW5i
+amlhbmco6JKL5b2qKSB3cm90ZToNCj4+Pj4+PiANCj4+Pj4+PiANCj4+Pj4+Pj4gT24gQXVnIDE3
+LCAyMDIwLCBhdCA0OjU3IFBNLCBEaWV0bWFyIEVnZ2VtYW5uIDxkaWV0bWFyLmVnZ2VtYW5uQGFy
+bS5jb20+IHdyb3RlOg0KPj4+Pj4+PiANCj4+Pj4+Pj4gT24gMTQvMDgvMjAyMCAwMTo1NSwgYmVu
+YmppYW5nKOiSi+W9qikgd3JvdGU6DQo+Pj4+Pj4+PiBIaSwNCj4+Pj4+Pj4+IA0KPj4+Pj4+Pj4+
+IE9uIEF1ZyAxMywgMjAyMCwgYXQgMjozOSBBTSwgRGlldG1hciBFZ2dlbWFubiA8ZGlldG1hci5l
+Z2dlbWFubkBhcm0uY29tPiB3cm90ZToNCj4+Pj4+Pj4+PiANCj4+Pj4+Pj4+PiBPbiAxMi8wOC8y
+MDIwIDA1OjE5LCBiZW5iamlhbmco6JKL5b2qKSB3cm90ZToNCj4+Pj4+Pj4+Pj4gSGksDQo+Pj4+
+Pj4+Pj4+IA0KPj4+Pj4+Pj4+Pj4gT24gQXVnIDExLCAyMDIwLCBhdCAxMTo1NCBQTSwgRGlldG1h
+ciBFZ2dlbWFubiA8ZGlldG1hci5lZ2dlbWFubkBhcm0uY29tPiB3cm90ZToNCj4+Pj4+Pj4+Pj4+
+IA0KPj4+Pj4+Pj4+Pj4gT24gMTEvMDgvMjAyMCAwMjo0MSwgYmVuYmppYW5nKOiSi+W9qikgd3Jv
+dGU6DQo+Pj4+Pj4+Pj4+Pj4gSGksDQo+Pj4+Pj4+Pj4+Pj4gDQo+Pj4+Pj4+Pj4+Pj4+IE9uIEF1
+ZyAxMCwgMjAyMCwgYXQgOToyNCBQTSwgRGlldG1hciBFZ2dlbWFubiA8ZGlldG1hci5lZ2dlbWFu
+bkBhcm0uY29tPiB3cm90ZToNCj4+Pj4+Pj4+Pj4+Pj4gDQo+Pj4+Pj4+Pj4+Pj4+IE9uIDA2LzA4
+LzIwMjAgMTc6NTIsIGJlbmJqaWFuZyjokovlvaopIHdyb3RlOg0KPj4+Pj4+Pj4+Pj4+Pj4gSGks
+DQo+Pj4+Pj4+Pj4+Pj4+PiANCj4+Pj4+Pj4+Pj4+Pj4+PiBPbiBBdWcgNiwgMjAyMCwgYXQgOToy
+OSBQTSwgRGlldG1hciBFZ2dlbWFubiA8ZGlldG1hci5lZ2dlbWFubkBhcm0uY29tPiB3cm90ZToN
+Cj4+Pj4+Pj4+Pj4+Pj4+PiANCj4+Pj4+Pj4+Pj4+Pj4+PiBPbiAwMy8wOC8yMDIwIDEzOjI2LCBi
+ZW5iamlhbmco6JKL5b2qKSB3cm90ZToNCj4+Pj4+Pj4+Pj4+Pj4+Pj4gDQo+Pj4+Pj4+Pj4+Pj4+
+Pj4+IA0KPj4+Pj4+Pj4+Pj4+Pj4+Pj4gT24gQXVnIDMsIDIwMjAsIGF0IDQ6MTYgUE0sIERpZXRt
+YXIgRWdnZW1hbm4gPGRpZXRtYXIuZWdnZW1hbm5AYXJtLmNvbT4gd3JvdGU6DQo+Pj4+Pj4+Pj4+
+Pj4+Pj4+PiANCj4+Pj4+Pj4+Pj4+Pj4+Pj4+IE9uIDAxLzA4LzIwMjAgMDQ6MzIsIEppYW5nIEJp
+YW8gd3JvdGU6DQo+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4gRnJvbTogSmlhbmcgQmlhbyA8YmVuYmppYW5n
+QHRlbmNlbnQuY29tPg0KPj4+Pj4gDQo+Pj4+PiBbLi4uXQ0KPj4+Pj4gDQo+Pj4+Pj4+IEFyZSB5
+b3Ugc3VyZSBhYm91dCB0aGlzPw0KPj4+Pj4+IFllcy4gOikNCj4+Pj4+Pj4gDQo+Pj4+Pj4+IFRo
+ZSBtYXRoIGlzIHRlbGxpbmcgbWUgZm9yIHRoZToNCj4+Pj4+Pj4gDQo+Pj4+Pj4+IGlkbGUgdGFz
+azogICAgICAoMyAvICgxMDI0ICsgMTAyNCArIDMpKV4oLTEpICogNG1zID0gMjczNW1zDQo+Pj4+
+Pj4+IA0KPj4+Pj4+PiBub3JtYWwgdGFzazogKDEwMjQgLyAoMTAyNCArIDEwMjQgKyAzKSleKC0x
+KSAqIDRtcyA9ICAgIDhtcw0KPj4+Pj4+PiANCj4+Pj4+Pj4gKDRtcyAtIDI1MCBIeikNCj4+Pj4+
+PiBNeSB0aWNrIGlzIDFtcyAtIDEwMDBIWiwgd2hpY2ggc2VlbXMgcmVhc29uYWJsZSBmb3IgNjAw
+bXM/IDopDQo+Pj4+PiANCj4+Pj4+IE9LLCBJIHNlZS4NCj4+Pj4+IA0KPj4+Pj4gQnV0IGhlcmUg
+dGhlIGRpZmZlcmVudCBzY2hlZCBzbGljZXMgKGNoZWNrX3ByZWVtcHRfdGljaygpLT4NCj4+Pj4+
+IHNjaGVkX3NsaWNlKCkpIGJldHdlZW4gbm9ybWFsIHRhc2tzIGFuZCB0aGUgaWRsZSB0YXNrIHBs
+YXkgYSByb2xlIHRvLg0KPj4+Pj4gDQo+Pj4+PiBOb3JtYWwgdGFza3MgZ2V0IH4zbXMgd2hlcmVh
+cyB0aGUgaWRsZSB0YXNrIGdldHMgPDAuMDFtcy4NCj4+Pj4gDQo+Pj4+IEluIGZhY3QgdGhhdCBk
+ZXBlbmRzIG9uIHRoZSBudW1iZXIgb2YgQ1BVcyBvbiB0aGUgc3lzdGVtDQo+Pj4+IDpzeXNjdGxf
+c2NoZWRfbGF0ZW5jeSA9IDZtcyAqICgxICsgaWxvZyhuY3B1cykpIC4gT24gYSA4IGNvcmVzIHN5
+c3RlbSwNCj4+Pj4gbm9ybWFsIHRhc2sgd2lsbCBydW4gYXJvdW5kIDEybXMgaW4gb25lIHNob290
+IGFuZCB0aGUgaWRsZSB0YXNrIHN0aWxsDQo+Pj4+IG9uZSB0aWNrIHBlcmlvZA0KPj4+IA0KPj4+
+IFRydWUuIFRoaXMgaXMgb24gYSBzaW5nbGUgQ1BVLg0KPj4gQWdyZWUuIDopDQo+PiANCj4+PiAN
+Cj4+Pj4gQWxzbywgeW91IGNhbiBpbmNyZWFzZSBldmVuIG1vcmUgdGhlIHBlcmlvZCBiZXR3ZWVu
+IDIgcnVucyBvZiBpZGxlDQo+Pj4+IHRhc2sgYnkgdXNpbmcgY2dyb3VwcyBhbmQgbWluIHNoYXJl
+cyB2YWx1ZSA6IDINCj4+PiANCj4+PiBBaCB5ZXMsIG1heWJlIHRoaXMgaXMgd2hhdCBKaWFuZyB3
+YW50cyB0byBkbyB0aGVuPyBJZiBoaXMgcnVudGltZSBkb2VzDQo+Pj4gbm90IGhhdmUgb3RoZXIg
+cmVxdWlyZW1lbnRzIHByZXZlbnRpbmcgdGhpcy4NCj4+IFRoYXQgY291bGQgd29yayBmb3IgaW5j
+cmVhc2luZyB0aGUgcGVyaW9kIGJldHdlZW4gMiBydW5zLiBCdXQgY291bGQgbm90DQo+PiByZWR1
+Y2UgdGhlIHNpbmdsZSBydW50aW1lIG9mIGlkbGUgdGFzayBJIGd1ZXNzLCB3aGljaCBtZWFucyBu
+b3JtYWwgdGFzaw0KPj4gY291bGQgaGF2ZSAxLXRpY2sgc2NoZWR1bGUgbGF0ZW5jeSBiZWNhdXNl
+IG9mIGlkbGUgdGFzay4NCj4gDQo+IFllcy4gIEFuIGlkbGUgdGFzayB3aWxsIHByZWVtcHQgYW4g
+YWx3YXlzIHJ1bm5pbmcgdGFzayBkdXJpbmcgMSB0aWNrDQo+IGV2ZXJ5IDY4MG1zLiBCdXQgYWxz
+byB5b3Ugc2hvdWxkIGtlZXAgaW4gbWluZCB0aGF0IGEgd2FraW5nIG5vcm1hbA0KPiB0YXNrIHdp
+bGwgcHJlZW1wdCB0aGUgaWRsZSB0YXNrIGltbWVkaWF0ZWx5IHdoaWNoIG1lYW5zIHRoYXQgaXQg
+d2lsbA0KPiBub3QgYWRkIHNjaGVkdWxpbmcgbGF0ZW5jeSB0byBhIG5vcm1hbCB0YXNrIGJ1dCAi
+c3RlYWwiIDAuMTQlIG9mDQo+IG5vcm1hbCB0YXNrIHRocm91Z2hwdXQgKDEvNjgwKSBhdCBtb3N0
+DQpUaGF04oCZcyB0cnVlLiBCdXQgaW4gdGhlIFZNIGNhc2UsIHdoZW4gVk0gYXJlIGJ1c3koTVdB
+SVQgcGFzc3Rocm91Z2gNCm9yIHJ1bm5pbmcgY3B1IGVhdGluZyB3b3JrcyksIHRoZSAxLXRpY2sg
+c2NoZWR1bGluZyBsYXRlbmN5IGNvdWxkIGJlDQpkZXRlY3RlZCBieSBjeWNsaWN0ZXN0IHJ1bm5p
+bmcgaW4gdGhlIFZNLg0KDQpPVE9ILCB3ZSBjb21wZW5zYXRlIHZydW50aW1lIGluIHBsYWNlX2Vu
+dGl0eSgpIHRvIGJvb3Qgd2FraW5nDQp3aXRob3V0IGRpc3Rpbmd1aXNoIFNDSEVEX0lETEUgdGFz
+aywgZG8geW91IHRoaW5rIGl04oCZcyBuZWNlc3NhcnkgdG8NCmRvIHRoYXQ/IGxpa2UNCg0KLS0t
+IGEva2VybmVsL3NjaGVkL2ZhaXIuYw0KKysrIGIva2VybmVsL3NjaGVkL2ZhaXIuYw0KQEAgLTQx
+MTUsNyArNDExNSw3IEBAIHBsYWNlX2VudGl0eShzdHJ1Y3QgY2ZzX3JxICpjZnNfcnEsIHN0cnVj
+dCBzY2hlZF9lbnRpdHkgKnNlLCBpbnQgaW5pdGlhbCkNCiAgICAgICAgICAgICAgICB2cnVudGlt
+ZSArPSBzY2hlZF92c2xpY2UoY2ZzX3JxLCBzZSk7DQoNCiAgICAgICAgLyogc2xlZXBzIHVwIHRv
+IGEgc2luZ2xlIGxhdGVuY3kgZG9uJ3QgY291bnQuICovDQotICAgICAgIGlmICghaW5pdGlhbCkg
+ew0KKyAgICAgICBpZiAoIWluaXRpYWwgJiYgbGlrZWx5KCF0YXNrX2hhc19pZGxlX3BvbGljeSh0
+YXNrX29mKHNlKSkpKSB7DQogICAgICAgICAgICAgICAgdW5zaWduZWQgbG9uZyB0aHJlc2ggPSBz
+eXNjdGxfc2NoZWRfbGF0ZW5jeTsNCg0KPiANCj4+IE9UT0gsIGNncm91cHMoc2hhcmVzKSBjb3Vs
+ZCBpbnRyb2R1Y2UgZXh0cmEgY29tcGxleGl0eS4gOikNCj4+IA0KPj4gSSB3b25kZXIgaWYgdGhl
+cmXigJlzIGFueSBwb3NzaWJpbGl0eSB0byBtYWtlIFNDSEVEX0lETEVz4oCZIHByaW9yaXRpZXMg
+YWJzb2x1dGVseQ0KPj4gbG93ZXIgdGhhbiBTQ0hFRF9OT1JNQUwoT1RIRVIpLCB3aGljaCBtZWFu
+cyBubyB3ZWlnaHRzL3NoYXJlcw0KPj4gZm9yIHRoZW0sIGFuZCB0aGV5IHJ1biBvbmx5IHdoZW4g
+bm8gb3RoZXIgdGFza+KAmXMgcnVubmFibGUuDQo+PiBJIGd1ZXNzIHRoZXJlIG1heSBiZSBwcmlv
+cml0eSBpbnZlcnNpb24gaXNzdWUgaWYgd2UgZG8gdGhhdC4gQnV0IG1heWJlIHdlDQo+IA0KPiBF
+eGFjdGx5LCB0aGF0J3Mgd2h5IHdlIG11c3QgZW5zdXJlIGEgbWluaW11bSBydW5uaW5nIHRpbWUg
+Zm9yIHNjaGVkX2lkbGUgdGFzaw0KDQpTdGlsbCBmb3IgVk0gY2FzZSwgZGlmZmVyZW50IFZNcyBo
+YXZlIGJlZW4gbXVjaCBpc29sYXRlZCBmcm9tIGVhY2ggb3RoZXIsDQpwcmlvcml0eSBpbnZlcnNp
+b24gaXNzdWUgY291bGQgYmUgdmVyeSByYXJlLCB3ZeKAmXJlIHRyeWluZyB0byBtYWtlIG9mZmxp
+bmUgdGFza3MNCmFic291bHRseSBoYXJtbGVzcyB0byBvbmxpbmUgdGFza3MuIDopDQoNClRoYW5r
+cyBhIGxvdCBmb3IgeW91ciB0aW1lLg0KUmVnYXJkcywNCkppYW5nDQoNCj4gDQo+PiBjb3VsZCBh
+dm9pZCBpdCBieSBsb2FkLWJhbGFuY2UgbW9yZSBhZ2dyZXNzaXZlbHksIG9yIGl0KHByaW9yaXR5
+IGludmVyc2lvbikNCj4+IGNvdWxkIGJlIGlnbm9yZWQgaW4gc29tZSBzcGVjaWFsIGNhc2UuDQo+
+PiANCj4+PiANCg0K
