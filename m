@@ -2,125 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 786EA24C777
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 23:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D335024C77B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 23:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbgHTVz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 17:55:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46586 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726899AbgHTVzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 17:55:52 -0400
-Received: from localhost (104.sub-72-107-126.myvzw.com [72.107.126.104])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17417204FD;
-        Thu, 20 Aug 2020 21:55:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597960551;
-        bh=5ULzVEcGtTnweVu+hyjjAnP9S4wCcq1qytib5KiiV2w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=1XKDiQcwbYSrv8Z4WVaOtJLooY4nfviEtxoPo0Y2NitTUuU8LYIu2bSKyRd8WQr0L
-         aN+ZWgAz5Hc65TmNcYJVWDD/yr5T+tCdq/45aqqethpzi9q7hBrkKKy8P8WzFsEOnq
-         NIWuz91tc4hJtRfSZd1UAfb3iDvkP5BRBg2NWEaU=
-Date:   Thu, 20 Aug 2020 16:55:49 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     George Cherian <george.cherian@marvell.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-pci@vger.kernel.org, bhelgaas@google.com, arnd@arndb.de,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Subject: Re: [PATCHv2] PCI: Add pci_iounmap
-Message-ID: <20200820215549.GA1569713@bjorn-Precision-5520>
+        id S1728208AbgHTV5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 17:57:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726741AbgHTV5i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 17:57:38 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 422F0C061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 14:57:37 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id ba10so2858066edb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 14:57:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5sviuv+X0eAsiZiEmZuhmbloJAvhEyc5WFuO1Rz+TUE=;
+        b=Lkupn2ml+C7DdOtGP0lOruDZjCFfwnzZiuPeCknEHAgkiKMiLp80Ja6hMjPtqmGwRg
+         TT8F0Wv4g0HogaPz3hrOrlrcVWXhd1IsuC5JePZNOf/kssSmniZdTvwFdRgaGt4YaZ0Q
+         rFCWRB0OQPj4jKB7KQ6hJY+o7KyG/cTRE0A4+++Ykt6dzIeMPlNjBtQrsXICMScwq4PL
+         j9LUtUltHPypHsbW0emiMMNTs0MTP1rQV21k+kiczIU+SB1vHp9kNDKV8/u23whPDOGK
+         r4xKo/s2KKKV37pqz1MX9++vknCXJidYRfJ3BzYN2w4lmxL9z8PwNp2GBhxP3mRPmmjn
+         TgtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5sviuv+X0eAsiZiEmZuhmbloJAvhEyc5WFuO1Rz+TUE=;
+        b=AqP3siNIWENwhuZ3CVERzs1B62Z30BsSVSeQz62zuNcI57Z81AcmxbTkB45Lq3yoBE
+         okUuy8OtYz64sUA0VpN5EO3y8WyoPGP8acbT+oN/qaqaCiisEcZbqk800ABA4FYUTNi/
+         ViM8xtRSzGHYdlyaIWI5YfcWqri4+On2eQ5fadWCobN2oxGmV3C2VuoXV5awCdLaB8lM
+         EIl8zBZQbKxstuOnhhvJ0pHfPjyUBFNFGuO42x6964mSlqfCrkT68knisVrvPXDApYs1
+         A6p81aZWgdXoD4Lzfy1nhdgeytjJqcnYqVWHqKmfDX7Wo/8L2Rudpy6Go+jNjGpVSMFF
+         Uvlg==
+X-Gm-Message-State: AOAM533nr6PgklqRwRUceCyDaK/a/XEkX8PkBwecvLlKaBby24/71AGZ
+        GWM98xU5jss+PCcq0Gyn/TkmkmApkXXXRPY6aSA=
+X-Google-Smtp-Source: ABdhPJzKrnmPWoJ3402kaH5MO+iUdtgoRHgzZkmiw5vnRW2kpH0g12SVDvfqxXIyPzkglcjdj6Pwl4UAvV9zN8cfV3E=
+X-Received: by 2002:aa7:d983:: with SMTP id u3mr657139eds.366.1597960655895;
+ Thu, 20 Aug 2020 14:57:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200820050306.2015009-1-george.cherian@marvell.com>
+References: <20200818184122.29C415DF@viggo.jf.intel.com> <20200818184126.B8E91F10@viggo.jf.intel.com>
+In-Reply-To: <20200818184126.B8E91F10@viggo.jf.intel.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 20 Aug 2020 14:57:24 -0700
+Message-ID: <CAHbLzkrLwaV1mi0wSU=XQ+mqkaPuP=4tmvwOBe6kiO2qendVdQ@mail.gmail.com>
+Subject: Re: [RFC][PATCH 2/9] mm/numa: automatically generate node migration order
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Rientjes <rientjes@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Michael, author of 66eab4df288a ("lib: add GENERIC_PCI_IOMAP")]
-
-On Thu, Aug 20, 2020 at 10:33:06AM +0530, George Cherian wrote:
-> In case if any architecture selects CONFIG_GENERIC_PCI_IOMAP and not
-> CONFIG_GENERIC_IOMAP, then the pci_iounmap function is reduced to a NULL
-> function. Due to this the managed release variants or even the explicit
-> pci_iounmap calls doesn't really remove the mappings.
-> 
-> This issue is seen on an arm64 based system. arm64 by default selects
-> only CONFIG_GENERIC_PCI_IOMAP and not CONFIG_GENERIC_IOMAP from this
-> 'commit cb61f6769b88 ("ARM64: use GENERIC_PCI_IOMAP")'
-> 
-> Simple bind/unbind test of any pci driver using pcim_iomap/pci_iomap,
-> would lead to the following error message after long hour tests
-> 
-> "allocation failed: out of vmalloc space - use vmalloc=<size> to
-> increase size."
-> 
-> Signed-off-by: George Cherian <george.cherian@marvell.com>
+On Tue, Aug 18, 2020 at 11:50 AM Dave Hansen
+<dave.hansen@linux.intel.com> wrote:
+>
+>
+> From: Dave Hansen <dave.hansen@linux.intel.com>
+>
+> When memory fills up on a node, memory contents can be
+> automatically migrated to another node.  The biggest problems are
+> knowing when to migrate and to where the migration should be
+> targeted.
+>
+> The most straightforward way to generate the "to where" list
+> would be to follow the page allocator fallback lists.  Those
+> lists already tell us if memory is full where to look next.  It
+> would also be logical to move memory in that order.
+>
+> But, the allocator fallback lists have a fatal flaw: most nodes
+> appear in all the lists.  This would potentially lead to
+> migration cycles (A->B, B->A, A->B, ...).
+>
+> Instead of using the allocator fallback lists directly, keep a
+> separate node migration ordering.  But, reuse the same data used
+> to generate page allocator fallback in the first place:
+> find_next_best_node().
+>
+> This means that the firmware data used to populate node distances
+> essentially dictates the ordering for now.  It should also be
+> architecture-neutral since all NUMA architectures have a working
+> find_next_best_node().
+>
+> The protocol for node_demotion[] access and writing is not
+> standard.  It has no specific locking and is intended to be read
+> locklessly.  Readers must take care to avoid observing changes
+> that appear incoherent.  This was done so that node_demotion[]
+> locking has no chance of becoming a bottleneck on large systems
+> with lots of CPUs in direct reclaim.
+>
+> This code is unused for now.  It will be called later in the
+> series.
+>
+> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Yang Shi <yang.shi@linux.alibaba.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Huang Ying <ying.huang@intel.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
 > ---
-> * Changes from v1
-> 	- Fix the 0-day compilation error.
-> 	- Mark the lib/iomap pci_iounmap call as weak incase 
-> 	  if any architecture have there own implementation.
-> 
->  include/asm-generic/io.h |  4 ++++
->  lib/pci_iomap.c          | 10 ++++++++++
->  2 files changed, 14 insertions(+)
-> 
-> diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-> index dabf8cb7203b..5986b37226b7 100644
-> --- a/include/asm-generic/io.h
-> +++ b/include/asm-generic/io.h
-> @@ -915,12 +915,16 @@ static inline void iowrite64_rep(volatile void __iomem *addr,
->  struct pci_dev;
->  extern void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max);
->  
-> +#ifdef CONFIG_GENERIC_PCI_IOMAP
-> +extern void pci_iounmap(struct pci_dev *dev, void __iomem *p);
-> +#else
->  #ifndef pci_iounmap
->  #define pci_iounmap pci_iounmap
->  static inline void pci_iounmap(struct pci_dev *dev, void __iomem *p)
+>
+>  b/mm/internal.h   |    1
+>  b/mm/migrate.c    |  137 +++++++++++++++++++++++++++++++++++++++++++++++++++++-
+>  b/mm/page_alloc.c |    2
+>  3 files changed, 138 insertions(+), 2 deletions(-)
+>
+> diff -puN mm/internal.h~auto-setup-default-migration-path-from-firmware mm/internal.h
+> --- a/mm/internal.h~auto-setup-default-migration-path-from-firmware     2020-08-18 11:36:48.960583188 -0700
+> +++ b/mm/internal.h     2020-08-18 11:36:48.968583188 -0700
+> @@ -203,6 +203,7 @@ extern int user_min_free_kbytes;
+>
+>  extern void zone_pcp_update(struct zone *zone);
+>  extern void zone_pcp_reset(struct zone *zone);
+> +extern int find_next_best_node(int node, nodemask_t *used_node_mask);
+>
+>  #if defined CONFIG_COMPACTION || defined CONFIG_CMA
+>
+> diff -puN mm/migrate.c~auto-setup-default-migration-path-from-firmware mm/migrate.c
+> --- a/mm/migrate.c~auto-setup-default-migration-path-from-firmware      2020-08-18 11:36:48.962583188 -0700
+> +++ b/mm/migrate.c      2020-08-18 11:36:48.970583188 -0700
+> @@ -1160,6 +1160,10 @@ out:
+>         return rc;
+>  }
+>
+> +/*
+> + * Writes to this array occur without locking.  READ_ONCE()
+> + * is recommended for readers to ensure consistent reads.
+> + */
+>  static int node_demotion[MAX_NUMNODES] = {[0 ...  MAX_NUMNODES - 1] = NUMA_NO_NODE};
+>
+>  /**
+> @@ -1173,7 +1177,13 @@ static int node_demotion[MAX_NUMNODES] =
+>   */
+>  int next_demotion_node(int node)
 >  {
+> -       return node_demotion[node];
+> +       /*
+> +        * node_demotion[] is updated without excluding
+> +        * this function from running.  READ_ONCE() avoids
+> +        * reading multiple, inconsistent 'node' values
+> +        * during an update.
+> +        */
+> +       return READ_ONCE(node_demotion[node]);
 >  }
->  #endif
-> +#endif /* CONFIG_GENERIC_PCI_IOMAP */
->  #endif /* CONFIG_GENERIC_IOMAP */
->  
+>
 >  /*
-> diff --git a/lib/pci_iomap.c b/lib/pci_iomap.c
-> index 2d3eb1cb73b8..ecd1eb3f6c25 100644
-> --- a/lib/pci_iomap.c
-> +++ b/lib/pci_iomap.c
-> @@ -134,4 +134,14 @@ void __iomem *pci_iomap_wc(struct pci_dev *dev, int bar, unsigned long maxlen)
->  	return pci_iomap_wc_range(dev, bar, 0, maxlen);
+> @@ -3001,3 +3011,128 @@ void migrate_vma_finalize(struct migrate
 >  }
->  EXPORT_SYMBOL_GPL(pci_iomap_wc);
+>  EXPORT_SYMBOL(migrate_vma_finalize);
+>  #endif /* CONFIG_DEVICE_PRIVATE */
 > +
-> +#ifndef CONFIG_GENERIC_IOMAP
-> +#define pci_iounmap pci_iounmap
-> +void __weak pci_iounmap(struct pci_dev *dev, void __iomem *addr);
-> +void __weak pci_iounmap(struct pci_dev *dev, void __iomem *addr)
+> +/* Disable reclaim-based migration. */
+> +static void disable_all_migrate_targets(void)
 > +{
-> +	iounmap(addr);
+> +       int node;
+> +
+> +       for_each_online_node(node)
+> +               node_demotion[node] = NUMA_NO_NODE;
 > +}
-> +EXPORT_SYMBOL(pci_iounmap);
-> +#endif
+> +
+> +/*
+> + * Find an automatic demotion target for 'node'.
+> + * Failing here is OK.  It might just indicate
+> + * being at the end of a chain.
+> + */
+> +static int establish_migrate_target(int node, nodemask_t *used)
+> +{
+> +       int migration_target;
+> +
+> +       /*
+> +        * Can not set a migration target on a
+> +        * node with it already set.
+> +        *
+> +        * No need for READ_ONCE() here since this
+> +        * in the write path for node_demotion[].
+> +        * This should be the only thread writing.
+> +        */
+> +       if (node_demotion[node] != NUMA_NO_NODE)
+> +               return NUMA_NO_NODE;
+> +
+> +       migration_target = find_next_best_node(node, used);
+> +       if (migration_target == NUMA_NO_NODE)
+> +               return NUMA_NO_NODE;
+> +
+> +       node_demotion[node] = migration_target;
+> +
+> +       return migration_target;
+> +}
+> +
+> +/*
+> + * When memory fills up on a node, memory contents can be
+> + * automatically migrated to another node instead of
+> + * discarded at reclaim.
+> + *
+> + * Establish a "migration path" which will start at nodes
+> + * with CPUs and will follow the priorities used to build the
+> + * page allocator zonelists.
+> + *
+> + * The difference here is that cycles must be avoided.  If
+> + * node0 migrates to node1, then neither node1, nor anything
+> + * node1 migrates to can migrate to node0.
+> + *
+> + * This function can run simultaneously with readers of
+> + * node_demotion[].  However, it can not run simultaneously
+> + * with itself.  Exclusion is provided by memory hotplug events
+> + * being single-threaded.
+> + */
+> +void __set_migration_target_nodes(void)
+> +{
+> +       nodemask_t next_pass    = NODE_MASK_NONE;
+> +       nodemask_t this_pass    = NODE_MASK_NONE;
+> +       nodemask_t used_targets = NODE_MASK_NONE;
+> +       int node;
+> +
+> +       /*
+> +        * Avoid any oddities like cycles that could occur
+> +        * from changes in the topology.  This will leave
+> +        * a momentary gap when migration is disabled.
+> +        */
+> +       disable_all_migrate_targets();
+> +
+> +       /*
+> +        * Ensure that the "disable" is visible across the system.
+> +        * Readers will see either a combination of before+disable
+> +        * state or disable+after.  They will never see before and
+> +        * after state together.
+> +        *
+> +        * The before+after state together might have cycles and
+> +        * could cause readers to do things like loop until this
+> +        * function finishes.  This ensures they can only see a
+> +        * single "bad" read and would, for instance, only loop
+> +        * once.
+> +        */
+> +       smp_wmb();
 
-I completely agree that this looks like a leak that needs to be fixed.
+Sounds better to move sp_wmb() into disable_all_migrate_targets()? I
+thought we need the barrier everytime disable_all_migrate_targets() is
+called, if so why not put them together to avoid overlooking?
 
-But my head hurts after trying to understand pci_iomap() and
-pci_iounmap().  I hate to add even more #ifdefs here.  Can't we
-somehow rationalize this and put pci_iounmap() next to pci_iomap()?
-
-66eab4df288a ("lib: add GENERIC_PCI_IOMAP") moved pci_iomap() from
-lib/iomap.c to lib/pci_iomap.c, but left pci_iounmap() in lib/iomap.c.
-There must be some good reason why they're separated, but I don't know
-what it is.
-
->  #endif /* CONFIG_PCI */
-> -- 
-> 2.25.1
-> 
+> +
+> +       /*
+> +        * Allocations go close to CPUs, first.  Assume that
+> +        * the migration path starts at the nodes with CPUs.
+> +        */
+> +       next_pass = node_states[N_CPU];
+> +again:
+> +       this_pass = next_pass;
+> +       next_pass = NODE_MASK_NONE;
+> +       /*
+> +        * To avoid cycles in the migration "graph", ensure
+> +        * that migration sources are not future targets by
+> +        * setting them in 'used_targets'.  Do this only
+> +        * once per pass so that multiple source nodes can
+> +        * share a target node.
+> +        *
+> +        * 'used_targets' will become unavailable in future
+> +        * passes.  This limits some opportunities for
+> +        * multiple source nodes to share a desintation.
+> +        */
+> +       nodes_or(used_targets, used_targets, this_pass);
+> +       for_each_node_mask(node, this_pass) {
+> +               int target_node = establish_migrate_target(node, &used_targets);
+> +
+> +               if (target_node == NUMA_NO_NODE)
+> +                       continue;
+> +
+> +               /* Visit targets from this pass in the next pass: */
+> +               node_set(target_node, next_pass);
+> +       }
+> +       /* Is another pass necessary? */
+> +       if (!nodes_empty(next_pass))
+> +               goto again;
+> +}
+> +
+> +void set_migration_target_nodes(void)
+> +{
+> +       get_online_mems();
+> +       __set_migration_target_nodes();
+> +       put_online_mems();
+> +}
+> diff -puN mm/page_alloc.c~auto-setup-default-migration-path-from-firmware mm/page_alloc.c
+> --- a/mm/page_alloc.c~auto-setup-default-migration-path-from-firmware   2020-08-18 11:36:48.964583188 -0700
+> +++ b/mm/page_alloc.c   2020-08-18 11:36:48.972583188 -0700
+> @@ -5607,7 +5607,7 @@ static int node_load[MAX_NUMNODES];
+>   *
+>   * Return: node id of the found node or %NUMA_NO_NODE if no node is found.
+>   */
+> -static int find_next_best_node(int node, nodemask_t *used_node_mask)
+> +int find_next_best_node(int node, nodemask_t *used_node_mask)
+>  {
+>         int n, val;
+>         int min_val = INT_MAX;
+> _
