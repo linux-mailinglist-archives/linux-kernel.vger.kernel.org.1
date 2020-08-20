@@ -2,84 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A8924B916
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E93A24B910
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730223AbgHTLiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:38:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52672 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730572AbgHTLa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 07:30:58 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BA164AC98;
-        Thu, 20 Aug 2020 11:31:24 +0000 (UTC)
-Date:   Thu, 20 Aug 2020 13:30:56 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Balamuruhan S <bala24@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org, Jisheng.Zhang@synaptics.com, rdna@fb.com,
-        viro@zeniv.linux.org.uk, gpiccoli@canonical.com,
-        naveen.n.rao@linux.vnet.ibm.com, ravi.bangoria@linux.ibm.com,
-        sandipan@linux.ibm.com, mpe@ellerman.id.au,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] kernel/watchdog: fix warning -Wunused-variable for
- watchdog_allowed_mask in ppc64
-Message-ID: <20200820113056.GG4353@alley>
-References: <20200814133330.210093-1-bala24@linux.ibm.com>
+        id S1729270AbgHTLib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:38:31 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:62854 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729738AbgHTLe0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 07:34:26 -0400
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 07KBXm51011709
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 20:33:49 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 07KBXm51011709
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1597923229;
+        bh=XGgv3Ngm5kbFZf0GD1E5nkmPdpn4darLmhe2GL+7nuU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PW31YXnIxPELMsxjO/YhYZ5bd4+t4Rm5AwFQZe8bmeZBvBBQ7BvTh7cjUevJqrdlC
+         gzNcqfHQ+E4ih1UEvONPCMZx/yBOXVIloW5ha/zKFL95ftQulz0HtUG8WxR/LU+rLN
+         nvQqC5nBLYu+jzoEUlVnTkfd3yqOX/pCyUhXhuGt1Qlok32u4PK01/NFj8hQz64qqz
+         W2ee2DPtWiIkzc+pZBA/C9Z66FUPpLVP+RYuh7srLvzlCKiAa73liFVEe01rWqlJel
+         VUCHNpmFMAGYkNyvXb5g5bYPWgDt8dROddMWVosqPoKzxMikuw3oO+BbUKUEKQamlR
+         UWc8GGtcTv6+g==
+X-Nifty-SrcIP: [209.85.222.52]
+Received: by mail-ua1-f52.google.com with SMTP id g20so459133uap.8
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 04:33:49 -0700 (PDT)
+X-Gm-Message-State: AOAM530l9Z+ElsBHoRUY0vE3eND1672PVNskV3Qu2FesNncbo6SA5cT3
+        ZHKKQsDvfMHsH8Deps2/5r7XLw5a5yIR63jetn8=
+X-Google-Smtp-Source: ABdhPJxNLBGf4ixlYGFomMDjKzFzffmoM3zK913g/lYzq4mGJBRmpedvIZCUnmeEdeI0pigKfT+itnJWLRfotpKWBcM=
+X-Received: by 2002:ab0:623:: with SMTP id f32mr1267638uaf.121.1597923228200;
+ Thu, 20 Aug 2020 04:33:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200814133330.210093-1-bala24@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <ab0cfaed-50bb-5b29-cb93-a2987c384af1@gmx.de>
+In-Reply-To: <ab0cfaed-50bb-5b29-cb93-a2987c384af1@gmx.de>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 20 Aug 2020 20:33:11 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASZ_sHPjDLd7+LTc0Sj9K+W51zoRq-=r-0_5AJC06jaEg@mail.gmail.com>
+Message-ID: <CAK7LNASZ_sHPjDLd7+LTc0Sj9K+W51zoRq-=r-0_5AJC06jaEg@mail.gmail.com>
+Subject: Re: BUG with 5.8.x and make xconfig
+To:     Ronald Warsow <rwarsow@gmx.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2020-08-14 19:03:30, Balamuruhan S wrote:
-> In ppc64 config if `CONFIG_SOFTLOCKUP_DETECTOR` is not set then it
-> warns for unused declaration of `watchdog_allowed_mask` while building,
-> move the declaration inside ifdef later in the code.
-> 
-> ```
-> kernel/watchdog.c:47:23: warning: ‘watchdog_allowed_mask’ defined but not used [-Wunused-variable]
->  static struct cpumask watchdog_allowed_mask __read_mostly;
-> ```
-> 
-> Signed-off-by: Balamuruhan S <bala24@linux.ibm.com>
-> ---
->  kernel/watchdog.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-> index 5abb5b22ad13..33c9b8a3d51b 100644
-> --- a/kernel/watchdog.c
-> +++ b/kernel/watchdog.c
-> @@ -44,7 +44,6 @@ int __read_mostly soft_watchdog_user_enabled = 1;
->  int __read_mostly watchdog_thresh = 10;
->  static int __read_mostly nmi_watchdog_available;
->  
-> -static struct cpumask watchdog_allowed_mask __read_mostly;
->  
->  struct cpumask watchdog_cpumask __read_mostly;
->  unsigned long *watchdog_cpumask_bits = cpumask_bits(&watchdog_cpumask);
-> @@ -166,6 +165,7 @@ int __read_mostly sysctl_softlockup_all_cpu_backtrace;
->  unsigned int __read_mostly softlockup_panic =
->  			CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC_VALUE;
->  
-> +static struct cpumask watchdog_allowed_mask __read_mostly;
+On Thu, Aug 20, 2020 at 4:19 AM Ronald Warsow <rwarsow@gmx.de> wrote:
+>
+> Hallo
+>
+> configuring kernel 5.8.x on Fedora 32 via "make xconfig" gives me this:
+>
+>
+>   HOSTCXX scripts/kconfig/qconf.o
+> scripts/kconfig/qconf.cc: In member function =E2=80=98void
+> ConfigInfoView::clicked(const QUrl&)=E2=80=99:
+> scripts/kconfig/qconf.cc:1231:3: error: =E2=80=98qInfo=E2=80=99 was not d=
+eclared in this
+> scope; did you mean =E2=80=98setInfo=E2=80=99?
+>   1231 |   qInfo() << "Clicked link is empty";
+>        |   ^~~~~
+>        |   setInfo
+> scripts/kconfig/qconf.cc:1244:3: error: =E2=80=98qInfo=E2=80=99 was not d=
+eclared in this
+> scope; did you mean =E2=80=98setInfo=E2=80=99?
+>   1244 |   qInfo() << "Clicked symbol is invalid:" << data;
+>        |   ^~~~~
+>        |   setInfo
+> make[1]: *** [scripts/Makefile.host:137: scripts/kconfig/qconf.o] Error 1
+> make: *** [Makefile:606: xconfig] Error 2
+>
+>
+>
+> I have never seen this with kernel 5.7.x.
+>
+> I haven't found a solution to the above, yet.
+> - apart from the workaround: "make menuconfig", etc.-
+>
+>
+> pointers/hints/ideas ?
 
-I could confirm that the variable is used only in code that is built
-when CONFIG_SOFTLOCKUP_DETECTOR is enabled.
 
-Note that the problem can't be seen on x86. There the softlockup
-detector is enforced together with hardloclup detector via
-via HARDLOCKUP_DETECTOR_PERF.
+I think you are using Qt4
+(dnf install qt4-devel).
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+If you install Qt5
+(dnf install qt5-devel),
+you will be able to do "make xconfig".
 
-Best Regards,
-Petr
+I will consider what to do about this.
+
+
+--=20
+Best Regards
+Masahiro Yamada
