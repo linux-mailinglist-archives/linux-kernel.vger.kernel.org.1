@@ -2,108 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE6A24BF77
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB71624BEA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730482AbgHTNjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:39:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725916AbgHTJal (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:30:41 -0400
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD926207FB;
-        Thu, 20 Aug 2020 09:30:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915839;
-        bh=aMJupPBQ4LxbwYlKEK/6QB+6fhqLMcVfiMNCpsaL+xs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=f4sMLbF3Ul/oSOcXWDtf7iwQrI3+vQvCq5y7Yl3ym07AuGuA3UOAR7s39x12gHGk1
-         bdOJyPHLfbdDmAyl1/S0WykPWX7i9HcBevqZzcszcsR/S/s/QWZrnc/71hV3B+fF8y
-         IcfGhTLfd4jaho8ZwXiXIA1vEWA3QC+wAsjyhP+c=
-Received: by mail-oi1-f171.google.com with SMTP id z22so1331795oid.1;
-        Thu, 20 Aug 2020 02:30:38 -0700 (PDT)
-X-Gm-Message-State: AOAM530RY4IMwYFWRqpHw7op23RTsLivnLutRFYlTm1Uz4U7Ip3WnfBC
-        p1RcQx7Ozr82/YTz8SB2y97mUtf5D4JW6HxcJPk=
-X-Google-Smtp-Source: ABdhPJxemHzFYiAaONEKxIjjxb830jZ1kTPr+TQsBCiFxqktaVfNOEcVPetmqS9UkEP59AbuX1DST0GcTwJkFK5yo5k=
-X-Received: by 2002:a05:6808:b:: with SMTP id u11mr1168892oic.33.1597915838236;
- Thu, 20 Aug 2020 02:30:38 -0700 (PDT)
+        id S1729171AbgHTN3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:29:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727901AbgHTN1D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 09:27:03 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B63DEC061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 06:27:02 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id v2so1607660ilq.4
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 06:27:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OV4Vp1ofAMr75B75qNJu3AEaL5Ppz0SQTP1brRp/NYI=;
+        b=f74DRrmw4KTmCMG95Z6yT+SY04V3gPuQ25oxfDNfAFmqUtgBt0belJ/hRAcVrDLTO9
+         h4iyImcHTzOYXeYLgdZPJMXjsBZq54JJg17f5zj/rt/Ad9CEuMjEY4VDZWT5OnEdAFfm
+         4mDxLqw1zQi2+vzOQDizjxV3NrnNy4lz6ImhNY7Kg+lucW+u+sfEfgQTiqzgTArSQXFn
+         hSWMLl37nR+87sju2ZhQBqAWVjxkAsyfUEnPThmCRxC1nZg1VibF+GfhA4R6XKzlI/DU
+         rDSl8lguXk1VJ/Cem1iEXdhmlUDgeLAN63mUlOs1kw6nL6pWFhGFkBYHtbfmUXUFikI3
+         cZcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OV4Vp1ofAMr75B75qNJu3AEaL5Ppz0SQTP1brRp/NYI=;
+        b=pvQveIHLjpE9L1/l2zpEVFjEz5ysxVyqZs0jydREo8UBxmXhG6GzH9QmfaGon+aJNM
+         VixArBNAUb82PLpWJKMVm57XOC15zCkUI0VbyMAfATXn5yDRj6zv09sE4uZXsjA9CaSd
+         QpG7hWOj7iukZyc2S/jy4gy6N3W3eFPvX5Rjg7T1SzJRNRRrTlpjtIgSEw77Q6Tvbl2a
+         WrB1aAeS3xXZ2qNFdWsQK2K4mNfr6l0/S86/sHrLbvbtycw40nOhws+KjZYUCZUeevjo
+         FyXbaqL92bPNIA3CQd4/mcr8ZykUB1gsgbkfuKp40kTZie1qihkBJKdxCabUmF7e9JWM
+         +vbg==
+X-Gm-Message-State: AOAM5311pWr1WTD7EmNlxTVmSRWWyo/UxwHCXMtKKxQkGPYupzM32DrD
+        YrC45qBuip8/7AjB+Ui7LHvWBATi1GQ3wk8/qv5AyQ==
+X-Google-Smtp-Source: ABdhPJzT3Zd2sVLZXRm4cZqG6dYAx1x0LMdjWvDuGy/rnXv22AhhSqNLyCTAgqUH8AzWAaeAQSg3atKW/HYqp0qO+2g=
+X-Received: by 2002:a92:d7c1:: with SMTP id g1mr2735836ilq.145.1597930021491;
+ Thu, 20 Aug 2020 06:27:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200819092838.11290-1-jlee@suse.com>
-In-Reply-To: <20200819092838.11290-1-jlee@suse.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 20 Aug 2020 11:30:27 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGx=34tqSWqDUbfJ5WAB-3rWhBc1xsh2-kk2pQgcnfbRQ@mail.gmail.com>
-Message-ID: <CAMj1kXGx=34tqSWqDUbfJ5WAB-3rWhBc1xsh2-kk2pQgcnfbRQ@mail.gmail.com>
-Subject: Re: [PATCH] efi/efivars: create efivars mount point when get variable
- services are available
-To:     "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
-Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Lee, Chun-Yi" <jlee@suse.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>
+References: <CALvZod5ZRUHO+=Bvwj4aEKNL0Egwea2dZKuYDKhkvvUyezbgdg@mail.gmail.com>
+ <20200820071647.25280-1-sjpark@amazon.com>
+In-Reply-To: <20200820071647.25280-1-sjpark@amazon.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 20 Aug 2020 06:26:49 -0700
+Message-ID: <CALvZod4i5f5RcsHao3DWddoDgHsO+vvGPZaAJUWkURZ2fqH9LA@mail.gmail.com>
+Subject: Re: [RFC v7 06/10] mm/damon: Implement callbacks for physical memory monitoring
+To:     SeongJae Park <sjpark@amazon.com>
+Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@huawei.com,
+        Andrea Arcangeli <aarcange@redhat.com>, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, amit@kernel.org,
+        benh@kernel.crashing.org, brendan.d.gregg@gmail.com,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Qian Cai <cai@lca.pw>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Hildenbrand <david@redhat.com>, dwmw@amazon.com,
+        "Du, Fan" <fan.du@intel.com>, foersleo@amazon.de,
+        Greg Thelen <gthelen@google.com>,
+        Ian Rogers <irogers@google.com>, jolsa@redhat.com,
+        "Kirill A. Shutemov" <kirill@shutemov.name>, mark.rutland@arm.com,
+        Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, namhyung@kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        David Rientjes <rientjes@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>, rppt@kernel.org,
+        sblbir@amazon.com, shuah@kernel.org, sj38.park@gmail.com,
+        snu@amazon.de, Vlastimil Babka <vbabka@suse.cz>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Huang Ying <ying.huang@intel.com>, zgf574564920@gmail.com,
+        linux-damon@amazon.com, Linux MM <linux-mm@kvack.org>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Aug 2020 at 11:28, Lee, Chun-Yi <joeyli.kernel@gmail.com> wrote:
+On Thu, Aug 20, 2020 at 12:17 AM SeongJae Park <sjpark@amazon.com> wrote:
 >
-> The efivars filesystem depends on GetVariable or GetNextVariable EFI
-> runtime services. So the /sys/firmware/efi/efivars does not need to be
-> created when GetVariable and GetNextVariable are not available.
+> On Wed, 19 Aug 2020 17:26:15 -0700 Shakeel Butt <shakeelb@google.com> wrote:
 >
-> It is useful for userland to determine the availability of efivars
-> filesystem.
+> > On Tue, Aug 18, 2020 at 12:27 AM SeongJae Park <sjpark@amazon.com> wrote:
+> > >
+> > > From: SeongJae Park <sjpark@amazon.de>
+> > >
+> > > This commit implements the four callbacks (->init_target_regions,
+> > > ->update_target_regions, ->prepare_access_check, and ->check_accesses)
+> > > for the basic access monitoring of the physical memory address space.
+> > > By setting the callback pointers to point those, users can easily
+> > > monitor the accesses to the physical memory.
+> > >
+> > > Internally, it uses the PTE Accessed bit, as similar to that of the
+> > > virtual memory support.  Also, it supports only user memory pages, as
+> > > idle page tracking also does, for the same reason.  If the monitoring
+> > > target physical memory address range contains non-user memory pages,
+> > > access check of the pages will do nothing but simply treat the pages as
+> > > not accessed.
+> > >
+> > > Users who want to use other access check primitives and/or monitor the
+> > > non-user memory regions could implement and use their own callbacks.
+> > >
+> > > Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> > [snip]
+> > > +static void damon_phys_mkold(unsigned long paddr)
+> > > +{
+> > > +       struct page *page = damon_phys_get_page(PHYS_PFN(paddr));
+> > > +       struct rmap_walk_control rwc = {
+> > > +               .rmap_one = damon_page_mkold,
+> > > +               .anon_lock = page_lock_anon_vma_read,
+> > > +       };
+> > > +       bool need_lock;
+> > > +
+> > > +       if (!page)
+> > > +               return;
+> > > +
+> > > +       if (!page_mapped(page) || !page_rmapping(page))
+> > > +               return;
+> >
+> > I don't think you want to skip the unmapped pages. The point of
+> > physical address space monitoring was to include the monitoring of
+> > unmapped pages, so, skipping them invalidates the underlying
+> > motivation.
 >
-> Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
+> I think my answer to your other mail[1] could be an answer to this.  Let me
+> quote some from it:
+>
+> ```
+> Technically speaking, this patchset introduces an implementation of DAMON's low
+> level primitives for physical address space of LRU-listed pages.  In other
+> words, it is not designed for cgroups case.  Also, please note that this
+> patchset is only RFC, because it aims to only show the future plan of DAMON and
+> get opinions about the concept before being serious.  It will be serious only
+> after the DAMON patchset is merged.  Maybe I didn' made this point clear in the
+> CV, sorry.  I will state this clearly in the next spin.
+> ```
 
-Hello Joey,
+The unmapped pages are also LRU pages. Let's forget about the cgroups
+support for a moment, the only reason to use DAMON's physical address
+space monitoring is also to track the accesses of unmapped pages
+otherwise virtual address space monitoring already does the monitoring
+for mapped pages.
 
-This is not the right check to perform here: the efivarfs code could
-be instantiated using a different efivars abstraction, so whether the
-RT services are implemented is not entirely relevant.
-
-Please look at commit f88814cc2578c121e6edef686365036db72af0ed
-("efi/efivars: Expose RT service availability via efivars
-abstraction") for an explanation of the underlying issue, and update
-your patch accordingly.
-
-
-> ---
->  drivers/firmware/efi/efi.c | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
 >
-> diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-> index fdd1db025dbf..929fbf4dfd5d 100644
-> --- a/drivers/firmware/efi/efi.c
-> +++ b/drivers/firmware/efi/efi.c
-> @@ -404,11 +404,14 @@ static int __init efisubsys_init(void)
->         if (error)
->                 goto err_remove_group;
+> ```
+> So, DAMON is a framework rather than a tool.  Though it comes with basic
+> applications using DAMON as a framework (e.g., the virtual address space low
+> primitives implementation, DAMON debugfs interface, and the DAMON user space
+> tool) that could be useful in simple use cases, you need to code your
+> application on it if your use cases are out of the simple cases.  I will also
+> develop more of such applications for more use-cases, but it will be only after
+> the framework is complete enough to be merged in the mainline.
+> ```
 >
-> -       /* and the standard mountpoint for efivarfs */
-> -       error = sysfs_create_mount_point(efi_kobj, "efivars");
-> -       if (error) {
-> -               pr_err("efivars: Subsystem registration failed.\n");
-> -               goto err_remove_group;
-> +       if (efi_rt_services_supported(EFI_RT_SUPPORTED_GET_VARIABLE |
-> +                                     EFI_RT_SUPPORTED_GET_NEXT_VARIABLE_NAME)) {
-> +               /* and the standard mountpoint for efivarfs */
-> +               error = sysfs_create_mount_point(efi_kobj, "efivars");
-> +               if (error) {
-> +                       pr_err("efivars: Subsystem registration failed.\n");
-> +                       goto err_remove_group;
-> +               }
->         }
+> Of course, we could prioritize the cgroup support if strongly required, though
+> I still prefer focusing on the framework itself for now.
 >
->         if (efi_enabled(EFI_DBG) && efi_enabled(EFI_PRESERVE_BS_REGIONS))
-> --
-> 2.16.4
+> [1] https://lore.kernel.org/linux-mm/20200820071052.24271-1-sjpark@amazon.com/
 >
+>
+> Thanks,
+> SeongJae Park
