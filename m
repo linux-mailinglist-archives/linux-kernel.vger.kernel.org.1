@@ -2,81 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8483324B915
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BFB824B91A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726947AbgHTLin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:38:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730563AbgHTLax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 07:30:53 -0400
-Received: from localhost (cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net [82.37.168.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 16321204EA;
-        Thu, 20 Aug 2020 11:30:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597923048;
-        bh=0zMYJ5oh5YMdX4pO293LF39UhxSYtvTe+EEHCB8h2oI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U3iLBpGFiwiloH/TS9/0Rd657qBi5S3FKwoNOZHTEHHpXKuJzRwGAwMhI/BBvYzDt
-         cb486WvZEEZELB18sEf6e5LV89N12ykeAr7RdHoszbAsJoXc5OsKZ7RWCqFCEyTqNr
-         fFOmEtNwtxyjRdBv1EYnFHIKQOHtwNbEVUgAFQJI=
-Date:   Thu, 20 Aug 2020 12:30:15 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-Cc:     matthias.bgg@gmail.com, robh+dt@kernel.org, lgirdwood@gmail.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Gene Chen <gene_chen@richtek.com>
-Subject: Re: [PATCH v3 2/2] regulator: mt6360: Add DT binding documentation
-Message-ID: <20200820113015.GB5854@sirena.org.uk>
-References: <1597910022-22617-1-git-send-email-gene.chen.richtek@gmail.com>
- <1597910022-22617-3-git-send-email-gene.chen.richtek@gmail.com>
+        id S1729141AbgHTLjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:39:12 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:40639 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730558AbgHTLat (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 07:30:49 -0400
+Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1k8im0-0000Eh-8L; Thu, 20 Aug 2020 11:30:24 +0000
+Date:   Thu, 20 Aug 2020 13:30:23 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>, mingo@kernel.org,
+        peterz@infradead.org, tglx@linutronix.de, esyr@redhat.com,
+        christian@kellner.me, areber@redhat.com, shakeelb@google.com,
+        cyphar@cyphar.com, adobriyan@gmail.com, akpm@linux-foundation.org,
+        ebiederm@xmission.com, gladkov.alexey@gmail.com, walken@google.com,
+        daniel.m.jordan@oracle.com, avagin@gmail.com,
+        bernd.edlinger@hotmail.de, john.johansen@canonical.com,
+        laoar.shao@gmail.com, timmurray@google.com, minchan@kernel.org,
+        kernel-team@android.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 1/1] mm, oom_adj: don't loop through tasks in
+ __set_oom_adj when not necessary
+Message-ID: <20200820113023.rjxque4jveo4nj5o@wittgenstein>
+References: <20200820002053.1424000-1-surenb@google.com>
+ <20200820105555.GA4546@redhat.com>
+ <20200820111349.GE5033@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rJwd6BRFiFCcLxzm"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1597910022-22617-3-git-send-email-gene.chen.richtek@gmail.com>
-X-Cookie: Dead? No excuse for laying off work.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200820111349.GE5033@dhcp22.suse.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 20, 2020 at 01:13:49PM +0200, Michal Hocko wrote:
+> On Thu 20-08-20 12:55:56, Oleg Nesterov wrote:
+> > On 08/19, Suren Baghdasaryan wrote:
+> > >
+> > > Since the combination of CLONE_VM and !CLONE_SIGHAND is rarely
+> > > used the additional mutex lock in that path of the clone() syscall should
+> > > not affect its overall performance. Clearing the MMF_PROC_SHARED flag
+> > > (when the last process sharing the mm exits) is left out of this patch to
+> > > keep it simple and because it is believed that this threading model is
+> > > rare.
+> > 
+> > vfork() ?
+> 
+> Could you be more specific?
 
---rJwd6BRFiFCcLxzm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+vfork() implies CLONE_VM but !CLONE_THREAD. The way this patch is
+written the mutex lock will be taken every time you do a vfork().
 
-On Thu, Aug 20, 2020 at 03:53:42PM +0800, Gene Chen wrote:
+(It's honestly also debatable whether it's that rare. For one, userspace
+stuff I maintain uses it too (see [1]).
+[1]: https://github.com/lxc/lxc/blob/9d3b7c97f0443adc9f0b0438437657ab42f5a1c3/src/lxc/start.c#L1676
+)
 
-> +properties:
-> +  compatible:
-> +    const: mediatek,mt6360-regulator
-> +
-> +  LDO_VIN3-supply:
-> +    description: Input supply phandle(s) for LDO3
-> +
+> 
+> > > --- a/kernel/fork.c
+> > > +++ b/kernel/fork.c
+> > > @@ -1403,6 +1403,15 @@ static int copy_mm(unsigned long clone_flags, struct task_struct *tsk)
+> > >  	if (clone_flags & CLONE_VM) {
+> > >  		mmget(oldmm);
+> > >  		mm = oldmm;
+> > > +		if (!(clone_flags & CLONE_SIGHAND)) {
+> > 
+> > I agree with Christian, you need CLONE_THREAD
+> 
+> This was my suggestion to Suren, likely because I've misrememberd which
+> clone flag is responsible for the signal delivery. But now, after double
+> checking we do explicitly disallow CLONE_SIGHAND && !CLONE_VM. So
+> CLONE_THREAD is the right thing to check.
+> 
+> > > +			/* We need to synchronize with __set_oom_adj */
+> > > +			mutex_lock(&oom_adj_lock);
+> > > +			set_bit(MMF_PROC_SHARED, &mm->flags);
+> > > +			/* Update the values in case they were changed after copy_signal */
+> > > +			tsk->signal->oom_score_adj = current->signal->oom_score_adj;
+> > > +			tsk->signal->oom_score_adj_min = current->signal->oom_score_adj_min;
+> > > +			mutex_unlock(&oom_adj_lock);
+> > 
+> > I don't understand how this can close the race with __set_oom_adj...
+> > 
+> > What if __set_oom_adj() is called right after mutex_unlock() ? It will see
+> > MMF_PROC_SHARED, but for_each_process() won't find the new child until
+> > copy_process() does list_add_tail_rcu(&p->tasks, &init_task.tasks) ?
+> 
+> Good point. Then we will have to move this thing there.
 
-Only LDO3 needs a supply?
+I was toying with moving this into sm like:
 
---rJwd6BRFiFCcLxzm
-Content-Type: application/pgp-signature; name="signature.asc"
+static inline copy_oom_score(unsigned long flags, struct task_struct *tsk)
 
------BEGIN PGP SIGNATURE-----
+trying to rely on set_bit() and test_bit() in copy_mm() being atomic and
+then calling it where Oleg said after the point of no return.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8+XscACgkQJNaLcl1U
-h9AlBAf/Rg+0tMXV5si2xJ024erGWC2hIyYtwI3+xCyY9sHhRgfsHGL0OavnQmH1
-XrzrHV2HlLPBpDOAsKc9FlToTqLxXHp6mWHlyl0AUgadrSqjIJKXKk53jrbAbWIo
-fx5TFc4o+WblH6MYd5sXUo5l5yzwESjU1zoT67WS4rIt/oVKOn5+e2VRUA+Y3nsy
-ThaA4Y1uYFRnH0IMEjw6TrHwWCHmDsSPoiNhcmt1GyQYrbVuroV3Nz4iQNS8MJDN
-zntnN8oAuDDVkPHkrSyY33fmOfKO+p7myQ+M/fR7E7gZvCNWU0f2D0hBTTLOmwXJ
-skfkHi2rhY3HPyKehk56JaL72atI7Q==
-=vywJ
------END PGP SIGNATURE-----
-
---rJwd6BRFiFCcLxzm--
+Christian
