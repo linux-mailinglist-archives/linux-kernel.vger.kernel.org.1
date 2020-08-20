@@ -2,116 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9015324C007
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F00D124C004
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727950AbgHTOG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 10:06:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728107AbgHTOC2 (ORCPT
+        id S1727829AbgHTOGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 10:06:07 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47435 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726861AbgHTOFe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 10:02:28 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77BF9C061385
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 07:02:28 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id k12so1545050otr.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 07:02:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7V8Nr2ZLqIB6Fm+9YdweCl6lFef8zjHx+W/eb65CZWQ=;
-        b=OefLEHD7/gsOkGowHqibgIn2BvXcvuSIL22NvNVC0MKMv5EA1gcTDshdsOrsDs6R9v
-         tTBVEFdNJQzdjBtZFcFFOolTJQv6VHaN/ASR/ZWU/Vnct1lKzJOXm/QY4/cW47+Rf24o
-         vG7ZfKsIiBMwzpeADcDKuYghAGbkKoLTOIuziuJDtDZHeX9Az+QoghHLruquO3FLGu9J
-         dhE4yJGGdbNtSP2y9SGBr/zu5pwOLpX4PVQqgdir1/JPbfDUNl2FtZdCw0yUtJCv6pis
-         5NnlORyNniDGHK6wXeynz+OE7rcy/1+jngd7A5uPpyV0Cuy44m/qZMlsEh/FBRJeoukR
-         OGGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7V8Nr2ZLqIB6Fm+9YdweCl6lFef8zjHx+W/eb65CZWQ=;
-        b=WOP1Wc1R+AtqutZhnK1rwbFR5Un4Z+zd+fa+PqWZ3xktHPew76QsZ0oqE0nQ21XlsR
-         goyx9/DHhRTkvv8+EMdS1XtiQrtbn8NdcGvKANkdiY8kjTrX1oFl1SQ5a38sUZa2fVtL
-         KBudG8n9jlCPqU4UarO2LoFk3vcRYQ+nKsP7b9a323RzoLkf/5fZZ+U9N5ifpmqDAYAW
-         xHycggJ0fmnfNjyoNUihQkYuWRmTs0T61Sx6wmbA0Lcl2/UVYX5G+iqQgMcneR2j7zTE
-         vKkPHZYZr+xrL/rfl+TZ/tLv//KK2GtCG0Onkv693StDZ+eATR0/RPMMXHhg7ajz5EFm
-         j++Q==
-X-Gm-Message-State: AOAM531YMdU/HrVkgA/HuhojyAqJtSEwn+uIeuABFkuLtpVJ0G18Wtdw
-        wQd6S1G5l365Pger5ge/1Si8tUNEmeb6fw7UaQpY7x2fX5F6Pg==
-X-Google-Smtp-Source: ABdhPJxNrSm5Cym3X45sROT/6O/6U1GXm4ggcTQuxN/It21oRPEZksIOUhBRINM1ziaOxCi0/LAwp6fjhlakocSZPfI=
-X-Received: by 2002:a9d:20c4:: with SMTP id x62mr2038263ota.99.1597932147885;
- Thu, 20 Aug 2020 07:02:27 -0700 (PDT)
+        Thu, 20 Aug 2020 10:05:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597932308;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5p4rUADjrxj0quQ4r1R4b8tfd7Ji6lrJ8BtKV8Z9CAA=;
+        b=ZmpefcF9DBC+4RGkF54llWZ021Jw5Fju0dB3h5eQ/29zEzGyqErszLU/SxCx/9rvNVjH+H
+        3Z8YlycFPR4W58znNdO+gXtiMjMZ0Tv7CES/JIIQLu1XDkwQh70Ue7cFGnadLDnjrXXVJO
+        WSaYhbDHm7YVwRyCF8pDNFealS84s8k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-25-8E1A4lmTPeuPwwq67Mji5A-1; Thu, 20 Aug 2020 10:05:06 -0400
+X-MC-Unique: 8E1A4lmTPeuPwwq67Mji5A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B8908186A57D;
+        Thu, 20 Aug 2020 14:05:02 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.73])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 7B67419D6C;
+        Thu, 20 Aug 2020 14:04:53 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 20 Aug 2020 16:05:02 +0200 (CEST)
+Date:   Thu, 20 Aug 2020 16:04:52 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        christian.brauner@ubuntu.com, mingo@kernel.org,
+        peterz@infradead.org, tglx@linutronix.de, esyr@redhat.com,
+        christian@kellner.me, areber@redhat.com, shakeelb@google.com,
+        cyphar@cyphar.com, adobriyan@gmail.com, akpm@linux-foundation.org,
+        gladkov.alexey@gmail.com, walken@google.com,
+        daniel.m.jordan@oracle.com, avagin@gmail.com,
+        bernd.edlinger@hotmail.de, john.johansen@canonical.com,
+        laoar.shao@gmail.com, timmurray@google.com, minchan@kernel.org,
+        kernel-team@android.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 1/1] mm, oom_adj: don't loop through tasks in
+ __set_oom_adj when not necessary
+Message-ID: <20200820140451.GC4546@redhat.com>
+References: <20200820002053.1424000-1-surenb@google.com>
+ <87zh6pxzq6.fsf@x220.int.ebiederm.org>
+ <20200820124241.GJ5033@dhcp22.suse.cz>
+ <87lfi9xz7y.fsf@x220.int.ebiederm.org>
+ <87d03lxysr.fsf@x220.int.ebiederm.org>
+ <20200820132631.GK5033@dhcp22.suse.cz>
+ <874koxxwn5.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-References: <1597061872-58724-1-git-send-email-xlpang@linux.alibaba.com>
-In-Reply-To: <1597061872-58724-1-git-send-email-xlpang@linux.alibaba.com>
-From:   Pekka Enberg <penberg@gmail.com>
-Date:   Thu, 20 Aug 2020 17:02:10 +0300
-Message-ID: <CAOJsxLE9SkLY5V=D=Ot1oyLkbAORagfozYqxk1iNDW6b7QZrwg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] mm/slub: Fix count_partial() problem
-To:     Xunlei Pang <xlpang@linux.alibaba.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
-        Wen Yang <wenyang@linux.alibaba.com>,
-        Roman Gushchin <guro@fb.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        David Rientjes <rientjes@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <874koxxwn5.fsf@x220.int.ebiederm.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 3:18 PM Xunlei Pang <xlpang@linux.alibaba.com> wrote:
+On 08/20, Eric W. Biederman wrote:
 >
-> v1->v2:
-> - Improved changelog and variable naming for PATCH 1~2.
-> - PATCH3 adds per-cpu counter to avoid performance regression
->   in concurrent __slab_free().
->
-> [Testing]
-> On my 32-cpu 2-socket physical machine:
-> Intel(R) Xeon(R) CPU E5-2650 v2 @ 2.60GHz
-> perf stat --null --repeat 10 -- hackbench 20 thread 20000
->
-> == original, no patched
->       19.211637055 seconds time elapsed                                          ( +-  0.57% )
->
-> == patched with patch1~2
->  Performance counter stats for 'hackbench 20 thread 20000' (10 runs):
->
->       21.731833146 seconds time elapsed                                          ( +-  0.17% )
->
-> == patched with patch1~3
->  Performance counter stats for 'hackbench 20 thread 20000' (10 runs):
->
->       19.112106847 seconds time elapsed                                          ( +-  0.64% )
->
->
-> Xunlei Pang (3):
->   mm/slub: Introduce two counters for partial objects
->   mm/slub: Get rid of count_partial()
->   mm/slub: Use percpu partial free counter
->
->  mm/slab.h |   2 +
->  mm/slub.c | 124 +++++++++++++++++++++++++++++++++++++++++++-------------------
->  2 files changed, 89 insertions(+), 37 deletions(-)
+> --- a/fs/exec.c
+> +++ b/fs/exec.c
+> @@ -1139,6 +1139,10 @@ static int exec_mmap(struct mm_struct *mm)
+>  	vmacache_flush(tsk);
+>  	task_unlock(tsk);
+>  	if (old_mm) {
+> +		mm->oom_score_adj = old_mm->oom_score_adj;
+> +		mm->oom_score_adj_min = old_mm->oom_score_adj_min;
+> +		if (tsk->vfork_done)
+> +			mm->oom_score_adj = tsk->vfork_oom_score_adj;
 
-We probably need to wrap the counters under CONFIG_SLUB_DEBUG because
-AFAICT all the code that uses them is also wrapped under it.
+too late, ->vfork_done is NULL after mm_release().
 
-An alternative approach for this patch would be to somehow make the
-lock in count_partial() more granular, but I don't know how feasible
-that actually is.
+And this can race with __set_oom_adj(). Yes, the current code is racy too,
+but this change adds another race, __set_oom_adj() could already observe
+->mm != NULL and update mm->oom_score_adj.
 
-Anyway, I am OK with this approach:
+Oleg.
 
-Reviewed-by: Pekka Enberg <penberg@kernel.org>
-
-You still need to convince Christoph, though, because he had
-objections over this approach.
-
-- Pekka
