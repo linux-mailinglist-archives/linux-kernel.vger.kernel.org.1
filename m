@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E95EA24BC1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ACDF24BC0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729540AbgHTMkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:40:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50212 "EHLO mail.kernel.org"
+        id S1729535AbgHTMjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:39:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729384AbgHTJrC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:47:02 -0400
+        id S1729395AbgHTJrH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:47:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F29782173E;
-        Thu, 20 Aug 2020 09:47:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D9BA22B43;
+        Thu, 20 Aug 2020 09:47:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916821;
-        bh=nDS9YM9aJxkFu5ZzfkTqvZdFAxXbEzlO2tlYmVHlIJo=;
+        s=default; t=1597916827;
+        bh=bHJHwNmJXUROGFe8pMHB6dazDbjUUBkWXzGhIAmLMSI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SE9wXRPTO27aesx1js2jlZyefnqIGIkN+LAds6BVRS/Z5Ot7vT7hzvNndnazFN11B
-         wPOHPmmIFaDPP1JblaKOExD71dq2uyOwNLLVodSsnjuMFQ/fMKFnrpHLJLBIJqbdG5
-         FvNiW7GokOgO4Kw3Qr8T2BIjerKxi744ucfMATto=
+        b=ueqXuxmXWENoEUD/P4vioIfyPyKAbfUZkAj/ndZuqlOM91xp3zF3WUefkEE7bLhfz
+         3MVFczUHwNpzi08X5c4GX9kLLe1LnYRs7BttOlv4nvMpoLGvLSNNZpNIGjmNrw9Gx8
+         MaDqm0uZeL4uqkHggvVKQIPic4XcoQIgLgxQQBZE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Kevin Hao <haokexin@gmail.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.4 059/152] tracing/hwlat: Honor the tracing_cpumask
-Date:   Thu, 20 Aug 2020 11:20:26 +0200
-Message-Id: <20200820091556.747022048@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        dann frazier <dann.frazier@canonical.com>
+Subject: [PATCH 5.4 061/152] tracing: Move pipe reference to trace array instead of current_tracer
+Date:   Thu, 20 Aug 2020 11:20:28 +0200
+Message-Id: <20200820091556.846156608@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
 References: <20200820091553.615456912@linuxfoundation.org>
@@ -44,54 +44,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kevin Hao <haokexin@gmail.com>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-commit 96b4833b6827a62c295b149213c68b559514c929 upstream.
+commit 7ef282e05132d56b6f6b71e3873f317664bea78b upstream.
 
-In calculation of the cpu mask for the hwlat kernel thread, the wrong
-cpu mask is used instead of the tracing_cpumask, this causes the
-tracing/tracing_cpumask useless for hwlat tracer. Fixes it.
+If a process has the trace_pipe open on a trace_array, the current tracer
+for that trace array should not be changed. This was original enforced by a
+global lock, but when instances were introduced, it was moved to the
+current_trace. But this structure is shared by all instances, and a
+trace_pipe is for a single instance. There's no reason that a process that
+has trace_pipe open on one instance should prevent another instance from
+changing its current tracer. Move the reference counter to the trace_array
+instead.
 
-Link: https://lkml.kernel.org/r/20200730082318.42584-2-haokexin@gmail.com
+This is marked as "Fixes" but is more of a clean up than a true fix.
+Backport if you want, but its not critical.
 
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: stable@vger.kernel.org
-Fixes: 0330f7aa8ee6 ("tracing: Have hwlat trace migrate across tracing_cpumask CPUs")
-Signed-off-by: Kevin Hao <haokexin@gmail.com>
+Fixes: cf6ab6d9143b1 ("tracing: Add ref count to tracer for when they are being read by pipe")
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+[Resolved conflict in __remove_instance()]
+Signed-off-by: dann frazier <dann.frazier@canonical.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/trace/trace_hwlat.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ kernel/trace/trace.c |   12 ++++++------
+ kernel/trace/trace.h |    2 +-
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
---- a/kernel/trace/trace_hwlat.c
-+++ b/kernel/trace/trace_hwlat.c
-@@ -270,6 +270,7 @@ static bool disable_migrate;
- static void move_to_next_cpu(void)
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -5686,7 +5686,7 @@ static int tracing_set_tracer(struct tra
+ 	}
+ 
+ 	/* If trace pipe files are being read, we can't change the tracer */
+-	if (tr->current_trace->ref) {
++	if (tr->trace_ref) {
+ 		ret = -EBUSY;
+ 		goto out;
+ 	}
+@@ -5902,7 +5902,7 @@ static int tracing_open_pipe(struct inod
+ 
+ 	nonseekable_open(inode, filp);
+ 
+-	tr->current_trace->ref++;
++	tr->trace_ref++;
+ out:
+ 	mutex_unlock(&trace_types_lock);
+ 	return ret;
+@@ -5921,7 +5921,7 @@ static int tracing_release_pipe(struct i
+ 
+ 	mutex_lock(&trace_types_lock);
+ 
+-	tr->current_trace->ref--;
++	tr->trace_ref--;
+ 
+ 	if (iter->trace->pipe_close)
+ 		iter->trace->pipe_close(iter);
+@@ -7230,7 +7230,7 @@ static int tracing_buffers_open(struct i
+ 
+ 	filp->private_data = info;
+ 
+-	tr->current_trace->ref++;
++	tr->trace_ref++;
+ 
+ 	mutex_unlock(&trace_types_lock);
+ 
+@@ -7331,7 +7331,7 @@ static int tracing_buffers_release(struc
+ 
+ 	mutex_lock(&trace_types_lock);
+ 
+-	iter->tr->current_trace->ref--;
++	iter->tr->trace_ref--;
+ 
+ 	__trace_array_put(iter->tr);
+ 
+@@ -8470,7 +8470,7 @@ static int __remove_instance(struct trac
  {
- 	struct cpumask *current_mask = &save_cpumask;
-+	struct trace_array *tr = hwlat_trace;
- 	int next_cpu;
+ 	int i;
  
- 	if (disable_migrate)
-@@ -283,7 +284,7 @@ static void move_to_next_cpu(void)
- 		goto disable;
+-	if (tr->ref || (tr->current_trace && tr->current_trace->ref))
++	if (tr->ref || (tr->current_trace && tr->trace_ref))
+ 		return -EBUSY;
  
- 	get_online_cpus();
--	cpumask_and(current_mask, cpu_online_mask, tracing_buffer_mask);
-+	cpumask_and(current_mask, cpu_online_mask, tr->tracing_cpumask);
- 	next_cpu = cpumask_next(smp_processor_id(), current_mask);
- 	put_online_cpus();
- 
-@@ -360,7 +361,7 @@ static int start_kthread(struct trace_ar
- 	/* Just pick the first CPU on first iteration */
- 	current_mask = &save_cpumask;
- 	get_online_cpus();
--	cpumask_and(current_mask, cpu_online_mask, tracing_buffer_mask);
-+	cpumask_and(current_mask, cpu_online_mask, tr->tracing_cpumask);
- 	put_online_cpus();
- 	next_cpu = cpumask_first(current_mask);
- 
+ 	list_del(&tr->list);
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -309,6 +309,7 @@ struct trace_array {
+ 	struct trace_event_file *trace_marker_file;
+ 	cpumask_var_t		tracing_cpumask; /* only trace on set CPUs */
+ 	int			ref;
++	int			trace_ref;
+ #ifdef CONFIG_FUNCTION_TRACER
+ 	struct ftrace_ops	*ops;
+ 	struct trace_pid_list	__rcu *function_pids;
+@@ -498,7 +499,6 @@ struct tracer {
+ 	struct tracer		*next;
+ 	struct tracer_flags	*flags;
+ 	int			enabled;
+-	int			ref;
+ 	bool			print_max;
+ 	bool			allow_instances;
+ #ifdef CONFIG_TRACER_MAX_TRACE
 
 
