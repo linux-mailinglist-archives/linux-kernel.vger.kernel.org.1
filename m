@@ -2,58 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE1324C797
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 00:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD3424C79A
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 00:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728087AbgHTWKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 18:10:52 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:58227 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727090AbgHTWKv (ORCPT
+        id S1728423AbgHTWLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 18:11:22 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:51056 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727090AbgHTWLV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 18:10:51 -0400
-X-Originating-IP: 90.66.108.79
-Received: from localhost (lfbn-lyo-1-1932-79.w90-66.abo.wanadoo.fr [90.66.108.79])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id F1BF1240003;
-        Thu, 20 Aug 2020 22:10:48 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Victor Ding <victording@google.com>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>
-Subject: Re: [PATCH v2] rtc: cmos: zero-init wkalrm when reading from CMOS
-Date:   Fri, 21 Aug 2020 00:10:48 +0200
-Message-Id: <159796143347.2239022.2687430267906057170.b4-ty@bootlin.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200814191654.v2.1.Iaf7638a2f2a87ff68d85fcb8dec615e41340c97f@changeid>
-References: <20200814191654.v2.1.Iaf7638a2f2a87ff68d85fcb8dec615e41340c97f@changeid>
+        Thu, 20 Aug 2020 18:11:21 -0400
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597961478;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zglLHRJDp8t8DRRuLZuvKBensI8bwuAzUgeKOh3U1e4=;
+        b=15AVGYQZJK+HhXN5oPTjvA+2c5fu3tHTcu632JtlVChloFRhnfxQbor+5vbwQrkcLjgUL9
+        EcbHAunL/6BeAwdywBTJtUJwYs6thXYcTknSH34AeCSemujFEKm2XcqORiZTky+nPtfCxg
+        ar1RRhdb052acTQEsET9NUz1WPHDa6oAi3NkeztiptF1cw1VEQQNMTn1+zJPxQGcGykmsc
+        hp9Ah1HM7A0aC2qBgpXkT2WPm5awF9T5YmHOTvApQdpuieokpqCFGsR6WoOf9VgUvfdmMm
+        dLLtQiyizER+0Ns30CcMd1CWIzyPi0+sIS4t9RtYtHNBPe2vmdBtE9Smh0xReg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597961478;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zglLHRJDp8t8DRRuLZuvKBensI8bwuAzUgeKOh3U1e4=;
+        b=jq+AXIL+qmrkdoE5qBqzZ9r1zdvalMOfBI4nJbi6uDhWIDn2fUZgoZpmpa2wtzEjmTZSBf
+        7cq48yOgpJV57SBQ==
+To:     Joe Perches <joe@perches.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 2/5] sysrq: use pr_cont_t for cont messages
+In-Reply-To: <472f2e553805b52d9834d64e4056db965edee329.camel@perches.com>
+References: <20200819232632.13418-1-john.ogness@linutronix.de> <20200819232632.13418-3-john.ogness@linutronix.de> <CAHk-=wj_b6Bh=d-Wwh0xYqoQBhHkYeExhszkpxdRA6GjTvkRiQ@mail.gmail.com> <472f2e553805b52d9834d64e4056db965edee329.camel@perches.com>
+Date:   Fri, 21 Aug 2020 00:17:18 +0206
+Message-ID: <87364hge7t.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 Aug 2020 19:17:30 +1000, Victor Ding wrote:
-> cmos_read_alarm() may leave certain fields of a struct rtc_wkalrm
-> untouched; therefore, these fields contain garbage if not properly
-> initialized, leading to inconsistent values when converting into
-> time64_t. This patch to zero initialize the struct before calling
-> cmos_read_alarm().
-> 
-> Note that this patch is not intended to produce a correct time64_t, it
-> is only to produce a consistent value. In the case of suspend/resume, a
-> correct time64_t is not necessary; a consistent value is sufficient to
-> correctly perform an equality test for t_current_expires and
-> t_saved_expires. Logic to deduce a correct time64_t is expensive and
-> hence should be avoided.
+On 2020-08-20, Joe Perches <joe@perches.com> wrote:
+> And here it seems like the 'for (j =...)' loop is superfluous.
 
-Applied, thanks!
+AFAICT it is skipping duplicate entries. In the case of a duplicate,
+only the first one is printed.
 
-[1/1] rtc: cmos: zero-init wkalrm when reading from CMOS
-      commit: c254bcd7231a3eeafc453f6ee3a483a2e7ff486e
-
-Best regards,
--- 
-Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Maybe something like this would be reasonable:
+> ---
+>  drivers/tty/sysrq.c | 19 ++++++-------------
+>  1 file changed, 6 insertions(+), 13 deletions(-)
+>
+> diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
+> index a8e39b2cdd55..a145e4fc1a2a 100644
+> --- a/drivers/tty/sysrq.c
+> +++ b/drivers/tty/sysrq.c
+> @@ -572,21 +572,14 @@ void __handle_sysrq(int key, bool check_mask)
+>  			console_loglevel = orig_log_level;
+>  		}
+>  	} else {
+> -		pr_info("HELP : ");
+> -		/* Only print the help msg once per handler */
+> +		pr_context c;
+> +		pr_info_start(&c, "HELP :");
+>  		for (i = 0; i < ARRAY_SIZE(sysrq_key_table); i++) {
+> -			if (sysrq_key_table[i]) {
+> -				int j;
+> -
+> -				for (j = 0; sysrq_key_table[i] !=
+> -						sysrq_key_table[j]; j++)
+> -					;
+> -				if (j != i)
+> -					continue;
+> -				pr_cont("%s ", sysrq_key_table[i]->help_msg);
+> -			}
+> +			if (!sysrq_key_table[i])
+> +				continue;
+> +			pr_next(&c, " %s", sysrq_key_table[i]->help_msg);
+>  		}
+> -		pr_cont("\n");
+> +		pr_end(&c, "\n");
+>  		console_loglevel = orig_log_level;
+>  	}
+>  	rcu_read_unlock();
