@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AC5D24AEB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 07:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BEAB24AEC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 07:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726861AbgHTFuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 01:50:04 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:38047 "EHLO m43-7.mailgun.net"
+        id S1727792AbgHTFvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 01:51:50 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:57742 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725798AbgHTFuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 01:50:03 -0400
+        id S1727062AbgHTFvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 01:51:45 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597902602; h=Content-Transfer-Encoding: MIME-Version:
+ s=smtp; t=1597902705; h=Content-Transfer-Encoding: MIME-Version:
  References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=oN3lYegcP9MiFhZ66Td4q7OEP1nPHIQuKra0uoHEguc=; b=Yum2ASHOl8xvQW5gOW5dV7AHHViF/QMtFGJF5p7pAt7QWf1V2BMnNL/5Gjhj/9vfEtnD1M9Z
- nY6Yxf3zdJi/Z1nBLvPBF+c7nVPxT8txl6/u4xLLLMIbHjF/oKlwJtsojmt+Z6xt87wPQIuI
- OIyCEm1TKG/Uye2RwQeRppLcbWk=
+ Sender; bh=c8SiTdSVtlRz9XYa0RzuYXIVC77L3SdHxweljgYNXkc=; b=fco9wUyI2enobufDEoAlipTn34OWgihUv/Or+smmN7cDioudwWbPQEb4nAGZhfrGfUP/WxfS
+ o6KR1aUNOkAOPnZ8UhzkeiISz57NcAfRWk9y6Z+LKfPS0PNH7JLTdLzXjbE3cLYh9hPUviYq
+ WeDuxlgWsnuq2uZTYcnS3A0Zan4=
 X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5f3e0f06b8eb275bd5c67421 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 20 Aug 2020 05:49:58
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5f3e0f11f37da9fb0e990ef1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 20 Aug 2020 05:50:09
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D512CC433C6; Thu, 20 Aug 2020 05:49:57 +0000 (UTC)
+        id 0C267C433BA; Thu, 20 Aug 2020 05:50:07 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -36,9 +36,9 @@ Received: from tingweiz-gv.qualcomm.com (unknown [180.166.53.21])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: tingwei)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 148DFC43455;
-        Thu, 20 Aug 2020 05:49:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 148DFC43455
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 879C1C4339C;
+        Thu, 20 Aug 2020 05:50:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 879C1C4339C
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=tingwei@codeaurora.org
 From:   Tingwei Zhang <tingwei@codeaurora.org>
@@ -58,9 +58,9 @@ Cc:     Kim Phillips <kim.phillips@arm.com>,
         linux-kernel@vger.kernel.org,
         Suzuki K Poulose <Suzuki.Poulose@arm.com>,
         Tingwei Zhang <tingwei@codeaurora.org>
-Subject: [PATCH v9 10/24] coresight: etm4x: allow etm4x to be built as a module
-Date:   Thu, 20 Aug 2020 13:47:04 +0800
-Message-Id: <20200820054718.20115-11-tingwei@codeaurora.org>
+Subject: [PATCH v9 11/24] coresight: etb: allow etb to be built as a module
+Date:   Thu, 20 Aug 2020 13:47:05 +0800
+Message-Id: <20200820054718.20115-12-tingwei@codeaurora.org>
 X-Mailer: git-send-email 2.20.0
 In-Reply-To: <20200820054718.20115-1-tingwei@codeaurora.org>
 References: <20200820054718.20115-1-tingwei@codeaurora.org>
@@ -73,15 +73,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kim Phillips <kim.phillips@arm.com>
 
-Allow to build coresight-etm4x as a module, for ease of development.
+Allow to build coresight-etb10 as a module, for ease of development.
 
 - Kconfig becomes a tristate, to allow =m
-- append -core to source file name to allow module to
-  be called coresight-etm4x by the Makefile
-- add an etm4_remove function, for module unload
+- add an etb_remove function, for module unload
 - add a MODULE_DEVICE_TABLE for autoloading on boot
-- delay advertising the per-cpu etmdrvdata
-- protect etmdrvdata[] by modifying it on relevant CPU
 
 Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
 Cc: Leo Yan <leo.yan@linaro.org>
@@ -93,209 +89,84 @@ Cc: Russell King <linux@armlinux.org.uk>
 Signed-off-by: Kim Phillips <kim.phillips@arm.com>
 Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
 Tested-by: Mike Leach <mike.leach@linaro.org>
-Suggested-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- drivers/hwtracing/coresight/Kconfig           |  5 +-
- drivers/hwtracing/coresight/Makefile          |  4 +-
- ...resight-etm4x.c => coresight-etm4x-core.c} | 84 ++++++++++++++-----
- 3 files changed, 69 insertions(+), 24 deletions(-)
- rename drivers/hwtracing/coresight/{coresight-etm4x.c => coresight-etm4x-core.c} (96%)
+ drivers/hwtracing/coresight/Kconfig           |  5 +++-
+ drivers/hwtracing/coresight/coresight-etb10.c | 26 ++++++++++++++++++-
+ 2 files changed, 29 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
-index 8fd9fd139cf3..d6e107bbd30b 100644
+index d6e107bbd30b..996d84a1edb8 100644
 --- a/drivers/hwtracing/coresight/Kconfig
 +++ b/drivers/hwtracing/coresight/Kconfig
-@@ -78,7 +78,7 @@ config CORESIGHT_SOURCE_ETM3X
- 	  module will be called coresight-etm3x.
+@@ -57,13 +57,16 @@ config CORESIGHT_SINK_TPIU
+ 	  the on-board coresight memory can handle.
  
- config CORESIGHT_SOURCE_ETM4X
--	bool "CoreSight Embedded Trace Macrocell 4.x driver"
-+	tristate "CoreSight Embedded Trace Macrocell 4.x driver"
- 	depends on ARM64
- 	select CORESIGHT_LINKS_AND_SINKS
- 	select PID_IN_CONTEXTIDR
-@@ -88,6 +88,9 @@ config CORESIGHT_SOURCE_ETM4X
- 	  for instruction level tracing. Depending on the implemented version
- 	  data tracing may also be available.
+ config CORESIGHT_SINK_ETBV10
+-	bool "Coresight ETBv1.0 driver"
++	tristate "Coresight ETBv1.0 driver"
+ 	depends on CORESIGHT_LINKS_AND_SINKS
+ 	help
+ 	  This enables support for the Embedded Trace Buffer version 1.0 driver
+ 	  that complies with the generic implementation of the component without
+ 	  special enhancement or added features.
  
 +	  To compile this driver as a module, choose M here: the
-+	  module will be called coresight-etm4x.
++	  module will be called coresight-etb10.
 +
- config CORESIGHT_STM
- 	tristate "CoreSight System Trace Macrocell driver"
- 	depends on (ARM && !(CPU_32v3 || CPU_32v4 || CPU_32v4T)) || ARM64
-diff --git a/drivers/hwtracing/coresight/Makefile b/drivers/hwtracing/coresight/Makefile
-index d619cfd0abd8..271dc255454f 100644
---- a/drivers/hwtracing/coresight/Makefile
-+++ b/drivers/hwtracing/coresight/Makefile
-@@ -14,8 +14,8 @@ obj-$(CONFIG_CORESIGHT_LINKS_AND_SINKS) += coresight-funnel.o \
- obj-$(CONFIG_CORESIGHT_SOURCE_ETM3X) += coresight-etm3x.o
- coresight-etm3x-y := coresight-etm3x-core.o coresight-etm-cp14.o \
- 					coresight-etm3x-sysfs.o
--obj-$(CONFIG_CORESIGHT_SOURCE_ETM4X) += coresight-etm4x.o \
--					coresight-etm4x-sysfs.o
-+obj-$(CONFIG_CORESIGHT_SOURCE_ETM4X) += coresight-etm4x.o
-+coresight-etm4x-y := coresight-etm4x-core.o coresight-etm4x-sysfs.o
- obj-$(CONFIG_CORESIGHT_STM) += coresight-stm.o
- obj-$(CONFIG_CORESIGHT_CPU_DEBUG) += coresight-cpu-debug.o
- obj-$(CONFIG_CORESIGHT_CATU) += coresight-catu.o
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-similarity index 96%
-rename from drivers/hwtracing/coresight/coresight-etm4x.c
-rename to drivers/hwtracing/coresight/coresight-etm4x-core.c
-index fddfd93b9a7b..a26f0fd63d5a 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -1430,7 +1430,7 @@ static int __init etm4_pm_setup(void)
+ config CORESIGHT_SOURCE_ETM3X
+ 	tristate "CoreSight Embedded Trace Macrocell 3.x driver"
+ 	depends on !ARM64
+diff --git a/drivers/hwtracing/coresight/coresight-etb10.c b/drivers/hwtracing/coresight/coresight-etb10.c
+index 04ee9cda988d..248cc82c838e 100644
+--- a/drivers/hwtracing/coresight/coresight-etb10.c
++++ b/drivers/hwtracing/coresight/coresight-etb10.c
+@@ -801,6 +801,21 @@ static int etb_probe(struct amba_device *adev, const struct amba_id *id)
  	return ret;
  }
  
--static void __init etm4_pm_clear(void)
-+static void etm4_pm_clear(void)
- {
- 	cpu_pm_unregister_notifier(&etm4_cpu_pm_nb);
- 	cpuhp_remove_state_nocalls(CPUHP_AP_ARM_CORESIGHT_STARTING);
-@@ -1487,25 +1487,20 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
- 	if (!desc.name)
- 		return -ENOMEM;
- 
--	etmdrvdata[drvdata->cpu] = drvdata;
--
- 	if (smp_call_function_single(drvdata->cpu,
- 				etm4_init_arch_data,  drvdata, 1))
- 		dev_err(dev, "ETM arch init failed\n");
- 
--	if (etm4_arch_supported(drvdata->arch) == false) {
--		ret = -EINVAL;
--		goto err_arch_supported;
--	}
-+	if (etm4_arch_supported(drvdata->arch) == false)
-+		return -EINVAL;
- 
- 	etm4_init_trace_id(drvdata);
- 	etm4_set_default(&drvdata->config);
- 
- 	pdata = coresight_get_platform_data(dev);
--	if (IS_ERR(pdata)) {
--		ret = PTR_ERR(pdata);
--		goto err_arch_supported;
--	}
-+	if (IS_ERR(pdata))
-+		return PTR_ERR(pdata);
-+
- 	adev->dev.platform_data = pdata;
- 
- 	desc.type = CORESIGHT_DEV_TYPE_SOURCE;
-@@ -1515,17 +1510,17 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
- 	desc.dev = dev;
- 	desc.groups = coresight_etmv4_groups;
- 	drvdata->csdev = coresight_register(&desc);
--	if (IS_ERR(drvdata->csdev)) {
--		ret = PTR_ERR(drvdata->csdev);
--		goto err_arch_supported;
--	}
-+	if (IS_ERR(drvdata->csdev))
-+		return PTR_ERR(drvdata->csdev);
- 
- 	ret = etm_perf_symlink(drvdata->csdev, true);
- 	if (ret) {
- 		coresight_unregister(drvdata->csdev);
--		goto err_arch_supported;
-+		return ret;
- 	}
- 
-+	etmdrvdata[drvdata->cpu] = drvdata;
-+
- 	pm_runtime_put(&adev->dev);
- 	dev_info(&drvdata->csdev->dev, "CPU%d: ETM v%d.%d initialized\n",
- 		 drvdata->cpu, drvdata->arch >> 4, drvdata->arch & 0xf);
-@@ -1536,10 +1531,6 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
- 	}
- 
- 	return 0;
--
--err_arch_supported:
--	etmdrvdata[drvdata->cpu] = NULL;
--	return ret;
- }
- 
- static struct amba_cs_uci_id uci_id_etm4[] = {
-@@ -1551,6 +1542,40 @@ static struct amba_cs_uci_id uci_id_etm4[] = {
- 	}
- };
- 
-+static void __exit clear_etmdrvdata(void *info)
++static int __exit etb_remove(struct amba_device *adev)
 +{
-+	int cpu = *(int *)info;
-+
-+	etmdrvdata[cpu] = NULL;
-+}
-+
-+static int __exit etm4_remove(struct amba_device *adev)
-+{
-+	struct etmv4_drvdata *drvdata = dev_get_drvdata(&adev->dev);
-+
-+	etm_perf_symlink(drvdata->csdev, false);
++	struct etb_drvdata *drvdata = dev_get_drvdata(&adev->dev);
 +
 +	/*
-+	 * Taking hotplug lock here to avoid racing between etm4_remove and
-+	 * CPU hotplug call backs.
++	 * Since misc_open() holds a refcount on the f_ops, which is
++	 * etb fops in this case, device is there until last file
++	 * handler to this device is closed.
 +	 */
-+	cpus_read_lock();
-+	/*
-+	 * The readers for etmdrvdata[] are CPU hotplug call backs
-+	 * and PM notification call backs. Change etmdrvdata[i] on
-+	 * CPU i ensures these call backs has consistent view
-+	 * inside one call back function.
-+	 */
-+	if (smp_call_function_single(drvdata->cpu, clear_etmdrvdata, &drvdata->cpu, 1))
-+		etmdrvdata[drvdata->cpu] = NULL;
-+
-+	cpus_read_unlock();
-+
++	misc_deregister(&drvdata->miscdev);
 +	coresight_unregister(drvdata->csdev);
 +
 +	return 0;
 +}
 +
- static const struct amba_id etm4_ids[] = {
- 	CS_AMBA_ID(0x000bb95d),			/* Cortex-A53 */
- 	CS_AMBA_ID(0x000bb95e),			/* Cortex-A57 */
-@@ -1568,12 +1593,16 @@ static const struct amba_id etm4_ids[] = {
- 	{},
+ #ifdef CONFIG_PM
+ static int etb_runtime_suspend(struct device *dev)
+ {
+@@ -835,6 +850,8 @@ static const struct amba_id etb_ids[] = {
+ 	{ 0, 0},
  };
  
-+MODULE_DEVICE_TABLE(amba, etm4_ids);
++MODULE_DEVICE_TABLE(amba, etb_ids);
 +
- static struct amba_driver etm4x_driver = {
+ static struct amba_driver etb_driver = {
  	.drv = {
- 		.name   = "coresight-etm4x",
-+		.owner  = THIS_MODULE,
- 		.suppress_bind_attrs = true,
+ 		.name	= "coresight-etb10",
+@@ -844,6 +861,13 @@ static struct amba_driver etb_driver = {
+ 
  	},
- 	.probe		= etm4_probe,
-+	.remove         = etm4_remove,
- 	.id_table	= etm4_ids,
+ 	.probe		= etb_probe,
++	.remove		= etb_remove,
+ 	.id_table	= etb_ids,
  };
- 
-@@ -1595,4 +1624,17 @@ static int __init etm4x_init(void)
- 
- 	return ret;
- }
--device_initcall(etm4x_init);
+-builtin_amba_driver(etb_driver);
 +
-+static void __exit etm4x_exit(void)
-+{
-+	amba_driver_unregister(&etm4x_driver);
-+	etm4_pm_clear();
-+}
-+
-+module_init(etm4x_init);
-+module_exit(etm4x_exit);
++module_amba_driver(etb_driver);
 +
 +MODULE_AUTHOR("Pratik Patel <pratikp@codeaurora.org>");
 +MODULE_AUTHOR("Mathieu Poirier <mathieu.poirier@linaro.org>");
-+MODULE_DESCRIPTION("Arm CoreSight Program Flow Trace v4.x driver");
++MODULE_DESCRIPTION("Arm CoreSight Embedded Trace Buffer driver");
 +MODULE_LICENSE("GPL v2");
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
