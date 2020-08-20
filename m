@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3AC424B314
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB5EE24B430
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728241AbgHTJlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:41:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34252 "EHLO mail.kernel.org"
+        id S1730275AbgHTJ72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:59:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727033AbgHTJlK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:41:10 -0400
+        id S1730290AbgHTJ7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:59:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D270E207DE;
-        Thu, 20 Aug 2020 09:41:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A4EE207FB;
+        Thu, 20 Aug 2020 09:59:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916470;
-        bh=U4KrGCQb7/GOL6p3/wipQV9B3LdWGiw+bPEaYyFKaq0=;
+        s=default; t=1597917555;
+        bh=YPjsRFQv74ePM9/WKkdHGjWplj1QCuqn9U5gRqEfeuE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KfwSal5CkFrNqzsxH74HX4yWfs4UYEkljw6mFh43mO8VDw0OgGoBUB9PfXTjUTgoI
-         Qb0izUa26NoXmTEgSYxbu1GHlXX6+uwLRr1UtWWUVgCiE3SmillTNoGNa0LWIrkg4L
-         eKHU7A/01yJYjtFg4e9LCofJy9RTR3ABxbO36TKw=
+        b=rYeTIYDJIRDXUIcSE0q2iEXjrlSR5lkg2U9SwjbLoXqPQGqUzNE51zk+01s1g7Q1t
+         wE26Kywow7qy4us4ThnHBi2yMg2zO0WcVzCf6E658y/EJfB7oHELxSFA0XS/+wSuNw
+         PVY4kb2PPBAON/Aw0oR3IzvaRoF88SHOFHz2i7U8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liu Yi L <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 140/204] iommu/vt-d: Enforce PASID devTLB field mask
-Date:   Thu, 20 Aug 2020 11:20:37 +0200
-Message-Id: <20200820091613.248324405@linuxfoundation.org>
+        stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 065/212] drm/nouveau/fbcon: fix module unload when fbcon init has failed for some reason
+Date:   Thu, 20 Aug 2020 11:20:38 +0200
+Message-Id: <20200820091605.652920898@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
-References: <20200820091606.194320503@linuxfoundation.org>
+In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
+References: <20200820091602.251285210@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,38 +43,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liu Yi L <yi.l.liu@intel.com>
+From: Ben Skeggs <bskeggs@redhat.com>
 
-[ Upstream commit 5f77d6ca5ca74e4b4a5e2e010f7ff50c45dea326 ]
+[ Upstream commit 498595abf5bd51f0ae074cec565d888778ea558f ]
 
-Set proper masks to avoid invalid input spillover to reserved bits.
+Stale pointer was tripping up the unload path.
 
-Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
-Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
-Link: https://lore.kernel.org/r/20200724014925.15523-2-baolu.lu@linux.intel.com
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/intel-iommu.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/nouveau/nouveau_fbcon.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
-index 64a5335046b00..bc1abbc041092 100644
---- a/include/linux/intel-iommu.h
-+++ b/include/linux/intel-iommu.h
-@@ -363,8 +363,8 @@ enum {
+diff --git a/drivers/gpu/drm/nouveau/nouveau_fbcon.c b/drivers/gpu/drm/nouveau/nouveau_fbcon.c
+index 2b79e27dd89c6..275abc424ce25 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_fbcon.c
++++ b/drivers/gpu/drm/nouveau/nouveau_fbcon.c
+@@ -584,6 +584,7 @@ fini:
+ 	drm_fb_helper_fini(&fbcon->helper);
+ free:
+ 	kfree(fbcon);
++	drm->fbcon = NULL;
+ 	return ret;
+ }
  
- #define QI_DEV_EIOTLB_ADDR(a)	((u64)(a) & VTD_PAGE_MASK)
- #define QI_DEV_EIOTLB_SIZE	(((u64)1) << 11)
--#define QI_DEV_EIOTLB_GLOB(g)	((u64)g)
--#define QI_DEV_EIOTLB_PASID(p)	(((u64)p) << 32)
-+#define QI_DEV_EIOTLB_GLOB(g)	((u64)(g) & 0x1)
-+#define QI_DEV_EIOTLB_PASID(p)	((u64)((p) & 0xfffff) << 32)
- #define QI_DEV_EIOTLB_SID(sid)	((u64)((sid) & 0xffff) << 16)
- #define QI_DEV_EIOTLB_QDEP(qd)	((u64)((qd) & 0x1f) << 4)
- #define QI_DEV_EIOTLB_PFSID(pfsid) (((u64)(pfsid & 0xf) << 12) | \
 -- 
 2.25.1
 
