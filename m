@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51D724BD9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B03A24BD7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728832AbgHTNHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:07:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56402 "EHLO mail.kernel.org"
+        id S1729391AbgHTNGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:06:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728842AbgHTJie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:38:34 -0400
+        id S1728298AbgHTJiq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:38:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3C06522B49;
-        Thu, 20 Aug 2020 09:38:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E99320724;
+        Thu, 20 Aug 2020 09:38:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916313;
-        bh=UpYTKo9YBI4Wb/ngMmtCZOnOgqcl6SDDieR0IfyJbOU=;
+        s=default; t=1597916325;
+        bh=qyt87pzmTp24Sz1p8Tt2FxVV5c23LEOA5GmK4+jMLYE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TR+BfDMVKf8NO9DQ3//Pfyd8WLi8ISJN1fB4yhvmERILr4YOvUo0QG1p/tb3ASxEW
-         cEcVbKy1tKhUglXhwdzXKN0Bvmb1CqnAJCgdknZ8yOHONSsU4h5G7BNLzF6/Qxx7lc
-         LISg5X7P2s+2ezLaBUOemtN4zgFSdkcADMLqWF/0=
+        b=I/qmcqris9Zu/pMXutsJx/qJc6hG9DMnGPvvGEqjErM1jFqRt6Cjn7Il7wYUxv06/
+         ZIgTv5dNs+qCuk62EXE6qhX9KB62gAPFPCC7tcPkZHv0ASW7ExdfB59iD95wiIcEPE
+         5wKzZSeKxE/dL3Ik06sxTV/xyTL0A3/lmox09ZiU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anton Blanchard <anton@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.7 085/204] pseries: Fix 64 bit logical memory block panic
-Date:   Thu, 20 Aug 2020 11:19:42 +0200
-Message-Id: <20200820091610.587579219@linuxfoundation.org>
+        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.7 088/204] bootconfig: Fix to find the initargs correctly
+Date:   Thu, 20 Aug 2020 11:19:45 +0200
+Message-Id: <20200820091610.732050537@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
 References: <20200820091606.194320503@linuxfoundation.org>
@@ -43,37 +44,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anton Blanchard <anton@ozlabs.org>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-commit 89c140bbaeee7a55ed0360a88f294ead2b95201b upstream.
+commit 477d08478170469d10b533624342d13701e24b34 upstream.
 
-Booting with a 4GB LMB size causes us to panic:
+Since the parse_args() stops parsing at '--', bootconfig_params()
+will never get the '--' as param and initargs_found never be true.
+In the result, if we pass some init arguments via the bootconfig,
+those are always appended to the kernel command line with '--'
+even if the kernel command line already has '--'.
 
-  qemu-system-ppc64: OS terminated: OS panic:
-      Memory block size not suitable: 0x0
+To fix this correctly, check the return value of parse_args()
+and set initargs_found true if the return value is not an error
+but a valid address.
 
-Fix pseries_memory_block_size() to handle 64 bit LMBs.
+Link: https://lkml.kernel.org/r/159650953285.270383.14822353843556363851.stgit@devnote2
 
+Fixes: f61872bb58a1 ("bootconfig: Use parse_args() to find bootconfig and '--'")
 Cc: stable@vger.kernel.org
-Signed-off-by: Anton Blanchard <anton@ozlabs.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200715000820.1255764-1-anton@ozlabs.org
+Reported-by: Arvind Sankar <nivedita@alum.mit.edu>
+Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/platforms/pseries/hotplug-memory.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ init/main.c |   14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
---- a/arch/powerpc/platforms/pseries/hotplug-memory.c
-+++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
-@@ -27,7 +27,7 @@ static bool rtas_hp_event;
- unsigned long pseries_memory_block_size(void)
+--- a/init/main.c
++++ b/init/main.c
+@@ -385,8 +385,6 @@ static int __init bootconfig_params(char
  {
- 	struct device_node *np;
--	unsigned int memblock_size = MIN_MEMORY_BLOCK_SIZE;
-+	u64 memblock_size = MIN_MEMORY_BLOCK_SIZE;
- 	struct resource r;
+ 	if (strcmp(param, "bootconfig") == 0) {
+ 		bootconfig_found = true;
+-	} else if (strcmp(param, "--") == 0) {
+-		initargs_found = true;
+ 	}
+ 	return 0;
+ }
+@@ -397,19 +395,23 @@ static void __init setup_boot_config(con
+ 	const char *msg;
+ 	int pos;
+ 	u32 size, csum;
+-	char *data, *copy;
++	char *data, *copy, *err;
+ 	int ret;
  
- 	np = of_find_node_by_path("/ibm,dynamic-reconfiguration-memory");
+ 	/* Cut out the bootconfig data even if we have no bootconfig option */
+ 	data = get_boot_config_from_initrd(&size, &csum);
+ 
+ 	strlcpy(tmp_cmdline, boot_command_line, COMMAND_LINE_SIZE);
+-	parse_args("bootconfig", tmp_cmdline, NULL, 0, 0, 0, NULL,
+-		   bootconfig_params);
++	err = parse_args("bootconfig", tmp_cmdline, NULL, 0, 0, 0, NULL,
++			 bootconfig_params);
+ 
+-	if (!bootconfig_found)
++	if (IS_ERR(err) || !bootconfig_found)
+ 		return;
+ 
++	/* parse_args() stops at '--' and returns an address */
++	if (err)
++		initargs_found = true;
++
+ 	if (!data) {
+ 		pr_err("'bootconfig' found on command line, but no bootconfig found\n");
+ 		return;
 
 
