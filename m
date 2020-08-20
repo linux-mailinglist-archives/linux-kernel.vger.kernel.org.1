@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA98A24B364
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E53124B41A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729353AbgHTJqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:46:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48532 "EHLO mail.kernel.org"
+        id S1729844AbgHTJ6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:58:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728983AbgHTJqU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:46:20 -0400
+        id S1730335AbgHTJ5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:57:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7DE492173E;
-        Thu, 20 Aug 2020 09:46:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69F90207FB;
+        Thu, 20 Aug 2020 09:57:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916780;
-        bh=a0mQ9l867mnZMQADo1PEs3gYwox1kqQXfbw0BZLxdJQ=;
+        s=default; t=1597917458;
+        bh=r9w4WXp9/e7/WqILGWIDl0giQdfpbmYMY9CwCYFkm6A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vmPFQRXAZIqIbgVv1f4lDkfwQnG/T5XQg33ywlOEX1oJjesDc+IfM+fqgq6DGjxyH
-         gD2rWr9pPZ/x+DMWFu8UDSg2QV2gZItWMMatCFrA37SP9lN1nmWwIDqpXKSz4j3I/f
-         CszVghM94s27jv2ykCxeRoMv1yOqONrIheyQXpA8=
+        b=aerKHIFzZUi0i0cup1a8pyeKjYz8rM3GX64EPqnAvI2u5BUGyO+YgKLe2c0gNSm5i
+         uU4sdNtARYuVEh2q86mW2yOvA+mTr20uxEpohAlAAjKDjP0QxTE9JHuoJI1Oc3kiq/
+         qZ1OT0l8MmcKXNCz+epcwGc0qqz0WLY6PQJNScjs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.4 013/152] btrfs: stop incremening log_batch for the log root tree when syncing log
-Date:   Thu, 20 Aug 2020 11:19:40 +0200
-Message-Id: <20200820091554.328851118@linuxfoundation.org>
+        stable@vger.kernel.org, Robert Hancock <hancockrwd@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 4.9 009/212] PCI/ASPM: Disable ASPM on ASMedia ASM1083/1085 PCIe-to-PCI bridge
+Date:   Thu, 20 Aug 2020 11:19:42 +0200
+Message-Id: <20200820091602.794106606@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
-References: <20200820091553.615456912@linuxfoundation.org>
+In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
+References: <20200820091602.251285210@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,68 +43,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Robert Hancock <hancockrwd@gmail.com>
 
-commit 28a9579561bcb9082715e720eac93012e708ab94 upstream.
+commit b361663c5a40c8bc758b7f7f2239f7a192180e7c upstream.
 
-We are incrementing the log_batch atomic counter of the root log tree but
-we never use that counter, it's used only for the log trees of subvolume
-roots. We started doing it when we moved the log_batch and log_write
-counters from the global, per fs, btrfs_fs_info structure, into the
-btrfs_root structure in commit 7237f1833601dc ("Btrfs: fix tree logs
-parallel sync").
+Recently ASPM handling was changed to allow ASPM on PCIe-to-PCI/PCI-X
+bridges.  Unfortunately the ASMedia ASM1083/1085 PCIe to PCI bridge device
+doesn't seem to function properly with ASPM enabled.  On an Asus PRIME
+H270-PRO motherboard, it causes errors like these:
 
-So just stop doing it for the log root tree and add a comment over the
-field declaration so inform it's used only for log trees of subvolume
-roots.
+  pcieport 0000:00:1c.0: AER: PCIe Bus Error: severity=Corrected, type=Data Link Layer, (Transmitter ID)
+  pcieport 0000:00:1c.0: AER:   device [8086:a292] error status/mask=00003000/00002000
+  pcieport 0000:00:1c.0: AER:    [12] Timeout
+  pcieport 0000:00:1c.0: AER: Corrected error received: 0000:00:1c.0
+  pcieport 0000:00:1c.0: AER: can't find device of ID00e0
 
-This patch is part of a series that has the following patches:
+In addition to flooding the kernel log, this also causes the machine to
+wake up immediately after suspend is initiated.
 
-1/4 btrfs: only commit the delayed inode when doing a full fsync
-2/4 btrfs: only commit delayed items at fsync if we are logging a directory
-3/4 btrfs: stop incremening log_batch for the log root tree when syncing log
-4/4 btrfs: remove no longer needed use of log_writers for the log root tree
+The device advertises ASPM L0s and L1 support in the Link Capabilities
+register, but the ASMedia web page for ASM1083 [1] claims "No PCIe ASPM
+support".
 
-After the entire patchset applied I saw about 12% decrease on max latency
-reported by dbench. The test was done on a qemu vm, with 8 cores, 16Gb of
-ram, using kvm and using a raw NVMe device directly (no intermediary fs on
-the host). The test was invoked like the following:
+Windows 10 (build 2004) enables L0s, but it also logs correctable PCIe
+errors.
 
-  mkfs.btrfs -f /dev/sdk
-  mount -o ssd -o nospace_cache /dev/sdk /mnt/sdk
-  dbench -D /mnt/sdk -t 300 8
-  umount /mnt/dsk
+Add a quirk to disable ASPM for this device.
 
-CC: stable@vger.kernel.org # 5.4+
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+[1] https://www.asmedia.com.tw/eng/e_show_products.php?cate_index=169&item=114
+
+[bhelgaas: commit log]
+Fixes: 66ff14e59e8a ("PCI/ASPM: Allow ASPM on links to PCIe-to-PCI/PCI-X Bridges")
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=208667
+Link: https://lore.kernel.org/r/20200722021803.17958-1-hancockrwd@gmail.com
+Signed-off-by: Robert Hancock <hancockrwd@gmail.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/ctree.h    |    1 +
- fs/btrfs/tree-log.c |    1 -
- 2 files changed, 1 insertion(+), 1 deletion(-)
+ drivers/pci/quirks.c |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -992,6 +992,7 @@ struct btrfs_root {
- 	struct list_head log_ctxs[2];
- 	atomic_t log_writers;
- 	atomic_t log_commit[2];
-+	/* Used only for log trees of subvolumes, not for the log root tree */
- 	atomic_t log_batch;
- 	int log_transid;
- 	/* No matter the commit succeeds or not*/
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -3140,7 +3140,6 @@ int btrfs_sync_log(struct btrfs_trans_ha
- 	btrfs_init_log_ctx(&root_log_ctx, NULL);
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -2046,6 +2046,19 @@ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_IN
+ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x10f4, quirk_disable_aspm_l0s);
+ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x1508, quirk_disable_aspm_l0s);
  
- 	mutex_lock(&log_root_tree->log_mutex);
--	atomic_inc(&log_root_tree->log_batch);
- 	atomic_inc(&log_root_tree->log_writers);
- 
- 	index2 = log_root_tree->log_transid % 2;
++static void quirk_disable_aspm_l0s_l1(struct pci_dev *dev)
++{
++	pci_info(dev, "Disabling ASPM L0s/L1\n");
++	pci_disable_link_state(dev, PCIE_LINK_STATE_L0S | PCIE_LINK_STATE_L1);
++}
++
++/*
++ * ASM1083/1085 PCIe-PCI bridge devices cause AER timeout errors on the
++ * upstream PCIe root port when ASPM is enabled. At least L0s mode is affected;
++ * disable both L0s and L1 for now to be safe.
++ */
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ASMEDIA, 0x1080, quirk_disable_aspm_l0s_l1);
++
+ /*
+  * Some Pericom PCIe-to-PCI bridges in reverse mode need the PCIe Retrain
+  * Link bit cleared after starting the link retrain process to allow this
 
 
