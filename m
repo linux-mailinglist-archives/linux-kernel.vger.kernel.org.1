@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 668C924BBB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 676FF24BBD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729612AbgHTJtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:49:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54086 "EHLO mail.kernel.org"
+        id S1729722AbgHTMeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:34:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729583AbgHTJst (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:48:49 -0400
+        id S1729594AbgHTJsw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:48:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CD702173E;
-        Thu, 20 Aug 2020 09:48:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DAC6422D6E;
+        Thu, 20 Aug 2020 09:48:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916929;
-        bh=xW1RePcyO1D+A0SCQ4SXfegUKzuv4CW2G79xpHbRwTo=;
+        s=default; t=1597916932;
+        bh=ENiqpdrP0F6yjrEXZFstOmJSl0BgjFvhgs+/PdwbxjE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=byWtFfeBqWnw1A+nz45ywhY+rMv4hczcUGA1j33CYK+vjUsQrB3bt5DQAUHLMzxdN
-         MTUGPx94LS46JU13H5ogFTXEi3h4XSQINjdcfzncniYgBflZVcH0A8QgtLSL04PLrg
-         JpDV5HG3aeMEB30o4uc231JHkOzuRCzXFbQeE5H8=
+        b=uzQY3NvwjYdmVlTppPwVJNqmArc2LbQM4RfAmXW/U5D5ksnSJVRHWGyzC4lNz/ZvP
+         7RBq0U6SsXCn514lasaRfN5ULDSNs4dG6jNQwE3dfD+F2t9gPqACZK3MWj+mS8vrem
+         dy4uWTwk65V1GdNDF1obTWCyGVR8PxHvThZ0n/lE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Zhang <markz@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 095/152] RDMA/counter: Allow manually bind QPs with different pids to same counter
-Date:   Thu, 20 Aug 2020 11:21:02 +0200
-Message-Id: <20200820091558.600195140@linuxfoundation.org>
+Subject: [PATCH 5.4 096/152] mmc: renesas_sdhi_internal_dmac: clean up the code for dma complete
+Date:   Thu, 20 Aug 2020 11:21:03 +0200
+Message-Id: <20200820091558.676450266@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
 References: <20200820091553.615456912@linuxfoundation.org>
@@ -46,38 +46,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Zhang <markz@mellanox.com>
+From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-[ Upstream commit cbeb7d896c0f296451ffa7b67e7706786b8364c8 ]
+[ Upstream commit 2b26e34e9af3fa24fa1266e9ea2d66a1f7d62dc0 ]
 
-In manual mode allow bind user QPs with different pids to same counter,
-since this is allowed in auto mode.
-Bind kernel QPs and user QPs to the same counter are not allowed.
+To add end() operation in the future, clean the code of
+renesas_sdhi_internal_dmac_complete_tasklet_fn(). No behavior change.
 
-Fixes: 1bd8e0a9d0fd ("RDMA/counter: Allow manual mode configuration support")
-Link: https://lore.kernel.org/r/20200702082933.424537-4-leon@kernel.org
-Signed-off-by: Mark Zhang <markz@mellanox.com>
-Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Link: https://lore.kernel.org/r/1590044466-28372-3-git-send-email-yoshihiro.shimoda.uh@renesas.com
+Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/counters.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mmc/host/renesas_sdhi_internal_dmac.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/core/counters.c b/drivers/infiniband/core/counters.c
-index 42809f612c2c4..f454d63008d69 100644
---- a/drivers/infiniband/core/counters.c
-+++ b/drivers/infiniband/core/counters.c
-@@ -487,7 +487,7 @@ int rdma_counter_bind_qpn(struct ib_device *dev, u8 port,
- 		goto err;
- 	}
+diff --git a/drivers/mmc/host/renesas_sdhi_internal_dmac.c b/drivers/mmc/host/renesas_sdhi_internal_dmac.c
+index a66f8d6d61d1b..cb89f0578d425 100644
+--- a/drivers/mmc/host/renesas_sdhi_internal_dmac.c
++++ b/drivers/mmc/host/renesas_sdhi_internal_dmac.c
+@@ -229,15 +229,12 @@ static void renesas_sdhi_internal_dmac_issue_tasklet_fn(unsigned long arg)
+ 					    DTRAN_CTRL_DM_START);
+ }
  
--	if (counter->res.task != qp->res.task) {
-+	if (rdma_is_kernel_res(&counter->res) != rdma_is_kernel_res(&qp->res)) {
- 		ret = -EINVAL;
- 		goto err_task;
- 	}
+-static void renesas_sdhi_internal_dmac_complete_tasklet_fn(unsigned long arg)
++static bool renesas_sdhi_internal_dmac_complete(struct tmio_mmc_host *host)
+ {
+-	struct tmio_mmc_host *host = (struct tmio_mmc_host *)arg;
+ 	enum dma_data_direction dir;
+ 
+-	spin_lock_irq(&host->lock);
+-
+ 	if (!host->data)
+-		goto out;
++		return false;
+ 
+ 	if (host->data->flags & MMC_DATA_READ)
+ 		dir = DMA_FROM_DEVICE;
+@@ -250,6 +247,17 @@ static void renesas_sdhi_internal_dmac_complete_tasklet_fn(unsigned long arg)
+ 	if (dir == DMA_FROM_DEVICE)
+ 		clear_bit(SDHI_INTERNAL_DMAC_RX_IN_USE, &global_flags);
+ 
++	return true;
++}
++
++static void renesas_sdhi_internal_dmac_complete_tasklet_fn(unsigned long arg)
++{
++	struct tmio_mmc_host *host = (struct tmio_mmc_host *)arg;
++
++	spin_lock_irq(&host->lock);
++	if (!renesas_sdhi_internal_dmac_complete(host))
++		goto out;
++
+ 	tmio_mmc_do_data_irq(host);
+ out:
+ 	spin_unlock_irq(&host->lock);
 -- 
 2.25.1
 
