@@ -2,75 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC2724B8EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A8924B916
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730665AbgHTLej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:34:39 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:28876 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730644AbgHTLcv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 07:32:51 -0400
-X-UUID: 4b3863a1b24a441f852a3a7e30223cf4-20200820
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=njMU5VLie19Pssvi8+YgppuDMCXfmQYubWzISF4gV9Y=;
-        b=JHB29HqJeuONQDk4mRL0MZeIudsGcDE6G6+Kbw/6yfT96wsm4leIUu5X9bUK6el/6BSRlu/dV6fCcjxLIcnCK0uYWRiiWBFmYw/ee4lX+sHGwUGWDf9jQhBgPzrmQVoxRKhKCTU/JEW7RYJCvU+NOoWqv9xKLEKiUJxxQengucM=;
-X-UUID: 4b3863a1b24a441f852a3a7e30223cf4-20200820
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 1629179673; Thu, 20 Aug 2020 19:32:35 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 20 Aug 2020 19:32:35 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 20 Aug 2020 19:32:32 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Felipe Balbi <balbi@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Al Cooper <alcooperx@gmail.com>,
-        Sasi Kumar <sasi.kumar@broadcom.com>,
-        Peter Chen <peter.chen@nxp.com>,
-        Minas Harutyunyan <hminas@synopsys.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: [PATCH v2 11/11] usb: gadget: bdc: fix checkpatch.pl repeated word warning
-Date:   Thu, 20 Aug 2020 19:30:46 +0800
-Message-ID: <1597923046-12535-11-git-send-email-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1597923046-12535-1-git-send-email-chunfeng.yun@mediatek.com>
-References: <1597923046-12535-1-git-send-email-chunfeng.yun@mediatek.com>
+        id S1730223AbgHTLiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:38:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52672 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730572AbgHTLa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 07:30:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BA164AC98;
+        Thu, 20 Aug 2020 11:31:24 +0000 (UTC)
+Date:   Thu, 20 Aug 2020 13:30:56 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Balamuruhan S <bala24@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org, Jisheng.Zhang@synaptics.com, rdna@fb.com,
+        viro@zeniv.linux.org.uk, gpiccoli@canonical.com,
+        naveen.n.rao@linux.vnet.ibm.com, ravi.bangoria@linux.ibm.com,
+        sandipan@linux.ibm.com, mpe@ellerman.id.au,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] kernel/watchdog: fix warning -Wunused-variable for
+ watchdog_allowed_mask in ppc64
+Message-ID: <20200820113056.GG4353@alley>
+References: <20200814133330.210093-1-bala24@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: B3585BA57539BB1FE94948FEBFECC89BEB16E80F879A3BED4E0C2E2CE777E7A62000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200814133330.210093-1-bala24@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zml4IHRoZSB3YXJuaW5nOg0KV0FSTklORzpSRVBFQVRFRF9XT1JEOiBQb3NzaWJsZSByZXBlYXRl
-ZCB3b3JkOiAnYW5kJw0KDQpDYzogRmxvcmlhbiBGYWluZWxsaSA8Zi5mYWluZWxsaUBnbWFpbC5j
-b20+DQpTaWduZWQtb2ZmLWJ5OiBDaHVuZmVuZyBZdW4gPGNodW5mZW5nLnl1bkBtZWRpYXRlay5j
-b20+DQotLS0NCnYyOiBuZXcgcGF0Y2gNCi0tLQ0KIGRyaXZlcnMvdXNiL2dhZGdldC91ZGMvYmRj
-L2JkY19lcC5jIHwgMiArLQ0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxl
-dGlvbigtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9iZGMvYmRjX2Vw
-LmMgYi9kcml2ZXJzL3VzYi9nYWRnZXQvdWRjL2JkYy9iZGNfZXAuYw0KaW5kZXggZDIyN2QyNi4u
-OGUyZjIwYiAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvdXNiL2dhZGdldC91ZGMvYmRjL2JkY19lcC5j
-DQorKysgYi9kcml2ZXJzL3VzYi9nYWRnZXQvdWRjL2JkYy9iZGNfZXAuYw0KQEAgLTE0MDUsNyAr
-MTQwNSw3IEBAIHN0YXRpYyBpbnQgZXAwX3NldF9zZWwoc3RydWN0IGJkYyAqYmRjLA0KIH0NCiAN
-CiAvKg0KLSAqIFF1ZXVlIGEgMCBieXRlIGJkIG9ubHkgaWYgd0xlbmd0aCBpcyBtb3JlIHRoYW4g
-dGhlIGxlbmd0aCBhbmQgYW5kIGxlbmd0aCBpcw0KKyAqIFF1ZXVlIGEgMCBieXRlIGJkIG9ubHkg
-aWYgd0xlbmd0aCBpcyBtb3JlIHRoYW4gdGhlIGxlbmd0aCBhbmQgbGVuZ3RoIGlzDQogICogYSBt
-dWx0aXBsZSBvZiBNYXhQYWNrZXQgdGhlbiBxdWV1ZSAwIGJ5dGUgQkQNCiAgKi8NCiBzdGF0aWMg
-aW50IGVwMF9xdWV1ZV96bHAoc3RydWN0IGJkYyAqYmRjKQ0KLS0gDQoxLjkuMQ0K
+On Fri 2020-08-14 19:03:30, Balamuruhan S wrote:
+> In ppc64 config if `CONFIG_SOFTLOCKUP_DETECTOR` is not set then it
+> warns for unused declaration of `watchdog_allowed_mask` while building,
+> move the declaration inside ifdef later in the code.
+> 
+> ```
+> kernel/watchdog.c:47:23: warning: ‘watchdog_allowed_mask’ defined but not used [-Wunused-variable]
+>  static struct cpumask watchdog_allowed_mask __read_mostly;
+> ```
+> 
+> Signed-off-by: Balamuruhan S <bala24@linux.ibm.com>
+> ---
+>  kernel/watchdog.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+> index 5abb5b22ad13..33c9b8a3d51b 100644
+> --- a/kernel/watchdog.c
+> +++ b/kernel/watchdog.c
+> @@ -44,7 +44,6 @@ int __read_mostly soft_watchdog_user_enabled = 1;
+>  int __read_mostly watchdog_thresh = 10;
+>  static int __read_mostly nmi_watchdog_available;
+>  
+> -static struct cpumask watchdog_allowed_mask __read_mostly;
+>  
+>  struct cpumask watchdog_cpumask __read_mostly;
+>  unsigned long *watchdog_cpumask_bits = cpumask_bits(&watchdog_cpumask);
+> @@ -166,6 +165,7 @@ int __read_mostly sysctl_softlockup_all_cpu_backtrace;
+>  unsigned int __read_mostly softlockup_panic =
+>  			CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC_VALUE;
+>  
+> +static struct cpumask watchdog_allowed_mask __read_mostly;
 
+I could confirm that the variable is used only in code that is built
+when CONFIG_SOFTLOCKUP_DETECTOR is enabled.
+
+Note that the problem can't be seen on x86. There the softlockup
+detector is enforced together with hardloclup detector via
+via HARDLOCKUP_DETECTOR_PERF.
+
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+
+Best Regards,
+Petr
