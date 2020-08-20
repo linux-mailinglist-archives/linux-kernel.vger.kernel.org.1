@@ -2,145 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 232C624C6EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 22:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9817A24C70C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 23:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728599AbgHTU7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 16:59:02 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:19712 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728255AbgHTU7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 16:59:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597957140; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=FJnUZ8hSOEwfDswhjf6p3X1DWgepHwpYrB7MhBJr5Ig=; b=GEbXAnjy8S9iqjwWM9XTXLkzF0xuYd9pvOFwSL+TbQsNIwZT1gcYOvSNbRJjzUEj1ICys0Lk
- he/7MntKdFS81M+G6zj7L8WtF5HZQw3WrLCHydaLLFqO6v4fJLlnyb93amcYsRTTNr1IzMlK
- voLDzi9dPgwqG560IC+K8cvoh7k=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5f3ee3d6f37da9fb0e87a338 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 20 Aug 2020 20:57:58
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5E9DDC4339C; Thu, 20 Aug 2020 20:57:57 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from localhost (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: prsood)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9FBB1C433CB;
-        Thu, 20 Aug 2020 20:57:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9FBB1C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=prsood@codeaurora.org
-From:   Prateek Sood <prsood@codeaurora.org>
-To:     tiwai@suse.de, mcgrof@kernel.org, gregkh@linuxfoundation.org,
-        rafael@kernel.org
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Prateek Sood <prsood@codeaurora.org>
-Subject: [PATCH v3] firmware_loader: fix memory leak for paged buffer
-Date:   Fri, 21 Aug 2020 02:27:50 +0530
-Message-Id: <1597957070-27185-1-git-send-email-prsood@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <s5h364lpj3d.wl-tiwai@suse.de>
-References: <s5h364lpj3d.wl-tiwai@suse.de>
+        id S1728682AbgHTVNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 17:13:44 -0400
+Received: from mailrelay3-2.pub.mailoutpod1-cph3.one.com ([46.30.212.2]:50513
+        "EHLO mailrelay3-2.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726980AbgHTVNl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 17:13:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bitmath.org; s=20191106;
+        h=content-transfer-encoding:content-type:in-reply-to:mime-version:date:
+         message-id:from:references:cc:to:subject:from;
+        bh=jtemrB4zsoa7mVFISpNS3LnmcTerk053X3gyJVZ91Ho=;
+        b=pvHkTpb5n5+xriE/BvwhCvErqEBlKs7CDgpSTkj/53k0nO9xUAEUfWTFHYb8OHoOj9sqzKPe+sOME
+         q3w/fGiSEIB1OQnrKfzYYMN/zKEcb5vb7eIuIgyM1TY/Nbwq5lFhFlvsEOG5C27iOc/Ed9nAX0VlL1
+         or3CjpEsrRlbrI4gLkBrwmLW/INWl1tJRto4DGhXUaJkpq9EeIpR+9t9PiM+66xQeyLihSyGTP2kWi
+         y7dZEkFAdGUNuwdMa38+JfAjCJVSg2oy2MKHat5Ro2TzMQhP3gGDbt7BaNVSLRHjRh1vCpA68zqAiw
+         Chh5phSqB+0iUO1Go4VCH4r9itHLKjg==
+X-HalOne-Cookie: 0ca3df440a60ca828b012abdaf5a091513d39283
+X-HalOne-ID: c6582f4f-e327-11ea-86ed-d0431ea8bb03
+Received: from [192.168.19.13] (h-98-128-166-229.na.cust.bahnhof.se [98.128.166.229])
+        by mailrelay3.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
+        id c6582f4f-e327-11ea-86ed-d0431ea8bb03;
+        Thu, 20 Aug 2020 20:57:36 +0000 (UTC)
+Subject: Re: [PATCH] hwmon: applesmc: check status earlier.
+To:     trix@redhat.com, jdelvare@suse.com, linux@roeck-us.net
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200820131932.10590-1-trix@redhat.com>
+From:   Henrik Rydberg <rydberg@bitmath.org>
+Message-ID: <4e6435d4-4fa7-1430-528e-e3188cd3e207@bitmath.org>
+Date:   Thu, 20 Aug 2020 22:57:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200820131932.10590-1-trix@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vfree() is being called on paged buffer allocated
-using alloc_page() and mapped using vmap().
+Hi Tom,
 
-Freeing of pages in vfree() relies on nr_pages of
-struct vm_struct. vmap() does not update nr_pages.
-It can lead to memory leaks.
+> From: Tom Rix <trix@redhat.com>
+> 
+> clang static analysis reports this representative problem
+> 
+> applesmc.c:758:10: warning: 1st function call argument is an
+>    uninitialized value
+>          left = be16_to_cpu(*(__be16 *)(buffer + 6)) >> 2;
+>                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> buffer is filled by the earlier call
+> 
+> 	ret = applesmc_read_key(LIGHT_SENSOR_LEFT_KEY, ...
+> 
+> This problem is reported because a goto skips the status check.
+> Other similar problems use data from applesmc_read_key before checking
+> the status.  So move the checks to before the use.
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>   drivers/hwmon/applesmc.c | 31 ++++++++++++++++---------------
+>   1 file changed, 16 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/hwmon/applesmc.c b/drivers/hwmon/applesmc.c
+> index 316618409315..a18887990f4a 100644
+> --- a/drivers/hwmon/applesmc.c
+> +++ b/drivers/hwmon/applesmc.c
+> @@ -753,15 +753,18 @@ static ssize_t applesmc_light_show(struct device *dev,
+>   	}
+>   
+>   	ret = applesmc_read_key(LIGHT_SENSOR_LEFT_KEY, buffer, data_length);
+> +	if (ret)
+> +		goto out;
+>   	/* newer macbooks report a single 10-bit bigendian value */
+>   	if (data_length == 10) {
+>   		left = be16_to_cpu(*(__be16 *)(buffer + 6)) >> 2;
+>   		goto out;
+>   	}
+>   	left = buffer[2];
+> +
+> +	ret = applesmc_read_key(LIGHT_SENSOR_RIGHT_KEY, buffer, data_length);
+>   	if (ret)
+>   		goto out;
+> -	ret = applesmc_read_key(LIGHT_SENSOR_RIGHT_KEY, buffer, data_length);
+>   	right = buffer[2];
+>   
+>   out:
+> @@ -810,12 +813,11 @@ static ssize_t applesmc_show_fan_speed(struct device *dev,
+>   		  to_index(attr));
+>   
+>   	ret = applesmc_read_key(newkey, buffer, 2);
+> -	speed = ((buffer[0] << 8 | buffer[1]) >> 2);
+> -
+>   	if (ret)
+>   		return ret;
+> -	else
+> -		return snprintf(sysfsbuf, PAGE_SIZE, "%u\n", speed);
+> +
+> +	speed = ((buffer[0] << 8 | buffer[1]) >> 2);
+> +	return snprintf(sysfsbuf, PAGE_SIZE, "%u\n", speed);
+>   }
+>   
+>   static ssize_t applesmc_store_fan_speed(struct device *dev,
+> @@ -851,12 +853,11 @@ static ssize_t applesmc_show_fan_manual(struct device *dev,
+>   	u8 buffer[2];
+>   
+>   	ret = applesmc_read_key(FANS_MANUAL, buffer, 2);
+> -	manual = ((buffer[0] << 8 | buffer[1]) >> to_index(attr)) & 0x01;
+> -
+>   	if (ret)
+>   		return ret;
+> -	else
+> -		return snprintf(sysfsbuf, PAGE_SIZE, "%d\n", manual);
+> +
+> +	manual = ((buffer[0] << 8 | buffer[1]) >> to_index(attr)) & 0x01;
+> +	return snprintf(sysfsbuf, PAGE_SIZE, "%d\n", manual);
+>   }
+>   
+>   static ssize_t applesmc_store_fan_manual(struct device *dev,
+> @@ -872,10 +873,11 @@ static ssize_t applesmc_store_fan_manual(struct device *dev,
+>   		return -EINVAL;
+>   
+>   	ret = applesmc_read_key(FANS_MANUAL, buffer, 2);
+> -	val = (buffer[0] << 8 | buffer[1]);
+>   	if (ret)
+>   		goto out;
+>   
+> +	val = (buffer[0] << 8 | buffer[1]);
+> +
+>   	if (input)
+>   		val = val | (0x01 << to_index(attr));
+>   	else
+> @@ -951,13 +953,12 @@ static ssize_t applesmc_key_count_show(struct device *dev,
+>   	u32 count;
+>   
+>   	ret = applesmc_read_key(KEY_COUNT_KEY, buffer, 4);
+> -	count = ((u32)buffer[0]<<24) + ((u32)buffer[1]<<16) +
+> -						((u32)buffer[2]<<8) + buffer[3];
+> -
+>   	if (ret)
+>   		return ret;
+> -	else
+> -		return snprintf(sysfsbuf, PAGE_SIZE, "%d\n", count);
+> +
+> +	count = ((u32)buffer[0]<<24) + ((u32)buffer[1]<<16) +
+> +						((u32)buffer[2]<<8) + buffer[3];
+> +	return snprintf(sysfsbuf, PAGE_SIZE, "%d\n", count);
+>   }
+>   
+>   static ssize_t applesmc_key_at_index_read_show(struct device *dev,
+> 
 
-Fixes: ddaf29fd9bb6 ("firmware: Free temporary page table after vmapping")
-Signed-off-by: Prateek Sood <prsood@codeaurora.org>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Cc: stable@vger.kernel.org
----
- drivers/base/firmware_loader/firmware.h |  2 ++
- drivers/base/firmware_loader/main.c     | 17 +++++++++++------
- 2 files changed, 13 insertions(+), 6 deletions(-)
+Looks good, thank you.
 
-diff --git a/drivers/base/firmware_loader/firmware.h b/drivers/base/firmware_loader/firmware.h
-index 933e2192..d08efc7 100644
---- a/drivers/base/firmware_loader/firmware.h
-+++ b/drivers/base/firmware_loader/firmware.h
-@@ -142,10 +142,12 @@ static inline void fw_state_done(struct fw_priv *fw_priv)
- void fw_free_paged_buf(struct fw_priv *fw_priv);
- int fw_grow_paged_buf(struct fw_priv *fw_priv, int pages_needed);
- int fw_map_paged_buf(struct fw_priv *fw_priv);
-+bool fw_is_paged_buf(struct fw_priv *fw_priv);
- #else
- static inline void fw_free_paged_buf(struct fw_priv *fw_priv) {}
- static inline int fw_grow_paged_buf(struct fw_priv *fw_priv, int pages_needed) { return -ENXIO; }
- static inline int fw_map_paged_buf(struct fw_priv *fw_priv) { return -ENXIO; }
-+static inline bool fw_is_paged_buf(struct fw_priv *fw_priv) { return false; }
- #endif
- 
- #endif /* __FIRMWARE_LOADER_H */
-diff --git a/drivers/base/firmware_loader/main.c b/drivers/base/firmware_loader/main.c
-index ca871b1..36bf455 100644
---- a/drivers/base/firmware_loader/main.c
-+++ b/drivers/base/firmware_loader/main.c
-@@ -252,9 +252,11 @@ static void __free_fw_priv(struct kref *ref)
- 	list_del(&fw_priv->list);
- 	spin_unlock(&fwc->lock);
- 
--	fw_free_paged_buf(fw_priv); /* free leftover pages */
--	if (!fw_priv->allocated_size)
-+	if (fw_is_paged_buf(fw_priv))
-+		fw_free_paged_buf(fw_priv);
-+	else if (!fw_priv->allocated_size)
- 		vfree(fw_priv->data);
-+
- 	kfree_const(fw_priv->fw_name);
- 	kfree(fw_priv);
- }
-@@ -268,6 +270,11 @@ static void free_fw_priv(struct fw_priv *fw_priv)
- }
- 
- #ifdef CONFIG_FW_LOADER_PAGED_BUF
-+bool fw_is_paged_buf(struct fw_priv *fw_priv)
-+{
-+	return fw_priv->is_paged_buf;
-+}
-+
- void fw_free_paged_buf(struct fw_priv *fw_priv)
- {
- 	int i;
-@@ -275,6 +282,8 @@ void fw_free_paged_buf(struct fw_priv *fw_priv)
- 	if (!fw_priv->pages)
- 		return;
- 
-+	vunmap(fw_priv->data);
-+
- 	for (i = 0; i < fw_priv->nr_pages; i++)
- 		__free_page(fw_priv->pages[i]);
- 	kvfree(fw_priv->pages);
-@@ -328,10 +337,6 @@ int fw_map_paged_buf(struct fw_priv *fw_priv)
- 	if (!fw_priv->data)
- 		return -ENOMEM;
- 
--	/* page table is no longer needed after mapping, let's free */
--	kvfree(fw_priv->pages);
--	fw_priv->pages = NULL;
--
- 	return 0;
- }
- #endif
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc., 
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+     Reviewed-by: Henrik Rydberg <rydberg@bitmath.org>
 
+Henrik
