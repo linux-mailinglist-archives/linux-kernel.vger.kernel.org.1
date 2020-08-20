@@ -2,155 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 603BA24C8DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 01:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 006EE24C8D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 01:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727822AbgHTX46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 19:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50004 "EHLO
+        id S1727076AbgHTX4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 19:56:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727033AbgHTX4Q (ORCPT
+        with ESMTP id S1726309AbgHTX4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 19:56:16 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5129FC061348;
-        Thu, 20 Aug 2020 16:49:59 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id c15so309001wrs.11;
-        Thu, 20 Aug 2020 16:49:59 -0700 (PDT)
+        Thu, 20 Aug 2020 19:56:08 -0400
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBD16C06134A
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 16:50:13 -0700 (PDT)
+Received: by mail-oo1-xc41.google.com with SMTP id j16so815861ooc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 16:50:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=swVS7wXP2zSlH4DoWRDX+ErkfgIT7hxKvOrIIG5V9Vk=;
-        b=NQ+o/6YYmM9TXrGVrcg8/ZHwO5GG82G5FVoY5ua24eyWXbWxqKgW2VvNzvKQeKtM6k
-         KcFCJZIgRmw1qlKSlm7yJGGyjcLACcGzEIFA1Co5yl9nzo3dbEF6KMAHYles+gq8/jaS
-         r/RmGx5TQdGB0bcaZdnIeDGbwZNQLONYoG0a3llzAl4+ZduZrDrM+jewmBLW+jgh5BE+
-         JiJHnqAekLukPw0kXueA0O1+MO3BSU+nLeBR+qmhRjV92kebat2XjMXhL5AQ/8rX9Wls
-         5vGMUSXXDsrFxaIT2puCVzbmj59VF/Q5gfx9n48bqj/ITaBdbeaHLJAmpVh/yMgnLUCm
-         KUAw==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yOUlFnTL+XyX6xjHFLowjyeqpIKSlnIJUWb6WpqEMQM=;
+        b=YGJwshJsH1wNFoOWIvfJIQp5Cf1LT/9VcJA/XPy4DFr4x22/NkrMoaLTzY6cAivNtg
+         Lh9nBCOI/Vbu6gnz1rGhh+NjftRRUQqh/SsyS/iWDn4bu3Ne2mhjdWvFJV6orzaMv0PI
+         zl9R11C2LQe7cusYbPVmckA5TjliVE8QTY5aA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=swVS7wXP2zSlH4DoWRDX+ErkfgIT7hxKvOrIIG5V9Vk=;
-        b=BXJxcpsn/hqa7BAmdKoUB+pZWZ/+vlUMQCKy1wrf6InQgOYdd7oX0iTLzLvl7Sw26C
-         oBFE6RuM1Vw3DC/21baHZWE1BvPBvDJkA9VUh3ek1Ni8NQcI0Pkez1b5UNpIc8Sl7oeb
-         QTgTG8qnnkOYDlY1JzF6e7ozEallNiZvlzr7S4UYvxkST/GPOJ6P74ARBfKPI5JtyUbJ
-         oE1MrX1AkWsLOQApBDUD1FIZX+flgy8nMxIWIQNZTcIr2NZNqp0FVxF1lLfboQMe7dOX
-         Q+FJH1N1vgqkkFy7wLj0EPEehnQ4rF+KYBVIOqpSf/76mc74EC4Fp3pCJ2kOiuTy3SBH
-         hK3A==
-X-Gm-Message-State: AOAM533s361R/wKI0qNPscR8qZNH2/DfVVzLatlRid7JeXBejf6OEVzv
-        QeBVUqrRRQgPYmSC7acYXB4=
-X-Google-Smtp-Source: ABdhPJwx5z14sg4nUnZDq7QLNLI/SpqBrc49XGsvnUnuqEdQPtptex17XQq05rJTUaJ7q05LzK2X3g==
-X-Received: by 2002:adf:82d5:: with SMTP id 79mr150654wrc.282.1597967397538;
-        Thu, 20 Aug 2020 16:49:57 -0700 (PDT)
-Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id 32sm707449wrh.18.2020.08.20.16.49.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 16:49:56 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-To:     alex.dewar90@gmail.com
-Cc:     GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, njavali@marvell.com
-Subject: [PATCH v2] scsi: Don't call memset after dma_alloc_coherent()
-Date:   Fri, 21 Aug 2020 00:49:52 +0100
-Message-Id: <20200820234952.317313-1-alex.dewar90@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820185149.932178-1-alex.dewar90@gmail.com>
-References: <20200820185149.932178-1-alex.dewar90@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yOUlFnTL+XyX6xjHFLowjyeqpIKSlnIJUWb6WpqEMQM=;
+        b=AMU8eksvboYIZX5pw55lVCbwbXck6mh5eFQ491U79FYfuh79pDSRmvOow6F2bFXuIQ
+         LQHGccv4/kiYVvxCR9wpV0IEuaL+9zqcUgV7fSEZElkd0imVOlOB1W5ESEIeMu/dLfOq
+         PTUXaTtpztmbL0xecak1f8BehUv8lyocwKf6BoOTLjmw6W/RK1U/JE2iJiyGujBThi29
+         HiBKN1f7r9mhKA+Y2ccrOvDMcFMBu54SHGefARgZajrPTViErBIHCewgJhUWZhW6CI9X
+         RPdk7U+fiduBFAKlPO92IeV+pGGImFIHokophJHKgcr0jJsb9qbkNLPK5QUbvlrmJC/R
+         uTZg==
+X-Gm-Message-State: AOAM533lDv8/HhkZutHN1SrzNndy7c3FXG71ZIHG6Y3NtyXklBdg131M
+        91Y99d305hgchxl5vzTSRA5Huw==
+X-Google-Smtp-Source: ABdhPJyZG8oH4VKCjS1vegRO13xkgfdCIBly/mLpQtPV8tBdm5byU+kUyvopaaB3/3Zo61WYDw5sEg==
+X-Received: by 2002:a4a:a782:: with SMTP id l2mr181821oom.62.1597967413403;
+        Thu, 20 Aug 2020 16:50:13 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id h21sm16403oib.51.2020.08.20.16.50.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Aug 2020 16:50:12 -0700 (PDT)
+Subject: Re: [PATCH 4.14 000/226] 4.14.194-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20200820135009.684062405@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <8de043e7-7b7a-c041-0dd5-f0384fd32713@linuxfoundation.org>
+Date:   Thu, 20 Aug 2020 17:50:12 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200820135009.684062405@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dma_alloc_coherent() already zeroes memory, so the extra call to
-memset() is unnecessary.
+On 8/20/20 7:51 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.194 release.
+> There are 226 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 22 Aug 2020 13:49:29 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.194-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Issue identified with Coccinelle.
+Compiled and booted on my test system. No dmesg regressions.
 
-Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
----
-v2: I've noticed a few other places in the scsi subsystem with this
-pattern, so lets fix them all with one patch.
----
- drivers/scsi/mpt3sas/mpt3sas_base.c | 1 -
- drivers/scsi/mvsas/mv_init.c        | 4 ----
- drivers/scsi/pmcraid.c              | 1 -
- drivers/scsi/qla2xxx/qla_mbx.c      | 2 --
- 4 files changed, 8 deletions(-)
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.c b/drivers/scsi/mpt3sas/mpt3sas_base.c
-index b66d3f9b717f..36b6c0d67353 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_base.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
-@@ -5259,7 +5259,6 @@ _base_allocate_memory_pools(struct MPT3SAS_ADAPTER *ioc)
- 		_base_release_memory_pools(ioc);
- 		goto retry_allocation;
- 	}
--	memset(ioc->request, 0, sz);
- 
- 	if (retry_sz)
- 		ioc_err(ioc, "request pool: dma_alloc_coherent succeed: hba_depth(%d), chains_per_io(%d), frame_sz(%d), total(%d kb)\n",
-diff --git a/drivers/scsi/mvsas/mv_init.c b/drivers/scsi/mvsas/mv_init.c
-index 978f5283c883..6aa2697c4a15 100644
---- a/drivers/scsi/mvsas/mv_init.c
-+++ b/drivers/scsi/mvsas/mv_init.c
-@@ -246,19 +246,16 @@ static int mvs_alloc(struct mvs_info *mvi, struct Scsi_Host *shost)
- 				     &mvi->tx_dma, GFP_KERNEL);
- 	if (!mvi->tx)
- 		goto err_out;
--	memset(mvi->tx, 0, sizeof(*mvi->tx) * MVS_CHIP_SLOT_SZ);
- 	mvi->rx_fis = dma_alloc_coherent(mvi->dev, MVS_RX_FISL_SZ,
- 					 &mvi->rx_fis_dma, GFP_KERNEL);
- 	if (!mvi->rx_fis)
- 		goto err_out;
--	memset(mvi->rx_fis, 0, MVS_RX_FISL_SZ);
- 
- 	mvi->rx = dma_alloc_coherent(mvi->dev,
- 				     sizeof(*mvi->rx) * (MVS_RX_RING_SZ + 1),
- 				     &mvi->rx_dma, GFP_KERNEL);
- 	if (!mvi->rx)
- 		goto err_out;
--	memset(mvi->rx, 0, sizeof(*mvi->rx) * (MVS_RX_RING_SZ + 1));
- 	mvi->rx[0] = cpu_to_le32(0xfff);
- 	mvi->rx_cons = 0xfff;
- 
-@@ -267,7 +264,6 @@ static int mvs_alloc(struct mvs_info *mvi, struct Scsi_Host *shost)
- 				       &mvi->slot_dma, GFP_KERNEL);
- 	if (!mvi->slot)
- 		goto err_out;
--	memset(mvi->slot, 0, sizeof(*mvi->slot) * slot_nr);
- 
- 	mvi->bulk_buffer = dma_alloc_coherent(mvi->dev,
- 				       TRASH_BUCKET_SIZE,
-diff --git a/drivers/scsi/pmcraid.c b/drivers/scsi/pmcraid.c
-index aa9ae2ae8579..d99568fdf4af 100644
---- a/drivers/scsi/pmcraid.c
-+++ b/drivers/scsi/pmcraid.c
-@@ -4716,7 +4716,6 @@ static int pmcraid_allocate_host_rrqs(struct pmcraid_instance *pinstance)
- 			return -ENOMEM;
- 		}
- 
--		memset(pinstance->hrrq_start[i], 0, buffer_size);
- 		pinstance->hrrq_curr[i] = pinstance->hrrq_start[i];
- 		pinstance->hrrq_end[i] =
- 			pinstance->hrrq_start[i] + PMCRAID_MAX_CMD - 1;
-diff --git a/drivers/scsi/qla2xxx/qla_mbx.c b/drivers/scsi/qla2xxx/qla_mbx.c
-index 226f1428d3e5..e00f604bbf7a 100644
---- a/drivers/scsi/qla2xxx/qla_mbx.c
-+++ b/drivers/scsi/qla2xxx/qla_mbx.c
-@@ -4925,8 +4925,6 @@ qla25xx_set_els_cmds_supported(scsi_qla_host_t *vha)
- 		return QLA_MEMORY_ALLOC_FAILED;
- 	}
- 
--	memset(els_cmd_map, 0, ELS_CMD_MAP_SIZE);
--
- 	/* List of Purex ELS */
- 	cmd_opcode[0] = ELS_FPIN;
- 	cmd_opcode[1] = ELS_RDP;
--- 
-2.28.0
+thanks,
+-- Shuah
 
