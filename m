@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6644624B160
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 10:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 701AC24B171
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 10:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727017AbgHTIvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 04:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726803AbgHTIvk (ORCPT
+        id S1726772AbgHTIxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 04:53:03 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:30491 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725823AbgHTIww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 04:51:40 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 283E4C061757;
-        Thu, 20 Aug 2020 01:51:40 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id e4so684769pjd.0;
-        Thu, 20 Aug 2020 01:51:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ar+rI+xGDP4PssjfL9GqrHFQRasXWCFc3IqAQQhSYEQ=;
-        b=ASMCNvoellD7szN4qArS90zy/x+CkLjVo9aX2itUUDPdsnmxyAsB6GtPaHdSDtqHOd
-         rkflihx4G6UG2Du0p9HYYLcJICuBxTJYbUDl1aH4hN8P6bF+omUVoAtghlZF71z0F9qq
-         drlct4R+7Gpp7k0e/xkjBOza6PLJgTwX/4q/BnJqO4VHF1XDJ10qi8+6NgVtJ7jBy6R9
-         Ku0ORXG2Bl91tGTiQDxXO5mQgN/pFID2CgoyZrW/KRakq5v0O6Fn/4eCpoKsH7F9Yopl
-         aWvd6GyuwIuwzE7+hiF1oG5lRs5T+tTAbCTTacgCry4U8tkLqQdEPzftt5Ya0FlwhxV7
-         5xrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ar+rI+xGDP4PssjfL9GqrHFQRasXWCFc3IqAQQhSYEQ=;
-        b=P/UB35Odi1rBZLYOdowZDZROw48SFuIuSlU7CWYrxxJv7rZJ3eg+xnB5Y7+PPZA2WW
-         wYGKCq+ykJsPTO9EzF3xUHUUKZl74JxUiERvJL5jp+U0WIeQumprwIzZiu8DnBEZ1xoS
-         0WDua8ogPQ36xH0WCHBsX78xHpyTLd2pU/+trJPJ/NaC3/eHnf/aC9lWh1YCtDB/EPuV
-         22j+qCqi8i2Ym/+omzxJMursHKlw56KdZXKVsGk6Y8aeHrZsSqlsMSNoR4GAOBwPfeIy
-         Vx/yCgL+pFGtd0j7Vi2b30at52zwkcg2WXAsDlfuc0Z7E3QB0JNR3oK0UCzMhWjm6vT2
-         fl3w==
-X-Gm-Message-State: AOAM533rhUbq9omKUf0MGdXAF/tRekTh5LbpLb7r6WQvxs9HP6CK9D9j
-        WpWqEYm/u4vYs3ZjlDJmqlc=
-X-Google-Smtp-Source: ABdhPJzwg/kSvmTns70zUU1N5icVsDSJ+MQrnF9Iz8GxpzsfWfaG+/FybKXsUw3JzQncr+lYPMyc1g==
-X-Received: by 2002:a17:90a:46c2:: with SMTP id x2mr1739558pjg.184.1597913499779;
-        Thu, 20 Aug 2020 01:51:39 -0700 (PDT)
-Received: from blackclown ([103.88.82.201])
-        by smtp.gmail.com with ESMTPSA id v8sm21683336pju.1.2020.08.20.01.51.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 20 Aug 2020 01:51:39 -0700 (PDT)
-Date:   Thu, 20 Aug 2020 14:21:27 +0530
-From:   Suraj Upadhyay <usuraj35@gmail.com>
-To:     jerome.pouiller@silabs.com, gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH 5/6] staging: wfx/hif_rx.c: Fix spelling mistake
- "negociation" => "negotiation"
-Message-ID: <eab6bcb570dcd1407efc8163ff8ff976f623ae9c.1597913333.git.usuraj35@gmail.com>
-References: <834139101223e627665c939388cd7c542920c531.1597913333.git.usuraj35@gmail.com>
+        Thu, 20 Aug 2020 04:52:52 -0400
+X-UUID: 093ddc2104f44c19bc9682f25a33b436-20200820
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=sJv/+CGFViRM8kc7c0v51N1LTh6fBPIfS3In0xmPVHA=;
+        b=V1oMbpwVLECj0GWQWV1Tf/LwDCnbxBp2onDOVA4ZuvKRDAWiVXYn/cXT4QcD/KZpEB6lrwwPQEDEjhIxrmIEK+kn3UmUYrZB8G4SgUbJeNXVHyeQ3SJnR7p3opOIKoqbP5+8XOxpGlM4HKQxdFmr1pWBe7q+gkbLo9TSZRPy3zI=;
+X-UUID: 093ddc2104f44c19bc9682f25a33b436-20200820
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <jiaxin.yu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 753846107; Thu, 20 Aug 2020 16:52:45 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 20 Aug 2020 16:52:43 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 20 Aug 2020 16:52:43 +0800
+From:   Jiaxin Yu <jiaxin.yu@mediatek.com>
+To:     <broonie@kernel.org>, <matthias.bgg@gmail.com>,
+        <robh+dt@kernel.org>, <tiwai@suse.com>,
+        <linux-kernel@vger.kernel.org>
+CC:     <alsa-devel@alsa-project.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <howie.huang@mediatek.com>,
+        <tzungbi@google.com>, <eason.yen@mediatek.com>,
+        <shane.chien@mediatek.com>, <bicycle.tasi@mediatek.com>,
+        Jiaxin Yu <jiaxin.yu@mediatek.com>
+Subject: [PATCH v6 0/2] Add mediatek codec mt6359 driver
+Date:   Thu, 20 Aug 2020 16:51:31 +0800
+Message-ID: <1597913493-10747-1-git-send-email-jiaxin.yu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <834139101223e627665c939388cd7c542920c531.1597913333.git.usuraj35@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
----
- drivers/staging/wfx/hif_rx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/wfx/hif_rx.c b/drivers/staging/wfx/hif_rx.c
-index cc7c0cf226ba..1d32973d8ec1 100644
---- a/drivers/staging/wfx/hif_rx.c
-+++ b/drivers/staging/wfx/hif_rx.c
-@@ -118,7 +118,7 @@ static int hif_keys_indication(struct wfx_dev *wdev,
- 
- 	// SL_PUB_KEY_EXCHANGE_STATUS_SUCCESS is used by legacy secure link
- 	if (body->status && body->status != HIF_STATUS_SLK_NEGO_SUCCESS)
--		dev_warn(wdev->dev, "secure link negociation error\n");
-+		dev_warn(wdev->dev, "secure link negotiation error\n");
- 	memcpy(pubkey, body->ncp_pub_key, sizeof(pubkey));
- 	memreverse(pubkey, sizeof(pubkey));
- 	wfx_sl_check_pubkey(wdev, pubkey, body->ncp_pub_key_mac);
--- 
-2.17.1
+QWRkIG1lZGlhdGVrIGNvZGVjIChNVDYzNTkpIGRyaXZlcg0KDQpNVDYzNTkgc3VwcG9ydCBwbGF5
+YmFjayBhbmQgY2FwdHVyZSBmZWF0dXJlLg0KDQpPbiBkb3dubGluayBwYXRoLCBpdCBpbmNsdWRl
+cyB0aHJlZSBEQUNzIGZvciBoYW5kc2V0LCBoZWFkc2V0LA0KYW5kIGxpbmVvdXQgcGF0aC4gT24g
+dW5saW5rIHBhdGgsIGl0IGluY2x1ZGVkcyB0aHJlZSBBRENzIGZvcg0KbWFpbiBtaWMsIHNlY29u
+ZCBtaWMsIDNyZCBtaWMsIGFuZCBoZWFkc2V0IG1pYy4NCg0KQnkgc2NlbmFyaW8sIHNlbGVjdCAq
+X01VWCB3aWRnZXQgdG8gY3JlYXRlIGRhbXAgcGF0aC4NCkFuZCBieSBzZWxlY3QgbWljX3R5cGVf
+bXV4IHRvIGNob29zZSBETUlDL0FNSUMvLi4uLg0KDQpGb3IgZXhhbXBsZSwgc2VsZWN0IHRoZXNl
+IE1VWCB3aWRnZXQgdG8gY3JlYXRlIGhlYWRzZXQgcGF0aA0KKDEpIERBQyBJbiBNdXggLS0+ICJO
+b3JtYWwgUGF0aCINCigyKSBIUCBNdXggLS0+ICJBdWRpbyBQbGF5YmFjayINCg0KdjYgY2hhbmdl
+czoNCgkxLiBSZW1vdmUgdGhlIGNvbXBhdGlibGUgc3RyaW5nIGluIG10NjM1OWNvZGVjIGJlY2F1
+c2UgTUZEIHNob3VsZCBiZSByZWdpc3RlcmluZyB0aGUgcGxhdGZvcm0gZGV2aWNlLg0KDQp2NSBj
+aGFuZ2VzOg0KCTEuIERvbid0IG5lZWQgdG8gdW5yZWdpc3RlciB0aGUgY29tcG9uZW50IHdoaWMg
+aXMgYWxyZWFkeSByZWxlZ2F0ZWQgdG8gZGV2bS4NCgkyLiBwYXRjaHdvcmsgbGluazoNCgkJaHR0
+cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9jb3Zlci8xMTcxNjM4Ny8NCgkJaHR0cHM6Ly9wYXRj
+aHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMTcxNzc1Ny8NCgkJaHR0cHM6Ly9wYXRjaHdvcmsua2Vy
+bmVsLm9yZy9wYXRjaC8xMTcxNjQ5MS8NCg0KdjQgY2hhbmdlczoNCgkxLiBBZGQgYSByZW1vdmUo
+KSBmdW5jdGlvbiB0byB1bmRvIHJlZ3VsYXRvcl9lbmFibGUoKS4NCgkyLiBSZW1vdmVkIHVubmVj
+ZXNzYXJ5IGxvZ3MuDQoJMy4gcGF0Y2h3b3JrIGxpbms6DQoJCWh0dHBzOi8vcGF0Y2h3b3JrLmtl
+cm5lbC5vcmcvY292ZXIvMTE3MTU1NTMvDQoJCWh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcv
+cGF0Y2gvMTE3MTYwMTUvDQoJCWh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gvMTE3
+MTU1NTcvDQoNCnYzIGNoYW5nZXM6DQoJMS4gcGF0Y2h3b3JrIGxpbms6DQoJCWh0dHBzOi8vcGF0
+Y2h3b3JrLmtlcm5lbC5vcmcvY292ZXIvMTE3MTQyOTEvDQoJCWh0dHBzOi8vcGF0Y2h3b3JrLmtl
+cm5lbC5vcmcvcGF0Y2gvMTE3MTQyOTUvDQoJCWh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcv
+cGF0Y2gvMTE3MTQzMzkvDQoNCnYyIGNoYW5nZXM6DQoJMS4gcGF0Y2h3b3JrIGxpbms6DQoJCWh0
+dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvY292ZXIvMTE3MDY5MzUvDQoJCWh0dHBzOi8vcGF0
+Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gvMTE3MDg4NjUvDQoJCWh0dHBzOi8vcGF0Y2h3b3JrLmtl
+cm5lbC5vcmcvcGF0Y2gvMTE3MDY5MzcvDQoNCnYxIGNoYW5nZXM6DQoJMS5sa21sIGxpbms6DQoJ
+CWh0dHBzOi8vbGttbC5vcmcvbGttbC8yMDIwLzMvNS8xMjU3DQoNCkppYXhpbiBZdSAoMik6DQog
+IEFTb0M6IG1lZGlhdGVrOiBtdDYzNTk6IGFkZCBjb2RlYyBkcml2ZXINCiAgZHQtYmluZGluZ3M6
+IG1lZGlhdGVrOiBtdDYzNTk6IGFkZCBjb2RlYyBkb2N1bWVudA0KDQogLi4uL2RldmljZXRyZWUv
+YmluZGluZ3Mvc291bmQvbXQ2MzU5LnlhbWwgICAgIHwgICA2MSArDQogc291bmQvc29jL2NvZGVj
+cy9LY29uZmlnICAgICAgICAgICAgICAgICAgICAgIHwgICAgOCArDQogc291bmQvc29jL2NvZGVj
+cy9NYWtlZmlsZSAgICAgICAgICAgICAgICAgICAgIHwgICAgMiArDQogc291bmQvc29jL2NvZGVj
+cy9tdDYzNTkuYyAgICAgICAgICAgICAgICAgICAgIHwgMjc1MyArKysrKysrKysrKysrKysrKw0K
+IHNvdW5kL3NvYy9jb2RlY3MvbXQ2MzU5LmggICAgICAgICAgICAgICAgICAgICB8IDI2NDAgKysr
+KysrKysrKysrKysrKw0KIDUgZmlsZXMgY2hhbmdlZCwgNTQ2NCBpbnNlcnRpb25zKCspDQogY3Jl
+YXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9t
+dDYzNTkueWFtbA0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9zb2MvY29kZWNzL210NjM1OS5j
+DQogY3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3NvYy9jb2RlY3MvbXQ2MzU5LmgNCg0KLS0gDQoy
+LjE4LjANCg==
 
