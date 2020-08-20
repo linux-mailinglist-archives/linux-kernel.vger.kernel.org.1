@@ -2,66 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A3A24ACA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 03:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE2324ACB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 03:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbgHTBbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 21:31:25 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:42429 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726646AbgHTBbY (ORCPT
+        id S1726729AbgHTBqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 21:46:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726603AbgHTBqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 21:31:24 -0400
-Received: (qmail 202460 invoked by uid 1000); 19 Aug 2020 21:31:22 -0400
-Date:   Wed, 19 Aug 2020 21:31:22 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-media@vger.kernel.org, linux-uvc-devel@lists.sourceforge.net,
-        Sakari Ailus <sakari.ailus@iki.fi>
-Subject: Re: Protecting uvcvideo againt USB device disconnect [Was: Re:
- Protecting usb_set_interface() against device removal]
-Message-ID: <20200820013122.GA202178@rowland.harvard.edu>
-References: <b0a7247c-bed3-934b-2c73-7f4b0adb5e75@roeck-us.net>
- <20200815020739.GB52242@rowland.harvard.edu>
- <20200816003315.GA13826@roeck-us.net>
- <20200816121816.GC32174@pendragon.ideasonboard.com>
- <9bb20ed7-b156-f6c2-4d25-6acac1a0021b@roeck-us.net>
- <20200816235155.GA7729@pendragon.ideasonboard.com>
- <0684b71c-8ac5-8962-cbd5-c0bcaa8b6881@xs4all.nl>
- <20200819013002.GL2360@pendragon.ideasonboard.com>
- <20200819230851.GA222844@roeck-us.net>
+        Wed, 19 Aug 2020 21:46:38 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16294C061383;
+        Wed, 19 Aug 2020 18:46:38 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id a26so743192ejc.2;
+        Wed, 19 Aug 2020 18:46:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4IAtUvlGZi9cZ30c8Tiv2QcGP8j7YjUireQ2hPSqYIc=;
+        b=lhqU8KCBq3JcXyLrjR7m1WxXBaJBMXFyOeFY2/f+x7ng6G5zQlWUhOOkz3cJRdbPr0
+         fDPjZWPX59w9VLcs3giM+fziJJBtsN8dJW8xIFnSbQNr64LGPjfREopYzlFEvK/t3w6C
+         bkHE1V5JX1QnfMcJYrGSJjsbuogziTWPR6YFrNA4Z57AIwLI2YziBXqL8jBcI7kT45H6
+         DOHctLZABu2Ie6ADGhzwzow3snknVvnvep4cRodQ2jvn8ew3JBKVdwPJhEtFFyndjkko
+         2J83m+iQ94azRYO5bPKbhDJrJPqCm/AIw6xRWgE5Z6qd3t4qoSOgPHQ/jF5Rk3MrFsg7
+         z9QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4IAtUvlGZi9cZ30c8Tiv2QcGP8j7YjUireQ2hPSqYIc=;
+        b=qW3dHjqGaKYUIpsu0hZ2CGiAhepc9BRZB+cyFKEgzD38jqz7gll4ljN6ltHM+YhJ1R
+         WwohZ9ZTA0HarE5NA1g4xlWa8y796loe8wY+eh88OpX4D0x5OrZISvXUIf9CVhz8YumU
+         BrHfcklyugRtWC2SanXvTct/rqfZBtd6epu2PuHorAvp2YV3GdiOJl29tPb2kmJMfrLD
+         Jp9MG0DXHeU5oMDyCXtDViTFLb3mUUPppRzadbJrg6DjOw8EJQMHxsSL3pAMw7D8apTY
+         n9gwx/QosvEGII28DEntTjS9hQpXJfum27w2+KU/ZEmDn5Tb6LKmBDIoJtTOvvOcaQ5F
+         AWyA==
+X-Gm-Message-State: AOAM530sx394T9mJTN7RWhm270S8O3EXozKOY5cK/JBJvyEeX9KSqi7x
+        4fjdyxdGn5jxdm2W8AEsk4KwRenUVScu539GfCI=
+X-Google-Smtp-Source: ABdhPJyE7dDS/w0hK1VUPbkBFQB5sNodimT33cc7agHJsrXQ6a+5qSQ+UFlj1xnEL1rjR8ztnYxPtpo+o8Gs3htaqL8=
+X-Received: by 2002:a17:906:78e:: with SMTP id l14mr1160378ejc.67.1597887996730;
+ Wed, 19 Aug 2020 18:46:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200819230851.GA222844@roeck-us.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1597406966-13740-1-git-send-email-abel.vesa@nxp.com>
+ <1597406966-13740-17-git-send-email-abel.vesa@nxp.com> <CAA+hA=S_wdoZvCPamW2F1Vs73t4fgnQa8LouUwzq2Vfpz3SDCg@mail.gmail.com>
+ <20200819203734.zbndyvf534xey5xy@fsr-ub1664-175>
+In-Reply-To: <20200819203734.zbndyvf534xey5xy@fsr-ub1664-175>
+From:   Dong Aisheng <dongas86@gmail.com>
+Date:   Thu, 20 Aug 2020 09:31:27 +0800
+Message-ID: <CAA+hA=S6j71M-Bjbkm1C+q6Ke7xGUX3K0TosKwWJ=tegFaBGsQ@mail.gmail.com>
+Subject: Re: [PATCH v2 16/17] arm64: dts: imx8mp: Add media_blk_ctrl node
+To:     Abel Vesa <abel.vesa@nxp.com>
+Cc:     Mike Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <fabio.estevam@nxp.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Anson Huang <anson.huang@nxp.com>,
+        Jacky Bai <ping.bai@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Fugang Duan <fugang.duan@nxp.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 04:08:51PM -0700, Guenter Roeck wrote:
+Hi Rob, Stephen,
 
-> usb_set_interface() should not be called anymore after uvc_disconnect(),
-> or at east I think so (is that documented anywhere ?).
+On Thu, Aug 20, 2020 at 4:37 AM Abel Vesa <abel.vesa@nxp.com> wrote:
+>
+> On 20-08-18 19:34:14, Dong Aisheng wrote:
+> > On Fri, Aug 14, 2020 at 8:12 PM Abel Vesa <abel.vesa@nxp.com> wrote:
+> > >
+> > > Some of the features of the media_ctrl will be used by some
+> > > different drivers in a way those drivers will know best, so adding the
+> > > syscon compatible we allow those to do just that. Only the resets
+> > > and the clocks are registered bit the clk-blk-ctrl driver.
+> > >
+> > > Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+> > > ---
+> > >  arch/arm64/boot/dts/freescale/imx8mp.dtsi | 16 ++++++++++++++++
+> > >  1 file changed, 16 insertions(+)
+> > >
+> > > diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> > > index dede0ae..2d6d213 100644
+> > > --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> > > +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> > > @@ -736,6 +736,22 @@
+> > >                         };
+> > >                 };
+> > >
+> > > +               aips4: bus@32c00000 {
+> > > +                       compatible = "simple-bus";
+> > > +                       reg = <0x32c00000 0x400000>;
+> > > +                       #address-cells = <1>;
+> > > +                       #size-cells = <1>;
+> > > +                       ranges;
+> > > +
+> > > +                       media_blk_ctrl: clock-controller@32ec0000 {
+> >
+> > For this combo device, maybe we can directly name it as blk-ctrl@32ec0000.
+> > Rob, do you think if we can do that?
+> >
+>
+> I think it was Stephen who suggested we change it to clock-controller in the
+> last's version thread.
+>
+> TBH, I agree with you here, since it makes more sense to be called blk-ctrl
+> provided that this is not really just a clock controller.
+>
 
-It may be documented somewhere, but basically it goes without saying.  
+How do you think?
 
-A main feature of the device model design is that drivers get bound to 
-devices by having their probe routine called, and they get unbound by 
-having their disconnect routine called.  It should go without saying 
-that once a driver is unbound from a device, it must not communicate 
-with that device any more.
+Regards
+Aisheng
 
-It might be nice if this requirement could be enforced (say in the USB 
-core), but doing so is impractical.  It would require every I/O request 
-to include some sort of cookie proving that the caller is authorized to 
-make the request.  That's not how the kernel works; it trusts drivers 
-to generally do the right thing without constant checking.
-
-Alan Stern
+> > > +                               compatible = "fsl,imx8mp-media-blk-ctrl", "syscon";
+> > > +                               reg = <0x32ec0000 0x10000>;
+> > > +
+> >
+> > Remove unnecessary blank line
+> >
+>
+> Will do.
+>
+> > Otherwise:
+> > Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
+> >
+> > Regards
+> > Aisheng
+> >
+> > > +                               #clock-cells = <1>;
+> > > +                               #reset-cells = <1>;
+> > > +                       };
+> > > +               };
+> > > +
+> > >                 aips5: bus@30c00000 {
+> > >                         compatible = "fsl,aips-bus", "simple-bus";
+> > >                         reg = <0x30c00000 0x400000>;
+> > > --
+> > > 2.7.4
+> > >
