@@ -2,121 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71AE224B080
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE77A24B060
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727017AbgHTHwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 03:52:51 -0400
-Received: from mail-dm6nam10on2079.outbound.protection.outlook.com ([40.107.93.79]:55712
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725852AbgHTHwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 03:52:47 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RwIvihp/QXca7zUxiLRHTkF9SlWE0SMqpVHYEkAK8syrrjMMU7uzDSc7geSltKDabRuMhNQYy4hyWiVMdsrDQsibm9/yXOvvO97B43sJCZmDnkXGhs4fp19KI9zN79LSFHtw6fjgiw5O56DZDdlTuGevxZtcFlTchVXKwPEmjncuaMoXmHffAaLR4Z6TgJqIiRPUP6V8BIqlXCDzr9w4I/1B9tMHfm+WUjSmCY9DA+fXef7rH6Z1OJpji3fO4nkqzLGWQg/4g+bFE2dWm7JydPOxLyWHqEVtrrYtfGu9ckmM8sp/hTgkyW9VQplX09VArcJ4tadRPxigJLok5PQwKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sRi3V6FNJkkTIWaeuZ1/4YbTh9G8sffk/HVDfxbdOmU=;
- b=IKmhP8Hn8AzKWVaDTj/NRg90zKrXbYXvqz37PLAdABcCiaSxl7QNspcAgSPuqYktokjdD1B5cXk0j5ey1+nhuKnoPkuJ4/eX+VVrXP4PBeWt7P/OD0gm5AOd00/iH4UA2k+qw070wz+8VXOKts9HI1ScFLvrKmDsZam4ouPMZBtcUcXiAwAjMyXheySmaQkh//nIKNKsDw5X3lpd7iamBaWZ0YbMzU/kogsKr5k3EzVoHnemugo4Kbp6gfF3j0Uiyu+4IrGrmBIQetMuJ6m/b9KWb6jhOem6JKsm/aRcuQd1orIi1dNXMyPyGGliQdrDGxdTCMRQOzu2WJsudOXzmw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+        id S1726786AbgHTHt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 03:49:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgHTHtZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 03:49:25 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABFF7C061384
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 00:49:24 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id y3so1059793wrl.4
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 00:49:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sRi3V6FNJkkTIWaeuZ1/4YbTh9G8sffk/HVDfxbdOmU=;
- b=lUFx4LtdEJRh04bEicQI8zEZ3R1Cqw0X/FWQsT0GtzToy6xytMxybHqokHjfHXTSELj2QCDESyapZNq8EdKy/bzVtN0Su8kG3v/XisSHCmeZxenKgkM/XxhhHrgbzn+fxtsvxI467PkbZZVx4MT4E/8RRq6L1K/sEUg/ahp+KZM=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=synaptics.com;
-Received: from BN7PR03MB4547.namprd03.prod.outlook.com (2603:10b6:408:9::22)
- by BN7PR03MB4563.namprd03.prod.outlook.com (2603:10b6:408:36::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.16; Thu, 20 Aug
- 2020 07:52:45 +0000
-Received: from BN7PR03MB4547.namprd03.prod.outlook.com
- ([fe80::3cda:7634:5802:df5f]) by BN7PR03MB4547.namprd03.prod.outlook.com
- ([fe80::3cda:7634:5802:df5f%7]) with mapi id 15.20.3305.024; Thu, 20 Aug 2020
- 07:52:45 +0000
-Date:   Thu, 20 Aug 2020 15:48:55 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Icenowy Zheng <icenowy@aosc.io>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 00/12] regulator: Fix W=1 build warning when CONFIG_OF=n
-Message-ID: <20200820154855.46881c8a@xhacker.debian>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: TY1PR01CA0194.jpnprd01.prod.outlook.com (2603:1096:403::24)
- To BN7PR03MB4547.namprd03.prod.outlook.com (2603:10b6:408:9::22)
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=XgD7oAraMYDOqNsfZffx0IqUVAmFZfcgzGRKvwI8mIc=;
+        b=XlaONjDnEdsYg/6xqFFyWyTH0yWrgNaxkmvE+JWcDVZbLe+f/V7HKdjYROy7dyRpgD
+         0dP7O6uThUl2ocYIR33bisbTsV7PY13WDhwdzpoG+1juP2BKSoKiEUd4Vt3PTFRroRgA
+         CKWIaTIqQLz/3rnEaEMJlfnH2LOTDEFgtejdx0YcZnIibXmUIW8mrTOAvdg1MlPqsu01
+         n4D3DHqkiUh/PUQcvUhn/MDFi/qLIJr1VljuscrpP3WooR3pcPufopgFHfsC1aJqsMPG
+         YS204VOVM7RsVE5k9miArRNcssfkXrf1ORtWY/QTAhKAThyjJpNspv/DCPSgCLSS8wMB
+         aMUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=XgD7oAraMYDOqNsfZffx0IqUVAmFZfcgzGRKvwI8mIc=;
+        b=B5x9U1GvVYQ3DrCztIHQeUiqPy0QS9cbunBxqDrx32XkBDVd7B0X3bIMrzH8hgub8d
+         jOoFlrNTSxMlr6ezJCpoWhylVtrLP5SQmC8Wu+zg7O3l/rNTvy4+xWfH4OYU2aQ9gr6x
+         ApxMXu2tkeI7AXAFDcVZ96JnwJ6XU/yeEFRX4k3khPg16CCZ59TDT/H3v1Zm/nq1VCQ+
+         jP3+R+IQ5M0A/0uW1XpatEprnnCKKkogss9OpHYvZhmqUgcJDQ73ETfT+sLCPMYt69i7
+         7021MR2TY/XQy5HoAqNyKkXix6Av51IYWMmpgwMUMaLyxXCORBtAMD/uz+LLub9f1Jg8
+         lUKQ==
+X-Gm-Message-State: AOAM531PrywwQS5ZcbTMV35IRrzhcZEL/bnSAUTb8nDLsvQyYu8NOpXN
+        tbezKuRsvcLYEmNAmcKwFnOhBg==
+X-Google-Smtp-Source: ABdhPJyboEGZAaF6RXm5GpaE/mKR6TYvk3Fye/goK+ikDC5z1N0gxsGJDDrfdepMKqxed6kq885b0w==
+X-Received: by 2002:a5d:60cb:: with SMTP id x11mr1737733wrt.281.1597909761789;
+        Thu, 20 Aug 2020 00:49:21 -0700 (PDT)
+Received: from dell ([95.149.164.62])
+        by smtp.gmail.com with ESMTPSA id s2sm2438068wrr.55.2020.08.20.00.49.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Aug 2020 00:49:21 -0700 (PDT)
+Date:   Thu, 20 Aug 2020 08:49:16 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     dinghao.liu@zju.edu.cn
+Cc:     Markus Elfring <Markus.Elfring@web.de>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Bryan Wu <cooloney@gmail.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Gyungoh Yoo <jack.yoo@skyworksinc.com>,
+        Jingoo Han <jingoohan1@gmail.com>, Kangjie Lu <kjlu@umn.edu>
+Subject: Re: Re: Re: [PATCH] video: backlight: sky81452-backlight: Fix
+ reference count imbalance on error
+Message-ID: <20200820074916.GE3248864@dell>
+References: <321fb03d-2307-7f60-f437-cfb99184dfd6@web.de>
+ <20200819165702.GC3248864@dell>
+ <217e3c0c.b58c.17409fd7496.Coremail.dinghao.liu@zju.edu.cn>
+ <20200820062301.GD3248864@dell>
+ <3f9fbdb1.bc96.1740a9560d5.Coremail.dinghao.liu@zju.edu.cn>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 255.255.255.255 (255.255.255.255) by TY1PR01CA0194.jpnprd01.prod.outlook.com (2603:1096:403::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24 via Frontend Transport; Thu, 20 Aug 2020 07:52:42 +0000
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-X-Originating-IP: [124.74.246.114]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1f4b5e31-caa7-454b-c5f9-08d844de062f
-X-MS-TrafficTypeDiagnostic: BN7PR03MB4563:
-X-Microsoft-Antispam-PRVS: <BN7PR03MB4563ABDADC7B593F2F7D7097ED5A0@BN7PR03MB4563.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:55;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ktaDe+ueVbDfddZNt7E988Ne7koaqgzzEmXUeTqTrludGbH+DWhQ/0uNsa/xxCsYvglFUvIf1HaYfuoFcOMPBfCSq3f8z/mFNL4PQ8zDSUmGy/fYiW/G5fwfRXyU7MlH/ocKNLUuJv7x3MkIVJzKgt12YnaPSbAInuvbT7L3czSh19Kj5I+9hE2BwSW3lQw6UyEWzvzrz2zKNWycu3ZpJBW9djitId5GCWdS8r8Fx1vzYbFRI8UgCrado5rLvH753K9dFS++zNVF8UgfuIw4sYzAj+q7W2ToeK5u18mG0OzfTuiwSK17FC7R0MKdQK1TmaN9SQ6xIb3vo2jlZLABpoyhQzYuw1wR9IRCT0mxaEo60zgmxGKihvWf67jTzYKb
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR03MB4547.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(396003)(346002)(136003)(376002)(1076003)(4326008)(2906002)(5660300002)(6666004)(478600001)(956004)(9686003)(83380400001)(26005)(316002)(86362001)(52116002)(8676002)(66946007)(16576012)(66556008)(6486002)(110011004)(8936002)(66476007)(110136005)(186003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: ZC5DCiUXK6U1isQmVa9P8s6DKrBFNcwTgx4jMItlmsLKql8MJ5Am2BA3JJnfdKzKO7A7C2/Z0sL9US/Uz4MxEWVAuNJI4Liv0fmPeZEPsfHgm6LFcefWD4eP6FwCb7zQn13+r0SvaHK7WTHV6iGFknOQgppw/9+G6kLDnieC58IKVXOOsRVDP1b6EVxVgVppcyBg9sAtgtMKyJ5mwceyzRAbnBkn5t1vsSBdP/EeD78BDEhqtQlnfHkSb5Hc+QFA2u3MlHU13k5Hbh2qesIvMTeXaDxohwDz7FQMovus2hM9okBaTL2tZH19bnSQnhoRYZ4cmk0xDbsY8xiPE+BebOacSXq3azL+U4NFtecUC9przi44+0XFV/JBhdBCCQWXEfg9pF6RjziyojQLLAstiqqqnwUNgrUVQfIOcjtqBv2SigNHCkGRcaglr/Cp9kGcdhKl/jBKB5A2zlEvxfDhbrotRhq6lqrVsskcChCdH7c2hPhEly5K0cmwnP3t5+X1De6FUVICoPmQQT9/nOBuHPpKbR5iSijZrC9bIZ3traJ0XNbu7zxYnR2VP1EfeTRD7XMZqrlMrpqvC3heTi1M1t4v1+kSdrC2c9Ryf9NZZaFvAg7701+w33NRZlwDTwe06sjGrW8UPzXKYEp3cNQS6A==
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f4b5e31-caa7-454b-c5f9-08d844de062f
-X-MS-Exchange-CrossTenant-AuthSource: BN7PR03MB4547.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2020 07:52:45.4055
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OG03/5xRyVzMENtl3uH3uLRJ0mYcm1U2LzsUoF+x6M/5ZZTWm03L/vzrWG70xkGgfyMf5EVuqBIQKkWKBCxCwg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR03MB4563
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3f9fbdb1.bc96.1740a9560d5.Coremail.dinghao.liu@zju.edu.cn>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixing W=1 build warning when no support for device tree is there.
+On Thu, 20 Aug 2020, dinghao.liu@zju.edu.cn wrote:
 
-Jisheng Zhang (12):
-  regulator: 88pg86x: Fix W=1 build warning when CONFIG_OF=n
-  regulator: da9210: Fix W=1 build warning when CONFIG_OF=n
-  regulator: fan53555: Fix W=1 build warning when CONFIG_OF=n
-  regulator: fixed: Fix W=1 build warnings when CONFIG_OF=n
-  regulator: ltc3589: Fix W=1 build warning when CONFIG_OF=n
-  regulator: ltc3676: Fix W=1 build warning when CONFIG_OF=n
-  regulator: max1586: Fix W=1 build warning when CONFIG_OF=n
-  regulator: max77826: Fix W=1 build warning when CONFIG_OF=n
-  regulator: pwm: Fix W=1 build warning when CONFIG_OF=n
-  regulator: stm32-pwr: Fix W=1 build warning when CONFIG_OF=n
-  regulator: stm32-vrefbuf: Fix W=1 build warning when CONFIG_OF=n
-  regulator: sy8106a: Fix W=1 build warning when CONFIG_OF=n
+> > On Thu, 20 Aug 2020, dinghao.liu@zju.edu.cn wrote:
+> > 
+> > > > On Wed, 19 Aug 2020, Markus Elfring wrote:
+> > > > 
+> > > > > > When of_property_read_u32_array() returns an error code,
+> > > > > > a pairing refcount decrement is needed to keep np's refcount balanced.
+> > > > > 
+> > > > > Can another imperative wording be helpful for the change description?
+> > > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=18445bf405cb331117bc98427b1ba6f12418ad17#n151
+> > > > > 
+> > > > > Would an other commit message be a bit nicer?
+> > > > > 
+> > > > > 
+> > > > > …
+> > > > > > +++ b/drivers/video/backlight/sky81452-backlight.c
+> > > > > > @@ -217,6 +217,7 @@ static struct sky81452_bl_platform_data *sky81452_bl_parse_dt(
+> > > > > >  					num_entry);
+> > > > > >  		if (ret < 0) {
+> > > > > >  			dev_err(dev, "led-sources node is invalid.\n");
+> > > > > > +			of_node_put(np);
+> > > > > >  			return ERR_PTR(-EINVAL);
+> > > > > >  		}
+> > > > > 
+> > > > > I propose to add the jump target “put_node” so that a bit of common exception
+> > > > > handling code can be better reused at the end of this function implementation.
+> > > > > 
+> > > > > Regards,
+> > > > > Markus
+> > > > 
+> > > > You can safely ignore any review comments from Markus!
+> > > > 
+> > > > However, this patch doesn't appear to be in my inbox.
+> > > > 
+> > > > Any ideas as to why?
+> > > > 
+> > > 
+> > > Thank you for your advice. My outbox shows that this patch
+> > > has reached your email server successfully. Maybe this
+> > > ended up in your junk mail file?
+> > 
+> > This has happened recently, so I was sure to check.
+> > 
+> > Not there either unfortunately.
+> > 
+> > Would you be kind enough to bounce/resend please?
+> 
+> Sure.
 
- drivers/regulator/88pg86x.c            |  2 ++
- drivers/regulator/da9210-regulator.c   |  2 ++
- drivers/regulator/fan53555.c           |  2 ++
- drivers/regulator/fixed.c              | 16 ++++++++--------
- drivers/regulator/ltc3589.c            |  2 ++
- drivers/regulator/ltc3676.c            |  2 ++
- drivers/regulator/max1586.c            |  2 ++
- drivers/regulator/max77826-regulator.c |  2 ++
- drivers/regulator/pwm-regulator.c      |  2 ++
- drivers/regulator/stm32-pwr.c          |  2 ++
- drivers/regulator/stm32-vrefbuf.c      |  2 ++
- drivers/regulator/sy8106a-regulator.c  |  2 ++
- 12 files changed, 30 insertions(+), 8 deletions(-)
+Looks like you sent it *only* to me.  Please keep everyone else in Cc
+when doing that, or I can't respond to everyone.
 
--- 
-2.28.0
+Anyway, besides the subject line (which I can fix easily), the patch
+looks good to me, but Daniel T must review.
 
+Reviewed-by: Lee Jones <lee.jones@linaro.org>
+
+--
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
