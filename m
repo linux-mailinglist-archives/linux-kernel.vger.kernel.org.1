@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A946724B275
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA7E24B36B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728133AbgHTJaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:30:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37100 "EHLO mail.kernel.org"
+        id S1729379AbgHTJq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:46:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727106AbgHTJ3q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:29:46 -0400
+        id S1729332AbgHTJqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:46:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EEC3E2173E;
-        Thu, 20 Aug 2020 09:29:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 74BE520724;
+        Thu, 20 Aug 2020 09:46:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915786;
-        bh=mfUn4xnhBLZ9RvlH0Kfu2AhP1HgYT78e9KdsuDfoqo8=;
+        s=default; t=1597916795;
+        bh=t7QQ+H33mo6eZ63X2f6jUu77Uht3ePV6CRkL8tYfkLs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ba/vKsWcIslne23Fpmv3HoSwL1yptu0I5YnUuniJzgo/Bzy8r+QjJx3PZLo3Vub93
-         hyUA+2EBHYNaQIBJ19n9AVIu4xWMFzOdHIE6FFsNpiAOmyahfkympObjXWSzbS8iyC
-         SvJDoYj44bwsmPhl66YfZZnFNMAvWg6dxJTitIEE=
+        b=RStXzMsYbjALsyQ1kyJgM3erRdTdBDqhG90UjEBf5qsvKM+DnnOhZyWuD9kEWUidL
+         hUcaf/FZstYIqUQjFwzbBMXLC1aCFim7fvgWhkIompLt3EkRRkP8/vVolfjUoL8dnU
+         VlUt8JsSM+sGq6beIrusJcXMQKORyJFS2jGMBGjc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jesper Dangaard Brouer <brouer@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 134/232] selftests/bpf: test_progs avoid minus shell exit codes
+        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.4 018/152] btrfs: relocation: review the call sites which can be interrupted by signal
 Date:   Thu, 20 Aug 2020 11:19:45 +0200
-Message-Id: <20200820091619.311576283@linuxfoundation.org>
+Message-Id: <20200820091554.580138411@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
-References: <20200820091612.692383444@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,77 +43,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jesper Dangaard Brouer <brouer@redhat.com>
+From: Qu Wenruo <wqu@suse.com>
 
-[ Upstream commit b8c50df0cb3eb9008f8372e4ff0317eee993b8d1 ]
+commit 44d354abf33e92a5e73b965c84caf5a5d5e58a0b upstream.
 
-There are a number of places in test_progs that use minus-1 as the argument
-to exit(). This is confusing as a process exit status is masked to be a
-number between 0 and 255 as defined in man exit(3). Thus, users will see
-status 255 instead of minus-1.
+Since most metadata reservation calls can return -EINTR when get
+interrupted by fatal signal, we need to review the all the metadata
+reservation call sites.
 
-This patch use positive exit code 3 instead of minus-1. These cases are put
-in the same group of infrastructure setup errors.
+In relocation code, the metadata reservation happens in the following
+sites:
 
-Fixes: fd27b1835e70 ("selftests/bpf: Reset process and thread affinity after each test/sub-test")
-Fixes: 811d7e375d08 ("bpf: selftests: Restore netns after each test")
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Link: https://lore.kernel.org/bpf/159410594499.1093222.11080787853132708654.stgit@firesoul
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+- btrfs_block_rsv_refill() in merge_reloc_root()
+  merge_reloc_root() is a pretty critical section, we don't want to be
+  interrupted by signal, so change the flush status to
+  BTRFS_RESERVE_FLUSH_LIMIT, so it won't get interrupted by signal.
+  Since such change can be ENPSPC-prone, also shrink the amount of
+  metadata to reserve least amount avoid deadly ENOSPC there.
+
+- btrfs_block_rsv_refill() in reserve_metadata_space()
+  It calls with BTRFS_RESERVE_FLUSH_LIMIT, which won't get interrupted
+  by signal.
+
+- btrfs_block_rsv_refill() in prepare_to_relocate()
+
+- btrfs_block_rsv_add() in prepare_to_relocate()
+
+- btrfs_block_rsv_refill() in relocate_block_group()
+
+- btrfs_delalloc_reserve_metadata() in relocate_file_extent_cluster()
+
+- btrfs_start_transaction() in relocate_block_group()
+
+- btrfs_start_transaction() in create_reloc_inode()
+  Can be interrupted by fatal signal and we can handle it easily.
+  For these call sites, just catch the -EINTR value in btrfs_balance()
+  and count them as canceled.
+
+CC: stable@vger.kernel.org # 5.4+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- tools/testing/selftests/bpf/test_progs.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ fs/btrfs/relocation.c |   12 ++++++++++--
+ fs/btrfs/volumes.c    |   17 ++++++++++++++++-
+ 2 files changed, 26 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-index 0849735ebda8a..d498b6aa63a42 100644
---- a/tools/testing/selftests/bpf/test_progs.c
-+++ b/tools/testing/selftests/bpf/test_progs.c
-@@ -13,6 +13,7 @@
- #include <execinfo.h> /* backtrace */
- 
- #define EXIT_NO_TEST		2
-+#define EXIT_ERR_SETUP_INFRA	3
- 
- /* defined in test_progs.h */
- struct test_env env = {};
-@@ -113,13 +114,13 @@ static void reset_affinity() {
- 	if (err < 0) {
- 		stdio_restore();
- 		fprintf(stderr, "Failed to reset process affinity: %d!\n", err);
--		exit(-1);
-+		exit(EXIT_ERR_SETUP_INFRA);
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -2312,12 +2312,20 @@ static noinline_for_stack int merge_relo
+ 		btrfs_unlock_up_safe(path, 0);
  	}
- 	err = pthread_setaffinity_np(pthread_self(), sizeof(cpuset), &cpuset);
- 	if (err < 0) {
- 		stdio_restore();
- 		fprintf(stderr, "Failed to reset thread affinity: %d!\n", err);
--		exit(-1);
-+		exit(EXIT_ERR_SETUP_INFRA);
- 	}
- }
  
-@@ -128,7 +129,7 @@ static void save_netns(void)
- 	env.saved_netns_fd = open("/proc/self/ns/net", O_RDONLY);
- 	if (env.saved_netns_fd == -1) {
- 		perror("open(/proc/self/ns/net)");
--		exit(-1);
-+		exit(EXIT_ERR_SETUP_INFRA);
- 	}
- }
+-	min_reserved = fs_info->nodesize * (BTRFS_MAX_LEVEL - 1) * 2;
++	/*
++	 * In merge_reloc_root(), we modify the upper level pointer to swap the
++	 * tree blocks between reloc tree and subvolume tree.  Thus for tree
++	 * block COW, we COW at most from level 1 to root level for each tree.
++	 *
++	 * Thus the needed metadata size is at most root_level * nodesize,
++	 * and * 2 since we have two trees to COW.
++	 */
++	min_reserved = fs_info->nodesize * btrfs_root_level(root_item) * 2;
+ 	memset(&next_key, 0, sizeof(next_key));
  
-@@ -137,7 +138,7 @@ static void restore_netns(void)
- 	if (setns(env.saved_netns_fd, CLONE_NEWNET) == -1) {
- 		stdio_restore();
- 		perror("setns(CLONE_NEWNS)");
--		exit(-1);
-+		exit(EXIT_ERR_SETUP_INFRA);
- 	}
- }
- 
--- 
-2.25.1
-
+ 	while (1) {
+ 		ret = btrfs_block_rsv_refill(root, rc->block_rsv, min_reserved,
+-					     BTRFS_RESERVE_FLUSH_ALL);
++					     BTRFS_RESERVE_FLUSH_LIMIT);
+ 		if (ret) {
+ 			err = ret;
+ 			goto out;
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -4261,7 +4261,22 @@ int btrfs_balance(struct btrfs_fs_info *
+ 	mutex_lock(&fs_info->balance_mutex);
+ 	if (ret == -ECANCELED && atomic_read(&fs_info->balance_pause_req))
+ 		btrfs_info(fs_info, "balance: paused");
+-	else if (ret == -ECANCELED && atomic_read(&fs_info->balance_cancel_req))
++	/*
++	 * Balance can be canceled by:
++	 *
++	 * - Regular cancel request
++	 *   Then ret == -ECANCELED and balance_cancel_req > 0
++	 *
++	 * - Fatal signal to "btrfs" process
++	 *   Either the signal caught by wait_reserve_ticket() and callers
++	 *   got -EINTR, or caught by btrfs_should_cancel_balance() and
++	 *   got -ECANCELED.
++	 *   Either way, in this case balance_cancel_req = 0, and
++	 *   ret == -EINTR or ret == -ECANCELED.
++	 *
++	 * So here we only check the return value to catch canceled balance.
++	 */
++	else if (ret == -ECANCELED || ret == -EINTR)
+ 		btrfs_info(fs_info, "balance: canceled");
+ 	else
+ 		btrfs_info(fs_info, "balance: ended with status: %d", ret);
 
 
