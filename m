@@ -2,62 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFAB424BA48
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B31D24BA4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730589AbgHTME5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:04:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45958 "EHLO mx2.suse.de"
+        id S1730671AbgHTMFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:05:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728855AbgHTMEj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 08:04:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6909CAC23;
-        Thu, 20 Aug 2020 12:05:04 +0000 (UTC)
-Date:   Thu, 20 Aug 2020 14:04:36 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Baoquan He <bhe@redhat.com>, Dave Young <dyoung@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>, kexec@lists.infradead.org,
-        linux-doc@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
+        id S1730654AbgHTMFE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 08:05:04 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0079C22B4D;
+        Thu, 20 Aug 2020 12:05:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597925103;
+        bh=NJ32BmIFgihAAZhAhjKEFu2hdvQMQjj1VvlRmUqjHBs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Q743CPKtujSGcC+4e2ik8LeVHUPU/2B1w5nONEeqilx5rCLH9MrAGiuYC6KT3q/gW
+         U0UytFKtLy+XiIA0XprDzUtuJuXNOKWGJWO8ncJkmeAZRYKf39YJS6rIdZ6NCJ9Pz2
+         WmI3VlaBYWKJckJa/OZqOumdEL8zActRq4YLXlyo=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] docs: vmcoreinfo: add lockless printk ringbuffer
- vmcoreinfo
-Message-ID: <20200820120436.GH4353@alley>
-References: <20200814213316.6394-1-john.ogness@linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200814213316.6394-1-john.ogness@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH] ath9k_htc: Do not select MAC80211_LEDS by default
+Date:   Thu, 20 Aug 2020 14:04:44 +0200
+Message-Id: <20200820120444.8809-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2020-08-14 23:39:16, John Ogness wrote:
-> With the introduction of the lockless printk ringbuffer, the
-> VMCOREINFO relating to the kernel log buffer was changed. Update the
-> documentation to match those changes.
-> 
-> Fixes: ("printk: use the lockless ringbuffer")
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
-> Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+The ath9k_htc driver hides all LEDs related code behind
+CONFIG_MAC80211_LEDS ifdefs so it does not really require the
+MAC80211_LEDS.  The code builds and works just fine.  Convert the
+"select" into "imply" to allow disabling LED trigger when not needed.
 
-Looks nice.
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ drivers/net/wireless/ath/ath9k/Kconfig | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+diff --git a/drivers/net/wireless/ath/ath9k/Kconfig b/drivers/net/wireless/ath/ath9k/Kconfig
+index d5e9af2dddd8..5effb3886631 100644
+--- a/drivers/net/wireless/ath/ath9k/Kconfig
++++ b/drivers/net/wireless/ath/ath9k/Kconfig
+@@ -177,10 +177,10 @@ config ATH9K_HTC
+ 	tristate "Atheros HTC based wireless cards support"
+ 	depends on USB && MAC80211
+ 	select ATH9K_HW
+-	select MAC80211_LEDS
+-	select LEDS_CLASS
+-	select NEW_LEDS
+ 	select ATH9K_COMMON
++	imply NEW_LEDS
++	imply LEDS_CLASS
++	imply MAC80211_LEDS
+ 	help
+ 	  Support for Atheros HTC based cards.
+ 	  Chipsets supported: AR9271
+-- 
+2.17.1
 
-Thanks a lot for taking care of the crashdump related stuff.
-It helps a lot.
-
-Best Regards,
-Petr
