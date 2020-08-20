@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3DB024BC76
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C9524BC6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730220AbgHTMqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:46:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46780 "EHLO mail.kernel.org"
+        id S1730189AbgHTMp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:45:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729300AbgHTJph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:45:37 -0400
+        id S1729301AbgHTJpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:45:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 18C2B22DA7;
-        Thu, 20 Aug 2020 09:45:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2AA3022D2B;
+        Thu, 20 Aug 2020 09:45:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916708;
-        bh=T2ekYwKMcI9We4WiQ3R5yX/we3RWSUTHfzAp2i/HlHA=;
+        s=default; t=1597916711;
+        bh=/8y6GF8k8VJess5C3NwZYNhibmbPHmu8ALAtqTv5b1s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bZKqTwClYBrdMTx709v+83qcT6Y278SQCgeof4tZ4G4jWBqHJpiS1cTwMW9bmqPrP
-         LeYzBtXghk0tmUH94SxXabDFTJFhsWFkFkRx8IvJrUo+0Oh6MNk2vcuU/CG92gsjcR
-         wo6X82mpdzOER9SV1SAhp/74br3YXwb1y6fAXL74=
+        b=Kcscj+16oMDwWZtPRqj3txrhzBf2FfjG3DGXjTipfwBRvcNb4IToLJv9LAW2dEKyc
+         dN3CtfTBNb5zAocz/OPsskHNuixT0ktkIaRSaXzYF9DgiVf4sJt1Yf8jbnAnhKSpr7
+         jNF4JwnX4+rv7wJ2K4ulc8+wGD8KRsbOKWVyb3WE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.4 019/152] btrfs: add missing check for nocow and compression inode flags
-Date:   Thu, 20 Aug 2020 11:19:46 +0200
-Message-Id: <20200820091554.630806711@linuxfoundation.org>
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.4 020/152] btrfs: avoid possible signal interruption of btrfs_drop_snapshot() on relocation tree
+Date:   Thu, 20 Aug 2020 11:19:47 +0200
+Message-Id: <20200820091554.678666788@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
 References: <20200820091553.615456912@linuxfoundation.org>
@@ -42,111 +43,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Sterba <dsterba@suse.com>
+From: Qu Wenruo <wqu@suse.com>
 
-commit f37c563bab4297024c300b05c8f48430e323809d upstream.
+commit f3e3d9cc35252a70a2fd698762c9687718268ec6 upstream.
 
-User Forza reported on IRC that some invalid combinations of file
-attributes are accepted by chattr.
+[BUG]
+There is a bug report about bad signal timing could lead to read-only
+fs during balance:
 
-The NODATACOW and compression file flags/attributes are mutually
-exclusive, but they could be set by 'chattr +c +C' on an empty file. The
-nodatacow will be in effect because it's checked first in
-btrfs_run_delalloc_range.
+  BTRFS info (device xvdb): balance: start -d -m -s
+  BTRFS info (device xvdb): relocating block group 73001861120 flags metadata
+  BTRFS info (device xvdb): found 12236 extents, stage: move data extents
+  BTRFS info (device xvdb): relocating block group 71928119296 flags data
+  BTRFS info (device xvdb): found 3 extents, stage: move data extents
+  BTRFS info (device xvdb): found 3 extents, stage: update data pointers
+  BTRFS info (device xvdb): relocating block group 60922265600 flags metadata
+  BTRFS: error (device xvdb) in btrfs_drop_snapshot:5505: errno=-4 unknown
+  BTRFS info (device xvdb): forced readonly
+  BTRFS info (device xvdb): balance: ended with status: -4
 
-Extend the flag validation to catch the following cases:
+[CAUSE]
+The direct cause is the -EINTR from the following call chain when a
+fatal signal is pending:
 
-  - input flags are conflicting
-  - old and new flags are conflicting
-  - initialize the local variable with inode flags after inode ls locked
+ relocate_block_group()
+ |- clean_dirty_subvols()
+    |- btrfs_drop_snapshot()
+       |- btrfs_start_transaction()
+          |- btrfs_delayed_refs_rsv_refill()
+             |- btrfs_reserve_metadata_bytes()
+                |- __reserve_metadata_bytes()
+                   |- wait_reserve_ticket()
+                      |- prepare_to_wait_event();
+                      |- ticket->error = -EINTR;
 
-Inode attributes take precedence over mount options and are an
-independent setting.
+Normally this behavior is fine for most btrfs_start_transaction()
+callers, as they need to catch any other error, same for the signal, and
+exit ASAP.
 
-Nocompress would be a no-op with nodatacow, but we don't want to mix
-any compression-related options with nodatacow.
+However for balance, especially for the clean_dirty_subvols() case, we're
+already doing cleanup works, getting -EINTR from btrfs_drop_snapshot()
+could cause a lot of unexpected problems.
 
-CC: stable@vger.kernel.org # 4.4+
+>From the mentioned forced read-only report, to later balance error due
+to half dropped reloc trees.
+
+[FIX]
+Fix this problem by using btrfs_join_transaction() if
+btrfs_drop_snapshot() is called from relocation context.
+
+Since btrfs_join_transaction() won't get interrupted by signal, we can
+continue the cleanup.
+
+CC: stable@vger.kernel.org # 5.4+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>3
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/ioctl.c |   30 ++++++++++++++++++++++--------
- 1 file changed, 22 insertions(+), 8 deletions(-)
+ fs/btrfs/extent-tree.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -167,8 +167,11 @@ static int btrfs_ioctl_getflags(struct f
- 	return 0;
- }
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -5221,7 +5221,14 @@ int btrfs_drop_snapshot(struct btrfs_roo
+ 		goto out;
+ 	}
  
--/* Check if @flags are a supported and valid set of FS_*_FL flags */
--static int check_fsflags(unsigned int flags)
-+/*
-+ * Check if @flags are a supported and valid set of FS_*_FL flags and that
-+ * the old and new flags are not conflicting
-+ */
-+static int check_fsflags(unsigned int old_flags, unsigned int flags)
- {
- 	if (flags & ~(FS_IMMUTABLE_FL | FS_APPEND_FL | \
- 		      FS_NOATIME_FL | FS_NODUMP_FL | \
-@@ -177,9 +180,19 @@ static int check_fsflags(unsigned int fl
- 		      FS_NOCOW_FL))
- 		return -EOPNOTSUPP;
- 
-+	/* COMPR and NOCOMP on new/old are valid */
- 	if ((flags & FS_NOCOMP_FL) && (flags & FS_COMPR_FL))
- 		return -EINVAL;
- 
-+	if ((flags & FS_COMPR_FL) && (flags & FS_NOCOW_FL))
-+		return -EINVAL;
-+
-+	/* NOCOW and compression options are mutually exclusive */
-+	if ((old_flags & FS_NOCOW_FL) && (flags & (FS_COMPR_FL | FS_NOCOMP_FL)))
-+		return -EINVAL;
-+	if ((flags & FS_NOCOW_FL) && (old_flags & (FS_COMPR_FL | FS_NOCOMP_FL)))
-+		return -EINVAL;
-+
- 	return 0;
- }
- 
-@@ -193,7 +206,7 @@ static int btrfs_ioctl_setflags(struct f
- 	unsigned int fsflags, old_fsflags;
- 	int ret;
- 	const char *comp = NULL;
--	u32 binode_flags = binode->flags;
-+	u32 binode_flags;
- 
- 	if (!inode_owner_or_capable(inode))
- 		return -EPERM;
-@@ -204,22 +217,23 @@ static int btrfs_ioctl_setflags(struct f
- 	if (copy_from_user(&fsflags, arg, sizeof(fsflags)))
- 		return -EFAULT;
- 
--	ret = check_fsflags(fsflags);
--	if (ret)
--		return ret;
--
- 	ret = mnt_want_write_file(file);
- 	if (ret)
- 		return ret;
- 
- 	inode_lock(inode);
--
- 	fsflags = btrfs_mask_fsflags_for_type(inode, fsflags);
- 	old_fsflags = btrfs_inode_flags_to_fsflags(binode->flags);
-+
- 	ret = vfs_ioc_setflags_prepare(inode, old_fsflags, fsflags);
- 	if (ret)
- 		goto out_unlock;
- 
-+	ret = check_fsflags(old_fsflags, fsflags);
-+	if (ret)
-+		goto out_unlock;
-+
-+	binode_flags = binode->flags;
- 	if (fsflags & FS_SYNC_FL)
- 		binode_flags |= BTRFS_INODE_SYNC;
- 	else
+-	trans = btrfs_start_transaction(tree_root, 0);
++	/*
++	 * Use join to avoid potential EINTR from transaction start. See
++	 * wait_reserve_ticket and the whole reservation callchain.
++	 */
++	if (for_reloc)
++		trans = btrfs_join_transaction(tree_root);
++	else
++		trans = btrfs_start_transaction(tree_root, 0);
+ 	if (IS_ERR(trans)) {
+ 		err = PTR_ERR(trans);
+ 		goto out_free;
 
 
