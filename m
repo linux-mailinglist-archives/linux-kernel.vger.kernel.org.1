@@ -2,120 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D805E24B021
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C049724B02D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726387AbgHTH20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 03:28:26 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:28129 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbgHTH2Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 03:28:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1597908505; x=1629444505;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=+z5gRR9lDvZgFOK5wYX/pVE2K58JbzzBVI8/7gKt8aU=;
-  b=QRdScb1QLjI7RFNgy/FaHLCiWqApUr5vMxxlgIMuvp1uT0q+Rl1o1qIY
-   3B8f1pWOKq5hcssNp6PZTKJHGooBHsU0593o91z2j6VTgFXtQfUJnYR6o
-   oYO/YjxDzY4B5y9lv3ctz/yazmmWOdRHVzf6By67E0Am6I2vRtBZsproj
-   U=;
-X-IronPort-AV: E=Sophos;i="5.76,332,1592870400"; 
-   d="scan'208";a="48764235"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 20 Aug 2020 07:28:24 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com (Postfix) with ESMTPS id 4879FA261F;
-        Thu, 20 Aug 2020 07:28:11 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 20 Aug 2020 07:28:11 +0000
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.183) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 20 Aug 2020 07:27:54 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     SeongJae Park <sjpark@amazon.com>
-CC:     <akpm@linux-foundation.org>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
-        <dwmw@amazon.com>, <fan.du@intel.com>, <foersleo@amazon.de>,
-        <gthelen@google.com>, <irogers@google.com>, <jolsa@redhat.com>,
-        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
-        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
-        <peterz@infradead.org>, <rdunlap@infradead.org>,
-        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
-        <rppt@kernel.org>, <sblbir@amazon.com>, <shakeelb@google.com>,
-        <shuah@kernel.org>, <sj38.park@gmail.com>, <snu@amazon.de>,
-        <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
-        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v20 00/15] Introduce Data Access MONitor (DAMON)
-Date:   Thu, 20 Aug 2020 09:27:38 +0200
-Message-ID: <20200820072738.27602-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200817105137.19296-1-sjpark@amazon.com>
+        id S1726735AbgHTHaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 03:30:15 -0400
+Received: from mga03.intel.com ([134.134.136.65]:26636 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725820AbgHTHaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 03:30:14 -0400
+IronPort-SDR: 8bBDYl41AyOx7NDwWl206ipj+SdbHB5Qhpi5KFLKwK5o04ELkZXK2noc/khjdoEsg7IIxDTmVg
+ FbF0k9dXR1pA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9718"; a="155225865"
+X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
+   d="scan'208";a="155225865"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2020 00:30:13 -0700
+IronPort-SDR: V0bNGK+unpSW220Mv1SyOPGZuGAnuaTlwOCopnjwvfUbDavGw+l76ufZosNkFRFVu19fHTMzAO
+ M3q/6zpbWVFg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
+   d="scan'208";a="497513364"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga006.fm.intel.com with ESMTP; 20 Aug 2020 00:30:13 -0700
+Received: from [10.249.73.140] (ekotax-MOBL.gar.corp.intel.com [10.249.73.140])
+        by linux.intel.com (Postfix) with ESMTP id 0595558045A;
+        Thu, 20 Aug 2020 00:30:11 -0700 (PDT)
+Subject: Re: [PATCH] dt-bindings: PCI: intel,lgm-pcie: Fix matching on all
+ snps,dw-pcie instances
+To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci@vger.kernel.org
+References: <20200819222002.2059917-1-robh@kernel.org>
+From:   Dilip Kota <eswara.kota@linux.intel.com>
+Message-ID: <e089ab71-e203-7d24-c1a5-6213c925b153@linux.intel.com>
+Date:   Thu, 20 Aug 2020 15:30:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.183]
-X-ClientProxiedBy: EX13D05UWB004.ant.amazon.com (10.43.161.208) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+In-Reply-To: <20200819222002.2059917-1-robh@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 Aug 2020 12:51:22 +0200 SeongJae Park <sjpark@amazon.com> wrote:
 
-> From: SeongJae Park <sjpark@amazon.de>
-> 
-> Changes from Previous Version
-> =============================
-> 
-> - Place 'CREATE_TRACE_POINTS' after '#include' statements (Steven Rostedt)
-> - Support large record file (Alkaid)
-> - Place 'put_pid()' of virtual monitoring targets in 'cleanup' callback
-> - Avoid conflict between concurrent DAMON users
-> - Update evaluation result document
-> 
-> Introduction
-> ============
-> 
-> DAMON is a data access monitoring framework subsystem for the Linux kernel.
-> The core mechanisms of DAMON called 'region based sampling' and 'adaptive
-> regions adjustment' (refer to 'mechanisms.rst' in the 11th patch of this
-> patchset for the detail) make it
-> 
->  - accurate (The monitored information is useful for DRAM level memory
->    management. It might not appropriate for Cache-level accuracy, though.),
->  - light-weight (The monitoring overhead is low enough to be applied online
->    while making no impact on the performance of the target workloads.), and
->  - scalable (the upper-bound of the instrumentation overhead is controllable
->    regardless of the size of target workloads.).
-> 
-> Using this framework, therefore, the kernel's core memory management mechanisms
-> such as reclamation and THP can be optimized for better memory management.  The
-> experimental memory management optimization works that incurring high
-> instrumentation overhead will be able to have another try.  In user space,
-> meanwhile, users who have some special workloads will be able to write
-> personalized tools or applications for deeper understanding and specialized
-> optimizations of their systems.
+On 8/20/2020 6:20 AM, Rob Herring wrote:
+> The intel,lgm-pcie binding is matching on all snps,dw-pcie instances
+> which is wrong. Add a custom 'select' entry to fix this.
+>
+> Fixes: e54ea45a4955 ("dt-bindings: PCI: intel: Add YAML schemas for the PCIe RC controller")
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Dilip Kota <eswara.kota@linux.intel.com>
+> Cc: linux-pci@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> I'll take this via the DT tree.
+>
+> Rob
+>
+>   Documentation/devicetree/bindings/pci/intel-gw-pcie.yaml | 8 ++++++++
+>   1 file changed, 8 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/pci/intel-gw-pcie.yaml b/Documentation/devicetree/bindings/pci/intel-gw-pcie.yaml
+> index 64b2c64ca806..a1e2be737eec 100644
+> --- a/Documentation/devicetree/bindings/pci/intel-gw-pcie.yaml
+> +++ b/Documentation/devicetree/bindings/pci/intel-gw-pcie.yaml
+> @@ -9,6 +9,14 @@ title: PCIe RC controller on Intel Gateway SoCs
+>   maintainers:
+>     - Dilip Kota <eswara.kota@linux.intel.com>
+>   
+> +select:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        const: intel,lgm-pcie
+> +  required:
+> +    - compatible
+> +
+>   properties:
+>     compatible:
+>       items:
 
-DAMON will be presented in the next week LPC[1].  To be prepared for a screen
-sharing error (if I get no such error, I will do a live-demo), I recorded a
-simple demo video.  I would like to share it here to help your easier
-understanding of DAMON.
+Reviewed-by: Dilip Kota <eswara.kota@linux.intel.com>
 
-    https://youtu.be/l63eqbVBZRY
-
-[1] https://linuxplumbersconf.org/event/7/contributions/659/
-
-
-Thanks,
-SeongJae Park
+Regards,
+Dilip
