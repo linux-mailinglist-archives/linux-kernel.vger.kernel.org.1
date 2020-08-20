@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E3824B40B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1EE24B40C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730244AbgHTJ4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:56:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39024 "EHLO mail.kernel.org"
+        id S1730249AbgHTJ4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:56:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730219AbgHTJzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:55:51 -0400
+        id S1730230AbgHTJz5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:55:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30CAC2067C;
-        Thu, 20 Aug 2020 09:55:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D8FD2078D;
+        Thu, 20 Aug 2020 09:55:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917350;
-        bh=n7wzPQ3M0ERQ59sffFXEWhQWFOF761BQYOzZAulle1Q=;
+        s=default; t=1597917356;
+        bh=nJMVz16Z//JCjia4/16HUl7e5sIkoC/e/9LkHub4gic=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HWNBt75kHj/CQVv8X8Dv/YKdtDC34vHwTzPKk0l3RXdtuZXiR+y0xwZ/p9HhoW0+V
-         ZTkP7LB6zjHRBFLmhIoM+eihkYagqobeFrXG124RvO5HYFOREx2jabXBA1nA4yPVl0
-         nrrVd7OamLH23iqlB/9dSkeQRFpv3qJ1DD28yLVo=
+        b=DKUahjyCM1bXgTWzuXKTuXhns3AiHZPD9XlQRPemFO9xQexHSN4UbHOigEsQ2LGwF
+         eQ28hUNob3m+QZjqnH3Clnh3vTSYr8h7dsfZvCjv4KsszpnxWV5ocIan1ydOBKnpg5
+         CUus+U9Ol2YCFdjtK0xfF27dk9QcAkY81hZxRe/U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Qiujun Huang <anenbupt@gmail.com>,
+        Evgeniy Dushistov <dushistov@mail.ru>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 79/92] fs/minix: fix block limit check for V1 filesystems
-Date:   Thu, 20 Aug 2020 11:22:04 +0200
-Message-Id: <20200820091541.764302089@linuxfoundation.org>
+Subject: [PATCH 4.19 81/92] fs/ufs: avoid potential u32 multiplication overflow
+Date:   Thu, 20 Aug 2020 11:22:06 +0200
+Message-Id: <20200820091541.867416468@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
 References: <20200820091537.490965042@linuxfoundation.org>
@@ -47,41 +47,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 0a12c4a8069607247cb8edc3b035a664e636fd9a ]
+[ Upstream commit 88b2e9b06381551b707d980627ad0591191f7a2d ]
 
-The minix filesystem reads its maximum file size from its on-disk
-superblock.  This value isn't necessarily a multiple of the block size.
-When it's not, the V1 block mapping code doesn't allow mapping the last
-possible block.  Commit 6ed6a722f9ab ("minixfs: fix block limit check")
-fixed this in the V2 mapping code.  Fix it in the V1 mapping code too.
+The 64 bit ino is being compared to the product of two u32 values,
+however, the multiplication is being performed using a 32 bit multiply so
+there is a potential of an overflow.  To be fully safe, cast uspi->s_ncg
+to a u64 to ensure a 64 bit multiplication occurs to avoid any chance of
+overflow.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Eric Biggers <ebiggers@google.com>
+Fixes: f3e2a520f5fb ("ufs: NFS support")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Qiujun Huang <anenbupt@gmail.com>
-Link: http://lkml.kernel.org/r/20200628060846.682158-6-ebiggers@kernel.org
+Cc: Evgeniy Dushistov <dushistov@mail.ru>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Link: http://lkml.kernel.org/r/20200715170355.1081713-1-colin.king@canonical.com
+Addresses-Coverity: ("Unintentional integer overflow")
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/minix/itree_v1.c | 2 +-
+ fs/ufs/super.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/minix/itree_v1.c b/fs/minix/itree_v1.c
-index c0d418209ead1..405573a79aab4 100644
---- a/fs/minix/itree_v1.c
-+++ b/fs/minix/itree_v1.c
-@@ -29,7 +29,7 @@ static int block_to_path(struct inode * inode, long block, int offsets[DEPTH])
- 	if (block < 0) {
- 		printk("MINIX-fs: block_to_path: block %ld < 0 on dev %pg\n",
- 			block, inode->i_sb->s_bdev);
--	} else if (block >= inode->i_sb->s_maxbytes/BLOCK_SIZE) {
-+	} else if ((u64)block * BLOCK_SIZE >= inode->i_sb->s_maxbytes) {
- 		if (printk_ratelimit())
- 			printk("MINIX-fs: block_to_path: "
- 			       "block %ld too big on dev %pg\n",
+diff --git a/fs/ufs/super.c b/fs/ufs/super.c
+index a4e07e910f1b4..6e59e45d7bfbd 100644
+--- a/fs/ufs/super.c
++++ b/fs/ufs/super.c
+@@ -100,7 +100,7 @@ static struct inode *ufs_nfs_get_inode(struct super_block *sb, u64 ino, u32 gene
+ 	struct ufs_sb_private_info *uspi = UFS_SB(sb)->s_uspi;
+ 	struct inode *inode;
+ 
+-	if (ino < UFS_ROOTINO || ino > uspi->s_ncg * uspi->s_ipg)
++	if (ino < UFS_ROOTINO || ino > (u64)uspi->s_ncg * uspi->s_ipg)
+ 		return ERR_PTR(-ESTALE);
+ 
+ 	inode = ufs_iget(sb, ino);
 -- 
 2.25.1
 
