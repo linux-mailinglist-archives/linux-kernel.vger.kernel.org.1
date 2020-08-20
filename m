@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6055D24B54A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69F1324B4EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731564AbgHTKV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:21:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48584 "EHLO mail.kernel.org"
+        id S1728464AbgHTKOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:14:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731567AbgHTKVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:21:45 -0400
+        id S1730918AbgHTKOE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:14:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13B9A20658;
-        Thu, 20 Aug 2020 10:21:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 504C52075E;
+        Thu, 20 Aug 2020 10:14:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918904;
-        bh=tUvYHjtllxbZQA4qI9CH65ubKgchGIjpKsJigpM5qm0=;
+        s=default; t=1597918443;
+        bh=+A7dgYrhmSz0Iyr0Yl0y4R65UKkk26bWGrDgGtQ//yU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kTKVtLZjKUlcMMnU7nWeICrqH+ZmPpWTp142HG2/wGkwn/J/n4JhcwNjfeiutCpVX
-         u4PEnfA/jZBOlh/HDVHBnHNPhX97lIjtkwcrx6KkQjSAzaFdB/TAiM2LFcn+O/i3O3
-         yiEeG3vk4C4rokbwZeGWS81cuyUshs/+CGz1g3w0=
+        b=Gk3T4OW3R5xl3oyP8aKOIqcVtZ/pbWQH+IRXm4NLmfhnXr1nNJHUMUSPFYvqZtYR5
+         m+TvSnjdk7UiMtiO05PgNyYcx3VImXyjnYH/IoNx7BKYCAeb/wsMC2TDpOA53Nt3FJ
+         5sLZdTr1H8l7rk0uO0n3Qjlg+X3DW1vqLjEXAH5g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Tretter <m.tretter@pengutronix.de>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 068/149] drm/debugfs: fix plain echo to connector "force" attribute
-Date:   Thu, 20 Aug 2020 11:22:25 +0200
-Message-Id: <20200820092129.031478447@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 4.14 171/228] btrfs: fix memory leaks after failure to lookup checksums during inode logging
+Date:   Thu, 20 Aug 2020 11:22:26 +0200
+Message-Id: <20200820091616.128171630@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
-References: <20200820092125.688850368@linuxfoundation.org>
+In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
+References: <20200820091607.532711107@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,51 +45,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Tretter <m.tretter@pengutronix.de>
+From: Filipe Manana <fdmanana@suse.com>
 
-[ Upstream commit c704b17071c4dc571dca3af4e4151dac51de081a ]
+commit 4f26433e9b3eb7a55ed70d8f882ae9cd48ba448b upstream.
 
-Using plain echo to set the "force" connector attribute fails with
--EINVAL, because echo appends a newline to the output.
+While logging an inode, at copy_items(), if we fail to lookup the checksums
+for an extent we release the destination path, free the ins_data array and
+then return immediately. However a previous iteration of the for loop may
+have added checksums to the ordered_sums list, in which case we leak the
+memory used by them.
 
-Replace strcmp with sysfs_streq to also accept strings that end with a
-newline.
+So fix this by making sure we iterate the ordered_sums list and free all
+its checksums before returning.
 
-v2: use sysfs_streq instead of stripping trailing whitespace
+Fixes: 3650860b90cc2a ("Btrfs: remove almost all of the BUG()'s from tree-log.c")
+CC: stable@vger.kernel.org # 4.4+
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
-Reviewed-by: Jani Nikula <jani.nikula@intel.com>
-Signed-off-by: Emil Velikov <emil.l.velikov@gmail.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20170817104307.17124-1-m.tretter@pengutronix.de
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_debugfs.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/btrfs/tree-log.c |    8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
-index 3bcf8e6a85b35..5b0fdcd0b63fd 100644
---- a/drivers/gpu/drm/drm_debugfs.c
-+++ b/drivers/gpu/drm/drm_debugfs.c
-@@ -290,13 +290,13 @@ static ssize_t connector_write(struct file *file, const char __user *ubuf,
- 
- 	buf[len] = '\0';
- 
--	if (!strcmp(buf, "on"))
-+	if (sysfs_streq(buf, "on"))
- 		connector->force = DRM_FORCE_ON;
--	else if (!strcmp(buf, "digital"))
-+	else if (sysfs_streq(buf, "digital"))
- 		connector->force = DRM_FORCE_ON_DIGITAL;
--	else if (!strcmp(buf, "off"))
-+	else if (sysfs_streq(buf, "off"))
- 		connector->force = DRM_FORCE_OFF;
--	else if (!strcmp(buf, "unspecified"))
-+	else if (sysfs_streq(buf, "unspecified"))
- 		connector->force = DRM_FORCE_UNSPECIFIED;
- 	else
- 		return -EINVAL;
--- 
-2.25.1
-
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -3854,11 +3854,8 @@ static noinline int copy_items(struct bt
+ 						fs_info->csum_root,
+ 						ds + cs, ds + cs + cl - 1,
+ 						&ordered_sums, 0);
+-				if (ret) {
+-					btrfs_release_path(dst_path);
+-					kfree(ins_data);
+-					return ret;
+-				}
++				if (ret)
++					break;
+ 			}
+ 		}
+ 	}
+@@ -3871,7 +3868,6 @@ static noinline int copy_items(struct bt
+ 	 * we have to do this after the loop above to avoid changing the
+ 	 * log tree while trying to change the log tree.
+ 	 */
+-	ret = 0;
+ 	while (!list_empty(&ordered_sums)) {
+ 		struct btrfs_ordered_sum *sums = list_entry(ordered_sums.next,
+ 						   struct btrfs_ordered_sum,
 
 
