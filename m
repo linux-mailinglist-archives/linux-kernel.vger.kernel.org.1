@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814A024B846
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6BC24B810
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730750AbgHTKIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:08:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41408 "EHLO mail.kernel.org"
+        id S1729909AbgHTKKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:10:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730724AbgHTKIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:08:43 -0400
+        id S1730829AbgHTKJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:09:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A9250206DA;
-        Thu, 20 Aug 2020 10:08:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69BE520738;
+        Thu, 20 Aug 2020 10:09:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918123;
-        bh=Z791Hw3g3+zFUkOer+xUwNtRyRJX1ucFG2EkH+hTXxs=;
+        s=default; t=1597918186;
+        bh=LthndcixR4U/nU7TTeLj3tEDBebmVUh9b9bTx4WDgoU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wKmlvJP3pbYJXvVsDpAwyF0DGUG/XBUCX0TxEowj9s27nhRJ7bUa24jT4cJxBIF+M
-         //vejf3oVlFUiSanmbBW3PYLmFDbkzOBq4up5wyIs8p67ViaTPOH1L0ew9keRJwB7X
-         sJXZ83HEkY3EHfyAuBnR2l7nvkYigac/bcJvJ7fE=
+        b=ttTQnuG7SMFOKtiVSMAvtpYeP5CByuKz3D7Hy+oc/KVVhmws4o9lesHLwpVGgfiAX
+         JWaAF+Or5UyDEsAw7czYlyLM9ADqFQsJPd7rYhxiHmrTR99hVLXmVPwrazE/zrGehQ
+         lSwu3HS1JrzVZygW1NbYvViDcVTpAJ4Hnb3wkdik=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Finn Thain <fthain@telegraphics.com.au>,
-        Stan Johnson <userm57@yahoo.com>,
-        Joshua Thompson <funaho@jurai.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Lu Wei <luwei32@huawei.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 053/228] m68k: mac: Dont send IOP message until channel is idle
-Date:   Thu, 20 Aug 2020 11:20:28 +0200
-Message-Id: <20200820091610.265182186@linuxfoundation.org>
+Subject: [PATCH 4.14 055/228] platform/x86: intel-hid: Fix return value check in check_acpi_dev()
+Date:   Thu, 20 Aug 2020 11:20:30 +0200
+Message-Id: <20200820091610.356658308@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
 References: <20200820091607.532711107@linuxfoundation.org>
@@ -46,67 +45,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Finn Thain <fthain@telegraphics.com.au>
+From: Lu Wei <luwei32@huawei.com>
 
-[ Upstream commit aeb445bf2194d83e12e85bf5c65baaf1f093bd8f ]
+[ Upstream commit 71fbe886ce6dd0be17f20aded9c63fe58edd2806 ]
 
-In the following sequence of calls, iop_do_send() gets called when the
-"send" channel is not in the IOP_MSG_IDLE state:
+In the function check_acpi_dev(), if it fails to create
+platform device, the return value is ERR_PTR() or NULL.
+Thus it must use IS_ERR_OR_NULL() to check return value.
 
-	iop_ism_irq()
-		iop_handle_send()
-			(msg->handler)()
-				iop_send_message()
-			iop_do_send()
-
-Avoid this by testing the channel state before calling iop_do_send().
-
-When sending, and iop_send_queue is empty, call iop_do_send() because
-the channel is idle. If iop_send_queue is not empty, iop_do_send() will
-get called later by iop_handle_send().
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-Tested-by: Stan Johnson <userm57@yahoo.com>
-Cc: Joshua Thompson <funaho@jurai.org>
-Link: https://lore.kernel.org/r/6d667c39e53865661fa5a48f16829d18ed8abe54.1590880333.git.fthain@telegraphics.com.au
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Fixes: ecc83e52b28c ("intel-hid: new hid event driver for hotkeys")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Lu Wei <luwei32@huawei.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/m68k/mac/iop.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/platform/x86/intel-hid.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/m68k/mac/iop.c b/arch/m68k/mac/iop.c
-index 4c1e606e7d03b..fb61af5ac4ab8 100644
---- a/arch/m68k/mac/iop.c
-+++ b/arch/m68k/mac/iop.c
-@@ -416,7 +416,8 @@ static void iop_handle_send(uint iop_num, uint chan)
- 	msg->status = IOP_MSGSTATUS_UNUSED;
- 	msg = msg->next;
- 	iop_send_queue[iop_num][chan] = msg;
--	if (msg) iop_do_send(msg);
-+	if (msg && iop_readb(iop, IOP_ADDR_SEND_STATE + chan) == IOP_MSG_IDLE)
-+		iop_do_send(msg);
- }
+diff --git a/drivers/platform/x86/intel-hid.c b/drivers/platform/x86/intel-hid.c
+index e34fd70b67afe..3add7b3f9658b 100644
+--- a/drivers/platform/x86/intel-hid.c
++++ b/drivers/platform/x86/intel-hid.c
+@@ -366,7 +366,7 @@ check_acpi_dev(acpi_handle handle, u32 lvl, void *context, void **rv)
+ 		return AE_OK;
  
- /*
-@@ -490,16 +491,12 @@ int iop_send_message(uint iop_num, uint chan, void *privdata,
- 
- 	if (!(q = iop_send_queue[iop_num][chan])) {
- 		iop_send_queue[iop_num][chan] = msg;
-+		iop_do_send(msg);
- 	} else {
- 		while (q->next) q = q->next;
- 		q->next = msg;
- 	}
- 
--	if (iop_readb(iop_base[iop_num],
--	    IOP_ADDR_SEND_STATE + chan) == IOP_MSG_IDLE) {
--		iop_do_send(msg);
--	}
--
- 	return 0;
- }
+ 	if (acpi_match_device_ids(dev, ids) == 0)
+-		if (acpi_create_platform_device(dev, NULL))
++		if (!IS_ERR_OR_NULL(acpi_create_platform_device(dev, NULL)))
+ 			dev_info(&dev->dev,
+ 				 "intel-hid: created platform device\n");
  
 -- 
 2.25.1
