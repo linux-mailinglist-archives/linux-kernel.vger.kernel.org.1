@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD02E24B771
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 879C824B76E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731820AbgHTKyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:54:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41650 "EHLO
+        id S1730170AbgHTKyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:54:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731709AbgHTKxf (ORCPT
+        with ESMTP id S1731220AbgHTKxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:53:35 -0400
+        Thu, 20 Aug 2020 06:53:37 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F32A6C061386
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:53:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F11C061388
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:53:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=jYYP9GTLyVSJp8LN9bICgXy2/uwcgvDb255B1zonkS4=; b=tRwwshVwuG78pcLYnAbGkhfK/R
-        LroT4BZ2MI049/QCn9ZwxpLS8/ATqchfnE/7mib+yxS3TiOhNk/qn46HNzZu2Vf+phzMeDbQLLXpx
-        FsLklf5mGZ3XL+zfxNTfQg5jwsQQ3L1GemItqRVYb3eZsxzr0oXdCpbnHYtuCA3WAk7tTi/2iXM0l
-        LuEH0BPLf+WviuL5QZaZ0KOiRzFk8Oi6giSfmyTe7RIa/Vn+qjfTqg693TxWB0cKAc4j97CXJqkBE
-        ByNKJ/yK75xHm2Ade31Smm3znOTTLEqRdyzzUUKDX+wHivBH5FNmHzZEYf8DAzdaB8sCfKLpVctwm
-        U+m1CB0g==;
+        bh=XScWW+VDxJfM3kZOnRAy8sSy8A+dFKOXsHQbSKIdGYU=; b=RjT7Y8jm720oCr/g1lYdpD3QA1
+        +/0XGKh0HCOt96nSsLowTfWV1cQs/R0mKeVp5ElIi7FvVX8u/crvSGFPzsxSr6il32k0kj+lHSe1R
+        /1EUfixm/E/2v+/wPnQcEXXPrU1kF0ymcjUuI4iIdNbLriaZ78/ektkic96heEugPV5GPoUef7PkL
+        ifudZiLuahGwtmyBqITvAPj7edZjIRXnK5IyTmnDqyUqM1oJn2zkgZNt0qVoWhqavjOyZIXwbefFn
+        DOnyPExROWs9iFzMVEP9gHcZuvJtKPEngk/nA/wG3ZiXH7fbrE0DXfqfIwb4CE033O5hvCvB8eel2
+        4Ime/BDg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k8iBU-0007Xs-VM; Thu, 20 Aug 2020 10:52:50 +0000
+        id 1k8iBU-0007Xr-Ux; Thu, 20 Aug 2020 10:52:50 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5AF0B305E21;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5E0BA306099;
         Thu, 20 Aug 2020 12:52:36 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 440AD2C38827C; Thu, 20 Aug 2020 12:52:36 +0200 (CEST)
-Message-ID: <20200820104905.236173163@infradead.org>
+        id 492D32C38827E; Thu, 20 Aug 2020 12:52:36 +0200 (CEST)
+Message-ID: <20200820104905.294802764@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 20 Aug 2020 12:38:35 +0200
+Date:   Thu, 20 Aug 2020 12:38:36 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org, Kyle Huey <me@kylehuey.com>,
@@ -57,7 +57,7 @@ Cc:     linux-kernel@vger.kernel.org, Kyle Huey <me@kylehuey.com>,
         Andy Lutomirski <luto@kernel.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: [RFC][PATCH 3/7] x86/debug: Move kprobe_debug_handler() into exc_debug_kernel()
+Subject: [RFC][PATCH 4/7] x86/debug: Move historical SYSENTER junk into exc_debug_kernel()
 References: <20200820103832.486877479@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -69,49 +69,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/include/asm/kprobes.h |    4 ++++
- arch/x86/kernel/traps.c        |   10 ++++------
- 2 files changed, 8 insertions(+), 6 deletions(-)
+ arch/x86/kernel/traps.c |   24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
---- a/arch/x86/include/asm/kprobes.h
-+++ b/arch/x86/include/asm/kprobes.h
-@@ -106,5 +106,9 @@ extern int kprobe_exceptions_notify(stru
- extern int kprobe_int3_handler(struct pt_regs *regs);
- extern int kprobe_debug_handler(struct pt_regs *regs);
- 
-+#else
-+
-+static inline int kprobe_debug_handler(struct pt_regs *regs) { return 0; }
-+
- #endif /* CONFIG_KPROBES */
- #endif /* _ASM_X86_KPROBES_H */
 --- a/arch/x86/kernel/traps.c
 +++ b/arch/x86/kernel/traps.c
-@@ -806,12 +806,6 @@ static void handle_debug(struct pt_regs
- 	/* Store the virtualized DR6 value */
- 	tsk->thread.debugreg6 = dr6;
+@@ -820,18 +820,6 @@ static void handle_debug(struct pt_regs
+ 		goto out;
+ 	}
  
--#ifdef CONFIG_KPROBES
--	if (kprobe_debug_handler(regs)) {
--		return;
+-	if (WARN_ON_ONCE((dr6 & DR_STEP) && !user_mode(regs))) {
+-		/*
+-		 * Historical junk that used to handle SYSENTER single-stepping.
+-		 * This should be unreachable now.  If we survive for a while
+-		 * without anyone hitting this warning, we'll turn this into
+-		 * an oops.
+-		 */
+-		tsk->thread.debugreg6 &= ~DR_STEP;
+-		set_tsk_thread_flag(tsk, TIF_SINGLESTEP);
+-		regs->flags &= ~X86_EFLAGS_TF;
 -	}
--#endif
 -
- 	if (notify_die(DIE_DEBUG, "debug", regs, (long)&dr6, 0,
- 		       SIGTRAP) == NOTIFY_STOP) {
- 		return;
-@@ -877,8 +871,12 @@ static __always_inline void exc_debug_ke
- 	if ((dr6 & DR_STEP) && is_sysenter_singlestep(regs))
- 		dr6 &= ~DR_STEP;
+ 	si_code = get_si_code(tsk->thread.debugreg6);
+ 	if (tsk->thread.debugreg6 & (DR_STEP | DR_TRAP_BITS) || user_icebp)
+ 		send_sigtrap(regs, 0, si_code);
+@@ -874,6 +862,18 @@ static __always_inline void exc_debug_ke
+ 	if (kprobe_debug_handler(regs))
+ 		goto out;
  
-+	if (kprobe_debug_handler(regs))
-+		goto out;
++	if (WARN_ON_ONCE(dr6 & DR_STEP)) {
++		/*
++		 * Historical junk that used to handle SYSENTER single-stepping.
++		 * This should be unreachable now.  If we survive for a while
++		 * without anyone hitting this warning, we'll turn this into
++		 * an oops.
++		 */
++		dr6 &= ~DR_STEP;
++		set_thread_flag(TIF_SINGLESTEP);
++		regs->flags &= ~X86_EFLAGS_TF;
++	}
 +
  	handle_debug(regs, dr6, false);
  
-+out:
- 	instrumentation_end();
- 	idtentry_exit_nmi(regs, irq_state);
- 
+ out:
 
 
