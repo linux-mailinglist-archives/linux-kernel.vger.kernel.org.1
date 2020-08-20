@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A78B324BFEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2105F24BFF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727082AbgHTN7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:59:18 -0400
+        id S1728267AbgHTN72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:59:28 -0400
 Received: from mail.kernel.org ([198.145.29.99]:60240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726840AbgHTJYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:24:11 -0400
+        id S1726948AbgHTJYW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:24:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 084F822CA1;
-        Thu, 20 Aug 2020 09:24:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F4CA22CA1;
+        Thu, 20 Aug 2020 09:24:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915450;
-        bh=qa81hbu0Agd/1qd/MfyLyNtBj4h/m46pZZEe2uwWhqE=;
+        s=default; t=1597915461;
+        bh=2zNQvTpp5k7RZuk30s8XlS+dyW8wMKyqVTDGMrdR33E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xOzSdEncSINDNwHu2uiwaPeJ87sUpWFTeXBQ65JUgWIW3U/uUx2QLdINQDfRxS95F
-         bIEsS01nCTb3TCBxgHysgjYfL2zQW35+AmIyETb7rupSOSaZAiAgTZ9i27zsJzw5br
-         W5oWLrgr0Y4F54ys8x+Uyftw0g0EsvgrifUZLORE=
+        b=FBaNdzMt0QgXEbuZRvOVck65hi1qjXYMfHcVPRBia/GBPSWx82XnNOlQX7c9rYqeJ
+         N2F4lTb8E4Y+O/naDc5YVYYZOb6ZacQk7T1auKHJoG9LPnL270b0uCHsVXDwESFxHu
+         SMc6O26YAX/YR799jd/V6n5l6hYC6wqUhCMFydRY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
         Filipe Manana <fdmanana@suse.com>,
         David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.8 018/232] btrfs: only commit the delayed inode when doing a full fsync
-Date:   Thu, 20 Aug 2020 11:17:49 +0200
-Message-Id: <20200820091613.620881772@linuxfoundation.org>
+Subject: [PATCH 5.8 021/232] btrfs: remove no longer needed use of log_writers for the log root tree
+Date:   Thu, 20 Aug 2020 11:17:52 +0200
+Message-Id: <20200820091613.767414822@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
 References: <20200820091612.692383444@linuxfoundation.org>
@@ -46,27 +46,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-commit 8c8648dd1f6d62aeb912deeb788b6ac33cb782e7 upstream.
+commit a93e01682e283f6de09d6ce8f805dc52a2e942fb upstream.
 
-Commit 2c2c452b0cafdc ("Btrfs: fix fsync when extend references are added
-to an inode") forced a commit of the delayed inode when logging an inode
-in order to ensure we would end up logging the inode item during a full
-fsync. By committing the delayed inode, we updated the inode item in the
-fs/subvolume tree and then later when copying items from leafs modified in
-the current transaction into the log tree (with copy_inode_items_to_log())
-we ended up copying the inode item from the fs/subvolume tree into the log
-tree. Logging an up to date version of the inode item is required to make
-sure at log replay time we get the link count fixup triggered among other
-things (replay xattr deletes, etc). The test case generic/040 from fstests
-exercises the bug which that commit fixed.
+When syncing the log, we used to update the log root tree without holding
+neither the log_mutex of the subvolume root nor the log_mutex of log root
+tree.
 
-However for a fast fsync we don't need to commit the delayed inode because
-we always log an up to date version of the inode item based on the struct
-btrfs_inode we have in-memory. We started doing this for fast fsyncs since
-commit e4545de5b035c7 ("Btrfs: fix fsync data loss after append write").
+We used to have two critical sections delimited by the log_mutex of the
+log root tree, so in the first one we incremented the log_writers of the
+log root tree and on the second one we decremented it and waited for the
+log_writers counter to go down to zero. This was because the update of
+the log root tree happened between the two critical sections.
 
-So just stop committing the delayed inode if we are doing a fast fsync,
-we are only wasting time and adding contention on fs/subvolume tree.
+The use of two critical sections allowed a little bit more of parallelism
+and required the use of the log_writers counter, necessary to make sure
+we didn't miss any log root tree update when we have multiple tasks trying
+to sync the log in parallel.
+
+However after commit 06989c799f0481 ("Btrfs: fix race updating log root
+item during fsync") the log root tree update was moved into a critical
+section delimited by the subvolume's log_mutex. Later another commit
+moved the log tree update from that critical section into the second
+critical section delimited by the log_mutex of the log root tree. Both
+commits addressed different bugs.
+
+The end result is that the first critical section delimited by the
+log_mutex of the log root tree became pointless, since there's nothing
+done between it and the second critical section, we just have an unlock
+of the log_mutex followed by a lock operation. This means we can merge
+both critical sections, as the first one does almost nothing now, and we
+can stop using the log_writers counter of the log root tree, which was
+incremented in the first critical section and decremented in the second
+criticial section, used to make sure no one in the second critical section
+started writeback of the log root tree before some other task updated it.
+
+So just remove the mutex_unlock() followed by mutex_lock() of the log root
+tree, as well as the use of the log_writers counter for the log root tree.
 
 This patch is part of a series that has the following patches:
 
@@ -92,40 +107,59 @@ Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/tree-log.c |   12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ fs/btrfs/ctree.h    |    1 +
+ fs/btrfs/tree-log.c |   13 -------------
+ 2 files changed, 1 insertion(+), 13 deletions(-)
 
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -1059,6 +1059,7 @@ struct btrfs_root {
+ 	wait_queue_head_t log_writer_wait;
+ 	wait_queue_head_t log_commit_wait[2];
+ 	struct list_head log_ctxs[2];
++	/* Used only for log trees of subvolumes, not for the log root tree */
+ 	atomic_t log_writers;
+ 	atomic_t log_commit[2];
+ 	/* Used only for log trees of subvolumes, not for the log root tree */
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -5130,7 +5130,7 @@ static int btrfs_log_inode(struct btrfs_
- 	struct btrfs_key max_key;
- 	struct btrfs_root *log = root->log_root;
- 	int err = 0;
--	int ret;
-+	int ret = 0;
- 	bool fast_search = false;
- 	u64 ino = btrfs_ino(inode);
- 	struct extent_map_tree *em_tree = &inode->extent_tree;
-@@ -5167,14 +5167,16 @@ static int btrfs_log_inode(struct btrfs_
+@@ -3116,28 +3116,17 @@ int btrfs_sync_log(struct btrfs_trans_ha
+ 	btrfs_init_log_ctx(&root_log_ctx, NULL);
  
+ 	mutex_lock(&log_root_tree->log_mutex);
+-	atomic_inc(&log_root_tree->log_writers);
+ 
+ 	index2 = log_root_tree->log_transid % 2;
+ 	list_add_tail(&root_log_ctx.list, &log_root_tree->log_ctxs[index2]);
+ 	root_log_ctx.log_transid = log_root_tree->log_transid;
+ 
+-	mutex_unlock(&log_root_tree->log_mutex);
+-
+-	mutex_lock(&log_root_tree->log_mutex);
+-
  	/*
- 	 * Only run delayed items if we are a dir or a new file.
--	 * Otherwise commit the delayed inode only, which is needed in
--	 * order for the log replay code to mark inodes for link count
--	 * fixup (create temporary BTRFS_TREE_LOG_FIXUP_OBJECTID items).
-+	 * Otherwise commit the delayed inode only if the full sync flag is set,
-+	 * as we want to make sure an up to date version is in the subvolume
-+	 * tree so copy_inode_items_to_log() / copy_items() can find it and copy
-+	 * it to the log tree. For a non full sync, we always log the inode item
-+	 * based on the in-memory struct btrfs_inode which is always up to date.
+ 	 * Now we are safe to update the log_root_tree because we're under the
+ 	 * log_mutex, and we're a current writer so we're holding the commit
+ 	 * open until we drop the log_mutex.
  	 */
- 	if (S_ISDIR(inode->vfs_inode.i_mode) ||
- 	    inode->generation > fs_info->last_trans_committed)
- 		ret = btrfs_commit_inode_delayed_items(trans, inode);
--	else
-+	else if (test_bit(BTRFS_INODE_NEEDS_FULL_SYNC, &inode->runtime_flags))
- 		ret = btrfs_commit_inode_delayed_inode(inode);
- 
+ 	ret = update_log_root(trans, log, &new_root_item);
+-
+-	if (atomic_dec_and_test(&log_root_tree->log_writers)) {
+-		/* atomic_dec_and_test implies a barrier */
+-		cond_wake_up_nomb(&log_root_tree->log_writer_wait);
+-	}
+-
  	if (ret) {
+ 		if (!list_empty(&root_log_ctx.list))
+ 			list_del_init(&root_log_ctx.list);
+@@ -3183,8 +3172,6 @@ int btrfs_sync_log(struct btrfs_trans_ha
+ 				root_log_ctx.log_transid - 1);
+ 	}
+ 
+-	wait_for_writer(log_root_tree);
+-
+ 	/*
+ 	 * now that we've moved on to the tree of log tree roots,
+ 	 * check the full commit flag again
 
 
