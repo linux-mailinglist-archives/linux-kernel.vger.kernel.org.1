@@ -2,77 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C537624C74E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 23:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E23124C74B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 23:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728799AbgHTVsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 17:48:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728085AbgHTVsp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 17:48:45 -0400
-Received: from localhost (cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net [82.37.168.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 269C6214F1;
-        Thu, 20 Aug 2020 21:48:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597960125;
-        bh=Bx31esN2mPf7lmCBEMBgqpTqFifE4a0F/RsNqDpOaDA=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=ijTfjR6OsaRfWZCaNUqnmjQfbXkI/pNj2mfXAmnTHt7+p1c31nIWgmezY7zBpgrq4
-         jsl+vrAJnzjtLwvyj3+dpHeObs0YJ1zZZrb6Lwh/TJd1OGQ+Sap6ulXiYeOmbT2etC
-         SaIdajnNskIp53GCoLvacKm8lrrbUJUCaZVI0Rbw=
-Date:   Thu, 20 Aug 2020 22:48:12 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Patrick Lai <plai@codeaurora.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        alsa-devel@alsa-project.org, Colin King <colin.king@canonical.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Ajit Pandey <ajitp@codeaurora.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rohit kumar <rohitkr@codeaurora.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-In-Reply-To: <20200819160103.164893-1-colin.king@canonical.com>
-References: <20200819160103.164893-1-colin.king@canonical.com>
-Subject: Re: [PATCH][next] ASoC: qcom: add missing out of memory check on drvdata->clks allocation
-Message-Id: <159796008815.44152.14467897806901945440.b4-ty@kernel.org>
+        id S1727835AbgHTVsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 17:48:19 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:39228 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725977AbgHTVsS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 17:48:18 -0400
+Received: from viremana-dev.fwjladdvyuiujdukmejncen4mf.xx.internal.cloudapp.net (unknown [13.66.132.26])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 2A73920B4908;
+        Thu, 20 Aug 2020 14:48:18 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2A73920B4908
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1597960098;
+        bh=1poYvZ5PwBVampeoy9/r+Ck8lpluSiK2TwYPa0QxQy8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C+4fabQdO2f9Gi1nCABCKRSBGNcAGeU4oo14Py/MMLDNnBNIKqj3OFQZ61+9Wg5i2
+         gaQuzc/mbeCMLWFy8RxFyWmGXC8ajz2oAuL7bJ2FhCfI4G+dRQXF9E0JNv+0Doo8rU
+         8Wq9iYUqrHsbTA1Y7Gbp/8JvM4SxZSnghiwAV3lI=
+Date:   Thu, 20 Aug 2020 21:48:17 +0000
+From:   Vineeth Pillai <viremana@linux.microsoft.com>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] hv_utils: drain the timesync packets on onchannelcallback
+Message-ID: <20200820214817.ndjmzanwmdm5qfvf@viremana-dev.fwjladdvyuiujdukmejncen4mf.xx.internal.cloudapp.net>
+References: <20200819174740.47291-1-viremana@linux.microsoft.com>
+ <MW2PR2101MB1052254C5ED7C587E548DB3AD75A0@MW2PR2101MB1052.namprd21.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW2PR2101MB1052254C5ED7C587E548DB3AD75A0@MW2PR2101MB1052.namprd21.prod.outlook.com>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Aug 2020 17:01:03 +0100, Colin King wrote:
-> Currently drvdata->clks is not being checked for an allocation failure,
-> leading to potential null pointer dereferencing. Fix this by adding a
-> check and returning -ENOMEM if an error occurred.
 
-Applied to
+Hi Michael,
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: qcom: add missing out of memory check on drvdata->clks allocation
-      commit: a467f2f8ad5f9a21f92b3fa6ad2aac90fa7054fe
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> > +			pr_warn("TimeSync IC pkt recv failed (Err: %d)\n",
+> > +				ret);
+> 
+> Let's use pr_warn_once().
+> 
+> If there's a packet at the head of the ring buffer that specifies a bogus length,
+> we could take the error path.  But the bad packet stays at the head of the ring buffer,
+> so if we end up back here again, we'll spit out the same error message.  We
+> actually should not end up here again because Hyper-V shouldn't interrupt
+> when adding a packet to a non-empty ring buffer, but who knows what might
+> happen.
+> 
+Valid point, will fix this in the next iteration.
 
 Thanks,
-Mark
+Vineeth
