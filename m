@@ -2,115 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4328124BF5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BCC524BF63
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729998AbgHTNqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:46:34 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:47108 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729819AbgHTNoO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 09:44:14 -0400
-Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k8kr8-0007Yq-07; Thu, 20 Aug 2020 13:43:50 +0000
-Date:   Thu, 20 Aug 2020 15:43:48 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>, mingo@kernel.org,
-        peterz@infradead.org, tglx@linutronix.de, esyr@redhat.com,
-        christian@kellner.me, areber@redhat.com, shakeelb@google.com,
-        cyphar@cyphar.com, adobriyan@gmail.com, akpm@linux-foundation.org,
-        ebiederm@xmission.com, gladkov.alexey@gmail.com, walken@google.com,
-        daniel.m.jordan@oracle.com, avagin@gmail.com,
-        bernd.edlinger@hotmail.de, john.johansen@canonical.com,
-        laoar.shao@gmail.com, timmurray@google.com, minchan@kernel.org,
-        kernel-team@android.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 1/1] mm, oom_adj: don't loop through tasks in
- __set_oom_adj when not necessary
-Message-ID: <20200820134348.tmoydr2aawghyfkt@wittgenstein>
-References: <20200820002053.1424000-1-surenb@google.com>
- <20200820105555.GA4546@redhat.com>
- <20200820111349.GE5033@dhcp22.suse.cz>
- <20200820113023.rjxque4jveo4nj5o@wittgenstein>
- <20200820114245.GH5033@dhcp22.suse.cz>
- <20200820124109.GI5033@dhcp22.suse.cz>
+        id S1728646AbgHTNsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:48:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728153AbgHTNsD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 09:48:03 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D6CC208DB;
+        Thu, 20 Aug 2020 13:48:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597931283;
+        bh=0cUhTu2kcvkdAMXDD1Ej4fAur3dt50eKRxc2djb/ufs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YxOvmp69gqUfe9ze3lIxSTrJkUjCChxP5m09Az4de/WNFcztdDT0XC5y2O6c4OSfS
+         E62SrOpobxYpa8gQiYCxcUZgRk/5E6PMYqNLmVbJMzbVm5jz6qju5J1UfXRavcg+58
+         dZynIvxSXYIIDu0cYTa0VZt47sOgHnehFuOINxX0=
+Date:   Thu, 20 Aug 2020 15:48:23 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Michael Kelley <mikelley@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Wei Hu <weh@microsoft.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: Re: [PATCH 5.8 164/232] PCI: hv: Fix a timing issue which causes
+ kdump to fail occasionally
+Message-ID: <20200820134823.GA1533625@kroah.com>
+References: <20200820091612.692383444@linuxfoundation.org>
+ <20200820091620.754492308@linuxfoundation.org>
+ <MW2PR2101MB10522B1242B1309BF35EFFEED75A0@MW2PR2101MB1052.namprd21.prod.outlook.com>
+ <20200820132924.GA8670@sasha-vm>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200820124109.GI5033@dhcp22.suse.cz>
+In-Reply-To: <20200820132924.GA8670@sasha-vm>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 02:41:09PM +0200, Michal Hocko wrote:
-> On Thu 20-08-20 13:42:56, Michal Hocko wrote:
-> > On Thu 20-08-20 13:30:23, Christian Brauner wrote:
-> [...]
-> > > trying to rely on set_bit() and test_bit() in copy_mm() being atomic and
-> > > then calling it where Oleg said after the point of no return.
+On Thu, Aug 20, 2020 at 09:29:24AM -0400, Sasha Levin wrote:
+> On Thu, Aug 20, 2020 at 01:00:51PM +0000, Michael Kelley wrote:
+> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org> Sent: Thursday, August 20, 2020 2:20 AM
+> > > 
+> > > From: Wei Hu <weh@microsoft.com>
+> > > 
+> > > [ Upstream commit d6af2ed29c7c1c311b96dac989dcb991e90ee195 ]
+> > > 
+> > > Kdump could fail sometime on Hyper-V guest because the retry in
+> > > hv_pci_enter_d0() releases child device structures in hv_pci_bus_exit().
+> > > 
+> > > Although there is a second asynchronous device relations message sending
+> > > from the host, if this message arrives to the guest after
+> > > hv_send_resource_allocated() is called, the retry would fail.
+> > > 
+> > > Fix the problem by moving retry to hv_pci_probe() and start the retry
+> > > from hv_pci_query_relations() call.  This will cause a device relations
+> > > message to arrive to the guest synchronously; the guest would then be
+> > > able to rebuild the child device structures before calling
+> > > hv_send_resource_allocated().
+> > > 
+> > > Link:
+> > > https://lore.kernel.org/linux-hyperv/20200727071731.18516-1-weh@microsoft.com/
+> > > Fixes: c81992e7f4aa ("PCI: hv: Retry PCI bus D0 entry on invalid device state")
+> > > Signed-off-by: Wei Hu <weh@microsoft.com>
+> > > [lorenzo.pieralisi@arm.com: fixed a comment and commit log]
+> > > Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> > > Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+> > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > > ---
+> > >  drivers/pci/controller/pci-hyperv.c | 71 +++++++++++++++--------------
+> > >  1 file changed, 37 insertions(+), 34 deletions(-)
+> > > 
 > > 
-> > No objections.
+> > This patch came through three days ago, and I indicated then that we don't want
+> > it backported to 5.8 and earlier.
 > 
-> Would something like the following work for you?
-> 
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 9177a76bf840..25b83f0912a6 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -1403,15 +1403,6 @@ static int copy_mm(unsigned long clone_flags, struct task_struct *tsk)
->  	if (clone_flags & CLONE_VM) {
->  		mmget(oldmm);
->  		mm = oldmm;
-> -		if (!(clone_flags & CLONE_SIGHAND)) {
-> -			/* We need to synchronize with __set_oom_adj */
-> -			mutex_lock(&oom_adj_lock);
-> -			set_bit(MMF_PROC_SHARED, &mm->flags);
-> -			/* Update the values in case they were changed after copy_signal */
-> -			tsk->signal->oom_score_adj = current->signal->oom_score_adj;
-> -			tsk->signal->oom_score_adj_min = current->signal->oom_score_adj_min;
-> -			mutex_unlock(&oom_adj_lock);
-> -		}
->  		goto good_mm;
->  	}
->  
-> @@ -1818,6 +1809,19 @@ static __always_inline void delayed_free_task(struct task_struct *tsk)
->  		free_task(tsk);
->  }
->  
-> +static void copy_oom_score_adj(u64 clone_flags, struct task_struct *tsk)
-> +{
-> +	if ((clone_flags & (CLONE_VM | CLONE_THREAD | CLONE_VFORK)) == CLONE_VM) {
-> +		/* We need to synchronize with __set_oom_adj */
-> +		mutex_lock(&oom_adj_lock);
-> +		set_bit(MMF_PROC_SHARED, &mm->flags);
-> +		/* Update the values in case they were changed after copy_signal */
-> +		tsk->signal->oom_score_adj = current->signal->oom_score_adj;
-> +		tsk->signal->oom_score_adj_min = current->signal->oom_score_adj_min;
-> +		mutex_unlock(&oom_adj_lock);
-> +	}
-> +}
-> +
->  /*
->   * This creates a new process as a copy of the old one,
->   * but does not actually start it yet.
-> @@ -2290,6 +2294,8 @@ static __latent_entropy struct task_struct *copy_process(
->  	trace_task_newtask(p, clone_flags);
->  	uprobe_copy_process(p, clone_flags);
->  
-> +	copy_oom_score_adj(clone_flags, p);
-> +
->  	return p;
->  
->  bad_fork_cancel_cgroup:
+> Uh, I re-added it by mistake, sorry.
 
-This should work, yes.
-And keeps the patch reasonably small.
-
-Christian
+Ok, let me go drop it...
