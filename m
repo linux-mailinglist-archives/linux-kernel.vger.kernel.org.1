@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2954224B3CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5D324B354
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:45:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729940AbgHTJw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:52:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34442 "EHLO mail.kernel.org"
+        id S1729240AbgHTJpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:45:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729930AbgHTJwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:52:55 -0400
+        id S1729024AbgHTJnA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:43:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F2D1B2067C;
-        Thu, 20 Aug 2020 09:52:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDCD92173E;
+        Thu, 20 Aug 2020 09:42:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917174;
-        bh=WFe0tgNbzxSOUsl4jNl26+8rxpegbb7YMIfqndC5tFc=;
+        s=default; t=1597916579;
+        bh=eZkObATRnty0e7Ot5i/YiemRbDKHfPtcLirUorAG2kc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vfcm3m0y3YfJEbLfXZkumtes2abBSKrvTl6td/rwPgnxBtfU6dtjCKDbb9lZHNuK1
-         9Fbai48iSGnTBABrEU5PHXMAxvx9HHR5RqZCy2o9y/rMRCEYmowm6E0E+u8vy3h9L9
-         gBP4/B2VtbyqPpF5IXK0KBhuocl2fN7Gkj5ga/u8=
+        b=JdNfKuqgiDffIL5egFDwPeDk0sBmYWzciiL8yeR3JCzRiQWV87RCLoBJdobKdCu0x
+         54d6j4avf3MzOVkDWmYSvc1FaLC4IeKa+8ervDCE6NSsi/E4sT6D1VCjF0+6HJcVMU
+         6HhztpTQxeren6nQTEGYuonlixToOl92ovFS9HXU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Coly Li <colyli@suse.de>,
-        Jens Axboe <axboe@kernel.dk>, Ken Raeburn <raeburn@redhat.com>
-Subject: [PATCH 4.19 30/92] bcache: fix overflow in offset_to_stripe()
+        stable@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Qiujun Huang <anenbupt@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 178/204] fs/minix: remove expected error message in block_to_path()
 Date:   Thu, 20 Aug 2020 11:21:15 +0200
-Message-Id: <20200820091539.154745687@linuxfoundation.org>
+Message-Id: <20200820091615.096124816@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
-References: <20200820091537.490965042@linuxfoundation.org>
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,136 +47,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Coly Li <colyli@suse.de>
+From: Eric Biggers <ebiggers@google.com>
 
-commit 7a1481267999c02abf4a624515c1b5c7c1fccbd6 upstream.
+[ Upstream commit f666f9fb9a36f1c833b9d18923572f0e4d304754 ]
 
-offset_to_stripe() returns the stripe number (in type unsigned int) from
-an offset (in type uint64_t) by the following calculation,
-	do_div(offset, d->stripe_size);
-For large capacity backing device (e.g. 18TB) with small stripe size
-(e.g. 4KB), the result is 4831838208 and exceeds UINT_MAX. The actual
-returned value which caller receives is 536870912, due to the overflow.
+When truncating a file to a size within the last allowed logical block,
+block_to_path() is called with the *next* block.  This exceeds the limit,
+causing the "block %ld too big" error message to be printed.
 
-Indeed in bcache_device_init(), bcache_device->nr_stripes is limited in
-range [1, INT_MAX]. Therefore all valid stripe numbers in bcache are
-in range [0, bcache_dev->nr_stripes - 1].
+This case isn't actually an error; there are just no more blocks past that
+point.  So, remove this error message.
 
-This patch adds a upper limition check in offset_to_stripe(): the max
-valid stripe number should be less than bcache_device->nr_stripes. If
-the calculated stripe number from do_div() is equal to or larger than
-bcache_device->nr_stripe, -EINVAL will be returned. (Normally nr_stripes
-is less than INT_MAX, exceeding upper limitation doesn't mean overflow,
-therefore -EOVERFLOW is not used as error code.)
-
-This patch also changes nr_stripes' type of struct bcache_device from
-'unsigned int' to 'int', and return value type of offset_to_stripe()
-from 'unsigned int' to 'int', to match their exact data ranges.
-
-All locations where bcache_device->nr_stripes and offset_to_stripe() are
-referenced also get updated for the above type change.
-
-Reported-and-tested-by: Ken Raeburn <raeburn@redhat.com>
-Signed-off-by: Coly Li <colyli@suse.de>
-Cc: stable@vger.kernel.org
-Link: https://bugzilla.redhat.com/show_bug.cgi?id=1783075
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Qiujun Huang <anenbupt@gmail.com>
+Link: http://lkml.kernel.org/r/20200628060846.682158-7-ebiggers@kernel.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/bcache/bcache.h    |    2 +-
- drivers/md/bcache/writeback.c |   14 +++++++++-----
- drivers/md/bcache/writeback.h |   19 +++++++++++++++++--
- 3 files changed, 27 insertions(+), 8 deletions(-)
+ fs/minix/itree_v1.c | 12 ++++++------
+ fs/minix/itree_v2.c | 12 ++++++------
+ 2 files changed, 12 insertions(+), 12 deletions(-)
 
---- a/drivers/md/bcache/bcache.h
-+++ b/drivers/md/bcache/bcache.h
-@@ -264,7 +264,7 @@ struct bcache_device {
- #define BCACHE_DEV_UNLINK_DONE		2
- #define BCACHE_DEV_WB_RUNNING		3
- #define BCACHE_DEV_RATE_DW_RUNNING	4
--	unsigned int		nr_stripes;
-+	int			nr_stripes;
- 	unsigned int		stripe_size;
- 	atomic_t		*stripe_sectors_dirty;
- 	unsigned long		*full_dirty_stripes;
---- a/drivers/md/bcache/writeback.c
-+++ b/drivers/md/bcache/writeback.c
-@@ -506,15 +506,19 @@ void bcache_dev_sectors_dirty_add(struct
- 				  uint64_t offset, int nr_sectors)
- {
- 	struct bcache_device *d = c->devices[inode];
--	unsigned int stripe_offset, stripe, sectors_dirty;
-+	unsigned int stripe_offset, sectors_dirty;
-+	int stripe;
- 
- 	if (!d)
- 		return;
- 
-+	stripe = offset_to_stripe(d, offset);
-+	if (stripe < 0)
-+		return;
-+
- 	if (UUID_FLASH_ONLY(&c->uuids[inode]))
- 		atomic_long_add(nr_sectors, &c->flash_dev_dirty_sectors);
- 
--	stripe = offset_to_stripe(d, offset);
- 	stripe_offset = offset & (d->stripe_size - 1);
- 
- 	while (nr_sectors) {
-@@ -554,12 +558,12 @@ static bool dirty_pred(struct keybuf *bu
- static void refill_full_stripes(struct cached_dev *dc)
- {
- 	struct keybuf *buf = &dc->writeback_keys;
--	unsigned int start_stripe, stripe, next_stripe;
-+	unsigned int start_stripe, next_stripe;
-+	int stripe;
- 	bool wrapped = false;
- 
- 	stripe = offset_to_stripe(&dc->disk, KEY_OFFSET(&buf->last_scanned));
--
--	if (stripe >= dc->disk.nr_stripes)
-+	if (stripe < 0)
- 		stripe = 0;
- 
- 	start_stripe = stripe;
---- a/drivers/md/bcache/writeback.h
-+++ b/drivers/md/bcache/writeback.h
-@@ -28,10 +28,22 @@ static inline uint64_t bcache_dev_sector
- 	return ret;
- }
- 
--static inline unsigned int offset_to_stripe(struct bcache_device *d,
-+static inline int offset_to_stripe(struct bcache_device *d,
- 					uint64_t offset)
- {
- 	do_div(offset, d->stripe_size);
-+
-+	/* d->nr_stripes is in range [1, INT_MAX] */
-+	if (unlikely(offset >= d->nr_stripes)) {
-+		pr_err("Invalid stripe %llu (>= nr_stripes %d).\n",
-+			offset, d->nr_stripes);
-+		return -EINVAL;
+diff --git a/fs/minix/itree_v1.c b/fs/minix/itree_v1.c
+index 405573a79aab4..1fed906042aa8 100644
+--- a/fs/minix/itree_v1.c
++++ b/fs/minix/itree_v1.c
+@@ -29,12 +29,12 @@ static int block_to_path(struct inode * inode, long block, int offsets[DEPTH])
+ 	if (block < 0) {
+ 		printk("MINIX-fs: block_to_path: block %ld < 0 on dev %pg\n",
+ 			block, inode->i_sb->s_bdev);
+-	} else if ((u64)block * BLOCK_SIZE >= inode->i_sb->s_maxbytes) {
+-		if (printk_ratelimit())
+-			printk("MINIX-fs: block_to_path: "
+-			       "block %ld too big on dev %pg\n",
+-				block, inode->i_sb->s_bdev);
+-	} else if (block < 7) {
++		return 0;
 +	}
++	if ((u64)block * BLOCK_SIZE >= inode->i_sb->s_maxbytes)
++		return 0;
 +
-+	/*
-+	 * Here offset is definitly smaller than INT_MAX,
-+	 * return it as int will never overflow.
-+	 */
- 	return offset;
- }
- 
-@@ -39,7 +51,10 @@ static inline bool bcache_dev_stripe_dir
- 					   uint64_t offset,
- 					   unsigned int nr_sectors)
- {
--	unsigned int stripe = offset_to_stripe(&dc->disk, offset);
-+	int stripe = offset_to_stripe(&dc->disk, offset);
++	if (block < 7) {
+ 		offsets[n++] = block;
+ 	} else if ((block -= 7) < 512) {
+ 		offsets[n++] = 7;
+diff --git a/fs/minix/itree_v2.c b/fs/minix/itree_v2.c
+index ee8af2f9e2828..9d00f31a2d9d1 100644
+--- a/fs/minix/itree_v2.c
++++ b/fs/minix/itree_v2.c
+@@ -32,12 +32,12 @@ static int block_to_path(struct inode * inode, long block, int offsets[DEPTH])
+ 	if (block < 0) {
+ 		printk("MINIX-fs: block_to_path: block %ld < 0 on dev %pg\n",
+ 			block, sb->s_bdev);
+-	} else if ((u64)block * (u64)sb->s_blocksize >= sb->s_maxbytes) {
+-		if (printk_ratelimit())
+-			printk("MINIX-fs: block_to_path: "
+-			       "block %ld too big on dev %pg\n",
+-				block, sb->s_bdev);
+-	} else if (block < DIRCOUNT) {
++		return 0;
++	}
++	if ((u64)block * (u64)sb->s_blocksize >= sb->s_maxbytes)
++		return 0;
 +
-+	if (stripe < 0)
-+		return false;
- 
- 	while (1) {
- 		if (atomic_read(dc->disk.stripe_sectors_dirty + stripe))
++	if (block < DIRCOUNT) {
+ 		offsets[n++] = block;
+ 	} else if ((block -= DIRCOUNT) < INDIRCOUNT(sb)) {
+ 		offsets[n++] = DIRCOUNT;
+-- 
+2.25.1
+
 
 
