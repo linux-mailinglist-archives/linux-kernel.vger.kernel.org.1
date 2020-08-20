@@ -2,132 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B8224C613
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 21:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FFD424C61B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 21:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbgHTTDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 15:03:16 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:34600 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725977AbgHTTDQ (ORCPT
+        id S1727991AbgHTTE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 15:04:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727884AbgHTTEv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 15:03:16 -0400
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 5861929ABEB;
-        Thu, 20 Aug 2020 20:03:14 +0100 (BST)
-Date:   Thu, 20 Aug 2020 21:03:11 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Parshuram Raju Thombare <pthombar@cadence.com>
-Cc:     "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
-        "vitor.soares@synopsys.com" <vitor.soares@synopsys.com>,
-        Przemyslaw Gaj <pgaj@cadence.com>,
-        "linux-i3c@lists.infradead.org" <linux-i3c@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Milind Parab <mparab@cadence.com>,
-        "praneeth@ti.com" <praneeth@ti.com>
-Subject: Re: [PATCH v3] i3c: master: fix for SETDASA and DAA process
-Message-ID: <20200820210311.5934fc2a@collabora.com>
-In-Reply-To: <DM5PR07MB3196085F8628478E7E2F5FC8C15A0@DM5PR07MB3196.namprd07.prod.outlook.com>
-References: <1597930706-15744-1-git-send-email-pthombar@cadence.com>
-        <20200820164820.4fec97b3@collabora.com>
-        <DM5PR07MB3196085F8628478E7E2F5FC8C15A0@DM5PR07MB3196.namprd07.prod.outlook.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Thu, 20 Aug 2020 15:04:51 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B4CC061387
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 12:04:50 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id l23so2484036edv.11
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 12:04:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xswSx5sBRdGqWy7m+JAEwKsyUNhOueCNUf2Bs425COY=;
+        b=YgjQySlg/iJIcLjVeYMYfs6nHZ0TBX0Osdu5/PR0ioBTn1qODpMbK2EvPQHig4GYxX
+         3WqnjZQFDbDAJOmcrdXxf9yGlAUj6v9DGoFpNDoQYOpcL6UJ/mWdSdo+iexH/aZk2MQw
+         vzWyUetDMt9/nhrDW7Jz7QSVwNgmiP+PPChHP8KG3i0kmjU665QRM1KUHpfzQtCWp0nR
+         ej5+V+jONMstbL1hYaigI9G9+K1lQePpUskJuhCCauQM6/FVNpiH+5cGabC/a2DSndz2
+         4l/DzmqjsMkSjLmuLFt/MM4eqvsC8rkiJUBmlpfNSHGRwQq9K+/xkrnR79i9uBrhBG6f
+         yi6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xswSx5sBRdGqWy7m+JAEwKsyUNhOueCNUf2Bs425COY=;
+        b=cWvd3zKhH5esXrXo0VglV+/2FxFoMd58zmZQOlil46lI1mRyIDjWUjHaFNksBNdA2o
+         +/bIc8+zPO/AuXvCP397R3gFDobfx2/HKRWU2q27ty26RnQap/tCb2G992061YQeo/c1
+         BSzCSG9o7PJMOCwe9tAuF39uQsUuN8ULhazbh8EneX420gcTu+jQ81T7Qx/WsNY264/H
+         FgmZcWEIhffpX3Od3WKu9m0FxAFp5VDEScAz7rRkFzSbi0r9ueXPIWVPtNRlHRNiqblO
+         L71eZ8tyG0siNX5dYirm4KkMKf9Lu+kDZxxV1vOJRaPog1yHtqZeJTuhSW93snlJDR73
+         MLOw==
+X-Gm-Message-State: AOAM531CzFfXdnwqG8w2hefncvsqLH0kdhXXniX1Xrc6k5fG7UFNoGBW
+        Y1Z05HGUTVIwxkIW6Q8or30RuhGJ1arIw+/W4Hzr
+X-Google-Smtp-Source: ABdhPJxP3ZKSyXy41c6/AE/a3lVkXSCBvxh/urAETB5iN6TCyPfAI8mpYN9YzofauaWw8j1r3dwYubGPqJNkYDdTbtc=
+X-Received: by 2002:aa7:cf19:: with SMTP id a25mr4175514edy.67.1597950288828;
+ Thu, 20 Aug 2020 12:04:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200820164753.3256899-1-jackmanb@chromium.org> <alpine.LRH.2.21.2008210439190.29407@namei.org>
+In-Reply-To: <alpine.LRH.2.21.2008210439190.29407@namei.org>
+From:   KP Singh <kpsingh@google.com>
+Date:   Thu, 20 Aug 2020 21:04:32 +0200
+Message-ID: <CAFLU3KsS40ANOS=t1gPo7_iL=xzHGAbqyXCjHpVZGM5vLYwEZg@mail.gmail.com>
+Subject: Re: [RFC] security: replace indirect calls with static calls
+To:     James Morris <jmorris@namei.org>
+Cc:     Brendan Jackman <jackmanb@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        Paul Renauld <renauld@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        peterz@infradead.org, rafael.j.wysocki@intel.com,
+        keescook@chromium.org, thgarnie@chromium.org,
+        paul.renauld.epfl@gmail.com, Brendan Jackman <jackmanb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Aug 2020 18:16:14 +0000
-Parshuram Raju Thombare <pthombar@cadence.com> wrote:
+On Thu, Aug 20, 2020 at 8:43 PM James Morris <jmorris@namei.org> wrote:
+>
+> On Thu, 20 Aug 2020, Brendan Jackman wrote:
+>
+> > With this implementation, any overhead of the indirect call in the LSM
+> > framework is completely mitigated (performance results: [7]). This
+> > facilitates the adoption of "bpf" LSM on production machines and also
+> > benefits all other LSMs.
+>
+> This looks like a potentially useful improvement, although I wonder if it
+> would be overshadowed by an LSM hook doing real work.
+>
 
-> >Hm, not sure that qualifies as a fix. The current implementation was
-> >correct, it was just reserving a slot in the device table for devices
-> >that didn't have an init address or on which SETDASA failed.  
-> If I3C controllers like ours use hardware slots to store slave devices info, 
-> due to limited available slots this can cause issue. 
->  If some slots are lost due to
-> 1. only init_dyn_addr and no static_addr in DT 
-> OR
-> 2. SETDASA failed
+Thanks for taking a look!
 
-Well, having a slot with a static address is valid, though I agree
-it's not really useful.
+We can surely look at other examples, but the real goal is to
+optimize the case where the "bpf" LSM adds callbacks to every LSM hook
+which don't do any real work and cause an avoidable overhead.
 
-> at the end of DAA some devices may be left without dyn_addr allocated from master
-> and hence can't work properly.
+This makes it not very practical for data center environments where
+one would want a framework that adds a zero base case overhead and
+allows the user to decide where to hook / add performance penalties.
+(at boot time for other LSMs and at runtime for bpf)
 
-My point is, there's no address or device slot leak, it's just that
-reserving a slot for I3C devices that only have a static address is
-kind of useless. But let's be honest, given the number of I3C devices
-available out there, I don't think it will hurt us before quite some
-time :P. That's not to say we shouldn't address that, I just don't
-think it deserves a Fixes tag.
+I also think this would be beneficial for LSMs which use a cache for
+a faster policy decision (e.g. access vector caching in SELinux).
 
-> I think during our discussion we recognized this change as a bug.
+- KP
 
-IIRC, I was talking about the first patch in the series.
-
-> That is the reason I added fixes tag, but if you think otherwise I can remove this tag.
->  
-> >> -static void i3c_master_pre_assign_dyn_addr(struct i3c_dev_desc *dev)
-> >> +static int i3c_master_pre_assign_dyn_addr(struct i3c_master_controller  
-> >That function now does more than just assigning a dynamic address: it
-> >also creates the i3c_dev_desc. It should be renamed accordingly
-> >(i3c_master_early_i3c_dev_add() maybe).  
-> Ok
-> 
-> >You should reserve the address before calling
-> >i3c_master_pre_assign_dyn_addr():
+> Do you have any more benchmarking beyond eventfd_write() ?
+>
+>
+>
 > >
-> >		/*
-> >		 * We don't attach devices which are not addressable
-> >		 * (no static_addr and dyn_addr) and devices with
-> >		 * static_addr but no init_dyn_addr will participate in DAA.
-> >		 */
-> >		if (!i3cboardinfo->init_dyn_addr ||
-> >		    !i3cboardinfo->static_addr)
-> >			continue;  
-> Don't we want to cover the case when only init_dyn_addr is present ?
+> > [1]: https://lwn.net/ml/linux-kernel/20200710133831.943894387@infradead.org/
 
-Uh, yes, my bad.
+[...]
 
-> I am not sure if we can't have init_dyn_addr without static_addr.
-
-You can, when you want to assign a specific dynamic address to a device
-that doesn't have a static address (see the 'try to assign init_addr
-dance' in i3c_dev_add()).
-
-> May be what we need is 
-> 		if (!i3cboardinfo->init_dyn_addr)
-> 			continue;
-> 
-> 		ret = i3c_bus_get_addr_slot_status(&master->bus,
-> 						   i3cboardinfo->init_dyn_addr);
-> 		if (ret != I3C_ADDR_SLOT_FREE) {
-> 			ret = -EBUSY;
-> 			goto err_rstdaa;
-> 		}
-> 
-> 		i3c_bus_set_addr_slot_status(&master->bus,
-> 					     i3cboardinfo->init_dyn_addr,
-> 					     I3C_ADDR_SLOT_I3C_DEV);
-> 
-> 		if (i3cboardinfo->static_addr)
-> 			i3c_master_pre_assign_dyn_addr(master, i3cboardinfo);
-
-Yep, that's correct.
-
-> IMHO this is functionally same to what I sent. Just that init_dyn_addr is reserved before,
-> and we leverage the change in reattach to bypass failure due to second attempt
-> to get init_dyn_addr in reattach called from i3c_master_pre_assign_dyn_addr().
-
-Unless I'm missing something, your solution didn't reserve the
-init address when there's no static address, and we definitely want
-that to happen, otherwise another device might steal it during DAA.
+> >
+> >  /* Security operations */
+> >
+>
+> --
+> James Morris
+> <jmorris@namei.org>
+>
