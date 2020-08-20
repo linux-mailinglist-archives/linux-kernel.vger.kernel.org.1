@@ -2,91 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33AD824B7BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B92F24B7AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726930AbgHTLEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:04:04 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:58708 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731373AbgHTK7X (ORCPT
+        id S1730916AbgHTLCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:02:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728936AbgHTLCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:59:23 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id CCF3A821EC;
-        Thu, 20 Aug 2020 13:59:15 +0300 (MSK)
+        Thu, 20 Aug 2020 07:02:01 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D2BC061385;
+        Thu, 20 Aug 2020 04:02:00 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id t6so1578343ljk.9;
+        Thu, 20 Aug 2020 04:02:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1597921155;
-        bh=/G4ClTatYbNc8NxLLIvGhk7wy/zotPptuhCDIH3E+SQ=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=NkfVgGe6ekDpYeVZB9ZORxdbkNwIVRGPvRJQ0rybcJlywu4honSmfpm1TfS46YYxz
-         UK2yZrfmvCgMMwyevyqWmLTqYgBx9lcQMb6tWSZxh5p6hL+ZYkPiiUKLP01AtD5gjW
-         SE8YHmKYhpxynd+MXu5EQN3DB6xHy675nukXT0Cs=
-Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Thu, 20 Aug 2020 13:59:15 +0300
-Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
- by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
- id 15.01.1847.003; Thu, 20 Aug 2020 13:59:15 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     "dsterba@suse.cz" <dsterba@suse.cz>
-CC:     "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: RE: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
- Software.
-Thread-Topic: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
- Software.
-Thread-Index: AdZyNcmjSkpkGje7R9K6YobJrVDyZ///4zWA//aNcGA=
-Date:   Thu, 20 Aug 2020 10:59:15 +0000
-Message-ID: <416846245360401380734c4ee2a82f5c@paragon-software.com>
-References: <2911ac5cd20b46e397be506268718d74@paragon-software.com>
- <20200814134056.GV2026@twin.jikos.cz>
-In-Reply-To: <20200814134056.GV2026@twin.jikos.cz>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.30.8.36]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vm6UdNU57gL1rdZIYLxxXIMcqfcOyBt2uS2h2r+o3AA=;
+        b=c8k+eYcm2xdYhX3dBI5WE4ENzx9S5r/hl4iAVSAGG1s0PTZm3HRH3hXLldFD/cpA3J
+         /YCW1qQrwrEazIg4SJctbIZ+oji0znqSQ6ZDr92UPv2jsuTaFXOX5vtHR51gZyosCrq5
+         Y1dTk2eJOtiKIp7EbG/xaTNAI8z6pdhyKYcMgxzn0yW5hEgUn48x6qQlldqCYjzYNyyC
+         NrCDCzmVU1bl8qkrsN16umktMbsS/LEMZYgo/jdJIWovHmO5vYTfO0X+CQ62+pphkorr
+         rVuammeF28ca8ZSRLQxEsEj1U19MShSPBxfuiS/sIJ9MaogSssSsXrFDvq1h0C5Pd1A2
+         ithA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vm6UdNU57gL1rdZIYLxxXIMcqfcOyBt2uS2h2r+o3AA=;
+        b=iK4tBJGuu0G35e5wceFPIPWFN3+9F4rFAsrlKxoYLcpnIjTOf+YdK8StdeJrkvUtdk
+         wdMpEdS09ISeqTKoTskC9CpBI5OqgjRRjdYlbL03YoE6o7rw4/En+Xi1jOVGGvu+1SnV
+         Z/uqGSDzr6kBm0TlliQ0InLSp0XrPu9uMJs3rGy1/BkgCR0fOn6rMLJAfJpV/yEXVyTF
+         fQWCgFEkq1qoYvamRY/6vqGJy04OLDHK7nBBHFGEDtLZODKnQCQq0GRcBsAar9y+KMwV
+         P97YC1KmtHQ4f+cmxMqmlYo+gAW1uzOqRpUell6TflcF+0i1HSf7Goo6txB+oQrETBiw
+         cvZw==
+X-Gm-Message-State: AOAM532+XrE5grU9JoxbXLoIr3ycjg0drptSj4trqIBAA9v7mLKOPmPb
+        zNrcuRttK7mrvJ6V1Nc6vSiCIDwEzrcyvOQ7M4E=
+X-Google-Smtp-Source: ABdhPJz/o/A6bxp2clzyeUoXRZAdQW/bQW8WJs+Uhw6QF52TM+vJBw0WX4aNw96WJw6RBt6gP8IKs6T2VYcg7l4a/1k=
+X-Received: by 2002:a2e:1417:: with SMTP id u23mr1438908ljd.44.1597921319247;
+ Thu, 20 Aug 2020 04:01:59 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200820041055.75848-1-cphealy@gmail.com>
+In-Reply-To: <20200820041055.75848-1-cphealy@gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Thu, 20 Aug 2020 08:01:47 -0300
+Message-ID: <CAOMZO5BeuG7hvTcwrYoDqu_9fsS3uPhaWVqyWYPDHA_0bvH_vA@mail.gmail.com>
+Subject: Re: [PATCH v2] ARM: dts: vfxxx: Add syscon compatible with ocotp
+To:     Chris Healy <cphealy@gmail.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Stefan Agner <stefan@agner.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Sterba <dsterba@suse.cz>
-Sent: Friday, August 14, 2020 4:41 PM
-> In case somebody wants to compile it, this fixup is needed to let 'make
-> fs/ntfs3/' actually work, besides enabling it in the config.
->=20
-> diff --git a/fs/Makefile b/fs/Makefile
-> index 1c7b0e3f6daa..b0b4ad8affa0 100644
-> --- a/fs/Makefile
-> +++ b/fs/Makefile
-> @@ -100,6 +100,7 @@ obj-$(CONFIG_SYSV_FS)		+=3D sysv/
->  obj-$(CONFIG_CIFS)		+=3D cifs/
->  obj-$(CONFIG_HPFS_FS)		+=3D hpfs/
->  obj-$(CONFIG_NTFS_FS)		+=3D ntfs/
-> +obj-$(CONFIG_NTFS3_FS)		+=3D ntfs3/
->  obj-$(CONFIG_UFS_FS)		+=3D ufs/
->  obj-$(CONFIG_EFS_FS)		+=3D efs/
->  obj-$(CONFIG_JFFS2_FS)		+=3D jffs2/
-> diff --git a/fs/ntfs3/Makefile b/fs/ntfs3/Makefile
-> index 4d4fe198b8b8..d99dd1af43aa 100644
-> --- a/fs/ntfs3/Makefile
-> +++ b/fs/ntfs3/Makefile
-> @@ -5,7 +5,7 @@
->=20
->  obj-$(CONFIG_NTFS3_FS) +=3D ntfs3.o
->=20
-> -ntfs3-objs :=3D bitfunc.o bitmap.o inode.o fsntfs.o frecord.o \
-> +ntfs3-y :=3D bitfunc.o bitmap.o inode.o fsntfs.o frecord.o \
->  	    index.o attrlist.o record.o attrib.o run.o xattr.o\
->  	    upcase.o super.o file.o dir.o namei.o lznt.o\
->  	    fslog.o
+Hi Chris,
 
-Thanks! Indeed these fixups are needed to the patch (lost them during final=
- polishing of the code before submitting). Will be fixed in v2.
+On Thu, Aug 20, 2020 at 1:11 AM Chris Healy <cphealy@gmail.com> wrote:
+>
+> From: Chris Healy <cphealy@gmail.com>
+>
+> Add syscon compatibility with Vybrid ocotp node. This is required to
+> access the UID.
+>
+> Fixes: fa8d20c8dbb77 ("ARM: dts: vfxxx: Add node corresponding to OCOTP")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Chris Healy <cphealy@gmail.com>
+
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
