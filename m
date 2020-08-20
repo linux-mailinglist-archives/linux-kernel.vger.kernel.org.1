@@ -2,225 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F1324C748
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 23:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A2024C74C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 23:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728791AbgHTVqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 17:46:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726435AbgHTVqB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 17:46:01 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B83F0C061386
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 14:46:00 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id s15so1764101pgc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 14:46:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=lAdAyYh5aN2j5JPQrGtT0EfFNZkeh1mFjZ/MnX14mHg=;
-        b=jqlWDd6sxFDmFJ/KUiqRGFnNyGKWDiNJLpoSwupzugFLhqCN9ZS6qtccF0An5Z2pAp
-         nwBWlzga+bXknE60CNsiILhMirgchDDV2Vj7hY7IEMtxh8h6VGzn+3wNGo2+F7ea9pJx
-         uume6sU6+RSqa4UeUUuBxrG3vOAzelifZxGgw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=lAdAyYh5aN2j5JPQrGtT0EfFNZkeh1mFjZ/MnX14mHg=;
-        b=WHpG82QduGcK2Ml7MSvGdu/PH5L+SBmaC9pC7vlKv8e0pkPRNQgcgxmAtWlAv73YmJ
-         7byTr0/1L/WkUa3g0lW9pA892fZHRsT5hLLeNbbUJ1OY64jv17kw27Vcee6RpYlWUq/B
-         Uk/9LEgZqQYw2lGjWvULcO94fHhdLG4/ilm+pvUju1tD5Z8upNAONfyaHZrW2FeaooDT
-         +Rv2ZUwHCUA1N+PtQTNdXjJw1iaf71WMrGkx4u6YntYLRnCMbDx4F4olmak8Ks0Swr6s
-         12TQouVX2eIVyddOQOAAeU8+pUk+VJT+LAwEWh3v0M64ck0YXiqb23vLZQTLJcuHLBce
-         Bd/Q==
-X-Gm-Message-State: AOAM532nmxEgOGF6HxjNqyaDooLyNunUwOdtkf0/imaFfsDRu1Sgs0US
-        JBiD6qr42HERoR4wnJFABl1qow==
-X-Google-Smtp-Source: ABdhPJy7ns/mk8REZldx/9DoA3Zk3IWns4swu15vQGd9bLEgzAMf1K45e88Ruhw0luZiFw52DoX76w==
-X-Received: by 2002:a65:66c4:: with SMTP id c4mr64065pgw.442.1597959959876;
-        Thu, 20 Aug 2020 14:45:59 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k21sm4159pgl.0.2020.08.20.14.45.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 14:45:58 -0700 (PDT)
-Date:   Thu, 20 Aug 2020 14:45:57 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Brendan Jackman <jackmanb@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Paul Renauld <renauld@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>, pjt@google.com,
-        jannh@google.com, peterz@infradead.org, rafael.j.wysocki@intel.com,
-        thgarnie@chromium.org, kpsingh@google.com,
-        paul.renauld.epfl@gmail.com, Brendan Jackman <jackmanb@google.com>
-Subject: Re: [RFC] security: replace indirect calls with static calls
-Message-ID: <202008201435.97CF8296@keescook>
-References: <20200820164753.3256899-1-jackmanb@chromium.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200820164753.3256899-1-jackmanb@chromium.org>
+        id S1728021AbgHTVsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 17:48:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43660 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726852AbgHTVsl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 17:48:41 -0400
+Received: from localhost (cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net [82.37.168.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9EB8D2075E;
+        Thu, 20 Aug 2020 21:48:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597960121;
+        bh=23yUEfhFOmQ/QJGKJF2s1PtUXf40Zt+kxozKC+ATEgk=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=lwaNkhwhgJpbE/zhVTfYZlNlh5BcgLwoBKqVYtgciUf+XphecrM4e40zZWnoPhWLr
+         7LR9JTFTO6VfDbLvzPuUiDJm4fBse8n5dQQE45mqwRzNjQb/wxGiAHr1b4b98oZVQp
+         gLXN8JhF5q2DsgDXOykirQXl1G7iYuLaKS2mwiRQ=
+Date:   Thu, 20 Aug 2020 22:48:08 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Jiaxin Yu <jiaxin.yu@mediatek.com>, matthias.bgg@gmail.com,
+        robh+dt@kernel.org, tiwai@suse.com, linux-kernel@vger.kernel.org
+Cc:     eason.yen@mediatek.com, tzungbi@google.com,
+        linux-mediatek@lists.infradead.org, alsa-devel@alsa-project.org,
+        howie.huang@mediatek.com, linux-arm-kernel@lists.infradead.org,
+        shane.chien@mediatek.com, bicycle.tasi@mediatek.com
+In-Reply-To: <1597913493-10747-1-git-send-email-jiaxin.yu@mediatek.com>
+References: <1597913493-10747-1-git-send-email-jiaxin.yu@mediatek.com>
+Subject: Re: [PATCH v6 0/2] Add mediatek codec mt6359 driver
+Message-Id: <159796008815.44152.16317052982855858224.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 06:47:53PM +0200, Brendan Jackman wrote:
-> From: Paul Renauld <renauld@google.com>
+On Thu, 20 Aug 2020 16:51:31 +0800, Jiaxin Yu wrote:
+> Add mediatek codec (MT6359) driver
 > 
-> LSMs have high overhead due to indirect function calls through
-> retpolines. This RPC proposes to replace these with static calls [1]
-
-typo: RFC
-
-> instead.
-
-Yay! :)
-
+> MT6359 support playback and capture feature.
+> 
+> On downlink path, it includes three DACs for handset, headset,
+> and lineout path. On unlink path, it includeds three ADCs for
+> main mic, second mic, 3rd mic, and headset mic.
+> 
 > [...]
-> This overhead prevents the adoption of bpf LSM on performance critical
-> systems, and also, in general, slows down all LSMs.
 
-I'd be curious to see other workloads too. (Your measurements are a bit
-synthetic, mostly showing "worst case": one short syscall in a tight
-loop. I'm curious how much performance gain can be had -- we should
-still do it, it'll be a direct performance improvement, but I'm curious
-about "real world" impact too.)
+Applied to
 
-> [...]
-> Previously, the code for this hook would have looked like this:
-> 
-> 	ret = DEFAULT_RET;
-> 
->         for each cb in [A, B, C]:
->                 ret = cb(args); <--- costly indirect call here
->                 if ret != 0:
->                         break;
-> 
->         return ret;
-> 
-> Static calls are defined at build time and are initially empty (NOP
-> instructions). When the LSMs are initialized, the slots are filled as
-> follows:
-> 
->  slot idx     content
->            |-----------|
->     0      |           |
->            |-----------|
->     1      |           |
->            |-----------|
->     2      |   call A  | <-- base_slot_idx = 2
->            |-----------|
->     3      |   call B  |
->            |-----------|
->     4      |   call C  |
->            |-----------|
-> 
-> The generated code will unroll the foreach loop to have a static call for
-> each possible LSM:
-> 
->         ret = DEFAULT_RET;
->         switch(base_slot_idx):
-> 
->                 case 0:
->                         NOP
->                         if ret != 0:
->                                 break;
->                         // fallthrough
->                 case 1:
->                         NOP
->                         if ret != 0:
->                                 break;
->                         // fallthrough
->                 case 2:
->                         ret = A(args); <--- direct call, no retpoline
->                         if ret != 0:
->                                 break;
->                         // fallthrough
->                 case 3:
->                         ret = B(args); <--- direct call, no retpoline
->                         if ret != 0:
->                                 break;
->                         // fallthrough
-> 
->                 [...]
-> 
->                 default:
->                         break;
-> 
->         return ret;
-> 
-> A similar logic is applied for void hooks.
-> 
-> Why this trick with a switch statement? The table of static call is defined
-> at compile time. The number of hook callbacks that will be defined is
-> unknown at that time, and the table cannot be resized at runtime.  Static
-> calls do not define a conditional execution for a non-void function, so the
-> executed slots must be non-empty.  With this use of the table and the
-> switch, it is possible to jump directly to the first used slot and execute
-> all of the slots after. This essentially makes the entry point of the table
-> dynamic. Instead, it would also be possible to start from 0 and break after
-> the final populated slot, but that would require an additional conditional
-> after each slot.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Instead of just "NOP", having the static branches perform a jump would
-solve this pretty cleanly, yes? Something like:
+Thanks!
 
-	ret = DEFAULT_RET;
+[1/2] ASoC: mediatek: mt6359: add codec driver
+      commit: 8061734ab65498f4802578564fc0948ec9aaf933
+[2/2] dt-bindings: mediatek: mt6359: add codec document
+      commit: 539237d1c609c0fd23389369939b5cc93feb16fb
 
-	ret = A(args); <--- direct call, no retpoline
-	if ret != 0:
-		goto out;
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-	ret = B(args); <--- direct call, no retpoline
-	if ret != 0:
-		goto out;
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-	goto out;
-	if ret != 0:
-		goto out;
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-out:
-	return ret;
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-
-> [...]
-> The number of available slots for each LSM hook is currently fixed at
-> 11 (the number of LSMs in the kernel). Ideally, it should automatically
-> adapt to the number of LSMs compiled into the kernel.
-
-Seems like a reasonable thing to do and could be a separate patch.
-
-> If there’s no practical way to implement such automatic adaptation, an
-> option instead would be to remove the panic call by falling-back to the old
-> linked-list mechanism, which is still present anyway (see below).
-> 
-> A few special cases of LSM don't use the macro call_[int/void]_hook but
-> have their own calling logic. The linked-lists are kept as a possible slow
-> path fallback for them.
-
-I assume you mean the integrity subsystem? That just needs to be fixed
-correctly. If we switch to this, let's ditch the linked list entirely.
-Fixing integrity's stacking can be a separate patch too.
-
-> [...]
-> Signed-off-by: Paul Renauld <renauld@google.com>
-> Signed-off-by: KP Singh <kpsingh@google.com>
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-
-This implies a maintainership chain, with Paul as the sole author. If
-you mean all of you worked on the patch, include Co-developed-by: as
-needed[1].
-
--Kees
-
-[1] https://www.kernel.org/doc/html/latest/process/submitting-patches.html#when-to-use-acked-by-cc-and-co-developed-by
-
--- 
-Kees Cook
+Thanks,
+Mark
