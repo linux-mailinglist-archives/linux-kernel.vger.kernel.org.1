@@ -2,58 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A0924ACE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 04:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72CA024ACF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 04:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726792AbgHTCPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 22:15:35 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:35534 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726435AbgHTCPe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 22:15:34 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0U6GzjvK_1597889732;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U6GzjvK_1597889732)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 20 Aug 2020 10:15:32 +0800
-Date:   Thu, 20 Aug 2020 10:15:31 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Wei Yang <richard.weiyang@linux.alibaba.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mm/mmap: rename __vma_unlink_common() to
- __vma_unlink()
-Message-ID: <20200820021531.GA51743@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20200809232057.23477-1-richard.weiyang@linux.alibaba.com>
- <20200819131210.dc5c045a626d1bf4475214d1@linux-foundation.org>
+        id S1726967AbgHTCSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 22:18:49 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9788 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726664AbgHTCSt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 22:18:49 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id CC474BE346A7FA004031;
+        Thu, 20 Aug 2020 10:18:46 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 20 Aug 2020 10:18:37 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <zhangfei.gao@linaro.org>, <wangzhou1@hisilicon.com>,
+        <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
+        <linux-accelerators@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <linuxarm@huawei.com>
+Subject: [PATCH] uacce: Use kobj_to_dev() instead of container_of()
+Date:   Thu, 20 Aug 2020 10:16:32 +0800
+Message-ID: <1597889792-53139-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200819131210.dc5c045a626d1bf4475214d1@linux-foundation.org>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 01:12:10PM -0700, Andrew Morton wrote:
->On Mon, 10 Aug 2020 07:20:56 +0800 Wei Yang <richard.weiyang@linux.alibaba.com> wrote:
->
->> __vma_unlink_common() and __vma_unlink() are counterparts. Since there is
->
->I assume you meant "__vma_link()" here?
->
+Use kobj_to_dev() instead of container_of()
 
-Oops, my fault. You are right.
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
+---
+ drivers/misc/uacce/uacce.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Do you prefer a v2, or you would like to fix it online?
-
->> not function named __vma_unlink(), let's rename it to __vma_unlink() to
->> make the code more self-explain and easy for audience to understand.
->> 
->> Otherwise we may expect there are several variants of vma_unlink and
->> __vma_unlink_common() is used by them.
-
+diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
+index a5b8dab..a9da7b1 100644
+--- a/drivers/misc/uacce/uacce.c
++++ b/drivers/misc/uacce/uacce.c
+@@ -370,7 +370,7 @@ static struct attribute *uacce_dev_attrs[] = {
+ static umode_t uacce_dev_is_visible(struct kobject *kobj,
+ 				    struct attribute *attr, int n)
+ {
+-	struct device *dev = container_of(kobj, struct device, kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 	struct uacce_device *uacce = to_uacce_device(dev);
+ 
+ 	if (((attr == &dev_attr_region_mmio_size.attr) &&
 -- 
-Wei Yang
-Help you, Help me
+2.7.4
+
