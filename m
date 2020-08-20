@@ -2,39 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F9F24BB96
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EDE724BCEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729412AbgHTJuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:50:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57666 "EHLO mail.kernel.org"
+        id S1729455AbgHTMzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:55:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729702AbgHTJuR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:50:17 -0400
+        id S1729132AbgHTJnF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:43:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6CBB22BEA;
-        Thu, 20 Aug 2020 09:50:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0D40622CF7;
+        Thu, 20 Aug 2020 09:43:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917017;
-        bh=HaSHAQTht2lvS8IefNfzjdeeLOJhuJ+du29m+05NXtc=;
+        s=default; t=1597916584;
+        bh=K9KMQFAcyvXCpKGPLlOIGzdhg4xgO8vb0fMc0YLqKwA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h/qiOsnO10TkJCRetX9VrmT4fO0Rp0xo89hzV3OhZCFPRbVoLvb/jDEeSzgf1xzJa
-         vyltFd7evUMvSfryx4S0x8N9/1SYD3yV6KPPzW1or+T+qQgPS/89qtngmzEVxIczUU
-         GXYMJfbtmKnXsJYUCHgVTsOAtTQ8tS1XHJBl/1PE=
+        b=Ir43Ux/lvdcYbrGyvvZJnTCLESHsmqHjoA3jTftdDLEST23jH8iruX2tuStEP70Xy
+         DK4dzLvtBLOcnMscTnstJWveiWpK/83vXDbPM/uoJUJK7cRf1sbzgvJUW/cZDdN/8/
+         apf5PXx9swlH5j+uGlYFBgDsPXXkmQvYTtpatFZ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 109/152] i2c: rcar: slave: only send STOP event when we have been addressed
-Date:   Thu, 20 Aug 2020 11:21:16 +0200
-Message-Id: <20200820091559.354748140@linuxfoundation.org>
+        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        David Howells <dhowells@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Kees Cook <keescook@chromium.org>,
+        Lars Ellenberg <lars.ellenberg@linbit.com>,
+        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        Sergey Kvachonok <ravenexp@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Tony Vroon <chainsaw@gentoo.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 180/204] test_kmod: avoid potential double free in trigger_config_run_type()
+Date:   Thu, 20 Aug 2020 11:21:17 +0200
+Message-Id: <20200820091615.191618387@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
-References: <20200820091553.615456912@linuxfoundation.org>
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,53 +69,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
 
-[ Upstream commit 314139f9f0abdba61ed9a8463bbcb0bf900ac5a2 ]
+[ Upstream commit 0776d1231bec0c7ab43baf440a3f5ef5f49dd795 ]
 
-When the SSR interrupt is activated, it will detect every STOP condition
-on the bus, not only the ones after we have been addressed. So, enable
-this interrupt only after we have been addressed, and disable it
-otherwise.
+Reset the member "test_fs" of the test configuration after a call of the
+function "kfree_const" to a null pointer so that a double memory release
+will not be performed.
 
-Fixes: de20d1857dd6 ("i2c: rcar: add slave support")
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Fixes: d9c6a72d6fa2 ("kmod: add test driver to stress test the module loader")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: Chuck Lever <chuck.lever@oracle.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: James Morris <jmorris@namei.org>
+Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc: J. Bruce Fields <bfields@fieldses.org>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Lars Ellenberg <lars.ellenberg@linbit.com>
+Cc: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
+Cc: Philipp Reisner <philipp.reisner@linbit.com>
+Cc: Roopa Prabhu <roopa@cumulusnetworks.com>
+Cc: "Serge E. Hallyn" <serge@hallyn.com>
+Cc: Sergei Trofimovich <slyfox@gentoo.org>
+Cc: Sergey Kvachonok <ravenexp@gmail.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Tony Vroon <chainsaw@gentoo.org>
+Cc: Christoph Hellwig <hch@infradead.org>
+Link: http://lkml.kernel.org/r/20200610154923.27510-4-mcgrof@kernel.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-rcar.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ lib/test_kmod.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/i2c-rcar.c b/drivers/i2c/busses/i2c-rcar.c
-index 36af8fdb66586..3ea6013a3d68a 100644
---- a/drivers/i2c/busses/i2c-rcar.c
-+++ b/drivers/i2c/busses/i2c-rcar.c
-@@ -580,13 +580,14 @@ static bool rcar_i2c_slave_irq(struct rcar_i2c_priv *priv)
- 			rcar_i2c_write(priv, ICSIER, SDR | SSR | SAR);
- 		}
- 
--		rcar_i2c_write(priv, ICSSR, ~SAR & 0xff);
-+		/* Clear SSR, too, because of old STOPs to other clients than us */
-+		rcar_i2c_write(priv, ICSSR, ~(SAR | SSR) & 0xff);
- 	}
- 
- 	/* master sent stop */
- 	if (ssr_filtered & SSR) {
- 		i2c_slave_event(priv->slave, I2C_SLAVE_STOP, &value);
--		rcar_i2c_write(priv, ICSIER, SAR | SSR);
-+		rcar_i2c_write(priv, ICSIER, SAR);
- 		rcar_i2c_write(priv, ICSSR, ~SSR & 0xff);
- 	}
- 
-@@ -850,7 +851,7 @@ static int rcar_reg_slave(struct i2c_client *slave)
- 	priv->slave = slave;
- 	rcar_i2c_write(priv, ICSAR, slave->addr);
- 	rcar_i2c_write(priv, ICSSR, 0);
--	rcar_i2c_write(priv, ICSIER, SAR | SSR);
-+	rcar_i2c_write(priv, ICSIER, SAR);
- 	rcar_i2c_write(priv, ICSCR, SIE | SDBS);
- 
- 	return 0;
+diff --git a/lib/test_kmod.c b/lib/test_kmod.c
+index e651c37d56dbd..eab52770070d6 100644
+--- a/lib/test_kmod.c
++++ b/lib/test_kmod.c
+@@ -745,7 +745,7 @@ static int trigger_config_run_type(struct kmod_test_device *test_dev,
+ 		break;
+ 	case TEST_KMOD_FS_TYPE:
+ 		kfree_const(config->test_fs);
+-		config->test_driver = NULL;
++		config->test_fs = NULL;
+ 		copied = config_copy_test_fs(config, test_str,
+ 					     strlen(test_str));
+ 		break;
 -- 
 2.25.1
 
