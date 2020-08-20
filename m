@@ -2,168 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FEBE24C5B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 20:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B4124C5B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 20:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727792AbgHTSiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 14:38:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57144 "EHLO
+        id S1727895AbgHTSi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 14:38:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726964AbgHTSiQ (ORCPT
+        with ESMTP id S1727012AbgHTSi5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 14:38:16 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA26C061385
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 11:38:14 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id o21so2720361oie.12
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 11:38:14 -0700 (PDT)
+        Thu, 20 Aug 2020 14:38:57 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A6FC061385;
+        Thu, 20 Aug 2020 11:38:56 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id 83so264198wme.4;
+        Thu, 20 Aug 2020 11:38:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dzm21wX1TryLHBz2IGA6qLAF3YJJDXDtGnxmVIQM7tE=;
-        b=E5dy0y+QwBggSrnnIS3XfALTvYo2Rsbzl2n7WnrV4awTNkTQQ273A+QCAIqUhg2Vpc
-         HBQRAxiKiIb6gvsDb93oCc722Aay3oHNGufXRaI4W8fPZCQTFizgek8dy+hLjzwllqHx
-         qNmcpcMpsnSF0ivVPD7KvBjT205+ScqWYdjV5KOFQlT4EoIW1bE4MiT+zkJO+8eh2ckC
-         lywuKVO43JB4RR9I/kYsI9f7GUHMi6RGngN8I39byEP7MbN6aCky7FuU/ddof848rt2O
-         7dGdwwkZTQa3h/Nzms77G9uc+a2MCzl/9OaS1rOxTX1ptBJjVyZo8vVePumAIgNsn0ts
-         zGtA==
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PgRf0Ar5MulFcCJvaCQyug2lmRa/ai0OZaAGSl3iEgY=;
+        b=H4hYkwVVPQYi9sO0a0/uLgOj8mXjpo7sKsrsj0dTHZy/XBHYoiNaAXeTSx/OL5Wlx3
+         dBrNi4aPjLVP+/AEvLkeoPT8OQJ8dZYUjPKUo0Y+ugsDL0vs1NBSj0gESCIgYO8hF/bC
+         Hycyy9kkoy6tGRRv2l1Wutk7sQ0lxJfrUtY+bTvYyI35YZ75rT2nUbAUg5TMNQ/kjjlY
+         4wa5aXdTpnQyL7DVapgmwaBwOdsTo7iI+DYqXBQr6ITMBpItHvHL5jf6QB8UgyQ1UwHU
+         tMoLD6WXbHU/w5yoAwWnbNSnfrTg5jUpyAV69BPvyoZvjMNyIjghUisXzRNWxHPpNObD
+         dXag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dzm21wX1TryLHBz2IGA6qLAF3YJJDXDtGnxmVIQM7tE=;
-        b=ho6KqAzq03lcwaAGGVbpZGIorNlOorWuZGMrAe4nxsMnSungphnYcMxCNgz91HOg42
-         I6TLTX9kwmYreFl0VmoSwVtPeSxuJdTYbwa6sPw+QRnJ5aCkY9BdWqR3O+YAhSM/wMRw
-         sbtbN6jMZLBX4WsuvT2DQLQKxHdfLlu4Kv6vWTkgcmV8ZS/l8eHIC6sHEwyvBy64NJqH
-         ipnVbhFh9mHXpbQ631U4qJXcWoO+W0y3orGCxDKrcg0L/GO1Nt0C075k/Oax+pty54Yb
-         huSgHGWvbloXCtunGQ6WwXpotkdGGlegMYsjWKGqrbdFcM4msWlJOlPFK1vDWUodKTwI
-         XXDg==
-X-Gm-Message-State: AOAM533Db3TTnCY/p3UnKqoKxkuS8804/+EUt6leTUWqP2H6NSw47FIz
-        HGFkQ/E1RqlwG6ZBuBwu/dD/UM7fgWEJAWBYOSHwzw==
-X-Google-Smtp-Source: ABdhPJzvjEL6juC4BvsGSslBlQzblP3A6kWhA31QCt8/EKB3hTLxRgO6iZf5l1DbyN5is7xzhB6GbqC/8lqS4KtLTEE=
-X-Received: by 2002:aca:670b:: with SMTP id z11mr38788oix.6.1597948693928;
- Thu, 20 Aug 2020 11:38:13 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PgRf0Ar5MulFcCJvaCQyug2lmRa/ai0OZaAGSl3iEgY=;
+        b=oiIU52eQs5HV2nXWJfi0D9//59ktOYDDWyj0yeVJsD0Cu9z2SHh0kGOiHpZQ+yDSZ8
+         jAz7gwZoPksyj6ADKLONovnltxZ9+sWTKHJsK62tEFRGxAGM45wzKNX2X2nAMFJtobvV
+         lQ6BYRVMgCy9gP6rEBjkGG0ZnT4qfxUjySaclvRg2vVQ5aU7z0ABxlpJJs4UOe/U/Dkk
+         TtaroDLTpvFrsb4cfnUdxDoaWh8N5UqEePwboZXSwUZF+JY9/L/fzJBQneoUhLAPWFPM
+         VUOiiNhLEU4RztIbBQHVDe1XmJssJYrEUoFI0+4BmlT90iA5QjZbhq+J0K/z49Q/MyUK
+         B0Ug==
+X-Gm-Message-State: AOAM5334l8paN11cSMqL3EOdLC6tvoeSQoGmyFH5C6TfNU283OmRjlHx
+        DEmlEMQgo1NBH6efB5LrAwGnzloTQEJZN8yr
+X-Google-Smtp-Source: ABdhPJwNRbuc6tSHftgEA+hcCV17PDfcinJw4n/pz9l/504EM/GlQARZj9wibS2vkPEgwsV69p/2/g==
+X-Received: by 2002:a1c:9a02:: with SMTP id c2mr52135wme.16.1597948735669;
+        Thu, 20 Aug 2020 11:38:55 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id b139sm6147232wmd.19.2020.08.20.11.38.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Aug 2020 11:38:55 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+To:     Alex Dewar <alex.dewar90@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] nfc: st21nfca: Remove unnecessary cast
+Date:   Thu, 20 Aug 2020 19:38:36 +0100
+Message-Id: <20200820183840.912558-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <39d57e4d-5db4-f536-6f5e-6b0414c0dccc@amd.com> <7dedb0ab-56a6-5d96-577b-21ab1ecdad24@amd.com>
- <CALCETrUArZ04UqJjp2mEheuMpZyPwLeEgGM7mdDdmWxmx=GN4Q@mail.gmail.com>
- <CALCETrWcXgp+GzFNrOKcX740+R-57FgNu3Wt3g=_sRCMYFzbMg@mail.gmail.com>
- <20200820151049.GA26595@sjchrist-ice> <362f5a45-b808-25ad-b99b-449e05717c4a@amd.com>
- <CALCETrW8SWgWxDdMXuMPD-A1avztvNcpwLAKKRQ4ojmcz07B6A@mail.gmail.com>
- <45e16c5c-ce99-33da-99c8-ea52ef0945db@amd.com> <c7f65dbc-316b-efb9-d2c3-c7c212289dce@amd.com>
- <68478297-ff21-fa38-a37b-2e1e515fdc5e@amd.com>
-In-Reply-To: <68478297-ff21-fa38-a37b-2e1e515fdc5e@amd.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Thu, 20 Aug 2020 11:38:02 -0700
-Message-ID: <CALMp9eQDuwzxdLXndnq9FZfDXaNS7U36WDW7CqixjVBareYAwQ@mail.gmail.com>
-Subject: Re: FSGSBASE causing panic on 5.9-rc1
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sasha Levin <sashal@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 11:34 AM Tom Lendacky <thomas.lendacky@amd.com> wrote:
->
-> On 8/20/20 11:30 AM, Tom Lendacky wrote:
-> > On 8/20/20 11:17 AM, Tom Lendacky wrote:
-> >> On 8/20/20 10:55 AM, Andy Lutomirski wrote:
-> >>> On Thu, Aug 20, 2020 at 8:21 AM Tom Lendacky <thomas.lendacky@amd.com>
-> >>> wrote:
-> >>>>
-> >>>> On 8/20/20 10:10 AM, Sean Christopherson wrote:
-> >>>>> On Wed, Aug 19, 2020 at 05:21:33PM -0700, Andy Lutomirski wrote:
-> >>>>>> On Wed, Aug 19, 2020 at 2:25 PM Andy Lutomirski <luto@kernel.org>
-> >>>>>> wrote:
-> >>>>>>>
-> >>>>>>> On Wed, Aug 19, 2020 at 11:19 AM Tom Lendacky
-> >>>>>>> <thomas.lendacky@amd.com> wrote:
-> >>>>>>>>
-> >>>>>>>> On 8/19/20 1:07 PM, Tom Lendacky wrote:
-> >>>>>>>>> It looks like the FSGSBASE support is crashing my second
-> >>>>>>>>> generation EPYC
-> >>>>>>>>> system. I was able to bisect it to:
-> >>>>>>>>>
-> >>>>>>>>> b745cfba44c1 ("x86/cpu: Enable FSGSBASE on 64bit by default and
-> >>>>>>>>> add a chicken bit")
-> >>>>>>>>>
-> >>>>>>>>> The panic only happens when using KVM. Doing kernel builds or stress
-> >>>>>>>>> on bare-metal appears fine. But if I fire up, in this case, a
-> >>>>>>>>> 64-vCPU
-> >>>>>>>>> guest and do a kernel build within the guest, I get the following:
-> >>>>>>>>
-> >>>>>>>> I should clarify that this panic is on the bare-metal system, not
-> >>>>>>>> in the
-> >>>>>>>> guest. And that specifying nofsgsbase on the bare-metal command
-> >>>>>>>> line fixes
-> >>>>>>>> the issue.
-> >>>>>>>
-> >>>>>>> I certainly see some oddities:
-> >>>>>>>
-> >>>>>>> We have this code:
-> >>>>>>>
-> >>>>>>> static void svm_vcpu_put(struct kvm_vcpu *vcpu)
-> >>>>>>> {
-> >>>>>>>           struct vcpu_svm *svm = to_svm(vcpu);
-> >>>>>>>           int i;
-> >>>>>>>
-> >>>>>>>           avic_vcpu_put(vcpu);
-> >>>>>>>
-> >>>>>>>           ++vcpu->stat.host_state_reload;
-> >>>>>>>           kvm_load_ldt(svm->host.ldt);
-> >>>>>>> #ifdef CONFIG_X86_64
-> >>>>>>>           loadsegment(fs, svm->host.fs);
-> >>>>>>>           wrmsrl(MSR_KERNEL_GS_BASE, current->thread.gsbase);
-> >>>>>
-> >>>>> Pretty sure current->thread.gsbase can be stale, i.e. this needs:
-> >>>>>
-> >>>>>        current_save_fsgs();
-> >>>>
-> >>>> I did try adding current_save_fsgs() in svm_vcpu_load(), saving the
-> >>>> current->thread.gsbase value to a new variable in the svm struct. I then
-> >>>> used that variable in the wrmsrl below, but it still crashed.
-> >>>
-> >>> Can you try bisecting all the way back to:
-> >>>
-> >>> commit dd649bd0b3aa012740059b1ba31ecad28a408f7f
-> >>> Author: Andy Lutomirski <luto@kernel.org>
-> >>> Date:   Thu May 28 16:13:48 2020 -0400
-> >>>
-> >>>      x86/cpu: Add 'unsafe_fsgsbase' to enable CR4.FSGSBASE
-> >>>
-> >>> and adding the unsafe_fsgsbase command line option while you bisect.
-> >>
-> >> I'll give that a try.
->
-> Bisecting with unsafe_fsgsbase identified:
->
-> c82965f9e530 ("x86/entry/64: Handle FSGSBASE enabled paranoid entry/exit")
->
-> But I'm thinking that could be because it starts using GET_PERCPU_BASE,
-> which on Rome would use RDPID. So is SVM restoring TSC_AUX_MSR too late?
-> That would explain why I don't see the issue on Naples, which doesn't
-> support RDPID.
+In st21nfca_connectivity_event_received(), the return value of
+devm_kzalloc() is unnecessarily cast from void*. Remove cast.
 
-It looks to me like SVM loads the guest TSC_AUX from vcpu_load to
-vcpu_put, with this comment:
+Issue identified with Coccinelle.
 
-/* This assumes that the kernel never uses MSR_TSC_AUX */
-if (static_cpu_has(X86_FEATURE_RDTSCP))
-        wrmsrl(MSR_TSC_AUX, svm->tsc_aux);
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+---
+ drivers/nfc/st21nfca/se.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-We are talking about mainline here, right?
+diff --git a/drivers/nfc/st21nfca/se.c b/drivers/nfc/st21nfca/se.c
+index 6586378cacb0..c8bdf078d111 100644
+--- a/drivers/nfc/st21nfca/se.c
++++ b/drivers/nfc/st21nfca/se.c
+@@ -315,8 +315,7 @@ int st21nfca_connectivity_event_received(struct nfc_hci_dev *hdev, u8 host,
+ 		    skb->data[0] != NFC_EVT_TRANSACTION_AID_TAG)
+ 			return -EPROTO;
+ 
+-		transaction = (struct nfc_evt_transaction *)devm_kzalloc(dev,
+-						   skb->len - 2, GFP_KERNEL);
++		transaction = devm_kzalloc(dev, skb->len - 2, GFP_KERNEL);
+ 		if (!transaction)
+ 			return -ENOMEM;
+ 
+-- 
+2.28.0
+
