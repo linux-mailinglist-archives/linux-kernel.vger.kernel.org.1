@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 730FB24B3B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F94A24B409
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729837AbgHTJvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:51:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60446 "EHLO mail.kernel.org"
+        id S1730231AbgHTJz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:55:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729780AbgHTJv1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:51:27 -0400
+        id S1730048AbgHTJzs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:55:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C37F52078D;
-        Thu, 20 Aug 2020 09:51:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 931022078D;
+        Thu, 20 Aug 2020 09:55:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917086;
-        bh=dh+2MnrTXKN76s1V+xq812i2B6/UgMTdPUQjeMkGIyY=;
+        s=default; t=1597917348;
+        bh=SVS21djZw9/LqBL4/NWJn5UrOM1V2Waxvqw8K5pIbbk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EnKX+WLkJVz4TB8Q6+NYrH1vD87tQfHJU3CE7wVkbj7ozM/SUmia67JHacTEq11kA
-         TXtIMp3HtlJYIAcLXq6BP0qw/VdXouxPLbDsPv6pAuYkQW1eEl4HhlrPFHUDzcjuSc
-         hl3SE3a+DypuNN6FL6W7RjlcCimcveJ/By/nYaAs=
+        b=dD/7Owz//WfdzrFRUK3pQwyqu3NtOrJMwgL0ZXEVtKR8aFFoMIXdr9q6Wk4Npj3QO
+         I3yuxdcEyi20B1onDFSlk70Zl1MM2TOWVqf0NPQa6wP4BJi2lT9pO8VCb805l6HWy+
+         937pctVKbjJEiGzADNEzeFdzWq7d0nkFKLs+upNA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hersen Wu <hersenxs.wu@amd.com>,
-        Aric Cyr <Aric.Cyr@amd.com>, Eryk Brol <eryk.brol@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.4 152/152] drm/amd/display: dchubbub p-state warning during surface planes switch
-Date:   Thu, 20 Aug 2020 11:21:59 +0200
-Message-Id: <20200820091601.620349728@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Qiujun Huang <anenbupt@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 78/92] fs/minix: set s_maxbytes correctly
+Date:   Thu, 20 Aug 2020 11:22:03 +0200
+Message-Id: <20200820091541.715985654@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
-References: <20200820091553.615456912@linuxfoundation.org>
+In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
+References: <20200820091537.490965042@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,168 +47,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: hersen wu <hersenxs.wu@amd.com>
+From: Eric Biggers <ebiggers@google.com>
 
-commit 8b0379a85762b516c7b46aed7dbf2a4947c00564 upstream.
+[ Upstream commit 32ac86efff91a3e4ef8c3d1cadd4559e23c8e73a ]
 
-[Why]
-ramp_up_dispclk_with_dpp is to change dispclk, dppclk and dprefclk
-according to bandwidth requirement. call stack: rv1_update_clocks -->
-update_clocks --> dcn10_prepare_bandwidth / dcn10_optimize_bandwidth
---> prepare_bandwidth / optimize_bandwidth. before change dcn hw,
-prepare_bandwidth will be called first to allow enough clock,
-watermark for change, after end of dcn hw change, optimize_bandwidth
-is executed to lower clock to save power for new dcn hw settings.
+The minix filesystem leaves super_block::s_maxbytes at MAX_NON_LFS rather
+than setting it to the actual filesystem-specific limit.  This is broken
+because it means userspace doesn't see the standard behavior like getting
+EFBIG and SIGXFSZ when exceeding the maximum file size.
 
-below is sequence of commit_planes_for_stream:
-step 1: prepare_bandwidth - raise clock to have enough bandwidth
-step 2: lock_doublebuffer_enable
-step 3: pipe_control_lock(true) - make dchubp register change will
-not take effect right way
-step 4: apply_ctx_for_surface - program dchubp
-step 5: pipe_control_lock(false) - dchubp register change take effect
-step 6: optimize_bandwidth --> dc_post_update_surfaces_to_stream
-for full_date, optimize clock to save power
+Fix this by setting s_maxbytes correctly.
 
-at end of step 1, dcn clocks (dprefclk, dispclk, dppclk) may be
-changed for new dchubp configuration. but real dcn hub dchubps are
-still running with old configuration until end of step 5. this need
-clocks settings at step 1 should not less than that before step 1.
-this is checked by two conditions: 1. if (should_set_clock(safe_to_lower
-, new_clocks->dispclk_khz, clk_mgr_base->clks.dispclk_khz) ||
-new_clocks->dispclk_khz == clk_mgr_base->clks.dispclk_khz)
-2. request_dpp_div = new_clocks->dispclk_khz > new_clocks->dppclk_khz
-
-the second condition is based on new dchubp configuration. dppclk
-for new dchubp may be different from dppclk before step 1.
-for example, before step 1, dchubps are as below:
-pipe 0: recout=(0,40,1920,980) viewport=(0,0,1920,979)
-pipe 1: recout=(0,0,1920,1080) viewport=(0,0,1920,1080)
-for dppclk for pipe0 need dppclk = dispclk
-
-new dchubp pipe split configuration:
-pipe 0: recout=(0,0,960,1080) viewport=(0,0,960,1080)
-pipe 1: recout=(960,0,960,1080) viewport=(960,0,960,1080)
-dppclk only needs dppclk = dispclk /2.
-
-dispclk, dppclk are not lock by otg master lock. they take effect
-after step 1. during this transition, dispclk are the same, but
-dppclk is changed to half of previous clock for old dchubp
-configuration between step 1 and step 6. This may cause p-state
-warning intermittently.
-
-[How]
-for new_clocks->dispclk_khz == clk_mgr_base->clks.dispclk_khz, we
-need make sure dppclk are not changed to less between step 1 and 6.
-for new_clocks->dispclk_khz > clk_mgr_base->clks.dispclk_khz,
-new display clock is raised, but we do not know ratio of
-new_clocks->dispclk_khz and clk_mgr_base->clks.dispclk_khz,
-new_clocks->dispclk_khz /2 does not guarantee equal or higher than
-old dppclk. we could ignore power saving different between
-dppclk = displck and dppclk = dispclk / 2 between step 1 and step 6.
-as long as safe_to_lower = false, set dpclk = dispclk to simplify
-condition check.
-
-CC: Stable <stable@vger.kernel.org>
-Signed-off-by: Hersen Wu <hersenxs.wu@amd.com>
-Reviewed-by: Aric Cyr <Aric.Cyr@amd.com>
-Acked-by: Eryk Brol <eryk.brol@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Qiujun Huang <anenbupt@gmail.com>
+Link: http://lkml.kernel.org/r/20200628060846.682158-5-ebiggers@kernel.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr.c |   69 ++++++++++++-
- 1 file changed, 67 insertions(+), 2 deletions(-)
+ fs/minix/inode.c    | 12 +++++++-----
+ fs/minix/itree_v1.c |  2 +-
+ fs/minix/itree_v2.c |  3 +--
+ fs/minix/minix.h    |  1 -
+ 4 files changed, 9 insertions(+), 9 deletions(-)
 
---- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr.c
-+++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr.c
-@@ -85,12 +85,77 @@ static int rv1_determine_dppclk_threshol
- 	return disp_clk_threshold;
+diff --git a/fs/minix/inode.c b/fs/minix/inode.c
+index 4f994de46e6b9..03fe8bac36cf4 100644
+--- a/fs/minix/inode.c
++++ b/fs/minix/inode.c
+@@ -155,8 +155,10 @@ static int minix_remount (struct super_block * sb, int * flags, char * data)
+ 	return 0;
  }
  
--static void ramp_up_dispclk_with_dpp(struct clk_mgr_internal *clk_mgr, struct dc *dc, struct dc_clocks *new_clocks)
-+static void ramp_up_dispclk_with_dpp(
-+		struct clk_mgr_internal *clk_mgr,
-+		struct dc *dc,
-+		struct dc_clocks *new_clocks,
-+		bool safe_to_lower)
+-static bool minix_check_superblock(struct minix_sb_info *sbi)
++static bool minix_check_superblock(struct super_block *sb)
  {
- 	int i;
- 	int dispclk_to_dpp_threshold = rv1_determine_dppclk_threshold(clk_mgr, new_clocks);
- 	bool request_dpp_div = new_clocks->dispclk_khz > new_clocks->dppclk_khz;
- 
-+	/* this function is to change dispclk, dppclk and dprefclk according to
-+	 * bandwidth requirement. Its call stack is rv1_update_clocks -->
-+	 * update_clocks --> dcn10_prepare_bandwidth / dcn10_optimize_bandwidth
-+	 * --> prepare_bandwidth / optimize_bandwidth. before change dcn hw,
-+	 * prepare_bandwidth will be called first to allow enough clock,
-+	 * watermark for change, after end of dcn hw change, optimize_bandwidth
-+	 * is executed to lower clock to save power for new dcn hw settings.
-+	 *
-+	 * below is sequence of commit_planes_for_stream:
-+	 *
-+	 * step 1: prepare_bandwidth - raise clock to have enough bandwidth
-+	 * step 2: lock_doublebuffer_enable
-+	 * step 3: pipe_control_lock(true) - make dchubp register change will
-+	 * not take effect right way
-+	 * step 4: apply_ctx_for_surface - program dchubp
-+	 * step 5: pipe_control_lock(false) - dchubp register change take effect
-+	 * step 6: optimize_bandwidth --> dc_post_update_surfaces_to_stream
-+	 * for full_date, optimize clock to save power
-+	 *
-+	 * at end of step 1, dcn clocks (dprefclk, dispclk, dppclk) may be
-+	 * changed for new dchubp configuration. but real dcn hub dchubps are
-+	 * still running with old configuration until end of step 5. this need
-+	 * clocks settings at step 1 should not less than that before step 1.
-+	 * this is checked by two conditions: 1. if (should_set_clock(safe_to_lower
-+	 * , new_clocks->dispclk_khz, clk_mgr_base->clks.dispclk_khz) ||
-+	 * new_clocks->dispclk_khz == clk_mgr_base->clks.dispclk_khz)
-+	 * 2. request_dpp_div = new_clocks->dispclk_khz > new_clocks->dppclk_khz
-+	 *
-+	 * the second condition is based on new dchubp configuration. dppclk
-+	 * for new dchubp may be different from dppclk before step 1.
-+	 * for example, before step 1, dchubps are as below:
-+	 * pipe 0: recout=(0,40,1920,980) viewport=(0,0,1920,979)
-+	 * pipe 1: recout=(0,0,1920,1080) viewport=(0,0,1920,1080)
-+	 * for dppclk for pipe0 need dppclk = dispclk
-+	 *
-+	 * new dchubp pipe split configuration:
-+	 * pipe 0: recout=(0,0,960,1080) viewport=(0,0,960,1080)
-+	 * pipe 1: recout=(960,0,960,1080) viewport=(960,0,960,1080)
-+	 * dppclk only needs dppclk = dispclk /2.
-+	 *
-+	 * dispclk, dppclk are not lock by otg master lock. they take effect
-+	 * after step 1. during this transition, dispclk are the same, but
-+	 * dppclk is changed to half of previous clock for old dchubp
-+	 * configuration between step 1 and step 6. This may cause p-state
-+	 * warning intermittently.
-+	 *
-+	 * for new_clocks->dispclk_khz == clk_mgr_base->clks.dispclk_khz, we
-+	 * need make sure dppclk are not changed to less between step 1 and 6.
-+	 * for new_clocks->dispclk_khz > clk_mgr_base->clks.dispclk_khz,
-+	 * new display clock is raised, but we do not know ratio of
-+	 * new_clocks->dispclk_khz and clk_mgr_base->clks.dispclk_khz,
-+	 * new_clocks->dispclk_khz /2 does not guarantee equal or higher than
-+	 * old dppclk. we could ignore power saving different between
-+	 * dppclk = displck and dppclk = dispclk / 2 between step 1 and step 6.
-+	 * as long as safe_to_lower = false, set dpclk = dispclk to simplify
-+	 * condition check.
-+	 * todo: review this change for other asic.
-+	 **/
-+	if (!safe_to_lower)
-+		request_dpp_div = false;
++	struct minix_sb_info *sbi = minix_sb(sb);
 +
- 	/* set disp clk to dpp clk threshold */
+ 	if (sbi->s_imap_blocks == 0 || sbi->s_zmap_blocks == 0)
+ 		return false;
  
- 	clk_mgr->funcs->set_dispclk(clk_mgr, dispclk_to_dpp_threshold);
-@@ -206,7 +271,7 @@ static void rv1_update_clocks(struct clk
- 	/* program dispclk on = as a w/a for sleep resume clock ramping issues */
- 	if (should_set_clock(safe_to_lower, new_clocks->dispclk_khz, clk_mgr_base->clks.dispclk_khz)
- 			|| new_clocks->dispclk_khz == clk_mgr_base->clks.dispclk_khz) {
--		ramp_up_dispclk_with_dpp(clk_mgr, dc, new_clocks);
-+		ramp_up_dispclk_with_dpp(clk_mgr, dc, new_clocks, safe_to_lower);
- 		clk_mgr_base->clks.dispclk_khz = new_clocks->dispclk_khz;
- 		send_request_to_lower = true;
- 	}
+@@ -166,7 +168,7 @@ static bool minix_check_superblock(struct minix_sb_info *sbi)
+ 	 * of indirect blocks which places the limit well above U32_MAX.
+ 	 */
+ 	if (sbi->s_version == MINIX_V1 &&
+-	    sbi->s_max_size > (7 + 512 + 512*512) * BLOCK_SIZE)
++	    sb->s_maxbytes > (7 + 512 + 512*512) * BLOCK_SIZE)
+ 		return false;
+ 
+ 	return true;
+@@ -207,7 +209,7 @@ static int minix_fill_super(struct super_block *s, void *data, int silent)
+ 	sbi->s_zmap_blocks = ms->s_zmap_blocks;
+ 	sbi->s_firstdatazone = ms->s_firstdatazone;
+ 	sbi->s_log_zone_size = ms->s_log_zone_size;
+-	sbi->s_max_size = ms->s_max_size;
++	s->s_maxbytes = ms->s_max_size;
+ 	s->s_magic = ms->s_magic;
+ 	if (s->s_magic == MINIX_SUPER_MAGIC) {
+ 		sbi->s_version = MINIX_V1;
+@@ -238,7 +240,7 @@ static int minix_fill_super(struct super_block *s, void *data, int silent)
+ 		sbi->s_zmap_blocks = m3s->s_zmap_blocks;
+ 		sbi->s_firstdatazone = m3s->s_firstdatazone;
+ 		sbi->s_log_zone_size = m3s->s_log_zone_size;
+-		sbi->s_max_size = m3s->s_max_size;
++		s->s_maxbytes = m3s->s_max_size;
+ 		sbi->s_ninodes = m3s->s_ninodes;
+ 		sbi->s_nzones = m3s->s_zones;
+ 		sbi->s_dirsize = 64;
+@@ -250,7 +252,7 @@ static int minix_fill_super(struct super_block *s, void *data, int silent)
+ 	} else
+ 		goto out_no_fs;
+ 
+-	if (!minix_check_superblock(sbi))
++	if (!minix_check_superblock(s))
+ 		goto out_illegal_sb;
+ 
+ 	/*
+diff --git a/fs/minix/itree_v1.c b/fs/minix/itree_v1.c
+index 046cc96ee7adb..c0d418209ead1 100644
+--- a/fs/minix/itree_v1.c
++++ b/fs/minix/itree_v1.c
+@@ -29,7 +29,7 @@ static int block_to_path(struct inode * inode, long block, int offsets[DEPTH])
+ 	if (block < 0) {
+ 		printk("MINIX-fs: block_to_path: block %ld < 0 on dev %pg\n",
+ 			block, inode->i_sb->s_bdev);
+-	} else if (block >= (minix_sb(inode->i_sb)->s_max_size/BLOCK_SIZE)) {
++	} else if (block >= inode->i_sb->s_maxbytes/BLOCK_SIZE) {
+ 		if (printk_ratelimit())
+ 			printk("MINIX-fs: block_to_path: "
+ 			       "block %ld too big on dev %pg\n",
+diff --git a/fs/minix/itree_v2.c b/fs/minix/itree_v2.c
+index f7fc7eccccccd..ee8af2f9e2828 100644
+--- a/fs/minix/itree_v2.c
++++ b/fs/minix/itree_v2.c
+@@ -32,8 +32,7 @@ static int block_to_path(struct inode * inode, long block, int offsets[DEPTH])
+ 	if (block < 0) {
+ 		printk("MINIX-fs: block_to_path: block %ld < 0 on dev %pg\n",
+ 			block, sb->s_bdev);
+-	} else if ((u64)block * (u64)sb->s_blocksize >=
+-			minix_sb(sb)->s_max_size) {
++	} else if ((u64)block * (u64)sb->s_blocksize >= sb->s_maxbytes) {
+ 		if (printk_ratelimit())
+ 			printk("MINIX-fs: block_to_path: "
+ 			       "block %ld too big on dev %pg\n",
+diff --git a/fs/minix/minix.h b/fs/minix/minix.h
+index df081e8afcc3c..168d45d3de73e 100644
+--- a/fs/minix/minix.h
++++ b/fs/minix/minix.h
+@@ -32,7 +32,6 @@ struct minix_sb_info {
+ 	unsigned long s_zmap_blocks;
+ 	unsigned long s_firstdatazone;
+ 	unsigned long s_log_zone_size;
+-	unsigned long s_max_size;
+ 	int s_dirsize;
+ 	int s_namelen;
+ 	struct buffer_head ** s_imap;
+-- 
+2.25.1
+
 
 
