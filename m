@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2294624BB91
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 202F024BCE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729326AbgHTMbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:31:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59438 "EHLO mail.kernel.org"
+        id S1730127AbgHTMzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:55:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729776AbgHTJu4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:50:56 -0400
+        id S1728789AbgHTJnL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:43:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5515A2075E;
-        Thu, 20 Aug 2020 09:50:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0814A208E4;
+        Thu, 20 Aug 2020 09:43:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917055;
-        bh=eevjQnw9rouQmoVAWrlOyJAU3VncyMN6KmHNuM6x0uY=;
+        s=default; t=1597916590;
+        bh=cFSsyY+N9kTR0Cd7a0UjjTB3fTM2An8IueZiXLqrQhw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VTqsm2WI0GFRPtp767DZsslZb6sFURuadpFo48QVHKC8qk5DRIZCoZubTs9ORLJMP
-         axvv4WAU4FWkDmoaGHzZRvQ1QYTYEHR1hdWkr5Z33E/skDzhYtpHku80bOzm93ll2h
-         mWeQGA+JbCQGB5nj+YhWJ4carRrn36ED2rmc2aLE=
+        b=B1ViXoWB1AcZkhv+MRo30zaSeN/AkkHkH6VtjZsJAGkYTEQ+IoRL7T326VvUQoPId
+         CmA7yaw3G9k6mlZVvBbEyNEG4YWow47frSwOcnXUq5IbvZKhnEVlXwmwRIA+1xsfWh
+         ULNpNdrJK/QBdOssIDKncymPPdey5uPfoIIE9skI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>,
-        Barry Song <baohua@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 111/152] clk: clk-atlas6: fix return value check in atlas6_clk_init()
-Date:   Thu, 20 Aug 2020 11:21:18 +0200
-Message-Id: <20200820091559.456000231@linuxfoundation.org>
+Subject: [PATCH 5.7 182/204] mfd: dln2: Run event handler loop under spinlock
+Date:   Thu, 20 Aug 2020 11:21:19 +0200
+Message-Id: <20200820091615.290159493@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
-References: <20200820091553.615456912@linuxfoundation.org>
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,37 +45,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xu Wang <vulab@iscas.ac.cn>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 12b90b40854a8461a02ef19f6f4474cc88d64b66 ]
+[ Upstream commit 3d858942250820b9adc35f963a257481d6d4c81d ]
 
-In case of error, the function clk_register() returns ERR_PTR()
-and never returns NULL. The NULL test in the return value check
-should be replaced with IS_ERR().
+The event handler loop must be run with interrupts disabled.
+Otherwise we will have a warning:
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
-Link: https://lore.kernel.org/r/20200713032143.21362-1-vulab@iscas.ac.cn
-Acked-by: Barry Song <baohua@kernel.org>
-Fixes: 7bf21bc81f28 ("clk: sirf: re-arch to make the codes support both prima2 and atlas6")
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+[ 1970.785649] irq 31 handler lineevent_irq_handler+0x0/0x20 enabled interrupts
+[ 1970.792739] WARNING: CPU: 0 PID: 0 at kernel/irq/handle.c:159 __handle_irq_event_percpu+0x162/0x170
+[ 1970.860732] RIP: 0010:__handle_irq_event_percpu+0x162/0x170
+...
+[ 1970.946994] Call Trace:
+[ 1970.949446]  <IRQ>
+[ 1970.951471]  handle_irq_event_percpu+0x2c/0x80
+[ 1970.955921]  handle_irq_event+0x23/0x43
+[ 1970.959766]  handle_simple_irq+0x57/0x70
+[ 1970.963695]  generic_handle_irq+0x42/0x50
+[ 1970.967717]  dln2_rx+0xc1/0x210 [dln2]
+[ 1970.971479]  ? usb_hcd_unmap_urb_for_dma+0xa6/0x1c0
+[ 1970.976362]  __usb_hcd_giveback_urb+0x77/0xe0
+[ 1970.980727]  usb_giveback_urb_bh+0x8e/0xe0
+[ 1970.984837]  tasklet_action_common.isra.0+0x4a/0xe0
+...
+
+Recently xHCI driver switched to tasklets in the commit 36dc01657b49
+("usb: host: xhci: Support running urb giveback in tasklet context").
+
+The handle_irq_event_* functions are expected to be called with interrupts
+disabled and they rightfully complain here because we run in tasklet context
+with interrupts enabled.
+
+Use a event spinlock to protect event handler from being interrupted.
+
+Note, that there are only two users of this GPIO and ADC drivers and both of
+them are using generic_handle_irq() which makes above happen.
+
+Fixes: 338a12814297 ("mfd: Add support for Diolan DLN-2 devices")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/sirf/clk-atlas6.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mfd/dln2.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/clk/sirf/clk-atlas6.c b/drivers/clk/sirf/clk-atlas6.c
-index c84d5bab7ac28..b95483bb6a5ec 100644
---- a/drivers/clk/sirf/clk-atlas6.c
-+++ b/drivers/clk/sirf/clk-atlas6.c
-@@ -135,7 +135,7 @@ static void __init atlas6_clk_init(struct device_node *np)
+diff --git a/drivers/mfd/dln2.c b/drivers/mfd/dln2.c
+index 39276fa626d2b..83e676a096dc1 100644
+--- a/drivers/mfd/dln2.c
++++ b/drivers/mfd/dln2.c
+@@ -287,7 +287,11 @@ static void dln2_rx(struct urb *urb)
+ 	len = urb->actual_length - sizeof(struct dln2_header);
  
- 	for (i = pll1; i < maxclk; i++) {
- 		atlas6_clks[i] = clk_register(NULL, atlas6_clk_hw_array[i]);
--		BUG_ON(!atlas6_clks[i]);
-+		BUG_ON(IS_ERR(atlas6_clks[i]));
- 	}
- 	clk_register_clkdev(atlas6_clks[cpu], NULL, "cpu");
- 	clk_register_clkdev(atlas6_clks[io],  NULL, "io");
+ 	if (handle == DLN2_HANDLE_EVENT) {
++		unsigned long flags;
++
++		spin_lock_irqsave(&dln2->event_cb_lock, flags);
+ 		dln2_run_event_callbacks(dln2, id, echo, data, len);
++		spin_unlock_irqrestore(&dln2->event_cb_lock, flags);
+ 	} else {
+ 		/* URB will be re-submitted in _dln2_transfer (free_rx_slot) */
+ 		if (dln2_transfer_complete(dln2, urb, handle, echo))
 -- 
 2.25.1
 
