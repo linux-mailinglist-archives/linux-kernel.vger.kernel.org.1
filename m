@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38FDC24BB9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C474424BB9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730134AbgHTMbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:31:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58524 "EHLO mail.kernel.org"
+        id S1730104AbgHTMbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:31:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729462AbgHTJug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:50:36 -0400
+        id S1729457AbgHTJuj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:50:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B323D2078D;
-        Thu, 20 Aug 2020 09:50:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 32BA92067C;
+        Thu, 20 Aug 2020 09:50:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917036;
-        bh=n7wzPQ3M0ERQ59sffFXEWhQWFOF761BQYOzZAulle1Q=;
+        s=default; t=1597917038;
+        bh=eZkObATRnty0e7Ot5i/YiemRbDKHfPtcLirUorAG2kc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=izt+fIWzVI5SynLDRBpal4gJX4JOGBK3wd7pU6dR8k9d/fFXtNmfYQVCoL6VYQNp6
-         dqlmB79c/kDXAggV41KYN0biGLYmoPjhy2BW4iqfbjUzZ+ICi9WXXDcqac7xqAWuAu
-         aY8Bg6LG0cugml2I1vItWHmSpswb4PlsjbhJX+Kg=
+        b=Ne7UqZn1/ZrletE781nFNMDODLCtE7z4JAk47kdbEBbnJ4cQRz11jBt4sUad2DPQx
+         Vnr79XhUcTcp5oHiaPF9zu6aiNPrAjRqZttCOH5ZDAEwPwNyXFEZ6KF4PohHaGO15H
+         gAQfjVqLcriD0TLnnyxDAE2lDjHqtucK9VIM9Opk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -32,9 +32,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Qiujun Huang <anenbupt@gmail.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 133/152] fs/minix: fix block limit check for V1 filesystems
-Date:   Thu, 20 Aug 2020 11:21:40 +0200
-Message-Id: <20200820091600.624865025@linuxfoundation.org>
+Subject: [PATCH 5.4 134/152] fs/minix: remove expected error message in block_to_path()
+Date:   Thu, 20 Aug 2020 11:21:41 +0200
+Message-Id: <20200820091600.672650245@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
 References: <20200820091553.615456912@linuxfoundation.org>
@@ -49,39 +49,74 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-[ Upstream commit 0a12c4a8069607247cb8edc3b035a664e636fd9a ]
+[ Upstream commit f666f9fb9a36f1c833b9d18923572f0e4d304754 ]
 
-The minix filesystem reads its maximum file size from its on-disk
-superblock.  This value isn't necessarily a multiple of the block size.
-When it's not, the V1 block mapping code doesn't allow mapping the last
-possible block.  Commit 6ed6a722f9ab ("minixfs: fix block limit check")
-fixed this in the V2 mapping code.  Fix it in the V1 mapping code too.
+When truncating a file to a size within the last allowed logical block,
+block_to_path() is called with the *next* block.  This exceeds the limit,
+causing the "block %ld too big" error message to be printed.
+
+This case isn't actually an error; there are just no more blocks past that
+point.  So, remove this error message.
 
 Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Cc: Alexander Viro <viro@zeniv.linux.org.uk>
 Cc: Qiujun Huang <anenbupt@gmail.com>
-Link: http://lkml.kernel.org/r/20200628060846.682158-6-ebiggers@kernel.org
+Link: http://lkml.kernel.org/r/20200628060846.682158-7-ebiggers@kernel.org
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/minix/itree_v1.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/minix/itree_v1.c | 12 ++++++------
+ fs/minix/itree_v2.c | 12 ++++++------
+ 2 files changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/fs/minix/itree_v1.c b/fs/minix/itree_v1.c
-index c0d418209ead1..405573a79aab4 100644
+index 405573a79aab4..1fed906042aa8 100644
 --- a/fs/minix/itree_v1.c
 +++ b/fs/minix/itree_v1.c
-@@ -29,7 +29,7 @@ static int block_to_path(struct inode * inode, long block, int offsets[DEPTH])
+@@ -29,12 +29,12 @@ static int block_to_path(struct inode * inode, long block, int offsets[DEPTH])
  	if (block < 0) {
  		printk("MINIX-fs: block_to_path: block %ld < 0 on dev %pg\n",
  			block, inode->i_sb->s_bdev);
--	} else if (block >= inode->i_sb->s_maxbytes/BLOCK_SIZE) {
-+	} else if ((u64)block * BLOCK_SIZE >= inode->i_sb->s_maxbytes) {
- 		if (printk_ratelimit())
- 			printk("MINIX-fs: block_to_path: "
- 			       "block %ld too big on dev %pg\n",
+-	} else if ((u64)block * BLOCK_SIZE >= inode->i_sb->s_maxbytes) {
+-		if (printk_ratelimit())
+-			printk("MINIX-fs: block_to_path: "
+-			       "block %ld too big on dev %pg\n",
+-				block, inode->i_sb->s_bdev);
+-	} else if (block < 7) {
++		return 0;
++	}
++	if ((u64)block * BLOCK_SIZE >= inode->i_sb->s_maxbytes)
++		return 0;
++
++	if (block < 7) {
+ 		offsets[n++] = block;
+ 	} else if ((block -= 7) < 512) {
+ 		offsets[n++] = 7;
+diff --git a/fs/minix/itree_v2.c b/fs/minix/itree_v2.c
+index ee8af2f9e2828..9d00f31a2d9d1 100644
+--- a/fs/minix/itree_v2.c
++++ b/fs/minix/itree_v2.c
+@@ -32,12 +32,12 @@ static int block_to_path(struct inode * inode, long block, int offsets[DEPTH])
+ 	if (block < 0) {
+ 		printk("MINIX-fs: block_to_path: block %ld < 0 on dev %pg\n",
+ 			block, sb->s_bdev);
+-	} else if ((u64)block * (u64)sb->s_blocksize >= sb->s_maxbytes) {
+-		if (printk_ratelimit())
+-			printk("MINIX-fs: block_to_path: "
+-			       "block %ld too big on dev %pg\n",
+-				block, sb->s_bdev);
+-	} else if (block < DIRCOUNT) {
++		return 0;
++	}
++	if ((u64)block * (u64)sb->s_blocksize >= sb->s_maxbytes)
++		return 0;
++
++	if (block < DIRCOUNT) {
+ 		offsets[n++] = block;
+ 	} else if ((block -= DIRCOUNT) < INDIRCOUNT(sb)) {
+ 		offsets[n++] = DIRCOUNT;
 -- 
 2.25.1
 
