@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7DF24BBA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D288D24BCB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730130AbgHTMb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:31:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57540 "EHLO mail.kernel.org"
+        id S1730157AbgHTMv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:51:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729712AbgHTJuO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:50:14 -0400
+        id S1728845AbgHTJnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:43:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE7A72224D;
-        Thu, 20 Aug 2020 09:50:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 18BF9207DE;
+        Thu, 20 Aug 2020 09:43:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917014;
-        bh=ujjmrEC6yLqifjsXw+51ksnycUu8RYHEvep7NS0yCZI=;
+        s=default; t=1597916631;
+        bh=GtoAiz2dXQyGy3F3OjN1t/VVSZB76SNZaVG7ljVY/TI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GMr30xdqLj5SJO5/1y5rXTqZ4+0bCkGcsSQKPUFSL1zFEORWQuJsPMAREEcihyLKj
-         Z4YVeRSihGoGqHjTrXxLXqVbZG0kj98pX0e6Tz+MhyzHBfzpeHYjBTtxd96nmdLLF3
-         zpTKIVW9FlMGT6uSCmiLzwKus4i+eo2OqVqy5xs4=
+        b=XqZmmG1EPIUX2/57H/Pb/0sNIQHsxkuhIUJA0BXleK7wfCh53+hpPoJpnMGs4DDtN
+         6gigje0heGsppsRQ9Gdn3ILdmhwHSeGTt1IbpoKSzlePQez6OOYh2kfD0O1J7joQZW
+         PBQAuJ1AasKGbmvluvl7E172uQI6YnU2x8qZ4MaA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 126/152] Input: sentelic - fix error return when fsp_reg_write fails
-Date:   Thu, 20 Aug 2020 11:21:33 +0200
-Message-Id: <20200820091600.256616070@linuxfoundation.org>
+        Alex Deucher <alexander.deucher@amd.com>,
+        Huang Rui <ray.huang@amd.com>
+Subject: [PATCH 5.7 197/204] drm/amdgpu: fix ordering of psp suspend
+Date:   Thu, 20 Aug 2020 11:21:34 +0200
+Message-Id: <20200820091616.019837757@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
-References: <20200820091553.615456912@linuxfoundation.org>
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Alex Deucher <alexdeucher@gmail.com>
 
-[ Upstream commit ea38f06e0291986eb93beb6d61fd413607a30ca4 ]
+The ordering of psp_tmr_terminate() and psp_asd_unload()
+got reversed when the patches were applied to stable.
 
-Currently when the call to fsp_reg_write fails -EIO is not being returned
-because the count is being returned instead of the return value in retval.
-Fix this by returning the value in retval instead of count.
+This patch does not exist in Linus' tree because the ordering
+is correct there.  It got reversed when the patches were applied
+to stable.  This patch is for stable only.
 
-Addresses-Coverity: ("Unused value")
-Fixes: fc69f4a6af49 ("Input: add new driver for Sentelic Finger Sensing Pad")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20200603141218.131663-1-colin.king@canonical.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 22ff658396b446 ("drm/amdgpu: asd function needs to be unloaded in suspend phase")
+Fixes: 2c41c968c6f648 ("drm/amdgpu: add TMR destory function for psp")
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org # 5.7.x
+Cc: Huang Rui <ray.huang@amd.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/input/mouse/sentelic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/input/mouse/sentelic.c b/drivers/input/mouse/sentelic.c
-index e99d9bf1a267d..e78c4c7eda34d 100644
---- a/drivers/input/mouse/sentelic.c
-+++ b/drivers/input/mouse/sentelic.c
-@@ -441,7 +441,7 @@ static ssize_t fsp_attr_set_setreg(struct psmouse *psmouse, void *data,
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
+@@ -1679,15 +1679,15 @@ static int psp_suspend(void *handle)
+ 		}
+ 	}
  
- 	fsp_reg_write_enable(psmouse, false);
+-	ret = psp_tmr_terminate(psp);
++	ret = psp_asd_unload(psp);
+ 	if (ret) {
+-		DRM_ERROR("Falied to terminate tmr\n");
++		DRM_ERROR("Failed to unload asd\n");
+ 		return ret;
+ 	}
  
--	return count;
-+	return retval;
- }
+-	ret = psp_asd_unload(psp);
++	ret = psp_tmr_terminate(psp);
+ 	if (ret) {
+-		DRM_ERROR("Failed to unload asd\n");
++		DRM_ERROR("Falied to terminate tmr\n");
+ 		return ret;
+ 	}
  
- PSMOUSE_DEFINE_WO_ATTR(setreg, S_IWUSR, NULL, fsp_attr_set_setreg);
--- 
-2.25.1
-
 
 
