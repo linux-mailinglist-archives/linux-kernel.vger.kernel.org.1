@@ -2,98 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 243DA24B257
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C21024B20A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728012AbgHTJ2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:28:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727841AbgHTJ1E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:27:04 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7609022CF6;
-        Thu, 20 Aug 2020 09:27:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915624;
-        bh=tnabjO7JEjY1lDcg7PZdz46k5I4+nn34zgqTPaqIAqg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DM11x6Y8JQpXhK2Rl6i+8PKmW8odDc4Jp9X/RkjG1cIBT7D+S2/MLXPRNfEZnz19F
-         UYw2PfywfCqN0G/T7bapyW7nfL1ir+LzOJI0TinyvB7YHZw+O6sC1KiLZG/nhl9koM
-         XQVmgzqvZ+TYGja8XcQ7NHbNDgWhb+ucUVHGaGPA=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>
-Subject: [PATCH 5.8 061/232] pidfd: Add missing sock updates for pidfd_getfd()
-Date:   Thu, 20 Aug 2020 11:18:32 +0200
-Message-Id: <20200820091615.744240580@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
-References: <20200820091612.692383444@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1726935AbgHTJTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:19:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726823AbgHTJSh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:18:37 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B793DC061384
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 02:18:36 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597915114;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BKCC8LY5eyXxgPkbZLKy7wBhTWb+3NrngDGJtPc7giw=;
+        b=yZ4vqcXicaTwqzYA56JRtJyNmR4lrnwCmHnfwA94jLlWRfPDycDYu/Q8ElPHlUXk5zSmrd
+        JmCWqW5xHeMiwMvynRwMIRmocvxe95LOkKedTBsNZcWAze2OrUZjwDRw11m98xuDCUfn5L
+        Vu8IBNa/KvbIrn5oZDyb+eM0vdJopgbvnav7/8bkD3wUr/AAkBjHJI5J1qfjHfspqlAq0C
+        8LT4AM56sEml8AwtzDoEV3YF6TJl8XboLR6DK17tJat7fAX5Xi69ZtlBP2xNPUUDJf6rpc
+        EPYFfTfPOHQIKUu7w+n2xkB60sBUx1zyvw9A0+ha59X/PcrEPKJc79/hBGdaDw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597915114;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BKCC8LY5eyXxgPkbZLKy7wBhTWb+3NrngDGJtPc7giw=;
+        b=HPS6KYi1eAGXLYiQWiaX4ld6qTIt6H3EeQs1uRPabErkbY9Z+V/pVQ6nGEBafTOetEENlx
+        OsfrWYk7MrzgrFBg==
+To:     David Laight <David.Laight@ACULAB.COM>,
+        'Joe Perches' <joe@perches.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC PATCH 1/5] printk: implement pr_cont_t
+In-Reply-To: <389a62f178d2482b9525f499b82e92df@AcuMS.aculab.com>
+References: <20200819232632.13418-1-john.ogness@linutronix.de> <20200819232632.13418-2-john.ogness@linutronix.de> <e1e3164eabf69e04ad9e9ddc259ca685f48c5e27.camel@perches.com> <b17fc8afc8984fedb852921366190104@AcuMS.aculab.com> <29b6120680fbfb51936bb9100b2c9bb78385aef0.camel@perches.com> <389a62f178d2482b9525f499b82e92df@AcuMS.aculab.com>
+Date:   Thu, 20 Aug 2020 11:24:33 +0206
+Message-ID: <87wo1tzndi.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+On 2020-08-20, David Laight <David.Laight@ACULAB.COM> wrote:
+>> On Thu, 2020-08-20 at 07:44 +0000, David Laight wrote:
+>>> I've no idea how you'd 'size' the number of buffers.
+>> 
+>> I believe they are static and assume no more than 10
+>> simultaneous uses of printk_begin
+>
+> What I meant was how you'd work out whether 10 was in any way
+> appropriate.  ISTM it is either 'too many' or 'nowhere near enough'
+> depending on exactly what the system is doing.
 
-commit 4969f8a073977123504609d7310b42a588297aa4 upstream.
+Right now mainline has 1, which breaks pr_cont just booting your system.
 
-The sock counting (sock_update_netprioidx() and sock_update_classid())
-was missing from pidfd's implementation of received fd installation. Add
-a call to the new __receive_sock() helper.
+I expect we will be increasing the number of buffers, regardless if we
+adapt a new API or continue with what we have now.
 
-Cc: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Sargun Dhillon <sargun@sargun.me>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
-Fixes: 8649c322f75c ("pid: Implement pidfd_getfd syscall")
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> And if code 'leaks' them you are in deep doo-doos.
 
----
- kernel/pid.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Not really. It falls back to printing individual parts. Also, the printk
+subsystem has access to the open buffers and could even track the users
+lockdep style.
 
---- a/kernel/pid.c
-+++ b/kernel/pid.c
-@@ -42,6 +42,7 @@
- #include <linux/sched/signal.h>
- #include <linux/sched/task.h>
- #include <linux/idr.h>
-+#include <net/sock.h>
- 
- struct pid init_struct_pid = {
- 	.count		= REFCOUNT_INIT(1),
-@@ -642,10 +643,12 @@ static int pidfd_getfd(struct pid *pid,
- 	}
- 
- 	ret = get_unused_fd_flags(O_CLOEXEC);
--	if (ret < 0)
-+	if (ret < 0) {
- 		fput(file);
--	else
-+	} else {
-+		__receive_sock(file);
- 		fd_install(ret, file);
-+	}
- 
- 	return ret;
- }
+But this discussion has little to do with the API. These are
+implementation details that may end up under the hood of the current
+mainline API.
 
-
+John Ogness
