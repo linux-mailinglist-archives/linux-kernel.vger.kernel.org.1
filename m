@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 144B924BB58
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 558C024BA43
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729891AbgHTJwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:52:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33162 "EHLO mail.kernel.org"
+        id S1729841AbgHTMEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:04:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729661AbgHTJwA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:52:00 -0400
+        id S1730395AbgHTJ7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:59:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86166207FB;
-        Thu, 20 Aug 2020 09:51:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 769ED2067C;
+        Thu, 20 Aug 2020 09:59:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917120;
-        bh=J54xSCntPSaWHZxpEYggTZx+DXeSiCJF8unRn8cZZio=;
+        s=default; t=1597917559;
+        bh=3DbTosbn/9M8AZwshGP3ITLMyCZ5UHRUtgMC2+pda8o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qwu9JS3wvvQ5GJx3vy5GNSsIbhVbbXfBJ/I9qvUryP+amQxSeuLChSyq3mXrPlRX1
-         KLGB+yc+Kiwtg1Ua+ppZ5zYFVm8bIQokqPguYRZ96bV68EO5qtTmOHhThUiy4vW2W/
-         e/QuzZF8JHh+pTToulHLTm3s5+pPapkS6RqMflGo=
+        b=pf2u4d1HuEkpOKXtr7K+kc9sTx3qnNe2RFQVD5Sr3uNM3l18IohqKS+efQktlmlY9
+         8PXLWaA097VP0bMHIXLh/MxoJeEaWpzbkuI9k58JvgfZ6Sgz5g63Z+yO0vxKF6w5SZ
+         qK7xnDDqzzFLg57ZMmdpXl1WZX6yKe4gJbJORgV0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Keeping <john@metanate.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 4.19 02/92] genirq/affinity: Make affinity setting if activated opt-in
+        stable@vger.kernel.org, Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 074/212] vxlan: Ensure FDB dump is performed under RCU
 Date:   Thu, 20 Aug 2020 11:20:47 +0200
-Message-Id: <20200820091537.624101245@linuxfoundation.org>
+Message-Id: <20200820091606.102963626@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
-References: <20200820091537.490965042@linuxfoundation.org>
+In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
+References: <20200820091602.251285210@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,138 +44,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Ido Schimmel <idosch@mellanox.com>
 
-commit f0c7baca180046824e07fc5f1326e83a8fd150c7 upstream.
+[ Upstream commit b5141915b5aec3b29a63db869229e3741ebce258 ]
 
-John reported that on a RK3288 system the perf per CPU interrupts are all
-affine to CPU0 and provided the analysis:
+The commit cited below removed the RCU read-side critical section from
+rtnl_fdb_dump() which means that the ndo_fdb_dump() callback is invoked
+without RCU protection.
 
- "It looks like what happens is that because the interrupts are not per-CPU
-  in the hardware, armpmu_request_irq() calls irq_force_affinity() while
-  the interrupt is deactivated and then request_irq() with IRQF_PERCPU |
-  IRQF_NOBALANCING.
+This results in the following warning [1] in the VXLAN driver, which
+relied on the callback being invoked from an RCU read-side critical
+section.
 
-  Now when irq_startup() runs with IRQ_STARTUP_NORMAL, it calls
-  irq_setup_affinity() which returns early because IRQF_PERCPU and
-  IRQF_NOBALANCING are set, leaving the interrupt on its original CPU."
+Fix this by calling rcu_read_lock() in the VXLAN driver, as already done
+in the bridge driver.
 
-This was broken by the recent commit which blocked interrupt affinity
-setting in hardware before activation of the interrupt. While this works in
-general, it does not work for this particular case. As contrary to the
-initial analysis not all interrupt chip drivers implement an activate
-callback, the safe cure is to make the deferred interrupt affinity setting
-at activation time opt-in.
+[1]
+WARNING: suspicious RCU usage
+5.8.0-rc4-custom-01521-g481007553ce6 #29 Not tainted
+-----------------------------
+drivers/net/vxlan.c:1379 RCU-list traversed in non-reader section!!
 
-Implement the necessary core logic and make the two irqchip implementations
-for which this is required opt-in. In hindsight this would have been the
-right thing to do, but ...
+other info that might help us debug this:
 
-Fixes: baedb87d1b53 ("genirq/affinity: Handle affinity setting on inactive interrupts correctly")
-Reported-by: John Keeping <john@metanate.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Marc Zyngier <maz@kernel.org>
-Acked-by: Marc Zyngier <maz@kernel.org>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/87blk4tzgm.fsf@nanos.tec.linutronix.de
+rcu_scheduler_active = 2, debug_locks = 1
+1 lock held by bridge/166:
+ #0: ffffffff85a27850 (rtnl_mutex){+.+.}-{3:3}, at: netlink_dump+0xea/0x1090
+
+stack backtrace:
+CPU: 1 PID: 166 Comm: bridge Not tainted 5.8.0-rc4-custom-01521-g481007553ce6 #29
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-2.fc32 04/01/2014
+Call Trace:
+ dump_stack+0x100/0x184
+ lockdep_rcu_suspicious+0x153/0x15d
+ vxlan_fdb_dump+0x51e/0x6d0
+ rtnl_fdb_dump+0x4dc/0xad0
+ netlink_dump+0x540/0x1090
+ __netlink_dump_start+0x695/0x950
+ rtnetlink_rcv_msg+0x802/0xbd0
+ netlink_rcv_skb+0x17a/0x480
+ rtnetlink_rcv+0x22/0x30
+ netlink_unicast+0x5ae/0x890
+ netlink_sendmsg+0x98a/0xf40
+ __sys_sendto+0x279/0x3b0
+ __x64_sys_sendto+0xe6/0x1a0
+ do_syscall_64+0x54/0xa0
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fe14fa2ade0
+Code: Bad RIP value.
+RSP: 002b:00007fff75bb5b88 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
+RAX: ffffffffffffffda RBX: 00005614b1ba0020 RCX: 00007fe14fa2ade0
+RDX: 000000000000011c RSI: 00007fff75bb5b90 RDI: 0000000000000003
+RBP: 00007fff75bb5b90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00005614b1b89160
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+Fixes: 5e6d24358799 ("bridge: netlink dump interface at par with brctl")
+Signed-off-by: Ido Schimmel <idosch@mellanox.com>
+Reviewed-by: Jiri Pirko <jiri@mellanox.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- arch/x86/kernel/apic/vector.c    |    4 ++++
- drivers/irqchip/irq-gic-v3-its.c |    5 ++++-
- include/linux/irq.h              |   13 +++++++++++++
- kernel/irq/manage.c              |    6 +++++-
- 4 files changed, 26 insertions(+), 2 deletions(-)
+ drivers/net/vxlan.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/arch/x86/kernel/apic/vector.c
-+++ b/arch/x86/kernel/apic/vector.c
-@@ -556,6 +556,10 @@ static int x86_vector_alloc_irqs(struct
- 		irqd->chip_data = apicd;
- 		irqd->hwirq = virq + i;
- 		irqd_set_single_target(irqd);
-+
-+		/* Don't invoke affinity setter on deactivated interrupts */
-+		irqd_set_affinity_on_activate(irqd);
-+
- 		/*
- 		 * Legacy vectors are already assigned when the IOAPIC
- 		 * takes them over. They stay on the same vector. This is
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -2458,6 +2458,7 @@ static int its_irq_domain_alloc(struct i
- {
- 	msi_alloc_info_t *info = args;
- 	struct its_device *its_dev = info->scratchpad[0].ptr;
-+	struct irq_data *irqd;
- 	irq_hw_number_t hwirq;
- 	int err;
- 	int i;
-@@ -2473,7 +2474,9 @@ static int its_irq_domain_alloc(struct i
+--- a/drivers/net/vxlan.c
++++ b/drivers/net/vxlan.c
+@@ -889,6 +889,7 @@ static int vxlan_fdb_dump(struct sk_buff
+ 	for (h = 0; h < FDB_HASH_SIZE; ++h) {
+ 		struct vxlan_fdb *f;
  
- 		irq_domain_set_hwirq_and_chip(domain, virq + i,
- 					      hwirq + i, &its_irq_chip, its_dev);
--		irqd_set_single_target(irq_desc_get_irq_data(irq_to_desc(virq + i)));
-+		irqd = irq_get_irq_data(virq + i);
-+		irqd_set_single_target(irqd);
-+		irqd_set_affinity_on_activate(irqd);
- 		pr_debug("ID:%d pID:%d vID:%d\n",
- 			 (int)(hwirq + i - its_dev->event_map.lpi_base),
- 			 (int)(hwirq + i), virq + i);
---- a/include/linux/irq.h
-+++ b/include/linux/irq.h
-@@ -210,6 +210,8 @@ struct irq_data {
-  * IRQD_CAN_RESERVE		- Can use reservation mode
-  * IRQD_MSI_NOMASK_QUIRK	- Non-maskable MSI quirk for affinity change
-  *				  required
-+ * IRQD_AFFINITY_ON_ACTIVATE	- Affinity is set on activation. Don't call
-+ *				  irq_chip::irq_set_affinity() when deactivated.
-  */
- enum {
- 	IRQD_TRIGGER_MASK		= 0xf,
-@@ -233,6 +235,7 @@ enum {
- 	IRQD_DEFAULT_TRIGGER_SET	= (1 << 25),
- 	IRQD_CAN_RESERVE		= (1 << 26),
- 	IRQD_MSI_NOMASK_QUIRK		= (1 << 27),
-+	IRQD_AFFINITY_ON_ACTIVATE	= (1 << 29),
- };
++		rcu_read_lock();
+ 		hlist_for_each_entry_rcu(f, &vxlan->fdb_head[h], hlist) {
+ 			struct vxlan_rdst *rd;
  
- #define __irqd_to_state(d) ACCESS_PRIVATE((d)->common, state_use_accessors)
-@@ -407,6 +410,16 @@ static inline bool irqd_msi_nomask_quirk
- 	return __irqd_to_state(d) & IRQD_MSI_NOMASK_QUIRK;
- }
- 
-+static inline void irqd_set_affinity_on_activate(struct irq_data *d)
-+{
-+	__irqd_to_state(d) |= IRQD_AFFINITY_ON_ACTIVATE;
-+}
-+
-+static inline bool irqd_affinity_on_activate(struct irq_data *d)
-+{
-+	return __irqd_to_state(d) & IRQD_AFFINITY_ON_ACTIVATE;
-+}
-+
- #undef __irqd_to_state
- 
- static inline irq_hw_number_t irqd_to_hwirq(struct irq_data *d)
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -280,12 +280,16 @@ static bool irq_set_affinity_deactivated
- 	struct irq_desc *desc = irq_data_to_desc(data);
- 
- 	/*
-+	 * Handle irq chips which can handle affinity only in activated
-+	 * state correctly
-+	 *
- 	 * If the interrupt is not yet activated, just store the affinity
- 	 * mask and do not call the chip driver at all. On activation the
- 	 * driver has to make sure anyway that the interrupt is in a
- 	 * useable state so startup works.
- 	 */
--	if (!IS_ENABLED(CONFIG_IRQ_DOMAIN_HIERARCHY) || irqd_is_activated(data))
-+	if (!IS_ENABLED(CONFIG_IRQ_DOMAIN_HIERARCHY) ||
-+	    irqd_is_activated(data) || !irqd_affinity_on_activate(data))
- 		return false;
- 
- 	cpumask_copy(desc->irq_common_data.affinity, mask);
+@@ -901,12 +902,15 @@ static int vxlan_fdb_dump(struct sk_buff
+ 						     cb->nlh->nlmsg_seq,
+ 						     RTM_NEWNEIGH,
+ 						     NLM_F_MULTI, rd);
+-				if (err < 0)
++				if (err < 0) {
++					rcu_read_unlock();
+ 					goto out;
++				}
+ skip:
+ 				*idx += 1;
+ 			}
+ 		}
++		rcu_read_unlock();
+ 	}
+ out:
+ 	return err;
 
 
