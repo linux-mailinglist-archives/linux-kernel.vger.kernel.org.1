@@ -2,140 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A079824BDB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6D3724BDEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728746AbgHTNLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:11:15 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9795 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727084AbgHTNLG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 09:11:06 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id DE87FE644D56D59FBCBC;
-        Thu, 20 Aug 2020 21:10:58 +0800 (CST)
-Received: from DESKTOP-8N3QUD5.china.huawei.com (10.67.102.173) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 20 Aug 2020 21:10:49 +0800
-From:   Guohua Zhong <zhongguohua1@huawei.com>
-To:     <paulus@samba.org>, <mpe@ellerman.id.au>,
-        <benh@kernel.crashing.org>, <gregkh@linuxfoundation.org>
-CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>, <nixiaoming@huawei.com>,
-        <wangle6@huawei.com>
-Subject: [PATCH] powerpc: Fix a bug in __div64_32 if divisor is zero
-Date:   Thu, 20 Aug 2020 21:10:49 +0800
-Message-ID: <20200820131049.42940-1-zhongguohua1@huawei.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S1728921AbgHTNQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:16:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728812AbgHTNPp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 09:15:45 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E49FC061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 06:15:44 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id j7so1786798oij.9
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 06:15:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uxwgX0CmrS+bL9jcwOXBNfIFagcjimHKU8Dz8OFh9wM=;
+        b=sZMJamaRU56/9uttmwSR1aZ9G2hQwvy/8xKscuv5uhdh4WUpL6qL1uGWJoWCRGg/x3
+         w16ByBrSQR6vmgPtfSHPBRAUrJkJ9e7/gmgKuSVoIsiSzNYEVvivHLjG8XiNUL4fh2u9
+         OmnOgDnmg7k14yNQHRaGVH4UaH1qjuT3CSsM+RMR4xxNVDZHeFXYee136MF1itGmA5pt
+         SYKgQSZHQHVZ8ZT7gQMZqhoKq3dheJ5g7glvd8f4/JarRBjblg8FVCCxDVDa6UnznyZv
+         A5y3htjBXdZl4xw1R1GQbCR7NQXka8fvcHPtKi/SokPZEwqA/YtgMPi3M/xODRXkMZPj
+         DtZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uxwgX0CmrS+bL9jcwOXBNfIFagcjimHKU8Dz8OFh9wM=;
+        b=HlXnsPB0JfD2+ThL8emo7ypmxQsQxc+k+qDRYv4m0WCh/iKF1UKKsoLFLD4zl4Exof
+         q9Ii/pHFyZfYCi0uv6YvQXcNnClAmPuKtiW1ODHnc4z3bpPYlAwkH+53Abys7dGrFCP2
+         tgrlmTPBH8LDVDS1K/hJG5J7Csq+gRMaeQk0mMqYQCkuWJ/4q4wVa21jRrAIK2mg67Pq
+         143UWXTHOXW0/zZdNVtxDYW2j7OXvOAHVwSdWiP0Zm3rTqJL+uuwbv3ZBVe1AhMKraDz
+         apKrCipCVqXpdoKeSjx5jvmI6JMAqAU6ogZakAIMyZQUDKnP252JCastv5Mdmi4KSlYq
+         Z/rA==
+X-Gm-Message-State: AOAM531BrqOeM+c6rCytmm4aaXcKUVbbQhJUrPYC7LweXfx9ooadvgo+
+        p1X1JeCVyuX4+kgCiOAW/169F/BdZLQkSvtsqnXolA==
+X-Google-Smtp-Source: ABdhPJx8MtyIqEt4eq5i7NpkgELb0LW4xVC/Qxsp/06hphz7mwCsibbMQmzcpjEBP3sxVH9VQLg0AZn0NKOaarJ+bmw=
+X-Received: by 2002:a05:6808:3da:: with SMTP id o26mr1573458oie.3.1597929343965;
+ Thu, 20 Aug 2020 06:15:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.102.173]
-X-CFilter-Loop: Reflected
+References: <20200820120025.74460-1-benbjiang@tencent.com> <CAKfTPtABCbEuYf3uup5ZODyPXpUqBjgM8A5gBQqM0cQGxWk5zw@mail.gmail.com>
+ <20200820125829.GT2674@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200820125829.GT2674@hirez.programming.kicks-ass.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 20 Aug 2020 15:15:32 +0200
+Message-ID: <CAKfTPtBuZOb9-W5sS=DqxcuMFa8Lw=7XqMJ_YrXEgd5zvufYjA@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: avoid vruntime compensation for SCHED_IDLE task
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Jiang Biao <benbjiang@gmail.com>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiang Biao <benbjiang@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When cat /proc/pid/stat, do_task_stat will call into cputime_adjust,
-which call stack is like this:
+On Thu, 20 Aug 2020 at 14:58, <peterz@infradead.org> wrote:
+>
+> On Thu, Aug 20, 2020 at 02:51:06PM +0200, Vincent Guittot wrote:
+> > On Thu, 20 Aug 2020 at 14:00, Jiang Biao <benbjiang@gmail.com> wrote:
+> > >
+> > > From: Jiang Biao <benbjiang@tencent.com>
+> > >
+> > > Vruntime compensation has been down in place_entity() to
+> > > boot the waking procedure for fair tasks. There is no need to
+> >
+> > s/boot/boost/ ?
+> >
+> > > do that for SCHED_IDLE task actually.
+> > >
+> > > Not compensating vruntime for SCHED_IDLE task could make
+> > > SCHED_IDLE task more harmless for normal tasks.
+>
+> This is rather week. It would be much better if there's some actual data
+> to support this claim.
+>
+> > > Signed-off-by: Jiang Biao <benbjiang@tencent.com>
+> > > ---
+> > >  kernel/sched/fair.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > index 1a68a0536add..adff77676a0a 100644
+> > > --- a/kernel/sched/fair.c
+> > > +++ b/kernel/sched/fair.c
+> > > @@ -4115,7 +4115,7 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int initial)
+> > >                 vruntime += sched_vslice(cfs_rq, se);
+> > >
+> > >         /* sleeps up to a single latency don't count. */
+> > > -       if (!initial) {
+> > > +       if (!initial && likely(!task_has_idle_policy(task_of(se)))) {
+> >
+> > What if se is not a task ?
+>
+> Then we very much need it, because it might have fair tasks inside. I
+> suppose you could do something complicated with idle_h_nr_running, but
+> is all that really worth the effort?
 
-[17179954.674326]BookE Watchdog detected hard LOCKUP on cpu 0
-[17179954.674331]dCPU: 0 PID: 1262 Comm: TICK Tainted: P        W  O    4.4.176 #1
-[17179954.674339]dtask: dc9d7040 task.stack: d3cb4000
-[17179954.674344]NIP: c001b1a8 LR: c006a7ac CTR: 00000000
-[17179954.674349]REGS: e6fe1f10 TRAP: 3202   Tainted: P        W  O     (4.4.176)
-[17179954.674355]MSR: 00021002 <CE,ME>  CR: 28002224  XER: 00000000
-[17179954.674364]
-GPR00: 00000016 d3cb5cb0 dc9d7040 d3cb5cc0 00000000 0000025d ffe15b24 ffffffff
-GPR08: de86aead 00000000 000003ff ffffffff 28002222 0084d1c0 00000000 ffffffff
-GPR16: b5929ca0 b4bb7a48 c0863c08 0000048d 00000062 00000062 00000000 0000000f
-GPR24: 00000000 d3cb5d08 d3cb5d60 d3cb5d64 00029002 d3e9c214 fffff30e d3e9c20c
-[17179954.674410]NIP [c001b1a8] __div64_32+0x60/0xa0
-[17179954.674422]LR [c006a7ac] cputime_adjust+0x124/0x138
-[17179954.674434]Call Trace:
-[17179961.832693]Call Trace:
-[17179961.832695][d3cb5cb0] [c006a6dc] cputime_adjust+0x54/0x138 (unreliable)
-[17179961.832705][d3cb5cf0] [c006a818] task_cputime_adjusted+0x58/0x80
-[17179961.832713][d3cb5d20] [c01dab44] do_task_stat+0x298/0x870
-[17179961.832720][d3cb5de0] [c01d4948] proc_single_show+0x60/0xa4
-[17179961.832728][d3cb5e10] [c01963d8] seq_read+0x2d8/0x52c
-[17179961.832736][d3cb5e80] [c01702fc] __vfs_read+0x40/0x114
-[17179961.832744][d3cb5ef0] [c0170b1c] vfs_read+0x9c/0x10c
-[17179961.832751][d3cb5f10] [c0171440] SyS_read+0x68/0xc4
-[17179961.832759][d3cb5f40] [c0010a40] ret_from_syscall+0x0/0x3c
+Not sure that Jiang is using cgroups otherwise he would have seen a
+warning I think.
+That's been said, not compensating the vruntime for a sched_idle task
+makes sense for me. Even if that will only help for others task in the
+same cfs_rq
 
-do_task_stat->task_cputime_adjusted->cputime_adjust->scale_stime->div_u64
-->div_u64_rem->do_div->__div64_32
-
-In some corner case, stime + utime = 0 if overflow. Even in v5.8.2  kernel
-the cputime has changed from unsigned long to u64 data type. About 200
-days, the lowwer 32 bit will be 0x00000000. Because divisor for __div64_32
-is unsigned long data type,which is 32 bit for powepc 32, the bug still
-exists.
-
-So it is also a bug in the cputime_adjust which does not check if
-stime + utime = 0
-
-time = scale_stime((__force u64)stime, (__force u64)rtime,
-                (__force u64)(stime + utime));
-
-The commit 3dc167ba5729 ("sched/cputime: Improve cputime_adjust()") in
-mainline kernel may has fixed this case. But it is also better to check
-if divisor is 0 in __div64_32 for other situation.
-
-Signed-off-by: Guohua Zhong <zhongguohua1@huawei.com>
-Fixes:14cf11af6cf6 "( powerpc: Merge enough to start building in arch/powerpc.)"
-Fixes:94b212c29f68 "( powerpc: Move ppc64 boot wrapper code over to arch/powerpc)"
-Cc: stable@vger.kernel.org # v2.6.15+
----
- arch/powerpc/boot/div64.S | 4 ++++
- arch/powerpc/lib/div64.S  | 4 ++++
- 2 files changed, 8 insertions(+)
-
-diff --git a/arch/powerpc/boot/div64.S b/arch/powerpc/boot/div64.S
-index 4354928ed62e..39a25b9712d1 100644
---- a/arch/powerpc/boot/div64.S
-+++ b/arch/powerpc/boot/div64.S
-@@ -13,6 +13,9 @@
- 
- 	.globl __div64_32
- __div64_32:
-+	li	r9,0
-+	cmplw	r4,r9	# check if divisor r4 is zero
-+	beq	5f			# jump to label 5 if r4(divisor) is zero
- 	lwz	r5,0(r3)	# get the dividend into r5/r6
- 	lwz	r6,4(r3)
- 	cmplw	r5,r4
-@@ -52,6 +55,7 @@ __div64_32:
- 4:	stw	r7,0(r3)	# return the quotient in *r3
- 	stw	r8,4(r3)
- 	mr	r3,r6		# return the remainder in r3
-+5:					# return if divisor r4 is zero
- 	blr
- 
- /*
-diff --git a/arch/powerpc/lib/div64.S b/arch/powerpc/lib/div64.S
-index 3d5426e7dcc4..1cc9bcabf678 100644
---- a/arch/powerpc/lib/div64.S
-+++ b/arch/powerpc/lib/div64.S
-@@ -13,6 +13,9 @@
- #include <asm/processor.h>
- 
- _GLOBAL(__div64_32)
-+	li	r9,0
-+	cmplw	r4,r9	# check if divisor r4 is zero
-+	beq	5f			# jump to label 5 if r4(divisor) is zero
- 	lwz	r5,0(r3)	# get the dividend into r5/r6
- 	lwz	r6,4(r3)
- 	cmplw	r5,r4
-@@ -52,4 +55,5 @@ _GLOBAL(__div64_32)
- 4:	stw	r7,0(r3)	# return the quotient in *r3
- 	stw	r8,4(r3)
- 	mr	r3,r6		# return the remainder in r3
-+5:					# return if divisor r4 is zero
- 	blr
--- 
-2.12.3
-
-
+>
+> > >                 unsigned long thresh = sysctl_sched_latency;
+> > >
+> > >                 /*
+> > > --
+> > > 2.21.0
+> > >
