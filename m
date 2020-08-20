@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA0C24BB4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 256B724BB45
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729430AbgHTM0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:26:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34344 "EHLO mail.kernel.org"
+        id S1729088AbgHTM0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:26:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730009AbgHTJwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:52:49 -0400
+        id S1729474AbgHTJxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:53:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 150572075E;
-        Thu, 20 Aug 2020 09:52:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BEC422067C;
+        Thu, 20 Aug 2020 09:53:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917168;
-        bh=lBNttqA3EORBs1vjmPPFPnFN6nVGZSBZZd8Eaj570Y4=;
+        s=default; t=1597917183;
+        bh=Ioa8RekqZZPooY2b/9Qub7r0er0Y5L/4+KS2IvOM9s8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=phu1p1+P+6XJJUjrlqsTDdu+S4m8qWSdTvu16ydxQxh8/7+GsLLS9JpC5gPcZnHUM
-         2F8KjtjASdtKlHyb3kvw80w81d5+ovehE9wnIzlocU197zHjdG7+sFPZcGe0IUT3iD
-         hPiph90EXrUPIb93oPZ9JjA+EOhAeh20hrNlrDFU=
+        b=xrvSMPRTdzXFhFbNmEHffdgVyW6go/+4hOiCYys8bod0bZPAwN56zkWRo7zZVszPB
+         V+KxU3Sh0wLTSgEMjlLspOEIN8kKOTW6qVNXKcbLJwrHnJdrI1X6WtBbUEYuTCDBV+
+         GaOnSxTvNMLPaafLH9C70goVJgmkQG7FJMaspu+4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Wu <alexwu@synology.com>,
-        BingJing Chang <bingjingc@synology.com>,
-        Danny Shih <dannyshih@synology.com>,
-        ChangSyun Peng <allenpeng@synology.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH 4.19 28/92] md/raid5: Fix Force reconstruct-write io stuck in degraded raid5
-Date:   Thu, 20 Aug 2020 11:21:13 +0200
-Message-Id: <20200820091539.010171532@linuxfoundation.org>
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Subject: [PATCH 4.19 32/92] driver core: Avoid binding drivers to dead devices
+Date:   Thu, 20 Aug 2020 11:21:17 +0200
+Message-Id: <20200820091539.256776256@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
 References: <20200820091537.490965042@linuxfoundation.org>
@@ -46,55 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChangSyun Peng <allenpeng@synology.com>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit a1c6ae3d9f3dd6aa5981a332a6f700cf1c25edef upstream.
+commit 654888327e9f655a9d55ad477a9583e90e8c9b5c upstream.
 
-In degraded raid5, we need to read parity to do reconstruct-write when
-data disks fail. However, we can not read parity from
-handle_stripe_dirtying() in force reconstruct-write mode.
+Commit 3451a495ef24 ("driver core: Establish order of operations for
+device_add and device_del via bitflag") sought to prevent asynchronous
+driver binding to a device which is being removed.  It added a
+per-device "dead" flag which is checked in the following code paths:
 
-Reproducible Steps:
+* asynchronous binding in __driver_attach_async_helper()
+*  synchronous binding in device_driver_attach()
+* asynchronous binding in __device_attach_async_helper()
 
-1. Create degraded raid5
-mdadm -C /dev/md2 --assume-clean -l5 -n3 /dev/sda2 /dev/sdb2 missing
-2. Set rmw_level to 0
-echo 0 > /sys/block/md2/md/rmw_level
-3. IO to raid5
+It did *not* check the flag upon:
 
-Now some io may be stuck in raid5. We can use handle_stripe_fill() to read
-the parity in this situation.
+*  synchronous binding in __device_attach()
 
-Cc: <stable@vger.kernel.org> # v4.4+
-Reviewed-by: Alex Wu <alexwu@synology.com>
-Reviewed-by: BingJing Chang <bingjingc@synology.com>
-Reviewed-by: Danny Shih <dannyshih@synology.com>
-Signed-off-by: ChangSyun Peng <allenpeng@synology.com>
-Signed-off-by: Song Liu <songliubraving@fb.com>
+However __device_attach() may also be called asynchronously from:
+
+deferred_probe_work_func()
+  bus_probe_device()
+    device_initial_probe()
+      __device_attach()
+
+So if the commit's intention was to check the "dead" flag in all
+asynchronous code paths, then a check is also necessary in
+__device_attach().  Add the missing check.
+
+Fixes: 3451a495ef24 ("driver core: Establish order of operations for device_add and device_del via bitflag")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: stable@vger.kernel.org # v5.1+
+Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Link: https://lore.kernel.org/r/de88a23a6fe0ef70f7cfd13c8aea9ab51b4edab6.1594214103.git.lukas@wunner.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/raid5.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/base/dd.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/md/raid5.c
-+++ b/drivers/md/raid5.c
-@@ -3596,6 +3596,7 @@ static int need_this_block(struct stripe
- 	 * is missing/faulty, then we need to read everything we can.
- 	 */
- 	if (sh->raid_conf->level != 6 &&
-+	    sh->raid_conf->rmw_level != PARITY_DISABLE_RMW &&
- 	    sh->sector < sh->raid_conf->mddev->recovery_cp)
- 		/* reconstruct-write isn't being forced */
- 		return 0;
-@@ -4832,7 +4833,7 @@ static void handle_stripe(struct stripe_
- 	 * or to load a block that is being partially written.
- 	 */
- 	if (s.to_read || s.non_overwrite
--	    || (conf->level == 6 && s.to_write && s.failed)
-+	    || (s.to_write && s.failed)
- 	    || (s.syncing && (s.uptodate + s.compute < disks))
- 	    || s.replacing
- 	    || s.expanding)
+--- a/drivers/base/dd.c
++++ b/drivers/base/dd.c
+@@ -792,7 +792,9 @@ static int __device_attach(struct device
+ 	int ret = 0;
+ 
+ 	device_lock(dev);
+-	if (dev->driver) {
++	if (dev->p->dead) {
++		goto out_unlock;
++	} else if (dev->driver) {
+ 		if (device_is_bound(dev)) {
+ 			ret = 1;
+ 			goto out_unlock;
 
 
