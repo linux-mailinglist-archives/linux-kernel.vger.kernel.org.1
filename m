@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB8824B412
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F01324B2F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730273AbgHTJ5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:57:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40518 "EHLO mail.kernel.org"
+        id S1728966AbgHTJj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:39:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730011AbgHTJ45 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:56:57 -0400
+        id S1728834AbgHTJjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:39:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 956AE207FB;
-        Thu, 20 Aug 2020 09:56:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0A2520724;
+        Thu, 20 Aug 2020 09:39:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917417;
-        bh=i962G2inrCZhyVPx+YuQR7dGciiioWMfgKAG1YVLAPY=;
+        s=default; t=1597916355;
+        bh=wMyosxFfoVepV2dxnPgQaTW3rLcoownAeqijonss+Ug=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VJAcXyPYXljAHHgINpBGjjNhjh35I2MsxGy/Z36sRU9+E3IW3Ztrv5oObiW5U2PpU
-         BKUTF2kh+fCuIN0VkP3oqz2gi+rDNtJgLUM/H4RDIj/fNTrpFVKMiNcpCN5fsRL2VV
-         zn+M91/D5FrP56WD7T/mdfb+jqbe+fj7VQ9ud8fo=
+        b=o6WrQ99XAQww6icfvHTbAXMOZ2+6hG4shJA3KGQDLVH6yg23tJNPewci3x6Fd829y
+         9gGtiL7I8bRpL7oWP4hVCD338J9adrB5U0L4GPikKJLh5V11QnQ1uysPJWFZH/6ACO
+         lWVkY9nRzz51od8PXQj8oWezBjhCU2tyJSkkgKdg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Rolf Eike Beer <eb@emlix.com>
-Subject: [PATCH 4.9 023/212] install several missing uapi headers
-Date:   Thu, 20 Aug 2020 11:19:56 +0200
-Message-Id: <20200820091603.509780520@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 100/204] mfd: arizona: Ensure 32k clock is put on driver unbind and error
+Date:   Thu, 20 Aug 2020 11:19:57 +0200
+Message-Id: <20200820091611.320264649@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
-References: <20200820091602.251285210@linuxfoundation.org>
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,89 +45,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rolf Eike Beer <eb@emlix.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Commit fcc8487d477a3452a1d0ccbdd4c5e0e1e3cb8bed ("uapi: export all headers
-under uapi directories") changed the default to install all headers not marked
-to be conditional. This takes the list of headers listed in the commit message
-and manually adds an export for those that are already present in this kernel
-version.
+[ Upstream commit ddff6c45b21d0437ce0c85f8ac35d7b5480513d7 ]
 
-Found during an attempt to build mtd-utils 2.1.2 as it wants hash_info.h, which
-exists since 3.13 but has not been installed until the above mentioned commit,
-which ended up in 4.12.
+Whilst it doesn't matter if the internal 32k clock register settings
+are cleaned up on exit, as the part will be turned off losing any
+settings, hence the driver hasn't historially bothered. The external
+clock should however be cleaned up, as it could cause clocks to be
+left on, and will at best generate a warning on unbind.
 
-Signed-off-by: Rolf Eike Beer <eb@emlix.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Add clean up on both the probe error path and unbind for the 32k
+clock.
+
+Fixes: cdd8da8cc66b ("mfd: arizona: Add gating of external MCLKn clocks")
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/include/uapi/asm/Kbuild    |    3 +++
- arch/powerpc/include/uapi/asm/Kbuild |    1 +
- include/uapi/drm/Kbuild              |    3 +++
- include/uapi/linux/Kbuild            |   20 ++++++++++++++++++++
- include/uapi/linux/cifs/Kbuild       |    1 +
- include/uapi/linux/genwqe/Kbuild     |    1 +
- 6 files changed, 29 insertions(+)
- create mode 100644 include/uapi/linux/cifs/Kbuild
- create mode 100644 include/uapi/linux/genwqe/Kbuild
+ drivers/mfd/arizona-core.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
---- a/arch/mips/include/uapi/asm/Kbuild
-+++ b/arch/mips/include/uapi/asm/Kbuild
-@@ -39,3 +39,6 @@ header-y += termbits.h
- header-y += termios.h
- header-y += types.h
- header-y += unistd.h
-+header-y += hwcap.h
-+header-y += reg.h
-+header-y += ucontext.h
---- a/arch/powerpc/include/uapi/asm/Kbuild
-+++ b/arch/powerpc/include/uapi/asm/Kbuild
-@@ -45,3 +45,4 @@ header-y += tm.h
- header-y += types.h
- header-y += ucontext.h
- header-y += unistd.h
-+header-y += perf_regs.h
---- a/include/uapi/drm/Kbuild
-+++ b/include/uapi/drm/Kbuild
-@@ -20,3 +20,6 @@ header-y += vmwgfx_drm.h
- header-y += msm_drm.h
- header-y += vc4_drm.h
- header-y += virtgpu_drm.h
-+header-y += armada_drm.h
-+header-y += etnaviv_drm.h
-+header-y += vgem_drm.h
---- a/include/uapi/linux/Kbuild
-+++ b/include/uapi/linux/Kbuild
-@@ -475,3 +475,23 @@ header-y += xilinx-v4l2-controls.h
- header-y += zorro.h
- header-y += zorro_ids.h
- header-y += userfaultfd.h
-+header-y += auto_dev-ioctl.h
-+header-y += bcache.h
-+header-y += btrfs_tree.h
-+header-y += coresight-stm.h
-+header-y += cryptouser.h
-+header-y += hash_info.h
-+header-y += kcm.h
-+header-y += kcov.h
-+header-y += kfd_ioctl.h
-+header-y += lightnvm.h
-+header-y += module.h
-+header-y += nilfs2_api.h
-+header-y += nilfs2_ondisk.h
-+header-y += nsfs.h
-+header-y += pr.h
-+header-y += qrtr.h
-+header-y += stm.h
-+header-y += wil6210_uapi.h
-+header-y += cifs/
-+header-y += genwqe/
---- /dev/null
-+++ b/include/uapi/linux/cifs/Kbuild
-@@ -0,0 +1 @@
-+header-y += cifs_mount.h
---- /dev/null
-+++ b/include/uapi/linux/genwqe/Kbuild
-@@ -0,0 +1 @@
-+header-y += genwqe_card.h
+diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+index f73cf76d1373d..a5e443110fc3d 100644
+--- a/drivers/mfd/arizona-core.c
++++ b/drivers/mfd/arizona-core.c
+@@ -1426,6 +1426,15 @@ int arizona_dev_init(struct arizona *arizona)
+ 	arizona_irq_exit(arizona);
+ err_pm:
+ 	pm_runtime_disable(arizona->dev);
++
++	switch (arizona->pdata.clk32k_src) {
++	case ARIZONA_32KZ_MCLK1:
++	case ARIZONA_32KZ_MCLK2:
++		arizona_clk32k_disable(arizona);
++		break;
++	default:
++		break;
++	}
+ err_reset:
+ 	arizona_enable_reset(arizona);
+ 	regulator_disable(arizona->dcvdd);
+@@ -1448,6 +1457,15 @@ int arizona_dev_exit(struct arizona *arizona)
+ 	regulator_disable(arizona->dcvdd);
+ 	regulator_put(arizona->dcvdd);
+ 
++	switch (arizona->pdata.clk32k_src) {
++	case ARIZONA_32KZ_MCLK1:
++	case ARIZONA_32KZ_MCLK2:
++		arizona_clk32k_disable(arizona);
++		break;
++	default:
++		break;
++	}
++
+ 	mfd_remove_devices(arizona->dev);
+ 	arizona_free_irq(arizona, ARIZONA_IRQ_UNDERCLOCKED, arizona);
+ 	arizona_free_irq(arizona, ARIZONA_IRQ_OVERCLOCKED, arizona);
+-- 
+2.25.1
+
 
 
