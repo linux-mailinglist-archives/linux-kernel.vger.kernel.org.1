@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 400AD24B520
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95D0124B4E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731359AbgHTKTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:19:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40708 "EHLO mail.kernel.org"
+        id S1731106AbgHTKNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:13:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729331AbgHTKSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:18:24 -0400
+        id S1731054AbgHTKMb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:12:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9784020658;
-        Thu, 20 Aug 2020 10:18:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B810120738;
+        Thu, 20 Aug 2020 10:12:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918704;
-        bh=6rfEhDzx06p0ulhrsLXqxxJSYwz8iUODLjDUxrMxFOE=;
+        s=default; t=1597918351;
+        bh=wEHEpnY21BIQiJBhHTEDRxYaJnYW3PivCC0GcHmkWe0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ys6lzK1chFnBcXN73wtiRti1d3ayrnUf/IGSKTYdnjrIg36Y0Y6d7JLD7am0Qfe7u
-         07cy8HaC8M4ss41TMTTeY/4A5tMooYbvG6A9LrwzmsAdRewqgElkNCH5PAe7MMBI5N
-         QI2DkUhb+obCM2UxbtcUo+26XmGszMp89mO8F5X8=
+        b=xyCMXaoAbmDbsoOtSE3xTXI5MDLOqUTEUpwSbXInTfw6Z4UyY/mV8Wch7RIpUKplz
+         jzNtX/Fn+NFxbFba87CAQiQFM2ZMgyxLSZUGfSD4ESSsYLFJ/6X1Vzh4PGsopijxsu
+         o5OolsrWwsSIbt8YiUxyMjA47VPY0/QkHrUTvOxY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+d8489a79b781849b9c46@syzkaller.appspotmail.com,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>
-Subject: [PATCH 4.4 035/149] Bluetooth: Fix slab-out-of-bounds read in hci_extended_inquiry_result_evt()
-Date:   Thu, 20 Aug 2020 11:21:52 +0200
-Message-Id: <20200820092127.433888379@linuxfoundation.org>
+        stable@vger.kernel.org, Sedat Dilek <sedat.dilek@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        Jian Cai <caij2003@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 138/228] crypto: aesni - add compatibility with IAS
+Date:   Thu, 20 Aug 2020 11:21:53 +0200
+Message-Id: <20200820091614.486103051@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
-References: <20200820092125.688850368@linuxfoundation.org>
+In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
+References: <20200820091607.532711107@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,39 +46,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peilin Ye <yepeilin.cs@gmail.com>
+From: Jian Cai <caij2003@gmail.com>
 
-commit 51c19bf3d5cfaa66571e4b88ba2a6f6295311101 upstream.
+[ Upstream commit 44069737ac9625a0f02f0f7f5ab96aae4cd819bc ]
 
-Check upon `num_rsp` is insufficient. A malformed event packet with a
-large `num_rsp` number makes hci_extended_inquiry_result_evt() go out
-of bounds. Fix it.
+Clang's integrated assembler complains "invalid reassignment of
+non-absolute variable 'var_ddq_add'" while assembling
+arch/x86/crypto/aes_ctrby8_avx-x86_64.S. It was because var_ddq_add was
+reassigned with non-absolute values several times, which IAS did not
+support. We can avoid the reassignment by replacing the uses of
+var_ddq_add with its definitions accordingly to have compatilibility
+with IAS.
 
-This patch fixes the following syzbot bug:
-
-    https://syzkaller.appspot.com/bug?id=4bf11aa05c4ca51ce0df86e500fce486552dc8d2
-
-Reported-by: syzbot+d8489a79b781849b9c46@syzkaller.appspotmail.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://github.com/ClangBuiltLinux/linux/issues/1008
+Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+Reported-by: Fangrui Song <maskray@google.com>
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com> # build+boot Linux v5.7.5; clang v11.0.0-git
+Signed-off-by: Jian Cai <caij2003@gmail.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_event.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/crypto/aes_ctrby8_avx-x86_64.S | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
 
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -3812,7 +3812,7 @@ static void hci_extended_inquiry_result_
+diff --git a/arch/x86/crypto/aes_ctrby8_avx-x86_64.S b/arch/x86/crypto/aes_ctrby8_avx-x86_64.S
+index 5f6a5af9c489b..77043a82da510 100644
+--- a/arch/x86/crypto/aes_ctrby8_avx-x86_64.S
++++ b/arch/x86/crypto/aes_ctrby8_avx-x86_64.S
+@@ -127,10 +127,6 @@ ddq_add_8:
  
- 	BT_DBG("%s num_rsp %d", hdev->name, num_rsp);
+ /* generate a unique variable for ddq_add_x */
  
--	if (!num_rsp)
-+	if (!num_rsp || skb->len < num_rsp * sizeof(*info) + 1)
- 		return;
+-.macro setddq n
+-	var_ddq_add = ddq_add_\n
+-.endm
+-
+ /* generate a unique variable for xmm register */
+ .macro setxdata n
+ 	var_xdata = %xmm\n
+@@ -140,9 +136,7 @@ ddq_add_8:
  
- 	if (hci_dev_test_flag(hdev, HCI_PERIODIC_INQ))
+ .macro club name, id
+ .altmacro
+-	.if \name == DDQ_DATA
+-		setddq %\id
+-	.elseif \name == XDATA
++	.if \name == XDATA
+ 		setxdata %\id
+ 	.endif
+ .noaltmacro
+@@ -165,9 +159,8 @@ ddq_add_8:
+ 
+ 	.set i, 1
+ 	.rept (by - 1)
+-		club DDQ_DATA, i
+ 		club XDATA, i
+-		vpaddq	var_ddq_add(%rip), xcounter, var_xdata
++		vpaddq	(ddq_add_1 + 16 * (i - 1))(%rip), xcounter, var_xdata
+ 		vptest	ddq_low_msk(%rip), var_xdata
+ 		jnz 1f
+ 		vpaddq	ddq_high_add_1(%rip), var_xdata, var_xdata
+@@ -180,8 +173,7 @@ ddq_add_8:
+ 	vmovdqa	1*16(p_keys), xkeyA
+ 
+ 	vpxor	xkey0, xdata0, xdata0
+-	club DDQ_DATA, by
+-	vpaddq	var_ddq_add(%rip), xcounter, xcounter
++	vpaddq	(ddq_add_1 + 16 * (by - 1))(%rip), xcounter, xcounter
+ 	vptest	ddq_low_msk(%rip), xcounter
+ 	jnz	1f
+ 	vpaddq	ddq_high_add_1(%rip), xcounter, xcounter
+-- 
+2.25.1
+
 
 
