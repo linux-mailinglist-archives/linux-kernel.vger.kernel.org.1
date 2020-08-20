@@ -2,142 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C304C24BC9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6340E24BCB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730048AbgHTMuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:50:04 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:31797 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730143AbgHTMtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 08:49:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597927792; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=CTYfSxipttQF90/6IHjYN+pYoPbXSp2wCshlwP0fbw8=; b=va3YQUB/gRLM4S7rrQ35xUJ/xt3tHIUaY5Pq549aprL3qUTf7Y1GbOgdWCoIazQ4n3CZxR2g
- QsqOtsRKzbMhWvXV9OR4FbGJztWdts7rgX/FuUU7rz57cipbKgazeK4p8wlu2CTa439Nc5UJ
- vs8Xoapu5HtEMP8cf0sOPDkI844=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f3e71707eb4541d9364459b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 20 Aug 2020 12:49:52
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 45007C43395; Thu, 20 Aug 2020 12:49:51 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from vjitta-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: vjitta)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 68043C433CB;
-        Thu, 20 Aug 2020 12:49:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 68043C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=vjitta@codeaurora.org
-From:   vjitta@codeaurora.org
-To:     joro@8bytes.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     vinmenon@codeaurora.org, kernel-team@android.com,
-        robin.murphy@arm.com, vjitta@codeaurora.org
-Subject: [PATCH v2 2/2] iommu/iova: Free global iova rcache on iova alloc failure
-Date:   Thu, 20 Aug 2020 18:19:21 +0530
-Message-Id: <1597927761-24441-2-git-send-email-vjitta@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1597927761-24441-1-git-send-email-vjitta@codeaurora.org>
-References: <1597927761-24441-1-git-send-email-vjitta@codeaurora.org>
+        id S1729673AbgHTMvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:51:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728981AbgHTMvT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 08:51:19 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED19C061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 05:51:19 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id j22so877563lfm.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 05:51:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jbR4Pr9PsKUZJNbETq29ZnQQtrCssVvEEQi3ARZG9nQ=;
+        b=NSQ0BROBMUCayc3T1MEpDkx4BHFB0Fa2GAnXsMWQfpc9Mxm8RXXYi5lIXrgPw4T8gp
+         RrcHrHqBxLMy+phmJVsyJet4JVoixJY1EjWaOcUoJvARS+Kogk3jxHOvaOiTFiBv3ON2
+         bYGM6rcx03city4YXeyfQ/Exg15Ql39gfEj/ZVmi7IgGGQahzsKTrbDi5x4T57w0PULJ
+         ImKs6d/eNQvxJatm0TZRsDK7swAfzws9tQp49r7cjdcJqKeVXudGfcWJKNPJE04EuSDR
+         jrUdNU0I6aCSVwBAtlNxgXAcPQN8HKPWpaKgNeHj0JneqqX0ENOv2kTcp+zf8bHyK1UC
+         pdbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jbR4Pr9PsKUZJNbETq29ZnQQtrCssVvEEQi3ARZG9nQ=;
+        b=HiLXEMQNUYFwapVkgijfkDyrywfUFrXHjhdx+xWCvpD2dsm/dN0D/sUa8NPN0TCR9I
+         IPSFl2/WMKC2MLcLwH9g7Cv5ojbNcDJXaMG3RMMe8FD9/+YswvLeiL4n8db9Ml132LiO
+         Wcl+Bhy+6MXtnxXXsgA8xMvMw2rG6V17CAeGSlsdclRU1gfMoeBYABcHThIAGWEkHXUM
+         U6fYEXWD3GEngHxIe+kZD93Sp8eO0U+HGRBdXcJPp2nbMqDjIK1j9n8X/Tr/gtLX1e3k
+         2kQ7DnNJlynNxCoxuKIOwPkho5HJe7ULVO6sDK75nrDJ2efcDsPDanjk6hGfGBv5C5V/
+         kaPA==
+X-Gm-Message-State: AOAM531iLxxKN+NuQ0Jr4CfvtcFxXpP8bSW+VDzTPrTAwFsZ88VJu9b3
+        3gGATHgL/wJ1gIo5XbO4ll//wcM12O/UmJEg2K6a3g==
+X-Google-Smtp-Source: ABdhPJyEfF3Cf/9HBpWEcyPwTPo5dMAoeC6NBCQNEMnYl5vYAY5FrV4DpuBgxEshfquiH7b1BGXzndIiHYrezc8JbBQ=
+X-Received: by 2002:ac2:42cd:: with SMTP id n13mr500476lfl.190.1597927877625;
+ Thu, 20 Aug 2020 05:51:17 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200820120025.74460-1-benbjiang@tencent.com>
+In-Reply-To: <20200820120025.74460-1-benbjiang@tencent.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 20 Aug 2020 14:51:06 +0200
+Message-ID: <CAKfTPtABCbEuYf3uup5ZODyPXpUqBjgM8A5gBQqM0cQGxWk5zw@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: avoid vruntime compensation for SCHED_IDLE task
+To:     Jiang Biao <benbjiang@gmail.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiang Biao <benbjiang@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vijayanand Jitta <vjitta@codeaurora.org>
+On Thu, 20 Aug 2020 at 14:00, Jiang Biao <benbjiang@gmail.com> wrote:
+>
+> From: Jiang Biao <benbjiang@tencent.com>
+>
+> Vruntime compensation has been down in place_entity() to
+> boot the waking procedure for fair tasks. There is no need to
 
-When ever an iova alloc request fails we free the iova
-ranges present in the percpu iova rcaches and then retry
-but the global iova rcache is not freed as a result we could
-still see iova alloc failure even after retry as global
-rcache is holding the iova's which can cause fragmentation.
-So, free the global iova rcache as well and then go for the
-retry.
+s/boot/boost/ ?
 
-Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
----
- drivers/iommu/iova.c | 23 +++++++++++++++++++++++
- include/linux/iova.h |  6 ++++++
- 2 files changed, 29 insertions(+)
+> do that for SCHED_IDLE task actually.
+>
+> Not compensating vruntime for SCHED_IDLE task could make
+> SCHED_IDLE task more harmless for normal tasks.
+>
+> Signed-off-by: Jiang Biao <benbjiang@tencent.com>
+> ---
+>  kernel/sched/fair.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 1a68a0536add..adff77676a0a 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -4115,7 +4115,7 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int initial)
+>                 vruntime += sched_vslice(cfs_rq, se);
+>
+>         /* sleeps up to a single latency don't count. */
+> -       if (!initial) {
+> +       if (!initial && likely(!task_has_idle_policy(task_of(se)))) {
 
-diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
-index 4e77116..5836c87 100644
---- a/drivers/iommu/iova.c
-+++ b/drivers/iommu/iova.c
-@@ -442,6 +442,7 @@ struct iova *find_iova(struct iova_domain *iovad, unsigned long pfn)
- 		flush_rcache = false;
- 		for_each_online_cpu(cpu)
- 			free_cpu_cached_iovas(cpu, iovad);
-+		free_global_cached_iovas(iovad);
- 		goto retry;
- 	}
- 
-@@ -1055,5 +1056,27 @@ void free_cpu_cached_iovas(unsigned int cpu, struct iova_domain *iovad)
- 	}
- }
- 
-+/*
-+ * free all the IOVA ranges of global cache
-+ */
-+void free_global_cached_iovas(struct iova_domain *iovad)
-+{
-+	struct iova_rcache *rcache;
-+	unsigned long flags;
-+	int i, j;
-+
-+	for (i = 0; i < IOVA_RANGE_CACHE_MAX_SIZE; ++i) {
-+		rcache = &iovad->rcaches[i];
-+		spin_lock_irqsave(&rcache->lock, flags);
-+		for (j = 0; j < rcache->depot_size; ++j) {
-+			iova_magazine_free_pfns(rcache->depot[j], iovad);
-+			iova_magazine_free(rcache->depot[j]);
-+			rcache->depot[j] = NULL;
-+		}
-+		rcache->depot_size = 0;
-+		spin_unlock_irqrestore(&rcache->lock, flags);
-+	}
-+}
-+
- MODULE_AUTHOR("Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>");
- MODULE_LICENSE("GPL");
-diff --git a/include/linux/iova.h b/include/linux/iova.h
-index a0637ab..a905726 100644
---- a/include/linux/iova.h
-+++ b/include/linux/iova.h
-@@ -163,6 +163,7 @@ int init_iova_flush_queue(struct iova_domain *iovad,
- struct iova *split_and_remove_iova(struct iova_domain *iovad,
- 	struct iova *iova, unsigned long pfn_lo, unsigned long pfn_hi);
- void free_cpu_cached_iovas(unsigned int cpu, struct iova_domain *iovad);
-+void free_global_cached_iovas(struct iova_domain *iovad);
- #else
- static inline int iova_cache_get(void)
- {
-@@ -270,6 +271,11 @@ static inline void free_cpu_cached_iovas(unsigned int cpu,
- 					 struct iova_domain *iovad)
- {
- }
-+
-+static inline void free_global_cached_iovas(struct iova_domain *iovad)
-+{
-+}
-+
- #endif
- 
- #endif
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
-1.9.1
+What if se is not a task ?
 
+>                 unsigned long thresh = sysctl_sched_latency;
+>
+>                 /*
+> --
+> 2.21.0
+>
