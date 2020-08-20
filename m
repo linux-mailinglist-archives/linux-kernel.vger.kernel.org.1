@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFFDF24C00E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B983724C01B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731313AbgHTN7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:59:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60614 "EHLO mail.kernel.org"
+        id S1731182AbgHTN6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:58:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725823AbgHTJYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:24:25 -0400
+        id S1726959AbgHTJY1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:24:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A29122CB1;
-        Thu, 20 Aug 2020 09:24:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DD51922CB2;
+        Thu, 20 Aug 2020 09:24:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915464;
-        bh=+ovO2cUVQ9x1FMkutMCyDN2YYRsnBrHjjN50/X+tt9g=;
+        s=default; t=1597915467;
+        bh=Cm2feadPvPt9PmnUf0EuHHArp78fgf63sITjvIEfr3E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rmBJXqt0voH9cEA475+ufLb+R/9T9ltWzAPrEXVIIWgLG1pa+M6EJPC9JFSo7CElu
-         9f2SLRfwU871QC78TD82MIGZCIVhKR9WZZRWLspP4K8nx8g5RgeXPpKRbGoS8OzfC5
-         9Gysnxg4xTTygAkfE9I2MLSDlVlnTShacFAqV9UI=
+        b=glUCWX8MrLfx1p0Uz2090itJcZtYlZMExJtpV65J6B0pxKAbdFaPWDvdsxwcOUF+g
+         wrL/W7At2Xk4+6ZGqeubsRTpp2y68NCN3nV79+8G+Uuci9vUa4CssliUUiKN2itPuP
+         EjPESar8+HEEKXFn3/vdJgU28EUMbFTt3ld+O4N4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Anand Jain <anand.jain@oracle.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.8 022/232] btrfs: dont traverse into the seed devices in show_devname
-Date:   Thu, 20 Aug 2020 11:17:53 +0200
-Message-Id: <20200820091613.821160235@linuxfoundation.org>
+Subject: [PATCH 5.8 023/232] btrfs: pass checksum type via BTRFS_IOC_FS_INFO ioctl
+Date:   Thu, 20 Aug 2020 11:17:54 +0200
+Message-Id: <20200820091613.872804938@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
 References: <20200820091612.692383444@linuxfoundation.org>
@@ -45,123 +44,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anand Jain <anand.jain@oracle.com>
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-commit 4faf55b03823e96c44dc4e364520000ed3b12fdb upstream.
+commit 137c541821a83debb63b3fa8abdd1cbc41bdf3a1 upstream.
 
-->show_devname currently shows the lowest devid in the list. As the seed
-devices have the lowest devid in the sprouted filesystem, the userland
-tool such as findmnt end up seeing seed device instead of the device from
-the read-writable sprouted filesystem. As shown below.
+With the recent addition of filesystem checksum types other than CRC32c,
+it is not anymore hard-coded which checksum type a btrfs filesystem uses.
 
- mount /dev/sda /btrfs
- mount: /btrfs: WARNING: device write-protected, mounted read-only.
+Up to now there is no good way to read the filesystem checksum, apart from
+reading the filesystem UUID and then query sysfs for the checksum type.
 
- findmnt --output SOURCE,TARGET,UUID /btrfs
- SOURCE   TARGET UUID
- /dev/sda /btrfs 899f7027-3e46-4626-93e7-7d4c9ad19111
+Add a new csum_type and csum_size fields to the BTRFS_IOC_FS_INFO ioctl
+command which usually is used to query filesystem features. Also add a
+flags member indicating that the kernel responded with a set csum_type and
+csum_size field.
 
- btrfs dev add -f /dev/sdb /btrfs
+For compatibility reasons, only return the csum_type and csum_size if
+the BTRFS_FS_INFO_FLAG_CSUM_INFO flag was passed to the kernel. Also
+clear any unknown flags so we don't pass false positives to user-space
+newer than the kernel.
 
- umount /btrfs
- mount /dev/sdb /btrfs
+To simplify further additions to the ioctl, also switch the padding to a
+u8 array. Pahole was used to verify the result of this switch:
 
- findmnt --output SOURCE,TARGET,UUID /btrfs
- SOURCE   TARGET UUID
- /dev/sda /btrfs 899f7027-3e46-4626-93e7-7d4c9ad19111
+The csum members are added before flags, which might look odd, but this
+is to keep the alignment requirements and not to introduce holes in the
+structure.
 
-All sprouts from a single seed will show the same seed device and the
-same fsid. That's confusing.
-This is causing problems in our prototype as there isn't any reference
-to the sprout file-system(s) which is being used for actual read and
-write.
+  $ pahole -C btrfs_ioctl_fs_info_args fs/btrfs/btrfs.ko
+  struct btrfs_ioctl_fs_info_args {
+	  __u64                      max_id;               /*     0     8 */
+	  __u64                      num_devices;          /*     8     8 */
+	  __u8                       fsid[16];             /*    16    16 */
+	  __u32                      nodesize;             /*    32     4 */
+	  __u32                      sectorsize;           /*    36     4 */
+	  __u32                      clone_alignment;      /*    40     4 */
+	  __u16                      csum_type;            /*    44     2 */
+	  __u16                      csum_size;            /*    46     2 */
+	  __u64                      flags;                /*    48     8 */
+	  __u8                       reserved[968];        /*    56   968 */
 
-This was added in the patch which implemented the show_devname in btrfs
-commit 9c5085c14798 ("Btrfs: implement ->show_devname").
-I tried to look for any particular reason that we need to show the seed
-device, there isn't any.
+	  /* size: 1024, cachelines: 16, members: 10 */
+  };
 
-So instead, do not traverse through the seed devices, just show the
-lowest devid in the sprouted fsid.
-
-After the patch:
-
- mount /dev/sda /btrfs
- mount: /btrfs: WARNING: device write-protected, mounted read-only.
-
- findmnt --output SOURCE,TARGET,UUID /btrfs
- SOURCE   TARGET UUID
- /dev/sda /btrfs 899f7027-3e46-4626-93e7-7d4c9ad19111
-
- btrfs dev add -f /dev/sdb /btrfs
- mount -o rw,remount /dev/sdb /btrfs
-
- findmnt --output SOURCE,TARGET,UUID /btrfs
- SOURCE   TARGET UUID
- /dev/sdb /btrfs 595ca0e6-b82e-46b5-b9e2-c72a6928be48
-
- mount /dev/sda /btrfs1
- mount: /btrfs1: WARNING: device write-protected, mounted read-only.
-
- btrfs dev add -f /dev/sdc /btrfs1
-
- findmnt --output SOURCE,TARGET,UUID /btrfs1
- SOURCE   TARGET  UUID
- /dev/sdc /btrfs1 ca1dbb7a-8446-4f95-853c-a20f3f82bdbb
-
- cat /proc/self/mounts | grep btrfs
- /dev/sdb /btrfs btrfs rw,relatime,noacl,space_cache,subvolid=5,subvol=/ 0 0
- /dev/sdc /btrfs1 btrfs ro,relatime,noacl,space_cache,subvolid=5,subvol=/ 0 0
-
-Reported-by: Martin K. Petersen <martin.petersen@oracle.com>
-CC: stable@vger.kernel.org # 4.19+
-Tested-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
+Fixes: 3951e7f050ac ("btrfs: add xxhash64 to checksumming algorithms")
+Fixes: 3831bf0094ab ("btrfs: add sha256 to checksumming algorithm")
+CC: stable@vger.kernel.org # 5.5+
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/super.c |   21 +++++++--------------
- 1 file changed, 7 insertions(+), 14 deletions(-)
+ fs/btrfs/ioctl.c           |   16 +++++++++++++---
+ include/uapi/linux/btrfs.h |   14 ++++++++++++--
+ 2 files changed, 25 insertions(+), 5 deletions(-)
 
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2296,9 +2296,7 @@ static int btrfs_unfreeze(struct super_b
- static int btrfs_show_devname(struct seq_file *m, struct dentry *root)
- {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(root->d_sb);
--	struct btrfs_fs_devices *cur_devices;
- 	struct btrfs_device *dev, *first_dev = NULL;
--	struct list_head *head;
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -3217,11 +3217,15 @@ static long btrfs_ioctl_fs_info(struct b
+ 	struct btrfs_ioctl_fs_info_args *fi_args;
+ 	struct btrfs_device *device;
+ 	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
++	u64 flags_in;
+ 	int ret = 0;
  
- 	/*
- 	 * Lightweight locking of the devices. We should not need
-@@ -2308,18 +2306,13 @@ static int btrfs_show_devname(struct seq
- 	 * least until the rcu_read_unlock.
- 	 */
+-	fi_args = kzalloc(sizeof(*fi_args), GFP_KERNEL);
+-	if (!fi_args)
+-		return -ENOMEM;
++	fi_args = memdup_user(arg, sizeof(*fi_args));
++	if (IS_ERR(fi_args))
++		return PTR_ERR(fi_args);
++
++	flags_in = fi_args->flags;
++	memset(fi_args, 0, sizeof(*fi_args));
+ 
  	rcu_read_lock();
--	cur_devices = fs_info->fs_devices;
--	while (cur_devices) {
--		head = &cur_devices->devices;
--		list_for_each_entry_rcu(dev, head, dev_list) {
--			if (test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_state))
--				continue;
--			if (!dev->name)
--				continue;
--			if (!first_dev || dev->devid < first_dev->devid)
--				first_dev = dev;
--		}
--		cur_devices = cur_devices->seed;
-+	list_for_each_entry_rcu(dev, &fs_info->fs_devices->devices, dev_list) {
-+		if (test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_state))
-+			continue;
-+		if (!dev->name)
-+			continue;
-+		if (!first_dev || dev->devid < first_dev->devid)
-+			first_dev = dev;
- 	}
+ 	fi_args->num_devices = fs_devices->num_devices;
+@@ -3237,6 +3241,12 @@ static long btrfs_ioctl_fs_info(struct b
+ 	fi_args->sectorsize = fs_info->sectorsize;
+ 	fi_args->clone_alignment = fs_info->sectorsize;
  
- 	if (first_dev)
++	if (flags_in & BTRFS_FS_INFO_FLAG_CSUM_INFO) {
++		fi_args->csum_type = btrfs_super_csum_type(fs_info->super_copy);
++		fi_args->csum_size = btrfs_super_csum_size(fs_info->super_copy);
++		fi_args->flags |= BTRFS_FS_INFO_FLAG_CSUM_INFO;
++	}
++
+ 	if (copy_to_user(arg, fi_args, sizeof(*fi_args)))
+ 		ret = -EFAULT;
+ 
+--- a/include/uapi/linux/btrfs.h
++++ b/include/uapi/linux/btrfs.h
+@@ -243,6 +243,13 @@ struct btrfs_ioctl_dev_info_args {
+ 	__u8 path[BTRFS_DEVICE_PATH_NAME_MAX];	/* out */
+ };
+ 
++/*
++ * Retrieve information about the filesystem
++ */
++
++/* Request information about checksum type and size */
++#define BTRFS_FS_INFO_FLAG_CSUM_INFO			(1 << 0)
++
+ struct btrfs_ioctl_fs_info_args {
+ 	__u64 max_id;				/* out */
+ 	__u64 num_devices;			/* out */
+@@ -250,8 +257,11 @@ struct btrfs_ioctl_fs_info_args {
+ 	__u32 nodesize;				/* out */
+ 	__u32 sectorsize;			/* out */
+ 	__u32 clone_alignment;			/* out */
+-	__u32 reserved32;
+-	__u64 reserved[122];			/* pad to 1k */
++	/* See BTRFS_FS_INFO_FLAG_* */
++	__u16 csum_type;			/* out */
++	__u16 csum_size;			/* out */
++	__u64 flags;				/* in/out */
++	__u8 reserved[968];			/* pad to 1k */
+ };
+ 
+ /*
 
 
