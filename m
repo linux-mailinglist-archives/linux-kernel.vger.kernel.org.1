@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12DED24ACEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 04:17:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F28F24ACE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 04:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726939AbgHTCRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 22:17:46 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9785 "EHLO huawei.com"
+        id S1726863AbgHTCRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 22:17:32 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9784 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726759AbgHTCR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 22:17:28 -0400
+        id S1726796AbgHTCR1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 22:17:27 -0400
 Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 755E8A4661290D22C777;
+        by Forcepoint Email with ESMTP id 71C0CF8ADFE834B79346;
         Thu, 20 Aug 2020 10:17:25 +0800 (CST)
 Received: from DESKTOP-C3MD9UG.china.huawei.com (10.174.177.253) by
  DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 20 Aug 2020 10:17:17 +0800
+ 14.3.487.0; Thu, 20 Aug 2020 10:17:18 +0800
 From:   Zhen Lei <thunder.leizhen@huawei.com>
 To:     Oliver O'Halloran <oohall@gmail.com>,
         Dan Williams <dan.j.williams@intel.com>,
@@ -27,9 +27,9 @@ To:     Oliver O'Halloran <oohall@gmail.com>,
         linux-nvdimm <linux-nvdimm@lists.01.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v3 4/7] libnvdimm: reduce an unnecessary if branch in nd_region_create()
-Date:   Thu, 20 Aug 2020 10:16:38 +0800
-Message-ID: <20200820021641.3188-5-thunder.leizhen@huawei.com>
+Subject: [PATCH v3 5/7] libnvdimm: reduce an unnecessary if branch in nd_region_activate()
+Date:   Thu, 20 Aug 2020 10:16:39 +0800
+Message-ID: <20200820021641.3188-6-thunder.leizhen@huawei.com>
 X-Mailer: git-send-email 2.26.0.windows.1
 In-Reply-To: <20200820021641.3188-1-thunder.leizhen@huawei.com>
 References: <20200820021641.3188-1-thunder.leizhen@huawei.com>
@@ -43,17 +43,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-if (ndr_desc->flush)
-1)	nd_region->flush = ndr_desc->flush;
-else
-2)	nd_region->flush = NULL;
+According to the original code logic:
+if (!nvdimm->num_flush) {
+	flush_data_size += sizeof(void *);
+	//nvdimm->num_flush is zero now, add 1) have no side effects
+} else {
+	flush_data_size += sizeof(void *);
+1)	flush_data_size += nvdimm->num_flush * sizeof(void *);
+}
 
-When entering the "else" branch, the value of ndr_desc->flush is NULL.
-After replaced "NULL" with "ndr_desc->flush" at 2), we will find that
-it becomes the same to 1).
-
-So the above code snippet can be reduced to one statement:
-nd_region->flush = ndr_desc->flush;
+Obviously, the above code snippet can be reduced to one statement:
+flush_data_size += (nvdimm->num_flush + 1) * sizeof(void *);
 
 No functional change.
 
@@ -63,20 +63,21 @@ Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
  1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/drivers/nvdimm/region_devs.c b/drivers/nvdimm/region_devs.c
-index ef23119db574663..7cf9c7d857909ce 100644
+index 7cf9c7d857909ce..49be115c9189eff 100644
 --- a/drivers/nvdimm/region_devs.c
 +++ b/drivers/nvdimm/region_devs.c
-@@ -1131,10 +1131,7 @@ static struct nd_region *nd_region_create(struct nvdimm_bus *nvdimm_bus,
- 	nd_region->ndr_size = resource_size(ndr_desc->res);
- 	nd_region->ndr_start = ndr_desc->res->start;
- 	nd_region->align = default_align(nd_region);
--	if (ndr_desc->flush)
--		nd_region->flush = ndr_desc->flush;
--	else
--		nd_region->flush = NULL;
-+	nd_region->flush = ndr_desc->flush;
+@@ -77,11 +77,8 @@ int nd_region_activate(struct nd_region *nd_region)
+ 		}
  
- 	nd_device_register(dev);
+ 		/* at least one null hint slot per-dimm for the "no-hint" case */
+-		flush_data_size += sizeof(void *);
++		flush_data_size += (nvdimm->num_flush + 1) * sizeof(void *);
+ 		num_flush = min_not_zero(num_flush, nvdimm->num_flush);
+-		if (!nvdimm->num_flush)
+-			continue;
+-		flush_data_size += nvdimm->num_flush * sizeof(void *);
+ 	}
+ 	nvdimm_bus_unlock(&nd_region->dev);
  
 -- 
 1.8.3
