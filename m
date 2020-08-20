@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 238AB24BB1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 042A624BB6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730155AbgHTMXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:23:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37210 "EHLO mail.kernel.org"
+        id S1728655AbgHTM3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:29:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730143AbgHTJyg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:54:36 -0400
+        id S1729617AbgHTJvl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:51:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9C2B72075E;
-        Thu, 20 Aug 2020 09:54:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C115E207FB;
+        Thu, 20 Aug 2020 09:51:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917276;
-        bh=YJIOkrnDLtvjSdQPBkT7qqKl3C3DwVHsZlnDQUDsGLk=;
+        s=default; t=1597917100;
+        bh=W7+t/6zBcdWVsX88rL4rBSRKb6pqQy+RRp5z1wyDlyo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2stVS8f+R60QbN6Hl8x9k6FzIQiZFbed6QusRKBVk1sfvg+xG6SnKF/AMGc2b3FcJ
-         749L/wITYUklEvEhKmZlxbS11o9WrIF02bgeRPWWz2lD9reOjGorAKRh+yTAtU/WVI
-         pQanElE306P9ntwJKHzlUYI+krEcGQfHVCnD2Ug0=
+        b=aUjExCDiPplw1j4sZ0GIMHgkMvGNnFJpLIgFQaXnsXo7G6u4fXGd0ob2JiVLcW+ke
+         8Ph0ZHmNLLwjj1a2/49vjFg1h4b1DemwMYn1nGXD4AI1Yz14mSSvRtxw+Tilxxr2IQ
+         arDny4Zgyfde0I348yN92FLR8HMiHFGOO4DiiEEY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 65/92] i2c: rcar: slave: only send STOP event when we have been addressed
-Date:   Thu, 20 Aug 2020 11:21:50 +0200
-Message-Id: <20200820091540.998682796@linuxfoundation.org>
+        stable@vger.kernel.org, Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Song Liu <songliubraving@fb.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 145/152] khugepaged: retract_page_tables() remember to test exit
+Date:   Thu, 20 Aug 2020 11:21:52 +0200
+Message-Id: <20200820091601.241691401@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
-References: <20200820091537.490965042@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,55 +48,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+From: Hugh Dickins <hughd@google.com>
 
-[ Upstream commit 314139f9f0abdba61ed9a8463bbcb0bf900ac5a2 ]
+commit 18e77600f7a1ed69f8ce46c9e11cad0985712dfa upstream.
 
-When the SSR interrupt is activated, it will detect every STOP condition
-on the bus, not only the ones after we have been addressed. So, enable
-this interrupt only after we have been addressed, and disable it
-otherwise.
+Only once have I seen this scenario (and forgot even to notice what forced
+the eventual crash): a sequence of "BUG: Bad page map" alerts from
+vm_normal_page(), from zap_pte_range() servicing exit_mmap();
+pmd:00000000, pte values corresponding to data in physical page 0.
 
-Fixes: de20d1857dd6 ("i2c: rcar: add slave support")
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The pte mappings being zapped in this case were supposed to be from a huge
+page of ext4 text (but could as well have been shmem): my belief is that
+it was racing with collapse_file()'s retract_page_tables(), found *pmd
+pointing to a page table, locked it, but *pmd had become 0 by the time
+start_pte was decided.
+
+In most cases, that possibility is excluded by holding mmap lock; but
+exit_mmap() proceeds without mmap lock.  Most of what's run by khugepaged
+checks khugepaged_test_exit() after acquiring mmap lock:
+khugepaged_collapse_pte_mapped_thps() and hugepage_vma_revalidate() do so,
+for example.  But retract_page_tables() did not: fix that.
+
+The fix is for retract_page_tables() to check khugepaged_test_exit(),
+after acquiring mmap lock, before doing anything to the page table.
+Getting the mmap lock serializes with __mmput(), which briefly takes and
+drops it in __khugepaged_exit(); then the khugepaged_test_exit() check on
+mm_users makes sure we don't touch the page table once exit_mmap() might
+reach it, since exit_mmap() will be proceeding without mmap lock, not
+expecting anyone to be racing with it.
+
+Fixes: f3f0e1d2150b ("khugepaged: add support of collapse for tmpfs/shmem pages")
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: <stable@vger.kernel.org>	[4.8+]
+Link: http://lkml.kernel.org/r/alpine.LSU.2.11.2008021215400.27773@eggly.anvils
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/i2c/busses/i2c-rcar.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ mm/khugepaged.c |   24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-rcar.c b/drivers/i2c/busses/i2c-rcar.c
-index 6e49e438ef5a5..11d1977616858 100644
---- a/drivers/i2c/busses/i2c-rcar.c
-+++ b/drivers/i2c/busses/i2c-rcar.c
-@@ -587,13 +587,14 @@ static bool rcar_i2c_slave_irq(struct rcar_i2c_priv *priv)
- 			rcar_i2c_write(priv, ICSIER, SDR | SSR | SAR);
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -1414,6 +1414,7 @@ out:
+ static void retract_page_tables(struct address_space *mapping, pgoff_t pgoff)
+ {
+ 	struct vm_area_struct *vma;
++	struct mm_struct *mm;
+ 	unsigned long addr;
+ 	pmd_t *pmd, _pmd;
+ 
+@@ -1442,7 +1443,8 @@ static void retract_page_tables(struct a
+ 			continue;
+ 		if (vma->vm_end < addr + HPAGE_PMD_SIZE)
+ 			continue;
+-		pmd = mm_find_pmd(vma->vm_mm, addr);
++		mm = vma->vm_mm;
++		pmd = mm_find_pmd(mm, addr);
+ 		if (!pmd)
+ 			continue;
+ 		/*
+@@ -1452,17 +1454,19 @@ static void retract_page_tables(struct a
+ 		 * mmap_sem while holding page lock. Fault path does it in
+ 		 * reverse order. Trylock is a way to avoid deadlock.
+ 		 */
+-		if (down_write_trylock(&vma->vm_mm->mmap_sem)) {
+-			spinlock_t *ptl = pmd_lock(vma->vm_mm, pmd);
+-			/* assume page table is clear */
+-			_pmd = pmdp_collapse_flush(vma, addr, pmd);
+-			spin_unlock(ptl);
+-			up_write(&vma->vm_mm->mmap_sem);
+-			mm_dec_nr_ptes(vma->vm_mm);
+-			pte_free(vma->vm_mm, pmd_pgtable(_pmd));
++		if (down_write_trylock(&mm->mmap_sem)) {
++			if (!khugepaged_test_exit(mm)) {
++				spinlock_t *ptl = pmd_lock(mm, pmd);
++				/* assume page table is clear */
++				_pmd = pmdp_collapse_flush(vma, addr, pmd);
++				spin_unlock(ptl);
++				mm_dec_nr_ptes(mm);
++				pte_free(mm, pmd_pgtable(_pmd));
++			}
++			up_write(&mm->mmap_sem);
+ 		} else {
+ 			/* Try again later */
+-			khugepaged_add_pte_mapped_thp(vma->vm_mm, addr);
++			khugepaged_add_pte_mapped_thp(mm, addr);
  		}
- 
--		rcar_i2c_write(priv, ICSSR, ~SAR & 0xff);
-+		/* Clear SSR, too, because of old STOPs to other clients than us */
-+		rcar_i2c_write(priv, ICSSR, ~(SAR | SSR) & 0xff);
  	}
- 
- 	/* master sent stop */
- 	if (ssr_filtered & SSR) {
- 		i2c_slave_event(priv->slave, I2C_SLAVE_STOP, &value);
--		rcar_i2c_write(priv, ICSIER, SAR | SSR);
-+		rcar_i2c_write(priv, ICSIER, SAR);
- 		rcar_i2c_write(priv, ICSSR, ~SSR & 0xff);
- 	}
- 
-@@ -848,7 +849,7 @@ static int rcar_reg_slave(struct i2c_client *slave)
- 	priv->slave = slave;
- 	rcar_i2c_write(priv, ICSAR, slave->addr);
- 	rcar_i2c_write(priv, ICSSR, 0);
--	rcar_i2c_write(priv, ICSIER, SAR | SSR);
-+	rcar_i2c_write(priv, ICSIER, SAR);
- 	rcar_i2c_write(priv, ICSCR, SIE | SDBS);
- 
- 	return 0;
--- 
-2.25.1
-
+ 	i_mmap_unlock_write(mapping);
 
 
