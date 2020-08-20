@@ -2,149 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DAFD24AEE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 08:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D46C24AF02
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 08:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726723AbgHTGDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 02:03:50 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:54883 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725768AbgHTGDt (ORCPT
+        id S1726796AbgHTGFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 02:05:47 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:18919 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725778AbgHTGFi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 02:03:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1597903429; x=1629439429;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=sOXwJsCQWu+b4I7y3270lKaVRfDiZrhJKY8XBiceV0Q=;
-  b=XqDmiD6RojQWOtRjZSEiUjtJEzO22BmGNekzCCoWFcjtdKRAQW4r1GP2
-   ac6pJusyNSyEEZrOSPw5QCzFxe0g8VKPRv8dmv3wRobFYWk0hA+cQGxKJ
-   20Pt6MsSEZjnovY47qiGyT6pBBUntM0mirB4PE9bfvwBMpX04yblP45ya
-   8yoSFiPFPhE2setoiLYunrOxkKMO0dg7YFHe4aprYpPmlRuRJ8kjHPT6d
-   1WLBTnRYP1Msubli/+sGfzWmrXJGwb/RJnd/AY+qE+dpOrA0h3G4knaof
-   bWWUihol594zn1xOIOsPoVnUsuqnMBeU+L1A+D1BG3X0KSzPrjZ1Zp3nt
-   A==;
-IronPort-SDR: S3bT1xzbnBuEoNX+9Z0NH553IqVw2cY7wIATP2k+3sQiSjp14IPlFGCUmEr/U5tyD6b9k+Szfc
- NyUwRi+yKm/+I+5aTrmO/+KqN7n6hb1aNOuLOqdaDwp8Yw/WvMc7JK29CIHmdUte9qT7U99yak
- 7rTZ75hqBiwejlCtc5U7XRLN6ITcw2ff1YJRONe7yQ6KxbvWXgI3ntPnVdgMFNaEOBEvGn80+M
- eprZkn/QjU3/qMdXAx/V5of0ZQmXfg1IzlC0+LQlFk8j1wMlWJondn7arpVLtZ1Z7qBDdlI6eb
- zFw=
-X-IronPort-AV: E=Sophos;i="5.76,332,1592841600"; 
-   d="scan'208";a="146607435"
-Received: from mail-sn1nam04lp2054.outbound.protection.outlook.com (HELO NAM04-SN1-obe.outbound.protection.outlook.com) ([104.47.44.54])
-  by ob1.hgst.iphmx.com with ESMTP; 20 Aug 2020 14:03:47 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WeGVGiVKmfEZcNCe+RsfzK54N6TsltllNQVDt2NrzM8DPIRp7ehnW9aSmjHDSo42JL6cgPmg3v3NUxhDEhz57WH8tBTkt+HHaZ9mbx4jND1tu47AK+14NDnSUtWutMBL0nd8waLCM8uj+bKv1LPSoi0dd4JRheh2pLbTU+Ru4NYb2xd2pOlNy+0DEl6qMRQa5XD0Pn2fgUgsy7E5pCQSyWED4N2kN714790MLo8B8Mh359iMq7h0+t3+cZqdKAo5HnJ9oaVtuTAlutyJRUWGc+lQJ47zFDpISvlc36UIwE84qcy6ZEpC5yYtUVQeyfisyAis0nvyCaBcOLf/jQmFbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sOXwJsCQWu+b4I7y3270lKaVRfDiZrhJKY8XBiceV0Q=;
- b=Wn/yksH1cxbPpoK1W2Pke2svT2ClSDlL5gA/EJSO2gI7hkz8ZcDsq0hYvm/0ZM/7rS18r1MkPshIszTCxN9tFc0pME6oi7o5z+FQPoMQPX7RNzrhOT0E60fNnBQFgA9G3hHKJ1wc5k+ZSrz5N78MtsocjIAJUcWjUVxclUyDNQGa7nf1y4pU0MbMdVxsQ6LQuAb3JRqWvziOR+NCFQDFVbuVwKFLbDxrU1wC2W3Jtl5CzUb+3Wtx8Jw+TDsRkjA16VDm2zgzOS2qKGTCOKHcky5p+5n1QDd73WJWumSb0HXsMk3i9eVc5H4HrnvkXWucA+YjgUdYVk5YDzagWfSSpw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sOXwJsCQWu+b4I7y3270lKaVRfDiZrhJKY8XBiceV0Q=;
- b=yRC+Vy3Nx/3y8zeLwqJ6SDUGNM7f1Q9OvaO8bRZ4X4AF2emWB5BXVR6y0dB4qzspXovHyjgvLwCU5lnX6QPVgFG+2FBso/T7+SqRhHow+/BHGMcnOAFO0DcInoAme8ZJ9cp7opNQMhMwa4EnAokMlrrDfSv8KVfEImr2fUwurNc=
-Received: from BY5PR04MB6705.namprd04.prod.outlook.com (2603:10b6:a03:220::8)
- by BYAPR04MB5447.namprd04.prod.outlook.com (2603:10b6:a03:c5::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.16; Thu, 20 Aug
- 2020 06:03:45 +0000
-Received: from BY5PR04MB6705.namprd04.prod.outlook.com
- ([fe80::1083:4093:49fa:a3fd]) by BY5PR04MB6705.namprd04.prod.outlook.com
- ([fe80::1083:4093:49fa:a3fd%2]) with mapi id 15.20.3283.028; Thu, 20 Aug 2020
- 06:03:45 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Stanley Chu <stanley.chu@mediatek.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>
-CC:     "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
+        Thu, 20 Aug 2020 02:05:38 -0400
+X-UUID: c578b6ffd56c483897870cd1f398118c-20200820
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=eMCqHf5VNCtvq/O+QRSOEtg5Xwd+1FDGSGsrpAcq+Zw=;
+        b=s+HZOyODiPZPySgERpgDUer2qNTepI6ICLm5Z1pTLUn6/+ykrk9iNJ9QOF8e17bWEjr006pIIZr/63sTEMcm2dNsINtuFzvQ13v1XJuG7bS8YeLMWOU5F+PWRUlna/n5qe0ctttUEe2pY1riFIFE0FgkxxZvJ8908xfrtO5578Q=;
+X-UUID: c578b6ffd56c483897870cd1f398118c-20200820
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <yongqiang.niu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1576741474; Thu, 20 Aug 2020 14:05:33 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 20 Aug 2020 14:05:31 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 20 Aug 2020 14:05:30 +0800
+From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
+To:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
-        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
-        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
-        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
-        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
-        "cc.chou@mediatek.com" <cc.chou@mediatek.com>
-Subject: RE: [PATCH] scsi: ufs-mediatek: Modify the minimum RX/TX lane count
- to 2
-Thread-Topic: [PATCH] scsi: ufs-mediatek: Modify the minimum RX/TX lane count
- to 2
-Thread-Index: AQHWdgTc2Id9u3Ln3Ua1qwoK877ZRalAgmqA
-Date:   Thu, 20 Aug 2020 06:03:45 +0000
-Message-ID: <BY5PR04MB67057C0623170CFABE9E8AFBFC5A0@BY5PR04MB6705.namprd04.prod.outlook.com>
-References: <20200819084340.7021-1-stanley.chu@mediatek.com>
-In-Reply-To: <20200819084340.7021-1-stanley.chu@mediatek.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: mediatek.com; dkim=none (message not signed)
- header.d=none;mediatek.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [212.25.79.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 8db1184b-285a-4a59-dfb6-08d844cecc84
-x-ms-traffictypediagnostic: BYAPR04MB5447:
-x-microsoft-antispam-prvs: <BYAPR04MB54471D0DA44EAA6716359F5FFC5A0@BYAPR04MB5447.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: YNBgw1mtvTp58eP0gvij6Fdt6w2nXWh1CJRRRnmkGnotlojNBdw5MO1hM+JpPGrgJGf+Fwh0pKL4mnLZHQJx3oKDDn3vNHJnRcUELgVaXPAAAiywlZzta7qI6HoBdc5JVIDjvqCXgeruPMh5mO4feyGeU5XBYEZFMVAseF0adkI2ZoTnOdVRM+lZTPryriNdyK1FFfpBpNRAv/PmgMpJ9iIgPXOmf2pgsqIceDRydjnwrQjj/XUCJNNP1XtFxTwDU4BLoEuTUR4yzNT0Cmmo5Ce+fjp+0lpy3onCrBO5xCruVH9U6zgzSWbFGwgQasqBjJRrrX8G0+lx43911xQgNw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6705.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(136003)(39860400002)(346002)(366004)(6506007)(76116006)(2906002)(7416002)(186003)(83380400001)(33656002)(316002)(8676002)(54906003)(110136005)(5660300002)(71200400001)(66946007)(52536014)(66556008)(9686003)(86362001)(8936002)(4744005)(64756008)(478600001)(66446008)(26005)(55016002)(7696005)(4326008)(66476007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: PHOGIh4suJWpg+gypi/j+EwCdKrWaBmf+mwVKZDQmjvJ5x7QGIGZuVzUx6Law1ApiD6xk1WLjIBSYy00Ev7evU+Oli9jnuBmuYbPRmkQh/l/wIu9LaE0guQPAjEtDxSNwyMq/quze6kU6aAudBBG71FuNTi8bEYZUfjiLXct9BWGW12YZ8IghtJp+5rd3PhfVk12Afxv9DmWz9Zdr3ce+CG+I6++x2u5ScbBXiVDfioycqlgEGyDVHw7fhaNLLdoGRmjKH734pHAPffIQP+UANq0vki2ep+XDQDteskWzRi6qQra81r25h67ORSv8jyPGxdqgpIR+3TfTl/6llPgqwtTe/IYyBVS7wrkOk6h4jBtKZhvvAoqaI/uPE6IYDReZeXdhGhQC9xV1lVKGvfmygU9lXK8XvBhGxYcI5RCxvQB/3FrpyD3SstMo9Unaj4MTlfOwzzQiXkmlm1hA9x/K7lZsVHwdPBgbJrgGvIhy+7/pzzhKJRrucAIJZLRsXAV4D1C40H8WDkdGa3NB0NHmGkONUNWMmilBbLJdMnXQNg36CcjZRCyE7ToSucuLUAOy5hflelofewWdbEaoEoG87ZBKEwB4x8A/67fqJEvZcuBqVPsj7qwJy8nyBBhax1Nef3ipqsg1DYagE0JSIRMIg==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        <linux-mediatek@lists.infradead.org>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>
+Subject: [PATCH v1 00/21] add drm support for MT8192
+Date:   Thu, 20 Aug 2020 14:03:57 +0800
+Message-ID: <1597903458-8055-1-git-send-email-yongqiang.niu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6705.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8db1184b-285a-4a59-dfb6-08d844cecc84
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Aug 2020 06:03:45.7290
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: q6e1elYAWlc/NWkq2qYda2Yr2FwSVLwXAYnwAcZOeAiGMOSopLhwrHPIItbV/C+FDbaKYFw+nVRqSyOESXFLFg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB5447
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=20
->=20
-> From: Andy Teng <andy.teng@mediatek.com>
->=20
-> MediaTek UFS host starts to support 2 lanes, thus modify the
-> minimum lane count to 2.
->=20
-> This modification shall not impact old 1-lane host because
-> PA_CONNECTEDRXDATALANES and PA_CONNECTEDTXDATALANES will limit
-> the
-> target lanes properly during power mode change. So we could relax
-> the limitation in ufs_dev_params.
->=20
-> Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
-> Signed-off-by: Andy Teng <andy.teng@mediatek.com>
-> Singed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
+Q2hhbmdlcyBpbiB2MToNCi0gYWRkIHNvbWUgbW9yZSBkZHAgY29tcG9uZW50DQotIGFkZCBtdDgx
+OTIgbW1zeXMgc3VwcG9ydA0KLSBhZGQgb3ZsIG1vdW50IG9uIHN1cHBvcnQNCi0gYWRkIDIgbW9y
+ZSBjbG9jayBpbnRvIG11dGV4IGRldmljZQ0KLSBmaXggb3ZsIHNtaV9pZF9lbiBhbmQgZmIgbnVs
+bCBzb2Z0d2FyZSBidWcNCi0gZml4IGRkcCBjb21wb2VudCBzaXplIGNvbmZpZyBidWcNCi0gYWRk
+IG10ODE5MiBkcm0gc3VwcG9ydA0KLSBhZGQgZGRwIGJ5cGFzcyBzaGFkb3cgcmVnaXN0ZXIgZnVu
+Y3Rpb24NCi0gYWRkIDgxOTIgZHRzIGRlc2NyaXB0aW9uDQoNCllvbmdxaWFuZyBOaXUgKDIxKToN
+CiAgZHJtL21lZGlhdGVrOiBhZGQgY29tcG9uZW50IE9WTF8yTDINCiAgZHJtL21lZGlhdGVrOiBh
+ZGQgY29tcG9uZW50IFBPU1RNQVNLDQogIGRybS9tZWRpYXRlazogYWRkIGNvbXBvbmVudCBSRE1B
+NA0KICBtdGstbW1zeXM6IGFkZCBtdDgxOTIgbW1zeXMgc3VwcG9ydA0KICBtdGstbW1zeXM6IGFk
+ZCBvdmwgbW91dCBvbiAgc3VwcG9ydA0KICBkcm0vbWVkaWF0ZWs6IGFkZCBkaXNwIGNvbmZpZyBh
+bmQgbW0gMjZtaHogY2xvY2sgaW50byBtdXRleCBkZXZpY2UNCiAgZHJtL21lZGlhdGVrOiBlbmFi
+bGUgT1ZMX0xBWUVSX1NNSV9JRF9FTiBmb3IgbXVsdGktbGF5ZXIgdXNlY2FzZQ0KICBkcm0vbWVk
+aWF0ZWs6IGNoZWNrIGlmIGZiIGlzIG51bGwNCiAgZHJtL21lZGlhdGVrOiBmaXggYWFsIHNpemUg
+Y29uZmlnDQogIGRybS9tZWRpYXRlazogZml4IGRpdGhlciBzaXplIGNvbmZpZw0KICBkcm0vbWVk
+aWF0ZWs6IGZpeCBnYW1tYSBzaXplIGNvbmZpZw0KICBkcm0vbWVkaWF0ZWs6IGZpeCBjY29yciBz
+aXplIGNvbmZpZw0KICBkcm0vbWVkaWF0ZWs6IGFkZCBzdXBwb3J0IGZvciBtZWRpYXRlayBTT0Mg
+TVQ4MTkyDQogIGRybS9tZWRpYXRlazogYWRkIGJ5cGFzcyBzaGFkb3cgcmVnaXN0ZXIgZnVuY3Rp
+b24gY2FsbCBmb3IgZGRwDQogICAgY29tcG9uZW50DQogIGRybS9tZWRpYXRlazogYWRkIGNvbG9y
+IGJ5cGFzcyBzaGFkb3cgcmVnaXN0ZXIgZnVuY3Rpb24NCiAgZHJtL21lZGlhdGVrOiBhZGQgb3Zs
+IGJ5cGFzcyBzaGFkb3cgcmVnaXN0ZXIgZnVuY3Rpb24NCiAgZHJtL21lZGlhdGVrOiBhZGQgcmRt
+YSBieXBhc3Mgc2hhZG93IHJlZ2lzdGVyIGZ1bmN0aW9uDQogIGRybS9tZWRpYXRlazogYWRkIGRp
+dGhlciBieXBhc3Mgc2hhZG93IHJlZ2lzdGVyIGZ1bmN0aW9uDQogIGRybS9tZWRpYXRlazogYWRk
+IGFhbCBieXBhc3Mgc2hhZG93IHJlZ2lzdGVyIGZ1bmN0aW9uDQogIGRybS9tZWRpYXRlazogYWRk
+IGNjb3JyIGJ5cGFzcyBzaGFkb3cgcmVnaXN0ZXIgZnVuY3Rpb24NCiAgYXJtNjQ6IGR0czogbXQ4
+MTkyOiBhZGQgZGlzcGxheSBub2RlDQoNCiBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210
+ODE5Mi5kdHNpICAgIHwgMTI2ICsrKysrKysrKysrKysrKysrKysNCiBkcml2ZXJzL2dwdS9kcm0v
+bWVkaWF0ZWsvbXRrX2Rpc3BfY29sb3IuYyAgIHwgIDIyICsrKysNCiBkcml2ZXJzL2dwdS9kcm0v
+bWVkaWF0ZWsvbXRrX2Rpc3Bfb3ZsLmMgICAgIHwgIDQxICsrKysrKy0NCiBkcml2ZXJzL2dwdS9k
+cm0vbWVkaWF0ZWsvbXRrX2Rpc3BfcmRtYS5jICAgIHwgIDI3ICsrKysrDQogZHJpdmVycy9ncHUv
+ZHJtL21lZGlhdGVrL210a19kcm1fY3J0Yy5jICAgICB8ICAgMyArDQogZHJpdmVycy9ncHUvZHJt
+L21lZGlhdGVrL210a19kcm1fZGRwLmMgICAgICB8ICA4NCArKysrKysrKysrKy0tDQogZHJpdmVy
+cy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fZGRwX2NvbXAuYyB8ICA4MCArKysrKysrKysrKy0N
+CiBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kZHBfY29tcC5oIHwgICA4ICsrDQog
+ZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fZHJ2LmMgICAgICB8ICA0OCArKysrKysr
+Kw0KIGRyaXZlcnMvc29jL21lZGlhdGVrL21tc3lzL01ha2VmaWxlICAgICAgICAgfCAgIDEgKw0K
+IGRyaXZlcnMvc29jL21lZGlhdGVrL21tc3lzL210ODE5Mi1tbXN5cy5jICAgfCAxODIgKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKw0KIGRyaXZlcnMvc29jL21lZGlhdGVrL210ay1tbXN5cy5j
+ICAgICAgICAgICAgfCAgIDggKysNCiBpbmNsdWRlL2xpbnV4L3NvYy9tZWRpYXRlay9tdGstbW1z
+eXMuaCAgICAgIHwgICA2ICsNCiAxMyBmaWxlcyBjaGFuZ2VkLCA2MjMgaW5zZXJ0aW9ucygrKSwg
+MTMgZGVsZXRpb25zKC0pDQogY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvc29jL21lZGlhdGVr
+L21tc3lzL210ODE5Mi1tbXN5cy5jDQoNCi0tIA0KMS44LjEuMS5kaXJ0eQ0K
 
-But then again, why those constants needs to be re-negotiated every pre-cha=
-nge?
-
-Thanks,
-Avri
