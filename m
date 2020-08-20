@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C7A24B4F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 728B224B536
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731221AbgHTKO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:14:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33168 "EHLO mail.kernel.org"
+        id S1731491AbgHTKUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:20:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731190AbgHTKOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:14:37 -0400
+        id S1730384AbgHTKUb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:20:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7026D206DA;
-        Thu, 20 Aug 2020 10:14:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C49BF2067C;
+        Thu, 20 Aug 2020 10:20:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918476;
-        bh=N7hUzOKg89hfCvlCfJ0ZbjFa5U76+UBt9Hgv6aW9NgY=;
+        s=default; t=1597918831;
+        bh=WLyA88J8T3spRMLusXNJPpUS4D63ON4Do1QvNlJ1D3Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2Cy5HuF/Cxk6BG2V61MAiGuCxnqai1iMNuI7DzOYchM4XWWCU7LIH/QFXC1uRLmnk
-         +1OUCU5/cXtdQDQBQXjVGAvqCcmN6OU07JLCXMtzGFDS70qwmb4X17No3QWmzrBn1g
-         bhVqgeo6KRMq+YDS2CWDlpK4BfTwAg7+KyxG/kh8=
+        b=l4KM/oaI8ZmhPDX6k3lSqxUNzIX94AO605lRe9nzjsLftdB/UPKk9pxp//brOnr3V
+         SVNPxTr3mBCd/SJUmG90ZVP8Eao11xu7zazftkThvWHNtHSsfswAZ0exsHdvDx4q/s
+         Fk6Vwr4sBk54E0S8QPcL6h7czWXyaEz9BLkgjUqk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
-        Jan Kara <jack@suse.cz>
-Subject: [PATCH 4.14 183/228] ext2: fix missing percpu_counter_inc
-Date:   Thu, 20 Aug 2020 11:22:38 +0200
-Message-Id: <20200820091616.719557334@linuxfoundation.org>
+        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 083/149] scsi: cumana_2: Fix different dev_id between request_irq() and free_irq()
+Date:   Thu, 20 Aug 2020 11:22:40 +0200
+Message-Id: <20200820092129.744289920@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
-References: <20200820091607.532711107@linuxfoundation.org>
+In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
+References: <20200820092125.688850368@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit bc2fbaa4d3808aef82dd1064a8e61c16549fe956 upstream.
+[ Upstream commit 040ab9c4fd0070cd5fa71ba3a7b95b8470db9b4d ]
 
-sbi->s_freeinodes_counter is only decreased by the ext2 code, it is never
-increased. This patch fixes it.
+The dev_id used in request_irq() and free_irq() should match.  Use 'info'
+in both cases.
 
-Note that sbi->s_freeinodes_counter is only used in the algorithm that
-tries to find the group for new allocations, so this bug is not easily
-visible (the only visibility is that the group finding algorithm selects
-inoptinal result).
-
-Link: https://lore.kernel.org/r/alpine.LRH.2.02.2004201538300.19436@file01.intranet.prod.int.rdu2.redhat.com
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://lore.kernel.org/r/20200625204730.943520-1-christophe.jaillet@wanadoo.fr
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Acked-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext2/ialloc.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/scsi/arm/cumana_2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/ext2/ialloc.c
-+++ b/fs/ext2/ialloc.c
-@@ -80,6 +80,7 @@ static void ext2_release_inode(struct su
- 	if (dir)
- 		le16_add_cpu(&desc->bg_used_dirs_count, -1);
- 	spin_unlock(sb_bgl_lock(EXT2_SB(sb), group));
-+	percpu_counter_inc(&EXT2_SB(sb)->s_freeinodes_counter);
- 	if (dir)
- 		percpu_counter_dec(&EXT2_SB(sb)->s_dirs_counter);
- 	mark_buffer_dirty(bh);
-@@ -531,7 +532,7 @@ got:
- 		goto fail;
- 	}
+diff --git a/drivers/scsi/arm/cumana_2.c b/drivers/scsi/arm/cumana_2.c
+index faa1bee07c8ac..0c83a155ceebc 100644
+--- a/drivers/scsi/arm/cumana_2.c
++++ b/drivers/scsi/arm/cumana_2.c
+@@ -454,7 +454,7 @@ static int cumanascsi2_probe(struct expansion_card *ec,
  
--	percpu_counter_add(&sbi->s_freeinodes_counter, -1);
-+	percpu_counter_dec(&sbi->s_freeinodes_counter);
- 	if (S_ISDIR(mode))
- 		percpu_counter_inc(&sbi->s_dirs_counter);
+ 	if (info->info.scsi.dma != NO_DMA)
+ 		free_dma(info->info.scsi.dma);
+-	free_irq(ec->irq, host);
++	free_irq(ec->irq, info);
  
+  out_release:
+ 	fas216_release(host);
+-- 
+2.25.1
+
 
 
