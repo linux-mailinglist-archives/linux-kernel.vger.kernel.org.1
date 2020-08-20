@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0311124B89E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7367F24B861
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729565AbgHTLYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:24:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36404 "EHLO mail.kernel.org"
+        id S1729852AbgHTKIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:08:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730514AbgHTKG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:06:56 -0400
+        id S1729920AbgHTKHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:07:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6939C206DA;
-        Thu, 20 Aug 2020 10:06:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1AF3320724;
+        Thu, 20 Aug 2020 10:06:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918015;
-        bh=RBmrsqYJE1VOmNErin+yCTp5FmI8o19mCee+EBGo8nU=;
+        s=default; t=1597918018;
+        bh=M6eF5IVhH9pwAY8htjnlrXGIgeElzl0aRUh8Sci0IC8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QCUy2FGPNqoaEG6PvikPU8O3XQ/JWcYxCktUlItfUwhm5AwDqGseWsCsfbPZNKT0E
-         mUPOaBENPrX+3PqOGUx8/fwdfDTyW6IxmgGPEabbp7KoG3/BXt7+QcJ5wSm5gGbVEF
-         koAHci23+0Nq7GSz//GeXltwqPTtEX8sdya5kLZI=
+        b=D5SmmtRy1XIPWuUCFi8Pt+mfx8dXAtpzVDuDNqF0/53tNo6B8E7OsBIDgJ0OA8cxC
+         hLUmX+FuorkUZ0H0jdNJRU/lX+QcFWj/iicyJWV2Kwd0mJ2YgeQHfO4djZUkOsHqy4
+         vYKjqBwXNxd7WtO7y9auxE1lTjPVOVz/MZBwmTtI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+7a0d9d0b26efefe61780@syzkaller.appspotmail.com,
-        Suren Baghdasaryan <surenb@google.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [PATCH 4.14 007/228] staging: android: ashmem: Fix lockdep warning for write operation
-Date:   Thu, 20 Aug 2020 11:19:42 +0200
-Message-Id: <20200820091607.890615373@linuxfoundation.org>
+        syzbot+d8489a79b781849b9c46@syzkaller.appspotmail.com,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>
+Subject: [PATCH 4.14 008/228] Bluetooth: Fix slab-out-of-bounds read in hci_extended_inquiry_result_evt()
+Date:   Thu, 20 Aug 2020 11:19:43 +0200
+Message-Id: <20200820091607.940500623@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
 References: <20200820091607.532711107@linuxfoundation.org>
@@ -45,77 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suren Baghdasaryan <surenb@google.com>
+From: Peilin Ye <yepeilin.cs@gmail.com>
 
-commit 3e338d3c95c735dc3265a86016bb4c022ec7cadc upstream.
+commit 51c19bf3d5cfaa66571e4b88ba2a6f6295311101 upstream.
 
-syzbot report [1] describes a deadlock when write operation against an
-ashmem fd executed at the time when ashmem is shrinking its cache results
-in the following lock sequence:
+Check upon `num_rsp` is insufficient. A malformed event packet with a
+large `num_rsp` number makes hci_extended_inquiry_result_evt() go out
+of bounds. Fix it.
 
-Possible unsafe locking scenario:
+This patch fixes the following syzbot bug:
 
-        CPU0                    CPU1
-        ----                    ----
-   lock(fs_reclaim);
-                                lock(&sb->s_type->i_mutex_key#13);
-                                lock(fs_reclaim);
-   lock(&sb->s_type->i_mutex_key#13);
+    https://syzkaller.appspot.com/bug?id=4bf11aa05c4ca51ce0df86e500fce486552dc8d2
 
-kswapd takes fs_reclaim and then inode_lock while generic_perform_write
-takes inode_lock and then fs_reclaim. However ashmem does not support
-writing into backing shmem with a write syscall. The only way to change
-its content is to mmap it and operate on mapped memory. Therefore the race
-that lockdep is warning about is not valid. Resolve this by introducing a
-separate lockdep class for the backing shmem inodes.
-
-[1]: https://lkml.kernel.org/lkml/0000000000000b5f9d059aa2037f@google.com/
-
-Reported-by: syzbot+7a0d9d0b26efefe61780@syzkaller.appspotmail.com
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-Cc: stable <stable@vger.kernel.org>
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Link: https://lore.kernel.org/r/20200730192632.3088194-1-surenb@google.com
+Reported-by: syzbot+d8489a79b781849b9c46@syzkaller.appspotmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/staging/android/ashmem.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ net/bluetooth/hci_event.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/staging/android/ashmem.c
-+++ b/drivers/staging/android/ashmem.c
-@@ -100,6 +100,15 @@ static DEFINE_MUTEX(ashmem_mutex);
- static struct kmem_cache *ashmem_area_cachep __read_mostly;
- static struct kmem_cache *ashmem_range_cachep __read_mostly;
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -3826,7 +3826,7 @@ static void hci_extended_inquiry_result_
  
-+/*
-+ * A separate lockdep class for the backing shmem inodes to resolve the lockdep
-+ * warning about the race between kswapd taking fs_reclaim before inode_lock
-+ * and write syscall taking inode_lock and then fs_reclaim.
-+ * Note that such race is impossible because ashmem does not support write
-+ * syscalls operating on the backing shmem.
-+ */
-+static struct lock_class_key backing_shmem_inode_class;
-+
- static inline unsigned long range_size(struct ashmem_range *range)
- {
- 	return range->pgend - range->pgstart + 1;
-@@ -406,6 +415,7 @@ static int ashmem_mmap(struct file *file
- 	if (!asma->file) {
- 		char *name = ASHMEM_NAME_DEF;
- 		struct file *vmfile;
-+		struct inode *inode;
+ 	BT_DBG("%s num_rsp %d", hdev->name, num_rsp);
  
- 		if (asma->name[ASHMEM_NAME_PREFIX_LEN] != '\0')
- 			name = asma->name;
-@@ -417,6 +427,8 @@ static int ashmem_mmap(struct file *file
- 			goto out;
- 		}
- 		vmfile->f_mode |= FMODE_LSEEK;
-+		inode = file_inode(vmfile);
-+		lockdep_set_class(&inode->i_rwsem, &backing_shmem_inode_class);
- 		asma->file = vmfile;
- 		/*
- 		 * override mmap operation of the vmfile so that it can't be
+-	if (!num_rsp)
++	if (!num_rsp || skb->len < num_rsp * sizeof(*info) + 1)
+ 		return;
+ 
+ 	if (hci_dev_test_flag(hdev, HCI_PERIODIC_INQ))
 
 
