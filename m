@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 555ED24B74F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4BC24B71C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728626AbgHTKvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:51:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33942 "EHLO mail.kernel.org"
+        id S1731262AbgHTKPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:15:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731190AbgHTKPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:15:01 -0400
+        id S1731008AbgHTKPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:15:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9871F206DA;
-        Thu, 20 Aug 2020 10:15:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0BF4020738;
+        Thu, 20 Aug 2020 10:15:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918501;
-        bh=YEXaHg2iBlaYXdD+t5XXIh39qL4/7luoV72oGLb54/U=;
+        s=default; t=1597918506;
+        bh=LIyGF576MagAjqOt06FNqkLGN4XwGvEsX1dTekAscic=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wRlY/9VPZmrcti/pVZ2My8rVcws80BVwMpAdr2XGg12370LwsB4aJ3uuOh4K+WVxg
-         IwFttnS2nlh8UOHpVpidDwPdVhpp/PWYDdE4L660ScOxQoe5bPiLSLjclw0wH7BP78
-         GGW/Xdrtd5gOfXGNDbUHNKVMnr/j4PrBnL4Wtwqo=
+        b=ABp2YiZVAGI2/rvW3Ll+ufHJo/oMM+SFw1xlrQzN8zetO8yUKBaKEg5YSpgftPfmu
+         lkGGSvd5WQYAONhRYCVoNGg19RykL1yAVjhBxvzLqZ+VQqfR/cXOvQXWz30yDBureA
+         YSrIpkmZIzLAQZbck0miolFAzSH8d7tvr0Erccso=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Liu Ying <victor.liu@nxp.com>
-Subject: [PATCH 4.14 194/228] drm/imx: imx-ldb: Disable both channels for split mode in enc->disable()
-Date:   Thu, 20 Aug 2020 11:22:49 +0200
-Message-Id: <20200820091617.259294266@linuxfoundation.org>
+        stable@vger.kernel.org, Kamal Heib <kamalheib1@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 196/228] RDMA/ipoib: Return void from ipoib_ib_dev_stop()
+Date:   Thu, 20 Aug 2020 11:22:51 +0200
+Message-Id: <20200820091617.361805582@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
 References: <20200820091607.532711107@linuxfoundation.org>
@@ -46,52 +44,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liu Ying <victor.liu@nxp.com>
+From: Kamal Heib <kamalheib1@gmail.com>
 
-commit 3b2a999582c467d1883716b37ffcc00178a13713 upstream.
+[ Upstream commit 95a5631f6c9f3045f26245e6045244652204dfdb ]
 
-Both of the two LVDS channels should be disabled for split mode
-in the encoder's ->disable() callback, because they are enabled
-in the encoder's ->enable() callback.
+The return value from ipoib_ib_dev_stop() is always 0 - change it to be
+void.
 
-Fixes: 6556f7f82b9c ("drm: imx: Move imx-drm driver out of staging")
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
-Cc: NXP Linux Team <linux-imx@nxp.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Liu Ying <victor.liu@nxp.com>
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://lore.kernel.org/r/20200623105236.18683-1-kamalheib1@gmail.com
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/imx/imx-ldb.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/infiniband/ulp/ipoib/ipoib.h    | 2 +-
+ drivers/infiniband/ulp/ipoib/ipoib_ib.c | 4 +---
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
---- a/drivers/gpu/drm/imx/imx-ldb.c
-+++ b/drivers/gpu/drm/imx/imx-ldb.c
-@@ -311,18 +311,19 @@ static void imx_ldb_encoder_disable(stru
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib.h b/drivers/infiniband/ulp/ipoib/ipoib.h
+index 4a5c7a07a6315..268e23ba4a636 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib.h
++++ b/drivers/infiniband/ulp/ipoib/ipoib.h
+@@ -509,7 +509,7 @@ void ipoib_ib_dev_cleanup(struct net_device *dev);
+ 
+ int ipoib_ib_dev_open_default(struct net_device *dev);
+ int ipoib_ib_dev_open(struct net_device *dev);
+-int ipoib_ib_dev_stop(struct net_device *dev);
++void ipoib_ib_dev_stop(struct net_device *dev);
+ void ipoib_ib_dev_up(struct net_device *dev);
+ void ipoib_ib_dev_down(struct net_device *dev);
+ int ipoib_ib_dev_stop_default(struct net_device *dev);
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib_ib.c b/drivers/infiniband/ulp/ipoib/ipoib_ib.c
+index d77e8e2ae05f2..8e1f48fe6f2e7 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib_ib.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_ib.c
+@@ -809,7 +809,7 @@ int ipoib_ib_dev_stop_default(struct net_device *dev)
+ 	return 0;
+ }
+ 
+-int ipoib_ib_dev_stop(struct net_device *dev)
++void ipoib_ib_dev_stop(struct net_device *dev)
  {
- 	struct imx_ldb_channel *imx_ldb_ch = enc_to_imx_ldb_ch(encoder);
- 	struct imx_ldb *ldb = imx_ldb_ch->ldb;
-+	int dual = ldb->ldb_ctrl & LDB_SPLIT_MODE_EN;
- 	int mux, ret;
+ 	struct ipoib_dev_priv *priv = ipoib_priv(dev);
  
- 	drm_panel_disable(imx_ldb_ch->panel);
+@@ -817,8 +817,6 @@ int ipoib_ib_dev_stop(struct net_device *dev)
  
--	if (imx_ldb_ch == &ldb->channel[0])
-+	if (imx_ldb_ch == &ldb->channel[0] || dual)
- 		ldb->ldb_ctrl &= ~LDB_CH0_MODE_EN_MASK;
--	else if (imx_ldb_ch == &ldb->channel[1])
-+	if (imx_ldb_ch == &ldb->channel[1] || dual)
- 		ldb->ldb_ctrl &= ~LDB_CH1_MODE_EN_MASK;
+ 	clear_bit(IPOIB_FLAG_INITIALIZED, &priv->flags);
+ 	ipoib_flush_ah(dev);
+-
+-	return 0;
+ }
  
- 	regmap_write(ldb->regmap, IOMUXC_GPR2, ldb->ldb_ctrl);
- 
--	if (ldb->ldb_ctrl & LDB_SPLIT_MODE_EN) {
-+	if (dual) {
- 		clk_disable_unprepare(ldb->clk[0]);
- 		clk_disable_unprepare(ldb->clk[1]);
- 	}
+ void ipoib_ib_tx_timer_func(unsigned long ctx)
+-- 
+2.25.1
+
 
 
