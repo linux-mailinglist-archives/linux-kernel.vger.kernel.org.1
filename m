@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C142F24BD5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA9324BD5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729805AbgHTNE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:04:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60593 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726974AbgHTNEO (ORCPT
+        id S1729896AbgHTNEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:04:30 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:55309 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729252AbgHTNES (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 09:04:14 -0400
+        Thu, 20 Aug 2020 09:04:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597928653;
+        s=mimecast20190719; t=1597928656;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=hToOrTBcLzAKV5opdBYDcXptdpuWDT/30+sf1Uf9L88=;
-        b=i+O9/34nFr8ztmA+rTsZvTl6P9PPJwnqEv8YWtNXpcWhm2YjWrDcIcMNwTwsX9g6SOFrce
-        yzg3Bt7kZsFJTbg09/ILSKfr561BaBCuSbaMGmPWduL5lfkWqGKCBAsviJq7qpXLiPL8JU
-        JNlAeG+8jnqwN2oEUxS7kG+MHrs5JEs=
+         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
+        bh=9Qlf4jXoP5jt/C4m3Gv4DFULDSZN0cJYKBX7J86Hq4I=;
+        b=dJ9K69apAqkL0vO5C4TdxJp07+o+lN8E1p5rDeqrOv6vVv7x340i1wEl8U4LxbadBf/yuL
+        3NQ4VVMViYo1oPAWfLt2XCufybliOouJbfYrjCAtsEFd4V/UR86Q6FMs/srlLRqtUefUbQ
+        zaQ/6A2zqecO7zw7JSFTQUrQ15Kd18w=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-267-nFOjyWgxPEmHla2QCC5ykg-1; Thu, 20 Aug 2020 09:04:11 -0400
-X-MC-Unique: nFOjyWgxPEmHla2QCC5ykg-1
+ us-mta-236-Ip-RVODANsqHupFz5vvTlg-1; Thu, 20 Aug 2020 09:04:12 -0400
+X-MC-Unique: Ip-RVODANsqHupFz5vvTlg-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 328A981F02E;
-        Thu, 20 Aug 2020 13:04:09 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 013441006702;
+        Thu, 20 Aug 2020 13:04:11 +0000 (UTC)
 Received: from llong.com (unknown [10.10.115.249])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 81757600DD;
-        Thu, 20 Aug 2020 13:04:04 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6B8DE69C9D;
+        Thu, 20 Aug 2020 13:04:09 +0000 (UTC)
 From:   Waiman Long <longman@redhat.com>
 To:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
@@ -43,30 +44,46 @@ Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
         Roman Gushchin <guro@fb.com>,
         Yafang Shao <laoar.shao@gmail.com>,
         Waiman Long <longman@redhat.com>
-Subject: [PATCH 0/3] mm/memcg: Miscellaneous cleanups and streamlining
-Date:   Thu, 20 Aug 2020 09:03:47 -0400
-Message-Id: <20200820130350.3211-1-longman@redhat.com>
+Subject: [PATCH 1/3] mm/memcg: Clean up obsolete enum charge_type
+Date:   Thu, 20 Aug 2020 09:03:48 -0400
+Message-Id: <20200820130350.3211-2-longman@redhat.com>
+In-Reply-To: <20200820130350.3211-1-longman@redhat.com>
+References: <20200820130350.3211-1-longman@redhat.com>
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Patch 1 removes an unused enum charge_type.
+Since commit 0a31bc97c80c ("mm: memcontrol: rewrite uncharge API") and
+commit 00501b531c47 ("mm: memcontrol: rewrite charge API") in v3.17, the
+enum charge_type was no longer used anywhere. However, the enum itself
+was not removed at that time. Remove the obsolete enum charge_type now.
 
-Patch 2 streamlines mem_cgroup_get_max().
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ mm/memcontrol.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-Patch 3 unifies swap and memsw page counters in mem_cgroup.
-
-Waiman Long (3):
-  mm/memcg: Clean up obsolete enum charge_type
-  mm/memcg: Simplify mem_cgroup_get_max()
-  mm/memcg: Unify swap and memsw page counters
-
- include/linux/memcontrol.h |  3 +--
- mm/memcontrol.c            | 30 ++++++++++--------------------
- 2 files changed, 11 insertions(+), 22 deletions(-)
-
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index b807952b4d43..26b7a48d3afb 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -197,14 +197,6 @@ static struct move_charge_struct {
+ #define	MEM_CGROUP_MAX_RECLAIM_LOOPS		100
+ #define	MEM_CGROUP_MAX_SOFT_LIMIT_RECLAIM_LOOPS	2
+ 
+-enum charge_type {
+-	MEM_CGROUP_CHARGE_TYPE_CACHE = 0,
+-	MEM_CGROUP_CHARGE_TYPE_ANON,
+-	MEM_CGROUP_CHARGE_TYPE_SWAPOUT,	/* for accounting swapcache */
+-	MEM_CGROUP_CHARGE_TYPE_DROP,	/* a page was unused swap cache */
+-	NR_CHARGE_TYPE,
+-};
+-
+ /* for encoding cft->private value on file */
+ enum res_type {
+ 	_MEM,
 -- 
 2.18.1
 
