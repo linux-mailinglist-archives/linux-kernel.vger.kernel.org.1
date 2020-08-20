@@ -2,162 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ABF424C8E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 01:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9CE524C920
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 02:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727817AbgHTX6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 19:58:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726435AbgHTX6f (ORCPT
+        id S1726957AbgHUA1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 20:27:00 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:29882 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725834AbgHUA07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 19:58:35 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ACE8C061387
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 16:58:35 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id g19so251923ejc.9
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 16:58:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9ltcYHArLoQsXGDP1rWIfO3JC1jU/kmH+fninhb3r4g=;
-        b=SJPIJwYZjsRJxH4Pn77CD1kcgeTKqIBrjfgQVHsEaGWg83JrJ/HTxJ0gS716H9ovsf
-         /deLlRPB51HyyaPivrGC3anTMg9qz3/tbTtxF8rjrpRjBiYlt4yFDYpW+WlfvOIJHyOO
-         rG+lOQ95fkHxVLr2dVbh9HD76wBiGfZKXa0xfRrGXRc6itTcMFGXsvHhTj2chFwfjTyL
-         Lay4jQW0LmR0ISZsJgjWgWuU94A6cov9c7/E76MEUoVy/UZth0T0hbPx//waWSaTm1mp
-         ZWwBzGwViIIT3OChKsRLirQn5MyczBcGTeNp66+lBCbqcM63lcfID2KeqyB6AK71IM4o
-         jWcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9ltcYHArLoQsXGDP1rWIfO3JC1jU/kmH+fninhb3r4g=;
-        b=VdUO63yzqFyXlkn7FYCG+QTriO44S7IkCXVzLBXz7+kvB+dotGF8oDosEmcxSfVy2g
-         4fmliWlZeC3dqCHiKpw5OeXYQu5Gef1kqseYDA4IVbyBaBID1kMD9mhDs+EBmrl7BWw4
-         CMhMyQ8XW9ZwcLp/z50yklnKpKfvw+Sr+6DVqWcCq4LNQB6gh2JosAEQstdYERNgJ8D/
-         NbscDflcbhykLKWP6sLCSf3JHWr24KWFPROOnQWJm4+NoqEyOOVA2Mb4mCoPrwrU+s1C
-         Y3GV6leM7VEnKwDH+6N0M2XHqiR6pFTYoG7KWnm8GKvgXXIURrxepCL12M4lbeJs8GYl
-         Zzjg==
-X-Gm-Message-State: AOAM530AagDYcI5DPLE/ZD+9a510q2Y7+YzF+ZsLFYD0yShW6LsKnTk1
-        nx3U2uAK3612h+aTG38WYo4fSu3+3SFYegB8els=
-X-Google-Smtp-Source: ABdhPJygQxAD9qVjNupDU9Kr1vqIEkpfD/cXfrhzy23tM7H2GrHaBRFPSCPF6djU8jDGjzviojaxKjo/Z1momWXrysU=
-X-Received: by 2002:a17:906:c2c8:: with SMTP id ch8mr331592ejb.161.1597967914213;
- Thu, 20 Aug 2020 16:58:34 -0700 (PDT)
+        Thu, 20 Aug 2020 20:26:59 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07KNWpEw114447;
+        Thu, 20 Aug 2020 19:46:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=LWvgozH5vCWQa6DI9mHHCsXlRgKTLkBwgr56N3JBteM=;
+ b=lBI80qt1adQ1aj3+OHi0Bfuwb49yLnIKeghJkY4Ank1eu0SO3+wh5tqg6Jvaw6uSErsL
+ Jve/D8qm+Ffyg8/iYTMv7/5+9cqvJtaRASwovGGhukf6dEhqDkc6r3+ygBtfugdHlV9O
+ W+cZo97lOH0JiG2oCZ3xRWeIYcam5N5vHU6Z4AYsK9lFl1Q1reIsLxLBcLGEiwju3pb3
+ mYGEokgkQpxVNyNDrc55D5jj12XqLObxu25PgwQ8wa3pjz9Lo/JW1n4IVgXvHrkfxDdP
+ ejiEspS8ZtasluAPQKpfOjiUjoPkeoamxOgQJh79FX80S98RERpKPmXroQZXOzQbKai0 tg== 
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3314mx5mpp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Aug 2020 19:46:48 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07KNiq1i020052;
+        Thu, 20 Aug 2020 23:46:47 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma01wdc.us.ibm.com with ESMTP id 3304tkyvff-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Aug 2020 23:46:47 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07KNkkEA53215654
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 20 Aug 2020 23:46:47 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DF71FAE05C;
+        Thu, 20 Aug 2020 23:46:46 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6FE70AE05F;
+        Thu, 20 Aug 2020 23:46:46 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.40.195.188])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 20 Aug 2020 23:46:46 +0000 (GMT)
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Jason Yan <yanaijie@huawei.com>, Joe Perches <joe@perches.com>,
+        linuxppc-dev@lists.ozlabs.org (open list:HYPERVISOR VIRTUAL CONSOLE
+        DRIVER), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] tty: hvcs: Don't NULL tty->driver_data until hvcs_cleanup()
+Date:   Thu, 20 Aug 2020 18:46:38 -0500
+Message-Id: <20200820234643.70412-1-tyreld@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20200818184122.29C415DF@viggo.jf.intel.com> <20200818184133.DCF58B5F@viggo.jf.intel.com>
- <CAHbLzkr9e=hsT-Fw14cwmBoK7p=GsbzAmVqo6HFCFRXz6sa0iw@mail.gmail.com>
-In-Reply-To: <CAHbLzkr9e=hsT-Fw14cwmBoK7p=GsbzAmVqo6HFCFRXz6sa0iw@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 20 Aug 2020 16:58:22 -0700
-Message-ID: <CAHbLzkpHwbUTnmLvK17mzRGR3DSjiXVEVbz9YLQb5CoEbmMDsw@mail.gmail.com>
-Subject: Re: [RFC][PATCH 6/9] mm/vmscan: add page demotion counter
-To:     Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Rientjes <rientjes@google.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-20_07:2020-08-19,2020-08-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ priorityscore=1501 adultscore=0 impostorscore=0 phishscore=0 bulkscore=0
+ malwarescore=0 mlxscore=0 suspectscore=3 mlxlogscore=963 clxscore=1011
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008200193
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 3:26 PM Yang Shi <shy828301@gmail.com> wrote:
->
-> On Tue, Aug 18, 2020 at 11:53 AM Dave Hansen
-> <dave.hansen@linux.intel.com> wrote:
-> >
-> >
-> > From: Yang Shi <yang.shi@linux.alibaba.com>
-> >
-> > Account the number of demoted pages into reclaim_state->nr_demoted.
-> >
-> > Add pgdemote_kswapd and pgdemote_direct VM counters showed in
-> > /proc/vmstat.
-> >
-> > [ daveh:
-> >    - __count_vm_events() a bit, and made them look at the THP
-> >      size directly rather than getting data from migrate_pages()
-> > ]
->
-> This reminds me that we'd better to make migrate_pages() return the
-> number of base pages. Now both nr_failed and nr_succeeded is inc'ed
-> regardless of whether it is THP.
->
-> A quick look finds the callers of migrate_pages() seem not care about
-> the exact returned number, they just care if it is positive or not.
->
-> And reclaim code depends on correct nr_succeeded to avoid over reclaim.
->
-> I will come up with a patch to post to the mailing list.
+The code currently NULLs tty->driver_data in hvcs_close() with the
+intent of informing the next call to hvcs_open() that device needs to be
+reconfigured. However, when hvcs_cleanup() is called we copy hvcsd from
+tty->driver_data which was previoulsy NULLed by hvcs_close() and our
+call to tty_port_put(&hvcsd->port) doesn't actually do anything since
+&hvcsd->port ends up translating to NULL by chance. This has the side
+effect that when hvcs_remove() is called we have one too many port
+references preventing hvcs_destuct_port() from ever being called. This
+also prevents us from reusing the /dev/hvcsX node in a future
+hvcs_probe() and we can eventually run out of /dev/hvcsX devices.
 
-I looks this problem has been fixed by commit
-1a5bae25e3cf95c4e83a97f87a6b5280d9acbb22 ("mm/vmstat: add events for
-THP migration without split") in v5.9-rc1. With that commit,
-nr_succeeded will be bumped by 512 if a THP is migrated successfully
-(without split). So, we don't need worry about this anymore.
+Fix this by waiting to NULL tty->driver_data in hvcs_cleanup().
 
->
-> >
-> > Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
-> > Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> > Cc: David Rientjes <rientjes@google.com>
-> > Cc: Huang Ying <ying.huang@intel.com>
-> > Cc: Dan Williams <dan.j.williams@intel.com>
-> > ---
-> >
-> >  b/include/linux/vm_event_item.h |    2 ++
-> >  b/mm/vmscan.c                   |    6 ++++++
-> >  b/mm/vmstat.c                   |    2 ++
-> >  3 files changed, 10 insertions(+)
-> >
-> > diff -puN include/linux/vm_event_item.h~mm-vmscan-add-page-demotion-counter include/linux/vm_event_item.h
-> > --- a/include/linux/vm_event_item.h~mm-vmscan-add-page-demotion-counter 2020-08-18 11:36:54.062583176 -0700
-> > +++ b/include/linux/vm_event_item.h     2020-08-18 11:36:54.070583176 -0700
-> > @@ -32,6 +32,8 @@ enum vm_event_item { PGPGIN, PGPGOUT, PS
-> >                 PGREFILL,
-> >                 PGSTEAL_KSWAPD,
-> >                 PGSTEAL_DIRECT,
-> > +               PGDEMOTE_KSWAPD,
-> > +               PGDEMOTE_DIRECT,
-> >                 PGSCAN_KSWAPD,
-> >                 PGSCAN_DIRECT,
-> >                 PGSCAN_DIRECT_THROTTLE,
-> > diff -puN mm/vmscan.c~mm-vmscan-add-page-demotion-counter mm/vmscan.c
-> > --- a/mm/vmscan.c~mm-vmscan-add-page-demotion-counter   2020-08-18 11:36:54.064583176 -0700
-> > +++ b/mm/vmscan.c       2020-08-18 11:36:54.072583176 -0700
-> > @@ -147,6 +147,7 @@ struct scan_control {
-> >                 unsigned int immediate;
-> >                 unsigned int file_taken;
-> >                 unsigned int taken;
-> > +               unsigned int demoted;
-> >         } nr;
-> >
-> >         /* for recording the reclaimed slab by now */
-> > @@ -1146,6 +1147,11 @@ static unsigned int demote_page_list(str
-> >                 list_splice(ret_list, demote_pages);
-> >         }
-> >
-> > +       if (current_is_kswapd())
-> > +               __count_vm_events(PGDEMOTE_KSWAPD, nr_succeeded);
-> > +       else
-> > +               __count_vm_events(PGDEMOTE_DIRECT, nr_succeeded);
-> > +
-> >         return nr_succeeded;
-> >  }
-> >
-> > diff -puN mm/vmstat.c~mm-vmscan-add-page-demotion-counter mm/vmstat.c
-> > --- a/mm/vmstat.c~mm-vmscan-add-page-demotion-counter   2020-08-18 11:36:54.067583176 -0700
-> > +++ b/mm/vmstat.c       2020-08-18 11:36:54.072583176 -0700
-> > @@ -1200,6 +1200,8 @@ const char * const vmstat_text[] = {
-> >         "pgrefill",
-> >         "pgsteal_kswapd",
-> >         "pgsteal_direct",
-> > +       "pgdemote_kswapd",
-> > +       "pgdemote_direct",
-> >         "pgscan_kswapd",
-> >         "pgscan_direct",
-> >         "pgscan_direct_throttle",
-> > _
+Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+---
+ drivers/tty/hvc/hvcs.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/tty/hvc/hvcs.c b/drivers/tty/hvc/hvcs.c
+index 55105ac38f89..509d1042825a 100644
+--- a/drivers/tty/hvc/hvcs.c
++++ b/drivers/tty/hvc/hvcs.c
+@@ -1216,13 +1216,6 @@ static void hvcs_close(struct tty_struct *tty, struct file *filp)
+ 
+ 		tty_wait_until_sent(tty, HVCS_CLOSE_WAIT);
+ 
+-		/*
+-		 * This line is important because it tells hvcs_open that this
+-		 * device needs to be re-configured the next time hvcs_open is
+-		 * called.
+-		 */
+-		tty->driver_data = NULL;
+-
+ 		free_irq(irq, hvcsd);
+ 		return;
+ 	} else if (hvcsd->port.count < 0) {
+@@ -1237,6 +1230,13 @@ static void hvcs_cleanup(struct tty_struct * tty)
+ {
+ 	struct hvcs_struct *hvcsd = tty->driver_data;
+ 
++	/*
++	 * This line is important because it tells hvcs_open that this
++	 * device needs to be re-configured the next time hvcs_open is
++	 * called.
++	 */
++	tty->driver_data = NULL;
++
+ 	tty_port_put(&hvcsd->port);
+ }
+ 
+-- 
+2.27.0
+
