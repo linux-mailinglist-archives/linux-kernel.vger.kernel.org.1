@@ -2,125 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F20B24B08B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1FDE24B030
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726873AbgHTHyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 03:54:04 -0400
-Received: from mail-bn8nam11on2066.outbound.protection.outlook.com ([40.107.236.66]:39137
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726772AbgHTHx7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 03:53:59 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YG9f9cE0u1sQCD7+niTvpJnC1WFP627UBRWRHK9OAB/8mSxmAKGnCyriB9URqBH2vCwDF6TQIeHfoQKaj9PXxWRl0tp5WiB8ku6PulMOl/N7vmxlnMMBLss2BLX8+dBDY2Vo+TkaphVdlQAes1xv/d1fQmCg9toxrlFkmqYjlqWUakozb7fvrqlJ73MwQSYcc3NGJOduAp9QLyKfh5NY8oV8oKe7ah1k2yrJZ9waHLTM08c0Y8BrdNUphcfCdAyJDkjm0/GiRPaR0T9NA7e6GhHoiZBxUxTSQbJmmFv4xoO0/ktEpM2SGd+F01FRlbAPSuqyQEPYO8r1bY/v6wjY8A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=idRfbtuXcxttm8DJ5dwgdNnWSAjl1gQN3akJ3AMtUuE=;
- b=M9ghDbJo1xRVl5ZXWZxhFPklNdoosf1ILes6c9qis7tNJBFr2WKUy7ntO3KCrOuodukTCQMxZpgbiDzRDHd7th0xAKwOY4WiDQqWJ5fh4JG7at+oyyi2NBjhaYJlh2krebbo8Y7YCcIOLXbkAateBaIJyAH2CHPH1FUPGwHMBPLlNhQwqelosW1jG5SK+ITfEXmZKkS4pzjbyDyNzXL404Mhrndb69KbVKQ6Mnb8+rq3zDbDcXpzyG3OD11aN/cePb+st1WIhctK9NPOERfmQ9KjDTgt152CRdJFnZ/0PKbxmckmv9DDR2KuYniQXNcEivjt5ZiQtXP8nD8WOOfDfg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=idRfbtuXcxttm8DJ5dwgdNnWSAjl1gQN3akJ3AMtUuE=;
- b=leOQQCQXkNP5S5fbHy/CI4IQUjpMYLGpL1/iqqfhfzil8Vp+b/BQ/UeNZ7Va3IYmazEq6vvNCrkuZHI5/YVKn83t1TtAyIiYMGxWyfkrbje1dJEq+G7LR2KU/rYhV3zTWK0LymFVicVhPnh8+K/2Jxh1aMtusDStTOIrfKSbZ04=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=synaptics.com;
-Received: from BN7PR03MB4547.namprd03.prod.outlook.com (2603:10b6:408:9::22)
- by BN7PR03MB4563.namprd03.prod.outlook.com (2603:10b6:408:36::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.16; Thu, 20 Aug
- 2020 07:53:56 +0000
-Received: from BN7PR03MB4547.namprd03.prod.outlook.com
- ([fe80::3cda:7634:5802:df5f]) by BN7PR03MB4547.namprd03.prod.outlook.com
- ([fe80::3cda:7634:5802:df5f%7]) with mapi id 15.20.3305.024; Thu, 20 Aug 2020
- 07:53:56 +0000
-Date:   Thu, 20 Aug 2020 15:32:13 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Icenowy Zheng <icenowy@aosc.io>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 01/12] regulator: 88pg86x: Fix W=1 build warning when
- CONFIG_OF=n
-Message-ID: <20200820153213.4d9a9666@xhacker.debian>
-In-Reply-To: <20200820152926.42c48840@xhacker.debian>
-References: <20200820152926.42c48840@xhacker.debian>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: TY1PR01CA0194.jpnprd01.prod.outlook.com (2603:1096:403::24)
- To BN7PR03MB4547.namprd03.prod.outlook.com (2603:10b6:408:9::22)
+        id S1725866AbgHTHdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 03:33:00 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:55008 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725778AbgHTHdA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 03:33:00 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 045EA28E289
+Message-ID: <bac2020eabb375a6c9dbc689c0c5a3f6eae16e1e.camel@collabora.com>
+Subject: Re: [PATCH v2 08/14] media: uapi: h264: Drop SLICE_PARAMS 'size'
+ field
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Jeffrey Kardatzke <jkardatzke@chromium.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Date:   Thu, 20 Aug 2020 04:32:46 -0300
+In-Reply-To: <20200819135430.GA1566@aptenodytes>
+References: <20200806151310.98624-1-ezequiel@collabora.com>
+         <20200806151310.98624-9-ezequiel@collabora.com>
+         <20200806155028.GB1621078@aptenodytes>
+         <7e0ad157cabb656cbb4f24354146197e6a1d3f36.camel@collabora.com>
+         <20200819135430.GA1566@aptenodytes>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3-1 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 255.255.255.255 (255.255.255.255) by TY1PR01CA0194.jpnprd01.prod.outlook.com (2603:1096:403::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24 via Frontend Transport; Thu, 20 Aug 2020 07:53:53 +0000
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-X-Originating-IP: [124.74.246.114]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8be45bb7-77c4-4657-52d0-08d844de30ac
-X-MS-TrafficTypeDiagnostic: BN7PR03MB4563:
-X-Microsoft-Antispam-PRVS: <BN7PR03MB4563E87A49C0DB997BB1E253ED5A0@BN7PR03MB4563.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:449;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YY6kj9JjzEglhivnKaFa/6ijaAei0xoddw0Ru/QDWQmwd+YD2cf8B4/3NBnut7Fzf6Zdkeq9Y3h48kd6myS0d+CMUPW/a8slTmISQeNJWcDLl03W69lISR1cfIJ2gWdFFYikdVfNCg+YYx3h4f/rZilctCcJHvD7aHcnI9/RRiirOPIp7IgQl5fkhPcpjhQyPFQfgzhwV8Qosvg/H92jL7iSfuHY1tMM+H6wtDwdG9/lqgnAWmFWx3jEbhhx+RYgAv2tlQeWQcyVxY8G5JT8mczmXHqCU7Mp3KRzDwjBN5XznV0QVZktRYaCmEks2mbdtwX1FcpzC3Yufoui7SLrVWkby6esCmoqXAkDQT6sNGEO/MBrR0FxKjCgiXrX5XOc
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR03MB4547.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(396003)(346002)(136003)(376002)(1076003)(4744005)(4326008)(2906002)(5660300002)(6666004)(478600001)(956004)(9686003)(83380400001)(26005)(316002)(86362001)(52116002)(8676002)(66946007)(16576012)(66556008)(6486002)(110011004)(8936002)(66476007)(110136005)(186003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: RQeSPSspgDrpaiAbdpqLngAeM9m2qJZls/RLow5DK/tsIfSgesYsIN7RXNYJrPmtCMEpIQLYups4qd0Nvl/CLN2s3H393wriCuuoCZnihuc4oqlabg5nE4Pix4bLavgxuSmdbT1nDDj5aj9++E4jb8EgC4i9P/U+3QtxloSacSnWkhEUezSG6qzDgkBGYJiiWhqQy+K83iywsD+jhp2L7ZxIsXyJIb/sYRcnMWJqId2+HlcB5JhvGsD4PnMOIHvCfPfg/uyYl3m2Dcw0GwTXXh3Kt1X+ByEMgue5c5Wte3kk/7WCDlqmeyYLMcbF+c7n2VrSEARWMtBIaQ0mkMhZKViMuMUR0Bw36HQyaEq6wY9ck+T66+sscuNRXZQ4m+uKiH1c6iSA1YtxeQasaGAXc9pxo46y8hqIUiEUFLLtzkPQ6mF9uQggKO5aFRJJ8p8qv4FeY9VDTrJaTdMZR+Q73baNUAYVRUIfr8OrJfNMyzhqznnsMb1mrJoSXZ7dd0LgpSOLa68kPyn/lQHEzC5JIzrqdSwd39oqYj7LlS1i6SGLom791BspXaaiqlJwJOVUdLJpvMdNy+8LKRbGxfBxPlGlMBMAMA7EbkLLzLfrIkXAb7cXn1xJEH2+89Fdq/4nvWKHzwlnYuWJqjL0uSFZew==
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8be45bb7-77c4-4657-52d0-08d844de30ac
-X-MS-Exchange-CrossTenant-AuthSource: BN7PR03MB4547.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2020 07:53:56.5791
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Kgok1vVjyRMINm3D6AY/jwYNGuZT8fWj9hU96JgPu2r5kpd8g1TAgLJPdXy7N+GpKeBK327JGJmh+aQQLket6w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR03MB4563
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix below warning when CONFIG_OF=3Dn:
+Hi Paul,
 
-drivers/regulator/88pg86x.c:87:34: warning: =E2=80=98pg86x_dt_ids=E2=80=99 =
-defined but not used [-Wunused-const-variable=3D]
-87 | static const struct of_device_id pg86x_dt_ids [] =3D {
-   |                                  ^~~~~~~~~~~~
+On Wed, 2020-08-19 at 15:54 +0200, Paul Kocialkowski wrote:
+> Hi,
+> 
+> On Fri 07 Aug 20, 11:44, Ezequiel Garcia wrote:
+> > On Thu, 2020-08-06 at 17:50 +0200, Paul Kocialkowski wrote:
+> > > Hi,
+> > > 
+> > > On Thu 06 Aug 20, 12:13, Ezequiel Garcia wrote:
+> > > > The SLICE_PARAMS control is intended for slice-based
+> > > > devices. In this mode, the OUTPUT buffer contains
+> > > > a single slice, and so the buffer's plane payload size
+> > > > can be used to query the slice size.
+> > > 
+> > > If we later extend the API for supporting multiple slices with dynamic array
+> > > controls, I guess we'll need to know the size of each slice in each control
+> > > elements. So I'd rather keep that even if it's indeed redundant with
+> > > vb2_get_plane_payload in single-slice mode.
+> > > 
+> > 
+> > If we later extend the API, another control (possibly
+> > another decoding mode?) shall be introduced.
+> > 
+> > This API covers single-slice-per-request as specified
+> > and documented in patch 9/14 "Clarify SLICE_BASED mode".
+> > 
+> > This is along the lines of the proposal drafted by Nicolas,
+> > see my reply: https://lkml.org/lkml/2020/8/5/791.
+> > 
+> > This applies to num_slices, slice size and slice start offset.
+> > 
+> > There are multiple ways of doing this.
+> 
+> If feels a bit problematic to remove these fields without a clear plan yet
+> on how to support multiple slices in the future. These may need to be added
+> again later, except that it will be too late and new controls will need to be
+> introduced.
+> 
 
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
----
- drivers/regulator/88pg86x.c | 2 ++
- 1 file changed, 2 insertions(+)
+As Nicolas and I have repeatedly mentioned we do have a plan :)
 
-diff --git a/drivers/regulator/88pg86x.c b/drivers/regulator/88pg86x.c
-index 71cfa2c5de5e..c47c14d190f5 100644
---- a/drivers/regulator/88pg86x.c
-+++ b/drivers/regulator/88pg86x.c
-@@ -84,12 +84,14 @@ static int pg86x_i2c_probe(struct i2c_client *i2c)
- 	return 0;
- }
-=20
-+#ifdef CONFIG_OF
- static const struct of_device_id pg86x_dt_ids [] =3D {
- 	{ .compatible =3D "marvell,88pg867" },
- 	{ .compatible =3D "marvell,88pg868" },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, pg86x_dt_ids);
-+#endif
-=20
- static const struct i2c_device_id pg86x_i2c_id[] =3D {
- 	{ "88pg867", },
---=20
-2.28.0
+Nothing prevents us from implementing this now, but since it seems
+we don't have any need since the 1-slice-per-buffer is working well,
+there is no motivation for it.
+
+As you well mention, it does require new controls. This is
+totally expected since new decoding semantics will need new controls.
+
+Here's my version of the plan:
+
+enum v4l2_mpeg_video_h264_decode_mode {
+        V4L2_MPEG_VIDEO_H264_DECODE_MODE_SLICE_BASED,
+        V4L2_MPEG_VIDEO_H264_DECODE_MODE_SLICE_ARRAY_BASED,
+        V4L2_MPEG_VIDEO_H264_DECODE_MODE_FRAME_BASED,
+};
+
+#define V4L2_CID_MPEG_VIDEO_H264_SLICE_ARRAY    (V4L2_CID_MPEG_BASE+1008)
+
+struct v4l2_ctrl_h264_slice_array {
+        __u16 num_slices;
+
+        struct v4l2_ctrl_h264_slice slices[16];
+}
+
+struct v4l2_ctrl_h264_slice {
+        __u32 size;
+        __u32 start_byte_offset;
+        struct v4l2_ctrl_h264_slice_params params;
+}
+
+Now, the _specific_ way this will be done is not under
+discussion at the moment.
+
+> Also, could we consider adding more reserved fields to handle such future needs?
+> 
+
+I have considered that (on each control), but I fail
+to see the reason for it. The same may be said of all controls,
+yet I don't think we bloat each one just in case. 
+
+Thanks,
+Ezequiel
+
+> Cheers,
+> 
+> Paul
+> 
+> > Thanks!
+> > Ezequiel
+> > 
+> > > What do you think?
+> > > 
+> > > Paul
+> > > 
+> > > > To reduce the API surface drop the size from the
+> > > > SLICE_PARAMS control.
+> > > > 
+> > > > A follow-up change will remove other members in SLICE_PARAMS
+> > > > so we don't need to add padding fields here.
+> > > > 
+> > > > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> > > > ---
+> > > >  Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 3 ---
+> > > >  drivers/staging/media/sunxi/cedrus/cedrus_h264.c          | 7 +++----
+> > > >  include/media/h264-ctrls.h                                | 3 ---
+> > > >  3 files changed, 3 insertions(+), 10 deletions(-)
+> > > > 
+> > > > diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> > > > index 427fc5727ec0..fff74b7bf32a 100644
+> > > > --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> > > > +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> > > > @@ -1760,9 +1760,6 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
+> > > >      :stub-columns: 0
+> > > >      :widths:       1 1 2
+> > > >  
+> > > > -    * - __u32
+> > > > -      - ``size``
+> > > > -      -
+> > > >      * - __u32
+> > > >        - ``start_byte_offset``
+> > > >          Offset (in bytes) from the beginning of the OUTPUT buffer to the start
+> > > > diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
+> > > > index a9ba78b15907..8b6f05aadbe8 100644
+> > > > --- a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
+> > > > +++ b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
+> > > > @@ -324,17 +324,16 @@ static void cedrus_set_params(struct cedrus_ctx *ctx,
+> > > >  	struct vb2_buffer *src_buf = &run->src->vb2_buf;
+> > > >  	struct cedrus_dev *dev = ctx->dev;
+> > > >  	dma_addr_t src_buf_addr;
+> > > > -	u32 len = slice->size * 8;
+> > > > +	size_t slice_bytes = vb2_get_plane_payload(src_buf, 0);
+> > > >  	unsigned int pic_width_in_mbs;
+> > > >  	bool mbaff_pic;
+> > > >  	u32 reg;
+> > > >  
+> > > > -	cedrus_write(dev, VE_H264_VLD_LEN, len);
+> > > > +	cedrus_write(dev, VE_H264_VLD_LEN, slice_bytes * 8);
+> > > >  	cedrus_write(dev, VE_H264_VLD_OFFSET, 0);
+> > > >  
+> > > >  	src_buf_addr = vb2_dma_contig_plane_dma_addr(src_buf, 0);
+> > > > -	cedrus_write(dev, VE_H264_VLD_END,
+> > > > -		     src_buf_addr + vb2_get_plane_payload(src_buf, 0));
+> > > > +	cedrus_write(dev, VE_H264_VLD_END, src_buf_addr + slice_bytes);
+> > > >  	cedrus_write(dev, VE_H264_VLD_ADDR,
+> > > >  		     VE_H264_VLD_ADDR_VAL(src_buf_addr) |
+> > > >  		     VE_H264_VLD_ADDR_FIRST | VE_H264_VLD_ADDR_VALID |
+> > > > diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
+> > > > index 4f05ee265997..f74736fcfa00 100644
+> > > > --- a/include/media/h264-ctrls.h
+> > > > +++ b/include/media/h264-ctrls.h
+> > > > @@ -158,9 +158,6 @@ struct v4l2_h264_reference {
+> > > >  };
+> > > >  
+> > > >  struct v4l2_ctrl_h264_slice_params {
+> > > > -	/* Size in bytes, including header */
+> > > > -	__u32 size;
+> > > > -
+> > > >  	/* Offset in bytes to the start of slice in the OUTPUT buffer. */
+> > > >  	__u32 start_byte_offset;
+> > > >  
+> > > > -- 
+> > > > 2.27.0
+> > > > 
+
 
