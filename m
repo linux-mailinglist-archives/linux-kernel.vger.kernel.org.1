@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3CA24B071
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:51:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F96A24B08F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgHTHvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 03:51:47 -0400
-Received: from mail-co1nam11on2061.outbound.protection.outlook.com ([40.107.220.61]:39649
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        id S1725866AbgHTHzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 03:55:11 -0400
+Received: from mail-dm6nam10on2063.outbound.protection.outlook.com ([40.107.93.63]:33531
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725819AbgHTHvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 03:51:45 -0400
+        id S1725798AbgHTHzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 03:55:06 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hRtKnEHC3Iv2dI96XoqRGArxUw/mxXMQvlCe3sDJVRHgKYeyGUdyuE51q7iPy+/54EIe2RFrlRU+st2rA18ttoSq2i7pwheXhC0Nxcy1r5fJHuaCW5V3T8wZy/R3KXY7y/BXtVeaF8RAFD+faLkk8pWNLkA6X/3KBlsXiyV+JBDWcBoEj5a/4AnL2GUafMmNmRn8gbipsb1WtEiA3R12XgzyHN9LxmFNt9GWz4R6zRIQ+ukTnalDyhum7b0umFsXDZ+B6VGqbwQU1EJhz7Pq5Z2yprDS9//j7OwjUrGli5hhtNA1iUABrvY2pZ/+ANpBS+MMV+E9OJYAFUjzLvj+fw==
+ b=mxuks3pFP6ERlEzCvhlPvlpkgarNBM7pmVG0hHIFBW9u50j7PVrTWsJRLufwreLrleASm/lwoGQUKEkofAWSnECymuzlJ3cI7cQI/mGQDQN2CJ/jjNUyQ+/QZvORwn3CAl9IScB0vVJUonZX+wlbtMgQjBNBxBuitpFgSMvhY42SHXGLau4+MKUdpIU1h9/57AuPsemwBLIdvPnNZ6+3vcuwYRcCgAYEvFVUYsS2JQIg2t/NAvmmDiJccyzEdZO+oJtcUW3ckINIy2t1v4ehM2RM4gRFmQo7KlVvW1aLkB7ugDvbvyGJ2SzP1GlgHLa19OQjNI/hJ3hXSU4i+HcZEg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5B2/JNzCKZKLjBhv6F3rxJW1sECk3G2yv+iD/ySGx/o=;
- b=Lf6C97bePYPcDh0+IymfXLxHiYEF6FiDcpMF92tounc+yHWk7/DLLvYL8FkHE5msTH2DFeOo2TD1V39SPyzPdfBLc3kazgH3d0/yrr3SaM6qtcnkDhjMCbne/yH1TFGn1IRFA0M7BHMZKV/g55J6XXzqM1Lv3VS0Pol359FrpS3CTqz0o1MS0WiOAyEiF4yxl5KcEtmFBSN4ren2kpFdT1GKNKMFFXjR9PS/tykqxg6wynYMhXI2DpMiIogRgwfTLUDtwv3sh4t3dlac1Tx2BVvGElx1isCkU3G2ui8knqtZJsRjzT/Ig9BVlYQOvkfA96Bet8e+DZe8BqqFpxjhNQ==
+ bh=z0F+bCmqcAnRxC8KfRXIvz6WdWsumQc7DWHZHtfxOus=;
+ b=kfS1hhXBVidDvOtnj7CrW1tap/3H1ce/AreoxxWwkadpWbIg5To3+fALA2NuZWIsZj73zWLHd/D3sou4QudAxTmwTNr6QfhCeu5VsySzbbGMb7zE9lncwLMdVpJ9h2tFsaqh41XM04hp14ZfpfPenQZ2IrAGPevrSgELUcEoZMGuQAt3/2A2xOn7tFKKcpn0d+a0O0uXOojJ7UlNUguFEAH4jq1s9QKXDbmk4+q/ktinTbrIuUoIAY1rq7uG48Wgq1RWq27GPVMUf7bvzuy1yTLtoAL2mLE9kYphk8iIjByF5vy0ZZngP7aExYJe21tDMtaE8Y7aGW8m5ahEkd+jPw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=synaptics.com; dmarc=pass action=none
  header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5B2/JNzCKZKLjBhv6F3rxJW1sECk3G2yv+iD/ySGx/o=;
- b=ZkEU/HJdmu6TxXcvMFD1K3u4ow+4t7pmlNSoVcyuUFXVm35563KeCjffYDvPpgVpXBg/HB5LzYCI96NrNihdPDA1G2navuhZOmV1rgvwqCQ7SZ4uaJzEYK6Mt7VJ21gXRdAIWcgGUkRcKVT32KMpyh8mXnAf3quVDpPIn6bSAro=
+ bh=z0F+bCmqcAnRxC8KfRXIvz6WdWsumQc7DWHZHtfxOus=;
+ b=IhKg3YZ1G4PGsJ96Tum3KqPYGjUZsFI9Joxx4Q25H5Dnr5XRgJW1NBNHdMSK73s0TKOqFatjd/G1ToCG4NMLYd1cNPDT53nN3WIBhymaNMNxoOJZ1aebMtVsIUzyjphFJnPGFejQv8jfqRI1IhKdm+pBTvfb45g6gZsnc9UTDnY=
 Authentication-Results: gmail.com; dkim=none (message not signed)
  header.d=none;gmail.com; dmarc=none action=none header.from=synaptics.com;
 Received: from BN7PR03MB4547.namprd03.prod.outlook.com (2603:10b6:408:9::22)
- by BN8PR03MB4834.namprd03.prod.outlook.com (2603:10b6:408:68::13) with
+ by BN7PR03MB4563.namprd03.prod.outlook.com (2603:10b6:408:36::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.20; Thu, 20 Aug
- 2020 07:51:43 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.16; Thu, 20 Aug
+ 2020 07:55:04 +0000
 Received: from BN7PR03MB4547.namprd03.prod.outlook.com
  ([fe80::3cda:7634:5802:df5f]) by BN7PR03MB4547.namprd03.prod.outlook.com
  ([fe80::3cda:7634:5802:df5f%7]) with mapi id 15.20.3305.024; Thu, 20 Aug 2020
- 07:51:42 +0000
-Date:   Thu, 20 Aug 2020 15:34:10 +0800
+ 07:55:04 +0000
+Date:   Thu, 20 Aug 2020 15:34:36 +0800
 From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -49,9 +49,9 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
 Cc:     linux-kernel@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 03/12] regulator: fan53555: Fix W=1 build warning when
+Subject: [PATCH 04/12] regulator: fixed: Fix W=1 build warnings when
  CONFIG_OF=n
-Message-ID: <20200820153410.498aa9d3@xhacker.debian>
+Message-ID: <20200820153436.39088071@xhacker.debian>
 In-Reply-To: <20200820152926.42c48840@xhacker.debian>
 References: <20200820152926.42c48840@xhacker.debian>
 X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
@@ -61,69 +61,86 @@ X-ClientProxiedBy: TY1PR01CA0194.jpnprd01.prod.outlook.com (2603:1096:403::24)
  To BN7PR03MB4547.namprd03.prod.outlook.com (2603:10b6:408:9::22)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 255.255.255.255 (255.255.255.255) by TY1PR01CA0194.jpnprd01.prod.outlook.com (2603:1096:403::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24 via Frontend Transport; Thu, 20 Aug 2020 07:51:39 +0000
+Received: from 255.255.255.255 (255.255.255.255) by TY1PR01CA0194.jpnprd01.prod.outlook.com (2603:1096:403::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24 via Frontend Transport; Thu, 20 Aug 2020 07:55:01 +0000
 X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 X-Originating-IP: [124.74.246.114]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f9458ca1-456f-4953-1bed-08d844dde0c2
-X-MS-TrafficTypeDiagnostic: BN8PR03MB4834:
-X-Microsoft-Antispam-PRVS: <BN8PR03MB483469D92A3FE545BE5DD9E8ED5A0@BN8PR03MB4834.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:449;
+X-MS-Office365-Filtering-Correlation-Id: 31f1421c-bf0f-4c46-e3ee-08d844de58e6
+X-MS-TrafficTypeDiagnostic: BN7PR03MB4563:
+X-Microsoft-Antispam-PRVS: <BN7PR03MB45635C561B5D1601C9927DFAED5A0@BN7PR03MB4563.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:530;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: U6JXlAfTs0hl4HgJuoMucnY6VsLCO5WWyJ0Lm0p1/qpzqbUi2I/Q2o9vmpoERCJt6zZ0O3EDKtpxqUD8BigJdubArMZxgTdv7nIo0T/rTnXu3/U86yjF4UGOwPdZykXHNU8qQcoKLymYoOyeTVNFktwMdZdYzb1biVcCkP/03SHq8f//hgQ994OtPqjkoeXFDPE69y9iLMPvH2utL0foKDiccH29ElTxRhBnWYjQuIXlml6DPdQtKmTS7XoA3nfJY3odbh4MsiWKpDXrMJTWkkHpRcfP5s+5ACy72q1rPW8jVAMYrECum5OLY+H90OyAo156vvJZH5zhlBPmYiuzqsYaIArGqpk0gYg52bfDS7YdYfI5CtyWQyZjo1G8pPzJ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR03MB4547.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(39860400002)(396003)(136003)(366004)(478600001)(956004)(5660300002)(186003)(1076003)(8936002)(8676002)(9686003)(2906002)(66946007)(66556008)(66476007)(6666004)(4326008)(16576012)(110011004)(4744005)(316002)(52116002)(83380400001)(26005)(6486002)(86362001)(110136005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: mdvqFX6mYF99jP1RtZ7kfAFD4Tr4HelpiZFAf3VWzu9HXsitIxVc38CVfBD070mXRZt5yjy678Nr8e+5AmmvWZnLd8mIGVilwiCe67qgXvJJLVlTm4TXVBqzinBbpRTfE14zVGUFdoS0tUDTquV4otD+ywFHeQlU+oBwlNcPWSCxQ4Lb0MQmukVc5sc+rQNni5CpIT2lLQmkbPa8m/Xy5sYmA8S0kcW5UdBWmoLhaViCDbMEe3heKb1IlTeWfFzaFOjgVRBvedGjc3rOhcyRAiaqXcjhCVEtW5UVDMctl3KkqCzdNg2+47SQKnqsJBVFl1gCi5xtdPPVt/OZC7rJH6BcBS6b9AQBf5RVM69u7UQgNJGemJI1zzgGkAY4ffhE/Nsa2vnshJX+SZwMtTha35g6zNdQXnQEuL1SBNzeiTGbq3PW0DoOdQmVgVgXOY1UvUWsC4IlqR1pptsWLrpE6KvIkMRdGOqFQLsX8JTCzj1pgDmNvcSOKuqfKAJv5k9N8Lguzm8t4V2ZkBY52lxYjv1C1jctOwFMGVIdUArG0kqd3HsgTFJMA+KC1OQTxrSphKFM0OEthdeZqcnxXAuWA3FujzqKtMHnUg3iEzghZlhBDMDYsC7KmPZemu/O0tx4aQi3Ndw1w4ckaTs+fmEEaw==
+X-Microsoft-Antispam-Message-Info: S55hj0RnyNfk/t4q6QGeGpTNuP2YUyq7EPiTIyNOJZg7Ze5LUd3au2DsC2kcE+2CPYki+r0bnKCQTB5GEto8vVSmIMjTJLnDKlUM2QKXzKv/JFH2aXeOJK5jPtr6QXyEn20NZPyGtPb0Oe0A2o8/L3uJOd6YipBmWr1VWn4cMJxz/H9emfh1RWEZBeKVUiU4qcYa5JuuPFz5XQsDetBXsJafCpRBCiX4mVeHkaPpn6e+MuZnNHFQ7eTntH4eS9nh/mFa1GrIrnM9cRoaavggqc07M3xIE11SGZomSRgcNVpn3inXdEK8x/bOQAT6hvU1tp2GxUNpVmRYeVLaJRfQYq2P2YO6bJTtzoGJ+XR1t9uThu7NfoP2lTV8Da+/1l60
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR03MB4547.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(396003)(346002)(136003)(376002)(1076003)(4326008)(2906002)(5660300002)(6666004)(478600001)(956004)(9686003)(83380400001)(26005)(316002)(86362001)(52116002)(8676002)(66946007)(16576012)(66556008)(6486002)(110011004)(8936002)(66476007)(110136005)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: Pvicf3XeI+mnIRJBXholur0MDPEe9yuHdr58X5UpSn5rLhET3hMysg+3eK1BKQiiXNr61IEpY9EwFTEm7i4NibdxCI9aLhFpZM3Q9m/XGi6/oImteOJhAnkbprZ2Iu84WQ5RrpKqldOtk8yDwb4Sh9VFARNT+bWTmMLaIm4C17QNndTy5h28lbE/pdI0iska+mUzq+JOIg3VTAU+Cegy3g+voXUe8pLXN2zcL3xImkH4m+IlTy4xCsHmo4J/yNT2QgTYGWE5cAQ1ifndn/MLtTFMFD/EXar61K8MwvvMscX59oHeHjXtvEc3rVrXRvp1h0oBSQwu0cw+gf/thvxWzLjslbwDY+V25kY5mc4iF/sOHhSGKl8XomGwpz1u9gPEDb+bXAdR5K7yKJE8tQ4bkPwPaphkX0I7tX/6s4pXV5+WqCULiMtvT8GFlUoUktY0dlXeci4EDO+YMJdHfFUDjCjkEHsWCDq7dptoHxjT5ybhs0tQcLQr1xSmUFmLtg15O5PICwGTxAjbNO/XXFSQ3/35/MONLKl8HMu24k8bMzI+yKiiF+2q21ibn1H7+QyRKy5AqqkQCJxg4jZbvs6ZKH7YHKBSWKH72OfqlnEONyDLnH6ZjpOv3Jl/UU63ih5/JTNqvvN9CCGxZFySt1+AsQ==
 X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f9458ca1-456f-4953-1bed-08d844dde0c2
+X-MS-Exchange-CrossTenant-Network-Message-Id: 31f1421c-bf0f-4c46-e3ee-08d844de58e6
 X-MS-Exchange-CrossTenant-AuthSource: BN7PR03MB4547.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2020 07:51:42.5861
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2020 07:55:04.0678
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AHSkNnhI99pmFWOCK2dvsJx1tIMZXzNzf1MEHFmzeCex9L2h/iULGdKlGX4NSIMo4AUTp5ACqXMm3Hq+bA8b+w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR03MB4834
+X-MS-Exchange-CrossTenant-UserPrincipalName: RpRNSr8GOGI1vx1omaF4z3aS0x5eZRQXmm1/1851d8oJVDPVUr2x+SEj/9r2O1jBVQV0SFi/shZGhPm3DVENHg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR03MB4563
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix below warning when CONFIG_OF=3Dn:
+Fix below warnings when CONFIG_OF=3Dn:
 
-drivers/regulator/fan53555.c:439:34: warning: =E2=80=98fan53555_dt_ids=E2=
+drivers/regulator/fixed.c:48:36: warning: =E2=80=98fixed_clkenable_data=E2=
 =80=99 defined but not used [-Wunused-const-variable=3D]
-  439 | static const struct of_device_id fan53555_dt_ids[] =3D {
-      |                                  ^~~~~~~~~~~~~~~
+   48 | static const struct fixed_dev_type fixed_clkenable_data =3D {
+      |                                    ^~~~~~~~~~~~~~~~~~~~
+drivers/regulator/fixed.c:44:36: warning: =E2=80=98fixed_voltage_data=E2=80=
+=99 defined but not used [-Wunused-const-variable=3D]
+   44 | static const struct fixed_dev_type fixed_voltage_data =3D {
+      |                                    ^~~~~~~~~~~~~~~~~~
 
 Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 ---
- drivers/regulator/fan53555.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/regulator/fixed.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/regulator/fan53555.c b/drivers/regulator/fan53555.c
-index 00c83492f774..387c53f387ba 100644
---- a/drivers/regulator/fan53555.c
-+++ b/drivers/regulator/fan53555.c
-@@ -436,6 +436,7 @@ static struct fan53555_platform_data *fan53555_parse_dt=
-(struct device *dev,
- 	return pdata;
+diff --git a/drivers/regulator/fixed.c b/drivers/regulator/fixed.c
+index d54830e48b8d..2d92a471ebc1 100644
+--- a/drivers/regulator/fixed.c
++++ b/drivers/regulator/fixed.c
+@@ -41,14 +41,6 @@ struct fixed_dev_type {
+ 	bool has_enable_clock;
+ };
+=20
+-static const struct fixed_dev_type fixed_voltage_data =3D {
+-	.has_enable_clock =3D false,
+-};
+-
+-static const struct fixed_dev_type fixed_clkenable_data =3D {
+-	.has_enable_clock =3D true,
+-};
+-
+ static int reg_clock_enable(struct regulator_dev *rdev)
+ {
+ 	struct fixed_voltage_data *priv =3D rdev_get_drvdata(rdev);
+@@ -260,6 +252,14 @@ static int reg_fixed_voltage_probe(struct platform_dev=
+ice *pdev)
  }
 =20
-+#ifdef CONFIG_OF
- static const struct of_device_id fan53555_dt_ids[] =3D {
+ #if defined(CONFIG_OF)
++static const struct fixed_dev_type fixed_voltage_data =3D {
++	.has_enable_clock =3D false,
++};
++
++static const struct fixed_dev_type fixed_clkenable_data =3D {
++	.has_enable_clock =3D true,
++};
++
+ static const struct of_device_id fixed_of_match[] =3D {
  	{
- 		.compatible =3D "fcs,fan53526",
-@@ -453,6 +454,7 @@ static const struct of_device_id fan53555_dt_ids[] =3D =
-{
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, fan53555_dt_ids);
-+#endif
-=20
- static int fan53555_regulator_probe(struct i2c_client *client,
- 				const struct i2c_device_id *id)
+ 		.compatible =3D "regulator-fixed",
 --=20
 2.28.0
 
