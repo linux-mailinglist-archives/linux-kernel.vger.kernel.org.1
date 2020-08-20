@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5019124B311
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C940F24B414
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729072AbgHTJk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:40:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33014 "EHLO mail.kernel.org"
+        id S1730285AbgHTJ5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:57:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728626AbgHTJki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:40:38 -0400
+        id S1730267AbgHTJ45 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:56:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B93E20724;
-        Thu, 20 Aug 2020 09:40:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 515B92067C;
+        Thu, 20 Aug 2020 09:56:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916437;
-        bh=xIWhDWnMtprZ575A1uCdjon2U3PFJGPff7fZSyx6LAw=;
+        s=default; t=1597917413;
+        bh=OaT3fz4TOia5W0ucvvmAPTLlSe+2mKY5qoePCnvDDcQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wbhPSJ0xBS08HlKkKTqX2/jBx1y34ZFEMfjgSbJwyxnTCNAp6GfusEX/IaEksJcEB
-         Mq34mpX9Maeyhmtu2IvgH6ix2V/tAnhjarVHK6I7iTkwU9Xe7oCEoZJ3ngbDqbnOoV
-         gjCzHLE8lhZoVnttd6vH7WGD47DSIswJOFPX/01w=
+        b=op0nDSqYVGd+JjjGheO1clVPsDEbzH0SnPjfrztuvWol51GveSa4q5GMfA4Wlz8xH
+         uHzfR9HGmfmSOWGXvaISbXfESgspJ01GW88qSnrX4iWJKaqukuPTX0BuaEjLJ/K5Xr
+         xgBIL64grWS2unw6b6sDrvxWP9BfKR8+7m8SaU3M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Liu Ying <victor.liu@nxp.com>
-Subject: [PATCH 5.7 097/204] drm/imx: imx-ldb: Disable both channels for split mode in enc->disable()
-Date:   Thu, 20 Aug 2020 11:19:54 +0200
-Message-Id: <20200820091611.171356635@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Rolf Eike Beer <eb@emlix.com>
+Subject: [PATCH 4.9 022/212] uapi: includes linux/types.h before exporting files
+Date:   Thu, 20 Aug 2020 11:19:55 +0200
+Message-Id: <20200820091603.459161619@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
-References: <20200820091606.194320503@linuxfoundation.org>
+In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
+References: <20200820091602.251285210@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,52 +45,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liu Ying <victor.liu@nxp.com>
+From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
 
-commit 3b2a999582c467d1883716b37ffcc00178a13713 upstream.
+commit 9078b4eea119c13d633d45af0397c821a517b522 upstream.
 
-Both of the two LVDS channels should be disabled for split mode
-in the encoder's ->disable() callback, because they are enabled
-in the encoder's ->enable() callback.
+Some files will be exported after a following patch. 0-day tests report the
+following warning/error:
+./usr/include/linux/bcache.h:8: include of <linux/types.h> is preferred over <asm/types.h>
+./usr/include/linux/bcache.h:11: found __[us]{8,16,32,64} type without #include <linux/types.h>
+./usr/include/linux/qrtr.h:8: found __[us]{8,16,32,64} type without #include <linux/types.h>
+./usr/include/linux/cryptouser.h:39: found __[us]{8,16,32,64} type without #include <linux/types.h>
+./usr/include/linux/pr.h:14: found __[us]{8,16,32,64} type without #include <linux/types.h>
+./usr/include/linux/btrfs_tree.h:337: found __[us]{8,16,32,64} type without #include <linux/types.h>
+./usr/include/rdma/bnxt_re-abi.h:45: found __[us]{8,16,32,64} type without #include <linux/types.h>
 
-Fixes: 6556f7f82b9c ("drm: imx: Move imx-drm driver out of staging")
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
-Cc: NXP Linux Team <linux-imx@nxp.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Liu Ying <victor.liu@nxp.com>
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Signed-off-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+reb: left out include/uapi/rdma/bnxt_re-abi.h as it's not in this kernel version
+Signed-off-by: Rolf Eike Beer <eb@emlix.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/imx/imx-ldb.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ include/uapi/linux/bcache.h     |    2 +-
+ include/uapi/linux/btrfs_tree.h |    2 ++
+ include/uapi/linux/cryptouser.h |    2 ++
+ include/uapi/linux/pr.h         |    2 ++
+ include/uapi/linux/qrtr.h       |    1 +
+ 5 files changed, 8 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/imx/imx-ldb.c
-+++ b/drivers/gpu/drm/imx/imx-ldb.c
-@@ -303,18 +303,19 @@ static void imx_ldb_encoder_disable(stru
- {
- 	struct imx_ldb_channel *imx_ldb_ch = enc_to_imx_ldb_ch(encoder);
- 	struct imx_ldb *ldb = imx_ldb_ch->ldb;
-+	int dual = ldb->ldb_ctrl & LDB_SPLIT_MODE_EN;
- 	int mux, ret;
+--- a/include/uapi/linux/bcache.h
++++ b/include/uapi/linux/bcache.h
+@@ -5,7 +5,7 @@
+  * Bcache on disk data structures
+  */
  
- 	drm_panel_disable(imx_ldb_ch->panel);
+-#include <asm/types.h>
++#include <linux/types.h>
  
--	if (imx_ldb_ch == &ldb->channel[0])
-+	if (imx_ldb_ch == &ldb->channel[0] || dual)
- 		ldb->ldb_ctrl &= ~LDB_CH0_MODE_EN_MASK;
--	else if (imx_ldb_ch == &ldb->channel[1])
-+	if (imx_ldb_ch == &ldb->channel[1] || dual)
- 		ldb->ldb_ctrl &= ~LDB_CH1_MODE_EN_MASK;
+ #define BITMASK(name, type, field, offset, size)		\
+ static inline __u64 name(const type *k)				\
+--- a/include/uapi/linux/btrfs_tree.h
++++ b/include/uapi/linux/btrfs_tree.h
+@@ -1,6 +1,8 @@
+ #ifndef _BTRFS_CTREE_H_
+ #define _BTRFS_CTREE_H_
  
- 	regmap_write(ldb->regmap, IOMUXC_GPR2, ldb->ldb_ctrl);
++#include <linux/types.h>
++
+ /*
+  * This header contains the structure definitions and constants used
+  * by file system objects that can be retrieved using
+--- a/include/uapi/linux/cryptouser.h
++++ b/include/uapi/linux/cryptouser.h
+@@ -18,6 +18,8 @@
+  * 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
+  */
  
--	if (ldb->ldb_ctrl & LDB_SPLIT_MODE_EN) {
-+	if (dual) {
- 		clk_disable_unprepare(ldb->clk[0]);
- 		clk_disable_unprepare(ldb->clk[1]);
- 	}
++#include <linux/types.h>
++
+ /* Netlink configuration messages.  */
+ enum {
+ 	CRYPTO_MSG_BASE = 0x10,
+--- a/include/uapi/linux/pr.h
++++ b/include/uapi/linux/pr.h
+@@ -1,6 +1,8 @@
+ #ifndef _UAPI_PR_H
+ #define _UAPI_PR_H
+ 
++#include <linux/types.h>
++
+ enum pr_type {
+ 	PR_WRITE_EXCLUSIVE		= 1,
+ 	PR_EXCLUSIVE_ACCESS		= 2,
+--- a/include/uapi/linux/qrtr.h
++++ b/include/uapi/linux/qrtr.h
+@@ -2,6 +2,7 @@
+ #define _LINUX_QRTR_H
+ 
+ #include <linux/socket.h>
++#include <linux/types.h>
+ 
+ struct sockaddr_qrtr {
+ 	__kernel_sa_family_t sq_family;
 
 
