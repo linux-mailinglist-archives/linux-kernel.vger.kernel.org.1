@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9FF24BF23
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4FF724BF56
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729358AbgHTNlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:41:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726879AbgHTJaF (ORCPT
+        id S1728934AbgHTNqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:46:01 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:53019 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728139AbgHTJaP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:30:05 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE79C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 02:30:04 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id r7so715594vsq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 02:30:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=6apwous/HgYA9e9mDqfrOOmq5wxR8eDdobsnINeJ2Ak=;
-        b=eETmXHMWgfN31+kZjG7CG3fcmrCL+QERYJYc7EZzYmZ/iyBm5vlKvOgbCCqNZxA+XN
-         10DkxJfP4eEu/UlvRJDammSXb+HlcfLo/fsFf2aSFcRcqIBQ+7RjdJr38r2T4P+8cYKO
-         8d/CnJ8R9svj2hUovuPzmNxBKfCNxtu6eLdBKKXWJVho4oL/RoLTArsoGOYd0BIX4/qh
-         +UqJMgXb82l+X/lNn+LZEZ6OyBAE3uKibnk1yh8wKFDHh+ShOt7pHuNUpHZjMK/Qj8+B
-         5xpyiCvymikyE0YC0aGlESFBcdypcqQY4fBWYVaeZr3tCYVHbpKA/DJkxajl5oNxBOLv
-         96Bw==
+        Thu, 20 Aug 2020 05:30:15 -0400
+Received: by mail-wm1-f68.google.com with SMTP id x5so976710wmi.2;
+        Thu, 20 Aug 2020 02:30:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=6apwous/HgYA9e9mDqfrOOmq5wxR8eDdobsnINeJ2Ak=;
-        b=BZ8aPMGDXURP4X/M1jM7BlzgTkb1is0eVpQfFLPzgn/E4ZFE6pSVsA2otGcslOjtsm
-         11CUTIUAt0pVgaS+8efxEWCWajV6CQUGrtxHkb0wgkFGnoX1vpuopD4tYqfZbGQ6n39M
-         nWYyE84+cXlMR2pwk7u9PDECbF5ocnFNeKyu0pRYeSZTJzczQYhphY8ZV8KUAdjJU5C3
-         xz8IN3XBlDsyO95rmf4eKeniVsYyu1gDC8nYUmGhWJ8KAyZ1No1zTJilkShMcnNyo4Lg
-         fh4pPSmBkdXuHMjnyRpg/1ELiUaQWPfQmoayunQJRNsT478/d8dBxIH84QJ4rpIIbtEM
-         kniA==
-X-Gm-Message-State: AOAM531+2jQeyja3/qzLW9rgTrDt8f0xtyJGTbFk62nqc3KlZQSIDayU
-        pIpbFi/uyfdhXY4dQs4icYqox5aDrvssMw3zVS+phr5Bx1NOtm06
-X-Google-Smtp-Source: ABdhPJxnX/aP9f1YYTlY9xogXia5cP6a2JVmyDFGvwr+8ZISnTbDnkGzsLz43KbFCYTyN0PDQwvWxV+jgNeZmbRKM00=
-X-Received: by 2002:a67:e45:: with SMTP id 66mr1205335vso.191.1597915803707;
- Thu, 20 Aug 2020 02:30:03 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tUnRntDeM2Z0wZOlftJYnlbiTXDqBXyNsySaCh9zCmY=;
+        b=SvJm8/wDP+0NcFQQ6EcJiW2c1pBJodLfRnSCUH214i0B5bACBo/O0iTE+g6fMmP8xk
+         Pf9wsIVGgID6O8tuWskHpwHk8mkIhVIZrbF1yK00ZDNlP/QDshVMiBaHQrM+YjwLv2X7
+         U0xDcXE1ywTYcuu4qt1EdB5HJGdEfkK7CQbVs23P6lZmtlI4XNqKexGPthkqDA4hPcJc
+         IhPBcRS2Xz8vNoFtrNXsB0TnqzLvka+lthDfV0tOZLSOFOrIJ7Osfc+oVjPA290S3jF2
+         p8bJ8XriUzi8vDx9d1pe4ipOluGshbj1omGRrVb/C4vZWPKaBOenM/vsW2N2ljP5TCtV
+         hS5A==
+X-Gm-Message-State: AOAM533mZhB3cZ8YRh5T1ZgqMYGEYrJyQyvRg7/+2sYukQZMTzyaKYDq
+        l1/IrY5OgxO0SDTIW7dLYUI=
+X-Google-Smtp-Source: ABdhPJyodhIy3b6biA58amHmZjnvQq4nyDVjNDGAvrKAsLjjKYeZihDIwmPPHhe2+ewpkCAnODpbww==
+X-Received: by 2002:a1c:2808:: with SMTP id o8mr2510138wmo.108.1597915813392;
+        Thu, 20 Aug 2020 02:30:13 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.216])
+        by smtp.googlemail.com with ESMTPSA id z8sm3045868wmf.10.2020.08.20.02.30.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 20 Aug 2020 02:30:12 -0700 (PDT)
+Date:   Thu, 20 Aug 2020 11:30:10 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Barry Song <baohua@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Mans Rullgard <mans@mansr.com>, Jun Nie <jun.nie@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [RESEND PATCH 5/5] ARM: dts: zx: Align L2 cache-controller
+ nodename with dtschema
+Message-ID: <20200820093010.GA15884@kozik-lap>
+References: <20200819175853.21492-1-krzk@kernel.org>
+ <20200819175853.21492-5-krzk@kernel.org>
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 20 Aug 2020 14:59:52 +0530
-Message-ID: <CA+G9fYuNS3k0DVT62twfV746pfNhCSrk5sVMcOcQ1PGGnEseyw@mail.gmail.com>
-Subject: =?UTF-8?B?bW0vZ3VwLmM6MTkyMjo3OiBlcnJvcjogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuYw==?=
-        =?UTF-8?B?dGlvbiDigJhpc192YWxpZF9ndXBfZmxhZ3PigJk=?=
-To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linuxarm@huawei.com, Barry Song <song.bao.hua@hisilicon.com>,
-        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shuah Khan <shuah@kernel.org>, Vlastimil Babka <vbabka@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200819175853.21492-5-krzk@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-arm and riscv architecture build failed on linux next 20200820 tag.
+On Wed, Aug 19, 2020 at 07:58:53PM +0200, Krzysztof Kozlowski wrote:
+> Fix dtschema validator warnings like:
+>     l2-cache-controller@c00000: $nodename:0:
+>         'l2-cache-controller@c00000' does not match '^(cache-controller|cpu)(@[0-9a-f,]+)*$'
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux -j16 ARCH=3Darm
-CROSS_COMPILE=3Darm-linux-gnueabihf- HOSTCC=3Dgcc CC=3D"sccache
-arm-linux-gnueabihf-gcc" O=3Dbuild zImage
+I forgot to add the tag from Jun provided on previous submission:
+Reviewed-by: Jun Nie <jun.nie@linaro.org>
 
-348#
-349../mm/gup.c: In function =E2=80=98get_user_pages=E2=80=99:
-350../mm/gup.c:1922:7: error: implicit declaration of function
-=E2=80=98is_valid_gup_flags=E2=80=99 [-Werror=3Dimplicit-function-declarati=
-on]
-351 1922 | if (!is_valid_gup_flags(gup_flags))
-352 | ^~~~~~~~~~~~~~~~~~
-353cc1: some warnings being treated as errors
+Best regards,
+Krzysztof
 
-Full build log,
-https://gitlab.com/Linaro/lkft/kernel-runs/-/jobs/695005038
-https://gitlab.com/Linaro/lkft/kernel-runs/-/jobs/695005042
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+> ---
+>  arch/arm/boot/dts/zx296702.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/boot/dts/zx296702.dtsi b/arch/arm/boot/dts/zx296702.dtsi
+> index afd98de029be..f378c661b3bf 100644
+> --- a/arch/arm/boot/dts/zx296702.dtsi
+> +++ b/arch/arm/boot/dts/zx296702.dtsi
+> @@ -58,7 +58,7 @@
+>  			clocks = <&topclk ZX296702_A9_PERIPHCLK>;
+>  		};
+>  
+> -		l2cc: l2-cache-controller@c00000 {
+> +		l2cc: cache-controller@c00000 {
+>  			compatible = "arm,pl310-cache";
+>  			reg = <0x00c00000 0x1000>;
+>  			cache-unified;
+> -- 
+> 2.17.1
+> 
