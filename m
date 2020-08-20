@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4BC24B71C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 104AB24B74D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731262AbgHTKPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:15:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34148 "EHLO mail.kernel.org"
+        id S1731350AbgHTKuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:50:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731008AbgHTKPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:15:07 -0400
+        id S1730744AbgHTKPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:15:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0BF4020738;
-        Thu, 20 Aug 2020 10:15:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E8A5206DA;
+        Thu, 20 Aug 2020 10:15:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918506;
-        bh=LIyGF576MagAjqOt06FNqkLGN4XwGvEsX1dTekAscic=;
+        s=default; t=1597918512;
+        bh=7FTVTN5umYaD610qgAVqutc9HXcdKmd8Wnr4zIcgjw0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ABp2YiZVAGI2/rvW3Ll+ufHJo/oMM+SFw1xlrQzN8zetO8yUKBaKEg5YSpgftPfmu
-         lkGGSvd5WQYAONhRYCVoNGg19RykL1yAVjhBxvzLqZ+VQqfR/cXOvQXWz30yDBureA
-         YSrIpkmZIzLAQZbck0miolFAzSH8d7tvr0Erccso=
+        b=d1rh6wo7gJoFW0/BaqcdxPh2haWWBmkR7AsjhDghHTegyT8V1g58wtGPdImMcvRoj
+         HZExM17DN7YCjKoQyvcDnof3NOjjKyV9WYy6Ik+fzFsDSdrOBtjaoRZclfpBM3iSSG
+         Q6BYsrEfe/qwFanCA2lwpDCEztp2wSL+p4Jh8ypQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kamal Heib <kamalheib1@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 196/228] RDMA/ipoib: Return void from ipoib_ib_dev_stop()
-Date:   Thu, 20 Aug 2020 11:22:51 +0200
-Message-Id: <20200820091617.361805582@linuxfoundation.org>
+Subject: [PATCH 4.14 198/228] USB: serial: ftdi_sio: clean up receive processing
+Date:   Thu, 20 Aug 2020 11:22:53 +0200
+Message-Id: <20200820091617.460355988@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
 References: <20200820091607.532711107@linuxfoundation.org>
@@ -44,57 +43,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kamal Heib <kamalheib1@gmail.com>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit 95a5631f6c9f3045f26245e6045244652204dfdb ]
+[ Upstream commit ce054039ba5e47b75a3be02a00274e52b06a6456 ]
 
-The return value from ipoib_ib_dev_stop() is always 0 - change it to be
-void.
+Clean up receive processing by dropping the character pointer and
+keeping the length argument unchanged throughout the function.
 
-Link: https://lore.kernel.org/r/20200623105236.18683-1-kamalheib1@gmail.com
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Also make it more apparent that sysrq processing can consume a
+characters by adding an explicit continue.
+
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/ipoib/ipoib.h    | 2 +-
- drivers/infiniband/ulp/ipoib/ipoib_ib.c | 4 +---
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ drivers/usb/serial/ftdi_sio.c | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib.h b/drivers/infiniband/ulp/ipoib/ipoib.h
-index 4a5c7a07a6315..268e23ba4a636 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib.h
-+++ b/drivers/infiniband/ulp/ipoib/ipoib.h
-@@ -509,7 +509,7 @@ void ipoib_ib_dev_cleanup(struct net_device *dev);
- 
- int ipoib_ib_dev_open_default(struct net_device *dev);
- int ipoib_ib_dev_open(struct net_device *dev);
--int ipoib_ib_dev_stop(struct net_device *dev);
-+void ipoib_ib_dev_stop(struct net_device *dev);
- void ipoib_ib_dev_up(struct net_device *dev);
- void ipoib_ib_dev_down(struct net_device *dev);
- int ipoib_ib_dev_stop_default(struct net_device *dev);
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_ib.c b/drivers/infiniband/ulp/ipoib/ipoib_ib.c
-index d77e8e2ae05f2..8e1f48fe6f2e7 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_ib.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_ib.c
-@@ -809,7 +809,7 @@ int ipoib_ib_dev_stop_default(struct net_device *dev)
- 	return 0;
- }
- 
--int ipoib_ib_dev_stop(struct net_device *dev)
-+void ipoib_ib_dev_stop(struct net_device *dev)
+diff --git a/drivers/usb/serial/ftdi_sio.c b/drivers/usb/serial/ftdi_sio.c
+index 4959fcac5e030..8abb30c797d30 100644
+--- a/drivers/usb/serial/ftdi_sio.c
++++ b/drivers/usb/serial/ftdi_sio.c
+@@ -2045,7 +2045,6 @@ static int ftdi_process_packet(struct usb_serial_port *port,
+ 		struct ftdi_private *priv, unsigned char *buf, int len)
  {
- 	struct ipoib_dev_priv *priv = ipoib_priv(dev);
+ 	unsigned char status;
+-	unsigned char *ch;
+ 	int i;
+ 	char flag;
  
-@@ -817,8 +817,6 @@ int ipoib_ib_dev_stop(struct net_device *dev)
+@@ -2088,8 +2087,7 @@ static int ftdi_process_packet(struct usb_serial_port *port,
+ 	else
+ 		priv->transmit_empty = 0;
  
- 	clear_bit(IPOIB_FLAG_INITIALIZED, &priv->flags);
- 	ipoib_flush_ah(dev);
--
--	return 0;
+-	len -= 2;
+-	if (!len)
++	if (len == 2)
+ 		return 0;	/* status only */
+ 
+ 	/*
+@@ -2118,19 +2116,20 @@ static int ftdi_process_packet(struct usb_serial_port *port,
+ 		}
+ 	}
+ 
+-	port->icount.rx += len;
+-	ch = buf + 2;
++	port->icount.rx += len - 2;
+ 
+ 	if (port->port.console && port->sysrq) {
+-		for (i = 0; i < len; i++, ch++) {
+-			if (!usb_serial_handle_sysrq_char(port, *ch))
+-				tty_insert_flip_char(&port->port, *ch, flag);
++		for (i = 2; i < len; i++) {
++			if (usb_serial_handle_sysrq_char(port, buf[i]))
++				continue;
++			tty_insert_flip_char(&port->port, buf[i], flag);
+ 		}
+ 	} else {
+-		tty_insert_flip_string_fixed_flag(&port->port, ch, flag, len);
++		tty_insert_flip_string_fixed_flag(&port->port, buf + 2, flag,
++				len - 2);
+ 	}
+ 
+-	return len;
++	return len - 2;
  }
  
- void ipoib_ib_tx_timer_func(unsigned long ctx)
+ static void ftdi_process_read_urb(struct urb *urb)
 -- 
 2.25.1
 
