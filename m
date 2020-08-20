@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1659724B63B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B333424B789
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731339AbgHTKTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:19:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41722 "EHLO mail.kernel.org"
+        id S1731146AbgHTKNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:13:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731409AbgHTKSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:18:53 -0400
+        id S1730876AbgHTKNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:13:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED74720658;
-        Thu, 20 Aug 2020 10:18:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 85F6D2067C;
+        Thu, 20 Aug 2020 10:13:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918732;
-        bh=zPSdERwGkzmq8uLtFN9GL6TfGc4jrmcGfhiaNRPb2Fk=;
+        s=default; t=1597918387;
+        bh=298ivzhcBLRyRA38lYcnrq2YKbioF13wTBksvqrIRYs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zSwTTNQpQM3bPJtMvHHQYyr3GSlAQiYTeh6VqngSjrQn0zt0IHZCfIwrrHNu1frEv
-         C3s8i6Jli6Prh+lrSb2TAq6nw7XIgSJo6Zk7b4k8tfWScljTrNqbBJ2fOaK7m0R26P
-         X8hIUrwLRgMvsRuRgidWnjupb18BqTKUSpzuM6kI=
+        b=nAIko872TiG7r6u/OvZ4PsSPCR+HgKbwayAXA8nydmBUL85oZywSbJ8hqA2klau9L
+         fkzWVRimqcMvhg/7wQlBVaKK5oT24IzF7f1TTaXyYf1OD2IPDkRH/jx1Ea5sBf9I9M
+         FYiEXtiaiFhJ8sHfpCzxzU55WHZpUbSrwEwukRpM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Todd Kjos <tkjos@google.com>,
-        Jann Horn <jannh@google.com>, Martijn Coenen <maco@android.com>
-Subject: [PATCH 4.4 046/149] binder: Prevent context manager from incrementing ref 0
-Date:   Thu, 20 Aug 2020 11:22:03 +0200
-Message-Id: <20200820092127.961712863@linuxfoundation.org>
+        stable@vger.kernel.org, John Allen <john.allen@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 4.14 150/228] crypto: ccp - Fix use of merged scatterlists
+Date:   Thu, 20 Aug 2020 11:22:05 +0200
+Message-Id: <20200820091615.074888787@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
-References: <20200820092125.688850368@linuxfoundation.org>
+In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
+References: <20200820091607.532711107@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,86 +44,176 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jann Horn <jannh@google.com>
+From: John Allen <john.allen@amd.com>
 
-commit 4b836a1426cb0f1ef2a6e211d7e553221594f8fc upstream.
+commit 8a302808c60d441d9884cb00ea7f2b534f2e3ca5 upstream.
 
-Binder is designed such that a binder_proc never has references to
-itself. If this rule is violated, memory corruption can occur when a
-process sends a transaction to itself; see e.g.
-<https://syzkaller.appspot.com/bug?extid=09e05aba06723a94d43d>.
+Running the crypto manager self tests with
+CONFIG_CRYPTO_MANAGER_EXTRA_TESTS may result in several types of errors
+when using the ccp-crypto driver:
 
-There is a remaining edgecase through which such a transaction-to-self
-can still occur from the context of a task with BINDER_SET_CONTEXT_MGR
-access:
+alg: skcipher: cbc-des3-ccp encryption failed on test vector 0; expected_error=0, actual_error=-5 ...
 
- - task A opens /dev/binder twice, creating binder_proc instances P1
-   and P2
- - P1 becomes context manager
- - P2 calls ACQUIRE on the magic handle 0, allocating index 0 in its
-   handle table
- - P1 dies (by closing the /dev/binder fd and waiting a bit)
- - P2 becomes context manager
- - P2 calls ACQUIRE on the magic handle 0, allocating index 1 in its
-   handle table
-   [this triggers a warning: "binder: 1974:1974 tried to acquire
-   reference to desc 0, got 1 instead"]
- - task B opens /dev/binder once, creating binder_proc instance P3
- - P3 calls P2 (via magic handle 0) with (void*)1 as argument (two-way
-   transaction)
- - P2 receives the handle and uses it to call P3 (two-way transaction)
- - P3 calls P2 (via magic handle 0) (two-way transaction)
- - P2 calls P2 (via handle 1) (two-way transaction)
+alg: skcipher: ctr-aes-ccp decryption overran dst buffer on test vector 0 ...
 
-And then, if P2 does *NOT* accept the incoming transaction work, but
-instead closes the binder fd, we get a crash.
+alg: ahash: sha224-ccp test failed (wrong result) on test vector ...
 
-Solve it by preventing the context manager from using ACQUIRE on ref 0.
-There shouldn't be any legitimate reason for the context manager to do
-that.
+These errors are the result of improper processing of scatterlists mapped
+for DMA.
 
-Additionally, print a warning if someone manages to find another way to
-trigger a transaction-to-self bug in the future.
+Given a scatterlist in which entries are merged as part of mapping the
+scatterlist for DMA, the DMA length of a merged entry will reflect the
+combined length of the entries that were merged. The subsequent
+scatterlist entry will contain DMA information for the scatterlist entry
+after the last merged entry, but the non-DMA information will be that of
+the first merged entry.
 
+The ccp driver does not take this scatterlist merging into account. To
+address this, add a second scatterlist pointer to track the current
+position in the DMA mapped representation of the scatterlist. Both the DMA
+representation and the original representation of the scatterlist must be
+tracked as while most of the driver can use just the DMA representation,
+scatterlist_map_and_copy() must use the original representation and
+expects the scatterlist pointer to be accurate to the original
+representation.
+
+In order to properly walk the original scatterlist, the scatterlist must
+be walked until the combined lengths of the entries seen is equal to the
+DMA length of the current entry being processed in the DMA mapped
+representation.
+
+Fixes: 63b945091a070 ("crypto: ccp - CCP device driver and interface support")
+Signed-off-by: John Allen <john.allen@amd.com>
 Cc: stable@vger.kernel.org
-Fixes: 457b9a6f09f0 ("Staging: android: add binder driver")
-Acked-by: Todd Kjos <tkjos@google.com>
-Signed-off-by: Jann Horn <jannh@google.com>
-Reviewed-by: Martijn Coenen <maco@android.com>
-Link: https://lore.kernel.org/r/20200727120424.1627555-1-jannh@google.com
-[manual backport: remove fine-grained locking and error reporting that
-                  don't exist in <=4.9]
-Signed-off-by: Jann Horn <jannh@google.com>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/android/binder.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/crypto/ccp/ccp-dev.h |    1 +
+ drivers/crypto/ccp/ccp-ops.c |   37 ++++++++++++++++++++++++++-----------
+ 2 files changed, 27 insertions(+), 11 deletions(-)
 
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -1415,6 +1415,10 @@ static void binder_transaction(struct bi
- 			return_error = BR_DEAD_REPLY;
- 			goto err_dead_binder;
+--- a/drivers/crypto/ccp/ccp-dev.h
++++ b/drivers/crypto/ccp/ccp-dev.h
+@@ -471,6 +471,7 @@ struct ccp_sg_workarea {
+ 	unsigned int sg_used;
+ 
+ 	struct scatterlist *dma_sg;
++	struct scatterlist *dma_sg_head;
+ 	struct device *dma_dev;
+ 	unsigned int dma_count;
+ 	enum dma_data_direction dma_dir;
+--- a/drivers/crypto/ccp/ccp-ops.c
++++ b/drivers/crypto/ccp/ccp-ops.c
+@@ -67,7 +67,7 @@ static u32 ccp_gen_jobid(struct ccp_devi
+ static void ccp_sg_free(struct ccp_sg_workarea *wa)
+ {
+ 	if (wa->dma_count)
+-		dma_unmap_sg(wa->dma_dev, wa->dma_sg, wa->nents, wa->dma_dir);
++		dma_unmap_sg(wa->dma_dev, wa->dma_sg_head, wa->nents, wa->dma_dir);
+ 
+ 	wa->dma_count = 0;
+ }
+@@ -96,6 +96,7 @@ static int ccp_init_sg_workarea(struct c
+ 		return 0;
+ 
+ 	wa->dma_sg = sg;
++	wa->dma_sg_head = sg;
+ 	wa->dma_dev = dev;
+ 	wa->dma_dir = dma_dir;
+ 	wa->dma_count = dma_map_sg(dev, sg, wa->nents, dma_dir);
+@@ -108,14 +109,28 @@ static int ccp_init_sg_workarea(struct c
+ static void ccp_update_sg_workarea(struct ccp_sg_workarea *wa, unsigned int len)
+ {
+ 	unsigned int nbytes = min_t(u64, len, wa->bytes_left);
++	unsigned int sg_combined_len = 0;
+ 
+ 	if (!wa->sg)
+ 		return;
+ 
+ 	wa->sg_used += nbytes;
+ 	wa->bytes_left -= nbytes;
+-	if (wa->sg_used == wa->sg->length) {
+-		wa->sg = sg_next(wa->sg);
++	if (wa->sg_used == sg_dma_len(wa->dma_sg)) {
++		/* Advance to the next DMA scatterlist entry */
++		wa->dma_sg = sg_next(wa->dma_sg);
++
++		/* In the case that the DMA mapped scatterlist has entries
++		 * that have been merged, the non-DMA mapped scatterlist
++		 * must be advanced multiple times for each merged entry.
++		 * This ensures that the current non-DMA mapped entry
++		 * corresponds to the current DMA mapped entry.
++		 */
++		do {
++			sg_combined_len += wa->sg->length;
++			wa->sg = sg_next(wa->sg);
++		} while (wa->sg_used > sg_combined_len);
++
+ 		wa->sg_used = 0;
+ 	}
+ }
+@@ -304,7 +319,7 @@ static unsigned int ccp_queue_buf(struct
+ 	/* Update the structures and generate the count */
+ 	buf_count = 0;
+ 	while (sg_wa->bytes_left && (buf_count < dm_wa->length)) {
+-		nbytes = min(sg_wa->sg->length - sg_wa->sg_used,
++		nbytes = min(sg_dma_len(sg_wa->dma_sg) - sg_wa->sg_used,
+ 			     dm_wa->length - buf_count);
+ 		nbytes = min_t(u64, sg_wa->bytes_left, nbytes);
+ 
+@@ -336,11 +351,11 @@ static void ccp_prepare_data(struct ccp_
+ 	 * and destination. The resulting len values will always be <= UINT_MAX
+ 	 * because the dma length is an unsigned int.
+ 	 */
+-	sg_src_len = sg_dma_len(src->sg_wa.sg) - src->sg_wa.sg_used;
++	sg_src_len = sg_dma_len(src->sg_wa.dma_sg) - src->sg_wa.sg_used;
+ 	sg_src_len = min_t(u64, src->sg_wa.bytes_left, sg_src_len);
+ 
+ 	if (dst) {
+-		sg_dst_len = sg_dma_len(dst->sg_wa.sg) - dst->sg_wa.sg_used;
++		sg_dst_len = sg_dma_len(dst->sg_wa.dma_sg) - dst->sg_wa.sg_used;
+ 		sg_dst_len = min_t(u64, src->sg_wa.bytes_left, sg_dst_len);
+ 		op_len = min(sg_src_len, sg_dst_len);
+ 	} else {
+@@ -370,7 +385,7 @@ static void ccp_prepare_data(struct ccp_
+ 		/* Enough data in the sg element, but we need to
+ 		 * adjust for any previously copied data
+ 		 */
+-		op->src.u.dma.address = sg_dma_address(src->sg_wa.sg);
++		op->src.u.dma.address = sg_dma_address(src->sg_wa.dma_sg);
+ 		op->src.u.dma.offset = src->sg_wa.sg_used;
+ 		op->src.u.dma.length = op_len & ~(block_size - 1);
+ 
+@@ -391,7 +406,7 @@ static void ccp_prepare_data(struct ccp_
+ 			/* Enough room in the sg element, but we need to
+ 			 * adjust for any previously used area
+ 			 */
+-			op->dst.u.dma.address = sg_dma_address(dst->sg_wa.sg);
++			op->dst.u.dma.address = sg_dma_address(dst->sg_wa.dma_sg);
+ 			op->dst.u.dma.offset = dst->sg_wa.sg_used;
+ 			op->dst.u.dma.length = op->src.u.dma.length;
  		}
-+		if (WARN_ON(proc == target_proc)) {
-+			return_error = BR_FAILED_REPLY;
-+			goto err_invalid_target_handle;
-+		}
- 		if (security_binder_transaction(proc->tsk,
- 						target_proc->tsk) < 0) {
- 			return_error = BR_FAILED_REPLY;
-@@ -1812,6 +1816,11 @@ static int binder_thread_write(struct bi
- 			ptr += sizeof(uint32_t);
- 			if (target == 0 && binder_context_mgr_node &&
- 			    (cmd == BC_INCREFS || cmd == BC_ACQUIRE)) {
-+				if (binder_context_mgr_node->proc == proc) {
-+					binder_user_error("%d:%d context manager tried to acquire desc 0\n",
-+							  proc->pid, thread->pid);
-+					return -EINVAL;
-+				}
- 				ref = binder_get_ref_for_node(proc,
- 					       binder_context_mgr_node);
- 				if (ref->desc != target) {
+@@ -2034,7 +2049,7 @@ ccp_run_passthru_cmd(struct ccp_cmd_queu
+ 	dst.sg_wa.sg_used = 0;
+ 	for (i = 1; i <= src.sg_wa.dma_count; i++) {
+ 		if (!dst.sg_wa.sg ||
+-		    (dst.sg_wa.sg->length < src.sg_wa.sg->length)) {
++		    (sg_dma_len(dst.sg_wa.sg) < sg_dma_len(src.sg_wa.sg))) {
+ 			ret = -EINVAL;
+ 			goto e_dst;
+ 		}
+@@ -2060,8 +2075,8 @@ ccp_run_passthru_cmd(struct ccp_cmd_queu
+ 			goto e_dst;
+ 		}
+ 
+-		dst.sg_wa.sg_used += src.sg_wa.sg->length;
+-		if (dst.sg_wa.sg_used == dst.sg_wa.sg->length) {
++		dst.sg_wa.sg_used += sg_dma_len(src.sg_wa.sg);
++		if (dst.sg_wa.sg_used == sg_dma_len(dst.sg_wa.sg)) {
+ 			dst.sg_wa.sg = sg_next(dst.sg_wa.sg);
+ 			dst.sg_wa.sg_used = 0;
+ 		}
 
 
