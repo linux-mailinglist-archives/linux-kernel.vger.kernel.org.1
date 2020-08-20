@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F3724B401
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 730FB24B3B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729949AbgHTJzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:55:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37932 "EHLO mail.kernel.org"
+        id S1729837AbgHTJvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:51:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730182AbgHTJzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:55:04 -0400
+        id S1729780AbgHTJv1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:51:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F60F2067C;
-        Thu, 20 Aug 2020 09:55:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C37F52078D;
+        Thu, 20 Aug 2020 09:51:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917303;
-        bh=OQ5gB70SunnoGAffLgoSQDAhBIGDZetpQ3oM1WKZpYA=;
+        s=default; t=1597917086;
+        bh=dh+2MnrTXKN76s1V+xq812i2B6/UgMTdPUQjeMkGIyY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P9fuko200WgZutsoWJ6rvsPoA0TXVc94UUkGEpcR8HO032NMU/bmvIa4XsBSvdCQF
-         /10xSp+zclEeLfyiEJGIgJpIn0NEBkhwoT2uq3+1BHxHMJtuda+2GLToMqz/BvkYit
-         6Y8D1fjMChm0ELqCzjbxXWxjdAg54uqLiJ7lvslE=
+        b=EnKX+WLkJVz4TB8Q6+NYrH1vD87tQfHJU3CE7wVkbj7ozM/SUmia67JHacTEq11kA
+         TXtIMp3HtlJYIAcLXq6BP0qw/VdXouxPLbDsPv6pAuYkQW1eEl4HhlrPFHUDzcjuSc
+         hl3SE3a+DypuNN6FL6W7RjlcCimcveJ/By/nYaAs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 74/92] drm/vmwgfx: Use correct vmw_legacy_display_unit pointer
+        stable@vger.kernel.org, Hersen Wu <hersenxs.wu@amd.com>,
+        Aric Cyr <Aric.Cyr@amd.com>, Eryk Brol <eryk.brol@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.4 152/152] drm/amd/display: dchubbub p-state warning during surface planes switch
 Date:   Thu, 20 Aug 2020 11:21:59 +0200
-Message-Id: <20200820091541.525191966@linuxfoundation.org>
+Message-Id: <20200820091601.620349728@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
-References: <20200820091537.490965042@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,54 +44,168 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: hersen wu <hersenxs.wu@amd.com>
 
-[ Upstream commit 1d2c0c565bc0da25f5e899a862fb58e612b222df ]
+commit 8b0379a85762b516c7b46aed7dbf2a4947c00564 upstream.
 
-The "entry" pointer is an offset from the list head and it doesn't
-point to a valid vmw_legacy_display_unit struct.  Presumably the
-intent was to point to the last entry.
+[Why]
+ramp_up_dispclk_with_dpp is to change dispclk, dppclk and dprefclk
+according to bandwidth requirement. call stack: rv1_update_clocks -->
+update_clocks --> dcn10_prepare_bandwidth / dcn10_optimize_bandwidth
+--> prepare_bandwidth / optimize_bandwidth. before change dcn hw,
+prepare_bandwidth will be called first to allow enough clock,
+watermark for change, after end of dcn hw change, optimize_bandwidth
+is executed to lower clock to save power for new dcn hw settings.
 
-Also the "i++" wasn't used so I have removed that as well.
+below is sequence of commit_planes_for_stream:
+step 1: prepare_bandwidth - raise clock to have enough bandwidth
+step 2: lock_doublebuffer_enable
+step 3: pipe_control_lock(true) - make dchubp register change will
+not take effect right way
+step 4: apply_ctx_for_surface - program dchubp
+step 5: pipe_control_lock(false) - dchubp register change take effect
+step 6: optimize_bandwidth --> dc_post_update_surfaces_to_stream
+for full_date, optimize clock to save power
 
-Fixes: d7e1958dbe4a ("drm/vmwgfx: Support older hardware.")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Roland Scheidegger <sroland@vmware.com>
-Signed-off-by: Roland Scheidegger <sroland@vmware.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+at end of step 1, dcn clocks (dprefclk, dispclk, dppclk) may be
+changed for new dchubp configuration. but real dcn hub dchubps are
+still running with old configuration until end of step 5. this need
+clocks settings at step 1 should not less than that before step 1.
+this is checked by two conditions: 1. if (should_set_clock(safe_to_lower
+, new_clocks->dispclk_khz, clk_mgr_base->clks.dispclk_khz) ||
+new_clocks->dispclk_khz == clk_mgr_base->clks.dispclk_khz)
+2. request_dpp_div = new_clocks->dispclk_khz > new_clocks->dppclk_khz
+
+the second condition is based on new dchubp configuration. dppclk
+for new dchubp may be different from dppclk before step 1.
+for example, before step 1, dchubps are as below:
+pipe 0: recout=(0,40,1920,980) viewport=(0,0,1920,979)
+pipe 1: recout=(0,0,1920,1080) viewport=(0,0,1920,1080)
+for dppclk for pipe0 need dppclk = dispclk
+
+new dchubp pipe split configuration:
+pipe 0: recout=(0,0,960,1080) viewport=(0,0,960,1080)
+pipe 1: recout=(960,0,960,1080) viewport=(960,0,960,1080)
+dppclk only needs dppclk = dispclk /2.
+
+dispclk, dppclk are not lock by otg master lock. they take effect
+after step 1. during this transition, dispclk are the same, but
+dppclk is changed to half of previous clock for old dchubp
+configuration between step 1 and step 6. This may cause p-state
+warning intermittently.
+
+[How]
+for new_clocks->dispclk_khz == clk_mgr_base->clks.dispclk_khz, we
+need make sure dppclk are not changed to less between step 1 and 6.
+for new_clocks->dispclk_khz > clk_mgr_base->clks.dispclk_khz,
+new display clock is raised, but we do not know ratio of
+new_clocks->dispclk_khz and clk_mgr_base->clks.dispclk_khz,
+new_clocks->dispclk_khz /2 does not guarantee equal or higher than
+old dppclk. we could ignore power saving different between
+dppclk = displck and dppclk = dispclk / 2 between step 1 and step 6.
+as long as safe_to_lower = false, set dpclk = dispclk to simplify
+condition check.
+
+CC: Stable <stable@vger.kernel.org>
+Signed-off-by: Hersen Wu <hersenxs.wu@amd.com>
+Reviewed-by: Aric Cyr <Aric.Cyr@amd.com>
+Acked-by: Eryk Brol <eryk.brol@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/vmwgfx/vmwgfx_ldu.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr.c |   69 ++++++++++++-
+ 1 file changed, 67 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_ldu.c b/drivers/gpu/drm/vmwgfx/vmwgfx_ldu.c
-index 7235781171912..0743a73117000 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_ldu.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_ldu.c
-@@ -79,7 +79,7 @@ static int vmw_ldu_commit_list(struct vmw_private *dev_priv)
- 	struct vmw_legacy_display_unit *entry;
- 	struct drm_framebuffer *fb = NULL;
- 	struct drm_crtc *crtc = NULL;
--	int i = 0;
-+	int i;
+--- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr.c
++++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr.c
+@@ -85,12 +85,77 @@ static int rv1_determine_dppclk_threshol
+ 	return disp_clk_threshold;
+ }
  
- 	/* If there is no display topology the host just assumes
- 	 * that the guest will set the same layout as the host.
-@@ -90,12 +90,11 @@ static int vmw_ldu_commit_list(struct vmw_private *dev_priv)
- 			crtc = &entry->base.crtc;
- 			w = max(w, crtc->x + crtc->mode.hdisplay);
- 			h = max(h, crtc->y + crtc->mode.vdisplay);
--			i++;
- 		}
+-static void ramp_up_dispclk_with_dpp(struct clk_mgr_internal *clk_mgr, struct dc *dc, struct dc_clocks *new_clocks)
++static void ramp_up_dispclk_with_dpp(
++		struct clk_mgr_internal *clk_mgr,
++		struct dc *dc,
++		struct dc_clocks *new_clocks,
++		bool safe_to_lower)
+ {
+ 	int i;
+ 	int dispclk_to_dpp_threshold = rv1_determine_dppclk_threshold(clk_mgr, new_clocks);
+ 	bool request_dpp_div = new_clocks->dispclk_khz > new_clocks->dppclk_khz;
  
- 		if (crtc == NULL)
- 			return 0;
--		fb = entry->base.crtc.primary->state->fb;
-+		fb = crtc->primary->state->fb;
++	/* this function is to change dispclk, dppclk and dprefclk according to
++	 * bandwidth requirement. Its call stack is rv1_update_clocks -->
++	 * update_clocks --> dcn10_prepare_bandwidth / dcn10_optimize_bandwidth
++	 * --> prepare_bandwidth / optimize_bandwidth. before change dcn hw,
++	 * prepare_bandwidth will be called first to allow enough clock,
++	 * watermark for change, after end of dcn hw change, optimize_bandwidth
++	 * is executed to lower clock to save power for new dcn hw settings.
++	 *
++	 * below is sequence of commit_planes_for_stream:
++	 *
++	 * step 1: prepare_bandwidth - raise clock to have enough bandwidth
++	 * step 2: lock_doublebuffer_enable
++	 * step 3: pipe_control_lock(true) - make dchubp register change will
++	 * not take effect right way
++	 * step 4: apply_ctx_for_surface - program dchubp
++	 * step 5: pipe_control_lock(false) - dchubp register change take effect
++	 * step 6: optimize_bandwidth --> dc_post_update_surfaces_to_stream
++	 * for full_date, optimize clock to save power
++	 *
++	 * at end of step 1, dcn clocks (dprefclk, dispclk, dppclk) may be
++	 * changed for new dchubp configuration. but real dcn hub dchubps are
++	 * still running with old configuration until end of step 5. this need
++	 * clocks settings at step 1 should not less than that before step 1.
++	 * this is checked by two conditions: 1. if (should_set_clock(safe_to_lower
++	 * , new_clocks->dispclk_khz, clk_mgr_base->clks.dispclk_khz) ||
++	 * new_clocks->dispclk_khz == clk_mgr_base->clks.dispclk_khz)
++	 * 2. request_dpp_div = new_clocks->dispclk_khz > new_clocks->dppclk_khz
++	 *
++	 * the second condition is based on new dchubp configuration. dppclk
++	 * for new dchubp may be different from dppclk before step 1.
++	 * for example, before step 1, dchubps are as below:
++	 * pipe 0: recout=(0,40,1920,980) viewport=(0,0,1920,979)
++	 * pipe 1: recout=(0,0,1920,1080) viewport=(0,0,1920,1080)
++	 * for dppclk for pipe0 need dppclk = dispclk
++	 *
++	 * new dchubp pipe split configuration:
++	 * pipe 0: recout=(0,0,960,1080) viewport=(0,0,960,1080)
++	 * pipe 1: recout=(960,0,960,1080) viewport=(960,0,960,1080)
++	 * dppclk only needs dppclk = dispclk /2.
++	 *
++	 * dispclk, dppclk are not lock by otg master lock. they take effect
++	 * after step 1. during this transition, dispclk are the same, but
++	 * dppclk is changed to half of previous clock for old dchubp
++	 * configuration between step 1 and step 6. This may cause p-state
++	 * warning intermittently.
++	 *
++	 * for new_clocks->dispclk_khz == clk_mgr_base->clks.dispclk_khz, we
++	 * need make sure dppclk are not changed to less between step 1 and 6.
++	 * for new_clocks->dispclk_khz > clk_mgr_base->clks.dispclk_khz,
++	 * new display clock is raised, but we do not know ratio of
++	 * new_clocks->dispclk_khz and clk_mgr_base->clks.dispclk_khz,
++	 * new_clocks->dispclk_khz /2 does not guarantee equal or higher than
++	 * old dppclk. we could ignore power saving different between
++	 * dppclk = displck and dppclk = dispclk / 2 between step 1 and step 6.
++	 * as long as safe_to_lower = false, set dpclk = dispclk to simplify
++	 * condition check.
++	 * todo: review this change for other asic.
++	 **/
++	if (!safe_to_lower)
++		request_dpp_div = false;
++
+ 	/* set disp clk to dpp clk threshold */
  
- 		return vmw_kms_write_svga(dev_priv, w, h, fb->pitches[0],
- 					  fb->format->cpp[0] * 8,
--- 
-2.25.1
-
+ 	clk_mgr->funcs->set_dispclk(clk_mgr, dispclk_to_dpp_threshold);
+@@ -206,7 +271,7 @@ static void rv1_update_clocks(struct clk
+ 	/* program dispclk on = as a w/a for sleep resume clock ramping issues */
+ 	if (should_set_clock(safe_to_lower, new_clocks->dispclk_khz, clk_mgr_base->clks.dispclk_khz)
+ 			|| new_clocks->dispclk_khz == clk_mgr_base->clks.dispclk_khz) {
+-		ramp_up_dispclk_with_dpp(clk_mgr, dc, new_clocks);
++		ramp_up_dispclk_with_dpp(clk_mgr, dc, new_clocks, safe_to_lower);
+ 		clk_mgr_base->clks.dispclk_khz = new_clocks->dispclk_khz;
+ 		send_request_to_lower = true;
+ 	}
 
 
