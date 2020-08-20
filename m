@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66BC224B2BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF04924B2B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728577AbgHTJgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:36:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50114 "EHLO mail.kernel.org"
+        id S1728269AbgHTJf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:35:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728423AbgHTJf6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:35:58 -0400
+        id S1726435AbgHTJfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:35:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30F3620724;
-        Thu, 20 Aug 2020 09:35:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EE8AF207DE;
+        Thu, 20 Aug 2020 09:35:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916157;
-        bh=Yorda5NEuOnH2beBNjDJoc7hFJMtvtZsSMq3am5igzE=;
+        s=default; t=1597916101;
+        bh=Tn6vDkAv5we1OQThZ2W8N0AUlRzzAOOEvYn4OIwwSq8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iYLsX5gGiFBQASZmqsvnnLvtJUEjcRuLxTAVC3WqElbjnCX0P+Q16OQ5AJgG+5Y5f
-         3o1jNG/BpwSohIWG41FZJNlsz61Rnm1rPbwCzldwHYJUJwDi+EhafH48b/uI3kGa5m
-         MYwBpxSLHVx0ejmLj+JSqVStfjmyhHCpk5b42bdI=
+        b=TOU9KiBhN1vWvrv1SYDDEaRRoi50NG9Bf5VeDBpnZoA1CpUPfvWz9NvEHHBTElxiF
+         e36FPgCNT5wY2HFGHFCA8juf5tOS0ZF5+FlmXxkC1RmQk0+WhvhKWcCR4OWznysPS6
+         bSGKMQfB+Q+r7vIFRoRelANALv7jCBzVZhcLX4vs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ansuel Smith <ansuelsmth@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>
-Subject: [PATCH 5.7 008/204] PCI: qcom: Define some PARF params needed for ipq8064 SoC
-Date:   Thu, 20 Aug 2020 11:18:25 +0200
-Message-Id: <20200820091606.617986816@linuxfoundation.org>
+        stable@vger.kernel.org, Greed Rong <greedrong@gmail.com>,
+        Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.7 012/204] btrfs: dont allocate anonymous block device for user invisible roots
+Date:   Thu, 20 Aug 2020 11:18:29 +0200
+Message-Id: <20200820091606.833861486@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
 References: <20200820091606.194320503@linuxfoundation.org>
@@ -45,73 +44,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ansuel Smith <ansuelsmth@gmail.com>
+From: Qu Wenruo <wqu@suse.com>
 
-commit 5149901e9e6deca487c01cc434a3ac4125c7b00b upstream.
+commit 851fd730a743e072badaf67caf39883e32439431 upstream.
 
-Set some specific value for Tx De-Emphasis, Tx Swing and Rx equalization
-needed on some ipq8064 based device (Netgear R7800 for example). Without
-this the system locks on kernel load.
+[BUG]
+When a lot of subvolumes are created, there is a user report about
+transaction aborted:
 
-Link: https://lore.kernel.org/r/20200615210608.21469-8-ansuelsmth@gmail.com
-Fixes: 82a823833f4e ("PCI: qcom: Add Qualcomm PCIe controller driver")
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Acked-by: Stanimir Varbanov <svarbanov@mm-sol.com>
-Cc: stable@vger.kernel.org # v4.5+
+  BTRFS: Transaction aborted (error -24)
+  WARNING: CPU: 17 PID: 17041 at fs/btrfs/transaction.c:1576 create_pending_snapshot+0xbc4/0xd10 [btrfs]
+  RIP: 0010:create_pending_snapshot+0xbc4/0xd10 [btrfs]
+  Call Trace:
+   create_pending_snapshots+0x82/0xa0 [btrfs]
+   btrfs_commit_transaction+0x275/0x8c0 [btrfs]
+   btrfs_mksubvol+0x4b9/0x500 [btrfs]
+   btrfs_ioctl_snap_create_transid+0x174/0x180 [btrfs]
+   btrfs_ioctl_snap_create_v2+0x11c/0x180 [btrfs]
+   btrfs_ioctl+0x11a4/0x2da0 [btrfs]
+   do_vfs_ioctl+0xa9/0x640
+   ksys_ioctl+0x67/0x90
+   __x64_sys_ioctl+0x1a/0x20
+   do_syscall_64+0x5a/0x110
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  ---[ end trace 33f2f83f3d5250e9 ]---
+  BTRFS: error (device sda1) in create_pending_snapshot:1576: errno=-24 unknown
+  BTRFS info (device sda1): forced readonly
+  BTRFS warning (device sda1): Skipping commit of aborted transaction.
+  BTRFS: error (device sda1) in cleanup_transaction:1831: errno=-24 unknown
+
+[CAUSE]
+The error is EMFILE (Too many files open) and comes from the anonymous
+block device allocation. The ids are in a shared pool of size 1<<20.
+
+The ids are assigned to live subvolumes, ie. the root structure exists
+in memory (eg. after creation or after the root appears in some path).
+The pool could be exhausted if the numbers are not reclaimed fast
+enough, after subvolume deletion or if other system component uses the
+anon block devices.
+
+[WORKAROUND]
+Since it's not possible to completely solve the problem, we can only
+minimize the time the id is allocated to a subvolume root.
+
+Firstly, we can reduce the use of anon_dev by trees that are not
+subvolume roots, like data reloc tree.
+
+This patch will do extra check on root objectid, to skip roots that
+don't need anon_dev.  Currently it's only data reloc tree and orphan
+roots.
+
+Reported-by: Greed Rong <greedrong@gmail.com>
+Link: https://lore.kernel.org/linux-btrfs/CA+UqX+NTrZ6boGnWHhSeZmEY5J76CTqmYjO2S+=tHJX7nb9DPw@mail.gmail.com/
+CC: stable@vger.kernel.org # 4.4+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/pci/controller/dwc/pcie-qcom.c |   24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ fs/btrfs/disk-io.c |   13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -77,6 +77,18 @@
- #define DBI_RO_WR_EN				1
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1432,9 +1432,16 @@ static int btrfs_init_fs_root(struct btr
+ 	spin_lock_init(&root->ino_cache_lock);
+ 	init_waitqueue_head(&root->ino_cache_wait);
  
- #define PERST_DELAY_US				1000
-+/* PARF registers */
-+#define PCIE20_PARF_PCS_DEEMPH			0x34
-+#define PCS_DEEMPH_TX_DEEMPH_GEN1(x)		((x) << 16)
-+#define PCS_DEEMPH_TX_DEEMPH_GEN2_3_5DB(x)	((x) << 8)
-+#define PCS_DEEMPH_TX_DEEMPH_GEN2_6DB(x)	((x) << 0)
-+
-+#define PCIE20_PARF_PCS_SWING			0x38
-+#define PCS_SWING_TX_SWING_FULL(x)		((x) << 8)
-+#define PCS_SWING_TX_SWING_LOW(x)		((x) << 0)
-+
-+#define PCIE20_PARF_CONFIG_BITS		0x50
-+#define PHY_RX0_EQ(x)				((x) << 24)
- 
- #define PCIE20_v3_PARF_SLV_ADDR_SPACE_SIZE	0x358
- #define SLV_ADDR_SPACE_SZ			0x10000000
-@@ -286,6 +298,7 @@ static int qcom_pcie_init_2_1_0(struct q
- 	struct qcom_pcie_resources_2_1_0 *res = &pcie->res.v2_1_0;
- 	struct dw_pcie *pci = pcie->pci;
- 	struct device *dev = pci->dev;
-+	struct device_node *node = dev->of_node;
- 	u32 val;
- 	int ret;
- 
-@@ -330,6 +343,17 @@ static int qcom_pcie_init_2_1_0(struct q
- 	val &= ~BIT(0);
- 	writel(val, pcie->parf + PCIE20_PARF_PHY_CTRL);
- 
-+	if (of_device_is_compatible(node, "qcom,pcie-ipq8064")) {
-+		writel(PCS_DEEMPH_TX_DEEMPH_GEN1(24) |
-+			       PCS_DEEMPH_TX_DEEMPH_GEN2_3_5DB(24) |
-+			       PCS_DEEMPH_TX_DEEMPH_GEN2_6DB(34),
-+		       pcie->parf + PCIE20_PARF_PCS_DEEMPH);
-+		writel(PCS_SWING_TX_SWING_FULL(120) |
-+			       PCS_SWING_TX_SWING_LOW(120),
-+		       pcie->parf + PCIE20_PARF_PCS_SWING);
-+		writel(PHY_RX0_EQ(4), pcie->parf + PCIE20_PARF_CONFIG_BITS);
+-	ret = get_anon_bdev(&root->anon_dev);
+-	if (ret)
+-		goto fail;
++	/*
++	 * Don't assign anonymous block device to roots that are not exposed to
++	 * userspace, the id pool is limited to 1M
++	 */
++	if (is_fstree(root->root_key.objectid) &&
++	    btrfs_root_refs(&root->root_item) > 0) {
++		ret = get_anon_bdev(&root->anon_dev);
++		if (ret)
++			goto fail;
 +	}
-+
- 	/* enable external reference clock */
- 	val = readl(pcie->parf + PCIE20_PARF_PHY_REFCLK);
- 	val |= BIT(16);
+ 
+ 	mutex_lock(&root->objectid_mutex);
+ 	ret = btrfs_find_highest_objectid(root,
 
 
