@@ -2,125 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E80824C2A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 17:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3653B24C2A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 17:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729296AbgHTPzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 11:55:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726731AbgHTPzf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 11:55:35 -0400
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2DEEE2086A
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 15:55:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597938935;
-        bh=cK3kF60+6TKP27RpSl0Ssbs1Tv+b14rPZSX1bkpQRak=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TSL7WFswph08vWCBCbZMvJx1kWZ40D9oa9ZYGlUzcyh2whzvROJh2BSLmczGlEB4J
-         IvhS+jYOS10HaUpCoLzDYCBr9j/oIqwl9LfgmTW42uGs3Hw7k/8auS/LdXI6THn5ep
-         dEmxCGaF//8SXPcsT6/9r9K+ob+e/Vr0gdgvFQWA=
-Received: by mail-wr1-f54.google.com with SMTP id f1so2520044wro.2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 08:55:35 -0700 (PDT)
-X-Gm-Message-State: AOAM532G8fVYRQkuiDJeaDuGsWnV9VEU62otVXtZfPRIU+5w8D3VGOcy
-        FS3i5UykAk3EHxk62mrSs5HPUVCVW0P+MJP7RwHH5Q==
-X-Google-Smtp-Source: ABdhPJz+eUFuLMzu85cx19PO2UoC7Sd0golzCYmYEtgLt8X8u8CKUgFNR1zXCKrO9UoYIMjlbqu9Jm1hgB+qk3OCMP4=
-X-Received: by 2002:a05:6000:10c6:: with SMTP id b6mr3771565wrx.257.1597938933739;
- Thu, 20 Aug 2020 08:55:33 -0700 (PDT)
+        id S1728210AbgHTP5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 11:57:00 -0400
+Received: from sonic305-20.consmr.mail.ir2.yahoo.com ([77.238.177.82]:39236
+        "EHLO sonic305-20.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726387AbgHTP4v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 11:56:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1597939010; bh=ZWeDLwf4cGlLDzTwCuOen1zTINlp5j+f2ywobrqBR9o=; h=Date:From:Reply-To:Subject:References:From:Subject; b=JFA2in8cTfn0Z9XxcEiG/es2xsCiyBNpnMLoWt0olVzprJOCMtRqUZI1KP9tyChe89aDqL+oE/Yt7go0pYqlkgbQpXO1eHTvyv0y6vGi5yUTn+A+GuZEkGALsdkArWrj8Q7I5jyPvHiabOYtJ5RQok0M0G4heu98HvRob0wA/KNyMVZpKU0Y2ujSYKQM+OVGb93OuVbo2zEfYAHLYLMuX8FUqj6S+aVom6+xWLtLTDHU6hqIyTG4X77P7pWYX5zkSbrvpZIMXwn+lLcebJ1pE2jyNBDtZ4Wn70l1NOPJcInZA32Mallxn0130Cqd9ebd2PGiKLElGwPrfEjHmElGUg==
+X-YMail-OSG: iry2DJwVM1lNFEdEzKFMawUXugLqD4ZMM_gOsfIuXeV0rRa_xM4E7lce1gXdqcl
+ 1jR0__L8ZNczQNFv_C7cc908Zp90MHImn4fxrGc86zJibiwbDhpiEo6FrMoha3tlMhV.dkAwSYaJ
+ 8cD5ppgSBElGmeH9idOfZE4MJBU_CBQLzDWu5HKyY2kjYMrsvI62gz9HcrYMlVM3bgWO9K8ECuoD
+ fi.QqlVcIIVOvcC9cGhC.hexUTYG0IHUYh8CSAf.daop8WxaivNYE_mWuktz8Cfm84Dv4.CJRzQU
+ M4je7jCzRA6rzg7P3_cpiZXIkZk2.Mo.oZPNZK_X9pFL0xQ8QGdn2EkRf.4QaOWhXyBaxpQn6Dw4
+ rszqT5Eakca1VcZdlerZSPZeBzy2J4vosg3SFLRjUelmr7cQM6wzxIwhadNM51iKTQQ4jgkzNv81
+ xjH_dh8kiCvnJkmoCIUMylFV0mMY0J724QXDtAgPZKejXRNVUpqYRwoFjDVfG1e15alx_xyvEljp
+ aTGd6i2.OlwAWuNKIoE4.s1qysEq4hB7JRjZUixBkllUdvjNnK_5OAMkSalYxlHdcjJF_gS31KZ8
+ .4Rq2iZmk7H.P6izQBWMP7KOWvAA6tEbqreebaN74PQxEbnRCpBiW2KxLHRFIBrLB1Mlpvo1Bx3D
+ Ln5BcBEADPUGGVl.ayyHuz5a2gfjCPQe4iHmPTxVZkuv76eYSlCh8CJ5kr.IgFSn4OyjwyoOTTXx
+ SgHG1YQVB2aNlgQVONcCXXw1twI8JuqkZK01usYEoF1T7YiTUkRE8jEXxKiGYeSWLvCXyO.6Fntj
+ VtedfDoSPUgLprLAXpyx4m8GcxBquJxvcwqaQQI1Vg2ZJ_933XQ9QafJQfrkqRwj9Rruuy9hO32i
+ _E4Jqxo.x8Mdc4hYh4sh_qO9DR7GqqYm5k0FuCAviQvVIlSvFE2aqQxKCGKGRGjgrtmazwJl45Lf
+ iC8OmIUcaCEiwAd3frXZ3UQyn8U8SmZ.R9CYiQHz_ZW6gILtVvi4hZhdVe5TJndP.RBVSu89wBst
+ t2L2Q6Jn9h7jEakEgtiGa49gvEZsiftSq2.I9OES0XhBPkO9iRxnK.GrAmSJqv62gEDjyYrzR02g
+ aSI7j5.O02XE6JvLoOf12Qdr3coxLh0WAsUyx0VdSGUX3tanelMuZFIqGw0H6ikSPeh23sJY9SFS
+ KlmoAkPNtTVu8FBj5k1VVqbDGLwWGbEA1Bi98N.8Jb.oHLw6JXHvdZIz9wpmFfat.Wq.ClCaC3tJ
+ k8i1wmfLQtnbs2UeNWCKetY57ZbnVMTbu1HKqmpxwc4GHGdEkICRtxGn1h4st_Ix0LgA65teVlcB
+ 1hkRo89qQBx3QWHTd9otuFWKrQ6432pql5GoxShccrK_at2W8yqJEzwwC
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.ir2.yahoo.com with HTTP; Thu, 20 Aug 2020 15:56:50 +0000
+Date:   Thu, 20 Aug 2020 15:56:49 +0000 (UTC)
+From:   Theresa Han <serena@lantermo.it>
+Reply-To: theresahan21@hotmail.com
+Message-ID: <1293944127.5787555.1597939009757@mail.yahoo.com>
+Subject: =?UTF-8?Q?Ich_gr=C3=BC=C3=9Fe_dich_im_Namen_des_Herrn?=
 MIME-Version: 1.0
-References: <39d57e4d-5db4-f536-6f5e-6b0414c0dccc@amd.com> <7dedb0ab-56a6-5d96-577b-21ab1ecdad24@amd.com>
- <CALCETrUArZ04UqJjp2mEheuMpZyPwLeEgGM7mdDdmWxmx=GN4Q@mail.gmail.com>
- <CALCETrWcXgp+GzFNrOKcX740+R-57FgNu3Wt3g=_sRCMYFzbMg@mail.gmail.com>
- <20200820151049.GA26595@sjchrist-ice> <362f5a45-b808-25ad-b99b-449e05717c4a@amd.com>
-In-Reply-To: <362f5a45-b808-25ad-b99b-449e05717c4a@amd.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 20 Aug 2020 08:55:22 -0700
-X-Gmail-Original-Message-ID: <CALCETrW8SWgWxDdMXuMPD-A1avztvNcpwLAKKRQ4ojmcz07B6A@mail.gmail.com>
-Message-ID: <CALCETrW8SWgWxDdMXuMPD-A1avztvNcpwLAKKRQ4ojmcz07B6A@mail.gmail.com>
-Subject: Re: FSGSBASE causing panic on 5.9-rc1
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sasha Levin <sashal@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <1293944127.5787555.1597939009757.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16455 YMailNodin Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 8:21 AM Tom Lendacky <thomas.lendacky@amd.com> wrote:
->
-> On 8/20/20 10:10 AM, Sean Christopherson wrote:
-> > On Wed, Aug 19, 2020 at 05:21:33PM -0700, Andy Lutomirski wrote:
-> >> On Wed, Aug 19, 2020 at 2:25 PM Andy Lutomirski <luto@kernel.org> wrote:
-> >>>
-> >>> On Wed, Aug 19, 2020 at 11:19 AM Tom Lendacky <thomas.lendacky@amd.com> wrote:
-> >>>>
-> >>>> On 8/19/20 1:07 PM, Tom Lendacky wrote:
-> >>>>> It looks like the FSGSBASE support is crashing my second generation EPYC
-> >>>>> system. I was able to bisect it to:
-> >>>>>
-> >>>>> b745cfba44c1 ("x86/cpu: Enable FSGSBASE on 64bit by default and add a chicken bit")
-> >>>>>
-> >>>>> The panic only happens when using KVM. Doing kernel builds or stress
-> >>>>> on bare-metal appears fine. But if I fire up, in this case, a 64-vCPU
-> >>>>> guest and do a kernel build within the guest, I get the following:
-> >>>>
-> >>>> I should clarify that this panic is on the bare-metal system, not in the
-> >>>> guest. And that specifying nofsgsbase on the bare-metal command line fixes
-> >>>> the issue.
-> >>>
-> >>> I certainly see some oddities:
-> >>>
-> >>> We have this code:
-> >>>
-> >>> static void svm_vcpu_put(struct kvm_vcpu *vcpu)
-> >>> {
-> >>>          struct vcpu_svm *svm = to_svm(vcpu);
-> >>>          int i;
-> >>>
-> >>>          avic_vcpu_put(vcpu);
-> >>>
-> >>>          ++vcpu->stat.host_state_reload;
-> >>>          kvm_load_ldt(svm->host.ldt);
-> >>> #ifdef CONFIG_X86_64
-> >>>          loadsegment(fs, svm->host.fs);
-> >>>          wrmsrl(MSR_KERNEL_GS_BASE, current->thread.gsbase);
-> >
-> > Pretty sure current->thread.gsbase can be stale, i.e. this needs:
-> >
-> >       current_save_fsgs();
->
-> I did try adding current_save_fsgs() in svm_vcpu_load(), saving the
-> current->thread.gsbase value to a new variable in the svm struct. I then
-> used that variable in the wrmsrl below, but it still crashed.
+Ich gr=C3=BC=C3=9Fe dich im Namen des Herrn
 
-Can you try bisecting all the way back to:
-
-commit dd649bd0b3aa012740059b1ba31ecad28a408f7f
-Author: Andy Lutomirski <luto@kernel.org>
-Date:   Thu May 28 16:13:48 2020 -0400
-
-    x86/cpu: Add 'unsafe_fsgsbase' to enable CR4.FSGSBASE
-
-and adding the unsafe_fsgsbase command line option while you bisect.
-
-Also, you're crashing when you run a guest, right?  Can you try
-running the x86 sefltests on a bad kernel without running any guests?
-
---Andy
+Ich kann mir nicht vorstellen wie du dich f=C3=BChlen wirst Sie einen pl=C3=
+=B6tzlichen Brief aus einem abgelegenen Land in der fernen Elfenbeink=C3=BC=
+ste erhalten werden und wahrscheinlich von jemandem, mit dem Sie nicht gut =
+verwandt sind. Ich appelliere an Sie, etwas Geduld zu =C3=BCben und meinen =
+Brief zu lesen Umgang mit Ihnen in dieser wichtigen Transaktion
+=20
+Ich bin Frau Theresa Han, 65 Jahre alt, in der Elfenbeink=C3=BCste, an Kreb=
+sleiden leidend. Ich war mit Herrn Johnson Han verheiratet, der bei der Reg=
+ierung von Elfenbeink=C3=BCste als Auftragnehmer t=C3=A4tig war, bevor er n=
+ach einigen Tagen im Krankenhaus starb
+=20
+Mein verstorbener Ehemann hat die Summe von US$2,5 Millionen (zwei Millione=
+n f=C3=BCnfhunderttausend USD) bei einer Bank in der Elfenbeink=C3=BCste hi=
+nterlegt. Ich habe an Krebs gelitten. K=C3=BCrzlich sagte mir mein Arzt, da=
+ss ich aufgrund der Krebserkrankungen, an denen ich leide, nur noch begrenz=
+te Lebenstage habe. Ich m=C3=B6chte wissen, ob ich Ihnen vertrauen kann, di=
+ese Mittel f=C3=BCr Wohlt=C3=A4tigkeit / Waisenhaus zu verwenden, und 20 Pr=
+ozent werden f=C3=BCr Sie als Entsch=C3=A4digung sein
+=20
+Ich habe diese Entscheidung getroffen, weil ich kein Kind habe, das dieses =
+Geld erben w=C3=BCrde, und mein Ehemann Verwandte sind b=C3=BCrgerliche und=
+ sehr wohlhabende Personen und ich m=C3=B6chte nicht, dass mein Ehemann har=
+t verdientes Geld missbraucht wird
+=20
+Bitte nehmen Sie Kontakt mit mir auf, damit ich Ihnen weitere Einzelheiten =
+mitteilen kann und jede Verz=C3=B6gerung Ihrer Antwort mir Raum geben wird,=
+ eine weitere gute Person f=C3=BCr diesen Zweck zu gewinnen
+=20
+Warten auf Ihre dringende Antwort Mit Gott sind alle Dinge m=C3=B6glich
+=20
+Deine Schwester in Christus
+=20
+Frau Theresa Han
