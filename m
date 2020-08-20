@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C7924B4E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CB6F24B52A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729851AbgHTKOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:14:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59144 "EHLO mail.kernel.org"
+        id S1731464AbgHTKUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:20:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730822AbgHTKNs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:13:48 -0400
+        id S1731066AbgHTKTo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:19:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C84C2206DA;
-        Thu, 20 Aug 2020 10:13:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4436C208E4;
+        Thu, 20 Aug 2020 10:19:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918427;
-        bh=7xMbWi8u2MztLyU+DFZFgOrpTUybRCIU3q3jbvbycHM=;
+        s=default; t=1597918783;
+        bh=BfPjhQ44U9DE3oZzImTFIZQyBr/WqCe9IVpkANI4hnw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1LJkEdoP36iN4SX9aL04G/uShCrwq0DEdQhe6+cPYzUFYLAs1YmfzEl8U79Vfhvzp
-         io1a6gaqsq1hDXndXIyy12nTH8G9jz0CFH14ODRU5QaUhwAc8IesWE2dmbU2WnNfIT
-         4fqk2WUJyCXDepj87CYZSU1/43I2JlhJjzz2qIks=
+        b=zWd4Zq9hoZ2ofjl7/VrTzsqvQxrqQs6fKWzbBF3G3XN52x0B96nx4b2LWyYvadSBI
+         /2gRJZmPJg6DMd9e8ztM4wB5y1HvrWrrQyrMk0gKzliJGX6S/alszgTN4/qboV/GBI
+         H5ryoyiDqFWsIXopItvsQqm1K3K0SfYZOiEkLEHc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Tim Froidcoeur <tim.froidcoeur@tessares.net>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 166/228] net: initialize fastreuse on inet_inherit_port
-Date:   Thu, 20 Aug 2020 11:22:21 +0200
-Message-Id: <20200820091615.869366086@linuxfoundation.org>
+        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
+        Aditya Pakki <pakki001@umn.edu>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 065/149] drm/radeon: Fix reference count leaks caused by pm_runtime_get_sync
+Date:   Thu, 20 Aug 2020 11:22:22 +0200
+Message-Id: <20200820092128.887747279@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
-References: <20200820091607.532711107@linuxfoundation.org>
+In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
+References: <20200820092125.688850368@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,61 +45,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Froidcoeur <tim.froidcoeur@tessares.net>
+From: Aditya Pakki <pakki001@umn.edu>
 
-commit d76f3351cea2d927fdf70dd7c06898235035e84e upstream.
+[ Upstream commit 9fb10671011143d15b6b40d6d5fa9c52c57e9d63 ]
 
-In the case of TPROXY, bind_conflict optimizations for SO_REUSEADDR or
-SO_REUSEPORT are broken, possibly resulting in O(n) instead of O(1) bind
-behaviour or in the incorrect reuse of a bind.
+On calling pm_runtime_get_sync() the reference count of the device
+is incremented. In case of failure, decrement the
+reference count before returning the error.
 
-the kernel keeps track for each bind_bucket if all sockets in the
-bind_bucket support SO_REUSEADDR or SO_REUSEPORT in two fastreuse flags.
-These flags allow skipping the costly bind_conflict check when possible
-(meaning when all sockets have the proper SO_REUSE option).
-
-For every socket added to a bind_bucket, these flags need to be updated.
-As soon as a socket that does not support reuse is added, the flag is
-set to false and will never go back to true, unless the bind_bucket is
-deleted.
-
-Note that there is no mechanism to re-evaluate these flags when a socket
-is removed (this might make sense when removing a socket that would not
-allow reuse; this leaves room for a future patch).
-
-For this optimization to work, it is mandatory that these flags are
-properly initialized and updated.
-
-When a child socket is created from a listen socket in
-__inet_inherit_port, the TPROXY case could create a new bind bucket
-without properly initializing these flags, thus preventing the
-optimization to work. Alternatively, a socket not allowing reuse could
-be added to an existing bind bucket without updating the flags, causing
-bind_conflict to never be called as it should.
-
-Call inet_csk_update_fastreuse when __inet_inherit_port decides to create
-a new bind_bucket or use a different bind_bucket than the one of the
-listen socket.
-
-Fixes: 093d282321da ("tproxy: fix hash locking issue when using port redirection in __inet_inherit_port()")
-Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: Tim Froidcoeur <tim.froidcoeur@tessares.net>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Acked-by: Evan Quan <evan.quan@amd.com>
+Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/inet_hashtables.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/radeon/radeon_display.c | 4 +++-
+ drivers/gpu/drm/radeon/radeon_drv.c     | 4 +++-
+ drivers/gpu/drm/radeon/radeon_kms.c     | 4 +++-
+ 3 files changed, 9 insertions(+), 3 deletions(-)
 
---- a/net/ipv4/inet_hashtables.c
-+++ b/net/ipv4/inet_hashtables.c
-@@ -160,6 +160,7 @@ int __inet_inherit_port(const struct soc
- 				return -ENOMEM;
- 			}
- 		}
-+		inet_csk_update_fastreuse(tb, child);
- 	}
- 	inet_bind_hash(child, tb, port);
- 	spin_unlock(&head->lock);
+diff --git a/drivers/gpu/drm/radeon/radeon_display.c b/drivers/gpu/drm/radeon/radeon_display.c
+index 4572bfba017c5..17c73b8c90e71 100644
+--- a/drivers/gpu/drm/radeon/radeon_display.c
++++ b/drivers/gpu/drm/radeon/radeon_display.c
+@@ -660,8 +660,10 @@ radeon_crtc_set_config(struct drm_mode_set *set)
+ 	dev = set->crtc->dev;
+ 
+ 	ret = pm_runtime_get_sync(dev->dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put_autosuspend(dev->dev);
+ 		return ret;
++	}
+ 
+ 	ret = drm_crtc_helper_set_config(set);
+ 
+diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon/radeon_drv.c
+index 5b6a6f5b3619e..401403a3ea50c 100644
+--- a/drivers/gpu/drm/radeon/radeon_drv.c
++++ b/drivers/gpu/drm/radeon/radeon_drv.c
+@@ -527,8 +527,10 @@ long radeon_drm_ioctl(struct file *filp,
+ 	long ret;
+ 	dev = file_priv->minor->dev;
+ 	ret = pm_runtime_get_sync(dev->dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put_autosuspend(dev->dev);
+ 		return ret;
++	}
+ 
+ 	ret = drm_ioctl(filp, cmd, arg);
+ 	
+diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/radeon/radeon_kms.c
+index d290a8a09036e..41caf7da90548 100644
+--- a/drivers/gpu/drm/radeon/radeon_kms.c
++++ b/drivers/gpu/drm/radeon/radeon_kms.c
+@@ -631,8 +631,10 @@ int radeon_driver_open_kms(struct drm_device *dev, struct drm_file *file_priv)
+ 	file_priv->driver_priv = NULL;
+ 
+ 	r = pm_runtime_get_sync(dev->dev);
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(dev->dev);
+ 		return r;
++	}
+ 
+ 	/* new gpu have virtual address space support */
+ 	if (rdev->family >= CHIP_CAYMAN) {
+-- 
+2.25.1
+
 
 
