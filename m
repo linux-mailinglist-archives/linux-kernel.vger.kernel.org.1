@@ -2,44 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC13D24B36F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF18724B2AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729396AbgHTJrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:47:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49750 "EHLO mail.kernel.org"
+        id S1727046AbgHTJfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:35:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729359AbgHTJqw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:46:52 -0400
+        id S1727822AbgHTJba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:31:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DFCBF2173E;
-        Thu, 20 Aug 2020 09:46:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C284B208E4;
+        Thu, 20 Aug 2020 09:31:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916811;
-        bh=C/84CIoJYHv4E/FABQ0fh8uf1gdQweNA4EgZRAF4Klc=;
+        s=default; t=1597915889;
+        bh=x7h681IlolzOdL7F1weUGqr7IZLFaG+yAVLcUGiSZWo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iGHEJLUSiQ5r4i+CrewD8B6EWYnDtVJogROozJIWxMZK0J5yj9g0Fd4qm7WuSb54F
-         ApCAq/YiZsTMcmBJSsNJEpYXE6adsLmqFQtY74+yHDmKWsQklroGCHwUJu7Ne4pATa
-         datcEB3NDcO2ukgeBIHgEvanUh0fP6gGP6tpvh5c=
+        b=cnzBBvTdzi5tEank9BHLCXjYRQ4ja7+e23q+Q19HIw3LhzSA15g75c0qVxSQ0jzyf
+         B1Lakafo23nwev2LR8ARPpr/XZG8BGjEHU4gU+wNbmVPUxFy+qmyPJaTq/0fQ99y9m
+         cUj+u78ctmTRRJaerqi/bq8EIVErpFqWlV9zccnM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 055/152] mm/page_counter.c: fix protection usage propagation
+        stable@vger.kernel.org, Thomas Hebb <tommyhebb@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        David Carrillo-Cisneros <davidcc@google.com>,
+        Ian Rogers <irogers@google.com>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Song Liu <songliubraving@fb.com>,
+        Stephane Eranian <eranian@google.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 171/232] tools build feature: Use CC and CXX from parent
 Date:   Thu, 20 Aug 2020 11:20:22 +0200
-Message-Id: <20200820091556.543146115@linuxfoundation.org>
+Message-Id: <20200820091621.101308451@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
-References: <20200820091553.615456912@linuxfoundation.org>
+In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
+References: <20200820091612.692383444@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,75 +52,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Koutný <mkoutny@suse.com>
+From: Thomas Hebb <tommyhebb@gmail.com>
 
-commit a6f23d14ec7d7d02220ad8bb2774be3322b9aeec upstream.
+[ Upstream commit e3232c2f39acafd5a29128425bc30b9884642cfa ]
 
-When workload runs in cgroups that aren't directly below root cgroup and
-their parent specifies reclaim protection, it may end up ineffective.
+commit c8c188679ccf ("tools build: Use the same CC for feature detection
+and actual build") changed these assignments from unconditional (:=) to
+conditional (?=) so that they wouldn't clobber values from the
+environment. However, conditional assignment does not work properly for
+variables that Make implicitly sets, among which are CC and CXX. To
+quote tools/scripts/Makefile.include, which handles this properly:
 
-The reason is that propagate_protected_usage() is not called in all
-hierarchy up.  All the protected usage is incorrectly accumulated in the
-workload's parent.  This means that siblings_low_usage is overestimated
-and effective protection underestimated.  Even though it is transitional
-phenomenon (uncharge path does correct propagation and fixes the wrong
-children_low_usage), it can undermine the intended protection
-unexpectedly.
+  # Makefiles suck: This macro sets a default value of $(2) for the
+  # variable named by $(1), unless the variable has been set by
+  # environment or command line. This is necessary for CC and AR
+  # because make sets default values, so the simpler ?= approach
+  # won't work as expected.
 
-We have noticed this problem while seeing a swap out in a descendant of a
-protected memcg (intermediate node) while the parent was conveniently
-under its protection limit and the memory pressure was external to that
-hierarchy.  Michal has pinpointed this down to the wrong
-siblings_low_usage which led to the unwanted reclaim.
+In other words, the conditional assignments will not run even if the
+variables are not overridden in the environment; Make will set CC to
+"cc" and CXX to "g++" when it starts[1], meaning the variables are not
+empty by the time the conditional assignments are evaluated. This breaks
+cross-compilation when CROSS_COMPILE is set but CC isn't, since "cc"
+gets used for feature detection instead of the cross compiler (and
+likewise for CXX).
 
-The fix is simply updating children_low_usage in respective ancestors also
-in the charging path.
+To fix the issue, just pass down the values of CC and CXX computed by
+the parent Makefile, which gets included by the Makefile that actually
+builds whatever we're detecting features for and so is guaranteed to
+have good values. This is a better solution anyway, since it means we
+aren't trying to replicate the logic of the parent build system and so
+don't risk it getting out of sync.
 
-Fixes: 230671533d64 ("mm: memory.low hierarchical behavior")
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
-Signed-off-by: Michal Hocko <mhocko@suse.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Acked-by: Roman Gushchin <guro@fb.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: <stable@vger.kernel.org>	[4.18+]
-Link: http://lkml.kernel.org/r/20200803153231.15477-1-mhocko@kernel.org
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Leave PKG_CONFIG alone, since 1) there's no common logic to compute it
+in Makefile.include, and 2) it's not an implicit variable, so
+conditional assignment works properly.
 
+[1] https://www.gnu.org/software/make/manual/html_node/Implicit-Variables.html
+
+Fixes: c8c188679ccf ("tools build: Use the same CC for feature detection and actual build")
+Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+Cc: David Carrillo-Cisneros <davidcc@google.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Igor Lubashev <ilubashe@akamai.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Quentin Monnet <quentin@isovalent.com>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Stephane Eranian <eranian@google.com>
+Cc: thomas hebb <tommyhebb@gmail.com>
+Link: http://lore.kernel.org/lkml/0a6e69d1736b0fa231a648f50b0cce5d8a6734ef.1595822871.git.tommyhebb@gmail.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/page_counter.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ tools/build/Makefile.feature | 2 +-
+ tools/build/feature/Makefile | 2 --
+ 2 files changed, 1 insertion(+), 3 deletions(-)
 
---- a/mm/page_counter.c
-+++ b/mm/page_counter.c
-@@ -77,7 +77,7 @@ void page_counter_charge(struct page_cou
- 		long new;
+diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+index cb152370fdefd..774f0b0ca28ac 100644
+--- a/tools/build/Makefile.feature
++++ b/tools/build/Makefile.feature
+@@ -8,7 +8,7 @@ endif
  
- 		new = atomic_long_add_return(nr_pages, &c->usage);
--		propagate_protected_usage(counter, new);
-+		propagate_protected_usage(c, new);
- 		/*
- 		 * This is indeed racy, but we can live with some
- 		 * inaccuracy in the watermark.
-@@ -121,7 +121,7 @@ bool page_counter_try_charge(struct page
- 		new = atomic_long_add_return(nr_pages, &c->usage);
- 		if (new > c->max) {
- 			atomic_long_sub(nr_pages, &c->usage);
--			propagate_protected_usage(counter, new);
-+			propagate_protected_usage(c, new);
- 			/*
- 			 * This is racy, but we can live with some
- 			 * inaccuracy in the failcnt.
-@@ -130,7 +130,7 @@ bool page_counter_try_charge(struct page
- 			*fail = c;
- 			goto failed;
- 		}
--		propagate_protected_usage(counter, new);
-+		propagate_protected_usage(c, new);
- 		/*
- 		 * Just like with failcnt, we can live with some
- 		 * inaccuracy in the watermark.
+ feature_check = $(eval $(feature_check_code))
+ define feature_check_code
+-  feature-$(1) := $(shell $(MAKE) OUTPUT=$(OUTPUT_FEATURES) CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" -C $(feature_dir) $(OUTPUT_FEATURES)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
++  feature-$(1) := $(shell $(MAKE) OUTPUT=$(OUTPUT_FEATURES) CC=$(CC) CXX=$(CXX) CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" -C $(feature_dir) $(OUTPUT_FEATURES)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
+ endef
+ 
+ feature_set = $(eval $(feature_set_code))
+diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+index b1f0321180f5c..93b590d81209c 100644
+--- a/tools/build/feature/Makefile
++++ b/tools/build/feature/Makefile
+@@ -74,8 +74,6 @@ FILES=                                          \
+ 
+ FILES := $(addprefix $(OUTPUT),$(FILES))
+ 
+-CC ?= $(CROSS_COMPILE)gcc
+-CXX ?= $(CROSS_COMPILE)g++
+ PKG_CONFIG ?= $(CROSS_COMPILE)pkg-config
+ LLVM_CONFIG ?= llvm-config
+ CLANG ?= clang
+-- 
+2.25.1
+
 
 
