@@ -2,98 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1CD124B971
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC9924B96B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729866AbgHTLqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:46:54 -0400
-Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:60631 "EHLO
-        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730591AbgHTLpG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 07:45:06 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id 8izskGuNMywL58iztkZUl0; Thu, 20 Aug 2020 13:44:45 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1597923886; bh=IocCpV9atTxbqpgpHngbBHta2la2malhBL6QLL+KbMw=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=wXZYynsoXGQzHJRmmozOkGf/EqZdtHoUtsr/ExG3gSyNAJPQVlg01223NpYMx/2p0
-         cym8co0f5yoFT/4yOUylgHG2WF9mlmjV4f1w5EQtJ56IhRL12hAaLZS3hG/FQZ3nLa
-         Ee+qFiJHupmdw5mOphHbm9kP7JVFsZAZdcIExqXQfEdHRSfE4Vz1Cl9sKQq6NJh4Gb
-         qdDsQ3Vw92+qjPV3rcN4kiY+1s7L+uysFgsLNUYTteqssRmo8jJLOZTiMplpaCNvlG
-         0x4iPQD65oKwFPRjouCSjJxFl1vDSyHcWq5szCK8Xk7JhLB2OVqIP4aJLcUd4fl/py
-         ORheinfat+Vvw==
-Subject: Re: [PATCH v2] media: pvrusb2: fix parsing error
-To:     Tong Zhang <ztong0001@gmail.com>, isely@pobox.com,
-        mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <75b8354b-362a-0215-8038-45bd68be7de5@xs4all.nl>
- <20200819212523.113973-1-ztong0001@gmail.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <aed971ed-bd8e-eaed-b2ee-80e9654f24cd@xs4all.nl>
-Date:   Thu, 20 Aug 2020 13:44:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729894AbgHTLqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:46:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59066 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729582AbgHTLp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 07:45:57 -0400
+Received: from localhost (cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net [82.37.168.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E4CF12078B;
+        Thu, 20 Aug 2020 11:45:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597923957;
+        bh=EmpcpyWUq8w0WNjTx0pP0rrQmAkwNgLkN1Z/MnuebcI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SiXurh7hS5kaPGz83qRaQPFIa3c10EcxMdG7VqJpmcAvQ1Kr2uVTFkz5T+BxZkuGc
+         Qud9WfkBlOnTh1eiEAJ+5+R7ke09jeNewuXlamTAN4LdniF9WirwON/WrYfCYGezDu
+         yuD0BvTXq5D151EW8HkiDvG8ChfiRGSL50q4s7+k=
+Date:   Thu, 20 Aug 2020 12:45:24 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Gene Chen <gene.chen.richtek@gmail.com>
+Cc:     matthias.bgg@gmail.com, robh+dt@kernel.org, lgirdwood@gmail.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Gene Chen <gene_chen@richtek.com>
+Subject: Re: [PATCH v3 1/2] regulator: mt6360: Add support for MT6360
+ regulator
+Message-ID: <20200820114524.GC5854@sirena.org.uk>
+References: <1597910022-22617-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1597910022-22617-2-git-send-email-gene.chen.richtek@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200819212523.113973-1-ztong0001@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4wfEhHaZWDaOurX1cn4LmZC0i1t/di2YlunFK+pliQZuPYrCIYyh5ho6JV7mVCMF7Hwd7EZK32MbBPIliMkHjTo1MIgVGORYFeOeMHXAIMg9Vc7BDXuCDj
- wAKOXUKbVDy9n7GO563eeDiQPU+EMFrd0BmsKGelRh0CZkeseQp/puARcYrNSsAxiGTwNzbyy3izpTpWPpp1SQYfZqH/tO5J5J9ngvKGX4SEOIResnWVu435
- SSUnVdy7alHFz2IqYHaDrgaXLO05Bno4a4Sy8Tibzme7zqSOOMhyb//jLURi5iPy5lXpeCDhH3nR8m7cPX3JkMjQngqcvuAwmZzJwHYGulDC5P9Vohksa84d
- M714J3ygzEM6tgdCHA9MU0cdZLtZWaUL5Lg6FjIE5pp1IcrZF34=
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jousvV0MzM2p6OtC"
+Content-Disposition: inline
+In-Reply-To: <1597910022-22617-2-git-send-email-gene.chen.richtek@gmail.com>
+X-Cookie: Dead? No excuse for laying off work.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/08/2020 23:25, Tong Zhang wrote:
-> pvr2_std_str_to_id() returns 0 on failure and 1 on success,
-> however the caller is checking failure case using <0
-> 
-> Co-developed-by: Hans Verkuil<hverkuil@xs4all.nl>
-> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-> ---
-> 
-> v2: return -EINVAL as suggested by Hans Verkuil<hverkuil@xs4all.nl>.
-> I also rebased the code on v5.9-rc1.
-> 
->  drivers/media/usb/pvrusb2/pvrusb2-hdw.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-> index 1cfb7cf64131..6a444cb27e31 100644
-> --- a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-> +++ b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-> @@ -866,8 +866,8 @@ static int ctrl_std_sym_to_val(struct pvr2_ctrl *cptr,
->  {
->  	int ret;
 
-This is no longer used, so can be removed.
+--jousvV0MzM2p6OtC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-And if I compile this patch I get this warning:
+On Thu, Aug 20, 2020 at 03:53:41PM +0800, Gene Chen wrote:
 
-drivers/media/usb/pvrusb2/pvrusb2-hdw.c: In function ‘ctrl_std_sym_to_val’:
-drivers/media/usb/pvrusb2/pvrusb2-hdw.c:867:6: warning: unused variable ‘ret’ [-Wunused-variable]
-  867 |  int ret;
-      |      ^~~
+> +	mrd->regmap = dev_get_regmap(pdev->dev.parent, NULL);
+> +	if (!mrd->regmap) {
+> +		dev_err(&pdev->dev, "Failed to get parent regmap\n");
+> +		return -ENODEV;
+> +	}
 
-Always compile-test before posting a patch :-)
+> +static const struct of_device_id __maybe_unused mt6360_regulator_of_id[] = {
+> +	{ .compatible = "mediatek,mt6360-regulator", },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, mt6360_regulator_of_id);
 
-Regards,
+This device only exists in the context of a single parent device, there
+should be no need for a compatible string here - this is just a detail
+of how Linux does things.  The MFD should just instntiate the platform
+device.
 
-	Hans
+--jousvV0MzM2p6OtC
+Content-Type: application/pgp-signature; name="signature.asc"
 
->  	v4l2_std_id id;
-> -	ret = pvr2_std_str_to_id(&id,bufPtr,bufSize);
-> -	if (ret < 0) return ret;
-> +	if (!pvr2_std_str_to_id(&id, bufPtr, bufSize))
-> +		return -EINVAL;
->  	if (mskp) *mskp = id;
->  	if (valp) *valp = id;
->  	return 0;
-> 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8+YlMACgkQJNaLcl1U
+h9DIKwf/ev1phumPNeX6i1SQql+DSte48x9dcwfsdVGdcUYYk9q6H6T5tUIKpzF7
+htv0KnJWujWXk9eYft25GnJTOdpzdkihP+bqHsc86o+2wfuI/9NGr2z6Al6sFwjf
+5neoBb9H3XMIHkkiAk/f8d4q5i9HDJA+5Gqe82/m7TV3qM7AYjeQH8X0BRnlGPTw
++H9wDCDmg/BkT4jq1spi0++fua58EtL58ex8OBPZpxFeG3ZPHZMLknJikpbEj3sG
+L2I+4nITn7sB4zrTbIZDcdZYJCcubV/rZ0lO7+K6a1SGDxw98eOOfy21ht4qM6RV
+R2n7uxfo+TjXqHqkdBGwQoqJdf2yJA==
+=7oEp
+-----END PGP SIGNATURE-----
+
+--jousvV0MzM2p6OtC--
