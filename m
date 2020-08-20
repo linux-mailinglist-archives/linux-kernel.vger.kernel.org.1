@@ -2,62 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D5424B371
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE81524B41E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729418AbgHTJrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:47:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49842 "EHLO mail.kernel.org"
+        id S1730392AbgHTJ6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:58:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729368AbgHTJqy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:46:54 -0400
+        id S1726796AbgHTJ6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:58:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40DEC20724;
-        Thu, 20 Aug 2020 09:46:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DBB972067C;
+        Thu, 20 Aug 2020 09:58:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916814;
-        bh=rn+mRAUbQfU39heNWrpzHI1QdsejG3kZgRmgd5msWDU=;
+        s=default; t=1597917491;
+        bh=B9I86CKSfEkWeYcKIy1EwsYk+OARDO/f2z7E9feAlY0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rq4a9bsXOTDhuye77SpSrvkW5LRTeL8YKbd5P3wa43l2OicCZ0d+K/x1wH4EQ4XYn
-         9xcYwFzlSKzsSPrFmq0TyPIroexx6Kp8rIWpS43KNaLiWEPQ2V24KNs98WScfKGvth
-         QAMzkdxC9isxPEp89tq5DyPKWl/BiMyykEy1V3VQ=
+        b=GlIUtJMwzvGRN04NkHsfNsJ1WbeuRyXWum3ATxaG2TtJzhUfKsAQl31Wu1Gwo9818
+         D582SD722ixq5tWczw9Rp8l4toYWHaC8XsEkE/PEz6lvk40+s7QJC3BQElc/0ym/B9
+         baWfN2yKa+LuMgLGBp0goFEjTGAyjXoEo1xLWTJI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jia He <justin.he@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Lutomirski <luto@kernel.org>, Baoquan He <bhe@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Kaly Xin <Kaly.Xin@arm.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 056/152] mm/memory_hotplug: fix unpaired mem_hotplug_begin/done
+        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Wang Long <wanglong19@meituan.com>,
+        Jiang Ying <jiangying8582@126.com>
+Subject: [PATCH 4.9 050/212] ext4: fix direct I/O read error
 Date:   Thu, 20 Aug 2020 11:20:23 +0200
-Message-Id: <20200820091556.591399331@linuxfoundation.org>
+Message-Id: <20200820091604.894804916@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
-References: <20200820091553.615456912@linuxfoundation.org>
+In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
+References: <20200820091602.251285210@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -67,92 +44,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jia He <justin.he@arm.com>
+From: Jiang Ying <jiangying8582@126.com>
 
-commit b4223a510e2ab1bf0f971d50af7c1431014b25ad upstream.
+This patch is used to fix ext4 direct I/O read error when
+the read size is not aligned with block size.
 
-When check_memblock_offlined_cb() returns failed rc(e.g. the memblock is
-online at that time), mem_hotplug_begin/done is unpaired in such case.
+Then, I will use a test to explain the error.
 
-Therefore a warning:
- Call Trace:
-  percpu_up_write+0x33/0x40
-  try_remove_memory+0x66/0x120
-  ? _cond_resched+0x19/0x30
-  remove_memory+0x2b/0x40
-  dev_dax_kmem_remove+0x36/0x72 [kmem]
-  device_release_driver_internal+0xf0/0x1c0
-  device_release_driver+0x12/0x20
-  bus_remove_device+0xe1/0x150
-  device_del+0x17b/0x3e0
-  unregister_dev_dax+0x29/0x60
-  devm_action_release+0x15/0x20
-  release_nodes+0x19a/0x1e0
-  devres_release_all+0x3f/0x50
-  device_release_driver_internal+0x100/0x1c0
-  driver_detach+0x4c/0x8f
-  bus_remove_driver+0x5c/0xd0
-  driver_unregister+0x31/0x50
-  dax_pmem_exit+0x10/0xfe0 [dax_pmem]
+(1) Make a file that is not aligned with block size:
+	$dd if=/dev/zero of=./test.jar bs=1000 count=3
 
-Fixes: f1037ec0cc8a ("mm/memory_hotplug: fix remove_memory() lockdep splat")
-Signed-off-by: Jia He <justin.he@arm.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Acked-by: Dan Williams <dan.j.williams@intel.com>
-Cc: <stable@vger.kernel.org>	[5.6+]
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Baoquan He <bhe@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Chuhong Yuan <hslester96@gmail.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: Fenghua Yu <fenghua.yu@intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc: Kaly Xin <Kaly.Xin@arm.com>
-Cc: Logan Gunthorpe <logang@deltatee.com>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Mike Rapoport <rppt@linux.ibm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Rich Felker <dalias@libc.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Tony Luck <tony.luck@intel.com>
-Cc: Vishal Verma <vishal.l.verma@intel.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Link: http://lkml.kernel.org/r/20200710031619.18762-3-justin.he@arm.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+(2) I wrote a source file named "direct_io_read_file.c" as following:
+
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <unistd.h>
+	#include <sys/file.h>
+	#include <sys/types.h>
+	#include <sys/stat.h>
+	#include <string.h>
+	#define BUF_SIZE 1024
+
+	int main()
+	{
+		int fd;
+		int ret;
+
+		unsigned char *buf;
+		ret = posix_memalign((void **)&buf, 512, BUF_SIZE);
+		if (ret) {
+			perror("posix_memalign failed");
+			exit(1);
+		}
+		fd = open("./test.jar", O_RDONLY | O_DIRECT, 0755);
+		if (fd < 0){
+			perror("open ./test.jar failed");
+			exit(1);
+		}
+
+		do {
+			ret = read(fd, buf, BUF_SIZE);
+			printf("ret=%d\n",ret);
+			if (ret < 0) {
+				perror("write test.jar failed");
+			}
+		} while (ret > 0);
+
+		free(buf);
+		close(fd);
+	}
+
+(3) Compile the source file:
+	$gcc direct_io_read_file.c -D_GNU_SOURCE
+
+(4) Run the test program:
+	$./a.out
+
+	The result is as following:
+	ret=1024
+	ret=1024
+	ret=952
+	ret=-1
+	write test.jar failed: Invalid argument.
+
+I have tested this program on XFS filesystem, XFS does not have
+this problem, because XFS use iomap_dio_rw() to do direct I/O
+read. And the comparing between read offset and file size is done
+in iomap_dio_rw(), the code is as following:
+
+	if (pos < size) {
+		retval = filemap_write_and_wait_range(mapping, pos,
+				pos + iov_length(iov, nr_segs) - 1);
+
+		if (!retval) {
+			retval = mapping->a_ops->direct_IO(READ, iocb,
+						iov, pos, nr_segs);
+		}
+		...
+	}
+
+...only when "pos < size", direct I/O can be done, or 0 will be return.
+
+I have tested the fix patch on Ext4, it is up to the mustard of
+EINVAL in man2(read) as following:
+	#include <unistd.h>
+	ssize_t read(int fd, void *buf, size_t count);
+
+	EINVAL
+		fd is attached to an object which is unsuitable for reading;
+		or the file was opened with the O_DIRECT flag, and either the
+		address specified in buf, the value specified in count, or the
+		current file offset is not suitably aligned.
+
+So I think this patch can be applied to fix ext4 direct I/O error.
+
+However Ext4 introduces direct I/O read using iomap infrastructure
+on kernel 5.5, the patch is commit <b1b4705d54ab>
+("ext4: introduce direct I/O read using iomap infrastructure"),
+then Ext4 will be the same as XFS, they all use iomap_dio_rw() to do direct
+I/O read. So this problem does not exist on kernel 5.5 for Ext4.
+
+>From above description, we can see this problem exists on all the kernel
+versions between kernel 3.14 and kernel 5.4. It will cause the Applications
+to fail to read. For example, when the search service downloads a new full
+index file, the search engine is loading the previous index file and is
+processing the search request, it can not use buffer io that may squeeze
+the previous index file in use from pagecache, so the serch service must
+use direct I/O read.
+
+Please apply this patch on these kernel versions, or please use the method
+on kernel 5.5 to fix this problem.
+
+Fixes: 9fe55eea7e4b ("Fix race when checking i_size on direct i/o read")
+Reviewed-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Wang Long <wanglong19@meituan.com>
+Signed-off-by: Jiang Ying <jiangying8582@126.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- mm/memory_hotplug.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ fs/ext4/inode.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -1751,7 +1751,7 @@ static int __ref try_remove_memory(int n
- 	 */
- 	rc = walk_memory_blocks(start, size, NULL, check_memblock_offlined_cb);
- 	if (rc)
--		goto done;
-+		return rc;
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3575,6 +3575,11 @@ static ssize_t ext4_direct_IO_read(struc
+ 	struct address_space *mapping = iocb->ki_filp->f_mapping;
+ 	struct inode *inode = mapping->host;
+ 	ssize_t ret;
++	loff_t offset = iocb->ki_pos;
++	loff_t size = i_size_read(inode);
++
++	if (offset >= size)
++		return 0;
  
- 	/* remove memmap entry */
- 	firmware_map_remove(start, start + size, "System RAM");
-@@ -1771,9 +1771,8 @@ static int __ref try_remove_memory(int n
- 
- 	try_offline_node(nid);
- 
--done:
- 	mem_hotplug_done();
--	return rc;
-+	return 0;
- }
- 
- /**
+ 	/*
+ 	 * Shared inode_lock is enough for us - it protects against concurrent
 
 
