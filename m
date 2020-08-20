@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A2F24B847
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1200124B898
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730716AbgHTKIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:08:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40808 "EHLO mail.kernel.org"
+        id S1730549AbgHTLXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:23:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729792AbgHTKIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:08:32 -0400
+        id S1730085AbgHTKHK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:07:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58D6C20738;
-        Thu, 20 Aug 2020 10:08:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB3662067C;
+        Thu, 20 Aug 2020 10:07:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918112;
-        bh=vXeEIzsqQBvfgLUHF5Suok51uUamakv2YzQy1CuxnzQ=;
+        s=default; t=1597918029;
+        bh=g7N0/vZFIa6paeWPq/ZEJNnxKB6/Yh9dRDNC5swfV/w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hbHbUV1pokTtr/xltsFitJzxmWrEIKayMP8293VtYKuU05ZsnUDKK7DjaCrXJa6hL
-         WM3oB4uB9vMQ7ar7Jm/6LS/KmMUdLmX4bRHiJKULwiaAdRAkhhENT1GrkOBsOTB72g
-         +undpL3ajXfqFJ1RwsLp6o4itZPxKjojSn+yrEFU=
+        b=OhHJW/vr+RTqiyINyOT7nNB2N434w+eUfLsnnp9SX70e0wUHYJbcuUbmCPqL+3+tl
+         VNaFpGxpr1xXfbBKyJ9je8iOdSA9z+1Sk8fT6wfd8I4emSfaqbocxWQfV35b7kgXRH
+         v3hrtHbYofgjak8B4NoWJyqRyDXpOUkmUJZC2DlM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Xiong <xiongx18@fudan.edu.cn>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 026/228] atm: fix atm_dev refcnt leaks in atmtcp_remove_persistent
-Date:   Thu, 20 Aug 2020 11:20:01 +0200
-Message-Id: <20200820091608.842161518@linuxfoundation.org>
+        stable@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        Chuck Lever <chuck.lever@oracle.com>
+Subject: [PATCH 4.14 029/228] xattr: break delegations in {set,remove}xattr
+Date:   Thu, 20 Aug 2020 11:20:04 +0200
+Message-Id: <20200820091608.992828603@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
 References: <20200820091607.532711107@linuxfoundation.org>
@@ -46,54 +45,181 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Xiong <xiongx18@fudan.edu.cn>
+From: Frank van der Linden <fllinden@amazon.com>
 
-[ Upstream commit 51875dad43b44241b46a569493f1e4bfa0386d86 ]
+commit 08b5d5014a27e717826999ad20e394a8811aae92 upstream.
 
-atmtcp_remove_persistent() invokes atm_dev_lookup(), which returns a
-reference of atm_dev with increased refcount or NULL if fails.
+set/removexattr on an exported filesystem should break NFS delegations.
+This is true in general, but also for the upcoming support for
+RFC 8726 (NFSv4 extended attribute support). Make sure that they do.
 
-The refcount leaks issues occur in two error handling paths. If
-dev_data->persist is zero or PRIV(dev)->vcc isn't NULL, the function
-returns 0 without decreasing the refcount kept by a local variable,
-resulting in refcount leaks.
+Additionally, they need to grow a _locked variant, since callers might
+call this with i_rwsem held (like the NFS server code).
 
-Fix the issue by adding atm_dev_put() before returning 0 both when
-dev_data->persist is zero or PRIV(dev)->vcc isn't NULL.
+Cc: stable@vger.kernel.org # v4.9+
+Cc: linux-fsdevel@vger.kernel.org
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Frank van der Linden <fllinden@amazon.com>
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/atm/atmtcp.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ fs/xattr.c            |   84 +++++++++++++++++++++++++++++++++++++++++++++-----
+ include/linux/xattr.h |    2 +
+ 2 files changed, 79 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/atm/atmtcp.c b/drivers/atm/atmtcp.c
-index afebeb1c3e1e9..723bad1201cc5 100644
---- a/drivers/atm/atmtcp.c
-+++ b/drivers/atm/atmtcp.c
-@@ -432,9 +432,15 @@ static int atmtcp_remove_persistent(int itf)
- 		return -EMEDIUMTYPE;
+--- a/fs/xattr.c
++++ b/fs/xattr.c
+@@ -204,10 +204,22 @@ int __vfs_setxattr_noperm(struct dentry
+ 	return error;
+ }
+ 
+-
++/**
++ * __vfs_setxattr_locked: set an extended attribute while holding the inode
++ * lock
++ *
++ *  @dentry - object to perform setxattr on
++ *  @name - xattr name to set
++ *  @value - value to set @name to
++ *  @size - size of @value
++ *  @flags - flags to pass into filesystem operations
++ *  @delegated_inode - on return, will contain an inode pointer that
++ *  a delegation was broken on, NULL if none.
++ */
+ int
+-vfs_setxattr(struct dentry *dentry, const char *name, const void *value,
+-		size_t size, int flags)
++__vfs_setxattr_locked(struct dentry *dentry, const char *name,
++		const void *value, size_t size, int flags,
++		struct inode **delegated_inode)
+ {
+ 	struct inode *inode = dentry->d_inode;
+ 	int error;
+@@ -216,15 +228,40 @@ vfs_setxattr(struct dentry *dentry, cons
+ 	if (error)
+ 		return error;
+ 
+-	inode_lock(inode);
+ 	error = security_inode_setxattr(dentry, name, value, size, flags);
+ 	if (error)
+ 		goto out;
+ 
++	error = try_break_deleg(inode, delegated_inode);
++	if (error)
++		goto out;
++
+ 	error = __vfs_setxattr_noperm(dentry, name, value, size, flags);
+ 
+ out:
++	return error;
++}
++EXPORT_SYMBOL_GPL(__vfs_setxattr_locked);
++
++int
++vfs_setxattr(struct dentry *dentry, const char *name, const void *value,
++		size_t size, int flags)
++{
++	struct inode *inode = dentry->d_inode;
++	struct inode *delegated_inode = NULL;
++	int error;
++
++retry_deleg:
++	inode_lock(inode);
++	error = __vfs_setxattr_locked(dentry, name, value, size, flags,
++	    &delegated_inode);
+ 	inode_unlock(inode);
++
++	if (delegated_inode) {
++		error = break_deleg_wait(&delegated_inode);
++		if (!error)
++			goto retry_deleg;
++	}
+ 	return error;
+ }
+ EXPORT_SYMBOL_GPL(vfs_setxattr);
+@@ -380,8 +417,18 @@ __vfs_removexattr(struct dentry *dentry,
+ }
+ EXPORT_SYMBOL(__vfs_removexattr);
+ 
++/**
++ * __vfs_removexattr_locked: set an extended attribute while holding the inode
++ * lock
++ *
++ *  @dentry - object to perform setxattr on
++ *  @name - name of xattr to remove
++ *  @delegated_inode - on return, will contain an inode pointer that
++ *  a delegation was broken on, NULL if none.
++ */
+ int
+-vfs_removexattr(struct dentry *dentry, const char *name)
++__vfs_removexattr_locked(struct dentry *dentry, const char *name,
++		struct inode **delegated_inode)
+ {
+ 	struct inode *inode = dentry->d_inode;
+ 	int error;
+@@ -390,11 +437,14 @@ vfs_removexattr(struct dentry *dentry, c
+ 	if (error)
+ 		return error;
+ 
+-	inode_lock(inode);
+ 	error = security_inode_removexattr(dentry, name);
+ 	if (error)
+ 		goto out;
+ 
++	error = try_break_deleg(inode, delegated_inode);
++	if (error)
++		goto out;
++
+ 	error = __vfs_removexattr(dentry, name);
+ 
+ 	if (!error) {
+@@ -403,12 +453,32 @@ vfs_removexattr(struct dentry *dentry, c
  	}
- 	dev_data = PRIV(dev);
--	if (!dev_data->persist) return 0;
-+	if (!dev_data->persist) {
-+		atm_dev_put(dev);
-+		return 0;
+ 
+ out:
++	return error;
++}
++EXPORT_SYMBOL_GPL(__vfs_removexattr_locked);
++
++int
++vfs_removexattr(struct dentry *dentry, const char *name)
++{
++	struct inode *inode = dentry->d_inode;
++	struct inode *delegated_inode = NULL;
++	int error;
++
++retry_deleg:
++	inode_lock(inode);
++	error = __vfs_removexattr_locked(dentry, name, &delegated_inode);
+ 	inode_unlock(inode);
++
++	if (delegated_inode) {
++		error = break_deleg_wait(&delegated_inode);
++		if (!error)
++			goto retry_deleg;
 +	}
- 	dev_data->persist = 0;
--	if (PRIV(dev)->vcc) return 0;
-+	if (PRIV(dev)->vcc) {
-+		atm_dev_put(dev);
-+		return 0;
-+	}
- 	kfree(dev_data);
- 	atm_dev_put(dev);
- 	atm_dev_deregister(dev);
--- 
-2.25.1
-
++
+ 	return error;
+ }
+ EXPORT_SYMBOL_GPL(vfs_removexattr);
+ 
+-
+ /*
+  * Extended attribute SET operations
+  */
+--- a/include/linux/xattr.h
++++ b/include/linux/xattr.h
+@@ -52,8 +52,10 @@ ssize_t vfs_getxattr(struct dentry *, co
+ ssize_t vfs_listxattr(struct dentry *d, char *list, size_t size);
+ int __vfs_setxattr(struct dentry *, struct inode *, const char *, const void *, size_t, int);
+ int __vfs_setxattr_noperm(struct dentry *, const char *, const void *, size_t, int);
++int __vfs_setxattr_locked(struct dentry *, const char *, const void *, size_t, int, struct inode **);
+ int vfs_setxattr(struct dentry *, const char *, const void *, size_t, int);
+ int __vfs_removexattr(struct dentry *, const char *);
++int __vfs_removexattr_locked(struct dentry *, const char *, struct inode **);
+ int vfs_removexattr(struct dentry *, const char *);
+ 
+ ssize_t generic_listxattr(struct dentry *dentry, char *buffer, size_t buffer_size);
 
 
