@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F1F24B845
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF2C24B83B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730076AbgHTLP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:15:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42052 "EHLO mail.kernel.org"
+        id S1729774AbgHTLOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:14:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729679AbgHTKI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:08:56 -0400
+        id S1730774AbgHTKJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:09:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9992420738;
-        Thu, 20 Aug 2020 10:08:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 07DB82067C;
+        Thu, 20 Aug 2020 10:09:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918136;
-        bh=ZYzY6ErG/NfSQMyGO+ymxwRPG0Hb5eEKj9Iv+PmCo5M=;
+        s=default; t=1597918147;
+        bh=r/KTWf0t6xqLREPTsTOA1ZJgkn5LmLXmM9KiU13s534=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o6gxt6+WIUmhwHPLzUXBP8HcUq+jLPlRtFsGtnInebTZb5EPhkFO7Hmlrrr+zBeLc
-         dfYygt6w9ykxgoowOb/dqZWznE2ajxhKUn2dXu7M+rom/80JxhoYJFyMmXc1nv1jRf
-         C8wAQoaQRAJTAjDBLbL1WkFdx4qCXTbLT+C78v9w=
+        b=Z8RF2LW81VJAwQAOLy0djDES9lqnacPZrJ2A3mXa6NeBM+aoaCKfegbVSlfI0SZLO
+         PnOHZbNDaujpoibu7mGbAgcMGjf7+N84mVspc58X0TDWckZwcnVCLwwWTmEHuJI9gm
+         1Mic6s3I/5Edl7IgTM9d3YccBMRpyuOGofxYJcmA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Ricardo=20Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Wei Xu <xuwei5@hisilicon.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 066/228] arm64: dts: hisilicon: hikey: fixes to comply with adi, adv7533 DT binding
-Date:   Thu, 20 Aug 2020 11:20:41 +0200
-Message-Id: <20200820091610.908828095@linuxfoundation.org>
+        stable@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 070/228] mm/mmap.c: Add cond_resched() for exit_mmap() CPU stalls
+Date:   Thu, 20 Aug 2020 11:20:45 +0200
+Message-Id: <20200820091611.102380875@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
 References: <20200820091607.532711107@linuxfoundation.org>
@@ -45,66 +46,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ricardo Cañuelo <ricardo.canuelo@collabora.com>
+From: Paul E. McKenney <paulmck@kernel.org>
 
-[ Upstream commit bbe28fc3cbabbef781bcdf847615d52ce2e26e42 ]
+[ Upstream commit 0a3b3c253a1eb2c7fe7f34086d46660c909abeb3 ]
 
-hi3660-hikey960.dts:
-  Define a 'ports' node for 'adv7533: adv7533@39' and the
-  'adi,dsi-lanes' property to make it compliant with the adi,adv7533 DT
-  binding.
+A large process running on a heavily loaded system can encounter the
+following RCU CPU stall warning:
 
-  This fills the requirements to meet the binding requirements,
-  remote endpoints are not defined.
+  rcu: INFO: rcu_sched self-detected stall on CPU
+  rcu: 	3-....: (20998 ticks this GP) idle=4ea/1/0x4000000000000002 softirq=556558/556558 fqs=5190
+  	(t=21013 jiffies g=1005461 q=132576)
+  NMI backtrace for cpu 3
+  CPU: 3 PID: 501900 Comm: aio-free-ring-w Kdump: loaded Not tainted 5.2.9-108_fbk12_rc3_3858_gb83b75af7909 #1
+  Hardware name: Wiwynn   HoneyBadger/PantherPlus, BIOS HBM6.71 02/03/2016
+  Call Trace:
+   <IRQ>
+   dump_stack+0x46/0x60
+   nmi_cpu_backtrace.cold.3+0x13/0x50
+   ? lapic_can_unplug_cpu.cold.27+0x34/0x34
+   nmi_trigger_cpumask_backtrace+0xba/0xca
+   rcu_dump_cpu_stacks+0x99/0xc7
+   rcu_sched_clock_irq.cold.87+0x1aa/0x397
+   ? tick_sched_do_timer+0x60/0x60
+   update_process_times+0x28/0x60
+   tick_sched_timer+0x37/0x70
+   __hrtimer_run_queues+0xfe/0x270
+   hrtimer_interrupt+0xf4/0x210
+   smp_apic_timer_interrupt+0x5e/0x120
+   apic_timer_interrupt+0xf/0x20
+   </IRQ>
+  RIP: 0010:kmem_cache_free+0x223/0x300
+  Code: 88 00 00 00 0f 85 ca 00 00 00 41 8b 55 18 31 f6 f7 da 41 f6 45 0a 02 40 0f 94 c6 83 c6 05 9c 41 5e fa e8 a0 a7 01 00 41 56 9d <49> 8b 47 08 a8 03 0f 85 87 00 00 00 65 48 ff 08 e9 3d fe ff ff 65
+  RSP: 0018:ffffc9000e8e3da8 EFLAGS: 00000206 ORIG_RAX: ffffffffffffff13
+  RAX: 0000000000020000 RBX: ffff88861b9de960 RCX: 0000000000000030
+  RDX: fffffffffffe41e8 RSI: 000060777fe3a100 RDI: 000000000001be18
+  RBP: ffffea00186e7780 R08: ffffffffffffffff R09: ffffffffffffffff
+  R10: ffff88861b9dea28 R11: ffff88887ffde000 R12: ffffffff81230a1f
+  R13: ffff888854684dc0 R14: 0000000000000206 R15: ffff8888547dbc00
+   ? remove_vma+0x4f/0x60
+   remove_vma+0x4f/0x60
+   exit_mmap+0xd6/0x160
+   mmput+0x4a/0x110
+   do_exit+0x278/0xae0
+   ? syscall_trace_enter+0x1d3/0x2b0
+   ? handle_mm_fault+0xaa/0x1c0
+   do_group_exit+0x3a/0xa0
+   __x64_sys_exit_group+0x14/0x20
+   do_syscall_64+0x42/0x100
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-hi6220-hikey.dts:
-  Change property name s/pd-gpio/pd-gpios, gpio properties should be
-  plural. This is just a cosmetic change.
+And on a PREEMPT=n kernel, the "while (vma)" loop in exit_mmap() can run
+for a very long time given a large process.  This commit therefore adds
+a cond_resched() to this loop, providing RCU any needed quiescent states.
 
-Signed-off-by: Ricardo Cañuelo <ricardo.canuelo@collabora.com>
-Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Wei Xu <xuwei5@hisilicon.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: <linux-mm@kvack.org>
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts | 11 +++++++++++
- arch/arm64/boot/dts/hisilicon/hi6220-hikey.dts    |  2 +-
- 2 files changed, 12 insertions(+), 1 deletion(-)
+ mm/mmap.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts b/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
-index e9f87cb61ade7..8587912e1eb00 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
-+++ b/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
-@@ -210,6 +210,17 @@ adv7533: adv7533@39 {
- 		status = "ok";
- 		compatible = "adi,adv7533";
- 		reg = <0x39>;
-+		adi,dsi-lanes = <4>;
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			port@0 {
-+				reg = <0>;
-+			};
-+			port@1 {
-+				reg = <1>;
-+			};
-+		};
- 	};
- };
- 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi6220-hikey.dts b/arch/arm64/boot/dts/hisilicon/hi6220-hikey.dts
-index 6887cc1a743d4..f78e6468b02fc 100644
---- a/arch/arm64/boot/dts/hisilicon/hi6220-hikey.dts
-+++ b/arch/arm64/boot/dts/hisilicon/hi6220-hikey.dts
-@@ -513,7 +513,7 @@ adv7533: adv7533@39 {
- 		reg = <0x39>;
- 		interrupt-parent = <&gpio1>;
- 		interrupts = <1 2>;
--		pd-gpio = <&gpio0 4 0>;
-+		pd-gpios = <&gpio0 4 0>;
- 		adi,dsi-lanes = <4>;
- 		#sound-dai-cells = <0>;
- 
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 8c6ed06983f9e..724b7c4f1a5b5 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -3065,6 +3065,7 @@ void exit_mmap(struct mm_struct *mm)
+ 		if (vma->vm_flags & VM_ACCOUNT)
+ 			nr_accounted += vma_pages(vma);
+ 		vma = remove_vma(vma);
++		cond_resched();
+ 	}
+ 	vm_unacct_memory(nr_accounted);
+ }
 -- 
 2.25.1
 
