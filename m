@@ -2,76 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E41F324ACFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 04:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5E4624ACFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 04:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726810AbgHTCYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 22:24:04 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9789 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726578AbgHTCYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 22:24:04 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id EA9B2982E81175518C99;
-        Thu, 20 Aug 2020 10:24:00 +0800 (CST)
-Received: from [127.0.0.1] (10.174.179.108) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Thu, 20 Aug 2020
- 10:23:57 +0800
-Subject: Re: [PATCH v2] net: stmmac: Fix signedness bug in
- stmmac_probe_config_dt()
-To:     Andrew Lunn <andrew@lunn.ch>
-References: <20200818143952.50752-1-yuehaibing@huawei.com>
- <20200818151500.51548-1-yuehaibing@huawei.com>
- <20200818170448.GH2330298@lunn.ch>
-CC:     <peppe.cavallaro@st.com>, <alexandre.torgue@st.com>,
-        <joabreu@synopsys.com>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <mcoquelin.stm32@gmail.com>, <ajayg@nvidia.com>,
-        <netdev@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-From:   Yuehaibing <yuehaibing@huawei.com>
-Message-ID: <07d81dd7-f59a-b7ca-64e9-ac1ab9aa4758@huawei.com>
-Date:   Thu, 20 Aug 2020 10:23:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.8.0
+        id S1726796AbgHTC1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 22:27:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726362AbgHTC1s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 22:27:48 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 294C6C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 19:27:46 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id p18so497404ilm.7
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 19:27:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s1iRO5PUEwoxn+BQDVff7Q0S8DqLabJs/zvwZKudU08=;
+        b=R0Ilo9pbEwV1QcELP/G0YHafJ62sW9RW+n0w4aAnjroypno1+q7aUWPEZLH3nVkOg0
+         xANF+WKw1jpfmzx/hivpmyxc/LJDY8Y2PaEyWSBzlcCwJupAqPwL2eOykaublqH24k+z
+         p0ExxkF/14tS8NEohByRUhzseRbMqB5ucSmEk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s1iRO5PUEwoxn+BQDVff7Q0S8DqLabJs/zvwZKudU08=;
+        b=FprlRnhGfXNpd37W3DPJs2HwYGLgUUmhLTZk7pITPQdWkjQ8WsNXhrE9H1A0Zern0g
+         BFPh+5sw4wECyTPbL0Hmk4c6qv/e2cUi2WUGmZuG7chulvoRj9jhd3Ap6Ev2gJEdb3lF
+         1C7+iCy4EJRJgDn5TfB37uKODD8IOJxf1JvRI0LHZs8AOmRLsrTTcTve1DuHD66deKEA
+         ZMQJ3WnIm0rfDNGxSHv7WFefD5+g+lT0wWomqeevnIZL9Mu09nZZNJGeLyZxmbmpnK3M
+         30mU4VMAfo7S3f4NSkJLOQSn+RfoRoR5J2Rfk2YbOP8zLBwbE6XTrJmpCZm+g/N9dCsU
+         cUOw==
+X-Gm-Message-State: AOAM532+8lhfiSERgjDVefAjHsjwpJHa1ZYSQdz5UXVVWlcnLUEk6LEt
+        455XywEdeJBsOODs6LAqY1IPUkNv7q9NweS8juZOaA==
+X-Google-Smtp-Source: ABdhPJxv7K/m2IZrGcCWyjSvDQaMV8kZsnsd/h081uSL046DJj5W3lKLzWNjXHh4FXImnh1IPHtNpwfKP6pb7szuRM0=
+X-Received: by 2002:a92:d086:: with SMTP id h6mr831618ilh.205.1597890462056;
+ Wed, 19 Aug 2020 19:27:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200818170448.GH2330298@lunn.ch>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.108]
-X-CFilter-Loop: Reflected
+References: <20200729161510.1.Iaa9c3d7c4332cf8717653f3d3ae6f2b955aa3fc6@changeid>
+ <20200814145956.GA12962@ideak-desk.fi.intel.com>
+In-Reply-To: <20200814145956.GA12962@ideak-desk.fi.intel.com>
+From:   Sam McNally <sammc@chromium.org>
+Date:   Thu, 20 Aug 2020 12:27:03 +1000
+Message-ID: <CAJqEsoCAR-3NNL+pD4QeUWioq-uLdEdZwNrPVkzjULM39KiayA@mail.gmail.com>
+Subject: Re: [PATCH] drm/dp_mst: Add ddc i2c device links for DP MST connectors
+To:     imre.deak@intel.com
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/8/19 1:04, Andrew Lunn wrote:
-> On Tue, Aug 18, 2020 at 11:15:00PM +0800, YueHaibing wrote:
->> The "plat->phy_interface" variable is an enum and in this context GCC
->> will treat it as an unsigned int so the error handling is never
->> triggered.
->>
->> Fixes: b9f0b2f634c0 ("net: stmmac: platform: fix probe for ACPI devices")
->> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> 
-> Hi YueHaibing
-> 
-> Please take a look at:
-> 
-> commit 0c65b2b90d13c1deaee6449304dd367c5d4eb8ae
-> Author: Andrew Lunn <andrew@lunn.ch>
-> Date:   Mon Nov 4 02:40:33 2019 +0100
-> 
->     net: of_get_phy_mode: Change API to solve int/unit warnings
-> 
-> You probably want to follow this basic idea.
-> 
+Thanks for the feedback.
 
-Thanks, will rework following this.
+On Sat, 15 Aug 2020 at 01:00, Imre Deak <imre.deak@intel.com> wrote:
+>
+> On Wed, Jul 29, 2020 at 04:15:28PM +1000, Sam McNally wrote:
+> > As of commit d8bd15b37d32 ("drm/dp_mst: Fix the DDC I2C device
+> > registration of an MST port"), DP MST DDC I2C devices are consistently
+> > parented to the underlying DRM device, making it challenging to
+> > associate the ddc i2c device with its connector from userspace.
+>
+> I can't see how was it less challenging before the commit. There is no
+> guarantee for a CSN message which was the only way for the i2c device to
+> get reparented to the connector.
+>
 
->     Andrew
-> 
-> .
-> 
+Yes, that's true - the state before and after are both unable to
+support ddc reliable i2c device discovery, and consistency is better.
+The challenging part certainly is an ongoing affair - I wasn't
+intending to blame it on that commit, though it has come out that way,
+unfortunately. Looking at it now, that paragraph doesn't need to
+reference any commits in particular; I'll rewrite it for the next
+version.
 
+> > Given the need for further refactoring before the i2c devices can be
+> > parented to their connectors, in the meantime follow the pattern of
+> > commit e1a29c6c5955 ("drm: Add ddc link in sysfs created by
+> > drm_connector"), creating sysfs ddc links to the associated i2c device
+> > for MST DP connectors.
+> >
+> > If the connector is created and registered before the i2c device, create
+> > the link when registering the i2c device; otherwise, create the link
+> > during late connector registration.
+> >
+> > Signed-off-by: Sam McNally <sammc@chromium.org>
+> > ---
+> >
+> >  drivers/gpu/drm/drm_dp_mst_topology.c | 29 +++++++++++++++++++++++++--
+> >  1 file changed, 27 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+> > index 1ac874e4e7a1..73a2299c2faa 100644
+> > --- a/drivers/gpu/drm/drm_dp_mst_topology.c
+> > +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+> > @@ -2161,11 +2161,23 @@ static void build_mst_prop_path(const struct drm_dp_mst_branch *mstb,
+> >  int drm_dp_mst_connector_late_register(struct drm_connector *connector,
+> >                                      struct drm_dp_mst_port *port)
+> >  {
+> > +     int ret;
+> >       DRM_DEBUG_KMS("registering %s remote bus for %s\n",
+> >                     port->aux.name, connector->kdev->kobj.name);
+> >
+> >       port->aux.dev = connector->kdev;
+> > -     return drm_dp_aux_register_devnode(&port->aux);
+> > +     ret = drm_dp_aux_register_devnode(&port->aux);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     if (port->pdt != DP_PEER_DEVICE_NONE &&
+> > +         drm_dp_mst_is_end_device(port->pdt, port->mcs)) {
+>
+> How can we get here when drm_dp_mst_is_end_device(port) is not true?
+> AFAICS that's only case where we should create a connector and an i2c
+> device. (IOW we don't create them for branch ports.)
+>
+
+I'm not sure what you mean. Wouldn't this condition be checked during
+the registration of any MST connector? This follows the pattern used
+in drm_dp_mst_port_add_connector() [0], which seems like it's invoked
+in the same cases as drm_dp_mst_connector_late_register(), modulo
+early outs for errors.
+
+[0] https://cgit.freedesktop.org/drm-tip/tree/drivers/gpu/drm/drm_dp_mst_topology.c?id=1939e049a8ec6cef03a098f7cc99cb0bbcff21c6#n2188
+
+
+
+> > +             ret = sysfs_create_link(&port->connector->kdev->kobj,
+> > +                                     &port->aux.ddc.dev.kobj, "ddc");
+> > +             if (ret)
+> > +                     drm_dp_aux_unregister_devnode(&port->aux);
+> > +     }
+> > +     return ret;
+> >  }
+> >  EXPORT_SYMBOL(drm_dp_mst_connector_late_register);
+> >
+> > @@ -5490,6 +5502,7 @@ static int drm_dp_mst_register_i2c_bus(struct drm_dp_mst_port *port)
+> >  {
+> >       struct drm_dp_aux *aux = &port->aux;
+> >       struct device *parent_dev = port->mgr->dev->dev;
+> > +     int ret;
+> >
+> >       aux->ddc.algo = &drm_dp_mst_i2c_algo;
+> >       aux->ddc.algo_data = aux;
+> > @@ -5504,7 +5517,17 @@ static int drm_dp_mst_register_i2c_bus(struct drm_dp_mst_port *port)
+> >       strlcpy(aux->ddc.name, aux->name ? aux->name : dev_name(parent_dev),
+> >               sizeof(aux->ddc.name));
+> >
+> > -     return i2c_add_adapter(&aux->ddc);
+> > +     ret = i2c_add_adapter(&aux->ddc);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     if (port->connector && port->connector->kdev) {
+> > +             ret = sysfs_create_link(&port->connector->kdev->kobj,
+> > +                                     &port->aux.ddc.dev.kobj, "ddc");
+> > +             if (ret)
+> > +                     i2c_del_adapter(&port->aux.ddc);
+> > +     }
+> > +     return ret;
+> >  }
+> >
+> >  /**
+> > @@ -5513,6 +5536,8 @@ static int drm_dp_mst_register_i2c_bus(struct drm_dp_mst_port *port)
+> >   */
+> >  static void drm_dp_mst_unregister_i2c_bus(struct drm_dp_mst_port *port)
+> >  {
+> > +     if (port->connector && port->connector->kdev)
+> > +             sysfs_remove_link(&port->connector->kdev->kobj, "ddc");
+> >       i2c_del_adapter(&port->aux.ddc);
+> >  }
+> >
+> > --
+> > 2.28.0.rc0.142.g3c755180ce-goog
+> >
