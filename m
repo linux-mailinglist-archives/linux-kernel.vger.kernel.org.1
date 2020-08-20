@@ -2,128 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBCE924C070
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2827B24C074
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727125AbgHTOT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 10:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45348 "EHLO
+        id S1727892AbgHTOTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 10:19:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726947AbgHTOTT (ORCPT
+        with ESMTP id S1726947AbgHTOTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 10:19:19 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4841C061385
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 07:19:19 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id j188so1156118vsd.2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 07:19:19 -0700 (PDT)
+        Thu, 20 Aug 2020 10:19:44 -0400
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90548C061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 07:19:44 -0700 (PDT)
+Received: by mail-oo1-xc41.google.com with SMTP id r6so438214oon.13
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 07:19:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZnDxdkuxYRmNtyk7Y2huayEumQNpEwRvmtnxfMXB4XU=;
-        b=ycvUl+MIZkhh4i8WXE15mw8LqxN3ey4UI3XKE1PFm+ioTX5Rxxs+bUZCMNTmMhB6Yo
-         +OyB4iENr/YC0+7OkuV1mdJL8vkMNBAuYS27Zb3CMuhpLDUtztBi07B3oHaHAAlw4LAv
-         faPtW4aLGLuDBfUflYkU+HQlompO0tg0AGLkCj0AP+bAJWs6tRSMjaGkrHq6OOY/tncy
-         BNxP1x+p0RKupWOa0A5i7DKeLHY/+GX8xnh1UGwsFhZhQTAlqI3i365iYGvFMCzQg+qs
-         gPqFOssA/diIZdAwWejMobS56aGInUxXfr6vX3f3NjBZwZJZzMUPveJu32uGeqOAQu6l
-         +1VA==
+        bh=LQb9WVGZOx9n9j1FigmsnSqdEAP41Eibw43enyJulIg=;
+        b=Phws8BHUL0rUuOaS64E2fTWRZt9Xw776XjmJ2R1c/Hs4o7LUXA/dRJkOBCvjOR38Qm
+         k1/SI/7I9n+X2CSLxuurpdv3E+7JZ8jK7n7+cQ/BPmCzXBdTaQWkfR9GN2cUgVn5lGLa
+         G/fWMnjIvdIaYf2gOXJ83vUsrFRSkG0J60nkpCxtBv01hK9A/oIdsBnDEUvSZu39MHXp
+         T/YsqM4ksVBjDaKSYM2ZYiIyTkIF/ZY+u9QotE0y9ifo8nK4tr7n6gmGV6dbBslWSc/d
+         J/Nim7X6TUEoCYaZDnbBpBifL53hflbz05yy3N8Up7dTK0Ub0xP0e3snxl274kmA6xde
+         KZFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZnDxdkuxYRmNtyk7Y2huayEumQNpEwRvmtnxfMXB4XU=;
-        b=DuajESu/taELGYNm136xTXcoFQS8cem7fzh1hLaqEbfWczfoBORBnowED/gIkpllZ6
-         nC3cRrUvrIsYirsOoinV4DLducmejUkg4JfJkuvkELsz9K8RaBPK8y/BBhaIxSbIb9Y6
-         Ra+nkrckMnemq9GCKCfS/PB5oAdZYc15OniSInrjcclfGUxvwg8p8Ku3auab3ZN6HJJJ
-         fv7jC8c6dj6z8gR0lTUJtcWWemoBNZSDSJsuRDOCzgUm6wSWABo1VS03B1BzFow8fOy5
-         v35atilz6Ka+iqzqhhTwqXU0/QbMuR3nnRJcX9fAW6ZhyNhVOwCrUlCW5Xc44LN+m7Lb
-         arNw==
-X-Gm-Message-State: AOAM5322DrV+UmoF3yQyQlpt6KveIxLYVE/5bmCoh6wANdPaXzoNCs8r
-        dBIzfhZBp/lCY7YZe8/Jrr7CVon5wkhR0LRE67pqMg==
-X-Google-Smtp-Source: ABdhPJwuYHKqDHqKwLv8/8PxuHVAGY/r1uoCFi8obd0CL6NZntClddlPGruInNtIRyyIkgjWiazXUfLgaWFjk+pxu8Y=
-X-Received: by 2002:a67:6996:: with SMTP id e144mr2120745vsc.185.1597933157760;
- Thu, 20 Aug 2020 07:19:17 -0700 (PDT)
+        bh=LQb9WVGZOx9n9j1FigmsnSqdEAP41Eibw43enyJulIg=;
+        b=Z3PtYeLPAF63scigEg6eZhyUHu5GngGwiZfHYXsLp1R6hUP0Z9wI+zVbPPs2i/0/Hh
+         +yCPx/bZCpjUKSv+hi9dibNHFA99h+Sni4IcKhpipa/flHKvG4iJcaX+KjfU8mVKa2oH
+         AWpuly+v9dgXTkUZ+cftSwWBiTzZFJvR9nc+4Q+uK4CqUR11+lZMYu3NevXPfpDSWy+p
+         Ft4Hsw9Z52HG0j+l1p9Pw6p7f/d3q7NSaKUGpreSqMB0eLw/zt5X37X/bfAEBU+duqVw
+         CU38eE8OK7LsOyMJRnEbSxXda9jj6awIlEWhe3LRj5SqdepTmp1jScF/lEN4+2FjH0dl
+         e5HQ==
+X-Gm-Message-State: AOAM530ObzwoRmaMs6WB2xlWPNcmiTECUtLYSyGJy0l4u/naYIjPTa65
+        Mv5uPYWrq3v3rc9SXil3J8nzqIvZ+ayfirOyB53AeEHaVPvPEQ==
+X-Google-Smtp-Source: ABdhPJyhjS63/b7WDVE9wM6oUnylRf6OwbI259OrGMTGANyQn2bOCLku2JrRZ5P9CrNozQGO1Sgqpy0LvqHAo91+ycY=
+X-Received: by 2002:a4a:d2d8:: with SMTP id j24mr2588594oos.82.1597933182847;
+ Thu, 20 Aug 2020 07:19:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200820092125.688850368@linuxfoundation.org>
-In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 20 Aug 2020 19:49:06 +0530
-Message-ID: <CA+G9fYsxQEnACmjP+CUtBq9P+0nWU_19oG62tpCbKtdcGAStfA@mail.gmail.com>
-Subject: Re: [PATCH 4.4 000/149] 4.4.233-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>,
-        Willy Tarreau <w@1wt.eu>, Kees Cook <keescook@chromium.org>
+References: <20200820120025.74460-1-benbjiang@tencent.com> <CAKfTPtABCbEuYf3uup5ZODyPXpUqBjgM8A5gBQqM0cQGxWk5zw@mail.gmail.com>
+ <20200820125829.GT2674@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200820125829.GT2674@hirez.programming.kicks-ass.net>
+From:   Jiang Biao <benbjiang@gmail.com>
+Date:   Thu, 20 Aug 2020 22:19:32 +0800
+Message-ID: <CAPJCdB=f_qSS-t_TFSjtT9uDo6q57bScCyau=gkF4E1gNcSjmQ@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: avoid vruntime compensation for SCHED_IDLE task
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiang Biao <benbjiang@tencent.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Aug 2020 at 15:47, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Thu, 20 Aug 2020 at 20:58, <peterz@infradead.org> wrote:
 >
-> This is the start of the stable review cycle for the 4.4.233 release.
-> There are 149 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Thu, Aug 20, 2020 at 02:51:06PM +0200, Vincent Guittot wrote:
+> > On Thu, 20 Aug 2020 at 14:00, Jiang Biao <benbjiang@gmail.com> wrote:
+> > >
+> > > From: Jiang Biao <benbjiang@tencent.com>
+> > >
+> > > Vruntime compensation has been down in place_entity() to
+> > > boot the waking procedure for fair tasks. There is no need to
+> >
+> > s/boot/boost/ ?
+> >
+> > > do that for SCHED_IDLE task actually.
+> > >
+> > > Not compensating vruntime for SCHED_IDLE task could make
+> > > SCHED_IDLE task more harmless for normal tasks.
 >
-> Responses should be made by Sat, 22 Aug 2020 09:21:01 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.233-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+> This is rather week. It would be much better if there's some actual data
+> to support this claim.
+I'll try to have a test and get some data. :)
 
-i386 build failed on stable-rc 4.4 branch
-
-make -sk KBUILD_BUILD_USER=TuxBuild -C/linux -j16 ARCH=i386 HOSTCC=gcc
-CC="sccache gcc" O=build
-#
-In file included from ../samples/seccomp/bpf-direct.c:19:
-/usr/include/linux/types.h:5:10: fatal error: asm/types.h: No such
-file or directory
-    5 | #include <asm/types.h>
-      |          ^~~~~~~~~~~~~
-compilation terminated.
-In file included from /usr/include/linux/filter.h:10,
-                 from ../samples/seccomp/bpf-fancy.c:12:
-/usr/include/linux/types.h:5:10: fatal error: asm/types.h: No such
-file or directory
-    5 | #include <asm/types.h>
-      |          ^~~~~~~~~~~~~
-compilation terminated.
-make[3]: *** [scripts/Makefile.host:108: samples/seccomp/bpf-direct.o] Error 1
-make[3]: *** [scripts/Makefile.host:108: samples/seccomp/bpf-fancy.o] Error 1
-In file included from /usr/include/bits/errno.h:26,
-                 from /usr/include/errno.h:28,
-                 from ../samples/seccomp/dropper.c:17:
-/usr/include/linux/errno.h:1:10: fatal error: asm/errno.h: No such
-file or directory
-    1 | #include <asm/errno.h>
-      |          ^~~~~~~~~~~~~
-compilation terminated.
-make[3]: *** [scripts/Makefile.host:108: samples/seccomp/dropper.o] Error 1
-In file included from ../samples/seccomp/bpf-helper.c:16:
-../samples/seccomp/bpf-helper.h:17:10: fatal error: asm/bitsperlong.h:
-No such file or directory
-   17 | #include <asm/bitsperlong.h> /* for __BITS_PER_LONG */
-      |          ^~~~~~~~~~~~~~~~~~~
+>
+> > > Signed-off-by: Jiang Biao <benbjiang@tencent.com>
+> > > ---
+> > >  kernel/sched/fair.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > index 1a68a0536add..adff77676a0a 100644
+> > > --- a/kernel/sched/fair.c
+> > > +++ b/kernel/sched/fair.c
+> > > @@ -4115,7 +4115,7 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int initial)
+> > >                 vruntime += sched_vslice(cfs_rq, se);
+> > >
+> > >         /* sleeps up to a single latency don't count. */
+> > > -       if (!initial) {
+> > > +       if (!initial && likely(!task_has_idle_policy(task_of(se)))) {
+> >
+> > What if se is not a task ?
+>
+> Then we very much need it, because it might have fair tasks inside. I
+> suppose you could do something complicated with idle_h_nr_running, but
+> is all that really worth the effort?
+Would it be better to limit to task se case? like
+ +       if (!initial && likely(!entity_is_task(se) ||
+!task_has_idle_policy(task_of(se)))) {
 
 
--- 
-Linaro LKFT
-https://lkft.linaro.org
+
+>
+> > >                 unsigned long thresh = sysctl_sched_latency;
+> > >
+> > >                 /*
+> > > --
+> > > 2.21.0
+> > >
