@@ -2,165 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A2324B040
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B20424B076
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726325AbgHTHiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 03:38:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725824AbgHTHiP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 03:38:15 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9720DC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 00:38:14 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id g75so676641wme.4
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 00:38:14 -0700 (PDT)
+        id S1726970AbgHTHwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 03:52:11 -0400
+Received: from mail-dm6nam10on2049.outbound.protection.outlook.com ([40.107.93.49]:45647
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725819AbgHTHwE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 03:52:04 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VGHfTwgzLiTBk+INrDQh4XmW7djAfSNPqkmW4WoPg4ps7upzKhlxK9aYShJcL6hahEhLtt/b1hzDg9b9hoTNWUB6KGeQiD5DD558geAY6WXj6iBe9rUfOTvAHdQ0mqwr9G7eKOa9zFA58xkvwxd9dZ97YyiKM+oEvIzO+pauwYXKQopRz+m9skplmwX7bzDXyXkyMD5WbQMv80sQVTXmIS2U6w60EXQTW4G1hLISlVHGZ3H8bMc+uGn155fF6m6gM04kMmVs9z6ryFMMJSmI9N6KDprBOXTSAu+Y4UjrNw7fcoYOSpyAHgO7F9ZhsxGs4TnZFfcTStlLOYBujTbRVQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BNtAOBC3aUw8TNLgI4GIzbD8jxcV4QRv6CXfrsJeh8Q=;
+ b=i3OgaSXHEqiqGoY60SSkKirCKIO0jvqGg7u94gS0CqLONEeI+49YRFLAELqdP3UXNdDxaCefEQnflDljQKMWsvu8LzIeN4xzRSrRCFzzxGXG2CnfesuIONxL0JYOL5vCE+2rRMVUx7MIf7BiWVzenBMFwpbktFqmlM2KCHxQSQD+tYKSBf7wC4AhOW/zRO8xFAdA2keH2L+GD4ngDVM5cd56cTGCL7liNOq5xtmi43OBWS3dLyS9uh08PPoGeIp1YbEMrZkyOWyeDzJ/a/93GwlHwrowILeDIj+s8UxZ4yiGRXyQkm5JnAd6MpkbhE8h78yqvpZYEq7KlYosIn5CIg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tQmGB+boenn+8AWQYGoZFj5ruu/kBTP0OjM4DoRcBzM=;
-        b=AviZ1SR1z3KYs/8oZaCL1cwH2GoTYKUaG1Mf7v+i8czULqXqUw5TOw+ZLKDfIYI+/P
-         5pgLSO7AAtAcdIC6ilZqNd58/QJbswRzm2H8QTbkGMxazUqSDiN7Op6SUAPOGmfnrrc6
-         je7fyhZTZ/iSQoIrjYE2/KbBrcX3nAY8KH5a3lzZLNofdM8/VZyNOMfChro5Sk2SEYTP
-         TriwhY59mSH9pR9JTMlh34jQKmHdZbasI5wR8+JP+UHImu0Tr5QPMfucQW75o6yAM9ey
-         7s8tKEwQS3s5MJrRHaDV5z5efziaDVP1okOS27kT0lXZItiM8iqWshBv5aXY3bPjXT1Z
-         yGhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tQmGB+boenn+8AWQYGoZFj5ruu/kBTP0OjM4DoRcBzM=;
-        b=U6drgT2icHnx494P2BwONCE95NXYWtx8UYBSbHIkYB783rLZA6dF1RpF6+GyTeGaZd
-         /RorUZEBnQbNzSiA2GXbm3fmq0uFodI0tUy30DnO7PJW7p9Ji/9qZVzMFYW0PJvf70/4
-         la4VxBfq/uHazw4w+FAYx92fyKuiGbSXtw58HwWm9AMj2G6/DR6MSD0UdB5+4NnT4SLD
-         Pz8pkwa0nRHzhjI3biEGTqgmIoXoc7MgOAvgPKZsB1Fdyu+ImDofYjn98+tSE3hYIv4a
-         dx7OcfaQHvIXKY+/4yIlzgopygEeX5+zEx9rLph00XPBub99k3V4aqfPnzL56n34W09h
-         3FxA==
-X-Gm-Message-State: AOAM531W97annbAJf+J5woNcflfZI3JEsUWdSaOWav3bLBGtMi4bbyvX
-        /LY7xTTl9h4j39MnZU8BDaNUyffFT/xIy/qgF6E=
-X-Google-Smtp-Source: ABdhPJyrhHyKEtU55iuD+ebeNI3eJX/NhcCqjNEYNHfndZ9F16tloec+To42PB17tAUBxv8xmPrMo8joNdVnrXkAe7Q=
-X-Received: by 2002:a7b:c384:: with SMTP id s4mr2082840wmj.138.1597909093072;
- Thu, 20 Aug 2020 00:38:13 -0700 (PDT)
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BNtAOBC3aUw8TNLgI4GIzbD8jxcV4QRv6CXfrsJeh8Q=;
+ b=gXEYhmkrjvk3T5/kiEDpsw4UL15YC6T4101E/f8vaAgP8xk7380/JKUOkiUAjynUWuzZTWH/ktLA7ppg5OUYuFghezELeKDzoiDXTU+ymAIL8h+GPL2QaeYMpMtSjgQg6ogACBiWpapIuAt/nf+DMa/f3ZXwPX347Drf8MzLYH4=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=synaptics.com;
+Received: from BN7PR03MB4547.namprd03.prod.outlook.com (2603:10b6:408:9::22)
+ by BN7PR03MB4563.namprd03.prod.outlook.com (2603:10b6:408:36::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.16; Thu, 20 Aug
+ 2020 07:52:02 +0000
+Received: from BN7PR03MB4547.namprd03.prod.outlook.com
+ ([fe80::3cda:7634:5802:df5f]) by BN7PR03MB4547.namprd03.prod.outlook.com
+ ([fe80::3cda:7634:5802:df5f%7]) with mapi id 15.20.3305.024; Thu, 20 Aug 2020
+ 07:52:02 +0000
+Date:   Thu, 20 Aug 2020 15:38:16 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Icenowy Zheng <icenowy@aosc.io>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 09/12] regulator: pwm: Fix W=1 build warning when
+ CONFIG_OF=n
+Message-ID: <20200820153816.5f64bd0e@xhacker.debian>
+In-Reply-To: <20200820152926.42c48840@xhacker.debian>
+References: <20200820152926.42c48840@xhacker.debian>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: TY1PR01CA0194.jpnprd01.prod.outlook.com (2603:1096:403::24)
+ To BN7PR03MB4547.namprd03.prod.outlook.com (2603:10b6:408:9::22)
 MIME-Version: 1.0
-References: <20200818052936.10995-1-joshi.k@samsung.com> <CGME20200818053256epcas5p46d0b66b3702192eb6617c8bba334c15f@epcas5p4.samsung.com>
- <20200818052936.10995-3-joshi.k@samsung.com> <20200818071249.GB2544@lst.de>
- <b52854fe11640a5a5f54e08b1d3c7a556f97aad5.camel@linux.intel.com> <20200819214248.GA26769@dhcp-10-100-145-180.wdl.wdc.com>
-In-Reply-To: <20200819214248.GA26769@dhcp-10-100-145-180.wdl.wdc.com>
-From:   Kanchan Joshi <joshiiitr@gmail.com>
-Date:   Thu, 20 Aug 2020 13:07:46 +0530
-Message-ID: <CA+1E3rJgvvebEex-zVBGtqK_BAaQUtcwq9nDoFm+Rd=DD20zxg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] nvme: add emulation for zone-append
-To:     Keith Busch <kbusch@kernel.org>
-Cc:     David Fugate <david.fugate@linux.intel.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "Damien.LeMoal@wdc.com" <Damien.LeMoal@wdc.com>,
-        SelvaKumar S <selvakuma.s1@samsung.com>,
-        "sagi@grimberg.me" <sagi@grimberg.me>,
-        Kanchan Joshi <joshi.k@samsung.com>,
-        "johannes.thumshirn@wdc.com" <johannes.thumshirn@wdc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from 255.255.255.255 (255.255.255.255) by TY1PR01CA0194.jpnprd01.prod.outlook.com (2603:1096:403::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24 via Frontend Transport; Thu, 20 Aug 2020 07:51:59 +0000
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+X-Originating-IP: [124.74.246.114]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f664a77e-fdf2-4598-0474-08d844ddec74
+X-MS-TrafficTypeDiagnostic: BN7PR03MB4563:
+X-Microsoft-Antispam-PRVS: <BN7PR03MB4563321E4B75C8F6FCA8322BED5A0@BN7PR03MB4563.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:449;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0/XqH51IPVQItCmHnFwwhXHwzphOAuyDgX5bMXtey1oRMZxxtlKPV/q660ZzjnqDPL6fCsUuEKYl2ORq6azibbN+yxpo9FtVs3089ym86XVvlU/3qDc7DVL+p6Nnd3SVSs+bhp23u7X+53BIygpAPIHgV2DrCEdB8hmQZLdjJUkagLigdtFIybLmNTEuKSkMtMJcgSidvYCXts2hbbmJ/CA29To4U3BH7sKlgn3LyCsfMhW+ZO9lghHchTyHp7kHLGcly7pYtk5q7jJY1EBZzos1ji8QRKTvUXJtoCGhVZZV1J/jyyi/FOGMhwB/TAad9KI2JpwUJVDSfd4u61UiBhgZqmE3FQzSglzSomNWL2itwSmw64iUC0HeJYyFLN6q
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR03MB4547.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(396003)(346002)(136003)(376002)(1076003)(4744005)(4326008)(2906002)(5660300002)(6666004)(478600001)(956004)(9686003)(83380400001)(26005)(316002)(86362001)(52116002)(8676002)(66946007)(16576012)(66556008)(6486002)(110011004)(8936002)(66476007)(110136005)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: abaGsiNSvE7whFO2We9VMFdZfGDpGCPYOf9OiV3stxDDcKfD1PAAvhZN1u2UcPXrr+2wSpSxDTv96m93rV2tCWi2/MTItd0iB/rZBzQt0IVbE+USj9EzEQIRYDtgB+6bYb+w27M7/9yiMiLgbC0JobNyp2RrcR56U2u1bl6fLDRtmhf98xj0RWBpOIT04Z0cIEnyzAjt3icc46IDbvCIu4Q8C2VsSa6BP/eXJShq9AI/Ljm2k1cinok0qEg3RHdM3Ci7S8qHhvXYXfsbeZdpjmg6vBzNkPfsvLjD0ojwrTiF/g5HDrsxSqHf8JRS6brNykUMOJbWXXy6ylTTawqMErQU/Z9IxspPA+1hqff2xHl0VSYMV2x2l7AFz+1wAN2Gn1T5Zs6dTdF6tNZMrOxe7nN7a9icw9KHH2WontEizkhfp0a1PzpxxHmXzTyNqwvpcBZcXXpNCOQZB7xXYjHSmdO3VJcoTF04W1YWztVD4VJs1TfPeH9Zc7siBxjskNL3c702HqhJdNaJa6V4E29LnmpKinICTdY69+G5C1LTAc4hd4ul2EKt6x6yKatDQS1go2GnuJETgbeNKTivyrIycngMesyes+ul6zL09UnkRI15QICb4ezxaouUBOo3HWZXuqCYPNMope1eThjzO28slw==
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f664a77e-fdf2-4598-0474-08d844ddec74
+X-MS-Exchange-CrossTenant-AuthSource: BN7PR03MB4547.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2020 07:52:02.1181
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jiyW2059+gRGwUdSRFmJ5p/7LKxlB+900+eIHOT6NTqZJ24+nXC8Ng/DrRS8mNSpriaEiSe7yg7TcXsIXClzMA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR03MB4563
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 3:22 AM Keith Busch <kbusch@kernel.org> wrote:
->
-> On Wed, Aug 19, 2020 at 01:11:58PM -0600, David Fugate wrote:
-> > Intel does not support making *optional* NVMe spec features *required*
-> > by the NVMe driver.
->
-> This is inaccurate. As another example, the spec optionally allows a
-> zone size to be a power of 2, but linux requires a power of 2 if you
-> want to use it with this driver.
->
-> > Provided there's no glaring technical issues
->
-> There are many. Some may be improved through a serious review process,
-> but the mess it makes out of the fast path is measurably harmful to
-> devices that don't subscribe to this. That issue is not so easily
-> remedied.
->
-> Since this patch is a copy of the scsi implementation, the reasonable
-> thing is take this fight to the generic block layer for a common
-> solution. We're not taking this in the nvme driver.
+Fix below warning when CONFIG_OF=3Dn:
 
-I sincerely want to minimize any adverse impact to the fast-path of
-non-zoned devices.
-My understanding of that aspect is (I feel it is good to confirm,
-irrespective of the future of this patch):
+drivers/regulator/pwm-regulator.c:393:34: warning: =E2=80=98pwm_of_match=E2=
+=80=99 defined but not used [-Wunused-const-variable=3D]
+  393 | static const struct of_device_id pwm_of_match[] =3D {
+      |                                  ^~~~~~~~~~~~
 
-1. Submission path:
-There is no extra code for non-zoned device IO. For append, there is
-this "ns->append_emulate = 1" check.
-Snippet -
-        case REQ_OP_ZONE_APPEND:
--               ret = nvme_setup_rw(ns, req, cmd, nvme_cmd_zone_append);
-+               if (!nvme_is_append_emulated(ns))
-+                       ret = nvme_setup_rw(ns, req, cmd, nvme_cmd_zone_append);
-+               else {
-+                       /* prepare append like write, and adjust lba
-afterwards */
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+---
+ drivers/regulator/pwm-regulator.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-2. Completion:
- Not as clean as submission for sure.
-The extra check is "ns && ns->append_emulate == 1" for completions if
-CONFIG_ZONED is enabled.
-A slightly better completion-handling version (than the submitted patch) is -
-
--       } else if (IS_ENABLED(CONFIG_BLK_DEV_ZONED) &&
--                  req_op(req) == REQ_OP_ZONE_APPEND) {
--               req->__sector = nvme_lba_to_sect(req->q->queuedata,
--                       le64_to_cpu(nvme_req(req)->result.u64));
-+       } else if (IS_ENABLED(CONFIG_BLK_DEV_ZONED)) {
-+               struct nvme_ns *ns = req->q->queuedata;
-+               /* append-emulation requires wp update for some cmds*/
-+               if (ns && nvme_is_append_emulated(ns)) {
-+                       if (nvme_need_zone_wp_update(req))
-+                               nvme_zone_wp_update(ns, req, status);
-+               }
-+               else if (req_op(req) == REQ_OP_ZONE_APPEND)
-+                       req->__sector = nvme_lba_to_sect(ns,
-+                                       le64_to_cpu(nvme_req(req)->result.u64));
-
-Am I missing any other fast-path pain-points?
-
-A quick 1 minute 4K randwrite run (QD 64, 4 jobs,libaio) shows :
-before: IOPS=270k, BW=1056MiB/s (1107MB/s)(61.9GiB/60002msec)
-after:  IOPS=270k, BW=1055MiB/s (1106MB/s)(61.8GiB/60005msec)
-
-This maynot be the best test to see the cost, and I am happy to
-conduct more and improvise.
-
-As for the volume of the code - it is same as SCSI emulation. And I
-can make efforts to reduce that by moving common code to blk-zone, and
-reuse in SCSI/NVMe emulation.
-In the patch I tried to isolate append-emulation by keeping everything
-into "nvme_za_emul". It contains nothing nvme'ish except nvme_ns,
-which can be turned into "driver_data".
-
-+#ifdef CONFIG_BLK_DEV_ZONED
-+struct nvme_za_emul {
-+       unsigned int nr_zones;
-+       spinlock_t zones_wp_offset_lock;
-+       u32 *zones_wp_offset;
-+       u32 *rev_wp_offset;
-+       struct work_struct zone_wp_offset_work;
-+       char *zone_wp_update_buf;
-+       struct mutex rev_mutex;
-+       struct nvme_ns *ns;
-+};
+diff --git a/drivers/regulator/pwm-regulator.c b/drivers/regulator/pwm-regu=
+lator.c
+index 3234b118b53e..c00829bd5d7b 100644
+--- a/drivers/regulator/pwm-regulator.c
++++ b/drivers/regulator/pwm-regulator.c
+@@ -390,11 +390,13 @@ static int pwm_regulator_probe(struct platform_device=
+ *pdev)
+ 	return 0;
+ }
+=20
++#ifdef CONFIG_OF
+ static const struct of_device_id pwm_of_match[] =3D {
+ 	{ .compatible =3D "pwm-regulator" },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(of, pwm_of_match);
 +#endif
+=20
+ static struct platform_driver pwm_regulator_driver =3D {
+ 	.driver =3D {
+--=20
+2.28.0
 
-Will that be an acceptable line of further work/discussions?
-
--- 
-Kanchan
