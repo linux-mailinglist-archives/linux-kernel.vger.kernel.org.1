@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382D324B7EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8203724B89D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730106AbgHTLGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:06:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51816 "EHLO mail.kernel.org"
+        id S1727966AbgHTKGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:06:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730776AbgHTKLu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:11:50 -0400
+        id S1730393AbgHTKCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:02:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B13820724;
-        Thu, 20 Aug 2020 10:11:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9ABBA20738;
+        Thu, 20 Aug 2020 10:02:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918310;
-        bh=8ZGoBqju/lye+2LTT4VSSUJ0uHKgnw6J0Qizfb+cNtQ=;
+        s=default; t=1597917732;
+        bh=AtLG/bn2mZUKkfIPmi8HqODHX4L427TjEdH9nex621c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S65LAiFPiJqpky9XwA9ZWIvx1dOcQT3u6BqvZwL1WrckGM+dn4eTyVtZ/8y5OyLfW
-         gBh7u38Na0yQxqEAd+ChW5PYwYG6fLdUNcM04duzg6VM9fjAUkJWJPIJZd5717l/bD
-         szJq0uvbTdyZkKjRnXjGnNDoCyQWrduyIZLj02AU=
+        b=kxBIKbhhQ3xpgjjkZRFh2tYGsHVwH7Ta0268sye1ifNSOhtCxfvLomWW2RQrjKjdG
+         XyCbI9P/yLzBwWJCWDw+WsHzPYdx7DZUg0blZuB0XRo95xRyMNRu8PxV6fBTFBPMKY
+         VnCzoYVp0LSV/lI0p4dwCoVBHQxWWW1qdawdEG2Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
+        Ben Skeggs <bskeggs@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 094/228] scsi: powertec: Fix different dev_id between request_irq() and free_irq()
-Date:   Thu, 20 Aug 2020 11:21:09 +0200
-Message-Id: <20200820091612.323036488@linuxfoundation.org>
+Subject: [PATCH 4.9 097/212] drm/nouveau: fix multiple instances of reference count leaks
+Date:   Thu, 20 Aug 2020 11:21:10 +0200
+Message-Id: <20200820091607.242576686@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
-References: <20200820091607.532711107@linuxfoundation.org>
+In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
+References: <20200820091602.251285210@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,35 +44,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Aditya Pakki <pakki001@umn.edu>
 
-[ Upstream commit d179f7c763241c1dc5077fca88ddc3c47d21b763 ]
+[ Upstream commit 659fb5f154c3434c90a34586f3b7aa1c39cf6062 ]
 
-The dev_id used in request_irq() and free_irq() should match. Use 'info' in
-both cases.
+On calling pm_runtime_get_sync() the reference count of the device
+is incremented. In case of failure, decrement the
+ref count before returning the error.
 
-Link: https://lore.kernel.org/r/20200626035948.944148-1-christophe.jaillet@wanadoo.fr
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/arm/powertec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/nouveau/nouveau_drm.c | 8 ++++++--
+ drivers/gpu/drm/nouveau/nouveau_gem.c | 4 +++-
+ 2 files changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/arm/powertec.c b/drivers/scsi/arm/powertec.c
-index 79aa88911b7f3..b5e4a25ea1ef3 100644
---- a/drivers/scsi/arm/powertec.c
-+++ b/drivers/scsi/arm/powertec.c
-@@ -382,7 +382,7 @@ static int powertecscsi_probe(struct expansion_card *ec,
+diff --git a/drivers/gpu/drm/nouveau/nouveau_drm.c b/drivers/gpu/drm/nouveau/nouveau_drm.c
+index 42829a942e33c..4e12d3d59651b 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_drm.c
++++ b/drivers/gpu/drm/nouveau/nouveau_drm.c
+@@ -823,8 +823,10 @@ nouveau_drm_open(struct drm_device *dev, struct drm_file *fpriv)
  
- 	if (info->info.scsi.dma != NO_DMA)
- 		free_dma(info->info.scsi.dma);
--	free_irq(ec->irq, host);
-+	free_irq(ec->irq, info);
+ 	/* need to bring up power immediately if opening device */
+ 	ret = pm_runtime_get_sync(dev->dev);
+-	if (ret < 0 && ret != -EACCES)
++	if (ret < 0 && ret != -EACCES) {
++		pm_runtime_put_autosuspend(dev->dev);
+ 		return ret;
++	}
  
-  out_release:
- 	fas216_release(host);
+ 	get_task_comm(tmpname, current);
+ 	snprintf(name, sizeof(name), "%s[%d]", tmpname, pid_nr(fpriv->pid));
+@@ -912,8 +914,10 @@ nouveau_drm_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	long ret;
+ 
+ 	ret = pm_runtime_get_sync(dev->dev);
+-	if (ret < 0 && ret != -EACCES)
++	if (ret < 0 && ret != -EACCES) {
++		pm_runtime_put_autosuspend(dev->dev);
+ 		return ret;
++	}
+ 
+ 	switch (_IOC_NR(cmd) - DRM_COMMAND_BASE) {
+ 	case DRM_NOUVEAU_NVIF:
+diff --git a/drivers/gpu/drm/nouveau/nouveau_gem.c b/drivers/gpu/drm/nouveau/nouveau_gem.c
+index 505dca48b9f80..be6672da33a65 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_gem.c
++++ b/drivers/gpu/drm/nouveau/nouveau_gem.c
+@@ -42,8 +42,10 @@ nouveau_gem_object_del(struct drm_gem_object *gem)
+ 	int ret;
+ 
+ 	ret = pm_runtime_get_sync(dev);
+-	if (WARN_ON(ret < 0 && ret != -EACCES))
++	if (WARN_ON(ret < 0 && ret != -EACCES)) {
++		pm_runtime_put_autosuspend(dev);
+ 		return;
++	}
+ 
+ 	if (gem->import_attach)
+ 		drm_prime_gem_destroy(gem, nvbo->bo.sg);
 -- 
 2.25.1
 
