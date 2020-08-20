@@ -2,114 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE21C24C4B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 19:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9454224C4BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 19:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbgHTRmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 13:42:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48420 "EHLO
+        id S1727897AbgHTRmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 13:42:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727895AbgHTRlo (ORCPT
+        with ESMTP id S1728009AbgHTRmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 13:41:44 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 831C4C061385;
-        Thu, 20 Aug 2020 10:41:42 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id a79so1381762pfa.8;
-        Thu, 20 Aug 2020 10:41:42 -0700 (PDT)
+        Thu, 20 Aug 2020 13:42:20 -0400
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5F2C061386
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:42:19 -0700 (PDT)
+Received: by mail-ua1-x92e.google.com with SMTP id d20so812593ual.13
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:42:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oDyvq15BnfthkLtUukIEJz89Sj2Uqn2+fWCc9qUql5I=;
-        b=Z+WGG4b4dkuKHsVtQe1i9WduYBqyH8S4uKxDElpd5cXsi4H11GIlZWCcZgd657XegK
-         uXT4JpFirhXkXu2XTJxbGr5kFdHmoP1OHsrCr6Qthuzimm9pMZzi5zXTgR6Sv5BgXyDs
-         hAhjr2OCzC2ulfDbsdYYA0LsBy0GFR/kM86YP/n5Exz7CmfTxKOvL7qShI/d6Ll+fa8n
-         Bi/NHJ8ocQ4qJoBa0SbGaagVawc0sq0uBEW8OKbSQRZBvqrd/tBRPv8bIRqvQdvoLMZ/
-         mSZXUw6GLC8ziVIN0UOUCm0rcnPhT9ElfrcwW67Ze23Tq2PGkJi5fpezXOZP/Ac4DgTY
-         Hliw==
+        d=posk.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AgLB407bKm54/IrZ6UCuTIQNo2tX1E4LKdmKF7McOxA=;
+        b=R84jP9dgvDeMoE2uEu+DF3AzBT5JNaKMCWQ4uCwEUKPxuNmwM7AXtxgRmH9vE+TQeE
+         Oah0ew6Va5dDXIcJ0Sjl3icIyEVfYvHNPq8+dsWbA5eS34smi/yPvhdLGCumnolaqKui
+         1iy5tM5Uhau+Nia85uAx+l7BXvdZETkn6m3ZEH1nuhX3Tj0SqLsa/xSeSX0gHVdhqOiH
+         KRH4n7yk+2B6HP3lvzpEoCHT43c6QW0Diq65ONkUD+NF8moo5oSe4bnh39RVq09Zxt3o
+         gie0sMhFlgaUUUx4EWO/KhD2g5nwgrshfLBAmIYzxWT1sn90RWDl4ymlzJ9sUDtv3cT4
+         iLqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oDyvq15BnfthkLtUukIEJz89Sj2Uqn2+fWCc9qUql5I=;
-        b=frW0kT98idrzSCKRULlgMqg+MqEfS9aoBzoJm1oOg3FOwPII3sz6wa3fpilCtAuLqB
-         qxU050XFz/2lZK7uqQb3oFYPPt+UTSsPTikmpzHRMQlAdtPNY+lFn/pQP7ovDKkFHD4w
-         Up1gsrW28cYI29rxNwPDW0mv4lDAZBYhpIOG1vyZk7dMt4lSPamDd8/3ND2H9gZg1EQL
-         PKDH7wJ48cI720SoTNan5wyebpbIbNQgqe7CRB9BTbiulb4QTvuRE+afPFvlTIXPxWkE
-         MPS2ZLVQbx+kXA/yjNZw7iEmWoqVdlWjjlCt/1+omX3VlR5HGmGmdjr60P56Zwo/URyo
-         QjCA==
-X-Gm-Message-State: AOAM530mVA5GLWxNoIpmrU752bgKffDOfWSyfjiykmqbyt1rgI2jmLwu
-        l5LzXSYe/HNZ2tF/s6+8JZY=
-X-Google-Smtp-Source: ABdhPJwLc9pERZHVMQlxakOJ6eWDFDhXz9bYZmx7M4I1O/HKPbfxjfH2YWKYleJW+BZ4TawkiN2DPg==
-X-Received: by 2002:a62:fc8c:: with SMTP id e134mr3018219pfh.113.1597945301788;
-        Thu, 20 Aug 2020 10:41:41 -0700 (PDT)
-Received: from gmail.com ([2601:600:9b7f:872e:a655:30fb:7373:c762])
-        by smtp.gmail.com with ESMTPSA id y10sm2698316pjv.55.2020.08.20.10.41.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 10:41:41 -0700 (PDT)
-Date:   Thu, 20 Aug 2020 10:41:39 -0700
-From:   Andrei Vagin <avagin@gmail.com>
-To:     Eugene Lubarsky <elubarsky.linux@gmail.com>
-Cc:     linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, adobriyan@gmail.com,
-        dsahern@gmail.com, Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [RFC PATCH 0/5] Introduce /proc/all/ to gather stats from all
- processes
-Message-ID: <20200820174139.GA919358@gmail.com>
-References: <20200810145852.9330-1-elubarsky.linux@gmail.com>
- <20200812075135.GA191218@gmail.com>
- <20200814010100.3e9b6423@eug-lubuntu>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AgLB407bKm54/IrZ6UCuTIQNo2tX1E4LKdmKF7McOxA=;
+        b=aVaj+XLEn/Chr+LDlWlh3X2dviu7E62F3DCotzhsarKMsjb/qZdQ1wSSaQZ4SKR1a9
+         PmIIelI22pV4yh2yXbNDm7FVXPXCvMi+EWftd4kEz7+pz9O90EmNztAEhxBLa2w4SE5J
+         uGR2c+J5/q4n6ieoC2b2KKcBWuMS9+gC6RGFEjKia7ElKrWEufQ7YprP+SS57o5PQxGN
+         Dy805NGv11sL8bfBxRimBHMVRRImb+D5Z2cWctHKkJpLpzeeyA0/+X3K86Y+36UunHaw
+         r3TL2jmTfWgA585FZmdovmYf1kG2V/HZMdhMfzooAC5dx3Fuc5mcdxX1KX9ahcLaMBAr
+         Qn6w==
+X-Gm-Message-State: AOAM531ImgEiBpZJk+K5KxLinZkTxScPsyTJUo249M/uoa8AXuTy70kw
+        OXjXyngoURTGAte9eKYXEsDGSQFweEpjpb6BwP6pQg==
+X-Google-Smtp-Source: ABdhPJzordxKYzj0nMYhDbICoBQiPfB/Pg2v8UB5v7axF5xFZh2v9ZTA7zbfzsT9wsEFZZcAPTL0/FOaQB/ZTm+f+Bg=
+X-Received: by 2002:ab0:7183:: with SMTP id l3mr2519103uao.139.1597945336910;
+ Thu, 20 Aug 2020 10:42:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=koi8-r
-Content-Disposition: inline
-In-Reply-To: <20200814010100.3e9b6423@eug-lubuntu>
+References: <20200811000959.2486636-1-posk@google.com> <20200811062733.GP3982@worktop.programming.kicks-ass.net>
+ <CAFTs51XK0HLwCCvXCcfE5P7a4ExANPNPw7UvNigwHZ8sZVP+nQ@mail.gmail.com>
+ <1003774683.6088.1597257002027.JavaMail.zimbra@efficios.com>
+ <CAFTs51XJhKXn7M2U2dZpFRsTrog4juy=UQfbtcdJfOj5TUSbqQ@mail.gmail.com> <1477195446.6156.1597261492255.JavaMail.zimbra@efficios.com>
+In-Reply-To: <1477195446.6156.1597261492255.JavaMail.zimbra@efficios.com>
+From:   Peter Oskolkov <posk@posk.io>
+Date:   Thu, 20 Aug 2020 10:42:05 -0700
+Message-ID: <CAFTs51Uwf7+Vs+Mbf=LZxoytFA+3WEtRB5zUanatxgk272MP7Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2 v3] rseq/membarrier: add MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Peter Oskolkov <posk@google.com>, paulmck <paulmck@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Paul Turner <pjt@google.com>,
+        Chris Kennelly <ckennelly@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 01:01:00AM +1000, Eugene Lubarsky wrote:
-> On Wed, 12 Aug 2020 00:51:35 -0700
-> Andrei Vagin <avagin@gmail.com> wrote:
-> 
-> > Maybe we need resurrect the task_diag series instead of inventing
-> > another less-effective interface...
-> 
-> I would certainly welcome the resurrection of task_diag - it is clearly
-> more efficient than this /proc/all/ idea. It would be good to find out
-> if there's anything in particular that's currently blocking it.
+On Wed, Aug 12, 2020 at 12:44 PM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
+>
+[...]
+>
+> > One way of doing what you suggest is to allow some commands to be bitwise-ORed.
+> >
+> > So, for example, the user could call
+> >
+> > membarrier(CMD_PRIVATE_EXPEDITED_SYNC_CORE | CMD_PRIVATE_EXPEDITED_RSEQ, cpu_id)
+> >
+> > Is this what you have in mind?
+>
+> Not really. This would not take care of the fact that we would end up multiplying
+> the number of commands as we allow combinations. E.g. if we ever want to have RSEQ
+> work in private and global, and in non-expedited and expedited, we end up needing:
+>
+> - CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ
+> - CMD_PRIVATE_EXPEDITED_RSEQ
+> - CMD_PRIVATE_RSEQ
+> - CMD_REGISTER_GLOBAL_EXPEDITED_RSEQ
+> - CMD_GLOBAL_EXPEDITED_RSEQ
+> - CMD_GLOBAL_RSEQ
+>
+> The only thing we would save by OR'ing it with the SYNC_CORE command is the additional
+> list:
+>
+> - CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ_SYNC_CORE
+> - CMD_PRIVATE_EXPEDITED_RSEQ_SYNC_CORE
+> - CMD_PRIVATE_RSEQ_SYNC_CORE
+> - CMD_REGISTER_GLOBAL_EXPEDITED_RSEQ_SYNC_CORE
+> - CMD_GLOBAL_EXPEDITED_RSEQ_SYNC_CORE
+> - CMD_GLOBAL_RSEQ_SYNC_CORE
+>
+> But unless we receive feedback that doing a membarrier with RSEQ+sync_core all in
+> one go is a significant use-case, I am tempted to leave out that scenario for now.
+> If we go for new commands, this means we could add (for private-expedited-rseq):
+>
+> - MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ,
+> - MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ,
+>
+> I do however have use-cases for using RSEQ across shared memory (between
+> processes). Not currently for a rseq-fence, but for rseq acting as per-cpu
+> atomic operations. If I ever end up needing rseq-fence across shared memory,
+> that would result in the following new commands:
+>
+> - MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED_RSEQ,
+> - MEMBARRIER_CMD_GLOBAL_EXPEDITED_RSEQ,
+>
+> The remaining open question is whether it would be OK to define a new
+> membarrier flag=MEMBARRIER_FLAG_CPU, which would expect an additional
+> @cpu parameter.
 
-Unfotunatly, I don't have enough time to lead a process of pushing
-task_diag into the upstream. So if it is interesting for you, you can
-restart this process and I am ready to help as much as time will permit.
+Hi  Mathieu,
 
-I think the main blocking issue was a lack of interest from the wide
-audience to this. The slow proc is the problem just for a few users, but
-task_diag is a big subsystem that repeats functionality of another
-subsystem with all derived problems like code duplication.
+I do not think there is any reason to wait for additional feedback, so I believe
+we should finalize the API/ABI.
 
-Another blocking issue is a new interface. There was no consensus on
-this. Initially, I suggested to use netlink sockets, but developers from
-non-network subsystem objected on this, so the transaction file
-interface was introduced. The main idea similar to netlink sockets is
-that we write a request and read a response.
+I see two issues to resolve:
+1: how to combine commands:
+  - you do not like adding new commands that are combinations of existing ones;
+  - you do not like ORing.
+=> I'm not sure what other options we have here?
 
-There were some security concerns but I think I fixed them.
+2: should @flags be repurposed for cpu_id, or MEMBARRIER_FLAG_CPU
+   added with a new syscall parameter.
+=> I'm still not sure a new parameter can be cleanly added, but I can try
+   it in the next patchset if you prefer it this way.
 
-> 
-> This RFC is mainly meant to check whether such an addition would
-> be acceptable from an API point of view. It currently has an obvious
-> performance issue in that seq_file seems to only return one page at a
-> time so lots of read syscalls are still required. However I may not
-> have the time to figure out a proposed fix for this by myself.
-> Regardless, text-based formats can't match the efficiency of task_diag,
-> but binary ones are also possible.
-
-I don't have objections to this series. It can be an option if we
-will decide that we don't want to do a major rework here.
-
+Please let me know your thoughts.
 
 Thanks,
-Andrei
+Peter
