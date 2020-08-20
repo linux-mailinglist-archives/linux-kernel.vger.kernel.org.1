@@ -2,98 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35AF824B8C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E48E24B7D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730177AbgHTL1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:27:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730656AbgHTKGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:06:07 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC0D220738;
-        Thu, 20 Aug 2020 10:06:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917967;
-        bh=DysMUwl484aGB1bJ1JQyqTW8i1SgBbgM8jezoFTjklk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=19BBsnBaWOdQbRzFnUTwZTDZeXzb8eojKIqiVRAPaW5snj8pHZL2PSWq39GmPDAUb
-         yTblJYdZZ+xv55BdhxO4LBsMzzSxGEkKWuFQzuoMQS/dDwV9/65Rub8MzIKy2LmbSz
-         F4W2DV+TQROQqo7uwWJAToF5lyRXKASZQXv/r++g=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jeffrey Mitchell <jeffrey.mitchell@starlab.io>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 205/212] nfs: Fix getxattr kernel panic and memory overflow
-Date:   Thu, 20 Aug 2020 11:22:58 +0200
-Message-Id: <20200820091612.701761193@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
-References: <20200820091602.251285210@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1729134AbgHTLEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:04:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731108AbgHTKM5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:12:57 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E952C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:12:56 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id c16so1785737ejx.12
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:12:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Pbe+IJf4ZBxt6yUxRRrQR1l3UQTW2eLx6AT4PE1gQKg=;
+        b=foA95pAMne0k+ZduK2+JsEaA0Kd3Xk6AJeP12ZUtsQO8oCEqpY6AC2jWiQeJjjQrKA
+         n//Z/S/hwU9sUSwrh2bpFx9EjO5w8H5vkm5cyHDHvlSF0L7E3fVBHC7P2Ym9zd8UwQZN
+         UTTFBKoIkLT88Lc8FZLz7dV6a5Tegh0nandB0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Pbe+IJf4ZBxt6yUxRRrQR1l3UQTW2eLx6AT4PE1gQKg=;
+        b=UiKyLdiYyXSIlGFym6Y0Jon1Z7AcLNsfX6hfWaiGxRMSNEb5PeJIdVc5rgPiSuwQFu
+         8pwMH1t95o3WAOoIxPNfx72aYve9SMwVWvoh3lQjkKkpxMTLCiGsz3wy0wVJfsIjZZGC
+         ySHgnKk8aK/q5Tc7EcLC3zmYqun11aIF7ZL0ZQtzlQxLIZwv2Lh7lQQQAQLnVPCj024s
+         9wsEBXAJfRVoXR1feGAeG4fertwYoI/iC8d6yfdT4o1bSen5/AElzo3a6bO3iSUtvzod
+         /p+AjAmZgP0sO3zT7Uk16feYlAGEjILjR+9KqSdDTbw29rqP0jHRgBD2Iq6wbF+qQl3Z
+         wPcA==
+X-Gm-Message-State: AOAM5325EPKiUc1EXPIH0Sh2jBKihj9b9F5E4LmxZPEc7+IyIbM0X0xg
+        KgZSZ/8wo6joGUJvBMu4iL3M8s+7+51u5Qem
+X-Google-Smtp-Source: ABdhPJzmNH7lGnbiye7d17EQaMEuMAwiWbgIiIcgib5igRoONcSajAI65P3MOjD0FnVNQusDZpo4SA==
+X-Received: by 2002:a17:906:4f8f:: with SMTP id o15mr2440063eju.220.1597918374629;
+        Thu, 20 Aug 2020 03:12:54 -0700 (PDT)
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
+        by smtp.gmail.com with ESMTPSA id 32sm1047701edf.83.2020.08.20.03.12.54
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Aug 2020 03:12:54 -0700 (PDT)
+Received: by mail-ed1-f48.google.com with SMTP id w17so1133898edt.8
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:12:54 -0700 (PDT)
+X-Received: by 2002:a5d:6744:: with SMTP id l4mr2628495wrw.105.1597917944145;
+ Thu, 20 Aug 2020 03:05:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200819065555.1802761-1-hch@lst.de> <20200819065555.1802761-6-hch@lst.de>
+ <CAAFQd5COLxjydDYrfx47ht8tj-aNPiaVnC+WyQA7nvpW4gs=ww@mail.gmail.com>
+ <20200819135454.GA17098@lst.de> <CAAFQd5BuXP7t3d-Rwft85j=KTyXq7y4s24mQxLr=VoY9krEGZw@mail.gmail.com>
+ <20200820044347.GA4533@lst.de> <20200820052004.GA5305@lst.de>
+In-Reply-To: <20200820052004.GA5305@lst.de>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Thu, 20 Aug 2020 12:05:29 +0200
+X-Gmail-Original-Message-ID: <CAAFQd5CFiA2WBaaPQ9ezvMjYZfNw37c42UEy9Pk7kJyCi1mLzQ@mail.gmail.com>
+Message-ID: <CAAFQd5CFiA2WBaaPQ9ezvMjYZfNw37c42UEy9Pk7kJyCi1mLzQ@mail.gmail.com>
+Subject: Re: [PATCH 05/28] media/v4l2: remove V4L2-FLAG-MEMORY-NON-CONSISTENT
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     alsa-devel@alsa-project.org, linux-ia64@vger.kernel.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        nouveau@lists.freedesktop.org, linux-nvme@lists.infradead.org,
+        linux-mips@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        linux-mm@kvack.org,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        linux-scsi@vger.kernel.org,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Pawel Osciak <pawel@osciak.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeffrey Mitchell <jeffrey.mitchell@starlab.io>
+On Thu, Aug 20, 2020 at 7:20 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Thu, Aug 20, 2020 at 06:43:47AM +0200, Christoph Hellwig wrote:
+> > On Wed, Aug 19, 2020 at 03:57:53PM +0200, Tomasz Figa wrote:
+> > > > > Could you explain what makes you think it's unused? It's a feature of
+> > > > > the UAPI generally supported by the videobuf2 framework and relied on
+> > > > > by Chromium OS to get any kind of reasonable performance when
+> > > > > accessing V4L2 buffers in the userspace.
+> > > >
+> > > > Because it doesn't do anything except on PARISC and non-coherent MIPS,
+> > > > so by definition it isn't used by any of these media drivers.
+> > >
+> > > It's still an UAPI feature, so we can't simply remove the flag, it
+> > > must stay there as a no-op, until the problem is resolved.
+> >
+> > Ok, I'll switch to just ignoring it for the next version.
+>
+> So I took a deeper look.  I don't really think it qualifies as a UAPI
+> in our traditional sense.  For one it only appeared in 5.9-rc1, so we
+> can trivially expedite the patch into 5.9-rc and not actually make it
+> show up in any released kernel version.  And even as of the current
+> Linus' tree the only user is a test driver.  So I really think the best
+> way to go ahead is to just revert it ASAP as the design wasn't thought
+> out at all.
 
-[ Upstream commit b4487b93545214a9db8cbf32e86411677b0cca21 ]
+The UAPI and V4L2/videobuf2 changes are in good shape and the only
+wrong part is the use of DMA API, which was based on an earlier email
+guidance anyway, and a change to the synchronization part . I find
+conclusions like the above insulting for people who put many hours
+into designing and implementing the related functionality, given the
+complexity of the videobuf2 framework and how ill-defined the DMA API
+was, and would feel better if such could be avoided in future
+communication.
 
-Move the buffer size check to decode_attr_security_label() before memcpy()
-Only call memcpy() if the buffer is large enough
+That said, we can revert it on the basis of the implementation issues,
+but I feel like we wouldn't get anything by doing so, because as I
+said, the design is sane and most of the implementation is fine as
+well. Instead. I'd suggest simply removing the use of the attribute
+being removed, so that the feature stays no-op until the DMA API
+provides a way to implement it or we just migrate videobuf2 to stop
+using the DMA API as much as possible, like many drivers in the DRM
+subsystem did.
 
-Fixes: aa9c2669626c ("NFS: Client implementation of Labeled-NFS")
-Signed-off-by: Jeffrey Mitchell <jeffrey.mitchell@starlab.io>
-[Trond: clean up duplicate test of label->len != 0]
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/nfs/nfs4proc.c | 2 --
- fs/nfs/nfs4xdr.c  | 6 +++++-
- 2 files changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
-index c189722bf9c71..714457bb1440a 100644
---- a/fs/nfs/nfs4proc.c
-+++ b/fs/nfs/nfs4proc.c
-@@ -5212,8 +5212,6 @@ static int _nfs4_get_security_label(struct inode *inode, void *buf,
- 		return ret;
- 	if (!(fattr.valid & NFS_ATTR_FATTR_V4_SECURITY_LABEL))
- 		return -ENOENT;
--	if (buflen < label.len)
--		return -ERANGE;
- 	return 0;
- }
- 
-diff --git a/fs/nfs/nfs4xdr.c b/fs/nfs/nfs4xdr.c
-index d7f8d5ce30e3e..0a7c4e30a385e 100644
---- a/fs/nfs/nfs4xdr.c
-+++ b/fs/nfs/nfs4xdr.c
-@@ -4163,7 +4163,11 @@ static int decode_attr_security_label(struct xdr_stream *xdr, uint32_t *bitmap,
- 			goto out_overflow;
- 		if (len < NFS4_MAXLABELLEN) {
- 			if (label) {
--				memcpy(label->label, p, len);
-+				if (label->len) {
-+					if (label->len < len)
-+						return -ERANGE;
-+					memcpy(label->label, p, len);
-+				}
- 				label->len = len;
- 				label->pi = pi;
- 				label->lfs = lfs;
--- 
-2.25.1
-
-
-
+Best regards,
+Tomasz
