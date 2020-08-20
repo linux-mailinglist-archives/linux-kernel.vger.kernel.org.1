@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A6B24B3E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1B4B24B347
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729983AbgHTJxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:53:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35910 "EHLO mail.kernel.org"
+        id S1729278AbgHTJnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:43:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730078AbgHTJxt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:53:49 -0400
+        id S1728997AbgHTJmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:42:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 295F12067C;
-        Thu, 20 Aug 2020 09:53:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 20AEF22BEA;
+        Thu, 20 Aug 2020 09:42:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917227;
-        bh=gMAJQySplqK3LODlD+yqkkSZmARBSR3jSggcw7cFqr8=;
+        s=default; t=1597916543;
+        bh=vlgI/GcQFDEuwsf31liFVaSoA4yqFdptOoUDqNhNW0E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nRRrb8zr/3sCzTA/5YoqZpiB7zbYb2s6p6WZ4Ko26/gkn26L9yTNqjhEb/0DAG+vQ
-         22/3YhMLUDlye4CTRCAcBszq9N8+xZ8OKCRbuU2fcjoFOpIYWwBKWC0B/JZF5C/kdt
-         asSMhXMqGGvbOoz6U/Ys+7XRgzDk8J0PBL+23lOY=
+        b=pFBOBono2t80N7J7IZq4zR9xCh6JaR5rMcIeWA9zUFwUv1BMxe6IufGSRAvfpPZr8
+         Z+t/kXXPWH57exdbzryd9lgMm33jE9NobHFihXvBZZ9hYE5nfSGOn55Qsb54KfJl0I
+         pR1aFzVgXBjhbQmHcQ6uX3tMCWC9jdy08V2rTQh4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Rosin <peda@axentia.se>,
-        Christian Eggers <ceggers@arri.de>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH 4.19 18/92] dt-bindings: iio: io-channel-mux: Fix compatible string in example code
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Gregory Herrero <gregory.herrero@oracle.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 166/204] recordmcount: Fix build failure on non arm64
 Date:   Thu, 20 Aug 2020 11:21:03 +0200
-Message-Id: <20200820091538.504723836@linuxfoundation.org>
+Message-Id: <20200820091614.509210298@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
-References: <20200820091537.490965042@linuxfoundation.org>
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,34 +47,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Eggers <ceggers@arri.de>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-commit add48ba425192c6e04ce70549129cacd01e2a09e upstream.
+[ Upstream commit 3df14264ad9930733a8166e5bd0eccc1727564bb ]
 
-The correct compatible string is "gpio-mux" (see
-bindings/mux/gpio-mux.txt).
+Commit ea0eada45632 leads to the following build failure on powerpc:
 
-Cc: stable@vger.kernel.org # v4.13+
-Reviewed-by: Peter Rosin <peda@axentia.se>
-Signed-off-by: Christian Eggers <ceggers@arri.de>
-Link: https://lore.kernel.org/r/20200727101605.24384-1-ceggers@arri.de
-Signed-off-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  HOSTCC  scripts/recordmcount
+scripts/recordmcount.c: In function 'arm64_is_fake_mcount':
+scripts/recordmcount.c:440: error: 'R_AARCH64_CALL26' undeclared (first use in this function)
+scripts/recordmcount.c:440: error: (Each undeclared identifier is reported only once
+scripts/recordmcount.c:440: error: for each function it appears in.)
+make[2]: *** [scripts/recordmcount] Error 1
 
+Make sure R_AARCH64_CALL26 is always defined.
+
+Fixes: ea0eada45632 ("recordmcount: only record relocation of type R_AARCH64_CALL26 on arm64.")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Acked-by: Gregory Herrero <gregory.herrero@oracle.com>
+Cc: Gregory Herrero <gregory.herrero@oracle.com>
+Link: https://lore.kernel.org/r/5ca1be21fa6ebf73203b45fd9aadd2bafb5e6b15.1597049145.git.christophe.leroy@csgroup.eu
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/devicetree/bindings/iio/multiplexer/io-channel-mux.txt |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ scripts/recordmcount.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/Documentation/devicetree/bindings/iio/multiplexer/io-channel-mux.txt
-+++ b/Documentation/devicetree/bindings/iio/multiplexer/io-channel-mux.txt
-@@ -21,7 +21,7 @@ controller state. The mux controller sta
+diff --git a/scripts/recordmcount.c b/scripts/recordmcount.c
+index e59022b3f1254..b9c2ee7ab43fa 100644
+--- a/scripts/recordmcount.c
++++ b/scripts/recordmcount.c
+@@ -42,6 +42,8 @@
+ #define R_ARM_THM_CALL		10
+ #define R_ARM_CALL		28
  
- Example:
- 	mux: mux-controller {
--		compatible = "mux-gpio";
-+		compatible = "gpio-mux";
- 		#mux-control-cells = <0>;
- 
- 		mux-gpios = <&pioA 0 GPIO_ACTIVE_HIGH>,
++#define R_AARCH64_CALL26	283
++
+ static int fd_map;	/* File descriptor for file being modified. */
+ static int mmap_failed; /* Boolean flag. */
+ static char gpfx;	/* prefix for global symbol name (sometimes '_') */
+-- 
+2.25.1
+
 
 
