@@ -2,105 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A73D524B0D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 10:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F36124B0E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 10:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726806AbgHTINW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 04:13:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726750AbgHTIMo (ORCPT
+        id S1726825AbgHTIQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 04:16:51 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:33661 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726435AbgHTINe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 04:12:44 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D0CC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 01:12:44 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id r13so941187iln.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 01:12:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wFUfLu1wjKpBcBk58rANEq0OhljlSviFHmqAjjNj9gA=;
-        b=YI3WGBljcqmJjBpWibWaA1B3PdJw1iIoruN9qxmTnnOwEnMPvjd8UrydeCNmL1LGO9
-         2CWeQFOt7O5NJgOlte+c26lUQGofhonJ9wgiZZyh22da0Idj1QgvGnPm56HPpKerw8RN
-         CbsDUcyZ6DOOYjYKjeLIoOk/W7nwe73sAVTWWNHzypZky90EveXh9IIdse94xbAd9aqs
-         AmxjFUZK/1dpqCJNq9aFxv8/fRipPVX0D+iZteyeOAVyj0KL0B1qEKDSkWjSWtf7gttZ
-         kjttykSDilJzpT4rHIbLKC28g68kIpugSzXYre7+RF7FeHdVtjLOUXUiO0aJwnvLTrTs
-         VAEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wFUfLu1wjKpBcBk58rANEq0OhljlSviFHmqAjjNj9gA=;
-        b=aBHCTgcIQZBgveVaaaB9Vv8HNH1ph85FKmMrcuNGVywRJf6l/WfrYxaPvBJXe6a+mu
-         ROFiIQ8XPtQE1/0XiqLnu7twoiljv7GQNOEn20OYz+Ib11WDFheHSaUBYKwii2yAaoK3
-         eSX7bagEh1GwOnCxXbqGs8ZzOmtWvgz5uDF0IK4cz+ppKjXucZWp68Lk1U07sDr6syad
-         +mtTUtSd7GmIqpwSjqTWO6tk0o4PM4pBVfwl4h0itZ9+lXJqtAoolJqXXvWNFOe3h/h7
-         tC7OMpU+JLYnAhOGg2KFd/05o3FYpuQ9pt9D8f3r9Y/tLiSC96ShKVgOPSiSioimcddk
-         KF7A==
-X-Gm-Message-State: AOAM533EIke4xc1yIcRfb3TfzibVVBvN3Gz6xV0bv9qF9mAKxSoEm2ll
-        XBQF2zIKylY82ulglVbADx422Q==
-X-Google-Smtp-Source: ABdhPJw2SI8b0KzEmhQCtckhElBztVNQOXgYYM311s7TbnGafxbeEmNS2ZxuwtamEQox7CCHEQAC/A==
-X-Received: by 2002:a92:35da:: with SMTP id c87mr1611116ilf.61.1597911163628;
-        Thu, 20 Aug 2020 01:12:43 -0700 (PDT)
-Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
-        by smtp.gmail.com with ESMTPSA id c24sm990383iom.46.2020.08.20.01.12.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 01:12:42 -0700 (PDT)
-Date:   Thu, 20 Aug 2020 02:12:38 -0600
-From:   Yu Zhao <yuzhao@google.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Huang Ying <ying.huang@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>, Qian Cai <cai@lca.pw>,
-        Mel Gorman <mgorman@suse.de>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [PATCH v2 3/3] mm: remove superfluous __ClearPageWaiters()
-Message-ID: <20200820081238.GA2576494@google.com>
-References: <20200818184704.3625199-1-yuzhao@google.com>
- <20200818184704.3625199-3-yuzhao@google.com>
- <20200820061652.GX5422@dhcp22.suse.cz>
+        Thu, 20 Aug 2020 04:13:34 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07K86vFO007077;
+        Thu, 20 Aug 2020 10:13:15 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=bypIudVjLD+BMgyLulgj0MddZ/EB2P+mWgfGr0rQwJo=;
+ b=jc6mPT2/HmRJzmahbN2wVAYpofs2aGC3NhG3DJOgHC4DwUiBnL2fjYxjHgbqSLufFwcP
+ OrPggsxjgfvK8Y285ICq5seBT/Eav0tWbnXhuHxZOcumnzFZkjhhz9JHtB3+wfPl+Z4+
+ NQdji+vwQ/7/GPkrx6Yi0Q3j0pu5JpQ+LxjcVFRXsIQ1kUORBMyP8u7YsIn2wVRdOKmD
+ wh3uznktpBVaxOKHseChr7unax3u+ypPEnICHS38gbD1KqvVydEwlLZDBCsKcE1BMqaW
+ 9ZdWmS4U0opvOoZgNPNVJs1byZZNTkZ0MvzpQxIj+CidlnIAHNzLNhQTR6gY/j1KTGbb ow== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 330jek8k2u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Aug 2020 10:13:15 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9FF2010002A;
+        Thu, 20 Aug 2020 10:13:14 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag5node3.st.com [10.75.127.15])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 331E921299C;
+        Thu, 20 Aug 2020 10:13:14 +0200 (CEST)
+Received: from [10.48.1.149] (10.75.127.47) by SFHDAG5NODE3.st.com
+ (10.75.127.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 20 Aug
+ 2020 10:13:13 +0200
+Subject: Re: [PATCH 11/12] regulator: stm32-vrefbuf: Fix W=1 build warning
+ when CONFIG_OF=n
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Icenowy Zheng <icenowy@aosc.io>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20200820152926.42c48840@xhacker.debian>
+ <20200820154626.79d83157@xhacker.debian>
+From:   Fabrice Gasnier <fabrice.gasnier@st.com>
+Message-ID: <20fc45ab-4daf-3855-5817-1898d50c9efc@st.com>
+Date:   Thu, 20 Aug 2020 10:13:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200820061652.GX5422@dhcp22.suse.cz>
+In-Reply-To: <20200820154626.79d83157@xhacker.debian>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG7NODE3.st.com (10.75.127.21) To SFHDAG5NODE3.st.com
+ (10.75.127.15)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-20_01:2020-08-19,2020-08-20 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 08:18:27AM +0200, Michal Hocko wrote:
-> On Tue 18-08-20 12:47:04, Yu Zhao wrote:
-> > Presumably __ClearPageWaiters() was added to follow the previously
-> > removed __ClearPageActive() pattern.
+On 8/20/20 9:46 AM, Jisheng Zhang wrote:
+> Fix below warning when CONFIG_OF=n:
 > 
-> I do not think so. Please have a look at 62906027091f ("mm: add
-> PageWaiters indicating tasks are waiting for a page bit") and a
-> discussion when the patch has been proposed. Sorry I do not have a link
-> handy but I do remember that the handling was quite subtle.
+> drivers/regulator/stm32-vrefbuf.c:287:34: warning: ‘stm32_vrefbuf_of_match’ defined but not used [-Wunused-const-variable=]
+>   287 | static const struct of_device_id stm32_vrefbuf_of_match[] = {
+>       |                                  ^~~~~~~~~~~~~~~~~~~~~~
+> 
+> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+> ---
+>  drivers/regulator/stm32-vrefbuf.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/regulator/stm32-vrefbuf.c b/drivers/regulator/stm32-vrefbuf.c
+> index 992bc18101ef..5a5c12d9ea22 100644
+> --- a/drivers/regulator/stm32-vrefbuf.c
+> +++ b/drivers/regulator/stm32-vrefbuf.c
+> @@ -284,11 +284,13 @@ static const struct dev_pm_ops stm32_vrefbuf_pm_ops = {
+>  			   NULL)
+>  };
 >  
-> > Only flags that are in PAGE_FLAGS_CHECK_AT_FREE needs to be properly
-> > cleared because otherwise we think there may be some kind of leak.
-> > PG_waiters is not one of those flags and leaving the clearing to
-> > PAGE_FLAGS_CHECK_AT_PREP is more appropriate.
+> +#ifdef CONFIG_OF
+
+Hi Jisheng,
+
+You could probably adopt "__maybe_unused" here ? E.g. like:
+
+static const struct of_device_id __maybe_unused stm32_vrefbuf_of_match[] = {
+
+I can see other drivers use this already for the same.
+
+Thanks,
+Best regards,
+Fabrice
+
+>  static const struct of_device_id stm32_vrefbuf_of_match[] = {
+>  	{ .compatible = "st,stm32-vrefbuf", },
+>  	{},
+>  };
+>  MODULE_DEVICE_TABLE(of, stm32_vrefbuf_of_match);
+> +#endif
+>  
+>  static struct platform_driver stm32_vrefbuf_driver = {
+>  	.probe = stm32_vrefbuf_probe,
 > 
-> What is the point of this patch in the first place? Page waiters is
-> quite subtle and I wouldn't touch it without having a very good reason.
-
-I appreciate your caution. And I just studied the history [1] (I admit
-this is something I should have done beforehand), and didn't find any
-discussion on __ClearPageWaiters() specifically. So I would ask why it
-was added originally. I was hoping Nicholas could help us.
-
-[1] https://lore.kernel.org/lkml/20161225030030.23219-3-npiggin@gmail.com/
-
-Given its triviality, I can't argue how useful this patch is. So I'll
-go with how evident it is: we are removing __ClearPageWaiters() from
-paths where pages have no references left -- they can't have any
-waiters or be on any wait queues.
