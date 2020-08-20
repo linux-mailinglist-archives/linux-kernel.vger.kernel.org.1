@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B8124B3BE
+	by mail.lfdr.de (Postfix) with ESMTP id 0B16F24B3BD
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729868AbgHTJvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:51:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60916 "EHLO mail.kernel.org"
+        id S1729849AbgHTJvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:51:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729843AbgHTJvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:51:44 -0400
+        id S1729011AbgHTJvq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:51:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0ED742067C;
-        Thu, 20 Aug 2020 09:51:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7EE17207FB;
+        Thu, 20 Aug 2020 09:51:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917103;
-        bh=5UJlsbh62S5WTF46gRZp+YqxZvryI9EakSVfIoAb5zs=;
+        s=default; t=1597917106;
+        bh=k640J9cqOEVPJ1orsTEWIBrNMF4F3K4Xs6YwxMvaSG8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cNLGD8vZx33XzAO/AqOMPSaabalFikdX4spKhgCLimA8z6Trt9xHz8pv+fveaxQyb
-         qib/fPolbhHBATvzWi1vXKfqDfrYPLNylwGAd4cR5JRwbPlmzzM70tiHhUbWjeqiE9
-         ySe1QGbKqSEtiqcpIvlIQETWb51A35SLO5N61OsQ=
+        b=rsTv+3BN/PugH1ee2IJ/X8Qv+wViH7gS+RSpuGIqI9Sp1DVJUotEUrhTB9b+/UBCP
+         BTw6raWCysfcJEgpIOzn6rdrJnW453aDYcPWZug8UO7CCZez0O0bJgv9v1ukoyBP/p
+         SdFdpyDUMkup3fZbp6r8iRY5LQ1UT2gLMrSFd+bo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [PATCH 5.4 146/152] arm64: dts: marvell: espressobin: add ethernet alias
-Date:   Thu, 20 Aug 2020 11:21:53 +0200
-Message-Id: <20200820091601.300686269@linuxfoundation.org>
+        stable@vger.kernel.org, Denis Efremov <efremov@linux.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.4 147/152] drm/radeon: fix fb_div check in ni_init_smc_spll_table()
+Date:   Thu, 20 Aug 2020 11:21:54 +0200
+Message-Id: <20200820091601.353769890@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
 References: <20200820091553.615456912@linuxfoundation.org>
@@ -44,37 +43,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomasz Maciej Nowak <tmn505@gmail.com>
+From: Denis Efremov <efremov@linux.com>
 
-commit 5253cb8c00a6f4356760efb38bca0e0393aa06de upstream.
+commit f29aa08852e1953e461f2d47ab13c34e14bc08b3 upstream.
 
-The maker of this board and its variants, stores MAC address in U-Boot
-environment. Add alias for bootloader to recognise, to which ethernet
-node inject the factory MAC address.
+clk_s is checked twice in a row in ni_init_smc_spll_table().
+fb_div should be checked instead.
 
-Signed-off-by: Tomasz Maciej Nowak <tmn505@gmail.com>
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-[pali: Backported to 5.4 and older versions]
-Signed-off-by: Pali Rohár <pali@kernel.org>
+Fixes: 69e0b57a91ad ("drm/radeon/kms: add dpm support for cayman (v5)")
+Cc: stable@vger.kernel.org
+Signed-off-by: Denis Efremov <efremov@linux.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/arm64/boot/dts/marvell/armada-3720-espressobin.dts |    6 ++++++
- 1 file changed, 6 insertions(+)
 
---- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dts
-@@ -19,6 +19,12 @@
- 	model = "Globalscale Marvell ESPRESSOBin Board";
- 	compatible = "globalscale,espressobin", "marvell,armada3720", "marvell,armada3710";
+---
+ drivers/gpu/drm/radeon/ni_dpm.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/gpu/drm/radeon/ni_dpm.c
++++ b/drivers/gpu/drm/radeon/ni_dpm.c
+@@ -2125,7 +2125,7 @@ static int ni_init_smc_spll_table(struct
+ 		if (p_div & ~(SMC_NISLANDS_SPLL_DIV_TABLE_PDIV_MASK >> SMC_NISLANDS_SPLL_DIV_TABLE_PDIV_SHIFT))
+ 			ret = -EINVAL;
  
-+	aliases {
-+		ethernet0 = &eth0;
-+		serial0 = &uart0;
-+		serial1 = &uart1;
-+	};
-+
- 	chosen {
- 		stdout-path = "serial0:115200n8";
- 	};
+-		if (clk_s & ~(SMC_NISLANDS_SPLL_DIV_TABLE_CLKS_MASK >> SMC_NISLANDS_SPLL_DIV_TABLE_CLKS_SHIFT))
++		if (fb_div & ~(SMC_NISLANDS_SPLL_DIV_TABLE_FBDIV_MASK >> SMC_NISLANDS_SPLL_DIV_TABLE_FBDIV_SHIFT))
+ 			ret = -EINVAL;
+ 
+ 		if (fb_div & ~(SMC_NISLANDS_SPLL_DIV_TABLE_FBDIV_MASK >> SMC_NISLANDS_SPLL_DIV_TABLE_FBDIV_SHIFT))
 
 
