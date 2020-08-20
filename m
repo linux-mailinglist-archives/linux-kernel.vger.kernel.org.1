@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD9D24BB2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:24:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E422624BB04
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730073AbgHTJxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:53:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35506 "EHLO mail.kernel.org"
+        id S1730204AbgHTMVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:21:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729506AbgHTJxd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:53:33 -0400
+        id S1729785AbgHTJzY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:55:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 88CFB20885;
-        Thu, 20 Aug 2020 09:53:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B4252067C;
+        Thu, 20 Aug 2020 09:55:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917213;
-        bh=UUrS1yBUSa9rxTrMyNiRGKbwDpz6ndKaUEJYbS4t3sA=;
+        s=default; t=1597917323;
+        bh=CeS91MIj9HIsTs8itkw8y0H2YxrRKZu/2ajiSiKx1Vg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qVu/beafzJDLCTLF3nJB0SRuBbg9zaU2U0PagJn7mn7Zvx6qDmcWwi7rWE0GEqCe5
-         9YQDGpY5XYgOWFpIKleZYH4rB2v8lxTMyA0IT4GsDQ6PJ7o34qK3xr3vTTVhm6GB/8
-         9DCShW5MloQvXVU6xyQCPpTV4MObO1pkX/SlZuiE=
+        b=Pz7iJezlP5ZOD82k6QL2c7dww0ELH7IJ0/nSATYIuY2FFSm1nlk/Muta5j0a92kXc
+         +MYS9MVbRZ5lMlbDI0axUfgqKo7YykajXXA1VB1lpJJ8hvJjXh16LDCFWY5pJz0Prr
+         y7yta3GchWz540rAqyhEvcHoVbXP+ayZdlQgvmF0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>
-Subject: [PATCH 4.19 42/92] watchdog: f71808e_wdt: remove use of wrong watchdog_info option
-Date:   Thu, 20 Aug 2020 11:21:27 +0200
-Message-Id: <20200820091539.804241003@linuxfoundation.org>
+        stable@vger.kernel.org, Anton Blanchard <anton@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.19 44/92] pseries: Fix 64 bit logical memory block panic
+Date:   Thu, 20 Aug 2020 11:21:29 +0200
+Message-Id: <20200820091539.916876717@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
 References: <20200820091537.490965042@linuxfoundation.org>
@@ -44,48 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ahmad Fatoum <a.fatoum@pengutronix.de>
+From: Anton Blanchard <anton@ozlabs.org>
 
-commit 802141462d844f2e6a4d63a12260d79b7afc4c34 upstream.
+commit 89c140bbaeee7a55ed0360a88f294ead2b95201b upstream.
 
-The flags that should be or-ed into the watchdog_info.options by drivers
-all start with WDIOF_, e.g. WDIOF_SETTIMEOUT, which indicates that the
-driver's watchdog_ops has a usable set_timeout.
+Booting with a 4GB LMB size causes us to panic:
 
-WDIOC_SETTIMEOUT was used instead, which expands to 0xc0045706, which
-equals:
+  qemu-system-ppc64: OS terminated: OS panic:
+      Memory block size not suitable: 0x0
 
-   WDIOF_FANFAULT | WDIOF_EXTERN1 | WDIOF_PRETIMEOUT | WDIOF_ALARMONLY |
-   WDIOF_MAGICCLOSE | 0xc0045000
+Fix pseries_memory_block_size() to handle 64 bit LMBs.
 
-These were so far indicated to userspace on WDIOC_GETSUPPORT.
-As the driver has not yet been migrated to the new watchdog kernel API,
-the constant can just be dropped without substitute.
-
-Fixes: 96cb4eb019ce ("watchdog: f71808e_wdt: new watchdog driver for Fintek F71808E and F71882FG")
 Cc: stable@vger.kernel.org
-Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20200611191750.28096-4-a.fatoum@pengutronix.de
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Signed-off-by: Anton Blanchard <anton@ozlabs.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200715000820.1255764-1-anton@ozlabs.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/watchdog/f71808e_wdt.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/powerpc/platforms/pseries/hotplug-memory.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/watchdog/f71808e_wdt.c
-+++ b/drivers/watchdog/f71808e_wdt.c
-@@ -688,8 +688,7 @@ static int __init watchdog_init(int sioa
- 	 * into the module have been registered yet.
- 	 */
- 	watchdog.sioaddr = sioaddr;
--	watchdog.ident.options = WDIOC_SETTIMEOUT
--				| WDIOF_MAGICCLOSE
-+	watchdog.ident.options = WDIOF_MAGICCLOSE
- 				| WDIOF_KEEPALIVEPING
- 				| WDIOF_CARDRESET;
+--- a/arch/powerpc/platforms/pseries/hotplug-memory.c
++++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
+@@ -31,7 +31,7 @@ static bool rtas_hp_event;
+ unsigned long pseries_memory_block_size(void)
+ {
+ 	struct device_node *np;
+-	unsigned int memblock_size = MIN_MEMORY_BLOCK_SIZE;
++	u64 memblock_size = MIN_MEMORY_BLOCK_SIZE;
+ 	struct resource r;
  
+ 	np = of_find_node_by_path("/ibm,dynamic-reconfiguration-memory");
 
 
