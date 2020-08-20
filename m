@@ -2,92 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BED2224B05C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A53124B081
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgHTHtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 03:49:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59436 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726309AbgHTHtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 03:49:12 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD8062076E;
-        Thu, 20 Aug 2020 07:49:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597909752;
-        bh=VINLwS3DBjghohvueceeLnHG2G40JRtPDdK6W1zz2MU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HvHATzEchtfziuqRwibKGmT2Pe3qxv2LBDdYEhnfFaUe31O+UlnlTUzKQXX1XCWe/
-         /XO9uk1XnOE8+hvmilJoLLvMedmH/mzJ3avUmH/KYhCn4u0PTc9Me7lg2GPH7gV0a2
-         5sllFoN/fTZJFF2MS0DgS5AY43cjoTtJj10+cgGw=
-Date:   Thu, 20 Aug 2020 09:49:32 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        kernel@pengutronix.de,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sven Schneider <s.schneider@arkona-technologies.de>
-Subject: Re: [PATCH RESEND] lib/fonts: add font 6x8 for oled display
-Message-ID: <20200820074932.GA3834397@kroah.com>
-References: <20200820074214.30214-1-s.hauer@pengutronix.de>
+        id S1726862AbgHTHxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 03:53:08 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2675 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725834AbgHTHxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 03:53:07 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 30239E82965CF9773093;
+        Thu, 20 Aug 2020 08:53:06 +0100 (IST)
+Received: from [127.0.0.1] (10.47.0.147) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 20 Aug
+ 2020 08:53:05 +0100
+Subject: Re: [PATCH] MAINTAINERS: Add entries for CoreSight and Arm SPE
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Will Deacon <will@kernel.org>
+CC:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>
+References: <20200817193140.3659956-1-mathieu.poirier@linaro.org>
+ <ede047ea-ad6a-1f7e-d597-b47bc87271c3@huawei.com>
+ <CANLsYkw2aBJmrHV+8_bDUtgD-Jfvndqz2kOfNNcBBMM+vztkug@mail.gmail.com>
+ <20200819173050.GA18091@willie-the-truck>
+ <CANLsYkzn2yuhVzZD0p-C156qi28ukHQDa83F8pezESsptG4d1Q@mail.gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <691cdbfa-d266-ec2e-e687-3ce1ca3014d8@huawei.com>
+Date:   Thu, 20 Aug 2020 08:50:44 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200820074214.30214-1-s.hauer@pengutronix.de>
+In-Reply-To: <CANLsYkzn2yuhVzZD0p-C156qi28ukHQDa83F8pezESsptG4d1Q@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.0.147]
+X-ClientProxiedBy: lhreml745-chm.china.huawei.com (10.201.108.195) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 09:42:14AM +0200, Sascha Hauer wrote:
-> From: Sven Schneider <s.schneider@arkona-technologies.de>
+On 19/08/2020 20:26, Mathieu Poirier wrote:
+> On Wed, 19 Aug 2020 at 11:30, Will Deacon <will@kernel.org> wrote:
+>>
+>> On Wed, Aug 19, 2020 at 11:01:38AM -0600, Mathieu Poirier wrote:
+>>> On Tue, 18 Aug 2020 at 11:56, John Garry <john.garry@huawei.com> wrote:
+>>>> On 17/08/2020 20:31, Mathieu Poirier wrote:
+>>>>> diff --git a/MAINTAINERS b/MAINTAINERS
+>>>>> index 4e2698cc7e23..f9bb76baeec9 100644
+>>>>> --- a/MAINTAINERS
+>>>>> +++ b/MAINTAINERS
+>>>>> @@ -13427,8 +13427,18 @@ F:   tools/perf/
+>>>>>    PERFORMANCE EVENTS SUBSYSTEM ARM64 PMU EVENTS
+
+Maybe "PERFORMANCE EVENTS SUBSYSTEM ARM64" would be more appropriate now.
+
+>>>>>    R:  John Garry <john.garry@huawei.com>
+>>>>>    R:  Will Deacon <will@kernel.org>
+>>>>> +R:   Mathieu Poirier <mathieu.poirier@linaro.org>
+>>>>> +R:   Leo Yan <leo.yan@linaro.org>
+>>>>>    L:  linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>>>>>    S:  Supported
+>>>>> +F:   tools/build/feature/test-libopencsd.c
+>>>>> +F:   tools/perf/arch/arm/util/auxtrace.c
+>>>>> +F:   tools/perf/arch/arm/util/cs-etm.*
+>>>>> +F:   tools/perf/arch/arm/util/pmu.c
+>>>>> +F:   tools/perf/arch/arm64/util/arm-spe.c
+>>>>> +F:   tools/perf/util/arm-spe.h
+>>>>> +F:   tools/perf/util/cs-etm-decoder/*
+>>>>> +F:   tools/perf/util/cs-etm.*
+>>>>
+>>>> But from the previous discussion, I thought that we wanted an entry to
+>>>> cover all tools/perf/arch/arm64/ and other related folders. Or was it
+>>>> just put all special interest parts (like SPE support) under one entry
+>>>> and leave the other arm/arm64 parts to be caught by "PERFORMANCE EVENTS
+>>>> SUBSYSTEM" entry?
+>>>
+>>> I do not have the time to maintain anything outside of coresight -
+>>> listing individual files as I did removes any ambiguity on that front.
+>>> I'm happy to add tools/perf/arch/arm and tools/perf/arch/arm64/ if you
+>>> agree to maintain them.  In that case you will have to be more
+>>> specific about the "other related folders" you are referring to above.
+
+As Leo mentioned, I was thinking of tools/perf/util/arm-spe-decoder/
+
+>>
+>> None of us have time for this, hence why I think putting us all in one entry
+>> with all of the files listed there makes the most sense; then people do
+>> whatever they can and try to help each other out based on how much time they
+>> have. I think that's much better than fine-grained maintainership where a
+>> given file has a single point of failure.
 > 
-> This font is derived from lib/fonts/font_6x10.c and is useful for small OLED
-> displays.
-> ---
+> Thanks for the clarification - just wanted to make sure I don't sign
+> you guys up for something you didn't agree to.
+
+And it's "R:" level, so none of the commitment associated with "M:". In 
+addition - and maybe most important - the linux-arm-kernel list will (or 
+should) be cc'ed.
+
+> 
+>>
+>> So I think it should include:
+>>
+>>    tools/perf/arch/arm64/
+>>    tools/pmu-events/arch/arm64/
+>>
+>> along with the SPE and Coresight files.
+>>
+>> Arnaldo would still handle the patches, so this is really about giving us a
+>> chance to review incoming patches without having to fish them out from the
+>> lists.
+>>
+>> Will
+> .
 > 
 
-No signed-off-by: line?  :(
+Cheers,
+John
 
-Always use scripts/checkpatch.pl on your patch to find stuff like this,
-and other errors that this patch has.
-
-> Hi All,
-> 
-> I am not sure any new fonts are desired in the kernel. If yes, please consider
-> for inclusion, otherwise some "go away, there are enough fonts in the kernel
-> already" would be nice as well so I can stop trying getting it in :)
-> 
-> Sascha
-> 
->  include/linux/font.h |    4 +-
->  lib/fonts/Kconfig    |    7 +
->  lib/fonts/Makefile   |    1 +
->  lib/fonts/font_6x8.c | 2575 ++++++++++++++++++++++++++++++++++++++++++
->  lib/fonts/fonts.c    |    3 +
->  5 files changed, 2589 insertions(+), 1 deletion(-)
->  mode change 100644 => 100755 include/linux/font.h
-
-You changed a .h file to be executable???
-
-> diff --git a/lib/fonts/fonts.c b/lib/fonts/fonts.c
-> index e7258d8c252b2..760f2e6893bdb 100644
-> --- a/lib/fonts/fonts.c
-> +++ b/lib/fonts/fonts.c
-> @@ -57,6 +57,9 @@ static const struct font_desc *fonts[] = {
->  #ifdef CONFIG_FONT_TER16x32
->  	&font_ter_16x32,
->  #endif
-> +#ifdef CONFIG_FONT_6x8
-> +    &font_6x8,
-
-Tabs please.
-
-As for "do we take new fonts?", sure, why not?
-
-thanks,
-
-greg k-h
