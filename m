@@ -2,81 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E5624BE93
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D82D024BFF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728733AbgHTN2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728017AbgHTN2i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 09:28:38 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A48DC061385
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 06:28:37 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id b2so285491edw.5
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 06:28:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZODn1jt1970mGvr5GEh4sQD7IJ3k+7keNckpIk/8sqg=;
-        b=VmD28wkxeL/mh5qEeFgQyTUMfQlClarclSFuVsi13Av2ziWfY4IMgRC6FGsZBJWTPW
-         1rSJOq/XC8/v9YEd26xxkNKWlfRtXX2XoJ2EBi5bO/vmb36chULSxUmfQFBU06YQxqer
-         AecRmITso0SD+wBOWNxJ+svZhFc5YYHitbMyB5kwjK/NfvI7MlUS1WLcZDX1W7Ya6lqL
-         J/4tdW4pwP8IE0xdoFapEXITFgxuxbuAiqDOfUtOPBJyPbXoeR9QkA2+tXNBANtGHZtZ
-         D/VBzyPW1X85tJsv3sggZ/QJCxp/zbLH6yW5II9PfBF6DRokZVSYZjlEqP8aqbOpurwX
-         cnaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZODn1jt1970mGvr5GEh4sQD7IJ3k+7keNckpIk/8sqg=;
-        b=OFWW0Ef/vODEuFwXSPUBrLa85umVz/gyyyJYHATdosp5iYYDB8OJxYG8nnPaCS3wk2
-         uqQJ1yKWySbaco+unf+RALmGMss4bHvWeMRbPxd8gPPnIFPd+zteNy5YQ3KqoLyC+Dj0
-         /wl4v8ewaMamRvf2FUxVd1gb85VnclqBt7zo+ryfEwpL+aEQJQsRvYmAPhqQLLpIZYJH
-         Bs/skntSMAV1buSKTdLHwbLPKaEXopmlCmzdKNLKMHcR0HrJRS/xqYzm9l4sho0F5qDL
-         E9GXRKYt5mhGR8AyKB8D9U9TIP6uUQOOLCP8cKZNbn2h63wgK7YHDzbMNRFFltJDmFkV
-         /YGg==
-X-Gm-Message-State: AOAM533dm2dJlueWcPpyrXoYZCgnotaA7CYcdyETQY3Ua70MV2BBlsYf
-        OWmBpAl/XtDuk0qcTMJHdXQ3Y/Wmq5Qm6Thqfkda
-X-Google-Smtp-Source: ABdhPJwlHMJddusXXnIwAHaVZlzOyIKl2c/krfHw1m9+5Tsz8rZpcpExiUwUW7zf0IHK0+QUsvWwYFBX6/JROrFRzYk=
-X-Received: by 2002:aa7:c383:: with SMTP id k3mr2795671edq.164.1597930115893;
- Thu, 20 Aug 2020 06:28:35 -0700 (PDT)
+        id S1726971AbgHTN7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:59:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59916 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726735AbgHTJX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:23:59 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B682222D02;
+        Thu, 20 Aug 2020 09:23:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597915439;
+        bh=yKmAMZWwCOzOAmbAJPyXG2Z9j6Mu8i6EZ/wMCEjEhhM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=1aMdTWsMzF0+ccw/wp86aOS3twRhTJp/5AGuxev5xrePU4ecc9lsirsCv0H6yj3ad
+         zFX8mOp6wedkpw006Zv1/V9MkjGrTNReiCCB31KzEHWbdrYP7SVBD1KMz62m8PYreB
+         vl7l9DXMHGlIzAMJfvkW31aUipgZyAJn4n/JHPtQ=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Greed Rong <greedrong@gmail.com>,
+        Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.8 014/232] btrfs: free anon block device right after subvolume deletion
+Date:   Thu, 20 Aug 2020 11:17:45 +0200
+Message-Id: <20200820091613.418255504@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
+References: <20200820091612.692383444@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-References: <alpine.DEB.2.22.394.2008201218350.2524@hadrien>
-In-Reply-To: <alpine.DEB.2.22.394.2008201218350.2524@hadrien>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 20 Aug 2020 09:28:24 -0400
-Message-ID: <CAHC9VhSX83awKZPO7KZdguTOrpcXokmidqNGDLQWjXgiiuQ5fQ@mail.gmail.com>
-Subject: Re: [PATCH] selinux: fix memdup.cocci warnings
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
-        kbuild-all@lists.01.org, selinux@vger.kernel.org,
-        Eric Paris <eparis@parisplace.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Tom Rix <trix@redhat.com>,
-        Ethan Edwards <ethancarteredwards@gmail.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 6:20 AM Julia Lawall <julia.lawall@inria.fr> wrote:
->
-> From: kernel test robot <lkp@intel.com>
->
-> Use kmemdup rather than duplicating its implementation
->
-> Generated by: scripts/coccinelle/api/memdup.cocci
->
-> Fixes: c7c556f1e81b ("selinux: refactor changing booleans")
-> CC: Stephen Smalley <stephen.smalley.work@gmail.com>
-> Signed-off-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+From: Qu Wenruo <wqu@suse.com>
 
-Merged into selinux/next, thanks!
+commit 082b6c970f02fefd278c7833880cda29691a5f34 upstream.
+
+[BUG]
+When a lot of subvolumes are created, there is a user report about
+transaction aborted caused by slow anonymous block device reclaim:
+
+  BTRFS: Transaction aborted (error -24)
+  WARNING: CPU: 17 PID: 17041 at fs/btrfs/transaction.c:1576 create_pending_snapshot+0xbc4/0xd10 [btrfs]
+  RIP: 0010:create_pending_snapshot+0xbc4/0xd10 [btrfs]
+  Call Trace:
+   create_pending_snapshots+0x82/0xa0 [btrfs]
+   btrfs_commit_transaction+0x275/0x8c0 [btrfs]
+   btrfs_mksubvol+0x4b9/0x500 [btrfs]
+   btrfs_ioctl_snap_create_transid+0x174/0x180 [btrfs]
+   btrfs_ioctl_snap_create_v2+0x11c/0x180 [btrfs]
+   btrfs_ioctl+0x11a4/0x2da0 [btrfs]
+   do_vfs_ioctl+0xa9/0x640
+   ksys_ioctl+0x67/0x90
+   __x64_sys_ioctl+0x1a/0x20
+   do_syscall_64+0x5a/0x110
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  ---[ end trace 33f2f83f3d5250e9 ]---
+  BTRFS: error (device sda1) in create_pending_snapshot:1576: errno=-24 unknown
+  BTRFS info (device sda1): forced readonly
+  BTRFS warning (device sda1): Skipping commit of aborted transaction.
+  BTRFS: error (device sda1) in cleanup_transaction:1831: errno=-24 unknown
+
+[CAUSE]
+The anonymous device pool is shared and its size is 1M. It's possible to
+hit that limit if the subvolume deletion is not fast enough and the
+subvolumes to be cleaned keep the ids allocated.
+
+[WORKAROUND]
+We can't avoid the anon device pool exhaustion but we can shorten the
+time the id is attached to the subvolume root once the subvolume becomes
+invisible to the user.
+
+Reported-by: Greed Rong <greedrong@gmail.com>
+Link: https://lore.kernel.org/linux-btrfs/CA+UqX+NTrZ6boGnWHhSeZmEY5J76CTqmYjO2S+=tHJX7nb9DPw@mail.gmail.com/
+CC: stable@vger.kernel.org # 4.4+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ fs/btrfs/inode.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -4041,6 +4041,8 @@ int btrfs_delete_subvolume(struct inode
+ 		}
+ 	}
+ 
++	free_anon_bdev(dest->anon_dev);
++	dest->anon_dev = 0;
+ out_end_trans:
+ 	trans->block_rsv = NULL;
+ 	trans->bytes_reserved = 0;
+
+
