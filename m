@@ -2,99 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7E324B47B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9C5324B508
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729760AbgHTKHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:07:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39678 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730361AbgHTKBV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:01:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597917680;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xtUkw1+pgkP1u0CE6ZeSzJD33eQ60AqxVBB24zxNhsI=;
-        b=OiDyaWk5d5AhnAHKmBZYkcd6kn0qtiOTFcY4p2fJSK4ANTzpHgrhnb0yi2nRIh9a0g1IZf
-        mbLjbdI0fqzfG0ez9+s72f9jvXduR6o+ZN375g2zs7MhItUPgOZ8HmPD1DBlJmkf7xDME7
-        WuPsn86VYsNFm27eex3ABcBEeZLX8Ic=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-304-pVi6lbvtM4S9QiyUbS4wnw-1; Thu, 20 Aug 2020 06:01:18 -0400
-X-MC-Unique: pVi6lbvtM4S9QiyUbS4wnw-1
-Received: by mail-wm1-f71.google.com with SMTP id u144so604234wmu.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:01:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xtUkw1+pgkP1u0CE6ZeSzJD33eQ60AqxVBB24zxNhsI=;
-        b=d5teiRFQ1NTiptiBN02FbIt/cDqHIYhjtJsBem1/w5UOVZc1MOsuefjIbyrz+13uj9
-         CgD/w4MuC97229X1YqYb66VseBTKgWnGq9NY8B4cru29SCsiQjVGXkh3IqTrQz2Mvxym
-         OINJj5sjN5YC4VB16KLh+TS5bmOzV37Xtp6sQBJVzQ4mj8UdJWQceMAwjkzrdjGmDEXB
-         2StC/hYZXEGbH5EDAwwhylLl+itBj5X4EGU77aPFkZw9GQLj1SZ+q1JbLrMn2GyP+Ga8
-         PbY9KituBBppfmfRO7YadlOYkA0FDHJdI/iD4AeYC/HJeMaQ4bKEFnSdn2eSaTbjsrK1
-         5d3A==
-X-Gm-Message-State: AOAM530EcAJy6ebiiVpu4Ya+xpJ7jsZ0rrLenKR4y822phiDTTd9TBRZ
-        XMIBQSkFrAJx67z4ohXX5ynfSbAf6Da+gEwT8LCHT0NmHFzPulXwlWORbEkX6L67YAX1zvmQTft
-        MCRIM6Csqop6v6IWkq2EfocvX
-X-Received: by 2002:a1c:3dc3:: with SMTP id k186mr2687074wma.122.1597917677216;
-        Thu, 20 Aug 2020 03:01:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz4gKUiUJ6EoQh9xoNdvazNihbXQF/czcITGb1+BqN75JHRCFO/tyWZLCjckhAt6e9saona4Q==
-X-Received: by 2002:a1c:3dc3:: with SMTP id k186mr2687048wma.122.1597917676995;
-        Thu, 20 Aug 2020 03:01:16 -0700 (PDT)
-Received: from [192.168.10.150] ([93.56.170.5])
-        by smtp.gmail.com with ESMTPSA id n18sm3077185wrp.58.2020.08.20.03.01.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Aug 2020 03:01:16 -0700 (PDT)
-Subject: Re: [PATCH 8/8] KVM: nSVM: read only changed fields of the nested
- guest data area
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
-        Borislav Petkov <bp@alien8.de>,
+        id S1730821AbgHTKQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:16:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36728 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730374AbgHTKQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:16:28 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0BCDCAD19;
+        Thu, 20 Aug 2020 10:16:53 +0000 (UTC)
+Date:   Thu, 20 Aug 2020 12:16:25 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <20200820091327.197807-1-mlevitsk@redhat.com>
- <20200820091327.197807-9-mlevitsk@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <53afbfba-427e-72f5-73a6-faea7606e78e@redhat.com>
-Date:   Thu, 20 Aug 2020 12:01:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/5] printk: implement pr_cont_t
+Message-ID: <20200820101625.GE4353@alley>
+References: <20200819232632.13418-1-john.ogness@linutronix.de>
+ <20200819232632.13418-2-john.ogness@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20200820091327.197807-9-mlevitsk@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200819232632.13418-2-john.ogness@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/08/20 11:13, Maxim Levitsky wrote:
-> +	u32 clean = nested_vmcb->control.clean;
+On Thu 2020-08-20 01:32:28, John Ogness wrote:
+> Implement a new buffering mechanism for pr_cont messages.
+> 
+> Old mechanism syntax:
+> 
+>     printk(KERN_INFO "text");
+>     printk(KERN_CONT " continued");
+>     printk(KERN_CONT "\n");
+> 
+> New mechanism syntax:
+> 
+>     pr_cont_t c;
+> 
+>     pr_cont_begin(&c, KERN_INFO "text");
+>     pr_cont_append(&c, " continued");
+>     pr_cont_end(&c);
+> 
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+> ---
+>  include/linux/printk.h |  19 ++++++
+>  kernel/printk/printk.c | 137 +++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 156 insertions(+)
+> 
+> diff --git a/include/linux/printk.h b/include/linux/printk.h
+> index 34c1a7be3e01..4d9ce18e4afa 100644
+> --- a/include/linux/printk.h
+> +++ b/include/linux/printk.h
+> @@ -380,6 +380,25 @@ extern int kptr_restrict;
+>  #define pr_cont(fmt, ...) \
+>  	printk(KERN_CONT fmt, ##__VA_ARGS__)
+>  
+> +/* opaque handle for continuous printk messages */
+> +typedef struct {
+> +	u8	index;
+> +	u8	loglevel;
+> +	u16	text_len;
+> +} pr_cont_t;
 > +
-> +	if (svm->nested.vmcb_gpa != vmcb_gpa) {
-> +		svm->nested.vmcb_gpa = vmcb_gpa;
-> +		clean = 0;
-> +	}
+> +/* initialize handle, provide loglevel and initial message text */
+> +int pr_cont_begin(pr_cont_t *c, const char *fmt, ...);
+> +
+> +/* append message text */
+> +int pr_cont_append(pr_cont_t *c, const char *fmt, ...);
+> +
+> +/* flush message to kernel buffer */
+> +void pr_cont_flush(pr_cont_t *c);
+> +
+> +/* flush message to kernel buffer, cleanup handle */
+> +void pr_cont_end(pr_cont_t *c);
+> +
+>  /**
+>   * pr_devel - Print a debug-level message conditionally
+>   * @fmt: format string
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index ad8d1dfe5fbe..10113e7ea350 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -3495,3 +3495,140 @@ void kmsg_dump_rewind(struct kmsg_dumper *dumper)
+>  EXPORT_SYMBOL_GPL(kmsg_dump_rewind);
+>  
+>  #endif
+> +
+> +#define CONT_LINE_MAX LOG_LINE_MAX
+> +#define CONT_BUF_COUNT 10
+> +static char cont_buf[CONT_BUF_COUNT][CONT_LINE_MAX];
+> +static DECLARE_BITMAP(cont_buf_map, CONT_BUF_COUNT);
+> +
+> +static int get_cont_buf(void)
+> +{
+> +	int bit;
+> +
+> +	do {
+> +		bit = find_first_zero_bit(cont_buf_map, CONT_BUF_COUNT);
+> +		if (bit == CONT_BUF_COUNT)
+> +			break;
+> +	} while (test_and_set_bit(bit, cont_buf_map));
+> +
+> +	return bit;
+> +}
 
-You probably should set clean to 0 also if the guest doesn't have the
-VMCBCLEAN feature (so, you first need an extra patch to add the
-VMCBCLEAN feature to cpufeatures.h).  It's probably best to cache the
-guest vmcbclean in struct vcpu_svm, too.
+My big problem with this solution is a forgotten pr_cont_end(). It
+will cause:
 
-Paolo
+   + the message will never get printed
 
+   + several calls into such a broken code will exhaust the pool of
+     cont buffers and it will stop working for the entire system
+
+The above might be solved with some fallback mechanism (timer,
+watchdog) but then it needs some synchronization.
+
+Why is it so bad?
+
+   + it will happen like other bugs
+
+   + it is hard to notice; it is easier to notice hard-lockup than
+     a missing message
+
+
+Now that I think about it. This is the biggest problem with any temporary buffer
+for pr_cont() lines. I am more and more convinced that we should just
+_keep the current behavior_. It is not ideal. But sometimes mixed
+messages are always better than lost ones.
+
+
+That said, some printk() API using local buffer would be still
+valuable for pieces of code where people really want to avoid
+mixed lines. But it should be optional and people should be
+aware of the risks.
+
+Best Regards,
+Petr
