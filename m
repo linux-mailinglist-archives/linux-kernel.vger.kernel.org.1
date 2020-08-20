@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2DC224C0A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 666AE24C0A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728218AbgHTOa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 10:30:58 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:58978 "EHLO huawei.com"
+        id S1728260AbgHTOa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 10:30:59 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:58952 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727911AbgHTOay (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 10:30:54 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id CD1104045911F351B0E0;
+        id S1727885AbgHTOaz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 10:30:55 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 99608B060FFF36059465;
         Thu, 20 Aug 2020 22:30:51 +0800 (CST)
 Received: from DESKTOP-C3MD9UG.china.huawei.com (10.174.177.253) by
  DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 20 Aug 2020 22:30:41 +0800
+ 14.3.487.0; Thu, 20 Aug 2020 22:30:42 +0800
 From:   Zhen Lei <thunder.leizhen@huawei.com>
 To:     Oliver O'Halloran <oohall@gmail.com>,
         Dan Williams <dan.j.williams@intel.com>,
@@ -26,9 +26,9 @@ To:     Oliver O'Halloran <oohall@gmail.com>,
         linux-nvdimm <linux-nvdimm@lists.01.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/4] libnvdimm: remove redundant list_empty() check in badrange.c
-Date:   Thu, 20 Aug 2020 22:30:24 +0800
-Message-ID: <20200820143027.3241-2-thunder.leizhen@huawei.com>
+Subject: [PATCH 2/4] libnvdimm: eliminate a meaningless spinlock operation
+Date:   Thu, 20 Aug 2020 22:30:25 +0800
+Message-ID: <20200820143027.3241-3-thunder.leizhen@huawei.com>
 X-Mailer: git-send-email 2.26.0.windows.1
 In-Reply-To: <20200820143027.3241-1-thunder.leizhen@huawei.com>
 References: <20200820143027.3241-1-thunder.leizhen@huawei.com>
@@ -42,45 +42,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In add_badrange() or badblocks_populate(), the list_empty() branch does
-the same things as the code after list_for_each_entry(). And the
-list_for_each_entry() will do noting when list_empty().
+badrange_add() take the lock "badrange->lock", but it's released
+immediately in add_badrange(), protect nothing. Because the static
+function add_badrange() is only called by badrange_add(), so spread its
+content into badrange_add(), and move "kfree(bre_new)" out of the lock
+protection.
 
-So the list_empty() branch can be removed without functional change, let
-the code after list_for_each_entry() to do it.
-
+Fixes: b3b454f694db ("libnvdimm: fix clear poison locking with spinlock ...")
 Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- drivers/nvdimm/badrange.c | 10 ----------
- 1 file changed, 10 deletions(-)
+ drivers/nvdimm/badrange.c | 22 ++++++++--------------
+ 1 file changed, 8 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/nvdimm/badrange.c b/drivers/nvdimm/badrange.c
-index b9eeefa27e3a507..9fdba8c43e8605e 100644
+index 9fdba8c43e8605e..7f78b659057902d 100644
 --- a/drivers/nvdimm/badrange.c
 +++ b/drivers/nvdimm/badrange.c
-@@ -53,13 +53,6 @@ static int add_badrange(struct badrange *badrange, u64 addr, u64 length)
+@@ -45,12 +45,12 @@ static int alloc_and_append_badrange_entry(struct badrange *badrange,
+ 	return 0;
+ }
+ 
+-static int add_badrange(struct badrange *badrange, u64 addr, u64 length)
++int badrange_add(struct badrange *badrange, u64 addr, u64 length)
+ {
+ 	struct badrange_entry *bre, *bre_new;
+ 
+-	spin_unlock(&badrange->lock);
  	bre_new = kzalloc(sizeof(*bre_new), GFP_KERNEL);
++
  	spin_lock(&badrange->lock);
  
--	if (list_empty(&badrange->list)) {
--		if (!bre_new)
--			return -ENOMEM;
--		append_badrange_entry(badrange, bre_new, addr, length);
--		return 0;
--	}
--
  	/*
- 	 * There is a chance this is a duplicate, check for those first.
- 	 * This will be the common case as ARS_STATUS returns all known
-@@ -215,9 +208,6 @@ static void badblocks_populate(struct badrange *badrange,
- {
- 	struct badrange_entry *bre;
- 
--	if (list_empty(&badrange->list))
--		return;
+@@ -63,6 +63,7 @@ static int add_badrange(struct badrange *badrange, u64 addr, u64 length)
+ 			/* If length has changed, update this list entry */
+ 			if (bre->length != length)
+ 				bre->length = length;
++			spin_unlock(&badrange->lock);
+ 			kfree(bre_new);
+ 			return 0;
+ 		}
+@@ -72,22 +73,15 @@ static int add_badrange(struct badrange *badrange, u64 addr, u64 length)
+ 	 * as any overlapping ranges will get resolved when the list is consumed
+ 	 * and converted to badblocks
+ 	 */
+-	if (!bre_new)
++	if (!bre_new) {
++		spin_unlock(&badrange->lock);
+ 		return -ENOMEM;
+-	append_badrange_entry(badrange, bre_new, addr, length);
 -
- 	list_for_each_entry(bre, &badrange->list, list) {
- 		u64 bre_end = bre->start + bre->length - 1;
+-	return 0;
+-}
+-
+-int badrange_add(struct badrange *badrange, u64 addr, u64 length)
+-{
+-	int rc;
++	}
+ 
+-	spin_lock(&badrange->lock);
+-	rc = add_badrange(badrange, addr, length);
++	append_badrange_entry(badrange, bre_new, addr, length);
+ 	spin_unlock(&badrange->lock);
+ 
+-	return rc;
++	return 0;
+ }
+ EXPORT_SYMBOL_GPL(badrange_add);
  
 -- 
 1.8.3
