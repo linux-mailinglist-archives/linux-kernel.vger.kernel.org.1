@@ -2,146 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A71B24B7A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33AD824B7BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730451AbgHTLCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:02:34 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:35137 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731691AbgHTK6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:58:47 -0400
-IronPort-SDR: YumMd3Db2DoVYT5oyny29iQRFlia7vmB5Ow7/qCj5e4X8AprM1QY2Ylqw+RK6EsWdgYLCML63c
- TH/hS2FVxKYMD/Sd32tD55SuTW240sQEQt/Gwg006lHEqD/iAkT3VVB86tUouKyd764uK0xF5G
- 97Rvw9UVaX7doxyrvOSbBTjqEp1ju7n2uHtJWIBzr7PAH3YloVqcVg4MpLl2S2EJZjM5LF1w1E
- C0bqpZNpbsagTFc9DQon0+lVKAQ2ScCcUoooALKORVsf8rZMnQgCbzpiwqB5K2NARfzaSzisSk
- NOo=
-X-IronPort-AV: E=Sophos;i="5.76,332,1592863200"; 
-   d="scan'208";a="13538551"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 20 Aug 2020 12:58:44 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Thu, 20 Aug 2020 12:58:44 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Thu, 20 Aug 2020 12:58:44 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1597921124; x=1629457124;
-  h=from:to:cc:subject:date:message-id;
-  bh=AvbWJpxiY9x30e5bs5u9l8RtJTLeeuHsRpLnISJKq8c=;
-  b=QUeJX0UQYjeqZhS30T6F/Nh1GDOCB7D3kV94RSgABmyFVtGNRsl0vFk8
-   Er0zBISu82lrJYhg4tJITRYTii25EWT9jgi1BSNEF05IYEPwlpzJDsTsR
-   vwaCK0epivrhA2sW4jmwP8gTbo0XOBwG7ipZGlSTUqHgCZyFnqSBBRjpl
-   +SeZzwq/S+YdCTgNGfLJgVtzad6GfT43GOBB1s3aDfCsPVW20dipYyh+s
-   klhILVkFzrqecHWKAIdqeMFRjOVFqPjlmz82xDDQX9yI9PUbgugazbtAC
-   V4PZYQVFhsqseVwrsi2LYJrytFcKLMXGIbuTfdxzN3lR71JVLpEEFxeOk
-   g==;
-IronPort-SDR: /cSvPJBux6HC5bgToM0tKrqIFpq8lI8ypZ/WzYQ99QPoGS2VsJOAZowbG/GXWLGW39cSKyegwK
- BWw3oABPLuPhKaQPzoN8ALFvAcCMX5wxVPq0pj3K1WhanQMkVB0V8T5HEGttrGUgIECnwzf49g
- 5C2jCkWrRuskW1qTcRTAbtWHvJ4B+bjeMFIGql5Af+8RDTlG8cl9wYbMnvUqcXGBbQU0oI6Sfv
- GGOmCCRf7owMOWAklauvEev3jctKWJRS/oc/DpJ6qrqXb2rXldr6MMIlNnFWBv1ApvJIAAUsHM
- yWg=
-X-IronPort-AV: E=Sophos;i="5.76,332,1592863200"; 
-   d="scan'208";a="13538550"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 20 Aug 2020 12:58:44 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 8F6AF280065;
-        Thu, 20 Aug 2020 12:58:44 +0200 (CEST)
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Stefan Agner <stefan@agner.ch>, Alison Wang <alison.wang@nxp.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH] drm: fsl-dcu: enable PIXCLK on LS1021A
-Date:   Thu, 20 Aug 2020 12:58:32 +0200
-Message-Id: <20200820105832.22331-1-matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726930AbgHTLEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:04:04 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:58708 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731373AbgHTK7X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:59:23 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id CCF3A821EC;
+        Thu, 20 Aug 2020 13:59:15 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1597921155;
+        bh=/G4ClTatYbNc8NxLLIvGhk7wy/zotPptuhCDIH3E+SQ=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=NkfVgGe6ekDpYeVZB9ZORxdbkNwIVRGPvRJQ0rybcJlywu4honSmfpm1TfS46YYxz
+         UK2yZrfmvCgMMwyevyqWmLTqYgBx9lcQMb6tWSZxh5p6hL+ZYkPiiUKLP01AtD5gjW
+         SE8YHmKYhpxynd+MXu5EQN3DB6xHy675nukXT0Cs=
+Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Thu, 20 Aug 2020 13:59:15 +0300
+Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
+ by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
+ id 15.01.1847.003; Thu, 20 Aug 2020 13:59:15 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     "dsterba@suse.cz" <dsterba@suse.cz>
+CC:     "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: RE: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
+ Software.
+Thread-Topic: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
+ Software.
+Thread-Index: AdZyNcmjSkpkGje7R9K6YobJrVDyZ///4zWA//aNcGA=
+Date:   Thu, 20 Aug 2020 10:59:15 +0000
+Message-ID: <416846245360401380734c4ee2a82f5c@paragon-software.com>
+References: <2911ac5cd20b46e397be506268718d74@paragon-software.com>
+ <20200814134056.GV2026@twin.jikos.cz>
+In-Reply-To: <20200814134056.GV2026@twin.jikos.cz>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.30.8.36]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PIXCLK needs to be enabled in SCFG before accessing the DCU on LS1021A,
-or the access will hang.
+From: David Sterba <dsterba@suse.cz>
+Sent: Friday, August 14, 2020 4:41 PM
+> In case somebody wants to compile it, this fixup is needed to let 'make
+> fs/ntfs3/' actually work, besides enabling it in the config.
+>=20
+> diff --git a/fs/Makefile b/fs/Makefile
+> index 1c7b0e3f6daa..b0b4ad8affa0 100644
+> --- a/fs/Makefile
+> +++ b/fs/Makefile
+> @@ -100,6 +100,7 @@ obj-$(CONFIG_SYSV_FS)		+=3D sysv/
+>  obj-$(CONFIG_CIFS)		+=3D cifs/
+>  obj-$(CONFIG_HPFS_FS)		+=3D hpfs/
+>  obj-$(CONFIG_NTFS_FS)		+=3D ntfs/
+> +obj-$(CONFIG_NTFS3_FS)		+=3D ntfs3/
+>  obj-$(CONFIG_UFS_FS)		+=3D ufs/
+>  obj-$(CONFIG_EFS_FS)		+=3D efs/
+>  obj-$(CONFIG_JFFS2_FS)		+=3D jffs2/
+> diff --git a/fs/ntfs3/Makefile b/fs/ntfs3/Makefile
+> index 4d4fe198b8b8..d99dd1af43aa 100644
+> --- a/fs/ntfs3/Makefile
+> +++ b/fs/ntfs3/Makefile
+> @@ -5,7 +5,7 @@
+>=20
+>  obj-$(CONFIG_NTFS3_FS) +=3D ntfs3.o
+>=20
+> -ntfs3-objs :=3D bitfunc.o bitmap.o inode.o fsntfs.o frecord.o \
+> +ntfs3-y :=3D bitfunc.o bitmap.o inode.o fsntfs.o frecord.o \
+>  	    index.o attrlist.o record.o attrib.o run.o xattr.o\
+>  	    upcase.o super.o file.o dir.o namei.o lznt.o\
+>  	    fslog.o
 
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
----
- drivers/gpu/drm/fsl-dcu/Kconfig           |  1 +
- drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c | 25 +++++++++++++++++++++++
- drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.h |  3 +++
- 3 files changed, 29 insertions(+)
-
-diff --git a/drivers/gpu/drm/fsl-dcu/Kconfig b/drivers/gpu/drm/fsl-dcu/Kconfig
-index d7dd8ba90e3a..9e5a35e7c00c 100644
---- a/drivers/gpu/drm/fsl-dcu/Kconfig
-+++ b/drivers/gpu/drm/fsl-dcu/Kconfig
-@@ -8,6 +8,7 @@ config DRM_FSL_DCU
- 	select DRM_PANEL
- 	select REGMAP_MMIO
- 	select VIDEOMODE_HELPERS
-+	select MFD_SYSCON if SOC_LS1021A
- 	help
- 	  Choose this option if you have an Freescale DCU chipset.
- 	  If M is selected the module will be called fsl-dcu-drm.
-diff --git a/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c b/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c
-index abbc1ddbf27f..8a7556655581 100644
---- a/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c
-+++ b/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c
-@@ -51,6 +51,23 @@ static const struct regmap_config fsl_dcu_regmap_config = {
- 	.volatile_reg = fsl_dcu_drm_is_volatile_reg,
- };
- 
-+static int fsl_dcu_scfg_config_ls1021a(struct device_node *np)
-+{
-+	struct regmap *scfg;
-+
-+	scfg = syscon_regmap_lookup_by_compatible("fsl,ls1021a-scfg");
-+	if (IS_ERR(scfg))
-+		return PTR_ERR(scfg);
-+
-+	/*
-+	 * For simplicity, enable the PIXCLK unconditionally. It might
-+	 * be possible to disable the clock in PM or on unload as a future
-+	 * improvement.
-+	 */
-+	return regmap_update_bits(scfg, SCFG_PIXCLKCR, SCFG_PIXCLKCR_PXCEN,
-+				  SCFG_PIXCLKCR_PXCEN);
-+}
-+
- static void fsl_dcu_irq_uninstall(struct drm_device *dev)
- {
- 	struct fsl_dcu_drm_device *fsl_dev = dev->dev_private;
-@@ -70,6 +87,14 @@ static int fsl_dcu_load(struct drm_device *dev, unsigned long flags)
- 		return ret;
- 	}
- 
-+	if (of_device_is_compatible(fsl_dev->np, "fsl,ls1021a-dcu")) {
-+		ret = fsl_dcu_scfg_config_ls1021a(fsl_dev->np);
-+		if (ret < 0) {
-+			dev_err(dev->dev, "failed to enable pixclk\n");
-+			goto done;
-+		}
-+	}
-+
- 	ret = drm_vblank_init(dev, dev->mode_config.num_crtc);
- 	if (ret < 0) {
- 		dev_err(dev->dev, "failed to initialize vblank\n");
-diff --git a/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.h b/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.h
-index e2049a0e8a92..566396013c04 100644
---- a/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.h
-+++ b/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.h
-@@ -160,6 +160,9 @@
- #define FSL_DCU_ARGB4444		12
- #define FSL_DCU_YUV422			14
- 
-+#define SCFG_PIXCLKCR			0x28
-+#define SCFG_PIXCLKCR_PXCEN		BIT(31)
-+
- #define VF610_LAYER_REG_NUM		9
- #define LS1021A_LAYER_REG_NUM		10
- 
--- 
-2.17.1
-
+Thanks! Indeed these fixups are needed to the patch (lost them during final=
+ polishing of the code before submitting). Will be fixed in v2.
