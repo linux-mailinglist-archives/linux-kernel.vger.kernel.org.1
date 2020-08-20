@@ -2,116 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4083124C139
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 17:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6502A24C145
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 17:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728505AbgHTPHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 11:07:46 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50849 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727920AbgHTPHl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 11:07:41 -0400
-Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k8m9Y-0005rd-Um; Thu, 20 Aug 2020 15:06:57 +0000
-Date:   Thu, 20 Aug 2020 17:06:55 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Michal Hocko <mhocko@suse.com>,
-        Suren Baghdasaryan <surenb@google.com>, timmurray@google.com,
-        mingo@kernel.org, peterz@infradead.org, tglx@linutronix.de,
-        esyr@redhat.com, christian@kellner.me, areber@redhat.com,
-        shakeelb@google.com, cyphar@cyphar.com, oleg@redhat.com,
-        adobriyan@gmail.com, akpm@linux-foundation.org,
-        gladkov.alexey@gmail.com, walken@google.com,
-        daniel.m.jordan@oracle.com, avagin@gmail.com,
-        bernd.edlinger@hotmail.de, john.johansen@canonical.com,
-        laoar.shao@gmail.com, minchan@kernel.org, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 1/1] mm, oom_adj: don't loop through tasks in
- __set_oom_adj when not necessary
-Message-ID: <20200820150655.ewjqommxs3axrsf6@wittgenstein>
-References: <87zh6pxzq6.fsf@x220.int.ebiederm.org>
- <20200820124241.GJ5033@dhcp22.suse.cz>
- <87lfi9xz7y.fsf@x220.int.ebiederm.org>
- <87d03lxysr.fsf@x220.int.ebiederm.org>
- <20200820132631.GK5033@dhcp22.suse.cz>
- <20200820133454.ch24kewh42ax4ebl@wittgenstein>
- <dcb62b67-5ad6-f63a-a909-e2fa70b240fc@i-love.sakura.ne.jp>
- <20200820140054.fdkbotd4tgfrqpe6@wittgenstein>
- <637ab0e7-e686-0c94-753b-b97d24bb8232@i-love.sakura.ne.jp>
- <87k0xtv0d4.fsf@x220.int.ebiederm.org>
+        id S1728590AbgHTPI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 11:08:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:40680 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727920AbgHTPIy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 11:08:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AA18331B;
+        Thu, 20 Aug 2020 08:08:53 -0700 (PDT)
+Received: from e121345-lin.cambridge.arm.com (e121345-lin.cambridge.arm.com [10.1.196.37])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1FDC83F6CF;
+        Thu, 20 Aug 2020 08:08:50 -0700 (PDT)
+From:   Robin Murphy <robin.murphy@arm.com>
+To:     hch@lst.de, joro@8bytes.org, linux@armlinux.org.uk
+Cc:     will@kernel.org, inki.dae@samsung.com, sw0312.kim@samsung.com,
+        kyungmin.park@samsung.com, m.szyprowski@samsung.com,
+        agross@kernel.org, bjorn.andersson@linaro.org,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, vdumpa@nvidia.com,
+        digetx@gmail.com, matthias.bgg@gmail.com, yong.wu@mediatek.com,
+        geert+renesas@glider.be, magnus.damm@gmail.com, t-kristo@ti.com,
+        s-anna@ti.com, laurent.pinchart@ideasonboard.com,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org,
+        linux-samsung-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 00/18] Convert arch/arm to use iommu-dma
+Date:   Thu, 20 Aug 2020 16:08:19 +0100
+Message-Id: <cover.1597931875.git.robin.murphy@arm.com>
+X-Mailer: git-send-email 2.28.0.dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87k0xtv0d4.fsf@x220.int.ebiederm.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 09:49:11AM -0500, Eric W. Biederman wrote:
-> Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp> writes:
-> 
-> > On 2020/08/20 23:00, Christian Brauner wrote:
-> >> On Thu, Aug 20, 2020 at 10:48:43PM +0900, Tetsuo Handa wrote:
-> >>> On 2020/08/20 22:34, Christian Brauner wrote:
-> >>>> On Thu, Aug 20, 2020 at 03:26:31PM +0200, Michal Hocko wrote:
-> >>>>> If you can handle vfork by other means then I am all for it. There were
-> >>>>> no patches in that regard proposed yet. Maybe it will turn out simpler
-> >>>>> then the heavy lifting we have to do in the oom specific code.
-> >>>>
-> >>>> Eric's not wrong. I fiddled with this too this morning but since
-> >>>> oom_score_adj is fiddled with in a bunch of places this seemed way more
-> >>>> code churn then what's proposed here.
-> >>>
-> >>> I prefer simply reverting commit 44a70adec910d692 ("mm, oom_adj: make sure
-> >>> processes sharing mm have same view of oom_score_adj").
-> >>>
-> >>>   https://lore.kernel.org/patchwork/patch/1037208/
-> >> 
-> >> I guess this is a can of worms but just or the sake of getting more
-> >> background: the question seems to be whether the oom adj score is a
-> >> property of the task/thread-group or a property of the mm. I always
-> >> thought the oom score is a property of the task/thread-group and not the
-> >> mm which is also why it lives in struct signal_struct and not in struct
-> >> mm_struct. But
-> >> 
-> >> 44a70adec910 ("mm, oom_adj: make sure processes sharing mm have same view of oom_score_adj")
-> >> 
-> >> reads like it is supposed to be a property of the mm or at least the
-> >> change makes it so.
-> >
-> > Yes, 44a70adec910 is trying to go towards changing from a property of the task/thread-group
-> > to a property of mm. But I don't think we need to do it at the cost of "__set_oom_adj() latency
-> > Yong-Taek Lee and Tim Murray have reported" and "complicity for supporting
-> > vfork() => __set_oom_adj() => execve() sequence".
-> 
-> The thing is commit 44a70adec910d692 ("mm, oom_adj: make sure processes
-> sharing mm have same view of oom_score_adj") has been in the tree for 4
-> years.
-> 
-> That someone is just now noticing a regression is their problem.  The
-> change is semantics is done and decided.  We can not reasonably revert
-> at this point without risking other regressions.
-> 
-> Given that the decision has already been made to make oom_adj
-> effectively per mm.  There is no point on have a debate if we should do
-> it.
+Hi all,
 
-I mean yeah, I think no-one really was going to jump on the revert-train.
+After 5 years or so of intending to get round to this, finally the
+time comes! The changes themselves actualy turn out to be relatively
+mechanical; the bigger concern appears to be how to get everything
+merged across about 5 diffferent trees given the dependencies.
 
-At least for me the historical background was quite important to know
-actually. The fact that by sharing the mm one can effectively be bound
-to the oom score of another thread-group is kinda suprising and the
-oom_score_adj section in man proc doesn't mention this.
+I've lightly boot-tested things on Rockchip RK3288 and Exynos 4412
+(Odroid-U3), to the degree that their display drivers should be using
+IOMMU-backed buffers and don't explode (the Odroid doesn't manage to
+send a working HDMI signal to the one monitor I have that it actually
+detects, but that's a pre-existing condition...) Confirmation that the
+Mediatek, OMAP and Tegra changes work will be most welcome.
 
-And I really think we need to document this. Either on the clone() or on
-the oom_score_adj page...
+Patches are based on 5.9-rc1, branch available here:
 
-Christian
+  git://linux-arm.org/linux-rm arm/dma
+
+
+Robin.
+
+
+Robin Murphy (18):
+  ARM/dma-mapping: Drop .dma_supported for IOMMU ops
+  ARM/dma-mapping: Consolidate IOMMU ops callbacks
+  ARM/dma-mapping: Merge IOMMU ops
+  iommu/dma: Add temporary hacks for arch/arm
+  ARM/dma-mapping: Switch to iommu_dma_ops
+  ARM/dma-mapping: Support IOMMU default domains
+  iommu/arm-smmu: Remove arch/arm workaround
+  iommu/renesas: Remove arch/arm workaround
+  iommu/mediatek-v1: Add IOMMU_DOMAIN_DMA support
+  iommu/msm: Add IOMMU_DOMAIN_DMA support
+  iommu/omap: Add IOMMU_DOMAIN_DMA support
+  iommu/tegra-gart: Add IOMMU_DOMAIN_DMA support
+  iommu/tegra: Add IOMMU_DOMAIN_DMA support
+  drm/exynos: Consolidate IOMMU mapping code
+  drm/nouveau/tegra: Clean up IOMMU workaround
+  staging/media/tegra-vde: Clean up IOMMU workaround
+  media/omap3isp: Clean up IOMMU workaround
+  ARM/dma-mapping: Remove legacy dma-iommu API
+
+ arch/arm/Kconfig                              |   28 +-
+ arch/arm/common/dmabounce.c                   |    1 -
+ arch/arm/include/asm/device.h                 |    9 -
+ arch/arm/include/asm/dma-iommu.h              |   37 -
+ arch/arm/mm/dma-mapping.c                     | 1198 +----------------
+ drivers/gpu/drm/exynos/exynos5433_drm_decon.c |    5 +-
+ drivers/gpu/drm/exynos/exynos7_drm_decon.c    |    5 +-
+ drivers/gpu/drm/exynos/exynos_drm_dma.c       |   61 +-
+ drivers/gpu/drm/exynos/exynos_drm_drv.h       |    6 +-
+ drivers/gpu/drm/exynos/exynos_drm_fimc.c      |    5 +-
+ drivers/gpu/drm/exynos/exynos_drm_fimd.c      |    5 +-
+ drivers/gpu/drm/exynos/exynos_drm_g2d.c       |    5 +-
+ drivers/gpu/drm/exynos/exynos_drm_gsc.c       |    5 +-
+ drivers/gpu/drm/exynos/exynos_drm_rotator.c   |    5 +-
+ drivers/gpu/drm/exynos/exynos_drm_scaler.c    |    6 +-
+ drivers/gpu/drm/exynos/exynos_mixer.c         |    7 +-
+ .../drm/nouveau/nvkm/engine/device/tegra.c    |   13 -
+ drivers/iommu/Kconfig                         |    8 -
+ drivers/iommu/arm/arm-smmu/arm-smmu.c         |   10 -
+ drivers/iommu/ipmmu-vmsa.c                    |   69 -
+ drivers/iommu/msm_iommu.c                     |    7 +-
+ drivers/iommu/mtk_iommu.h                     |    2 -
+ drivers/iommu/mtk_iommu_v1.c                  |  153 +--
+ drivers/iommu/omap-iommu.c                    |   22 +-
+ drivers/iommu/tegra-gart.c                    |   17 +-
+ drivers/iommu/tegra-smmu.c                    |   37 +-
+ drivers/media/platform/Kconfig                |    1 -
+ drivers/media/platform/omap3isp/isp.c         |   68 +-
+ drivers/media/platform/omap3isp/isp.h         |    3 -
+ drivers/staging/media/tegra-vde/iommu.c       |   12 -
+ 30 files changed, 150 insertions(+), 1660 deletions(-)
+ delete mode 100644 arch/arm/include/asm/dma-iommu.h
+
+-- 
+2.28.0.dirty
+
