@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9DDC24B43E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D6824B4AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730479AbgHTKAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:00:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47420 "EHLO mail.kernel.org"
+        id S1730904AbgHTKKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:10:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727794AbgHTKAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:00:01 -0400
+        id S1730896AbgHTKKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:10:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8046C2067C;
-        Thu, 20 Aug 2020 10:00:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7673C2075E;
+        Thu, 20 Aug 2020 10:10:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917601;
-        bh=NA/ndJV7K60CAH946kmTXs4ibWi53JfPfIOQEF4YGjc=;
+        s=default; t=1597918218;
+        bh=XYRT9QlV1V+F9o3hPmuQ8qXMUy5c6QM3eYvpnEST3fo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XeoeQtjinrZSKyJUr4bBSfhQlxNYaa/McifLzgl9cLyDWTfaqtx/phMJlnUtaaLAa
-         x/cyTUSq526P5ctYTOTBEAIcEL3+4Fay2BatJWWd2l2sGNGuxg1Daz9k05HHu6txg3
-         pHe1ZO2n85xHIB3lc5daI5BWuUIRDCvxMpTyHCKU=
+        b=VTYn8/TY1/0+2406oKjk+puYPoTyQh7vr7aVEny9YtLHjJxYmUFAM8Tyr0SUeee1F
+         4pF/rlHyx/nrOj5LsauUv8LboYKMCUOzlS9Og3H48aFmGKHgKi8WDc62Lw1wuV2x7R
+         c3uRfbP0qpTO/mmPfFUS2QecCcHVipZ+vAb8JU6A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Lu Wei <luwei32@huawei.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Liviu Dudau <Liviu.Dudau@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 088/212] platform/x86: intel-vbtn: Fix return value check in check_acpi_dev()
+Subject: [PATCH 4.14 086/228] drm/arm: fix unintentional integer overflow on left shift
 Date:   Thu, 20 Aug 2020 11:21:01 +0200
-Message-Id: <20200820091606.792489258@linuxfoundation.org>
+Message-Id: <20200820091611.914793815@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
-References: <20200820091602.251285210@linuxfoundation.org>
+In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
+References: <20200820091607.532711107@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,36 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lu Wei <luwei32@huawei.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 64dd4a5a7d214a07e3d9f40227ec30ac8ba8796e ]
+[ Upstream commit 5f368ddea6fec519bdb93b5368f6a844b6ea27a6 ]
 
-In the function check_acpi_dev(), if it fails to create
-platform device, the return value is ERR_PTR() or NULL.
-Thus it must use IS_ERR_OR_NULL() to check return value.
+Shifting the integer value 1 is evaluated using 32-bit arithmetic
+and then used in an expression that expects a long value leads to
+a potential integer overflow. Fix this by using the BIT macro to
+perform the shift to avoid the overflow.
 
-Fixes: 332e081225fc ("intel-vbtn: new driver for Intel Virtual Button")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Lu Wei <luwei32@huawei.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Addresses-Coverity: ("Unintentional integer overflow")
+Fixes: ad49f8602fe8 ("drm/arm: Add support for Mali Display Processors")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Acked-by: Liviu Dudau <liviu.dudau@arm.com>
+Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200618100400.11464-1-colin.king@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/intel-vbtn.c | 2 +-
+ drivers/gpu/drm/arm/malidp_planes.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/platform/x86/intel-vbtn.c b/drivers/platform/x86/intel-vbtn.c
-index a74340dff530e..1cf2a38add5f9 100644
---- a/drivers/platform/x86/intel-vbtn.c
-+++ b/drivers/platform/x86/intel-vbtn.c
-@@ -168,7 +168,7 @@ check_acpi_dev(acpi_handle handle, u32 lvl, void *context, void **rv)
- 		return AE_OK;
- 
- 	if (acpi_match_device_ids(dev, ids) == 0)
--		if (acpi_create_platform_device(dev, NULL))
-+		if (!IS_ERR_OR_NULL(acpi_create_platform_device(dev, NULL)))
- 			dev_info(&dev->dev,
- 				 "intel-vbtn: created platform device\n");
- 
+diff --git a/drivers/gpu/drm/arm/malidp_planes.c b/drivers/gpu/drm/arm/malidp_planes.c
+index 16b8b310ae5c7..7072d738b072b 100644
+--- a/drivers/gpu/drm/arm/malidp_planes.c
++++ b/drivers/gpu/drm/arm/malidp_planes.c
+@@ -369,7 +369,7 @@ int malidp_de_planes_init(struct drm_device *drm)
+ 	const struct malidp_hw_regmap *map = &malidp->dev->map;
+ 	struct malidp_plane *plane = NULL;
+ 	enum drm_plane_type plane_type;
+-	unsigned long crtcs = 1 << drm->mode_config.num_crtc;
++	unsigned long crtcs = BIT(drm->mode_config.num_crtc);
+ 	unsigned long flags = DRM_MODE_ROTATE_0 | DRM_MODE_ROTATE_90 | DRM_MODE_ROTATE_180 |
+ 			      DRM_MODE_ROTATE_270 | DRM_MODE_REFLECT_X | DRM_MODE_REFLECT_Y;
+ 	u32 *formats;
 -- 
 2.25.1
 
