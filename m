@@ -2,178 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3095624AC60
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 02:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B98FE24AC64
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 02:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726729AbgHTArg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 20:47:36 -0400
-Received: from relay1.mymailcheap.com ([144.217.248.102]:47558 "EHLO
-        relay1.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726609AbgHTArg (ORCPT
+        id S1726810AbgHTAsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 20:48:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726617AbgHTAsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 20:47:36 -0400
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay1.mymailcheap.com (Postfix) with ESMTPS id 0A51C3F157;
-        Wed, 19 Aug 2020 20:47:34 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id DFDC92A3B9;
-        Wed, 19 Aug 2020 20:47:33 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1597884453;
-        bh=J9JScJSbjxuW0cyxqgEmt85ZvWaBbF7FA9Mv/L55Rqo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BaVr2ND3MXzxRKENbZZcsGKx3TtFz+MjzJaUAi/WBBNexpaRaoDUmmHVvaTvG73a/
-         u2KSiV34IOghgG9ViryivcILOWHYATARa+uzVpygCIpBA7GMgLBsfP92XYjBeRNKB5
-         n5VK8gz1zgt+C7WjK1sphqkeQp1phHRO/sEXNKoU=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id OOeexP1UEHWo; Wed, 19 Aug 2020 20:47:32 -0400 (EDT)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Wed, 19 Aug 2020 20:47:32 -0400 (EDT)
-Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id B0B1E41184;
-        Thu, 20 Aug 2020 00:47:30 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="urcCyii1";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from localhost.localdomain (unknown [117.136.8.126])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 05DCE4085B;
-        Thu, 20 Aug 2020 00:43:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
-        s=default; t=1597884195;
-        bh=J9JScJSbjxuW0cyxqgEmt85ZvWaBbF7FA9Mv/L55Rqo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=urcCyii16Z/YTh/IPIcfqwHQMw/KmAMQ095cPmcVdcoYNT3iTb+kv0iyoWGpNW2RL
-         tzzelV0Poxb0xYAqzNAdcBz86ou9fl2h35BtQw5YqoGVPnzZ7NLDDo0TzqiQ0VO++O
-         AnoD63WNTyv8qgJOIJmKGJMyvw/ZLHV5ISK9Xytw=
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     linux-mips@vger.kernel.org
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
-        Paul Burton <paulburton@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND 1/2] MIPS: cacheinfo: Add missing VCache
-Date:   Thu, 20 Aug 2020 08:42:49 +0800
-Message-Id: <20200820004253.3418-2-jiaxun.yang@flygoat.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820004253.3418-1-jiaxun.yang@flygoat.com>
-References: <20200820004253.3418-1-jiaxun.yang@flygoat.com>
+        Wed, 19 Aug 2020 20:48:12 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB0EC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 17:48:12 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id f24so602578ejx.6
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 17:48:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zWR/eDOYSmSVzczzo6qbGdfO4pCgUsBX0AEa/KnN3jA=;
+        b=HyVasFG1fl4fG/iXKZkNWPqtu9OF1wAHPJFL5xKE4K5PVXaRHNZfuPl5ObgPVNHOQt
+         /htjOJIF2gzq6iLuXNRz09A1VwBpeyptHNhBWS1A8fyDbvNWyQXhX5FawuLAheY3ty8+
+         D5pWABLubEXetY0V+8FZkLNjerqN3uETEGS/v5KBy4Ta7MVWu8Jk8VOFClzlWfGq+0Y6
+         y8yyLyR0MO1DLw9CWcggVwGbuU+46BMzO4oUnrd9VMYC48AOU5MRIfWaxbTPjN3Rm+hO
+         v98ZyBTXH1/nGNovMA8nv0SinlQ1Iow+nVzg2oFPX1p3RzIYDze4uS+RIJqHGLy5Bict
+         hQcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zWR/eDOYSmSVzczzo6qbGdfO4pCgUsBX0AEa/KnN3jA=;
+        b=a82ftL13gRq+9S1634ZBpRxFx+vzxyLLQGHt706qRWD5q2kILpEtuJmTMcOp4+h7oL
+         yXI//j833rB8q63AmPWA0fkNdKgI8ryFMkv8yZv9PuNvOAktLQI9p3/SOvvYOk4P8E2Y
+         qX01mInOaIXSbWMGp9aU5DIMHxhkBhO4a1y3eGMAY2ZIRP6uJrRARovXnelRNUIc8dfB
+         fyWcsq3cXO32nB47qT6vhxzSZLDbe1Up5r53l5jxfdaY16HLvp06dXWTxHppkvEOYoJb
+         6st03Vy/iomXaV5a+T7FUZ0ODm3Z3Z1mgF+RoJYi/PeYeYjqbZ5NouYa0TISGnJQj+NP
+         b4KA==
+X-Gm-Message-State: AOAM531+uIDeFjr313W1tgZb4HXdXYhtwHJjBdd4qGbH0+4K4nhCGkTQ
+        +nU0w4IbPLeYNlJrOTkjqgnCcmoxBqAA0tGe60o=
+X-Google-Smtp-Source: ABdhPJxvdzXT6NM+jo0exsa3ykTI/5zJ81iR0HKM/WV5zYDeWG1qkf3V5Pvuk3az7y+KnGMfb2ms6/BsOrCsPjg1mWY=
+X-Received: by 2002:a17:906:990c:: with SMTP id zl12mr884319ejb.488.1597884490658;
+ Wed, 19 Aug 2020 17:48:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: B0B1E41184
-X-Spamd-Result: default: False [4.90 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
-         RECEIVED_SPAMHAUS_PBL(0.00)[117.136.8.126:received];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         ML_SERVERS(-3.10)[148.251.23.173];
-         DKIM_TRACE(0.00)[flygoat.com:+];
-         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
-         RCPT_COUNT_SEVEN(0.00)[7];
-         MID_CONTAINS_FROM(1.00)[];
-         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
-X-Rspamd-Server: mail20.mymailcheap.com
-X-Spam: Yes
+References: <20200818184122.29C415DF@viggo.jf.intel.com>
+In-Reply-To: <20200818184122.29C415DF@viggo.jf.intel.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Wed, 19 Aug 2020 17:47:59 -0700
+Message-ID: <CAHbLzkqTrzsSJQW8Jkob+aBiVkt2kVR7FsH5-_d5cxmnYw39Pg@mail.gmail.com>
+Subject: Re: [RFC][PATCH 0/9] [v3] Migrate Pages in lieu of discard
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Rientjes <rientjes@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Victim Cache is defined by Loongson as per-core unified
-private Cache.
-Add this into cacheinfo and make cache levels selfincrement
-instead of hardcode levels.
+On Tue, Aug 18, 2020 at 11:50 AM Dave Hansen
+<dave.hansen@linux.intel.com> wrote:
+>
+> todo:
+> Changes since (https://lwn.net/Articles/824830/):
+>  * Use higher-level migrate_pages() API approach from Yang Shi's
+>    earlier patches.
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
- arch/mips/kernel/cacheinfo.c | 34 ++++++++++++++++++++++++++--------
- 1 file changed, 26 insertions(+), 8 deletions(-)
+Thanks for incorporating in this. I believe this would be more efficient.
 
-diff --git a/arch/mips/kernel/cacheinfo.c b/arch/mips/kernel/cacheinfo.c
-index 47312c529410..83548331ee94 100644
---- a/arch/mips/kernel/cacheinfo.c
-+++ b/arch/mips/kernel/cacheinfo.c
-@@ -35,6 +35,11 @@ static int __init_cache_level(unsigned int cpu)
- 
- 	leaves += (c->icache.waysize) ? 2 : 1;
- 
-+	if (c->vcache.waysize) {
-+		levels++;
-+		leaves++;
-+	}
-+
- 	if (c->scache.waysize) {
- 		levels++;
- 		leaves++;
-@@ -74,25 +79,38 @@ static int __populate_cache_leaves(unsigned int cpu)
- 	struct cpuinfo_mips *c = &current_cpu_data;
- 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
- 	struct cacheinfo *this_leaf = this_cpu_ci->info_list;
-+	int level = 1;
- 
- 	if (c->icache.waysize) {
--		/* L1 caches are per core */
-+		/* D/I caches are per core */
- 		fill_cpumask_siblings(cpu, &this_leaf->shared_cpu_map);
--		populate_cache(dcache, this_leaf, 1, CACHE_TYPE_DATA);
-+		populate_cache(dcache, this_leaf, level, CACHE_TYPE_DATA);
- 		fill_cpumask_siblings(cpu, &this_leaf->shared_cpu_map);
--		populate_cache(icache, this_leaf, 1, CACHE_TYPE_INST);
-+		populate_cache(icache, this_leaf, level, CACHE_TYPE_INST);
-+		level++;
- 	} else {
--		populate_cache(dcache, this_leaf, 1, CACHE_TYPE_UNIFIED);
-+		populate_cache(dcache, this_leaf, level, CACHE_TYPE_UNIFIED);
-+		level++;
-+	}
-+
-+	if (c->vcache.waysize) {
-+		/* Vcache is per core as well */
-+		fill_cpumask_siblings(cpu, &this_leaf->shared_cpu_map);
-+		populate_cache(vcache, this_leaf, level, CACHE_TYPE_UNIFIED);
-+		level++;
- 	}
- 
- 	if (c->scache.waysize) {
--		/* L2 cache is per cluster */
-+		/* Scache is per cluster */
- 		fill_cpumask_cluster(cpu, &this_leaf->shared_cpu_map);
--		populate_cache(scache, this_leaf, 2, CACHE_TYPE_UNIFIED);
-+		populate_cache(scache, this_leaf, level, CACHE_TYPE_UNIFIED);
-+		level++;
- 	}
- 
--	if (c->tcache.waysize)
--		populate_cache(tcache, this_leaf, 3, CACHE_TYPE_UNIFIED);
-+	if (c->tcache.waysize) {
-+		populate_cache(tcache, this_leaf, level, CACHE_TYPE_UNIFIED);
-+		level++;
-+	}
- 
- 	this_cpu_ci->cpu_map_populated = true;
- 
--- 
-2.28.0
+>  * made sure to actually check node_reclaim_mode's new bit
+>  * disabled migration entirely before introducing RECLAIM_MIGRATE
+>  * Replace GFP_NOWAIT with explicit __GFP_KSWAPD_RECLAIM and
+>    comment why we want that.
+>  * Comment on effects of that keep multiple source nodes from
+>    sharing target nodes
+>
+> The full series is also available here:
+>
+>         https://github.com/hansendc/linux/tree/automigrate-20200818
+>
+> --
+>
+> We're starting to see systems with more and more kinds of memory such
+> as Intel's implementation of persistent memory.
+>
+> Let's say you have a system with some DRAM and some persistent memory.
+> Today, once DRAM fills up, reclaim will start and some of the DRAM
+> contents will be thrown out.  Allocations will, at some point, start
+> falling over to the slower persistent memory.
+>
+> That has two nasty properties.  First, the newer allocations can end
+> up in the slower persistent memory.  Second, reclaimed data in DRAM
+> are just discarded even if there are gobs of space in persistent
+> memory that could be used.
+>
+> This set implements a solution to these problems.  At the end of the
+> reclaim process in shrink_page_list() just before the last page
+> refcount is dropped, the page is migrated to persistent memory instead
+> of being dropped.
+>
+> While I've talked about a DRAM/PMEM pairing, this approach would
+> function in any environment where memory tiers exist.
+>
+> This is not perfect.  It "strands" pages in slower memory and never
+> brings them back to fast DRAM.  Other things need to be built to
+> promote hot pages back to DRAM.
+>
+> This is also all based on an upstream mechanism that allows
+> persistent memory to be onlined and used as if it were volatile:
+>
+>         http://lkml.kernel.org/r/20190124231441.37A4A305@viggo.jf.intel.com
+>
+> == Open Issues ==
+>
+>  * For cpusets and memory policies that restrict allocations
+>    to PMEM, is it OK to demote to PMEM?  Do we need a cgroup-
+>    level API to opt-in or opt-out of these migrations?
+
+I'm not sure if this would work or not, but AFAICT, it is unlikely.
+The nasty thing about cgroupv1 is you may end up having threads from
+the same process in different cgroups although it is rare.
+
+My initial thought is to make cpuset process only (the threads in the
+same process must be in the same cpuset group), but it sounds not too
+feasible either since it may break some user configurations.
+
+>  * Migration failures will result in pages being unreclaimable.
+>    Need to be able to fall back to normal reclaim.
+
+That should be transient, shouldn't? The migration logic is supposed
+to wake up kswapd on pmem nodes, then the pages should become
+migratable in later retry.
+
+>
+>
+> Cc: Yang Shi <yang.shi@linux.alibaba.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Huang Ying <ying.huang@intel.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+>
+> --
+>
+> Dave Hansen (5):
+>       mm/numa: node demotion data structure and lookup
+>       mm/vmscan: Attempt to migrate page in lieu of discard
+>       mm/numa: automatically generate node migration order
+>       mm/vmscan: never demote for memcg reclaim
+>       mm/numa: new reclaim mode to enable reclaim-based migration
+>
+> Keith Busch (2):
+>       mm/migrate: Defer allocating new page until needed
+>       mm/vmscan: Consider anonymous pages without swap
+>
+> Yang Shi (1):
+>       mm/vmscan: add page demotion counter
+>
+>  Documentation/admin-guide/sysctl/vm.rst |    9
+>  include/linux/migrate.h                 |    6
+>  include/linux/node.h                    |    9
+>  include/linux/vm_event_item.h           |    2
+>  include/trace/events/migrate.h          |    3
+>  mm/debug.c                              |    1
+>  mm/internal.h                           |    1
+>  mm/migrate.c                            |  400 ++++++++++++++++++++++++++------
+>  mm/page_alloc.c                         |    2
+>  mm/vmscan.c                             |   88 ++++++-
+>  mm/vmstat.c                             |    2
+>  11 files changed, 439 insertions(+), 84 deletions(-)
