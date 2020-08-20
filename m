@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC30024C015
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF4B24BFFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731219AbgHTN6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:58:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60762 "EHLO mail.kernel.org"
+        id S1728220AbgHTODF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 10:03:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726973AbgHTJYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:24:30 -0400
+        id S1727793AbgHTJZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:25:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 72A6822CA1;
-        Thu, 20 Aug 2020 09:24:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 85E4E2173E;
+        Thu, 20 Aug 2020 09:25:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915470;
-        bh=jIGx1oDIotA1N0j1NtNbCXqLVSh5R/KCnfPlSK6xOcA=;
+        s=default; t=1597915531;
+        bh=BJZ3khMHnakcxXd+d87ppc6iMeGURSC9HUcleIi3LsA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B5wQIckufI2wd3bSt1baWqs8RUbnRwayo7RlM06gtQsl9gjkOvc0Pn1ehyLE/FUSy
-         zDKriRLodyPalomqLMdm0E9DfB3T+11tjbpk5rnAd9yGOewbx/2z3XBInPw7bVQRys
-         1Xaqny9yROcxmNgQFb7wPjMsAnhDlB74FAyGK5OI=
+        b=Xeiw4zc/LeppE7ITtWlQ1UvCTKd6KxzmZxm91UpH3FekebMrfRzIMKgOJ5F6Jo0Ah
+         OOHq4Yf9Ul5jF+5l7jYM4di/Ke8pnCCAZpP5PPadi41lvISAZikGCfbvp7AKcE050J
+         f6u/vi53Orkj6RrOIaEkNhRfd60WsJoDqmrQbZII=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        stable@vger.kernel.org, Eric Sandeen <esandeen@redhat.com>,
+        Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.8 024/232] btrfs: open device without device_list_mutex
-Date:   Thu, 20 Aug 2020 11:17:55 +0200
-Message-Id: <20200820091613.922748607@linuxfoundation.org>
+Subject: [PATCH 5.8 029/232] btrfs: return EROFS for BTRFS_FS_STATE_ERROR cases
+Date:   Thu, 20 Aug 2020 11:18:00 +0200
+Message-Id: <20200820091614.166494761@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
 References: <20200820091612.692383444@linuxfoundation.org>
@@ -45,251 +46,150 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Josef Bacik <josef@toxicpanda.com>
 
-commit 18c850fdc5a801bad4977b0f1723761d42267e45 upstream.
+commit fbabd4a36faaf74c83142d0b3d950c11ec14fda1 upstream.
 
-There's long existed a lockdep splat because we open our bdev's under
-the ->device_list_mutex at mount time, which acquires the bd_mutex.
-Usually this goes unnoticed, but if you do loopback devices at all
-suddenly the bd_mutex comes with a whole host of other dependencies,
-which results in the splat when you mount a btrfs file system.
+Eric reported seeing this message while running generic/475
 
-======================================================
-WARNING: possible circular locking dependency detected
-5.8.0-0.rc3.1.fc33.x86_64+debug #1 Not tainted
-------------------------------------------------------
-systemd-journal/509 is trying to acquire lock:
-ffff970831f84db0 (&fs_info->reloc_mutex){+.+.}-{3:3}, at: btrfs_record_root_in_trans+0x44/0x70 [btrfs]
+  BTRFS: error (device dm-3) in btrfs_sync_log:3084: errno=-117 Filesystem corrupted
 
-but task is already holding lock:
-ffff97083144d598 (sb_pagefaults){.+.+}-{0:0}, at: btrfs_page_mkwrite+0x59/0x560 [btrfs]
+Full stack trace:
 
-which lock already depends on the new lock.
+  BTRFS: error (device dm-0) in btrfs_commit_transaction:2323: errno=-5 IO failure (Error while writing out transaction)
+  BTRFS info (device dm-0): forced readonly
+  BTRFS warning (device dm-0): Skipping commit of aborted transaction.
+  ------------[ cut here ]------------
+  BTRFS: error (device dm-0) in cleanup_transaction:1894: errno=-5 IO failure
+  BTRFS: Transaction aborted (error -117)
+  BTRFS warning (device dm-0): direct IO failed ino 3555 rw 0,0 sector 0x1c6480 len 4096 err no 10
+  BTRFS warning (device dm-0): direct IO failed ino 3555 rw 0,0 sector 0x1c6488 len 4096 err no 10
+  BTRFS warning (device dm-0): direct IO failed ino 3555 rw 0,0 sector 0x1c6490 len 4096 err no 10
+  BTRFS warning (device dm-0): direct IO failed ino 3555 rw 0,0 sector 0x1c6498 len 4096 err no 10
+  BTRFS warning (device dm-0): direct IO failed ino 3555 rw 0,0 sector 0x1c64a0 len 4096 err no 10
+  BTRFS warning (device dm-0): direct IO failed ino 3555 rw 0,0 sector 0x1c64a8 len 4096 err no 10
+  BTRFS warning (device dm-0): direct IO failed ino 3555 rw 0,0 sector 0x1c64b0 len 4096 err no 10
+  BTRFS warning (device dm-0): direct IO failed ino 3555 rw 0,0 sector 0x1c64b8 len 4096 err no 10
+  BTRFS warning (device dm-0): direct IO failed ino 3555 rw 0,0 sector 0x1c64c0 len 4096 err no 10
+  BTRFS warning (device dm-0): direct IO failed ino 3572 rw 0,0 sector 0x1b85e8 len 4096 err no 10
+  BTRFS warning (device dm-0): direct IO failed ino 3572 rw 0,0 sector 0x1b85f0 len 4096 err no 10
+  WARNING: CPU: 3 PID: 23985 at fs/btrfs/tree-log.c:3084 btrfs_sync_log+0xbc8/0xd60 [btrfs]
+  BTRFS warning (device dm-0): direct IO failed ino 3548 rw 0,0 sector 0x1d4288 len 4096 err no 10
+  BTRFS warning (device dm-0): direct IO failed ino 3548 rw 0,0 sector 0x1d4290 len 4096 err no 10
+  BTRFS warning (device dm-0): direct IO failed ino 3548 rw 0,0 sector 0x1d4298 len 4096 err no 10
+  BTRFS warning (device dm-0): direct IO failed ino 3548 rw 0,0 sector 0x1d42a0 len 4096 err no 10
+  BTRFS warning (device dm-0): direct IO failed ino 3548 rw 0,0 sector 0x1d42a8 len 4096 err no 10
+  BTRFS warning (device dm-0): direct IO failed ino 3548 rw 0,0 sector 0x1d42b0 len 4096 err no 10
+  BTRFS warning (device dm-0): direct IO failed ino 3548 rw 0,0 sector 0x1d42b8 len 4096 err no 10
+  BTRFS warning (device dm-0): direct IO failed ino 3548 rw 0,0 sector 0x1d42c0 len 4096 err no 10
+  BTRFS warning (device dm-0): direct IO failed ino 3548 rw 0,0 sector 0x1d42c8 len 4096 err no 10
+  BTRFS warning (device dm-0): direct IO failed ino 3548 rw 0,0 sector 0x1d42d0 len 4096 err no 10
+  CPU: 3 PID: 23985 Comm: fsstress Tainted: G        W    L    5.8.0-rc4-default+ #1181
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
+  RIP: 0010:btrfs_sync_log+0xbc8/0xd60 [btrfs]
+  RSP: 0018:ffff909a44d17bd0 EFLAGS: 00010286
+  RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000001
+  RDX: ffff8f3be41cb940 RSI: ffffffffb0108d2b RDI: ffffffffb0108ff7
+  RBP: ffff909a44d17e70 R08: 0000000000000000 R09: 0000000000000000
+  R10: 0000000000000000 R11: 0000000000037988 R12: ffff8f3bd20e4000
+  R13: ffff8f3bd20e4428 R14: 00000000ffffff8b R15: ffff909a44d17c70
+  FS:  00007f6a6ed3fb80(0000) GS:ffff8f3c3dc00000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 00007f6a6ed3e000 CR3: 00000000525c0003 CR4: 0000000000160ee0
+  Call Trace:
+   ? finish_wait+0x90/0x90
+   ? __mutex_unlock_slowpath+0x45/0x2a0
+   ? lock_acquire+0xa3/0x440
+   ? lockref_put_or_lock+0x9/0x30
+   ? dput+0x20/0x4a0
+   ? dput+0x20/0x4a0
+   ? do_raw_spin_unlock+0x4b/0xc0
+   ? _raw_spin_unlock+0x1f/0x30
+   btrfs_sync_file+0x335/0x490 [btrfs]
+   do_fsync+0x38/0x70
+   __x64_sys_fsync+0x10/0x20
+   do_syscall_64+0x50/0xe0
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  RIP: 0033:0x7f6a6ef1b6e3
+  Code: Bad RIP value.
+  RSP: 002b:00007ffd01e20038 EFLAGS: 00000246 ORIG_RAX: 000000000000004a
+  RAX: ffffffffffffffda RBX: 000000000007a120 RCX: 00007f6a6ef1b6e3
+  RDX: 00007ffd01e1ffa0 RSI: 00007ffd01e1ffa0 RDI: 0000000000000003
+  RBP: 0000000000000003 R08: 0000000000000001 R09: 00007ffd01e2004c
+  R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000009f
+  R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+  irq event stamp: 0
+  hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+  hardirqs last disabled at (0): [<ffffffffb007fe0b>] copy_process+0x67b/0x1b00
+  softirqs last  enabled at (0): [<ffffffffb007fe0b>] copy_process+0x67b/0x1b00
+  softirqs last disabled at (0): [<0000000000000000>] 0x0
+  ---[ end trace af146e0e38433456 ]---
+  BTRFS: error (device dm-0) in btrfs_sync_log:3084: errno=-117 Filesystem corrupted
 
-the existing dependency chain (in reverse order) is:
+This ret came from btrfs_write_marked_extents().  If we get an aborted
+transaction via EIO before, we'll see it in btree_write_cache_pages()
+and return EUCLEAN, which gets printed as "Filesystem corrupted".
 
- -> #6 (sb_pagefaults){.+.+}-{0:0}:
-       __sb_start_write+0x13e/0x220
-       btrfs_page_mkwrite+0x59/0x560 [btrfs]
-       do_page_mkwrite+0x4f/0x130
-       do_wp_page+0x3b0/0x4f0
-       handle_mm_fault+0xf47/0x1850
-       do_user_addr_fault+0x1fc/0x4b0
-       exc_page_fault+0x88/0x300
-       asm_exc_page_fault+0x1e/0x30
+Except we shouldn't be returning EUCLEAN here, we need to be returning
+EROFS because EUCLEAN is reserved for actual corruption, not IO errors.
 
- -> #5 (&mm->mmap_lock#2){++++}-{3:3}:
-       __might_fault+0x60/0x80
-       _copy_from_user+0x20/0xb0
-       get_sg_io_hdr+0x9a/0xb0
-       scsi_cmd_ioctl+0x1ea/0x2f0
-       cdrom_ioctl+0x3c/0x12b4
-       sr_block_ioctl+0xa4/0xd0
-       block_ioctl+0x3f/0x50
-       ksys_ioctl+0x82/0xc0
-       __x64_sys_ioctl+0x16/0x20
-       do_syscall_64+0x52/0xb0
-       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+We are inconsistent about our handling of BTRFS_FS_STATE_ERROR
+elsewhere, but we want to use EROFS for this particular case.  The
+original transaction abort has the real error code for why we ended up
+with an aborted transaction, all subsequent actions just need to return
+EROFS because they may not have a trans handle and have no idea about
+the original cause of the abort.
 
- -> #4 (&cd->lock){+.+.}-{3:3}:
-       __mutex_lock+0x7b/0x820
-       sr_block_open+0xa2/0x180
-       __blkdev_get+0xdd/0x550
-       blkdev_get+0x38/0x150
-       do_dentry_open+0x16b/0x3e0
-       path_openat+0x3c9/0xa00
-       do_filp_open+0x75/0x100
-       do_sys_openat2+0x8a/0x140
-       __x64_sys_openat+0x46/0x70
-       do_syscall_64+0x52/0xb0
-       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+After patch "btrfs: don't WARN if we abort a transaction with EROFS" the
+stacktrace will not be dumped either.
 
- -> #3 (&bdev->bd_mutex){+.+.}-{3:3}:
-       __mutex_lock+0x7b/0x820
-       __blkdev_get+0x6a/0x550
-       blkdev_get+0x85/0x150
-       blkdev_get_by_path+0x2c/0x70
-       btrfs_get_bdev_and_sb+0x1b/0xb0 [btrfs]
-       open_fs_devices+0x88/0x240 [btrfs]
-       btrfs_open_devices+0x92/0xa0 [btrfs]
-       btrfs_mount_root+0x250/0x490 [btrfs]
-       legacy_get_tree+0x30/0x50
-       vfs_get_tree+0x28/0xc0
-       vfs_kern_mount.part.0+0x71/0xb0
-       btrfs_mount+0x119/0x380 [btrfs]
-       legacy_get_tree+0x30/0x50
-       vfs_get_tree+0x28/0xc0
-       do_mount+0x8c6/0xca0
-       __x64_sys_mount+0x8e/0xd0
-       do_syscall_64+0x52/0xb0
-       entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
- -> #2 (&fs_devs->device_list_mutex){+.+.}-{3:3}:
-       __mutex_lock+0x7b/0x820
-       btrfs_run_dev_stats+0x36/0x420 [btrfs]
-       commit_cowonly_roots+0x91/0x2d0 [btrfs]
-       btrfs_commit_transaction+0x4e6/0x9f0 [btrfs]
-       btrfs_sync_file+0x38a/0x480 [btrfs]
-       __x64_sys_fdatasync+0x47/0x80
-       do_syscall_64+0x52/0xb0
-       entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
- -> #1 (&fs_info->tree_log_mutex){+.+.}-{3:3}:
-       __mutex_lock+0x7b/0x820
-       btrfs_commit_transaction+0x48e/0x9f0 [btrfs]
-       btrfs_sync_file+0x38a/0x480 [btrfs]
-       __x64_sys_fdatasync+0x47/0x80
-       do_syscall_64+0x52/0xb0
-       entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
- -> #0 (&fs_info->reloc_mutex){+.+.}-{3:3}:
-       __lock_acquire+0x1241/0x20c0
-       lock_acquire+0xb0/0x400
-       __mutex_lock+0x7b/0x820
-       btrfs_record_root_in_trans+0x44/0x70 [btrfs]
-       start_transaction+0xd2/0x500 [btrfs]
-       btrfs_dirty_inode+0x44/0xd0 [btrfs]
-       file_update_time+0xc6/0x120
-       btrfs_page_mkwrite+0xda/0x560 [btrfs]
-       do_page_mkwrite+0x4f/0x130
-       do_wp_page+0x3b0/0x4f0
-       handle_mm_fault+0xf47/0x1850
-       do_user_addr_fault+0x1fc/0x4b0
-       exc_page_fault+0x88/0x300
-       asm_exc_page_fault+0x1e/0x30
-
-other info that might help us debug this:
-
-Chain exists of:
-  &fs_info->reloc_mutex --> &mm->mmap_lock#2 --> sb_pagefaults
-
-Possible unsafe locking scenario:
-
-     CPU0                    CPU1
-     ----                    ----
- lock(sb_pagefaults);
-                             lock(&mm->mmap_lock#2);
-                             lock(sb_pagefaults);
- lock(&fs_info->reloc_mutex);
-
- *** DEADLOCK ***
-
-3 locks held by systemd-journal/509:
- #0: ffff97083bdec8b8 (&mm->mmap_lock#2){++++}-{3:3}, at: do_user_addr_fault+0x12e/0x4b0
- #1: ffff97083144d598 (sb_pagefaults){.+.+}-{0:0}, at: btrfs_page_mkwrite+0x59/0x560 [btrfs]
- #2: ffff97083144d6a8 (sb_internal){.+.+}-{0:0}, at: start_transaction+0x3f8/0x500 [btrfs]
-
-stack backtrace:
-CPU: 0 PID: 509 Comm: systemd-journal Not tainted 5.8.0-0.rc3.1.fc33.x86_64+debug #1
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-Call Trace:
- dump_stack+0x92/0xc8
- check_noncircular+0x134/0x150
- __lock_acquire+0x1241/0x20c0
- lock_acquire+0xb0/0x400
- ? btrfs_record_root_in_trans+0x44/0x70 [btrfs]
- ? lock_acquire+0xb0/0x400
- ? btrfs_record_root_in_trans+0x44/0x70 [btrfs]
- __mutex_lock+0x7b/0x820
- ? btrfs_record_root_in_trans+0x44/0x70 [btrfs]
- ? kvm_sched_clock_read+0x14/0x30
- ? sched_clock+0x5/0x10
- ? sched_clock_cpu+0xc/0xb0
- btrfs_record_root_in_trans+0x44/0x70 [btrfs]
- start_transaction+0xd2/0x500 [btrfs]
- btrfs_dirty_inode+0x44/0xd0 [btrfs]
- file_update_time+0xc6/0x120
- btrfs_page_mkwrite+0xda/0x560 [btrfs]
- ? sched_clock+0x5/0x10
- do_page_mkwrite+0x4f/0x130
- do_wp_page+0x3b0/0x4f0
- handle_mm_fault+0xf47/0x1850
- do_user_addr_fault+0x1fc/0x4b0
- exc_page_fault+0x88/0x300
- ? asm_exc_page_fault+0x8/0x30
- asm_exc_page_fault+0x1e/0x30
-RIP: 0033:0x7fa3972fdbfe
-Code: Bad RIP value.
-
-Fix this by not holding the ->device_list_mutex at this point.  The
-device_list_mutex exists to protect us from modifying the device list
-while the file system is running.
-
-However it can also be modified by doing a scan on a device.  But this
-action is specifically protected by the uuid_mutex, which we are holding
-here.  We cannot race with opening at this point because we have the
-->s_mount lock held during the mount.  Not having the
-->device_list_mutex here is perfectly safe as we're not going to change
-the devices at this point.
-
-CC: stable@vger.kernel.org # 4.19+
+Reported-by: Eric Sandeen <esandeen@redhat.com>
+CC: stable@vger.kernel.org # 5.4+
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
-[ add some comments ]
+[ add full test stacktrace ]
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/volumes.c |   21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
+ fs/btrfs/extent_io.c   |    2 +-
+ fs/btrfs/scrub.c       |    2 +-
+ fs/btrfs/transaction.c |    5 ++++-
+ 3 files changed, 6 insertions(+), 3 deletions(-)
 
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -245,7 +245,9 @@ static int __btrfs_map_block(struct btrf
-  *
-  * global::fs_devs - add, remove, updates to the global list
-  *
-- * does not protect: manipulation of the fs_devices::devices list!
-+ * does not protect: manipulation of the fs_devices::devices list in general
-+ * but in mount context it could be used to exclude list modifications by eg.
-+ * scan ioctl
-  *
-  * btrfs_device::name - renames (write side), read is RCU
-  *
-@@ -258,6 +260,9 @@ static int __btrfs_map_block(struct btrf
-  * may be used to exclude some operations from running concurrently without any
-  * modifications to the list (see write_all_supers)
-  *
-+ * Is not required at mount and close times, because our device list is
-+ * protected by the uuid_mutex at that point.
-+ *
-  * balance_mutex
-  * -------------
-  * protects balance structures (status, state) and context accessed from
-@@ -602,6 +607,11 @@ static int btrfs_free_stale_devices(cons
- 	return ret;
- }
- 
-+/*
-+ * This is only used on mount, and we are protected from competing things
-+ * messing with our fs_devices by the uuid_mutex, thus we do not need the
-+ * fs_devices->device_list_mutex here.
-+ */
- static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
- 			struct btrfs_device *device, fmode_t flags,
- 			void *holder)
-@@ -1229,8 +1239,14 @@ int btrfs_open_devices(struct btrfs_fs_d
- 	int ret;
- 
- 	lockdep_assert_held(&uuid_mutex);
-+	/*
-+	 * The device_list_mutex cannot be taken here in case opening the
-+	 * underlying device takes further locks like bd_mutex.
-+	 *
-+	 * We also don't need the lock here as this is called during mount and
-+	 * exclusion is provided by uuid_mutex
-+	 */
- 
--	mutex_lock(&fs_devices->device_list_mutex);
- 	if (fs_devices->opened) {
- 		fs_devices->opened++;
- 		ret = 0;
-@@ -1238,7 +1254,6 @@ int btrfs_open_devices(struct btrfs_fs_d
- 		list_sort(NULL, &fs_devices->devices, devid_cmp);
- 		ret = open_fs_devices(fs_devices, flags, holder);
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -4127,7 +4127,7 @@ retry:
+ 	if (!test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
+ 		ret = flush_write_bio(&epd);
+ 	} else {
+-		ret = -EUCLEAN;
++		ret = -EROFS;
+ 		end_write_bio(&epd, ret);
  	}
--	mutex_unlock(&fs_devices->device_list_mutex);
- 
  	return ret;
- }
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -3758,7 +3758,7 @@ static noinline_for_stack int scrub_supe
+ 	struct btrfs_fs_info *fs_info = sctx->fs_info;
+ 
+ 	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
+-		return -EIO;
++		return -EROFS;
+ 
+ 	/* Seed devices of a new filesystem has their own generation. */
+ 	if (scrub_dev->fs_devices != fs_info->fs_devices)
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -937,7 +937,10 @@ static int __btrfs_end_transaction(struc
+ 	if (TRANS_ABORTED(trans) ||
+ 	    test_bit(BTRFS_FS_STATE_ERROR, &info->fs_state)) {
+ 		wake_up_process(info->transaction_kthread);
+-		err = -EIO;
++		if (TRANS_ABORTED(trans))
++			err = trans->aborted;
++		else
++			err = -EROFS;
+ 	}
+ 
+ 	kmem_cache_free(btrfs_trans_handle_cachep, trans);
 
 
