@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC1A24B64C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EFA424B663
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731350AbgHTKTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:19:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38506 "EHLO mail.kernel.org"
+        id S1731423AbgHTKS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:18:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729486AbgHTKRU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:17:20 -0400
+        id S1729583AbgHTKRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:17:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B231E2078D;
-        Thu, 20 Aug 2020 10:17:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3A3B72067C;
+        Thu, 20 Aug 2020 10:17:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918640;
-        bh=jqX5GocdlkyARVdF0q7LJBQWlacRZIf0cSo2DDLoUeI=;
+        s=default; t=1597918642;
+        bh=pZOtxjNjinvQ+Xpqra3fbMQc09FWVo9+DFkPcY/6nzw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DNn0rHewDTJM6+jvfbpv7T0i9/NzhfALQNcSWmnJQLcqApaBPW0o3E2ccXZabMn/z
-         ExbvPvqRjDh6MxHD/CioT3QE17//ajrNV4/xTt+oT8xXNHHynPjsAfVoSYtDPszzZR
-         xdoBdYVZO9pbfF3yXQlGPoy53rE2w2JA9OyaHSHg=
+        b=X2/znE5iUEKpzPcLvd7IcGtFFodjEadriWWInYwfuXyILV/SRUrbaF4UAwnBnAppx
+         Lwby98lFbNCfCbIMm01sa2+Nqx+pTMqN+eaFUhIeo66ZuV9q2PO8WVYRg1UfB4VVmd
+         GWCQ+lh9siMehMiKBD4d6VaYcy6kxhC0F+PeTDxk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 014/149] rds: Prevent kernel-infoleak in rds_notify_queue_get()
-Date:   Thu, 20 Aug 2020 11:21:31 +0200
-Message-Id: <20200820092126.382688459@linuxfoundation.org>
+Subject: [PATCH 4.4 015/149] net/x25: Fix x25_neigh refcnt leak when x25 disconnect
+Date:   Thu, 20 Aug 2020 11:21:32 +0200
+Message-Id: <20200820092126.434763188@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
 References: <20200820092125.688850368@linuxfoundation.org>
@@ -45,47 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peilin Ye <yepeilin.cs@gmail.com>
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 
-commit bbc8a99e952226c585ac17477a85ef1194501762 upstream.
+commit 4becb7ee5b3d2829ed7b9261a245a77d5b7de902 upstream.
 
-rds_notify_queue_get() is potentially copying uninitialized kernel stack
-memory to userspace since the compiler may leave a 4-byte hole at the end
-of `cmsg`.
+x25_connect() invokes x25_get_neigh(), which returns a reference of the
+specified x25_neigh object to "x25->neighbour" with increased refcnt.
 
-In 2016 we tried to fix this issue by doing `= { 0 };` on `cmsg`, which
-unfortunately does not always initialize that 4-byte hole. Fix it by using
-memset() instead.
+When x25 connect success and returns, the reference still be hold by
+"x25->neighbour", so the refcount should be decreased in
+x25_disconnect() to keep refcount balanced.
 
-Cc: stable@vger.kernel.org
-Fixes: f037590fff30 ("rds: fix a leak of kernel memory")
-Fixes: bdbe6fbc6a2f ("RDS: recv.c")
-Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
+The reference counting issue happens in x25_disconnect(), which forgets
+to decrease the refcnt increased by x25_get_neigh() in x25_connect(),
+causing a refcnt leak.
+
+Fix this issue by calling x25_neigh_put() before x25_disconnect()
+returns.
+
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/rds/recv.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/x25/x25_subr.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/net/rds/recv.c
-+++ b/net/rds/recv.c
-@@ -301,12 +301,13 @@ static int rds_still_queued(struct rds_s
- int rds_notify_queue_get(struct rds_sock *rs, struct msghdr *msghdr)
- {
- 	struct rds_notifier *notifier;
--	struct rds_rdma_notify cmsg = { 0 }; /* fill holes with zero */
-+	struct rds_rdma_notify cmsg;
- 	unsigned int count = 0, max_messages = ~0U;
- 	unsigned long flags;
- 	LIST_HEAD(copy);
- 	int err = 0;
+--- a/net/x25/x25_subr.c
++++ b/net/x25/x25_subr.c
+@@ -368,6 +368,10 @@ void x25_disconnect(struct sock *sk, int
+ 		sk->sk_state_change(sk);
+ 		sock_set_flag(sk, SOCK_DEAD);
+ 	}
++	read_lock_bh(&x25_list_lock);
++	x25_neigh_put(x25->neighbour);
++	x25->neighbour = NULL;
++	read_unlock_bh(&x25_list_lock);
+ }
  
-+	memset(&cmsg, 0, sizeof(cmsg));	/* fill holes with zero */
- 
- 	/* put_cmsg copies to user space and thus may sleep. We can't do this
- 	 * with rs_lock held, so first grab as many notifications as we can stuff
+ /*
 
 
