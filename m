@@ -2,103 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F26E824B640
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4B924B612
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729605AbgHTKed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:34:33 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:52437 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731375AbgHTKTW (ORCPT
+        id S1731656AbgHTKbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:31:49 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:33322 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731471AbgHTKUc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:19:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597918760;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=34Fudio4VU2L9NDM258KSxl3iDnftB/ysyHG0W39VZc=;
-        b=hNqLU63ZEFUtY+a5phIHdRevvjdrctzYsDmXOtuPFzx8oRidBr5vqmWltvX03guLVZikiD
-        /c9h6/BXPeL4ka5pnQ3RXiEZ6hjbuJxhGjLOJHCZpMjxioU0jPPFQcn+yYqvz+qrnGLQv/
-        jXW710cJeMNBEr6uGxJ+WWn4jwLBPXQ=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-446-8W1XISl7NPq1Q9aswYW3ug-1; Thu, 20 Aug 2020 06:19:19 -0400
-X-MC-Unique: 8W1XISl7NPq1Q9aswYW3ug-1
-Received: by mail-wm1-f70.google.com with SMTP id h7so612325wmm.7
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:19:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=34Fudio4VU2L9NDM258KSxl3iDnftB/ysyHG0W39VZc=;
-        b=nRhLfiA7BQv923UZjE8kREyCTNPdItSeIXfn0N4/zJ/sqFaZJrzolv1RpqJaTrnJ4v
-         ZHJ0J5M7SWabxlggmI3X4V1oaHLb+DGbddvSwY0VWu7jdQGnoh5vBFpFyU7S6oyb7Mgn
-         X46A4sI73LuyD83w/JU/vrjQxFtFgLvUmOcnFb5apdTPOsb5Ger7fW6BORVLYP0XDx3U
-         vbGs3Haw/faefIRX8JcpMIMRPbNUHFBZ9a7/OVj9jPfoEiq6cKoRK1fXnAJlRz6uawnB
-         WjioZhsSuRSvvm1hdEcN9SlQGCBi2NFQiVBbnka1z9pmEP2YUtMGeAVAJNPO+4QH2ckh
-         KnZQ==
-X-Gm-Message-State: AOAM531sCaqHY8RvSO48Tj8cn+aGWjGyyEPYXqa0itxdqSmVqm4hquk9
-        b2MVKeGZJcjkZZPSq4lN1AJOYjs8bbizfikeVmALi8JM+gZWTzTZdFAfc2pdT64IDHxYI0urywV
-        3LITxr9svQvOBJ5NVelxdpIWu
-X-Received: by 2002:a5d:538a:: with SMTP id d10mr2629008wrv.280.1597918757985;
-        Thu, 20 Aug 2020 03:19:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxcmOd0V2f8YQ+GGOMTGELWjIMpMo5QSR9ODiDyEBM79MegWciDEkcINCLPVWrrTLa38NO7ew==
-X-Received: by 2002:a5d:538a:: with SMTP id d10mr2628987wrv.280.1597918757808;
-        Thu, 20 Aug 2020 03:19:17 -0700 (PDT)
-Received: from [192.168.10.150] ([93.56.170.5])
-        by smtp.gmail.com with ESMTPSA id d11sm3113354wrw.77.2020.08.20.03.19.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Aug 2020 03:19:17 -0700 (PDT)
-Subject: Re: [PATCH 2/8] KVM: nSVM: rename nested 'vmcb' to vmcb_gpa in few
- places
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <20200820091327.197807-1-mlevitsk@redhat.com>
- <20200820091327.197807-3-mlevitsk@redhat.com>
- <f6bf9494-f337-2e53-6e6c-e0b8a847ec8d@redhat.com>
- <608fe03082dc5e4db142afe3c0eb5f7c165f342b.camel@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <2e8185af-08fc-18c3-c1ca-fa1f7d4665dd@redhat.com>
-Date:   Thu, 20 Aug 2020 12:19:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <608fe03082dc5e4db142afe3c0eb5f7c165f342b.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8
+        Thu, 20 Aug 2020 06:20:32 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id A05DE434;
+        Thu, 20 Aug 2020 13:20:26 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1597918826;
+        bh=zUeZ9txBd8CUV16UFvP7cKQBctMZ9i7FqExpSVprv0U=;
+        h=From:To:Subject:Date:References:In-Reply-To;
+        b=SlxKJFc7RTxAJr3+1nq6HBKiPgCtt/0/RImqgQN6Le5bCBF0FPkXlxp1TG8n8z650
+         HFpalwrq/efe9FT2/UBLsX8yHGLwhbtT9VVpw4imSF++7QLwaI9H92D4WJK1GnnWoD
+         KgGvh1DFigsWF0QGM5kPgxhD8O8/3UPeUKstvC+w=
+Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Thu, 20 Aug 2020 13:20:26 +0300
+Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
+ by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
+ id 15.01.1847.003; Thu, 20 Aug 2020 13:20:26 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     =?utf-8?B?QXVyw6lsaWVuIEFwdGVs?= <aaptel@suse.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: RE: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
+ Software.
+Thread-Topic: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
+ Software.
+Thread-Index: AdZyNcmjSkpkGje7R9K6YobJrVDyZ///6wOA//ag0SA=
+Date:   Thu, 20 Aug 2020 10:20:26 +0000
+Message-ID: <7538540ab82e4b398a0203564a1f1b23@paragon-software.com>
+References: <2911ac5cd20b46e397be506268718d74@paragon-software.com>
+ <87mu2x48wa.fsf@suse.com>
+In-Reply-To: <87mu2x48wa.fsf@suse.com>
+Accept-Language: ru-RU, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.30.8.36]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/08/20 12:00, Maxim Levitsky wrote:
->> Please use vmcb12_gpa, and svm->nested.vmcb12 for the VMCB in patch 6.
->>
->> (You probably also what to have local variables named vmcb12 in patch 6
->> to avoid too-long lines).
-> The limit was raised to 100 chars recently, thats why I allowed some lines to
-> go over 80 characters to avoid adding too much noise.
-> 
-
-True, but having svm->nested.vmcb12->control repeated all over isn't
-pretty. :)
-
-Since you're going to touch all lines anyway, adding the local variable
-is a good idea.
-
-Paolo
-
+RnJvbTogQXVyw6lsaWVuIEFwdGVsIDxhYXB0ZWxAc3VzZS5jb20+DQpTZW50OiBGcmlkYXksIEF1
+Z3VzdCAxNCwgMjAyMCA1OjA5IFBNDQo+IA0KPiBIaSBLb25zdGFudGluLA0KPiANCj4gVGhhdCdz
+IGNvb2wgOikgQXMgTmlrb2xheSBzYWlkIGl0IG5lZWRzIGEgbGl0dGxlIGNoYW5nZSB0byB0aGUg
+bWFrZWZpbGVzDQo+IHRvIGV2ZW4gYnVpbGQuDQo+IA0KPiBBcmUgeW91IGFsc28gZ29pbmcgdG8g
+cHVibGlzaCB5b3VyIG93biBta2ZzLm50ZnMzIHRvb2w/IEkgZG9udCB0aGluayB0aGUNCj4gZXhp
+c3Rpbmcgb25lIHdvdWxkIHN1cHBvcnQgNjRrIGNsdXN0ZXJzLg0KDQpIaSBBdXLDqWxpZW4uIFRo
+YW5rcyBmb3IgeW91ciBmZWVkYmFjay4gV2UgcGxhbiB0byBwdWJsaXNoIG91ciBta2ZzLm50ZnMg
+dXRpbGl0eSBhcyB0aGUgb3BlbiBzb3VyY2UgYXMgd2VsbCAoYW5kIHBvc3NpYmx5IGZzY2hrLm50
+ZnMgLSBhZnRlciBta2ZzKS4gDQoNCj4gDQo+IEkgd291bGQgcmVjb21tZW5kIHRvIHJ1biBjaGVj
+a3BhdGNoIChJIHNlZSBhbHJlYWR5IDg3IHdhcm5pbmdzLi4uIHNvbWUNCj4gb2YgaXQgaXMgbm9p
+c2UpOg0KPiANCj4gICAkIC4vc2NyaXB0cy9jaGVja3BhdGNoLnBsIDxwYXRjaD4NCj4gDQo+IEFu
+ZCBzcGFyc2UgKEkgZG9udCBzZWUgbXVjaCk6DQo+IA0KPiAgICQgdG91Y2ggZnMvbnRmczMvKi5b
+Y2hdICYmIG1ha2UgQz0xDQo+IA0KPiBZb3UgbmVlZCBhIHJlY2VudCBidWlsZCBvZiBzcGFyc2Ug
+dG8gZG8gdGhhdCBsYXN0IG9uZS4gWW91IGNhbiBwYXNzIHlvdXINCj4gb3duIHNwYXJzZSBiaW4g
+KG1ha2UgQ0hFQ0s9fi9wcm9nL3NwYXJzZS9zcGFyc2UgQz0xKQ0KPiANCj4gVGhpcyB3aWxsIGJl
+IGEgZ29vZCBmaXJzdCBzdGVwLg0KDQpUaGUgc3BhcnNlIHV0aWxpdHkgaXMgcnVubmluZyBhZ2Fp
+bnN0IHRoZSBjb2RlLCBhcyB3ZWxsIGFzIGNoZWNrcGF0Y2gucGwuIFNwcmFzZSBvdXRwdXQgaXMg
+Y2xlYW4gbm93LiBDaGVja3BhdGNoJ3Mgc29tZWhvdyBpbXBvcnRhbnQgd2FybmluZ3Mgd2lsbCBi
+ZSBmaXhlZCBpbiB2MiAoZXhjZXB0IG1heWJlIHR5cGVkZWZzKS4gDQoNCj4gDQo+IEhhdmUgeW91
+IHRyaWVkIHRvIHJ1biB0aGUgeGZzdGVzdHMgc3VpdGUgYWdhaW5zdCBpdD8NCj4NCnhmc3Rlc3Rz
+IGFyZSBiZWluZyBvbmUgb2Ygb3VyIHN0YW5kYXJkIHRlc3Qgc3VpdGVzIGFtb25nIG90aGVycy4g
+Q3VycmVudGx5IHdlIGhhdmUgdGhlICdnZW5lcmljLzMzOScgYW5kICdnZW5lcmljLzAxMycgdGVz
+dCBjYXNlcyBmYWlsaW5nLCB3b3JraW5nIG9uIGl0IG5vdy4gT3RoZXIgdGVzdHMgZWl0aGVyIHBh
+c3Mgb3IgYmVpbmcgc2tpcHBlZCAoZHVlIHRvIG1pc3NpbmcgZmVhdHVyZXMgZS5nLiByZWZsaW5r
+KS4gDQogDQo+IENoZWVycywNCj4gLS0NCj4gQXVyw6lsaWVuIEFwdGVsIC8gU1VTRSBMYWJzIFNh
+bWJhIFRlYW0NCj4gR1BHOiAxODM5IENCNUYgOUY1QiBGQjlCIEFBOTcgIDhDOTkgMDNDOCBBNDlC
+IDUyMUIgRDVEMw0KPiBTVVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdtYkgsIE1heGZl
+bGRzdHIuIDUsIDkwNDA5IE7DvHJuYmVyZywgREUNCj4gR0Y6IEZlbGl4IEltZW5kw7ZyZmZlciwg
+TWFyeSBIaWdnaW5zLCBTcmkgUmFzaWFoIEhSQiAyNDcxNjUgKEFHIE3DvG5jaGVuKQ0K
