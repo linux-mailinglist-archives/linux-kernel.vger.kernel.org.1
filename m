@@ -2,92 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71E3024BD79
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9FB24BD7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729097AbgHTNGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:06:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34026 "EHLO
+        id S1729528AbgHTNHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:07:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728871AbgHTNGB (ORCPT
+        with ESMTP id S1729453AbgHTNGp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 09:06:01 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59459C061385;
-        Thu, 20 Aug 2020 06:06:01 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id g15so1008628plj.6;
-        Thu, 20 Aug 2020 06:06:01 -0700 (PDT)
+        Thu, 20 Aug 2020 09:06:45 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 253DAC061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 06:06:45 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id d27so1097337qtg.4
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 06:06:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=diWOF1th57LrHj7EG5tnoK7CBPOeUfDwxvRZ4lqQiP0=;
-        b=DeUdFyknlpSmv5kkr6H1ATJsndaWr8MvMFne3KWTmGJG2YERGgiOrFBxV8km9lA2JU
-         Oa6V7i+KP6qIv/FWA1Np283lXNOL3vRdGSIfwsFfjMhZKMY0/wcj28w6WCZAlYqMricd
-         Be3+/O982WCiUXb4tsZAS9OEr/KdI9lmibNYy3XMw9HIowe2Rcv/4LpCoaBXo9dP8yXh
-         CRznHv/OOUqYi5+iTNJzawAu6SO/kUXt4h3YBtZjIChyxiaFt77BG+zh/9lOdN6NSMog
-         sVhkkOprbhTKlcnllopmB/AHS/eMfTPZmxPZ3XGQs2b2kqpFwjs1pyjTdZrCAtPc062G
-         wvig==
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6sOeSsarGxFkc/+IF5UxnDuuMZBTO6G7PiDa6w0ehU4=;
+        b=LM5GQuhFGEsLF8MQ6iOdC11qBa7tnj8sX0Xil7PxLzz/UMQLxDRtcvKVnl1hsnEW3B
+         icW4hW5rJquat9cuaRLYXwjPc69Id1R75PgEiZK66cy0exPj/r3d8qLlYwhkS18l5ifx
+         73P1btmYPz9Qg/EwV8gf+/md6kgGYdrBDEw0GA1l/HYrJ5vU6uwgZQAB+Pk5iKxaDaPj
+         p6NJ/ajFj2loXTCG/WdpbtmPs4jlcnvtQ+yOu2dbQcLz8I6nDj2yEkE7YDSZ6DgwNywy
+         /ByoGAJ4Q1GtihDUQfhHQlVhNEp7M0JSHZFztUT7nMAmHo2nRwLUhBsT9/toWMJ2uZIk
+         ebSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=diWOF1th57LrHj7EG5tnoK7CBPOeUfDwxvRZ4lqQiP0=;
-        b=e//lRh9AMYuQTZVwCmflB4EyxTOOHT/7Onqa91elCj610CNrtA3bod7IeRBtwSDEGF
-         sHNq9qpd4SLqvsfppmieYjXA8Db2tVoKnD3r7OyODmFLU6QqMcbuxorlMiUCQ4L7rIFH
-         bHfGQ/56RrDfVAemhXD+iDNFvL+WJprfrYXIOeZfydVzrBPZt0fpREqsfoSjxHpmFms0
-         9w6Cci7qAQ51+QvuFXFTErR85EO8XupODV7Pk+5Q2hoqeZWyX3sD7ZboeyRUfXjzMQnG
-         M+gnQxmAfmkL8lG4iRKyj/sUOZVOHQb1VZbKyX4vs9T9ZeWyxYBtUR0ErPzCiBRMAi1u
-         87/A==
-X-Gm-Message-State: AOAM533griJg3l0fI7SoYTGrwcsvbhPzBQp6HZK/av8Huz8A/nCUgS+l
-        Z83WmxuqKqZHM1ifYxkQFVuijs31fV5ktcDoTNg=
-X-Google-Smtp-Source: ABdhPJxA7srVMSku0uu1P5zHAAAti2hEfo+ytXQ/cTrfBTaGNEDKCsEeSr7WtE6tLnyFBWb9/IWKQ2RbXaPhzu0Togo=
-X-Received: by 2002:a17:90a:bc41:: with SMTP id t1mr2333932pjv.181.1597928760579;
- Thu, 20 Aug 2020 06:06:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <1597892486-3236-1-git-send-email-tiantao6@hisilicon.com> <CA+U=DsojNXFxT812=i-0ceRGUV3gJXhMMb-ungP=DO166jjZMA@mail.gmail.com>
-In-Reply-To: <CA+U=DsojNXFxT812=i-0ceRGUV3gJXhMMb-ungP=DO166jjZMA@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 20 Aug 2020 16:05:44 +0300
-Message-ID: <CAHp75VdqrczNjsgR7JZTsK8+=RmgFopGJ1VZdD4+BYxBHMHukg@mail.gmail.com>
-Subject: Re: [PATCH] iio: adc: adi-axi-adc: Use kobj_to_dev() instead of container_of()
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-Cc:     Tian Tao <tiantao6@hisilicon.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio <linux-iio@vger.kernel.org>,
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=6sOeSsarGxFkc/+IF5UxnDuuMZBTO6G7PiDa6w0ehU4=;
+        b=Vz/ZLVX8Z/Ti8x3o3EZxlJoDwTBrTLIw0mkVq9S5m+hEOjD4X6NAK1h3KllGvZuvlZ
+         iNBFeSmjnULzgncffXSw0kc7wonIc+ofyJTZKw3W2UKXLE2BoKbmDhBE5XcPJAxlgy3U
+         uBR5RDrNopu/3KwFzulkgXwq8k7tIdNGFSIJHptC1MAjRhp6CjmEr40yYPH0B1jxmgVs
+         jo6j6mf4SJ8aRR4PqA21Epf44cIGgAlDDr6pvuVNXGzhxBhBJtRPki7XGjXp1YkoDC/N
+         fDcjG20qERiBj/8gBxnM2/fItRquOexzd+ZVCoymztYRLoLqhtg2slRYgW5xOBAbyZfs
+         Veyg==
+X-Gm-Message-State: AOAM5313N7Hpnn3Ab7OICHPnvg1mzRy3/Gd9KWvgcUBuoAaFvekCAAa5
+        xdkiLlFCHWCHllmWWuCCJUw=
+X-Google-Smtp-Source: ABdhPJxccojle6U7opjzSg53Z05Mn86zUb3l5HAJ/ag2n1hc/KXp+E192r2u5Dp8CHeo4TtBW6Ckvg==
+X-Received: by 2002:ac8:4e91:: with SMTP id 17mr2582988qtp.284.1597928804224;
+        Thu, 20 Aug 2020 06:06:44 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id q126sm1998857qke.34.2020.08.20.06.06.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Aug 2020 06:06:43 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Thu, 20 Aug 2020 09:06:41 -0400
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Zhenzhong Duan <zhenzhong.duan@oracle.com>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juergen Gross <jgross@suse.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Content-Type: text/plain; charset="UTF-8"
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] x86: work around clang IAS bug referencing __force_order
+Message-ID: <20200820130641.GA536306@rani.riverdale.lan>
+References: <20200527135329.1172644-1-arnd@arndb.de>
+ <878serh1b9.fsf@nanos.tec.linutronix.de>
+ <CAKwvOdnOh3H3ga2qpTktywvcgfXW5QJaB7r4XMhigmDzLhDNeA@mail.gmail.com>
+ <87h7t6tpye.fsf@nanos.tec.linutronix.de>
+ <20200813173701.GC4295@paulmck-ThinkPad-P72>
+ <20200813180933.GA532283@rani.riverdale.lan>
+ <875z9dioll.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <875z9dioll.fsf@nanos.tec.linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 12:10 PM Alexandru Ardelean
-<ardeleanalex@gmail.com> wrote:
-> On Thu, Aug 20, 2020 at 6:04 AM Tian Tao <tiantao6@hisilicon.com> wrote:
+On Thu, Aug 20, 2020 at 12:44:06PM +0200, Thomas Gleixner wrote:
+> On Thu, Aug 13 2020 at 14:09, Arvind Sankar wrote:
+> > On Thu, Aug 13, 2020 at 10:37:01AM -0700, Paul E. McKenney wrote:
+> >> > Let me ask (hopefully) useful questions this time:
+> >> > 
+> >> >   Is a compiler allowed to reorder two 'asm volatile()'?
+> >> > 
+> >> >   Are there compilers (gcc >= 4.9 or other supported ones) which do that?
+> >> 
+> >> I would hope that the answer to both of these questions is "no"!
+> >> 
+> >> But I freely confess that I have been disappointed before on this sort
+> >> of thing.  :-/
+> >> 
+> >> 							Thanx, Paul
 > >
-> > Use kobj_to_dev() instead of container_of()
+> > Ok, I found this, so gcc developers consider re-ordering volatile asm
+> > wrt each other a bug at least.
+> >
+> > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=82602
+> 
+> Yes. It prevents reordering of volatiles, but it does not necessarily
+> prevent reorder of something like this:
+> 
+>         asm volatile(...);
+>         foo();
+>         asm volatile(...);
+> 
+> it might turn that into
+> 
+>         foo();
+>         asm volatile(...);
+>         asm volatile(...);
+> 
+> if I understood their discussion correctly. So removing this magic is
+> not really straight forward.
+> 
+> Thanks,
+> 
+>         tglx
+> 
+> 
 
-> Good point.
->
-> Acked-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+I don't think that's an issue, or at least, not one where force_order
+helps.
 
-...
+If the source for foo() is not visible to the compiler, the only reason
+force_order prevents the reordering is because foo() might have
+references to it, but equally foo() might have volatile asm, so the
+reordering isn't possible anyway.
 
-> > -       struct device *dev = container_of(kobj, struct device, kobj);
-> > +       struct device *dev = kobj_to_dev(kobj);
-> >         struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+If the source is visible, force_order won't prevent any reordering
+except across references to force_order, but the only references are
+from the volatile asm's which already prevent reordering.
 
-And now this can be one line since dev is not used separately.
+I think force_order can only help with buggy compilers, and for those it
+should really have been an input-output operand -- it wouldn't currently
+do anything to prevent cr writes from being reordered.
 
-> >         struct adi_axi_adc_state *st = iio_priv(indio_dev);
-> >         struct adi_axi_adc_conv *conv = &st->client->conv;
-
--- 
-With Best Regards,
-Andy Shevchenko
+Thanks.
