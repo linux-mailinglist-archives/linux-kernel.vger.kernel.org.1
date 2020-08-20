@@ -2,39 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C241224B64F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A2A824B758
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731770AbgHTKfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:35:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42264 "EHLO mail.kernel.org"
+        id S1731150AbgHTKvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:51:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731353AbgHTKTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:19:08 -0400
+        id S1731202AbgHTKOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:14:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6203C2067C;
-        Thu, 20 Aug 2020 10:19:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6198020724;
+        Thu, 20 Aug 2020 10:14:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918747;
-        bh=vMxXImEUfOzC6fgLLpSf1H64g4l+btfQn1trTpT1spM=;
+        s=default; t=1597918480;
+        bh=0vbpsik9GH1sOS6luzvN5FmPVmEen3xws3Rpjd3rdO4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uAulq1Kszci6X8E6AcNHhn1gEWRLkVWG/aWtw1Uf845zfBfT6qKw5BI4tjI8viaSa
-         PtMoZXPfcayWa8XG5CdmTJoIQtR+zQgpz/x9xCWwaSQ7b/G4OkqDL7LLDZF+K5o9ZJ
-         SaH0RtfnkeB5AXEQgtp3J+K4ggZUMP179kdE+95I=
+        b=cr47rsZVzKGk6bBPoo5Z+xBvA7s4uo/VnxDK450sQLNrXxci4FMjVkUYrZY8VjqcY
+         R6Zgmtpzht3o/IGeKEyQp4qm76qAfYuvgI3NICIV8BH7+MB5s1gecBiShBf0KPYRC2
+         qCGOkqtB1ZTyXpKQRsVqzFSBuWA4KWFWsmYoW1zU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ido Schimmel <idosch@mellanox.com>,
-        Jiri Pirko <jiri@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 052/149] vxlan: Ensure FDB dump is performed under RCU
-Date:   Thu, 20 Aug 2020 11:22:09 +0200
-Message-Id: <20200820092128.250378756@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+c7d9ec7a1a7272dd71b3@syzkaller.appspotmail.com,
+        syzbot+3b7b03a0c28948054fb5@syzkaller.appspotmail.com,
+        syzbot+6e056ee473568865f3e6@syzkaller.appspotmail.com,
+        Eric Biggers <ebiggers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Qiujun Huang <anenbupt@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 155/228] fs/minix: reject too-large maximum file size
+Date:   Thu, 20 Aug 2020 11:22:10 +0200
+Message-Id: <20200820091615.329868478@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
-References: <20200820092125.688850368@linuxfoundation.org>
+In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
+References: <20200820091607.532711107@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,96 +50,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ido Schimmel <idosch@mellanox.com>
+From: Eric Biggers <ebiggers@google.com>
 
-[ Upstream commit b5141915b5aec3b29a63db869229e3741ebce258 ]
+commit 270ef41094e9fa95273f288d7d785313ceab2ff3 upstream.
 
-The commit cited below removed the RCU read-side critical section from
-rtnl_fdb_dump() which means that the ndo_fdb_dump() callback is invoked
-without RCU protection.
+If the minix filesystem tries to map a very large logical block number to
+its on-disk location, block_to_path() can return offsets that are too
+large, causing out-of-bounds memory accesses when accessing indirect index
+blocks.  This should be prevented by the check against the maximum file
+size, but this doesn't work because the maximum file size is read directly
+from the on-disk superblock and isn't validated itself.
 
-This results in the following warning [1] in the VXLAN driver, which
-relied on the callback being invoked from an RCU read-side critical
-section.
+Fix this by validating the maximum file size at mount time.
 
-Fix this by calling rcu_read_lock() in the VXLAN driver, as already done
-in the bridge driver.
-
-[1]
-WARNING: suspicious RCU usage
-5.8.0-rc4-custom-01521-g481007553ce6 #29 Not tainted
------------------------------
-drivers/net/vxlan.c:1379 RCU-list traversed in non-reader section!!
-
-other info that might help us debug this:
-
-rcu_scheduler_active = 2, debug_locks = 1
-1 lock held by bridge/166:
- #0: ffffffff85a27850 (rtnl_mutex){+.+.}-{3:3}, at: netlink_dump+0xea/0x1090
-
-stack backtrace:
-CPU: 1 PID: 166 Comm: bridge Not tainted 5.8.0-rc4-custom-01521-g481007553ce6 #29
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-2.fc32 04/01/2014
-Call Trace:
- dump_stack+0x100/0x184
- lockdep_rcu_suspicious+0x153/0x15d
- vxlan_fdb_dump+0x51e/0x6d0
- rtnl_fdb_dump+0x4dc/0xad0
- netlink_dump+0x540/0x1090
- __netlink_dump_start+0x695/0x950
- rtnetlink_rcv_msg+0x802/0xbd0
- netlink_rcv_skb+0x17a/0x480
- rtnetlink_rcv+0x22/0x30
- netlink_unicast+0x5ae/0x890
- netlink_sendmsg+0x98a/0xf40
- __sys_sendto+0x279/0x3b0
- __x64_sys_sendto+0xe6/0x1a0
- do_syscall_64+0x54/0xa0
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7fe14fa2ade0
-Code: Bad RIP value.
-RSP: 002b:00007fff75bb5b88 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
-RAX: ffffffffffffffda RBX: 00005614b1ba0020 RCX: 00007fe14fa2ade0
-RDX: 000000000000011c RSI: 00007fff75bb5b90 RDI: 0000000000000003
-RBP: 00007fff75bb5b90 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00005614b1b89160
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-
-Fixes: 5e6d24358799 ("bridge: netlink dump interface at par with brctl")
-Signed-off-by: Ido Schimmel <idosch@mellanox.com>
-Reviewed-by: Jiri Pirko <jiri@mellanox.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: syzbot+c7d9ec7a1a7272dd71b3@syzkaller.appspotmail.com
+Reported-by: syzbot+3b7b03a0c28948054fb5@syzkaller.appspotmail.com
+Reported-by: syzbot+6e056ee473568865f3e6@syzkaller.appspotmail.com
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Qiujun Huang <anenbupt@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200628060846.682158-4-ebiggers@kernel.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/vxlan.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/net/vxlan.c
-+++ b/drivers/net/vxlan.c
-@@ -921,6 +921,7 @@ static int vxlan_fdb_dump(struct sk_buff
- 		struct vxlan_fdb *f;
- 		int err;
+---
+ fs/minix/inode.c |   22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
+
+--- a/fs/minix/inode.c
++++ b/fs/minix/inode.c
+@@ -155,6 +155,23 @@ static int minix_remount (struct super_b
+ 	return 0;
+ }
  
-+		rcu_read_lock();
- 		hlist_for_each_entry_rcu(f, &vxlan->fdb_head[h], hlist) {
- 			struct vxlan_rdst *rd;
++static bool minix_check_superblock(struct minix_sb_info *sbi)
++{
++	if (sbi->s_imap_blocks == 0 || sbi->s_zmap_blocks == 0)
++		return false;
++
++	/*
++	 * s_max_size must not exceed the block mapping limitation.  This check
++	 * is only needed for V1 filesystems, since V2/V3 support an extra level
++	 * of indirect blocks which places the limit well above U32_MAX.
++	 */
++	if (sbi->s_version == MINIX_V1 &&
++	    sbi->s_max_size > (7 + 512 + 512*512) * BLOCK_SIZE)
++		return false;
++
++	return true;
++}
++
+ static int minix_fill_super(struct super_block *s, void *data, int silent)
+ {
+ 	struct buffer_head *bh;
+@@ -233,11 +250,12 @@ static int minix_fill_super(struct super
+ 	} else
+ 		goto out_no_fs;
  
-@@ -933,12 +934,15 @@ static int vxlan_fdb_dump(struct sk_buff
- 						     cb->nlh->nlmsg_seq,
- 						     RTM_NEWNEIGH,
- 						     NLM_F_MULTI, rd);
--				if (err < 0)
-+				if (err < 0) {
-+					rcu_read_unlock();
- 					goto out;
-+				}
- skip:
- 				++idx;
- 			}
- 		}
-+		rcu_read_unlock();
- 	}
- out:
- 	return idx;
++	if (!minix_check_superblock(sbi))
++		goto out_illegal_sb;
++
+ 	/*
+ 	 * Allocate the buffer map to keep the superblock small.
+ 	 */
+-	if (sbi->s_imap_blocks == 0 || sbi->s_zmap_blocks == 0)
+-		goto out_illegal_sb;
+ 	i = (sbi->s_imap_blocks + sbi->s_zmap_blocks) * sizeof(bh);
+ 	map = kzalloc(i, GFP_KERNEL);
+ 	if (!map)
 
 
