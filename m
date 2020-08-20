@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F04F824B3E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D4124B3A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729370AbgHTJxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:53:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35620 "EHLO mail.kernel.org"
+        id S1729461AbgHTJuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:50:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729902AbgHTJxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:53:37 -0400
+        id S1729704AbgHTJuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:50:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 619562173E;
-        Thu, 20 Aug 2020 09:53:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8692C20724;
+        Thu, 20 Aug 2020 09:50:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917216;
-        bh=z1bWgTa9JnH8RMIZqIT+XLK2kqP+JWiABGvNdNQcH5E=;
+        s=default; t=1597917003;
+        bh=VjGXS5qUqznvGzS2U4eUACOqvpULSo7dVAE7teJvuEU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0/5I8b22y3R4vE6zBIgmQpcOR2BZ7o/3fRgyf/5VMdECTBXmaHJVNII+aWLY/Achm
-         /s3+2aePlPbrGtosOjIxNvkwL6QF9+Th5NefioqDSNmfb+YIa/ksFgkwqdyzpcSizo
-         uCShzwNo29vFvVRtJ92ZPhFzkOq8TocGeeC4ju4w=
+        b=d83Pze5JjyX14PAyFSVzqWqH24ujGKsXDTjcLJ+RpQGG9v7BtK1DiVDEngSKmHby3
+         VKGv8QHAaOHO6pfZK10G2LjRmFoUiB0NXFBuMSSQ3eVdjYRZtckxz63vn35ImkK1Ni
+         /n3JR9fTtNEQtvdRRWWKqWIRDoeK0wu8VAyUkMeA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>
-Subject: [PATCH 4.19 43/92] watchdog: f71808e_wdt: clear watchdog timeout occurred flag
-Date:   Thu, 20 Aug 2020 11:21:28 +0200
-Message-Id: <20200820091539.858163022@linuxfoundation.org>
+        stable@vger.kernel.org, Scott Mayhew <smayhew@redhat.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 122/152] nfs: nfs_file_write() should check for writeback errors
+Date:   Thu, 20 Aug 2020 11:21:29 +0200
+Message-Id: <20200820091600.023309775@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
-References: <20200820091537.490965042@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +44,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ahmad Fatoum <a.fatoum@pengutronix.de>
+From: Scott Mayhew <smayhew@redhat.com>
 
-commit 4f39d575844148fbf3081571a1f3b4ae04150958 upstream.
+[ Upstream commit ce368536dd614452407dc31e2449eb84681a06af ]
 
-The flag indicating a watchdog timeout having occurred normally persists
-till Power-On Reset of the Fintek Super I/O chip. The user can clear it
-by writing a `1' to the bit.
+The NFS_CONTEXT_ERROR_WRITE flag (as well as the check of said flag) was
+removed by commit 6fbda89b257f.  The absence of an error check allows
+writes to be continually queued up for a server that may no longer be
+able to handle them.  Fix it by adding an error check using the generic
+error reporting functions.
 
-The driver doesn't offer a restart method, so regular system reboot
-might not reset the Super I/O and if the watchdog isn't enabled, we
-won't touch the register containing the bit on the next boot.
-In this case all subsequent regular reboots will be wrongly flagged
-by the driver as being caused by the watchdog.
-
-Fix this by having the flag cleared after read. This is also done by
-other drivers like those for the i6300esb and mpc8xxx_wdt.
-
-Fixes: b97cb21a4634 ("watchdog: f71808e_wdt: Fix WDTMOUT_STS register read")
-Cc: stable@vger.kernel.org
-Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20200611191750.28096-5-a.fatoum@pengutronix.de
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 6fbda89b257f ("NFS: Replace custom error reporting mechanism with generic one")
+Signed-off-by: Scott Mayhew <smayhew@redhat.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/f71808e_wdt.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ fs/nfs/file.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
---- a/drivers/watchdog/f71808e_wdt.c
-+++ b/drivers/watchdog/f71808e_wdt.c
-@@ -704,6 +704,13 @@ static int __init watchdog_init(int sioa
- 	wdt_conf = superio_inb(sioaddr, F71808FG_REG_WDT_CONF);
- 	watchdog.caused_reboot = wdt_conf & BIT(F71808FG_FLAG_WDTMOUT_STS);
+diff --git a/fs/nfs/file.c b/fs/nfs/file.c
+index 348f67c8f3224..387a2cfa7e172 100644
+--- a/fs/nfs/file.c
++++ b/fs/nfs/file.c
+@@ -583,12 +583,14 @@ static const struct vm_operations_struct nfs_file_vm_ops = {
+ 	.page_mkwrite = nfs_vm_page_mkwrite,
+ };
  
-+	/*
-+	 * We don't want WDTMOUT_STS to stick around till regular reboot.
-+	 * Write 1 to the bit to clear it to zero.
-+	 */
-+	superio_outb(sioaddr, F71808FG_REG_WDT_CONF,
-+		     wdt_conf | BIT(F71808FG_FLAG_WDTMOUT_STS));
-+
- 	superio_exit(sioaddr);
+-static int nfs_need_check_write(struct file *filp, struct inode *inode)
++static int nfs_need_check_write(struct file *filp, struct inode *inode,
++				int error)
+ {
+ 	struct nfs_open_context *ctx;
  
- 	err = watchdog_set_timeout(timeout);
+ 	ctx = nfs_file_open_context(filp);
+-	if (nfs_ctx_key_to_expire(ctx, inode))
++	if (nfs_error_is_fatal_on_server(error) ||
++	    nfs_ctx_key_to_expire(ctx, inode))
+ 		return 1;
+ 	return 0;
+ }
+@@ -599,6 +601,8 @@ ssize_t nfs_file_write(struct kiocb *iocb, struct iov_iter *from)
+ 	struct inode *inode = file_inode(file);
+ 	unsigned long written = 0;
+ 	ssize_t result;
++	errseq_t since;
++	int error;
+ 
+ 	result = nfs_key_timeout_notify(file, inode);
+ 	if (result)
+@@ -623,6 +627,7 @@ ssize_t nfs_file_write(struct kiocb *iocb, struct iov_iter *from)
+ 	if (iocb->ki_pos > i_size_read(inode))
+ 		nfs_revalidate_mapping(inode, file->f_mapping);
+ 
++	since = filemap_sample_wb_err(file->f_mapping);
+ 	nfs_start_io_write(inode);
+ 	result = generic_write_checks(iocb, from);
+ 	if (result > 0) {
+@@ -641,7 +646,8 @@ ssize_t nfs_file_write(struct kiocb *iocb, struct iov_iter *from)
+ 		goto out;
+ 
+ 	/* Return error values */
+-	if (nfs_need_check_write(file, inode)) {
++	error = filemap_check_wb_err(file->f_mapping, since);
++	if (nfs_need_check_write(file, inode, error)) {
+ 		int err = nfs_wb_all(inode);
+ 		if (err < 0)
+ 			result = err;
+-- 
+2.25.1
+
 
 
