@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 651EA24AEB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 07:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49AD524AEB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 07:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727781AbgHTFsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 01:48:43 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:37192 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727108AbgHTFsm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 01:48:42 -0400
+        id S1727111AbgHTFsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 01:48:54 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:55879 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726825AbgHTFss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 01:48:48 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597902521; h=Content-Transfer-Encoding: MIME-Version:
+ s=smtp; t=1597902528; h=Content-Transfer-Encoding: MIME-Version:
  References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=1h4fsqhtrfHOIIY9722x00XG5pmAjB4prQT3AFauQ9k=; b=VlVqI/2pMK5DAP0OJ5Qa8PDIvn8me+GMcqDA6pMK9q/8vLKBRe9311bZEQvlrfH4zZIeHUH9
- t73+Qy/Oa5ReH6sDPoiC21BlIt8Dfbs0LBof0/NgFGuw2o+MSZPVDxzoZLUljKHvs25awFQC
- ciSJug9ewlKEYErWmUiebfswke4=
-X-Mailgun-Sending-Ip: 104.130.122.29
+ Sender; bh=CNgtZ+04LUqpuHskCaUKwUE4yjEH6qYxU2GM8zcuRyI=; b=Il2ya6FYk98o9DxlYp8mp3uEkf6xvOovrQ+GGXvt5kmzhdJm08Q4IBvjNlI1QBJI2NLHU5lx
+ fHATwaU5lxnJ2y0zKrYWa8Ieozkw9W8Wo23dFnz6dAB5cB0FSsytjWCmuorY658piaf8Nayf
+ CxQrvZHSMPP52pAxJQ0Fl/mrokY=
+X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5f3e0eb9797e7ddeccddf9b8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 20 Aug 2020 05:48:41
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5f3e0ebc7e76db358ef7dbf1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 20 Aug 2020 05:48:44
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EA2F2C43452; Thu, 20 Aug 2020 05:48:40 +0000 (UTC)
+        id 40718C4345F; Thu, 20 Aug 2020 05:48:44 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -37,9 +36,9 @@ Received: from tingweiz-gv.qualcomm.com (unknown [180.166.53.21])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: tingwei)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9F94AC433A1;
-        Thu, 20 Aug 2020 05:48:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9F94AC433A1
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CA146C43449;
+        Thu, 20 Aug 2020 05:48:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CA146C43449
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=tingwei@codeaurora.org
 From:   Tingwei Zhang <tingwei@codeaurora.org>
@@ -57,11 +56,10 @@ Cc:     Tingwei Zhang <tingwei@codeaurora.org>,
         Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
         Mao Jinlong <jinlmao@codeaurora.org>,
         coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Suzuki K Poulose <Suzuki.Poulose@arm.com>
-Subject: [PATCH v9 07/24] coresight: stm: allow to build coresight-stm as a module
-Date:   Thu, 20 Aug 2020 13:47:01 +0800
-Message-Id: <20200820054718.20115-8-tingwei@codeaurora.org>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v9 08/24] coresight: etm: perf: Fix warning caused by etm_setup_aux failure
+Date:   Thu, 20 Aug 2020 13:47:02 +0800
+Message-Id: <20200820054718.20115-9-tingwei@codeaurora.org>
 X-Mailer: git-send-email 2.20.0
 In-Reply-To: <20200820054718.20115-1-tingwei@codeaurora.org>
 References: <20200820054718.20115-1-tingwei@codeaurora.org>
@@ -72,95 +70,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- Kconfig becomes a tristate, to allow =m
-- add a stm_remove function, for module unload
-- add a MODULE_DEVICE_TABLE for autoloading on boot
+When coresight_build_path() fails on all the cpus, etm_setup_aux
+calls etm_free_aux() to free allocated event_data.
+WARN_ON(cpumask_empty(mask) will be triggered since cpu mask is empty.
+Check event_data->snk_config is not NULL first to avoid this
+warning.
 
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Cc: Suzuki K Poulose <Suzuki.Poulose@arm.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Russell King <linux@armlinux.org.uk>
-Signed-off-by: Kim Phillips <kim.phillips@arm.com>
 Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
-Tested-by: Mike Leach <mike.leach@linaro.org>
+Reviewed-by: Mike Leach <mike.leach@linaro.org>
 Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- drivers/hwtracing/coresight/Kconfig         |  5 ++++-
- drivers/hwtracing/coresight/coresight-stm.c | 20 +++++++++++++++++++-
- 2 files changed, 23 insertions(+), 2 deletions(-)
+ drivers/hwtracing/coresight/coresight-etm-perf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
-index 4663fd1bbffc..6433f835fc97 100644
---- a/drivers/hwtracing/coresight/Kconfig
-+++ b/drivers/hwtracing/coresight/Kconfig
-@@ -86,7 +86,7 @@ config CORESIGHT_SOURCE_ETM4X
- 	  data tracing may also be available.
+diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+index dcb0592418ae..3728c44e5763 100644
+--- a/drivers/hwtracing/coresight/coresight-etm-perf.c
++++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+@@ -126,10 +126,10 @@ static void free_sink_buffer(struct etm_event_data *event_data)
+ 	cpumask_t *mask = &event_data->mask;
+ 	struct coresight_device *sink;
  
- config CORESIGHT_STM
--	bool "CoreSight System Trace Macrocell driver"
-+	tristate "CoreSight System Trace Macrocell driver"
- 	depends on (ARM && !(CPU_32v3 || CPU_32v4 || CPU_32v4T)) || ARM64
- 	select CORESIGHT_LINKS_AND_SINKS
- 	select STM
-@@ -96,6 +96,9 @@ config CORESIGHT_STM
- 	  logging useful software events or data coming from various entities
- 	  in the system, possibly running different OSs
+-	if (WARN_ON(cpumask_empty(mask)))
++	if (!event_data->snk_config)
+ 		return;
  
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called coresight-stm.
-+
- config CORESIGHT_CPU_DEBUG
- 	tristate "CoreSight CPU Debug driver"
- 	depends on ARM || ARM64
-diff --git a/drivers/hwtracing/coresight/coresight-stm.c b/drivers/hwtracing/coresight/coresight-stm.c
-index 673d2f56ed1e..b74072e78436 100644
---- a/drivers/hwtracing/coresight/coresight-stm.c
-+++ b/drivers/hwtracing/coresight/coresight-stm.c
-@@ -948,6 +948,17 @@ static int stm_probe(struct amba_device *adev, const struct amba_id *id)
- 	return ret;
- }
+-	if (!event_data->snk_config)
++	if (WARN_ON(cpumask_empty(mask)))
+ 		return;
  
-+static int __exit stm_remove(struct amba_device *adev)
-+{
-+	struct stm_drvdata *drvdata = dev_get_drvdata(&adev->dev);
-+
-+	coresight_unregister(drvdata->csdev);
-+
-+	stm_unregister_device(&drvdata->stm);
-+
-+	return 0;
-+}
-+
- #ifdef CONFIG_PM
- static int stm_runtime_suspend(struct device *dev)
- {
-@@ -980,6 +991,8 @@ static const struct amba_id stm_ids[] = {
- 	{ 0, 0},
- };
- 
-+MODULE_DEVICE_TABLE(amba, stm_ids);
-+
- static struct amba_driver stm_driver = {
- 	.drv = {
- 		.name   = "coresight-stm",
-@@ -988,7 +1001,12 @@ static struct amba_driver stm_driver = {
- 		.suppress_bind_attrs = true,
- 	},
- 	.probe          = stm_probe,
-+	.remove         = stm_remove,
- 	.id_table	= stm_ids,
- };
- 
--builtin_amba_driver(stm_driver);
-+module_amba_driver(stm_driver);
-+
-+MODULE_AUTHOR("Pratik Patel <pratikp@codeaurora.org>");
-+MODULE_DESCRIPTION("Arm CoreSight System Trace Macrocell driver");
-+MODULE_LICENSE("GPL v2");
+ 	cpu = cpumask_first(mask);
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
