@@ -2,221 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D77E024B8FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C581224B90F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730728AbgHTLhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:37:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47790 "EHLO
+        id S1728176AbgHTLiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:38:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730705AbgHTLd1 (ORCPT
+        with ESMTP id S1730849AbgHTLfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 07:33:27 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E787C061387
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 04:33:27 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id z18so1172777otk.6
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 04:33:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QDmA2I/vpmdly65/ewdOkuvkgD5OTZaOmPpGyJss1r8=;
-        b=dNd1ucF68FOwK698++MeDaHZC8R4QTfkj/7ds5fx+EVzNfJCMORnX8FAOUdJXqjhwB
-         KzyLCNsY8RwuHBIj/D1WqqnFEjPzWvq/PbQrZhsKiZ2hAM1Tl2HAg7aZ9Om4JaruuI0q
-         ECAeeAY4+/MbKn5cW+ySGsEjinxUvgEoWpJtY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QDmA2I/vpmdly65/ewdOkuvkgD5OTZaOmPpGyJss1r8=;
-        b=nJaFoF0FAJ56aB9riJQ9KOtoDsNOAC8wK6Ng1/bSgmQu7j/UtHjt18JE4o7k1vxdpP
-         6h0Hhi7EM+yLtk9WhZdHkz2F4uWkNI+yf8aC5JDGYtRnpZloJTgbebD/l1IowXVsNABa
-         Blyim3aI/PF/ca+jDAcpUmAKbbn5In5n6qZa8ckverEcjJ9F1+zfKaMJUquWCiUb6pGw
-         AZYrBxnq5qAns0zQjpWDdyUCpfhGScrwvfqpSN4NrYecWDh+0WkucA2yAlOKeuC4odDL
-         dXB1XX4jCPcCgV6hzRtrKJ+edHrkUxXfoMZmNau+92u4QWngQC8t6/bMFjZYjhanRH9R
-         epRw==
-X-Gm-Message-State: AOAM531BcwjBh3X6v0eU6175nPwFJfnBT3a5T8nrkLayEnJ3FspikiHp
-        T5df4E4e0XQJ7DfVdX+PGdwOp6Gf20ZEznhyptl3TQ==
-X-Google-Smtp-Source: ABdhPJz5sS9SzkLweMOTau3oDrIAtuUMdCvWcs9y5ZeCHjWJmjdV0SWMRwsXpqL0zJOpQbQIgTkvrSUYiwFOo9W6SY8=
-X-Received: by 2002:a9d:2f23:: with SMTP id h32mr1908222otb.334.1597923206365;
- Thu, 20 Aug 2020 04:33:26 -0700 (PDT)
+        Thu, 20 Aug 2020 07:35:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E88C061385;
+        Thu, 20 Aug 2020 04:35:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=t84+Z949JCHOIrLVWyab10y1aUar8zezYlYXe5c2wbk=; b=Vah+zRC10NBMvc8xBtg+tjZiTo
+        FG7tUUZHI4+gor8Ux3uZza/5rQmRIf34CLhjWtUc4glJBovY5Zt8tMIGwnOKg026bwsrH9lojI7bL
+        E2pXK2kM1ZFDkhxnJx44Kyexr0FfrbS+K7Ic7AF3qsysKTCBWa9tiIRJMbzNOvApL0RROg2bxNoiN
+        6l383zlJUyuwUumLjB0w/Xi3RreLD+9ipEDkwtIPtksBVSBgUyyKSjP/UK9C5QsuGrs9rETzxjkXA
+        bQzIO195RJBmwBnXAb4ZRT4fRC0sG82WYMpiMOZx0aoZqJ1SqMeFV4vEG9SCc8Nl39JQVEhWdA03e
+        DTE5yHTQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k8iqG-0002He-GO; Thu, 20 Aug 2020 11:34:48 +0000
+Date:   Thu, 20 Aug 2020 12:34:48 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Gao Xiang <hsiangkao@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Carlos Maiolino <cmaiolino@redhat.com>,
+        Eric Sandeen <esandeen@redhat.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Rafael Aquini <aquini@redhat.com>,
+        Dave Chinner <david@fromorbit.com>,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH v2] mm, THP, swap: fix allocating cluster for swapfile by
+ mistake
+Message-ID: <20200820113448.GM17456@casper.infradead.org>
+References: <20200820045323.7809-1-hsiangkao@redhat.com>
 MIME-Version: 1.0
-References: <20200819092436.58232-1-lmb@cloudflare.com> <20200819092436.58232-6-lmb@cloudflare.com>
- <5f3d982f51f22_2c9b2adeefb585bccb@john-XPS-13-9370.notmuch> <5f3daa91265a7_1b0e2ab87245e5c05@john-XPS-13-9370.notmuch>
-In-Reply-To: <5f3daa91265a7_1b0e2ab87245e5c05@john-XPS-13-9370.notmuch>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Thu, 20 Aug 2020 12:33:15 +0100
-Message-ID: <CACAyw9_oa5BKq+0gLS6pAuGu6pj9MsRHhEAxFvts167DwpdhLw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/6] bpf: sockmap: allow update from BPF
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200820045323.7809-1-hsiangkao@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Aug 2020 at 23:41, John Fastabend <john.fastabend@gmail.com> wrote:
->
-> John Fastabend wrote:
-> > Lorenz Bauer wrote:
-> > > Allow calling bpf_map_update_elem on sockmap and sockhash from a BPF
-> > > context. The synchronization required for this is a bit fiddly: we
-> > > need to prevent the socket from changing it's state while we add it
-> > > to the sockmap, since we rely on getting a callback via
-> > > sk_prot->unhash. However, we can't just lock_sock like in
-> > > sock_map_sk_acquire because that might sleep. So instead we disable
-> > > softirq processing and use bh_lock_sock to prevent further
-> > > modification.
-> > >
-> > > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> > > ---
-> > >  kernel/bpf/verifier.c |  6 ++++--
-> > >  net/core/sock_map.c   | 24 ++++++++++++++++++++++++
-> > >  2 files changed, 28 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index 47f9b94bb9d4..421fccf18dea 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -4254,7 +4254,8 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
-> > >                 func_id != BPF_FUNC_map_delete_elem &&
-> > >                 func_id != BPF_FUNC_msg_redirect_map &&
-> > >                 func_id != BPF_FUNC_sk_select_reuseport &&
-> > > -               func_id != BPF_FUNC_map_lookup_elem)
-> > > +               func_id != BPF_FUNC_map_lookup_elem &&
-> > > +               func_id != BPF_FUNC_map_update_elem)
-> > >                     goto error;
-> > >             break;
-> > >     case BPF_MAP_TYPE_SOCKHASH:
-> > > @@ -4263,7 +4264,8 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
-> > >                 func_id != BPF_FUNC_map_delete_elem &&
-> > >                 func_id != BPF_FUNC_msg_redirect_hash &&
-> > >                 func_id != BPF_FUNC_sk_select_reuseport &&
-> > > -               func_id != BPF_FUNC_map_lookup_elem)
-> > > +               func_id != BPF_FUNC_map_lookup_elem &&
-> > > +               func_id != BPF_FUNC_map_update_elem)
-> >
-> > I lost track of a detail here, map_lookup_elem should return
-> > PTR_TO_MAP_VALUE_OR_NULL but if we want to feed that back into
-> > the map_update_elem() we need to return PTR_TO_SOCKET_OR_NULL
-> > and then presumably have a null check to get a PTR_TO_SOCKET
-> > type as expect.
-> >
-> > Can we use the same logic for expected arg (previous patch) on the
-> > ret_type. Or did I miss it:/ Need some coffee I guess.
->
-> OK, I tracked this down. It looks like we rely on mark_ptr_or_null_reg()
-> to update the reg->tyype to PTR_TO_SOCKET. I do wonder if it would be
-> a bit more straight forward to do something similar to the previous
-> patch and refine it earlier to PTR_TO_SOCKET_OR_NULL, but should be
-> safe as-is for now.
+On Thu, Aug 20, 2020 at 12:53:23PM +0800, Gao Xiang wrote:
+> SWP_FS is used to make swap_{read,write}page() go through
+> the filesystem, and it's only used for swap files over
+> NFS. So, !SWP_FS means non NFS for now, it could be either
+> file backed or device backed. Something similar goes with
+> legacy SWP_FILE.
+> 
+> So in order to achieve the goal of the original patch,
+> SWP_BLKDEV should be used instead.
 
-Yes, it took me a while to figure this out as well. I think we can use
-the same approach, but I wanted to keep this series simple.
+This is clearly confusing.  I think we need to rename SWP_FS to SWP_FS_OPS.
 
-> I still have the below question though.
->
-> >
-> > >                     goto error;
-> > >             break;
-> > >     case BPF_MAP_TYPE_REUSEPORT_SOCKARRAY:
-> > > diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> > > index 018367fb889f..b2c886c34566 100644
-> > > --- a/net/core/sock_map.c
-> > > +++ b/net/core/sock_map.c
-> > > @@ -603,6 +603,28 @@ int sock_map_update_elem_sys(struct bpf_map *map, void *key,
-> > >     return ret;
-> > >  }
-> > >
-> > > +static int sock_map_update_elem(struct bpf_map *map, void *key,
-> > > +                           void *value, u64 flags)
-> > > +{
-> > > +   struct sock *sk = (struct sock *)value;
-> > > +   int ret;
-> > > +
-> > > +   if (!sock_map_sk_is_suitable(sk))
-> > > +           return -EOPNOTSUPP;
-> > > +
-> > > +   local_bh_disable();
-> > > +   bh_lock_sock(sk);
-> >
-> > How do ensure we are not being called from some context which
-> > already has the bh_lock_sock() held? It seems we can call map_update_elem()
-> > from any context, kprobes, tc, xdp, etc.?
+More generally, the swap code seems insane.  I appreciate that it's an
+inherited design from over twenty-five years ago, and nobody wants to
+touch it, but it's crazy that it cares about how the filesystem has
+mapped file blocks to disk blocks.  I understand that the filesystem
+has to know not to allocate memory in order to free memory, but this
+is already something filesystems have to understand.  It's also useful
+for filesystems to know that this is data which has no meaning after a
+power cycle (so it doesn't need to be journalled or snapshotted or ...),
+but again, that's useful functionality which we could stand to present
+to userspace anyway.
 
-Yeah, to be honest I'm not entirely sure.
+I suppose the tricky thing about it is that working on the swap code is
+not as sexy as working on a filesystem, and doing the swap code right
+is essentially writing a filesystem, so everybody who's capable already
+has something better to do.
 
-XDP, TC, sk_lookup are fine I think. We have bpf_sk_lookup_tcp and
-friends, but these aren't locked, and the BPF doesn't run in a context
-where there is a locked socket.
-
-As you point out, kprobes / tracing is problematic because the probe
-_can_ run at a point where an sk is locked. If the tracing program
-somehow gets a hold of this socket via sk_lookup_* or
-a sockmap the program could deadlock.
-
-bpf_sock_ops is also problematic since ctx->sk is in various states of
-locking. For example, BPF_SOCK_OPS_TCP_LISTEN_CB is called with
-lock_sock held, so unproblematic. BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB
-on the other hand is called with the spinlock held.
-
-It seems to me like the only option is to instead only allow updates
-from "safe" contexts, such as XDP, tc, bpf_iter etc.
-
-Am I missing something?
-
-
-> >
-> > > +   if (!sock_map_sk_state_allowed(sk))
-> > > +           ret = -EOPNOTSUPP;
-> > > +   else if (map->map_type == BPF_MAP_TYPE_SOCKMAP)
-> > > +           ret = sock_map_update_common(map, *(u32 *)key, sk, flags);
-> > > +   else
-> > > +           ret = sock_hash_update_common(map, key, sk, flags);
-> > > +   bh_unlock_sock(sk);
-> > > +   local_bh_enable();
-> > > +   return ret;
-> > > +}
-> > > +
-> > >  BPF_CALL_4(bpf_sock_map_update, struct bpf_sock_ops_kern *, sops,
-> > >        struct bpf_map *, map, void *, key, u64, flags)
-> > >  {
-> > > @@ -687,6 +709,7 @@ const struct bpf_map_ops sock_map_ops = {
-> > >     .map_free               = sock_map_free,
-> > >     .map_get_next_key       = sock_map_get_next_key,
-> > >     .map_lookup_elem_sys_only = sock_map_lookup_sys,
-> > > +   .map_update_elem        = sock_map_update_elem,
-> > >     .map_delete_elem        = sock_map_delete_elem,
-> > >     .map_lookup_elem        = sock_map_lookup,
-> > >     .map_release_uref       = sock_map_release_progs,
-> > > @@ -1180,6 +1203,7 @@ const struct bpf_map_ops sock_hash_ops = {
-> > >     .map_alloc              = sock_hash_alloc,
-> > >     .map_free               = sock_hash_free,
-> > >     .map_get_next_key       = sock_hash_get_next_key,
-> > > +   .map_update_elem        = sock_map_update_elem,
-> > >     .map_delete_elem        = sock_hash_delete_elem,
-> > >     .map_lookup_elem        = sock_hash_lookup,
-> > >     .map_lookup_elem_sys_only = sock_hash_lookup_sys,
-> > > --
-> > > 2.25.1
-> > >
-> >
-> >
->
->
-
-
---
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
+Anyway, Gao, please can you submit a follow-on patch to rename SWP_FS?
