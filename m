@@ -2,120 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 210D424B0B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 10:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5691024B0BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 10:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725824AbgHTIFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 04:05:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44226 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725834AbgHTIEw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 04:04:52 -0400
-Received: from coco.lan (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 494C22080C;
-        Thu, 20 Aug 2020 08:04:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597910691;
-        bh=OWWu+MjMbXHrGQztQRN2ylfscy+5B8mChqzjsAWtscU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=h5b1/133ACDgHCMmw6/rHv5Gql/4zGLxnABbEKYeU9N378GO55Fy4cGxpFyfiCyTc
-         WwVI3HJOWwe4FuMDjQEAsUTVpHVI5X8qscPaThxTdaYlForCPtCHOG8P/p6r+Lu+8p
-         CMIQRH9B5IFg3ngYjdu3Dyp2r35gyzgNbeRNFh+w=
-Date:   Thu, 20 Aug 2020 10:04:40 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Bogdan Togorean <bogdan.togorean@analog.com>,
-        Liwei Cai <cailiwei@hisilicon.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Xinliang Liu <xinliang.liu@linaro.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Wanchun Zheng <zhengwanchun@hisilicon.com>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        Xiubin Zhang <zhangxiubin1@huawei.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Clark <robdclark@chromium.org>,
-        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Liuyao An <anliuyao@huawei.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, Wei Xu <xuwei5@hisilicon.com>,
-        Rongrong Zou <zourongrong@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Chen Feng <puck.chen@hisilicon.com>
-Subject: Re: [PATCH 00/49] DRM driver for Hikey 970
-Message-ID: <20200820100440.2d30dc02@coco.lan>
-In-Reply-To: <CALAqxLU3bt6fT4nGHZFSnzyQq4xJo2On=c_Oa9ONED9-jhaFgw@mail.gmail.com>
-References: <cover.1597833138.git.mchehab+huawei@kernel.org>
-        <CALAqxLU3bt6fT4nGHZFSnzyQq4xJo2On=c_Oa9ONED9-jhaFgw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1726664AbgHTIG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 04:06:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725798AbgHTIGk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 04:06:40 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C1A7C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 01:06:39 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id m20so873414eds.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 01:06:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0OwhNfFCbhYDQLA4/dccOD7L7141WZ9ATtkpH6xUNMc=;
+        b=swKUvLLnAQdFPDLye2jyXh2prjZtgQAcVoLnNhc7qsmp4y6k0yNkEfsA5FufOZ56X8
+         pymAO2W/n81MdoV+Uo3zfbU64TjgEKIkSmaKZMhdY/6q87jaNSn0K2bGDXXzd6L8DiTZ
+         7ii1ra03DhVoia2KQzGGhqhQJpCxGL0UeVwPbAJivnYhHgc5JH0TK09/6+PMDp/ggC2K
+         DSUnx2mgfsZUpWFQDB3efdz27VUZtITNnPOHIQrp92tQt0Hzj0K7AGZu1MTgO6480SEz
+         ePiYPyT3Ysh5+oprallpD6gif3mMAjj1m2n/zuPrMwunpU1bm/ojeO7YfIBLznybOQFJ
+         cGXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0OwhNfFCbhYDQLA4/dccOD7L7141WZ9ATtkpH6xUNMc=;
+        b=UsShGassfWBbDXYx2G/1d/2UspB3mFQiLk+DtYOiJ/kCd8Re0e+q5R9woLC9IXdCxR
+         CzPhrYzXfs8gVpXEA0FjC2P2qm/ZMD+PbD8TJub8Z9WSUIR6aDuYjkiy4dLHDFgmH8Na
+         54hMkmz8St6H0T41awS6JKca8AVuBY5pOzD0fEj1pzj440HpovhCcSD8J6r9MtKTdqlv
+         Ih5va3aZreT4eB97iwTi8yEYDdcDn0M0cGQPWT4COpLQ1ePBB29OsUh624qjVDPMMe7G
+         wibQyP5jlq0JaeTGJ2w2qgWKDTKw9KrKBiAZvSkZNJrvmeRArGafaLQH+SxzHF5Gwl0I
+         FVIw==
+X-Gm-Message-State: AOAM532xd9P8vL4ZZpiZpARZnRTlC1V//JwbLkY0oufRZ1+SXiOa7chL
+        8cMO51mtOghvNSfryL1PqsnHEQIi/0WvLFuPXFlRcQ==
+X-Google-Smtp-Source: ABdhPJxedwVOjuhOGa+YZ2VRQ5JC/KBODV2K/n3WXxs7L+MCk4FOrvdgSwNrpgvPVRF3DiAgVdCepfeUVHJ0icaTZOY=
+X-Received: by 2002:aa7:c395:: with SMTP id k21mr1797517edq.386.1597910798048;
+ Thu, 20 Aug 2020 01:06:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+References: <20200818111057.19755-1-tingwei@codeaurora.org> <20200818111057.19755-3-tingwei@codeaurora.org>
+In-Reply-To: <20200818111057.19755-3-tingwei@codeaurora.org>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Thu, 20 Aug 2020 09:06:27 +0100
+Message-ID: <CAJ9a7VjoKZnztndjAZKKsAj1-QJhWDHZN6e3hyp8dj7EerJF=A@mail.gmail.com>
+Subject: Re: [PATCH] coresight: cti: write regsiters directly in cti_enable_hw()
+To:     Tingwei Zhang <tingwei@codeaurora.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        tsoni@codeaurora.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 19 Aug 2020 14:36:52 -0700
-John Stultz <john.stultz@linaro.org> escreveu:
+Hi Tingwei
 
-> On Wed, Aug 19, 2020 at 4:46 AM Mauro Carvalho Chehab
-> <mchehab+huawei@kernel.org> wrote:
-> > So, IMO, the best is to keep it on staging for a while, until those
-> > remaining bugs gets solved.
-> >
-> > I added this series, together with the regulator driver and
-> > a few other patches (including a hack to fix a Kernel 5.8
-> > regression at WiFi ) at:
-> >
-> >         https://gitlab.freedesktop.org/mchehab_kernel/hikey-970/-/commi=
-ts/master =20
->=20
-> Sorry, one more small request: Could you create a branch that only has
-> the DRM driver changes in it?
->=20
-> The reason I ask, is that since the HiKey960 isn't affected by the
-> majority of the problems you listed as motivation for going through
-> staging. So if we can validate that your tree works fine on HiKey960,
-> the series can be cleaned up and submitted properly upstream to enable
-> that SoC, and the outstanding 970 issues can be worked out afterwards
-> against mainline.
+On Tue, 18 Aug 2020 at 12:11, Tingwei Zhang <tingwei@codeaurora.org> wrote:
+>
+> Deadlock as below is triggered by one CPU holds drvdata->spinlock
+> and calls cti_enable_hw(). Smp_call_function_single() is called
+> in cti_enable_hw() and tries to let another CPU write CTI registers.
+> That CPU is trying to get drvdata->spinlock in cti_cpu_pm_notify()
+> and doesn't response to IPI from smp_call_function_single().
+>
+> [  988.335937] CPU: 6 PID: 10258 Comm: sh Tainted: G        W    L
+> 5.8.0-rc6-mainline-16783-gc38daa79b26b-dirty #1
+> [  988.346364] Hardware name: Thundercomm Dragonboard 845c (DT)
+> [  988.352073] pstate: 20400005 (nzCv daif +PAN -UAO BTYPE=--)
+> [  988.357689] pc : smp_call_function_single+0x158/0x1b8
+> [  988.362782] lr : smp_call_function_single+0x124/0x1b8
+> ...
+> [  988.451638] Call trace:
+> [  988.454119]  smp_call_function_single+0x158/0x1b8
+> [  988.458866]  cti_enable+0xb4/0xf8 [coresight_cti]
+> [  988.463618]  coresight_control_assoc_ectdev+0x6c/0x128 [coresight]
+> [  988.469855]  coresight_enable+0x1f0/0x364 [coresight]
+> [  988.474957]  enable_source_store+0x5c/0x9c [coresight]
+> [  988.480140]  dev_attr_store+0x14/0x28
+> [  988.483839]  sysfs_kf_write+0x38/0x4c
+> [  988.487532]  kernfs_fop_write+0x1c0/0x2b0
+> [  988.491585]  vfs_write+0xfc/0x300
+> [  988.494931]  ksys_write+0x78/0xe0
+> [  988.498283]  __arm64_sys_write+0x18/0x20
+> [  988.502240]  el0_svc_common+0x98/0x160
+> [  988.506024]  do_el0_svc+0x78/0x80
+> [  988.509377]  el0_sync_handler+0xd4/0x270
+> [  988.513337]  el0_sync+0x164/0x180
+>
+> This change write CTI registers directly in cti_enable_hw().
+> Config->hw_powered has been checked to be true with spinlock holded.
+> CTI is powered and can be programmed until spinlock is released.
+>
 
-Well, if support for HiKey 960 is OK, I guess what we can do is to not=20
-push the patch with DT bindings for hikey970. We should probably fix
-the color swap thing at the driver first.
+Agreed.
 
-=46rom my side, provided that the history is preserved, I don't mind
-if this is merged:
+Reviewed-by Mike Leach <mike.leach@linaro.org>
 
-- via staging tree;
-- at dri-devel tree;
-- or having a the historic patchsets merged at /staging, with
-  a follow up patch moving it from staging/ into /gpu/drm/.
+> Fixes: 6a0953ce7de9 ("coresight: cti: Add CPU idle pm notifer to CTI devices")
+> Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
+> ---
+>  drivers/hwtracing/coresight/coresight-cti.c | 17 +----------------
+>  1 file changed, 1 insertion(+), 16 deletions(-)
+>
+> diff --git a/drivers/hwtracing/coresight/coresight-cti.c b/drivers/hwtracing/coresight/coresight-cti.c
+> index 3ccc703dc940..869569eb8c7f 100644
+> --- a/drivers/hwtracing/coresight/coresight-cti.c
+> +++ b/drivers/hwtracing/coresight/coresight-cti.c
+> @@ -86,13 +86,6 @@ void cti_write_all_hw_regs(struct cti_drvdata *drvdata)
+>         CS_LOCK(drvdata->base);
+>  }
+>
+> -static void cti_enable_hw_smp_call(void *info)
+> -{
+> -       struct cti_drvdata *drvdata = info;
+> -
+> -       cti_write_all_hw_regs(drvdata);
+> -}
+> -
+>  /* write regs to hardware and enable */
+>  static int cti_enable_hw(struct cti_drvdata *drvdata)
+>  {
+> @@ -112,15 +105,7 @@ static int cti_enable_hw(struct cti_drvdata *drvdata)
+>         if (rc)
+>                 goto cti_err_not_enabled;
+>
+> -       if (drvdata->ctidev.cpu >= 0) {
+> -               rc = smp_call_function_single(drvdata->ctidev.cpu,
+> -                                             cti_enable_hw_smp_call,
+> -                                             drvdata, 1);
+> -               if (rc)
+> -                       goto cti_err_not_enabled;
+> -       } else {
+> -               cti_write_all_hw_regs(drvdata);
+> -       }
+> +       cti_write_all_hw_regs(drvdata);
+>
+>         config->hw_enabled = true;
+>         atomic_inc(&drvdata->config.enable_req_count);
+> --
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+>
+> _______________________________________________
+> CoreSight mailing list
+> CoreSight@lists.linaro.org
+> https://lists.linaro.org/mailman/listinfo/coresight
 
-Thanks,
-Mauro
+
+
+-- 
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
