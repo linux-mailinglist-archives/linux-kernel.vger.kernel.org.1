@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF09724BBE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A7A24BBC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730206AbgHTMfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:35:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52678 "EHLO mail.kernel.org"
+        id S1730007AbgHTMdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:33:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729545AbgHTJsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:48:11 -0400
+        id S1728132AbgHTJtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:49:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C37812078D;
-        Thu, 20 Aug 2020 09:48:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 850E42173E;
+        Thu, 20 Aug 2020 09:49:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916890;
-        bh=e/9H8fbVPvZQZK6O/dKJii+CSircMQEFTYMDaaOMrak=;
+        s=default; t=1597916956;
+        bh=7stOTL4c0r0SmATase0Q11SoLc9JM33qxJma8oASAuE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LdiTNVwSZcg9GXn0d/mMLeilx4lipJFpzP/X8AO5h4p4QkDr97MRHl4hLQrrKBgQr
-         m1RWgL7G06NrKVCq/4qwHWLXDDljUbozax55bwvG7W+1OzL5kG74E5d+WrKiHYzq8d
-         6CqnTWg7BJCtYHtOrTZo4fDn2DVaoK9AUFcdyvFI=
+        b=upyd6Pjgq7Wc6GvDDMOwd4/3LTjV9cL8twMyz8z4SHC7DgRuoV6KHWj0NaE2p8rzA
+         hMrR7vhkIAAsQw2obJjSkxnfzqkxnJspHeiaN/Xu2nG4kGl/lZK3vQ5S5juUip/2oa
+         yqoXaNvURtrX3Oq2p/b0EJ7sLfJt3DzyP8COHPBM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mike Marshall <hubcap@omnibond.com>,
-        kbuild test robot <lkp@intel.com>
-Subject: [PATCH 5.4 075/152] orangefs: get rid of knob code...
-Date:   Thu, 20 Aug 2020 11:20:42 +0200
-Message-Id: <20200820091557.578194646@linuxfoundation.org>
+        stable@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 077/152] crypto: algif_aead - Only wake up when ctx->more is zero
+Date:   Thu, 20 Aug 2020 11:20:44 +0200
+Message-Id: <20200820091557.681528438@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
 References: <20200820091553.615456912@linuxfoundation.org>
@@ -43,188 +43,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Marshall <hubcap@omnibond.com>
+From: Herbert Xu <herbert@gondor.apana.org.au>
 
-commit ec95f1dedc9c64ac5a8b0bdb7c276936c70fdedd upstream.
+[ Upstream commit f3c802a1f30013f8f723b62d7fa49eb9e991da23 ]
 
-Christoph Hellwig sent in a reversion of "orangefs: remember count
-when reading." because:
+AEAD does not support partial requests so we must not wake up
+while ctx->more is set.  In order to distinguish between the
+case of no data sent yet and a zero-length request, a new init
+flag has been added to ctx.
 
-  ->read_iter calls can race with each other and one or
-  more ->flush calls. Remove the the scheme to store the read
-  count in the file private data as is is completely racy and
-  can cause use after free or double free conditions
+SKCIPHER has also been modified to ensure that at least a block
+of data is available if there is more data to come.
 
-Christoph's reversion caused Orangefs not to work or to compile. I
-added a patch that fixed that, but intel's kbuild test robot pointed
-out that sending Christoph's patch followed by my patch upstream, it
-would break bisection because of the failure to compile. So I have
-combined the reversion plus my patch... here's the commit message
-that was in my patch:
-
-  Logically, optimal Orangefs "pages" are 4 megabytes. Reading
-  large Orangefs files 4096 bytes at a time is like trying to
-  kick a dead whale down the beach. Before Christoph's "Revert
-  orangefs: remember count when reading." I tried to give users
-  a knob whereby they could, for example, use "count" in
-  read(2) or bs with dd(1) to get whatever they considered an
-  appropriate amount of bytes at a time from Orangefs and fill
-  as many page cache pages as they could at once.
-
-  Without the racy code that Christoph reverted Orangefs won't
-  even compile, much less work. So this replaces the logic that
-  used the private file data that Christoph reverted with
-  a static number of bytes to read from Orangefs.
-
-  I ran tests like the following to determine what a
-  reasonable static number of bytes might be:
-
-  dd if=/pvfsmnt/asdf of=/dev/null count=128 bs=4194304
-  dd if=/pvfsmnt/asdf of=/dev/null count=256 bs=2097152
-  dd if=/pvfsmnt/asdf of=/dev/null count=512 bs=1048576
-                            .
-                            .
-                            .
-  dd if=/pvfsmnt/asdf of=/dev/null count=4194304 bs=128
-
-  Reads seem faster using the static number, so my "knob code"
-  wasn't just racy, it wasn't even a good idea...
-
-Signed-off-by: Mike Marshall <hubcap@omnibond.com>
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 2d97591ef43d ("crypto: af_alg - consolidation of...")
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/orangefs/file.c            |   26 +-------------------------
- fs/orangefs/inode.c           |   39 ++++++---------------------------------
- fs/orangefs/orangefs-kernel.h |    4 ----
- 3 files changed, 7 insertions(+), 62 deletions(-)
+ crypto/af_alg.c         | 11 ++++++++---
+ crypto/algif_aead.c     |  4 ++--
+ crypto/algif_skcipher.c |  4 ++--
+ include/crypto/if_alg.h |  4 +++-
+ 4 files changed, 15 insertions(+), 8 deletions(-)
 
---- a/fs/orangefs/file.c
-+++ b/fs/orangefs/file.c
-@@ -311,23 +311,8 @@ static ssize_t orangefs_file_read_iter(s
-     struct iov_iter *iter)
- {
- 	int ret;
--	struct orangefs_read_options *ro;
--
- 	orangefs_stats.reads++;
+diff --git a/crypto/af_alg.c b/crypto/af_alg.c
+index a3b9df99af6de..ed8ace8675b77 100644
+--- a/crypto/af_alg.c
++++ b/crypto/af_alg.c
+@@ -635,6 +635,7 @@ void af_alg_pull_tsgl(struct sock *sk, size_t used, struct scatterlist *dst,
  
--	/*
--	 * Remember how they set "count" in read(2) or pread(2) or whatever -
--	 * users can use count as a knob to control orangefs io size and later
--	 * we can try to help them fill as many pages as possible in readpage.
--	 */
--	if (!iocb->ki_filp->private_data) {
--		iocb->ki_filp->private_data = kmalloc(sizeof *ro, GFP_KERNEL);
--		if (!iocb->ki_filp->private_data)
--			return(ENOMEM);
--		ro = iocb->ki_filp->private_data;
--		ro->blksiz = iter->count;
--	}
--
- 	down_read(&file_inode(iocb->ki_filp)->i_rwsem);
- 	ret = orangefs_revalidate_mapping(file_inode(iocb->ki_filp));
- 	if (ret)
-@@ -615,12 +600,6 @@ static int orangefs_lock(struct file *fi
- 	return rc;
+ 	if (!ctx->used)
+ 		ctx->merge = 0;
++	ctx->init = ctx->more;
  }
+ EXPORT_SYMBOL_GPL(af_alg_pull_tsgl);
  
--static int orangefs_file_open(struct inode * inode, struct file *file)
--{
--	file->private_data = NULL;
--	return generic_file_open(inode, file);
--}
--
- static int orangefs_flush(struct file *file, fl_owner_t id)
+@@ -734,9 +735,10 @@ EXPORT_SYMBOL_GPL(af_alg_wmem_wakeup);
+  *
+  * @sk socket of connection to user space
+  * @flags If MSG_DONTWAIT is set, then only report if function would sleep
++ * @min Set to minimum request size if partial requests are allowed.
+  * @return 0 when writable memory is available, < 0 upon error
+  */
+-int af_alg_wait_for_data(struct sock *sk, unsigned flags)
++int af_alg_wait_for_data(struct sock *sk, unsigned flags, unsigned min)
  {
- 	/*
-@@ -634,9 +613,6 @@ static int orangefs_flush(struct file *f
- 	struct inode *inode = file->f_mapping->host;
- 	int r;
+ 	DEFINE_WAIT_FUNC(wait, woken_wake_function);
+ 	struct alg_sock *ask = alg_sk(sk);
+@@ -754,7 +756,9 @@ int af_alg_wait_for_data(struct sock *sk, unsigned flags)
+ 		if (signal_pending(current))
+ 			break;
+ 		timeout = MAX_SCHEDULE_TIMEOUT;
+-		if (sk_wait_event(sk, &timeout, (ctx->used || !ctx->more),
++		if (sk_wait_event(sk, &timeout,
++				  ctx->init && (!ctx->more ||
++						(min && ctx->used >= min)),
+ 				  &wait)) {
+ 			err = 0;
+ 			break;
+@@ -843,7 +847,7 @@ int af_alg_sendmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 	}
  
--	kfree(file->private_data);
--	file->private_data = NULL;
--
- 	if (inode->i_state & I_DIRTY_TIME) {
- 		spin_lock(&inode->i_lock);
- 		inode->i_state &= ~I_DIRTY_TIME;
-@@ -659,7 +635,7 @@ const struct file_operations orangefs_fi
- 	.lock		= orangefs_lock,
- 	.unlocked_ioctl	= orangefs_ioctl,
- 	.mmap		= orangefs_file_mmap,
--	.open		= orangefs_file_open,
-+	.open		= generic_file_open,
- 	.flush		= orangefs_flush,
- 	.release	= orangefs_file_release,
- 	.fsync		= orangefs_fsync,
---- a/fs/orangefs/inode.c
-+++ b/fs/orangefs/inode.c
-@@ -259,46 +259,19 @@ static int orangefs_readpage(struct file
- 	pgoff_t index; /* which page */
- 	struct page *next_page;
- 	char *kaddr;
--	struct orangefs_read_options *ro = file->private_data;
- 	loff_t read_size;
--	loff_t roundedup;
- 	int buffer_index = -1; /* orangefs shared memory slot */
- 	int slot_index;   /* index into slot */
- 	int remaining;
+ 	lock_sock(sk);
+-	if (!ctx->more && ctx->used) {
++	if (ctx->init && (init || !ctx->more)) {
+ 		err = -EINVAL;
+ 		goto unlock;
+ 	}
+@@ -854,6 +858,7 @@ int af_alg_sendmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 			memcpy(ctx->iv, con.iv->iv, ivsize);
  
- 	/*
--	 * If they set some miniscule size for "count" in read(2)
--	 * (for example) then let's try to read a page, or the whole file
--	 * if it is smaller than a page. Once "count" goes over a page
--	 * then lets round up to the highest page size multiple that is
--	 * less than or equal to "count" and do that much orangefs IO and
--	 * try to fill as many pages as we can from it.
--	 *
--	 * "count" should be represented in ro->blksiz.
--	 *
--	 * inode->i_size = file size.
-+	 * Get up to this many bytes from Orangefs at a time and try
-+	 * to fill them into the page cache at once. Tests with dd made
-+	 * this seem like a reasonable static number, if there was
-+	 * interest perhaps this number could be made setable through
-+	 * sysfs...
- 	 */
--	if (ro) {
--		if (ro->blksiz < PAGE_SIZE) {
--			if (inode->i_size < PAGE_SIZE)
--				read_size = inode->i_size;
--			else
--				read_size = PAGE_SIZE;
--		} else {
--			roundedup = ((PAGE_SIZE - 1) & ro->blksiz) ?
--				((ro->blksiz + PAGE_SIZE) & ~(PAGE_SIZE -1)) :
--				ro->blksiz;
--			if (roundedup > inode->i_size)
--				read_size = inode->i_size;
--			else
--				read_size = roundedup;
--
--		}
--	} else {
--		read_size = PAGE_SIZE;
--	}
--	if (!read_size)
--		read_size = PAGE_SIZE;
-+	read_size = 524288;
+ 		ctx->aead_assoclen = con.aead_assoclen;
++		ctx->init = true;
+ 	}
  
- 	if (PageDirty(page))
- 		orangefs_launder_page(page);
---- a/fs/orangefs/orangefs-kernel.h
-+++ b/fs/orangefs/orangefs-kernel.h
-@@ -239,10 +239,6 @@ struct orangefs_write_range {
- 	kgid_t gid;
+ 	while (size) {
+diff --git a/crypto/algif_aead.c b/crypto/algif_aead.c
+index 0ae000a61c7f5..d48d2156e6210 100644
+--- a/crypto/algif_aead.c
++++ b/crypto/algif_aead.c
+@@ -106,8 +106,8 @@ static int _aead_recvmsg(struct socket *sock, struct msghdr *msg,
+ 	size_t usedpages = 0;		/* [in]  RX bufs to be used from user */
+ 	size_t processed = 0;		/* [in]  TX bufs to be consumed */
+ 
+-	if (!ctx->used) {
+-		err = af_alg_wait_for_data(sk, flags);
++	if (!ctx->init || ctx->more) {
++		err = af_alg_wait_for_data(sk, flags, 0);
+ 		if (err)
+ 			return err;
+ 	}
+diff --git a/crypto/algif_skcipher.c b/crypto/algif_skcipher.c
+index ec5567c87a6df..a51ba22fef58f 100644
+--- a/crypto/algif_skcipher.c
++++ b/crypto/algif_skcipher.c
+@@ -61,8 +61,8 @@ static int _skcipher_recvmsg(struct socket *sock, struct msghdr *msg,
+ 	int err = 0;
+ 	size_t len = 0;
+ 
+-	if (!ctx->used) {
+-		err = af_alg_wait_for_data(sk, flags);
++	if (!ctx->init || (ctx->more && ctx->used < bs)) {
++		err = af_alg_wait_for_data(sk, flags, bs);
+ 		if (err)
+ 			return err;
+ 	}
+diff --git a/include/crypto/if_alg.h b/include/crypto/if_alg.h
+index 864849e942c45..c1a8d4a41bb16 100644
+--- a/include/crypto/if_alg.h
++++ b/include/crypto/if_alg.h
+@@ -135,6 +135,7 @@ struct af_alg_async_req {
+  *			SG?
+  * @enc:		Cryptographic operation to be performed when
+  *			recvmsg is invoked.
++ * @init:		True if metadata has been sent.
+  * @len:		Length of memory allocated for this data structure.
+  */
+ struct af_alg_ctx {
+@@ -151,6 +152,7 @@ struct af_alg_ctx {
+ 	bool more;
+ 	bool merge;
+ 	bool enc;
++	bool init;
+ 
+ 	unsigned int len;
  };
- 
--struct orangefs_read_options {
--	ssize_t blksiz;
--};
--
- extern struct orangefs_stats orangefs_stats;
- 
- /*
+@@ -226,7 +228,7 @@ unsigned int af_alg_count_tsgl(struct sock *sk, size_t bytes, size_t offset);
+ void af_alg_pull_tsgl(struct sock *sk, size_t used, struct scatterlist *dst,
+ 		      size_t dst_offset);
+ void af_alg_wmem_wakeup(struct sock *sk);
+-int af_alg_wait_for_data(struct sock *sk, unsigned flags);
++int af_alg_wait_for_data(struct sock *sk, unsigned flags, unsigned min);
+ int af_alg_sendmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 		   unsigned int ivsize);
+ ssize_t af_alg_sendpage(struct socket *sock, struct page *page,
+-- 
+2.25.1
+
 
 
