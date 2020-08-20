@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E56D424B0A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2967F24B09E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727034AbgHTH5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 03:57:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42570 "EHLO
+        id S1726983AbgHTH4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 03:56:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726841AbgHTH4r (ORCPT
+        with ESMTP id S1726968AbgHTH4u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 03:56:47 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07515C061343
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 00:56:46 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id k13so544438plk.13
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 00:56:46 -0700 (PDT)
+        Thu, 20 Aug 2020 03:56:50 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C2CC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 00:56:49 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id r11so611879pfl.11
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 00:56:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7cAYVPl8VrNuz/qq2w1qboUHzBiXW9tB7aHazhnx+PM=;
-        b=djA1hgKEGskSmARq3FIBrHUsYkkRYcjjVOCAopzAHSM3DdER8yOHcbaeLUYu5OrdvX
-         29WLW6jF8w82pw3sGSWKV4gumuYQhCXS4+Uo4wB648aMj1oTtl9KY8tJIO2c6MlCAz4H
-         XIkYwISLFxGmNwkmqb+OiuqROpFTHyyt33+A1MmQy3ItCODZx5ppQSlVAieEW8ahhIlX
-         OhsoT3yiRmkfL2VoIorrNcAF64tNwrUkhFBh3gtPNX6a1XkdAB50b0NjhU/iZryBEP+p
-         QYSe8XvJkTtiE6bt5CsFiWpW3o6QXx3WpQl+Yma5Qmee4izygCJael6hkfcplCxDECYN
-         moKA==
+        bh=iqN+JRqBcM9sNS/bUUY7pxB30ldKatY72VtpGF2V5es=;
+        b=mf3rBwfBi0yKumSxP8KE3wv22MrRq2xvrN50piShKy6hP8xLXV3o5c16JSMPtHIuy9
+         +HGYFuxUtPOQIAee5skPIxdRSp80RPp98Qx6YwSDRviMIhgkE82sV9+XsVzIUBMIGU2e
+         lkZcKh7JmQg9xjbLnH9GRK+c0hnXZDbtIKuTMOZ3W57PY29jgpHVO/nMynDjGZGJIrHE
+         K+YfMWeOJij4utbSUAv5OX9S+m1BpIwcShog7ZvylOCusbSalofndd2qgQ4SeOiXiyMG
+         OuXv/60JgKFcucPFV41z8wupsn3Qp0MuPSHYvbPdYjVV6ld3eHhT9ofkMZeqrFjVqJ5z
+         J7tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7cAYVPl8VrNuz/qq2w1qboUHzBiXW9tB7aHazhnx+PM=;
-        b=eBFouqwD9UhncYcV1wY8VHP+47Zl/Nu+AgkgvUCZ4/6t0gGmgZ8jnbkBOg2ZvRTIYt
-         WOce218gBPjjmp9eyZJBZQ/X0aoz1vhdUIAhGw8iUtuKXAA3BJ3pf2rmH5sWmqNNyVOh
-         YaHaukntPDfyvWBzC5fvv+ueGDKB+lOzYdJ/Bo3JsZ6lXDvnJ7FVh659ptwIbT/NqFOK
-         mPlQu7u5awU9J46CbOSSDD+MMmnHMHwTR5hLDUYtwULqoELf8U+LQGEcrA4ROtmwMLyj
-         dYdULWionMsbWBfqtGOgGBgLwEUgw9Q4rPxH5YDESxXXhCdSo1pOadFYip78J5W5/6il
-         JTbQ==
-X-Gm-Message-State: AOAM530zKiDTIBSlti+b8rBc2RUAXLamTabbOwN85TSlC2biNgh3v7zT
-        QWVVbZo0waQp46DLnHA7BZ/yKg==
-X-Google-Smtp-Source: ABdhPJzRSKZYVMfP9/tr8oO0UXvoRbzfFJJfmGeZ3SD9CPHnYC/ddojFEpND02X48Kp8mtP708SYyQ==
-X-Received: by 2002:a17:902:be0f:: with SMTP id r15mr156256pls.84.1597910206510;
-        Thu, 20 Aug 2020 00:56:46 -0700 (PDT)
+        bh=iqN+JRqBcM9sNS/bUUY7pxB30ldKatY72VtpGF2V5es=;
+        b=b8K0Kcbz96aXjr74HdJjbhh5/j9AipdJ9K2yX35qjBIwXR+iLnJhR11Bv4lrJ/Qm7O
+         GlbYcTV74SIIIF/vi2bZToSWLDMgwej/gpGCmQeR6K5Z0PK7X5/+S0mMGQckjfI0OExy
+         41o8NwgV3uC21f/Gizdto2geQU/JBfcHHy+oZyLmbe1NPqDLSzRYf12VG6qFeypb78Ax
+         Y5E7u1q5VWbUHnzWkmmhpKWGckPQACYgIEGH5gNdM9w2HwjEkQxw+nBwGr/8S4N5C69o
+         myVAzfL1UqO/1iWLC8R+/xSarToXrj+EBSCsZ8yAgBbchVY8g/ivUQsNN3Ap4tB5blr5
+         nVjw==
+X-Gm-Message-State: AOAM5326UyVt0RrMUqU0kmu47ns2aRCcVqKERHmT33KgAUGpYNaPv5OF
+        vKwQhGUEAHzWq3yAieM2lXxQHw==
+X-Google-Smtp-Source: ABdhPJxQ7U6EWVfkoD2z5UQBGCWPgueMB34snJzWDFh8s4UoEucOWlQWof69mlCJK0R6lO73TdPodw==
+X-Received: by 2002:a63:4b61:: with SMTP id k33mr1583047pgl.195.1597910209384;
+        Thu, 20 Aug 2020 00:56:49 -0700 (PDT)
 Received: from localhost ([122.172.43.13])
-        by smtp.gmail.com with ESMTPSA id v10sm21351892pjy.3.2020.08.20.00.56.45
+        by smtp.gmail.com with ESMTPSA id n17sm1570767pgg.6.2020.08.20.00.56.48
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 20 Aug 2020 00:56:45 -0700 (PDT)
+        Thu, 20 Aug 2020 00:56:48 -0700 (PDT)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     rnayak@codeaurora.org, Viresh Kumar <vireshk@kernel.org>,
         Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>
@@ -55,9 +55,9 @@ Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Rafael Wysocki <rjw@rjwysocki.net>, sibis@codeaurora.org,
         sbhanu@codeaurora.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V3 2/4] opp: Reuse the enabled flag in !target_freq path
-Date:   Thu, 20 Aug 2020 13:26:32 +0530
-Message-Id: <9cefccfbf124c49f32c905549aad9ab284957065.1597909885.git.viresh.kumar@linaro.org>
+Subject: [PATCH V3 3/4] opp: Split out _opp_set_rate_zero()
+Date:   Thu, 20 Aug 2020 13:26:33 +0530
+Message-Id: <5a0183fa0b61cf70839fa90aa70f79e33ab4f60a.1597909885.git.viresh.kumar@linaro.org>
 X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 In-Reply-To: <cover.1597909885.git.viresh.kumar@linaro.org>
 References: <cover.1597909885.git.viresh.kumar@linaro.org>
@@ -68,71 +68,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The OPP core needs to track if the resources of devices are
-enabled/configured or not, as it disables the resources when target_freq
-is set to 0.
-
-Handle that with the new enabled flag and remove otherwise complex
-conditional statements.
+Create separate routine _opp_set_rate_zero() to handle !target_freq
+case.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- drivers/opp/core.c | 29 +++++++++++------------------
- 1 file changed, 11 insertions(+), 18 deletions(-)
+ drivers/opp/core.c | 52 ++++++++++++++++++++++++++--------------------
+ 1 file changed, 29 insertions(+), 23 deletions(-)
 
 diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index 6f43ef4945b7..0b437d483b75 100644
+index 0b437d483b75..4edd2c3d6d91 100644
 --- a/drivers/opp/core.c
 +++ b/drivers/opp/core.c
-@@ -886,22 +886,18 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
+@@ -860,6 +860,34 @@ int dev_pm_opp_set_bw(struct device *dev, struct dev_pm_opp *opp)
+ }
+ EXPORT_SYMBOL_GPL(dev_pm_opp_set_bw);
+ 
++static int _opp_set_rate_zero(struct device *dev, struct opp_table *opp_table)
++{
++	int ret;
++
++	if (!opp_table->enabled)
++		return 0;
++
++	/*
++	 * Some drivers need to support cases where some platforms may
++	 * have OPP table for the device, while others don't and
++	 * opp_set_rate() just needs to behave like clk_set_rate().
++	 */
++	if (!_get_opp_count(opp_table))
++		return 0;
++
++	ret = _set_opp_bw(opp_table, NULL, dev, true);
++	if (ret)
++		return ret;
++
++	if (opp_table->regulators)
++		regulator_disable(opp_table->regulators[0]);
++
++	ret = _set_required_opps(dev, opp_table, NULL);
++
++	opp_table->enabled = false;
++	return ret;
++}
++
+ /**
+  * dev_pm_opp_set_rate() - Configure new OPP based on frequency
+  * @dev:	 device for which we do this operation
+@@ -886,29 +914,7 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
  	}
  
  	if (unlikely(!target_freq)) {
-+		ret = 0;
-+
-+		if (!opp_table->enabled)
-+			goto put_opp_table;
-+
- 		/*
- 		 * Some drivers need to support cases where some platforms may
- 		 * have OPP table for the device, while others don't and
- 		 * opp_set_rate() just needs to behave like clk_set_rate().
- 		 */
--		if (!_get_opp_count(opp_table)) {
--			ret = 0;
--			goto put_opp_table;
--		}
+-		ret = 0;
 -
--		if (!opp_table->required_opp_tables && !opp_table->regulators &&
--		    !opp_table->paths) {
--			dev_err(dev, "target frequency can't be 0\n");
--			ret = -EINVAL;
-+		if (!_get_opp_count(opp_table))
- 			goto put_opp_table;
--		}
- 
- 		ret = _set_opp_bw(opp_table, NULL, dev, true);
- 		if (ret)
-@@ -931,14 +927,11 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
- 	old_freq = clk_get_rate(clk);
- 
- 	/* Return early if nothing to do */
--	if (old_freq == freq) {
--		if (!opp_table->required_opp_tables && !opp_table->regulators &&
--		    !opp_table->paths) {
--			dev_dbg(dev, "%s: old/new frequencies (%lu Hz) are same, nothing to do\n",
--				__func__, freq);
--			ret = 0;
+-		if (!opp_table->enabled)
 -			goto put_opp_table;
--		}
-+	if (opp_table->enabled && old_freq == freq) {
-+		dev_dbg(dev, "%s: old/new frequencies (%lu Hz) are same, nothing to do\n",
-+			__func__, freq);
-+		ret = 0;
-+		goto put_opp_table;
+-
+-		/*
+-		 * Some drivers need to support cases where some platforms may
+-		 * have OPP table for the device, while others don't and
+-		 * opp_set_rate() just needs to behave like clk_set_rate().
+-		 */
+-		if (!_get_opp_count(opp_table))
+-			goto put_opp_table;
+-
+-		ret = _set_opp_bw(opp_table, NULL, dev, true);
+-		if (ret)
+-			goto put_opp_table;
+-
+-		if (opp_table->regulators)
+-			regulator_disable(opp_table->regulators[0]);
+-
+-		ret = _set_required_opps(dev, opp_table, NULL);
+-
+-		opp_table->enabled = false;
++		ret = _opp_set_rate_zero(dev, opp_table);
+ 		goto put_opp_table;
  	}
  
- 	/*
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
