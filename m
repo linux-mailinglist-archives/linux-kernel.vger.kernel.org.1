@@ -2,113 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0293A24B207
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB1524B1C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726918AbgHTJTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:19:05 -0400
-Received: from mail-mw2nam10on2079.outbound.protection.outlook.com ([40.107.94.79]:58367
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725916AbgHTJSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:18:25 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fHErzm8tHm7tp8V9Gc4Dk4uCmiU8fvoTyP8IcqupT2U6Zmx6lnMn6tCnfUIHkIvv3MZqqXUGwHRipTqQztQnIEdjzqC6kodEVUa0c6Sf3BaEV6JFh5aBA+k3tA1/83Gz4LGQdSZmxPfLLvuqJMF+RFlkQeowPG1SlibOBt7fuxu4UhayVf4Go/fRYlbfam0dlOOsLMtVAZ0knVVys6BZni5d1XY9ScggjzB9slvi/iTglzNsbvB2tPMj7CSsYGRadoKC+ZdVsYv+736Hzgr7q8pbXpkDOuEKRML49xXRnfqHYprl00Kr3MrQFRpnNcCYsamxxZX4O8VWRFGXrNB9yw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8S0kZq4Zvc8lWRFN2ZeHPnOrb5Btj4ZFpf+hggkO/MU=;
- b=jInirSxPmXEQx9SW3ocW/Cy5B6c5x4hQo9jUbHwydBkQmwooxAOlX2YyEi7jdQg5L+b1ISCGq/+k82bM3lBhnydtDtAU/452hTqmkyeVR8ocfnK098rEmroU/AfOyTgo8pQ0tu1AreW+Tlb5LgB2zksEIlrXG31nAw7yQDgMSqUvHGBSYzQtXajdAvtEI0yd4GkTld+Erp1IYPNji1Lbbdu87FBPlegKbvZSns/bm0vKe7lEskFOB+WPZ46AXYEpVEiqV03/e2SgQL9IV2Ti+RNlyNgyLjhx6uqOD+2BjdlNh0/eDDbO0DmZ3UC7uyEdONJXGUYn8komM0t5P0XGPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8S0kZq4Zvc8lWRFN2ZeHPnOrb5Btj4ZFpf+hggkO/MU=;
- b=J5yOZEYZFGD/3GK51f4WI+OhbyKZVVn2hB7RZSntbHnSA5wO0waJJv61aDWwussSmBtB2p4sxUp4T3FGMbs8HlFlfjUqbiGCHg9VgntdsvUp9Rxl5SBEdkhjdkkRqVz53tMXAtBXe+dXrleqmlB0YrC6Pw9GMylmJns1L3Ncer8=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=synaptics.com;
-Received: from BN7PR03MB4547.namprd03.prod.outlook.com (2603:10b6:408:9::22)
- by BN8PR03MB4738.namprd03.prod.outlook.com (2603:10b6:408:6d::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24; Thu, 20 Aug
- 2020 09:17:19 +0000
-Received: from BN7PR03MB4547.namprd03.prod.outlook.com
- ([fe80::3cda:7634:5802:df5f]) by BN7PR03MB4547.namprd03.prod.outlook.com
- ([fe80::3cda:7634:5802:df5f%7]) with mapi id 15.20.3305.024; Thu, 20 Aug 2020
- 09:17:19 +0000
-Date:   Thu, 20 Aug 2020 17:11:29 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Saravanan Sekar <sravanhome@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v3 2/4] dt-bindings: regulator: mp886x: support
- mps,switch-frequency-hz
-Message-ID: <20200820171129.62bb4105@xhacker.debian>
-In-Reply-To: <20200820171020.5df4683b@xhacker.debian>
-References: <20200820171020.5df4683b@xhacker.debian>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: TYAPR03CA0015.apcprd03.prod.outlook.com
- (2603:1096:404:14::27) To BN7PR03MB4547.namprd03.prod.outlook.com
- (2603:10b6:408:9::22)
+        id S1726786AbgHTJLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:11:52 -0400
+Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:56033 "EHLO
+        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726364AbgHTJLp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:11:45 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id 8gblkFRmeywL58gbmkZ5pf; Thu, 20 Aug 2020 11:11:42 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1597914702; bh=U7xBLcM2J0jpHAEK5uZYaH2c1oV3hUq9xBqu8R3Xk5s=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=LaaXzekvbv04aXLJUi0eJAG8g7ODXfUELwhFsahrBUUuM8RZsp582BjyuPOu3E9V4
+         Q9K/quCO7BiIStMa3WS24eFIxfSpStTQSooqgIacXM07Rmn+1KgfQLZgjDyBvSmVqj
+         64T77nOLZ0rnpi6qbwnTAIR0eI9Sb28u2hyCv6yLSVYpG8ba6aLVqT5u44QfsE2irn
+         mSpcZyUFZePb7FEQ3wuyqJ1g9j5fc+VamCqtIKg9uRZ1kljhrVyxoCHCSkKLixPwPF
+         yR/jrCV8Z7jHRJQVDX7g18mlv5cusaAxpIp1m+X0Q/cpkrjvtpA+jCv6deCLxt+wB5
+         AlL+djRYrd/eA==
+Subject: Re: [PATCH v3 01/19] media: uapi: h264: Update reference lists
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Jeffrey Kardatzke <jkardatzke@chromium.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+References: <20200814133634.95665-1-ezequiel@collabora.com>
+ <20200814133634.95665-2-ezequiel@collabora.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <f00e299f-8ed2-6dcf-211f-0545e13438aa@xs4all.nl>
+Date:   Thu, 20 Aug 2020 11:11:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 255.255.255.255 (255.255.255.255) by TYAPR03CA0015.apcprd03.prod.outlook.com (2603:1096:404:14::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.10 via Frontend Transport; Thu, 20 Aug 2020 09:17:17 +0000
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-X-Originating-IP: [124.74.246.114]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6b617b1e-d884-43ae-a016-08d844e9d6cf
-X-MS-TrafficTypeDiagnostic: BN8PR03MB4738:
-X-Microsoft-Antispam-PRVS: <BN8PR03MB4738A415E70E70D037AFDC3CED5A0@BN8PR03MB4738.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kmpjfDhyIK1xpHzr9dy/Qrxpn6oe6Em5FQtimyGOXaMU3+0uN11xZtGPTWwLSmBnzo9GiRJVl8gpZAiXZttLPH1u10IpIdFSDq2qQ8UFLH+dsrJOdWtJDrIXgon32vPQNuqDDnVKYisBBuxunIp/YDF88/Qhy3FNMU+xSdvUzfbP3BMAQ2MVAAxfCSCZHJe/+3GIHi+Lkqn9E0XlKnrqjvFkEZFnHdO1ZLrOkqICMDiAystCYzDnPN8FoJZRibWiLSUndNpvE8mCnEKmzus8FCvzwTs4xupU9tvYv33eVZOzod7fS/HeVoKhy8qR8xgf0guWgSkBTnFM1NF1ZJC3q0Q/mtJ1R1LBFr75q7poFZHmrUEUqe6som6tdo4AkCxhaOpGHuDOXVS9ROM+gB61xw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR03MB4547.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(346002)(366004)(376002)(136003)(316002)(2906002)(110136005)(66476007)(6486002)(66556008)(66946007)(110011004)(16576012)(4326008)(8676002)(478600001)(5660300002)(26005)(4744005)(86362001)(9686003)(6666004)(52116002)(956004)(186003)(1076003)(8936002)(142933001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: Q1d9Eucka5Ezk65u8KD/HAnAj2Cfbe2TpcUoCYQ9l7erk0eXAFYnk2cXHHCEgWzJlYfWnYBxnhq2ioGyH9r4kMc44vdpqzm77iWOgWieF9FLNj1SFtxAAM+9MVd9gyltS67y5PAwYmqBTy8+OrvpBfWc9/w1zeqrZfpekRuKWd+aPepAlynwjTYthkpIapYEfLb5NOITOdXj07R7K4hbt6bQPNUAJ5SUwXpz6RIy7EcZek3SvWq5W7k6W2y0RHYaHbVHRCWyk6cWQJzwiinwHaTlcyATz0H/s/MkDHawUZm3te8Ft62yTA/Mb5XB89ClGIPpVnaeyR7T6FMQpsU5JE0qMmVw8qAB1DfjtdyKdVjz6EjVsxTy1PKzz/LBRT2hmRT1kZAjgNNfGp6U5z5VQ/ydUJngKAKMk8Yzpqy+So9QuNjZoSweR9m5rBpF8ZZk9XhxspID9x3mghxhE4w42B7FpvBvfD5y8frsCeDewkYPctcn+BTk+gk16zG2kz167gAmgBiAggxia/TKRRfkGY4A5x59YdjU8nyvhZX6rU0OFWxdz2l+zhUFKOlwAMXqw6dt9KE6ntD0Uj+6DWEkwQAN8n0AkAc/P2TPJeaoh62c9QYa7UnL204SKXh9RoC90l5mYDluBx4hqV+NohbkiQ==
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6b617b1e-d884-43ae-a016-08d844e9d6cf
-X-MS-Exchange-CrossTenant-AuthSource: BN7PR03MB4547.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2020 09:17:19.8493
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: g/44Iwdgk/yWsK3vxL7eYSH3E0F5kAN0N5Hg4joQlnZrLLwwCoE24VG+fHmsGPdrYSUXVQN37YH7OXFCpmSSZA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR03MB4738
+In-Reply-To: <20200814133634.95665-2-ezequiel@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfAjTqbisxxfuHqWvIRIOhnI8MK49adN3g+IHofEpheCosvb8sv3BNbTYJN7+/spl3+u2qEBz4tvjmIyx1P5HxD3b59gnrjvS2FVBX1bfCxNPMszZDk11
+ IbnXH6nPsnEdkBrjcm5wzfwkoX0Wv5K58gSAbYgode3aK6TDgznTDFK4itsJRmZ8FGlfta9h/oejjldypeAkLvnGoxglyGvzY8YkyUZg8sBbDzn0uYC73Sna
+ dcOfWCKoeT8Uj+h+/RyMTpMok3zlGhDqZ6lyQwp9QAHX0+0WXHkDSQvHxdecTV70yNwzPn0rmAF3RCQbOqTCgRZdtlRe/kAbDH+IhrI8zd3BRhl0xxV7m1zR
+ idjJl3/NowOJf/drEWEy0nwphqv2jgeP4rDJNZd5J0APqfwIlm+A6rGuYce5fykr8olAAQgkP0T/kh7a4sKCqH+TaHRSH2NfRSeQMWveeKqcyzLPpHrcX2eo
+ o7DGoXmx5l1ssB0RJYMBg5u6MroIzPymTaNSkLzREaaOhQGhgNa1R2/NreKZwXKmkVDuwh1brqmYI8mGyZchOPl8qo5+eQ2Rc8llKrSgDT39lYuEVOldUY1A
+ P57e48XWqPvxMNfr9xo9L/1Ghsm+VFNJibxkp+MqJdCaB8BLC9ueO+AV1LKPkuYp8HQibWCAOSL9m/nKk0RmkN+Vk9k5m8kMlXZrt9YHMZPpYw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both MP8867 and MP8869 support different switch frequency.
+On 14/08/2020 15:36, Ezequiel Garcia wrote:
+> From: Jernej Skrabec <jernej.skrabec@siol.net>
+> 
+> When dealing with with interlaced frames, reference lists must tell if
+> each particular reference is meant for top or bottom field. This info
+> is currently not provided at all in the H264 related controls.
+> 
+> Make reference lists hold a structure which will also hold an
+> enumerator type along index into DPB array. The enumerator must
+> be used to specify if reference is for top or bottom field.
+> 
+> Currently the only user of these lists is Cedrus which is just compile
+> fixed here. Actual usage of will come in a following commit.
+> 
+> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> ---
+> v3:
+> * Rename to avoid mentioning the DPB.
+> v2:
+> * As pointed out by Jonas, enum v4l2_h264_dpb_reference here.
+> ---
+>  .../media/v4l/ext-ctrls-codec.rst             | 44 ++++++++++++++++++-
+>  .../staging/media/sunxi/cedrus/cedrus_h264.c  |  6 +--
+>  include/media/h264-ctrls.h                    | 23 +++++++---
+>  3 files changed, 62 insertions(+), 11 deletions(-)
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> index d0d506a444b1..b9b2617c3bda 100644
+> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> @@ -1843,10 +1843,10 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
+>      * - __u32
+>        - ``slice_group_change_cycle``
+>        -
+> -    * - __u8
+> +    * - struct :c:type:`v4l2_h264_reference`
+>        - ``ref_pic_list0[32]``
+>        - Reference picture list after applying the per-slice modifications
+> -    * - __u8
+> +    * - struct :c:type:`v4l2_h264_reference`
+>        - ``ref_pic_list1[32]``
+>        - Reference picture list after applying the per-slice modifications
+>      * - __u32
+> @@ -1926,6 +1926,46 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
+>        - ``chroma_offset[32][2]``
+>        -
+>  
+> +``Picture Reference``
+> +
+> +.. c:type:: v4l2_h264_reference
+> +
+> +.. cssclass:: longtable
+> +
+> +.. flat-table:: struct v4l2_h264_reference
+> +    :header-rows:  0
+> +    :stub-columns: 0
+> +    :widths:       1 1 2
+> +
+> +    * - enum :c:type:`v4l2_h264_field_reference`
+> +      - ``reference``
+> +      - Specifies how the picture is referenced.
+> +    * - __u8
+> +      - ``index``
+> +      - Index into the :c:type:`v4l2_ctrl_h264_decode_params`.dpb array.
+> +
+> +.. c:type:: v4l2_h264_field_reference
+> +
+> +.. cssclass:: longtable
+> +
+> +.. flat-table::
+> +    :header-rows:  0
+> +    :stub-columns: 0
+> +    :widths:       1 1 2
+> +
+> +    * - ``V4L2_H264_TOP_FIELD_REF``
+> +      - 0x1
+> +      - The top field in field pair is used for
+> +        short-term reference.
+> +    * - ``V4L2_H264_BOTTOM_FIELD_REF``
+> +      - 0x2
+> +     - The bottom field in field pair is used for
+> +        short-term reference.
+> +    * - ``V4L2_H264_FRAME_REF``
+> +      - 0x3
+> +      - The frame (or the top/bottom fields, if it's a field pair)
+> +        is used for short-term reference.
+> +
+>  ``V4L2_CID_MPEG_VIDEO_H264_DECODE_PARAMS (struct)``
+>      Specifies the decode parameters (as extracted from the bitstream)
+>      for the associated H264 slice data. This includes the necessary
+> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
+> index 54ee2aa423e2..cce527bbdf86 100644
+> --- a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
+> +++ b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
+> @@ -166,8 +166,8 @@ static void cedrus_write_frame_list(struct cedrus_ctx *ctx,
+>  
+>  static void _cedrus_write_ref_list(struct cedrus_ctx *ctx,
+>  				   struct cedrus_run *run,
+> -				   const u8 *ref_list, u8 num_ref,
+> -				   enum cedrus_h264_sram_off sram)
+> +				   const struct v4l2_h264_reference *ref_list,
+> +				   u8 num_ref, enum cedrus_h264_sram_off sram)
+>  {
+>  	const struct v4l2_ctrl_h264_decode_params *decode = run->h264.decode_params;
+>  	struct vb2_queue *cap_q;
+> @@ -188,7 +188,7 @@ static void _cedrus_write_ref_list(struct cedrus_ctx *ctx,
+>  		int buf_idx;
+>  		u8 dpb_idx;
+>  
+> -		dpb_idx = ref_list[i];
+> +		dpb_idx = ref_list[i].index;
+>  		dpb = &decode->dpb[dpb_idx];
+>  
+>  		if (!(dpb->flags & V4L2_H264_DPB_ENTRY_FLAG_ACTIVE))
+> diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
+> index 080fd1293c42..5f635e8d25e2 100644
+> --- a/include/media/h264-ctrls.h
+> +++ b/include/media/h264-ctrls.h
+> @@ -19,6 +19,8 @@
+>   */
+>  #define V4L2_H264_NUM_DPB_ENTRIES 16
+>  
+> +#define V4L2_H264_REF_LIST_LEN (2 * V4L2_H264_NUM_DPB_ENTRIES)
+> +
+>  /* Our pixel format isn't stable at the moment */
+>  #define V4L2_PIX_FMT_H264_SLICE v4l2_fourcc('S', '2', '6', '4') /* H264 parsed slices */
+>  
+> @@ -140,6 +142,19 @@ struct v4l2_h264_pred_weight_table {
+>  #define V4L2_H264_SLICE_FLAG_DIRECT_SPATIAL_MV_PRED	0x04
+>  #define V4L2_H264_SLICE_FLAG_SP_FOR_SWITCH		0x08
+>  
+> +enum v4l2_h264_field_reference {
+> +	V4L2_H264_TOP_FIELD_REF = 0x1,
+> +	V4L2_H264_BOTTOM_FIELD_REF = 0x2,
+> +	V4L2_H264_FRAME_REF = 0x3,
+> +};
+> +
+> +struct v4l2_h264_reference {
+> +	enum v4l2_h264_field_reference fields;
+> +
+> +	/* Index into v4l2_ctrl_h264_decode_params.dpb[] */
+> +	__u8 index;
+> +};
 
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
----
- Documentation/devicetree/bindings/regulator/mp886x.txt | 4 ++++
- 1 file changed, 4 insertions(+)
+This introducing 3 bytes of padding at the end of this struct...
 
-diff --git a/Documentation/devicetree/bindings/regulator/mp886x.txt b/Documentation/devicetree/bindings/regulator/mp886x.txt
-index 551867829459..b05307bbb0d9 100644
---- a/Documentation/devicetree/bindings/regulator/mp886x.txt
-+++ b/Documentation/devicetree/bindings/regulator/mp886x.txt
-@@ -9,6 +9,10 @@ Required properties:
- - mps,fb-voltage-divider: An array of two integers containing the resistor
-   values R1 and R2 of the feedback voltage divider in kilo ohms.
- 
-+Optional properties:
-+- mps,switch-frequency-hz: The valid switch frequency in Hertz. Available values
-+  are: 500000, 750000, 1000000, 1250000, 1500000
-+
- Any property defined as part of the core regulator binding, defined in
- ./regulator.txt, can also be used.
- 
--- 
-2.28.0
+> +
+>  struct v4l2_ctrl_h264_slice_params {
+>  	/* Size in bytes, including header */
+>  	__u32 size;
+> @@ -178,12 +193,8 @@ struct v4l2_ctrl_h264_slice_params {
+>  	__u8 num_ref_idx_l1_active_minus1;
+>  	__u32 slice_group_change_cycle;
+>  
+> -	/*
+> -	 * Entries on each list are indices into
+> -	 * v4l2_ctrl_h264_decode_params.dpb[].
+> -	 */
+> -	__u8 ref_pic_list0[32];
+> -	__u8 ref_pic_list1[32];
+> +	struct v4l2_h264_reference ref_pic_list0[V4L2_H264_REF_LIST_LEN];
+> +	struct v4l2_h264_reference ref_pic_list1[V4L2_H264_REF_LIST_LEN];
+
+...which leads to a lot of holes of uninitialized data in these arrays.
+
+I recommend to replace 'enum v4l2_h264_field_reference fields;' in struct v4l2_h264_reference
+by '__u8 fields; /* enum v4l2_h264_field_reference */'.
+
+This also saves a lot of memory (2*32*6 = 384 bytes!) and avoids the padding issue.
+
+Regards,
+
+	Hans
+
+>  
+>  	__u32 flags;
+>  };
+> 
 
