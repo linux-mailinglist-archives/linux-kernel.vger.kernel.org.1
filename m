@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B10D124BCE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C8C24BBD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729071AbgHTJnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:43:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37006 "EHLO mail.kernel.org"
+        id S1729600AbgHTMeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:34:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729150AbgHTJmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:42:19 -0400
+        id S1729574AbgHTJsq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:48:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4FF9A2075E;
-        Thu, 20 Aug 2020 09:42:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F84520724;
+        Thu, 20 Aug 2020 09:48:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916538;
-        bh=ujjmrEC6yLqifjsXw+51ksnycUu8RYHEvep7NS0yCZI=;
+        s=default; t=1597916926;
+        bh=Nahniq3tivwXHlULeR3BZ+n9Or9Il37c18TVMl+h06Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jPWkqFAWpodNfWG/XIkkcqYEt0eknpP/Oo0ixQxl2cESrMdYguk3mW1DgkpPZJtAz
-         UojZiM0BO3PVKDYNKz6bTotQqzm77D2JYg+7rFAvK2e5zzydud/3zMyIYt6S6wzZXc
-         J2Nk12nHOowVH9AVw8s0EeYLXspOCOX8Zw0T4em0=
+        b=AxBiNsh3DFkWOYy8sCt/Bv+6SuRlrTJUamQXkVnxNL4iAWDK2BOqoeaUuhP6KB9xt
+         3X1hbYTgBucc3n6GJftRYq3sB0lYdFtdJq0ktkZ+PrbzpOan04m4CBvJl/hnnZ28XQ
+         T2pcKBivRT10J1FVIt2eZ6hibuYt/mAIN5JeqZvM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, Mark Zhang <markz@mellanox.com>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 164/204] Input: sentelic - fix error return when fsp_reg_write fails
+Subject: [PATCH 5.4 094/152] RDMA/counter: Only bind user QPs in auto mode
 Date:   Thu, 20 Aug 2020 11:21:01 +0200
-Message-Id: <20200820091614.411816259@linuxfoundation.org>
+Message-Id: <20200820091558.542037319@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
-References: <20200820091606.194320503@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +46,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Mark Zhang <markz@mellanox.com>
 
-[ Upstream commit ea38f06e0291986eb93beb6d61fd413607a30ca4 ]
+[ Upstream commit c9f557421e505f75da4234a6af8eff46bc08614b ]
 
-Currently when the call to fsp_reg_write fails -EIO is not being returned
-because the count is being returned instead of the return value in retval.
-Fix this by returning the value in retval instead of count.
+In auto mode only bind user QPs to a dynamic counter, since this feature
+is mainly used for system statistic and diagnostic purpose, while there's
+no need to counter kernel QPs so far.
 
-Addresses-Coverity: ("Unused value")
-Fixes: fc69f4a6af49 ("Input: add new driver for Sentelic Finger Sensing Pad")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20200603141218.131663-1-colin.king@canonical.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: 99fa331dc862 ("RDMA/counter: Add "auto" configuration mode support")
+Link: https://lore.kernel.org/r/20200702082933.424537-3-leon@kernel.org
+Signed-off-by: Mark Zhang <markz@mellanox.com>
+Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/mouse/sentelic.c | 2 +-
+ drivers/infiniband/core/counters.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/input/mouse/sentelic.c b/drivers/input/mouse/sentelic.c
-index e99d9bf1a267d..e78c4c7eda34d 100644
---- a/drivers/input/mouse/sentelic.c
-+++ b/drivers/input/mouse/sentelic.c
-@@ -441,7 +441,7 @@ static ssize_t fsp_attr_set_setreg(struct psmouse *psmouse, void *data,
+diff --git a/drivers/infiniband/core/counters.c b/drivers/infiniband/core/counters.c
+index 11210bf7fd61b..42809f612c2c4 100644
+--- a/drivers/infiniband/core/counters.c
++++ b/drivers/infiniband/core/counters.c
+@@ -284,7 +284,7 @@ int rdma_counter_bind_qp_auto(struct ib_qp *qp, u8 port)
+ 	struct rdma_counter *counter;
+ 	int ret;
  
- 	fsp_reg_write_enable(psmouse, false);
+-	if (!qp->res.valid)
++	if (!qp->res.valid || rdma_is_kernel_res(&qp->res))
+ 		return 0;
  
--	return count;
-+	return retval;
- }
- 
- PSMOUSE_DEFINE_WO_ATTR(setreg, S_IWUSR, NULL, fsp_attr_set_setreg);
+ 	if (!rdma_is_port_valid(dev, port))
 -- 
 2.25.1
 
