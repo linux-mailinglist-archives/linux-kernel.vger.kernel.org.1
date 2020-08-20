@@ -2,107 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 243B324BB00
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ABB124BAEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729847AbgHTMVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:21:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730207AbgHTJz2 (ORCPT
+        id S1730467AbgHTMUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:20:34 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47938 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729921AbgHTJzh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:55:28 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1FBBC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 02:55:27 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id c12so745362qtn.9
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 02:55:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=byj5e1NcGEKCZCoUKeCb/RN9/39259nsooaPeWr05l4=;
-        b=mIYWqROvWD/RKdlCt/1BmnvTJH0idhKXzinoONCuobC26Ag8t2QIs/tRAQMvpAJ08U
-         BzQnr6Nj3HJWweGGabib/1Ebtv6b9iTSVp37ZQ0WUFyGT/1Mwf9LHvU5nK4YjsOecvx0
-         qeq35+syF+iWCEZEKoRYj8cJkQFXUe4PUx4IfwcRXiDj3YC7NyPY3pzIqRseHc7REiIh
-         N/sY49jbKljaksEPUT/z8xb0zCJuW6D4i/ZcCidJbK5nRKJOJOPGEWLPa7qSCfoJtzPD
-         ifR+I7dLcXN7mec2hk//+ojQ1if4Az7i7YBKVrbsiRurX/txFql1hnICOgzD9ep0YRYN
-         Frng==
+        Thu, 20 Aug 2020 05:55:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597917335;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jf8gbz8LQopQe0J21yTGM4+cDZmGtIYLJCcRhjeOrR4=;
+        b=UB4G3768jo311kVvi91ndf8WfkCNMZI0tbXGq94FtxVsP8v2k57IQdp9rXawNzfXycdsrR
+        Ky9khbVd45mCsiJU8FeR5vbqQJY0WD/Aw5AUYNUs7400yyDhEDClZV1kjysdWmPkV4qAfS
+        IIbp6yYYv0FFw1YxUEY+k8tnypVF118=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-53-GRfa2RLmNqiSiRzBIxstPA-1; Thu, 20 Aug 2020 05:55:34 -0400
+X-MC-Unique: GRfa2RLmNqiSiRzBIxstPA-1
+Received: by mail-wr1-f72.google.com with SMTP id r14so471704wrq.3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 02:55:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=byj5e1NcGEKCZCoUKeCb/RN9/39259nsooaPeWr05l4=;
-        b=bsd68IwhwPD/V8dVAlvQxWKY3oGiralcYE9qfNQOKln3ybVLNartCCcySKxDD7rGp2
-         wJYqEfjUCru8/VMXIAl0MaE7mFLv8GEzzbfBqHzvG73jdaKarfVW8ml0ld1NSWVT87Vy
-         F+ALSzDYwkYa3a8UyHu8LSUesd4kgLOUsu7TZaRTQF0h8TxKRdWmg6JzBwBf2oeIB8aO
-         ExJjV/xlSfdg2lwKgKxUKz+CT/+2ULTfrCtyYc7ufAD09qchABwCdbdrTPoizrP5/v5X
-         eBCXm7RsSCuFqSEoJDu23hOd4FF0YYX/j2klHStpbwTrS4mzu0zUk9u+ThoueU4g7nTA
-         Knyw==
-X-Gm-Message-State: AOAM530tWUihmDstzmKoqiKrxk81tNFR96P5qypCqCLMsS06ctHrfCs3
-        1WHqDp02jiRetV4wQD9oJpoFurclHBVLoBfDtO6Upw==
-X-Google-Smtp-Source: ABdhPJxN/Qcu0Avu7t5f0IsPNNgIlJfLFijf+/xkCrEm8gQAOrgnBi2Xab4nv3xb6LKbZ1GtGC+38K0MG7TuYx2ZwF0=
-X-Received: by 2002:ac8:480c:: with SMTP id g12mr1838251qtq.257.1597917326809;
- Thu, 20 Aug 2020 02:55:26 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Jf8gbz8LQopQe0J21yTGM4+cDZmGtIYLJCcRhjeOrR4=;
+        b=DnEa6edBYyAwScKT9fwjz2drP9CzWJGc8CUlIxp6Eu4TfsEZaapL+SvY/ME+lcBTWE
+         N3FFAfX0jPDg6hZNrg+pnBmxo9JK/4qtWgw+exv1P6GidHnmV5+du6bRELB+xZkexZd4
+         nHl1q21r31s/lUGcXBbjqScxBC557pMK0xXpTRjgoaPt51BbLTs4oekJhaeeYJ7NchQW
+         Q7ZorjvXghWVKQX3v35CR/o/ajC4DEMp4Ccis2HUtniEt5ux8r/AybXdPeDkTzRpOptW
+         JhK77Kw2HlRkwiVutf1msVuK3YWp3YMhE6bJcDGwcYPAJP6u3iZrv8FMiczPeT3vZ5Lk
+         VugQ==
+X-Gm-Message-State: AOAM5302I+DsiYhe9CC1y/hmpD8/S9RMtk+dDztshWrJZkYV9Cci+/8k
+        jZzTZpQaLZ5N4SrpG4EyOTvcmMYhkykpwGhD9nwSkL8HqoUHnGQXqbeXQZFCw2IYiivg3vKVgSK
+        /9HEa9viqk4r+dh+B0NBAEuT9
+X-Received: by 2002:a1c:e244:: with SMTP id z65mr2712572wmg.34.1597917332842;
+        Thu, 20 Aug 2020 02:55:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz7+uOoYVXeIwgWOAsbxvSNBUeYTbpN+9/M9HQCIj4IkWFjHWhPfBPnCwQmglmYgMwvO0mang==
+X-Received: by 2002:a1c:e244:: with SMTP id z65mr2712561wmg.34.1597917332571;
+        Thu, 20 Aug 2020 02:55:32 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:1cc0:4e4e:f1a9:1745? ([2001:b07:6468:f312:1cc0:4e4e:f1a9:1745])
+        by smtp.gmail.com with ESMTPSA id g145sm4323729wmg.23.2020.08.20.02.55.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Aug 2020 02:55:32 -0700 (PDT)
+Subject: Re: [PATCH 8/8] KVM: nSVM: read only changed fields of the nested
+ guest data area
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <20200820091327.197807-1-mlevitsk@redhat.com>
+ <20200820091327.197807-9-mlevitsk@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <766e669d-9b0b-aad6-b1d2-19ef77cbb791@redhat.com>
+Date:   Thu, 20 Aug 2020 11:55:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <000000000000a7e38a05a997edb2@google.com> <0000000000005c13f505ad3f5c42@google.com>
- <CAHmME9rd+54EOO-b=wmVxtzbvckET2WSMm-3q8LJmfp38A9ceg@mail.gmail.com>
-In-Reply-To: <CAHmME9rd+54EOO-b=wmVxtzbvckET2WSMm-3q8LJmfp38A9ceg@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 20 Aug 2020 11:55:15 +0200
-Message-ID: <CACT4Y+b7eZNuCOBhwxpzXoEXqOAk9ZGBJBakr6nqYrnd54URpQ@mail.gmail.com>
-Subject: Re: WARNING in __cfg80211_connect_result
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     syzbot <syzbot+cc4c0f394e2611edba66@syzkaller.appspotmail.com>,
-        David Miller <davem@davemloft.net>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200820091327.197807-9-mlevitsk@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 11:48 AM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
->
-> On Wed, Aug 19, 2020 at 8:42 PM syzbot
-> <syzbot+cc4c0f394e2611edba66@syzkaller.appspotmail.com> wrote:
-> >
-> > syzbot has bisected this issue to:
-> >
-> > commit e7096c131e5161fa3b8e52a650d7719d2857adfd
-> > Author: Jason A. Donenfeld <Jason@zx2c4.com>
-> > Date:   Sun Dec 8 23:27:34 2019 +0000
-> >
-> >     net: WireGuard secure network tunnel
-> >
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=175ad8b1900000
-> > start commit:   e3ec1e8c net: eliminate meaningless memcpy to data in pskb..
-> > git tree:       net-next
-> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=14dad8b1900000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=10dad8b1900000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3d400a47d1416652
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=cc4c0f394e2611edba66
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d9de91900000
-> >
-> > Reported-by: syzbot+cc4c0f394e2611edba66@syzkaller.appspotmail.com
-> > Fixes: e7096c131e51 ("net: WireGuard secure network tunnel")
->
-> Having trouble linking this back to wireguard... Those oopses don't
-> have anything to do with it either. Bisection error?
+On 20/08/20 11:13, Maxim Levitsky wrote:
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 06668e0f93e7..f0bb7f622dca 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -3924,7 +3924,7 @@ static int svm_pre_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
+>  		if (kvm_vcpu_map(&svm->vcpu, gpa_to_gfn(vmcb_gpa), &map) == -EINVAL)
+>  			return 1;
+>  
+> -		load_nested_vmcb(svm, map.hva, vmcb);
+> +		load_nested_vmcb(svm, map.hva, vmcb_gpa);
+>  		ret = enter_svm_guest_mode(svm);
+>  
 
-I don't see anything obviously wrong in the bisection log:
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=175ad8b1900000
+Wrong patch?
 
-On the other hand, it looks super precise. It tracked "WARNING in
-__cfg80211_connect_result" all the way down to the wireguard commit
-with no flakes or anything.
+Paolo
+
