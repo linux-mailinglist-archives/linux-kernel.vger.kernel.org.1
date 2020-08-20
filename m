@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343B024B376
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA31224B424
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729455AbgHTJr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:47:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50602 "EHLO mail.kernel.org"
+        id S1730417AbgHTJ6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:58:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729189AbgHTJrN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:47:13 -0400
+        id S1730409AbgHTJ6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:58:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 345782224D;
-        Thu, 20 Aug 2020 09:47:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5D9622B3F;
+        Thu, 20 Aug 2020 09:58:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916832;
-        bh=LNdruWfsdbl7VgaTM+oKt/5xrO+jpxMzIJCb/U8B/98=;
+        s=default; t=1597917512;
+        bh=2LkuLw7hc5amWcJudiBTDsOVkeurjDE/qsPZWPVYzm4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oaP7Wt/+Iig07XImrSMF/O1tdxWDZJHlSW+4Ihd/26UgwGBJ9Cyb/dM70qiImph49
-         TOXH+mvlX5FyWG38BJPd4uH3UDP4AAQGmFQ9Ut//dH3H8AKHkZezQ3Oxd+Qwne50t0
-         6L+H8Lnoi+oFeVw3tI4Cg+HxfbV/UyBP8jDUO6fc=
+        b=KGrGVB4pf90/PZfr3BIUHtjcoYGs0KD8GLv4Ph1KGzjR0LOPAT73G9nt5MWyZsJfh
+         biKJL+Z1ZSLdKHj+0yPuEucONHgKCNfpyFhZhHwS4LfGvVCWzM7TMGSmt1ryi2OyrF
+         JuUatsOD9uErv3GysrqKrkmH9aaoXSPsuuGQPzxo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>
-Subject: [PATCH 5.4 062/152] watchdog: f71808e_wdt: indicate WDIOF_CARDRESET support in watchdog_info.options
+        stable@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>
+Subject: [PATCH 4.9 056/212] Bluetooth: Prevent out-of-bounds read in hci_inquiry_result_with_rssi_evt()
 Date:   Thu, 20 Aug 2020 11:20:29 +0200
-Message-Id: <20200820091556.901619073@linuxfoundation.org>
+Message-Id: <20200820091605.201121887@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
-References: <20200820091553.615456912@linuxfoundation.org>
+In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
+References: <20200820091602.251285210@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,38 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ahmad Fatoum <a.fatoum@pengutronix.de>
+From: Peilin Ye <yepeilin.cs@gmail.com>
 
-commit e871e93fb08a619dfc015974a05768ed6880fd82 upstream.
+commit 629b49c848ee71244203934347bd7730b0ddee8d upstream.
 
-The driver supports populating bootstatus with WDIOF_CARDRESET, but so
-far userspace couldn't portably determine whether absence of this flag
-meant no watchdog reset or no driver support. Or-in the bit to fix this.
+Check `num_rsp` before using it as for-loop counter. Add `unlock` label.
 
-Fixes: b97cb21a4634 ("watchdog: f71808e_wdt: Fix WDTMOUT_STS register read")
 Cc: stable@vger.kernel.org
-Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20200611191750.28096-3-a.fatoum@pengutronix.de
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/watchdog/f71808e_wdt.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/bluetooth/hci_event.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/watchdog/f71808e_wdt.c
-+++ b/drivers/watchdog/f71808e_wdt.c
-@@ -691,7 +691,8 @@ static int __init watchdog_init(int sioa
- 	watchdog.sioaddr = sioaddr;
- 	watchdog.ident.options = WDIOC_SETTIMEOUT
- 				| WDIOF_MAGICCLOSE
--				| WDIOF_KEEPALIVEPING;
-+				| WDIOF_KEEPALIVEPING
-+				| WDIOF_CARDRESET;
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -3623,6 +3623,9 @@ static void hci_inquiry_result_with_rssi
+ 		struct inquiry_info_with_rssi_and_pscan_mode *info;
+ 		info = (void *) (skb->data + 1);
  
- 	snprintf(watchdog.ident.identity,
- 		sizeof(watchdog.ident.identity), "%s watchdog",
++		if (skb->len < num_rsp * sizeof(*info) + 1)
++			goto unlock;
++
+ 		for (; num_rsp; num_rsp--, info++) {
+ 			u32 flags;
+ 
+@@ -3644,6 +3647,9 @@ static void hci_inquiry_result_with_rssi
+ 	} else {
+ 		struct inquiry_info_with_rssi *info = (void *) (skb->data + 1);
+ 
++		if (skb->len < num_rsp * sizeof(*info) + 1)
++			goto unlock;
++
+ 		for (; num_rsp; num_rsp--, info++) {
+ 			u32 flags;
+ 
+@@ -3664,6 +3670,7 @@ static void hci_inquiry_result_with_rssi
+ 		}
+ 	}
+ 
++unlock:
+ 	hci_dev_unlock(hdev);
+ }
+ 
 
 
