@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D9124B2AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA9224B42A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728479AbgHTJfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:35:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44582 "EHLO mail.kernel.org"
+        id S1729888AbgHTJ7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:59:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727779AbgHTJcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:32:14 -0400
+        id S1730346AbgHTJ67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:58:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C64722B4B;
-        Thu, 20 Aug 2020 09:32:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 329BB20855;
+        Thu, 20 Aug 2020 09:58:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915933;
-        bh=Do5+tr33I6sMu+dO/0UB/wx1YwNFPXRVPUGKAE7s/BM=;
+        s=default; t=1597917538;
+        bh=eMP58QO9Rlabxhp3ZpKPfysVhjN0uuIbRwVWnL00Zh4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qgj9ds9uXvKfXCmq1oVZfx+PwQQwMtXRP0grVETzM1EN2Yoi/2w+t8u0aB+ebIUOV
-         Yse+Z38QXNLCt6R3+AOuVD7DME2g7hro/n2dlWtpC/MM4TskiJ2LoQ0jWu2FB+Kwhx
-         hGfutIkSsS13OfpkHLJMbUUlforlsd5DUsGJGBOc=
+        b=o74BG9OWG+5w2UAc/dk1/cerNIV1VOjgTVReOjlpbN9/vDGJiaGUXwoRz+dbHkYZk
+         M1K1SEJWDAehIxsQdeN4vSpe6iBnyCTE8WPqfJHr+Ji374CQ4o05wqAhIcwqYPSIjg
+         K3Lmaj4igOFw8/Z+wXzCBIr0RsDO/crjKkL/qfRw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liu Yi L <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 158/232] iommu/vt-d: Handle non-page aligned address
-Date:   Thu, 20 Aug 2020 11:20:09 +0200
-Message-Id: <20200820091620.465486065@linuxfoundation.org>
+        stable@vger.kernel.org, Laurence Oberman <loberman@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 037/212] qed: Disable "MFW indication via attention" SPAM every 5 minutes
+Date:   Thu, 20 Aug 2020 11:20:10 +0200
+Message-Id: <20200820091604.243009894@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
-References: <20200820091612.692383444@linuxfoundation.org>
+In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
+References: <20200820091602.251285210@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,62 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liu Yi L <yi.l.liu@intel.com>
+From: Laurence Oberman <loberman@redhat.com>
 
-[ Upstream commit 288d08e78008828416ffaa85ef274b4e29ef3dae ]
+[ Upstream commit 1d61e21852d3161f234b9656797669fe185c251b ]
 
-Address information for device TLB invalidation comes from userspace
-when device is directly assigned to a guest with vIOMMU support.
-VT-d requires page aligned address. This patch checks and enforce
-address to be page aligned, otherwise reserved bits can be set in the
-invalidation descriptor. Unrecoverable fault will be reported due to
-non-zero value in the reserved bits.
+This is likely firmware causing this but its starting to annoy customers.
+Change the message level to verbose to prevent the spam.
+Note that this seems to only show up with ISCSI enabled on the HBA via the
+qedi driver.
 
-Fixes: 61a06a16e36d8 ("iommu/vt-d: Support flushing more translation cache types")
-Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
-Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
-Link: https://lore.kernel.org/r/20200724014925.15523-5-baolu.lu@linux.intel.com
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Laurence Oberman <loberman@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/intel/dmar.c | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/qlogic/qed/qed_int.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
-index 16f47041f1bf5..ec23a2f0b5f8d 100644
---- a/drivers/iommu/intel/dmar.c
-+++ b/drivers/iommu/intel/dmar.c
-@@ -1459,9 +1459,26 @@ void qi_flush_dev_iotlb_pasid(struct intel_iommu *iommu, u16 sid, u16 pfsid,
- 	 * Max Invs Pending (MIP) is set to 0 for now until we have DIT in
- 	 * ECAP.
- 	 */
--	desc.qw1 |= addr & ~mask;
--	if (size_order)
-+	if (addr & GENMASK_ULL(size_order + VTD_PAGE_SHIFT, 0))
-+		pr_warn_ratelimited("Invalidate non-aligned address %llx, order %d\n",
-+				    addr, size_order);
-+
-+	/* Take page address */
-+	desc.qw1 = QI_DEV_EIOTLB_ADDR(addr);
-+
-+	if (size_order) {
-+		/*
-+		 * Existing 0s in address below size_order may be the least
-+		 * significant bit, we must set them to 1s to avoid having
-+		 * smaller size than desired.
-+		 */
-+		desc.qw1 |= GENMASK_ULL(size_order + VTD_PAGE_SHIFT - 1,
-+					VTD_PAGE_SHIFT);
-+		/* Clear size_order bit to indicate size */
-+		desc.qw1 &= ~mask;
-+		/* Set the S bit to indicate flushing more than 1 page */
- 		desc.qw1 |= QI_DEV_EIOTLB_SIZE;
-+	}
- 
- 	qi_submit_sync(iommu, &desc, 1, 0);
- }
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_int.c b/drivers/net/ethernet/qlogic/qed/qed_int.c
+index fd19372db2f86..6e1d38041d0ac 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_int.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_int.c
+@@ -2158,7 +2158,8 @@ static int qed_int_attentions(struct qed_hwfn *p_hwfn)
+ 			index, attn_bits, attn_acks, asserted_bits,
+ 			deasserted_bits, p_sb_attn_sw->known_attn);
+ 	} else if (asserted_bits == 0x100) {
+-		DP_INFO(p_hwfn, "MFW indication via attention\n");
++		DP_VERBOSE(p_hwfn, NETIF_MSG_INTR,
++			   "MFW indication via attention\n");
+ 	} else {
+ 		DP_VERBOSE(p_hwfn, NETIF_MSG_INTR,
+ 			   "MFW indication [deassertion]\n");
 -- 
 2.25.1
 
