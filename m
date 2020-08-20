@@ -2,70 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1FD024B6A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0B224B770
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731925AbgHTKjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:39:05 -0400
-Received: from relayfre-01.paragon-software.com ([176.12.100.13]:33602 "EHLO
-        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731229AbgHTKiK (ORCPT
+        id S1731184AbgHTKyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:54:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729331AbgHTKxn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:38:10 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id F36F1223;
-        Thu, 20 Aug 2020 13:38:07 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1597919888;
-        bh=gfXFV6bh+3dm6WwUV1c/R0J8KdjOdJb/YfS20DcA1TQ=;
-        h=From:To:Subject:Date:References:In-Reply-To;
-        b=oF1Ef0jpdMP0PGiW8jcwI7pSE+y5loGhZ6e3E76Np9uAYmnWtuQ/xykBU/3rdmAqD
-         ecXo+pXUyjPwrmtbyQFX/1S7I7R4TMUA3bEGcgV2EUuqUxcca5uHeDK5HT6cdj8xFF
-         VffkE1PfN3Qcjzx6U94UDjxbRaMEdR7d8dBy3hYM=
-Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Thu, 20 Aug 2020 13:38:07 +0300
-Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
- by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
- id 15.01.1847.003; Thu, 20 Aug 2020 13:38:07 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     =?utf-8?B?QXVyw6lsaWVuIEFwdGVs?= <aaptel@suse.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: RE: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
- Software.
-Thread-Topic: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
- Software.
-Thread-Index: AdZyNcmjSkpkGje7R9K6YobJrVDyZwAAOBcAASmx1XA=
-Date:   Thu, 20 Aug 2020 10:38:07 +0000
-Message-ID: <5588b1f433bb4844ae4db776030d323f@paragon-software.com>
-References: <2911ac5cd20b46e397be506268718d74@paragon-software.com>
- <87h7t5454n.fsf@suse.com>
-In-Reply-To: <87h7t5454n.fsf@suse.com>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.30.8.36]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+        Thu, 20 Aug 2020 06:53:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79B0C061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:53:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=2XSx4viBFbJgOBV8yT1eTUmZXgBSR5PRDZ/vc6Xsztk=; b=A6XkrfUyczaG2gRtYRVA9qaLEa
+        mui6hOulro1g2Y5BfTw/FEAU/arMhynrfMmhFzQubn2YNSI5Gg0uUd5qE/giIPqhUiC0pX1CodiB+
+        prd0Jye9c0grjBneKHVdswbT2CCqw4iHHt2HyZAsWRjGQ0Wvg4G0JxDHmyV/aCvnjhJqa2O9GITR5
+        Tj6Ut5jVxES3xFyXV89CFc1Or8pGixRKurgNZMjFKipuaxpoNhGcdnZu1khhqcrb0E+wMVo10SgMZ
+        rUB9wSaLbWI6TGi9Nl44UErGQMOxVgilmqStx5lQ+s2aSttVFPuy5rAxYVlpvw/gHxcimESYKwPso
+        TsHxx3fw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k8iBU-0007Xv-VS; Thu, 20 Aug 2020 10:52:50 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 561BF302526;
+        Thu, 20 Aug 2020 12:52:36 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 37DC42C38827A; Thu, 20 Aug 2020 12:52:36 +0200 (CEST)
+Message-ID: <20200820103832.486877479@infradead.org>
+User-Agent: quilt/0.66
+Date:   Thu, 20 Aug 2020 12:38:32 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Kyle Huey <me@kylehuey.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Robert O'Callahan <rocallahan@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [RFC][PATCH 0/7] x86/debug: Untangle handle_debug()
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQXVyw6lsaWVuIEFwdGVsIDxhYXB0ZWxAc3VzZS5jb20+DQpTZW50OiBGcmlkYXksIEF1
-Z3VzdCAxNCwgMjAyMCA2OjMwIFBNDQo+IEkndmUgdHJpZWQgdGhpcyB1c2luZyBsaWJudGZzLTNn
-IG1rZnMubnRmcw0KPiANCj4gIyBta2ZzLm50ZnMgL2Rldi92YjENCj4gIyBtb3VudCAtdCBudGZz
-MyAvZGV2L3ZiMSAvbW50DQo+IA0KPiBUaGlzIGFscmVhZHkgdHJpZ2dlcmVkIFVCU0FOOg0KPiBU
-aGVuIEkndmUgdHJpZWQgdG8gY29weSAvZXRjIGludG8gaXQ6DQo+IC4uLg0KPiAjIGNwIC1ycCAv
-ZXRjIC9tbnQNCj4gDQo+IEJ1dCB0aGlzIHRyaWdnZXJlZCBhIE5VTEwgcHRyIGRlcmVmOg0KPiAN
-Cj4gIEJVRzoga2VybmVsIE5VTEwgcG9pbnRlciBkZXJlZmVyZW5jZSwgYWRkcmVzczogMDAwMDAw
-MDAwMDAwMDAyOA0KDQpUaGFua3MhIFRoaXMgd2lsbCBiZSBmaXhlZCBpbiB2Mi4gVG8gZ2l2ZSBz
-b21lIGNvbnRleHQ6IHdlIHVzZSBvdXIgbWtmcyB1dGlsaXR5IGluIHRlc3RzLCBjb3VwbGVkIHdp
-dGggYSBXaW5kb3dzLW5hdGl2ZSBvbmUgYXMgYSByZWZlcmVuY2UuIFAuUy4gQWxyZWFkeSBoYXZl
-IGV4dGVuZGVkIHRoaXMgYXBwcm9hY2ggd2l0aCB0aGUgY3VycmVudCBta2ZzLm50ZnMgdXRpbGl0
-eSBhcyB3ZWxsLg0K
+Hi,
+
+handle_debug() is a mess, and now that we have separate user and kernel paths,
+try and clean it up.
+
+Included amluto's fix for convenience.
+
+The whole set passes x86-selftests and the RR DR0 testcase.
+
