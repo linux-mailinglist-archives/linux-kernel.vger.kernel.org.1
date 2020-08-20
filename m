@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0608B24BE5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D20924BE9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729541AbgHTNX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:23:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46964 "EHLO mail.kernel.org"
+        id S1729040AbgHTN3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:29:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728089AbgHTJeM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:34:12 -0400
+        id S1728391AbgHTJc7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:32:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C970722BEF;
-        Thu, 20 Aug 2020 09:34:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D03C621775;
+        Thu, 20 Aug 2020 09:32:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916048;
-        bh=vlgI/GcQFDEuwsf31liFVaSoA4yqFdptOoUDqNhNW0E=;
+        s=default; t=1597915978;
+        bh=ocubZFKj0D9EfDNzBRU77+U/K0QUAZCJOvfIuZRXxW4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nf10lQGBL4dLRPyrtQm/A28Lf8mkuYwfWH3bN8RRC7Qlcyp6WbtVdXFePF5Mq2Jeo
-         rkqLn/7JZof9yBnOGuvqDz/xHU01+MM9XfgE3I1ndErsv8qzepz3zGU/KhH4PdG04N
-         iu3zf7fQtUAgGfBEA6SgyGjTV6mP8+Sq9FVXFLUU=
+        b=CQ08dwbUYBFeK9c+jD2Y+mzI45AqAertKjfDuiLRd1tHUQet5PIydXBAKKaMOO2OX
+         iMBzTzN8PrRMcsQCRXOCXax7mM9yamLBS9BxhcUJI/l+na3NgbSZYt9pXEp9D2WSsg
+         PA53voBdIS8I+ORjWgoD8jZoTpwzCIKtvLBFwh2o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Gregory Herrero <gregory.herrero@oracle.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>, Timur Tabi <timur@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 196/232] recordmcount: Fix build failure on non arm64
-Date:   Thu, 20 Aug 2020 11:20:47 +0200
-Message-Id: <20200820091622.284965844@linuxfoundation.org>
+Subject: [PATCH 5.8 202/232] net: qcom/emac: add missed clk_disable_unprepare in error path of emac_clks_phase1_init
+Date:   Thu, 20 Aug 2020 11:20:53 +0200
+Message-Id: <20200820091622.592773804@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
 References: <20200820091612.692383444@linuxfoundation.org>
@@ -47,46 +45,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit 3df14264ad9930733a8166e5bd0eccc1727564bb ]
+[ Upstream commit 50caa777a3a24d7027748e96265728ce748b41ef ]
 
-Commit ea0eada45632 leads to the following build failure on powerpc:
+Fix the missing clk_disable_unprepare() before return
+from emac_clks_phase1_init() in the error handling case.
 
-  HOSTCC  scripts/recordmcount
-scripts/recordmcount.c: In function 'arm64_is_fake_mcount':
-scripts/recordmcount.c:440: error: 'R_AARCH64_CALL26' undeclared (first use in this function)
-scripts/recordmcount.c:440: error: (Each undeclared identifier is reported only once
-scripts/recordmcount.c:440: error: for each function it appears in.)
-make[2]: *** [scripts/recordmcount] Error 1
-
-Make sure R_AARCH64_CALL26 is always defined.
-
-Fixes: ea0eada45632 ("recordmcount: only record relocation of type R_AARCH64_CALL26 on arm64.")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Acked-by: Gregory Herrero <gregory.herrero@oracle.com>
-Cc: Gregory Herrero <gregory.herrero@oracle.com>
-Link: https://lore.kernel.org/r/5ca1be21fa6ebf73203b45fd9aadd2bafb5e6b15.1597049145.git.christophe.leroy@csgroup.eu
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Fixes: b9b17debc69d ("net: emac: emac gigabit ethernet controller driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Acked-by: Timur Tabi <timur@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/recordmcount.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/qualcomm/emac/emac.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/scripts/recordmcount.c b/scripts/recordmcount.c
-index e59022b3f1254..b9c2ee7ab43fa 100644
---- a/scripts/recordmcount.c
-+++ b/scripts/recordmcount.c
-@@ -42,6 +42,8 @@
- #define R_ARM_THM_CALL		10
- #define R_ARM_CALL		28
+diff --git a/drivers/net/ethernet/qualcomm/emac/emac.c b/drivers/net/ethernet/qualcomm/emac/emac.c
+index 20b1b43a0e393..1166b98d8bb2c 100644
+--- a/drivers/net/ethernet/qualcomm/emac/emac.c
++++ b/drivers/net/ethernet/qualcomm/emac/emac.c
+@@ -474,13 +474,24 @@ static int emac_clks_phase1_init(struct platform_device *pdev,
  
-+#define R_AARCH64_CALL26	283
+ 	ret = clk_prepare_enable(adpt->clk[EMAC_CLK_CFG_AHB]);
+ 	if (ret)
+-		return ret;
++		goto disable_clk_axi;
+ 
+ 	ret = clk_set_rate(adpt->clk[EMAC_CLK_HIGH_SPEED], 19200000);
+ 	if (ret)
+-		return ret;
++		goto disable_clk_cfg_ahb;
 +
- static int fd_map;	/* File descriptor for file being modified. */
- static int mmap_failed; /* Boolean flag. */
- static char gpfx;	/* prefix for global symbol name (sometimes '_') */
++	ret = clk_prepare_enable(adpt->clk[EMAC_CLK_HIGH_SPEED]);
++	if (ret)
++		goto disable_clk_cfg_ahb;
+ 
+-	return clk_prepare_enable(adpt->clk[EMAC_CLK_HIGH_SPEED]);
++	return 0;
++
++disable_clk_cfg_ahb:
++	clk_disable_unprepare(adpt->clk[EMAC_CLK_CFG_AHB]);
++disable_clk_axi:
++	clk_disable_unprepare(adpt->clk[EMAC_CLK_AXI]);
++
++	return ret;
+ }
+ 
+ /* Enable clocks; needs emac_clks_phase1_init to be called before */
 -- 
 2.25.1
 
