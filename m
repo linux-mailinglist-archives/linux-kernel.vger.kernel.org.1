@@ -2,133 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C9424BCD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACBE124BC15
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730136AbgHTMyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:54:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729236AbgHTJnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:43:23 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        id S1729479AbgHTMja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:39:30 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:56372 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729397AbgHTJrJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:47:09 -0400
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C285F20724;
-        Thu, 20 Aug 2020 09:43:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916602;
-        bh=CnunxCsOvBU/gUFXe+EXz0IAGG4b1qj7pIVDUrpfZWg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LxUe/5zOhpUu0yX3QPQi/2NIS3QBRStNZyzIAXegfpS5FX55TPD3T3rBBxX49W404
-         pxpLHhvfzBFfEL+qweR6QBJe8n8M0SifTa+Y0PGkqpTqM1J2zqQNThqD9utBYHkaWm
-         UJ3W7NW4FCAaIbpLQhWuXnyKqLZ+xGPa//aVByaE=
-Date:   Thu, 20 Aug 2020 10:43:15 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Jianyong Wu <Jianyong.Wu@arm.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "yangbo.lu@nxp.com" <yangbo.lu@nxp.com>,
-        "john.stultz@linaro.org" <john.stultz@linaro.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "richardcochran@gmail.com" <richardcochran@gmail.com>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Suzuki Poulose <Suzuki.Poulose@arm.com>,
-        Steven Price <Steven.Price@arm.com>,
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 6967429A219;
+        Thu, 20 Aug 2020 10:47:07 +0100 (BST)
+Date:   Thu, 20 Aug 2020 11:47:02 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Parshuram Raju Thombare <pthombar@cadence.com>
+Cc:     "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
+        "vitor.soares@synopsys.com" <vitor.soares@synopsys.com>,
+        Milind Parab <mparab@cadence.com>,
+        "praneeth@ti.com" <praneeth@ti.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Steve Capper <Steve.Capper@arm.com>,
-        Kaly Xin <Kaly.Xin@arm.com>, Justin He <Justin.He@arm.com>,
-        Wei Chen <Wei.Chen@arm.com>, nd <nd@arm.com>
-Subject: Re: [PATCH v13 2/9] arm/arm64: KVM: Advertise KVM UID to guests via
- SMCCC
-Message-ID: <20200820094314.GA18838@willie-the-truck>
-References: <20200619130120.40556-1-jianyong.wu@arm.com>
- <20200619130120.40556-3-jianyong.wu@arm.com>
- <HE1PR0802MB255577943C260898A6C686ABF4720@HE1PR0802MB2555.eurprd08.prod.outlook.com>
- <20200727113821.GB20437@willie-the-truck>
- <HE1PR0802MB25551F426910F76E95523383F4730@HE1PR0802MB2555.eurprd08.prod.outlook.com>
+        Przemyslaw Gaj <pgaj@cadence.com>,
+        "linux-i3c@lists.infradead.org" <linux-i3c@lists.infradead.org>
+Subject: Re: [PATCH v2 2/2] i3c: master: fix for SETDASA and DAA process
+Message-ID: <20200820114702.4c4cd58a@collabora.com>
+In-Reply-To: <DM5PR07MB31965D54B61E191E3C1325FEC15A0@DM5PR07MB3196.namprd07.prod.outlook.com>
+References: <1590053467-32079-1-git-send-email-pthombar@cadence.com>
+        <1590053581-803-1-git-send-email-pthombar@cadence.com>
+        <20200819101238.760d4e90@collabora.com>
+        <DM5PR07MB31965D54B61E191E3C1325FEC15A0@DM5PR07MB3196.namprd07.prod.outlook.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <HE1PR0802MB25551F426910F76E95523383F4730@HE1PR0802MB2555.eurprd08.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 01:07:14AM +0000, Jianyong Wu wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Will Deacon <will@kernel.org>
-> > Sent: Monday, July 27, 2020 7:38 PM
-> > To: Jianyong Wu <Jianyong.Wu@arm.com>
-> > Cc: netdev@vger.kernel.org; yangbo.lu@nxp.com; john.stultz@linaro.org;
-> > tglx@linutronix.de; pbonzini@redhat.com; sean.j.christopherson@intel.com;
-> > maz@kernel.org; richardcochran@gmail.com; Mark Rutland
-> > <Mark.Rutland@arm.com>; Suzuki Poulose <Suzuki.Poulose@arm.com>;
-> > Steven Price <Steven.Price@arm.com>; linux-kernel@vger.kernel.org; linux-
-> > arm-kernel@lists.infradead.org; kvmarm@lists.cs.columbia.edu;
-> > kvm@vger.kernel.org; Steve Capper <Steve.Capper@arm.com>; Kaly Xin
-> > <Kaly.Xin@arm.com>; Justin He <Justin.He@arm.com>; Wei Chen
-> > <Wei.Chen@arm.com>; nd <nd@arm.com>
-> > Subject: Re: [PATCH v13 2/9] arm/arm64: KVM: Advertise KVM UID to guests
-> > via SMCCC
-> > 
-> > On Mon, Jul 27, 2020 at 03:45:37AM +0000, Jianyong Wu wrote:
-> > > > From: Will Deacon <will@kernel.org>
-> > > >
-> > > > We can advertise ourselves to guests as KVM and provide a basic
-> > > > features bitmap for discoverability of future hypervisor services.
-> > > >
-> > > > Cc: Marc Zyngier <maz@kernel.org>
-> > > > Signed-off-by: Will Deacon <will@kernel.org>
-> > > > Signed-off-by: Jianyong Wu <jianyong.wu@arm.com>
-> > > > ---
-> > > >  arch/arm64/kvm/hypercalls.c | 29 +++++++++++++++++++----------
-> > > >  1 file changed, 19 insertions(+), 10 deletions(-)
-> > > >
-> > > > diff --git a/arch/arm64/kvm/hypercalls.c
-> > > > b/arch/arm64/kvm/hypercalls.c index 550dfa3e53cd..db6dce3d0e23
-> > > > 100644
-> > > > --- a/arch/arm64/kvm/hypercalls.c
-> > > > +++ b/arch/arm64/kvm/hypercalls.c
-> > > > @@ -12,13 +12,13 @@
-> > > >  int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)  {
-> > > >  	u32 func_id = smccc_get_function(vcpu);
-> > > > -	long val = SMCCC_RET_NOT_SUPPORTED;
-> > > > +	u32 val[4] = {SMCCC_RET_NOT_SUPPORTED};
-> > >
-> > > There is a risk as this u32 value will return here and a u64 value
-> > > will be obtained in guest. For example, The val[0] is initialized as
-> > > -1 of 0xffffffff and the guest get 0xffffffff then it will be compared
-> > > with -1 of 0xffffffffffffffff Also this problem exists for the
-> > > transfer of address in u64 type. So the following assignment to "val"
-> > > should be split into two
-> > > u32 value and assign to val[0] and val[1] respectively.
-> > > WDYT?
-> > 
-> > Yes, I think you're right that this is a bug, but isn't the solution just to make
-> > that an array of 'long'?
-> > 
-> > 	long val [4];
-> > 
-> > That will sign-extend the negative error codes as required, while leaving the
-> > explicitly unsigned UID constants alone.
-> 
-> Ok, that's much better. I will fix it at next version.
-> 
-> By the way, I wonder when will you update this patch set. I see someone like me
-> adopt this patch set as code base and need rebase it every time, so expect your update.
+On Thu, 20 Aug 2020 09:23:25 +0000
+Parshuram Raju Thombare <pthombar@cadence.com> wrote:
 
-I'm not working on it, so please feel free to include it along with the
-patches that add an upstream user.
+> Hi Boris,
+> 
+> Thanks for your comments.
+> 
+> >> +	 * We anyway don't attach devices which are not addressable  
+> >
+> >You can drop the anyway.  
+> Sure, I will make above mentioned change in the comment.
+> 
+> >> +	 * (no static_addr and dyn_addr) and devices with static_addr
+> >> +	 * but no init_dyn_addr will participate in DAA.
+> >> +	 */
+> >> +	if (!boardinfo->static_addr || !boardinfo->init_dyn_addr)
+> >> +		return -EINVAL;  
+> >
+> >If we consider this as an error, we should probably check that before
+> >calling i3c_master_pre_assign_dyn_addr() in i3c_master_bus_init().  
+> Ok, I will move this check to i3c_master_bus_init(), before calling
+> i3c_master_pre_assign_dyn_addr. It will probably add extra if condition,
+> but will save one function call.
+> 
+> >>   * 5. Pre-assign dynamic addresses requested by the FW with SETDASA for I3C
+> >> - *    devices that have a static address
+> >> + *    devices that have a static address and attach corresponding statically
+> >> + *    defined I3C devices to the master.  
+> >
+> >					     and attach them to the
+> >					     master if
+> >	  the dynamic address assignment succeeds  
+> Sure, I will append above mentioned change to the comment.
+> 
+> >> +		/*
+> >> +		 * Free reserved init_dyn_addr so that attach can
+> >> +		 * get it before trying setnewda.
+> >> +		 */
+> >> +		if (i3cboardinfo->init_dyn_addr)
+> >> +			i3c_bus_set_addr_slot_status(&master->bus,
+> >> +						     init_dyn_addr,
+> >> +						     I3C_ADDR_SLOT_FREE);  
+> >
+> >Hm, it's a bit more complicated. I don't think we can unconditionally
+> >release the init_dyn_addr here. Say you have a device that's been
+> >assigned its init_dyn_addr, and userspace decided to re-assign a new
+> >one (the feature is not available yet, but I thought about letting
+> >userspace write to the dyn_addr sysfs entry and wire that to a SETDA).
+> >The init_dyn_addr can now be re-assigned to a different device. After
+> >some time the device ends up resetting and thus lose its DA. A new DAA
+> >is issued to re-discover it, but you want this device to be assigned its
+> >last known address not the init address. And when
+> >i3c_master_attach_boardinfo() is called on this new device, you release
+> >a slot that's no longer yours.
+> >
+> >That was the rational behind the "address slots are attached to i3cdevs
+> >not boardinfo". Maybe we should have another list where we keep i3c
+> >devs that have not been discovered yet but have boardinfo attached to
+> >them. This way we can reserve dynamic addresses without blocking a
+> >slot in the master device table.  
+> 
+> I think the sequence of events you are discussing here is
+> 1. User assign address to device A with init_dyn_addr in boardinfo.
+> 2. That particular init_dyn_addr is assigned to device B, which may be hotplugged ?
+>     and don't have boardinfo or init_dyn_addr in boardinfo ? 
+> 3. Device A resets and trigger DAA due to hot plug ?
+>    A. Here now init_dyn_addr is already assigned to device B so device A shouldn't be freeing it.
+>    B. Now preferable dyn_addr is the one received from user in step 1.
 
-Will
+No, that's not what I'm talking about. I meant:
+
+1. Device A is assigned a default init address X in the DT.
+2. Device B has no init address
+3. The framework reserves address X for and assigns it to device A
+   when it appears on the bus (DAA, SETDASA or HJ+DDA)
+4. Device B is assigned address Y
+5. User decides to explicitly assign a different address to device A by
+   issuing "echo Z > /sys/bus/i3c/..../<i3c-dev>/dyn_addr" (not yet
+   supported, but I think we should allow that at some point), such
+   that device A gets a lower/higher priority
+6. User manually assigns address X to device B (that should be allowed
+   since device A no longer uses X)
+7. Device A is reset for some reason and loses its dynamic address,
+   thus requiring a new DAA (or HJ+DAA). During this new discovery,
+   device A is re-assigned its last known address (Z), but in the
+   meantime you've marked address X as free (when attaching boardinfo
+   to the newdev object).
+
+> 
+> If we are to prefer init_dyn_addr always, that will rule out possibility of making init_dyn_addr 
+> available to any other device when original device is assigned with user or master
+> provided address owing to SETDATA or SETNEWDA failures. And we can be sure of not freeing
+> init_dyn_addr inadvertently while it is being used by any other device.
+> 
+> Else if we want to prefer user provided address even across resets, since we don't need init_dyn_addr
+> anymore, it can be used to store user provided address. This will serve both the purposes A and B stated above.
+>  
+> And in my opinion this can be handled when we add code to allow user to change the device address.
+
+If we go for a temporary solution, I'd opt for relaxing the test done
+in i3c_master_get_i3c_addrs() to not reserve the init address (since it
+should have been reserved at probe time) and keep those init addressed
+reserved.
