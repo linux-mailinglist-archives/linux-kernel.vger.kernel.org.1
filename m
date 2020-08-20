@@ -2,99 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE52C24B6FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD6224B6EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731447AbgHTKps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:45:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40256 "EHLO
+        id S1730473AbgHTKol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:44:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731913AbgHTKoz (ORCPT
+        with ESMTP id S1731871AbgHTKoJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:44:55 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECCD4C061343
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:44:39 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id k18so824436pfp.7
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:44:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=haHH6xEEDXJD3ODlka0BS0C5wOsHmEx6Ewo0XdB15Uc=;
-        b=vU9PtiBP/HMww5OYiXpQ2L/p3G067TEgmGB7o6dGutqO8yILjlrEn53ex/u3faTp52
-         ThF1jzECs2i+5ZuE8HPnXkwi1aAQCfu6hJ3ejTDZJCHMwWvI24LXzKm7M6x0ciFr72wP
-         OeCydEUBElA1g0WqGWGlncp53UuL1I87DeVH1eZFO72pv0o51t5tbD5Q6MeBqYVUD+H7
-         Jd5mg7xLagn5+maXyf+J/zdNvyHv4YKZBrHEpAQcZq2SVRJ1twUFTsCOBkh1s5BEXekM
-         oMqeaBRysQ0+4BQkjjfkXpTamNlPKKFFx49eG0LPOFE31HjXMu1q2lb/0yvVUnWmuvi1
-         GQLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=haHH6xEEDXJD3ODlka0BS0C5wOsHmEx6Ewo0XdB15Uc=;
-        b=D3ebi8Ej7bP/G9Fdz1Y2KZDD7h1us9UfYsM0gKmonbe8ax3gOCEyAfH5QPq7lub60y
-         +SyBxomgM5She0RMX0PhncqruH1JUjK2AWEl9erWA8RFZ3Xx/OOT8YHopcFLokoKw5rZ
-         MXS3zGuAereS3j3Y3a9Ceq1WzIU+JsVTI04N/JZXoHiWpsxyo3gqI9VaBn8cL8su2mxT
-         NoHTXQryguiH8c32gVbaIcukqP0DdFWrnw77qArmkAtHmDBednyaKLJuMGbIbh0mnRME
-         IngRNGr3jiw2j75N3FTvhjklc2Ck5uufN53SssJ2GGAoUDVcyLVZHRTFuIHTreY8KZcA
-         g1gg==
-X-Gm-Message-State: AOAM533vSovlvlUgjdlk3B8rN8uLySMtOHR9l956lgJoxYE8jahFgmbl
-        7V6fYaEB2n9yu51PojrG0PWelA==
-X-Google-Smtp-Source: ABdhPJwv7H3K1Z9BH0dMOP+jy6GalrbBJ8Rh28BkScE3yXgCSBp3BcAdC3SvV+YLonsYVB8/uNM5hg==
-X-Received: by 2002:a05:6a00:847:: with SMTP id q7mr1769819pfk.172.1597920279519;
-        Thu, 20 Aug 2020 03:44:39 -0700 (PDT)
-Received: from localhost ([122.172.43.13])
-        by smtp.gmail.com with ESMTPSA id s125sm2338382pfb.125.2020.08.20.03.44.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 20 Aug 2020 03:44:39 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     rnayak@codeaurora.org
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 8/8] qcom-geni-se: remove has_opp_table
-Date:   Thu, 20 Aug 2020 16:13:57 +0530
-Message-Id: <4e27260253fdda236562f8bed9ec30a75e03f97c.1597919647.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <cover.1597919647.git.viresh.kumar@linaro.org>
-References: <cover.1597919647.git.viresh.kumar@linaro.org>
+        Thu, 20 Aug 2020 06:44:09 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3393BC061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:44:09 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597920247;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iLWA2FzepFQDF+V/YhX0IJ79bp9VAkXafLwZ2xRN6/g=;
+        b=fJFa3FKKIQeRv4J0N16FZqeUYlTc7OC303z+nw+wglNo4fQdRztgWeGlDcjv0itTFBDyCd
+        dLt8Gq+u1jHvN46pTQOXL9TnwenMeVnCZsARor2Pn8fNvn9f9PVpvIivlDNRNx7Q5tyF/8
+        QOrZH/pfBhBXdHSU8IIyr3QxMXTZoCNcXXG1mnVhFgovyZi3rbgNhR/mshB2GaqoV3u8m8
+        3+qNbniIc51dJerNfGbsMYHF6TufaKhqZVuVvMSrcNHwwQS0ScnsRMj+zLD1F7DpXv/XMB
+        UjNY6TBkBn08C20P9V8no0IWei9dirR8uvN40zZBXvcIJaTtN3UnkbqgVH67pQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597920247;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iLWA2FzepFQDF+V/YhX0IJ79bp9VAkXafLwZ2xRN6/g=;
+        b=sqQzoAgci1OIfkv+FS0qV2QXi1IUvtydMYUSAT7segZbbQiSm21J1JciDWunW6LatF7Wb8
+        2dYYDRqNN1x90cDQ==
+To:     Arvind Sankar <nivedita@alum.mit.edu>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Zhenzhong Duan <zhenzhong.duan@oracle.com>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juergen Gross <jgross@suse.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] x86: work around clang IAS bug referencing __force_order
+In-Reply-To: <20200813180933.GA532283@rani.riverdale.lan>
+References: <20200527135329.1172644-1-arnd@arndb.de> <878serh1b9.fsf@nanos.tec.linutronix.de> <CAKwvOdnOh3H3ga2qpTktywvcgfXW5QJaB7r4XMhigmDzLhDNeA@mail.gmail.com> <87h7t6tpye.fsf@nanos.tec.linutronix.de> <20200813173701.GC4295@paulmck-ThinkPad-P72> <20200813180933.GA532283@rani.riverdale.lan>
+Date:   Thu, 20 Aug 2020 12:44:06 +0200
+Message-ID: <875z9dioll.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-has_opp_table isn't used anymore, remove it.
+On Thu, Aug 13 2020 at 14:09, Arvind Sankar wrote:
+> On Thu, Aug 13, 2020 at 10:37:01AM -0700, Paul E. McKenney wrote:
+>> > Let me ask (hopefully) useful questions this time:
+>> > 
+>> >   Is a compiler allowed to reorder two 'asm volatile()'?
+>> > 
+>> >   Are there compilers (gcc >= 4.9 or other supported ones) which do that?
+>> 
+>> I would hope that the answer to both of these questions is "no"!
+>> 
+>> But I freely confess that I have been disappointed before on this sort
+>> of thing.  :-/
+>> 
+>> 							Thanx, Paul
+>
+> Ok, I found this, so gcc developers consider re-ordering volatile asm
+> wrt each other a bug at least.
+>
+> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=82602
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- include/linux/qcom-geni-se.h | 2 --
- 1 file changed, 2 deletions(-)
+Yes. It prevents reordering of volatiles, but it does not necessarily
+prevent reorder of something like this:
 
-diff --git a/include/linux/qcom-geni-se.h b/include/linux/qcom-geni-se.h
-index 8f385fbe5a0e..02d1417c8ecf 100644
---- a/include/linux/qcom-geni-se.h
-+++ b/include/linux/qcom-geni-se.h
-@@ -48,7 +48,6 @@ struct geni_icc_path {
-  * @clk_perf_tbl:	Table of clock frequency input to serial engine clock
-  * @icc_paths:		Array of ICC paths for SE
-  * @opp_table:		Pointer to the OPP table
-- * @has_opp_table:	Specifies if the SE has an OPP table
-  */
- struct geni_se {
- 	void __iomem *base;
-@@ -59,7 +58,6 @@ struct geni_se {
- 	unsigned long *clk_perf_tbl;
- 	struct geni_icc_path icc_paths[3];
- 	struct opp_table *opp_table;
--	bool has_opp_table;
- };
- 
- /* Common SE registers */
--- 
-2.25.0.rc1.19.g042ed3e048af
+        asm volatile(...);
+        foo();
+        asm volatile(...);
+
+it might turn that into
+
+        foo();
+        asm volatile(...);
+        asm volatile(...);
+
+if I understood their discussion correctly. So removing this magic is
+not really straight forward.
+
+Thanks,
+
+        tglx
+
 
