@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33DB724BB19
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE00524BB61
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728979AbgHTMXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:23:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37550 "EHLO mail.kernel.org"
+        id S1730655AbgHTM2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:28:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730157AbgHTJyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:54:46 -0400
+        id S1729230AbgHTJvt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:51:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DDB61207FB;
-        Thu, 20 Aug 2020 09:54:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB1352067C;
+        Thu, 20 Aug 2020 09:51:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917286;
-        bh=z8abWbrQfvKrdo/2l/V5xVkWfRiUU1HPSskqPVkafqY=;
+        s=default; t=1597917109;
+        bh=Bgf8F92t/ZAyenynqhNM6Yf/xAbcyUQKG4+V7kmmPnQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rP9jGJjkcfHAkUPFPWuaOFnJW2SlxTrqorPeDFSn7tqyRUKd2LWODRW9nMURmG3PG
-         vnOQi43y4Pg5TMBs7QJIKBAWBbg2jn2PjrfXyrjaNHFJQWWD2+lNPM+JhzTt5Z/SSy
-         efJTnU6CcHvQqH4Nk3HFykQWWZC1lSpVxWRUr5cs=
+        b=eC5inylfmIF+I30VVLDRTG0h45kio9WdEQHw0uudK86fCefQ5KiCr93AgxEVMhmX7
+         /T/KtxrNrebkFnnKfHFgH4yeH7HntjVZrATnsOfYz9D1CSl5GcAvzxKUOOejW/Cp25
+         2h2tMJ3tkqs8D7adPOEQvpf7LwFPDPF44I9B/N1o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 69/92] i2c: rcar: avoid race when unregistering slave
-Date:   Thu, 20 Aug 2020 11:21:54 +0200
-Message-Id: <20200820091541.220955447@linuxfoundation.org>
+        stable@vger.kernel.org, Denis Efremov <efremov@linux.com>,
+        Steven Price <steven.price@arm.com>
+Subject: [PATCH 5.4 148/152] drm/panfrost: Use kvfree() to free bo->sgts
+Date:   Thu, 20 Aug 2020 11:21:55 +0200
+Message-Id: <20200820091601.405432172@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
-References: <20200820091537.490965042@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,53 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+From: Denis Efremov <efremov@linux.com>
 
-[ Upstream commit c7c9e914f9a0478fba4dc6f227cfd69cf84a4063 ]
+commit 114427b8927a4def2942b2b886f7e4aeae289ccb upstream.
 
-Due to the lockless design of the driver, it is theoretically possible
-to access a NULL pointer, if a slave interrupt was running while we were
-unregistering the slave. To make this rock solid, disable the interrupt
-for a short time while we are clearing the interrupt_enable register.
-This patch is purely based on code inspection. The OOPS is super-hard to
-trigger because clearing SAR (the address) makes interrupts even more
-unlikely to happen as well. While here, reinit SCR to SDBS because this
-bit should always be set according to documentation. There is no effect,
-though, because the interface is disabled.
+Use kvfree() to free bo->sgts, because the memory is allocated with
+kvmalloc_array() in panfrost_mmu_map_fault_addr().
 
-Fixes: 7b814d852af6 ("i2c: rcar: avoid race when unregistering slave client")
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 187d2929206e ("drm/panfrost: Add support for GPU heap allocations")
+Cc: stable@vger.kernel.org
+Signed-off-by: Denis Efremov <efremov@linux.com>
+Reviewed-by: Steven Price <steven.price@arm.com>
+Signed-off-by: Steven Price <steven.price@arm.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200608151728.234026-1-efremov@linux.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/i2c/busses/i2c-rcar.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/panfrost/panfrost_gem.c |    2 +-
+ drivers/gpu/drm/panfrost/panfrost_mmu.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-rcar.c b/drivers/i2c/busses/i2c-rcar.c
-index 11d1977616858..dcdce18fc7062 100644
---- a/drivers/i2c/busses/i2c-rcar.c
-+++ b/drivers/i2c/busses/i2c-rcar.c
-@@ -861,12 +861,14 @@ static int rcar_unreg_slave(struct i2c_client *slave)
+--- a/drivers/gpu/drm/panfrost/panfrost_gem.c
++++ b/drivers/gpu/drm/panfrost/panfrost_gem.c
+@@ -46,7 +46,7 @@ static void panfrost_gem_free_object(str
+ 				sg_free_table(&bo->sgts[i]);
+ 			}
+ 		}
+-		kfree(bo->sgts);
++		kvfree(bo->sgts);
+ 	}
  
- 	WARN_ON(!priv->slave);
- 
--	/* disable irqs and ensure none is running before clearing ptr */
-+	/* ensure no irq is running before clearing ptr */
-+	disable_irq(priv->irq);
- 	rcar_i2c_write(priv, ICSIER, 0);
--	rcar_i2c_write(priv, ICSCR, 0);
-+	rcar_i2c_write(priv, ICSSR, 0);
-+	enable_irq(priv->irq);
-+	rcar_i2c_write(priv, ICSCR, SDBS);
- 	rcar_i2c_write(priv, ICSAR, 0); /* Gen2: must be 0 if not using slave */
- 
--	synchronize_irq(priv->irq);
- 	priv->slave = NULL;
- 
- 	pm_runtime_put(rcar_i2c_priv_to_dev(priv));
--- 
-2.25.1
-
+ 	drm_gem_shmem_free_object(obj);
+--- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
++++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+@@ -486,7 +486,7 @@ static int panfrost_mmu_map_fault_addr(s
+ 		pages = kvmalloc_array(bo->base.base.size >> PAGE_SHIFT,
+ 				       sizeof(struct page *), GFP_KERNEL | __GFP_ZERO);
+ 		if (!pages) {
+-			kfree(bo->sgts);
++			kvfree(bo->sgts);
+ 			bo->sgts = NULL;
+ 			mutex_unlock(&bo->base.pages_lock);
+ 			ret = -ENOMEM;
 
 
