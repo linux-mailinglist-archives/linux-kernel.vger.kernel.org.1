@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9BC24BCFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4547724BBB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729498AbgHTM4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:56:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35396 "EHLO mail.kernel.org"
+        id S1729615AbgHTJtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:49:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729106AbgHTJlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:41:39 -0400
+        id S1729654AbgHTJta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:49:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C28B12075E;
-        Thu, 20 Aug 2020 09:41:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B34D92173E;
+        Thu, 20 Aug 2020 09:49:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916499;
-        bh=gm98W7cxlKXrJXNcmlT0ZN/s1aay862VXPnEca0d31M=;
+        s=default; t=1597916970;
+        bh=mHCLShJIyONqXrwZHOovab7y/jig8WvlVqeHasDla7s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vL05uyr3KpZdD6jNuoEtCVcYSgEAXi2Jc/rhya52jlxp9+pcBs04BQC2EysgKv5Zd
-         Rc6w+VPPketTVUsJ6OqaGc9qvyqCgw7JsvLAfsWEoTUcY1cQr6dnjPqK5H9OXLm5kZ
-         omZIER+4NHe038WAZXJFPayHcDfots5wtUHBqQ44=
+        b=gaGrwXc+PfV14/SUwxOHhWRLZkGEZxSenFtHEeyV6I7fgtspVKMogPJl2edHLmHGf
+         7sfQb65Orjs/o/Uex62iI1W47Vh4F7vP7YAzx7Lu3TqpfKcpucTkoGNS/smqHJq/UX
+         8Rpon7K7fToUtG4LwKiOHHyds1AFHXKJtTdtlTGo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 149/204] i2c: rcar: avoid race when unregistering slave
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 079/152] octeontx2-af: change (struct qmem)->entry_sz from u8 to u16
 Date:   Thu, 20 Aug 2020 11:20:46 +0200
-Message-Id: <20200820091613.686977292@linuxfoundation.org>
+Message-Id: <20200820091557.777626013@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
-References: <20200820091606.194320503@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,51 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit c7c9e914f9a0478fba4dc6f227cfd69cf84a4063 ]
+[ Upstream commit 393415203f5c916b5907e0a7c89f4c2c5a9c5505 ]
 
-Due to the lockless design of the driver, it is theoretically possible
-to access a NULL pointer, if a slave interrupt was running while we were
-unregistering the slave. To make this rock solid, disable the interrupt
-for a short time while we are clearing the interrupt_enable register.
-This patch is purely based on code inspection. The OOPS is super-hard to
-trigger because clearing SAR (the address) makes interrupts even more
-unlikely to happen as well. While here, reinit SCR to SDBS because this
-bit should always be set according to documentation. There is no effect,
-though, because the interface is disabled.
+We need to increase TSO_HEADER_SIZE from 128 to 256.
 
-Fixes: 7b814d852af6 ("i2c: rcar: avoid race when unregistering slave client")
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Since otx2_sq_init() calls qmem_alloc() with TSO_HEADER_SIZE,
+we need to change (struct qmem)->entry_sz to avoid truncation to 0.
+
+Fixes: 7a37245ef23f ("octeontx2-af: NPA block admin queue init")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Sunil Goutham <sgoutham@marvell.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-rcar.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/marvell/octeontx2/af/common.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/i2c-rcar.c b/drivers/i2c/busses/i2c-rcar.c
-index 76bcdb27070e1..5615e7c43b436 100644
---- a/drivers/i2c/busses/i2c-rcar.c
-+++ b/drivers/i2c/busses/i2c-rcar.c
-@@ -866,12 +866,14 @@ static int rcar_unreg_slave(struct i2c_client *slave)
- 
- 	WARN_ON(!priv->slave);
- 
--	/* disable irqs and ensure none is running before clearing ptr */
-+	/* ensure no irq is running before clearing ptr */
-+	disable_irq(priv->irq);
- 	rcar_i2c_write(priv, ICSIER, 0);
--	rcar_i2c_write(priv, ICSCR, 0);
-+	rcar_i2c_write(priv, ICSSR, 0);
-+	enable_irq(priv->irq);
-+	rcar_i2c_write(priv, ICSCR, SDBS);
- 	rcar_i2c_write(priv, ICSAR, 0); /* Gen2: must be 0 if not using slave */
- 
--	synchronize_irq(priv->irq);
- 	priv->slave = NULL;
- 
- 	pm_runtime_put(rcar_i2c_priv_to_dev(priv));
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/common.h b/drivers/net/ethernet/marvell/octeontx2/af/common.h
+index 413c3f254cf85..c881a573da662 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/common.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/common.h
+@@ -43,7 +43,7 @@ struct qmem {
+ 	void            *base;
+ 	dma_addr_t	iova;
+ 	int		alloc_sz;
+-	u8		entry_sz;
++	u16		entry_sz;
+ 	u8		align;
+ 	u32		qsize;
+ };
 -- 
 2.25.1
 
