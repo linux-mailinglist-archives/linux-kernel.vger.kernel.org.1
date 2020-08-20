@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F1EE24B40C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD3BA24B40A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730249AbgHTJ4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:56:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39214 "EHLO mail.kernel.org"
+        id S1729836AbgHTJ4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:56:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730230AbgHTJz5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:55:57 -0400
+        id S1730217AbgHTJzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:55:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D8FD2078D;
-        Thu, 20 Aug 2020 09:55:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C6592173E;
+        Thu, 20 Aug 2020 09:55:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917356;
-        bh=nJMVz16Z//JCjia4/16HUl7e5sIkoC/e/9LkHub4gic=;
+        s=default; t=1597917339;
+        bh=SriRrDedMudRpYmWo2kpmKuWSF9BDf4K95kArhbHnPQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DKUahjyCM1bXgTWzuXKTuXhns3AiHZPD9XlQRPemFO9xQexHSN4UbHOigEsQ2LGwF
-         eQ28hUNob3m+QZjqnH3Clnh3vTSYr8h7dsfZvCjv4KsszpnxWV5ocIan1ydOBKnpg5
-         CUus+U9Ol2YCFdjtK0xfF27dk9QcAkY81hZxRe/U=
+        b=kPpDSE+BpKbDIp5dMdmz9ew8r3lsmsZvV1KwEbH8xLOTG367A777DIC1UztT1rnjv
+         Fh3wMaksUX8fgcWPT/UTh/qNXYuQ+0+vw+r499AfeLe/FmvNS1ktwaTe04mECd23Tn
+         LaSFa1IM7nYxL+7Nk5DKlNE4Htwyz7QlPL5cgYuY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Evgeniy Dushistov <dushistov@mail.ru>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 81/92] fs/ufs: avoid potential u32 multiplication overflow
-Date:   Thu, 20 Aug 2020 11:22:06 +0200
-Message-Id: <20200820091541.867416468@linuxfoundation.org>
+        stable@vger.kernel.org, Denis Efremov <efremov@linux.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 4.19 90/92] drm/radeon: fix fb_div check in ni_init_smc_spll_table()
+Date:   Thu, 20 Aug 2020 11:22:15 +0200
+Message-Id: <20200820091542.324851351@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
 References: <20200820091537.490965042@linuxfoundation.org>
@@ -47,44 +43,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Denis Efremov <efremov@linux.com>
 
-[ Upstream commit 88b2e9b06381551b707d980627ad0591191f7a2d ]
+commit f29aa08852e1953e461f2d47ab13c34e14bc08b3 upstream.
 
-The 64 bit ino is being compared to the product of two u32 values,
-however, the multiplication is being performed using a 32 bit multiply so
-there is a potential of an overflow.  To be fully safe, cast uspi->s_ncg
-to a u64 to ensure a 64 bit multiplication occurs to avoid any chance of
-overflow.
+clk_s is checked twice in a row in ni_init_smc_spll_table().
+fb_div should be checked instead.
 
-Fixes: f3e2a520f5fb ("ufs: NFS support")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Evgeniy Dushistov <dushistov@mail.ru>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>
-Link: http://lkml.kernel.org/r/20200715170355.1081713-1-colin.king@canonical.com
-Addresses-Coverity: ("Unintentional integer overflow")
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 69e0b57a91ad ("drm/radeon/kms: add dpm support for cayman (v5)")
+Cc: stable@vger.kernel.org
+Signed-off-by: Denis Efremov <efremov@linux.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/ufs/super.c | 2 +-
+ drivers/gpu/drm/radeon/ni_dpm.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ufs/super.c b/fs/ufs/super.c
-index a4e07e910f1b4..6e59e45d7bfbd 100644
---- a/fs/ufs/super.c
-+++ b/fs/ufs/super.c
-@@ -100,7 +100,7 @@ static struct inode *ufs_nfs_get_inode(struct super_block *sb, u64 ino, u32 gene
- 	struct ufs_sb_private_info *uspi = UFS_SB(sb)->s_uspi;
- 	struct inode *inode;
+--- a/drivers/gpu/drm/radeon/ni_dpm.c
++++ b/drivers/gpu/drm/radeon/ni_dpm.c
+@@ -2123,7 +2123,7 @@ static int ni_init_smc_spll_table(struct
+ 		if (p_div & ~(SMC_NISLANDS_SPLL_DIV_TABLE_PDIV_MASK >> SMC_NISLANDS_SPLL_DIV_TABLE_PDIV_SHIFT))
+ 			ret = -EINVAL;
  
--	if (ino < UFS_ROOTINO || ino > uspi->s_ncg * uspi->s_ipg)
-+	if (ino < UFS_ROOTINO || ino > (u64)uspi->s_ncg * uspi->s_ipg)
- 		return ERR_PTR(-ESTALE);
+-		if (clk_s & ~(SMC_NISLANDS_SPLL_DIV_TABLE_CLKS_MASK >> SMC_NISLANDS_SPLL_DIV_TABLE_CLKS_SHIFT))
++		if (fb_div & ~(SMC_NISLANDS_SPLL_DIV_TABLE_FBDIV_MASK >> SMC_NISLANDS_SPLL_DIV_TABLE_FBDIV_SHIFT))
+ 			ret = -EINVAL;
  
- 	inode = ufs_iget(sb, ino);
--- 
-2.25.1
-
+ 		if (fb_div & ~(SMC_NISLANDS_SPLL_DIV_TABLE_FBDIV_MASK >> SMC_NISLANDS_SPLL_DIV_TABLE_FBDIV_SHIFT))
 
 
