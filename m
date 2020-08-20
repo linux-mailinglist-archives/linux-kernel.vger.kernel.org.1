@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C929924B785
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCB3624B64D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731149AbgHTKN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:13:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57032 "EHLO mail.kernel.org"
+        id S1731341AbgHTKTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:19:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731114AbgHTKNP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:13:15 -0400
+        id S1731371AbgHTKRu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:17:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 416032067C;
-        Thu, 20 Aug 2020 10:13:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B63D2067C;
+        Thu, 20 Aug 2020 10:17:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918394;
-        bh=sXv/aQZI69SbI3dJ4/o3rzShpDxVRN+9/EDX6451GTw=;
+        s=default; t=1597918669;
+        bh=5lM8KCwnYSYrdF78ZiUyZHdioymTZ03frSXpaWniM2Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZYHwrvtdYJqsviTigq/UarLNdnpQjyrRI6jBJ4KO8SGVhcyr9k+jYZXX/cFzdElbN
-         K/Gu7dqlvlCZrx44Xbb/XuJpduiFi9nJc4hw4f0C7J9q4CYn0Pqt+v7C6dKgUbvuVX
-         sY3TPA+EQJPqrj8CzAMXHk9fR/ADmnJ3pC1QMcCE=
+        b=RSY4gi1OQlnngH8lih67CN8AHM4v2bVqripqhjzxI2c0wc3ZNnWkm9Dr/f7C+wOGc
+         VpwrK2BQMoU2xGeFC2NJAvZITZL8v+hd7Trc8AQolwXHb8BXrDm9/uIy958E5WObUQ
+         FXhOke88PPV03Szih8VRJ/yzUVcY1sLdvFdOmj5A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
-        Alexandra Winter <wintera@linux.ibm.com>,
+        stable@vger.kernel.org, Dirk Behme <dirk.behme@de.bosch.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 124/228] s390/qeth: dont process empty bridge port events
-Date:   Thu, 20 Aug 2020 11:21:39 +0200
-Message-Id: <20200820091613.792461704@linuxfoundation.org>
+Subject: [PATCH 4.4 023/149] net: ethernet: ravb: exit if re-initialization fails in tx timeout
+Date:   Thu, 20 Aug 2020 11:21:40 +0200
+Message-Id: <20200820092126.839451261@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
-References: <20200820091607.532711107@linuxfoundation.org>
+In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
+References: <20200820092125.688850368@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,38 +46,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Wiedmann <jwi@linux.ibm.com>
+From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-[ Upstream commit 02472e28b9a45471c6d8729ff2c7422baa9be46a ]
+[ Upstream commit 015c5d5e6aa3523c758a70eb87b291cece2dbbb4 ]
 
-Discard events that don't contain any entries. This shouldn't happen,
-but subsequent code relies on being able to use entry 0. So better
-be safe than accessing garbage.
+According to the report of [1], this driver is possible to cause
+the following error in ravb_tx_timeout_work().
 
-Fixes: b4d72c08b358 ("qeth: bridgeport support - basic control")
-Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
-Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
+ravb e6800000.ethernet ethernet: failed to switch device to config mode
+
+This error means that the hardware could not change the state
+from "Operation" to "Configuration" while some tx and/or rx queue
+are operating. After that, ravb_config() in ravb_dmac_init() will fail,
+and then any descriptors will be not allocaled anymore so that NULL
+pointer dereference happens after that on ravb_start_xmit().
+
+To fix the issue, the ravb_tx_timeout_work() should check
+the return values of ravb_stop_dma() and ravb_dmac_init().
+If ravb_stop_dma() fails, ravb_tx_timeout_work() re-enables TX and RX
+and just exits. If ravb_dmac_init() fails, just exits.
+
+[1]
+https://lore.kernel.org/linux-renesas-soc/20200518045452.2390-1-dirk.behme@de.bosch.com/
+
+Reported-by: Dirk Behme <dirk.behme@de.bosch.com>
+Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/s390/net/qeth_l2_main.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/ethernet/renesas/ravb_main.c | 26 ++++++++++++++++++++++--
+ 1 file changed, 24 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/s390/net/qeth_l2_main.c b/drivers/s390/net/qeth_l2_main.c
-index 6fa07c2469150..ae310d5ced105 100644
---- a/drivers/s390/net/qeth_l2_main.c
-+++ b/drivers/s390/net/qeth_l2_main.c
-@@ -1559,6 +1559,10 @@ static void qeth_bridge_state_change(struct qeth_card *card,
- 	int extrasize;
+diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+index 5b6320f9c935f..460b29ac5fd86 100644
+--- a/drivers/net/ethernet/renesas/ravb_main.c
++++ b/drivers/net/ethernet/renesas/ravb_main.c
+@@ -1291,6 +1291,7 @@ static void ravb_tx_timeout_work(struct work_struct *work)
+ 	struct ravb_private *priv = container_of(work, struct ravb_private,
+ 						 work);
+ 	struct net_device *ndev = priv->ndev;
++	int error;
  
- 	QETH_CARD_TEXT(card, 2, "brstchng");
-+	if (qports->num_entries == 0) {
-+		QETH_CARD_TEXT(card, 2, "BPempty");
+ 	netif_tx_stop_all_queues(ndev);
+ 
+@@ -1298,15 +1299,36 @@ static void ravb_tx_timeout_work(struct work_struct *work)
+ 	ravb_ptp_stop(ndev);
+ 
+ 	/* Wait for DMA stopping */
+-	ravb_stop_dma(ndev);
++	if (ravb_stop_dma(ndev)) {
++		/* If ravb_stop_dma() fails, the hardware is still operating
++		 * for TX and/or RX. So, this should not call the following
++		 * functions because ravb_dmac_init() is possible to fail too.
++		 * Also, this should not retry ravb_stop_dma() again and again
++		 * here because it's possible to wait forever. So, this just
++		 * re-enables the TX and RX and skip the following
++		 * re-initialization procedure.
++		 */
++		ravb_rcv_snd_enable(ndev);
++		goto out;
++	}
+ 
+ 	ravb_ring_free(ndev, RAVB_BE);
+ 	ravb_ring_free(ndev, RAVB_NC);
+ 
+ 	/* Device init */
+-	ravb_dmac_init(ndev);
++	error = ravb_dmac_init(ndev);
++	if (error) {
++		/* If ravb_dmac_init() fails, descriptors are freed. So, this
++		 * should return here to avoid re-enabling the TX and RX in
++		 * ravb_emac_init().
++		 */
++		netdev_err(ndev, "%s: ravb_dmac_init() failed, error %d\n",
++			   __func__, error);
 +		return;
 +	}
- 	if (qports->entry_length != sizeof(struct qeth_sbp_port_entry)) {
- 		QETH_CARD_TEXT_(card, 2, "BPsz%04x", qports->entry_length);
- 		return;
+ 	ravb_emac_init(ndev);
+ 
++out:
+ 	/* Initialise PTP Clock driver */
+ 	ravb_ptp_init(ndev, priv->pdev);
+ 
 -- 
 2.25.1
 
