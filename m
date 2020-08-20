@@ -2,105 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC4E24C4B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 19:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE21C24C4B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 19:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727894AbgHTRlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 13:41:36 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:55907 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726887AbgHTRlU (ORCPT
+        id S1727787AbgHTRmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 13:42:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727895AbgHTRlo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 13:41:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597945278;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=saSZ72xGZQjg7N1ZoxyMXMkEKF7tyG6HepfcvbIUgEk=;
-        b=Mntx/bm43+U9X1/ilmJnlc5ny8YQzQl3vegCSVApaS4eDyoLO4zf+hPlnzYXhCEw9P9jfg
-        lcpjuW7rLh51QrE/k05JSrTmtfFCz7tLHJT3iP/3ZAdXd3oPz7i5omRAbJh9RLCtqQuvvv
-        WV++ahCW2ejRhfZouJbhayzHne8B3Cs=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-256-caDrItTlPsuFNVszP9Oo3Q-1; Thu, 20 Aug 2020 13:41:15 -0400
-X-MC-Unique: caDrItTlPsuFNVszP9Oo3Q-1
-Received: by mail-wm1-f72.google.com with SMTP id d22so1050444wmd.2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:41:15 -0700 (PDT)
+        Thu, 20 Aug 2020 13:41:44 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 831C4C061385;
+        Thu, 20 Aug 2020 10:41:42 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id a79so1381762pfa.8;
+        Thu, 20 Aug 2020 10:41:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oDyvq15BnfthkLtUukIEJz89Sj2Uqn2+fWCc9qUql5I=;
+        b=Z+WGG4b4dkuKHsVtQe1i9WduYBqyH8S4uKxDElpd5cXsi4H11GIlZWCcZgd657XegK
+         uXT4JpFirhXkXu2XTJxbGr5kFdHmoP1OHsrCr6Qthuzimm9pMZzi5zXTgR6Sv5BgXyDs
+         hAhjr2OCzC2ulfDbsdYYA0LsBy0GFR/kM86YP/n5Exz7CmfTxKOvL7qShI/d6Ll+fa8n
+         Bi/NHJ8ocQ4qJoBa0SbGaagVawc0sq0uBEW8OKbSQRZBvqrd/tBRPv8bIRqvQdvoLMZ/
+         mSZXUw6GLC8ziVIN0UOUCm0rcnPhT9ElfrcwW67Ze23Tq2PGkJi5fpezXOZP/Ac4DgTY
+         Hliw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=saSZ72xGZQjg7N1ZoxyMXMkEKF7tyG6HepfcvbIUgEk=;
-        b=Y8CdQcfMc+Rb4p5MMlP7zmxTpMpEHlszKEbGv3tGeGX+rIglBwaQZutePGEKhg9Auv
-         R+SYExwumL9gn9vWPTovLaMeoHAiw/l+6sV7Y0FzQfZ5Q9TDCuA4engucpYnbQS5CI1c
-         qSRqPLASXLwu4p8NhWc6axtZ1aBbsvXTbetW6/AxoizWlFmQT6C7Sml7T8nQbNk3VEZq
-         Asp6LDRt5fj9Vwkc9zCnWhIpPABeAg7gUKWpWaVHVIQAQByyYVoQAdcnuM8LlZTytTjs
-         TWMwZ4iCgBkZUDQzvEYHJxIaYYYgvCZQr0L4oKWdcYIerNwZBXgtlcWsdupGXvXuenyZ
-         tg2w==
-X-Gm-Message-State: AOAM530UJCrqZzMGmtTlCIpVhjA2A9y829ynqDxzXzbKhLPa1vJvgwE9
-        ZWWhzCAo1dXwjShVEGuVDv6T+W6S4n5UM8Tr7j4DNqEUllcXmCecri6o+zb9IcYeFnH9VU4MjB0
-        mXY6Axx+/W16pC4YcHNnArxZF
-X-Received: by 2002:a1c:f70e:: with SMTP id v14mr4489699wmh.74.1597945274640;
-        Thu, 20 Aug 2020 10:41:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwXRw1tgy3fAFN1oCdLTnKz42TTndVNN2Sy+b17hJaQYRdiYwXj7JZqocGj8Y8zK/yjlQ25sA==
-X-Received: by 2002:a1c:f70e:: with SMTP id v14mr4489678wmh.74.1597945274412;
-        Thu, 20 Aug 2020 10:41:14 -0700 (PDT)
-Received: from [192.168.10.150] ([93.56.170.5])
-        by smtp.gmail.com with ESMTPSA id l18sm5660930wrm.52.2020.08.20.10.41.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Aug 2020 10:41:13 -0700 (PDT)
-Subject: Re: FSGSBASE causing panic on 5.9-rc1
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sasha Levin <sashal@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-References: <39d57e4d-5db4-f536-6f5e-6b0414c0dccc@amd.com>
- <7dedb0ab-56a6-5d96-577b-21ab1ecdad24@amd.com>
- <CALCETrUArZ04UqJjp2mEheuMpZyPwLeEgGM7mdDdmWxmx=GN4Q@mail.gmail.com>
- <CALCETrWcXgp+GzFNrOKcX740+R-57FgNu3Wt3g=_sRCMYFzbMg@mail.gmail.com>
- <20200820151049.GA26595@sjchrist-ice>
- <362f5a45-b808-25ad-b99b-449e05717c4a@amd.com>
- <CALCETrW8SWgWxDdMXuMPD-A1avztvNcpwLAKKRQ4ojmcz07B6A@mail.gmail.com>
- <45e16c5c-ce99-33da-99c8-ea52ef0945db@amd.com>
- <c7f65dbc-316b-efb9-d2c3-c7c212289dce@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <59fc4b2f-7b18-53a2-b30d-c8e0842e7cf9@redhat.com>
-Date:   Thu, 20 Aug 2020 19:41:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oDyvq15BnfthkLtUukIEJz89Sj2Uqn2+fWCc9qUql5I=;
+        b=frW0kT98idrzSCKRULlgMqg+MqEfS9aoBzoJm1oOg3FOwPII3sz6wa3fpilCtAuLqB
+         qxU050XFz/2lZK7uqQb3oFYPPt+UTSsPTikmpzHRMQlAdtPNY+lFn/pQP7ovDKkFHD4w
+         Up1gsrW28cYI29rxNwPDW0mv4lDAZBYhpIOG1vyZk7dMt4lSPamDd8/3ND2H9gZg1EQL
+         PKDH7wJ48cI720SoTNan5wyebpbIbNQgqe7CRB9BTbiulb4QTvuRE+afPFvlTIXPxWkE
+         MPS2ZLVQbx+kXA/yjNZw7iEmWoqVdlWjjlCt/1+omX3VlR5HGmGmdjr60P56Zwo/URyo
+         QjCA==
+X-Gm-Message-State: AOAM530mVA5GLWxNoIpmrU752bgKffDOfWSyfjiykmqbyt1rgI2jmLwu
+        l5LzXSYe/HNZ2tF/s6+8JZY=
+X-Google-Smtp-Source: ABdhPJwLc9pERZHVMQlxakOJ6eWDFDhXz9bYZmx7M4I1O/HKPbfxjfH2YWKYleJW+BZ4TawkiN2DPg==
+X-Received: by 2002:a62:fc8c:: with SMTP id e134mr3018219pfh.113.1597945301788;
+        Thu, 20 Aug 2020 10:41:41 -0700 (PDT)
+Received: from gmail.com ([2601:600:9b7f:872e:a655:30fb:7373:c762])
+        by smtp.gmail.com with ESMTPSA id y10sm2698316pjv.55.2020.08.20.10.41.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Aug 2020 10:41:41 -0700 (PDT)
+Date:   Thu, 20 Aug 2020 10:41:39 -0700
+From:   Andrei Vagin <avagin@gmail.com>
+To:     Eugene Lubarsky <elubarsky.linux@gmail.com>
+Cc:     linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, adobriyan@gmail.com,
+        dsahern@gmail.com, Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [RFC PATCH 0/5] Introduce /proc/all/ to gather stats from all
+ processes
+Message-ID: <20200820174139.GA919358@gmail.com>
+References: <20200810145852.9330-1-elubarsky.linux@gmail.com>
+ <20200812075135.GA191218@gmail.com>
+ <20200814010100.3e9b6423@eug-lubuntu>
 MIME-Version: 1.0
-In-Reply-To: <c7f65dbc-316b-efb9-d2c3-c7c212289dce@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=koi8-r
+Content-Disposition: inline
+In-Reply-To: <20200814010100.3e9b6423@eug-lubuntu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/08/20 18:30, Tom Lendacky wrote:
->>> running the x86 sefltests on a bad kernel without running any guests?
->>
->> I'll give that a try.
+On Fri, Aug 14, 2020 at 01:01:00AM +1000, Eugene Lubarsky wrote:
+> On Wed, 12 Aug 2020 00:51:35 -0700
+> Andrei Vagin <avagin@gmail.com> wrote:
 > 
-> All the selftests passed.
+> > Maybe we need resurrect the task_diag series instead of inventing
+> > another less-effective interface...
+> 
+> I would certainly welcome the resurrection of task_diag - it is clearly
+> more efficient than this /proc/all/ idea. It would be good to find out
+> if there's anything in particular that's currently blocking it.
 
-Do the KVM selftests also pass?  Especially the dirty_log_test might be
-interesting since it can be run for a longer time.
+Unfotunatly, I don't have enough time to lead a process of pushing
+task_diag into the upstream. So if it is interesting for you, you can
+restart this process and I am ready to help as much as time will permit.
 
-Paolo
+I think the main blocking issue was a lack of interest from the wide
+audience to this. The slow proc is the problem just for a few users, but
+task_diag is a big subsystem that repeats functionality of another
+subsystem with all derived problems like code duplication.
 
+Another blocking issue is a new interface. There was no consensus on
+this. Initially, I suggested to use netlink sockets, but developers from
+non-network subsystem objected on this, so the transaction file
+interface was introduced. The main idea similar to netlink sockets is
+that we write a request and read a response.
+
+There were some security concerns but I think I fixed them.
+
+> 
+> This RFC is mainly meant to check whether such an addition would
+> be acceptable from an API point of view. It currently has an obvious
+> performance issue in that seq_file seems to only return one page at a
+> time so lots of read syscalls are still required. However I may not
+> have the time to figure out a proposed fix for this by myself.
+> Regardless, text-based formats can't match the efficiency of task_diag,
+> but binary ones are also possible.
+
+I don't have objections to this series. It can be an option if we
+will decide that we don't want to do a major rework here.
+
+
+Thanks,
+Andrei
