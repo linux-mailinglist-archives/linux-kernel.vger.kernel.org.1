@@ -2,86 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C08E24B763
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71FFE24B76A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729948AbgHTKwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:52:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42192 "EHLO mail.kernel.org"
+        id S1731058AbgHTKxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:53:23 -0400
+Received: from mga06.intel.com ([134.134.136.31]:52351 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730973AbgHTKwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:52:22 -0400
-Received: from localhost (cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net [82.37.168.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6F34C206FA;
-        Thu, 20 Aug 2020 10:52:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597920741;
-        bh=ZqG3th/b5Uxk50ROdnLR+gts/eCRrmj90/L+6Vb52wc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pKDANHIIeJcjOAaMWCQFzyJXu/r70du2ZKYKRhRDh7VOW0vGBNtjTAJk8z0IVbhAw
-         JCszTZds6S/hxCXmwDrfok82iKPXNDKGgNImJdSIvMJ2P9fr6wInj5PcJ3bNLOBRFw
-         kCUYhb9pBv6JtwL9RlZ/VriQJ42RkSuLBgvIoGME=
-Date:   Thu, 20 Aug 2020 11:51:48 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc:     Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Icenowy Zheng <icenowy@aosc.io>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH 11/12] regulator: stm32-vrefbuf: Fix W=1 build warning
- when CONFIG_OF=n
-Message-ID: <20200820105148.GA5854@sirena.org.uk>
-References: <20200820152926.42c48840@xhacker.debian>
- <20200820154626.79d83157@xhacker.debian>
- <20fc45ab-4daf-3855-5817-1898d50c9efc@st.com>
- <20200820163232.54b59e1d@xhacker.debian>
+        id S1731514AbgHTKxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:53:02 -0400
+IronPort-SDR: mTFY2IsmrTjA6seb/afrZwNU1L7tes2q0eqeR3QSAyZloyQIdIKO/+12EJNW19vwwFNoiriWL6
+ iFtHE447+Vlg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9718"; a="216814278"
+X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
+   d="scan'208";a="216814278"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2020 03:53:01 -0700
+IronPort-SDR: F/MSpuvDJb0c+Fl311bQpLMxkIGXF5XvQ6IQk4EsJbAiffqOx9xUzw79vymMv2eshLsNtJO8RA
+ U7BalIxgzuLw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
+   d="scan'208";a="327392777"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 20 Aug 2020 03:52:58 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1k8iBj-00A5k8-Ra; Thu, 20 Aug 2020 13:52:55 +0300
+Date:   Thu, 20 Aug 2020 13:52:55 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Rahul Tanwar <rahul.tanwar@linux.intel.com>
+Cc:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
+        lee.jones@linaro.org, thierry.reding@gmail.com,
+        p.zabel@pengutronix.de, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, rahul.tanwar.linux@gmail.com,
+        rtanwar@maxlinear.com
+Subject: Re: [PATCH v8 2/2] Add PWM fan controller driver for LGM SoC
+Message-ID: <20200820105255.GB1891694@smile.fi.intel.com>
+References: <cover.1597898872.git.rahul.tanwar@linux.intel.com>
+ <b6d0a65625a2bc231c649c970c0a1af1ff3a5dd5.1597898872.git.rahul.tanwar@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="WIyZ46R2i8wDzkSu"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200820163232.54b59e1d@xhacker.debian>
-X-Cookie: Dead? No excuse for laying off work.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <b6d0a65625a2bc231c649c970c0a1af1ff3a5dd5.1597898872.git.rahul.tanwar@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 20, 2020 at 12:50:46PM +0800, Rahul Tanwar wrote:
+> Intel Lightning Mountain(LGM) SoC contains a PWM fan controller.
+> This PWM controller does not have any other consumer, it is a
+> dedicated PWM controller for fan attached to the system. Add
+> driver for this PWM fan controller.
 
---WIyZ46R2i8wDzkSu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+...
 
-On Thu, Aug 20, 2020 at 04:32:32PM +0800, Jisheng Zhang wrote:
-> On Thu, 20 Aug 2020 10:13:12 +0200 Fabrice Gasnier wrote:
+> +config PWM_INTEL_LGM
+> +	tristate "Intel LGM PWM support"
 
-> > You could probably adopt "__maybe_unused" here ? E.g. like:
+> +	depends on OF && HAS_IOMEM
+> +	depends on X86 || COMPILE_TEST
 
-> __maybe_unused also fixes the warning. I'm not sure the maintainers' preference.
+For better test coverage you may rewrite this
 
-> which solution do you prefer?
+	depends on HAS_IOMEM
+	depends on (OF && X86) || COMPILE_TEST
 
-__maybe_unused is a bit nicer.
+> +	select REGMAP_MMIO
+> +	help
+> +	  Generic PWM fan controller driver for LGM SoC.
+> +
+> +	  To compile this driver as a module, choose M here: the module
+> +	  will be called pwm-intel-lgm.
 
---WIyZ46R2i8wDzkSu
-Content-Type: application/pgp-signature; name="signature.asc"
+...
 
------BEGIN PGP SIGNATURE-----
+> +#include <linux/bitfield.h>
+> +#include <linux/clk.h>
+> +#include <linux/module.h>
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8+VcAACgkQJNaLcl1U
-h9CIQQf8CpLxeYGvZPi26wQNd0LwMWOfzS5DReNlci1HTCE1X6GKANsxjGudPCHZ
-dxEIuBuC4eqVCHu4xfXjX+WdYnavp80dGD83kJGzHvMlu6z6gtRUezjspbWClDJF
-S92rmkLD1DZo/gMFHKEdyLs7RUNrOVcW/SbesClYSL0S649zBIljRvwibJsFKX9p
-npNlMDrRtpx87Rdux0cCAqIXuQEOjFCLs5oFZcHHbIHxvh042022JW7NmyQ5wHx4
-sZTeM1eC1wyJqQihJkjziS+VaFwJG3k6vaQZIbkddcRrl1UHC/B7NarX0onCkAso
-NGsTd9rE3rfVV9jK51V27xg9pkhIlg==
-=fXEC
------END PGP SIGNATURE-----
+> +#include <linux/of_device.h>
 
---WIyZ46R2i8wDzkSu--
+This should be mod_devicetable.h.
+
+> +#include <linux/pwm.h>
+> +#include <linux/regmap.h>
+> +#include <linux/reset.h>
+
+...
+
+> +#define LGM_PWM_PERIOD_2WIRE_NSECS	40000000
+
+NSECS -> NS
+40000000 -> (40 * NSEC_PER_MSEC)
+
+...
+
+> +	if (state->polarity != PWM_POLARITY_NORMAL ||
+> +	    state->period < pc->period)
+
+It can be one line.
+
+> +		return -EINVAL;
+
+...
+
+> +	if (!state->enabled) {
+
+> +		ret = lgm_pwm_enable(chip, 0);
+> +		return ret;
+
+What is the point?
+
+> +	}
+
+...
+
+> +	ret = lgm_pwm_enable(chip, 1);
+> +
+> +	return ret;
+
+Ditto.
+
+...
+
+> +	state->duty_cycle = DIV_ROUND_UP(duty * pc->period,
+> +					 LGM_PWM_MAX_DUTY_CYCLE);
+
+One line?
+
+...
+
+> +	struct lgm_pwm_chip *pc;
+> +	struct device *dev = &pdev->dev;
+
+Use reversed xmas tree order.
+
+> +	void __iomem *io_base;
+> +	int ret;
+
+...
+
+> +	pc->regmap = devm_regmap_init_mmio(dev, io_base, &lgm_pwm_regmap_config);
+> +	if (IS_ERR(pc->regmap)) {
+
+> +		ret = PTR_ERR(pc->regmap);
+> +		if (ret != -EPROBE_DEFER)
+> +			dev_err(dev, "failed to init register map: %pe\n",
+> +				pc->regmap);
+> +		return ret;
+
+dev_err_probe()
+
+> +	}
+
+...
+
+> +	pc->clk = devm_clk_get(dev, NULL);
+> +	if (IS_ERR(pc->clk)) {
+> +		ret = PTR_ERR(pc->clk);
+> +		if (ret != -EPROBE_DEFER)
+> +			dev_err(dev, "failed to get clock: %pe\n", pc->clk);
+> +		return ret;
+
+Ditto.
+
+> +	}
+> +
+> +	pc->rst = devm_reset_control_get_exclusive(dev, NULL);
+> +	if (IS_ERR(pc->rst)) {
+> +		ret = PTR_ERR(pc->rst);
+> +		if (ret != -EPROBE_DEFER)
+> +			dev_err(dev, "failed to get reset control: %pe\n",
+> +				pc->rst);
+> +		return ret;
+
+Ditto.
+
+> +	}
+> +
+> +	ret = reset_control_deassert(pc->rst);
+> +	if (ret) {
+> +		if (ret != -EPROBE_DEFER)
+> +			dev_err(dev, "cannot deassert reset control: %pe\n",
+> +				ERR_PTR(ret));
+> +		return ret;
+
+Ditto.
+
+> +	}
+
+...
+
+> +	ret = clk_prepare_enable(pc->clk);
+
+Wrap it with devm_add_action_or_reset(). Same for reset_control_deassert().
+You probably can even put them under one function.
+
+> +	if (ret) {
+> +		dev_err(dev, "failed to enable clock\n");
+> +		reset_control_assert(pc->rst);
+> +		return ret;
+> +	}
+
+...
+
+> +	ret = pwmchip_add(&pc->chip);
+
+> +	if (ret < 0) {
+
+Does ' < 0' have any meaning?
+
+> +		dev_err(dev, "failed to add PWM chip: %pe\n", ERR_PTR(ret));
+> +		clk_disable_unprepare(pc->clk);
+> +		reset_control_assert(pc->rst);
+> +		return ret;
+> +	}
+
+...
+
+> +	ret = pwmchip_remove(&pc->chip);
+> +	if (ret < 0)
+
+Ditto.
+
+> +		return ret;
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
