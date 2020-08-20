@@ -2,85 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C21024B20A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B3024B25D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726935AbgHTJTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:19:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726823AbgHTJSh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:18:37 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B793DC061384
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 02:18:36 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597915114;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BKCC8LY5eyXxgPkbZLKy7wBhTWb+3NrngDGJtPc7giw=;
-        b=yZ4vqcXicaTwqzYA56JRtJyNmR4lrnwCmHnfwA94jLlWRfPDycDYu/Q8ElPHlUXk5zSmrd
-        JmCWqW5xHeMiwMvynRwMIRmocvxe95LOkKedTBsNZcWAze2OrUZjwDRw11m98xuDCUfn5L
-        Vu8IBNa/KvbIrn5oZDyb+eM0vdJopgbvnav7/8bkD3wUr/AAkBjHJI5J1qfjHfspqlAq0C
-        8LT4AM56sEml8AwtzDoEV3YF6TJl8XboLR6DK17tJat7fAX5Xi69ZtlBP2xNPUUDJf6rpc
-        EPYFfTfPOHQIKUu7w+n2xkB60sBUx1zyvw9A0+ha59X/PcrEPKJc79/hBGdaDw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597915114;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BKCC8LY5eyXxgPkbZLKy7wBhTWb+3NrngDGJtPc7giw=;
-        b=HPS6KYi1eAGXLYiQWiaX4ld6qTIt6H3EeQs1uRPabErkbY9Z+V/pVQ6nGEBafTOetEENlx
-        OsfrWYk7MrzgrFBg==
-To:     David Laight <David.Laight@ACULAB.COM>,
-        'Joe Perches' <joe@perches.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC PATCH 1/5] printk: implement pr_cont_t
-In-Reply-To: <389a62f178d2482b9525f499b82e92df@AcuMS.aculab.com>
-References: <20200819232632.13418-1-john.ogness@linutronix.de> <20200819232632.13418-2-john.ogness@linutronix.de> <e1e3164eabf69e04ad9e9ddc259ca685f48c5e27.camel@perches.com> <b17fc8afc8984fedb852921366190104@AcuMS.aculab.com> <29b6120680fbfb51936bb9100b2c9bb78385aef0.camel@perches.com> <389a62f178d2482b9525f499b82e92df@AcuMS.aculab.com>
-Date:   Thu, 20 Aug 2020 11:24:33 +0206
-Message-ID: <87wo1tzndi.fsf@jogness.linutronix.de>
+        id S1727903AbgHTJ2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:28:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37616 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727997AbgHTJ1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:27:51 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6C29222D02;
+        Thu, 20 Aug 2020 09:27:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597915670;
+        bh=Qy65o2ElQbFg2VmWsr+VjaMnkiwLKwRjolVO9ke96v8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=sAF7nfHdbFQ5SPSMQ8AcVvG8eFEGPVjUmYGxaUSIGKsy0hpUASDZ4+1NbrbrIhaiR
+         7mtKEdf75zwnUqKTg/mvHANkUrzIUbdYf3TF0qCTbb1gFHEU1LwPjJUlV0onbfql84
+         YutKzOwIIRAHQgReZgcoVnFYgceXQMkE5lKiNtcM=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Coly Li <colyli@suse.de>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.8 065/232] bcache: allocate meta data pages as compound pages
+Date:   Thu, 20 Aug 2020 11:18:36 +0200
+Message-Id: <20200820091615.947140901@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
+References: <20200820091612.692383444@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-20, David Laight <David.Laight@ACULAB.COM> wrote:
->> On Thu, 2020-08-20 at 07:44 +0000, David Laight wrote:
->>> I've no idea how you'd 'size' the number of buffers.
->> 
->> I believe they are static and assume no more than 10
->> simultaneous uses of printk_begin
->
-> What I meant was how you'd work out whether 10 was in any way
-> appropriate.  ISTM it is either 'too many' or 'nowhere near enough'
-> depending on exactly what the system is doing.
+From: Coly Li <colyli@suse.de>
 
-Right now mainline has 1, which breaks pr_cont just booting your system.
+commit 5fe48867856367142d91a82f2cbf7a57a24cbb70 upstream.
 
-I expect we will be increasing the number of buffers, regardless if we
-adapt a new API or continue with what we have now.
+There are some meta data of bcache are allocated by multiple pages,
+and they are used as bio bv_page for I/Os to the cache device. for
+example cache_set->uuids, cache->disk_buckets, journal_write->data,
+bset_tree->data.
 
-> And if code 'leaks' them you are in deep doo-doos.
+For such meta data memory, all the allocated pages should be treated
+as a single memory block. Then the memory management and underlying I/O
+code can treat them more clearly.
 
-Not really. It falls back to printing individual parts. Also, the printk
-subsystem has access to the open buffers and could even track the users
-lockdep style.
+This patch adds __GFP_COMP flag to all the location allocating >0 order
+pages for the above mentioned meta data. Then their pages are treated
+as compound pages now.
 
-But this discussion has little to do with the API. These are
-implementation details that may end up under the hood of the current
-mainline API.
+Signed-off-by: Coly Li <colyli@suse.de>
+Cc: stable@vger.kernel.org
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-John Ogness
+---
+ drivers/md/bcache/bset.c    |    2 +-
+ drivers/md/bcache/btree.c   |    2 +-
+ drivers/md/bcache/journal.c |    4 ++--
+ drivers/md/bcache/super.c   |    2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
+
+--- a/drivers/md/bcache/bset.c
++++ b/drivers/md/bcache/bset.c
+@@ -322,7 +322,7 @@ int bch_btree_keys_alloc(struct btree_ke
+ 
+ 	b->page_order = page_order;
+ 
+-	t->data = (void *) __get_free_pages(gfp, b->page_order);
++	t->data = (void *) __get_free_pages(__GFP_COMP|gfp, b->page_order);
+ 	if (!t->data)
+ 		goto err;
+ 
+--- a/drivers/md/bcache/btree.c
++++ b/drivers/md/bcache/btree.c
+@@ -785,7 +785,7 @@ int bch_btree_cache_alloc(struct cache_s
+ 	mutex_init(&c->verify_lock);
+ 
+ 	c->verify_ondisk = (void *)
+-		__get_free_pages(GFP_KERNEL, ilog2(bucket_pages(c)));
++		__get_free_pages(GFP_KERNEL|__GFP_COMP, ilog2(bucket_pages(c)));
+ 
+ 	c->verify_data = mca_bucket_alloc(c, &ZERO_KEY, GFP_KERNEL);
+ 
+--- a/drivers/md/bcache/journal.c
++++ b/drivers/md/bcache/journal.c
+@@ -999,8 +999,8 @@ int bch_journal_alloc(struct cache_set *
+ 	j->w[1].c = c;
+ 
+ 	if (!(init_fifo(&j->pin, JOURNAL_PIN, GFP_KERNEL)) ||
+-	    !(j->w[0].data = (void *) __get_free_pages(GFP_KERNEL, JSET_BITS)) ||
+-	    !(j->w[1].data = (void *) __get_free_pages(GFP_KERNEL, JSET_BITS)))
++	    !(j->w[0].data = (void *) __get_free_pages(GFP_KERNEL|__GFP_COMP, JSET_BITS)) ||
++	    !(j->w[1].data = (void *) __get_free_pages(GFP_KERNEL|__GFP_COMP, JSET_BITS)))
+ 		return -ENOMEM;
+ 
+ 	return 0;
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -1776,7 +1776,7 @@ void bch_cache_set_unregister(struct cac
+ }
+ 
+ #define alloc_bucket_pages(gfp, c)			\
+-	((void *) __get_free_pages(__GFP_ZERO|gfp, ilog2(bucket_pages(c))))
++	((void *) __get_free_pages(__GFP_ZERO|__GFP_COMP|gfp, ilog2(bucket_pages(c))))
+ 
+ struct cache_set *bch_cache_set_alloc(struct cache_sb *sb)
+ {
+
+
