@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C77224B4EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 894A924B527
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728624AbgHTKOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:14:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32984 "EHLO mail.kernel.org"
+        id S1731455AbgHTKTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:19:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730928AbgHTKOa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:14:30 -0400
+        id S1731369AbgHTKTQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:19:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13F6320738;
-        Thu, 20 Aug 2020 10:14:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D681820658;
+        Thu, 20 Aug 2020 10:19:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918469;
-        bh=10jsHML1yfzSljuKWYJg2C1g0WyzWLBu9ooMOo5TVOQ=;
+        s=default; t=1597918755;
+        bh=RbLioRtwqIYvPCQRBQHY8oawWlkPDVdj5GuzGLh/pYI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eJYhaE4OdXlVRGZ9RfdRT/1j/02zYWfRguyt1w4FEt1m9V8Pa09z0V9mimejMqiMu
-         239MoCbwWORLjLMD2hnndIx80jMds7CJMbnp0jRjw03U4k0XgeMguGY6SKnJj8j5SC
-         DhdHWaEcKiHfIrVJXtljBjiB9LgPfm7DHNTfVLEI=
+        b=wvr0vQpKed6GbDOCCLDQeOsfZSLoPJr8ZFXbVCBhQ2nEuWONiOwvO2ufo5qkI9dZn
+         h++3nA1xOXTYEKYA95m037Y9Wd4WCDqESbkLBQKK7Hu1Ea2q6Ir0h4L6G110JabfsV
+         Je/orPVtzWEQnJg/Z2kq5MLt0Ob5U/hMOEE3+DGc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+a9ac3de1b5de5fb10efc@syzkaller.appspotmail.com,
-        syzbot+df958cf5688a96ad3287@syzkaller.appspotmail.com,
-        Eric Biggers <ebiggers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Qiujun Huang <anenbupt@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 154/228] fs/minix: dont allow getting deleted inodes
-Date:   Thu, 20 Aug 2020 11:22:09 +0200
-Message-Id: <20200820091615.278147448@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 055/149] udp: drop corrupt packets earlier to avoid data corruption
+Date:   Thu, 20 Aug 2020 11:22:12 +0200
+Message-Id: <20200820092128.392955595@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
-References: <20200820091607.532711107@linuxfoundation.org>
+In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
+References: <20200820092125.688850368@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,59 +44,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+From: Dexuan Cui <decui@microsoft.com>
 
-commit facb03dddec04e4aac1bb2139accdceb04deb1f3 upstream.
+The v4.4 stable kernel lacks this bugfix:
+commit 327868212381 ("make skb_copy_datagram_msg() et.al. preserve ->msg_iter on error").
+As a result, the v4.4 kernel can deliver corrupt data to the application
+when a corrupt UDP packet is closely followed by a valid UDP packet: the
+same invocation of the recvmsg() syscall can deliver the corrupt packet's
+UDP payload to the application with the UDP payload length and the
+"from IP/Port" of the valid packet.
 
-If an inode has no links, we need to mark it bad rather than allowing it
-to be accessed.  This avoids WARNINGs in inc_nlink() and drop_nlink() when
-doing directory operations on a fuzzed filesystem.
+Details:
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-by: syzbot+a9ac3de1b5de5fb10efc@syzkaller.appspotmail.com
-Reported-by: syzbot+df958cf5688a96ad3287@syzkaller.appspotmail.com
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Qiujun Huang <anenbupt@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r/20200628060846.682158-3-ebiggers@kernel.org
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+For a UDP packet longer than 76 bytes (see the v5.8-rc6 kernel's
+include/linux/skbuff.h:3951), Linux delays the UDP checksum verification
+until the application invokes the syscall recvmsg().
 
+In the recvmsg() syscall handler, while Linux is copying the UDP payload
+to the application's memory, it calculates the UDP checksum. If the
+calculated checksum doesn't match the received checksum, Linux drops the
+corrupt UDP packet, and then starts to process the next packet (if any),
+and if the next packet is valid (i.e. the checksum is correct), Linux
+will copy the valid UDP packet's payload to the application's receiver
+buffer.
+
+The bug is: before Linux starts to copy the valid UDP packet, the data
+structure used to track how many more bytes should be copied to the
+application memory is not reset to what it was when the application just
+entered the kernel by the syscall! Consequently, only a small portion or
+none of the valid packet's payload is copied to the application's
+receive buffer, and later when the application exits from the kernel,
+actually most of the application's receive buffer contains the payload
+of the corrupt packet while recvmsg() returns the length of the UDP
+payload of the valid packet.
+
+For the mainline kernel, the bug was fixed in commit 327868212381,
+but unluckily the bugfix is only backported to v4.9+. It turns out
+backporting 327868212381 to v4.4 means that some supporting patches
+must be backported first, so the overall changes seem too big, so the
+alternative is performs the csum validation earlier and drops the
+corrupt packets earlier.
+
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Dexuan Cui <decui@microsoft.com>
+Acked-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/minix/inode.c |   14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ net/ipv4/udp.c | 3 +--
+ net/ipv6/udp.c | 6 ++----
+ 2 files changed, 3 insertions(+), 6 deletions(-)
 
---- a/fs/minix/inode.c
-+++ b/fs/minix/inode.c
-@@ -471,6 +471,13 @@ static struct inode *V1_minix_iget(struc
- 		iget_failed(inode);
- 		return ERR_PTR(-EIO);
+diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+index 5464fd2102302..0d9f9d6251245 100644
+--- a/net/ipv4/udp.c
++++ b/net/ipv4/udp.c
+@@ -1589,8 +1589,7 @@ int udp_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
+ 		}
  	}
-+	if (raw_inode->i_nlinks == 0) {
-+		printk("MINIX-fs: deleted inode referenced: %lu\n",
-+		       inode->i_ino);
-+		brelse(bh);
-+		iget_failed(inode);
-+		return ERR_PTR(-ESTALE);
-+	}
- 	inode->i_mode = raw_inode->i_mode;
- 	i_uid_write(inode, raw_inode->i_uid);
- 	i_gid_write(inode, raw_inode->i_gid);
-@@ -504,6 +511,13 @@ static struct inode *V2_minix_iget(struc
- 		iget_failed(inode);
- 		return ERR_PTR(-EIO);
+ 
+-	if (rcu_access_pointer(sk->sk_filter) &&
+-	    udp_lib_checksum_complete(skb))
++	if (udp_lib_checksum_complete(skb))
+ 		goto csum_error;
+ 
+ 	if (sk_rcvqueues_full(sk, sk->sk_rcvbuf)) {
+diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
+index 79c583004575a..be570cd7c9aed 100644
+--- a/net/ipv6/udp.c
++++ b/net/ipv6/udp.c
+@@ -686,10 +686,8 @@ int udpv6_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
+ 		}
  	}
-+	if (raw_inode->i_nlinks == 0) {
-+		printk("MINIX-fs: deleted inode referenced: %lu\n",
-+		       inode->i_ino);
-+		brelse(bh);
-+		iget_failed(inode);
-+		return ERR_PTR(-ESTALE);
-+	}
- 	inode->i_mode = raw_inode->i_mode;
- 	i_uid_write(inode, raw_inode->i_uid);
- 	i_gid_write(inode, raw_inode->i_gid);
+ 
+-	if (rcu_access_pointer(sk->sk_filter)) {
+-		if (udp_lib_checksum_complete(skb))
+-			goto csum_error;
+-	}
++	if (udp_lib_checksum_complete(skb))
++		goto csum_error;
+ 
+ 	if (sk_rcvqueues_full(sk, sk->sk_rcvbuf)) {
+ 		UDP6_INC_STATS_BH(sock_net(sk),
+-- 
+2.25.1
+
 
 
