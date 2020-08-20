@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A3A24B78D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7707524B620
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730872AbgHTKNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:13:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54990 "EHLO mail.kernel.org"
+        id S1731865AbgHTKcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:32:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731063AbgHTKMn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:12:43 -0400
+        id S1728833AbgHTKUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:20:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED42A2067C;
-        Thu, 20 Aug 2020 10:12:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EA54320738;
+        Thu, 20 Aug 2020 10:20:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918362;
-        bh=Keo6OZ8vC0rp+95v2eqm9/aj7XkRtXvNFbrDYtiPdiQ=;
+        s=default; t=1597918801;
+        bh=8aQaJQ3yhJZ2jljzx1rQZ4agQxGWLhV6PGFPiR1F+N8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DOYUwlflw0fSEoHHBK3QMI2n/e55k7lb/AF5ttWdD1yabS+uQ+Ys5KN0O7DWAEUzp
-         QugVoKMNxCFNYyvpJNwMqLMX0IX+fv12Ye4SB0reBRQTxoJrdKwPVeyndrjhdLmSRT
-         qh8qTog1L0ZzxvjL9IClI9HHdnM4kQySLXQUG11s=
+        b=WMsg9StSFvX1bhYs1EQ+LV+vmo4p+nKF+GkPhobBrOQG4oj/Z3JbG1HatqiNOGy/v
+         JfTqq2lDcP8W2Jb4IjKIIgC0S+BR2Ou1BgIAgA5I0MkOlgofheKeew6WIQPHlS5Vbc
+         3urcuG+7wew/rEU1g2rza5mkMoyNGB5+7epxptV8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Tim Froidcoeur <tim.froidcoeur@tessares.net>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 142/228] net: refactor bind_bucket fastreuse into helper
-Date:   Thu, 20 Aug 2020 11:21:57 +0200
-Message-Id: <20200820091614.684508567@linuxfoundation.org>
+        stable@vger.kernel.org, Julian Squires <julian@cipht.net>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 042/149] cfg80211: check vendor command doit pointer before use
+Date:   Thu, 20 Aug 2020 11:21:59 +0200
+Message-Id: <20200820092127.773758336@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
-References: <20200820091607.532711107@linuxfoundation.org>
+In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
+References: <20200820092125.688850368@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,145 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Froidcoeur <tim.froidcoeur@tessares.net>
+From: Julian Squires <julian@cipht.net>
 
-[ Upstream commit 62ffc589abb176821662efc4525ee4ac0b9c3894 ]
+[ Upstream commit 4052d3d2e8f47a15053320bbcbe365d15610437d ]
 
-Refactor the fastreuse update code in inet_csk_get_port into a small
-helper function that can be called from other places.
+In the case where a vendor command does not implement doit, and has no
+flags set, doit would not be validated and a NULL pointer dereference
+would occur, for example when invoking the vendor command via iw.
 
-Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: Tim Froidcoeur <tim.froidcoeur@tessares.net>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+I encountered this while developing new vendor commands.  Perhaps in
+practice it is advisable to always implement doit along with dumpit,
+but it seems reasonable to me to always check doit anyway, not just
+when NEED_WDEV.
+
+Signed-off-by: Julian Squires <julian@cipht.net>
+Link: https://lore.kernel.org/r/20200706211353.2366470-1-julian@cipht.net
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/inet_connection_sock.h |    4 +
- net/ipv4/inet_connection_sock.c    |   93 ++++++++++++++++++++-----------------
- 2 files changed, 55 insertions(+), 42 deletions(-)
+ net/wireless/nl80211.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/include/net/inet_connection_sock.h
-+++ b/include/net/inet_connection_sock.h
-@@ -321,5 +321,9 @@ int inet_csk_compat_getsockopt(struct so
- int inet_csk_compat_setsockopt(struct sock *sk, int level, int optname,
- 			       char __user *optval, unsigned int optlen);
- 
-+/* update the fast reuse flag when adding a socket */
-+void inet_csk_update_fastreuse(struct inet_bind_bucket *tb,
-+			       struct sock *sk);
-+
- struct dst_entry *inet_csk_update_pmtu(struct sock *sk, u32 mtu);
- #endif /* _INET_CONNECTION_SOCK_H */
---- a/net/ipv4/inet_connection_sock.c
-+++ b/net/ipv4/inet_connection_sock.c
-@@ -276,51 +276,12 @@ static inline int sk_reuseport_match(str
- 				    ipv6_only_sock(sk), true);
- }
- 
--/* Obtain a reference to a local port for the given sock,
-- * if snum is zero it means select any available local port.
-- * We try to allocate an odd port (and leave even ports for connect())
-- */
--int inet_csk_get_port(struct sock *sk, unsigned short snum)
-+void inet_csk_update_fastreuse(struct inet_bind_bucket *tb,
-+			       struct sock *sk)
- {
--	bool reuse = sk->sk_reuse && sk->sk_state != TCP_LISTEN;
--	struct inet_hashinfo *hinfo = sk->sk_prot->h.hashinfo;
--	int ret = 1, port = snum;
--	struct inet_bind_hashbucket *head;
--	struct net *net = sock_net(sk);
--	struct inet_bind_bucket *tb = NULL;
- 	kuid_t uid = sock_i_uid(sk);
-+	bool reuse = sk->sk_reuse && sk->sk_state != TCP_LISTEN;
- 
--	if (!port) {
--		head = inet_csk_find_open_port(sk, &tb, &port);
--		if (!head)
--			return ret;
--		if (!tb)
--			goto tb_not_found;
--		goto success;
--	}
--	head = &hinfo->bhash[inet_bhashfn(net, port,
--					  hinfo->bhash_size)];
--	spin_lock_bh(&head->lock);
--	inet_bind_bucket_for_each(tb, &head->chain)
--		if (net_eq(ib_net(tb), net) && tb->port == port)
--			goto tb_found;
--tb_not_found:
--	tb = inet_bind_bucket_create(hinfo->bind_bucket_cachep,
--				     net, head, port);
--	if (!tb)
--		goto fail_unlock;
--tb_found:
--	if (!hlist_empty(&tb->owners)) {
--		if (sk->sk_reuse == SK_FORCE_REUSE)
--			goto success;
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index c6c168f20b0f2..55de35c4434a8 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -10180,13 +10180,13 @@ static int nl80211_vendor_cmd(struct sk_buff *skb, struct genl_info *info)
+ 				if (!wdev->netdev && !wdev->p2p_started)
+ 					return -ENETDOWN;
+ 			}
 -
--		if ((tb->fastreuse > 0 && reuse) ||
--		    sk_reuseport_match(tb, sk))
--			goto success;
--		if (inet_csk_bind_conflict(sk, tb, true, true))
--			goto fail_unlock;
--	}
--success:
- 	if (hlist_empty(&tb->owners)) {
- 		tb->fastreuse = reuse;
- 		if (sk->sk_reuseport) {
-@@ -364,6 +325,54 @@ success:
- 			tb->fastreuseport = 0;
+-			if (!vcmd->doit)
+-				return -EOPNOTSUPP;
+ 		} else {
+ 			wdev = NULL;
  		}
- 	}
-+}
+ 
++		if (!vcmd->doit)
++			return -EOPNOTSUPP;
 +
-+/* Obtain a reference to a local port for the given sock,
-+ * if snum is zero it means select any available local port.
-+ * We try to allocate an odd port (and leave even ports for connect())
-+ */
-+int inet_csk_get_port(struct sock *sk, unsigned short snum)
-+{
-+	bool reuse = sk->sk_reuse && sk->sk_state != TCP_LISTEN;
-+	struct inet_hashinfo *hinfo = sk->sk_prot->h.hashinfo;
-+	int ret = 1, port = snum;
-+	struct inet_bind_hashbucket *head;
-+	struct net *net = sock_net(sk);
-+	struct inet_bind_bucket *tb = NULL;
-+
-+	if (!port) {
-+		head = inet_csk_find_open_port(sk, &tb, &port);
-+		if (!head)
-+			return ret;
-+		if (!tb)
-+			goto tb_not_found;
-+		goto success;
-+	}
-+	head = &hinfo->bhash[inet_bhashfn(net, port,
-+					  hinfo->bhash_size)];
-+	spin_lock_bh(&head->lock);
-+	inet_bind_bucket_for_each(tb, &head->chain)
-+		if (net_eq(ib_net(tb), net) && tb->port == port)
-+			goto tb_found;
-+tb_not_found:
-+	tb = inet_bind_bucket_create(hinfo->bind_bucket_cachep,
-+				     net, head, port);
-+	if (!tb)
-+		goto fail_unlock;
-+tb_found:
-+	if (!hlist_empty(&tb->owners)) {
-+		if (sk->sk_reuse == SK_FORCE_REUSE)
-+			goto success;
-+
-+		if ((tb->fastreuse > 0 && reuse) ||
-+		    sk_reuseport_match(tb, sk))
-+			goto success;
-+		if (inet_csk_bind_conflict(sk, tb, true, true))
-+			goto fail_unlock;
-+	}
-+success:
-+	inet_csk_update_fastreuse(tb, sk);
-+
- 	if (!inet_csk(sk)->icsk_bind_hash)
- 		inet_bind_hash(sk, tb, port);
- 	WARN_ON(inet_csk(sk)->icsk_bind_hash != tb);
+ 		if (info->attrs[NL80211_ATTR_VENDOR_DATA]) {
+ 			data = nla_data(info->attrs[NL80211_ATTR_VENDOR_DATA]);
+ 			len = nla_len(info->attrs[NL80211_ATTR_VENDOR_DATA]);
+-- 
+2.25.1
+
 
 
