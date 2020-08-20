@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCDFF24B4BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C9824B594
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730952AbgHTKLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:11:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47954 "EHLO mail.kernel.org"
+        id S1731646AbgHTKZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:25:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730174AbgHTKKp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:10:45 -0400
+        id S1731717AbgHTKZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:25:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 65C85206DA;
-        Thu, 20 Aug 2020 10:10:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 467AA2075E;
+        Thu, 20 Aug 2020 10:25:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918244;
-        bh=tpC6nHZoH1PnEAHCP82qYae3GdmxlAsc2q+a/13Zj6M=;
+        s=default; t=1597919127;
+        bh=WuWUFoM8glOjWZTJLhMfKnsgfVWQ7Vo3QZ4kDFUqIRs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tPzBsBCaaWBV3KGlja92Emhx/ITCED1dg3MEnneMZw6UTodeAUiVzh52Mp61qRHmQ
-         xgoxkc93M7EY4t61TJ9q1T2/uoRnHmO0xhzJjuMVzcDe1gWORVMvNbB5v3mVbh4ajZ
-         R3N4dXZOM0Cd1fHc/VqcncaA3yiqzZL7jKVtsJ9s=
+        b=pIGqP6QAB0ADSO5hzPWm1fE3Q3Lo3pCeW5lIAIuYXGgQZ8N3+eHu/OYBlWC1bF1Gw
+         pAFQ3MNWNAHVXFd4L3zVHrI8otgEjcc+dyBAaoZtXLra3Q4pHwOMW0dR7gHKpsgDCs
+         tUisIFQ+MBBiSO4yJjL5k8tUa5AuuOTdqGHj0GUU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
+        stable@vger.kernel.org, "Xu, Wen" <wen.xu@gatech.edu>,
+        Eric Sandeen <sandeen@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 103/228] drm/bridge: sil_sii8620: initialize return of sii8620_readb
+Subject: [PATCH 4.4 001/149] xfs: dont call xfs_da_shrink_inode with NULL bp
 Date:   Thu, 20 Aug 2020 11:21:18 +0200
-Message-Id: <20200820091612.761057152@linuxfoundation.org>
+Message-Id: <20200820092125.757209674@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
-References: <20200820091607.532711107@linuxfoundation.org>
+In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
+References: <20200820092125.688850368@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -46,47 +47,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Eric Sandeen <sandeen@sandeen.net>
 
-[ Upstream commit 02cd2d3144653e6e2a0c7ccaa73311e48e2dc686 ]
+[ Upstream commit bb3d48dcf86a97dc25fe9fc2c11938e19cb4399a ]
 
-clang static analysis flags this error
+xfs_attr3_leaf_create may have errored out before instantiating a buffer,
+for example if the blkno is out of range.  In that case there is no work
+to do to remove it, and in fact xfs_da_shrink_inode will lead to an oops
+if we try.
 
-sil-sii8620.c:184:2: warning: Undefined or garbage value
-  returned to caller [core.uninitialized.UndefReturn]
-        return ret;
-        ^~~~~~~~~~
+This also seems to fix a flaw where the original error from
+xfs_attr3_leaf_create gets overwritten in the cleanup case, and it
+removes a pointless assignment to bp which isn't used after this.
 
-sii8620_readb calls sii8620_read_buf.
-sii8620_read_buf can return without setting its output
-pararmeter 'ret'.
-
-So initialize ret.
-
-Fixes: ce6e153f414a ("drm/bridge: add Silicon Image SiI8620 driver")
-Signed-off-by: Tom Rix <trix@redhat.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200712152453.27510-1-trix@redhat.com
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=199969
+Reported-by: Xu, Wen <wen.xu@gatech.edu>
+Tested-by: Xu, Wen <wen.xu@gatech.edu>
+Signed-off-by: Eric Sandeen <sandeen@redhat.com>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/bridge/sil-sii8620.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/xfs/libxfs/xfs_attr_leaf.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/sil-sii8620.c b/drivers/gpu/drm/bridge/sil-sii8620.c
-index 0cb69ee94ac16..b93486892f4ae 100644
---- a/drivers/gpu/drm/bridge/sil-sii8620.c
-+++ b/drivers/gpu/drm/bridge/sil-sii8620.c
-@@ -167,7 +167,7 @@ static void sii8620_read_buf(struct sii8620 *ctx, u16 addr, u8 *buf, int len)
- 
- static u8 sii8620_readb(struct sii8620 *ctx, u16 addr)
- {
--	u8 ret;
-+	u8 ret = 0;
- 
- 	sii8620_read_buf(ctx, addr, &ret, 1);
- 	return ret;
+diff --git a/fs/xfs/libxfs/xfs_attr_leaf.c b/fs/xfs/libxfs/xfs_attr_leaf.c
+index 01a5ecfedfcf1..445a3f2f871fb 100644
+--- a/fs/xfs/libxfs/xfs_attr_leaf.c
++++ b/fs/xfs/libxfs/xfs_attr_leaf.c
+@@ -779,9 +779,8 @@ xfs_attr_shortform_to_leaf(xfs_da_args_t *args)
+ 	ASSERT(blkno == 0);
+ 	error = xfs_attr3_leaf_create(args, blkno, &bp);
+ 	if (error) {
+-		error = xfs_da_shrink_inode(args, 0, bp);
+-		bp = NULL;
+-		if (error)
++		/* xfs_attr3_leaf_create may not have instantiated a block */
++		if (bp && (xfs_da_shrink_inode(args, 0, bp) != 0))
+ 			goto out;
+ 		xfs_idata_realloc(dp, size, XFS_ATTR_FORK);	/* try to put */
+ 		memcpy(ifp->if_u1.if_data, tmpbuffer, size);	/* it back */
 -- 
 2.25.1
 
