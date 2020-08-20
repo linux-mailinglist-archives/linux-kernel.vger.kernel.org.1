@@ -2,41 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ADF824BD03
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6410324BC04
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729078AbgHTJlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:41:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33336 "EHLO mail.kernel.org"
+        id S1729408AbgHTJrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:47:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728802AbgHTJkq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:40:46 -0400
+        id S1729355AbgHTJqt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:46:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 53C662075E;
-        Thu, 20 Aug 2020 09:40:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 56D1522B43;
+        Thu, 20 Aug 2020 09:46:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916445;
-        bh=ATlZv6UUf8gC4J7JiJhspjarlU5BxTsDmslsrQf6BAo=;
+        s=default; t=1597916808;
+        bh=PKNpThjb7+fkLR/AL7zx/sviArJdzkpLNMjlFLtKWsE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EvdcXM+ryr4MM1zea5XyPM6UCmMPyvNxTX400zC70CgyuSy+YPVERe0il2A3tCK4O
-         7pek2eCAPzL8dSZno3pMm1m88GaOsUwhFNJ2tN7nwPyXM+CcLTmGinPTLpdvxs9sxw
-         WlWqwpP+rM+EOadHKxq/iRXDnTQRR+kJnkyrKGnk=
+        b=yJXAn6S5jzhXibwa0ml1krC5joCa+aOKRP6wZB53W+mGm+BlfhGBPXSe5yb8fg1QX
+         iQnHOLkyamVO6INB4lz8VrmFCxd9UDx3HqoHshU5/W8PSaulJ7Px70a/fk2CFdkuNM
+         fpga50i5C3W5voA8gPIKc+olJ3H18sfOOVjq0ZXE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Zhang <markz@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 123/204] RDMA/counter: Allow manually bind QPs with different pids to same counter
-Date:   Thu, 20 Aug 2020 11:20:20 +0200
-Message-Id: <20200820091612.439376799@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Junxiao Bi <junxiao.bi@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Gang He <ghe@suse.com>, Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Changwei Ge <gechangwei@live.cn>,
+        Jun Piao <piaojun@huawei.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 054/152] ocfs2: change slot number type s16 to u16
+Date:   Thu, 20 Aug 2020 11:20:21 +0200
+Message-Id: <20200820091556.490172299@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
-References: <20200820091606.194320503@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,40 +50,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Zhang <markz@mellanox.com>
+From: Junxiao Bi <junxiao.bi@oracle.com>
 
-[ Upstream commit cbeb7d896c0f296451ffa7b67e7706786b8364c8 ]
+commit 38d51b2dd171ad973afc1f5faab825ed05a2d5e9 upstream.
 
-In manual mode allow bind user QPs with different pids to same counter,
-since this is allowed in auto mode.
-Bind kernel QPs and user QPs to the same counter are not allowed.
+Dan Carpenter reported the following static checker warning.
 
-Fixes: 1bd8e0a9d0fd ("RDMA/counter: Allow manual mode configuration support")
-Link: https://lore.kernel.org/r/20200702082933.424537-4-leon@kernel.org
-Signed-off-by: Mark Zhang <markz@mellanox.com>
-Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+	fs/ocfs2/super.c:1269 ocfs2_parse_options() warn: '(-1)' 65535 can't fit into 32767 'mopt->slot'
+	fs/ocfs2/suballoc.c:859 ocfs2_init_inode_steal_slot() warn: '(-1)' 65535 can't fit into 32767 'osb->s_inode_steal_slot'
+	fs/ocfs2/suballoc.c:867 ocfs2_init_meta_steal_slot() warn: '(-1)' 65535 can't fit into 32767 'osb->s_meta_steal_slot'
+
+That's because OCFS2_INVALID_SLOT is (u16)-1. Slot number in ocfs2 can be
+never negative, so change s16 to u16.
+
+Fixes: 9277f8334ffc ("ocfs2: fix value of OCFS2_INVALID_SLOT")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Junxiao Bi <junxiao.bi@oracle.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+Reviewed-by: Gang He <ghe@suse.com>
+Cc: Mark Fasheh <mark@fasheh.com>
+Cc: Joel Becker <jlbec@evilplan.org>
+Cc: Junxiao Bi <junxiao.bi@oracle.com>
+Cc: Changwei Ge <gechangwei@live.cn>
+Cc: Jun Piao <piaojun@huawei.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200627001259.19757-1-junxiao.bi@oracle.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/infiniband/core/counters.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ocfs2/ocfs2.h    |    4 ++--
+ fs/ocfs2/suballoc.c |    4 ++--
+ fs/ocfs2/super.c    |    4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/infiniband/core/counters.c b/drivers/infiniband/core/counters.c
-index 6deb1901fbd02..417ebf4d8ba9b 100644
---- a/drivers/infiniband/core/counters.c
-+++ b/drivers/infiniband/core/counters.c
-@@ -483,7 +483,7 @@ int rdma_counter_bind_qpn(struct ib_device *dev, u8 port,
- 		goto err;
- 	}
+--- a/fs/ocfs2/ocfs2.h
++++ b/fs/ocfs2/ocfs2.h
+@@ -326,8 +326,8 @@ struct ocfs2_super
+ 	spinlock_t osb_lock;
+ 	u32 s_next_generation;
+ 	unsigned long osb_flags;
+-	s16 s_inode_steal_slot;
+-	s16 s_meta_steal_slot;
++	u16 s_inode_steal_slot;
++	u16 s_meta_steal_slot;
+ 	atomic_t s_num_inodes_stolen;
+ 	atomic_t s_num_meta_stolen;
  
--	if (counter->res.task != qp->res.task) {
-+	if (rdma_is_kernel_res(&counter->res) != rdma_is_kernel_res(&qp->res)) {
- 		ret = -EINVAL;
- 		goto err_task;
- 	}
--- 
-2.25.1
-
+--- a/fs/ocfs2/suballoc.c
++++ b/fs/ocfs2/suballoc.c
+@@ -879,9 +879,9 @@ static void __ocfs2_set_steal_slot(struc
+ {
+ 	spin_lock(&osb->osb_lock);
+ 	if (type == INODE_ALLOC_SYSTEM_INODE)
+-		osb->s_inode_steal_slot = slot;
++		osb->s_inode_steal_slot = (u16)slot;
+ 	else if (type == EXTENT_ALLOC_SYSTEM_INODE)
+-		osb->s_meta_steal_slot = slot;
++		osb->s_meta_steal_slot = (u16)slot;
+ 	spin_unlock(&osb->osb_lock);
+ }
+ 
+--- a/fs/ocfs2/super.c
++++ b/fs/ocfs2/super.c
+@@ -78,7 +78,7 @@ struct mount_options
+ 	unsigned long	commit_interval;
+ 	unsigned long	mount_opt;
+ 	unsigned int	atime_quantum;
+-	signed short	slot;
++	unsigned short	slot;
+ 	int		localalloc_opt;
+ 	unsigned int	resv_level;
+ 	int		dir_resv_level;
+@@ -1334,7 +1334,7 @@ static int ocfs2_parse_options(struct su
+ 				goto bail;
+ 			}
+ 			if (option)
+-				mopt->slot = (s16)option;
++				mopt->slot = (u16)option;
+ 			break;
+ 		case Opt_commit:
+ 			if (match_int(&args[0], &option)) {
 
 
