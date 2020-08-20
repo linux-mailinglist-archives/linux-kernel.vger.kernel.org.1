@@ -2,260 +2,414 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1448924C488
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 19:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8872024C483
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 19:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730660AbgHTR3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 13:29:12 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:19112 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730514AbgHTR3H (ORCPT
+        id S1730635AbgHTR27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 13:28:59 -0400
+Received: from smtprelay0239.hostedemail.com ([216.40.44.239]:52202 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730609AbgHTR2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 13:29:07 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 07KHSLuT026202;
-        Thu, 20 Aug 2020 10:28:26 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=Zg2XBgDn0tUhXGIDQ7YiLJaRKb+R7NUhQXtc7TKc2+Y=;
- b=SQRH7nbxLVczcb3Odmsb/pAs+sczdXQ6UVXmJ3jGPVaWf/7XDqH5zgG+hZg8+YajWLry
- p+jmWH8EQGQMCwD0UGnUtN76tND7bSZ+eV1eAN+NiW36Cu6quLMDD3bL3qkTip8DFezU
- eZC+QPwOckwP0on4Ay9h42DowQLKzNSWjdU= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 3304jjff9u-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 20 Aug 2020 10:28:26 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 20 Aug 2020 10:28:11 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MvxAXm7afJ6sRparhOGT91HupiWj5ZP+p+3XucxLZ0wSV678JB0nsr3i/SXfoFZV9T6QrPOKy0zEbxRBJyghX8hHim1Ay83xxOL9vZg7IHbESx8HobUkIYb2PV8HhdxrtoiTSxt+BN/wn2lu3klpXodifjKrUUaWdUL0CqyuEoR/5zaQYKevJZBpbtYGfPpokpd/HJprzB9EvWxdd4FEc2resf1u4goiJkIqrRn5nppXxIydXVJ4gS/dkl0Rs00qwlMzOsatNBdSfgQ/Yf8SnADjatEmRJVwQhxtvP7HUgQEWKrfMNdfi2/iwbSt7x3NLbVXAgKEgHyjmJnSTe0xVw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Zg2XBgDn0tUhXGIDQ7YiLJaRKb+R7NUhQXtc7TKc2+Y=;
- b=P7jO5bVIqotIftLXug+qVpa4jFcvPYU9XFIDZVHwkjBYni6loAMxI24HMtJeSIZAd9GAN8Dk85iiD3Pgnk8VawIo+40rz0vdoZEz1Wklh+mYpvoSWOueJVA0gwZVW9NHnZBvIEI2xJ5ZnOsNywA7kBHfxjH1K/UM+C/VaCMOxnLW8FksdvOAcXbf9jD7i9vKLiuCVqWtG3qbtXIQ6o+TIAq7LE+G5JI7v9RM2j7A19R/R+L87e2R451OQOeLh70MGeOR+XejlVTXaGYR9pEGdQi2kHS8WRcRdeWEWJXaq8pXZbEkVlbSvG5eMR0XlBlCmcUdeo/2YH0UB20DxaRnWg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Zg2XBgDn0tUhXGIDQ7YiLJaRKb+R7NUhQXtc7TKc2+Y=;
- b=B2Txxpmb3fXE0qWEQZNhJuRTLr2kip2eH6f140x1kUdLwgY7IeFu2n0Guj9wBI+py/C0DrbAQB9UCuvIbom2kjpHmm95mOcOLOmBjxQXvZLui8znO8oeqbrqRO5Z6JVRxNo3qE61nCqARJMCOXqwakpqNB4KSftSYUkDjS9jtpo=
-Authentication-Results: cloudflare.com; dkim=none (message not signed)
- header.d=none;cloudflare.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3095.namprd15.prod.outlook.com (2603:10b6:a03:fe::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.25; Thu, 20 Aug
- 2020 17:28:10 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::56b:2925:8762:2d80]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::56b:2925:8762:2d80%7]) with mapi id 15.20.3305.026; Thu, 20 Aug 2020
- 17:28:10 +0000
-Subject: Re: [PATCH bpf-next v1 5/8] bpf/selftests: ksyms_btf to test typed
- ksyms
-To:     Hao Luo <haoluo@google.com>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>
-CC:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-References: <20200819224030.1615203-1-haoluo@google.com>
- <20200819224030.1615203-6-haoluo@google.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <29b8358f-64fb-9e82-acb0-20b5922afc81@fb.com>
-Date:   Thu, 20 Aug 2020 10:28:04 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
-In-Reply-To: <20200819224030.1615203-6-haoluo@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MN2PR05CA0053.namprd05.prod.outlook.com
- (2603:10b6:208:236::22) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        Thu, 20 Aug 2020 13:28:53 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 6709B837F27E;
+        Thu, 20 Aug 2020 17:28:49 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:4:41:69:355:379:599:857:960:966:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1593:1594:1605:1730:1747:1777:1792:1801:2194:2196:2198:2199:2200:2201:2393:2559:2562:2691:2693:2828:2903:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:4362:4385:4470:4605:5007:7903:7904:7974:8549:8550:9010:9038:10004:10848:11026:11232:11657:11658:11914:12043:12295:12296:12297:12438:12555:12679:12690:12691:12697:12702:12712:12737:12740:12760:12895:13161:13229:13255:13439:14096:14097:14659:21060:21080:21324:21433:21627:21740:21773:30054:30055:30056:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: touch76_130f73727032
+X-Filterd-Recvd-Size: 18997
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf16.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 20 Aug 2020 17:28:47 +0000 (UTC)
+Message-ID: <a3bd371fd0697d87ca099f212f0ec5c205e6b930.camel@perches.com>
+Subject: Re: [Cocci] coccinelle: Convert comma to semicolons (was Re:
+ [PATCH] checkpatch: Add test for comma use that should be semicolon)
+From:   Joe Perches <joe@perches.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        cocci <cocci@systeme.lip6.fr>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andy Whitcroft <apw@shadowen.org>, Xu Wang <vulab@iscas.ac.cn>
+Date:   Thu, 20 Aug 2020 10:28:46 -0700
+In-Reply-To: <alpine.DEB.2.22.394.2008201856110.2524@hadrien>
+References: <20200818184107.f8af232fb58b17160c570874@linux-foundation.org>
+          <3bf27caf462007dfa75647b040ab3191374a59de.camel@perches.com>
+          <b0fd63e4b379eda69ee85ab098353582b8c054bb.camel@perches.com>
+          <alpine.DEB.2.22.394.2008201021400.2524@hadrien>
+         <a5713d8597065ef986f780499428fcc4cd31c003.camel@perches.com>
+         <alpine.DEB.2.22.394.2008201856110.2524@hadrien>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 255.255.255.255 (255.255.255.255) by MN2PR05CA0053.namprd05.prod.outlook.com (2603:10b6:208:236::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.10 via Frontend Transport; Thu, 20 Aug 2020 17:28:07 +0000
-X-Originating-IP: [2620:10d:c091:480::1:7ec1]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4ff7a7fe-b33b-4502-236a-08d8452e68ea
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3095:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3095708F1264BA60C22B1FAAD35A0@BYAPR15MB3095.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:294;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: f5gdOHD09VpQxTcq+5mpffkrfbia5STKDaYDpGRA4OUFhOtlPWUyTSf3N/WyI3+8CbFhju2FCizKBmL9Mqq4Tp9qj6EkPfO/n+f1NbQNou4IGekQ6M2p8JiyZJGGPH6Ss6Xt3xUu2qz4dkCnm0Awg4l8C6e5QttF98rq3NxBWnov/BvMn2pLowjSy1URwCdia0rMR/5ThCu3CPrgPsrAR7LC1Aey1jr2Pgf009Z+qcGwhVFL+6J+5QxUPrk0OJGaqZLJSbMbcxVHrWdfCzTOFzqulYIf6OcmC/eZtQq8ulm1cErIvF/xTAV5y5Qzruslz36lBZkWXhgvvpeaqiIoRKdNPinXPcAQgxJguRPzgrFM+LXqSZcAwocrRspEDSLYiWwpkj7iepgk8hN5aA6ne/l9VeRU1caInrIgTUlOcIU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(366004)(346002)(376002)(396003)(66476007)(7416002)(66556008)(2906002)(5660300002)(66946007)(8936002)(6666004)(36756003)(478600001)(53546011)(54906003)(8676002)(110011004)(86362001)(6486002)(16576012)(316002)(4326008)(956004)(2616005)(52116002)(186003)(31696002)(83380400001)(31686004)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: cCD57vVQfzQ4OvIthHTll3Mk0Mmm4kSDLQsNhvMjBz04FYDyq4bXh8j66cmOoHD+FwllSgTHGNTEyvnPQyE0sxN96syhI6ZpqNMwvXmXTzqeDh6ZLK2iYxa0xqjigWQVcPL4FJNRiryT3fYIq50VS0mT+lTQG0UmqdIKpOSZdUGKi0CD3g49rpQW6BPzIdfx050SNVW3fNdsyDZMmkAjn43gb6KMf7s6MvDo+G0HQrt5CtOyebXw9hABpoeb/veFFThsfBG9j30cxF3dfbpy3x7OzoSA1aw5/PNv2yttfP0ga5O0/5ytXhxamUx51GhP+VPcJsy3bOTr+IfdUFKFLEfdFtPyYEVX75H0yZ5U3oREGHAiBYwjxJ9U/ay/9BbMzJpLMg7vH24qAy21irKXgA2SW+3yc3alNwYwWk5setUZd3XYQWasZZrrg8XHh4NVOtF+FOmHPTDZJ7S208qjHIV13MlxZCBT6E5zkzWWiFv6CHbLKwcJggwkYKIbxfl0XIfjbb48JcTtf6ZQMsBqkLmocyjqyxmaxFCpE5chw4XolURQymZzAZBa5gacs7mNBMyvY7lCU4NnGUErc3Wwzia+VpfXFDEJZaS7CzQWnX6pnthFV3LQYDRO8urUCfdilB/GWYRpXIvlEHkJj4n25a3nOd723m213EnN/eIczss=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ff7a7fe-b33b-4502-236a-08d8452e68ea
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2020 17:28:10.6181
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /hrOfmQAGfpzGy97kG4XImm8BTQPT3cTo7AliMkr6FgX6kAafd06q5UWHKJIy0F6
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3095
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-20_03:2020-08-19,2020-08-20 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- lowpriorityscore=0 priorityscore=1501 malwarescore=0 spamscore=0
- impostorscore=0 bulkscore=0 mlxlogscore=999 phishscore=0 mlxscore=0
- clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008200141
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/19/20 3:40 PM, Hao Luo wrote:
-> Selftests for typed ksyms. Tests two types of ksyms: one is a struct,
-> the other is a plain int. This tests two paths in the kernel. Struct
-> ksyms will be converted into PTR_TO_BTF_ID by the verifier while int
-> typed ksyms will be converted into PTR_TO_MEM.
+On Thu, 2020-08-20 at 19:03 +0200, Julia Lawall wrote:
+> > > I have a bunch of variations of this that are more complicated than I
+> > > would have expected.  One shorter variant that I have is:
+> > > 
+> > > @@
+> > > expression e1,e2;
+> > > statement S;
+> > > @@
+> > > 
+> > >  S
+> > >  e1
+> > > -,
+> > > +;
+> > >   (<+... e2 ...+>);
+> > > 
+> > > This will miss cases where the first statement is the comma thing.  But I
+> > > think it is possible to improve this now.  I will check.
+> > 
+> > Hi Julia.
+> > 
+> > Right, thanks, this adds a dependency on a statement
+> > before the expression.  Any stragglers would be easily
+> > found using slightly different form.
+> > There are not very many of these in linux kernel.
+> > 
+> > Another nicety would be to allow the s/,/;/ conversion to
+> > find both b and c in this sequence:
+> > 	a = 1;
+> > 	b = 2,
+> > 	c = 3,
+> > 	d = 4;
+> > without running the script multiple times.
+> > There are many dozen uses of this style in linux kernel.
+> > 
+> > I tried variants of adding a comma after the e2 expression,
+> > but cocci seems to have parsing problems with:
+> > 
+> > @@
+> > expression e1;
+> > expression e2;
+> > @@
+> > 	e1
+> > -	,
+> > +	;
+> > 	e2,
 > 
-> Signed-off-by: Hao Luo <haoluo@google.com>
-> ---
->   .../selftests/bpf/prog_tests/ksyms_btf.c      | 77 +++++++++++++++++++
->   .../selftests/bpf/progs/test_ksyms_btf.c      | 23 ++++++
->   2 files changed, 100 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
->   create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_btf.c
+> This doesn't work because it's not a valid expression.
 > 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c b/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-> new file mode 100644
-> index 000000000000..1dad61ba7e99
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-> @@ -0,0 +1,77 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2020 Google */
-> +
-> +#include <test_progs.h>
-> +#include <bpf/libbpf.h>
-> +#include <bpf/btf.h>
-> +#include "test_ksyms_btf.skel.h"
-> +
-> +static int duration;
-> +
-> +static __u64 kallsyms_find(const char *sym)
-> +{
-> +	char type, name[500];
-> +	__u64 addr, res = 0;
-> +	FILE *f;
-> +
-> +	f = fopen("/proc/kallsyms", "r");
-> +	if (CHECK(!f, "kallsyms_fopen", "failed to open: %d\n", errno))
-> +		return 0;
-
-could you check whether libbpf API can provide this functionality for 
-you? As far as I know, libbpf does parse /proc/kallsyms.
-
-> +
-> +	while (fscanf(f, "%llx %c %499s%*[^\n]\n", &addr, &type, name) > 0) {
-> +		if (strcmp(name, sym) == 0) {
-> +			res = addr;
-> +			goto out;
-> +		}
-> +	}
-> +
-> +	CHECK(false, "not_found", "symbol %s not found\n", sym);
-> +out:
-> +	fclose(f);
-> +	return res;
-> +}
-> +
-> +void test_ksyms_btf(void)
-> +{
-> +	__u64 runqueues_addr = kallsyms_find("runqueues");
-> +	__u64 bpf_prog_active_addr = kallsyms_find("bpf_prog_active");
-> +	struct test_ksyms_btf *skel;
-> +	struct test_ksyms_btf__data *data;
-> +	struct btf *btf;
-> +	int percpu_datasec;
-> +	int err;
-> +
-> +	btf = libbpf_find_kernel_btf();
-> +	if (CHECK(IS_ERR(btf), "btf_exists", "failed to load kernel BTF: %ld\n",
-> +		  PTR_ERR(btf)))
-> +		return;
-> +
-> +	percpu_datasec = btf__find_by_name_kind(btf, ".data..percpu",
-> +						BTF_KIND_DATASEC);
-> +	if (percpu_datasec < 0) {
-> +		printf("%s:SKIP:no PERCPU DATASEC in kernel btf\n",
-> +		       __func__);
-> +		test__skip();
-> +		return;
-> +	}
-> +
-> +	skel = test_ksyms_btf__open_and_load();
-> +	if (CHECK(!skel, "skel_open", "failed to open and load skeleton\n"))
-> +		return;
-> +
-> +	err = test_ksyms_btf__attach(skel);
-> +	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
-> +		goto cleanup;
-> +
-> +	/* trigger tracepoint */
-> +	usleep(1);
-> +
-> +	data = skel->data;
-> +	CHECK(data->out__runqueues != runqueues_addr, "runqueues",
-> +	      "got %llu, exp %llu\n", data->out__runqueues, runqueues_addr);
-> +	CHECK(data->out__bpf_prog_active != bpf_prog_active_addr, "bpf_prog_active",
-> +	      "got %llu, exp %llu\n", data->out__bpf_prog_active, bpf_prog_active_addr);
-> +
-> +cleanup:
-> +	test_ksyms_btf__destroy(skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_ksyms_btf.c b/tools/testing/selftests/bpf/progs/test_ksyms_btf.c
-> new file mode 100644
-> index 000000000000..e04e31117f84
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_ksyms_btf.c
-> @@ -0,0 +1,23 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2020 Google */
-> +
-> +#include "vmlinux.h"
-> +
-> +#include <bpf/bpf_helpers.h>
-> +
-> +__u64 out__runqueues = -1;
-> +__u64 out__bpf_prog_active = -1;
-> +
-> +extern const struct rq runqueues __ksym; /* struct type global var. */
-> +extern const int bpf_prog_active __ksym; /* int type global var. */
-> +
-> +SEC("raw_tp/sys_enter")
-> +int handler(const void *ctx)
-> +{
-> +	out__runqueues = (__u64)&runqueues;
-> +	out__bpf_prog_active = (__u64)&bpf_prog_active;
-> +
-> +	return 0;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
+> The problem is solved by doing:
 > 
+>   e1
+> - ,
+> + ;
+>   e2
+>   ... when any
+> 
+> But that doesn't work in the current version of Coccinelle.  I have fixed
+> the problem, though and it will work shortly.
+
+Great, thanks.
+
+> > I do appreciate that coccinelle adds braces for multiple
+> > expression comma use after an if.
+> > 
+> > i.e.:
+> > 	if (foo)
+> > 		a = 1, b = 2;
+> > becomes
+> > 	if (foo) {
+> > 		a = 1; b = 2;
+> > 	}
+> 
+> I wasn't sure what was wanted for such things.  Should b = 2 now be on a
+> separate line?
+
+Ideally for linux kernel style, yes.
+
+> I took the strategy of avoiding the problem and leaving those cases as is.
+> That also solves the LIST_HEAD problem.  But if it is wanted to change
+> these commas under ifs, then that is probably possible too.
+
+I would probably just do those by hand, I believe
+there are only a few dozen and they are easily found
+using the original script.
+
+> My current complete solution is as follows.  The first rule avoids changing
+> commas in macros, where thebody of the macro is just an expression.  The
+> second rule uses position variables to ensure that the two expression are
+> on different lines.
+> 
+> @r@
+> expression e1,e2;
+> statement S;
+> position p;
+> @@
+> 
+> e1 ,@S@p e2;
+> 
+> @@
+> expression e1,e2;
+> position p1;
+> position p2 :
+>     script:ocaml(p1) { not((List.hd p1).line_end = (List.hd p2).line) };
+> statement S;
+> position r.p;
+> @@
+> 
+> e1@p1
+> -,@S@p
+> +;
+> e2@p2
+> ... when any
+> 
+> The generated patch is below.
+
+(150kb patch removed)
+
+There sure are a bunch of these...
+
+This output patch is very difficult to read as it's unordered.
+Perhaps it'd be simpler using --in-place and git diff --stat -p
+
+Thanks again,  Joe
+
+btw: the ordered diffstat for Julia's removed patch is:
+
+$ git diff --stat
+ arch/alpha/kernel/process.c                        |  2 +-
+ arch/arm/mach-davinci/pm.c                         |  2 +-
+ arch/arm/mach-ixp4xx/ixdp425-setup.c               |  2 +-
+ arch/arm/mach-pxa/eseries.c                        |  6 +--
+ arch/arm/mach-pxa/palm27x.c                        |  4 +-
+ arch/arm/mach-pxa/z2.c                             |  2 +-
+ arch/arm/vfp/vfp.h                                 |  2 +-
+ arch/ia64/kernel/setup.c                           |  2 +-
+ arch/m68k/lib/muldi3.c                             |  2 +-
+ arch/mips/bcm63xx/dev-spi.c                        |  4 +-
+ arch/mips/kernel/cevt-txx9.c                       |  2 +-
+ arch/mips/kernel/vpe-cmp.c                         |  4 +-
+ arch/mips/kernel/vpe-mt.c                          |  4 +-
+ arch/mips/pci/pci-ar2315.c                         |  6 +--
+ arch/openrisc/kernel/time.c                        |  8 ++--
+ arch/powerpc/kexec/core.c                          |  2 +-
+ arch/powerpc/lib/feature-fixups.c                  |  8 ++--
+ arch/sparc/kernel/pci_sun4v.c                      |  2 +-
+ arch/x86/kernel/cpu/mtrr/cleanup.c                 |  4 +-
+ .../platform/intel-mid/device_libs/platform_bt.c   |  4 +-
+ block/bsg-lib.c                                    |  2 +-
+ drivers/base/regmap/regmap-debugfs.c               |  2 +-
+ drivers/bcma/driver_pci_host.c                     |  4 +-
+ drivers/char/agp/amd-k7-agp.c                      |  2 +-
+ drivers/char/agp/nvidia-agp.c                      |  2 +-
+ drivers/char/agp/sworks-agp.c                      |  2 +-
+ drivers/char/hw_random/iproc-rng200.c              |  8 ++--
+ drivers/char/hw_random/mxc-rnga.c                  |  6 +--
+ drivers/char/hw_random/stm32-rng.c                 |  8 ++--
+ drivers/char/ipmi/bt-bmc.c                         |  6 +--
+ drivers/clk/meson/meson-aoclk.c                    |  2 +-
+ drivers/clk/mvebu/ap-cpu-clk.c                     |  2 +-
+ drivers/clk/uniphier/clk-uniphier-cpugear.c        |  2 +-
+ drivers/clk/uniphier/clk-uniphier-mux.c            |  2 +-
+ drivers/clocksource/mps2-timer.c                   |  6 +--
+ drivers/clocksource/timer-armada-370-xp.c          |  8 ++--
+ drivers/counter/ti-eqep.c                          |  2 +-
+ drivers/crypto/amcc/crypto4xx_alg.c                |  2 +-
+ drivers/crypto/atmel-tdes.c                        |  2 +-
+ drivers/crypto/hifn_795x.c                         |  4 +-
+ drivers/crypto/talitos.c                           |  8 ++--
+ drivers/edac/ppc4xx_edac.c                         |  2 +-
+ drivers/firmware/arm_scmi/base.c                   |  2 +-
+ drivers/gpio/gpio-max77620.c                       |  2 +-
+ drivers/gpio/gpio-mc33880.c                        |  2 +-
+ drivers/gpio/gpio-omap.c                           | 18 ++++-----
+ drivers/gpio/gpio-rc5t583.c                        | 20 +++++-----
+ drivers/gpio/gpio-rda.c                            | 12 +++---
+ drivers/gpio/gpio-sama5d2-piobu.c                  | 18 ++++-----
+ drivers/gpio/gpio-tegra186.c                       |  2 +-
+ drivers/gpio/gpio-vx855.c                          |  2 +-
+ drivers/gpio/gpio-wcove.c                          |  2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_sa.c             |  2 +-
+ drivers/gpu/drm/i915/display/intel_hdmi.c          |  4 +-
+ drivers/gpu/drm/i915/intel_region_lmem.c           |  2 +-
+ drivers/gpu/drm/i915/selftests/i915_buddy.c        |  2 +-
+ drivers/gpu/drm/imx/parallel-display.c             |  2 +-
+ .../gpu/drm/nouveau/nvkm/engine/disp/channv50.c    |  2 +-
+ drivers/gpu/drm/radeon/radeon_sa.c                 |  2 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c            |  2 +-
+ drivers/hid/hid-sensor-custom.c                    |  2 +-
+ drivers/hwmon/pc87360.c                            |  4 +-
+ drivers/i2c/busses/i2c-imx.c                       |  2 +-
+ drivers/iio/chemical/pms7003.c                     |  2 +-
+ drivers/infiniband/hw/hfi1/qsfp.c                  |  4 +-
+ drivers/infiniband/hw/qib/qib_iba6120.c            |  2 +-
+ drivers/infiniband/hw/qib/qib_iba7220.c            |  2 +-
+ drivers/infiniband/sw/siw/siw_main.c               |  2 +-
+ drivers/infiniband/ulp/ipoib/ipoib_multicast.c     |  2 +-
+ drivers/infiniband/ulp/opa_vnic/opa_vnic_vema.c    |  2 +-
+ drivers/input/input.c                              |  2 +-
+ drivers/input/misc/ixp4xx-beeper.c                 |  2 +-
+ drivers/input/misc/pm8941-pwrkey.c                 |  2 +-
+ drivers/input/serio/parkbd.c                       |  2 +-
+ drivers/iommu/amd/init.c                           |  4 +-
+ drivers/irqchip/irq-renesas-rza1.c                 | 12 +++---
+ drivers/leds/leds-ariel.c                          |  6 +--
+ drivers/leds/leds-lm3533.c                         |  2 +-
+ drivers/leds/leds-lm3642.c                         |  4 +-
+ drivers/md/bcache/sysfs.c                          |  2 +-
+ drivers/md/raid10.c                                |  2 +-
+ drivers/media/dvb-frontends/m88ds3103.c            |  6 +--
+ drivers/media/dvb-frontends/rtl2832.c              | 14 +++----
+ drivers/media/dvb-frontends/ts2020.c               | 10 ++---
+ drivers/media/platform/coda/coda-common.c          |  2 +-
+ drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c    |  2 +-
+ .../media/platform/sunxi/sun4i-csi/sun4i_v4l2.c    |  2 +-
+ drivers/media/radio/radio-sf16fmr2.c               |  2 +-
+ drivers/media/tuners/mt2060.c                      |  2 +-
+ drivers/media/usb/au0828/au0828-video.c            |  2 +-
+ drivers/media/usb/dvb-usb-v2/dvbsky.c              | 22 +++++------
+ drivers/media/usb/dvb-usb-v2/lmedm04.c             |  2 +-
+ drivers/media/usb/dvb-usb-v2/rtl28xxu.c            |  4 +-
+ drivers/media/usb/dvb-usb/dib0700_devices.c        |  4 +-
+ drivers/media/usb/em28xx/em28xx-audio.c            | 14 +++----
+ drivers/media/usb/gspca/ov534.c                    | 12 +++---
+ drivers/media/usb/pvrusb2/pvrusb2-devattr.c        |  2 +-
+ drivers/mfd/88pm860x-core.c                        | 10 ++---
+ drivers/mfd/atmel-flexcom.c                        |  2 +-
+ drivers/mfd/rave-sp.c                              |  2 +-
+ drivers/mfd/rk808.c                                |  2 +-
+ drivers/misc/pci_endpoint_test.c                   |  2 +-
+ drivers/mmc/core/core.c                            |  8 ++--
+ drivers/mmc/host/sdhci-pci-core.c                  |  2 +-
+ drivers/mtd/devices/st_spi_fsm.c                   |  2 +-
+ drivers/mtd/maps/pci.c                             |  8 ++--
+ drivers/mtd/nand/raw/marvell_nand.c                |  2 +-
+ drivers/mtd/nand/raw/mxc_nand.c                    |  2 +-
+ drivers/net/dsa/mv88e6xxx/global1_atu.c            |  2 +-
+ drivers/net/ethernet/8390/axnet_cs.c               |  2 +-
+ drivers/net/ethernet/8390/lib8390.c                |  2 +-
+ drivers/net/ethernet/aquantia/atlantic/aq_ring.c   |  6 +--
+ .../net/ethernet/freescale/fs_enet/mii-bitbang.c   |  2 +-
+ drivers/net/ethernet/freescale/fsl_pq_mdio.c       |  2 +-
+ drivers/net/ethernet/hisilicon/hns/hns_dsaf_misc.c | 12 +++---
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c    |  2 +-
+ drivers/net/ethernet/intel/i40e/i40e_ethtool.c     |  2 +-
+ .../net/ethernet/mellanox/mlx5/core/esw/chains.c   |  2 +-
+ .../ethernet/mellanox/mlx5/core/eswitch_offloads.c |  2 +-
+ drivers/net/ethernet/micrel/ks8851_common.c        |  2 +-
+ drivers/net/ethernet/qlogic/netxen/netxen_nic_hw.c | 28 ++++++-------
+ drivers/net/ethernet/sfc/ptp.c                     |  2 +-
+ drivers/net/ethernet/ti/davinci_mdio.c             |  6 +--
+ drivers/net/ipa/ipa_qmi.c                          |  2 +-
+ drivers/net/thunderbolt.c                          |  2 +-
+ drivers/net/usb/cdc-phonet.c                       |  2 +-
+ drivers/net/wan/sbni.c                             | 46 +++++++++++-----------
+ drivers/net/wireless/intel/iwlwifi/mvm/debugfs.c   |  2 +-
+ drivers/net/wireless/mediatek/mt76/mt7615/mcu.c    |  6 +--
+ .../net/wireless/mediatek/mt76/mt7615/sdio_mcu.c   |  2 +-
+ .../net/wireless/mediatek/mt76/mt7615/usb_mcu.c    |  2 +-
+ drivers/net/wireless/mediatek/mt76/mt7915/mcu.c    |  6 +--
+ drivers/net/wireless/ralink/rt2x00/rt2800lib.c     |  2 +-
+ drivers/net/wireless/st/cw1200/txrx.c              |  2 +-
+ drivers/nfc/pn533/usb.c                            |  2 +-
+ drivers/nvmem/imx-iim.c                            | 10 ++---
+ drivers/nvmem/qcom-spmi-sdam.c                     |  2 +-
+ drivers/nvmem/snvs_lpgpr.c                         |  2 +-
+ drivers/phy/ti/phy-j721e-wiz.c                     |  4 +-
+ drivers/pinctrl/berlin/berlin-bg4ct.c              |  6 +--
+ drivers/pinctrl/berlin/pinctrl-as370.c             |  6 +--
+ drivers/pinctrl/intel/pinctrl-baytrail.c           | 12 +++---
+ drivers/pinctrl/intel/pinctrl-merrifield.c         |  2 +-
+ drivers/pinctrl/mediatek/pinctrl-moore.c           |  4 +-
+ drivers/pinctrl/mediatek/pinctrl-paris.c           |  4 +-
+ drivers/pinctrl/pinctrl-at91.c                     |  2 +-
+ drivers/pinctrl/pinctrl-digicolor.c                |  8 ++--
+ drivers/pinctrl/qcom/pinctrl-spmi-gpio.c           | 14 +++----
+ drivers/pinctrl/ti/pinctrl-ti-iodelay.c            |  2 +-
+ .../x86/intel_speed_select_if/isst_if_common.c     |  6 +--
+ drivers/power/supply/ab8500_fg.c                   |  2 +-
+ drivers/power/supply/bq24190_charger.c             |  2 +-
+ drivers/power/supply/wm831x_power.c                |  2 +-
+ drivers/regulator/mc13892-regulator.c              |  4 +-
+ drivers/regulator/wm831x-isink.c                   |  8 ++--
+ drivers/remoteproc/remoteproc_virtio.c             |  4 +-
+ drivers/reset/hisilicon/reset-hi3660.c             |  2 +-
+ drivers/reset/reset-lpc18xx.c                      |  4 +-
+ drivers/reset/reset-npcm.c                         |  4 +-
+ drivers/reset/sti/reset-syscfg.c                   |  2 +-
+ drivers/s390/crypto/zcrypt_cex2a.c                 |  2 +-
+ drivers/s390/crypto/zcrypt_cex4.c                  |  2 +-
+ drivers/s390/crypto/zcrypt_msgtype6.h              |  4 +-
+ drivers/scsi/arm/cumana_2.c                        |  8 ++--
+ drivers/scsi/arm/eesox.c                           |  4 +-
+ drivers/scsi/arm/powertec.c                        |  4 +-
+ drivers/scsi/hpsa.c                                |  2 +-
+ drivers/scsi/isci/host.c                           |  2 +-
+ drivers/scsi/pmcraid.c                             |  2 +-
+ drivers/spi/spi-meson-spicc.c                      | 22 +++++------
+ drivers/staging/media/hantro/hantro_v4l2.c         |  2 +-
+ drivers/staging/media/ipu3/ipu3-css-params.c       |  2 +-
+ drivers/staging/media/rkvdec/rkvdec.c              |  2 +-
+ drivers/tty/hvc/hvsi_lib.c                         |  2 +-
+ drivers/tty/moxa.c                                 |  8 ++--
+ drivers/tty/mxser.c                                | 18 ++++-----
+ drivers/tty/serial/imx.c                           |  2 +-
+ drivers/tty/serial/lantiq.c                        |  2 +-
+ drivers/usb/class/cdc-acm.c                        | 12 +++---
+ drivers/usb/gadget/udc/net2280.c                   |  4 +-
+ drivers/usb/host/isp1362-hcd.c                     |  2 +-
+ drivers/usb/phy/phy-isp1301-omap.c                 | 10 ++---
+ drivers/usb/roles/intel-xhci-usb-role-switch.c     |  6 +--
+ drivers/usb/typec/tcpm/tcpm.c                      | 12 +++---
+ drivers/usb/typec/ucsi/psy.c                       |  6 +--
+ drivers/video/backlight/sky81452-backlight.c       |  2 +-
+ drivers/video/fbdev/imsttfb.c                      |  4 +-
+ drivers/video/fbdev/pxa3xx-gcu.c                   |  4 +-
+ drivers/video/fbdev/s3c2410fb.c                    |  2 +-
+ drivers/watchdog/iTCO_wdt.c                        |  4 +-
+ drivers/watchdog/mpc8xxx_wdt.c                     |  4 +-
+ drivers/watchdog/pm8916_wdt.c                      |  2 +-
+ drivers/watchdog/rza_wdt.c                         |  4 +-
+ fs/afs/inode.c                                     |  4 +-
+ fs/ceph/dir.c                                      |  2 +-
+ fs/lockd/host.c                                    |  2 +-
+ fs/nfs/nfs42proc.c                                 |  2 +-
+ fs/omfs/file.c                                     |  4 +-
+ fs/reiserfs/do_balan.c                             |  4 +-
+ fs/xfs/libxfs/xfs_attr_remote.c                    |  2 +-
+ fs/xfs/libxfs/xfs_btree.c                          |  2 +-
+ kernel/audit.c                                     |  2 +-
+ kernel/dma/debug.c                                 |  4 +-
+ kernel/sched/fair.c                                |  2 +-
+ kernel/time/alarmtimer.c                           |  2 +-
+ lib/test_rhashtable.c                              |  2 +-
+ mm/hugetlb_cgroup.c                                |  4 +-
+ net/ipv4/tcp_vegas.c                               |  8 ++--
+ net/ipv6/calipso.c                                 |  2 +-
+ net/ipv6/route.c                                   |  2 +-
+ net/mac80211/debugfs_sta.c                         |  2 +-
+ net/rxrpc/recvmsg.c                                |  2 +-
+ net/smc/smc_clc.c                                  |  2 +-
+ net/tls/tls_main.c                                 |  2 +-
+ samples/v4l/v4l2-pci-skeleton.c                    |  4 +-
+ sound/firewire/fireworks/fireworks_pcm.c           |  2 +-
+ sound/pci/hda/patch_ca0132.c                       |  2 +-
+ sound/pci/hda/patch_hdmi.c                         |  2 +-
+ sound/soc/codecs/madera.c                          |  4 +-
+ sound/soc/intel/boards/bytcr_rt5651.c              |  2 +-
+ sound/soc/samsung/snow.c                           |  2 +-
+ sound/soc/soc-dapm.c                               |  2 +-
+ sound/soc/sof/intel/hda-dsp.c                      |  2 +-
+ tools/perf/builtin-diff.c                          |  4 +-
+ tools/perf/builtin-inject.c                        |  2 +-
+ tools/perf/ui/browsers/annotate.c                  |  2 +-
+ tools/perf/ui/tui/util.c                           |  2 +-
+ tools/perf/util/annotate.c                         |  2 +-
+ tools/perf/util/evsel.c                            |  2 +-
+ tools/testing/nvdimm/test/nfit.c                   |  2 +-
+ .../testing/selftests/bpf/benchs/bench_ringbufs.c  |  2 +-
+ tools/testing/selftests/bpf/test_verifier.c        |  4 +-
+ tools/testing/selftests/net/psock_fanout.c         |  6 +--
+ tools/testing/selftests/vm/userfaultfd.c           | 12 +++---
+ 234 files changed, 509 insertions(+), 509 deletions(-)
+
