@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 046B224B47C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B649A24B5DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730198AbgHTKH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:07:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34412 "EHLO mail.kernel.org"
+        id S1731489AbgHTK3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:29:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730648AbgHTKF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:05:58 -0400
+        id S1730519AbgHTKVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:21:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5086D20724;
-        Thu, 20 Aug 2020 10:05:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A4AF420885;
+        Thu, 20 Aug 2020 10:21:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917957;
-        bh=oSg29O4EE7wm26TO9QUIlPQlcXSOZytFhnc5IbOB+N4=;
+        s=default; t=1597918881;
+        bh=+W1ClYTS8nfE7NN7MjHwbLixXM3LcbIFD2L7yU6ukJc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WtajiUbIEHT4JshSYHEyVukKj87foO/RYqjrM1nRs3HLOjaFk6hE57S2LNRYoam8z
-         cUQyq2VmxkuvkVRTRv8l3lMm/CdUQXUibZI0eKFjJZghRAtpphHctnnZyKHgkyu/93
-         +gjF/Tvb3yNA/2gyxeJ3IV8YGX56AJs2l126/WTw=
+        b=a9SWIfWvbeTIQWzFegQ+vNg675CY+JsMbKkvA7s8q24Dz8DQ7i0OK8rQ0ffJFStBG
+         TF5j3Ca2lA88l8p89WeciTu4lejFitRmRLe/u/Nle6IvhHxRDox20vpeJ4FNGhhNNE
+         D6XYz9+l7X4sxTwuiU89nfOubBnLRtaESTc5Nrgk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
+        Alexandra Winter <wintera@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 202/212] Input: sentelic - fix error return when fsp_reg_write fails
-Date:   Thu, 20 Aug 2020 11:22:55 +0200
-Message-Id: <20200820091612.550776008@linuxfoundation.org>
+Subject: [PATCH 4.4 099/149] s390/qeth: dont process empty bridge port events
+Date:   Thu, 20 Aug 2020 11:22:56 +0200
+Message-Id: <20200820092130.507259086@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
-References: <20200820091602.251285210@linuxfoundation.org>
+In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
+References: <20200820092125.688850368@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Julian Wiedmann <jwi@linux.ibm.com>
 
-[ Upstream commit ea38f06e0291986eb93beb6d61fd413607a30ca4 ]
+[ Upstream commit 02472e28b9a45471c6d8729ff2c7422baa9be46a ]
 
-Currently when the call to fsp_reg_write fails -EIO is not being returned
-because the count is being returned instead of the return value in retval.
-Fix this by returning the value in retval instead of count.
+Discard events that don't contain any entries. This shouldn't happen,
+but subsequent code relies on being able to use entry 0. So better
+be safe than accessing garbage.
 
-Addresses-Coverity: ("Unused value")
-Fixes: fc69f4a6af49 ("Input: add new driver for Sentelic Finger Sensing Pad")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20200603141218.131663-1-colin.king@canonical.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: b4d72c08b358 ("qeth: bridgeport support - basic control")
+Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/mouse/sentelic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/s390/net/qeth_l2_main.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/input/mouse/sentelic.c b/drivers/input/mouse/sentelic.c
-index 11c32ac8234b2..779d0b9341c0d 100644
---- a/drivers/input/mouse/sentelic.c
-+++ b/drivers/input/mouse/sentelic.c
-@@ -454,7 +454,7 @@ static ssize_t fsp_attr_set_setreg(struct psmouse *psmouse, void *data,
+diff --git a/drivers/s390/net/qeth_l2_main.c b/drivers/s390/net/qeth_l2_main.c
+index 97211f7f0cf02..ed4b0f6e2d6ad 100644
+--- a/drivers/s390/net/qeth_l2_main.c
++++ b/drivers/s390/net/qeth_l2_main.c
+@@ -1669,6 +1669,10 @@ static void qeth_bridge_state_change(struct qeth_card *card,
+ 	int extrasize;
  
- 	fsp_reg_write_enable(psmouse, false);
- 
--	return count;
-+	return retval;
- }
- 
- PSMOUSE_DEFINE_WO_ATTR(setreg, S_IWUSR, NULL, fsp_attr_set_setreg);
+ 	QETH_CARD_TEXT(card, 2, "brstchng");
++	if (qports->num_entries == 0) {
++		QETH_CARD_TEXT(card, 2, "BPempty");
++		return;
++	}
+ 	if (qports->entry_length != sizeof(struct qeth_sbp_port_entry)) {
+ 		QETH_CARD_TEXT_(card, 2, "BPsz%04x", qports->entry_length);
+ 		return;
 -- 
 2.25.1
 
