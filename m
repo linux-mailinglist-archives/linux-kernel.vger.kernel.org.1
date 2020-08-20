@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9558324C0A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA0F24C0AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728295AbgHTObB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 10:31:01 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:58976 "EHLO huawei.com"
+        id S1728450AbgHTObh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 10:31:37 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:58956 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727881AbgHTOay (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 10:30:54 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id C998F799B7358370849E;
+        id S1728148AbgHTOba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 10:31:30 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id A0524680DFEFE3E90D12;
         Thu, 20 Aug 2020 22:30:51 +0800 (CST)
 Received: from DESKTOP-C3MD9UG.china.huawei.com (10.174.177.253) by
  DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
@@ -26,9 +26,9 @@ To:     Oliver O'Halloran <oohall@gmail.com>,
         linux-nvdimm <linux-nvdimm@lists.01.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 3/4] libnvdimm: eliminate two unnecessary zero initializations in badrange.c
-Date:   Thu, 20 Aug 2020 22:30:26 +0800
-Message-ID: <20200820143027.3241-4-thunder.leizhen@huawei.com>
+Subject: [PATCH 4/4] libnvdimm: avoid unnecessary judgments in nvdimm_namespace_disk_name()
+Date:   Thu, 20 Aug 2020 22:30:27 +0800
+Message-ID: <20200820143027.3241-5-thunder.leizhen@huawei.com>
 X-Mailer: git-send-email 2.26.0.windows.1
 In-Reply-To: <20200820143027.3241-1-thunder.leizhen@huawei.com>
 References: <20200820143027.3241-1-thunder.leizhen@huawei.com>
@@ -42,40 +42,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the "struct badrange_entry" has three members: start, length,
-list. In append_badrange_entry(), "start" and "length" will be assigned
-later, and "list" does not need to be initialized before calling
-list_add_tail(). That means, the kzalloc() in badrange_add() or
-alloc_and_append_badrange_entry() can be replaced with kmalloc(), because
-the zero initialization is not required.
+suffix ? suffix : "" appears three times, it's easy to get rid of it
+by initialize the local variable "suffix" to empty string.
+
+To avoid having rows that exceed 80 columns, add a new local variable
+"region_id".
+
+No functional change, but it can reduce the code size.
+Before:
+   text    data     bss     dec     hex filename
+  41749    3697      16   45462    b196 drivers/nvdimm/namespace_devs.o
+
+After:
+   text    data     bss     dec     hex filename
+  41653    3697      16   45366    b136 drivers/nvdimm/namespace_devs.o
 
 Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- drivers/nvdimm/badrange.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/nvdimm/namespace_devs.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/nvdimm/badrange.c b/drivers/nvdimm/badrange.c
-index 7f78b659057902d..13145001c52ff39 100644
---- a/drivers/nvdimm/badrange.c
-+++ b/drivers/nvdimm/badrange.c
-@@ -37,7 +37,7 @@ static int alloc_and_append_badrange_entry(struct badrange *badrange,
+diff --git a/drivers/nvdimm/namespace_devs.c b/drivers/nvdimm/namespace_devs.c
+index 6da67f4d641a27c..ef2800c5da4c99c 100644
+--- a/drivers/nvdimm/namespace_devs.c
++++ b/drivers/nvdimm/namespace_devs.c
+@@ -157,7 +157,8 @@ const char *nvdimm_namespace_disk_name(struct nd_namespace_common *ndns,
+ 		char *name)
  {
- 	struct badrange_entry *bre;
+ 	struct nd_region *nd_region = to_nd_region(ndns->dev.parent);
+-	const char *suffix = NULL;
++	const char *suffix = "";
++	int region_id = nd_region->id;
  
--	bre = kzalloc(sizeof(*bre), flags);
-+	bre = kmalloc(sizeof(*bre), flags);
- 	if (!bre)
- 		return -ENOMEM;
+ 	if (ndns->claim && is_nd_btt(ndns->claim))
+ 		suffix = "s";
+@@ -173,17 +174,14 @@ const char *nvdimm_namespace_disk_name(struct nd_namespace_common *ndns,
+ 		}
  
-@@ -49,7 +49,7 @@ int badrange_add(struct badrange *badrange, u64 addr, u64 length)
- {
- 	struct badrange_entry *bre, *bre_new;
+ 		if (nsidx)
+-			sprintf(name, "pmem%d.%d%s", nd_region->id, nsidx,
+-					suffix ? suffix : "");
++			sprintf(name, "pmem%d.%d%s", region_id, nsidx, suffix);
+ 		else
+-			sprintf(name, "pmem%d%s", nd_region->id,
+-					suffix ? suffix : "");
++			sprintf(name, "pmem%d%s", region_id, suffix);
+ 	} else if (is_namespace_blk(&ndns->dev)) {
+ 		struct nd_namespace_blk *nsblk;
  
--	bre_new = kzalloc(sizeof(*bre_new), GFP_KERNEL);
-+	bre_new = kmalloc(sizeof(*bre_new), GFP_KERNEL);
- 
- 	spin_lock(&badrange->lock);
- 
+ 		nsblk = to_nd_namespace_blk(&ndns->dev);
+-		sprintf(name, "ndblk%d.%d%s", nd_region->id, nsblk->id,
+-				suffix ? suffix : "");
++		sprintf(name, "ndblk%d.%d%s", region_id, nsblk->id, suffix);
+ 	} else {
+ 		return NULL;
+ 	}
 -- 
 1.8.3
 
