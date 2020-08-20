@@ -2,122 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F201624BAAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2732024BAF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726215AbgHTMPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:15:22 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:39103 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729652AbgHTMOt (ORCPT
+        id S1729466AbgHTMUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:20:38 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:60844 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730356AbgHTMUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 08:14:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597925686;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=xILkwKXiimBRQG7R/yBOZh2vZwlweNle6iIT8qUHOGk=;
-        b=MTTUptamMcQpfhl8I5GMUKrw017mmmELLsEV/+WE4KwV8eiE+r0ghYwhf7a9+oGmukE0M8
-        uA9Dmj3smL890B+GWolPG9NWNuacIpyWeOy3hWuz+Ps5MVU7DhDLbk/Vv4XwbORbKrtq4W
-        mxuBW9zaiSNuSVJ67bueAThrkgdbyls=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-232-8rgB_toIMCWjnWNOpU1GVw-1; Thu, 20 Aug 2020 08:14:41 -0400
-X-MC-Unique: 8rgB_toIMCWjnWNOpU1GVw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Thu, 20 Aug 2020 08:20:09 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597926008; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=yHVAvexqEWvuHwpqCiJJpqti28GNOsRReJIvgdeT+YM=;
+ b=UJH6ED2QZ1Pz2NXTWAreyKLWW5oaCTzZ6SVqFl/GvrhN2NY0V2F38ceiLQ4NBYf1r/DHc0he
+ Il+UcZvZclqQ9nV8WxrNVZ88atoxE9P+tY/0J65t35H4fxkCGz+9/Q64MyMrJrT+92SvKQH3
+ ObfWUfMl9/JIV4778yQRmK/GM/0=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5f3e6a6bc3a55812b159c544 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 20 Aug 2020 12:19:55
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 126D9C433AD; Thu, 20 Aug 2020 12:19:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A0A18801AAB;
-        Thu, 20 Aug 2020 12:14:40 +0000 (UTC)
-Received: from [10.36.113.120] (ovpn-113-120.ams2.redhat.com [10.36.113.120])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 241827E306;
-        Thu, 20 Aug 2020 12:14:35 +0000 (UTC)
-Subject: Re: Kernel build error on BTFIDS vmlinux
-To:     Mark Wielaard <mark@klomp.org>, Jiri Olsa <jolsa@redhat.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>, sdf@google.com,
-        andriin@fb.com
-References: <20200818105555.51fc6d62@carbon> <20200818091404.GB177896@krava>
- <20200818105602.GC177896@krava> <20200818134543.GD177896@krava>
- <20200818183318.2c3fe4a2@carbon>
- <c9c4a42ba6b4d36e557a5441e90f7f4961ec3f72.camel@klomp.org>
- <0ddf7bc5-be05-cc06-05d7-2778c53d023b@redhat.com>
- <20200819171820.GG177896@krava>
- <f03e0fec4b29afe24a7a13c43de23e6db6dfce23.camel@klomp.org>
-From:   Nick Clifton <nickc@redhat.com>
-Autocrypt: addr=nickc@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- 6susi2ReUyNJEJaSnjO5z13TQ1U=
-Organization: Red Hat
-Message-ID: <5a4dfcc7-5f6f-d1bb-42a0-363cb59b6d93@redhat.com>
-Date:   Thu, 20 Aug 2020 13:14:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BB6EAC433C6;
+        Thu, 20 Aug 2020 12:19:53 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <f03e0fec4b29afe24a7a13c43de23e6db6dfce23.camel@klomp.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Date:   Thu, 20 Aug 2020 17:49:53 +0530
+From:   skakit@codeaurora.org
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        gregkh@linuxfoundation.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, akashast@codeaurora.org,
+        rojay@codeaurora.org, msavaliy@qti.qualcomm.com
+Subject: Re: [PATCH V2 2/3] arm64: dts: qcom: sc7180: Add sleep pin ctrl for
+ BT uart
+In-Reply-To: <20200819161311.GF2995789@google.com>
+References: <1595563082-2353-1-git-send-email-skakit@codeaurora.org>
+ <1595563082-2353-3-git-send-email-skakit@codeaurora.org>
+ <20200817180158.GD2995789@google.com>
+ <1cbbc8cf5c918c6a9eee5ef349707fc6@codeaurora.org>
+ <20200819161311.GF2995789@google.com>
+Message-ID: <29d523f4a46ecce8e4a62a5310528969@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guys,
+Hi Matthias,
 
->> so when I take empty object and compile like:
->>
->>   $ echo 'int main(int argc, char **argv) { return 0; }' | gcc -c -o ex.o -g -gz=zlib -x c -
->>   $ ld -o ex --compress-debug-sections=zlib ex.o
+On 2020-08-19 21:43, Matthias Kaehlcke wrote:
+> On Wed, Aug 19, 2020 at 07:19:25PM +0530, skakit@codeaurora.org wrote:
+>> On 2020-08-17 23:31, Matthias Kaehlcke wrote:
+>> > On Fri, Jul 24, 2020 at 09:28:01AM +0530, satya priya wrote:
+>> > > Add sleep pin ctrl for BT uart, and also change the bias
+>> > > configuration to match Bluetooth module.
+>> > >
+>> > > Signed-off-by: satya priya <skakit@codeaurora.org>
+>> > > ---
+>> > > Changes in V2:
+>> > >  - This patch adds sleep state for BT UART. Newly added in V2.
+>> > >
+>> > >  arch/arm64/boot/dts/qcom/sc7180-idp.dts | 42
+>> > > ++++++++++++++++++++++++++++-----
+>> > >  1 file changed, 36 insertions(+), 6 deletions(-)
+>> > >
+>> > > diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+>> > > b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+>> > > index 26cc491..bc919f2 100644
+>> > > --- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+>> > > +++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+>> > > @@ -469,20 +469,50 @@
+>> > >
+>> > >  &qup_uart3_default {
+>> > >  	pinconf-cts {
+>> > > -		/*
+>> > > -		 * Configure a pull-down on 38 (CTS) to match the pull of
+>> > > -		 * the Bluetooth module.
+>> > > -		 */
+>> > > +		/* Configure no pull on 38 (CTS) to match Bluetooth module */
+>> >
+>> > Has the pull from the Bluetooth module been removed or did the previous
+>> > config
+>> > incorrectly claim that the Bluetooth module has a pull-down?
+>> >
+>> 
+>> The previous config was incorrect, so we corrected it to match the 
+>> pull of
+>> BT.
+> 
+> The pull config of the BT controller varies depending on its state, 
+> could
+> you clarify which state you intend to match?
+> 
 
-Thanks Mark.  I have now created a binutils PR for this bug, and I am looking into a fix:
+Since this line is driven by BT SoC, they could change their 
+pull(although it's less likely). Recently on cherokee we worked with BT 
+team and came to an agreement to keep no-pull from our side in order to 
+not conflict with their pull in any state.
 
-  https://sourceware.org/bugzilla/show_bug.cgi?id=26428
+>> 
+>> > >  		pins = "gpio38";
+>> > > +		bias-disable;
+>> > > +	};
+>> > > +
+>> > > +	pinconf-rts {
+>> > > +		/* We'll drive 39 (RTS), so configure pull-down */
+>> > > +		pins = "gpio39";
+>> > > +		drive-strength = <2>;
+>> > >  		bias-pull-down;
+>> > > +	};
+>> > > +
+>> > > +	pinconf-tx {
+>> > > +		/* We'll drive 40 (TX), so no pull */
+>> >
+>> > The rationales for RTS and TX contradict each other. According to the
+>> > comment
+>> > the reason to configure a pull-down on RTS is that it is driven by the
+>> > host.
+>> > Then for TX the reason to configure no pull is that it is driven by the
+>> > host.
+>> >
+>> > Please make sure the comments *really* describe the rationale, otherwise
+>> > they
+>> > are just confusing.
+>> 
+>> The rationale for RTS is that we don't want it to be floating and want 
+>> to
+>> make sure that it is pulled down, to receive bytes. Will modify the 
+>> comment
+>> mentioning the same.
+> 
+> Could you clarify what you mean with "to receive bytes"?
+> 
 
-Cheers
-  Nick
+When we keep no-pull(floating), sometimes it may be pulled high and UART 
+flow will be turned off(RFR_NOT_READY), due to this BT SoC wont be able 
+to send data even though host is ready.
 
+> Thanks
+> 
+> Matthias
+
+Thanks,
+Satya Priya
