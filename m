@@ -2,110 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E91224C13D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 17:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC6324C1A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 17:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728523AbgHTPIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 11:08:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52498 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727920AbgHTPI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 11:08:27 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE2AB208C7;
-        Thu, 20 Aug 2020 15:08:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597936107;
-        bh=PD+kIuAml8tMq9Xgm9Esyl8lxWkN6y9z0t/To/ttxnk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2ogBOzYPiOBulfWMN7+t/PcwRan6eCGrpEwj4EA1anWfTdxPB4SIzbFF8hruHDKUg
-         zQJL83RUzVE3m04VGnNsjUKMJGwANZkn+LbIfuEUk0TXTyjUz62sAx5uvzD7R9kSH1
-         4bPMIW9gZkoPikuokh44iDUOplB+kE62f5aNpf3E=
-Date:   Thu, 20 Aug 2020 17:08:48 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>,
-        Willy Tarreau <w@1wt.eu>, Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH 4.4 000/149] 4.4.233-rc1 review
-Message-ID: <20200820150848.GA1565072@kroah.com>
-References: <20200820092125.688850368@linuxfoundation.org>
- <CA+G9fYsxQEnACmjP+CUtBq9P+0nWU_19oG62tpCbKtdcGAStfA@mail.gmail.com>
+        id S1728799AbgHTPLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 11:11:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728687AbgHTPJn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 11:09:43 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3835DC061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 08:09:43 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id e4so1100326pjd.0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 08:09:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=71XX2veJkKT0YzwmClCc+z80ZFWwKWy5GA8qJO8IZyc=;
+        b=hPnfMgMMtVyfrUz89//K6xkkxbZOFny/EDMVqtpoiQpt/h2T8RlAtlhfnLe8eHgbzM
+         WMCMdsgyGNgbjc/1ZE6EbjNyEGZr+e+MGoRGAlYOvdZGyOXg8UJsEwRUBvEryn6gUJDV
+         WZwjroQEgmVQ4V3zoeWVW0jroqHZyaLrLLlmvnLPFHnIotm/ffXiB28Uo+h9qFg2Cyfi
+         JQMIEEtlxsVpm16jcujJ+ncMNBqF4faVaVvPZPcKsWZTiq/HrqzVqDHnlONkMb8TfUVv
+         hp67Q6loy2lF49ULJ5hH94C03IHvuiRbXAsvT6WS3H0LmkAfRLL1Jj0C+JMjbHC/+1NU
+         KFMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=71XX2veJkKT0YzwmClCc+z80ZFWwKWy5GA8qJO8IZyc=;
+        b=Yit8z6UR+odinaH5UFCQ4CaYpLUShr+OiC34QxjSp1JKcqUaAoerMvQ15Q93tqiEiC
+         +wSSsdILsnpl5FdLVQU/4wZGnz4xNN2zd13+vPQip5Cj8eb/bK5Vp0ccheOIB5vH6dhv
+         hbFnPQteo7uqnxQOA+MBRK6dtH4tR5OEnQ6wZJko/7vEB8XcBF6aUj0KGqYRwoUdS3cj
+         dqv5nkSSGjM/63bUd2+05aTKX0FC47MhvC+nNcpOMB63PUSdspMFar9/69YIPSPAe2qt
+         4gkmGnZeo6d9Lf0qGzGwYASjofgzPLvkTR7zBMQgr/VRxoEuoy7WVO8Z9sJa+wVmdm3a
+         Pl9w==
+X-Gm-Message-State: AOAM533mu0k1q1b0RnpZnFh7iDG6qDuCquZ1Ofznq8awl7qdmY3rKfjy
+        wlPfveVFoL7TU4n5xvwywHh/87d00BTxjQ==
+X-Google-Smtp-Source: ABdhPJyIg3RDk70VxXVYxag07JOMUCl79xDsodzJij9LUYJP33yJbMtuYuSEB+EnTRx9lqU8SmkKLA==
+X-Received: by 2002:a17:90b:4c0c:: with SMTP id na12mr2747635pjb.24.1597936182749;
+        Thu, 20 Aug 2020 08:09:42 -0700 (PDT)
+Received: from mail.google.com ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id r77sm3426355pfc.193.2020.08.20.08.09.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Aug 2020 08:09:41 -0700 (PDT)
+Date:   Thu, 20 Aug 2020 23:09:32 +0800
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Changbin Du <changbin.du@gmail.com>, Jiri Olsa <jolsa@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 11/18] perf ftrace: add support for tracing option
+ 'irq-info'
+Message-ID: <20200820150932.nexcjkiys4flf4ov@mail.google.com>
+References: <20200808023141.14227-1-changbin.du@gmail.com>
+ <20200808023141.14227-12-changbin.du@gmail.com>
+ <20200814122807.GB13995@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+G9fYsxQEnACmjP+CUtBq9P+0nWU_19oG62tpCbKtdcGAStfA@mail.gmail.com>
+In-Reply-To: <20200814122807.GB13995@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 07:49:06PM +0530, Naresh Kamboju wrote:
-> On Thu, 20 Aug 2020 at 15:47, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 4.4.233 release.
-> > There are 149 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Sat, 22 Aug 2020 09:21:01 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.233-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
+On Fri, Aug 14, 2020 at 09:28:07AM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Sat, Aug 08, 2020 at 10:31:34AM +0800, Changbin Du escreveu:
+> > This adds support to display irq context info for function tracer. To do
+> > this, just specify a '--func-opts irq-info' option.
 > 
-> i386 build failed on stable-rc 4.4 branch
+> Applied, ditto about adding an example to perf-ftrace.txt
+>
+no problem, I will do it some days later. Thanks.
+
+> > Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> > ---
+> >  tools/perf/Documentation/perf-ftrace.txt |  1 +
+> >  tools/perf/builtin-ftrace.c              | 21 ++++++++++++++++++++-
+> >  2 files changed, 21 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/perf/Documentation/perf-ftrace.txt b/tools/perf/Documentation/perf-ftrace.txt
+> > index fca55ac55ff3..37ea3ea97922 100644
+> > --- a/tools/perf/Documentation/perf-ftrace.txt
+> > +++ b/tools/perf/Documentation/perf-ftrace.txt
+> > @@ -79,6 +79,7 @@ OPTIONS
+> >  --func-opts::
+> >  	List of options allowed to set:
+> >  	  call-graph - Display kernel stack trace for function tracer.
+> > +	  irq-info   - Display irq context info for function tracer.
+> >  
+> >  -G::
+> >  --graph-funcs=::
+> > diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
+> > index b4c821be4fb5..d1241febe143 100644
+> > --- a/tools/perf/builtin-ftrace.c
+> > +++ b/tools/perf/builtin-ftrace.c
+> > @@ -44,6 +44,7 @@ struct perf_ftrace {
+> >  	unsigned long		percpu_buffer_size;
+> >  	bool			inherit;
+> >  	int			func_stack_trace;
+> > +	int			func_irq_info;
+> >  	int			graph_nosleep_time;
+> >  	int			graph_noirqs;
+> >  };
+> > @@ -209,6 +210,7 @@ static void reset_tracing_options(struct perf_ftrace *ftrace __maybe_unused)
+> >  	write_tracing_option_file("func_stack_trace", "0");
+> >  	write_tracing_option_file("sleep-time", "1");
+> >  	write_tracing_option_file("funcgraph-irqs", "1");
+> > +	write_tracing_option_file("irq-info", "0");
+> >  }
+> >  
+> >  static int reset_tracing_files(struct perf_ftrace *ftrace __maybe_unused)
+> > @@ -296,6 +298,17 @@ static int set_tracing_func_stack_trace(struct perf_ftrace *ftrace)
+> >  	return 0;
+> >  }
+> >  
+> > +static int set_tracing_func_irqinfo(struct perf_ftrace *ftrace)
+> > +{
+> > +	if (!ftrace->func_irq_info)
+> > +		return 0;
+> > +
+> > +	if (write_tracing_option_file("irq-info", "1") < 0)
+> > +		return -1;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  static int reset_tracing_cpu(void)
+> >  {
+> >  	struct perf_cpu_map *cpumap = perf_cpu_map__new(NULL);
+> > @@ -471,6 +484,11 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
+> >  		goto out_reset;
+> >  	}
+> >  
+> > +	if (set_tracing_func_irqinfo(ftrace) < 0) {
+> > +		pr_err("failed to set tracing option irq-info\n");
+> > +		goto out_reset;
+> > +	}
+> > +
+> >  	if (set_tracing_filters(ftrace) < 0) {
+> >  		pr_err("failed to set tracing filters\n");
+> >  		goto out_reset;
+> > @@ -660,6 +678,7 @@ static int parse_func_tracer_opts(const struct option *opt,
+> >  	struct perf_ftrace *ftrace = (struct perf_ftrace *) opt->value;
+> >  	struct sublevel_option func_tracer_opts[] = {
+> >  		{ .name = "call-graph",	.value_ptr = &ftrace->func_stack_trace },
+> > +		{ .name = "irq-info",	.value_ptr = &ftrace->func_irq_info },
+> >  		{ .name = NULL, }
+> >  	};
+> >  
+> > @@ -742,7 +761,7 @@ int cmd_ftrace(int argc, const char **argv)
+> >  	OPT_CALLBACK('N', "notrace-funcs", &ftrace.notrace, "func",
+> >  		     "do not trace given functions", parse_filter_func),
+> >  	OPT_CALLBACK(0, "func-opts", &ftrace, "options",
+> > -		     "function tracer options, available options: call-graph",
+> > +		     "function tracer options, available options: call-graph,irq-info",
+> >  		     parse_func_tracer_opts),
+> >  	OPT_CALLBACK('G', "graph-funcs", &ftrace.graph_funcs, "func",
+> >  		     "trace given functions using function_graph tracer",
+> > -- 
+> > 2.25.1
+> > 
 > 
-> make -sk KBUILD_BUILD_USER=TuxBuild -C/linux -j16 ARCH=i386 HOSTCC=gcc
-> CC="sccache gcc" O=build
-> #
-> In file included from ../samples/seccomp/bpf-direct.c:19:
-> /usr/include/linux/types.h:5:10: fatal error: asm/types.h: No such
-> file or directory
->     5 | #include <asm/types.h>
->       |          ^~~~~~~~~~~~~
-> compilation terminated.
-> In file included from /usr/include/linux/filter.h:10,
->                  from ../samples/seccomp/bpf-fancy.c:12:
-> /usr/include/linux/types.h:5:10: fatal error: asm/types.h: No such
-> file or directory
->     5 | #include <asm/types.h>
->       |          ^~~~~~~~~~~~~
-> compilation terminated.
-> make[3]: *** [scripts/Makefile.host:108: samples/seccomp/bpf-direct.o] Error 1
-> make[3]: *** [scripts/Makefile.host:108: samples/seccomp/bpf-fancy.o] Error 1
-> In file included from /usr/include/bits/errno.h:26,
->                  from /usr/include/errno.h:28,
->                  from ../samples/seccomp/dropper.c:17:
-> /usr/include/linux/errno.h:1:10: fatal error: asm/errno.h: No such
-> file or directory
->     1 | #include <asm/errno.h>
->       |          ^~~~~~~~~~~~~
-> compilation terminated.
-> make[3]: *** [scripts/Makefile.host:108: samples/seccomp/dropper.o] Error 1
-> In file included from ../samples/seccomp/bpf-helper.c:16:
-> ../samples/seccomp/bpf-helper.h:17:10: fatal error: asm/bitsperlong.h:
-> No such file or directory
->    17 | #include <asm/bitsperlong.h> /* for __BITS_PER_LONG */
->       |          ^~~~~~~~~~~~~~~~~~~
+> -- 
+> 
+> - Arnaldo
 
-Any pointers to the commit that caused this?  I'll place odds on one of
-the random.h changes :(
-
-greg k-h
+-- 
+Cheers,
+Changbin Du
