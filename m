@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 800A924B2A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A086324B357
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728334AbgHTJeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:34:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43094 "EHLO mail.kernel.org"
+        id S1728594AbgHTJqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:46:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728236AbgHTJbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:31:38 -0400
+        id S1728920AbgHTJmE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:42:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9337122B3F;
-        Thu, 20 Aug 2020 09:31:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EC8822075E;
+        Thu, 20 Aug 2020 09:42:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915898;
-        bh=wp8G5LoikT6tMvWTrOAsmUvkum57qThOs0SmGsnDMmE=;
+        s=default; t=1597916523;
+        bh=sL0968/HFFbREq/hgGicNt4OaxmzlMEkH2rS4F4Lc48=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jHg4W3l6z93G80sxfHYFssGiWTOf3pRCVpzsSvJJ+mbowONt1j7a8A6MXS4iME8eC
-         wCz2rMzYrPi3ocl34AOQn9vWdzMwLTpWYnvYpMbZNB1fuXpzVCc0C31nQcxdOURNDa
-         QkbI3mgPQugCXO42e1tMkmcEfbT24rW2TH6x3U7E=
+        b=vnUOumdXC3Qp8Sf38JctpyOZTw6RGUaTJq1EHGGTuIkX3ogBMirWcBVmAOtM4PTIt
+         PAZW0x6YS+oCaAQqKReMXTvZoYukz1VtsqHAyu+xxxSkhyGPdJCAPl/sEeiOEMIuYL
+         Tg/I1blYvFmp5kYjLSppq2Exrzpl53UK3hLfn8/Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        syzbot+d9aab50b1154e3d163f5@syzkaller.appspotmail.com,
-        Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org, Steve Longerbeam <slongerbeam@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 174/232] ubi: fastmap: Dont produce the initial next anchor PEB when fastmap is disabled
+Subject: [PATCH 5.7 128/204] gpu: ipu-v3: image-convert: Combine rotate/no-rotate irq handlers
 Date:   Thu, 20 Aug 2020 11:20:25 +0200
-Message-Id: <20200820091621.246072260@linuxfoundation.org>
+Message-Id: <20200820091612.675453246@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
-References: <20200820091612.692383444@linuxfoundation.org>
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,43 +44,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+From: Steve Longerbeam <slongerbeam@gmail.com>
 
-[ Upstream commit 3b185255bb2f34fa6927619b9ef27f192a3d9f5a ]
+[ Upstream commit 0f6245f42ce9b7e4d20f2cda8d5f12b55a44d7d1 ]
 
-Following process triggers a memleak caused by forgetting to release the
-initial next anchor PEB (CONFIG_MTD_UBI_FASTMAP is disabled):
-1. attach -> __erase_worker -> produce the initial next anchor PEB
-2. detach -> ubi_fastmap_close (Do nothing, it should have released the
-   initial next anchor PEB)
+Combine the rotate_irq() and norotate_irq() handlers into a single
+eof_irq() handler.
 
-Don't produce the initial next anchor PEB in __erase_worker() when fastmap
-is disabled.
-
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Suggested-by: Sascha Hauer <s.hauer@pengutronix.de>
-Fixes: f9c34bb529975fe ("ubi: Fix producing anchor PEBs")
-Reported-by: syzbot+d9aab50b1154e3d163f5@syzkaller.appspotmail.com
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Steve Longerbeam <slongerbeam@gmail.com>
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/ubi/wl.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/ipu-v3/ipu-image-convert.c | 58 +++++++++-----------------
+ 1 file changed, 20 insertions(+), 38 deletions(-)
 
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 27636063ed1bb..42cac572f82dc 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -1086,7 +1086,8 @@ static int __erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk)
- 	if (!err) {
- 		spin_lock(&ubi->wl_lock);
+diff --git a/drivers/gpu/ipu-v3/ipu-image-convert.c b/drivers/gpu/ipu-v3/ipu-image-convert.c
+index eeca50d9a1ee4..f8b031ded3cf2 100644
+--- a/drivers/gpu/ipu-v3/ipu-image-convert.c
++++ b/drivers/gpu/ipu-v3/ipu-image-convert.c
+@@ -1709,9 +1709,10 @@ static irqreturn_t do_irq(struct ipu_image_convert_run *run)
+ 	return IRQ_WAKE_THREAD;
+ }
  
--		if (!ubi->fm_next_anchor && e->pnum < UBI_FM_MAX_START) {
-+		if (!ubi->fm_disabled && !ubi->fm_next_anchor &&
-+		    e->pnum < UBI_FM_MAX_START) {
- 			/* Abort anchor production, if needed it will be
- 			 * enabled again in the wear leveling started below.
- 			 */
+-static irqreturn_t norotate_irq(int irq, void *data)
++static irqreturn_t eof_irq(int irq, void *data)
+ {
+ 	struct ipu_image_convert_chan *chan = data;
++	struct ipu_image_convert_priv *priv = chan->priv;
+ 	struct ipu_image_convert_ctx *ctx;
+ 	struct ipu_image_convert_run *run;
+ 	unsigned long flags;
+@@ -1728,45 +1729,26 @@ static irqreturn_t norotate_irq(int irq, void *data)
+ 
+ 	ctx = run->ctx;
+ 
+-	if (ipu_rot_mode_is_irt(ctx->rot_mode)) {
+-		/* this is a rotation operation, just ignore */
+-		spin_unlock_irqrestore(&chan->irqlock, flags);
+-		return IRQ_HANDLED;
+-	}
+-
+-	ret = do_irq(run);
+-out:
+-	spin_unlock_irqrestore(&chan->irqlock, flags);
+-	return ret;
+-}
+-
+-static irqreturn_t rotate_irq(int irq, void *data)
+-{
+-	struct ipu_image_convert_chan *chan = data;
+-	struct ipu_image_convert_priv *priv = chan->priv;
+-	struct ipu_image_convert_ctx *ctx;
+-	struct ipu_image_convert_run *run;
+-	unsigned long flags;
+-	irqreturn_t ret;
+-
+-	spin_lock_irqsave(&chan->irqlock, flags);
+-
+-	/* get current run and its context */
+-	run = chan->current_run;
+-	if (!run) {
++	if (irq == chan->out_eof_irq) {
++		if (ipu_rot_mode_is_irt(ctx->rot_mode)) {
++			/* this is a rotation op, just ignore */
++			ret = IRQ_HANDLED;
++			goto out;
++		}
++	} else if (irq == chan->rot_out_eof_irq) {
++		if (!ipu_rot_mode_is_irt(ctx->rot_mode)) {
++			/* this was NOT a rotation op, shouldn't happen */
++			dev_err(priv->ipu->dev,
++				"Unexpected rotation interrupt\n");
++			ret = IRQ_HANDLED;
++			goto out;
++		}
++	} else {
++		dev_err(priv->ipu->dev, "Received unknown irq %d\n", irq);
+ 		ret = IRQ_NONE;
+ 		goto out;
+ 	}
+ 
+-	ctx = run->ctx;
+-
+-	if (!ipu_rot_mode_is_irt(ctx->rot_mode)) {
+-		/* this was NOT a rotation operation, shouldn't happen */
+-		dev_err(priv->ipu->dev, "Unexpected rotation interrupt\n");
+-		spin_unlock_irqrestore(&chan->irqlock, flags);
+-		return IRQ_HANDLED;
+-	}
+-
+ 	ret = do_irq(run);
+ out:
+ 	spin_unlock_irqrestore(&chan->irqlock, flags);
+@@ -1859,7 +1841,7 @@ static int get_ipu_resources(struct ipu_image_convert_chan *chan)
+ 						  chan->out_chan,
+ 						  IPU_IRQ_EOF);
+ 
+-	ret = request_threaded_irq(chan->out_eof_irq, norotate_irq, do_bh,
++	ret = request_threaded_irq(chan->out_eof_irq, eof_irq, do_bh,
+ 				   0, "ipu-ic", chan);
+ 	if (ret < 0) {
+ 		dev_err(priv->ipu->dev, "could not acquire irq %d\n",
+@@ -1872,7 +1854,7 @@ static int get_ipu_resources(struct ipu_image_convert_chan *chan)
+ 						     chan->rotation_out_chan,
+ 						     IPU_IRQ_EOF);
+ 
+-	ret = request_threaded_irq(chan->rot_out_eof_irq, rotate_irq, do_bh,
++	ret = request_threaded_irq(chan->rot_out_eof_irq, eof_irq, do_bh,
+ 				   0, "ipu-ic", chan);
+ 	if (ret < 0) {
+ 		dev_err(priv->ipu->dev, "could not acquire irq %d\n",
 -- 
 2.25.1
 
