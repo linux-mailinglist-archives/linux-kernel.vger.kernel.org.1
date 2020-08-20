@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD87924BEA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B2824BEB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727935AbgHTJc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:32:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44042 "EHLO mail.kernel.org"
+        id S1726903AbgHTJcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:32:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728257AbgHTJby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:31:54 -0400
+        id S1728245AbgHTJcC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:32:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5571922BF5;
-        Thu, 20 Aug 2020 09:31:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A376208E4;
+        Thu, 20 Aug 2020 09:32:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915912;
-        bh=zX065Jj8yZv2ZjljmxDbv1KjrqSbKCATFwprplDdImQ=;
+        s=default; t=1597915922;
+        bh=vxvjVRskRRfqYiS7lGjlXSeNqSaOj3GOptYFi73IQUI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jp4oJKsf5zbG4UfoNXg//tpVjdFFFw19IoiO8Z+rbx5YmxZrcKArVG6gEhra9jvjl
-         vqNrLxZg+7DXFCz00p4YeGkMpggmkktgpLn72wSJMD+/HNWw3FFTOMRis1QMUsa7A7
-         zD0mXCj0pPvcNxY0NDoA35v471wASAZFps07lzL8=
+        b=l6mS+z8fPHczuDofq67fRRwn+rxRGpaYkDx7RZW/3GRDCN3/OdqfMAKi+6bcv9kka
+         8Fq0uP6wRQp8dvZFnxqoCbkcFZrYB/T+THk78PPFrkYcgKNvWsYOsIRJMt3KEELGyE
+         Gc2d96ggKkvhmt7LnvQ/HtWKLknd2q+8hg+6e/XU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Stafford Horne <shorne@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 178/232] clk: bcm2835: Do not use prediv with bcm2711s PLLs
-Date:   Thu, 20 Aug 2020 11:20:29 +0200
-Message-Id: <20200820091621.432573048@linuxfoundation.org>
+Subject: [PATCH 5.8 181/232] openrisc: Fix oops caused when dumping stack
+Date:   Thu, 20 Aug 2020 11:20:32 +0200
+Message-Id: <20200820091621.571260086@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
 References: <20200820091612.692383444@linuxfoundation.org>
@@ -47,110 +43,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+From: Stafford Horne <shorne@gmail.com>
 
-[ Upstream commit f34e4651ce66a754f41203284acf09b28b9dd955 ]
+[ Upstream commit 57b8e277c33620e115633cdf700a260b55095460 ]
 
-Contrary to previous SoCs, bcm2711 doesn't have a prescaler in the PLL
-feedback loop. Bypass it by zeroing fb_prediv_mask when running on
-bcm2711.
+When dumping a stack with 'cat /proc/#/stack' the kernel would oops.
+For example:
 
-Note that, since the prediv configuration bits were re-purposed, this
-was triggering miscalculations on all clocks hanging from the VPU clock,
-notably the aux UART, making its output unintelligible.
+    # cat /proc/690/stack
+    Unable to handle kernel access
+     at virtual address 0x7fc60f58
 
-Fixes: 42de9ad400af ("clk: bcm2835: Add BCM2711_CLOCK_EMMC2 support")
-Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Link: https://lore.kernel.org/r/20200730182619.23246-1-nsaenzjulienne@suse.de
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+    Oops#: 0000
+    CPU #: 0
+       PC: c00097fc    SR: 0000807f    SP: d6f09b9c
+    GPR00: 00000000 GPR01: d6f09b9c GPR02: d6f09bb8 GPR03: d6f09bc4
+    GPR04: 7fc60f5c GPR05: c00099b4 GPR06: 00000000 GPR07: d6f09ba3
+    GPR08: ffffff00 GPR09: c0009804 GPR10: d6f08000 GPR11: 00000000
+    GPR12: ffffe000 GPR13: dbb86000 GPR14: 00000001 GPR15: dbb86250
+    GPR16: 7fc60f63 GPR17: 00000f5c GPR18: d6f09bc4 GPR19: 00000000
+    GPR20: c00099b4 GPR21: ffffffc0 GPR22: 00000000 GPR23: 00000000
+    GPR24: 00000001 GPR25: 000002c6 GPR26: d78b6850 GPR27: 00000001
+    GPR28: 00000000 GPR29: dbb86000 GPR30: ffffffff GPR31: dbb862fc
+      RES: 00000000 oGPR11: ffffffff
+    Process cat (pid: 702, stackpage=d79d6000)
+
+    Stack:
+    Call trace:
+    [<598977f2>] save_stack_trace_tsk+0x40/0x74
+    [<95063f0e>] stack_trace_save_tsk+0x44/0x58
+    [<b557bfdd>] proc_pid_stack+0xd0/0x13c
+    [<a2df8eda>] proc_single_show+0x6c/0xf0
+    [<e5a737b7>] seq_read+0x1b4/0x688
+    [<2d6c7480>] do_iter_read+0x208/0x248
+    [<2182a2fb>] vfs_readv+0x64/0x90
+
+This was caused by the stack trace code in save_stack_trace_tsk using
+the wrong stack pointer.  It was using the user stack pointer instead of
+the kernel stack pointer.  Fix this by using the right stack.
+
+Also for good measure we add try_get_task_stack/put_task_stack to ensure
+the task is not lost while we are walking it's stack.
+
+Fixes: eecac38b0423a ("openrisc: support framepointers and STACKTRACE_SUPPORT")
+Signed-off-by: Stafford Horne <shorne@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/bcm/clk-bcm2835.c | 25 +++++++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
+ arch/openrisc/kernel/stacktrace.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/bcm/clk-bcm2835.c b/drivers/clk/bcm/clk-bcm2835.c
-index 6bb7efa12037b..011802f1a6df9 100644
---- a/drivers/clk/bcm/clk-bcm2835.c
-+++ b/drivers/clk/bcm/clk-bcm2835.c
-@@ -314,6 +314,7 @@ struct bcm2835_cprman {
- 	struct device *dev;
- 	void __iomem *regs;
- 	spinlock_t regs_lock; /* spinlock for all clocks */
-+	unsigned int soc;
+diff --git a/arch/openrisc/kernel/stacktrace.c b/arch/openrisc/kernel/stacktrace.c
+index 43f140a28bc72..54d38809e22cb 100644
+--- a/arch/openrisc/kernel/stacktrace.c
++++ b/arch/openrisc/kernel/stacktrace.c
+@@ -13,6 +13,7 @@
+ #include <linux/export.h>
+ #include <linux/sched.h>
+ #include <linux/sched/debug.h>
++#include <linux/sched/task_stack.h>
+ #include <linux/stacktrace.h>
  
- 	/*
- 	 * Real names of cprman clock parents looked up through
-@@ -525,6 +526,20 @@ static int bcm2835_pll_is_on(struct clk_hw *hw)
- 		A2W_PLL_CTRL_PRST_DISABLE;
+ #include <asm/processor.h>
+@@ -68,12 +69,25 @@ void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
+ {
+ 	unsigned long *sp = NULL;
+ 
++	if (!try_get_task_stack(tsk))
++		return;
++
+ 	if (tsk == current)
+ 		sp = (unsigned long *) &sp;
+-	else
+-		sp = (unsigned long *) KSTK_ESP(tsk);
++	else {
++		unsigned long ksp;
++
++		/* Locate stack from kernel context */
++		ksp = task_thread_info(tsk)->ksp;
++		ksp += STACK_FRAME_OVERHEAD;	/* redzone */
++		ksp += sizeof(struct pt_regs);
++
++		sp = (unsigned long *) ksp;
++	}
+ 
+ 	unwind_stack(trace, sp, save_stack_address_nosched);
++
++	put_task_stack(tsk);
  }
+ EXPORT_SYMBOL_GPL(save_stack_trace_tsk);
  
-+static u32 bcm2835_pll_get_prediv_mask(struct bcm2835_cprman *cprman,
-+				       const struct bcm2835_pll_data *data)
-+{
-+	/*
-+	 * On BCM2711 there isn't a pre-divisor available in the PLL feedback
-+	 * loop. Bits 13:14 of ANA1 (PLLA,PLLB,PLLC,PLLD) have been re-purposed
-+	 * for to for VCO RANGE bits.
-+	 */
-+	if (cprman->soc & SOC_BCM2711)
-+		return 0;
-+
-+	return data->ana->fb_prediv_mask;
-+}
-+
- static void bcm2835_pll_choose_ndiv_and_fdiv(unsigned long rate,
- 					     unsigned long parent_rate,
- 					     u32 *ndiv, u32 *fdiv)
-@@ -582,7 +597,7 @@ static unsigned long bcm2835_pll_get_rate(struct clk_hw *hw,
- 	ndiv = (a2wctrl & A2W_PLL_CTRL_NDIV_MASK) >> A2W_PLL_CTRL_NDIV_SHIFT;
- 	pdiv = (a2wctrl & A2W_PLL_CTRL_PDIV_MASK) >> A2W_PLL_CTRL_PDIV_SHIFT;
- 	using_prediv = cprman_read(cprman, data->ana_reg_base + 4) &
--		data->ana->fb_prediv_mask;
-+		       bcm2835_pll_get_prediv_mask(cprman, data);
- 
- 	if (using_prediv) {
- 		ndiv *= 2;
-@@ -665,6 +680,7 @@ static int bcm2835_pll_set_rate(struct clk_hw *hw,
- 	struct bcm2835_pll *pll = container_of(hw, struct bcm2835_pll, hw);
- 	struct bcm2835_cprman *cprman = pll->cprman;
- 	const struct bcm2835_pll_data *data = pll->data;
-+	u32 prediv_mask = bcm2835_pll_get_prediv_mask(cprman, data);
- 	bool was_using_prediv, use_fb_prediv, do_ana_setup_first;
- 	u32 ndiv, fdiv, a2w_ctl;
- 	u32 ana[4];
-@@ -682,7 +698,7 @@ static int bcm2835_pll_set_rate(struct clk_hw *hw,
- 	for (i = 3; i >= 0; i--)
- 		ana[i] = cprman_read(cprman, data->ana_reg_base + i * 4);
- 
--	was_using_prediv = ana[1] & data->ana->fb_prediv_mask;
-+	was_using_prediv = ana[1] & prediv_mask;
- 
- 	ana[0] &= ~data->ana->mask0;
- 	ana[0] |= data->ana->set0;
-@@ -692,10 +708,10 @@ static int bcm2835_pll_set_rate(struct clk_hw *hw,
- 	ana[3] |= data->ana->set3;
- 
- 	if (was_using_prediv && !use_fb_prediv) {
--		ana[1] &= ~data->ana->fb_prediv_mask;
-+		ana[1] &= ~prediv_mask;
- 		do_ana_setup_first = true;
- 	} else if (!was_using_prediv && use_fb_prediv) {
--		ana[1] |= data->ana->fb_prediv_mask;
-+		ana[1] |= prediv_mask;
- 		do_ana_setup_first = false;
- 	} else {
- 		do_ana_setup_first = true;
-@@ -2238,6 +2254,7 @@ static int bcm2835_clk_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, cprman);
- 
- 	cprman->onecell.num = asize;
-+	cprman->soc = pdata->soc;
- 	hws = cprman->onecell.hws;
- 
- 	for (i = 0; i < asize; i++) {
 -- 
 2.25.1
 
