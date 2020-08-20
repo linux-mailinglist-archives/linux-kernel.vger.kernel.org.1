@@ -2,40 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 202F024BCE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD2624BB86
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730127AbgHTMzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:55:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40530 "EHLO mail.kernel.org"
+        id S1729778AbgHTJvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:51:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728789AbgHTJnL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:43:11 -0400
+        id S1729754AbgHTJvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:51:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0814A208E4;
-        Thu, 20 Aug 2020 09:43:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A770207FB;
+        Thu, 20 Aug 2020 09:51:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916590;
-        bh=cFSsyY+N9kTR0Cd7a0UjjTB3fTM2An8IueZiXLqrQhw=;
+        s=default; t=1597917061;
+        bh=zgX5EzlNrMkyPEnY+oFLy6xF9pGS1hqNJAeuwaeQgfU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B1ViXoWB1AcZkhv+MRo30zaSeN/AkkHkH6VtjZsJAGkYTEQ+IoRL7T326VvUQoPId
-         CmA7yaw3G9k6mlZVvBbEyNEG4YWow47frSwOcnXUq5IbvZKhnEVlXwmwRIA+1xsfWh
-         ULNpNdrJK/QBdOssIDKncymPPdey5uPfoIIE9skI=
+        b=cDHHYAeDghZZmGGnjUOfH71PVTnmV79tRxii5iSN16OSlS8zblD6KUDmo5lD03HV7
+         E4TITkPNgJm1I0rJxhldw1Jqkjd0AKXoc6kO9xyngvfBi5Fl0Mi0V9wSeiQ5yIFleA
+         iXhesP4dsZlF3BlZ3DPnXbyRt9HyHPynx4l5VxRA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
+        stable@vger.kernel.org, Thomas Hebb <tommyhebb@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        David Carrillo-Cisneros <davidcc@google.com>,
+        Ian Rogers <irogers@google.com>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Song Liu <songliubraving@fb.com>,
+        Stephane Eranian <eranian@google.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 182/204] mfd: dln2: Run event handler loop under spinlock
-Date:   Thu, 20 Aug 2020 11:21:19 +0200
-Message-Id: <20200820091615.290159493@linuxfoundation.org>
+Subject: [PATCH 5.4 113/152] tools build feature: Use CC and CXX from parent
+Date:   Thu, 20 Aug 2020 11:21:20 +0200
+Message-Id: <20200820091559.561382896@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
-References: <20200820091606.194320503@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,66 +52,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Thomas Hebb <tommyhebb@gmail.com>
 
-[ Upstream commit 3d858942250820b9adc35f963a257481d6d4c81d ]
+[ Upstream commit e3232c2f39acafd5a29128425bc30b9884642cfa ]
 
-The event handler loop must be run with interrupts disabled.
-Otherwise we will have a warning:
+commit c8c188679ccf ("tools build: Use the same CC for feature detection
+and actual build") changed these assignments from unconditional (:=) to
+conditional (?=) so that they wouldn't clobber values from the
+environment. However, conditional assignment does not work properly for
+variables that Make implicitly sets, among which are CC and CXX. To
+quote tools/scripts/Makefile.include, which handles this properly:
 
-[ 1970.785649] irq 31 handler lineevent_irq_handler+0x0/0x20 enabled interrupts
-[ 1970.792739] WARNING: CPU: 0 PID: 0 at kernel/irq/handle.c:159 __handle_irq_event_percpu+0x162/0x170
-[ 1970.860732] RIP: 0010:__handle_irq_event_percpu+0x162/0x170
-...
-[ 1970.946994] Call Trace:
-[ 1970.949446]  <IRQ>
-[ 1970.951471]  handle_irq_event_percpu+0x2c/0x80
-[ 1970.955921]  handle_irq_event+0x23/0x43
-[ 1970.959766]  handle_simple_irq+0x57/0x70
-[ 1970.963695]  generic_handle_irq+0x42/0x50
-[ 1970.967717]  dln2_rx+0xc1/0x210 [dln2]
-[ 1970.971479]  ? usb_hcd_unmap_urb_for_dma+0xa6/0x1c0
-[ 1970.976362]  __usb_hcd_giveback_urb+0x77/0xe0
-[ 1970.980727]  usb_giveback_urb_bh+0x8e/0xe0
-[ 1970.984837]  tasklet_action_common.isra.0+0x4a/0xe0
-...
+  # Makefiles suck: This macro sets a default value of $(2) for the
+  # variable named by $(1), unless the variable has been set by
+  # environment or command line. This is necessary for CC and AR
+  # because make sets default values, so the simpler ?= approach
+  # won't work as expected.
 
-Recently xHCI driver switched to tasklets in the commit 36dc01657b49
-("usb: host: xhci: Support running urb giveback in tasklet context").
+In other words, the conditional assignments will not run even if the
+variables are not overridden in the environment; Make will set CC to
+"cc" and CXX to "g++" when it starts[1], meaning the variables are not
+empty by the time the conditional assignments are evaluated. This breaks
+cross-compilation when CROSS_COMPILE is set but CC isn't, since "cc"
+gets used for feature detection instead of the cross compiler (and
+likewise for CXX).
 
-The handle_irq_event_* functions are expected to be called with interrupts
-disabled and they rightfully complain here because we run in tasklet context
-with interrupts enabled.
+To fix the issue, just pass down the values of CC and CXX computed by
+the parent Makefile, which gets included by the Makefile that actually
+builds whatever we're detecting features for and so is guaranteed to
+have good values. This is a better solution anyway, since it means we
+aren't trying to replicate the logic of the parent build system and so
+don't risk it getting out of sync.
 
-Use a event spinlock to protect event handler from being interrupted.
+Leave PKG_CONFIG alone, since 1) there's no common logic to compute it
+in Makefile.include, and 2) it's not an implicit variable, so
+conditional assignment works properly.
 
-Note, that there are only two users of this GPIO and ADC drivers and both of
-them are using generic_handle_irq() which makes above happen.
+[1] https://www.gnu.org/software/make/manual/html_node/Implicit-Variables.html
 
-Fixes: 338a12814297 ("mfd: Add support for Diolan DLN-2 devices")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Fixes: c8c188679ccf ("tools build: Use the same CC for feature detection and actual build")
+Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+Cc: David Carrillo-Cisneros <davidcc@google.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Igor Lubashev <ilubashe@akamai.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Quentin Monnet <quentin@isovalent.com>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Stephane Eranian <eranian@google.com>
+Cc: thomas hebb <tommyhebb@gmail.com>
+Link: http://lore.kernel.org/lkml/0a6e69d1736b0fa231a648f50b0cce5d8a6734ef.1595822871.git.tommyhebb@gmail.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/dln2.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ tools/build/Makefile.feature | 2 +-
+ tools/build/feature/Makefile | 2 --
+ 2 files changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/mfd/dln2.c b/drivers/mfd/dln2.c
-index 39276fa626d2b..83e676a096dc1 100644
---- a/drivers/mfd/dln2.c
-+++ b/drivers/mfd/dln2.c
-@@ -287,7 +287,11 @@ static void dln2_rx(struct urb *urb)
- 	len = urb->actual_length - sizeof(struct dln2_header);
+diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+index 8a19753cc26aa..e80a1a8e287f8 100644
+--- a/tools/build/Makefile.feature
++++ b/tools/build/Makefile.feature
+@@ -8,7 +8,7 @@ endif
  
- 	if (handle == DLN2_HANDLE_EVENT) {
-+		unsigned long flags;
-+
-+		spin_lock_irqsave(&dln2->event_cb_lock, flags);
- 		dln2_run_event_callbacks(dln2, id, echo, data, len);
-+		spin_unlock_irqrestore(&dln2->event_cb_lock, flags);
- 	} else {
- 		/* URB will be re-submitted in _dln2_transfer (free_rx_slot) */
- 		if (dln2_transfer_complete(dln2, urb, handle, echo))
+ feature_check = $(eval $(feature_check_code))
+ define feature_check_code
+-  feature-$(1) := $(shell $(MAKE) OUTPUT=$(OUTPUT_FEATURES) CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" -C $(feature_dir) $(OUTPUT_FEATURES)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
++  feature-$(1) := $(shell $(MAKE) OUTPUT=$(OUTPUT_FEATURES) CC=$(CC) CXX=$(CXX) CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" -C $(feature_dir) $(OUTPUT_FEATURES)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
+ endef
+ 
+ feature_set = $(eval $(feature_set_code))
+diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+index 8499385365c02..054e09ab4a9e4 100644
+--- a/tools/build/feature/Makefile
++++ b/tools/build/feature/Makefile
+@@ -70,8 +70,6 @@ FILES=                                          \
+ 
+ FILES := $(addprefix $(OUTPUT),$(FILES))
+ 
+-CC ?= $(CROSS_COMPILE)gcc
+-CXX ?= $(CROSS_COMPILE)g++
+ PKG_CONFIG ?= $(CROSS_COMPILE)pkg-config
+ LLVM_CONFIG ?= llvm-config
+ 
 -- 
 2.25.1
 
