@@ -2,149 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACBE124BC15
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B0B24BBED
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729479AbgHTMja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:39:30 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:56372 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729397AbgHTJrJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:47:09 -0400
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 6967429A219;
-        Thu, 20 Aug 2020 10:47:07 +0100 (BST)
-Date:   Thu, 20 Aug 2020 11:47:02 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Parshuram Raju Thombare <pthombar@cadence.com>
-Cc:     "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
-        "vitor.soares@synopsys.com" <vitor.soares@synopsys.com>,
-        Milind Parab <mparab@cadence.com>,
-        "praneeth@ti.com" <praneeth@ti.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Przemyslaw Gaj <pgaj@cadence.com>,
-        "linux-i3c@lists.infradead.org" <linux-i3c@lists.infradead.org>
-Subject: Re: [PATCH v2 2/2] i3c: master: fix for SETDASA and DAA process
-Message-ID: <20200820114702.4c4cd58a@collabora.com>
-In-Reply-To: <DM5PR07MB31965D54B61E191E3C1325FEC15A0@DM5PR07MB3196.namprd07.prod.outlook.com>
-References: <1590053467-32079-1-git-send-email-pthombar@cadence.com>
-        <1590053581-803-1-git-send-email-pthombar@cadence.com>
-        <20200819101238.760d4e90@collabora.com>
-        <DM5PR07MB31965D54B61E191E3C1325FEC15A0@DM5PR07MB3196.namprd07.prod.outlook.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1730320AbgHTMf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:35:58 -0400
+Received: from mail.zx2c4.com ([192.95.5.64]:39071 "EHLO mail.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729515AbgHTJsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:48:07 -0400
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 2a71feb8;
+        Thu, 20 Aug 2020 09:21:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
+        :references:in-reply-to:from:date:message-id:subject:to:cc
+        :content-type; s=mail; bh=cC4XKmjMItkWu82Ddd4N3/mfNJY=; b=aH3z0j
+        ih2A6UbHCt3IxPb9cGURoW1AdUF79cwHzp+slOvV8CXFkpZjl6EwYEA+JlKT5gjg
+        zXUFARHfV2sFXTmSREd8NhJunCIHY4nLafXpXu1CpMGAdsfYq1ZI7Ulbh+f6nFuU
+        GLpyQGqn20N+3jb0blAVWJ4mBsKgajaVO0bu5fJURP7VRaYN89n0QypNDmBbRufv
+        ee0CyvIMq5UV+mGRrzaGLR7yKNhLsfMBrsRgpAAPY0ix1nrsuR83acVzKS7914El
+        0vW2TT1WjeT+Ulx5s/6fFxHTTSITqe0SO9LaYWBs5aRN38VHZxd5DoUNpQtc1oJx
+        mQHl+eYy/l9WTo+Q==
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 18dd5401 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Thu, 20 Aug 2020 09:21:41 +0000 (UTC)
+Received: by mail-io1-f50.google.com with SMTP id z17so385964ioi.6;
+        Thu, 20 Aug 2020 02:48:06 -0700 (PDT)
+X-Gm-Message-State: AOAM533pN3W79s134djddKcgXm3DtAhueZEDHWNsMOx+g89DE9LGy6Z0
+        nvgqpWN0nwu7SaecnD3KF0JrCiBgFDzwFZD/hPw=
+X-Google-Smtp-Source: ABdhPJwxqXuh3zpZ+vXV6pG3wfV26J+WMkYRDPSnD0jh7SwXM3vLbJ0QIOl7CaiQOrNMVRuAQnK6mTMYW9n8YZipXUs=
+X-Received: by 2002:a05:6638:138a:: with SMTP id w10mr2407389jad.36.1597916885689;
+ Thu, 20 Aug 2020 02:48:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <000000000000a7e38a05a997edb2@google.com> <0000000000005c13f505ad3f5c42@google.com>
+In-Reply-To: <0000000000005c13f505ad3f5c42@google.com>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Thu, 20 Aug 2020 11:47:54 +0200
+X-Gmail-Original-Message-ID: <CAHmME9rd+54EOO-b=wmVxtzbvckET2WSMm-3q8LJmfp38A9ceg@mail.gmail.com>
+Message-ID: <CAHmME9rd+54EOO-b=wmVxtzbvckET2WSMm-3q8LJmfp38A9ceg@mail.gmail.com>
+Subject: Re: WARNING in __cfg80211_connect_result
+To:     syzbot <syzbot+cc4c0f394e2611edba66@syzkaller.appspotmail.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, kvalo@codeaurora.org,
+        leon@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Aug 2020 09:23:25 +0000
-Parshuram Raju Thombare <pthombar@cadence.com> wrote:
+On Wed, Aug 19, 2020 at 8:42 PM syzbot
+<syzbot+cc4c0f394e2611edba66@syzkaller.appspotmail.com> wrote:
+>
+> syzbot has bisected this issue to:
+>
+> commit e7096c131e5161fa3b8e52a650d7719d2857adfd
+> Author: Jason A. Donenfeld <Jason@zx2c4.com>
+> Date:   Sun Dec 8 23:27:34 2019 +0000
+>
+>     net: WireGuard secure network tunnel
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=175ad8b1900000
+> start commit:   e3ec1e8c net: eliminate meaningless memcpy to data in pskb..
+> git tree:       net-next
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=14dad8b1900000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=10dad8b1900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3d400a47d1416652
+> dashboard link: https://syzkaller.appspot.com/bug?extid=cc4c0f394e2611edba66
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d9de91900000
+>
+> Reported-by: syzbot+cc4c0f394e2611edba66@syzkaller.appspotmail.com
+> Fixes: e7096c131e51 ("net: WireGuard secure network tunnel")
 
-> Hi Boris,
-> 
-> Thanks for your comments.
-> 
-> >> +	 * We anyway don't attach devices which are not addressable  
-> >
-> >You can drop the anyway.  
-> Sure, I will make above mentioned change in the comment.
-> 
-> >> +	 * (no static_addr and dyn_addr) and devices with static_addr
-> >> +	 * but no init_dyn_addr will participate in DAA.
-> >> +	 */
-> >> +	if (!boardinfo->static_addr || !boardinfo->init_dyn_addr)
-> >> +		return -EINVAL;  
-> >
-> >If we consider this as an error, we should probably check that before
-> >calling i3c_master_pre_assign_dyn_addr() in i3c_master_bus_init().  
-> Ok, I will move this check to i3c_master_bus_init(), before calling
-> i3c_master_pre_assign_dyn_addr. It will probably add extra if condition,
-> but will save one function call.
-> 
-> >>   * 5. Pre-assign dynamic addresses requested by the FW with SETDASA for I3C
-> >> - *    devices that have a static address
-> >> + *    devices that have a static address and attach corresponding statically
-> >> + *    defined I3C devices to the master.  
-> >
-> >					     and attach them to the
-> >					     master if
-> >	  the dynamic address assignment succeeds  
-> Sure, I will append above mentioned change to the comment.
-> 
-> >> +		/*
-> >> +		 * Free reserved init_dyn_addr so that attach can
-> >> +		 * get it before trying setnewda.
-> >> +		 */
-> >> +		if (i3cboardinfo->init_dyn_addr)
-> >> +			i3c_bus_set_addr_slot_status(&master->bus,
-> >> +						     init_dyn_addr,
-> >> +						     I3C_ADDR_SLOT_FREE);  
-> >
-> >Hm, it's a bit more complicated. I don't think we can unconditionally
-> >release the init_dyn_addr here. Say you have a device that's been
-> >assigned its init_dyn_addr, and userspace decided to re-assign a new
-> >one (the feature is not available yet, but I thought about letting
-> >userspace write to the dyn_addr sysfs entry and wire that to a SETDA).
-> >The init_dyn_addr can now be re-assigned to a different device. After
-> >some time the device ends up resetting and thus lose its DA. A new DAA
-> >is issued to re-discover it, but you want this device to be assigned its
-> >last known address not the init address. And when
-> >i3c_master_attach_boardinfo() is called on this new device, you release
-> >a slot that's no longer yours.
-> >
-> >That was the rational behind the "address slots are attached to i3cdevs
-> >not boardinfo". Maybe we should have another list where we keep i3c
-> >devs that have not been discovered yet but have boardinfo attached to
-> >them. This way we can reserve dynamic addresses without blocking a
-> >slot in the master device table.  
-> 
-> I think the sequence of events you are discussing here is
-> 1. User assign address to device A with init_dyn_addr in boardinfo.
-> 2. That particular init_dyn_addr is assigned to device B, which may be hotplugged ?
->     and don't have boardinfo or init_dyn_addr in boardinfo ? 
-> 3. Device A resets and trigger DAA due to hot plug ?
->    A. Here now init_dyn_addr is already assigned to device B so device A shouldn't be freeing it.
->    B. Now preferable dyn_addr is the one received from user in step 1.
-
-No, that's not what I'm talking about. I meant:
-
-1. Device A is assigned a default init address X in the DT.
-2. Device B has no init address
-3. The framework reserves address X for and assigns it to device A
-   when it appears on the bus (DAA, SETDASA or HJ+DDA)
-4. Device B is assigned address Y
-5. User decides to explicitly assign a different address to device A by
-   issuing "echo Z > /sys/bus/i3c/..../<i3c-dev>/dyn_addr" (not yet
-   supported, but I think we should allow that at some point), such
-   that device A gets a lower/higher priority
-6. User manually assigns address X to device B (that should be allowed
-   since device A no longer uses X)
-7. Device A is reset for some reason and loses its dynamic address,
-   thus requiring a new DAA (or HJ+DAA). During this new discovery,
-   device A is re-assigned its last known address (Z), but in the
-   meantime you've marked address X as free (when attaching boardinfo
-   to the newdev object).
-
-> 
-> If we are to prefer init_dyn_addr always, that will rule out possibility of making init_dyn_addr 
-> available to any other device when original device is assigned with user or master
-> provided address owing to SETDATA or SETNEWDA failures. And we can be sure of not freeing
-> init_dyn_addr inadvertently while it is being used by any other device.
-> 
-> Else if we want to prefer user provided address even across resets, since we don't need init_dyn_addr
-> anymore, it can be used to store user provided address. This will serve both the purposes A and B stated above.
->  
-> And in my opinion this can be handled when we add code to allow user to change the device address.
-
-If we go for a temporary solution, I'd opt for relaxing the test done
-in i3c_master_get_i3c_addrs() to not reserve the init address (since it
-should have been reserved at probe time) and keep those init addressed
-reserved.
+Having trouble linking this back to wireguard... Those oopses don't
+have anything to do with it either. Bisection error?
