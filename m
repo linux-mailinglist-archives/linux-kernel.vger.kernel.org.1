@@ -2,202 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F196924C130
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 17:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE36C24C134
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 17:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728082AbgHTPGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 11:06:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726872AbgHTPGk (ORCPT
+        id S1728334AbgHTPG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 11:06:58 -0400
+Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:25462 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728272AbgHTPGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 11:06:40 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1F48C061385;
-        Thu, 20 Aug 2020 08:06:39 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id v16so1177144plo.1;
-        Thu, 20 Aug 2020 08:06:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pz6ckJJvBO0SLIQWlMyoaxh6BMJszEjENsEEOH3BJrw=;
-        b=kDzQf+cI3PYuXx6yDIBXasPKrKm4dTLnEkIh0qraHWSbaesmVXhCCM9ZajgAGwsGze
-         Ra0RvHciz21M6EnDyvOzDV/Cuoc4FjYB1pzt567xsLxOwsGpzzs+QwD5CpUEvDQEZMe8
-         PLV2+VWEjIBkxevGd44Y/3p9BEvR62gdt714ViCcMaJ9qUvDTuGIID+rCV0CXeVIQlME
-         oOPYfkNJQncuJVEew3U8ySlhnu/gMa5rvN84RDF+exqMlsi64Cy5bLo3MHj18c8mDFZd
-         l5uGVYGbfbxJQ8xf/oIJYhpEe17tB9jroZABZjQva0gKqSz180sabQ86nweutslVJVF7
-         23UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=pz6ckJJvBO0SLIQWlMyoaxh6BMJszEjENsEEOH3BJrw=;
-        b=b5s4Nwj4QnCC29BVsanuJRv1oA9CrgY3widVH0y9vKWOxOl85QPptBRJAwwffNJA1I
-         RbmgePaeWiYMAcqL5NoBXfRqmCsfv7if8Go3MLTo0eF5qlDU3fE7CTkjvFXF2h+tO7Gk
-         mOn6DrCA02AbcmjAcEvej0Edx+MSrLTCLVR+0JGFwwkv/6mB67ptbkuFZIGoQFLrzmaX
-         V5ql4Do0cYBXKTQOVX+v0VHqfCeuv6o5aj8boVXZYHPmG0cWwDzQuG1sJNl2Cs7Q6Qes
-         t8AxRkZWebFCvAO0TLr+SRYGThds4eY5aLEAmhBhAzLno1tII/C+1MjJT8BQ8Q3H+4NV
-         sUjg==
-X-Gm-Message-State: AOAM533xCQ54H7kVOhE8oHDSqug6OpmjT5Pa7YvrRjeOl67UC1+MryV1
-        8yWXPr+xBm4Bkpfu402eyqs=
-X-Google-Smtp-Source: ABdhPJxuh5KfduEVxfZsElkmm4+PzyIZbvlEi/PxnYI244XFJzXihjmKZMtMDyX/mofQBQADSfcIvg==
-X-Received: by 2002:a17:902:aa91:: with SMTP id d17mr2960002plr.27.1597935995853;
-        Thu, 20 Aug 2020 08:06:35 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u15sm2531460pju.42.2020.08.20.08.06.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Aug 2020 08:06:35 -0700 (PDT)
-Subject: Re: [PATCH 4.4 000/149] 4.4.233-rc1 review
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>,
-        Willy Tarreau <w@1wt.eu>, Kees Cook <keescook@chromium.org>
-References: <20200820092125.688850368@linuxfoundation.org>
- <CA+G9fYsxQEnACmjP+CUtBq9P+0nWU_19oG62tpCbKtdcGAStfA@mail.gmail.com>
- <CA+G9fYsavGNPSKyTutADC1itOV4C-3JbidWTJmAJBv0e3rs-Tw@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <fc888e77-9135-a96d-dbc8-80814f3fad25@roeck-us.net>
-Date:   Thu, 20 Aug 2020 08:06:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 20 Aug 2020 11:06:51 -0400
+Received: from localhost.localdomain ([93.22.135.164])
+        by mwinf5d87 with ME
+        id Hr6n2300H3YzEb903r6o4Z; Thu, 20 Aug 2020 17:06:49 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 20 Aug 2020 17:06:49 +0200
+X-ME-IP: 93.22.135.164
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     yhchuang@realtek.com, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] rtw88: switch from 'pci_' to 'dma_' API
+Date:   Thu, 20 Aug 2020 17:06:43 +0200
+Message-Id: <20200820150643.148219-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CA+G9fYsavGNPSKyTutADC1itOV4C-3JbidWTJmAJBv0e3rs-Tw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/20/20 7:25 AM, Naresh Kamboju wrote:
-> On Thu, 20 Aug 2020 at 19:49, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->>
->> On Thu, 20 Aug 2020 at 15:47, Greg Kroah-Hartman
->> <gregkh@linuxfoundation.org> wrote:
->>>
->>> This is the start of the stable review cycle for the 4.4.233 release.
->>> There are 149 patches in this series, all will be posted as a response
->>> to this one.  If anyone has any issues with these being applied, please
->>> let me know.
->>>
->>> Responses should be made by Sat, 22 Aug 2020 09:21:01 +0000.
->>> Anything received after that time might be too late.
->>>
->>> The whole patch series can be found in one patch at:
->>>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.233-rc1.gz
->>> or in the git tree and branch at:
->>>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
->>> and the diffstat can be found below.
->>>
->>> thanks,
->>>
->>> greg k-h
->>
->> i386 build failed on stable-rc 4.4 branch
-> 
-> The defconfig build pass but the config i am using is breaking.
-> kernel config link,
-> https://builds.tuxbuild.com/xuCFzjgiR3X6wY9KGKQKwA/kernel.config
-> 
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-This configuration WFM as well. I tried with
+The patch has been generated with the coccinelle script below and has been
+hand modified to replace GFP_ with a correct flag.
+It has been compile tested.
 
-gcc (Ubuntu 6.5.0-2ubuntu1~18.04) 6.5.0 20181026
-gcc-7 (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
-gcc-8 (Ubuntu 8.4.0-1ubuntu1~18.04) 8.4.0
+When memory is allocated in 'rtw_pci_init_tx_ring()' and
+'rtw_pci_init_rx_ring()' GFP_KERNEL can be used because both functions are
+called from a probe function and no spinlock is taken.
 
-I tried with and without O=.
+The call chain is:
+  rtw_pci_probe
+    --> rtw_pci_setup_resource
+      --> rtw_pci_init
+        --> rtw_pci_init_trx_ring
+          --> rtw_pci_init_tx_ring
+          --> rtw_pci_init_rx_ring
 
-Guenter
 
->>
->> make -sk KBUILD_BUILD_USER=TuxBuild -C/linux -j16 ARCH=i386 HOSTCC=gcc
->> CC="sccache gcc" O=build
->> #
->> In file included from ../samples/seccomp/bpf-direct.c:19:
->> /usr/include/linux/types.h:5:10: fatal error: asm/types.h: No such
->> file or directory>>     5 | #include <asm/types.h>
->>       |          ^~~~~~~~~~~~~
->> compilation terminated.
->> In file included from /usr/include/linux/filter.h:10,
->>                  from ../samples/seccomp/bpf-fancy.c:12:
->> /usr/include/linux/types.h:5:10: fatal error: asm/types.h: No such
->> file or directory
->>     5 | #include <asm/types.h>
->>       |          ^~~~~~~~~~~~~
->> compilation terminated.
->> make[3]: *** [scripts/Makefile.host:108: samples/seccomp/bpf-direct.o] Error 1
->> make[3]: *** [scripts/Makefile.host:108: samples/seccomp/bpf-fancy.o] Error 1
->> In file included from /usr/include/bits/errno.h:26,
->>                  from /usr/include/errno.h:28,
->>                  from ../samples/seccomp/dropper.c:17:
->> /usr/include/linux/errno.h:1:10: fatal error: asm/errno.h: No such
->> file or directory
->>     1 | #include <asm/errno.h>
->>       |          ^~~~~~~~~~~~~
->> compilation terminated.
->> make[3]: *** [scripts/Makefile.host:108: samples/seccomp/dropper.o] Error 1
->> In file included from ../samples/seccomp/bpf-helper.c:16:
->> ../samples/seccomp/bpf-helper.h:17:10: fatal error: asm/bitsperlong.h:
->> No such file or directory
->>    17 | #include <asm/bitsperlong.h> /* for __BITS_PER_LONG */
->>       |          ^~~~~~~~~~~~~~~~~~~
->>
->>
->> --
->> Linaro LKFT
->> https://lkft.linaro.org
+@@
+@@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
+
+@@
+@@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
+
+@@
+@@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
+
+@@
+@@
+-    PCI_DMA_NONE
++    DMA_NONE
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/net/wireless/realtek/rtw88/pci.c | 33 ++++++++++++------------
+ 1 file changed, 16 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/net/wireless/realtek/rtw88/pci.c b/drivers/net/wireless/realtek/rtw88/pci.c
+index 3413973bc475..135dd331691c 100644
+--- a/drivers/net/wireless/realtek/rtw88/pci.c
++++ b/drivers/net/wireless/realtek/rtw88/pci.c
+@@ -109,7 +109,7 @@ static void rtw_pci_free_tx_ring_skbs(struct rtw_dev *rtwdev,
+ 		tx_data = rtw_pci_get_tx_data(skb);
+ 		dma = tx_data->dma;
+ 
+-		pci_unmap_single(pdev, dma, skb->len, PCI_DMA_TODEVICE);
++		dma_unmap_single(&pdev->dev, dma, skb->len, DMA_TO_DEVICE);
+ 		dev_kfree_skb_any(skb);
+ 	}
+ }
+@@ -125,7 +125,7 @@ static void rtw_pci_free_tx_ring(struct rtw_dev *rtwdev,
+ 	rtw_pci_free_tx_ring_skbs(rtwdev, tx_ring);
+ 
+ 	/* free the ring itself */
+-	pci_free_consistent(pdev, ring_sz, head, tx_ring->r.dma);
++	dma_free_coherent(&pdev->dev, ring_sz, head, tx_ring->r.dma);
+ 	tx_ring->r.head = NULL;
+ }
+ 
+@@ -144,7 +144,7 @@ static void rtw_pci_free_rx_ring_skbs(struct rtw_dev *rtwdev,
+ 			continue;
+ 
+ 		dma = *((dma_addr_t *)skb->cb);
+-		pci_unmap_single(pdev, dma, buf_sz, PCI_DMA_FROMDEVICE);
++		dma_unmap_single(&pdev->dev, dma, buf_sz, DMA_FROM_DEVICE);
+ 		dev_kfree_skb(skb);
+ 		rx_ring->buf[i] = NULL;
+ 	}
+@@ -159,7 +159,7 @@ static void rtw_pci_free_rx_ring(struct rtw_dev *rtwdev,
+ 
+ 	rtw_pci_free_rx_ring_skbs(rtwdev, rx_ring);
+ 
+-	pci_free_consistent(pdev, ring_sz, head, rx_ring->r.dma);
++	dma_free_coherent(&pdev->dev, ring_sz, head, rx_ring->r.dma);
+ }
+ 
+ static void rtw_pci_free_trx_ring(struct rtw_dev *rtwdev)
+@@ -194,7 +194,7 @@ static int rtw_pci_init_tx_ring(struct rtw_dev *rtwdev,
+ 		return -EINVAL;
+ 	}
+ 
+-	head = pci_zalloc_consistent(pdev, ring_sz, &dma);
++	head = dma_alloc_coherent(&pdev->dev, ring_sz, &dma, GFP_KERNEL);
+ 	if (!head) {
+ 		rtw_err(rtwdev, "failed to allocate tx ring\n");
+ 		return -ENOMEM;
+@@ -223,8 +223,8 @@ static int rtw_pci_reset_rx_desc(struct rtw_dev *rtwdev, struct sk_buff *skb,
+ 	if (!skb)
+ 		return -EINVAL;
+ 
+-	dma = pci_map_single(pdev, skb->data, buf_sz, PCI_DMA_FROMDEVICE);
+-	if (pci_dma_mapping_error(pdev, dma))
++	dma = dma_map_single(&pdev->dev, skb->data, buf_sz, DMA_FROM_DEVICE);
++	if (dma_mapping_error(&pdev->dev, dma))
+ 		return -EBUSY;
+ 
+ 	*((dma_addr_t *)skb->cb) = dma;
+@@ -272,7 +272,7 @@ static int rtw_pci_init_rx_ring(struct rtw_dev *rtwdev,
+ 		return -EINVAL;
+ 	}
+ 
+-	head = pci_zalloc_consistent(pdev, ring_sz, &dma);
++	head = dma_alloc_coherent(&pdev->dev, ring_sz, &dma, GFP_KERNEL);
+ 	if (!head) {
+ 		rtw_err(rtwdev, "failed to allocate rx ring\n");
+ 		return -ENOMEM;
+@@ -311,11 +311,11 @@ static int rtw_pci_init_rx_ring(struct rtw_dev *rtwdev,
+ 		if (!skb)
+ 			continue;
+ 		dma = *((dma_addr_t *)skb->cb);
+-		pci_unmap_single(pdev, dma, buf_sz, PCI_DMA_FROMDEVICE);
++		dma_unmap_single(&pdev->dev, dma, buf_sz, DMA_FROM_DEVICE);
+ 		dev_kfree_skb_any(skb);
+ 		rx_ring->buf[i] = NULL;
+ 	}
+-	pci_free_consistent(pdev, ring_sz, head, dma);
++	dma_free_coherent(&pdev->dev, ring_sz, head, dma);
+ 
+ 	rtw_err(rtwdev, "failed to init rx buffer\n");
+ 
+@@ -675,8 +675,7 @@ static void rtw_pci_release_rsvd_page(struct rtw_pci *rtwpci,
+ 
+ 	tx_data = rtw_pci_get_tx_data(prev);
+ 	dma = tx_data->dma;
+-	pci_unmap_single(rtwpci->pdev, dma, prev->len,
+-			 PCI_DMA_TODEVICE);
++	dma_unmap_single(&rtwpci->pdev->dev, dma, prev->len, DMA_TO_DEVICE);
+ 	dev_kfree_skb_any(prev);
+ }
+ 
+@@ -755,9 +754,9 @@ static int rtw_pci_tx_write_data(struct rtw_dev *rtwdev,
+ 	memset(pkt_desc, 0, tx_pkt_desc_sz);
+ 	pkt_info->qsel = rtw_pci_get_tx_qsel(skb, queue);
+ 	rtw_tx_fill_tx_desc(pkt_info, skb);
+-	dma = pci_map_single(rtwpci->pdev, skb->data, skb->len,
+-			     PCI_DMA_TODEVICE);
+-	if (pci_dma_mapping_error(rtwpci->pdev, dma))
++	dma = dma_map_single(&rtwpci->pdev->dev, skb->data, skb->len,
++			     DMA_TO_DEVICE);
++	if (dma_mapping_error(&rtwpci->pdev->dev, dma))
+ 		return -EBUSY;
+ 
+ 	/* after this we got dma mapped, there is no way back */
+@@ -896,8 +895,8 @@ static void rtw_pci_tx_isr(struct rtw_dev *rtwdev, struct rtw_pci *rtwpci,
+ 			break;
+ 		}
+ 		tx_data = rtw_pci_get_tx_data(skb);
+-		pci_unmap_single(rtwpci->pdev, tx_data->dma, skb->len,
+-				 PCI_DMA_TODEVICE);
++		dma_unmap_single(&rtwpci->pdev->dev, tx_data->dma, skb->len,
++				 DMA_TO_DEVICE);
+ 
+ 		/* just free command packets from host to card */
+ 		if (hw_queue == RTW_TX_QUEUE_H2C) {
+-- 
+2.25.1
 
