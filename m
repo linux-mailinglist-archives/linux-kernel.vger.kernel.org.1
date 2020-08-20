@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 606DF24BBD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEEA424BCC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729567AbgHTJsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:48:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53144 "EHLO mail.kernel.org"
+        id S1729153AbgHTMxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:53:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729497AbgHTJsX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:48:23 -0400
+        id S1729243AbgHTJn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:43:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 88D4C2078D;
-        Thu, 20 Aug 2020 09:48:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4BEDB2224D;
+        Thu, 20 Aug 2020 09:43:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916903;
-        bh=XrbbsEwzjw+TUQZLjHjpZRKnnu1QqeUqlC+z7zSuM0g=;
+        s=default; t=1597916608;
+        bh=5bCMb58m/idID+jX1LMdnRhVIFWSKgLCIvtf2QfQDes=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yhzok+Gl3wZNYnHyjEFi22g3Utbz8yfYuIM2xJbyG2Dyd2JwNP5eU3U1+yojm+jaN
-         Chmpkr7UKiYLxRF19ailGvRYQad6kf68tkl3z/MjuXLz2XRZaaBKhmrKSDsaqivAAN
-         7ibiQoU+haVpImPabSkb8Z43hiDpcevdX63OwP6g=
+        b=DowPF4to5Kk85qmUyyG4+FeFYChptA+qgEucbOvwzrLi1kKk/nM2fpvXrjxWP7hOy
+         bXkZ8gPv34ydN/CVRgOvmEdJ9h+rn0Sjrm9zZIMdnyGePrKktsLiVT/OY16hrpbKfS
+         +dXiSlsUhkRIUE5Hrhj3CdvTS+RQZwnglFSRLM0c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Krzysztof Sobota <krzysztof.sobota@nokia.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 087/152] selftests/bpf: Test_progs indicate to shell on non-actions
-Date:   Thu, 20 Aug 2020 11:20:54 +0200
-Message-Id: <20200820091558.191183968@linuxfoundation.org>
+Subject: [PATCH 5.7 158/204] watchdog: initialize device before misc_register
+Date:   Thu, 20 Aug 2020 11:20:55 +0200
+Message-Id: <20200820091614.124132070@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
-References: <20200820091553.615456912@linuxfoundation.org>
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,37 +46,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jesper Dangaard Brouer <brouer@redhat.com>
+From: Krzysztof Sobota <krzysztof.sobota@nokia.com>
 
-[ Upstream commit 6c92bd5cd4650c39dd929565ee172984c680fead ]
+[ Upstream commit cb36e29bb0e4b0c33c3d5866a0a4aebace4c99b7 ]
 
-When a user selects a non-existing test the summary is printed with
-indication 0 for all info types, and shell "success" (EXIT_SUCCESS) is
-indicated. This can be understood by a human end-user, but for shell
-scripting is it useful to indicate a shell failure (EXIT_FAILURE).
+When watchdog device is being registered, it calls misc_register that
+makes watchdog available for systemd to open. This is a data race
+scenario, because when device is open it may still have device struct
+not initialized - this in turn causes a crash. This patch moves
+device initialization before misc_register call and it solves the
+problem printed below.
 
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Link: https://lore.kernel.org/bpf/159363984736.930467.17956007131403952343.stgit@firesoul
+------------[ cut here ]------------
+WARNING: CPU: 3 PID: 1 at lib/kobject.c:612 kobject_get+0x50/0x54
+kobject: '(null)' ((ptrval)): is not initialized, yet kobject_get() is being called.
+Modules linked in: k2_reset_status(O) davinci_wdt(+) sfn_platform_hwbcn(O) fsmddg_sfn(O) clk_misc_mmap(O) clk_sw_bcn(O) fsp_reset(O) cma_mod(O) slave_sup_notif(O) fpga_master(O) latency(O+) evnotify(O) enable_arm_pmu(O) xge(O) rio_mport_cdev br_netfilter bridge stp llc nvrd_checksum(O) ipv6
+CPU: 3 PID: 1 Comm: systemd Tainted: G           O      4.19.113-g2579778-fsm4_k2 #1
+Hardware name: Keystone
+[<c02126c4>] (unwind_backtrace) from [<c020da94>] (show_stack+0x18/0x1c)
+[<c020da94>] (show_stack) from [<c07f87d8>] (dump_stack+0xb4/0xe8)
+[<c07f87d8>] (dump_stack) from [<c0221f70>] (__warn+0xfc/0x114)
+[<c0221f70>] (__warn) from [<c0221fd8>] (warn_slowpath_fmt+0x50/0x74)
+[<c0221fd8>] (warn_slowpath_fmt) from [<c07fd394>] (kobject_get+0x50/0x54)
+[<c07fd394>] (kobject_get) from [<c0602ce8>] (get_device+0x1c/0x24)
+[<c0602ce8>] (get_device) from [<c06961e0>] (watchdog_open+0x90/0xf0)
+[<c06961e0>] (watchdog_open) from [<c06001dc>] (misc_open+0x130/0x17c)
+[<c06001dc>] (misc_open) from [<c0388228>] (chrdev_open+0xec/0x1a8)
+[<c0388228>] (chrdev_open) from [<c037fa98>] (do_dentry_open+0x204/0x3cc)
+[<c037fa98>] (do_dentry_open) from [<c0391e2c>] (path_openat+0x330/0x1148)
+[<c0391e2c>] (path_openat) from [<c0394518>] (do_filp_open+0x78/0xec)
+[<c0394518>] (do_filp_open) from [<c0381100>] (do_sys_open+0x130/0x1f4)
+[<c0381100>] (do_sys_open) from [<c0201000>] (ret_fast_syscall+0x0/0x28)
+Exception stack(0xd2ceffa8 to 0xd2cefff0)
+ffa0:                   b6f69968 00000000 ffffff9c b6ebd210 000a0001 00000000
+ffc0: b6f69968 00000000 00000000 00000142 fffffffd ffffffff 00b65530 bed7bb78
+ffe0: 00000142 bed7ba70 b6cc2503 b6cc41d6
+---[ end trace 7b16eb105513974f ]---
+
+------------[ cut here ]------------
+WARNING: CPU: 3 PID: 1 at lib/refcount.c:153 kobject_get+0x24/0x54
+refcount_t: increment on 0; use-after-free.
+Modules linked in: k2_reset_status(O) davinci_wdt(+) sfn_platform_hwbcn(O) fsmddg_sfn(O) clk_misc_mmap(O) clk_sw_bcn(O) fsp_reset(O) cma_mod(O) slave_sup_notif(O) fpga_master(O) latency(O+) evnotify(O) enable_arm_pmu(O) xge(O) rio_mport_cdev br_netfilter bridge stp llc nvrd_checksum(O) ipv6
+CPU: 3 PID: 1 Comm: systemd Tainted: G        W  O      4.19.113-g2579778-fsm4_k2 #1
+Hardware name: Keystone
+[<c02126c4>] (unwind_backtrace) from [<c020da94>] (show_stack+0x18/0x1c)
+[<c020da94>] (show_stack) from [<c07f87d8>] (dump_stack+0xb4/0xe8)
+[<c07f87d8>] (dump_stack) from [<c0221f70>] (__warn+0xfc/0x114)
+[<c0221f70>] (__warn) from [<c0221fd8>] (warn_slowpath_fmt+0x50/0x74)
+[<c0221fd8>] (warn_slowpath_fmt) from [<c07fd368>] (kobject_get+0x24/0x54)
+[<c07fd368>] (kobject_get) from [<c0602ce8>] (get_device+0x1c/0x24)
+[<c0602ce8>] (get_device) from [<c06961e0>] (watchdog_open+0x90/0xf0)
+[<c06961e0>] (watchdog_open) from [<c06001dc>] (misc_open+0x130/0x17c)
+[<c06001dc>] (misc_open) from [<c0388228>] (chrdev_open+0xec/0x1a8)
+[<c0388228>] (chrdev_open) from [<c037fa98>] (do_dentry_open+0x204/0x3cc)
+[<c037fa98>] (do_dentry_open) from [<c0391e2c>] (path_openat+0x330/0x1148)
+[<c0391e2c>] (path_openat) from [<c0394518>] (do_filp_open+0x78/0xec)
+[<c0394518>] (do_filp_open) from [<c0381100>] (do_sys_open+0x130/0x1f4)
+[<c0381100>] (do_sys_open) from [<c0201000>] (ret_fast_syscall+0x0/0x28)
+Exception stack(0xd2ceffa8 to 0xd2cefff0)
+ffa0:                   b6f69968 00000000 ffffff9c b6ebd210 000a0001 00000000
+ffc0: b6f69968 00000000 00000000 00000142 fffffffd ffffffff 00b65530 bed7bb78
+ffe0: 00000142 bed7ba70 b6cc2503 b6cc41d6
+---[ end trace 7b16eb1055139750 ]---
+
+Fixes: 72139dfa2464 ("watchdog: Fix the race between the release of watchdog_core_data and cdev")
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Signed-off-by: Krzysztof Sobota <krzysztof.sobota@nokia.com>
+Link: https://lore.kernel.org/r/20200717103109.14660-1-krzysztof.sobota@nokia.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/test_progs.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/watchdog/watchdog_dev.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-index 8cb3469dd11f2..a7d06724c18c2 100644
---- a/tools/testing/selftests/bpf/test_progs.c
-+++ b/tools/testing/selftests/bpf/test_progs.c
-@@ -584,5 +584,8 @@ int main(int argc, char **argv)
- 	free(env.test_selector.num_set);
- 	free(env.subtest_selector.num_set);
+diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
+index 7e4cd34a8c20e..b535f5fa279b9 100644
+--- a/drivers/watchdog/watchdog_dev.c
++++ b/drivers/watchdog/watchdog_dev.c
+@@ -994,6 +994,15 @@ static int watchdog_cdev_register(struct watchdog_device *wdd)
+ 	if (IS_ERR_OR_NULL(watchdog_kworker))
+ 		return -ENODEV;
  
-+	if (env.succ_cnt + env.fail_cnt + env.skip_cnt == 0)
-+		return EXIT_FAILURE;
++	device_initialize(&wd_data->dev);
++	wd_data->dev.devt = MKDEV(MAJOR(watchdog_devt), wdd->id);
++	wd_data->dev.class = &watchdog_class;
++	wd_data->dev.parent = wdd->parent;
++	wd_data->dev.groups = wdd->groups;
++	wd_data->dev.release = watchdog_core_data_release;
++	dev_set_drvdata(&wd_data->dev, wdd);
++	dev_set_name(&wd_data->dev, "watchdog%d", wdd->id);
 +
- 	return env.fail_cnt ? EXIT_FAILURE : EXIT_SUCCESS;
- }
+ 	kthread_init_work(&wd_data->work, watchdog_ping_work);
+ 	hrtimer_init(&wd_data->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_HARD);
+ 	wd_data->timer.function = watchdog_timer_expired;
+@@ -1014,15 +1023,6 @@ static int watchdog_cdev_register(struct watchdog_device *wdd)
+ 		}
+ 	}
+ 
+-	device_initialize(&wd_data->dev);
+-	wd_data->dev.devt = MKDEV(MAJOR(watchdog_devt), wdd->id);
+-	wd_data->dev.class = &watchdog_class;
+-	wd_data->dev.parent = wdd->parent;
+-	wd_data->dev.groups = wdd->groups;
+-	wd_data->dev.release = watchdog_core_data_release;
+-	dev_set_drvdata(&wd_data->dev, wdd);
+-	dev_set_name(&wd_data->dev, "watchdog%d", wdd->id);
+-
+ 	/* Fill in the data structures */
+ 	cdev_init(&wd_data->cdev, &watchdog_fops);
+ 
 -- 
 2.25.1
 
