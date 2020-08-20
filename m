@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6899524BB70
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7775C24BB3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728897AbgHTJvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:51:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59892 "EHLO mail.kernel.org"
+        id S1730167AbgHTMZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:25:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729789AbgHTJvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:51:09 -0400
+        id S1729455AbgHTJxX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:53:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49B3F2067C;
-        Thu, 20 Aug 2020 09:51:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B8492075E;
+        Thu, 20 Aug 2020 09:53:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917068;
-        bh=EqK1nmioHLRXP/FPoASKUhIIOzl5voHdIypZ8eFMvrU=;
+        s=default; t=1597917202;
+        bh=nDS9YM9aJxkFu5ZzfkTqvZdFAxXbEzlO2tlYmVHlIJo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TbcolSkwpipLw2o0k6w/qTEMtslLWpTCdDAWcg8ZmXRyswTo8sPEnofQg+Gqi2hnx
-         7Ghj724wdI/c150vSnW4e3IISCrw7VtkPpHDmsoCI0MYyp4c7RwQPRzV+5pvfXGgFC
-         81SoebcTeZIW+wGj1csTmeMjR8SYipl1SMcQtLlE=
+        b=eda2NLqv6yOYee+CoyL+mcXm8cG7aczWcAxzMzWTS8ZobWO++Vo2x06Ehjta9V7wf
+         kH/rPwUEAVZFzGGoOS8Ou+1IB2WEfgbpR13sm4yDQraTYnIIQQaCEg8mKds0ZtcOFK
+         VBkniqCWCl0+sFx7959ixq+lOwWnGu7Qnj7fMT7M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
-        Richard Weinberger <richard@nod.at>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 116/152] ubifs: Fix wrong orphan node deletion in ubifs_jnl_update|rename
-Date:   Thu, 20 Aug 2020 11:21:23 +0200
-Message-Id: <20200820091559.703357874@linuxfoundation.org>
+        stable@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Kevin Hao <haokexin@gmail.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.19 39/92] tracing/hwlat: Honor the tracing_cpumask
+Date:   Thu, 20 Aug 2020 11:21:24 +0200
+Message-Id: <20200820091539.647153467@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
-References: <20200820091553.615456912@linuxfoundation.org>
+In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
+References: <20200820091537.490965042@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,86 +44,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+From: Kevin Hao <haokexin@gmail.com>
 
-[ Upstream commit 094b6d1295474f338201b846a1f15e72eb0b12cf ]
+commit 96b4833b6827a62c295b149213c68b559514c929 upstream.
 
-There a wrong orphan node deleting in error handling path in
-ubifs_jnl_update() and ubifs_jnl_rename(), which may cause
-following error msg:
+In calculation of the cpu mask for the hwlat kernel thread, the wrong
+cpu mask is used instead of the tracing_cpumask, this causes the
+tracing/tracing_cpumask useless for hwlat tracer. Fixes it.
 
-  UBIFS error (ubi0:0 pid 1522): ubifs_delete_orphan [ubifs]:
-  missing orphan ino 65
+Link: https://lkml.kernel.org/r/20200730082318.42584-2-haokexin@gmail.com
 
-Fix this by checking whether the node has been operated for
-adding to orphan list before being deleted,
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: stable@vger.kernel.org
+Fixes: 0330f7aa8ee6 ("tracing: Have hwlat trace migrate across tracing_cpumask CPUs")
+Signed-off-by: Kevin Hao <haokexin@gmail.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Fixes: 823838a486888cf484e ("ubifs: Add hashes to the tree node cache")
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ubifs/journal.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ kernel/trace/trace_hwlat.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index 826dad0243dcc..a6ae2428e4c96 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -539,7 +539,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
- 		     const struct fscrypt_name *nm, const struct inode *inode,
- 		     int deletion, int xent)
+--- a/kernel/trace/trace_hwlat.c
++++ b/kernel/trace/trace_hwlat.c
+@@ -270,6 +270,7 @@ static bool disable_migrate;
+ static void move_to_next_cpu(void)
  {
--	int err, dlen, ilen, len, lnum, ino_offs, dent_offs;
-+	int err, dlen, ilen, len, lnum, ino_offs, dent_offs, orphan_added = 0;
- 	int aligned_dlen, aligned_ilen, sync = IS_DIRSYNC(dir);
- 	int last_reference = !!(deletion && inode->i_nlink == 0);
- 	struct ubifs_inode *ui = ubifs_inode(inode);
-@@ -630,6 +630,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
- 			goto out_finish;
- 		}
- 		ui->del_cmtno = c->cmt_no;
-+		orphan_added = 1;
- 	}
+ 	struct cpumask *current_mask = &save_cpumask;
++	struct trace_array *tr = hwlat_trace;
+ 	int next_cpu;
  
- 	err = write_head(c, BASEHD, dent, len, &lnum, &dent_offs, sync);
-@@ -702,7 +703,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
- 	kfree(dent);
- out_ro:
- 	ubifs_ro_mode(c, err);
--	if (last_reference)
-+	if (orphan_added)
- 		ubifs_delete_orphan(c, inode->i_ino);
- 	finish_reservation(c);
- 	return err;
-@@ -1217,7 +1218,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 	void *p;
- 	union ubifs_key key;
- 	struct ubifs_dent_node *dent, *dent2;
--	int err, dlen1, dlen2, ilen, lnum, offs, len;
-+	int err, dlen1, dlen2, ilen, lnum, offs, len, orphan_added = 0;
- 	int aligned_dlen1, aligned_dlen2, plen = UBIFS_INO_NODE_SZ;
- 	int last_reference = !!(new_inode && new_inode->i_nlink == 0);
- 	int move = (old_dir != new_dir);
-@@ -1333,6 +1334,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 			goto out_finish;
- 		}
- 		new_ui->del_cmtno = c->cmt_no;
-+		orphan_added = 1;
- 	}
+ 	if (disable_migrate)
+@@ -283,7 +284,7 @@ static void move_to_next_cpu(void)
+ 		goto disable;
  
- 	err = write_head(c, BASEHD, dent, len, &lnum, &offs, sync);
-@@ -1414,7 +1416,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 	release_head(c, BASEHD);
- out_ro:
- 	ubifs_ro_mode(c, err);
--	if (last_reference)
-+	if (orphan_added)
- 		ubifs_delete_orphan(c, new_inode->i_ino);
- out_finish:
- 	finish_reservation(c);
--- 
-2.25.1
-
+ 	get_online_cpus();
+-	cpumask_and(current_mask, cpu_online_mask, tracing_buffer_mask);
++	cpumask_and(current_mask, cpu_online_mask, tr->tracing_cpumask);
+ 	next_cpu = cpumask_next(smp_processor_id(), current_mask);
+ 	put_online_cpus();
+ 
+@@ -360,7 +361,7 @@ static int start_kthread(struct trace_ar
+ 	/* Just pick the first CPU on first iteration */
+ 	current_mask = &save_cpumask;
+ 	get_online_cpus();
+-	cpumask_and(current_mask, cpu_online_mask, tracing_buffer_mask);
++	cpumask_and(current_mask, cpu_online_mask, tr->tracing_cpumask);
+ 	put_online_cpus();
+ 	next_cpu = cpumask_first(current_mask);
+ 
 
 
