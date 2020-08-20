@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE3224B466
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD67724B4B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730622AbgHTKEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:04:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51860 "EHLO mail.kernel.org"
+        id S1730264AbgHTKKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:10:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730404AbgHTKBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:01:45 -0400
+        id S1728922AbgHTKKe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:10:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2505622B4D;
-        Thu, 20 Aug 2020 10:01:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BA7720738;
+        Thu, 20 Aug 2020 10:10:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917704;
-        bh=an2qDyvexFxr4rBh8yzEGHY2b5T586DGONdlqCE5QIM=;
+        s=default; t=1597918233;
+        bh=ByK/kJ7jWro0SZOd6KIbhzj/ZVF+eektKAT83EY8AXA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iC9+d6ypjKU2uxnRF7JwOrZHJx4gQOBieU7opyEg9+lkGmr18dH9xckxxaAhajMG9
-         9Z5wU8MRCNIT91Dd/LGpSOjLEiXmt4LTfyB4RCE/Sn8z+FhxZB7PFEnEmMdSOWIMhx
-         mVQlNudyfqQ4YsWi/t1Yb9x1fdKu1o4AFSGvndNo=
+        b=zM/GMNVcw+T+7Chs+yjj/WhniY+7JF+RZiBjxHbsAqrZcKfAtjNkL1MASmGuZ+evj
+         qUzXg/J+nZoFDOBDpiU0I/auN1Dc1Jzr5fFZxWHPZemUbLxlwPgvSQObF7MWolO8YP
+         8OULjw4XZfoNN6PJVGo+Kb/QByDoG6TqFU/JfCk4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Prasanna Kerekoppa <prasanna.kerekoppa@cypress.com>,
-        Chi-hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Brian Foster <bfoster@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 100/212] brcmfmac: To fix Bss Info flag definition Bug
-Date:   Thu, 20 Aug 2020 11:21:13 +0200
-Message-Id: <20200820091607.395740461@linuxfoundation.org>
+Subject: [PATCH 4.14 099/228] xfs: fix reflink quota reservation accounting error
+Date:   Thu, 20 Aug 2020 11:21:14 +0200
+Message-Id: <20200820091612.571236307@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
-References: <20200820091602.251285210@linuxfoundation.org>
+In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
+References: <20200820091607.532711107@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,37 +45,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Prasanna Kerekoppa <prasanna.kerekoppa@cypress.com>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-[ Upstream commit fa3266541b13f390eb35bdbc38ff4a03368be004 ]
+[ Upstream commit 83895227aba1ade33e81f586aa7b6b1e143096a5 ]
 
-Bss info flag definition need to be fixed from 0x2 to 0x4
-This flag is for rssi info received on channel.
-All Firmware branches defined as 0x4 and this is bug in brcmfmac.
+Quota reservations are supposed to account for the blocks that might be
+allocated due to a bmap btree split.  Reflink doesn't do this, so fix
+this to make the quota accounting more accurate before we start
+rearranging things.
 
-Signed-off-by: Prasanna Kerekoppa <prasanna.kerekoppa@cypress.com>
-Signed-off-by: Chi-hsien Lin <chi-hsien.lin@cypress.com>
-Signed-off-by: Wright Feng <wright.feng@cypress.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200604071835.3842-6-wright.feng@cypress.com
+Fixes: 862bb360ef56 ("xfs: reflink extents from one file to another")
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Brian Foster <bfoster@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/xfs/xfs_reflink.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
-index 59013572fbe3f..d6a4a08fd3c44 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
-@@ -30,7 +30,7 @@
- #define BRCMF_ARP_OL_PEER_AUTO_REPLY	0x00000008
+diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
+index db7f9fdd20a30..4d37f1b59436c 100644
+--- a/fs/xfs/xfs_reflink.c
++++ b/fs/xfs/xfs_reflink.c
+@@ -1076,6 +1076,7 @@ xfs_reflink_remap_extent(
+ 	xfs_filblks_t		rlen;
+ 	xfs_filblks_t		unmap_len;
+ 	xfs_off_t		newlen;
++	int64_t			qres;
+ 	int			error;
  
- #define	BRCMF_BSS_INFO_VERSION	109 /* curr ver of brcmf_bss_info_le struct */
--#define BRCMF_BSS_RSSI_ON_CHANNEL	0x0002
-+#define BRCMF_BSS_RSSI_ON_CHANNEL	0x0004
+ 	unmap_len = irec->br_startoff + irec->br_blockcount - destoff;
+@@ -1098,13 +1099,19 @@ xfs_reflink_remap_extent(
+ 	xfs_ilock(ip, XFS_ILOCK_EXCL);
+ 	xfs_trans_ijoin(tp, ip, 0);
  
- #define BRCMF_STA_WME              0x00000002      /* WMM association */
- #define BRCMF_STA_AUTHE            0x00000008      /* Authenticated */
+-	/* If we're not just clearing space, then do we have enough quota? */
+-	if (real_extent) {
+-		error = xfs_trans_reserve_quota_nblks(tp, ip,
+-				irec->br_blockcount, 0, XFS_QMOPT_RES_REGBLKS);
+-		if (error)
+-			goto out_cancel;
+-	}
++	/*
++	 * Reserve quota for this operation.  We don't know if the first unmap
++	 * in the dest file will cause a bmap btree split, so we always reserve
++	 * at least enough blocks for that split.  If the extent being mapped
++	 * in is written, we need to reserve quota for that too.
++	 */
++	qres = XFS_EXTENTADD_SPACE_RES(mp, XFS_DATA_FORK);
++	if (real_extent)
++		qres += irec->br_blockcount;
++	error = xfs_trans_reserve_quota_nblks(tp, ip, qres, 0,
++			XFS_QMOPT_RES_REGBLKS);
++	if (error)
++		goto out_cancel;
+ 
+ 	trace_xfs_reflink_remap(ip, irec->br_startoff,
+ 				irec->br_blockcount, irec->br_startblock);
 -- 
 2.25.1
 
