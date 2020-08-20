@@ -2,172 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4207424C49A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 19:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8099624C4BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 19:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730662AbgHTRe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 13:34:28 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:2074 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730620AbgHTReJ (ORCPT
+        id S1728426AbgHTRmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 13:42:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728067AbgHTRmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 13:34:09 -0400
+        Thu, 20 Aug 2020 13:42:20 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A72FC061387
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:42:18 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id b2so979208edw.5
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:42:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1597944848; x=1629480848;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=MEA3ZhuWPoS1IieuWPGBAER8PruyG5EIp2kQWXV3Uws=;
-  b=okiHBEmAad8HTbk2suf+KuvP1XdldNIUn0DWCyIR2xmdMG4/pi8ORw8T
-   nFAdoK2xDvvHyM6H65lCV9FlBgTepp2GQtMkYy+j/OqZnEdc6IKfrc/v2
-   CMnEbABqth65XKvmBpF/lBfy2+wCmHPYfQ0A80UFILGp4HpPwdtrtKblS
-   Y=;
-X-IronPort-AV: E=Sophos;i="5.76,333,1592870400"; 
-   d="scan'208";a="50392757"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 20 Aug 2020 17:33:54 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com (Postfix) with ESMTPS id 21249A211A;
-        Thu, 20 Aug 2020 17:33:42 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 20 Aug 2020 17:33:42 +0000
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.34) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 20 Aug 2020 17:33:25 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     Shakeel Butt <shakeelb@google.com>
-CC:     SeongJae Park <sjpark@amazon.com>, <Jonathan.Cameron@huawei.com>,
-        "Andrea Arcangeli" <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Qian Cai <cai@lca.pw>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "David Hildenbrand" <david@redhat.com>, <dwmw@amazon.com>,
-        "Du, Fan" <fan.du@intel.com>, <foersleo@amazon.de>,
-        Greg Thelen <gthelen@google.com>,
-        Ian Rogers <irogers@google.com>, <jolsa@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        <mark.rutland@arm.com>, Mel Gorman <mgorman@suse.de>,
-        Minchan Kim <minchan@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, <namhyung@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rik van Riel <riel@surriel.com>,
-        David Rientjes <rientjes@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>, <rppt@kernel.org>,
-        <sblbir@amazon.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
-        <snu@amazon.de>, Vlastimil Babka <vbabka@suse.cz>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Huang Ying <ying.huang@intel.com>, <zgf574564920@gmail.com>,
-        <linux-damon@amazon.com>, Linux MM <linux-mm@kvack.org>,
-        <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC v7 00/10] DAMON: Support Physical Memory Address Space Monitoring
-Date:   Thu, 20 Aug 2020 19:33:10 +0200
-Message-ID: <20200820173310.18933-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <CALvZod7a=zr8VX3T2KOheUJ-THjGz=O+JBdcjw4iraN3m9jSJg@mail.gmail.com>
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=++DU+mGMau0wCVk26WL7BRudLdRoW/TdcNVBaFfSVeo=;
+        b=WJVp6ukadTpNcM9SYJpDROIRN+tD3gRH5NoPQs0+HAsQmLtJTImp5dRFMc7wGC3HgN
+         R/lFt0vUnPt7BGWZ9GyHNRaZ0vNwnvZs2Kqg3u8nexS2ZBfKmw9OlPBaaVZioiS7BHsl
+         YQ4r7w5vrJPUKxgqdugvjbGIbRfRLzSot++CY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=++DU+mGMau0wCVk26WL7BRudLdRoW/TdcNVBaFfSVeo=;
+        b=IZEd22bpdlEhisVAjFQPaHpOtSqfTMKM9y0D4ddeXFhYyuaZJYzy2zKsCIDRBXodZr
+         PbNZed+g8AkQyzfq8Y6Ecd9BHjClb5F0DDOu3woIBmcxvuwhxCXgdwOmi/xojQs+DfyY
+         WGe0qqwWuVhs0hcuwmk02/bd2HPk63RkvlcbXnDllygIr74JAHqE5xj6MWUlZ5sIrgZ7
+         sEujS/uMWdNdG/sT/o/M+i0tyYvneucpXZpDZuU7oQiEWdq4SHovfHySXh3l6EaBF/SX
+         A4sbUo4brMlZdr5fTdjSEAikFEk2gUVzxJUK3pR3y3gIAy18M32usqkbazHlSm99sN+D
+         C2kw==
+X-Gm-Message-State: AOAM531a6NBl6lqqXwe66HRz6gZx15WQJZZUtrvvr2EnrQW10JCgJx0u
+        YoPDQx8kKHgHb8FXny3KHceEprH+REpmcQ==
+X-Google-Smtp-Source: ABdhPJzhwDmx9HXVO6sfDFfdOpOkJHK90ObGBKI76s04d3pqBHAGkR3JU5F1v3JEEcu1BbhK8f0Zpg==
+X-Received: by 2002:aa7:c544:: with SMTP id s4mr3943651edr.51.1597945337308;
+        Thu, 20 Aug 2020 10:42:17 -0700 (PDT)
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com. [209.85.221.49])
+        by smtp.gmail.com with ESMTPSA id p21sm1676781edr.59.2020.08.20.10.42.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Aug 2020 10:42:17 -0700 (PDT)
+Received: by mail-wr1-f49.google.com with SMTP id 88so2876042wrh.3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:42:16 -0700 (PDT)
+X-Received: by 2002:adf:ec4f:: with SMTP id w15mr4013793wrn.385.1597944841643;
+ Thu, 20 Aug 2020 10:34:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.34]
-X-ClientProxiedBy: EX13D27UWA001.ant.amazon.com (10.43.160.19) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+References: <20200819065555.1802761-1-hch@lst.de> <20200819065555.1802761-6-hch@lst.de>
+ <CAAFQd5COLxjydDYrfx47ht8tj-aNPiaVnC+WyQA7nvpW4gs=ww@mail.gmail.com>
+ <20200819135454.GA17098@lst.de> <CAAFQd5BuXP7t3d-Rwft85j=KTyXq7y4s24mQxLr=VoY9krEGZw@mail.gmail.com>
+ <20200820044347.GA4533@lst.de> <20200820052004.GA5305@lst.de>
+ <CAAFQd5CFiA2WBaaPQ9ezvMjYZfNw37c42UEy9Pk7kJyCi1mLzQ@mail.gmail.com> <20200820165407.GD12693@lst.de>
+In-Reply-To: <20200820165407.GD12693@lst.de>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Thu, 20 Aug 2020 19:33:48 +0200
+X-Gmail-Original-Message-ID: <CAAFQd5D=NzgjosB51-O_cH27a8V6CPgCfaPSfHHz7nKJPbazgg@mail.gmail.com>
+Message-ID: <CAAFQd5D=NzgjosB51-O_cH27a8V6CPgCfaPSfHHz7nKJPbazgg@mail.gmail.com>
+Subject: Re: [PATCH 05/28] media/v4l2: remove V4L2-FLAG-MEMORY-NON-CONSISTENT
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     alsa-devel@alsa-project.org, linux-ia64@vger.kernel.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        nouveau@lists.freedesktop.org, linux-nvme@lists.infradead.org,
+        linux-mips@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        linux-mm@kvack.org,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        linux-scsi@vger.kernel.org,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Pawel Osciak <pawel@osciak.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Aug 2020 08:44:33 -0700 Shakeel Butt <shakeelb@google.com> wrote:
+On Thu, Aug 20, 2020 at 6:54 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Thu, Aug 20, 2020 at 12:05:29PM +0200, Tomasz Figa wrote:
+> > The UAPI and V4L2/videobuf2 changes are in good shape and the only
+> > wrong part is the use of DMA API, which was based on an earlier email
+> > guidance anyway, and a change to the synchronization part . I find
+> > conclusions like the above insulting for people who put many hours
+> > into designing and implementing the related functionality, given the
+> > complexity of the videobuf2 framework and how ill-defined the DMA API
+> > was, and would feel better if such could be avoided in future
+> > communication.
+>
+> It wasn't meant to be too insulting, but I found this out when trying
+> to figure out how to just disable it.  But it also ends up using
+> the actual dma attr flags for it's own consistency checks, so just
+> not setting the flag did not turn out to work that easily.
+>
 
-> On Thu, Aug 20, 2020 at 12:11 AM SeongJae Park <sjpark@amazon.com> wrote:
-> >
-> > On Wed, 19 Aug 2020 18:21:44 -0700 Shakeel Butt <shakeelb@google.com> wrote:
-> >
-> > > On Tue, Aug 18, 2020 at 12:25 AM SeongJae Park <sjpark@amazon.com> wrote:
-> > > >
-> > > > From: SeongJae Park <sjpark@amazon.de>
-> > > >
-> > > > Changes from Previous Version
-> > > > =============================
-> > > >
-> > > > - Use 42 as the fake target id for paddr instead of -1
-> > > > - Fix a typo
-> > > >
-> > > > Introduction
-> > > > ============
-> > > >
-> > > > DAMON[1] programming interface users can extend DAMON for any address space by
-> > > > configuring the address-space specific low level primitives with appropriate
-> > > > ones including their own implementations.  However, because the implementation
-> > > > for the virtual address space is only available now, the users should implement
-> > > > their own for other address spaces.  Worse yet, the user space users who rely
-> > > > on the debugfs interface and user space tool, cannot implement their own.
-> > > >
-> > > > This patchset implements another reference implementation of the low level
-> > > > primitives for the physical memory address space.  With this change, hence, the
-> > > > kernel space users can monitor both the virtual and the physical address spaces
-> > > > by simply changing the configuration in the runtime.  Further, this patchset
-> > > > links the implementation to the debugfs interface and the user space tool for
-> > > > the user space users.
-> > > >
-> > > > Note that the implementation supports only the user memory, as same to the idle
-> > > > page access tracking feature.
-> > > >
-> > > > [1] https://lore.kernel.org/linux-mm/20200706115322.29598-1-sjpark@amazon.com/
-> > > >
-> > >
-> > > I am still struggling to find the benefit of this feature the way it
-> > > is implemented i.e. region based physical address space monitoring.
-> > > What exactly am I supposed to do for a given hot (or cold) physical
-> > > region? In a containerized world, that region can contain pages from
-> > > any cgroup. I can not really do anything about the accesses PHY-DAMON
-> > > provides me for a region.
-> >
-> > Technically speaking, this patchset introduces an implementation of DAMON's low
-> > level primitives for physical address space of LRU-listed pages.  In other
-> > words, it is not designed for cgroups case.
-> 
-> So, this RFC is for a system running a single workload which comprises
-> multiple processes. Instead of registering each process with DAMON,
-> just monitor the whole physical memory, right?
+Yes, sadly the videobuf2 ended up becoming quite counterintuitive
+after growing for the long years and that is reflected in the design
+of this feature as well. I think we need to do something about it.
 
-Right.  Also I assumed the kernel space DAMON users as the primary users of
-this feature.
+> But in general it helps to add a few more people to the Cc list for
+> such things that do stranger things.  Especially if you think you did
+> it based on the advice of those people.
 
-> 
-> Though I am still not sure how the output from DAMON can be used in
-> this case. DAMON told me a physical region is cold, how do I find out
-> processes that have mapped the pages in that region to do
-> process_madvise(PAGEOUT) on them?
+Indeed, we should have CCed you and other DMA folks. Sergey who worked
+on this series is quite new to these areas of the kernel (although not
+to the kernel itself) and it's my fault for not explicitly letting him
+know to do that.
 
-Seems you are saying about the user space DAMON use.  Indeed, it would be quite
-complicated.  For example, maybe the user space could read '/proc/pid/pagemap'
-of every process, but this really sounds awkward.  Thank you for pointing this
-:)  Even in the virtual address case, it could be complicated.
-
-For this reason, I am developing DAMON-based Operation Schemes[1].  It is
-designed to do the monitoring and optimization of specific regions fit in
-special monitoring result by DAMON itself.  Nonetheless, current version of it
-supports only virtual address spaces.  A support of physical address space from
-the feature will be another future work.
-
-If the user space really need to do that by itself, we could provide the
-physical address to virtual address mapping info in addition to the monitoring
-result in future.
-
-And, yes, we have so many TODO tasks that really necessary.  I will eventually
-do all of those, but also concerning about my limited time.  Nevertheless, I
-believe it would better to focus on the core of DAMON[2] for now and continue
-further TODO tasks after it is merged in the mainline, because maintainance of
-the code will be much easier and hopefully more developers could collaborate
-for the many TODO tasks.
-
-[1] https://lore.kernel.org/linux-mm/20200804142430.15384-1-sjpark@amazon.com/
-[2] https://lore.kernel.org/linux-mm/20200817105137.19296-1-sjpark@amazon.com/
-
-
-Thanks,
-SeongJae Park
+Best regards,
+Tomasz
