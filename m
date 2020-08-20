@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9049724B5CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 065A424B5BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731794AbgHTK2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:28:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49046 "EHLO mail.kernel.org"
+        id S1731606AbgHTKWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:22:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731576AbgHTKV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:21:57 -0400
+        id S1731579AbgHTKV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:21:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4DC6A20658;
-        Thu, 20 Aug 2020 10:21:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC4CE2072D;
+        Thu, 20 Aug 2020 10:21:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918916;
-        bh=OE314dlREHwftamZAUJHXC4kUWq7DSSXV5toaxDKDP4=;
+        s=default; t=1597918919;
+        bh=bVvddrK+qoU01hUbXwqrKFPxQVIC31GFgroVKcw9PwE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QxwFEKHz5XJvu1hO6H4j8573oAyv7bvOqxxMiUlXOvSrY0T0cTur6/osmzA3+sP6q
-         sev3AdViADScViq02zNeRqIXyW1OA91T/uEWQhWZmqhFqsg3uk9pxIH+aYZonjzr8b
-         iNpnY05i9uKy8gg+r38n58ePqjWgbuzstbH19dcE=
+        b=baEoAGEVobTiznF2cHvluSu0q71UbeuPQRZ+6u5dmBnuAt7oBJKw+AbSWpG/C17Qy
+         umpVK4BuSaiD8dLq6KGVJCiBNFdAESGXyvGxBwtl64m/UHKUWO022FSAi+dG6GN/Ih
+         jSw9aXMew7SuWDw86gk1VrKNBYxDoW9FFuUsDBZ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hector Martin <marcan@marcan.st>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.4 114/149] ALSA: usb-audio: work around streaming quirk for MacroSilicon MS2109
-Date:   Thu, 20 Aug 2020 11:23:11 +0200
-Message-Id: <20200820092131.220609205@linuxfoundation.org>
+        stable@vger.kernel.org, Zheng Bin <zhengbin13@huawei.com>,
+        Dominique Martinet <asmadeus@codewreck.org>
+Subject: [PATCH 4.4 115/149] 9p: Fix memory leak in v9fs_mount
+Date:   Thu, 20 Aug 2020 11:23:12 +0200
+Message-Id: <20200820092131.267368313@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
 References: <20200820092125.688850368@linuxfoundation.org>
@@ -43,80 +43,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hector Martin <marcan@marcan.st>
+From: Zheng Bin <zhengbin13@huawei.com>
 
-commit 1b7ecc241a67ad6b584e071bd791a54e0cd5f097 upstream.
+commit cb0aae0e31c632c407a2cab4307be85a001d4d98 upstream.
 
-Further investigation of the L-R swap problem on the MS2109 reveals that
-the problem isn't that the channels are swapped, but rather that they
-are swapped and also out of phase by one sample. In other words, the
-issue is actually that the very first frame that comes from the hardware
-is a half-frame containing only the right channel, and after that
-everything becomes offset.
+v9fs_mount
+  v9fs_session_init
+    v9fs_cache_session_get_cookie
+      v9fs_random_cachetag                     -->alloc cachetag
+      v9ses->fscache = fscache_acquire_cookie  -->maybe NULL
+  sb = sget                                    -->fail, goto clunk
+clunk_fid:
+  v9fs_session_close
+    if (v9ses->fscache)                        -->NULL
+      kfree(v9ses->cachetag)
 
-So introduce a new quirk field to drop the very first 2 bytes that come
-in after the format is configured and a capture stream starts. This puts
-the channels in phase and in the correct order.
+Thus memleak happens.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Hector Martin <marcan@marcan.st>
-Link: https://lore.kernel.org/r/20200810082400.225858-1-marcan@marcan.st
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: http://lkml.kernel.org/r/20200615012153.89538-1-zhengbin13@huawei.com
+Fixes: 60e78d2c993e ("9p: Add fscache support to 9p")
+Cc: <stable@vger.kernel.org> # v2.6.32+
+Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
+Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/usb/card.h   |    1 +
- sound/usb/pcm.c    |    6 ++++++
- sound/usb/quirks.c |    3 +++
- sound/usb/stream.c |    1 +
- 4 files changed, 11 insertions(+)
+ fs/9p/v9fs.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/sound/usb/card.h
-+++ b/sound/usb/card.h
-@@ -125,6 +125,7 @@ struct snd_usb_substream {
- 	unsigned int tx_length_quirk:1;	/* add length specifier to transfers */
- 	unsigned int fmt_type;		/* USB audio format type (1-3) */
- 	unsigned int pkt_offset_adj;	/* Bytes to drop from beginning of packets (for non-compliant devices) */
-+	unsigned int stream_offset_adj;	/* Bytes to drop from beginning of stream (for non-compliant devices) */
- 
- 	unsigned int running: 1;	/* running status */
- 
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -1302,6 +1302,12 @@ static void retire_capture_urb(struct sn
- 			// continue;
- 		}
- 		bytes = urb->iso_frame_desc[i].actual_length;
-+		if (subs->stream_offset_adj > 0) {
-+			unsigned int adj = min(subs->stream_offset_adj, bytes);
-+			cp += adj;
-+			bytes -= adj;
-+			subs->stream_offset_adj -= adj;
-+		}
- 		frames = bytes / stride;
- 		if (!subs->txfr_quirk)
- 			bytes = frames * stride;
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1122,6 +1122,9 @@ void snd_usb_set_format_quirk(struct snd
- 	case USB_ID(0x041e, 0x3f19): /* E-Mu 0204 USB */
- 		set_format_emu_quirk(subs, fmt);
- 		break;
-+	case USB_ID(0x534d, 0x2109): /* MacroSilicon MS2109 */
-+		subs->stream_offset_adj = 2;
-+		break;
+--- a/fs/9p/v9fs.c
++++ b/fs/9p/v9fs.c
+@@ -457,10 +457,9 @@ void v9fs_session_close(struct v9fs_sess
  	}
- }
  
---- a/sound/usb/stream.c
-+++ b/sound/usb/stream.c
-@@ -95,6 +95,7 @@ static void snd_usb_init_substream(struc
- 	subs->tx_length_quirk = as->chip->tx_length_quirk;
- 	subs->speed = snd_usb_get_speed(subs->dev);
- 	subs->pkt_offset_adj = 0;
-+	subs->stream_offset_adj = 0;
- 
- 	snd_usb_set_pcm_ops(as->pcm, stream);
- 
+ #ifdef CONFIG_9P_FSCACHE
+-	if (v9ses->fscache) {
++	if (v9ses->fscache)
+ 		v9fs_cache_session_put_cookie(v9ses);
+-		kfree(v9ses->cachetag);
+-	}
++	kfree(v9ses->cachetag);
+ #endif
+ 	kfree(v9ses->uname);
+ 	kfree(v9ses->aname);
 
 
