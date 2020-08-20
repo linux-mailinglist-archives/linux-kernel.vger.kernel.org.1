@@ -2,102 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E93A24B910
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D77E024B8FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729270AbgHTLib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:38:31 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:62854 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729738AbgHTLe0 (ORCPT
+        id S1730728AbgHTLhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:37:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730705AbgHTLd1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 07:34:26 -0400
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 07KBXm51011709
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 20:33:49 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 07KBXm51011709
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1597923229;
-        bh=XGgv3Ngm5kbFZf0GD1E5nkmPdpn4darLmhe2GL+7nuU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PW31YXnIxPELMsxjO/YhYZ5bd4+t4Rm5AwFQZe8bmeZBvBBQ7BvTh7cjUevJqrdlC
-         gzNcqfHQ+E4ih1UEvONPCMZx/yBOXVIloW5ha/zKFL95ftQulz0HtUG8WxR/LU+rLN
-         nvQqC5nBLYu+jzoEUlVnTkfd3yqOX/pCyUhXhuGt1Qlok32u4PK01/NFj8hQz64qqz
-         W2ee2DPtWiIkzc+pZBA/C9Z66FUPpLVP+RYuh7srLvzlCKiAa73liFVEe01rWqlJel
-         VUCHNpmFMAGYkNyvXb5g5bYPWgDt8dROddMWVosqPoKzxMikuw3oO+BbUKUEKQamlR
-         UWc8GGtcTv6+g==
-X-Nifty-SrcIP: [209.85.222.52]
-Received: by mail-ua1-f52.google.com with SMTP id g20so459133uap.8
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 04:33:49 -0700 (PDT)
-X-Gm-Message-State: AOAM530l9Z+ElsBHoRUY0vE3eND1672PVNskV3Qu2FesNncbo6SA5cT3
-        ZHKKQsDvfMHsH8Deps2/5r7XLw5a5yIR63jetn8=
-X-Google-Smtp-Source: ABdhPJxNLBGf4ixlYGFomMDjKzFzffmoM3zK913g/lYzq4mGJBRmpedvIZCUnmeEdeI0pigKfT+itnJWLRfotpKWBcM=
-X-Received: by 2002:ab0:623:: with SMTP id f32mr1267638uaf.121.1597923228200;
- Thu, 20 Aug 2020 04:33:48 -0700 (PDT)
+        Thu, 20 Aug 2020 07:33:27 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E787C061387
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 04:33:27 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id z18so1172777otk.6
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 04:33:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QDmA2I/vpmdly65/ewdOkuvkgD5OTZaOmPpGyJss1r8=;
+        b=dNd1ucF68FOwK698++MeDaHZC8R4QTfkj/7ds5fx+EVzNfJCMORnX8FAOUdJXqjhwB
+         KzyLCNsY8RwuHBIj/D1WqqnFEjPzWvq/PbQrZhsKiZ2hAM1Tl2HAg7aZ9Om4JaruuI0q
+         ECAeeAY4+/MbKn5cW+ySGsEjinxUvgEoWpJtY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QDmA2I/vpmdly65/ewdOkuvkgD5OTZaOmPpGyJss1r8=;
+        b=nJaFoF0FAJ56aB9riJQ9KOtoDsNOAC8wK6Ng1/bSgmQu7j/UtHjt18JE4o7k1vxdpP
+         6h0Hhi7EM+yLtk9WhZdHkz2F4uWkNI+yf8aC5JDGYtRnpZloJTgbebD/l1IowXVsNABa
+         Blyim3aI/PF/ca+jDAcpUmAKbbn5In5n6qZa8ckverEcjJ9F1+zfKaMJUquWCiUb6pGw
+         AZYrBxnq5qAns0zQjpWDdyUCpfhGScrwvfqpSN4NrYecWDh+0WkucA2yAlOKeuC4odDL
+         dXB1XX4jCPcCgV6hzRtrKJ+edHrkUxXfoMZmNau+92u4QWngQC8t6/bMFjZYjhanRH9R
+         epRw==
+X-Gm-Message-State: AOAM531BcwjBh3X6v0eU6175nPwFJfnBT3a5T8nrkLayEnJ3FspikiHp
+        T5df4E4e0XQJ7DfVdX+PGdwOp6Gf20ZEznhyptl3TQ==
+X-Google-Smtp-Source: ABdhPJz5sS9SzkLweMOTau3oDrIAtuUMdCvWcs9y5ZeCHjWJmjdV0SWMRwsXpqL0zJOpQbQIgTkvrSUYiwFOo9W6SY8=
+X-Received: by 2002:a9d:2f23:: with SMTP id h32mr1908222otb.334.1597923206365;
+ Thu, 20 Aug 2020 04:33:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <ab0cfaed-50bb-5b29-cb93-a2987c384af1@gmx.de>
-In-Reply-To: <ab0cfaed-50bb-5b29-cb93-a2987c384af1@gmx.de>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 20 Aug 2020 20:33:11 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASZ_sHPjDLd7+LTc0Sj9K+W51zoRq-=r-0_5AJC06jaEg@mail.gmail.com>
-Message-ID: <CAK7LNASZ_sHPjDLd7+LTc0Sj9K+W51zoRq-=r-0_5AJC06jaEg@mail.gmail.com>
-Subject: Re: BUG with 5.8.x and make xconfig
-To:     Ronald Warsow <rwarsow@gmx.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
+References: <20200819092436.58232-1-lmb@cloudflare.com> <20200819092436.58232-6-lmb@cloudflare.com>
+ <5f3d982f51f22_2c9b2adeefb585bccb@john-XPS-13-9370.notmuch> <5f3daa91265a7_1b0e2ab87245e5c05@john-XPS-13-9370.notmuch>
+In-Reply-To: <5f3daa91265a7_1b0e2ab87245e5c05@john-XPS-13-9370.notmuch>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Thu, 20 Aug 2020 12:33:15 +0100
+Message-ID: <CACAyw9_oa5BKq+0gLS6pAuGu6pj9MsRHhEAxFvts167DwpdhLw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 5/6] bpf: sockmap: allow update from BPF
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 4:19 AM Ronald Warsow <rwarsow@gmx.de> wrote:
+On Wed, 19 Aug 2020 at 23:41, John Fastabend <john.fastabend@gmail.com> wrote:
 >
-> Hallo
+> John Fastabend wrote:
+> > Lorenz Bauer wrote:
+> > > Allow calling bpf_map_update_elem on sockmap and sockhash from a BPF
+> > > context. The synchronization required for this is a bit fiddly: we
+> > > need to prevent the socket from changing it's state while we add it
+> > > to the sockmap, since we rely on getting a callback via
+> > > sk_prot->unhash. However, we can't just lock_sock like in
+> > > sock_map_sk_acquire because that might sleep. So instead we disable
+> > > softirq processing and use bh_lock_sock to prevent further
+> > > modification.
+> > >
+> > > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> > > ---
+> > >  kernel/bpf/verifier.c |  6 ++++--
+> > >  net/core/sock_map.c   | 24 ++++++++++++++++++++++++
+> > >  2 files changed, 28 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index 47f9b94bb9d4..421fccf18dea 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -4254,7 +4254,8 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
+> > >                 func_id != BPF_FUNC_map_delete_elem &&
+> > >                 func_id != BPF_FUNC_msg_redirect_map &&
+> > >                 func_id != BPF_FUNC_sk_select_reuseport &&
+> > > -               func_id != BPF_FUNC_map_lookup_elem)
+> > > +               func_id != BPF_FUNC_map_lookup_elem &&
+> > > +               func_id != BPF_FUNC_map_update_elem)
+> > >                     goto error;
+> > >             break;
+> > >     case BPF_MAP_TYPE_SOCKHASH:
+> > > @@ -4263,7 +4264,8 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
+> > >                 func_id != BPF_FUNC_map_delete_elem &&
+> > >                 func_id != BPF_FUNC_msg_redirect_hash &&
+> > >                 func_id != BPF_FUNC_sk_select_reuseport &&
+> > > -               func_id != BPF_FUNC_map_lookup_elem)
+> > > +               func_id != BPF_FUNC_map_lookup_elem &&
+> > > +               func_id != BPF_FUNC_map_update_elem)
+> >
+> > I lost track of a detail here, map_lookup_elem should return
+> > PTR_TO_MAP_VALUE_OR_NULL but if we want to feed that back into
+> > the map_update_elem() we need to return PTR_TO_SOCKET_OR_NULL
+> > and then presumably have a null check to get a PTR_TO_SOCKET
+> > type as expect.
+> >
+> > Can we use the same logic for expected arg (previous patch) on the
+> > ret_type. Or did I miss it:/ Need some coffee I guess.
 >
-> configuring kernel 5.8.x on Fedora 32 via "make xconfig" gives me this:
+> OK, I tracked this down. It looks like we rely on mark_ptr_or_null_reg()
+> to update the reg->tyype to PTR_TO_SOCKET. I do wonder if it would be
+> a bit more straight forward to do something similar to the previous
+> patch and refine it earlier to PTR_TO_SOCKET_OR_NULL, but should be
+> safe as-is for now.
+
+Yes, it took me a while to figure this out as well. I think we can use
+the same approach, but I wanted to keep this series simple.
+
+> I still have the below question though.
 >
->
->   HOSTCXX scripts/kconfig/qconf.o
-> scripts/kconfig/qconf.cc: In member function =E2=80=98void
-> ConfigInfoView::clicked(const QUrl&)=E2=80=99:
-> scripts/kconfig/qconf.cc:1231:3: error: =E2=80=98qInfo=E2=80=99 was not d=
-eclared in this
-> scope; did you mean =E2=80=98setInfo=E2=80=99?
->   1231 |   qInfo() << "Clicked link is empty";
->        |   ^~~~~
->        |   setInfo
-> scripts/kconfig/qconf.cc:1244:3: error: =E2=80=98qInfo=E2=80=99 was not d=
-eclared in this
-> scope; did you mean =E2=80=98setInfo=E2=80=99?
->   1244 |   qInfo() << "Clicked symbol is invalid:" << data;
->        |   ^~~~~
->        |   setInfo
-> make[1]: *** [scripts/Makefile.host:137: scripts/kconfig/qconf.o] Error 1
-> make: *** [Makefile:606: xconfig] Error 2
->
->
->
-> I have never seen this with kernel 5.7.x.
->
-> I haven't found a solution to the above, yet.
-> - apart from the workaround: "make menuconfig", etc.-
->
->
-> pointers/hints/ideas ?
+> >
+> > >                     goto error;
+> > >             break;
+> > >     case BPF_MAP_TYPE_REUSEPORT_SOCKARRAY:
+> > > diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> > > index 018367fb889f..b2c886c34566 100644
+> > > --- a/net/core/sock_map.c
+> > > +++ b/net/core/sock_map.c
+> > > @@ -603,6 +603,28 @@ int sock_map_update_elem_sys(struct bpf_map *map, void *key,
+> > >     return ret;
+> > >  }
+> > >
+> > > +static int sock_map_update_elem(struct bpf_map *map, void *key,
+> > > +                           void *value, u64 flags)
+> > > +{
+> > > +   struct sock *sk = (struct sock *)value;
+> > > +   int ret;
+> > > +
+> > > +   if (!sock_map_sk_is_suitable(sk))
+> > > +           return -EOPNOTSUPP;
+> > > +
+> > > +   local_bh_disable();
+> > > +   bh_lock_sock(sk);
+> >
+> > How do ensure we are not being called from some context which
+> > already has the bh_lock_sock() held? It seems we can call map_update_elem()
+> > from any context, kprobes, tc, xdp, etc.?
+
+Yeah, to be honest I'm not entirely sure.
+
+XDP, TC, sk_lookup are fine I think. We have bpf_sk_lookup_tcp and
+friends, but these aren't locked, and the BPF doesn't run in a context
+where there is a locked socket.
+
+As you point out, kprobes / tracing is problematic because the probe
+_can_ run at a point where an sk is locked. If the tracing program
+somehow gets a hold of this socket via sk_lookup_* or
+a sockmap the program could deadlock.
+
+bpf_sock_ops is also problematic since ctx->sk is in various states of
+locking. For example, BPF_SOCK_OPS_TCP_LISTEN_CB is called with
+lock_sock held, so unproblematic. BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB
+on the other hand is called with the spinlock held.
+
+It seems to me like the only option is to instead only allow updates
+from "safe" contexts, such as XDP, tc, bpf_iter etc.
+
+Am I missing something?
 
 
-I think you are using Qt4
-(dnf install qt4-devel).
+> >
+> > > +   if (!sock_map_sk_state_allowed(sk))
+> > > +           ret = -EOPNOTSUPP;
+> > > +   else if (map->map_type == BPF_MAP_TYPE_SOCKMAP)
+> > > +           ret = sock_map_update_common(map, *(u32 *)key, sk, flags);
+> > > +   else
+> > > +           ret = sock_hash_update_common(map, key, sk, flags);
+> > > +   bh_unlock_sock(sk);
+> > > +   local_bh_enable();
+> > > +   return ret;
+> > > +}
+> > > +
+> > >  BPF_CALL_4(bpf_sock_map_update, struct bpf_sock_ops_kern *, sops,
+> > >        struct bpf_map *, map, void *, key, u64, flags)
+> > >  {
+> > > @@ -687,6 +709,7 @@ const struct bpf_map_ops sock_map_ops = {
+> > >     .map_free               = sock_map_free,
+> > >     .map_get_next_key       = sock_map_get_next_key,
+> > >     .map_lookup_elem_sys_only = sock_map_lookup_sys,
+> > > +   .map_update_elem        = sock_map_update_elem,
+> > >     .map_delete_elem        = sock_map_delete_elem,
+> > >     .map_lookup_elem        = sock_map_lookup,
+> > >     .map_release_uref       = sock_map_release_progs,
+> > > @@ -1180,6 +1203,7 @@ const struct bpf_map_ops sock_hash_ops = {
+> > >     .map_alloc              = sock_hash_alloc,
+> > >     .map_free               = sock_hash_free,
+> > >     .map_get_next_key       = sock_hash_get_next_key,
+> > > +   .map_update_elem        = sock_map_update_elem,
+> > >     .map_delete_elem        = sock_hash_delete_elem,
+> > >     .map_lookup_elem        = sock_hash_lookup,
+> > >     .map_lookup_elem_sys_only = sock_hash_lookup_sys,
+> > > --
+> > > 2.25.1
+> > >
+> >
+> >
+>
+>
 
-If you install Qt5
-(dnf install qt5-devel),
-you will be able to do "make xconfig".
 
-I will consider what to do about this.
+--
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
-
---=20
-Best Regards
-Masahiro Yamada
+www.cloudflare.com
