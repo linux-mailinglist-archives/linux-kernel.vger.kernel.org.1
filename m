@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A851124B34A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D9E24B394
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729182AbgHTJo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:44:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37196 "EHLO mail.kernel.org"
+        id S1729656AbgHTJtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:49:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729180AbgHTJmn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:42:43 -0400
+        id S1728912AbgHTJtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:49:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 721AD20724;
-        Thu, 20 Aug 2020 09:42:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 62CC12078D;
+        Thu, 20 Aug 2020 09:49:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916561;
-        bh=x7Q9qCp+MY8vZ7KOdTXouEdvuAm/+Ue87rUmmdF7JZA=;
+        s=default; t=1597916953;
+        bh=FIf245zXysx06zrfB4Thg/nzHVS7fWcttgKSzi+mJQg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RbPnqmWw2BPIruDJGh5ZsYsAj6ngcK/TzXU2CVYbZUp4y4bex+hx9blZiEz0HRzmo
-         tE66S8Ddtr1OO826iRN8hksREjigzylZU6gYsvbeREgEOwENyiZFSSrpliGwLyq3qv
-         ouQyoUq2nrPyXINcNc2YWH5XyILPnjiHD2uf5jZM=
+        b=wN4qv487K7vr/eTS6ozJ8XKsXMJjftvwQf7LsKKGw38rZpmcAM90HsLFs3cKdtYEd
+         oRKM3sHjDDbE2w8l3Tm/ALJeiKrKK2j8LSmWFFiejXilX3EFD4D7lxWsOjN8Am5wRX
+         EUa956zev2I7hZBxOysqhc2oKjTIYWU8c2gI1IRY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>, Timur Tabi <timur@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 172/204] net: qcom/emac: add missed clk_disable_unprepare in error path of emac_clks_phase1_init
-Date:   Thu, 20 Aug 2020 11:21:09 +0200
-Message-Id: <20200820091614.797571638@linuxfoundation.org>
+Subject: [PATCH 5.4 103/152] selftests/powerpc: ptrace-pkey: Update the test to mark an invalid pkey correctly
+Date:   Thu, 20 Aug 2020 11:21:10 +0200
+Message-Id: <20200820091559.034720681@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
-References: <20200820091606.194320503@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,55 +45,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
 
-[ Upstream commit 50caa777a3a24d7027748e96265728ce748b41ef ]
+[ Upstream commit 0eaa3b5ca7b5a76e3783639c828498343be66a01 ]
 
-Fix the missing clk_disable_unprepare() before return
-from emac_clks_phase1_init() in the error handling case.
-
-Fixes: b9b17debc69d ("net: emac: emac gigabit ethernet controller driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Acked-by: Timur Tabi <timur@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200709032946.881753-22-aneesh.kumar@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qualcomm/emac/emac.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ .../selftests/powerpc/ptrace/ptrace-pkey.c    | 30 ++++++++-----------
+ 1 file changed, 12 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/net/ethernet/qualcomm/emac/emac.c b/drivers/net/ethernet/qualcomm/emac/emac.c
-index 18b0c7a2d6dcb..90e794c79f667 100644
---- a/drivers/net/ethernet/qualcomm/emac/emac.c
-+++ b/drivers/net/ethernet/qualcomm/emac/emac.c
-@@ -473,13 +473,24 @@ static int emac_clks_phase1_init(struct platform_device *pdev,
- 
- 	ret = clk_prepare_enable(adpt->clk[EMAC_CLK_CFG_AHB]);
- 	if (ret)
--		return ret;
-+		goto disable_clk_axi;
- 
- 	ret = clk_set_rate(adpt->clk[EMAC_CLK_HIGH_SPEED], 19200000);
- 	if (ret)
--		return ret;
-+		goto disable_clk_cfg_ahb;
-+
-+	ret = clk_prepare_enable(adpt->clk[EMAC_CLK_HIGH_SPEED]);
-+	if (ret)
-+		goto disable_clk_cfg_ahb;
- 
--	return clk_prepare_enable(adpt->clk[EMAC_CLK_HIGH_SPEED]);
-+	return 0;
-+
-+disable_clk_cfg_ahb:
-+	clk_disable_unprepare(adpt->clk[EMAC_CLK_CFG_AHB]);
-+disable_clk_axi:
-+	clk_disable_unprepare(adpt->clk[EMAC_CLK_AXI]);
-+
-+	return ret;
+diff --git a/tools/testing/selftests/powerpc/ptrace/ptrace-pkey.c b/tools/testing/selftests/powerpc/ptrace/ptrace-pkey.c
+index f9216c7a1829e..bc33d748d95b4 100644
+--- a/tools/testing/selftests/powerpc/ptrace/ptrace-pkey.c
++++ b/tools/testing/selftests/powerpc/ptrace/ptrace-pkey.c
+@@ -66,11 +66,6 @@ static int sys_pkey_alloc(unsigned long flags, unsigned long init_access_rights)
+ 	return syscall(__NR_pkey_alloc, flags, init_access_rights);
  }
  
- /* Enable clocks; needs emac_clks_phase1_init to be called before */
+-static int sys_pkey_free(int pkey)
+-{
+-	return syscall(__NR_pkey_free, pkey);
+-}
+-
+ static int child(struct shared_info *info)
+ {
+ 	unsigned long reg;
+@@ -100,7 +95,11 @@ static int child(struct shared_info *info)
+ 
+ 	info->amr1 |= 3ul << pkeyshift(pkey1);
+ 	info->amr2 |= 3ul << pkeyshift(pkey2);
+-	info->invalid_amr |= info->amr2 | 3ul << pkeyshift(pkey3);
++	/*
++	 * invalid amr value where we try to force write
++	 * things which are deined by a uamor setting.
++	 */
++	info->invalid_amr = info->amr2 | (~0x0UL & ~info->expected_uamor);
+ 
+ 	if (disable_execute)
+ 		info->expected_iamr |= 1ul << pkeyshift(pkey1);
+@@ -111,17 +110,12 @@ static int child(struct shared_info *info)
+ 
+ 	info->expected_uamor |= 3ul << pkeyshift(pkey1) |
+ 				3ul << pkeyshift(pkey2);
+-	info->invalid_iamr |= 1ul << pkeyshift(pkey1) | 1ul << pkeyshift(pkey2);
+-	info->invalid_uamor |= 3ul << pkeyshift(pkey1);
+-
+ 	/*
+-	 * We won't use pkey3. We just want a plausible but invalid key to test
+-	 * whether ptrace will let us write to AMR bits we are not supposed to.
+-	 *
+-	 * This also tests whether the kernel restores the UAMOR permissions
+-	 * after a key is freed.
++	 * Create an IAMR value different from expected value.
++	 * Kernel will reject an IAMR and UAMOR change.
+ 	 */
+-	sys_pkey_free(pkey3);
++	info->invalid_iamr = info->expected_iamr | (1ul << pkeyshift(pkey1) | 1ul << pkeyshift(pkey2));
++	info->invalid_uamor = info->expected_uamor & ~(0x3ul << pkeyshift(pkey1));
+ 
+ 	printf("%-30s AMR: %016lx pkey1: %d pkey2: %d pkey3: %d\n",
+ 	       user_write, info->amr1, pkey1, pkey2, pkey3);
+@@ -196,9 +190,9 @@ static int parent(struct shared_info *info, pid_t pid)
+ 	PARENT_SKIP_IF_UNSUPPORTED(ret, &info->child_sync);
+ 	PARENT_FAIL_IF(ret, &info->child_sync);
+ 
+-	info->amr1 = info->amr2 = info->invalid_amr = regs[0];
+-	info->expected_iamr = info->invalid_iamr = regs[1];
+-	info->expected_uamor = info->invalid_uamor = regs[2];
++	info->amr1 = info->amr2 = regs[0];
++	info->expected_iamr = regs[1];
++	info->expected_uamor = regs[2];
+ 
+ 	/* Wake up child so that it can set itself up. */
+ 	ret = prod_child(&info->child_sync);
 -- 
 2.25.1
 
