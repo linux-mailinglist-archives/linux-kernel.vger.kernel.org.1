@@ -2,80 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 788E124BFB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C414024BFA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729062AbgHTNw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:52:26 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:5867 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728987AbgHTNwD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 09:52:03 -0400
-Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 20 Aug 2020 06:52:02 -0700
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 20 Aug 2020 06:52:00 -0700
-Received: from c-skakit-linux.ap.qualcomm.com (HELO c-skakit-linux.qualcomm.com) ([10.242.51.242])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 20 Aug 2020 19:21:35 +0530
-Received: by c-skakit-linux.qualcomm.com (Postfix, from userid 2344709)
-        id 7747A442B; Thu, 20 Aug 2020 19:21:34 +0530 (IST)
-From:   satya priya <skakit@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Matthias Kaehlcke <mka@chromium.org>, gregkh@linuxfoundation.org,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, akashast@codeaurora.org,
-        rojay@codeaurora.org, msavaliy@qti.qualcomm.com,
-        satya priya <skakit@codeaurora.org>
-Subject: [PATCH V3 3/3] tty: serial: qcom_geni_serial: Fix the UART wakeup issue
-Date:   Thu, 20 Aug 2020 19:21:07 +0530
-Message-Id: <1597931467-24268-4-git-send-email-skakit@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1597931467-24268-1-git-send-email-skakit@codeaurora.org>
-References: <1597931467-24268-1-git-send-email-skakit@codeaurora.org>
+        id S1730426AbgHTNu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:50:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56850 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728807AbgHTNut (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 09:50:49 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 99CAC206DA;
+        Thu, 20 Aug 2020 13:50:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597931449;
+        bh=dS8dzhEVE5Nj4hXt/7nG5Xj6Ci9DebYbCbAd8yx4FHA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gMloImExGVBFf8YTArNooTXh+sdXLqklIX4766SFRMbXpKrzvsS/vgRPyIzFFAZ6G
+         7L6c11hsVfNMi9dnbRPY2pULwc9LLR+wweGgedbzvmWcU5EIylOcekyrMVaEy9OJXu
+         CTbNwkD14pbK3B7jjCss4EJhd+ZmMjWzReskyuV4=
+Date:   Thu, 20 Aug 2020 15:51:09 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, ben.hutchings@codethink.co.uk,
+        lkft-triage@lists.linaro.org, stable@vger.kernel.org,
+        linux-tegra <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH 4.14 000/228] 4.14.194-rc1 review
+Message-ID: <20200820135109.GA1533948@kroah.com>
+References: <20200820091607.532711107@linuxfoundation.org>
+ <a6b632f8-b327-3f8d-5306-12989cfaf4e3@nvidia.com>
+ <20200820123828.GA1465682@kroah.com>
+ <20200820124445.GB1482630@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200820124445.GB1482630@kroah.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As a part of system suspend uart_port_suspend is called from the
-Serial driver, which calls set_mctrl passing mctrl as NULL. This
-makes RFR high(NOT_READY) during suspend.
+On Thu, Aug 20, 2020 at 02:44:45PM +0200, Greg Kroah-Hartman wrote:
+> On Thu, Aug 20, 2020 at 02:38:28PM +0200, Greg Kroah-Hartman wrote:
+> > On Thu, Aug 20, 2020 at 12:57:36PM +0100, Jon Hunter wrote:
+> > > 
+> > > On 20/08/2020 10:19, Greg Kroah-Hartman wrote:
+> > > > This is the start of the stable review cycle for the 4.14.194 release.
+> > > > There are 228 patches in this series, all will be posted as a response
+> > > > to this one.  If anyone has any issues with these being applied, please
+> > > > let me know.
+> > > > 
+> > > > Responses should be made by Sat, 22 Aug 2020 09:15:09 +0000.
+> > > > Anything received after that time might be too late.
+> > > > 
+> > > > The whole patch series can be found in one patch at:
+> > > > 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.194-rc1.gz
+> > > > or in the git tree and branch at:
+> > > > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+> > > > and the diffstat can be found below.
+> > > > 
+> > > > thanks,
+> > > > 
+> > > > greg k-h
+> > > > 
+> > > > -------------
+> > > > Pseudo-Shortlog of commits:
+> > > 
+> > > ...
+> > > 
+> > > > Tomasz Maciej Nowak <tmn505@gmail.com>
+> > > >     arm64: dts: marvell: espressobin: add ethernet alias
+> > > 
+> > > 
+> > > The above change is causing the following build failure for ARM64 ...
+> > > 
+> > > arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtb: ERROR (path_references): Reference to non-existent node or label "uart1"
+> > > ERROR: Input tree has errors, aborting (use -f to force output)
+> > > scripts/Makefile.lib:317: recipe for target 'arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtb' failed
+> > > make[3]: *** [arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtb] Error 2
+> > > 
+> > > Reverting this fixes the problem.
+> > 
+> > Thanks, now dropping it.  Sad as it said it was to be backported here...
+> > 
+> > Will go push out a -rc2 with that fixed.
+> 
+> Well, will push out -rc2 once kernel.org's maintenance is finished,
+> might be an hour or so...
 
-Due to this BT SoC is not able to send wakeup bytes to UART during
-suspend. Include if check for non-suspend case to keep RFR low
-during suspend.
-
-Signed-off-by: satya priya <skakit@codeaurora.org>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Akash Asthana <akashast@codeaurora.org>
----
-Changes in V2:
- - This patch fixes the UART flow control issue during suspend.
-   Newly added in V2.
-
-Changes in V3:
- - As per Matthias's comment removed the extra parentheses.
-
- drivers/tty/serial/qcom_geni_serial.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
-index 07b7b6b..2aad9d7 100644
---- a/drivers/tty/serial/qcom_geni_serial.c
-+++ b/drivers/tty/serial/qcom_geni_serial.c
-@@ -242,7 +242,7 @@ static void qcom_geni_serial_set_mctrl(struct uart_port *uport,
- 	if (mctrl & TIOCM_LOOP)
- 		port->loopback = RX_TX_CTS_RTS_SORTED;
- 
--	if (!(mctrl & TIOCM_RTS))
-+	if (!(mctrl & TIOCM_RTS) && !uport->suspended)
- 		uart_manual_rfr = UART_MANUAL_RFR_EN | UART_RFR_NOT_READY;
- 	writel(uart_manual_rfr, uport->membase + SE_UART_MANUAL_RFR);
- }
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
-
+Now pushed out!
