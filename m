@@ -2,95 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB4124AD6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 05:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D7124AD70
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 05:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgHTDqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 23:46:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26422 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726578AbgHTDqs (ORCPT
+        id S1726903AbgHTDq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 23:46:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726578AbgHTDq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 23:46:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597895207;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yJp8ETPySMsCpzxcqSo+vhA8i7HDv8eDmkf15FdeaxY=;
-        b=EBNSDL9zOOn3bpAmGNw4ZMLXUYXh3TePPLhs2EQk6SeWeU+Mr7omjxk4jxubXlgdexQcUV
-        hSdZ6rEq359wPKQiNuECwERRCrP2Nwk5t7DmrAEQJat8X0jK6IntHciDliONL7jWHCdwLu
-        nH2mJGSrS5CRzNV0fKr6sj9XRDmZ2LI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-501-CPdbQVJvNBSygXj1nyor9g-1; Wed, 19 Aug 2020 23:46:45 -0400
-X-MC-Unique: CPdbQVJvNBSygXj1nyor9g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 63875100CEC4;
-        Thu, 20 Aug 2020 03:46:42 +0000 (UTC)
-Received: from treble (ovpn-117-70.rdu2.redhat.com [10.10.117.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 339621B47B;
-        Thu, 20 Aug 2020 03:46:39 +0000 (UTC)
-Date:   Wed, 19 Aug 2020 22:46:36 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>, Kyle Huey <me@kylehuey.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Robert O'Callahan <rocallahan@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [REGRESSION 5.8] x86/entry: DR0 break-on-write not working
-Message-ID: <20200820034636.tl4nq5aiitpfvx62@treble>
-References: <CAP045Ao5-+vvTzCOaCkfwztsd2Q0_8kh85UxuXW0bbcfVbF40w@mail.gmail.com>
- <20200819184149.GH2674@hirez.programming.kicks-ass.net>
- <CAP045ApfQnsHsimmhLsSeL2OSB98-Q3f=nM4em5rqr_paz4=5Q@mail.gmail.com>
- <20200819213534.GQ3982@worktop.programming.kicks-ass.net>
- <20200819224731.3edo5lqw6lbuprdx@treble>
- <CALCETrV8sVjhVYig4ZvYDN3pEbF0tvekXCcJCBakeZbMn0gZ=A@mail.gmail.com>
+        Wed, 19 Aug 2020 23:46:57 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C4EC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 20:46:56 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id c15so255365lfi.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 20:46:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MIchUN4tOHyQmoooHagLeI7lJ2WK7JXkWyfuUiGtb4U=;
+        b=cdrzd8DIJ9+V4zbbpYRCDfD/ME6MRUgMWO1v+hngvJLZ6QUHqpxtZhfVChVn0KV1YI
+         L16g+IBo/PcqaRGEJl1cra6LI2AVjcny64WifYbPZns6gz6+gFxxWmxtlYj9HZzTAjzi
+         BLiUryBAwPeKKrJyDbZyYfUZn14Q00tasLilhAt3bb1/JduHvrKlC9mZ8Dy1D7L17NKj
+         J/zdlCU1JZncuPj6GELWF7xGpoLwcnEEUUaZeVMFcp2KDqvBeq5sZJhL66J0DMYEsSH/
+         4USCC9pPciz4YakEK4jaCTAAIs6B1to8yLLUVxaW6MFEgIPb3iymIqt865iHYfT68diA
+         OPqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MIchUN4tOHyQmoooHagLeI7lJ2WK7JXkWyfuUiGtb4U=;
+        b=KwNx3l/djh6YxN3Uor9ti9HSlJ8z+RwdBYdd+UivMzxMr25K4fAbTT6z5BYm01sv+5
+         5t18P49uaGAmjhcjbM+TaGtTNlnkKOqerLrtOi1C5RLOYGg2dOaO5jsytbW4KoAM+w3s
+         8KLxaeKPAccwFdET09xW5kLakMeWbCMJbFlUdlXFogUHdIjPBrk5ouV7wY8GMz7CbDOM
+         QvBHQgCSCU5TyqHeoWATRo+5wZYs+/lDQjzYoQslwBMWTmoOtN8AZjKFz0Ae1/CkKl3g
+         1JLpq8wffSyEXEOc4Khtb2pf1CNbnbBB++5vjT0MnzeD/MYWCLAyQdDudWcwd8XRhE8m
+         dKow==
+X-Gm-Message-State: AOAM530VJHPQK3lmdTyNPLqxBu9LAO58xxh1t74z0vfb7t0V2oF7KS8R
+        voej9hUDvx5yZSKikT9N/E1ZWn56hr5+dsN/VnNUvQ==
+X-Google-Smtp-Source: ABdhPJyh8nJHRDA1mfQUy8hmEEmCfXfd0QzynbDBcUhoqQgBHFkqmr86v4MdYm3HWWb1KXvShlGfk8bos1w9MFj/vlw=
+X-Received: by 2002:ac2:5383:: with SMTP id g3mr576386lfh.45.1597895214380;
+ Wed, 19 Aug 2020 20:46:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CALCETrV8sVjhVYig4ZvYDN3pEbF0tvekXCcJCBakeZbMn0gZ=A@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20200819175134.19261-1-krzk@kernel.org>
+In-Reply-To: <20200819175134.19261-1-krzk@kernel.org>
+From:   Sumit Semwal <sumit.semwal@linaro.org>
+Date:   Thu, 20 Aug 2020 09:16:40 +0530
+Message-ID: <CAO_48GGjS6rAU1ojTDc9RA6e8nS4PRKOJEBzu-Vpc69x+7ykyg@mail.gmail.com>
+Subject: Re: [RESEND PATCH 1/2] dma-buf: Fix kerneldoc of dma_buf_set_name()
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        Linaro MM SIG <linaro-mm-sig@lists.linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 05:14:18PM -0700, Andy Lutomirski wrote:
-> On Wed, Aug 19, 2020 at 3:47 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> > What amazes me is that it successfully schedules back to the end of the
-> > #DB handler finish and everything keeps working.
-> >
-> > Do we not have assertions in the scheduler to catch this?
-> 
-> You almost nailed it.
-> 
-> I'm pretty sure you have the buggy sequence of events right, but for
-> the wrong reason.  There's nothing wrong with scheduling when
-> delivering SIGTRAP, but it's definitely wrong to blindly save and
-> restore DR7 around scheduling and around ptrace invocations.  Remember
-> this is an entry from user mode, so it runs on the user stack.
+Hello Krzystof,
 
-Wow, I had no idea user #DB's run on the task stack.  The scheduling
-from #DB blew my mind :-)  What's the purpose of that?
+On Wed, 19 Aug 2020 at 23:21, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> Fix W=1 compile warnings (invalid kerneldoc):
+>
+>     drivers/dma-buf/dma-buf.c:328: warning: Function parameter or member 'dmabuf' not described in 'dma_buf_set_name'
 
--- 
-Josh
+Thanks for the patch; I will apply it to drm-misc.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  drivers/dma-buf/dma-buf.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> index 1699a8e309ef..58564d82a3a2 100644
+> --- a/drivers/dma-buf/dma-buf.c
+> +++ b/drivers/dma-buf/dma-buf.c
+> @@ -316,9 +316,9 @@ static __poll_t dma_buf_poll(struct file *file, poll_table *poll)
+>   * name of the dma-buf if the same piece of memory is used for multiple
+>   * purpose between different devices.
+>   *
+> - * @dmabuf [in]     dmabuf buffer that will be renamed.
+> - * @buf:   [in]     A piece of userspace memory that contains the name of
+> - *                  the dma-buf.
+> + * @dmabuf: [in]     dmabuf buffer that will be renamed.
+> + * @buf:    [in]     A piece of userspace memory that contains the name of
+> + *                   the dma-buf.
+>   *
+>   * Returns 0 on success. If the dma-buf buffer is already attached to
+>   * devices, return -EBUSY.
+> --
+> 2.17.1
+>
 
+Best,
+Sumit
