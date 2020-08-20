@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F96624BB32
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3EAA24BB31
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730194AbgHTMYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:24:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35760 "EHLO mail.kernel.org"
+        id S1729747AbgHTMYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:24:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730045AbgHTJxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:53:42 -0400
+        id S1730071AbgHTJxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:53:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F16A208DB;
-        Thu, 20 Aug 2020 09:53:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DAF0821775;
+        Thu, 20 Aug 2020 09:53:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917221;
-        bh=X5Vbw7v3JN2jIdF4Via6kEXf7Sgw1y6/1nSofmAy63Y=;
+        s=default; t=1597917224;
+        bh=ng2dWQPIygJnSwEabXZLLCmhiuRhUXoVKVZys+erk0A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oO19pvT6Mp0ObBGyMqgd23V4u0flbEfQz7PgErDePBVzPhhjuF+sOuGbazOWnkATK
-         lAQvzDe05tGCRUDJxGUi7LRrX6mHgMtxWEAnnzZ1hxAC79K65LcWLe0cBefYwA8fwe
-         qTZzhHH38/Y50xEKK8SQLbWqPsgS6VKuR9c2Pu/U=
+        b=EUVejZn/cAiveBWTpASi2nk6sFV7RMmEVlhpVuasLyXX7Iv2BdAhuuxkCaEGJX+eO
+         QSFx3Cwo/4OCBXwaa0GmkXeW+EHfCLzxFlaviOK0Bd86GxJu6yDIu8IqBWeo7tNCvg
+         fNpMTSzLzlkApPdzrLfdpFGDBowhDADqj16Wdbo4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Filipe Manana <fdmanana@suse.com>,
+        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
+        "Pavel Machek (CIP)" <pavel@denx.de>,
         David Sterba <dsterba@suse.com>
-Subject: [PATCH 4.19 16/92] btrfs: fix memory leaks after failure to lookup checksums during inode logging
-Date:   Thu, 20 Aug 2020 11:21:01 +0200
-Message-Id: <20200820091538.397895621@linuxfoundation.org>
+Subject: [PATCH 4.19 17/92] btrfs: fix return value mixup in btrfs_get_extent
+Date:   Thu, 20 Aug 2020 11:21:02 +0200
+Message-Id: <20200820091538.452622277@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
 References: <20200820091537.490965042@linuxfoundation.org>
@@ -45,54 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Pavel Machek <pavel@denx.de>
 
-commit 4f26433e9b3eb7a55ed70d8f882ae9cd48ba448b upstream.
+commit 881a3a11c2b858fe9b69ef79ac5ee9978a266dc9 upstream.
 
-While logging an inode, at copy_items(), if we fail to lookup the checksums
-for an extent we release the destination path, free the ins_data array and
-then return immediately. However a previous iteration of the for loop may
-have added checksums to the ordered_sums list, in which case we leak the
-memory used by them.
+btrfs_get_extent() sets variable ret, but out: error path expect error
+to be in variable err so the error code is lost.
 
-So fix this by making sure we iterate the ordered_sums list and free all
-its checksums before returning.
-
-Fixes: 3650860b90cc2a ("Btrfs: remove almost all of the BUG()'s from tree-log.c")
-CC: stable@vger.kernel.org # 4.4+
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Fixes: 6bf9e4bd6a27 ("btrfs: inode: Verify inode mode to avoid NULL pointer dereference")
+CC: stable@vger.kernel.org # 5.4+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
 Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/tree-log.c |    8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ fs/btrfs/inode.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -3988,11 +3988,8 @@ static noinline int copy_items(struct bt
- 						fs_info->csum_root,
- 						ds + cs, ds + cs + cl - 1,
- 						&ordered_sums, 0);
--				if (ret) {
--					btrfs_release_path(dst_path);
--					kfree(ins_data);
--					return ret;
--				}
-+				if (ret)
-+					break;
- 			}
- 		}
- 	}
-@@ -4005,7 +4002,6 @@ static noinline int copy_items(struct bt
- 	 * we have to do this after the loop above to avoid changing the
- 	 * log tree while trying to change the log tree.
- 	 */
--	ret = 0;
- 	while (!list_empty(&ordered_sums)) {
- 		struct btrfs_ordered_sum *sums = list_entry(ordered_sums.next,
- 						   struct btrfs_ordered_sum,
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -7014,7 +7014,7 @@ struct extent_map *btrfs_get_extent(stru
+ 	    found_type == BTRFS_FILE_EXTENT_PREALLOC) {
+ 		/* Only regular file could have regular/prealloc extent */
+ 		if (!S_ISREG(inode->vfs_inode.i_mode)) {
+-			ret = -EUCLEAN;
++			err = -EUCLEAN;
+ 			btrfs_crit(fs_info,
+ 		"regular/prealloc extent found for non-regular inode %llu",
+ 				   btrfs_ino(inode));
 
 
