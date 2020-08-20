@@ -2,40 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4EC24B389
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30CEA24B320
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729598AbgHTJs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:48:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53876 "EHLO mail.kernel.org"
+        id S1729111AbgHTJlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:41:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729157AbgHTJsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:48:43 -0400
+        id S1728710AbgHTJlf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:41:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E9ACF2078D;
-        Thu, 20 Aug 2020 09:48:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 42D4C2075E;
+        Thu, 20 Aug 2020 09:41:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916923;
-        bh=CFfNeosnv87tQONZzW6TrZx7td1xXo6DeJgM4alZ3oE=;
+        s=default; t=1597916493;
+        bh=tl+cUgc5OR6puSRkQCFPVS3w587cIlAO4ks3kHm9LrM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LxG9Gt3cUM77brK0YB1T4AMZUrX3KCQB0+BMX4RSKWUje3sZW7aQaXdMtBJS9sZpg
-         YYU3RK2lpr8Xq2OSaYFzkvZfjN7Jda5N+YunwwezwsvVs6d7gqmbmoXd7Th4iiw5Et
-         ZUurpiTNPXdDa2y8qw5r8PYwUMC0oK/lcpCWPNr0=
+        b=LR0f1NqBJL1sYoUh+ORFu+AD7OFmw+muA6j523+HuvjYdRgdleTg75yqqPzAfztRg
+         ZSrUcYWoYf2n8D5n8itmcl01d8ijKIRawF2B46i6Gun07aAK0tLuXOz6F+vtFXyMrf
+         FInxHZs5gXQMVBcGC3rmb8LnnAGbeqsmsUCfcapg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Jo=C3=A3o=20Henrique?= <johnnyonflame@hotmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 5.4 076/152] pinctrl: ingenic: Properly detect GPIO direction when configured for IRQ
-Date:   Thu, 20 Aug 2020 11:20:43 +0200
-Message-Id: <20200820091557.629841938@linuxfoundation.org>
+        Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Ray Jui <ray.jui@broadcom.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 147/204] pwm: bcm-iproc: handle clk_get_rate() return
+Date:   Thu, 20 Aug 2020 11:20:44 +0200
+Message-Id: <20200820091613.588844723@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
-References: <20200820091553.615456912@linuxfoundation.org>
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,39 +49,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Cercueil <paul@crapouillou.net>
+From: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
 
-commit 84e7a946da71f678affacea301f6d5cb4d9784e8 upstream.
+[ Upstream commit 6ced5ff0be8e94871ba846dfbddf69d21363f3d7 ]
 
-The PAT1 register contains information about the IRQ type (edge/level)
-for input GPIOs with IRQ enabled, and the direction for non-IRQ GPIOs.
-So it makes sense to read it only if the GPIO has no interrupt
-configured, otherwise input GPIOs configured for level IRQs are
-misdetected as output GPIOs.
+Handle clk_get_rate() returning 0 to avoid possible division by zero.
 
-Fixes: ebd6651418b6 ("pinctrl: ingenic: Implement .get_direction for GPIO chips")
-Reported-by: João Henrique <johnnyonflame@hotmail.com>
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200622214548.265417-2-paul@crapouillou.net
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: daa5abc41c80 ("pwm: Add support for Broadcom iProc PWM controller")
+Signed-off-by: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+Reviewed-by: Ray Jui <ray.jui@broadcom.com>
+Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/pinctrl-ingenic.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/pwm/pwm-bcm-iproc.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
---- a/drivers/pinctrl/pinctrl-ingenic.c
-+++ b/drivers/pinctrl/pinctrl-ingenic.c
-@@ -1644,7 +1644,8 @@ static int ingenic_gpio_get_direction(st
- 	unsigned int pin = gc->base + offset;
+diff --git a/drivers/pwm/pwm-bcm-iproc.c b/drivers/pwm/pwm-bcm-iproc.c
+index 1f829edd8ee70..d392a828fc493 100644
+--- a/drivers/pwm/pwm-bcm-iproc.c
++++ b/drivers/pwm/pwm-bcm-iproc.c
+@@ -85,8 +85,6 @@ static void iproc_pwmc_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
+ 	u64 tmp, multi, rate;
+ 	u32 value, prescale;
  
- 	if (jzpc->version >= ID_JZ4760)
--		return ingenic_get_pin_config(jzpc, pin, JZ4760_GPIO_PAT1);
-+		return ingenic_get_pin_config(jzpc, pin, JZ4760_GPIO_INT) ||
-+			ingenic_get_pin_config(jzpc, pin, JZ4760_GPIO_PAT1);
+-	rate = clk_get_rate(ip->clk);
+-
+ 	value = readl(ip->base + IPROC_PWM_CTRL_OFFSET);
  
- 	if (ingenic_get_pin_config(jzpc, pin, JZ4740_GPIO_SELECT))
- 		return true;
+ 	if (value & BIT(IPROC_PWM_CTRL_EN_SHIFT(pwm->hwpwm)))
+@@ -99,6 +97,13 @@ static void iproc_pwmc_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
+ 	else
+ 		state->polarity = PWM_POLARITY_INVERSED;
+ 
++	rate = clk_get_rate(ip->clk);
++	if (rate == 0) {
++		state->period = 0;
++		state->duty_cycle = 0;
++		return;
++	}
++
+ 	value = readl(ip->base + IPROC_PWM_PRESCALE_OFFSET);
+ 	prescale = value >> IPROC_PWM_PRESCALE_SHIFT(pwm->hwpwm);
+ 	prescale &= IPROC_PWM_PRESCALE_MAX;
+-- 
+2.25.1
+
 
 
