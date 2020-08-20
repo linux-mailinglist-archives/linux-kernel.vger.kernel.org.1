@@ -2,168 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136BC24B76F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3581C24B6BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731692AbgHTKyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:54:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731724AbgHTKxf (ORCPT
+        id S1731185AbgHTKkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:40:19 -0400
+Received: from sonic308-1.consmr.mail.bf2.yahoo.com ([74.6.130.40]:39570 "EHLO
+        sonic308-1.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729755AbgHTKkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:53:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F23BC061387
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:53:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=TeO9rz3sjn3E0TMFhE7YmYChuS9nQysvnB1/WdjxhaY=; b=PBcHfDXy4ucnMsPNQgBr3I75z4
-        0FKlVCqbohuQ2kTGNe8tLI0GVMLTzvw64lc6tq938O1sbVMz6pzP8BKs4bVUm8wCSGpzPJoDiEyd8
-        rAabX2fGl6+2tua5W56BmFVawBBd6lBwLJkjLLKUQAIzYOxx2cN1syowpDLYUGj9uEdHTGadCssb7
-        PDt3Oo6AkB4/O0mpETkgeBMjgtEdEDPwBy6ja1SrOb1iZqC7SUfI7kQ/9iTDa5/UCbeh/18gSdALn
-        rcjjzOd7fdSiOkCLQOk+P4FN1fqcuLbw24lQA8jkA8zWX/6+qrl5f6Tv6JGzikWLp9XqJ4QyUMuzs
-        e40NJEPQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k8iBU-0007Xx-VB; Thu, 20 Aug 2020 10:52:50 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D62A3306E56;
-        Thu, 20 Aug 2020 12:52:36 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 521EE2C38827F; Thu, 20 Aug 2020 12:52:36 +0200 (CEST)
-Message-ID: <20200820104905.470593910@infradead.org>
-User-Agent: quilt/0.66
-Date:   Thu, 20 Aug 2020 12:38:39 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Kyle Huey <me@kylehuey.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Robert O'Callahan <rocallahan@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [RFC][PATCH 7/7] x86/debug: Move cond_local_irq_enable() block into exc_debug_user()
-References: <20200820103832.486877479@infradead.org>
+        Thu, 20 Aug 2020 06:40:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1597920003; bh=DPYuw2gUpgtMJzJhlH/AVmRGu2wSKCY1C+f8nOCoxu0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=pJy2XubKsq09AY4iPdPzk1tRvVH9mu5584Fa1ioMdxxei6CX/DIGYGfQpTTcOuXVXLZItH59IsNbnqmjLw8pRpAnvVSIDhX82ow1cfxMrBYqx04Upvlg6Pfgxz5x0ubW6PbbzXRYCJJG/jx2wOpNqMivRTozSmTS9eFJVM7pjUUQy/qCjHW46PxS3LoasgSAmR5tNDIYcdK/R3mRvhqXsL5Ny62Y8AN8XHgHzfN7O2IhKSOHQudeUjo5F0jErMameKKtkFZg59BjJzf6rhtLhQ6g7sqh14NaNlgLjZrypr3tPV5Mudmcur4HEpaJ48InUQxzRP4efRHJHr5R1hRzeQ==
+X-YMail-OSG: hw_fF6wVM1nPrD1semydnWJqdEYX6GmxIMhSihpH5571JTndp3VWOtgLKsPy0xw
+ PFY40ea86_1Ce.wgHOGP87keVgqtyuD.5qzfpv4Yb2r91c2Fp4pHgzFEl9YdlGeucfssh0lUnEa6
+ JFqGvtN8OFDxToJZ_Oa6Hq8d8ED7Pxfd3a87uKuPV_bnbcU0y5bRkIXfKqUIBUNf6EEobuOLIsWn
+ A8q4FyMd3y4URUSwFMZj43akXZBCE_CW6Aw6Fx_jLR0EVPAjrUZktY9TI9Z03QqWJN9o4Qhrc2..
+ tm91SVzB00Ox_j_KSvaAByXZpADRPRsIUayrvzymIZSBTF_10UO0ATE3oj3ysHixBobLC9Sv417M
+ AbIYTtjgKugHyr4myXztJpCNKtaWSNooFbSiTImO_TZuqK3OxSmwrTXe0_RaG64KKxwOlu9e5NJj
+ LRwwfOlwJgZVyGR3AUGLXjLQSba2xb9cokQQEXzPqIpxf6vFc92H2zPyxUOTvhf3oY1wmRo_hscz
+ Iw0Q38tV4mbbI4ZWHe9PjRoh93dO_DEA9lyGjc7c1gKX1.BLNaxiHa3WVL0ugvAA9DvxLejV9Mpg
+ AfMPI1SFqSzWEJ0fOdeF7.qeYrrTm5PiGbpiG8VITq6RtlNAww.MgFS837QK5mLBCvIEWI2plCFG
+ 4nY8YS9OHz6WwaIUH3zMAdytGAKCYCnj6eG1DPmx_lzt4v6xvJQHieC.dIfVYlr_.2qD1DqQo8zO
+ hzvpBt.tBGw8yS.jfoR8Tmu0AUPq61oOApsryea0NqQv3TpG4EHRwW2k9G9SqohA5jH37DstbbxP
+ jw4UGbmb4nYblQEGK9yWBk01dIH73F3yk33tjNxBVTxoRBsi1VD1NRlUTWZ9kdXqF149vmy.Hey2
+ 4hzKhWNIcGALEw3xTL.Yo1DU6Nv.B6R9MQlVkR_Uc.7nRX._YyRLgGofoC2vzPqzQm0NQoiZ1gcz
+ krjOtZ6r5QWBUXj1JUjnX7bBT7Jcte9fiGsm7qJaf177HNwWoIt5.Y6XQu2Ech6o5ojkkW1Z5L8X
+ d4goAe0r.JGuxZqY1fNsVCM9jTuyxVyQbAuEkIIeNfXULt7UXtfJmAyMjsX9EBfXJVLjU22q6B7d
+ _BlKutpCdQy23Y7WkbATbN_abQDZ1lUJj_aQvcEX.zjdywbHqe3mherLDMJeI6JCkuZsSZEuliXj
+ A0F5e3z1HfysFJi8GoamZ1C4EqmPVB8SkSaYYqkYsJEP1PIgFS94yIWaanxXqePVVAS8QkNJsL.a
+ vEusXyCnisRqwT5vq35k1EOIw3Ty71HoSmH7irnwB7Ro3YBwJwcGpsI9d1Hk0MeLtlSXEaCZWWbw
+ f.3PXg9WgAtN0QMzHreJ93vzzs_2T0P9ingM3KwfMFmt.GdVAHN8-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.bf2.yahoo.com with HTTP; Thu, 20 Aug 2020 10:40:03 +0000
+Date:   Thu, 20 Aug 2020 10:39:58 +0000 (UTC)
+From:   "Mrs. Mina A. Brunel" <mrs.minaaaliyahbrunel0001@gmail.com>
+Reply-To: mrsminaabrunel373@gmail.com
+Message-ID: <1094794777.3657800.1597919998832@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <1094794777.3657800.1597919998832.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16455 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/kernel/traps.c |   65 +++++++++++++++++++++++-------------------------
- 1 file changed, 32 insertions(+), 33 deletions(-)
 
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -783,41 +783,15 @@ static __always_inline unsigned long deb
-  *
-  * May run on IST stack.
-  */
--static void handle_debug(struct pt_regs *regs, unsigned long dr6)
-+static bool notify_debug(struct pt_regs *regs, unsigned long dr6)
- {
--	struct task_struct *tsk = current;
--
- 	/* Store the virtualized DR6 value */
--	tsk->thread.debugreg6 = dr6;
--
--	if (notify_die(DIE_DEBUG, "debug", regs, (long)&dr6, 0,
--		       SIGTRAP) == NOTIFY_STOP) {
--		return;
--	}
--
--	/* It's safe to allow irq's after DR6 has been saved */
--	cond_local_irq_enable(regs);
-+	current->thread.debugreg6 = dr6;
- 
--	if (v8086_mode(regs)) {
--		handle_vm86_trap((struct kernel_vm86_regs *) regs, 0,
--				 X86_TRAP_DB);
--		goto out;
--	}
--
--	/*
--	 * Reload dr6, the notifier might have changed it.
--	 */
--	dr6 = tsk->thread.debugreg6;
--	/*
--	 * If dr6 has no reason to give us about the origin of this trap,
--	 * then it's very likely the result of an icebp/int01 trap.
--	 * User wants a sigtrap for that.
--	 */
--	if (dr6 & (DR_STEP | DR_TRAP_BITS) || !dr6)
--		send_sigtrap(regs, 0, get_si_code(dr6));
-+	if (notify_die(DIE_DEBUG, "debug", regs, (long)&dr6, 0, SIGTRAP) == NOTIFY_STOP)
-+		return true;
- 
--out:
--	cond_local_irq_disable(regs);
-+	return false;
- }
- 
- static __always_inline void exc_debug_kernel(struct pt_regs *regs,
-@@ -872,7 +846,7 @@ static __always_inline void exc_debug_ke
- 	if (!dr6)
- 		goto out;
- 
--	handle_debug(regs, dr6);
-+	notify_debug(regs, dr6);
- 
- out:
- 	instrumentation_end();
-@@ -902,8 +876,33 @@ static __always_inline void exc_debug_us
- 	irqentry_enter_from_user_mode(regs);
- 	instrumentation_begin();
- 
--	handle_debug(regs, dr6);
-+	if (notify_debug(regs, dr6))
-+		goto out;
-+
-+	/*
-+	 * Reload dr6, the notifier might have changed it.
-+	 */
-+	dr6 = current->thread.debugreg6;
-+
-+	/* It's safe to allow irq's after DR6 has been saved */
-+	local_irq_enable();
-+
-+	if (v8086_mode(regs)) {
-+		handle_vm86_trap((struct kernel_vm86_regs *)regs, 0, X86_TRAP_DB);
-+		goto out_irq;
-+	}
- 
-+	/*
-+	 * If dr6 has no reason to give us about the origin of this trap,
-+	 * then it's very likely the result of an icebp/int01 trap.
-+	 * User wants a sigtrap for that.
-+	 */
-+	if (dr6 & (DR_STEP | DR_TRAP_BITS) || !dr6)
-+		send_sigtrap(regs, 0, get_si_code(dr6));
-+
-+out_irq:
-+	local_irq_disable();
-+out:
- 	instrumentation_end();
- 	irqentry_exit_to_user_mode(regs);
- }
+My Dear in the lord
 
 
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
+ gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
+ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
+on Euro) Eight million, Five hundred thousand Euros in a bank in Ouagadougo=
+u the capital city of of Burkina in West Africa. The money was from the sal=
+e of his company and death benefits payment and entitlements of my deceased=
+ husband by his company.
+
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
+
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
+
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
