@@ -2,119 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F25BC24ACB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 03:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A9924ACB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 03:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726700AbgHTBo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 21:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726362AbgHTBo6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 21:44:58 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B761C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 18:44:57 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id r19so276491qvw.11
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 18:44:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BDDnMK4h5MqrABrJlp8QSE24w6CUN2EJwzH9w5HlgTk=;
-        b=ZeSu88rRmOVOFsKZMIkPfFK1lon84nKwM22J7Ci5blJIcuMjhxhrMDfKDzBcrLBObg
-         5G+zNb+8HK6+UMRTBH3e39+9trLZP1sqNDsrdsF9FWhPA2n3u0NDiT2w+MKPsqhjpGqw
-         UKSpG9UUaDuSjGOSkr8wT6f94tNYtp/cX4SR8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BDDnMK4h5MqrABrJlp8QSE24w6CUN2EJwzH9w5HlgTk=;
-        b=QxbjgjgaroHXJs+vLhUOd0gLZd6Sa/50VkKN0lC7AM9GfQoD7SWHxlvPS9rJ0/r+m6
-         MdhZyGVaEmEa6ivCRp7VePwuQnDFRJXIGcCWTGM/oVt/Ve2X/yut+MASPp4bGYNdCmau
-         /uwga1UOAcnqDVmZVtlS/NVDu0jv/lQ5hlvGHLclNKstfRZLLy+J+U0WbMN7acbJ54lu
-         5cJdKoW8pYDYTtzEpZXhGpCWs0UP3VkX8BjeoKKfMgjDsqRlL53S2sscpji94exMF4Xo
-         2ougk+O08Ik38pfLBJNQytaTqOBWwg9vucuNiwOOOqNr8cikPMAi8YFdiI52PrgSBxx5
-         m3nw==
-X-Gm-Message-State: AOAM531m5PDDD/fOO3dAJ73IbU9Cj1yhfLj2WOzOelf9y+ebFL0pATz4
-        sYhDb/1jaTnWWR4rWZET9oIQ5k7rUDWlYw==
-X-Google-Smtp-Source: ABdhPJwt5aP3+ayenQU/okMYJ9OjwFREU3xfoo4bR+bMtRQYEz3Nsyy7lR1q0QIN7W+d+HgNIZeE9w==
-X-Received: by 2002:a0c:da07:: with SMTP id x7mr1124350qvj.66.1597887897077;
-        Wed, 19 Aug 2020 18:44:57 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id b2sm1103304qto.82.2020.08.19.18.44.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 18:44:56 -0700 (PDT)
-Date:   Wed, 19 Aug 2020 21:44:56 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Paul Turner <pjt@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tim Chen <tim.c.chen@intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        fweisbec@gmail.com, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH RFC 00/12] Core-sched v6+: kernel protection and hotplug
- fixes
-Message-ID: <20200820014456.GD1492280@google.com>
-References: <20200815031908.1015049-1-joel@joelfernandes.org>
- <202008191116.1A1F51186D@keescook>
+        id S1726691AbgHTBtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 21:49:41 -0400
+Received: from mga18.intel.com ([134.134.136.126]:36688 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726362AbgHTBtk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 21:49:40 -0400
+IronPort-SDR: /En9Hb9kU5PDHVtn0gbKJKwCuTGE60nxefVJdjW2mKngs3Wps7VBIBJhC9rYwc5yYMnp1p8328
+ k4+ITuK3lBBQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9718"; a="142858007"
+X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
+   d="scan'208";a="142858007"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2020 18:49:39 -0700
+IronPort-SDR: 2hJKGiyMn8FXlB+NOYwWdjugfGwo0KNnFNP0P1T8vjVwvqk/XtAUbDtNj6E/rhsVJXZLXZMbrC
+ NwN9DEvn/V2A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
+   d="scan'208";a="441805388"
+Received: from lkp-server01.sh.intel.com (HELO 4cedd236b688) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 19 Aug 2020 18:49:38 -0700
+Received: from kbuild by 4cedd236b688 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1k8Zhy-0000iX-4R; Thu, 20 Aug 2020 01:49:38 +0000
+Date:   Thu, 20 Aug 2020 09:49:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/cache] BUILD SUCCESS
+ 709c4362725abb5fa1e36fd94893a9b0d049df82
+Message-ID: <5f3dd690.OcX+LPbQAD7Hkd4n%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202008191116.1A1F51186D@keescook>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 11:26:48AM -0700, Kees Cook wrote:
-> On Fri, Aug 14, 2020 at 11:18:56PM -0400, Joel Fernandes (Google) wrote:
-> > This series is continuation of main core-sched v6 series [1] and adds support
-> 
-> - Is this really "RFC"? Seeing multiple authors implies this is looking
->   to get merged. :)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/cache
+branch HEAD: 709c4362725abb5fa1e36fd94893a9b0d049df82  cacheinfo: Move resctrl's get_cache_id() to the cacheinfo header file
 
-This mini series was inspired by discussions/concerns mostly by Thomas so
-that's why I kept it as RFC since I thought more comments will come.
+elapsed time: 725m
 
-> - Is this on top of the v6 core-sched series (or instead of)? (That
->   series doesn't seem to be RFC any more either, IMO, if it's at v6.) If
->   this replaces that series, isn't this v7? I don't see the v6
->   core-sched series in -next anywhere?
+configs tested: 80
+configs skipped: 1
 
-Yes, it was just a continuation of that. Actually I screwed up, I should have
-just posted the whole v6 again with these patches with appropriate
-subject-prefix. That would prevent confusion.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> - Whatever the case, please include the series version in the "[PATCH vN ...]"
->   portion of the Subject, otherwise things like "b4" don't really know what's
->   happening.
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                     powernv_defconfig
+arm                          pcm027_defconfig
+arm                        mvebu_v7_defconfig
+arm                          pxa168_defconfig
+powerpc                     skiroot_defconfig
+arm                         vf610m4_defconfig
+arm                           h5000_defconfig
+mips                        nlm_xlp_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20200818
+i386                 randconfig-a002-20200818
+i386                 randconfig-a001-20200818
+i386                 randconfig-a006-20200818
+i386                 randconfig-a003-20200818
+i386                 randconfig-a004-20200818
+x86_64               randconfig-a013-20200818
+x86_64               randconfig-a016-20200818
+x86_64               randconfig-a012-20200818
+x86_64               randconfig-a011-20200818
+x86_64               randconfig-a014-20200818
+x86_64               randconfig-a015-20200818
+i386                 randconfig-a016-20200818
+i386                 randconfig-a011-20200818
+i386                 randconfig-a015-20200818
+i386                 randconfig-a013-20200818
+i386                 randconfig-a012-20200818
+i386                 randconfig-a014-20200818
+i386                 randconfig-a016-20200819
+i386                 randconfig-a011-20200819
+i386                 randconfig-a015-20200819
+i386                 randconfig-a013-20200819
+i386                 randconfig-a012-20200819
+i386                 randconfig-a014-20200819
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Got it.
-
-> Sorry for the drive-by comments, but I was really confused trying to
-> understand how this fit together. :)
-
-No problem, your comments are very valid so they are welcome :)
-
-thanks,
-
- - Joel
-
-
-> -- 
-> Kees Cook
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
