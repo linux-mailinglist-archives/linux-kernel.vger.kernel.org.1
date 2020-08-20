@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ABB124BAEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C546424BAC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730467AbgHTMUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:20:34 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47938 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729921AbgHTJzh (ORCPT
+        id S1729790AbgHTMQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:16:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26100 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730118AbgHTJ4j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:55:37 -0400
+        Thu, 20 Aug 2020 05:56:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597917335;
+        s=mimecast20190719; t=1597917398;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Jf8gbz8LQopQe0J21yTGM4+cDZmGtIYLJCcRhjeOrR4=;
-        b=UB4G3768jo311kVvi91ndf8WfkCNMZI0tbXGq94FtxVsP8v2k57IQdp9rXawNzfXycdsrR
-        Ky9khbVd45mCsiJU8FeR5vbqQJY0WD/Aw5AUYNUs7400yyDhEDClZV1kjysdWmPkV4qAfS
-        IIbp6yYYv0FFw1YxUEY+k8tnypVF118=
+        bh=BBZ9tzVG8IQYeA14qViPmIhF5BRH6qjqiVI94E69QaM=;
+        b=XoKg5CBA/5EFLEu4kejb+QGdLV3NCx0wM1sGmH32SZAeI5jUmrJOy9yIRMzBdyCU0PRu4K
+        Caqa9xevJAW9YN9uqi525v0rBnWgzL3WjDyT7zXK+XZUfXUa2Y3qqXT6dW6YDuejpRnGQ6
+        69GGHPAd0izl5a13FQ5gRtqAprlossY=
 Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
  [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-53-GRfa2RLmNqiSiRzBIxstPA-1; Thu, 20 Aug 2020 05:55:34 -0400
-X-MC-Unique: GRfa2RLmNqiSiRzBIxstPA-1
-Received: by mail-wr1-f72.google.com with SMTP id r14so471704wrq.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 02:55:33 -0700 (PDT)
+ us-mta-499-c-Rll06OM5CvCK15_NcAGw-1; Thu, 20 Aug 2020 05:56:36 -0400
+X-MC-Unique: c-Rll06OM5CvCK15_NcAGw-1
+Received: by mail-wr1-f72.google.com with SMTP id f14so463498wrm.22
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 02:56:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Jf8gbz8LQopQe0J21yTGM4+cDZmGtIYLJCcRhjeOrR4=;
-        b=DnEa6edBYyAwScKT9fwjz2drP9CzWJGc8CUlIxp6Eu4TfsEZaapL+SvY/ME+lcBTWE
-         N3FFAfX0jPDg6hZNrg+pnBmxo9JK/4qtWgw+exv1P6GidHnmV5+du6bRELB+xZkexZd4
-         nHl1q21r31s/lUGcXBbjqScxBC557pMK0xXpTRjgoaPt51BbLTs4oekJhaeeYJ7NchQW
-         Q7ZorjvXghWVKQX3v35CR/o/ajC4DEMp4Ccis2HUtniEt5ux8r/AybXdPeDkTzRpOptW
-         JhK77Kw2HlRkwiVutf1msVuK3YWp3YMhE6bJcDGwcYPAJP6u3iZrv8FMiczPeT3vZ5Lk
-         VugQ==
-X-Gm-Message-State: AOAM5302I+DsiYhe9CC1y/hmpD8/S9RMtk+dDztshWrJZkYV9Cci+/8k
-        jZzTZpQaLZ5N4SrpG4EyOTvcmMYhkykpwGhD9nwSkL8HqoUHnGQXqbeXQZFCw2IYiivg3vKVgSK
-        /9HEa9viqk4r+dh+B0NBAEuT9
-X-Received: by 2002:a1c:e244:: with SMTP id z65mr2712572wmg.34.1597917332842;
-        Thu, 20 Aug 2020 02:55:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz7+uOoYVXeIwgWOAsbxvSNBUeYTbpN+9/M9HQCIj4IkWFjHWhPfBPnCwQmglmYgMwvO0mang==
-X-Received: by 2002:a1c:e244:: with SMTP id z65mr2712561wmg.34.1597917332571;
-        Thu, 20 Aug 2020 02:55:32 -0700 (PDT)
+        bh=BBZ9tzVG8IQYeA14qViPmIhF5BRH6qjqiVI94E69QaM=;
+        b=k/8EJBN5MHjdJprZlMGP98/rqIajDp3uh8/21GBZTvSI6rwFFc3DGUIPzpZW3ngMxQ
+         Ix0orvoD1TubgdjtRWIYIfW4m8qPEoxcE2htbf9idOLqzW1ju3HN1tP9dDNVMBntE+Ck
+         fzgz4KJYFdpwtONWDwo7YuZpEGe9j66qGl6/Hu7fB/sItYNKD3n1Zkbmv3njSeAsdwNj
+         meSaXw35uMMMJ9xGcs6Z+eCChkn6HHA5JjBt9X3IiwRAZurUNBjYTUOBz3/Xxf7oWOk1
+         vXV+A8mACQKjV6YhwjBo5pH9ZdW3rLNGtPvI8cWHvFQouTKHaBontV2gxPIONB37oK2m
+         LGgg==
+X-Gm-Message-State: AOAM532mj+uJpSEygPcClHnDzdlAs5EFP91TemGZ30X8CIfSgV0an4Vb
+        otRF9zCTy9cFibSjdGqdb7SgOFiBHSVYuJAN3mOyKFN1BqmRIAlE2WuZC1iXzd2PJItU33xEo9X
+        7sToYkQPIosoAZc1yqlzFDYty
+X-Received: by 2002:adf:b18d:: with SMTP id q13mr2390360wra.256.1597917395684;
+        Thu, 20 Aug 2020 02:56:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzrfr+Qru5BiCr9hmj1YTIj41N0i8y3XjstZXt12asbQQWLh4g4cNP2GQ/YcdxlhzPJglbGfw==
+X-Received: by 2002:adf:b18d:: with SMTP id q13mr2390326wra.256.1597917395332;
+        Thu, 20 Aug 2020 02:56:35 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:1cc0:4e4e:f1a9:1745? ([2001:b07:6468:f312:1cc0:4e4e:f1a9:1745])
-        by smtp.gmail.com with ESMTPSA id g145sm4323729wmg.23.2020.08.20.02.55.31
+        by smtp.gmail.com with ESMTPSA id l11sm3087714wme.11.2020.08.20.02.56.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Aug 2020 02:55:32 -0700 (PDT)
-Subject: Re: [PATCH 8/8] KVM: nSVM: read only changed fields of the nested
- guest data area
+        Thu, 20 Aug 2020 02:56:34 -0700 (PDT)
+Subject: Re: [PATCH 2/8] KVM: nSVM: rename nested 'vmcb' to vmcb_gpa in few
+ places
 To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
 Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
         Borislav Petkov <bp@alien8.de>,
@@ -67,14 +67,14 @@ Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
         Wanpeng Li <wanpengli@tencent.com>,
         Sean Christopherson <sean.j.christopherson@intel.com>
 References: <20200820091327.197807-1-mlevitsk@redhat.com>
- <20200820091327.197807-9-mlevitsk@redhat.com>
+ <20200820091327.197807-3-mlevitsk@redhat.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <766e669d-9b0b-aad6-b1d2-19ef77cbb791@redhat.com>
-Date:   Thu, 20 Aug 2020 11:55:30 +0200
+Message-ID: <f6bf9494-f337-2e53-6e6c-e0b8a847ec8d@redhat.com>
+Date:   Thu, 20 Aug 2020 11:56:33 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200820091327.197807-9-mlevitsk@redhat.com>
+In-Reply-To: <20200820091327.197807-3-mlevitsk@redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -84,20 +84,128 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 20/08/20 11:13, Maxim Levitsky wrote:
+> No functional changes.
+> 
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> ---
+>  arch/x86/kvm/svm/nested.c | 10 +++++-----
+>  arch/x86/kvm/svm/svm.c    | 13 +++++++------
+>  arch/x86/kvm/svm/svm.h    |  2 +-
+>  3 files changed, 13 insertions(+), 12 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index fb68467e6049..d9755eab2199 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -431,7 +431,7 @@ int enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb_gpa,
+>  {
+>  	int ret;
+>  
+> -	svm->nested.vmcb = vmcb_gpa;
+> +	svm->nested.vmcb_gpa = vmcb_gpa;
+>  	load_nested_vmcb_control(svm, &nested_vmcb->control);
+>  	nested_prepare_vmcb_save(svm, nested_vmcb);
+>  	nested_prepare_vmcb_control(svm);
+> @@ -568,7 +568,7 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
+>  	struct vmcb *vmcb = svm->vmcb;
+>  	struct kvm_host_map map;
+>  
+> -	rc = kvm_vcpu_map(&svm->vcpu, gpa_to_gfn(svm->nested.vmcb), &map);
+> +	rc = kvm_vcpu_map(&svm->vcpu, gpa_to_gfn(svm->nested.vmcb_gpa), &map);
+>  	if (rc) {
+>  		if (rc == -EINVAL)
+>  			kvm_inject_gp(&svm->vcpu, 0);
+> @@ -579,7 +579,7 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
+>  
+>  	/* Exit Guest-Mode */
+>  	leave_guest_mode(&svm->vcpu);
+> -	svm->nested.vmcb = 0;
+> +	svm->nested.vmcb_gpa = 0;
+>  	WARN_ON_ONCE(svm->nested.nested_run_pending);
+>  
+>  	/* in case we halted in L2 */
+> @@ -1018,7 +1018,7 @@ static int svm_get_nested_state(struct kvm_vcpu *vcpu,
+>  
+>  	/* First fill in the header and copy it out.  */
+>  	if (is_guest_mode(vcpu)) {
+> -		kvm_state.hdr.svm.vmcb_pa = svm->nested.vmcb;
+> +		kvm_state.hdr.svm.vmcb_pa = svm->nested.vmcb_gpa;
+>  		kvm_state.size += KVM_STATE_NESTED_SVM_VMCB_SIZE;
+>  		kvm_state.flags |= KVM_STATE_NESTED_GUEST_MODE;
+>  
+> @@ -1128,7 +1128,7 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+>  	copy_vmcb_control_area(&hsave->control, &svm->vmcb->control);
+>  	hsave->save = save;
+>  
+> -	svm->nested.vmcb = kvm_state->hdr.svm.vmcb_pa;
+> +	svm->nested.vmcb_gpa = kvm_state->hdr.svm.vmcb_pa;
+>  	load_nested_vmcb_control(svm, &ctl);
+>  	nested_prepare_vmcb_control(svm);
+>  
 > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 06668e0f93e7..f0bb7f622dca 100644
+> index 562a79e3e63a..4338d2a2596e 100644
 > --- a/arch/x86/kvm/svm/svm.c
 > +++ b/arch/x86/kvm/svm/svm.c
-> @@ -3924,7 +3924,7 @@ static int svm_pre_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
->  		if (kvm_vcpu_map(&svm->vcpu, gpa_to_gfn(vmcb_gpa), &map) == -EINVAL)
+> @@ -1102,7 +1102,7 @@ static void init_vmcb(struct vcpu_svm *svm)
+>  	}
+>  	svm->asid_generation = 0;
+>  
+> -	svm->nested.vmcb = 0;
+> +	svm->nested.vmcb_gpa = 0;
+>  	svm->vcpu.arch.hflags = 0;
+>  
+>  	if (!kvm_pause_in_guest(svm->vcpu.kvm)) {
+> @@ -3884,7 +3884,7 @@ static int svm_pre_enter_smm(struct kvm_vcpu *vcpu, char *smstate)
+>  		/* FED8h - SVM Guest */
+>  		put_smstate(u64, smstate, 0x7ed8, 1);
+>  		/* FEE0h - SVM Guest VMCB Physical Address */
+> -		put_smstate(u64, smstate, 0x7ee0, svm->nested.vmcb);
+> +		put_smstate(u64, smstate, 0x7ee0, svm->nested.vmcb_gpa);
+>  
+>  		svm->vmcb->save.rax = vcpu->arch.regs[VCPU_REGS_RAX];
+>  		svm->vmcb->save.rsp = vcpu->arch.regs[VCPU_REGS_RSP];
+> @@ -3903,17 +3903,18 @@ static int svm_pre_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
+>  	struct vmcb *nested_vmcb;
+>  	struct kvm_host_map map;
+>  	u64 guest;
+> -	u64 vmcb;
+> +	u64 vmcb_gpa;
+>  	int ret = 0;
+>  
+>  	guest = GET_SMSTATE(u64, smstate, 0x7ed8);
+> -	vmcb = GET_SMSTATE(u64, smstate, 0x7ee0);
+> +	vmcb_gpa = GET_SMSTATE(u64, smstate, 0x7ee0);
+>  
+>  	if (guest) {
+> -		if (kvm_vcpu_map(&svm->vcpu, gpa_to_gfn(vmcb), &map) == -EINVAL)
+> +		if (kvm_vcpu_map(&svm->vcpu, gpa_to_gfn(vmcb_gpa), &map) == -EINVAL)
 >  			return 1;
+> +
+>  		nested_vmcb = map.hva;
+> -		ret = enter_svm_guest_mode(svm, vmcb, nested_vmcb);
+> +		ret = enter_svm_guest_mode(svm, vmcb_gpa, nested_vmcb);
+>  		kvm_vcpu_unmap(&svm->vcpu, &map, true);
+>  	}
 >  
-> -		load_nested_vmcb(svm, map.hva, vmcb);
-> +		load_nested_vmcb(svm, map.hva, vmcb_gpa);
->  		ret = enter_svm_guest_mode(svm);
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index a798e1731709..03f2f082ef10 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -85,7 +85,7 @@ struct svm_nested_state {
+>  	struct vmcb *hsave;
+>  	u64 hsave_msr;
+>  	u64 vm_cr_msr;
+> -	u64 vmcb;
+> +	u64 vmcb_gpa;
+>  	u32 host_intercept_exceptions;
 >  
+>  	/* These are the merged vectors */
+> 
 
-Wrong patch?
+Please use vmcb12_gpa, and svm->nested.vmcb12 for the VMCB in patch 6.
+
+(You probably also what to have local variables named vmcb12 in patch 6
+to avoid too-long lines).
 
 Paolo
 
