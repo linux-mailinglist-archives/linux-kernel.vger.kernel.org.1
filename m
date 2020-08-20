@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A4F24B53D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE0624B4FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:16:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731402AbgHTKVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:21:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46926 "EHLO mail.kernel.org"
+        id S1731257AbgHTKPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:15:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731522AbgHTKVA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:21:00 -0400
+        id S1728648AbgHTKPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:15:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B476A20738;
-        Thu, 20 Aug 2020 10:20:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5052120724;
+        Thu, 20 Aug 2020 10:15:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918860;
-        bh=kWs4muxCzOiLp83mocfcq5fC24GhCoVS5HOY531HJDs=;
+        s=default; t=1597918503;
+        bh=NnsOgkFkY5IHESmBT5t/41GWPFnhKjY1FN9F62r2EOw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DcJHbRyXxHmMUZOHVV4/n2cAlQ9ZOnX8t0vllrSuWah1SBIvv+jqusleda0Sq5Qpg
-         8M4MM/C7SQ0GokueOkvyTNSntSGpeJaAvhnFbcO5bd048IXL6Xf0HXwW7+xrPLr5HO
-         nS/pUWJrJSxb+iNoNUFmB+HgDD//h4NFM4BJflN0=
+        b=pn1YH+AP2UwqrlJ98L0pgTD8M5G9bzOTCWQTrnYOmM8ENRbuuT36rvrDJA6YJ40nn
+         XogaxFq6B8G1GkweY5FFv2AN02ZI8GkbMbQNdVswP48FPW0QiOLWG5BHZGYEitpoeh
+         /bAIMhRlbygzwM1E04pnW4QS3WzNHEToi7Q8wMrU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Milton Miller <miltonm@us.ibm.com>,
-        Anton Blanchard <anton@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 092/149] powerpc/vdso: Fix vdso cpu truncation
-Date:   Thu, 20 Aug 2020 11:22:49 +0200
-Message-Id: <20200820092130.180810916@linuxfoundation.org>
+Subject: [PATCH 4.14 195/228] mfd: arizona: Ensure 32k clock is put on driver unbind and error
+Date:   Thu, 20 Aug 2020 11:22:50 +0200
+Message-Id: <20200820091617.309030781@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
-References: <20200820092125.688850368@linuxfoundation.org>
+In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
+References: <20200820091607.532711107@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,43 +45,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Milton Miller <miltonm@us.ibm.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-[ Upstream commit a9f675f950a07d5c1dbcbb97aabac56f5ed085e3 ]
+[ Upstream commit ddff6c45b21d0437ce0c85f8ac35d7b5480513d7 ]
 
-The code in vdso_cpu_init that exposes the cpu and numa node to
-userspace via SPRG_VDSO incorrctly masks the cpu to 12 bits. This means
-that any kernel running on a box with more than 4096 threads (NR_CPUS
-advertises a limit of of 8192 cpus) would expose userspace to two cpu
-contexts running at the same time with the same cpu number.
+Whilst it doesn't matter if the internal 32k clock register settings
+are cleaned up on exit, as the part will be turned off losing any
+settings, hence the driver hasn't historially bothered. The external
+clock should however be cleaned up, as it could cause clocks to be
+left on, and will at best generate a warning on unbind.
 
-Note: I'm not aware of any distro shipping a kernel with support for more
-than 4096 threads today, nor of any system image that currently exceeds
-4096 threads. Found via code browsing.
+Add clean up on both the probe error path and unbind for the 32k
+clock.
 
-Fixes: 18ad51dd342a7eb09dbcd059d0b451b616d4dafc ("powerpc: Add VDSO version of getcpu")
-Signed-off-by: Milton Miller <miltonm@us.ibm.com>
-Signed-off-by: Anton Blanchard <anton@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200715233704.1352257-1-anton@ozlabs.org
+Fixes: cdd8da8cc66b ("mfd: arizona: Add gating of external MCLKn clocks")
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/vdso.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mfd/arizona-core.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/arch/powerpc/kernel/vdso.c b/arch/powerpc/kernel/vdso.c
-index b457bfa284360..05c17429e5442 100644
---- a/arch/powerpc/kernel/vdso.c
-+++ b/arch/powerpc/kernel/vdso.c
-@@ -702,7 +702,7 @@ int vdso_getcpu_init(void)
- 	node = cpu_to_node(cpu);
- 	WARN_ON_ONCE(node > 0xffff);
+diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+index ad8a5296c50ba..9aa33141e7f14 100644
+--- a/drivers/mfd/arizona-core.c
++++ b/drivers/mfd/arizona-core.c
+@@ -1528,6 +1528,15 @@ int arizona_dev_init(struct arizona *arizona)
+ 	arizona_irq_exit(arizona);
+ err_pm:
+ 	pm_runtime_disable(arizona->dev);
++
++	switch (arizona->pdata.clk32k_src) {
++	case ARIZONA_32KZ_MCLK1:
++	case ARIZONA_32KZ_MCLK2:
++		arizona_clk32k_disable(arizona);
++		break;
++	default:
++		break;
++	}
+ err_reset:
+ 	arizona_enable_reset(arizona);
+ 	regulator_disable(arizona->dcvdd);
+@@ -1550,6 +1559,15 @@ int arizona_dev_exit(struct arizona *arizona)
+ 	regulator_disable(arizona->dcvdd);
+ 	regulator_put(arizona->dcvdd);
  
--	val = (cpu & 0xfff) | ((node & 0xffff) << 16);
-+	val = (cpu & 0xffff) | ((node & 0xffff) << 16);
- 	mtspr(SPRN_SPRG_VDSO_WRITE, val);
- 	get_paca()->sprg_vdso = val;
- 
++	switch (arizona->pdata.clk32k_src) {
++	case ARIZONA_32KZ_MCLK1:
++	case ARIZONA_32KZ_MCLK2:
++		arizona_clk32k_disable(arizona);
++		break;
++	default:
++		break;
++	}
++
+ 	mfd_remove_devices(arizona->dev);
+ 	arizona_free_irq(arizona, ARIZONA_IRQ_UNDERCLOCKED, arizona);
+ 	arizona_free_irq(arizona, ARIZONA_IRQ_OVERCLOCKED, arizona);
 -- 
 2.25.1
 
