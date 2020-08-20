@@ -2,95 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C009E24B09A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD2924B0A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726745AbgHTH4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 03:56:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38460 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725916AbgHTH4h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 03:56:37 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 73FCA2076E;
-        Thu, 20 Aug 2020 07:56:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597910196;
-        bh=1PlDm4wRWcH/RTMBQxxaAC1lHTDc0CkhAaxyMr2dXR4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rVWTd0wlUfO5Sdto2s314fZMXF0ky7uxabFPMbo9OLG22jZ6Qrj9eVZO5WKUnhcnJ
-         GYUkApm3MI93J/dR2lUZ0BkF5dYu/b6+/9yH7s0EtrawaSNutAm+4EeyN4h/h5iA/U
-         FGqRQT/2QB4hndYu6UQlbGKAnPEzfYh2H0HSGD1c=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1k8fR4-004S5S-Vb; Thu, 20 Aug 2020 08:56:35 +0100
+        id S1726716AbgHTH5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 03:57:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726977AbgHTH4y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 03:56:54 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E0DC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 00:56:53 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id t6so636051pjr.0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 00:56:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=MKa/l++NJX3mb6HDqlPH9HCmk5UKEoj8jJyL9pAVlUc=;
+        b=JOhKqnxXyMfppUBIxlmvtEQlY5wB7zlwWW93yYoleBojKtOVakJwUIYj1ZKu4hzmZb
+         EKEtrRsslpuOJ6lZJaqD+bqa4AbhVNuOyzF8abrRSlnfiLB1UstLmeV0AgLrLqMr7frF
+         jZ7/sXrCNYPogK/+ohFMy/NlW0bTZ6dNRT/FIFnee66X/ZhU1eWzEPe7CqQ21fxnvvIo
+         lJWQ5fdhyFNVMMVIGukrmECNfz/6JlWWOepDnc0ODoCBVC7C7ZnSP3D81+RgzZM3r2Fa
+         NCf25h2gHBexgANYvR4Vsdbt3TNddA4eotdZtqvTC+OO+NpvXmNWzvPp8l2vAs0WNGWd
+         Uqsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=MKa/l++NJX3mb6HDqlPH9HCmk5UKEoj8jJyL9pAVlUc=;
+        b=c7IuBNDhFs5+CEc61GzoWffucc5bMzuAVw39wW4hd2/2l37lYzaQxPxyzvEShu2RU2
+         BjKqIC9FBz7NcHHWYvR9n3/ucjjtEb+UpqEtCJD1+4iTCOj0ZpmsIeVtO/16i8TwGwY4
+         oeCM5XyTwzqBboCN4azgmcZZUdeb1cvu9DfirRptTvRJEcDosCs60piihd5foH45vHD6
+         BJ+Hs5Sc/CRWhNlnTD7BjAZlz8hhjFaQUugUMi5Patjc/v3D8zMWxcLHm+VKHmo8ppLL
+         hiXx/+NxFUJNd1h1bcVDnBp1Ar/CtNy+sF8nvhEpxl8OJD5Jt1WMmNbpjVYJ54GEdSfn
+         v8eg==
+X-Gm-Message-State: AOAM5302iw8vhF/YSgV4mC50s+iRABbvbYbHynH30XIo/PMBOkNai597
+        WpC3PUi3MznJ6e1/vqe9PmirkQ==
+X-Google-Smtp-Source: ABdhPJzWB+4yLlGmmwE4dywCJsMU0wuwok6h4p35XzVgwJJe1xwVCWD/kbQ46Cz8LSqBcayxXRk5gw==
+X-Received: by 2002:a17:902:868b:: with SMTP id g11mr1739808plo.9.1597910212779;
+        Thu, 20 Aug 2020 00:56:52 -0700 (PDT)
+Received: from localhost ([122.172.43.13])
+        by smtp.gmail.com with ESMTPSA id m19sm1596343pgd.21.2020.08.20.00.56.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 20 Aug 2020 00:56:52 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     rnayak@codeaurora.org, Viresh Kumar <vireshk@kernel.org>,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>, sibis@codeaurora.org,
+        sbhanu@codeaurora.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V3 4/4] opp: Remove _dev_pm_opp_find_and_remove_table() wrapper
+Date:   Thu, 20 Aug 2020 13:26:34 +0530
+Message-Id: <ac1b1206c290a677921b55a4e94e18b12264208e.1597909885.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+In-Reply-To: <cover.1597909885.git.viresh.kumar@linaro.org>
+References: <cover.1597909885.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 20 Aug 2020 08:56:34 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Frank Wunderlich <wichtig@fw-web.de>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Frank Wunderlich <linux@fw-web.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Hanks Chen <hanks.chen@mediatek.com>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH] Revert "irqchip/mtk-sysirq: Convert to a platform driver"
-In-Reply-To: <CAGETcx9_A-E5b-JxT2G142mGxqoo8xqFNEgT+CNWt=oOv0Z5+w@mail.gmail.com>
-References: <20200819161907.1155110-1-enric.balletbo@collabora.com>
- <C9E59107-CE83-4554-9447-5DE5BEE09A3B@fw-web.de>
- <CAGETcx9_A-E5b-JxT2G142mGxqoo8xqFNEgT+CNWt=oOv0Z5+w@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.7
-Message-ID: <a23bac35d20eb002bdfb5263bf5dd213@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: saravanak@google.com, wichtig@fw-web.de, enric.balletbo@collabora.com, linux-kernel@vger.kernel.org, kernel@collabora.com, linux@fw-web.de, matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org, hanks.chen@mediatek.com, jason@lakedaemon.net, tglx@linutronix.de, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-19 19:51, Saravana Kannan wrote:
-> On Wed, Aug 19, 2020 at 9:52 AM Frank Wunderlich <wichtig@fw-web.de> 
-> wrote:
->> 
->> hi,
->> 
->> does the fix you've linked to my revert [1] not work in your case?
->> 
->> [1] https://patchwork.kernel.org/patch/11718481/
-> 
-> Thanks for pointing it out Frank. Also, might want to avoid top
-> posting in the future.
-> 
-> Enric, Can you please try that other fix and see if that solves your 
-> issue?
+Remove the unnecessary wrapper and merge
+_dev_pm_opp_find_and_remove_table() with dev_pm_opp_remove_table().
 
-I think Enric was clear that the driver does probe correctly
-(meaning that he has the fix in his tree). It is everything else
-that breaks, because none of the drivers on the platform are
-equipped to defer their own probing.
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ drivers/opp/core.c | 21 ++++++++-------------
+ drivers/opp/cpu.c  |  2 +-
+ drivers/opp/of.c   |  2 +-
+ drivers/opp/opp.h  |  1 -
+ 4 files changed, 10 insertions(+), 16 deletions(-)
 
-I think we need to change this works right now, meaning that we can't
-blindly change the behaviour of *built-in* drivers. I'll see if I can
-come up with something quickly, but I'll otherwise take Enric patch.
-
-         M.
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index 4edd2c3d6d91..6978b9218c6e 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -2395,7 +2395,14 @@ int dev_pm_opp_unregister_notifier(struct device *dev,
+ }
+ EXPORT_SYMBOL(dev_pm_opp_unregister_notifier);
+ 
+-void _dev_pm_opp_find_and_remove_table(struct device *dev)
++/**
++ * dev_pm_opp_remove_table() - Free all OPPs associated with the device
++ * @dev:	device pointer used to lookup OPP table.
++ *
++ * Free both OPPs created using static entries present in DT and the
++ * dynamically added entries.
++ */
++void dev_pm_opp_remove_table(struct device *dev)
+ {
+ 	struct opp_table *opp_table;
+ 
+@@ -2420,16 +2427,4 @@ void _dev_pm_opp_find_and_remove_table(struct device *dev)
+ 	/* Drop reference taken while the OPP table was added */
+ 	dev_pm_opp_put_opp_table(opp_table);
+ }
+-
+-/**
+- * dev_pm_opp_remove_table() - Free all OPPs associated with the device
+- * @dev:	device pointer used to lookup OPP table.
+- *
+- * Free both OPPs created using static entries present in DT and the
+- * dynamically added entries.
+- */
+-void dev_pm_opp_remove_table(struct device *dev)
+-{
+-	_dev_pm_opp_find_and_remove_table(dev);
+-}
+ EXPORT_SYMBOL_GPL(dev_pm_opp_remove_table);
+diff --git a/drivers/opp/cpu.c b/drivers/opp/cpu.c
+index b5055cc886ef..5004335cf0de 100644
+--- a/drivers/opp/cpu.c
++++ b/drivers/opp/cpu.c
+@@ -124,7 +124,7 @@ void _dev_pm_opp_cpumask_remove_table(const struct cpumask *cpumask,
+ 			continue;
+ 		}
+ 
+-		_dev_pm_opp_find_and_remove_table(cpu_dev);
++		dev_pm_opp_remove_table(cpu_dev);
+ 	}
+ }
+ 
+diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+index 0430290670ab..7d9d4455a59e 100644
+--- a/drivers/opp/of.c
++++ b/drivers/opp/of.c
+@@ -616,7 +616,7 @@ static int opp_parse_supplies(struct dev_pm_opp *opp, struct device *dev,
+  */
+ void dev_pm_opp_of_remove_table(struct device *dev)
+ {
+-	_dev_pm_opp_find_and_remove_table(dev);
++	dev_pm_opp_remove_table(dev);
+ }
+ EXPORT_SYMBOL_GPL(dev_pm_opp_of_remove_table);
+ 
+diff --git a/drivers/opp/opp.h b/drivers/opp/opp.h
+index 0c3de3f6db5c..78e876ec803e 100644
+--- a/drivers/opp/opp.h
++++ b/drivers/opp/opp.h
+@@ -217,7 +217,6 @@ void _get_opp_table_kref(struct opp_table *opp_table);
+ int _get_opp_count(struct opp_table *opp_table);
+ struct opp_table *_find_opp_table(struct device *dev);
+ struct opp_device *_add_opp_dev(const struct device *dev, struct opp_table *opp_table);
+-void _dev_pm_opp_find_and_remove_table(struct device *dev);
+ struct dev_pm_opp *_opp_allocate(struct opp_table *opp_table);
+ void _opp_free(struct dev_pm_opp *opp);
+ int _opp_compare_key(struct dev_pm_opp *opp1, struct dev_pm_opp *opp2);
 -- 
-Jazz is not dead. It just smells funny...
+2.25.0.rc1.19.g042ed3e048af
+
