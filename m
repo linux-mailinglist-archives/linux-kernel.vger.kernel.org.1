@@ -2,171 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8AAC24C36C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 18:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF2E24C378
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 18:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729977AbgHTQic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 12:38:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:42636 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728753AbgHTQiN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 12:38:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C367E31B;
-        Thu, 20 Aug 2020 09:38:09 -0700 (PDT)
-Received: from e119603-lin.cambridge.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 120893F6CF;
-        Thu, 20 Aug 2020 09:38:08 -0700 (PDT)
-Date:   Thu, 20 Aug 2020 17:38:44 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regulator: core: add of_match_full_name boolean flag
-Message-ID: <20200820163844.GA7292@e119603-lin.cambridge.arm.com>
-References: <20200819140448.51373-1-cristian.marussi@arm.com>
- <20200819182245.GE5441@sirena.org.uk>
+        id S1730082AbgHTQjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 12:39:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729337AbgHTQju (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 12:39:50 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5467FC061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 09:39:50 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id g11so763543ual.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 09:39:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PyflrXnQUbtPNUqSeNBAoTuBoeAweIXkGnj1Lf7fZSk=;
+        b=dr6MhC1jPPfshOSLfPKpekWjY1WHI+qJSoim5A4vRN0/F4DFjTNMiPhq5bet4Tf8p7
+         B7ZLQnoPZFPXCQ9ui1d4ETCVWa/8qUDz4ye4CbuyixhGZinkBNpp3r8pvuFUYQtZjpZf
+         WeGzJJSTBL/0P0T4INT0G1bg5lsWCyiR9QsWjycUGwsdcuZ0TobFpTYUp3WuTokWbHjP
+         sD/mYfze0TLOxAyDC0UX4CCpfvbBZ/lcEIrh9U+q9jBH24+GW59JNQ07BPp3zb0t2yXe
+         QZy8gyrNq29iR2so09dePODfIuLDRWeTwkZ6fxOJLkgDhC3r6zoRaPBtVNVIBCOVdd1Y
+         wCxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PyflrXnQUbtPNUqSeNBAoTuBoeAweIXkGnj1Lf7fZSk=;
+        b=nFkDUz/eQ3xp2QQbS+5L5bfILQ6ULnLJ2Vvk5Gyt8scEGCsHm9IA8MU6X6sm65I/dQ
+         jrdzqn4ez3oGT09a/m/7IcPD/6IoE1TQw4VGwqvNTVlEuo6Ec5FVqbERNYSW6BUs82RN
+         EyPzm2b40uzCW7A2fYuJVkvrDyPMwowYITGYTu/pzVCtEI5PFDLu5hik+MHYf7Y4O255
+         BPXoFMxUA+yRupMoC6jJbc+4z9rOOgkLnSvNnKR+Rus3879dnDr3cEszS43CEO07QweI
+         XGdm/G2OVXZDlk1IsJctiSyr9vvbbJPIqNyn4KFecpb0f3vB+vfH/T72a+pfB3VPmNFQ
+         fw0A==
+X-Gm-Message-State: AOAM533PUtYqOcWVYppIKbsKR2i2HBTj65ouTIexnw/9dt/OS30tA+cF
+        8Z2bT9yPoii+QH210NUjLO6oTITsA/W2VMUwIIxj2w==
+X-Google-Smtp-Source: ABdhPJzTyguz0hHskIuhi/a8ZlQvRyze+vAX2RCvtL1XzFeizaLNtlEV/e/4IdYUD/JqaIZ9RY3WBc6ECZCeBAFFOnA=
+X-Received: by 2002:ab0:4029:: with SMTP id h38mr2363377uad.6.1597941589256;
+ Thu, 20 Aug 2020 09:39:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200819182245.GE5441@sirena.org.uk>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20200820092125.688850368@linuxfoundation.org> <CA+G9fYsxQEnACmjP+CUtBq9P+0nWU_19oG62tpCbKtdcGAStfA@mail.gmail.com>
+ <20200820150848.GA1565072@kroah.com>
+In-Reply-To: <20200820150848.GA1565072@kroah.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 20 Aug 2020 22:09:37 +0530
+Message-ID: <CA+G9fYu9r8wfWVLmyMC+bbnCbJH1Zzr7ps_4N0coybYEUenUaw@mail.gmail.com>
+Subject: Re: [PATCH 4.4 000/149] 4.4.233-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>,
+        Willy Tarreau <w@1wt.eu>, Kees Cook <keescook@chromium.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, danieltimlee@gmail.com,
+        masahiroy@kernel.org, ivan.khoronzhuk@linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark 
+On Thu, 20 Aug 2020 at 20:38, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Aug 20, 2020 at 07:49:06PM +0530, Naresh Kamboju wrote:
+> > On Thu, 20 Aug 2020 at 15:47, Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > This is the start of the stable review cycle for the 4.4.233 release.
+> > > There are 149 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, please
+> > > let me know.
+> > >
+> > > Responses should be made by Sat, 22 Aug 2020 09:21:01 +0000.
+> > > Anything received after that time might be too late.
+> > >
+> > > The whole patch series can be found in one patch at:
+> > >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.233-rc1.gz
+> > > or in the git tree and branch at:
+> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
+> > > and the diffstat can be found below.
+> > >
+> > > thanks,
+> > >
+> > > greg k-h
+> >
+> > i386 build failed on stable-rc 4.4 branch
+> >
+> > make -sk KBUILD_BUILD_USER=TuxBuild -C/linux -j16 ARCH=i386 HOSTCC=gcc
+> > CC="sccache gcc" O=build
+> > #
+> > In file included from ../samples/seccomp/bpf-direct.c:19:
+> > /usr/include/linux/types.h:5:10: fatal error: asm/types.h: No such
+> > file or directory
+> >     5 | #include <asm/types.h>
+> >       |          ^~~~~~~~~~~~~
+> > compilation terminated.
+> > In file included from /usr/include/linux/filter.h:10,
+> >                  from ../samples/seccomp/bpf-fancy.c:12:
+> > /usr/include/linux/types.h:5:10: fatal error: asm/types.h: No such
+> > file or directory
+> >     5 | #include <asm/types.h>
+> >       |          ^~~~~~~~~~~~~
+> > compilation terminated.
+> > make[3]: *** [scripts/Makefile.host:108: samples/seccomp/bpf-direct.o] Error 1
+> > make[3]: *** [scripts/Makefile.host:108: samples/seccomp/bpf-fancy.o] Error 1
+> > In file included from /usr/include/bits/errno.h:26,
+> >                  from /usr/include/errno.h:28,
+> >                  from ../samples/seccomp/dropper.c:17:
+> > /usr/include/linux/errno.h:1:10: fatal error: asm/errno.h: No such
+> > file or directory
+> >     1 | #include <asm/errno.h>
+> >       |          ^~~~~~~~~~~~~
+> > compilation terminated.
+> > make[3]: *** [scripts/Makefile.host:108: samples/seccomp/dropper.o] Error 1
+> > In file included from ../samples/seccomp/bpf-helper.c:16:
+> > ../samples/seccomp/bpf-helper.h:17:10: fatal error: asm/bitsperlong.h:
+> > No such file or directory
+> >    17 | #include <asm/bitsperlong.h> /* for __BITS_PER_LONG */
+> >       |          ^~~~~~~~~~~~~~~~~~~
+>
+> Any pointers to the commit that caused this?  I'll place odds on one of
+> the random.h changes :(
+>
 
-thanks for the review.
+This config is causing a build break with gcc-9 on stable-rc 4.4 on i386.
+CONFIG_SAMPLES=y
 
-On Wed, Aug 19, 2020 at 07:22:45PM +0100, Mark Brown wrote:
-> On Wed, Aug 19, 2020 at 03:04:48PM +0100, Cristian Marussi wrote:
-> 
-> > Property 'regulator-compatible' is now deprecated (even if still widely
-> > used in the code base), and the node-name fallback works fine only as long
-> 
-> I'm seeing a very small number of DTs using it, the majority of which
-> are pretty old - the arm64 ones are just mistakes on the part of
-> reviewers.
-> 
+P.S. Recently we have enabled DYNAMIC debug and more trace configs.
 
-Yes indeed 'widely' was a bit of an exaggeration, what I (poorly) meant to point
-out was that beside still used is deprecated and so not a viable option to solve
-my issue.
-
-> > as the nodes are named in an unique way; if it makes sense to use a common
-> > name and identifying them using an index through a 'reg' property the
-> > standard advices to use a naming in the form <common-name>@<unit>.
-> 
-> > In this case the above matching mechanism based on the simple (common) name
-> > will fail and the only viable alternative would be to properly define the
-> > deprecrated 'regulator-compatible' property equal to the full name
-> > <common-name>@<unit>.
-> 
-> This seems like a massive jump.  You appear to be saying that the reg
-> property is unusable which doesn't seem right to me?
-> 
-
-The 'issue' I observed while working on another series was that with the
-following example DT:
-
-firmware {
-	scmi {
-		...
-		scmi_voltage: scmi_protocol@17 {
-			reg = <0x17>;
-			
-			regulators {
-				#address-cells = <1>;
-				#size-cells = <0>;
-
-				regulator_scmi_discrete: regulator_scmi_discrete@0 {
-					reg = <0>;
-				};
-				
-				regulator_scmi_range: regulator_scmi_range@2 {
-					reg = <2>;
-				};
-				
-				regulator_scmi_vd3: regulator_scmi@3 {
-					reg = <3>;
-				};
-
-				regulator_scmi_vd4: regulator_scmi@4 {
-					reg = <4>;
-				};
-			};
-		};
-};
-
-and the struct regulator_desc configured roughly as:
-
-	sreg->desc.regulators_node = "regulators";
-	sreg->desc.of_match = sreg->of_node->name;    <<< This being the regulator_* nodes
-
-the regulator framework standard initialization routines were able to match univocally the
-first two regulators above (and parse autonomously the constraints without me explicitly
-calling of_get_regulator_init_data() as in a previous version of the series), but got fooled
-by the last two since the node name is the same and they differ only by the index, which in
-turn anyway seemed to me a sensible thing to be able to do when a node uses reg indexing.
-
-Note that with these SCMI regulators this .of_match configuration happens dynamically at
-run-time (as above) since it is defined by the DT and the SCMI fw platform which regulators are
-visible and defined and the common SCMI regulator driver handles them all if defined in the DT
-and known to the SCMI fw, while with the normal regulators the .of_match setup happens statically
-at compile time with macros driver by driver, since the DT defines what is present and the driver
-declares what can support.
-
-With this patch you could support both the above naming instead configuring like:
-
-	sreg->desc.regulators_node = "regulators";
-	sreg->desc.of_match_full_name = true;
-	sreg->desc.of_match = sreg->of_node->full_name;
-
-but I'm not sure that this is needed and worth the effort sincerely at this point,
-and probably makes more sense to look at this possible naming issue after I post
-the whole original series (without this patch) just to be sure I'm not getting
-something wrong somewhere else instead.
-
-> > In order to address this case without using such deprecated property,
-> > define a new boolean flag .of_match_full_name in struct regulator_desc to
-> > force the core to match against the node full-name instead.
-> 
-> I can't tell from this description what this change is intended to do,
-> and I suspect it'd be difficult for anyone trying to figure out if they
-> should use this or not.  What is a full name and what should people put
-> in there?  What would one look like for example?  I have to look at the
-> code to see that this is changing to compare against the full_name field
-> in the node and there's no kerneldoc for struct device_node.
-> 
-
-Yes I agree it is hard to understand how to use this from the commit log and if
-it is useful or not in a specific use case.
-
-> I'm also wondering why we can't just add this to the list of fallbacks
-> rather than requiring some custom per driver thing?
-> 
-
-It's an option but it would have doubled the following strncmp() if we just started
-checking against full_name every time we fail to find against name so I thought
-to make it configurable with the new of_match_full_name....but, given it is far from
-clear with this proposed patch, maybe it's better to use a default fallback as you said.
-
-> > -			name = child->name;
-> > +			name = !desc->of_match_full_name ?
-> > +				child->name : child->full_name;
-> 
-> Please write normal conditional statements for the benefits of people
-> who have to read this code, the extra ! in there isn't adding anything
-> here either.
-
-At this point I could just hold this patch and post the original series ignoring
-the above issue at first and discuss around that code if this is needed at all
-(so to have more context to discuss this), or simplify the patch as above if you
-think this fix is still worth.
-
-Regards
-
-Cristian
-
-
+- Naresh
