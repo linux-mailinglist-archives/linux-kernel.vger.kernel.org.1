@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCA724BA24
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A14124BB62
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730350AbgHTJ7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:59:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45754 "EHLO mail.kernel.org"
+        id S1730056AbgHTM1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:27:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728060AbgHTJ71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:59:27 -0400
+        id S1729886AbgHTJwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:52:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8C0A0208DB;
-        Thu, 20 Aug 2020 09:59:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17E7B2067C;
+        Thu, 20 Aug 2020 09:52:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917567;
-        bh=CF0K9DLAiVFuQL24PrDR4QPlTU3LUPidNE+WG6IEwVI=;
+        s=default; t=1597917130;
+        bh=4Pu5l+a7R0giKXEjk93F4XnVBL48zhHRz7T5g0HZRQc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Er9F4klMwCOghosXy4whnjEjUBXYuKhDyC8Bp/ESsEaljzivw6fzdcQJY4j+elx9b
-         +iVeU5Eh6bbMu0Uzm1BWhI/toLvqA8i4TkPrWrM8pOewbUKfv8XWnAAyUpaG/JUJPz
-         Ypbv5dF/Fc3qVqqDJNXkFCiCxoCz5NWtlWRsJHhA=
+        b=ISOzYfSNrkFfOc7y/K4v97ZM+k8CV1Et3Zgw4dk1Gwd+KMzJxOuS5ozBHZr6/vIur
+         mfLHN/PgIXQVfpvFwJEFtpcSuAaOgUFF/JFn16mr1lcYQ3V0pX+bQXK/b4Bpjm+/Nv
+         VoZGa0IVIi+51ejT7r0PMupWBhOszhPg6FL3JPY4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rustam Kovhaev <rkovhaev@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        syzbot+67b2bd0e34f952d0321e@syzkaller.appspotmail.com
-Subject: [PATCH 4.9 077/212] usb: hso: check for return value in hso_serial_common_create()
-Date:   Thu, 20 Aug 2020 11:20:50 +0200
-Message-Id: <20200820091606.255659045@linuxfoundation.org>
+        stable@vger.kernel.org, Ansuel Smith <ansuelsmth@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>
+Subject: [PATCH 4.19 06/92] PCI: qcom: Define some PARF params needed for ipq8064 SoC
+Date:   Thu, 20 Aug 2020 11:20:51 +0200
+Message-Id: <20200820091537.825524967@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
-References: <20200820091602.251285210@linuxfoundation.org>
+In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
+References: <20200820091537.490965042@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +45,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rustam Kovhaev <rkovhaev@gmail.com>
+From: Ansuel Smith <ansuelsmth@gmail.com>
 
-[ Upstream commit e911e99a0770f760377c263bc7bac1b1593c6147 ]
+commit 5149901e9e6deca487c01cc434a3ac4125c7b00b upstream.
 
-in case of an error tty_register_device_attr() returns ERR_PTR(),
-add IS_ERR() check
+Set some specific value for Tx De-Emphasis, Tx Swing and Rx equalization
+needed on some ipq8064 based device (Netgear R7800 for example). Without
+this the system locks on kernel load.
 
-Reported-and-tested-by: syzbot+67b2bd0e34f952d0321e@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=67b2bd0e34f952d0321e
-Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/r/20200615210608.21469-8-ansuelsmth@gmail.com
+Fixes: 82a823833f4e ("PCI: qcom: Add Qualcomm PCIe controller driver")
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Stanimir Varbanov <svarbanov@mm-sol.com>
+Cc: stable@vger.kernel.org # v4.5+
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/usb/hso.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -2274,12 +2274,14 @@ static int hso_serial_common_create(stru
+---
+ drivers/pci/controller/dwc/pcie-qcom.c |   24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+--- a/drivers/pci/controller/dwc/pcie-qcom.c
++++ b/drivers/pci/controller/dwc/pcie-qcom.c
+@@ -76,6 +76,18 @@
+ #define DBI_RO_WR_EN				1
  
- 	minor = get_free_serial_index();
- 	if (minor < 0)
--		goto exit;
-+		goto exit2;
+ #define PERST_DELAY_US				1000
++/* PARF registers */
++#define PCIE20_PARF_PCS_DEEMPH			0x34
++#define PCS_DEEMPH_TX_DEEMPH_GEN1(x)		((x) << 16)
++#define PCS_DEEMPH_TX_DEEMPH_GEN2_3_5DB(x)	((x) << 8)
++#define PCS_DEEMPH_TX_DEEMPH_GEN2_6DB(x)	((x) << 0)
++
++#define PCIE20_PARF_PCS_SWING			0x38
++#define PCS_SWING_TX_SWING_FULL(x)		((x) << 8)
++#define PCS_SWING_TX_SWING_LOW(x)		((x) << 0)
++
++#define PCIE20_PARF_CONFIG_BITS		0x50
++#define PHY_RX0_EQ(x)				((x) << 24)
  
- 	/* register our minor number */
- 	serial->parent->dev = tty_port_register_device_attr(&serial->port,
- 			tty_drv, minor, &serial->parent->interface->dev,
- 			serial->parent, hso_serial_dev_groups);
-+	if (IS_ERR(serial->parent->dev))
-+		goto exit2;
- 	dev = serial->parent->dev;
+ #define PCIE20_v3_PARF_SLV_ADDR_SPACE_SIZE	0x358
+ #define SLV_ADDR_SPACE_SZ			0x10000000
+@@ -275,6 +287,7 @@ static int qcom_pcie_init_2_1_0(struct q
+ 	struct qcom_pcie_resources_2_1_0 *res = &pcie->res.v2_1_0;
+ 	struct dw_pcie *pci = pcie->pci;
+ 	struct device *dev = pci->dev;
++	struct device_node *node = dev->of_node;
+ 	u32 val;
+ 	int ret;
  
- 	/* fill in specific data for later use */
-@@ -2325,6 +2327,7 @@ static int hso_serial_common_create(stru
- 	return 0;
- exit:
- 	hso_serial_tty_unregister(serial);
-+exit2:
- 	hso_serial_common_free(serial);
- 	return -1;
- }
+@@ -319,6 +332,17 @@ static int qcom_pcie_init_2_1_0(struct q
+ 	val &= ~BIT(0);
+ 	writel(val, pcie->parf + PCIE20_PARF_PHY_CTRL);
+ 
++	if (of_device_is_compatible(node, "qcom,pcie-ipq8064")) {
++		writel(PCS_DEEMPH_TX_DEEMPH_GEN1(24) |
++			       PCS_DEEMPH_TX_DEEMPH_GEN2_3_5DB(24) |
++			       PCS_DEEMPH_TX_DEEMPH_GEN2_6DB(34),
++		       pcie->parf + PCIE20_PARF_PCS_DEEMPH);
++		writel(PCS_SWING_TX_SWING_FULL(120) |
++			       PCS_SWING_TX_SWING_LOW(120),
++		       pcie->parf + PCIE20_PARF_PCS_SWING);
++		writel(PHY_RX0_EQ(4), pcie->parf + PCIE20_PARF_CONFIG_BITS);
++	}
++
+ 	/* enable external reference clock */
+ 	val = readl(pcie->parf + PCIE20_PARF_PHY_REFCLK);
+ 	val |= BIT(16);
 
 
