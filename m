@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC22224BE96
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B5A24BE7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728418AbgHTJdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:33:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44130 "EHLO mail.kernel.org"
+        id S1730245AbgHTNYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:24:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727882AbgHTJb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:31:57 -0400
+        id S1727075AbgHTJeM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:34:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F28C22BED;
-        Thu, 20 Aug 2020 09:31:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0076822CA0;
+        Thu, 20 Aug 2020 09:34:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915916;
-        bh=S5pOME3zGx4IYjWpdF8CZDVdUnqXcSKVsKmBjXwEE0E=;
+        s=default; t=1597916051;
+        bh=Q1zIU5SuzkyJ10BIgp1gFKULbwqkncB9RaWdhQ0CRdY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i4sQ+yoCZ5LLPKIv/gBvzkf23r9h8VAfNEhYwB5jEB/pey3NnZ5QdPiDWMCsGTCkc
-         hBC71M5k75sjIALJ21l38SHOsd0gaHobxTTRXTnR3IKp4924y0vsYfB3HKEkF5TYcd
-         aQTBOTsUgMiJY/lJV2H9ciyrIQO8jE1dKI59qYVE=
+        b=IXJuuQtrNTArGW2DkDW5IKD6stb491fJyg2wcCIKc0rtBNqpi/gW5jTrp0aDWPl7q
+         n/KdlUQv7iHIWrEzhrT9Rj+hFv1wXOxesvysCgTGDtYsj2zudhqOTxgI71WeN0j/kp
+         Q2TJViNKJSK6pXyLAcvquv0CdPPs7QhBvtdPraq0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jane Chu <jane.chu@oracle.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Song Liu <songliubraving@fb.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 179/232] libnvdimm/security: fix a typo
-Date:   Thu, 20 Aug 2020 11:20:30 +0200
-Message-Id: <20200820091621.481053528@linuxfoundation.org>
+Subject: [PATCH 5.8 187/232] md-cluster: Fix potential error pointer dereference in resize_bitmaps()
+Date:   Thu, 20 Aug 2020 11:20:38 +0200
+Message-Id: <20200820091621.853179966@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
 References: <20200820091612.692383444@linuxfoundation.org>
@@ -46,38 +45,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jane Chu <jane.chu@oracle.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit dad42d17558f316e9e807698cd4207359b636084 ]
+[ Upstream commit e8abe1de43dac658dacbd04a4543e0c988a8d386 ]
 
-commit d78c620a2e82 ("libnvdimm/security: Introduce a 'frozen' attribute")
-introduced a typo, causing a 'nvdimm->sec.flags' update being overwritten
-by the subsequent update meant for 'nvdimm->sec.ext_flags'.
+The error handling calls md_bitmap_free(bitmap) which checks for NULL
+but will Oops if we pass an error pointer.  Let's set "bitmap" to NULL
+on this error path.
 
-Link: https://lore.kernel.org/r/1596494499-9852-1-git-send-email-jane.chu@oracle.com
-Fixes: d78c620a2e82 ("libnvdimm/security: Introduce a 'frozen' attribute")
-Cc: Dan Williams <dan.j.williams@intel.com>
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-Signed-off-by: Jane Chu <jane.chu@oracle.com>
-Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
+Fixes: afd756286083 ("md-cluster/raid10: resize all the bitmaps before start reshape")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Signed-off-by: Song Liu <songliubraving@fb.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvdimm/security.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/md/md-cluster.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/nvdimm/security.c b/drivers/nvdimm/security.c
-index 4cef69bd3c1bd..8f3971cf16541 100644
---- a/drivers/nvdimm/security.c
-+++ b/drivers/nvdimm/security.c
-@@ -457,7 +457,7 @@ void __nvdimm_security_overwrite_query(struct nvdimm *nvdimm)
- 	clear_bit(NDD_WORK_PENDING, &nvdimm->flags);
- 	put_device(&nvdimm->dev);
- 	nvdimm->sec.flags = nvdimm_security_flags(nvdimm, NVDIMM_USER);
--	nvdimm->sec.flags = nvdimm_security_flags(nvdimm, NVDIMM_MASTER);
-+	nvdimm->sec.ext_flags = nvdimm_security_flags(nvdimm, NVDIMM_MASTER);
- }
- 
- void nvdimm_security_overwrite_query(struct work_struct *work)
+diff --git a/drivers/md/md-cluster.c b/drivers/md/md-cluster.c
+index 73fd50e779754..d50737ec40394 100644
+--- a/drivers/md/md-cluster.c
++++ b/drivers/md/md-cluster.c
+@@ -1139,6 +1139,7 @@ static int resize_bitmaps(struct mddev *mddev, sector_t newsize, sector_t oldsiz
+ 		bitmap = get_bitmap_from_slot(mddev, i);
+ 		if (IS_ERR(bitmap)) {
+ 			pr_err("can't get bitmap from slot %d\n", i);
++			bitmap = NULL;
+ 			goto out;
+ 		}
+ 		counts = &bitmap->counts;
 -- 
 2.25.1
 
