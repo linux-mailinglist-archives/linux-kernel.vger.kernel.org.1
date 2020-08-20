@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B8824B353
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 800A924B2A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729208AbgHTJp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:45:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36266 "EHLO mail.kernel.org"
+        id S1728334AbgHTJeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:34:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728490AbgHTJmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:42:01 -0400
+        id S1728236AbgHTJbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:31:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EBCA120724;
-        Thu, 20 Aug 2020 09:41:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9337122B3F;
+        Thu, 20 Aug 2020 09:31:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916520;
-        bh=0X7WpuY/jCJp0/tIa44IIaSK8ndpAN4TJYDqNrG0RlE=;
+        s=default; t=1597915898;
+        bh=wp8G5LoikT6tMvWTrOAsmUvkum57qThOs0SmGsnDMmE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xz4wWHZ8P+pPoudsxVY30efaHryXB7bk2b6juxR2SchLLeHkZBeA9wvUUL1bEl8r4
-         +fvkIN0H/5gciyJebEgGG6Jhz3+DcnSX5J7h7MKmleF+JKeyiVs0hEDBvzJ3hJq29g
-         A/mj9FU0st/qOrKAgVYAxrR47d12z8t1d6L94zsA=
+        b=jHg4W3l6z93G80sxfHYFssGiWTOf3pRCVpzsSvJJ+mbowONt1j7a8A6MXS4iME8eC
+         wCz2rMzYrPi3ocl34AOQn9vWdzMwLTpWYnvYpMbZNB1fuXpzVCc0C31nQcxdOURNDa
+         QkbI3mgPQugCXO42e1tMkmcEfbT24rW2TH6x3U7E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        syzbot+d9aab50b1154e3d163f5@syzkaller.appspotmail.com,
+        Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 127/204] crypto: caam - Remove broken arc4 support
-Date:   Thu, 20 Aug 2020 11:20:24 +0200
-Message-Id: <20200820091612.632767074@linuxfoundation.org>
+Subject: [PATCH 5.8 174/232] ubi: fastmap: Dont produce the initial next anchor PEB when fastmap is disabled
+Date:   Thu, 20 Aug 2020 11:20:25 +0200
+Message-Id: <20200820091621.246072260@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
-References: <20200820091606.194320503@linuxfoundation.org>
+In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
+References: <20200820091612.692383444@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,115 +46,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Herbert Xu <herbert@gondor.apana.org.au>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-[ Upstream commit eeedb618378f8a09779546a3eeac16b000447d62 ]
+[ Upstream commit 3b185255bb2f34fa6927619b9ef27f192a3d9f5a ]
 
-The arc4 algorithm requires storing state in the request context
-in order to allow more than one encrypt/decrypt operation.  As this
-driver does not seem to do that, it means that using it for more
-than one operation is broken.
+Following process triggers a memleak caused by forgetting to release the
+initial next anchor PEB (CONFIG_MTD_UBI_FASTMAP is disabled):
+1. attach -> __erase_worker -> produce the initial next anchor PEB
+2. detach -> ubi_fastmap_close (Do nothing, it should have released the
+   initial next anchor PEB)
 
-Fixes: eaed71a44ad9 ("crypto: caam - add ecb(*) support")
-Link: https://lore.kernel.org/linux-crypto/CAMj1kXGvMe_A_iQ43Pmygg9xaAM-RLy=_M=v+eg--8xNmv9P+w@mail.gmail.com
-Link: https://lore.kernel.org/linux-crypto/20200702101947.682-1-ardb@kernel.org
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Acked-by: Horia Geantă <horia.geanta@nxp.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Don't produce the initial next anchor PEB in __erase_worker() when fastmap
+is disabled.
+
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Suggested-by: Sascha Hauer <s.hauer@pengutronix.de>
+Fixes: f9c34bb529975fe ("ubi: Fix producing anchor PEBs")
+Reported-by: syzbot+d9aab50b1154e3d163f5@syzkaller.appspotmail.com
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/caam/caamalg.c | 29 -----------------------------
- drivers/crypto/caam/compat.h  |  1 -
- 2 files changed, 30 deletions(-)
+ drivers/mtd/ubi/wl.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/caam/caamalg.c b/drivers/crypto/caam/caamalg.c
-index bf90a4fcabd1f..8149ac4d6ef22 100644
---- a/drivers/crypto/caam/caamalg.c
-+++ b/drivers/crypto/caam/caamalg.c
-@@ -810,12 +810,6 @@ static int ctr_skcipher_setkey(struct crypto_skcipher *skcipher,
- 	return skcipher_setkey(skcipher, key, keylen, ctx1_iv_off);
- }
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 27636063ed1bb..42cac572f82dc 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -1086,7 +1086,8 @@ static int __erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk)
+ 	if (!err) {
+ 		spin_lock(&ubi->wl_lock);
  
--static int arc4_skcipher_setkey(struct crypto_skcipher *skcipher,
--				const u8 *key, unsigned int keylen)
--{
--	return skcipher_setkey(skcipher, key, keylen, 0);
--}
--
- static int des_skcipher_setkey(struct crypto_skcipher *skcipher,
- 			       const u8 *key, unsigned int keylen)
- {
-@@ -1967,21 +1961,6 @@ static struct caam_skcipher_alg driver_algs[] = {
- 		},
- 		.caam.class1_alg_type = OP_ALG_ALGSEL_3DES | OP_ALG_AAI_ECB,
- 	},
--	{
--		.skcipher = {
--			.base = {
--				.cra_name = "ecb(arc4)",
--				.cra_driver_name = "ecb-arc4-caam",
--				.cra_blocksize = ARC4_BLOCK_SIZE,
--			},
--			.setkey = arc4_skcipher_setkey,
--			.encrypt = skcipher_encrypt,
--			.decrypt = skcipher_decrypt,
--			.min_keysize = ARC4_MIN_KEY_SIZE,
--			.max_keysize = ARC4_MAX_KEY_SIZE,
--		},
--		.caam.class1_alg_type = OP_ALG_ALGSEL_ARC4 | OP_ALG_AAI_ECB,
--	},
- };
- 
- static struct caam_aead_alg driver_aeads[] = {
-@@ -3457,7 +3436,6 @@ int caam_algapi_init(struct device *ctrldev)
- 	struct caam_drv_private *priv = dev_get_drvdata(ctrldev);
- 	int i = 0, err = 0;
- 	u32 aes_vid, aes_inst, des_inst, md_vid, md_inst, ccha_inst, ptha_inst;
--	u32 arc4_inst;
- 	unsigned int md_limit = SHA512_DIGEST_SIZE;
- 	bool registered = false, gcm_support;
- 
-@@ -3477,8 +3455,6 @@ int caam_algapi_init(struct device *ctrldev)
- 			   CHA_ID_LS_DES_SHIFT;
- 		aes_inst = cha_inst & CHA_ID_LS_AES_MASK;
- 		md_inst = (cha_inst & CHA_ID_LS_MD_MASK) >> CHA_ID_LS_MD_SHIFT;
--		arc4_inst = (cha_inst & CHA_ID_LS_ARC4_MASK) >>
--			    CHA_ID_LS_ARC4_SHIFT;
- 		ccha_inst = 0;
- 		ptha_inst = 0;
- 
-@@ -3499,7 +3475,6 @@ int caam_algapi_init(struct device *ctrldev)
- 		md_inst = mdha & CHA_VER_NUM_MASK;
- 		ccha_inst = rd_reg32(&priv->ctrl->vreg.ccha) & CHA_VER_NUM_MASK;
- 		ptha_inst = rd_reg32(&priv->ctrl->vreg.ptha) & CHA_VER_NUM_MASK;
--		arc4_inst = rd_reg32(&priv->ctrl->vreg.afha) & CHA_VER_NUM_MASK;
- 
- 		gcm_support = aesa & CHA_VER_MISC_AES_GCM;
- 	}
-@@ -3522,10 +3497,6 @@ int caam_algapi_init(struct device *ctrldev)
- 		if (!aes_inst && (alg_sel == OP_ALG_ALGSEL_AES))
- 				continue;
- 
--		/* Skip ARC4 algorithms if not supported by device */
--		if (!arc4_inst && alg_sel == OP_ALG_ALGSEL_ARC4)
--			continue;
--
- 		/*
- 		 * Check support for AES modes not available
- 		 * on LP devices.
-diff --git a/drivers/crypto/caam/compat.h b/drivers/crypto/caam/compat.h
-index 60e2a54c19f11..c3c22a8de4c00 100644
---- a/drivers/crypto/caam/compat.h
-+++ b/drivers/crypto/caam/compat.h
-@@ -43,7 +43,6 @@
- #include <crypto/akcipher.h>
- #include <crypto/scatterwalk.h>
- #include <crypto/skcipher.h>
--#include <crypto/arc4.h>
- #include <crypto/internal/skcipher.h>
- #include <crypto/internal/hash.h>
- #include <crypto/internal/rsa.h>
+-		if (!ubi->fm_next_anchor && e->pnum < UBI_FM_MAX_START) {
++		if (!ubi->fm_disabled && !ubi->fm_next_anchor &&
++		    e->pnum < UBI_FM_MAX_START) {
+ 			/* Abort anchor production, if needed it will be
+ 			 * enabled again in the wear leveling started below.
+ 			 */
 -- 
 2.25.1
 
