@@ -2,82 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D6724BB8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80CFF24BBAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730068AbgHTMay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:30:54 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:49010 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729791AbgHTJvL (ORCPT
+        id S1730709AbgHTMcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:32:46 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.168]:30612 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730002AbgHTMcb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:51:11 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R611e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0U6IvpVk_1597917064;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U6IvpVk_1597917064)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 20 Aug 2020 17:51:05 +0800
-Subject: Re: [RFC PATCH v2 4/5] mm: Split release_pages work into 3 passes
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Yang Shi <yang.shi@linux.alibaba.com>,
-        kbuild test robot <lkp@intel.com>,
-        Rong Chen <rong.a.chen@intel.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        linux-mm <linux-mm@kvack.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-References: <20200819041852.23414.95939.stgit@localhost.localdomain>
- <20200819042730.23414.41309.stgit@localhost.localdomain>
- <15edf807-ce03-83f7-407d-5929341b2b4e@linux.alibaba.com>
- <CAKgT0UepdfjXn=j8e4xEBFmsNJdzJyN57em8dscr-Er4OBZCOg@mail.gmail.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <a88eef1b-242d-78c6-fecb-35ea00cd739b@linux.alibaba.com>
-Date:   Thu, 20 Aug 2020 17:49:49 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Thu, 20 Aug 2020 08:32:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1597926745;
+        s=strato-dkim-0002; d=chronox.de;
+        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=HiSYPKMGXm6jn1TcY+F4FDv3aSG6bNhGXRIYvbK5L3s=;
+        b=IPBS35bR14M/OsrQYLF1dvXVvVUNBmVYCHz2Zm06eq1JJB1IE0kO6+0gtTHQSrAQm3
+        p35bs1o0l0BYVtCwzTFUMTyZw2pG4jom/p3co/0pwgDsOLc7Bhx6ny8cjOt05SDn7e6k
+        WvOVMBAVexRbcN77MSOvpfY6gRwYljzpkob/9Gojc+ZblKzX5W7engsV4uUiCF0STZO/
+        GZ7o0voBW7njz5zlktzQwIWAIFZjGR2rrrdYYMgboYZ9qz46Hyl0p9J++Q/PAEJsWzGB
+        JGexzMriTV4BzvadwaC1cpHWwqia/RWAoirA/dnzdInkf6YkhAlpYdKi0tr2vexJLk2+
+        n3wQ==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xm0dNS3IdRAZAL+p6A=="
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+        by smtp.strato.de (RZmta 46.10.7 DYNA|AUTH)
+        with ESMTPSA id 002e9aw7KCVWDBa
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Thu, 20 Aug 2020 14:31:32 +0200 (CEST)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>
+Subject: Re: [PATCH v32 01/12] Linux Random Number Generator
+Date:   Thu, 20 Aug 2020 14:31:31 +0200
+Message-ID: <3318076.iIbC2pHGDl@positron.chronox.de>
+In-Reply-To: <202008201950.Peepx4LA%lkp@intel.com>
+References: <7836955.NyiUUSuA9g@positron.chronox.de> <202008201950.Peepx4LA%lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0UepdfjXn=j8e4xEBFmsNJdzJyN57em8dscr-Er4OBZCOg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am Donnerstag, 20. August 2020, 13:46:49 CEST schrieb kernel test robot:
 
+Hi,
 
-在 2020/8/19 下午10:57, Alexander Duyck 写道:
->>>       lruvec = relock_page_lruvec_irqsave(page, lruvec, &flags);
->> the lock bounce is better with the patch, would you like to do further
->> like using add_lruvecs to reduce bounce more?
->>
->> Thanks
->> Alex
-> I'm not sure how much doing something like that would add. In my case
-> I had a very specific issue that this is addressing which is the fact
-> that every compound page was taking the LRU lock and zone lock
-> separately. With this patch that is reduced to one LRU lock per 15
-> pages and then the zone lock per page. By adding or sorting pages by
-> lruvec I am not sure there will be much benefit as I am not certain
-> how often we will end up with pages being interleaved between multiple
-> lruvecs. In addition as I am limiting the quantity to a pagevec which
-> limits the pages to 15 I am not sure there will be much benefit to be
-> seen for sorting the pages beforehand.
+> All warnings (new ones prefixed by >>):
+> >> drivers/char/lrng/lrng_interfaces.c:120:6: warning: no previous prototype
+> >> for 'add_hwgenerator_randomness' [-Wmissing-prototypes]
+>      120 | void add_hwgenerator_randomness(const char *buffer, size_t count,
+>          |      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Thank you, added <linux/hw_random.h>
+> >> 
+> >> drivers/char/lrng/lrng_interfaces.c:297:6: warning: no previous prototype
+> >> for 'get_random_bytes_full' [-Wmissing-prototypes]
+>      297 | void get_random_bytes_full(void *buf, int nbytes)
 > 
+>          |      ^~~~~~~~~~~~~~~~~~~~~
+> 
+Thanks, added prototype to header file.
 
-the relock will unlock and get another lock again, the cost in that, the 2nd
-lock need to wait for fairness for concurrency lruvec locking.
-If we can do sort before, we should remove the fairness waiting here. Of course, 
-perf result depends on scenarios.
+Ciao
+Stephan
 
-Thanks
-Alex
+
