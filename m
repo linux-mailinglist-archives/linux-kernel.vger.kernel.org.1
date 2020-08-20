@@ -2,107 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0395724B535
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D659924B5F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731482AbgHTKUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:20:47 -0400
-Received: from esa2.hc3370-68.iphmx.com ([216.71.145.153]:6917 "EHLO
-        esa2.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731463AbgHTKUZ (ORCPT
+        id S1731566AbgHTKaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:30:05 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:34649
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731506AbgHTKU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:20:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1597918825;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=Sv68RoNLXVff/6n8GJVDTzUndQIzSGsto9tYosUgXbw=;
-  b=AznunsBUonXknv9jqFhp3YXSxxZ1uxt+H2KvV61dWsm3G53n7J9AZfB1
-   qI5+ZDDA2P2NSnYRnXsek+Mw1LrafRrGJ/GzDe9OYYJTzOq6F5tXg5Cum
-   gFvG5mX5UVjPLVpFrvTPq9CfnVmyHE5f/Mqv16VHSh2ZO3g3qs5XjbrxI
-   4=;
-Authentication-Results: esa2.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: g5He4ply494ZRa/EGg7MaC71UzA0BjHI1c7YSwZBTDzTp9vpey0jdtGIFSsbMxA1X6JsEBAvkw
- B26jNrEgbiFdR1wvCVK0z3EhFmTTq4XgjmQ4hJTQKN/YHmJkqr3oqEq7fo7nByDE/78nF//jET
- ail+DgQVD5LgeIS6TGXJHGPHn3r/NmlyoYNxzeNv9wZ5nmrHZHIqKJpLTa/azaYJygb0agovIt
- sOBNqo3hgPUzC/dFP+lUPEmbSTg+MmbWcdS+RPQkTjx3SN4flHaKnhszEvO84y4Le8Yy5jVL1n
- qaI=
-X-SBRS: 2.7
-X-MesageID: 24943558
-X-Ironport-Server: esa2.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.76,332,1592884800"; 
-   d="scan'208";a="24943558"
-Date:   Thu, 20 Aug 2020 12:20:16 +0200
-From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To:     Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= 
-        <marmarek@invisiblethingslab.com>
-CC:     Norbert Kaminski <norbert.kaminski@3mdeb.com>,
-        Ard Biesheuvel <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
-        <xen-devel@lists.xenproject.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Maciej Pijanowski <maciej.pijanowski@3mdeb.com>,
-        <piotr.krol@3mdeb.com>
-Subject: Re: [PATCH] efi: discover ESRT table on Xen PV too
-Message-ID: <20200820102016.GU828@Air-de-Roger>
-References: <20200817090013.GN975@Air-de-Roger>
- <20200818120135.GK1679@mail-itl>
- <20200818124710.GK828@Air-de-Roger>
- <20200818150020.GL1679@mail-itl>
- <20200818172114.GO828@Air-de-Roger>
- <20200818184018.GN1679@mail-itl>
- <20200819081930.GQ828@Air-de-Roger>
- <3d405b0c-4e2b-0d29-56bb-e315f4c21d03@3mdeb.com>
- <20200820093025.GT828@Air-de-Roger>
- <20200820093454.GS1626@mail-itl>
+        Thu, 20 Aug 2020 06:20:56 -0400
+X-IronPort-AV: E=Sophos;i="5.76,332,1592863200"; 
+   d="scan'208";a="356907302"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 20 Aug 2020 12:20:51 +0200
+Date:   Thu, 20 Aug 2020 12:20:51 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Stephen Smalley <stephen.smalley.work@gmail.com>
+cc:     kbuild-all@lists.01.org, selinux@vger.kernel.org,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Tom Rix <trix@redhat.com>,
+        Ethan Edwards <ethancarteredwards@gmail.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>, selinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] selinux: fix memdup.cocci warnings
+Message-ID: <alpine.DEB.2.22.394.2008201218350.2524@hadrien>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200820093454.GS1626@mail-itl>
-X-ClientProxiedBy: AMSPEX02CAS02.citrite.net (10.69.22.113) To
- AMSPEX02CL02.citrite.net (10.69.22.126)
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 11:34:54AM +0200, Marek Marczykowski-Górecki wrote:
-> On Thu, Aug 20, 2020 at 11:30:25AM +0200, Roger Pau Monné wrote:
-> > Right, so you only need access to the ESRT table, that's all. Then I
-> > think we need to make sure Xen doesn't use this memory for anything
-> > else, which will require some changes in Xen (or at least some
-> > checks?).
-> > 
-> > We also need to decide what to do if the table turns out to be placed
-> > in a wrong region. How are we going to prevent dom0 from using it
-> > then? My preference would be to completely hide it from dom0 in that
-> > case, such that it believes there's no ESRT at all if possible.
-> 
-> Yes, that makes sense. As discussed earlier, that probably means
-> re-constructing SystemTable before giving it to dom0. We'd need to do
-> that in PVH case anyway, to adjust addresses, right?
+From: kernel test robot <lkp@intel.com>
 
-Not really, on PVH dom0 we should be able to identity map the required
-EFI regions in the dom0 p2m, so the only difference between a classic
-PV dom0 is that we need to assure that those regions are correctly
-identity mapped in the p2m, but that shouldn't require any change to
-the SystemTable unless we need to craft custom tables (see below).
+Use kmemdup rather than duplicating its implementation
 
-> Is there something
-> like this in the Xen codebase already, or it needs to be written from
-> scratch?
+Generated by: scripts/coccinelle/api/memdup.cocci
 
-AFAICT it needs to be written for EFI. For the purposes here I think
-you could copy the SystemTable and modify the NumberOfTableEntries and
-ConfigurationTable fields in the copy in order to delete the ESRT if
-found to be placed in a non suitable region?
+Fixes: c7c556f1e81b ("selinux: refactor changing booleans")
+CC: Stephen Smalley <stephen.smalley.work@gmail.com>
+Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
 
-At that point we can remove the checks from Linux since Xen will
-assert that whatever gets passed to dom0 is in a suitable region. It
-would be nice to have a way to signal that the placement of the ESRT
-has been checked, but I'm not sure how to do this, do you have any
-ideas?
+---
 
-Roger.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git next
+head:   37ea433c66070fcef09c6d118492c36299eb72ba
+commit: c7c556f1e81bb9e09656ed6650d0c44c84b7c016 [4/6] selinux: refactor changing booleans
+:::::: branch date: 4 hours ago
+:::::: commit date: 2 days ago
+
+ conditional.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+--- a/security/selinux/ss/conditional.c
++++ b/security/selinux/ss/conditional.c
+@@ -686,12 +686,11 @@ static int cond_bools_copy(struct hashta
+ {
+ 	struct cond_bool_datum *datum;
+
+-	datum = kmalloc(sizeof(struct cond_bool_datum), GFP_KERNEL);
++	datum = kmemdup(orig->datum, sizeof(struct cond_bool_datum),
++			GFP_KERNEL);
+ 	if (!datum)
+ 		return -ENOMEM;
+
+-	memcpy(datum, orig->datum, sizeof(struct cond_bool_datum));
+-
+ 	new->key = orig->key; /* No need to copy, never modified */
+ 	new->datum = datum;
+ 	return 0;
