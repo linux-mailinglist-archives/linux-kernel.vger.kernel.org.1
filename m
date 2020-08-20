@@ -2,87 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4B924B612
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DAAE24B791
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731656AbgHTKbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:31:49 -0400
-Received: from relayfre-01.paragon-software.com ([176.12.100.13]:33322 "EHLO
-        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731471AbgHTKUc (ORCPT
+        id S1731229AbgHTK5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:57:13 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:44729 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731162AbgHTK4u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:20:32 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id A05DE434;
-        Thu, 20 Aug 2020 13:20:26 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1597918826;
-        bh=zUeZ9txBd8CUV16UFvP7cKQBctMZ9i7FqExpSVprv0U=;
-        h=From:To:Subject:Date:References:In-Reply-To;
-        b=SlxKJFc7RTxAJr3+1nq6HBKiPgCtt/0/RImqgQN6Le5bCBF0FPkXlxp1TG8n8z650
-         HFpalwrq/efe9FT2/UBLsX8yHGLwhbtT9VVpw4imSF++7QLwaI9H92D4WJK1GnnWoD
-         KgGvh1DFigsWF0QGM5kPgxhD8O8/3UPeUKstvC+w=
-Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Thu, 20 Aug 2020 13:20:26 +0300
-Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
- by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
- id 15.01.1847.003; Thu, 20 Aug 2020 13:20:26 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     =?utf-8?B?QXVyw6lsaWVuIEFwdGVs?= <aaptel@suse.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: RE: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
- Software.
-Thread-Topic: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
- Software.
-Thread-Index: AdZyNcmjSkpkGje7R9K6YobJrVDyZ///6wOA//ag0SA=
-Date:   Thu, 20 Aug 2020 10:20:26 +0000
-Message-ID: <7538540ab82e4b398a0203564a1f1b23@paragon-software.com>
-References: <2911ac5cd20b46e397be506268718d74@paragon-software.com>
- <87mu2x48wa.fsf@suse.com>
-In-Reply-To: <87mu2x48wa.fsf@suse.com>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.30.8.36]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 20 Aug 2020 06:56:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597920992;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uYbV8VLkse7x10+SVN80YNuWWr3hGT+D+KMqbsymh68=;
+        b=eYx+D+YoCP2ChyKvT+kCjWxRLpclSz3jtRb2v54tdlvOXhOrRrNeEr2w1frXN64/w3cdFJ
+        j8tDWNlxxm0oC0RygDG+ATtRYnHvDuqIu86v6FcKIquTOJGcoVI8EEpdd4ffeBEQ4ioHBN
+        0tPvZ9CxnwxvFVIYA5eyVHtlAGgKwC8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-384-hWJLFjQNPwmPnM0BmojkMA-1; Thu, 20 Aug 2020 06:29:11 -0400
+X-MC-Unique: hWJLFjQNPwmPnM0BmojkMA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1304C186A56B;
+        Thu, 20 Aug 2020 10:27:06 +0000 (UTC)
+Received: from starship (unknown [10.35.206.173])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 31B405D9F1;
+        Thu, 20 Aug 2020 10:26:57 +0000 (UTC)
+Message-ID: <76c13e7d8f3c26583411fc6d42f50c98e92ebc1c.camel@redhat.com>
+Subject: Re: [PATCH 8/8] KVM: nSVM: read only changed fields of the nested
+ guest data area
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Date:   Thu, 20 Aug 2020 13:26:57 +0300
+In-Reply-To: <be88aaae-c776-32d2-fa69-00c6aace787d@redhat.com>
+References: <20200820091327.197807-1-mlevitsk@redhat.com>
+         <20200820091327.197807-9-mlevitsk@redhat.com>
+         <53afbfba-427e-72f5-73a6-faea7606e78e@redhat.com>
+         <33166884f54569ab47cc17a4c3e01f9dbc96401a.camel@redhat.com>
+         <be88aaae-c776-32d2-fa69-00c6aace787d@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQXVyw6lsaWVuIEFwdGVsIDxhYXB0ZWxAc3VzZS5jb20+DQpTZW50OiBGcmlkYXksIEF1
-Z3VzdCAxNCwgMjAyMCA1OjA5IFBNDQo+IA0KPiBIaSBLb25zdGFudGluLA0KPiANCj4gVGhhdCdz
-IGNvb2wgOikgQXMgTmlrb2xheSBzYWlkIGl0IG5lZWRzIGEgbGl0dGxlIGNoYW5nZSB0byB0aGUg
-bWFrZWZpbGVzDQo+IHRvIGV2ZW4gYnVpbGQuDQo+IA0KPiBBcmUgeW91IGFsc28gZ29pbmcgdG8g
-cHVibGlzaCB5b3VyIG93biBta2ZzLm50ZnMzIHRvb2w/IEkgZG9udCB0aGluayB0aGUNCj4gZXhp
-c3Rpbmcgb25lIHdvdWxkIHN1cHBvcnQgNjRrIGNsdXN0ZXJzLg0KDQpIaSBBdXLDqWxpZW4uIFRo
-YW5rcyBmb3IgeW91ciBmZWVkYmFjay4gV2UgcGxhbiB0byBwdWJsaXNoIG91ciBta2ZzLm50ZnMg
-dXRpbGl0eSBhcyB0aGUgb3BlbiBzb3VyY2UgYXMgd2VsbCAoYW5kIHBvc3NpYmx5IGZzY2hrLm50
-ZnMgLSBhZnRlciBta2ZzKS4gDQoNCj4gDQo+IEkgd291bGQgcmVjb21tZW5kIHRvIHJ1biBjaGVj
-a3BhdGNoIChJIHNlZSBhbHJlYWR5IDg3IHdhcm5pbmdzLi4uIHNvbWUNCj4gb2YgaXQgaXMgbm9p
-c2UpOg0KPiANCj4gICAkIC4vc2NyaXB0cy9jaGVja3BhdGNoLnBsIDxwYXRjaD4NCj4gDQo+IEFu
-ZCBzcGFyc2UgKEkgZG9udCBzZWUgbXVjaCk6DQo+IA0KPiAgICQgdG91Y2ggZnMvbnRmczMvKi5b
-Y2hdICYmIG1ha2UgQz0xDQo+IA0KPiBZb3UgbmVlZCBhIHJlY2VudCBidWlsZCBvZiBzcGFyc2Ug
-dG8gZG8gdGhhdCBsYXN0IG9uZS4gWW91IGNhbiBwYXNzIHlvdXINCj4gb3duIHNwYXJzZSBiaW4g
-KG1ha2UgQ0hFQ0s9fi9wcm9nL3NwYXJzZS9zcGFyc2UgQz0xKQ0KPiANCj4gVGhpcyB3aWxsIGJl
-IGEgZ29vZCBmaXJzdCBzdGVwLg0KDQpUaGUgc3BhcnNlIHV0aWxpdHkgaXMgcnVubmluZyBhZ2Fp
-bnN0IHRoZSBjb2RlLCBhcyB3ZWxsIGFzIGNoZWNrcGF0Y2gucGwuIFNwcmFzZSBvdXRwdXQgaXMg
-Y2xlYW4gbm93LiBDaGVja3BhdGNoJ3Mgc29tZWhvdyBpbXBvcnRhbnQgd2FybmluZ3Mgd2lsbCBi
-ZSBmaXhlZCBpbiB2MiAoZXhjZXB0IG1heWJlIHR5cGVkZWZzKS4gDQoNCj4gDQo+IEhhdmUgeW91
-IHRyaWVkIHRvIHJ1biB0aGUgeGZzdGVzdHMgc3VpdGUgYWdhaW5zdCBpdD8NCj4NCnhmc3Rlc3Rz
-IGFyZSBiZWluZyBvbmUgb2Ygb3VyIHN0YW5kYXJkIHRlc3Qgc3VpdGVzIGFtb25nIG90aGVycy4g
-Q3VycmVudGx5IHdlIGhhdmUgdGhlICdnZW5lcmljLzMzOScgYW5kICdnZW5lcmljLzAxMycgdGVz
-dCBjYXNlcyBmYWlsaW5nLCB3b3JraW5nIG9uIGl0IG5vdy4gT3RoZXIgdGVzdHMgZWl0aGVyIHBh
-c3Mgb3IgYmVpbmcgc2tpcHBlZCAoZHVlIHRvIG1pc3NpbmcgZmVhdHVyZXMgZS5nLiByZWZsaW5r
-KS4gDQogDQo+IENoZWVycywNCj4gLS0NCj4gQXVyw6lsaWVuIEFwdGVsIC8gU1VTRSBMYWJzIFNh
-bWJhIFRlYW0NCj4gR1BHOiAxODM5IENCNUYgOUY1QiBGQjlCIEFBOTcgIDhDOTkgMDNDOCBBNDlC
-IDUyMUIgRDVEMw0KPiBTVVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdtYkgsIE1heGZl
-bGRzdHIuIDUsIDkwNDA5IE7DvHJuYmVyZywgREUNCj4gR0Y6IEZlbGl4IEltZW5kw7ZyZmZlciwg
-TWFyeSBIaWdnaW5zLCBTcmkgUmFzaWFoIEhSQiAyNDcxNjUgKEFHIE3DvG5jaGVuKQ0K
+On Thu, 2020-08-20 at 12:18 +0200, Paolo Bonzini wrote:
+> On 20/08/20 12:05, Maxim Levitsky wrote:
+> > > You probably should set clean to 0 also if the guest doesn't have the
+> > > VMCBCLEAN feature (so, you first need an extra patch to add the
+> > > VMCBCLEAN feature to cpufeatures.h).  It's probably best to cache the
+> > > guest vmcbclean in struct vcpu_svm, too.
+> > Right, I totally forgot about this one.
+> > 
+> > One thing why I made this patch optional, is that I can instead drop it,
+> > and not 'read back' the saved area on vmexit, this will probably be faster
+> > that what this optimization does. What do you think? Is this patch worth it?
+> > (I submitted it because I already implemented this and wanted to hear opinion
+> > on this).
+> 
+> Yeah, good point.  It's one copy either way, either on vmexit (and
+> partly on vmentry depending on clean bits) or on vmentry.  I had not
+> considered the need to copy from vmcb02 to the cached vmcb12 on vmexit. :(
+> 
+> Let's shelve this for a bit, and revisit it once we have separate vmcb01
+> and vmcb02.  Then we might still use the clean bits to avoid copying
+> data from vmcb12 to vmcb02, including avoiding consistency checks
+> because we know the vmcb02 data is legit.
+It makes sense I guess. The vmcb02 would then play the role of the cache of
+vmcb12
+
+> 
+> Patches 1-5 are still worthwhile, so you can clean them up and send them.
+> 
+> Paolo
+
+OK, on it now.
+
+Best regards,
+	Maxim Levitsky
+> 
+
+
