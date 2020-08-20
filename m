@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA31224B424
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B1324B312
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730417AbgHTJ6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:58:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42900 "EHLO mail.kernel.org"
+        id S1727925AbgHTJlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:41:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730409AbgHTJ6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:58:32 -0400
+        id S1728893AbgHTJkv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:40:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B5D9622B3F;
-        Thu, 20 Aug 2020 09:58:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BCBE620724;
+        Thu, 20 Aug 2020 09:40:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917512;
-        bh=2LkuLw7hc5amWcJudiBTDsOVkeurjDE/qsPZWPVYzm4=;
+        s=default; t=1597916451;
+        bh=4ECfkLhEYHdEtCnhAdduHmkM3iWQ8LHlr8d9E3NNG1g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KGrGVB4pf90/PZfr3BIUHtjcoYGs0KD8GLv4Ph1KGzjR0LOPAT73G9nt5MWyZsJfh
-         biKJL+Z1ZSLdKHj+0yPuEucONHgKCNfpyFhZhHwS4LfGvVCWzM7TMGSmt1ryi2OyrF
-         JuUatsOD9uErv3GysrqKrkmH9aaoXSPsuuGQPzxo=
+        b=2QNVteTn9SrrhSPtPIJiPCZp3ZA3kTFQjeHNWkpyL0MNDWaPtTQnqnCDeS2sbtep5
+         3mi57GGSBTQrfl7IGTTedh0e9wLCb/e5qSy3ny/eREXDSMSg0RGfCKcc6UL7z5ZgrN
+         JkdxYRHQez4tRd1gSL/hE7ZUGWPHJNVv+KBE7oRg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>
-Subject: [PATCH 4.9 056/212] Bluetooth: Prevent out-of-bounds read in hci_inquiry_result_with_rssi_evt()
-Date:   Thu, 20 Aug 2020 11:20:29 +0200
-Message-Id: <20200820091605.201121887@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 133/204] clk: actions: Fix h_clk for Actions S500 SoC
+Date:   Thu, 20 Aug 2020 11:20:30 +0200
+Message-Id: <20200820091612.920283039@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
-References: <20200820091602.251285210@linuxfoundation.org>
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,50 +46,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peilin Ye <yepeilin.cs@gmail.com>
+From: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 
-commit 629b49c848ee71244203934347bd7730b0ddee8d upstream.
+[ Upstream commit f47ee279d25fb0e010cae5d6e758e39b40eb6378 ]
 
-Check `num_rsp` before using it as for-loop counter. Add `unlock` label.
+The h_clk clock in the Actions Semi S500 SoC clock driver has an
+invalid parent. Replace with the correct one.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: ed6b4795ece4 ("clk: actions: Add clock driver for S500 SoC")
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Link: https://lore.kernel.org/r/c57e7ebabfa970014f073b92fe95b47d3e5a70b1.1593788312.git.cristian.ciocaltea@gmail.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_event.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/clk/actions/owl-s500.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -3623,6 +3623,9 @@ static void hci_inquiry_result_with_rssi
- 		struct inquiry_info_with_rssi_and_pscan_mode *info;
- 		info = (void *) (skb->data + 1);
+diff --git a/drivers/clk/actions/owl-s500.c b/drivers/clk/actions/owl-s500.c
+index e2007ac4d235d..0eb83a0b70bcc 100644
+--- a/drivers/clk/actions/owl-s500.c
++++ b/drivers/clk/actions/owl-s500.c
+@@ -183,7 +183,7 @@ static OWL_GATE(timer_clk, "timer_clk", "hosc", CMU_DEVCLKEN1, 27, 0, 0);
+ static OWL_GATE(hdmi_clk, "hdmi_clk", "hosc", CMU_DEVCLKEN1, 3, 0, 0);
  
-+		if (skb->len < num_rsp * sizeof(*info) + 1)
-+			goto unlock;
-+
- 		for (; num_rsp; num_rsp--, info++) {
- 			u32 flags;
+ /* divider clocks */
+-static OWL_DIVIDER(h_clk, "h_clk", "ahbprevdiv_clk", CMU_BUSCLK1, 12, 2, NULL, 0, 0);
++static OWL_DIVIDER(h_clk, "h_clk", "ahbprediv_clk", CMU_BUSCLK1, 12, 2, NULL, 0, 0);
+ static OWL_DIVIDER(rmii_ref_clk, "rmii_ref_clk", "ethernet_pll_clk", CMU_ETHERNETPLL, 1, 1, rmii_ref_div_table, 0, 0);
  
-@@ -3644,6 +3647,9 @@ static void hci_inquiry_result_with_rssi
- 	} else {
- 		struct inquiry_info_with_rssi *info = (void *) (skb->data + 1);
- 
-+		if (skb->len < num_rsp * sizeof(*info) + 1)
-+			goto unlock;
-+
- 		for (; num_rsp; num_rsp--, info++) {
- 			u32 flags;
- 
-@@ -3664,6 +3670,7 @@ static void hci_inquiry_result_with_rssi
- 		}
- 	}
- 
-+unlock:
- 	hci_dev_unlock(hdev);
- }
- 
+ /* factor clocks */
+-- 
+2.25.1
+
 
 
