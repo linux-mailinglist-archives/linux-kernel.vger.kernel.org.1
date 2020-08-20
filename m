@@ -2,38 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8107C24B428
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5E424B29D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730359AbgHTJ7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:59:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43466 "EHLO mail.kernel.org"
+        id S1728386AbgHTJeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:34:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729652AbgHTJ6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:58:43 -0400
+        id S1727856AbgHTJcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:32:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4CA442067C;
-        Thu, 20 Aug 2020 09:58:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 097EB22BEA;
+        Thu, 20 Aug 2020 09:32:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917522;
-        bh=sB3O8RsK+WNH9GoiGeAlv0G4heZHl6LbPgI8bJi86mo=;
+        s=default; t=1597915924;
+        bh=F7tmT7M/lQLNNkMo1EXCnbaRGMuqCLijhPq4j2DczAU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jor7D8PRGeoSPKj2dSEtfSLFDT4CkFCW+e9AgC0fv2YujPkeiNG9jt4ZnRQvShsDu
-         ogNfW4/zwAQqn3ejc43XoYhB0+TmbR3EB9LGSV2xAzEzTpAW3ZBLtWBOQo8TJS6914
-         t2FgRTVxtrnrxQlCzBDmgw2bFdrBWHxsPwuk6AE4=
+        b=QbNYk54xDfqlhjwu8nLaP4drIMjBxeZfdG4e0s5YLWV3xsCyBQV5rhwLYpH7EOqc+
+         4VRkuvIgNyq2h7ZSDn0AUGtd3HiAe5EBLxgeHhynwAVO060W+ImtZI2DM5+qHvaSgQ
+         bX5K3TPscKFQKHYXeaRL86d0ODXiRyZ8Sb0LqQro=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amitoj Kaur Chawla <amitoj1606@gmail.com>,
-        Johan Hovold <johan@kernel.org>, Pavel Machek <pavel@ucw.cz>
-Subject: [PATCH 4.9 060/212] leds: wm831x-status: fix use-after-free on unbind
+        stable@vger.kernel.org, Jin Yao <yao.jin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>, Jin Yao <yao.jin@intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 182/232] perf evsel: Dont set sample_regs_intr/sample_regs_user for dummy event
 Date:   Thu, 20 Aug 2020 11:20:33 +0200
-Message-Id: <20200820091605.400259432@linuxfoundation.org>
+Message-Id: <20200820091621.619896502@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
-References: <20200820091602.251285210@linuxfoundation.org>
+In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
+References: <20200820091612.692383444@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,61 +51,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Jin Yao <yao.jin@linux.intel.com>
 
-commit 47a459ecc800a17109d0c496a4e21e478806ee40 upstream.
+[ Upstream commit c4735d990268399da9133b0ad445e488ece009ad ]
 
-Several MFD child drivers register their class devices directly under
-the parent device. This means you cannot blindly do devres conversions
-so that deregistration ends up being tied to the parent device,
-something which leads to use-after-free on driver unbind when the class
-device is released while still being registered.
+Since commit 0a892c1c9472 ("perf record: Add dummy event during system wide synthesis"),
+a dummy event is added to capture mmaps.
 
-Fixes: 8d3b6a4001ce ("leds: wm831x-status: Use devm_led_classdev_register")
-Cc: stable <stable@vger.kernel.org>     # 4.6
-Cc: Amitoj Kaur Chawla <amitoj1606@gmail.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Pavel Machek <pavel@ucw.cz>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+But if we run perf-record as,
 
+ # perf record -e cycles:p -IXMM0 -a -- sleep 1
+ Error:
+ dummy:HG: PMU Hardware doesn't support sampling/overflow-interrupts. Try 'perf stat'
+
+The issue is, if we enable the extended regs (-IXMM0), but the
+pmu->capabilities is not set with PERF_PMU_CAP_EXTENDED_REGS, the kernel
+will return -EOPNOTSUPP error.
+
+See following code:
+
+/* in kernel/events/core.c */
+static int perf_try_init_event(struct pmu *pmu, struct perf_event *event)
+
+{
+        ....
+        if (!(pmu->capabilities & PERF_PMU_CAP_EXTENDED_REGS) &&
+            has_extended_regs(event))
+                ret = -EOPNOTSUPP;
+        ....
+}
+
+For software dummy event, the PMU should not be set with
+PERF_PMU_CAP_EXTENDED_REGS. But unfortunately now, the dummy
+event has possibility to be set with PERF_REG_EXTENDED_MASK bit.
+
+In evsel__config, /* tools/perf/util/evsel.c */
+
+if (opts->sample_intr_regs) {
+        attr->sample_regs_intr = opts->sample_intr_regs;
+}
+
+If we use -IXMM0, the attr>sample_regs_intr will be set with
+PERF_REG_EXTENDED_MASK bit.
+
+It doesn't make sense to set attr->sample_regs_intr for a
+software dummy event.
+
+This patch adds dummy event checking before setting
+attr->sample_regs_intr and attr->sample_regs_user.
+
+After:
+  # ./perf record -e cycles:p -IXMM0 -a -- sleep 1
+  [ perf record: Woken up 1 times to write data ]
+  [ perf record: Captured and wrote 0.413 MB perf.data (45 samples) ]
+
+Committer notes:
+
+Adrian said this when providing his Acked-by:
+
+"
+This is fine.  It will not break PT.
+
+no_aux_samples is useful for evsels that have been added by the code rather
+than requested by the user.  For old kernels PT adds sched_switch tracepoint
+to track context switches (before the current context switch event was
+added) and having auxiliary sample information unnecessarily uses up space
+in the perf buffer.
+"
+
+Fixes: 0a892c1c9472 ("perf record: Add dummy event during system wide synthesis")
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jin Yao <yao.jin@intel.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/20200720010013.18238-1-yao.jin@linux.intel.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/leds/leds-wm831x-status.c |   14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ tools/perf/util/evsel.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/leds/leds-wm831x-status.c
-+++ b/drivers/leds/leds-wm831x-status.c
-@@ -283,12 +283,23 @@ static int wm831x_status_probe(struct pl
- 	drvdata->cdev.blink_set = wm831x_status_blink_set;
- 	drvdata->cdev.groups = wm831x_status_groups;
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index ef802f6d40c17..6a79cfdf96cb6 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -1014,12 +1014,14 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
+ 	if (callchain && callchain->enabled && !evsel->no_aux_samples)
+ 		evsel__config_callchain(evsel, opts, callchain);
  
--	ret = devm_led_classdev_register(wm831x->dev, &drvdata->cdev);
-+	ret = led_classdev_register(wm831x->dev, &drvdata->cdev);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "Failed to register LED: %d\n", ret);
- 		return ret;
+-	if (opts->sample_intr_regs && !evsel->no_aux_samples) {
++	if (opts->sample_intr_regs && !evsel->no_aux_samples &&
++	    !evsel__is_dummy_event(evsel)) {
+ 		attr->sample_regs_intr = opts->sample_intr_regs;
+ 		evsel__set_sample_bit(evsel, REGS_INTR);
  	}
  
-+	platform_set_drvdata(pdev, drvdata);
-+
-+	return 0;
-+}
-+
-+static int wm831x_status_remove(struct platform_device *pdev)
-+{
-+	struct wm831x_status *drvdata = platform_get_drvdata(pdev);
-+
-+	led_classdev_unregister(&drvdata->cdev);
-+
- 	return 0;
- }
- 
-@@ -297,6 +308,7 @@ static struct platform_driver wm831x_sta
- 		   .name = "wm831x-status",
- 		   },
- 	.probe = wm831x_status_probe,
-+	.remove = wm831x_status_remove,
- };
- 
- module_platform_driver(wm831x_status_driver);
+-	if (opts->sample_user_regs && !evsel->no_aux_samples) {
++	if (opts->sample_user_regs && !evsel->no_aux_samples &&
++	    !evsel__is_dummy_event(evsel)) {
+ 		attr->sample_regs_user |= opts->sample_user_regs;
+ 		evsel__set_sample_bit(evsel, REGS_USER);
+ 	}
+-- 
+2.25.1
+
 
 
