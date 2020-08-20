@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0E624B3E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7030624B35A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730098AbgHTJyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:54:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36052 "EHLO mail.kernel.org"
+        id S1729124AbgHTJqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:46:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729669AbgHTJxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:53:54 -0400
+        id S1729156AbgHTJmd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:42:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 371F62078D;
-        Thu, 20 Aug 2020 09:53:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 24140207DE;
+        Thu, 20 Aug 2020 09:42:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917233;
-        bh=fkOJEgxnlLfFoY4VoR+l/3xqMq5UzsO9nPMTzem0mjU=;
+        s=default; t=1597916552;
+        bh=BvelV7rj7pX8LClD7CfT1GkoCmXsCtbsF1V8T+D2ddY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=myLi8l6SSSh7tIIpoR2rzsLs/sQBoq9ay6seyIcF30xXkeTdNtacPV4/r+MZRn4S2
-         AY+gNJRy3YD2m49NFCliBHemWGA4jgVAZoG0Ev1X4xefHoroqLZJEzxp+36dApCYnB
-         pNjFSurRnqNQm/JHigwExAWgB3DRrnM27QJWSh0E=
+        b=b+2QBgfRmbBCqZi18+YWJIHZ4ZIHMgVnbOxlS0yi5+vKEt9vsn5gX4a4iJNOsYIL4
+         99IfSnBWreFQ8gM9lgzpkrCxpHH8snLDLtKQTaH+nNf/2BUV4ygQzUjr4LiULGrj0T
+         vGa61MDJw598nNv75zyywfIdzOXKar/NcsrDZ0RM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PATCH 4.19 20/92] xtensa: fix xtensa_pmu_setup prototype
-Date:   Thu, 20 Aug 2020 11:21:05 +0200
-Message-Id: <20200820091538.607550543@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 169/204] drm/vmwgfx: Fix two list_for_each loop exit tests
+Date:   Thu, 20 Aug 2020 11:21:06 +0200
+Message-Id: <20200820091614.652651134@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
-References: <20200820091537.490965042@linuxfoundation.org>
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,35 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Filippov <jcmvbkbc@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 6d65d3769d1910379e1cfa61ebf387efc6bfb22c upstream.
+[ Upstream commit 4437c1152ce0e57ab8f401aa696ea6291cc07ab1 ]
 
-Fix the following build error in configurations with
-CONFIG_XTENSA_VARIANT_HAVE_PERF_EVENTS=y:
+These if statements are supposed to be true if we ended the
+list_for_each_entry() loops without hitting a break statement but they
+don't work.
 
-  arch/xtensa/kernel/perf_event.c:420:29: error: passing argument 3 of
-  ‘cpuhp_setup_state’ from incompatible pointer type
+In the first loop, we increment "i" after the "if (i == unit)" condition
+so we don't necessarily know that "i" is not equal to unit at the end of
+the loop.
 
-Cc: stable@vger.kernel.org
-Fixes: 25a77b55e74c ("xtensa/perf: Convert the hotplug notifier to state machine callbacks")
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+In the second loop we exit when mode is not pointing to a valid
+drm_display_mode struct so it doesn't make sense to check "mode->type".
 
+Fixes: a278724aa23c ("drm/vmwgfx: Implement fbdev on kms v2")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Roland Scheidegger <sroland@vmware.com>
+Signed-off-by: Roland Scheidegger <sroland@vmware.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/xtensa/kernel/perf_event.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/arch/xtensa/kernel/perf_event.c
-+++ b/arch/xtensa/kernel/perf_event.c
-@@ -404,7 +404,7 @@ static struct pmu xtensa_pmu = {
- 	.read = xtensa_pmu_read,
- };
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
+index 04d66592f6050..b7a9cee69ea72 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
+@@ -2578,7 +2578,7 @@ int vmw_kms_fbdev_init_data(struct vmw_private *dev_priv,
+ 		++i;
+ 	}
  
--static int xtensa_pmu_setup(int cpu)
-+static int xtensa_pmu_setup(unsigned int cpu)
- {
- 	unsigned i;
+-	if (i != unit) {
++	if (&con->head == &dev_priv->dev->mode_config.connector_list) {
+ 		DRM_ERROR("Could not find initial display unit.\n");
+ 		ret = -EINVAL;
+ 		goto out_unlock;
+@@ -2602,13 +2602,13 @@ int vmw_kms_fbdev_init_data(struct vmw_private *dev_priv,
+ 			break;
+ 	}
  
+-	if (mode->type & DRM_MODE_TYPE_PREFERRED)
+-		*p_mode = mode;
+-	else {
++	if (&mode->head == &con->modes) {
+ 		WARN_ONCE(true, "Could not find initial preferred mode.\n");
+ 		*p_mode = list_first_entry(&con->modes,
+ 					   struct drm_display_mode,
+ 					   head);
++	} else {
++		*p_mode = mode;
+ 	}
+ 
+  out_unlock:
+-- 
+2.25.1
+
 
 
