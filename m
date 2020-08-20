@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A60724BD77
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4675424BD68
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728009AbgHTJi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:38:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56660 "EHLO mail.kernel.org"
+        id S1728937AbgHTJjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:39:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728895AbgHTJik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:38:40 -0400
+        id S1728901AbgHTJiw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:38:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D37E2173E;
-        Thu, 20 Aug 2020 09:38:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D948B2075E;
+        Thu, 20 Aug 2020 09:38:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916320;
-        bh=leFGFO6VIFJLxyhjNyZWZnKHXhV2UKbC1qbZhu5S6/w=;
+        s=default; t=1597916331;
+        bh=SZvPBRzilFSWQsUwBrp/oT8mvvxNfp7riXtTnZ+NGLI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nHH5m4KsLOxxEgerZZMYSJYzQy7KKYQfX0vl+3sEzN3g0lmuKysEV9i7sLYl3VGQO
-         tfpAHHfMwR7r2AFHdRqyKc/dQEbbtNG3SHo9Dw0tn0okMYd1FWZ3L9oUKOHNxc9Fxm
-         sfYgPoErO0sGR+5xLsidVBNkKhCZpLWI8Z3L/184=
+        b=Op+4RJOpSF8Zz4E+4wnl72Jf88ghTveds4+vW9KZsNxXRhTVWTzZHVBzFHa2Roz2n
+         q0xoVjldmomco+Arn4gDk5C4e4UDqjYoLe5p268FgyxYgWIRBRyaWrVbuvJ7oY48zp
+         RMcxS33lZyH9xG5Mlw9GVmcybmTTmiwtEQpZfVk0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Coly Li <colyli@suse.de>,
-        Jens Axboe <axboe@kernel.dk>, Ken Raeburn <raeburn@redhat.com>
-Subject: [PATCH 5.7 060/204] bcache: fix overflow in offset_to_stripe()
-Date:   Thu, 20 Aug 2020 11:19:17 +0200
-Message-Id: <20200820091609.265726854@linuxfoundation.org>
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Subject: [PATCH 5.7 062/204] driver core: Avoid binding drivers to dead devices
+Date:   Thu, 20 Aug 2020 11:19:19 +0200
+Message-Id: <20200820091609.364387087@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
 References: <20200820091606.194320503@linuxfoundation.org>
@@ -43,136 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Coly Li <colyli@suse.de>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit 7a1481267999c02abf4a624515c1b5c7c1fccbd6 upstream.
+commit 654888327e9f655a9d55ad477a9583e90e8c9b5c upstream.
 
-offset_to_stripe() returns the stripe number (in type unsigned int) from
-an offset (in type uint64_t) by the following calculation,
-	do_div(offset, d->stripe_size);
-For large capacity backing device (e.g. 18TB) with small stripe size
-(e.g. 4KB), the result is 4831838208 and exceeds UINT_MAX. The actual
-returned value which caller receives is 536870912, due to the overflow.
+Commit 3451a495ef24 ("driver core: Establish order of operations for
+device_add and device_del via bitflag") sought to prevent asynchronous
+driver binding to a device which is being removed.  It added a
+per-device "dead" flag which is checked in the following code paths:
 
-Indeed in bcache_device_init(), bcache_device->nr_stripes is limited in
-range [1, INT_MAX]. Therefore all valid stripe numbers in bcache are
-in range [0, bcache_dev->nr_stripes - 1].
+* asynchronous binding in __driver_attach_async_helper()
+*  synchronous binding in device_driver_attach()
+* asynchronous binding in __device_attach_async_helper()
 
-This patch adds a upper limition check in offset_to_stripe(): the max
-valid stripe number should be less than bcache_device->nr_stripes. If
-the calculated stripe number from do_div() is equal to or larger than
-bcache_device->nr_stripe, -EINVAL will be returned. (Normally nr_stripes
-is less than INT_MAX, exceeding upper limitation doesn't mean overflow,
-therefore -EOVERFLOW is not used as error code.)
+It did *not* check the flag upon:
 
-This patch also changes nr_stripes' type of struct bcache_device from
-'unsigned int' to 'int', and return value type of offset_to_stripe()
-from 'unsigned int' to 'int', to match their exact data ranges.
+*  synchronous binding in __device_attach()
 
-All locations where bcache_device->nr_stripes and offset_to_stripe() are
-referenced also get updated for the above type change.
+However __device_attach() may also be called asynchronously from:
 
-Reported-and-tested-by: Ken Raeburn <raeburn@redhat.com>
-Signed-off-by: Coly Li <colyli@suse.de>
-Cc: stable@vger.kernel.org
-Link: https://bugzilla.redhat.com/show_bug.cgi?id=1783075
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+deferred_probe_work_func()
+  bus_probe_device()
+    device_initial_probe()
+      __device_attach()
+
+So if the commit's intention was to check the "dead" flag in all
+asynchronous code paths, then a check is also necessary in
+__device_attach().  Add the missing check.
+
+Fixes: 3451a495ef24 ("driver core: Establish order of operations for device_add and device_del via bitflag")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: stable@vger.kernel.org # v5.1+
+Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Link: https://lore.kernel.org/r/de88a23a6fe0ef70f7cfd13c8aea9ab51b4edab6.1594214103.git.lukas@wunner.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/bcache/bcache.h    |    2 +-
- drivers/md/bcache/writeback.c |   14 +++++++++-----
- drivers/md/bcache/writeback.h |   19 +++++++++++++++++--
- 3 files changed, 27 insertions(+), 8 deletions(-)
+ drivers/base/dd.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/md/bcache/bcache.h
-+++ b/drivers/md/bcache/bcache.h
-@@ -264,7 +264,7 @@ struct bcache_device {
- #define BCACHE_DEV_UNLINK_DONE		2
- #define BCACHE_DEV_WB_RUNNING		3
- #define BCACHE_DEV_RATE_DW_RUNNING	4
--	unsigned int		nr_stripes;
-+	int			nr_stripes;
- 	unsigned int		stripe_size;
- 	atomic_t		*stripe_sectors_dirty;
- 	unsigned long		*full_dirty_stripes;
---- a/drivers/md/bcache/writeback.c
-+++ b/drivers/md/bcache/writeback.c
-@@ -523,15 +523,19 @@ void bcache_dev_sectors_dirty_add(struct
- 				  uint64_t offset, int nr_sectors)
- {
- 	struct bcache_device *d = c->devices[inode];
--	unsigned int stripe_offset, stripe, sectors_dirty;
-+	unsigned int stripe_offset, sectors_dirty;
-+	int stripe;
+--- a/drivers/base/dd.c
++++ b/drivers/base/dd.c
+@@ -846,7 +846,9 @@ static int __device_attach(struct device
+ 	int ret = 0;
  
- 	if (!d)
- 		return;
- 
-+	stripe = offset_to_stripe(d, offset);
-+	if (stripe < 0)
-+		return;
-+
- 	if (UUID_FLASH_ONLY(&c->uuids[inode]))
- 		atomic_long_add(nr_sectors, &c->flash_dev_dirty_sectors);
- 
--	stripe = offset_to_stripe(d, offset);
- 	stripe_offset = offset & (d->stripe_size - 1);
- 
- 	while (nr_sectors) {
-@@ -571,12 +575,12 @@ static bool dirty_pred(struct keybuf *bu
- static void refill_full_stripes(struct cached_dev *dc)
- {
- 	struct keybuf *buf = &dc->writeback_keys;
--	unsigned int start_stripe, stripe, next_stripe;
-+	unsigned int start_stripe, next_stripe;
-+	int stripe;
- 	bool wrapped = false;
- 
- 	stripe = offset_to_stripe(&dc->disk, KEY_OFFSET(&buf->last_scanned));
--
--	if (stripe >= dc->disk.nr_stripes)
-+	if (stripe < 0)
- 		stripe = 0;
- 
- 	start_stripe = stripe;
---- a/drivers/md/bcache/writeback.h
-+++ b/drivers/md/bcache/writeback.h
-@@ -52,10 +52,22 @@ static inline uint64_t bcache_dev_sector
- 	return ret;
- }
- 
--static inline unsigned int offset_to_stripe(struct bcache_device *d,
-+static inline int offset_to_stripe(struct bcache_device *d,
- 					uint64_t offset)
- {
- 	do_div(offset, d->stripe_size);
-+
-+	/* d->nr_stripes is in range [1, INT_MAX] */
-+	if (unlikely(offset >= d->nr_stripes)) {
-+		pr_err("Invalid stripe %llu (>= nr_stripes %d).\n",
-+			offset, d->nr_stripes);
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * Here offset is definitly smaller than INT_MAX,
-+	 * return it as int will never overflow.
-+	 */
- 	return offset;
- }
- 
-@@ -63,7 +75,10 @@ static inline bool bcache_dev_stripe_dir
- 					   uint64_t offset,
- 					   unsigned int nr_sectors)
- {
--	unsigned int stripe = offset_to_stripe(&dc->disk, offset);
-+	int stripe = offset_to_stripe(&dc->disk, offset);
-+
-+	if (stripe < 0)
-+		return false;
- 
- 	while (1) {
- 		if (atomic_read(dc->disk.stripe_sectors_dirty + stripe))
+ 	device_lock(dev);
+-	if (dev->driver) {
++	if (dev->p->dead) {
++		goto out_unlock;
++	} else if (dev->driver) {
+ 		if (device_is_bound(dev)) {
+ 			ret = 1;
+ 			goto out_unlock;
 
 
