@@ -2,292 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952E224C0E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F275D24C102
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727955AbgHTOsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 10:48:46 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:60584 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728511AbgHTOs3 (ORCPT
+        id S1728033AbgHTOxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 10:53:07 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:46092 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726810AbgHTOw7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 10:48:29 -0400
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2A93C29AAD2;
-        Thu, 20 Aug 2020 15:48:24 +0100 (BST)
-Date:   Thu, 20 Aug 2020 16:48:20 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Parshuram Thombare <pthombar@cadence.com>
-Cc:     <bbrezillon@kernel.org>, <vitor.soares@synopsys.com>,
-        <pgaj@cadence.com>, <linux-i3c@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <mparab@cadence.com>,
-        <praneeth@ti.com>
-Subject: Re: [PATCH v3] i3c: master: fix for SETDASA and DAA process
-Message-ID: <20200820164820.4fec97b3@collabora.com>
-In-Reply-To: <1597930706-15744-1-git-send-email-pthombar@cadence.com>
-References: <1597930706-15744-1-git-send-email-pthombar@cadence.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Thu, 20 Aug 2020 10:52:59 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1k8lvs-00Aq9f-QJ; Thu, 20 Aug 2020 08:52:48 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1k8lvr-0002V7-SF; Thu, 20 Aug 2020 08:52:48 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Suren Baghdasaryan <surenb@google.com>, timmurray@google.com,
+        mingo@kernel.org, peterz@infradead.org, tglx@linutronix.de,
+        esyr@redhat.com, christian@kellner.me, areber@redhat.com,
+        shakeelb@google.com, cyphar@cyphar.com, oleg@redhat.com,
+        adobriyan@gmail.com, akpm@linux-foundation.org,
+        gladkov.alexey@gmail.com, walken@google.com,
+        daniel.m.jordan@oracle.com, avagin@gmail.com,
+        bernd.edlinger@hotmail.de, john.johansen@canonical.com,
+        laoar.shao@gmail.com, minchan@kernel.org, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20200820002053.1424000-1-surenb@google.com>
+        <87zh6pxzq6.fsf@x220.int.ebiederm.org>
+        <20200820124241.GJ5033@dhcp22.suse.cz>
+        <87lfi9xz7y.fsf@x220.int.ebiederm.org>
+        <87d03lxysr.fsf@x220.int.ebiederm.org>
+        <20200820132631.GK5033@dhcp22.suse.cz>
+        <20200820133454.ch24kewh42ax4ebl@wittgenstein>
+        <dcb62b67-5ad6-f63a-a909-e2fa70b240fc@i-love.sakura.ne.jp>
+        <20200820140054.fdkbotd4tgfrqpe6@wittgenstein>
+        <637ab0e7-e686-0c94-753b-b97d24bb8232@i-love.sakura.ne.jp>
+Date:   Thu, 20 Aug 2020 09:49:11 -0500
+In-Reply-To: <637ab0e7-e686-0c94-753b-b97d24bb8232@i-love.sakura.ne.jp>
+        (Tetsuo Handa's message of "Thu, 20 Aug 2020 23:18:40 +0900")
+Message-ID: <87k0xtv0d4.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-XM-SPF: eid=1k8lvr-0002V7-SF;;;mid=<87k0xtv0d4.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19eJAV7OrO6lFoLS+9WugMFiMdwgaSwTyw=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,T_TooManySym_03,XMNoVowels,XMSubLong
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 T_TooManySym_03 6+ unique symbols in subject
+X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 515 ms - load_scoreonly_sql: 0.10 (0.0%),
+        signal_user_changed: 12 (2.4%), b_tie_ro: 10 (2.0%), parse: 1.82
+        (0.4%), extract_message_metadata: 16 (3.1%), get_uri_detail_list: 3.4
+        (0.7%), tests_pri_-1000: 6 (1.2%), tests_pri_-950: 1.43 (0.3%),
+        tests_pri_-900: 1.15 (0.2%), tests_pri_-90: 126 (24.4%), check_bayes:
+        119 (23.0%), b_tokenize: 10 (1.9%), b_tok_get_all: 9 (1.7%),
+        b_comp_prob: 2.9 (0.6%), b_tok_touch_all: 94 (18.2%), b_finish: 0.95
+        (0.2%), tests_pri_0: 327 (63.5%), check_dkim_signature: 0.78 (0.2%),
+        check_dkim_adsp: 2.9 (0.6%), poll_dns_idle: 0.99 (0.2%), tests_pri_10:
+        3.6 (0.7%), tests_pri_500: 15 (2.8%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 1/1] mm, oom_adj: don't loop through tasks in __set_oom_adj when not necessary
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Aug 2020 15:38:26 +0200
-Parshuram Thombare <pthombar@cadence.com> wrote:
+Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp> writes:
 
-> This patch fix following issue.
-> Controller slots blocked for devices with static_addr
-> but no init_dyn_addr may limit the number of I3C devices
-> on the bus which gets dynamic address in DAA. So
-> instead of attaching all the devices with static_addr,
-> now we only attach the devices which successfully
-> complete SETDASA. For remaining devices with init_dyn_addr,
-> i3c_master_add_i3c_dev_locked() will try to set requested
-> dynamic address after DAA.
-> 
-> Fixes: 3a379bbcea0a ("i3c: Add core I3C infrastructure")
+> On 2020/08/20 23:00, Christian Brauner wrote:
+>> On Thu, Aug 20, 2020 at 10:48:43PM +0900, Tetsuo Handa wrote:
+>>> On 2020/08/20 22:34, Christian Brauner wrote:
+>>>> On Thu, Aug 20, 2020 at 03:26:31PM +0200, Michal Hocko wrote:
+>>>>> If you can handle vfork by other means then I am all for it. There were
+>>>>> no patches in that regard proposed yet. Maybe it will turn out simpler
+>>>>> then the heavy lifting we have to do in the oom specific code.
+>>>>
+>>>> Eric's not wrong. I fiddled with this too this morning but since
+>>>> oom_score_adj is fiddled with in a bunch of places this seemed way more
+>>>> code churn then what's proposed here.
+>>>
+>>> I prefer simply reverting commit 44a70adec910d692 ("mm, oom_adj: make sure
+>>> processes sharing mm have same view of oom_score_adj").
+>>>
+>>>   https://lore.kernel.org/patchwork/patch/1037208/
+>> 
+>> I guess this is a can of worms but just or the sake of getting more
+>> background: the question seems to be whether the oom adj score is a
+>> property of the task/thread-group or a property of the mm. I always
+>> thought the oom score is a property of the task/thread-group and not the
+>> mm which is also why it lives in struct signal_struct and not in struct
+>> mm_struct. But
+>> 
+>> 44a70adec910 ("mm, oom_adj: make sure processes sharing mm have same view of oom_score_adj")
+>> 
+>> reads like it is supposed to be a property of the mm or at least the
+>> change makes it so.
+>
+> Yes, 44a70adec910 is trying to go towards changing from a property of the task/thread-group
+> to a property of mm. But I don't think we need to do it at the cost of "__set_oom_adj() latency
+> Yong-Taek Lee and Tim Murray have reported" and "complicity for supporting
+> vfork() => __set_oom_adj() => execve() sequence".
 
-Hm, not sure that qualifies as a fix. The current implementation was
-correct, it was just reserving a slot in the device table for devices
-that didn't have an init address or on which SETDASA failed.
+The thing is commit 44a70adec910d692 ("mm, oom_adj: make sure processes
+sharing mm have same view of oom_score_adj") has been in the tree for 4
+years.
 
-> Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
-> ---
-> Changes between v2 and v3 are:
-> 1. Keeping init_dyn_addr reserved.
-> 2. Code refactoring and changes in comments.
-> 
-> Changes between v1 and v2 are:
-> 1. Added boardinfo attach fix.
-> 2. Removed reattach issue related fix.
-> 3. Reserve init_dyn_addr initially, so that it will not
->    be used in DAA and  attempt can be made to set those
->    firmware requested dynamic address after DAA.
-> ---
->  drivers/i3c/master.c |  115 ++++++++++++++++++++++++++++----------------------
->  1 files changed, 65 insertions(+), 50 deletions(-)
-> 
-> diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
-> index 3d995f2..24543d8 100644
-> --- a/drivers/i3c/master.c
-> +++ b/drivers/i3c/master.c
-> @@ -1367,7 +1367,9 @@ static int i3c_master_reattach_i3c_dev(struct i3c_dev_desc *dev,
->  	enum i3c_addr_slot_status status;
->  	int ret;
->  
-> -	if (dev->info.dyn_addr != old_dyn_addr) {
-> +	if (dev->info.dyn_addr != old_dyn_addr &&
-> +	    (!dev->boardinfo ||
-> +	     dev->info.dyn_addr != dev->boardinfo->init_dyn_addr)) {
->  		status = i3c_bus_get_addr_slot_status(&master->bus,
->  						      dev->info.dyn_addr);
->  		if (status != I3C_ADDR_SLOT_FREE)
-> @@ -1426,33 +1428,49 @@ static void i3c_master_detach_i2c_dev(struct i2c_dev_desc *dev)
->  		master->ops->detach_i2c_dev(dev);
->  }
->  
-> -static void i3c_master_pre_assign_dyn_addr(struct i3c_dev_desc *dev)
-> +static int i3c_master_pre_assign_dyn_addr(struct i3c_master_controller *master,
-> +					  struct i3c_dev_boardinfo *boardinfo)
+That someone is just now noticing a regression is their problem.  The
+change is semantics is done and decided.  We can not reasonably revert
+at this point without risking other regressions.
 
-That function now does more than just assigning a dynamic address: it
-also creates the i3c_dev_desc. It should be renamed accordingly
-(i3c_master_early_i3c_dev_add() maybe).
+Given that the decision has already been made to make oom_adj
+effectively per mm.  There is no point on have a debate if we should do
+it.
 
->  {
-> -	struct i3c_master_controller *master = i3c_dev_get_master(dev);
-> +	struct i3c_device_info info = {
-> +		.static_addr = boardinfo->static_addr,
-> +	};
-> +	struct i3c_dev_desc *i3cdev;
->  	int ret;
->  
-> -	if (!dev->boardinfo || !dev->boardinfo->init_dyn_addr ||
-> -	    !dev->boardinfo->static_addr)
-> -		return;
-> +	i3cdev = i3c_master_alloc_i3c_dev(master, &info);
-> +	if (IS_ERR(i3cdev))
-> +		return -ENOMEM;
-> +
-> +	i3cdev->boardinfo = boardinfo;
->  
-> -	ret = i3c_master_setdasa_locked(master, dev->info.static_addr,
-> -					dev->boardinfo->init_dyn_addr);
-> +	ret = i3c_master_attach_i3c_dev(master, i3cdev);
->  	if (ret)
-> -		return;
-> +		goto err_attach;
-> +
-> +	ret = i3c_master_setdasa_locked(master, i3cdev->info.static_addr,
-> +					i3cdev->boardinfo->init_dyn_addr);
-> +	if (ret)
-> +		goto err_setdasa;
->  
-> -	dev->info.dyn_addr = dev->boardinfo->init_dyn_addr;
-> -	ret = i3c_master_reattach_i3c_dev(dev, 0);
-> +	i3cdev->info.dyn_addr = i3cdev->boardinfo->init_dyn_addr;
-> +	ret = i3c_master_reattach_i3c_dev(i3cdev, 0);
->  	if (ret)
->  		goto err_rstdaa;
->  
-> -	ret = i3c_master_retrieve_dev_info(dev);
-> +	ret = i3c_master_retrieve_dev_info(i3cdev);
->  	if (ret)
->  		goto err_rstdaa;
->  
-> -	return;
-> +	return 0;
->  
->  err_rstdaa:
-> -	i3c_master_rstdaa_locked(master, dev->boardinfo->init_dyn_addr);
-> +	i3c_master_rstdaa_locked(master, i3cdev->boardinfo->init_dyn_addr);
-> +err_setdasa:
-> +	i3c_master_detach_i3c_dev(i3cdev);
-> +err_attach:
-> +	i3c_master_free_i3c_dev(i3cdev);
-> +
-> +	return ret;
->  }
->  
->  static void
-> @@ -1619,8 +1637,8 @@ static void i3c_master_detach_free_devs(struct i3c_master_controller *master)
->   * This function is following all initialisation steps described in the I3C
->   * specification:
->   *
-> - * 1. Attach I2C and statically defined I3C devs to the master so that the
-> - *    master can fill its internal device table appropriately
-> + * 1. Attach I2C devs to the master so that the master can fill its internal
-> + *    device table appropriately
->   *
->   * 2. Call &i3c_master_controller_ops->bus_init() method to initialize
->   *    the master controller. That's usually where the bus mode is selected
-> @@ -1633,10 +1651,14 @@ static void i3c_master_detach_free_devs(struct i3c_master_controller *master)
->   * 4. Disable all slave events.
->   *
->   * 5. Pre-assign dynamic addresses requested by the FW with SETDASA for I3C
-> - *    devices that have a static address
-> + *    devices that have a static address and attach corresponding statically
-> + *    defined I3C devices to the master. If only init_dyn_addr is available
-> + *    or if SETDASA fails, reserve those init_dyn_addr to be used later to set
-> + *    address using SETNEWDA after DAA.
->   *
->   * 6. Do a DAA (Dynamic Address Assignment) to assign dynamic addresses to all
-> - *    remaining I3C devices
-> + *    remaining I3C devices and attach them to the master if the dynamic address
-> + *    assignment succeeds
->   *
->   * Once this is done, all I3C and I2C devices should be usable.
->   *
-> @@ -1647,7 +1669,6 @@ static int i3c_master_bus_init(struct i3c_master_controller *master)
->  	enum i3c_addr_slot_status status;
->  	struct i2c_dev_boardinfo *i2cboardinfo;
->  	struct i3c_dev_boardinfo *i3cboardinfo;
-> -	struct i3c_dev_desc *i3cdev;
->  	struct i2c_dev_desc *i2cdev;
->  	int ret;
->  
-> @@ -1679,34 +1700,6 @@ static int i3c_master_bus_init(struct i3c_master_controller *master)
->  			goto err_detach_devs;
->  		}
->  	}
-> -	list_for_each_entry(i3cboardinfo, &master->boardinfo.i3c, node) {
-> -		struct i3c_device_info info = {
-> -			.static_addr = i3cboardinfo->static_addr,
-> -		};
-> -
-> -		if (i3cboardinfo->init_dyn_addr) {
-> -			status = i3c_bus_get_addr_slot_status(&master->bus,
-> -						i3cboardinfo->init_dyn_addr);
-> -			if (status != I3C_ADDR_SLOT_FREE) {
-> -				ret = -EBUSY;
-> -				goto err_detach_devs;
-> -			}
-> -		}
-> -
-> -		i3cdev = i3c_master_alloc_i3c_dev(master, &info);
-> -		if (IS_ERR(i3cdev)) {
-> -			ret = PTR_ERR(i3cdev);
-> -			goto err_detach_devs;
-> -		}
-> -
-> -		i3cdev->boardinfo = i3cboardinfo;
-> -
-> -		ret = i3c_master_attach_i3c_dev(master, i3cdev);
-> -		if (ret) {
-> -			i3c_master_free_i3c_dev(i3cdev);
-> -			goto err_detach_devs;
-> -		}
-> -	}
->  
->  	/*
->  	 * Now execute the controller specific ->bus_init() routine, which
-> @@ -1744,10 +1737,32 @@ static int i3c_master_bus_init(struct i3c_master_controller *master)
->  
->  	/*
->  	 * Pre-assign dynamic address and retrieve device information if
-> -	 * needed.
-> +	 * needed. And reserve the init_dyn_addr in case of failure, to retry
-> +	 * setting the requested address after DAA is done in
-> +	 * i3c_master_add_i3c_dev_locked().
->  	 */
-> -	i3c_bus_for_each_i3cdev(&master->bus, i3cdev)
-> -		i3c_master_pre_assign_dyn_addr(i3cdev);
-> +	list_for_each_entry(i3cboardinfo, &master->boardinfo.i3c, node) {
-> +		/*
-> +		 * We don't attach devices which are not addressable
-> +		 * (no static_addr and dyn_addr) and devices with static_addr
-> +		 * but no init_dyn_addr will participate in DAA.
-> +		 */
-> +		if (!i3cboardinfo->init_dyn_addr ||
-> +		    (i3cboardinfo->static_addr &&
-> +		     !i3c_master_pre_assign_dyn_addr(master, i3cboardinfo)))
-> +			continue;
-> +
-> +		ret = i3c_bus_get_addr_slot_status(&master->bus,
-> +						   i3cboardinfo->init_dyn_addr);
-> +		if (ret != I3C_ADDR_SLOT_FREE) {
-> +			ret = -EBUSY;
-> +			goto err_rstdaa;
-> +		}
-> +
-> +		i3c_bus_set_addr_slot_status(&master->bus,
-> +					     i3cboardinfo->init_dyn_addr,
-> +					     I3C_ADDR_SLOT_I3C_DEV);
+Eric
 
-You should reserve the address before calling
-i3c_master_pre_assign_dyn_addr():
-
-		/*
-		 * We don't attach devices which are not addressable
-		 * (no static_addr and dyn_addr) and devices with
-		 * static_addr but no init_dyn_addr will participate in DAA.
-		 */
-		if (!i3cboardinfo->init_dyn_addr ||
-		    !i3cboardinfo->static_addr)
-			continue;
-
-		ret = i3c_bus_get_addr_slot_status(&master->bus,
-						   i3cboardinfo->init_dyn_addr);
-		if (ret != I3C_ADDR_SLOT_FREE) {
-			ret = -EBUSY;
-			goto err_rstdaa;
-		}
-
-		i3c_bus_set_addr_slot_status(&master->bus,
-					     i3cboardinfo->init_dyn_addr,
-					     I3C_ADDR_SLOT_I3C_DEV);
-
-		i3c_master_pre_assign_dyn_addr(master, i3cboardinfo);
-
-> +	}
->  
->  	ret = i3c_master_do_daa(master);
->  	if (ret)
 
