@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F09824BE34
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC22224BE96
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728463AbgHTJeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:34:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43602 "EHLO mail.kernel.org"
+        id S1728418AbgHTJdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:33:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727112AbgHTJbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:31:35 -0400
+        id S1727882AbgHTJb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:31:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6854122B4B;
-        Thu, 20 Aug 2020 09:31:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F28C22BED;
+        Thu, 20 Aug 2020 09:31:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915894;
-        bh=cCUOGE8MGkysAC94vp/q2pSVU3xfxlp5tQo6NvQEVZg=;
+        s=default; t=1597915916;
+        bh=S5pOME3zGx4IYjWpdF8CZDVdUnqXcSKVsKmBjXwEE0E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QwX/cb+SdmekRmfw8X5tcjVPYn7xQPjwP927EZ47svfMY/YUYGkmCyp1lLbWdUsdq
-         QOLm7WhkswVdeEca/Yz4i9OEQGC+fTA3O6X2qcXUonzfmoTu6S+6QBNTdSY9SR9ptT
-         oaLFh7zXyeT/gcpxS/BAW7hvpfPfZBx9dc17APDo=
+        b=i4sQ+yoCZ5LLPKIv/gBvzkf23r9h8VAfNEhYwB5jEB/pey3NnZ5QdPiDWMCsGTCkc
+         hBC71M5k75sjIALJ21l38SHOsd0gaHobxTTRXTnR3IKp4924y0vsYfB3HKEkF5TYcd
+         aQTBOTsUgMiJY/lJV2H9ciyrIQO8jE1dKI59qYVE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Scott Mayhew <smayhew@redhat.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Jane Chu <jane.chu@oracle.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 173/232] nfs: ensure correct writeback errors are returned on close()
-Date:   Thu, 20 Aug 2020 11:20:24 +0200
-Message-Id: <20200820091621.199408680@linuxfoundation.org>
+Subject: [PATCH 5.8 179/232] libnvdimm/security: fix a typo
+Date:   Thu, 20 Aug 2020 11:20:30 +0200
+Message-Id: <20200820091621.481053528@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
 References: <20200820091612.692383444@linuxfoundation.org>
@@ -44,74 +46,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Scott Mayhew <smayhew@redhat.com>
+From: Jane Chu <jane.chu@oracle.com>
 
-[ Upstream commit 67dd23f9e6fbaf163431912ef5599c5e0693476c ]
+[ Upstream commit dad42d17558f316e9e807698cd4207359b636084 ]
 
-nfs_wb_all() calls filemap_write_and_wait(), which uses
-filemap_check_errors() to determine the error to return.
-filemap_check_errors() only looks at the mapping->flags and will
-therefore only return either -ENOSPC or -EIO.  To ensure that the
-correct error is returned on close(), nfs{,4}_file_flush() should call
-filemap_check_wb_err() which looks at the errseq value in
-mapping->wb_err without consuming it.
+commit d78c620a2e82 ("libnvdimm/security: Introduce a 'frozen' attribute")
+introduced a typo, causing a 'nvdimm->sec.flags' update being overwritten
+by the subsequent update meant for 'nvdimm->sec.ext_flags'.
 
-Fixes: 6fbda89b257f ("NFS: Replace custom error reporting mechanism with
-generic one")
-Signed-off-by: Scott Mayhew <smayhew@redhat.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Link: https://lore.kernel.org/r/1596494499-9852-1-git-send-email-jane.chu@oracle.com
+Fixes: d78c620a2e82 ("libnvdimm/security: Introduce a 'frozen' attribute")
+Cc: Dan Williams <dan.j.williams@intel.com>
+Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+Signed-off-by: Jane Chu <jane.chu@oracle.com>
+Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/file.c     | 5 ++++-
- fs/nfs/nfs4file.c | 5 ++++-
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ drivers/nvdimm/security.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/nfs/file.c b/fs/nfs/file.c
-index f96367a2463e3..d72496efa17b0 100644
---- a/fs/nfs/file.c
-+++ b/fs/nfs/file.c
-@@ -140,6 +140,7 @@ static int
- nfs_file_flush(struct file *file, fl_owner_t id)
- {
- 	struct inode	*inode = file_inode(file);
-+	errseq_t since;
- 
- 	dprintk("NFS: flush(%pD2)\n", file);
- 
-@@ -148,7 +149,9 @@ nfs_file_flush(struct file *file, fl_owner_t id)
- 		return 0;
- 
- 	/* Flush writes to the server and return any errors */
--	return nfs_wb_all(inode);
-+	since = filemap_sample_wb_err(file->f_mapping);
-+	nfs_wb_all(inode);
-+	return filemap_check_wb_err(file->f_mapping, since);
+diff --git a/drivers/nvdimm/security.c b/drivers/nvdimm/security.c
+index 4cef69bd3c1bd..8f3971cf16541 100644
+--- a/drivers/nvdimm/security.c
++++ b/drivers/nvdimm/security.c
+@@ -457,7 +457,7 @@ void __nvdimm_security_overwrite_query(struct nvdimm *nvdimm)
+ 	clear_bit(NDD_WORK_PENDING, &nvdimm->flags);
+ 	put_device(&nvdimm->dev);
+ 	nvdimm->sec.flags = nvdimm_security_flags(nvdimm, NVDIMM_USER);
+-	nvdimm->sec.flags = nvdimm_security_flags(nvdimm, NVDIMM_MASTER);
++	nvdimm->sec.ext_flags = nvdimm_security_flags(nvdimm, NVDIMM_MASTER);
  }
  
- ssize_t
-diff --git a/fs/nfs/nfs4file.c b/fs/nfs/nfs4file.c
-index 8e5d6223ddd35..a339707654673 100644
---- a/fs/nfs/nfs4file.c
-+++ b/fs/nfs/nfs4file.c
-@@ -110,6 +110,7 @@ static int
- nfs4_file_flush(struct file *file, fl_owner_t id)
- {
- 	struct inode	*inode = file_inode(file);
-+	errseq_t since;
- 
- 	dprintk("NFS: flush(%pD2)\n", file);
- 
-@@ -125,7 +126,9 @@ nfs4_file_flush(struct file *file, fl_owner_t id)
- 		return filemap_fdatawrite(file->f_mapping);
- 
- 	/* Flush writes to the server and return any errors */
--	return nfs_wb_all(inode);
-+	since = filemap_sample_wb_err(file->f_mapping);
-+	nfs_wb_all(inode);
-+	return filemap_check_wb_err(file->f_mapping, since);
- }
- 
- #ifdef CONFIG_NFS_V4_2
+ void nvdimm_security_overwrite_query(struct work_struct *work)
 -- 
 2.25.1
 
