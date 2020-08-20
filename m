@@ -2,107 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD6224B6EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4279024B701
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730473AbgHTKol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:44:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40156 "EHLO
+        id S1727770AbgHTKqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:46:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731871AbgHTKoJ (ORCPT
+        with ESMTP id S1729582AbgHTKpn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:44:09 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3393BC061385
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:44:09 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597920247;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iLWA2FzepFQDF+V/YhX0IJ79bp9VAkXafLwZ2xRN6/g=;
-        b=fJFa3FKKIQeRv4J0N16FZqeUYlTc7OC303z+nw+wglNo4fQdRztgWeGlDcjv0itTFBDyCd
-        dLt8Gq+u1jHvN46pTQOXL9TnwenMeVnCZsARor2Pn8fNvn9f9PVpvIivlDNRNx7Q5tyF/8
-        QOrZH/pfBhBXdHSU8IIyr3QxMXTZoCNcXXG1mnVhFgovyZi3rbgNhR/mshB2GaqoV3u8m8
-        3+qNbniIc51dJerNfGbsMYHF6TufaKhqZVuVvMSrcNHwwQS0ScnsRMj+zLD1F7DpXv/XMB
-        UjNY6TBkBn08C20P9V8no0IWei9dirR8uvN40zZBXvcIJaTtN3UnkbqgVH67pQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597920247;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iLWA2FzepFQDF+V/YhX0IJ79bp9VAkXafLwZ2xRN6/g=;
-        b=sqQzoAgci1OIfkv+FS0qV2QXi1IUvtydMYUSAT7segZbbQiSm21J1JciDWunW6LatF7Wb8
-        2dYYDRqNN1x90cDQ==
-To:     Arvind Sankar <nivedita@alum.mit.edu>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Zhenzhong Duan <zhenzhong.duan@oracle.com>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juergen Gross <jgross@suse.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] x86: work around clang IAS bug referencing __force_order
-In-Reply-To: <20200813180933.GA532283@rani.riverdale.lan>
-References: <20200527135329.1172644-1-arnd@arndb.de> <878serh1b9.fsf@nanos.tec.linutronix.de> <CAKwvOdnOh3H3ga2qpTktywvcgfXW5QJaB7r4XMhigmDzLhDNeA@mail.gmail.com> <87h7t6tpye.fsf@nanos.tec.linutronix.de> <20200813173701.GC4295@paulmck-ThinkPad-P72> <20200813180933.GA532283@rani.riverdale.lan>
-Date:   Thu, 20 Aug 2020 12:44:06 +0200
-Message-ID: <875z9dioll.fsf@nanos.tec.linutronix.de>
+        Thu, 20 Aug 2020 06:45:43 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93EE9C061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:45:43 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id d19so928050pgl.10
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:45:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=e8inUcZeC1EMvDkcDtQU8bF16fiEKmHQKTdE6UvD9Ao=;
+        b=ZP0QD+506tNSnZWgxhklM3ACdIxHLDAKs7Y13NpvZb2lV6r7xBuNUnDBfXq2jvNYt5
+         7/lQtWJa3Cu4CfERXUOwODKWYU+mc5q5qYgKK8atZQD/l3Z7Zcqfa36O+ah8JEkloJ7/
+         4QI/MwpTcOG0VE1ecRxhrUQkH0pIEadmkkaLn0VK5zuxbvSE/NDTjXl7TAQDuoYLIrg7
+         lZTOkJP3RN5mhSYnn8+JpyUvQtmpkgc0Oenv7D/7CoFEV7ycyqokUoEQRnSzpdLZ3gXr
+         77bL4G/C9sDbJETUHN0n73YPe+3B9OdykJGXhLF73vdoXwUpld0sK/DvCVXPwvGnU8BH
+         JPOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=e8inUcZeC1EMvDkcDtQU8bF16fiEKmHQKTdE6UvD9Ao=;
+        b=SLqyviLra+CnMUXWLnJt3cB1FvrXNijzcAdvYO6BZLi0NkWBmzhKJAmRzJf/8dJolK
+         VjoAAZ7N2ORpMRts9sd/+30etFssFXIcQNlKwmK7dJZ0c2hEYPTX1b5Z5nnVDuOlbxUO
+         t8iRJuJGaNVYQGe/3Y8p+Km+1e+KLfyJ45KtTp4xK7d/58wQZu9BFjuByGwnbGRssxuU
+         a2vwlZZ86M0CsHtU25olSXxm1+724xsYNWdTsv3EL1jaPHhAOLwr431K0RUu5UJJ4lpZ
+         LtAhrcxbmbfZ7KyNX0Cd1l30j43ume4sjS88DwfondkXNhHof013Lj+zVbzQjlHwMtyg
+         mqkA==
+X-Gm-Message-State: AOAM530xafUPV9atp6TelBiVlbxkbXPTEzyeRs2IXndd6TZVZ1eeEsgU
+        NnpM1zPb2333lZr+UzIC3A90qg==
+X-Google-Smtp-Source: ABdhPJxOJujoHIwJeXRT5jnwcXre+SjocPhd74ZRzEkHGK2rTIfJshGRbE/6smUIR6n+rpoJPe8BDw==
+X-Received: by 2002:aa7:83cf:: with SMTP id j15mr1682989pfn.251.1597920342783;
+        Thu, 20 Aug 2020 03:45:42 -0700 (PDT)
+Received: from localhost ([122.172.43.13])
+        by smtp.gmail.com with ESMTPSA id s125sm2589935pfc.63.2020.08.20.03.45.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 20 Aug 2020 03:45:42 -0700 (PDT)
+Date:   Thu, 20 Aug 2020 16:15:40 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, robdclark@chromium.org,
+        robdclark@gmail.com, stanimir.varbanov@linaro.org,
+        mka@chromium.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        linux-serial@vger.kernel.org
+Subject: Re: [PATCH v6 1/6] tty: serial: qcom_geni_serial: Use OPP API to set
+ clk/perf state
+Message-ID: <20200820104540.4c4cg4rn4oa4rh6t@vireshk-i7>
+References: <1592222564-13556-1-git-send-email-rnayak@codeaurora.org>
+ <1592222564-13556-2-git-send-email-rnayak@codeaurora.org>
+ <159347264530.1987609.11350620235820019545@swboyd.mtv.corp.google.com>
+ <a3d53f82-b29d-97ef-3ba1-ca9bd650d354@codeaurora.org>
+ <20200630030552.cfp5oh33qde6nlnf@vireshk-i7>
+ <159532101373.3847286.9695594340556014384@swboyd.mtv.corp.google.com>
+ <20200722052444.updchi2yfjgbf3hb@vireshk-mac-ubuntu>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200722052444.updchi2yfjgbf3hb@vireshk-mac-ubuntu>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13 2020 at 14:09, Arvind Sankar wrote:
-> On Thu, Aug 13, 2020 at 10:37:01AM -0700, Paul E. McKenney wrote:
->> > Let me ask (hopefully) useful questions this time:
->> > 
->> >   Is a compiler allowed to reorder two 'asm volatile()'?
->> > 
->> >   Are there compilers (gcc >= 4.9 or other supported ones) which do that?
->> 
->> I would hope that the answer to both of these questions is "no"!
->> 
->> But I freely confess that I have been disappointed before on this sort
->> of thing.  :-/
->> 
->> 							Thanx, Paul
->
-> Ok, I found this, so gcc developers consider re-ordering volatile asm
-> wrt each other a bug at least.
->
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=82602
+On 22-07-20, 10:54, Viresh Kumar wrote:
+> On 21-07-20, 01:43, Stephen Boyd wrote:
+> > It seems that dev_pm_opp_set_rate() calls _find_opp_table() and finds
+> > something that isn't an error pointer but then dev_pm_opp_of_add_table()
+> > returns an error value because there isn't an operating-points property
+> > in DT. We're getting saved because this driver also happens to call
+> > dev_pm_opp_set_clkname() which allocates the OPP table a second time
+> > (because the first time it got freed when dev_pm_opp_of_add_table()
+> > return -ENODEV because the property was missing).
+> > 
+> > Why do we need 'has_opp_table' logic? It seems that we have to keep
+> > track of the fact that dev_pm_opp_of_add_table() failed so that we don't
+> > put the table again, but then dev_pm_opp_set_clkname() can be called
+> > to allocate the table regardless.
 
-Yes. It prevents reordering of volatiles, but it does not necessarily
-prevent reorder of something like this:
+I have sent a patchset to clean this stuff up a bit now.
 
-        asm volatile(...);
-        foo();
-        asm volatile(...);
-
-it might turn that into
-
-        foo();
-        asm volatile(...);
-        asm volatile(...);
-
-if I understood their discussion correctly. So removing this magic is
-not really straight forward.
-
-Thanks,
-
-        tglx
-
-
+-- 
+viresh
