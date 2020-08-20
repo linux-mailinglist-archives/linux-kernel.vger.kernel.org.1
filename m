@@ -2,55 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B62824B58D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7E324B47B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730575AbgHTKZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:25:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730638AbgHTKZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:25:04 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2BEB20738;
-        Thu, 20 Aug 2020 10:25:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597919104;
-        bh=9oYax7Vp/sAADx+saTCkAJutmFw9MX576JS3dAW94qk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=v49FYdt+kCIo6yhXddlU3h1I6OicKBQuGqQ3W79GZIj9LChc1S4y8caYW1CC2haEj
-         dmqcZQjru+Pd1WrjLObbmK/Z8/g70DH9g6VYW8SXca9uzXEcHmLAALrsrSiy0RFBsy
-         UtXnV1Zc9x+ybOoC4S/ZvkJtcb0xf7+RGfXgJgbo=
-Date:   Thu, 20 Aug 2020 11:56:52 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.8 137/232] USB: serial: ftdi_sio: fix break and sysrq
- handling
-Message-ID: <20200820095652.GA1266907@kroah.com>
-References: <20200820091612.692383444@linuxfoundation.org>
- <20200820091619.460392380@linuxfoundation.org>
- <CAMgPeKX54WqE0Wc56u6W3M2JwttV=E7sBKmM5eRa5_Mu7m+okg@mail.gmail.com>
+        id S1729760AbgHTKHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:07:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39678 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730361AbgHTKBV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:01:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597917680;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xtUkw1+pgkP1u0CE6ZeSzJD33eQ60AqxVBB24zxNhsI=;
+        b=OiDyaWk5d5AhnAHKmBZYkcd6kn0qtiOTFcY4p2fJSK4ANTzpHgrhnb0yi2nRIh9a0g1IZf
+        mbLjbdI0fqzfG0ez9+s72f9jvXduR6o+ZN375g2zs7MhItUPgOZ8HmPD1DBlJmkf7xDME7
+        WuPsn86VYsNFm27eex3ABcBEeZLX8Ic=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-304-pVi6lbvtM4S9QiyUbS4wnw-1; Thu, 20 Aug 2020 06:01:18 -0400
+X-MC-Unique: pVi6lbvtM4S9QiyUbS4wnw-1
+Received: by mail-wm1-f71.google.com with SMTP id u144so604234wmu.3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:01:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xtUkw1+pgkP1u0CE6ZeSzJD33eQ60AqxVBB24zxNhsI=;
+        b=d5teiRFQ1NTiptiBN02FbIt/cDqHIYhjtJsBem1/w5UOVZc1MOsuefjIbyrz+13uj9
+         CgD/w4MuC97229X1YqYb66VseBTKgWnGq9NY8B4cru29SCsiQjVGXkh3IqTrQz2Mvxym
+         OINJj5sjN5YC4VB16KLh+TS5bmOzV37Xtp6sQBJVzQ4mj8UdJWQceMAwjkzrdjGmDEXB
+         2StC/hYZXEGbH5EDAwwhylLl+itBj5X4EGU77aPFkZw9GQLj1SZ+q1JbLrMn2GyP+Ga8
+         PbY9KituBBppfmfRO7YadlOYkA0FDHJdI/iD4AeYC/HJeMaQ4bKEFnSdn2eSaTbjsrK1
+         5d3A==
+X-Gm-Message-State: AOAM530EcAJy6ebiiVpu4Ya+xpJ7jsZ0rrLenKR4y822phiDTTd9TBRZ
+        XMIBQSkFrAJx67z4ohXX5ynfSbAf6Da+gEwT8LCHT0NmHFzPulXwlWORbEkX6L67YAX1zvmQTft
+        MCRIM6Csqop6v6IWkq2EfocvX
+X-Received: by 2002:a1c:3dc3:: with SMTP id k186mr2687074wma.122.1597917677216;
+        Thu, 20 Aug 2020 03:01:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz4gKUiUJ6EoQh9xoNdvazNihbXQF/czcITGb1+BqN75JHRCFO/tyWZLCjckhAt6e9saona4Q==
+X-Received: by 2002:a1c:3dc3:: with SMTP id k186mr2687048wma.122.1597917676995;
+        Thu, 20 Aug 2020 03:01:16 -0700 (PDT)
+Received: from [192.168.10.150] ([93.56.170.5])
+        by smtp.gmail.com with ESMTPSA id n18sm3077185wrp.58.2020.08.20.03.01.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Aug 2020 03:01:16 -0700 (PDT)
+Subject: Re: [PATCH 8/8] KVM: nSVM: read only changed fields of the nested
+ guest data area
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <20200820091327.197807-1-mlevitsk@redhat.com>
+ <20200820091327.197807-9-mlevitsk@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <53afbfba-427e-72f5-73a6-faea7606e78e@redhat.com>
+Date:   Thu, 20 Aug 2020 12:01:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMgPeKX54WqE0Wc56u6W3M2JwttV=E7sBKmM5eRa5_Mu7m+okg@mail.gmail.com>
+In-Reply-To: <20200820091327.197807-9-mlevitsk@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 11:51:56AM +0200, Johan Hovold wrote:
-> This was never intended for stable as it is not a critical fix and has
-> never worked properly in the first place. Please drop this one and the
-> preparatory clean ups from all stable trees.
+On 20/08/20 11:13, Maxim Levitsky wrote:
+> +	u32 clean = nested_vmcb->control.clean;
+> +
+> +	if (svm->nested.vmcb_gpa != vmcb_gpa) {
+> +		svm->nested.vmcb_gpa = vmcb_gpa;
+> +		clean = 0;
+> +	}
 
-Ok, but the "fix this thing" and the "Fixes:" tag really did imply this
-was actually fixing something :)
+You probably should set clean to 0 also if the guest doesn't have the
+VMCBCLEAN feature (so, you first need an extra patch to add the
+VMCBCLEAN feature to cpufeatures.h).  It's probably best to cache the
+guest vmcbclean in struct vcpu_svm, too.
 
-I'll drop it from everywhere, thanks.
+Paolo
 
-greg k-h
