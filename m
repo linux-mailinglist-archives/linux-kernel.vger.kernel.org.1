@@ -2,92 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4BA24B9AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA13424BA00
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729020AbgHTLxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:53:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29356 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728469AbgHTLw6 (ORCPT
+        id S1729237AbgHTL6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:58:32 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:5935 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729180AbgHTL5l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 07:52:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597924377;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sl1A0GJYyx/PpdeVM1m/fCfkzRMyvSRC51l7PfeNxkY=;
-        b=AmUXcJvBXqFfFdl4vkih78OTpfyMXSd2na1rWfCd+kbgg+r8eHE3Gr756JiVzm49eGOcmx
-        b8GSsNWnvjAQtdR4nlDiXpW37q+9wUcIxsm060bzK3a1ukR2e8RzbAgCcgtyyUDXLJ8gLw
-        2T9tkGtCOjdcjaIaG1WtiJ2YzE16qbs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-439-OVb8DL8xOeOkVLLilJhpGw-1; Thu, 20 Aug 2020 07:52:55 -0400
-X-MC-Unique: OVb8DL8xOeOkVLLilJhpGw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22407801AE5;
-        Thu, 20 Aug 2020 11:52:54 +0000 (UTC)
-Received: from starship (unknown [10.35.206.173])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F36167A40D;
-        Thu, 20 Aug 2020 11:52:46 +0000 (UTC)
-Message-ID: <36a13760db3cb439eb47057c763845f61449cbcc.camel@redhat.com>
-Subject: Re: [PATCH 2/8] KVM: nSVM: rename nested 'vmcb' to vmcb_gpa in few
- places
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Date:   Thu, 20 Aug 2020 14:52:45 +0300
-In-Reply-To: <3effc656-20e8-40c9-d0e3-5c700d9b5572@redhat.com>
-References: <20200820091327.197807-1-mlevitsk@redhat.com>
-         <20200820091327.197807-3-mlevitsk@redhat.com>
-         <f6bf9494-f337-2e53-6e6c-e0b8a847ec8d@redhat.com>
-         <608fe03082dc5e4db142afe3c0eb5f7c165f342b.camel@redhat.com>
-         <2e8185af-08fc-18c3-c1ca-fa1f7d4665dd@redhat.com>
-         <2b8faaead6f7744dc10b4701bd1583a2b494d4f4.camel@redhat.com>
-         <3effc656-20e8-40c9-d0e3-5c700d9b5572@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        Thu, 20 Aug 2020 07:57:41 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f3e65270001>; Thu, 20 Aug 2020 04:57:27 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 20 Aug 2020 04:57:41 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 20 Aug 2020 04:57:41 -0700
+Received: from [10.26.73.68] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 20 Aug
+ 2020 11:57:38 +0000
+Subject: Re: [PATCH 4.14 000/228] 4.14.194-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <ben.hutchings@codethink.co.uk>, <lkft-triage@lists.linaro.org>,
+        <stable@vger.kernel.org>, linux-tegra <linux-tegra@vger.kernel.org>
+References: <20200820091607.532711107@linuxfoundation.org>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <a6b632f8-b327-3f8d-5306-12989cfaf4e3@nvidia.com>
+Date:   Thu, 20 Aug 2020 12:57:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1597924647; bh=r74Ro8+IvD+U7RWZxt3Uhr4cSN8tdC8hsw3f2VfgBWY=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=EDnzEc4BtXXN2Z6iYGaCk4soNiKt6ocAw/EzEH638I8e2hL9q2ySHS63lio1j0vuo
+         KSdG7zStYd1JGGSiwQF3D64sJ3HH20eRRuXdF6vkM9yOsqeWvETu/XTq705wT0uoGl
+         je6QJuSOGiMXOYG98fWDqo+3fntUl3lKkg5fFQm6rt77GPm/FmZEhQ2UvaGaKb3WOM
+         6b9WNMm8mX27L7t87dFVCbM5+sLn1l9WKs3Pg5ZUnqPlsLx/OwQo251YkB9totrmkA
+         KK0qLGyH0wgr7e6oHXvg6Iiy9EW1o+oMXDBb+6INYbCrdoHsBKetdQnU5pZMpUTmTS
+         tNO6mOoxdEMlw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-08-20 at 12:56 +0200, Paolo Bonzini wrote:
-> On 20/08/20 12:23, Maxim Levitsky wrote:
-> > I fully agree that adding local variable is a good idea anyway.
-> > 
-> > I was just noting that svm->nested.vmcb is already about the nested
-> > (e.g vmcb12) thus I was thinking that naming this field vmcb12 would be
-> > redundant and not accepted this way.
-> 
-> We want to have both svm->nested.vmcb12 and svm->nested.vmcb02 in there,
-> and hsave is also a VMCB of sort (somewhat like a vmcb01 that is only
-> used while running a nested guest).  So it is clearer to write _which_
-> vmcb it is, and it also helps by making terminology consistent between
-> VMX and SVM.
-This makes sense.
-Best regards,
-	Maxim Levitsky
 
+On 20/08/2020 10:19, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.194 release.
+> There are 228 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Paolo
+> Responses should be made by Sat, 22 Aug 2020 09:15:09 +0000.
+> Anything received after that time might be too late.
 > 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.194-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
+> -------------
+> Pseudo-Shortlog of commits:
+
+...
+
+> Tomasz Maciej Nowak <tmn505@gmail.com>
+>     arm64: dts: marvell: espressobin: add ethernet alias
 
 
+The above change is causing the following build failure for ARM64 ...
+
+arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtb: ERROR (path_references): Reference to non-existent node or label "uart1"
+ERROR: Input tree has errors, aborting (use -f to force output)
+scripts/Makefile.lib:317: recipe for target 'arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtb' failed
+make[3]: *** [arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtb] Error 2
+
+Reverting this fixes the problem.
+
+Cheers
+Jon
+
+-- 
+nvpublic
