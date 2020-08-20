@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE84C24ACE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 04:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC01524ACF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 04:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726875AbgHTCRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 22:17:34 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9854 "EHLO huawei.com"
+        id S1726957AbgHTCS2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 19 Aug 2020 22:18:28 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3071 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726852AbgHTCRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 22:17:32 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 970854FFC53A1C5449FA;
-        Thu, 20 Aug 2020 10:17:30 +0800 (CST)
-Received: from DESKTOP-C3MD9UG.china.huawei.com (10.174.177.253) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 20 Aug 2020 10:17:19 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Oliver O'Halloran <oohall@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Dave Jiang" <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v3 7/7] libnvdimm: slightly simplify available_slots_show()
-Date:   Thu, 20 Aug 2020 10:16:41 +0800
-Message-ID: <20200820021641.3188-8-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20200820021641.3188-1-thunder.leizhen@huawei.com>
-References: <20200820021641.3188-1-thunder.leizhen@huawei.com>
+        id S1726707AbgHTCS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 22:18:28 -0400
+Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.53])
+        by Forcepoint Email with ESMTP id D3309176DF76B41ECDED;
+        Thu, 20 Aug 2020 10:18:21 +0800 (CST)
+Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
+ dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Thu, 20 Aug 2020 10:18:21 +0800
+Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
+ dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
+ Thu, 20 Aug 2020 10:18:21 +0800
+From:   linmiaohe <linmiaohe@huawei.com>
+To:     Kees Cook <keescook@chromium.org>
+CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Subject: Re: [PATCH] mm/migrate: Avoid possible unnecessary
+ ptrace_may_access() call in kernel_move_pages()
+Thread-Topic: [PATCH] mm/migrate: Avoid possible unnecessary
+ ptrace_may_access() call in kernel_move_pages()
+Thread-Index: AdZ2ltiiUzrfeGlxSAudy1KmaVsz/A==
+Date:   Thu, 20 Aug 2020 02:18:21 +0000
+Message-ID: <9ce6209f41b64734b2cac748783aa441@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.142]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.253]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The type of "nfree" is u32, so "nfree - 1" can only be overflowed when
-"nfree" is zero. Replace "if (nfree - 1 > nfree)" with "if (nfree == 0)"
-seems more clear. And remove the assignment "nfree = 0", no need for it.
+Kees Cook <keescook@chromium.org> wrote:
+>On Mon, Aug 17, 2020 at 07:59:33AM -0400, Miaohe Lin wrote:
+>> There is no need to check if this process has the right to modify the 
+>> specified process when they are same.
+>> 
+>> Signed-off-by: Hongxiang Lou <louhongxiang@huawei.com>
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>
+>NAK, please don't do this -- the ptrace and security hooks already do these kinds of self-introspection checks, and I'd like to keep a central place to perform these kinds of checks.
+>
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/nvdimm/dimm_devs.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Many thanks for your reply.
+We also avoid get_task_struct/ put_task_struct pair of atomic ops, rcu_lock, task_lock and so on this way.
 
-diff --git a/drivers/nvdimm/dimm_devs.c b/drivers/nvdimm/dimm_devs.c
-index 61374def515552f..bf7d0cdc147cb39 100644
---- a/drivers/nvdimm/dimm_devs.c
-+++ b/drivers/nvdimm/dimm_devs.c
-@@ -347,10 +347,9 @@ static ssize_t available_slots_show(struct device *dev,
- 
- 	nvdimm_bus_lock(dev);
- 	nfree = nd_label_nfree(ndd);
--	if (nfree - 1 > nfree) {
-+	if (nfree == 0)
- 		dev_WARN_ONCE(dev, 1, "we ate our last label?\n");
--		nfree = 0;
--	} else
-+	else
- 		nfree--;
- 	rc = sprintf(buf, "%d\n", nfree);
- 	nvdimm_bus_unlock(dev);
--- 
-1.8.3
+>Is there a specific problem you've encountered that this fixes?
+>
 
+I'am sorry but there's no specific problem. I do this mainly to skip the unnecessary ptrace and security hooks.
+
+>--
+>Kees Cook
+
+Thanks again.
 
