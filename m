@@ -2,75 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382E724ADFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 06:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA7B24AE0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 06:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726765AbgHTEpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 00:45:41 -0400
-Received: from verein.lst.de ([213.95.11.211]:40402 "EHLO verein.lst.de"
+        id S1726387AbgHTEu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 00:50:56 -0400
+Received: from mga12.intel.com ([192.55.52.136]:2971 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725772AbgHTEpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 00:45:39 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id CA1C068C4E; Thu, 20 Aug 2020 06:45:33 +0200 (CEST)
-Date:   Thu, 20 Aug 2020 06:45:33 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        alsa-devel@alsa-project.org, linux-ia64@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        nouveau@lists.freedesktop.org, linux-nvme@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        linux-mm@kvack.org, Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        linux-scsi@vger.kernel.org,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Pawel Osciak <pawel@osciak.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH 05/28] media/v4l2: remove
- V4L2-FLAG-MEMORY-NON-CONSISTENT
-Message-ID: <20200820044533.GA4570@lst.de>
-References: <20200819065555.1802761-1-hch@lst.de> <20200819065555.1802761-6-hch@lst.de> <CAAFQd5COLxjydDYrfx47ht8tj-aNPiaVnC+WyQA7nvpW4gs=ww@mail.gmail.com> <62e4f4fc-c8a5-3ee8-c576-fe7178cb4356@arm.com> <CAAFQd5AcCTDguB2C9KyDiutXWoEvBL8tL7+a==Uo8vj_8CLOJw@mail.gmail.com> <20200819135738.GB17098@lst.de> <CAAFQd5BvpzJTycFvjntmX9W_d879hHFX+rJ8W9EK6+6cqFaVMA@mail.gmail.com>
+        id S1725768AbgHTEuw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 00:50:52 -0400
+IronPort-SDR: tD+hw2Y+QwhATIdnA0F7Dh269z6Slor/fo92Vq9l87PZBC6HnGRm2p7qKyBa9y2Rp0P9RjyWGM
+ 3tjTexWnnxmg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9718"; a="134756850"
+X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
+   d="scan'208";a="134756850"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2020 21:50:52 -0700
+IronPort-SDR: Rh1t6lmybtEH1Byb+M9kr3MHgeNlXOo006WlHgbajcitS5jq7NdbnpWH7Uw31y4IVWweu6/iWj
+ AkuHYf0u2AlA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
+   d="scan'208";a="320727641"
+Received: from sgsxdev001.isng.intel.com (HELO localhost) ([10.226.88.11])
+  by fmsmga004.fm.intel.com with ESMTP; 19 Aug 2020 21:50:49 -0700
+From:   Rahul Tanwar <rahul.tanwar@linux.intel.com>
+To:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
+        lee.jones@linaro.org
+Cc:     thierry.reding@gmail.com, p.zabel@pengutronix.de,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, andriy.shevchenko@intel.com,
+        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, rahul.tanwar.linux@gmail.com,
+        rtanwar@maxlinear.com, Rahul Tanwar <rahul.tanwar@linux.intel.com>
+Subject: [PATCH v8 0/2] pwm: intel: Add PWM driver for a new SoC
+Date:   Thu, 20 Aug 2020 12:50:44 +0800
+Message-Id: <cover.1597898872.git.rahul.tanwar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAFQd5BvpzJTycFvjntmX9W_d879hHFX+rJ8W9EK6+6cqFaVMA@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset=y
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 04:11:52PM +0200, Tomasz Figa wrote:
-> > > By the way, as a videobuf2 reviewer, I'd appreciate being CC'd on any
-> > > series related to the subsystem-facing DMA API changes, since
-> > > videobuf2 is one of the biggest users of it.
-> >
-> > The cc list is too long - I cc lists and key maintainers.  As a reviewer
-> > should should watch your subsystems lists closely.
-> 
-> Well, I guess we can disagree on this, because there is no clear
-> policy. I'm listed in the MAINTAINERS file for the subsystem and I
-> believe the purpose of the file is to list the people to CC on
-> relevant patches. We're all overloaded with work and having to look
-> through the huge volume of mailing lists like linux-media doesn't help
-> and thus I'd still appreciate being added on CC.
+Patch 1 adds dt binding document in YAML format.
+Patch 2 add PWM fan controller driver for LGM SoC.
 
-I'm happy to Cc and active participant in the discussion.  I'm not
-going to add all reviewers because even with the trimmed CC list
-I'm already hitting the number of receipients limit on various lists.
+v8:
+- Remove fan related optional properties usage, keep
+  them as default. If needed, change pwm-fan driver
+  separately in future to add them as generic properties.
+
+v7:
+- Address code quality related review concerns.
+- Rename fan related property to pwm-*.
+- Fix one make dt_binding_check reported error.
+
+v6:
+- Readjust .apply op as per review feedback.
+- Add back pwm-cells property to resolve make dt_binding_check error.
+  pwm-cells is a required property for PWM driver.
+- Add back fan related optional properties.
+
+v5:
+- Address below review concerns from Uwe Kleine-König.
+  * Improve comments about Limitations.
+  * Use return value of regmap_update_bits if container function returns
+    error code.
+  * Modify .apply op to have strict checking for fixed period supported
+    by PWM HW.
+  * Use u64 as type when use min_t for duty_cycle.
+  * Add reset_control_assert() in failure case in probe where it was missing
+    earlier.
+- Remove fan specific optional properties from pwm dt binding document (Rob Herring)
+
+v4:
+- Address below review concerns from Uwe Kleine-König.
+  * Improve notes and limitations comments.
+  * Add common prefixes for all #defines.
+  * Modify/Improve logic in .apply & .get_state ops as advised.
+  * Skip error messages in probe when error is -EPROBE_DEFER.
+  * Add dependencies in Kconfig (OF & HAS_IOMEM) and add select REGMAP_MMIO.
+  * Address other code quality related review concerns.
+- Fix make dt_binding_check reported error in YAML file.
+
+v3:
+- Address below review concerns from Uwe Kleine-König.
+  * Remove fan rpm calibration task from the driver.
+  * Modify apply op as per the review feedback.
+  * Add roundup & round down where necessary.
+  * Address other misc code quality related review concerns.
+  * Use devm_reset_control_get_exclusive(). (Philipp Zabel)
+  * Improve dt binding document.
+
+v2:
+- Address below review concerns from Uwe Kleine-König.
+  * Add notes and limitations about PWM HW.
+  * Rename all functions and structure to lgm_pwm_* 
+  * Readjust space aligninment in structure fields to single space.
+  * Switch to using apply instead of config/enable/disable.
+  * Address other code quality related concerns.
+  * Rebase to 5.8-rc1.
+- Address review concerns in dt binding YAML from Rob Herring.
+
+v1:
+- Initial version.
+
+
+Rahul Tanwar (2):
+  Add DT bindings YAML schema for PWM fan controller of LGM SoC
+  Add PWM fan controller driver for LGM SoC
+
+ .../devicetree/bindings/pwm/intel,lgm-pwm.yaml     |  44 ++++
+ drivers/pwm/Kconfig                                |  11 +
+ drivers/pwm/Makefile                               |   1 +
+ drivers/pwm/pwm-intel-lgm.c                        | 244 +++++++++++++++++++++
+ 4 files changed, 300 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
+ create mode 100644 drivers/pwm/pwm-intel-lgm.c
+
+-- 
+2.11.0
+
