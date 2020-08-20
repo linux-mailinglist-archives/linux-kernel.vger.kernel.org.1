@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E2B24BA31
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EED7D24BA2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730448AbgHTMB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:01:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47564 "EHLO mail.kernel.org"
+        id S1730342AbgHTMBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:01:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730449AbgHTKAE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:00:04 -0400
+        id S1729707AbgHTKAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:00:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5FCFE208DB;
-        Thu, 20 Aug 2020 10:00:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F3E221775;
+        Thu, 20 Aug 2020 10:00:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917604;
-        bh=VV39/e+5QHHtPRI8mr7TPAiaSliMBkOT1PdczhdxBf0=;
+        s=default; t=1597917606;
+        bh=ty18EZHzNNsdgv8w9u5VplsWbIv4nX7VRyU0h2WE+W4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pKAP9NjB4jJhefLbf4WUONrLCcimxvpo7P7VtqV+tYgy2nctE1FRFt9En+jUC/Nrf
-         e0IKg1JtlTQDxJ/AspWtX29eoNNaR5bh3nfJn7T3YHcRcIOZ1fVl1NITiMZHymYSvK
-         4g7+pR+22VFLXmtppGI2wiznSHRUzm3o6ojQDUWs=
+        b=odUjY3Cf8QYbjOt4hklg7aJC8s+P4cDXtbcrJzSyxnXHCdyLb05MXJmcmLBO2Pyhe
+         UGakxMnNJ4imTLYqV4MYkb4i6NZcXCZNAAislO9dqC19wCEG+4YM36s/LGfOtzuJCC
+         RwlIdEeXqY44zCOZErBwtK1oI8ZQEIiQyjWS73nc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, yu kuai <yukuai3@huawei.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 089/212] ARM: at91: pm: add missing put_device() call in at91_pm_sram_init()
-Date:   Thu, 20 Aug 2020 11:21:02 +0200
-Message-Id: <20200820091606.844090402@linuxfoundation.org>
+Subject: [PATCH 4.9 090/212] ARM: socfpga: PM: add missing put_device() call in socfpga_setup_ocram_self_refresh()
+Date:   Thu, 20 Aug 2020 11:21:03 +0200
+Message-Id: <20200820091606.896984588@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
 References: <20200820091602.251285210@linuxfoundation.org>
@@ -44,62 +44,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: yu kuai <yukuai3@huawei.com>
+From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit f87a4f022c44e5b87e842a9f3e644fba87e8385f ]
+[ Upstream commit 3ad7b4e8f89d6bcc9887ca701cf2745a6aedb1a0 ]
 
-if of_find_device_by_node() succeed, at91_pm_sram_init() doesn't have
-a corresponding put_device(). Thus add a jump target to fix the exception
-handling for this function implementation.
+if of_find_device_by_node() succeed, socfpga_setup_ocram_self_refresh
+doesn't have a corresponding put_device(). Thus add a jump target to
+fix the exception handling for this function implementation.
 
-Fixes: d2e467905596 ("ARM: at91: pm: use the mmio-sram pool to access SRAM")
-Signed-off-by: yu kuai <yukuai3@huawei.com>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Link: https://lore.kernel.org/r/20200604123301.3905837-1-yukuai3@huawei.com
+Fixes: 44fd8c7d4005 ("ARM: socfpga: support suspend to ram")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mach-at91/pm.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ arch/arm/mach-socfpga/pm.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/mach-at91/pm.c b/arch/arm/mach-at91/pm.c
-index 8ba0e2e5ad97c..0efac1404418e 100644
---- a/arch/arm/mach-at91/pm.c
-+++ b/arch/arm/mach-at91/pm.c
-@@ -411,13 +411,13 @@ static void __init at91_pm_sram_init(void)
- 	sram_pool = gen_pool_get(&pdev->dev, NULL);
- 	if (!sram_pool) {
- 		pr_warn("%s: sram pool unavailable!\n", __func__);
--		return;
-+		goto out_put_device;
+diff --git a/arch/arm/mach-socfpga/pm.c b/arch/arm/mach-socfpga/pm.c
+index c378ab0c24317..93f2245c97750 100644
+--- a/arch/arm/mach-socfpga/pm.c
++++ b/arch/arm/mach-socfpga/pm.c
+@@ -60,14 +60,14 @@ static int socfpga_setup_ocram_self_refresh(void)
+ 	if (!ocram_pool) {
+ 		pr_warn("%s: ocram pool unavailable!\n", __func__);
+ 		ret = -ENODEV;
+-		goto put_node;
++		goto put_device;
  	}
  
- 	sram_base = gen_pool_alloc(sram_pool, at91_pm_suspend_in_sram_sz);
- 	if (!sram_base) {
- 		pr_warn("%s: unable to alloc sram!\n", __func__);
--		return;
-+		goto out_put_device;
+ 	ocram_base = gen_pool_alloc(ocram_pool, socfpga_sdram_self_refresh_sz);
+ 	if (!ocram_base) {
+ 		pr_warn("%s: unable to alloc ocram!\n", __func__);
+ 		ret = -ENOMEM;
+-		goto put_node;
++		goto put_device;
  	}
  
- 	sram_pbase = gen_pool_virt_to_phys(sram_pool, sram_base);
-@@ -425,12 +425,17 @@ static void __init at91_pm_sram_init(void)
- 					at91_pm_suspend_in_sram_sz, false);
- 	if (!at91_suspend_sram_fn) {
- 		pr_warn("SRAM: Could not map\n");
--		return;
-+		goto out_put_device;
+ 	ocram_pbase = gen_pool_virt_to_phys(ocram_pool, ocram_base);
+@@ -78,7 +78,7 @@ static int socfpga_setup_ocram_self_refresh(void)
+ 	if (!suspend_ocram_base) {
+ 		pr_warn("%s: __arm_ioremap_exec failed!\n", __func__);
+ 		ret = -ENOMEM;
+-		goto put_node;
++		goto put_device;
  	}
  
- 	/* Copy the pm suspend handler to SRAM */
- 	at91_suspend_sram_fn = fncpy(at91_suspend_sram_fn,
- 			&at91_pm_suspend_in_sram, at91_pm_suspend_in_sram_sz);
-+	return;
-+
-+out_put_device:
+ 	/* Copy the code that puts DDR in self refresh to ocram */
+@@ -92,6 +92,8 @@ static int socfpga_setup_ocram_self_refresh(void)
+ 	if (!socfpga_sdram_self_refresh_in_ocram)
+ 		ret = -EFAULT;
+ 
++put_device:
 +	put_device(&pdev->dev);
-+	return;
- }
+ put_node:
+ 	of_node_put(np);
  
- static const struct of_device_id atmel_pmc_ids[] __initconst = {
 -- 
 2.25.1
 
