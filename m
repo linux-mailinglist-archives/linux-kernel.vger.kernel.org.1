@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7FE324B29E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFAA124B29B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728072AbgHTJeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:34:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43924 "EHLO mail.kernel.org"
+        id S1728433AbgHTJdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:33:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728252AbgHTJbr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:31:47 -0400
+        id S1728255AbgHTJbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:31:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79DA220724;
-        Thu, 20 Aug 2020 09:31:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A7FEA21775;
+        Thu, 20 Aug 2020 09:31:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915907;
-        bh=GLXQfcRWfRzS75qj46k4hC5dnG429jw21sLIeHx3YyM=;
+        s=default; t=1597915910;
+        bh=7/xGhS2jXg70AQL+LrjRaZ6SVzc0mVFtwhK0uFYVNso=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uwhvQ5DWzRbqvZg3IX5nIYScR3sb5JA+NnAt6gMzS23CNFEQy/nkgA7GsRwfKpHaE
-         fDbh1uTo2i9XDuLLImjHVzGjPtJEli54xIEaYgq2XABrWWs1kTz+pF55LTrcuadF5l
-         LaE1blJCrYUZ+wXkmAO9gI4xvZQdqXuYqzBaDthI=
+        b=aNIUOCv0Sfp579sMuTCU8chBMCn4CZVB7cHqQkrhnovB5A5dTGZNf90FH+/Kp7Mrn
+         pTqca48eZDC+ClonahCvqcI9S+7YNKht+bWew2rXl6hQbpRpdejkBHqExfias+PORN
+         PeTyicvpqUgPbrS/MrlT0E9QawL3s87w3eFFy18Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
-        Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 176/232] ubifs: Fix wrong orphan node deletion in ubifs_jnl_update|rename
-Date:   Thu, 20 Aug 2020 11:20:27 +0200
-Message-Id: <20200820091621.342215904@linuxfoundation.org>
+Subject: [PATCH 5.8 177/232] clk: hsdk: Fix bad dependency on IOMEM
+Date:   Thu, 20 Aug 2020 11:20:28 +0200
+Message-Id: <20200820091621.388674950@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
 References: <20200820091612.692383444@linuxfoundation.org>
@@ -44,84 +45,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit 094b6d1295474f338201b846a1f15e72eb0b12cf ]
+[ Upstream commit bd8548d0dcdab514e08e35a3451667486d879dae ]
 
-There a wrong orphan node deleting in error handling path in
-ubifs_jnl_update() and ubifs_jnl_rename(), which may cause
-following error msg:
+CONFIG_IOMEM does not exist.  The correct symbol to depend on is
+CONFIG_HAS_IOMEM.
 
-  UBIFS error (ubi0:0 pid 1522): ubifs_delete_orphan [ubifs]:
-  missing orphan ino 65
-
-Fix this by checking whether the node has been operated for
-adding to orphan list before being deleted,
-
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Fixes: 823838a486888cf484e ("ubifs: Add hashes to the tree node cache")
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Fixes: 1e7468bd9d30a21e ("clk: Specify IOMEM dependency for HSDK pll driver")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/20200803084835.21838-1-geert+renesas@glider.be
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ubifs/journal.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/clk/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index e5ec1afe1c668..2cf05f87565c2 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -539,7 +539,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
- 		     const struct fscrypt_name *nm, const struct inode *inode,
- 		     int deletion, int xent)
- {
--	int err, dlen, ilen, len, lnum, ino_offs, dent_offs;
-+	int err, dlen, ilen, len, lnum, ino_offs, dent_offs, orphan_added = 0;
- 	int aligned_dlen, aligned_ilen, sync = IS_DIRSYNC(dir);
- 	int last_reference = !!(deletion && inode->i_nlink == 0);
- 	struct ubifs_inode *ui = ubifs_inode(inode);
-@@ -630,6 +630,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
- 			goto out_finish;
- 		}
- 		ui->del_cmtno = c->cmt_no;
-+		orphan_added = 1;
- 	}
- 
- 	err = write_head(c, BASEHD, dent, len, &lnum, &dent_offs, sync);
-@@ -702,7 +703,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
- 	kfree(dent);
- out_ro:
- 	ubifs_ro_mode(c, err);
--	if (last_reference)
-+	if (orphan_added)
- 		ubifs_delete_orphan(c, inode->i_ino);
- 	finish_reservation(c);
- 	return err;
-@@ -1218,7 +1219,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 	void *p;
- 	union ubifs_key key;
- 	struct ubifs_dent_node *dent, *dent2;
--	int err, dlen1, dlen2, ilen, lnum, offs, len;
-+	int err, dlen1, dlen2, ilen, lnum, offs, len, orphan_added = 0;
- 	int aligned_dlen1, aligned_dlen2, plen = UBIFS_INO_NODE_SZ;
- 	int last_reference = !!(new_inode && new_inode->i_nlink == 0);
- 	int move = (old_dir != new_dir);
-@@ -1334,6 +1335,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 			goto out_finish;
- 		}
- 		new_ui->del_cmtno = c->cmt_no;
-+		orphan_added = 1;
- 	}
- 
- 	err = write_head(c, BASEHD, dent, len, &lnum, &offs, sync);
-@@ -1415,7 +1417,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 	release_head(c, BASEHD);
- out_ro:
- 	ubifs_ro_mode(c, err);
--	if (last_reference)
-+	if (orphan_added)
- 		ubifs_delete_orphan(c, new_inode->i_ino);
- out_finish:
- 	finish_reservation(c);
+diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
+index 326f91b2dda9f..5f952e111ab5a 100644
+--- a/drivers/clk/Kconfig
++++ b/drivers/clk/Kconfig
+@@ -50,7 +50,7 @@ source "drivers/clk/versatile/Kconfig"
+ config CLK_HSDK
+ 	bool "PLL Driver for HSDK platform"
+ 	depends on OF || COMPILE_TEST
+-	depends on IOMEM
++	depends on HAS_IOMEM
+ 	help
+ 	  This driver supports the HSDK core, system, ddr, tunnel and hdmi PLLs
+ 	  control.
 -- 
 2.25.1
 
