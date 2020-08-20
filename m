@@ -2,129 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7DE24C4A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 19:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A9924C4B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 19:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730613AbgHTRhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 13:37:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47696 "EHLO
+        id S1728271AbgHTRl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 13:41:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729122AbgHTRhD (ORCPT
+        with ESMTP id S1727084AbgHTRlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 13:37:03 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52BFBC061385
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:37:03 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id x12so1799273qtp.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:37:03 -0700 (PDT)
+        Thu, 20 Aug 2020 13:41:20 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A6D7C061387
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:41:20 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id o18so3490640eje.7
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:41:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LoboofYleSqsx6Po76z6KtFKykk6O4/M/law9ADONhQ=;
-        b=bqapqgbGxSqIpTZ9lqM1OdRQ4ld0i+GkD+9Nmxa1GUtaiBn/O9VbQypsMHolHj0z6R
-         O5BVPWUTxs1lPqRKqLIHUGDCBJLiJ4iTA7HIC6qB9jSaJjvKbm8SI/1kvGieeG0doLWJ
-         OCDi+LYKIfxOKRk0/y7qOPc8DpMwu+WU3vD+l8KIvb21LNwGFGLgzaQthypuZUWvs+rs
-         oJCpu+HfrIXROzi0WhrBWx4WpDDfRvE0lUwTcbI+9/X0czS0xt7v14LrRI0jg5MRRTp/
-         LBDfwgBeTz7UfF8zOvwgvyF3yu6ue4PzybmMEWhEHmy34YliUAVBRRucg//JTWS0mIdc
-         WDfA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TdWdmS9KmpqRDKTTx4ZFKlZV0sk8Q5cLOhIOkZ1gD+w=;
+        b=cAZtzVYP2n3YvXgVkbJ7dbST+g3SP0UPbXQ9iKKyhX4VXr8jHpSYHqZMaG5ucNVipI
+         bzzpnQCIz78GKzn14VpRAj8Y6mpMr87iyH7UMbPsjr5O6z0niDquexdhhjTmn1y5QjQv
+         l8iJOpqbyOslL4LKhF6zS+g3cTQ+z78POnoVc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LoboofYleSqsx6Po76z6KtFKykk6O4/M/law9ADONhQ=;
-        b=Zr53uYGofj71/+DY5++AfU7O5nJaZ/l9E/yVa3H6bkPAFLbMNdlZvrEex+ocw5Jo67
-         Y1fyEX2a9DKv6ZWt1S7hVVJO4HXubfzZyL4cCqoyFZudjf7Da5Ac8oG609cTr7yCT3NQ
-         8mGHfzBsWX+MME58n1hqscdAEwL2bw/zoD1yrMIUzNKYow0bWto9IS+FEMvT80l2PSaV
-         gwJdpycizuOAgsK0e7cABR5Z8rOG5SdJnpQQpL4arZ9pCwEOSC8nOm7v4YahwzLkAcvZ
-         E+McRjrLqcHcrC7MDVXnkmAJ4o4b3Nt4q8i9CIOCImci2/anI7ZcqarcLo38SfhFrfRY
-         Fg2Q==
-X-Gm-Message-State: AOAM532ECipM38VZUlYK2E6bQgRyYoaDF9k8jowHhlZNre9Pt+u0QFxp
-        zfJ6J5Iq8Opj8/vQdv4ehVpLsw==
-X-Google-Smtp-Source: ABdhPJy0N3AzU+bC9wgIjMRXMwdsW3NNSoeyvr6MWRhCLnEfbQNcRW8bcmUt5YL0OIu+rlUywXSVzA==
-X-Received: by 2002:ac8:c0e:: with SMTP id k14mr3885478qti.364.1597945021939;
-        Thu, 20 Aug 2020 10:37:01 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:3cdd])
-        by smtp.gmail.com with ESMTPSA id k11sm2653665qkk.93.2020.08.20.10.37.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 10:37:01 -0700 (PDT)
-Date:   Thu, 20 Aug 2020 13:35:46 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Roman Gushchin <guro@fb.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH 2/3] mm/memcg: Simplify mem_cgroup_get_max()
-Message-ID: <20200820173546.GB912520@cmpxchg.org>
-References: <20200820130350.3211-1-longman@redhat.com>
- <20200820130350.3211-3-longman@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TdWdmS9KmpqRDKTTx4ZFKlZV0sk8Q5cLOhIOkZ1gD+w=;
+        b=RuLXf2kFkoio1iXrCYgfRSon8Nbk4Shaj9W/PTL5GiJ0mfCdn6O/gkFThFc6HcfAHI
+         mGJGNeuxEpn4jF9IKlcB6dQkr+bR6mVKm3UfNHTKXF4eLEJGLjIFjrSaS6cktTHEz9Hu
+         lcJ9Tggu34sP+3Leprt1ysgGg6BVghU3nSuGcOVbzNU0diEpXnymuKIdXF5MNr1Nf2nv
+         NNvJDhkov/O4VMt8jdnDeOnuD8Pgwua78/V+gP+90Rqd4AePxobjkwiKmkp2e/3hwdmy
+         n4NbWNjsFarE92TqpgdDe+Vc1ce2ah+FGxQ8+HpYxHnSr/M/OMSinS7aw5oZY19fHVWt
+         ysog==
+X-Gm-Message-State: AOAM532ofhf5/A3F8M4p2Q+jA6/fPg/Ss7zAxFoQBkGbRioxewUWdlLO
+        yj0Ca4sjYBA+PxP4MSRRaaZ0xRZJt4torA==
+X-Google-Smtp-Source: ABdhPJy+vhNhxV3Bi8auAWLP8v6fVuWQzowF144kevUbG8rxye4GAYU+JhqsRs5Uvy4yKKWlxDT8HQ==
+X-Received: by 2002:a17:906:b248:: with SMTP id ce8mr4223939ejb.85.1597945278458;
+        Thu, 20 Aug 2020 10:41:18 -0700 (PDT)
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com. [209.85.128.43])
+        by smtp.gmail.com with ESMTPSA id n25sm1670566edy.79.2020.08.20.10.41.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Aug 2020 10:41:17 -0700 (PDT)
+Received: by mail-wm1-f43.google.com with SMTP id o21so2420328wmc.0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:41:16 -0700 (PDT)
+X-Received: by 2002:a1c:4d12:: with SMTP id o18mr4512279wmh.55.1597945276327;
+ Thu, 20 Aug 2020 10:41:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200820130350.3211-3-longman@redhat.com>
+References: <20200819065555.1802761-1-hch@lst.de> <20200819065555.1802761-6-hch@lst.de>
+ <CAAFQd5COLxjydDYrfx47ht8tj-aNPiaVnC+WyQA7nvpW4gs=ww@mail.gmail.com>
+ <62e4f4fc-c8a5-3ee8-c576-fe7178cb4356@arm.com> <CAAFQd5AcCTDguB2C9KyDiutXWoEvBL8tL7+a==Uo8vj_8CLOJw@mail.gmail.com>
+ <2b32f1d8-16f7-3352-40a5-420993d52fb5@arm.com> <20200820050214.GA4815@lst.de>
+ <CAAFQd5AknYpP5BamC=wJkEJyO-q47V6Gc+HT65h6B+HyT+-xjQ@mail.gmail.com> <20200820165213.GC12693@lst.de>
+In-Reply-To: <20200820165213.GC12693@lst.de>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Thu, 20 Aug 2020 19:41:03 +0200
+X-Gmail-Original-Message-ID: <CAAFQd5BcH-_S=WDvqYvSPxMvQuN5atO8q=xktbMaPS-DOCAYbw@mail.gmail.com>
+Message-ID: <CAAFQd5BcH-_S=WDvqYvSPxMvQuN5atO8q=xktbMaPS-DOCAYbw@mail.gmail.com>
+Subject: Re: [PATCH 05/28] media/v4l2: remove V4L2-FLAG-MEMORY-NON-CONSISTENT
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Robin Murphy <robin.murphy@arm.com>, alsa-devel@alsa-project.org,
+        linux-ia64@vger.kernel.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        nouveau@lists.freedesktop.org, linux-nvme@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        linux-mm@kvack.org, Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        linux-scsi@vger.kernel.org,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Pawel Osciak <pawel@osciak.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        linux-mips@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 09:03:49AM -0400, Waiman Long wrote:
-> The mem_cgroup_get_max() function used to get memory+swap max from
-> both the v1 memsw and v2 memory+swap page counters & return the maximum
-> of these 2 values. This is redundant and it is more efficient to just
-> get either the v1 or the v2 values depending on which one is currently
-> in use.
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  mm/memcontrol.c | 14 +++++---------
->  1 file changed, 5 insertions(+), 9 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 26b7a48d3afb..d219dca5239f 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1633,17 +1633,13 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
->   */
->  unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg)
->  {
-> -	unsigned long max;
-> +	unsigned long max = READ_ONCE(memcg->memory.max);
->  
-> -	max = READ_ONCE(memcg->memory.max);
->  	if (mem_cgroup_swappiness(memcg)) {
-> -		unsigned long memsw_max;
-> -		unsigned long swap_max;
-> -
-> -		memsw_max = memcg->memsw.max;
-> -		swap_max = READ_ONCE(memcg->swap.max);
-> -		swap_max = min(swap_max, (unsigned long)total_swap_pages);
-> -		max = min(max + swap_max, memsw_max);
-> +		if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
-> +			max += READ_ONCE(memcg->swap.max);
-> +		else
-> +			max = memcg->memsw.max;
+On Thu, Aug 20, 2020 at 6:52 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Thu, Aug 20, 2020 at 12:24:31PM +0200, Tomasz Figa wrote:
+> > > Of course this still uses the scatterlist structure with its annoying
+> > > mix of input and output parametes, so I'd rather not expose it as
+> > > an official API at the DMA layer.
+> >
+> > The problem with the above open coded approach is that it requires
+> > explicit handling of the non-IOMMU and IOMMU cases and this is exactly
+> > what we don't want to have in vb2 and what was actually the job of the
+> > DMA API to hide. Is the plan to actually move the IOMMU handling out
+> > of the DMA API?
+> >
+> > Do you think we could instead turn it into a dma_alloc_noncoherent()
+> > helper, which has similar semantics as dma_alloc_attrs() and handles
+> > the various corner cases (e.g. invalidate_kernel_vmap_range and
+> > flush_kernel_vmap_range) to achieve the desired functionality without
+> > delegating the "hell", as you called it, to the users?
+>
+> Yes, I guess I could do something in that direction.  At least for
+> dma-iommu, which thanks to Robin should be all you'll need in the
+> foreseeable future.
 
-I agree with the premise of the patch, but v1 and v2 have sufficiently
-different logic, and the way v1 overrides max from the innermost
-branch again also doesn't help in understanding what's going on.
+That would be really great. Let me know if we can help by testing with
+V4L2/vb2 or in any other way.
 
-Can you please split out the v1 and v2 code?
-
-	if (cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
-		max = READ_ONCE(memcg->memory.max);
-		if (mem_cgroup_swappiness(memcg))
-			max += READ_ONCE(memcg->swap.max);
-	} else {
-		if (mem_cgroup_swappiness(memcg))
-			max = memcg->memsw.max;
-		else
-			max = READ_ONCE(memcg->memory.max);
-	}
-
-It's slightly repetitive, but IMO much more readable.
+Best regards,
+Tomasz
