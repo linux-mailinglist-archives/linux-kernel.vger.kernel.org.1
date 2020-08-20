@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AFC124B8C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9BF24B8C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730613AbgHTL1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:27:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34300 "EHLO mail.kernel.org"
+        id S1726788AbgHTL1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:27:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730647AbgHTKFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:05:55 -0400
+        id S1730653AbgHTKGF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:06:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 999862075E;
-        Thu, 20 Aug 2020 10:05:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D88FD2078D;
+        Thu, 20 Aug 2020 10:06:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917955;
-        bh=Q9Nk+Ip/pL2MI3WbOFTTcfDsLTucVvUTK6hNb3XVb9U=;
+        s=default; t=1597917964;
+        bh=Gtl2GUwVxg3GvtMHD2tUtCb4j/1WNS8hc/PhUv3xZy4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nJ1aRq0ENLhRgS1/I1s7e2Gz3u+rLNy5oHVJtuumHqbiUpIGIvQCpKN4TGRvEfJsJ
-         QWJNJ9qcHrqAhw5/QXIsPwkJWooJIQXo8mykBIO/Fd6jcmOTzGGGY/r3HEC34ovMcV
-         NLTfWMkTmeZ1WtrafcMtHb9Z0/QecBvt5mL3g8yo=
+        b=yQ4QRAYWggwdLBuzX7BXy+hg/fdjHrtuqr5flXL0S5KVRjDRwHwGZoy2T2jfXpNmc
+         vibs9NloCYlW/MkpgypCWtig2ug9q6oEFtDln4WqgKzhTsnrzzS0tKNGjj03BB6Tji
+         MxQ/bAF/+QN6S3AMxvZQkI1lB2G3/tQKCZPQhUEc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Ray Jui <ray.jui@broadcom.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>, Timur Tabi <timur@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 201/212] pwm: bcm-iproc: handle clk_get_rate() return
-Date:   Thu, 20 Aug 2020 11:22:54 +0200
-Message-Id: <20200820091612.499591802@linuxfoundation.org>
+Subject: [PATCH 4.9 204/212] net: qcom/emac: add missed clk_disable_unprepare in error path of emac_clks_phase1_init
+Date:   Thu, 20 Aug 2020 11:22:57 +0200
+Message-Id: <20200820091612.651354827@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
 References: <20200820091602.251285210@linuxfoundation.org>
@@ -49,50 +45,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit 6ced5ff0be8e94871ba846dfbddf69d21363f3d7 ]
+[ Upstream commit 50caa777a3a24d7027748e96265728ce748b41ef ]
 
-Handle clk_get_rate() returning 0 to avoid possible division by zero.
+Fix the missing clk_disable_unprepare() before return
+from emac_clks_phase1_init() in the error handling case.
 
-Fixes: daa5abc41c80 ("pwm: Add support for Broadcom iProc PWM controller")
-Signed-off-by: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-Signed-off-by: Scott Branden <scott.branden@broadcom.com>
-Reviewed-by: Ray Jui <ray.jui@broadcom.com>
-Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Fixes: b9b17debc69d ("net: emac: emac gigabit ethernet controller driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Acked-by: Timur Tabi <timur@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-bcm-iproc.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/qualcomm/emac/emac.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pwm/pwm-bcm-iproc.c b/drivers/pwm/pwm-bcm-iproc.c
-index 31b01035d0ab3..8cfba3614e601 100644
---- a/drivers/pwm/pwm-bcm-iproc.c
-+++ b/drivers/pwm/pwm-bcm-iproc.c
-@@ -85,8 +85,6 @@ static void iproc_pwmc_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
- 	u64 tmp, multi, rate;
- 	u32 value, prescale;
+diff --git a/drivers/net/ethernet/qualcomm/emac/emac.c b/drivers/net/ethernet/qualcomm/emac/emac.c
+index 57b35aeac51a0..adc088033c15d 100644
+--- a/drivers/net/ethernet/qualcomm/emac/emac.c
++++ b/drivers/net/ethernet/qualcomm/emac/emac.c
+@@ -477,13 +477,24 @@ static int emac_clks_phase1_init(struct platform_device *pdev,
  
--	rate = clk_get_rate(ip->clk);
--
- 	value = readl(ip->base + IPROC_PWM_CTRL_OFFSET);
+ 	ret = clk_prepare_enable(adpt->clk[EMAC_CLK_CFG_AHB]);
+ 	if (ret)
+-		return ret;
++		goto disable_clk_axi;
  
- 	if (value & BIT(IPROC_PWM_CTRL_EN_SHIFT(pwm->hwpwm)))
-@@ -99,6 +97,13 @@ static void iproc_pwmc_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
- 	else
- 		state->polarity = PWM_POLARITY_INVERSED;
- 
-+	rate = clk_get_rate(ip->clk);
-+	if (rate == 0) {
-+		state->period = 0;
-+		state->duty_cycle = 0;
-+		return;
-+	}
+ 	ret = clk_set_rate(adpt->clk[EMAC_CLK_HIGH_SPEED], 19200000);
+ 	if (ret)
+-		return ret;
++		goto disable_clk_cfg_ahb;
 +
- 	value = readl(ip->base + IPROC_PWM_PRESCALE_OFFSET);
- 	prescale = value >> IPROC_PWM_PRESCALE_SHIFT(pwm->hwpwm);
- 	prescale &= IPROC_PWM_PRESCALE_MAX;
++	ret = clk_prepare_enable(adpt->clk[EMAC_CLK_HIGH_SPEED]);
++	if (ret)
++		goto disable_clk_cfg_ahb;
+ 
+-	return clk_prepare_enable(adpt->clk[EMAC_CLK_HIGH_SPEED]);
++	return 0;
++
++disable_clk_cfg_ahb:
++	clk_disable_unprepare(adpt->clk[EMAC_CLK_CFG_AHB]);
++disable_clk_axi:
++	clk_disable_unprepare(adpt->clk[EMAC_CLK_AXI]);
++
++	return ret;
+ }
+ 
+ /* Enable clocks; needs emac_clks_phase1_init to be called before */
 -- 
 2.25.1
 
