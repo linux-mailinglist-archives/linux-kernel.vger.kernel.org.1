@@ -2,101 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D210224B575
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD44524B58C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729137AbgHTKYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:24:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37026 "EHLO
+        id S1728689AbgHTKZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:25:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731809AbgHTKYC (ORCPT
+        with ESMTP id S1731816AbgHTKYt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:24:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24642C061757;
-        Thu, 20 Aug 2020 03:24:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qdnfNm3IUzTMwmlQEg5cRLJ7F7h28cIGXcZ5YJRE3sU=; b=gtubPbuXkk4dOz+fGtiw5/nuXj
-        8DQU8y8NymTK/NQey14TfABLazVfI+wLeUuyp9U76iCTN4a8XSbHT0snK5IwEmrSJhLVUso8D8RlF
-        pw9la++GvNu2tBpQYVhnvnglAUTWDH2YYuuVW691JsUFvlAZX9dmjLoNaaGbWBhaK0zGVM38912E/
-        Yl1jQuTPnZpEzUqv+Cgc8Oc/FT5hqFo6TiDzHVbfPIv0eCsgKTK5clHJ5c0vLk2ipNtNlmGj43J1s
-        yFpaWoWouEqs7CKciXZHWJfUEuX2ti5XXLaBCv5A8jl31/7ui9Juhqpr64jchD3RYLCNUXMPNC2/n
-        lnfl1GKw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k8hjW-0004sh-38; Thu, 20 Aug 2020 10:23:51 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 833B6302526;
-        Thu, 20 Aug 2020 12:23:44 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 73D8928B7E826; Thu, 20 Aug 2020 12:23:44 +0200 (CEST)
-Date:   Thu, 20 Aug 2020 12:23:44 +0200
-From:   peterz@infradead.org
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-tip-commits@vger.kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>
-Subject: Re: [tip: x86/urgent] x86/entry, selftests: Further improve user
- entry sanity checks
-Message-ID: <20200820102344.GP2674@hirez.programming.kicks-ass.net>
-References: <881de09e786ab93ce56ee4a2437ba2c308afe7a9.1593795633.git.luto@kernel.org>
- <159388495037.4006.7851835406474127743.tip-bot2@tip-bot2>
+        Thu, 20 Aug 2020 06:24:49 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B0CC061387
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:24:48 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id cq28so1149955edb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:24:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FU3+CiJFzLHmOFDuQMwlaisWRGuHRN+5AV6txupwZrU=;
+        b=QFNCCjnhRiVXX1RwHJMrjJrm3FMIDmNx/PgDGVaGoYPr2orRHBTBO48N0vE/bjgnJ+
+         SYuYytDiRhiYZtZgJZ7z4/4vPKus2MwWgTKmnlMmLZQ4o8gAgDqGKHg0dO0uTStdh95b
+         tHYxvzFh9iEVHBmlKA/EhqmNwNT52r2I3xUhk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FU3+CiJFzLHmOFDuQMwlaisWRGuHRN+5AV6txupwZrU=;
+        b=m+tx+Uj/3auM4Gj3sV4F2uUlhQ6koQd9kC05T1HSbuA3P0rttGIAgkQGKSbcupKaIC
+         hQQYqgaLd8rjs6WWOb0rdlvD3WRPdu4k469XkZywx9vIc608unLNuKz+NC6/jEzfbcwJ
+         BKMr0/Yc0an4fGPx8jAffmbh8mcf41dOg47Q8GvJlOYlLHeau3hpnFTku2jk6vrVk3k0
+         c5clhT0Fe8tehXm3CWYHfcVJDXlIJ1dlowrpglRJFXikIytXwAi/KwzguKIJB83M5no+
+         hXqoPvYDkbnMdOb5cHIC9R1GVvpuF8qoBUu3EQ5yqkZymNpwSOsDhblTqrcDox4crhGu
+         eKJA==
+X-Gm-Message-State: AOAM530x59mtvA0dfPpxcJ6ZdA2i1pSBjk/tqrXB3pI+sGXYebNgiCT+
+        7DnZ3a/oXg33yNIASAAUSaWq2MEyIxxDwH/0
+X-Google-Smtp-Source: ABdhPJwePk2okpFz2tvriocKm5ZUujkrr9z03ETYnlpEJPDCCXnre+sH1wCko6+mmnmpdKoB2n9pJg==
+X-Received: by 2002:a50:fd8d:: with SMTP id o13mr2210499edt.313.1597919086618;
+        Thu, 20 Aug 2020 03:24:46 -0700 (PDT)
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com. [209.85.221.53])
+        by smtp.gmail.com with ESMTPSA id j19sm448388ejo.64.2020.08.20.03.24.45
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Aug 2020 03:24:45 -0700 (PDT)
+Received: by mail-wr1-f53.google.com with SMTP id f7so1530051wrw.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:24:45 -0700 (PDT)
+X-Received: by 2002:a5d:6744:: with SMTP id l4mr2717742wrw.105.1597919084826;
+ Thu, 20 Aug 2020 03:24:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <159388495037.4006.7851835406474127743.tip-bot2@tip-bot2>
+References: <20200819065555.1802761-1-hch@lst.de> <20200819065555.1802761-6-hch@lst.de>
+ <CAAFQd5COLxjydDYrfx47ht8tj-aNPiaVnC+WyQA7nvpW4gs=ww@mail.gmail.com>
+ <62e4f4fc-c8a5-3ee8-c576-fe7178cb4356@arm.com> <CAAFQd5AcCTDguB2C9KyDiutXWoEvBL8tL7+a==Uo8vj_8CLOJw@mail.gmail.com>
+ <2b32f1d8-16f7-3352-40a5-420993d52fb5@arm.com> <20200820050214.GA4815@lst.de>
+In-Reply-To: <20200820050214.GA4815@lst.de>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Thu, 20 Aug 2020 12:24:31 +0200
+X-Gmail-Original-Message-ID: <CAAFQd5AknYpP5BamC=wJkEJyO-q47V6Gc+HT65h6B+HyT+-xjQ@mail.gmail.com>
+Message-ID: <CAAFQd5AknYpP5BamC=wJkEJyO-q47V6Gc+HT65h6B+HyT+-xjQ@mail.gmail.com>
+Subject: Re: [PATCH 05/28] media/v4l2: remove V4L2-FLAG-MEMORY-NON-CONSISTENT
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Robin Murphy <robin.murphy@arm.com>, alsa-devel@alsa-project.org,
+        linux-ia64@vger.kernel.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        nouveau@lists.freedesktop.org, linux-nvme@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        linux-mm@kvack.org, Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        linux-scsi@vger.kernel.org,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Pawel Osciak <pawel@osciak.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        linux-mips@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 04, 2020 at 05:49:10PM -0000, tip-bot2 for Andy Lutomirski wrote:
+On Thu, Aug 20, 2020 at 7:02 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Wed, Aug 19, 2020 at 03:07:04PM +0100, Robin Murphy wrote:
+> >> FWIW, I asked back in time what the plan is for non-coherent
+> >> allocations and it seemed like DMA_ATTR_NON_CONSISTENT and
+> >> dma_sync_*() was supposed to be the right thing to go with. [2] The
+> >> same thread also explains why dma_alloc_pages() isn't suitable for the
+> >> users of dma_alloc_attrs() and DMA_ATTR_NON_CONSISTENT.
+> >
+> > AFAICS even back then Christoph was implying getting rid of NON_CONSISTENT
+> > and *replacing* it with something streaming-API-based - i.e. this series -
+> > not encouraging mixing the existing APIs. It doesn't seem impossible to
+> > implement a remapping version of this new dma_alloc_pages() for
+> > IOMMU-backed ops if it's really warranted (although at that point it seems
+> > like "non-coherent" vb2-dc starts to have significant conceptual overlap
+> > with vb2-sg).
+>
+> You can alway vmap the returned pages from dma_alloc_pages, but it will
+> make cache invalidation hell - you'll need to use
+> invalidate_kernel_vmap_range and flush_kernel_vmap_range to properly
+> handle virtually indexed caches.
+>
+> Or with remapping you mean using the iommu do de-scatter/gather?
 
-> diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-> index f392a8b..e83b3f1 100644
-> --- a/arch/x86/entry/common.c
-> +++ b/arch/x86/entry/common.c
-> @@ -49,6 +49,23 @@
->  static void check_user_regs(struct pt_regs *regs)
->  {
->  	if (IS_ENABLED(CONFIG_DEBUG_ENTRY)) {
-> +		/*
-> +		 * Make sure that the entry code gave us a sensible EFLAGS
-> +		 * register.  Native because we want to check the actual CPU
-> +		 * state, not the interrupt state as imagined by Xen.
-> +		 */
-> +		unsigned long flags = native_save_fl();
-> +		WARN_ON_ONCE(flags & (X86_EFLAGS_AC | X86_EFLAGS_DF |
-> +				      X86_EFLAGS_NT));
+Ideally, both.
 
-This triggers with AC|TF on my !SMAP enabled machine.
+For remapping in the CPU sense, there are drivers which rely on a
+contiguous kernel mapping of the vb2 buffers, which was provided by
+dma_alloc_attrs(). I think they could be reworked to work on single
+pages, but that would significantly complicate the code. At the same
+time, such drivers would actually benefit from a cached mapping,
+because they often have non-bursty, random access patterns.
 
-something like so then?
+Then, in the IOMMU sense, the whole idea of videobuf2-dma-contig is to
+rely on the DMA API to always provide device-contiguous memory, as
+required by the hardware which only has a single pointer and size.
 
-diff --git a/arch/x86/include/asm/entry-common.h b/arch/x86/include/asm/entry-common.h
-index a8f9315b9eae..76410964585f 100644
---- a/arch/x86/include/asm/entry-common.h
-+++ b/arch/x86/include/asm/entry-common.h
-@@ -18,8 +18,15 @@ static __always_inline void arch_check_user_regs(struct pt_regs *regs)
- 		 * state, not the interrupt state as imagined by Xen.
- 		 */
- 		unsigned long flags = native_save_fl();
--		WARN_ON_ONCE(flags & (X86_EFLAGS_AC | X86_EFLAGS_DF |
--				      X86_EFLAGS_NT));
-+		unsigned long mask = X86_EFLAGS_DF | X86_EFLAGS_NT;
-+
-+		/*
-+		 * For !SMAP hardware we patch out CLAC on entry.
-+		 */
-+		if (boot_cpu_has(X86_FEATURE_SMAP))
-+			mask |= X86_EFLAGS_AC;
-+
-+		WARN_ON_ONCE(flags & mask);
- 
- 		/* We think we came from user mode. Make sure pt_regs agrees. */
- 		WARN_ON_ONCE(!user_mode(regs));
+>
+> You can implement that trivially implement it yourself for the iommu
+> case:
+>
+> {
+>         merge_boundary = dma_get_merge_boundary(dev);
+>         if (!merge_boundary || merge_boundary > chunk_size - 1) {
+>                 /* can't coalesce */
+>                 return -EINVAL;
+>         }
+>
+>
+>         nents = DIV_ROUND_UP(total_size, chunk_size);
+>         sg = sgl_alloc();
+>         for_each_sgl() {
+>                 sg->page = __alloc_pages(get_order(chunk_size))
+>                 sg->len = chunk_size;
+>         }
+>         dma_map_sg(sg, DMA_ATTR_SKIP_CPU_SYNC);
+>         // you are guaranteed to get a single dma_addr out
+> }
+>
+> Of course this still uses the scatterlist structure with its annoying
+> mix of input and output parametes, so I'd rather not expose it as
+> an official API at the DMA layer.
+
+The problem with the above open coded approach is that it requires
+explicit handling of the non-IOMMU and IOMMU cases and this is exactly
+what we don't want to have in vb2 and what was actually the job of the
+DMA API to hide. Is the plan to actually move the IOMMU handling out
+of the DMA API?
+
+Do you think we could instead turn it into a dma_alloc_noncoherent()
+helper, which has similar semantics as dma_alloc_attrs() and handles
+the various corner cases (e.g. invalidate_kernel_vmap_range and
+flush_kernel_vmap_range) to achieve the desired functionality without
+delegating the "hell", as you called it, to the users?
+
+Best regards,
+Tomasz
