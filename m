@@ -2,98 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 221E824C8EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 02:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B5E24C8D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 01:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbgHTX74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 19:59:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50584 "EHLO
+        id S1727846AbgHTX5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 19:57:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726781AbgHTX7w (ORCPT
+        with ESMTP id S1727050AbgHTX4Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 19:59:52 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2169EC061357
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 16:51:17 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id a24so98929oia.6
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 16:51:17 -0700 (PDT)
+        Thu, 20 Aug 2020 19:56:24 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F1A1C061349
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 16:56:11 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id t14so109129wmi.3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 16:56:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bWH45KSsjMDtcB36FJCwfAf8uMmznGsZVuQtNo0KJIE=;
-        b=FJhaosUCodFEAJRj3zyKrxXgw2KLeOB71sGFq8MfhnXDSf8Bqgv5tiOEVsVRbdaWtm
-         sBtxKlzlUFEfaXZ2k4E8RqXrG4xu21TF6H5bOjCVZKU08xOy07giksduSxkQ9wNaOoEN
-         g27quDxW1zmdIxE5kcnTuOinwv1GutFAb+Lfs=
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eSKa4Ey8gdfGZw4O7eXF+v0TKjbgoL2h7/Rum3+7vIE=;
+        b=KXTks0qCaDbUf6bPSUK7xs/HT8S55LvPXgC8K2DVaaR3efaGdhX3rHNOPE1ocnOqyX
+         Lu64TfQ2jxfdtUu4eG/nhLqYSCijXr41c/h4MZx+ib0IWXeiKV8rWaTPSbNiZvwHUIi0
+         LfX0BCHPrg4tK9DYHGpkocyUuAkqbO5vVyCEf6kU5VoKTOV8IZQLZzJ772H6tXWoPjSx
+         De5MzZKc0RJeG+jhckjzf7zD5PLYvWYrIqyLqgXUrKZ8Yvgu5rBLNPT4QCv9HK9tNjHx
+         frl3rvvz9Hk6wxrtuz9gc9vRuMSTg8JVPn2y93jWV1MqV1vS+pAeL6Ack1RYwyyXsLgR
+         NN1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=bWH45KSsjMDtcB36FJCwfAf8uMmznGsZVuQtNo0KJIE=;
-        b=k1IoNBs/37hwajjh6wVvE1NF49xvfb1+3OyMgli5sCykRqZB7pEvsbEJ6qTNKhPyfF
-         xmpKW/4rQluEZS9+dmPCz+Xge7SWluYXdJ9p3JI061v6PvbxY2D58pzG+btVQbH1IQYw
-         LOkniWu+F2YAaQtXIqjWGH1GopTS6ItySi0omyl3AE7ZwgeA/60gr+OBiELZOwpX+mED
-         0VlhVtMPF+xrtZ8FIYge+zeiZvIv99LgGsduqsPrpZtbBNun23fFbMEJZ5SQSJzTZzbH
-         HHgg+4kc19Cj5IAJ4nJOHHfEcx6mEbVwzIHpOQ1tAAEaSZKYWhKDLcnsxzokcX/j5l7M
-         gWag==
-X-Gm-Message-State: AOAM531DrepM0I6z+OqkxK4F9Rx2WPncqGeqREIUnJp4JlpMIX5FnYCk
-        1GGNFtUohCaMwd3kL4LaICkUhg==
-X-Google-Smtp-Source: ABdhPJwGsqbYR42hZnuQpFyt9MFGKV1Ti4RcBLS4mOzHG5sgOkbEdSNJY/JGxUJ0lAVPZLAEyJJSXw==
-X-Received: by 2002:a05:6808:8e5:: with SMTP id d5mr265149oic.64.1597967476593;
-        Thu, 20 Aug 2020 16:51:16 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id o22sm31838ota.49.2020.08.20.16.51.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Aug 2020 16:51:15 -0700 (PDT)
-Subject: Re: [PATCH 4.4 000/149] 4.4.233-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        bh=eSKa4Ey8gdfGZw4O7eXF+v0TKjbgoL2h7/Rum3+7vIE=;
+        b=L+zV/O5Qe0BipTLeJ4O2uVwd9/a5Ko3VPGJBeCD9Wn83rHDAKw5D9H4DXvnB94FA8p
+         /gdDTKVrMJeHd35AarjsUST1/J2g7LOJtK0XV8fR8uDocJBW6z1RSi+Dh05PSPXlw0IA
+         ihQGd/FSMBUth67Xgt1nLmk2zBVa9+mj+tEH1+J6qYk2tVF/I4L9kshnxTJqYCKDh/5Q
+         QT4chSJphwrusx2EFk+o4u0zSWN4t7+Mdf5t8dM15x400BQgkJO8EqZrnGN5WLS68oxA
+         uNhTypXRCvRBzmMekmRs5SEpKe/6lStHc0TGmcBEt+7ig4mOaXNfpsJbmYzq5fLvI2D/
+         ilIQ==
+X-Gm-Message-State: AOAM530nx8+1jidkkMgK+UpW5naGNCOKOzvun2YSJ445bqx7ZQAJTGQ+
+        qZAG/3IpCTg0UspvhS0xZv0=
+X-Google-Smtp-Source: ABdhPJwDGeYpHJYWEawHyyzdBiI9Dk7vOO5oGyMaLBb8yJU/pvhi6QWe4Hh/d9CEuDOAQsmEiul5gw==
+X-Received: by 2002:a1c:2808:: with SMTP id o8mr820101wmo.108.1597967770566;
+        Thu, 20 Aug 2020 16:56:10 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id s20sm561046wmh.21.2020.08.20.16.56.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Aug 2020 16:56:09 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+To:     Julia Lawall <Julia.Lawall@lip6.fr>,
+        Gilles Muller <Gilles.Muller@lip6.fr>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>, cocci@systeme.lip6.fr,
         linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20200820092125.688850368@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <70ff8ddf-810c-6636-2ab8-fd15027f7140@linuxfoundation.org>
-Date:   Thu, 20 Aug 2020 17:51:14 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Subject: [PATCH] coccinelle: add patch rule for dma_alloc_coherent
+Date:   Fri, 21 Aug 2020 00:55:57 +0100
+Message-Id: <20200820235600.326346-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/20/20 3:21 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.4.233 release.
-> There are 149 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 22 Aug 2020 09:21:01 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.233-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
->
+Commit dfd32cad146e ("dma-mapping: remove dma_zalloc_coherent()")
+removed the definition of dma_zalloc_coherent() and also removed the
+corresponding patch rule for replacing instances of dma_alloc_coherent +
+memset in zalloc-simple.cocci (though left the report rule).
 
-Compiled and booted on my test system. No dmesg regressions.
+Add a new patch rule to remove unnecessary calls to memset after
+allocating with dma_alloc_coherent. While we're at it, fix a couple of
+typos.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Fixes: dfd32cad146e ("dma-mapping: remove dma_zalloc_coherent()")
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+---
+ scripts/coccinelle/api/alloc/zalloc-simple.cocci | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-thanks,
--- Shuah
+diff --git a/scripts/coccinelle/api/alloc/zalloc-simple.cocci b/scripts/coccinelle/api/alloc/zalloc-simple.cocci
+index 26cda3f48f01..b3d0c3c230c1 100644
+--- a/scripts/coccinelle/api/alloc/zalloc-simple.cocci
++++ b/scripts/coccinelle/api/alloc/zalloc-simple.cocci
+@@ -127,6 +127,16 @@ statement S;
+   if ((x==NULL) || ...) S
+ - memset((T2)x,0,E1);
+ 
++@depends on patch@
++type T, T2;
++expression x;
++expression E1,E2,E3,E4;
++statement S;
++@@
++  x = (T)dma_alloc_coherent(E1, E2, E3, E4);
++  if ((x==NULL) || ...) S
++- memset((T2)x, 0, E2);
++
+ //----------------------------------------------------------
+ //  For org mode
+ //----------------------------------------------------------
+@@ -199,9 +209,9 @@ statement S;
+ position p;
+ @@
+ 
+- x = (T)dma_alloc_coherent@p(E2,E1,E3,E4);
++ x = (T)dma_alloc_coherent@p(E1,E2,E3,E4);
+  if ((x==NULL) || ...) S
+- memset((T2)x,0,E1);
++ memset((T2)x,0,E2);
+ 
+ @script:python depends on org@
+ p << r2.p;
+@@ -217,7 +227,7 @@ p << r2.p;
+ x << r2.x;
+ @@
+ 
+-msg="WARNING: dma_alloc_coherent use in %s already zeroes out memory,  so memset is not needed" % (x)
++msg="WARNING: dma_alloc_coherent used in %s already zeroes out memory, so memset is not needed" % (x)
+ coccilib.report.print_report(p[0], msg)
+ 
+ //-----------------------------------------------------------------
+-- 
+2.28.0
 
