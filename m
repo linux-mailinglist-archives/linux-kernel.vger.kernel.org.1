@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6494124B4DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FFAE24B4DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730170AbgHTKNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:13:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55480 "EHLO mail.kernel.org"
+        id S1731081AbgHTKNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:13:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731096AbgHTKMw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:12:52 -0400
+        id S1731099AbgHTKMy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:12:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8876D206DA;
-        Thu, 20 Aug 2020 10:12:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 84C3D2067C;
+        Thu, 20 Aug 2020 10:12:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918371;
-        bh=RY+bUR6q62ndFq4NTc+Ra1HAuUXfTe8JDs9v63RZvMs=;
+        s=default; t=1597918374;
+        bh=A0T3gi1GP6TniScFs7IGQjKPJyxA4pj4/xcIpUMTwiE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DdnbodhE+eaVzUrTtM8aYAUp/1FV+zSsuO4vcpAT9JcA6Co9wITqXQf4Vp94KkMJk
-         ChTu9rNAUZhI4jxkyilGghheWCNi5fm8iwPBCJ5qiRkOj9JYzzNlX2B4uhTxbeCU9n
-         fsCPL24TCj3N02GqB09V6aW+/hN0bvjj+/rTPQa4=
+        b=RPB1PTbdFUrIKadOwQ1qExXmpe0Rd/FXqYCqZtpcIaRVSg433ImGyVgL0aVYsVxXc
+         pyHvGjKbMcXXg4x5e1a3qpsPMZ03QQdseznj97oq/QWk6UbtM3o1O9LhsLgt91U374
+         +Ws8ZssFoE9PNIrHvBSsv+UWVThWPwXXnOHZgmqI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brant Merryman <brant.merryman@silabs.com>,
-        Phu Luu <phu.luu@silabs.com>, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.14 145/228] USB: serial: cp210x: enable usb generic throttle/unthrottle
-Date:   Thu, 20 Aug 2020 11:22:00 +0200
-Message-Id: <20200820091614.826651760@linuxfoundation.org>
+        stable@vger.kernel.org, Mirko Dietrich <buzz@l4m1.de>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.14 146/228] ALSA: usb-audio: Creative USB X-Fi Pro SB1095 volume knob support
+Date:   Thu, 20 Aug 2020 11:22:01 +0200
+Message-Id: <20200820091614.874079709@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
 References: <20200820091607.532711107@linuxfoundation.org>
@@ -43,38 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brant Merryman <brant.merryman@silabs.com>
+From: Mirko Dietrich <buzz@l4m1.de>
 
-commit 4387b3dbb079d482d3c2b43a703ceed4dd27ed28 upstream.
+commit fec9008828cde0076aae595ac031bfcf49d335a4 upstream.
 
-Assign the .throttle and .unthrottle functions to be generic function
-in the driver structure to prevent data loss that can otherwise occur
-if the host does not enable USB throttling.
+Adds an entry for Creative USB X-Fi to the rc_config array in
+mixer_quirks.c to allow use of volume knob on the device.
+Adds support for newer X-Fi Pro card, known as "Model No. SB1095"
+with USB ID "041e:3263"
 
-Signed-off-by: Brant Merryman <brant.merryman@silabs.com>
-Co-developed-by: Phu Luu <phu.luu@silabs.com>
-Signed-off-by: Phu Luu <phu.luu@silabs.com>
-Link: https://lore.kernel.org/r/57401AF3-9961-461F-95E1-F8AFC2105F5E@silabs.com
-[ johan: fix up tags ]
-Fixes: 39a66b8d22a3 ("[PATCH] USB: CP2101 Add support for flow control")
-Cc: stable <stable@vger.kernel.org>     # 2.6.12
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Mirko Dietrich <buzz@l4m1.de>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200806124850.20334-1-buzz@l4m1.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/cp210x.c |    2 ++
- 1 file changed, 2 insertions(+)
+ sound/usb/mixer_quirks.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -271,6 +271,8 @@ static struct usb_serial_driver cp210x_d
- 	.break_ctl		= cp210x_break_ctl,
- 	.set_termios		= cp210x_set_termios,
- 	.tx_empty		= cp210x_tx_empty,
-+	.throttle		= usb_serial_generic_throttle,
-+	.unthrottle		= usb_serial_generic_unthrottle,
- 	.tiocmget		= cp210x_tiocmget,
- 	.tiocmset		= cp210x_tiocmset,
- 	.attach			= cp210x_attach,
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -196,6 +196,7 @@ static const struct rc_config {
+ 	{ USB_ID(0x041e, 0x3042), 0, 1, 1, 1,  1,  0x000d }, /* Usb X-Fi S51 */
+ 	{ USB_ID(0x041e, 0x30df), 0, 1, 1, 1,  1,  0x000d }, /* Usb X-Fi S51 Pro */
+ 	{ USB_ID(0x041e, 0x3237), 0, 1, 1, 1,  1,  0x000d }, /* Usb X-Fi S51 Pro */
++	{ USB_ID(0x041e, 0x3263), 0, 1, 1, 1,  1,  0x000d }, /* Usb X-Fi S51 Pro */
+ 	{ USB_ID(0x041e, 0x3048), 2, 2, 6, 6,  2,  0x6e91 }, /* Toshiba SB0500 */
+ };
+ 
 
 
