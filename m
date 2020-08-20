@@ -2,203 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1D5C24B0BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 10:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A4FE24B0C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 10:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbgHTIG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 04:06:58 -0400
-Received: from mga07.intel.com ([134.134.136.100]:6342 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725824AbgHTIGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 04:06:50 -0400
-IronPort-SDR: tg5/UWn3GYTP9fMCWsNGhSXejHFePOEXe+t/4OS5tm27ozRKWhEC85/nJ6265v2Axllp0cntsT
- sWEQHHAsQoSA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9718"; a="219563394"
-X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
-   d="scan'208";a="219563394"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2020 01:06:48 -0700
-IronPort-SDR: ofSLQ90hcXgo9+AOSKBWlxm1iZpaVXrMm33vBnHA+mUz2CKr20IvxDVqlNHTn7HJV+DgpCNNRz
- 5+wG3IhPChsg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
-   d="scan'208";a="329595076"
-Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.164])
-  by fmsmga002.fm.intel.com with ESMTP; 20 Aug 2020 01:06:47 -0700
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     <linux-kernel@vger.kernel.org>, <yang.shi@linux.alibaba.com>,
-        <rientjes@google.com>, <dan.j.williams@intel.com>
-Subject: Re: [RFC][PATCH 5/9] mm/migrate: demote pages during reclaim
-References: <20200818184122.29C415DF@viggo.jf.intel.com>
-        <20200818184131.C972AFCC@viggo.jf.intel.com>
-Date:   Thu, 20 Aug 2020 16:06:46 +0800
-In-Reply-To: <20200818184131.C972AFCC@viggo.jf.intel.com> (Dave Hansen's
-        message of "Tue, 18 Aug 2020 11:41:31 -0700")
-Message-ID: <87lfi9wxk9.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1725885AbgHTIJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 04:09:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726701AbgHTIIj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 04:08:39 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 294F5C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 01:08:35 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id y6so566064plk.10
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 01:08:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UyQuqwn4RZF56iSes2DwNieBx5SpVLzHQWszhjrntHk=;
+        b=Lapb6oYHVPL5HNLwcPNs8MoFKbXLSYE2HQX+VtwSg4ZyjFXq7XlQltoIe56HYn9XBU
+         LgwdfPt8FCiCKiRbg3IIeQgysyw919rVQUDSW3IajjJ4Bcb4v2VdKddnHiiHjmJkfgte
+         vGNQRL95MAlkFXlYw11QN+/MX2YrmkdaJNPn3RX9kQKH1etDLseHML/CHfTp/SCPCwGw
+         iDhSewBo6cWlO1VA8xkTEW5sYfnlr5ET52plBb+3U82O3jAIEDhQL3CziQeoxCA+45m8
+         w/f5FVvfNttV9zaQbMZb3OubH8Q7zAW8LJ0J3oNih7c0jn0yUjeNIij+iKML5/wJG/Bc
+         j1Yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UyQuqwn4RZF56iSes2DwNieBx5SpVLzHQWszhjrntHk=;
+        b=RJ38Lb2l3EH1dCejlWSjKn7sAw39H/EbRamTqR4IEmqG63BbYdSXOkablePTMetJdx
+         giI5dsRp/NNdCcAltjIl9TUE5BqczxD5FIyomRBMetWiPjtV/BD2Isl+3AnBYvDGEaWj
+         +bh9ip/XQLeeiyCfyOWH5q7mnv8OBAzAkF27ZlI+Za8+kf0ESFHqrsjP7Fa+Ufi79bzk
+         DbpAaeU6+XsbeZClBE8Y0pBgOHRdiw2TiPWP8rRQy+7LxGqoGgLCzt5qPRbzCPlq5du9
+         ELktq80GDORt1G9Y5RP4BMwcHptMdjLopZOatp+duju123lOOn0B1l2YbQGvGxkZkRx5
+         VKGA==
+X-Gm-Message-State: AOAM530KJDZl/kofxqLk6f4fSIEw5ggQcPrCMsP78pOBx7m0ec4Ivu/O
+        xKtWORFhyIqqiUXc3TFRAkRup7ZzKvau1Hgnq2r0pw==
+X-Google-Smtp-Source: ABdhPJz0kFzwDoyHPV/MtXyJ7awqCWpml+jMHDpurrzZKfWF2c7tPKWf1HaPIVFCZtqGF9x1K04HyBAeG+49r9IiS7I=
+X-Received: by 2002:a17:90a:f98e:: with SMTP id cq14mr1645144pjb.51.1597910914013;
+ Thu, 20 Aug 2020 01:08:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+References: <20200819161907.1155110-1-enric.balletbo@collabora.com>
+ <C9E59107-CE83-4554-9447-5DE5BEE09A3B@fw-web.de> <CAGETcx9_A-E5b-JxT2G142mGxqoo8xqFNEgT+CNWt=oOv0Z5+w@mail.gmail.com>
+ <a23bac35d20eb002bdfb5263bf5dd213@kernel.org>
+In-Reply-To: <a23bac35d20eb002bdfb5263bf5dd213@kernel.org>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 20 Aug 2020 01:07:58 -0700
+Message-ID: <CAGETcx-NpRzzeXYN-UBP1eAsC3s_AofSQ9rXOEmCjhLhKLnxWg@mail.gmail.com>
+Subject: Re: [PATCH] Revert "irqchip/mtk-sysirq: Convert to a platform driver"
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Frank Wunderlich <wichtig@fw-web.de>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Frank Wunderlich <linux@fw-web.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Hanks Chen <hanks.chen@mediatek.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Dave,
+On Thu, Aug 20, 2020 at 12:56 AM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On 2020-08-19 19:51, Saravana Kannan wrote:
+> > On Wed, Aug 19, 2020 at 9:52 AM Frank Wunderlich <wichtig@fw-web.de>
+> > wrote:
+> >>
+> >> hi,
+> >>
+> >> does the fix you've linked to my revert [1] not work in your case?
+> >>
+> >> [1] https://patchwork.kernel.org/patch/11718481/
+> >
+> > Thanks for pointing it out Frank. Also, might want to avoid top
+> > posting in the future.
+> >
+> > Enric, Can you please try that other fix and see if that solves your
+> > issue?
+>
+> I think Enric was clear that the driver does probe correctly
+> (meaning that he has the fix in his tree). It is everything else
+> that breaks, because none of the drivers on the platform are
+> equipped to defer their own probing.
+>
+> I think we need to change this works right now, meaning that we can't
+> blindly change the behaviour of *built-in* drivers. I'll see if I can
+> come up with something quickly, but I'll otherwise take Enric patch.
 
-Dave Hansen <dave.hansen@linux.intel.com> writes:
+Sounds fair Marc.
 
-[snip]
+Btw, Enric, out of curiosity, can you try adding "fw_devlink=on" to
+your kernel command line to see if it helps? It basically ensures
+proper probe ordering without depending on the drivers. There are some
+corner cases where it still can't work properly (too much to explain
+for a late night email), but if the platforms don't have those corner
+cases it'll work perfectly.
 
-> diff -puN mm/vmscan.c~demote-with-migrate_pages mm/vmscan.c
-> --- a/mm/vmscan.c~demote-with-migrate_pages	2020-08-18 11:36:52.919583179 -0700
-> +++ b/mm/vmscan.c	2020-08-18 11:36:52.924583179 -0700
-> @@ -43,6 +43,7 @@
->  #include <linux/kthread.h>
->  #include <linux/freezer.h>
->  #include <linux/memcontrol.h>
-> +#include <linux/migrate.h>
->  #include <linux/delayacct.h>
->  #include <linux/sysctl.h>
->  #include <linux/oom.h>
-> @@ -1040,6 +1041,24 @@ static enum page_references page_check_r
->  	return PAGEREF_RECLAIM;
->  }
->  
-> +bool migrate_demote_page_ok(struct page *page, struct scan_control *sc)
-> +{
-> +	int next_nid = next_demotion_node(page_to_nid(page));
-> +
-> +	VM_BUG_ON_PAGE(!PageLocked(page), page);
-> +	VM_BUG_ON_PAGE(PageHuge(page), page);
-> +	VM_BUG_ON_PAGE(PageLRU(page), page);
-> +
-> +	if (next_nid == NUMA_NO_NODE)
-> +		return false;
-> +	if (PageTransHuge(page) && !thp_migration_supported())
-> +		return false;
-> +
-> +	// FIXME: actually enable this later in the series
-> +	return false;
-> +}
-> +
-> +
->  /* Check if a page is dirty or under writeback */
->  static void page_check_dirty_writeback(struct page *page,
->  				       bool *dirty, bool *writeback)
-> @@ -1070,6 +1089,66 @@ static void page_check_dirty_writeback(s
->  		mapping->a_ops->is_dirty_writeback(page, dirty, writeback);
->  }
->  
-> +static struct page *alloc_demote_page(struct page *page, unsigned long node)
-> +{
-> +	/*
-> +	 * Try to fail quickly if memory on the target node is not
-> +	 * available.  Leaving out __GFP_IO and __GFP_FS helps with
-> +	 * this.  If the desintation node is full, we want kswapd to
-> +	 * run there so that its pages will get reclaimed and future
-> +	 * migration attempts may succeed.
-> +	 */
-> +	gfp_t flags = (__GFP_HIGHMEM | __GFP_MOVABLE | __GFP_NORETRY |
-> +		       __GFP_NOMEMALLOC | __GFP_NOWARN | __GFP_THISNODE |
-> +		       __GFP_KSWAPD_RECLAIM);
-> +	/* HugeTLB pages should not be on the LRU */
-> +	WARN_ON_ONCE(PageHuge(page));
-> +
-> +	if (PageTransHuge(page)) {
-> +		struct page *thp;
-> +
-> +		flags |= __GFP_COMP;
-> +
-> +		thp = alloc_pages_node(node, flags, HPAGE_PMD_ORDER);
-> +		if (!thp)
-> +			return NULL;
-> +		prep_transhuge_page(thp);
-> +		return thp;
-> +	}
-> +
-> +	return __alloc_pages_node(node, flags, 0);
-> +}
-> +
-> +/*
-> + * Take pages on @demote_list and attempt to demote them to
-> + * another node.  Pages which are not demoted are added to
-> + * @ret_pages.
-> + */
-> +static unsigned int demote_page_list(struct list_head *ret_list,
-> +				     struct list_head *demote_pages,
-> +				     struct pglist_data *pgdat,
-> +				     struct scan_control *sc)
-> +{
-> +	int target_nid = next_demotion_node(pgdat->node_id);
-> +	unsigned int nr_succeeded = 0;
-> +	int err;
-> +
-> +	if (list_empty(demote_pages))
-> +		return 0;
-> +
-> +	/* Demotion ignores all cpuset and mempolicy settings */
-> +	err = migrate_pages(demote_pages, alloc_demote_page, NULL,
-> +			    target_nid, MIGRATE_ASYNC, MR_DEMOTION,
-> +			    &nr_succeeded);
-> +
-> +	if (err) {
-> +		putback_movable_pages(demote_pages);
-> +		list_splice(ret_list, demote_pages);
-> +	}
-> +
-> +	return nr_succeeded;
-> +}
-> +
->  /*
->   * shrink_page_list() returns the number of reclaimed pages
->   */
-> @@ -1082,6 +1161,7 @@ static unsigned int shrink_page_list(str
->  {
->  	LIST_HEAD(ret_pages);
->  	LIST_HEAD(free_pages);
-> +	LIST_HEAD(demote_pages);
->  	unsigned int nr_reclaimed = 0;
->  	unsigned int pgactivate = 0;
->  
-> @@ -1237,6 +1317,16 @@ static unsigned int shrink_page_list(str
->  		}
->  
->  		/*
-> +		 * Before reclaiming the page, try to relocate
-> +		 * its contents to another node.
-> +		 */
-> +		if (migrate_demote_page_ok(page, sc)) {
-> +			list_add(&page->lru, &demote_pages);
-> +			unlock_page(page);
-> +			continue;
-> +		}
-> +
-> +		/*
->  		 * Anonymous process memory has backing store?
->  		 * Try to allocate it some swap space here.
->  		 * Lazyfree page could be freed directly
-> @@ -1484,6 +1574,9 @@ keep:
->  		VM_BUG_ON_PAGE(PageLRU(page) || PageUnevictable(page), page);
->  	}
->  
-> +	/* Migrate pages selected for demotion */
-> +	nr_reclaimed += demote_page_list(&ret_pages, &demote_pages, pgdat, sc);
-> +
->  	pgactivate = stat->nr_activate[0] + stat->nr_activate[1];
->  
->  	mem_cgroup_uncharge_list(&free_pages);
-> _
+I'm fine with the revert if Marc isn't able to find a quick fix to the
+drivers, but this might also fix your problem right away.
 
-Generally, it's good to batch the page migration.  But one side effect
-is that, if the pages are failed to be migrated, they will be placed
-back to the LRU list instead of falling back to be reclaimed really.
-This may cause some issue in some situation.  For example, if there's no
-enough space in the PMEM (slow) node, so the page migration fails, OOM
-may be triggered, because the direct reclaiming on the DRAM (fast) node
-may make no progress, while it can reclaim some pages really before.
-
-Best Regards,
-Huang, Ying
+-Saravana
