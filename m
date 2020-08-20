@@ -2,187 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4079524C369
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 18:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B01524C370
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 18:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729957AbgHTQh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 12:37:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728987AbgHTQhx (ORCPT
+        id S1730002AbgHTQjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 12:39:13 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:57068 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728753AbgHTQjL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 12:37:53 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4DF4C061385
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 09:37:53 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id bh1so1173617plb.12
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 09:37:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=j2sbZKOunUPIGK510Ugi3zbe+NKV7WregpDvTrZZO3M=;
-        b=NtPHvi10EOcyYIgrMLzQKtYZHfhYnX0kv7C1qjMsiWY7LO4GGRn2nvySgtSGevrgk/
-         S5c6Ev2gtYc8YfHMg4Uox928yUxIIbmFHum2B8DBWk3TfuqyuIrRYc+HMF/HiEtSOBAT
-         o8CRbM0AOR30tIzu3uWz2wM6nURVSMpR5Fr1c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=j2sbZKOunUPIGK510Ugi3zbe+NKV7WregpDvTrZZO3M=;
-        b=qPLpnnhTkFu/K66QAAUhUK6TTahMZAdr4mhkTd2v5K8kcjZb6WHnzWhnX6As+qstX3
-         cIXUgfXzFR7OCPG1BeOAYirgAmUcntGTCCb/8xCCbxuXAINfmaRlr9Vwq3UZwvYaBrIV
-         CfF14GaU5eGv32BLUqfwBZt2dhO8La9XbKjig5nZVUtciJ381DBjfKExkhls5l7qifX1
-         IXYtHF5MZ3T0jy8hpWGkohhsQ+m4RRrmhslYJYybeUauh+ATERMOvUO3BPCSS1w9E9rf
-         +36d+2ASMkEwmOcS+8sCEISlQ3JybRQClyuWfZ8gkrZxPYfFzDrfNfympiQ4Mi28tv+z
-         pSQQ==
-X-Gm-Message-State: AOAM532sYKeDGLPXhYd+n/oleAn0H92tA+9hSaY0HaSw92ZmlydDFQ9Z
-        lMQIRCTHDhObG6QuC2W7zlimwU+mRhcVavq7
-X-Google-Smtp-Source: ABdhPJwBUFRJHDaiJTeIfbOcXiJStO7WcAzgyrbSctsBiBcYV2vC12oTNzAL2jL5rPa0l9qO8VuT3w==
-X-Received: by 2002:a17:902:bd8d:: with SMTP id q13mr3134756pls.142.1597941472847;
-        Thu, 20 Aug 2020 09:37:52 -0700 (PDT)
-Received: from [10.136.13.65] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id bj18sm2619461pjb.5.2020.08.20.09.37.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Aug 2020 09:37:52 -0700 (PDT)
-Subject: Re: [PATCH v2 1/3] bcm-vk: add bcm_vk UAPI
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com
-References: <20200806004631.8102-1-scott.branden@broadcom.com>
- <20200806004631.8102-2-scott.branden@broadcom.com>
- <20200818135313.GB495837@kroah.com>
- <8894c3c4-4d5c-cb94-bc90-a26833ebf268@broadcom.com>
- <20200818174451.GA749919@kroah.com>
- <4adbd70e-c49b-c2d4-84c7-5e910f05e449@broadcom.com>
- <20200819070044.GA1004396@kroah.com>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <fdbb7404-03c3-22b1-d409-5b6d8745ff2b@broadcom.com>
-Date:   Thu, 20 Aug 2020 09:37:46 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 20 Aug 2020 12:39:11 -0400
+Received: from 89-64-87-57.dynamic.chello.pl (89.64.87.57) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.459)
+ id a3d0785267e228d1; Thu, 20 Aug 2020 18:39:07 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Doug Smythies <dsmythies@telus.net>
+Subject: [PATCH 3/4] cpufreq: intel_pstate: Add ->offline and ->online callbacks
+Date:   Thu, 20 Aug 2020 18:38:01 +0200
+Message-ID: <1879185.C8Vd3vmt8n@kreacher>
+In-Reply-To: <2283366.Lr8yYYnyev@kreacher>
+References: <2283366.Lr8yYYnyev@kreacher>
 MIME-Version: 1.0
-In-Reply-To: <20200819070044.GA1004396@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-CA
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
 
-On 2020-08-19 12:00 a.m., Greg Kroah-Hartman wrote:
-> On Tue, Aug 18, 2020 at 05:35:04PM -0700, Scott Branden wrote:
->>
->> On 2020-08-18 10:44 a.m., Greg Kroah-Hartman wrote:
->>> On Tue, Aug 18, 2020 at 10:23:42AM -0700, Scott Branden wrote:
->>>> Hi Greg,
->>>>
->>>> On 2020-08-18 6:53 a.m., Greg Kroah-Hartman wrote:
->>>>> On Wed, Aug 05, 2020 at 05:46:29PM -0700, Scott Branden wrote:
->>>>>> Add user space api for bcm-vk driver.
->>>>>>
->>>>>> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
->>>>>> ---
->>>>>>  include/uapi/linux/misc/bcm_vk.h | 99 ++++++++++++++++++++++++++++++++
->>>>>>  1 file changed, 99 insertions(+)
->>>>>>  create mode 100644 include/uapi/linux/misc/bcm_vk.h
->>>>>>
->>>>>> diff --git a/include/uapi/linux/misc/bcm_vk.h b/include/uapi/linux/misc/bcm_vk.h
->>>>>> new file mode 100644
->>>>>> index 000000000000..783087b7c31f
->>>>>> --- /dev/null
->>>>>> +++ b/include/uapi/linux/misc/bcm_vk.h
->>>>>> @@ -0,0 +1,99 @@
->>>>>> +/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-2-Clause) */
->>>>>> +/*
->>>>>> + * Copyright 2018-2020 Broadcom.
->>>>>> + */
->>>>>> +
->>>>>> +#ifndef __UAPI_LINUX_MISC_BCM_VK_H
->>>>>> +#define __UAPI_LINUX_MISC_BCM_VK_H
->>>>>> +
->>>>>> +#include <linux/ioctl.h>
->>>>>> +#include <linux/types.h>
->>>>>> +
->>>>>> +#define BCM_VK_MAX_FILENAME 64
->>>>>> +
->>>>>> +struct vk_image {
->>>>>> +	__u32 type; /* Type of image */
->>>>>> +#define VK_IMAGE_TYPE_BOOT1 1 /* 1st stage (load to SRAM) */
->>>>>> +#define VK_IMAGE_TYPE_BOOT2 2 /* 2nd stage (load to DDR) */
->>>>>> +	char filename[BCM_VK_MAX_FILENAME]; /* Filename of image */
->>>>>> +};
->>>>>> +
->>>>>> +struct vk_reset {
->>>>>> +	__u32 arg1;
->>>>>> +	__u32 arg2;
->>>>>> +};
->>>>>> +
->>>>>> +#define VK_MAGIC		0x5e
->>>>>> +
->>>>>> +/* Load image to Valkyrie */
->>>>>> +#define VK_IOCTL_LOAD_IMAGE	_IOW(VK_MAGIC, 0x2, struct vk_image)
->>>>>> +
->>>>>> +/* Send Reset to Valkyrie */
->>>>>> +#define VK_IOCTL_RESET		_IOW(VK_MAGIC, 0x4, struct vk_reset)
->>>>>> +
->>>>>> +/*
->>>>>> + * message block - basic unit in the message where a message's size is always
->>>>>> + *		   N x sizeof(basic_block)
->>>>>> + */
->>>>>> +struct vk_msg_blk {
->>>>>> +	__u8 function_id;
->>>>>> +#define VK_FID_TRANS_BUF	5
->>>>>> +#define VK_FID_SHUTDOWN		8
->>>>>> +	__u8 size;
->>>>>> +	__u16 trans_id; /* transport id, queue & msg_id */
->>>>>> +	__u32 context_id;
->>>>>> +	__u32 args[2];
->>>>>> +#define VK_CMD_PLANES_MASK	0x000f /* number of planes to up/download */
->>>>>> +#define VK_CMD_UPLOAD		0x0400 /* memory transfer to vk */
->>>>>> +#define VK_CMD_DOWNLOAD		0x0500 /* memory transfer from vk */
->>>>>> +#define VK_CMD_MASK		0x0f00 /* command mask */
->>>>>> +};
->>>>>> +
->>>>>> +#define VK_BAR_FWSTS			0x41c
->>>>>> +#define VK_BAR_COP_FWSTS		0x428
->>>>>> +/* VK_FWSTS definitions */
->>>>>> +#define VK_FWSTS_RELOCATION_ENTRY	BIT(0)
->>>>> <snip>
->>>>>
->>>>> I thought BIT() was not allowed in uapi .h files, this really works
->>>>> properly???
->>>> I did some investigation and it looks like a few other header files in include/uapi also use the BIT() macro:
->>>> include/uapi/misc/uacce/uacce.h
->>>> include/uapi/linux/psci.h
->>>> include/uapi/linux/v4l2-subdev.h
->>> Does the header install test target now fail for these?
->> I do not understand the question above.  make headers_install works.
->> But I guess the above headers would have similar issue with the BIT macro.
-> Try enabling CONFIG_UAPI_HEADER_TEST and see what happens :)
-I enabled CONFIG_UAPI_HEADER_TEST and then
-built using "make" and "make headers_install".
+Add ->offline and ->online driver callbacksto to do the cleanup
+before taking a CPU offline and to restore its working configuration
+when it goes back online, respectively, to avoid invoking the ->init
+callback on every CPU online which is quite a bit of unnecessary
+overhead.
 
-There didn't appear to be any issue with the BIT macro in the headers.
->
->>>> tools/include/uapi/linux/pkt_sched.h
->>> That doesn't count :)
->>>
->>>> It does look like we end up defining the BIT() macro in our user space app that includes the header file.
->>>>
->>>> So, what is the proper thing to be done?
->>>> 1) Move the BIT() macro somewhere in include/uapi and include it in the necessary header files
->>>> 2) Use the _BITUL macro in include/uapi/linux/const.h instead?
->>>> 3) something else?
->>> open-code it for now please, that's the best way as I am pretty sure we
->>> can not contaminate the global C namespace with out BIT() macro, no
->>> matter how much we would like to...
->> OK, I will open-code it instead.
-> Great!
->
-> greg k-h
+Define ->offline and ->online so that they can be used in the
+passive as well as in the active mode and because ->offline will
+do the majority of ->stop_cpu work, the passive mode does not
+need that callback any more, so drop it.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/cpufreq/intel_pstate.c | 38 ++++++++++++++++++++++++++++------
+ 1 file changed, 32 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+index 3d18934fa975..aca0587b176f 100644
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -2297,28 +2297,51 @@ static int intel_pstate_verify_policy(struct cpufreq_policy_data *policy)
+ 	return 0;
+ }
+ 
+-static void intel_cpufreq_stop_cpu(struct cpufreq_policy *policy)
++static int intel_pstate_cpu_offline(struct cpufreq_policy *policy)
+ {
++	pr_debug("CPU %d going offline\n", policy->cpu);
++
++	intel_pstate_exit_perf_limits(policy);
++
++	/*
++	 * If the CPU is an SMT thread and it goes offline with the performance
++	 * settings different from the minimum, it will prevent its sibling
++	 * from getting to lower performance levels, so force the minimum
++	 * performance on CPU offline to prevent that form happening.
++	 */
+ 	if (hwp_active)
+ 		intel_pstate_hwp_force_min_perf(policy->cpu);
+ 	else
+ 		intel_pstate_set_min_pstate(all_cpu_data[policy->cpu]);
++
++	return 0;
++}
++
++static int intel_pstate_cpu_online(struct cpufreq_policy *policy)
++{
++	pr_debug("CPU %d going online\n", policy->cpu);
++
++	intel_pstate_init_acpi_perf_limits(policy);
++
++	if (hwp_active)
++		wrmsrl_on_cpu(policy->cpu, MSR_HWP_REQUEST,
++			      all_cpu_data[policy->cpu]->hwp_req_cached);
++
++	return 0;
+ }
+ 
+ static void intel_pstate_stop_cpu(struct cpufreq_policy *policy)
+ {
+-	pr_debug("CPU %d exiting\n", policy->cpu);
++	pr_debug("CPU %d stopping\n", policy->cpu);
+ 
+ 	intel_pstate_clear_update_util_hook(policy->cpu);
+ 	if (hwp_active)
+ 		intel_pstate_hwp_save_state(policy);
+-
+-	intel_cpufreq_stop_cpu(policy);
+ }
+ 
+ static int intel_pstate_cpu_exit(struct cpufreq_policy *policy)
+ {
+-	intel_pstate_exit_perf_limits(policy);
++	pr_debug("CPU %d exiting\n", policy->cpu);
+ 
+ 	policy->fast_switch_possible = false;
+ 
+@@ -2398,6 +2421,8 @@ static struct cpufreq_driver intel_pstate = {
+ 	.init		= intel_pstate_cpu_init,
+ 	.exit		= intel_pstate_cpu_exit,
+ 	.stop_cpu	= intel_pstate_stop_cpu,
++	.offline	= intel_pstate_cpu_offline,
++	.online		= intel_pstate_cpu_online,
+ 	.update_limits	= intel_pstate_update_limits,
+ 	.name		= "intel_pstate",
+ };
+@@ -2652,7 +2677,8 @@ static struct cpufreq_driver intel_cpufreq = {
+ 	.fast_switch	= intel_cpufreq_fast_switch,
+ 	.init		= intel_cpufreq_cpu_init,
+ 	.exit		= intel_cpufreq_cpu_exit,
+-	.stop_cpu	= intel_cpufreq_stop_cpu,
++	.offline	= intel_pstate_cpu_offline,
++	.online		= intel_pstate_cpu_online,
+ 	.update_limits	= intel_pstate_update_limits,
+ 	.name		= "intel_cpufreq",
+ };
+-- 
+2.26.2
+
+
+
 
