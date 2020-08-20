@@ -2,96 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4384724B9BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1273F24B9A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727949AbgHTLyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:54:05 -0400
-Received: from sonic304-9.consmr.mail.bf2.yahoo.com ([74.6.128.32]:39997 "EHLO
-        sonic304-9.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730769AbgHTLta (ORCPT
+        id S1730795AbgHTLwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:52:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726387AbgHTLui (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 07:49:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1597924167; bh=DPYuw2gUpgtMJzJhlH/AVmRGu2wSKCY1C+f8nOCoxu0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=fVpA2PaOHl4uT1O1PBOuxcRp5LiuEcFxW9MMLHESOiTOzs1jml3sbBxlmivU+U32GIAql8neFn5+r+aZ6z2gnJEhzCug7Cbv/8X+nvVJlctCTpELiOkY43oGR5Ef45qCSr8iUps1CYNMs88OFShPFk0BbKvMJ5FDC5YpOEvNvwW47PwCcTvCRx78pnMqVHGymrweSFuHT/gxsXPYU3V+Af4Hh57E+KqKTybtDLiwD4c7zI9YA6GJZKrsVU3Dh/g7cMUgSykkrUv2MxV8M6+cvkyKjdppi6/UUnl1DPeRUELh9Pn+AEj6soNOOlooNngAkZC92EtzXU9AmsFyZSlN6Q==
-X-YMail-OSG: C.VdJtEVM1nOGwiNQkN5Xjte_LdWU.QcDy0brPn2UN.V7OlZS5v1wG2CiFjMtqc
- PRRi6YArvGMGICBkzs0FyIUZWrV2Ji6B2u7nrcvizYuRXugsavqAosxaA0019qZAt3pf1.aGmV8e
- NI62IoQvsj7LMwgSZrtreWL6_6z6IZBjxjyQSYW8HKVQVWj0QmhKavcG2wQbXTqmWK2Q8ibCOZCH
- 3Fi2D7.4oc5_mkpyrWlxcimfLl3wo9OwO3D5vp9p8d_U8.4BIGfUQ9CSpBFpJtzRfOHfIbcjlzt9
- lId5nIBzoXPs193xkuofQ6w2j2WIiCrKw_BWX1a3ZUWLJ7G.wdDfu3KTMTU5..8zK21Icamsp0dE
- 0u.aWHt7PqDr8.usG_JR_0YzGfnmLFJ.4sLSZm6QJI3BIgV.Ook_gLYtlwekk2v49_OB434qsmwr
- gcSJS25IRnyYw3N7_mB8AvFQxX0lvv9TCm8lvMoKuQYlDudNdIDZ0m9uc8j.qfvxGexx.Lvi19Ai
- vIdCsAY1PUJ5kKsWbeVdh1DFDGuucEK0XtPHkSkhKX0QxfI.C1bFdIQTdyMYff5_m145oHpdy0ki
- R.ZN3wJ.O_y7b2oqUdvku_lAQvTRKkNYhltXxyBBAuAxcVOTTP5bNdahXXzWpM7nznNkxQPz1Srn
- 2Gi3b_btE6UfDSthFxgdQPAT_F.SJJBTpaZFsZS3oxNs.4QSpV3MmXns4v_ks2nQv4LUIyBjlnIh
- tR6OEpCWJIv7ZOFKzTt6Uve2Owriy2DQrzcpblqX1WLxRaLCRNL2Y5sb5eAQBtp78YyyCIzUEbv6
- aw7fIR3TK6AoShRNeyub_HAe_n1M54wRm4Psq5rtDpf2G6x2SIBEanr2wVDWnL5isOUSFbjgtTQr
- M8v9C3c7zR4NH_9mdbcCMcyS5NIvcquPw0RphjyzzCVW1ekJAPzHUiJSwoGdEjw3KFpzhXyf6sBG
- BPHjrVJk5lwv41tbbNPg1IXRzvDT0gyJ.abUuL40z5_tibD4yVZ3FHxp_61Uv813N97fdrEnModt
- tMw082yqhCG3LaBMvUYnTX1pp_Hiy.k.hc4T9Xw_PbGJmDvyAbMj6N8K1kG6E7u76SiMqCD880Vl
- TszH7BD.DzbdW.xemBdkWLPiZ7gfkGBbLpteHbN626ysXIxQXHw_D4OA_nRa1eL9bzBstbISmqhI
- aie_lFDZ_fnLxmxptL0TYQLKS3X4Ll0CU93RgrN9m18axH7Thl3rIHUjIVNKKOiKF6MU0Fu77A0R
- 2faonhtpZ6eRpshOA8yHDIKSrtSC2KczDI5P3cyUMqy6ockyh5NQh9SlFW3hXws0IcwK2W5xw_c5
- FPqcfd88lhSYvJpBe_I1tIRbeYOAw23CjEXiYdn6MfjReYuDYGl2m
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic304.consmr.mail.bf2.yahoo.com with HTTP; Thu, 20 Aug 2020 11:49:27 +0000
-Date:   Thu, 20 Aug 2020 11:49:22 +0000 (UTC)
-From:   "Mrs. Mina A. Brunel" <mrsannahbruun4@gmail.com>
-Reply-To: mrsminaabrunel653@gmail.com
-Message-ID: <450024180.3660223.1597924162646@mail.yahoo.com>
-Subject: My Dear in the lord
+        Thu, 20 Aug 2020 07:50:38 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3415BC061387
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 04:50:38 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id o23so2166925ejr.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 04:50:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9KvhtHICF0TxOfrbvj/8zshCyJ1YS3JOgoqNxp3Dtog=;
+        b=OTjSgTX26tjI06uphAGdtLggVcIgVcSt1nz4x60CK0u4ojkcFGNakF5cn05N44O/dR
+         JXD6+G8MocvROe0iUMI1ZrQ40vkGq7A30yIfErACZJDTCan2wRABxXvixJL45sr3Rr/2
+         8xxq5DF+WSzeLDRiQWcbLYeCgl03xjD/tvCtvtMLnfEbR/oaoDdjyZ4DLEKEl98FNYc4
+         DV9NXq2L6rrWdMQ9XvoIhc34sEnFVAsnLIr7NvtQWRsgsR8rFDBFNakuSp3QKoLKwgDl
+         nPQM+VliGVKGFOp4rv7LGlXSOWRVmxWkAVpEoAKPb0IYvt3QniG6aRRGqqsN+SeXncCP
+         kbdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9KvhtHICF0TxOfrbvj/8zshCyJ1YS3JOgoqNxp3Dtog=;
+        b=oY8e/8RsTOTFJcHeo2XRC2OoqnhcxAckOFP1OfnA4XryiM7WjQrUaw3zFLbpMmSIAJ
+         kjJUIbwd98zmdCR+u4sTueQtCB+s+A2TGt87kLDU2DsOP8B2/Zrhypg19/GyzAnju5V+
+         KJrUFSkT7YL64Nzi9ZzPf8RdB9qhMV9rdHyZ6q2Yk/QcwNNYI5YjOxLKkUrS6k7f1lzH
+         b5lzq2sE+CFcHjcC9MohsUuAu7cYXULInFysSu+t/9Q29zy8w4ABJCkc43FjReP8CPLi
+         EYBCwISPPmG4kYa+dYA3nF97p1dawaXrB5tu7WCaO0xFtLa2OFw3QQIFLVnfVc/tqqja
+         HLuA==
+X-Gm-Message-State: AOAM533IYCLA0tQGjBiPYHg+j8nlT1LhCyPFhFHrvWerh3soUV3Oaarg
+        2dd65rX383eHfMhu4G1wQQtyyA==
+X-Google-Smtp-Source: ABdhPJz+xq++T0cU+EUORbqtkNA9eSQnIaxdJEeZWGYtdPFVNSQjrdlUNXUw/OLLWuv93oO1tCQvhA==
+X-Received: by 2002:a17:906:260c:: with SMTP id h12mr2985086ejc.457.1597924236812;
+        Thu, 20 Aug 2020 04:50:36 -0700 (PDT)
+Received: from maco2.ams.corp.google.com (a83-162-234-235.adsl.xs4all.nl. [83.162.234.235])
+        by smtp.gmail.com with ESMTPSA id m13sm1185358edi.89.2020.08.20.04.50.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Aug 2020 04:50:36 -0700 (PDT)
+From:   Martijn Coenen <maco@android.com>
+To:     gregkh@linuxfoundation.org, tkjos@google.com, arve@android.com,
+        joel@joelfernandes.org, christian@brauner.io, hridya@google.com,
+        surenb@google.com
+Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        maco@google.com, Martijn Coenen <maco@android.com>
+Subject: [PATCH v2] ANDROID: binder: print warnings when detecting oneway spamming.
+Date:   Thu, 20 Aug 2020 13:50:33 +0200
+Message-Id: <20200820115033.276111-1-maco@android.com>
+X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <450024180.3660223.1597924162646.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16455 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The most common cause of the binder transaction buffer filling up is a
+client rapidly firing oneway transactions into a process, before it has
+a chance to handle them. Yet the root cause of this is often hard to
+debug, because either the system or the app will stop, and by that time
+binder debug information we dump in bugreports is no longer relevant.
 
+This change warns as soon as a process dips below 80% of its oneway
+space (less than 100kB available in the configuration), when any one
+process is responsible for either more than 50 transactions, or more
+than 50% of the oneway space.
 
-My Dear in the lord
+Signed-off-by: Martijn Coenen <maco@android.com>
+---
+v2: fixed call-site in binder_alloc_selftest
 
+ drivers/android/binder.c                |  2 +-
+ drivers/android/binder_alloc.c          | 49 +++++++++++++++++++++++--
+ drivers/android/binder_alloc.h          |  5 ++-
+ drivers/android/binder_alloc_selftest.c |  2 +-
+ 4 files changed, 52 insertions(+), 6 deletions(-)
 
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
- gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
-ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
-on Euro) Eight million, Five hundred thousand Euros in a bank in Ouagadougo=
-u the capital city of of Burkina in West Africa. The money was from the sal=
-e of his company and death benefits payment and entitlements of my deceased=
- husband by his company.
+diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+index f936530a19b0..946332bc871a 100644
+--- a/drivers/android/binder.c
++++ b/drivers/android/binder.c
+@@ -3136,7 +3136,7 @@ static void binder_transaction(struct binder_proc *proc,
+ 
+ 	t->buffer = binder_alloc_new_buf(&target_proc->alloc, tr->data_size,
+ 		tr->offsets_size, extra_buffers_size,
+-		!reply && (t->flags & TF_ONE_WAY));
++		!reply && (t->flags & TF_ONE_WAY), current->tgid);
+ 	if (IS_ERR(t->buffer)) {
+ 		/*
+ 		 * -ESRCH indicates VMA cleared. The target is dying.
+diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
+index 69609696a843..76e8e633dbd4 100644
+--- a/drivers/android/binder_alloc.c
++++ b/drivers/android/binder_alloc.c
+@@ -338,12 +338,48 @@ static inline struct vm_area_struct *binder_alloc_get_vma(
+ 	return vma;
+ }
+ 
++static void debug_low_async_space_locked(struct binder_alloc *alloc, int pid)
++{
++	/*
++	 * Find the amount and size of buffers allocated by the current caller;
++	 * The idea is that once we cross the threshold, whoever is responsible
++	 * for the low async space is likely to try to send another async txn,
++	 * and at some point we'll catch them in the act. This is more efficient
++	 * than keeping a map per pid.
++	 */
++	struct rb_node *n = alloc->free_buffers.rb_node;
++	struct binder_buffer *buffer;
++	size_t buffer_size;
++	size_t total_alloc_size = 0;
++	size_t num_buffers = 0;
++
++	for (n = rb_first(&alloc->allocated_buffers); n != NULL;
++		 n = rb_next(n)) {
++		buffer = rb_entry(n, struct binder_buffer, rb_node);
++		if (buffer->pid != pid)
++			continue;
++		if (!buffer->async_transaction)
++			continue;
++		buffer_size = binder_alloc_buffer_size(alloc, buffer);
++		total_alloc_size += buffer_size;
++		num_buffers++;
++	}
++
++	// Warn if this pid has more than 50% of async space, or more than 50 txns
++	if (num_buffers > 50 || total_alloc_size > alloc->buffer_size / 4) {
++		binder_alloc_debug(BINDER_DEBUG_USER_ERROR,
++			     "%d: pid %d spamming oneway? %zd buffers allocated for a total size of %zd\n",
++			      alloc->pid, pid, num_buffers, total_alloc_size);
++	}
++}
++
+ static struct binder_buffer *binder_alloc_new_buf_locked(
+ 				struct binder_alloc *alloc,
+ 				size_t data_size,
+ 				size_t offsets_size,
+ 				size_t extra_buffers_size,
+-				int is_async)
++				int is_async,
++				int pid)
+ {
+ 	struct rb_node *n = alloc->free_buffers.rb_node;
+ 	struct binder_buffer *buffer;
+@@ -486,11 +522,16 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
+ 	buffer->offsets_size = offsets_size;
+ 	buffer->async_transaction = is_async;
+ 	buffer->extra_buffers_size = extra_buffers_size;
++	buffer->pid = pid;
+ 	if (is_async) {
+ 		alloc->free_async_space -= size + sizeof(struct binder_buffer);
+ 		binder_alloc_debug(BINDER_DEBUG_BUFFER_ALLOC_ASYNC,
+ 			     "%d: binder_alloc_buf size %zd async free %zd\n",
+ 			      alloc->pid, size, alloc->free_async_space);
++		if (alloc->free_async_space < alloc->buffer_size / 10) {
++			// Start detecting spammers once we reach 80% of async space used
++			debug_low_async_space_locked(alloc, pid);
++		}
+ 	}
+ 	return buffer;
+ 
+@@ -508,6 +549,7 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
+  * @offsets_size:       user specified buffer offset
+  * @extra_buffers_size: size of extra space for meta-data (eg, security context)
+  * @is_async:           buffer for async transaction
++ * @pid:				pid to attribute allocation to (used for debugging)
+  *
+  * Allocate a new buffer given the requested sizes. Returns
+  * the kernel version of the buffer pointer. The size allocated
+@@ -520,13 +562,14 @@ struct binder_buffer *binder_alloc_new_buf(struct binder_alloc *alloc,
+ 					   size_t data_size,
+ 					   size_t offsets_size,
+ 					   size_t extra_buffers_size,
+-					   int is_async)
++					   int is_async,
++					   int pid)
+ {
+ 	struct binder_buffer *buffer;
+ 
+ 	mutex_lock(&alloc->mutex);
+ 	buffer = binder_alloc_new_buf_locked(alloc, data_size, offsets_size,
+-					     extra_buffers_size, is_async);
++					     extra_buffers_size, is_async, pid);
+ 	mutex_unlock(&alloc->mutex);
+ 	return buffer;
+ }
+diff --git a/drivers/android/binder_alloc.h b/drivers/android/binder_alloc.h
+index db9c1b984695..55d8b4106766 100644
+--- a/drivers/android/binder_alloc.h
++++ b/drivers/android/binder_alloc.h
+@@ -32,6 +32,7 @@ struct binder_transaction;
+  * @offsets_size:       size of array of offsets
+  * @extra_buffers_size: size of space for other objects (like sg lists)
+  * @user_data:          user pointer to base of buffer space
++ * @pid:                pid to attribute the buffer to (caller)
+  *
+  * Bookkeeping structure for binder transaction buffers
+  */
+@@ -51,6 +52,7 @@ struct binder_buffer {
+ 	size_t offsets_size;
+ 	size_t extra_buffers_size;
+ 	void __user *user_data;
++	int    pid;
+ };
+ 
+ /**
+@@ -117,7 +119,8 @@ extern struct binder_buffer *binder_alloc_new_buf(struct binder_alloc *alloc,
+ 						  size_t data_size,
+ 						  size_t offsets_size,
+ 						  size_t extra_buffers_size,
+-						  int is_async);
++						  int is_async,
++						  int pid);
+ extern void binder_alloc_init(struct binder_alloc *alloc);
+ extern int binder_alloc_shrinker_init(void);
+ extern void binder_alloc_vma_close(struct binder_alloc *alloc);
+diff --git a/drivers/android/binder_alloc_selftest.c b/drivers/android/binder_alloc_selftest.c
+index 4151d9938255..c2b323bc3b3a 100644
+--- a/drivers/android/binder_alloc_selftest.c
++++ b/drivers/android/binder_alloc_selftest.c
+@@ -119,7 +119,7 @@ static void binder_selftest_alloc_buf(struct binder_alloc *alloc,
+ 	int i;
+ 
+ 	for (i = 0; i < BUFFER_NUM; i++) {
+-		buffers[i] = binder_alloc_new_buf(alloc, sizes[i], 0, 0, 0);
++		buffers[i] = binder_alloc_new_buf(alloc, sizes[i], 0, 0, 0, 0);
+ 		if (IS_ERR(buffers[i]) ||
+ 		    !check_buffer_pages_allocated(alloc, buffers[i],
+ 						  sizes[i])) {
+-- 
+2.28.0.220.ged08abb693-goog
 
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
-
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
-
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
-
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
-
-Thanks
-Mrs. Mina A. Brunel
