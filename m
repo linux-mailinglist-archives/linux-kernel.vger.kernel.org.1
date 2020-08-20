@@ -2,138 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E48E24B7D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8DD24B7D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729134AbgHTLEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:04:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731108AbgHTKM5 (ORCPT
+        id S1729235AbgHTLFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:05:04 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:42628 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731097AbgHTKMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:12:57 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E952C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:12:56 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id c16so1785737ejx.12
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:12:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Pbe+IJf4ZBxt6yUxRRrQR1l3UQTW2eLx6AT4PE1gQKg=;
-        b=foA95pAMne0k+ZduK2+JsEaA0Kd3Xk6AJeP12ZUtsQO8oCEqpY6AC2jWiQeJjjQrKA
-         n//Z/S/hwU9sUSwrh2bpFx9EjO5w8H5vkm5cyHDHvlSF0L7E3fVBHC7P2Ym9zd8UwQZN
-         UTTFBKoIkLT88Lc8FZLz7dV6a5Tegh0nandB0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Pbe+IJf4ZBxt6yUxRRrQR1l3UQTW2eLx6AT4PE1gQKg=;
-        b=UiKyLdiYyXSIlGFym6Y0Jon1Z7AcLNsfX6hfWaiGxRMSNEb5PeJIdVc5rgPiSuwQFu
-         8pwMH1t95o3WAOoIxPNfx72aYve9SMwVWvoh3lQjkKkpxMTLCiGsz3wy0wVJfsIjZZGC
-         ySHgnKk8aK/q5Tc7EcLC3zmYqun11aIF7ZL0ZQtzlQxLIZwv2Lh7lQQQAQLnVPCj024s
-         9wsEBXAJfRVoXR1feGAeG4fertwYoI/iC8d6yfdT4o1bSen5/AElzo3a6bO3iSUtvzod
-         /p+AjAmZgP0sO3zT7Uk16feYlAGEjILjR+9KqSdDTbw29rqP0jHRgBD2Iq6wbF+qQl3Z
-         wPcA==
-X-Gm-Message-State: AOAM5325EPKiUc1EXPIH0Sh2jBKihj9b9F5E4LmxZPEc7+IyIbM0X0xg
-        KgZSZ/8wo6joGUJvBMu4iL3M8s+7+51u5Qem
-X-Google-Smtp-Source: ABdhPJzmNH7lGnbiye7d17EQaMEuMAwiWbgIiIcgib5igRoONcSajAI65P3MOjD0FnVNQusDZpo4SA==
-X-Received: by 2002:a17:906:4f8f:: with SMTP id o15mr2440063eju.220.1597918374629;
-        Thu, 20 Aug 2020 03:12:54 -0700 (PDT)
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
-        by smtp.gmail.com with ESMTPSA id 32sm1047701edf.83.2020.08.20.03.12.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Aug 2020 03:12:54 -0700 (PDT)
-Received: by mail-ed1-f48.google.com with SMTP id w17so1133898edt.8
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:12:54 -0700 (PDT)
-X-Received: by 2002:a5d:6744:: with SMTP id l4mr2628495wrw.105.1597917944145;
- Thu, 20 Aug 2020 03:05:44 -0700 (PDT)
+        Thu, 20 Aug 2020 06:12:55 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200820101252euoutp020cf5a73ddbb1153ee0f9bb4b580e6736~s8ksYweFh1616116161euoutp02l;
+        Thu, 20 Aug 2020 10:12:52 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200820101252euoutp020cf5a73ddbb1153ee0f9bb4b580e6736~s8ksYweFh1616116161euoutp02l
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1597918372;
+        bh=Eca9rhf9QUv2Wht7tEgouWJ5QtgOlNZgYftYPW/BMps=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=EBhq4gquN+cSmsUrAfubyFcN1m1/UszRxUyTEwCkCFPFhSn80lMpJokAzebv7CMrd
+         14X4KpF7m9tU6K5PMQZ7cWYKQcHw8bgF09IEDM9eZh6qX9PrlxeFENuDqnXUqsFPE3
+         Ecxc+c9U/uwjNc4fAmKng33FXsxt5jsG4wtZEUq4=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200820101251eucas1p1fa32323daa091eab92f59f36b54b3af2~s8kr8mKWy2913229132eucas1p1U;
+        Thu, 20 Aug 2020 10:12:51 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id C8.53.05997.3AC4E3F5; Thu, 20
+        Aug 2020 11:12:51 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200820101251eucas1p237a794cc11f44c709c0ccdfef766702c~s8krpBSbM0965809658eucas1p2L;
+        Thu, 20 Aug 2020 10:12:51 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200820101251eusmtrp11c30144971bf8177c7a1ac34d73fe7af~s8kroUCtj0130701307eusmtrp1u;
+        Thu, 20 Aug 2020 10:12:51 +0000 (GMT)
+X-AuditID: cbfec7f4-65dff7000000176d-9c-5f3e4ca35d51
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 9B.E2.06017.3AC4E3F5; Thu, 20
+        Aug 2020 11:12:51 +0100 (BST)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200820101251eusmtip1654a532dfde40f6aee5232a6cc38cac7~s8krdzWLi0662106621eusmtip1f;
+        Thu, 20 Aug 2020 10:12:51 +0000 (GMT)
+From:   Lukasz Stelmach <l.stelmach@samsung.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>, Andi Shyti <andi@etezian.org>,
+        linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        m.szyprowski@samsung.com, b.zolnierkie@samsung.com
+Subject: Re: [PATCH 1/8] spi: spi-s3c64xx: swap s3c64xx_spi_set_cs() and
+ s3c64xx_enable_datapath()
+Date:   Thu, 20 Aug 2020 12:12:40 +0200
+In-Reply-To: <20200819191227.GG5441@sirena.org.uk> (Mark Brown's message of
+        "Wed, 19 Aug 2020 20:12:27 +0100")
+Message-ID: <dleftjh7sxzkvb.fsf%l.stelmach@samsung.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20200819065555.1802761-1-hch@lst.de> <20200819065555.1802761-6-hch@lst.de>
- <CAAFQd5COLxjydDYrfx47ht8tj-aNPiaVnC+WyQA7nvpW4gs=ww@mail.gmail.com>
- <20200819135454.GA17098@lst.de> <CAAFQd5BuXP7t3d-Rwft85j=KTyXq7y4s24mQxLr=VoY9krEGZw@mail.gmail.com>
- <20200820044347.GA4533@lst.de> <20200820052004.GA5305@lst.de>
-In-Reply-To: <20200820052004.GA5305@lst.de>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Thu, 20 Aug 2020 12:05:29 +0200
-X-Gmail-Original-Message-ID: <CAAFQd5CFiA2WBaaPQ9ezvMjYZfNw37c42UEy9Pk7kJyCi1mLzQ@mail.gmail.com>
-Message-ID: <CAAFQd5CFiA2WBaaPQ9ezvMjYZfNw37c42UEy9Pk7kJyCi1mLzQ@mail.gmail.com>
-Subject: Re: [PATCH 05/28] media/v4l2: remove V4L2-FLAG-MEMORY-NON-CONSISTENT
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     alsa-devel@alsa-project.org, linux-ia64@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        nouveau@lists.freedesktop.org, linux-nvme@lists.infradead.org,
-        linux-mips@vger.kernel.org,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        linux-mm@kvack.org,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        linux-scsi@vger.kernel.org,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Pawel Osciak <pawel@osciak.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
+        protocol="application/pgp-signature"
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0hTYRju2zk7Oxstvk3Dt1US64IZqd3sdFEqKhZkLPqRGKVLD2u1TdlR
+        y4hMTFHTLkoXrfAyazLdpmuYSBmslpXkxC5qWeKFzJlEN7KIynkW9O/5ntv7vvDRhLxLqKB1
+        xnTWZNTolZSEbH74w7vcvDM2McpuXsKYJ0cFTNMVh5C5ODhCMeeGxwnG620UMc7hl0LmWes1
+        irnibRMwOZ/6RIztwRvRJomqp/YzoXJaCynVrdps1VmXFam+OEPVwgTJxhRWr8tkTZGxSZJD
+        eZUuMq1l/rGfz+zkKeSAIiSmAa+G5wVniCIkoeW4DoH5XaOIf3xF0Jb3hOQfXxB86LNT/yJn
+        WjopXrAgyL/YHsiPIsgdqJxSaJrCEWCzxfsDwXghvPh+d7qJwA0CuDpoQ34hCKfAeGuxwO8n
+        8WL4nKP302KcBr7CbpEfS/FaGOl5TPrxbLwOXO8HArwMHpePTPMENkC59wPy9wN+JYKRqmLE
+        b7oV3BMWAY+DwNfuEvF4HnSUFZP+uYCzoaw0ms8WI2i+Nknyng3Q3/kzcPFmGH59neL9s6B3
+        QsbPnQWlzZcJnpZCQb6cdy8C+7k7gRYFlPjqAtuooM9VP72BHOchyPOEnEcLKv67puK/ayqm
+        Wgm8FBytkTy9DG5WjxM8jgG7/SNZhYRWFMJmcAYty600skcjOI2ByzBqI5JTDU409bc6frd/
+        bUGtvw66EaaRcqZUrYxJlAs1mVyWwY0WTTUNNdZ3IQVpTDWyymDplqcdB+TSFE3WcdaUmmjK
+        0LOcG82lSWWIdFXN2H451mrS2SMsm8aa/qkCWqw4hbTlKy/Jer9te7Xvfu+N/nvdkYdPR+kn
+        ky2lesXCHdEycXXDmO/RwJyhBsWQ7uia7XdPdr3dlkzV3RbYdm/KVq9/oDrRs1e1XFfaPWNy
+        oibLFR7mibfkcmVhzY6m+793VcXJfJQ4ocAcVPXngmeMtdalNqnjToTtCXWVzJ0Zk+RRK0nu
+        kGZFOGHiNH8BM+uEfGMDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGIsWRmVeSWpSXmKPExsVy+t/xu7qLfeziDXbeFLJY/OM5k8XGGetZ
+        LaY+fMJm0f/4NbPF+fMb2C02Pb7GanF51xw2ixnn9zFZNH68yW6x9shddgcuj+tLPjF7bFrV
+        yeaxeUm9R9+WVYwenzfJBbBG6dkU5ZeWpCpk5BeX2CpFG1oY6RlaWugZmVjqGRqbx1oZmSrp
+        29mkpOZklqUW6dsl6GW0zt/CUrBDtuLX5XUsDYzrJboYOTkkBEwkunecY+ti5OIQEljKKNG4
+        YgaQwwGUkJJYOTcdokZY4s+1Lqiap4wSHdPPsYLUsAnoSaxdGwFSIyKgLHH1+14WEJtZYCmT
+        xPu7riC2sECSxKUDl1hAyoUEDCVW/dADMVkEVCU+NeaAVHAKFEi86rzEDmLzCphLPLl+EmyK
+        qIClxJYX96HighInZz6Bmp4t8XX1c+YJjAKzkKRmIUnNAtrALKApsX6XPkRYW2LZwtfMELat
+        xLp171kWMLKuYhRJLS3OTc8tNtIrTswtLs1L10vOz93ECIy3bcd+btnB2PUu+BCjAAejEg9v
+        gJJtvBBrYllxZe4hRhWgMY82rL7AKMWSl5+XqiTC63T2dJwQb0piZVVqUX58UWlOavEhRlOg
+        NycyS4km5wNTRF5JvKGpobmFpaG5sbmxmYWSOG+HwMEYIYH0xJLU7NTUgtQimD4mDk6pBkbh
+        R+uP/Zz5Odsyad7k7IMxX2YITmmanbvO99MaWVkNztBVB3s0L6daN6wsZyhuPG9ctNvbZIPN
+        GpWq/8Xb+e8YGHNvYT/re8lnRySnYH2NW/+NB2WXrDInbAue22k5U3jnjDN6n6YZ6nPWzRe4
+        kHdy+gxnKffdx3xurL57aEsXX7PS+7VN782UWIozEg21mIuKEwGT+LDR2QIAAA==
+X-CMS-MailID: 20200820101251eucas1p237a794cc11f44c709c0ccdfef766702c
+X-Msg-Generator: CA
+X-RootMTR: 20200820101251eucas1p237a794cc11f44c709c0ccdfef766702c
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200820101251eucas1p237a794cc11f44c709c0ccdfef766702c
+References: <20200819191227.GG5441@sirena.org.uk>
+        <CGME20200820101251eucas1p237a794cc11f44c709c0ccdfef766702c@eucas1p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 7:20 AM Christoph Hellwig <hch@lst.de> wrote:
+--=-=-=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+It was <2020-08-19 =C5=9Bro 20:12>, when Mark Brown wrote:
+> On Wed, Aug 19, 2020 at 04:01:52PM +0200, Lukasz Stelmach wrote:
+>> It was <2020-08-19 =C5=9Bro 14:16>, when Mark Brown wrote:
+>>> On Wed, Aug 19, 2020 at 02:58:22PM +0200, Krzysztof Kozlowski wrote:
+>>>> On Wed, Aug 19, 2020 at 02:51:27PM +0200, Lukasz Stelmach wrote:
+>>>>
+>>>>>     0732a9d2a155 spi/s3c64xx: Use core message handling
+>>>>
+>>>> Then describe at least this... maybe Mark knows why he brough back old
+>>>> code after refactoring?
+>>>>
+>>> I'm not sure what's being referred to as being lost in the second commit
+>>> TBH.
 >
-> On Thu, Aug 20, 2020 at 06:43:47AM +0200, Christoph Hellwig wrote:
-> > On Wed, Aug 19, 2020 at 03:57:53PM +0200, Tomasz Figa wrote:
-> > > > > Could you explain what makes you think it's unused? It's a feature of
-> > > > > the UAPI generally supported by the videobuf2 framework and relied on
-> > > > > by Chromium OS to get any kind of reasonable performance when
-> > > > > accessing V4L2 buffers in the userspace.
-> > > >
-> > > > Because it doesn't do anything except on PARISC and non-coherent MIPS,
-> > > > so by definition it isn't used by any of these media drivers.
-> > >
-> > > It's still an UAPI feature, so we can't simply remove the flag, it
-> > > must stay there as a no-op, until the problem is resolved.
-> >
-> > Ok, I'll switch to just ignoring it for the next version.
+>> Order of enable_cs() and enable_datapath(). The order 0f5a sets makes
+>> (for a reaseon I don't know) my devices work. In the latter commit,
+>> which rewrites "everything", enable_datapath() is called before what
+>> later (in aa4964c4eb3e) became s3c64xx_spi_set_cs().
 >
-> So I took a deeper look.  I don't really think it qualifies as a UAPI
-> in our traditional sense.  For one it only appeared in 5.9-rc1, so we
-> can trivially expedite the patch into 5.9-rc and not actually make it
-> show up in any released kernel version.  And even as of the current
-> Linus' tree the only user is a test driver.  So I really think the best
-> way to go ahead is to just revert it ASAP as the design wasn't thought
-> out at all.
+> That's doesn't look like what the changes do.  Note that the enable_cs()
+> function that got moved in 0f5a751ace250097 (spi/s3c64xx: Enable GPIO
+> /CS prior to starting hardware) does not touch the chip registers at
+> all, it only manipulates GPIOs, code that was subsequently factored out
+> into the core.
 
-The UAPI and V4L2/videobuf2 changes are in good shape and the only
-wrong part is the use of DMA API, which was based on an earlier email
-guidance anyway, and a change to the synchronization part . I find
-conclusions like the above insulting for people who put many hours
-into designing and implementing the related functionality, given the
-complexity of the videobuf2 framework and how ill-defined the DMA API
-was, and would feel better if such could be avoided in future
-communication.
+Indeed, you are 100% right. Anyway that commit has inspired me after
+days of trying different stuff to switch enable_datapath() and set_cs()
+and it worked. Even if without any technical connection with your commit.
 
-That said, we can revert it on the basis of the implementation issues,
-but I feel like we wouldn't get anything by doing so, because as I
-said, the design is sane and most of the implementation is fine as
-well. Instead. I'd suggest simply removing the use of the attribute
-being removed, so that the feature stays no-op until the DMA API
-provides a way to implement it or we just migrate videobuf2 to stop
-using the DMA API as much as possible, like many drivers in the DRM
-subsystem did.
+> The write to the _SLAVE_SEL register has so far as I can see always
+> been after enable_datapath() right back to the initial commit, it just
+> got made more complex for the Exynos7 controller (I'm guessing your
+> new one might be an ancestor of that?) in bf77cba95f8c06 (spi:
+> s3c64xx: add support for exynos7 SPI controller) and then factored out
+> in the commit you mention above.
+>
+> Are you sure your new ordering works for all controller revisions?
 
-Best regards,
-Tomasz
+Not 100%, but we've tested it on several differnt SoCs, and haven't seen
+any problems.
+
+> According to the comment the _set_cs() is what's actually kicking off
+> the transfer
+
+I don't think so. Indeed, without the CS_AUTO quirk CS is pulled down
+(the SPI device is selected) but for the transfer to start the SPI clock
+needs to start ticking.
+
+> Please include human readable descriptions of things like commits and
+> issues being discussed in e-mail in your mails, this makes them much
+> easier for humans to read especially when they have no internet access.
+
+I will.
+
+>>> I don't know that I ever actually used a system that used the native
+>>> chip select as the actual chip select.  Perhaps some quirk was
+>>> introduced where the chip select signal does something?
+>>>
+>>> The commit is also lacking a description of what the issues that are
+>>> being fixed are.
+>>
+>> On Exynos3250 DMA transfers from SPI longer than 512 fail.
+>
+> Could you expand on "fail" please?
+
+Stopping a transfer and hitting timeout with a few bytes (<20) left
+pending in the SPI controller.
+
+=2D-=20
+=C5=81ukasz Stelmach
+Samsung R&D Institute Poland
+Samsung Electronics
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAl8+TJgACgkQsK4enJil
+gBCfDgf+Nsy7Obq4x9IRVYhgZCzbEpbVDv10JUhPSq/wNVnSvTj4QcAKQXE2MTcV
+1fg5actyzuu912NigSdtrYgMexq/xIEDZVZ0Fv9uKbHeA/K9Q4ytJJD81rfy8B5W
+pC8shdxshfzqxoUdTO4wqW7WmQy/IFQwXaT6L0xDNTKpUWTHcFi7Oa78T740WwGx
+tLf69SfFsEiKDFTPV3MrBawaV8t5FuuyluYWHDlSjHlXquqwrnpwrxSrTyjdq0LI
+xYIxtRsxITOk768GhZX8w/TPVRuij5FuYUD9z5iuPjb5CmVtcZzBoIR2hHHHNYVj
+Yi5y+2wy5FHgLamD3J0A2P9bq1L5lQ==
+=kEPr
+-----END PGP SIGNATURE-----
+--=-=-=--
