@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C217F24BB7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E0524BB0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729918AbgHTM35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:29:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60340 "EHLO mail.kernel.org"
+        id S1730180AbgHTJzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:55:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727822AbgHTJvY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:51:24 -0400
+        id S1730178AbgHTJy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:54:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 213F92067C;
-        Thu, 20 Aug 2020 09:51:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98CED2067C;
+        Thu, 20 Aug 2020 09:54:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917083;
-        bh=mdP55MQ5hZd+LjwfofX9mTruh9HHZctyninsRPIAus0=;
+        s=default; t=1597917298;
+        bh=yyE+nWCDLiFzg8TXH1V6lIX1NecfxIOE1OLjTtT2LvM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tdzFLyoMCU1P+EZ9TDiOvO3PKx/evM+d6mO3M8j5BkexnkxR/jbf54Kkm/b8BKhVB
-         eQEbVekR+xmrZ1YErECGNEhvbgnxzUofxrB++UQoojZClNt5f1Uk39eXrZBnx8FrjD
-         eObQoLC1vdevOcQ/mHF9PH9w2EnICelJGGvSYp8c=
+        b=vAiD96o9i+qGerl6vfacZ5LV+BcZhGFO5LmGoJ/TOHH2XQcz3teMGB3/Oo2lAx8jw
+         e/maAU4iw9SYlD5dvgTTiuU4/q0uNWHVY4ZNjSrxntS7k2cOOFkNzSl6aeoPcBK9PW
+         XB7OjNqAzHYfGDUXxhrjezTKZ12k7JKrFghhpZ9c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sandeep Raghuraman <sandy.8925@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.4 151/152] drm/amdgpu: Fix bug where DPM is not enabled after hibernate and resume
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 73/92] Input: sentelic - fix error return when fsp_reg_write fails
 Date:   Thu, 20 Aug 2020 11:21:58 +0200
-Message-Id: <20200820091601.569990290@linuxfoundation.org>
+Message-Id: <20200820091541.476797643@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
-References: <20200820091553.615456912@linuxfoundation.org>
+In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
+References: <20200820091537.490965042@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,60 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sandeep Raghuraman <sandy.8925@gmail.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-commit f87812284172a9809820d10143b573d833cd3f75 upstream.
+[ Upstream commit ea38f06e0291986eb93beb6d61fd413607a30ca4 ]
 
-Reproducing bug report here:
-After hibernating and resuming, DPM is not enabled. This remains the case
-even if you test hibernate using the steps here:
-https://www.kernel.org/doc/html/latest/power/basic-pm-debugging.html
+Currently when the call to fsp_reg_write fails -EIO is not being returned
+because the count is being returned instead of the return value in retval.
+Fix this by returning the value in retval instead of count.
 
-I debugged the problem, and figured out that in the file hardwaremanager.c,
-in the function, phm_enable_dynamic_state_management(), the check
-'if (!hwmgr->pp_one_vf && smum_is_dpm_running(hwmgr) && !amdgpu_passthrough(adev) && adev->in_suspend)'
-returns true for the hibernate case, and false for the suspend case.
-
-This means that for the hibernate case, the AMDGPU driver doesn't enable DPM
-(even though it should) and simply returns from that function.
-In the suspend case, it goes ahead and enables DPM, even though it doesn't need to.
-
-I debugged further, and found out that in the case of suspend, for the
-CIK/Hawaii GPUs, smum_is_dpm_running(hwmgr) returns false, while in the case of
-hibernate, smum_is_dpm_running(hwmgr) returns true.
-
-For CIK, the ci_is_dpm_running() function calls the ci_is_smc_ram_running() function,
-which is ultimately used to determine if DPM is currently enabled or not,
-and this seems to provide the wrong answer.
-
-I've changed the ci_is_dpm_running() function to instead use the same method that
-some other AMD GPU chips do (e.g Fiji), which seems to read the voltage controller.
-I've tested on my R9 390 and it seems to work correctly for both suspend and
-hibernate use cases, and has been stable so far.
-
-Bug: https://bugzilla.kernel.org/show_bug.cgi?id=208839
-Signed-off-by: Sandeep Raghuraman <sandy.8925@gmail.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Addresses-Coverity: ("Unused value")
+Fixes: fc69f4a6af49 ("Input: add new driver for Sentelic Finger Sensing Pad")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20200603141218.131663-1-colin.king@canonical.com
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/input/mouse/sentelic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c
-+++ b/drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c
-@@ -2725,7 +2725,10 @@ static int ci_initialize_mc_reg_table(st
+diff --git a/drivers/input/mouse/sentelic.c b/drivers/input/mouse/sentelic.c
+index 1d6010d463e2c..022a8cb58a066 100644
+--- a/drivers/input/mouse/sentelic.c
++++ b/drivers/input/mouse/sentelic.c
+@@ -454,7 +454,7 @@ static ssize_t fsp_attr_set_setreg(struct psmouse *psmouse, void *data,
  
- static bool ci_is_dpm_running(struct pp_hwmgr *hwmgr)
- {
--	return ci_is_smc_ram_running(hwmgr);
-+	return (1 == PHM_READ_INDIRECT_FIELD(hwmgr->device,
-+					     CGS_IND_REG__SMC, FEATURE_STATUS,
-+					     VOLTAGE_CONTROLLER_ON))
-+		? true : false;
+ 	fsp_reg_write_enable(psmouse, false);
+ 
+-	return count;
++	return retval;
  }
  
- static int ci_smu_init(struct pp_hwmgr *hwmgr)
+ PSMOUSE_DEFINE_WO_ATTR(setreg, S_IWUSR, NULL, fsp_attr_set_setreg);
+-- 
+2.25.1
+
 
 
