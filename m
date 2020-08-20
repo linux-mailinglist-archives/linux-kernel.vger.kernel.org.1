@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC03824B3AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C01424B3F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729772AbgHTJux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:50:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58748 "EHLO mail.kernel.org"
+        id S1726875AbgHTJyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:54:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729702AbgHTJul (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:50:41 -0400
+        id S1730105AbgHTJyR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:54:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D03992075E;
-        Thu, 20 Aug 2020 09:50:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A73732067C;
+        Thu, 20 Aug 2020 09:54:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917041;
-        bh=cecQAWHLmwsCCrinzA06frVhhV1249x+4mNIPD1Sj6I=;
+        s=default; t=1597917257;
+        bh=JnNbhAP2AQk4xvVJqWvvnnyW0+wwq4Gfhgkon2rtHL0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KSm18AkyNWid1pty2PZvZORfT8GRNO7Df0o2lgzQHcjmiOZ/FLC49pe2UuUqlnT7v
-         BoHpVaRAnsoY0/6Y9NGwDFCIDNV6gGaE3QifHOavAM8if4AVvSOWwvIw7WuB3Q/Ziy
-         HTzz19mUQ0Esbxhu2BYMXz1a3/jAax+JC/n5Y0hE=
+        b=sTG593gs+2GxJ0QYbH/SciMJpvm4ssAJJAxpCrzLFTyH1zbyA+qmSBxV1TaIOx6ki
+         HXj7GMhj7rOUrx+lgqKSfRySdurcQoHhcZvuIEeANeSX6qbDmD0+2QafW1uFnO9nBV
+         WhqEjHMHiwUjU7z9dbl4XgJ4wXWZHcXa0pzjhJQU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Evgeniy Dushistov <dushistov@mail.ru>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 135/152] fs/ufs: avoid potential u32 multiplication overflow
-Date:   Thu, 20 Aug 2020 11:21:42 +0200
-Message-Id: <20200820091600.725717478@linuxfoundation.org>
+Subject: [PATCH 4.19 59/92] dm rq: dont call blk_mq_queue_stopped() in dm_stop_queue()
+Date:   Thu, 20 Aug 2020 11:21:44 +0200
+Message-Id: <20200820091540.691298635@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
-References: <20200820091553.615456912@linuxfoundation.org>
+In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
+References: <20200820091537.490965042@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,42 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Ming Lei <ming.lei@redhat.com>
 
-[ Upstream commit 88b2e9b06381551b707d980627ad0591191f7a2d ]
+[ Upstream commit e766668c6cd49d741cfb49eaeb38998ba34d27bc ]
 
-The 64 bit ino is being compared to the product of two u32 values,
-however, the multiplication is being performed using a 32 bit multiply so
-there is a potential of an overflow.  To be fully safe, cast uspi->s_ncg
-to a u64 to ensure a 64 bit multiplication occurs to avoid any chance of
-overflow.
+dm_stop_queue() only uses blk_mq_quiesce_queue() so it doesn't
+formally stop the blk-mq queue; therefore there is no point making the
+blk_mq_queue_stopped() check -- it will never be stopped.
 
-Fixes: f3e2a520f5fb ("ufs: NFS support")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Evgeniy Dushistov <dushistov@mail.ru>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>
-Link: http://lkml.kernel.org/r/20200715170355.1081713-1-colin.king@canonical.com
-Addresses-Coverity: ("Unintentional integer overflow")
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+In addition, even though dm_stop_queue() actually tries to quiesce hw
+queues via blk_mq_quiesce_queue(), checking with blk_queue_quiesced()
+to avoid unnecessary queue quiesce isn't reliable because: the
+QUEUE_FLAG_QUIESCED flag is set before synchronize_rcu() and
+dm_stop_queue() may be called when synchronize_rcu() from another
+blk_mq_quiesce_queue() is in-progress.
+
+Fixes: 7b17c2f7292ba ("dm: Fix a race condition related to stopping and starting queues")
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ufs/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/md/dm-rq.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/fs/ufs/super.c b/fs/ufs/super.c
-index 1da0be667409b..e3b69fb280e8c 100644
---- a/fs/ufs/super.c
-+++ b/fs/ufs/super.c
-@@ -101,7 +101,7 @@ static struct inode *ufs_nfs_get_inode(struct super_block *sb, u64 ino, u32 gene
- 	struct ufs_sb_private_info *uspi = UFS_SB(sb)->s_uspi;
- 	struct inode *inode;
+diff --git a/drivers/md/dm-rq.c b/drivers/md/dm-rq.c
+index 4d36373e1c0f0..9fde174ce3961 100644
+--- a/drivers/md/dm-rq.c
++++ b/drivers/md/dm-rq.c
+@@ -95,9 +95,6 @@ static void dm_old_stop_queue(struct request_queue *q)
  
--	if (ino < UFS_ROOTINO || ino > uspi->s_ncg * uspi->s_ipg)
-+	if (ino < UFS_ROOTINO || ino > (u64)uspi->s_ncg * uspi->s_ipg)
- 		return ERR_PTR(-ESTALE);
+ static void dm_mq_stop_queue(struct request_queue *q)
+ {
+-	if (blk_mq_queue_stopped(q))
+-		return;
+-
+ 	blk_mq_quiesce_queue(q);
+ }
  
- 	inode = ufs_iget(sb, ino);
 -- 
 2.25.1
 
