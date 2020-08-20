@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E422624BB04
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF6C24BB0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730204AbgHTMVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:21:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38390 "EHLO mail.kernel.org"
+        id S1730428AbgHTMWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:22:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729785AbgHTJzY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:55:24 -0400
+        id S1726749AbgHTJzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:55:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B4252067C;
-        Thu, 20 Aug 2020 09:55:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F626207FB;
+        Thu, 20 Aug 2020 09:55:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917323;
-        bh=CeS91MIj9HIsTs8itkw8y0H2YxrRKZu/2ajiSiKx1Vg=;
+        s=default; t=1597917311;
+        bh=Zt11HEx9mwqoY2DnBPQJ+cHLfqM7iyelikVjN7g0opE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Pz7iJezlP5ZOD82k6QL2c7dww0ELH7IJ0/nSATYIuY2FFSm1nlk/Muta5j0a92kXc
-         +MYS9MVbRZ5lMlbDI0axUfgqKo7YykajXXA1VB1lpJJ8hvJjXh16LDCFWY5pJz0Prr
-         y7yta3GchWz540rAqyhEvcHoVbXP+ayZdlQgvmF0=
+        b=Tgo2+HArl+fzDpv+X+d+w8GVhDfFfVF+3a5RKrIGH7V0fBJzTZrn/sTnagCMt2rql
+         Bzd0MqlrzGYYkbzBYJCTNdM9IjagFdrnTKq3vR2OFMvz9vHMA086HLw/KW5tyAk/Oi
+         i2ZfthXRSwEsfnHOZa7hkNf6NPpJpwHTy13uuS8A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anton Blanchard <anton@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.19 44/92] pseries: Fix 64 bit logical memory block panic
-Date:   Thu, 20 Aug 2020 11:21:29 +0200
-Message-Id: <20200820091539.916876717@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 49/92] mfd: arizona: Ensure 32k clock is put on driver unbind and error
+Date:   Thu, 20 Aug 2020 11:21:34 +0200
+Message-Id: <20200820091540.200469560@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
 References: <20200820091537.490965042@linuxfoundation.org>
@@ -43,37 +45,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anton Blanchard <anton@ozlabs.org>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-commit 89c140bbaeee7a55ed0360a88f294ead2b95201b upstream.
+[ Upstream commit ddff6c45b21d0437ce0c85f8ac35d7b5480513d7 ]
 
-Booting with a 4GB LMB size causes us to panic:
+Whilst it doesn't matter if the internal 32k clock register settings
+are cleaned up on exit, as the part will be turned off losing any
+settings, hence the driver hasn't historially bothered. The external
+clock should however be cleaned up, as it could cause clocks to be
+left on, and will at best generate a warning on unbind.
 
-  qemu-system-ppc64: OS terminated: OS panic:
-      Memory block size not suitable: 0x0
+Add clean up on both the probe error path and unbind for the 32k
+clock.
 
-Fix pseries_memory_block_size() to handle 64 bit LMBs.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Anton Blanchard <anton@ozlabs.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200715000820.1255764-1-anton@ozlabs.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: cdd8da8cc66b ("mfd: arizona: Add gating of external MCLKn clocks")
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/pseries/hotplug-memory.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mfd/arizona-core.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
---- a/arch/powerpc/platforms/pseries/hotplug-memory.c
-+++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
-@@ -31,7 +31,7 @@ static bool rtas_hp_event;
- unsigned long pseries_memory_block_size(void)
- {
- 	struct device_node *np;
--	unsigned int memblock_size = MIN_MEMORY_BLOCK_SIZE;
-+	u64 memblock_size = MIN_MEMORY_BLOCK_SIZE;
- 	struct resource r;
+diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+index a4403a57ddc89..09acaa2cf74a2 100644
+--- a/drivers/mfd/arizona-core.c
++++ b/drivers/mfd/arizona-core.c
+@@ -1433,6 +1433,15 @@ int arizona_dev_init(struct arizona *arizona)
+ 	arizona_irq_exit(arizona);
+ err_pm:
+ 	pm_runtime_disable(arizona->dev);
++
++	switch (arizona->pdata.clk32k_src) {
++	case ARIZONA_32KZ_MCLK1:
++	case ARIZONA_32KZ_MCLK2:
++		arizona_clk32k_disable(arizona);
++		break;
++	default:
++		break;
++	}
+ err_reset:
+ 	arizona_enable_reset(arizona);
+ 	regulator_disable(arizona->dcvdd);
+@@ -1455,6 +1464,15 @@ int arizona_dev_exit(struct arizona *arizona)
+ 	regulator_disable(arizona->dcvdd);
+ 	regulator_put(arizona->dcvdd);
  
- 	np = of_find_node_by_path("/ibm,dynamic-reconfiguration-memory");
++	switch (arizona->pdata.clk32k_src) {
++	case ARIZONA_32KZ_MCLK1:
++	case ARIZONA_32KZ_MCLK2:
++		arizona_clk32k_disable(arizona);
++		break;
++	default:
++		break;
++	}
++
+ 	mfd_remove_devices(arizona->dev);
+ 	arizona_free_irq(arizona, ARIZONA_IRQ_UNDERCLOCKED, arizona);
+ 	arizona_free_irq(arizona, ARIZONA_IRQ_OVERCLOCKED, arizona);
+-- 
+2.25.1
+
 
 
