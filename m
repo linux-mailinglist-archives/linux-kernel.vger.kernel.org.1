@@ -2,171 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB71624BEA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2584424BEA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729171AbgHTN3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:29:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727901AbgHTN1D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 09:27:03 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B63DEC061385
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 06:27:02 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id v2so1607660ilq.4
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 06:27:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OV4Vp1ofAMr75B75qNJu3AEaL5Ppz0SQTP1brRp/NYI=;
-        b=f74DRrmw4KTmCMG95Z6yT+SY04V3gPuQ25oxfDNfAFmqUtgBt0belJ/hRAcVrDLTO9
-         h4iyImcHTzOYXeYLgdZPJMXjsBZq54JJg17f5zj/rt/Ad9CEuMjEY4VDZWT5OnEdAFfm
-         4mDxLqw1zQi2+vzOQDizjxV3NrnNy4lz6ImhNY7Kg+lucW+u+sfEfgQTiqzgTArSQXFn
-         hSWMLl37nR+87sju2ZhQBqAWVjxkAsyfUEnPThmCRxC1nZg1VibF+GfhA4R6XKzlI/DU
-         rDSl8lguXk1VJ/Cem1iEXdhmlUDgeLAN63mUlOs1kw6nL6pWFhGFkBYHtbfmUXUFikI3
-         cZcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OV4Vp1ofAMr75B75qNJu3AEaL5Ppz0SQTP1brRp/NYI=;
-        b=pvQveIHLjpE9L1/l2zpEVFjEz5ysxVyqZs0jydREo8UBxmXhG6GzH9QmfaGon+aJNM
-         VixArBNAUb82PLpWJKMVm57XOC15zCkUI0VbyMAfATXn5yDRj6zv09sE4uZXsjA9CaSd
-         QpG7hWOj7iukZyc2S/jy4gy6N3W3eFPvX5Rjg7T1SzJRNRRrTlpjtIgSEw77Q6Tvbl2a
-         WrB1aAeS3xXZ2qNFdWsQK2K4mNfr6l0/S86/sHrLbvbtycw40nOhws+KjZYUCZUeevjo
-         FyXbaqL92bPNIA3CQd4/mcr8ZykUB1gsgbkfuKp40kTZie1qihkBJKdxCabUmF7e9JWM
-         +vbg==
-X-Gm-Message-State: AOAM5311pWr1WTD7EmNlxTVmSRWWyo/UxwHCXMtKKxQkGPYupzM32DrD
-        YrC45qBuip8/7AjB+Ui7LHvWBATi1GQ3wk8/qv5AyQ==
-X-Google-Smtp-Source: ABdhPJzT3Zd2sVLZXRm4cZqG6dYAx1x0LMdjWvDuGy/rnXv22AhhSqNLyCTAgqUH8AzWAaeAQSg3atKW/HYqp0qO+2g=
-X-Received: by 2002:a92:d7c1:: with SMTP id g1mr2735836ilq.145.1597930021491;
- Thu, 20 Aug 2020 06:27:01 -0700 (PDT)
+        id S1729419AbgHTN3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:29:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41536 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728770AbgHTN3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 09:29:25 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A631208A9;
+        Thu, 20 Aug 2020 13:29:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597930165;
+        bh=TCYmLgf6ZeWa82TBbBiddjDcFsiYAq77Gs/NAYzu4RQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hSd2v8g7NzQcHTqpKc4MRnc3is4Z/W4nds9K2D9wx1uFlDRELkaHfG46pprMNl0qQ
+         B/Ckq6ME9DSu0O226AGuDw79ue3YjbjiQnQ5vzcFuq4VdL+OTR45om/YxxdJaH06IQ
+         wOUJjgMfT8Ezg6bZW8cSDDGylSNcvwwARkVRYacg=
+Date:   Thu, 20 Aug 2020 09:29:24 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Wei Hu <weh@microsoft.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: Re: [PATCH 5.8 164/232] PCI: hv: Fix a timing issue which causes
+ kdump to fail occasionally
+Message-ID: <20200820132924.GA8670@sasha-vm>
+References: <20200820091612.692383444@linuxfoundation.org>
+ <20200820091620.754492308@linuxfoundation.org>
+ <MW2PR2101MB10522B1242B1309BF35EFFEED75A0@MW2PR2101MB1052.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-References: <CALvZod5ZRUHO+=Bvwj4aEKNL0Egwea2dZKuYDKhkvvUyezbgdg@mail.gmail.com>
- <20200820071647.25280-1-sjpark@amazon.com>
-In-Reply-To: <20200820071647.25280-1-sjpark@amazon.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 20 Aug 2020 06:26:49 -0700
-Message-ID: <CALvZod4i5f5RcsHao3DWddoDgHsO+vvGPZaAJUWkURZ2fqH9LA@mail.gmail.com>
-Subject: Re: [RFC v7 06/10] mm/damon: Implement callbacks for physical memory monitoring
-To:     SeongJae Park <sjpark@amazon.com>
-Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@huawei.com,
-        Andrea Arcangeli <aarcange@redhat.com>, acme@kernel.org,
-        alexander.shishkin@linux.intel.com, amit@kernel.org,
-        benh@kernel.crashing.org, brendan.d.gregg@gmail.com,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Qian Cai <cai@lca.pw>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Hildenbrand <david@redhat.com>, dwmw@amazon.com,
-        "Du, Fan" <fan.du@intel.com>, foersleo@amazon.de,
-        Greg Thelen <gthelen@google.com>,
-        Ian Rogers <irogers@google.com>, jolsa@redhat.com,
-        "Kirill A. Shutemov" <kirill@shutemov.name>, mark.rutland@arm.com,
-        Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, namhyung@kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rik van Riel <riel@surriel.com>,
-        David Rientjes <rientjes@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>, rppt@kernel.org,
-        sblbir@amazon.com, shuah@kernel.org, sj38.park@gmail.com,
-        snu@amazon.de, Vlastimil Babka <vbabka@suse.cz>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Huang Ying <ying.huang@intel.com>, zgf574564920@gmail.com,
-        linux-damon@amazon.com, Linux MM <linux-mm@kvack.org>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <MW2PR2101MB10522B1242B1309BF35EFFEED75A0@MW2PR2101MB1052.namprd21.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 12:17 AM SeongJae Park <sjpark@amazon.com> wrote:
+On Thu, Aug 20, 2020 at 01:00:51PM +0000, Michael Kelley wrote:
+>From: Greg Kroah-Hartman <gregkh@linuxfoundation.org> Sent: Thursday, August 20, 2020 2:20 AM
+>>
+>> From: Wei Hu <weh@microsoft.com>
+>>
+>> [ Upstream commit d6af2ed29c7c1c311b96dac989dcb991e90ee195 ]
+>>
+>> Kdump could fail sometime on Hyper-V guest because the retry in
+>> hv_pci_enter_d0() releases child device structures in hv_pci_bus_exit().
+>>
+>> Although there is a second asynchronous device relations message sending
+>> from the host, if this message arrives to the guest after
+>> hv_send_resource_allocated() is called, the retry would fail.
+>>
+>> Fix the problem by moving retry to hv_pci_probe() and start the retry
+>> from hv_pci_query_relations() call.  This will cause a device relations
+>> message to arrive to the guest synchronously; the guest would then be
+>> able to rebuild the child device structures before calling
+>> hv_send_resource_allocated().
+>>
+>> Link:
+>> https://lore.kernel.org/linux-hyperv/20200727071731.18516-1-weh@microsoft.com/
+>> Fixes: c81992e7f4aa ("PCI: hv: Retry PCI bus D0 entry on invalid device state")
+>> Signed-off-by: Wei Hu <weh@microsoft.com>
+>> [lorenzo.pieralisi@arm.com: fixed a comment and commit log]
+>> Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+>> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>> ---
+>>  drivers/pci/controller/pci-hyperv.c | 71 +++++++++++++++--------------
+>>  1 file changed, 37 insertions(+), 34 deletions(-)
+>>
 >
-> On Wed, 19 Aug 2020 17:26:15 -0700 Shakeel Butt <shakeelb@google.com> wrote:
->
-> > On Tue, Aug 18, 2020 at 12:27 AM SeongJae Park <sjpark@amazon.com> wrote:
-> > >
-> > > From: SeongJae Park <sjpark@amazon.de>
-> > >
-> > > This commit implements the four callbacks (->init_target_regions,
-> > > ->update_target_regions, ->prepare_access_check, and ->check_accesses)
-> > > for the basic access monitoring of the physical memory address space.
-> > > By setting the callback pointers to point those, users can easily
-> > > monitor the accesses to the physical memory.
-> > >
-> > > Internally, it uses the PTE Accessed bit, as similar to that of the
-> > > virtual memory support.  Also, it supports only user memory pages, as
-> > > idle page tracking also does, for the same reason.  If the monitoring
-> > > target physical memory address range contains non-user memory pages,
-> > > access check of the pages will do nothing but simply treat the pages as
-> > > not accessed.
-> > >
-> > > Users who want to use other access check primitives and/or monitor the
-> > > non-user memory regions could implement and use their own callbacks.
-> > >
-> > > Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> > [snip]
-> > > +static void damon_phys_mkold(unsigned long paddr)
-> > > +{
-> > > +       struct page *page = damon_phys_get_page(PHYS_PFN(paddr));
-> > > +       struct rmap_walk_control rwc = {
-> > > +               .rmap_one = damon_page_mkold,
-> > > +               .anon_lock = page_lock_anon_vma_read,
-> > > +       };
-> > > +       bool need_lock;
-> > > +
-> > > +       if (!page)
-> > > +               return;
-> > > +
-> > > +       if (!page_mapped(page) || !page_rmapping(page))
-> > > +               return;
-> >
-> > I don't think you want to skip the unmapped pages. The point of
-> > physical address space monitoring was to include the monitoring of
-> > unmapped pages, so, skipping them invalidates the underlying
-> > motivation.
->
-> I think my answer to your other mail[1] could be an answer to this.  Let me
-> quote some from it:
->
-> ```
-> Technically speaking, this patchset introduces an implementation of DAMON's low
-> level primitives for physical address space of LRU-listed pages.  In other
-> words, it is not designed for cgroups case.  Also, please note that this
-> patchset is only RFC, because it aims to only show the future plan of DAMON and
-> get opinions about the concept before being serious.  It will be serious only
-> after the DAMON patchset is merged.  Maybe I didn' made this point clear in the
-> CV, sorry.  I will state this clearly in the next spin.
-> ```
+>This patch came through three days ago, and I indicated then that we don't want
+>it backported to 5.8 and earlier.
 
-The unmapped pages are also LRU pages. Let's forget about the cgroups
-support for a moment, the only reason to use DAMON's physical address
-space monitoring is also to track the accesses of unmapped pages
-otherwise virtual address space monitoring already does the monitoring
-for mapped pages.
+Uh, I re-added it by mistake, sorry.
 
->
-> ```
-> So, DAMON is a framework rather than a tool.  Though it comes with basic
-> applications using DAMON as a framework (e.g., the virtual address space low
-> primitives implementation, DAMON debugfs interface, and the DAMON user space
-> tool) that could be useful in simple use cases, you need to code your
-> application on it if your use cases are out of the simple cases.  I will also
-> develop more of such applications for more use-cases, but it will be only after
-> the framework is complete enough to be merged in the mainline.
-> ```
->
-> Of course, we could prioritize the cgroup support if strongly required, though
-> I still prefer focusing on the framework itself for now.
->
-> [1] https://lore.kernel.org/linux-mm/20200820071052.24271-1-sjpark@amazon.com/
->
->
-> Thanks,
-> SeongJae Park
+-- 
+Thanks,
+Sasha
