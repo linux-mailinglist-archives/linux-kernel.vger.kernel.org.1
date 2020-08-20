@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C848624BA93
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A02B24BABA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729931AbgHTMMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:12:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41246 "EHLO mail.kernel.org"
+        id S1730126AbgHTJ4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:56:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730325AbgHTJ5h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:57:37 -0400
+        id S1730256AbgHTJ4X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:56:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E5452067C;
-        Thu, 20 Aug 2020 09:57:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D4C8320885;
+        Thu, 20 Aug 2020 09:56:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917455;
-        bh=dLSZoe0U68+XiHw2ZjmLR1zZjUunThM8XsBc5V+pY8I=;
+        s=default; t=1597917381;
+        bh=YwZJ9W+XJlZjVI5HfWYlwaHFRfhwEswTi5fcPpoXoI4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vMg1GJ2FKCwPnJFeMcHC093XLscnHVO6J2wNtT2fy2kZdtZh7LHEhxkWNgxqB0Q4h
-         cgjhp4FRYiuz5kURuViUl66gzdnXKVW1WNagCU7wNqiPWKeWGEwfJDesg45N5dJj9I
-         HBWHG+xFyTPG8uDp7uZeqs3EYRIRbD8AVIrG/GX0=
+        b=GdhPfefC2DSs+KxmhHbKYYg4oYX4qKgwKqZHXIdfSKfT0EFdguVSI/ky2Uo0NtD3T
+         lnw0T4fr7+XrBW0TIvYO02QiS7WA0wMQGhM8zatJhO1BEaVLsmLCA6zWOM2zGjyGfN
+         R8QcVRxt97GJbJox/XE/NxkA4NrOW8eFGcb70Vmk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Navid Emamdoost <navid.emamdoost@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 008/212] ath9k: release allocated buffer if timed out
-Date:   Thu, 20 Aug 2020 11:19:41 +0200
-Message-Id: <20200820091602.678759128@linuxfoundation.org>
+        stable@vger.kernel.org, Steve Cohen <cohens@codeaurora.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: [PATCH 4.9 012/212] drm: hold gem reference until object is no longer accessed
+Date:   Thu, 20 Aug 2020 11:19:45 +0200
+Message-Id: <20200820091602.949207208@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
 References: <20200820091602.251285210@linuxfoundation.org>
@@ -45,34 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Navid Emamdoost <navid.emamdoost@gmail.com>
+From: Steve Cohen <cohens@codeaurora.org>
 
-[ Upstream commit 728c1e2a05e4b5fc52fab3421dce772a806612a2 ]
+commit 8490d6a7e0a0a6fab5c2d82d57a3937306660864 upstream.
 
-In ath9k_wmi_cmd, the allocated network buffer needs to be released
-if timeout happens. Otherwise memory will be leaked.
+A use-after-free in drm_gem_open_ioctl can happen if the
+GEM object handle is closed between the idr lookup and
+retrieving the size from said object since a local reference
+is not being held at that point. Hold the local reference
+while the object can still be accessed to fix this and
+plug the potential security hole.
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Steve Cohen <cohens@codeaurora.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/1595284250-31580-1-git-send-email-cohens@codeaurora.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/wireless/ath/ath9k/wmi.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/drm_gem.c |   10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath9k/wmi.c b/drivers/net/wireless/ath/ath9k/wmi.c
-index 8f14897ae5a33..f100533eb7adc 100644
---- a/drivers/net/wireless/ath/ath9k/wmi.c
-+++ b/drivers/net/wireless/ath/ath9k/wmi.c
-@@ -340,6 +340,7 @@ int ath9k_wmi_cmd(struct wmi *wmi, enum wmi_cmd_id cmd_id,
- 		ath_dbg(common, WMI, "Timeout waiting for WMI command: %s\n",
- 			wmi_cmd_to_name(cmd_id));
- 		mutex_unlock(&wmi->op_mutex);
-+		kfree_skb(skb);
- 		return -ETIMEDOUT;
- 	}
+--- a/drivers/gpu/drm/drm_gem.c
++++ b/drivers/gpu/drm/drm_gem.c
+@@ -694,9 +694,6 @@ err:
+  * @file_priv: drm file-private structure
+  *
+  * Open an object using the global name, returning a handle and the size.
+- *
+- * This handle (of course) holds a reference to the object, so the object
+- * will not go away until the handle is deleted.
+  */
+ int
+ drm_gem_open_ioctl(struct drm_device *dev, void *data,
+@@ -721,14 +718,15 @@ drm_gem_open_ioctl(struct drm_device *de
  
--- 
-2.25.1
-
+ 	/* drm_gem_handle_create_tail unlocks dev->object_name_lock. */
+ 	ret = drm_gem_handle_create_tail(file_priv, obj, &handle);
+-	drm_gem_object_unreference_unlocked(obj);
+ 	if (ret)
+-		return ret;
++		goto err;
+ 
+ 	args->handle = handle;
+ 	args->size = obj->size;
+ 
+-	return 0;
++err:
++	drm_gem_object_unreference_unlocked(obj);
++	return ret;
+ }
+ 
+ /**
 
 
