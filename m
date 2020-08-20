@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F9124B482
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC7F24B485
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730367AbgHTKIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:08:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39322 "EHLO mail.kernel.org"
+        id S1726846AbgHTKI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:08:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729660AbgHTKIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:08:00 -0400
+        id S1729288AbgHTKIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:08:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 42B9220738;
-        Thu, 20 Aug 2020 10:07:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C41A02067C;
+        Thu, 20 Aug 2020 10:08:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918079;
-        bh=uQVXhEjnRhpD+xpU3IyQVRFvKWZSPkxnjSZK5N8DzPY=;
+        s=default; t=1597918097;
+        bh=U+gWfkrY3BsVuOe18g1jlpr8DJgrJunvSINNKdy/Hcs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yQb1sNJZBJGIUtxTlEb/pGARUgzFIDJXXqxkRa7rMN9qB7+xcbNgk4lzqliNE/klN
-         FHdv6P92Q9aiB2LggNJY7z64ltiWgMXcnT7yz4Wh9+kbmxEs3vP4hTW8whSvel6IvP
-         9CkfWfW69T5uJow3IyJjNr/Bv41eo+9hAAyzm1eI=
+        b=15JduGU7zAnEE6192I9+Mq6NvqbR99ETWT5Kecn1U+brsOmtNo9+hBdPombWQEQwV
+         tMp7xLCr11TITBrLGLK0+zQHZFbZfcqqKBVDHBWWgE27e77JdjP2W8IplsiwZlwKZG
+         m0uJbC3sMbCu+wtnwkUzepWCtcnKDTq6w1IknJyI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 045/228] cgroup: add missing skcd->no_refcnt check in cgroup_sk_clone()
-Date:   Thu, 20 Aug 2020 11:20:20 +0200
-Message-Id: <20200820091609.863261417@linuxfoundation.org>
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 050/228] EDAC: Fix reference count leaks
+Date:   Thu, 20 Aug 2020 11:20:25 +0200
+Message-Id: <20200820091610.115802455@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
 References: <20200820091607.532711107@linuxfoundation.org>
@@ -43,32 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Qiushi Wu <wu000273@umn.edu>
 
-Add skcd->no_refcnt check which is missed when backporting
-ad0f75e5f57c ("cgroup: fix cgroup_sk_alloc() for sk_clone_lock()").
+[ Upstream commit 17ed808ad243192fb923e4e653c1338d3ba06207 ]
 
-This patch is needed in stable-4.9, stable-4.14 and stable-4.19.
+When kobject_init_and_add() returns an error, it should be handled
+because kobject_init_and_add() takes a reference even when it fails. If
+this function returns an error, kobject_put() must be called to properly
+clean up the memory associated with the object.
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Therefore, replace calling kfree() and call kobject_put() and add a
+missing kobject_put() in the edac_device_register_sysfs_main_kobj()
+error path.
+
+ [ bp: Massage and merge into a single patch. ]
+
+Fixes: b2ed215a3338 ("Kobject: change drivers/edac to use kobject_init_and_add")
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20200528202238.18078-1-wu000273@umn.edu
+Link: https://lkml.kernel.org/r/20200528203526.20908-1-wu000273@umn.edu
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/cgroup/cgroup.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/edac/edac_device_sysfs.c | 1 +
+ drivers/edac/edac_pci_sysfs.c    | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index a2fed8fbd2bde..ada060e628ce3 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -5827,6 +5827,8 @@ void cgroup_sk_clone(struct sock_cgroup_data *skcd)
- {
- 	/* Socket clone path */
- 	if (skcd->val) {
-+		if (skcd->no_refcnt)
-+			return;
- 		/*
- 		 * We might be cloning a socket which is left in an empty
- 		 * cgroup and the cgroup might have already been rmdir'd.
+diff --git a/drivers/edac/edac_device_sysfs.c b/drivers/edac/edac_device_sysfs.c
+index 0e7ea3591b781..5e75937537997 100644
+--- a/drivers/edac/edac_device_sysfs.c
++++ b/drivers/edac/edac_device_sysfs.c
+@@ -275,6 +275,7 @@ int edac_device_register_sysfs_main_kobj(struct edac_device_ctl_info *edac_dev)
+ 
+ 	/* Error exit stack */
+ err_kobj_reg:
++	kobject_put(&edac_dev->kobj);
+ 	module_put(edac_dev->owner);
+ 
+ err_out:
+diff --git a/drivers/edac/edac_pci_sysfs.c b/drivers/edac/edac_pci_sysfs.c
+index 72c9eb9fdffbe..53042af7262e2 100644
+--- a/drivers/edac/edac_pci_sysfs.c
++++ b/drivers/edac/edac_pci_sysfs.c
+@@ -386,7 +386,7 @@ static int edac_pci_main_kobj_setup(void)
+ 
+ 	/* Error unwind statck */
+ kobject_init_and_add_fail:
+-	kfree(edac_pci_top_main_kobj);
++	kobject_put(edac_pci_top_main_kobj);
+ 
+ kzalloc_fail:
+ 	module_put(THIS_MODULE);
 -- 
 2.25.1
 
