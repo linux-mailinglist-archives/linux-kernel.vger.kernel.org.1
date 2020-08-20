@@ -2,96 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7399024AC46
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 02:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 777CA24AC62
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 02:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726862AbgHTAep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 20:34:45 -0400
-Received: from mga06.intel.com ([134.134.136.31]:7673 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726681AbgHTAeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 20:34:44 -0400
-IronPort-SDR: EauY4riZJCl36P4jWmGSBoTjenjyGNQ/diN0hXLLcfM2zEkPip2XPX7Y7XlJ3EFZK6rq/S1GXN
- HWfW04f5nzSw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9718"; a="216751054"
-X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
-   d="scan'208";a="216751054"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2020 17:34:43 -0700
-IronPort-SDR: nJmm0rF6UwMP7YmtFr8ehyHe2KjZmYZSek3t/nBnoCMsQqknuuzvozT/fgomnxxidyEP/KInLl
- W446bRfSzxLA==
-X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
-   d="scan'208";a="472442155"
-Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.238.4.3]) ([10.238.4.3])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2020 17:34:41 -0700
-Subject: Re: [kbuild-all] Re: drivers/net/wireless/ti/wlcore/main.c:700:9:
- sparse: sparse: context imbalance in 'wlcore_irq' - different lock contexts
- for basic block
-To:     Tony Lindgren <tony@atomide.com>, kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Kalle Valo <kvalo@codeaurora.org>
-References: <202008111908.j7IQlv5Q%lkp@intel.com>
- <20200817102821.GE2994@atomide.com>
-From:   "Chen, Rong A" <rong.a.chen@intel.com>
-Message-ID: <a817204f-8b4d-339f-6e22-701ed189795b@intel.com>
-Date:   Thu, 20 Aug 2020 08:34:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726754AbgHTArj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 20:47:39 -0400
+Received: from relay4.mymailcheap.com ([137.74.80.156]:49986 "EHLO
+        relay4.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726617AbgHTAri (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 20:47:38 -0400
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay4.mymailcheap.com (Postfix) with ESMTPS id AFB4D3F1CF;
+        Thu, 20 Aug 2020 02:47:34 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id D133F2A347;
+        Wed, 19 Aug 2020 20:47:33 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1597884453;
+        bh=mik3lkRm3XRBmorjbLDSLfkE+H+yosrvlTUTCU822gE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LJzveso3gj8dnZsFw+VJpm5yBKI2WKywUBQddHpAPUT0azZYIQRC3UhnSu2zB4KWf
+         feO0KHEVsM5p1oONBEZzMAlajWhnuEjCrfRvK0rE3Z4dvDm2AALzmrd6F9Ptuehqml
+         bNiP7/pxuC6xbDnEnarx05AKOYB8HulrJjNEM4II=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id qv2Em2NnE3zr; Wed, 19 Aug 2020 20:47:32 -0400 (EDT)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Wed, 19 Aug 2020 20:47:32 -0400 (EDT)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 4175041737;
+        Thu, 20 Aug 2020 00:47:30 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="Kwi2FqS8";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from localhost.localdomain (unknown [117.136.8.126])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 1D5F741184;
+        Thu, 20 Aug 2020 00:43:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
+        s=default; t=1597884186;
+        bh=mik3lkRm3XRBmorjbLDSLfkE+H+yosrvlTUTCU822gE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Kwi2FqS8GCKvfVLdPIhmnkSV/mg4bRYyGlAFcnobZVNJHsSK9mJ2fyAXjup75YFr0
+         tiGoMYp293OwUeMdkZaZayZ5AX1hxfNr3C2T97fkLJp5Sdw16fwC5XOHyyZ16s4ze8
+         lC3PsDfnr6z1j3dcCOI2MpEBf9jIweP4pKmX+91o=
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
+        Paul Burton <paulburton@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND 0/2] Fix cacheinfo
+Date:   Thu, 20 Aug 2020 08:42:48 +0800
+Message-Id: <20200820004253.3418-1-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200817102821.GE2994@atomide.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 4175041737
+X-Spamd-Result: default: False [4.90 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
+         RECEIVED_SPAMHAUS_PBL(0.00)[117.136.8.126:received];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         DKIM_TRACE(0.00)[flygoat.com:+];
+         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         MID_CONTAINS_FROM(1.00)[];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
+X-Rspamd-Server: mail20.mymailcheap.com
+X-Spam: Yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is causing lscpu segfault. So probably worthy to
+include it as a part of mips-fixes. 
 
+Jiaxun Yang (2):
+  MIPS: cacheinfo: Add missing VCache
+  MIPS: Loongson64: Set cluster for cores
 
-On 8/17/2020 6:28 PM, Tony Lindgren wrote:
-> Hi,
->
-> * kernel test robot <lkp@intel.com> [200811 11:55]:
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   00e4db51259a5f936fec1424b884f029479d3981
->> commit: 35fba0f0fd762a8b87d403ae3c723e0061c4aa25 wlcore: Use spin_trylock in wlcore_irq() to see if we need to queue tx
->> date:   4 weeks ago
->> config: mips-randconfig-s032-20200811 (attached as .config)
->> compiler: mips64-linux-gcc (GCC) 9.3.0
->> reproduce:
->>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>          chmod +x ~/bin/make.cross
->>          # apt-get install sparse
->>          # sparse version: v0.6.2-168-g9554805c-dirty
->>          git checkout 35fba0f0fd762a8b87d403ae3c723e0061c4aa25
->>          # save the attached .config to linux build tree
->>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=mips
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->>
->> sparse warnings: (new ones prefixed by >>)
->>
->>     drivers/net/wireless/ti/wlcore/main.c:643:34: sparse: sparse: context imbalance in 'wlcore_irq_locked' - different lock contexts for basic block
->>>> drivers/net/wireless/ti/wlcore/main.c:700:9: sparse: sparse: context imbalance in 'wlcore_irq' - different lock contexts for basic block
-> I tried to reproduce this with cross compiling for ARM using sparse-0.6.2,
-> but don't see any similar warnings.
->
-> Is this only happening on mips for some reason?
->
-> Regards,
->
-> Tony
->
+ arch/mips/kernel/cacheinfo.c | 34 ++++++++++++++++++++++++++--------
+ arch/mips/loongson64/smp.c   |  2 ++
+ 2 files changed, 28 insertions(+), 8 deletions(-)
 
-Hi Tony,
-
-Sorry for the inconvenience, please ignore this report,
-there is something wrong in the bot.
-
-Best Regards,
-Rong Chen
+-- 
+2.28.0
