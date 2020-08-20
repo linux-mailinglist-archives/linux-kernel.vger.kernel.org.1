@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC0A324B325
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 635D924B431
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729125AbgHTJlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:41:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35660 "EHLO mail.kernel.org"
+        id S1729386AbgHTJ7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:59:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728710AbgHTJlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:41:46 -0400
+        id S1730426AbgHTJ7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:59:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BED962075E;
-        Thu, 20 Aug 2020 09:41:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C01C920855;
+        Thu, 20 Aug 2020 09:59:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916505;
-        bh=GLXQfcRWfRzS75qj46k4hC5dnG429jw21sLIeHx3YyM=;
+        s=default; t=1597917564;
+        bh=eBXCDnZNWilzhj/f7V2+co07FctdFNJ0+O2jix7pLkw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OKOfBId1Mgg5E2dBTJOjSauAHUBD9UnnTD5K7oA9H3TF5U9dHzTsX/MS57E8kGwSX
-         5Iws/Nitgqd/sM6y1XW2IzlhayWUNmuoR8zofvGeKNu3+U3OTBiCYMWSxTV6+ga1LX
-         Wz/Wl6VDPPMdLB7M8DDA2WBQWUPq0ZWV/Fjfn16s=
+        b=ji46omPIxEHL57uJPohmIoJviIAlV+m4fl7Fz1npPTYniohWHwIlvqU5vWOJQYq52
+         9CFdrb1bj7olJiaUkwuET0ZBdCEdUmjjj580kPOc90HaIzk8sm+LzSh5XLpB4x3zC+
+         JxYTywTXj/8KWwOIq144C4R3ifhyIZrT/OC4D04U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
-        Richard Weinberger <richard@nod.at>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 151/204] ubifs: Fix wrong orphan node deletion in ubifs_jnl_update|rename
-Date:   Thu, 20 Aug 2020 11:20:48 +0200
-Message-Id: <20200820091613.785037682@linuxfoundation.org>
+        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 076/212] Revert "vxlan: fix tos value before xmit"
+Date:   Thu, 20 Aug 2020 11:20:49 +0200
+Message-Id: <20200820091606.207508915@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
-References: <20200820091606.194320503@linuxfoundation.org>
+In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
+References: <20200820091602.251285210@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,86 +44,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+From: Hangbin Liu <liuhangbin@gmail.com>
 
-[ Upstream commit 094b6d1295474f338201b846a1f15e72eb0b12cf ]
+[ Upstream commit a0dced17ad9dc08b1b25e0065b54c97a318e6e8b ]
 
-There a wrong orphan node deleting in error handling path in
-ubifs_jnl_update() and ubifs_jnl_rename(), which may cause
-following error msg:
+This reverts commit 71130f29979c7c7956b040673e6b9d5643003176.
 
-  UBIFS error (ubi0:0 pid 1522): ubifs_delete_orphan [ubifs]:
-  missing orphan ino 65
+In commit 71130f29979c ("vxlan: fix tos value before xmit") we want to
+make sure the tos value are filtered by RT_TOS() based on RFC1349.
 
-Fix this by checking whether the node has been operated for
-adding to orphan list before being deleted,
+       0     1     2     3     4     5     6     7
+    +-----+-----+-----+-----+-----+-----+-----+-----+
+    |   PRECEDENCE    |          TOS          | MBZ |
+    +-----+-----+-----+-----+-----+-----+-----+-----+
 
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Fixes: 823838a486888cf484e ("ubifs: Add hashes to the tree node cache")
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+But RFC1349 has been obsoleted by RFC2474. The new DSCP field defined like
+
+       0     1     2     3     4     5     6     7
+    +-----+-----+-----+-----+-----+-----+-----+-----+
+    |          DS FIELD, DSCP           | ECN FIELD |
+    +-----+-----+-----+-----+-----+-----+-----+-----+
+
+So with
+
+IPTOS_TOS_MASK          0x1E
+RT_TOS(tos)		((tos)&IPTOS_TOS_MASK)
+
+the first 3 bits DSCP info will get lost.
+
+To take all the DSCP info in xmit, we should revert the patch and just push
+all tos bits to ip_tunnel_ecn_encap(), which will handling ECN field later.
+
+Fixes: 71130f29979c ("vxlan: fix tos value before xmit")
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Acked-by: Guillaume Nault <gnault@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ubifs/journal.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/net/vxlan.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index e5ec1afe1c668..2cf05f87565c2 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -539,7 +539,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
- 		     const struct fscrypt_name *nm, const struct inode *inode,
- 		     int deletion, int xent)
- {
--	int err, dlen, ilen, len, lnum, ino_offs, dent_offs;
-+	int err, dlen, ilen, len, lnum, ino_offs, dent_offs, orphan_added = 0;
- 	int aligned_dlen, aligned_ilen, sync = IS_DIRSYNC(dir);
- 	int last_reference = !!(deletion && inode->i_nlink == 0);
- 	struct ubifs_inode *ui = ubifs_inode(inode);
-@@ -630,6 +630,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
- 			goto out_finish;
- 		}
- 		ui->del_cmtno = c->cmt_no;
-+		orphan_added = 1;
- 	}
+--- a/drivers/net/vxlan.c
++++ b/drivers/net/vxlan.c
+@@ -2110,7 +2110,7 @@ static void vxlan_xmit_one(struct sk_buf
+ 		else if (info->key.tun_flags & TUNNEL_DONT_FRAGMENT)
+ 			df = htons(IP_DF);
  
- 	err = write_head(c, BASEHD, dent, len, &lnum, &dent_offs, sync);
-@@ -702,7 +703,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
- 	kfree(dent);
- out_ro:
- 	ubifs_ro_mode(c, err);
--	if (last_reference)
-+	if (orphan_added)
- 		ubifs_delete_orphan(c, inode->i_ino);
- 	finish_reservation(c);
- 	return err;
-@@ -1218,7 +1219,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 	void *p;
- 	union ubifs_key key;
- 	struct ubifs_dent_node *dent, *dent2;
--	int err, dlen1, dlen2, ilen, lnum, offs, len;
-+	int err, dlen1, dlen2, ilen, lnum, offs, len, orphan_added = 0;
- 	int aligned_dlen1, aligned_dlen2, plen = UBIFS_INO_NODE_SZ;
- 	int last_reference = !!(new_inode && new_inode->i_nlink == 0);
- 	int move = (old_dir != new_dir);
-@@ -1334,6 +1335,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 			goto out_finish;
- 		}
- 		new_ui->del_cmtno = c->cmt_no;
-+		orphan_added = 1;
- 	}
+-		tos = ip_tunnel_ecn_encap(RT_TOS(tos), old_iph, skb);
++		tos = ip_tunnel_ecn_encap(tos, old_iph, skb);
+ 		ttl = ttl ? : ip4_dst_hoplimit(&rt->dst);
+ 		err = vxlan_build_skb(skb, &rt->dst, sizeof(struct iphdr),
+ 				      vni, md, flags, udp_sum);
+@@ -2169,7 +2169,7 @@ static void vxlan_xmit_one(struct sk_buf
+ 		if (!info)
+ 			udp_sum = !(flags & VXLAN_F_UDP_ZERO_CSUM6_TX);
  
- 	err = write_head(c, BASEHD, dent, len, &lnum, &offs, sync);
-@@ -1415,7 +1417,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 	release_head(c, BASEHD);
- out_ro:
- 	ubifs_ro_mode(c, err);
--	if (last_reference)
-+	if (orphan_added)
- 		ubifs_delete_orphan(c, new_inode->i_ino);
- out_finish:
- 	finish_reservation(c);
--- 
-2.25.1
-
+-		tos = ip_tunnel_ecn_encap(RT_TOS(tos), old_iph, skb);
++		tos = ip_tunnel_ecn_encap(tos, old_iph, skb);
+ 		ttl = ttl ? : ip6_dst_hoplimit(ndst);
+ 		skb_scrub_packet(skb, xnet);
+ 		err = vxlan_build_skb(skb, ndst, sizeof(struct ipv6hdr),
 
 
