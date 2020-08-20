@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 730DE24B631
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D74224B71E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:47:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730500AbgHTKTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:19:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41944 "EHLO mail.kernel.org"
+        id S1731245AbgHTKPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:15:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731291AbgHTKS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:18:58 -0400
+        id S1731224AbgHTKO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:14:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B35A520658;
-        Thu, 20 Aug 2020 10:18:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6418320724;
+        Thu, 20 Aug 2020 10:14:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918737;
-        bh=6KMASYgSY9mZsiOFd5G1ReOXX0yDHm7t+VKPImhwBiA=;
+        s=default; t=1597918495;
+        bh=6DHbHLVvao1IOlB/zt8+RprsouiSiHG/qkIEQ1H8n/k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s4dKzQodZ8eXVWXvFrpRbddQVPXnG1vbpOAzvVsqEQ6JQV7U+3e+h0Hnl/+o/5mjv
-         LViWnZ73ubWk8FVhUsk9IKyCegKouszwd+9ti3O6IMwzu4278YeOaaYYOMVZu22pz+
-         cxbvSrS9EQbl42cYQMqVYljPE0PL2a6I/lbdR1lI=
+        b=B66iuBnZ28ijEuin1xOsWN6LWMoesHib7iskyMMnKvipHZVAxWCJACKa63Xjn5YDc
+         P9mgAMinvR7Y2mJdvgxUriJcv84KGSlsY7QA3XTNYlq6SnnyFf/dLpdV7J7cwHr25B
+         nxafjTiikLNFR9g/PzrI6C1eHz3mezrLjyOAmrfA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, ch3332xr@gmail.com,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 048/149] ipv6: fix memory leaks on IPV6_ADDRFORM path
-Date:   Thu, 20 Aug 2020 11:22:05 +0200
-Message-Id: <20200820092128.066065707@linuxfoundation.org>
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 4.14 151/228] crypto: cpt - dont sleep of CRYPTO_TFM_REQ_MAY_SLEEP was not specified
+Date:   Thu, 20 Aug 2020 11:22:06 +0200
+Message-Id: <20200820091615.125267995@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
-References: <20200820092125.688850368@linuxfoundation.org>
+In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
+References: <20200820091607.532711107@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,115 +43,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cong Wang <xiyou.wangcong@gmail.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-[ Upstream commit 8c0de6e96c9794cb523a516c465991a70245da1c ]
+commit 9e27c99104707f083dccd3b4d79762859b5a0614 upstream.
 
-IPV6_ADDRFORM causes resource leaks when converting an IPv6 socket
-to IPv4, particularly struct ipv6_ac_socklist. Similar to
-struct ipv6_mc_socklist, we should just close it on this path.
+There is this call chain:
+cvm_encrypt -> cvm_enc_dec -> cptvf_do_request -> process_request -> kzalloc
+where we call sleeping allocator function even if CRYPTO_TFM_REQ_MAY_SLEEP
+was not specified.
 
-This bug can be easily reproduced with the following C program:
-
-  #include <stdio.h>
-  #include <string.h>
-  #include <sys/types.h>
-  #include <sys/socket.h>
-  #include <arpa/inet.h>
-
-  int main()
-  {
-    int s, value;
-    struct sockaddr_in6 addr;
-    struct ipv6_mreq m6;
-
-    s = socket(AF_INET6, SOCK_DGRAM, 0);
-    addr.sin6_family = AF_INET6;
-    addr.sin6_port = htons(5000);
-    inet_pton(AF_INET6, "::ffff:192.168.122.194", &addr.sin6_addr);
-    connect(s, (struct sockaddr *)&addr, sizeof(addr));
-
-    inet_pton(AF_INET6, "fe80::AAAA", &m6.ipv6mr_multiaddr);
-    m6.ipv6mr_interface = 5;
-    setsockopt(s, SOL_IPV6, IPV6_JOIN_ANYCAST, &m6, sizeof(m6));
-
-    value = AF_INET;
-    setsockopt(s, SOL_IPV6, IPV6_ADDRFORM, &value, sizeof(value));
-
-    close(s);
-    return 0;
-  }
-
-Reported-by: ch3332xr@gmail.com
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Cc: stable@vger.kernel.org	# v4.11+
+Fixes: c694b233295b ("crypto: cavium - Add the Virtual Function driver for CPT")
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- include/net/addrconf.h   |    1 +
- net/ipv6/anycast.c       |   17 ++++++++++++-----
- net/ipv6/ipv6_sockglue.c |    1 +
- 3 files changed, 14 insertions(+), 5 deletions(-)
 
---- a/include/net/addrconf.h
-+++ b/include/net/addrconf.h
-@@ -239,6 +239,7 @@ int ipv6_sock_ac_join(struct sock *sk, i
- 		      const struct in6_addr *addr);
- int ipv6_sock_ac_drop(struct sock *sk, int ifindex,
- 		      const struct in6_addr *addr);
-+void __ipv6_sock_ac_close(struct sock *sk);
- void ipv6_sock_ac_close(struct sock *sk);
+---
+ drivers/crypto/cavium/cpt/cptvf_algs.c       |    1 +
+ drivers/crypto/cavium/cpt/cptvf_reqmanager.c |   12 ++++++------
+ drivers/crypto/cavium/cpt/request_manager.h  |    2 ++
+ 3 files changed, 9 insertions(+), 6 deletions(-)
+
+--- a/drivers/crypto/cavium/cpt/cptvf_algs.c
++++ b/drivers/crypto/cavium/cpt/cptvf_algs.c
+@@ -205,6 +205,7 @@ static inline int cvm_enc_dec(struct abl
+ 	int status;
  
- int __ipv6_dev_ac_inc(struct inet6_dev *idev, const struct in6_addr *addr);
---- a/net/ipv6/anycast.c
-+++ b/net/ipv6/anycast.c
-@@ -170,7 +170,7 @@ int ipv6_sock_ac_drop(struct sock *sk, i
- 	return 0;
- }
+ 	memset(req_info, 0, sizeof(struct cpt_request_info));
++	req_info->may_sleep = (req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP) != 0;
+ 	memset(fctx, 0, sizeof(struct fc_context));
+ 	create_input_list(req, enc, enc_iv_len);
+ 	create_output_list(req, enc_iv_len);
+--- a/drivers/crypto/cavium/cpt/cptvf_reqmanager.c
++++ b/drivers/crypto/cavium/cpt/cptvf_reqmanager.c
+@@ -136,7 +136,7 @@ static inline int setup_sgio_list(struct
  
--void ipv6_sock_ac_close(struct sock *sk)
-+void __ipv6_sock_ac_close(struct sock *sk)
- {
- 	struct ipv6_pinfo *np = inet6_sk(sk);
- 	struct net_device *dev = NULL;
-@@ -178,10 +178,7 @@ void ipv6_sock_ac_close(struct sock *sk)
- 	struct net *net = sock_net(sk);
- 	int	prev_index;
+ 	/* Setup gather (input) components */
+ 	g_sz_bytes = ((req->incnt + 3) / 4) * sizeof(struct sglist_component);
+-	info->gather_components = kzalloc(g_sz_bytes, GFP_KERNEL);
++	info->gather_components = kzalloc(g_sz_bytes, req->may_sleep ? GFP_KERNEL : GFP_ATOMIC);
+ 	if (!info->gather_components) {
+ 		ret = -ENOMEM;
+ 		goto  scatter_gather_clean;
+@@ -153,7 +153,7 @@ static inline int setup_sgio_list(struct
  
--	if (!np->ipv6_ac_list)
--		return;
--
--	rtnl_lock();
-+	ASSERT_RTNL();
- 	pac = np->ipv6_ac_list;
- 	np->ipv6_ac_list = NULL;
+ 	/* Setup scatter (output) components */
+ 	s_sz_bytes = ((req->outcnt + 3) / 4) * sizeof(struct sglist_component);
+-	info->scatter_components = kzalloc(s_sz_bytes, GFP_KERNEL);
++	info->scatter_components = kzalloc(s_sz_bytes, req->may_sleep ? GFP_KERNEL : GFP_ATOMIC);
+ 	if (!info->scatter_components) {
+ 		ret = -ENOMEM;
+ 		goto  scatter_gather_clean;
+@@ -170,7 +170,7 @@ static inline int setup_sgio_list(struct
  
-@@ -198,6 +195,16 @@ void ipv6_sock_ac_close(struct sock *sk)
- 		sock_kfree_s(sk, pac, sizeof(*pac));
- 		pac = next;
+ 	/* Create and initialize DPTR */
+ 	info->dlen = g_sz_bytes + s_sz_bytes + SG_LIST_HDR_SIZE;
+-	info->in_buffer = kzalloc(info->dlen, GFP_KERNEL);
++	info->in_buffer = kzalloc(info->dlen, req->may_sleep ? GFP_KERNEL : GFP_ATOMIC);
+ 	if (!info->in_buffer) {
+ 		ret = -ENOMEM;
+ 		goto  scatter_gather_clean;
+@@ -198,7 +198,7 @@ static inline int setup_sgio_list(struct
  	}
-+}
+ 
+ 	/* Create and initialize RPTR */
+-	info->out_buffer = kzalloc(COMPLETION_CODE_SIZE, GFP_KERNEL);
++	info->out_buffer = kzalloc(COMPLETION_CODE_SIZE, req->may_sleep ? GFP_KERNEL : GFP_ATOMIC);
+ 	if (!info->out_buffer) {
+ 		ret = -ENOMEM;
+ 		goto scatter_gather_clean;
+@@ -434,7 +434,7 @@ int process_request(struct cpt_vf *cptvf
+ 	struct cpt_vq_command vq_cmd;
+ 	union cpt_inst_s cptinst;
+ 
+-	info = kzalloc(sizeof(*info), GFP_KERNEL);
++	info = kzalloc(sizeof(*info), req->may_sleep ? GFP_KERNEL : GFP_ATOMIC);
+ 	if (unlikely(!info)) {
+ 		dev_err(&pdev->dev, "Unable to allocate memory for info_buffer\n");
+ 		return -ENOMEM;
+@@ -456,7 +456,7 @@ int process_request(struct cpt_vf *cptvf
+ 	 * Get buffer for union cpt_res_s response
+ 	 * structure and its physical address
+ 	 */
+-	info->completion_addr = kzalloc(sizeof(union cpt_res_s), GFP_KERNEL);
++	info->completion_addr = kzalloc(sizeof(union cpt_res_s), req->may_sleep ? GFP_KERNEL : GFP_ATOMIC);
+ 	if (unlikely(!info->completion_addr)) {
+ 		dev_err(&pdev->dev, "Unable to allocate memory for completion_addr\n");
+ 		ret = -ENOMEM;
+--- a/drivers/crypto/cavium/cpt/request_manager.h
++++ b/drivers/crypto/cavium/cpt/request_manager.h
+@@ -65,6 +65,8 @@ struct cpt_request_info {
+ 	union ctrl_info ctrl; /* User control information */
+ 	struct cptvf_request req; /* Request Information (Core specific) */
+ 
++	bool may_sleep;
 +
-+void ipv6_sock_ac_close(struct sock *sk)
-+{
-+	struct ipv6_pinfo *np = inet6_sk(sk);
-+
-+	if (!np->ipv6_ac_list)
-+		return;
-+	rtnl_lock();
-+	__ipv6_sock_ac_close(sk);
- 	rtnl_unlock();
- }
+ 	struct buf_ptr in[MAX_BUF_CNT];
+ 	struct buf_ptr out[MAX_BUF_CNT];
  
---- a/net/ipv6/ipv6_sockglue.c
-+++ b/net/ipv6/ipv6_sockglue.c
-@@ -207,6 +207,7 @@ static int do_ipv6_setsockopt(struct soc
- 
- 			fl6_free_socklist(sk);
- 			__ipv6_sock_mc_close(sk);
-+			__ipv6_sock_ac_close(sk);
- 
- 			/*
- 			 * Sock is moving from IPv6 to IPv4 (sk_prot), so
 
 
