@@ -2,82 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F7524AF90
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2AC24B018
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbgHTHHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 03:07:03 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:47984 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725824AbgHTHHB (ORCPT
+        id S1725852AbgHTHYf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 20 Aug 2020 03:24:35 -0400
+Received: from smg.telkomsa.net ([105.187.200.242]:47723 "EHLO
+        smg2.telkomsa.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725778AbgHTHYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 03:07:01 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07K76xpd071021;
-        Thu, 20 Aug 2020 02:06:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1597907219;
-        bh=tO+VmcwGzpBAIWcmRdVeBCzVCyQm0H4wa4UHvBG9D+Q=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=tYRgP1lxTqSSsoBQmaZaLB3lby6SAxbEVI5POeoZVoBmdVfpDna5PbzzEhnRlW3c0
-         n//ew1gyeK57A4vXjFfDGTsRq7UADufcjWA7tFOpiivfLwkQbt/+IjOGpQkjSLi/cd
-         F23FF+zI7CxGA3+MdZt3Xnd7TxBbHAVUO0r+Py74=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 07K76xSV114742
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 20 Aug 2020 02:06:59 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 20
- Aug 2020 02:06:59 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 20 Aug 2020 02:06:59 -0500
-Received: from [10.250.232.88] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07K76tC2095200;
-        Thu, 20 Aug 2020 02:06:56 -0500
-Subject: Re: [PATCH] dt-bindings: mmc: sdhci-am654: Document bindings for the
- host controllers on TI's J7200 devices
-To:     Rob Herring <robh@kernel.org>
-CC:     <ulf.hansson@linaro.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mmc@vger.kernel.org>, <robh+dt@kernel.org>,
-        <devicetree@vger.kernel.org>
-References: <20200802070114.9624-1-faiz_abbas@ti.com>
- <20200817211727.GA1578682@bogus>
-From:   Faiz Abbas <faiz_abbas@ti.com>
-Message-ID: <30d40498-847b-add7-d209-020d2ae00805@ti.com>
-Date:   Thu, 20 Aug 2020 12:36:54 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 20 Aug 2020 03:24:34 -0400
+X-Greylist: delayed 328 seconds by postgrey-1.27 at vger.kernel.org; Thu, 20 Aug 2020 03:24:32 EDT
+X-AuditID: 69bbcaf2-b59b09e000000a45-0e-5f3e23e43b06
+Received: from zmmtarelay4.telkomsa.net ( [10.146.45.47])
+        by smg2.telkomsa.net (Telkom Internet Messaging Gateway) with SMTP id FB.4E.02629.4E32E3F5; Thu, 20 Aug 2020 09:19:00 +0200 (CAT)
+Received: from [192.168.43.163] (8ta-229-0-122.telkomadsl.co.za [197.229.0.122])
+        by zmmtarelay4.telkomsa.net (Postfix) with ESMTPS id 56A9A7ED75;
+        Thu, 20 Aug 2020 09:10:27 +0200 (SAST)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-In-Reply-To: <20200817211727.GA1578682@bogus>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Hi
+To:     Recipients <dutoic@telkomsa.net>
+From:   "Mr David Bailey" <dutoic@telkomsa.net>
+Date:   Thu, 20 Aug 2020 16:40:23 +0930
+Reply-To: david.bailey0515@zohomail.eu
+Message-Id: <20200820071027.56A9A7ED75@zmmtarelay4.telkomsa.net>
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0wUZxSG/WZmd4eFseNCwylNjZleYmwWLKnpGAslsQnjjzY1Tf/4g3Us
+        I0uBhewsVGyaWLAgt0J3IYEtAstyE7TIAm0tsIW1ICJWSrXcVC4LuAXFCthy03YGovDnzTfn
+        nPd9Zs58JK4ZUQWQ0QaTYDTwsYxSTajN2iDt5Kuhur1zLi/2Uel3iK2++Zhg8+qbCXa2uErB
+        PsjqUrL9fbdUbGfpEs5eu/6ngj2TekbJOqZSCNbz/YqCdXZ1IHahoANj/7D+IMnPxUrWPWDD
+        2d8fLRNs9e2vpICcIYKtH1wlwvy4yqE+grPX5Cs4d3avkpv+tknJWQarEWf2hHNZ0y7EnUs/
+        reJ+7Q7mFhw7uZyxctVH3kfU70YKsdFJgjEo9Kha31NXo0yIOTFXnqs4hT7ORF4k0G+D57cF
+        PBOpSQ3dhqC4yqnaeGhF8PX5dIU8hdOBMFiQr5TPFL0DrhZNEhv1N6HKNiu5Sen8BjzONMll
+        X9obCgfuKuSyH/0aONvC5bKS1sKac3jdSdCvw3RRxnq6RnIutLhUG+lh4BrOUOUhyroFbN0C
+        tm4BWzfBZYioRYyYHCeIIh/Fm4TP+WTt3uDATw2mQJMQGxMfJ/KBBsHkQNIPjG7pmf8Jpefr
+        XYgmEeNDhSyF6DQKPknyu9BLJMa8SOGvhOo024/FRybreVGvMybGCqILAYkzflRO2wGdhork
+        k08KxvhnrZdJgvGnvEK0Og0tv0CMICQIxmfdQJKk+66PzyP65t/zKVgAYYg3CAxQGCNhdhiF
+        KOHE8ehY06YBI71knI+EA3mGEhP4ODE6aqPfgw6TdybPluPk3XXNbSyRtKFT1jKXXdKZdV3w
+        VJTjmnVYgD9VKAfRcpA+0fCcJV/pzqltJ2fQAJK24Usx8piPdOOf44LbpA5tgEsX2gkwz66q
+        4f7IEw30/tLiBw3/WQOgrr+fg7m/2iPAMVaRhaB+wPwjAovdPIrAbF8cQ7B4K/Megm+eZq8g
+        GLY9TMOgd6nAhsHYYlkDBoUO5wQGjtXSKQxcaQ/WMGj/d9SCw2DvagsO3f/c6MBh9WxvNw4l
+        RcXDODSnu8dwqLlz6R4updWnEVDUN1FCwOm6VBsBlidr5wgorKypJWDoqe0yMSNtEpM2eSAu
+        RN6kid/8tIBTSGxePhhxe887QRlNzuNVrf55nZ7GcuWui+FJx5YPea60ZZc4d+dut4xEkG7e
+        t3Ha58sPP/jEXbv/Pfu2L7xTdjUdHKo4at83/r7XlUND+yLSyZqsVKbySKqhsf1iJJ/lvjpa
+        9/By6f21z8JujO/OESa6tNdWcEshv/+FxJ1mfXFr4xJDiHr+rT24UeT/B6ac6GRuBAAA
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ulf,
+Attention:
 
-On 18/08/20 2:47 am, Rob Herring wrote:
-> On Sun, 02 Aug 2020 12:31:14 +0530, Faiz Abbas wrote:
->> Add binding documentation for mmc host controllers present on
->> TI's J7200 SOC
->>
->> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
->> ---
->>  Documentation/devicetree/bindings/mmc/sdhci-am654.txt | 6 +++++-
->>  1 file changed, 5 insertions(+), 1 deletion(-)
->>
-> 
-> Acked-by: Rob Herring <robh@kernel.org>
-> 
+Promptly email Mr David Bailey on to lay claims to your INHERITED FUNDS.
 
-Can you pick this up now or should I rebase to latest?
-
-Thanks,
-Faiz
+Mr David Bailey
