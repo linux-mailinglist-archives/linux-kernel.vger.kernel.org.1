@@ -2,73 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5A924BB6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B7D24BB7C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730218AbgHTM2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:28:49 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.167]:25628 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729745AbgHTM2a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 08:28:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1597926505;
-        s=strato-dkim-0002; d=chronox.de;
-        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=/JloQPp9h4GmQtbfm5NHu/X6KBfEz5eiI1yrNGZEv0A=;
-        b=h4qmX/sOMAbRIXJ7Y/NUhUCi9TLU/i5EkQHgzS8mgOSM5UP0VQmRvsKo2Qp9iJspSW
-        mf8T6k1CtetBcW5GZQe/SLRL3G5P2AWjmbXVcayXCjr7+LgCgTbzhma5L6cMoeaVt+YY
-        VKrmitwvVjsVhuD3ekXhQNjTNWDMSmRHSbr9VcycNDRXy6L2C19B0TH4jFrfEtBC46rl
-        BNQKg8eOHWOX0Q1pVd4SO+0l4Kyn5gpAsWRplEbwI0GblzIYr8wKO+NXrv+qMI6BUno/
-        aCJNLlxaMiUVo98Pso9HwqmbK3lSjSgnmL7m/xEaMAbzNODXgFAKXoFYocGuZZ42AOSP
-        Unxg==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xm0dNS3IdRAZAL+p6A=="
-X-RZG-CLASS-ID: mo00
-Received: from positron.chronox.de
-        by smtp.strato.de (RZmta 46.10.7 DYNA|AUTH)
-        with ESMTPSA id 002e9aw7KCRYD9R
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Thu, 20 Aug 2020 14:27:34 +0200 (CEST)
-From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-api@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>
-Subject: Re: [PATCH v32 06/12] LRNG - add SP800-90A DRBG extension
-Date:   Thu, 20 Aug 2020 14:27:33 +0200
-Message-ID: <20755167.EfDdHjke4D@positron.chronox.de>
-In-Reply-To: <202008202008.JfY8S1sB%lkp@intel.com>
-References: <1733393.atdPhlSkOF@positron.chronox.de> <202008202008.JfY8S1sB%lkp@intel.com>
+        id S1728169AbgHTM3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:29:48 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:34814 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729347AbgHTM3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 08:29:37 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 7A43D86F04766B046245;
+        Thu, 20 Aug 2020 20:29:34 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Thu, 20 Aug 2020
+ 20:29:28 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>,
+        <martin.varghese@nokia.com>, <pshelar@ovn.org>, <fw@strlen.de>,
+        <dcaratti@redhat.com>, <edumazet@google.com>,
+        <steffen.klassert@secunet.com>, <pabeni@redhat.com>,
+        <shmulik@metanetworks.com>, <kyk.segfault@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] net: Check the expect of skb->data at mac header
+Date:   Thu, 20 Aug 2020 08:28:22 -0400
+Message-ID: <20200820122822.46608-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Donnerstag, 20. August 2020, 14:07:40 CEST schrieb kernel test robot:
+skb_mpls_push() and skb_mpls_pop() expect skb->data at mac header. Check
+this assumption or we would get wrong mac_header and network_header.
 
-Hi,
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ net/core/skbuff.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-> 
-> All warnings (new ones prefixed by >>):
-> >> drivers/char/lrng/lrng_drbg.c:226:1: warning: 'static' is not at
-> >> beginning of declaration [-Wold-style-declaration]
->      226 | const static struct lrng_crypto_cb lrng_drbg_crypto_cb = {
-> 
->          | ^~~~~
-
-Thanks, I will provide a new patch set with the two keywords switched.
-
-Ciao
-Stephan
-
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index e18184ffa9c3..52d2ad54aa97 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -5590,6 +5590,7 @@ static void skb_mod_eth_type(struct sk_buff *skb, struct ethhdr *hdr,
+ int skb_mpls_push(struct sk_buff *skb, __be32 mpls_lse, __be16 mpls_proto,
+ 		  int mac_len, bool ethernet)
+ {
++	int offset = skb->data - skb_mac_header(skb);
+ 	struct mpls_shim_hdr *lse;
+ 	int err;
+ 
+@@ -5600,6 +5601,9 @@ int skb_mpls_push(struct sk_buff *skb, __be32 mpls_lse, __be16 mpls_proto,
+ 	if (skb->encapsulation)
+ 		return -EINVAL;
+ 
++	if (WARN_ONCE(offset, "We got skb with skb->data not at mac header (offset %d)\n", offset))
++		return -EINVAL;
++
+ 	err = skb_cow_head(skb, MPLS_HLEN);
+ 	if (unlikely(err))
+ 		return err;
+@@ -5643,11 +5647,15 @@ EXPORT_SYMBOL_GPL(skb_mpls_push);
+ int skb_mpls_pop(struct sk_buff *skb, __be16 next_proto, int mac_len,
+ 		 bool ethernet)
+ {
++	int offset = skb->data - skb_mac_header(skb);
+ 	int err;
+ 
+ 	if (unlikely(!eth_p_mpls(skb->protocol)))
+ 		return 0;
+ 
++	if (WARN_ONCE(offset, "We got skb with skb->data not at mac header (offset %d)\n", offset))
++		return -EINVAL;
++
+ 	err = skb_ensure_writable(skb, mac_len + MPLS_HLEN);
+ 	if (unlikely(err))
+ 		return err;
+-- 
+2.19.1
 
