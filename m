@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 647FC24BFFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A49024C000
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728699AbgHTODP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 10:03:15 -0400
-Received: from raptor.unsafe.ru ([5.9.43.93]:41962 "EHLO raptor.unsafe.ru"
+        id S1729345AbgHTOEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 10:04:16 -0400
+Received: from raptor.unsafe.ru ([5.9.43.93]:41974 "EHLO raptor.unsafe.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728572AbgHTN4B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 09:56:01 -0400
+        id S1729742AbgHTN4E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 09:56:04 -0400
 Received: from comp-core-i7-2640m-0182e6.redhat.com (ip-89-102-33-211.net.upcbroadband.cz [89.102.33.211])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by raptor.unsafe.ru (Postfix) with ESMTPSA id 510982052E;
-        Thu, 20 Aug 2020 13:55:50 +0000 (UTC)
+        by raptor.unsafe.ru (Postfix) with ESMTPSA id 5D625209DD;
+        Thu, 20 Aug 2020 13:55:54 +0000 (UTC)
 From:   Alexey Gladkov <gladkov.alexey@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>,
         Linux FS Devel <linux-fsdevel@vger.kernel.org>,
@@ -23,10 +23,12 @@ To:     LKML <linux-kernel@vger.kernel.org>,
 Cc:     Alexey Gladkov <legion@kernel.org>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
         Kees Cook <keescook@chromium.org>
-Subject: [PATCH v3 0/2] proc: Relax check of mount visibility
-Date:   Thu, 20 Aug 2020 15:53:32 +0200
-Message-Id: <cover.1597931457.git.gladkov.alexey@gmail.com>
+Subject: [PATCH v3 1/2] proc: Relax check of mount visibility
+Date:   Thu, 20 Aug 2020 15:53:33 +0200
+Message-Id: <d05ce34f1254b96cdae45fa87087750604510f43.1597931457.git.gladkov.alexey@gmail.com>
 X-Mailer: git-send-email 2.25.4
+In-Reply-To: <cover.1597931457.git.gladkov.alexey@gmail.com>
+References: <cover.1597931457.git.gladkov.alexey@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Thu, 20 Aug 2020 13:55:54 +0000 (UTC)
@@ -35,30 +37,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If only the dynamic part of procfs is mounted (subset=pid), then there is no
-need to check if procfs is fully visible to the user in the new user namespace.
+Allow to mount of procfs with subset=pid option even if the entire
+procfs is not fully accessible to the user.
 
-Changelog
----------
+Signed-off-by: Alexey Gladkov <gladkov.alexey@gmail.com>
+---
+ fs/namespace.c     | 27 ++++++++++++++++-----------
+ fs/proc/root.c     | 16 +++++++++-------
+ include/linux/fs.h |  1 +
+ 3 files changed, 26 insertions(+), 18 deletions(-)
 
-v3:
-* Add 'const' to struct cred *mounter_cred (fix kernel test robot warning).
-
-v2:
-* cache the mounters credentials and make access to the net directories
-  contingent of the permissions of the mounter of procfs.
-
-Alexey Gladkov (2):
-  proc: Relax check of mount visibility
-  Show /proc/self/net only for CAP_NET_ADMIN
-
- fs/namespace.c          | 27 ++++++++++++++++-----------
- fs/proc/proc_net.c      |  8 ++++++++
- fs/proc/root.c          | 21 +++++++++++++++------
- include/linux/fs.h      |  1 +
- include/linux/proc_fs.h |  1 +
- 5 files changed, 41 insertions(+), 17 deletions(-)
-
+diff --git a/fs/namespace.c b/fs/namespace.c
+index 4a0f600a3328..ab9d607921da 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -3949,18 +3949,23 @@ static bool mnt_already_visible(struct mnt_namespace *ns,
+ 		    ((mnt_flags & MNT_ATIME_MASK) != (new_flags & MNT_ATIME_MASK)))
+ 			continue;
+ 
+-		/* This mount is not fully visible if there are any
+-		 * locked child mounts that cover anything except for
+-		 * empty directories.
++		/* If this filesystem is completely dynamic, then it
++		 * makes no sense to check for any child mounts.
+ 		 */
+-		list_for_each_entry(child, &mnt->mnt_mounts, mnt_child) {
+-			struct inode *inode = child->mnt_mountpoint->d_inode;
+-			/* Only worry about locked mounts */
+-			if (!(child->mnt.mnt_flags & MNT_LOCKED))
+-				continue;
+-			/* Is the directory permanetly empty? */
+-			if (!is_empty_dir_inode(inode))
+-				goto next;
++		if (!(sb->s_iflags & SB_I_DYNAMIC)) {
++			/* This mount is not fully visible if there are any
++			 * locked child mounts that cover anything except for
++			 * empty directories.
++			 */
++			list_for_each_entry(child, &mnt->mnt_mounts, mnt_child) {
++				struct inode *inode = child->mnt_mountpoint->d_inode;
++				/* Only worry about locked mounts */
++				if (!(child->mnt.mnt_flags & MNT_LOCKED))
++					continue;
++				/* Is the directory permanetly empty? */
++				if (!is_empty_dir_inode(inode))
++					goto next;
++			}
+ 		}
+ 		/* Preserve the locked attributes */
+ 		*new_mnt_flags |= mnt_flags & (MNT_LOCK_READONLY | \
+diff --git a/fs/proc/root.c b/fs/proc/root.c
+index 5e444d4f9717..c6bf74de1906 100644
+--- a/fs/proc/root.c
++++ b/fs/proc/root.c
+@@ -145,18 +145,21 @@ static int proc_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 	return 0;
+ }
+ 
+-static void proc_apply_options(struct proc_fs_info *fs_info,
++static void proc_apply_options(struct super_block *s,
+ 			       struct fs_context *fc,
+ 			       struct user_namespace *user_ns)
+ {
+ 	struct proc_fs_context *ctx = fc->fs_private;
++	struct proc_fs_info *fs_info = proc_sb_info(s);
+ 
+ 	if (ctx->mask & (1 << Opt_gid))
+ 		fs_info->pid_gid = make_kgid(user_ns, ctx->gid);
+ 	if (ctx->mask & (1 << Opt_hidepid))
+ 		fs_info->hide_pid = ctx->hidepid;
+-	if (ctx->mask & (1 << Opt_subset))
++	if (ctx->mask & (1 << Opt_subset)) {
+ 		fs_info->pidonly = ctx->pidonly;
++		s->s_iflags |= SB_I_DYNAMIC;
++	}
+ }
+ 
+ static int proc_fill_super(struct super_block *s, struct fs_context *fc)
+@@ -170,9 +173,6 @@ static int proc_fill_super(struct super_block *s, struct fs_context *fc)
+ 	if (!fs_info)
+ 		return -ENOMEM;
+ 
+-	fs_info->pid_ns = get_pid_ns(ctx->pid_ns);
+-	proc_apply_options(fs_info, fc, current_user_ns());
+-
+ 	/* User space would break if executables or devices appear on proc */
+ 	s->s_iflags |= SB_I_USERNS_VISIBLE | SB_I_NOEXEC | SB_I_NODEV;
+ 	s->s_flags |= SB_NODIRATIME | SB_NOSUID | SB_NOEXEC;
+@@ -183,6 +183,9 @@ static int proc_fill_super(struct super_block *s, struct fs_context *fc)
+ 	s->s_time_gran = 1;
+ 	s->s_fs_info = fs_info;
+ 
++	fs_info->pid_ns = get_pid_ns(ctx->pid_ns);
++	proc_apply_options(s, fc, current_user_ns());
++
+ 	/*
+ 	 * procfs isn't actually a stacking filesystem; however, there is
+ 	 * too much magic going on inside it to permit stacking things on
+@@ -216,11 +219,10 @@ static int proc_fill_super(struct super_block *s, struct fs_context *fc)
+ static int proc_reconfigure(struct fs_context *fc)
+ {
+ 	struct super_block *sb = fc->root->d_sb;
+-	struct proc_fs_info *fs_info = proc_sb_info(sb);
+ 
+ 	sync_filesystem(sb);
+ 
+-	proc_apply_options(fs_info, fc, current_user_ns());
++	proc_apply_options(sb, fc, current_user_ns());
+ 	return 0;
+ }
+ 
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index f5abba86107d..aff5ed9e8f82 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -1413,6 +1413,7 @@ extern int send_sigurg(struct fown_struct *fown);
+ #define SB_I_USERNS_VISIBLE		0x00000010 /* fstype already mounted */
+ #define SB_I_IMA_UNVERIFIABLE_SIGNATURE	0x00000020
+ #define SB_I_UNTRUSTED_MOUNTER		0x00000040
++#define SB_I_DYNAMIC			0x00000080
+ 
+ #define SB_I_SKIP_SYNC	0x00000100	/* Skip superblock at global sync */
+ 
 -- 
 2.25.4
 
