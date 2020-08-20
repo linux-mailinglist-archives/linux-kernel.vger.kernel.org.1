@@ -2,99 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35DCD24BF61
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 064B624BF5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730315AbgHTNri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:47:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24223 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729762AbgHTNn2 (ORCPT
+        id S1729745AbgHTNqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:46:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728695AbgHTNoI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 09:43:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597931005;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fUj6yx5X7ltWZxH/b96euv3aQubH9i85achpimDWoYg=;
-        b=cL1q1AuLDPLpG2AGCod7/hSccPe6qmDMrn+dYt1OFsDCec4jzy9RIfohEYScJcf3at3hH9
-        wmcPRl7y+zlCFCHlFM19ebW2bJNj1eindiqlCj+acicYnKT6euUiFsfvTS8HWvyHGRpq4A
-        uSggMoJRzReN4UEhpJbdr26dwtvdnY0=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-363-Dzfst2oTM1a4u5Y44wfmlw-1; Thu, 20 Aug 2020 09:43:21 -0400
-X-MC-Unique: Dzfst2oTM1a4u5Y44wfmlw-1
-Received: by mail-wr1-f70.google.com with SMTP id k11so676344wrv.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 06:43:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fUj6yx5X7ltWZxH/b96euv3aQubH9i85achpimDWoYg=;
-        b=EOy+RdSUHK5yhb7s43CNktaJIdBJ4AgH7CSd8jc9CQuNrazi5oJfuXRU4jBcVp70uo
-         xmKQzTS1lR3Bvcum46VAX3sk/Dg8hq+FFRUb0AuKQlRr/c/xVCYH+4K0dC+n3NCnRhau
-         YtIyRmJGzwEwYjTNIqTvCBhdKf18MNwRbEk6r8Jyfl3FSEWc9lG3Q0oRqPiXjjE1sAJg
-         WdNBY8ZYtutL/O6SLXtbLdyZl+wOWr2IKS0tn0G3vUqDH0S1kzN3bg3pWLwbtPhaqiZH
-         uzXUekU996RBP7B3rjIyQbz5ZvzBk1UhkN8GnEn/sfHGCWpxpvVFOU950T3pHn0dtACD
-         jipw==
-X-Gm-Message-State: AOAM530PT7wr+pUHw8t642SnpKrrJsCAiDotZk+xOcGMXEN64Z8e+YQU
-        qAlczZ64j720AftrA+7YA6tzb6js9aYjNh6GduWoRf9M30I8/13lTHxnv/cHSFs4kUOEI2N1D2t
-        dMaOmPDHOadzenJ9txE6YnsP0
-X-Received: by 2002:adf:9501:: with SMTP id 1mr3285837wrs.413.1597930999853;
-        Thu, 20 Aug 2020 06:43:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxk4AYhMdLAx9L3X17nzshI8k7fQJaU0SM+fw+yWM5KCtAXxh9slvySYS9RNfo3aInUv8N2Cw==
-X-Received: by 2002:adf:9501:: with SMTP id 1mr3285752wrs.413.1597930998734;
-        Thu, 20 Aug 2020 06:43:18 -0700 (PDT)
-Received: from [192.168.10.150] ([93.56.170.5])
-        by smtp.gmail.com with ESMTPSA id d14sm4210136wre.44.2020.08.20.06.43.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Aug 2020 06:43:18 -0700 (PDT)
-Subject: Re: FSGSBASE causing panic on 5.9-rc1
-To:     Andy Lutomirski <luto@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sasha Levin <sashal@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-References: <39d57e4d-5db4-f536-6f5e-6b0414c0dccc@amd.com>
- <7dedb0ab-56a6-5d96-577b-21ab1ecdad24@amd.com>
- <CALCETrUArZ04UqJjp2mEheuMpZyPwLeEgGM7mdDdmWxmx=GN4Q@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <aab48f12-5c2a-8e01-8dcb-16669fda7526@redhat.com>
-Date:   Thu, 20 Aug 2020 15:43:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Thu, 20 Aug 2020 09:44:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E639C061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 06:44:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NvYnWgOAVLeS0ww2FKkz6JZjgCUOG8nfY5k3KGZFesw=; b=SMJtlG6gpmxu9BR7hWA/m82WXN
+        Gp4BkEsPanIZnDHmi6WqwCfovEFuUhHFowE3Y4G07xPsqUl2pM3rq7nwEk6THep2JZgwjy4FR7Ezh
+        lrWsDoLGK6VnoJ8C3EVBDZrm7Imfi9zdg1JEnaD1v2J8aImBsL8OL2Cj5+clMBkD341FWQdlyEIK1
+        u2Jhyn7p5oHTXX+Oiy9p5VGQy169OzEu7DnV9gvQoyLpg3pTlqkwZiRT5AESMCzXS3+TA7g9E+hqj
+        01oiqKAYaign+LU8pNogATAof0a8ckQ7Sao4pvuH6lFWvnkUDY3DUHXyqFuEx2Grwcv1x2FDIVKvc
+        DzLQfyRQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k8kr2-0006fX-Ds; Thu, 20 Aug 2020 13:43:45 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CFED3303271;
+        Thu, 20 Aug 2020 15:43:41 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 986F62BE72362; Thu, 20 Aug 2020 15:43:41 +0200 (CEST)
+Date:   Thu, 20 Aug 2020 15:43:41 +0200
+From:   peterz@infradead.org
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Jiang Biao <benbjiang@gmail.com>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiang Biao <benbjiang@tencent.com>
+Subject: Re: [PATCH] sched/fair: avoid vruntime compensation for SCHED_IDLE
+ task
+Message-ID: <20200820134341.GW2674@hirez.programming.kicks-ass.net>
+References: <20200820120025.74460-1-benbjiang@tencent.com>
+ <CAKfTPtABCbEuYf3uup5ZODyPXpUqBjgM8A5gBQqM0cQGxWk5zw@mail.gmail.com>
+ <20200820125829.GT2674@hirez.programming.kicks-ass.net>
+ <CAKfTPtBuZOb9-W5sS=DqxcuMFa8Lw=7XqMJ_YrXEgd5zvufYjA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CALCETrUArZ04UqJjp2mEheuMpZyPwLeEgGM7mdDdmWxmx=GN4Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtBuZOb9-W5sS=DqxcuMFa8Lw=7XqMJ_YrXEgd5zvufYjA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/08/20 23:25, Andy Lutomirski wrote:
->         wrmsrl(MSR_KERNEL_GS_BASE, current->thread.gsbase);
->         load_gs_index(svm->host.gs);
-> 
-> Surely that should do load_gs_index() *before* wrmsrl().  But that's
-> not the problem at hand.
+> That's been said, not compensating the vruntime for a sched_idle task
+> makes sense for me. Even if that will only help for others task in the
+> same cfs_rq
 
-The wrmsrl is writing the inactive GS base so the ordering between
-load_gs_index and wrmsrl(MSR_KERNEL_GS_BASE) should be irrelevant?
+Yeah, but it is worth the extra pointer chasing and branches?
 
-Paolo
-
+Then again, I suppose we started all that with the idle_h_nr_running
+nonsense :/
