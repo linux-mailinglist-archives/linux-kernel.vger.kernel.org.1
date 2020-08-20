@@ -2,105 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAAA024C47C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 19:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D870224C484
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 19:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730569AbgHTR1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 13:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46144 "EHLO
+        id S1730623AbgHTR2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 13:28:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730473AbgHTR1D (ORCPT
+        with ESMTP id S1730441AbgHTR2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 13:27:03 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5008FC061387
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:27:02 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id f24so3456291ejx.6
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:27:02 -0700 (PDT)
+        Thu, 20 Aug 2020 13:28:44 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 543CDC061386
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:28:42 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id w9so1754150qts.6
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 10:28:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ewf+8/r8T+ocxKAIGX5h4PS/z3AFtkho8eATC5y+uhk=;
-        b=Obfep8GDwJOj8YMmWlFSdQIaFfUZJNxuZ5wnp6NBFTdGC1SWtA7KpTHvf8PBpiWPAn
-         JqBBAh1AwFctNZhfCq+fpMqkU79ayvttXSKA9YKcYkbispcHyReyR43IT1odLe623ZdL
-         WxHmxQ95LGYxJkWiSyFsTSKr347gPRgj0DMF5OmyTL74Sl/Ug0zxcC4voImal8izbf+V
-         WXCvCHG2db4v6DoE1dkkXT8UFoIy63ZFuOhfHawK8hOlKM9m43nkhJd59QFhM7a8N2yO
-         OWF6GLQHwH5KMB1q5GdRLrsxztCQUjBdlwhB+IWWjLze8q0LHgLzQDsEztxo62B438eZ
-         Dtdg==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BGSTy2S11pQaFof1yGnLyVAv1YOvYkkwg2xvJjtqeUQ=;
+        b=B0zXn8r/1mchT7VpWpZ+mN4JB+LQTOAcThKwvNYAguEIUDOZHwwTrdR6gzmQZ5tubZ
+         nadwJJP0FhhTUc6qtozlaIcQuD/FFdRoOqCSSFPC20808u50MokVC+zzcj74bSNK3564
+         K2rPaPV6/LqFSt2EYvyidWPeBNnkH5k+UUHnDDp7LsHM+QUZl4RIfl0sMDasq2fgoDTh
+         aEiFbkQ9IhmoLjkYAaQc2VPQYaxtLY7ONExn+cDWgW0LH7qwa/cgM2WtSkYRhS29jGEn
+         +HZQ+jI+GqR+PBIfIjicJ0wnOj2ML6oSYHPVNMYabbRVYTlqLboSPlY8YiNQkmtdg/2E
+         7wZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ewf+8/r8T+ocxKAIGX5h4PS/z3AFtkho8eATC5y+uhk=;
-        b=cm9Ck8ZzfAhjIAUUiyQiuCu5GFJkvFvQj1FXpIv/ISM55RnKB7zJYTVQB9CnUq/uSY
-         5cKM1uSdnsfEE3VJ6XgdlyGGXITsu/MAbN3Ny6xz5zVj09OBBziO/kVYnF7JvnC3nSnX
-         srYspwTtpmM5nxb4YLdYzBajc7W72RjZs7DBBGx7gzt7bICukJIy3DVQZeiVrkuDtCNj
-         pD/yTjJBkQJZXukDAQch9rAF/2RtATfr4BdvLpuMfjcofzndunuA6iT7aSORgnDEQLKY
-         5GFL41DqpVvhjWnTOrBdMw18a4klT99TkYSk1PkhadF5YtxVnzBTVOL0/x36uTBy1ztA
-         ldkA==
-X-Gm-Message-State: AOAM532UhvUbKsAwR68W0b8Na0wa1jWuqFluHJMvfVTq8Ypm9yzSBsmH
-        wmaoCmdeibFdlpjEozbYgP6uiXWxxJAkqXJBZNHFdA==
-X-Google-Smtp-Source: ABdhPJxvAaKLLKKwXl1PefuwOJJemDCdpMhoIxK+ZZQ0EotjoFeAdC2HBCnvUkCHnM+WkXakEtqpibQt5p8Q6LwTQbc=
-X-Received: by 2002:a17:906:d187:: with SMTP id c7mr4456457ejz.196.1597944421480;
- Thu, 20 Aug 2020 10:27:01 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BGSTy2S11pQaFof1yGnLyVAv1YOvYkkwg2xvJjtqeUQ=;
+        b=SEdaBxZlZUkg41PaAlPREptAb/bdmTSSxuK366r/OWIArB54eaW1hJozTU055rxMbF
+         eAORcr/OQffWBcHbV2IZcC1mEQZgsQ9Zybkm1TS27JVLMdZSZrj8tG7+aVeJQAv5WSkg
+         Socegeoolz5sn3nub9VUwgaQB1t0uuiwOeiictXKyI6PbD5G7HfRkohqEMdoFKwjpsCf
+         FZVRL4fruDtAORzrs23S9lcxjFCP5NI16ziBTupmTZBsMXHHm5HKB9G0bv8KTA2faW4W
+         uPQyCepWszT02RJS84UcdBEuaNPU0csXf2Xq9eG0RWEsTM44oqxV9EnesMDTrs3XLcn8
+         NCpg==
+X-Gm-Message-State: AOAM533OkkgI0gc2Z00Y7I1LqYrqsVXogsitR6iw+JzkJZ1x00qpXMyx
+        sKLZFmXx5lwPmD8pOpKqqT4EWg==
+X-Google-Smtp-Source: ABdhPJzxECzP6spyILQOPgtHzJiSltg/hxxoXq1qcxUwEjRfqOCr081RyncGF5PD5joh3rhL7RCH+w==
+X-Received: by 2002:ac8:7c87:: with SMTP id y7mr3692080qtv.375.1597944521618;
+        Thu, 20 Aug 2020 10:28:41 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:3cdd])
+        by smtp.gmail.com with ESMTPSA id r188sm2708541qkb.122.2020.08.20.10.28.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Aug 2020 10:28:40 -0700 (PDT)
+Date:   Thu, 20 Aug 2020 13:27:26 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Roman Gushchin <guro@fb.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: Re: [PATCH 1/3] mm/memcg: Clean up obsolete enum charge_type
+Message-ID: <20200820172726.GA912520@cmpxchg.org>
+References: <20200820130350.3211-1-longman@redhat.com>
+ <20200820130350.3211-2-longman@redhat.com>
 MIME-Version: 1.0
-References: <CAP045Arc1Vdh+n2j2ELE3q7XfagLjyqXji9ZD0jqwVB-yuzq-g@mail.gmail.com>
- <87blj6ifo8.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87blj6ifo8.fsf@nanos.tec.linutronix.de>
-From:   Kyle Huey <me@kylehuey.com>
-Date:   Thu, 20 Aug 2020 10:26:47 -0700
-Message-ID: <CAP045ApB9Ju+V2HsTb=z19Y5+AgB9eHhS_QEiv1E8cLdreewzw@mail.gmail.com>
-Subject: Re: [REGRESSION] x86/entry: Tracer no longer has opportunity to
- change the syscall number at entry via orig_ax
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Robert O'Callahan" <rocallahan@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        linux-arch@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        kvm list <kvm@vger.kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200820130350.3211-2-longman@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 12:44 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> On Wed, Aug 19 2020 at 10:14, Kyle Huey wrote:
-> > tl;dr: after 27d6b4d14f5c3ab21c4aef87dd04055a2d7adf14 ptracer
-> > modifications to orig_ax in a syscall entry trace stop are not honored
-> > and this breaks our code.
->
-> My fault and I have no idead why none of the silly test cases
-> noticed. Fix below.
+On Thu, Aug 20, 2020 at 09:03:48AM -0400, Waiman Long wrote:
+> Since commit 0a31bc97c80c ("mm: memcontrol: rewrite uncharge API") and
+> commit 00501b531c47 ("mm: memcontrol: rewrite charge API") in v3.17, the
+> enum charge_type was no longer used anywhere. However, the enum itself
+> was not removed at that time. Remove the obsolete enum charge_type now.
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-That'll do it, thanks.
-
-- Kyle
-
-> Thanks,
->
->         tglx
-> ---
-> diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-> index 9852e0d62d95..fcae019158ca 100644
-> --- a/kernel/entry/common.c
-> +++ b/kernel/entry/common.c
-> @@ -65,7 +65,8 @@ static long syscall_trace_enter(struct pt_regs *regs, long syscall,
->
->         syscall_enter_audit(regs, syscall);
->
-> -       return ret ? : syscall;
-> +       /* The above might have changed the syscall number */
-> +       return ret ? : syscall_get_nr(current, regs);
->  }
->
->  noinstr long syscall_enter_from_user_mode(struct pt_regs *regs, long syscall)
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
