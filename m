@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7021424BADF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:20:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E17A324BAEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgHTJz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:55:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38720 "EHLO mail.kernel.org"
+        id S1730041AbgHTMUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:20:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730215AbgHTJzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730218AbgHTJzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 Aug 2020 05:55:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1FDDF2078D;
-        Thu, 20 Aug 2020 09:55:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A10B207FB;
+        Thu, 20 Aug 2020 09:55:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917336;
-        bh=5UJlsbh62S5WTF46gRZp+YqxZvryI9EakSVfIoAb5zs=;
+        s=default; t=1597917342;
+        bh=m6pmoW1BMVz59rNMe5ltuoMeTV9B08zOn59YOBhOLqM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H4k9HITeYWeZl/WFhxOqkjmI1ko0PmNo/STVfgcsdygI/FOAJ7p2f49XgBilvvvTM
-         iZEyZ3B6KHtG/5OXiOur1G8nz3zoV+W2/nbhUYnb+6gDp/2CSayiolfdJwd11lNMkY
-         NFXNJ4C6C7IeCHPwdZyOUiZ0b2BTAYkt3qSxmy88=
+        b=BNjqQikrjd7Sm5+XncOFX2UgXsy0ifPfYJFPdqoA9QOlBdNYn7cE+D9xuHyg/hBvj
+         23hmsB7IQh4uhvXEeKuYAasS5iZAGZAWOErh0hrhRqw6QJ3ZbiGVN+NBI9YV9oMriC
+         4ckjloyHT/ZWDl5iUvNaRwvXatxI4Xppg1nWzNtI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [PATCH 4.19 89/92] arm64: dts: marvell: espressobin: add ethernet alias
-Date:   Thu, 20 Aug 2020 11:22:14 +0200
-Message-Id: <20200820091542.273955917@linuxfoundation.org>
+        stable@vger.kernel.org, Marius Iacob <themariusus@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: [PATCH 4.19 91/92] drm: Added orientation quirk for ASUS tablet model T103HAF
+Date:   Thu, 20 Aug 2020 11:22:16 +0200
+Message-Id: <20200820091542.372428816@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
 References: <20200820091537.490965042@linuxfoundation.org>
@@ -44,37 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomasz Maciej Nowak <tmn505@gmail.com>
+From: Marius Iacob <themariusus@gmail.com>
 
-commit 5253cb8c00a6f4356760efb38bca0e0393aa06de upstream.
+commit b5ac98cbb8e5e30c34ebc837d1e5a3982d2b5f5c upstream.
 
-The maker of this board and its variants, stores MAC address in U-Boot
-environment. Add alias for bootloader to recognise, to which ethernet
-node inject the factory MAC address.
-
-Signed-off-by: Tomasz Maciej Nowak <tmn505@gmail.com>
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-[pali: Backported to 5.4 and older versions]
-Signed-off-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Marius Iacob <themariusus@gmail.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200801123445.1514567-1-themariusus@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/arm64/boot/dts/marvell/armada-3720-espressobin.dts |    6 ++++++
+ drivers/gpu/drm/drm_panel_orientation_quirks.c |    6 ++++++
  1 file changed, 6 insertions(+)
 
---- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dts
-@@ -19,6 +19,12 @@
- 	model = "Globalscale Marvell ESPRESSOBin Board";
- 	compatible = "globalscale,espressobin", "marvell,armada3720", "marvell,armada3710";
- 
-+	aliases {
-+		ethernet0 = &eth0;
-+		serial0 = &uart0;
-+		serial1 = &uart1;
-+	};
-+
- 	chosen {
- 		stdout-path = "serial0:115200n8";
- 	};
+--- a/drivers/gpu/drm/drm_panel_orientation_quirks.c
++++ b/drivers/gpu/drm/drm_panel_orientation_quirks.c
+@@ -107,6 +107,12 @@ static const struct dmi_system_id orient
+ 		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T101HA"),
+ 		},
+ 		.driver_data = (void *)&lcd800x1280_rightside_up,
++	}, {	/* Asus T103HAF */
++		.matches = {
++		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T103HAF"),
++		},
++		.driver_data = (void *)&lcd800x1280_rightside_up,
+ 	}, {	/* GPD MicroPC (generic strings, also match on bios date) */
+ 		.matches = {
+ 		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Default string"),
 
 
