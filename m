@@ -2,160 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6880124B67F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1FD024B6A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731094AbgHTKgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:36:33 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:62150 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731420AbgHTKgL (ORCPT
+        id S1731925AbgHTKjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:39:05 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:33602 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731229AbgHTKiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:36:11 -0400
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 20 Aug 2020 03:36:10 -0700
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 20 Aug 2020 03:36:08 -0700
-Received: from c-rojay-linux.qualcomm.com ([10.206.21.80])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 20 Aug 2020 16:05:36 +0530
-Received: by c-rojay-linux.qualcomm.com (Postfix, from userid 88981)
-        id 937791F44; Thu, 20 Aug 2020 16:05:35 +0530 (IST)
-From:   Roja Rani Yarubandi <rojay@codeaurora.org>
-To:     wsa@kernel.org
-Cc:     swboyd@chromium.org, dianders@chromium.org,
-        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
-        mka@chromium.org, akashast@codeaurora.org,
-        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
-        rnayak@codeaurora.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        Roja Rani Yarubandi <rojay@codeaurora.org>
-Subject: [PATCH V2 2/2] i2c: i2c-qcom-geni: Add shutdown callback for i2c
-Date:   Thu, 20 Aug 2020 16:05:22 +0530
-Message-Id: <20200820103522.26242-3-rojay@codeaurora.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200820103522.26242-1-rojay@codeaurora.org>
-References: <20200820103522.26242-1-rojay@codeaurora.org>
+        Thu, 20 Aug 2020 06:38:10 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id F36F1223;
+        Thu, 20 Aug 2020 13:38:07 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1597919888;
+        bh=gfXFV6bh+3dm6WwUV1c/R0J8KdjOdJb/YfS20DcA1TQ=;
+        h=From:To:Subject:Date:References:In-Reply-To;
+        b=oF1Ef0jpdMP0PGiW8jcwI7pSE+y5loGhZ6e3E76Np9uAYmnWtuQ/xykBU/3rdmAqD
+         ecXo+pXUyjPwrmtbyQFX/1S7I7R4TMUA3bEGcgV2EUuqUxcca5uHeDK5HT6cdj8xFF
+         VffkE1PfN3Qcjzx6U94UDjxbRaMEdR7d8dBy3hYM=
+Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Thu, 20 Aug 2020 13:38:07 +0300
+Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
+ by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
+ id 15.01.1847.003; Thu, 20 Aug 2020 13:38:07 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     =?utf-8?B?QXVyw6lsaWVuIEFwdGVs?= <aaptel@suse.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: RE: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
+ Software.
+Thread-Topic: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
+ Software.
+Thread-Index: AdZyNcmjSkpkGje7R9K6YobJrVDyZwAAOBcAASmx1XA=
+Date:   Thu, 20 Aug 2020 10:38:07 +0000
+Message-ID: <5588b1f433bb4844ae4db776030d323f@paragon-software.com>
+References: <2911ac5cd20b46e397be506268718d74@paragon-software.com>
+ <87h7t5454n.fsf@suse.com>
+In-Reply-To: <87h7t5454n.fsf@suse.com>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.30.8.36]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the hardware is still accessing memory after SMMU translation
-is disabled (as part of smmu shutdown callback), then the
-IOVAs (I/O virtual address) which it was using will go on the bus
-as the physical addresses which will result in unknown crashes
-like NoC/interconnect errors.
-
-So, implement shutdown callback to i2c driver to unmap DMA mappings
-during system "reboot" or "shutdown".
-
-Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
----
-Changes in V2:
- - As per Stephen's comments added seperate function for stop transfer,
-   fixed minor nitpicks.
-
- drivers/i2c/busses/i2c-qcom-geni.c | 43 ++++++++++++++++++++++++++++++
- include/linux/qcom-geni-se.h       |  5 ++++
- 2 files changed, 48 insertions(+)
-
-diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
-index 1fda5c7c2cfc..d07f2f33bb75 100644
---- a/drivers/i2c/busses/i2c-qcom-geni.c
-+++ b/drivers/i2c/busses/i2c-qcom-geni.c
-@@ -486,6 +486,28 @@ static int geni_i2c_xfer(struct i2c_adapter *adap,
- 	return ret;
- }
- 
-+static void geni_i2c_stop_xfer(struct geni_i2c_dev *gi2c)
-+{
-+	u32 val;
-+	struct geni_se *se = &gi2c->se;
-+
-+	val = readl_relaxed(gi2c->se.base + SE_DMA_DEBUG_REG0);
-+	if (val & DMA_TX_ACTIVE) {
-+		geni_i2c_abort_xfer(gi2c);
-+		gi2c->cur_wr = 0;
-+		if (gi2c->err)
-+			geni_i2c_tx_fsm_rst(gi2c);
-+		geni_se_tx_dma_unprep(se, gi2c->tx_dma, gi2c->xfer_len);
-+	}
-+	if (val & DMA_RX_ACTIVE) {
-+		geni_i2c_abort_xfer(gi2c);
-+		gi2c->cur_rd = 0;
-+		if (gi2c->err)
-+			geni_i2c_rx_fsm_rst(gi2c);
-+		geni_se_rx_dma_unprep(se, gi2c->rx_dma, gi2c->xfer_len);
-+	}
-+}
-+
- static u32 geni_i2c_func(struct i2c_adapter *adap)
- {
- 	return I2C_FUNC_I2C | (I2C_FUNC_SMBUS_EMUL & ~I2C_FUNC_SMBUS_QUICK);
-@@ -617,6 +639,26 @@ static int geni_i2c_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static void geni_i2c_shutdown(struct platform_device *pdev)
-+{
-+	int ret;
-+	u32 dma;
-+	struct geni_i2c_dev *gi2c = platform_get_drvdata(pdev);
-+	struct geni_se *se = &gi2c->se;
-+
-+	ret = pm_runtime_get_sync(gi2c->se.dev);
-+	if (ret < 0) {
-+		dev_err(gi2c->se.dev, "Failed to resume device: %d\n", ret);
-+		return;
-+	}
-+
-+	dma = readl_relaxed(se->base + SE_GENI_DMA_MODE_EN);
-+	if (dma)
-+		geni_i2c_stop_xfer(gi2c);
-+
-+	pm_runtime_put_sync_suspend(gi2c->se.dev);
-+}
-+
- static int __maybe_unused geni_i2c_runtime_suspend(struct device *dev)
- {
- 	int ret;
-@@ -677,6 +719,7 @@ MODULE_DEVICE_TABLE(of, geni_i2c_dt_match);
- static struct platform_driver geni_i2c_driver = {
- 	.probe  = geni_i2c_probe,
- 	.remove = geni_i2c_remove,
-+	.shutdown = geni_i2c_shutdown,
- 	.driver = {
- 		.name = "geni_i2c",
- 		.pm = &geni_i2c_pm_ops,
-diff --git a/include/linux/qcom-geni-se.h b/include/linux/qcom-geni-se.h
-index dd464943f717..c3c016496d98 100644
---- a/include/linux/qcom-geni-se.h
-+++ b/include/linux/qcom-geni-se.h
-@@ -77,6 +77,7 @@ struct geni_se {
- #define SE_DMA_RX_FSM_RST		0xd58
- #define SE_HW_PARAM_0			0xe24
- #define SE_HW_PARAM_1			0xe28
-+#define SE_DMA_DEBUG_REG0		0xe40
- 
- /* GENI_FORCE_DEFAULT_REG fields */
- #define FORCE_DEFAULT	BIT(0)
-@@ -207,6 +208,10 @@ struct geni_se {
- #define RX_GENI_CANCEL_IRQ		BIT(11)
- #define RX_GENI_GP_IRQ_EXT		GENMASK(13, 12)
- 
-+/* SE_DMA_DEBUG_REG0 Register fields */
-+#define DMA_TX_ACTIVE			BIT(0)
-+#define DMA_RX_ACTIVE			BIT(1)
-+
- /* SE_HW_PARAM_0 fields */
- #define TX_FIFO_WIDTH_MSK		GENMASK(29, 24)
- #define TX_FIFO_WIDTH_SHFT		24
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
-
+RnJvbTogQXVyw6lsaWVuIEFwdGVsIDxhYXB0ZWxAc3VzZS5jb20+DQpTZW50OiBGcmlkYXksIEF1
+Z3VzdCAxNCwgMjAyMCA2OjMwIFBNDQo+IEkndmUgdHJpZWQgdGhpcyB1c2luZyBsaWJudGZzLTNn
+IG1rZnMubnRmcw0KPiANCj4gIyBta2ZzLm50ZnMgL2Rldi92YjENCj4gIyBtb3VudCAtdCBudGZz
+MyAvZGV2L3ZiMSAvbW50DQo+IA0KPiBUaGlzIGFscmVhZHkgdHJpZ2dlcmVkIFVCU0FOOg0KPiBU
+aGVuIEkndmUgdHJpZWQgdG8gY29weSAvZXRjIGludG8gaXQ6DQo+IC4uLg0KPiAjIGNwIC1ycCAv
+ZXRjIC9tbnQNCj4gDQo+IEJ1dCB0aGlzIHRyaWdnZXJlZCBhIE5VTEwgcHRyIGRlcmVmOg0KPiAN
+Cj4gIEJVRzoga2VybmVsIE5VTEwgcG9pbnRlciBkZXJlZmVyZW5jZSwgYWRkcmVzczogMDAwMDAw
+MDAwMDAwMDAyOA0KDQpUaGFua3MhIFRoaXMgd2lsbCBiZSBmaXhlZCBpbiB2Mi4gVG8gZ2l2ZSBz
+b21lIGNvbnRleHQ6IHdlIHVzZSBvdXIgbWtmcyB1dGlsaXR5IGluIHRlc3RzLCBjb3VwbGVkIHdp
+dGggYSBXaW5kb3dzLW5hdGl2ZSBvbmUgYXMgYSByZWZlcmVuY2UuIFAuUy4gQWxyZWFkeSBoYXZl
+IGV4dGVuZGVkIHRoaXMgYXBwcm9hY2ggd2l0aCB0aGUgY3VycmVudCBta2ZzLm50ZnMgdXRpbGl0
+eSBhcyB3ZWxsLg0K
