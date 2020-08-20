@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640D224B3FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0176F24B3B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730173AbgHTJyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:54:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37612 "EHLO mail.kernel.org"
+        id S1729832AbgHTJvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:51:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730153AbgHTJyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:54:49 -0400
+        id S1729795AbgHTJvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:51:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 716A72078D;
-        Thu, 20 Aug 2020 09:54:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5D2852067C;
+        Thu, 20 Aug 2020 09:51:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917289;
-        bh=vxvjVRskRRfqYiS7lGjlXSeNqSaOj3GOptYFi73IQUI=;
+        s=default; t=1597917076;
+        bh=hrY0NhL1R5l5ToViiwDTlNThpTbAJifen/N2VMBxI74=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MXorqTAzKJcwJ29SqqbJyT6s3b3r08qE1WN//bLi2ctZs+gtLaxiZbM3OVsgyOXra
-         1nBtZuEWbyZPfTeo6aleGL2Dipd9B7yg448TNlBB5LCaDWrewwZBIPNJMnfa9sWYl+
-         7g+TqNXPszA8LYWU0ky3TRn0hPCc/YNTy3jDV0rI=
+        b=DAXifZWN/ui39O7rLZtehbBg7cTCZB4suqdpzSw+K6CkzedIInkei1xmlRCm3wjKa
+         DPIWL5MQInnSwbAMToH63WExv5tg35nK+N3ixqMehf4hARIxs7vcJ1d5RDiqMa7Zzr
+         73XLR3StS26fY5nfzZUR+69RCbpqSuMu/zs8z7rI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stafford Horne <shorne@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 70/92] openrisc: Fix oops caused when dumping stack
-Date:   Thu, 20 Aug 2020 11:21:55 +0200
-Message-Id: <20200820091541.305247070@linuxfoundation.org>
+        stable@vger.kernel.org, Marius Iacob <themariusus@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: [PATCH 5.4 149/152] drm: Added orientation quirk for ASUS tablet model T103HAF
+Date:   Thu, 20 Aug 2020 11:21:56 +0200
+Message-Id: <20200820091601.454836276@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
-References: <20200820091537.490965042@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,97 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stafford Horne <shorne@gmail.com>
+From: Marius Iacob <themariusus@gmail.com>
 
-[ Upstream commit 57b8e277c33620e115633cdf700a260b55095460 ]
+commit b5ac98cbb8e5e30c34ebc837d1e5a3982d2b5f5c upstream.
 
-When dumping a stack with 'cat /proc/#/stack' the kernel would oops.
-For example:
+Signed-off-by: Marius Iacob <themariusus@gmail.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200801123445.1514567-1-themariusus@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-    # cat /proc/690/stack
-    Unable to handle kernel access
-     at virtual address 0x7fc60f58
-
-    Oops#: 0000
-    CPU #: 0
-       PC: c00097fc    SR: 0000807f    SP: d6f09b9c
-    GPR00: 00000000 GPR01: d6f09b9c GPR02: d6f09bb8 GPR03: d6f09bc4
-    GPR04: 7fc60f5c GPR05: c00099b4 GPR06: 00000000 GPR07: d6f09ba3
-    GPR08: ffffff00 GPR09: c0009804 GPR10: d6f08000 GPR11: 00000000
-    GPR12: ffffe000 GPR13: dbb86000 GPR14: 00000001 GPR15: dbb86250
-    GPR16: 7fc60f63 GPR17: 00000f5c GPR18: d6f09bc4 GPR19: 00000000
-    GPR20: c00099b4 GPR21: ffffffc0 GPR22: 00000000 GPR23: 00000000
-    GPR24: 00000001 GPR25: 000002c6 GPR26: d78b6850 GPR27: 00000001
-    GPR28: 00000000 GPR29: dbb86000 GPR30: ffffffff GPR31: dbb862fc
-      RES: 00000000 oGPR11: ffffffff
-    Process cat (pid: 702, stackpage=d79d6000)
-
-    Stack:
-    Call trace:
-    [<598977f2>] save_stack_trace_tsk+0x40/0x74
-    [<95063f0e>] stack_trace_save_tsk+0x44/0x58
-    [<b557bfdd>] proc_pid_stack+0xd0/0x13c
-    [<a2df8eda>] proc_single_show+0x6c/0xf0
-    [<e5a737b7>] seq_read+0x1b4/0x688
-    [<2d6c7480>] do_iter_read+0x208/0x248
-    [<2182a2fb>] vfs_readv+0x64/0x90
-
-This was caused by the stack trace code in save_stack_trace_tsk using
-the wrong stack pointer.  It was using the user stack pointer instead of
-the kernel stack pointer.  Fix this by using the right stack.
-
-Also for good measure we add try_get_task_stack/put_task_stack to ensure
-the task is not lost while we are walking it's stack.
-
-Fixes: eecac38b0423a ("openrisc: support framepointers and STACKTRACE_SUPPORT")
-Signed-off-by: Stafford Horne <shorne@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/openrisc/kernel/stacktrace.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/drm_panel_orientation_quirks.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/openrisc/kernel/stacktrace.c b/arch/openrisc/kernel/stacktrace.c
-index 43f140a28bc72..54d38809e22cb 100644
---- a/arch/openrisc/kernel/stacktrace.c
-+++ b/arch/openrisc/kernel/stacktrace.c
-@@ -13,6 +13,7 @@
- #include <linux/export.h>
- #include <linux/sched.h>
- #include <linux/sched/debug.h>
-+#include <linux/sched/task_stack.h>
- #include <linux/stacktrace.h>
- 
- #include <asm/processor.h>
-@@ -68,12 +69,25 @@ void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
- {
- 	unsigned long *sp = NULL;
- 
-+	if (!try_get_task_stack(tsk))
-+		return;
-+
- 	if (tsk == current)
- 		sp = (unsigned long *) &sp;
--	else
--		sp = (unsigned long *) KSTK_ESP(tsk);
-+	else {
-+		unsigned long ksp;
-+
-+		/* Locate stack from kernel context */
-+		ksp = task_thread_info(tsk)->ksp;
-+		ksp += STACK_FRAME_OVERHEAD;	/* redzone */
-+		ksp += sizeof(struct pt_regs);
-+
-+		sp = (unsigned long *) ksp;
-+	}
- 
- 	unwind_stack(trace, sp, save_stack_address_nosched);
-+
-+	put_task_stack(tsk);
- }
- EXPORT_SYMBOL_GPL(save_stack_trace_tsk);
- 
--- 
-2.25.1
-
+--- a/drivers/gpu/drm/drm_panel_orientation_quirks.c
++++ b/drivers/gpu/drm/drm_panel_orientation_quirks.c
+@@ -121,6 +121,12 @@ static const struct dmi_system_id orient
+ 		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T101HA"),
+ 		},
+ 		.driver_data = (void *)&lcd800x1280_rightside_up,
++	}, {	/* Asus T103HAF */
++		.matches = {
++		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T103HAF"),
++		},
++		.driver_data = (void *)&lcd800x1280_rightside_up,
+ 	}, {	/* GPD MicroPC (generic strings, also match on bios date) */
+ 		.matches = {
+ 		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Default string"),
 
 
