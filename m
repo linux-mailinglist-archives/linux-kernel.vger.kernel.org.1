@@ -2,138 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D166B24C819
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 00:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB7724C81D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 00:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728686AbgHTW4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 18:56:12 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:39149 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728571AbgHTW4C (ORCPT
+        id S1728706AbgHTW43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 18:56:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728608AbgHTW42 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 18:56:02 -0400
-X-Originating-IP: 90.66.108.79
-Received: from localhost (lfbn-lyo-1-1932-79.w90-66.abo.wanadoo.fr [90.66.108.79])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 40AA060002;
-        Thu, 20 Aug 2020 22:55:59 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
-        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@free-electrons.com>,
-        Antoine Aubert <a.aubert@overkiz.com>
-Subject: [PATCH 4/4] ARM: dts: at91: kizbox: switch to new pwm-atmel-tcb binding
-Date:   Fri, 21 Aug 2020 00:55:46 +0200
-Message-Id: <20200820225546.2246517-5-alexandre.belloni@bootlin.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200820225546.2246517-1-alexandre.belloni@bootlin.com>
-References: <20200820225546.2246517-1-alexandre.belloni@bootlin.com>
+        Thu, 20 Aug 2020 18:56:28 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 069D8C061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 15:56:28 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id di22so2926321edb.12
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 15:56:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aim7ZV7VxtAqstOLObh/dmvDlBTIjwC/vQNJeLjw2SY=;
+        b=k7Zg9x+tf+PmQarKuJnmu7Zwgp9XjnbEqKdxZSAL93vsY5Bc8y7XC5gDsRf7vb/nhr
+         Yc9bO2RL1EHlua9v6qybcCDd+lQ3pFyHYAYMRarzK9QkiZhiLe1R177NiOHCG5W8hnA/
+         6LJ12Q0oH/h1wF3qwUdFH5WsLLntlRwyXATzzGAFLeTiVHY7CT64faa1RLTC1xuCzTA3
+         52mwyV0U8/ItJZky9BqT/HnoE23xX6P+Ehx8JL7HXYy//EBM+XYTf0oeNy43rhENuPts
+         wgK8Q00uYl2ZichfLQEq24UuYAVdibEKlafnaSV+MuGczzV5SqQ4YkW52pReCZaW4PoG
+         IWUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aim7ZV7VxtAqstOLObh/dmvDlBTIjwC/vQNJeLjw2SY=;
+        b=ap3sU64n3qsrCXyqFX5A3ev+ZrVbK0JtJsPQvqsLZhbPTuA2hsPTK+9xtr3mCT9JW4
+         m1BBCYk3S2S66EJOgGnzfBTqcc4uHUSTphWaFbEw+EDyfH2IL9d4mnfmSMNyUSLx1QNY
+         52cQRCilnHUtmEFKW1o9FXKLBwY+BF4EYnffvcLVYrGZQ3n2xkdyf4nuWejhuTmvxdSU
+         IQtOBOr8vwonKIk5+a//sBbDw+rH4T+789iwi4z1+9mT4VaRJOXNuBVICr+iRkbDtzSp
+         zHRSH44Nih3Dn5TmZgK4JiO/O7q2lSpkj/YAVw4JvuYi50qPkEaUnhQf6b98sxp2R7JH
+         GWtQ==
+X-Gm-Message-State: AOAM530V9KGJMJHJrHfSJqDEJjgy+9nyDWL0ogkomTgfa+rs2Jgg4ITY
+        x3Mki6FX9Wv1iK7cV58BvR85TE60Q/EP916li8s=
+X-Google-Smtp-Source: ABdhPJzq0HtqtlANNIeHA9f4OjwvT96Pj6Ads7F9L1lX5AbAw6f5cOiTX8WoQsmIp+9r5LDEX1isFWSicGgDbBIbt9E=
+X-Received: by 2002:aa7:d9d0:: with SMTP id v16mr144465eds.137.1597964186662;
+ Thu, 20 Aug 2020 15:56:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200818184122.29C415DF@viggo.jf.intel.com> <20200818184133.DCF58B5F@viggo.jf.intel.com>
+In-Reply-To: <20200818184133.DCF58B5F@viggo.jf.intel.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 20 Aug 2020 15:56:15 -0700
+Message-ID: <CAHbLzkowZgcXc9Oqcr0yr6X0TPmU5T55FLXJpV=5q+_NK8O4iQ@mail.gmail.com>
+Subject: Re: [RFC][PATCH 6/9] mm/vmscan: add page demotion counter
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Rientjes <rientjes@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+On Tue, Aug 18, 2020 at 11:53 AM Dave Hansen
+<dave.hansen@linux.intel.com> wrote:
+>
+>
+> From: Yang Shi <yang.shi@linux.alibaba.com>
+>
+> Account the number of demoted pages into reclaim_state->nr_demoted.
+>
+> Add pgdemote_kswapd and pgdemote_direct VM counters showed in
+> /proc/vmstat.
 
-Switch to the new pwm-atmel-tcb binding that avoid wasting TCB channels.
+BTW we'd better add promotion counters as well. The NUMA balancing
+could promote pages to local nodes without any modification. We could
+argue it may be optimized for PMEM usecases, but it does work. And it
+makes the patchset more self-contained.
 
-Cc: Antoine Aubert <a.aubert@overkiz.com>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
----
- arch/arm/boot/dts/at91-kizbox.dts | 45 ++++++++++++++++++++-----------
- 1 file changed, 30 insertions(+), 15 deletions(-)
+You could refer to:
+https://lore.kernel.org/linux-mm/1560468577-101178-10-git-send-email-yang.shi@linux.alibaba.com/
 
-diff --git a/arch/arm/boot/dts/at91-kizbox.dts b/arch/arm/boot/dts/at91-kizbox.dts
-index 7d938ccf71b0..3e255bf8707c 100644
---- a/arch/arm/boot/dts/at91-kizbox.dts
-+++ b/arch/arm/boot/dts/at91-kizbox.dts
-@@ -53,43 +53,32 @@ pwm_leds {
- 
- 		network_green {
- 			label = "pwm:green:network";
--			pwms = <&tcb_pwm 2 10000000 PWM_POLARITY_INVERTED>;
-+			pwms = <&tcb1_pwm1 0 10000000 PWM_POLARITY_INVERTED>;
- 			max-brightness = <255>;
- 			linux,default-trigger = "default-on";
- 		};
- 
- 		network_red {
- 			label = "pwm:red:network";
--			pwms = <&tcb_pwm 4 10000000 PWM_POLARITY_INVERTED>;
-+			pwms = <&tcb1_pwm2 0 10000000 PWM_POLARITY_INVERTED>;
- 			max-brightness = <255>;
- 			linux,default-trigger = "default-on";
- 		};
- 
- 		user_green {
- 			label = "pwm:green:user";
--			pwms = <&tcb_pwm 0 10000000 PWM_POLARITY_INVERTED>;
-+			pwms = <&tcb1_pwm0 0 10000000 PWM_POLARITY_INVERTED>;
- 			max-brightness = <255>;
- 			linux,default-trigger = "default-on";
- 		};
- 
- 		user_red {
- 			label = "pwm:red:user";
--			pwms = <&tcb_pwm 1 10000000 PWM_POLARITY_INVERTED>;
-+			pwms = <&tcb1_pwm0 1 10000000 PWM_POLARITY_INVERTED>;
- 			max-brightness = <255>;
- 			linux,default-trigger = "default-on";
- 		};
- 	};
--
--	tcb_pwm: pwm {
--		compatible = "atmel,tcb-pwm";
--		#pwm-cells = <3>;
--		tc-block = <1>;
--		pinctrl-names = "default";
--		pinctrl-0 = <&pinctrl_tcb1_tioa0
--			     &pinctrl_tcb1_tioa1
--			     &pinctrl_tcb1_tioa2
--			     &pinctrl_tcb1_tiob0>;
--	};
- };
- 
- &tcb0 {
-@@ -104,6 +93,32 @@ timer@2 {
- 	};
- };
- 
-+&tcb1 {
-+	tcb1_pwm0: pwm@0 {
-+		compatible = "atmel,tcb-pwm";
-+		reg = <0>;
-+		#pwm-cells = <3>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_tcb1_tioa0 &pinctrl_tcb1_tiob0>;
-+	};
-+
-+	tcb1_pwm1: pwm@1 {
-+		compatible = "atmel,tcb-pwm";
-+		reg = <1>;
-+		#pwm-cells = <3>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_tcb1_tioa1>;
-+	};
-+
-+	tcb1_pwm2: pwm@2 {
-+		compatible = "atmel,tcb-pwm";
-+		reg = <2>;
-+		#pwm-cells = <3>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_tcb1_tioa2>;
-+	};
-+};
-+
- &ebi {
- 	status = "okay";
- };
--- 
-2.26.2
-
+>
+> [ daveh:
+>    - __count_vm_events() a bit, and made them look at the THP
+>      size directly rather than getting data from migrate_pages()
+> ]
+>
+> Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
+> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Huang Ying <ying.huang@intel.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> ---
+>
+>  b/include/linux/vm_event_item.h |    2 ++
+>  b/mm/vmscan.c                   |    6 ++++++
+>  b/mm/vmstat.c                   |    2 ++
+>  3 files changed, 10 insertions(+)
+>
+> diff -puN include/linux/vm_event_item.h~mm-vmscan-add-page-demotion-counter include/linux/vm_event_item.h
+> --- a/include/linux/vm_event_item.h~mm-vmscan-add-page-demotion-counter 2020-08-18 11:36:54.062583176 -0700
+> +++ b/include/linux/vm_event_item.h     2020-08-18 11:36:54.070583176 -0700
+> @@ -32,6 +32,8 @@ enum vm_event_item { PGPGIN, PGPGOUT, PS
+>                 PGREFILL,
+>                 PGSTEAL_KSWAPD,
+>                 PGSTEAL_DIRECT,
+> +               PGDEMOTE_KSWAPD,
+> +               PGDEMOTE_DIRECT,
+>                 PGSCAN_KSWAPD,
+>                 PGSCAN_DIRECT,
+>                 PGSCAN_DIRECT_THROTTLE,
+> diff -puN mm/vmscan.c~mm-vmscan-add-page-demotion-counter mm/vmscan.c
+> --- a/mm/vmscan.c~mm-vmscan-add-page-demotion-counter   2020-08-18 11:36:54.064583176 -0700
+> +++ b/mm/vmscan.c       2020-08-18 11:36:54.072583176 -0700
+> @@ -147,6 +147,7 @@ struct scan_control {
+>                 unsigned int immediate;
+>                 unsigned int file_taken;
+>                 unsigned int taken;
+> +               unsigned int demoted;
+>         } nr;
+>
+>         /* for recording the reclaimed slab by now */
+> @@ -1146,6 +1147,11 @@ static unsigned int demote_page_list(str
+>                 list_splice(ret_list, demote_pages);
+>         }
+>
+> +       if (current_is_kswapd())
+> +               __count_vm_events(PGDEMOTE_KSWAPD, nr_succeeded);
+> +       else
+> +               __count_vm_events(PGDEMOTE_DIRECT, nr_succeeded);
+> +
+>         return nr_succeeded;
+>  }
+>
+> diff -puN mm/vmstat.c~mm-vmscan-add-page-demotion-counter mm/vmstat.c
+> --- a/mm/vmstat.c~mm-vmscan-add-page-demotion-counter   2020-08-18 11:36:54.067583176 -0700
+> +++ b/mm/vmstat.c       2020-08-18 11:36:54.072583176 -0700
+> @@ -1200,6 +1200,8 @@ const char * const vmstat_text[] = {
+>         "pgrefill",
+>         "pgsteal_kswapd",
+>         "pgsteal_direct",
+> +       "pgdemote_kswapd",
+> +       "pgdemote_direct",
+>         "pgscan_kswapd",
+>         "pgscan_direct",
+>         "pgscan_direct_throttle",
+> _
