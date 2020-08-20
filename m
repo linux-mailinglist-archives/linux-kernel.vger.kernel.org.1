@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB9724B29A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 141DB24B427
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728454AbgHTJdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:33:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44194 "EHLO mail.kernel.org"
+        id S1729906AbgHTJ6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:58:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728258AbgHTJb7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:31:59 -0400
+        id S1730420AbgHTJ6l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:58:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4656322B43;
-        Thu, 20 Aug 2020 09:31:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D53172173E;
+        Thu, 20 Aug 2020 09:58:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915918;
-        bh=yXQvIeh6zMjicGaFl3Np+uvH08uFB6zeEjIw7UUyD0E=;
+        s=default; t=1597917520;
+        bh=HJjCP81rywixE/GLZjXGg0JY6wNzwcv1jdYMv2+9i1s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Sa9gfU/BLaZXHb2ttuChyK8+VGNVnICfPl6ZMk2VIMETqt9WJMVotXPSZUSp6h2EU
-         /uUu8PaVtqXrp2qANsb2tma8W6W8W9bKj2awrZXvXByG0VnNbQYx2ydAhYCDN8TOMt
-         vKtyp/y2XxxnRESpQhTL7+wvlNktIeHnze3rJFNw=
+        b=2d0n9tGpB5YEzU+sxus1TKHtoVMgsFDTf/egLgjkYHytBVQNkK7rd3Mwnus5Bt6xE
+         tYITn7tphoSg9XFZUa+VWm36BPnlIbem66tJAqSn4v7x2d8gQkm59xmn9BH7bxgszh
+         OQmthpxJK33V61mB2e9qJERO+f/p7T0cS9YTAAOo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dave Jiang <dave.jiang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jane Chu <jane.chu@oracle.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 180/232] libnvdimm/security: ensure sysfs poll thread woke up and fetch updated attr
-Date:   Thu, 20 Aug 2020 11:20:31 +0200
-Message-Id: <20200820091621.523221974@linuxfoundation.org>
+        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        stable <stable@kernel.org>
+Subject: [PATCH 4.9 059/212] mtd: properly check all write ioctls for permissions
+Date:   Thu, 20 Aug 2020 11:20:32 +0200
+Message-Id: <20200820091605.350471878@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
-References: <20200820091612.692383444@linuxfoundation.org>
+In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
+References: <20200820091602.251285210@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,59 +45,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jane Chu <jane.chu@oracle.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 7f674025d9f7321dea11b802cc0ab3f09cbe51c5 ]
+commit f7e6b19bc76471ba03725fe58e0c218a3d6266c3 upstream.
 
-commit 7d988097c546 ("acpi/nfit, libnvdimm/security: Add security DSM overwrite support")
-adds a sysfs_notify_dirent() to wake up userspace poll thread when the "overwrite"
-operation has completed. But the notification is issued before the internal
-dimm security state and flags have been updated, so the userspace poll thread
-wakes up and fetches the not-yet-updated attr and falls back to sleep, forever.
-But if user from another terminal issue "ndctl wait-overwrite nmemX" again,
-the command returns instantly.
+When doing a "write" ioctl call, properly check that we have permissions
+to do so before copying anything from userspace or anything else so we
+can "fail fast".  This includes also covering the MEMWRITE ioctl which
+previously missed checking for this.
 
-Link: https://lore.kernel.org/r/1596494499-9852-3-git-send-email-jane.chu@oracle.com
-Fixes: 7d988097c546 ("acpi/nfit, libnvdimm/security: Add security DSM overwrite support")
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-Signed-off-by: Jane Chu <jane.chu@oracle.com>
-Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: stable <stable@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[rw: Fixed locking issue]
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/nvdimm/security.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ drivers/mtd/mtdchar.c |   56 +++++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 47 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/nvdimm/security.c b/drivers/nvdimm/security.c
-index 8f3971cf16541..4b80150e4afa7 100644
---- a/drivers/nvdimm/security.c
-+++ b/drivers/nvdimm/security.c
-@@ -450,14 +450,19 @@ void __nvdimm_security_overwrite_query(struct nvdimm *nvdimm)
- 	else
- 		dev_dbg(&nvdimm->dev, "overwrite completed\n");
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -372,9 +372,6 @@ static int mtdchar_writeoob(struct file
+ 	uint32_t retlen;
+ 	int ret = 0;
  
--	if (nvdimm->sec.overwrite_state)
--		sysfs_notify_dirent(nvdimm->sec.overwrite_state);
+-	if (!(file->f_mode & FMODE_WRITE))
+-		return -EPERM;
+-
+ 	if (length > 4096)
+ 		return -EINVAL;
+ 
+@@ -681,6 +678,48 @@ static int mtdchar_ioctl(struct file *fi
+ 			return -EFAULT;
+ 	}
+ 
 +	/*
-+	 * Mark the overwrite work done and update dimm security flags,
-+	 * then send a sysfs event notification to wake up userspace
-+	 * poll threads to picked up the changed state.
++	 * Check the file mode to require "dangerous" commands to have write
++	 * permissions.
 +	 */
- 	nvdimm->sec.overwrite_tmo = 0;
- 	clear_bit(NDD_SECURITY_OVERWRITE, &nvdimm->flags);
- 	clear_bit(NDD_WORK_PENDING, &nvdimm->flags);
--	put_device(&nvdimm->dev);
- 	nvdimm->sec.flags = nvdimm_security_flags(nvdimm, NVDIMM_USER);
- 	nvdimm->sec.ext_flags = nvdimm_security_flags(nvdimm, NVDIMM_MASTER);
-+	if (nvdimm->sec.overwrite_state)
-+		sysfs_notify_dirent(nvdimm->sec.overwrite_state);
-+	put_device(&nvdimm->dev);
- }
++	switch (cmd) {
++	/* "safe" commands */
++	case MEMGETREGIONCOUNT:
++	case MEMGETREGIONINFO:
++	case MEMGETINFO:
++	case MEMREADOOB:
++	case MEMREADOOB64:
++	case MEMLOCK:
++	case MEMUNLOCK:
++	case MEMISLOCKED:
++	case MEMGETOOBSEL:
++	case MEMGETBADBLOCK:
++	case MEMSETBADBLOCK:
++	case OTPSELECT:
++	case OTPGETREGIONCOUNT:
++	case OTPGETREGIONINFO:
++	case OTPLOCK:
++	case ECCGETLAYOUT:
++	case ECCGETSTATS:
++	case MTDFILEMODE:
++	case BLKPG:
++	case BLKRRPART:
++		break;
++
++	/* "dangerous" commands */
++	case MEMERASE:
++	case MEMERASE64:
++	case MEMWRITEOOB:
++	case MEMWRITEOOB64:
++	case MEMWRITE:
++		if (!(file->f_mode & FMODE_WRITE))
++			return -EPERM;
++		break;
++
++	default:
++		return -ENOTTY;
++	}
++
+ 	switch (cmd) {
+ 	case MEMGETREGIONCOUNT:
+ 		if (copy_to_user(argp, &(mtd->numeraseregions), sizeof(int)))
+@@ -728,9 +767,6 @@ static int mtdchar_ioctl(struct file *fi
+ 	{
+ 		struct erase_info *erase;
  
- void nvdimm_security_overwrite_query(struct work_struct *work)
--- 
-2.25.1
-
+-		if(!(file->f_mode & FMODE_WRITE))
+-			return -EPERM;
+-
+ 		erase=kzalloc(sizeof(struct erase_info),GFP_KERNEL);
+ 		if (!erase)
+ 			ret = -ENOMEM;
+@@ -1051,9 +1087,6 @@ static int mtdchar_ioctl(struct file *fi
+ 		ret = 0;
+ 		break;
+ 	}
+-
+-	default:
+-		ret = -ENOTTY;
+ 	}
+ 
+ 	return ret;
+@@ -1097,6 +1130,11 @@ static long mtdchar_compat_ioctl(struct
+ 		struct mtd_oob_buf32 buf;
+ 		struct mtd_oob_buf32 __user *buf_user = argp;
+ 
++		if (!(file->f_mode & FMODE_WRITE)) {
++			ret = -EPERM;
++			break;
++		}
++
+ 		if (copy_from_user(&buf, argp, sizeof(buf)))
+ 			ret = -EFAULT;
+ 		else
 
 
