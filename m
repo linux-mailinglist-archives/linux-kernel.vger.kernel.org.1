@@ -2,91 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D9C24B271
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4409B24B20D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728147AbgHTJaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:30:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38982 "EHLO mail.kernel.org"
+        id S1726854AbgHTJUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:20:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55686 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728127AbgHTJ36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:29:58 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A547422CA1;
-        Thu, 20 Aug 2020 09:29:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915798;
-        bh=WbXt8Ib5yN5cpTvhe/9oHmMjDtvq/mhODJSbnCMBbf4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LSSLjHSdgznU75octr1s+1JRBd78A6F1dgBBtgIwcvfbVg77MsOnhEzkneXkbEb5j
-         +9Nv+cRwTc5hxYw34i/AbukMvkFYSYH+KHeV8sPGMQz6FxNLTjmyErPWfyO3xaJ6R7
-         8dl0PdjxjUMKP1z92yWYn4mEHm84IuGriyDPcuYg=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sachin Sant <sachinp@linux.vnet.ibm.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 138/232] crypto: af_alg - Fix regression on empty requests
-Date:   Thu, 20 Aug 2020 11:19:49 +0200
-Message-Id: <20200820091619.509042985@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
-References: <20200820091612.692383444@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1726435AbgHTJUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:20:15 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6DA83B761;
+        Thu, 20 Aug 2020 09:20:40 +0000 (UTC)
+Date:   Thu, 20 Aug 2020 11:20:12 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Luca Stefani <luca.stefani.ge1@gmail.com>
+Subject: Re: linux-next: Fixes tag needs some work in the tip tree
+Message-ID: <20200820092012.GC17365@zn.tnic>
+References: <20200820161239.25a9b3f4@canb.auug.org.au>
+ <20200820082149.GB17365@zn.tnic>
+ <20200820191502.1df900be@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200820191502.1df900be@canb.auug.org.au>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Herbert Xu <herbert@gondor.apana.org.au>
+Hey Stephen,
 
-[ Upstream commit 662bb52f50bca16a74fe92b487a14d7dccb85e1a ]
+On Thu, Aug 20, 2020 at 07:15:02PM +1000, Stephen Rothwell wrote:
+> yeah, I wish people would just generate these lines:
+> 
+> git log -1 --format='Fixes: %h ("%s")' <commit-id>
 
-Some user-space programs rely on crypto requests that have no
-control metadata.  This broke when a check was added to require
-the presence of control metadata with the ctx->init flag.
+Yap, but that "add invalid char" thing can happen when pasting the mail
+in the mail client, etc. I've even seen maintainers botch tags...
 
-This patch fixes the regression by setting ctx->init as long as
-one sendmsg(2) has been made, with or without a control message.
+> Is a shell script OK?
 
-Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Fixes: f3c802a1f300 ("crypto: algif_aead - Only wake up when...")
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- crypto/af_alg.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Nah, my script is in python. But no worries, I'll add that to it now,
+since I even have an actual example to test it on.
 
-diff --git a/crypto/af_alg.c b/crypto/af_alg.c
-index 9fcb91ea10c41..5882ed46f1adb 100644
---- a/crypto/af_alg.c
-+++ b/crypto/af_alg.c
-@@ -851,6 +851,7 @@ int af_alg_sendmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 		err = -EINVAL;
- 		goto unlock;
- 	}
-+	ctx->init = true;
- 
- 	if (init) {
- 		ctx->enc = enc;
-@@ -858,7 +859,6 @@ int af_alg_sendmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 			memcpy(ctx->iv, con.iv->iv, ivsize);
- 
- 		ctx->aead_assoclen = con.aead_assoclen;
--		ctx->init = true;
- 	}
- 
- 	while (size) {
+Thx for catching this!
+
 -- 
-2.25.1
+Regards/Gruss,
+    Boris.
 
-
-
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
