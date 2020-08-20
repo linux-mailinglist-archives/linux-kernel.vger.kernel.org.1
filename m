@@ -2,128 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B5E24C8D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 01:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ABF424C8E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 01:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727846AbgHTX5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 19:57:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49974 "EHLO
+        id S1727817AbgHTX6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 19:58:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727050AbgHTX4Y (ORCPT
+        with ESMTP id S1726435AbgHTX6f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 19:56:24 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F1A1C061349
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 16:56:11 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id t14so109129wmi.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 16:56:11 -0700 (PDT)
+        Thu, 20 Aug 2020 19:58:35 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ACE8C061387
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 16:58:35 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id g19so251923ejc.9
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 16:58:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eSKa4Ey8gdfGZw4O7eXF+v0TKjbgoL2h7/Rum3+7vIE=;
-        b=KXTks0qCaDbUf6bPSUK7xs/HT8S55LvPXgC8K2DVaaR3efaGdhX3rHNOPE1ocnOqyX
-         Lu64TfQ2jxfdtUu4eG/nhLqYSCijXr41c/h4MZx+ib0IWXeiKV8rWaTPSbNiZvwHUIi0
-         LfX0BCHPrg4tK9DYHGpkocyUuAkqbO5vVyCEf6kU5VoKTOV8IZQLZzJ772H6tXWoPjSx
-         De5MzZKc0RJeG+jhckjzf7zD5PLYvWYrIqyLqgXUrKZ8Yvgu5rBLNPT4QCv9HK9tNjHx
-         frl3rvvz9Hk6wxrtuz9gc9vRuMSTg8JVPn2y93jWV1MqV1vS+pAeL6Ack1RYwyyXsLgR
-         NN1Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9ltcYHArLoQsXGDP1rWIfO3JC1jU/kmH+fninhb3r4g=;
+        b=SJPIJwYZjsRJxH4Pn77CD1kcgeTKqIBrjfgQVHsEaGWg83JrJ/HTxJ0gS716H9ovsf
+         /deLlRPB51HyyaPivrGC3anTMg9qz3/tbTtxF8rjrpRjBiYlt4yFDYpW+WlfvOIJHyOO
+         rG+lOQ95fkHxVLr2dVbh9HD76wBiGfZKXa0xfRrGXRc6itTcMFGXsvHhTj2chFwfjTyL
+         Lay4jQW0LmR0ISZsJgjWgWuU94A6cov9c7/E76MEUoVy/UZth0T0hbPx//waWSaTm1mp
+         ZWwBzGwViIIT3OChKsRLirQn5MyczBcGTeNp66+lBCbqcM63lcfID2KeqyB6AK71IM4o
+         jWcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eSKa4Ey8gdfGZw4O7eXF+v0TKjbgoL2h7/Rum3+7vIE=;
-        b=L+zV/O5Qe0BipTLeJ4O2uVwd9/a5Ko3VPGJBeCD9Wn83rHDAKw5D9H4DXvnB94FA8p
-         /gdDTKVrMJeHd35AarjsUST1/J2g7LOJtK0XV8fR8uDocJBW6z1RSi+Dh05PSPXlw0IA
-         ihQGd/FSMBUth67Xgt1nLmk2zBVa9+mj+tEH1+J6qYk2tVF/I4L9kshnxTJqYCKDh/5Q
-         QT4chSJphwrusx2EFk+o4u0zSWN4t7+Mdf5t8dM15x400BQgkJO8EqZrnGN5WLS68oxA
-         uNhTypXRCvRBzmMekmRs5SEpKe/6lStHc0TGmcBEt+7ig4mOaXNfpsJbmYzq5fLvI2D/
-         ilIQ==
-X-Gm-Message-State: AOAM530nx8+1jidkkMgK+UpW5naGNCOKOzvun2YSJ445bqx7ZQAJTGQ+
-        qZAG/3IpCTg0UspvhS0xZv0=
-X-Google-Smtp-Source: ABdhPJwDGeYpHJYWEawHyyzdBiI9Dk7vOO5oGyMaLBb8yJU/pvhi6QWe4Hh/d9CEuDOAQsmEiul5gw==
-X-Received: by 2002:a1c:2808:: with SMTP id o8mr820101wmo.108.1597967770566;
-        Thu, 20 Aug 2020 16:56:10 -0700 (PDT)
-Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id s20sm561046wmh.21.2020.08.20.16.56.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 16:56:09 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-To:     Julia Lawall <Julia.Lawall@lip6.fr>,
-        Gilles Muller <Gilles.Muller@lip6.fr>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] coccinelle: add patch rule for dma_alloc_coherent
-Date:   Fri, 21 Aug 2020 00:55:57 +0100
-Message-Id: <20200820235600.326346-1-alex.dewar90@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9ltcYHArLoQsXGDP1rWIfO3JC1jU/kmH+fninhb3r4g=;
+        b=VdUO63yzqFyXlkn7FYCG+QTriO44S7IkCXVzLBXz7+kvB+dotGF8oDosEmcxSfVy2g
+         4fmliWlZeC3dqCHiKpw5OeXYQu5Gef1kqseYDA4IVbyBaBID1kMD9mhDs+EBmrl7BWw4
+         CMhMyQ8XW9ZwcLp/z50yklnKpKfvw+Sr+6DVqWcCq4LNQB6gh2JosAEQstdYERNgJ8D/
+         NbscDflcbhykLKWP6sLCSf3JHWr24KWFPROOnQWJm4+NoqEyOOVA2Mb4mCoPrwrU+s1C
+         Y3GV6leM7VEnKwDH+6N0M2XHqiR6pFTYoG7KWnm8GKvgXXIURrxepCL12M4lbeJs8GYl
+         Zzjg==
+X-Gm-Message-State: AOAM530AagDYcI5DPLE/ZD+9a510q2Y7+YzF+ZsLFYD0yShW6LsKnTk1
+        nx3U2uAK3612h+aTG38WYo4fSu3+3SFYegB8els=
+X-Google-Smtp-Source: ABdhPJygQxAD9qVjNupDU9Kr1vqIEkpfD/cXfrhzy23tM7H2GrHaBRFPSCPF6djU8jDGjzviojaxKjo/Z1momWXrysU=
+X-Received: by 2002:a17:906:c2c8:: with SMTP id ch8mr331592ejb.161.1597967914213;
+ Thu, 20 Aug 2020 16:58:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200818184122.29C415DF@viggo.jf.intel.com> <20200818184133.DCF58B5F@viggo.jf.intel.com>
+ <CAHbLzkr9e=hsT-Fw14cwmBoK7p=GsbzAmVqo6HFCFRXz6sa0iw@mail.gmail.com>
+In-Reply-To: <CAHbLzkr9e=hsT-Fw14cwmBoK7p=GsbzAmVqo6HFCFRXz6sa0iw@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 20 Aug 2020 16:58:22 -0700
+Message-ID: <CAHbLzkpHwbUTnmLvK17mzRGR3DSjiXVEVbz9YLQb5CoEbmMDsw@mail.gmail.com>
+Subject: Re: [RFC][PATCH 6/9] mm/vmscan: add page demotion counter
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Rientjes <rientjes@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit dfd32cad146e ("dma-mapping: remove dma_zalloc_coherent()")
-removed the definition of dma_zalloc_coherent() and also removed the
-corresponding patch rule for replacing instances of dma_alloc_coherent +
-memset in zalloc-simple.cocci (though left the report rule).
+On Thu, Aug 20, 2020 at 3:26 PM Yang Shi <shy828301@gmail.com> wrote:
+>
+> On Tue, Aug 18, 2020 at 11:53 AM Dave Hansen
+> <dave.hansen@linux.intel.com> wrote:
+> >
+> >
+> > From: Yang Shi <yang.shi@linux.alibaba.com>
+> >
+> > Account the number of demoted pages into reclaim_state->nr_demoted.
+> >
+> > Add pgdemote_kswapd and pgdemote_direct VM counters showed in
+> > /proc/vmstat.
+> >
+> > [ daveh:
+> >    - __count_vm_events() a bit, and made them look at the THP
+> >      size directly rather than getting data from migrate_pages()
+> > ]
+>
+> This reminds me that we'd better to make migrate_pages() return the
+> number of base pages. Now both nr_failed and nr_succeeded is inc'ed
+> regardless of whether it is THP.
+>
+> A quick look finds the callers of migrate_pages() seem not care about
+> the exact returned number, they just care if it is positive or not.
+>
+> And reclaim code depends on correct nr_succeeded to avoid over reclaim.
+>
+> I will come up with a patch to post to the mailing list.
 
-Add a new patch rule to remove unnecessary calls to memset after
-allocating with dma_alloc_coherent. While we're at it, fix a couple of
-typos.
+I looks this problem has been fixed by commit
+1a5bae25e3cf95c4e83a97f87a6b5280d9acbb22 ("mm/vmstat: add events for
+THP migration without split") in v5.9-rc1. With that commit,
+nr_succeeded will be bumped by 512 if a THP is migrated successfully
+(without split). So, we don't need worry about this anymore.
 
-Fixes: dfd32cad146e ("dma-mapping: remove dma_zalloc_coherent()")
-Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
----
- scripts/coccinelle/api/alloc/zalloc-simple.cocci | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
-
-diff --git a/scripts/coccinelle/api/alloc/zalloc-simple.cocci b/scripts/coccinelle/api/alloc/zalloc-simple.cocci
-index 26cda3f48f01..b3d0c3c230c1 100644
---- a/scripts/coccinelle/api/alloc/zalloc-simple.cocci
-+++ b/scripts/coccinelle/api/alloc/zalloc-simple.cocci
-@@ -127,6 +127,16 @@ statement S;
-   if ((x==NULL) || ...) S
- - memset((T2)x,0,E1);
- 
-+@depends on patch@
-+type T, T2;
-+expression x;
-+expression E1,E2,E3,E4;
-+statement S;
-+@@
-+  x = (T)dma_alloc_coherent(E1, E2, E3, E4);
-+  if ((x==NULL) || ...) S
-+- memset((T2)x, 0, E2);
-+
- //----------------------------------------------------------
- //  For org mode
- //----------------------------------------------------------
-@@ -199,9 +209,9 @@ statement S;
- position p;
- @@
- 
-- x = (T)dma_alloc_coherent@p(E2,E1,E3,E4);
-+ x = (T)dma_alloc_coherent@p(E1,E2,E3,E4);
-  if ((x==NULL) || ...) S
-- memset((T2)x,0,E1);
-+ memset((T2)x,0,E2);
- 
- @script:python depends on org@
- p << r2.p;
-@@ -217,7 +227,7 @@ p << r2.p;
- x << r2.x;
- @@
- 
--msg="WARNING: dma_alloc_coherent use in %s already zeroes out memory,  so memset is not needed" % (x)
-+msg="WARNING: dma_alloc_coherent used in %s already zeroes out memory, so memset is not needed" % (x)
- coccilib.report.print_report(p[0], msg)
- 
- //-----------------------------------------------------------------
--- 
-2.28.0
-
+>
+> >
+> > Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
+> > Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+> > Cc: David Rientjes <rientjes@google.com>
+> > Cc: Huang Ying <ying.huang@intel.com>
+> > Cc: Dan Williams <dan.j.williams@intel.com>
+> > ---
+> >
+> >  b/include/linux/vm_event_item.h |    2 ++
+> >  b/mm/vmscan.c                   |    6 ++++++
+> >  b/mm/vmstat.c                   |    2 ++
+> >  3 files changed, 10 insertions(+)
+> >
+> > diff -puN include/linux/vm_event_item.h~mm-vmscan-add-page-demotion-counter include/linux/vm_event_item.h
+> > --- a/include/linux/vm_event_item.h~mm-vmscan-add-page-demotion-counter 2020-08-18 11:36:54.062583176 -0700
+> > +++ b/include/linux/vm_event_item.h     2020-08-18 11:36:54.070583176 -0700
+> > @@ -32,6 +32,8 @@ enum vm_event_item { PGPGIN, PGPGOUT, PS
+> >                 PGREFILL,
+> >                 PGSTEAL_KSWAPD,
+> >                 PGSTEAL_DIRECT,
+> > +               PGDEMOTE_KSWAPD,
+> > +               PGDEMOTE_DIRECT,
+> >                 PGSCAN_KSWAPD,
+> >                 PGSCAN_DIRECT,
+> >                 PGSCAN_DIRECT_THROTTLE,
+> > diff -puN mm/vmscan.c~mm-vmscan-add-page-demotion-counter mm/vmscan.c
+> > --- a/mm/vmscan.c~mm-vmscan-add-page-demotion-counter   2020-08-18 11:36:54.064583176 -0700
+> > +++ b/mm/vmscan.c       2020-08-18 11:36:54.072583176 -0700
+> > @@ -147,6 +147,7 @@ struct scan_control {
+> >                 unsigned int immediate;
+> >                 unsigned int file_taken;
+> >                 unsigned int taken;
+> > +               unsigned int demoted;
+> >         } nr;
+> >
+> >         /* for recording the reclaimed slab by now */
+> > @@ -1146,6 +1147,11 @@ static unsigned int demote_page_list(str
+> >                 list_splice(ret_list, demote_pages);
+> >         }
+> >
+> > +       if (current_is_kswapd())
+> > +               __count_vm_events(PGDEMOTE_KSWAPD, nr_succeeded);
+> > +       else
+> > +               __count_vm_events(PGDEMOTE_DIRECT, nr_succeeded);
+> > +
+> >         return nr_succeeded;
+> >  }
+> >
+> > diff -puN mm/vmstat.c~mm-vmscan-add-page-demotion-counter mm/vmstat.c
+> > --- a/mm/vmstat.c~mm-vmscan-add-page-demotion-counter   2020-08-18 11:36:54.067583176 -0700
+> > +++ b/mm/vmstat.c       2020-08-18 11:36:54.072583176 -0700
+> > @@ -1200,6 +1200,8 @@ const char * const vmstat_text[] = {
+> >         "pgrefill",
+> >         "pgsteal_kswapd",
+> >         "pgsteal_direct",
+> > +       "pgdemote_kswapd",
+> > +       "pgdemote_direct",
+> >         "pgscan_kswapd",
+> >         "pgscan_direct",
+> >         "pgscan_direct_throttle",
+> > _
