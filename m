@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3162224BBD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8624E24BCE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729551AbgHTJsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:48:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53038 "EHLO mail.kernel.org"
+        id S1729271AbgHTMzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:55:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729423AbgHTJsV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:48:21 -0400
+        id S1729089AbgHTJnR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:43:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D7A320724;
-        Thu, 20 Aug 2020 09:48:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F7CE207DE;
+        Thu, 20 Aug 2020 09:43:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916900;
-        bh=jWbCFWTiHf+hm/s+EFXcXBpUr6fBEbGeNjTBoOoDPWc=;
+        s=default; t=1597916596;
+        bh=NnN6YacW0a2xO0gvCRIxh7ybG+jk2VHafX/DGDFWdoM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OcHKqfk/VNCv4kR3DCc0zuhOen8Vv9HGXOxBMfiQjG+I7OxXr5GlkXUguIHpdpa8M
-         4ci8DYXkPWe0FdTrk0dfN1tQ2g/3+bCU3yrrzyTlrQdqxbOwW+8eAQlwldzmAhp+SX
-         4JDNMDut1h5kwaDetpzDJmWRf379N/2ImPePkM2E=
+        b=fCmmi+7IhafKvwcynK5Jffc9AGuhA9RH4z9vHaRlgKBt8vp4g/vq2s0E/3FoK+ppx
+         gcE2dx5HjUZd/20OySvLUyeWrN8bc6hsZRetp71dARIc+spq0vG80CQ9RdKdw4IxtB
+         56uWBtBdkYM1WikJzqyRaxZyfe16yYNZ/JLk1EBw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yishai Hadas <yishaih@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Scott Mayhew <smayhew@redhat.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 086/152] IB/uverbs: Set IOVA on IB MR in uverbs layer
-Date:   Thu, 20 Aug 2020 11:20:53 +0200
-Message-Id: <20200820091558.142006157@linuxfoundation.org>
+Subject: [PATCH 5.7 157/204] nfs: nfs_file_write() should check for writeback errors
+Date:   Thu, 20 Aug 2020 11:20:54 +0200
+Message-Id: <20200820091614.073906138@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
-References: <20200820091553.615456912@linuxfoundation.org>
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,73 +44,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yishai Hadas <yishaih@mellanox.com>
+From: Scott Mayhew <smayhew@redhat.com>
 
-[ Upstream commit 04c0a5fcfcf65aade2fb238b6336445f1a99b646 ]
+[ Upstream commit ce368536dd614452407dc31e2449eb84681a06af ]
 
-Set IOVA on IB MR in uverbs layer to let all drivers have it, this
-includes both reg/rereg MR flows.
-As part of this change cleaned-up this setting from the drivers that
-already did it by themselves in their user flows.
+The NFS_CONTEXT_ERROR_WRITE flag (as well as the check of said flag) was
+removed by commit 6fbda89b257f.  The absence of an error check allows
+writes to be continually queued up for a server that may no longer be
+able to handle them.  Fix it by adding an error check using the generic
+error reporting functions.
 
-Fixes: e6f0330106f4 ("mlx4_ib: set user mr attributes in struct ib_mr")
-Link: https://lore.kernel.org/r/20200630093916.332097-3-leon@kernel.org
-Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 6fbda89b257f ("NFS: Replace custom error reporting mechanism with generic one")
+Signed-off-by: Scott Mayhew <smayhew@redhat.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/uverbs_cmd.c | 4 ++++
- drivers/infiniband/hw/cxgb4/mem.c    | 1 -
- drivers/infiniband/hw/mlx4/mr.c      | 1 -
- 3 files changed, 4 insertions(+), 2 deletions(-)
+ fs/nfs/file.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index e2ddcb0dc4ee3..c398d1a64614c 100644
---- a/drivers/infiniband/core/uverbs_cmd.c
-+++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -757,6 +757,7 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
- 	mr->uobject = uobj;
- 	atomic_inc(&pd->usecnt);
- 	mr->res.type = RDMA_RESTRACK_MR;
-+	mr->iova = cmd.hca_va;
- 	rdma_restrack_uadd(&mr->res);
+diff --git a/fs/nfs/file.c b/fs/nfs/file.c
+index d72496efa17b0..63940a7a70be1 100644
+--- a/fs/nfs/file.c
++++ b/fs/nfs/file.c
+@@ -590,12 +590,14 @@ static const struct vm_operations_struct nfs_file_vm_ops = {
+ 	.page_mkwrite = nfs_vm_page_mkwrite,
+ };
  
- 	uobj->object = mr;
-@@ -847,6 +848,9 @@ static int ib_uverbs_rereg_mr(struct uverbs_attr_bundle *attrs)
- 		atomic_dec(&old_pd->usecnt);
- 	}
+-static int nfs_need_check_write(struct file *filp, struct inode *inode)
++static int nfs_need_check_write(struct file *filp, struct inode *inode,
++				int error)
+ {
+ 	struct nfs_open_context *ctx;
  
-+	if (cmd.flags & IB_MR_REREG_TRANS)
-+		mr->iova = cmd.hca_va;
-+
- 	memset(&resp, 0, sizeof(resp));
- 	resp.lkey      = mr->lkey;
- 	resp.rkey      = mr->rkey;
-diff --git a/drivers/infiniband/hw/cxgb4/mem.c b/drivers/infiniband/hw/cxgb4/mem.c
-index 35c284af574da..dcb58cef336d9 100644
---- a/drivers/infiniband/hw/cxgb4/mem.c
-+++ b/drivers/infiniband/hw/cxgb4/mem.c
-@@ -399,7 +399,6 @@ static int finish_mem_reg(struct c4iw_mr *mhp, u32 stag)
- 	mmid = stag >> 8;
- 	mhp->ibmr.rkey = mhp->ibmr.lkey = stag;
- 	mhp->ibmr.length = mhp->attr.len;
--	mhp->ibmr.iova = mhp->attr.va_fbo;
- 	mhp->ibmr.page_size = 1U << (mhp->attr.page_size + 12);
- 	pr_debug("mmid 0x%x mhp %p\n", mmid, mhp);
- 	return xa_insert_irq(&mhp->rhp->mrs, mmid, mhp, GFP_KERNEL);
-diff --git a/drivers/infiniband/hw/mlx4/mr.c b/drivers/infiniband/hw/mlx4/mr.c
-index 6ae503cfc5264..9114cb7307692 100644
---- a/drivers/infiniband/hw/mlx4/mr.c
-+++ b/drivers/infiniband/hw/mlx4/mr.c
-@@ -439,7 +439,6 @@ struct ib_mr *mlx4_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 	ctx = nfs_file_open_context(filp);
+-	if (nfs_ctx_key_to_expire(ctx, inode))
++	if (nfs_error_is_fatal_on_server(error) ||
++	    nfs_ctx_key_to_expire(ctx, inode))
+ 		return 1;
+ 	return 0;
+ }
+@@ -606,6 +608,8 @@ ssize_t nfs_file_write(struct kiocb *iocb, struct iov_iter *from)
+ 	struct inode *inode = file_inode(file);
+ 	unsigned long written = 0;
+ 	ssize_t result;
++	errseq_t since;
++	int error;
  
- 	mr->ibmr.rkey = mr->ibmr.lkey = mr->mmr.key;
- 	mr->ibmr.length = length;
--	mr->ibmr.iova = virt_addr;
- 	mr->ibmr.page_size = 1U << shift;
+ 	result = nfs_key_timeout_notify(file, inode);
+ 	if (result)
+@@ -630,6 +634,7 @@ ssize_t nfs_file_write(struct kiocb *iocb, struct iov_iter *from)
+ 	if (iocb->ki_pos > i_size_read(inode))
+ 		nfs_revalidate_mapping(inode, file->f_mapping);
  
- 	return &mr->ibmr;
++	since = filemap_sample_wb_err(file->f_mapping);
+ 	nfs_start_io_write(inode);
+ 	result = generic_write_checks(iocb, from);
+ 	if (result > 0) {
+@@ -648,7 +653,8 @@ ssize_t nfs_file_write(struct kiocb *iocb, struct iov_iter *from)
+ 		goto out;
+ 
+ 	/* Return error values */
+-	if (nfs_need_check_write(file, inode)) {
++	error = filemap_check_wb_err(file->f_mapping, since);
++	if (nfs_need_check_write(file, inode, error)) {
+ 		int err = nfs_wb_all(inode);
+ 		if (err < 0)
+ 			result = err;
 -- 
 2.25.1
 
