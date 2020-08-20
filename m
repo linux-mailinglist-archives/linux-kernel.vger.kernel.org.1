@@ -2,110 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BFB824B91A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A427D24B8FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729141AbgHTLjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:39:12 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40639 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730558AbgHTLat (ORCPT
+        id S1730538AbgHTLhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:37:03 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:29940 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730154AbgHTLcv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 07:30:49 -0400
-Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k8im0-0000Eh-8L; Thu, 20 Aug 2020 11:30:24 +0000
-Date:   Thu, 20 Aug 2020 13:30:23 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>, mingo@kernel.org,
-        peterz@infradead.org, tglx@linutronix.de, esyr@redhat.com,
-        christian@kellner.me, areber@redhat.com, shakeelb@google.com,
-        cyphar@cyphar.com, adobriyan@gmail.com, akpm@linux-foundation.org,
-        ebiederm@xmission.com, gladkov.alexey@gmail.com, walken@google.com,
-        daniel.m.jordan@oracle.com, avagin@gmail.com,
-        bernd.edlinger@hotmail.de, john.johansen@canonical.com,
-        laoar.shao@gmail.com, timmurray@google.com, minchan@kernel.org,
-        kernel-team@android.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 1/1] mm, oom_adj: don't loop through tasks in
- __set_oom_adj when not necessary
-Message-ID: <20200820113023.rjxque4jveo4nj5o@wittgenstein>
-References: <20200820002053.1424000-1-surenb@google.com>
- <20200820105555.GA4546@redhat.com>
- <20200820111349.GE5033@dhcp22.suse.cz>
+        Thu, 20 Aug 2020 07:32:51 -0400
+X-UUID: fc157446e9cb41f3bc3de99a6f4896b1-20200820
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=G7pvdWU6ecd0ZELjOP1tjCdcvdakfvhwkNEctXHsX3w=;
+        b=Y6lBTbZDjgKKOj7caJpk1mtzuw3Z0Qn0ZUOokYIMZ3AvqlF1aAX+flQj5HdUBc2zNnKqSERYSZKPglPl706yIqqcrdRs/vfmc25ywYpt6JVRMg1cEHNI/sJelnAZosLxwsG8YJXWhVoGSZEhztyZi6RjGZOvlFxWiMJzvkb3bzc=;
+X-UUID: fc157446e9cb41f3bc3de99a6f4896b1-20200820
+Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLS)
+        with ESMTP id 882762425; Thu, 20 Aug 2020 19:32:22 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ MTKMBS31DR.mediatek.inc (172.27.6.102) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 20 Aug 2020 19:32:20 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 20 Aug 2020 19:32:18 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Felipe Balbi <balbi@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Al Cooper <alcooperx@gmail.com>,
+        Sasi Kumar <sasi.kumar@broadcom.com>,
+        Peter Chen <peter.chen@nxp.com>,
+        Minas Harutyunyan <hminas@synopsys.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH v2 01/11] usb: gadget: bdc: fix improper SPDX comment style for header file
+Date:   Thu, 20 Aug 2020 19:30:36 +0800
+Message-ID: <1597923046-12535-1-git-send-email-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200820111349.GE5033@dhcp22.suse.cz>
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 921FA67EAD5DF1151DD75AC4BE3FAD03D1FB55737FB5FEAF8748B0F0395FC15B2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 01:13:49PM +0200, Michal Hocko wrote:
-> On Thu 20-08-20 12:55:56, Oleg Nesterov wrote:
-> > On 08/19, Suren Baghdasaryan wrote:
-> > >
-> > > Since the combination of CLONE_VM and !CLONE_SIGHAND is rarely
-> > > used the additional mutex lock in that path of the clone() syscall should
-> > > not affect its overall performance. Clearing the MMF_PROC_SHARED flag
-> > > (when the last process sharing the mm exits) is left out of this patch to
-> > > keep it simple and because it is believed that this threading model is
-> > > rare.
-> > 
-> > vfork() ?
-> 
-> Could you be more specific?
+Rm9yIEMgaGVhZGVyIGZpbGVzIERvY3VtZW50YXRpb24vcHJvY2Vzcy9saWNlbnNlLXJ1bGVzLnJz
+dA0KbWFuZGF0ZXMgQy1saWtlIGNvbW1lbnRzIChvcHBvc2VkIHRvIEMgc291cmNlIGZpbGVzIHdo
+ZXJlDQpDKysgc3R5bGUgc2hvdWxkIGJlIHVzZWQpLg0KDQpDYzogRmxvcmlhbiBGYWluZWxsaSA8
+Zi5mYWluZWxsaUBnbWFpbC5jb20+DQpTaWduZWQtb2ZmLWJ5OiBDaHVuZmVuZyBZdW4gPGNodW5m
+ZW5nLnl1bkBtZWRpYXRlay5jb20+DQotLS0NCnYyOiBhZGQgQ2MgRmxvcmlhbg0KLS0tDQogZHJp
+dmVycy91c2IvZ2FkZ2V0L3VkYy9iZGMvYmRjLmggICAgIHwgMiArLQ0KIGRyaXZlcnMvdXNiL2dh
+ZGdldC91ZGMvYmRjL2JkY19jbWQuaCB8IDIgKy0NCiBkcml2ZXJzL3VzYi9nYWRnZXQvdWRjL2Jk
+Yy9iZGNfZGJnLmggfCAyICstDQogZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9iZGMvYmRjX2VwLmgg
+IHwgMiArLQ0KIDQgZmlsZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygt
+KQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9iZGMvYmRjLmggYi9kcml2
+ZXJzL3VzYi9nYWRnZXQvdWRjL2JkYy9iZGMuaA0KaW5kZXggYWM3NWUyNS4uZmNiYTc3ZSAxMDA2
+NDQNCi0tLSBhL2RyaXZlcnMvdXNiL2dhZGdldC91ZGMvYmRjL2JkYy5oDQorKysgYi9kcml2ZXJz
+L3VzYi9nYWRnZXQvdWRjL2JkYy9iZGMuaA0KQEAgLTEsNCArMSw0IEBADQotLy8gU1BEWC1MaWNl
+bnNlLUlkZW50aWZpZXI6IEdQTC0yLjArDQorLyogU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQ
+TC0yLjArICovDQogLyoNCiAgKiBiZGMuaCAtIGhlYWRlciBmb3IgdGhlIEJSQ00gQkRDIFVTQjMu
+MCBkZXZpY2UgY29udHJvbGxlcg0KICAqDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvZ2FkZ2V0
+L3VkYy9iZGMvYmRjX2NtZC5oIGIvZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9iZGMvYmRjX2NtZC5o
+DQppbmRleCAyOWNjOTg4Li4zNzNlNjc0IDEwMDY0NA0KLS0tIGEvZHJpdmVycy91c2IvZ2FkZ2V0
+L3VkYy9iZGMvYmRjX2NtZC5oDQorKysgYi9kcml2ZXJzL3VzYi9nYWRnZXQvdWRjL2JkYy9iZGNf
+Y21kLmgNCkBAIC0xLDQgKzEsNCBAQA0KLS8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwt
+Mi4wKw0KKy8qIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wKyAqLw0KIC8qDQogICog
+YmRjX2NtZC5oIC0gaGVhZGVyIGZvciB0aGUgQkRDIGRlYnVnIGZ1bmN0aW9ucw0KICAqDQpkaWZm
+IC0tZ2l0IGEvZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9iZGMvYmRjX2RiZy5oIGIvZHJpdmVycy91
+c2IvZ2FkZ2V0L3VkYy9iZGMvYmRjX2RiZy5oDQppbmRleCAzNzNkNWFiLi44NTlkNTg4IDEwMDY0
+NA0KLS0tIGEvZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9iZGMvYmRjX2RiZy5oDQorKysgYi9kcml2
+ZXJzL3VzYi9nYWRnZXQvdWRjL2JkYy9iZGNfZGJnLmgNCkBAIC0xLDQgKzEsNCBAQA0KLS8vIFNQ
+RFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wKw0KKy8qIFNQRFgtTGljZW5zZS1JZGVudGlm
+aWVyOiBHUEwtMi4wKyAqLw0KIC8qDQogICogYmRjX2RiZy5oIC0gaGVhZGVyIGZvciB0aGUgQkRD
+IGRlYnVnIGZ1bmN0aW9ucw0KICAqDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvZ2FkZ2V0L3Vk
+Yy9iZGMvYmRjX2VwLmggYi9kcml2ZXJzL3VzYi9nYWRnZXQvdWRjL2JkYy9iZGNfZXAuaA0KaW5k
+ZXggYTM3ZmY4MDMuLjViYmQ3M2YgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3VzYi9nYWRnZXQvdWRj
+L2JkYy9iZGNfZXAuaA0KKysrIGIvZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9iZGMvYmRjX2VwLmgN
+CkBAIC0xLDQgKzEsNCBAQA0KLS8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wKw0K
+Ky8qIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wKyAqLw0KIC8qDQogICogYmRjX2Vw
+LmggLSBoZWFkZXIgZm9yIHRoZSBCREMgZGVidWcgZnVuY3Rpb25zDQogICoNCi0tIA0KMS45LjEN
+Cg==
 
-vfork() implies CLONE_VM but !CLONE_THREAD. The way this patch is
-written the mutex lock will be taken every time you do a vfork().
-
-(It's honestly also debatable whether it's that rare. For one, userspace
-stuff I maintain uses it too (see [1]).
-[1]: https://github.com/lxc/lxc/blob/9d3b7c97f0443adc9f0b0438437657ab42f5a1c3/src/lxc/start.c#L1676
-)
-
-> 
-> > > --- a/kernel/fork.c
-> > > +++ b/kernel/fork.c
-> > > @@ -1403,6 +1403,15 @@ static int copy_mm(unsigned long clone_flags, struct task_struct *tsk)
-> > >  	if (clone_flags & CLONE_VM) {
-> > >  		mmget(oldmm);
-> > >  		mm = oldmm;
-> > > +		if (!(clone_flags & CLONE_SIGHAND)) {
-> > 
-> > I agree with Christian, you need CLONE_THREAD
-> 
-> This was my suggestion to Suren, likely because I've misrememberd which
-> clone flag is responsible for the signal delivery. But now, after double
-> checking we do explicitly disallow CLONE_SIGHAND && !CLONE_VM. So
-> CLONE_THREAD is the right thing to check.
-> 
-> > > +			/* We need to synchronize with __set_oom_adj */
-> > > +			mutex_lock(&oom_adj_lock);
-> > > +			set_bit(MMF_PROC_SHARED, &mm->flags);
-> > > +			/* Update the values in case they were changed after copy_signal */
-> > > +			tsk->signal->oom_score_adj = current->signal->oom_score_adj;
-> > > +			tsk->signal->oom_score_adj_min = current->signal->oom_score_adj_min;
-> > > +			mutex_unlock(&oom_adj_lock);
-> > 
-> > I don't understand how this can close the race with __set_oom_adj...
-> > 
-> > What if __set_oom_adj() is called right after mutex_unlock() ? It will see
-> > MMF_PROC_SHARED, but for_each_process() won't find the new child until
-> > copy_process() does list_add_tail_rcu(&p->tasks, &init_task.tasks) ?
-> 
-> Good point. Then we will have to move this thing there.
-
-I was toying with moving this into sm like:
-
-static inline copy_oom_score(unsigned long flags, struct task_struct *tsk)
-
-trying to rely on set_bit() and test_bit() in copy_mm() being atomic and
-then calling it where Oleg said after the point of no return.
-
-Christian
