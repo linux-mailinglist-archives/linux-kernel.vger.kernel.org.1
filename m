@@ -2,228 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9779624C33F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 18:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8871424C344
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 18:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729837AbgHTQSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 12:18:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50075 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729802AbgHTQRn (ORCPT
+        id S1729702AbgHTQTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 12:19:38 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:43232 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729944AbgHTQTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 12:17:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597940257;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T4Kp9q57v6oKTddIn0XFYGFL+/Vlz9rKcFYPTaJ4D5s=;
-        b=OhE+xx8nl+dhYZ/88q7PxDHrapj+C/kuq4J9gAlQRvn+KdD+l+FQm+8UxivCy6VeKOIRPx
-        222kbxqQULHsm8vUhIrMyAEo+Ye6BvDZ0ueki7YGOFLHhhVKtzP4mk7/3mkFTOaGz/dq8s
-        e+cpYzY3oTEcAg6G0z2U6JG6JddAJvE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-569-ClgmlA3JMhuolaQDkwRw-g-1; Thu, 20 Aug 2020 12:17:35 -0400
-X-MC-Unique: ClgmlA3JMhuolaQDkwRw-g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 09C2A185519C;
-        Thu, 20 Aug 2020 16:17:33 +0000 (UTC)
-Received: from treble (ovpn-117-70.rdu2.redhat.com [10.10.117.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EC3F110023A7;
-        Thu, 20 Aug 2020 16:17:30 +0000 (UTC)
-Date:   Thu, 20 Aug 2020 11:17:29 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     peterz@infradead.org
-Cc:     Brian Gerst <brgerst@gmail.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kyle Huey <me@kylehuey.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Robert O'Callahan <rocallahan@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [RFC][PATCH 4/7] x86/debug: Move historical SYSENTER junk into
- exc_debug_kernel()
-Message-ID: <20200820161729.cxzjsdqtgr6vktqx@treble>
-References: <20200820103832.486877479@infradead.org>
- <20200820104905.294802764@infradead.org>
- <CAMzpN2gmCu0q_8gLAOcSuLjpKF+rNj=wiCFsGZXgNwz000HCvg@mail.gmail.com>
- <20200820150841.GB1362448@hirez.programming.kicks-ass.net>
- <20200820151659.b7q7hspe5zsf46eg@treble>
- <20200820152111.GC1362448@hirez.programming.kicks-ass.net>
+        Thu, 20 Aug 2020 12:19:24 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07KGAbFN010187;
+        Thu, 20 Aug 2020 09:19:04 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=n88BMqN7VBIH/kJoxqi6FPMKxdintb/pzM7ZVXrtC2k=;
+ b=D7AUyCF24hDz3cXh2cjPG0huAYgPTA9KsIsdwcm/l/g6aSVnDDrBK5GpE+Cvv57/yjP+
+ goMr+gQpznETh5tFZbHbaShh/lYxvrzyWIdwzJiljelT4CCFKSwRVeWMtfvjWp+PDO37
+ oDXIZcj/OcKtSmW6DxDbhpnBuLMDmPrizkM= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 331d50m0cr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 20 Aug 2020 09:19:04 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 20 Aug 2020 09:19:04 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DUHdwGEuELiwr3WM5qrE+PZussXS8Fj7aCtiSYUIwUlMBd3F7buXJtM+Y/cTDZrqrfZyWBBUcjYOUcURQCAHD7RObfdZy19pzJUIgCSQK9e0PeoloGVMoXsmtAQcNhbPgcqP0HRwWg1helCgOteMt1EkgNFmjlwgs2mghANt+xpENW7XmODuLWWPz4zuzJl2jVkW7aditOT/w6/SMXap+YVBEfhsrrPbes9kxmshqHcnuzCJvr1hhxFBI6BgLgbspl9yhhf2mMJCSz4nfjVwhIpEXdMcOl2gY6sTM/73yZg8OdS8H4n7TwB0CzdIXlKeU+FDAGxGv1156e1XukkfTA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n88BMqN7VBIH/kJoxqi6FPMKxdintb/pzM7ZVXrtC2k=;
+ b=VOzw9pEmJACgIPwrUDYcj0/FuGXNPFh2D57AgfNCZUItSvKw8GMNuYjV3Ow2tFuq76Vl7b3ssnJyLg7qcGg2p8n2nZovrbJ50qeErpjKAggU0Jf40JRk9zMcXPzt53hPwQpvV1TBIROu2nw9/Jl8wITa5/CAiL6zo4r53gMwL3tI1NY7a7s3+/TWERPlMNc5fYf8PF6JUtcTW+6ahSOxG/52Dl/Pfk6NX1MjEKgNUUhJKmcL2+qlqh7WX3Ldjfqkhrk5UNNgaUXZ3djwSg7UtthxMvIZFiSzBVUcpPpwQQ2ycxF6hducRAGfeeFI5U1ZV7Ob5XpxFrCMlg4P/RdKiQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n88BMqN7VBIH/kJoxqi6FPMKxdintb/pzM7ZVXrtC2k=;
+ b=lYdzPevzFM+AM7CJ4Oi3UJ1kZDj8qjEBTPsVGEwCB68WyXVW5toWn5d2eDinV6czD30mRubYkBTGrG9zLgs31ZO8TjD+A3bv6Y7kWMDnKxhTsvrUT4BBnQJ2Kg0euBlSq5NU2YffaTlwvIiNmvkSPa80FxUOWsml+EL0ykROlbs=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.26; Thu, 20 Aug
+ 2020 16:19:02 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::56b:2925:8762:2d80]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::56b:2925:8762:2d80%7]) with mapi id 15.20.3305.026; Thu, 20 Aug 2020
+ 16:19:02 +0000
+Subject: Re: [PATCH bpf-next v2 4/6] bpf: override the meaning of
+ ARG_PTR_TO_MAP_VALUE for sockmap and sockhash
+To:     Lorenz Bauer <lmb@cloudflare.com>
+CC:     Jakub Sitnicki <jakub@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20200820135729.135783-1-lmb@cloudflare.com>
+ <20200820135729.135783-5-lmb@cloudflare.com>
+ <34027dbc-d5c6-e886-21f8-f3e73e2fde4a@fb.com>
+ <CACAyw98gaWmpJT-LPhqKbKgaPG9s=aNU=K2Db1144dihFHzXJA@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <2d167605-df64-29c8-f817-d2602cb9d57f@fb.com>
+Date:   Thu, 20 Aug 2020 09:18:57 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
+In-Reply-To: <CACAyw98gaWmpJT-LPhqKbKgaPG9s=aNU=K2Db1144dihFHzXJA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BL1PR13CA0056.namprd13.prod.outlook.com
+ (2603:10b6:208:257::31) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200820152111.GC1362448@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from 255.255.255.255 (255.255.255.255) by BL1PR13CA0056.namprd13.prod.outlook.com (2603:10b6:208:257::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.10 via Frontend Transport; Thu, 20 Aug 2020 16:19:00 +0000
+X-Originating-IP: [2620:10d:c091:480::1:7ec1]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c8897372-e04f-459f-dce0-08d84524c0a2
+X-MS-TrafficTypeDiagnostic: BYAPR15MB4088:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB408882415B0AE4C27A25F912D35A0@BYAPR15MB4088.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lO7QPyvWnMamYDwBonbwPgV1xN46L/Uvfm1a36ZmcTDJtjRP2QbpUnQsuYUv3Fi4aKFhnBLtyFFUe0s5z5hrBMzOUEMCOt7tJJFgq4GMZruMWTixHdMdq8oWIRsWgd3cxtWbpOwUGLl/+n1Xd8GhH9m7WeG/7iBbcdkhI8P4ZIeH+jqa2B8j58IahKPxbW2pinUrYCGohIw6gdKqV6qS0nvQjIYjNa+u1q9mVC+Y9AqeXjCuM0wiyCjTFgbdR6IO3L4ws23t0DXp+/7u6ZQq76CyxoI21KT3i2x6br1z3cp7tyUPXlyfXvJDr3RGOYunU54UNQL93vT+ImYg/nrtsCDXcEf+Km7NtNWG0vdG/7TuRYrCMp9CAHAzPhMw7CbFE1nBX0st9fpQejBR7BrDfDO6d9mCyARkiN9TvCMQ4/Y=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(136003)(396003)(39860400002)(346002)(54906003)(52116002)(66556008)(66476007)(316002)(66946007)(8936002)(31696002)(5660300002)(83380400001)(6666004)(186003)(53546011)(86362001)(2906002)(2616005)(16576012)(36756003)(478600001)(110011004)(8676002)(956004)(4326008)(6486002)(6916009)(31686004)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: O5m73O5sxRYDxSaO7qcI0m+shFTwPgSlVIlAMzRlculHn3OmuFXl3GNkyXeq5USgKnnQonv0P48tZEysMzMrkoWA5qU6fj9UiMI+ulNw4wOtIiX4dSXIhb4q8PSCLSF5bNBGHl2zmiNuTREyDuCS/Km/ZcIT38dKHxb0iaS0e7jRaXT4BSJ1V6gquFAHYGtz7m5524hABAv9ZSbDc55d9fvp4URxhdodNFvaPeqtWR3Lsn0BxsQ9ANd32eBicM7aB0H8mtPOxiYEYLzPXdgHlop6Nt/sHk7DcQRIKDDoKIgesaSAy4wHhwgbR7S09GVFKNIPTZRlcMdTOZI+SQirL7r31IGzqoyoLCtVRX9yTIt8tSFsRo2OWApVWVTudh9qZhU44eTAYp51pfKE8PoCkgKo3w0RRvwRz4CYElDtQTZ/y7eoQPawsvkZoY6kbNjQ0B2DhDPKxNvuPjPoBetF5ZYHuQXku5xnWkytSxNgAaHV3kiSKVXHpg+fXa6wrZeAhf+C5s2p7PI+4RfO704LZA491Oi6Cbb8ZusfDkQT/7VfmKoIo8PF6sw/pPekWvoGzp/l2DC2Jwzl2ZPcVh/2BH9fNYx/kgcx9XkuzuFs9jDYcTjw1BlQ5RmiAVsV/w0tfEjDpFtu9CRZSJZlRljFxDqI5Ndc4iGrd9YiDKgyoXk=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c8897372-e04f-459f-dce0-08d84524c0a2
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2020 16:19:02.7012
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AZUWeQio4uxZFdaE0DAqs0r/DPi2yZ52rvgo5ItIzRs0KWg0mV/Dhhfn5EHKq5ip
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB4088
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-20_03:2020-08-19,2020-08-20 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
+ malwarescore=0 mlxlogscore=999 priorityscore=1501 impostorscore=0
+ clxscore=1015 phishscore=0 suspectscore=0 adultscore=0 bulkscore=0
+ mlxscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2008200132
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 05:21:11PM +0200, peterz@infradead.org wrote:
-> On Thu, Aug 20, 2020 at 10:16:59AM -0500, Josh Poimboeuf wrote:
-> > On Thu, Aug 20, 2020 at 05:08:41PM +0200, peterz@infradead.org wrote:
-> > > On Thu, Aug 20, 2020 at 10:45:12AM -0400, Brian Gerst wrote:
-> > > > On Thu, Aug 20, 2020 at 6:53 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > > > >
-> > > > >
-> > > > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > > > > ---
-> > > > >  arch/x86/kernel/traps.c |   24 ++++++++++++------------
-> > > > >  1 file changed, 12 insertions(+), 12 deletions(-)
-> > > > >
-> > > > > --- a/arch/x86/kernel/traps.c
-> > > > > +++ b/arch/x86/kernel/traps.c
-> > > > > @@ -820,18 +820,6 @@ static void handle_debug(struct pt_regs
-> > > > >                 goto out;
-> > > > >         }
-> > > > >
-> > > > > -       if (WARN_ON_ONCE((dr6 & DR_STEP) && !user_mode(regs))) {
-> > > > > -               /*
-> > > > > -                * Historical junk that used to handle SYSENTER single-stepping.
-> > > > > -                * This should be unreachable now.  If we survive for a while
-> > > > > -                * without anyone hitting this warning, we'll turn this into
-> > > > > -                * an oops.
-> > > > > -                */
-> > > > > -               tsk->thread.debugreg6 &= ~DR_STEP;
-> > > > > -               set_tsk_thread_flag(tsk, TIF_SINGLESTEP);
-> > > > > -               regs->flags &= ~X86_EFLAGS_TF;
-> > > > > -       }
-> > > > > -
-> > > > >         si_code = get_si_code(tsk->thread.debugreg6);
-> > > > >         if (tsk->thread.debugreg6 & (DR_STEP | DR_TRAP_BITS) || user_icebp)
-> > > > >                 send_sigtrap(regs, 0, si_code);
-> > > > > @@ -874,6 +862,18 @@ static __always_inline void exc_debug_ke
-> > > > >         if (kprobe_debug_handler(regs))
-> > > > >                 goto out;
-> > > > >
-> > > > > +       if (WARN_ON_ONCE(dr6 & DR_STEP)) {
-> > > > > +               /*
-> > > > > +                * Historical junk that used to handle SYSENTER single-stepping.
-> > > > > +                * This should be unreachable now.  If we survive for a while
-> > > > > +                * without anyone hitting this warning, we'll turn this into
-> > > > > +                * an oops.
-> > > > > +                */
-> > > > > +               dr6 &= ~DR_STEP;
-> > > > > +               set_thread_flag(TIF_SINGLESTEP);
-> > > > > +               regs->flags &= ~X86_EFLAGS_TF;
-> > > > > +       }
-> > > > > +
-> > > > >         handle_debug(regs, dr6, false);
-> > > > >
-> > > > >  out:
-> > > > 
-> > > > Can this be removed or changed to a BUG()?  The warning has been there
-> > > > since 2016 and nobody has apparently complained about it.
-> > > 
-> > > Something like:
-> > > 
-> > > 	/*
-> > > 	 * The kernel doesn't do TF outside of Kprobes, so if we get
-> > > 	 * here, something's fishy.
-> > > 	 */
-> > > 	BUG_ON(dr6 & DR_STEP);
-> > > 
-> > > ?
-> > 
-> > What about kernel debuggers like kgdb and qemu gdb?
+
+
+On 8/20/20 9:15 AM, Lorenz Bauer wrote:
+> On Thu, 20 Aug 2020 at 17:10, Yonghong Song <yhs@fb.com> wrote:
+>>
+>>
+>>
+>> On 8/20/20 6:57 AM, Lorenz Bauer wrote:
+>>> The verifier assumes that map values are simple blobs of memory, and
+>>> therefore treats ARG_PTR_TO_MAP_VALUE, etc. as such. However, there are
+>>> map types where this isn't true. For example, sockmap and sockhash store
+>>> sockets. In general this isn't a big problem: we can just
+>>> write helpers that explicitly requests PTR_TO_SOCKET instead of
+>>> ARG_PTR_TO_MAP_VALUE.
+>>>
+>>> The one exception are the standard map helpers like map_update_elem,
+>>> map_lookup_elem, etc. Here it would be nice we could overload the
+>>> function prototype for different kinds of maps. Unfortunately, this
+>>> isn't entirely straight forward:
+>>> We only know the type of the map once we have resolved meta->map_ptr
+>>> in check_func_arg. This means we can't swap out the prototype
+>>> in check_helper_call until we're half way through the function.
+>>>
+>>> Instead, modify check_func_arg to treat ARG_PTR_TO_MAP_VALUE* to
+>>> mean "the native type for the map" instead of "pointer to memory"
+>>> for sockmap and sockhash. This means we don't have to modify the
+>>> function prototype at all
+>>>
+>>> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+>>> ---
+>>>    kernel/bpf/verifier.c | 37 +++++++++++++++++++++++++++++++++++++
+>>>    1 file changed, 37 insertions(+)
+>>>
+>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>>> index b6ccfce3bf4c..24feec515d3e 100644
+>>> --- a/kernel/bpf/verifier.c
+>>> +++ b/kernel/bpf/verifier.c
+>>> @@ -3872,6 +3872,35 @@ static int int_ptr_type_to_size(enum bpf_arg_type type)
+>>>        return -EINVAL;
+>>>    }
+>>>
+>>> +static int resolve_map_arg_type(struct bpf_verifier_env *env,
+>>> +                              const struct bpf_call_arg_meta *meta,
+>>> +                              enum bpf_arg_type *arg_type)
+>>> +{
+>>> +     if (!meta->map_ptr) {
+>>> +             /* kernel subsystem misconfigured verifier */
+>>> +             verbose(env, "invalid map_ptr to access map->type\n");
+>>> +             return -EACCES;
+>>> +     }
+>>> +
+>>> +     switch (meta->map_ptr->map_type) {
+>>> +     case BPF_MAP_TYPE_SOCKMAP:
+>>> +     case BPF_MAP_TYPE_SOCKHASH:
+>>> +             if (*arg_type == ARG_PTR_TO_MAP_VALUE) {
+>>> +                     *arg_type = ARG_PTR_TO_SOCKET;
+>>> +             } else if (*arg_type == ARG_PTR_TO_MAP_VALUE_OR_NULL) {
+>>> +                     *arg_type = ARG_PTR_TO_SOCKET_OR_NULL;
+>>
+>> Is this *arg_type == ARG_PTR_TO_MAP_VALUE_OR_NULL possible with
+>> current implementation?
 > 
-> qemu-gdb stub should eat the event before it lands in the guest
+> No, the only user is bpf_sk_storage_get and friends which requires
+> BPF_MAP_TYPE_SK_STORAGE.
+> I seemed to make sense to map ARG_PTR_TO_MAP_VALUE_OR_NULL, but I can
+> remove it as
+> well if you prefer. Do you think this is dangerous?
 
-Are we sure about that?  I triggered the warning just now, stepping
-through the debug handler.
+It is not dangerous, but is misleading. People looking at code may
+think it is possible but actually it is not. So I prefer you remove it.
 
-[   34.577903] ------------[ cut here ]------------
-[   34.578410] WARNING: CPU: 0 PID: 950 at arch/x86/kernel/traps.c:843 handle_debug+0x10e/0x140
-[   34.579152] Modules linked in:
-[   34.579439]  ip6t_rpfilter
-[   34.579690]  ip6t_REJECT
-[   34.579945]  nf_reject_ipv6
-[   34.580216]  xt_conntrack
-[   34.580467]  ebtable_nat
-[   34.580715]  ebtable_broute
-[   34.581003]  ip6table_raw
-[   34.581258]  ip6table_mangle
-[   34.581534]  ip6table_nat
-[   34.581801]  ip6table_security
-[   34.582116]  iptable_raw
-[   34.582361]  iptable_mangle
-[   34.582642]  iptable_nat
-[   34.582916]  nf_nat
-[   34.583136]  nf_conntrack
-[   34.583394]  nf_defrag_ipv6
-[   34.583665]  nf_defrag_ipv4
-[   34.583937]  iptable_security
-[   34.584246]  ebtable_filter
-[   34.584504]  ebtables
-[   34.584735]  ip6table_filter
-[   34.585038]  ip6_tables
-[   34.585262]  rfkill
-[   34.585453]  snd_hda_codec_generic
-[   34.585792]  sunrpc
-[   34.586006]  crct10dif_pclmul
-[   34.586285]  crc32_pclmul
-[   34.586549]  ghash_clmulni_intel
-[   34.586892]  snd_hda_intel
-[   34.587172]  snd_intel_dspcfg
-[   34.587456]  snd_hda_codec
-[   34.587705]  snd_hwdep
-[   34.587953]  snd_hda_core
-[   34.588222]  snd_pcm
-[   34.588435]  virtio_balloon
-[   34.588706]  snd_timer
-[   34.588946]  snd
-[   34.589131]  soundcore
-[   34.589354]  i2c_piix4
-[   34.589889]  xfs
-[   34.590381]  libcrc32c
-[   34.590904]  virtio_net
-[   34.591460]  net_failover
-[   34.592004]  virtio_blk
-[   34.592544]  failover
-[   34.593035]  virtio_console
-[   34.593514]  crc32c_intel
-[   34.593967]  qxl
-[   34.594359]  drm_ttm_helper
-[   34.594831]  ttm
-[   34.595219]  serio_raw
-[   34.595648]  drm_kms_helper
-[   34.596126]  virtio_pci
-[   34.596568]  virtio_ring
-[   34.597026]  drm
-[   34.597418]  virtio
-[   34.597831]  ata_generic
-[   34.598304]  pata_acpi
-[   34.598757] CPU: 0 PID: 950 Comm: a.out Not tainted 5.9.0-rc1+ #275
-[   34.599555] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
-[   34.601250] RIP: 0010:handle_debug+0x10e/0x140
-[   34.601916] Code: 91 00 00 00 02 0f 84 55 ff ff ff fa 66 0f 1f 44 00 00 e8 35 f7 20 00 e9 44 ff ff ff e8 1b f6 20 00 fb 66 0f 1f 44 00 00 cc 87 <0f> 0b 80 e4 bf 49 89 85 18 28 00 00 3e 41 80 4d 00 10 48 81 a3 90
-[   34.604087] RSP: 0000:fffffe000000dee8 EFLAGS: 00010246
-[   34.604870] RAX: 0000000000004000 RBX: fffffe000000df58 RCX: 00000000ffffffff
-[   34.605722] RDX: ffff8881366c0000 RSI: ffffffff81b136f3 RDI: ffffffff81037b65
-[   34.606557] RBP: fffffe000000df10 R08: 0000000000000001 R09: 0000000000000001
-[   34.607770] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-[   34.608667] R13: ffff8881366c0000 R14: 0000000000000200 R15: 0000000000004000
-[   34.609579] FS:  00007f3503d09700(0000) GS:ffff88813b600000(0000) knlGS:0000000000000000
-[   34.610578] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   34.611399] CR2: 00007f3503822ae0 CR3: 0000000137cd4003 CR4: 00000000001706f0
-[   34.612345] DR0: 00000000004008cf DR1: 0000000000000000 DR2: 0000000000000000
-[   34.613368] DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
-[   34.614437] Call Trace:
-[   34.615098]  <#DB>
-
--- 
-Josh
-
+> 
+>>
+>> If not, we can remove this "else if" and return -EINVAL, right?
+>>
+>>> +             } else {
+>>> +                     verbose(env, "invalid arg_type for sockmap/sockhash\n");
+>>> +                     return -EINVAL;
+>>> +             }
+>>> +             break;
+>>> +
+>>> +     default:
+>>> +             break;
+>>> +     }
+>>> +     return 0;
+>>> +}
+>>> +
+>>>    static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>>>                          struct bpf_call_arg_meta *meta,
+>>>                          const struct bpf_func_proto *fn)
+>>> @@ -3904,6 +3933,14 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>>>                return -EACCES;
+>>>        }
+>>>
+>>> +     if (arg_type == ARG_PTR_TO_MAP_VALUE ||
+>>> +         arg_type == ARG_PTR_TO_UNINIT_MAP_VALUE ||
+>>> +         arg_type == ARG_PTR_TO_MAP_VALUE_OR_NULL) {
+>>> +             err = resolve_map_arg_type(env, meta, &arg_type);
+>>
+>> I am okay with this to cover all MAP_VALUE types with func
+>> name resolve_map_arg_type as a generic helper.
+>>
+>>> +             if (err)
+>>> +                     return err;
+>>> +     }
+>>> +
+>>>        if (arg_type == ARG_PTR_TO_MAP_KEY ||
+>>>            arg_type == ARG_PTR_TO_MAP_VALUE ||
+>>>            arg_type == ARG_PTR_TO_UNINIT_MAP_VALUE ||
+>>>
+> 
+> 
+> 
