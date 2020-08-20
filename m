@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D34324B52C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 671A624B523
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731349AbgHTKUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:20:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44850 "EHLO mail.kernel.org"
+        id S1731409AbgHTKTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:19:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731331AbgHTKUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:20:11 -0400
+        id S1731418AbgHTKSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:18:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9903720658;
-        Thu, 20 Aug 2020 10:20:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 533C92067C;
+        Thu, 20 Aug 2020 10:18:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918810;
-        bh=J1l/8xL5ugSePa2empb90X9FSlsOHCQrh41SssYYGDc=;
+        s=default; t=1597918734;
+        bh=i20cTE8zZsa2S8I21mR46fM0KH4ljoFs0YmBjUWK0kc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EG+NGnvwcRbkmfs6wgwnUiegvxG8WmogomOTwfHPL54AnsvdEQzNflnhTc6xc6Cei
-         3PRQBougJPvDRABi477DnyqIPYAXLwPrMnBGtPqDlK8l/tJZ8sUl47X8CF5MTrPca5
-         i4Acb9JjUoWSC+MhNfOQzLZopRvkkNDq2nVeDDrU=
+        b=r6X6zdWmeMqaa6aYWkr5qi3HLOI1zUurYE9MZadWxMUCLUzmsqzLnvHJhVrOFi5n2
+         3B+ndDDflQ10HDiqeaOk88vTCur48TKImplSMBJuN64RzaDLufkRfowNKDx1EI2/nr
+         WIvLItkAYXNyqp1OCcwGioJX4P8wiPiA545jCgNE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Philippe Duplessis-Guindon <pduplessis@efficios.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 045/149] tools lib traceevent: Fix memory leak in process_dynamic_array_len
-Date:   Thu, 20 Aug 2020 11:22:02 +0200
-Message-Id: <20200820092127.910957687@linuxfoundation.org>
+        stable@vger.kernel.org, Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.4 047/149] ipv4: Silence suspicious RCU usage warning
+Date:   Thu, 20 Aug 2020 11:22:04 +0200
+Message-Id: <20200820092128.011909266@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
 References: <20200820092125.688850368@linuxfoundation.org>
@@ -46,72 +44,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Philippe Duplessis-Guindon <pduplessis@efficios.com>
+From: Ido Schimmel <idosch@mellanox.com>
 
-[ Upstream commit e24c6447ccb7b1a01f9bf0aec94939e6450c0b4d ]
+[ Upstream commit 83f3522860f702748143e022f1a546547314c715 ]
 
-I compiled with AddressSanitizer and I had these memory leaks while I
-was using the tep_parse_format function:
+fib_trie_unmerge() is called with RTNL held, but not from an RCU
+read-side critical section. This leads to the following warning [1] when
+the FIB alias list in a leaf is traversed with
+hlist_for_each_entry_rcu().
 
-    Direct leak of 28 byte(s) in 4 object(s) allocated from:
-        #0 0x7fb07db49ffe in __interceptor_realloc (/lib/x86_64-linux-gnu/libasan.so.5+0x10dffe)
-        #1 0x7fb07a724228 in extend_token /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:985
-        #2 0x7fb07a724c21 in __read_token /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1140
-        #3 0x7fb07a724f78 in read_token /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1206
-        #4 0x7fb07a725191 in __read_expect_type /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1291
-        #5 0x7fb07a7251df in read_expect_type /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1299
-        #6 0x7fb07a72e6c8 in process_dynamic_array_len /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:2849
-        #7 0x7fb07a7304b8 in process_function /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:3161
-        #8 0x7fb07a730900 in process_arg_token /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:3207
-        #9 0x7fb07a727c0b in process_arg /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1786
-        #10 0x7fb07a731080 in event_read_print_args /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:3285
-        #11 0x7fb07a731722 in event_read_print /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:3369
-        #12 0x7fb07a740054 in __tep_parse_format /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:6335
-        #13 0x7fb07a74047a in __parse_event /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:6389
-        #14 0x7fb07a740536 in tep_parse_format /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:6431
-        #15 0x7fb07a785acf in parse_event ../../../src/fs-src/fs.c:251
-        #16 0x7fb07a785ccd in parse_systems ../../../src/fs-src/fs.c:284
-        #17 0x7fb07a786fb3 in read_metadata ../../../src/fs-src/fs.c:593
-        #18 0x7fb07a78760e in ftrace_fs_source_init ../../../src/fs-src/fs.c:727
-        #19 0x7fb07d90c19c in add_component_with_init_method_data ../../../../src/lib/graph/graph.c:1048
-        #20 0x7fb07d90c87b in add_source_component_with_initialize_method_data ../../../../src/lib/graph/graph.c:1127
-        #21 0x7fb07d90c92a in bt_graph_add_source_component ../../../../src/lib/graph/graph.c:1152
-        #22 0x55db11aa632e in cmd_run_ctx_create_components_from_config_components ../../../src/cli/babeltrace2.c:2252
-        #23 0x55db11aa6fda in cmd_run_ctx_create_components ../../../src/cli/babeltrace2.c:2347
-        #24 0x55db11aa780c in cmd_run ../../../src/cli/babeltrace2.c:2461
-        #25 0x55db11aa8a7d in main ../../../src/cli/babeltrace2.c:2673
-        #26 0x7fb07d5460b2 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x270b2)
+Since the function is always called with RTNL held and since
+modification of the list is protected by RTNL, simply use
+hlist_for_each_entry() and silence the warning.
 
-The token variable in the process_dynamic_array_len function is
-allocated in the read_expect_type function, but is not freed before
-calling the read_token function.
+[1]
+WARNING: suspicious RCU usage
+5.8.0-rc4-custom-01520-gc1f937f3f83b #30 Not tainted
+-----------------------------
+net/ipv4/fib_trie.c:1867 RCU-list traversed in non-reader section!!
 
-Free the token variable before calling read_token in order to plug the
-leak.
+other info that might help us debug this:
 
-Signed-off-by: Philippe Duplessis-Guindon <pduplessis@efficios.com>
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Link: https://lore.kernel.org/linux-trace-devel/20200730150236.5392-1-pduplessis@efficios.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+rcu_scheduler_active = 2, debug_locks = 1
+1 lock held by ip/164:
+ #0: ffffffff85a27850 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x49a/0xbd0
+
+stack backtrace:
+CPU: 0 PID: 164 Comm: ip Not tainted 5.8.0-rc4-custom-01520-gc1f937f3f83b #30
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-2.fc32 04/01/2014
+Call Trace:
+ dump_stack+0x100/0x184
+ lockdep_rcu_suspicious+0x153/0x15d
+ fib_trie_unmerge+0x608/0xdb0
+ fib_unmerge+0x44/0x360
+ fib4_rule_configure+0xc8/0xad0
+ fib_nl_newrule+0x37a/0x1dd0
+ rtnetlink_rcv_msg+0x4f7/0xbd0
+ netlink_rcv_skb+0x17a/0x480
+ rtnetlink_rcv+0x22/0x30
+ netlink_unicast+0x5ae/0x890
+ netlink_sendmsg+0x98a/0xf40
+ ____sys_sendmsg+0x879/0xa00
+ ___sys_sendmsg+0x122/0x190
+ __sys_sendmsg+0x103/0x1d0
+ __x64_sys_sendmsg+0x7d/0xb0
+ do_syscall_64+0x54/0xa0
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fc80a234e97
+Code: Bad RIP value.
+RSP: 002b:00007ffef8b66798 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fc80a234e97
+RDX: 0000000000000000 RSI: 00007ffef8b66800 RDI: 0000000000000003
+RBP: 000000005f141b1c R08: 0000000000000001 R09: 0000000000000000
+R10: 00007fc80a2a8ac0 R11: 0000000000000246 R12: 0000000000000001
+R13: 0000000000000000 R14: 00007ffef8b67008 R15: 0000556fccb10020
+
+Fixes: 0ddcf43d5d4a ("ipv4: FIB Local/MAIN table collapse")
+Signed-off-by: Ido Schimmel <idosch@mellanox.com>
+Reviewed-by: Jiri Pirko <jiri@mellanox.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/lib/traceevent/event-parse.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/ipv4/fib_trie.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-index 9954b069b3ca2..86455408c7e12 100644
---- a/tools/lib/traceevent/event-parse.c
-+++ b/tools/lib/traceevent/event-parse.c
-@@ -2752,6 +2752,7 @@ process_dynamic_array_len(struct event_format *event, struct print_arg *arg,
- 	if (read_expected(EVENT_DELIM, ")") < 0)
- 		goto out_err;
+--- a/net/ipv4/fib_trie.c
++++ b/net/ipv4/fib_trie.c
+@@ -1696,7 +1696,7 @@ struct fib_table *fib_trie_unmerge(struc
+ 	while ((l = leaf_walk_rcu(&tp, key)) != NULL) {
+ 		struct key_vector *local_l = NULL, *local_tp;
  
-+	free_token(token);
- 	type = read_token(&token);
- 	*tok = token;
+-		hlist_for_each_entry_rcu(fa, &l->leaf, fa_list) {
++		hlist_for_each_entry(fa, &l->leaf, fa_list) {
+ 			struct fib_alias *new_fa;
  
--- 
-2.25.1
-
+ 			if (local_tb->tb_id != fa->tb_id)
 
 
