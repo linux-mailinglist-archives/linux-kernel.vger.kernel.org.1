@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 636DC24B3CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD31D24B392
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729913AbgHTJwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:52:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33840 "EHLO mail.kernel.org"
+        id S1729651AbgHTJt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:49:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729914AbgHTJwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:52:31 -0400
+        id S1729606AbgHTJtH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:49:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 656122067C;
-        Thu, 20 Aug 2020 09:52:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6059F2078D;
+        Thu, 20 Aug 2020 09:49:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917150;
-        bh=RC22bk4RqaXRBDXXm7/9pkd7kocs1SVyiUWvdKLVKDA=;
+        s=default; t=1597916946;
+        bh=4ECfkLhEYHdEtCnhAdduHmkM3iWQ8LHlr8d9E3NNG1g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aBCrCtvDgK5tO1GSAhUS/fGmw6QXcfLKsGCCo/2oOwbh2x0eVlStUH9Bk3Db7cXAl
-         WyswSJAzCXI9UvH80BTW76ipketjpm4CnOzGH7jEZhEyFvaVhu6Y3fWTRLMNvZ6Jbt
-         8acK1EJviGs3caDAhFzRu7M5X70fPe/3G1/FjGFo=
+        b=jElTXVTIDfMJHKaxmC5IgXAvzk1sMojrzxVUf5RsKZPBjIcI8OcjpuELlO2fjeIwA
+         oK8ruopuRjyS5ZHEP5ZQz90Gan4kb8aImO4tpZcR97duZOXycneeLAsJCe6C9PFU3C
+         bCMMVLsFkvebZpLScwKXgJNQgPlCFr5nNdwgBdw8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Lane <tgl@sss.pgh.pa.us>,
-        Daniel Axtens <dja@axtens.net>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.19 22/92] powerpc: Allow 4224 bytes of stack expansion for the signal frame
-Date:   Thu, 20 Aug 2020 11:21:07 +0200
-Message-Id: <20200820091538.715949385@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 101/152] clk: actions: Fix h_clk for Actions S500 SoC
+Date:   Thu, 20 Aug 2020 11:21:08 +0200
+Message-Id: <20200820091558.930540741@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
-References: <20200820091537.490965042@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,184 +46,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 
-commit 63dee5df43a31f3844efabc58972f0a206ca4534 upstream.
+[ Upstream commit f47ee279d25fb0e010cae5d6e758e39b40eb6378 ]
 
-We have powerpc specific logic in our page fault handling to decide if
-an access to an unmapped address below the stack pointer should expand
-the stack VMA.
+The h_clk clock in the Actions Semi S500 SoC clock driver has an
+invalid parent. Replace with the correct one.
 
-The code was originally added in 2004 "ported from 2.4". The rough
-logic is that the stack is allowed to grow to 1MB with no extra
-checking. Over 1MB the access must be within 2048 bytes of the stack
-pointer, or be from a user instruction that updates the stack pointer.
-
-The 2048 byte allowance below the stack pointer is there to cover the
-288 byte "red zone" as well as the "about 1.5kB" needed by the signal
-delivery code.
-
-Unfortunately since then the signal frame has expanded, and is now
-4224 bytes on 64-bit kernels with transactional memory enabled. This
-means if a process has consumed more than 1MB of stack, and its stack
-pointer lies less than 4224 bytes from the next page boundary, signal
-delivery will fault when trying to expand the stack and the process
-will see a SEGV.
-
-The total size of the signal frame is the size of struct rt_sigframe
-(which includes the red zone) plus __SIGNAL_FRAMESIZE (128 bytes on
-64-bit).
-
-The 2048 byte allowance was correct until 2008 as the signal frame
-was:
-
-struct rt_sigframe {
-        struct ucontext    uc;                           /*     0  1440 */
-        /* --- cacheline 11 boundary (1408 bytes) was 32 bytes ago --- */
-        long unsigned int          _unused[2];           /*  1440    16 */
-        unsigned int               tramp[6];             /*  1456    24 */
-        struct siginfo *           pinfo;                /*  1480     8 */
-        void *                     puc;                  /*  1488     8 */
-        struct siginfo     info;                         /*  1496   128 */
-        /* --- cacheline 12 boundary (1536 bytes) was 88 bytes ago --- */
-        char                       abigap[288];          /*  1624   288 */
-
-        /* size: 1920, cachelines: 15, members: 7 */
-        /* padding: 8 */
-};
-
-1920 + 128 = 2048
-
-Then in commit ce48b2100785 ("powerpc: Add VSX context save/restore,
-ptrace and signal support") (Jul 2008) the signal frame expanded to
-2304 bytes:
-
-struct rt_sigframe {
-        struct ucontext    uc;                           /*     0  1696 */	<--
-        /* --- cacheline 13 boundary (1664 bytes) was 32 bytes ago --- */
-        long unsigned int          _unused[2];           /*  1696    16 */
-        unsigned int               tramp[6];             /*  1712    24 */
-        struct siginfo *           pinfo;                /*  1736     8 */
-        void *                     puc;                  /*  1744     8 */
-        struct siginfo     info;                         /*  1752   128 */
-        /* --- cacheline 14 boundary (1792 bytes) was 88 bytes ago --- */
-        char                       abigap[288];          /*  1880   288 */
-
-        /* size: 2176, cachelines: 17, members: 7 */
-        /* padding: 8 */
-};
-
-2176 + 128 = 2304
-
-At this point we should have been exposed to the bug, though as far as
-I know it was never reported. I no longer have a system old enough to
-easily test on.
-
-Then in 2010 commit 320b2b8de126 ("mm: keep a guard page below a
-grow-down stack segment") caused our stack expansion code to never
-trigger, as there was always a VMA found for a write up to PAGE_SIZE
-below r1.
-
-That meant the bug was hidden as we continued to expand the signal
-frame in commit 2b0a576d15e0 ("powerpc: Add new transactional memory
-state to the signal context") (Feb 2013):
-
-struct rt_sigframe {
-        struct ucontext    uc;                           /*     0  1696 */
-        /* --- cacheline 13 boundary (1664 bytes) was 32 bytes ago --- */
-        struct ucontext    uc_transact;                  /*  1696  1696 */	<--
-        /* --- cacheline 26 boundary (3328 bytes) was 64 bytes ago --- */
-        long unsigned int          _unused[2];           /*  3392    16 */
-        unsigned int               tramp[6];             /*  3408    24 */
-        struct siginfo *           pinfo;                /*  3432     8 */
-        void *                     puc;                  /*  3440     8 */
-        struct siginfo     info;                         /*  3448   128 */
-        /* --- cacheline 27 boundary (3456 bytes) was 120 bytes ago --- */
-        char                       abigap[288];          /*  3576   288 */
-
-        /* size: 3872, cachelines: 31, members: 8 */
-        /* padding: 8 */
-        /* last cacheline: 32 bytes */
-};
-
-3872 + 128 = 4000
-
-And commit 573ebfa6601f ("powerpc: Increase stack redzone for 64-bit
-userspace to 512 bytes") (Feb 2014):
-
-struct rt_sigframe {
-        struct ucontext    uc;                           /*     0  1696 */
-        /* --- cacheline 13 boundary (1664 bytes) was 32 bytes ago --- */
-        struct ucontext    uc_transact;                  /*  1696  1696 */
-        /* --- cacheline 26 boundary (3328 bytes) was 64 bytes ago --- */
-        long unsigned int          _unused[2];           /*  3392    16 */
-        unsigned int               tramp[6];             /*  3408    24 */
-        struct siginfo *           pinfo;                /*  3432     8 */
-        void *                     puc;                  /*  3440     8 */
-        struct siginfo     info;                         /*  3448   128 */
-        /* --- cacheline 27 boundary (3456 bytes) was 120 bytes ago --- */
-        char                       abigap[512];          /*  3576   512 */	<--
-
-        /* size: 4096, cachelines: 32, members: 8 */
-        /* padding: 8 */
-};
-
-4096 + 128 = 4224
-
-Then finally in 2017, commit 1be7107fbe18 ("mm: larger stack guard
-gap, between vmas") exposed us to the existing bug, because it changed
-the stack VMA to be the correct/real size, meaning our stack expansion
-code is now triggered.
-
-Fix it by increasing the allowance to 4224 bytes.
-
-Hard-coding 4224 is obviously unsafe against future expansions of the
-signal frame in the same way as the existing code. We can't easily use
-sizeof() because the signal frame structure is not in a header. We
-will either fix that, or rip out all the custom stack expansion
-checking logic entirely.
-
-Fixes: ce48b2100785 ("powerpc: Add VSX context save/restore, ptrace and signal support")
-Cc: stable@vger.kernel.org # v2.6.27+
-Reported-by: Tom Lane <tgl@sss.pgh.pa.us>
-Tested-by: Daniel Axtens <dja@axtens.net>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200724092528.1578671-2-mpe@ellerman.id.au
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: ed6b4795ece4 ("clk: actions: Add clock driver for S500 SoC")
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Link: https://lore.kernel.org/r/c57e7ebabfa970014f073b92fe95b47d3e5a70b1.1593788312.git.cristian.ciocaltea@gmail.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/mm/fault.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/clk/actions/owl-s500.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/powerpc/mm/fault.c
-+++ b/arch/powerpc/mm/fault.c
-@@ -233,6 +233,9 @@ static bool bad_kernel_fault(bool is_exe
- 	return is_exec || (address >= TASK_SIZE);
- }
+diff --git a/drivers/clk/actions/owl-s500.c b/drivers/clk/actions/owl-s500.c
+index e2007ac4d235d..0eb83a0b70bcc 100644
+--- a/drivers/clk/actions/owl-s500.c
++++ b/drivers/clk/actions/owl-s500.c
+@@ -183,7 +183,7 @@ static OWL_GATE(timer_clk, "timer_clk", "hosc", CMU_DEVCLKEN1, 27, 0, 0);
+ static OWL_GATE(hdmi_clk, "hdmi_clk", "hosc", CMU_DEVCLKEN1, 3, 0, 0);
  
-+// This comes from 64-bit struct rt_sigframe + __SIGNAL_FRAMESIZE
-+#define SIGFRAME_MAX_SIZE	(4096 + 128)
-+
- static bool bad_stack_expansion(struct pt_regs *regs, unsigned long address,
- 				struct vm_area_struct *vma, unsigned int flags,
- 				bool *must_retry)
-@@ -240,7 +243,7 @@ static bool bad_stack_expansion(struct p
- 	/*
- 	 * N.B. The POWER/Open ABI allows programs to access up to
- 	 * 288 bytes below the stack pointer.
--	 * The kernel signal delivery code writes up to about 1.5kB
-+	 * The kernel signal delivery code writes a bit over 4KB
- 	 * below the stack pointer (r1) before decrementing it.
- 	 * The exec code can write slightly over 640kB to the stack
- 	 * before setting the user r1.  Thus we allow the stack to
-@@ -265,7 +268,7 @@ static bool bad_stack_expansion(struct p
- 		 * between the last mapped region and the stack will
- 		 * expand the stack rather than segfaulting.
- 		 */
--		if (address + 2048 >= uregs->gpr[1])
-+		if (address + SIGFRAME_MAX_SIZE >= uregs->gpr[1])
- 			return false;
+ /* divider clocks */
+-static OWL_DIVIDER(h_clk, "h_clk", "ahbprevdiv_clk", CMU_BUSCLK1, 12, 2, NULL, 0, 0);
++static OWL_DIVIDER(h_clk, "h_clk", "ahbprediv_clk", CMU_BUSCLK1, 12, 2, NULL, 0, 0);
+ static OWL_DIVIDER(rmii_ref_clk, "rmii_ref_clk", "ethernet_pll_clk", CMU_ETHERNETPLL, 1, 1, rmii_ref_div_table, 0, 0);
  
- 		if ((flags & FAULT_FLAG_WRITE) && (flags & FAULT_FLAG_USER) &&
+ /* factor clocks */
+-- 
+2.25.1
+
 
 
