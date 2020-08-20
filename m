@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A1124BBC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA06C24BC2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730449AbgHTMdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:33:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54650 "EHLO mail.kernel.org"
+        id S1729161AbgHTJqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:46:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729318AbgHTJtE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:49:04 -0400
+        id S1729170AbgHTJmk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:42:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B278420724;
-        Thu, 20 Aug 2020 09:49:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E5B0322CA1;
+        Thu, 20 Aug 2020 09:42:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916944;
-        bh=H45zlV34uzWv6yFUOSzT/yKhOvpoCRwwr64AGhO37eQ=;
+        s=default; t=1597916558;
+        bh=olZ68WhNvG83HX80HgxGvok04QTPvwlYFeyVJu0yG0Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EXX2e8N7/aI+/DA402dnImF6wsXcLRoiP/5CUl1KwGB+pon3oq+4esU1kOXgKGvL+
-         gUx5y4HFHE69yYgqjXjUtz9KTojNgvEvTDfC4eWBpQLwwgb91Dw16a+H0W7Jkb+qwN
-         Vy7dfBbia/MvOs1OIEeI6n3bRFjboVY7fXaUonro=
+        b=M3zV1X/1jcFzjPsGYix8cSdbATwWBFjxkyHMPOKab0I1hoBA2BdDqkEzAku7Y94eD
+         FmLwVud1JBIGpSPtJHHaNjIYkiYKlO8gxHg7oVO9SDGtVrJOgn1TBlZfcTPIT94V1A
+         wGs+tOje1mxtZoEjOA3xN/x9UEVgxwjQ9ryHRkDE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 100/152] dm rq: dont call blk_mq_queue_stopped() in dm_stop_queue()
-Date:   Thu, 20 Aug 2020 11:21:07 +0200
-Message-Id: <20200820091558.880711889@linuxfoundation.org>
+Subject: [PATCH 5.7 171/204] s390/Kconfig: add missing ZCRYPT dependency to VFIO_AP
+Date:   Thu, 20 Aug 2020 11:21:08 +0200
+Message-Id: <20200820091614.748444536@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
-References: <20200820091553.615456912@linuxfoundation.org>
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit e766668c6cd49d741cfb49eaeb38998ba34d27bc ]
+[ Upstream commit 929a343b858612100cb09443a8aaa20d4a4706d3 ]
 
-dm_stop_queue() only uses blk_mq_quiesce_queue() so it doesn't
-formally stop the blk-mq queue; therefore there is no point making the
-blk_mq_queue_stopped() check -- it will never be stopped.
+The VFIO_AP uses ap_driver_register() (and deregister) functions
+implemented in ap_bus.c (compiled into ap.o).  However the ap.o will be
+built only if CONFIG_ZCRYPT is selected.
 
-In addition, even though dm_stop_queue() actually tries to quiesce hw
-queues via blk_mq_quiesce_queue(), checking with blk_queue_quiesced()
-to avoid unnecessary queue quiesce isn't reliable because: the
-QUEUE_FLAG_QUIESCED flag is set before synchronize_rcu() and
-dm_stop_queue() may be called when synchronize_rcu() from another
-blk_mq_quiesce_queue() is in-progress.
+This was not visible before commit e93a1695d7fb ("iommu: Enable compile
+testing for some of drivers") because the CONFIG_VFIO_AP depends on
+CONFIG_S390_AP_IOMMU which depends on the missing CONFIG_ZCRYPT.  After
+adding COMPILE_TEST, it is possible to select a configuration with
+VFIO_AP and S390_AP_IOMMU but without the ZCRYPT.
 
-Fixes: 7b17c2f7292ba ("dm: Fix a race condition related to stopping and starting queues")
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Add proper dependency to the VFIO_AP to fix build errors:
+
+ERROR: modpost: "ap_driver_register" [drivers/s390/crypto/vfio_ap.ko] undefined!
+ERROR: modpost: "ap_driver_unregister" [drivers/s390/crypto/vfio_ap.ko] undefined!
+
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: e93a1695d7fb ("iommu: Enable compile testing for some of drivers")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/dm-rq.c | 3 ---
- 1 file changed, 3 deletions(-)
+ arch/s390/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/md/dm-rq.c b/drivers/md/dm-rq.c
-index 3f8577e2c13be..2bd2444ad99c6 100644
---- a/drivers/md/dm-rq.c
-+++ b/drivers/md/dm-rq.c
-@@ -70,9 +70,6 @@ void dm_start_queue(struct request_queue *q)
- 
- void dm_stop_queue(struct request_queue *q)
- {
--	if (blk_mq_queue_stopped(q))
--		return;
--
- 	blk_mq_quiesce_queue(q);
- }
- 
+diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+index ae01be202204b..03e491c103e76 100644
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@ -769,6 +769,7 @@ config VFIO_AP
+ 	def_tristate n
+ 	prompt "VFIO support for AP devices"
+ 	depends on S390_AP_IOMMU && VFIO_MDEV_DEVICE && KVM
++	depends on ZCRYPT
+ 	help
+ 		This driver grants access to Adjunct Processor (AP) devices
+ 		via the VFIO mediated device interface.
 -- 
 2.25.1
 
