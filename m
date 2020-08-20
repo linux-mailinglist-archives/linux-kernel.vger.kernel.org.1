@@ -2,107 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA8424B9C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 469BC24B993
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729308AbgHTLsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:48:23 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40951 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730554AbgHTLr3 (ORCPT
+        id S1730468AbgHTLtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:49:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730795AbgHTLrh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 07:47:29 -0400
-Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k8j26-0001SH-AW; Thu, 20 Aug 2020 11:47:02 +0000
-Date:   Thu, 20 Aug 2020 13:47:00 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>, mingo@kernel.org,
-        peterz@infradead.org, tglx@linutronix.de, esyr@redhat.com,
-        christian@kellner.me, areber@redhat.com, shakeelb@google.com,
-        cyphar@cyphar.com, adobriyan@gmail.com, akpm@linux-foundation.org,
-        ebiederm@xmission.com, gladkov.alexey@gmail.com, walken@google.com,
-        daniel.m.jordan@oracle.com, avagin@gmail.com,
-        bernd.edlinger@hotmail.de, john.johansen@canonical.com,
-        laoar.shao@gmail.com, timmurray@google.com, minchan@kernel.org,
-        kernel-team@android.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 1/1] mm, oom_adj: don't loop through tasks in
- __set_oom_adj when not necessary
-Message-ID: <20200820114700.bmla72v3t4ux7gsm@wittgenstein>
-References: <20200820002053.1424000-1-surenb@google.com>
- <20200820105555.GA4546@redhat.com>
- <20200820111349.GE5033@dhcp22.suse.cz>
- <20200820112932.GG5033@dhcp22.suse.cz>
+        Thu, 20 Aug 2020 07:47:37 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E623BC061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 04:47:36 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id v12so1711058ljc.10
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 04:47:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=85mDl2XRAWxgMF4mNsc2vG2t2o48E+xjhQQLuiAlw3Q=;
+        b=ZUcRieqe0aBzHLPGHrrGT4sAZDtl+9aXgLMCQ/RDOlOUaBfuP1DhGtlmWOMYusks9/
+         aOefopIADH4HrGXJbj7IFK3Wc73XmNZEjKIUkSc1lij0bLsXe/Uys0dcB4vOYKnnRv88
+         bNWPy6WaGvO/YPOgb/IrWMFf3Buo3rNKsCJ/hYKI0r/VgFj1G29N58TLrNRZk7OWauu/
+         iC3XRsndSFaheGd2ky965/2RluIuiKSFtVMDl1KU85E2EF1KWjueIMe+tjdSKdxSLDO/
+         cWvIrk1KmtqNNTSaV4iFk6TOgS4n62Ni+SYNrncFIFe/Tif6G7qDtJC0IOgHObYJitR8
+         cFtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=85mDl2XRAWxgMF4mNsc2vG2t2o48E+xjhQQLuiAlw3Q=;
+        b=GmJi8fpLipwr+TqR1Rb4VcmElFGwPH2jyJqv6kL+bJEcKr3Zjo+E3APOb9WT5tJ4Qa
+         WSxb8htdTmZjQPuXml8KiK2ie9SUA0Cq2Tii+LdTjd+8hPn+zJdi7xDePqs2OT19FshT
+         To9FwVUQZz6O6KHfySFCTAlRRXBPoV9KkxbHcusMsRyUxRMwmACBDQkN/Jsfmc+vyZFT
+         1UNU8GedvbvUgqdj+Lsf8e3qVID9J2b7TBG5pI9bT1FIPabnJFH507I0vOZ55+wy6mC3
+         lISIf1VpTyDcTwR/64xvMBXSA0ELuAxQEDuR+/vnSc8Gu1BBJLJYtcuIqNRKqw0nViFI
+         X9VQ==
+X-Gm-Message-State: AOAM531qldMi7yh74VdvUnIy19X0Zt8TT7qKOEshlDgfdHlq3zJyJieB
+        OVWxabO0v0FL7mya9F+8Jz3mPqqnbo7FaGETCVCqJQ==
+X-Google-Smtp-Source: ABdhPJwXtQX6L6pFWRnWBgrmQIcbjIr81PgWqpzE4b7Qr6nEQQ+0rsGGEjPHUa0TXMMiypCdmYO4z0v/YDAR3c/RQJA=
+X-Received: by 2002:a2e:9913:: with SMTP id v19mr1372814lji.292.1597924055257;
+ Thu, 20 Aug 2020 04:47:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200820112932.GG5033@dhcp22.suse.cz>
+References: <20200820075133.87040-1-maco@android.com> <202008201814.TxGOq6Z2%lkp@intel.com>
+In-Reply-To: <202008201814.TxGOq6Z2%lkp@intel.com>
+From:   Martijn Coenen <maco@android.com>
+Date:   Thu, 20 Aug 2020 13:47:24 +0200
+Message-ID: <CAB0TPYGc_cfXYA3AgbEff_c=h_RsOpc=tR-+tztfHCLeEQQ8gA@mail.gmail.com>
+Subject: Re: [PATCH] binder: print warnings when detecting oneway spamming.
+To:     kernel test robot <lkp@intel.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, Todd Kjos <tkjos@google.com>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
+        Martijn Coenen <maco@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 01:29:32PM +0200, Michal Hocko wrote:
-> On Thu 20-08-20 13:13:55, Michal Hocko wrote:
-> > On Thu 20-08-20 12:55:56, Oleg Nesterov wrote:
-> > > On 08/19, Suren Baghdasaryan wrote:
-> > > >
-> > > > Since the combination of CLONE_VM and !CLONE_SIGHAND is rarely
-> > > > used the additional mutex lock in that path of the clone() syscall should
-> > > > not affect its overall performance. Clearing the MMF_PROC_SHARED flag
-> > > > (when the last process sharing the mm exits) is left out of this patch to
-> > > > keep it simple and because it is believed that this threading model is
-> > > > rare.
-> > > 
-> > > vfork() ?
-> > 
-> > Could you be more specific?
-> > 
-> > > > --- a/kernel/fork.c
-> > > > +++ b/kernel/fork.c
-> > > > @@ -1403,6 +1403,15 @@ static int copy_mm(unsigned long clone_flags, struct task_struct *tsk)
-> > > >  	if (clone_flags & CLONE_VM) {
-> > > >  		mmget(oldmm);
-> > > >  		mm = oldmm;
-> > > > +		if (!(clone_flags & CLONE_SIGHAND)) {
-> > > 
-> > > I agree with Christian, you need CLONE_THREAD
-> > 
-> > This was my suggestion to Suren, likely because I've misrememberd which
-> > clone flag is responsible for the signal delivery. But now, after double
-> > checking we do explicitly disallow CLONE_SIGHAND && !CLONE_VM. So
-> > CLONE_THREAD is the right thing to check.
-> 
-> I have tried to remember but I have to say that after reading man page I
-> am still confused. So what is the actual difference between CLONE_THREAD
-> and CLONE_SIGHAND? Essentially all we care about from the OOM (and
+On Thu, Aug 20, 2020 at 12:41 PM kernel test robot <lkp@intel.com> wrote:
+>
+> Hi Martijn,
+>
+> I love your patch! Yet something to improve:
+>
+> [auto build test ERROR on staging/staging-testing]
+> [also build test ERROR on v5.9-rc1 next-20200820]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+>
+> url:    https://github.com/0day-ci/linux/commits/Martijn-Coenen/binder-print-warnings-when-detecting-oneway-spamming/20200820-155358
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git bc752d2f345bf55d71b3422a6a24890ea03168dc
+> config: s390-randconfig-r002-20200818 (attached as .config)
+> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 4deda57106f7c9b982a49cb907c33e3966c8de7f)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install s390 cross compiling tool for clang build
+>         # apt-get install binutils-s390x-linux-gnu
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=s390
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+> >> drivers/android/binder_alloc_selftest.c:122:61: error: too few arguments to function call, expected 6, have 5
+>                    buffers[i] = binder_alloc_new_buf(alloc, sizes[i], 0, 0, 0);
 
-CLONE_THREAD implies CLONE_SIGHAND
-CLONE_SIGHAND implies CLONE_VM but CLONE_SIGHAND doesn't imply CLONE_THREAD.
+missed this call-site, will send v2.
 
-> oom_score_adj) POV is that signals are delivered to all entities and
-> that thay share signal struct. copy_signal is checking for CLONE_THREAD
-
-If a thread has a separate sighand struct it can have separate handlers
-(Oleg will correct me if wrong.). But fatal signals will take the whole
-thread-group down and can't be ignored which is the only thing you care
-about with OOM afair.
-What you care about is that the oom_score_adj{_min} settings are shared
-and they live in struct signal_struct and whether that's shared or not
-is basically guided by CLONE_THREAD.
-
-> but CLONE_THREAD requires CLONE_SIGHAND AFAIU. So is there any cae where
-> checking for CLONE_SIGHAND would wrong for our purpose?
-
-Without having spent a long time thinking deeply about this it likely
-wouldn't. But using CLONE_SIGHAND is very irritating since it doesn't
-clearly express what you want this for. Especially since there's now a
-difference between the check in copy_signal() and copy_mm() and a
-disconnect to what is expressed in the commit message too, imho.
-
-Christian
+Martijn
+>                                 ~~~~~~~~~~~~~~~~~~~~                         ^
+>    drivers/android/binder_alloc.h:118:30: note: 'binder_alloc_new_buf' declared here
+>    extern struct binder_buffer *binder_alloc_new_buf(struct binder_alloc *alloc,
+>                                 ^
+>    1 error generated.
+>
+> # https://github.com/0day-ci/linux/commit/9d0b269f4468d6793f6fd76a410fdde39dbf6ac2
+> git remote add linux-review https://github.com/0day-ci/linux
+> git fetch --no-tags linux-review Martijn-Coenen/binder-print-warnings-when-detecting-oneway-spamming/20200820-155358
+> git checkout 9d0b269f4468d6793f6fd76a410fdde39dbf6ac2
+> vim +122 drivers/android/binder_alloc_selftest.c
+>
+> 4175e2b46fd4b9 Sherry Yang 2017-08-23  114
+> 4175e2b46fd4b9 Sherry Yang 2017-08-23  115  static void binder_selftest_alloc_buf(struct binder_alloc *alloc,
+> 4175e2b46fd4b9 Sherry Yang 2017-08-23  116                                    struct binder_buffer *buffers[],
+> 4175e2b46fd4b9 Sherry Yang 2017-08-23  117                                    size_t *sizes, int *seq)
+> 4175e2b46fd4b9 Sherry Yang 2017-08-23  118  {
+> 4175e2b46fd4b9 Sherry Yang 2017-08-23  119      int i;
+> 4175e2b46fd4b9 Sherry Yang 2017-08-23  120
+> 4175e2b46fd4b9 Sherry Yang 2017-08-23  121      for (i = 0; i < BUFFER_NUM; i++) {
+> 4175e2b46fd4b9 Sherry Yang 2017-08-23 @122              buffers[i] = binder_alloc_new_buf(alloc, sizes[i], 0, 0, 0);
+> 4175e2b46fd4b9 Sherry Yang 2017-08-23  123              if (IS_ERR(buffers[i]) ||
+> 4175e2b46fd4b9 Sherry Yang 2017-08-23  124                  !check_buffer_pages_allocated(alloc, buffers[i],
+> 4175e2b46fd4b9 Sherry Yang 2017-08-23  125                                                sizes[i])) {
+> 4175e2b46fd4b9 Sherry Yang 2017-08-23  126                      pr_err_size_seq(sizes, seq);
+> 4175e2b46fd4b9 Sherry Yang 2017-08-23  127                      binder_selftest_failures++;
+> 4175e2b46fd4b9 Sherry Yang 2017-08-23  128              }
+> 4175e2b46fd4b9 Sherry Yang 2017-08-23  129      }
+> 4175e2b46fd4b9 Sherry Yang 2017-08-23  130  }
+> 4175e2b46fd4b9 Sherry Yang 2017-08-23  131
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
