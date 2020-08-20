@@ -2,114 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C20724AD11
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 04:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFBF324AD0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 04:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgHTCq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 22:46:57 -0400
-Received: from cnshjsmin05.nokia-sbell.com ([116.246.26.45]:50224 "EHLO
-        CNSHJSMIN05.NOKIA-SBELL.COM" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726362AbgHTCq4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 22:46:56 -0400
-X-Greylist: delayed 901 seconds by postgrey-1.27 at vger.kernel.org; Wed, 19 Aug 2020 22:46:53 EDT
-X-AuditID: ac18929d-5fdff70000017e37-36-5f3de09151c9
-Received: from CNSHPPEXCH1603.nsn-intra.net (Unknown_Domain [135.251.51.103])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by CNSHJSMIN05.NOKIA-SBELL.COM (Symantec Messaging Gateway) with SMTP id 6C.68.32311.190ED3F5; Thu, 20 Aug 2020 10:31:45 +0800 (HKT)
-Received: from CNSHPPEXCH1604.nsn-intra.net (135.251.51.104) by
- CNSHPPEXCH1603.nsn-intra.net (135.251.51.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Thu, 20 Aug 2020 10:31:45 +0800
-Received: from CNSHPPEXCH1604.nsn-intra.net ([135.251.51.104]) by
- CNSHPPEXCH1604.nsn-intra.net ([135.251.51.104]) with mapi id 15.01.1847.007;
- Thu, 20 Aug 2020 10:31:45 +0800
-From:   "Zhou, Libing (NSB - CN/Hangzhou)" <libing.zhou@nokia-sbell.com>
-To:     "peterz@infradead.org" <peterz@infradead.org>
-CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "bp@suse.de" <bp@suse.de>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>
-Subject: RE: [PATCH] x86/nmi: Fix nmi_handle duration miscalculation
-Thread-Topic: [PATCH] x86/nmi: Fix nmi_handle duration miscalculation
-Thread-Index: AQHWdHV7gKGoaCX/hkiiTjZTrUPMfak+kFSAgAG6l/A=
-Date:   Thu, 20 Aug 2020 02:31:45 +0000
-Message-ID: <c3a422ace0724f1f986b4fc033fa065f@nokia-sbell.com>
-References: <20200817090441.44501-1-libing.zhou@nokia-sbell.com>
- <20200819080645.GX2674@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200819080645.GX2674@hirez.programming.kicks-ass.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [135.251.51.115]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S1726752AbgHTCgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 22:36:16 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:36327 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726362AbgHTCgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 22:36:13 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BX80R5lnrz9sRN;
+        Thu, 20 Aug 2020 12:36:07 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1597890971;
+        bh=vULF1V6e0f1yAmziZlk663aZWqAbdESm0QzRgsSJSXg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=q9GkWeLnxRMya8G/Fbwsb/rU3kXcaVyIudfMZ/PFBaH5yRw/Mg1mQMb3XfPlkRK3x
+         VvLmQ+0DYOAFyoGgN7H6qMBumPcO2J7ZjonRaq3FuGs/B6G7rVMCQOn0/a6M9cFKL+
+         1qtjLnXKLu7XOx1pHG5+Y/tUXvYpaTiHILM5Fa5wFVCbKKbYFgl2Wtd3Fcoac+OPe0
+         wy0m/sOHRKlQd5eLgequXO5ndbzg9562Svw8wqqWFKL+3JdVj3Fd7JroqRSNnUMuT2
+         U1m+g67y1b3y9C3g3fKjZt4nS/LdsiXf2PoGPM8Sb0JZ5iS1DrjPiwILLU18kmRffg
+         VqWDLhKtz8j8Q==
+Date:   Thu, 20 Aug 2020 12:36:06 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        X86 ML <x86@kernel.org>, selinux@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        Eric Paris <eparis@parisplace.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>, rgb@redhat.com,
+        Kees Cook <keescook@chromium.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        YueHaibing <yuehaibing@huawei.com>, jeffv@google.com,
+        Kent Overstreet <kent.overstreet@gmail.com>
+Subject: Re: Linux-next: Kernel panic - not syncing: Fatal exception in
+ interrupt - RIP: 0010:security_port_sid
+Message-ID: <20200820123606.772691e0@canb.auug.org.au>
+In-Reply-To: <CAHC9VhTR7b_p3rdiQ8q07OMoY3fXgU4kH=bH5URVgVS6kH5r5g@mail.gmail.com>
+References: <CA+G9fYvdAUWHw7SUF6Da1bgDJ2Q=59nJLovrxz8Ke74DSFnG1g@mail.gmail.com>
+        <543834b1-9e7e-187d-4f98-e8484362105b@gmail.com>
+        <CAHp75Vf_3cb51UPXqiPspo4pa5AhU7xTvwAk6Z2+FtzNfmogDA@mail.gmail.com>
+        <fdffd8f2-ea67-4bfd-f75b-9ffd56dfbbde@gmail.com>
+        <20200820083111.46e81b4c@canb.auug.org.au>
+        <CAHC9VhTR7b_p3rdiQ8q07OMoY3fXgU4kH=bH5URVgVS6kH5r5g@mail.gmail.com>
 MIME-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrBIsWRmVeSWpSXmKPExsXS/ts4XXfiA9t4g6/XDS0+b/jHZjGxX9Ni
-        2kZxi8u75rBZXDqwgMnieO8BJovNm6YyW/zY8JjVgcPje2sfi8fmFVoem1Z1snm8O3eO3eP9
-        vqtsHptPV3t83iTncaLlC2sARxSXTUpqTmZZapG+XQJXxsO7N5gLFkhVbOzZwdjAeEKyi5GT
-        Q0LARGLS9Z/MXYxcHEICh5gkjn6Yygrh/GWUaL95nw3C2cQo8en7ASaQFjYBN4mH8y+xgtgi
-        AoYS0+cdYQEpYhaYziTx5tcmsCJhAReJ5ht3mSGKXCVeTOtgh7CtJJZPOwg0lYODRUBVYvXy
-        UBCTV8BO4t9CNZAKIYEqiVeL7oNVcwJNOb32H9hERgExie+n1oDZzALiEreezGeC+EBAYsme
-        88wQtqjEy8f/WEFGSggoSfRtgCrXkpjX8BvKVpSY0v0QbDyvgKDEyZlPWCYwis1CMnUWkpZZ
-        SFpmIWlZwMiyilHa2S/YwyvY19PPwFTPz9/b01E32MnVx0fP2d93EyMwctdITJq7g7Fp5ge9
-        Q4xMHIyHGCU4mJVEeHv3WscL8aYkVlalFuXHF5XmpBYfYpTmYFES5523SD5eSCA9sSQ1OzW1
-        ILUIJsvEwSnVwLRr5pHY40I6/u8UA8v0kr1fbzGb6l9x/+tB5o+8gb3TH6ty/TrhzHDi95zY
-        pF3b9vm4FB/0/Pr544L7HvrSeafvv1Jds692ksNm42d2h/bZ9h/rFu3ibxCSEfnzRPIq147j
-        e8sP7QrT3B4Unl52vjhVd0Lgksdi6/cfF3X6lr14a/QEqVSF7EUVs6acqapepbziiqeH1Kov
-        l3lMo7xr5/45ZJm5lq1yrfzHiwenX3K37jB8rHU62aqww7RAwesW3/zlJmHLDwv3sR77sUVE
-        /N2PRTrsEysEg1hOFxTzKBw6nT/Zdf++xRYe1aLX3CR/ec07UdB9KHUb3+aea9EZLg0T9n4+
-        1Ptfpf9EzLGlPGVKLMUZiYZazEXFiQDhdhs0SwMAAA==
+Content-Type: multipart/signed; boundary="Sig_/hvV3_WwiiS1IDDfSXsR+NWi";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhhbmtzIGZvciB5b3VyIGNvbW1lbnRzLCBJIHdpbGwgcmVjb21taXQgcGF0Y2ggc29vbi4NCg0K
-LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IHBldGVyekBpbmZyYWRlYWQub3JnIDxw
-ZXRlcnpAaW5mcmFkZWFkLm9yZz4gDQpTZW50OiAyMDIwxOo41MIxOcjVIDE2OjA3DQpUbzogWmhv
-dSwgTGliaW5nIChOU0IgLSBDTi9IYW5nemhvdSkgPGxpYmluZy56aG91QG5va2lhLXNiZWxsLmNv
-bT4NCkNjOiB0Z2x4QGxpbnV0cm9uaXguZGU7IG1pbmdvQHJlZGhhdC5jb207IGJwQGFsaWVuOC5k
-ZTsgYnBAc3VzZS5kZTsgeDg2QGtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5v
-cmc7IGhwYUB6eXRvci5jb20NClN1YmplY3Q6IFJlOiBbUEFUQ0hdIHg4Ni9ubWk6IEZpeCBubWlf
-aGFuZGxlIGR1cmF0aW9uIG1pc2NhbGN1bGF0aW9uDQoNCk9uIE1vbiwgQXVnIDE3LCAyMDIwIGF0
-IDA1OjA0OjQxUE0gKzA4MDAsIExpYmluZyBaaG91IHdyb3RlOg0KPiBJbiBubWlfY2hlY2tfZHVy
-YXRpb24oKSwgdGhlICd3aG9sZV9tc2VjcycgdmFsdWUgc2hvdWxkIGdldCBmcm9tIA0KPiAnZHVy
-YXRpb24nIHRvIHJlZmxlY3QgYWN0dWFsIHRpbWUgZHVyYXRpb24sIGJ1dCBub3QgDQo+ICdhY3Rp
-b24tPm1heF9kdXJhdGlvbicuDQoNCkZpeGVzOiAyNDhlZDUxMDQ4YzQgKCJ4ODYvbm1pOiBSZW1v
-dmUgaXJxX3dvcmsgZnJvbSB0aGUgbG9uZyBkdXJhdGlvbiBOTUkgaGFuZGxlciIpDQoNCj4gU2ln
-bmVkLW9mZi1ieTogTGliaW5nIFpob3UgPGxpYmluZy56aG91QG5va2lhLXNiZWxsLmNvbT4NCj4g
-LS0tDQo+ICBhcmNoL3g4Ni9rZXJuZWwvbm1pLmMgfCAyICstDQo+ICAxIGZpbGUgY2hhbmdlZCwg
-MSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9hcmNoL3g4
-Ni9rZXJuZWwvbm1pLmMgYi9hcmNoL3g4Ni9rZXJuZWwvbm1pLmMgaW5kZXggDQo+IDRmYzk5NTRh
-OTU2MC4uYzUxZWU2NTllNTIwIDEwMDY0NA0KPiAtLS0gYS9hcmNoL3g4Ni9rZXJuZWwvbm1pLmMN
-Cj4gKysrIGIvYXJjaC94ODYva2VybmVsL25taS5jDQo+IEBAIC0xMDIsNyArMTAyLDcgQEAgZnNf
-aW5pdGNhbGwobm1pX3dhcm5pbmdfZGVidWdmcyk7DQo+ICANCj4gIHN0YXRpYyB2b2lkIG5taV9j
-aGVja19kdXJhdGlvbihzdHJ1Y3Qgbm1pYWN0aW9uICphY3Rpb24sIHU2NCANCj4gZHVyYXRpb24p
-ICB7DQo+IC0JdTY0IHdob2xlX21zZWNzID0gUkVBRF9PTkNFKGFjdGlvbi0+bWF4X2R1cmF0aW9u
-KTsNCj4gKwl1NjQgd2hvbGVfbXNlY3MgPSBkdXJhdGlvbjsNCj4gIAlpbnQgcmVtYWluZGVyX25z
-LCBkZWNpbWFsX21zZWNzOw0KPiAgDQo+ICAJaWYgKGR1cmF0aW9uIDwgbm1pX2xvbmdlc3RfbnMg
-fHwgZHVyYXRpb24gPCBhY3Rpb24tPm1heF9kdXJhdGlvbikNCg0KVGhlLCBJTU8sIHNhbmVyIHNv
-bHV0aW9uIGlzOg0KDQotLS0NCmRpZmYgLS1naXQgYS9hcmNoL3g4Ni9rZXJuZWwvbm1pLmMgYi9h
-cmNoL3g4Ni9rZXJuZWwvbm1pLmMgaW5kZXggNGZjOTk1NGE5NTYwLi40NzM4MTY2NmQ2YTUgMTAw
-NjQ0DQotLS0gYS9hcmNoL3g4Ni9rZXJuZWwvbm1pLmMNCisrKyBiL2FyY2gveDg2L2tlcm5lbC9u
-bWkuYw0KQEAgLTEwMiw3ICsxMDIsNiBAQCBmc19pbml0Y2FsbChubWlfd2FybmluZ19kZWJ1Z2Zz
-KTsNCiANCiBzdGF0aWMgdm9pZCBubWlfY2hlY2tfZHVyYXRpb24oc3RydWN0IG5taWFjdGlvbiAq
-YWN0aW9uLCB1NjQgZHVyYXRpb24pICB7DQotCXU2NCB3aG9sZV9tc2VjcyA9IFJFQURfT05DRShh
-Y3Rpb24tPm1heF9kdXJhdGlvbik7DQogCWludCByZW1haW5kZXJfbnMsIGRlY2ltYWxfbXNlY3M7
-DQogDQogCWlmIChkdXJhdGlvbiA8IG5taV9sb25nZXN0X25zIHx8IGR1cmF0aW9uIDwgYWN0aW9u
-LT5tYXhfZHVyYXRpb24pIEBAIC0xMTAsMTIgKzEwOSwxMiBAQCBzdGF0aWMgdm9pZCBubWlfY2hl
-Y2tfZHVyYXRpb24oc3RydWN0IG5taWFjdGlvbiAqYWN0aW9uLCB1NjQgZHVyYXRpb24pDQogDQog
-CWFjdGlvbi0+bWF4X2R1cmF0aW9uID0gZHVyYXRpb247DQogDQotCXJlbWFpbmRlcl9ucyA9IGRv
-X2Rpdih3aG9sZV9tc2VjcywgKDEwMDAgKiAxMDAwKSk7DQorCXJlbWFpbmRlcl9ucyA9IGRvX2Rp
-dihkdXJhdGlvbiwgKDEwMDAgKiAxMDAwKSk7DQogCWRlY2ltYWxfbXNlY3MgPSByZW1haW5kZXJf
-bnMgLyAxMDAwOw0KIA0KIAlwcmludGtfcmF0ZWxpbWl0ZWQoS0VSTl9JTkZPDQogCQkiSU5GTzog
-Tk1JIGhhbmRsZXIgKCVwcykgdG9vayB0b28gbG9uZyB0byBydW46ICVsbGQuJTAzZCBtc2Vjc1xu
-IiwNCi0JCWFjdGlvbi0+aGFuZGxlciwgd2hvbGVfbXNlY3MsIGRlY2ltYWxfbXNlY3MpOw0KKwkJ
-YWN0aW9uLT5oYW5kbGVyLCBkdXJhdGlvbiwgZGVjaW1hbF9tc2Vjcyk7DQogfQ0KIA0KIHN0YXRp
-YyBpbnQgbm1pX2hhbmRsZSh1bnNpZ25lZCBpbnQgdHlwZSwgc3RydWN0IHB0X3JlZ3MgKnJlZ3Mp
-DQo=
+--Sig_/hvV3_WwiiS1IDDfSXsR+NWi
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi Paul,
+
+On Wed, 19 Aug 2020 21:21:29 -0400 Paul Moore <paul@paul-moore.com> wrote:
+>
+> On Wed, Aug 19, 2020 at 6:31 PM Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+> FYI, I just merged that patch into the selinux/next tree.
+
+Thanks, I will drop my copy from my tree tomorrow.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/hvV3_WwiiS1IDDfSXsR+NWi
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl894ZYACgkQAVBC80lX
+0Gz5GAf8DJ3zLB6L2nDSdO6q6Dthrh1QZ3leXhW3V6v5RczxX/z/1zakE14IfcfK
+U7vftIP+pQ/CNhnuMzeiWvVWI5flz6ZoZyr1cq+5qfqJ/8LaYXPqLIYUNjqpzn/y
+lSdBgJxlnfqk91HRB1fnRY7/7CaOMH6UZB409OsFte03QAqBGjOnsvgDObtCCbz9
+9+HWRiJjXGbzi+d/76CUUyzQdWI0V85dLbyuNZwqMg3rHR0eWmuj/ndBv0+Yk3XV
+wsjp9NkjqULzaCdtK/PJpnLWzNsO0TXin28W3M2y31XMa+MrWgkjY5HwemmiDtaJ
+5DRF7usTn/0O1ZYJKj1ZM8f1sGeT/w==
+=frR/
+-----END PGP SIGNATURE-----
+
+--Sig_/hvV3_WwiiS1IDDfSXsR+NWi--
