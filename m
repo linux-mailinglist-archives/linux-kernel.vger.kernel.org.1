@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC2D24BFDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 208A224BFDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728585AbgHTNzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:55:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35816 "EHLO mail.kernel.org"
+        id S1730646AbgHTNzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:55:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727906AbgHTJ0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:26:41 -0400
+        id S1727921AbgHTJ0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:26:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C969022CE3;
-        Thu, 20 Aug 2020 09:26:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 04C8B22CF7;
+        Thu, 20 Aug 2020 09:26:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915600;
-        bh=dLN8VAA5iPGBkW4opW8cjquNH5m79Hk8dZeExUXHUBY=;
+        s=default; t=1597915604;
+        bh=VS46scwFVsaKDkyhE6NIl1+c/wDesdKoeConpx7g6ag=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mycbaZb1Xb8vdGovidZZfJsgRljAZGF0UkiNjAtYyc3Glyu2J8p79sMhjERHfrF9v
-         shQwGfn/7cPnRkkG8a0o0ZzFT2q/IO9t9t4iHC+Pwa9dGnrKmYWVEQQ/17RsNdH4CI
-         taMP30WjyUIBysOIrhIvXzdIOxEvn9FRe7sryvPM=
+        b=GU47jW7zuMGxGWo81YQLZo4GKviW4DmZfyU9F45d5pqaNXPpkwJT54PLlqgPbmtEi
+         EKRkWXphUgQIbL0SwVVvZm2bOwsNwSsl/89tOwJPQ+HcwWTciHiQDDVPNXyIplAu2Y
+         2xP9GfO/X1dcGRxWiCfjI86uUaMy/+Wp/e47yTnY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christopher KOBAYASHI <chris@disavowed.jp>,
-        Doug Brown <doug@downtowndougbrown.com>,
-        Vincent Duvert <vincent.ldev@duvert.net>,
-        Lukas Wunner <lukas@wunner.de>,
-        Yue Haibing <yuehaibing@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.8 071/232] appletalk: Fix atalk_proc_init() return path
-Date:   Thu, 20 Aug 2020 11:18:42 +0200
-Message-Id: <20200820091616.241259112@linuxfoundation.org>
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Subject: [PATCH 5.8 072/232] driver core: Avoid binding drivers to dead devices
+Date:   Thu, 20 Aug 2020 11:18:43 +0200
+Message-Id: <20200820091616.290353265@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
 References: <20200820091612.692383444@linuxfoundation.org>
@@ -47,40 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Duvert <vincent.ldev@duvert.net>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit d0f6ba2ef2c1c95069509e71402e7d6d43452512 upstream.
+commit 654888327e9f655a9d55ad477a9583e90e8c9b5c upstream.
 
-Add a missing return statement to atalk_proc_init so it doesn't return
--ENOMEM when successful.  This allows the appletalk module to load
-properly.
+Commit 3451a495ef24 ("driver core: Establish order of operations for
+device_add and device_del via bitflag") sought to prevent asynchronous
+driver binding to a device which is being removed.  It added a
+per-device "dead" flag which is checked in the following code paths:
 
-Fixes: e2bcd8b0ce6e ("appletalk: use remove_proc_subtree to simplify procfs code")
-Link: https://www.downtowndougbrown.com/2020/08/hacking-up-a-fix-for-the-broken-appletalk-kernel-module-in-linux-5-1-and-newer/
-Reported-by: Christopher KOBAYASHI <chris@disavowed.jp>
-Reported-by: Doug Brown <doug@downtowndougbrown.com>
-Signed-off-by: Vincent Duvert <vincent.ldev@duvert.net>
-[lukas: add missing tags]
+* asynchronous binding in __driver_attach_async_helper()
+*  synchronous binding in device_driver_attach()
+* asynchronous binding in __device_attach_async_helper()
+
+It did *not* check the flag upon:
+
+*  synchronous binding in __device_attach()
+
+However __device_attach() may also be called asynchronously from:
+
+deferred_probe_work_func()
+  bus_probe_device()
+    device_initial_probe()
+      __device_attach()
+
+So if the commit's intention was to check the "dead" flag in all
+asynchronous code paths, then a check is also necessary in
+__device_attach().  Add the missing check.
+
+Fixes: 3451a495ef24 ("driver core: Establish order of operations for device_add and device_del via bitflag")
 Signed-off-by: Lukas Wunner <lukas@wunner.de>
 Cc: stable@vger.kernel.org # v5.1+
-Cc: Yue Haibing <yuehaibing@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Link: https://lore.kernel.org/r/de88a23a6fe0ef70f7cfd13c8aea9ab51b4edab6.1594214103.git.lukas@wunner.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/appletalk/atalk_proc.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/base/dd.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/net/appletalk/atalk_proc.c
-+++ b/net/appletalk/atalk_proc.c
-@@ -229,6 +229,8 @@ int __init atalk_proc_init(void)
- 				     sizeof(struct aarp_iter_state), NULL))
- 		goto out;
+--- a/drivers/base/dd.c
++++ b/drivers/base/dd.c
+@@ -844,7 +844,9 @@ static int __device_attach(struct device
+ 	int ret = 0;
  
-+	return 0;
-+
- out:
- 	remove_proc_subtree("atalk", init_net.proc_net);
- 	return -ENOMEM;
+ 	device_lock(dev);
+-	if (dev->driver) {
++	if (dev->p->dead) {
++		goto out_unlock;
++	} else if (dev->driver) {
+ 		if (device_is_bound(dev)) {
+ 			ret = 1;
+ 			goto out_unlock;
 
 
