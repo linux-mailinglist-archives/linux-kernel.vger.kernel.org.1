@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C9624B068
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D1324B064
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726923AbgHTHuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 03:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41520 "EHLO
+        id S1726867AbgHTHud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 03:50:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726809AbgHTHuF (ORCPT
+        with ESMTP id S1726851AbgHTHuM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 03:50:05 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B7AEC061383
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 00:50:05 -0700 (PDT)
+        Thu, 20 Aug 2020 03:50:12 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86924C061383
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 00:50:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=vXXGq0ENjUX7sz+2LG68QGk+DMxq9lP4bV2GN66XJU0=; b=GtgSGYLkNfWPuMSULL4e/mzVZB
-        qSL+Wf43RibF0QA/g+QCLWSv2rX6HB9bi56I3eoq7pjMrM1Kfw3ZqZC0scvJr3qs5ESU1ml1sngZA
-        xK+pdNOK6Frm0/KYZj2L2fpbAFeD5v+DTj7QFp7FG9l2eu4ngP3C+cZ7vJBRdbIMoNcI4pJGLa2g6
-        8n7B67AZAOvXzISo7upzqIyipPgcFataMbTBeSs0YisPb53n1VUfslAKlguzDpd6jmTIoAWeldWZZ
-        NzUqzij4OoyZk1y+oEa4qGltmbeS37IKIjP4YnV7FXXBtc5MBUmupazhdV2RcwdV+/1SP1PM37aLl
-        TnnxWXkw==;
+        bh=FVA3agAYNH03NGG2EyaMJvjyPHeKiT2gHRMfl74rZEg=; b=XQ8E8gXowzXI4xMrerFcNycRrL
+        Z8AqszcKj5PV+4Eod+GJ6uIRRZlg1+HB/wB+odgZ/f6KV5ztaYJR+Y6sP9oX2Hzt8WNS/GVVjypU3
+        gQeJGQPtI/p2zGH7stR8P0Vx6QuZ8e63mcKLD5U5cPkzTK+o2xGub1zyiN3X7gZRrck3d7lqTDUkV
+        rON76Z9Zg7yRLLilkNQBZGvsZ2bhS/e/ChTbJcxM0kvWVkvHvPG7Uh8S6Xp/yGsr5mXySJ4FgQXyC
+        1tgR09P1apsSwGnK5FStc+s9vH712yOSfaYmUEExxDvKI2rkurpHW+iF5x92ZXawXz3zppw2z+UfT
+        +j2+resQ==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k8fKX-0007Dd-IJ; Thu, 20 Aug 2020 07:49:49 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k8fKX-0000Mm-77; Thu, 20 Aug 2020 07:49:49 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EB9DF3060F3;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EDA25306E56;
         Thu, 20 Aug 2020 09:49:43 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 7150F28B7E848; Thu, 20 Aug 2020 09:49:43 +0200 (CEST)
-Message-ID: <20200820074640.752402406@infradead.org>
+        id 7327728B7E847; Thu, 20 Aug 2020 09:49:43 +0200 (CEST)
+Message-ID: <20200820074640.810404638@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 20 Aug 2020 09:30:39 +0200
+Date:   Thu, 20 Aug 2020 09:30:40 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     linux-kernel@vger.kernel.org, mingo@kernel.org, will@kernel.org
 Cc:     npiggin@gmail.com, elver@google.com, jgross@suse.com,
         paulmck@kernel.org, rostedt@goodmis.org, rjw@rjwysocki.net,
         joel@joelfernandes.org, svens@linux.ibm.com, tglx@linutronix.de,
         peterz@infradead.org
-Subject: [PATCH 8/9] lockdep: Only trace IRQ edges
+Subject: [PATCH 9/9] lockdep,trace: Expose tracepoints
 References: <20200820073031.886217423@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,125 +53,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+The lockdep tracepoints are under the lockdep recursion counter, this
+has a bunch of nasty side effects:
 
-Problem:
+ - TRACE_IRQFLAGS doesn't work across the entire tracepoint
 
-	raw_local_irq_save();
-	local_irq_save();
-	...
-	local_irq_restore();
-	raw_local_irq_restore();
+ - RCU-lockdep doesn't see the tracepoints either, hiding numerous
+   "suspicious RCU usage" warnings.
 
-existing instances:
+Pull the trace_lock_*() tracepoints completely out from under the
+lockdep recursion handling and completely rely on the trace level
+recusion handling -- also, tracing *SHOULD* not be taking locks in any
+case.
 
- - lock_acquire()
-     raw_local_irq_save()
-     __lock_acquire()
-       arch_spin_lock(&graph_lock)
-         pv_wait() := kvm_wait() (same or worse for Xen/HyperV)
-           local_irq_save()
-
- - trace_clock_global()
-     raw_local_irq_save()
-     arch_spin_lock()
-       pv_wait() := kvm_wait()
-	 local_irq_save()
-
- - apic_retrigger_irq()
-     raw_local_irq_save()
-     apic->send_IPI() := default_send_IPI_single_phys()
-       local_irq_save()
-
-Possible solutions:
-
- A) make it work by enabling the tracing inside raw_*()
- B) make it work by keeping tracing disabled inside raw_*()
- C) call it broken and clean it up now
-
-Now, given that the only reason to use the raw_* variant is because you don't
-want tracing. Therefore A) seems like a weird option (although it can be done).
-C) is tempting, but OTOH it ends up converting a _lot_ of code to raw just
-because there is one raw user, this strips the validation/tracing off for all
-the other users.
-
-So we pick B) and declare any code that ends up doing:
-
-	raw_local_irq_save()
-	local_irq_save()
-	lockdep_assert_irqs_disabled();
-
-broken. AFAICT this problem has existed forever, the only reason it came
-up is because I changed IRQ tracing vs lockdep recursion and the first
-instance is fairly common, the other cases hardly ever happen.
-
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-[rewrote changelog]
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
+ kernel/locking/lockdep.c |   14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
- arch/powerpc/include/asm/hw_irq.h |   11 ++++-------
- include/linux/irqflags.h          |   15 +++++++--------
- 2 files changed, 11 insertions(+), 15 deletions(-)
-
---- a/arch/powerpc/include/asm/hw_irq.h
-+++ b/arch/powerpc/include/asm/hw_irq.h
-@@ -200,17 +200,14 @@ static inline bool arch_irqs_disabled(vo
- #define powerpc_local_irq_pmu_save(flags)			\
- 	 do {							\
- 		raw_local_irq_pmu_save(flags);			\
--		trace_hardirqs_off();				\
-+		if (!raw_irqs_disabled_flags(flags))		\
-+			trace_hardirqs_off();			\
- 	} while(0)
- #define powerpc_local_irq_pmu_restore(flags)			\
- 	do {							\
--		if (raw_irqs_disabled_flags(flags)) {		\
--			raw_local_irq_pmu_restore(flags);	\
--			trace_hardirqs_off();			\
--		} else {					\
-+		if (!raw_irqs_disabled_flags(flags))		\
- 			trace_hardirqs_on();			\
--			raw_local_irq_pmu_restore(flags);	\
--		}						\
-+		raw_local_irq_pmu_restore(flags);		\
- 	} while(0)
- #else
- #define powerpc_local_irq_pmu_save(flags)			\
---- a/include/linux/irqflags.h
-+++ b/include/linux/irqflags.h
-@@ -191,25 +191,24 @@ do {						\
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -5044,6 +5044,8 @@ void lock_acquire(struct lockdep_map *lo
+ {
+ 	unsigned long flags;
  
- #define local_irq_disable()				\
- 	do {						\
-+		bool was_disabled = raw_irqs_disabled();\
- 		raw_local_irq_disable();		\
--		trace_hardirqs_off();			\
-+		if (!was_disabled)			\
-+			trace_hardirqs_off();		\
- 	} while (0)
++	trace_lock_acquire(lock, subclass, trylock, read, check, nest_lock, ip);
++
+ 	if (unlikely(current->lockdep_recursion)) {
+ 		/* XXX allow trylock from NMI ?!? */
+ 		if (lockdep_nmi() && !trylock) {
+@@ -5068,7 +5070,6 @@ void lock_acquire(struct lockdep_map *lo
+ 	check_flags(flags);
  
- #define local_irq_save(flags)				\
- 	do {						\
- 		raw_local_irq_save(flags);		\
--		trace_hardirqs_off();			\
-+		if (!raw_irqs_disabled_flags(flags))	\
-+			trace_hardirqs_off();		\
- 	} while (0)
+ 	current->lockdep_recursion++;
+-	trace_lock_acquire(lock, subclass, trylock, read, check, nest_lock, ip);
+ 	__lock_acquire(lock, subclass, trylock, read, check,
+ 		       irqs_disabled_flags(flags), nest_lock, ip, 0, 0);
+ 	lockdep_recursion_finish();
+@@ -5080,13 +5081,15 @@ void lock_release(struct lockdep_map *lo
+ {
+ 	unsigned long flags;
  
- #define local_irq_restore(flags)			\
- 	do {						\
--		if (raw_irqs_disabled_flags(flags)) {	\
--			raw_local_irq_restore(flags);	\
--			trace_hardirqs_off();		\
--		} else {				\
-+		if (!raw_irqs_disabled_flags(flags))	\
- 			trace_hardirqs_on();		\
--			raw_local_irq_restore(flags);	\
--		}					\
-+		raw_local_irq_restore(flags);		\
- 	} while (0)
++	trace_lock_release(lock, ip);
++
+ 	if (unlikely(current->lockdep_recursion))
+ 		return;
  
- #define safe_halt()				\
+ 	raw_local_irq_save(flags);
+ 	check_flags(flags);
++
+ 	current->lockdep_recursion++;
+-	trace_lock_release(lock, ip);
+ 	if (__lock_release(lock, ip))
+ 		check_chain_key(current);
+ 	lockdep_recursion_finish();
+@@ -5272,8 +5275,6 @@ __lock_acquired(struct lockdep_map *lock
+ 		hlock->holdtime_stamp = now;
+ 	}
+ 
+-	trace_lock_acquired(lock, ip);
+-
+ 	stats = get_lock_stats(hlock_class(hlock));
+ 	if (waittime) {
+ 		if (hlock->read)
+@@ -5292,6 +5293,8 @@ void lock_contended(struct lockdep_map *
+ {
+ 	unsigned long flags;
+ 
++	trace_lock_contended(lock, ip);
++
+ 	if (unlikely(!lock_stat || !debug_locks))
+ 		return;
+ 
+@@ -5301,7 +5304,6 @@ void lock_contended(struct lockdep_map *
+ 	raw_local_irq_save(flags);
+ 	check_flags(flags);
+ 	current->lockdep_recursion++;
+-	trace_lock_contended(lock, ip);
+ 	__lock_contended(lock, ip);
+ 	lockdep_recursion_finish();
+ 	raw_local_irq_restore(flags);
+@@ -5312,6 +5314,8 @@ void lock_acquired(struct lockdep_map *l
+ {
+ 	unsigned long flags;
+ 
++	trace_lock_acquired(lock, ip);
++
+ 	if (unlikely(!lock_stat || !debug_locks))
+ 		return;
+ 
 
 
