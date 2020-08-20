@@ -2,101 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E46B24BAE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EEF724BB15
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730365AbgHTMUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:20:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38896 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729924AbgHTJzq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:55:46 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0895D2067C;
-        Thu, 20 Aug 2020 09:55:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917345;
-        bh=HAPb4srVV8co5wIjXy1C6+XY4jLcuHnudIAZvr0Xsrg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pFYqhWfgdXMz4/ZuixwQxcr0bPDYVkS7k9IcuqLlXXfSXV3MyNb/H8ViAJ26AQPsb
-         Ohc3BHESfnzkbYm8jo1xelEL6R32H9i7zY6NITIUzo8BXH7Ldq8/jI89DNQLRczyBY
-         NNMVSEThFxCLD+1082nnxTHenjCKHhXMH3NHnI3A=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sandeep Raghuraman <sandy.8925@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 4.19 92/92] drm/amdgpu: Fix bug where DPM is not enabled after hibernate and resume
-Date:   Thu, 20 Aug 2020 11:22:17 +0200
-Message-Id: <20200820091542.424191325@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
-References: <20200820091537.490965042@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1730662AbgHTMWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:22:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730190AbgHTJzP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:55:15 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA50C061757;
+        Thu, 20 Aug 2020 02:55:12 -0700 (PDT)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1k8hHZ-007L1T-Cn; Thu, 20 Aug 2020 11:54:53 +0200
+Message-ID: <8d35f1aa44b4f228e104275a824adaacf0b36674.camel@sipsolutions.net>
+Subject: Re: WARNING in __cfg80211_connect_result
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        syzbot <syzbot+cc4c0f394e2611edba66@syzkaller.appspotmail.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, kvalo@codeaurora.org,
+        leon@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        syzkaller-bugs@googlegroups.com
+Date:   Thu, 20 Aug 2020 11:54:51 +0200
+In-Reply-To: <CAHmME9rd+54EOO-b=wmVxtzbvckET2WSMm-3q8LJmfp38A9ceg@mail.gmail.com>
+References: <000000000000a7e38a05a997edb2@google.com>
+         <0000000000005c13f505ad3f5c42@google.com>
+         <CAHmME9rd+54EOO-b=wmVxtzbvckET2WSMm-3q8LJmfp38A9ceg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sandeep Raghuraman <sandy.8925@gmail.com>
+On Thu, 2020-08-20 at 11:47 +0200, Jason A. Donenfeld wrote:
+> On Wed, Aug 19, 2020 at 8:42 PM syzbot
+> <syzbot+cc4c0f394e2611edba66@syzkaller.appspotmail.com> wrote:
+> > syzbot has bisected this issue to:
+> > 
+> > commit e7096c131e5161fa3b8e52a650d7719d2857adfd
+> > Author: Jason A. Donenfeld <Jason@zx2c4.com>
+> > Date:   Sun Dec 8 23:27:34 2019 +0000
+> > 
+> >     net: WireGuard secure network tunnel
+> > 
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=175ad8b1900000
+> > start commit:   e3ec1e8c net: eliminate meaningless memcpy to data in pskb..
+> > git tree:       net-next
+> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=14dad8b1900000
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=10dad8b1900000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3d400a47d1416652
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=cc4c0f394e2611edba66
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d9de91900000
+> > 
+> > Reported-by: syzbot+cc4c0f394e2611edba66@syzkaller.appspotmail.com
+> > Fixes: e7096c131e51 ("net: WireGuard secure network tunnel")
+> 
+> Having trouble linking this back to wireguard... Those oopses don't
+> have anything to do with it either. Bisection error?
 
-commit f87812284172a9809820d10143b573d833cd3f75 upstream.
+Probably the typical generic netlink issue - syzbot often hits the
+generic netlink family by ID, rather than by name. So when it has a
+kernel without WG a generic netlink family disappears, the later ones
+get different IDs, and the issue no longer happens since the ID is now
+no longer valid or hitting some completely different code path ...
 
-Reproducing bug report here:
-After hibernating and resuming, DPM is not enabled. This remains the case
-even if you test hibernate using the steps here:
-https://www.kernel.org/doc/html/latest/power/basic-pm-debugging.html
-
-I debugged the problem, and figured out that in the file hardwaremanager.c,
-in the function, phm_enable_dynamic_state_management(), the check
-'if (!hwmgr->pp_one_vf && smum_is_dpm_running(hwmgr) && !amdgpu_passthrough(adev) && adev->in_suspend)'
-returns true for the hibernate case, and false for the suspend case.
-
-This means that for the hibernate case, the AMDGPU driver doesn't enable DPM
-(even though it should) and simply returns from that function.
-In the suspend case, it goes ahead and enables DPM, even though it doesn't need to.
-
-I debugged further, and found out that in the case of suspend, for the
-CIK/Hawaii GPUs, smum_is_dpm_running(hwmgr) returns false, while in the case of
-hibernate, smum_is_dpm_running(hwmgr) returns true.
-
-For CIK, the ci_is_dpm_running() function calls the ci_is_smc_ram_running() function,
-which is ultimately used to determine if DPM is currently enabled or not,
-and this seems to provide the wrong answer.
-
-I've changed the ci_is_dpm_running() function to instead use the same method that
-some other AMD GPU chips do (e.g Fiji), which seems to read the voltage controller.
-I've tested on my R9 390 and it seems to work correctly for both suspend and
-hibernate use cases, and has been stable so far.
-
-Bug: https://bugzilla.kernel.org/show_bug.cgi?id=208839
-Signed-off-by: Sandeep Raghuraman <sandy.8925@gmail.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
---- a/drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c
-+++ b/drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c
-@@ -2723,7 +2723,10 @@ static int ci_initialize_mc_reg_table(st
- 
- static bool ci_is_dpm_running(struct pp_hwmgr *hwmgr)
- {
--	return ci_is_smc_ram_running(hwmgr);
-+	return (1 == PHM_READ_INDIRECT_FIELD(hwmgr->device,
-+					     CGS_IND_REG__SMC, FEATURE_STATUS,
-+					     VOLTAGE_CONTROLLER_ON))
-+		? true : false;
- }
- 
- static int ci_smu_init(struct pp_hwmgr *hwmgr)
-
+johannes
 
