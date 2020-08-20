@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CEB824B519
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 206D024B473
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731381AbgHTKS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:18:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38698 "EHLO mail.kernel.org"
+        id S1729558AbgHTKGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:06:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731021AbgHTKR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:17:26 -0400
+        id S1729500AbgHTKB3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:01:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD24E208E4;
-        Thu, 20 Aug 2020 10:17:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C0A5D20855;
+        Thu, 20 Aug 2020 10:01:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918645;
-        bh=QG+9dxGsIKi3If5pONGdBxr2CB5gnvr30BE7fpx6EuY=;
+        s=default; t=1597917689;
+        bh=1/n5nDmrqZc82M8C2uKR8Htb2KZeOlFAnuXCzhSTwys=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rSoGie0pqKm+gx3YR8jRgMWto/pHDD60bwOYq875wPS/ybMYox+M4YDPKxWvfa1Tz
-         Oy7PoiRgO/9yof1HlWnuggb788l82eSaZ4VzEQRiCcLbMdYc+forcDcMggkaPbBcYK
-         N5eaXa3FRmQTo/TcM0hIeDA7QWlBkTyUgvF35rOE=
+        b=rA+HRNN7Bab6da3wihIkB+bE6RG1OubkFSgdYREAwTvDN8x3/YkHgFn97GOR7DGVr
+         HBApN72aa+Ot/AVaoQ5MejjSRqX3wCa6BKq0yd2yS/mrycqWUCU6D54LY+60odahsE
+         mksTtx95FhuMOOxnAFEHGJ2b5stW/iv4gjattpDc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+6db548b615e5aeefdce2@syzkaller.appspotmail.com,
-        YueHaibing <yuehaibing@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 016/149] net/x25: Fix null-ptr-deref in x25_disconnect
-Date:   Thu, 20 Aug 2020 11:21:33 +0200
-Message-Id: <20200820092126.483903460@linuxfoundation.org>
+        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 121/212] media: exynos4-is: Add missed check for pinctrl_lookup_state()
+Date:   Thu, 20 Aug 2020 11:21:34 +0200
+Message-Id: <20200820091608.466007941@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
-References: <20200820092125.688850368@linuxfoundation.org>
+In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
+References: <20200820091602.251285210@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,66 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-commit 8999dc89497ab1c80d0718828e838c7cd5f6bffe upstream.
+[ Upstream commit 18ffec750578f7447c288647d7282c7d12b1d969 ]
 
-We should check null before do x25_neigh_put in x25_disconnect,
-otherwise may cause null-ptr-deref like this:
+fimc_md_get_pinctrl() misses a check for pinctrl_lookup_state().
+Add the missed check to fix it.
 
- #include <sys/socket.h>
- #include <linux/x25.h>
-
- int main() {
-    int sck_x25;
-    sck_x25 = socket(AF_X25, SOCK_SEQPACKET, 0);
-    close(sck_x25);
-    return 0;
- }
-
-BUG: kernel NULL pointer dereference, address: 00000000000000d8
-CPU: 0 PID: 4817 Comm: t2 Not tainted 5.7.0-rc3+ #159
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.9.3-
-RIP: 0010:x25_disconnect+0x91/0xe0
-Call Trace:
- x25_release+0x18a/0x1b0
- __sock_release+0x3d/0xc0
- sock_close+0x13/0x20
- __fput+0x107/0x270
- ____fput+0x9/0x10
- task_work_run+0x6d/0xb0
- exit_to_usermode_loop+0x102/0x110
- do_syscall_64+0x23c/0x260
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-
-Reported-by: syzbot+6db548b615e5aeefdce2@syzkaller.appspotmail.com
-Fixes: 4becb7ee5b3d ("net/x25: Fix x25_neigh refcnt leak when x25 disconnect")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 4163851f7b99 ("[media] s5p-fimc: Use pinctrl API for camera ports configuration]")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/x25/x25_subr.c |   10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/media/platform/exynos4-is/media-dev.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/net/x25/x25_subr.c
-+++ b/net/x25/x25_subr.c
-@@ -368,10 +368,12 @@ void x25_disconnect(struct sock *sk, int
- 		sk->sk_state_change(sk);
- 		sock_set_flag(sk, SOCK_DEAD);
- 	}
--	read_lock_bh(&x25_list_lock);
--	x25_neigh_put(x25->neighbour);
--	x25->neighbour = NULL;
--	read_unlock_bh(&x25_list_lock);
-+	if (x25->neighbour) {
-+		read_lock_bh(&x25_list_lock);
-+		x25_neigh_put(x25->neighbour);
-+		x25->neighbour = NULL;
-+		read_unlock_bh(&x25_list_lock);
-+	}
+diff --git a/drivers/media/platform/exynos4-is/media-dev.c b/drivers/media/platform/exynos4-is/media-dev.c
+index ef6ccb5b89525..cdaf3a8e2555e 100644
+--- a/drivers/media/platform/exynos4-is/media-dev.c
++++ b/drivers/media/platform/exynos4-is/media-dev.c
+@@ -1257,6 +1257,9 @@ static int fimc_md_get_pinctrl(struct fimc_md *fmd)
+ 
+ 	pctl->state_idle = pinctrl_lookup_state(pctl->pinctrl,
+ 					PINCTRL_STATE_IDLE);
++	if (IS_ERR(pctl->state_idle))
++		return PTR_ERR(pctl->state_idle);
++
+ 	return 0;
  }
  
- /*
+-- 
+2.25.1
+
 
 
