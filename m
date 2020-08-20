@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C44524B76D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9253B24B777
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731242AbgHTKxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:53:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41556 "EHLO
+        id S1730424AbgHTKyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:54:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731471AbgHTKw7 (ORCPT
+        with ESMTP id S1730973AbgHTKw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:52:59 -0400
+        Thu, 20 Aug 2020 06:52:57 -0400
 Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8384C061387
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:52:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB8FC061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 03:52:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=9cui8yGpBY2ZOyPniSDNd2mkKvm1A1hT7OP8vChaDSw=; b=tXBVCcMpUX96dGkP/1qyea08Rw
-        hvYF89TlNee70zCpU7Ec/1P3QywaWPWaGqYTNQYZIz6cZeeDCknCHBYkaobqS65ReHFWw6O78Ooz1
-        RfodqZqyZQCo9ozGzqK2plPGysUPU+c8OYvqE0fWMyo1mKU5ZdTuEhLS+cvymYl0nHehDywOxR7cF
-        DQaRRS6zVmPdzVclaMZNR4LGX5ikCJDnFaI/Os9GG0oDQ3mNpcBE2K99bkYMLWyVJlaB/ya+hDN0e
-        oYmPCRhz/IgzE7D/GqY/FWx02OwWkRxHS+9yn9ldPVVdwyXorO/NLVv78dYvVKOIuFHyWYm41M5tD
-        AHHxZA/Q==;
+        bh=6a4fzHlDI/vqrQCkj8cPYEMr+0pCffBvrRSzShfRcXY=; b=LvYeFHf1xucbRhvIaADEKdr4tv
+        g+BtOIXxOolgvKvGtfXED0g2gCuSkuQFxx6idfLpF6XoIwjaNXVSsr1vctQmRtN5WpcSFJCjfAlM0
+        BenmvqQWvLmXgQi09rlOaw6pDj3RZNOu+GRhA5ZFZTxmpeuXopEmo518MKa+HkE8mmN6UVoE6i6Pb
+        Cu6pU3/8SRZ0DEp7HtQe49rSaGH5Lqb75Nd0z+efamWznZ02EmbD0DzjLxtJIJnWoD5ItIHegEcs2
+        v5xf6w24RaZSc/kOaZ1PSDpJj8sGrdcpc4arqiQtF5j0bVieS2LDMTJetj3iqFgP4P8HfTK0klXKd
+        uGJpxHtg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k8iBS-0008Fs-Gn; Thu, 20 Aug 2020 10:52:38 +0000
+        id 1k8iBS-0008Ft-Gm; Thu, 20 Aug 2020 10:52:38 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5A15C305B23;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 58E92305815;
         Thu, 20 Aug 2020 12:52:36 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 3DE4628B7E856; Thu, 20 Aug 2020 12:52:36 +0200 (CEST)
-Message-ID: <20200820104905.118636133@infradead.org>
+        id 4073E2C38827B; Thu, 20 Aug 2020 12:52:36 +0200 (CEST)
+Message-ID: <20200820104905.178074795@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 20 Aug 2020 12:38:33 +0200
+Date:   Thu, 20 Aug 2020 12:38:34 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org, Kyle Huey <me@kylehuey.com>,
@@ -57,7 +57,7 @@ Cc:     linux-kernel@vger.kernel.org, Kyle Huey <me@kylehuey.com>,
         Andy Lutomirski <luto@kernel.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 1/7] x86/debug: Allow a single level of #DB recursion
+Subject: [RFC][PATCH 2/7] x86/debug: Sync BTF earlier
 References: <20200820103832.486877479@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -66,151 +66,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Lutomirski <luto@kernel.org>
 
-Trying to clear DR7 around a #DB from usermode malfunctions if we
-schedule when delivering SIGTRAP.  Rather than trying to define a
-special no-recursion region, just allow a single level of recursion.
-We do the same thing for NMI, and it hasn't caused any problems yet.
-
-Fixes: 9f58fdde95c9 ("x86/db: Split out dr6/7 handling")
-Reported-by: Kyle Huey <me@kylehuey.com>
-Debugged-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/8b9bd05f187231df008d48cf818a6a311cbd5c98.1597882384.git.luto@kernel.org
 ---
- arch/x86/kernel/traps.c |   65 ++++++++++++++++++++++--------------------------
- 1 file changed, 31 insertions(+), 34 deletions(-)
+ arch/x86/kernel/traps.c |   14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 --- a/arch/x86/kernel/traps.c
 +++ b/arch/x86/kernel/traps.c
-@@ -729,20 +729,9 @@ static bool is_sysenter_singlestep(struc
- #endif
+@@ -749,6 +749,13 @@ static __always_inline unsigned long deb
+ 	/* Filter out all the reserved bits which are preset to 1 */
+ 	dr6 &= ~DR6_RESERVED;
+ 
++	/*
++	 * The SDM says "The processor clears the BTF flag when it
++	 * generates a debug exception."  Clear TIF_BLOCKSTEP to keep
++	 * TIF_BLOCKSTEP in sync with the hardware BTF flag.
++	 */
++	clear_thread_flag(TIF_BLOCKSTEP);
++
+ 	return dr6;
  }
  
--static __always_inline void debug_enter(unsigned long *dr6, unsigned long *dr7)
-+static __always_inline unsigned long debug_read_clear_dr6(void)
- {
--	/*
--	 * Disable breakpoints during exception handling; recursive exceptions
--	 * are exceedingly 'fun'.
--	 *
--	 * Since this function is NOKPROBE, and that also applies to
--	 * HW_BREAKPOINT_X, we can't hit a breakpoint before this (XXX except a
--	 * HW_BREAKPOINT_W on our stack)
--	 *
--	 * Entry text is excluded for HW_BP_X and cpu_entry_area, which
--	 * includes the entry stack is excluded for everything.
--	 */
--	*dr7 = local_db_save();
-+	unsigned long dr6;
+@@ -783,13 +790,6 @@ static void handle_debug(struct pt_regs
+ 	int si_code;
  
  	/*
- 	 * The Intel SDM says:
-@@ -755,15 +744,12 @@ static __always_inline void debug_enter(
- 	 *
- 	 * Keep it simple: clear DR6 immediately.
+-	 * The SDM says "The processor clears the BTF flag when it
+-	 * generates a debug exception."  Clear TIF_BLOCKSTEP to keep
+-	 * TIF_BLOCKSTEP in sync with the hardware BTF flag.
+-	 */
+-	clear_thread_flag(TIF_BLOCKSTEP);
+-
+-	/*
+ 	 * If DR6 is zero, no point in trying to handle it. The kernel is
+ 	 * not using INT1.
  	 */
--	get_debugreg(*dr6, 6);
-+	get_debugreg(dr6, 6);
- 	set_debugreg(0, 6);
- 	/* Filter out all the reserved bits which are preset to 1 */
--	*dr6 &= ~DR6_RESERVED;
--}
-+	dr6 &= ~DR6_RESERVED;
- 
--static __always_inline void debug_exit(unsigned long dr7)
--{
--	local_db_restore(dr7);
-+	return dr6;
- }
- 
- /*
-@@ -863,6 +849,18 @@ static void handle_debug(struct pt_regs
- static __always_inline void exc_debug_kernel(struct pt_regs *regs,
- 					     unsigned long dr6)
- {
-+	/*
-+	 * Disable breakpoints during exception handling; recursive exceptions
-+	 * are exceedingly 'fun'.
-+	 *
-+	 * Since this function is NOKPROBE, and that also applies to
-+	 * HW_BREAKPOINT_X, we can't hit a breakpoint before this (XXX except a
-+	 * HW_BREAKPOINT_W on our stack)
-+	 *
-+	 * Entry text is excluded for HW_BP_X and cpu_entry_area, which
-+	 * includes the entry stack is excluded for everything.
-+	 */
-+	unsigned long dr7 = local_db_save();
- 	bool irq_state = idtentry_enter_nmi(regs);
- 	instrumentation_begin();
- 
-@@ -883,6 +881,8 @@ static __always_inline void exc_debug_ke
- 
- 	instrumentation_end();
- 	idtentry_exit_nmi(regs, irq_state);
-+
-+	local_db_restore(dr7);
- }
- 
- static __always_inline void exc_debug_user(struct pt_regs *regs,
-@@ -894,6 +894,15 @@ static __always_inline void exc_debug_us
- 	 */
- 	WARN_ON_ONCE(!user_mode(regs));
- 
-+	/*
-+	 * NB: We can't easily clear DR7 here because
-+	 * idtentry_exit_to_usermode() can invoke ptrace, schedule, access
-+	 * user memory, etc.  This means that a recursive #DB is possible.  If
-+	 * this happens, that #DB will hit exc_debug_kernel() and clear DR7.
-+	 * Since we're not on the IST stack right now, everything will be
-+	 * fine.
-+	 */
-+
- 	irqentry_enter_from_user_mode(regs);
- 	instrumentation_begin();
- 
-@@ -907,36 +916,24 @@ static __always_inline void exc_debug_us
- /* IST stack entry */
- DEFINE_IDTENTRY_DEBUG(exc_debug)
- {
--	unsigned long dr6, dr7;
--
--	debug_enter(&dr6, &dr7);
--	exc_debug_kernel(regs, dr6);
--	debug_exit(dr7);
-+	exc_debug_kernel(regs, debug_read_clear_dr6());
- }
- 
- /* User entry, runs on regular task stack */
- DEFINE_IDTENTRY_DEBUG_USER(exc_debug)
- {
--	unsigned long dr6, dr7;
--
--	debug_enter(&dr6, &dr7);
--	exc_debug_user(regs, dr6);
--	debug_exit(dr7);
-+	exc_debug_user(regs, debug_read_clear_dr6());
- }
- #else
- /* 32 bit does not have separate entry points. */
- DEFINE_IDTENTRY_RAW(exc_debug)
- {
--	unsigned long dr6, dr7;
--
--	debug_enter(&dr6, &dr7);
-+	unsigned long dr6 = debug_read_clear_dr6();
- 
- 	if (user_mode(regs))
- 		exc_debug_user(regs, dr6);
- 	else
- 		exc_debug_kernel(regs, dr6);
--
--	debug_exit(dr7);
- }
- #endif
- 
 
 
