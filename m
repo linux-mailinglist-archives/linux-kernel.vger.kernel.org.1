@@ -2,120 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FCE624BFD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF9B24BF1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728587AbgHTNzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:55:02 -0400
-Received: from relayfre-01.paragon-software.com ([176.12.100.13]:60528 "EHLO
-        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727902AbgHTJ0k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:26:40 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id A5F4A1D0C;
-        Thu, 20 Aug 2020 12:26:35 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1597915595;
-        bh=3noQN8rOGv2yyitvWoJV96U2nOW/mwH5Vfw1lzFR83E=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=bdquysZzTTNsEgZmhWWSDjkJ4od2EtH31dCcK9nPTrMFLuzeeog3mPhGfs1+oREns
-         PuDEyKRa+EhK5NcJec2XfOo2MwaqbSbqzuj6zOTyGTAvF8kJJXiNd9IlJbtUNp7on2
-         AtM1BPTLSeGtOwrfni7AkK1uhdE02Os3GOyb2+zQ=
-Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Thu, 20 Aug 2020 12:26:35 +0300
-Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
- by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
- id 15.01.1847.003; Thu, 20 Aug 2020 12:26:35 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     "dsterba@suse.cz" <dsterba@suse.cz>
-CC:     "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: RE: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
- Software.
-Thread-Topic: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
- Software.
-Thread-Index: AdZyNcmjSkpkGje7R9K6YobJrVDyZ///4zWA//aneKA=
-Date:   Thu, 20 Aug 2020 09:26:35 +0000
-Message-ID: <dc291b0599c4400b9f7776f969ad5a81@paragon-software.com>
-References: <2911ac5cd20b46e397be506268718d74@paragon-software.com>
- <20200814134056.GV2026@twin.jikos.cz>
-In-Reply-To: <20200814134056.GV2026@twin.jikos.cz>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.30.8.36]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728981AbgHTNkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:40:45 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:51600 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725820AbgHTJaW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:30:22 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 5661E68EB82655C34646;
+        Thu, 20 Aug 2020 17:30:19 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 20 Aug 2020 17:30:09 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <srinivas.kandagatla@linaro.org>, <linux-kernel@vger.kernel.org>
+CC:     <linuxarm@huawei.com>
+Subject: [PATCH] nvmem: core: Use kobj_to_dev() instead of container_of()
+Date:   Thu, 20 Aug 2020 17:28:03 +0800
+Message-ID: <1597915683-44794-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: David Sterba <dsterba@suse.cz>
-> Sent: Friday, August 14, 2020 4:41 PM
-> On Fri, Aug 14, 2020 at 12:29:01PM +0000, Konstantin Komarov wrote:
-> > This patch adds NTFS Read-Write driver to fs/ntfs3.
-> >
-> > Having decades of expertise in commercial file systems development and =
-huge
-> > test coverage, we at Paragon Software GmbH want to make our contributio=
-n to
-> > the Open Source Community by providing implementation of NTFS Read-Writ=
-e
-> > driver for the Linux Kernel.
-> >
-> > This is fully functional NTFS Read-Write driver. Current version works =
-with
-> > NTFS(including v3.1) normal/compressed/sparse files and supports journa=
-l replaying.
-> >
-> > We plan to support this version after the codebase once merged, and add=
- new
-> > features and fix bugs. For example, full journaling support over JBD wi=
-ll be
-> > added in later updates.
-> >
-> > The patch is too big to handle it within an e-mail body, so it is avail=
-able to download
-> > on our server: https://dl.paragon-software.com/ntfs3/ntfs3.patch
-> >
-> > Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software=
-.com>
->=20
-> In case somebody wants to compile it, this fixup is needed to let 'make
-> fs/ntfs3/' actually work, besides enabling it in the config.
->=20
-> diff --git a/fs/Makefile b/fs/Makefile
-> index 1c7b0e3f6daa..b0b4ad8affa0 100644
-> --- a/fs/Makefile
-> +++ b/fs/Makefile
-> @@ -100,6 +100,7 @@ obj-$(CONFIG_SYSV_FS)		+=3D sysv/
->  obj-$(CONFIG_CIFS)		+=3D cifs/
->  obj-$(CONFIG_HPFS_FS)		+=3D hpfs/
->  obj-$(CONFIG_NTFS_FS)		+=3D ntfs/
-> +obj-$(CONFIG_NTFS3_FS)		+=3D ntfs3/
->  obj-$(CONFIG_UFS_FS)		+=3D ufs/
->  obj-$(CONFIG_EFS_FS)		+=3D efs/
->  obj-$(CONFIG_JFFS2_FS)		+=3D jffs2/
-> diff --git a/fs/ntfs3/Makefile b/fs/ntfs3/Makefile
-> index 4d4fe198b8b8..d99dd1af43aa 100644
-> --- a/fs/ntfs3/Makefile
-> +++ b/fs/ntfs3/Makefile
-> @@ -5,7 +5,7 @@
->=20
->  obj-$(CONFIG_NTFS3_FS) +=3D ntfs3.o
->=20
-> -ntfs3-objs :=3D bitfunc.o bitmap.o inode.o fsntfs.o frecord.o \
-> +ntfs3-y :=3D bitfunc.o bitmap.o inode.o fsntfs.o frecord.o \
->  	    index.o attrlist.o record.o attrib.o run.o xattr.o\
->  	    upcase.o super.o file.o dir.o namei.o lznt.o\
->  	    fslog.o
-> ---
-Hi David, thanks! Indeed these fixups are needed to the patch (lost them du=
-ring final polishing of the code before submitting). Will be fixed in v2.
+Use kobj_to_dev() instead of container_of()
+
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+---
+ drivers/nvmem/core.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index 6cd3edb..7641e56 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -128,7 +128,7 @@ static ssize_t bin_attr_nvmem_read(struct file *filp, struct kobject *kobj,
+ 	if (attr->private)
+ 		dev = attr->private;
+ 	else
+-		dev = container_of(kobj, struct device, kobj);
++		dev = kobj_to_dev(kobj);
+ 	nvmem = to_nvmem_device(dev);
+ 
+ 	/* Stop the user from reading */
+@@ -168,7 +168,7 @@ static ssize_t bin_attr_nvmem_write(struct file *filp, struct kobject *kobj,
+ 	if (attr->private)
+ 		dev = attr->private;
+ 	else
+-		dev = container_of(kobj, struct device, kobj);
++		dev = kobj_to_dev(kobj);
+ 	nvmem = to_nvmem_device(dev);
+ 
+ 	/* Stop the user from writing */
+@@ -219,7 +219,7 @@ static umode_t nvmem_bin_attr_get_umode(struct nvmem_device *nvmem)
+ static umode_t nvmem_bin_attr_is_visible(struct kobject *kobj,
+ 					 struct bin_attribute *attr, int i)
+ {
+-	struct device *dev = container_of(kobj, struct device, kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 	struct nvmem_device *nvmem = to_nvmem_device(dev);
+ 
+ 	return nvmem_bin_attr_get_umode(nvmem);
+-- 
+2.7.4
+
