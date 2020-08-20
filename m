@@ -2,43 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5E424B29D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2108F24B29F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728386AbgHTJeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:34:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44364 "EHLO mail.kernel.org"
+        id S1728312AbgHTJeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:34:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727856AbgHTJcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:32:05 -0400
+        id S1728063AbgHTJcI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:32:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 097EB22BEA;
-        Thu, 20 Aug 2020 09:32:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 61A04207DE;
+        Thu, 20 Aug 2020 09:32:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915924;
-        bh=F7tmT7M/lQLNNkMo1EXCnbaRGMuqCLijhPq4j2DczAU=;
+        s=default; t=1597915927;
+        bh=4fzfIvN+NcbSnlAg6+7Q33xB9C/POBwhAntdAp9XSBs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QbNYk54xDfqlhjwu8nLaP4drIMjBxeZfdG4e0s5YLWV3xsCyBQV5rhwLYpH7EOqc+
-         4VRkuvIgNyq2h7ZSDn0AUGtd3HiAe5EBLxgeHhynwAVO060W+ImtZI2DM5+qHvaSgQ
-         bX5K3TPscKFQKHYXeaRL86d0ODXiRyZ8Sb0LqQro=
+        b=jYHl9dT+tbx59+MQ2N5LxVaIw1RxzbH5s9hrIrxvwn7a6g+wMtfKJLbR/7W76BSYr
+         gVG1AYtZzctKGBTk4Zr6Yfdhsmg3kHE1+xKfslKrUqmqWclBZq8aY4MfCL8HNkazs8
+         GDkL/TkI80EkIXXQ5q70nRa+bcPaEzfhJIHPhyZ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jin Yao <yao.jin@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>, Jin Yao <yao.jin@intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org, James Smart <james.smart@broadcom.com>,
+        "Ewan D. Milne" <emilne@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 182/232] perf evsel: Dont set sample_regs_intr/sample_regs_user for dummy event
-Date:   Thu, 20 Aug 2020 11:20:33 +0200
-Message-Id: <20200820091621.619896502@linuxfoundation.org>
+Subject: [PATCH 5.8 183/232] scsi: lpfc: nvmet: Avoid hang / use-after-free again when destroying targetport
+Date:   Thu, 20 Aug 2020 11:20:34 +0200
+Message-Id: <20200820091621.668630975@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
 References: <20200820091612.692383444@linuxfoundation.org>
@@ -51,112 +45,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jin Yao <yao.jin@linux.intel.com>
+From: Ewan D. Milne <emilne@redhat.com>
 
-[ Upstream commit c4735d990268399da9133b0ad445e488ece009ad ]
+[ Upstream commit af6de8c60fe9433afa73cea6fcccdccd98ad3e5e ]
 
-Since commit 0a892c1c9472 ("perf record: Add dummy event during system wide synthesis"),
-a dummy event is added to capture mmaps.
+We cannot wait on a completion object in the lpfc_nvme_targetport structure
+in the _destroy_targetport() code path because the NVMe/fc transport will
+free that structure immediately after the .targetport_delete() callback.
+This results in a use-after-free, and a crash if slub_debug=FZPU is
+enabled.
 
-But if we run perf-record as,
+An earlier fix put put the completion on the stack, but commit 2a0fb340fcc8
+("scsi: lpfc: Correct localport timeout duration error") subsequently
+changed the code to reference the completion through a pointer in the
+object rather than the local stack variable.  Fix this by using the stack
+variable directly.
 
- # perf record -e cycles:p -IXMM0 -a -- sleep 1
- Error:
- dummy:HG: PMU Hardware doesn't support sampling/overflow-interrupts. Try 'perf stat'
-
-The issue is, if we enable the extended regs (-IXMM0), but the
-pmu->capabilities is not set with PERF_PMU_CAP_EXTENDED_REGS, the kernel
-will return -EOPNOTSUPP error.
-
-See following code:
-
-/* in kernel/events/core.c */
-static int perf_try_init_event(struct pmu *pmu, struct perf_event *event)
-
-{
-        ....
-        if (!(pmu->capabilities & PERF_PMU_CAP_EXTENDED_REGS) &&
-            has_extended_regs(event))
-                ret = -EOPNOTSUPP;
-        ....
-}
-
-For software dummy event, the PMU should not be set with
-PERF_PMU_CAP_EXTENDED_REGS. But unfortunately now, the dummy
-event has possibility to be set with PERF_REG_EXTENDED_MASK bit.
-
-In evsel__config, /* tools/perf/util/evsel.c */
-
-if (opts->sample_intr_regs) {
-        attr->sample_regs_intr = opts->sample_intr_regs;
-}
-
-If we use -IXMM0, the attr>sample_regs_intr will be set with
-PERF_REG_EXTENDED_MASK bit.
-
-It doesn't make sense to set attr->sample_regs_intr for a
-software dummy event.
-
-This patch adds dummy event checking before setting
-attr->sample_regs_intr and attr->sample_regs_user.
-
-After:
-  # ./perf record -e cycles:p -IXMM0 -a -- sleep 1
-  [ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 0.413 MB perf.data (45 samples) ]
-
-Committer notes:
-
-Adrian said this when providing his Acked-by:
-
-"
-This is fine.  It will not break PT.
-
-no_aux_samples is useful for evsels that have been added by the code rather
-than requested by the user.  For old kernels PT adds sched_switch tracepoint
-to track context switches (before the current context switch event was
-added) and having auxiliary sample information unnecessarily uses up space
-in the perf buffer.
-"
-
-Fixes: 0a892c1c9472 ("perf record: Add dummy event during system wide synthesis")
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jin Yao <yao.jin@intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/20200720010013.18238-1-yao.jin@linux.intel.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Link: https://lore.kernel.org/r/20200729231011.13240-1-emilne@redhat.com
+Fixes: 2a0fb340fcc8 ("scsi: lpfc: Correct localport timeout duration error")
+Reviewed-by: James Smart <james.smart@broadcom.com>
+Signed-off-by: Ewan D. Milne <emilne@redhat.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/evsel.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/scsi/lpfc/lpfc_nvmet.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index ef802f6d40c17..6a79cfdf96cb6 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -1014,12 +1014,14 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
- 	if (callchain && callchain->enabled && !evsel->no_aux_samples)
- 		evsel__config_callchain(evsel, opts, callchain);
- 
--	if (opts->sample_intr_regs && !evsel->no_aux_samples) {
-+	if (opts->sample_intr_regs && !evsel->no_aux_samples &&
-+	    !evsel__is_dummy_event(evsel)) {
- 		attr->sample_regs_intr = opts->sample_intr_regs;
- 		evsel__set_sample_bit(evsel, REGS_INTR);
- 	}
- 
--	if (opts->sample_user_regs && !evsel->no_aux_samples) {
-+	if (opts->sample_user_regs && !evsel->no_aux_samples &&
-+	    !evsel__is_dummy_event(evsel)) {
- 		attr->sample_regs_user |= opts->sample_user_regs;
- 		evsel__set_sample_bit(evsel, REGS_USER);
- 	}
+diff --git a/drivers/scsi/lpfc/lpfc_nvmet.c b/drivers/scsi/lpfc/lpfc_nvmet.c
+index 88760416a8cbd..fcd9d4c2f1ee0 100644
+--- a/drivers/scsi/lpfc/lpfc_nvmet.c
++++ b/drivers/scsi/lpfc/lpfc_nvmet.c
+@@ -2112,7 +2112,7 @@ lpfc_nvmet_destroy_targetport(struct lpfc_hba *phba)
+ 		}
+ 		tgtp->tport_unreg_cmp = &tport_unreg_cmp;
+ 		nvmet_fc_unregister_targetport(phba->targetport);
+-		if (!wait_for_completion_timeout(tgtp->tport_unreg_cmp,
++		if (!wait_for_completion_timeout(&tport_unreg_cmp,
+ 					msecs_to_jiffies(LPFC_NVMET_WAIT_TMO)))
+ 			lpfc_printf_log(phba, KERN_ERR, LOG_NVME,
+ 					"6179 Unreg targetport x%px timeout "
 -- 
 2.25.1
 
