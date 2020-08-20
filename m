@@ -2,205 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1BE24B1FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FCDD24B1C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726806AbgHTJRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:17:38 -0400
-Received: from mail-mw2nam10on2079.outbound.protection.outlook.com ([40.107.94.79]:58367
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726819AbgHTJQS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:16:18 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UMur2l4zsbE78PFb9spDhH4z0U5RPPuSOK1o/Ht+o6RBWSnu3LxX8agnis99rUR5fafuE8TYKk0DljYetU1puRswBCbgwcp5S+N2afX8viWKFQtHvTZ66W0TuWbwQJG0NEahMpeO8gFCZ7qrImqjSveDnUflrPWr/XV/L5FcIy+ojvdBk1ulIg+/MUkDhV4viAfVXnU9t60VehZSYpv6F1OfgnyHW+t9vLJo082UM9hAW+pFa0/EyNl9RCDkXRLINc+oA1y+lJrWVdGNAv1gVyht0BarZwloM0IXI4hA1EAlBWXQwHao6SVfA5hG2ke8o88RMmuWiGjdvHtgF+vEsA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kWP85sg+5B2N7GxqB5V/tlSIKHfhx9kgFns3KJl3sJ8=;
- b=jvTnRiMRtZ0Nc4YjAmJyWwpcYDp3NZ/j/95brK1SAtYZFar6E6IZi4DCla7vJYtzKnykdR5Q90nvM9ZWJvxRFNTi72tL7caiewRGE3JkFqIeh0NZiZGxp35mwmqKzm9To+zscEZqRkUYA+YC7sx/BnSlNhTdKKV0E7oGIRRly+3Mkny3SfSMCnPDSw7SEiznXp0sdBUO565yojIM9Ue4D+MHFpEI3ZFcHTRbFjuchgOJ+yceW6JPsYKQa61GgZnLTsgyD5EUeUF21OubJg4PsT9o9VXN8E/R/lm8P6YP7NnX6c3JMFBNAHwwYOHMgJsjwNRR87cRL4j0oqZDFbr8wg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kWP85sg+5B2N7GxqB5V/tlSIKHfhx9kgFns3KJl3sJ8=;
- b=ZVXy4KY6c3rR/+PXCAjQjKKqVH44bHrFhZRhXUGIMhh8KbTG2jHwbXmrO+OLWfxC88yykrnzR/wpeiyg/IFbcyMDlfTs+DGAhwXmaT41y6z1E3hsVasvbi+2QO5KhZrNRZKWx9c5r8ZSBRQdxhZmWtypP52XuJGLYry6OTtgHLI=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=synaptics.com;
-Received: from BN7PR03MB4547.namprd03.prod.outlook.com (2603:10b6:408:9::22)
- by BN8PR03MB4738.namprd03.prod.outlook.com (2603:10b6:408:6d::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24; Thu, 20 Aug
- 2020 09:15:45 +0000
-Received: from BN7PR03MB4547.namprd03.prod.outlook.com
- ([fe80::3cda:7634:5802:df5f]) by BN7PR03MB4547.namprd03.prod.outlook.com
- ([fe80::3cda:7634:5802:df5f%7]) with mapi id 15.20.3305.024; Thu, 20 Aug 2020
- 09:15:45 +0000
-Date:   Thu, 20 Aug 2020 17:12:32 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Saravanan Sekar <sravanhome@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v3 4/4] dt-bindings: regulator: Convert mp886x to
- json-schema
-Message-ID: <20200820171232.1fede9bc@xhacker.debian>
-In-Reply-To: <20200820171020.5df4683b@xhacker.debian>
-References: <20200820171020.5df4683b@xhacker.debian>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: TYAPR03CA0015.apcprd03.prod.outlook.com
- (2603:1096:404:14::27) To BN7PR03MB4547.namprd03.prod.outlook.com
- (2603:10b6:408:9::22)
+        id S1726702AbgHTJMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:12:53 -0400
+Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:44675 "EHLO
+        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725834AbgHTJMv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:12:51 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id 8gcpkFSRoywL58gcqkZ61l; Thu, 20 Aug 2020 11:12:48 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1597914768; bh=aXI2/6QEiinjBXcX2u69fj7TFQ5IZXG2FvHF5Y8k7f8=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=AjZdStg814c0S3MYTLeC/A8UxTsmH3fCMDL5kvwIjw/8xnwEMTbIddTg5C1k4tluH
+         0+wRy+7iMTcU7y+IIWTpdl1oegMkxF9lV+WsWZBCKG3jeTCV0GuGxS+eotOvbQf1xc
+         lUxOhAxKWuycHKOixgQh0BxillRlF6LVSHqDpZ5K1IueUanWVRTwNOgp9zsWTys53D
+         hXAzf3DX3Z7br3tcpWi6PkxUk3E312PbAztGw/PKBXYEwFyYsZZPQvxjpMNX+NVzmf
+         g34TigYZHQaRCesA+sj/raT9hpHFE7pjnIY8kxNr3kcbvM/w0gmEQFhnoC2gE1o+5l
+         7l57zTS+uXJSg==
+Subject: Re: [PATCH v3 06/19] media: uapi: h264: Clean DPB entry interface
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Jeffrey Kardatzke <jkardatzke@chromium.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+References: <20200814133634.95665-1-ezequiel@collabora.com>
+ <20200814133634.95665-7-ezequiel@collabora.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <3de270f8-b248-977b-fc14-56d9e2ed05e2@xs4all.nl>
+Date:   Thu, 20 Aug 2020 11:12:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 255.255.255.255 (255.255.255.255) by TYAPR03CA0015.apcprd03.prod.outlook.com (2603:1096:404:14::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.10 via Frontend Transport; Thu, 20 Aug 2020 09:15:43 +0000
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-X-Originating-IP: [124.74.246.114]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e359bfa4-4ccd-4199-808e-08d844e99e95
-X-MS-TrafficTypeDiagnostic: BN8PR03MB4738:
-X-Microsoft-Antispam-PRVS: <BN8PR03MB4738A6CE0F535F5BAE722A01ED5A0@BN8PR03MB4738.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XYSLPkgKsNYDDYhvH49w8jcdZJSN5A/EuO2aSr87+DGu3l9SqdIR3Bf9+fIJAqnWWwmLzIiVFnxKwty/Qj99n4KGNDnT51ckNrFkc3K6TKeXlYqf2YKgQl2CfySu61PQ1y94fcDgFS+kOxYDMnVoBlUL8AIbuCayTxqe6MQMO9vnpqWhY8z9YVdibYuDynQH6OTuFQDeD1CD+eIP9VDE9ztyxGIHlE/LpdL0Kcnsbk1noXqVpqz0DbuID/4MovJ/vNo1lHa/8kxRkcLHiDCioexoQ+keF7HPZMIknCqDPhV5B8wfMeSdKGCGc/r9Wsbu0VO4R8gvNl/jJjc9HL+3+cKq4nQ1kefoQxcBKo7y1KtOEVxlSzEyIhT0YvOmEjmh4JWcKURB2izA0HD3hZhDslZoe32Npe6OM460ivrQgwqoITPb9EHXqjB0KcKB8fFykDMTQnO7Im/Vqype0a4iRw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR03MB4547.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(346002)(366004)(376002)(136003)(316002)(2906002)(110136005)(66476007)(6486002)(66556008)(66946007)(110011004)(966005)(16576012)(4326008)(8676002)(478600001)(5660300002)(26005)(86362001)(9686003)(6666004)(52116002)(956004)(186003)(1076003)(83380400001)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: vgzEO04YE4kGsNF1Apev1s7gMhSleIvhjepY6fRGEikvpjQVv+8Ay7Wgs+PBlsJDduRw2Gz4IcZzakA2WRBnCmDH7Fp+91V6SomHxXgiiF5j1nfOQuf8ZmR3ZufTdDJjX8tt8XoSpnsX3UAaffo63XXgjL1m4dwX5gGsJs6Ok1M4ToJariR+XLwPJfHmEpXXGKPfPppp1yvF/DWzoF5T75oG6MBQb5RgBcYV4IJz7TNv8jDgdTJFqS40+lXadpDF3wcj/lNaQyQAK1YGqT895nvB/qaKj8lODc9oarq+d9o8h6n6SZss64nUh+F8sS5FKv7tJBciYRZf6FM0/lhC5SEheIpJj/1sFGk9q0h6Nzob1xt9f3fITW38xIovUFU17r5xoQI49ym/gUhUzzTFXJ8gGgD60z6StEDMGbLBl71SqZx3ioGO//nohf11zU3yn7sw8m8g1cg6WBzmhfV6EDUED8DmgPMwNufn9odqJUhCaGbIgM1hpTKfsMX9PpAX+jPH0VdD93lIV/mrArbTige6P7ScfSTMOMZjeCwqBA+hzVdUDIkQFPEzVgxN1ekqp/RwAdvRmdCLMk7UubZgWuJDYcMNM8Kbc80FjGQ4bOP/2OaEbFSI9gckVnksWY+VglCFfnW2RxJP+OR1JqhvWQ==
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e359bfa4-4ccd-4199-808e-08d844e99e95
-X-MS-Exchange-CrossTenant-AuthSource: BN7PR03MB4547.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2020 09:15:45.5339
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uguMyUL6ge4d1wq2zJbaQMXqQwZ2xKIvwQF9UDzG9GeDG4KKsUogcLTaTwZs71G4QtVtQ1sfc11GFtyi2+JALw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR03MB4738
+In-Reply-To: <20200814133634.95665-7-ezequiel@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfB52LwPAMGQLXyp8ZoNriEzVLyAmR06KbczdgRQP6Nnk8IBae/KS7hcDJHNbpJPz3U4r3K6WYmL8ae1HfkNeHcH/7Ye9gmzOwLmGuo/YgUYJVvQp/wMX
+ fMtNa2zY4n6cybCFryXEfoogR0zOVA/zJlniKooxVtV7mc2mGy3Kw7VrCmDeHJmJu6iDA2QGbhXnhaSH9+4oNwjDTbhYbOGtYEtixiNRNZ8Fxw5JIEELuiJo
+ x05Kp+iJCUy2bY7GJBwHkOMskA02yU4xRcBvnrNWtl89BLPbcJAaP3tlHAfzxG/0+Wr5LpJIKJA4h4+rkAqq/cLYh5Rm3heQuFkPIEow8qPXqcqLGr3MH0tQ
+ nTvKm+Gph0Yddf4RdZ0ABY5k00TC08T2ilRm2huqY95Ou1ZZvjabeNuZBAeD68aSlHFIsvne6Tr1m9TL3MnAsxJLerwhSSvdXdfcfqIas66WQ5EvHdNo4PxY
+ rWUILyyLTK++7UK0LdD6OgxHiVD7iDtpTJw+FGze0ABZrRqbt4zog87+GWaDxrPSNZnGp+pTufPibb9/ghCvSDUITrwUPqE4kNzWnGHaynPeAT3nF8xMl4DJ
+ kv5Sfene59ikUKe5GuWsV/DlEUFUymFLaw5q7/Kre9Zw/OMXOIqMJAu0NzK1leF/Q7JSsJSsKJ2nUi6YTQlfDtImqHnzAlBroS7O3tJYnn8qTQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the mp886x binding to DT schema format using json-schema.
+On 14/08/2020 15:36, Ezequiel Garcia wrote:
+> As discussed recently, the current interface for the
+> Decoded Picture Buffer is not enough to properly
+> support field coding.
+> 
+> This commit introduces enough semantics to support
+> frame and field coding, and to signal how DPB entries
+> are "used for reference".
+> 
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> ---
+> v3:
+> * Port to renamed types.
+> v2:
+> * Fix rkvdec usage of fields flags as noted by Jonas.
+> ---
+>  .../media/v4l/ext-ctrls-codec.rst             | 24 ++++++-------------
+>  drivers/media/v4l2-core/v4l2-h264.c           |  4 ++--
+>  drivers/staging/media/rkvdec/rkvdec-h264.c    | 17 ++++++-------
+>  include/media/h264-ctrls.h                    |  2 +-
+>  4 files changed, 19 insertions(+), 28 deletions(-)
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> index 714a8d9ae6a0..d14da8325382 100644
+> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> @@ -2063,6 +2063,9 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
+>      * - __s32
+>        - ``bottom_field_order_cnt``
+>        -
+> +    * - enum :c:type:`v4l2_h264_field_reference`
+> +      - ``reference``
+> +      - Specifies how the DPB entry is referenced.
+>      * - __u32
+>        - ``flags``
+>        - See :ref:`DPB Entry Flags <h264_dpb_flags>`
+> @@ -2080,29 +2083,16 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
+>  
+>      * - ``V4L2_H264_DPB_ENTRY_FLAG_VALID``
+>        - 0x00000001
+> -      - The DPB entry is valid and should be considered
+> +      - The DPB entry is valid (non-empty) and should be considered.
+>      * - ``V4L2_H264_DPB_ENTRY_FLAG_ACTIVE``
+>        - 0x00000002
+> -      - The DPB entry is currently being used as a reference frame
+> +      - The DPB entry is used for reference.
+>      * - ``V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM``
+>        - 0x00000004
+> -      - The DPB entry is a long term reference frame
+> +      - The DPB entry is used for long-term reference.
+>      * - ``V4L2_H264_DPB_ENTRY_FLAG_FIELD``
+>        - 0x00000008
+> -      - The DPB entry is a field reference, which means only one of the field
+> -        will be used when decoding the new frame/field. When not set the DPB
+> -        entry is a frame reference (both fields will be used). Note that this
+> -        flag does not say anything about the number of fields contained in the
+> -        reference frame, it just describes the one used to decode the new
+> -        field/frame
+> -    * - ``V4L2_H264_DPB_ENTRY_FLAG_BOTTOM_FIELD``
+> -      - 0x00000010
+> -      - The DPB entry is a bottom field reference (only the bottom field of the
+> -        reference frame is needed to decode the new frame/field). Only valid if
+> -        V4L2_H264_DPB_ENTRY_FLAG_FIELD is set. When
+> -        V4L2_H264_DPB_ENTRY_FLAG_FIELD is set but
+> -        V4L2_H264_DPB_ENTRY_FLAG_BOTTOM_FIELD is not, that means the
+> -        DPB entry is a top field reference
+> +      - The DPB entry is a single field or a complementary field pair.
+>  
+>  ``V4L2_CID_MPEG_VIDEO_H264_DECODE_MODE (enum)``
+>      Specifies the decoding mode to use. Currently exposes slice-based and
+> diff --git a/drivers/media/v4l2-core/v4l2-h264.c b/drivers/media/v4l2-core/v4l2-h264.c
+> index edf6225f0522..12b751c09016 100644
+> --- a/drivers/media/v4l2-core/v4l2-h264.c
+> +++ b/drivers/media/v4l2-core/v4l2-h264.c
+> @@ -66,10 +66,10 @@ v4l2_h264_init_reflist_builder(struct v4l2_h264_reflist_builder *b,
+>  		else
+>  			b->refs[i].frame_num = dpb[i].frame_num;
+>  
+> -		if (!(dpb[i].flags & V4L2_H264_DPB_ENTRY_FLAG_FIELD))
+> +		if (dpb[i].reference == V4L2_H264_FRAME_REF)
+>  			pic_order_count = min(dpb[i].top_field_order_cnt,
+>  					      dpb[i].bottom_field_order_cnt);
+> -		else if (dpb[i].flags & V4L2_H264_DPB_ENTRY_FLAG_BOTTOM_FIELD)
+> +		else if (dpb[i].reference & V4L2_H264_BOTTOM_FIELD_REF)
+>  			pic_order_count = dpb[i].bottom_field_order_cnt;
+>  		else
+>  			pic_order_count = dpb[i].top_field_order_cnt;
+> diff --git a/drivers/staging/media/rkvdec/rkvdec-h264.c b/drivers/staging/media/rkvdec/rkvdec-h264.c
+> index 7b66e2743a4f..07a80e9a9df2 100644
+> --- a/drivers/staging/media/rkvdec/rkvdec-h264.c
+> +++ b/drivers/staging/media/rkvdec/rkvdec-h264.c
+> @@ -949,16 +949,17 @@ static void config_registers(struct rkvdec_ctx *ctx,
+>  	for (i = 0; i < ARRAY_SIZE(dec_params->dpb); i++) {
+>  		struct vb2_buffer *vb_buf = get_ref_buf(ctx, run, i);
+>  
+> -		refer_addr = vb2_dma_contig_plane_dma_addr(vb_buf, 0) |
+> -			     RKVDEC_COLMV_USED_FLAG_REF;
+> +		refer_addr = vb2_dma_contig_plane_dma_addr(vb_buf, 0);
+>  
+> -		if (!(dpb[i].flags & V4L2_H264_DPB_ENTRY_FLAG_FIELD))
+> -			refer_addr |= RKVDEC_TOPFIELD_USED_REF |
+> -				      RKVDEC_BOTFIELD_USED_REF;
+> -		else if (dpb[i].flags & V4L2_H264_DPB_ENTRY_FLAG_BOTTOM_FIELD)
+> -			refer_addr |= RKVDEC_BOTFIELD_USED_REF;
+> -		else
+> +		if (dpb[i].flags & V4L2_H264_DPB_ENTRY_FLAG_ACTIVE)
+> +			refer_addr |= RKVDEC_COLMV_USED_FLAG_REF;
+> +		if (dpb[i].flags & V4L2_H264_DPB_ENTRY_FLAG_FIELD)
+> +			refer_addr |= RKVDEC_FIELD_REF;
+> +
+> +		if (dpb[i].reference & V4L2_H264_TOP_FIELD_REF)
+>  			refer_addr |= RKVDEC_TOPFIELD_USED_REF;
+> +		if (dpb[i].reference & V4L2_H264_BOTTOM_FIELD_REF)
+> +			refer_addr |= RKVDEC_BOTFIELD_USED_REF;
+>  
+>  		writel_relaxed(dpb[i].top_field_order_cnt,
+>  			       rkvdec->regs +  poc_reg_tbl_top_field[i]);
+> diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
+> index 9ff085fdc9ab..4447697e9465 100644
+> --- a/include/media/h264-ctrls.h
+> +++ b/include/media/h264-ctrls.h
+> @@ -212,7 +212,6 @@ struct v4l2_ctrl_h264_slice_params {
+>  #define V4L2_H264_DPB_ENTRY_FLAG_ACTIVE		0x02
+>  #define V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM	0x04
+>  #define V4L2_H264_DPB_ENTRY_FLAG_FIELD		0x08
+> -#define V4L2_H264_DPB_ENTRY_FLAG_BOTTOM_FIELD	0x10
+>  
+>  struct v4l2_h264_dpb_entry {
+>  	__u64 reference_ts;
+> @@ -221,6 +220,7 @@ struct v4l2_h264_dpb_entry {
+>  	/* Note that field is indicated by v4l2_buffer.field */
+>  	__s32 top_field_order_cnt;
+>  	__s32 bottom_field_order_cnt;
+> +	enum v4l2_h264_field_reference reference;
 
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
----
- .../devicetree/bindings/regulator/mp886x.txt  | 31 ----------
- .../bindings/regulator/mps,mp886x.yaml        | 61 +++++++++++++++++++
- 2 files changed, 61 insertions(+), 31 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/regulator/mp886x.txt
- create mode 100644 Documentation/devicetree/bindings/regulator/mps,mp886x.yaml
+Here it is called 'references', but the same enum field in struct v4l2_h264_reference
+is called 'fields' there. It's a good idea to use the same names.
 
-diff --git a/Documentation/devicetree/bindings/regulator/mp886x.txt b/Documentation/devicetree/bindings/regulator/mp886x.txt
-deleted file mode 100644
-index b05307bbb0d9..000000000000
---- a/Documentation/devicetree/bindings/regulator/mp886x.txt
-+++ /dev/null
-@@ -1,31 +0,0 @@
--Monolithic Power Systems MP8867/MP8869 voltage regulator
--
--Required properties:
--- compatible: Must be one of the following.
--	"mps,mp8867"
--	"mps,mp8869"
--- reg: I2C slave address.
--- enable-gpios: enable gpios.
--- mps,fb-voltage-divider: An array of two integers containing the resistor
--  values R1 and R2 of the feedback voltage divider in kilo ohms.
--
--Optional properties:
--- mps,switch-frequency-hz: The valid switch frequency in Hertz. Available values
--  are: 500000, 750000, 1000000, 1250000, 1500000
--
--Any property defined as part of the core regulator binding, defined in
--./regulator.txt, can also be used.
--
--Example:
--
--	vcpu: regulator@62 {
--		compatible = "mps,mp8869";
--		regulator-name = "vcpu";
--		regulator-min-microvolt = <700000>;
--		regulator-max-microvolt = <850000>;
--		regulator-always-on;
--		regulator-boot-on;
--		enable-gpios = <&porta 1 GPIO_ACTIVE_LOW>;
--		mps,fb-voltage-divider = <80 240>;
--		reg = <0x62>;
--	};
-diff --git a/Documentation/devicetree/bindings/regulator/mps,mp886x.yaml b/Documentation/devicetree/bindings/regulator/mps,mp886x.yaml
-new file mode 100644
-index 000000000000..ba175b30f468
---- /dev/null
-+++ b/Documentation/devicetree/bindings/regulator/mps,mp886x.yaml
-@@ -0,0 +1,61 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/regulator/mps,mp886x.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Monolithic Power Systems MP8867/MP8869 voltage regulator
-+
-+maintainers:
-+  - Jisheng Zhang <jszhang@kernel.org>
-+
-+allOf:
-+  - $ref: regulator.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - mps,mp8867
-+      - mps,mp8869
-+
-+  reg:
-+    maxItems: 1
-+
-+  enable-gpios:
-+    description: GPIO to enable/disable the regulator.
-+    maxItems: 1
-+
-+  mps,fb-voltage-divider:
-+    description: An array of two integers containing the resistor
-+      values R1 and R2 of the feedback voltage divider in kilo ohms.
-+    $ref: "/schemas/types.yaml#/definitions/uint32-array"
-+    maxItems: 2
-+
-+  mps,switch-frequency-hz:
-+    description: The valid switch frequency in Hertz.
-+    enum: [500000, 750000, 1000000, 1250000, 1500000]
-+
-+required:
-+  - compatible
-+  - reg
-+  - enable-gpios
-+  - mps,fb-voltage-divider
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        regulator@62 {
-+          compatible = "mps,mp8869";
-+          regulator-name = "vcpu";
-+          regulator-min-microvolt = <800000>;
-+          regulator-max-microvolt = <1150000>;
-+          enable-gpios = <&porta 1 GPIO_ACTIVE_LOW>;
-+          mps,fb-voltage-divider = <80 240>;
-+          reg = <0x62>;
-+        };
-+    };
-+
-+...
--- 
-2.28.0
+Regards,
+
+	Hans
+
+>  	__u32 flags; /* V4L2_H264_DPB_ENTRY_FLAG_* */
+>  };
+>  
+> 
 
