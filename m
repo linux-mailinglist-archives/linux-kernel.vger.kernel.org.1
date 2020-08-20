@@ -2,94 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C049724B02D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8440C24B061
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbgHTHaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 03:30:15 -0400
-Received: from mga03.intel.com ([134.134.136.65]:26636 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725820AbgHTHaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 03:30:14 -0400
-IronPort-SDR: 8bBDYl41AyOx7NDwWl206ipj+SdbHB5Qhpi5KFLKwK5o04ELkZXK2noc/khjdoEsg7IIxDTmVg
- FbF0k9dXR1pA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9718"; a="155225865"
-X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
-   d="scan'208";a="155225865"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2020 00:30:13 -0700
-IronPort-SDR: V0bNGK+unpSW220Mv1SyOPGZuGAnuaTlwOCopnjwvfUbDavGw+l76ufZosNkFRFVu19fHTMzAO
- M3q/6zpbWVFg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,332,1592895600"; 
-   d="scan'208";a="497513364"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga006.fm.intel.com with ESMTP; 20 Aug 2020 00:30:13 -0700
-Received: from [10.249.73.140] (ekotax-MOBL.gar.corp.intel.com [10.249.73.140])
-        by linux.intel.com (Postfix) with ESMTP id 0595558045A;
-        Thu, 20 Aug 2020 00:30:11 -0700 (PDT)
-Subject: Re: [PATCH] dt-bindings: PCI: intel,lgm-pcie: Fix matching on all
- snps,dw-pcie instances
-To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        linux-pci@vger.kernel.org
-References: <20200819222002.2059917-1-robh@kernel.org>
-From:   Dilip Kota <eswara.kota@linux.intel.com>
-Message-ID: <e089ab71-e203-7d24-c1a5-6213c925b153@linux.intel.com>
-Date:   Thu, 20 Aug 2020 15:30:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <20200819222002.2059917-1-robh@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S1726840AbgHTHuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 03:50:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726803AbgHTHuE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 03:50:04 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C1A8C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 00:50:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=oKmfoGegSJfXzJuA5gewBqXh+JiK5i+tRgbhZuhhiOk=; b=LVsXuj5WD5cdjoPZtAPtubYb9/
+        js13qKgrdlHnCBf5LLjRzEw8g2pgV2Bh+uJUdjNne9KAgxIWiQSlt7Z+Y29SaTjRvRdmbv2cdVbWC
+        VxP+MbHjThwrVcKQBfHqEWl1FgxoJPJngUOsoSxBPQmXdWeDwKnAdijBXCyXcLWRVEQUoPqY4u0cO
+        WXBiI/7a76W1IvCZE6+tz5jwfzgzm4oFk3FDdNEYK6eMpBWiZorLHiMbRYNvPIKhnRTg3F2ei7UdT
+        DgBjUfdH7JrUM9Yn5rApkiJNbPgtrO4ozfyPNcLj1qNJuk3xTphLYd1YierrvURs8dxFh9laFlh37
+        hRvKTHIw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k8fKW-0007DH-23; Thu, 20 Aug 2020 07:49:48 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 64C783059C6;
+        Thu, 20 Aug 2020 09:49:43 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 520A828B7E840; Thu, 20 Aug 2020 09:49:43 +0200 (CEST)
+Message-ID: <20200820073031.886217423@infradead.org>
+User-Agent: quilt/0.66
+Date:   Thu, 20 Aug 2020 09:30:31 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     linux-kernel@vger.kernel.org, mingo@kernel.org, will@kernel.org
+Cc:     npiggin@gmail.com, elver@google.com, jgross@suse.com,
+        paulmck@kernel.org, rostedt@goodmis.org, rjw@rjwysocki.net,
+        joel@joelfernandes.org, svens@linux.ibm.com, tglx@linutronix.de,
+        peterz@infradead.org
+Subject: [PATCH 0/9] TRACE_IRQFLAGS wreckage
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 8/20/2020 6:20 AM, Rob Herring wrote:
-> The intel,lgm-pcie binding is matching on all snps,dw-pcie instances
-> which is wrong. Add a custom 'select' entry to fix this.
->
-> Fixes: e54ea45a4955 ("dt-bindings: PCI: intel: Add YAML schemas for the PCIe RC controller")
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Dilip Kota <eswara.kota@linux.intel.com>
-> Cc: linux-pci@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> I'll take this via the DT tree.
->
-> Rob
->
->   Documentation/devicetree/bindings/pci/intel-gw-pcie.yaml | 8 ++++++++
->   1 file changed, 8 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/pci/intel-gw-pcie.yaml b/Documentation/devicetree/bindings/pci/intel-gw-pcie.yaml
-> index 64b2c64ca806..a1e2be737eec 100644
-> --- a/Documentation/devicetree/bindings/pci/intel-gw-pcie.yaml
-> +++ b/Documentation/devicetree/bindings/pci/intel-gw-pcie.yaml
-> @@ -9,6 +9,14 @@ title: PCIe RC controller on Intel Gateway SoCs
->   maintainers:
->     - Dilip Kota <eswara.kota@linux.intel.com>
->   
-> +select:
-> +  properties:
-> +    compatible:
-> +      contains:
-> +        const: intel,lgm-pcie
-> +  required:
-> +    - compatible
-> +
->   properties:
->     compatible:
->       items:
+TRACE_IRQFLAGS
 
-Reviewed-by: Dilip Kota <eswara.kota@linux.intel.com>
+local_irq_*() keeps a software state that mirrors the hardware state,
+used for lockdep, includes tracepoints.
 
-Regards,
-Dilip
+raw_local_irq_*() does not update the software state, no tracing.
+
+---
+
+Problem 1:
+
+	raw_local_irq_save(); // software state on
+	local_irq_save(); // software state off
+	...
+	local_irq_restore(); // software state still off, because we don't enable IRQs
+	raw_local_irq_restore(); // software state still off, *whoopsie*
+
+existing instances:
+
+ - lock_acquire()
+     raw_local_irq_save()
+     __lock_acquire()
+       arch_spin_lock(&graph_lock)
+         pv_wait() := kvm_wait() (same or worse for Xen/HyperV)
+           local_irq_save()
+
+ - trace_clock_global()
+     raw_local_irq_save()
+     arch_spin_lock()
+       pv_wait() := kvm_wait()
+	 local_irq_save()
+
+ - apic_retrigger_irq()
+     raw_local_irq_save()
+     apic->send_IPI() := default_send_IPI_single_phys()
+       local_irq_save()
+
+Possible solutions:
+
+ A) make it work by enabling the tracing inside raw_*()
+ B) make it work by keeping tracing disabled inside raw_*()
+ C) call it broken and clean it up now
+
+Now, given that the only reason to use the raw_* variant is because you don't
+want tracing. Therefore A) seems like a weird option (although it can be done).
+C) is tempting, but OTOH it ends up converting a _lot_ of code to raw just
+because there is one raw user, this strips the validation/tracing off for all
+the other users.
+
+So we pick B) and declare any code that ends up doing:
+
+	raw_local_irq_save()
+	local_irq_save()
+	lockdep_assert_irqs_disabled();
+
+broken. AFAICT this problem has existed forever, the only reason it came
+up is because I changed IRQ tracing vs lockdep recursion and the first
+instance is fairly common, the other cases hardly ever happen.
+
+---
+
+Problem 2:
+
+	raw_local_irq_save(); // software state on
+	trace_*()
+          ...
+          perf_tp_event()
+            ...
+            perf_callchain()
+	    <#PF>
+	      trace_hardirqs_off(); // software state off
+	      ...
+	      if (regs_irqs_disabled(regs)) // false
+	        trace_hardirqs_on();
+	    </#PF>
+	raw_local_irq_restore(); // software state stays off, *whoopsie*
+
+existing instances:
+
+ - lock_acquire() / lock_release()
+     raw_local_irq_save()
+     trace_lock_acquire() / trace_lock_release()
+
+ - function tracing
+
+Possible solutions:
+
+ A) fix every architecture's entry code
+ B) only fix kernel/entry/common.c
+ C) fix lockdep tracepoints and pray
+
+This series does C, AFAICT this problem has existed forever.
+
+---
+
+Problem 3:
+
+	raw_local_irq_save(); // software state on
+	<#NMI>
+	  trace_hardirqs_off(); // software state off
+	  ...
+	  if (regs_irqs_disabled(regs)) // false
+	    trace_hardirqs_on();
+	</#NMI>
+	raw_local_irq_restore(); // software state stays off, *whoopsie*
+
+Possible solutions:
+
+This *should* not be a problem if an architecture has it's entry ordering
+right. In particular we rely on the architecture doing nmi_enter() before
+trace_hardirqs_off().
+
+In that case, in_nmi() will be true, and lockdep_hardirqs_*() should NO-OP,
+except if CONFIG_TRACE_IRQFLAGS_NMI (x86).
+
+There might be a problem with using lockdep_assert_irqs_disabled() from NMI
+context, if so, those needs a little TLC.
+
+---
+
+The patches in this series do (in reverse order):
+
+ - 2C
+ - 1B
+ - fix fallout in idle due to the trace_lock_*() tracepoints suddenly
+   being visible to rcu-lockdep.
+
+---
+ arch/arm/mach-omap2/pm34xx.c      |    4 --
+ arch/arm64/kernel/process.c       |    2 -
+ arch/nds32/include/asm/irqflags.h |    5 ++
+ arch/powerpc/include/asm/hw_irq.h |   11 ++---
+ arch/s390/kernel/idle.c           |    3 -
+ arch/x86/entry/thunk_32.S         |    5 --
+ arch/x86/include/asm/mmu.h        |    1 
+ arch/x86/kernel/process.c         |    4 --
+ arch/x86/mm/tlb.c                 |   13 +-----
+ drivers/cpuidle/cpuidle.c         |   19 +++++++--
+ drivers/idle/intel_idle.c         |   16 --------
+ include/linux/cpuidle.h           |   13 +++---
+ include/linux/irqflags.h          |   73 ++++++++++++++++++++------------------
+ include/linux/lockdep.h           |   18 ++++++---
+ include/linux/mmu_context.h       |    5 ++
+ kernel/locking/lockdep.c          |   18 +++++----
+ kernel/sched/idle.c               |   21 ++++------
+ 17 files changed, 112 insertions(+), 119 deletions(-)
+
+
+
