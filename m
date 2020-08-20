@@ -2,105 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DAAE24B791
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A7B24B5FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731229AbgHTK5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:57:13 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:44729 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731162AbgHTK4u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:56:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597920992;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uYbV8VLkse7x10+SVN80YNuWWr3hGT+D+KMqbsymh68=;
-        b=eYx+D+YoCP2ChyKvT+kCjWxRLpclSz3jtRb2v54tdlvOXhOrRrNeEr2w1frXN64/w3cdFJ
-        j8tDWNlxxm0oC0RygDG+ATtRYnHvDuqIu86v6FcKIquTOJGcoVI8EEpdd4ffeBEQ4ioHBN
-        0tPvZ9CxnwxvFVIYA5eyVHtlAGgKwC8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-384-hWJLFjQNPwmPnM0BmojkMA-1; Thu, 20 Aug 2020 06:29:11 -0400
-X-MC-Unique: hWJLFjQNPwmPnM0BmojkMA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1731607AbgHTKaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:30:46 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:44868 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729099AbgHTKaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:30:15 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597919413; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=km9nW3C7eCummePhEdybTk2b7eYw/T0nXcPSw02yQc8=;
+ b=GgRBYZGZtR2yF4xdMtVnFHwpF56rMbuniUSgeALRYq5afPYeBHoZZJNghvr3d3BBLcpKROWy
+ Qk39PWSaLk4O+C8Ez4W6WX/LZx+uffUW2IcMrxB+WcghGGhCFa+my5hWb6CinYuyz6KX6XwE
+ SdNJtiwPhPQTsbz2sruEOtszE/I=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5f3e50a5f37da9fb0ef5ccec (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 20 Aug 2020 10:29:57
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 427F8C433A0; Thu, 20 Aug 2020 10:29:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1304C186A56B;
-        Thu, 20 Aug 2020 10:27:06 +0000 (UTC)
-Received: from starship (unknown [10.35.206.173])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 31B405D9F1;
-        Thu, 20 Aug 2020 10:26:57 +0000 (UTC)
-Message-ID: <76c13e7d8f3c26583411fc6d42f50c98e92ebc1c.camel@redhat.com>
-Subject: Re: [PATCH 8/8] KVM: nSVM: read only changed fields of the nested
- guest data area
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Date:   Thu, 20 Aug 2020 13:26:57 +0300
-In-Reply-To: <be88aaae-c776-32d2-fa69-00c6aace787d@redhat.com>
-References: <20200820091327.197807-1-mlevitsk@redhat.com>
-         <20200820091327.197807-9-mlevitsk@redhat.com>
-         <53afbfba-427e-72f5-73a6-faea7606e78e@redhat.com>
-         <33166884f54569ab47cc17a4c3e01f9dbc96401a.camel@redhat.com>
-         <be88aaae-c776-32d2-fa69-00c6aace787d@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        (Authenticated sender: rojay)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 099F2C433CA;
+        Thu, 20 Aug 2020 10:29:55 +0000 (UTC)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Date:   Thu, 20 Aug 2020 15:59:54 +0530
+From:   rojay@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     wsa@kernel.org, dianders@chromium.org,
+        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
+        mka@chromium.org, akashast@codeaurora.org,
+        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
+        rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH 1/2] i2c: i2c-qcom-geni: Add tx_dma, rx_dma and xfer_len
+ to geni_i2c_dev struct
+In-Reply-To: <159780835380.334488.10270114810481187992@swboyd.mtv.corp.google.com>
+References: <20200814095540.32115-1-rojay@codeaurora.org>
+ <20200814095540.32115-2-rojay@codeaurora.org>
+ <159780835380.334488.10270114810481187992@swboyd.mtv.corp.google.com>
+Message-ID: <872641764c4a03b92c8f2dafe6f2764a@codeaurora.org>
+X-Sender: rojay@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-08-20 at 12:18 +0200, Paolo Bonzini wrote:
-> On 20/08/20 12:05, Maxim Levitsky wrote:
-> > > You probably should set clean to 0 also if the guest doesn't have the
-> > > VMCBCLEAN feature (so, you first need an extra patch to add the
-> > > VMCBCLEAN feature to cpufeatures.h).  It's probably best to cache the
-> > > guest vmcbclean in struct vcpu_svm, too.
-> > Right, I totally forgot about this one.
-> > 
-> > One thing why I made this patch optional, is that I can instead drop it,
-> > and not 'read back' the saved area on vmexit, this will probably be faster
-> > that what this optimization does. What do you think? Is this patch worth it?
-> > (I submitted it because I already implemented this and wanted to hear opinion
-> > on this).
-> 
-> Yeah, good point.  It's one copy either way, either on vmexit (and
-> partly on vmentry depending on clean bits) or on vmentry.  I had not
-> considered the need to copy from vmcb02 to the cached vmcb12 on vmexit. :(
-> 
-> Let's shelve this for a bit, and revisit it once we have separate vmcb01
-> and vmcb02.  Then we might still use the clean bits to avoid copying
-> data from vmcb12 to vmcb02, including avoiding consistency checks
-> because we know the vmcb02 data is legit.
-It makes sense I guess. The vmcb02 would then play the role of the cache of
-vmcb12
+Hi Stephen,
 
-> 
-> Patches 1-5 are still worthwhile, so you can clean them up and send them.
-> 
-> Paolo
+Thanks for reviewing the patches.
 
-OK, on it now.
-
-Best regards,
-	Maxim Levitsky
+On 2020-08-19 09:09, Stephen Boyd wrote:
+> Quoting Roja Rani Yarubandi (2020-08-14 02:55:39)
+>> Adding tx_dma, rx_dma and xfer length in geni_i2c_dev struct to
+>> store DMA mapping data to enhance its scope. For example during
+>> shutdown callback to unmap DMA mapping, these new struct members
+>> can be used as part of geni_se_tx_dma_unprep and
+>> geni_se_rx_dma_unprep calls.
+> 
+> Please read about how to write commit text from kernel docs[1]. Hint,
+> use imperative mood.
 > 
 
+Ok, will update the commit text.
 
+>> 
+>> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+>> ---
+>>  drivers/i2c/busses/i2c-qcom-geni.c | 23 +++++++++++++----------
+>>  1 file changed, 13 insertions(+), 10 deletions(-)
+>> 
+>> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c 
+>> b/drivers/i2c/busses/i2c-qcom-geni.c
+>> index 7f130829bf01..53ca41f76080 100644
+>> --- a/drivers/i2c/busses/i2c-qcom-geni.c
+>> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
+>> @@ -86,6 +86,9 @@ struct geni_i2c_dev {
+>>         u32 clk_freq_out;
+>>         const struct geni_i2c_clk_fld *clk_fld;
+>>         int suspended;
+>> +       dma_addr_t tx_dma;
+>> +       dma_addr_t rx_dma;
+>> +       u32 xfer_len;
+> 
+> Why not size_t?
+> 
+
+Will change it to size_t.
+
+>>  };
+>> 
+>>  struct geni_i2c_err_log {
+>> @@ -352,12 +355,11 @@ static void geni_i2c_tx_fsm_rst(struct 
+>> geni_i2c_dev *gi2c)
+>>  static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct 
+>> i2c_msg *msg,
+>>                                 u32 m_param)
+>>  {
+>> -       dma_addr_t rx_dma;
+>>         unsigned long time_left;
+>>         void *dma_buf = NULL;
+>>         struct geni_se *se = &gi2c->se;
+>> -       size_t len = msg->len;
+>> 
+>> +       gi2c->xfer_len = msg->len;
+> 
+> I'd prefer to keep the local variable and then have
+> 
+> 	len = gi2c->xfer_len = msg->len;
+> 
+
+Ok, will keep the local variable.
+
+>>         if (!of_machine_is_compatible("lenovo,yoga-c630"))
+>>                 dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
+>> 
+>> @@ -366,9 +368,10 @@ static int geni_i2c_rx_one_msg(struct 
+>> geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>>         else
+>>                 geni_se_select_mode(se, GENI_SE_FIFO);
+>> 
+>> -       writel_relaxed(len, se->base + SE_I2C_RX_TRANS_LEN);
+>> +       writel_relaxed(gi2c->xfer_len, se->base + 
+>> SE_I2C_RX_TRANS_LEN);
+> 
+> So that all this doesn't have to change.
+> 
+>> 
+>> -       if (dma_buf && geni_se_rx_dma_prep(se, dma_buf, len, &rx_dma)) 
+>> {
+>> +       if (dma_buf && geni_se_rx_dma_prep(se, dma_buf, 
+>> gi2c->xfer_len,
+>> +                                          &gi2c->rx_dma)) {
+>>                 geni_se_select_mode(se, GENI_SE_FIFO);
+>>                 i2c_put_dma_safe_msg_buf(dma_buf, msg, false);
+>>                 dma_buf = NULL;
+>> @@ -384,7 +387,7 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev 
+>> *gi2c, struct i2c_msg *msg,
+>>         if (dma_buf) {
+>>                 if (gi2c->err)
+>>                         geni_i2c_rx_fsm_rst(gi2c);
+>> -               geni_se_rx_dma_unprep(se, rx_dma, len);
+>> +               geni_se_rx_dma_unprep(se, gi2c->rx_dma, 
+>> gi2c->xfer_len);
+>>                 i2c_put_dma_safe_msg_buf(dma_buf, msg, !gi2c->err);
+>>         }
+>> 
+>> @@ -394,12 +397,11 @@ static int geni_i2c_rx_one_msg(struct 
+>> geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>>  static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct 
+>> i2c_msg *msg,
+>>                                 u32 m_param)
+>>  {
+>> -       dma_addr_t tx_dma;
+>>         unsigned long time_left;
+>>         void *dma_buf = NULL;
+>>         struct geni_se *se = &gi2c->se;
+>> -       size_t len = msg->len;
+>> 
+>> +       gi2c->xfer_len = msg->len;
+> 
+> Same comment.
+> 
+
+Ok.
+
+>>         if (!of_machine_is_compatible("lenovo,yoga-c630"))
+>>                 dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
+>> 
+> 
+> [1]
+> https://www.kernel.org/doc/html/latest/process/submitting-patches.html#describe-your-changes
+
+Thanks,
+Roja
