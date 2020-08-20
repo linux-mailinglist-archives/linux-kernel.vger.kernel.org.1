@@ -2,109 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E250024BA60
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE1624BA29
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729702AbgHTMGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:06:16 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:21829 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730349AbgHTJ6s (ORCPT
+        id S1729855AbgHTMBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:01:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729324AbgHTMBF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:58:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597917527;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t8lvvw/yYxKRmz+hdWa2YvTezmPK88L9XFePRdHjAeE=;
-        b=UFEeVnKfiyhT+nLdQ6pjJYWn2q135LQaRv+HpdQyx+3Y2N3XVARHE3hMby6shW5zvZ5/AO
-        MslKa0U4nSYbEzMDDGVY42YyZ3v43HyFhclhSFdAlW/PsfND47/fb5JRZaLqx3LutmaAIN
-        K2o4CmbsQ0ffyK7YpP62HQwxakU3Yz4=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-538-Ri56sbYhOP-vqABCEVQyVg-1; Thu, 20 Aug 2020 05:58:45 -0400
-X-MC-Unique: Ri56sbYhOP-vqABCEVQyVg-1
-Received: by mail-wr1-f72.google.com with SMTP id l14so473146wrp.9
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 02:58:45 -0700 (PDT)
+        Thu, 20 Aug 2020 08:01:05 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF10BC061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 05:00:59 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id j21so1017411pgi.9
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 05:00:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vxEczYTbXFfqWxIphzoJ3nc1l42+2omdhsQaCW411K8=;
+        b=kWVVXC2yGYpQ1Vne6si7j49TqNTF19uAbWYHcP/ygjWdkdfHWHi3a/SK3nx6wx8oaR
+         96vOgRs/Inhj3nPo3EAB5VTY4iZwxhMxlPmqZh63ZOZ/iBiY6y0IwuLRM4BFsEgtPCMI
+         fk8CqipMP6BoNsUBFJCltXA1Thm8MfaIICvHE+0qERL41JINezkGttbIIa4jmli8QT08
+         LZCPzl7yFwqAucFYxOSp/xMvcxe5FUJDu/It5xBib/l4A8//vLfnWhygz5MRVNGQhBdN
+         JufsBK+7ButP83fLNuINtiyTxMHSOl/tY4NwqWApG4QbRi7J1BotRtS7PRQpY6AAdcX4
+         GZDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=t8lvvw/yYxKRmz+hdWa2YvTezmPK88L9XFePRdHjAeE=;
-        b=s7QIBjU3555sb8eL63Hyp+2MA0YUkUR5mLwzRKahYz1lSg9AjRhRpJTAVfomqrY+Fl
-         Q9XiC52a+iTW2eb2zI9ccjntHN/ySjquTDMuTLTMI9wi7vDCOuSUtcSICXfZ/5VtKdQP
-         EzvglUk8SQuP/3/X0yjF3jiz6B0rOBDY7qUKSR1aYuh9zMXWiSdAf7uX4Zo2G++LWu9v
-         7wuQeTrqGkNhcKQ6z/DHMs9ddD0vFyzyslyPqRr+7jus3FPE6XbLFR2KCxHeha860uFW
-         kMT3Vgh5eOETBjIWc9PKpaVLSggPoXTU3j7ioKG7/ZTdXSxrTSW+xhankcrKiYsBYSfV
-         nogg==
-X-Gm-Message-State: AOAM533UYE3QoTVb+++BOCX5WKpCegZ1kqlHIIYqX+XGZ8zp4wKLDOZa
-        0G2apkVYZ0XaPA6yMYfFyJSnJesluHGCzjmJMrhjDOiaiKCpYtc38S6sJ5FT2Fm+eN/B77idADl
-        8hs8WM5S9hR7Qi31aKP7Jq+Ca
-X-Received: by 2002:a7b:c00c:: with SMTP id c12mr2892898wmb.54.1597917524020;
-        Thu, 20 Aug 2020 02:58:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxQG2uYPWfBztaiUxqZyq+dbAAl1wn0Yf6pusnnn3jC/iiRZELY2R1ZcTSp/HyzwfQlSLGT+Q==
-X-Received: by 2002:a7b:c00c:: with SMTP id c12mr2892879wmb.54.1597917523784;
-        Thu, 20 Aug 2020 02:58:43 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:1cc0:4e4e:f1a9:1745? ([2001:b07:6468:f312:1cc0:4e4e:f1a9:1745])
-        by smtp.gmail.com with ESMTPSA id t14sm3517781wrg.38.2020.08.20.02.58.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Aug 2020 02:58:43 -0700 (PDT)
-Subject: Re: [PATCH 5/8] KVM: nSVM: implement ondemand allocation of the
- nested state
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <20200820091327.197807-1-mlevitsk@redhat.com>
- <20200820091327.197807-6-mlevitsk@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <476eecc8-a861-203c-40f5-46707d8c0237@redhat.com>
-Date:   Thu, 20 Aug 2020 11:58:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        bh=vxEczYTbXFfqWxIphzoJ3nc1l42+2omdhsQaCW411K8=;
+        b=DPLqx2RgnRpK0fSQCVa85yGI6QpV8D3ukAkC+jh0HOq1PXKZm1Sb8I/Mxt13IGac/d
+         4lPbXrN90v5S4rJ7NPUghUd3BQutZ7ANrFdKBa2AYqMY1zIciPZ51978xlIyyEy2yjAT
+         DgmtnYzZ7AtQPakJME/tBOpJkPxXZSwWXLCRohCq4D2WYhWLRIaTDn/fUuIdeF9H7aB0
+         mVX22N+5q8+xLZtynrJ2L60Th9F5cVmXqP887kjHKxQ01jqABhg3P1yWbxLYIXPI0+c8
+         M9kv2Hgvh27lVtLdRsh1eJ7hEu91uuMvMyXkpqjtkpeVGLPX9pZ9vLkcueQbSaLRtKkl
+         bGcA==
+X-Gm-Message-State: AOAM531HSl7MIZDFwIntaRa2Ba+ZQmSD24fNoUt+AQeOOWrDQiP2pSmp
+        7tsTCkbxV/tVx1YKUMLvRQ5h2UBYQMiVYw==
+X-Google-Smtp-Source: ABdhPJynfWO6HyWpdKBktyFIyEqBe0LH9o6AleQb+0o+e4duCBv+3NoJu2Vdj5laNHgC8pucZWRIEg==
+X-Received: by 2002:aa7:96c5:: with SMTP id h5mr1958444pfq.195.1597924859495;
+        Thu, 20 Aug 2020 05:00:59 -0700 (PDT)
+Received: from localhost.localdomain ([103.7.29.7])
+        by smtp.gmail.com with ESMTPSA id h193sm2407517pgc.42.2020.08.20.05.00.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 20 Aug 2020 05:00:59 -0700 (PDT)
+From:   Jiang Biao <benbjiang@gmail.com>
+X-Google-Original-From: Jiang Biao <benbjiang@tencent.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org
+Cc:     dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, linux-kernel@vger.kernel.org,
+        Jiang Biao <benbjiang@tencent.com>
+Subject: [PATCH] sched/fair: avoid vruntime compensation for SCHED_IDLE task
+Date:   Thu, 20 Aug 2020 20:00:25 +0800
+Message-Id: <20200820120025.74460-1-benbjiang@tencent.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <20200820091327.197807-6-mlevitsk@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/08/20 11:13, Maxim Levitsky wrote:
-> @@ -3912,6 +3914,14 @@ static int svm_pre_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
->  	vmcb_gpa = GET_SMSTATE(u64, smstate, 0x7ee0);
->  
->  	if (guest) {
-> +		/*
-> +		 * This can happen if SVM was not enabled prior to #SMI,
-> +		 * but guest corrupted the #SMI state and marked it as
-> +		 * enabled it there
-> +		 */
-> +		if (!svm->nested.initialized)
-> +			return 1;
-> +
->  		if (kvm_vcpu_map(&svm->vcpu, gpa_to_gfn(vmcb_gpa), &map) == -EINVAL)
->  			return 1;
+From: Jiang Biao <benbjiang@tencent.com>
 
-This can also happen if you live migrate while in SMM (EFER.SVME=0).
-You need to check for the SVME bit in the SMM state save area, and:
+Vruntime compensation has been down in place_entity() to
+boot the waking procedure for fair tasks. There is no need to
+do that for SCHED_IDLE task actually.
 
-1) triple fault if it is clear
+Not compensating vruntime for SCHED_IDLE task could make
+SCHED_IDLE task more harmless for normal tasks.
 
-2) call svm_allocate_nested if it is set.
+Signed-off-by: Jiang Biao <benbjiang@tencent.com>
+---
+ kernel/sched/fair.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Paolo
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 1a68a0536add..adff77676a0a 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -4115,7 +4115,7 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int initial)
+ 		vruntime += sched_vslice(cfs_rq, se);
+ 
+ 	/* sleeps up to a single latency don't count. */
+-	if (!initial) {
++	if (!initial && likely(!task_has_idle_policy(task_of(se)))) {
+ 		unsigned long thresh = sysctl_sched_latency;
+ 
+ 		/*
+-- 
+2.21.0
 
