@@ -2,71 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76F2E24C5D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 20:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 336D724C5DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 20:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727936AbgHTSvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 14:51:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59186 "EHLO
+        id S1727987AbgHTSwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 14:52:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727897AbgHTSv2 (ORCPT
+        with ESMTP id S1727943AbgHTSv5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 14:51:28 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BEC3C061342
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 11:51:28 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id c19so4320856wmd.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 11:51:28 -0700 (PDT)
+        Thu, 20 Aug 2020 14:51:57 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D913C061385;
+        Thu, 20 Aug 2020 11:51:56 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z18so3102649wrm.12;
+        Thu, 20 Aug 2020 11:51:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=QPQnmI/58kOYJX5JO2+CM6DvjdssZDc2jVBjt8SVn9Y=;
-        b=ds8FchHZgRuxGCcCkfqi5SN58L2+FMba1tz0losixTRhpXlqakfrOTqrbbVnokDN7f
-         WheHwZbtxeZPlOV4zb65MCYoGXAMGE5xVq/Idi3wyXUyRrsLVO4rc/xo9Ni2Ap70Zrln
-         ynhRFKQdeKG3/n3MpIXmtpXc8PiWpVShani05RJZfwaHRiM/mJlDf1/T1urQOTb7OF+n
-         E3S2YOSoJBYv2fiaSbYSjMYeZFKmJYkr4SLL/TqZWgAUyusGabPyP7GqG5K2ZNsu2uZD
-         qXOABGS19VmFHX3oLEuCVW74JDowihEpLnyDpBNKyfNtaK5PrnF6XWwOyQLeYHSci/CY
-         eEUA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1OBfjEMXrvHfHA4ZfSTlw1MEhV9y4/rsLJtMDyqLaZE=;
+        b=TggKAq+GHBkFEqPv5wF0L7x1EL8m9AjUaZo3YMoCq0oby0froLzwXVCIYof0QcV6gP
+         4PDAmkQ8mNAsgGmgcE/0ufjCu1/VA336H7AQmdmWW0s70PdH7AC6M/s6Czw6dysdOy7u
+         9PZ7A8lpDnAfn5ogdcCCezXRSParyypBJqEO+NC/YJhank4UfcdWyF4NCaTXXpLF/mHC
+         r5TYZ7PtPG/emC8Dl500w54ZLWIoxb2Mbdkg7Liw7sVWpgeVFK18osTAR2wQNBkprzVi
+         io4PSPLfeWuaNnu1KnKLvHZCY4wQ/xNOkI5dwWfMCKQCzZvPkAmsheWwpHYUwQ9afR/1
+         d07w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=QPQnmI/58kOYJX5JO2+CM6DvjdssZDc2jVBjt8SVn9Y=;
-        b=OISlbfraECo58IgXiTAK2nhzfcP7kEkLbbUCQ2hnnzAUbgXMExS9gAn1tTVox+hCPs
-         q42rVSwf6obuE5EutG77fW5jQi3itFpvGhqSPBLgexHB5msf1vFHl0PHvRUMBQV/7zYd
-         A5Ol8MtuYqm0Tkaqh40EuJ7W6wjItk7E4RW1eiD3YXgjA9F/hNWtGh8pnrLzIUoeQxrr
-         u9yDoMD+cjGbE3BI9VuZAoUD7Uu8lenb82CuZDWE5Vb/wTJNkNcdhtao34gzAsQIqKfd
-         mMiycBOvrLqMfSx8N5JKSTw4F5uBHWbPKHmQYwgnaXwbjTJ44zJOIQSJ6LmcYn3a/V8O
-         Bwww==
-X-Gm-Message-State: AOAM533R2yOO18DdUsVlzrOPUn/hFNg88rgPZAJbQ7+wddz9HXCRhbYy
-        9xcl4KNJ6LyP/tcWrDCVYYG5UQ==
-X-Google-Smtp-Source: ABdhPJyp/NWmznNP/KusvFX00GaOA7bor3jeE+T3/KSaaSpCfA6GXoWHo3uB2PcjIe/9X/tKfJQ0Pw==
-X-Received: by 2002:a7b:cbcc:: with SMTP id n12mr38361wmi.105.1597949487036;
-        Thu, 20 Aug 2020 11:51:27 -0700 (PDT)
-Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id q2sm5694019wro.8.2020.08.20.11.51.25
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1OBfjEMXrvHfHA4ZfSTlw1MEhV9y4/rsLJtMDyqLaZE=;
+        b=RZaFOHbLRR26fs1N1sgJPrzHNZcLxkuTx1jFA5CuDXA1e454zNOedNuOdHX/XeWOFk
+         lDUQFU90iCRXQfx27aU3bK/nEGNRvS9oD9G+ezA8bUkOJWxDB+3E+pgbVmYD/VVwhnau
+         sx3BUcOUa8v+IMgy2xSVD1LhrVfqemzMLpkxKBOmfYYNeBZ4n+9xd1gL1zqloWvXyaOp
+         7sMZ3wAFKOKv4lrmTmGWGzNf+zWmxkL4tyGlCQygoeLGc9kKm0IfS036ztr79vAwj5sk
+         Ud4ZUohqd0FlsnNhMqabm7qjsEgNyuxu88WH0BuuYmcAjHj4KrAvI8YVKi5y+gpzjAEL
+         z4XA==
+X-Gm-Message-State: AOAM530+G/Jc+zSQRBLw6PLWn11H+QpyjpCqw0W98SDy4ZVy8aAeeBpB
+        BLyq4/O0H1YZWejqhxhT+RwQNUsZyhitxFxm
+X-Google-Smtp-Source: ABdhPJwuFJAYfGU9Hmt7SvFrIIXQWtVurSNECgoa311lZtPpNp64wDhutmHAW01NOap7yrwY/7qQbQ==
+X-Received: by 2002:adf:c983:: with SMTP id f3mr96319wrh.348.1597949515238;
+        Thu, 20 Aug 2020 11:51:55 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id t17sm5511290wmj.34.2020.08.20.11.51.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 11:51:26 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH v8 3/3] iio: adc: xilinx-xadc: use devm_krealloc()
-Date:   Thu, 20 Aug 2020 20:51:10 +0200
-Message-Id: <20200820185110.17828-4-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200820185110.17828-1-brgl@bgdev.pl>
-References: <20200820185110.17828-1-brgl@bgdev.pl>
+        Thu, 20 Aug 2020 11:51:54 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+To:     Nilesh Javali <njavali@marvell.com>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Alex Dewar <alex.dewar90@gmail.com>
+Subject: [PATCH] scsi: qla2xxx: Remove unnecessary call to memset
+Date:   Thu, 20 Aug 2020 19:51:49 +0100
+Message-Id: <20200820185149.932178-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -74,84 +66,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+In qla25xx_set_els_cmds_supported(), a call is made to
+dma_alloc_coherent() followed by zeroing the memory with memset. This is
+unnecessary as dma_alloc_coherent() already zeros memory. Remove.
 
-Use the managed variant of krealloc() and shrink the code a bit.
+Issue identified with Coccinelle.
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
 ---
- drivers/iio/adc/xilinx-xadc-core.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/scsi/qla2xxx/qla_mbx.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/iio/adc/xilinx-xadc-core.c b/drivers/iio/adc/xilinx-xadc-core.c
-index d0b7ef296afb..f93c34fe5873 100644
---- a/drivers/iio/adc/xilinx-xadc-core.c
-+++ b/drivers/iio/adc/xilinx-xadc-core.c
-@@ -1092,6 +1092,7 @@ MODULE_DEVICE_TABLE(of, xadc_of_match_table);
- static int xadc_parse_dt(struct iio_dev *indio_dev, struct device_node *np,
- 	unsigned int *conf)
- {
-+	struct device *dev = indio_dev->dev.parent;
- 	struct xadc *xadc = iio_priv(indio_dev);
- 	struct iio_chan_spec *channels, *chan;
- 	struct device_node *chan_node, *child;
-@@ -1136,7 +1137,8 @@ static int xadc_parse_dt(struct iio_dev *indio_dev, struct device_node *np,
- 		*conf |= XADC_CONF0_MUX | XADC_CONF0_CHAN(ext_mux_chan);
+diff --git a/drivers/scsi/qla2xxx/qla_mbx.c b/drivers/scsi/qla2xxx/qla_mbx.c
+index 226f1428d3e5..e00f604bbf7a 100644
+--- a/drivers/scsi/qla2xxx/qla_mbx.c
++++ b/drivers/scsi/qla2xxx/qla_mbx.c
+@@ -4925,8 +4925,6 @@ qla25xx_set_els_cmds_supported(scsi_qla_host_t *vha)
+ 		return QLA_MEMORY_ALLOC_FAILED;
  	}
  
--	channels = kmemdup(xadc_channels, sizeof(xadc_channels), GFP_KERNEL);
-+	channels = devm_kmemdup(dev, xadc_channels,
-+				sizeof(xadc_channels), GFP_KERNEL);
- 	if (!channels)
- 		return -ENOMEM;
- 
-@@ -1172,8 +1174,9 @@ static int xadc_parse_dt(struct iio_dev *indio_dev, struct device_node *np,
- 	of_node_put(chan_node);
- 
- 	indio_dev->num_channels = num_channels;
--	indio_dev->channels = krealloc(channels, sizeof(*channels) *
--					num_channels, GFP_KERNEL);
-+	indio_dev->channels = devm_krealloc(dev, channels,
-+					    sizeof(*channels) * num_channels,
-+					    GFP_KERNEL);
- 	/* If we can't resize the channels array, just use the original */
- 	if (!indio_dev->channels)
- 		indio_dev->channels = channels;
-@@ -1225,14 +1228,14 @@ static int xadc_probe(struct platform_device *pdev)
- 
- 	ret = xadc_parse_dt(indio_dev, pdev->dev.of_node, &conf0);
- 	if (ret)
--		goto err_device_free;
-+		return ret;
- 
- 	if (xadc->ops->flags & XADC_FLAGS_BUFFERED) {
- 		ret = iio_triggered_buffer_setup(indio_dev,
- 			&iio_pollfunc_store_time, &xadc_trigger_handler,
- 			&xadc_buffer_ops);
- 		if (ret)
--			goto err_device_free;
-+			return ret;
- 
- 		xadc->convst_trigger = xadc_alloc_trigger(indio_dev, "convst");
- 		if (IS_ERR(xadc->convst_trigger)) {
-@@ -1350,8 +1353,6 @@ static int xadc_probe(struct platform_device *pdev)
- err_triggered_buffer_cleanup:
- 	if (xadc->ops->flags & XADC_FLAGS_BUFFERED)
- 		iio_triggered_buffer_cleanup(indio_dev);
--err_device_free:
--	kfree(indio_dev->channels);
- 
- 	return ret;
- }
-@@ -1371,7 +1372,6 @@ static int xadc_remove(struct platform_device *pdev)
- 	cancel_delayed_work_sync(&xadc->zynq_unmask_work);
- 	clk_disable_unprepare(xadc->clk);
- 	kfree(xadc->data);
--	kfree(indio_dev->channels);
- 
- 	return 0;
- }
+-	memset(els_cmd_map, 0, ELS_CMD_MAP_SIZE);
+-
+ 	/* List of Purex ELS */
+ 	cmd_opcode[0] = ELS_FPIN;
+ 	cmd_opcode[1] = ELS_RDP;
 -- 
-2.26.1
+2.28.0
 
