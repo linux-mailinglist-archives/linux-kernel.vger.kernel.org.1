@@ -2,88 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF8D24BD1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C9424BCD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729277AbgHTM6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:58:23 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:54186 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729061AbgHTJks (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:40:48 -0400
-X-UUID: 1984987cbc4d4ab59f1cffc95a1863c6-20200820
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=PEJq9o5rjHt9Tgt/ghXvLxkCSShvH3PLy1g95tCOzfo=;
-        b=u4kmujXaQXvIQTsiNtWhYp1Ir+63ck6qM6hUbYor08fTrvamxwsGwbRChhAqFPiLrA3xaTpNnbvg32Cg13H6mcCd2Sj711agi0uo1EFrzigGdJdgjUoNngR2Cj32wiXN3MUHrkEPJa3rJEvgTrgPTrBkHmKmq51H/c4Z4ZEzPE0=;
-X-UUID: 1984987cbc4d4ab59f1cffc95a1863c6-20200820
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <light.hsieh@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1248855608; Thu, 20 Aug 2020 17:40:43 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 20 Aug 2020 17:40:39 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 20 Aug 2020 17:40:40 +0800
-From:   <light.hsieh@mediatek.com>
-To:     <linus.walleij@linaro.org>
-CC:     <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sean.wang@kernel.org>,
-        <kuohong.wang@mediatek.com>, Light Hsieh <light.hsieh@mediatek.com>
-Subject: [PATCH v1 1/1] pinctrl: mediatek: refine mtk_pmx_get_funcs_cnt()
-Date:   Thu, 20 Aug 2020 17:40:39 +0800
-Message-ID: <1597916439-26376-1-git-send-email-light.hsieh@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
+        id S1730136AbgHTMyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:54:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729236AbgHTJnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:43:23 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C285F20724;
+        Thu, 20 Aug 2020 09:43:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597916602;
+        bh=CnunxCsOvBU/gUFXe+EXz0IAGG4b1qj7pIVDUrpfZWg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LxUe/5zOhpUu0yX3QPQi/2NIS3QBRStNZyzIAXegfpS5FX55TPD3T3rBBxX49W404
+         pxpLHhvfzBFfEL+qweR6QBJe8n8M0SifTa+Y0PGkqpTqM1J2zqQNThqD9utBYHkaWm
+         UJ3W7NW4FCAaIbpLQhWuXnyKqLZ+xGPa//aVByaE=
+Date:   Thu, 20 Aug 2020 10:43:15 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Jianyong Wu <Jianyong.Wu@arm.com>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "yangbo.lu@nxp.com" <yangbo.lu@nxp.com>,
+        "john.stultz@linaro.org" <john.stultz@linaro.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "richardcochran@gmail.com" <richardcochran@gmail.com>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Suzuki Poulose <Suzuki.Poulose@arm.com>,
+        Steven Price <Steven.Price@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Steve Capper <Steve.Capper@arm.com>,
+        Kaly Xin <Kaly.Xin@arm.com>, Justin He <Justin.He@arm.com>,
+        Wei Chen <Wei.Chen@arm.com>, nd <nd@arm.com>
+Subject: Re: [PATCH v13 2/9] arm/arm64: KVM: Advertise KVM UID to guests via
+ SMCCC
+Message-ID: <20200820094314.GA18838@willie-the-truck>
+References: <20200619130120.40556-1-jianyong.wu@arm.com>
+ <20200619130120.40556-3-jianyong.wu@arm.com>
+ <HE1PR0802MB255577943C260898A6C686ABF4720@HE1PR0802MB2555.eurprd08.prod.outlook.com>
+ <20200727113821.GB20437@willie-the-truck>
+ <HE1PR0802MB25551F426910F76E95523383F4730@HE1PR0802MB2555.eurprd08.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 89E841128ED7E0737F0C5C3B513376298F38FFC82A08151051B83A73D1B33ED22000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <HE1PR0802MB25551F426910F76E95523383F4730@HE1PR0802MB2555.eurprd08.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTGlnaHQgSHNpZWggPGxpZ2h0LmhzaWVoQG1lZGlhdGVrLmNvbT4NCg0KUmVmaW5lIGlt
-cGxlbWVudGF0aW9uIG9mIG10a19wbXhfZ2V0X2Z1bmNzX2NudCgpLg0KVGhlIG9yaWdpbmFsIGlt
-cGxlbWVudGF0aW9uIGFsd2F5cyByZXR1cm4gQVJSQVlfU0laRShtdGtfZ3Bpb19mdW5jdGlvbnMp
-DQp3aGljaCBpcyAxNi4NCg0KSG93ZXZlciwgTVQ2NzY1L01UNjc3OSBvbmx5IHN1cHBvcnQgOCBm
-dW5jdGlvbnMgcGVyIEdQSU8gcGluLiBTbyByZXR1cm5pbmcNCjE2IGlzIGltcHJvcGVyLiBUaGUg
-bmV3IGltcGxlbWVudGF0aW9uIGNoZWNrIG1lbWJlciBuZnVuY3Mgb2Ygc3RydWN0DQptdGtfcGlu
-X3NvYyBmb3IgYSBwbGF0Zm9ybS4gSWYgbmZ1bmNzIGlzIG5vdCB6ZXJvLCByZXR1cm4gbmZ1bmNz
-Lg0KSWYgbmZ1bmNzIGlzIHplcm8sIGZhbGxiYWNrIHRvIG9yaWdpbmFsIGltcGxlbWVudGF0aW9u
-IGJ5IHJldHVybmluZw0KQVJSQVlfU0laRShtdGtfZ3Bpb19mdW5jdGlvbnMpLg0KDQpTaWduZWQt
-b2ZmLWJ5OiBMaWdodCBIc2llaCA8bGlnaHQuaHNpZWhAbWVkaWF0ZWsuY29tPg0KLS0tDQogZHJp
-dmVycy9waW5jdHJsL21lZGlhdGVrL3BpbmN0cmwtbXQ2NzY1LmMgfCAxICsNCiBkcml2ZXJzL3Bp
-bmN0cmwvbWVkaWF0ZWsvcGluY3RybC1tdDY3NzkuYyB8IDEgKw0KIGRyaXZlcnMvcGluY3RybC9t
-ZWRpYXRlay9waW5jdHJsLXBhcmlzLmMgIHwgNCArKysrDQogMyBmaWxlcyBjaGFuZ2VkLCA2IGlu
-c2VydGlvbnMoKykNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGluY3RybC9tZWRpYXRlay9waW5j
-dHJsLW10Njc2NS5jIGIvZHJpdmVycy9waW5jdHJsL21lZGlhdGVrL3BpbmN0cmwtbXQ2NzY1LmMN
-CmluZGV4IDJjNTlkMzkuLjhkOWYzZWEgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3BpbmN0cmwvbWVk
-aWF0ZWsvcGluY3RybC1tdDY3NjUuYw0KKysrIGIvZHJpdmVycy9waW5jdHJsL21lZGlhdGVrL3Bp
-bmN0cmwtbXQ2NzY1LmMNCkBAIC0xMDY5LDYgKzEwNjksNyBAQA0KIAkucGlucyA9IG10a19waW5z
-X210Njc2NSwNCiAJLm5waW5zID0gQVJSQVlfU0laRShtdGtfcGluc19tdDY3NjUpLA0KIAkubmdy
-cHMgPSBBUlJBWV9TSVpFKG10a19waW5zX210Njc2NSksDQorCS5uZnVuY3MgPSA4LA0KIAkuZWlu
-dF9odyA9ICZtdDY3NjVfZWludF9odywNCiAJLmdwaW9fbSA9IDAsDQogCS5iYXNlX25hbWVzID0g
-bXQ2NzY1X3BpbmN0cmxfcmVnaXN0ZXJfYmFzZV9uYW1lcywNCmRpZmYgLS1naXQgYS9kcml2ZXJz
-L3BpbmN0cmwvbWVkaWF0ZWsvcGluY3RybC1tdDY3NzkuYyBiL2RyaXZlcnMvcGluY3RybC9tZWRp
-YXRlay9waW5jdHJsLW10Njc3OS5jDQppbmRleCBiYjA4NTFjLi4xZjI2YWRiIDEwMDY0NA0KLS0t
-IGEvZHJpdmVycy9waW5jdHJsL21lZGlhdGVrL3BpbmN0cmwtbXQ2Nzc5LmMNCisrKyBiL2RyaXZl
-cnMvcGluY3RybC9tZWRpYXRlay9waW5jdHJsLW10Njc3OS5jDQpAQCAtNzQ0LDYgKzc0NCw3IEBA
-DQogCS5waW5zID0gbXRrX3BpbnNfbXQ2Nzc5LA0KIAkubnBpbnMgPSBBUlJBWV9TSVpFKG10a19w
-aW5zX210Njc3OSksDQogCS5uZ3JwcyA9IEFSUkFZX1NJWkUobXRrX3BpbnNfbXQ2Nzc5KSwNCisJ
-Lm5mdW5jcyA9IDgsDQogCS5laW50X2h3ID0gJm10Njc3OV9laW50X2h3LA0KIAkuZ3Bpb19tID0g
-MCwNCiAJLmllc19wcmVzZW50ID0gdHJ1ZSwNCmRpZmYgLS1naXQgYS9kcml2ZXJzL3BpbmN0cmwv
-bWVkaWF0ZWsvcGluY3RybC1wYXJpcy5jIGIvZHJpdmVycy9waW5jdHJsL21lZGlhdGVrL3BpbmN0
-cmwtcGFyaXMuYw0KaW5kZXggYTIzYzE4Mi4uOTZmOWY4NiAxMDA2NDQNCi0tLSBhL2RyaXZlcnMv
-cGluY3RybC9tZWRpYXRlay9waW5jdHJsLXBhcmlzLmMNCisrKyBiL2RyaXZlcnMvcGluY3RybC9t
-ZWRpYXRlay9waW5jdHJsLXBhcmlzLmMNCkBAIC02NTcsNiArNjU3LDEwIEBAIHN0YXRpYyB2b2lk
-IG10a19wY3RybF9kYmdfc2hvdyhzdHJ1Y3QgcGluY3RybF9kZXYgKnBjdGxkZXYsIHN0cnVjdCBz
-ZXFfZmlsZSAqcywNCiANCiBzdGF0aWMgaW50IG10a19wbXhfZ2V0X2Z1bmNzX2NudChzdHJ1Y3Qg
-cGluY3RybF9kZXYgKnBjdGxkZXYpDQogew0KKwlzdHJ1Y3QgbXRrX3BpbmN0cmwgKmh3ID0gcGlu
-Y3RybF9kZXZfZ2V0X2RydmRhdGEocGN0bGRldik7DQorIA0KKwlpZiAoaHctPnNvYy0+bmZ1bmNz
-KQ0KKwkJcmV0dXJuIChpbnQpaHctPnNvYy0+bmZ1bmNzOw0KIAlyZXR1cm4gQVJSQVlfU0laRSht
-dGtfZ3Bpb19mdW5jdGlvbnMpOw0KIH0NCiANCi0tIA0KMS44LjEuMS5kaXJ0eQ0K
+On Tue, Jul 28, 2020 at 01:07:14AM +0000, Jianyong Wu wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Will Deacon <will@kernel.org>
+> > Sent: Monday, July 27, 2020 7:38 PM
+> > To: Jianyong Wu <Jianyong.Wu@arm.com>
+> > Cc: netdev@vger.kernel.org; yangbo.lu@nxp.com; john.stultz@linaro.org;
+> > tglx@linutronix.de; pbonzini@redhat.com; sean.j.christopherson@intel.com;
+> > maz@kernel.org; richardcochran@gmail.com; Mark Rutland
+> > <Mark.Rutland@arm.com>; Suzuki Poulose <Suzuki.Poulose@arm.com>;
+> > Steven Price <Steven.Price@arm.com>; linux-kernel@vger.kernel.org; linux-
+> > arm-kernel@lists.infradead.org; kvmarm@lists.cs.columbia.edu;
+> > kvm@vger.kernel.org; Steve Capper <Steve.Capper@arm.com>; Kaly Xin
+> > <Kaly.Xin@arm.com>; Justin He <Justin.He@arm.com>; Wei Chen
+> > <Wei.Chen@arm.com>; nd <nd@arm.com>
+> > Subject: Re: [PATCH v13 2/9] arm/arm64: KVM: Advertise KVM UID to guests
+> > via SMCCC
+> > 
+> > On Mon, Jul 27, 2020 at 03:45:37AM +0000, Jianyong Wu wrote:
+> > > > From: Will Deacon <will@kernel.org>
+> > > >
+> > > > We can advertise ourselves to guests as KVM and provide a basic
+> > > > features bitmap for discoverability of future hypervisor services.
+> > > >
+> > > > Cc: Marc Zyngier <maz@kernel.org>
+> > > > Signed-off-by: Will Deacon <will@kernel.org>
+> > > > Signed-off-by: Jianyong Wu <jianyong.wu@arm.com>
+> > > > ---
+> > > >  arch/arm64/kvm/hypercalls.c | 29 +++++++++++++++++++----------
+> > > >  1 file changed, 19 insertions(+), 10 deletions(-)
+> > > >
+> > > > diff --git a/arch/arm64/kvm/hypercalls.c
+> > > > b/arch/arm64/kvm/hypercalls.c index 550dfa3e53cd..db6dce3d0e23
+> > > > 100644
+> > > > --- a/arch/arm64/kvm/hypercalls.c
+> > > > +++ b/arch/arm64/kvm/hypercalls.c
+> > > > @@ -12,13 +12,13 @@
+> > > >  int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)  {
+> > > >  	u32 func_id = smccc_get_function(vcpu);
+> > > > -	long val = SMCCC_RET_NOT_SUPPORTED;
+> > > > +	u32 val[4] = {SMCCC_RET_NOT_SUPPORTED};
+> > >
+> > > There is a risk as this u32 value will return here and a u64 value
+> > > will be obtained in guest. For example, The val[0] is initialized as
+> > > -1 of 0xffffffff and the guest get 0xffffffff then it will be compared
+> > > with -1 of 0xffffffffffffffff Also this problem exists for the
+> > > transfer of address in u64 type. So the following assignment to "val"
+> > > should be split into two
+> > > u32 value and assign to val[0] and val[1] respectively.
+> > > WDYT?
+> > 
+> > Yes, I think you're right that this is a bug, but isn't the solution just to make
+> > that an array of 'long'?
+> > 
+> > 	long val [4];
+> > 
+> > That will sign-extend the negative error codes as required, while leaving the
+> > explicitly unsigned UID constants alone.
+> 
+> Ok, that's much better. I will fix it at next version.
+> 
+> By the way, I wonder when will you update this patch set. I see someone like me
+> adopt this patch set as code base and need rebase it every time, so expect your update.
 
+I'm not working on it, so please feel free to include it along with the
+patches that add an upstream user.
+
+Will
