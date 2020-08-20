@@ -2,41 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 134E624B33D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E08B824B2A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729244AbgHTJna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:43:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36784 "EHLO mail.kernel.org"
+        id S1726792AbgHTJet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:34:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727774AbgHTJmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:42:14 -0400
+        id S1727845AbgHTJbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:31:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 398782075E;
-        Thu, 20 Aug 2020 09:42:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D22F20724;
+        Thu, 20 Aug 2020 09:31:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916533;
-        bh=xyDZYkyPG1JpMD3a/x9ITUBO7mLGiopl2omnRGsYpl0=;
+        s=default; t=1597915884;
+        bh=tl+cUgc5OR6puSRkQCFPVS3w587cIlAO4ks3kHm9LrM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NnydXkJ8hCsEyobyebgrrAXKrQNFLB5r7YzE8m2ejtN29rkJEluUmEvUhpW8gZ0u3
-         sBH5/hmY0g8kxjTF6zLWqyW14JqBor4lYmsKo8r0mqyFsy0CA2UDK+QgcDLYY2uIDJ
-         U/vUrdIzvS6GqVDGW68jUkkXyZJmn3eeKkAYS++g=
+        b=Oa+ybJEcmIl0bkYMeEdYLnxg0i3o+Tvb9WTpCgI46a+KswLsd3LzZ1V2ZlZ0bpHGF
+         AmT7XsbHvRu7aFGhJvnYQAg28h3pzsEDxEHyjL0y/L8Dx8hftLEt8oGCu5RXg1fhQ5
+         C0HmcOmVUUgytEx7pEoZPH01GrRREx0twpUTkjR4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Zhang <markz@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org,
+        Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Ray Jui <ray.jui@broadcom.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 122/204] RDMA/counter: Only bind user QPs in auto mode
-Date:   Thu, 20 Aug 2020 11:20:19 +0200
-Message-Id: <20200820091612.389345052@linuxfoundation.org>
+Subject: [PATCH 5.8 169/232] pwm: bcm-iproc: handle clk_get_rate() return
+Date:   Thu, 20 Aug 2020 11:20:20 +0200
+Message-Id: <20200820091621.001700555@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
-References: <20200820091606.194320503@linuxfoundation.org>
+In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
+References: <20200820091612.692383444@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,38 +49,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Zhang <markz@mellanox.com>
+From: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
 
-[ Upstream commit c9f557421e505f75da4234a6af8eff46bc08614b ]
+[ Upstream commit 6ced5ff0be8e94871ba846dfbddf69d21363f3d7 ]
 
-In auto mode only bind user QPs to a dynamic counter, since this feature
-is mainly used for system statistic and diagnostic purpose, while there's
-no need to counter kernel QPs so far.
+Handle clk_get_rate() returning 0 to avoid possible division by zero.
 
-Fixes: 99fa331dc862 ("RDMA/counter: Add "auto" configuration mode support")
-Link: https://lore.kernel.org/r/20200702082933.424537-3-leon@kernel.org
-Signed-off-by: Mark Zhang <markz@mellanox.com>
-Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: daa5abc41c80 ("pwm: Add support for Broadcom iProc PWM controller")
+Signed-off-by: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+Reviewed-by: Ray Jui <ray.jui@broadcom.com>
+Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/counters.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pwm/pwm-bcm-iproc.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/core/counters.c b/drivers/infiniband/core/counters.c
-index 738d1faf4bba5..6deb1901fbd02 100644
---- a/drivers/infiniband/core/counters.c
-+++ b/drivers/infiniband/core/counters.c
-@@ -288,7 +288,7 @@ int rdma_counter_bind_qp_auto(struct ib_qp *qp, u8 port)
- 	struct rdma_counter *counter;
- 	int ret;
+diff --git a/drivers/pwm/pwm-bcm-iproc.c b/drivers/pwm/pwm-bcm-iproc.c
+index 1f829edd8ee70..d392a828fc493 100644
+--- a/drivers/pwm/pwm-bcm-iproc.c
++++ b/drivers/pwm/pwm-bcm-iproc.c
+@@ -85,8 +85,6 @@ static void iproc_pwmc_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
+ 	u64 tmp, multi, rate;
+ 	u32 value, prescale;
  
--	if (!qp->res.valid)
-+	if (!qp->res.valid || rdma_is_kernel_res(&qp->res))
- 		return 0;
+-	rate = clk_get_rate(ip->clk);
+-
+ 	value = readl(ip->base + IPROC_PWM_CTRL_OFFSET);
  
- 	if (!rdma_is_port_valid(dev, port))
+ 	if (value & BIT(IPROC_PWM_CTRL_EN_SHIFT(pwm->hwpwm)))
+@@ -99,6 +97,13 @@ static void iproc_pwmc_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
+ 	else
+ 		state->polarity = PWM_POLARITY_INVERSED;
+ 
++	rate = clk_get_rate(ip->clk);
++	if (rate == 0) {
++		state->period = 0;
++		state->duty_cycle = 0;
++		return;
++	}
++
+ 	value = readl(ip->base + IPROC_PWM_PRESCALE_OFFSET);
+ 	prescale = value >> IPROC_PWM_PRESCALE_SHIFT(pwm->hwpwm);
+ 	prescale &= IPROC_PWM_PRESCALE_MAX;
 -- 
 2.25.1
 
