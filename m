@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 566C524BCBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D3F24BBAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730241AbgHTMv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:51:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42058 "EHLO mail.kernel.org"
+        id S1730353AbgHTMca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:32:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729271AbgHTJnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:43:49 -0400
+        id S1729645AbgHTJtz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:49:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82C1022B43;
-        Thu, 20 Aug 2020 09:43:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E839A20724;
+        Thu, 20 Aug 2020 09:49:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916629;
-        bh=I8uEIPz1Akn5O5ubpZWgVp4PADz7yYhOyHoDeLbjUI8=;
+        s=default; t=1597916994;
+        bh=/bkX29MlNOUlzQFGNzz049u3ETyfMbrJy+tTeeKVYTw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vWo0yfz6CB+qI7mAL7/lmMUqOE0z5YxgYc78ccX2gzbsbL8ZL4LKLShcxeVjQxeVe
-         7eWSpvmM2JvrZXPsWto6JzGssnYYAffvaJbaQOpuIu7T9JYhTBULnIjXcgBfErkynb
-         EG/24CPYWWDbJGDW9NnnKwF9W76+GbZXuIifmKSM=
+        b=TRuJtSpmzHbwl+tsOKtFSmCOx9yN8V4H7zgR2HpArD7kgxx9GZhT/B7KPpFTEhKtO
+         jHvvi5ve5XSf6EtEhagV7ygaikmU1H6xwu71ykdAsYQ181/Wf5l4qb3JKo4D/62JZc
+         V1jc3g/FpniO3y2n0ByYIk+MOa5yuSw+WtI6MBJc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rich Felker <dalias@libc.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 188/204] sh: landisk: Add missing initialization of sh_io_port_base
-Date:   Thu, 20 Aug 2020 11:21:25 +0200
-Message-Id: <20200820091615.584546497@linuxfoundation.org>
+        stable@vger.kernel.org, Dave Jiang <dave.jiang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jane Chu <jane.chu@oracle.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 119/152] libnvdimm/security: ensure sysfs poll thread woke up and fetch updated attr
+Date:   Thu, 20 Aug 2020 11:21:26 +0200
+Message-Id: <20200820091559.866711845@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
-References: <20200820091606.194320503@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +46,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Jane Chu <jane.chu@oracle.com>
 
-[ Upstream commit 0c64a0dce51faa9c706fdf1f957d6f19878f4b81 ]
+[ Upstream commit 7f674025d9f7321dea11b802cc0ab3f09cbe51c5 ]
 
-The Landisk setup code maps the CF IDE area using ioremap_prot(), and
-passes the resulting virtual addresses to the pata_platform driver,
-disguising them as I/O port addresses.  Hence the pata_platform driver
-translates them again using ioport_map().
-As CONFIG_GENERIC_IOMAP=n, and CONFIG_HAS_IOPORT_MAP=y, the
-SuperH-specific mapping code in arch/sh/kernel/ioport.c translates
-I/O port addresses to virtual addresses by adding sh_io_port_base, which
-defaults to -1, thus breaking the assumption of an identity mapping.
+commit 7d988097c546 ("acpi/nfit, libnvdimm/security: Add security DSM overwrite support")
+adds a sysfs_notify_dirent() to wake up userspace poll thread when the "overwrite"
+operation has completed. But the notification is issued before the internal
+dimm security state and flags have been updated, so the userspace poll thread
+wakes up and fetches the not-yet-updated attr and falls back to sleep, forever.
+But if user from another terminal issue "ndctl wait-overwrite nmemX" again,
+the command returns instantly.
 
-Fix this by setting sh_io_port_base to zero.
-
-Fixes: 37b7a97884ba64bf ("sh: machvec IO death.")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Rich Felker <dalias@libc.org>
+Link: https://lore.kernel.org/r/1596494499-9852-3-git-send-email-jane.chu@oracle.com
+Fixes: 7d988097c546 ("acpi/nfit, libnvdimm/security: Add security DSM overwrite support")
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+Signed-off-by: Jane Chu <jane.chu@oracle.com>
+Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/sh/boards/mach-landisk/setup.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/nvdimm/security.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/arch/sh/boards/mach-landisk/setup.c b/arch/sh/boards/mach-landisk/setup.c
-index 16b4d8b0bb850..2c44b94f82fb2 100644
---- a/arch/sh/boards/mach-landisk/setup.c
-+++ b/arch/sh/boards/mach-landisk/setup.c
-@@ -82,6 +82,9 @@ device_initcall(landisk_devices_setup);
+diff --git a/drivers/nvdimm/security.c b/drivers/nvdimm/security.c
+index acfd211c01b9c..35d265014e1ec 100644
+--- a/drivers/nvdimm/security.c
++++ b/drivers/nvdimm/security.c
+@@ -450,14 +450,19 @@ void __nvdimm_security_overwrite_query(struct nvdimm *nvdimm)
+ 	else
+ 		dev_dbg(&nvdimm->dev, "overwrite completed\n");
  
- static void __init landisk_setup(char **cmdline_p)
- {
-+	/* I/O port identity mapping */
-+	__set_io_port_base(0);
-+
- 	/* LED ON */
- 	__raw_writeb(__raw_readb(PA_LED) | 0x03, PA_LED);
+-	if (nvdimm->sec.overwrite_state)
+-		sysfs_notify_dirent(nvdimm->sec.overwrite_state);
++	/*
++	 * Mark the overwrite work done and update dimm security flags,
++	 * then send a sysfs event notification to wake up userspace
++	 * poll threads to picked up the changed state.
++	 */
+ 	nvdimm->sec.overwrite_tmo = 0;
+ 	clear_bit(NDD_SECURITY_OVERWRITE, &nvdimm->flags);
+ 	clear_bit(NDD_WORK_PENDING, &nvdimm->flags);
+-	put_device(&nvdimm->dev);
+ 	nvdimm->sec.flags = nvdimm_security_flags(nvdimm, NVDIMM_USER);
+ 	nvdimm->sec.ext_flags = nvdimm_security_flags(nvdimm, NVDIMM_MASTER);
++	if (nvdimm->sec.overwrite_state)
++		sysfs_notify_dirent(nvdimm->sec.overwrite_state);
++	put_device(&nvdimm->dev);
+ }
  
+ void nvdimm_security_overwrite_query(struct work_struct *work)
 -- 
 2.25.1
 
