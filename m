@@ -2,42 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A0F24B6D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57EB624B6C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731068AbgHTKlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:41:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37152 "EHLO mail.kernel.org"
+        id S1731292AbgHTKRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:17:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731288AbgHTKQm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:16:42 -0400
+        id S1728737AbgHTKQx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:16:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 25A0B20658;
-        Thu, 20 Aug 2020 10:16:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BE0A020658;
+        Thu, 20 Aug 2020 10:16:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918600;
-        bh=8oiJfUWAGWX/bCFj33VEYHm5fd1QvU3Tdt/J/MpTiwI=;
+        s=default; t=1597918612;
+        bh=tIzoCSSLRjt/w8J6hFho8GNxLkMCM5XbRXm84eMaaeY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WhoQnWQ7rrLH67iqRiQVkDai2a776W7m/kUnSt+ILINQYpEmAuOzvL7LJ7Ds47WOX
-         lwlYLPU/cMGg2r9hpVRAWf/EGGzEZ92ZvPf/o6j4Tr2wg/kzOhkYRcBI9Lt5jQMFRy
-         EEfjTIoolN9xXhB1yKuUY6DQlJSELTLrIhHq8zYM=
+        b=nJ4e3MItFu35AoG6AK3JdeWfIXREpuR8vJufPXjytZSmEGOBHk2ZceJ8hvtHcF3HU
+         vg0csJ5zuPRlIGx2tMc3eLA80rpiEIYwXvm4EZLjbfGJyYjdIUA03TPDcX5r8wmi4I
+         P6evo7ca+zhLrydc8xb/yfUA9UrXn6hjdW3UGVX0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, kernel@axis.com,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 218/228] perf bench mem: Always memset source before memcpy
-Date:   Thu, 20 Aug 2020 11:23:13 +0200
-Message-Id: <20200820091618.406713948@linuxfoundation.org>
+        stable@vger.kernel.org, Ali Saidi <alisaidi@amazon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Frank van der Linden <fllinden@amazon.com>
+Subject: [PATCH 4.14 222/228] genirq/affinity: Handle affinity setting on inactive interrupts correctly
+Date:   Thu, 20 Aug 2020 11:23:17 +0200
+Message-Id: <20200820091618.608293206@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
 References: <20200820091607.532711107@linuxfoundation.org>
@@ -50,105 +44,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Whitchurch <vincent.whitchurch@axis.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit 1beaef29c34154ccdcb3f1ae557f6883eda18840 ]
+commit baedb87d1b53532f81b4bd0387f83b05d4f7eb9a upstream.
 
-For memcpy, the source pages are memset to zero only when --cycles is
-used.  This leads to wildly different results with or without --cycles,
-since all sources pages are likely to be mapped to the same zero page
-without explicit writes.
+Setting interrupt affinity on inactive interrupts is inconsistent when
+hierarchical irq domains are enabled. The core code should just store the
+affinity and not call into the irq chip driver for inactive interrupts
+because the chip drivers may not be in a state to handle such requests.
 
-Before this fix:
+X86 has a hacky workaround for that but all other irq chips have not which
+causes problems e.g. on GIC V3 ITS.
 
-$ export cmd="./perf stat -e LLC-loads -- ./perf bench \
-  mem memcpy -s 1024MB -l 100 -f default"
-$ $cmd
+Instead of adding more ugly hacks all over the place, solve the problem in
+the core code. If the affinity is set on an inactive interrupt then:
 
-         2,935,826      LLC-loads
-       3.821677452 seconds time elapsed
+    - Store it in the irq descriptors affinity mask
+    - Update the effective affinity to reflect that so user space has
+      a consistent view
+    - Don't call into the irq chip driver
 
-$ $cmd --cycles
+This is the core equivalent of the X86 workaround and works correctly
+because the affinity setting is established in the irq chip when the
+interrupt is activated later on.
 
-       217,533,436      LLC-loads
-       8.616725985 seconds time elapsed
+Note, that this is only effective when hierarchical irq domains are enabled
+by the architecture. Doing it unconditionally would break legacy irq chip
+implementations.
 
-After this fix:
+For hierarchial irq domains this works correctly as none of the drivers can
+have a dependency on affinity setting in inactive state by design.
 
-$ $cmd
+Remove the X86 workaround as it is not longer required.
 
-       214,459,686      LLC-loads
-       8.674301124 seconds time elapsed
-
-$ $cmd --cycles
-
-       214,758,651      LLC-loads
-       8.644480006 seconds time elapsed
-
-Fixes: 47b5757bac03c338 ("perf bench mem: Move boilerplate memory allocation to the infrastructure")
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: kernel@axis.com
-Link: http://lore.kernel.org/lkml/20200810133404.30829-1-vincent.whitchurch@axis.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 02edee152d6e ("x86/apic/vector: Ignore set_affinity call for inactive interrupts")
+Reported-by: Ali Saidi <alisaidi@amazon.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Ali Saidi <alisaidi@amazon.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200529015501.15771-1-alisaidi@amazon.com
+Link: https://lkml.kernel.org/r/877dv2rv25.fsf@nanos.tec.linutronix.de
+[fllinden@amazon.com - 4.14 never had the x86 workaround, so skip x86 changes]
+Signed-off-by: Frank van der Linden <fllinden@amazon.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/bench/mem-functions.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+ kernel/irq/manage.c |   37 +++++++++++++++++++++++++++++++++++--
+ 1 file changed, 35 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/bench/mem-functions.c b/tools/perf/bench/mem-functions.c
-index 0251dd348124a..4864fc67d01b5 100644
---- a/tools/perf/bench/mem-functions.c
-+++ b/tools/perf/bench/mem-functions.c
-@@ -222,12 +222,8 @@ static int bench_mem_common(int argc, const char **argv, struct bench_mem_info *
- 	return 0;
+--- a/kernel/irq/manage.c
++++ b/kernel/irq/manage.c
+@@ -168,9 +168,9 @@ void irq_set_thread_affinity(struct irq_
+ 			set_bit(IRQTF_AFFINITY, &action->thread_flags);
  }
  
--static u64 do_memcpy_cycles(const struct function *r, size_t size, void *src, void *dst)
-+static void memcpy_prefault(memcpy_t fn, size_t size, void *src, void *dst)
++#ifdef CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK
+ static void irq_validate_effective_affinity(struct irq_data *data)
  {
--	u64 cycle_start = 0ULL, cycle_end = 0ULL;
--	memcpy_t fn = r->fn.memcpy;
--	int i;
--
- 	/* Make sure to always prefault zero pages even if MMAP_THRESH is crossed: */
- 	memset(src, 0, size);
+-#ifdef CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK
+ 	const struct cpumask *m = irq_data_get_effective_affinity_mask(data);
+ 	struct irq_chip *chip = irq_data_get_irq_chip(data);
  
-@@ -236,6 +232,15 @@ static u64 do_memcpy_cycles(const struct function *r, size_t size, void *src, vo
- 	 * to not measure page fault overhead:
- 	 */
- 	fn(dst, src, size);
+@@ -178,9 +178,19 @@ static void irq_validate_effective_affin
+ 		return;
+ 	pr_warn_once("irq_chip %s did not update eff. affinity mask of irq %u\n",
+ 		     chip->name, data->irq);
+-#endif
+ }
+ 
++static inline void irq_init_effective_affinity(struct irq_data *data,
++					       const struct cpumask *mask)
++{
++	cpumask_copy(irq_data_get_effective_affinity_mask(data), mask);
++}
++#else
++static inline void irq_validate_effective_affinity(struct irq_data *data) { }
++static inline void irq_init_effective_affinity(struct irq_data *data,
++					       const struct cpumask *mask) { }
++#endif
++
+ int irq_do_set_affinity(struct irq_data *data, const struct cpumask *mask,
+ 			bool force)
+ {
+@@ -205,6 +215,26 @@ int irq_do_set_affinity(struct irq_data
+ 	return ret;
+ }
+ 
++static bool irq_set_affinity_deactivated(struct irq_data *data,
++					 const struct cpumask *mask, bool force)
++{
++	struct irq_desc *desc = irq_data_to_desc(data);
++
++	/*
++	 * If the interrupt is not yet activated, just store the affinity
++	 * mask and do not call the chip driver at all. On activation the
++	 * driver has to make sure anyway that the interrupt is in a
++	 * useable state so startup works.
++	 */
++	if (!IS_ENABLED(CONFIG_IRQ_DOMAIN_HIERARCHY) || irqd_is_activated(data))
++		return false;
++
++	cpumask_copy(desc->irq_common_data.affinity, mask);
++	irq_init_effective_affinity(data, mask);
++	irqd_set(data, IRQD_AFFINITY_SET);
++	return true;
 +}
 +
-+static u64 do_memcpy_cycles(const struct function *r, size_t size, void *src, void *dst)
-+{
-+	u64 cycle_start = 0ULL, cycle_end = 0ULL;
-+	memcpy_t fn = r->fn.memcpy;
-+	int i;
+ int irq_set_affinity_locked(struct irq_data *data, const struct cpumask *mask,
+ 			    bool force)
+ {
+@@ -215,6 +245,9 @@ int irq_set_affinity_locked(struct irq_d
+ 	if (!chip || !chip->irq_set_affinity)
+ 		return -EINVAL;
+ 
++	if (irq_set_affinity_deactivated(data, mask, force))
++		return 0;
 +
-+	memcpy_prefault(fn, size, src, dst);
- 
- 	cycle_start = get_cycles();
- 	for (i = 0; i < nr_loops; ++i)
-@@ -251,11 +256,7 @@ static double do_memcpy_gettimeofday(const struct function *r, size_t size, void
- 	memcpy_t fn = r->fn.memcpy;
- 	int i;
- 
--	/*
--	 * We prefault the freshly allocated memory range here,
--	 * to not measure page fault overhead:
--	 */
--	fn(dst, src, size);
-+	memcpy_prefault(fn, size, src, dst);
- 
- 	BUG_ON(gettimeofday(&tv_start, NULL));
- 	for (i = 0; i < nr_loops; ++i)
--- 
-2.25.1
-
+ 	if (irq_can_move_pcntxt(data)) {
+ 		ret = irq_do_set_affinity(data, mask, force);
+ 	} else {
 
 
