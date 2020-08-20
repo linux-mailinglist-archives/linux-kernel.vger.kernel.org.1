@@ -2,242 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1273F24B9A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4BA24B9AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730795AbgHTLwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726387AbgHTLui (ORCPT
+        id S1729020AbgHTLxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:53:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29356 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728469AbgHTLw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 07:50:38 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3415BC061387
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 04:50:38 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id o23so2166925ejr.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 04:50:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9KvhtHICF0TxOfrbvj/8zshCyJ1YS3JOgoqNxp3Dtog=;
-        b=OTjSgTX26tjI06uphAGdtLggVcIgVcSt1nz4x60CK0u4ojkcFGNakF5cn05N44O/dR
-         JXD6+G8MocvROe0iUMI1ZrQ40vkGq7A30yIfErACZJDTCan2wRABxXvixJL45sr3Rr/2
-         8xxq5DF+WSzeLDRiQWcbLYeCgl03xjD/tvCtvtMLnfEbR/oaoDdjyZ4DLEKEl98FNYc4
-         DV9NXq2L6rrWdMQ9XvoIhc34sEnFVAsnLIr7NvtQWRsgsR8rFDBFNakuSp3QKoLKwgDl
-         nPQM+VliGVKGFOp4rv7LGlXSOWRVmxWkAVpEoAKPb0IYvt3QniG6aRRGqqsN+SeXncCP
-         kbdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9KvhtHICF0TxOfrbvj/8zshCyJ1YS3JOgoqNxp3Dtog=;
-        b=oY8e/8RsTOTFJcHeo2XRC2OoqnhcxAckOFP1OfnA4XryiM7WjQrUaw3zFLbpMmSIAJ
-         kjJUIbwd98zmdCR+u4sTueQtCB+s+A2TGt87kLDU2DsOP8B2/Zrhypg19/GyzAnju5V+
-         KJrUFSkT7YL64Nzi9ZzPf8RdB9qhMV9rdHyZ6q2Yk/QcwNNYI5YjOxLKkUrS6k7f1lzH
-         b5lzq2sE+CFcHjcC9MohsUuAu7cYXULInFysSu+t/9Q29zy8w4ABJCkc43FjReP8CPLi
-         EYBCwISPPmG4kYa+dYA3nF97p1dawaXrB5tu7WCaO0xFtLa2OFw3QQIFLVnfVc/tqqja
-         HLuA==
-X-Gm-Message-State: AOAM533IYCLA0tQGjBiPYHg+j8nlT1LhCyPFhFHrvWerh3soUV3Oaarg
-        2dd65rX383eHfMhu4G1wQQtyyA==
-X-Google-Smtp-Source: ABdhPJz+xq++T0cU+EUORbqtkNA9eSQnIaxdJEeZWGYtdPFVNSQjrdlUNXUw/OLLWuv93oO1tCQvhA==
-X-Received: by 2002:a17:906:260c:: with SMTP id h12mr2985086ejc.457.1597924236812;
-        Thu, 20 Aug 2020 04:50:36 -0700 (PDT)
-Received: from maco2.ams.corp.google.com (a83-162-234-235.adsl.xs4all.nl. [83.162.234.235])
-        by smtp.gmail.com with ESMTPSA id m13sm1185358edi.89.2020.08.20.04.50.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 04:50:36 -0700 (PDT)
-From:   Martijn Coenen <maco@android.com>
-To:     gregkh@linuxfoundation.org, tkjos@google.com, arve@android.com,
-        joel@joelfernandes.org, christian@brauner.io, hridya@google.com,
-        surenb@google.com
-Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        maco@google.com, Martijn Coenen <maco@android.com>
-Subject: [PATCH v2] ANDROID: binder: print warnings when detecting oneway spamming.
-Date:   Thu, 20 Aug 2020 13:50:33 +0200
-Message-Id: <20200820115033.276111-1-maco@android.com>
-X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
+        Thu, 20 Aug 2020 07:52:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597924377;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sl1A0GJYyx/PpdeVM1m/fCfkzRMyvSRC51l7PfeNxkY=;
+        b=AmUXcJvBXqFfFdl4vkih78OTpfyMXSd2na1rWfCd+kbgg+r8eHE3Gr756JiVzm49eGOcmx
+        b8GSsNWnvjAQtdR4nlDiXpW37q+9wUcIxsm060bzK3a1ukR2e8RzbAgCcgtyyUDXLJ8gLw
+        2T9tkGtCOjdcjaIaG1WtiJ2YzE16qbs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-439-OVb8DL8xOeOkVLLilJhpGw-1; Thu, 20 Aug 2020 07:52:55 -0400
+X-MC-Unique: OVb8DL8xOeOkVLLilJhpGw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22407801AE5;
+        Thu, 20 Aug 2020 11:52:54 +0000 (UTC)
+Received: from starship (unknown [10.35.206.173])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F36167A40D;
+        Thu, 20 Aug 2020 11:52:46 +0000 (UTC)
+Message-ID: <36a13760db3cb439eb47057c763845f61449cbcc.camel@redhat.com>
+Subject: Re: [PATCH 2/8] KVM: nSVM: rename nested 'vmcb' to vmcb_gpa in few
+ places
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Date:   Thu, 20 Aug 2020 14:52:45 +0300
+In-Reply-To: <3effc656-20e8-40c9-d0e3-5c700d9b5572@redhat.com>
+References: <20200820091327.197807-1-mlevitsk@redhat.com>
+         <20200820091327.197807-3-mlevitsk@redhat.com>
+         <f6bf9494-f337-2e53-6e6c-e0b8a847ec8d@redhat.com>
+         <608fe03082dc5e4db142afe3c0eb5f7c165f342b.camel@redhat.com>
+         <2e8185af-08fc-18c3-c1ca-fa1f7d4665dd@redhat.com>
+         <2b8faaead6f7744dc10b4701bd1583a2b494d4f4.camel@redhat.com>
+         <3effc656-20e8-40c9-d0e3-5c700d9b5572@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The most common cause of the binder transaction buffer filling up is a
-client rapidly firing oneway transactions into a process, before it has
-a chance to handle them. Yet the root cause of this is often hard to
-debug, because either the system or the app will stop, and by that time
-binder debug information we dump in bugreports is no longer relevant.
+On Thu, 2020-08-20 at 12:56 +0200, Paolo Bonzini wrote:
+> On 20/08/20 12:23, Maxim Levitsky wrote:
+> > I fully agree that adding local variable is a good idea anyway.
+> > 
+> > I was just noting that svm->nested.vmcb is already about the nested
+> > (e.g vmcb12) thus I was thinking that naming this field vmcb12 would be
+> > redundant and not accepted this way.
+> 
+> We want to have both svm->nested.vmcb12 and svm->nested.vmcb02 in there,
+> and hsave is also a VMCB of sort (somewhat like a vmcb01 that is only
+> used while running a nested guest).  So it is clearer to write _which_
+> vmcb it is, and it also helps by making terminology consistent between
+> VMX and SVM.
+This makes sense.
+Best regards,
+	Maxim Levitsky
 
-This change warns as soon as a process dips below 80% of its oneway
-space (less than 100kB available in the configuration), when any one
-process is responsible for either more than 50 transactions, or more
-than 50% of the oneway space.
+> 
+> Paolo
+> 
 
-Signed-off-by: Martijn Coenen <maco@android.com>
----
-v2: fixed call-site in binder_alloc_selftest
-
- drivers/android/binder.c                |  2 +-
- drivers/android/binder_alloc.c          | 49 +++++++++++++++++++++++--
- drivers/android/binder_alloc.h          |  5 ++-
- drivers/android/binder_alloc_selftest.c |  2 +-
- 4 files changed, 52 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-index f936530a19b0..946332bc871a 100644
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -3136,7 +3136,7 @@ static void binder_transaction(struct binder_proc *proc,
- 
- 	t->buffer = binder_alloc_new_buf(&target_proc->alloc, tr->data_size,
- 		tr->offsets_size, extra_buffers_size,
--		!reply && (t->flags & TF_ONE_WAY));
-+		!reply && (t->flags & TF_ONE_WAY), current->tgid);
- 	if (IS_ERR(t->buffer)) {
- 		/*
- 		 * -ESRCH indicates VMA cleared. The target is dying.
-diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
-index 69609696a843..76e8e633dbd4 100644
---- a/drivers/android/binder_alloc.c
-+++ b/drivers/android/binder_alloc.c
-@@ -338,12 +338,48 @@ static inline struct vm_area_struct *binder_alloc_get_vma(
- 	return vma;
- }
- 
-+static void debug_low_async_space_locked(struct binder_alloc *alloc, int pid)
-+{
-+	/*
-+	 * Find the amount and size of buffers allocated by the current caller;
-+	 * The idea is that once we cross the threshold, whoever is responsible
-+	 * for the low async space is likely to try to send another async txn,
-+	 * and at some point we'll catch them in the act. This is more efficient
-+	 * than keeping a map per pid.
-+	 */
-+	struct rb_node *n = alloc->free_buffers.rb_node;
-+	struct binder_buffer *buffer;
-+	size_t buffer_size;
-+	size_t total_alloc_size = 0;
-+	size_t num_buffers = 0;
-+
-+	for (n = rb_first(&alloc->allocated_buffers); n != NULL;
-+		 n = rb_next(n)) {
-+		buffer = rb_entry(n, struct binder_buffer, rb_node);
-+		if (buffer->pid != pid)
-+			continue;
-+		if (!buffer->async_transaction)
-+			continue;
-+		buffer_size = binder_alloc_buffer_size(alloc, buffer);
-+		total_alloc_size += buffer_size;
-+		num_buffers++;
-+	}
-+
-+	// Warn if this pid has more than 50% of async space, or more than 50 txns
-+	if (num_buffers > 50 || total_alloc_size > alloc->buffer_size / 4) {
-+		binder_alloc_debug(BINDER_DEBUG_USER_ERROR,
-+			     "%d: pid %d spamming oneway? %zd buffers allocated for a total size of %zd\n",
-+			      alloc->pid, pid, num_buffers, total_alloc_size);
-+	}
-+}
-+
- static struct binder_buffer *binder_alloc_new_buf_locked(
- 				struct binder_alloc *alloc,
- 				size_t data_size,
- 				size_t offsets_size,
- 				size_t extra_buffers_size,
--				int is_async)
-+				int is_async,
-+				int pid)
- {
- 	struct rb_node *n = alloc->free_buffers.rb_node;
- 	struct binder_buffer *buffer;
-@@ -486,11 +522,16 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
- 	buffer->offsets_size = offsets_size;
- 	buffer->async_transaction = is_async;
- 	buffer->extra_buffers_size = extra_buffers_size;
-+	buffer->pid = pid;
- 	if (is_async) {
- 		alloc->free_async_space -= size + sizeof(struct binder_buffer);
- 		binder_alloc_debug(BINDER_DEBUG_BUFFER_ALLOC_ASYNC,
- 			     "%d: binder_alloc_buf size %zd async free %zd\n",
- 			      alloc->pid, size, alloc->free_async_space);
-+		if (alloc->free_async_space < alloc->buffer_size / 10) {
-+			// Start detecting spammers once we reach 80% of async space used
-+			debug_low_async_space_locked(alloc, pid);
-+		}
- 	}
- 	return buffer;
- 
-@@ -508,6 +549,7 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
-  * @offsets_size:       user specified buffer offset
-  * @extra_buffers_size: size of extra space for meta-data (eg, security context)
-  * @is_async:           buffer for async transaction
-+ * @pid:				pid to attribute allocation to (used for debugging)
-  *
-  * Allocate a new buffer given the requested sizes. Returns
-  * the kernel version of the buffer pointer. The size allocated
-@@ -520,13 +562,14 @@ struct binder_buffer *binder_alloc_new_buf(struct binder_alloc *alloc,
- 					   size_t data_size,
- 					   size_t offsets_size,
- 					   size_t extra_buffers_size,
--					   int is_async)
-+					   int is_async,
-+					   int pid)
- {
- 	struct binder_buffer *buffer;
- 
- 	mutex_lock(&alloc->mutex);
- 	buffer = binder_alloc_new_buf_locked(alloc, data_size, offsets_size,
--					     extra_buffers_size, is_async);
-+					     extra_buffers_size, is_async, pid);
- 	mutex_unlock(&alloc->mutex);
- 	return buffer;
- }
-diff --git a/drivers/android/binder_alloc.h b/drivers/android/binder_alloc.h
-index db9c1b984695..55d8b4106766 100644
---- a/drivers/android/binder_alloc.h
-+++ b/drivers/android/binder_alloc.h
-@@ -32,6 +32,7 @@ struct binder_transaction;
-  * @offsets_size:       size of array of offsets
-  * @extra_buffers_size: size of space for other objects (like sg lists)
-  * @user_data:          user pointer to base of buffer space
-+ * @pid:                pid to attribute the buffer to (caller)
-  *
-  * Bookkeeping structure for binder transaction buffers
-  */
-@@ -51,6 +52,7 @@ struct binder_buffer {
- 	size_t offsets_size;
- 	size_t extra_buffers_size;
- 	void __user *user_data;
-+	int    pid;
- };
- 
- /**
-@@ -117,7 +119,8 @@ extern struct binder_buffer *binder_alloc_new_buf(struct binder_alloc *alloc,
- 						  size_t data_size,
- 						  size_t offsets_size,
- 						  size_t extra_buffers_size,
--						  int is_async);
-+						  int is_async,
-+						  int pid);
- extern void binder_alloc_init(struct binder_alloc *alloc);
- extern int binder_alloc_shrinker_init(void);
- extern void binder_alloc_vma_close(struct binder_alloc *alloc);
-diff --git a/drivers/android/binder_alloc_selftest.c b/drivers/android/binder_alloc_selftest.c
-index 4151d9938255..c2b323bc3b3a 100644
---- a/drivers/android/binder_alloc_selftest.c
-+++ b/drivers/android/binder_alloc_selftest.c
-@@ -119,7 +119,7 @@ static void binder_selftest_alloc_buf(struct binder_alloc *alloc,
- 	int i;
- 
- 	for (i = 0; i < BUFFER_NUM; i++) {
--		buffers[i] = binder_alloc_new_buf(alloc, sizes[i], 0, 0, 0);
-+		buffers[i] = binder_alloc_new_buf(alloc, sizes[i], 0, 0, 0, 0);
- 		if (IS_ERR(buffers[i]) ||
- 		    !check_buffer_pages_allocated(alloc, buffers[i],
- 						  sizes[i])) {
--- 
-2.28.0.220.ged08abb693-goog
 
