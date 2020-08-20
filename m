@@ -2,36 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504B024B3B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2174024B3B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729757AbgHTJu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:50:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58996 "EHLO mail.kernel.org"
+        id S1729799AbgHTJvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:51:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729756AbgHTJur (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:50:47 -0400
+        id S1729780AbgHTJu7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:50:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 83CD62067C;
-        Thu, 20 Aug 2020 09:50:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 199152078D;
+        Thu, 20 Aug 2020 09:50:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917047;
-        bh=Ot+IlbwWoYcMtGQlRqjPHSZwBDd0x0OKpAG8nmv7J4g=;
+        s=default; t=1597917058;
+        bh=tl+cUgc5OR6puSRkQCFPVS3w587cIlAO4ks3kHm9LrM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y77ZM5iD6PCIdm7XwkjucTFhbRJWalgtI9evsFTi4u51UcabTpUj06QjC5eG8zZpG
-         l705r4Lz7KiGLq06V1mzTCqfv/5xoqtEXgwPkX+eBlbTXCux6QgF1oXM3mlUwSlfd4
-         a7rjGWvM0e58D+JlLa6E9mfDYhuWeqrNYVUrKUOc=
+        b=qTmbOP36OIeH9m49W+QzSbJekQyHhTQHAdJt8rWDagZZRtD6EFApAkNxesMfQWZKj
+         Qo5RTRyT4gyZzJcwHZllapAZJT6UM5C1d12GWVLoBClMYXZhjEwa401d4dCQRGhr4e
+         oNuGd4ab6FCZFkRMmvdfycgs/3HV5BZ2xr6iH1vA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Konrad Dybcio <konradybcio@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org,
+        Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Ray Jui <ray.jui@broadcom.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 110/152] clk: qcom: gcc-sdm660: Fix up gcc_mss_mnoc_bimc_axi_clk
-Date:   Thu, 20 Aug 2020 11:21:17 +0200
-Message-Id: <20200820091559.405855518@linuxfoundation.org>
+Subject: [PATCH 5.4 112/152] pwm: bcm-iproc: handle clk_get_rate() return
+Date:   Thu, 20 Aug 2020 11:21:19 +0200
+Message-Id: <20200820091559.505653909@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
 References: <20200820091553.615456912@linuxfoundation.org>
@@ -44,36 +49,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Konrad Dybcio <konradybcio@gmail.com>
+From: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
 
-[ Upstream commit 3386af51d3bcebcba3f7becdb1ef2e384abe90cf ]
+[ Upstream commit 6ced5ff0be8e94871ba846dfbddf69d21363f3d7 ]
 
-Add missing halt_check, hwcg_reg and hwcg_bit properties.
-These were likely omitted when porting the driver upstream.
+Handle clk_get_rate() returning 0 to avoid possible division by zero.
 
-Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
-Link: https://lore.kernel.org/r/20200726111215.22361-9-konradybcio@gmail.com
-Fixes: f2a76a2955c0 ("clk: qcom: Add Global Clock controller (GCC) driver for SDM660")
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Fixes: daa5abc41c80 ("pwm: Add support for Broadcom iProc PWM controller")
+Signed-off-by: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+Reviewed-by: Ray Jui <ray.jui@broadcom.com>
+Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/qcom/gcc-sdm660.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/pwm/pwm-bcm-iproc.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/qcom/gcc-sdm660.c b/drivers/clk/qcom/gcc-sdm660.c
-index bf5730832ef3d..c6fb57cd576f5 100644
---- a/drivers/clk/qcom/gcc-sdm660.c
-+++ b/drivers/clk/qcom/gcc-sdm660.c
-@@ -1715,6 +1715,9 @@ static struct clk_branch gcc_mss_cfg_ahb_clk = {
+diff --git a/drivers/pwm/pwm-bcm-iproc.c b/drivers/pwm/pwm-bcm-iproc.c
+index 1f829edd8ee70..d392a828fc493 100644
+--- a/drivers/pwm/pwm-bcm-iproc.c
++++ b/drivers/pwm/pwm-bcm-iproc.c
+@@ -85,8 +85,6 @@ static void iproc_pwmc_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
+ 	u64 tmp, multi, rate;
+ 	u32 value, prescale;
  
- static struct clk_branch gcc_mss_mnoc_bimc_axi_clk = {
- 	.halt_reg = 0x8a004,
-+	.halt_check = BRANCH_HALT,
-+	.hwcg_reg = 0x8a004,
-+	.hwcg_bit = 1,
- 	.clkr = {
- 		.enable_reg = 0x8a004,
- 		.enable_mask = BIT(0),
+-	rate = clk_get_rate(ip->clk);
+-
+ 	value = readl(ip->base + IPROC_PWM_CTRL_OFFSET);
+ 
+ 	if (value & BIT(IPROC_PWM_CTRL_EN_SHIFT(pwm->hwpwm)))
+@@ -99,6 +97,13 @@ static void iproc_pwmc_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
+ 	else
+ 		state->polarity = PWM_POLARITY_INVERSED;
+ 
++	rate = clk_get_rate(ip->clk);
++	if (rate == 0) {
++		state->period = 0;
++		state->duty_cycle = 0;
++		return;
++	}
++
+ 	value = readl(ip->base + IPROC_PWM_PRESCALE_OFFSET);
+ 	prescale = value >> IPROC_PWM_PRESCALE_SHIFT(pwm->hwpwm);
+ 	prescale &= IPROC_PWM_PRESCALE_MAX;
 -- 
 2.25.1
 
