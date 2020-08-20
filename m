@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B1D024B2EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3278E24B2F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728603AbgHTJjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:39:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57034 "EHLO mail.kernel.org"
+        id S1728208AbgHTJjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:39:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728788AbgHTJit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:38:49 -0400
+        id S1725819AbgHTJi5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:38:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 489FD2075E;
-        Thu, 20 Aug 2020 09:38:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AA3D9207DE;
+        Thu, 20 Aug 2020 09:38:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916328;
-        bh=fEdiXVCUATGjxgpl36gAhW7CNegS9vb79xmy4lwUylo=;
+        s=default; t=1597916337;
+        bh=HMeLencfP79QnOTHpQu9SCQ8crUYfKYEweeJFlkvMmY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EQt2ZS5EScbTZ6avA+/A3EPSdm2jGSkDP09l5Vxpua72US+BEN2G5n5EHXZJpLXIY
-         P8j6bF/VSUHzYnW+9e2lNqP32KN8JThz1m5LjRunCbL0edKxqDRWHPyp+ThfNqCdkp
-         /yDF9rzVqwqOQb4IsX7o/y1RiVZqynrUGF6pKsIo=
+        b=YYsPrtWoZGJU2baS5fmOyrL5EzuEYPRuOY5/VQQJ4aF4uPTqecbixLTKvmplruhub
+         Bu3n8zoapgqLF3A7L6lPNLzugPS6kNsAj0IPfEYTQi3CQtsSgjvyQ5fYqs6AJWv2tm
+         rdepBxUkd5tRfyZ4cNKFaEARSmVVoEpejamEKcBs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ben Greear <greearb@candelatech.com>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.7 061/204] mac80211: fix misplaced while instead of if
-Date:   Thu, 20 Aug 2020 11:19:18 +0200
-Message-Id: <20200820091609.315336854@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH 5.7 064/204] MIPS: qi_lb60: Fix routing to audio amplifier
+Date:   Thu, 20 Aug 2020 11:19:21 +0200
+Message-Id: <20200820091609.460152322@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
 References: <20200820091606.194320503@linuxfoundation.org>
@@ -43,37 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Paul Cercueil <paul@crapouillou.net>
 
-commit 5981fe5b0529ba25d95f37d7faa434183ad618c5 upstream.
+commit 0889a67a9e7a56ba39af223d536630b20b877fda upstream.
 
-This never was intended to be a 'while' loop, it should've
-just been an 'if' instead of 'while'. Fix this.
+The ROUT (right channel output of audio codec) was connected to INL
+(left channel of audio amplifier) instead of INR (right channel of audio
+amplifier).
 
-I noticed this while applying another patch from Ben that
-intended to fix a busy loop at this spot.
-
-Cc: stable@vger.kernel.org
-Fixes: b16798f5b907 ("mac80211: mark station unauthorized before key removal")
-Reported-by: Ben Greear <greearb@candelatech.com>
-Link: https://lore.kernel.org/r/20200803110209.253009ae41ff.I3522aad099392b31d5cf2dcca34cbac7e5832dde@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: 8ddebad15e9b ("MIPS: qi_lb60: Migrate to devicetree")
+Cc: stable@vger.kernel.org # v5.3
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/mac80211/sta_info.c |    2 +-
+ arch/mips/boot/dts/ingenic/qi_lb60.dts |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/mac80211/sta_info.c
-+++ b/net/mac80211/sta_info.c
-@@ -1050,7 +1050,7 @@ static void __sta_info_destroy_part2(str
- 	might_sleep();
- 	lockdep_assert_held(&local->sta_mtx);
+--- a/arch/mips/boot/dts/ingenic/qi_lb60.dts
++++ b/arch/mips/boot/dts/ingenic/qi_lb60.dts
+@@ -69,7 +69,7 @@
+ 			"Speaker", "OUTL",
+ 			"Speaker", "OUTR",
+ 			"INL", "LOUT",
+-			"INL", "ROUT";
++			"INR", "ROUT";
  
--	while (sta->sta_state == IEEE80211_STA_AUTHORIZED) {
-+	if (sta->sta_state == IEEE80211_STA_AUTHORIZED) {
- 		ret = sta_info_move_state(sta, IEEE80211_STA_ASSOC);
- 		WARN_ON_ONCE(ret);
- 	}
+ 		simple-audio-card,aux-devs = <&amp>;
+ 
 
 
