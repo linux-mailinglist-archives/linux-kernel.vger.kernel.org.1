@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 714E724B47D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7A7924B489
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730676AbgHTKHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:07:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35292 "EHLO mail.kernel.org"
+        id S1729957AbgHTKIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:08:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730667AbgHTKGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:06:31 -0400
+        id S1726930AbgHTKI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:08:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 178C0206DA;
-        Thu, 20 Aug 2020 10:06:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A8D34206DA;
+        Thu, 20 Aug 2020 10:08:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917990;
-        bh=sB3O8RsK+WNH9GoiGeAlv0G4heZHl6LbPgI8bJi86mo=;
+        s=default; t=1597918106;
+        bh=D3Y8alahK5ow2vJF2tGwq2hBCrD0elyQSCI3NfWikUk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tK/qHgq6ZRpESF9NoH+gt8gp7AFjBeU6jmayOG6SzpbTSsxycprNKlngV9Zi4Rwxa
-         hTV5xu8TgzpJyYgnMn1QVmQE5Sx1iFu/8gQYYM3pSK/AVrBo5A/A+RRciS+MaiiDFO
-         gYDbaN5ZjqmOoZSAioheskfB+GXlRjRqWw++/vWg=
+        b=wX1ZQ3skmWN8VpKvBQTH3UWDM3pbdL11B9ACZMLIs5Hd79yZ9qfzi6+d2uLoGkUAu
+         thEI1rU+rF/+aQcuipHA0mI5wVfzy6dKro/7tqi/k49E6HpN0a8D0xbLoNVQOJYnkC
+         S3sKRt9upZO/NLwfRz1BpLO5yS7MDTToFhYjI18Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amitoj Kaur Chawla <amitoj1606@gmail.com>,
-        Johan Hovold <johan@kernel.org>, Pavel Machek <pavel@ucw.cz>
-Subject: [PATCH 4.14 015/228] leds: wm831x-status: fix use-after-free on unbind
-Date:   Thu, 20 Aug 2020 11:19:50 +0200
-Message-Id: <20200820091608.294236424@linuxfoundation.org>
+        stable@vger.kernel.org, Julian Squires <julian@cipht.net>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 024/228] cfg80211: check vendor command doit pointer before use
+Date:   Thu, 20 Aug 2020 11:19:59 +0200
+Message-Id: <20200820091608.743601352@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
 References: <20200820091607.532711107@linuxfoundation.org>
@@ -43,61 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Julian Squires <julian@cipht.net>
 
-commit 47a459ecc800a17109d0c496a4e21e478806ee40 upstream.
+[ Upstream commit 4052d3d2e8f47a15053320bbcbe365d15610437d ]
 
-Several MFD child drivers register their class devices directly under
-the parent device. This means you cannot blindly do devres conversions
-so that deregistration ends up being tied to the parent device,
-something which leads to use-after-free on driver unbind when the class
-device is released while still being registered.
+In the case where a vendor command does not implement doit, and has no
+flags set, doit would not be validated and a NULL pointer dereference
+would occur, for example when invoking the vendor command via iw.
 
-Fixes: 8d3b6a4001ce ("leds: wm831x-status: Use devm_led_classdev_register")
-Cc: stable <stable@vger.kernel.org>     # 4.6
-Cc: Amitoj Kaur Chawla <amitoj1606@gmail.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Pavel Machek <pavel@ucw.cz>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+I encountered this while developing new vendor commands.  Perhaps in
+practice it is advisable to always implement doit along with dumpit,
+but it seems reasonable to me to always check doit anyway, not just
+when NEED_WDEV.
 
+Signed-off-by: Julian Squires <julian@cipht.net>
+Link: https://lore.kernel.org/r/20200706211353.2366470-1-julian@cipht.net
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/leds/leds-wm831x-status.c |   14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ net/wireless/nl80211.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/leds/leds-wm831x-status.c
-+++ b/drivers/leds/leds-wm831x-status.c
-@@ -283,12 +283,23 @@ static int wm831x_status_probe(struct pl
- 	drvdata->cdev.blink_set = wm831x_status_blink_set;
- 	drvdata->cdev.groups = wm831x_status_groups;
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index d0b75781e6f7a..9be7ee322093b 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -11859,13 +11859,13 @@ static int nl80211_vendor_cmd(struct sk_buff *skb, struct genl_info *info)
+ 				if (!wdev_running(wdev))
+ 					return -ENETDOWN;
+ 			}
+-
+-			if (!vcmd->doit)
+-				return -EOPNOTSUPP;
+ 		} else {
+ 			wdev = NULL;
+ 		}
  
--	ret = devm_led_classdev_register(wm831x->dev, &drvdata->cdev);
-+	ret = led_classdev_register(wm831x->dev, &drvdata->cdev);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "Failed to register LED: %d\n", ret);
- 		return ret;
- 	}
- 
-+	platform_set_drvdata(pdev, drvdata);
++		if (!vcmd->doit)
++			return -EOPNOTSUPP;
 +
-+	return 0;
-+}
-+
-+static int wm831x_status_remove(struct platform_device *pdev)
-+{
-+	struct wm831x_status *drvdata = platform_get_drvdata(pdev);
-+
-+	led_classdev_unregister(&drvdata->cdev);
-+
- 	return 0;
- }
- 
-@@ -297,6 +308,7 @@ static struct platform_driver wm831x_sta
- 		   .name = "wm831x-status",
- 		   },
- 	.probe = wm831x_status_probe,
-+	.remove = wm831x_status_remove,
- };
- 
- module_platform_driver(wm831x_status_driver);
+ 		if (info->attrs[NL80211_ATTR_VENDOR_DATA]) {
+ 			data = nla_data(info->attrs[NL80211_ATTR_VENDOR_DATA]);
+ 			len = nla_len(info->attrs[NL80211_ATTR_VENDOR_DATA]);
+-- 
+2.25.1
+
 
 
