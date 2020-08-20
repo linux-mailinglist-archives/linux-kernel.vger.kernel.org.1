@@ -2,66 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E23124C74B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 23:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F8424C756
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 23:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727835AbgHTVsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 17:48:19 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:39228 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725977AbgHTVsS (ORCPT
+        id S1728806AbgHTVt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 17:49:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24210 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727011AbgHTVtw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 17:48:18 -0400
-Received: from viremana-dev.fwjladdvyuiujdukmejncen4mf.xx.internal.cloudapp.net (unknown [13.66.132.26])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 2A73920B4908;
-        Thu, 20 Aug 2020 14:48:18 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2A73920B4908
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1597960098;
-        bh=1poYvZ5PwBVampeoy9/r+Ck8lpluSiK2TwYPa0QxQy8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C+4fabQdO2f9Gi1nCABCKRSBGNcAGeU4oo14Py/MMLDNnBNIKqj3OFQZ61+9Wg5i2
-         gaQuzc/mbeCMLWFy8RxFyWmGXC8ajz2oAuL7bJ2FhCfI4G+dRQXF9E0JNv+0Doo8rU
-         8Wq9iYUqrHsbTA1Y7Gbp/8JvM4SxZSnghiwAV3lI=
-Date:   Thu, 20 Aug 2020 21:48:17 +0000
-From:   Vineeth Pillai <viremana@linux.microsoft.com>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] hv_utils: drain the timesync packets on onchannelcallback
-Message-ID: <20200820214817.ndjmzanwmdm5qfvf@viremana-dev.fwjladdvyuiujdukmejncen4mf.xx.internal.cloudapp.net>
-References: <20200819174740.47291-1-viremana@linux.microsoft.com>
- <MW2PR2101MB1052254C5ED7C587E548DB3AD75A0@MW2PR2101MB1052.namprd21.prod.outlook.com>
+        Thu, 20 Aug 2020 17:49:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597960190;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W/SGQdOIGqJRv/JTZUfj1nigkzEJpxbggpHyJJW2C1s=;
+        b=ADIHSFNUMknKq9Vt/lIop1V9mzOOK65tlaQcx1dECQNhCpeEFewIGacWVdg4M01mnHsiSA
+        giWiHSkSlXRDNaV0dTsESLVen4mqETbtuZ5ZNzOk/UqnuLUD3iPb7+G7im7G851GDqVvb8
+        oZToasmabwuyHBoUBqlp1UIrgr3XjEY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-131-uzFfsYIJMcmgsgWzc7zHIQ-1; Thu, 20 Aug 2020 17:49:24 -0400
+X-MC-Unique: uzFfsYIJMcmgsgWzc7zHIQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EB9781015C9C;
+        Thu, 20 Aug 2020 21:49:02 +0000 (UTC)
+Received: from x1.home (ovpn-112-71.phx2.redhat.com [10.3.112.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E9E5E7B90C;
+        Thu, 20 Aug 2020 21:48:53 +0000 (UTC)
+Date:   Thu, 20 Aug 2020 15:48:53 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Liu Yi L <yi.l.liu@intel.com>
+Cc:     eric.auger@redhat.com, baolu.lu@linux.intel.com, joro@8bytes.org,
+        kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
+        ashok.raj@intel.com, jun.j.tian@intel.com, yi.y.sun@intel.com,
+        jean-philippe@linaro.org, peterx@redhat.com, hao.wu@intel.com,
+        stefanha@gmail.com, iommu@lists.linux-foundation.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 12/15] vfio/type1: Add vSVA support for IOMMU-backed
+ mdevs
+Message-ID: <20200820154853.21b660d2@x1.home>
+In-Reply-To: <1595917664-33276-13-git-send-email-yi.l.liu@intel.com>
+References: <1595917664-33276-1-git-send-email-yi.l.liu@intel.com>
+        <1595917664-33276-13-git-send-email-yi.l.liu@intel.com>
+Organization: Red Hat
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MW2PR2101MB1052254C5ED7C587E548DB3AD75A0@MW2PR2101MB1052.namprd21.prod.outlook.com>
-User-Agent: NeoMutt/20171215
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 27 Jul 2020 23:27:41 -0700
+Liu Yi L <yi.l.liu@intel.com> wrote:
 
-Hi Michael,
+> Recent years, mediated device pass-through framework (e.g. vfio-mdev)
+> is used to achieve flexible device sharing across domains (e.g. VMs).
+> Also there are hardware assisted mediated pass-through solutions from
+> platform vendors. e.g. Intel VT-d scalable mode which supports Intel
+> Scalable I/O Virtualization technology. Such mdevs are called IOMMU-
+> backed mdevs as there are IOMMU enforced DMA isolation for such mdevs.
+> In kernel, IOMMU-backed mdevs are exposed to IOMMU layer by aux-domain
 
-> > +			pr_warn("TimeSync IC pkt recv failed (Err: %d)\n",
-> > +				ret);
-> 
-> Let's use pr_warn_once().
-> 
-> If there's a packet at the head of the ring buffer that specifies a bogus length,
-> we could take the error path.  But the bad packet stays at the head of the ring buffer,
-> so if we end up back here again, we'll spit out the same error message.  We
-> actually should not end up here again because Hyper-V shouldn't interrupt
-> when adding a packet to a non-empty ring buffer, but who knows what might
-> happen.
-> 
-Valid point, will fix this in the next iteration.
+Or a physical IOMMU backing device.
 
-Thanks,
-Vineeth
+> concept, which means mdevs are protected by an iommu domain which is
+> auxiliary to the domain that the kernel driver primarily uses for DMA
+> API. Details can be found in the KVM presentation as below:
+> 
+> https://events19.linuxfoundation.org/wp-content/uploads/2017/12/\
+> Hardware-Assisted-Mediated-Pass-Through-with-VFIO-Kevin-Tian-Intel.pdf
+
+I think letting the line exceed 80 columns is preferable so that it's
+clickable.  Thanks,
+
+Alex
+
+> This patch extends NESTING_IOMMU ops to IOMMU-backed mdev devices. The
+> main requirement is to use the auxiliary domain associated with mdev.
+> 
+> Cc: Kevin Tian <kevin.tian@intel.com>
+> CC: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> CC: Jun Tian <jun.j.tian@intel.com>
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: Eric Auger <eric.auger@redhat.com>
+> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Lu Baolu <baolu.lu@linux.intel.com>
+> Reviewed-by: Eric Auger <eric.auger@redhat.com>
+> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
+> ---
+> v5 -> v6:
+> *) add review-by from Eric Auger.
+> 
+> v1 -> v2:
+> *) check the iommu_device to ensure the handling mdev is IOMMU-backed
+> ---
+>  drivers/vfio/vfio_iommu_type1.c | 40 ++++++++++++++++++++++++++++++++++++----
+>  1 file changed, 36 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index bf95a0f..9d8f252 100644
+> --- a/drivers/vfio/vfio_iommu_type1.c
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -2379,20 +2379,41 @@ static int vfio_iommu_resv_refresh(struct vfio_iommu *iommu,
+>  	return ret;
+>  }
+>  
+> +static struct device *vfio_get_iommu_device(struct vfio_group *group,
+> +					    struct device *dev)
+> +{
+> +	if (group->mdev_group)
+> +		return vfio_mdev_get_iommu_device(dev);
+> +	else
+> +		return dev;
+> +}
+> +
+>  static int vfio_dev_bind_gpasid_fn(struct device *dev, void *data)
+>  {
+>  	struct domain_capsule *dc = (struct domain_capsule *)data;
+>  	unsigned long arg = *(unsigned long *)dc->data;
+> +	struct device *iommu_device;
+> +
+> +	iommu_device = vfio_get_iommu_device(dc->group, dev);
+> +	if (!iommu_device)
+> +		return -EINVAL;
+>  
+> -	return iommu_uapi_sva_bind_gpasid(dc->domain, dev, (void __user *)arg);
+> +	return iommu_uapi_sva_bind_gpasid(dc->domain, iommu_device,
+> +					  (void __user *)arg);
+>  }
+>  
+>  static int vfio_dev_unbind_gpasid_fn(struct device *dev, void *data)
+>  {
+>  	struct domain_capsule *dc = (struct domain_capsule *)data;
+>  	unsigned long arg = *(unsigned long *)dc->data;
+> +	struct device *iommu_device;
+>  
+> -	iommu_uapi_sva_unbind_gpasid(dc->domain, dev, (void __user *)arg);
+> +	iommu_device = vfio_get_iommu_device(dc->group, dev);
+> +	if (!iommu_device)
+> +		return -EINVAL;
+> +
+> +	iommu_uapi_sva_unbind_gpasid(dc->domain, iommu_device,
+> +				     (void __user *)arg);
+>  	return 0;
+>  }
+>  
+> @@ -2401,8 +2422,13 @@ static int __vfio_dev_unbind_gpasid_fn(struct device *dev, void *data)
+>  	struct domain_capsule *dc = (struct domain_capsule *)data;
+>  	struct iommu_gpasid_bind_data *unbind_data =
+>  				(struct iommu_gpasid_bind_data *)dc->data;
+> +	struct device *iommu_device;
+> +
+> +	iommu_device = vfio_get_iommu_device(dc->group, dev);
+> +	if (!iommu_device)
+> +		return -EINVAL;
+>  
+> -	iommu_sva_unbind_gpasid(dc->domain, dev, unbind_data);
+> +	iommu_sva_unbind_gpasid(dc->domain, iommu_device, unbind_data);
+>  	return 0;
+>  }
+>  
+> @@ -3060,8 +3086,14 @@ static int vfio_dev_cache_invalidate_fn(struct device *dev, void *data)
+>  {
+>  	struct domain_capsule *dc = (struct domain_capsule *)data;
+>  	unsigned long arg = *(unsigned long *)dc->data;
+> +	struct device *iommu_device;
+> +
+> +	iommu_device = vfio_get_iommu_device(dc->group, dev);
+> +	if (!iommu_device)
+> +		return -EINVAL;
+>  
+> -	iommu_uapi_cache_invalidate(dc->domain, dev, (void __user *)arg);
+> +	iommu_uapi_cache_invalidate(dc->domain, iommu_device,
+> +				    (void __user *)arg);
+>  	return 0;
+>  }
+>  
+
