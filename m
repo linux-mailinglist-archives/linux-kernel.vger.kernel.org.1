@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 700F424BD67
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7274C24BD70
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728738AbgHTJjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:39:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57328 "EHLO mail.kernel.org"
+        id S1730122AbgHTNFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:05:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728913AbgHTJiy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:38:54 -0400
+        id S1728928AbgHTJjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:39:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13D972075E;
-        Thu, 20 Aug 2020 09:38:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 121FF2075E;
+        Thu, 20 Aug 2020 09:38:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916334;
-        bh=6Ph9bjp28ZJvGhNXbLdFvK04Ec5xSbH1QX9g4Ch7iaQ=;
+        s=default; t=1597916340;
+        bh=5PrAAv0+0REj+O0N8z/gfFLMgwdefzBCKDdUTLEPxUY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SPlznQtnNFFtiEqS2/a+fUJFKZKx8LwiYfGukv/gzB2sCWOg9enggXHlGip3VXm0t
-         GrLEGjAH5YW3LeklCCqeumW3r5Hq9ac83cAqdthLTT3AWWYLNqJMBEo6rLwo7gYdXO
-         bdMRr4yd+ZhxDwjj/4AS3g2I5ggiEMFtkOD4bFDA=
+        b=zWKLOxapd/CnstJ3FrBshkfXw0T7qb1herfGjBFZhMuA2LFe4EmSRug5EHonvq1Q5
+         83sMwwRTWSqPXHcw1IzoSc0SNtBmhC84OWgiX2ET7NCHuUS2wLrV+U8hHJTkOxmqOd
+         V1+OnA3il4V47TtwjRt9cua/RTuzPdnugd9/yuO4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: [PATCH 5.7 063/204] MIPS: CPU#0 is not hotpluggable
-Date:   Thu, 20 Aug 2020 11:19:20 +0200
-Message-Id: <20200820091609.411657951@linuxfoundation.org>
+Subject: [PATCH 5.7 065/204] MIPS: SGI-IP27: always enable NUMA in Kconfig
+Date:   Thu, 20 Aug 2020 11:19:22 +0200
+Message-Id: <20200820091609.509397890@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
 References: <20200820091606.194320503@linuxfoundation.org>
@@ -43,32 +44,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huacai Chen <chenhc@lemote.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-commit 9cce844abf07b683cff5f0273977d5f8d0af94c7 upstream.
+commit 6c86a3029ce3b44597526909f2e39a77a497f640 upstream.
 
-Now CPU#0 is not hotpluggable on MIPS, so prevent to create /sys/devices
-/system/cpu/cpu0/online which confuses some user-space tools.
+When a configuration has NUMA disabled and SGI_IP27 enabled, the build
+fails:
 
+  CC      kernel/bounds.s
+  CC      arch/mips/kernel/asm-offsets.s
+In file included from arch/mips/include/asm/topology.h:11,
+                 from include/linux/topology.h:36,
+                 from include/linux/gfp.h:9,
+                 from include/linux/slab.h:15,
+                 from include/linux/crypto.h:19,
+                 from include/crypto/hash.h:11,
+                 from include/linux/uio.h:10,
+                 from include/linux/socket.h:8,
+                 from include/linux/compat.h:15,
+                 from arch/mips/kernel/asm-offsets.c:12:
+include/linux/topology.h: In function 'numa_node_id':
+arch/mips/include/asm/mach-ip27/topology.h:16:27: error: implicit declaration of function 'cputonasid'; did you mean 'cpu_vpe_id'? [-Werror=implicit-function-declaration]
+ #define cpu_to_node(cpu) (cputonasid(cpu))
+                           ^~~~~~~~~~
+include/linux/topology.h:119:9: note: in expansion of macro 'cpu_to_node'
+  return cpu_to_node(raw_smp_processor_id());
+         ^~~~~~~~~~~
+include/linux/topology.h: In function 'cpu_cpu_mask':
+arch/mips/include/asm/mach-ip27/topology.h:19:7: error: implicit declaration of function 'hub_data' [-Werror=implicit-function-declaration]
+      &hub_data(node)->h_cpus)
+       ^~~~~~~~
+include/linux/topology.h:210:9: note: in expansion of macro 'cpumask_of_node'
+  return cpumask_of_node(cpu_to_node(cpu));
+         ^~~~~~~~~~~~~~~
+arch/mips/include/asm/mach-ip27/topology.h:19:21: error: invalid type argument of '->' (have 'int')
+      &hub_data(node)->h_cpus)
+                     ^~
+include/linux/topology.h:210:9: note: in expansion of macro 'cpumask_of_node'
+  return cpumask_of_node(cpu_to_node(cpu));
+         ^~~~~~~~~~~~~~~
+
+Before switch from discontigmem to sparsemem, there always was
+CONFIG_NEED_MULTIPLE_NODES=y because it was selected by DISCONTIGMEM.
+Without DISCONTIGMEM it is possible to have SPARSEMEM without NUMA for
+SGI_IP27 and as many things there rely on custom node definition, the
+build breaks.
+
+As Thomas noted "... there are right now too many places in IP27 code,
+which assumes NUMA enabled", the simplest solution would be to always
+enable NUMA for SGI-IP27 builds.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 397dc00e249e ("mips: sgi-ip27: switch from DISCONTIGMEM to SPARSEMEM")
 Cc: stable@vger.kernel.org
-Signed-off-by: Huacai Chen <chenhc@lemote.com>
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/mips/kernel/topology.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/mips/kernel/topology.c
-+++ b/arch/mips/kernel/topology.c
-@@ -20,7 +20,7 @@ static int __init topology_init(void)
- 	for_each_present_cpu(i) {
- 		struct cpu *c = &per_cpu(cpu_devices, i);
- 
--		c->hotpluggable = 1;
-+		c->hotpluggable = !!i;
- 		ret = register_cpu(c, i);
- 		if (ret)
- 			printk(KERN_WARNING "topology_init: register_cpu %d "
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -722,6 +722,7 @@ config SGI_IP27
+ 	select SYS_SUPPORTS_NUMA
+ 	select SYS_SUPPORTS_SMP
+ 	select MIPS_L1_CACHE_SHIFT_7
++	select NUMA
+ 	help
+ 	  This are the SGI Origin 200, Origin 2000 and Onyx 2 Graphics
+ 	  workstations.  To compile a Linux kernel that runs on these, say Y
 
 
