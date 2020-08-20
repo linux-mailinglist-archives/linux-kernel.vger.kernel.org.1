@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E6424BBE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A87EA24BCD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729568AbgHTMfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:35:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53222 "EHLO mail.kernel.org"
+        id S1730573AbgHTMx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:53:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729554AbgHTJs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:48:26 -0400
+        id S1729245AbgHTJnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:43:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D7A520724;
-        Thu, 20 Aug 2020 09:48:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E163A20724;
+        Thu, 20 Aug 2020 09:43:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916905;
-        bh=AMJbALkJjz8scBdcbtE9UUJgKG/4dLleB2UZksKqIAc=;
+        s=default; t=1597916611;
+        bh=Mlo04NAwqU0Kk+zWv/II0kvQJ5NJbELIWe+SPqU84EM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mBMYdr9uH39AF2DG+CgR4OGM8pxmMrHQhYAsueXsVQlTCGREe3n9EwzVaDsKMmREe
-         HC0Sq3DK8v63G1J+lot6b8EcbruRKnfSEQX+Iq1FWsc0iWHjS89Lmgq9f+zg879hjV
-         ZHgDD3QMVtKEFCGOPHfG92IX9VNJ7lQ7pP95Mzxc=
+        b=c87WqE88mGuaq6tX/rxvckxMKr3ynhdDYkD66jOhBlh6qibXpuA0NhW1BsslfjDgi
+         SU3QvmuVsXr+ncRsDMTykq4GmkBngpnv8L2ktkZ2rmKVYzmUQn94e6ncFfl3sbnTGZ
+         6TzKgF1m2kf9nh6QutNUnttFsKezGtZRt3Y0JWQg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jesper Dangaard Brouer <brouer@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
+        stable@vger.kernel.org, Tero Kristo <t-kristo@ti.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 088/152] selftests/bpf: test_progs use another shell exit on non-actions
-Date:   Thu, 20 Aug 2020 11:20:55 +0200
-Message-Id: <20200820091558.240620751@linuxfoundation.org>
+Subject: [PATCH 5.7 159/204] watchdog: rti-wdt: balance pm runtime enable calls
+Date:   Thu, 20 Aug 2020 11:20:56 +0200
+Message-Id: <20200820091614.173060527@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
-References: <20200820091553.615456912@linuxfoundation.org>
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,51 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jesper Dangaard Brouer <brouer@redhat.com>
+From: Tero Kristo <t-kristo@ti.com>
 
-[ Upstream commit 3220fb667842a9725cbb71656f406eadb03c094b ]
+[ Upstream commit d5b29c2c5ba2bd5bbdb5b744659984185d17d079 ]
 
-This is a follow up adjustment to commit 6c92bd5cd465 ("selftests/bpf:
-Test_progs indicate to shell on non-actions"), that returns shell exit
-indication EXIT_FAILURE (value 1) when user selects a non-existing test.
+PM runtime should be disabled in the fail path of probe and when
+the driver is removed.
 
-The problem with using EXIT_FAILURE is that a shell script cannot tell
-the difference between a non-existing test and the test failing.
-
-This patch uses value 2 as shell exit indication.
-(Aside note unrecognized option parameters use value 64).
-
-Fixes: 6c92bd5cd465 ("selftests/bpf: Test_progs indicate to shell on non-actions")
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Link: https://lore.kernel.org/bpf/159410593992.1093222.90072558386094370.stgit@firesoul
+Fixes: 2d63908bdbfb ("watchdog: Add K3 RTI watchdog support")
+Signed-off-by: Tero Kristo <t-kristo@ti.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20200717132958.14304-5-t-kristo@ti.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/test_progs.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/watchdog/rti_wdt.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-index a7d06724c18c2..48bbe8e0ce48d 100644
---- a/tools/testing/selftests/bpf/test_progs.c
-+++ b/tools/testing/selftests/bpf/test_progs.c
-@@ -7,6 +7,8 @@
- #include <argp.h>
- #include <string.h>
+diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
+index d456dd72d99a0..c904496fff65e 100644
+--- a/drivers/watchdog/rti_wdt.c
++++ b/drivers/watchdog/rti_wdt.c
+@@ -211,6 +211,7 @@ static int rti_wdt_probe(struct platform_device *pdev)
  
-+#define EXIT_NO_TEST		2
-+
- /* defined in test_progs.h */
- struct test_env env;
+ err_iomap:
+ 	pm_runtime_put_sync(&pdev->dev);
++	pm_runtime_disable(&pdev->dev);
  
-@@ -585,7 +587,7 @@ int main(int argc, char **argv)
- 	free(env.subtest_selector.num_set);
+ 	return ret;
+ }
+@@ -221,6 +222,7 @@ static int rti_wdt_remove(struct platform_device *pdev)
  
- 	if (env.succ_cnt + env.fail_cnt + env.skip_cnt == 0)
--		return EXIT_FAILURE;
-+		return EXIT_NO_TEST;
+ 	watchdog_unregister_device(&wdt->wdd);
+ 	pm_runtime_put(&pdev->dev);
++	pm_runtime_disable(&pdev->dev);
  
- 	return env.fail_cnt ? EXIT_FAILURE : EXIT_SUCCESS;
+ 	return 0;
  }
 -- 
 2.25.1
