@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7B9224B378
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CB9724B29A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729483AbgHTJrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:47:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50848 "EHLO mail.kernel.org"
+        id S1728454AbgHTJdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:33:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729421AbgHTJrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:47:19 -0400
+        id S1728258AbgHTJb7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:31:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 36BDB22BEA;
-        Thu, 20 Aug 2020 09:47:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4656322B43;
+        Thu, 20 Aug 2020 09:31:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916838;
-        bh=sOLyRSVh6bLobyYs66EGqvuZqQ71VOVNcZvsXcdcfNk=;
+        s=default; t=1597915918;
+        bh=yXQvIeh6zMjicGaFl3Np+uvH08uFB6zeEjIw7UUyD0E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IWLuWNbs7Lg6SzN0siIDTAgdI9z0W6gLxM+9xNwApjozhKSYUHgjnMOrHq/MzrX52
-         p8f3choOu6vfBu+FqDiKf5GSFjADq7Pjs60z3sdsugQ0c1uaixVRXmeJtsM1eM25Tp
-         DpQXLAuKB481eNeaGHc1TUfpyv76DxmV3MQWux4o=
+        b=Sa9gfU/BLaZXHb2ttuChyK8+VGNVnICfPl6ZMk2VIMETqt9WJMVotXPSZUSp6h2EU
+         /uUu8PaVtqXrp2qANsb2tma8W6W8W9bKj2awrZXvXByG0VnNbQYx2ydAhYCDN8TOMt
+         vKtyp/y2XxxnRESpQhTL7+wvlNktIeHnze3rJFNw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>
-Subject: [PATCH 5.4 064/152] watchdog: f71808e_wdt: clear watchdog timeout occurred flag
+        stable@vger.kernel.org, Dave Jiang <dave.jiang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jane Chu <jane.chu@oracle.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 180/232] libnvdimm/security: ensure sysfs poll thread woke up and fetch updated attr
 Date:   Thu, 20 Aug 2020 11:20:31 +0200
-Message-Id: <20200820091557.006281830@linuxfoundation.org>
+Message-Id: <20200820091621.523221974@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
-References: <20200820091553.615456912@linuxfoundation.org>
+In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
+References: <20200820091612.692383444@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +46,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ahmad Fatoum <a.fatoum@pengutronix.de>
+From: Jane Chu <jane.chu@oracle.com>
 
-commit 4f39d575844148fbf3081571a1f3b4ae04150958 upstream.
+[ Upstream commit 7f674025d9f7321dea11b802cc0ab3f09cbe51c5 ]
 
-The flag indicating a watchdog timeout having occurred normally persists
-till Power-On Reset of the Fintek Super I/O chip. The user can clear it
-by writing a `1' to the bit.
+commit 7d988097c546 ("acpi/nfit, libnvdimm/security: Add security DSM overwrite support")
+adds a sysfs_notify_dirent() to wake up userspace poll thread when the "overwrite"
+operation has completed. But the notification is issued before the internal
+dimm security state and flags have been updated, so the userspace poll thread
+wakes up and fetches the not-yet-updated attr and falls back to sleep, forever.
+But if user from another terminal issue "ndctl wait-overwrite nmemX" again,
+the command returns instantly.
 
-The driver doesn't offer a restart method, so regular system reboot
-might not reset the Super I/O and if the watchdog isn't enabled, we
-won't touch the register containing the bit on the next boot.
-In this case all subsequent regular reboots will be wrongly flagged
-by the driver as being caused by the watchdog.
-
-Fix this by having the flag cleared after read. This is also done by
-other drivers like those for the i6300esb and mpc8xxx_wdt.
-
-Fixes: b97cb21a4634 ("watchdog: f71808e_wdt: Fix WDTMOUT_STS register read")
-Cc: stable@vger.kernel.org
-Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20200611191750.28096-5-a.fatoum@pengutronix.de
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://lore.kernel.org/r/1596494499-9852-3-git-send-email-jane.chu@oracle.com
+Fixes: 7d988097c546 ("acpi/nfit, libnvdimm/security: Add security DSM overwrite support")
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+Signed-off-by: Jane Chu <jane.chu@oracle.com>
+Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/f71808e_wdt.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/nvdimm/security.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
---- a/drivers/watchdog/f71808e_wdt.c
-+++ b/drivers/watchdog/f71808e_wdt.c
-@@ -705,6 +705,13 @@ static int __init watchdog_init(int sioa
- 	wdt_conf = superio_inb(sioaddr, F71808FG_REG_WDT_CONF);
- 	watchdog.caused_reboot = wdt_conf & BIT(F71808FG_FLAG_WDTMOUT_STS);
+diff --git a/drivers/nvdimm/security.c b/drivers/nvdimm/security.c
+index 8f3971cf16541..4b80150e4afa7 100644
+--- a/drivers/nvdimm/security.c
++++ b/drivers/nvdimm/security.c
+@@ -450,14 +450,19 @@ void __nvdimm_security_overwrite_query(struct nvdimm *nvdimm)
+ 	else
+ 		dev_dbg(&nvdimm->dev, "overwrite completed\n");
  
+-	if (nvdimm->sec.overwrite_state)
+-		sysfs_notify_dirent(nvdimm->sec.overwrite_state);
 +	/*
-+	 * We don't want WDTMOUT_STS to stick around till regular reboot.
-+	 * Write 1 to the bit to clear it to zero.
++	 * Mark the overwrite work done and update dimm security flags,
++	 * then send a sysfs event notification to wake up userspace
++	 * poll threads to picked up the changed state.
 +	 */
-+	superio_outb(sioaddr, F71808FG_REG_WDT_CONF,
-+		     wdt_conf | BIT(F71808FG_FLAG_WDTMOUT_STS));
-+
- 	superio_exit(sioaddr);
+ 	nvdimm->sec.overwrite_tmo = 0;
+ 	clear_bit(NDD_SECURITY_OVERWRITE, &nvdimm->flags);
+ 	clear_bit(NDD_WORK_PENDING, &nvdimm->flags);
+-	put_device(&nvdimm->dev);
+ 	nvdimm->sec.flags = nvdimm_security_flags(nvdimm, NVDIMM_USER);
+ 	nvdimm->sec.ext_flags = nvdimm_security_flags(nvdimm, NVDIMM_MASTER);
++	if (nvdimm->sec.overwrite_state)
++		sysfs_notify_dirent(nvdimm->sec.overwrite_state);
++	put_device(&nvdimm->dev);
+ }
  
- 	err = watchdog_set_timeout(timeout);
+ void nvdimm_security_overwrite_query(struct work_struct *work)
+-- 
+2.25.1
+
 
 
