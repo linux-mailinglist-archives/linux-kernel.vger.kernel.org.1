@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E346824B4E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8042D24B46A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:05:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730529AbgHTKNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:13:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56684 "EHLO mail.kernel.org"
+        id S1730560AbgHTKFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:05:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731026AbgHTKNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:13:10 -0400
+        id S1730475AbgHTKBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:01:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1FC8020724;
-        Thu, 20 Aug 2020 10:13:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2872822B40;
+        Thu, 20 Aug 2020 10:01:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918389;
-        bh=j7dy0bSZdJMy0fQ8xfWCUsGcJ0bQlI1YyTEiGg3ult0=;
+        s=default; t=1597917696;
+        bh=nomXhcYIp8cGk9ExnDbF/NwHaf8ImgxM9gUxQ+TVNfA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d42NyCBxsgZjexirkAop6GJeTgyrWzaAeLGe1fxEPcCc18lz9iMtoQkcnjcOPXfLF
-         jtLcMT9rC6P3C5hCvATkp9giLUpeVjdovzGWj74RzYoz/8hauz9CCEp8jBwSzuoRLp
-         12gEuV68RxJps09YV3S+CZtsLoI2F7v7FaIld5TQ=
+        b=08Eov4rGhGH0BTvqmm5oMMM2A/Kex+u8iPGiRSPiEku83iQFkzwTegkjXZbaRzd0W
+         YGmmkW6i5OHBND29zIpOS0EYqr7TjIPfcoR3FcWG99lGDw+zhfn1ZttQJWBPas3Jgv
+         nt0nUK1hBZ3BcFpJ6D+kd2xhqa7eYM8i9l0ycvbs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hanjun Guo <guohanjun@huawei.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 122/228] PCI: Release IVRS table in AMD ACS quirk
+        stable@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 124/212] leds: core: Flush scheduled work for system suspend
 Date:   Thu, 20 Aug 2020 11:21:37 +0200
-Message-Id: <20200820091613.689102252@linuxfoundation.org>
+Message-Id: <20200820091608.611404453@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
-References: <20200820091607.532711107@linuxfoundation.org>
+In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
+References: <20200820091602.251285210@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hanjun Guo <guohanjun@huawei.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-[ Upstream commit 090688fa4e448284aaa16136372397d7d10814db ]
+[ Upstream commit 302a085c20194bfa7df52e0fe684ee0c41da02e6 ]
 
-The acpi_get_table() should be coupled with acpi_put_table() if the mapped
-table is not used at runtime to release the table mapping.
+Sometimes LED won't be turned off by LED_CORE_SUSPENDRESUME flag upon
+system suspend.
 
-In pci_quirk_amd_sb_acs(), IVRS table is just used for checking AMD IOMMU
-is supported, not used at runtime, so put the table after using it.
+led_set_brightness_nopm() uses schedule_work() to set LED brightness.
+However, there's no guarantee that the scheduled work gets executed
+because no one flushes the work.
 
-Fixes: 15b100dfd1c9 ("PCI: Claim ACS support for AMD southbridge devices")
-Link: https://lore.kernel.org/r/1595411068-15440-1-git-send-email-guohanjun@huawei.com
-Signed-off-by: Hanjun Guo <guohanjun@huawei.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+So flush the scheduled work to make sure LED gets turned off.
+
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Fixes: 81fe8e5b73e3 ("leds: core: Add led_set_brightness_nosleep{nopm} functions")
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/quirks.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/leds/led-class.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 243b16ce0c8eb..da790f26d2950 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -4307,6 +4307,8 @@ static int pci_quirk_amd_sb_acs(struct pci_dev *dev, u16 acs_flags)
- 	if (ACPI_FAILURE(status))
- 		return -ENODEV;
- 
-+	acpi_put_table(header);
-+
- 	/* Filter out flags not applicable to multifunction */
- 	acs_flags &= (PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_EC | PCI_ACS_DT);
+diff --git a/drivers/leds/led-class.c b/drivers/leds/led-class.c
+index aa84e5b375931..7d3f23bad88dd 100644
+--- a/drivers/leds/led-class.c
++++ b/drivers/leds/led-class.c
+@@ -110,6 +110,7 @@ void led_classdev_suspend(struct led_classdev *led_cdev)
+ {
+ 	led_cdev->flags |= LED_SUSPENDED;
+ 	led_set_brightness_nopm(led_cdev, 0);
++	flush_work(&led_cdev->set_brightness_work);
+ }
+ EXPORT_SYMBOL_GPL(led_classdev_suspend);
  
 -- 
 2.25.1
