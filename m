@@ -2,81 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA97124C094
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A05A24C099
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728185AbgHTO1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 10:27:45 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:55593 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728148AbgHTO1o (ORCPT
+        id S1728012AbgHTO3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 10:29:03 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:19709 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726896AbgHTO3C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 10:27:44 -0400
-Received: from fsav402.sakura.ne.jp (fsav402.sakura.ne.jp [133.242.250.101])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 07KEQXrD085945;
-        Thu, 20 Aug 2020 23:26:33 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav402.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp);
- Thu, 20 Aug 2020 23:26:33 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 07KEQXg6085942
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Thu, 20 Aug 2020 23:26:33 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH 1/1] mm, oom_adj: don't loop through tasks in
- __set_oom_adj when not necessary
-To:     Michal Hocko <mhocko@suse.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Suren Baghdasaryan <surenb@google.com>, timmurray@google.com,
-        mingo@kernel.org, peterz@infradead.org, tglx@linutronix.de,
-        esyr@redhat.com, christian@kellner.me, areber@redhat.com,
-        shakeelb@google.com, cyphar@cyphar.com, oleg@redhat.com,
-        adobriyan@gmail.com, akpm@linux-foundation.org,
-        gladkov.alexey@gmail.com, walken@google.com,
-        daniel.m.jordan@oracle.com, avagin@gmail.com,
-        bernd.edlinger@hotmail.de, john.johansen@canonical.com,
-        laoar.shao@gmail.com, minchan@kernel.org, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20200820002053.1424000-1-surenb@google.com>
- <87zh6pxzq6.fsf@x220.int.ebiederm.org> <20200820124241.GJ5033@dhcp22.suse.cz>
- <87lfi9xz7y.fsf@x220.int.ebiederm.org> <87d03lxysr.fsf@x220.int.ebiederm.org>
- <20200820132631.GK5033@dhcp22.suse.cz>
- <20200820133454.ch24kewh42ax4ebl@wittgenstein>
- <dcb62b67-5ad6-f63a-a909-e2fa70b240fc@i-love.sakura.ne.jp>
- <20200820140054.fdkbotd4tgfrqpe6@wittgenstein>
- <20200820141538.GM5033@dhcp22.suse.cz>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <42d5645e-0364-c8cd-01dc-93a9aaff5b09@i-love.sakura.ne.jp>
-Date:   Thu, 20 Aug 2020 23:26:29 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Thu, 20 Aug 2020 10:29:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1597933742; x=1629469742;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=iuszyUpO1ndlzGbTxwV1GwNeRR/arNRnxwcYR1kXoYQ=;
+  b=gCA7p7KxP6nhLdrnGz407SQ0YvKVoIov9KmlehHAJB5pRrerugQXJ8AU
+   8M4boLofwuwU3ZdhxVzLncS47Jqn298jtFds3+Ig0BNAjeHDNlk5tQgaP
+   YhmrWgyGI83Bqz/NRLP4HZFGOWA6E5vE6mUug7KTMbp4KCF4pPIO3nrOs
+   o=;
+X-IronPort-AV: E=Sophos;i="5.76,333,1592870400"; 
+   d="scan'208";a="69467749"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 20 Aug 2020 14:28:59 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id 3673F1A7472;
+        Thu, 20 Aug 2020 14:28:57 +0000 (UTC)
+Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 20 Aug 2020 14:28:56 +0000
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.85) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 20 Aug 2020 14:28:40 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     Shakeel Butt <shakeelb@google.com>
+CC:     SeongJae Park <sjpark@amazon.com>, <Jonathan.Cameron@huawei.com>,
+        "Andrea Arcangeli" <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Qian Cai <cai@lca.pw>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "David Hildenbrand" <david@redhat.com>, <dwmw@amazon.com>,
+        "Du, Fan" <fan.du@intel.com>, <foersleo@amazon.de>,
+        Greg Thelen <gthelen@google.com>,
+        Ian Rogers <irogers@google.com>, <jolsa@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        <mark.rutland@arm.com>, Mel Gorman <mgorman@suse.de>,
+        Minchan Kim <minchan@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, <namhyung@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        David Rientjes <rientjes@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>, <rppt@kernel.org>,
+        <sblbir@amazon.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
+        <snu@amazon.de>, Vlastimil Babka <vbabka@suse.cz>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Huang Ying <ying.huang@intel.com>, <zgf574564920@gmail.com>,
+        <linux-damon@amazon.com>, Linux MM <linux-mm@kvack.org>,
+        <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC v7 06/10] mm/damon: Implement callbacks for physical memory monitoring
+Date:   Thu, 20 Aug 2020 16:28:05 +0200
+Message-ID: <20200820142805.10234-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <CALvZod4i5f5RcsHao3DWddoDgHsO+vvGPZaAJUWkURZ2fqH9LA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200820141538.GM5033@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.85]
+X-ClientProxiedBy: EX13D21UWA004.ant.amazon.com (10.43.160.252) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/08/20 23:15, Michal Hocko wrote:
-> I would tend to agree that from the userspace POV it is nice to look at
-> oom tuning per process but fundamentaly the oom killer operates on the
-> address space much more than other resources bound to a process because
-> it is usually the address space hogging the largest portion of the
-> memory footprint. This is the reason why the oom killer has been
-> evaluating tasks based on that aspect rather than other potential memory
-> consumers bound to a task. Mostly due to lack of means to evaluate
-> those.
+On Thu, 20 Aug 2020 06:26:49 -0700 Shakeel Butt <shakeelb@google.com> wrote:
 
-We already allow specifying potential memory consumers via oom_task_origin().
+> On Thu, Aug 20, 2020 at 12:17 AM SeongJae Park <sjpark@amazon.com> wrote:
+> >
+> > On Wed, 19 Aug 2020 17:26:15 -0700 Shakeel Butt <shakeelb@google.com> wrote:
+> >
+> > > On Tue, Aug 18, 2020 at 12:27 AM SeongJae Park <sjpark@amazon.com> wrote:
+> > > >
+> > > > From: SeongJae Park <sjpark@amazon.de>
+> > > >
+> > > > This commit implements the four callbacks (->init_target_regions,
+> > > > ->update_target_regions, ->prepare_access_check, and ->check_accesses)
+> > > > for the basic access monitoring of the physical memory address space.
+> > > > By setting the callback pointers to point those, users can easily
+> > > > monitor the accesses to the physical memory.
+> > > >
+> > > > Internally, it uses the PTE Accessed bit, as similar to that of the
+> > > > virtual memory support.  Also, it supports only user memory pages, as
+> > > > idle page tracking also does, for the same reason.  If the monitoring
+> > > > target physical memory address range contains non-user memory pages,
+> > > > access check of the pages will do nothing but simply treat the pages as
+> > > > not accessed.
+> > > >
+> > > > Users who want to use other access check primitives and/or monitor the
+> > > > non-user memory regions could implement and use their own callbacks.
+> > > >
+> > > > Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> > > [snip]
+> > > > +static void damon_phys_mkold(unsigned long paddr)
+> > > > +{
+> > > > +       struct page *page = damon_phys_get_page(PHYS_PFN(paddr));
+> > > > +       struct rmap_walk_control rwc = {
+> > > > +               .rmap_one = damon_page_mkold,
+> > > > +               .anon_lock = page_lock_anon_vma_read,
+> > > > +       };
+> > > > +       bool need_lock;
+> > > > +
+> > > > +       if (!page)
+> > > > +               return;
+> > > > +
+> > > > +       if (!page_mapped(page) || !page_rmapping(page))
+> > > > +               return;
+> > >
+> > > I don't think you want to skip the unmapped pages. The point of
+> > > physical address space monitoring was to include the monitoring of
+> > > unmapped pages, so, skipping them invalidates the underlying
+> > > motivation.
+> >
+> > I think my answer to your other mail[1] could be an answer to this.  Let me
+> > quote some from it:
+> >
+> > ```
+> > Technically speaking, this patchset introduces an implementation of DAMON's low
+> > level primitives for physical address space of LRU-listed pages.  In other
+> > words, it is not designed for cgroups case.  Also, please note that this
+> > patchset is only RFC, because it aims to only show the future plan of DAMON and
+> > get opinions about the concept before being serious.  It will be serious only
+> > after the DAMON patchset is merged.  Maybe I didn' made this point clear in the
+> > CV, sorry.  I will state this clearly in the next spin.
+> > ```
+> 
+> The unmapped pages are also LRU pages.
 
-If we change from a property of the task/thread-group to a property of mm,
-we won't be able to add means to adjust oom score based on other potential
-memory consumers bound to a task (e.g. pipes) in the future.
+Sorry, I missed the detail.  So, the description should be updated to:
+
+    This patchset introduces an implementation of DAMON's low level primitives
+    for physical addressspace of _mapped_ LRU pages.
+
+> Let's forget about the cgroups
+> support for a moment, the only reason to use DAMON's physical address
+> space monitoring is also to track the accesses of unmapped pages
+> otherwise virtual address space monitoring already does the monitoring
+> for mapped pages.
+
+Well, I didn't intended the use case...  I just wanted to let people see the
+data accesses on physical address space without tracking every mappings of the
+pages.
+
+Anyway, ok, we could consider supporting unmapped pages, but I'm unsure why and
+how much it is necessary.  After all, who could access unmapped pages?  Could
+you give me more details on the needs for access monitoring of the unmapped
+pages?
+
+
+Thanks,
+SeongJae Park
