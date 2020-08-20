@@ -2,46 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF47E24B644
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B31BD24B78E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731486AbgHTKet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:34:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42660 "EHLO mail.kernel.org"
+        id S1731143AbgHTKNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:13:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731370AbgHTKTS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:19:18 -0400
+        id S1731059AbgHTKMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:12:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2444320738;
-        Thu, 20 Aug 2020 10:19:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C314C2078D;
+        Thu, 20 Aug 2020 10:12:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918757;
-        bh=MrYrebokHTAUJmrvRr3qLac/OCL5dZ4RwhVvxtvnVnA=;
+        s=default; t=1597918359;
+        bh=qrdaKOIVavS/UpsqEh0jTdT1tTtGvj0c6xdHIGU2Kmw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LvrTkDVp3HPD3Zbvc7AzJd+dA0fpIm1izaL843avU9fAXnqaW61qG4jjpiDyTujj3
-         NnkQXjBPDH2UvEBFHkgNW9LCyoIuUXP6W7+YZU0+RV5hqp3QGfeoWB4jYBvTaFPT+/
-         Du9aCW3O36XropRTl1qd7qvW1oOb8QE7d33/c6Zg=
+        b=afCviD8tB8kazQR5DyfVfdSD5406+b7pl7Pqn62o4no9OeSql+dDGoQd283UFfPoa
+         IJsklz9iAdKKWcDtlpWBK5CPougPYVNB6qfqdjAnx78Uyza4jTcqq5W77hA1Fe5l6M
+         MURRG0KwIKy61GsakRPJZXMKRp1IoDl+YIGtqZ8s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?=E5=BC=A0=E4=BA=91=E6=B5=B7?= <zhangyunhai@nsfocus.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Kyungtae Kim <kt0755@gmail.com>, linux-fbdev@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Solar Designer <solar@openwall.com>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
-        Anthony Liguori <aliguori@amazon.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jiri Slaby <jirislaby@kernel.org>
-Subject: [PATCH 4.4 038/149] vgacon: Fix for missing check in scrollback handling
-Date:   Thu, 20 Aug 2020 11:21:55 +0200
-Message-Id: <20200820092127.580348981@linuxfoundation.org>
+        stable@vger.kernel.org, Qingyu Li <ieatmuttonchuan@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 141/228] net/nfc/rawsock.c: add CAP_NET_RAW check.
+Date:   Thu, 20 Aug 2020 11:21:56 +0200
+Message-Id: <20200820091614.634392402@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
-References: <20200820092125.688850368@linuxfoundation.org>
+In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
+References: <20200820091607.532711107@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,86 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunhai Zhang <zhangyunhai@nsfocus.com>
+From: Qingyu Li <ieatmuttonchuan@gmail.com>
 
-commit ebfdfeeae8c01fcb2b3b74ffaf03876e20835d2d upstream.
+[ Upstream commit 26896f01467a28651f7a536143fe5ac8449d4041 ]
 
-vgacon_scrollback_update() always leaves enbough room in the scrollback
-buffer for the next call, but if the console size changed that room
-might not actually be enough, and so we need to re-check.
+When creating a raw AF_NFC socket, CAP_NET_RAW needs to be checked first.
 
-The check should be in the loop since vgacon_scrollback_cur->tail is
-updated in the loop and count may be more than 1 when triggered by CSI M,
-as Jiri's PoC:
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/ioctl.h>
-#include <fcntl.h>
-
-int main(int argc, char** argv)
-{
-        int fd = open("/dev/tty1", O_RDWR);
-        unsigned short size[3] = {25, 200, 0};
-        ioctl(fd, 0x5609, size); // VT_RESIZE
-
-        write(fd, "\e[1;1H", 6);
-        for (int i = 0; i < 30; i++)
-                write(fd, "\e[10M", 5);
-}
-
-It leads to various crashes as vgacon_scrollback_update writes out of
-the buffer:
- BUG: unable to handle page fault for address: ffffc900001752a0
- #PF: supervisor write access in kernel mode
- #PF: error_code(0x0002) - not-present page
- RIP: 0010:mutex_unlock+0x13/0x30
-...
- Call Trace:
-  n_tty_write+0x1a0/0x4d0
-  tty_write+0x1a0/0x2e0
-
-Or to KASAN reports:
-BUG: KASAN: slab-out-of-bounds in vgacon_scroll+0x57a/0x8ed
-
-This fixes CVE-2020-14331.
-
-Reported-by: 张云海 <zhangyunhai@nsfocus.com>
-Reported-by: Yang Yingliang <yangyingliang@huawei.com>
-Reported-by: Kyungtae Kim <kt0755@gmail.com>
-Fixes: 15bdab959c9b ([PATCH] vgacon: Add support for soft scrollback)
-Cc: stable@vger.kernel.org
-Cc: linux-fbdev@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Solar Designer <solar@openwall.com>
-Cc: "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Cc: Anthony Liguori <aliguori@amazon.com>
-Cc: Yang Yingliang <yangyingliang@huawei.com>
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc: Jiri Slaby <jirislaby@kernel.org>
-Signed-off-by: Yunhai Zhang <zhangyunhai@nsfocus.com>
-Link: https://lore.kernel.org/r/9fb43895-ca91-9b07-ebfd-808cf854ca95@nsfocus.com
+Signed-off-by: Qingyu Li <ieatmuttonchuan@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/video/console/vgacon.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ net/nfc/rawsock.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/video/console/vgacon.c
-+++ b/drivers/video/console/vgacon.c
-@@ -220,6 +220,10 @@ static void vgacon_scrollback_update(str
- 	p = (void *) (c->vc_origin + t * c->vc_size_row);
+--- a/net/nfc/rawsock.c
++++ b/net/nfc/rawsock.c
+@@ -344,10 +344,13 @@ static int rawsock_create(struct net *ne
+ 	if ((sock->type != SOCK_SEQPACKET) && (sock->type != SOCK_RAW))
+ 		return -ESOCKTNOSUPPORT;
  
- 	while (count--) {
-+		if ((vgacon_scrollback_tail + c->vc_size_row) >
-+		    vgacon_scrollback_size)
-+			vgacon_scrollback_tail = 0;
-+
- 		scr_memcpyw(vgacon_scrollback + vgacon_scrollback_tail,
- 			    p, c->vc_size_row);
- 		vgacon_scrollback_cnt++;
+-	if (sock->type == SOCK_RAW)
++	if (sock->type == SOCK_RAW) {
++		if (!capable(CAP_NET_RAW))
++			return -EPERM;
+ 		sock->ops = &rawsock_raw_ops;
+-	else
++	} else {
+ 		sock->ops = &rawsock_ops;
++	}
+ 
+ 	sk = sk_alloc(net, PF_NFC, GFP_ATOMIC, nfc_proto->proto, kern);
+ 	if (!sk)
 
 
