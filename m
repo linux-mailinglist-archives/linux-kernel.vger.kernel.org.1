@@ -2,236 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE9624C7D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 00:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B223224C7DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 00:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728538AbgHTWkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 18:40:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728139AbgHTWkA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 18:40:00 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAAB0C061385
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 15:39:59 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id y11so1717390qvl.4
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 15:39:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=gDWGboVRg2Ifj9ershFBt4glX1e0Eb3i4ChaJKBdsLM=;
-        b=wWhqt2sgudht08dliBUhUGv0kBTCUy1Yi++SnCsK7fkORPRHeagnE031C4dLIQrj+g
-         8DpaYPMA+9er88sF99xgUPawGSSHG3CSiygdWUQ3ppYDIwdXpTuGfsAsEGqIlk7Z4xoj
-         g82nVppTOd/3El8ghQYQcvq4JSW86EoNIhkuk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=gDWGboVRg2Ifj9ershFBt4glX1e0Eb3i4ChaJKBdsLM=;
-        b=LdRlo5u/5gH/PUxkNv2rU5m2iasmKef48ADoRtFJ0nsNSVw3TJdhQ/wIxO7MsH+CP1
-         MM48xu3KXW4nXBdGWhimkPxM3O9USYEas/EHPNpnR3PJHlx393gKcHLxb3CJqwTTnOGo
-         6mVJbcvUGMLXt6unQnWd2aQU3G8dy3C7aAcSHtShgLFS6ADCwXV6Ns+9BCcog15PQhM2
-         WWkIDhdolNzSDEQJKW707jbFeokXKOYjPfVcOpFvl+G0IGmv9Kl/MtWePmQEGl+i+DDO
-         eP2mH9iADp20mtEfIUCjxphUURoXOYx1QfF2Ehryl874+FuuAznk32LpRLNdRIi8ftWd
-         7SGA==
-X-Gm-Message-State: AOAM5327/9QP1gv90+DnCVMfI4JB/TRhFBmfKHRY7d5aeekDc9TWy/og
-        3pGg65zvgXAseLcyGxqFraYDIQ==
-X-Google-Smtp-Source: ABdhPJytaaGXINg9yeRHNHCC7PNFZV4y9D6ZAEYYPM4H16cO5KIairRplvfI4DBAfo1QMKRkgD+uxA==
-X-Received: by 2002:ad4:510b:: with SMTP id g11mr1910qvp.20.1597963198915;
-        Thu, 20 Aug 2020 15:39:58 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id f130sm3717122qke.99.2020.08.20.15.39.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 15:39:58 -0700 (PDT)
-Date:   Thu, 20 Aug 2020 18:39:57 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: =?utf-8?B?5Zue5aSN?= =?utf-8?Q?=3A?= [PATCH] rcu: shrink each
- possible cpu krcp
-Message-ID: <20200820223957.GB120898@google.com>
-References: <20200818171807.GI27891@paulmck-ThinkPad-P72>
- <CAEXW_YQu9MAV-3ym0EFB0NmomWkLsBtZCT9sShnzo+vv=8sLgg@mail.gmail.com>
- <20200818210355.GM27891@paulmck-ThinkPad-P72>
- <20200818215511.GA2538@pc636>
- <20200818220245.GO27891@paulmck-ThinkPad-P72>
- <CAEXW_YRZ6RM90+aYA0JQ1war0n-D0M4peXJZE2_Uqf07xvF+5g@mail.gmail.com>
- <BYAPR11MB26323E6D956BA22DFE610A13FF5D0@BYAPR11MB2632.namprd11.prod.outlook.com>
- <20200819135654.GB3875610@google.com>
- <20200819152159.GX27891@paulmck-ThinkPad-P72>
- <20200819155808.GA8817@pc636>
+        id S1728556AbgHTWmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 18:42:54 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:38161 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728477AbgHTWmx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 18:42:53 -0400
+Received: from hanvin-mobl2.amr.corp.intel.com ([134.134.139.76])
+        (authenticated bits=0)
+        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 07KMfYf0053672
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Thu, 20 Aug 2020 15:41:34 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 07KMfYf0053672
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2020072401; t=1597963300;
+        bh=s4KiY6IVPnssifxLe3ApzH+AtYKkZ/XrfXH15ucZ9e0=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=IAMNJsQo4KkZCk6UDBgAsJFK1T4nqrdipQ0KSG2bi5XlLefzOFyNzJfd6JBp/Eqnj
+         VHbE4iAUQMWz5ocgQpUMbWJZ48TsXSpcvRbzTndwkfz78DBqhhQshfKmOQgTqfl/Wj
+         RBrRX6RLrQLFcyq+62UQqNTl5iqXyJkx64mYyx75plbxBnh30PzkIKu+Mutd3qUOT0
+         A4ujtEmGkcsIjEOIH+UIsRNZ+WEbjtLf8z10eiI1dZo9znixEIR6kWCNqNX8JEo+kL
+         Mat2a2XlApq5aNd3GFkvQ74Yb62mM52q5ryXOb1H145zrd8cWYB0dPr/gIaowZMVMU
+         Kmllk8PLEm/fA==
+Subject: Re: [PATCH 0/4] -ffreestanding/-fno-builtin-* patches
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        =?UTF-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
+        Eli Friedman <efriedma@quicinc.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Joe Perches <joe@perches.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Bruce Ashfield <bruce.ashfield@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+References: <20200817220212.338670-1-ndesaulniers@google.com>
+ <fae91af3-4e08-a929-e5c3-25271ad7324b@zytor.com>
+ <CAKwvOdk6A4AqTtOsD34WNwxRjyTvXP8KCNj2xfNWYdPT+sLHwQ@mail.gmail.com>
+ <76071c24-ec6f-7f7a-4172-082bd574d581@zytor.com>
+ <CAHk-=wiPeRQU_5JXCN0TLoW-xHZHp7dmrhx0wyXUSKxiCxE02Q@mail.gmail.com>
+ <20200818202407.GA3143683@rani.riverdale.lan>
+ <CAKwvOdnfh9nWwu1xV=WDbETGiabwDxXxQDRCAfpa-+kSZijb9w@mail.gmail.com>
+ <CAKwvOdkA4SC==vGZ4e7xqFG3Zo=fnhU=FgnSazmWkkVWhkaSYw@mail.gmail.com>
+From:   "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <edd38955-dad1-ca6c-d783-6cb529d8dd3a@zytor.com>
+Date:   Thu, 20 Aug 2020 15:41:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
+In-Reply-To: <CAKwvOdkA4SC==vGZ4e7xqFG3Zo=fnhU=FgnSazmWkkVWhkaSYw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200819155808.GA8817@pc636>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 05:58:08PM +0200, Uladzislau Rezki wrote:
-> On Wed, Aug 19, 2020 at 08:21:59AM -0700, Paul E. McKenney wrote:
-> > On Wed, Aug 19, 2020 at 09:56:54AM -0400, Joel Fernandes wrote:
-> > > On Wed, Aug 19, 2020 at 03:00:55AM +0000, Zhang, Qiang wrote:
-> > > > 
-> > > > 
-> > > > ________________________________________
-> > > > 发件人: linux-kernel-owner@vger.kernel.org <linux-kernel-owner@vger.kernel.org> 代表 Joel Fernandes <joel@joelfernandes.org>
-> > > > 发送时间: 2020年8月19日 8:04
-> > > > 收件人: Paul E. McKenney
-> > > > 抄送: Uladzislau Rezki; Zhang, Qiang; Josh Triplett; Steven Rostedt; Mathieu Desnoyers; Lai Jiangshan; rcu; LKML
-> > > > 主题: Re: [PATCH] rcu: shrink each possible cpu krcp
-> > > > 
-> > > > On Tue, Aug 18, 2020 at 6:02 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > 
-> > > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > > > index b8ccd7b5af82..6decb9ad2421 100644
-> > > > > > --- a/kernel/rcu/tree.c
-> > > > > > +++ b/kernel/rcu/tree.c
-> > > > > > @@ -2336,10 +2336,15 @@ int rcutree_dead_cpu(unsigned int cpu)
-> > > > > >  {
-> > > > > >         struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-> > > > > >         struct rcu_node *rnp = rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
-> > > > > > +       struct kfree_rcu_cpu *krcp;
-> > > > > >
-> > > > > >         if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
-> > > > > >                 return 0;
-> > > > > >
-> > > > > > +       /* Drain the kcrp of this CPU. IRQs should be disabled? */
-> > > > > > +       krcp = this_cpu_ptr(&krc)
-> > > > > > +       schedule_delayed_work(&krcp->monitor_work, 0);
-> > > > > > +
-> > > > > >
-> > > > > > A cpu can be offlined and its krp will be stuck until a shrinker is involved.
-> > > > > > Maybe be never.
-> > > > >
-> > > > > Does the same apply to its kmalloc() per-CPU caches?  If so, I have a
-> > > > > hard time getting too worried about it.  ;-)
-> > > > 
-> > > > >Looking at slab_offline_cpu() , that calls cancel_delayed_work_sync()
-> > > > >on the cache reaper who's job is to flush the per-cpu caches. So I
-> > > > >believe during CPU offlining, the per-cpu slab caches are flushed.
-> > > > >
-> > > > >thanks,
-> > > > >
-> > > >  >- Joel
-> > > > 
-> > > > When cpu going offline, the slub or slab only flush free objects in offline
-> > > > cpu cache,  put these free objects in node list  or return buddy system,
-> > > > for those who are still in use, they still stay offline cpu cache.
-> > > > 
-> > > > If we want clean per-cpu "krcp" objects when cpu going offline.  we should
-> > > > free "krcp" cache objects in "rcutree_offline_cpu", this func be called
-> > > > before other rcu cpu offline func. and then "rcutree_offline_cpu" will be
-> > > > called in "cpuhp/%u" per-cpu thread.
-> > > > 
-> > > 
-> > > Could you please wrap text properly when you post to mailing list, thanks. I
-> > > fixed it for you above.
-> > > 
-> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > index 8ce77d9ac716..1812d4a1ac1b 100644
-> > > > --- a/kernel/rcu/tree.c
-> > > > +++ b/kernel/rcu/tree.c
-> > > > @@ -3959,6 +3959,7 @@ int rcutree_offline_cpu(unsigned int cpu)
-> > > >         unsigned long flags;
-> > > >         struct rcu_data *rdp;
-> > > >         struct rcu_node *rnp;
-> > > > +       struct kfree_rcu_cpu *krcp;
-> > > >  
-> > > >         rdp = per_cpu_ptr(&rcu_data, cpu);
-> > > >         rnp = rdp->mynode;
-> > > > @@ -3970,6 +3971,11 @@ int rcutree_offline_cpu(unsigned int cpu)
-> > > >  
-> > > >         // nohz_full CPUs need the tick for stop-machine to work quickly
-> > > >         tick_dep_set(TICK_DEP_BIT_RCU);
-> > > > +
-> > > > +       krcp = per_cpu_ptr(&krc, cpu);
-> > > > +       raw_spin_lock_irqsave(&krcp->lock, flags);
-> > > > +       schedule_delayed_work(&krcp->monitor_work, 0);
-> > > > +       raw_spin_unlock_irqrestore(&krcp->lock, flags);
-> > > >         return 0;
-> > > 
-> > > I realized the above is not good enough for what this is trying to do. Unlike
-> > > the slab, the new kfree_rcu objects cannot always be drained / submitted to
-> > > RCU because the previous batch may still be waiting for a grace period. So
-> > > the above code could very well return with the yet-to-be-submitted kfree_rcu
-> > > objects still in the cache.
-> > > 
-> > > One option is to spin-wait here for monitor_todo to be false and keep calling
-> > > kfree_rcu_drain_unlock() till then.
-> > > 
-> > > But then that's not good enough either, because if new objects are queued
-> > > when interrupts are enabled in the CPU offline path, then the cache will get
-> > > new objects after the previous set was drained. Further, spin waiting may
-> > > introduce deadlocks.
-> > > 
-> > > Another option is to switch the kfree_rcu() path to non-batching (so new
-> > > objects cannot be cached in the offline path and are submitted directly to
-> > > RCU), wait for a GP and then submit the work. But then not sure if 1-argument
-> > > kfree_rcu() will like that.
-> > 
-> > Or spawn a workqueue that does something like this:
-> > 
-> > 1.	Get any pending kvfree_rcu() requests sent off to RCU.
-> > 
-> > 2.	Do an rcu_barrier().
-> > 
-> > 3.	Do the cleanup actions.
-> > 
-> > > Probably Qian's original fix for for_each_possible_cpus() is good enough for
-> > > the shrinker case, and then we can tackle the hotplug one.
-> > 
-> > It might take some experimentation to find the best solution.
-> > 
+On 2020-08-18 13:58, Nick Desaulniers wrote:
+> On Tue, Aug 18, 2020 at 1:27 PM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+>>
+>> On Tue, Aug 18, 2020 at 1:24 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>>>
+>>> On Tue, Aug 18, 2020 at 12:13:22PM -0700, Linus Torvalds wrote:
+>>>> On Tue, Aug 18, 2020 at 12:03 PM H. Peter Anvin <hpa@zytor.com> wrote:
+>>>>>
+>>>>> I'm not saying "change the semantics", nor am I saying that playing
+>>>>> whack-a-mole *for a limited time* is unreasonable. But I would like to go back
+>>>>> to the compiler authors and get them to implement such a #pragma: "this
+>>>>> freestanding implementation *does* support *this specific library function*,
+>>>>> and you are free to call it."
+>>>>
+>>>> I'd much rather just see the library functions as builtins that always
+>>>> do the right thing (with the fallback being "just call the standard
+>>>> function").
+>>>>
+>>>> IOW, there's nothing wrong with -ffreestanding if you then also have
+>>>> __builtin_memcpy() etc, and they do the sane compiler optimizations
+>>>> for memcpy().
+>>>>
+>>>> What we want to avoid is the compiler making *assumptions* based on
+>>>> standard names, because we may implement some of those things
+>>>> differently.
+>>>>
+>>>
+>>> -ffreestanding as it stands today does have __builtin_memcpy and
+>>> friends. But you need to then use #define memcpy __builtin_memcpy etc,
+>>> which is messy and also doesn't fully express what you want. #pragma, or
+>>> even just allowing -fbuiltin-foo options would be useful.
 > 
-> <snip>
-> static void do_idle(void)
-> {
-> ...
->  while (!need_resched()) {
->   rmb();
+> I do really like the idea of -fbuiltin-foo.  For example, you'd specify:
 > 
->   local_irq_disable();
+> -ffreestanding -fbuiltin-bcmp
 > 
->   if (cpu_is_offline(cpu)) {
->    tick_nohz_idle_stop_tick();
->    cpuhp_report_idle_dead();
->        -> cpuhp_report_idle_dead(void)
->               -> rcu_report_dead(smp_processor_id());
->    arch_cpu_idle_dead();
->   }
-> ...
-> <snip>
+> as an example. `-ffreestanding` would opt you out of ALL libcall
+> optimizations, `-fbuiltin-bcmp` would then opt you back in to
+> transforms that produce bcmp.  That way you're informing the compiler
+> more precisely about the environment you'd be targeting.  It feels
+> symmetric to existing `-fno-` flags (clang makes -f vs -fno- pretty
+> easy when there is such symmetry).  And it's already convention that
+> if you specify multiple conflicting compiler flags, then the latter
+> one specified "wins."  In that sense, turning back on specific
+> libcalls after disabling the rest looks more ergonomic to me.
 > 
-> We have the rcu_report_dead() callback. When it gets called IRQs are off
-> and CPU that is in question is offline.
+> Maybe Eli or David have thoughts on why that may or may not be as
+> ergonomic or possible to implement as I imagine?
 > 
->     krcp = per_cpu_ptr(&krc, cpu);
->     raw_spin_lock_irqsave(&krcp->lock, flags);
->     krcp->monotro_todo = true;
->     schedule_delayed_work(&krcp->monitor_work, 0);
->     raw_spin_unlock_irqrestore(&krcp->lock, flags);
-> 
-> If there is a batch that is in progress, the job will rearm itself.
-> But i agree, it requires more experiments.
 
-I chatted with Ulad and we believe the timer and/or (delayed) workqueue will
-get migrated during the CPU offline path, so it is not an issue.
+I would prefer this to be a #pragma for a header file, rather than
+having a very long command line for everything...
 
-In this case, Qiang's initial patch suffices to fix the shrinker issue.
-
-thanks,
-
- - Joel
+	-hpa
 
