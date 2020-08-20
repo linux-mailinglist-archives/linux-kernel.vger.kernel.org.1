@@ -2,627 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6222024C0EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6C924C10F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 16:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727927AbgHTOvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 10:51:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726911AbgHTOv1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 10:51:27 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C23C061385
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 07:51:26 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id i20so1721124qkk.8
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 07:51:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=eclypsium.com; s=google;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EjJ01IjtmxevFQQ7zQg+vmwVtLzMJMtCRp/LYGMtBVs=;
-        b=KGnFzaCJftujS+CaDsYegh4xUxuqAaY6doJZcy3jbF9cVBzg+tKa9W419XxClVPaRR
-         frp4RjSY6Y+Y7svb9hDtK1PJybAMC1b8FbQC6Lb9+F1bF07ivXzL462UdckR1TQl/VQE
-         X/QmGAieWso2O1MPspfZPESeA6t+6uTHnqlOfaO9k58ozeF9k1Y3+5jMQeRQc8HbQw+0
-         wIyF3ockxBlRpWHG0Hhl8B1WMCCF27B3Kf7XFRYVpX3xiPLjlb2sW0019J1djr7d6Y0C
-         vdqRB8NvFUykFg/yZGrjraSKaFmI1EPElYYrvXajAlxEVUcB+E/KcGSzTc01Tas3QuJG
-         DPMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EjJ01IjtmxevFQQ7zQg+vmwVtLzMJMtCRp/LYGMtBVs=;
-        b=YZYBoSzzjbrp6aIBaUdQPOA14VVIpgRkwE0Q1ZOMMbdPiMywOEB9z8sb+ykIuC1jJg
-         xAsNSNwLk9JuloZjnFJBoPMsQC956TE6i1tM5FKtIJF+J8qm/JTLzwp/s3B6d60XE4b1
-         LURxMR5iz/xjmBTSYvW8jh9unKsF0Gawv7j7UnxI9HYDCrqA40W7o1JVuBSntADMNJ+U
-         rJsWn94RktZT9EZ/6cO/QubxAzmOOYNGseRPZmEbOgTE+7b/Z4o2x3q6ETCfg0ZRy1a7
-         XXaKRzSWEonsAUKuBp3YdqQabrmsBXjLRFWT/y4dTaH10bQ7GS1c4mPL7EgEsHcHEQFF
-         qffg==
-X-Gm-Message-State: AOAM532PUF5vdh91TnIWBfI6iBWtt0UpQc25Cju1FrMYyuHxDZ9eTcb4
-        BQKtp+d4YLod1c+F7hS+I9sLew==
-X-Google-Smtp-Source: ABdhPJyDuw1z3XGe3ymadVCShbzpnZtibjy1loQ8oB8mt6Rt0PHX3s1EtQrdm37+EvP/CRp835ZoYA==
-X-Received: by 2002:a37:54a:: with SMTP id 71mr2795707qkf.193.1597935085530;
-        Thu, 20 Aug 2020 07:51:25 -0700 (PDT)
-Received: from localhost ([190.190.138.51])
-        by smtp.gmail.com with ESMTPSA id d20sm2401617qkk.84.2020.08.20.07.51.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Aug 2020 07:51:25 -0700 (PDT)
-From:   Daniel Gutson <daniel.gutson@eclypsium.com>
-To:     Daniel Gutson <daniel.gutson@eclypsium.com>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Richard Hughes <hughsient@gmail.com>,
-        Alex Bazhaniuk <alex@eclypsium.com>
-Subject: [PATCH] Platform lockdown information in sysfs (v2)
-Date:   Thu, 20 Aug 2020 11:51:17 -0300
-Message-Id: <20200820145117.8348-1-daniel.gutson@eclypsium.com>
-X-Mailer: git-send-email 2.25.1
+        id S1728090AbgHTOxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 10:53:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47998 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728058AbgHTOxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 10:53:42 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 41AAF2075E;
+        Thu, 20 Aug 2020 14:53:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597935221;
+        bh=pSyLCSjLNaoL9qhpLxOpTdvEKBIbz4IpNwyffAy0eto=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=K87nPqzPK7zV2HjLW+4JGIe56cVVNM47n1uO+JdtyZzahMd4fCF9hYerAz6I5YYqa
+         QNtTO5/sg6lDgORj+sVp3XVTjzak81uojvgFjx26rcdLkKfUmFhx0uPKuCay1Pphgx
+         dspdb2jKjT4b7GG2zkDuDbDoX8pcO/i9YXeANkRg=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1k8lwh-004bi9-P2; Thu, 20 Aug 2020 15:53:39 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 20 Aug 2020 15:53:39 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Saravana Kannan <saravanak@google.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     Frank Wunderlich <wichtig@fw-web.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Frank Wunderlich <linux@fw-web.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Hanks Chen <hanks.chen@mediatek.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Subject: Re: [PATCH] Revert "irqchip/mtk-sysirq: Convert to a platform driver"
+In-Reply-To: <CAGETcx-NpRzzeXYN-UBP1eAsC3s_AofSQ9rXOEmCjhLhKLnxWg@mail.gmail.com>
+References: <20200819161907.1155110-1-enric.balletbo@collabora.com>
+ <C9E59107-CE83-4554-9447-5DE5BEE09A3B@fw-web.de>
+ <CAGETcx9_A-E5b-JxT2G142mGxqoo8xqFNEgT+CNWt=oOv0Z5+w@mail.gmail.com>
+ <a23bac35d20eb002bdfb5263bf5dd213@kernel.org>
+ <CAGETcx-NpRzzeXYN-UBP1eAsC3s_AofSQ9rXOEmCjhLhKLnxWg@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.7
+Message-ID: <14b8f4b9667d29ee25e25eb19c69e3f7@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: saravanak@google.com, enric.balletbo@collabora.com, wichtig@fw-web.de, linux-kernel@vger.kernel.org, kernel@collabora.com, linux@fw-web.de, matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org, hanks.chen@mediatek.com, jason@lakedaemon.net, tglx@linutronix.de, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch exports information about the platform lockdown
-firmware configuration in the sysfs filesystem.
-In this initial patch, I include some configuration attributes
-for the system SPI chip.
+On 2020-08-20 09:07, Saravana Kannan wrote:
+> On Thu, Aug 20, 2020 at 12:56 AM Marc Zyngier <maz@kernel.org> wrote:
+>> 
+>> On 2020-08-19 19:51, Saravana Kannan wrote:
+>> > On Wed, Aug 19, 2020 at 9:52 AM Frank Wunderlich <wichtig@fw-web.de>
+>> > wrote:
+>> >>
+>> >> hi,
+>> >>
+>> >> does the fix you've linked to my revert [1] not work in your case?
+>> >>
+>> >> [1] https://patchwork.kernel.org/patch/11718481/
+>> >
+>> > Thanks for pointing it out Frank. Also, might want to avoid top
+>> > posting in the future.
+>> >
+>> > Enric, Can you please try that other fix and see if that solves your
+>> > issue?
+>> 
+>> I think Enric was clear that the driver does probe correctly
+>> (meaning that he has the fix in his tree). It is everything else
+>> that breaks, because none of the drivers on the platform are
+>> equipped to defer their own probing.
+>> 
+>> I think we need to change this works right now, meaning that we can't
+>> blindly change the behaviour of *built-in* drivers. I'll see if I can
+>> come up with something quickly, but I'll otherwise take Enric patch.
+> 
+> Sounds fair Marc.
+> 
+> Btw, Enric, out of curiosity, can you try adding "fw_devlink=on" to
+> your kernel command line to see if it helps? It basically ensures
+> proper probe ordering without depending on the drivers. There are some
+> corner cases where it still can't work properly (too much to explain
+> for a late night email), but if the platforms don't have those corner
+> cases it'll work perfectly.
+> 
+> I'm fine with the revert if Marc isn't able to find a quick fix to the
+> drivers, but this might also fix your problem right away.
 
-This initial version exports the BIOS Write Enable (bioswe),
-BIOS Lock Enable (ble), and the SMM BIOS Write Protect (SMM_BWP)
-fields of the BIOS Control register. The idea is to keep adding more
-flags, not only from the BC but also from other registers in following
-versions.
+I'm afraid there is no quick fix if we want to preserve the current
+behavior with built-in drivers, and not having "fw_devlink=on" by
+default makes it irrelevant for most people.
 
-The goal is that the attributes are avilable to fwupd when SecureBoot
-is turned on.
+fw_devlink also prevents my test platforms from booting (my rk3399
+doesn't find its PCI devices with it), while the same kernel boots
+just fine without it. It could well be that the corner case is
+likely to be more prevalent than you seem to expect.
 
-The patch provides a new misc driver, as proposed in the previous patch,
-that provides a registration function for HW Driver devices to register
-class_attributes.
-In this case, the intel SPI flash chip (intel-spi) registers three
-class_attributes corresponding to the fields mentioned above.
+I will probably end-up end-up queuing reverts for both mtk-sysirq,
+mtk-cirq, and qcom-pdc (the first two can't be built as module with
+mainline anyway, and I seem to remember that the latter caused some
+controversy as well).
 
-This version of the patch replaces class attributes by device
-attributes.
+As an experiment, I have pushed out a branch[1] that implements
+a "hybrid" probe, retaining the previous early probe mechanism when
+the driver is built-in, and letting things rip when built as a
+module (if you do that, you hopefully know what you are doing).
+I'd welcome some testing on affected platforms (I don't have
+anything I can run mainline on that'd be affected).
 
-Signed-off-by: Daniel Gutson <daniel.gutson@eclypsium.com>
----
- .../ABI/stable/sysfs-class-platform-lockdown  |  23 ++++
- MAINTAINERS                                   |   7 +
- drivers/misc/Kconfig                          |   9 ++
- drivers/misc/Makefile                         |   1 +
- drivers/misc/platform-lockdown-attrs.c        | 123 ++++++++++++++++++
- drivers/mtd/spi-nor/controllers/Kconfig       |   1 +
- .../mtd/spi-nor/controllers/intel-spi-pci.c   |  73 +++++++++++
- drivers/mtd/spi-nor/controllers/intel-spi.c   |  87 +++++++++++++
- .../platform_data/platform-lockdown-attrs.h   |  42 ++++++
- 9 files changed, 366 insertions(+)
- create mode 100644 Documentation/ABI/stable/sysfs-class-platform-lockdown
- create mode 100644 drivers/misc/platform-lockdown-attrs.c
- create mode 100644 include/linux/platform_data/platform-lockdown-attrs.h
+Thanks,
 
-diff --git a/Documentation/ABI/stable/sysfs-class-platform-lockdown b/Documentation/ABI/stable/sysfs-class-platform-lockdown
-new file mode 100644
-index 000000000000..3fe75d775a42
---- /dev/null
-+++ b/Documentation/ABI/stable/sysfs-class-platform-lockdown
-@@ -0,0 +1,23 @@
-+What:		/sys/class/platform-lockdown/bioswe
-+Date:		July 2020
-+KernelVersion:	5.8.0
-+Contact:	Daniel Gutson <daniel.gutson@eclypsium.com>
-+Description:	If the system firmware set BIOS Write Enable.
-+		0: writes disabled, 1: writes enabled.
-+Users:		https://github.com/fwupd/fwupd
-+
-+What:		/sys/class/platform-lockdown/ble
-+Date:		July 2020
-+KernelVersion:	5.8.0
-+Contact:	Daniel Gutson <daniel.gutson@eclypsium.com>
-+Description:	If the system firmware set BIOS Lock Enable.
-+		0: SMM lock disabled, 1: SMM lock enabled.
-+Users:		https://github.com/fwupd/fwupd
-+
-+What:		/sys/class/platform-lockdown/smm_bwp
-+Date:		July 2020
-+KernelVersion:	5.8.0
-+Contact:	Daniel Gutson <daniel.gutson@eclypsium.com>
-+Description:	If the system firmware set SMM BIOS Write Protect.
-+		0: writes disabled unless in SMM, 1: writes enabled.
-+Users:		https://github.com/fwupd/fwupd
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c8e8232c65da..2fa8128487d8 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13664,6 +13664,13 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/iio/chemical/plantower,pms7003.yaml
- F:	drivers/iio/chemical/pms7003.c
- 
-+PLATFORM LOCKDOWN ATTRIBUTES MODULE
-+M:	Daniel Gutson <daniel.gutson@eclypsium.com>
-+S:	Supported
-+F:	Documentation/ABI/sysfs-class-platform-lockdown
-+F:	drivers/misc/platform-lockdown-attrs.c
-+F:	include/linux/platform_data/platform-lockdown-attrs.h
-+
- PLX DMA DRIVER
- M:	Logan Gunthorpe <logang@deltatee.com>
- S:	Maintained
-diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-index e1b1ba5e2b92..6f44d896ef35 100644
---- a/drivers/misc/Kconfig
-+++ b/drivers/misc/Kconfig
-@@ -456,6 +456,15 @@ config PVPANIC
- 	  a paravirtualized device provided by QEMU; it lets a virtual machine
- 	  (guest) communicate panic events to the host.
- 
-+config PLATFORM_LOCKDOWN_ATTRS
-+	tristate "Platform lockdown information in the sysfs"
-+	depends on SYSFS
-+	help
-+	  This kernel module is a helper driver to provide information about
-+	  platform lockdown settings and configuration.
-+	  This module is used by other device drivers -such as the intel-spi-
-+	  to publish the information in /sys/class/platform-lockdown.
-+
- source "drivers/misc/c2port/Kconfig"
- source "drivers/misc/eeprom/Kconfig"
- source "drivers/misc/cb710/Kconfig"
-diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-index c7bd01ac6291..e29b45c564f9 100644
---- a/drivers/misc/Makefile
-+++ b/drivers/misc/Makefile
-@@ -57,3 +57,4 @@ obj-$(CONFIG_PVPANIC)   	+= pvpanic.o
- obj-$(CONFIG_HABANA_AI)		+= habanalabs/
- obj-$(CONFIG_UACCE)		+= uacce/
- obj-$(CONFIG_XILINX_SDFEC)	+= xilinx_sdfec.o
-+obj-$(CONFIG_PLATFORM_LOCKDOWN_ATTRS)	+= platform-lockdown-attrs.o
-diff --git a/drivers/misc/platform-lockdown-attrs.c b/drivers/misc/platform-lockdown-attrs.c
-new file mode 100644
-index 000000000000..68656680cadd
---- /dev/null
-+++ b/drivers/misc/platform-lockdown-attrs.c
-@@ -0,0 +1,123 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Platform lockdown attributes kernel module
-+ *
-+ * Copyright (C) 2020 Daniel Gutson <daniel.gutson@eclypsium.com>
-+ * Copyright (C) 2020 Eclypsium Inc.
-+ */
-+#include <linux/sysfs.h>
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/kdev_t.h>
-+#include <linux/platform_data/platform-lockdown-attrs.h>
-+
-+static struct class platform_lockdown_class = {
-+	.name = "platform-lockdown",
-+	.owner = THIS_MODULE,
-+};
-+
-+struct device *register_platform_lockdown_data_device(struct device *parent,
-+						      const char *name)
-+{
-+	return device_create(&platform_lockdown_class, parent, MKDEV(0, 0),
-+			     NULL, name);
-+}
-+EXPORT_SYMBOL_GPL(register_platform_lockdown_data_device);
-+
-+void unregister_platform_lockdown_data_device(struct device *dev)
-+{
-+	device_unregister(dev);
-+}
-+EXPORT_SYMBOL_GPL(unregister_platform_lockdown_data_device);
-+
-+int register_platform_lockdown_attribute(struct device *dev,
-+					 struct device_attribute *dev_attr)
-+{
-+	return device_create_file(dev, dev_attr);
-+}
-+EXPORT_SYMBOL_GPL(register_platform_lockdown_attribute);
-+
-+void register_platform_lockdown_attributes(struct device *dev,
-+					   struct device_attribute dev_attrs[])
-+{
-+	u32 idx = 0;
-+
-+	while (dev_attrs[idx].attr.name != NULL) {
-+		register_platform_lockdown_attribute(dev, &dev_attrs[idx]);
-+		idx++;
-+	}
-+}
-+EXPORT_SYMBOL_GPL(register_platform_lockdown_attributes);
-+
-+void register_platform_lockdown_custom_attributes(struct device *dev,
-+						  void *custom_attrs,
-+						  size_t dev_attr_offset,
-+						  size_t custom_attr_size)
-+{
-+	char *raw_position = custom_attrs;
-+
-+	raw_position += dev_attr_offset;
-+
-+	while (((struct device_attribute *)raw_position)->attr.name != NULL) {
-+		register_platform_lockdown_attribute(
-+			dev, (struct device_attribute *)raw_position);
-+		raw_position += custom_attr_size;
-+	}
-+}
-+EXPORT_SYMBOL_GPL(register_platform_lockdown_custom_attributes);
-+
-+void unregister_platform_lockdown_attribute(struct device *dev,
-+					    struct device_attribute *dev_attr)
-+{
-+	device_remove_file(dev, dev_attr);
-+}
-+EXPORT_SYMBOL_GPL(unregister_platform_lockdown_attribute);
-+
-+void unregister_platform_lockdown_attributes(
-+	struct device *dev, struct device_attribute dev_attrs[])
-+{
-+	u32 idx = 0;
-+
-+	while (dev_attrs[idx].attr.name != NULL) {
-+		unregister_platform_lockdown_attribute(dev, &dev_attrs[idx]);
-+		idx++;
-+	}
-+}
-+EXPORT_SYMBOL_GPL(unregister_platform_lockdown_attributes);
-+
-+void unregister_platform_lockdown_custom_attributes(struct device *dev,
-+						    void *custom_attrs,
-+						    size_t dev_attr_offset,
-+						    size_t custom_attr_size)
-+{
-+	char *raw_position = custom_attrs;
-+
-+	raw_position += dev_attr_offset;
-+	while (((struct device_attribute *)raw_position)->attr.name != NULL) {
-+		unregister_platform_lockdown_attribute(
-+			dev, (struct device_attribute *)raw_position);
-+		raw_position += custom_attr_size;
-+	}
-+}
-+EXPORT_SYMBOL_GPL(unregister_platform_lockdown_custom_attributes);
-+
-+static int __init platform_lockdown_attrs_init(void)
-+{
-+	int status;
-+
-+	status = class_register(&platform_lockdown_class);
-+	if (status < 0)
-+		return status;
-+
-+	return 0;
-+}
-+
-+static void __exit platform_lockdown_attrs_exit(void)
-+{
-+	class_unregister(&platform_lockdown_class);
-+}
-+
-+module_init(platform_lockdown_attrs_init);
-+module_exit(platform_lockdown_attrs_exit);
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR("Daniel Gutson <daniel.gutson@eclypsium.com>");
-diff --git a/drivers/mtd/spi-nor/controllers/Kconfig b/drivers/mtd/spi-nor/controllers/Kconfig
-index 5c0e0ec2e6d1..c092d784c554 100644
---- a/drivers/mtd/spi-nor/controllers/Kconfig
-+++ b/drivers/mtd/spi-nor/controllers/Kconfig
-@@ -29,6 +29,7 @@ config SPI_NXP_SPIFI
- 
- config SPI_INTEL_SPI
- 	tristate
-+	select PLATFORM_LOCKDOWN_ATTRS
- 
- config SPI_INTEL_SPI_PCI
- 	tristate "Intel PCH/PCU SPI flash PCI driver (DANGEROUS)"
-diff --git a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
-index 81329f680bec..50a98fb0a244 100644
---- a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
-+++ b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
-@@ -10,11 +10,19 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/pci.h>
-+#include <linux/platform_data/platform-lockdown-attrs.h>
- 
- #include "intel-spi.h"
- 
- #define BCR		0xdc
- #define BCR_WPD		BIT(0)
-+#define BCR_BLE		BIT(1)
-+#define BCR_SMM_BWP	BIT(5)
-+
-+struct cnl_spi_attr {
-+	struct device_attribute dev_attr;
-+	u32 mask;
-+};
- 
- static const struct intel_spi_boardinfo bxt_info = {
- 	.type = INTEL_SPI_BXT,
-@@ -24,6 +32,58 @@ static const struct intel_spi_boardinfo cnl_info = {
- 	.type = INTEL_SPI_CNL,
- };
- 
-+static struct device *class_child_device;
-+
-+static ssize_t cnl_spi_attr_show(struct device *dev,
-+	struct device_attribute *attr, char *buf)
-+{
-+	u32 bcr;
-+	struct cnl_spi_attr *cnl_spi_attr = container_of(attr,
-+		struct cnl_spi_attr, dev_attr);
-+
-+	if (class_child_device != dev)
-+		return -EIO;
-+
-+	if (dev->parent == NULL)
-+		return -EIO;
-+
-+	if (pci_read_config_dword(container_of(dev->parent, struct pci_dev, dev),
-+				BCR, &bcr) != PCIBIOS_SUCCESSFUL)
-+		return -EIO;
-+
-+	return sprintf(buf, "%d\n", (int)!!(bcr & cnl_spi_attr->mask));
-+}
-+
-+#define CNL_SPI_ATTR(_name, _mask)					\
-+{									\
-+	.dev_attr = __ATTR(_name, 0444, cnl_spi_attr_show, NULL),	\
-+	.mask = _mask							\
-+}
-+
-+static struct cnl_spi_attr cnl_spi_attrs[] = {
-+	CNL_SPI_ATTR(bioswe, BCR_WPD),
-+	CNL_SPI_ATTR(ble, BCR_BLE),
-+	CNL_SPI_ATTR(smm_bwp, BCR_SMM_BWP),
-+	{ }
-+};
-+
-+static void register_local_platform_lockdown_attributes(struct pci_dev *pdev)
-+{
-+	if (class_child_device == NULL) {
-+		class_child_device = register_platform_lockdown_data_device(
-+			&pdev->dev, "intel-spi-pci");
-+
-+		if (IS_ERR_OR_NULL(class_child_device))
-+			return;
-+
-+		register_platform_lockdown_custom_attributes(
-+			class_child_device,
-+			cnl_spi_attrs,
-+			offsetof(struct cnl_spi_attr, dev_attr),
-+			sizeof(struct cnl_spi_attr));
-+	}
-+}
-+
- static int intel_spi_pci_probe(struct pci_dev *pdev,
- 			       const struct pci_device_id *id)
- {
-@@ -50,6 +110,8 @@ static int intel_spi_pci_probe(struct pci_dev *pdev,
- 	}
- 	info->writeable = !!(bcr & BCR_WPD);
- 
-+	register_local_platform_lockdown_attributes(pdev);
-+
- 	ispi = intel_spi_probe(&pdev->dev, &pdev->resource[0], info);
- 	if (IS_ERR(ispi))
- 		return PTR_ERR(ispi);
-@@ -60,6 +122,17 @@ static int intel_spi_pci_probe(struct pci_dev *pdev,
- 
- static void intel_spi_pci_remove(struct pci_dev *pdev)
- {
-+	if (class_child_device != NULL) {
-+		unregister_platform_lockdown_custom_attributes(
-+			class_child_device,
-+			cnl_spi_attrs,
-+			offsetof(struct cnl_spi_attr, dev_attr),
-+			sizeof(struct cnl_spi_attr));
-+
-+		unregister_platform_lockdown_data_device(class_child_device);
-+		class_child_device = NULL;
-+	}
-+
- 	intel_spi_remove(pci_get_drvdata(pdev));
- }
- 
-diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
-index 61d2a0ad2131..f243e7996917 100644
---- a/drivers/mtd/spi-nor/controllers/intel-spi.c
-+++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
-@@ -16,6 +16,7 @@
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/spi-nor.h>
- #include <linux/platform_data/intel-spi.h>
-+#include <linux/platform_data/platform-lockdown-attrs.h>
- 
- #include "intel-spi.h"
- 
-@@ -95,6 +96,8 @@
- #define BYT_SSFSTS_CTL			0x90
- #define BYT_BCR				0xfc
- #define BYT_BCR_WPD			BIT(0)
-+#define BYT_BCR_BLE			BIT(1)
-+#define BYT_BCR_SMM_BWP			BIT(5)
- #define BYT_FREG_NUM			5
- #define BYT_PR_NUM			5
- 
-@@ -159,10 +162,17 @@ struct intel_spi {
- 	u8 opcodes[8];
- };
- 
-+struct byt_spi_attr {
-+	struct device_attribute dev_attr;
-+	u32 mask;
-+};
-+
- static bool writeable;
- module_param(writeable, bool, 0);
- MODULE_PARM_DESC(writeable, "Enable write access to SPI flash chip (default=0)");
- 
-+static struct device *class_child_device;
-+
- static void intel_spi_dump_regs(struct intel_spi *ispi)
- {
- 	u32 value;
-@@ -305,6 +315,80 @@ static int intel_spi_wait_sw_busy(struct intel_spi *ispi)
- 				  INTEL_SPI_TIMEOUT * 1000);
- }
- 
-+static ssize_t byt_spi_attr_show(struct device *dev,
-+	struct device_attribute *attr, char *buf)
-+{
-+	u32 bcr;
-+	struct byt_spi_attr *byt_spi_attr = container_of(attr,
-+		struct byt_spi_attr, dev_attr);
-+	struct intel_spi *ispi = dev_get_drvdata(dev);
-+
-+	if (class_child_device != dev->parent)
-+		return -EIO;
-+
-+	bcr = readl(ispi->base + BYT_BCR);
-+	return sprintf(buf, "%d\n", (int)!!(bcr & byt_spi_attr->mask));
-+}
-+
-+#define BYT_SPI_ATTR(_name, _mask)					\
-+{									\
-+	.dev_attr = __ATTR(_name, 0444, byt_spi_attr_show, NULL),	\
-+	.mask = _mask							\
-+}
-+
-+static struct byt_spi_attr byt_spi_attrs[] = {
-+	BYT_SPI_ATTR(bioswe, BYT_BCR_WPD),
-+	BYT_SPI_ATTR(ble, BYT_BCR_BLE),
-+	BYT_SPI_ATTR(smm_bwp, BYT_BCR_SMM_BWP),
-+	{ }
-+};
-+
-+static void register_local_platform_lockdown_attributes(struct intel_spi *ispi)
-+{
-+	if (class_child_device == NULL) {
-+		switch (ispi->info->type) {
-+		case INTEL_SPI_BYT:
-+			class_child_device =
-+				register_platform_lockdown_data_device(
-+					ispi->dev, "intel-spi");
-+
-+			if (IS_ERR_OR_NULL(class_child_device))
-+				return;
-+
-+			dev_set_drvdata(class_child_device, ispi);
-+
-+			register_platform_lockdown_custom_attributes(
-+				class_child_device,
-+				byt_spi_attrs,
-+				offsetof(struct byt_spi_attr, dev_attr),
-+				sizeof(struct byt_spi_attr));
-+			break;
-+		default:
-+			break; /* TODO. not yet implemented. */
-+		}
-+	}
-+}
-+
-+static void unregister_local_platform_lockdown_attributes(struct intel_spi *ispi)
-+{
-+	if (class_child_device != NULL) {
-+		switch (ispi->info->type) {
-+		case INTEL_SPI_BYT:
-+			unregister_platform_lockdown_custom_attributes(
-+				class_child_device,
-+				byt_spi_attrs,
-+				offsetof(struct byt_spi_attr, dev_attr),
-+				sizeof(struct byt_spi_attr));
-+			break;
-+		default:
-+			break; /* TODO. not yet implemented. */
-+		}
-+
-+		unregister_platform_lockdown_data_device(class_child_device);
-+		class_child_device = NULL;
-+	}
-+}
-+
- static int intel_spi_init(struct intel_spi *ispi)
- {
- 	u32 opmenu0, opmenu1, lvscc, uvscc, val;
-@@ -422,6 +506,8 @@ static int intel_spi_init(struct intel_spi *ispi)
- 
- 	intel_spi_dump_regs(ispi);
- 
-+	register_local_platform_lockdown_attributes(ispi);
-+
- 	return 0;
- }
- 
-@@ -951,6 +1037,7 @@ EXPORT_SYMBOL_GPL(intel_spi_probe);
- 
- int intel_spi_remove(struct intel_spi *ispi)
- {
-+	unregister_local_platform_lockdown_attributes(ispi);
- 	return mtd_device_unregister(&ispi->nor.mtd);
- }
- EXPORT_SYMBOL_GPL(intel_spi_remove);
-diff --git a/include/linux/platform_data/platform-lockdown-attrs.h b/include/linux/platform_data/platform-lockdown-attrs.h
-new file mode 100644
-index 000000000000..e538e9e612b0
---- /dev/null
-+++ b/include/linux/platform_data/platform-lockdown-attrs.h
-@@ -0,0 +1,42 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Platform lockdown attributes kernel module
-+ *
-+ * Copyright (C) 2020 Daniel Gutson <daniel.gutson@eclypsium.com>
-+ * Copyright (C) 2020 Eclypsium Inc.
-+ */
-+#ifndef PLATFORM_LOCKDOWN_ATTRS_H
-+#define PLATFORM_LOCKDOWN_ATTRS_H
-+
-+#include <linux/device.h>
-+
-+extern struct device *
-+register_platform_lockdown_data_device(struct device *parent, const char *name);
-+
-+extern void unregister_platform_lockdown_data_device(struct device *dev);
-+
-+extern int
-+register_platform_lockdown_attribute(struct device *dev,
-+				     struct device_attribute *dev_attr);
-+
-+extern void
-+register_platform_lockdown_attributes(struct device *dev,
-+				      struct device_attribute dev_attrs[]);
-+
-+extern void register_platform_lockdown_custom_attributes(
-+	struct device *dev, void *custom_attrs, size_t dev_attr_offset,
-+	size_t custom_attr_size);
-+
-+extern void
-+unregister_platform_lockdown_attribute(struct device *dev,
-+				       struct device_attribute *dev_attr);
-+
-+extern void
-+unregister_platform_lockdown_attributes(struct device *dev,
-+					struct device_attribute dev_attrs[]);
-+
-+extern void unregister_platform_lockdown_custom_attributes(
-+	struct device *dev, void *custom_attrs, size_t dev_attr_offset,
-+	size_t custom_attr_size);
-+
-+#endif /* PLATFORM_LOCKDOWN_ATTRS_H */
+         M.
+
+[1] 
+https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=irq/hybrid-probe
 -- 
-2.25.1
-
+Jazz is not dead. It just smells funny...
