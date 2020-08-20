@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F1D24BECE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD87924BEA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729486AbgHTNc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:32:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42902 "EHLO mail.kernel.org"
+        id S1727935AbgHTJc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:32:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727859AbgHTJbO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:31:14 -0400
+        id S1728257AbgHTJby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:31:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1511F208E4;
-        Thu, 20 Aug 2020 09:31:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5571922BF5;
+        Thu, 20 Aug 2020 09:31:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915873;
-        bh=Ot+IlbwWoYcMtGQlRqjPHSZwBDd0x0OKpAG8nmv7J4g=;
+        s=default; t=1597915912;
+        bh=zX065Jj8yZv2ZjljmxDbv1KjrqSbKCATFwprplDdImQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m+Fj59qV2nZXhUcTxywvpke6sa+YEyLANVuz+vTkKKJf7WgO+QLTf2V8pxXRBn4+S
-         kL0P/SP6H8/MLuSz3igxD4ad4oYANMr/vJMtrKinOai4UE/fY3p2vJZpnzbIg7/MQE
-         Q+Ean9MFg/509RrvUpGJHnJP7Hs345xhz23HJjCE=
+        b=jp4oJKsf5zbG4UfoNXg//tpVjdFFFw19IoiO8Z+rbx5YmxZrcKArVG6gEhra9jvjl
+         vqNrLxZg+7DXFCz00p4YeGkMpggmkktgpLn72wSJMD+/HNWw3FFTOMRis1QMUsa7A7
+         zD0mXCj0pPvcNxY0NDoA35v471wASAZFps07lzL8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Konrad Dybcio <konradybcio@gmail.com>,
+        stable@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 165/232] clk: qcom: gcc-sdm660: Fix up gcc_mss_mnoc_bimc_axi_clk
-Date:   Thu, 20 Aug 2020 11:20:16 +0200
-Message-Id: <20200820091620.802984528@linuxfoundation.org>
+Subject: [PATCH 5.8 178/232] clk: bcm2835: Do not use prediv with bcm2711s PLLs
+Date:   Thu, 20 Aug 2020 11:20:29 +0200
+Message-Id: <20200820091621.432573048@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
 References: <20200820091612.692383444@linuxfoundation.org>
@@ -44,36 +47,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Konrad Dybcio <konradybcio@gmail.com>
+From: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 
-[ Upstream commit 3386af51d3bcebcba3f7becdb1ef2e384abe90cf ]
+[ Upstream commit f34e4651ce66a754f41203284acf09b28b9dd955 ]
 
-Add missing halt_check, hwcg_reg and hwcg_bit properties.
-These were likely omitted when porting the driver upstream.
+Contrary to previous SoCs, bcm2711 doesn't have a prescaler in the PLL
+feedback loop. Bypass it by zeroing fb_prediv_mask when running on
+bcm2711.
 
-Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
-Link: https://lore.kernel.org/r/20200726111215.22361-9-konradybcio@gmail.com
-Fixes: f2a76a2955c0 ("clk: qcom: Add Global Clock controller (GCC) driver for SDM660")
+Note that, since the prediv configuration bits were re-purposed, this
+was triggering miscalculations on all clocks hanging from the VPU clock,
+notably the aux UART, making its output unintelligible.
+
+Fixes: 42de9ad400af ("clk: bcm2835: Add BCM2711_CLOCK_EMMC2 support")
+Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Link: https://lore.kernel.org/r/20200730182619.23246-1-nsaenzjulienne@suse.de
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/qcom/gcc-sdm660.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/clk/bcm/clk-bcm2835.c | 25 +++++++++++++++++++++----
+ 1 file changed, 21 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/clk/qcom/gcc-sdm660.c b/drivers/clk/qcom/gcc-sdm660.c
-index bf5730832ef3d..c6fb57cd576f5 100644
---- a/drivers/clk/qcom/gcc-sdm660.c
-+++ b/drivers/clk/qcom/gcc-sdm660.c
-@@ -1715,6 +1715,9 @@ static struct clk_branch gcc_mss_cfg_ahb_clk = {
+diff --git a/drivers/clk/bcm/clk-bcm2835.c b/drivers/clk/bcm/clk-bcm2835.c
+index 6bb7efa12037b..011802f1a6df9 100644
+--- a/drivers/clk/bcm/clk-bcm2835.c
++++ b/drivers/clk/bcm/clk-bcm2835.c
+@@ -314,6 +314,7 @@ struct bcm2835_cprman {
+ 	struct device *dev;
+ 	void __iomem *regs;
+ 	spinlock_t regs_lock; /* spinlock for all clocks */
++	unsigned int soc;
  
- static struct clk_branch gcc_mss_mnoc_bimc_axi_clk = {
- 	.halt_reg = 0x8a004,
-+	.halt_check = BRANCH_HALT,
-+	.hwcg_reg = 0x8a004,
-+	.hwcg_bit = 1,
- 	.clkr = {
- 		.enable_reg = 0x8a004,
- 		.enable_mask = BIT(0),
+ 	/*
+ 	 * Real names of cprman clock parents looked up through
+@@ -525,6 +526,20 @@ static int bcm2835_pll_is_on(struct clk_hw *hw)
+ 		A2W_PLL_CTRL_PRST_DISABLE;
+ }
+ 
++static u32 bcm2835_pll_get_prediv_mask(struct bcm2835_cprman *cprman,
++				       const struct bcm2835_pll_data *data)
++{
++	/*
++	 * On BCM2711 there isn't a pre-divisor available in the PLL feedback
++	 * loop. Bits 13:14 of ANA1 (PLLA,PLLB,PLLC,PLLD) have been re-purposed
++	 * for to for VCO RANGE bits.
++	 */
++	if (cprman->soc & SOC_BCM2711)
++		return 0;
++
++	return data->ana->fb_prediv_mask;
++}
++
+ static void bcm2835_pll_choose_ndiv_and_fdiv(unsigned long rate,
+ 					     unsigned long parent_rate,
+ 					     u32 *ndiv, u32 *fdiv)
+@@ -582,7 +597,7 @@ static unsigned long bcm2835_pll_get_rate(struct clk_hw *hw,
+ 	ndiv = (a2wctrl & A2W_PLL_CTRL_NDIV_MASK) >> A2W_PLL_CTRL_NDIV_SHIFT;
+ 	pdiv = (a2wctrl & A2W_PLL_CTRL_PDIV_MASK) >> A2W_PLL_CTRL_PDIV_SHIFT;
+ 	using_prediv = cprman_read(cprman, data->ana_reg_base + 4) &
+-		data->ana->fb_prediv_mask;
++		       bcm2835_pll_get_prediv_mask(cprman, data);
+ 
+ 	if (using_prediv) {
+ 		ndiv *= 2;
+@@ -665,6 +680,7 @@ static int bcm2835_pll_set_rate(struct clk_hw *hw,
+ 	struct bcm2835_pll *pll = container_of(hw, struct bcm2835_pll, hw);
+ 	struct bcm2835_cprman *cprman = pll->cprman;
+ 	const struct bcm2835_pll_data *data = pll->data;
++	u32 prediv_mask = bcm2835_pll_get_prediv_mask(cprman, data);
+ 	bool was_using_prediv, use_fb_prediv, do_ana_setup_first;
+ 	u32 ndiv, fdiv, a2w_ctl;
+ 	u32 ana[4];
+@@ -682,7 +698,7 @@ static int bcm2835_pll_set_rate(struct clk_hw *hw,
+ 	for (i = 3; i >= 0; i--)
+ 		ana[i] = cprman_read(cprman, data->ana_reg_base + i * 4);
+ 
+-	was_using_prediv = ana[1] & data->ana->fb_prediv_mask;
++	was_using_prediv = ana[1] & prediv_mask;
+ 
+ 	ana[0] &= ~data->ana->mask0;
+ 	ana[0] |= data->ana->set0;
+@@ -692,10 +708,10 @@ static int bcm2835_pll_set_rate(struct clk_hw *hw,
+ 	ana[3] |= data->ana->set3;
+ 
+ 	if (was_using_prediv && !use_fb_prediv) {
+-		ana[1] &= ~data->ana->fb_prediv_mask;
++		ana[1] &= ~prediv_mask;
+ 		do_ana_setup_first = true;
+ 	} else if (!was_using_prediv && use_fb_prediv) {
+-		ana[1] |= data->ana->fb_prediv_mask;
++		ana[1] |= prediv_mask;
+ 		do_ana_setup_first = false;
+ 	} else {
+ 		do_ana_setup_first = true;
+@@ -2238,6 +2254,7 @@ static int bcm2835_clk_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, cprman);
+ 
+ 	cprman->onecell.num = asize;
++	cprman->soc = pdata->soc;
+ 	hws = cprman->onecell.hws;
+ 
+ 	for (i = 0; i < asize; i++) {
 -- 
 2.25.1
 
