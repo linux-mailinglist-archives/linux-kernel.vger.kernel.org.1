@@ -2,186 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C58924B0D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 10:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B141424B0EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 10:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726870AbgHTIPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 04:15:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726853AbgHTIOq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 04:14:46 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8FAC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 01:14:45 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id bo3so1414758ejb.11
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 01:14:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=javigon-com.20150623.gappssmtp.com; s=20150623;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=g0v1TVbYwAwmSoj7QGga3H4kAFy2bpvMW+yENdu88bQ=;
-        b=gD/PAM/5z1gJRM2L/hhs83u2G6dxhrlGRNjPZAcXA3Ps9AmnRfVlDkONc+Q8/z3MqF
-         r7CLU1FiuK5MYHIjYMmYsZNiOXnJ40x7r+54XF3GM5ZDO0+q6Nfl1TycK48mzcYKZxHj
-         Neuc0LfbNED/FWHLB6rJseceEqy3BbaZXj9aF38/V2eTs7cW+D8J27UMsyUIIJFpEWDD
-         kTjTdv1yUm3JFqAEuxmPgQzq+0pC/rDTM9iWveV5N/muRWClRvxBK9H70Ew42Dn9aDw8
-         gh/tDB2uatVehzTr5FzdomsNecR8voBgz6+mW+JUwFtSdENL6cVmGxjrJmf3lDuaAwHX
-         ChAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g0v1TVbYwAwmSoj7QGga3H4kAFy2bpvMW+yENdu88bQ=;
-        b=ZU6+xGQMLQgvb33zdqMKY7XP0fB17PywW1ulXAEVvG87ELmsTmRbx+TTCZNMyqE/zs
-         /O8Dlt+xoGqfmUueLf3c+ESWMqoZJKiQ8U6/BVvI6HJ0QuQ0CRoAzHMhNocYOyBMDHFL
-         ctUn1r6y56m9a31N3WuAF9agWNnYwH+VFJP+cPjKVX8hPhabpCwgLDAEgKdK37Yq0X7y
-         acR8oserVce+QCjurnwP8j/gqzc7Z6PrNR9jdNmvq9vlm++plKZ3IXiYN4p8HBEIsaGu
-         nf0Y8Z6AXDvIqsiG86XuaRmpCvZKEd1lSFTgXSytY9XNImPCUIsrC3xiBXoKBMNbgkvc
-         Y6pw==
-X-Gm-Message-State: AOAM532ulrLtTUC69+6RH8qHzKdrxIJzgTaTftrOhOft2pEFw/WEv4/i
-        LnJuyST/PxjTHT4Aksfz5p7aZA==
-X-Google-Smtp-Source: ABdhPJyn8U936iLeaPbvcl7H9ouAf63VVQN83bsoVOmETCnR61Of4Sv7JsOqloslCk6sXLAbzCclGg==
-X-Received: by 2002:a17:906:1757:: with SMTP id d23mr1017684eje.126.1597911284556;
-        Thu, 20 Aug 2020 01:14:44 -0700 (PDT)
-Received: from localhost ([194.62.217.57])
-        by smtp.gmail.com with ESMTPSA id v7sm912049edd.48.2020.08.20.01.14.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 01:14:43 -0700 (PDT)
-From:   Javier Gonzalez <javier@javigon.com>
-X-Google-Original-From: Javier Gonzalez <javier.gonz@samsung.com>
-Date:   Thu, 20 Aug 2020 10:14:43 +0200
-To:     Kanchan Joshi <joshiiitr@gmail.com>
-Cc:     Keith Busch <kbusch@kernel.org>,
-        David Fugate <david.fugate@linux.intel.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "Damien.LeMoal@wdc.com" <Damien.LeMoal@wdc.com>,
-        SelvaKumar S <selvakuma.s1@samsung.com>,
-        "sagi@grimberg.me" <sagi@grimberg.me>,
-        Kanchan Joshi <joshi.k@samsung.com>,
-        "johannes.thumshirn@wdc.com" <johannes.thumshirn@wdc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 2/2] nvme: add emulation for zone-append
-Message-ID: <20200820081443.fwu7z3webjkhpeuv@mpHalley.local>
-References: <20200818052936.10995-1-joshi.k@samsung.com>
- <CGME20200818053256epcas5p46d0b66b3702192eb6617c8bba334c15f@epcas5p4.samsung.com>
- <20200818052936.10995-3-joshi.k@samsung.com>
- <20200818071249.GB2544@lst.de>
- <b52854fe11640a5a5f54e08b1d3c7a556f97aad5.camel@linux.intel.com>
- <20200819214248.GA26769@dhcp-10-100-145-180.wdl.wdc.com>
- <CA+1E3rJgvvebEex-zVBGtqK_BAaQUtcwq9nDoFm+Rd=DD20zxg@mail.gmail.com>
+        id S1726745AbgHTISC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 04:18:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57154 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725910AbgHTIRl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 04:17:41 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 78703207DE;
+        Thu, 20 Aug 2020 08:17:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597911461;
+        bh=tnxzVI3REHYfxhlG+Le20oXiyBnTOIRi9Ha7ujsgOms=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BiXjKHU+t3kt0dGqtIgfFJBr5zxmUNLlkx0oMPDZlYR433dwzz8qZjqWFWE3jnijg
+         hUcICMiUQJZpweqeqgyYMB6nK/DJ3WparXIXodkZhJYJlkyR5wx2V1jBlmsyLgxTua
+         zY6PV1YY+GAKsyE5tnpbxCA9YF0deNyUCa648srA=
+Date:   Thu, 20 Aug 2020 10:18:01 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mike Snitzer <snitzer@redhat.com>
+Cc:     John Donnelly <john.p.donnelly@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org, dm-devel@redhat.com
+Subject: Re: fixing 4.14-stable's broken DM cache writethrough support [was:
+ Re: [(resend) PATCH v3: {linux-4.14.y} ] dm cache: submit writethrough
+ writes in parallel to origin and cache]
+Message-ID: <20200820081801.GH4049659@kroah.com>
+References: <8CFF8DA9-C105-461C-8F5A-DA2BF448A135@oracle.com>
+ <20200804124735.GA219143@kroah.com>
+ <20200804182037.GA15453@redhat.com>
+ <20200805143242.GC2154236@kroah.com>
+ <20200805193409.GA21824@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+1E3rJgvvebEex-zVBGtqK_BAaQUtcwq9nDoFm+Rd=DD20zxg@mail.gmail.com>
+In-Reply-To: <20200805193409.GA21824@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.08.2020 13:07, Kanchan Joshi wrote:
->On Thu, Aug 20, 2020 at 3:22 AM Keith Busch <kbusch@kernel.org> wrote:
->>
->> On Wed, Aug 19, 2020 at 01:11:58PM -0600, David Fugate wrote:
->> > Intel does not support making *optional* NVMe spec features *required*
->> > by the NVMe driver.
->>
->> This is inaccurate. As another example, the spec optionally allows a
->> zone size to be a power of 2, but linux requires a power of 2 if you
->> want to use it with this driver.
->>
->> > Provided there's no glaring technical issues
->>
->> There are many. Some may be improved through a serious review process,
->> but the mess it makes out of the fast path is measurably harmful to
->> devices that don't subscribe to this. That issue is not so easily
->> remedied.
->>
->> Since this patch is a copy of the scsi implementation, the reasonable
->> thing is take this fight to the generic block layer for a common
->> solution. We're not taking this in the nvme driver.
->
->I sincerely want to minimize any adverse impact to the fast-path of
->non-zoned devices.
->My understanding of that aspect is (I feel it is good to confirm,
->irrespective of the future of this patch):
->
->1. Submission path:
->There is no extra code for non-zoned device IO. For append, there is
->this "ns->append_emulate = 1" check.
->Snippet -
->        case REQ_OP_ZONE_APPEND:
->-               ret = nvme_setup_rw(ns, req, cmd, nvme_cmd_zone_append);
->+               if (!nvme_is_append_emulated(ns))
->+                       ret = nvme_setup_rw(ns, req, cmd, nvme_cmd_zone_append);
->+               else {
->+                       /* prepare append like write, and adjust lba
->afterwards */
->
->2. Completion:
-> Not as clean as submission for sure.
->The extra check is "ns && ns->append_emulate == 1" for completions if
->CONFIG_ZONED is enabled.
->A slightly better completion-handling version (than the submitted patch) is -
->
->-       } else if (IS_ENABLED(CONFIG_BLK_DEV_ZONED) &&
->-                  req_op(req) == REQ_OP_ZONE_APPEND) {
->-               req->__sector = nvme_lba_to_sect(req->q->queuedata,
->-                       le64_to_cpu(nvme_req(req)->result.u64));
->+       } else if (IS_ENABLED(CONFIG_BLK_DEV_ZONED)) {
->+               struct nvme_ns *ns = req->q->queuedata;
->+               /* append-emulation requires wp update for some cmds*/
->+               if (ns && nvme_is_append_emulated(ns)) {
->+                       if (nvme_need_zone_wp_update(req))
->+                               nvme_zone_wp_update(ns, req, status);
->+               }
->+               else if (req_op(req) == REQ_OP_ZONE_APPEND)
->+                       req->__sector = nvme_lba_to_sect(ns,
->+                                       le64_to_cpu(nvme_req(req)->result.u64));
->
->Am I missing any other fast-path pain-points?
->
->A quick 1 minute 4K randwrite run (QD 64, 4 jobs,libaio) shows :
->before: IOPS=270k, BW=1056MiB/s (1107MB/s)(61.9GiB/60002msec)
->after:  IOPS=270k, BW=1055MiB/s (1106MB/s)(61.8GiB/60005msec)
+On Wed, Aug 05, 2020 at 03:34:09PM -0400, Mike Snitzer wrote:
+> On Wed, Aug 05 2020 at 10:32am -0400,
+> Greg KH <gregkh@linuxfoundation.org> wrote:
+> 
+> > On Tue, Aug 04, 2020 at 02:20:38PM -0400, Mike Snitzer wrote:
+> > > On Tue, Aug 04 2020 at  8:47am -0400,
+> > > Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > 
+> > > > On Tue, Aug 04, 2020 at 07:33:05AM -0500, John Donnelly wrote:
+> > > > > From: Mike Snitzer <snitzer@redhat.com>
+> > > > > 
+> > > > > Discontinue issuing writethrough write IO in series to the origin and
+> > > > > then cache.
+> > > > > 
+> > > > > Use bio_clone_fast() to create a new origin clone bio that will be
+> > > > > mapped to the origin device and then bio_chain() it to the bio that gets
+> > > > > remapped to the cache device.  The origin clone bio does _not_ have a
+> > > > > copy of the per_bio_data -- as such check_if_tick_bio_needed() will not
+> > > > > be called.
+> > > > > 
+> > > > > The cache bio (parent bio) will not complete until the origin bio has
+> > > > > completed -- this fulfills bio_clone_fast()'s requirements as well as
+> > > > > the requirement to not complete the original IO until the write IO has
+> > > > > completed to both the origin and cache device.
+> > > > > 
+> > > > > Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+> > > > > 
+> > > > > (cherry picked from commit 2df3bae9a6543e90042291707b8db0cbfbae9ee9)
+> > > > > 
+> > > > > Fixes: 4ec34f2196d125ff781170ddc6c3058c08ec5e73 (dm bio record:
+> > > > > save/restore bi_end_io and bi_integrity )
+> > > > > 
+> > > > > 4ec34f21 introduced a mkfs.ext4 hang on a LVM device that has been
+> > > > > modified with lvconvert --cachemode=writethrough.
+> > > > > 
+> > > > > CC:stable@vger.kernel.org for 4.14.y
+> > > > > 
+> > > > > Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
+> > > > > Reviewed-by: Somasundaram Krishnasamy <somasundaram.krishnasamy@oracle.com>
+> > > > > 
+> > > > > conflicts:
+> > > > > 	drivers/md/dm-cache-target.c. -  Corrected usage of
+> > > > > 	writethrough_mode(&cache->feature) that was caught by
+> > > > > 	compiler, and removed unused static functions : writethrough_endio(),
+> > > > > 	defer_writethrough_bio(), wake_deferred_writethrough_worker()
+> > > > > 	that generated warnings.
+> > > > 
+> > > > What is this "conflicts nonsense"?  You don't see that in any other
+> > > > kernel patch changelog, do you?
+> > > > 
+> > > > > ---
+> > > > > drivers/md/dm-cache-target.c | 92 ++++++++++++++++++--------------------------
+> > > > > 1 file changed, 37 insertions(+), 55 deletions(-)
+> > > > 
+> > > > Please fix your email client up, it's totally broken and this does not
+> > > > work at all and is getting frustrating from my side here.
+> > > > 
+> > > > Try sending emails to yourself and see if you can apply the patches, as
+> > > > the one you sent here does not work, again:
+> > > 
+> > > John's inability to submit a patch that can apply aside: I do not like
+> > > how this patch header is constructed (yet attributed "From" me).  It is
+> > > devoid of detail as it relates to stable@.
+> > > 
+> > > Greg, please don't apply the v4 of this patch either.  I'll craft a
+> > > proper stable@ patch that explains the reason for change and why we're
+> > > left having to resolve conflicts in stable@.
+> > > 
+> > > But first I need to focus on sending DM changes to Linus for v5.9 merge.
+> > 
+> > Ok, no worries, I'll drop all of these from my review queue and wait for
+> > something from you sometime in the future.
+> 
+> Hey Greg,
+> 
+> SO I've looked this required 4.14 stable@ backport over. Because 4.14
+> already has these commits (to fix a dm integrity issue):
+> 1b17159e52b dm bio record: save/restore bi_end_io and bi_integrity
+> 248aa2645aa dm integrity: use dm_bio_record and dm_bio_restore
+> 
+> DM-cache's 4.14 writethrough mode got broken because its implementation
+> (ab)used dm_hook_bio+dm_bio_record and predates 4.15's switch to using
+> bio_chain() via commit 2df3bae9a654.  Without commit 2df3bae9a654 the
+> dm_hook_bio+dm_bio_record changes from commit 1b17159e52b break
+> dm-cache's writethrough support.
+> 
+> So 4.14-stable now needs these 3 upstream 4.15 commits:
+> 8e3c3827776f dm cache: pass cache structure to mode functions
+> 2df3bae9a654 dm cache: submit writethrough writes in parallel to origin and cache
+> 9958f1d9a04e dm cache: remove all obsolete writethrough-specific code
+> 
+> Applying those commits to v4.14.190 with:
+> git cherry-pick -x 8e3c3827776f^..9958f1d9a04e
+> 
+> results in a kernel that successfully builds and should fix
+> 4.14-stable's broken dm-cache writethrough support.
+> 
+> Are you ok with queueing up applying these 3 upstream commits to
+> 4.14-stable or do you need me to send a patchset?
 
-It is good to use the QEMU "simulation" path that we implemented to test
-performance with different delays, etc., but for these numbers to make
-sense we need to put them in contrast to the simulated NAND speed, etc.
+This is good enough, now all queued up, thanks!
 
->
->This maynot be the best test to see the cost, and I am happy to
->conduct more and improvise.
->
->As for the volume of the code - it is same as SCSI emulation. And I
->can make efforts to reduce that by moving common code to blk-zone, and
->reuse in SCSI/NVMe emulation.
->In the patch I tried to isolate append-emulation by keeping everything
->into "nvme_za_emul". It contains nothing nvme'ish except nvme_ns,
->which can be turned into "driver_data".
->
->+#ifdef CONFIG_BLK_DEV_ZONED
->+struct nvme_za_emul {
->+       unsigned int nr_zones;
->+       spinlock_t zones_wp_offset_lock;
->+       u32 *zones_wp_offset;
->+       u32 *rev_wp_offset;
->+       struct work_struct zone_wp_offset_work;
->+       char *zone_wp_update_buf;
->+       struct mutex rev_mutex;
->+       struct nvme_ns *ns;
->+};
->+#endif
->
->Will that be an acceptable line of further work/discussions?
-
-I know we spent time enabling this path, but I don't think that moving
-the discussion to the block layer will have much more benefit.
-
-Let's keep the support for these non-append devices in xNVMe and focus
-on the support for the append-enabled ones in Linux. We have a lot of
-good stuff in the backlog that we can start pushing.
-
+greg k-h
