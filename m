@@ -2,105 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02CF424B07F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B13CB24B085
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727005AbgHTHwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 03:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41942 "EHLO
+        id S1726819AbgHTHyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 03:54:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725834AbgHTHwp (ORCPT
+        with ESMTP id S1725925AbgHTHxw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 03:52:45 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73DA3C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 00:52:45 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id l13so1423203ybf.5
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 00:52:45 -0700 (PDT)
+        Thu, 20 Aug 2020 03:53:52 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDF3C061757;
+        Thu, 20 Aug 2020 00:53:52 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id a79so619335pfa.8;
+        Thu, 20 Aug 2020 00:53:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=ZTZ7FeRGcuK/Hk+zj5oM9AwC2C+E4zSdizznNm3JGaw=;
-        b=qDhQwNj/i9PSLJjNFzjvh270vkvMWiwNw4Xn4zB5msBMj/zonYxNr4zdkzs+kHxEKQ
-         hsk4cTsctX3LU0jX3+aNU39vbHGAcgDW/7Kabwd7zA09xokQNLQT+l5OUTB18PY3jtc8
-         3u1DD2f4zPraIZQBIOQgu9SC/UA+drjB87PyO+//YzeTsLTNXzTI13pixc0NmJ+t1Sig
-         PSJynH6yZ+VT6N3palt7khJAXHuQF+GvVTeSVEFGUaZaKJmXq+GuZh7x882Oye0ACLPL
-         isTCg2Gonbg6ZOLFRn+07HTT8f9TCbu/pBmgDuj3uzlMTq+fzWAWdRBL05rAShBbUOLe
-         hRhw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=V7dpkHJntuEfI3gKLsHKE5NL3K2FF0k9pm8mQcVZr3Q=;
+        b=tYF2/zRfp2/3qZWZpfB0jI6w2gnBzZfpQeDXb6SkrlT75Uf9PlzW+WPVgo9Ym1Ad46
+         GMeVOeZ/Jh9Zk+wh94FZsa2VlbLLZfAAX2ZaZ5IicN/bK1WFlEfs0Eg8x3SIygqcpvEt
+         UJxagkQDG/PDSn9VmyXjO+6TbreP3Lg6xEXEfjmmvPVYRhYWRZOtJOGWX5b0zd+cVgkL
+         +GN6UZVaqnWKOxLPZQGTJ1L0BNrFLIBQyam5No0lHpnLFqV+TJSt0DfCXDOIxEt94Uzk
+         tIhFGesaA2gy6Voyk3GVN3QK2u5AhzzM0nLArhVNeCXaZGeZVTViB3KM0OKL6rVsO/k6
+         cu4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=ZTZ7FeRGcuK/Hk+zj5oM9AwC2C+E4zSdizznNm3JGaw=;
-        b=FDj64p61LnxkQ8TjH0OWZQ+3TUG4qL2/x+v7PGEJAC/ixOdsgn/VfYgnbRJk/DWCMj
-         KQyzZOyVch0gL/PYjp1ibQ3T7D7DzZxXrEGNz7PXEVIxay/bcHGEli/r12DUBcQAImzH
-         sORyFapzK40QgUGi7KmluWgH/GvU1h/q8Ipt9eJO3tU+AfQqLieAe11/XR++FCU5LQ9e
-         rViaY8X7ah1Nu4p3SL0N+DO/fhtWID9/hx5HOobMkaciX+0/tXe4I/J/tQag8wWOKSso
-         tPVS7/n/AzybaT9zZ+KTOq8oH+FTTjOvGzLxnI+6qxdgrzRwrV5urUhjpI9k9dTwohtO
-         AJug==
-X-Gm-Message-State: AOAM531iCiEhCRAUvm3Lfg3jSNcOOq1mpZH1CLBIBRd7shKzq3cTUZL4
-        XWxxEBwEi3WSnglkK0VXg5FFl9f/Wawc
-X-Google-Smtp-Source: ABdhPJzAM44YvcI2eY5BDvZXP1CL91XTwHSk/ficRLHKynUx1ZaTtPmmgHpQyfkf4ayDeiiwEw2CVKu0Zo+Z
-X-Received: from furquan.mtv.corp.google.com ([2620:15c:202:1:7220:84ff:fe09:13a4])
- (user=furquan job=sendgmr) by 2002:a5b:b45:: with SMTP id b5mr3114667ybr.294.1597909964605;
- Thu, 20 Aug 2020 00:52:44 -0700 (PDT)
-Date:   Thu, 20 Aug 2020 00:52:41 -0700
-In-Reply-To: <20200820052600.3069895-1-furquan@google.com>
-Message-Id: <20200820075241.3160534-1-furquan@google.com>
-Mime-Version: 1.0
-References: <20200820052600.3069895-1-furquan@google.com>
-X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
-Subject: [PATCH v2] drivers: gpu: amd: Initialize amdgpu_dm_backlight_caps
- object to 0 in amdgpu_dm_update_backlight_caps
-From:   Furquan Shaikh <furquan@google.com>
-To:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Cc:     "=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Stylon Wang <stylon.wang@amd.com>, Roman Li <roman.li@amd.com>,
-        Mikita Lipski <mikita.lipski@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, adurbin@google.com,
-        deepak.sharma@amd.com, Furquan Shaikh <furquan@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=V7dpkHJntuEfI3gKLsHKE5NL3K2FF0k9pm8mQcVZr3Q=;
+        b=W+5UTsPcxvTGobXqojqJgxb+TrY8oqKF/D7zDZpvLxFGesvwl3IfWMMqddASzStoXb
+         VQR3ttzXHY7IVo67v9Z4HwrhlVxbXD1IvSz+67aHjsZ0y5fSe/jYFytmjh+vhwCYYwGX
+         8zspDLx6xBr7AjD6ljpzKMX0HiFvUe9Zg3eCf6xnTVL0B6QPVpMo5gyqhDv9CCrqUlRD
+         4Epfrh7JIRc0/aD4c0CDs4Do235S7IbBTla0uM1Fa+sZrqYgoGBIffmgmqsLKQPZdGNb
+         m3lyObUfAjXXu/DPTLJzb63D3sPlt5BXlGIUpYvmo7PurbP0qLrn7nL5ZhppgQc3oqOn
+         w+6w==
+X-Gm-Message-State: AOAM530xvCxNfJCH6Z5JDkrXivIRwKaFmoSgOhI6IyYZcMRfStHseqsO
+        /4/q6tyCR0VLOprNkWocCbU=
+X-Google-Smtp-Source: ABdhPJxcTwXfOx9IDdIc47j4nhuqEyt43NJ7bWz9WAYnPXuZZyknl+AgRk2hE7/Mk44d+zJ8Vw+iyA==
+X-Received: by 2002:a65:4148:: with SMTP id x8mr1596525pgp.245.1597910030790;
+        Thu, 20 Aug 2020 00:53:50 -0700 (PDT)
+Received: from localhost.localdomain ([2402:7500:577:c217:67e6:a40c:a3bf:1945])
+        by smtp.gmail.com with ESMTPSA id q71sm1273832pjq.7.2020.08.20.00.53.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 20 Aug 2020 00:53:50 -0700 (PDT)
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+To:     matthias.bgg@gmail.com, robh+dt@kernel.org
+Cc:     lgirdwood@gmail.com, broonie@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v3 0/2] regulator: mt6360: Add support for MT6360 regulator
+Date:   Thu, 20 Aug 2020 15:53:40 +0800
+Message-Id: <1597910022-22617-1-git-send-email-gene.chen.richtek@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In `amdgpu_dm_update_backlight_caps()`, there is a local
-`amdgpu_dm_backlight_caps` object that is filled in by
-`amdgpu_acpi_get_backlight_caps()`. However, this object is
-uninitialized before the call and hence the subsequent check for
-aux_support can fail since it is not initialized by
-`amdgpu_acpi_get_backlight_caps()` as well. This change initializes
-this local `amdgpu_dm_backlight_caps` object to 0.
+This patch series add MT6360 regulator support contains driver and binding document
 
-Signed-off-by: Furquan Shaikh <furquan@google.com>
----
-v2: Switched to using memset for initialization of object.
+Gene Chen (2)
+  regulator: mt6360: Add support for MT6360 regulator
+  regulator: mt6360: Add DT binding documentation
 
-drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/devicetree/bindings/regulator/mt6360-regulator.yaml |  109 ++
+ drivers/regulator/Kconfig                                         |    9 
+ drivers/regulator/Makefile                                        |    1 
+ drivers/regulator/mt6360-regulator.c                              |  458 ++++++++++
+ include/dt-bindings/regulator/mediatek,mt6360-regulator.h         |   16 
+ 5 files changed, 593 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index e4b33c67b634..da072998ce48 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -2855,6 +2855,8 @@ static void amdgpu_dm_update_backlight_caps(struct amdgpu_display_manager *dm)
- #if defined(CONFIG_ACPI)
- 	struct amdgpu_dm_backlight_caps caps;
- 
-+	memset(&caps, 0, sizeof(caps));
-+
- 	if (dm->backlight_caps.caps_valid)
- 		return;
- 
--- 
-2.28.0.297.g1956fa8f8d-goog
+changelogs between v1 & v2
+ - regulator: merge regmap to mfd driver for r/w with crc
+
+changelogs between v2 & v3
+ - Move regmap define to MFD parent driver
+ - Add bindings document
 
