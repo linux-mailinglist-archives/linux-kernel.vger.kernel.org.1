@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7EE24B465
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E786124B469
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729742AbgHTKE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:04:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52070 "EHLO mail.kernel.org"
+        id S1730452AbgHTKFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:05:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730492AbgHTKBu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:01:50 -0400
+        id S1730494AbgHTKB6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:01:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8CAA622BEF;
-        Thu, 20 Aug 2020 10:01:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CB5122BF3;
+        Thu, 20 Aug 2020 10:01:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917710;
-        bh=y6wwBtn+KP9Yd5tnD9YVIntDuu6JPXyHFIUPNYMgO3k=;
+        s=default; t=1597917713;
+        bh=V+/Zi4mxR5Rb4HM+/QHOT7Y2fxlm21G4sCP879RSQ0I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L0kXG+5Dke4M5rAmkqfDkz0pmbNb6LWG8nJuqIsl+QcHR7mzeZvTJdtKbfjUZPum8
-         zHDBpqQDe4sR11jAKolCx6JFnteWqNrMa37euvGx/zGbwN5zwuwPkmusosJ+vUw2SG
-         4GbpvZkaghc6jKbMEOJVqce4C9PayGNw/Ea5k1jo=
+        b=lXvmsl015aQa31kW1T55w5D/PJFN1BJJBlfxUYZLcdwXHZTjrjTDCryL+n5qcTWZr
+         93t5X5/OOKcC4GzVxl5J4AYaUawHy6nbkBADAASRbSax1o5MUvq9jOWSUUgouzfCBZ
+         Dodkev546ixUtpm2A1AItznyWqmBnaqZ2VSAeB9Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Milton Miller <miltonm@us.ibm.com>,
-        Anton Blanchard <anton@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 128/212] powerpc/vdso: Fix vdso cpu truncation
-Date:   Thu, 20 Aug 2020 11:21:41 +0200
-Message-Id: <20200820091608.814277295@linuxfoundation.org>
+Subject: [PATCH 4.9 129/212] staging: rtl8192u: fix a dubious looking mask before a shift
+Date:   Thu, 20 Aug 2020 11:21:42 +0200
+Message-Id: <20200820091608.864370010@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
 References: <20200820091602.251285210@linuxfoundation.org>
@@ -45,43 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Milton Miller <miltonm@us.ibm.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit a9f675f950a07d5c1dbcbb97aabac56f5ed085e3 ]
+[ Upstream commit c4283950a9a4d3bf4a3f362e406c80ab14f10714 ]
 
-The code in vdso_cpu_init that exposes the cpu and numa node to
-userspace via SPRG_VDSO incorrctly masks the cpu to 12 bits. This means
-that any kernel running on a box with more than 4096 threads (NR_CPUS
-advertises a limit of of 8192 cpus) would expose userspace to two cpu
-contexts running at the same time with the same cpu number.
+Currently the masking of ret with 0xff and followed by a right shift
+of 8 bits always leaves a zero result.  It appears the mask of 0xff
+is incorrect and should be 0xff00, but I don't have the hardware to
+test this. Fix this to mask the upper 8 bits before shifting.
 
-Note: I'm not aware of any distro shipping a kernel with support for more
-than 4096 threads today, nor of any system image that currently exceeds
-4096 threads. Found via code browsing.
+[ Not tested ]
 
-Fixes: 18ad51dd342a7eb09dbcd059d0b451b616d4dafc ("powerpc: Add VDSO version of getcpu")
-Signed-off-by: Milton Miller <miltonm@us.ibm.com>
-Signed-off-by: Anton Blanchard <anton@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200715233704.1352257-1-anton@ozlabs.org
+Addresses-Coverity: ("Operands don't affect result")
+Fixes: 8fc8598e61f6 ("Staging: Added Realtek rtl8192u driver to staging")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20200716154720.1710252-1-colin.king@canonical.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/vdso.c | 2 +-
+ drivers/staging/rtl8192u/r8192U_core.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/kernel/vdso.c b/arch/powerpc/kernel/vdso.c
-index 4111d30badfad..d24aea160352b 100644
---- a/arch/powerpc/kernel/vdso.c
-+++ b/arch/powerpc/kernel/vdso.c
-@@ -704,7 +704,7 @@ int vdso_getcpu_init(void)
- 	node = cpu_to_node(cpu);
- 	WARN_ON_ONCE(node > 0xffff);
- 
--	val = (cpu & 0xfff) | ((node & 0xffff) << 16);
-+	val = (cpu & 0xffff) | ((node & 0xffff) << 16);
- 	mtspr(SPRN_SPRG_VDSO_WRITE, val);
- 	get_paca()->sprg_vdso = val;
- 
+diff --git a/drivers/staging/rtl8192u/r8192U_core.c b/drivers/staging/rtl8192u/r8192U_core.c
+index 6ec3790566504..fa4c47c7d2166 100644
+--- a/drivers/staging/rtl8192u/r8192U_core.c
++++ b/drivers/staging/rtl8192u/r8192U_core.c
+@@ -2522,7 +2522,7 @@ static int rtl8192_read_eeprom_info(struct net_device *dev)
+ 				ret = eprom_read(dev, (EEPROM_TxPwIndex_CCK >> 1));
+ 				if (ret < 0)
+ 					return ret;
+-				priv->EEPROMTxPowerLevelCCK = ((u16)ret & 0xff) >> 8;
++				priv->EEPROMTxPowerLevelCCK = ((u16)ret & 0xff00) >> 8;
+ 			} else
+ 				priv->EEPROMTxPowerLevelCCK = 0x10;
+ 			RT_TRACE(COMP_EPROM, "CCK Tx Power Levl: 0x%02x\n", priv->EEPROMTxPowerLevelCCK);
 -- 
 2.25.1
 
