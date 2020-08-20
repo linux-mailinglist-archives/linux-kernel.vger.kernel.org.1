@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D78B24B47A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F057624B52D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730099AbgHTKHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:07:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53084 "EHLO mail.kernel.org"
+        id S1728671AbgHTKUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:20:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730293AbgHTKCR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:02:17 -0400
+        id S1731348AbgHTKUN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:20:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C7D7420855;
-        Thu, 20 Aug 2020 10:02:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 36916206DA;
+        Thu, 20 Aug 2020 10:20:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917737;
-        bh=0BuGBNYRRfCZkWroIdzu90x55iYIIgyR6zQdAe8liMk=;
+        s=default; t=1597918812;
+        bh=Gg+kEkswDRxTKOBGrIllN4zRgEO19H9gT8252jAy1aY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DbIuRohNVW5fj22kNc2Bg5APHCu2CN4lliUR/bSjmf7FPjRj3F2BTpzuFP4/XKoPd
-         4noYOnJ2GoRNew16gaQYZNFQEK7T4Trp0IBYGNK90q60UcqyKfxexXynKUnu8ureFn
-         Hch+K8JmKAYUJ20IKy5HwjAloD6uOUR+EHWeqL4M=
+        b=VRIQW/5wfyGfyi3Jg4qa9gKm1186ftY4RGGBqHFop82xp+WzzRcWgIQGR8CG8PVMw
+         nJ9SJrz456m23LxVy0o5B/3b4hO3aaPEeA5PE8QhSQ3GWy9bhOzb3zZVJmdJk7fYV7
+         jp/fotQS9R5sHPOkt6L2eOJTjarE+dTgIO4cJvH0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
-        Alexandra Winter <wintera@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 140/212] s390/qeth: dont process empty bridge port events
+        stable@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>
+Subject: [PATCH 4.4 036/149] Bluetooth: Prevent out-of-bounds read in hci_inquiry_result_evt()
 Date:   Thu, 20 Aug 2020 11:21:53 +0200
-Message-Id: <20200820091609.417418761@linuxfoundation.org>
+Message-Id: <20200820092127.482844716@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
-References: <20200820091602.251285210@linuxfoundation.org>
+In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
+References: <20200820092125.688850368@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,40 +43,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Wiedmann <jwi@linux.ibm.com>
+From: Peilin Ye <yepeilin.cs@gmail.com>
 
-[ Upstream commit 02472e28b9a45471c6d8729ff2c7422baa9be46a ]
+commit 75bbd2ea50ba1c5d9da878a17e92eac02fe0fd3a upstream.
 
-Discard events that don't contain any entries. This shouldn't happen,
-but subsequent code relies on being able to use entry 0. So better
-be safe than accessing garbage.
+Check `num_rsp` before using it as for-loop counter.
 
-Fixes: b4d72c08b358 ("qeth: bridgeport support - basic control")
-Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
-Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/s390/net/qeth_l2_main.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ net/bluetooth/hci_event.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/s390/net/qeth_l2_main.c b/drivers/s390/net/qeth_l2_main.c
-index 51152681aba6e..c878c87966163 100644
---- a/drivers/s390/net/qeth_l2_main.c
-+++ b/drivers/s390/net/qeth_l2_main.c
-@@ -1675,6 +1675,10 @@ static void qeth_bridge_state_change(struct qeth_card *card,
- 	int extrasize;
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -2094,7 +2094,7 @@ static void hci_inquiry_result_evt(struc
  
- 	QETH_CARD_TEXT(card, 2, "brstchng");
-+	if (qports->num_entries == 0) {
-+		QETH_CARD_TEXT(card, 2, "BPempty");
-+		return;
-+	}
- 	if (qports->entry_length != sizeof(struct qeth_sbp_port_entry)) {
- 		QETH_CARD_TEXT_(card, 2, "BPsz%04x", qports->entry_length);
+ 	BT_DBG("%s num_rsp %d", hdev->name, num_rsp);
+ 
+-	if (!num_rsp)
++	if (!num_rsp || skb->len < num_rsp * sizeof(*info) + 1)
  		return;
--- 
-2.25.1
-
+ 
+ 	if (hci_dev_test_flag(hdev, HCI_PERIODIC_INQ))
 
 
