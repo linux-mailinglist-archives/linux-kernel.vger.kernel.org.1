@@ -2,88 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2584424BEA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA7424BEDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729419AbgHTN3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:29:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41536 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728770AbgHTN3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 09:29:25 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729651AbgHTNd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:33:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28710 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729475AbgHTNdt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 09:33:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597930428;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=X2fJCEf/hhnmDqCnQtY5hjOcNe8YUPEVscVUU8eAkMY=;
+        b=PCeB5h9t4arJmC7gNny9BR5ixdPvS4aReiuGdKagFlgRp6KFFhxgOOWsYCJAnhtCTzft/7
+        kCPDpLERZoNFA4tI8vaLNDrMSYuGq9dodpF+N4sNM8VzxdLsDthBAdo/Hw6c3W+01i3jJw
+        STrZDp0kklISUTvMmd+ye85yfE3SDgM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-196-vDgPCg3fNbqGSmAdSCx5vQ-1; Thu, 20 Aug 2020 09:33:46 -0400
+X-MC-Unique: vDgPCg3fNbqGSmAdSCx5vQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A631208A9;
-        Thu, 20 Aug 2020 13:29:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597930165;
-        bh=TCYmLgf6ZeWa82TBbBiddjDcFsiYAq77Gs/NAYzu4RQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hSd2v8g7NzQcHTqpKc4MRnc3is4Z/W4nds9K2D9wx1uFlDRELkaHfG46pprMNl0qQ
-         B/Ckq6ME9DSu0O226AGuDw79ue3YjbjiQnQ5vzcFuq4VdL+OTR45om/YxxdJaH06IQ
-         wOUJjgMfT8Ezg6bZW8cSDDGylSNcvwwARkVRYacg=
-Date:   Thu, 20 Aug 2020 09:29:24 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Wei Hu <weh@microsoft.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: Re: [PATCH 5.8 164/232] PCI: hv: Fix a timing issue which causes
- kdump to fail occasionally
-Message-ID: <20200820132924.GA8670@sasha-vm>
-References: <20200820091612.692383444@linuxfoundation.org>
- <20200820091620.754492308@linuxfoundation.org>
- <MW2PR2101MB10522B1242B1309BF35EFFEED75A0@MW2PR2101MB1052.namprd21.prod.outlook.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B2A52AE641;
+        Thu, 20 Aug 2020 13:33:43 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.35.206.173])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 35F7219D6C;
+        Thu, 20 Aug 2020 13:33:40 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        Jim Mattson <jmattson@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
+        64-BIT)), "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH v2 0/7] KVM: nSVM: ondemand nested state allocation + smm fixes
+Date:   Thu, 20 Aug 2020 16:33:32 +0300
+Message-Id: <20200820133339.372823-1-mlevitsk@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <MW2PR2101MB10522B1242B1309BF35EFFEED75A0@MW2PR2101MB1052.namprd21.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 01:00:51PM +0000, Michael Kelley wrote:
->From: Greg Kroah-Hartman <gregkh@linuxfoundation.org> Sent: Thursday, August 20, 2020 2:20 AM
->>
->> From: Wei Hu <weh@microsoft.com>
->>
->> [ Upstream commit d6af2ed29c7c1c311b96dac989dcb991e90ee195 ]
->>
->> Kdump could fail sometime on Hyper-V guest because the retry in
->> hv_pci_enter_d0() releases child device structures in hv_pci_bus_exit().
->>
->> Although there is a second asynchronous device relations message sending
->> from the host, if this message arrives to the guest after
->> hv_send_resource_allocated() is called, the retry would fail.
->>
->> Fix the problem by moving retry to hv_pci_probe() and start the retry
->> from hv_pci_query_relations() call.  This will cause a device relations
->> message to arrive to the guest synchronously; the guest would then be
->> able to rebuild the child device structures before calling
->> hv_send_resource_allocated().
->>
->> Link:
->> https://lore.kernel.org/linux-hyperv/20200727071731.18516-1-weh@microsoft.com/
->> Fixes: c81992e7f4aa ("PCI: hv: Retry PCI bus D0 entry on invalid device state")
->> Signed-off-by: Wei Hu <weh@microsoft.com>
->> [lorenzo.pieralisi@arm.com: fixed a comment and commit log]
->> Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
->> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->> ---
->>  drivers/pci/controller/pci-hyperv.c | 71 +++++++++++++++--------------
->>  1 file changed, 37 insertions(+), 34 deletions(-)
->>
->
->This patch came through three days ago, and I indicated then that we don't want
->it backported to 5.8 and earlier.
+Hi!=0D
+=0D
+This patch series does some refactoring and implements on demand nested sta=
+te area=0D
+This way at least guests that don't use nesting won't waste memory=0D
+on nested state.=0D
+=0D
+Patches 1,2,3 are refactoring=0D
+=0D
+Patches 4,5 are new from V1 and implement more strict SMM save state area c=
+hecking=0D
+on resume from SMM to avoid guest tampering with this area.=0D
+=0D
+This was done to avoid crashing if the guest enabled 'guest was interrupted=
+'=0D
+flag there and we don't have nested state allocated.=0D
+=0D
+Patches 6,7 are for ondemand nested state.=0D
+=0D
+The series was tested with various nested guests, in one case even with=0D
+L3 running, but note that due to unrelated issue, migration with nested=0D
+guest running didn't work for me with or without this series.=0D
+I am investigating this currently.=0D
+=0D
+Best regards,=0D
+	Maxim Levitsky=0D
+=0D
+Maxim Levitsky (7):=0D
+  KVM: SVM: rename a variable in the svm_create_vcpu=0D
+  KVM: nSVM: rename nested 'vmcb' to vmcb12_gpa in few places=0D
+  KVM: SVM: refactor msr permission bitmap allocation=0D
+  KVM: x86: allow kvm_x86_ops.set_efer to return a value=0D
+  KVM: nSVM: more strict smm checks=0D
+  KVM: emulator: more strict rsm checks.=0D
+  KVM: nSVM: implement ondemand allocation of the nested state=0D
+=0D
+ arch/x86/include/asm/kvm_host.h |   2 +-=0D
+ arch/x86/kvm/emulate.c          |  22 ++++--=0D
+ arch/x86/kvm/svm/nested.c       |  53 +++++++++++--=0D
+ arch/x86/kvm/svm/svm.c          | 130 ++++++++++++++++++--------------=0D
+ arch/x86/kvm/svm/svm.h          |  10 ++-=0D
+ arch/x86/kvm/vmx/vmx.c          |   5 +-=0D
+ arch/x86/kvm/x86.c              |   3 +-=0D
+ 7 files changed, 151 insertions(+), 74 deletions(-)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
-Uh, I re-added it by mistake, sorry.
-
--- 
-Thanks,
-Sasha
