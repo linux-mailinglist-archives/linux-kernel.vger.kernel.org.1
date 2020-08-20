@@ -2,144 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A07724BA14
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E0424BAB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727858AbgHTL74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 07:59:56 -0400
-Received: from crapouillou.net ([89.234.176.41]:45940 "EHLO crapouillou.net"
+        id S1729768AbgHTMQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:16:19 -0400
+Received: from m12-13.163.com ([220.181.12.13]:55685 "EHLO m12-13.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730471AbgHTL7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 07:59:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1597924774; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kB2wGLDuU6aSHvN4xthqcKsE4uQqughcC0pSUs3BWBU=;
-        b=prx1avjqa0Ec51djNOI7gQDIPqvrOlAPUI7yPDnkvY580F1LFMbGawsak00Ou/nO9a0UWN
-        3d3DtzU5B+oepNoiQrT4clwIKAnw4yO/pMifbAFDcAFpXOvjJHAPknTYYFM6wOlYa5kq+P
-        NdU8DgqFntO9IBnHFyjFnr+Qa13EEtk=
-Date:   Thu, 20 Aug 2020 13:59:23 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] drivers/dma/dma-jz4780: Fix race condition between probe
- and irq handler
-To:     madhuparnabhowmik10@gmail.com
-Cc:     dan.j.williams@intel.com, vkoul@kernel.org,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        andrianov@ispras.ru, ldv-project@linuxtesting.org
-Message-Id: <ZM2DFQ.KQQJYLJ02WTD3@crapouillou.net>
-In-Reply-To: <20200816072253.13817-1-madhuparnabhowmik10@gmail.com>
-References: <20200816072253.13817-1-madhuparnabhowmik10@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+        id S1730254AbgHTJ5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:57:06 -0400
+X-Greylist: delayed 6414 seconds by postgrey-1.27 at vger.kernel.org; Thu, 20 Aug 2020 05:57:01 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=zh3BcAV+VPoSPllH0M
+        6u5wgwqBFhydicUtJNSNo6k0A=; b=dQ0Su/Id+ScorRnxqvOUNDmqEcCmvclewL
+        /iANzNAWCQ4TAWd6xynRfdGX5z6ffkRKPNed4JwHYD5TbbN5PtvGhLdfgakMQjO3
+        sRofhHp2Lga/xBF1aPLeGgq3JX/gYoqtP2RW96il4tUPqGuciX4+KgwsdQNoUW5x
+        ZvdRCwJ6g=
+Received: from localhost.localdomain (unknown [182.149.198.204])
+        by smtp9 (Coremail) with SMTP id DcCowAA3sygTLD5fhvmqCQ--.55333S4;
+        Thu, 20 Aug 2020 15:53:56 +0800 (CST)
+From:   Sheng Long Wang <china_shenglong@163.com>
+To:     johan@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jan.kiszka@siemens.com,
+        Wang Sheng Long <shenglong.wang.ext@siemens.com>
+Subject: [PATCH v3] usb-serial:cp210x: add support to software flow control
+Date:   Thu, 20 Aug 2020 15:52:40 +0800
+Message-Id: <20200820075240.13321-1-china_shenglong@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: DcCowAA3sygTLD5fhvmqCQ--.55333S4
+X-Coremail-Antispam: 1Uf129KBjvJXoW3JF45Jw18Jr45GFWftFyrZwb_yoW7ZFW7pF
+        W8trWfKF4DZF4fWa1rAF4Uu3sxuanaqry2yFy3G39I9a13Jr1fKF1Ika4Yvr1UArW7G345
+        Jrs8tayDur4qyrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bY6pPUUUUU=
+X-Originating-IP: [182.149.198.204]
+X-CM-SenderInfo: xfkl0tpbvkv0xjor0wi6rwjhhfrp/1tbiNA+GslaD5MEDugABsH
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Wang Sheng Long <shenglong.wang.ext@siemens.com>
 
-Le dim. 16 ao=FBt 2020 =E0 12:52, madhuparnabhowmik10@gmail.com a =E9crit :
-> From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
->=20
-> In probe IRQ is requested before zchan->id is initialized which can be
-> read in the irq handler. Hence, shift request irq and enable clock=20
-> after
-> other initializations complete. Here, enable clock part is not part of
-> the race, it is just shifted down after request_irq to keep the error
-> path same as before.
->=20
-> Found by Linux Driver Verification project (linuxtesting.org).
->=20
-> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+When data is transmitted between two serial ports,
+the phenomenon of data loss often occurs. The two kinds
+of flow control commonly used in serial communication
+are hardware flow control and software flow control.
 
-I don't think there is a race at all, the interrupt handler won't be=20
-called before the DMA is registered.
+In serial communication, If you only use RX/TX/GND Pins, you
+can't do hardware flow. So we often used software flow control
+and prevent data loss. The user sets the software flow control
+through the application program, and the application program
+sets the software flow control mode for the serial port
+chip through the driver.
 
-More importantly, this patch will break things, as there are now=20
-register writes in the probe before the clock is enabled.
+For the cp210 serial port chip, its driver lacks the
+software flow control setting code, so the user cannot set
+the software flow control function through the application
+program. This adds the missing software flow control.
 
-Cheers,
--Paul
+Signed-off-by: Wang Sheng Long <shenglong.wang.ext@siemens.com>
 
-> ---
->  drivers/dma/dma-jz4780.c | 44=20
-> ++++++++++++++++++++--------------------
->  1 file changed, 22 insertions(+), 22 deletions(-)
->=20
-> diff --git a/drivers/dma/dma-jz4780.c b/drivers/dma/dma-jz4780.c
-> index 448f663da89c..5cbc8c3bd6c7 100644
-> --- a/drivers/dma/dma-jz4780.c
-> +++ b/drivers/dma/dma-jz4780.c
-> @@ -879,28 +879,6 @@ static int jz4780_dma_probe(struct=20
-> platform_device *pdev)
->  		return -EINVAL;
->  	}
->=20
-> -	ret =3D platform_get_irq(pdev, 0);
-> -	if (ret < 0)
-> -		return ret;
-> -
-> -	jzdma->irq =3D ret;
-> -
-> -	ret =3D request_irq(jzdma->irq, jz4780_dma_irq_handler, 0,=20
-> dev_name(dev),
-> -			  jzdma);
-> -	if (ret) {
-> -		dev_err(dev, "failed to request IRQ %u!\n", jzdma->irq);
-> -		return ret;
-> -	}
-> -
-> -	jzdma->clk =3D devm_clk_get(dev, NULL);
-> -	if (IS_ERR(jzdma->clk)) {
-> -		dev_err(dev, "failed to get clock\n");
-> -		ret =3D PTR_ERR(jzdma->clk);
-> -		goto err_free_irq;
-> -	}
-> -
-> -	clk_prepare_enable(jzdma->clk);
-> -
->  	/* Property is optional, if it doesn't exist the value will remain=20
-> 0. */
->  	of_property_read_u32_index(dev->of_node,=20
-> "ingenic,reserved-channels",
->  				   0, &jzdma->chan_reserved);
-> @@ -949,6 +927,28 @@ static int jz4780_dma_probe(struct=20
-> platform_device *pdev)
->  		jzchan->vchan.desc_free =3D jz4780_dma_desc_free;
->  	}
->=20
-> +	ret =3D platform_get_irq(pdev, 0);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	jzdma->irq =3D ret;
-> +
-> +	ret =3D request_irq(jzdma->irq, jz4780_dma_irq_handler, 0,=20
-> dev_name(dev),
-> +			  jzdma);
-> +	if (ret) {
-> +		dev_err(dev, "failed to request IRQ %u!\n", jzdma->irq);
-> +		return ret;
-> +	}
-> +
-> +	jzdma->clk =3D devm_clk_get(dev, NULL);
-> +	if (IS_ERR(jzdma->clk)) {
-> +		dev_err(dev, "failed to get clock\n");
-> +		ret =3D PTR_ERR(jzdma->clk);
-> +		goto err_free_irq;
-> +	}
-> +
-> +	clk_prepare_enable(jzdma->clk);
-> +
->  	ret =3D dmaenginem_async_device_register(dd);
->  	if (ret) {
->  		dev_err(dev, "failed to register device\n");
-> --
-> 2.17.1
->=20
+Changes in v3:
+-fixed code style, It mainly adjusts the code style acccording
+ to kernel specification.
+---
+ drivers/usb/serial/cp210x.c | 118 ++++++++++++++++++++++++++++++++++--
+ 1 file changed, 113 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
+index e732949f65..c66a0e0fb9 100644
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -380,6 +380,9 @@ static struct usb_serial_driver * const serial_drivers[] = {
+ #define CP210X_PARTNUM_CP2102N_QFN20	0x22
+ #define CP210X_PARTNUM_UNKNOWN	0xFF
+ 
++#define CP210X_VSTART	0x11
++#define CP210X_VSTOP	0x13
++
+ /* CP210X_GET_COMM_STATUS returns these 0x13 bytes */
+ struct cp210x_comm_status {
+ 	__le32   ulErrors;
+@@ -391,6 +394,15 @@ struct cp210x_comm_status {
+ 	u8       bReserved;
+ } __packed;
+ 
++struct cp210x_chars_response {
++	u8	eofchar;
++	u8	errochar;
++	u8	breakchar;
++	u8	eventchar;
++	u8	xonchar;
++	u8	xoffchar;
++} __packed;
++
+ /*
+  * CP210X_PURGE - 16 bits passed in wValue of USB request.
+  * SiLabs app note AN571 gives a strange description of the 4 bits:
+@@ -624,6 +636,45 @@ static int cp210x_read_vendor_block(struct usb_serial *serial, u8 type, u16 val,
+ 	return result;
+ }
+ 
++/*
++ * Read and Write Character Responses operate
++ * Register SET_CHARS/GET_CHATS
++ */
++static int cp210x_operate_chars_block(struct usb_serial_port *port,
++				u8 req, u8 type, void *buf, int bufsize)
++{
++	struct usb_serial *serial = port->serial;
++	struct cp210x_port_private *port_priv = usb_get_serial_port_data(port);
++	void *dmabuf;
++	int result;
++
++	dmabuf = kmemdup(buf, bufsize, GFP_KERNEL);
++	if (!dmabuf)
++		return -ENOMEM;
++
++	result = usb_control_msg(serial->dev,
++				usb_rcvctrlpipe(serial->dev, 0),
++				req, type, 0, port_priv->bInterfaceNumber,
++				dmabuf, bufsize, USB_CTRL_SET_TIMEOUT);
++
++	if (result == bufsize) {
++		if (type == REQTYPE_DEVICE_TO_HOST)
++			memcpy(buf, dmabuf, bufsize);
++
++		result = 0;
++	} else {
++		dev_err(&port->dev, "failed get req 0x%x size %d status: %d\n",
++			req, bufsize, result);
++		if (result >= 0)
++			result = -EIO;
++
++	}
++
++	kfree(dmabuf);
++
++	return result;
++}
++
+ /*
+  * Writes any 16-bit CP210X_ register (req) whose value is passed
+  * entirely in the wValue field of the USB request.
+@@ -1134,11 +1185,17 @@ static void cp210x_set_termios(struct tty_struct *tty,
+ 		struct usb_serial_port *port, struct ktermios *old_termios)
+ {
+ 	struct device *dev = &port->dev;
+-	unsigned int cflag, old_cflag;
++	struct cp210x_chars_response charsres;
++	struct cp210x_flow_ctl flow_ctl;
++	unsigned int cflag, old_cflag, iflag;
+ 	u16 bits;
++	int result;
++	u32 ctl_hs;
++	u32 flow_repl;
+ 
+ 	cflag = tty->termios.c_cflag;
+ 	old_cflag = old_termios->c_cflag;
++	iflag = tty->termios.c_iflag;
+ 
+ 	if (tty->termios.c_ospeed != old_termios->c_ospeed)
+ 		cp210x_change_speed(tty, port, old_termios);
+@@ -1212,10 +1269,6 @@ static void cp210x_set_termios(struct tty_struct *tty,
+ 	}
+ 
+ 	if ((cflag & CRTSCTS) != (old_cflag & CRTSCTS)) {
+-		struct cp210x_flow_ctl flow_ctl;
+-		u32 ctl_hs;
+-		u32 flow_repl;
+-
+ 		cp210x_read_reg_block(port, CP210X_GET_FLOW, &flow_ctl,
+ 				sizeof(flow_ctl));
+ 		ctl_hs = le32_to_cpu(flow_ctl.ulControlHandshake);
+@@ -1252,6 +1305,61 @@ static void cp210x_set_termios(struct tty_struct *tty,
+ 				sizeof(flow_ctl));
+ 	}
+ 
++	/*
++	 * Set Software  Flow  Control
++	 * Check the IXOFF/IXON status in the iflag component of the
++	 * termios structure.
++	 *
++	 */
++	if ((iflag & IXOFF) || (iflag & IXON)) {
++
++		result = cp210x_operate_chars_block(port,
++						CP210X_GET_CHARS,
++						REQTYPE_DEVICE_TO_HOST,
++						&charsres,
++						sizeof(charsres));
++
++		if (result < 0) {
++			dev_err(dev, "Read Characrter Responses failed\n");
++			return;
++		}
++		charsres.xonchar  = CP210X_VSTART;
++		charsres.xoffchar = CP210X_VSTOP;
++		result = cp210x_operate_chars_block(port,
++						CP210X_SET_CHARS,
++						REQTYPE_HOST_TO_INTERFACE,
++						&charsres,
++						sizeof(charsres));
++		if (result < 0) {
++			memset(&charsres, 0, sizeof(charsres));
++			dev_err(dev, "Write Characrter Responses failed\n");
++			return;
++		}
++
++		/*Set  Rx/Tx Flow Contrl  Flag in ulFlowReplace*/
++		cp210x_read_reg_block(port,
++					CP210X_GET_FLOW,
++					&flow_ctl,
++					sizeof(flow_ctl));
++
++		flow_repl = le32_to_cpu(flow_ctl.ulFlowReplace);
++
++		if (iflag & IXOFF)
++			flow_repl |= CP210X_SERIAL_AUTO_RECEIVE;
++		else
++			flow_repl &= ~CP210X_SERIAL_AUTO_RECEIVE;
++
++		if (iflag & IXON)
++			flow_repl |= CP210X_SERIAL_AUTO_TRANSMIT;
++		else
++			flow_repl &= ~CP210X_SERIAL_AUTO_TRANSMIT;
++
++		flow_ctl.ulFlowReplace = cpu_to_le32(flow_repl);
++		cp210x_write_reg_block(port,
++					CP210X_SET_FLOW,
++					&flow_ctl,
++					sizeof(flow_ctl));
++	}
+ }
+ 
+ static int cp210x_tiocmset(struct tty_struct *tty,
+-- 
+2.17.1
 
 
