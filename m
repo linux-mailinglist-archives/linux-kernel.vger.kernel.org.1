@@ -2,213 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4BE24BF6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5B124BF5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729487AbgHTNsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:48:33 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:49530 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729889AbgHTNjq (ORCPT
+        id S1730713AbgHTNqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:46:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730583AbgHTNkO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 09:39:46 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07KDdfPe064937;
-        Thu, 20 Aug 2020 08:39:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1597930781;
-        bh=CreWDlx2qw1gxWkE6+yRLtN1h0tYFQe3WNDbGnsvsrA=;
-        h=From:To:CC:Subject:Date;
-        b=EzF0matl3w/Tupsws9Qb4Wiy9di0m/4OgyYS1J/sXucf1N8CZOkDK7uH0P7TDehTS
-         vCVE9+Z35nDC6n10erou66E+AsH0LU4DSxUg5UbjtXmMuhNR5UuY8Y1lUzOGSuPXlb
-         YFwTNPFHeeN3S5W20TaVIwfk6buP0i2Vk+IG45Oo=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 07KDdfQk067556
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 20 Aug 2020 08:39:41 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 20
- Aug 2020 08:39:41 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 20 Aug 2020 08:39:40 -0500
-Received: from lta0400828a.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07KDddxj087926;
-        Thu, 20 Aug 2020 08:39:39 -0500
-From:   Roger Quadros <rogerq@ti.com>
-To:     <kishon@ti.com>
-CC:     <nsekhar@ti.com>, <vigneshr@ti.com>, <jan.kiszka@siemens.com>,
-        <linux-kernel@vger.kernel.org>, Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v5] phy: omap-usb2-phy: disable PHY charger detect
-Date:   Thu, 20 Aug 2020 16:39:37 +0300
-Message-ID: <20200820133937.32504-1-rogerq@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 20 Aug 2020 09:40:14 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC072C061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 06:40:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=M7LhfTKr/6e64b8f6hHsV3cvhzdJCa8nrqjNCiRKjWo=; b=ht5gtNDT2NQZYe0CQtBrRTqED7
+        rT6HAsJ5h0qOe1WgVmpqvxXibeM5KfYyR5d47CDCT7hOuJfTixAT4a7gj64V3iVbion/QGrFXQLcN
+        2n6R/BNgMypzS6rssVVTrM4BtO8hG5GZFce2p+xbtUBn3IWUPK74jsMJkX17dtaaY+OZhRiasQn5p
+        hJUTenjorBK8m6ByBV5ltRW3WJl5jM2y79cKdE4Iw9xAdV2lQwHwObMnkY2VX1mIyFVZDcFpwLqjo
+        c2IOHzv3p09atfkzHAY36qQhOQ5mZ4n+fYofow1XetxmO93zCLwSFGEQIN6vokI7vPyGkbuFgyxvJ
+        tlMrt3Ag==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k8knT-0005Uz-GU; Thu, 20 Aug 2020 13:40:04 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 06307302526;
+        Thu, 20 Aug 2020 15:40:01 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D1D902BE72362; Thu, 20 Aug 2020 15:40:01 +0200 (CEST)
+Date:   Thu, 20 Aug 2020 15:40:01 +0200
+From:   peterz@infradead.org
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
+        linux-kernel@vger.kernel.org, will@kernel.org, paulmck@kernel.org,
+        axboe@kernel.dk, chris@chris-wilson.co.uk, davem@davemloft.net,
+        kuba@kernel.org, fweisbec@gmail.com, oleg@redhat.com,
+        vincent.guittot@linaro.org
+Subject: Re: [RFC][PATCH v2 08/10] smp,irq_work: Use the new irq_work API
+Message-ID: <20200820134001.GV2674@hirez.programming.kicks-ass.net>
+References: <20200818105102.926463950@infradead.org>
+ <20200818112418.460474861@infradead.org>
+ <20200820061927.GA6447@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200820061927.GA6447@lst.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AM654x PG1.0 has a silicon bug that D+ is pulled high after POR, which
-could cause enumeration failure with some USB hubs.  Disabling the
-USB2_PHY Charger Detect function will put D+ into the normal state.
+On Thu, Aug 20, 2020 at 08:19:27AM +0200, Christoph Hellwig wrote:
+> On Tue, Aug 18, 2020 at 12:51:10PM +0200, Peter Zijlstra wrote:
+> >  	if (blk_mq_complete_need_ipi(rq)) {
+> > -		INIT_CSD(&rq->csd, __blk_mq_complete_request_remote, rq);
+> > -		smp_call_function_single_async(rq->mq_ctx->cpu, &rq->csd);
+> > +		rq->work = IRQ_WORK_INIT_HARD(__blk_mq_complete_request_remote);
+> > +		irq_work_queue_remote_static(rq->mq_ctx->cpu, &rq->work);
+> 
+> So given the caller synchronization / use once semantics does it even
+> make sense to split the init vs call part here?  What about:
+> 
+> 		irq_work_queue_remote_static(&rq->work, rq->mq_ctx->cpu,
+> 					    __blk_mq_complete_request_remote);
+> 
+> instead?  And btw, I'm not sure what the "static" stand for.  Maybe
+> irq_work_queue_remote_once?
 
-This addresses Silicon Errata:
-i2075 - "USB2PHY: USB2PHY Charger Detect is Enabled by Default Without VBUS
-Presence"
+The 'static' came from static storage, but I agree that the naming is
+pretty random/poor.
 
-Signed-off-by: Roger Quadros <rogerq@ti.com>
----
-Changelog:
-v5
-- don't use dt property to enable workaround. Use soc_device_match() instead.
+One argument against your proposal is that it makes it even harder to
+add warnings that try and catch bad/broken usage.
 
-v4
-- fix example to fix dt_binding_check warnings
-- '#phy-cells' -> "#phy-cells"
-- Add 'oneOf' to compatible logic to allow just "ti,omap-usb2" as valid
+Also, given Linus' email I now wonder if we still want the
+irq_work_remote variant at all.
 
-v3
-- Removed quotes from compatibles
-- changed property to "ti,disable-charger-det"
 
-v2
-- Address Rob's comments on YAML schema.
+So the initial use-case was something like:
 
- drivers/phy/ti/phy-omap-usb2.c | 70 +++++++++++++++++++++++++---------
- 1 file changed, 51 insertions(+), 19 deletions(-)
+struct foo {
+	struct irq_work work;
+	...
+};
 
-diff --git a/drivers/phy/ti/phy-omap-usb2.c b/drivers/phy/ti/phy-omap-usb2.c
-index cb2dd3230fa7..65d73142d4ec 100644
---- a/drivers/phy/ti/phy-omap-usb2.c
-+++ b/drivers/phy/ti/phy-omap-usb2.c
-@@ -6,26 +6,31 @@
-  * Author: Kishon Vijay Abraham I <kishon@ti.com>
-  */
- 
--#include <linux/module.h>
--#include <linux/platform_device.h>
--#include <linux/slab.h>
--#include <linux/of.h>
--#include <linux/io.h>
--#include <linux/phy/omap_usb.h>
--#include <linux/usb/phy_companion.h>
- #include <linux/clk.h>
--#include <linux/err.h>
--#include <linux/pm_runtime.h>
- #include <linux/delay.h>
-+#include <linux/err.h>
-+#include <linux/io.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
- #include <linux/phy/omap_control_phy.h>
-+#include <linux/phy/omap_usb.h>
- #include <linux/phy/phy.h>
--#include <linux/mfd/syscon.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
- #include <linux/regmap.h>
--#include <linux/of_platform.h>
-+#include <linux/slab.h>
-+#include <linux/sys_soc.h>
-+#include <linux/usb/phy_companion.h>
- 
- #define USB2PHY_ANA_CONFIG1		0x4c
- #define USB2PHY_DISCON_BYP_LATCH	BIT(31)
- 
-+#define USB2PHY_CHRG_DET			0x14
-+#define USB2PHY_CHRG_DET_USE_CHG_DET_REG	BIT(29)
-+#define USB2PHY_CHRG_DET_DIS_CHG_DET		BIT(28)
-+
- /* SoC Specific USB2_OTG register definitions */
- #define AM654_USB2_OTG_PD		BIT(8)
- #define AM654_USB2_VBUS_DET_EN		BIT(5)
-@@ -43,6 +48,7 @@
- #define OMAP_USB2_HAS_START_SRP			BIT(0)
- #define OMAP_USB2_HAS_SET_VBUS			BIT(1)
- #define OMAP_USB2_CALIBRATE_FALSE_DISCONNECT	BIT(2)
-+#define OMAP_USB2_DISABLE_CHRG_DET		BIT(3)
- 
- struct omap_usb {
- 	struct usb_phy		phy;
-@@ -236,6 +242,13 @@ static int omap_usb_init(struct phy *x)
- 		omap_usb_writel(phy->phy_base, USB2PHY_ANA_CONFIG1, val);
- 	}
- 
-+	if (phy->flags & OMAP_USB2_DISABLE_CHRG_DET) {
-+		val = omap_usb_readl(phy->phy_base, USB2PHY_CHRG_DET);
-+		val |= USB2PHY_CHRG_DET_USE_CHG_DET_REG |
-+		       USB2PHY_CHRG_DET_DIS_CHG_DET;
-+		omap_usb_writel(phy->phy_base, USB2PHY_CHRG_DET, val);
-+	}
-+
- 	return 0;
- }
- 
-@@ -329,6 +342,26 @@ static const struct of_device_id omap_usb2_id_table[] = {
- };
- MODULE_DEVICE_TABLE(of, omap_usb2_id_table);
- 
-+static void omap_usb2_init_errata(struct omap_usb *phy)
-+{
-+	static const struct soc_device_attribute am65x_sr10_soc_devices[] = {
-+		{ .family = "AM65X", .revision = "SR1.0" },
-+		{ /* sentinel */ }
-+	};
-+
-+	/*
-+	 * Errata i2075: USB2PHY: USB2PHY Charger Detect is Enabled by
-+	 * Default Without VBUS Presence.
-+	 *
-+	 * AM654x SR1.0 has a silicon bug due to which D+ is pulled high after
-+	 * POR, which could cause enumeration failure with some USB hubs.
-+	 * Disabling the USB2_PHY Charger Detect function will put D+
-+	 * into the normal state.
-+	 */
-+	if (soc_device_match(am65x_sr10_soc_devices))
-+		phy->flags |= OMAP_USB2_DISABLE_CHRG_DET;
-+}
-+
- static int omap_usb2_probe(struct platform_device *pdev)
- {
- 	struct omap_usb	*phy;
-@@ -366,14 +399,14 @@ static int omap_usb2_probe(struct platform_device *pdev)
- 	phy->mask		= phy_data->mask;
- 	phy->power_on		= phy_data->power_on;
- 	phy->power_off		= phy_data->power_off;
-+	phy->flags		= phy_data->flags;
- 
--	if (phy_data->flags & OMAP_USB2_CALIBRATE_FALSE_DISCONNECT) {
--		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--		phy->phy_base = devm_ioremap_resource(&pdev->dev, res);
--		if (IS_ERR(phy->phy_base))
--			return PTR_ERR(phy->phy_base);
--		phy->flags |= OMAP_USB2_CALIBRATE_FALSE_DISCONNECT;
--	}
-+	omap_usb2_init_errata(phy);
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	phy->phy_base = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(phy->phy_base))
-+		return PTR_ERR(phy->phy_base);
- 
- 	phy->syscon_phy_power = syscon_regmap_lookup_by_phandle(node,
- 							"syscon-phy-power");
-@@ -405,7 +438,6 @@ static int omap_usb2_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--
- 	phy->wkupclk = devm_clk_get(phy->dev, "wkupclk");
- 	if (IS_ERR(phy->wkupclk)) {
- 		if (PTR_ERR(phy->wkupclk) == -EPROBE_DEFER)
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+void foo_func(struct irq_work *work)
+{
+	struct foo *f = container_of(work, struct foo, work);
+
+	...
+}
+
+DEFINE_PER_CPU(struct foo, foo) = IRQ_WORK_INIT_HARD(foo_func);
+
+void raise_foo(int cpu)
+{
+	irq_work_queue_remote(per_cpu_ptr(&foo, cpu), cpu);
+}
+
+Where you can, with IRQs disabled, call raise_foo(cpu) for a remote CPU
+and have the guarantee that foo_func() will observe whatever you did
+before calling raise_foo().
+
+Specifically, I needed this for what is now __ttwu_queue_wakelist(),
+which used to rely on smp_send_reschedule() but needed to be pulled out
+of the regular scheduler IPI.
+
+While sorting through the wreckage of me getting this horribly wrong, I
+noticed that generic_smp_call_function_single_interrupt() was
+unconditionally loading _2_ cachelines, one for the regular CSD llist
+and one for the remote irq_work llist.
+
+I then realized we could merge those two lists, and regain the original
+intent of that IPI to only touch one line.
+
+At that point I could build the above, but then I realized that since I
+already had a mixed type list, I could put the ttwu entries on it as
+well, which is cheaper than doing the above.
+
+
+Anyway, tl;dr, what do we actually want? Do we favour the embedded
+irq_work variant over smp_call_function_single_asyn() ?
+
+There's a few subtle differences, where smp_call_function_single_async()
+will directly call @func when @cpu == smp_processor_id(),
+irq_work_remote will give you WARN -- since irq_work to the local CPU is
+defined as a self-IPI, which isn't implemented on all architectures and
+is a distinctly different behaviour.
+
+That said, most (if not all) users seem to actually only care about
+running things on another CPU, so that seems to not matter (much).
+
+
 
