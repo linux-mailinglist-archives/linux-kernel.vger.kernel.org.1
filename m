@@ -2,93 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A9524BFBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FCE624BFD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:55:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726870AbgHTJYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:24:06 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:57024 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726781AbgHTJXz (ORCPT
+        id S1728587AbgHTNzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:55:02 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:60528 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727902AbgHTJ0k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:23:55 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 273591C0BD6; Thu, 20 Aug 2020 11:23:50 +0200 (CEST)
-Date:   Thu, 20 Aug 2020 11:23:49 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Dave Airlie <airlied@gmail.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Subject: Re: [Intel-gfx] 5.9-rc1: graphics regression moved from -next to
- mainline
-Message-ID: <20200820092349.GA3792@amd>
-References: <20200817161132.GA4711@amd>
- <CAHk-=wh6_eWwvpL=AhOeY0btf_dkpu+0joNzPZWfbBWgAeAhMA@mail.gmail.com>
- <CAPM=9tw8LVWsuA6m_nkUDgm00iz2txYRNZY0b0WWZbyiUVzLEw@mail.gmail.com>
- <CAHk-=wg34bw1ude07nC_XCPOJHZ21-v6117p4574d5S7iP4gxw@mail.gmail.com>
+        Thu, 20 Aug 2020 05:26:40 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id A5F4A1D0C;
+        Thu, 20 Aug 2020 12:26:35 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1597915595;
+        bh=3noQN8rOGv2yyitvWoJV96U2nOW/mwH5Vfw1lzFR83E=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=bdquysZzTTNsEgZmhWWSDjkJ4od2EtH31dCcK9nPTrMFLuzeeog3mPhGfs1+oREns
+         PuDEyKRa+EhK5NcJec2XfOo2MwaqbSbqzuj6zOTyGTAvF8kJJXiNd9IlJbtUNp7on2
+         AtM1BPTLSeGtOwrfni7AkK1uhdE02Os3GOyb2+zQ=
+Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Thu, 20 Aug 2020 12:26:35 +0300
+Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
+ by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
+ id 15.01.1847.003; Thu, 20 Aug 2020 12:26:35 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     "dsterba@suse.cz" <dsterba@suse.cz>
+CC:     "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: RE: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
+ Software.
+Thread-Topic: [PATCH] fs: NTFS read-write driver GPL implementation by Paragon
+ Software.
+Thread-Index: AdZyNcmjSkpkGje7R9K6YobJrVDyZ///4zWA//aneKA=
+Date:   Thu, 20 Aug 2020 09:26:35 +0000
+Message-ID: <dc291b0599c4400b9f7776f969ad5a81@paragon-software.com>
+References: <2911ac5cd20b46e397be506268718d74@paragon-software.com>
+ <20200814134056.GV2026@twin.jikos.cz>
+In-Reply-To: <20200814134056.GV2026@twin.jikos.cz>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.30.8.36]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="EeQfGwPcQSOJBaQU"
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wg34bw1ude07nC_XCPOJHZ21-v6117p4574d5S7iP4gxw@mail.gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---EeQfGwPcQSOJBaQU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-> > I think there's been some discussion about reverting that change for
-> > other reasons, but it's quite likely the culprit.
+> From: David Sterba <dsterba@suse.cz>
+> Sent: Friday, August 14, 2020 4:41 PM
+> On Fri, Aug 14, 2020 at 12:29:01PM +0000, Konstantin Komarov wrote:
+> > This patch adds NTFS Read-Write driver to fs/ntfs3.
+> >
+> > Having decades of expertise in commercial file systems development and =
+huge
+> > test coverage, we at Paragon Software GmbH want to make our contributio=
+n to
+> > the Open Source Community by providing implementation of NTFS Read-Writ=
+e
+> > driver for the Linux Kernel.
+> >
+> > This is fully functional NTFS Read-Write driver. Current version works =
+with
+> > NTFS(including v3.1) normal/compressed/sparse files and supports journa=
+l replaying.
+> >
+> > We plan to support this version after the codebase once merged, and add=
+ new
+> > features and fix bugs. For example, full journaling support over JBD wi=
+ll be
+> > added in later updates.
+> >
+> > The patch is too big to handle it within an e-mail body, so it is avail=
+able to download
+> > on our server: https://dl.paragon-software.com/ntfs3/ntfs3.patch
+> >
+> > Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software=
+.com>
 >=20
-> Hmm. It reverts cleanly, but the end result doesn't work, because of
-> other changes.
+> In case somebody wants to compile it, this fixup is needed to let 'make
+> fs/ntfs3/' actually work, besides enabling it in the config.
 >=20
-> Reverting all of
+> diff --git a/fs/Makefile b/fs/Makefile
+> index 1c7b0e3f6daa..b0b4ad8affa0 100644
+> --- a/fs/Makefile
+> +++ b/fs/Makefile
+> @@ -100,6 +100,7 @@ obj-$(CONFIG_SYSV_FS)		+=3D sysv/
+>  obj-$(CONFIG_CIFS)		+=3D cifs/
+>  obj-$(CONFIG_HPFS_FS)		+=3D hpfs/
+>  obj-$(CONFIG_NTFS_FS)		+=3D ntfs/
+> +obj-$(CONFIG_NTFS3_FS)		+=3D ntfs3/
+>  obj-$(CONFIG_UFS_FS)		+=3D ufs/
+>  obj-$(CONFIG_EFS_FS)		+=3D efs/
+>  obj-$(CONFIG_JFFS2_FS)		+=3D jffs2/
+> diff --git a/fs/ntfs3/Makefile b/fs/ntfs3/Makefile
+> index 4d4fe198b8b8..d99dd1af43aa 100644
+> --- a/fs/ntfs3/Makefile
+> +++ b/fs/ntfs3/Makefile
+> @@ -5,7 +5,7 @@
 >=20
->    763fedd6a216 ("drm/i915: Remove i915_gem_object_get_dirty_page()")
->    7ac2d2536dfa ("drm/i915/gem: Delete unused code")
->    9e0f9464e2ab ("drm/i915/gem: Async GPU relocations only")
+>  obj-$(CONFIG_NTFS3_FS) +=3D ntfs3.o
 >=20
-> seems to at least build.
->=20
-> Pavel, does doing those three reverts make things work for you?
-
-Yes, it seems they make things work. (Chris asked for new patch to be
-tested, so I am switching to his kernel, but it survived longer than
-it usually does.)
-
-Thanks and best regards,
-								Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---EeQfGwPcQSOJBaQU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl8+QSUACgkQMOfwapXb+vJNIwCeI5looH84mvmfbwh947kCWZjp
-DrYAoMLxcp9yPQh16oheciyRdFHfmJdf
-=/piO
------END PGP SIGNATURE-----
-
---EeQfGwPcQSOJBaQU--
+> -ntfs3-objs :=3D bitfunc.o bitmap.o inode.o fsntfs.o frecord.o \
+> +ntfs3-y :=3D bitfunc.o bitmap.o inode.o fsntfs.o frecord.o \
+>  	    index.o attrlist.o record.o attrib.o run.o xattr.o\
+>  	    upcase.o super.o file.o dir.o namei.o lznt.o\
+>  	    fslog.o
+> ---
+Hi David, thanks! Indeed these fixups are needed to the patch (lost them du=
+ring final polishing of the code before submitting). Will be fixed in v2.
