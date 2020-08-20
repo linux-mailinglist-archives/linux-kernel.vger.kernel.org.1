@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 602CC24B4BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BFE224B513
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730945AbgHTKLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:11:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48410 "EHLO mail.kernel.org"
+        id S1730151AbgHTKR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:17:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730931AbgHTKKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:10:54 -0400
+        id S1729368AbgHTKRP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:17:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BD0EC2067C;
-        Thu, 20 Aug 2020 10:10:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3D7BA2075E;
+        Thu, 20 Aug 2020 10:17:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918253;
-        bh=10+zJNWlRoM66xwFf3KVQNglej270cZB0fTcSdq6LUQ=;
+        s=default; t=1597918634;
+        bh=UtA49LqjWfOiF+UegpH3bqGT9EIXZNTUrGsjO15YjNA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WJQvY+Ai0WBZvV+qe1m7qhmMrzApH9S8/qJ0c/WYvFkTwsiJXeuA/1kim2KXRi0N8
-         8IBnXHz7uNxF/FvLo2cQCd8fyvpjwp21IRGxZo7682jv5bfCg4JMHSjM9Xz8IrvTZk
-         yZo3FYYeB7u4j0Xyh7OJd8VtgA+/02jaMOv+8d4w=
+        b=2N2eXMzFK7GvyzKXLZqi3znQtGJH4UgmMT3uwaMtiudpbsq5oylHTnYtb1Kn54rF1
+         i8fizR2bAJbc4K8iYotveOJGmBCaTSNRY3RbhFIDLkJwaq2RLk0A/RWGXCk4vZcGr6
+         8kX5oSwe3S1GxCyOvq26ZHt5l3IqR0Id1zBaeElc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        stable@vger.kernel.org,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
         Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 105/228] mwifiex: Prevent memory corruption handling keys
-Date:   Thu, 20 Aug 2020 11:21:20 +0200
-Message-Id: <20200820091612.848621514@linuxfoundation.org>
+Subject: [PATCH 4.4 004/149] ath9k_htc: release allocated buffer if timed out
+Date:   Thu, 20 Aug 2020 11:21:21 +0200
+Message-Id: <20200820092125.903127111@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
-References: <20200820091607.532711107@linuxfoundation.org>
+In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
+References: <20200820092125.688850368@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,80 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
 
-[ Upstream commit e18696786548244914f36ec3c46ac99c53df99c3 ]
+[ Upstream commit 853acf7caf10b828102d92d05b5c101666a6142b ]
 
-The length of the key comes from the network and it's a 16 bit number.  It
-needs to be capped to prevent a buffer overflow.
+In htc_config_pipe_credits, htc_setup_complete, and htc_connect_service
+if time out happens, the allocated buffer needs to be released.
+Otherwise there will be memory leak.
 
-Fixes: 5e6e3a92b9a4 ("wireless: mwifiex: initial commit for Marvell mwifiex driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Ganapathi Bhat <ganapathi.bhat@nxp.com>
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200708115857.GA13729@mwanda
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../wireless/marvell/mwifiex/sta_cmdresp.c    | 22 +++++++++++++------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+ drivers/net/wireless/ath/ath9k/htc_hst.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c b/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c
-index 0fba5b10ef2d7..19ce279df24d9 100644
---- a/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c
-+++ b/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c
-@@ -585,6 +585,11 @@ static int mwifiex_ret_802_11_key_material_v1(struct mwifiex_private *priv,
- {
- 	struct host_cmd_ds_802_11_key_material *key =
- 						&resp->params.key_material;
-+	int len;
-+
-+	len = le16_to_cpu(key->key_param_set.key_len);
-+	if (len > sizeof(key->key_param_set.key))
-+		return -EINVAL;
+diff --git a/drivers/net/wireless/ath/ath9k/htc_hst.c b/drivers/net/wireless/ath/ath9k/htc_hst.c
+index 257b6ee51e54b..1af216aa5adae 100644
+--- a/drivers/net/wireless/ath/ath9k/htc_hst.c
++++ b/drivers/net/wireless/ath/ath9k/htc_hst.c
+@@ -175,6 +175,7 @@ static int htc_config_pipe_credits(struct htc_target *target)
+ 	time_left = wait_for_completion_timeout(&target->cmd_wait, HZ);
+ 	if (!time_left) {
+ 		dev_err(target->dev, "HTC credit config timeout\n");
++		kfree_skb(skb);
+ 		return -ETIMEDOUT;
+ 	}
  
- 	if (le16_to_cpu(key->action) == HostCmd_ACT_GEN_SET) {
- 		if ((le16_to_cpu(key->key_param_set.key_info) & KEY_MCAST)) {
-@@ -598,9 +603,8 @@ static int mwifiex_ret_802_11_key_material_v1(struct mwifiex_private *priv,
+@@ -211,6 +212,7 @@ static int htc_setup_complete(struct htc_target *target)
+ 	time_left = wait_for_completion_timeout(&target->cmd_wait, HZ);
+ 	if (!time_left) {
+ 		dev_err(target->dev, "HTC start timeout\n");
++		kfree_skb(skb);
+ 		return -ETIMEDOUT;
+ 	}
  
- 	memset(priv->aes_key.key_param_set.key, 0,
- 	       sizeof(key->key_param_set.key));
--	priv->aes_key.key_param_set.key_len = key->key_param_set.key_len;
--	memcpy(priv->aes_key.key_param_set.key, key->key_param_set.key,
--	       le16_to_cpu(priv->aes_key.key_param_set.key_len));
-+	priv->aes_key.key_param_set.key_len = cpu_to_le16(len);
-+	memcpy(priv->aes_key.key_param_set.key, key->key_param_set.key, len);
+@@ -284,6 +286,7 @@ int htc_connect_service(struct htc_target *target,
+ 	if (!time_left) {
+ 		dev_err(target->dev, "Service connection timeout for: %d\n",
+ 			service_connreq->service_id);
++		kfree_skb(skb);
+ 		return -ETIMEDOUT;
+ 	}
  
- 	return 0;
- }
-@@ -615,9 +619,14 @@ static int mwifiex_ret_802_11_key_material_v2(struct mwifiex_private *priv,
- 					      struct host_cmd_ds_command *resp)
- {
- 	struct host_cmd_ds_802_11_key_material_v2 *key_v2;
--	__le16 len;
-+	int len;
- 
- 	key_v2 = &resp->params.key_material_v2;
-+
-+	len = le16_to_cpu(key_v2->key_param_set.key_params.aes.key_len);
-+	if (len > WLAN_KEY_LEN_CCMP)
-+		return -EINVAL;
-+
- 	if (le16_to_cpu(key_v2->action) == HostCmd_ACT_GEN_SET) {
- 		if ((le16_to_cpu(key_v2->key_param_set.key_info) & KEY_MCAST)) {
- 			mwifiex_dbg(priv->adapter, INFO, "info: key: GTK is set\n");
-@@ -633,10 +642,9 @@ static int mwifiex_ret_802_11_key_material_v2(struct mwifiex_private *priv,
- 	memset(priv->aes_key_v2.key_param_set.key_params.aes.key, 0,
- 	       WLAN_KEY_LEN_CCMP);
- 	priv->aes_key_v2.key_param_set.key_params.aes.key_len =
--				key_v2->key_param_set.key_params.aes.key_len;
--	len = priv->aes_key_v2.key_param_set.key_params.aes.key_len;
-+				cpu_to_le16(len);
- 	memcpy(priv->aes_key_v2.key_param_set.key_params.aes.key,
--	       key_v2->key_param_set.key_params.aes.key, le16_to_cpu(len));
-+	       key_v2->key_param_set.key_params.aes.key, len);
- 
- 	return 0;
- }
 -- 
 2.25.1
 
