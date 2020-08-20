@@ -2,73 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2787D24C6E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 22:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 111D724C6CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 22:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728553AbgHTUyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 16:54:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42190 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725820AbgHTUyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 16:54:49 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 636AAACB5;
-        Thu, 20 Aug 2020 20:55:15 +0000 (UTC)
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     akpm@linux-foundation.org
-Cc:     catalin.marinas@arm.com, oleg@redhat.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, dave@stgolabs.net,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: [PATCH] mm/kmemleak: rely on rcu for task stack scanning
-Date:   Thu, 20 Aug 2020 13:39:02 -0700
-Message-Id: <20200820203902.11308-1-dave@stgolabs.net>
-X-Mailer: git-send-email 2.26.2
+        id S1728425AbgHTUjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 16:39:55 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:51532 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728415AbgHTUjy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 16:39:54 -0400
+Received: from imladris.surriel.com ([96.67.55.152])
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1k8rLf-0006yz-UW; Thu, 20 Aug 2020 16:39:47 -0400
+Message-ID: <ad2a59c680d361847f257cdae576dd479e6ab9ac.camel@surriel.com>
+Subject: Re: CFS flat runqueue proposal fixes/update
+From:   Rik van Riel <riel@surriel.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Paul Turner <pjt@google.com>,
+        "vincent.guittot" <vincent.guittot@linaro.org>, kernel-team@fb.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dietmar.eggeman" <dietmar.eggeman@arm.com>
+Date:   Thu, 20 Aug 2020 16:39:47 -0400
+In-Reply-To: <0e7a9174-6ed9-752d-dacb-4dce182852cf@arm.com>
+References: <1609106d05a6a4a5938233e993548510f599d7d9.camel@surriel.com>
+         <0e7a9174-6ed9-752d-dacb-4dce182852cf@arm.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-E3qV2JTgigT6ELVlkBvg"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kmemleak_scan() currently relies on the big tasklist_lock
-hammer to stabilize iterating through the tasklist. Instead,
-this patch proposes simply using rcu along with the rcu-safe
-for_each_process_thread flavor (without changing scan semantics),
-which doesn't make use of next_thread/p->thread_group and thus
-cannot race with exit. Furthermore, any races with fork()
-and not seeing the new child should be benign as it's not
-running yet and can also be detected by the next scan.
 
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
----
- mm/kmemleak.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+--=-E3qV2JTgigT6ELVlkBvg
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/mm/kmemleak.c b/mm/kmemleak.c
-index 5e252d91eb14..c0014d3b91c1 100644
---- a/mm/kmemleak.c
-+++ b/mm/kmemleak.c
-@@ -1471,15 +1471,15 @@ static void kmemleak_scan(void)
- 	if (kmemleak_stack_scan) {
- 		struct task_struct *p, *g;
- 
--		read_lock(&tasklist_lock);
--		do_each_thread(g, p) {
-+		rcu_read_lock();
-+		for_each_process_thread(g, p) {
- 			void *stack = try_get_task_stack(p);
- 			if (stack) {
- 				scan_block(stack, stack + THREAD_SIZE, NULL);
- 				put_task_stack(p);
- 			}
--		} while_each_thread(g, p);
--		read_unlock(&tasklist_lock);
-+		}
-+		rcu_read_unlock();
- 	}
- 
- 	/*
--- 
-2.26.2
+On Thu, 2020-08-20 at 16:56 +0200, Dietmar Eggemann wrote:
+> Hi Rik,
+>=20
+> On 31/07/2020 09:42, Rik van Riel wrote:
+>=20
+> [...]
+>=20
+> > Lets revisit the hierarchy from above, and assign priorities
+> > to the cgroups, with the fixed point one being 1000. Lets
+> > say cgroups A, A1, and B have priority 1000, while cgroup
+> > A2 has priority 1.
+> >=20
+> >         /\
+> >        /  \
+> >       A    B
+> >      / \    \=20
+> >     A1 A2   t3
+> >    /     \
+> >   t1     t2
+> >=20
+> > One consequence of this is that when t1, t2, and t3 each
+> > get a time slice, the vruntime of tasks t1 and t3 advances
+> > at roughly the same speed as the clock time, while the
+> > vruntime of task t2 advances 1000x faster.
+> >=20
+> > This is fine if all three tasks continue to be runnable,
+> > since t1, t2 and t3 each get their fair share of CPU time.
+> >=20
+> > However, if t1 goes to sleep, t2 is the only thing running
+> > inside cgroup A, which has the same priority as cgroup B,
+> > and tasks t2 and t3 should be getting the same amount of
+> > CPU time.
+> >=20
+> > They eventually will, but not before task t3 has used up
+> > enough CPU time to catch up with the enormous vruntime
+> > advance that t2 just suffered.
+> >=20
+> > That needs to be fixed, to get near-immediate convergence,
+> > and not convergence after some unknown (potentially long)
+> > period of time.
+>=20
+> I'm trying to understand this issue in detail ...
+>=20
+> Since t1 and t2 are single tasks in A1 and A2, this taskgroup level
+> shouldn't matter for tick preemption after t1 went to sleep?
+>=20
+> check_preempt_tick() is only invoked for 'cfs_rq->nr_running > 1'
+> from
+> entity_tick().
+>=20
+> IMHO, tick preemption is handled between A and B and since they have
+> the
+> same cpu.weight (cpu.shares) t2 and t3 get the same time slice after
+> t1
+> went to sleep.
+>=20
+> I think that here tick preemption happens in the 'if (delta_exec >
+> ideal_runtime)' condition w/ delta_exec =3D curr->sum_exec_runtime -
+> curr->prev_sum_exec_runtime.
+>=20
+> Did I miss anything?
+
+The issue happens with a flat runqueue, when t1 goes
+to sleep, but t2 and t3 continue running.
+
+We need to make sure the vruntime for t2 has not been
+advanced so far into the future that cgroup A is unable
+to get its fair share of CPU wihle t1 is sleeping.
+
+--=20
+All Rights Reversed.
+
+--=-E3qV2JTgigT6ELVlkBvg
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl8+35MACgkQznnekoTE
+3oNxmQgArqcqvpPxMhn76k0rHtet79OO5oN6c8hx+ubeET7pmVfk4FgdNdfjV3Tr
+bjAxwXHlBdQ/ANXIfWTBEzPeGEfryua+DxI1Z8LkMi1uicsULOOr/g8JYFAzdp42
+QNeyiHz68rNhN1y6lP2K1x7/4T9iSRrnDamkRyOIcjHplWEk98iT1CoQZf1K7r11
+dojYcwjUu38tCSd4nsLK+PUHJC/Mie4Bq1+0If0DrwrNTkiaBh23haniigVynTJK
+tTOP4AXheN/j+KEoTge5NYDx/fik0BerCX15XZfvy9YgkbHMCSJ5XhC0o+cnVX+Q
+l/WcBsqxttF0vPo1AqxR0Pb38rBPCg==
+=5mT9
+-----END PGP SIGNATURE-----
+
+--=-E3qV2JTgigT6ELVlkBvg--
 
