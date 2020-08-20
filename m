@@ -2,101 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64ACD24BEA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E5624BE93
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 15:28:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729372AbgHTN3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 09:29:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42240 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729301AbgHTN1l (ORCPT
+        id S1728733AbgHTN2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 09:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728017AbgHTN2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 09:27:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597930060;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DAGecdZwlkCmWN+ue1t4x/y2+dJaBtvVkYDbnFL2ArE=;
-        b=DJj2ffV5GMFskZvUpCs+SXgswY2KApFmfdwxi+7MZey2Dl8LqAVhSVFVTc/CPddQNNupHi
-        5lwbBXTVTxJOXJZc6GcZKHTSt1hY0rlY8+FMVRm2+6XbyyCdWFk1IpVRhZYl9ElqJn/J+8
-        sXMGLGK4Uf6SrA+SPaEk1mqxy0DokZ0=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-547-yxxGaQzqMcq_kYE18BaPXw-1; Thu, 20 Aug 2020 09:27:39 -0400
-X-MC-Unique: yxxGaQzqMcq_kYE18BaPXw-1
-Received: by mail-qk1-f198.google.com with SMTP id n128so1250214qke.2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 06:27:39 -0700 (PDT)
+        Thu, 20 Aug 2020 09:28:38 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A48DC061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 06:28:37 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id b2so285491edw.5
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 06:28:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZODn1jt1970mGvr5GEh4sQD7IJ3k+7keNckpIk/8sqg=;
+        b=VmD28wkxeL/mh5qEeFgQyTUMfQlClarclSFuVsi13Av2ziWfY4IMgRC6FGsZBJWTPW
+         1rSJOq/XC8/v9YEd26xxkNKWlfRtXX2XoJ2EBi5bO/vmb36chULSxUmfQFBU06YQxqer
+         AecRmITso0SD+wBOWNxJ+svZhFc5YYHitbMyB5kwjK/NfvI7MlUS1WLcZDX1W7Ya6lqL
+         J/4tdW4pwP8IE0xdoFapEXITFgxuxbuAiqDOfUtOPBJyPbXoeR9QkA2+tXNBANtGHZtZ
+         D/VBzyPW1X85tJsv3sggZ/QJCxp/zbLH6yW5II9PfBF6DRokZVSYZjlEqP8aqbOpurwX
+         cnaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=DAGecdZwlkCmWN+ue1t4x/y2+dJaBtvVkYDbnFL2ArE=;
-        b=ajNCuiBJubvJsQMvg0qenl1Zij678KKnlNnNaNfVmkHnatHXhfLyJe4iNJjnunjSGl
-         A1tywggZWrjfaJAxfu3zPy7ApG9WiCFoTjFfvBvkNeYuyYrmdw9WtkZ7yBl+rtN9WYjy
-         DVHdZC7TLlLGi2hRV3LCS5r4knlunnLA2CyGibcAwQdB0323IVUvEbiCDQH3ERy8HGwf
-         AZmlWXlvRbDnNrlo+lULODdR/HKcigiDyuNRudRwwMmmqSmcabnWO8jofV8pYvN4rJO8
-         UpdE6mu9L1f7JO0xH174Y9jz33cGz9Ogt73G6wgUH0GprlP8DTbjEXtrtpckRfqwuWd3
-         qrpQ==
-X-Gm-Message-State: AOAM530viX6dskgvpAuIz7rZNbSynCEg/7zqt59Lkx9gWMSYqSUWrF03
-        UOaVO4XYYhd0DeGJ3MBqEnGp96OYtAtP82Gt1Dn8HdOF31Tc0L0hyKVQGisTgMtNUk43whGz070
-        XiT+g4sS3gzGJ21Nykl9TKf2N
-X-Received: by 2002:ac8:564d:: with SMTP id 13mr2688673qtt.101.1597930058349;
-        Thu, 20 Aug 2020 06:27:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw8usGhxVEOYqYVa3I9N6+A3QyxTwJoJ2mZHFFTPor1LOox137u/l6oZfaIOPqyX556p76xjA==
-X-Received: by 2002:ac8:564d:: with SMTP id 13mr2688660qtt.101.1597930058111;
-        Thu, 20 Aug 2020 06:27:38 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id k31sm2798255qtd.60.2020.08.20.06.27.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Aug 2020 06:27:37 -0700 (PDT)
-Subject: Re: [PATCH] crypto: drbg: check blocklen is non zero
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     davem@davemloft.net, smueller@chronox.de,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200802171247.16558-1-trix@redhat.com>
- <20200820071522.GA21511@gondor.apana.org.au>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <97371bc7-ebb6-92f2-bbaa-6b444e27cb8b@redhat.com>
-Date:   Thu, 20 Aug 2020 06:27:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZODn1jt1970mGvr5GEh4sQD7IJ3k+7keNckpIk/8sqg=;
+        b=OFWW0Ef/vODEuFwXSPUBrLa85umVz/gyyyJYHATdosp5iYYDB8OJxYG8nnPaCS3wk2
+         uqQJ1yKWySbaco+unf+RALmGMss4bHvWeMRbPxd8gPPnIFPd+zteNy5YQ3KqoLyC+Dj0
+         /wl4v8ewaMamRvf2FUxVd1gb85VnclqBt7zo+ryfEwpL+aEQJQsRvYmAPhqQLLpIZYJH
+         Bs/skntSMAV1buSKTdLHwbLPKaEXopmlCmzdKNLKMHcR0HrJRS/xqYzm9l4sho0F5qDL
+         E9GXRKYt5mhGR8AyKB8D9U9TIP6uUQOOLCP8cKZNbn2h63wgK7YHDzbMNRFFltJDmFkV
+         /YGg==
+X-Gm-Message-State: AOAM533dm2dJlueWcPpyrXoYZCgnotaA7CYcdyETQY3Ua70MV2BBlsYf
+        OWmBpAl/XtDuk0qcTMJHdXQ3Y/Wmq5Qm6Thqfkda
+X-Google-Smtp-Source: ABdhPJwlHMJddusXXnIwAHaVZlzOyIKl2c/krfHw1m9+5Tsz8rZpcpExiUwUW7zf0IHK0+QUsvWwYFBX6/JROrFRzYk=
+X-Received: by 2002:aa7:c383:: with SMTP id k3mr2795671edq.164.1597930115893;
+ Thu, 20 Aug 2020 06:28:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200820071522.GA21511@gondor.apana.org.au>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <alpine.DEB.2.22.394.2008201218350.2524@hadrien>
+In-Reply-To: <alpine.DEB.2.22.394.2008201218350.2524@hadrien>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 20 Aug 2020 09:28:24 -0400
+Message-ID: <CAHC9VhSX83awKZPO7KZdguTOrpcXokmidqNGDLQWjXgiiuQ5fQ@mail.gmail.com>
+Subject: Re: [PATCH] selinux: fix memdup.cocci warnings
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
+        kbuild-all@lists.01.org, selinux@vger.kernel.org,
+        Eric Paris <eparis@parisplace.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Tom Rix <trix@redhat.com>,
+        Ethan Edwards <ethancarteredwards@gmail.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are many divide by 0 reports.  This one got attention because it is in crypto, where i believe problems, even false positives, should be fixed.
-
-Tom
-
-On 8/20/20 12:15 AM, Herbert Xu wrote:
-> On Sun, Aug 02, 2020 at 10:12:47AM -0700, trix@redhat.com wrote:
->> From: Tom Rix <trix@redhat.com>
->>
->> Clang static analysis reports this error
->>
->> crypto/drbg.c:441:40: warning: Division by zero
->>         padlen = (inputlen + sizeof(L_N) + 1) % (drbg_blocklen(drbg));
->>                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
->>
->> When drbg_bocklen fails it returns 0.
->>
->> 	if (drbg && drbg->core)
->> 		return drbg->core->blocklen_bytes;
->> 	return 0;
-> Yes but it can only fail if the drbg is not instantiated.  If
-> you're hitting the generate path with an uninstantiated drbg you've
-> got bigger problems than a divide by zero.
+On Thu, Aug 20, 2020 at 6:20 AM Julia Lawall <julia.lawall@inria.fr> wrote:
 >
-> So how is this even possible?
+> From: kernel test robot <lkp@intel.com>
 >
-> Cheers,
+> Use kmemdup rather than duplicating its implementation
+>
+> Generated by: scripts/coccinelle/api/memdup.cocci
+>
+> Fixes: c7c556f1e81b ("selinux: refactor changing booleans")
+> CC: Stephen Smalley <stephen.smalley.work@gmail.com>
+> Signed-off-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
 
+Merged into selinux/next, thanks!
