@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64CCB24B2A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3AC424B314
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728364AbgHTJev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:34:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44492 "EHLO mail.kernel.org"
+        id S1728241AbgHTJlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:41:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726974AbgHTJcL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:32:11 -0400
+        id S1727033AbgHTJlK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:41:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C964922B3F;
-        Thu, 20 Aug 2020 09:32:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D270E207DE;
+        Thu, 20 Aug 2020 09:41:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597915930;
-        bh=NnN6YacW0a2xO0gvCRIxh7ybG+jk2VHafX/DGDFWdoM=;
+        s=default; t=1597916470;
+        bh=U4KrGCQb7/GOL6p3/wipQV9B3LdWGiw+bPEaYyFKaq0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PcdJzW9ebzxprXNRxrTtWOJ64BhD/hIsFM+hj0J9yY0SAHiZ9FNcaOch2sMuHCGQ+
-         5BSmOqB4wnAn3pXVGXXjViGuxo68sIXCDM3vg7upX1EGPkQYbDDCTAYx0MKYEMaLnm
-         9ehuKyVRlZqF6NoGwqI1WRVFmiap7xiX0MXARZ2A=
+        b=KfwSal5CkFrNqzsxH74HX4yWfs4UYEkljw6mFh43mO8VDw0OgGoBUB9PfXTjUTgoI
+         Qb0izUa26NoXmTEgSYxbu1GHlXX6+uwLRr1UtWWUVgCiE3SmillTNoGNa0LWIrkg4L
+         eKHU7A/01yJYjtFg4e9LCofJy9RTR3ABxbO36TKw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Scott Mayhew <smayhew@redhat.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 184/232] nfs: nfs_file_write() should check for writeback errors
-Date:   Thu, 20 Aug 2020 11:20:35 +0200
-Message-Id: <20200820091621.714245075@linuxfoundation.org>
+        stable@vger.kernel.org, Liu Yi L <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 140/204] iommu/vt-d: Enforce PASID devTLB field mask
+Date:   Thu, 20 Aug 2020 11:20:37 +0200
+Message-Id: <20200820091613.248324405@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
-References: <20200820091612.692383444@linuxfoundation.org>
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,72 +46,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Scott Mayhew <smayhew@redhat.com>
+From: Liu Yi L <yi.l.liu@intel.com>
 
-[ Upstream commit ce368536dd614452407dc31e2449eb84681a06af ]
+[ Upstream commit 5f77d6ca5ca74e4b4a5e2e010f7ff50c45dea326 ]
 
-The NFS_CONTEXT_ERROR_WRITE flag (as well as the check of said flag) was
-removed by commit 6fbda89b257f.  The absence of an error check allows
-writes to be continually queued up for a server that may no longer be
-able to handle them.  Fix it by adding an error check using the generic
-error reporting functions.
+Set proper masks to avoid invalid input spillover to reserved bits.
 
-Fixes: 6fbda89b257f ("NFS: Replace custom error reporting mechanism with generic one")
-Signed-off-by: Scott Mayhew <smayhew@redhat.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
+Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+Link: https://lore.kernel.org/r/20200724014925.15523-2-baolu.lu@linux.intel.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/file.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ include/linux/intel-iommu.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/nfs/file.c b/fs/nfs/file.c
-index d72496efa17b0..63940a7a70be1 100644
---- a/fs/nfs/file.c
-+++ b/fs/nfs/file.c
-@@ -590,12 +590,14 @@ static const struct vm_operations_struct nfs_file_vm_ops = {
- 	.page_mkwrite = nfs_vm_page_mkwrite,
- };
+diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
+index 64a5335046b00..bc1abbc041092 100644
+--- a/include/linux/intel-iommu.h
++++ b/include/linux/intel-iommu.h
+@@ -363,8 +363,8 @@ enum {
  
--static int nfs_need_check_write(struct file *filp, struct inode *inode)
-+static int nfs_need_check_write(struct file *filp, struct inode *inode,
-+				int error)
- {
- 	struct nfs_open_context *ctx;
- 
- 	ctx = nfs_file_open_context(filp);
--	if (nfs_ctx_key_to_expire(ctx, inode))
-+	if (nfs_error_is_fatal_on_server(error) ||
-+	    nfs_ctx_key_to_expire(ctx, inode))
- 		return 1;
- 	return 0;
- }
-@@ -606,6 +608,8 @@ ssize_t nfs_file_write(struct kiocb *iocb, struct iov_iter *from)
- 	struct inode *inode = file_inode(file);
- 	unsigned long written = 0;
- 	ssize_t result;
-+	errseq_t since;
-+	int error;
- 
- 	result = nfs_key_timeout_notify(file, inode);
- 	if (result)
-@@ -630,6 +634,7 @@ ssize_t nfs_file_write(struct kiocb *iocb, struct iov_iter *from)
- 	if (iocb->ki_pos > i_size_read(inode))
- 		nfs_revalidate_mapping(inode, file->f_mapping);
- 
-+	since = filemap_sample_wb_err(file->f_mapping);
- 	nfs_start_io_write(inode);
- 	result = generic_write_checks(iocb, from);
- 	if (result > 0) {
-@@ -648,7 +653,8 @@ ssize_t nfs_file_write(struct kiocb *iocb, struct iov_iter *from)
- 		goto out;
- 
- 	/* Return error values */
--	if (nfs_need_check_write(file, inode)) {
-+	error = filemap_check_wb_err(file->f_mapping, since);
-+	if (nfs_need_check_write(file, inode, error)) {
- 		int err = nfs_wb_all(inode);
- 		if (err < 0)
- 			result = err;
+ #define QI_DEV_EIOTLB_ADDR(a)	((u64)(a) & VTD_PAGE_MASK)
+ #define QI_DEV_EIOTLB_SIZE	(((u64)1) << 11)
+-#define QI_DEV_EIOTLB_GLOB(g)	((u64)g)
+-#define QI_DEV_EIOTLB_PASID(p)	(((u64)p) << 32)
++#define QI_DEV_EIOTLB_GLOB(g)	((u64)(g) & 0x1)
++#define QI_DEV_EIOTLB_PASID(p)	((u64)((p) & 0xfffff) << 32)
+ #define QI_DEV_EIOTLB_SID(sid)	((u64)((sid) & 0xffff) << 16)
+ #define QI_DEV_EIOTLB_QDEP(qd)	((u64)((qd) & 0x1f) << 4)
+ #define QI_DEV_EIOTLB_PFSID(pfsid) (((u64)(pfsid & 0xf) << 12) | \
 -- 
 2.25.1
 
