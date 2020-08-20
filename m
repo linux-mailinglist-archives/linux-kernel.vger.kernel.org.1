@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537E624B7C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1605C24B7D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 13:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730542AbgHTKND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:13:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55132 "EHLO mail.kernel.org"
+        id S1729104AbgHTLEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 07:04:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731067AbgHTKMp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:12:45 -0400
+        id S1731105AbgHTKM6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:12:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2F60206DA;
-        Thu, 20 Aug 2020 10:12:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 103AE2067C;
+        Thu, 20 Aug 2020 10:12:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918365;
-        bh=zknEk2SYahKBzJKWH2mpBxTm0EtLWvmX6voU525LImQ=;
+        s=default; t=1597918376;
+        bh=mWsxCKDF2jQl76QZS+o3janKb4+GWIAq68VFC1YnKXw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xmpKRyHAfg9oFv5flIdEonIfVT24103Tbtxpv8EdXOZdBuUpaCILh9uCH2VS1qYRL
-         EgO/thAMmIPTK4G8x9Q7O7nWc4Wc94ywrX6VRSdqElJN8yyjBxf42X0Pxqok+yaMRh
-         m33MYEWrei80R295N1Hxzx5yWqJlWWvJE42pn4as=
+        b=qPd6G/8XWZQIl7y0sWPrby5WbWNC2aIDcLlUhUJpDijNQKxRRdgeZQcxhTnWBRFO8
+         zHM/PBZ0NdSuGdK0YDQN2Ziyv3TFo+mX3wK+oF6V1NxK4P5RAgX4X/5uocp+J0WE+P
+         RBMbhFZ1ugHd8H+JtGCa/iVIFtdMmQ786VywLQrs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 143/228] net: Set fput_needed iff FDPUT_FPUT is set
-Date:   Thu, 20 Aug 2020 11:21:58 +0200
-Message-Id: <20200820091614.727400733@linuxfoundation.org>
+        stable@vger.kernel.org, Hector Martin <marcan@marcan.st>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.14 147/228] ALSA: usb-audio: fix overeager device match for MacroSilicon MS2109
+Date:   Thu, 20 Aug 2020 11:22:02 +0200
+Message-Id: <20200820091614.924651070@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
 References: <20200820091607.532711107@linuxfoundation.org>
@@ -43,31 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+From: Hector Martin <marcan@marcan.st>
 
-[ Upstream commit ce787a5a074a86f76f5d3fd804fa78e01bfb9e89 ]
+commit 14a720dc1f5332f3bdf30a23a3bc549e81be974c upstream.
 
-We should fput() file iff FDPUT_FPUT is set. So we should set fput_needed
-accordingly.
+Matching by device matches all interfaces, which breaks the video/HID
+portions of the device depending on module load order.
 
-Fixes: 00e188ef6a7e ("sockfd_lookup_light(): switch to fdget^W^Waway from fget_light")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: e337bf19f6af ("ALSA: usb-audio: add quirk for MacroSilicon MS2109")
+Cc: stable@vger.kernel.org
+Signed-off-by: Hector Martin <marcan@marcan.st>
+Link: https://lore.kernel.org/r/20200810045319.128745-1-marcan@marcan.st
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/socket.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -496,7 +496,7 @@ static struct socket *sockfd_lookup_ligh
- 	if (f.file) {
- 		sock = sock_from_file(f.file, err);
- 		if (likely(sock)) {
--			*fput_needed = f.flags;
-+			*fput_needed = f.flags & FDPUT_FPUT;
- 			return sock;
- 		}
- 		fdput(f);
+---
+ sound/usb/quirks-table.h |    8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -3335,7 +3335,13 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge
+  * with.
+  */
+ {
+-	USB_DEVICE(0x534d, 0x2109),
++	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
++		       USB_DEVICE_ID_MATCH_INT_CLASS |
++		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
++	.idVendor = 0x534d,
++	.idProduct = 0x2109,
++	.bInterfaceClass = USB_CLASS_AUDIO,
++	.bInterfaceSubClass = USB_SUBCLASS_AUDIOCONTROL,
+ 	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
+ 		.vendor_name = "MacroSilicon",
+ 		.product_name = "MS2109",
 
 
