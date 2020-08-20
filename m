@@ -2,97 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A70EB24B569
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D210224B575
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731640AbgHTKXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:23:36 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:26864 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731459AbgHTKXT (ORCPT
+        id S1729137AbgHTKYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:24:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731809AbgHTKYC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:23:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597918996;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6DrPsxamb6fxr2VuGH8LdCoENsK+kekbSzDauKSHHQ8=;
-        b=HQ7f8rs7wzleapYUPDA9hC9Rd4iiOdfybA+jJa1+Wd1UrSeH9p767PpTmrdc244dQw9DzE
-        XFUvcPfyI5Ch5fjzGisMDx+9ohKyv9Q7TeiE4BOeSmrZsghL3UTdw1Og2MfmZukp/R32kB
-        MAV5FGewuMrGOhUY3LIdusTu40A+eac=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-441-DH713AW0OcaxK4khNv7WLw-1; Thu, 20 Aug 2020 06:23:15 -0400
-X-MC-Unique: DH713AW0OcaxK4khNv7WLw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5DC8D100746D;
-        Thu, 20 Aug 2020 10:23:13 +0000 (UTC)
-Received: from starship (unknown [10.35.206.173])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D1930101417C;
-        Thu, 20 Aug 2020 10:23:09 +0000 (UTC)
-Message-ID: <2b8faaead6f7744dc10b4701bd1583a2b494d4f4.camel@redhat.com>
-Subject: Re: [PATCH 2/8] KVM: nSVM: rename nested 'vmcb' to vmcb_gpa in few
- places
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Date:   Thu, 20 Aug 2020 13:23:07 +0300
-In-Reply-To: <2e8185af-08fc-18c3-c1ca-fa1f7d4665dd@redhat.com>
-References: <20200820091327.197807-1-mlevitsk@redhat.com>
-         <20200820091327.197807-3-mlevitsk@redhat.com>
-         <f6bf9494-f337-2e53-6e6c-e0b8a847ec8d@redhat.com>
-         <608fe03082dc5e4db142afe3c0eb5f7c165f342b.camel@redhat.com>
-         <2e8185af-08fc-18c3-c1ca-fa1f7d4665dd@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        Thu, 20 Aug 2020 06:24:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24642C061757;
+        Thu, 20 Aug 2020 03:24:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qdnfNm3IUzTMwmlQEg5cRLJ7F7h28cIGXcZ5YJRE3sU=; b=gtubPbuXkk4dOz+fGtiw5/nuXj
+        8DQU8y8NymTK/NQey14TfABLazVfI+wLeUuyp9U76iCTN4a8XSbHT0snK5IwEmrSJhLVUso8D8RlF
+        pw9la++GvNu2tBpQYVhnvnglAUTWDH2YYuuVW691JsUFvlAZX9dmjLoNaaGbWBhaK0zGVM38912E/
+        Yl1jQuTPnZpEzUqv+Cgc8Oc/FT5hqFo6TiDzHVbfPIv0eCsgKTK5clHJ5c0vLk2ipNtNlmGj43J1s
+        yFpaWoWouEqs7CKciXZHWJfUEuX2ti5XXLaBCv5A8jl31/7ui9Juhqpr64jchD3RYLCNUXMPNC2/n
+        lnfl1GKw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k8hjW-0004sh-38; Thu, 20 Aug 2020 10:23:51 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 833B6302526;
+        Thu, 20 Aug 2020 12:23:44 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 73D8928B7E826; Thu, 20 Aug 2020 12:23:44 +0200 (CEST)
+Date:   Thu, 20 Aug 2020 12:23:44 +0200
+From:   peterz@infradead.org
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-tip-commits@vger.kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>
+Subject: Re: [tip: x86/urgent] x86/entry, selftests: Further improve user
+ entry sanity checks
+Message-ID: <20200820102344.GP2674@hirez.programming.kicks-ass.net>
+References: <881de09e786ab93ce56ee4a2437ba2c308afe7a9.1593795633.git.luto@kernel.org>
+ <159388495037.4006.7851835406474127743.tip-bot2@tip-bot2>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <159388495037.4006.7851835406474127743.tip-bot2@tip-bot2>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-08-20 at 12:19 +0200, Paolo Bonzini wrote:
-> On 20/08/20 12:00, Maxim Levitsky wrote:
-> > > Please use vmcb12_gpa, and svm->nested.vmcb12 for the VMCB in patch 6.
-> > > 
-> > > (You probably also what to have local variables named vmcb12 in patch 6
-> > > to avoid too-long lines).
-> > The limit was raised to 100 chars recently, thats why I allowed some lines to
-> > go over 80 characters to avoid adding too much noise.
-> > 
-> 
-> True, but having svm->nested.vmcb12->control repeated all over isn't
-> pretty. :)
-I fully agree that adding local variable is a good idea anyway.
+On Sat, Jul 04, 2020 at 05:49:10PM -0000, tip-bot2 for Andy Lutomirski wrote:
 
-I was just noting that svm->nested.vmcb is already about the nested
-(e.g vmcb12) thus I was thinking that naming this field vmcb12 would be
-redundant and not accepted this way.
+> diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+> index f392a8b..e83b3f1 100644
+> --- a/arch/x86/entry/common.c
+> +++ b/arch/x86/entry/common.c
+> @@ -49,6 +49,23 @@
+>  static void check_user_regs(struct pt_regs *regs)
+>  {
+>  	if (IS_ENABLED(CONFIG_DEBUG_ENTRY)) {
+> +		/*
+> +		 * Make sure that the entry code gave us a sensible EFLAGS
+> +		 * register.  Native because we want to check the actual CPU
+> +		 * state, not the interrupt state as imagined by Xen.
+> +		 */
+> +		unsigned long flags = native_save_fl();
+> +		WARN_ON_ONCE(flags & (X86_EFLAGS_AC | X86_EFLAGS_DF |
+> +				      X86_EFLAGS_NT));
 
-Best regards,
-	Maxim Levitsky
+This triggers with AC|TF on my !SMAP enabled machine.
 
-> 
-> Since you're going to touch all lines anyway, adding the local variable
-> is a good idea.
-> 
-> Paolo
-> 
+something like so then?
 
-
+diff --git a/arch/x86/include/asm/entry-common.h b/arch/x86/include/asm/entry-common.h
+index a8f9315b9eae..76410964585f 100644
+--- a/arch/x86/include/asm/entry-common.h
++++ b/arch/x86/include/asm/entry-common.h
+@@ -18,8 +18,15 @@ static __always_inline void arch_check_user_regs(struct pt_regs *regs)
+ 		 * state, not the interrupt state as imagined by Xen.
+ 		 */
+ 		unsigned long flags = native_save_fl();
+-		WARN_ON_ONCE(flags & (X86_EFLAGS_AC | X86_EFLAGS_DF |
+-				      X86_EFLAGS_NT));
++		unsigned long mask = X86_EFLAGS_DF | X86_EFLAGS_NT;
++
++		/*
++		 * For !SMAP hardware we patch out CLAC on entry.
++		 */
++		if (boot_cpu_has(X86_FEATURE_SMAP))
++			mask |= X86_EFLAGS_AC;
++
++		WARN_ON_ONCE(flags & mask);
+ 
+ 		/* We think we came from user mode. Make sure pt_regs agrees. */
+ 		WARN_ON_ONCE(!user_mode(regs));
