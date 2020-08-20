@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE53B24B47E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56BAB24B47F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730722AbgHTKHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:07:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35810 "EHLO mail.kernel.org"
+        id S1728218AbgHTKH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:07:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730487AbgHTKGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:06:42 -0400
+        id S1730305AbgHTKGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:06:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B08B1206DA;
-        Thu, 20 Aug 2020 10:06:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 398AF20724;
+        Thu, 20 Aug 2020 10:06:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918002;
-        bh=AmTZtyZUnDO5InHBHtS78KWfPouKRkGH35AeeRiiGuM=;
+        s=default; t=1597918010;
+        bh=APNPFDFVpjqGfhmPy6ABPkto89gHqoC2FFE9vTszl0I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NSTtuxV+Lqx2IOUHnokU7XutmNkSQ5uwy2u4PBbIeMZEEeAyqSlJC9GRdSg7Mk8hL
-         9WfNe2BqElz5phC9u2sI0/Jg3M6da1xYOtihapElnfV8Nd7ITZGnMjVtU2XXCmFP8z
-         kOmsHqjc4LugJa0M4D7ijp0ve3EKxewuHOX2WRx8=
+        b=A+MTFJXLUqQhi/W/8E5eHIaFzRFpxTMO6XaUBDFb6hugZ12p6QMQCCxOtRJ3GFagO
+         8waZV3JxDmYu7EIQhP2Dthu0N9+XsSoeic8wOyHFAGoG2ztXfCibLZBji5poggJ9eu
+         eANhtWLNMpRwhobbJXBkRlqAt1LfpWbfQS3oH1iI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roi Dayan <roid@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>
-Subject: [PATCH 4.14 002/228] net/mlx5e: Dont support phys switch id if not in switchdev mode
-Date:   Thu, 20 Aug 2020 11:19:37 +0200
-Message-Id: <20200820091607.648150053@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Forest Crossman <cyrozap@gmail.com>
+Subject: [PATCH 4.14 005/228] usb: xhci: Fix ASMedia ASM1142 DMA addressing
+Date:   Thu, 20 Aug 2020 11:19:40 +0200
+Message-Id: <20200820091607.798981964@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
 References: <20200820091607.532711107@linuxfoundation.org>
@@ -43,37 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Forest Crossman <cyrozap@gmail.com>
 
-From: Roi Dayan <roid@mellanox.com>
+commit ec37198acca7b4c17b96247697406e47aafe0605 upstream.
 
-Support for phys switch id ndo added for representors and if
-we do not have representors there is no need to support it.
-Since each port return different switch id supporting this
-block support for creating bond over PFs and attaching to bridge
-in legacy mode.
+I've confirmed that the ASMedia ASM1142 has the same problem as the
+ASM2142/ASM3142, in that it too reports that it supports 64-bit DMA
+addresses when in fact it does not. As with the ASM2142/ASM3142, this
+can cause problems on systems where the upper bits matter, and adding
+the XHCI_NO_64BIT_SUPPORT quirk completely fixes the issue.
 
-This bug doesn't exist upstream as the code got refactored and the
-netdev api is totally different.
-
-Fixes: cb67b832921c ("net/mlx5e: Introduce SRIOV VF representors")
-Signed-off-by: Roi Dayan <roid@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Acked-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Signed-off-by: Forest Crossman <cyrozap@gmail.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200728042408.180529-3-cyrozap@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_rep.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/host/xhci-pci.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-@@ -180,7 +180,7 @@ int mlx5e_attr_get(struct net_device *de
- 	struct mlx5_eswitch_rep *rep = rpriv->rep;
- 	struct mlx5_eswitch *esw = priv->mdev->priv.eswitch;
+--- a/drivers/usb/host/xhci-pci.c
++++ b/drivers/usb/host/xhci-pci.c
+@@ -61,6 +61,7 @@
+ #define PCI_DEVICE_ID_AMD_PROMONTORYA_1			0x43bc
+ #define PCI_DEVICE_ID_ASMEDIA_1042_XHCI			0x1042
+ #define PCI_DEVICE_ID_ASMEDIA_1042A_XHCI		0x1142
++#define PCI_DEVICE_ID_ASMEDIA_1142_XHCI			0x1242
+ #define PCI_DEVICE_ID_ASMEDIA_2142_XHCI			0x2142
  
--	if (esw->mode == SRIOV_NONE)
-+	if (esw->mode != SRIOV_OFFLOADS)
- 		return -EOPNOTSUPP;
+ static const char hcd_name[] = "xhci_hcd";
+@@ -238,7 +239,8 @@ static void xhci_pci_quirks(struct devic
+ 		pdev->device == PCI_DEVICE_ID_ASMEDIA_1042A_XHCI)
+ 		xhci->quirks |= XHCI_TRUST_TX_LENGTH;
+ 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
+-		pdev->device == PCI_DEVICE_ID_ASMEDIA_2142_XHCI)
++	    (pdev->device == PCI_DEVICE_ID_ASMEDIA_1142_XHCI ||
++	     pdev->device == PCI_DEVICE_ID_ASMEDIA_2142_XHCI))
+ 		xhci->quirks |= XHCI_NO_64BIT_SUPPORT;
  
- 	switch (attr->id) {
+ 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
 
 
