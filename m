@@ -2,39 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363E724BAE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50FBA24BAE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730254AbgHTMT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:19:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39132 "EHLO mail.kernel.org"
+        id S1730554AbgHTMTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:19:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730226AbgHTJzx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:55:53 -0400
+        id S1730233AbgHTJz7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:55:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E06BC20855;
-        Thu, 20 Aug 2020 09:55:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 242652067C;
+        Thu, 20 Aug 2020 09:55:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917353;
-        bh=eZkObATRnty0e7Ot5i/YiemRbDKHfPtcLirUorAG2kc=;
+        s=default; t=1597917358;
+        bh=Ne0socCZGcwrMblGJ2DwvxH0Vsev8VfPF/bS/K0PF6A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qkYSDsdk5gfLaBjdaeUrmvjmXqh0w6j5PMVGg9+P6AIvS7e4/ggjW4AMEfnzJcWxJ
-         1nP3I36KQXqnwPAIBKH+INUW0tTXsV/L0lpaAAIU/ehXBTkHVYzLbrChSZC0TIG+Hm
-         K1NbfXad5t5JnJqPvYqyUGpllqB8Y0hjqpZKmjvs=
+        b=kdXckTJyEqPh9+qz8+f4sF8guSejoSwJO1c6wAYvPIAzmAvxLyTe7NiRIqvTw3HQP
+         Odq7KYewajU6TWT7tT9boOkc6Eow9rDCMmgRfIa2zBEW9hfToAe7Kks1YZo3Ph/T9j
+         OmB+sgpKyxazDU13QzuNV2a6FJRRoOGEYI/VVxkE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
+        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Luis Chamberlain <mcgrof@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Qiujun Huang <anenbupt@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        David Howells <dhowells@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Kees Cook <keescook@chromium.org>,
+        Lars Ellenberg <lars.ellenberg@linbit.com>,
+        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        Sergey Kvachonok <ravenexp@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Tony Vroon <chainsaw@gentoo.org>,
+        Christoph Hellwig <hch@infradead.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 80/92] fs/minix: remove expected error message in block_to_path()
-Date:   Thu, 20 Aug 2020 11:22:05 +0200
-Message-Id: <20200820091541.816423267@linuxfoundation.org>
+Subject: [PATCH 4.19 82/92] test_kmod: avoid potential double free in trigger_config_run_type()
+Date:   Thu, 20 Aug 2020 11:22:07 +0200
+Message-Id: <20200820091541.913675669@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
 References: <20200820091537.490965042@linuxfoundation.org>
@@ -47,76 +69,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
 
-[ Upstream commit f666f9fb9a36f1c833b9d18923572f0e4d304754 ]
+[ Upstream commit 0776d1231bec0c7ab43baf440a3f5ef5f49dd795 ]
 
-When truncating a file to a size within the last allowed logical block,
-block_to_path() is called with the *next* block.  This exceeds the limit,
-causing the "block %ld too big" error message to be printed.
+Reset the member "test_fs" of the test configuration after a call of the
+function "kfree_const" to a null pointer so that a double memory release
+will not be performed.
 
-This case isn't actually an error; there are just no more blocks past that
-point.  So, remove this error message.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Eric Biggers <ebiggers@google.com>
+Fixes: d9c6a72d6fa2 ("kmod: add test driver to stress test the module loader")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Qiujun Huang <anenbupt@gmail.com>
-Link: http://lkml.kernel.org/r/20200628060846.682158-7-ebiggers@kernel.org
+Acked-by: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: Chuck Lever <chuck.lever@oracle.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: James Morris <jmorris@namei.org>
+Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc: J. Bruce Fields <bfields@fieldses.org>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Lars Ellenberg <lars.ellenberg@linbit.com>
+Cc: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
+Cc: Philipp Reisner <philipp.reisner@linbit.com>
+Cc: Roopa Prabhu <roopa@cumulusnetworks.com>
+Cc: "Serge E. Hallyn" <serge@hallyn.com>
+Cc: Sergei Trofimovich <slyfox@gentoo.org>
+Cc: Sergey Kvachonok <ravenexp@gmail.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Tony Vroon <chainsaw@gentoo.org>
+Cc: Christoph Hellwig <hch@infradead.org>
+Link: http://lkml.kernel.org/r/20200610154923.27510-4-mcgrof@kernel.org
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/minix/itree_v1.c | 12 ++++++------
- fs/minix/itree_v2.c | 12 ++++++------
- 2 files changed, 12 insertions(+), 12 deletions(-)
+ lib/test_kmod.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/minix/itree_v1.c b/fs/minix/itree_v1.c
-index 405573a79aab4..1fed906042aa8 100644
---- a/fs/minix/itree_v1.c
-+++ b/fs/minix/itree_v1.c
-@@ -29,12 +29,12 @@ static int block_to_path(struct inode * inode, long block, int offsets[DEPTH])
- 	if (block < 0) {
- 		printk("MINIX-fs: block_to_path: block %ld < 0 on dev %pg\n",
- 			block, inode->i_sb->s_bdev);
--	} else if ((u64)block * BLOCK_SIZE >= inode->i_sb->s_maxbytes) {
--		if (printk_ratelimit())
--			printk("MINIX-fs: block_to_path: "
--			       "block %ld too big on dev %pg\n",
--				block, inode->i_sb->s_bdev);
--	} else if (block < 7) {
-+		return 0;
-+	}
-+	if ((u64)block * BLOCK_SIZE >= inode->i_sb->s_maxbytes)
-+		return 0;
-+
-+	if (block < 7) {
- 		offsets[n++] = block;
- 	} else if ((block -= 7) < 512) {
- 		offsets[n++] = 7;
-diff --git a/fs/minix/itree_v2.c b/fs/minix/itree_v2.c
-index ee8af2f9e2828..9d00f31a2d9d1 100644
---- a/fs/minix/itree_v2.c
-+++ b/fs/minix/itree_v2.c
-@@ -32,12 +32,12 @@ static int block_to_path(struct inode * inode, long block, int offsets[DEPTH])
- 	if (block < 0) {
- 		printk("MINIX-fs: block_to_path: block %ld < 0 on dev %pg\n",
- 			block, sb->s_bdev);
--	} else if ((u64)block * (u64)sb->s_blocksize >= sb->s_maxbytes) {
--		if (printk_ratelimit())
--			printk("MINIX-fs: block_to_path: "
--			       "block %ld too big on dev %pg\n",
--				block, sb->s_bdev);
--	} else if (block < DIRCOUNT) {
-+		return 0;
-+	}
-+	if ((u64)block * (u64)sb->s_blocksize >= sb->s_maxbytes)
-+		return 0;
-+
-+	if (block < DIRCOUNT) {
- 		offsets[n++] = block;
- 	} else if ((block -= DIRCOUNT) < INDIRCOUNT(sb)) {
- 		offsets[n++] = DIRCOUNT;
+diff --git a/lib/test_kmod.c b/lib/test_kmod.c
+index 9cf77628fc913..87a0cc750ea23 100644
+--- a/lib/test_kmod.c
++++ b/lib/test_kmod.c
+@@ -745,7 +745,7 @@ static int trigger_config_run_type(struct kmod_test_device *test_dev,
+ 		break;
+ 	case TEST_KMOD_FS_TYPE:
+ 		kfree_const(config->test_fs);
+-		config->test_driver = NULL;
++		config->test_fs = NULL;
+ 		copied = config_copy_test_fs(config, test_str,
+ 					     strlen(test_str));
+ 		break;
 -- 
 2.25.1
 
