@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E181724BBDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 194E024BBF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:36:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728652AbgHTJsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:48:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52064 "EHLO mail.kernel.org"
+        id S1729748AbgHTMgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:36:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729423AbgHTJrx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:47:53 -0400
+        id S1729253AbgHTJr7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:47:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94B3E20724;
-        Thu, 20 Aug 2020 09:47:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2EE362078D;
+        Thu, 20 Aug 2020 09:47:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916873;
-        bh=0r476CZefNg6z1mu1eOCPZYFPBbeVIl0xPyCXY1Ajmc=;
+        s=default; t=1597916878;
+        bh=6Ph9bjp28ZJvGhNXbLdFvK04Ec5xSbH1QX9g4Ch7iaQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FPyADIf0Cq6fhzuHYpkejrQpXrTiqmOTZkbvIKGkofiPJf5jDalrCIZHY4aKZSlWk
-         afsB6rRC2s0Fgw/1mwRrF9Opi874zazssM0ROPK4xFINgcjoA8kHmjafOSvhlY7ZlJ
-         4V2mJpbLtlfiUvcUc8mCwUSpc2NNYk+m2SRN1ac0=
+        b=W9nsYB/5sts59QPDI+sfruVCLUxOQV+M5DEcb/JdABogf0XrC1LvycFUGwDMglAxd
+         5ACn1ZK4NeveWN0wUKthQjFdl0jXf95YllfmZxFsNhRQ208oC8UrY6UfCaVzTYI7AM
+         A+8sQb5EiiFjJ9RTtKHYpmM+MtxK++vvgoowbjwo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ben Greear <greearb@candelatech.com>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.4 047/152] mac80211: fix misplaced while instead of if
-Date:   Thu, 20 Aug 2020 11:20:14 +0200
-Message-Id: <20200820091556.107422877@linuxfoundation.org>
+        stable@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH 5.4 049/152] MIPS: CPU#0 is not hotpluggable
+Date:   Thu, 20 Aug 2020 11:20:16 +0200
+Message-Id: <20200820091556.214462547@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
 References: <20200820091553.615456912@linuxfoundation.org>
@@ -43,37 +43,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Huacai Chen <chenhc@lemote.com>
 
-commit 5981fe5b0529ba25d95f37d7faa434183ad618c5 upstream.
+commit 9cce844abf07b683cff5f0273977d5f8d0af94c7 upstream.
 
-This never was intended to be a 'while' loop, it should've
-just been an 'if' instead of 'while'. Fix this.
-
-I noticed this while applying another patch from Ben that
-intended to fix a busy loop at this spot.
+Now CPU#0 is not hotpluggable on MIPS, so prevent to create /sys/devices
+/system/cpu/cpu0/online which confuses some user-space tools.
 
 Cc: stable@vger.kernel.org
-Fixes: b16798f5b907 ("mac80211: mark station unauthorized before key removal")
-Reported-by: Ben Greear <greearb@candelatech.com>
-Link: https://lore.kernel.org/r/20200803110209.253009ae41ff.I3522aad099392b31d5cf2dcca34cbac7e5832dde@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Huacai Chen <chenhc@lemote.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/mac80211/sta_info.c |    2 +-
+ arch/mips/kernel/topology.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/mac80211/sta_info.c
-+++ b/net/mac80211/sta_info.c
-@@ -1033,7 +1033,7 @@ static void __sta_info_destroy_part2(str
- 	might_sleep();
- 	lockdep_assert_held(&local->sta_mtx);
+--- a/arch/mips/kernel/topology.c
++++ b/arch/mips/kernel/topology.c
+@@ -20,7 +20,7 @@ static int __init topology_init(void)
+ 	for_each_present_cpu(i) {
+ 		struct cpu *c = &per_cpu(cpu_devices, i);
  
--	while (sta->sta_state == IEEE80211_STA_AUTHORIZED) {
-+	if (sta->sta_state == IEEE80211_STA_AUTHORIZED) {
- 		ret = sta_info_move_state(sta, IEEE80211_STA_ASSOC);
- 		WARN_ON_ONCE(ret);
- 	}
+-		c->hotpluggable = 1;
++		c->hotpluggable = !!i;
+ 		ret = register_cpu(c, i);
+ 		if (ret)
+ 			printk(KERN_WARNING "topology_init: register_cpu %d "
 
 
