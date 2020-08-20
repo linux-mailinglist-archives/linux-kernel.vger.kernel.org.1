@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC6C24B14B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 10:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6B224B167
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 10:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726873AbgHTIu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 04:50:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50754 "EHLO
+        id S1726387AbgHTIwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 04:52:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726347AbgHTIuZ (ORCPT
+        with ESMTP id S1726347AbgHTIur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 04:50:25 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2271C061757;
-        Thu, 20 Aug 2020 01:50:24 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id d188so704906pfd.2;
-        Thu, 20 Aug 2020 01:50:24 -0700 (PDT)
+        Thu, 20 Aug 2020 04:50:47 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDDFEC061757;
+        Thu, 20 Aug 2020 01:50:47 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id mw10so687909pjb.2;
+        Thu, 20 Aug 2020 01:50:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=DBkev/tvu1fiDGLiQGbd1WuoTNLvp7U5tTXawjMYG/U=;
-        b=Ndu3Uq8mOlAB8uENa/CanUwGnl5u+NHnytug+a0MJuUls0S5QlE6qZk6uoPv3It2gh
-         R6dUOn8lRhCm8BWquhOzjpuWSCVmuyEcLMtBUURCj5YeqxHd74QnLOzqtt5rMuhpD3Uk
-         roEQ10r7kvHIi7+cxE1UY7vuKIXqfSCOlsMYyRIPfpqZR2Rrz+B6MQD1Gsq/0P8RT8wU
-         fbxLKwXrQA6PjXsX97iJpiQ9U0MJm7f3r1avDe51htCZLDaY6XbkcuFDGS8QgKGlpSQw
-         tpngQnAp1IrUiJXxQQNcVGrcO1gbHPlDf/yLadFiqaL1c/WeajYucdHDMmtQg/TjOjLp
-         q16Q==
+        bh=Xwd8nOeSb0YumtAMd904xAyU3bfTBgRBas9x5F4YwCU=;
+        b=pyZdQ+WycGAAsR6ciDdWCZbdA3betN8OJ1+4K5MqjQUilxaKdYWeb5xjr8Y6fxZrV+
+         XPMoH+1lvlgrhDkSI9rpVwHnSGWDKSNnIX0DO8YW3ZRzFP2mqH+lxKVVdo3Axk0VDsZG
+         Q+DbuJ4e5Z/u7Rx8zm2M4juVhU3wWDeA6Cb8p4TGOnty9BXGy0EvCNRuNWC4l6WZ6c1P
+         W3NdxxD2N5GShe57Mgv2ctJCeQD1b2DQpcb+vl32Y4furb1BEbwP7Ui0mst8ZKvyk3ZI
+         qf7SaDki5SjnwSCU8YowwLIREmwMXdzjaFCF9Bvr56ze8sTr02R6+Mkq6kdr5Ey/24wc
+         Jtng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DBkev/tvu1fiDGLiQGbd1WuoTNLvp7U5tTXawjMYG/U=;
-        b=Uou9+1pMfMMlWmWgWyPzqhvwRhYKcQ5g/2s/BPZXk9BPWJQUeD2b08tRMpLCPO/VsJ
-         5yzVb7yBaTyDUM4ZjPxzQ8xWG9z8NuCD2xcA8ZGKuNRDCj1+0D3oZaH7AQs0enfEr/pI
-         uFkxWrKjwUkMThJrBeO7FUtzw1eUJrUDiyictMHShBJ6W7lMzOl5n6XIjhUORoRSWDc3
-         uN3218iozrJHZGlIkDsCEYT09GpBTz6Ut+F0jPrqoz3GrzC1mAy+3zlOEPplp+RYgb+R
-         bDA26KchAqLeWx0DscArCdDS1fxqoHFIzW8Sl9dZih2wMGRJvXp/DtjntGK8ZCknOnQw
-         d6NA==
-X-Gm-Message-State: AOAM530nbGFWrZl02T1zCv+CbKn2XKWwxzi+XygHlFW+zUCnrBGYZQMp
-        cF6y/vCa/XO1cyp2byGX5piN9shTUoD4FHGU
-X-Google-Smtp-Source: ABdhPJxCGL34hWekjNcc6JUXVYWE+M4duJGVRTFnKvcir+Dci9nYUFO8mc8LR5hw2WnN9ntzcklsNA==
-X-Received: by 2002:a63:742:: with SMTP id 63mr1689192pgh.295.1597913424191;
-        Thu, 20 Aug 2020 01:50:24 -0700 (PDT)
+        bh=Xwd8nOeSb0YumtAMd904xAyU3bfTBgRBas9x5F4YwCU=;
+        b=VaG+DiXNz2AsTeBJA3mQynvvcQZATXTylGfAxFp/zTGWVWWPD9iOMTXgoJv5u4Bdj0
+         pGdwVxdU/reJAXcifCKwnLvb2myVG25SCizhcXLHTkttEzA2Q4EIP5dtdUtAgVRh342Q
+         mNjP2FH8O2hEnoaFKIxFFT65lQR+S+UNNbCNqN4X40m3dKfP4mr5sAr/sL/+JaCvfDWw
+         KgNlqtMAw4r+CqNIUIQc/ezLEDX51n/aeurRXbRJJXcVL1epis+EBX4KejCewE3uzzJd
+         W8JW6/vK7Oe4xoGnuUltUHyc6XyR+f3xLg775blkW/ajpAOXjTbluP0EhIvPt9XDno9o
+         febw==
+X-Gm-Message-State: AOAM530a58yRZcOhzEs1zu3WfsSvA6dJNoDFRneZ5cs97bs8GYfHpvGb
+        NusS8QrGAe8UiMJf/aPeHUo=
+X-Google-Smtp-Source: ABdhPJxu7QsiBFdAy9B2xEBnvtCHJcAdiOoyfB4PTnGuT/Z3ZavblpMFV434HG45UwgjHJrRvpao2g==
+X-Received: by 2002:a17:902:8601:: with SMTP id f1mr1779259plo.272.1597913447264;
+        Thu, 20 Aug 2020 01:50:47 -0700 (PDT)
 Received: from blackclown ([103.88.82.201])
-        by smtp.gmail.com with ESMTPSA id h3sm1731449pgj.4.2020.08.20.01.50.22
+        by smtp.gmail.com with ESMTPSA id gl9sm1442254pjb.41.2020.08.20.01.50.45
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 20 Aug 2020 01:50:23 -0700 (PDT)
-Date:   Thu, 20 Aug 2020 14:20:12 +0530
+        Thu, 20 Aug 2020 01:50:46 -0700 (PDT)
+Date:   Thu, 20 Aug 2020 14:20:35 +0530
 From:   Suraj Upadhyay <usuraj35@gmail.com>
 To:     jerome.pouiller@silabs.com, gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH 2/6] staging: wfx/main.c: Fix a spelling mistake "negociate"
- => "negotiate"
-Message-ID: <99deaab6dbe1d1a8325ec7f340109d9f9b5026fb.1597913333.git.usuraj35@gmail.com>
+Subject: [PATCH 3/6] staging: wfx/data_rx.c: Fix spelling mistake
+ "negociation" => "negotiation"
+Message-ID: <7e0dab9eb4d976605371f1ba814ce32d62366dd4.1597913333.git.usuraj35@gmail.com>
 References: <834139101223e627665c939388cd7c542920c531.1597913333.git.usuraj35@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -68,22 +68,22 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
 ---
- drivers/staging/wfx/main.c | 2 +-
+ drivers/staging/wfx/data_rx.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/wfx/main.c b/drivers/staging/wfx/main.c
-index 11dfa088fc86..4263f912760b 100644
---- a/drivers/staging/wfx/main.c
-+++ b/drivers/staging/wfx/main.c
-@@ -384,7 +384,7 @@ int wfx_probe(struct wfx_dev *wdev)
- 	err = wfx_sl_init(wdev);
- 	if (err && wdev->hw_caps.capabilities.link_mode == SEC_LINK_ENFORCED) {
- 		dev_err(wdev->dev,
--			"chip require secure_link, but can't negociate it\n");
-+			"chip require secure_link, but can't negotiate it\n");
- 		goto err0;
- 	}
+diff --git a/drivers/staging/wfx/data_rx.c b/drivers/staging/wfx/data_rx.c
+index 6fb078880742..7fcbbfc53416 100644
+--- a/drivers/staging/wfx/data_rx.c
++++ b/drivers/staging/wfx/data_rx.c
+@@ -73,7 +73,7 @@ void wfx_rx_cb(struct wfx_vif *wvif,
+ 	if (arg->rx_flags.encryp)
+ 		hdr->flag |= RX_FLAG_DECRYPTED;
  
+-	// Block ack negociation is offloaded by the firmware. However,
++	// Block ack negotiation is offloaded by the firmware. However,
+ 	// re-ordering must be done by the mac80211.
+ 	if (ieee80211_is_action(frame->frame_control) &&
+ 	    mgmt->u.action.category == WLAN_CATEGORY_BACK &&
 -- 
 2.17.1
 
