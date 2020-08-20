@@ -2,109 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CD0224AF96
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5973C24AF82
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 09:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgHTHK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 03:10:28 -0400
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:52821 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725820AbgHTHK0 (ORCPT
+        id S1726754AbgHTHA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 03:00:58 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:42922 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725778AbgHTHAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 03:10:26 -0400
-X-Greylist: delayed 1068 seconds by postgrey-1.27 at vger.kernel.org; Thu, 20 Aug 2020 03:10:26 EDT
-Received: from [2001:67c:670:100:1d::c0] (helo=ptx.hi.pengutronix.de)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1k8eQz-0000f8-L0; Thu, 20 Aug 2020 08:52:25 +0200
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1k8eQv-0003ht-Hg; Thu, 20 Aug 2020 08:52:21 +0200
-Date:   Thu, 20 Aug 2020 08:52:21 +0200
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     Lars-Peter Clausen <lars@metafoo.de>
-Cc:     Benjamin Bara - SKIDATA <Benjamin.Bara@skidata.com>,
-        Robin Gong <yibin.gong@nxp.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "timur@kernel.org" <timur@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Richard Leitner - SKIDATA <Richard.Leitner@skidata.com>
-Subject: Re: pcm|dmaengine|imx-sdma race condition on i.MX6
-Message-ID: <20200820065221.GF19745@pengutronix.de>
-References: <20200813112258.GA327172@pcleri>
- <VE1PR04MB6638EE5BDBE2C65FF50B7DB889400@VE1PR04MB6638.eurprd04.prod.outlook.com>
- <61498763c60e488a825e8dd270732b62@skidata.com>
- <16942794-1e03-6da0-b8e5-c82332a217a5@metafoo.de>
+        Thu, 20 Aug 2020 03:00:49 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id BBF1C1C0BD5; Thu, 20 Aug 2020 09:00:46 +0200 (CEST)
+Date:   Thu, 20 Aug 2020 09:00:45 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     maemo-leste@lists.dyne.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-omap@vger.kernel.org, sre@kernel.org, nekit1000@gmail.com,
+        mpartap@gmx.net, merlijn@wizzup.org, martin_rysavy@centrum.cz
+Subject: Re: GPS fun on Droid 4 and leste
+Message-ID: <20200820070045.GB9738@amd>
+References: <20200712092726.GC13495@amd>
+ <20200820042431.GI2994@atomide.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="9zSXsLTf0vkW971A"
 Content-Disposition: inline
-In-Reply-To: <16942794-1e03-6da0-b8e5-c82332a217a5@metafoo.de>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 08:19:09 up 182 days, 13:49, 135 users,  load average: 0.10, 0.14,
- 0.14
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20200820042431.GI2994@atomide.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 01:08:29PM +0200, Lars-Peter Clausen wrote:
-> > For the first option, which is potentially more performant, we have to leave the atomic PCM context
-> > and we are not sure if we are allowed to.
-> > For the second option, we would have to divide the dma_device terminate_all into an atomic sync and
-> > an async one, which would align with the dmaengine API, giving it the option to ensure termination
-> > in an atomic context.
-> > Based on my understanding, most of them are synchronous anyways, for the currently async ones we
-> > would have to implement busy waits.
-> > However, with this approach, we reach the WARN_ON [6] inside of an atomic context,
-> > indicating we might not do the right thing.
-> 
-> I don't know how feasible this is to implement in the SDMA dmaengine driver.
-> But I think what is should do is to have some flag to indicate if a
-> terminate is in progress. If a new transfer is issued while terminate is in
-> progress the transfer should go on a list. Once terminate finishes it should
-> check the list and start the transfer if there are any on the list.
 
-The list is already there in form of the vchan helpers the driver uses.
+--9zSXsLTf0vkW971A
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I think the big mistake the driver makes is to configure fields in
-struct sdma_channel and also the hardware directly in
-sdma_prep_memcpy(), sdma_prep_slave_sg() and sdma_prep_dma_cyclic(). All
-information should be stored in the struct sdma_desc allocated in the
-prep functions and only be used when it's time to fire that specific
-descriptor.
+Hi!
 
-More specifically sdma_config_write() may not be called from
-sdma_prep_slave_sg() or sdma_prep_dma_cyclic(), but instead must be
-called from sdma_start_desc().  sdma_config_ownership() also must be
-called later in sdma_start_desc(). 'direction' must be a member of
-struct sdma_desc, not of struct sdma_channel.
+> > GPS on the droid 4 does not really work out of the box.
+> >=20
+> > gpsd is not in default installation, maybe it should be?
+> >=20
+> > What is worse, there's something broken with gpsd. Try:
+> >=20
+> > /usr/sbin/gpsd -N -D 5 /dev/gnss0
+> > gpspipe -w
+> > # this seems to work, but do ^C and restart
+> > gpspipe -w
+> > ...and it hangs.
+>=20
+> Some earlier versions of gpsd I think had issues where you could
+> only connect one client. Or it was a bug in the kernel drivers..
+> Anyways, multiple gpspipe instances have been working for me for
+> a while now with gpsd-3.21.
+>=20
+> I also found some issues in gnss-motmdm driver for closing the
+> gnss device, see:
+>=20
+> https://github.com/tmlind/linux/commits/droid4-pending-v5.8
+>=20
+> And I think the xtra2.bin data for agps is now working too :)
+>=20
+> https://github.com/tmlind/droid4-agps/commits/master
+>=20
+> At least I now get a fix in about two minutes after running the
+> update.sh, going outside, and starting cgps.
 
-Overall this sounds like a fair amount of work to do, but should be
-feasible and IMO is a step in the right direction.
+Ok, let me play. But you should be getting fix in two minutes
+_without_ AGPS support, if GPS is any good...
 
-Sascha
+Best regards,
+									Pavel
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--9zSXsLTf0vkW971A
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl8+H50ACgkQMOfwapXb+vIqogCgmdMbsFL3VMG8vdt7AwZd+YGs
+/l0AoIORJDoZjrNtjT4mv0rLTzaQnZuI
+=drNP
+-----END PGP SIGNATURE-----
+
+--9zSXsLTf0vkW971A--
