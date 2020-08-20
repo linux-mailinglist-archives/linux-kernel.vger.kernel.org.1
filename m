@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20FAA24B388
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FE324B344
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729590AbgHTJsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:48:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53766 "EHLO mail.kernel.org"
+        id S1729268AbgHTJns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:43:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729565AbgHTJsl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:48:41 -0400
+        id S1728902AbgHTJmV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:42:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14EA920724;
-        Thu, 20 Aug 2020 09:48:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A521E20855;
+        Thu, 20 Aug 2020 09:42:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916920;
-        bh=JGBl8CsM/imI4Ug31S0hfZkmCFVH2FkWgjLYluEQnyE=;
+        s=default; t=1597916541;
+        bh=nr/2VzfFW/HOWdF78Zd5ouU6Ua0NDBxDOqvDSXOvJ9Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nnVtMiTptUgtBWLp9qH4rMZ52NFu5/XZuFT9J/uR3K2b5ZdXmKEvoTsLUE4l4uMKO
-         MXZD4GSDuFJ0VTjfMTPNHRzF+Y0wC5Ds18nRg+2q1WZBmQilMi0kxxXD0nAf1npSz9
-         bDrSQ/K5as6D8gYYea/bAuCCgAY7IAmmbbhIn6Pw=
+        b=GGOD8rxHUSrbo+cMycOh3CloluEwCc+tvb0d+euU/n4VVYJ0REo46QMaprlZNaLnO
+         LH1FOUDSM+ntCYihJ1Qf7sZuva2j+ut3nF/ObQxnMr/oANkdf6UrkBzQJudBld/KRb
+         gX8vQ1GSqww7DZMuLhFXi68rzvDFLJV0th3bsWV0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        stable@vger.kernel.org, kernel test robot <rong.a.chen@intel.com>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 093/152] devres: keep both device name and resource name in pretty name
-Date:   Thu, 20 Aug 2020 11:21:00 +0200
-Message-Id: <20200820091558.491404518@linuxfoundation.org>
+Subject: [PATCH 5.7 165/204] vdpa_sim: init iommu lock
+Date:   Thu, 20 Aug 2020 11:21:02 +0200
+Message-Id: <20200820091614.460785917@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
-References: <20200820091553.615456912@linuxfoundation.org>
+In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
+References: <20200820091606.194320503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,112 +45,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Michael S. Tsirkin <mst@redhat.com>
 
-[ Upstream commit 35bd8c07db2ce8fd2834ef866240613a4ef982e7 ]
+[ Upstream commit 1e3e792650d2c0df8dd796906275b7c79e278664 ]
 
-Sometimes debugging a device is easiest using devmem on its register
-map, and that can be seen with /proc/iomem. But some device drivers have
-many memory regions. Take for example a networking switch. Its memory
-map used to look like this in /proc/iomem:
+The patch adding the iommu lock did not initialize it.
+The struct is zero-initialized so this is mostly a problem
+when using lockdep.
 
-1fc000000-1fc3fffff : pcie@1f0000000
-  1fc000000-1fc3fffff : 0000:00:00.5
-    1fc010000-1fc01ffff : sys
-    1fc030000-1fc03ffff : rew
-    1fc060000-1fc0603ff : s2
-    1fc070000-1fc0701ff : devcpu_gcb
-    1fc080000-1fc0800ff : qs
-    1fc090000-1fc0900cb : ptp
-    1fc100000-1fc10ffff : port0
-    1fc110000-1fc11ffff : port1
-    1fc120000-1fc12ffff : port2
-    1fc130000-1fc13ffff : port3
-    1fc140000-1fc14ffff : port4
-    1fc150000-1fc15ffff : port5
-    1fc200000-1fc21ffff : qsys
-    1fc280000-1fc28ffff : ana
-
-But after the patch in Fixes: was applied, the information is now
-presented in a much more opaque way:
-
-1fc000000-1fc3fffff : pcie@1f0000000
-  1fc000000-1fc3fffff : 0000:00:00.5
-    1fc010000-1fc01ffff : 0000:00:00.5
-    1fc030000-1fc03ffff : 0000:00:00.5
-    1fc060000-1fc0603ff : 0000:00:00.5
-    1fc070000-1fc0701ff : 0000:00:00.5
-    1fc080000-1fc0800ff : 0000:00:00.5
-    1fc090000-1fc0900cb : 0000:00:00.5
-    1fc100000-1fc10ffff : 0000:00:00.5
-    1fc110000-1fc11ffff : 0000:00:00.5
-    1fc120000-1fc12ffff : 0000:00:00.5
-    1fc130000-1fc13ffff : 0000:00:00.5
-    1fc140000-1fc14ffff : 0000:00:00.5
-    1fc150000-1fc15ffff : 0000:00:00.5
-    1fc200000-1fc21ffff : 0000:00:00.5
-    1fc280000-1fc28ffff : 0000:00:00.5
-
-That patch made a fair comment that /proc/iomem might be confusing when
-it shows resources without an associated device, but we can do better
-than just hide the resource name altogether. Namely, we can print the
-device name _and_ the resource name. Like this:
-
-1fc000000-1fc3fffff : pcie@1f0000000
-  1fc000000-1fc3fffff : 0000:00:00.5
-    1fc010000-1fc01ffff : 0000:00:00.5 sys
-    1fc030000-1fc03ffff : 0000:00:00.5 rew
-    1fc060000-1fc0603ff : 0000:00:00.5 s2
-    1fc070000-1fc0701ff : 0000:00:00.5 devcpu_gcb
-    1fc080000-1fc0800ff : 0000:00:00.5 qs
-    1fc090000-1fc0900cb : 0000:00:00.5 ptp
-    1fc100000-1fc10ffff : 0000:00:00.5 port0
-    1fc110000-1fc11ffff : 0000:00:00.5 port1
-    1fc120000-1fc12ffff : 0000:00:00.5 port2
-    1fc130000-1fc13ffff : 0000:00:00.5 port3
-    1fc140000-1fc14ffff : 0000:00:00.5 port4
-    1fc150000-1fc15ffff : 0000:00:00.5 port5
-    1fc200000-1fc21ffff : 0000:00:00.5 qsys
-    1fc280000-1fc28ffff : 0000:00:00.5 ana
-
-Fixes: 8d84b18f5678 ("devres: always use dev_name() in devm_ioremap_resource()")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Link: https://lore.kernel.org/r/20200601095826.1757621-1-olteanv@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: kernel test robot <rong.a.chen@intel.com>
+Cc: Max Gurtovoy <maxg@mellanox.com>
+Fixes: 0ea9ee430e74 ("vdpasim: protect concurrent access to iommu iotlb")
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/devres.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/vdpa/vdpa_sim/vdpa_sim.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/lib/devres.c b/lib/devres.c
-index 17624d35e82d4..77c80ca9e4856 100644
---- a/lib/devres.c
-+++ b/lib/devres.c
-@@ -155,6 +155,7 @@ void __iomem *devm_ioremap_resource(struct device *dev,
- {
- 	resource_size_t size;
- 	void __iomem *dest_ptr;
-+	char *pretty_name;
+diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+index e2dc8edd680e0..3554f8de00e64 100644
+--- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
++++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+@@ -330,6 +330,7 @@ static struct vdpasim *vdpasim_create(void)
  
- 	BUG_ON(!dev);
+ 	INIT_WORK(&vdpasim->work, vdpasim_work);
+ 	spin_lock_init(&vdpasim->lock);
++	spin_lock_init(&vdpasim->iommu_lock);
  
-@@ -165,7 +166,15 @@ void __iomem *devm_ioremap_resource(struct device *dev,
- 
- 	size = resource_size(res);
- 
--	if (!devm_request_mem_region(dev, res->start, size, dev_name(dev))) {
-+	if (res->name)
-+		pretty_name = devm_kasprintf(dev, GFP_KERNEL, "%s %s",
-+					     dev_name(dev), res->name);
-+	else
-+		pretty_name = devm_kstrdup(dev, dev_name(dev), GFP_KERNEL);
-+	if (!pretty_name)
-+		return IOMEM_ERR_PTR(-ENOMEM);
-+
-+	if (!devm_request_mem_region(dev, res->start, size, pretty_name)) {
- 		dev_err(dev, "can't request region for resource %pR\n", res);
- 		return IOMEM_ERR_PTR(-EBUSY);
- 	}
+ 	dev = &vdpasim->vdpa.dev;
+ 	dev->coherent_dma_mask = DMA_BIT_MASK(64);
 -- 
 2.25.1
 
