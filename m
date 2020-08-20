@@ -2,152 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2507924C7BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 00:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E24DB24C7C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 00:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728244AbgHTW0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 18:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35934 "EHLO
+        id S1728425AbgHTWbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 18:31:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726919AbgHTW0R (ORCPT
+        with ESMTP id S1726951AbgHTWbf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 18:26:17 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45704C061385
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 15:26:16 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id l23so2883247edv.11
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 15:26:16 -0700 (PDT)
+        Thu, 20 Aug 2020 18:31:35 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481F7C061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 15:31:35 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id qc22so93710ejb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 15:31:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=OhRf5j3vdObD26X1swOWaXMxZZjJcjsvsmxQNBB1Tsk=;
-        b=TAIB2L0yZvDqSwHwg7yrRZsEp0JutwTv7HDFn4IA6Ps261QLkYKlrp9BJdJxvbJ42X
-         +/gKblFfOdLk6rr7cOsg+tUvV3jwjLPOOIF2D8/ASgdHBaIkSzBF03Gv+5yfRlZsnx1e
-         gv5JYwgmBt88FPfLIMKSLCgN85oZk6Ko/+Y7/p+Tlk52crUCekeY+LvdZh48WlZsz2K+
-         JNxEOfA3hcrGElMcLq5UydT79/YmzyA/lfAHFBVSqQkw5oMnWlsnh6H7WzUbopodrByR
-         4KdvuPdfx3A6KhGnCXjcKMdCf4C8+cPz8YdsF6H2mOxPTVhAxfrCqrP/PxBcKF8Y+1JL
-         cAlQ==
+        bh=SuUXRswcOeNLCip2n7MAbvqZMd+jOnXUCuYTkBD7p0U=;
+        b=fgZ1D9Tju8B8pr7drSv2uBnOnJJ4F9TWjipSfuWilX3suyse9Y/kBGn8zayEmnM3m9
+         cwKh4W2gjJyqUkkrIZSsFRtG+xYQGHZ6VzgFjYOsn4nlxwnaQZ8ffcC+VHIUYEhkWV5Y
+         xk6Ps8er0VfoqvJAzXTd0Rlgsn0nxWO8iNl9+T2YTwFzDd91KASzh/1Z6FGvNBC0IuHd
+         oIhUnf3z73ftQwdtP1t4blwW/CZzL2PMZUwSSxad+Epm90deWkSj+rwQc37BBR9sU9v3
+         gerMFt+WjkLitHdHTRtXbTNwTsQqatFOliNGrUGBjbJwddBhN7KoEOQKhWjkNtRvObLV
+         gXyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OhRf5j3vdObD26X1swOWaXMxZZjJcjsvsmxQNBB1Tsk=;
-        b=n6mClKu+Fx7ySYss1tU/Ly7cWJHNNl2bJctyrRLScAIO29j/cFaP2XnRzAcG+y4dS7
-         ZtsF9S7Y41HBzsPxbExwPExQy+H6UUatJBo/mVQvh9lWp9Og1hIS6ETI3ATw/nnCiOxw
-         sXp9rX5q4WY29wyR2xSM01JHouVH4xdOLVmxPOegMUPp3hwTv08r5Iy6qTmn0Iy8TYql
-         aDGGykuQycflmsxC5nDZfVu/Dn+qMcClT7RmLCb77nuOMYyra35m7gtpW/1cK4MU0x2/
-         HkEQsL9pbCGtcWcuG2JGMqSVMVm6cKIWG9N8YOKNz/FWdAhMHSbjDsjhezJIzU++/314
-         pLGQ==
-X-Gm-Message-State: AOAM531fC7N0BmN0gfntynxYT98jVKOpSht+4kuQvrlTvKWrCDx2fQv6
-        tGgpQPUiDuEtTnKJu7zkvnukJLEp3xPxlldAbGakYWTezZ8=
-X-Google-Smtp-Source: ABdhPJyW3Km6Y645JwYgI1WkycEMm6hwqcpSf6ZjHm2OthkhiefcI4IHZ07aumd0ZLsE2wpJAXobLSBM5vZJDSmXF28=
-X-Received: by 2002:a05:6402:1c10:: with SMTP id ck16mr51358edb.151.1597962374944;
- Thu, 20 Aug 2020 15:26:14 -0700 (PDT)
+        bh=SuUXRswcOeNLCip2n7MAbvqZMd+jOnXUCuYTkBD7p0U=;
+        b=tfrw9vrSFiDJfJg+M9F6McE4FvVtCAU5rmG2AWiTGBXXG8iPsLITUaekqelQG+OqsF
+         80rbWYCT/sR8Texf24abBWTQkBh4vvtNd/a5jfWBvs3FD8gJmbAyjGKpG4lQPJQ9ZhMa
+         /SLLt05ZzejqXQlZqIQIPlF8LXB6FvLwODYbXlxt/SvK+NrHIG+kzAuAKL+6OamTcWQk
+         +E7jFnzgtvGJkChXtR07dJWrKmKMmwH+HHZ4sWDYJRWErkUX5eScuxaUdcPurjbXzo9U
+         H7CnRMDlfN+yUo09OIlycG5xG8tUHkbzkah1bJ/qXNiKVyNwCDRk+mK3Y0Wq9GIhX32z
+         NnoQ==
+X-Gm-Message-State: AOAM533Z005TgaEg4+XCB4RXC7hBMkHNv3TlYzzWYLyGnb+pqsxIBOg1
+        xewl8KZU32mVpLR4kB+aE5+tOev1ZJtk/iz5122tRw==
+X-Google-Smtp-Source: ABdhPJyIXR6qYMtpFJDbmSSAJHv2Aynqs8K6Iicf8g+Btpd5pGPoqEqW4RIDrek9BV4Us4qvkmY8bPcQnw6hYvG1TNU=
+X-Received: by 2002:a17:906:c406:: with SMTP id u6mr81296ejz.47.1597962693551;
+ Thu, 20 Aug 2020 15:31:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200818184122.29C415DF@viggo.jf.intel.com> <20200818184133.DCF58B5F@viggo.jf.intel.com>
-In-Reply-To: <20200818184133.DCF58B5F@viggo.jf.intel.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 20 Aug 2020 15:26:02 -0700
-Message-ID: <CAHbLzkr9e=hsT-Fw14cwmBoK7p=GsbzAmVqo6HFCFRXz6sa0iw@mail.gmail.com>
-Subject: Re: [RFC][PATCH 6/9] mm/vmscan: add page demotion counter
-To:     Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Rientjes <rientjes@google.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
+References: <20200820115033.276111-1-maco@android.com>
+In-Reply-To: <20200820115033.276111-1-maco@android.com>
+From:   Todd Kjos <tkjos@google.com>
+Date:   Thu, 20 Aug 2020 15:31:21 -0700
+Message-ID: <CAHRSSExdn-aYUK-N9-ANg2Zwtm+B49qMQrLqttG+Ay6yYgiMHQ@mail.gmail.com>
+Subject: Re: [PATCH v2] ANDROID: binder: print warnings when detecting oneway spamming.
+To:     Martijn Coenen <maco@android.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
+        Martijn Coenen <maco@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 11:53 AM Dave Hansen
-<dave.hansen@linux.intel.com> wrote:
+On Thu, Aug 20, 2020 at 4:50 AM Martijn Coenen <maco@android.com> wrote:
 >
+> The most common cause of the binder transaction buffer filling up is a
+> client rapidly firing oneway transactions into a process, before it has
+> a chance to handle them. Yet the root cause of this is often hard to
+> debug, because either the system or the app will stop, and by that time
+> binder debug information we dump in bugreports is no longer relevant.
 >
-> From: Yang Shi <yang.shi@linux.alibaba.com>
+> This change warns as soon as a process dips below 80% of its oneway
+> space (less than 100kB available in the configuration), when any one
+> process is responsible for either more than 50 transactions, or more
+> than 50% of the oneway space.
 >
-> Account the number of demoted pages into reclaim_state->nr_demoted.
->
-> Add pgdemote_kswapd and pgdemote_direct VM counters showed in
-> /proc/vmstat.
->
-> [ daveh:
->    - __count_vm_events() a bit, and made them look at the THP
->      size directly rather than getting data from migrate_pages()
-> ]
+> Signed-off-by: Martijn Coenen <maco@android.com>
 
-This reminds me that we'd better to make migrate_pages() return the
-number of base pages. Now both nr_failed and nr_succeeded is inc'ed
-regardless of whether it is THP.
+A few minor comment issues below. When resolved:
+Acked-by: Todd Kjos <tkjos@google.com>
 
-A quick look finds the callers of migrate_pages() seem not care about
-the exact returned number, they just care if it is positive or not.
-
-And reclaim code depends on correct nr_succeeded to avoid over reclaim.
-
-I will come up with a patch to post to the mailing list.
-
->
-> Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
-> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Huang Ying <ying.huang@intel.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
 > ---
+> v2: fixed call-site in binder_alloc_selftest
 >
->  b/include/linux/vm_event_item.h |    2 ++
->  b/mm/vmscan.c                   |    6 ++++++
->  b/mm/vmstat.c                   |    2 ++
->  3 files changed, 10 insertions(+)
+>  drivers/android/binder.c                |  2 +-
+>  drivers/android/binder_alloc.c          | 49 +++++++++++++++++++++++--
+>  drivers/android/binder_alloc.h          |  5 ++-
+>  drivers/android/binder_alloc_selftest.c |  2 +-
+>  4 files changed, 52 insertions(+), 6 deletions(-)
 >
-> diff -puN include/linux/vm_event_item.h~mm-vmscan-add-page-demotion-counter include/linux/vm_event_item.h
-> --- a/include/linux/vm_event_item.h~mm-vmscan-add-page-demotion-counter 2020-08-18 11:36:54.062583176 -0700
-> +++ b/include/linux/vm_event_item.h     2020-08-18 11:36:54.070583176 -0700
-> @@ -32,6 +32,8 @@ enum vm_event_item { PGPGIN, PGPGOUT, PS
->                 PGREFILL,
->                 PGSTEAL_KSWAPD,
->                 PGSTEAL_DIRECT,
-> +               PGDEMOTE_KSWAPD,
-> +               PGDEMOTE_DIRECT,
->                 PGSCAN_KSWAPD,
->                 PGSCAN_DIRECT,
->                 PGSCAN_DIRECT_THROTTLE,
-> diff -puN mm/vmscan.c~mm-vmscan-add-page-demotion-counter mm/vmscan.c
-> --- a/mm/vmscan.c~mm-vmscan-add-page-demotion-counter   2020-08-18 11:36:54.064583176 -0700
-> +++ b/mm/vmscan.c       2020-08-18 11:36:54.072583176 -0700
-> @@ -147,6 +147,7 @@ struct scan_control {
->                 unsigned int immediate;
->                 unsigned int file_taken;
->                 unsigned int taken;
-> +               unsigned int demoted;
->         } nr;
+> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+> index f936530a19b0..946332bc871a 100644
+> --- a/drivers/android/binder.c
+> +++ b/drivers/android/binder.c
+> @@ -3136,7 +3136,7 @@ static void binder_transaction(struct binder_proc *proc,
 >
->         /* for recording the reclaimed slab by now */
-> @@ -1146,6 +1147,11 @@ static unsigned int demote_page_list(str
->                 list_splice(ret_list, demote_pages);
->         }
->
-> +       if (current_is_kswapd())
-> +               __count_vm_events(PGDEMOTE_KSWAPD, nr_succeeded);
-> +       else
-> +               __count_vm_events(PGDEMOTE_DIRECT, nr_succeeded);
-> +
->         return nr_succeeded;
+>         t->buffer = binder_alloc_new_buf(&target_proc->alloc, tr->data_size,
+>                 tr->offsets_size, extra_buffers_size,
+> -               !reply && (t->flags & TF_ONE_WAY));
+> +               !reply && (t->flags & TF_ONE_WAY), current->tgid);
+>         if (IS_ERR(t->buffer)) {
+>                 /*
+>                  * -ESRCH indicates VMA cleared. The target is dying.
+> diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
+> index 69609696a843..76e8e633dbd4 100644
+> --- a/drivers/android/binder_alloc.c
+> +++ b/drivers/android/binder_alloc.c
+> @@ -338,12 +338,48 @@ static inline struct vm_area_struct *binder_alloc_get_vma(
+>         return vma;
 >  }
 >
-> diff -puN mm/vmstat.c~mm-vmscan-add-page-demotion-counter mm/vmstat.c
-> --- a/mm/vmstat.c~mm-vmscan-add-page-demotion-counter   2020-08-18 11:36:54.067583176 -0700
-> +++ b/mm/vmstat.c       2020-08-18 11:36:54.072583176 -0700
-> @@ -1200,6 +1200,8 @@ const char * const vmstat_text[] = {
->         "pgrefill",
->         "pgsteal_kswapd",
->         "pgsteal_direct",
-> +       "pgdemote_kswapd",
-> +       "pgdemote_direct",
->         "pgscan_kswapd",
->         "pgscan_direct",
->         "pgscan_direct_throttle",
-> _
+> +static void debug_low_async_space_locked(struct binder_alloc *alloc, int pid)
+> +{
+> +       /*
+> +        * Find the amount and size of buffers allocated by the current caller;
+> +        * The idea is that once we cross the threshold, whoever is responsible
+> +        * for the low async space is likely to try to send another async txn,
+> +        * and at some point we'll catch them in the act. This is more efficient
+> +        * than keeping a map per pid.
+> +        */
+> +       struct rb_node *n = alloc->free_buffers.rb_node;
+> +       struct binder_buffer *buffer;
+> +       size_t buffer_size;
+> +       size_t total_alloc_size = 0;
+> +       size_t num_buffers = 0;
+> +
+> +       for (n = rb_first(&alloc->allocated_buffers); n != NULL;
+> +                n = rb_next(n)) {
+> +               buffer = rb_entry(n, struct binder_buffer, rb_node);
+> +               if (buffer->pid != pid)
+> +                       continue;
+> +               if (!buffer->async_transaction)
+> +                       continue;
+> +               buffer_size = binder_alloc_buffer_size(alloc, buffer);
+> +               total_alloc_size += buffer_size;
+> +               num_buffers++;
+> +       }
+> +
+> +       // Warn if this pid has more than 50% of async space, or more than 50 txns
+
+/* .. */
+
+Folks might be confused by 50% being calculated as (alloc->buffer_size
+/4) which on the surface looks like 25%. Maybe either change the
+comment to "25% of buffer space" or point out that async space is 50%
+of the buffer.
+
+
+> +       if (num_buffers > 50 || total_alloc_size > alloc->buffer_size / 4) {
+> +               binder_alloc_debug(BINDER_DEBUG_USER_ERROR,
+> +                            "%d: pid %d spamming oneway? %zd buffers allocated for a total size of %zd\n",
+> +                             alloc->pid, pid, num_buffers, total_alloc_size);
+> +       }
+> +}
+> +
+>  static struct binder_buffer *binder_alloc_new_buf_locked(
+>                                 struct binder_alloc *alloc,
+>                                 size_t data_size,
+>                                 size_t offsets_size,
+>                                 size_t extra_buffers_size,
+> -                               int is_async)
+> +                               int is_async,
+> +                               int pid)
+>  {
+>         struct rb_node *n = alloc->free_buffers.rb_node;
+>         struct binder_buffer *buffer;
+> @@ -486,11 +522,16 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
+>         buffer->offsets_size = offsets_size;
+>         buffer->async_transaction = is_async;
+>         buffer->extra_buffers_size = extra_buffers_size;
+> +       buffer->pid = pid;
+>         if (is_async) {
+>                 alloc->free_async_space -= size + sizeof(struct binder_buffer);
+>                 binder_alloc_debug(BINDER_DEBUG_BUFFER_ALLOC_ASYNC,
+>                              "%d: binder_alloc_buf size %zd async free %zd\n",
+>                               alloc->pid, size, alloc->free_async_space);
+> +               if (alloc->free_async_space < alloc->buffer_size / 10) {
+> +                       // Start detecting spammers once we reach 80% of async space used
+
+Use /* ... */
+
+> +                       debug_low_async_space_locked(alloc, pid);
+> +               }
+>         }
+>         return buffer;
+>
+> @@ -508,6 +549,7 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
+>   * @offsets_size:       user specified buffer offset
+>   * @extra_buffers_size: size of extra space for meta-data (eg, security context)
+>   * @is_async:           buffer for async transaction
+> + * @pid:                               pid to attribute allocation to (used for debugging)
+>   *
+>   * Allocate a new buffer given the requested sizes. Returns
+>   * the kernel version of the buffer pointer. The size allocated
+> @@ -520,13 +562,14 @@ struct binder_buffer *binder_alloc_new_buf(struct binder_alloc *alloc,
+>                                            size_t data_size,
+>                                            size_t offsets_size,
+>                                            size_t extra_buffers_size,
+> -                                          int is_async)
+> +                                          int is_async,
+> +                                          int pid)
+>  {
+>         struct binder_buffer *buffer;
+>
+>         mutex_lock(&alloc->mutex);
+>         buffer = binder_alloc_new_buf_locked(alloc, data_size, offsets_size,
+> -                                            extra_buffers_size, is_async);
+> +                                            extra_buffers_size, is_async, pid);
+>         mutex_unlock(&alloc->mutex);
+>         return buffer;
+>  }
+> diff --git a/drivers/android/binder_alloc.h b/drivers/android/binder_alloc.h
+> index db9c1b984695..55d8b4106766 100644
+> --- a/drivers/android/binder_alloc.h
+> +++ b/drivers/android/binder_alloc.h
+> @@ -32,6 +32,7 @@ struct binder_transaction;
+>   * @offsets_size:       size of array of offsets
+>   * @extra_buffers_size: size of space for other objects (like sg lists)
+>   * @user_data:          user pointer to base of buffer space
+> + * @pid:                pid to attribute the buffer to (caller)
+>   *
+>   * Bookkeeping structure for binder transaction buffers
+>   */
+> @@ -51,6 +52,7 @@ struct binder_buffer {
+>         size_t offsets_size;
+>         size_t extra_buffers_size;
+>         void __user *user_data;
+> +       int    pid;
+>  };
+>
+>  /**
+> @@ -117,7 +119,8 @@ extern struct binder_buffer *binder_alloc_new_buf(struct binder_alloc *alloc,
+>                                                   size_t data_size,
+>                                                   size_t offsets_size,
+>                                                   size_t extra_buffers_size,
+> -                                                 int is_async);
+> +                                                 int is_async,
+> +                                                 int pid);
+>  extern void binder_alloc_init(struct binder_alloc *alloc);
+>  extern int binder_alloc_shrinker_init(void);
+>  extern void binder_alloc_vma_close(struct binder_alloc *alloc);
+> diff --git a/drivers/android/binder_alloc_selftest.c b/drivers/android/binder_alloc_selftest.c
+> index 4151d9938255..c2b323bc3b3a 100644
+> --- a/drivers/android/binder_alloc_selftest.c
+> +++ b/drivers/android/binder_alloc_selftest.c
+> @@ -119,7 +119,7 @@ static void binder_selftest_alloc_buf(struct binder_alloc *alloc,
+>         int i;
+>
+>         for (i = 0; i < BUFFER_NUM; i++) {
+> -               buffers[i] = binder_alloc_new_buf(alloc, sizes[i], 0, 0, 0);
+> +               buffers[i] = binder_alloc_new_buf(alloc, sizes[i], 0, 0, 0, 0);
+>                 if (IS_ERR(buffers[i]) ||
+>                     !check_buffer_pages_allocated(alloc, buffers[i],
+>                                                   sizes[i])) {
+> --
+> 2.28.0.220.ged08abb693-goog
+>
