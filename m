@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F2E24BA1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CFE724BB50
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729507AbgHTMAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:00:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48164 "EHLO mail.kernel.org"
+        id S1730013AbgHTJwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:52:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730462AbgHTKAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:00:19 -0400
+        id S1729938AbgHTJwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:52:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7DF3421775;
-        Thu, 20 Aug 2020 10:00:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 20DCE2078D;
+        Thu, 20 Aug 2020 09:52:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917618;
-        bh=DMfpQ+H8dZEgtsoidfttJ8FPsd91nK2KArIgGobJheI=;
+        s=default; t=1597917153;
+        bh=80d02pedfTpF3cSJbY6um8Fk5bv/JNoyRNqEAFcDkBM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oyUxqwkbOAh6HwF0BmxQXCBBgO1FQm9edt5D3PA4EvDcHyLvvmWFRI8U76hIhBWoo
-         K2i1ChiYr8AuMueK84h2lNtGLtYO2ewo31ZwrIf1gqSAPYMNqliyPH8y6FLXHNbIwL
-         VLwZgfZS37WBl/KoIPEas2UW9fu9JEu23sGaMHjk=
+        b=svwJVFqQ9up7G0BeoVSl+PhcsBchVvC5LiKlbkLGtCjp6pY3oOr2m90m5jGdRLiK4
+         f8i/SfrPILllmmu0h1D3CO2YKCb5dU/2B+uyLTr8LjXZSb5l3VGYy+hb5EKoFEZ/eH
+         hjbt6A/QqDy+Jmg1FM+v2q5YEkH3EtUp/yN7ZgIo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
-        Aditya Pakki <pakki001@umn.edu>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 094/212] drm/radeon: Fix reference count leaks caused by pm_runtime_get_sync
-Date:   Thu, 20 Aug 2020 11:21:07 +0200
-Message-Id: <20200820091607.097614592@linuxfoundation.org>
+        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.19 23/92] powerpc: Fix circular dependency between percpu.h and mmu.h
+Date:   Thu, 20 Aug 2020 11:21:08 +0200
+Message-Id: <20200820091538.765451827@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
-References: <20200820091602.251285210@linuxfoundation.org>
+In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
+References: <20200820091537.490965042@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,74 +43,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aditya Pakki <pakki001@umn.edu>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-[ Upstream commit 9fb10671011143d15b6b40d6d5fa9c52c57e9d63 ]
+commit 0c83b277ada72b585e6a3e52b067669df15bcedb upstream.
 
-On calling pm_runtime_get_sync() the reference count of the device
-is incremented. In case of failure, decrement the
-reference count before returning the error.
+Recently random.h started including percpu.h (see commit
+f227e3ec3b5c ("random32: update the net random state on interrupt and
+activity")), which broke corenet64_smp_defconfig:
 
-Acked-by: Evan Quan <evan.quan@amd.com>
-Signed-off-by: Aditya Pakki <pakki001@umn.edu>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  In file included from /linux/arch/powerpc/include/asm/paca.h:18,
+                   from /linux/arch/powerpc/include/asm/percpu.h:13,
+                   from /linux/include/linux/random.h:14,
+                   from /linux/lib/uuid.c:14:
+  /linux/arch/powerpc/include/asm/mmu.h:139:22: error: unknown type name 'next_tlbcam_idx'
+    139 | DECLARE_PER_CPU(int, next_tlbcam_idx);
+
+This is due to a circular header dependency:
+  asm/mmu.h includes asm/percpu.h, which includes asm/paca.h, which
+  includes asm/mmu.h
+
+Which means DECLARE_PER_CPU() isn't defined when mmu.h needs it.
+
+We can fix it by moving the include of paca.h below the include of
+asm-generic/percpu.h.
+
+This moves the include of paca.h out of the #ifdef __powerpc64__, but
+that is OK because paca.h is almost entirely inside #ifdef
+CONFIG_PPC64 anyway.
+
+It also moves the include of paca.h out of the #ifdef CONFIG_SMP,
+which could possibly break something, but seems to have no ill
+effects.
+
+Fixes: f227e3ec3b5c ("random32: update the net random state on interrupt and activity")
+Cc: stable@vger.kernel.org # v5.8
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200804130558.292328-1-mpe@ellerman.id.au
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/radeon/radeon_display.c | 4 +++-
- drivers/gpu/drm/radeon/radeon_drv.c     | 4 +++-
- drivers/gpu/drm/radeon/radeon_kms.c     | 4 +++-
- 3 files changed, 9 insertions(+), 3 deletions(-)
+ arch/powerpc/include/asm/percpu.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/radeon/radeon_display.c b/drivers/gpu/drm/radeon/radeon_display.c
-index 432ad7d73cb9b..99e23800cadc7 100644
---- a/drivers/gpu/drm/radeon/radeon_display.c
-+++ b/drivers/gpu/drm/radeon/radeon_display.c
-@@ -639,8 +639,10 @@ radeon_crtc_set_config(struct drm_mode_set *set)
- 	dev = set->crtc->dev;
+--- a/arch/powerpc/include/asm/percpu.h
++++ b/arch/powerpc/include/asm/percpu.h
+@@ -10,8 +10,6 @@
  
- 	ret = pm_runtime_get_sync(dev->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_autosuspend(dev->dev);
- 		return ret;
-+	}
+ #ifdef CONFIG_SMP
  
- 	ret = drm_crtc_helper_set_config(set);
+-#include <asm/paca.h>
+-
+ #define __my_cpu_offset local_paca->data_offset
  
-diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon/radeon_drv.c
-index 30bd4a6a9d466..7648fd0d10751 100644
---- a/drivers/gpu/drm/radeon/radeon_drv.c
-+++ b/drivers/gpu/drm/radeon/radeon_drv.c
-@@ -496,8 +496,10 @@ long radeon_drm_ioctl(struct file *filp,
- 	long ret;
- 	dev = file_priv->minor->dev;
- 	ret = pm_runtime_get_sync(dev->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_autosuspend(dev->dev);
- 		return ret;
-+	}
+ #endif /* CONFIG_SMP */
+@@ -19,4 +17,6 @@
  
- 	ret = drm_ioctl(filp, cmd, arg);
- 	
-diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/radeon/radeon_kms.c
-index 4388ddeec8d24..96d2a564d9a3c 100644
---- a/drivers/gpu/drm/radeon/radeon_kms.c
-+++ b/drivers/gpu/drm/radeon/radeon_kms.c
-@@ -634,8 +634,10 @@ int radeon_driver_open_kms(struct drm_device *dev, struct drm_file *file_priv)
- 	file_priv->driver_priv = NULL;
+ #include <asm-generic/percpu.h>
  
- 	r = pm_runtime_get_sync(dev->dev);
--	if (r < 0)
-+	if (r < 0) {
-+		pm_runtime_put_autosuspend(dev->dev);
- 		return r;
-+	}
- 
- 	/* new gpu have virtual address space support */
- 	if (rdev->family >= CHIP_CAYMAN) {
--- 
-2.25.1
-
++#include <asm/paca.h>
++
+ #endif /* _ASM_POWERPC_PERCPU_H_ */
 
 
