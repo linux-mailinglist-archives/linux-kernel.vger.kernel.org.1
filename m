@@ -2,108 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6FA124ABE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 02:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED5124ABEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 02:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728665AbgHTAOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 20:14:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728721AbgHTAOA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 20:14:00 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38313C061383
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 17:14:00 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id y6so205949plt.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 17:14:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fSEYrX5ACCj62ngKp36MmVum7AWiPuR/R+X34o+7xuE=;
-        b=GZgsINVjA/iPVwpqT/wdawM2LvRnSYS0j70GlPgoxgV9M4sanwWBFOsmDMGbuAVIRa
-         fInE81nFqMhoKq8aeK2wXF23ckv+8mvNAsIAMNsaEXyznMXVLd+MFeyWTryUYHfbHhoL
-         kS9sYMtCAKiqoxBbxYxGEpzZdonBKqbwUdIwbuasbQS/1Reg518ZvopiGNEAOnVxezPZ
-         0fc1L1znuoVPGemAh7QXesW7icu7VBfCaj9yWLu28K5Ix0mIvzQPh6O3AT9pCabC9Qlt
-         bd32bNMb1gX+jDIWkWEa7SXABnbuMe2PsEgAvpvtqbTRKy6kOBIF4TCyzYtrGbZrqAki
-         rq8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fSEYrX5ACCj62ngKp36MmVum7AWiPuR/R+X34o+7xuE=;
-        b=AoZsqWxKccKreyCfRWbjz4yjb1YaYbp63kSO7vh1NQu77DDvYhPRCVf5LFIGAu0L9B
-         9dK0MddhmoSdQVE6ngDo80DEaB6WJN0zaL9DUF+8eSzMMnt510n90lqeNrYACiGC4enf
-         4dLGevI8tf30MrUyacBpUsA5GqMt8L0DXs25p3jOgk1FhzYAngmwLTNy4k3Tk1HJTEcg
-         GplRGTTnQQBY8ktoZptlIMJ0aIbM6ke3jL/mE7+LUrZxaQReU2WkxBHdn/y6ziCH/jc0
-         HEQqgkdA/PLgA7uGmAlBItXP2OMts4LmDEXpCSd6nfz4G3rPRnVNzExEHPrzQS0SAOD6
-         ev6w==
-X-Gm-Message-State: AOAM533H8GFqSOf1+JeeJ1x5VSZl4fRkGrXoDh606MiPe515Y5ECNb8n
-        h0xBx/wBcFiVl+vEgJF0mEPU94mU1w3r0hVvgrQkgA==
-X-Google-Smtp-Source: ABdhPJzl6F5E2iWMKn+8J0GL89vR8SvenD67R1x0TWLjRLW3Uw/3w3cewKL6RgzutABpZ4MtNfBH5ztYpmF9l9LEG8A=
-X-Received: by 2002:a17:90a:a10c:: with SMTP id s12mr340778pjp.32.1597882439098;
- Wed, 19 Aug 2020 17:13:59 -0700 (PDT)
+        id S1728446AbgHTAOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 20:14:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44220 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727817AbgHTAOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 20:14:31 -0400
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD88E22B45
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 00:14:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597882471;
+        bh=ErsxOzudaYAqd/JOMw1cblnI0Jw1+r4C15tCDSy35Mw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Yue7lrmosAlgj8CCubCKwjR2GdG5sCA0nA5lNCxkUmFszRG/XaSYaQzp66SO/kx+W
+         LQaMf9wycov2ECJiIx4pMyrFANfDjqS0W1xt78gIsh2R7wO+Us6bgXznij9+I5fH4I
+         MZiu7ZmnePaj0OUmph3xa8JkAq21mbrxrMLttbik=
+Received: by mail-wm1-f42.google.com with SMTP id g75so103843wme.4
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Aug 2020 17:14:30 -0700 (PDT)
+X-Gm-Message-State: AOAM533vTE1GQmbQwg4Efqv0R8GNkoxM7zvHX6s+jL5plSq21Mr+axWd
+        NoihyPrDh8LX+znEuHFf1fSVLpiPnil9y4ONrAX20A==
+X-Google-Smtp-Source: ABdhPJzK7uFbomAuzonPEM1aKx4TLzsdUQTwYMDJ/Jef5VbDAxL3CoZfOMnG+NMjcLbBwzFea4wYD33BMgOHG66qcnc=
+X-Received: by 2002:a1c:4c17:: with SMTP id z23mr757787wmf.49.1597882469268;
+ Wed, 19 Aug 2020 17:14:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200730205112.2099429-1-ndesaulniers@google.com>
- <20200730205112.2099429-3-ndesaulniers@google.com> <CAN=-Rxty=Ux5rj-VQSZH-ryj1RiNJvy7mRE7uyx_YAndGtcq7Q@mail.gmail.com>
- <CAKwvOdkNLK2cRfY+DA0u3KuY5PuEss5Qox6X3zzpL053pARfrA@mail.gmail.com>
-In-Reply-To: <CAKwvOdkNLK2cRfY+DA0u3KuY5PuEss5Qox6X3zzpL053pARfrA@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 19 Aug 2020 17:13:47 -0700
-Message-ID: <CAKwvOdnDyUw7TZ-ZsWQ=d7ZNPM_ziFnimmbYoVAexWmg2DL36A@mail.gmail.com>
-Subject: Re: [PATCH 2/4] ARM: backtrace-clang: add fixup for lr dereference
-To:     Nathan Huckleberry <nhuck15@gmail.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+References: <CAP045Ao5-+vvTzCOaCkfwztsd2Q0_8kh85UxuXW0bbcfVbF40w@mail.gmail.com>
+ <20200819184149.GH2674@hirez.programming.kicks-ass.net> <CAP045ApfQnsHsimmhLsSeL2OSB98-Q3f=nM4em5rqr_paz4=5Q@mail.gmail.com>
+ <20200819213534.GQ3982@worktop.programming.kicks-ass.net> <20200819224731.3edo5lqw6lbuprdx@treble>
+In-Reply-To: <20200819224731.3edo5lqw6lbuprdx@treble>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 19 Aug 2020 17:14:18 -0700
+X-Gmail-Original-Message-ID: <CALCETrV8sVjhVYig4ZvYDN3pEbF0tvekXCcJCBakeZbMn0gZ=A@mail.gmail.com>
+Message-ID: <CALCETrV8sVjhVYig4ZvYDN3pEbF0tvekXCcJCBakeZbMn0gZ=A@mail.gmail.com>
+Subject: Re: [REGRESSION 5.8] x86/entry: DR0 break-on-write not working
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, Kyle Huey <me@kylehuey.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Robert O'Callahan" <rocallahan@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        Lvqiang Huang <lvqiang.huang@unisoc.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Miles Chen <miles.chen@mediatek.com>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Nathan Huckleberry <nhuck@google.com>
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Will Deacon <will@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 3:33 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
+On Wed, Aug 19, 2020 at 3:47 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
 >
-> On Thu, Aug 6, 2020 at 3:39 PM Nathan Huckleberry <nhuck15@gmail.com> wrote:
+> On Wed, Aug 19, 2020 at 11:35:34PM +0200, Peter Zijlstra wrote:
+> > On Wed, Aug 19, 2020 at 12:28:16PM -0700, Kyle Huey wrote:
 > >
-> > Mostly looks good to me. Just a minor nit.
+> > > > I'm guess that is not the expected outcome, is that the same failure you
+> > > > saw?
+> > >
+> > > Yes. Is status also 0x4d00 for you?
 > >
-> > On Thu, Jul 30, 2020 at 3:51 PM Nick Desaulniers
-> > <ndesaulniers@google.com> wrote:
-> > > +/*
-> > > + * Accessing the address pointed to by the link register triggered an
-> > > + * exception, don't try to unwind through it.
-> > > + */
-> > > +bad_lr:                mov     sv_fp, #0
+> > Indeed.
 > >
-> > It might be nice to emit a warning here since we'll
-> > only hit this case if something fishy is going on
-> > with the saved lr.
+> > > The program is expected to complete with no assertions firing.
+> >
+> > When I comment out the break-on-exec test, the break-on-write test
+> > succeeds.
+> >
+> > When I add a few printk()'s to our #DB handler (6) the program will
+> > magically work again.
 >
-> Yeah, something fishy is going on if that ever happens.  Let me create
-> a V2 with an additional print.
+> I added some trace_printk()'s and I think the #DB handler is calling
+> schedule????
+>
+> exc_debug_user()
+>   irqentry_exit_to_user_mode()
+>     exit_to_user_mode_prepare()
+>       exit_to_user_mode_loop()
+>         schedule()
+>
+> So #DB schedules out, then the process scheduls in and tells ptrace to
+> set the data breakpoint in DR7.  Then the #DB handler schedules back in
+> and overwrites DR7 with the original value.
+>
+> What amazes me is that it successfully schedules back to the end of the
+> #DB handler finish and everything keeps working.
+>
+> Do we not have assertions in the scheduler to catch this?
 
-FWIW, I ran into another bug on -next when trying to update this.
+You almost nailed it.
 
-Report:
-https://lore.kernel.org/lkml/20200811204729.1116341-1-ndesaulniers@google.com/
-Fix:
-https://lore.kernel.org/lkml/20200814212525.6118-1-john.ogness@linutronix.de/T/#t
+I'm pretty sure you have the buggy sequence of events right, but for
+the wrong reason.  There's nothing wrong with scheduling when
+delivering SIGTRAP, but it's definitely wrong to blindly save and
+restore DR7 around scheduling and around ptrace invocations.  Remember
+this is an entry from user mode, so it runs on the user stack.
 
-Then I got bogged down in planning for plumbers and other fires. I
-hope to revisit the series after plumbers.
--- 
-Thanks,
-~Nick Desaulniers
+Patch coming.
+
+--Andy
