@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE0624B4FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E357824B541
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731257AbgHTKPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:15:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34072 "EHLO mail.kernel.org"
+        id S1731186AbgHTKV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:21:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728648AbgHTKPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:15:05 -0400
+        id S1731400AbgHTKVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:21:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5052120724;
-        Thu, 20 Aug 2020 10:15:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1264E2072D;
+        Thu, 20 Aug 2020 10:21:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918503;
-        bh=NnsOgkFkY5IHESmBT5t/41GWPFnhKjY1FN9F62r2EOw=;
+        s=default; t=1597918863;
+        bh=8t5d5q+dhyRF4P3VO6JxwXQOT6FGg6hABo4iNnLHrOo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pn1YH+AP2UwqrlJ98L0pgTD8M5G9bzOTCWQTrnYOmM8ENRbuuT36rvrDJA6YJ40nn
-         XogaxFq6B8G1GkweY5FFv2AN02ZI8GkbMbQNdVswP48FPW0QiOLWG5BHZGYEitpoeh
-         /bAIMhRlbygzwM1E04pnW4QS3WzNHEToi7Q8wMrU=
+        b=yF7tjc7Ot8xQn29xuvYu4pmg6Te33m8kxfl8140PAMvam++lsbs1dl9bAd/F1R7kO
+         jdlKkd9dv4OlrIb0lM3V6bYwtpd5noibDDjHBT5yDJUwfeG5m2yOHu9Im9Uo2lunES
+         9HjK+FVVo6Nl+XUSGghOnV88MiAENS/DlJPzacfM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Lee Jones <lee.jones@linaro.org>,
+        stable@vger.kernel.org, Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 195/228] mfd: arizona: Ensure 32k clock is put on driver unbind and error
+Subject: [PATCH 4.4 093/149] PCI/ASPM: Add missing newline in sysfs policy
 Date:   Thu, 20 Aug 2020 11:22:50 +0200
-Message-Id: <20200820091617.309030781@linuxfoundation.org>
+Message-Id: <20200820092130.232690962@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
-References: <20200820091607.532711107@linuxfoundation.org>
+In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
+References: <20200820092125.688850368@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,63 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
+From: Xiongfeng Wang <wangxiongfeng2@huawei.com>
 
-[ Upstream commit ddff6c45b21d0437ce0c85f8ac35d7b5480513d7 ]
+[ Upstream commit 3167e3d340c092fd47924bc4d23117a3074ef9a9 ]
 
-Whilst it doesn't matter if the internal 32k clock register settings
-are cleaned up on exit, as the part will be turned off losing any
-settings, hence the driver hasn't historially bothered. The external
-clock should however be cleaned up, as it could cause clocks to be
-left on, and will at best generate a warning on unbind.
+When I cat ASPM parameter 'policy' by sysfs, it displays as follows.  Add a
+newline for easy reading.  Other sysfs attributes already include a
+newline.
 
-Add clean up on both the probe error path and unbind for the 32k
-clock.
+  [root@localhost ~]# cat /sys/module/pcie_aspm/parameters/policy
+  [default] performance powersave powersupersave [root@localhost ~]#
 
-Fixes: cdd8da8cc66b ("mfd: arizona: Add gating of external MCLKn clocks")
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Fixes: 7d715a6c1ae5 ("PCI: add PCI Express ASPM support")
+Link: https://lore.kernel.org/r/1594972765-10404-1-git-send-email-wangxiongfeng2@huawei.com
+Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/arizona-core.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/pci/pcie/aspm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
-index ad8a5296c50ba..9aa33141e7f14 100644
---- a/drivers/mfd/arizona-core.c
-+++ b/drivers/mfd/arizona-core.c
-@@ -1528,6 +1528,15 @@ int arizona_dev_init(struct arizona *arizona)
- 	arizona_irq_exit(arizona);
- err_pm:
- 	pm_runtime_disable(arizona->dev);
-+
-+	switch (arizona->pdata.clk32k_src) {
-+	case ARIZONA_32KZ_MCLK1:
-+	case ARIZONA_32KZ_MCLK2:
-+		arizona_clk32k_disable(arizona);
-+		break;
-+	default:
-+		break;
-+	}
- err_reset:
- 	arizona_enable_reset(arizona);
- 	regulator_disable(arizona->dcvdd);
-@@ -1550,6 +1559,15 @@ int arizona_dev_exit(struct arizona *arizona)
- 	regulator_disable(arizona->dcvdd);
- 	regulator_put(arizona->dcvdd);
+diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+index 966b6947e5656..a098f8324afd0 100644
+--- a/drivers/pci/pcie/aspm.c
++++ b/drivers/pci/pcie/aspm.c
+@@ -807,6 +807,7 @@ static int pcie_aspm_get_policy(char *buffer, struct kernel_param *kp)
+ 			cnt += sprintf(buffer + cnt, "[%s] ", policy_str[i]);
+ 		else
+ 			cnt += sprintf(buffer + cnt, "%s ", policy_str[i]);
++	cnt += sprintf(buffer + cnt, "\n");
+ 	return cnt;
+ }
  
-+	switch (arizona->pdata.clk32k_src) {
-+	case ARIZONA_32KZ_MCLK1:
-+	case ARIZONA_32KZ_MCLK2:
-+		arizona_clk32k_disable(arizona);
-+		break;
-+	default:
-+		break;
-+	}
-+
- 	mfd_remove_devices(arizona->dev);
- 	arizona_free_irq(arizona, ARIZONA_IRQ_UNDERCLOCKED, arizona);
- 	arizona_free_irq(arizona, ARIZONA_IRQ_OVERCLOCKED, arizona);
 -- 
 2.25.1
 
