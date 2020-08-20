@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4EA824BBE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3162224BBD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729821AbgHTMf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:35:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52908 "EHLO mail.kernel.org"
+        id S1729551AbgHTJsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:48:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729102AbgHTJsS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:48:18 -0400
+        id S1729423AbgHTJsV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:48:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 540612173E;
-        Thu, 20 Aug 2020 09:48:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0D7A320724;
+        Thu, 20 Aug 2020 09:48:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916897;
-        bh=9iIh+itXFCiJpzJCgY8kQPXUYNArH99tHwymyYCggEs=;
+        s=default; t=1597916900;
+        bh=jWbCFWTiHf+hm/s+EFXcXBpUr6fBEbGeNjTBoOoDPWc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F2lCzwqRL322IpMRmXk+VC5YTPCPzzvw58lfZWIrCri35e+hjEcwTJL9btAXUlEOr
-         VZUNpRcwJg1tHkVekLFIseqcfMLxSjPwhxvSv9+0ADZL0y88R3NPrhBHsBh3QkzzQi
-         GKalfRvkYY9bNfEbMVhm5avNMw29YOn7OInwR6Ow=
+        b=OcHKqfk/VNCv4kR3DCc0zuhOen8Vv9HGXOxBMfiQjG+I7OxXr5GlkXUguIHpdpa8M
+         4ci8DYXkPWe0FdTrk0dfN1tQ2g/3+bCU3yrrzyTlrQdqxbOwW+8eAQlwldzmAhp+SX
+         4JDNMDut1h5kwaDetpzDJmWRf379N/2ImPePkM2E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Yishai Hadas <yishaih@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 085/152] media: rockchip: rga: Only set output CSC mode for RGB input
-Date:   Thu, 20 Aug 2020 11:20:52 +0200
-Message-Id: <20200820091558.099124991@linuxfoundation.org>
+Subject: [PATCH 5.4 086/152] IB/uverbs: Set IOVA on IB MR in uverbs layer
+Date:   Thu, 20 Aug 2020 11:20:53 +0200
+Message-Id: <20200820091558.142006157@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
 References: <20200820091553.615456912@linuxfoundation.org>
@@ -47,53 +45,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+From: Yishai Hadas <yishaih@mellanox.com>
 
-[ Upstream commit 0f879bab72f47e8ba2421a984e7acfa763d3e84e ]
+[ Upstream commit 04c0a5fcfcf65aade2fb238b6336445f1a99b646 ]
 
-Setting the output CSC mode is required for a YUV output, but must not
-be set when the input is also YUV. Doing this (as tested with a YUV420P
-to YUV420P conversion) results in wrong colors.
+Set IOVA on IB MR in uverbs layer to let all drivers have it, this
+includes both reg/rereg MR flows.
+As part of this change cleaned-up this setting from the drivers that
+already did it by themselves in their user flows.
 
-Adapt the logic to only set the output CSC mode when the output is YUV and
-the input is RGB. Also add a comment to clarify the rationale.
-
-Fixes: f7e7b48e6d79 ("[media] rockchip/rga: v4l2 m2m support")
-Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: e6f0330106f4 ("mlx4_ib: set user mr attributes in struct ib_mr")
+Link: https://lore.kernel.org/r/20200630093916.332097-3-leon@kernel.org
+Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/rockchip/rga/rga-hw.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/infiniband/core/uverbs_cmd.c | 4 ++++
+ drivers/infiniband/hw/cxgb4/mem.c    | 1 -
+ drivers/infiniband/hw/mlx4/mr.c      | 1 -
+ 3 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/rockchip/rga/rga-hw.c b/drivers/media/platform/rockchip/rga/rga-hw.c
-index 5607ee8d19176..aaa96f256356b 100644
---- a/drivers/media/platform/rockchip/rga/rga-hw.c
-+++ b/drivers/media/platform/rockchip/rga/rga-hw.c
-@@ -200,6 +200,11 @@ static void rga_cmd_set_trans_info(struct rga_ctx *ctx)
- 	dst_info.data.format = ctx->out.fmt->hw_format;
- 	dst_info.data.swap = ctx->out.fmt->color_swap;
+diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+index e2ddcb0dc4ee3..c398d1a64614c 100644
+--- a/drivers/infiniband/core/uverbs_cmd.c
++++ b/drivers/infiniband/core/uverbs_cmd.c
+@@ -757,6 +757,7 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
+ 	mr->uobject = uobj;
+ 	atomic_inc(&pd->usecnt);
+ 	mr->res.type = RDMA_RESTRACK_MR;
++	mr->iova = cmd.hca_va;
+ 	rdma_restrack_uadd(&mr->res);
  
-+	/*
-+	 * CSC mode must only be set when the colorspace families differ between
-+	 * input and output. It must remain unset (zeroed) if both are the same.
-+	 */
-+
- 	if (RGA_COLOR_FMT_IS_YUV(ctx->in.fmt->hw_format) &&
- 	    RGA_COLOR_FMT_IS_RGB(ctx->out.fmt->hw_format)) {
- 		switch (ctx->in.colorspace) {
-@@ -212,7 +217,8 @@ static void rga_cmd_set_trans_info(struct rga_ctx *ctx)
- 		}
+ 	uobj->object = mr;
+@@ -847,6 +848,9 @@ static int ib_uverbs_rereg_mr(struct uverbs_attr_bundle *attrs)
+ 		atomic_dec(&old_pd->usecnt);
  	}
  
--	if (RGA_COLOR_FMT_IS_YUV(ctx->out.fmt->hw_format)) {
-+	if (RGA_COLOR_FMT_IS_RGB(ctx->in.fmt->hw_format) &&
-+	    RGA_COLOR_FMT_IS_YUV(ctx->out.fmt->hw_format)) {
- 		switch (ctx->out.colorspace) {
- 		case V4L2_COLORSPACE_REC709:
- 			dst_info.data.csc_mode = RGA_SRC_CSC_MODE_BT709_R0;
++	if (cmd.flags & IB_MR_REREG_TRANS)
++		mr->iova = cmd.hca_va;
++
+ 	memset(&resp, 0, sizeof(resp));
+ 	resp.lkey      = mr->lkey;
+ 	resp.rkey      = mr->rkey;
+diff --git a/drivers/infiniband/hw/cxgb4/mem.c b/drivers/infiniband/hw/cxgb4/mem.c
+index 35c284af574da..dcb58cef336d9 100644
+--- a/drivers/infiniband/hw/cxgb4/mem.c
++++ b/drivers/infiniband/hw/cxgb4/mem.c
+@@ -399,7 +399,6 @@ static int finish_mem_reg(struct c4iw_mr *mhp, u32 stag)
+ 	mmid = stag >> 8;
+ 	mhp->ibmr.rkey = mhp->ibmr.lkey = stag;
+ 	mhp->ibmr.length = mhp->attr.len;
+-	mhp->ibmr.iova = mhp->attr.va_fbo;
+ 	mhp->ibmr.page_size = 1U << (mhp->attr.page_size + 12);
+ 	pr_debug("mmid 0x%x mhp %p\n", mmid, mhp);
+ 	return xa_insert_irq(&mhp->rhp->mrs, mmid, mhp, GFP_KERNEL);
+diff --git a/drivers/infiniband/hw/mlx4/mr.c b/drivers/infiniband/hw/mlx4/mr.c
+index 6ae503cfc5264..9114cb7307692 100644
+--- a/drivers/infiniband/hw/mlx4/mr.c
++++ b/drivers/infiniband/hw/mlx4/mr.c
+@@ -439,7 +439,6 @@ struct ib_mr *mlx4_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 
+ 	mr->ibmr.rkey = mr->ibmr.lkey = mr->mmr.key;
+ 	mr->ibmr.length = length;
+-	mr->ibmr.iova = virt_addr;
+ 	mr->ibmr.page_size = 1U << shift;
+ 
+ 	return &mr->ibmr;
 -- 
 2.25.1
 
