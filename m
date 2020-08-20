@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D84724B318
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B1AB24B31B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729084AbgHTJlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:41:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34352 "EHLO mail.kernel.org"
+        id S1728699AbgHTJlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:41:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729092AbgHTJlN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:41:13 -0400
+        id S1729096AbgHTJlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:41:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E02D20724;
-        Thu, 20 Aug 2020 09:41:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 91016207DE;
+        Thu, 20 Aug 2020 09:41:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916472;
-        bh=0mOpG+4Dx+/t0qGb2Ucxbs/NO8xyTowGeePEyf6kuW8=;
+        s=default; t=1597916482;
+        bh=Ot+IlbwWoYcMtGQlRqjPHSZwBDd0x0OKpAG8nmv7J4g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BLHxI+HFig/QtHHuncs483BHdCrtgrlSsgZJs3eit2dntkH8593z7YqdfsOpgmziE
-         jbKBSffbOkXIzWYP3DECzAXv8bRjaSV62x8hpAZP0vPA3SnNN9EUxF95wtqa2uIBl/
-         5MKGNpsBa9VuB0TJm4SCaiZjaQqVzqJ+NsbFmpRI=
+        b=kj6+EXmW/Zt0dTuxdqAhu+Jd4qWJQoLlu35Ry5GLxFcfRKgxFNFGX6CLdZIgfyx2p
+         AzSE9w3MZSQjaNh96mVguUnrgPdA3XvvEjhU2iqlnTwY1ASBRM51+vzEBkGCrKM2Do
+         Yu+taSw3ddfCe/dvcOBu9c7mgivjOupHuDLwavPA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 141/204] i2c: rcar: slave: only send STOP event when we have been addressed
-Date:   Thu, 20 Aug 2020 11:20:38 +0200
-Message-Id: <20200820091613.296403546@linuxfoundation.org>
+        stable@vger.kernel.org, Konrad Dybcio <konradybcio@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 143/204] clk: qcom: gcc-sdm660: Fix up gcc_mss_mnoc_bimc_axi_clk
+Date:   Thu, 20 Aug 2020 11:20:40 +0200
+Message-Id: <20200820091613.395253114@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
 References: <20200820091606.194320503@linuxfoundation.org>
@@ -44,53 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+From: Konrad Dybcio <konradybcio@gmail.com>
 
-[ Upstream commit 314139f9f0abdba61ed9a8463bbcb0bf900ac5a2 ]
+[ Upstream commit 3386af51d3bcebcba3f7becdb1ef2e384abe90cf ]
 
-When the SSR interrupt is activated, it will detect every STOP condition
-on the bus, not only the ones after we have been addressed. So, enable
-this interrupt only after we have been addressed, and disable it
-otherwise.
+Add missing halt_check, hwcg_reg and hwcg_bit properties.
+These were likely omitted when porting the driver upstream.
 
-Fixes: de20d1857dd6 ("i2c: rcar: add slave support")
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
+Link: https://lore.kernel.org/r/20200726111215.22361-9-konradybcio@gmail.com
+Fixes: f2a76a2955c0 ("clk: qcom: Add Global Clock controller (GCC) driver for SDM660")
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-rcar.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/clk/qcom/gcc-sdm660.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/i2c/busses/i2c-rcar.c b/drivers/i2c/busses/i2c-rcar.c
-index 50dd98803ca0c..76bcdb27070e1 100644
---- a/drivers/i2c/busses/i2c-rcar.c
-+++ b/drivers/i2c/busses/i2c-rcar.c
-@@ -583,13 +583,14 @@ static bool rcar_i2c_slave_irq(struct rcar_i2c_priv *priv)
- 			rcar_i2c_write(priv, ICSIER, SDR | SSR | SAR);
- 		}
+diff --git a/drivers/clk/qcom/gcc-sdm660.c b/drivers/clk/qcom/gcc-sdm660.c
+index bf5730832ef3d..c6fb57cd576f5 100644
+--- a/drivers/clk/qcom/gcc-sdm660.c
++++ b/drivers/clk/qcom/gcc-sdm660.c
+@@ -1715,6 +1715,9 @@ static struct clk_branch gcc_mss_cfg_ahb_clk = {
  
--		rcar_i2c_write(priv, ICSSR, ~SAR & 0xff);
-+		/* Clear SSR, too, because of old STOPs to other clients than us */
-+		rcar_i2c_write(priv, ICSSR, ~(SAR | SSR) & 0xff);
- 	}
- 
- 	/* master sent stop */
- 	if (ssr_filtered & SSR) {
- 		i2c_slave_event(priv->slave, I2C_SLAVE_STOP, &value);
--		rcar_i2c_write(priv, ICSIER, SAR | SSR);
-+		rcar_i2c_write(priv, ICSIER, SAR);
- 		rcar_i2c_write(priv, ICSSR, ~SSR & 0xff);
- 	}
- 
-@@ -853,7 +854,7 @@ static int rcar_reg_slave(struct i2c_client *slave)
- 	priv->slave = slave;
- 	rcar_i2c_write(priv, ICSAR, slave->addr);
- 	rcar_i2c_write(priv, ICSSR, 0);
--	rcar_i2c_write(priv, ICSIER, SAR | SSR);
-+	rcar_i2c_write(priv, ICSIER, SAR);
- 	rcar_i2c_write(priv, ICSCR, SIE | SDBS);
- 
- 	return 0;
+ static struct clk_branch gcc_mss_mnoc_bimc_axi_clk = {
+ 	.halt_reg = 0x8a004,
++	.halt_check = BRANCH_HALT,
++	.hwcg_reg = 0x8a004,
++	.hwcg_bit = 1,
+ 	.clkr = {
+ 		.enable_reg = 0x8a004,
+ 		.enable_mask = BIT(0),
 -- 
 2.25.1
 
