@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DDEF24BB13
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92F024BB2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730130AbgHTJy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:54:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36514 "EHLO mail.kernel.org"
+        id S1730493AbgHTMYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:24:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729148AbgHTJyL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:54:11 -0400
+        id S1730068AbgHTJyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:54:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B087F2067C;
-        Thu, 20 Aug 2020 09:54:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5DCA62075E;
+        Thu, 20 Aug 2020 09:54:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917251;
-        bh=+scfe+NEZbJY7EkOG84JZhcz2N/+8keGUW4mOZ8jPCc=;
+        s=default; t=1597917253;
+        bh=LvNYnM+Edoc6JYWBGUXA6P+JWoJFIlVZpUBRwTssFYA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rmWoh+ILhsrxB78nDFZuM8FBE2mgdpSyI7McVWDAq6E5R5iFc+FfIlIRLy2e+j0DE
-         jY3hfHdHzLcuhG1cHJfgIfQ3baSGGjDcGjc/tLig/UXtZYmokrq0lqk5IgFjSmTwC7
-         PhP4W56jIbJwJuQGERMk6r2a0unYzNxxt7siMiQU=
+        b=r19uRXaoJpLmxANMu/1RyG89jgzi2E1ao11oOWzAvQu3Pl5H7QFI6zMSEfpdSRc1h
+         WlTcJ7c/+uO0dyYG4v3J75g0w7O4rkd3hOI4A/rWy7Aj3/JtanEuQ7rI9d93A3lXsM
+         yhwl/5K1jziMS16uAuGbUOMqY2f8Ae5zWGSGRhCs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Steve Longerbeam <slongerbeam@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 57/92] mmc: renesas_sdhi_internal_dmac: clean up the code for dma complete
-Date:   Thu, 20 Aug 2020 11:21:42 +0200
-Message-Id: <20200820091540.583963283@linuxfoundation.org>
+Subject: [PATCH 4.19 58/92] gpu: ipu-v3: image-convert: Combine rotate/no-rotate irq handlers
+Date:   Thu, 20 Aug 2020 11:21:43 +0200
+Message-Id: <20200820091540.640659114@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
 References: <20200820091537.490965042@linuxfoundation.org>
@@ -46,62 +44,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+From: Steve Longerbeam <slongerbeam@gmail.com>
 
-[ Upstream commit 2b26e34e9af3fa24fa1266e9ea2d66a1f7d62dc0 ]
+[ Upstream commit 0f6245f42ce9b7e4d20f2cda8d5f12b55a44d7d1 ]
 
-To add end() operation in the future, clean the code of
-renesas_sdhi_internal_dmac_complete_tasklet_fn(). No behavior change.
+Combine the rotate_irq() and norotate_irq() handlers into a single
+eof_irq() handler.
 
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Link: https://lore.kernel.org/r/1590044466-28372-3-git-send-email-yoshihiro.shimoda.uh@renesas.com
-Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Steve Longerbeam <slongerbeam@gmail.com>
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/renesas_sdhi_internal_dmac.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ drivers/gpu/ipu-v3/ipu-image-convert.c | 58 +++++++++-----------------
+ 1 file changed, 20 insertions(+), 38 deletions(-)
 
-diff --git a/drivers/mmc/host/renesas_sdhi_internal_dmac.c b/drivers/mmc/host/renesas_sdhi_internal_dmac.c
-index 382172fb3da8f..74eea8247490d 100644
---- a/drivers/mmc/host/renesas_sdhi_internal_dmac.c
-+++ b/drivers/mmc/host/renesas_sdhi_internal_dmac.c
-@@ -222,15 +222,12 @@ static void renesas_sdhi_internal_dmac_issue_tasklet_fn(unsigned long arg)
- 					    DTRAN_CTRL_DM_START);
+diff --git a/drivers/gpu/ipu-v3/ipu-image-convert.c b/drivers/gpu/ipu-v3/ipu-image-convert.c
+index 91653adc41cc4..cdaf1d74e31a2 100644
+--- a/drivers/gpu/ipu-v3/ipu-image-convert.c
++++ b/drivers/gpu/ipu-v3/ipu-image-convert.c
+@@ -998,9 +998,10 @@ static irqreturn_t do_irq(struct ipu_image_convert_run *run)
+ 	return IRQ_WAKE_THREAD;
  }
  
--static void renesas_sdhi_internal_dmac_complete_tasklet_fn(unsigned long arg)
-+static bool renesas_sdhi_internal_dmac_complete(struct tmio_mmc_host *host)
+-static irqreturn_t norotate_irq(int irq, void *data)
++static irqreturn_t eof_irq(int irq, void *data)
  {
--	struct tmio_mmc_host *host = (struct tmio_mmc_host *)arg;
- 	enum dma_data_direction dir;
+ 	struct ipu_image_convert_chan *chan = data;
++	struct ipu_image_convert_priv *priv = chan->priv;
+ 	struct ipu_image_convert_ctx *ctx;
+ 	struct ipu_image_convert_run *run;
+ 	unsigned long flags;
+@@ -1017,45 +1018,26 @@ static irqreturn_t norotate_irq(int irq, void *data)
  
--	spin_lock_irq(&host->lock);
+ 	ctx = run->ctx;
+ 
+-	if (ipu_rot_mode_is_irt(ctx->rot_mode)) {
+-		/* this is a rotation operation, just ignore */
+-		spin_unlock_irqrestore(&chan->irqlock, flags);
+-		return IRQ_HANDLED;
+-	}
 -
- 	if (!host->data)
--		goto out;
-+		return false;
+-	ret = do_irq(run);
+-out:
+-	spin_unlock_irqrestore(&chan->irqlock, flags);
+-	return ret;
+-}
+-
+-static irqreturn_t rotate_irq(int irq, void *data)
+-{
+-	struct ipu_image_convert_chan *chan = data;
+-	struct ipu_image_convert_priv *priv = chan->priv;
+-	struct ipu_image_convert_ctx *ctx;
+-	struct ipu_image_convert_run *run;
+-	unsigned long flags;
+-	irqreturn_t ret;
+-
+-	spin_lock_irqsave(&chan->irqlock, flags);
+-
+-	/* get current run and its context */
+-	run = chan->current_run;
+-	if (!run) {
++	if (irq == chan->out_eof_irq) {
++		if (ipu_rot_mode_is_irt(ctx->rot_mode)) {
++			/* this is a rotation op, just ignore */
++			ret = IRQ_HANDLED;
++			goto out;
++		}
++	} else if (irq == chan->rot_out_eof_irq) {
++		if (!ipu_rot_mode_is_irt(ctx->rot_mode)) {
++			/* this was NOT a rotation op, shouldn't happen */
++			dev_err(priv->ipu->dev,
++				"Unexpected rotation interrupt\n");
++			ret = IRQ_HANDLED;
++			goto out;
++		}
++	} else {
++		dev_err(priv->ipu->dev, "Received unknown irq %d\n", irq);
+ 		ret = IRQ_NONE;
+ 		goto out;
+ 	}
  
- 	if (host->data->flags & MMC_DATA_READ)
- 		dir = DMA_FROM_DEVICE;
-@@ -243,6 +240,17 @@ static void renesas_sdhi_internal_dmac_complete_tasklet_fn(unsigned long arg)
- 	if (dir == DMA_FROM_DEVICE)
- 		clear_bit(SDHI_INTERNAL_DMAC_RX_IN_USE, &global_flags);
- 
-+	return true;
-+}
-+
-+static void renesas_sdhi_internal_dmac_complete_tasklet_fn(unsigned long arg)
-+{
-+	struct tmio_mmc_host *host = (struct tmio_mmc_host *)arg;
-+
-+	spin_lock_irq(&host->lock);
-+	if (!renesas_sdhi_internal_dmac_complete(host))
-+		goto out;
-+
- 	tmio_mmc_do_data_irq(host);
+-	ctx = run->ctx;
+-
+-	if (!ipu_rot_mode_is_irt(ctx->rot_mode)) {
+-		/* this was NOT a rotation operation, shouldn't happen */
+-		dev_err(priv->ipu->dev, "Unexpected rotation interrupt\n");
+-		spin_unlock_irqrestore(&chan->irqlock, flags);
+-		return IRQ_HANDLED;
+-	}
+-
+ 	ret = do_irq(run);
  out:
- 	spin_unlock_irq(&host->lock);
+ 	spin_unlock_irqrestore(&chan->irqlock, flags);
+@@ -1148,7 +1130,7 @@ static int get_ipu_resources(struct ipu_image_convert_chan *chan)
+ 						  chan->out_chan,
+ 						  IPU_IRQ_EOF);
+ 
+-	ret = request_threaded_irq(chan->out_eof_irq, norotate_irq, do_bh,
++	ret = request_threaded_irq(chan->out_eof_irq, eof_irq, do_bh,
+ 				   0, "ipu-ic", chan);
+ 	if (ret < 0) {
+ 		dev_err(priv->ipu->dev, "could not acquire irq %d\n",
+@@ -1161,7 +1143,7 @@ static int get_ipu_resources(struct ipu_image_convert_chan *chan)
+ 						     chan->rotation_out_chan,
+ 						     IPU_IRQ_EOF);
+ 
+-	ret = request_threaded_irq(chan->rot_out_eof_irq, rotate_irq, do_bh,
++	ret = request_threaded_irq(chan->rot_out_eof_irq, eof_irq, do_bh,
+ 				   0, "ipu-ic", chan);
+ 	if (ret < 0) {
+ 		dev_err(priv->ipu->dev, "could not acquire irq %d\n",
 -- 
 2.25.1
 
