@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 923F324B555
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:23:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ED8A24B50F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730607AbgHTKW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:22:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49496 "EHLO mail.kernel.org"
+        id S1730306AbgHTKRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:17:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731444AbgHTKWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:22:08 -0400
+        id S1728603AbgHTKQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:16:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97DEF20658;
-        Thu, 20 Aug 2020 10:22:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1EDC020658;
+        Thu, 20 Aug 2020 10:16:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918928;
-        bh=DSpyrDd0pvgB0JJb39Kn4RsjnrkWqMxaES3Es1Yq/wk=;
+        s=default; t=1597918606;
+        bh=Mlre0NfdZn5TVHGLM/JcqLK5nl+zozSKCg2mXww6fb8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KfTfOOfEo8M6Qo2U6nHNd7Pj0AI1ZqB4kyB1wbAW0lf19CgSb/I/wwEi/wVHEPB48
-         PVoc6x3MLfwY6fP9SUHo9kOmAUyt67z9Bp06RucNuuXhUMN0I2wARBKh6mAuOTyOMH
-         1ulyLV1LCbfYgsEjiqRgPi729DxxEY2R9NC4urUk=
+        b=TuQzP43rdH/7ZyNkq7BbVc71SbH+VOg1b8JAHmR+zEvjRmuVZeYZnOWhjXoPYRI+V
+         3XhoKKl7s2D4cE/HilANZOoqNjdaUM0BdNhZo+dVSEbxSyh0Rofhsz4ofZaZt2fDZy
+         Bk2GAcQELsYw+BRv0B6WxLAQClheZupDW58lqc6w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 4.4 118/149] xen/balloon: fix accounting in alloc_xenballooned_pages error path
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rich Felker <dalias@libc.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 220/228] sh: landisk: Add missing initialization of sh_io_port_base
 Date:   Thu, 20 Aug 2020 11:23:15 +0200
-Message-Id: <20200820092131.414972833@linuxfoundation.org>
+Message-Id: <20200820091618.505578616@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
-References: <20200820092125.688850368@linuxfoundation.org>
+In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
+References: <20200820091607.532711107@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roger Pau Monne <roger.pau@citrix.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-commit 1951fa33ec259abdf3497bfee7b63e7ddbb1a394 upstream.
+[ Upstream commit 0c64a0dce51faa9c706fdf1f957d6f19878f4b81 ]
 
-target_unpopulated is incremented with nr_pages at the start of the
-function, but the call to free_xenballooned_pages will only subtract
-pgno number of pages, and thus the rest need to be subtracted before
-returning or else accounting will be skewed.
+The Landisk setup code maps the CF IDE area using ioremap_prot(), and
+passes the resulting virtual addresses to the pata_platform driver,
+disguising them as I/O port addresses.  Hence the pata_platform driver
+translates them again using ioport_map().
+As CONFIG_GENERIC_IOMAP=n, and CONFIG_HAS_IOPORT_MAP=y, the
+SuperH-specific mapping code in arch/sh/kernel/ioport.c translates
+I/O port addresses to virtual addresses by adding sh_io_port_base, which
+defaults to -1, thus breaking the assumption of an identity mapping.
 
-Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200727091342.52325-2-roger.pau@citrix.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix this by setting sh_io_port_base to zero.
 
+Fixes: 37b7a97884ba64bf ("sh: machvec IO death.")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Rich Felker <dalias@libc.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/xen/balloon.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/sh/boards/mach-landisk/setup.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/xen/balloon.c
-+++ b/drivers/xen/balloon.c
-@@ -683,6 +683,12 @@ int alloc_xenballooned_pages(int nr_page
-  out_undo:
- 	mutex_unlock(&balloon_mutex);
- 	free_xenballooned_pages(pgno, pages);
-+	/*
-+	 * NB: free_xenballooned_pages will only subtract pgno pages, but since
-+	 * target_unpopulated is incremented with nr_pages at the start we need
-+	 * to remove the remaining ones also, or accounting will be screwed.
-+	 */
-+	balloon_stats.target_unpopulated -= nr_pages - pgno;
- 	return ret;
- }
- EXPORT_SYMBOL(alloc_xenballooned_pages);
+diff --git a/arch/sh/boards/mach-landisk/setup.c b/arch/sh/boards/mach-landisk/setup.c
+index f1147caebacf0..af69fb7fef7c7 100644
+--- a/arch/sh/boards/mach-landisk/setup.c
++++ b/arch/sh/boards/mach-landisk/setup.c
+@@ -85,6 +85,9 @@ device_initcall(landisk_devices_setup);
+ 
+ static void __init landisk_setup(char **cmdline_p)
+ {
++	/* I/O port identity mapping */
++	__set_io_port_base(0);
++
+ 	/* LED ON */
+ 	__raw_writeb(__raw_readb(PA_LED) | 0x03, PA_LED);
+ 
+-- 
+2.25.1
+
 
 
