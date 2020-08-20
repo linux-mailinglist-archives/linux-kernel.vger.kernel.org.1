@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B4224BB17
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D05924BB81
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730652AbgHTMW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 08:22:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37688 "EHLO mail.kernel.org"
+        id S1730018AbgHTMaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:30:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730160AbgHTJyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:54:52 -0400
+        id S1729800AbgHTJvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:51:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A6A0A207FB;
-        Thu, 20 Aug 2020 09:54:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 380C52075E;
+        Thu, 20 Aug 2020 09:51:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917292;
-        bh=gkyn4aFGhKY9SDdydZTGTsLeU28H236Tk3wbC9RA6Mo=;
+        s=default; t=1597917080;
+        bh=bu/gfhKHX2wDS5zQxERccVGF9giJQteXKz3SFp1TCdM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L+kRcYb5sZ6VC5/4skRC/YG5dILWdoAlcYfl1/o/8T0AZ6gsiUErqSooX49RfNWZo
-         KZTwpo8Bo7Vvb1Pgx2ZpnsWLM1DsRRw3CEhCuIuo2e/OAATioUkkQgaEPwprzP6QeW
-         Gw6kMfuFNt8zITfMU9bB7ZzjzN8UZwLza00Zjukg=
+        b=VnW6tX49YTvqvAhRfMUnrSHzSytES3mgtVa++s7gwHlnZPX5R0b4hAdBS62c/kpvP
+         Gl4ZZm7tJf+JNsBUipedFYD5QZcAwAYTprXijRSAbwPsJTddhLiIg0N2yGPRYZxChm
+         /tMs7b79habs41+CtYgPIiGwH9tggkxjZEMyzgY4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Smart <james.smart@broadcom.com>,
-        "Ewan D. Milne" <emilne@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 71/92] scsi: lpfc: nvmet: Avoid hang / use-after-free again when destroying targetport
-Date:   Thu, 20 Aug 2020 11:21:56 +0200
-Message-Id: <20200820091541.356760236@linuxfoundation.org>
+        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        Xin Xiong <xiongx18@fudan.edu.cn>,
+        Lyude Paul <lyude@redhat.com>
+Subject: [PATCH 5.4 150/152] drm: fix drm_dp_mst_port refcount leaks in drm_dp_mst_allocate_vcpi
+Date:   Thu, 20 Aug 2020 11:21:57 +0200
+Message-Id: <20200820091601.510194925@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
-References: <20200820091537.490965042@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,47 +45,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ewan D. Milne <emilne@redhat.com>
+From: Xin Xiong <xiongx18@fudan.edu.cn>
 
-[ Upstream commit af6de8c60fe9433afa73cea6fcccdccd98ad3e5e ]
+commit a34a0a632dd991a371fec56431d73279f9c54029 upstream.
 
-We cannot wait on a completion object in the lpfc_nvme_targetport structure
-in the _destroy_targetport() code path because the NVMe/fc transport will
-free that structure immediately after the .targetport_delete() callback.
-This results in a use-after-free, and a crash if slub_debug=FZPU is
-enabled.
+drm_dp_mst_allocate_vcpi() invokes
+drm_dp_mst_topology_get_port_validated(), which increases the refcount
+of the "port".
 
-An earlier fix put put the completion on the stack, but commit 2a0fb340fcc8
-("scsi: lpfc: Correct localport timeout duration error") subsequently
-changed the code to reference the completion through a pointer in the
-object rather than the local stack variable.  Fix this by using the stack
-variable directly.
+These reference counting issues take place in two exception handling
+paths separately. Either when “slots” is less than 0 or when
+drm_dp_init_vcpi() returns a negative value, the function forgets to
+reduce the refcnt increased drm_dp_mst_topology_get_port_validated(),
+which results in a refcount leak.
 
-Link: https://lore.kernel.org/r/20200729231011.13240-1-emilne@redhat.com
-Fixes: 2a0fb340fcc8 ("scsi: lpfc: Correct localport timeout duration error")
-Reviewed-by: James Smart <james.smart@broadcom.com>
-Signed-off-by: Ewan D. Milne <emilne@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix these issues by pulling up the error handling when "slots" is less
+than 0, and calling drm_dp_mst_topology_put_port() before termination
+when drm_dp_init_vcpi() returns a negative value.
+
+Fixes: 1e797f556c61 ("drm/dp: Split drm_dp_mst_allocate_vcpi")
+Cc: <stable@vger.kernel.org> # v4.12+
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
+Reviewed-by: Lyude Paul <lyude@redhat.com>
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200719154545.GA41231@xin-virtual-machine
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/scsi/lpfc/lpfc_nvmet.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/drm_dp_mst_topology.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_nvmet.c b/drivers/scsi/lpfc/lpfc_nvmet.c
-index 768eba8c111d9..5bc33817568ea 100644
---- a/drivers/scsi/lpfc/lpfc_nvmet.c
-+++ b/drivers/scsi/lpfc/lpfc_nvmet.c
-@@ -1712,7 +1712,7 @@ lpfc_nvmet_destroy_targetport(struct lpfc_hba *phba)
- 		}
- 		tgtp->tport_unreg_cmp = &tport_unreg_cmp;
- 		nvmet_fc_unregister_targetport(phba->targetport);
--		if (!wait_for_completion_timeout(tgtp->tport_unreg_cmp,
-+		if (!wait_for_completion_timeout(&tport_unreg_cmp,
- 					msecs_to_jiffies(LPFC_NVMET_WAIT_TMO)))
- 			lpfc_printf_log(phba, KERN_ERR, LOG_NVME,
- 					"6179 Unreg targetport %p timeout "
--- 
-2.25.1
-
+--- a/drivers/gpu/drm/drm_dp_mst_topology.c
++++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+@@ -3369,11 +3369,11 @@ bool drm_dp_mst_allocate_vcpi(struct drm
+ {
+ 	int ret;
+ 
+-	port = drm_dp_mst_topology_get_port_validated(mgr, port);
+-	if (!port)
++	if (slots < 0)
+ 		return false;
+ 
+-	if (slots < 0)
++	port = drm_dp_mst_topology_get_port_validated(mgr, port);
++	if (!port)
+ 		return false;
+ 
+ 	if (port->vcpi.vcpi > 0) {
+@@ -3389,6 +3389,7 @@ bool drm_dp_mst_allocate_vcpi(struct drm
+ 	if (ret) {
+ 		DRM_DEBUG_KMS("failed to init vcpi slots=%d max=63 ret=%d\n",
+ 			      DIV_ROUND_UP(pbn, mgr->pbn_div), ret);
++		drm_dp_mst_topology_put_port(port);
+ 		goto out;
+ 	}
+ 	DRM_DEBUG_KMS("initing vcpi for pbn=%d slots=%d\n",
 
 
