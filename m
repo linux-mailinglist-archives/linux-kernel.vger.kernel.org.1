@@ -2,114 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1515124ACC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 03:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E580024ACAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 03:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgHTBzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 21:55:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726362AbgHTBzc (ORCPT
+        id S1726673AbgHTBnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 21:43:00 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:48509 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726435AbgHTBnA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 21:55:32 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B39C061757;
-        Wed, 19 Aug 2020 18:55:32 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id l23so376172edv.11;
-        Wed, 19 Aug 2020 18:55:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ToacIw0lll2YQvnSO/xL/+VeiTLkY2lOUpjxJou/kXU=;
-        b=DgoHEPEwFtQfs9zPlXT3FqbKes+MhIsMXW6UhrO6yny8npEEHTxoxBk2HAiSZ+jSqK
-         zlPeWx5brxQw4ZP5AvaE76RGGQK5wYWbjWD32nkN5PUhmwRQW1/DBFmuPSLNTrSr4P16
-         TOictmeNLSRoBYq5kz1jAjVx1REVzHAprVjUZ/E8wEIuMci3SrkKBe3y9DmdRBM0nDTk
-         0ArMn4HV82cWRQS9Hs8rmas+1zzCuwoZTkeCaXxc9LL7XKVZq7SALbZATXFa8FYkVoBl
-         vJkfcMlezXvhvyT6Wp4iJ4lMLBkvK4mrrQU2tMLyhYk4WCNA/DxrOYQz3Aacc9cPFhaR
-         FURg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ToacIw0lll2YQvnSO/xL/+VeiTLkY2lOUpjxJou/kXU=;
-        b=ZxW8z01HmKsdRTJ4zCHTMg4L0aGaIG6O3sqcCixiLJUawKBb+0op/OrPSR7vgo3NA6
-         NSc/9Oml1RorAste0zOEQ0FtHShsyoaI2BY3ORA1LXkO25p7768xb6TbB8rpdqRd1gQB
-         W/BK7Ib0x57/5DDMH6VMkhMQnW8k5ZjRK51/rBIlNDh/W234FqLoSPFDZ22IiVlfR0Zk
-         mmdoXL8jMFGgTGYb79Kj3L8aimXgH7WSY2Adqa06CC9ZZL7R9rFvJRng3iGI40T2SfuB
-         Jl8u1kx/A6PjNa6qcJiUO+klFrKVflg6N76pSQjG4Ln19c+39Yc4Y5rgjmDh4Qhp4u9F
-         htNQ==
-X-Gm-Message-State: AOAM532Yb/f50CfIBA9+N81gg7VfT7K92lQ+1ISIALuKhkUYocJO8rsm
-        rNImgKA11cRF3BWV8fIOMmb7X/ZKp9qiIxhK8WAU0jkJ
-X-Google-Smtp-Source: ABdhPJzxYSbCfjlQL09Z8thB5yHOEcQFVo7lLkpDPs0nvIj5WHBFAY+GGn3P+8fCuAYFRCCOS/XVAMPRi8WTq5KWKBI=
-X-Received: by 2002:a05:6402:b45:: with SMTP id bx5mr846526edb.22.1597888531248;
- Wed, 19 Aug 2020 18:55:31 -0700 (PDT)
+        Wed, 19 Aug 2020 21:43:00 -0400
+Received: from [111.196.79.150] (helo=[192.168.0.103])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <hui.wang@canonical.com>)
+        id 1k8ZbU-0006l0-8l; Thu, 20 Aug 2020 01:42:56 +0000
+Subject: Re: [PATCH] ALSA: usb-audio: Add prevent wakeup from s3 state trig by
+ Lenovo ThinkCentre TI024Gen3 USB-audio
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>
+Cc:     penghao <penghao@uniontech.com>,
+        Mark Pearson <mpearson@lenovo.com>,
+        Jaroslav Kysela <perex@perex.cz>, alexander@tsoy.me,
+        dan.carpenter@oracle.com, crwulff@gmail.com, gustavoars@kernel.org,
+        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+        linux-kernel@vger.kernel.org
+References: <20200819115757.23168-1-penghao@uniontech.com>
+ <s5h364ih7vd.wl-tiwai@suse.de>
+ <74B3A9AD-8B49-4E5F-BE9F-BF88865304B7@canonical.com>
+From:   Hui Wang <hui.wang@canonical.com>
+Message-ID: <fdd0d029-d7b5-ff43-5f84-9d73de867bca@canonical.com>
+Date:   Thu, 20 Aug 2020 09:42:41 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1597406966-13740-1-git-send-email-abel.vesa@nxp.com>
- <1597406966-13740-12-git-send-email-abel.vesa@nxp.com> <CAA+hA=R9bFBX-tFfSEO3wqC+b4P1nbfSVyBQUOzez=oZ71AhkA@mail.gmail.com>
- <20200819203150.bddziq2m75sccixj@fsr-ub1664-175>
-In-Reply-To: <20200819203150.bddziq2m75sccixj@fsr-ub1664-175>
-From:   Dong Aisheng <dongas86@gmail.com>
-Date:   Thu, 20 Aug 2020 09:40:22 +0800
-Message-ID: <CAA+hA=RiNeruR2d2qVS1A+P31YA42hjvyAo53W0+31zcEei9mg@mail.gmail.com>
-Subject: Re: [PATCH v2 11/17] clk: imx: Add blk_ctrl combo driver
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <fabio.estevam@nxp.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Anson Huang <anson.huang@nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Fugang Duan <fugang.duan@nxp.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <74B3A9AD-8B49-4E5F-BE9F-BF88865304B7@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 4:31 AM Abel Vesa <abel.vesa@nxp.com> wrote:
-....
-> > > +extern const struct imx_blk_ctrl_dev_data imx8mp_audio_blk_ctrl_dev_data __initconst;
-> > > +extern const struct imx_blk_ctrl_dev_data imx8mp_media_blk_ctrl_dev_data __initconst;
-> > > +extern const struct imx_blk_ctrl_dev_data imx8mp_hdmi_blk_ctrl_dev_data __initconst;
-> > > +
-> >
-> > If no special reasons, i may prefer to put those data in either
-> > clk-blk-ctrl.c or separate clk-blk-ctrl-data.c
-> > because there seems to be no code level dependency on the CCM
-> > driver(clk-imx8mq.c) for clk_blk_ctrl drivers.
-> > Then we can save those extern variables.
-> >
->
-> The rationale here is to have the SoC specific definitions in the SoC specific
-> clock provider driver. Otherwise with every new SoC that will use the blk_ctl
-> IPs we will increase the size of clk-blk-ctrl driver. Plus the kernel names of
-> the clocks used by each blk_ctl IP as parents are also defined in the SoC
-> specific clock provider driver.
->
-> I'll find a way, though, to move those so that they would not be shared between
-> all the clock drivers that needs a blk_ctl implementation.
->
 
-Please refer to pinctrl-imx.c to see if we can do similar things for blk-ctrl.
+On 2020/8/20 上午2:10, Kai-Heng Feng wrote:
+>
+>> On Aug 20, 2020, at 01:18, Takashi Iwai <tiwai@suse.de> wrote:
+>>
+>> [ Adding a few more relevant people to Cc. ]
+>>
+>> On Wed, 19 Aug 2020 13:57:57 +0200,
+>> penghao wrote:
+>>> TI024Gen3 USB-audio is controlled by TI024Gen3,when TI024Gens
+>>> enter sleep mode, USB-audio will disconnect from USB bus port,
+>>> wakup form s3 state
+>>>
+>>> Signed-off-by: penghao <penghao@uniontech.com>
+>>> ---
+>>> sound/usb/card.c | 6 ++++++
+>>> 1 file changed, 6 insertions(+)
+>>>
+>>> diff --git a/sound/usb/card.c b/sound/usb/card.c
+>>> index 696e788c5d31..6bdbb34009b3 100644
+>>> --- a/sound/usb/card.c
+>>> +++ b/sound/usb/card.c
+>>> @@ -658,6 +658,12 @@ static int usb_audio_probe(struct usb_interface *intf,
+>>> 	}
+>>>
+>>> 	dev_set_drvdata(&dev->dev, chip);
+>>> +	/*
+>>> +	 *ALSA: usb-audio: Add prevent wakeup from s3 state trig by Lenovo
+>>> +	 *ThinkCentre TI024Gen3 usb-audio
+>>> +	 */
+>>> +	if ((usb_id->idVendor == 0x17ef) && (usb_id->idProduct == 0xa012))
+>>> +		device_set_wakeup_enable(＆dev->dev, 0);
+>> Here it's no proper ASCII letter, and this must be broken.
+>> Please check the actual patch before submitting.
+>>
+>> In anyway, before going further, I'd like to hear from other people
+>> whether this is really mandatory and appropriate.  And whether it's
+>> specific to that device, too (not other Lenovo devices?)
+> If USB remote wakeup on this device is broken then we need to fix it in USB core instead of USB audio.
+> We need USB and xHCI logs to understand the real problem here, the commit message doesn't contain enough information.
+>
+> Kai-Heng
 
-Regards
-Aisheng
+I checked with our QA, we didn't enable this machine before.  And I 
+tried 2 different usb audio cards, neither of them has wakeup 
+capability. it is weird that your usb sound card (maybe a built-in usb 
+sound card) has wakeup capability.
 
-> > Regards
-> > Aisheng
-> >
-> > > +#endif
-> > > +
-> > > --
-> > > 2.7.4
-> > >
+You could file a bug to 
+https://bugs.launchpad.net/ubuntu/+source/linux/+filebug, then upload 
+the needed logs,  Kai-Heng and I will help investigate this issue.
+
+Thanks,
+
+Hui.
+
+>>
+>> thanks,
+>>
+>> Takashi
