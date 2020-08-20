@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEFEC24B2B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E087E24B2B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728544AbgHTJf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:35:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49610 "EHLO mail.kernel.org"
+        id S1728530AbgHTJfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:35:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728307AbgHTJfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:35:46 -0400
+        id S1728414AbgHTJft (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:35:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D3B2208E4;
-        Thu, 20 Aug 2020 09:35:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 444322173E;
+        Thu, 20 Aug 2020 09:35:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916146;
-        bh=CB91mRZZtwRX5Rs6Z2McPo2ROvipo0Nrx6PjkXAUo9k=;
+        s=default; t=1597916148;
+        bh=61l/JMXtp6cMAV+NVOTPh+tXEErxNGyAOehCesszQOs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i236QKnVf4iU0Z2sSij8NInA0MXCeF/o8Te4VdEoNCg3ScqboZgdoYJniDd9lhkfE
-         Sfx/+27AUopK2+CvijBSmw8KB3SzIKAf1cggv8/mm/+uZJ82g5OYH0O7TJJlAUJ4ju
-         Fk2QmMJ3nEuVGA0XEkWGWTtlFwPfNmUGW2SmiMbc=
+        b=0F7mZAkIPtywnT1b5PhXm2r8J2NFHGu+pFFKpGVlubJ+XUVqAz3nYTFxdaZJSZdiJ
+         gTM/xGzziK8ZswcgUBE5GnNRRQLkl2HB3cxXOnYxteTPXjn6OsRbuEJhtUJQtVx3X4
+         k/cgKEzAYkPn1ToMA4Qb3D2HMxcXjzs8b7XKATeE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.7 004/204] PCI: hotplug: ACPI: Fix context refcounting in acpiphp_grab_context()
-Date:   Thu, 20 Aug 2020 11:18:21 +0200
-Message-Id: <20200820091606.425774608@linuxfoundation.org>
+        stable@vger.kernel.org, Ashok Raj <ashok.raj@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>
+Subject: [PATCH 5.7 005/204] PCI/ATS: Add pci_pri_supported() to check device or associated PF
+Date:   Thu, 20 Aug 2020 11:18:22 +0200
+Message-Id: <20200820091606.469344265@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
 References: <20200820091606.194320503@linuxfoundation.org>
@@ -43,51 +45,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Ashok Raj <ashok.raj@intel.com>
 
-commit dae68d7fd4930315389117e9da35b763f12238f9 upstream.
+commit 3f9a7a13fe4cb6e119e4e4745fbf975d30bfac9b upstream.
 
-If context is not NULL in acpiphp_grab_context(), but the
-is_going_away flag is set for the device's parent, the reference
-counter of the context needs to be decremented before returning
-NULL or the context will never be freed, so make that happen.
+For SR-IOV, the PF PRI is shared between the PF and any associated VFs, and
+the PRI Capability is allowed for PFs but not for VFs.  Searching for the
+PRI Capability on a VF always fails, even if its associated PF supports
+PRI.
 
-Fixes: edf5bf34d408 ("ACPI / dock: Use callback pointers from devices' ACPI hotplug contexts")
-Reported-by: Vasily Averin <vvs@virtuozzo.com>
-Cc: 3.15+ <stable@vger.kernel.org> # 3.15+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Add pci_pri_supported() to check whether device or its associated PF
+supports PRI.
+
+[bhelgaas: commit log, avoid "!!"]
+Fixes: b16d0cb9e2fc ("iommu/vt-d: Always enable PASID/PRI PCI capabilities before ATS")
+Link: https://lore.kernel.org/r/1595543849-19692-1-git-send-email-ashok.raj@intel.com
+Signed-off-by: Ashok Raj <ashok.raj@intel.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+Acked-by: Joerg Roedel <jroedel@suse.de>
+Cc: stable@vger.kernel.org	# v4.4+
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/pci/hotplug/acpiphp_glue.c |   14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/iommu/intel-iommu.c |    2 +-
+ drivers/pci/ats.c           |   15 +++++++++++++++
+ include/linux/pci-ats.h     |    4 ++++
+ 3 files changed, 20 insertions(+), 1 deletion(-)
 
---- a/drivers/pci/hotplug/acpiphp_glue.c
-+++ b/drivers/pci/hotplug/acpiphp_glue.c
-@@ -122,13 +122,21 @@ static struct acpiphp_context *acpiphp_g
- 	struct acpiphp_context *context;
+--- a/drivers/iommu/intel-iommu.c
++++ b/drivers/iommu/intel-iommu.c
+@@ -2645,7 +2645,7 @@ static struct dmar_domain *dmar_insert_o
+ 			}
  
- 	acpi_lock_hp_context();
-+
- 	context = acpiphp_get_context(adev);
--	if (!context || context->func.parent->is_going_away) {
--		acpi_unlock_hp_context();
--		return NULL;
-+	if (!context)
-+		goto unlock;
-+
-+	if (context->func.parent->is_going_away) {
-+		acpiphp_put_context(context);
-+		context = NULL;
-+		goto unlock;
+ 			if (info->ats_supported && ecap_prs(iommu->ecap) &&
+-			    pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_PRI))
++			    pci_pri_supported(pdev))
+ 				info->pri_supported = 1;
+ 		}
  	}
-+
- 	get_bridge(context->func.parent);
- 	acpiphp_put_context(context);
-+
-+unlock:
- 	acpi_unlock_hp_context();
- 	return context;
+--- a/drivers/pci/ats.c
++++ b/drivers/pci/ats.c
+@@ -309,6 +309,21 @@ int pci_prg_resp_pasid_required(struct p
+ 
+ 	return pdev->pasid_required;
  }
++
++/**
++ * pci_pri_supported - Check if PRI is supported.
++ * @pdev: PCI device structure
++ *
++ * Returns true if PRI capability is present, false otherwise.
++ */
++bool pci_pri_supported(struct pci_dev *pdev)
++{
++	/* VFs share the PF PRI */
++	if (pci_physfn(pdev)->pri_cap)
++		return true;
++	return false;
++}
++EXPORT_SYMBOL_GPL(pci_pri_supported);
+ #endif /* CONFIG_PCI_PRI */
+ 
+ #ifdef CONFIG_PCI_PASID
+--- a/include/linux/pci-ats.h
++++ b/include/linux/pci-ats.h
+@@ -25,6 +25,10 @@ int pci_enable_pri(struct pci_dev *pdev,
+ void pci_disable_pri(struct pci_dev *pdev);
+ int pci_reset_pri(struct pci_dev *pdev);
+ int pci_prg_resp_pasid_required(struct pci_dev *pdev);
++bool pci_pri_supported(struct pci_dev *pdev);
++#else
++static inline bool pci_pri_supported(struct pci_dev *pdev)
++{ return false; }
+ #endif /* CONFIG_PCI_PRI */
+ 
+ #ifdef CONFIG_PCI_PASID
 
 
