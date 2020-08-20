@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A7924B489
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E27824B48F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729957AbgHTKIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:08:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40528 "EHLO mail.kernel.org"
+        id S1730739AbgHTKIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:08:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726930AbgHTKI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:08:27 -0400
+        id S1730681AbgHTKIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:08:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A8D34206DA;
-        Thu, 20 Aug 2020 10:08:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C4182067C;
+        Thu, 20 Aug 2020 10:08:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918106;
-        bh=D3Y8alahK5ow2vJF2tGwq2hBCrD0elyQSCI3NfWikUk=;
+        s=default; t=1597918115;
+        bh=tFtOHLlSmr0ZanRNrVBLZNCQ6z4elVuV4Sbo6SmXFGU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wX1ZQ3skmWN8VpKvBQTH3UWDM3pbdL11B9ACZMLIs5Hd79yZ9qfzi6+d2uLoGkUAu
-         thEI1rU+rF/+aQcuipHA0mI5wVfzy6dKro/7tqi/k49E6HpN0a8D0xbLoNVQOJYnkC
-         S3sKRt9upZO/NLwfRz1BpLO5yS7MDTToFhYjI18Q=
+        b=tcOo56vokw0eNBK9rVpZEyXTBrxwDxBUc4lvLdGtXNi13ORvK++3hEnnI4RTUqeLb
+         T2lvMuzvHoIZRPEFfPGY2R8uiNTDB/xnd9TZGGQ8G1F9xcdDbesh/SqLgO7s4qJypA
+         Yahmo4uKd4gJc5BjINjN53K4OhKTJzH5kEyUfvS0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julian Squires <julian@cipht.net>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org,
+        Philippe Duplessis-Guindon <pduplessis@efficios.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 024/228] cfg80211: check vendor command doit pointer before use
-Date:   Thu, 20 Aug 2020 11:19:59 +0200
-Message-Id: <20200820091608.743601352@linuxfoundation.org>
+Subject: [PATCH 4.14 027/228] tools lib traceevent: Fix memory leak in process_dynamic_array_len
+Date:   Thu, 20 Aug 2020 11:20:02 +0200
+Message-Id: <20200820091608.891200333@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
 References: <20200820091607.532711107@linuxfoundation.org>
@@ -44,48 +46,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Squires <julian@cipht.net>
+From: Philippe Duplessis-Guindon <pduplessis@efficios.com>
 
-[ Upstream commit 4052d3d2e8f47a15053320bbcbe365d15610437d ]
+[ Upstream commit e24c6447ccb7b1a01f9bf0aec94939e6450c0b4d ]
 
-In the case where a vendor command does not implement doit, and has no
-flags set, doit would not be validated and a NULL pointer dereference
-would occur, for example when invoking the vendor command via iw.
+I compiled with AddressSanitizer and I had these memory leaks while I
+was using the tep_parse_format function:
 
-I encountered this while developing new vendor commands.  Perhaps in
-practice it is advisable to always implement doit along with dumpit,
-but it seems reasonable to me to always check doit anyway, not just
-when NEED_WDEV.
+    Direct leak of 28 byte(s) in 4 object(s) allocated from:
+        #0 0x7fb07db49ffe in __interceptor_realloc (/lib/x86_64-linux-gnu/libasan.so.5+0x10dffe)
+        #1 0x7fb07a724228 in extend_token /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:985
+        #2 0x7fb07a724c21 in __read_token /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1140
+        #3 0x7fb07a724f78 in read_token /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1206
+        #4 0x7fb07a725191 in __read_expect_type /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1291
+        #5 0x7fb07a7251df in read_expect_type /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1299
+        #6 0x7fb07a72e6c8 in process_dynamic_array_len /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:2849
+        #7 0x7fb07a7304b8 in process_function /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:3161
+        #8 0x7fb07a730900 in process_arg_token /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:3207
+        #9 0x7fb07a727c0b in process_arg /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:1786
+        #10 0x7fb07a731080 in event_read_print_args /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:3285
+        #11 0x7fb07a731722 in event_read_print /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:3369
+        #12 0x7fb07a740054 in __tep_parse_format /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:6335
+        #13 0x7fb07a74047a in __parse_event /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:6389
+        #14 0x7fb07a740536 in tep_parse_format /home/pduplessis/repo/linux/tools/lib/traceevent/event-parse.c:6431
+        #15 0x7fb07a785acf in parse_event ../../../src/fs-src/fs.c:251
+        #16 0x7fb07a785ccd in parse_systems ../../../src/fs-src/fs.c:284
+        #17 0x7fb07a786fb3 in read_metadata ../../../src/fs-src/fs.c:593
+        #18 0x7fb07a78760e in ftrace_fs_source_init ../../../src/fs-src/fs.c:727
+        #19 0x7fb07d90c19c in add_component_with_init_method_data ../../../../src/lib/graph/graph.c:1048
+        #20 0x7fb07d90c87b in add_source_component_with_initialize_method_data ../../../../src/lib/graph/graph.c:1127
+        #21 0x7fb07d90c92a in bt_graph_add_source_component ../../../../src/lib/graph/graph.c:1152
+        #22 0x55db11aa632e in cmd_run_ctx_create_components_from_config_components ../../../src/cli/babeltrace2.c:2252
+        #23 0x55db11aa6fda in cmd_run_ctx_create_components ../../../src/cli/babeltrace2.c:2347
+        #24 0x55db11aa780c in cmd_run ../../../src/cli/babeltrace2.c:2461
+        #25 0x55db11aa8a7d in main ../../../src/cli/babeltrace2.c:2673
+        #26 0x7fb07d5460b2 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x270b2)
 
-Signed-off-by: Julian Squires <julian@cipht.net>
-Link: https://lore.kernel.org/r/20200706211353.2366470-1-julian@cipht.net
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+The token variable in the process_dynamic_array_len function is
+allocated in the read_expect_type function, but is not freed before
+calling the read_token function.
+
+Free the token variable before calling read_token in order to plug the
+leak.
+
+Signed-off-by: Philippe Duplessis-Guindon <pduplessis@efficios.com>
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Link: https://lore.kernel.org/linux-trace-devel/20200730150236.5392-1-pduplessis@efficios.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/wireless/nl80211.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ tools/lib/traceevent/event-parse.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-index d0b75781e6f7a..9be7ee322093b 100644
---- a/net/wireless/nl80211.c
-+++ b/net/wireless/nl80211.c
-@@ -11859,13 +11859,13 @@ static int nl80211_vendor_cmd(struct sk_buff *skb, struct genl_info *info)
- 				if (!wdev_running(wdev))
- 					return -ENETDOWN;
- 			}
--
--			if (!vcmd->doit)
--				return -EOPNOTSUPP;
- 		} else {
- 			wdev = NULL;
- 		}
+diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
+index 8211e8010e09b..d260ca680f074 100644
+--- a/tools/lib/traceevent/event-parse.c
++++ b/tools/lib/traceevent/event-parse.c
+@@ -2780,6 +2780,7 @@ process_dynamic_array_len(struct event_format *event, struct print_arg *arg,
+ 	if (read_expected(EVENT_DELIM, ")") < 0)
+ 		goto out_err;
  
-+		if (!vcmd->doit)
-+			return -EOPNOTSUPP;
-+
- 		if (info->attrs[NL80211_ATTR_VENDOR_DATA]) {
- 			data = nla_data(info->attrs[NL80211_ATTR_VENDOR_DATA]);
- 			len = nla_len(info->attrs[NL80211_ATTR_VENDOR_DATA]);
++	free_token(token);
+ 	type = read_token(&token);
+ 	*tok = token;
+ 
 -- 
 2.25.1
 
