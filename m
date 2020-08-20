@@ -2,39 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671A624B523
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C77224B4EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731409AbgHTKTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:19:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41828 "EHLO mail.kernel.org"
+        id S1728624AbgHTKOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:14:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731418AbgHTKSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:18:55 -0400
+        id S1730928AbgHTKOa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:14:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 533C92067C;
-        Thu, 20 Aug 2020 10:18:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 13F6320738;
+        Thu, 20 Aug 2020 10:14:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918734;
-        bh=i20cTE8zZsa2S8I21mR46fM0KH4ljoFs0YmBjUWK0kc=;
+        s=default; t=1597918469;
+        bh=10jsHML1yfzSljuKWYJg2C1g0WyzWLBu9ooMOo5TVOQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r6X6zdWmeMqaa6aYWkr5qi3HLOI1zUurYE9MZadWxMUCLUzmsqzLnvHJhVrOFi5n2
-         3B+ndDDflQ10HDiqeaOk88vTCur48TKImplSMBJuN64RzaDLufkRfowNKDx1EI2/nr
-         WIvLItkAYXNyqp1OCcwGioJX4P8wiPiA545jCgNE=
+        b=eJYhaE4OdXlVRGZ9RfdRT/1j/02zYWfRguyt1w4FEt1m9V8Pa09z0V9mimejMqiMu
+         239MoCbwWORLjLMD2hnndIx80jMds7CJMbnp0jRjw03U4k0XgeMguGY6SKnJj8j5SC
+         DhdHWaEcKiHfIrVJXtljBjiB9LgPfm7DHNTfVLEI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ido Schimmel <idosch@mellanox.com>,
-        Jiri Pirko <jiri@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 047/149] ipv4: Silence suspicious RCU usage warning
-Date:   Thu, 20 Aug 2020 11:22:04 +0200
-Message-Id: <20200820092128.011909266@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+a9ac3de1b5de5fb10efc@syzkaller.appspotmail.com,
+        syzbot+df958cf5688a96ad3287@syzkaller.appspotmail.com,
+        Eric Biggers <ebiggers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Qiujun Huang <anenbupt@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 154/228] fs/minix: dont allow getting deleted inodes
+Date:   Thu, 20 Aug 2020 11:22:09 +0200
+Message-Id: <20200820091615.278147448@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
-References: <20200820092125.688850368@linuxfoundation.org>
+In-Reply-To: <20200820091607.532711107@linuxfoundation.org>
+References: <20200820091607.532711107@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,80 +49,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ido Schimmel <idosch@mellanox.com>
+From: Eric Biggers <ebiggers@google.com>
 
-[ Upstream commit 83f3522860f702748143e022f1a546547314c715 ]
+commit facb03dddec04e4aac1bb2139accdceb04deb1f3 upstream.
 
-fib_trie_unmerge() is called with RTNL held, but not from an RCU
-read-side critical section. This leads to the following warning [1] when
-the FIB alias list in a leaf is traversed with
-hlist_for_each_entry_rcu().
+If an inode has no links, we need to mark it bad rather than allowing it
+to be accessed.  This avoids WARNINGs in inc_nlink() and drop_nlink() when
+doing directory operations on a fuzzed filesystem.
 
-Since the function is always called with RTNL held and since
-modification of the list is protected by RTNL, simply use
-hlist_for_each_entry() and silence the warning.
-
-[1]
-WARNING: suspicious RCU usage
-5.8.0-rc4-custom-01520-gc1f937f3f83b #30 Not tainted
------------------------------
-net/ipv4/fib_trie.c:1867 RCU-list traversed in non-reader section!!
-
-other info that might help us debug this:
-
-rcu_scheduler_active = 2, debug_locks = 1
-1 lock held by ip/164:
- #0: ffffffff85a27850 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x49a/0xbd0
-
-stack backtrace:
-CPU: 0 PID: 164 Comm: ip Not tainted 5.8.0-rc4-custom-01520-gc1f937f3f83b #30
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-2.fc32 04/01/2014
-Call Trace:
- dump_stack+0x100/0x184
- lockdep_rcu_suspicious+0x153/0x15d
- fib_trie_unmerge+0x608/0xdb0
- fib_unmerge+0x44/0x360
- fib4_rule_configure+0xc8/0xad0
- fib_nl_newrule+0x37a/0x1dd0
- rtnetlink_rcv_msg+0x4f7/0xbd0
- netlink_rcv_skb+0x17a/0x480
- rtnetlink_rcv+0x22/0x30
- netlink_unicast+0x5ae/0x890
- netlink_sendmsg+0x98a/0xf40
- ____sys_sendmsg+0x879/0xa00
- ___sys_sendmsg+0x122/0x190
- __sys_sendmsg+0x103/0x1d0
- __x64_sys_sendmsg+0x7d/0xb0
- do_syscall_64+0x54/0xa0
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7fc80a234e97
-Code: Bad RIP value.
-RSP: 002b:00007ffef8b66798 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fc80a234e97
-RDX: 0000000000000000 RSI: 00007ffef8b66800 RDI: 0000000000000003
-RBP: 000000005f141b1c R08: 0000000000000001 R09: 0000000000000000
-R10: 00007fc80a2a8ac0 R11: 0000000000000246 R12: 0000000000000001
-R13: 0000000000000000 R14: 00007ffef8b67008 R15: 0000556fccb10020
-
-Fixes: 0ddcf43d5d4a ("ipv4: FIB Local/MAIN table collapse")
-Signed-off-by: Ido Schimmel <idosch@mellanox.com>
-Reviewed-by: Jiri Pirko <jiri@mellanox.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: syzbot+a9ac3de1b5de5fb10efc@syzkaller.appspotmail.com
+Reported-by: syzbot+df958cf5688a96ad3287@syzkaller.appspotmail.com
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Qiujun Huang <anenbupt@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200628060846.682158-3-ebiggers@kernel.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/ipv4/fib_trie.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/ipv4/fib_trie.c
-+++ b/net/ipv4/fib_trie.c
-@@ -1696,7 +1696,7 @@ struct fib_table *fib_trie_unmerge(struc
- 	while ((l = leaf_walk_rcu(&tp, key)) != NULL) {
- 		struct key_vector *local_l = NULL, *local_tp;
- 
--		hlist_for_each_entry_rcu(fa, &l->leaf, fa_list) {
-+		hlist_for_each_entry(fa, &l->leaf, fa_list) {
- 			struct fib_alias *new_fa;
- 
- 			if (local_tb->tb_id != fa->tb_id)
+---
+ fs/minix/inode.c |   14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+--- a/fs/minix/inode.c
++++ b/fs/minix/inode.c
+@@ -471,6 +471,13 @@ static struct inode *V1_minix_iget(struc
+ 		iget_failed(inode);
+ 		return ERR_PTR(-EIO);
+ 	}
++	if (raw_inode->i_nlinks == 0) {
++		printk("MINIX-fs: deleted inode referenced: %lu\n",
++		       inode->i_ino);
++		brelse(bh);
++		iget_failed(inode);
++		return ERR_PTR(-ESTALE);
++	}
+ 	inode->i_mode = raw_inode->i_mode;
+ 	i_uid_write(inode, raw_inode->i_uid);
+ 	i_gid_write(inode, raw_inode->i_gid);
+@@ -504,6 +511,13 @@ static struct inode *V2_minix_iget(struc
+ 		iget_failed(inode);
+ 		return ERR_PTR(-EIO);
+ 	}
++	if (raw_inode->i_nlinks == 0) {
++		printk("MINIX-fs: deleted inode referenced: %lu\n",
++		       inode->i_ino);
++		brelse(bh);
++		iget_failed(inode);
++		return ERR_PTR(-ESTALE);
++	}
+ 	inode->i_mode = raw_inode->i_mode;
+ 	i_uid_write(inode, raw_inode->i_uid);
+ 	i_gid_write(inode, raw_inode->i_gid);
 
 
