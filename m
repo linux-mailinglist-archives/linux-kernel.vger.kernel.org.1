@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D57FB24B616
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D1C24B608
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 12:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731602AbgHTKcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 06:32:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45290 "EHLO mail.kernel.org"
+        id S1728920AbgHTKUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 06:20:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731333AbgHTKUV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:20:21 -0400
+        id S1731465AbgHTKUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:20:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 692BB20738;
-        Thu, 20 Aug 2020 10:20:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C93F20885;
+        Thu, 20 Aug 2020 10:20:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597918821;
-        bh=26p9J5tuMWUmvPbx7P/76yWdq/mIClnq9Ir+zm1yLbg=;
+        s=default; t=1597918823;
+        bh=LlUgNbk1YjcZULzOtahIsEpUg1DS5mkIOYr/0JVGRNU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IRUwvQyazuFro+LiMt4ejCAEetaIdlG+YVGrKjHVnjPwNa6PihtM7zT5TYUuFRtVs
-         uAMyYhQi8tdfYJJIH9jSeJM3RFWQt2e5p1tnRb2v1tHUcOSlbETU+jUZrRWCl3jwEs
-         8g1T/cu7lLcEWiCIFnkVTEgyLoUVK7vc6vzD9ygA=
+        b=I+ukEV/JSlAE2ARcJRUTvDY1944VdL3z6FEM8gmXv4bvKH0faiFmMVQOMY4gBWUw7
+         nnZA9nQC3OQhl0DNZtVcHdbNGqrQMwRPB4bD+2PtDDetpJ9eilwFKFXQu4c23jJoks
+         yepwQ05YJqFbgBUzHxsyP8gVd1lPSZAGClhcTHYo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Dejin Zheng <zhengdejin5@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@osdl.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 079/149] console: newport_con: fix an issue about leak related system resources
-Date:   Thu, 20 Aug 2020 11:22:36 +0200
-Message-Id: <20200820092129.554750028@linuxfoundation.org>
+        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 080/149] iio: improve IIO_CONCENTRATION channel type description
+Date:   Thu, 20 Aug 2020 11:22:37 +0200
+Message-Id: <20200820092129.601055548@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820092125.688850368@linuxfoundation.org>
 References: <20200820092125.688850368@linuxfoundation.org>
@@ -47,88 +46,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dejin Zheng <zhengdejin5@gmail.com>
+From: Tomasz Duszynski <tomasz.duszynski@octakon.com>
 
-[ Upstream commit fd4b8243877250c05bb24af7fea5567110c9720b ]
+[ Upstream commit df16c33a4028159d1ba8a7061c9fa950b58d1a61 ]
 
-A call of the function do_take_over_console() can fail here.
-The corresponding system resources were not released then.
-Thus add a call of iounmap() and release_mem_region()
-together with the check of a failure predicate. and also
-add release_mem_region() on device removal.
+IIO_CONCENTRATION together with INFO_RAW specifier is used for reporting
+raw concentrations of pollutants. Raw value should be meaningless
+before being properly scaled. Because of that description shouldn't
+mention raw value unit whatsoever.
 
-Fixes: e86bb8acc0fdc ("[PATCH] VT binding: Make newport_con support binding")
-Suggested-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Andrew Morton <akpm@osdl.org>
-Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200423164251.3349-1-zhengdejin5@gmail.com
+Fix this by rephrasing existing description so it follows conventions
+used throughout IIO ABI docs.
+
+Fixes: 8ff6b3bc94930 ("iio: chemical: Add IIO_CONCENTRATION channel type")
+Signed-off-by: Tomasz Duszynski <tomasz.duszynski@octakon.com>
+Acked-by: Matt Ranostay <matt.ranostay@konsulko.com>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/console/newport_con.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ Documentation/ABI/testing/sysfs-bus-iio | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/video/console/newport_con.c b/drivers/video/console/newport_con.c
-index bb4e96255974a..bd0c6e53bec19 100644
---- a/drivers/video/console/newport_con.c
-+++ b/drivers/video/console/newport_con.c
-@@ -31,6 +31,8 @@
- #include <linux/linux_logo.h>
- #include <linux/font.h>
+diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
+index 0439c2aaf7419..f20c783cb5c03 100644
+--- a/Documentation/ABI/testing/sysfs-bus-iio
++++ b/Documentation/ABI/testing/sysfs-bus-iio
+@@ -1470,7 +1470,8 @@ What:		/sys/bus/iio/devices/iio:deviceX/in_concentrationX_voc_raw
+ KernelVersion:	4.3
+ Contact:	linux-iio@vger.kernel.org
+ Description:
+-		Raw (unscaled no offset etc.) percentage reading of a substance.
++		Raw (unscaled no offset etc.) reading of a substance. Units
++		after application of scale and offset are percents.
  
-+#define NEWPORT_LEN	0x10000
-+
- #define FONT_DATA ((unsigned char *)font_vga_8x16.data)
- 
- /* borrowed from fbcon.c */
-@@ -42,6 +44,7 @@
- static unsigned char *font_data[MAX_NR_CONSOLES];
- 
- static struct newport_regs *npregs;
-+static unsigned long newport_addr;
- 
- static int logo_active;
- static int topscan;
-@@ -743,7 +746,6 @@ const struct consw newport_con = {
- static int newport_probe(struct gio_device *dev,
- 			 const struct gio_device_id *id)
- {
--	unsigned long newport_addr;
- 	int err;
- 
- 	if (!dev->resource.start)
-@@ -753,7 +755,7 @@ static int newport_probe(struct gio_device *dev,
- 		return -EBUSY; /* we only support one Newport as console */
- 
- 	newport_addr = dev->resource.start + 0xF0000;
--	if (!request_mem_region(newport_addr, 0x10000, "Newport"))
-+	if (!request_mem_region(newport_addr, NEWPORT_LEN, "Newport"))
- 		return -ENODEV;
- 
- 	npregs = (struct newport_regs *)/* ioremap cannot fail */
-@@ -761,6 +763,11 @@ static int newport_probe(struct gio_device *dev,
- 	console_lock();
- 	err = do_take_over_console(&newport_con, 0, MAX_NR_CONSOLES - 1, 1);
- 	console_unlock();
-+
-+	if (err) {
-+		iounmap((void *)npregs);
-+		release_mem_region(newport_addr, NEWPORT_LEN);
-+	}
- 	return err;
- }
- 
-@@ -768,6 +775,7 @@ static void newport_remove(struct gio_device *dev)
- {
- 	give_up_console(&newport_con);
- 	iounmap((void *)npregs);
-+	release_mem_region(newport_addr, NEWPORT_LEN);
- }
- 
- static struct gio_device_id newport_ids[] = {
+ What:		/sys/bus/iio/devices/iio:deviceX/in_resistance_raw
+ What:		/sys/bus/iio/devices/iio:deviceX/in_resistanceX_raw
 -- 
 2.25.1
 
