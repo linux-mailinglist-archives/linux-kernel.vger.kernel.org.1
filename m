@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F18B24B323
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71E8A24B39F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729119AbgHTJlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:41:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35512 "EHLO mail.kernel.org"
+        id S1729393AbgHTJt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:49:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727914AbgHTJlm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:41:42 -0400
+        id S1729674AbgHTJtg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:49:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89BD1207FB;
-        Thu, 20 Aug 2020 09:41:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B99820724;
+        Thu, 20 Aug 2020 09:49:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597916502;
-        bh=cCUOGE8MGkysAC94vp/q2pSVU3xfxlp5tQo6NvQEVZg=;
+        s=default; t=1597916976;
+        bh=hRXr8wczIZrt0cJy0jW7KdOBS7YZgK4GYprUqa0cFWM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FuUeEcWpTWPgcFE1yIb6ssaCbwzYryF+9/aoitePqeQoldDBF0jncnQNwMhvgBPi2
-         koMSy49533+jpXMpht20jSw23kajKVs9qFpHsz3jEofj+Njz9YY0FU1sUiwdjHUBnB
-         uQWeMj+28/OBlS09ab8f5PHppYrKZtf/azikjRpI=
+        b=E4lvxI6OP10eBmLNYe88BEVVNVSSBoz9mtSCYN52sLXJ3Ikeg6wuXk7L4JDwy7qeM
+         DjrQcMyhxAUYIXoquY9cELzNp/gNR7ixyKtrSbMr+SmTLXEI5Sr0qAKatXV1BpvOzL
+         CWGoAvSzfL10IZUZ1jw13Pc8wRVY65ZsAIWY7rHM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Scott Mayhew <smayhew@redhat.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        Mathew King <mathewk@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 150/204] nfs: ensure correct writeback errors are returned on close()
-Date:   Thu, 20 Aug 2020 11:20:47 +0200
-Message-Id: <20200820091613.736322187@linuxfoundation.org>
+Subject: [PATCH 5.4 081/152] platform/chrome: cros_ec_ishtp: Fix a double-unlock issue
+Date:   Thu, 20 Aug 2020 11:20:48 +0200
+Message-Id: <20200820091557.890172669@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200820091606.194320503@linuxfoundation.org>
-References: <20200820091606.194320503@linuxfoundation.org>
+In-Reply-To: <20200820091553.615456912@linuxfoundation.org>
+References: <20200820091553.615456912@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,74 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Scott Mayhew <smayhew@redhat.com>
+From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit 67dd23f9e6fbaf163431912ef5599c5e0693476c ]
+[ Upstream commit aaa3cbbac326c95308e315f1ab964a3369c4d07d ]
 
-nfs_wb_all() calls filemap_write_and_wait(), which uses
-filemap_check_errors() to determine the error to return.
-filemap_check_errors() only looks at the mapping->flags and will
-therefore only return either -ENOSPC or -EIO.  To ensure that the
-correct error is returned on close(), nfs{,4}_file_flush() should call
-filemap_check_wb_err() which looks at the errseq value in
-mapping->wb_err without consuming it.
+In function cros_ec_ishtp_probe(), "up_write" is already called
+before function "cros_ec_dev_init". But "up_write" will be called
+again after the calling of the function "cros_ec_dev_init" failed.
+Thus add a call of the function “down_write” in this if branch
+for the completion of the exception handling.
 
-Fixes: 6fbda89b257f ("NFS: Replace custom error reporting mechanism with
-generic one")
-Signed-off-by: Scott Mayhew <smayhew@redhat.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Fixes: 26a14267aff2 ("platform/chrome: Add ChromeOS EC ISHTP driver")
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Tested-by: Mathew King <mathewk@chromium.org>
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/file.c     | 5 ++++-
- fs/nfs/nfs4file.c | 5 ++++-
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ drivers/platform/chrome/cros_ec_ishtp.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/nfs/file.c b/fs/nfs/file.c
-index f96367a2463e3..d72496efa17b0 100644
---- a/fs/nfs/file.c
-+++ b/fs/nfs/file.c
-@@ -140,6 +140,7 @@ static int
- nfs_file_flush(struct file *file, fl_owner_t id)
- {
- 	struct inode	*inode = file_inode(file);
-+	errseq_t since;
+diff --git a/drivers/platform/chrome/cros_ec_ishtp.c b/drivers/platform/chrome/cros_ec_ishtp.c
+index 25ca2c894b4de..ab0662a33b41a 100644
+--- a/drivers/platform/chrome/cros_ec_ishtp.c
++++ b/drivers/platform/chrome/cros_ec_ishtp.c
+@@ -645,8 +645,10 @@ static int cros_ec_ishtp_probe(struct ishtp_cl_device *cl_device)
  
- 	dprintk("NFS: flush(%pD2)\n", file);
+ 	/* Register croc_ec_dev mfd */
+ 	rv = cros_ec_dev_init(client_data);
+-	if (rv)
++	if (rv) {
++		down_write(&init_lock);
+ 		goto end_cros_ec_dev_init_error;
++	}
  
-@@ -148,7 +149,9 @@ nfs_file_flush(struct file *file, fl_owner_t id)
- 		return 0;
+ 	return 0;
  
- 	/* Flush writes to the server and return any errors */
--	return nfs_wb_all(inode);
-+	since = filemap_sample_wb_err(file->f_mapping);
-+	nfs_wb_all(inode);
-+	return filemap_check_wb_err(file->f_mapping, since);
- }
- 
- ssize_t
-diff --git a/fs/nfs/nfs4file.c b/fs/nfs/nfs4file.c
-index 8e5d6223ddd35..a339707654673 100644
---- a/fs/nfs/nfs4file.c
-+++ b/fs/nfs/nfs4file.c
-@@ -110,6 +110,7 @@ static int
- nfs4_file_flush(struct file *file, fl_owner_t id)
- {
- 	struct inode	*inode = file_inode(file);
-+	errseq_t since;
- 
- 	dprintk("NFS: flush(%pD2)\n", file);
- 
-@@ -125,7 +126,9 @@ nfs4_file_flush(struct file *file, fl_owner_t id)
- 		return filemap_fdatawrite(file->f_mapping);
- 
- 	/* Flush writes to the server and return any errors */
--	return nfs_wb_all(inode);
-+	since = filemap_sample_wb_err(file->f_mapping);
-+	nfs_wb_all(inode);
-+	return filemap_check_wb_err(file->f_mapping, since);
- }
- 
- #ifdef CONFIG_NFS_V4_2
 -- 
 2.25.1
 
