@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C10F24BB42
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79FDB24BB55
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 14:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730039AbgHTJww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:52:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34094 "EHLO mail.kernel.org"
+        id S1730009AbgHTM1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 08:27:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729993AbgHTJwj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:52:39 -0400
+        id S1729998AbgHTJwn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:52:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ECCC02075E;
-        Thu, 20 Aug 2020 09:52:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 235352078D;
+        Thu, 20 Aug 2020 09:52:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597917159;
-        bh=1Z+yY8883xRpttdCFfESM34OdyzWiQYyO4wws3jJvZY=;
+        s=default; t=1597917162;
+        bh=+cJZlcM/NgebCg4g4alyqMpOi4jxxplSXRxhi68G4Og=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PwlHziDZtN0r1KXil1ZpPOOTUeSik+xn/RI8Mdje5GckWXzyG1hTtfg6YfriJjngZ
-         zQCr4pJLtASzVOTMMj7RXRGbH+h7ZtF/IH47koaXa1zM3HpQU7efQLRKxARPMz9eC0
-         S6Srxu8YFyUCtniIvvXbbu+DmMepYFOnTT13HH0Y=
+        b=bx9pUg4uAsfefIi9l9ozpWOPTKwWdy63PYo7XOx7uk7aUxwMtM+bpO6dz6OSpgr/i
+         esVBiIj14mQcUjbA/lpy2sE5Ag2pyq/IMagV0k/LjswsqQirlEaEtXTF0GrILq4HjT
+         mYrsbwBcVFXv16fJ7UroXXMiVAx1Zmf5KKYGCPpY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Jonathan McDowell <noodles@earth.li>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 25/92] net: ethernet: stmmac: Disable hardware multicast filter
-Date:   Thu, 20 Aug 2020 11:21:10 +0200
-Message-Id: <20200820091538.866981520@linuxfoundation.org>
+Subject: [PATCH 4.19 26/92] net: stmmac: dwmac1000: provide multicast filter fallback
+Date:   Thu, 20 Aug 2020 11:21:11 +0200
+Message-Id: <20200820091538.915149698@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200820091537.490965042@linuxfoundation.org>
 References: <20200820091537.490965042@linuxfoundation.org>
@@ -45,18 +45,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jonathan McDowell <noodles@earth.li>
 
-commit df43dd526e6609769ae513a81443c7aa727c8ca3 upstream.
+commit 592d751c1e174df5ff219946908b005eb48934b3 upstream.
 
-The IPQ806x does not appear to have a functional multicast ethernet
-address filter. This was observed as a failure to correctly receive IPv6
-packets on a LAN to the all stations address. Checking the vendor driver
-shows that it does not attempt to enable the multicast filter and
-instead falls back to receiving all multicast packets, internally
-setting ALLMULTI.
-
-Use the new fallback support in the dwmac1000 driver to correctly
-achieve the same with the mainline IPQ806x driver. Confirmed to fix IPv6
-functionality on an RB3011 router.
+If we don't have a hardware multicast filter available then instead of
+silently failing to listen for the requested ethernet broadcast
+addresses fall back to receiving all multicast packets, in a similar
+fashion to other drivers with no multicast filter.
 
 Cc: stable@vger.kernel.org
 Signed-off-by: Jonathan McDowell <noodles@earth.li>
@@ -64,18 +58,20 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-@@ -350,6 +350,7 @@ static int ipq806x_gmac_probe(struct pla
- 	plat_dat->has_gmac = true;
- 	plat_dat->bsp_priv = gmac;
- 	plat_dat->fix_mac_speed = ipq806x_gmac_fix_mac_speed;
-+	plat_dat->multicast_filter_bins = 0;
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
+@@ -176,6 +176,9 @@ static void dwmac1000_set_filter(struct
+ 		value = GMAC_FRAME_FILTER_PR;
+ 	} else if (dev->flags & IFF_ALLMULTI) {
+ 		value = GMAC_FRAME_FILTER_PM;	/* pass all multi */
++	} else if (!netdev_mc_empty(dev) && (mcbitslog2 == 0)) {
++		/* Fall back to all multicast if we've no filter */
++		value = GMAC_FRAME_FILTER_PM;
+ 	} else if (!netdev_mc_empty(dev)) {
+ 		struct netdev_hw_addr *ha;
  
- 	err = stmmac_dvr_probe(&pdev->dev, plat_dat, &stmmac_res);
- 	if (err)
 
 
