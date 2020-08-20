@@ -2,186 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 149A124AD18
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 04:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFCA724AD1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 04:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgHTC5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Aug 2020 22:57:08 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9855 "EHLO huawei.com"
+        id S1726817AbgHTC6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Aug 2020 22:58:32 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9790 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726578AbgHTC5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Aug 2020 22:57:07 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id A24496F32C173C085B9D;
-        Thu, 20 Aug 2020 10:57:04 +0800 (CST)
-Received: from [10.174.178.63] (10.174.178.63) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 20 Aug 2020 10:56:59 +0800
-From:   "liwei (GF)" <liwei391@huawei.com>
-Subject: Re: [PATCH v2 1/4] perf tools: Support Arm arch timer counter
-To:     Leo Yan <leo.yan@linaro.org>
-CC:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>, Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kemeng Shi <shikemeng@huawei.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        James Clark <james.clark@arm.com>,
-        <linux-kernel@vger.kernel.org>
-References: <20200807071620.11907-1-leo.yan@linaro.org>
- <20200807071620.11907-2-leo.yan@linaro.org>
-Message-ID: <27ed6ebf-d9e6-e0ea-1577-2bba3d6f35c1@huawei.com>
-Date:   Thu, 20 Aug 2020 10:56:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.0
+        id S1726435AbgHTC6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 Aug 2020 22:58:31 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id B0188A24B8655BD6CAFB;
+        Thu, 20 Aug 2020 10:58:29 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Thu, 20 Aug 2020
+ 10:58:23 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <bfields@fieldses.org>, <chuck.lever@oracle.com>
+CC:     <linux-nfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH v2] nfsd: Convert to use the preferred fallthrough macro
+Date:   Wed, 19 Aug 2020 22:57:18 -0400
+Message-ID: <20200820025718.51244-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-In-Reply-To: <20200807071620.11907-2-leo.yan@linaro.org>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.63]
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo
+Convert the uses of fallthrough comments to fallthrough macro. Please see
+commit 294f69e662d1 ("compiler_attributes.h: Add 'fallthrough' pseudo
+keyword for switch/case use") for detail.
 
-On 2020/8/7 15:16, Leo Yan wrote:
-> The Arm arch timer can be used to calculate timestamp, the basic idea is
-> the arch timer's counter value can be recorded in the hardware tracing
-> data, e.g. the arch timer's counter value can be used for Arm CoreSight
-> (not now but might be implemented later) and Arm SPE.  So we need a way
-> to convert the arch timer's counter to the system time, the conversion
-> is dependent on some related parameters, e.g. 'time_shift', 'time_mult',
-> 'time_offset', etc; furthermore, to handle the counter wrapping issue,
-> perf tool needs to know 'time_cycles' and 'time_mask' for correction.
-> 
-> This patch is to support Arm arch timer by reading out the relevant
-> parameters from the head of first mmaped page.  And these parameters
-> will be stored into the structure 'perf_arch_timer_conversion' for
-> later calculation timestamp.
-> 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  tools/perf/arch/arm64/util/Build        |  1 +
->  tools/perf/arch/arm64/util/arch_timer.c | 50 +++++++++++++++++++++++++
->  tools/perf/util/arm_arch_timer.h        | 20 ++++++++++
->  3 files changed, 71 insertions(+)
->  create mode 100644 tools/perf/arch/arm64/util/arch_timer.c
->  create mode 100644 tools/perf/util/arm_arch_timer.h
-> 
-> diff --git a/tools/perf/arch/arm64/util/Build b/tools/perf/arch/arm64/util/Build
-> index 5c13438c7bd4..77f4d7b30932 100644
-> --- a/tools/perf/arch/arm64/util/Build
-> +++ b/tools/perf/arch/arm64/util/Build
-> @@ -1,3 +1,4 @@
-> +perf-y += arch_timer.o
->  perf-y += header.o
->  perf-y += machine.o
->  perf-y += perf_regs.o
-> diff --git a/tools/perf/arch/arm64/util/arch_timer.c b/tools/perf/arch/arm64/util/arch_timer.c
-> new file mode 100644
-> index 000000000000..dcc217c294fc
-> --- /dev/null
-> +++ b/tools/perf/arch/arm64/util/arch_timer.c
-> @@ -0,0 +1,50 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <stdbool.h>
-> +#include <errno.h>
-> +
-> +#include <linux/stddef.h>
-> +#include <linux/perf_event.h>
-> +
-> +#include <linux/types.h>
-> +#include <asm/barrier.h>
-> +#include "../../../util/debug.h"
-> +#include "../../../util/event.h"
-> +#include "../../../util/synthetic-events.h"
-> +#include "../../../util/arm_arch_timer.h"
-> +
-> +int perf_read_arch_timer_conversion(const struct perf_event_mmap_page *pc,
-> +				    struct perf_arch_timer_conversion *tc)
-> +{
-> +	bool cap_user_time_zero, cap_user_time_short;
-> +	u32 seq;
-> +	int i = 0;
-> +
-> +	while (1) {
-> +		seq = pc->lock;
-> +		/* Add barrier between the sequence lock and data accessing */
-> +		rmb();
-> +
-> +		tc->time_mult = pc->time_mult;
-> +		tc->time_shift = pc->time_shift;
-> +		tc->time_zero = pc->time_zero;
-> +		tc->time_cycles = pc->time_cycles;
-> +		tc->time_mask = pc->time_mask;
-> +		cap_user_time_zero = pc->cap_user_time_zero;
-> +		cap_user_time_short = pc->cap_user_time_short;
-> +
-> +		/* Add barrier between the data accessing and sequence lock */
-> +		rmb();
-> +		if (pc->lock == seq && !(seq & 1))
-> +			break;
-> +		if (++i > 10000) {
-> +			pr_debug("%s: failed to get perf_event_mmap_page lock\n",
-> +				 __func__);
-> +			return -EINVAL;
-> +		}
-> +	}
-> +
-> +	if (!cap_user_time_zero || !cap_user_time_short)
-> +		return -EOPNOTSUPP;
-> +
-> +	return 0;
-> +}
+Signed-off-by: Hongxiang Lou <louhongxiang@huawei.com>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ fs/nfsd/nfs4callback.c | 2 +-
+ fs/nfsd/nfs4proc.c     | 2 +-
+ fs/nfsd/nfs4state.c    | 2 +-
+ fs/nfsd/nfsfh.c        | 2 +-
+ fs/nfsd/vfs.c          | 4 ++--
+ 5 files changed, 6 insertions(+), 6 deletions(-)
 
-Should we implement the perf_event__synth_time_conv() method? As it can be supported
-on arm64 arch now.
+diff --git a/fs/nfsd/nfs4callback.c b/fs/nfsd/nfs4callback.c
+index 7fbe9840a03e..052be5bf9ef5 100644
+--- a/fs/nfsd/nfs4callback.c
++++ b/fs/nfsd/nfs4callback.c
+@@ -1119,7 +1119,7 @@ static bool nfsd4_cb_sequence_done(struct rpc_task *task, struct nfsd4_callback
+ 		break;
+ 	case -ESERVERFAULT:
+ 		++session->se_cb_seq_nr;
+-		/* Fall through */
++		fallthrough;
+ 	case 1:
+ 	case -NFS4ERR_BADSESSION:
+ 		nfsd4_mark_cb_fault(cb->cb_clp, cb->cb_seq_status);
+diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
+index a527da3d8052..eaf50eafa935 100644
+--- a/fs/nfsd/nfs4proc.c
++++ b/fs/nfsd/nfs4proc.c
+@@ -428,7 +428,7 @@ nfsd4_open(struct svc_rqst *rqstp, struct nfsd4_compound_state *cstate,
+ 				goto out;
+ 			open->op_openowner->oo_flags |= NFS4_OO_CONFIRMED;
+ 			reclaim = true;
+-			/* fall through */
++			fallthrough;
+ 		case NFS4_OPEN_CLAIM_FH:
+ 		case NFS4_OPEN_CLAIM_DELEG_CUR_FH:
+ 			status = do_open_fhandle(rqstp, cstate, open);
+diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
+index 81ed8e8bab3f..2f77f4b66cbc 100644
+--- a/fs/nfsd/nfs4state.c
++++ b/fs/nfsd/nfs4state.c
+@@ -3117,7 +3117,7 @@ nfsd4_exchange_id(struct svc_rqst *rqstp, struct nfsd4_compound_state *cstate,
+ 		break;
+ 	default:				/* checked by xdr code */
+ 		WARN_ON_ONCE(1);
+-		/* fall through */
++		fallthrough;
+ 	case SP4_SSV:
+ 		status = nfserr_encr_alg_unsupp;
+ 		goto out_nolock;
+diff --git a/fs/nfsd/nfsfh.c b/fs/nfsd/nfsfh.c
+index 37bc8f5f4514..a0a8d27539ae 100644
+--- a/fs/nfsd/nfsfh.c
++++ b/fs/nfsd/nfsfh.c
+@@ -469,7 +469,7 @@ static bool fsid_type_ok_for_exp(u8 fsid_type, struct svc_export *exp)
+ 	case FSID_UUID16:
+ 		if (!is_root_export(exp))
+ 			return false;
+-		/* fall through */
++		fallthrough;
+ 	case FSID_UUID4_INUM:
+ 	case FSID_UUID16_INUM:
+ 		return exp->ex_uuid != NULL;
+diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
+index 7d2933b85b65..aba5af9df328 100644
+--- a/fs/nfsd/vfs.c
++++ b/fs/nfsd/vfs.c
+@@ -1456,7 +1456,7 @@ do_nfsd_create(struct svc_rqst *rqstp, struct svc_fh *fhp,
+ 					*created = true;
+ 				break;
+ 			}
+-			/* fall through */
++			fallthrough;
+ 		case NFS4_CREATE_EXCLUSIVE4_1:
+ 			if (   d_inode(dchild)->i_mtime.tv_sec == v_mtime
+ 			    && d_inode(dchild)->i_atime.tv_sec == v_atime
+@@ -1465,7 +1465,7 @@ do_nfsd_create(struct svc_rqst *rqstp, struct svc_fh *fhp,
+ 					*created = true;
+ 				goto set_attr;
+ 			}
+-			/* fall through */
++			fallthrough;
+ 		case NFS3_CREATE_GUARDED:
+ 			err = nfserr_exist;
+ 		}
+-- 
+2.19.1
 
-These is also a tsc get method called rdtsc(), weak implementation in 'tools/perf/util/tsc.c',
-maybe we should rename it to an arch independent name, and implement the arm64 version
-(read_cntvct_el0 in patch 3) here. Thus we can also make the testcase generic,
-instead of adding a new one for arm64 :).
-
-Thanks,
-Wei
-
-> diff --git a/tools/perf/util/arm_arch_timer.h b/tools/perf/util/arm_arch_timer.h
-> new file mode 100644
-> index 000000000000..a3263cc4e5cf
-> --- /dev/null
-> +++ b/tools/perf/util/arm_arch_timer.h
-> @@ -0,0 +1,20 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __PERF_ARM_ARCH_TIMER_H
-> +#define __PERF_ARM_ARCH_TIMER_H
-> +
-> +#include <linux/types.h>
-> +
-> +struct perf_arch_timer_conversion {
-> +	u16 time_shift;
-> +	u32 time_mult;
-> +	u64 time_zero;
-> +	u64 time_cycles;
-> +	u64 time_mask;
-> +};
-> +
-> +struct perf_event_mmap_page;
-> +
-> +int perf_read_arch_timer_conversion(const struct perf_event_mmap_page *pc,
-> +				    struct perf_arch_timer_conversion *tc);
-> +
-> +#endif // __PERF_ARM_ARCH_TIMER_H
-> 
