@@ -2,117 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1365B24B1E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 013B224B1F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Aug 2020 11:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727118AbgHTJPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 05:15:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54466 "EHLO
+        id S1727047AbgHTJQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 05:16:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726987AbgHTJOb (ORCPT
+        with ESMTP id S1727087AbgHTJPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:14:31 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA87C061343
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 02:14:27 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id y206so708553pfb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 02:14:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iKNU74NJdZK5cyzQFbM7uQHSgaBwB5CboR+e0oglByo=;
-        b=f53NuOrsS3mDzLLgHf/lVcMv2rI0XJgW2xMiLctDDBFzrksxOqhcTxm1XIVQnBQkE5
-         +kMAMDdXzLKtSit04ro2JszrQPyd+kMW6DQyX3Fqi5F4PZDe779pikdz44FcUDrjmvQc
-         jjFTXmzw429GB5mNaBH2Jij5WbpAtdFvjw+D8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iKNU74NJdZK5cyzQFbM7uQHSgaBwB5CboR+e0oglByo=;
-        b=h3STQDsZxd9yoh9nO7iE/KqpHysdsbAT43hxMXXVI8n2KrhfAuvuFbpVeWarAxJ5Ai
-         G7OnI6fBhjUze8M3z+oQUjSwAh3BbtpqVtSyjAPu7GMHcdlTZ2ZN8ol5vGN4Q+MY5p6L
-         JhqPgmOFQguRwjE0YdsB/v4LuN3Qo937XDCvNCGC6LkE451W1sYkaucLG43W7rXsjOUh
-         aiolyzPiRT6ckpJ32X70qr8ALMsfzgulp23MnRm5fvYmzFrA9JpIHQ3LCc5BujrnMN4+
-         xMKGp7BgJEAwW3yD2N2W3zRW9KXY3v/lSJtxsdb74Cpq8FkbEiLtr6mN1hLn++gmTy7H
-         8Wkg==
-X-Gm-Message-State: AOAM532+t0SmuCXPZCxJlRnWRMgGnuUm8+e2epTBhOg6vSSGmJQorrT5
-        Sf5DQco/OtxR/l+aA2NTSaQ9zA==
-X-Google-Smtp-Source: ABdhPJxP50eTeBITIcRQC6yWdtCxNMHAvn0Wises0b5yFF9JV14XlN/Ry4qvDKlv1dBi9YhOxSAgjA==
-X-Received: by 2002:a62:7bcf:: with SMTP id w198mr1569326pfc.90.1597914866996;
-        Thu, 20 Aug 2020 02:14:26 -0700 (PDT)
-Received: from drinkcat2.tpe.corp.google.com ([2401:fa00:1:b:7220:84ff:fe09:41dc])
-        by smtp.gmail.com with ESMTPSA id o15sm1954448pfu.167.2020.08.20.02.14.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 02:14:26 -0700 (PDT)
-From:   Nicolas Boichat <drinkcat@chromium.org>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Nicolas Boichat <drinkcat@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Subject: [PATCH v4 3/3] media: atomisp: Only use trace_printk if allowed
-Date:   Thu, 20 Aug 2020 17:14:12 +0800
-Message-Id: <20200820170951.v4.3.I066d89f39023956c47fb0a42edf196b3950ffbf7@changeid>
-X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
-In-Reply-To: <20200820170951.v4.1.Ia54fe801f246a0b0aee36fb1f3bfb0922a8842b0@changeid>
-References: <20200820170951.v4.1.Ia54fe801f246a0b0aee36fb1f3bfb0922a8842b0@changeid>
+        Thu, 20 Aug 2020 05:15:15 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD652C061387;
+        Thu, 20 Aug 2020 02:15:14 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BXJrm56R0z9sR4;
+        Thu, 20 Aug 2020 19:15:04 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1597914906;
+        bh=Dv9vUBhSxsnmV3d3q+uzCLLaquUdA8Kpp/gZoa4RjJE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gQYrI0Lt52lfmhYAST+7UHE3pqw+v57FhBC6G82IbfDWZR6Xh7d6XXd44q0WB4Gw1
+         w2VP8xN2RUwZgy0G/byoJF/qQDyrjJDmJiU0MJUgxhmOXN4twv640qZ6zu/suOumzv
+         v0EL6DZ9ztljIu5qxG3bsrVnqiZVYAwsIqNEoBF+iDOhNkIXcF31yHgH99AsnqiNAD
+         d5zMcJNa0068hfimIrfZf7Erd85KqyCYX8a2suZEb0nIvU2O50kmrpSDUYNpdZDHps
+         +PfFnDpC4N+a0aVtqsNP1wVspnWESm36/S5Mtir/1Fz74xervzvJ0Z+KnK3Nx97X1I
+         LIXSu7dicBdDA==
+Date:   Thu, 20 Aug 2020 19:15:02 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Borislav Petkov <bp@suse.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Luca Stefani <luca.stefani.ge1@gmail.com>
+Subject: Re: linux-next: Fixes tag needs some work in the tip tree
+Message-ID: <20200820191502.1df900be@canb.auug.org.au>
+In-Reply-To: <20200820082149.GB17365@zn.tnic>
+References: <20200820161239.25a9b3f4@canb.auug.org.au>
+        <20200820082149.GB17365@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/ln/hvUN3hVQKJYpGK=y1pWs";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We added a config option CONFIG_TRACING_ALLOW_PRINTK to make sure
-that no extra trace_printk gets added to the kernel, let's use
-that in this driver to guard the trace_printk call.
+--Sig_/ln/hvUN3hVQKJYpGK=y1pWs
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
----
+Hi Borislav,
 
-Technically, we could only initialize the trace_printk buffers
-when the print env is switched, to avoid the build error and
-unconditional boot-time warning, but I assume this printing
-framework will eventually get removed when the driver moves out
-of staging?
+On Thu, 20 Aug 2020 10:21:49 +0200 Borislav Petkov <bp@suse.de> wrote:
+>
+> On Thu, Aug 20, 2020 at 04:12:39PM +1000, Stephen Rothwell wrote:
+> >=20
+> > Fixes tag
+> >=20
+> >   Fixes: 9554bfe403nd ("x86/mce: Convert the CEC to use the MCE notifie=
+r") =20
+>=20
+> Hmm, this came from the original patch submission:
+>=20
+> https://lkml.kernel.org/r/20200805095708.83939-1-luca.stefani.ge1@gmail.c=
+om
+>=20
+> the 'n' is already there.
 
- drivers/staging/media/atomisp/pci/atomisp_compat_css20.c | 4 ++++
- 1 file changed, 4 insertions(+)
+yeah, I wish people would just generate these lines:
 
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
-index 1b2b2c68025b4cc..020519dca1324ab 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
-@@ -165,11 +165,13 @@ static int atomisp_css2_dbg_print(const char *fmt, va_list args)
- 	return 0;
- }
- 
-+#ifdef CONFIG_TRACING_ALLOW_PRINTK
- static int atomisp_css2_dbg_ftrace_print(const char *fmt, va_list args)
- {
- 	ftrace_vprintk(fmt, args);
- 	return 0;
- }
-+#endif
- 
- static int atomisp_css2_err_print(const char *fmt, va_list args)
- {
-@@ -865,9 +867,11 @@ static inline int __set_css_print_env(struct atomisp_device *isp, int opt)
- 
- 	if (opt == 0)
- 		isp->css_env.isp_css_env.print_env.debug_print = NULL;
-+#ifdef CONFIG_TRACING_ALLOW_PRINTK
- 	else if (opt == 1)
- 		isp->css_env.isp_css_env.print_env.debug_print =
- 		    atomisp_css2_dbg_ftrace_print;
-+#endif
- 	else if (opt == 2)
- 		isp->css_env.isp_css_env.print_env.debug_print =
- 		    atomisp_css2_dbg_print;
--- 
-2.28.0.220.ged08abb693-goog
+git log -1 --format=3D'Fixes: %h ("%s")' <commit-id>
 
+> > has these problem(s):
+> >=20
+> >   - The SHA1 is not all hex =20
+>=20
+> If your script which verifies that is in python, per chance, you could
+> give it to me so that I can add it to my patch massaging script. :-)
+
+Is a shell script OK?
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/ln/hvUN3hVQKJYpGK=y1pWs
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8+PxYACgkQAVBC80lX
+0GySsggAmP2Kt8kxBQXsj3ObEgFbPyGXjk6PB8j1ejcFIa2g6CNrDqAzhcnYvkSU
+kH8h5XCsk4xkF/lNaLsMHeT1za3X0RjV2yy5rcd3b4GSmYOC3MGWZEMq7KVoBEld
+VJiNQQYRwgpvbWf/MGRHcAau4wa4ONA+SbJuT5VLL9Ogp4tKMOODZ56nsxSJ0NWJ
+4ABG4UXHkCk3/SKbsSjlxzW1gvwjYivNihVAoU4wIW9s3VFpMn+GLEd5pgxYjAo5
+K423vlOD3jc5J8A9Jqk4JU2B0LLBxrWi3/2ZVnytyei/KL0Q7xrmVkSP0JUVJsVe
+ZnHg/srs5RqtOKPFsCzYjGiEsBvfrw==
+=Z9DU
+-----END PGP SIGNATURE-----
+
+--Sig_/ln/hvUN3hVQKJYpGK=y1pWs--
