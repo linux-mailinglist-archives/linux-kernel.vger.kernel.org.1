@@ -2,217 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D80324D8A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 411F324D8B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728137AbgHUPdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 11:33:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727116AbgHUPd3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 11:33:29 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9BB6F2063A;
-        Fri, 21 Aug 2020 15:33:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598024008;
-        bh=XSyUhUqo+Gos2SbGp1YxB7LP27cXAxleYAB8qOo6Z+c=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=rhgqW/Px3ewREPr6Shn75ttm9S6U+BsOszbR5E3byLWimS0DkbjrJWthRmRUJ7ih5
-         hbVYkq5UereKHbEkQ6EgHnUz+F2wlQDl8gUiAuzXIb6H4UJ9U6eDPwMFoRpjdEpKtg
-         4NOLrIcAVm/ETiiy8mEAAC3ItX9gbmJFbOyuw6/0=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 6B7CD35227D4; Fri, 21 Aug 2020 08:33:28 -0700 (PDT)
-Date:   Fri, 21 Aug 2020 08:33:28 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: =?utf-8?B?5Zue5aSN?= =?utf-8?Q?=3A?= [PATCH] rcu: shrink each
- possible cpu krcp
-Message-ID: <20200821153328.GH2855@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <CAEXW_YQu9MAV-3ym0EFB0NmomWkLsBtZCT9sShnzo+vv=8sLgg@mail.gmail.com>
- <20200818210355.GM27891@paulmck-ThinkPad-P72>
- <20200818215511.GA2538@pc636>
- <20200818220245.GO27891@paulmck-ThinkPad-P72>
- <CAEXW_YRZ6RM90+aYA0JQ1war0n-D0M4peXJZE2_Uqf07xvF+5g@mail.gmail.com>
- <BYAPR11MB26323E6D956BA22DFE610A13FF5D0@BYAPR11MB2632.namprd11.prod.outlook.com>
- <20200819135654.GB3875610@google.com>
- <20200819152159.GX27891@paulmck-ThinkPad-P72>
- <20200819155808.GA8817@pc636>
- <20200820223957.GB120898@google.com>
+        id S1728141AbgHUPfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 11:35:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727882AbgHUPfi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 11:35:38 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF58CC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 08:35:37 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id bh1so1021844plb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 08:35:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KlcOztWWQPRGdO3GJ4i5K8dX5Ri0O0Yjm2p6XeAjX5c=;
+        b=K4xOshzvJr7aCXXwH4DAQRpEXUsdEQHd4W+925408O95RPmPvEx9o1Qfb37SCB1Gho
+         oJJeNwvIk992gMb+wjm4aBzLv0AwDdFpQqg6Sx9dh4vQgCXUjAupJMC3PN+v7fFX+V4c
+         9ww3RJgSeDEiwb0n5vIcXlfAHk3l6xWnlYojk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KlcOztWWQPRGdO3GJ4i5K8dX5Ri0O0Yjm2p6XeAjX5c=;
+        b=UhlOr2KH7sJeqTwdwS/E75/FCCqpIYRq2btfcmWmxYLb1/A8toEl5arfVCDVTUL09p
+         WHNFlLu1Q2ox1RInK0ST9TDcMMWlc17lFcloRqq/hTMp6MycX6JZx0GLFatBv17C2KOm
+         ZHZ7aBkHUmzO3cBTQ/zta2PvZkOT3gDrdbQSdBgEhJJ77zg1av9R4cSQTE2abQJaRECd
+         +uzrPQ0NsZiLZsOLVgaSp4h34qP/aM3lgsWzMRlkZ3Pro+NTNPjjpE/swOB+5NpTM1gg
+         bb2VNxep3VgzSEdtFJkJfP9ZfOy7b6u17YFELtv6r4xtGf8bT+kKGeQoeQNxF87WNS+2
+         AC0w==
+X-Gm-Message-State: AOAM531GZRHv2vrHx+cpd4Uarrt+wvWMSn3Ddx559CEG9XPSA6zFTxX+
+        7Zj319Bvdi/qo7jser8PwiMCbQ==
+X-Google-Smtp-Source: ABdhPJwZXxjhNDGxHTeRfEsG36o7sm8xNgtpV6HgMuiEo8kAPWL1TyuKck2o9/PPo4gkANxrXbSxMQ==
+X-Received: by 2002:a17:90a:5b:: with SMTP id 27mr2784374pjb.188.1598024135637;
+        Fri, 21 Aug 2020 08:35:35 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id u8sm2200720pjy.35.2020.08.21.08.35.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Aug 2020 08:35:35 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, robdclark@chromium.org,
+        Douglas Anderson <dianders@chromium.org>,
+        David Airlie <airlied@linux.ie>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] dt-bindings: display: simple: Add KD116N21-30NV-A010 compatible
+Date:   Fri, 21 Aug 2020 08:35:14 -0700
+Message-Id: <20200821083454.1.I61e6248813d797c9eeebfbb7019c713aa71c4419@changeid>
+X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200820223957.GB120898@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 06:39:57PM -0400, Joel Fernandes wrote:
-> On Wed, Aug 19, 2020 at 05:58:08PM +0200, Uladzislau Rezki wrote:
-> > On Wed, Aug 19, 2020 at 08:21:59AM -0700, Paul E. McKenney wrote:
-> > > On Wed, Aug 19, 2020 at 09:56:54AM -0400, Joel Fernandes wrote:
-> > > > On Wed, Aug 19, 2020 at 03:00:55AM +0000, Zhang, Qiang wrote:
-> > > > > 
-> > > > > 
-> > > > > ________________________________________
-> > > > > 发件人: linux-kernel-owner@vger.kernel.org <linux-kernel-owner@vger.kernel.org> 代表 Joel Fernandes <joel@joelfernandes.org>
-> > > > > 发送时间: 2020年8月19日 8:04
-> > > > > 收件人: Paul E. McKenney
-> > > > > 抄送: Uladzislau Rezki; Zhang, Qiang; Josh Triplett; Steven Rostedt; Mathieu Desnoyers; Lai Jiangshan; rcu; LKML
-> > > > > 主题: Re: [PATCH] rcu: shrink each possible cpu krcp
-> > > > > 
-> > > > > On Tue, Aug 18, 2020 at 6:02 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > 
-> > > > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > > > > index b8ccd7b5af82..6decb9ad2421 100644
-> > > > > > > --- a/kernel/rcu/tree.c
-> > > > > > > +++ b/kernel/rcu/tree.c
-> > > > > > > @@ -2336,10 +2336,15 @@ int rcutree_dead_cpu(unsigned int cpu)
-> > > > > > >  {
-> > > > > > >         struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-> > > > > > >         struct rcu_node *rnp = rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
-> > > > > > > +       struct kfree_rcu_cpu *krcp;
-> > > > > > >
-> > > > > > >         if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
-> > > > > > >                 return 0;
-> > > > > > >
-> > > > > > > +       /* Drain the kcrp of this CPU. IRQs should be disabled? */
-> > > > > > > +       krcp = this_cpu_ptr(&krc)
-> > > > > > > +       schedule_delayed_work(&krcp->monitor_work, 0);
-> > > > > > > +
-> > > > > > >
-> > > > > > > A cpu can be offlined and its krp will be stuck until a shrinker is involved.
-> > > > > > > Maybe be never.
-> > > > > >
-> > > > > > Does the same apply to its kmalloc() per-CPU caches?  If so, I have a
-> > > > > > hard time getting too worried about it.  ;-)
-> > > > > 
-> > > > > >Looking at slab_offline_cpu() , that calls cancel_delayed_work_sync()
-> > > > > >on the cache reaper who's job is to flush the per-cpu caches. So I
-> > > > > >believe during CPU offlining, the per-cpu slab caches are flushed.
-> > > > > >
-> > > > > >thanks,
-> > > > > >
-> > > > >  >- Joel
-> > > > > 
-> > > > > When cpu going offline, the slub or slab only flush free objects in offline
-> > > > > cpu cache,  put these free objects in node list  or return buddy system,
-> > > > > for those who are still in use, they still stay offline cpu cache.
-> > > > > 
-> > > > > If we want clean per-cpu "krcp" objects when cpu going offline.  we should
-> > > > > free "krcp" cache objects in "rcutree_offline_cpu", this func be called
-> > > > > before other rcu cpu offline func. and then "rcutree_offline_cpu" will be
-> > > > > called in "cpuhp/%u" per-cpu thread.
-> > > > > 
-> > > > 
-> > > > Could you please wrap text properly when you post to mailing list, thanks. I
-> > > > fixed it for you above.
-> > > > 
-> > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > > index 8ce77d9ac716..1812d4a1ac1b 100644
-> > > > > --- a/kernel/rcu/tree.c
-> > > > > +++ b/kernel/rcu/tree.c
-> > > > > @@ -3959,6 +3959,7 @@ int rcutree_offline_cpu(unsigned int cpu)
-> > > > >         unsigned long flags;
-> > > > >         struct rcu_data *rdp;
-> > > > >         struct rcu_node *rnp;
-> > > > > +       struct kfree_rcu_cpu *krcp;
-> > > > >  
-> > > > >         rdp = per_cpu_ptr(&rcu_data, cpu);
-> > > > >         rnp = rdp->mynode;
-> > > > > @@ -3970,6 +3971,11 @@ int rcutree_offline_cpu(unsigned int cpu)
-> > > > >  
-> > > > >         // nohz_full CPUs need the tick for stop-machine to work quickly
-> > > > >         tick_dep_set(TICK_DEP_BIT_RCU);
-> > > > > +
-> > > > > +       krcp = per_cpu_ptr(&krc, cpu);
-> > > > > +       raw_spin_lock_irqsave(&krcp->lock, flags);
-> > > > > +       schedule_delayed_work(&krcp->monitor_work, 0);
-> > > > > +       raw_spin_unlock_irqrestore(&krcp->lock, flags);
-> > > > >         return 0;
-> > > > 
-> > > > I realized the above is not good enough for what this is trying to do. Unlike
-> > > > the slab, the new kfree_rcu objects cannot always be drained / submitted to
-> > > > RCU because the previous batch may still be waiting for a grace period. So
-> > > > the above code could very well return with the yet-to-be-submitted kfree_rcu
-> > > > objects still in the cache.
-> > > > 
-> > > > One option is to spin-wait here for monitor_todo to be false and keep calling
-> > > > kfree_rcu_drain_unlock() till then.
-> > > > 
-> > > > But then that's not good enough either, because if new objects are queued
-> > > > when interrupts are enabled in the CPU offline path, then the cache will get
-> > > > new objects after the previous set was drained. Further, spin waiting may
-> > > > introduce deadlocks.
-> > > > 
-> > > > Another option is to switch the kfree_rcu() path to non-batching (so new
-> > > > objects cannot be cached in the offline path and are submitted directly to
-> > > > RCU), wait for a GP and then submit the work. But then not sure if 1-argument
-> > > > kfree_rcu() will like that.
-> > > 
-> > > Or spawn a workqueue that does something like this:
-> > > 
-> > > 1.	Get any pending kvfree_rcu() requests sent off to RCU.
-> > > 
-> > > 2.	Do an rcu_barrier().
-> > > 
-> > > 3.	Do the cleanup actions.
-> > > 
-> > > > Probably Qian's original fix for for_each_possible_cpus() is good enough for
-> > > > the shrinker case, and then we can tackle the hotplug one.
-> > > 
-> > > It might take some experimentation to find the best solution.
-> > > 
-> > 
-> > <snip>
-> > static void do_idle(void)
-> > {
-> > ...
-> >  while (!need_resched()) {
-> >   rmb();
-> > 
-> >   local_irq_disable();
-> > 
-> >   if (cpu_is_offline(cpu)) {
-> >    tick_nohz_idle_stop_tick();
-> >    cpuhp_report_idle_dead();
-> >        -> cpuhp_report_idle_dead(void)
-> >               -> rcu_report_dead(smp_processor_id());
-> >    arch_cpu_idle_dead();
-> >   }
-> > ...
-> > <snip>
-> > 
-> > We have the rcu_report_dead() callback. When it gets called IRQs are off
-> > and CPU that is in question is offline.
-> > 
-> >     krcp = per_cpu_ptr(&krc, cpu);
-> >     raw_spin_lock_irqsave(&krcp->lock, flags);
-> >     krcp->monotro_todo = true;
-> >     schedule_delayed_work(&krcp->monitor_work, 0);
-> >     raw_spin_unlock_irqrestore(&krcp->lock, flags);
-> > 
-> > If there is a batch that is in progress, the job will rearm itself.
-> > But i agree, it requires more experiments.
-> 
-> I chatted with Ulad and we believe the timer and/or (delayed) workqueue will
-> get migrated during the CPU offline path, so it is not an issue.
-> 
-> In this case, Qiang's initial patch suffices to fix the shrinker issue.
+The KD116N21-30NV-A010 is a pretty standard eDP panel.  Add it to the
+list of compatible strings.
 
-As in the patch that is currented in -rcu, correct?
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
-							Thanx, Paul
+ .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+index 47247ace86ac..f2204f17a9dc 100644
+--- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
++++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+@@ -161,6 +161,8 @@ properties:
+       - innolux,n156bge-l21
+         # Innolux Corporation 7.0" WSVGA (1024x600) TFT LCD panel
+       - innolux,zj070na-01p
++        # King & Display KD116N21-30NV-A010 eDP TFT LCD panel
++      - kingdisplay,kd116n21-30nv-a010
+         # Kaohsiung Opto-Electronics Inc. 5.7" QVGA (320 x 240) TFT LCD panel
+       - koe,tx14d24vm1bpa
+         # Kaohsiung Opto-Electronics Inc. 10.1" WUXGA (1920 x 1200) LVDS TFT LCD panel
+-- 
+2.28.0.297.g1956fa8f8d-goog
+
