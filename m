@@ -2,72 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D7424D4DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 14:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0577124D4E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 14:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728654AbgHUMVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 08:21:51 -0400
-Received: from mga01.intel.com ([192.55.52.88]:7993 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728529AbgHUMVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 08:21:04 -0400
-IronPort-SDR: 0yu1DH6/7KglHN4KqAt7TbhJvlh5/sAPn8D+TIDPzbLuYGESkXM3q4CNHezAdT+9bcdYz9+guy
- R1cs0gfo9kdA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9719"; a="173568920"
-X-IronPort-AV: E=Sophos;i="5.76,335,1592895600"; 
-   d="scan'208";a="173568920"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2020 05:21:03 -0700
-IronPort-SDR: h5ov/Vxs9uCKdSZAfTvh5kcVy0zh4tPuWg5CPQc1T2djfWE0tQ1f8+7RhonZ4e+Rcb9qdhVBr0
- fd7yFeB7O5+w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,335,1592895600"; 
-   d="scan'208";a="321243630"
-Received: from lkp-server01.sh.intel.com (HELO 91ed66e1ca04) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 21 Aug 2020 05:21:00 -0700
-Received: from kbuild by 91ed66e1ca04 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1k962W-00010i-0X; Fri, 21 Aug 2020 12:21:00 +0000
-Date:   Fri, 21 Aug 2020 20:20:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Wang <jasowang@redhat.com>, mst@redhat.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, rob.miller@broadcom.com,
-        lingshan.zhu@intel.com, eperezma@redhat.com, lulu@redhat.com,
-        shahafs@mellanox.com, hanand@xilinx.com, mhabets@solarflare.com
-Subject: [RFC PATCH] vdpa_sim: vdpasim_get_iova_range() can be static
-Message-ID: <20200821122051.GA60229@ff58d72860ac>
-References: <20200821092813.8952-4-jasowang@redhat.com>
+        id S1728678AbgHUMW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 08:22:26 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:35992 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727125AbgHUMWM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 08:22:12 -0400
+Received: by mail-ot1-f65.google.com with SMTP id x24so1417151otp.3;
+        Fri, 21 Aug 2020 05:22:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C3Cty3iDMhmI0uvrBWWtrlYDNSJRFMglnzj/pu0/3wk=;
+        b=ZTTPLhK4P8/GbUPDmldztluU5rSWDINTVesb+HsERp2YghoZgJkxWHZKObHZaQd/Dk
+         dpXP2nIqQy/Fp/kYC2bmS0xpY6urbsT9l1xHKIdd6zqvFE55HiXyLwcS2wpNjqCiQ341
+         6CQ5ckpFScy9eoZM7+CJc1afjrflCjTBuayt3+TLkTQzweGjlvyGJEznUNOHzErGxCVG
+         n4t6A1B0zxoPGqDvYVfgZeR/gGMRdszQuJI7LwYLKymrgOGbBeqJ7a71V26MUhJRr96L
+         V4Su7NPUssO2IVQ+DNM5a4ABdEc2GAn88OflT1K5vEnKMVTANVWUUrXSpx1aLkkx1ty0
+         KN3w==
+X-Gm-Message-State: AOAM532hfW8xROOXAjk47vD/71+37IImb+fcPuzyKIWF64smtNbTZySq
+        7isafbMkoYu9Idm35JMUs86L027DIJz09L5ZecY=
+X-Google-Smtp-Source: ABdhPJz335LYEtU3qA3RAE7Q/2Bs2XPPn6AvJ6wW0UmyVT4uzHNSWs1F6pT0PADuguTj8fHA6jFZByti9tHIPjQyBBM=
+X-Received: by 2002:a05:6830:1b79:: with SMTP id d25mr1590236ote.107.1598012531780;
+ Fri, 21 Aug 2020 05:22:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200821092813.8952-4-jasowang@redhat.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200814173037.17822-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20200814173037.17822-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200814173037.17822-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 21 Aug 2020 14:22:00 +0200
+Message-ID: <CAMuHMdWr1METtxzQ3FXG+hqKbykAXUdqwH14HV6+141dEPqnbw@mail.gmail.com>
+Subject: Re: [PATCH 2/5] misc: pci_endpoint_test: Add Device ID for RZ/G2M and
+ RZ/G2N PCIe controllers
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 14, 2020 at 7:33 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add Renesas R8A774A1 and R8A774B1 in pci_device_id table so that
+> pci-epf-test can be used for testing PCIe EP on RZ/G2M and RZ/G2N.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-Signed-off-by: kernel test robot <lkp@intel.com>
----
- vdpa_sim.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-index 89854e17c3c27b..ff6c9fd8d879bd 100644
---- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-@@ -574,7 +574,7 @@ static u32 vdpasim_get_generation(struct vdpa_device *vdpa)
- 	return vdpasim->generation;
- }
- 
--struct vdpa_iova_range vdpasim_get_iova_range(struct vdpa_device *vdpa)
-+static struct vdpa_iova_range vdpasim_get_iova_range(struct vdpa_device *vdpa)
- {
- 	struct vdpa_iova_range range = {
- 		.first = 0ULL,
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
