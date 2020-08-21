@@ -2,64 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0ED24CEEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 09:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FA724CEDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 09:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728146AbgHUHUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 03:20:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33526 "EHLO
+        id S1728101AbgHUHTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 03:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728285AbgHUHSX (ORCPT
+        with ESMTP id S1728240AbgHUHS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 03:18:23 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8065FC0612F2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 00:17:24 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id c15so981779wrs.11
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 00:17:24 -0700 (PDT)
+        Fri, 21 Aug 2020 03:18:28 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96202C0612F6
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 00:17:25 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id c15so981815wrs.11
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 00:17:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=3GcXWK42EOat9gpnv8yfBhBVK1TNbXyjHRD+03gi2Dk=;
-        b=zKIGuyNS9dEpgui3o1oAewVdt7OZLZGMe4NfJiyTtqzGaBaiFU/KqDyDWUPAMxtUhT
-         hrmQQAQAe/ON2srwrzflXkvaBBAP6AFcaSY7svkz+oazdd3o+xdVZlPXvR6m+rkYZzli
-         BVV1p+m6HBVNJxlCnSdqYwVKv70l5WkNoDiR4grhO1LqVYLv1IIDOtwwwVXREwTLfSQj
-         jfO0aeuOLn3k0QTp8Ei+/ntORcg/UHjP3uHxFS6Zn3mN4vaKZQ7yw1l+MStMtNokpFfB
-         FrjyH9aNTzZJCdnU0MwBvVq61+OnYAYpibR1NvR36gN5AlkjOGiguVkkqeVRcjqYnWIn
-         KiQA==
+        bh=ikJrPqLtaYXNecWR7DLDG7Iz5IzAnzmdF64bzAd6wno=;
+        b=Uy9ndG1aCoadDrvykF3vodVZv3Ha9iFVjXPsA3i8oYjvo0l8Gq7q0QToEG4+lZNVYx
+         RUCevn4X3h3KJEjQ4YdlV4Jn+Zoqq1uICmH/b3JBH7BxsNWidjVJZaNvUB0p6Tkes5uq
+         SW9vkChKipu+8P2b1jWgiTAPvXpPywelv9eetzolSy8okZup6sQT6JqndoAhR5SFnLsE
+         skm5LX8p6nnSvPbte4PiGc2OtJgEppTZlAUVIldNxnxhmeIlH/oJXaUT39maHiqdtVB0
+         z88cjcengpbyYlt3NnV12Xiz68I7iUmdsBqHQli9ehfRc+t2UHAUOx+LQ9BFsDG4jDd+
+         JfGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=3GcXWK42EOat9gpnv8yfBhBVK1TNbXyjHRD+03gi2Dk=;
-        b=g/kk0EEagRFlLXFtPJsKN6JdCMbSEI9MWlM1tWUFnPPkP9wVgVntKGrmGe/jZvhipg
-         +FNQ1kSbqcMemVhMrr4trPtcPWE5hLMvP/0yK9iUVrufxtqdaz5EeOLIjBygFU3mHfqC
-         RaGG69lcxsqnFSDqvuhRl3EFlUjliCI3KipmMKNaXrBL5JggrxgDxqS1kcNs8YJ9za+H
-         4RUTWX7RQo6vGUeMlIt47xo5aG3hgDGY+cxfrYEcUmQfpPipgXHSO7+hkx0UTx1QqWhz
-         MHme4h5KzZNjdZvJU1rtScq64FmR4U0c0I7uGYO27rI2oCLNojgc9e/CLjX64zzaJ8YG
-         GKwQ==
-X-Gm-Message-State: AOAM5335QIE7Pzz+dSQpMcqcBpI/WqAFJp49j/LOQTy9DVDWiT3tE67/
-        P3ATqflP29gNUwz+H565w5dNRw==
-X-Google-Smtp-Source: ABdhPJyno6qESJCJyD/bb2OUFMm5wB39EeK0xwRj1yRHwjS8+ZfoYNIIYaKpFzBo/7N0ZNP3x9pv1Q==
-X-Received: by 2002:adf:ba10:: with SMTP id o16mr1424734wrg.100.1597994243109;
-        Fri, 21 Aug 2020 00:17:23 -0700 (PDT)
+        bh=ikJrPqLtaYXNecWR7DLDG7Iz5IzAnzmdF64bzAd6wno=;
+        b=bPRvk3IkyPTGmLZncqLGDeBMmEcTx/i4owxKurPvkfghnAGAq5IEtN2MDqht/UcSMk
+         /obF75N+GoypWQ5vOgo6BEgovou/H6H3wGlylQ81KAWOEPwiNZGzB+FHfP1890VbzkQM
+         5TmvsvawCjtJFGuSWXFFhpXNGSaigv8fDywF9b/OSFQLKjzd0mrj2Rb5HZnZ2fqAUgQs
+         sLzisMaX7bjTsIcWIUqK9pV1S1Y40YY4pmkQzUQ4AaqmxvI5ubG9xI/t8NLSZi8MT/Ny
+         l8WplRBwUbP4EPahuLSKV+vHVHrvrVMTno8g1mOTmKINSmAEtob1sGKnTaQ69tNYqstK
+         PO3w==
+X-Gm-Message-State: AOAM5319Tfg89mJZb1MKbMQqwwOKtG93EW544GdAn0djlVdSJUma+4Q5
+        zJbo1rYEnwXzW0LSSy3RqgF0ZA==
+X-Google-Smtp-Source: ABdhPJzk/E+GxnhTpj4IxYEkR/RBbYesDLOTF2cF6bkxcCYQCm8TFkuxP3b/YnXUju6Mh+c+JMO2Vw==
+X-Received: by 2002:adf:9ec5:: with SMTP id b5mr1336455wrf.190.1597994244313;
+        Fri, 21 Aug 2020 00:17:24 -0700 (PDT)
 Received: from dell.default ([95.149.164.62])
-        by smtp.gmail.com with ESMTPSA id y24sm2667957wmi.17.2020.08.21.00.17.22
+        by smtp.gmail.com with ESMTPSA id y24sm2667957wmi.17.2020.08.21.00.17.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 00:17:22 -0700 (PDT)
+        Fri, 21 Aug 2020 00:17:23 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
 Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
         netdev@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Maya Erez <merez@codeaurora.org>, wil6210@qti.qualcomm.com
-Subject: [PATCH 28/32] wireless: ath: wil6210: txrx_edma: Demote comments which are clearly not kernel-doc
-Date:   Fri, 21 Aug 2020 08:16:40 +0100
-Message-Id: <20200821071644.109970-29-lee.jones@linaro.org>
+        Ping-Ke Shih <pkshih@realtek.com>,
+        zhengbin <zhengbin13@huawei.com>
+Subject: [PATCH 29/32] wireless: realtek: rtl8192c: phy_common: Remove unused variable 'bbvalue'
+Date:   Fri, 21 Aug 2020 08:16:41 +0100
+Message-Id: <20200821071644.109970-30-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200821071644.109970-1-lee.jones@linaro.org>
 References: <20200821071644.109970-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -68,61 +70,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/net/wireless/ath/wil6210/txrx_edma.c:155: warning: Function parameter or member 'wil' not described in 'wil_ring_alloc_skb_edma'
- drivers/net/wireless/ath/wil6210/txrx_edma.c:155: warning: Function parameter or member 'ring' not described in 'wil_ring_alloc_skb_edma'
- drivers/net/wireless/ath/wil6210/txrx_edma.c:155: warning: Function parameter or member 'i' not described in 'wil_ring_alloc_skb_edma'
- drivers/net/wireless/ath/wil6210/txrx_edma.c:1161: warning: Function parameter or member 'wil' not described in 'wil_tx_sring_handler'
- drivers/net/wireless/ath/wil6210/txrx_edma.c:1161: warning: Function parameter or member 'sring' not described in 'wil_tx_sring_handler'
- drivers/net/wireless/ath/wil6210/txrx_edma.c:1328: warning: Function parameter or member 'd' not described in 'wil_tx_desc_offload_setup_tso_edma'
- drivers/net/wireless/ath/wil6210/txrx_edma.c:1328: warning: Function parameter or member 'tso_desc_type' not described in 'wil_tx_desc_offload_setup_tso_edma'
- drivers/net/wireless/ath/wil6210/txrx_edma.c:1328: warning: Function parameter or member 'is_ipv4' not described in 'wil_tx_desc_offload_setup_tso_edma'
- drivers/net/wireless/ath/wil6210/txrx_edma.c:1328: warning: Function parameter or member 'tcp_hdr_len' not described in 'wil_tx_desc_offload_setup_tso_edma'
- drivers/net/wireless/ath/wil6210/txrx_edma.c:1328: warning: Function parameter or member 'skb_net_hdr_len' not described in 'wil_tx_desc_offload_setup_tso_edma'
- drivers/net/wireless/ath/wil6210/txrx_edma.c:1328: warning: Function parameter or member 'mss' not described in 'wil_tx_desc_offload_setup_tso_edma'
+ drivers/net/wireless/realtek/rtlwifi/rtl8192c/phy_common.c: In function ‘_rtl92c_phy_iq_calibrate’:
+ drivers/net/wireless/realtek/rtlwifi/rtl8192c/phy_common.c:1223:6: warning: variable ‘bbvalue’ set but not used [-Wunused-but-set-variable]
 
-Cc: Maya Erez <merez@codeaurora.org>
+Cc: Ping-Ke Shih <pkshih@realtek.com>
 Cc: Kalle Valo <kvalo@codeaurora.org>
 Cc: "David S. Miller" <davem@davemloft.net>
 Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: zhengbin <zhengbin13@huawei.com>
 Cc: linux-wireless@vger.kernel.org
-Cc: wil6210@qti.qualcomm.com
 Cc: netdev@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/net/wireless/ath/wil6210/txrx_edma.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/wireless/realtek/rtlwifi/rtl8192c/phy_common.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/wil6210/txrx_edma.c b/drivers/net/wireless/ath/wil6210/txrx_edma.c
-index 7bfe867c7509e..1eb1a309a0264 100644
---- a/drivers/net/wireless/ath/wil6210/txrx_edma.c
-+++ b/drivers/net/wireless/ath/wil6210/txrx_edma.c
-@@ -147,7 +147,7 @@ static int wil_tx_init_edma(struct wil6210_priv *wil)
- 	return rc;
- }
+diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192c/phy_common.c b/drivers/net/wireless/realtek/rtlwifi/rtl8192c/phy_common.c
+index 661249d618c09..70706d51805da 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/rtl8192c/phy_common.c
++++ b/drivers/net/wireless/realtek/rtlwifi/rtl8192c/phy_common.c
+@@ -1220,10 +1220,9 @@ static void _rtl92c_phy_iq_calibrate(struct ieee80211_hw *hw,
+ 		0x522, 0x550, 0x551, 0x040
+ 	};
+ 	const u32 retrycount = 2;
+-	u32 bbvalue;
  
--/**
-+/*
-  * Allocate one skb for Rx descriptor RING
-  */
- static int wil_ring_alloc_skb_edma(struct wil6210_priv *wil,
-@@ -1152,7 +1152,7 @@ wil_get_next_tx_status_msg(struct wil_status_ring *sring, u8 *dr_bit,
- 	*msg = *_msg;
- }
+ 	if (t == 0) {
+-		bbvalue = rtl_get_bbreg(hw, 0x800, MASKDWORD);
++		rtl_get_bbreg(hw, 0x800, MASKDWORD);
  
--/**
-+/*
-  * Clean up transmitted skb's from the Tx descriptor RING.
-  * Return number of descriptors cleared.
-  */
-@@ -1314,7 +1314,7 @@ int wil_tx_sring_handler(struct wil6210_priv *wil,
- 	return desc_cnt;
- }
- 
--/**
-+/*
-  * Sets the descriptor @d up for csum and/or TSO offloading. The corresponding
-  * @skb is used to obtain the protocol and headers length.
-  * @tso_desc_type is a descriptor type for TSO: 0 - a header, 1 - first data,
+ 		_rtl92c_phy_save_adda_registers(hw, adda_reg,
+ 						rtlphy->adda_backup, 16);
 -- 
 2.25.1
 
