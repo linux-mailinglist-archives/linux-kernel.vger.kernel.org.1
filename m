@@ -2,113 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D7524DFFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B79D24DFFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgHUSwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 14:52:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56884 "EHLO
+        id S1726752AbgHUSxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 14:53:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725768AbgHUSwa (ORCPT
+        with ESMTP id S1726118AbgHUSxk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 14:52:30 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908E9C061573
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:52:29 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id l204so2384167oib.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:52:29 -0700 (PDT)
+        Fri, 21 Aug 2020 14:53:40 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48576C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:53:40 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id v22so1933480qtq.8
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:53:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=+6DnWkoLk+ZcWADUSKaqJDpW6JCuqaTSy9tUwMI9O2w=;
-        b=aGXz8e3KswugP5GdR0vdCXXDw44nXVvDw3Ox2WWqUC8VUshHuyEKVgZh3+p5PZ9tH0
-         XRUihzqm5+K18Y/ujqwjzvvE25NlcmmFxb1yGwvyHuKvBiLn4xvCKuz2skfjsffDjf5n
-         pQaLiU4UAGCjuK85egVXwzbs7afm+X4kcOO1/K2V+naWNWrDa6kFBbx/hqFmmXTA2DlS
-         kFdk2RyoKj0VJ6O92iuVTjhyiGoIan5IhS1tQLY4Zw9mW9itF7cvZgsdPncy2bRXrZPD
-         /kldhNj6iIXsWOi/F0V2coq5RPTgSk5PwXH65pruE4H2Ejnb4Xr9oSgG/rh2D/eQOR//
-         nSvQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6fEk5o+JtGsEMi+t1XipTCOzTB4EYy5u5pAnjhPn+tc=;
+        b=IHn3PdrjjkxPkH4x22lOEh8mz7SNlFAtCTdUqXGkJQNcr2zYGRLUIhWPChaEStztrQ
+         fC/X4a4IPpXC+NY6PV3e13wwGSXbSutrgBvEH73X2uTEg6Xexsr19AGU9QjZhTNFNv9x
+         NdqMYitYDpykv2AWPTiK4bJrpYsjuc4oSaSL9WWNnMA3QzMNEwiRbL44QUpyJpuBnP5d
+         xJdHOFyVMWGVxmdu0QhU8ph4AOeofUo9QO2a8SJma2sX6/7ZSpMj1KUYJDrFphbiyCtK
+         qD+CYmbFsLahWwV05hIQgi6XNJ+eYkuoJBqWoH2lTf1YqXyOjVnj6GpNSzTI3//xx9tY
+         pl+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=+6DnWkoLk+ZcWADUSKaqJDpW6JCuqaTSy9tUwMI9O2w=;
-        b=BaFLx+rz4U710TYLpG4LLSFVU0Yl+eUP1w1IdaG0teJqN6TC1eO9vMAjnv9YSPAFAO
-         TH9GUV7DG+c9Hxf4IcEqBiAHtdftDQVpk9XlbbgRaKWb4GNNNWLUZ+JFzW9hWBAghCOV
-         No0yWmLnfeugVIc5kfkVyJBKXCFWuQ/I3NueUF6SuBF5GmCFO/jTreF0Rog0ht4+RtMC
-         B3i7dpjN7USWsADFQA5TL6tyXXcA011MtTdIvj/Vkj1cupk6MFkmPy69SZzIrqsc4QTC
-         lmzGiPfrwpxNDI1u/ArRiR5MIp5J7MnUZT3fe0AHLHjHP+q0Llt7xrcG6zYKEPmGl47V
-         adsw==
-X-Gm-Message-State: AOAM533XwE6zIWGzL4g8ul4q1n3Krvlu2LSVUVPHmfL5q7k6ORdXz1hD
-        sdNoZyVGEWWnhOT6zoHRyU3xEaUP1+t8dR5OFdY=
-X-Google-Smtp-Source: ABdhPJxz1goSG/agIc35K1V3KcbWbBqRtUPAMhrp/iiqWFHnbZjeeL6K0GICAlpBcnapbikRpo7WnKRkYkbuCv/snVk=
-X-Received: by 2002:aca:724f:: with SMTP id p76mr2621088oic.35.1598035948316;
- Fri, 21 Aug 2020 11:52:28 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6fEk5o+JtGsEMi+t1XipTCOzTB4EYy5u5pAnjhPn+tc=;
+        b=AqJtplJCMqi7OLL7LKL16orneaOoXso5r8J4yO5dN1QfcNdxSc8Ok58CD3QasCzAF1
+         mJWekHRkru1D2xwNdEVMx/t6Q/BUkbB/E0jcxsrmV23O3DxEFfMeuLSxKBr5CiV6o2u5
+         ObzL+ZR4+3v2gexMQVhDCFy46lpbmIlAH8tcxc0nCkiZcdAPV92GAAYZxMcF5FdBYUV1
+         GvdfFuIdWg1Vq4+fDdrSkQHOD82TWbX990/lWSCnhVy/cTTqyE0xA2pCrrd6eBoVwev2
+         dDCK5U9G2PpCTlYVkiQdzkD/k6l1QoSPxV/3kxoKLAep7bNqk3rAjeJO7WaXtl0/sK+q
+         fy4w==
+X-Gm-Message-State: AOAM531xJZazhjG4FbSh+GHBgU/R4gUhI7F1/fUCuhZiZ81TyGwNhd1O
+        jtaKQbQPXL1mEruo5m6Yq9M=
+X-Google-Smtp-Source: ABdhPJxqidkPRdoAqeh12zWutA108nXj9dr2/WKtZ5kYfsIuy56E6pDiDC5ku6o7yafxKR14Hb7DfA==
+X-Received: by 2002:ac8:4117:: with SMTP id q23mr4029550qtl.186.1598036019416;
+        Fri, 21 Aug 2020 11:53:39 -0700 (PDT)
+Received: from localhost.localdomain (cpe-71-65-111-223.cinci.res.rr.com. [71.65.111.223])
+        by smtp.googlemail.com with ESMTPSA id o72sm2468426qka.113.2020.08.21.11.53.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Aug 2020 11:53:38 -0700 (PDT)
+From:   Connor McAdams <conmanx360@gmail.com>
+Cc:     conmanx360@gmail.com, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 00/20] ALSA: hda/ca0132 - Add AE-7 support/Control cleanup.
+Date:   Fri, 21 Aug 2020 14:52:17 -0400
+Message-Id: <20200821185239.26133-1-conmanx360@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20200820212940.Kq1ky-JHH%akpm@linux-foundation.org>
- <20200821172231.GA1444408@localhost.localdomain> <dc2fbc95-8c8a-5613-f4bd-f29328bb695c@infradead.org>
-In-Reply-To: <dc2fbc95-8c8a-5613-f4bd-f29328bb695c@infradead.org>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 21 Aug 2020 20:52:17 +0200
-Message-ID: <CA+icZUVPjw_JMXFA9Y=wUewq6Bi0ATFOX-4dce3mOpVbv9SHXw@mail.gmail.com>
-Subject: Re: make defconfig (Re: + x86-defconfigs-explicitly-unset-config_64bit-in-i386_defconfig.patch
- added to -mm tree)
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-kernel@vger.kernel.org, daniel.diaz@linaro.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 7:27 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 8/21/20 10:22 AM, Alexey Dobriyan wrote:
-> > On Thu, Aug 20, 2020 at 02:29:40PM -0700, akpm@linux-foundation.org wrote:
-> >> Subject: x86/defconfigs: Explicitly unset CONFIG_64BIT in i386_defconfig
-> >>
-> >> A recent refresh of the defconfigs got rid of the following (unset)
-> >> config:
-> >>
-> >>   # CONFIG_64BIT is not set
-> >>
-> >> Innocuous as it seems, when the config file is saved again the
-> >> behavior is changed so that CONFIG_64BIT=y.
-> >>
-> >> Currently,
-> >>
-> >>   $ make i386_defconfig
-> >>   $ grep CONFIG_64BIT .config
-> >>   CONFIG_64BIT=y
-> >>
-> >> whereas previously (and with this patch):
-> >>
-> >>   $ make i386_defconfig
-> >>   $ grep CONFIG_64BIT .config
-> >>   # CONFIG_64BIT is not set
-> >
-> > It is highly, highly, highly advisable to always pass ARCH when dealing
-> > with 32/64-bit archs:
-> >
-> >       +---------------------------------------+
-> >       |       make ARCH=x86_64 defconfig      |
-> >       |       make ARCH=i386 defconfig        |
-> >       +---------------------------------------+
->
-> I certainly always do that and I also avoid
-> ARCH=x86
-> although it is supported/allowed.
->
+This patch series adds support for the Sound Blaster AE-7 along with
+adding new controls and cleaning up the old ones. I have personally
+tested the Recon3D, Recon3Di, Sound Blaster Z/ZxR, and AE-5 cards to
+confirm they work with these patches. Another user has confirmed that
+they work on the AE-7.
 
-Unsure, if this already documented - if not - might be good to document it.
+Connor McAdams (20):
+  ALSA: hda/ca0132 - Cleanup ca0132_mmio_init function.
+  ALSA: hda/ca0132 - Add speaker tuning initialization commands.
+  ALSA: hda/ca0132 - Add surround channel config control.
+  ALSA: hda/ca0132 - Add full-range speaker selection controls.
+  ALSA: hda/ca0132 - Add bass redirection controls.
+  ALSA: hda/ca0132 - Remove surround output selection.
+  ALSA: hda/ca0132 - Clean up ca0132_alt_out_select.
+  ALSA: hda/ca0132 - Add quirk output selection structures.
+  ALSA: hda/ca0132 - Fix Recon3D Center/LFE output.
+  ALSA: hda/ca0132 - Add new quirk ID for SoundBlaster AE-7.
+  ALSA: hda/ca0132 - Add SoundBlaster AE-7 pincfg.
+  ALSA: hda/ca0132 - Set AE-7 bools and select mixer.
+  ALSA: hda/ca0132 - Add ca0132_mmio_init data for SoundBlaster AE-7.
+  ALSA: hda/ca0132 - Add pre-init function for SoundBlaster AE-7.
+  ALSA: hda/ca0132 - Add init data for SoundBlaster AE-7.
+  ALSA: hda/ca0132 - Add DSP setup functions for AE-7.
+  ALSA: hda/ca0132 - Add output selection for SoundBlaster AE-7.
+  ALSA: hda/ca0132 - Add AE-7 microphone selection commands.
+  ALSA: hda/ca0132 - Add AE-7 custom controls.
+  ALSA: hda/ca0132 - Add AE-7 exit commands.
 
-While playing with ClangBuiltLinux issue #194 this was not clear to me.
+ sound/pci/hda/patch_ca0132.c | 1794 +++++++++++++++++++++++++++-------
+ 1 file changed, 1430 insertions(+), 364 deletions(-)
 
-- Sedat -
+-- 
+2.20.1
 
-[1] https://github.com/ClangBuiltLinux/linux/issues/194
-[2] https://github.com/ClangBuiltLinux/linux/issues/194#issuecomment-662433916
-[3] https://github.com/ClangBuiltLinux/linux/issues/194#issuecomment-662613396
-[4] https://github.com/ClangBuiltLinux/linux/issues/194#issuecomment-662620461
