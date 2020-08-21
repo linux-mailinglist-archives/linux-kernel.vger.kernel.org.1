@@ -2,123 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AEC324CB4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 05:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D36F324CB34
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 05:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727868AbgHUDWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 23:22:05 -0400
-Received: from mail-mw2nam10on2045.outbound.protection.outlook.com ([40.107.94.45]:29056
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726844AbgHUDWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 23:22:03 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bDmjPjDmJURMmJSgwWpDmgoQE27vhONFd376kufMeYIl1P/cdfTuudsVyTd1b4c01UAk7YnmnDnPuThzpMXfkOED9Ju6lYGelv13E3Md7VUWTqDYtHQBf/CgD1RSQreoSv2XccdtjAO+YCufOf692Tcs2rGFSKfI1LqvJfhppmHKolUR1BJWhe0Eayj9jSBLmKogHAS62uJj1TwvGs8ycTu90mPvCB1BGr63gSSIitqA+8xxjUM0ZUwXwVnJ6y+YdSZW/VAcimAFt5kAH8AGno9M3oOOH24iiN8CMbxwzS1pyJnvMZPTsHrWz+hAIkv16af/8xZVVBGAJeVxEwrO6g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+mDWivb176KZlW+P9hfOAZZSmv1v9G4MGktWYC18cH4=;
- b=fG7uMaV2ocHwKp0yzsGDTqeiWOJpZZRcoPxiDY7XIfB3PlUvyk4/UNHod1O9oIvvuiGDZoKKLBBd5imukN5B351p6s+68l5TRQi4vNJSUZR/4h9K4CaqDAJnIKCN5PP1gq9dzB/ViYB5/Qy6Dor2l56j2kWR2M0A0MarnKneSp/4wrCaS5DBecANv1Ns1KJkXqWBNH0k88jyo4sE4GK8ue+6kFNVQD4JbPwB7aftkm0EOdwJHYrckcWDIyZgDIIqAB+oHk2rBEw6KLfQc49y0RUWM4mAOVtgJCTm5q4WAUdxIcte8VG84uuBmkxmKYjesGOLRqobo+NxU7TijodprQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+        id S1727797AbgHUDQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 23:16:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727040AbgHUDQX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 23:16:23 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0339C061385;
+        Thu, 20 Aug 2020 20:16:22 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id x6so323097pgx.12;
+        Thu, 20 Aug 2020 20:16:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+mDWivb176KZlW+P9hfOAZZSmv1v9G4MGktWYC18cH4=;
- b=XSbDyjdB7z1finpGKZqjtc+Rfzt60uKncRr50Nnxx3y5vN9zTFFRXIavBvZYdudmJIE5N6wDtBYj4nlglrHctWDWFqqZPLnsOahDybeFLOk0BEuECFwJrFHECuzI19GyR1a3brRW7oIgyc2x4q5Lzqp4Mw7J7iSf5p4ToKH5Z0M=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=synaptics.com;
-Received: from DM6PR03MB4555.namprd03.prod.outlook.com (2603:10b6:5:102::17)
- by DM6PR03MB4617.namprd03.prod.outlook.com (2603:10b6:5:15e::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.25; Fri, 21 Aug
- 2020 03:22:00 +0000
-Received: from DM6PR03MB4555.namprd03.prod.outlook.com
- ([fe80::e494:740f:155:4a38]) by DM6PR03MB4555.namprd03.prod.outlook.com
- ([fe80::e494:740f:155:4a38%7]) with mapi id 15.20.3305.025; Fri, 21 Aug 2020
- 03:22:00 +0000
-Date:   Fri, 21 Aug 2020 11:16:01 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Icenowy Zheng <icenowy@aosc.io>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 07/15] regulator: max1586: Fix W=1 build warning when
- CONFIG_OF=n
-Message-ID: <20200821111601.26243417@xhacker.debian>
-In-Reply-To: <20200821111135.0b958d3a@xhacker.debian>
-References: <20200821111135.0b958d3a@xhacker.debian>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: TY2PR06CA0043.apcprd06.prod.outlook.com
- (2603:1096:404:2e::31) To DM6PR03MB4555.namprd03.prod.outlook.com
- (2603:10b6:5:102::17)
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=zuSfrbRroXjdvycDvIKeih7mu1rrI15reoeLUG4u7xg=;
+        b=MO/bFuRiKH6hf5dJApCZCir/8evOymPRRUSN+uJy3KDAIjWRhxKu+ebYmc2P2q+bCr
+         daLgzJQPaQQZWr2W95guKOrpFvLaQE6scTY00kbhjNVKJKfvHAqxait9qGYLNFbbAmxg
+         utGtWnrOBuYtGQPMb2y6lCDdg1tO308bit4SPmgYxef+gvKzslF5m1H+zRbGNFKi1t0F
+         yU2I4dEntx+5GQjyu/UiaB7Ya8XLBkTV+HoCCQKowT0wRbtVmSAX05olaPYOH0H3doJ8
+         /gnkbBJ5N16n5PWkthfMHcQSasfkFE5s8b4p2I+DVo7Mx6jWeC6Z5/9bZbYpoSwX36ej
+         MXyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=zuSfrbRroXjdvycDvIKeih7mu1rrI15reoeLUG4u7xg=;
+        b=NExE8Qm3lKKHdAI7pc2cFFNGq2XxiAJoWOpgwKJ+bTC7Zvyx1X9FmxrqqVHV8Mksnj
+         2jAwaB9x4amlBVjjefX48zgx/qA9fxyuO+SePMHFIO9eMOi+1lNCPV/ztwMz2hIuwVkC
+         wTds58a4S02qYRjWGV5mBtkXvaQMcoGAhQuhFCzK0ACIPr0A8bZLHfHhsO1KAQBLpB1H
+         VeLMYcIN8cmBMut6chJ+P3dTfOyZXoXqx3ZEikmmumVE9aP3WvwFC8KR97hIElMKv2R3
+         S5w5q3V0iPBRMM6ZtULfBNmANUdbgBkzMjM1QdtT6cwIRbDVgULeUlzoJdkjnWiNN1Vm
+         0KFA==
+X-Gm-Message-State: AOAM530fjA3SPQV1SrVrCsVjuIRBaVizuLO7V8cMz3YTh7k8lLZoarNP
+        r6gcHS0n+hxTfyYph/uc9A==
+X-Google-Smtp-Source: ABdhPJyLLFifq2ZsJQXiLNv6WVOo8gqDR4lttb0FPvu3Js2UMJbg2rwIgy8M5GxbRUDMfeDFF1SMHQ==
+X-Received: by 2002:a63:e747:: with SMTP id j7mr846297pgk.107.1597979782380;
+        Thu, 20 Aug 2020 20:16:22 -0700 (PDT)
+Received: from madhuparna-HP-Notebook ([2402:3a80:cfa:ca54:b051:6744:d734:a674])
+        by smtp.gmail.com with ESMTPSA id y1sm568390pfr.207.2020.08.20.20.16.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 20 Aug 2020 20:16:21 -0700 (PDT)
+From:   Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+X-Google-Original-From: Madhuparna Bhowmik <change_this_user_name@gmail.com>
+Date:   Fri, 21 Aug 2020 08:46:16 +0530
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        madhuparnabhowmik10@gmail.com, dan.j.williams@intel.com,
+        vkoul@kernel.org, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org, andrianov@ispras.ru,
+        ldv-project@linuxtesting.org
+Subject: Re: [PATCH] drivers/dma/dma-jz4780: Fix race condition between probe
+ and irq handler
+Message-ID: <20200821031616.GA7874@madhuparna-HP-Notebook>
+References: <20200816072253.13817-1-madhuparnabhowmik10@gmail.com>
+ <ZM2DFQ.KQQJYLJ02WTD3@crapouillou.net>
+ <e1961c04-e2aa-fe3a-fb84-bb3b33fae5dc@metafoo.de>
+ <VHLDFQ.HR10VPMY1GHD3@crapouillou.net>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 255.255.255.255 (255.255.255.255) by TY2PR06CA0043.apcprd06.prod.outlook.com (2603:1096:404:2e::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24 via Frontend Transport; Fri, 21 Aug 2020 03:21:56 +0000
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-X-Originating-IP: [124.74.246.114]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b05a5f7f-c64a-4e52-01c0-08d845815e09
-X-MS-TrafficTypeDiagnostic: DM6PR03MB4617:
-X-Microsoft-Antispam-PRVS: <DM6PR03MB46179E2E35407DAE7E6E6F88ED5B0@DM6PR03MB4617.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:449;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 99NfYGKVtwnvW1pXHoxAhcMAZszplIQK9ynaOsD7WodjWAGwaviTXgtkJCGyD31oTFaxiqqOY5lYZHSN/KkeAk3kIKhOO3YUoFihYVUbd+xn7FFno09DqRXDJZJfr22G8bT2yeOupYKXia+/aSFYZ1NFRhkxMUSqAzK9uPHBhL2jYU5MxycdMIjYMa6iAUWfFmanynIxewQl+iTD1XO3svzFTZrYY6vNCbNmMamOFAGSEkuM+mE2OCkFeHWBVr9fQnLAdYKSnJIrosAMvyYgFp2XGV9Ba4whUlU304NXR7CyZo1KQKl7QPC9Cm60ohOF+g3Wly23pV4CxB428Yln0V03bZnV0E/mCqcTQ/q/aWOKuOl32sXjnAaHWYHTY0yn
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4555.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(376002)(366004)(39860400002)(346002)(66946007)(478600001)(8936002)(1076003)(7416002)(66556008)(6486002)(52116002)(110011004)(9686003)(4326008)(66476007)(8676002)(6666004)(5660300002)(86362001)(956004)(16576012)(186003)(316002)(4744005)(26005)(110136005)(2906002)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: Us91wlj3sfidAoiROJnIB8YQnbEpvdVISP+OPU0myoRqAZA3C2RIqlVgDWa20dSlMeSIRNvLKB/u3lRBjx5gqevJEIXsmMwmAsrDP6HY/eXlylIUV2HZaIF0Su+wtYn4fN/vt10N+nmQrwhYbAnln6RJSBsiCh+CgiDf8scDuxfr0/awdKwuZ9rgSXtIULs8eKrAZpr6hIEWIzXFNHBpZ+MhrrkmR1k9TakUMWHFUWIcbN3tq+7cjSBJFpPFiQbFgohLTeBdDeXnTIr5GrckY3vYHm/wOuQCFj49QOsX2tHtO7eKgE5litlgEnvy2U1ECEbqydvwyBOEj5uF5tCBUCMOoPxHPfAdgsESR6lVw7JzsWCPWiip9tTgTp20EuYYbA68znBpl7dBslZG+oHvRxRx8STNibPpqf3MeXS1gttYPnG3t+5ygw2BRyFTEZtsgprjZRrzWEqpNy2lL8ViuQ+OaRGUpsBZHw06Uwc2N8FpFpHpYd3XEJNy6WJG0A8yY8zJmki5QnbA3uk8grSi0MrBGj5cto1vEBNWtbFfyGR7uNpAVkWvCxsyamxn3D8DdueZnT0aUbMoouTX0jyYMOdjfngkKYTUKfSGSe3aCgGrDidmg864eIoYpUOfwVPyIYSyZQzqopmPqD9WNSfCmg==
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b05a5f7f-c64a-4e52-01c0-08d845815e09
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4555.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2020 03:22:00.6419
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BeHl/eT55Ue4TZPVMCMR/5BzdZIKjaEgm99McnhHwr3xR9HYqxAaxDWgjed0g3hCm9GtpLHvE4xgJNpZRca1Yg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB4617
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <VHLDFQ.HR10VPMY1GHD3@crapouillou.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix below warning when CONFIG_OF=3Dn:
+On Thu, Aug 20, 2020 at 08:46:43PM +0200, Paul Cercueil wrote:
+>=20
+>=20
+> Le jeu. 20 ao=FBt 2020 =E0 20:23, Lars-Peter Clausen <lars@metafoo.de> a =
+=E9crit :
+> > On 8/20/20 1:59 PM, Paul Cercueil wrote:
+> > > Hi,
+> > >=20
+> > > Le dim. 16 ao=FBt 2020 =E0 12:52, madhuparnabhowmik10@gmail.com a =E9=
+crit
+> > > :
+> > > > From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+> > > >=20
+> > > > In probe IRQ is requested before zchan->id is initialized which
+> > > > can be
+> > > > read in the irq handler. Hence, shift request irq and enable
+> > > > clock after
+> > > > other initializations complete. Here, enable clock part is not
+> > > > part of
+> > > > the race, it is just shifted down after request_irq to keep the
+> > > > error
+> > > > path same as before.
+> > > >=20
+> > > > Found by Linux Driver Verification project (linuxtesting.org).
+> > > >=20
+> > > > Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+> > >=20
+> > > I don't think there is a race at all, the interrupt handler won't be
+> > > =7Fcalled before the DMA is registered.
+> > >=20
+> > From a purely formal verification perspective there is a bug. The
+> > interrupt could fire if i.e. the hardware is buggy or something. In
+> > general it is a good idea to not request the IRQ until all the resources
+> > that are used in the interrupt handler are properly set up. Even if you
+> > know that in practice the interrupt will never fire this early.
+> >=20
+>
+> Fair enough, I'm fine with that, but the patch should be reworked so that
+> the clk_prepare_enable() call is not moved.
+>
 
-drivers/regulator/max1586.c:204:34: warning: =E2=80=98max1586_of_match=E2=
-=80=99 defined but not used [-Wunused-const-variable=3D]
-  204 | static const struct of_device_id max1586_of_match[] =3D {
-      |                                  ^~~~~~~~~~~~~~~~
+Sure, I will send the v2 of the patch with this change soon.
 
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
----
- drivers/regulator/max1586.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/regulator/max1586.c b/drivers/regulator/max1586.c
-index f8941025780b..d4958394e608 100644
---- a/drivers/regulator/max1586.c
-+++ b/drivers/regulator/max1586.c
-@@ -201,7 +201,7 @@ static int of_get_max1586_platform_data(struct device *=
-dev,
- 	return 0;
- }
-=20
--static const struct of_device_id max1586_of_match[] =3D {
-+static const struct of_device_id __maybe_unused max1586_of_match[] =3D {
- 	{ .compatible =3D "maxim,max1586", },
- 	{},
- };
---=20
-2.28.0
-
+Thanks,
+Madhuparna
+> Cheers,
+> -Paul
+>=20
+>=20
