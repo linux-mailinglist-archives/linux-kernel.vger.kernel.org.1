@@ -2,175 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B1724D1BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 11:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA3B24D1C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 11:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728458AbgHUJwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 05:52:15 -0400
-Received: from mail-eopbgr130058.outbound.protection.outlook.com ([40.107.13.58]:56486
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725855AbgHUJwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 05:52:07 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jB3gFVYqEg4rMs6VvmQ84+2+sb0QDIUAkQflzFT7JDzRGXzC8queVMFXnOxNKlin1nP/mwLrpp8QpswYXbj9cRDMhtsItbq3CYaCf4+9xObeeMhuxSRFWD4OejXBzVi4S7MmUoH+tHcz8YN1Mn1+34EPWD6XgnsbWpEPrSr5FJATwRGHY5poFI8KzuFhoySAv+weuDEjzjUaVA1yTAT0L1bclsxiX+fJhUtaG11l9S4F8zAbgq5aOlpKsZJW1Eh2TodO26jorDm2st/P/OrgVUMKJrMbuBjDtzh7n36LR3hDlTlT8VufWudfyMQk473pUGKm6hVwXIaWkjr7A3khcQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6y40jIdXqSjeJyX4PsUQ9ODdn5bUlDTpJNYivUJSuXI=;
- b=JVMfsm3SRs/Izqk1gIPS1e4jMzSK1yfNSvrTAZLju6phLsSVwNnrgTxI7S9mS+03yvo119dNOAIgVbzR4jFbjR1S8TRkxkOUjzeUCaii1g7gNoxlOIaeoyGypMCD85H9TyFwFhuSUsVZFUoB8seIn8hU5dCHi/O8buElF5xM2H0rJerTqXYsp//TWOGsV2fXGocSjvNnwgGplllMkCKb6uhfs2cVBn8AVgK558oBs/onLLVCgYdhhyIKo/DJBNNgZoC3/qePH+oq2R6tu/eHR8WnvsXIu6/aadD/B8otehMzE702HqqTRrULkOwHVSE0QgnX5w/FqTKmYzS0hH2J0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6y40jIdXqSjeJyX4PsUQ9ODdn5bUlDTpJNYivUJSuXI=;
- b=VDT1FBeOURzIfGzWZtYbITCrgRArGgVdFsT8fHc1iyYWLpHv8aq8KD0TlVIJW+eVQSxZFAnaZx8jU+CNQWwi+/0j6nsnKfrZ49zu2t8qdVasmqbVQw1MW7Y82Odp/wAC5VMxraAZkqfPCnNt9LICS/ts+OhraaXm911dAYwMcPc=
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
- by VI1PR0402MB3711.eurprd04.prod.outlook.com (2603:10a6:803:18::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.20; Fri, 21 Aug
- 2020 09:52:00 +0000
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::ad7f:d95a:5413:a950]) by VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::ad7f:d95a:5413:a950%3]) with mapi id 15.20.3283.027; Fri, 21 Aug 2020
- 09:52:00 +0000
-From:   Robin Gong <yibin.gong@nxp.com>
-To:     Sascha Hauer <s.hauer@pengutronix.de>,
-        Lars-Peter Clausen <lars@metafoo.de>
-CC:     Benjamin Bara - SKIDATA <Benjamin.Bara@skidata.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "timur@kernel.org" <timur@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Richard Leitner - SKIDATA <Richard.Leitner@skidata.com>
-Subject: RE: pcm|dmaengine|imx-sdma race condition on i.MX6
-Thread-Topic: pcm|dmaengine|imx-sdma race condition on i.MX6
-Thread-Index: AQHWcWQbD9eqMlwY2U27XyctTVPmVak3Rd/wgASnXICAA2IfgIABSsWAgAFIBOA=
-Date:   Fri, 21 Aug 2020 09:52:00 +0000
-Message-ID: <VE1PR04MB66386A43E2BCC5B758D1A71A895B0@VE1PR04MB6638.eurprd04.prod.outlook.com>
-References: <20200813112258.GA327172@pcleri>
- <VE1PR04MB6638EE5BDBE2C65FF50B7DB889400@VE1PR04MB6638.eurprd04.prod.outlook.com>
- <61498763c60e488a825e8dd270732b62@skidata.com>
- <16942794-1e03-6da0-b8e5-c82332a217a5@metafoo.de>
- <20200820065221.GF19745@pengutronix.de>
-In-Reply-To: <20200820065221.GF19745@pengutronix.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: pengutronix.de; dkim=none (message not signed)
- header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.67]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 097eb0c9-f049-4500-28cd-08d845b7d9b6
-x-ms-traffictypediagnostic: VI1PR0402MB3711:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR0402MB371166538E756AEADF38C128895B0@VI1PR0402MB3711.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: m6hn9tmks7/tkOwxMbBBNzb8gPsV/7Yiqc3nxENZUkmYccM9jnFboAXjspVYH8oKu0gKdlCdq8k5EpRuTr49UAXq1yBsuYXy2WEa4U2g9zBwK+kRtZGUwgD4TmxRNVXIdDf3PPxaDzM7YZOSCcULarC1EXEaBwOcW5g9CzCTapRF2fjAE6/EZuz03TaABzUcXPO3Dy5jVqqZI6xHNt0b3AiRNZqJbrRGf1nGhEQ+FnmE4n0VQnGxFm68yzotyD/uXUskxsIG2gEicfPrZLlHWdELN9YYr3SaMMGRvDBXpLqUHCXCFFKKYHKxvdiMqJ6p2/QVDgS/7riiyleMvOwTkH6TdLPNWtrrxwpdyJfL74BLqELxERTE8i0TN9FEe4wHDvZQDOWZIVJXzsjtQJijtA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(366004)(376002)(136003)(346002)(9686003)(71200400001)(966005)(8676002)(8936002)(86362001)(478600001)(54906003)(66946007)(4326008)(110136005)(7696005)(5660300002)(316002)(66556008)(66476007)(7416002)(66446008)(64756008)(83380400001)(2906002)(55016002)(186003)(52536014)(76116006)(33656002)(26005)(53546011)(6506007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 9m9kvxJP/MKG3SqF7SYW/hf1CHuUtprmGV+IfeJATDqWwSX3PlyUBvn8WOqYTxUUhdEIXl0Dciyp9dd5sdlz7v384QZwrmofA2Z3Pzassy1o23E3PHS4FdP2fcI4mPSpfaIzGZOYMNkLFxswouqPOyP3z0KmFTQfJzgATcBfWKlv4MUfCrOhLNUEmR5T5IO74elDmLzMmqrlcI9pgCqwNYBzNEjnE4nX2dfng4n1HHT05miEoNPZQbS06z0AJxllDl2n/5+hlFQUjLPVq6U/IBLvcJRxtrTKZ2dTf4U66HgVfyF7H85jRSjFlI22tdk5VCLH7jMizQ7di7QtdusJbmjKCTetKi1RRR7xXq3Mcy4Qx3YSGgd0FmdpmChD3WxdU/baVpC255O6iuBFxFAN8NegOJ7tis12NmhPTsC/Z1AdjE2ouyCkSCi02Hvn4te7YdLHMm8k6U926K6RmXI5OauJXvybKPRpeIGJvpl1Sdb1W4KeQaKZZRsXma13uMh/vze/lgw2nwg0IjkcTrvdtRpICLkc1UaXszsNp8JwzoODIKpluS39aSLwTfB1JGuzOggUkjZZBWFecaZkZ8I162p8pJSVE5IWM96WMFgot7BbHWgitcfG1OtnJwK+vJfEQQVhH6FpQfWkQvdBHrwWGQ==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728540AbgHUJxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 05:53:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727046AbgHUJxY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 05:53:24 -0400
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF958C061386
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 02:53:23 -0700 (PDT)
+Received: by mail-vk1-xa44.google.com with SMTP id i20so287314vkk.2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 02:53:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=mqdF4DU9Fq0gDTPH8UgXtcco5abUWNAad4E1i3Fz1IQ=;
+        b=KU23PN172J+CZc5BbS4Jy6R+NT636uXbvWCWiHVQkmKwkfh/mUK+9arz5mELEsZROX
+         QbjGgFT/Kqd0pkpmOMBfB2CFFFxegUSVY0LlwYmN1t+bOy3VYGr2M8jG34O0ouejEWue
+         3g/KLuLFVSuDbta5+7PtuvkuqS5s15i8hLfwDXo4saverhirNEQC+9dydZNwxWvU4vUr
+         0dMLuWGsaDwZrufPNqgwvRt+NRxCr9Ri3xhwmTakONJoub87FR9WFeEdW7tVHA6MuZj+
+         BZqrWlTBbSZk7kga9Z9hwShW72JPkRm1s2FBTy+zS8HJio8fJ0s4BD7AkQkMhJfdW4HU
+         q4QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=mqdF4DU9Fq0gDTPH8UgXtcco5abUWNAad4E1i3Fz1IQ=;
+        b=CPu1xa3KZzbLRxZg5rJpE/3eitwtfpU4XDRWA5IuR9Z7T7V8MA+yySB3KRqkaZh//2
+         ZOCA36I5fOJms6W/ODp4MWvpbJ5Hwjs4ZbCpRueEJJwa+xTG1Y3qhr2SCPCxlEVHtaHz
+         yaEvydv6bex/SaK8k8uP9mlwt5kfusL+u4EdKYc21F5kI+ZnzR72cgN/OBvYVJiSyHCK
+         dTXBx3B0xPK9VOFUVGdpTMRWiPU6gm7vH6Smry8vXXolDMfy5mc14Jp3VsWAgTcgNOrr
+         kEnbKpO/+1o3e3gSHYZIGntlyBSl821y0cJE34QBo2WnMdvfXFDttlxe83icRUh6lFvO
+         7NaQ==
+X-Gm-Message-State: AOAM5327/vPUNZHvbu7Vw5SwKyfO6uIRT36eOFZ7/tEspptb8tWagN4E
+        jdcGnlTbpZFXRrmLAoTh+n1WOyz7lQNDtjFMHmS9tw==
+X-Google-Smtp-Source: ABdhPJyQEswyIdMCighk/Q8aG0xznm4gyr1xexhr8haTDjldgnUnKYlq10/pu4REc4KPzQ9yhk7lWFMDRxSYAbom6vg=
+X-Received: by 2002:a1f:a256:: with SMTP id l83mr991966vke.78.1598003602721;
+ Fri, 21 Aug 2020 02:53:22 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6638.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 097eb0c9-f049-4500-28cd-08d845b7d9b6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Aug 2020 09:52:00.4542
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8ZU/iO6CvjQ+2nP/PrMxq5fVccSiMqsbS1EVsTGlrpkFfZYbVyl6VHikPNqZNwAy40K1Xpus8X0HphcsnZozew==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3711
+References: <20200820092125.688850368@linuxfoundation.org> <CA+G9fYsxQEnACmjP+CUtBq9P+0nWU_19oG62tpCbKtdcGAStfA@mail.gmail.com>
+ <20200820150848.GA1565072@kroah.com> <CA+G9fYu9r8wfWVLmyMC+bbnCbJH1Zzr7ps_4N0coybYEUenUaw@mail.gmail.com>
+ <CA+G9fYv=aMoHJs2ToyhPyG13qmcN6o26MHW=zKnJwmevyKCo3g@mail.gmail.com>
+In-Reply-To: <CA+G9fYv=aMoHJs2ToyhPyG13qmcN6o26MHW=zKnJwmevyKCo3g@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 21 Aug 2020 15:23:11 +0530
+Message-ID: <CA+G9fYu==XteDhGytOvZ2cPjNB1rddNzfJ435eLxAMuhQKVuOA@mail.gmail.com>
+Subject: Re: [PATCH 4.4 000/149] 4.4.233-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>,
+        Willy Tarreau <w@1wt.eu>, Kees Cook <keescook@chromium.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, danieltimlee@gmail.com,
+        masahiroy@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/08/20 14:52 Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> On Wed, Aug 19, 2020 at 01:08:29PM +0200, Lars-Peter Clausen wrote:
-> > > For the first option, which is potentially more performant, we have
-> > > to leave the atomic PCM context and we are not sure if we are allowed=
- to.
-> > > For the second option, we would have to divide the dma_device
-> > > terminate_all into an atomic sync and an async one, which would
-> > > align with the dmaengine API, giving it the option to ensure terminat=
-ion in
-> an atomic context.
-> > > Based on my understanding, most of them are synchronous anyways, for
-> > > the currently async ones we would have to implement busy waits.
-> > > However, with this approach, we reach the WARN_ON [6] inside of an
-> > > atomic context, indicating we might not do the right thing.
+On Thu, 20 Aug 2020 at 23:26, Naresh Kamboju <naresh.kamboju@linaro.org> wr=
+ote:
+>
+> On Thu, 20 Aug 2020 at 22:09, Naresh Kamboju <naresh.kamboju@linaro.org> =
+wrote:
 > >
-> > I don't know how feasible this is to implement in the SDMA dmaengine
-> driver.
-> > But I think what is should do is to have some flag to indicate if a
-> > terminate is in progress. If a new transfer is issued while terminate
-> > is in progress the transfer should go on a list. Once terminate
-> > finishes it should check the list and start the transfer if there are a=
-ny on the
-> list.
->=20
-> The list is already there in form of the vchan helpers the driver uses.
-Seems Lars major concern is on the race condition between next descriptor
-and sdma_channel_terminate_work which free the last terminated descriptor,
-not the ability of vchan to support multi descriptors. But anyway, I think =
-we
-should take care vchan_get_all_descriptors to free descriptors during termi=
-nate
-phase in case it's done in worker like sdma_channel_terminate_work, since t=
-hat
-may free the next descriptor wrongly. That's what my patch attached in
-0001-dmaengine-imx-sdma-add-terminated-list-for-freed-des.patch
-https://www.spinics.net/lists/arm-kernel/msg829972.html
+> > On Thu, 20 Aug 2020 at 20:38, Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Thu, Aug 20, 2020 at 07:49:06PM +0530, Naresh Kamboju wrote:
+> > > > On Thu, 20 Aug 2020 at 15:47, Greg Kroah-Hartman
+> > > > <gregkh@linuxfoundation.org> wrote:
+> > > > >
+> > > > > This is the start of the stable review cycle for the 4.4.233 rele=
+ase.
+> > > > > There are 149 patches in this series, all will be posted as a res=
+ponse
+> > > > > to this one.  If anyone has any issues with these being applied, =
+please
+> > > > > let me know.
+> > > > >
+> > > > > Responses should be made by Sat, 22 Aug 2020 09:21:01 +0000.
+> > > > > Anything received after that time might be too late.
+> > > > >
+> > > > > The whole patch series can be found in one patch at:
+> > > > >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-revie=
+w/patch-4.4.233-rc1.gz
+> > > > > or in the git tree and branch at:
+> > > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linu=
+x-stable-rc.git linux-4.4.y
+> > > > > and the diffstat can be found below.
+> > > > >
+> > > > > thanks,
+> > > > >
+> > > > > greg k-h
 
->=20
-> I think the big mistake the driver makes is to configure fields in struct
-> sdma_channel and also the hardware directly in sdma_prep_memcpy(),
-> sdma_prep_slave_sg() and sdma_prep_dma_cyclic(). All information should b=
-e
-> stored in the struct sdma_desc allocated in the prep functions and only b=
-e used
-> when it's time to fire that specific descriptor.
-Sorry Sascha, seems that's another topic and your intention is to make sure=
- only
-software involved in sdma_prep_* and all HW moved into one function inside
-sdma_start_desc. I agree that will make code more clean but my concern is=20
-sdma_start_desc is protect by spin_lock which should be short as possible w=
-hile
-some HW touch as context_load may cost some time. Anyway, that's another to=
-pic,
-maybe we can refine it in the future.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
->=20
-> More specifically sdma_config_write() may not be called from
-> sdma_prep_slave_sg() or sdma_prep_dma_cyclic(), but instead must be calle=
-d
-> from sdma_start_desc().  sdma_config_ownership() also must be called late=
-r
-> in sdma_start_desc(). 'direction' must be a member of struct sdma_desc, n=
-ot of
-> struct sdma_channel.
->=20
-> Overall this sounds like a fair amount of work to do, but should be feasi=
-ble and
-> IMO is a step in the right direction.
->=20
-> Sascha
->=20
-> --
+Summary
+------------------------------------------------------------------------
 
+kernel: 4.4.233-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.4.y
+git commit: 1c57f0a7ac3845a9f81f463bcd28d926afaa86a7
+git describe: v4.4.232-150-g1c57f0a7ac38
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.4-oe/bui=
+ld/v4.4.232-150-g1c57f0a7ac38
+
+
+No regressions (compared to build v4.4.232)
+
+No fixes (compared to build v4.4.232)
+
+Ran 7413 total tests in the following environments and test suites.
+
+Environments
+--------------
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-ipc-tests
+* network-basic-tests
+* v4l2-compliance
+* ltp-syscalls-tests
+* install-android-platform-tools-r2600
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* kselftest/net
+* perf
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-tracing-tests
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.4.233-rc1
+git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
+git branch: 4.4.233-rc1-hikey-20200820-795
+git commit: 00f7a2d07eefd72ddbc7179ea7b911111d8d7df0
+git describe: 4.4.233-rc1-hikey-20200820-795
+Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
+-oe/build/4.4.233-rc1-hikey-20200820-795
+
+
+No regressions (compared to build 4.4.233-rc1-hikey-20200819-792)
+
+
+No fixes (compared to build 4.4.233-rc1-hikey-20200819-792)
+
+Ran 715 total tests in the following environments and test suites.
+
+Environments
+--------------
+- hi6220-hikey - arm64
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-fs-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-sched-tests
+* perf
+* spectre-meltdown-checker-test
+* v4l2-compliance
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
