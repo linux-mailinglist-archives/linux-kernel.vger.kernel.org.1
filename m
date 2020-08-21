@@ -2,75 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6982B24CAD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 04:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC0D24CADA
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 04:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726975AbgHUC3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 22:29:04 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:53608 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726885AbgHUC3D (ORCPT
+        id S1727811AbgHUCaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 22:30:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726885AbgHUCaB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 22:29:03 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597976941;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=is756+5g/B+UsuzcfpjCaazryNhoCR7MbohihXk4jig=;
-        b=MoJF1ab9p4QXNy7FLEi500VmEOf9izMPbupcEaSGv/Q9omYQ6Md9SIYkEc1y9hRVVq7mdL
-        hMWML/701L1JUkg1GIq673xRNbvVykOrq8p5H/37rWRYk3mWzu4/ONqzitxu/nt2QH0lGZ
-        X0ajBbOfOsIvVwJgMjMt03/CGhjCGll1NK3nhJApvZsdB/xmj5vxX63cVX/hnAddGx+CnZ
-        BCwXqhhuw6diMKoyWMI3JUclasR9EcWfw43eETKJbfVw22WjRvzFyOOPut+mKeSJRnLkYW
-        sudQkUEFnRJXXaz+oOrgLriH+MDDk2rrZTJ98MmJErXWs93w8exhJ8e0UmcwNg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597976941;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=is756+5g/B+UsuzcfpjCaazryNhoCR7MbohihXk4jig=;
-        b=t0pdfr310fMXxCJx4RvEI+Zne71yneSjyaZCDHsk1vjtRkUh9UIRjTVw3aWSjOq4lsMSdD
-        RyqOaMiTUpCrEKDw==
-To:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Kyle Huey <me@kylehuey.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Robert O'Callahan <rocallahan@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [RFC][PATCH 0/7] x86/debug: Untangle handle_debug()
-In-Reply-To: <20200820103832.486877479@infradead.org>
-References: <20200820103832.486877479@infradead.org>
-Date:   Fri, 21 Aug 2020 04:29:01 +0200
-Message-ID: <87tuwwhguq.fsf@nanos.tec.linutronix.de>
+        Thu, 20 Aug 2020 22:30:01 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D07C061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 19:30:01 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id s23so304791qtq.12
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 19:30:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=kxixIM+JhLr4CA8HoqUsdWcGyULPAwA0w4kNHnnJn1A=;
+        b=Hy0FHAYUHwZ20oV/pOQJKKBU/OvKWEerzQKj4850mMN+V8CMFEY07rnnnedLyrYg0q
+         m9/0gdjXPSdQsuDetvtAohK+SMRVE5G1bPDUYnV4BHQnCREgi5W3NZG6rT4+NxdyhaXa
+         Go0MySOwOkMLpRObZ2cHK8IxFpi7+ppMjR6otFAeFWnKbxMrB6jryIunkhMVPBT9lXLp
+         MCwomPdTJmX3lGnRTzt5HGdX3v7erA2+bSqjmouDm+98Lc2EPGw9wecO+qG2FBezKsjT
+         aSaCMJfGFmh6jC51FSn2wQGcOYoI9IYtmACMK111rR3mC0WEC2eM1UWssM0VG2rWVZH4
+         BaXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=kxixIM+JhLr4CA8HoqUsdWcGyULPAwA0w4kNHnnJn1A=;
+        b=dv9A8Z4CRL6AznhBuab3dIcjlJtZQ0N/wcq8Y9pRfpMqG/uSwL02e3B8w/pcp+cxHF
+         zzhcX/36G6Ep7uGIjc64qq/DHPDUWjKZ5GuJR1CGLVufhl7qmVgBdTycVIzZEwWyQhV/
+         geNPeh6cXzfBSlCPlyjASmjihsfgCymtAF8m5929GrbzDkzQzzswX7jeQfiQ8Dh/dAV8
+         lz3c2Iwx2l2v2bfiCUV3wkjFB9L83D0kUrv3ms4A6O/S6qaUFW2MrzDPEPstlnDOWeDd
+         wr1XzTUl2FGpxyjrMVMr9Lbzswq28d5gCUHXo96h68RWnEpNVJbYVpe0AiZxGe1NgUoa
+         SMDA==
+X-Gm-Message-State: AOAM532prGr6VQdWOqi0CwME5rXqvz2UmozVM/07bkdbWnm0aPJjQ45Q
+        2zsjY7khRf7e2J1bRqK6qqU2KWzOx1gvlA==
+X-Google-Smtp-Source: ABdhPJwTx3iY7/ab8qofgNfAWK9Ql8cOfkmPqJ/mN8c915NdD76pU1z71GEvNiwPtSt3Yyp+MBSfHQ==
+X-Received: by 2002:ac8:6f62:: with SMTP id u2mr700661qtv.155.1597977000492;
+        Thu, 20 Aug 2020 19:30:00 -0700 (PDT)
+Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id q34sm637000qtk.32.2020.08.20.19.29.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Aug 2020 19:29:59 -0700 (PDT)
+Date:   Thu, 20 Aug 2020 22:29:57 -0400
+From:   Qian Cai <cai@lca.pw>
+To:     akpm@linux-foundation.org, catalin.marinas@arm.com,
+        oleg@redhat.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Davidlohr Bueso <dbueso@suse.de>
+Subject: Re: [PATCH] mm/kmemleak: rely on rcu for task stack scanning
+Message-ID: <20200821022955.GD4622@lca.pw>
+References: <20200820203902.11308-1-dave@stgolabs.net>
+ <20200821002554.GB4622@lca.pw>
+ <20200821012750.qxiklfhuaryajvhn@linux-p48b>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200821012750.qxiklfhuaryajvhn@linux-p48b>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter,
+On Thu, Aug 20, 2020 at 06:27:50PM -0700, Davidlohr Bueso wrote:
+> On Thu, 20 Aug 2020, Qian Cai wrote:
+> 
+> > On Thu, Aug 20, 2020 at 01:39:02PM -0700, Davidlohr Bueso wrote:
+> > > kmemleak_scan() currently relies on the big tasklist_lock
+> > > hammer to stabilize iterating through the tasklist. Instead,
+> > > this patch proposes simply using rcu along with the rcu-safe
+> > > for_each_process_thread flavor (without changing scan semantics),
+> > > which doesn't make use of next_thread/p->thread_group and thus
+> > > cannot race with exit. Furthermore, any races with fork()
+> > > and not seeing the new child should be benign as it's not
+> > > running yet and can also be detected by the next scan.
+> > 
+> > It is not entirely clear to me what problem the patch is trying to solve. If
+> > this is about performance, we will probably need some number.
+> 
+> So in this case avoiding the tasklist_lock could prove beneficial for performance
+> considering the scan operation is done periodically. I have seen improvements
+> of 30%-ish when doing similar replacements on very pathological microbenchmarks
+> (ie stressing get/setpriority(2)).
+> 
+> However my main motivation is that it's one less user of the global lock,
+> something that Linus has long time wanted to see gone eventually (if ever)
+> even if the traditional fairness issues has been dealt with now with qrwlocks.
+> Of course this is a very long ways ahead. This patch also kills another user
+> of the deprecated tsk->thread_group.
 
-On Thu, Aug 20 2020 at 12:38, Peter Zijlstra wrote:
-> handle_debug() is a mess, and now that we have separate user and kernel paths,
-> try and clean it up.
->
-> Included amluto's fix for convenience.
->
-> The whole set passes x86-selftests and the RR DR0 testcase.
+This makes thing clearer.
 
-but the utter lack of content in _ALL_ changelogs of this series does
-not pass my sanity filter ..
+Reviewed-by: Qian Cai <cai@lca.pw>
