@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5423F24D2B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 12:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C5A24D2B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 12:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728798AbgHUKhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 06:37:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36450 "EHLO
+        id S1728754AbgHUKhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 06:37:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728692AbgHUKhX (ORCPT
+        with ESMTP id S1728759AbgHUKh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 06:37:23 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB82C061386
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 03:37:23 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id d19so798557pgl.10
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 03:37:23 -0700 (PDT)
+        Fri, 21 Aug 2020 06:37:27 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8742FC061349
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 03:37:27 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id z23so693220plo.8
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 03:37:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ljhi/VG5P34Hs9+4uh6nLgqd8v+gNFS6fb+CvHrY46E=;
-        b=P8vvNleHgwAynsmC6lsMKY3uwNUsNbZ452tZWs27SpnLxhe2UCnzODapTh66dRpnyW
-         cCwYlU0eob1fTTdvoCMzGkcjlp1+7SWxMOF06GyRJReplD8lO+viqGBFPZffZ2j1PDpu
-         m8gMb3YxQc5AJYYMpqR4GoYAPjzM9401B+4w0=
+        bh=DufvN1VHKhvycaUKRq7bCN3zR8+vkOiC/Y9oiV+15/w=;
+        b=HvtvAHLNuEBtOSAUa+7D7d50ohlMgLoBYEZZbiVTcm9izI+AGbs6y8jlsmWnkcMU3N
+         q4AP13L+wM7iufOmGvaxPVQsglfouW9tD/iCeCQcaJurm3jux6JjQMo7YVc2GHQ4GNH4
+         PkOXOLKnCislXsGbtjcFFMwQR625Ue9zBxPVc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ljhi/VG5P34Hs9+4uh6nLgqd8v+gNFS6fb+CvHrY46E=;
-        b=WR6IszMA7g29xWKxBx38Vh1iQm1benrBfQEoJNESFe7ERSZajjO57a5Q5fUFRubdJ5
-         bErfZGZaWBHPHJ/pzL7rXnUV1v8RSJM+lpMvHnI3og0bgZ/UDMt8TMujCr8DFFnWEDqX
-         AWFdT0KjL3q+TZUPmmuwrmg8du6km7kgNhoiBiVTQnFhZoiMWuMdChhAQMN1s6nUGAHo
-         AVIxLhlWNP4VMKiCyIwO5ad7JG7i76SsGdXQMSZ33lE14qNy3C51GmJ4sfaRipjt0aPJ
-         mfr8PYU9UJsMtlgUIvv7tphMJQWJkm6yjFBQPmEuRjRgUzEnzKnSNIbx/+ooz0KILGAY
-         JFHg==
-X-Gm-Message-State: AOAM530RS2uo9accuu1KrMVkkRJlHzdBt9OKI74G9HzdN/GVr0JfKSpI
-        F5bGO4Yx1waGKv4zVsq4Vy97RqpObBNljzsa
-X-Google-Smtp-Source: ABdhPJxfUTmFDWyoXGgTXQnxxK5YQdD4uEr3YGTNDXasSVXq6ygIS2UJtCfWh+Z8fX1itWDOPrt+xg==
-X-Received: by 2002:a62:8416:: with SMTP id k22mr1930146pfd.293.1598006243121;
-        Fri, 21 Aug 2020 03:37:23 -0700 (PDT)
+        bh=DufvN1VHKhvycaUKRq7bCN3zR8+vkOiC/Y9oiV+15/w=;
+        b=Xg3f124itFTzXb5JoBSSgdtckPbBYeh4EB+fiOGMSZsBUHnpFqpWUVAHgIno9F1ZBP
+         QY3kITne7NqJaKayTPLeO5aBuo2XTzme7XbHFjB3YZBQSuu54plFnzPIQ7BkXaJWxC+L
+         WA90Vf0eFyuhfi+hHT5eGNHpA/F6C3JTqkkKQJJgHXZpRuWiRzds+TMtAMa0x1onGSMN
+         1ETzLVZDVSxXwo1PDy3oI+SsSOBpPuuTOaJxpbGYqltX8iKe+gVfgJoPEEwJevH88C6h
+         wv8tuJLs0up1I/aax09iEiKtU19oa0hhE9XP6cP8goFddqP1sWwCei/CCjCzDDlwJaob
+         b5fg==
+X-Gm-Message-State: AOAM532uFfhhALATNVPh5LCdU+E1udLqxisTrmpR7gjgteZZfsqucrhq
+        V+577boJfoWvUQTXPQ2eyb6L7Q==
+X-Google-Smtp-Source: ABdhPJwDddg8xE6aw1cgQorjp++aUtEmKN10tnGi0rgs5jvKyG1NLD77bBM5fWtyTpMsucUd1d2s/Q==
+X-Received: by 2002:a17:90a:bd15:: with SMTP id y21mr1898704pjr.144.1598006247152;
+        Fri, 21 Aug 2020 03:37:27 -0700 (PDT)
 Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:eeb1:d7ff:fe57:b7e5])
-        by smtp.gmail.com with ESMTPSA id y20sm2081525pfn.183.2020.08.21.03.37.19
+        by smtp.gmail.com with ESMTPSA id y20sm2081525pfn.183.2020.08.21.03.37.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 03:37:22 -0700 (PDT)
+        Fri, 21 Aug 2020 03:37:26 -0700 (PDT)
 From:   Alexandre Courbot <acourbot@chromium.org>
 To:     Tiffany Lin <tiffany.lin@mediatek.com>,
         Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
@@ -55,9 +55,9 @@ To:     Tiffany Lin <tiffany.lin@mediatek.com>,
 Cc:     linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Alexandre Courbot <acourbot@chromium.org>
-Subject: [PATCH v4 15/17] media: mtk-vcodec: venc: support ENUM_FRAMESIZES on OUTPUT formats
-Date:   Fri, 21 Aug 2020 19:36:06 +0900
-Message-Id: <20200821103608.2310097-16-acourbot@chromium.org>
+Subject: [PATCH v4 16/17] media: mtk-vcodec: venc: set default time per frame
+Date:   Fri, 21 Aug 2020 19:36:07 +0900
+Message-Id: <20200821103608.2310097-17-acourbot@chromium.org>
 X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
 In-Reply-To: <20200821103608.2310097-1-acourbot@chromium.org>
 References: <20200821103608.2310097-1-acourbot@chromium.org>
@@ -68,141 +68,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v4l2-compliance requires ENUM_FRAMESIZES to support OUTPUT formats.
-Reuse mtk_venc_find_format() to make sure both queues are considered
-when serving an ENUM_FRAMESIZES.
+The time per frame was left initialized to 0/0, which make the driver
+fail v4l2-compliance, and also leaves it potentially exposed to doing a
+division by zero.
 
 Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
 ---
- .../platform/mtk-vcodec/mtk_vcodec_enc.c      | 71 +++++++++----------
- 1 file changed, 33 insertions(+), 38 deletions(-)
+ drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
-index f8d4fbe927f9..1b79185cf922 100644
+index 1b79185cf922..09baac2dbc36 100644
 --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
 +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
-@@ -123,28 +123,44 @@ static int vidioc_enum_fmt(struct v4l2_fmtdesc *f,
- 	return 0;
+@@ -24,6 +24,9 @@
+ #define DFT_CFG_HEIGHT	MTK_VENC_MIN_H
+ #define MTK_MAX_CTRLS_HINT	20
+ 
++#define MTK_DEFAULT_FRAMERATE_NUM 1001
++#define MTK_DEFAULT_FRAMERATE_DENOM 30000
++
+ static void mtk_venc_worker(struct work_struct *work);
+ 
+ static const struct v4l2_frmsize_stepwise mtk_venc_framesizes = {
+@@ -1197,6 +1200,8 @@ void mtk_vcodec_enc_set_default_params(struct mtk_vcodec_ctx *ctx)
+ 		DFT_CFG_WIDTH * DFT_CFG_HEIGHT;
+ 	ctx->q_data[MTK_Q_DATA_DST].bytesperline[0] = 0;
+ 
++	ctx->enc_params.framerate_num = MTK_DEFAULT_FRAMERATE_NUM;
++	ctx->enc_params.framerate_denom = MTK_DEFAULT_FRAMERATE_DENOM;
  }
  
-+static const struct mtk_video_fmt *mtk_venc_find_format(u32 fourcc,
-+	const struct mtk_vcodec_enc_pdata *pdata)
-+{
-+	const struct mtk_video_fmt *fmt;
-+	unsigned int k;
-+
-+	for (k = 0; k < pdata->num_capture_formats; k++) {
-+		fmt = &pdata->capture_formats[k];
-+		if (fmt->fourcc == fourcc)
-+			return fmt;
-+	}
-+
-+	for (k = 0; k < pdata->num_output_formats; k++) {
-+		fmt = &pdata->output_formats[k];
-+		if (fmt->fourcc == fourcc)
-+			return fmt;
-+	}
-+
-+	return NULL;
-+}
-+
- static int vidioc_enum_framesizes(struct file *file, void *fh,
- 				  struct v4l2_frmsizeenum *fsize)
- {
--	const struct mtk_vcodec_enc_pdata *pdata =
--		fh_to_ctx(fh)->dev->venc_pdata;
--	int i = 0;
-+	const struct mtk_video_fmt *fmt;
- 
- 	if (fsize->index != 0)
- 		return -EINVAL;
- 
--	for (i = 0; i < pdata->num_capture_formats; ++i) {
--		const struct mtk_video_fmt *fmt = &pdata->capture_formats[i];
-+	fmt = mtk_venc_find_format(fsize->pixel_format,
-+				   fh_to_ctx(fh)->dev->venc_pdata);
-+	if (!fmt)
-+		return -EINVAL;
- 
--		if (fsize->pixel_format != fmt->fourcc)
--			continue;
-+	fsize->type = V4L2_FRMSIZE_TYPE_STEPWISE;
-+	fsize->stepwise = mtk_venc_framesizes;
- 
--		fsize->type = V4L2_FRMSIZE_TYPE_STEPWISE;
--		fsize->stepwise = mtk_venc_framesizes;
--		return 0;
--	}
--
--	return -EINVAL;
-+	return 0;
- }
- 
- static int vidioc_enum_fmt_vid_cap(struct file *file, void *priv,
-@@ -222,27 +238,6 @@ static struct mtk_q_data *mtk_venc_get_q_data(struct mtk_vcodec_ctx *ctx,
- 	return &ctx->q_data[MTK_Q_DATA_DST];
- }
- 
--static const struct mtk_video_fmt *mtk_venc_find_format(struct v4l2_format *f,
--	const struct mtk_vcodec_enc_pdata *pdata)
--{
--	const struct mtk_video_fmt *fmt;
--	unsigned int k;
--
--	for (k = 0; k < pdata->num_capture_formats; k++) {
--		fmt = &pdata->capture_formats[k];
--		if (fmt->fourcc == f->fmt.pix.pixelformat)
--			return fmt;
--	}
--
--	for (k = 0; k < pdata->num_output_formats; k++) {
--		fmt = &pdata->output_formats[k];
--		if (fmt->fourcc == f->fmt.pix.pixelformat)
--			return fmt;
--	}
--
--	return NULL;
--}
--
- /* V4L2 specification suggests the driver corrects the format struct if any of
-  * the dimensions is unsupported
-  */
-@@ -403,7 +398,7 @@ static int vidioc_venc_s_fmt_cap(struct file *file, void *priv,
- 		return -EINVAL;
- 	}
- 
--	fmt = mtk_venc_find_format(f, pdata);
-+	fmt = mtk_venc_find_format(f->fmt.pix.pixelformat, pdata);
- 	if (!fmt) {
- 		fmt = &ctx->dev->venc_pdata->capture_formats[0];
- 		f->fmt.pix.pixelformat = fmt->fourcc;
-@@ -467,7 +462,7 @@ static int vidioc_venc_s_fmt_out(struct file *file, void *priv,
- 		return -EINVAL;
- 	}
- 
--	fmt = mtk_venc_find_format(f, pdata);
-+	fmt = mtk_venc_find_format(f->fmt.pix.pixelformat, pdata);
- 	if (!fmt) {
- 		fmt = &ctx->dev->venc_pdata->output_formats[0];
- 		f->fmt.pix.pixelformat = fmt->fourcc;
-@@ -550,7 +545,7 @@ static int vidioc_try_fmt_vid_cap_mplane(struct file *file, void *priv,
- 	struct mtk_vcodec_ctx *ctx = fh_to_ctx(priv);
- 	const struct mtk_vcodec_enc_pdata *pdata = ctx->dev->venc_pdata;
- 
--	fmt = mtk_venc_find_format(f, pdata);
-+	fmt = mtk_venc_find_format(f->fmt.pix.pixelformat, pdata);
- 	if (!fmt) {
- 		fmt = &ctx->dev->venc_pdata->capture_formats[0];
- 		f->fmt.pix.pixelformat = fmt->fourcc;
-@@ -570,7 +565,7 @@ static int vidioc_try_fmt_vid_out_mplane(struct file *file, void *priv,
- 	struct mtk_vcodec_ctx *ctx = fh_to_ctx(priv);
- 	const struct mtk_vcodec_enc_pdata *pdata = ctx->dev->venc_pdata;
- 
--	fmt = mtk_venc_find_format(f, pdata);
-+	fmt = mtk_venc_find_format(f->fmt.pix.pixelformat, pdata);
- 	if (!fmt) {
- 		fmt = &ctx->dev->venc_pdata->output_formats[0];
- 		f->fmt.pix.pixelformat = fmt->fourcc;
+ int mtk_vcodec_enc_ctrls_setup(struct mtk_vcodec_ctx *ctx)
 -- 
 2.28.0.297.g1956fa8f8d-goog
 
