@@ -2,117 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5602024D84B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B2724D859
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727994AbgHUPRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 11:17:30 -0400
-Received: from mga06.intel.com ([134.134.136.31]:18349 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727791AbgHUPR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 11:17:28 -0400
-IronPort-SDR: Hlsn19nD8YWku2/mcNy7uukn9FXxqY9O+s361/9OIAMNJSI85Qhjt7tdh9wbumSpgVHdgBGIJu
- fQeqkp/nwyBQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9719"; a="217094652"
-X-IronPort-AV: E=Sophos;i="5.76,337,1592895600"; 
-   d="scan'208";a="217094652"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2020 08:17:27 -0700
-IronPort-SDR: X3WZs6CSMS+GgnkdfsfTbfDrbYXMtwd4QXENHMbQ/vkSmOsQgjxTnbAVin/D+ElXQ3Weo9quLC
- ipOKHUYXOXLg==
-X-IronPort-AV: E=Sophos;i="5.76,337,1592895600"; 
-   d="scan'208";a="442377166"
-Received: from pcmiller-mobl1.amr.corp.intel.com (HELO [10.209.120.121]) ([10.209.120.121])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2020 08:17:25 -0700
-Subject: Re: [PATCH] soundwire: cadence: fix race condition between suspend
- and Slave device alerts
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
-        alsa-devel@alsa-project.org, tiwai@suse.de,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        broonie@kernel.org, srinivas.kandagatla@linaro.org,
-        jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-References: <20200817222340.18042-1-yung-chuan.liao@linux.intel.com>
- <20200819090637.GE2639@vkoul-mobl>
- <8d60fa6f-bb7f-daa8-5ae2-51386b87ccad@linux.intel.com>
- <20200821050758.GI2639@vkoul-mobl>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <29ea5a44-b971-770a-519c-ae879557b63f@linux.intel.com>
-Date:   Fri, 21 Aug 2020 10:17:25 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200821050758.GI2639@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1728290AbgHUPSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 11:18:35 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2685 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728138AbgHUPSM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 11:18:12 -0400
+Received: from lhreml716-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id 30BAF2E228F8D53A3CF8;
+        Fri, 21 Aug 2020 16:18:10 +0100 (IST)
+Received: from fraeml701-chm.china.huawei.com (10.206.15.50) by
+ lhreml716-chm.china.huawei.com (10.201.108.67) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1913.5; Fri, 21 Aug 2020 16:18:09 +0100
+Received: from lhreml722-chm.china.huawei.com (10.201.108.73) by
+ fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Fri, 21 Aug 2020 17:18:09 +0200
+Received: from lhreml722-chm.china.huawei.com ([10.201.108.73]) by
+ lhreml722-chm.china.huawei.com ([10.201.108.73]) with mapi id 15.01.1913.007;
+ Fri, 21 Aug 2020 16:18:08 +0100
+From:   Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "containers@lists.linux-foundation.org" 
+        <containers@lists.linux-foundation.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "stefanb@linux.vnet.ibm.com" <stefanb@linux.vnet.ibm.com>,
+        "sunyuqiong1988@gmail.com" <sunyuqiong1988@gmail.com>,
+        "mkayaalp@cs.binghamton.edu" <mkayaalp@cs.binghamton.edu>,
+        "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "christian@brauner.io" <christian@brauner.io>,
+        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: RE: [RFC PATCH 00/30] ima: Introduce IMA namespace
+Thread-Topic: [RFC PATCH 00/30] ima: Introduce IMA namespace
+Thread-Index: AQHWdXPBkpeRDLdh20+fyp1BiEOjYak989wAgAS8adA=
+Date:   Fri, 21 Aug 2020 15:18:08 +0000
+Message-ID: <8fe0d5c879af46cc8ec64d429c601b3d@huawei.com>
+References: <N> <20200818152037.11869-1-krzysztof.struczynski@huawei.com>
+ <20200818155350.oy3axodt3vj5k7ij@wittgenstein>
+In-Reply-To: <20200818155350.oy3axodt3vj5k7ij@wittgenstein>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.48.215.114]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
->> cancel_work_sync() will either
->> a) wait until the current work completes, or
->> b) prevent a new one from starting.
->>
->> there's no way to really 'abort' a workqueue, 'cancel' means either complete
->> or don't start.
-> 
-> Quite right, as that is how everyone deals with it. Stop the irq from
-> firing first and then wait until work is cancelled or completed, hence
-> cancel_work_sync()
-
-No, this cannot work... The work queue in progress will initiate 
-transactions which would never complete because the interrupts are disabled.
-
->> if you disable the interrupts then cancel the work, you have a risk of not
->> letting the work complete if it already started (case a).
->>
->> The race is
->> a) the interrupt thread (this function) starts
->> b) the work is scheduled and starts
->> c) the suspend handler starts and disables interrupts in [1] below.
->> d) the work initiates transactions which will never complete since Cadence
->> interrupts have been disabled.
-> 
-> Would it not be better to let work handle the case of interrupts
-> disabled and not initiates transactions which wont complete here? That
-> sounds more reasonable to do rather than complete the work which anyone
-> doesn't matter as you are suspending
-
-A in-progress workqueue has no notion that interrupts are disabled, nor 
-that the device is in the process of suspending. It writes into a fifo 
-and blocks with wait_for_completion(). the complete() is done in an 
-interrupt thread, triggered when the RX Fifo reaches a watermark.
-
-So if you disable interrupts, the complete() never happens.
-
-The safe way to do things with the current code is to let the workqueue 
-complete, then disable interrupts.
-
-We only disable interrupts on suspend, we don't need to test if 
-interrupts are enabled for every single byte that's transmitted on the 
-bus. Not to mention that this additional test would be racy as hell and 
-require yet another synchronization primitive making the code more 
-complicated.
-
-So yes, the current transactions will complete and will be ignored, but 
-it's a lot better than trying to prevent these transactions from 
-happening with extra layers of complexity that will impact *every* 
-transaction.
-
-BTW I looked at another alternative based on the msg lock, so that 
-interrupts cannot be disabled while a message is being sent. However 
-because a workqueue may send multiple messages, e.g. to read registers 
-are non-contiguous locations, there is no way to guarantee what happens 
-how messages and interrupt disabling are scheduled, so there'd still be 
-a case of a workqueue not completing and being stuck on a mutex_lock(), 
-not so good either.
-
-In short, this is the simplest way to fix the timeout on resume.
+PiBGcm9tOiBDaHJpc3RpYW4gQnJhdW5lciBbbWFpbHRvOmNocmlzdGlhbi5icmF1bmVyQHVidW50
+dS5jb21dDQo+IE9uIFR1ZSwgQXVnIDE4LCAyMDIwIGF0IDA1OjIwOjA3UE0gKzAyMDAsIGtyenlz
+enRvZi5zdHJ1Y3p5bnNraUBodWF3ZWkuY29tDQo+IHdyb3RlOg0KPiA+IEZyb206IEtyenlzenRv
+ZiBTdHJ1Y3p5bnNraSA8a3J6eXN6dG9mLnN0cnVjenluc2tpQGh1YXdlaS5jb20+DQo+ID4NCj4g
+PiBJTUEgaGFzIG5vdCBiZWVuIGRlc2lnbmVkIHRvIHdvcmsgd2l0aCBjb250YWluZXJzLiBJdCBo
+YW5kbGVzIGV2ZXJ5DQo+ID4gcHJvY2VzcyBpbiB0aGUgc2FtZSB3YXksIGFuZCBpdCBjYW5ub3Qg
+ZGlzdGluZ3Vpc2ggaWYgYSBwcm9jZXNzIGJlbG9uZ3MgdG8NCj4gPiBhIGNvbnRhaW5lciBvciBu
+b3QuDQo+ID4NCj4gPiBDb250YWluZXJzIHVzZSBuYW1lc3BhY2VzIHRvIG1ha2UgaXQgYXBwZWFy
+IHRvIHRoZSBwcm9jZXNzZXMgaW4gdGhlDQo+ID4gY29udGFpbmVycyB0aGF0IHRoZXkgaGF2ZSB0
+aGVpciBvd24gaXNvbGF0ZWQgaW5zdGFuY2Ugb2YgdGhlIGdsb2JhbA0KPiA+IHJlc291cmNlLiBG
+b3IgSU1BIGFzIHdlbGwsIGl0IGlzIGRlc2lyYWJsZSB0byBsZXQgcHJvY2Vzc2VzIGluIHRoZQ0K
+PiA+IGNvbnRhaW5lcnMgaGF2ZSBJTUEgZnVuY3Rpb25hbGl0eSBpbmRlcGVuZGVudCBmcm9tIG90
+aGVyIGNvbnRhaW5lcnM6DQo+ID4gc2VwYXJhdGUgcG9saWN5IHJ1bGVzLCBtZWFzdXJlbWVudCBs
+aXN0LCBhZGRpdGlvbmFsIGFwcHJhaXNhbCBrZXlzIHRvDQo+ID4gdmVyaWZ5IHRoZSBjb250YWlu
+ZXIgaW1hZ2UsIHNlcGFyYXRlIGF1ZGl0IGxvZ3MuDQo+ID4NCj4gPiBBcyBwcmV2aW91cyB3b3Jr
+IGRvbmUgaW4gdGhpcyBhcmVhLCB0aGlzIHBhdGNoIHNlcmllcyBpbnRyb2R1Y2VzIHRoZSBJTUEN
+Cj4gPiBuYW1lc3BhY2UsIHdoaWNoIGlzIGEgc2VwYXJhdGUgaW5zdGFuY2Ugb2YgSU1BIHRvIGhh
+bmRsZSBhIHN1YnNldCBvZg0KPiA+IHByb2Nlc3NlcyB0aGF0IGJlbG9uZyB0byBhIGNvbnRhaW5l
+ci4NCj4gPg0KPiA+IFRoZSBJTUEgbmFtZXNwYWNlIGlzIGNyZWF0ZWQgdXNpbmcgY2xvbmUzKCkg
+b3IgdW5zaGFyZSgpIHN5c3RlbSBjYWxscy4gSXQNCj4gPiBpcyBpbXBvcnRhbnQgdG8gY29uZmln
+dXJlIHRoZSBuYW1lc3BhY2UgYmVmb3JlIGFueSBwcm9jZXNzIGFwcGVhcnMgaW4gaXQsDQo+ID4g
+c28gdGhhdCB0aGUgbmV3IHBvbGljeSBydWxlcyBhcHBseSB0byB0aGUgdmVyeSBmaXJzdCBwcm9j
+ZXNzIGluIHRoZQ0KPiA+IG5hbWVzcGFjZS4gVG8gYWNoaWV2ZSB0aGF0LCB0aGUgaW50ZXJtZWRp
+YXRlIG5hbWVzcGFjZQ0KPiBpbWFfbnNfZm9yX2NoaWxkcmVuDQo+ID4gaXMgdXNlZC4gSXQgc3Rv
+cmVzIHRoZSBjb25maWd1cmF0aW9uIGFuZCBiZWNvbWVzIGFjdGl2ZSBvbiB0aGUgbmV4dCBmb3Jr
+DQo+ID4gb3Igd2hlbiB0aGUgZmlyc3QgcHJvY2VzcyBlbnRlcnMgaXQgdXNpbmcgdGhlIHNldG5z
+KCkgc3lzdGVtIGNhbGwuIFRoZQ0KPiA+IHNpbWlsYXIgcHJvY2VzcyBpcyB1c2VkIGZvciB0aGUg
+dGltZSBuYW1lc3BhY2UuDQo+ID4NCj4gPiBUaGUgSU1BIG5hbWVzcGFjZSBjYW4gYmUgY29uZmln
+dXJlZCB1c2luZyB0aGUgbmV3IHNlY3VyaXR5ZnMgZGlyZWN0b3J5DQo+ID4gZW50cmllcyB0aGF0
+IGFsbG93IHRoZSB1c2VyIHRvIHNldCB0aGUgcG9saWN5IHJ1bGVzLCB4NTA5IGNlcnRpZmljYXRl
+IGZvcg0KPiA+IGFwcHJhaXNhbCBhbmQgcGFzcyBJTUEgY29uZmlndXJhdGlvbiBwYXJhbWV0ZXJz
+IG5vcm1hbGx5IGluY2x1ZGVkIGluIHRoZQ0KPiA+IGtlcm5lbCBjb21tYW5kIGxpbmUgcGFyYW1l
+dGVycy4gSXQgaXMgaW50ZW5kZWQgdG8gZXh0ZW5kIHRoZSBjbG9uZV9hcmdzIHRvDQo+ID4gYWxs
+b3cgY29uZmlndXJhdGlvbiBmcm9tIGNsb25lMygpIHN5c2NhbGwuDQo+IA0KPiBOb3QgdG8gYmUg
+dGhlIGRvd25lciByaWdodCBhd2F5IGJ1dCBqdXN0IGFzIGFuIGZ5aSwgaWYgdGhpcyBwYXRjaHNl
+dA0KPiBtYWtlcyBpdCwgY2xvbmUzKCkgd2lsbCBub3QgYWxsb3cgdG8gYmUgZXh0ZW5kZWQgd2l0
+aCBhbnkgcmVhbA0KPiBzZWNvbmQtbGV2ZWwgcG9pbnRlcnMuIFRoYXQgd2lsbCBzZWUgYSBoYXJk
+IE5BSyBmcm9tIG1lIGFuZCBzZXZlcmFsDQo+IG90aGVyIG1haW50YWluZXJzLg0KDQpPaywgdGhh
+dCdzIGEgZ29vZCBwb2ludC4gSXQgY2FuIGJlIGRvbmUgd2l0aG91dCB0aGUgc2Vjb25kLWxldmVs
+IHBvaW50ZXJzDQpidXQgaWYgdGhhdCdzIG5vdCBkZXNpcmFibGUgdGhlbiBJTUEgbmFtZXNwYWNl
+IGNyZWF0aW9uIHZpYSBhIGRpcmVjdA0KY2xvbmUzKCkgY2FsbCBjYW4gYmUgcmVtb3ZlZC4gSXQg
+d2lsbCBtYWtlIHRoZSBwcm9jZXNzIGxlc3MgZmxleGlibGUgYnV0DQppdCB3aWxsIHN0aWxsIHdv
+cmsgd2l0aCB1bnNoYXJlKCkgYW5kIGNsb25lMygpIG9yIHVuc2hhcmUoKSBhbmQgc2V0bnMoKQ0K
+Y2FsbHMuDQoNCj4gDQo+IENocmlzdGlhbg0K
