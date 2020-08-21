@@ -2,89 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1BF24CAD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 04:29:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6982B24CAD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 04:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727785AbgHUC3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 22:29:23 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:54952 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726885AbgHUC3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 22:29:20 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 3E708A95552C316CDD13;
-        Fri, 21 Aug 2020 10:29:18 +0800 (CST)
-Received: from SWX921481.china.huawei.com (10.126.200.57) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 21 Aug 2020 10:29:10 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <hch@lst.de>, <m.szyprowski@samsung.com>, <robin.murphy@arm.com>,
-        <will@kernel.org>, <ganapatrao.kulkarni@cavium.com>,
-        <catalin.marinas@arm.com>
-CC:     <iommu@lists.linux-foundation.org>, <linuxarm@huawei.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <huangdaode@huawei.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        "Nicolas Saenz Julienne" <nsaenzjulienne@suse.de>,
-        Steve Capper <steve.capper@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: [PATCH v6 2/2] arm64: mm: reserve per-numa CMA to localize coherent dma buffers
-Date:   Fri, 21 Aug 2020 14:26:15 +1200
-Message-ID: <20200821022615.28596-3-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
-In-Reply-To: <20200821022615.28596-1-song.bao.hua@hisilicon.com>
-References: <20200821022615.28596-1-song.bao.hua@hisilicon.com>
+        id S1726975AbgHUC3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 22:29:04 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53608 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726885AbgHUC3D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 22:29:03 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597976941;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=is756+5g/B+UsuzcfpjCaazryNhoCR7MbohihXk4jig=;
+        b=MoJF1ab9p4QXNy7FLEi500VmEOf9izMPbupcEaSGv/Q9omYQ6Md9SIYkEc1y9hRVVq7mdL
+        hMWML/701L1JUkg1GIq673xRNbvVykOrq8p5H/37rWRYk3mWzu4/ONqzitxu/nt2QH0lGZ
+        X0ajBbOfOsIvVwJgMjMt03/CGhjCGll1NK3nhJApvZsdB/xmj5vxX63cVX/hnAddGx+CnZ
+        BCwXqhhuw6diMKoyWMI3JUclasR9EcWfw43eETKJbfVw22WjRvzFyOOPut+mKeSJRnLkYW
+        sudQkUEFnRJXXaz+oOrgLriH+MDDk2rrZTJ98MmJErXWs93w8exhJ8e0UmcwNg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597976941;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=is756+5g/B+UsuzcfpjCaazryNhoCR7MbohihXk4jig=;
+        b=t0pdfr310fMXxCJx4RvEI+Zne71yneSjyaZCDHsk1vjtRkUh9UIRjTVw3aWSjOq4lsMSdD
+        RyqOaMiTUpCrEKDw==
+To:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Kyle Huey <me@kylehuey.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Robert O'Callahan <rocallahan@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC][PATCH 0/7] x86/debug: Untangle handle_debug()
+In-Reply-To: <20200820103832.486877479@infradead.org>
+References: <20200820103832.486877479@infradead.org>
+Date:   Fri, 21 Aug 2020 04:29:01 +0200
+Message-ID: <87tuwwhguq.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.126.200.57]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now, smmu is using dma_alloc_coherent() to get memory to save queues
-and tables. Typically, on ARM64 server, there is a default CMA located at
-node0, which could be far away from node2, node3 etc.
-with this patch, smmu will get memory from local numa node to save command
-queues and page tables. that means dma_unmap latency will be shrunk much.
-Meanwhile, when iommu.passthrough is on, device drivers which call dma_
-alloc_coherent() will also get local memory and avoid the travel between
-numa nodes.
+Peter,
 
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Ganapatrao Kulkarni <ganapatrao.kulkarni@cavium.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc: Steve Capper <steve.capper@arm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Mike Rapoport <rppt@linux.ibm.com>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
----
- -v6: rebase on top of 5.9-rc1
+On Thu, Aug 20 2020 at 12:38, Peter Zijlstra wrote:
+> handle_debug() is a mess, and now that we have separate user and kernel paths,
+> try and clean it up.
+>
+> Included amluto's fix for convenience.
+>
+> The whole set passes x86-selftests and the RR DR0 testcase.
 
- arch/arm64/mm/init.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 481d22c32a2e..f1c75957ff3c 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -429,6 +429,8 @@ void __init bootmem_init(void)
- 	arm64_hugetlb_cma_reserve();
- #endif
- 
-+	dma_pernuma_cma_reserve();
-+
- 	/*
- 	 * sparse_init() tries to allocate memory from memblock, so must be
- 	 * done after the fixed reservations
--- 
-2.27.0
-
-
+but the utter lack of content in _ALL_ changelogs of this series does
+not pass my sanity filter ..
