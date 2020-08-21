@@ -2,106 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F1E24CE26
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 08:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F07D24CE42
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 08:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727837AbgHUGoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 02:44:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45746 "EHLO mail.kernel.org"
+        id S1727854AbgHUGvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 02:51:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54880 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726181AbgHUGoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 02:44:12 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 636F420732;
-        Fri, 21 Aug 2020 06:44:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597992252;
-        bh=4J4qz5B1NZzvGGMmZoiEQ54l//Vbmr1oMNWo4drmq5M=;
-        h=Date:From:To:Cc:Subject:From;
-        b=rNw/IaiX0g8qJR8b/acDFu/3vybjZMedp75QZKn31toPhPyiIUyGltwhPZ/0AAyts
-         GheTV0ujR9JpCE5MjHAaVjo8Noz2eDV3/Ae8QcsKRSSFQfrW4PCLgA3Rf+gUfBKGg6
-         mFrUfcTXQ/jjcaxNg0drRi4ke3K0X53oDsj/5saA=
-Date:   Fri, 21 Aug 2020 01:49:59 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Yan-Hsuan Chuang <yhchuang@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH][next] rtw88: Use fallthrough pseudo-keyword
-Message-ID: <20200821064959.GA23693@embeddedor>
+        id S1726119AbgHUGvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 02:51:09 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 36528B663;
+        Fri, 21 Aug 2020 06:51:35 +0000 (UTC)
+Date:   Fri, 21 Aug 2020 08:51:05 +0200
+From:   Petr Vorel <pvorel@suse.cz>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LTP List <ltp@lists.linux.it>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, patches@kernelci.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        linux- stable <stable@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [LTP] [PATCH 5.8 000/232] 5.8.3-rc1 review
+Message-ID: <20200821065105.GB11908@dell5510>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+References: <20200820091612.692383444@linuxfoundation.org>
+ <CA+G9fYtebf78TH-XpqArunHc1L6s9mHdLEbpY1EY9tSyDjp=sg@mail.gmail.com>
+ <20200820182516.GA49496@sol.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200820182516.GA49496@sol.localdomain>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the existing /* fall through */ comments and its variants with
-the new pseudo-keyword macro fallthrough[1].
+Hi all,
 
-[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+> On Thu, Aug 20, 2020 at 08:57:57PM +0530, Naresh Kamboju wrote:
+> > On Thu, 20 Aug 2020 at 14:55, Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/wireless/realtek/rtw88/main.c | 4 ++--
- drivers/net/wireless/realtek/rtw88/phy.c  | 6 +++---
- 2 files changed, 5 insertions(+), 5 deletions(-)
+> > > This is the start of the stable review cycle for the 5.8.3 release.
+> > > There are 232 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, please
+> > > let me know.
 
-diff --git a/drivers/net/wireless/realtek/rtw88/main.c b/drivers/net/wireless/realtek/rtw88/main.c
-index 54044abf30d7..9d454f0004d2 100644
---- a/drivers/net/wireless/realtek/rtw88/main.c
-+++ b/drivers/net/wireless/realtek/rtw88/main.c
-@@ -474,10 +474,10 @@ static u8 hw_bw_cap_to_bitamp(u8 bw_cap)
- 	case EFUSE_HW_CAP_IGNORE:
- 	case EFUSE_HW_CAP_SUPP_BW80:
- 		bw |= BIT(RTW_CHANNEL_WIDTH_80);
--		/* fall through */
-+		fallthrough;
- 	case EFUSE_HW_CAP_SUPP_BW40:
- 		bw |= BIT(RTW_CHANNEL_WIDTH_40);
--		/* fall through */
-+		fallthrough;
- 	default:
- 		bw |= BIT(RTW_CHANNEL_WIDTH_20);
- 		break;
-diff --git a/drivers/net/wireless/realtek/rtw88/phy.c b/drivers/net/wireless/realtek/rtw88/phy.c
-index 8d93f3159746..a4a40372b1b0 100644
---- a/drivers/net/wireless/realtek/rtw88/phy.c
-+++ b/drivers/net/wireless/realtek/rtw88/phy.c
-@@ -1522,7 +1522,7 @@ static u8 rtw_get_channel_group(u8 channel)
- 	switch (channel) {
- 	default:
- 		WARN_ON(1);
--		/* fall through */
-+		fallthrough;
- 	case 1:
- 	case 2:
- 	case 36:
-@@ -1668,7 +1668,7 @@ static u8 rtw_phy_get_2g_tx_power_index(struct rtw_dev *rtwdev,
- 	switch (bandwidth) {
- 	default:
- 		WARN_ON(1);
--		/* fall through */
-+		fallthrough;
- 	case RTW_CHANNEL_WIDTH_20:
- 		tx_power += pwr_idx_2g->ht_1s_diff.bw20 * factor;
- 		if (above_2ss)
-@@ -1712,7 +1712,7 @@ static u8 rtw_phy_get_5g_tx_power_index(struct rtw_dev *rtwdev,
- 	switch (bandwidth) {
- 	default:
- 		WARN_ON(1);
--		/* fall through */
-+		fallthrough;
- 	case RTW_CHANNEL_WIDTH_20:
- 		tx_power += pwr_idx_5g->ht_1s_diff.bw20 * factor;
- 		if (above_2ss)
--- 
-2.27.0
+> > > Responses should be made by Sat, 22 Aug 2020 09:15:09 +0000.
+> > > Anything received after that time might be too late.
 
+> > > The whole patch series can be found in one patch at:
+> > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.3-rc1.gz
+> > > or in the git tree and branch at:
+> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.8.y
+> > > and the diffstat can be found below.
+
+> > > thanks,
+
+> > > greg k-h
+
+> > > Herbert Xu <herbert@gondor.apana.org.au>
+> > >     crypto: af_alg - Fix regression on empty requests
+
+> > Results from Linaro’s test farm.
+> > Regressions detected.
+
+> >   ltp-crypto-tests:
+> >     * af_alg02
+> >   ltp-cve-tests:
+> >     * cve-2017-17805
+
+> > af_alg02.c:52: BROK: Timed out while reading from request socket.
+> > We are running the LTP 20200515 tag released test suite.
+> >  https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/crypto/af_alg02.c
+
+> > Summary
+> > ------------------------------------------------------------------------
+
+> > kernel: 5.8.3-rc1
+> > git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+> > git branch: linux-5.8.y
+> > git commit: 201fff807310ce10485bcff294d47be95f3769eb
+> > git describe: v5.8.2-233-g201fff807310
+> > Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.8-oe/build/v5.8.2-233-g201fff807310
+
+> > Regressions (compared to build v5.8.2)
+> > ------------------------------------------------------------------------
+
+> > x15:
+> >   ltp-crypto-tests:
+> >     * af_alg02
+
+> >   ltp-cve-tests:
+> >     * cve-2017-17805
+
+
+> Looks like this test is still "broken" because it assumes behavior that isn't
+> clearly specified, as previously discussed at
+> https://lkml.kernel.org/r/20200702033221.GA19367@gondor.apana.org.au.
+
+> I sent out LTP patches to fix it:
+> https://lkml.kernel.org/linux-crypto/20200820181918.404758-1-ebiggers@kernel.org/T/#u
+
+FYI fix for LTP merged.
+
+Kind regards,
+Petr
+
+> - Eric
