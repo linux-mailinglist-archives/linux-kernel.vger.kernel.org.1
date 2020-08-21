@@ -2,68 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15DA624CFCF
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 09:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8465E24CFD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 09:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728177AbgHUHoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 03:44:13 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:54898 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728036AbgHUHoH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 03:44:07 -0400
-Received: from zn.tnic (p200300ec2f0eda00b4e1d8975031aaf0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:da00:b4e1:d897:5031:aaf0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 46E9F1EC013E;
-        Fri, 21 Aug 2020 09:44:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1597995844;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=/VLxr4dUi7USeeH53ZvvCwvHownlzsBvY+Xuy61UjKo=;
-        b=BqtZjh0NAJScy01jzq1+qUfXSNwhfhAg3MYPqqI2PqrZxlQurET3MwL21jiIYsRyQaIgV4
-        o0Ljla4bj+XoBoe8K0/oSlA5gFH6OD5DJSuoTaAUuBTimWt9idwulji0ZHii9qPzwCPkER
-        aJRPGIcE3ApMQh58HS3i6pkaidchShU=
-Date:   Fri, 21 Aug 2020 09:44:00 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     peterz@infradead.org
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@intel.com>,
-        Chang Seok Bae <chang.seok.bae@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [PATCH] x86/entry/64: Disallow RDPID in paranoid entry if KVM is
- enabled
-Message-ID: <20200821074400.GA12181@zn.tnic>
-References: <20200821025050.32573-1-sean.j.christopherson@intel.com>
- <20200821072414.GH1362448@hirez.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200821072414.GH1362448@hirez.programming.kicks-ass.net>
+        id S1728149AbgHUHqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 03:46:07 -0400
+Received: from mail.zju.edu.cn ([61.164.42.155]:14198 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727824AbgHUHqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 03:46:05 -0400
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app4 (Coremail) with SMTP id cS_KCgDHP3uFez9fIjMsAQ--.38108S4;
+        Fri, 21 Aug 2020 15:45:14 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Tony Lindgren <tony@atomide.com>,
+        zhengbin <zhengbin13@huawei.com>, Kevin Hilman <khilman@ti.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/omap: Fix runtime PM imbalance in dsi_runtime_get
+Date:   Fri, 21 Aug 2020 15:45:03 +0800
+Message-Id: <20200821074506.32359-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgDHP3uFez9fIjMsAQ--.38108S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrKrW7ZFyDtr4kZrW7CrykXwb_yoWkWFX_Ww
+        n0qrnxGr43KFyqqw4UAa4YvrySvFW7Zay8Xr18tayfArWIvr1DJry0vrZrAwsxXa17AF1D
+        Ca1vgF93ArZrCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbV8Fc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
+        0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoSBlZdtPnBhAAhs+
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 09:24:14AM +0200, peterz@infradead.org wrote:
-> With distro configs that's going to be a guaranteed no_rdpid. Also with
-> a grand total of 0 performance numbers that RDPID is even worth it, I'd
-> suggest to just unconditionally remove that thing. Simpler code
-> all-around.
+pm_runtime_get_sync() increments the runtime PM usage counter
+even when it returns an error code. However, users of
+dsi_runtime_get(), a direct wrapper of pm_runtime_get_sync(),
+assume that PM usage counter will not change on error. Thus a
+pairing decrement is needed on the error handling path to keep
+the counter balanced.
 
-I was just about to say the same thing - all this dancing around just to
-keep RDPID better be backed by numbers, otherwise just remove the damn
-thing in that path and use LSL and be done with it.
+Fixes: 4fbafaf371be7 ("OMAP: DSS2: Use PM runtime & HWMOD support")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/gpu/drm/omapdrm/dss/dsi.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/gpu/drm/omapdrm/dss/dsi.c b/drivers/gpu/drm/omapdrm/dss/dsi.c
+index eeccf40bae41..973bfa14a104 100644
+--- a/drivers/gpu/drm/omapdrm/dss/dsi.c
++++ b/drivers/gpu/drm/omapdrm/dss/dsi.c
+@@ -1112,8 +1112,11 @@ static int dsi_runtime_get(struct dsi_data *dsi)
+ 	DSSDBG("dsi_runtime_get\n");
+ 
+ 	r = pm_runtime_get_sync(dsi->dev);
+-	WARN_ON(r < 0);
+-	return r < 0 ? r : 0;
++	if (WARN_ON(r < 0)) {
++		pm_runtime_put_noidle(dsi->dev);
++		return r;
++	}
++	return 0;
+ }
+ 
+ static void dsi_runtime_put(struct dsi_data *dsi)
 -- 
-Regards/Gruss,
-    Boris.
+2.17.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
