@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3C1D24DA3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D001A24DA45
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728270AbgHUQTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 12:19:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47720 "EHLO mail.kernel.org"
+        id S1728258AbgHUQTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 12:19:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726809AbgHUQPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:15:16 -0400
+        id S1727889AbgHUQPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 12:15:21 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E8E04214F1;
-        Fri, 21 Aug 2020 16:15:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4BADA22C9F;
+        Fri, 21 Aug 2020 16:15:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598026515;
-        bh=ZS5koshl9P5XnEP6E1J+YO76VIZh7Oth6V8mWrNQ9Ps=;
+        s=default; t=1598026518;
+        bh=FS9LV1mgzKB2FrwnM+i3H+Tuad1djbcvC2VsGtvdOyI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pbdMPzVC6JMv9hVQpSGfN0X5p3kYJreHmCX7eXlzIiC3/L7+CXfUmTsU9YpOJRMmA
-         WMR2mQlD0usMVMVcErPSS/svqybdQzZa8YZMcXV6AhnwFH9S8+/s5+Dxu96Ne6CDP7
-         EeWbQuuKy+gU1RGDSouNzMI1Ui5gdArrx8ts4rIY=
+        b=B4GFlIn0r5x1xYgOq2O9Bo4du9mGyjh15e5A5T1xi8JZe1HWkLKxBZpR1pveNu1sc
+         ldoCrrsdTSvjfv+imFUdFzfOFmNtCuix8Lmz+JsdYdN036w0x+FkWzLK2KFguCIS91
+         GUE8Fy92xcrNZ/ICNeqBWyizuPAnyZ0Hh4Tdh7xE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Reto Schneider <code@reto-schneider.ch>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 40/62] rtlwifi: rtl8192cu: Prevent leaking urb
-Date:   Fri, 21 Aug 2020 12:14:01 -0400
-Message-Id: <20200821161423.347071-40-sashal@kernel.org>
+Cc:     Kaige Li <likaige@loongson.cn>, Takashi Iwai <tiwai@suse.de>,
+        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 5.8 42/62] ALSA: hda: Add support for Loongson 7A1000 controller
+Date:   Fri, 21 Aug 2020 12:14:03 -0400
+Message-Id: <20200821161423.347071-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200821161423.347071-1-sashal@kernel.org>
 References: <20200821161423.347071-1-sashal@kernel.org>
@@ -44,38 +42,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Reto Schneider <code@reto-schneider.ch>
+From: Kaige Li <likaige@loongson.cn>
 
-[ Upstream commit 03128643eb5453a798db5770952c73dc64fcaf00 ]
+[ Upstream commit 61eee4a7fc406f94e441778c3cecbbed30373c89 ]
 
-If usb_submit_urb fails the allocated urb should be unanchored and
-released.
+Add the new PCI ID 0x0014 0x7a07 to support Loongson 7A1000 controller.
 
-Signed-off-by: Reto Schneider <code@reto-schneider.ch>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200622132113.14508-3-code@reto-schneider.ch
+Signed-off-by: Kaige Li <likaige@loongson.cn>
+Link: https://lore.kernel.org/r/1594954292-1703-2-git-send-email-likaige@loongson.cn
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/realtek/rtlwifi/usb.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/pci/hda/hda_intel.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/wireless/realtek/rtlwifi/usb.c b/drivers/net/wireless/realtek/rtlwifi/usb.c
-index c66c6dc003783..bad06939a247c 100644
---- a/drivers/net/wireless/realtek/rtlwifi/usb.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/usb.c
-@@ -718,8 +718,11 @@ static int _rtl_usb_receive(struct ieee80211_hw *hw)
- 
- 		usb_anchor_urb(urb, &rtlusb->rx_submitted);
- 		err = usb_submit_urb(urb, GFP_KERNEL);
--		if (err)
-+		if (err) {
-+			usb_unanchor_urb(urb);
-+			usb_free_urb(urb);
- 			goto err_out;
-+		}
- 		usb_free_urb(urb);
- 	}
- 	return 0;
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 4c23b169ac67e..1a26940a3fd7c 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2747,6 +2747,8 @@ static const struct pci_device_id azx_ids[] = {
+ 	  .driver_data = AZX_DRIVER_GENERIC | AZX_DCAPS_PRESET_ATI_HDMI },
+ 	/* Zhaoxin */
+ 	{ PCI_DEVICE(0x1d17, 0x3288), .driver_data = AZX_DRIVER_ZHAOXIN },
++	/* Loongson */
++	{ PCI_DEVICE(0x0014, 0x7a07), .driver_data = AZX_DRIVER_GENERIC },
+ 	{ 0, }
+ };
+ MODULE_DEVICE_TABLE(pci, azx_ids);
 -- 
 2.25.1
 
