@@ -2,96 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99CF424D976
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2073724D94C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726716AbgHUQMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 12:12:06 -0400
-Received: from 6.mo2.mail-out.ovh.net ([87.98.165.38]:43346 "EHLO
-        6.mo2.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbgHUQMB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:12:01 -0400
-Received: from player755.ha.ovh.net (unknown [10.110.115.223])
-        by mo2.mail-out.ovh.net (Postfix) with ESMTP id DEFA21E379F
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 18:02:40 +0200 (CEST)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player755.ha.ovh.net (Postfix) with ESMTPSA id 4F52A157ED5B3;
-        Fri, 21 Aug 2020 16:02:35 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-105G006368e313c-e325-44bd-9ae6-001aee886a17,
-                    20EB7F6BE0168D07063FB82D5C23839419BBC220) smtp.auth=steve@sk2.org
-From:   Stephen Kitt <steve@sk2.org>
-To:     Eric Tremblay <etremblay@distech-controls.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
-Subject: [PATCH] hwmon: (tmp513) use simple i2c probe
-Date:   Fri, 21 Aug 2020 18:02:31 +0200
-Message-Id: <20200821160231.592571-1-steve@sk2.org>
-X-Mailer: git-send-email 2.25.4
+        id S1726749AbgHUQCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 12:02:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35254 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725866AbgHUQCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 12:02:44 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C1045207BB;
+        Fri, 21 Aug 2020 16:02:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598025764;
+        bh=bVxlYauOODt5UvuiL4qlg3/4fXBWfUekdVF6gpHL2NA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qtiOLcTNtgV8t5B/UrNYZ67LjVkjtj+tvsE9RImkxtdHUkBLASZC84M+1nS5+sgV8
+         12FhkH4Yc2r9MBR7hEzYmWd/5CxFkvZFFSXaR1E+wKWERtuGzDJFGqL94UTpIKmSud
+         HqMJEU+DetpWiJgA/zKbNbLhRsa4BmgcgcDUJ6xU=
+Date:   Fri, 21 Aug 2020 17:02:38 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
+        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 00/17] Warn on orphan section placement
+Message-ID: <20200821160237.GB21517@willie-the-truck>
+References: <20200629061840.4065483-1-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 17302829769863875927
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrudduvddgkeejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucggtffrrghtthgvrhhnpeetgedugfelkeeikeetgeegteevfeeufeetuefgudeiiedthfehtdeffeekvdeffeenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeehhedrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200629061840.4065483-1-keescook@chromium.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As part of the ongoing i2c transition to the simple probe
-("probe_new"), this patch uses i2c_match_id to retrieve the
-driver_data for the probed device. The id parameter is thus no longer
-necessary and the simple probe can be used instead.
+Hi Kees,
 
-Signed-off-by: Stephen Kitt <steve@sk2.org>
----
- drivers/hwmon/tmp513.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+On Sun, Jun 28, 2020 at 11:18:23PM -0700, Kees Cook wrote:
+> v4:
+> - explicitly add .ARM.attributes
+> - split up arm64 changes into separate patches
+> - split up arm changes into separate patches
+> - work around Clang section generation bug in -mbranch-protection
+> - work around Clang section generation bug in KASAN and KCSAN
+> - split "common" ELF sections out of STABS_DEBUG
+> - changed relative position of .comment
+> - add reviews/acks
 
-diff --git a/drivers/hwmon/tmp513.c b/drivers/hwmon/tmp513.c
-index df66e0bc1253..9f5885b0eb74 100644
---- a/drivers/hwmon/tmp513.c
-+++ b/drivers/hwmon/tmp513.c
-@@ -709,8 +709,7 @@ static int tmp51x_configure(struct device *dev, struct tmp51x_data *data)
- 	return 0;
- }
- 
--static int tmp51x_probe(struct i2c_client *client,
--			const struct i2c_device_id *id)
-+static int tmp51x_probe(struct i2c_client *client)
- {
- 	struct device *dev = &client->dev;
- 	struct tmp51x_data *data;
-@@ -724,7 +723,7 @@ static int tmp51x_probe(struct i2c_client *client,
- 	if (client->dev.of_node)
- 		data->id = (enum tmp51x_ids)device_get_match_data(&client->dev);
- 	else
--		data->id = id->driver_data;
-+		data->id = i2c_match_id(tmp51x_id, client)->driver_data;
- 
- 	ret = tmp51x_configure(dev, data);
- 	if (ret < 0) {
-@@ -751,7 +750,7 @@ static int tmp51x_probe(struct i2c_client *client,
- 	if (IS_ERR(hwmon_dev))
- 		return PTR_ERR(hwmon_dev);
- 
--	dev_dbg(dev, "power monitor %s\n", id->name);
-+	dev_dbg(dev, "power monitor %s\n", client->name);
- 
- 	return 0;
- }
-@@ -761,7 +760,7 @@ static struct i2c_driver tmp51x_driver = {
- 		.name	= "tmp51x",
- 		.of_match_table = of_match_ptr(tmp51x_of_match),
- 	},
--	.probe		= tmp51x_probe,
-+	.probe_new	= tmp51x_probe,
- 	.id_table	= tmp51x_id,
- };
- 
--- 
-2.25.4
+What's the plan with this series? I thought it might have landed during the
+merge window, but I can't even seem to find it in next. Anything else you
+need on the arm64 side?
 
+Will
