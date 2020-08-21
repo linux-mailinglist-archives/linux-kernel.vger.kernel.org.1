@@ -2,98 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 114CB24DCAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74B6E24DCD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728298AbgHURGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 13:06:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51510 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728240AbgHUQS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:18:26 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DAC3422BF5;
-        Fri, 21 Aug 2020 16:18:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598026686;
-        bh=Zd9trFmb/P/F9p8nDs9AnkiHR6lVNPcpkIQyVaBL0kg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0fzsGDqTZtLE+pvHmcrtpm2bb/41nJqq9ZxAmWGInJB+ch5fv7W6tJ9PQD6EQw7By
-         4n31ww0vaAic9S8WaABom7/oZFCDsX5wtSFCqVm1zDBEOT5QzMrWFlj9sd01C8CSxA
-         Ce0du8SOSWiyRkoBTmtQUCvsukx6fLehO3hXccKM=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        syzbot+d6ec23007e951dadf3de@syzkaller.appspotmail.com,
-        Amir Goldstein <amir73il@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Colin Walters <walters@verbum.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>, linux-mm@kvack.org
-Subject: [PATCH AUTOSEL 5.4 48/48] hugetlbfs: prevent filesystem stacking of hugetlbfs
-Date:   Fri, 21 Aug 2020 12:17:04 -0400
-Message-Id: <20200821161704.348164-48-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200821161704.348164-1-sashal@kernel.org>
-References: <20200821161704.348164-1-sashal@kernel.org>
+        id S1728915AbgHURIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 13:08:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726181AbgHUQRo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 12:17:44 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 090C0C061573;
+        Fri, 21 Aug 2020 09:17:44 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id i19so1183100lfj.8;
+        Fri, 21 Aug 2020 09:17:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ciQpCZNqlUAY76HFlpjGJHUNDAs9xwtRbJI1yNtcuhM=;
+        b=V3/MFuyaaic5NHAkMdBvSSzRXUx1HZnX7/7tVB5SKdqFl4sCYkXTJLsJGDC8JzAEBz
+         QQHAWx1G5tLg68B/f+jO/GTnmuGXHhqqsBY99hXSUagyg+/ese3ijTQFcPm59tc/Om0j
+         93zEOpjIPKN+nJsVkX97YNxBsJZ8beku0FZSKz1vyd0ww1TeaPiS8O9rAmi4VkXJ0jVM
+         YJVQVXWk6cpCcjykvdwRko4eFY+lYyAh9hfbpflaqRK7YwSgbZddXWy4G4blNIg5Dmc4
+         RU7t62cdxvy05TJm67EQ7n0CS3ldhL2OQ1YZfsFLOzNquURORpOUln5VqamVCzY6TsIZ
+         zDuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ciQpCZNqlUAY76HFlpjGJHUNDAs9xwtRbJI1yNtcuhM=;
+        b=tTOBuY/c8XDoyb9OQOZjTkvb+LM+j2P3XHryuaV8pLuY8mwy3uf1dfWt7yL40xs/MY
+         NOFVabsq4HRMUWHy+eFu/QYZnsHGbL3HNeBW00h4Lc2LARFk/E+6P0uvDwSUphPK9SKl
+         ROJAYgGE+aq2H0MHB7rZE4ERfpftWbUm9zBRP5mayKqXvmUgth3AAJc4hOZF/37lauun
+         /v9nH3KK9T+HcbMIjkLEoIa6ROJD4FIo4tNDSNsk9lEQDgBto/EVMqjZuWyGjiwI1Mwg
+         EJnh0L9mdgU5XN5X9SHEZdRKMHk7gn1yP851v8h6iKYSTnKes8JlNu5cXEomw00S7HkW
+         UrXg==
+X-Gm-Message-State: AOAM5320FRkl99HPk8tjWY4w//0hstpZPuZJgW5dZYb8oJErJxwaDUi+
+        zjiVAdBor+RY5ojxpJdP3r3vCfu/yDlUpg6jqL8=
+X-Google-Smtp-Source: ABdhPJwm4JQ0bHBpLTQfTKEIlpZDWvTsAm23urM4zWdMRprV3Ar817MgJFfm1txpjI+CAqlIEnxa8dYFBlvOP4wMeaM=
+X-Received: by 2002:ac2:59c5:: with SMTP id x5mr1766672lfn.174.1598026662334;
+ Fri, 21 Aug 2020 09:17:42 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <87ft8l6ic3.fsf@x220.int.ebiederm.org> <20200817220425.9389-9-ebiederm@xmission.com>
+ <CAHk-=whCU_psWXHod0-WqXXKB4gKzgW9q=d_ZEFPNATr3kG=QQ@mail.gmail.com>
+ <875z9g7oln.fsf@x220.int.ebiederm.org> <CAHk-=wjk_CnGHt4LBi2WsOeYOxE5j79R8xHzZytCy8t-_9orQw@mail.gmail.com>
+ <20200818110556.q5i5quflrcljv4wa@wittgenstein> <87pn7m22kn.fsf@x220.int.ebiederm.org>
+ <CAADnVQKpDaaogmbZPD0bv3SrTXo9i5eSBMz1dd=3wOn9pxDOWA@mail.gmail.com> <871rk0t45v.fsf@x220.int.ebiederm.org>
+In-Reply-To: <871rk0t45v.fsf@x220.int.ebiederm.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 21 Aug 2020 09:17:30 -0700
+Message-ID: <CAADnVQL2ugp+t39kXnd_iQMM8RGM=O2nD7OBL7XvB1GBHcyoxA@mail.gmail.com>
+Subject: Re: [PATCH 09/17] file: Implement fnext_task
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
+        criu@openvz.org, bpf <bpf@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Jann Horn <jann@thejh.net>, Kees Cook <keescook@chromium.org>,
+        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Matthew Wilcox <willy@debian.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Matthew Wilcox <matthew@wil.cx>,
+        Trond Myklebust <trond.myklebust@fys.uio.no>,
+        Chris Wright <chrisw@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Kravetz <mike.kravetz@oracle.com>
+On Fri, Aug 21, 2020 at 8:26 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>
+> > On Wed, Aug 19, 2020 at 6:25 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+> >>
+> >> The bug in the existing code is that bpf_iter does get_file instead
+> >> of get_file_rcu.  Does anyone have any sense of how to add debugging
+> >> to get_file to notice when it is being called in the wrong context?
+> >
+> > That bug is already fixed in bpf tree.
+> > See commit cf28f3bbfca0 ("bpf: Use get_file_rcu() instead of
+> > get_file() for task_file iterator")
+>
+> I wished you had based that change on -rc1 instead of some random
+> looking place in David's Millers net tree.
 
-[ Upstream commit 15568299b7d9988063afce60731df605ab236e2a ]
+random?
+It's a well documented process. Please see:
+Documentation/bpf/bpf_devel_QA.rst
 
-syzbot found issues with having hugetlbfs on a union/overlay as reported
-in [1].  Due to the limitations (no write) and special functionality of
-hugetlbfs, it does not work well in filesystem stacking.  There are no
-know use cases for hugetlbfs stacking.  Rather than making modifications
-to get hugetlbfs working in such environments, simply prevent stacking.
+> I am glad to see that our existing debug checks can catch that
+> kind of problem when the code is exercised enough.
 
-[1] https://lore.kernel.org/linux-mm/000000000000b4684e05a2968ca6@google.com/
+They did not. Please see the commit log of the fix.
+It was a NULL pointer dereference.
 
-Reported-by: syzbot+d6ec23007e951dadf3de@syzkaller.appspotmail.com
-Suggested-by: Amir Goldstein <amir73il@gmail.com>
-Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Miklos Szeredi <mszeredi@redhat.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Colin Walters <walters@verbum.org>
-Link: http://lkml.kernel.org/r/80f869aa-810d-ef6c-8888-b46cee135907@oracle.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/hugetlbfs/inode.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+> I am going to pull this change into my tree on top of -rc1 so we won't
+> have unnecessary conflicts.  Hopefully this will show up in -rc2 so the
+> final version of this patchset can use an easily describable base.
 
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index 40306c1eab07c..5fff7cb3582f0 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -1284,6 +1284,12 @@ hugetlbfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	sb->s_magic = HUGETLBFS_MAGIC;
- 	sb->s_op = &hugetlbfs_ops;
- 	sb->s_time_gran = 1;
-+
-+	/*
-+	 * Due to the special and limited functionality of hugetlbfs, it does
-+	 * not work well as a stacking filesystem.
-+	 */
-+	sb->s_stack_depth = FILESYSTEM_MAX_STACK_DEPTH;
- 	sb->s_root = d_make_root(hugetlbfs_get_root(sb, ctx));
- 	if (!sb->s_root)
- 		goto out_free;
--- 
-2.25.1
-
+Please do not cherry pick fixes from other trees. You need to wait
+until the bpf tree gets merged into net tree and net into Linus's tree.
+It's only a couple days away. Hopefully it's there by -rc2,
+but I cannot speak for Dave's schedule.
+We'll send bpf tree pull-req to Dave today.
