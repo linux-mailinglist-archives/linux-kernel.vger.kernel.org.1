@@ -2,196 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD4624CEA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 09:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F235B24CEB0
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 09:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727988AbgHUHLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 03:11:50 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:28666 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727905AbgHUHLa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 03:11:30 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200821071127epoutp04ac12510bcacf8b7ab4b1fb4fb58b9e3e~tNvlN7ViN2253722537epoutp04V
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 07:11:27 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200821071127epoutp04ac12510bcacf8b7ab4b1fb4fb58b9e3e~tNvlN7ViN2253722537epoutp04V
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1597993887;
-        bh=aV0x4n6wQckii0JDBHb/o4LkoOEhIHxl7xns9Eg3VhU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UtVhY1IT7h8a7RPeMP8EH0ah3Fz7mAeOoxmpmz9GefxUhZUfAZV5+NTsGFIePBtH6
-         aPsKL3regcqJ4GseeXzLFGQQe/M7xzxD+3BxUS9TQfFkM97Nh8XuvGfN5kq5wlCR2l
-         2P1j3Ks7W+N1c4X8KJRWDfmTj4YP7HFmako+vQhw=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20200821071126epcas1p4d9ce4f46c18803992d1d7e22986ac3b3~tNvknpofv3245032450epcas1p4c;
-        Fri, 21 Aug 2020 07:11:26 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.156]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4BXt3Z4g0JzMqYkr; Fri, 21 Aug
-        2020 07:11:22 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A7.8D.18978.A937F3F5; Fri, 21 Aug 2020 16:11:22 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20200821071122epcas1p3d00dda4665f94192ac5e9ee829d0557d~tNvgqLEzS1277912779epcas1p3n;
-        Fri, 21 Aug 2020 07:11:22 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200821071122epsmtrp2da61cd56d43dbcb30a9004682fdccc9e~tNvgpY4TN2521125211epsmtrp25;
-        Fri, 21 Aug 2020 07:11:22 +0000 (GMT)
-X-AuditID: b6c32a35-603ff70000004a22-63-5f3f739ae0fc
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        BD.C1.08382.A937F3F5; Fri, 21 Aug 2020 16:11:22 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.113.111.64]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200821071121epsmtip2b93ad01672ed278eec482ed19b1d61e6~tNvgXmNBO2424724247epsmtip2y;
-        Fri, 21 Aug 2020 07:11:21 +0000 (GMT)
-From:   Hoegeun Kwon <hoegeun.kwon@samsung.com>
-To:     nsaenzjulienne@suse.de, eric@anholt.net, maxime@cerno.tech
-Cc:     devicetree@vger.kernel.org, tim.gover@raspberrypi.com,
-        dave.stevenson@raspberrypi.com, sboyd@kernel.org,
-        mturquette@baylibre.com, kdasu.kdev@gmail.com,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-clk@vger.kernel.org, robh+dt@kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org, phil@raspberrypi.com,
-        linux-arm-kernel@lists.infradead.org, hoegeun.kwon@samsung.com
-Subject: [PATCH 3/3] drm/vc4: hdmi: Add pixel bvb clock control
-Date:   Fri, 21 Aug 2020 16:10:45 +0900
-Message-Id: <20200821071045.24501-4-hoegeun.kwon@samsung.com>
+        id S1728015AbgHUHMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 03:12:16 -0400
+Received: from mx1.tq-group.com ([62.157.118.193]:14048 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726548AbgHUHMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 03:12:14 -0400
+IronPort-SDR: 2D1en2nIaqpQD5WHCwkl5keNUKSx1Yg7WLkFEX+Jp+IudMxGs1H/g5cCp/jxcMacHgXvy977qn
+ 5g3ld4Rv8sGPCt/inLic2BkOVLqH70LdODaB2ptDpGVg13T61EzidU9QW3C6DvmrFHbpX2Zngh
+ wSVeYWIXGeol0ckTAlkUHDCjLHhVEeQNW8peWblzM86/UMCaKAFTTJ3j1iwbl+kjsFJRNfSETg
+ N4lh8O5r9BBLFmbAv+ZzOUyWz2Ya6kArXVgIQ2LdjiAiE5PTUGVhAM1FZUaEtYeQwUHYw7+fs7
+ jJo=
+X-IronPort-AV: E=Sophos;i="5.76,335,1592863200"; 
+   d="scan'208";a="13549137"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 21 Aug 2020 09:12:11 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Fri, 21 Aug 2020 09:12:11 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Fri, 21 Aug 2020 09:12:11 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1597993931; x=1629529931;
+  h=from:to:cc:subject:date:message-id;
+  bh=4C93rfTkYYAe6YpLxR8PaC5qgCxICWsqnPda3XOTLVU=;
+  b=Vt4Sqwe3i0b2cyC3lAhzp2Yi+sqoXtYFC2sCdrTVy8gwY9CyEiL+Um5k
+   uQAh5tqzqvc/VIz7efzO02RYLgv/rQ9LqIRcZqU9yvWwFIGGE0Y0uVjqe
+   eeHAp8F3vAQXI/MAoYBmLuf7Jc4NG6Sv12voaIF7Adwd5q67FOE5zqyHJ
+   c1wt0HK9Q+PnRxOJlrVn6I2EDnsnNv7boPbh/ENCzhYSp84Bdnovc+fU+
+   lNGOPSuyQT7bAY5zTVU2MNVPv/7XM5OsmhxxP6QqbXtfAQcE3E8voGhDd
+   Ah9qmNvgxe0PM7YWxrdT2pjcXpM7L456B/LhM67awZEsKtNRssxlEaur4
+   Q==;
+IronPort-SDR: 6LGTt+7iBWNLGsTYozLX6NjYOiV2bCMlsFeIRF2xdffJ9B+qK9CoDa1hEyGqnxS5Q7XWWYVf1P
+ v7KRfyhftrSqG/neIJL821FYZLfCDPzGD9wpbq873juzofSBUp76oxRK3bssXI8m2fTfNJLt3i
+ OOlRIXO5npr+Vfpsn5wWPnRzD9fwe+kxzQLDPS8f5KiKSFwvyRUdY7MAPMsWo5WtRMynRW3E7A
+ 0ySil2zYA546DRPRdhaamIo+uQJLKfLV474xZ2T1g5AJ5ZbssgzE4BdXP0f9nLfNRBi+ZZtDkI
+ WlU=
+X-IronPort-AV: E=Sophos;i="5.76,335,1592863200"; 
+   d="scan'208";a="13549136"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 21 Aug 2020 09:12:11 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 90C36280065;
+        Fri, 21 Aug 2020 09:12:11 +0200 (CEST)
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Subject: [PATCH 1/2] ASoC: bindings: fsl-asoc-card: add compatible string for TLV320AIC32x4 codec
+Date:   Fri, 21 Aug 2020 09:11:52 +0200
+Message-Id: <20200821071153.7317-1-matthias.schiffer@ew.tq-group.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200821071045.24501-1-hoegeun.kwon@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrCJsWRmVeSWpSXmKPExsWy7bCmge6sYvt4g7PP5SzW9h5lsXg7dzGL
-        xfwj51gtrnx9z2ZxoPEyo8X75V1sFjuvrGWx2PT4GqvFx557rBaXd81hs5h4ewO7xYwf/xgt
-        Lp5ytdg2azmbxbpbr9ksWvceYbf4d20ji8WjqfcZHYQ8mt4fY/N4f6OV3WPW/bNsHnfOnWfz
-        2DnrLrvHplWdbB73u48zeWxeUu/RevQXi0ffllWMHptPV3t83iQXwBOVbZORmpiSWqSQmpec
-        n5KZl26r5B0c7xxvamZgqGtoaWGupJCXmJtqq+TiE6DrlpkD9J2SQlliTilQKCCxuFhJ386m
-        KL+0JFUhI7+4xFYptSAlp8CyQK84Mbe4NC9dLzk/18rQwMDIFKgwITvj36fVTAVbRCuOz+hk
-        bWDsFupi5OSQEDCRaFr9jr2LkYtDSGAHo8Sl00dZQRJCAp8YJeYdC4VIfGOUuPfwKhtMx94l
-        j9kgEnsZJRZOugfV/plRYsOuz+wgVWwCuhJfe64zgdgiAnYSbT0HGUGKmAW2M0tcb+8GKxIW
-        sJeYcO4R0D4ODhYBVYnH37hBwrwCthI3516D2iYvsXrDAWYQmxNozuI7S1lA5kgIXOCQWLRo
-        CTtEkYvE0S23mCFsYYlXx7dAxaUkPr/bCzWoWOLKzFdQzQ2MEv0TZ0MVGUvsXzqZCeQIZgFN
-        ifW79CHCihI7f89lBLGZBfgk3n3tAbtTQoBXoqMNGnZqEs8aDrBC2DISp3qXM0HYHhLvJx+G
-        BspERonnJ88xT2CUm4WwYQEj4ypGsdSC4tz01GLDAkPkKNvECE6+WqY7GCe+/aB3iJGJg/EQ
-        owQHs5IIb+9e63gh3pTEyqrUovz4otKc1OJDjKbAwJvILCWanA9M/3kl8YamRsbGxhYmhmam
-        hoZK4rwPbynECwmkJ5akZqemFqQWwfQxcXBKNTDVpBUwrph/aeVaz417Zdk/8LI4Hm8XXpKS
-        oOX0ZZq405XX4bOnfTyk3CMrnc7wQKVl0grbsN2KF7Q3djx/bOwVFzPx34pTbleckvY/vevK
-        YiZ95t6mgLodrlt632QVcFW+cMlc0tXLsSv8PFeZzmcTqSiRt20eZf//e5Q6rVjJO3nZeZ6W
-        WOH+b5Urk+bWupfZPM19omk8xfAis8mBdw2Hpx2fcFllTQq75oHHixcJhhmUr/SfYfrT0vBE
-        ZuDLHdfNktwCtNoqLa7Vn1q3OEqrOohXa4ZnF8vp5l1WXxkWzEw80efiPfHzcRs1H7ktX+be
-        kHuq8Uv5hUbFEnMXtfvfW5ZaxJVrq1v0Bcc52CmxFGckGmoxFxUnAgAyuvKxRwQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrLLMWRmVeSWpSXmKPExsWy7bCSvO6sYvt4g29HOS3W9h5lsXg7dzGL
-        xfwj51gtrnx9z2ZxoPEyo8X75V1sFjuvrGWx2PT4GqvFx557rBaXd81hs5h4ewO7xYwf/xgt
-        Lp5ytdg2azmbxbpbr9ksWvceYbf4d20ji8WjqfcZHYQ8mt4fY/N4f6OV3WPW/bNsHnfOnWfz
-        2DnrLrvHplWdbB73u48zeWxeUu/RevQXi0ffllWMHptPV3t83iQXwBPFZZOSmpNZllqkb5fA
-        lfHv02qmgi2iFcdndLI2MHYLdTFyckgImEjsXfKYrYuRi0NIYDejxI6G0ywQCRmJVf1bWLsY
-        OYBsYYnDh4shaj4ySkw7t5YRpIZNQFfia891JhBbRMBJ4sHffcwgRcwCx5klpvcfYAVJCAvY
-        S0w49whsEIuAqsTjb9wgYV4BW4mbc6+xQeySl1i94QAziM0pYCex+M5SsBuEgGpOdXxknsDI
-        t4CRYRWjZGpBcW56brFhgWFearlecWJucWleul5yfu4mRnCMaGnuYNy+6oPeIUYmDsZDjBIc
-        zEoivL17reOFeFMSK6tSi/Lji0pzUosPMUpzsCiJ894oXBgnJJCeWJKanZpakFoEk2Xi4JRq
-        YLLa8c5iyvf3NzQ/h0pPXOCf27ZQIqpn9nbPSt+X0086vdK4+oa5/8bhcPVwNe4vOW0vZkg/
-        O/os98rcibqdnfF5Vm87cytSj/qUqVs9dv2QJ6pyYt6rS7uy1dpUfEsV+sV6V1Qwyt11TU99
-        Yhz29uup2wuTH86ScRBdututMnrJCUuZW29/SIc2LLry99Ph9cpZlSs+HTpyQO35dq5N6xlu
-        5RSeZkovmrDMYHPfhTvSK63mSJfNfG2a9bz3oVD0sX6W0KCpalP/b1HavfKz7sbGK8cZGv7O
-        YOcJ/XNP+VincrKX+zbzhl/9LG7qX39ueislfdopU9Bx46Ro3cKJJ0ImZgud+Z+0LPTy3NNl
-        h9YqsRRnJBpqMRcVJwIAetHsOwADAAA=
-X-CMS-MailID: 20200821071122epcas1p3d00dda4665f94192ac5e9ee829d0557d
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200821071122epcas1p3d00dda4665f94192ac5e9ee829d0557d
-References: <20200821071045.24501-1-hoegeun.kwon@samsung.com>
-        <CGME20200821071122epcas1p3d00dda4665f94192ac5e9ee829d0557d@epcas1p3.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a problem that the output does not work at a resolution
-exceeding FHD. To solve this, we need to adjust the bvb clock at a
-resolution exceeding FHD.
+The TLV320AIC32x4 is commonly used on TQ-Systems starterkit mainboards
+for i.MX-based SoMs (i.MX6Q/DL, i.MX6UL, i.MX7) and LS1021A.
 
-Signed-off-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
+Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 ---
- drivers/gpu/drm/vc4/vc4_hdmi.c | 25 +++++++++++++++++++++++++
- drivers/gpu/drm/vc4/vc4_hdmi.h |  1 +
- 2 files changed, 26 insertions(+)
+ Documentation/devicetree/bindings/sound/fsl-asoc-card.txt | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index 95ec5eedea39..eb3192d1fd86 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -80,6 +80,7 @@
- # define VC4_HD_M_ENABLE			BIT(0)
+diff --git a/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt b/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
+index 63ebf52b43e8..f339be62e7e4 100644
+--- a/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
++++ b/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
+@@ -38,6 +38,8 @@ The compatible list for this generic sound card currently:
  
- #define CEC_CLOCK_FREQ 40000
-+#define VC4_HSM_MID_CLOCK 149985000
+  "fsl,imx-audio-wm8524"
  
- static int vc4_hdmi_debugfs_regs(struct seq_file *m, void *unused)
- {
-@@ -380,6 +381,7 @@ static void vc4_hdmi_encoder_post_crtc_powerdown(struct drm_encoder *encoder)
- 	HDMI_WRITE(HDMI_VID_CTL,
- 		   HDMI_READ(HDMI_VID_CTL) & ~VC4_HD_VID_CTL_ENABLE);
- 
-+	clk_disable_unprepare(vc4_hdmi->pixel_bvb_clock);
- 	clk_disable_unprepare(vc4_hdmi->hsm_clock);
- 	clk_disable_unprepare(vc4_hdmi->pixel_clock);
- 
-@@ -638,6 +640,23 @@ static void vc4_hdmi_encoder_pre_crtc_configure(struct drm_encoder *encoder)
- 		return;
- 	}
- 
-+	ret = clk_set_rate(vc4_hdmi->pixel_bvb_clock,
-+			(hsm_rate > VC4_HSM_MID_CLOCK ? 150000000 : 75000000));
-+	if (ret) {
-+		DRM_ERROR("Failed to set pixel bvb clock rate: %d\n", ret);
-+		clk_disable_unprepare(vc4_hdmi->hsm_clock);
-+		clk_disable_unprepare(vc4_hdmi->pixel_clock);
-+		return;
-+	}
++ "fsl,imx-audio-tlv320aic32x4"
 +
-+	ret = clk_prepare_enable(vc4_hdmi->pixel_bvb_clock);
-+	if (ret) {
-+		DRM_ERROR("Failed to turn on pixel bvb clock: %d\n", ret);
-+		clk_disable_unprepare(vc4_hdmi->hsm_clock);
-+		clk_disable_unprepare(vc4_hdmi->pixel_clock);
-+		return;
-+	}
-+
- 	if (vc4_hdmi->variant->reset)
- 		vc4_hdmi->variant->reset(vc4_hdmi);
+ Required properties:
  
-@@ -1593,6 +1612,12 @@ static int vc5_hdmi_init_resources(struct vc4_hdmi *vc4_hdmi)
- 		return PTR_ERR(vc4_hdmi->audio_clock);
- 	}
- 
-+	vc4_hdmi->pixel_bvb_clock = devm_clk_get(dev, "bvb");
-+	if (IS_ERR(vc4_hdmi->pixel_bvb_clock)) {
-+		DRM_ERROR("Failed to get pixel bvb clock\n");
-+		return PTR_ERR(vc4_hdmi->pixel_bvb_clock);
-+	}
-+
- 	vc4_hdmi->reset = devm_reset_control_get(dev, NULL);
- 	if (IS_ERR(vc4_hdmi->reset)) {
- 		DRM_ERROR("Failed to get HDMI reset line\n");
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.h b/drivers/gpu/drm/vc4/vc4_hdmi.h
-index 0806c6d9f24e..63c6f8bddf1d 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.h
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.h
-@@ -147,6 +147,7 @@ struct vc4_hdmi {
- 	struct clk *pixel_clock;
- 	struct clk *hsm_clock;
- 	struct clk *audio_clock;
-+	struct clk *pixel_bvb_clock;
- 
- 	struct reset_control *reset;
- 
+   - compatible		: Contains one of entries in the compatible list.
 -- 
 2.17.1
 
