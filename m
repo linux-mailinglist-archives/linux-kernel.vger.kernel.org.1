@@ -2,241 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7692F24CBA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 05:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 355FD24CB81
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 05:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727931AbgHUDvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 23:51:24 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:35828 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727090AbgHUDvY (ORCPT
+        id S1727897AbgHUDpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 23:45:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727090AbgHUDpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 23:51:24 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1597981883; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=8rbtmpEouJenSJA2EpxoBAY5IfGcZIzNBKVktZgupcg=; b=vsLQNTtehjYWoGiiGRB/05RkjYGNm03XjvkKRiIS7BoiOytsk4w8TeaBBuCUaI1pdcgKNHqc
- av6cARX77EZLmBtuQitAWUn5dmfb3tGZm9Q2vsiCqDiH5cPhU/wlVtNyRbZgfCFSjxE6rz5V
- pduGA3Xpm3gT9f+TmkGPGDu+new=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5f3f445c1384cb499a59e042 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 21 Aug 2020 03:49:48
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6F475C433CB; Fri, 21 Aug 2020 03:49:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from tingweiz-gv.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tingwei)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BB4C0C433CA;
-        Fri, 21 Aug 2020 03:49:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BB4C0C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=tingwei@codeaurora.org
-From:   Tingwei Zhang <tingwei@codeaurora.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mike Leach <mike.leach@linaro.org>
-Cc:     Tingwei Zhang <tingwei@codeaurora.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Kim Phillips <kim.phillips@arm.com>,
-        Mian Yousaf Kaukab <ykaukab@suse.de>, tsoni@codeaurora.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Mao Jinlong <jinlmao@codeaurora.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Suzuki K Poulose <Suzuki.Poulose@arm.com>
-Subject: [PATCH v10 24/24] coresight: allow the coresight core driver to be built as a module
-Date:   Fri, 21 Aug 2020 11:44:45 +0800
-Message-Id: <20200821034445.967-25-tingwei@codeaurora.org>
-X-Mailer: git-send-email 2.20.0
-In-Reply-To: <20200821034445.967-1-tingwei@codeaurora.org>
-References: <20200821034445.967-1-tingwei@codeaurora.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 20 Aug 2020 23:45:05 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 672FBC061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 20:45:05 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id k4so301690ilr.12
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 20:45:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=pjb3qXMqNGgbJ/lSuknPKaxC91VgiCH9RpbBjdcDS+8=;
+        b=mV8MyBfwdtBHyzYdMge8jfhsn0YXfWoqfrEOge4JH25XoMui3ok4QyrAfAHSRsxDUD
+         BbFoOhjLpPdqki5bLodj0gyNJif5RCd8HiuIHXg/rtUVRQfOaacVwr1i7upVDHR7DV47
+         ABbgHTY/zwpTVpqbyL2Rccs5IRsNy4N2lC2NMl6a8U1FTWRInZlBE0gv7Mf8fE83Ea60
+         bvmlXqd4QCjdqXHPvlv83QOdA1U4U/JgS3aS7rF4GCoNF0hg/sXgFB9bk08YuZ/PZbnw
+         Lj24IFQ3UUP1UNc7Fr5GwdXe8BoIMFMFVfqI4bTsaH4y2/VSJQPMj8BotrkS+lv3C8v7
+         dZOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=pjb3qXMqNGgbJ/lSuknPKaxC91VgiCH9RpbBjdcDS+8=;
+        b=jQg6phyKf0EYlfS+Z/wu/ifzUH6F0S4mf4rj7xQKfGbhfNgEa+uDzuntdkZnNo3/6k
+         U+ca+KbclDYvQHwT1ygkmBxeOEVGJ78KLU/Dl41JcYKKrIKsbd4VnjxmRajxVY7Tjo99
+         f+o6lVHqnmKNJmjKVtyg8Vx37RtbcY4lFjUBkR1llMSC8dkD18GdkDKw3diEXIoBys3k
+         2HzvdIuJDp3dUXqsefpld6T9XSXP5/up0LinXrY0fhc8XrkbnOAu+1H3V7MmrB79Fva/
+         kfsSYcKIYIz/XunTqx2kCqsoFvNUB1ubrY1wtlgYX7os8ynas/x1MuYinSVd8Zpi+VH5
+         c+0w==
+X-Gm-Message-State: AOAM5335seHIY+F4qfLo+ZZvYNyAKmi2rjnxYiHhEcRUtN3xURNymCsU
+        oqQGQ1hzsrFWGHTqQUUI0qA=
+X-Google-Smtp-Source: ABdhPJyQO2gsgp9hegbJXCRacpvIWQr1eAIAyQvGnHxGPvbmUrWyvaCsC/lHY6qQXi/ljXI9Zed6fg==
+X-Received: by 2002:a92:2901:: with SMTP id l1mr949385ilg.306.1597981503759;
+        Thu, 20 Aug 2020 20:45:03 -0700 (PDT)
+Received: from localhost.localdomain (x-128-101-215-112.reshalls.umn.edu. [128.101.215.112])
+        by smtp.gmail.com with ESMTPSA id c90sm390227ilf.30.2020.08.20.20.45.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Aug 2020 20:45:03 -0700 (PDT)
+From:   George Acosta <acostag.ubuntu@gmail.com>
+To:     acostag.ubuntu@gmail.com
+Cc:     Matt Porter <mporter@kernel.crashing.org>,
+        Alexandre Bounine <alex.bou9@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] rapidio: fix get device imbalance on error
+Date:   Thu, 20 Aug 2020 22:44:57 -0500
+Message-Id: <20200821034458.22472-1-acostag.ubuntu@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enhance coresight developer's efficiency to debug coresight drivers.
-- Kconfig becomes a tristate, to allow =m
-- append -core to source file name to allow module to
-  be called coresight by the Makefile
-- modules can have only one init/exit, so we add the etm_perf
-  register/unregister function calls to the core init/exit
-  functions.
-- add a MODULE_DEVICE_TABLE for autoloading on boot
+Fix the imbalance in mport_cdev_open.
+Call put_device in error path to balance the
+refcount that increased by the get_device.
 
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Cc: Suzuki K Poulose <Suzuki.Poulose@arm.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Russell King <linux@armlinux.org.uk>
-Signed-off-by: Kim Phillips <kim.phillips@arm.com>
-Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
-Tested-by: Mike Leach <mike.leach@linaro.org>
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Fixes: e8de370188d0 ("rapidio: add mport char device driver")
+Signed-off-by: George Acosta <acostag.ubuntu@gmail.com>
 ---
- drivers/hwtracing/coresight/Kconfig           |  5 ++-
- drivers/hwtracing/coresight/Makefile          |  5 ++-
- .../{coresight.c => coresight-core.c}         | 42 ++++++++++++++-----
- .../hwtracing/coresight/coresight-etm-perf.c  |  8 +++-
- .../hwtracing/coresight/coresight-etm-perf.h  |  3 ++
- 5 files changed, 48 insertions(+), 15 deletions(-)
- rename drivers/hwtracing/coresight/{coresight.c => coresight-core.c} (98%)
+ drivers/rapidio/devices/rio_mport_cdev.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
-index dfe407cde262..c1198245461d 100644
---- a/drivers/hwtracing/coresight/Kconfig
-+++ b/drivers/hwtracing/coresight/Kconfig
-@@ -3,7 +3,7 @@
- # Coresight configuration
- #
- menuconfig CORESIGHT
--	bool "CoreSight Tracing Support"
-+	tristate "CoreSight Tracing Support"
- 	depends on ARM || ARM64
- 	depends on OF || ACPI
- 	select ARM_AMBA
-@@ -15,6 +15,9 @@ menuconfig CORESIGHT
- 	  specification and configure the right series of components when a
- 	  trace source gets enabled.
- 
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called coresight.
-+
- if CORESIGHT
- config CORESIGHT_LINKS_AND_SINKS
- 	tristate "CoreSight Link and Sink drivers"
-diff --git a/drivers/hwtracing/coresight/Makefile b/drivers/hwtracing/coresight/Makefile
-index 0359d5a1588f..1b35b55bd420 100644
---- a/drivers/hwtracing/coresight/Makefile
-+++ b/drivers/hwtracing/coresight/Makefile
-@@ -2,8 +2,9 @@
- #
- # Makefile for CoreSight drivers.
- #
--obj-$(CONFIG_CORESIGHT) += coresight.o coresight-etm-perf.o \
--			   coresight-platform.o coresight-sysfs.o
-+obj-$(CONFIG_CORESIGHT) += coresight.o
-+coresight-y := coresight-core.o  coresight-etm-perf.o coresight-platform.o \
-+		coresight-sysfs.o
- obj-$(CONFIG_CORESIGHT_LINK_AND_SINK_TMC) += coresight-tmc.o
- coresight-tmc-y := coresight-tmc-core.o coresight-tmc-etf.o \
- 		      coresight-tmc-etr.o
-diff --git a/drivers/hwtracing/coresight/coresight.c b/drivers/hwtracing/coresight/coresight-core.c
-similarity index 98%
-rename from drivers/hwtracing/coresight/coresight.c
-rename to drivers/hwtracing/coresight/coresight-core.c
-index 668963b4b7d4..bf6edf468963 100644
---- a/drivers/hwtracing/coresight/coresight.c
-+++ b/drivers/hwtracing/coresight/coresight-core.c
-@@ -1460,16 +1460,6 @@ int coresight_timeout(void __iomem *addr, u32 offset, int position, int value)
- }
- EXPORT_SYMBOL_GPL(coresight_timeout);
- 
--struct bus_type coresight_bustype = {
--	.name	= "coresight",
--};
--
--static int __init coresight_init(void)
--{
--	return bus_register(&coresight_bustype);
--}
--postcore_initcall(coresight_init);
--
- /*
-  * coresight_release_platform_data: Release references to the devices connected
-  * to the output port of this device.
-@@ -1678,3 +1668,35 @@ char *coresight_alloc_device_name(struct coresight_dev_list *dict,
- 	return name;
- }
- EXPORT_SYMBOL_GPL(coresight_alloc_device_name);
-+
-+struct bus_type coresight_bustype = {
-+	.name	= "coresight",
-+};
-+
-+static int __init coresight_init(void)
-+{
-+	int ret;
-+
-+	ret = bus_register(&coresight_bustype);
-+	if (ret)
-+		return ret;
-+
-+	ret = etm_perf_init();
-+	if (ret)
-+		bus_unregister(&coresight_bustype);
-+
-+	return ret;
-+}
-+
-+static void __exit coresight_exit(void)
-+{
-+	etm_perf_exit();
-+	bus_unregister(&coresight_bustype);
-+}
-+
-+module_init(coresight_init);
-+module_exit(coresight_exit);
-+
-+MODULE_AUTHOR("Pratik Patel <pratikp@codeaurora.org>");
-+MODULE_AUTHOR("Mathieu Poirier <mathieu.poirier@linaro.org>");
-+MODULE_DESCRIPTION("Arm CoreSight tracer driver");
-diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-index 3728c44e5763..668b3ff11576 100644
---- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-+++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-@@ -591,7 +591,7 @@ void etm_perf_del_symlink_sink(struct coresight_device *csdev)
- 	csdev->ea = NULL;
- }
- 
--static int __init etm_perf_init(void)
-+int __init etm_perf_init(void)
- {
- 	int ret;
- 
-@@ -618,4 +618,8 @@ static int __init etm_perf_init(void)
- 
- 	return ret;
- }
--device_initcall(etm_perf_init);
-+
-+void __exit etm_perf_exit(void)
-+{
-+	perf_pmu_unregister(&etm_pmu);
-+}
-diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.h b/drivers/hwtracing/coresight/coresight-etm-perf.h
-index 05f89723e282..3e4f2ad5e193 100644
---- a/drivers/hwtracing/coresight/coresight-etm-perf.h
-+++ b/drivers/hwtracing/coresight/coresight-etm-perf.h
-@@ -82,4 +82,7 @@ static inline void *etm_perf_sink_config(struct perf_output_handle *handle)
- 
- #endif /* CONFIG_CORESIGHT */
- 
-+int __init etm_perf_init(void);
-+void __exit etm_perf_exit(void);
-+
- #endif
+diff --git a/drivers/rapidio/devices/rio_mport_cdev.c b/drivers/rapidio/devices/rio_mport_cdev.c
+index c07ceec3c6d4..3b68e00eb40f 100644
+--- a/drivers/rapidio/devices/rio_mport_cdev.c
++++ b/drivers/rapidio/devices/rio_mport_cdev.c
+@@ -1908,6 +1908,7 @@ static int mport_cdev_open(struct inode *inode, struct file *filp)
+ 			  sizeof(struct rio_event) * MPORT_EVENT_DEPTH,
+ 			  GFP_KERNEL);
+ 	if (ret < 0) {
++		put_device(&chdev->dev);
+ 		dev_err(&chdev->dev, DRV_NAME ": kfifo_alloc failed\n");
+ 		ret = -ENOMEM;
+ 		goto err_fifo;
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.17.1
 
