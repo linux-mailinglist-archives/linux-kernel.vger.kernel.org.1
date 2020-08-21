@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDCAF24E0EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 21:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E3724E10C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 21:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726856AbgHUTpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 15:45:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36824 "EHLO
+        id S1727006AbgHUTqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 15:46:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726736AbgHUTog (ORCPT
+        with ESMTP id S1726759AbgHUToi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 15:44:36 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA15C0617AB
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:44:27 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id d22so1568963pfn.5
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:44:27 -0700 (PDT)
+        Fri, 21 Aug 2020 15:44:38 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C80C0617BD
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:44:28 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id s15so1467162pgc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:44:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Y6H7F3yYvyF+nG4ZythWO1q4A4EGexkc0hsQxsFmb9Y=;
-        b=bzEVhilQDoNZ88CqeMIylY5czHrj5mvx3pyI0KZHCOwCCad75pWPogmJocbzqDIa4M
-         jCL7LMBOWN3BWIkvwxCZD0INBFknxTPTqmEyLqGKlmZvjvzASSQMjNtetIJK/36sGUfc
-         tpPl9PGejZzGddLdSQuM8jUBTC9zPIENj4PdY=
+        bh=XUX2/F199MEO0A5MxoqXk+lRBktQIKiWBEBF3o8wM8g=;
+        b=j1sa53Ser9mup3Pv1fHYCK7qkFQ8JkWE5b9bJ2WYsLFPuFUJI+77KvzI8C6EnJ19+U
+         HOx5t7CYCG20lCrUcZggNSgWvsVF0d2eqTd4pLYBAA6zYjF6GRTQ4yiYD74vhBk3D1th
+         23E2s7EIY6h+0C6fBfpGXayEHW+B0c00eaZ9Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Y6H7F3yYvyF+nG4ZythWO1q4A4EGexkc0hsQxsFmb9Y=;
-        b=plGRd+i/k5gMDo+Yxthj7tm/qKSkcnt0Vrst83pt8D6qWtT0Jyzssrd6969i9I8mJZ
-         sCZ89ksRXrMKxX2OxKfwLxDBZqZ22byvJEzub2PZk7O9igx3toIPr93eXplUfmnK0TLD
-         4pwPRAZQKf1k3V7HEadl0Azrg2TgXbXQHB0ceiMeS+vP+jT1cHIP4g3B3Ret8RwqfkZb
-         Lck4Tzivt81NMSTtSuKDChPu4/DMpvV4aTsfGiPrxPaVb5yJCy7crWDOOnYE/OS019Qr
-         JJW81W7ptqcEYNZYtIgEwD56zn8Qw5vZ8Nob6dkpQLig8AS1j0jrllHoa+CA3/I6mLNM
-         Zs7g==
-X-Gm-Message-State: AOAM533GefzZafpmIFISXVqugmgbi+OibpaeDRd+qlaOmubxU3os///U
-        xaic5v/XztfzrvUqxO7pSrivYA==
-X-Google-Smtp-Source: ABdhPJzovlQLohuyGck2L97aDvFQQrVLNN8WGQiiMLGQhFilz17skLPcq8rq1acZQatUKm4A+V3zJQ==
-X-Received: by 2002:a63:9c1:: with SMTP id 184mr171258pgj.265.1598039067233;
+        bh=XUX2/F199MEO0A5MxoqXk+lRBktQIKiWBEBF3o8wM8g=;
+        b=CpRZTQb+vJqj+M5xxTDfZFA+I0l29pRTRiz1vZ7qfmrLusi6JEjCv3Q79VUXd0Wr3O
+         0mJ8M54Bu/weqh6WCQj1EB2KsEV8RC0+2vvqA4nXbSLH5o6EobIZf8PvUKkHmM8W+0kZ
+         c5P6fp/edcJQfXJXFeYR8k024GxJHERrj/kohd+ONU4PMq5tm+/+Podht+Z1U2qx1N5m
+         bDiVaCSbqtINmCrLtu9gGADNms7QrCq6znb2tFxteSPl4tQnzNsNKZM23OOmP0VXK7fH
+         +k8fIwSQTps0H+1ZUWymR/ujIcRS79BH3tSE28bijaX1Zq8cgZnZseMatxR/ahCsqWax
+         /LEg==
+X-Gm-Message-State: AOAM533pXFzkDomboLltE+BgoLnUGpwsgIwYs/F0MZpiF3+DRN/7sXyy
+        fUI0DxFPxXtqKrw5rxb7MtrwzA==
+X-Google-Smtp-Source: ABdhPJxMWaonUSXNP/PpdB0d3pPrg3ZHtK9FuUs2ySecf3qKVDwynmOApOgUDdedWpVyLheXGVlFJw==
+X-Received: by 2002:a65:679a:: with SMTP id e26mr3467507pgr.167.1598039067977;
         Fri, 21 Aug 2020 12:44:27 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id g23sm3243141pfo.95.2020.08.21.12.44.22
+        by smtp.gmail.com with ESMTPSA id p20sm2611002pjz.49.2020.08.21.12.44.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 21 Aug 2020 12:44:25 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -64,9 +64,9 @@ Cc:     Kees Cook <keescook@chromium.org>,
         clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
         linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v6 09/29] arm64/kernel: Remove needless Call Frame Information annotations
-Date:   Fri, 21 Aug 2020 12:42:50 -0700
-Message-Id: <20200821194310.3089815-10-keescook@chromium.org>
+Subject: [PATCH v6 10/29] arm64/build: Remove .eh_frame* sections due to unwind tables
+Date:   Fri, 21 Aug 2020 12:42:51 -0700
+Message-Id: <20200821194310.3089815-11-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200821194310.3089815-1-keescook@chromium.org>
 References: <20200821194310.3089815-1-keescook@chromium.org>
@@ -77,36 +77,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove last instance of an .eh_frame section by removing the needless Call
-Frame Information annotations which were likely leftovers from 32-bit arm.
+Avoid .eh_frame* section generation by making sure both CFLAGS and AFLAGS
+contain -fno-asychronous-unwind-tables and -fno-unwind-tables.
+
+With all sources of .eh_frame now removed from the build, drop this
+DISCARD so we can be alerted in the future if it returns unexpectedly
+once orphan section warnings have been enabled.
 
 Suggested-by: Ard Biesheuvel <ardb@kernel.org>
 Acked-by: Will Deacon <will@kernel.org>
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- arch/arm64/kernel/smccc-call.S | 2 --
- 1 file changed, 2 deletions(-)
+ arch/arm64/Makefile             | 5 ++++-
+ arch/arm64/kernel/vmlinux.lds.S | 1 -
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/kernel/smccc-call.S b/arch/arm64/kernel/smccc-call.S
-index 1f93809528a4..d62447964ed9 100644
---- a/arch/arm64/kernel/smccc-call.S
-+++ b/arch/arm64/kernel/smccc-call.S
-@@ -9,7 +9,6 @@
- #include <asm/assembler.h>
+diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+index 55bc8546d9c7..6de7f551b821 100644
+--- a/arch/arm64/Makefile
++++ b/arch/arm64/Makefile
+@@ -47,13 +47,16 @@ endif
  
- 	.macro SMCCC instr
--	.cfi_startproc
- 	\instr	#0
- 	ldr	x4, [sp]
- 	stp	x0, x1, [x4, #ARM_SMCCC_RES_X0_OFFS]
-@@ -21,7 +20,6 @@
- 	b.ne	1f
- 	str	x6, [x4, ARM_SMCCC_QUIRK_STATE_OFFS]
- 1:	ret
--	.cfi_endproc
- 	.endm
+ KBUILD_CFLAGS	+= -mgeneral-regs-only	\
+ 		   $(compat_vdso) $(cc_has_k_constraint)
+-KBUILD_CFLAGS	+= -fno-asynchronous-unwind-tables
+ KBUILD_CFLAGS	+= $(call cc-disable-warning, psabi)
+ KBUILD_AFLAGS	+= $(compat_vdso)
  
- /*
+ KBUILD_CFLAGS	+= $(call cc-option,-mabi=lp64)
+ KBUILD_AFLAGS	+= $(call cc-option,-mabi=lp64)
+ 
++# Avoid generating .eh_frame* sections.
++KBUILD_CFLAGS	+= -fno-asynchronous-unwind-tables -fno-unwind-tables
++KBUILD_AFLAGS	+= -fno-asynchronous-unwind-tables -fno-unwind-tables
++
+ ifeq ($(CONFIG_STACKPROTECTOR_PER_TASK),y)
+ prepare: stack_protector_prepare
+ stack_protector_prepare: prepare0
+diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
+index 13fc2ec46aae..c2b8426bf4bd 100644
+--- a/arch/arm64/kernel/vmlinux.lds.S
++++ b/arch/arm64/kernel/vmlinux.lds.S
+@@ -94,7 +94,6 @@ SECTIONS
+ 		*(.discard.*)
+ 		*(.interp .dynamic)
+ 		*(.dynsym .dynstr .hash .gnu.hash)
+-		*(.eh_frame)
+ 	}
+ 
+ 	. = KIMAGE_VADDR + TEXT_OFFSET;
 -- 
 2.25.1
 
