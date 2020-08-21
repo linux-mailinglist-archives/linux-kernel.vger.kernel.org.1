@@ -2,145 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D9924CF26
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 09:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0944B24CF42
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 09:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728666AbgHUHWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 03:22:39 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:44582 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728270AbgHUHWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 03:22:31 -0400
-IronPort-SDR: PvpX4vLHoB6c9cGWXR+HM20NT9r22FGsrYRI3utjSvWfg16ftQ5T6XYs86nxtN3Xy/Gr9H84f8
- R0f9vzRkx9AF45foI7mKFqbB0GwehklXFftO6AP07M/MZcavuTmEMDZ//LmJxXZ8fHPg5RVtb+
- Xu8bF+vyj5wPwW4aeQgZfTu9oP6/mrN15eYA7lAQ672VqX8Wndgao364ec3jGs+SjcLWjc2Az9
- QJYHA5gXCT+1U8gGbBJVb4GfOujTfNYFKaRNEnC2/V48U3DgKblVqwdOxJEiSH1ERTxfhVi5kP
- 6CM=
-X-IronPort-AV: E=Sophos;i="5.76,335,1592863200"; 
-   d="scan'208";a="13549384"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 21 Aug 2020 09:22:26 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Fri, 21 Aug 2020 09:22:29 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Fri, 21 Aug 2020 09:22:29 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1597994546; x=1629530546;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=C2YxwjDhmsC3RZPpcsF1SDGKY5Ul1PexKxYtX5L1/3k=;
-  b=jgau/tGjIKIdGMdRG+L7p1JwJvunKAAj1PU8Xcc22sDGkoeVRXCOahTC
-   d3slq2Q7WRF/xbsa7osaR8q5mCmUS9OEr08fXK/4NFD726eA+VkJ+ryA5
-   FYb7cL4OZlH9L4wtmccL/PlNNdw76V83IJj0cLpJwF+tufY9bPtrq9ekr
-   cK+exIP1tw5kf221mYJqvemcIpNntV/koJ1DSQrOVVI9zBvwo8kG7WHt3
-   ex2oNYcJ8YvxgwGrA3bra0TpEvfKJCKgpJehd/QYxEiyZNyZk5eugVk/K
-   BPyfBE7wqJuM9qpL9/pFgZHycJwP7U9joIL63gkoP4YC0Nf7wYM+s2SRO
-   g==;
-IronPort-SDR: SUKNibXxzv1XPL+UiPJeYZeyVofAQBX+xqiik/VINdxgi6Yea2TV1bKh2HGlBICHCmL2D5Q1IM
- 8gyzab0K5QkKVxTbWY4AkWjjqCtwADype1Jj31jhJBQuBz9Ev3lRvjPcbgQGwacBts+WycIQD9
- MVrnnedoL74ZtAqsBbdIz2wSWyLUyyxIUfhXXc76UBNGBTdmTIGllMD9DRAOOYqpuKkXzrYc8j
- 1pa/15uTRixuAPxqtMCbAdmAl/xNC9+tVgB6JixjH+oA+Jk3zqj5nycXVHWem7+BqqQXNyrhdl
- EzE=
-X-IronPort-AV: E=Sophos;i="5.76,335,1592863200"; 
-   d="scan'208";a="13549383"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 21 Aug 2020 09:22:26 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id EFC79280070;
-        Fri, 21 Aug 2020 09:22:25 +0200 (CEST)
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Dan Murphy <dmurphy@ti.com>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH net-next 2/2] net: phy: dp83867: apply ti,led-function and ti,led-ctrl to registers
-Date:   Fri, 21 Aug 2020 09:21:46 +0200
-Message-Id: <20200821072146.8117-2-matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200821072146.8117-1-matthias.schiffer@ew.tq-group.com>
-References: <20200821072146.8117-1-matthias.schiffer@ew.tq-group.com>
+        id S1728116AbgHUHYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 03:24:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727873AbgHUHYp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 03:24:45 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57060C061385;
+        Fri, 21 Aug 2020 00:24:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=zz8fZZdhH+JJC5yy6EdzQ8wTU5OLIvBo+26qAJBzST8=; b=owR7eiVgwxP6repaAN6OZzTsKU
+        ALgQR0Z0DDdZr34Clu2uH0hSy8Doug989grf/jXukUqXF4BpdX5TWGhDflwZzJdfqdD2zBTGk2t1T
+        wwyYfMQOsKkLYmhRPrhoJBZhNwP4zUIfEaXbKDFgzp+xeKdsxf+vi8y8YNJNid+1fWkyyotxjg1DH
+        fQ7fRgHy261s466smafmg63VozhZUGLIhj3XdSjRBZjS3uuYTTehwFlHOtW0mNaM6iY3eeGmbAKS/
+        VVzAXuYIBFkpr8mcdS8DuwcmzRz7C016IlIgCXBBRndxV+LTMuzwgMaUAfHUzFZe0vKv6PKIGr+Kl
+        TN5b3bEQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k91PO-0004lQ-2r; Fri, 21 Aug 2020 07:24:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 59090303271;
+        Fri, 21 Aug 2020 09:24:14 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3EC922B410945; Fri, 21 Aug 2020 09:24:14 +0200 (CEST)
+Date:   Fri, 21 Aug 2020 09:24:14 +0200
+From:   peterz@infradead.org
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
+        Chang Seok Bae <chang.seok.bae@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH] x86/entry/64: Disallow RDPID in paranoid entry if KVM is
+ enabled
+Message-ID: <20200821072414.GH1362448@hirez.programming.kicks-ass.net>
+References: <20200821025050.32573-1-sean.j.christopherson@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200821025050.32573-1-sean.j.christopherson@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These DT bindings are already in use by the imx7-mba7 DTS, but they were
-not supported by the PHY driver so far.
+On Thu, Aug 20, 2020 at 07:50:50PM -0700, Sean Christopherson wrote:
+> diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+> index 70dea93378162..fd915c46297c5 100644
+> --- a/arch/x86/entry/entry_64.S
+> +++ b/arch/x86/entry/entry_64.S
+> @@ -842,8 +842,13 @@ SYM_CODE_START_LOCAL(paranoid_entry)
+>  	 *
+>  	 * The MSR write ensures that no subsequent load is based on a
+>  	 * mispredicted GSBASE. No extra FENCE required.
+> +	 *
+> +	 * Disallow RDPID if KVM is enabled as it may consume a guest's TSC_AUX
+> +	 * if an NMI arrives in KVM's run loop.  KVM loads guest's TSC_AUX on
+> +	 * VM-Enter and may not restore the host's value until the CPU returns
+> +	 * to userspace, i.e. KVM depends on the kernel not using TSC_AUX.
+>  	 */
+> -	SAVE_AND_SET_GSBASE scratch_reg=%rax save_reg=%rbx
+> +	SAVE_AND_SET_GSBASE scratch_reg=%rax save_reg=%rbx no_rdpid=IS_ENABLED(CONFIG_KVM)
+>  	ret
 
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
----
- drivers/net/phy/dp83867.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
-
-diff --git a/drivers/net/phy/dp83867.c b/drivers/net/phy/dp83867.c
-index f3c04981b8da..972824e25c1c 100644
---- a/drivers/net/phy/dp83867.c
-+++ b/drivers/net/phy/dp83867.c
-@@ -26,6 +26,8 @@
- #define MII_DP83867_MICR	0x12
- #define MII_DP83867_ISR		0x13
- #define DP83867_CFG2		0x14
-+#define DP83867_LEDCR1		0x18
-+#define DP83867_LEDCR2		0x19
- #define DP83867_CFG3		0x1e
- #define DP83867_CTRL		0x1f
- 
-@@ -163,6 +165,8 @@ struct dp83867_private {
- 	u32 rx_fifo_depth;
- 	int io_impedance;
- 	int port_mirroring;
-+	u32 led_function;
-+	u32 led_ctrl;
- 	bool rxctrl_strap_quirk;
- 	bool set_clk_output;
- 	u32 clk_output_sel;
-@@ -583,6 +587,27 @@ static int dp83867_of_init(struct phy_device *phydev)
- 		return -EINVAL;
- 	}
- 
-+	ret = of_property_read_u32(of_node, "ti,led-function",
-+				   &dp83867->led_function);
-+	if (ret) {
-+		dp83867->led_function = U32_MAX;
-+	} else if (dp83867->led_function > U16_MAX) {
-+		phydev_err(phydev,
-+			   "ti,led-function value %x out of range\n",
-+			   dp83867->led_function);
-+		return -EINVAL;
-+	}
-+
-+	ret = of_property_read_u32(of_node, "ti,led-ctrl", &dp83867->led_ctrl);
-+	if (ret) {
-+		dp83867->led_ctrl = U32_MAX;
-+	} else if (dp83867->led_ctrl > U16_MAX) {
-+		phydev_err(phydev,
-+			   "ti,led-ctrl value %x out of range\n",
-+			   dp83867->led_ctrl);
-+		return -EINVAL;
-+	}
-+
- 	return 0;
- }
- #else
-@@ -788,6 +813,11 @@ static int dp83867_config_init(struct phy_device *phydev)
- 			       mask, val);
- 	}
- 
-+	if (dp83867->led_function != U32_MAX)
-+		phy_write(phydev, DP83867_LEDCR1, dp83867->led_function);
-+	if (dp83867->led_ctrl != U32_MAX)
-+		phy_write(phydev, DP83867_LEDCR2, dp83867->led_ctrl);
-+
- 	return 0;
- }
- 
--- 
-2.17.1
-
+With distro configs that's going to be a guaranteed no_rdpid. Also with
+a grand total of 0 performance numbers that RDPID is even worth it, I'd
+suggest to just unconditionally remove that thing. Simpler code
+all-around.
