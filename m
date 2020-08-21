@@ -2,80 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DAB924D5E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 15:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 584AA24D5E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 15:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728550AbgHUNN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 09:13:29 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:47518 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726345AbgHUNNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 09:13:25 -0400
-Received: from zn.tnic (p200300ec2f0eda00b8d46e5d5e13d656.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:da00:b8d4:6e5d:5e13:d656])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 860911EC03D5;
-        Fri, 21 Aug 2020 15:13:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1598015603;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=nHemKtTBp+NM9oPdX0rXMY4JjMfETVe/fnjU5artibA=;
-        b=OCwxbdk0CrCVF9l2onxaXcC7nVpa1AE7JgfgabYTAhUXR26PcokdTRKhVdgwWUvHe/NLkd
-        bkPoj2f8cVRoMQ7pkEFQtOct+hxDgxuoyQgRPoKNzY6kZ+MXndJtDIGKVGK4pN+Y7ACFYF
-        tZvMDSgt50g96fNGf2O/3BJob9RVYyI=
-Date:   Fri, 21 Aug 2020 15:13:17 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Fenghua Yu <fenghua.yu@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        Kuo-Lang Tseng <kuo-lang.tsenng@intel.com>,
-        Babu Moger <babu.moger@amd.com>, H Peter Anvin <hpa@zytor.com>,
-        x86 <x86@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] x86/resctrl: Enable user to view thread or core
- throttling mode
-Message-ID: <20200821131306.GH12181@zn.tnic>
-References: <1594921994-66192-1-git-send-email-fenghua.yu@intel.com>
- <1594921994-66192-3-git-send-email-fenghua.yu@intel.com>
+        id S1728708AbgHUNPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 09:15:42 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:41828 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727837AbgHUNP1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 09:15:27 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07LDCKZ7044099;
+        Fri, 21 Aug 2020 13:15:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=48t+JyaxUG+IiwX0HOyopf5UdpGg/IM7foZd1KSrLCc=;
+ b=XNkgb7RsDkvwpB4+y6cZIRRx1y+ShUsmuWUFDjAoTG+r8zo1FnIKquCAyRPHq251tMTK
+ +Gh63ZtewoUojaiLKo7Jmrf4vCk7BQRowhV3TdN/3rPP1K3tYufIb59cOjhOclSzLflO
+ 3x9ra3ckgTtvCFRJYFPfGdg1tubbye8gqrYi4OUtleA++Go36mVGAuU/9fsaj9DWPlgY
+ cYjosORm9WIdR8R6HvipPtrh5FGnODGrqbj6s1VWYyF7IkklVeoYHvSCukQ8IX2WGFUs
+ Hp3Pzh2xNSxfhh0MpD6RJlGM7R+tI5Y2xJZt1JjqtxJ5C0S5PCM7LZBHukS2xLnGImo5 jw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 32x74rnyxx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 21 Aug 2020 13:15:15 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07LD95Ow116592;
+        Fri, 21 Aug 2020 13:15:15 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 32xsn2jbak-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 21 Aug 2020 13:15:15 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07LDFBMK029772;
+        Fri, 21 Aug 2020 13:15:12 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 21 Aug 2020 13:15:11 +0000
+Date:   Fri, 21 Aug 2020 16:15:02 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Tomer Samara <tomersamara98@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, Todd Kjos <tkjos@android.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Riley Andrews <riandrews@android.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Hridya Valsaraju <hridya@google.com>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Martijn Coenen <maco@android.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Brauner <christian@brauner.io>
+Subject: Re: [PATCH v3 1/2] staging: android: Remove BUG_ON from
+ ion_page_pool.c
+Message-ID: <20200821131502.GU1793@kadam>
+References: <cover.1597865771.git.tomersamara98@gmail.com>
+ <2e6c71ad168f92170ef856922b9a0c8dd0f85e11.1597865771.git.tomersamara98@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1594921994-66192-3-git-send-email-fenghua.yu@intel.com>
+In-Reply-To: <2e6c71ad168f92170ef856922b9a0c8dd0f85e11.1597865771.git.tomersamara98@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9719 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 bulkscore=0
+ mlxlogscore=999 phishscore=0 mlxscore=0 suspectscore=2 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008210121
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9719 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxlogscore=999
+ priorityscore=1501 phishscore=0 spamscore=0 mlxscore=0 adultscore=0
+ suspectscore=2 lowpriorityscore=0 bulkscore=0 malwarescore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008210121
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 10:53:14AM -0700, Fenghua Yu wrote:
->  struct rdt_membw {
-> -	u32		max_delay;
-> -	u32		min_bw;
-> -	u32		bw_gran;
-> -	u32		delay_linear;
-> -	bool		mba_sc;
-> -	u32		*mb_map;
-> +	u32				max_delay;
-> +	u32				min_bw;
-> +	u32				bw_gran;
-> +	u32				delay_linear;
-> +	enum membw_throttle_mode	arch_throttle_mode;
+On Wed, Aug 19, 2020 at 10:38:47PM +0300, Tomer Samara wrote:
+> BUG_ON() is removed at ion_page_pool.c and add error handleing to
+> ion_page_pool_shrink
+> 
+> Fixes the following issue:
+> Avoid crashing the kernel - try using WARN_ON & recovery code ratherthan BUG() or BUG_ON().
+> 
+> Signed-off-by: Tomer Samara <tomersamara98@gmail.com>
+> ---
+>  drivers/staging/android/ion/ion_page_pool.c | 14 ++++++++++----
+>  1 file changed, 10 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/staging/android/ion/ion_page_pool.c b/drivers/staging/android/ion/ion_page_pool.c
+> index 0198b886d906..ae2bc57bcbe8 100644
+> --- a/drivers/staging/android/ion/ion_page_pool.c
+> +++ b/drivers/staging/android/ion/ion_page_pool.c
+> @@ -46,11 +46,13 @@ static struct page *ion_page_pool_remove(struct ion_page_pool *pool, bool high)
+>  	struct page *page;
+>  
+>  	if (high) {
+> -		BUG_ON(!pool->high_count);
+> +		if (!pool->high_count)
+> +			return NULL;
 
-I guess "arch" is implicit so you can
+I looked at the callers and it's trivial to verify that these conditions
+are impossible.  Just delete the BUG_ON() checks.
 
-s/arch_throttle_mode/throttle_mode/g
+>  		page = list_first_entry(&pool->high_items, struct page, lru);
+>  		pool->high_count--;
+>  	} else {
+> -		BUG_ON(!pool->low_count);
+> +		if (!pool->low_count)
+> +			return NULL;
+>  		page = list_first_entry(&pool->low_items, struct page, lru);
+>  		pool->low_count--;
+>  	}
+> @@ -65,7 +67,8 @@ struct page *ion_page_pool_alloc(struct ion_page_pool *pool)
+>  {
+>  	struct page *page = NULL;
+>  
+> -	BUG_ON(!pool);
+> +	if (!pool)
+> +		return NULL;
 
-...
+This one is slightly harder to verify...  But really I would prefer that
+we just deleted it as well.  If we had a NULL dereference here then that
+would give a pretty straight forward stack trace to debug.
 
-> +static struct rftype *rdtgroup_rftype_by_name(const char *name)
+>  
+>  	mutex_lock(&pool->mutex);
+>  	if (pool->high_count)
+> @@ -82,7 +85,8 @@ struct page *ion_page_pool_alloc(struct ion_page_pool *pool)
+>  
+>  void ion_page_pool_free(struct ion_page_pool *pool, struct page *page)
+>  {
+> -	BUG_ON(pool->order != compound_order(page));
+> +	if (pool->order != compound_order(page))
+> +		return;
 
-That function name needs a verb.
+Is returning really the correct way to handle this bug?  I suggest,
+just change BUG_ON() to a WARN_ON().
 
--- 
-Regards/Gruss,
-    Boris.
+>  
+>  	ion_page_pool_add(pool, page);
+>  }
+> @@ -124,6 +128,8 @@ int ion_page_pool_shrink(struct ion_page_pool *pool, gfp_t gfp_mask,
+>  			break;
+>  		}
+>  		mutex_unlock(&pool->mutex);
+> +		if (!page)
+> +			break;
 
-https://people.kernel.org/tglx/notes-about-netiquette
+This change is no longer required if we delete the changes earlier as
+I suggest.  This change illustrates how when we start handling
+impossible conditions then we just have to keep on imagining more and
+more impossible conditions.  When we start trying to write code for
+situations which we know are impossible that is an unending task.
+
+>  		ion_page_pool_free_pages(pool, page);
+>  		freed += (1 << pool->order);
+>  	}
+
+regards,
+dan carpenter
+
