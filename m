@@ -2,73 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8AC324D5B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 15:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88FEB24D5B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 15:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728697AbgHUNEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 09:04:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59224 "EHLO
+        id S1728748AbgHUNEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 09:04:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727894AbgHUND7 (ORCPT
+        with ESMTP id S1728595AbgHUNEC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 09:03:59 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96994C061388
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 06:03:58 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id r7so771722vsq.5
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 06:03:58 -0700 (PDT)
+        Fri, 21 Aug 2020 09:04:02 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BC4DC061387
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 06:04:02 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id e20so511259uav.3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 06:04:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wesd22SaH/Yu10jo2mpmrtMJ3o0MXxuO8DPBgj5gKOU=;
-        b=NTh8RyTmUKZNAmfZCw6zvzkEfSZHiAjvFUksKtYHD9TnfvQJFcp3drW1N1ohf4v59c
-         fzW6R+NZvRVRHuIs0w+PDW6Z1phFENujlIcqHtsxcoxRWcWwWmAscNXamwwebnA3s7ZU
-         Tsd8cNpWy+0YDRE9JyoKJ84DmhPtIJ2Bl/6edB9mLYbPJqYKjDMRzg4JR7iWZfDlUf4W
-         jxwdnX06nKNxAxlaodBuk2F8NlYfimmto9oXah5BuaaMb+MiJPOeaCJuwF6XBUwp0XYS
-         YjGYuEBuhv+YE+ulZfg1oiD2Jdsh/typWpzRG0q3UDPiKOXld+KXIzXh2tdGjUclim0S
-         VO2g==
+        bh=KnDW6llQiq63EFCJkVzXUzpg/vhNfgZSeuWupJPba2k=;
+        b=amMeqn6McxsW9H4NO/zZ0Pb6Eri6A3hNoEchjDZnuAUewx5ku9PhXwwnoQth9vHp1f
+         TMkmg7I90iD79l1oHaYDV6QvA6oZE4PAZF2h7NljHZ0tGjkOMlG1AMFdoQkqzfVWj1Zx
+         eaa/JoPXiBcKKJ81CpQxYwwhKiI/lL6/MhRhK3wjGrrevWMyowenQyVMF7GXFHJIV0HS
+         E5i2Jo1aR1RQHyiHsT8C3ImbQXLKI4Yn0xssjWKCcVEN9lZlFwAL+FuZqPQDECySk+5H
+         qXxyN82zE415KM+azojrn33wRmo54AoRQ5RzgIdOB6Z/3BViWqJETPAXxIhGfIXKiXh+
+         J+0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wesd22SaH/Yu10jo2mpmrtMJ3o0MXxuO8DPBgj5gKOU=;
-        b=hQdzgxbhnrvfuuBFs96igvB+SqKGJM4x/ZFtnHZG8082OonRpoXuXFAsCda4v+OJqV
-         D2Fw0rU3ed9vXzDVgzAbQBaAuY9Qy/c38KHF6wkCupAnqGCFYj/ivY4woWWMM3E+FXW9
-         eX24LPV97TK9lx5crruXqpdvQgYhRzY+j93fTe5B1+2WCp0SR+lk1rB1Mt3Q7VAWqThJ
-         T/JgxuF8POMo5EHh7+x4dv6bauf7e9ENVLPIebYcacH8xdSRCvhaze3g8bOQT+k1GIsJ
-         WzbALhFzwcU+YqqAFyelgL+VJaTYSH9gl55vo939RjwDghjI3cBfMLNFzrJfoCoC/NGY
-         2rlQ==
-X-Gm-Message-State: AOAM532Mmoc5xuo5/5fPwoyugSTfD9Zx34rMGhfscEHsXfOIzkzHOhs4
-        eOdbhhouWUdDr1mQv9q047bFA9r2mslB7W5YnSRy9w==
-X-Google-Smtp-Source: ABdhPJxKQlNajf9FNzPaKAATRgV0WhnFcDv8qBxSJNGexjRHXge8jJrzZV66RbH0DI/FiCkxBez3kUyWKFq8jMAyaAQ=
-X-Received: by 2002:a67:e9d8:: with SMTP id q24mr1516889vso.165.1598015037799;
- Fri, 21 Aug 2020 06:03:57 -0700 (PDT)
+        bh=KnDW6llQiq63EFCJkVzXUzpg/vhNfgZSeuWupJPba2k=;
+        b=fFAOqZabPMJQsz4uRTxx2R4FfTjNJ2cdqP9J3d0g8LC3d+yXGCfsl0xLNGGzo82ieF
+         Os96Ru6i/ey7UQyREiD7NsiruZ4AlDJQvrPdv6dSHAfNHw5tASLRTxEZQpuy/wo/BuMJ
+         t1fWexi7lntcndcdmq16v3tABpCL8sFu0BjGCgDdG84y6FN3en4PyyIn1BHlXUqjNBXz
+         EMrLO2vFJBWE4io9Rpf9hw9+6YojFAAD4tbKXfGoavpTnewO1TGdD2UwugQEdrMcKu9I
+         y789/2aliQTmDB3W10NQ8zApgQWC1qQYYzAMnrElBbpcrRbGVeOKbGVW5XiBAjuTcMNA
+         9mdA==
+X-Gm-Message-State: AOAM5326TInE1z1O6uP2yh0QcsykBi//ImB9Ig6kV+sS1rbRfWGJiuhJ
+        VdtEijcRbhZZBMpv44xY8Idutx39wQfCcb5C1vOYpg==
+X-Google-Smtp-Source: ABdhPJxYz1Bdm75WVJtCJBiqXNkdHyyC+9S/ilWhmuwkmkOMDXcKiZPrxqZmT9vVbW6PxuHSOTTLxtnagEQRkiuWcps=
+X-Received: by 2002:ab0:2ea2:: with SMTP id y2mr1306910uay.15.1598015041353;
+ Fri, 21 Aug 2020 06:04:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200802070114.9624-1-faiz_abbas@ti.com>
-In-Reply-To: <20200802070114.9624-1-faiz_abbas@ti.com>
+References: <20200804151345.28005-1-krzk@kernel.org>
+In-Reply-To: <20200804151345.28005-1-krzk@kernel.org>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 21 Aug 2020 15:03:19 +0200
-Message-ID: <CAPDyKFq79ZdseQkgP9XxwdmQTBzMsfRPz54663njXrbzKgsFxg@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: mmc: sdhci-am654: Document bindings for the
- host controllers on TI's J7200 devices
-To:     Faiz Abbas <faiz_abbas@ti.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
+Date:   Fri, 21 Aug 2020 15:03:22 +0200
+Message-ID: <CAPDyKFqRq9u_w0AwhKELK11yetGj5nc9-bM9+-AOsQZVpVmZig@mail.gmail.com>
+Subject: Re: [PATCH] mmc: s3cmci: remove empty kerneldoc comment
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Ben Dooks <ben-linux@fluff.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2 Aug 2020 at 09:01, Faiz Abbas <faiz_abbas@ti.com> wrote:
+On Tue, 4 Aug 2020 at 17:14, Krzysztof Kozlowski <krzk@kernel.org> wrote:
 >
-> Add binding documentation for mmc host controllers present on
-> TI's J7200 SOC
+> Remove empty comment to fix W=1 compile warning:
 >
-> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+>     drivers/mmc/host/s3cmci.c:400: warning: Cannot understand  *
+>      on line 400 - I thought it was a doc line
+>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
 Applied for next, thanks!
 
@@ -77,33 +78,23 @@ Uffe
 
 
 > ---
->  Documentation/devicetree/bindings/mmc/sdhci-am654.txt | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+>  drivers/mmc/host/s3cmci.c | 3 ---
+>  1 file changed, 3 deletions(-)
 >
-> diff --git a/Documentation/devicetree/bindings/mmc/sdhci-am654.txt b/Documentation/devicetree/bindings/mmc/sdhci-am654.txt
-> index 6d202f4d9249..b49cbfdd679f 100644
-> --- a/Documentation/devicetree/bindings/mmc/sdhci-am654.txt
-> +++ b/Documentation/devicetree/bindings/mmc/sdhci-am654.txt
-> @@ -12,6 +12,8 @@ Required Properties:
->                         "ti,am654-sdhci-5.1": SDHCI on AM654 device.
->                         "ti,j721e-sdhci-8bit": 8 bit SDHCI on J721E device.
->                         "ti,j721e-sdhci-4bit": 4 bit SDHCI on J721E device.
-> +                       "ti,j7200-sdhci-8bit": 8 bit SDHCI on J7200 device.
-> +                       "ti,j7200-sdhci-4bit": 4 bit SDHCI on J7200 device.
->         - reg: Must be two entries.
->                 - The first should be the sdhci register space
->                 - The second should the subsystem/phy register space
-> @@ -33,7 +35,9 @@ Required Properties:
->           These bindings must be provided otherwise the driver will disable the
->           corresponding speed mode (i.e. all nodes must provide at least -legacy)
+> diff --git a/drivers/mmc/host/s3cmci.c b/drivers/mmc/host/s3cmci.c
+> index 444b2769ae2c..b5df948f8155 100644
+> --- a/drivers/mmc/host/s3cmci.c
+> +++ b/drivers/mmc/host/s3cmci.c
+> @@ -396,9 +396,6 @@ static void s3cmci_enable_irq(struct s3cmci_host *host, bool more)
+>         local_irq_restore(flags);
+>  }
 >
-> -Optional Properties (Required for ti,am654-sdhci-5.1 and ti,j721e-sdhci-8bit):
-> +Optional Properties (Required for ti,am654-sdhci-5.1,
-> +                                 ti,j721e-sdhci-8bit,
-> +                                 ti,j7200-sdhci-8bit):
->         - ti,trm-icp: DLL trim select
->         - ti,driver-strength-ohm: driver strength in ohms.
->                                   Valid values are 33, 40, 50, 66 and 100 ohms.
+> -/**
+> - *
+> - */
+>  static void s3cmci_disable_irq(struct s3cmci_host *host, bool transfer)
+>  {
+>         unsigned long flags;
 > --
 > 2.17.1
 >
