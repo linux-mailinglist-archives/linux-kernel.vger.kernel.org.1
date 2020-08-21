@@ -2,78 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DBB324D3DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 13:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0E6324D3E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 13:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727859AbgHULZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 07:25:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33276 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727912AbgHULU4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 07:20:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598008850;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TVZPy7+N9bwrhLBiHBDmf2ilfdv7OW35jUfwMGWMLck=;
-        b=SHzB0lz7EyE/uEYinPhsDvRB22EtHEnozzssZuJe5sfWxAlqG4ZhGTLpN21xlu4l55hqXb
-        C6Tfkv0MX+Taj16O5/Yz/nFA5IuBng1qFpJfKeAjlLGmOGwczCoM4kAwNDapzrjFld38TN
-        xqdVCp6mRRT9IqIPiK4mvE/PK/WuUsI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-191-mLtxB508OFynLZExQXVzIg-1; Fri, 21 Aug 2020 07:20:46 -0400
-X-MC-Unique: mLtxB508OFynLZExQXVzIg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1728138AbgHULZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 07:25:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38242 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727982AbgHULVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 07:21:38 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A16E1100CED1;
-        Fri, 21 Aug 2020 11:20:44 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.73])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 0DA705F705;
-        Fri, 21 Aug 2020 11:20:42 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Fri, 21 Aug 2020 13:20:44 +0200 (CEST)
-Date:   Fri, 21 Aug 2020 13:20:41 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     akpm@linux-foundation.org, catalin.marinas@arm.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH] mm/kmemleak: rely on rcu for task stack scanning
-Message-ID: <20200821112041.GH4546@redhat.com>
-References: <20200820203902.11308-1-dave@stgolabs.net>
+        by mail.kernel.org (Postfix) with ESMTPSA id 378C82054F;
+        Fri, 21 Aug 2020 11:21:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598008870;
+        bh=wIHnziovTq/GuaiND/z2I5281pOd4DVCK+dCOSRCHIw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PcSliOZS3tcBKMbeSR3XaPv/ZGWUPKX9YSogRdLwuTDjMmwiNY1SM9y9mjy2LbVWM
+         wKT4WDDJ2FNx3Q+MP+JARGf1KkeqXgSrn7eg/Jy+KF+jND2xTGLw8aIgdeT9yMGj1J
+         bYzBg/iQgpr4e5t9XIW2GjR+m2AG0ELB7MEXiOvM=
+Date:   Fri, 21 Aug 2020 13:21:29 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Pavel Machek <pavel@denx.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.19 83/92] mfd: dln2: Run event handler loop under
+ spinlock
+Message-ID: <20200821112129.GA2284907@kroah.com>
+References: <20200820091537.490965042@linuxfoundation.org>
+ <20200820091541.964627271@linuxfoundation.org>
+ <20200821072123.GC23823@amd>
+ <CAHp75Vcbmc-PV-gQxuj9i8sAcFCzhJKe_qzEfrkUTZbnf3Vupg@mail.gmail.com>
+ <20200821091416.GA1894114@kroah.com>
+ <20200821091510.GA1894407@kroah.com>
+ <20200821105449.GN1891694@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200820203902.11308-1-dave@stgolabs.net>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20200821105449.GN1891694@smile.fi.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/20, Davidlohr Bueso wrote:
->
-> @@ -1471,15 +1471,15 @@ static void kmemleak_scan(void)
->  	if (kmemleak_stack_scan) {
->  		struct task_struct *p, *g;
->  
-> -		read_lock(&tasklist_lock);
-> -		do_each_thread(g, p) {
-> +		rcu_read_lock();
-> +		for_each_process_thread(g, p) {
->  			void *stack = try_get_task_stack(p);
->  			if (stack) {
->  				scan_block(stack, stack + THREAD_SIZE, NULL);
->  				put_task_stack(p);
->  			}
-> -		} while_each_thread(g, p);
-> -		read_unlock(&tasklist_lock);
-> +		}
-> +		rcu_read_unlock();
+On Fri, Aug 21, 2020 at 01:54:49PM +0300, Andy Shevchenko wrote:
+> On Fri, Aug 21, 2020 at 11:15:10AM +0200, Greg Kroah-Hartman wrote:
+> > On Fri, Aug 21, 2020 at 11:14:16AM +0200, Greg Kroah-Hartman wrote:
+> > > On Fri, Aug 21, 2020 at 12:06:45PM +0300, Andy Shevchenko wrote:
+> > > > On Fri, Aug 21, 2020 at 10:26 AM Pavel Machek <pavel@denx.de> wrote:
+> > > > > > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > > > >
+> > > > > > [ Upstream commit 3d858942250820b9adc35f963a257481d6d4c81d ]
+> > > > > >
+> > > > > > The event handler loop must be run with interrupts disabled.
+> > > > > > Otherwise we will have a warning:
+> > > > > ...
+> > > > > > Recently xHCI driver switched to tasklets in the commit 36dc01657b49
+> > > > > > ("usb: host: xhci: Support running urb giveback in tasklet
+> > > > > > context").
+> > > > >
+> > > > > AFAICT, 36dc01657b49 is not included in 4.19.141, so this commit
+> > > > > should not be needed, either.
+> > > > 
+> > > > I'm wondering if there are any other USB host controller drivers that
+> > > > use URB giveback in interrupt enabled context.
+> > > 
+> > > Almost all do.
+> > 
+> > Sorry, read that the wrong way, most have interrupts disabled, so this
+> > change should be fine.
+> 
+> The change is harmless in these cases. I was wondering if it actually *helps*
+> in some cases besides xHCI.
 
-Acked-by: Oleg Nesterov <oleg@redhat.com>
+It might, I forgot about usbip, which probably runs in this mode.
 
+thanks,
+
+greg k-h
