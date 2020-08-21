@@ -2,82 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 548D824DB05
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D56C624DB71
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728508AbgHUQce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 12:32:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50002 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728451AbgHUQVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:21:34 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F4A022D75;
-        Fri, 21 Aug 2020 16:20:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598026837;
-        bh=FresQJ+8YrzQahGXKniizpkZbx4mcAjvUTHqjSRmheQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bRYa7XV6D+HRAUzu5oELpY0QFg75IKNawAx6Y8vLEHrwHKFHg3sIvYsAIBHa8NSg8
-         1+O08ChVhxwpPizYicNwvqnQjEX7uiJwb9frNbv8SfIntVQc/LpnCAUkB5qSNDdeun
-         Yj3XRibcmUIKfKT0j4Yd9TmBckh36pSLbbXtYTgM=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.4 18/22] locking/lockdep: Fix overflow in presentation of average lock-time
-Date:   Fri, 21 Aug 2020 12:20:10 -0400
-Message-Id: <20200821162014.349506-18-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200821162014.349506-1-sashal@kernel.org>
-References: <20200821162014.349506-1-sashal@kernel.org>
+        id S1728165AbgHUQjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 12:39:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728410AbgHUQUs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 12:20:48 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C592C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 09:20:48 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id u126so2244566iod.12
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 09:20:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=BFgLAsnF1li7m4vAoiXUX3v+I+43ELkCHNO8Uii8l/k=;
+        b=ja6lYmQl/5PQscWBTLB+PYAGkw5+2xzqpgIRY610wXwfTZ9RIxqSq7uH3lT9CNeexC
+         XOvNEXdzGK5o2huUVL5GFqyOrYwitnpkFRVKjsvhVVzdXVr0vT/cmHk+YJaHrn/JaQNM
+         1U+Bxj7Ozdqk00R4+cZQ3UWA3pPgvTGQ6RXrJGSUBxqEmAW+Cg/PPYGT6ywvRPjjVOc3
+         zrU26+GfybdSVZncXtwBrzp3OspcGa9Xp5FLfsZNuFtAnv/sPTIIz3llQSgevglJTQqK
+         F3l7MrqqfY2WKWerkaML37hOux9znLi3jYOBHZODzo3aR/lVASXZ0UjawQBzkEbQPuPI
+         75oQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=BFgLAsnF1li7m4vAoiXUX3v+I+43ELkCHNO8Uii8l/k=;
+        b=QDxCIqrduVKGv3z9frRWKSgOCaiPpYNz+F5LscMOAOt2qTwLaKpIu/vcBpLLxHpaXG
+         tWxXcjZKgG7NtWepKWWJ87w89219gL+xwafyeJ91eqgOQXNH2v24ZCxFILh9YRXurXO5
+         urM67dcvnRWTDt8lGCE1Z9xuy34NICchq4ujCpE5hTmQaLptS+usdHVqpH328Ep8+cWR
+         85fnO3tJKDiMbl3j3A6MNh9s+3pYwWZuROnPe0wWVRkdW/FIPRG6TGvB94X07UPl6S2W
+         XNYKZGX9mxe95S3uEw5Pyqe/+Zk/5Gh8fa5e9Gs4xaEWbt5wyfVbuwwrNU7h8kMcOGWP
+         DwoQ==
+X-Gm-Message-State: AOAM531UgKug7oZY6yBRVihjeTegg8McKVIaEnwVkhK9zRjMQKAGO6yR
+        aGn75v/DCJkQz45Nb8yfluZIXhco7XQ296ur5jY=
+X-Google-Smtp-Source: ABdhPJyaagi0KJNoXQ64i12AWRJuDpWm+R14x8+y2wUYlY/BIzaKPc90psn3E8eZlGAJJw/KexQQpLhIrogPYLDuZpI=
+X-Received: by 2002:a02:e4a:: with SMTP id 71mr3144580jae.133.1598026847596;
+ Fri, 21 Aug 2020 09:20:47 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <b360242d-f488-da51-9d47-36b2abdf90cd@kernel.org>
+ <20200818160401.4736-1-ztong0001@gmail.com> <20200821092844.GB2026@suse.cz>
+In-Reply-To: <20200821092844.GB2026@suse.cz>
+From:   Tong Zhang <ztong0001@gmail.com>
+Date:   Fri, 21 Aug 2020 12:20:36 -0400
+Message-ID: <CAA5qM4BOn2Kie6chjC4e6A2Sc6Pe61hP8=JKiW7ohYNMnLaC8Q@mail.gmail.com>
+Subject: Re: [PATCH v2] tty: ipwireless: fix error handling
+To:     dsterba@suse.cz, Tong Zhang <ztong0001@gmail.com>,
+        jikos@kernel.org, dsterba@suse.com,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+On Fri, Aug 21, 2020 at 5:29 AM David Sterba <dsterba@suse.cz> wrote:
+> This paragraph should not be in the changelog. The patches to ipwireless
+> go via Greg's tree, please send an updated v3 so he can just apply that
+> without further edits.  Thanks.
 
-[ Upstream commit a7ef9b28aa8d72a1656fa6f0a01bbd1493886317 ]
-
-Though the number of lock-acquisitions is tracked as unsigned long, this
-is passed as the divisor to div_s64() which interprets it as a s32,
-giving nonsense values with more than 2 billion acquisitons. E.g.
-
-  acquisitions   holdtime-min   holdtime-max holdtime-total   holdtime-avg
-  -------------------------------------------------------------------------
-    2350439395           0.07         353.38   649647067.36          0.-32
-
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20200725185110.11588-1-chris@chris-wilson.co.uk
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/locking/lockdep_proc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/locking/lockdep_proc.c b/kernel/locking/lockdep_proc.c
-index 35b34eccdd109..9484f934aa349 100644
---- a/kernel/locking/lockdep_proc.c
-+++ b/kernel/locking/lockdep_proc.c
-@@ -423,7 +423,7 @@ static void seq_lock_time(struct seq_file *m, struct lock_time *lt)
- 	seq_time(m, lt->min);
- 	seq_time(m, lt->max);
- 	seq_time(m, lt->total);
--	seq_time(m, lt->nr ? div_s64(lt->total, lt->nr) : 0);
-+	seq_time(m, lt->nr ? div64_u64(lt->total, lt->nr) : 0);
- }
- 
- static void seq_stats(struct seq_file *m, struct lock_stat_data *data)
--- 
-2.25.1
-
+Thanks David! I've made another patch - hope this one works.
