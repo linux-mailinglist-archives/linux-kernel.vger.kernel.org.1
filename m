@@ -2,133 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E6E24E3DD
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 01:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9779924E3E1
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 01:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726880AbgHUXYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 19:24:08 -0400
-Received: from smtprelay0023.hostedemail.com ([216.40.44.23]:40982 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726856AbgHUXYG (ORCPT
+        id S1726878AbgHUXZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 19:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726688AbgHUXZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 19:24:06 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 0766F181D341E;
-        Fri, 21 Aug 2020 23:24:05 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1535:1544:1593:1594:1711:1730:1747:1777:1792:1801:2194:2198:2199:2200:2393:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:4250:4321:4605:5007:9149:9592:10004:10848:11026:11232:11473:11657:11658:11914:12043:12048:12291:12297:12438:12555:12683:12740:12760:12895:13161:13229:13439:14110:14659:14721:21080:21451:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: game49_02002042703d
-X-Filterd-Recvd-Size: 5177
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf06.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 21 Aug 2020 23:24:03 +0000 (UTC)
-Message-ID: <32801506f274e046e329da069839ff75443b2b78.camel@perches.com>
-Subject: Re: [PATCH] vdpa/mlx5: Avoid warnings about shifts on 32-bit
- platforms
-From:   Joe Perches <joe@perches.com>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, Eli Cohen <eli@mellanox.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Date:   Fri, 21 Aug 2020 16:24:02 -0700
-In-Reply-To: <1975c0a0-c19a-c91e-dc10-2918061cc4e7@infradead.org>
-References: <20200821225018.940798-1-natechancellor@gmail.com>
-         <1975c0a0-c19a-c91e-dc10-2918061cc4e7@infradead.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Fri, 21 Aug 2020 19:25:09 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9BCCC061573
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 16:25:08 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id b2so1385023qvp.9
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 16:25:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tPcAOUQXeRo09D74FlY+tpPy6QiUk0I9B9RENqrqcW0=;
+        b=ntUqPrmjAo1/EkCYyYOMh3BgGdFcqk4KfkAS3Kqq2ho2+1ApOm9gKR0LdPQo+OWwdG
+         a9RSry2SuNJtU0hPPPVKqfBgpA/kRcpdh+4z9SIHJlEx7r6ZotqaSp4rJ7wuUtBUR0Sw
+         B5lJv0z+1INf29uhTrMkpKfI6wK8QjsNcTeSG+G1VJKLJhzzpajuCLaQk6H1pULR6wm+
+         fxNkMOIuhq+D2wlsn7lnvcb8IX0jEVahvvwMuLsoTS0q7fl2Z3fTxVZOtnHNXAVoCICW
+         kCesbQxwJcbbB8YDew1FIUeOGlF+hoxZUTVZPd9C/fbIlacrNEsWhAnKHNEyufDT3ROS
+         6eMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=tPcAOUQXeRo09D74FlY+tpPy6QiUk0I9B9RENqrqcW0=;
+        b=aEyhQMofycA2guP7GIjdYd3s7emIYMz+gsCv/oRp6SNNvjmOPsGnvBYo1WnvuBTD8z
+         SBgVJUaSoesAckXvsMJghKSB9KgC60U5FYBANUvn6G2bCz00gkETYWff66UpNlCPpt1l
+         69cNaWBfhAaX+eMucpjXA0bmK1l5o+ZPNrUD1LykXRQaQ5Uf0wz7t8cSQ0z6pYKQNvj0
+         /oDHG/kHm5lRO1+9nUW48mlCCzM09YVftX4crz/A8bH9JvZ8gHQMsQvBTuj9XYCZGFt4
+         97Dtyw76iHHafaBEqCxKuC5eUAHknKqx4dW0mw+9S5CtJFyF/DWluvMVdHNiAFn2x4iQ
+         IEDg==
+X-Gm-Message-State: AOAM531WFFGZumHUhWL7phnNHPNtcGfk8wF6SDczM+LPj4Cmr9/3qV8O
+        m56wvWMFUQSVt9pExzz7BmY=
+X-Google-Smtp-Source: ABdhPJzdsa1XdIelQnW3ZUEGiSAMU7vKSSC2YSMuWs1YYOqDTyd6svcZMqK0u6TZ0GHTctLCdpATVg==
+X-Received: by 2002:a0c:ec01:: with SMTP id y1mr4495531qvo.167.1598052307897;
+        Fri, 21 Aug 2020 16:25:07 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id h55sm3767475qte.16.2020.08.21.16.25.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Aug 2020 16:25:07 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Fri, 21 Aug 2020 19:25:05 -0400
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Zhenzhong Duan <zhenzhong.duan@oracle.com>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juergen Gross <jgross@suse.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] x86: work around clang IAS bug referencing __force_order
+Message-ID: <20200821232505.GA66405@rani.riverdale.lan>
+References: <878serh1b9.fsf@nanos.tec.linutronix.de>
+ <CAKwvOdnOh3H3ga2qpTktywvcgfXW5QJaB7r4XMhigmDzLhDNeA@mail.gmail.com>
+ <87h7t6tpye.fsf@nanos.tec.linutronix.de>
+ <20200813173701.GC4295@paulmck-ThinkPad-P72>
+ <20200813180933.GA532283@rani.riverdale.lan>
+ <875z9dioll.fsf@nanos.tec.linutronix.de>
+ <20200820130641.GA536306@rani.riverdale.lan>
+ <87zh6ohm03.fsf@nanos.tec.linutronix.de>
+ <20200821230435.GA56974@rani.riverdale.lan>
+ <CAKwvOdkoB+fT9tt7vgg1R6J-NEr77EWP5X8nFat_L-HvEzWGzA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdkoB+fT9tt7vgg1R6J-NEr77EWP5X8nFat_L-HvEzWGzA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-08-21 at 16:13 -0700, Randy Dunlap wrote:
-> On 8/21/20 3:50 PM, Nathan Chancellor wrote:
-> > Clang warns several times when building for 32-bit ARM along the lines
-> > of:
+On Fri, Aug 21, 2020 at 04:16:56PM -0700, Nick Desaulniers wrote:
+> On Fri, Aug 21, 2020 at 4:04 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> >
+> > On Fri, Aug 21, 2020 at 02:37:48AM +0200, Thomas Gleixner wrote:
+> > > On Thu, Aug 20 2020 at 09:06, Arvind Sankar wrote:
+> > > > I don't think that's an issue, or at least, not one where force_order
+> > > > helps.
+> > > >
+> > > > If the source for foo() is not visible to the compiler, the only reason
+> > > > force_order prevents the reordering is because foo() might have
+> > > > references to it, but equally foo() might have volatile asm, so the
+> > > > reordering isn't possible anyway.
+> > > >
+> > > > If the source is visible, force_order won't prevent any reordering
+> > > > except across references to force_order, but the only references are
+> > > > from the volatile asm's which already prevent reordering.
+> > > >
+> > > > I think force_order can only help with buggy compilers, and for those it
+> > > > should really have been an input-output operand -- it wouldn't currently
+> > > > do anything to prevent cr writes from being reordered.
+> 
+> I agree 100%.  From the link to GCC docs, the code in question doesn't
+> even follow the pattern from the doc from informing the compiler of
+> any dependency, it just looks like !@#$.
+> 
+> > >
+> > > Fair enough. Care to provide a patch which has the collected wisdom of
+> > > this thread in the changelog?
+> > >
+> > > Thanks,
+> > >
+> > >         tglx
+> >
+> > The gcc bug I linked to earlier is only fixed in gcc-6 onwards. Is that
+> 
+> (based on https://gcc.gnu.org/bugzilla/show_bug.cgi?id=82602#c14)
 
-The defines are quite horrible to read.
-Maybe:
----
- drivers/vdpa/mlx5/net/mlx5_vnet.c | 61 +++++++++++++++++++++++++++-----
--------
- 1 file changed, 43 insertions(+), 18 deletions(-)
+I actually checked gcc's git repo too. The fix is not there in gcc-4.9
+and gcc-5.
 
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-index 9df69d5efe8c..62b6eec713b2 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -15,24 +15,49 @@
- 
- #define to_mvdev(__vdev) container_of((__vdev), struct mlx5_vdpa_dev, vdev)
- 
--#define VALID_FEATURES_MASK                                                                        \
--	(BIT(VIRTIO_NET_F_CSUM) | BIT(VIRTIO_NET_F_GUEST_CSUM) |                                   \
--	 BIT(VIRTIO_NET_F_CTRL_GUEST_OFFLOADS) | BIT(VIRTIO_NET_F_MTU) | BIT(VIRTIO_NET_F_MAC) |   \
--	 BIT(VIRTIO_NET_F_GUEST_TSO4) | BIT(VIRTIO_NET_F_GUEST_TSO6) |                             \
--	 BIT(VIRTIO_NET_F_GUEST_ECN) | BIT(VIRTIO_NET_F_GUEST_UFO) | BIT(VIRTIO_NET_F_HOST_TSO4) | \
--	 BIT(VIRTIO_NET_F_HOST_TSO6) | BIT(VIRTIO_NET_F_HOST_ECN) | BIT(VIRTIO_NET_F_HOST_UFO) |   \
--	 BIT(VIRTIO_NET_F_MRG_RXBUF) | BIT(VIRTIO_NET_F_STATUS) | BIT(VIRTIO_NET_F_CTRL_VQ) |      \
--	 BIT(VIRTIO_NET_F_CTRL_RX) | BIT(VIRTIO_NET_F_CTRL_VLAN) |                                 \
--	 BIT(VIRTIO_NET_F_CTRL_RX_EXTRA) | BIT(VIRTIO_NET_F_GUEST_ANNOUNCE) |                      \
--	 BIT(VIRTIO_NET_F_MQ) | BIT(VIRTIO_NET_F_CTRL_MAC_ADDR) | BIT(VIRTIO_NET_F_HASH_REPORT) |  \
--	 BIT(VIRTIO_NET_F_RSS) | BIT(VIRTIO_NET_F_RSC_EXT) | BIT(VIRTIO_NET_F_STANDBY) |           \
--	 BIT(VIRTIO_NET_F_SPEED_DUPLEX) | BIT(VIRTIO_F_NOTIFY_ON_EMPTY) |                          \
--	 BIT(VIRTIO_F_ANY_LAYOUT) | BIT(VIRTIO_F_VERSION_1) | BIT(VIRTIO_F_ACCESS_PLATFORM) |      \
--	 BIT(VIRTIO_F_RING_PACKED) | BIT(VIRTIO_F_ORDER_PLATFORM) | BIT(VIRTIO_F_SR_IOV))
--
--#define VALID_STATUS_MASK                                                                          \
--	(VIRTIO_CONFIG_S_ACKNOWLEDGE | VIRTIO_CONFIG_S_DRIVER | VIRTIO_CONFIG_S_DRIVER_OK |        \
--	 VIRTIO_CONFIG_S_FEATURES_OK | VIRTIO_CONFIG_S_NEEDS_RESET | VIRTIO_CONFIG_S_FAILED)
-+#define VALID_FEATURES_MASK						\
-+	(BIT_ULL(VIRTIO_NET_F_CSUM) |					\
-+	 BIT_ULL(VIRTIO_NET_F_GUEST_CSUM) |				\
-+	 BIT_ULL(VIRTIO_NET_F_CTRL_GUEST_OFFLOADS) |			\
-+	 BIT_ULL(VIRTIO_NET_F_MTU) |					\
-+	 BIT_ULL(VIRTIO_NET_F_MAC) |					\
-+	 BIT_ULL(VIRTIO_NET_F_GUEST_TSO4) |				\
-+	 BIT_ULL(VIRTIO_NET_F_GUEST_TSO6) |				\
-+	 BIT_ULL(VIRTIO_NET_F_GUEST_ECN) |				\
-+	 BIT_ULL(VIRTIO_NET_F_GUEST_UFO) |				\
-+	 BIT_ULL(VIRTIO_NET_F_HOST_TSO4) |				\
-+	 BIT_ULL(VIRTIO_NET_F_HOST_TSO6) |				\
-+	 BIT_ULL(VIRTIO_NET_F_HOST_ECN) |				\
-+	 BIT_ULL(VIRTIO_NET_F_HOST_UFO) |				\
-+	 BIT_ULL(VIRTIO_NET_F_MRG_RXBUF) |				\
-+	 BIT_ULL(VIRTIO_NET_F_STATUS) |					\
-+	 BIT_ULL(VIRTIO_NET_F_CTRL_VQ) |				\
-+	 BIT_ULL(VIRTIO_NET_F_CTRL_RX) |				\
-+	 BIT_ULL(VIRTIO_NET_F_CTRL_VLAN) |				\
-+	 BIT_ULL(VIRTIO_NET_F_CTRL_RX_EXTRA) |				\
-+	 BIT_ULL(VIRTIO_NET_F_GUEST_ANNOUNCE) |				\
-+	 BIT_ULL(VIRTIO_NET_F_MQ) |					\
-+	 BIT_ULL(VIRTIO_NET_F_CTRL_MAC_ADDR) |				\
-+	 BIT_ULL(VIRTIO_NET_F_HASH_REPORT) |				\
-+	 BIT_ULL(VIRTIO_NET_F_RSS) |					\
-+	 BIT_ULL(VIRTIO_NET_F_RSC_EXT) |				\
-+	 BIT_ULL(VIRTIO_NET_F_STANDBY) |				\
-+	 BIT_ULL(VIRTIO_NET_F_SPEED_DUPLEX) |				\
-+	 BIT_ULL(VIRTIO_F_NOTIFY_ON_EMPTY) |				\
-+	 BIT_ULL(VIRTIO_F_ANY_LAYOUT) |					\
-+	 BIT_ULL(VIRTIO_F_VERSION_1) |					\
-+	 BIT_ULL(VIRTIO_F_ACCESS_PLATFORM) |				\
-+	 BIT_ULL(VIRTIO_F_RING_PACKED) |				\
-+	 BIT_ULL(VIRTIO_F_ORDER_PLATFORM) |				\
-+	 BIT_ULL(VIRTIO_F_SR_IOV))
-+
-+#define VALID_STATUS_MASK						\
-+	(VIRTIO_CONFIG_S_ACKNOWLEDGE |					\
-+	 VIRTIO_CONFIG_S_DRIVER |					\
-+	 VIRTIO_CONFIG_S_DRIVER_OK |					\
-+	 VIRTIO_CONFIG_S_FEATURES_OK |					\
-+	 VIRTIO_CONFIG_S_NEEDS_RESET |					\
-+	 VIRTIO_CONFIG_S_FAILED)
- 
- struct mlx5_vdpa_net_resources {
- 	u32 tisn;
+> 
+> > good enough to remove force_order? I can test gcc-4.9 and gcc-5 to check
+> > if it would currently have any impact.
+> 
+> I think checking the disassemblies with a pre-gcc-6 would be good
+> enough then; that bug isn't specific to this particular case.
+> 
+> > CBL guys, can you confirm that clang also will not reorder volatile asm?
+> 
+> Full disassemblies of vmlinux pre vs post __force_order removal are
+> the same.  That's pretty good actually; I was worried for a code base
+> of this size whether two compiles would produce the exact same
+> disassemblies; I know the version strings are timestamped, for
+> instance, but I didn't compare data, just .text.  I should triple
+> check i386, and some of the ko's that use modified functions.  I'd be
+> happy to help provide a tested by tag for numerous configurations with
+> Clang.
+> 
+> Attaching the diff I was testing, feel free to add a commit message.
+> --
+> Thanks,
+> ~Nick Desaulniers
 
-
+Thanks, will write it up over the weekend.
