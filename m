@@ -2,58 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6056724D6F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 16:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D7E24D6FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 16:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727802AbgHUOIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 10:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41168 "EHLO
+        id S1727976AbgHUOJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 10:09:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725897AbgHUOIw (ORCPT
+        with ESMTP id S1726907AbgHUOJO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 10:08:52 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23EDAC061573
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 07:08:52 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id q4so1284248qvu.6
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 07:08:52 -0700 (PDT)
+        Fri, 21 Aug 2020 10:09:14 -0400
+Received: from mail-ej1-x649.google.com (mail-ej1-x649.google.com [IPv6:2a00:1450:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44DBC061573
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 07:09:13 -0700 (PDT)
+Received: by mail-ej1-x649.google.com with SMTP id jz22so800840ejb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 07:09:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=/nsE/W4nJ7wAzFSlbqSsmngFyg++wjvDvN8DWqY3F/4=;
-        b=lwC+gQdgq8YdHvNsY/O5GtQ+byMersGQZmc0YaWo6WkauTKG+J+wffUG3Pa8BSZIcR
-         wXTu7cf/GT8HPARuDWe4ojyYjB3zNnQuZKGCYiiDC08OcSDMElNag4sHTDD3dRirZySx
-         tjVZ8uazzZJSmCasAZUz4JAzgohyNA0rHA3owl/yDx9TQRTgOrcgc+8Nv82mUAj4dHGb
-         5o43vPgi44b8bFNYXtiTB0xDYgcuiFt1K96J5o0onZ284SF/MAfO4OHc1EF6r5aUhpZL
-         IZV2r2pEfw80EevC5g2xIz1RcIMZXG3JiVutI6v+BKbCAdMimEZl2KOyN4nPhzHO9EPb
-         1f5g==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc:content-transfer-encoding;
+        bh=WbkBQ4+3z/Ot6sbqqq8NLsjBfrTpm7bxNJKwF4zPNxs=;
+        b=EU+fJH0P2XOsXa2F3Nzicvv6xCPoAKfudHYonTUsulkHtN42K6PJ8CGEH/iwXcYdh/
+         NsiSjQrdSMeLPWAlcODAwVY6KS9rOgo78reUXgPm+Ps5R6kDglPyp282hLGbpvAiS3lk
+         wXN5GJmY9vvmENFW3T/SWgRTFd+GgOyWXsuy9SQZQyLB447hy4yUHKefFPyBZIXXn1Ob
+         82Fx+T1IEvjfZVSEp1jVgrq9koBj0/wsq/Synd7JWYQMF1cPvAlN4xvISeXFiY8tjf/4
+         w+M5EeJpDD2QjjOWRsQ4WX7KJKoy8ZXxr5tydVAjhnqcHetxbMAX9ioGNW2OHyLYuJkO
+         WtjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc:content-transfer-encoding;
-        bh=/nsE/W4nJ7wAzFSlbqSsmngFyg++wjvDvN8DWqY3F/4=;
-        b=Hj42nsI3Gz8XeHsfB9uEXkmQ6kEy4R1aWHNws795OmUKDlT4HVH82NHBFvinVDlCt3
-         2RC712tLtF7L7RfHGLvlMQoITwVZt0EoU5Q6VyzJ7Qcje8l/aMnG3mN1Jr+W+DWEmF2X
-         BGTagx1rwFm4EjQnEiG0IMWgKEgcWPV7BQWr8GwjvsXWgUhXwk6qP8q58GX/8xqe/z1o
-         kzQXUsTLO6zkBIqgrTkxpanT1jjeM6qh+BuqNpI9x3joYOCIr53/5h8lm+m3aOb8jE3A
-         HefhN7C6d9l+aKb2jl7fhZRRlr7hwlucoExzwNc3BFUp6nouVZf1v3uLTn/MGc8X5Naw
-         VJjg==
-X-Gm-Message-State: AOAM533KbwhhsHZ9zgNcQ0jUhy9lEeRNUI99eKn5o/cr/RKi5ZgO7ST3
-        gXSGqn+GKAVnVsxtPi691QuYtN8X5A==
-X-Google-Smtp-Source: ABdhPJxRkRhlJSydiiBr15eFhnIGnyD/G8li7QUKnO02K6mRrYQ4d24uAwzRWAEs2oOxHqfhboXJLrDDMQ==
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc:content-transfer-encoding;
+        bh=WbkBQ4+3z/Ot6sbqqq8NLsjBfrTpm7bxNJKwF4zPNxs=;
+        b=aw5FbrSreNn0keFdLCJ0ITpBS6eiXVTSzmzxPsvt1cHjBrH6Xu9Gn4MC5MQ2B76MKQ
+         z/rLycl71opKdlIssVOWCxHT9pcwk9J8cGZg0jE+M8Tt4hfrI/ycShqbIMwwwX+drgOM
+         zcim+uVZPKYo2JV5lTPjXDemM8OEt0tOysUB3fqsBW3bIFdCwESS/vJOtTDowmkDNl7a
+         wThh538/T1oGu3NbIJHSJpZHEzNH0vpodRluysMVIgcVORnPy2jgmySUvBrX1CrS8LFu
+         ibXaZSK98Jtn2EaDdx3ffXkaWHA/LtMlS83kiLv2Va8ab8NM1sx9DG4QmrrgtKwtMhT4
+         ldUw==
+X-Gm-Message-State: AOAM532UhQp+kAPpKQO1zRXknVhChfJnyh4QOUtApc7gEY3F3J5YTftA
+        SpZAtb+0u88Gr2ry5p7neiPi3kmyYw==
+X-Google-Smtp-Source: ABdhPJycYwIlgR1/3MQcUQpCA/jvMjkw1ymd9AtU6+k+l7ChKK3QeTYfeyDAta7wOHPvSUFI+S+KmQmAxQ==
 X-Received: from tweek1.zrh.corp.google.com ([2a00:79e0:61:100:f693:9fff:fef4:a93d])
- (user=tweek job=sendgmr) by 2002:a0c:e90b:: with SMTP id a11mr2547816qvo.168.1598018931267;
- Fri, 21 Aug 2020 07:08:51 -0700 (PDT)
-Date:   Fri, 21 Aug 2020 16:08:20 +0200
-Message-Id: <20200821140836.3707282-1-tweek@google.com>
+ (user=tweek job=sendgmr) by 2002:a17:906:c1d7:: with SMTP id
+ bw23mr3089611ejb.315.1598018951604; Fri, 21 Aug 2020 07:09:11 -0700 (PDT)
+Date:   Fri, 21 Aug 2020 16:08:21 +0200
+In-Reply-To: <20200821140836.3707282-1-tweek@google.com>
+Message-Id: <20200821140836.3707282-2-tweek@google.com>
 Mime-Version: 1.0
+References: <20200821140836.3707282-1-tweek@google.com>
 X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
-Subject: [PATCH v4 0/2] selinux: add detailed tracepoint on audited events
+Subject: [PATCH v4 1/2] selinux: add tracepoint on audited events
 From:   "=?UTF-8?q?Thi=C3=A9baud=20Weksteen?=" <tweek@google.com>
 To:     Paul Moore <paul@paul-moore.com>
 Cc:     Nick Kralevich <nnk@google.com>,
         "=?UTF-8?q?Thi=C3=A9baud=20Weksteen?=" <tweek@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Peter Enderborg <peter.enderborg@sony.com>,
         Stephen Smalley <stephen.smalley.work@gmail.com>,
         Eric Paris <eparis@parisplace.org>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -71,36 +75,147 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The audit data currently captures which process and which target
 is responsible for a denial. There is no data on where exactly in the
-process that call occurred. Debugging can be made easier by adding a
-trace point when an event is audited.
+process that call occurred. Debugging can be made easier by being able to
+reconstruct the unified kernel and userland stack traces [1]. Add a
+tracepoint on the SELinux denials which can then be used by userland
+(i.e. perf).
 
-This series of patch defines this new trace point and extra attributes
-to easily match the tracepoint event with the audit event. It is also
-possible to filter the events based on these attributes.
+Although this patch could manually be added by each OS developer to
+trouble shoot a denial, adding it to the kernel streamlines the
+developers workflow.
 
-Changes since v3
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-- Remove patch to include decoded permissions.
-- Remove extra braces in patch 2.
+It is possible to use perf for monitoring the event:
+  # perf record -e avc:selinux_audited -g -a
+  ^C
+  # perf report -g
+  [...]
+      6.40%     6.40%  audited=3D800000 tclass=3D4
+               |
+                  __libc_start_main
+                  |
+                  |--4.60%--__GI___ioctl
+                  |          entry_SYSCALL_64
+                  |          do_syscall_64
+                  |          __x64_sys_ioctl
+                  |          ksys_ioctl
+                  |          binder_ioctl
+                  |          binder_set_nice
+                  |          can_nice
+                  |          capable
+                  |          security_capable
+                  |          cred_has_capability.isra.0
+                  |          slow_avc_audit
+                  |          common_lsm_audit
+                  |          avc_audit_post_callback
+                  |          avc_audit_post_callback
+                  |
 
-Changes since v2
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-- Add patch to include decoded permissions.
-- Remove ssid and tsid from attributes list.
-- Update commit log with more context.
+It is also possible to use the ftrace interface:
+  # echo 1 > /sys/kernel/debug/tracing/events/avc/selinux_audited/enable
+  # cat /sys/kernel/debug/tracing/trace
+  tracer: nop
+  entries-in-buffer/entries-written: 1/1   #P:8
+  [...]
+  dmesg-3624  [001] 13072.325358: selinux_denied: audited=3D800000 tclass=
+=3D4
 
-Peter Enderborg (1):
-  selinux: add basic filtering for audit trace events
+The tclass value can be mapped to a class by searching
+security/selinux/flask.h. The audited value is a bit field of the
+permissions described in security/selinux/av_permissions.h for the
+corresponding class.
 
-Thi=C3=A9baud Weksteen (1):
-  selinux: add tracepoint on audited events
+[1] https://source.android.com/devices/tech/debug/native_stack_dump
 
+Signed-off-by: Thi=C3=A9baud Weksteen <tweek@google.com>
+Suggested-by: Joel Fernandes <joelaf@google.com>
+Reviewed-by: Peter Enderborg <peter.enderborg@sony.com>
+---
  MAINTAINERS                |  1 +
- include/trace/events/avc.h | 53 ++++++++++++++++++++++++++++++++++++++
- security/selinux/avc.c     | 29 +++++++++++++--------
- 3 files changed, 72 insertions(+), 11 deletions(-)
+ include/trace/events/avc.h | 37 +++++++++++++++++++++++++++++++++++++
+ security/selinux/avc.c     |  5 +++++
+ 3 files changed, 43 insertions(+)
  create mode 100644 include/trace/events/avc.h
 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index c8e8232c65da..0efaea0e144c 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15426,6 +15426,7 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/gi=
+t/pcmoore/selinux.git
+ F:	Documentation/ABI/obsolete/sysfs-selinux-checkreqprot
+ F:	Documentation/ABI/obsolete/sysfs-selinux-disable
+ F:	Documentation/admin-guide/LSM/SELinux.rst
++F:	include/trace/events/avc.h
+ F:	include/uapi/linux/selinux_netlink.h
+ F:	scripts/selinux/
+ F:	security/selinux/
+diff --git a/include/trace/events/avc.h b/include/trace/events/avc.h
+new file mode 100644
+index 000000000000..07c058a9bbcd
+--- /dev/null
++++ b/include/trace/events/avc.h
+@@ -0,0 +1,37 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Author: Thi=C3=A9baud Weksteen <tweek@google.com>
++ */
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM avc
++
++#if !defined(_TRACE_SELINUX_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_SELINUX_H
++
++#include <linux/tracepoint.h>
++
++TRACE_EVENT(selinux_audited,
++
++	TP_PROTO(struct selinux_audit_data *sad),
++
++	TP_ARGS(sad),
++
++	TP_STRUCT__entry(
++		__field(unsigned int, tclass)
++		__field(unsigned int, audited)
++	),
++
++	TP_fast_assign(
++		__entry->tclass =3D sad->tclass;
++		__entry->audited =3D sad->audited;
++	),
++
++	TP_printk("tclass=3D%u audited=3D%x",
++		__entry->tclass,
++		__entry->audited)
++);
++
++#endif
++
++/* This part must be outside protection */
++#include <trace/define_trace.h>
+diff --git a/security/selinux/avc.c b/security/selinux/avc.c
+index d18cb32a242a..b0a0af778b70 100644
+--- a/security/selinux/avc.c
++++ b/security/selinux/avc.c
+@@ -31,6 +31,9 @@
+ #include "avc_ss.h"
+ #include "classmap.h"
+=20
++#define CREATE_TRACE_POINTS
++#include <trace/events/avc.h>
++
+ #define AVC_CACHE_SLOTS			512
+ #define AVC_DEF_CACHE_THRESHOLD		512
+ #define AVC_CACHE_RECLAIM		16
+@@ -706,6 +709,8 @@ static void avc_audit_post_callback(struct audit_buffer=
+ *ab, void *a)
+ 	u32 scontext_len;
+ 	int rc;
+=20
++	trace_selinux_audited(sad);
++
+ 	rc =3D security_sid_to_context(sad->state, sad->ssid, &scontext,
+ 				     &scontext_len);
+ 	if (rc)
 --=20
 2.28.0.297.g1956fa8f8d-goog
 
