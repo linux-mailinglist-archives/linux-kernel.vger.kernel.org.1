@@ -2,83 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825B524CEF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 09:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19D5A24CF0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 09:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728479AbgHUHUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 03:20:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727961AbgHUHUQ (ORCPT
+        id S1728392AbgHUHV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 03:21:29 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:49324 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728110AbgHUHV0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 03:20:16 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB75C061385;
-        Fri, 21 Aug 2020 00:20:16 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id y6so498949plt.3;
-        Fri, 21 Aug 2020 00:20:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=+LGTq1mqvMSViuH9XCWlGLerVDHsR7IO+qqsPsb76uI=;
-        b=mIeS9XimBJsE+R74E2h+kzAGFNmF9sHLZa++02iH7VXJs4TWPgfQWEmq0TIGn9dSuY
-         bggAhy01WqgfXZAccaweCDv2yCrj7Fnv1w/Rtz2677vfJeT/ZuZK2P8FCehZ3aML7DVe
-         JNbOQhn9Ad0YNMUBEeuu9wGHe09e8S/9ZsKJ5NL0xYcRezro27bAQZDb/sbiNb//gSzk
-         UM+e3vqmi5mq+SOBGHJ/iF2j4ANUjlJGLyE1PbJkO5QYZsaLvf0RItyuCmcMAe4guCGY
-         +3ZzoqR0umpZ59pMu5JRBp9ghz+eBwEHt0hixBuvSslIhPq5Km/6Zo07teG2lwub9bmA
-         gYUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+LGTq1mqvMSViuH9XCWlGLerVDHsR7IO+qqsPsb76uI=;
-        b=ufsc7RRmdXWMWSKI1nMNshH6fpUnK/svwwM2dCvEctGXenylI+3lz3MRDqRWm0WZ8U
-         da+nVQ8Iy0K3znSrC0b0F3LGjV/cVhIp6wDfcxMWwdsfZHh7S0Aiz7dBQY+R++M5pdOr
-         KUb+mmF2LQzyqYv2CrSneLRusreXoOwCsV6lVbn3T90NBqTtGkrdw4DptUC3jxkuW5ug
-         0ZknWI8CYtvuPFjR4rpUKyMUe4J3oe1tawdqG8TisbW5Wo6+OMGmmd5d0s2N5FVxdQyF
-         41NRz6B4f1qLQmVo9qnl5RKJ5UYcwjV5TAYs+m3hNP69OFbvs5+wJ310LA15VMTEsrFK
-         kLBA==
-X-Gm-Message-State: AOAM530j9Y43NqDIkc2cQ9eWgArn/un2UdB0XkdbCQleMKhBpFoV426E
-        +uK9QBozq7MVfoz5gMnLEp4=
-X-Google-Smtp-Source: ABdhPJyY4LIUiQOEFw4qKKYRk/DqxT3xnarW2dvCwbV61Q9ZpHhPswII0/WPHdU5HxTecshuqMQ5vw==
-X-Received: by 2002:a17:90b:4ac9:: with SMTP id mh9mr1424330pjb.40.1597994415561;
-        Fri, 21 Aug 2020 00:20:15 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id y23sm1425650pfb.66.2020.08.21.00.20.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 21 Aug 2020 00:20:15 -0700 (PDT)
-Date:   Fri, 21 Aug 2020 00:20:03 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Timur Tabi <timur@kernel.org>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] ASoC: bindings: fsl-asoc-card: add compatible string
- for TLV320AIC32x4 codec
-Message-ID: <20200821072003.GB19890@Asurada-Nvidia>
-References: <20200821071153.7317-1-matthias.schiffer@ew.tq-group.com>
+        Fri, 21 Aug 2020 03:21:26 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 0555D1C0BF3; Fri, 21 Aug 2020 09:21:24 +0200 (CEST)
+Date:   Fri, 21 Aug 2020 09:21:23 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.19 83/92] mfd: dln2: Run event handler loop under
+ spinlock
+Message-ID: <20200821072123.GC23823@amd>
+References: <20200820091537.490965042@linuxfoundation.org>
+ <20200820091541.964627271@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="aT9PWwzfKXlsBJM1"
 Content-Disposition: inline
-In-Reply-To: <20200821071153.7317-1-matthias.schiffer@ew.tq-group.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200820091541.964627271@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 09:11:52AM +0200, Matthias Schiffer wrote:
-> The TLV320AIC32x4 is commonly used on TQ-Systems starterkit mainboards
-> for i.MX-based SoMs (i.MX6Q/DL, i.MX6UL, i.MX7) and LS1021A.
-> 
-> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+--aT9PWwzfKXlsBJM1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>=20
+> [ Upstream commit 3d858942250820b9adc35f963a257481d6d4c81d ]
+>=20
+> The event handler loop must be run with interrupts disabled.
+> Otherwise we will have a warning:
+=2E..
+> Recently xHCI driver switched to tasklets in the commit 36dc01657b49
+> ("usb: host: xhci: Support running urb giveback in tasklet
+> context").
+
+AFAICT, 36dc01657b49 is not included in 4.19.141, so this commit
+should not be needed, either.
+
+Best regards,
+								Pavel
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--aT9PWwzfKXlsBJM1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl8/dfMACgkQMOfwapXb+vLMTACgiwiKsJXzkeupMh+PAlL1dpn0
+pQ4AoIXuQpO8hmAqR1AV1FgtPQfbD7hQ
+=lTmd
+-----END PGP SIGNATURE-----
+
+--aT9PWwzfKXlsBJM1--
