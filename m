@@ -2,115 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F9F24E0A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 21:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19FB124E0A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 21:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726600AbgHUTaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 15:30:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34502 "EHLO
+        id S1726306AbgHUT1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 15:27:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbgHUTaB (ORCPT
+        with ESMTP id S1725801AbgHUT1x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 15:30:01 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E69BC061573
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:30:00 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id m22so3071522ljj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:30:00 -0700 (PDT)
+        Fri, 21 Aug 2020 15:27:53 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD192C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:27:52 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id g13so2818923ioo.9
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:27:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=poorly.run; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9gB440Ze4ZBHaiJd3Tg8xGm277dDUwBE5I6gf2Si2z0=;
-        b=WOJ24K7m95T6qyq7uMw1ZdUwa/ZY4iGih7G5ZretzrJOrNpRBizAWpzqXrw1KWVWpc
-         9TkDhakIq2vNEGCc92t86ZIgDgIbr11x7Ktk8FlZyRm+v8heqUVRBJ7OMmGX9+L9XQtV
-         J5Et6X/zWbSvpX6upyCYcudXQqtPQNKhJtMC0=
+        bh=/1myCzRi4esv568zxCC1VxTn8QF6yFvp0MAEFFS3ZsY=;
+        b=Nqw6EIhtcjnVch1RyTLTHNW2VJ+2Ni8LGHFdwEAVuaMrE3JKuA2kXp1SYMO6P5fP31
+         zTaWstPauLAEGevPcKswhs9bXoz7uuq3p3BxNSQOy/A+N5xX9D5/4ACBcSUgt/dFgzZP
+         oqSOH9yWQygCmVq8TKj1VnX75vDcKFIcTUleB3UsGfhDk1zTnAjxue1gFhvyJC+k/QNF
+         m4s5LIjkoJkk4TERUp5MboKpnnXHw8mqj8+hxaKVt2RA+3xXOLQRXMJ9GezgTip4LEdc
+         /73NUqlokP2apQlEH+RwioHtYHWnyDesZDHTeMxrBUUf74esIKP5eJA0hZh1Cct1hvzr
+         p0tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9gB440Ze4ZBHaiJd3Tg8xGm277dDUwBE5I6gf2Si2z0=;
-        b=iRz6bSuPa9AJoJy68KxVTg0hc061h2zZwxDKVNsbGsYT2sl2aNEqcl4Aa5nIwWo/so
-         KXB7JET2VIzWLmDuh+/m65ZJiQ4dBCF+K6no6FUCwOqFXSBisAxMozWvCQyI/2rzUfKK
-         h7uXSePk8oAjolTR6QW7yWmUAe0NWT+01e9U2AkYRQjTsH/OwhM+0rKBhFmZKUDMuYxo
-         BPc0zHOia00uBhGYH7Sk4SjNht/eLHKfNSLD5xwkiDXf7JgQsV0NyqJW4LX8Spk8XxVl
-         6KAZO6wQfKgwJ/LmrLn8T+fWxPQZ1iKgJ5XFeZ+GJnJ7x7+QJQy/qp9XBs9cHCbnpSxa
-         fPpQ==
-X-Gm-Message-State: AOAM533x7k3UIN8iwN1QSEqSQIYoB71jEFts9xsWPh/nTm+ASyl9/xA3
-        cN8exwF8xsQb3sDaNb0mWXnMg5yCAo3nmw==
-X-Google-Smtp-Source: ABdhPJyOwIvAGo88yZqJ6ZS1ta9NQJpzdG+F8ASBsfInlBQ1hQBSNJsq0+ALuTwSQqNLcMX82ubfIA==
-X-Received: by 2002:a05:651c:1343:: with SMTP id j3mr2016036ljb.112.1598038198025;
-        Fri, 21 Aug 2020 12:29:58 -0700 (PDT)
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
-        by smtp.gmail.com with ESMTPSA id 20sm570387ljj.51.2020.08.21.12.29.57
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Aug 2020 12:29:57 -0700 (PDT)
-Received: by mail-lj1-f176.google.com with SMTP id v9so3074394ljk.6
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:29:57 -0700 (PDT)
-X-Received: by 2002:ac2:58d5:: with SMTP id u21mr2053187lfo.31.1598037806053;
- Fri, 21 Aug 2020 12:23:26 -0700 (PDT)
+        bh=/1myCzRi4esv568zxCC1VxTn8QF6yFvp0MAEFFS3ZsY=;
+        b=onexXvtMf/JI9hfmRuE0wN3mbP8Q5dCh63WA2g3AG/qftOQVu9/aBu46S7v98B745R
+         PS7ym4Msp1WU3O2RZlhTLSLJWtWwN5BqPfOQ9FzKsQzRcSi3q+LMrlg0SVLLiTYn/Z2p
+         wymTjcogSiLcGFqNOc9nvVhIcyILRF0ighB8g5vUxl2cLHhrutEIos4j+KwIFG9GpdeN
+         7WkJYlHO79GJKFxpJgFhQB58qsQJGOs8obLdH79S4/zm/9zLCv74zM02CxGxdi2DrVi4
+         mcFsywsBSJZEbJqFdZA5J+7RKl/GE2bSSYJNLwleboAZ438hdKBqWOHwGFlX8rp51fBW
+         XCGA==
+X-Gm-Message-State: AOAM530UGFX03Yv5McVsFf2DoSkPiowhU44qx7NqLBOK5gNEg5sICYKG
+        t/NoyaTZtR4PDyzQ3P1S1I8cTEGPzFr4xYOtDgtTpQ==
+X-Google-Smtp-Source: ABdhPJyPRbjjzFgClBBrSDVUAWdB1QiLVFzBazaPFxEmZV6a+K0eIC0a5hyTfRBnCQ8C/pCpXS8TPG/SWd1SnE/J3jA=
+X-Received: by 2002:a05:6602:1589:: with SMTP id e9mr3455471iow.85.1598038071643;
+ Fri, 21 Aug 2020 12:27:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200818202407.GA3143683@rani.riverdale.lan> <CAKwvOdnfh9nWwu1xV=WDbETGiabwDxXxQDRCAfpa-+kSZijb9w@mail.gmail.com>
- <CAKwvOdkA4SC==vGZ4e7xqFG3Zo=fnhU=FgnSazmWkkVWhkaSYw@mail.gmail.com>
- <20200818214146.GA3196105@rani.riverdale.lan> <df6c1da4-b910-ecb8-0de2-6156dd651be6@rasmusvillemoes.dk>
- <20200820175617.GA604994@rani.riverdale.lan> <CAHk-=whn91ar+EbcBXQb9UXad00Q5WjU-TCB6UBzVba682a4ew@mail.gmail.com>
- <20200821172935.GA1411923@rani.riverdale.lan> <CAHk-=wi8vdb+wo-DACDpSijYfAbCs135YcnnAbRhGJcU+A=-+Q@mail.gmail.com>
- <CAHk-=whjVCTjZG0Y88WhJruLdbxF=7q3mmFThD+N5WK0P5giSw@mail.gmail.com> <20200821191458.GA1475504@rani.riverdale.lan>
-In-Reply-To: <20200821191458.GA1475504@rani.riverdale.lan>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 21 Aug 2020 12:23:10 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjX6jaRH+yozTh3kV3ocF2Qv0v96o8JofvbV6=U_K2mXw@mail.gmail.com>
-Message-ID: <CAHk-=wjX6jaRH+yozTh3kV3ocF2Qv0v96o8JofvbV6=U_K2mXw@mail.gmail.com>
-Subject: Re: [PATCH 0/4] -ffreestanding/-fno-builtin-* patches
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        =?UTF-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
-        Eli Friedman <efriedma@quicinc.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Joe Perches <joe@perches.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Bruce Ashfield <bruce.ashfield@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+References: <20200820183012.288794-1-lyude@redhat.com> <20200820183012.288794-14-lyude@redhat.com>
+In-Reply-To: <20200820183012.288794-14-lyude@redhat.com>
+From:   Sean Paul <sean@poorly.run>
+Date:   Fri, 21 Aug 2020 15:27:15 -0400
+Message-ID: <CAMavQKL75YiiTn9woovnfUzTosYUQeBhTsJs6Ne0HxBQ4Ap6NA@mail.gmail.com>
+Subject: Re: [Intel-gfx] [RFC v2 13/20] drm/i915/dp: Extract drm_dp_downstream_read_info()
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        nouveau <nouveau@lists.freedesktop.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Wambui Karuga <wambui.karugax@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 12:15 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+On Thu, Aug 20, 2020 at 2:31 PM Lyude Paul <lyude@redhat.com> wrote:
 >
-> How are you testing it?
+> We're going to be doing the same probing process in nouveau for
+> determining downstream DP port capabilities, so let's deduplicate the
+> work by moving i915's code for handling this into a shared helper:
+> drm_dp_downstream_read_info().
 >
-> https://godbolt.org/z/eahdGn
+> Note that when we do this, we also do make some functional changes while
+> we're at it:
+> * We always clear the downstream port info before trying to read it,
+>   just to make things easier for the caller
+> * We skip reading downstream port info if the DPCD indicates that we
+>   don't support downstream port info
+> * We only read as many bytes as needed for the reported number of
+>   downstream ports, no sense in reading the whole thing every time
+>
+> v2:
+> * Fixup logic for calculating the downstream port length to account for
+>   the fact that downstream port caps can be either 1 byte or 4 bytes
+>   long. We can actually skip fixing the max_clock/max_bpc helpers here
+>   since they all check for DP_DETAILED_CAP_INFO_AVAILABLE anyway.
+> * Fix ret code check for drm_dp_dpcd_read
+>
 
-Ugh. I tested the reverse thing - that the builtin is still available
-for manual use despite the -fno-builtin.
+Thanks for sorting this out!
 
-Because I - stupidly - assumed that fno-builtin would do *something*.
+Reviewed-by: Sean Paul <sean@poorly.run>
 
-But if it's available for manual use _and_ it's used implicitly by the
-compiler, then that was clearly very naive of me.
-
-                     Linus
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> ---
+>  drivers/gpu/drm/drm_dp_helper.c         | 46 +++++++++++++++++++++++++
+>  drivers/gpu/drm/i915/display/intel_dp.c | 14 ++------
+>  include/drm/drm_dp_helper.h             |  3 ++
+>  3 files changed, 51 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
+> index 4c21cf69dad5a..4f845995f1f66 100644
+> --- a/drivers/gpu/drm/drm_dp_helper.c
+> +++ b/drivers/gpu/drm/drm_dp_helper.c
+> @@ -423,6 +423,52 @@ bool drm_dp_send_real_edid_checksum(struct drm_dp_aux *aux,
+>  }
+>  EXPORT_SYMBOL(drm_dp_send_real_edid_checksum);
+>
+> +static u8 drm_dp_downstream_port_count(const u8 dpcd[DP_RECEIVER_CAP_SIZE])
+> +{
+> +       u8 port_count = dpcd[DP_DOWN_STREAM_PORT_COUNT] & DP_PORT_COUNT_MASK;
+> +
+> +       if (dpcd[DP_DOWNSTREAMPORT_PRESENT] & DP_DETAILED_CAP_INFO_AVAILABLE && port_count > 4)
+> +               port_count = 4;
+> +
+> +       return port_count;
+> +}
+> +
+> +/**
+> + * drm_dp_downstream_read_info() - read DPCD downstream port info if available
+> + * @aux: DisplayPort AUX channel
+> + * @dpcd: A cached copy of the port's DPCD
+> + * @downstream_ports: buffer to store the downstream port info in
+> + *
+> + * Returns: 0 if either the downstream port info was read successfully or
+> + * there was no downstream info to read, or a negative error code otherwise.
+> + */
+> +int drm_dp_downstream_read_info(struct drm_dp_aux *aux,
+> +                               const u8 dpcd[DP_RECEIVER_CAP_SIZE],
+> +                               u8 downstream_ports[DP_MAX_DOWNSTREAM_PORTS])
+> +{
+> +       int ret;
+> +       u8 len;
+> +
+> +       memset(downstream_ports, 0, DP_MAX_DOWNSTREAM_PORTS);
+> +
+> +       /* No downstream info to read */
+> +       if (!drm_dp_is_branch(dpcd) ||
+> +           dpcd[DP_DPCD_REV] < DP_DPCD_REV_10 ||
+> +           !(dpcd[DP_DOWNSTREAMPORT_PRESENT] & DP_DWN_STRM_PORT_PRESENT))
+> +               return 0;
+> +
+> +       len = drm_dp_downstream_port_count(dpcd);
+> +       if (dpcd[DP_DOWNSTREAMPORT_PRESENT] & DP_DETAILED_CAP_INFO_AVAILABLE)
+> +               len *= 4;
+> +
+> +       ret = drm_dp_dpcd_read(aux, DP_DOWNSTREAM_PORT_0, downstream_ports, len);
+> +       if (ret < 0)
+> +               return ret;
+> +
+> +       return ret == len ? 0 : -EIO;
+> +}
+> +EXPORT_SYMBOL(drm_dp_downstream_read_info);
+> +
+>  /**
+>   * drm_dp_downstream_max_clock() - extract branch device max
+>   *                                 pixel rate for legacy VGA
+> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+> index 1e29d3a012856..984e49194ca31 100644
+> --- a/drivers/gpu/drm/i915/display/intel_dp.c
+> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
+> @@ -4685,18 +4685,8 @@ intel_dp_get_dpcd(struct intel_dp *intel_dp)
+>                         return false;
+>         }
+>
+> -       if (!drm_dp_is_branch(intel_dp->dpcd))
+> -               return true; /* native DP sink */
+> -
+> -       if (intel_dp->dpcd[DP_DPCD_REV] == 0x10)
+> -               return true; /* no per-port downstream info */
+> -
+> -       if (drm_dp_dpcd_read(&intel_dp->aux, DP_DOWNSTREAM_PORT_0,
+> -                            intel_dp->downstream_ports,
+> -                            DP_MAX_DOWNSTREAM_PORTS) < 0)
+> -               return false; /* downstream port status fetch failed */
+> -
+> -       return true;
+> +       return drm_dp_downstream_read_info(&intel_dp->aux, intel_dp->dpcd,
+> +                                          intel_dp->downstream_ports) == 0;
+>  }
+>
+>  static bool
+> diff --git a/include/drm/drm_dp_helper.h b/include/drm/drm_dp_helper.h
+> index 5c28199248626..1349f16564ace 100644
+> --- a/include/drm/drm_dp_helper.h
+> +++ b/include/drm/drm_dp_helper.h
+> @@ -1613,6 +1613,9 @@ int drm_dp_dpcd_read_link_status(struct drm_dp_aux *aux,
+>  bool drm_dp_send_real_edid_checksum(struct drm_dp_aux *aux,
+>                                     u8 real_edid_checksum);
+>
+> +int drm_dp_downstream_read_info(struct drm_dp_aux *aux,
+> +                               const u8 dpcd[DP_RECEIVER_CAP_SIZE],
+> +                               u8 downstream_ports[DP_MAX_DOWNSTREAM_PORTS]);
+>  int drm_dp_downstream_max_clock(const u8 dpcd[DP_RECEIVER_CAP_SIZE],
+>                                 const u8 port_cap[4]);
+>  int drm_dp_downstream_max_bpc(const u8 dpcd[DP_RECEIVER_CAP_SIZE],
+> --
+> 2.26.2
+>
+> _______________________________________________
+> Intel-gfx mailing list
+> Intel-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
