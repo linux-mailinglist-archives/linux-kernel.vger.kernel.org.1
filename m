@@ -2,233 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9525824D80E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFFA624D81E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727866AbgHUPLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 11:11:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50884 "EHLO
+        id S1728100AbgHUPMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 11:12:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbgHUPLa (ORCPT
+        with ESMTP id S1727833AbgHUPMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 11:11:30 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F02C061573;
-        Fri, 21 Aug 2020 08:11:29 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: dafna)
-        with ESMTPSA id 4391329AC90
-Subject: Re: [PATCH v3 4/9] media: vimc: Separate starting stream from
- pipeline initialisation
-To:     Kaaira Gupta <kgupta@es.iitr.ac.in>,
-        Helen Koike <helen.koike@collabora.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>
-References: <20200819180442.11630-1-kgupta@es.iitr.ac.in>
- <20200819180442.11630-5-kgupta@es.iitr.ac.in>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <eb5d4259-fe77-b4f2-1e62-0f846420b7c2@collabora.com>
-Date:   Fri, 21 Aug 2020 17:11:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 21 Aug 2020 11:12:30 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC48C061573;
+        Fri, 21 Aug 2020 08:12:28 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id o13so1148685pgf.0;
+        Fri, 21 Aug 2020 08:12:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lRxrDToJB/xPOxG5kGdgUWQPtXDsSaGWKdRXIKBnLww=;
+        b=kZUnJ6jz2FEkjkC4B07sDG1MjmzhjlUML84kGzNbhSDyDdfVyIkBqQ1JVaKnlcpnsW
+         O4/rnCdzXc5wLDuh66q0rTTJxxarsRrbbSJ3CBzYgOl2Kiph/wZYJr1Qvco+GQ7avZZF
+         Dbs74MOkriYYn3Uv1eGMGWPeNA1bNr83Aa+YHScAmKLmebvgMrUyej9FYoVnkrCPjtE3
+         /d9DU7qLsc96xQiWL8n/lPwiBLfzsLbk3ZLdsUeHAbC9H8xLy9KN7b5omTiIo5lCszfb
+         4BIvgj0FwaU6x9/I2bYSDZEgvwAguArcSIW9qjKYuZ90qn8CQH/xh3SQ44OCN04qHdb/
+         qz8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lRxrDToJB/xPOxG5kGdgUWQPtXDsSaGWKdRXIKBnLww=;
+        b=EA68r7e7JOxQzC089+nNHH9Kj1n1ZhweTRlVYDRRfkbCMMoERm2JwwNxgRvd6KpEc5
+         ea6H8E/y6CJ3Aeix0tJVBPcxUm+BvyC9p44hg1PO4HjOij7e33AEhTxr28auEaMt5x9D
+         nkdR9H5XfmjLLDcLWylnz5fYzKWHP40Pa8JNaWuWe/px8cxTQzLm+EX7uyWagOiLy4v7
+         b80pi7dm8tTXGpyjPjTeSJRl4aLWdovWIdwiXL1Qap6byiU+DVzaeMZHThvmoP8bHtlI
+         2t1oLCaV+BVkOOMkXyy06MbfXv2M4VI2IvEoBFsyblpjudnindX8A18di6JG28FZU98u
+         y56g==
+X-Gm-Message-State: AOAM532Gx1MvVzhoP6NRbe41YT+BvvnoK+kcCVTgc5zRSEEVvrxnFSsr
+        i9zjSjxyiHgBkB/Bi65YwXjaYB1uPZM=
+X-Google-Smtp-Source: ABdhPJxt6gfGs7RCQ4HiMUqjAvNGZuzKIyZP+qM+HUnYFTtKpiyJhyFCAA1UxFk4xgMqZ7BnAojcJw==
+X-Received: by 2002:aa7:8757:: with SMTP id g23mr2825194pfo.283.1598022748057;
+        Fri, 21 Aug 2020 08:12:28 -0700 (PDT)
+Received: from bobo.ozlabs.ibm.com (61-68-212-105.tpgi.com.au. [61.68.212.105])
+        by smtp.gmail.com with ESMTPSA id s8sm3126985pfc.122.2020.08.21.08.12.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Aug 2020 08:12:27 -0700 (PDT)
+From:   Nicholas Piggin <npiggin@gmail.com>
+To:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>
+Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Zefan Li <lizefan@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v6 00/12] huge vmalloc mappings
+Date:   Sat, 22 Aug 2020 01:12:04 +1000
+Message-Id: <20200821151216.1005117-1-npiggin@gmail.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <20200819180442.11630-5-kgupta@es.iitr.ac.in>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Am 19.08.20 um 20:04 schrieb Kaaira Gupta:
-> Separate the process of initialising pipeline array from starting
-> streaming for all entities in path of a stream. This is needed because
-> multiple streams can stream, but only one pipeline object is needed.
-> 
-> Process frames only for those entities in a pipeline which are
-> streaming. This is known through their use counts.
-> 
-> Signed-off-by: Kaaira Gupta <kgupta@es.iitr.ac.in>
-> ---
->   .../media/test-drivers/vimc/vimc-streamer.c   | 95 ++++++++++++++++---
->   1 file changed, 83 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/media/test-drivers/vimc/vimc-streamer.c b/drivers/media/test-drivers/vimc/vimc-streamer.c
-> index c1644d69686d..cc40ecabe95a 100644
-> --- a/drivers/media/test-drivers/vimc/vimc-streamer.c
-> +++ b/drivers/media/test-drivers/vimc/vimc-streamer.c
-> @@ -40,33 +40,30 @@ static void vimc_streamer_pipeline_terminate(struct vimc_stream *stream)
->   }
->   
->   /**
-> - * vimc_streamer_pipeline_init - Initializes the stream structure
-> + * vimc_streamer_stream_start - Starts streaming for all entities
-> + * in a stream
->    *
-> - * @stream: the pointer to the stream structure to be initialized
->    * @ved:    the pointer to the vimc entity initializing the stream
->    *
-> - * Initializes the stream structure. Walks through the entity graph to
-> - * construct the pipeline used later on the streamer thread.
-> - * Calls vimc_streamer_s_stream() to enable stream in all entities of
-> - * the pipeline.
-> + * Walks through the entity graph to call vimc_streamer_s_stream()
-> + * to enable stream in all entities in path of a stream.
->    *
->    * Return: 0 if success, error code otherwise.
->    */
-> -static int vimc_streamer_pipeline_init(struct vimc_stream *stream,
-> -				       struct vimc_ent_device *ved)
-> +static int vimc_streamer_stream_start(struct vimc_stream *stream,
-> +				      struct vimc_ent_device *ved)
->   {
->   	struct media_entity *entity;
->   	struct video_device *vdev;
->   	struct v4l2_subdev *sd;
-> +	int stream_size = 0;
->   	int ret = 0;
->   
-> -	stream->pipe_size = 0;
-> -	while (stream->pipe_size < VIMC_STREAMER_PIPELINE_MAX_SIZE) {
-> +	while (stream_size < VIMC_STREAMER_PIPELINE_MAX_SIZE) {
->   		if (!ved) {
->   			vimc_streamer_pipeline_terminate(stream);
->   			return -EINVAL;
->   		}
-> -		stream->ved_pipeline[stream->pipe_size++] = ved;
->   
->   		if (is_media_entity_v4l2_subdev(ved->ent)) {
->   			sd = media_entity_to_v4l2_subdev(ved->ent);
-> @@ -104,6 +101,73 @@ static int vimc_streamer_pipeline_init(struct vimc_stream *stream,
->   					    entity);
->   			ved = video_get_drvdata(vdev);
->   		}
-> +		stream_size++;
-> +	}
-> +
-> +	vimc_streamer_pipeline_terminate(stream);
-> +	return -EINVAL;
-> +}
-> +
-> +/**
-> + * vimc_streamer_pipeline_init - Initialises pipeline and pipe size
-> + *
-> + * @stream: the pointer to the stream structure
-> + * @ved:    the pointer to the vimc entity initializing the stream pipeline
-> + *
-> + * Walks through the entity graph to initialise ved_pipeline and updates
-> + * pipe_size too.
-> + *
-> + * Return: 0 if success, error code otherwise.
-> + */
-> +static int vimc_streamer_pipeline_init(struct vimc_stream *stream,
-> +				       struct vimc_ent_device *ved)
-> +{
-> +	struct media_entity *entity;
-> +	struct media_device *mdev;
-> +	struct media_graph graph;
-> +	struct video_device *vdev;
-> +	struct v4l2_subdev *sd;
-> +	int ret;
-> +
-> +	entity = ved->ent;
-> +	mdev = entity->graph_obj.mdev;
-> +
-> +	ret = media_graph_walk_init(&graph, mdev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	media_graph_walk_start(&graph, entity);
-> +
-> +	/*
-> +	 * Start pipeline array initialisation from RAW Capture only to get
-> +	 * entities in the correct order of their frame processing.
-> +	 */
-> +	if (!strncmp(entity->name, "RGB", 3)) {
-
-I don't understand this condition, way is it good for?
-
-I think the function should be generic and not assume names of entities
-or specific topology.
-
-
-> +		entity = media_graph_walk_next(&graph);
-> +		mdev = entity->graph_obj.mdev;
-> +		media_graph_walk_cleanup(&graph);
-> +
-> +		ret = media_graph_walk_init(&graph, mdev);
-> +		if (ret)
-> +			return ret;
-> +		media_graph_walk_start(&graph, entity);
-> +	}
-> +
-> +	while (stream->pipe_size < VIMC_STREAMER_PIPELINE_MAX_SIZE) {
-> +		if (is_media_entity_v4l2_subdev(entity)) {
-> +			sd = media_entity_to_v4l2_subdev(entity);
-> +			ved = v4l2_get_subdevdata(sd);
-> +		} else {
-> +			vdev = container_of(entity, struct video_device, entity);
-> +			ved = video_get_drvdata(vdev);
-> +		}
-> +		stream->ved_pipeline[stream->pipe_size++] = ved;
-> +		entity = media_graph_walk_next(&graph);
-> +
-> +		if (!strcmp(entity->name, stream->ved_pipeline[0]->ent->name)) {
-
-I also don't understand this condition
-
-> +			media_graph_walk_cleanup(&graph);
-> +			return 0;
-> +		}
->   	}
-
-It is not clear what this function does, it looks like it adds to 'ved_pipeline'
-all entities that are connected to the video node, in addition to the entities
-that where there from previous calls, so some entities appear several times.
-
-I think there is no need to use the graph walk here but to access the source entity
-in each iteration, the way done in vimc_streamer_stream_start
-also.
-I think the code should iterate here until it reaches an entity that is already streaming,
-this means that the entity is already in the `ved_pipeline`, also you should make sure
-that the sensor is the first entity that process a frame, therefore the sensor should be
-at the end/start of the list of entities. Generally each entity should appear exactly once
-in the 'ved_pipeline' array and the entities should be ordered such that when calling 'process_frame'
-on one entity should be after calling 'process_frame' on its source entity.
-maybe it is easyer to implement if 'ved_pipeline' is a linked list.
+Thanks Christophe and Christoph for reviews.
 
 Thanks,
-Dafna
+Nick
 
->   
->   	vimc_streamer_pipeline_terminate(stream);
-> @@ -138,8 +202,11 @@ static int vimc_streamer_thread(void *data)
->   
->   		for (i = stream->pipe_size - 1; i >= 0; i--) {
->   			ved = stream->ved_pipeline[i];
-> -			ret = ved->process_frame(ved);
->   
-> +			if (atomic_read(&ved->use_count) == 0)
-> +				continue;
-> +
-> +			ret = ved->process_frame(ved);
->   			if (ret)
->   				break;
->   		}
-> @@ -179,6 +246,10 @@ int vimc_streamer_s_stream(struct vimc_stream *stream,
->   		if (stream->kthread)
->   			return 0;
->   
-> +		ret = vimc_streamer_stream_start(stream, ved);
-> +		if (ret)
-> +			return ret;
-> +
->   		ret = vimc_streamer_pipeline_init(stream, ved);
->   		if (ret)
->   			return ret;
-> 
+Since v5:
+- Split arch changes out better and make the constant folding work
+- Avoid most of the 80 column wrap, fix a reference to lib/ioremap.c
+- Fix compile error on some archs
+
+Since v4:
+- Fixed an off-by-page-order bug in v4
+- Several minor cleanups.
+- Added page order to /proc/vmallocinfo
+- Added hugepage to alloc_large_system_hage output.
+- Made an architecture config option, powerpc only for now.
+
+Since v3:
+- Fixed an off-by-one bug in a loop
+- Fix !CONFIG_HAVE_ARCH_HUGE_VMAP build fail
+- Hopefully this time fix the arm64 vmap stack bug, thanks Jonathan
+  Cameron for debugging the cause of this (hopefully).
+
+Since v2:
+- Rebased on vmalloc cleanups, split series into simpler pieces.
+- Fixed several compile errors and warnings
+- Keep the page array and accounting in small page units because
+  struct vm_struct is an interface (this should fix x86 vmap stack debug
+  assert). [Thanks Zefan]
+
+Nicholas Piggin (12):
+  mm/vmalloc: fix vmalloc_to_page for huge vmap mappings
+  mm: apply_to_pte_range warn and fail if a large pte is encountered
+  mm/vmalloc: rename vmap_*_range vmap_pages_*_range
+  lib/ioremap: rename ioremap_*_range to vmap_*_range
+  mm: HUGE_VMAP arch support cleanup
+  powerpc: inline huge vmap supported functions
+  arm64: inline huge vmap supported functions
+  x86: inline huge vmap supported functions
+  mm: Move vmap_range from mm/ioremap.c to mm/vmalloc.c
+  mm/vmalloc: add vmap_range_noflush variant
+  mm/vmalloc: Hugepage vmalloc mappings
+  powerpc/64s/radix: Enable huge vmalloc mappings
+
+ .../admin-guide/kernel-parameters.txt         |   2 +
+ arch/Kconfig                                  |   4 +
+ arch/arm64/include/asm/vmalloc.h              |  25 +
+ arch/arm64/mm/mmu.c                           |  26 -
+ arch/powerpc/Kconfig                          |   1 +
+ arch/powerpc/include/asm/vmalloc.h            |  21 +
+ arch/powerpc/mm/book3s64/radix_pgtable.c      |  21 -
+ arch/x86/include/asm/vmalloc.h                |  23 +
+ arch/x86/mm/ioremap.c                         |  19 -
+ arch/x86/mm/pgtable.c                         |  13 -
+ include/linux/io.h                            |   9 -
+ include/linux/vmalloc.h                       |  10 +
+ init/main.c                                   |   1 -
+ mm/ioremap.c                                  | 225 +--------
+ mm/memory.c                                   |  60 ++-
+ mm/page_alloc.c                               |   5 +-
+ mm/vmalloc.c                                  | 443 +++++++++++++++---
+ 17 files changed, 515 insertions(+), 393 deletions(-)
+
+-- 
+2.23.0
+
