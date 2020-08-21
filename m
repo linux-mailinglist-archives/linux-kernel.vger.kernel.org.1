@@ -2,110 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8AB424E29B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 23:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC22724E2A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 23:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726796AbgHUVVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 17:21:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51930 "EHLO
+        id S1726701AbgHUV0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 17:26:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726364AbgHUVVh (ORCPT
+        with ESMTP id S1726513AbgHUV0N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 17:21:37 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D7AC061573
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 14:21:37 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id u128so1677778pfb.6
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 14:21:37 -0700 (PDT)
+        Fri, 21 Aug 2020 17:26:13 -0400
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29E2C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 14:26:12 -0700 (PDT)
+Received: by mail-vk1-xa43.google.com with SMTP id m12so731797vko.5
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 14:26:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7zxJLsKDKPmlEOdAqEaMs/th95WQoPa5KmWk+Z1DjV8=;
-        b=Z6d0JADM6ZgtFdmHVXm5tWDcsc0z+xRwVRI6J5P0qu7Wh8Wlh8hMqrvoVoPHscBSX5
-         BPn31oZ1h8KocB9ca3F8q5MQ2YsQ1iVfBeigGJPS6Yoy6p0Po4/KSMrywwADhAagcgS9
-         igh0vRz/eRmU7KOg9mT0Sb0Co7agth6mO4CkA=
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=078+CiH7lVt29oWJpgwXIBkmUDbeJffsaSjW+OIcOZA=;
+        b=AHpmjfdLdmfBLldw9lQ0tRe+lGasQ3Wz8M5iSX7ICT4hyybMHrjbo14GoGAXCLge29
+         aPxUpd++RRLoFxUzIY78Eusp1qdRdl2Se5TWUd+g1AN0pnChMXZnr4l+HTAVpXkoFRJQ
+         TZ2wFZ04ad9De40QwE3vqDUkVLDJrHFPIrSAc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7zxJLsKDKPmlEOdAqEaMs/th95WQoPa5KmWk+Z1DjV8=;
-        b=Q2iHnjn5Bb8pJzcN/Iyb/jI9+l4uHrgaDWLfrUESDwOlsn1KtQh6IaEud8/ZuDl7y7
-         jXLICr7rVq6nxgecL8P4otkMEAahXvsONUwmn0wKempiD5THYSETjC7Tfu4n3ihMg54Y
-         xGse0GdhdqrSknb7a7M+fAjF6cfABa8PI/Bv8ADGuPUBSaL5RaPgQAH/9/+X6+5+7Fre
-         n/8HlM5X7jcSxy0LcQLtsoA+fdyP2RinAh65uSA+nZwIRYT5I4dpB5YT9FwKA5VoAasI
-         lOz4vUxVmEHcjSccasF/Hyvmc3oJdP/gORfM0Miyd0D/gq5OYmUVfST1is4QJDwFYVp7
-         qcmg==
-X-Gm-Message-State: AOAM532ZWKaN9ob6ln6m+rB9eEftECVq0+Mg/Czc/ThmwHvLo7xbjCHI
-        Y8t6+NtIoewoPpkkaFA3SPbvlA==
-X-Google-Smtp-Source: ABdhPJwlauw3d/VbXEWNPYofZtpxXF3lSoJiQEDnVGrlctpzlU0ciKIkShtT/G6ZiVpcxESPW34GqQ==
-X-Received: by 2002:a63:7550:: with SMTP id f16mr3613147pgn.118.1598044896892;
-        Fri, 21 Aug 2020 14:21:36 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id m22sm2843446pja.36.2020.08.21.14.21.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 14:21:35 -0700 (PDT)
-Date:   Fri, 21 Aug 2020 14:21:34 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        James Morse <james.morse@arm.com>,
-        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
-        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 27/29] x86/boot/compressed: Remove, discard, or assert
- for unwanted sections
-Message-ID: <202008211421.47347CA42@keescook>
-References: <20200821194310.3089815-1-keescook@chromium.org>
- <20200821194310.3089815-28-keescook@chromium.org>
- <20200821200159.GC1475504@rani.riverdale.lan>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=078+CiH7lVt29oWJpgwXIBkmUDbeJffsaSjW+OIcOZA=;
+        b=j/lon+4vhQbNsd0xLxEEVjx+BGoQn5Mprat1T6VOlVJoOUb78frVXvx7y20B+jg5Tt
+         vm0lOEshWAaDXwaOO2GlVnPxbdqFZd3BQEvgxnPmVa3nKLZJHwVCakMLm9cjz5r+7GG8
+         QVC6ptKIElesjfGPB/YsyisFIgnBmqIVxdFj9fy5C3fG74+78I+7zOFFhLu7Rm64WV38
+         VLzNfj1YT0iT31eWpcgIwxr7v+4OyBos5jqV5597EXGyS7qeCX/6vnX7DpaBEiiA/Jtq
+         6keeF4Xxa1RbmQIFG55+kde+6qngSImRERBoMri74Ce4nv/bEh77JT8T/u3X4I3vIxbx
+         gU5g==
+X-Gm-Message-State: AOAM532ayME9qUX0lJEulnZGzeilxVzURG2PeVtoHFB5tGu4PsmuPKPP
+        SkHYXRGXn8dnXFDEIBupQ9pg/XexeZOlfg==
+X-Google-Smtp-Source: ABdhPJz6yGhGJRNdcO1n6UuW5sREYREq+wOIspJO+CAJ2Dwun/rwg16vGn09umrHOXk/Fqqbhws3RQ==
+X-Received: by 2002:a1f:20d8:: with SMTP id g207mr3436274vkg.31.1598045171840;
+        Fri, 21 Aug 2020 14:26:11 -0700 (PDT)
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com. [209.85.222.41])
+        by smtp.gmail.com with ESMTPSA id u3sm428788vkb.0.2020.08.21.14.26.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Aug 2020 14:26:11 -0700 (PDT)
+Received: by mail-ua1-f41.google.com with SMTP id d20so931327ual.13
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 14:26:10 -0700 (PDT)
+X-Received: by 2002:a9f:2b89:: with SMTP id y9mr3066484uai.0.1598045170522;
+ Fri, 21 Aug 2020 14:26:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200821200159.GC1475504@rani.riverdale.lan>
+References: <20200709082024.v2.1.I4d2f85ffa06f38532631e864a3125691ef5ffe06@changeid>
+In-Reply-To: <20200709082024.v2.1.I4d2f85ffa06f38532631e864a3125691ef5ffe06@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 21 Aug 2020 14:25:59 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=U1WGrDDspTLJJk1jTSY-Raizm55+8szVADNLTa+tvekw@mail.gmail.com>
+Message-ID: <CAD=FV=U1WGrDDspTLJJk1jTSY-Raizm55+8szVADNLTa+tvekw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] ath10k: Keep track of which interrupts fired,
+ don't poll them
+To:     Kalle Valo <kvalo@codeaurora.org>,
+        ath10k <ath10k@lists.infradead.org>
+Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Rakesh Pillai <pillair@codeaurora.org>,
+        Abhishek Kumar <kuabhs@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 04:01:59PM -0400, Arvind Sankar wrote:
-> On Fri, Aug 21, 2020 at 12:43:08PM -0700, Kees Cook wrote:
-> > In preparation for warning on orphan sections, stop the linker from
-> > generating the .eh_frame* sections, discard unwanted non-zero-sized
-> > generated sections, and enforce other expected-to-be-zero-sized sections
-> > (since discarding them might hide problems with them suddenly gaining
-> > unexpected entries).
-> > 
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> >  	.rel.dyn : {
-> > -		*(.rel.*)
-> > +		*(.rel.*) *(.rel_*)
-> >  	}
-> >  	ASSERT(SIZEOF(.rel.dyn) == 0, "Unexpected run-time relocations (.rel) detected!")
-> >  
-> >  	.rela.dyn : {
-> > -		*(.rela.*)
-> > +		*(.rela.*) *(.rela_*)
-> >  	}
-> >  	ASSERT(SIZEOF(.rela.dyn) == 0, "Unexpected run-time relocations (.rela) detected!")
-> >  }
-> > -- 
-> > 2.25.1
-> > 
-> 
-> When do you get .rela_?
+Kalle,
 
-i386 builds, IIRC. I can try to hunt that down if you want?
+On Thu, Jul 9, 2020 at 8:22 AM Douglas Anderson <dianders@chromium.org> wrote:
+>
+> If we have a per CE (Copy Engine) IRQ then we have no summary
+> register.  Right now the code generates a summary register by
+> iterating over all copy engines and seeing if they have an interrupt
+> pending.
+>
+> This has a problem.  Specifically if _none_ if the Copy Engines have
+> an interrupt pending then they might go into low power mode and
+> reading from their address space will cause a full system crash.  This
+> was seen to happen when two interrupts went off at nearly the same
+> time.  Both were handled by a single call of ath10k_snoc_napi_poll()
+> but, because there were two interrupts handled and thus two calls to
+> napi_schedule() there was still a second call to
+> ath10k_snoc_napi_poll() which ran with no interrupts pending.
+>
+> Instead of iterating over all the copy engines, let's just keep track
+> of the IRQs that fire.  Then we can effectively generate our own
+> summary without ever needing to read the Copy Engines.
+>
+> Tested-on: WCN3990 SNOC WLAN.HL.3.2.2-00490-QCAHLSWMTPL-1
+>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Reviewed-by: Rakesh Pillai <pillair@codeaurora.org>
+> Reviewed-by: Brian Norris <briannorris@chromium.org>
+> ---
+> This patch continues work to try to squash all instances of the crash
+> we've been seeing while reading CE registers and hopefully this patch
+> addresses the true root of the issue.
+>
+> The first patch that attempted to address these problems landed as
+> commit 8f9ed93d09a9 ("ath10k: Wait until copy complete is actually
+> done before completing").  After that Rakesh Pillai posted ("ath10k:
+> Add interrupt summary based CE processing") [1] and this patch is
+> based atop that one.  Both of those patches significantly reduced the
+> instances of problems but didn't fully eliminate them.  Crossing my
+> fingers that they're all gone now.
+>
+> [1] https://lore.kernel.org/r/1593193967-29897-1-git-send-email-pillair@codeaurora.org
+>
+> Changes in v2:
+> - Add bitmap_clear() in ath10k_snoc_hif_start().
+>
+>  drivers/net/wireless/ath/ath10k/ce.c   | 84 ++++++++++----------------
+>  drivers/net/wireless/ath/ath10k/ce.h   | 14 ++---
+>  drivers/net/wireless/ath/ath10k/snoc.c | 19 ++++--
+>  drivers/net/wireless/ath/ath10k/snoc.h |  1 +
+>  4 files changed, 52 insertions(+), 66 deletions(-)
 
--- 
-Kees Cook
+I'm wondering if there's anything else you're looking for here.  If I
+just need to sit tight that's fine, but I want to make sure this patch
+isn't lost and you're not waiting for any actions on my part.  The
+patch it depends on from Rakesh (see above or patchwork ID 11628289)
+is also still marked as "Under Review".
+
+We have been using this patch for the last few months and we haven't
+hit a single crash like we were getting before.  At the same time, we
+haven't found any regressions that have been attributed to this patch.
+
+Anyway, just figured I'd check in.  Thanks!
+
+-Doug
