@@ -2,73 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB9B24D875
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A48BB24D87B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728024AbgHUPYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 11:24:17 -0400
-Received: from mga07.intel.com ([134.134.136.100]:44116 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727950AbgHUPYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 11:24:04 -0400
-IronPort-SDR: 70BIbq1x79/nF0LwGFq++WdYgCvh22Xe/STFbQoDatrGr2SLk1PiOmm8urbQ4e08HcfO0q9fWd
- 44ZbjSKPnjOw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9719"; a="219843904"
-X-IronPort-AV: E=Sophos;i="5.76,337,1592895600"; 
-   d="scan'208";a="219843904"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2020 08:23:56 -0700
-IronPort-SDR: zr1zjNdR2ZfsTBqk29XtWieg4LINsD0s6fmv+QUtyUtLdXM233ywWMMaCMB17PU9sMFN2bIyZ2
- BH/PZ1xhLQ+Q==
-X-IronPort-AV: E=Sophos;i="5.76,337,1592895600"; 
-   d="scan'208";a="442379328"
-Received: from pcmiller-mobl1.amr.corp.intel.com (HELO [10.209.120.121]) ([10.209.120.121])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2020 08:23:54 -0700
-Subject: Re: [PATCH] soundwire: intel: fix CONFIG_PM and CONFIG_PM_SLEEP
- confusion
-To:     Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, tiwai@suse.de,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        broonie@kernel.org, srinivas.kandagatla@linaro.org,
-        jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-References: <20200820140441.9478-1-yung-chuan.liao@linux.intel.com>
- <20200821050159.GH2639@vkoul-mobl>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <cab31891-15bf-4ae2-44dd-ae33de4eb4ed@linux.intel.com>
-Date:   Fri, 21 Aug 2020 10:23:53 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200821050159.GH2639@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1728085AbgHUPZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 11:25:53 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:46832 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727091AbgHUPZu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 11:25:50 -0400
+Received: from testvm-timer.0wqf5yk0ngwuzjntifuk1ppqse.cx.internal.cloudapp.net (unknown [40.65.222.102])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 95D9720B4908;
+        Fri, 21 Aug 2020 08:25:49 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 95D9720B4908
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1598023550;
+        bh=bC0FGrYXLPz3vW4zlcF+S6Fm1cVv02y/ELXHJG4PNlU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KyfDaFBeiutxMXxnG8OTPzazr2r4CrGFMykBI0bDTRQHM6v8ShOvfOyRbJ361nvWK
+         KL+/ZFDyBQ/1nJKQpjN95BMsoiKXUU6kIfw63pLaMN8m0y/Wgbs3cADrhakUMPF/kp
+         8wgp1VRYnMxsa/D8kZYI5IyFy/9ZWOLsTd8Nr1IA=
+From:   Vineeth Pillai <viremana@linux.microsoft.com>
+To:     Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>
+Cc:     Vineeth Pillai <viremana@linux.microsoft.com>,
+        "K . Y . Srinivasan" <kys@microsoft.com>,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] hv_utils: return error if host timesysnc update is stale
+Date:   Fri, 21 Aug 2020 15:25:23 +0000
+Message-Id: <20200821152523.99364-1-viremana@linux.microsoft.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If for any reason, host timesync messages were not processed by
+the guest, hv_ptp_gettime() returns a stale value and the
+caller (clock_gettime, PTP ioctl etc) has no means to know this
+now. Return an error so that the caller knows about this.
 
+Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
+---
 
->> When CONFIG_PM_SLEEP is not defined, GCC throws compilation warnings:
->>
->> drivers/soundwire/intel.c:1816:12: warning: ‘intel_resume’ defined but
->> not used [-Wunused-function]
->>   1816 | static int intel_resume(struct device *dev)
->>        |            ^~~~~~~~~~~~
->>
->> drivers/soundwire/intel.c:1697:12: warning: ‘intel_suspend’ defined
->> but not used [-Wunused-function]
->>   1697 | static int intel_suspend(struct device *dev)
->>
->> Fix by adding the missing CONFIG_PM_SLEEP.
-> 
-> Can you rather use __maybe for for these rather than wrapping in another
-> ifdef, that is the recommended way to do this
+ v2:
+    - Fix warnings reported by Kernel test robot <lkp@intel.com>
+    - s/pr_warn/pr_warn_once/
 
-No objections, that would work as well.
+---
+ drivers/hv/hv_util.c | 46 +++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 35 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/hv/hv_util.c b/drivers/hv/hv_util.c
+index 92ee0fe4c919..1f86e8d9b018 100644
+--- a/drivers/hv/hv_util.c
++++ b/drivers/hv/hv_util.c
+@@ -282,26 +282,52 @@ static struct {
+ 	spinlock_t			lock;
+ } host_ts;
+ 
+-static struct timespec64 hv_get_adj_host_time(void)
++static inline u64 reftime_to_ns(u64 reftime)
+ {
+-	struct timespec64 ts;
+-	u64 newtime, reftime;
++	return (reftime - WLTIMEDELTA) * 100;
++}
++
++/*
++ * Hard coded threshold for host timesync delay: 600 seconds
++ */
++static const u64 HOST_TIMESYNC_DELAY_THRESH = 600 * (u64)NSEC_PER_SEC;
++
++static int hv_get_adj_host_time(struct timespec64 *ts)
++{
++	u64 newtime, reftime, timediff_adj;
+ 	unsigned long flags;
++	int ret = 0;
+ 
+ 	spin_lock_irqsave(&host_ts.lock, flags);
+ 	reftime = hv_read_reference_counter();
+-	newtime = host_ts.host_time + (reftime - host_ts.ref_time);
+-	ts = ns_to_timespec64((newtime - WLTIMEDELTA) * 100);
++
++	/*
++	 * We need to let the caller know that last update from host
++	 * is older than the max allowable threshold. clock_gettime()
++	 * and PTP ioctl do not have a documented error that we could
++	 * return for this specific case. Use ESTALE to report this.
++	 */
++	timediff_adj = reftime - host_ts.ref_time;
++	if (timediff_adj * 100 > HOST_TIMESYNC_DELAY_THRESH) {
++		pr_warn_once("TIMESYNC IC: Stale time stamp, %llu nsecs old\n",
++			     (timediff_adj * 100));
++		ret = -ESTALE;
++	}
++
++	newtime = host_ts.host_time + timediff_adj;
++	*ts = ns_to_timespec64(reftime_to_ns(newtime));
+ 	spin_unlock_irqrestore(&host_ts.lock, flags);
+ 
+-	return ts;
++	return ret;
+ }
+ 
+ static void hv_set_host_time(struct work_struct *work)
+ {
+-	struct timespec64 ts = hv_get_adj_host_time();
+ 
+-	do_settimeofday64(&ts);
++	struct timespec64 ts;
++
++	if (!hv_get_adj_host_time(&ts))
++		do_settimeofday64(&ts);
+ }
+ 
+ /*
+@@ -622,9 +648,7 @@ static int hv_ptp_adjtime(struct ptp_clock_info *ptp, s64 delta)
+ 
+ static int hv_ptp_gettime(struct ptp_clock_info *info, struct timespec64 *ts)
+ {
+-	*ts = hv_get_adj_host_time();
+-
+-	return 0;
++	return hv_get_adj_host_time(ts);
+ }
+ 
+ static struct ptp_clock_info ptp_hyperv_info = {
+
+base-commit: 49971e6bad2da980686368baa34039907f62b516
+-- 
+2.17.1
+
