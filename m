@@ -2,264 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE7C24E05C
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 21:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF04924E071
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 21:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726731AbgHUTDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 15:03:20 -0400
-Received: from conuserg-09.nifty.com ([210.131.2.76]:63053 "EHLO
-        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbgHUTDH (ORCPT
+        id S1726433AbgHUTFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 15:05:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725935AbgHUTFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 15:03:07 -0400
-Received: from oscar.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
-        by conuserg-09.nifty.com with ESMTP id 07LJ23eb027595;
-        Sat, 22 Aug 2020 04:02:11 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 07LJ23eb027595
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1598036531;
-        bh=may07TN/E9M6QqtFSP+c/0evMKANYT+YPi6JrwTRamU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qyEu1Gsksgw3eT7Ert0fmXAt+/f3Kww0sWsL6bXpD3fUB5UDReHL8huLNohdZqap+
-         QNGULMnid4SsHXs2zcmE0pJZu0pux6SCzcsWuRaDdy60tyCsH7hngoft/TXJihJYyT
-         N0YX5aSjE1/cDSZ0YKvduy8/Divtn+x7sgHZjHyNZw791DWv6pyVwkfSwoDv9tsKTX
-         Ygi5KEhXW24Bfc5dPivGfW2yedloz2w6UsgMd+ijmM393BbXR9u+vWdZBBQWQzN8mE
-         1iZY03WK2FHPoll6Q5msFRbiVLZlKO65INSKb7zVfex4+CSv05nms3/JDqD5itE5eS
-         hOMg4JrlcrhpQ==
-X-Nifty-SrcIP: [126.90.211.135]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Nathan Huckleberry <nhuck@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Roeder <tmroeder@google.com>,
-        clang-built-linux@googlegroups.com,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 9/9] Makefile: Add clang-tidy and static analyzer support to makefile
-Date:   Sat, 22 Aug 2020 04:01:59 +0900
-Message-Id: <20200821190159.1033740-10-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200821190159.1033740-1-masahiroy@kernel.org>
-References: <20200821190159.1033740-1-masahiroy@kernel.org>
+        Fri, 21 Aug 2020 15:05:42 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2311C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:05:41 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id g6so2977353ljn.11
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:05:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nYAilJKJE/Ww6fPETY0UsPcqYTSdX+KcqzOQ2SZHjHk=;
+        b=govgPlM5hnPkSEwfWGUIYxRmIaYCCF2bJTE78xBfzEYFWIPnokbR5UlRZzXwtuMDBP
+         3GiSRxTe+MNLCrhfBipl0worTfXzuhdTvTP6Gg+IWnDBkSdWt5veGPtmhC5r57CVxwrS
+         LCil9FpOzP42GhiX+Lc1tk9QZDcIjKIcMjeTQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nYAilJKJE/Ww6fPETY0UsPcqYTSdX+KcqzOQ2SZHjHk=;
+        b=uXHMsnmYb6IuX+YOClWXZBKWyD6g/i5KNhZTws0QwFwrE3f9rtIy2eQ/nDWcwm8OB/
+         P+dIcW/m9JfzrUzGLe+57a+TOzUmASby5ClZwTeKQG0BYSLBhL8xaqd3AwZliSN7fRsa
+         wqfODZBQQQ20qElnp5ktgsnuQo/lMSr6Mtd9bgSshEPIjo/6UfWss6BHdJr5oByrgps9
+         Jwvww07iZiYGD0AseB9jo4FyIU9Aps8uDNBqOuYcFyOZ0LoNIWR8UDB7b1iMyQUpKZv6
+         c8j+sfpG1A75yuZwkxYx6Gh3vRLuD0wlAD4WSkdY4Tti2nMB1RkrU7SdwY64VWv9+bPF
+         Uehg==
+X-Gm-Message-State: AOAM532W7ip4yw7SnTmmamEW+0toVT/mmRZ7MIW09nsgjkPqCzCetsdk
+        nEDHDpbGj7gWXIR00WgH1wU97iNS/rzjYA==
+X-Google-Smtp-Source: ABdhPJxuAyvSezu1Wnlo/pz3YudXdushqM7Uw8Hd1p4QvruV89W6Q9o4ukLFmHP6N+cm6OaQRX480w==
+X-Received: by 2002:a2e:91d4:: with SMTP id u20mr1993730ljg.87.1598036739724;
+        Fri, 21 Aug 2020 12:05:39 -0700 (PDT)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id l19sm545227lfg.61.2020.08.21.12.05.36
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Aug 2020 12:05:36 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id v9so3003275ljk.6
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:05:36 -0700 (PDT)
+X-Received: by 2002:a2e:545:: with SMTP id 66mr2338287ljf.285.1598036735955;
+ Fri, 21 Aug 2020 12:05:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAHk-=wit7LDr0tA2eVn7yHHEH76oK=Lfm3tTs8_JxO8XEED4_g@mail.gmail.com>
+ <CAHk-=wifRg0pDhufQFasWa7G3sMHbG0nahnm5yRwvTKpKU9g4A@mail.gmail.com>
+ <20200811214255.GE6353@xz-x1> <CAHk-=wiVN-+P1vOCSMyfGwYQD3hF7A18OJyXgpiMwGDfMaU+8w@mail.gmail.com>
+ <20200820215449.GB358043@xz-x1> <CAHk-=wjGzOjsfmX1Dc=yz6o_+62w4wcTVXX_hia9sHLfsCoxjg@mail.gmail.com>
+ <20200821101333.GA3432@quack2.suse.cz> <CAHk-=whXfL5DtinS42dgtNu6i+xchK_VP+XLprQbu_og2J5Dkw@mail.gmail.com>
+ <20200821154756.GC3432@quack2.suse.cz> <CAHk-=wj-pfzKf3JDe9fr4o_nKYXJXfuYAMFCajwhy0YYYri4Fw@mail.gmail.com>
+ <20200821180848.GA11376@xz-x1> <CAHk-=wj3fY2dch7Ah-MLbJcfU3buoXgJnwc1zWFSjVujSd39GA@mail.gmail.com>
+In-Reply-To: <CAHk-=wj3fY2dch7Ah-MLbJcfU3buoXgJnwc1zWFSjVujSd39GA@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 21 Aug 2020 12:05:19 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj5Oyg0LeAxSw_vizerm=sLd=sHfcVecZMKPZn6kNbbXA@mail.gmail.com>
+Message-ID: <CAHk-=wj5Oyg0LeAxSw_vizerm=sLd=sHfcVecZMKPZn6kNbbXA@mail.gmail.com>
+Subject: Re: [PATCH v3] mm/gup: Allow real explicit breaking of COW
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Jan Kara <jack@suse.cz>, Andrea Arcangeli <aarcange@redhat.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marty Mcfadden <mcfadden8@llnl.gov>,
+        "Maya B . Gokhale" <gokhale2@llnl.gov>,
+        Jann Horn <jannh@google.com>, Christoph Hellwig <hch@lst.de>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Kirill Shutemov <kirill@shutemov.name>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Huckleberry <nhuck@google.com>
+On Fri, Aug 21, 2020 at 11:23 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> But the PageKsm() page_count() issue I didn't even realize. That worries me.
 
-This patch adds clang-tidy and the clang static-analyzer as make
-targets. The goal of this patch is to make static analysis tools
-usable and extendable by any developer or researcher who is familiar
-with basic c++.
+Well, the fix is simple, although I don't love the magic PageKsm
+semantics that hide it from the page count.
 
-The current static analysis tools require intimate knowledge of the
-internal workings of the static analysis. Clang-tidy and the clang
-static analyzers expose an easy to use api and allow users unfamiliar
-with clang to write new checks with relative ease.
+But since (a) a Ksm page is presumably normally shared (ie things like
+all zeroes) and (b) copying should always be safe, just do that.
 
-===Clang-tidy===
+The case we *used* to have with trying to reuse the KSM page seems
+like it's not just adding complexity, it's optimizing for entirely the
+wrong case.
 
-Clang-tidy is an easily extendable 'linter' that runs on the AST.
-Clang-tidy checks are easy to write and understand. A check consists of
-two parts, a matcher and a checker. The matcher is created using a
-domain specific language that acts on the AST
-(https://clang.llvm.org/docs/LibASTMatchersReference.html).  When AST
-nodes are found by the matcher a callback is made to the checker. The
-checker can then execute additional checks and issue warnings.
+Check both before and after getting the page lock, for the same reason
+we do it for the page count.
 
-Here is an example clang-tidy check to report functions that have calls
-to local_irq_disable without calls to local_irq_enable and vice-versa.
-Functions flagged with __attribute((annotation("ignore_irq_balancing")))
-are ignored for analysis. (https://reviews.llvm.org/D65828)
+The logic there matches the "reuse swap page", but while that old
+logic may have made sense 20 years ago, the swap cache case should be
+*so* rare these days that it feels completely pointless to try to
+reuse it.
 
-===Clang static analyzer===
+Aggressively doing a new allocation, copy, and freeing the old swap
+cache page is quite possibly cheaper than taking the page lock anyway,
+but more importantly, it's not a case that should normally trigger in
+the first place.
 
-The clang static analyzer is a more powerful static analysis tool that
-uses symbolic execution to find bugs. Currently there is a check that
-looks for potential security bugs from invalid uses of kmalloc and
-kfree. There are several more general purpose checks that are useful for
-the kernel.
+That said, looking at this code again, I get the feeling that the
+mapcount check is pointless.
 
-The clang static analyzer is well documented and designed to be
-extensible.
-(https://clang-analyzer.llvm.org/checker_dev_manual.html)
-(https://github.com/haoNoQ/clang-analyzer-guide/releases/download/v0.1/clang-analyzer-guide-v0.1.pdf)
+Afaik, page_count() should always be larger than page_mapcount(), so
+if mapcount is > 1, then we'd have caught it with the page_count()
+check.
 
-The main draw of the clang tools is how accessible they are. The clang
-documentation is very nice and these tools are built specifically to be
-easily extendable by any developer. They provide an accessible method of
-bug-finding and research to people who are not overly familiar with the
-kernel codebase.
+Hmm? Am I popssibly missing some other subtle special case?
 
-Signed-off-by: Nathan Huckleberry <nhuck@google.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Are there any THP issues? Again, doing the copy should always be the
+safe thing to do, and since we get the page lock for the reuse case I
+think we're ok on that front.
 
-(no changes since v1)
+What else possible special cases could we hit?
 
- MAINTAINERS                                   |  1 +
- Makefile                                      | 20 ++++-
- .../{ => clang-tools}/gen_compile_commands.py |  0
- scripts/clang-tools/run-clang-tools.py        | 74 +++++++++++++++++++
- 4 files changed, 93 insertions(+), 2 deletions(-)
- rename scripts/{ => clang-tools}/gen_compile_commands.py (100%)
- create mode 100755 scripts/clang-tools/run-clang-tools.py
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index deaafb617361..19b916dbc796 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4247,6 +4247,7 @@ W:	https://clangbuiltlinux.github.io/
- B:	https://github.com/ClangBuiltLinux/linux/issues
- C:	irc://chat.freenode.net/clangbuiltlinux
- F:	Documentation/kbuild/llvm.rst
-+F:	scripts/clang-tools/
- K:	\b(?i:clang|llvm)\b
- 
- CLEANCACHE API
-diff --git a/Makefile b/Makefile
-index 65ed336a6de1..9ece191d8d51 100644
---- a/Makefile
-+++ b/Makefile
-@@ -635,7 +635,7 @@ endif
- # in addition to whatever we do anyway.
- # Just "make" or "make all" shall build modules as well
- 
--ifneq ($(filter all modules nsdeps %compile_commands.json,$(MAKECMDGOALS)),)
-+ifneq ($(filter all modules nsdeps %compile_commands.json clang-%,$(MAKECMDGOALS)),)
-   KBUILD_MODULES := 1
- endif
- 
-@@ -1577,6 +1577,8 @@ help:
- 	@echo  '  export_report   - List the usages of all exported symbols'
- 	@echo  '  headerdep       - Detect inclusion cycles in headers'
- 	@echo  '  coccicheck      - Check with Coccinelle'
-+	@echo  '  clang-analyzer  - Check with clang static analyzer'
-+	@echo  '  clang-tidy      - Check with clang-tidy'
- 	@echo  ''
- 	@echo  'Tools:'
- 	@echo  '  nsdeps          - Generate missing symbol namespace dependencies'
-@@ -1842,13 +1844,27 @@ nsdeps: modules
- quiet_cmd_gen_compile_commands = GEN     $@
-       cmd_gen_compile_commands = $(PYTHON3) $< -a $(AR) -o $@ $(filter-out $<, $(real-prereqs))
- 
--$(extmod-prefix)compile_commands.json: scripts/gen_compile_commands.py \
-+$(extmod-prefix)compile_commands.json: scripts/clang-tools/gen_compile_commands.py \
- 	$(if $(KBUILD_EXTMOD),,$(KBUILD_VMLINUX_OBJS) $(KBUILD_VMLINUX_LIBS)) \
- 	$(if $(CONFIG_MODULES), $(MODORDER)) FORCE
- 	$(call if_changed,gen_compile_commands)
- 
- targets += $(extmod-prefix)compile_commands.json
- 
-+PHONY += clang-tidy clang-analyzer
-+
-+ifdef CONFIG_CC_IS_CLANG
-+quiet_cmd_clang_tools = CHECK   $<
-+      cmd_clang_tools = $(PYTHON3) $(srctree)/scripts/clang-tools/run-clang-tools.py $@ $<
-+
-+clang-tidy clang-analyzer: $(extmod-prefix)compile_commands.json
-+	$(call cmd,clang_tools)
-+else
-+clang-tidy clang-analyzer:
-+	@echo "$@ requires CC=clang" >&2
-+	@false
-+endif
-+
- # Scripts to check various things for consistency
- # ---------------------------------------------------------------------------
- 
-diff --git a/scripts/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
-similarity index 100%
-rename from scripts/gen_compile_commands.py
-rename to scripts/clang-tools/gen_compile_commands.py
-diff --git a/scripts/clang-tools/run-clang-tools.py b/scripts/clang-tools/run-clang-tools.py
-new file mode 100755
-index 000000000000..fa7655c7cec0
---- /dev/null
-+++ b/scripts/clang-tools/run-clang-tools.py
-@@ -0,0 +1,74 @@
-+#!/usr/bin/env python
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Copyright (C) Google LLC, 2020
-+#
-+# Author: Nathan Huckleberry <nhuck@google.com>
-+#
-+"""A helper routine run clang-tidy and the clang static-analyzer on
-+compile_commands.json.
-+"""
-+
-+import argparse
-+import json
-+import multiprocessing
-+import os
-+import subprocess
-+import sys
-+
-+
-+def parse_arguments():
-+    """Set up and parses command-line arguments.
-+    Returns:
-+        args: Dict of parsed args
-+        Has keys: [path, type]
-+    """
-+    usage = """Run clang-tidy or the clang static-analyzer on a
-+        compilation database."""
-+    parser = argparse.ArgumentParser(description=usage)
-+
-+    type_help = "Type of analysis to be performed"
-+    parser.add_argument("type",
-+                        choices=["clang-tidy", "clang-analyzer"],
-+                        help=type_help)
-+    path_help = "Path to the compilation database to parse"
-+    parser.add_argument("path", type=str, help=path_help)
-+
-+    return parser.parse_args()
-+
-+
-+def init(l, a):
-+    global lock
-+    global args
-+    lock = l
-+    args = a
-+
-+
-+def run_analysis(entry):
-+    # Disable all checks, then re-enable the ones we want
-+    checks = "-checks=-*,"
-+    if args.type == "clang-tidy":
-+        checks += "linuxkernel-*"
-+    else:
-+        checks += "clang-analyzer-*"
-+    p = subprocess.run(["clang-tidy", "-p", args.path, checks, entry["file"]],
-+                       stdout=subprocess.PIPE,
-+                       stderr=subprocess.STDOUT,
-+                       cwd=entry["directory"])
-+    with lock:
-+        sys.stderr.buffer.write(p.stdout)
-+
-+
-+def main():
-+    args = parse_arguments()
-+
-+    lock = multiprocessing.Lock()
-+    pool = multiprocessing.Pool(initializer=init, initargs=(lock, args))
-+    # Read JSON data into the datastore variable
-+    with open(args.path, "r") as f:
-+        datastore = json.load(f)
-+        pool.map(run_analysis, datastore)
-+
-+
-+if __name__ == "__main__":
-+    main()
--- 
-2.25.1
-
+                Linus
