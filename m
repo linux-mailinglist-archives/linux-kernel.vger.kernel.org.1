@@ -2,192 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE4E624D087
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 10:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D4E24D09D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 10:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727982AbgHUI3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 04:29:42 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3139 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726332AbgHUI3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 04:29:41 -0400
-Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.53])
-        by Forcepoint Email with ESMTP id B0E2AF97C94A8C457749;
-        Fri, 21 Aug 2020 16:29:37 +0800 (CST)
-Received: from dggema771-chm.china.huawei.com (10.1.198.213) by
- DGGEMM406-HUB.china.huawei.com (10.3.20.214) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Fri, 21 Aug 2020 16:29:37 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggema771-chm.china.huawei.com (10.1.198.213) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Fri, 21 Aug 2020 16:29:36 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
- Fri, 21 Aug 2020 16:29:37 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Randy Dunlap <rdunlap@infradead.org>, "hch@lst.de" <hch@lst.de>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "ganapatrao.kulkarni@cavium.com" <ganapatrao.kulkarni@cavium.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>
-CC:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        huangdaode <huangdaode@huawei.com>,
-        "Jonathan Cameron" <jonathan.cameron@huawei.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Steve Capper <steve.capper@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: RE: [PATCH v6 1/2] dma-contiguous: provide the ability to reserve
- per-numa CMA
-Thread-Topic: [PATCH v6 1/2] dma-contiguous: provide the ability to reserve
- per-numa CMA
-Thread-Index: AQHWd2LcxiMeqDASCk2fUz72+ALjbKlBVpwAgADf/CA=
-Date:   Fri, 21 Aug 2020 08:29:37 +0000
-Message-ID: <81b215005152449ca4392862d0676ded@hisilicon.com>
-References: <20200821022615.28596-1-song.bao.hua@hisilicon.com>
- <20200821022615.28596-2-song.bao.hua@hisilicon.com>
- <5dbe456d-d408-11ef-788e-63d996435fa8@infradead.org>
-In-Reply-To: <5dbe456d-d408-11ef-788e-63d996435fa8@infradead.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.202.192]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1727925AbgHUIfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 04:35:41 -0400
+Received: from mga18.intel.com ([134.134.136.126]:62770 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726757AbgHUIfj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 04:35:39 -0400
+IronPort-SDR: 473IjoKoSUySt7XxSerjKtpL6iZBXxpCmGyzfmrrMpAygYiGX/PRP8DzUz3NKGGBnO/QsWDCh9
+ aOolRDmSCPlQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9719"; a="143124538"
+X-IronPort-AV: E=Sophos;i="5.76,335,1592895600"; 
+   d="scan'208";a="143124538"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2020 01:35:38 -0700
+IronPort-SDR: kPINq9ixWXyPpch7brhxnjMiBn6ePSw4V+gQnwsz0I5/NakVFttvyHIM9Z+bHNE0Nqf18ENI3v
+ F+cuKaXVHgOA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,335,1592895600"; 
+   d="scan'208";a="327705621"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 21 Aug 2020 01:35:35 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1k92DL-00AI66-Dw; Fri, 21 Aug 2020 11:15:55 +0300
+Date:   Fri, 21 Aug 2020 11:15:55 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>, linux-iio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v8 1/3] devres: provide devm_krealloc()
+Message-ID: <20200821081555.GG1891694@smile.fi.intel.com>
+References: <20200820185110.17828-1-brgl@bgdev.pl>
+ <20200820185110.17828-2-brgl@bgdev.pl>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200820185110.17828-2-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogbGludXgta2VybmVsLW93
-bmVyQHZnZXIua2VybmVsLm9yZw0KPiBbbWFpbHRvOmxpbnV4LWtlcm5lbC1vd25lckB2Z2VyLmtl
-cm5lbC5vcmddIE9uIEJlaGFsZiBPZiBSYW5keSBEdW5sYXANCj4gU2VudDogRnJpZGF5LCBBdWd1
-c3QgMjEsIDIwMjAgMjo1MCBQTQ0KPiBUbzogU29uZyBCYW8gSHVhIChCYXJyeSBTb25nKSA8c29u
-Zy5iYW8uaHVhQGhpc2lsaWNvbi5jb20+OyBoY2hAbHN0LmRlOw0KPiBtLnN6eXByb3dza2lAc2Ft
-c3VuZy5jb207IHJvYmluLm11cnBoeUBhcm0uY29tOyB3aWxsQGtlcm5lbC5vcmc7DQo+IGdhbmFw
-YXRyYW8ua3Vsa2FybmlAY2F2aXVtLmNvbTsgY2F0YWxpbi5tYXJpbmFzQGFybS5jb20NCj4gQ2M6
-IGlvbW11QGxpc3RzLmxpbnV4LWZvdW5kYXRpb24ub3JnOyBMaW51eGFybSA8bGludXhhcm1AaHVh
-d2VpLmNvbT47DQo+IGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZzsgbGludXgt
-a2VybmVsQHZnZXIua2VybmVsLm9yZzsNCj4gaHVhbmdkYW9kZSA8aHVhbmdkYW9kZUBodWF3ZWku
-Y29tPjsgSm9uYXRoYW4gQ2FtZXJvbg0KPiA8am9uYXRoYW4uY2FtZXJvbkBodWF3ZWkuY29tPjsg
-Tmljb2xhcyBTYWVueiBKdWxpZW5uZQ0KPiA8bnNhZW56anVsaWVubmVAc3VzZS5kZT47IFN0ZXZl
-IENhcHBlciA8c3RldmUuY2FwcGVyQGFybS5jb20+OyBBbmRyZXcNCj4gTW9ydG9uIDxha3BtQGxp
-bnV4LWZvdW5kYXRpb24ub3JnPjsgTWlrZSBSYXBvcG9ydCA8cnBwdEBsaW51eC5pYm0uY29tPg0K
-PiBTdWJqZWN0OiBSZTogW1BBVENIIHY2IDEvMl0gZG1hLWNvbnRpZ3VvdXM6IHByb3ZpZGUgdGhl
-IGFiaWxpdHkgdG8gcmVzZXJ2ZQ0KPiBwZXItbnVtYSBDTUENCj4gDQo+IE9uIDgvMjAvMjAgNzoy
-NiBQTSwgQmFycnkgU29uZyB3cm90ZToNCj4gPg0KPiA+DQo+ID4gQ2M6IEpvbmF0aGFuIENhbWVy
-b24gPEpvbmF0aGFuLkNhbWVyb25AaHVhd2VpLmNvbT4NCj4gPiBDYzogQ2hyaXN0b3BoIEhlbGx3
-aWcgPGhjaEBsc3QuZGU+DQo+ID4gQ2M6IE1hcmVrIFN6eXByb3dza2kgPG0uc3p5cHJvd3NraUBz
-YW1zdW5nLmNvbT4NCj4gPiBDYzogV2lsbCBEZWFjb24gPHdpbGxAa2VybmVsLm9yZz4NCj4gPiBD
-YzogUm9iaW4gTXVycGh5IDxyb2Jpbi5tdXJwaHlAYXJtLmNvbT4NCj4gPiBDYzogR2FuYXBhdHJh
-byBLdWxrYXJuaSA8Z2FuYXBhdHJhby5rdWxrYXJuaUBjYXZpdW0uY29tPg0KPiA+IENjOiBDYXRh
-bGluIE1hcmluYXMgPGNhdGFsaW4ubWFyaW5hc0Bhcm0uY29tPg0KPiA+IENjOiBOaWNvbGFzIFNh
-ZW56IEp1bGllbm5lIDxuc2FlbnpqdWxpZW5uZUBzdXNlLmRlPg0KPiA+IENjOiBTdGV2ZSBDYXBw
-ZXIgPHN0ZXZlLmNhcHBlckBhcm0uY29tPg0KPiA+IENjOiBBbmRyZXcgTW9ydG9uIDxha3BtQGxp
-bnV4LWZvdW5kYXRpb24ub3JnPg0KPiA+IENjOiBNaWtlIFJhcG9wb3J0IDxycHB0QGxpbnV4Lmli
-bS5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogQmFycnkgU29uZyA8c29uZy5iYW8uaHVhQGhpc2ls
-aWNvbi5jb20+DQo+ID4gLS0tDQo+ID4gIHY2OiByZWJhc2Ugb24gdG9wIG9mIDUuOS1yYzE7DQo+
-ID4gICAgICBkb2MgY2xlYW51cA0KPiA+DQo+ID4gIC4uLi9hZG1pbi1ndWlkZS9rZXJuZWwtcGFy
-YW1ldGVycy50eHQgICAgICAgICB8ICAgOSArKw0KPiA+ICBpbmNsdWRlL2xpbnV4L2RtYS1jb250
-aWd1b3VzLmggICAgICAgICAgICAgICAgfCAgIDYgKysNCj4gPiAga2VybmVsL2RtYS9LY29uZmln
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDEwICsrDQo+ID4gIGtlcm5lbC9kbWEvY29u
-dGlndW91cy5jICAgICAgICAgICAgICAgICAgICAgICB8IDEwMA0KPiArKysrKysrKysrKysrKysr
-LS0NCj4gPiAgNCBmaWxlcyBjaGFuZ2VkLCAxMTUgaW5zZXJ0aW9ucygrKSwgMTAgZGVsZXRpb25z
-KC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9hZG1pbi1ndWlkZS9rZXJu
-ZWwtcGFyYW1ldGVycy50eHQNCj4gYi9Eb2N1bWVudGF0aW9uL2FkbWluLWd1aWRlL2tlcm5lbC1w
-YXJhbWV0ZXJzLnR4dA0KPiA+IGluZGV4IGJkYzFmMzNmZDNkMS4uM2YzM2I4OWFlYWI1IDEwMDY0
-NA0KPiA+IC0tLSBhL0RvY3VtZW50YXRpb24vYWRtaW4tZ3VpZGUva2VybmVsLXBhcmFtZXRlcnMu
-dHh0DQo+ID4gKysrIGIvRG9jdW1lbnRhdGlvbi9hZG1pbi1ndWlkZS9rZXJuZWwtcGFyYW1ldGVy
-cy50eHQNCj4gPiBAQCAtNTk5LDYgKzU5OSwxNSBAQA0KPiA+ICAJCQlhbHRvZ2V0aGVyLiBGb3Ig
-bW9yZSBpbmZvcm1hdGlvbiwgc2VlDQo+ID4gIAkJCWluY2x1ZGUvbGludXgvZG1hLWNvbnRpZ3Vv
-dXMuaA0KPiA+DQo+ID4gKwlwZXJudW1hX2NtYT1ubltNR10NCj4gDQo+IG1lbXBhcnNlKCkgYWxs
-b3dzIGFueSBvbmUgb2YgdGhlc2Ugc3VmZml4ZXM6IEssIE0sIEcsIFQsIFAsIEUNCj4gYW5kIG5v
-dGhpbmcgaW4gdGhlIG9wdGlvbiBwYXJzaW5nIGZ1bmN0aW9uIGNhcmVzIHdoYXQgc3VmZml4IGlz
-IHVzZWQuLi4NCg0KSGVsbG8gUmFuZHksDQpUaGFua3MgZm9yIHlvdXIgY29tbWVudHMuDQoNCkFj
-dHVhbGx5IEkgYW0gZm9sbG93aW5nIHRoZSBzdWZmaXggb2YgZGVmYXVsdCBjbWE6DQoJY21hPW5u
-W01HXUBbc3RhcnRbTUddWy1lbmRbTUddXV0NCgkJCVtBUk0sWDg2LEtOTF0NCgkJCVNldHMgdGhl
-IHNpemUgb2Yga2VybmVsIGdsb2JhbCBtZW1vcnkgYXJlYSBmb3INCgkJCWNvbnRpZ3VvdXMgbWVt
-b3J5IGFsbG9jYXRpb25zIGFuZCBvcHRpb25hbGx5IHRoZQ0KCQkJcGxhY2VtZW50IGNvbnN0cmFp
-bnQgYnkgdGhlIHBoeXNpY2FsIGFkZHJlc3MgcmFuZ2Ugb2YNCgkJCW1lbW9yeSBhbGxvY2F0aW9u
-cy4gQSB2YWx1ZSBvZiAwIGRpc2FibGVzIENNQQ0KCQkJYWx0b2dldGhlci4gRm9yIG1vcmUgaW5m
-b3JtYXRpb24sIHNlZQ0KCQkJaW5jbHVkZS9saW51eC9kbWEtY29udGlndW91cy5oDQoNCkkgc3Vn
-Z2VzdCB1c2VycyBzaG91bGQgc2V0IHRoZSBzaXplIGluIGVpdGhlciBNQiBvciBHQiBhcyB0aGV5
-IHNldCBjbWEuIA0KDQo+IA0KPiA+ICsJCQlbQVJNNjQsS05MXQ0KPiA+ICsJCQlTZXRzIHRoZSBz
-aXplIG9mIGtlcm5lbCBwZXItbnVtYSBtZW1vcnkgYXJlYSBmb3INCj4gPiArCQkJY29udGlndW91
-cyBtZW1vcnkgYWxsb2NhdGlvbnMuIEEgdmFsdWUgb2YgMCBkaXNhYmxlcw0KPiA+ICsJCQlwZXIt
-bnVtYSBDTUEgYWx0b2dldGhlci4gRE1BIHVzZXJzIG9uIG5vZGUgbmlkIHdpbGwNCj4gPiArCQkJ
-Zmlyc3QgdHJ5IHRvIGFsbG9jYXRlIGJ1ZmZlciBmcm9tIHRoZSBwZXJudW1hIGFyZWENCj4gPiAr
-CQkJd2hpY2ggaXMgbG9jYXRlZCBpbiBub2RlIG5pZCwgaWYgdGhlIGFsbG9jYXRpb24gZmFpbHMs
-DQo+ID4gKwkJCXRoZXkgd2lsbCBmYWxsYmFjayB0byB0aGUgZ2xvYmFsIGRlZmF1bHQgbWVtb3J5
-IGFyZWEuDQo+ID4gKw0KPiA+ICAJY21vX2ZyZWVfaGludD0JW1BQQ10gRm9ybWF0OiB7IHllcyB8
-IG5vIH0NCj4gPiAgCQkJU3BlY2lmeSB3aGV0aGVyIHBhZ2VzIGFyZSBtYXJrZWQgYXMgYmVpbmcg
-aW5hY3RpdmUNCj4gPiAgCQkJd2hlbiB0aGV5IGFyZSBmcmVlZC4gIFRoaXMgaXMgdXNlZCBpbiBD
-TU8gZW52aXJvbm1lbnRzDQo+IA0KPiA+IGRpZmYgLS1naXQgYS9rZXJuZWwvZG1hL2NvbnRpZ3Vv
-dXMuYyBiL2tlcm5lbC9kbWEvY29udGlndW91cy5jDQo+ID4gaW5kZXggY2ZmN2U2MDk2OGI5Li44
-OWI5NWYxMGU1NmQgMTAwNjQ0DQo+ID4gLS0tIGEva2VybmVsL2RtYS9jb250aWd1b3VzLmMNCj4g
-PiArKysgYi9rZXJuZWwvZG1hL2NvbnRpZ3VvdXMuYw0KPiA+IEBAIC02OSw2ICs2OSwxOSBAQCBz
-dGF0aWMgaW50IF9faW5pdCBlYXJseV9jbWEoY2hhciAqcCkNCj4gPiAgfQ0KPiA+ICBlYXJseV9w
-YXJhbSgiY21hIiwgZWFybHlfY21hKTsNCj4gPg0KPiA+ICsjaWZkZWYgQ09ORklHX0RNQV9QRVJO
-VU1BX0NNQQ0KPiA+ICsNCj4gPiArc3RhdGljIHN0cnVjdCBjbWEgKmRtYV9jb250aWd1b3VzX3Bl
-cm51bWFfYXJlYVtNQVhfTlVNTk9ERVNdOw0KPiA+ICtzdGF0aWMgcGh5c19hZGRyX3QgcGVybnVt
-YV9zaXplX2J5dGVzIF9faW5pdGRhdGE7DQo+IA0KPiB3aHkgcGh5c19hZGRyX3Q/IGNvdWxkbid0
-IGl0IGp1c3QgYmUgdW5zaWduZWQgbG9uZyBsb25nPw0KPiANCg0KTWFpbmx5IGJlY2F1c2Ugb2Yg
-Zm9sbG93aW5nIHRoZSBwcm9ncmFtbWluZyBoYWJpdCBpbiBrZXJuZWwvZG1hL2NvbnRpZ3VvdXMu
-YzoNCkkgdGhpbmsgdGhlIG9yaWdpbmFsIGNvZGUgcHJvYmFibHkgbWVhbnQgdGhlIHNpemUgc2hv
-dWxkIG5vdCBiZSBsYXJnZXIgdGhhbiB0aGUgTUFYSU1VTQ0KdmFsdWUgb2YgcGh5c19hZGRyX3Q6
-DQoNCi8qDQogKiBEZWZhdWx0IGdsb2JhbCBDTUEgYXJlYSBzaXplIGNhbiBiZSBkZWZpbmVkIGlu
-IGtlcm5lbCdzIC5jb25maWcuDQogKiBUaGlzIGlzIHVzZWZ1bCBtYWlubHkgZm9yIGRpc3RybyBt
-YWludGFpbmVycyB0byBjcmVhdGUgYSBrZXJuZWwNCiAqIHRoYXQgd29ya3MgY29ycmVjdGx5IGZv
-ciBtb3N0IHN1cHBvcnRlZCBzeXN0ZW1zLg0KICogVGhlIHNpemUgY2FuIGJlIHNldCBpbiBieXRl
-cyBvciBhcyBhIHBlcmNlbnRhZ2Ugb2YgdGhlIHRvdGFsIG1lbW9yeQ0KICogaW4gdGhlIHN5c3Rl
-bS4NCiAqDQogKiBVc2Vycywgd2hvIHdhbnQgdG8gc2V0IHRoZSBzaXplIG9mIGdsb2JhbCBDTUEg
-YXJlYSBmb3IgdGhlaXIgc3lzdGVtDQogKiBzaG91bGQgdXNlIGNtYT0ga2VybmVsIHBhcmFtZXRl
-ci4NCiAqLw0Kc3RhdGljIGNvbnN0IHBoeXNfYWRkcl90IHNpemVfYnl0ZXMgX19pbml0Y29uc3Qg
-PQ0KCShwaHlzX2FkZHJfdClDTUFfU0laRV9NQllURVMgKiBTWl8xTTsNCnN0YXRpYyBwaHlzX2Fk
-ZHJfdCAgc2l6ZV9jbWRsaW5lIF9faW5pdGRhdGEgPSAtMTsNCnN0YXRpYyBwaHlzX2FkZHJfdCBi
-YXNlX2NtZGxpbmUgX19pbml0ZGF0YTsNCnN0YXRpYyBwaHlzX2FkZHJfdCBsaW1pdF9jbWRsaW5l
-IF9faW5pdGRhdGE7DQoNCnZvaWQgX19pbml0IGRtYV9jb250aWd1b3VzX3Jlc2VydmUocGh5c19h
-ZGRyX3QgbGltaXQpDQp7DQoJcGh5c19hZGRyX3Qgc2VsZWN0ZWRfc2l6ZSA9IDA7DQoJcGh5c19h
-ZGRyX3Qgc2VsZWN0ZWRfYmFzZSA9IDA7DQoJcGh5c19hZGRyX3Qgc2VsZWN0ZWRfbGltaXQgPSBs
-aW1pdDsNCglib29sIGZpeGVkID0gZmFsc2U7DQoNCglwcl9kZWJ1ZygiJXMobGltaXQgJTA4bHgp
-XG4iLCBfX2Z1bmNfXywgKHVuc2lnbmVkIGxvbmcpbGltaXQpOw0KDQoJaWYgKHNpemVfY21kbGlu
-ZSAhPSAtMSkgew0KCQlzZWxlY3RlZF9zaXplID0gc2l6ZV9jbWRsaW5lOw0KCQlzZWxlY3RlZF9i
-YXNlID0gYmFzZV9jbWRsaW5lOw0KCQlzZWxlY3RlZF9saW1pdCA9IG1pbl9ub3RfemVybyhsaW1p
-dF9jbWRsaW5lLCBsaW1pdCk7DQoJCWlmIChiYXNlX2NtZGxpbmUgKyBzaXplX2NtZGxpbmUgPT0g
-bGltaXRfY21kbGluZSkNCgkJCWZpeGVkID0gdHJ1ZTsNCg0KaWYgdGhlIHdob2xlIGZpbGUgaXMg
-dXNpbmcgcGh5c19hZGRyX3QgZm9yIHNpemUsIEkgZG9uJ3Qgd2FudCB0byBtYWtlIHRoZSBuZXcg
-Y29kZSB3ZWlyZC4NCg0KPiBPSywgc28gY21hX2RlY2xhcmVfY29udGlndW91c19uaWQoKSB1c2Vz
-IHBoeXNfYWRkcl90LiBGaW5lLg0KPiANCj4gPiArDQo+ID4gK3N0YXRpYyBpbnQgX19pbml0IGVh
-cmx5X3Blcm51bWFfY21hKGNoYXIgKnApDQo+ID4gK3sNCj4gPiArCXBlcm51bWFfc2l6ZV9ieXRl
-cyA9IG1lbXBhcnNlKHAsICZwKTsNCj4gPiArCXJldHVybiAwOw0KPiA+ICt9DQo+ID4gK2Vhcmx5
-X3BhcmFtKCJwZXJudW1hX2NtYSIsIGVhcmx5X3Blcm51bWFfY21hKTsNCj4gPiArI2VuZGlmDQo+
-ID4gKw0KPiA+ICAjaWZkZWYgQ09ORklHX0NNQV9TSVpFX1BFUkNFTlRBR0UNCj4gPg0KPiA+ICBz
-dGF0aWMgcGh5c19hZGRyX3QgX19pbml0IF9fbWF5YmVfdW51c2VkDQo+IGNtYV9lYXJseV9wZXJj
-ZW50X21lbW9yeSh2b2lkKQ0KPiA+IEBAIC05Niw2ICsxMDksMzQgQEAgc3RhdGljIGlubGluZSBf
-X21heWJlX3VudXNlZCBwaHlzX2FkZHJfdA0KPiBjbWFfZWFybHlfcGVyY2VudF9tZW1vcnkodm9p
-ZCkNCj4gPg0KPiA+ICAjZW5kaWYNCj4gPg0KPiA+ICsjaWZkZWYgQ09ORklHX0RNQV9QRVJOVU1B
-X0NNQQ0KPiA+ICt2b2lkIF9faW5pdCBkbWFfcGVybnVtYV9jbWFfcmVzZXJ2ZSh2b2lkKQ0KPiA+
-ICt7DQo+ID4gKwlpbnQgbmlkOw0KPiA+ICsNCj4gPiArCWlmICghcGVybnVtYV9zaXplX2J5dGVz
-KQ0KPiA+ICsJCXJldHVybjsNCj4gPiArDQo+ID4gKwlmb3JfZWFjaF9ub2RlX3N0YXRlKG5pZCwg
-Tl9PTkxJTkUpIHsNCj4gPiArCQlpbnQgcmV0Ow0KPiA+ICsJCWNoYXIgbmFtZVsyMF07DQo+ID4g
-KwkJc3RydWN0IGNtYSAqKmNtYSA9ICZkbWFfY29udGlndW91c19wZXJudW1hX2FyZWFbbmlkXTsN
-Cj4gPiArDQo+ID4gKwkJc25wcmludGYobmFtZSwgc2l6ZW9mKG5hbWUpLCAicGVybnVtYSVkIiwg
-bmlkKTsNCj4gPiArCQlyZXQgPSBjbWFfZGVjbGFyZV9jb250aWd1b3VzX25pZCgwLCBwZXJudW1h
-X3NpemVfYnl0ZXMsIDAsIDAsDQo+ID4gKwkJCQkJCSAwLCBmYWxzZSwgbmFtZSwgY21hLCBuaWQp
-Ow0KPiA+ICsJCWlmIChyZXQpIHsNCj4gPiArCQkJcHJfd2FybigiJXM6IHJlc2VydmF0aW9uIGZh
-aWxlZDogZXJyICVkLCBub2RlICVkIiwgX19mdW5jX18sDQo+ID4gKwkJCQlyZXQsIG5pZCk7DQo+
-ID4gKwkJCWNvbnRpbnVlOw0KPiA+ICsJCX0NCj4gPiArDQo+ID4gKwkJcHJfZGVidWcoIiVzOiBy
-ZXNlcnZlZCAlbGx1IE1pQiBvbiBub2RlICVkXG4iLCBfX2Z1bmNfXywNCj4gPiArCQkJKHVuc2ln
-bmVkIGxvbmcgbG9uZylwZXJudW1hX3NpemVfYnl0ZXMgLyBTWl8xTSwgbmlkKTsNCj4gDQo+IENv
-bnZlcnNlbHksIGlmIHlvdSB3YW50IHRvIGxlYXZlIHBlcm51bWFfc2l6ZV9ieXRlcyBhcyBwaHlz
-X2FkZHJfdCwNCj4geW91IHNob3VsZCB1c2UgJXBhIChvciAlcGFwKSB0byBwcmludCBpdC4NCg0K
-SGVyZSBJIHRoaW5rIGl0IGlzIHdvcmtpbmcgYXMgInNpemUiIGluIGludGVnZXIuDQoNCj4gDQo+
-ID4gKwl9DQo+ID4gK30NCj4gPiArI2VuZGlmDQoNClRoYW5rcw0KQmFycnkNCg0K
+On Thu, Aug 20, 2020 at 08:51:08PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> 
+> Implement the managed variant of krealloc(). This function works with
+> all memory allocated by devm_kmalloc() (or devres functions using it
+> implicitly like devm_kmemdup(), devm_kstrdup() etc.).
+> 
+> Managed realloc'ed chunks can be manually released with devm_kfree().
+> 
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+...
+
+> +static struct devres *to_devres(void *data)
+> +{
+> +	return data - ALIGN(sizeof(struct devres), ARCH_KMALLOC_MINALIGN);
+> +}
+> +
+> +static size_t devres_data_size(size_t total_size)
+> +{
+> +	return total_size - ALIGN(sizeof(struct devres), ARCH_KMALLOC_MINALIGN);
+> +}
+
+I'm fine with above, but here is a side note, perhaps
+
+	offsetof(struct devres,	data)
+
+will be more practical (no duplication of alignment and hence slightly better
+maintenance)? (Note, I didn't check if it provides the correct result)
+
+Another side note: do we have existing users of these helpers?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
