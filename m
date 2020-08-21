@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704B724E400
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 01:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D69C24E404
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 01:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726832AbgHUXuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 19:50:10 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:45403 "EHLO
+        id S1726816AbgHUXuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 19:50:09 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:55413 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726706AbgHUXuH (ORCPT
+        with ESMTP id S1726719AbgHUXuH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 21 Aug 2020 19:50:07 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598053805;
+        s=mimecast20190719; t=1598053806;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=M/hJ2+3QuvuuDTv/txt7lwY07Jv7xqj8w65baH7PTCg=;
-        b=cld/dSe0wBciF4/frtOPvtAufDIYGotBzHyl86IUO5/VAaC/6JfzAjqZrMoCG5+saMVEuP
-        SNR8S31/AI6l95GgDksHCd4ZrX+0yVJvL1HFAyQWAY4y1tJzbkR2QfNkPFveDgVRtC95O7
-        7i4xRIbQQM16FGGmlHTlP2GlxUpvl3Y=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-191-p2QlI8maORmyXzqRCjUZPA-1; Fri, 21 Aug 2020 19:50:03 -0400
-X-MC-Unique: p2QlI8maORmyXzqRCjUZPA-1
-Received: by mail-qv1-f71.google.com with SMTP id l18so2295118qvq.16
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 16:50:03 -0700 (PDT)
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qJMoESJi1CzsGXjZoMet0uu1x4mJs/R0x5g01SKUlC0=;
+        b=eRJadN1VWkzw5AKANibH7MRg/8xPdjVBMAtLauEzBXgZsNeEW0qxdSOHddkK07QgB1fiLi
+        EkcNGVAAmQlqt+2NAswENLVTDhK8NP7KaBdCpSRl6UmW5xSzSeUDSHju/yf+kN7OOLad2V
+        ckoU1BKTRX8e9FEdlKmznfTXHWhipQA=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-447-Pf1vEi5jPBmQieZiUI6bUQ-1; Fri, 21 Aug 2020 19:50:04 -0400
+X-MC-Unique: Pf1vEi5jPBmQieZiUI6bUQ-1
+Received: by mail-qt1-f199.google.com with SMTP id f59so2413769qtb.22
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 16:50:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=M/hJ2+3QuvuuDTv/txt7lwY07Jv7xqj8w65baH7PTCg=;
-        b=Vfv9bE8TAV1/kHJf3lcmDw91iYmGzP5hmhvziIaCFQEb968z6FXxNCysMjnCZLUSUs
-         TBTiUAdSlu/gsHxRHFnoUS6XsGf6/qjrblDPZisvcR4mmtRV1/6B6S8ZJ1JeZsodpRSl
-         vy8RfKkQIBt8p67aj5wC4eYtMbpNr6eH5LYVlRbqDu1RG1zAT+hWOiavyxZ0Z/0llvZi
-         mLLz9b0SCPTzhIhmiwjHFyhRjScPqHKafClWG6spHa2g+HrAWsBWhGr0CAM7S/SpkHeI
-         u1HTLn2NRm7WbRKy2QI+LyeBCTZGTT76jLymAOJ1cCqgvMEEKS1VOw5nJ/CNtAcfmcNg
-         Nbvw==
-X-Gm-Message-State: AOAM531D9dEn8mfzgOCumtNEz/KuYioX2KPtG4w+wqkDq6NIRQUXFRc9
-        fu6BwOijTle2WSHAiCB5RBlDpnLNk4KRO73kJmMDmZ3XlA/UyNZDqggOvDM/FWK/JHjBLA2LdWT
-        QN0Tvt5irFnFtyS8HWbD5C90x
-X-Received: by 2002:a05:620a:1122:: with SMTP id p2mr5231550qkk.45.1598053802632;
-        Fri, 21 Aug 2020 16:50:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyf9TcOFofVzIprDNuH38y7NKdVN1zPjbaOB0+mpCLdI95pwNyzpBVw9WbSMeBuklFfpgnsnA==
-X-Received: by 2002:a05:620a:1122:: with SMTP id p2mr5231526qkk.45.1598053802338;
-        Fri, 21 Aug 2020 16:50:02 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=qJMoESJi1CzsGXjZoMet0uu1x4mJs/R0x5g01SKUlC0=;
+        b=ecHwnHzQSezmk5p0hqfQfGN2AQkovTllIVYPDKb7NwhpVH99wm5IKXyPNl3DZojIBq
+         XRZaUGjSGJN1wTBfaXm/jEfzVXkfEHZmiTUKSTqUDxPo38iYJh+br48EyjRiHM9Lm6YW
+         eloQwTC98cN3B7GTwY9BX9dBArDJaU0IXfGMnSe+0k9JKF90B/gTGpuHRFrrAUDpFZs0
+         YQ+oJJcias8seFZObMBzYr2XtW8HO9ec01HWfNzdh2sTg4htaLTU4t7Lsl8kClnELi39
+         ktqSiI/fE/eapRDC16w4dziLR34dE6AADZEm9N29mVYMVmFS4nJFPdt/de3P+326N/os
+         l30Q==
+X-Gm-Message-State: AOAM5306ck9B7vECzEpxeqgyqVi2ipIKYpJIhr26HK5eJfphhEXgRBwy
+        SmthSnZKeQ613mlXjLbKcS/7DjLuRPguK3yjoi2GM0R4+rgc8P9uuY9NeKUaSr/xPCssIAGiJa1
+        cuAZiTfjPqXnMmEjXxc7Rsjde
+X-Received: by 2002:a37:bd46:: with SMTP id n67mr5209833qkf.190.1598053804360;
+        Fri, 21 Aug 2020 16:50:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJym38019X0MXzuv14+yatNymJFgB7Qx8TRrssQJ+S40n02yV1nQKW5PQNvdNrKhPQZr5dzc8g==
+X-Received: by 2002:a37:bd46:: with SMTP id n67mr5209812qkf.190.1598053804062;
+        Fri, 21 Aug 2020 16:50:04 -0700 (PDT)
 Received: from localhost.localdomain (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
-        by smtp.gmail.com with ESMTPSA id t69sm2821600qka.73.2020.08.21.16.50.00
+        by smtp.gmail.com with ESMTPSA id t69sm2821600qka.73.2020.08.21.16.50.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 16:50:01 -0700 (PDT)
+        Fri, 21 Aug 2020 16:50:03 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Cc:     "Maya B . Gokhale" <gokhale2@llnl.gov>,
@@ -62,88 +63,107 @@ Cc:     "Maya B . Gokhale" <gokhale2@llnl.gov>,
         Andrea Arcangeli <aarcange@redhat.com>,
         Christoph Hellwig <hch@lst.de>,
         Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH 0/4] mm: Simplfy cow handling
-Date:   Fri, 21 Aug 2020 19:49:54 -0400
-Message-Id: <20200821234958.7896-1-peterx@redhat.com>
+Subject: [PATCH 1/4] mm: Trial do_wp_page() simplification
+Date:   Fri, 21 Aug 2020 19:49:55 -0400
+Message-Id: <20200821234958.7896-2-peterx@redhat.com>
 X-Mailer: git-send-email 2.26.2
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20200821234958.7896-1-peterx@redhat.com>
+References: <20200821234958.7896-1-peterx@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a small series that I picked up from Linus's suggestion [0] to simp=
-lify=0D
-cow handling (and also more strict) by checking against page refcounts rath=
-er=0D
-than mapcounts.=0D
-=0D
-I'm CCing the author and reviewer of commit 52d1e606ee73 on ksm ("mm: reuse=
-=0D
-only-pte-mapped KSM page in do_wp_page()", 2019-03-05).  Please shoot if=0D
-there's any reason to keep the logic, or it'll be removed in this series.  =
-For=0D
-more information, please refer to [3,4].=0D
-=0D
-The new mm counter in the last patch can be seen as RFC, depending on wheth=
-er=0D
-anyone dislikes it... I used it majorly for observing the page reuses, so i=
-t is=0D
-kind of optional.=0D
-=0D
-Two tests I did:=0D
-=0D
-  - Run a busy loop dirty program [1] that uses 6G of memory, restrict to 1=
-G=0D
-    RAM + 5G swap (cgroup).  A few hours later, all things still look good.=
-=0D
-    Make sure to observe (still massive) correct page reuses using the new=
-=0D
-    counter using the last patch, probably when swapping in.=0D
-=0D
-  - Run umapsort [2] to make sure uffd-wp will work again after applying th=
-is=0D
-    series upon master 5.9-rc1 (5.9-rc1 is broken).=0D
-=0D
-In all cases, I must confess it's quite pleased to post a series with diffs=
-tat=0D
-like this...  Hopefully this won't break anyone but only to make everything=
-=0D
-better.=0D
-=0D
-Please review, thanks.=0D
-=0D
-[0] https://lore.kernel.org/lkml/CAHk-=3Dwjn90-=3Ds6MBerxTuP=3D-FVEZtR-LpoH=
-9eenEQ3A-QfKTZw@mail.gmail.com=0D
-[1] https://github.com/xzpeter/clibs/blob/master/bsd/mig_mon/mig_mon.c=0D
-[2] https://github.com/LLNL/umap-apps/blob/develop/src/umapsort/umapsort.cp=
-p=0D
-[3] https://lore.kernel.org/lkml/CAHk-=3Dwh0syDtNzt9jGyHRV0r1pVX5gkdJWdenwm=
-vy=3Ddq0AL5mA@mail.gmail.com=0D
-[4] https://lore.kernel.org/lkml/CAHk-=3Dwj5Oyg0LeAxSw_vizerm=3DsLd=3DsHfcV=
-ecZMKPZn6kNbbXA@mail.gmail.com=0D
-=0D
-Linus Torvalds (1):=0D
-  mm: Trial do_wp_page() simplification=0D
-=0D
-Peter Xu (3):=0D
-  mm/ksm: Remove reuse_ksm_page()=0D
-  mm/gup: Remove enfornced COW mechanism=0D
-  mm: Add PGREUSE counter=0D
-=0D
- drivers/gpu/drm/i915/gem/i915_gem_userptr.c |  8 ---=0D
- include/linux/ksm.h                         |  7 ---=0D
- include/linux/vm_event_item.h               |  1 +=0D
- mm/gup.c                                    | 40 ++------------=0D
- mm/huge_memory.c                            |  7 +--=0D
- mm/ksm.c                                    | 25 ---------=0D
- mm/memory.c                                 | 60 +++++++--------------=0D
- mm/vmstat.c                                 |  1 +=0D
- 8 files changed, 29 insertions(+), 120 deletions(-)=0D
-=0D
--- =0D
-2.26.2=0D
-=0D
+From: Linus Torvalds <torvalds@linux-foundation.org>
+
+How about we just make sure we're the only possible valid user fo the
+page before we bother to reuse it?
+
+Simplify, simplify, simplify.
+
+And get rid of the nasty serialization on the page lock at the same time.
+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+[peterx: add subject prefix]
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ mm/memory.c | 59 +++++++++++++++--------------------------------------
+ 1 file changed, 17 insertions(+), 42 deletions(-)
+
+diff --git a/mm/memory.c b/mm/memory.c
+index 602f4283122f..cb9006189d22 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -2927,50 +2927,25 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
+ 	 * not dirty accountable.
+ 	 */
+ 	if (PageAnon(vmf->page)) {
+-		int total_map_swapcount;
+-		if (PageKsm(vmf->page) && (PageSwapCache(vmf->page) ||
+-					   page_count(vmf->page) != 1))
++		struct page *page = vmf->page;
++
++		/* PageKsm() doesn't necessarily raise the page refcount */
++		if (PageKsm(page) || page_count(page) != 1)
++			goto copy;
++		if (!trylock_page(page))
++			goto copy;
++		if (PageKsm(page) || page_mapcount(page) != 1 || page_count(page) != 1) {
++			unlock_page(page);
+ 			goto copy;
+-		if (!trylock_page(vmf->page)) {
+-			get_page(vmf->page);
+-			pte_unmap_unlock(vmf->pte, vmf->ptl);
+-			lock_page(vmf->page);
+-			vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd,
+-					vmf->address, &vmf->ptl);
+-			if (!pte_same(*vmf->pte, vmf->orig_pte)) {
+-				update_mmu_tlb(vma, vmf->address, vmf->pte);
+-				unlock_page(vmf->page);
+-				pte_unmap_unlock(vmf->pte, vmf->ptl);
+-				put_page(vmf->page);
+-				return 0;
+-			}
+-			put_page(vmf->page);
+-		}
+-		if (PageKsm(vmf->page)) {
+-			bool reused = reuse_ksm_page(vmf->page, vmf->vma,
+-						     vmf->address);
+-			unlock_page(vmf->page);
+-			if (!reused)
+-				goto copy;
+-			wp_page_reuse(vmf);
+-			return VM_FAULT_WRITE;
+-		}
+-		if (reuse_swap_page(vmf->page, &total_map_swapcount)) {
+-			if (total_map_swapcount == 1) {
+-				/*
+-				 * The page is all ours. Move it to
+-				 * our anon_vma so the rmap code will
+-				 * not search our parent or siblings.
+-				 * Protected against the rmap code by
+-				 * the page lock.
+-				 */
+-				page_move_anon_rmap(vmf->page, vma);
+-			}
+-			unlock_page(vmf->page);
+-			wp_page_reuse(vmf);
+-			return VM_FAULT_WRITE;
+ 		}
+-		unlock_page(vmf->page);
++		/*
++		 * Ok, we've got the only map reference, and the only
++		 * page count reference, and the page is locked,
++		 * it's dark out, and we're wearing sunglasses. Hit it.
++		 */
++		wp_page_reuse(vmf);
++		unlock_page(page);
++		return VM_FAULT_WRITE;
+ 	} else if (unlikely((vma->vm_flags & (VM_WRITE|VM_SHARED)) ==
+ 					(VM_WRITE|VM_SHARED))) {
+ 		return wp_page_shared(vmf);
+-- 
+2.26.2
 
