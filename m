@@ -2,98 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC9B24D38F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 13:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA8424D3A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 13:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727770AbgHULLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 07:11:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbgHULL0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 07:11:26 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B430C061385;
-        Fri, 21 Aug 2020 04:11:26 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id o13so859008pgf.0;
-        Fri, 21 Aug 2020 04:11:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=O0JOI3uzd7ucCmR5qeZbGG+pRLYOys3ZnqIcbO7aSA8=;
-        b=raPLPjcfRS5fGs6GsJeKHoRE7KZtMB/Kmt/+3TpNhYGZEkTmc9rqs5EaeEt2jXkwmR
-         Pjke8YLKuCt52Qjfrrzo1cjJGbM51qa/lguoTsbuRVTntBeFV6YmmbbY91kIBTfhraZt
-         ep/meXsgBak78BLiUDvktrLgzmxL4hY2nlMLVL2+jskO41rg2XgfixV0JeShCBEwUwgm
-         Yfwnv4PKI0n4/IwHrjUQClJ3xVdb5ixzGgAZH867Y6KYjBhurxhwLe5fjo/8pWJU+JOg
-         50NpKfxgOc2nACLFdQ9cfs9a4AaFxhk/lnmJj9JSeIi1b8zizgfXdoE1Obx8JMc2l11N
-         2ttw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=O0JOI3uzd7ucCmR5qeZbGG+pRLYOys3ZnqIcbO7aSA8=;
-        b=Rk8lQE6ZPXQI14P5ymuKkmbUvHo3v33lkEmgBj5qG+NLnAqmHoo+4sj6rcGDxVeaph
-         NfMFtM6J/JnQVdpWWxIJXJQszrKDOXsOMEODBlev5IzdID5SUEewr4yEqEbcSMBN4rha
-         H9K6UU7HP4i8pfArg8JSZhnPiShcfdzYcp5dnX1Gl+yrvmwFqzpM141dr3Ibwj1+dQ4g
-         LyaqYpyDoh3RaE2bp+IObqweCIpAM5hhSmYMPEszTiIdLRiUVC/WZ1pAJuPFNauf1UyM
-         iBiw7aWd+FDg2dKRMtch4r7RdMDwaY1Q7AsCMVCJwnW+xjmpnXsM2f2N1/SAEmZtUMma
-         x1IA==
-X-Gm-Message-State: AOAM533sh+3XQQzFhqeO496g54hDRSLdDrpRps5UNCbWQDrvKwHlQMuD
-        hw5j52y9CLjDeiVk/7bKhYRNm4YMwpY=
-X-Google-Smtp-Source: ABdhPJyN95KoCLSGpi+TFBy6i2yfFQWUvteLJM7qPop/EXa6ZcjYNEgf2G5C1Xl8hpt0GydW8Ox0Hw==
-X-Received: by 2002:a65:6287:: with SMTP id f7mr1981459pgv.307.1598008285896;
-        Fri, 21 Aug 2020 04:11:25 -0700 (PDT)
-Received: from localhost (61-68-212-105.tpgi.com.au. [61.68.212.105])
-        by smtp.gmail.com with ESMTPSA id o7sm1613042pjl.48.2020.08.21.04.11.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 04:11:25 -0700 (PDT)
-Date:   Fri, 21 Aug 2020 21:11:19 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v5 0/8] huge vmalloc mappings
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-mm@kvack.org
-Cc:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Zefan Li <lizefan@huawei.com>
-References: <20200821044427.736424-1-npiggin@gmail.com>
-        <bc7537f4-abc6-b7cc-ccd3-420098fec917@csgroup.eu>
-In-Reply-To: <bc7537f4-abc6-b7cc-ccd3-420098fec917@csgroup.eu>
+        id S1727931AbgHULOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 07:14:18 -0400
+Received: from mout.gmx.net ([212.227.17.22]:49297 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726907AbgHULOP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 07:14:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1598008382;
+        bh=3hICDB8bk52dFVQc3BFBE3kOtnHrBZBdOB6EMWbL2iU=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=hE19nQIKsQiQl/Bzl7LQ4OEg0BX321SpOmsxPONZ3+/OGmWIDrJtEzACdx/bwvqrn
+         1V3QJtWMg6r/CAXLpCapgK4tvJpc3QUE0t4adpbQOMjV93iFKYylD4IAyd9a79X7+H
+         Sf9g/+pS6ckCNG4Z+JXdJhgG90PS4/ApiohlOoP0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [185.76.97.101] ([185.76.97.101]) by web-mail.gmx.net
+ (3c-app-gmx-bs37.server.lan [172.19.170.89]) (via HTTP); Fri, 21 Aug 2020
+ 13:13:02 +0200
 MIME-Version: 1.0
-Message-Id: <1598006399.kdw772nr6n.astroid@bobo.none>
+Message-ID: <trinity-299eba1b-59af-4257-83e6-7387e9fcf865-1598008382125@3c-app-gmx-bs37>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     frank-w@public-files.de
+Cc:     linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Frank Wunderlich <linux@fw-web.de>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        chunhui dai <chunhui.dai@mediatek.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Aw: Re: [PATCH v5 3/7] drm/mediatek: disable tmds on mt2701
 Content-Type: text/plain; charset=UTF-8
+Date:   Fri, 21 Aug 2020 13:13:02 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <0E911554-482A-47C2-B2C6-136486C5ACB5@public-files.de>
+References: <20200819081752.4805-1-linux@fw-web.de>
+ <20200819081752.4805-4-linux@fw-web.de>
+ <f68cf4c2-6c79-fe46-b7b4-bcc49e0b6b69@gmail.com>
+ <0E911554-482A-47C2-B2C6-136486C5ACB5@public-files.de>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:qQ4/QXcY7aHug4GJ2xC3UHeSxq5y48c2pvLvlG6DRO/NMKGYWoyQwtVQ37sT6Iw2tCo9j
+ WCKmpdZA+cTKW69yQWXhnYpUZUmALV8zop6WyiuuqnOlgKYjp5SDOuFI4iXNCwt0xaMW577Qsf4d
+ GPoF68X2Ms6m4c7uyd8zyf3lCvsTyHOwKsTRThS9n78XKRGZpOuXSHdczxiiomx7Cb1MK4H/5baj
+ nrYfg8g1zE46ft9EsWJp9+YZy4LaebVzAcJAxu6PPD9DeHN3zUo3QGl95pZbpvqgABWDEm8OI5H6
+ Pc=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:YCk7Kw/svWM=:R2+qY8dmS+nNu0rNZbnzI5
+ zHruvXFt1cp3+5drBm1BUX5H1Bn386hNGlWqkArpNzOQJOUffN0vC0HyeDbmd2r4MwsgB1Yy4
+ /ucUHi9FUNCGk8qIEokq9vhX0sdKl6ILinIcwT+eZqr1vckoWitNw0WqS3XAnqHfSNf7oUmby
+ xR7KXqgG50c5SjxSuBxybmExGF7grmzVIDeCySvALaE+Vcn5a3Pi6OkIpCyvu/Z1DBguvOHRV
+ wAGhnUMGM31uiFSWEUdyhrIS7gh0cXM8U7e10y+1Ab5QvJ6fUPWveNxlGsFeXcB1V2xzIflkj
+ ThtoiT6G8AEQYr3fLiYgC61i0POskwZyUtXfvpgCMlX7XxwejwnPiP0scWiCdfUgGXgd11jYb
+ 7OUDvTQh5bElHROUdD99eQD5Ip98xnaDMqQC4nUcqsJO+Z8SrLAFUad6rhdqDhoFa9xSYbnpc
+ CsClqD7bocnA8qYJ1+UUsV6qve52+8hecyizFEMdod3Zpab0J6QNLh/svJvy3yw1Zpz2QttDu
+ 3+/jr9QRjPD/jlNify6PeqPMpbBVitnf2EJHyvzAZnbR8Jxgu/u2pGYDoy3Cq21Wye/lS+iIe
+ 5ZNBjTZKhtgyT0dqjLTpD5jVLQ8UclEJHtK4rhef13kRuW2ziFiwzga0LK/LS7CdkAqJz3nbU
+ qWHTQkQULFrybDoWZB5kL3N7zBhgbne3CizYJ7YHnjIV4J1NEiljG4kDa5/KH96QvdYo=
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christophe Leroy's message of August 21, 2020 3:47 pm:
->=20
->=20
-> Le 21/08/2020 =C3=A0 06:44, Nicholas Piggin a =C3=A9crit=C2=A0:
->> I made this powerpc-only for the time being. It shouldn't be too hard to
->> add support for other archs that define HUGE_VMAP. I have booted x86
->> with it enabled, just may not have audited everything.
->=20
-> I like this series, but if I understand correctly it enables huge=20
-> vmalloc mappings only for hugepages sizes matching a page directory=20
-> levels, ie on a PPC32 it would work only for 4M hugepages.
+> Gesendet: Mittwoch, 19. August 2020 um 21:04 Uhr
+> Von: "Frank Wunderlich" <frank-w@public-files.de>
+> Another way to fix it maybe not enabling it (use the flag in mtk_hdmi_ph=
+y_power_on) there instead of disabling after enabling it.
+>
+> Maybe this is less hacky than current way (as ck hu pointed in v2).
 
-Yeah it really just uses the HUGE_VMAP mapping which is already there.
+seems my last mail is not send right (did not got it from mailinglist and =
+it's not mapped in patchwork).
 
-> On the 8xx, we only have 8M and 512k hugepages. Any change that it can=20
-> support these as well one day ?
+i tried this approach, but this does not work, with checking the new flag =
+in mtk_hdmi_phy_power_on and only enabling tmds if this flag is not set re=
+sults in same behaviour like without the Patch (horizontally distorted ima=
+ge flickering on 1280x1024)
 
-The vmap_range interface can now handle that, then adding support is the
-main work. Either make it weak and arch can override it, or add some
-arch helpers to make the generic version create the huge pages if it's
-not too ugly. Then you get those large pages for ioremap for free.
+- hdmi_phy->conf->hdmi_phy_enable_tmds(hdmi_phy);
++ if (!hdmi_phy->conf->pll_default_off)
++ hdmi_phy->conf->hdmi_phy_enable_tmds(hdmi_phy);
 
-The vmalloc part to allocate and try to map a bigger page size and use=20
-it is quite trivial to change from PMD to an arch specific size.
+seems like tmds needs to be initially enabled and can only disabled later
 
-Thanks,
-Nick
-
+regards Frank
