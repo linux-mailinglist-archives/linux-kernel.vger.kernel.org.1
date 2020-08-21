@@ -2,179 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E677A24DAAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8724C24D95C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728597AbgHUQYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 12:24:22 -0400
-Received: from 5.mo178.mail-out.ovh.net ([46.105.51.53]:59820 "EHLO
-        5.mo178.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728521AbgHUQWx (ORCPT
+        id S1726364AbgHUQFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 12:05:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725834AbgHUQFh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:22:53 -0400
-X-Greylist: delayed 598 seconds by postgrey-1.27 at vger.kernel.org; Fri, 21 Aug 2020 12:22:51 EDT
-Received: from player687.ha.ovh.net (unknown [10.110.115.233])
-        by mo178.mail-out.ovh.net (Postfix) with ESMTP id ABC2FAC5CD
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 18:04:02 +0200 (CEST)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player687.ha.ovh.net (Postfix) with ESMTPSA id F334E1561EB26;
-        Fri, 21 Aug 2020 16:03:57 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-106R0060bc536b8-eaf8-41f7-b4a3-88bd76c57ad9,
-                    20EB7F6BE0168D07063FB82D5C23839419BBC220) smtp.auth=steve@sk2.org
-From:   Stephen Kitt <steve@sk2.org>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
-Subject: [PATCH] hwmon: use simple i2c probe function
-Date:   Fri, 21 Aug 2020 18:03:54 +0200
-Message-Id: <20200821160354.594715-1-steve@sk2.org>
-X-Mailer: git-send-email 2.25.4
+        Fri, 21 Aug 2020 12:05:37 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F69C061573;
+        Fri, 21 Aug 2020 09:05:37 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id o21so1909308oie.12;
+        Fri, 21 Aug 2020 09:05:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=BcOLS+QuONeHD3ULxAD7chhfzxFLcz1amouLJKxi+4E=;
+        b=CLiNQhzzfkl8UaGxUU332gsocXd65bcriw/vgAe+SQvAOTIvOkdx/DGINT/3KQ6l4N
+         UE4E8YfqEVIbBoMpZGeo7ZOvqBaB9pLGk7CqMotD8E/Ss1ypE1fcy4MehY5zzxSnDqkC
+         gx58nceVEBx4K+pdI2iTotzuMpQWUvNaRQxFhLyVVRyOrFkL4yuZroV4dhghrNC2Awy8
+         wf2zPHOTnP9RYilhVHYYVnUzZbNrHhPuyrM8+S4qafxNUIzwcWVS59n7XrnVtXFOHDB8
+         SEeniXIZvPbiD9fiBRl5bBbTs76WkX4zfKD7JEmDB7TNtMTjuWA8WeWJ9Ro8J35XHzu/
+         S5QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BcOLS+QuONeHD3ULxAD7chhfzxFLcz1amouLJKxi+4E=;
+        b=XYchesj05xtkDB4IJnjsuDozeFyLSt7DWVg8jI1V9PnDbRAubn2+b84ZH48KjwR+ri
+         Wbyv2ngSCUzk/N8lmxNMqrwOjLGYwANxoKmI65WVBr2AJxura4NBSydNtqUz4Q2IaoDd
+         iwBfoF5yakbuz5m+34FyeMnNU+im6v/7FL2vJGSHIRhdnAbG//ZvGevGsdTDmEThJZoR
+         DTj86RqgYgFNUwbU1N4RIAHLGOvp46CaUvqxvvD/9tBwE91hhXAJ3powM00ZHfIS4Fse
+         nMSzfwzASVOTNowXIHxtWcv5cDmB6Bnbz2b1NxlAKrFvM5HGVo/aH9H/n92ByTB4YQKA
+         2gEQ==
+X-Gm-Message-State: AOAM531VcQt5BSirqF894s7nB38EUglnyBaUCOWygmq5SS/GiXNVcy7g
+        XX6FgbXJQwdhFdatkXndR78=
+X-Google-Smtp-Source: ABdhPJzSkgdfxS9dyh3gPvKo0mml6TPmUNJQAExx4dRCzuO1vCfiWKeQ2N+xAcTWp7uzCJ50SkL7/A==
+X-Received: by 2002:aca:2304:: with SMTP id e4mr2225683oie.1.1598025935729;
+        Fri, 21 Aug 2020 09:05:35 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([2601:284:8202:10b0:a888:bc35:d7d6:9aca])
+        by smtp.googlemail.com with ESMTPSA id t1sm494307ooi.27.2020.08.21.09.05.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Aug 2020 09:05:35 -0700 (PDT)
+Subject: Re: general protection fault in fib_dump_info (2)
+To:     Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
+        syzbot <syzbot+a61aa19b0c14c8770bd9@syzkaller.appspotmail.com>,
+        davem@davemloft.net, kuba@kernel.org, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
+References: <00000000000039b10005ad64df20@google.com>
+ <47e92c2b-c9c5-4c74-70c4-103e70e91630@cumulusnetworks.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <6184a09e-04ee-f7f0-81b0-de405b6188ae@gmail.com>
+Date:   Fri, 21 Aug 2020 10:05:16 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 17325910717523709338
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrudduvddgkeejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucggtffrrghtthgvrhhnpeetgedugfelkeeikeetgeegteevfeeufeetuefgudeiiedthfehtdeffeekvdeffeenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgepvdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrieekjedrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+In-Reply-To: <47e92c2b-c9c5-4c74-70c4-103e70e91630@cumulusnetworks.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many hwmon drivers don't use the id information provided by the old
-i2c probe function, and the remainder can easily be adapted to the new
-form ("probe_new") by calling i2c_match_id explicitly.
+On 8/21/20 10:00 AM, Nikolay Aleksandrov wrote:
+> 
+> This seems like a much older bug to me, the code allows to pass 0 groups
+> and
+> thus we end up without any nh_grp_entry pointers. I reproduced it with a
+> modified iproute2 that sends an empty NHA_GROUP and then just uses the new
+> nexthop in any way (e.g. add a route with it). This is the same bug as the
+> earlier report for: "general protection fault in fib_check_nexthop"
 
-This avoids scanning the identifier tables during probes.
+hmmm.... empty NHA_GROUP should not be allowed.
 
-Drivers which didn't use the id are converted as-is; drivers which did
-are modified to call i2c_match_id() with the same level of
-error-handling (if any) as before.
+> 
+> I have a patch but I'll be able to send it tomorrow.
+> 
 
-This patch wraps up the transition for hwmon, with four stragglers not
-included in the previous large patch.
-
-Signed-off-by: Stephen Kitt <steve@sk2.org>
----
- drivers/hwmon/adc128d818.c | 5 ++---
- drivers/hwmon/ads7828.c    | 9 +++++----
- drivers/hwmon/lm87.c       | 4 ++--
- drivers/hwmon/w83795.c     | 9 +++++----
- 4 files changed, 14 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/hwmon/adc128d818.c b/drivers/hwmon/adc128d818.c
-index f9edec195c35..80511d316845 100644
---- a/drivers/hwmon/adc128d818.c
-+++ b/drivers/hwmon/adc128d818.c
-@@ -427,8 +427,7 @@ static int adc128_init_client(struct adc128_data *data)
- 	return 0;
- }
- 
--static int adc128_probe(struct i2c_client *client,
--			const struct i2c_device_id *id)
-+static int adc128_probe(struct i2c_client *client)
- {
- 	struct device *dev = &client->dev;
- 	struct regulator *regulator;
-@@ -524,7 +523,7 @@ static struct i2c_driver adc128_driver = {
- 		.name	= "adc128d818",
- 		.of_match_table = of_match_ptr(adc128_of_match),
- 	},
--	.probe		= adc128_probe,
-+	.probe_new	= adc128_probe,
- 	.remove		= adc128_remove,
- 	.id_table	= adc128_id,
- 	.detect		= adc128_detect,
-diff --git a/drivers/hwmon/ads7828.c b/drivers/hwmon/ads7828.c
-index d895b73fde6f..7246198f0901 100644
---- a/drivers/hwmon/ads7828.c
-+++ b/drivers/hwmon/ads7828.c
-@@ -99,8 +99,9 @@ static const struct regmap_config ads2830_regmap_config = {
- 	.val_bits = 8,
- };
- 
--static int ads7828_probe(struct i2c_client *client,
--			 const struct i2c_device_id *id)
-+static const struct i2c_device_id ads7828_device_ids[];
-+
-+static int ads7828_probe(struct i2c_client *client)
- {
- 	struct device *dev = &client->dev;
- 	struct ads7828_platform_data *pdata = dev_get_platdata(dev);
-@@ -141,7 +142,7 @@ static int ads7828_probe(struct i2c_client *client,
- 		chip = (enum ads7828_chips)
- 			of_device_get_match_data(&client->dev);
- 	else
--		chip = id->driver_data;
-+		chip = i2c_match_id(ads7828_device_ids, client)->driver_data;
- 
- 	/* Bound Vref with min/max values */
- 	vref_mv = clamp_val(vref_mv, ADS7828_EXT_VREF_MV_MIN,
-@@ -207,7 +208,7 @@ static struct i2c_driver ads7828_driver = {
- 	},
- 
- 	.id_table = ads7828_device_ids,
--	.probe = ads7828_probe,
-+	.probe_new = ads7828_probe,
- };
- 
- module_i2c_driver(ads7828_driver);
-diff --git a/drivers/hwmon/lm87.c b/drivers/hwmon/lm87.c
-index ad501ac4a594..24cb8a1c3381 100644
---- a/drivers/hwmon/lm87.c
-+++ b/drivers/hwmon/lm87.c
-@@ -912,7 +912,7 @@ static int lm87_init_client(struct i2c_client *client)
- 	return 0;
- }
- 
--static int lm87_probe(struct i2c_client *client, const struct i2c_device_id *id)
-+static int lm87_probe(struct i2c_client *client)
- {
- 	struct lm87_data *data;
- 	struct device *hwmon_dev;
-@@ -994,7 +994,7 @@ static struct i2c_driver lm87_driver = {
- 		.name	= "lm87",
- 		.of_match_table = lm87_of_match,
- 	},
--	.probe		= lm87_probe,
-+	.probe_new	= lm87_probe,
- 	.id_table	= lm87_id,
- 	.detect		= lm87_detect,
- 	.address_list	= normal_i2c,
-diff --git a/drivers/hwmon/w83795.c b/drivers/hwmon/w83795.c
-index 44f68b965aec..9cff2e399f1d 100644
---- a/drivers/hwmon/w83795.c
-+++ b/drivers/hwmon/w83795.c
-@@ -2134,8 +2134,9 @@ static void w83795_apply_temp_config(struct w83795_data *data, u8 config,
- 	}
- }
- 
--static int w83795_probe(struct i2c_client *client,
--			const struct i2c_device_id *id)
-+static const struct i2c_device_id w83795_id[];
-+
-+static int w83795_probe(struct i2c_client *client)
- {
- 	int i;
- 	u8 tmp;
-@@ -2148,7 +2149,7 @@ static int w83795_probe(struct i2c_client *client,
- 		return -ENOMEM;
- 
- 	i2c_set_clientdata(client, data);
--	data->chip_type = id->driver_data;
-+	data->chip_type = i2c_match_id(w83795_id, client)->driver_data;
- 	data->bank = i2c_smbus_read_byte_data(client, W83795_REG_BANKSEL);
- 	mutex_init(&data->update_lock);
- 
-@@ -2256,7 +2257,7 @@ static struct i2c_driver w83795_driver = {
- 	.driver = {
- 		   .name = "w83795",
- 	},
--	.probe		= w83795_probe,
-+	.probe_new	= w83795_probe,
- 	.remove		= w83795_remove,
- 	.id_table	= w83795_id,
- 
--- 
-2.25.4
-
+thanks.
