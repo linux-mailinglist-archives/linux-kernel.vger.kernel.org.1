@@ -2,126 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA14724D0E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 10:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A866824D0EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 10:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728036AbgHUIyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 04:54:10 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55564 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726243AbgHUIyG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 04:54:06 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07L8X7fK072907;
-        Fri, 21 Aug 2020 04:54:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : date : mime-version : in-reply-to : content-type :
- content-transfer-encoding : message-id; s=pp1;
- bh=tMpNeTWf65DjC70rS5HyK/935zN2nZFWJAbrMtoWLWM=;
- b=ROGpziHzLer7q4RxRNMlsIh02QHcsuW4nx++4W55MlAtDvOnm/34MSU8qEoaLAzmD+7w
- nqAjYrE1XeOtfd8QRjezVGQfBhj6Sd0bbGl7Bo751retTKKsInVQwOhtx9QscBOoaYne
- 0rY8IHweV1QP7Mo0k7L/MZMzooxmsfqVyBdJlWGwGRiln6UxMRjbz/neUvPF6qZ3bEOw
- b+HXkegr5fRrIG5z2nG0fwUTDXaduQntoBkSWO+/FFsYVwv1fk59mY/82uYE/hUk4ag0
- j93qu64MIdTR5+BTPYz1fVQ4QxOhjkqoIS3wfbfGLBovyc+ehlsOaclW4gqGgD8noq7L ng== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33257sshsd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Aug 2020 04:54:02 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07L8q58q025176;
-        Fri, 21 Aug 2020 08:54:00 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 330tbvtupg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Aug 2020 08:54:00 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07L8rwYK65405230
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 Aug 2020 08:53:58 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 16D634C044;
-        Fri, 21 Aug 2020 08:53:58 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 93CF64C040;
-        Fri, 21 Aug 2020 08:53:56 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.33.217])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 21 Aug 2020 08:53:56 +0000 (GMT)
-Subject: Re: [PATCH] iomap: Fix the write_count in iomap_add_to_ioend().
-To:     Christoph Hellwig <hch@infradead.org>,
-        Anju T Sudhakar <anju@linux.vnet.ibm.com>,
-        linux-block@vger.kernel.org
-Cc:     darrick.wong@oracle.com, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        willy@infradead.org
-References: <20200819102841.481461-1-anju@linux.vnet.ibm.com>
- <20200821060710.GC31091@infradead.org>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Fri, 21 Aug 2020 14:23:55 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728169AbgHUIzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 04:55:51 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2681 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726243AbgHUIzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 04:55:50 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id E386C4B18AC1B04972AA;
+        Fri, 21 Aug 2020 09:55:48 +0100 (IST)
+Received: from localhost (10.52.123.86) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Fri, 21 Aug
+ 2020 09:55:47 +0100
+Date:   Fri, 21 Aug 2020 09:54:14 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     <linux-mm@kvack.org>, <linux-acpi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <x86@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, <rafael@kernel.org>,
+        <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>, <linuxarm@huawei.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Brice Goglin" <Brice.Goglin@inria.fr>,
+        Sean V Kelley <sean.v.kelley@linux.intel.com>,
+        <linux-api@vger.kernel.org>
+Subject: Re: [PATCH v9 2/6] x86: Support Generic Initiator only proximity
+ domains
+Message-ID: <20200821095414.00004559@Huawei.com>
+In-Reply-To: <20200820222433.GA1571517@bjorn-Precision-5520>
+References: <20200819145111.1715026-3-Jonathan.Cameron@huawei.com>
+        <20200820222433.GA1571517@bjorn-Precision-5520>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <20200821060710.GC31091@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20200821085356.93CF64C040@d06av22.portsmouth.uk.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-21_06:2020-08-21,2020-08-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
- mlxlogscore=840 suspectscore=0 impostorscore=0 mlxscore=0 adultscore=0
- spamscore=0 clxscore=1011 priorityscore=1501 lowpriorityscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008210079
+X-Originating-IP: [10.52.123.86]
+X-ClientProxiedBy: lhreml701-chm.china.huawei.com (10.201.108.50) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 20 Aug 2020 17:24:33 -0500
+Bjorn Helgaas <helgaas@kernel.org> wrote:
 
-
-On 8/21/20 11:37 AM, Christoph Hellwig wrote:
-> On Wed, Aug 19, 2020 at 03:58:41PM +0530, Anju T Sudhakar wrote:
->> From: Ritesh Harjani <riteshh@linux.ibm.com>
->>
->> __bio_try_merge_page() may return same_page = 1 and merged = 0.
->> This could happen when bio->bi_iter.bi_size + len > UINT_MAX.
->> Handle this case in iomap_add_to_ioend() by incrementing write_count.
->> This scenario mostly happens where we have too much dirty data accumulated.
->>
->> w/o the patch we hit below kernel warning,
+> On Wed, Aug 19, 2020 at 10:51:07PM +0800, Jonathan Cameron wrote:
+> > In common with memoryless domains we only register GI domains
+> > if the proximity node is not online. If a domain is already
+> > a memory containing domain, or a memoryless domain there is
+> > nothing to do just because it also contains a Generic Initiator.
+> > 
+> > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > ---
+> >  arch/x86/include/asm/numa.h |  2 ++
+> >  arch/x86/kernel/setup.c     |  1 +
+> >  arch/x86/mm/numa.c          | 14 ++++++++++++++
+> >  3 files changed, 17 insertions(+)
+> > 
+> > diff --git a/arch/x86/include/asm/numa.h b/arch/x86/include/asm/numa.h
+> > index bbfde3d2662f..f631467272a3 100644
+> > --- a/arch/x86/include/asm/numa.h
+> > +++ b/arch/x86/include/asm/numa.h
+> > @@ -62,12 +62,14 @@ extern void numa_clear_node(int cpu);
+> >  extern void __init init_cpu_to_node(void);
+> >  extern void numa_add_cpu(int cpu);
+> >  extern void numa_remove_cpu(int cpu);
+> > +extern void init_gi_nodes(void);
+> >  #else	/* CONFIG_NUMA */
+> >  static inline void numa_set_node(int cpu, int node)	{ }
+> >  static inline void numa_clear_node(int cpu)		{ }
+> >  static inline void init_cpu_to_node(void)		{ }
+> >  static inline void numa_add_cpu(int cpu)		{ }
+> >  static inline void numa_remove_cpu(int cpu)		{ }
+> > +static inline void init_gi_nodes(void)			{ }
+> >  #endif	/* CONFIG_NUMA */
+> >  
+> >  #ifdef CONFIG_DEBUG_PER_CPU_MAPS
+> > diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> > index 3511736fbc74..9062c146f03a 100644
+> > --- a/arch/x86/kernel/setup.c
+> > +++ b/arch/x86/kernel/setup.c
+> > @@ -1218,6 +1218,7 @@ void __init setup_arch(char **cmdline_p)
+> >  	prefill_possible_map();
+> >  
+> >  	init_cpu_to_node();
+> > +	init_gi_nodes();
+> >  
+> >  	io_apic_init_mappings();
+> >  
+> > diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
+> > index aa76ec2d359b..fc630dc6764e 100644
+> > --- a/arch/x86/mm/numa.c
+> > +++ b/arch/x86/mm/numa.c
+> > @@ -747,6 +747,20 @@ static void __init init_memory_less_node(int nid)
+> >  	 */
+> >  }
+> >  
+> > +/*
+> > + * Generic Initiator Nodes may have neither CPU nor Memory.
+> > + * At this stage if either of the others were present we would
+> > + * already be online.
+> > + */
+> > +void __init init_gi_nodes(void)
+> > +{
+> > +	int nid;
+> > +
+> > +	for_each_node_state(nid, N_GENERIC_INITIATOR)
+> > +		if (!node_online(nid))
+> > +			init_memory_less_node(nid);
+> > +}  
 > 
-> I think this is better fixed in the block layer rather than working
-> around the problem in the callers.  Something like this:
+> This doesn't *look* very x86-specific, and apparently you don't need
+> any arm64-specific changes?  Too bad this can't be unified a little
+> bit to remove the arch #ifdefs completely.
+
+The only ifdefs in the set aren't actually about this (which is entirely
+contained in arch code) they are to avoid ia64 issues as has an entirely
+different implementation that I doubt anyone wants to touch!
+
 > 
-> diff --git a/block/bio.c b/block/bio.c
-> index c63ba04bd62967..ef321cd1072e4e 100644
-> --- a/block/bio.c
-> +++ b/block/bio.c
-> @@ -879,8 +879,10 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
->   		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
->   
->   		if (page_is_mergeable(bv, page, len, off, same_page)) {
-> -			if (bio->bi_iter.bi_size > UINT_MAX - len)
-> +			if (bio->bi_iter.bi_size > UINT_MAX - len) {
-> +				*same_page = false;
->   				return false;
-> +			}
->   			bv->bv_len += len;
->   			bio->bi_iter.bi_size += len;
->   			return true;
-> 
+> I do see that init_memory_less_node() is only implemented on x86, but
+> it just seems like all this might not be inherently be arch-specific.
 
-Ya, we had think of that. But what we then thought was, maybe the
-API does return the right thing. Meaning, what API says is, same_page is
-true, but the page couldn't be merged hence it returned ret = false.
-With that thought, we fixed this in the caller.
+I absolutely agree with a long term aim to unify the numa setup code
+across architectures.
 
-But agree with you that with ret = false, there is no meaning of
-same_page being true. Ok, so let linux-block comment on whether
-above also looks good. If yes, I can spin out an official patch with
-all details.
+The x86 code is rather more involved than what we have for arm64. On arm64,
+memoryless nodes are handled in the same pass as those with memory (and
+we get GI nodes for free).
 
--ritesh
+There are some separate patches under discussion that take a few steps
+in that direction.
+
+https://lore.kernel.org/linux-arm-kernel/20200814214725.28818-3-atish.patra@wdc.com/T/
+https://patchwork.kernel.org/patch/11651437/ (this one is mostly by coincidence rather
+than intent!)
+
+Jonathan
+
+
+
+
