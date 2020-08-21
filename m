@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0734724E018
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C229C24E00B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727111AbgHUSzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 14:55:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57118 "EHLO
+        id S1726358AbgHUSyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 14:54:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbgHUSx6 (ORCPT
+        with ESMTP id S1726798AbgHUSyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 14:53:58 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A710EC061573
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:53:58 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id g26so2285433qka.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:53:58 -0700 (PDT)
+        Fri, 21 Aug 2020 14:54:00 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BBBBC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:54:00 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id v1so1086865qvn.3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:54:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dRoRCggi8EdohCRwOMamTs7F9Ex68uNFaZTz9zGb0Zk=;
-        b=bHMz4Ht5vwX+q8ADoAC35a2xJJdiDVCnVPj/wyg2XKkhfeQcjZjCesbaCZr7UJRizQ
-         V/y7W7d7lssHUAcpf3GpeVnAftjyH2Cwmy3WUd/lfBz6GTUX3U6Uv+AUfcLsCdlsYW6x
-         kLhzg1wDyNWEEkwf/L6OBzxM7zrNQbWEvGROZQo0VltKceupu478Qixm5qOZsWJDC2LI
-         QJpDbGSfWTMO55Xtp1TuUJ/VlNC2taw5uqP7O20c0bYy18x4bH733NoJ7rYB0uPfauHF
-         OTk1OBiJEsjabiJn5vjMmzWkuIHb88155pW+xp+M+DA6eYdX8iTXGeye5SEV+TlD9MQp
-         1ToQ==
+        bh=9IeHB9lDAArlqZqVF3RpujPXGqkuFDtD8SXfEd8xABI=;
+        b=GD6hD8LMYN5mgdIAELCXVSnSM884fmkvhr5QqlZoeJpeb+L1ZV9uxSoOV7b0prEDCN
+         nAFH6njIFhR2pI1yMQw2XmHNcDq3yQbtD6o7xi50IQrQV1++zULuBD4C71Eeh5jksjeV
+         f5AoLe6an5/xr+k4QzibPZI18Z2L7VHdPP5pAyKsm/2lyzaERsEJhT+gCoOLQ32ZKokj
+         A+/VYocRBPXO2FhE90r6bFFbF1PoQCyMtpqvchi8nLIgQjybnWa7Y9/yODsOQEtU8v/1
+         puI+7D5DqqArmZRFaYVc8wT7UGqAbh9A08hAg7ycrQUFNpml0JkqNDmgfRV8c4pE1d78
+         Ivtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dRoRCggi8EdohCRwOMamTs7F9Ex68uNFaZTz9zGb0Zk=;
-        b=LtMlFtoweN3E1sApP45u1G8d/TmsbnqeJmnES5h6UEtonru70pxcUhIlKBYVoQxe5j
-         HJrIFUF6ukGbxn2QrpgI0jHa3+XOX1ohYSByH/mdA4EIlvUX9m/YE2z2JrU/5a4jBOmS
-         9nLCIw85BcWmo9QFL9XTNTx7OmgZJiCQGdIiKHx/mklrfMhdsN/YDGvACKJQB+6VCJ4L
-         i1r+M0KLdkQGffxBng4StN/8vD4Td++7ytZ9Jk0tfb7AW01l6pPJ8cW2OJTQTZj1PY+o
-         j3ebVUR0SxlQCi9HZ5kkAhOMNpNPR4+tuYIKT5c/SDdTuj2YnoSbS4TtLK3AfxJoGXlR
-         8vQg==
-X-Gm-Message-State: AOAM533AxaLjj/i2WrL7fe2+0miBj01doBKAhECh3z49aMYjfETFg6km
-        OoCTpkTV9ZoRqlAXMpLjmQs=
-X-Google-Smtp-Source: ABdhPJyy1Yysmy6zE+dyTA641LNOUFu78UKKJ8Evz1PzwzSm4I5hRZxkO4dY76b1gWaI5Mv2d/nMWQ==
-X-Received: by 2002:a37:a4ce:: with SMTP id n197mr4011097qke.77.1598036037979;
-        Fri, 21 Aug 2020 11:53:57 -0700 (PDT)
+        bh=9IeHB9lDAArlqZqVF3RpujPXGqkuFDtD8SXfEd8xABI=;
+        b=XWQztbCgNtQyb8vPnUbYyKOj7TimeTgdsOMf9jGpznx5e83A7LwkHHshmVt+cYOlTE
+         Ei46GfD8TfO4rL0MvElF13FW3xfOOkAy6/pWCOKZm0GJ/MsMTYVovQkeBGp9xvveds/Z
+         QDD4r5k6GsXxdj3AXuSfi2visohl3ifnPicQ1JfXlESgjqnTh2jP/qfb4sIjUB3xfrtq
+         /Z+/Q2gnlxxcl3aM0ZyT0qjAMOUQeQxZtk6kZbug6y82MPvbKWoFBt3ziy66Mve8j6zE
+         F9p90JxlT+LP3arWo8lgAQ3PP0N6uIgQheDxR/hoCbNKw5DjXZpsZiDzjLarMhYxlV+u
+         VXyg==
+X-Gm-Message-State: AOAM531ZwDWZESmsRkd9qGW44YJd1O7c3woEgDlwE2rxXVqTRz0BFPtv
+        yG+VfswXdLBgzwq7eg8j9DQ=
+X-Google-Smtp-Source: ABdhPJw/p/aSkmV5jyryhckZjVlGcJD7wF9+/GM74z1Nf/6LQvha53fa74/Vf278dTIRUtlJXKMSIw==
+X-Received: by 2002:a05:6214:1742:: with SMTP id dc2mr3813584qvb.90.1598036039800;
+        Fri, 21 Aug 2020 11:53:59 -0700 (PDT)
 Received: from localhost.localdomain (cpe-71-65-111-223.cinci.res.rr.com. [71.65.111.223])
-        by smtp.googlemail.com with ESMTPSA id o72sm2468426qka.113.2020.08.21.11.53.57
+        by smtp.googlemail.com with ESMTPSA id o72sm2468426qka.113.2020.08.21.11.53.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 11:53:57 -0700 (PDT)
+        Fri, 21 Aug 2020 11:53:59 -0700 (PDT)
 From:   Connor McAdams <conmanx360@gmail.com>
 Cc:     conmanx360@gmail.com, Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 09/20] ALSA: hda/ca0132 - Fix Recon3D Center/LFE output.
-Date:   Fri, 21 Aug 2020 14:52:26 -0400
-Message-Id: <20200821185239.26133-10-conmanx360@gmail.com>
+Subject: [PATCH 10/20] ALSA: hda/ca0132 - Add new quirk ID for SoundBlaster AE-7.
+Date:   Fri, 21 Aug 2020 14:52:27 -0400
+Message-Id: <20200821185239.26133-11-conmanx360@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200821185239.26133-1-conmanx360@gmail.com>
 References: <20200821185239.26133-1-conmanx360@gmail.com>
@@ -66,31 +66,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Properly set the GPIO pin to un-mute the Center/LFE channel on the
-Recon3D.
+Add a new PCI subsystem ID for the SoundBlaster AE-7 card.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- sound/pci/hda/patch_ca0132.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/pci/hda/patch_ca0132.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index ac9dcaf69a2e..9c61a10114aa 100644
+index 9c61a10114aa..57cb63ea88e6 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -7819,6 +7819,12 @@ static void r3d_setup_defaults(struct hda_codec *codec)
- 	if (ca0132_quirk(spec) == QUIRK_R3DI)
- 		r3di_gpio_dsp_status_set(codec, R3DI_DSP_DOWNLOADED);
+@@ -1134,6 +1134,7 @@ enum {
+ 	QUIRK_R3DI,
+ 	QUIRK_R3D,
+ 	QUIRK_AE5,
++	QUIRK_AE7,
+ };
  
-+	/* Disable mute on Center/LFE. */
-+	if (ca0132_quirk(spec) == QUIRK_R3D) {
-+		ca0113_mmio_gpio_set(codec, 2, false);
-+		ca0113_mmio_gpio_set(codec, 4, true);
-+	}
-+
- 	/* Setup effect defaults */
- 	num_fx = OUT_EFFECTS_COUNT + IN_EFFECTS_COUNT + 1;
- 	for (idx = 0; idx < num_fx; idx++) {
+ #ifdef CONFIG_PCI
+@@ -1253,6 +1254,7 @@ static const struct snd_pci_quirk ca0132_quirks[] = {
+ 	SND_PCI_QUIRK(0x1102, 0x0013, "Recon3D", QUIRK_R3D),
+ 	SND_PCI_QUIRK(0x1102, 0x0018, "Recon3D", QUIRK_R3D),
+ 	SND_PCI_QUIRK(0x1102, 0x0051, "Sound Blaster AE-5", QUIRK_AE5),
++	SND_PCI_QUIRK(0x1102, 0x0081, "Sound Blaster AE-7", QUIRK_AE7),
+ 	{}
+ };
+ 
 -- 
 2.20.1
 
