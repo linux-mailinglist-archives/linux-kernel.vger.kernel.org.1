@@ -2,94 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C0524E2C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 23:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47FB524E2CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 23:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726697AbgHUViV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 17:38:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54484 "EHLO
+        id S1726740AbgHUVoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 17:44:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726187AbgHUViT (ORCPT
+        with ESMTP id S1726433AbgHUVoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 17:38:19 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 543D7C061573;
-        Fri, 21 Aug 2020 14:38:19 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id df16so2734982edb.9;
-        Fri, 21 Aug 2020 14:38:18 -0700 (PDT)
+        Fri, 21 Aug 2020 17:44:37 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 911F0C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 14:44:36 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id w14so2264969eds.0
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 14:44:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Gfug6M3OOZNJ6q8sApGDCaMBquL65QMuLFdwuuumNZA=;
-        b=jJ6eae3Ww+WWoXwtlu8P2VejAtCwIbkp1hM5FMDc4Zr/kaCcCRojMR7zI4Nhg7+yZW
-         ZBUofAil656eC9j0w0jL4lQVktpXNTm05+a2ZfkTTtBRkzXILrphQ69mH2Y28fQaMKU7
-         XRkWX/qyM33hcafGbIWzqz/FLGx5uvF64S5hv+B8feCw/QnKRBm9XsVSv/lAF1HqAoPx
-         Nh8SsXOgRvY+bGlhLpVMb3UuEhSy6pe1wYrVDTTqQPn1w6xxDLEsPSECpGSIukXGZYy0
-         D16/cbrmQ1yMi3uHC/qqCp0MchMfEEp6GCnqYmGe3tyQedwhCyCamdjMhAwMm2gxSHU8
-         dDtw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fmQQDVMXbn1xkliDoKeEU74auHxtHQpL4ZkAUewHmqw=;
+        b=gfwHC9xeYNz7EUpsz/d5a69ffJsRioVxivkh2vW/TF4IoWRw3IP7tqtfK1M2BdovRD
+         BqR5TXoGfgnoGPiVUutu4293iBXetWkpFRZW47K9qMBDXtc3lD7qcD5MTZFqIHAqEy7Z
+         fvQROxcppyhgOJ17j77yZkQ1SOQxSLwO/qOY0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Gfug6M3OOZNJ6q8sApGDCaMBquL65QMuLFdwuuumNZA=;
-        b=iZlnEgO9Nc+bhNpX6kuoPeGrP/1TlVqDPlEi5IMm+QEMavk8/TZpXOZ86X9syJKJmF
-         pKmTO9GInRB/tlAN/Q/lwqSbbSZF8VbtVKm/val5z1V68SukWwFDmyy/5Fl+uEO25qam
-         4mXi2aNB2219cA91fgHUBadZYlZyK+YBzSwR8PHvX+0Rolazd1AsA8F+MPIZZ1KO6F26
-         8pGU5NwfxQ5v/bYpclV11QWGbLocGVUtiImwOLQaQqZhXlVLvEOv4OPzZBVH7aWFtX2o
-         4RqnjTwxLGykBQtE0vv5xAZXY2N6ExCxZ27MqExmHyWrHOJ7SkOFR5PZ1zXoQ0UVFUGn
-         a+MQ==
-X-Gm-Message-State: AOAM530eor/mAKMkFp2QNDB1mdHUx31pCL7I3tgXUVBIkIqzAnLNDr3P
-        PPC62UcZ/B/8xHmtDPfyLzw=
-X-Google-Smtp-Source: ABdhPJx9SolUSPU3K4hQ7fAGjLqRUXTKmcwsXFEYs/qMrfvB/XNPni7gUXanVwnJeBE6tcmYRQWomg==
-X-Received: by 2002:a50:935a:: with SMTP id n26mr4858258eda.107.1598045896089;
-        Fri, 21 Aug 2020 14:38:16 -0700 (PDT)
-Received: from localhost.localdomain ([86.126.22.216])
-        by smtp.gmail.com with ESMTPSA id cq1sm1775762edb.95.2020.08.21.14.38.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 14:38:15 -0700 (PDT)
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     broonie@kernel.org
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: add myself as maintainer for spi-fsl-dspi driver
-Date:   Sat, 22 Aug 2020 00:37:53 +0300
-Message-Id: <20200821213753.3143632-1-olteanv@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fmQQDVMXbn1xkliDoKeEU74auHxtHQpL4ZkAUewHmqw=;
+        b=LTGKdXbGXPrxXIXaWQ5r0roi+T02jDalazsPsUJ7hZJX+LcBHMJjHv0u/TuqhxArQD
+         vLhw7B8JSwpIsLjldwwovvLOt5If9FS07aoJo3kgAvylthBz4wiqWzSBe3y5pyyh+odj
+         gO8jolRWXFodHe4baEb2sdj17GljUFNhdVj92tm2P/Wf9MLgvCGR3FFKUsZyCZrGcND+
+         RuxgqzT4cEIhqILdauBjKS9Gh1nWc595XlUZDAHbg5pj/Xz8HVbyLptLiYSmv8mJRM7R
+         h7Q82VuKLDnDG/yQgABiJMtUgBllSS0eIvxle9mM9LJUWLHOCjCCIpdJafUzV3U1kq2a
+         VuCQ==
+X-Gm-Message-State: AOAM532SKravcUu+zNjUG3c19UOrAvlDc6HvH4LgYui2HaNMQTXEYUV0
+        S28PnWhV5u0RbnJP0JaFeat5VHqJQLT7nw==
+X-Google-Smtp-Source: ABdhPJzzqa+oC+p9IZBkJE/M9xa9PECjS/O7r8lQZ26viz9qf/wDpvS/B9IojwBi4MyiKjSes5oapQ==
+X-Received: by 2002:a05:6402:501:: with SMTP id m1mr4554819edv.99.1598046274595;
+        Fri, 21 Aug 2020 14:44:34 -0700 (PDT)
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
+        by smtp.gmail.com with ESMTPSA id j21sm107141eja.109.2020.08.21.14.44.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Aug 2020 14:44:34 -0700 (PDT)
+Received: by mail-ej1-f45.google.com with SMTP id o23so4194360ejr.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 14:44:34 -0700 (PDT)
+X-Received: by 2002:a2e:7615:: with SMTP id r21mr2253045ljc.371.1598045972531;
+ Fri, 21 Aug 2020 14:39:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAHk-=wiPeRQU_5JXCN0TLoW-xHZHp7dmrhx0wyXUSKxiCxE02Q@mail.gmail.com>
+ <20200818202407.GA3143683@rani.riverdale.lan> <CAKwvOdnfh9nWwu1xV=WDbETGiabwDxXxQDRCAfpa-+kSZijb9w@mail.gmail.com>
+ <CAKwvOdkA4SC==vGZ4e7xqFG3Zo=fnhU=FgnSazmWkkVWhkaSYw@mail.gmail.com>
+ <20200818214146.GA3196105@rani.riverdale.lan> <df6c1da4-b910-ecb8-0de2-6156dd651be6@rasmusvillemoes.dk>
+ <20200820175617.GA604994@rani.riverdale.lan> <CAHk-=whn91ar+EbcBXQb9UXad00Q5WjU-TCB6UBzVba682a4ew@mail.gmail.com>
+ <20200821172935.GA1411923@rani.riverdale.lan> <CAHk-=wi8vdb+wo-DACDpSijYfAbCs135YcnnAbRhGJcU+A=-+Q@mail.gmail.com>
+ <20200821195712.GB1475504@rani.riverdale.lan>
+In-Reply-To: <20200821195712.GB1475504@rani.riverdale.lan>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 21 Aug 2020 14:39:16 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgXHhN5MSOLeE_7rMPoGknrSxmOOJVLBa4jkz38J4gHgg@mail.gmail.com>
+Message-ID: <CAHk-=wgXHhN5MSOLeE_7rMPoGknrSxmOOJVLBa4jkz38J4gHgg@mail.gmail.com>
+Subject: Re: [PATCH 0/4] -ffreestanding/-fno-builtin-* patches
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        =?UTF-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
+        Eli Friedman <efriedma@quicinc.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Joe Perches <joe@perches.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Bruce Ashfield <bruce.ashfield@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since I've introduced a fairly large diff to this driver since tag v5.4,
-I would like to avoid breakage for my use cases by getting a chance to
-be copied on newly submitted patches.
+On Fri, Aug 21, 2020 at 12:57 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> Look, four stores into memset(), yeah that's a bit weird. I didn't think
+> you meant "four" literally. But in any case, that has nothing to do with
+> the topic at hand. It would be just as bad if it was a 16-byte structure
+> being initialized with an out-of-line memset() call.
 
-Signed-off-by: Vladimir Oltean <olteanv@gmail.com>
----
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Actually, I mis-remembered. It wasn't four stores.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index deaafb617361..d29fa11d7742 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6884,6 +6884,14 @@ L:	linuxppc-dev@lists.ozlabs.org
- S:	Maintained
- F:	drivers/dma/fsldma.*
- 
-+FREESCALE DSPI DRIVER
-+M:	Vladimir Oltean <olteanv@gmail.com>
-+L:	linux-spi@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt
-+F:	drivers/spi/spi-fsl-dspi.c
-+F:	include/linux/spi/spi-fsl-dspi.h
-+
- FREESCALE ENETC ETHERNET DRIVERS
- M:	Claudiu Manoil <claudiu.manoil@nxp.com>
- L:	netdev@vger.kernel.org
--- 
-2.25.1
+It was two.
 
+We have this lovely "sas_ss_reset()" function that initializes three
+fields in a structure (two to zero, one to '2').
+
+And we used it in a critical place that didn't allow function calls
+(because we have magic rules with the SMAP instructions).
+
+And clang turned the initalization into a memset().  Which then
+triggered our "you can't do that here" check on the generated code.
+
+This is the kind of special rules we sometimes can have for code
+generation, where the compiler really doesn't understand that no, you
+can't just replace this code sequence with a function call, because
+there are things going on around it that really mean that the code
+should be generated the way we wrote it.
+
+> But coming back to the actual topic: it is fine if the compiler turns
+> four stores into __builtin_memset(). A size-16 or -32 __builtin_memset()
+> will get inlined anyway. There's a lot of garbage here if you look
+> closely: check out what gcc does to initialize a 7-character array with
+> zeros at -Os.
+
+Yeah. The reason we had to make -Os be a non-preferred thing is
+because gcc has some really sad things it does when optimizing for
+size.
+
+I happen to believe that I$ matters, but -Os made _such_ a mess of
+things that it was untenable to use ;(
+
+              Linus
