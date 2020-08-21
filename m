@@ -2,224 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDA6524D902
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF4F24D961
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727924AbgHUPqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 11:46:15 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10253 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725828AbgHUPqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 11:46:11 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 54A0117A4900C0881F6B;
-        Fri, 21 Aug 2020 23:46:07 +0800 (CST)
-Received: from huawei.com (10.151.151.249) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Fri, 21 Aug 2020
- 23:45:57 +0800
-From:   Dongjiu Geng <gengdongjiu@huawei.com>
-To:     <mingo@redhat.com>, <peterz@infradead.org>,
-        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
-        <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
-        <bsegall@google.com>, <mgorman@suse.de>,
-        <thara.gopinath@linaro.org>, <pauld@redhat.com>,
-        <vincent.donnefort@arm.com>, <rdunlap@infradead.org>
-CC:     <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH v2] sched: Add trace for task wake up latency and leave running time
-Date:   Sat, 22 Aug 2020 00:08:14 +0000
-Message-ID: <20200822000814.33189-1-gengdongjiu@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726820AbgHUQGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 12:06:47 -0400
+Received: from 12.mo7.mail-out.ovh.net ([178.33.107.167]:50860 "EHLO
+        12.mo7.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726548AbgHUQGq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 12:06:46 -0400
+Received: from player799.ha.ovh.net (unknown [10.108.35.158])
+        by mo7.mail-out.ovh.net (Postfix) with ESMTP id 7C0F4176719
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 18:00:44 +0200 (CEST)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player799.ha.ovh.net (Postfix) with ESMTPSA id ABD0E156BDE9D;
+        Fri, 21 Aug 2020 16:00:38 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-103G0059f190c4a-db29-4b17-b616-76cf4b1db7b5,
+                    20EB7F6BE0168D07063FB82D5C23839419BBC220) smtp.auth=steve@sk2.org
+From:   Stephen Kitt <steve@sk2.org>
+To:     Juerg Haefliger <juergh@gmail.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
+Subject: [PATCH] hwmon: (dme1737) use simple i2c probe
+Date:   Fri, 21 Aug 2020 18:00:35 +0200
+Message-Id: <20200821160035.590142-1-steve@sk2.org>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.151.151.249]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 17270178671746174236
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrudduvddgkeejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucggtffrrghtthgvrhhnpeetgedugfelkeeikeetgeegteevfeeufeetuefgudeiiedthfehtdeffeekvdeffeenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeelledrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1) The perf event sched_switch is used to record scheduling tracks,
-   which consumes a large amount of CPU resources and disk space.
-   Therefore, a mechanism is required to record only the scheduling
-   delay greater than a certain threshold. This patch supports this
-   feature. For example, if the threshold is 10 ms, you can run the
-   following command to only record the scheduling track with the
-   scheduling delay greater than 10 ms.
+As part of the ongoing i2c transition to the simple probe
+("probe_new"), this patch uses i2c_match_id to retrieve the
+driver_data for the probed device. The id parameter is thus no longer
+necessary and the simple probe can be used instead.
 
-   echo 'time > 10000000' > /sys/kernel/debug/tracing/events/sched/sched_wakeup_latency/filter
-   echo 1 > /sys/kernel/debug/tracing/events/sched/sched_wakeup_latency/enable
-
-2) Similarly, when tune performance, we usually want to know which
-   tasks are not running for a long time that is greater than a
-   certain threshold, Use the following commands can easily implement
-   it.
-
-   echo 'time > 10000000' > /sys/kernel/debug/tracing/events/sched/sched_leave_running_time/filter
-   echo 1 > /sys/kernel/debug/tracing/events/sched/sched_leave_running_time/enable
-
-Signed-off-by: Dongjiu Geng <gengdongjiu@huawei.com>
+Signed-off-by: Stephen Kitt <steve@sk2.org>
 ---
- include/linux/sched.h        |  7 ++++
- include/trace/events/sched.h | 66 ++++++++++++++++++++++++++++++++++++
- kernel/sched/core.c          | 20 +++++++++++
- 3 files changed, 93 insertions(+)
+ drivers/hwmon/dme1737.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 93ecd930efd3..edb622c40a90 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1324,6 +1324,13 @@ struct task_struct {
- 	/* CPU-specific state of this task: */
- 	struct thread_struct		thread;
- 
-+	/* Task wake up time stamp */
-+	u64				ts_wakeup;
-+	/* Previous task switch out time stamp */
-+	u64				pre_ts_end;
-+	/* Next task switch in time stamp */
-+	u64				next_ts_start;
-+	bool				wakeup_state;
- 	/*
- 	 * WARNING: on x86, 'thread_struct' contains a variable-sized
- 	 * structure.  It *MUST* be at the end of 'task_struct'.
-diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
-index fec25b9cfbaf..e99c6d573a42 100644
---- a/include/trace/events/sched.h
-+++ b/include/trace/events/sched.h
-@@ -183,6 +183,72 @@ TRACE_EVENT(sched_switch,
- 		__entry->next_comm, __entry->next_pid, __entry->next_prio)
- );
- 
-+DECLARE_EVENT_CLASS(sched_latency_template,
-+
-+	TP_PROTO(bool preempt,
-+		 struct task_struct *prev,
-+		 struct task_struct *next,
-+		 u64 time),
-+
-+	TP_ARGS(preempt, prev, next, time),
-+
-+	TP_STRUCT__entry(
-+		__array(	char,	prev_comm,	TASK_COMM_LEN	)
-+		__field(	pid_t,	prev_pid			)
-+		__field(	int,	prev_prio			)
-+		__field(	long,	prev_state			)
-+		__array(	char,	next_comm,	TASK_COMM_LEN	)
-+		__field(	pid_t,	next_pid			)
-+		__field(	int,	next_prio			)
-+		__field(	u64,	time				)
-+	),
-+
-+	TP_fast_assign(
-+		memcpy(__entry->next_comm, next->comm, TASK_COMM_LEN);
-+		__entry->prev_pid	= prev->pid;
-+		__entry->prev_prio	= prev->prio;
-+		__entry->prev_state	= __trace_sched_switch_state(preempt, prev);
-+		memcpy(__entry->prev_comm, prev->comm, TASK_COMM_LEN);
-+		__entry->next_pid	= next->pid;
-+		__entry->next_prio	= next->prio;
-+		__entry->time		= time;
-+		/* XXX SCHED_DEADLINE */
-+	),
-+
-+	TP_printk("prev_comm=%s prev_pid=%d prev_prio=%d prev_state=%s%s ==> next_comm=%s next_pid=%d next_prio=%d passed time=%llu (ns)",
-+		__entry->prev_comm, __entry->prev_pid, __entry->prev_prio,
-+
-+		(__entry->prev_state & (TASK_REPORT_MAX - 1)) ?
-+		  __print_flags(__entry->prev_state & (TASK_REPORT_MAX - 1), "|",
-+				{ TASK_INTERRUPTIBLE, "S" },
-+				{ TASK_UNINTERRUPTIBLE, "D" },
-+				{ __TASK_STOPPED, "T" },
-+				{ __TASK_TRACED, "t" },
-+				{ EXIT_DEAD, "X" },
-+				{ EXIT_ZOMBIE, "Z" },
-+				{ TASK_PARKED, "P" },
-+				{ TASK_DEAD, "I" }) :
-+		  "R",
-+
-+		__entry->prev_state & TASK_REPORT_MAX ? "+" : "",
-+		__entry->next_comm, __entry->next_pid, __entry->next_prio,
-+		__entry->time)
-+);
-+
-+DEFINE_EVENT(sched_latency_template, sched_wakeup_latency,
-+	TP_PROTO(bool preempt,
-+		 struct task_struct *prev,
-+		 struct task_struct *next,
-+		 u64 time),
-+	TP_ARGS(preempt, prev, next, time));
-+
-+DEFINE_EVENT(sched_latency_template, sched_leave_running_time,
-+	TP_PROTO(bool preempt,
-+		 struct task_struct *prev,
-+		 struct task_struct *next,
-+		 u64 time),
-+	TP_ARGS(preempt, prev, next, time));
-+
- /*
-  * Tracepoint for a task being migrated:
-  */
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 8471a0f7eb32..b5a1928dc948 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2464,6 +2464,8 @@ static void ttwu_do_wakeup(struct rq *rq, struct task_struct *p, int wake_flags,
- {
- 	check_preempt_curr(rq, p, wake_flags);
- 	p->state = TASK_RUNNING;
-+	p->ts_wakeup = local_clock();
-+	p->wakeup_state = true;
- 	trace_sched_wakeup(p);
- 
- #ifdef CONFIG_SMP
-@@ -2846,6 +2848,8 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
- 		success = 1;
- 		trace_sched_waking(p);
- 		p->state = TASK_RUNNING;
-+		p->ts_wakeup = local_clock();
-+		p->wakeup_state = true;
- 		trace_sched_wakeup(p);
- 		goto out;
- 	}
-@@ -3299,6 +3303,9 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
- 	plist_node_init(&p->pushable_tasks, MAX_PRIO);
- 	RB_CLEAR_NODE(&p->pushable_dl_tasks);
- #endif
-+	p->ts_wakeup = 0;
-+	p->wakeup_state = false;
-+	p->pre_ts_end = p->next_ts_start = 0;
+diff --git a/drivers/hwmon/dme1737.c b/drivers/hwmon/dme1737.c
+index c3472b73fa79..c1e4cfb40c3d 100644
+--- a/drivers/hwmon/dme1737.c
++++ b/drivers/hwmon/dme1737.c
+@@ -2461,8 +2461,9 @@ static int dme1737_i2c_detect(struct i2c_client *client,
  	return 0;
  }
  
-@@ -3355,6 +3362,8 @@ void wake_up_new_task(struct task_struct *p)
- 	post_init_entity_util_avg(p);
- 
- 	activate_task(rq, p, ENQUEUE_NOCLOCK);
-+	p->ts_wakeup = local_clock();
-+	p->wakeup_state = true;
- 	trace_sched_wakeup_new(p);
- 	check_preempt_curr(rq, p, WF_FORK);
- #ifdef CONFIG_SMP
-@@ -4521,8 +4530,19 @@ static void __sched notrace __schedule(bool preempt)
- 
- 		psi_sched_switch(prev, next, !task_on_rq_queued(prev));
- 
-+		next->next_ts_start = prev->pre_ts_end = local_clock();
+-static int dme1737_i2c_probe(struct i2c_client *client,
+-			     const struct i2c_device_id *id)
++static const struct i2c_device_id dme1737_id[];
 +
- 		trace_sched_switch(preempt, prev, next);
++static int dme1737_i2c_probe(struct i2c_client *client)
+ {
+ 	struct dme1737_data *data;
+ 	struct device *dev = &client->dev;
+@@ -2473,7 +2474,7 @@ static int dme1737_i2c_probe(struct i2c_client *client,
+ 		return -ENOMEM;
  
-+		if (next->ts_wakeup && next->wakeup_state) {
-+			trace_sched_wakeup_latency(preempt, prev, next,
-+				next->next_ts_start - next->ts_wakeup);
-+			next->wakeup_state = false;
-+		}
-+
-+		trace_sched_leave_running_time(preempt, prev,
-+			next, next->next_ts_start - next->pre_ts_end);
-+
- 		/* Also unlocks the rq: */
- 		rq = context_switch(rq, prev, next, &rf);
- 	} else {
+ 	i2c_set_clientdata(client, data);
+-	data->type = id->driver_data;
++	data->type = i2c_match_id(dme1737_id, client)->driver_data;
+ 	data->client = client;
+ 	data->name = client->name;
+ 	mutex_init(&data->update_lock);
+@@ -2529,7 +2530,7 @@ static struct i2c_driver dme1737_i2c_driver = {
+ 	.driver = {
+ 		.name = "dme1737",
+ 	},
+-	.probe = dme1737_i2c_probe,
++	.probe_new = dme1737_i2c_probe,
+ 	.remove = dme1737_i2c_remove,
+ 	.id_table = dme1737_id,
+ 	.detect = dme1737_i2c_detect,
 -- 
-2.17.1
+2.25.4
 
