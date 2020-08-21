@@ -2,145 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD2724D89E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0AA824D8AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728111AbgHUPbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 11:31:36 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:43212 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727882AbgHUPbd (ORCPT
+        id S1728020AbgHUPeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 11:34:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728141AbgHUPdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 11:31:33 -0400
-Received: by mail-lj1-f195.google.com with SMTP id v12so2281727ljc.10
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 08:31:31 -0700 (PDT)
+        Fri, 21 Aug 2020 11:33:38 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2DDC061573;
+        Fri, 21 Aug 2020 08:33:37 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id v6so1849709ota.13;
+        Fri, 21 Aug 2020 08:33:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=0UODExHNr70hBlkw5NoS5M2zRCjpoudfpEgGYewpYzs=;
+        b=GNwFlwjsiQxOVZviBYqlzbDjeXaxMBoPCAKXZVtOFmIvyuZ+huJwdDvOja03AHtGt2
+         0KnvciGXYm9+XVry8EWqq5D4Z8/qAeFs9X6Q8s5guGEHnhbVGfFDdPbKcetmLnlZnhQF
+         S22FTMIHJoUzOJVOJczmL/WeK1fa6ogypu41P0M8KpkcioYvYbbfIGmtW186JpCNk5Eb
+         OGvEMDRxL94maTmzwF7Ct57rq9lsoXPW8ZleHDPUYl08ovc8zXQ53YoJMFaa12Qlk0Xn
+         dsrTdYHkqQex3f8K0IqoSQIxNAaRUTg3M4YyTLuHdbNaoAmfNgZil3wzjoKffSMnDf00
+         KCtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RiowHVIdXmdWQw4sb/h6lAEadFKHLzL7PqwIIimzsFs=;
-        b=N8LZfZy/tlqq0o1y729wdePWv3U9Dkqh8D1VZJdY40jOKCI7UCQ3c5srsjuRdQEcs2
-         C/nZEQ/8LJnANsS1cuJsvEh3pzZytlSeAzPHLHVbwc2eVBCpzGnmJtXaYGoVtFiat4tG
-         QrO4IwLLeLcNlF3tDDrqZn5+oyrJGayXf6dVTipQQTLCfpadGrGYmkSU0Y/WQb4yU5Vg
-         VVrVaTN2OOzKCJ+g2Z6zIUaRbCNUn9hdMbsxwlyDGPSEL+mMNh9PLQPCHcFAIfUfKsKP
-         T4puG4eOxDQN2EHva3bK1p3vrhKsfrus01pxD51fpDTQkK/xvE9uEvxBF8Bkd/cdlGYv
-         Vc9g==
-X-Gm-Message-State: AOAM532v/GQjoEVH9f54jqCKqkBMEs63mrjEiv9lkI/7Nq7TsDHJoj0Y
-        hJGsZzWiWpfgeE9WdjSv8d+pCGnOe4E=
-X-Google-Smtp-Source: ABdhPJzjz8FcMOgIuUhj09q0MInHjKvcAKGRb0sLsr90dgT5GOGFgFOstOCNXGo0SSKhlQF1TzthIw==
-X-Received: by 2002:a2e:9003:: with SMTP id h3mr1868250ljg.185.1598023890775;
-        Fri, 21 Aug 2020 08:31:30 -0700 (PDT)
-Received: from localhost.localdomain ([213.87.151.123])
-        by smtp.googlemail.com with ESMTPSA id w11sm446050lff.62.2020.08.21.08.31.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 08:31:28 -0700 (PDT)
-From:   Denis Efremov <efremov@linux.com>
-To:     Julia Lawall <Julia.Lawall@lip6.fr>
-Cc:     Denis Efremov <efremov@linux.com>, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] coccinelle: api: add kobj_to_dev.cocci script
-Date:   Fri, 21 Aug 2020 18:31:00 +0300
-Message-Id: <20200821153100.434332-1-efremov@linux.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0UODExHNr70hBlkw5NoS5M2zRCjpoudfpEgGYewpYzs=;
+        b=e7eWNYb5yiBMcNMHTiPjMX11ip9aaQiHHFC2hzuq065Rc3bzl+Y9MPKxx2rtogm+KK
+         ysNv69r/ac3shc3ynuQ5ovG3OBmZcinbEs/3qdgpnpyibGG4qVGLFvzZOR2rXznB1Fcb
+         A9RDNUGg/YFCt6siNryz9pxUTt2F8jDyBXeDeWDQZllQyWMo8b4PGNnLNWRa2jDmb+sU
+         DPfBZgPiITlCUWJknuTn39NDdif2I4xJr5qIMwFhfMKR5DPrmeQ1bxO2rkkMtmbel25B
+         w6Bqu+1q1a7zdQc/m3xUb5740EYgG3Qk9Im8gT3SRvI3VJq4WL9CJxcDx9OzoSGu2dhT
+         2AAA==
+X-Gm-Message-State: AOAM532/bGdpdKSFUQK41elDDTqG9BlgCimRZEa9EHn30EL5YubhkJnn
+        6Jc7w3Xlgt/A4Upr4vsNg6Kklqw1JGw7X3Celj4=
+X-Google-Smtp-Source: ABdhPJzTaWWS4KFsWhwVdexjyVS9FPsLuG66C3W4pSO1JfmW5mnH24nERLmoJY89ZSAcHLBxXqdy4UPcx98HFEllh6s=
+X-Received: by 2002:a05:6830:16d8:: with SMTP id l24mr2243264otr.89.1598024016342;
+ Fri, 21 Aug 2020 08:33:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200821140836.3707282-1-tweek@google.com> <20200821140836.3707282-2-tweek@google.com>
+In-Reply-To: <20200821140836.3707282-2-tweek@google.com>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Date:   Fri, 21 Aug 2020 11:33:25 -0400
+Message-ID: <CAEjxPJ7TF8cq_C+rh08vmq-aBMTH8FFgQaREkgUWB7fqTQWtQw@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] selinux: add tracepoint on audited events
+To:     =?UTF-8?Q?Thi=C3=A9baud_Weksteen?= <tweek@google.com>
+Cc:     Paul Moore <paul@paul-moore.com>, Nick Kralevich <nnk@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Peter Enderborg <peter.enderborg@sony.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use kobj_to_dev() instead of container_of().
+On Fri, Aug 21, 2020 at 10:09 AM Thi=C3=A9baud Weksteen <tweek@google.com> =
+wrote:
+>
+> The audit data currently captures which process and which target
+> is responsible for a denial. There is no data on where exactly in the
+> process that call occurred. Debugging can be made easier by being able to
+> reconstruct the unified kernel and userland stack traces [1]. Add a
+> tracepoint on the SELinux denials which can then be used by userland
+> (i.e. perf).
+>
+> Although this patch could manually be added by each OS developer to
+> trouble shoot a denial, adding it to the kernel streamlines the
+> developers workflow.
+>
+> It is possible to use perf for monitoring the event:
+>   # perf record -e avc:selinux_audited -g -a
+>   ^C
+>   # perf report -g
+>   [...]
+>       6.40%     6.40%  audited=3D800000 tclass=3D4
+>                |
+>                   __libc_start_main
+>                   |
+>                   |--4.60%--__GI___ioctl
+>                   |          entry_SYSCALL_64
+>                   |          do_syscall_64
+>                   |          __x64_sys_ioctl
+>                   |          ksys_ioctl
+>                   |          binder_ioctl
+>                   |          binder_set_nice
+>                   |          can_nice
+>                   |          capable
+>                   |          security_capable
+>                   |          cred_has_capability.isra.0
+>                   |          slow_avc_audit
+>                   |          common_lsm_audit
+>                   |          avc_audit_post_callback
+>                   |          avc_audit_post_callback
+>                   |
+>
+> It is also possible to use the ftrace interface:
+>   # echo 1 > /sys/kernel/debug/tracing/events/avc/selinux_audited/enable
+>   # cat /sys/kernel/debug/tracing/trace
+>   tracer: nop
+>   entries-in-buffer/entries-written: 1/1   #P:8
+>   [...]
+>   dmesg-3624  [001] 13072.325358: selinux_denied: audited=3D800000 tclass=
+=3D4
+>
+> The tclass value can be mapped to a class by searching
+> security/selinux/flask.h. The audited value is a bit field of the
+> permissions described in security/selinux/av_permissions.h for the
+> corresponding class.
+>
+> [1] https://source.android.com/devices/tech/debug/native_stack_dump
+>
+> Signed-off-by: Thi=C3=A9baud Weksteen <tweek@google.com>
+> Suggested-by: Joel Fernandes <joelaf@google.com>
+> Reviewed-by: Peter Enderborg <peter.enderborg@sony.com>
 
-Signed-off-by: Denis Efremov <efremov@linux.com>
----
-Examples of such patches:
-893c3d82b425 watchdog: Use kobj_to_dev() API
-23fd63a44460 hwmon: (nct6683) Replace container_of() with  kobj_to_dev()
-224941c9424f power: supply: use kobj_to_dev
-a9b9b2af40c7 backlight: lm3533_bl: Use kobj_to_dev() instead
-0acb47a3a093 qlcnic: Use kobj_to_dev() instead
-97cd738c44c8 gpiolib: sysfs: use kobj_to_dev
-d06f9e6c8960 hwmon: (nct7802) Replace container_of() API
-036855a4c3b3 hwmon : (nct6775) Use kobj_to_dev() API
-baf1d9c18293 driver/base/soc: Use kobj_to_dev() API
-ae243ef0afbc rtc: sysfs: use kobj_to_dev
-6b060d8a09e9 i2c: use kobj_to_dev() API
-9e7bd945b9a9 scsi: core: use kobj_to_dev
-0d730b57b95f s390/cio: use kobj_to_dev() API
-0616ca73fd35 usb: use kobj_to_dev() API
-8c9b839c0b80 alpha: use kobj_to_dev()
-016c0bbae1d1 netxen: Use kobj_to_dev()
-6908b45eafc4 GenWQE: use kobj_to_dev()
-85f4f39c80e9 pch_phub: use kobj_to_dev()
-47679cde604d misc: c2port: use kobj_to_dev()
-85016ff33f35 misc: cxl: use kobj_to_dev()
-092462c2b522 misc: eeprom: use kobj_to_dev()
-a9c9d9aca4e7 zorro: Use kobj_to_dev()
-a253f1eee6c4 rapidio: use kobj_to_dev()
-e3837b00b6bb drm/radeon: use kobj_to_dev()
-cc29ec874b37 drm/amdgpu: use kobj_to_dev()
-d122cbf1a310 drm/sysfs: use kobj_to_dev()
-657fb5fbadb3 drm/i915: use kobj_to_dev()
-554a60379aaa PCI: Use kobj_to_dev() instead of open-coding it
-2cf83833fc9c HID: use kobj_to_dev()
-aeb7ed14fe5d bridge: use kobj_to_dev instead of to_dev
-8e3829c61b48 staging:iio:adis16220: Use kobj_to_dev instead of open-coding it
-b0d1f807f340 driver-core: Use kobj_to_dev instead of re-implementing it
-
- scripts/coccinelle/api/kobj_to_dev.cocci | 44 ++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
- create mode 100644 scripts/coccinelle/api/kobj_to_dev.cocci
-
-diff --git a/scripts/coccinelle/api/kobj_to_dev.cocci b/scripts/coccinelle/api/kobj_to_dev.cocci
-new file mode 100644
-index 000000000000..e2cdd424aeca
---- /dev/null
-+++ b/scripts/coccinelle/api/kobj_to_dev.cocci
-@@ -0,0 +1,44 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+///
-+/// Use kobj_to_dev() instead of container_of()
-+///
-+// Confidence: High
-+// Copyright: (C) 2020 Denis Efremov ISPRAS
-+// Options: --no-includes --include-headers
-+//
-+// Keywords: kobj_to_dev, container_of
-+//
-+
-+virtual context
-+virtual report
-+virtual org
-+virtual patch
-+
-+
-+@r depends on !patch@
-+expression ptr;
-+position p;
-+@@
-+
-+* container_of(ptr, struct device, kobj)@p
-+
-+
-+@depends on patch@
-+expression ptr;
-+@@
-+
-+- container_of(ptr, struct device, kobj)
-++ kobj_to_dev(ptr)
-+
-+
-+@script:python depends on report@
-+p << r.p;
-+@@
-+
-+coccilib.report.print_report(p[0], "WARNING opportunity for kobj_to_dev()")
-+
-+@script:python depends on org@
-+p << r.p;
-+@@
-+
-+coccilib.org.print_todo(p[0], "WARNING opportunity for kobj_to_dev()")
--- 
-2.26.2
-
+Acked-by: Stephen Smalley <stephen.smalley.work@gmail.com>
