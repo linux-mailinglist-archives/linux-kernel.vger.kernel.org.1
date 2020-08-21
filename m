@@ -2,310 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 963D024D6C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 15:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0F624D6B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 15:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728789AbgHUN6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 09:58:41 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10305 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728764AbgHUN6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 09:58:20 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 18C9F5937A24790A5672;
-        Fri, 21 Aug 2020 21:58:15 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 21 Aug 2020 21:58:05 +0800
-From:   John Garry <john.garry@huawei.com>
-To:     <will@kernel.org>, <robin.murphy@arm.com>
-CC:     <joro@8bytes.org>, <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <maz@kernel.org>,
-        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
-        John Garry <john.garry@huawei.com>
-Subject: [PATCH v2 2/2] iommu/arm-smmu-v3: Remove cmpxchg() in arm_smmu_cmdq_issue_cmdlist()
-Date:   Fri, 21 Aug 2020 21:54:22 +0800
-Message-ID: <1598018062-175608-3-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1598018062-175608-1-git-send-email-john.garry@huawei.com>
-References: <1598018062-175608-1-git-send-email-john.garry@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-CFilter-Loop: Reflected
+        id S1728808AbgHUN4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 09:56:12 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:21963 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727123AbgHUN4K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 09:56:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598018169;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=iYHZ9rEeh+4mirTCdwtBo4QZdb8y4a+LohJ/ODv3tOY=;
+        b=TKFCMB1yh2oS5NCM2UAW9ACq0HtNvO3WfTTyJA3+p0JzQOL6TnMEJk7t/q5EYd116owqDI
+        EBAmMtDA/tKf0GeD4+3vmAvsnoy4C6iEtRdtctpc5u1/v98MuBY+ydYCLGVnP7+66lvWH9
+        WrLhXkz+Fct79WQs95Mc29JzCwz6Qu8=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-206-3aGZY51gMVKsHFOUmIm4mA-1; Fri, 21 Aug 2020 09:56:07 -0400
+X-MC-Unique: 3aGZY51gMVKsHFOUmIm4mA-1
+Received: by mail-qv1-f71.google.com with SMTP id n5so1273185qvx.2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 06:56:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=iYHZ9rEeh+4mirTCdwtBo4QZdb8y4a+LohJ/ODv3tOY=;
+        b=BOdqHt4Sn6AA4TePKQHaWF66Tp4S2CyubZJjzCUKm5DRr7LZjIm5+/e2YecNkwGdDv
+         eoOfXT2K4ARKnU00Kvq6iwi5KBxDsMfxvkzRLNfHA8ekJJU55/ax4krjpAg3DYsrKYDG
+         lLezcnwMZQSRH3N94zzO2hRYooBhLYoS+ZhFq1D+mQ585jzpinK26k0YZZ75XQ6a/qn3
+         QDgi5Kf23afgRA922sVbzXQPOZ0hfC+x1haJp7wD+kjJ9dJu0fE1xWiBxh4LqMJZxGwn
+         n4qzM9JbY9khkctcXrD2LQatSYq8a7sDy8ORq6e+6B9htRgIFRvFnmC+qP7gsUY3QgmL
+         OAMA==
+X-Gm-Message-State: AOAM5322HDE0n6xaz4NkkPSR/gkwTU0mhT33TqO1TpJ4wvaUMkIYVkbY
+        G6QkNIKhIlmfpbiRJ0noBpDc9zoyTPIJquslxaSWI1biNZw2n4Y4XLHxkOlUhidW8Ge1BQEsFa8
+        ljFeYaxQy1Pf0X8LOYJSAGywf
+X-Received: by 2002:a37:a797:: with SMTP id q145mr2612664qke.13.1598018167020;
+        Fri, 21 Aug 2020 06:56:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw1o7ZF4qH1t8r6ITbYV6KemBEtJ5AJ+GkcUjHtK9cXYSjNa2zcI8bL6ZWuEDg1nNcYpIvT6w==
+X-Received: by 2002:a37:a797:: with SMTP id q145mr2612640qke.13.1598018166747;
+        Fri, 21 Aug 2020 06:56:06 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id a67sm1717700qkd.40.2020.08.21.06.56.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Aug 2020 06:56:06 -0700 (PDT)
+From:   trix@redhat.com
+To:     f.fainelli@gmail.com, andrew@lunn.ch, vivien.didelot@gmail.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] net: dsa: b53: check for timeout
+Date:   Fri, 21 Aug 2020 06:56:00 -0700
+Message-Id: <20200821135600.18017-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It has been shown that the cmpxchg() for finding space in the cmdq can
-be a bottleneck:
-- for more CPUs contending the cmdq, the cmpxchg() will fail more often
-- since the software-maintained cons pointer is updated on the same 64b
-  memory region, the chance of cmpxchg() failure increases again
+From: Tom Rix <trix@redhat.com>
 
-The cmpxchg() is removed as part of 2 related changes:
+clang static analysis reports this problem
 
-- Update prod and cmdq owner in a single atomic64 add operation.
+b53_common.c:1583:13: warning: The left expression of the compound
+  assignment is an uninitialized value. The computed value will
+  also be garbage
+        ent.port &= ~BIT(port);
+        ~~~~~~~~ ^
 
-  The prod value is updated in one 32b region, while the "owner" is updated
-  in another 32b region.
+ent is set by a successful call to b53_arl_read().  Unsuccessful
+calls are caught by an switch statement handling specific returns.
+b32_arl_read() calls b53_arl_op_wait() which fails with the
+unhandled -ETIMEDOUT.
 
-  For the "owner", we now count this value, instead of setting a flag.
-  Similar to before, once the owner has finished gathering, it will clear
-  a mask. As such, a CPU declares itself as the "owner" when it reads zero
-  for this region.
+So add -ETIMEDOUT to the switch statement.  Because
+b53_arl_op_wait() already prints out a message, do not add another
+one.
 
-  The owner is now responsible for all cmdq locking to avoid possible
-  deadlock. The owner will lock the cmdq for all non-owers it has gathered
-  when they have space in the queue and have written their entries.
+Fixes: 1da6df85c6fb ("net: dsa: b53: Implement ARL add/del/dump operations")
 
-- Check for space in the cmdq after the prod pointer has been assigned.
-
-  We don't bother checking for space in the cmdq before assigning the prod
-  pointer, as this would be super racy.
-
-  So since the prod pointer is updated unconditionally, it would be common
-  for no space to be available in the cmdq when prod is assigned - that
-  is, according the software-maintained prod and cons pointer. So now
-  it must be ensured that the entries are not yet written and not until
-  there is space.
-
-  How the prod pointer is maintained also leads to a strange condition
-  where the prod pointer can wrap past the cons pointer. We can detect this
-  condition, and report no space here. However, a prod pointer progressed
-  twice past the cons pointer cannot be detected. But it can be ensured
-  that this that this scenario does not occur, as we limit the amount of
-  commands any CPU can issue at any given time, such that we cannot
-  progress prod pointer further.
-
-Signed-off-by: John Garry <john.garry@huawei.com>
+Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 120 ++++++++++++--------
- 1 file changed, 72 insertions(+), 48 deletions(-)
+ drivers/net/dsa/b53/b53_common.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index a705fa3e18ea..d3c1400c644c 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -521,16 +521,17 @@ struct arm_smmu_cmdq_ent {
- struct arm_smmu_ll_queue {
- 	union {
- 		u64			val;
-+		atomic64_t		atomic;
- 		struct {
-+			struct {
-+				u16	sync;
-+				u16	count;
-+			};
- 			u32		prod;
--			u32		cons;
- 		};
--		struct {
--			atomic_t	prod;
--			atomic_t	cons;
--		} atomic;
- 		u8			__pad[SMP_CACHE_BYTES];
- 	} ____cacheline_aligned_in_smp;
-+	u32				cons;
- 	u32				max_n_shift;
- 	u32				max_cmd_per_batch;
- };
-@@ -771,10 +772,19 @@ static bool queue_has_space(struct arm_smmu_ll_queue *q, u32 n)
- 	prod = Q_IDX(q, q->prod);
- 	cons = Q_IDX(q, q->cons);
+diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
+index abe0a3e20648..e731db900ee0 100644
+--- a/drivers/net/dsa/b53/b53_common.c
++++ b/drivers/net/dsa/b53/b53_common.c
+@@ -1554,6 +1554,8 @@ static int b53_arl_op(struct b53_device *dev, int op, int port,
+ 		return ret;
  
--	if (Q_WRP(q, q->prod) == Q_WRP(q, q->cons))
-+	if (Q_WRP(q, q->prod) == Q_WRP(q, q->cons)) {
-+		/* check if we have wrapped, meaning definitely no space */
-+		if (cons > prod)
-+			return false;
-+
- 		space = (1 << q->max_n_shift) - (prod - cons);
--	else
-+	} else {
-+		/* similar check to above */
-+		if (prod > cons)
-+			return false;
-+
- 		space = cons - prod;
-+	}
- 
- 	return space >= n;
- }
-@@ -1072,7 +1082,7 @@ static void arm_smmu_cmdq_skip_err(struct arm_smmu_device *smmu)
-  *   fails if the caller appears to be the last lock holder (yes, this is
-  *   racy). All successful UNLOCK routines have RELEASE semantics.
-  */
--static void arm_smmu_cmdq_shared_lock(struct arm_smmu_cmdq *cmdq)
-+static void arm_smmu_cmdq_shared_lock(struct arm_smmu_cmdq *cmdq, int count)
- {
- 	int val;
- 
-@@ -1082,12 +1092,12 @@ static void arm_smmu_cmdq_shared_lock(struct arm_smmu_cmdq *cmdq)
- 	 * to INT_MIN so these increments won't hurt as the value will remain
- 	 * negative.
- 	 */
--	if (atomic_fetch_inc_relaxed(&cmdq->lock) >= 0)
-+	if (atomic_fetch_add_relaxed(count, &cmdq->lock) >= 0)
- 		return;
- 
- 	do {
- 		val = atomic_cond_read_relaxed(&cmdq->lock, VAL >= 0);
--	} while (atomic_cmpxchg_relaxed(&cmdq->lock, val, val + 1) != val);
-+	} while (atomic_cmpxchg_relaxed(&cmdq->lock, val, val + count) != val);
- }
- 
- static void arm_smmu_cmdq_shared_unlock(struct arm_smmu_cmdq *cmdq)
-@@ -1236,13 +1246,14 @@ static int arm_smmu_cmdq_poll_until_not_full(struct arm_smmu_device *smmu,
- 	if (arm_smmu_cmdq_exclusive_trylock_irqsave(cmdq, flags)) {
- 		WRITE_ONCE(cmdq->q.llq.cons, readl_relaxed(cmdq->q.cons_reg));
- 		arm_smmu_cmdq_exclusive_unlock_irqrestore(cmdq, flags);
--		llq->val = READ_ONCE(cmdq->q.llq.val);
-+		llq->cons = READ_ONCE(cmdq->q.llq.cons);
- 		return 0;
- 	}
- 
- 	queue_poll_init(smmu, &qp);
- 	do {
--		llq->val = READ_ONCE(smmu->cmdq.q.llq.val);
-+		llq->prod = READ_ONCE(smmu->cmdq.q.llq.prod);
-+		llq->cons = READ_ONCE(smmu->cmdq.q.llq.cons);
- 		if (!queue_full(llq))
- 			break;
- 
-@@ -1289,7 +1300,7 @@ static int __arm_smmu_cmdq_poll_until_consumed(struct arm_smmu_device *smmu,
- 	int ret = 0;
- 
- 	queue_poll_init(smmu, &qp);
--	llq->val = READ_ONCE(smmu->cmdq.q.llq.val);
-+	llq->cons = READ_ONCE(smmu->cmdq.q.llq.cons);
- 	do {
- 		if (queue_consumed(llq, prod))
- 			break;
-@@ -1383,53 +1394,46 @@ static int arm_smmu_cmdq_issue_cmdlist(struct arm_smmu_device *smmu,
- 	struct arm_smmu_cmdq *cmdq = &smmu->cmdq;
- 	struct arm_smmu_ll_queue llq = {
- 		.max_n_shift = cmdq->q.llq.max_n_shift,
--	}, head = llq;
-+	}, head = llq, space = {
-+		.max_n_shift = cmdq->q.llq.max_n_shift,
-+		/* We would need 2^16 CPUs gathered for overflow ... */
-+		.count = 1,
-+		.sync = sync,
-+		.prod = n + sync,
-+	};
-+	u32 prod_mask = GENMASK(cmdq->q.llq.max_n_shift, 0);
- 	int ret = 0;
- 
- 	/* 1. Allocate some space in the queue */
- 	local_irq_save(flags);
--	llq.val = READ_ONCE(cmdq->q.llq.val);
--	do {
--		u64 old;
- 
--		while (!queue_has_space(&llq, n + sync)) {
--			local_irq_restore(flags);
--			if (arm_smmu_cmdq_poll_until_not_full(smmu, &llq))
--				dev_err_ratelimited(smmu->dev, "CMDQ timeout\n");
--			local_irq_save(flags);
--		}
-+	llq.val = atomic64_fetch_add(space.val, &cmdq->q.llq.atomic);
-+	llq.prod &= prod_mask;
-+	owner = !llq.count;
-+	head.prod = queue_inc_prod_n(&llq, n + sync);
- 
--		head.cons = llq.cons;
--		head.prod = queue_inc_prod_n(&llq, n + sync) |
--					     CMDQ_PROD_OWNED_FLAG;
--
--		old = cmpxchg_relaxed(&cmdq->q.llq.val, llq.val, head.val);
--		if (old == llq.val)
--			break;
-+	/*
-+	 * Ensure it's safe to write the entries. For this, we need to ensure
-+	 * that there is space in the queue from our prod pointer.
-+	 */
-+	space.cons = READ_ONCE(cmdq->q.llq.cons);
-+	space.prod = llq.prod;
-+	while (!queue_has_space(&space, n + sync)) {
-+		if (arm_smmu_cmdq_poll_until_not_full(smmu, &space))
-+			dev_err_ratelimited(smmu->dev, "CMDQ timeout\n");
- 
--		llq.val = old;
--	} while (1);
--	owner = !(llq.prod & CMDQ_PROD_OWNED_FLAG);
--	head.prod &= ~CMDQ_PROD_OWNED_FLAG;
--	llq.prod &= ~CMDQ_PROD_OWNED_FLAG;
-+		space.prod = llq.prod;
-+	}
- 
- 	/*
- 	 * 2. Write our commands into the queue
--	 * Dependency ordering from the cmpxchg() loop above.
-+	 * Dependency ordering from the space-checking while loop, above.
- 	 */
- 	arm_smmu_cmdq_write_entries(cmdq, cmds, llq.prod, n);
- 	if (sync) {
- 		prod = queue_inc_prod_n(&llq, n);
- 		arm_smmu_cmdq_build_sync_cmd(cmd_sync, smmu, prod);
- 		queue_write(Q_ENT(&cmdq->q, prod), cmd_sync, CMDQ_ENT_DWORDS);
--
--		/*
--		 * In order to determine completion of our CMD_SYNC, we must
--		 * ensure that the queue can't wrap twice without us noticing.
--		 * We achieve that by taking the cmdq lock as shared before
--		 * marking our slot as valid.
--		 */
--		arm_smmu_cmdq_shared_lock(cmdq);
- 	}
- 
- 	/* 3. Mark our slots as valid, ensuring commands are visible first */
-@@ -1438,13 +1442,20 @@ static int arm_smmu_cmdq_issue_cmdlist(struct arm_smmu_device *smmu,
- 
- 	/* 4. If we are the owner, take control of the SMMU hardware */
- 	if (owner) {
-+		struct arm_smmu_ll_queue tmp = {
-+			.sync = ~0,
-+			.count = ~0,
-+			.prod = ~prod_mask,
-+		};
-+		int sync_count;
- 		/* a. Wait for previous owner to finish */
- 		atomic_cond_read_relaxed(&cmdq->owner_prod, VAL == llq.prod);
- 
--		/* b. Stop gathering work by clearing the owned flag */
--		prod = atomic_fetch_andnot_relaxed(CMDQ_PROD_OWNED_FLAG,
--						   &cmdq->q.llq.atomic.prod);
--		prod &= ~CMDQ_PROD_OWNED_FLAG;
-+		/* b. Stop gathering work by clearing the owned mask */
-+		tmp.val = atomic64_fetch_andnot_relaxed(tmp.val,
-+						       &cmdq->q.llq.atomic);
-+		prod = Q_WRP(&llq, tmp.prod) | Q_IDX(&llq, tmp.prod);
-+		sync_count = tmp.sync;
- 
- 		/*
- 		 * c. Wait for any gathered work to be written to the queue.
-@@ -1453,6 +1464,19 @@ static int arm_smmu_cmdq_issue_cmdlist(struct arm_smmu_device *smmu,
- 		 */
- 		arm_smmu_cmdq_poll_valid_map(cmdq, llq.prod, prod);
- 
-+		/*
-+		 * In order to determine completion of the CMD_SYNCs, we must
-+		 * ensure that the queue can't wrap twice without us noticing.
-+		 * We achieve that by taking the cmdq lock as shared before
-+		 * progressing the prod pointer.
-+		 * The owner does this for all the non-owners it has gathered.
-+		 * Otherwise, some non-owner(s) may lock the cmdq, blocking the
-+		 * cons being updating. This could be when the cmdq has just
-+		 * become full. In this case, other sibling non-owners could be
-+		 * blocked from progressing, leading to deadlock.
-+		 */
-+		arm_smmu_cmdq_shared_lock(cmdq, sync_count);
-+
- 		/*
- 		 * d. Advance the hardware prod pointer
- 		 * Control dependency ordering from the entries becoming valid.
+ 	switch (ret) {
++	case -ETIMEDOUT:
++		return ret;
+ 	case -ENOSPC:
+ 		dev_dbg(dev->dev, "{%pM,%.4d} no space left in ARL\n",
+ 			addr, vid);
 -- 
-2.26.2
+2.18.1
 
