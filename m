@@ -2,100 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DF2024DF69
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52EDB24DF6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726306AbgHUSX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 14:23:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725768AbgHUSXZ (ORCPT
+        id S1726598AbgHUSXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 14:23:39 -0400
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:44428 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725867AbgHUSXi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 14:23:25 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2749C061573;
-        Fri, 21 Aug 2020 11:23:25 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id u128so1472981pfb.6;
-        Fri, 21 Aug 2020 11:23:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=z1l3J4HIwjaymDbG87bFgQjdS5UWloioib/q8SREpNk=;
-        b=jgKxm2H3dmu91ou+hWH8jUo90teTDoqJUzE5K8yC/yLdQLabVo8lvwe+4EVvpoXPQU
-         Pt4fDERjlsRuMxDC+VG61rkO/ycOm3z5g28ZSgI5p8a7NU8zrV8+8uMR0Nb8t4+JYPyQ
-         dbDcmhE9V/Y0PLo2xz1IlAF9C4b3GlSmwLONidpWrXM+srwAMoYyAmhyPdG0Spa9Htlv
-         51FbgUjiYjWYCIfop+HWnyy4Ue9Kv+VE0SoRmnIu9/04cVHOYhzSrleeTi2eFZ4gHOZb
-         b8aBSl3nVs3Eu7pyeVkY5uVHwjUlf16mAvu2aqnbMy9OSq4Ybdrl96jJDdYlyGo+HlRm
-         /3aQ==
+        Fri, 21 Aug 2020 14:23:38 -0400
+Received: by mail-ej1-f66.google.com with SMTP id bo3so3370593ejb.11;
+        Fri, 21 Aug 2020 11:23:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=z1l3J4HIwjaymDbG87bFgQjdS5UWloioib/q8SREpNk=;
-        b=nCQnjlT+PRlq2nHA/rr0tYQsq5bUO4PCd7E2cfNhTKhLyEwhOgV6YSdGUwPnmtIOQ5
-         xlmC0/f/XuVaJTvbQ0EvJDKGvoFrYSTDA5zjuS+aFvVQxEFZfvYQLQhpQmcqCbF1faj1
-         mxmUT1friyVBM0BKlbtbJ6PSB3mtxZ6Mh8KbVoEdEQfsmHqbNdVxsFdYUY2X+13q88M/
-         ywSAW+1xVofQmqJX0S3zBrgHVq2XMnq0lYtoTfElxbmeZtlPFJGdoEj+KQqlynCWyKSs
-         BB+6GdD5i+LsAi/PYFIZIMBgi1E2nJcIq3MQCwqxYKyfQo5XJzL7Ec82h822ffO70F/1
-         VJVA==
-X-Gm-Message-State: AOAM533u2BOuLQU8OeXukj7b9HbYAF7WBjH4rN9QWEg3a59EXHi5x9XQ
-        JgNhhVYWuhMG3zv75/z9r4g=
-X-Google-Smtp-Source: ABdhPJzJuiD3ixxA6vJ/NRGlFHb2PXkNQM1SMpjW6/zkgEg4SKvYZ5jB7O5yS6IHs9iQlIHpZAf9Ew==
-X-Received: by 2002:a63:955d:: with SMTP id t29mr3122232pgn.135.1598034205068;
-        Fri, 21 Aug 2020 11:23:25 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:8791])
-        by smtp.gmail.com with ESMTPSA id h19sm2494976pjv.41.2020.08.21.11.23.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 11:23:24 -0700 (PDT)
-Date:   Fri, 21 Aug 2020 11:23:21 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org
-Subject: Re: [PATCH bpf-next v4 28/30] bpf: eliminate rlimit-based memory
- accounting infra for bpf maps
-Message-ID: <20200821182321.dtkf5wpi4pukbq3w@ast-mbp.dhcp.thefacebook.com>
-References: <20200821150134.2581465-1-guro@fb.com>
- <20200821150134.2581465-29-guro@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ik24Pn50+AFSzC/zSLjdolgrHNOwiWrGKLY+tyLf6y0=;
+        b=U3uAWmAM8cM9zKJNmyPNPB1xStNLANuE/X+x2cdKaLZxri4cj169hCQx+BOJS9sa0p
+         bLCReuCX8x1hQTXz6aG1zcSG9bYAzbJb+6yHzxhx5U8zyHAxzCXUsPuJWNa0T6wXLwbz
+         1rytH7gDJoAmj8TqsKqlF73PekWP/IgK/4yfAoLF5pwhEOaMw0fokRh3ZAmBLQyZ5VN5
+         RTEm8g5NkP5bM9HsNp38Qv7VuX2s4Z+q5s4zCJyJDlvSacCOciiHaELmpkx5Pt/olEmN
+         j9vi34w1Nfx+b6FfGosoNSYtTBsFyUrJXVfU3Gxoje+gUowetatZDdmDWLZP08w02bYy
+         31dw==
+X-Gm-Message-State: AOAM5307UYjhf36sNr9NWMn9PyiDJu6BlQMyj8o1ojYwCLAIfOA4Qh3u
+        ugB6Jqt49X1CDGo7Q9m59DoGgJrYOybk8lOoA6y8JwJ2
+X-Google-Smtp-Source: ABdhPJyfhHKvLdCjmom4XAojkrgk5ZNIN1FBTEoRjtkk3wCieNVVu/zuLSNK2hdo6lUDcZgllT3qR8arxEDagQfDrJw=
+X-Received: by 2002:a17:906:a219:: with SMTP id r25mr4211610ejy.201.1598034216965;
+ Fri, 21 Aug 2020 11:23:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200821150134.2581465-29-guro@fb.com>
+References: <20200810144330.75613-1-darcari@redhat.com>
+In-Reply-To: <20200810144330.75613-1-darcari@redhat.com>
+From:   Len Brown <lenb@kernel.org>
+Date:   Fri, 21 Aug 2020 14:23:25 -0400
+Message-ID: <CAJvTdKms-sO=Qvpnhe4OjE48gXHPzDKbT0i5vK2QuDCxZTt_+Q@mail.gmail.com>
+Subject: Re: [PATCH] tools/power turbostat: fix output formatting for ACPI CST enumeration
+To:     David Arcari <darcari@redhat.com>
+Cc:     Linux PM list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 08:01:32AM -0700, Roman Gushchin wrote:
->  
-> diff --git a/tools/testing/selftests/bpf/progs/map_ptr_kern.c b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-> index 473665cac67e..49d1dcaf7999 100644
-> --- a/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-> +++ b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-> @@ -26,17 +26,12 @@ __u32 g_line = 0;
->  		return 0;	\
->  })
->  
-> -struct bpf_map_memory {
-> -	__u32 pages;
-> -} __attribute__((preserve_access_index));
-> -
->  struct bpf_map {
->  	enum bpf_map_type map_type;
->  	__u32 key_size;
->  	__u32 value_size;
->  	__u32 max_entries;
->  	__u32 id;
-> -	struct bpf_map_memory memory;
->  } __attribute__((preserve_access_index));
+Hi Dave,
 
-hmm. Did you build selftests?
+I think this is fine.
+Indeed, I actually went ahead and applied it a week or so ago.
 
-progs/map_ptr_kern.c:45:14: error: no member named 'memory' in 'struct bpf_map'
-        VERIFY(map->memory.pages > 0);
-               ~~~  ^
-progs/map_ptr_kern.c:25:8: note: expanded from macro 'VERIFY'
+the only alternative that I can think of is actually shortening the
+ACPI C-state names in the intel_idle driver -- which is still an
+option.  It would not be the first time we have tweaked the names used
+in that driver to make tools more happy...
+
+My apology for neglecting to send you an ACK.
+I had intended to send my queued series to the list, which would
+suffice for all the ACKs, but that send and the subsequent push got
+delayed by this and that.  So I'll try to ack as I go, so it is clear
+at any time where a patch stands.
+
+thanks!
+
+Len Brown, Intel Open Source Technology Center
