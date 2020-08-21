@@ -2,183 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650FA24DFB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E8F24DFB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726630AbgHUSd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 14:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53882 "EHLO
+        id S1726740AbgHUSfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 14:35:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726414AbgHUSdN (ORCPT
+        with ESMTP id S1726627AbgHUSfL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 14:33:13 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 051CCC061573;
-        Fri, 21 Aug 2020 11:33:12 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id u20so1498299pfn.0;
-        Fri, 21 Aug 2020 11:33:12 -0700 (PDT)
+        Fri, 21 Aug 2020 14:35:11 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4174EC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:35:10 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id o23so3467940ejr.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:35:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=c0IYmtPlTYdcWM4v9Z24Y/LKv93Em9VatSn2LIsOk08=;
-        b=oXevgdg2uRH/KC9bvFkJU7+ztru1Li73wtw4bjDpVTVu832bWDlGsSMsHUtVySWSvg
-         NHjSlazuS4RCnTkMPbGvc8R5RStBnszAumbGrkCqb5zNQD9zICLGm2V3cTtxyRivsCUs
-         oeUF03Y0fyO5F86DReTXkoNNoFewpW4rDwZFMTaXyLFMjqU/b2cveXwNzn5q/3ZEk5u+
-         RtVrd7lJlRGFNdzvuk/0B1fh2DYVMGzpNT9LSxhQUSGC0G/GaZr/4yws8e3PwpGLg6L5
-         VjUKV0G9sGs/30k7wxfefeLkzsMRBAUBRY2J4ohdqI506EECno6Xuz8NxB1G0HP6Z0Vi
-         WvMA==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q4frqIW9I+72sr79+gm0FlxLWfHVNqfXNa3Q85/YG38=;
+        b=FFvdCi9F5IYZnNSXXIYkdNN6KgOiWn2gpkkna/pVmWNnIBtYPB/REc3lR/fIaVeCW9
+         xcSIWYk5iEt0s3PqyD4BZtBeNRnNdMU5hgRft3ZaAVYAasCNtgX2d6rzDzZJkEmWns8Q
+         DMouWMb6Wi3acrbp58tg1muQxWsOySA71Li1F/+ycwrhf8v2Y0nl3puJD3YvwQfnHUGb
+         nrBMScR8wjFGLnAUtO3JiGu8kd20y0FCbHOw69GnkVA4KDSkAF+r8hp2olMacxwqoxVg
+         jl1pnhCY2uVZkYVQNb9N1obAwGLTlc2+T6DsKYp19SXlykAO66qL+BjzJ7BOFir1WKli
+         sEEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=c0IYmtPlTYdcWM4v9Z24Y/LKv93Em9VatSn2LIsOk08=;
-        b=nmeFz+2ju76qar5/nzwgzAYUU+13ZhBpJll+wQJh6smZNNA4ItVoL5i/1ZD64feNNu
-         rb/vN12ttblm9YwM3sKpTU+3LK5rjQKKPPgWbNvw94ipdfVtNgrybdR7wKSetY+OjgTc
-         JpO2zmVmKmobquLaMWxNqQ7Lg6r37CwzYAat8+OjgMdykmBrp8qrqDMzEMF423QP1eiV
-         pkSY+BzHTItEtfJC6wmOjk2d5+AisQBx4FboGg5Gq1x4TtCQLCyNlq+aFWmJUK0wgEqD
-         W2f6ZfX0LxtKYSKVeSg0AFBZpAaeRaZHYfwcP64mtkHnS4rDNi1LIdhOUJ7QzGQ5cxJA
-         8qkw==
-X-Gm-Message-State: AOAM530y2axrKkDi150itPyzzWB+vzvupOXvZuWYC5F2u8gNp6mzKZrp
-        IL0IVDAZjyYT1WPQEM+dV2U=
-X-Google-Smtp-Source: ABdhPJxlIumpirHMvSBxiTfmK6kO1Kw8bTcK0sfHdwMsy7+kyET/4vjtzvAjkZ8nobd1eZ+1+y+P1w==
-X-Received: by 2002:aa7:93ad:: with SMTP id x13mr3359105pff.33.1598034792345;
-        Fri, 21 Aug 2020 11:33:12 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f17sm3368582pfq.67.2020.08.21.11.33.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 21 Aug 2020 11:33:11 -0700 (PDT)
-Date:   Fri, 21 Aug 2020 11:33:11 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     trix@redhat.com
-Cc:     rydberg@bitmath.org, jdelvare@suse.com,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwmon: applesmc: check status earlier.
-Message-ID: <20200821183311.GA138863@roeck-us.net>
-References: <20200820131932.10590-1-trix@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q4frqIW9I+72sr79+gm0FlxLWfHVNqfXNa3Q85/YG38=;
+        b=Wd2wHrNAl1eai8mVX84YGWgqjQK/61PDS3JFHH307VIJcvxtdKPxRVqSnTY8EVWBDe
+         OLM8MXi88imRdQ4Ey8mp5HOfMJ+wcXIQzCnf4IfowATHdm9eAvbNDHji/G1MWULSIWdN
+         g6vVRl08jVJ4pIQ3C/+bEKE19saknAVMYKpdiUhAheOK1A8DaBu9zMU6vTSiWHusa0cl
+         zzJNDsXYQ85kEi0z3aaVa+6311PuSzqT2ylFhr+O2kblGmAkty1UeCU05v1QGTBRjJ8J
+         8k87WLaIP6cqvJZ4bJoLGonO7chsjaJeg2GNY43PQUPAGocqSmvHkWcBV+NI82pmvDo9
+         hkww==
+X-Gm-Message-State: AOAM533W7yKioi/vWT8YDJ8xvJtE6fLISw+eizuTMNJEnE6MOdhuu+eD
+        AjHavLLBB0j08EssHmTg/3MTWmQYii01wY/r+9nO
+X-Google-Smtp-Source: ABdhPJxfrGP14Je3zh0ICJTpECzCcS4IA89+zoHjdAPERXK51mLX3W5gqb4xv4Taij+96NOlohguUZetQbWOQvF7dOs=
+X-Received: by 2002:a17:906:43c9:: with SMTP id j9mr4143785ejn.542.1598034909369;
+ Fri, 21 Aug 2020 11:35:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200820131932.10590-1-trix@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <cover.1593198710.git.rgb@redhat.com> <4a5019ed3cfab416aeb6549b791ac6d8cc9fb8b7.1593198710.git.rgb@redhat.com>
+ <CAHC9VhSwMEZrq0dnaXmPi=bu0NgUtWPuw-2UGDrQa6TwxWkZtw@mail.gmail.com> <20200718004341.ruyre5xhlu3ps2tr@madcap2.tricolour.ca>
+In-Reply-To: <20200718004341.ruyre5xhlu3ps2tr@madcap2.tricolour.ca>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 21 Aug 2020 14:34:57 -0400
+Message-ID: <CAHC9VhSDLF3W4LNqdgz-56m8wXLZLpDhMd8S-DxFcrKvsgCreg@mail.gmail.com>
+Subject: Re: [PATCH ghak90 V9 08/13] audit: add containerid support for user records
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     nhorman@tuxdriver.com, linux-api@vger.kernel.org,
+        containers@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>, dhowells@redhat.com,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        netfilter-devel@vger.kernel.org, ebiederm@xmission.com,
+        simo@redhat.com, netdev@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
+        mpatel@redhat.com, Serge Hallyn <serge@hallyn.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 06:19:32AM -0700, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> clang static analysis reports this representative problem
-> 
-> applesmc.c:758:10: warning: 1st function call argument is an
->   uninitialized value
->         left = be16_to_cpu(*(__be16 *)(buffer + 6)) >> 2;
->                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> buffer is filled by the earlier call
-> 
-> 	ret = applesmc_read_key(LIGHT_SENSOR_LEFT_KEY, ...
-> 
-> This problem is reported because a goto skips the status check.
-> Other similar problems use data from applesmc_read_key before checking
-> the status.  So move the checks to before the use.
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
+On Fri, Jul 17, 2020 at 8:44 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> On 2020-07-05 11:11, Paul Moore wrote:
+> > On Sat, Jun 27, 2020 at 9:23 AM Richard Guy Briggs <rgb@redhat.com> wrote:
+> > >
+> > > Add audit container identifier auxiliary record to user event standalone
+> > > records.
+> > >
+> > > Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+> > > Acked-by: Neil Horman <nhorman@tuxdriver.com>
+> > > Reviewed-by: Ondrej Mosnacek <omosnace@redhat.com>
+> > > ---
+> > >  kernel/audit.c | 19 ++++++++++++-------
+> > >  1 file changed, 12 insertions(+), 7 deletions(-)
+> > >
+> > > diff --git a/kernel/audit.c b/kernel/audit.c
+> > > index 54dd2cb69402..997c34178ee8 100644
+> > > --- a/kernel/audit.c
+> > > +++ b/kernel/audit.c
+> > > @@ -1507,6 +1504,14 @@ static int audit_receive_msg(struct sk_buff *skb, struct nlmsghdr *nlh)
+> > >                                 audit_log_n_untrustedstring(ab, str, data_len);
+> > >                         }
+> > >                         audit_log_end(ab);
+> > > +                       rcu_read_lock();
+> > > +                       cont = _audit_contobj_get(current);
+> > > +                       rcu_read_unlock();
+> > > +                       audit_log_container_id(context, cont);
+> > > +                       rcu_read_lock();
+> > > +                       _audit_contobj_put(cont);
+> > > +                       rcu_read_unlock();
+> > > +                       audit_free_context(context);
+> >
+> > I haven't searched the entire patchset, but it seems like the pattern
+> > above happens a couple of times in this patchset, yes?  If so would it
+> > make sense to wrap the above get/log/put in a helper function?
+>
+> I've redone the locking with an rcu lock around the get and a spinlock
+> around the put.  It occurs to me that putting an rcu lock around the
+> whole thing and doing a get without the refcount increment would save
+> us the spinlock and put and be fine since we'd be fine with stale but
+> consistent information traversing the contobj list from this point to
+> report it.  Problem with that is needing to use GFP_ATOMIC due to the
+> rcu lock.  If I stick with the spinlock around the put then I can use
+> GFP_KERNEL and just grab the spinlock while traversing the contobj list.
+>
+> > Not a big deal either way, I'm pretty neutral on it at this point in
+> > the patchset but thought it might be worth mentioning in case you
+> > noticed the same and were on the fence.
+>
+> There is only one other place this is used, in audit_log_exit in
+> auditsc.c.  I had noted the pattern but wasn't sure it was worth it.
+> Inline or not?  Should we just let the compiler decide?
 
-Applied.
+I'm generally not a fan of explicit inlines unless it has been shown
+to be a real problem.
 
-Thanks,
-Guenter
-
-> ---
->  drivers/hwmon/applesmc.c | 31 ++++++++++++++++---------------
->  1 file changed, 16 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/hwmon/applesmc.c b/drivers/hwmon/applesmc.c
-> index 316618409315..a18887990f4a 100644
-> --- a/drivers/hwmon/applesmc.c
-> +++ b/drivers/hwmon/applesmc.c
-> @@ -753,15 +753,18 @@ static ssize_t applesmc_light_show(struct device *dev,
->  	}
->  
->  	ret = applesmc_read_key(LIGHT_SENSOR_LEFT_KEY, buffer, data_length);
-> +	if (ret)
-> +		goto out;
->  	/* newer macbooks report a single 10-bit bigendian value */
->  	if (data_length == 10) {
->  		left = be16_to_cpu(*(__be16 *)(buffer + 6)) >> 2;
->  		goto out;
->  	}
->  	left = buffer[2];
-> +
-> +	ret = applesmc_read_key(LIGHT_SENSOR_RIGHT_KEY, buffer, data_length);
->  	if (ret)
->  		goto out;
-> -	ret = applesmc_read_key(LIGHT_SENSOR_RIGHT_KEY, buffer, data_length);
->  	right = buffer[2];
->  
->  out:
-> @@ -810,12 +813,11 @@ static ssize_t applesmc_show_fan_speed(struct device *dev,
->  		  to_index(attr));
->  
->  	ret = applesmc_read_key(newkey, buffer, 2);
-> -	speed = ((buffer[0] << 8 | buffer[1]) >> 2);
-> -
->  	if (ret)
->  		return ret;
-> -	else
-> -		return snprintf(sysfsbuf, PAGE_SIZE, "%u\n", speed);
-> +
-> +	speed = ((buffer[0] << 8 | buffer[1]) >> 2);
-> +	return snprintf(sysfsbuf, PAGE_SIZE, "%u\n", speed);
->  }
->  
->  static ssize_t applesmc_store_fan_speed(struct device *dev,
-> @@ -851,12 +853,11 @@ static ssize_t applesmc_show_fan_manual(struct device *dev,
->  	u8 buffer[2];
->  
->  	ret = applesmc_read_key(FANS_MANUAL, buffer, 2);
-> -	manual = ((buffer[0] << 8 | buffer[1]) >> to_index(attr)) & 0x01;
-> -
->  	if (ret)
->  		return ret;
-> -	else
-> -		return snprintf(sysfsbuf, PAGE_SIZE, "%d\n", manual);
-> +
-> +	manual = ((buffer[0] << 8 | buffer[1]) >> to_index(attr)) & 0x01;
-> +	return snprintf(sysfsbuf, PAGE_SIZE, "%d\n", manual);
->  }
->  
->  static ssize_t applesmc_store_fan_manual(struct device *dev,
-> @@ -872,10 +873,11 @@ static ssize_t applesmc_store_fan_manual(struct device *dev,
->  		return -EINVAL;
->  
->  	ret = applesmc_read_key(FANS_MANUAL, buffer, 2);
-> -	val = (buffer[0] << 8 | buffer[1]);
->  	if (ret)
->  		goto out;
->  
-> +	val = (buffer[0] << 8 | buffer[1]);
-> +
->  	if (input)
->  		val = val | (0x01 << to_index(attr));
->  	else
-> @@ -951,13 +953,12 @@ static ssize_t applesmc_key_count_show(struct device *dev,
->  	u32 count;
->  
->  	ret = applesmc_read_key(KEY_COUNT_KEY, buffer, 4);
-> -	count = ((u32)buffer[0]<<24) + ((u32)buffer[1]<<16) +
-> -						((u32)buffer[2]<<8) + buffer[3];
-> -
->  	if (ret)
->  		return ret;
-> -	else
-> -		return snprintf(sysfsbuf, PAGE_SIZE, "%d\n", count);
-> +
-> +	count = ((u32)buffer[0]<<24) + ((u32)buffer[1]<<16) +
-> +						((u32)buffer[2]<<8) + buffer[3];
-> +	return snprintf(sysfsbuf, PAGE_SIZE, "%d\n", count);
->  }
->  
->  static ssize_t applesmc_key_at_index_read_show(struct device *dev,
+-- 
+paul moore
+www.paul-moore.com
