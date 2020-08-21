@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4872E24E11B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 21:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C63224E11D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 21:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727084AbgHUTrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 15:47:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40876 "EHLO mail.kernel.org"
+        id S1726630AbgHUTrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 15:47:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726431AbgHUTrH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 15:47:07 -0400
+        id S1726433AbgHUTrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 15:47:09 -0400
 Received: from localhost.localdomain (c-73-211-240-131.hsd1.il.comcast.net [73.211.240.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 751F9207CD;
-        Fri, 21 Aug 2020 19:47:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A30342076E;
+        Fri, 21 Aug 2020 19:47:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598039227;
-        bh=f3yVDNBJvnGh5Iokm9/PFcobvsO5ALwAD6QUltmqU44=;
+        s=default; t=1598039228;
+        bh=8xJ0F7JbD2VxF2kbGN+MXw9TdxCSx05LiKE9CoRfqKg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
          References:From;
-        b=ROw4/dA9/I7gR7iBcQaILUsDT3BjeLbI0NaqMjjSuJ6Hp1tnzfH43aW232ggfONWu
-         klj1gm3NJFLaEepo/RXDEUtf9ERdfs/InGgqpGDxRsv4bjgQUVxLSxkSsIv6oArWuh
-         8Zzr/3p8R7ywfPqL57iwZyHzya1i2lHYrbZRhIDE=
+        b=eTMkRU87bRSvnmgnc/fY78cBPJrPL5PoZqQe5avnCStmV8lGqte14CePOIJKig4Xg
+         GeeFzux17WPw1fntGUADKoKfFxC0kXAwLx5IJtWI3E0MLLB/x119VeLsHcOKH5GXWP
+         uTapAbHwfsBdoIa8l3rp/qL4OO+nf7peSx7aTsWM=
 From:   zanussi@kernel.org
 To:     LKML <linux-kernel@vger.kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
@@ -35,10 +35,10 @@ To:     LKML <linux-kernel@vger.kernel.org>,
         Daniel Wagner <wagi@monom.org>,
         Clark Williams <williams@redhat.com>,
         Pavel Machek <pavel@denx.de>, Tom Zanussi <zanussi@kernel.org>
-Cc:     Matt Fleming <matt@codeblueprint.co.uk>
-Subject: [PATCH RT 1/5] signal: Prevent double-free of user struct
-Date:   Fri, 21 Aug 2020 14:47:00 -0500
-Message-Id: <544fad9036a21c60dc68278fa302cc5cdf477098.1598039186.git.zanussi@kernel.org>
+Cc:     Marcel Holtmann <marcel@holtmann.org>
+Subject: [PATCH RT 2/5] Bluetooth: Acquire sk_lock.slock without disabling interrupts
+Date:   Fri, 21 Aug 2020 14:47:01 -0500
+Message-Id: <964fd3a30eb7d0ac0c0f89f9f9a11c38bb8dfec9.1598039186.git.zanussi@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <cover.1598039186.git.zanussi@kernel.org>
 References: <cover.1598039186.git.zanussi@kernel.org>
@@ -49,7 +49,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matt Fleming <matt@codeblueprint.co.uk>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
 v4.19.135-rt61-rc1 stable review patch.
 If anyone has any objections, please let me know.
@@ -57,52 +57,61 @@ If anyone has any objections, please let me know.
 -----------
 
 
-[ Upsteam commit 9567db2ebe566a93485e1a27d8759969d0002d7a ]
+[ Upstream commit e6da0edc24eecef2f6964d92fa9044e1821deace ]
 
-The way user struct reference counting works changed significantly with,
+There was a lockdep which led to commit
+   fad003b6c8e3d ("Bluetooth: Fix inconsistent lock state with RFCOMM")
 
-  fda31c50292a ("signal: avoid double atomic counter increments for user accounting")
+Lockdep noticed that `sk->sk_lock.slock' was acquired without disabling
+the softirq while the lock was also used in softirq context.
+Unfortunately the solution back then was to disable interrupts before
+acquiring the lock which however made lockdep happy.
+It would have been enough to simply disable the softirq. Disabling
+interrupts before acquiring a spinlock_t is not allowed on PREEMPT_RT
+because these locks are converted to 'sleeping' spinlocks.
 
-Now user structs are only freed once the last pending signal is
-dequeued. Make sigqueue_free_current() follow this new convention to
-avoid freeing the user struct multiple times and triggering this
-warning:
+Use spin_lock_bh() in order to acquire the `sk_lock.slock'.
 
- refcount_t: underflow; use-after-free.
- WARNING: CPU: 0 PID: 6794 at lib/refcount.c:288 refcount_dec_not_one+0x45/0x50
- Call Trace:
-  refcount_dec_and_lock_irqsave+0x16/0x60
-  free_uid+0x31/0xa0
-  __dequeue_signal+0x17c/0x190
-  dequeue_signal+0x5a/0x1b0
-  do_sigtimedwait+0x208/0x250
-  __x64_sys_rt_sigtimedwait+0x6f/0xd0
-  do_syscall_64+0x72/0x200
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-Signed-off-by: Matt Fleming <matt@codeblueprint.co.uk>
-Reported-by: Daniel Wagner <wagi@monom.org>
+Reported-by: Luis Claudio R. Goncalves <lclaudio@uudg.org>
+Reported-by: kbuild test robot <lkp@intel.com> [missing unlock]
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Tom Zanussi <zanussi@kernel.org>
 ---
- kernel/signal.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/bluetooth/rfcomm/sock.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 45748993f777..05c9b5a6b3ae 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -488,8 +488,8 @@ static void sigqueue_free_current(struct sigqueue *q)
+diff --git a/net/bluetooth/rfcomm/sock.c b/net/bluetooth/rfcomm/sock.c
+index c044ff2f73e6..75bc8102cdd7 100644
+--- a/net/bluetooth/rfcomm/sock.c
++++ b/net/bluetooth/rfcomm/sock.c
+@@ -64,15 +64,13 @@ static void rfcomm_sk_data_ready(struct rfcomm_dlc *d, struct sk_buff *skb)
+ static void rfcomm_sk_state_change(struct rfcomm_dlc *d, int err)
+ {
+ 	struct sock *sk = d->owner, *parent;
+-	unsigned long flags;
  
- 	up = q->user;
- 	if (rt_prio(current->normal_prio) && !put_task_cache(current, q)) {
--		atomic_dec(&up->sigpending);
--		free_uid(up);
-+		if (atomic_dec_and_test(&up->sigpending))
-+			free_uid(up);
- 	} else
- 		  __sigqueue_free(q);
- }
+ 	if (!sk)
+ 		return;
+ 
+ 	BT_DBG("dlc %p state %ld err %d", d, d->state, err);
+ 
+-	local_irq_save(flags);
+-	bh_lock_sock(sk);
++	spin_lock_bh(&sk->sk_lock.slock);
+ 
+ 	if (err)
+ 		sk->sk_err = err;
+@@ -93,8 +91,7 @@ static void rfcomm_sk_state_change(struct rfcomm_dlc *d, int err)
+ 		sk->sk_state_change(sk);
+ 	}
+ 
+-	bh_unlock_sock(sk);
+-	local_irq_restore(flags);
++	spin_unlock_bh(&sk->sk_lock.slock);
+ 
+ 	if (parent && sock_flag(sk, SOCK_ZAPPED)) {
+ 		/* We have to drop DLC lock here, otherwise
 -- 
 2.17.1
 
