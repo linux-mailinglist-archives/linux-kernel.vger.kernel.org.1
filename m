@@ -2,136 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA5824CAFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 04:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD7F24CB06
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 04:51:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727081AbgHUCuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 22:50:04 -0400
-Received: from smtprelay0015.hostedemail.com ([216.40.44.15]:41834 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725852AbgHUCuE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 22:50:04 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 8DDB11801EA45;
-        Fri, 21 Aug 2020 02:50:02 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2525:2553:2561:2564:2682:2685:2693:2828:2859:2895:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3355:3622:3865:3866:3867:3868:3870:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6117:6119:6248:6691:6742:7903:9025:10004:10400:10848:10967:11026:11232:11658:11914:12043:12296:12297:12438:12555:12740:12760:12895:13439:14181:14659:14721:21080:21324:21433:21451:21627:21972:21990:30006:30012:30054:30060:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:1:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: tank92_391416627035
-X-Filterd-Recvd-Size: 4489
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 21 Aug 2020 02:50:00 +0000 (UTC)
-Message-ID: <c0ca85e475d1e761431b2c10ade803451c74178f.camel@perches.com>
-Subject: Re: [PATCH v4 3/3] media: atomisp: Only use trace_printk if allowed
-From:   Joe Perches <joe@perches.com>
-To:     Nicolas Boichat <drinkcat@chromium.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        devel@driverdev.osuosl.org, lkml <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        id S1727782AbgHUCvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 22:51:05 -0400
+Received: from mga11.intel.com ([192.55.52.93]:54690 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726975AbgHUCvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 22:51:04 -0400
+IronPort-SDR: 9Uc10Ob7R9FsPpKarIjdIuuxfXhNp6CcWtxjfaaXzEHFeHjjwvB8begXQv/CE/vbVBwQk1z/NP
+ /kjA59XcBG9g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9719"; a="153051709"
+X-IronPort-AV: E=Sophos;i="5.76,335,1592895600"; 
+   d="scan'208";a="153051709"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2020 19:51:04 -0700
+IronPort-SDR: QaK6LNpXa1ocVtIBAx1I+9UT+UaUgCzWAQaqs+chC4eT3+5mLHuK46MVaPy6psrJhb4UpnanRb
+ f21Mov7iOfLQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,335,1592895600"; 
+   d="scan'208";a="278797794"
+Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
+  by fmsmga007.fm.intel.com with ESMTP; 20 Aug 2020 19:51:03 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>
-Date:   Thu, 20 Aug 2020 19:49:59 -0700
-In-Reply-To: <CANMq1KDYBbtrrCw6YUeoAPeHyet3L7qM3di9zmULDDRaQR_fZA@mail.gmail.com>
-References: <20200820170951.v4.1.Ia54fe801f246a0b0aee36fb1f3bfb0922a8842b0@changeid>
-         <20200820170951.v4.3.I066d89f39023956c47fb0a42edf196b3950ffbf7@changeid>
-         <20200820102347.15d2f610@oasis.local.home>
-         <CANMq1KCoEZVj=sjxCqBhqLZKBab57+82=Rk_LN7fc3aCuNHMUw@mail.gmail.com>
-         <20200820203601.4f70bf98@oasis.local.home>
-         <CANMq1KAAgXG9MKMZ_D9zYFV-j0oVreA_AeSw-8FoyJgZ9eWQpg@mail.gmail.com>
-         <20200820215701.667f02b2@oasis.local.home>
-         <f9d33bcaa2eda680752205d3c3690cb6bc421730.camel@perches.com>
-         <CANMq1KDYBbtrrCw6YUeoAPeHyet3L7qM3di9zmULDDRaQR_fZA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Cc:     "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@intel.com>,
+        Chang Seok Bae <chang.seok.bae@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: [PATCH] x86/entry/64: Disallow RDPID in paranoid entry if KVM is enabled
+Date:   Thu, 20 Aug 2020 19:50:50 -0700
+Message-Id: <20200821025050.32573-1-sean.j.christopherson@intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-08-21 at 10:42 +0800, Nicolas Boichat wrote:
-> On Fri, Aug 21, 2020 at 10:36 AM Joe Perches <joe@perches.com> wrote:
-> > On Thu, 2020-08-20 at 21:57 -0400, Steven Rostedt wrote:
-> > > On Fri, 21 Aug 2020 09:39:19 +0800
-> > > Nicolas Boichat <drinkcat@chromium.org> wrote:
-> > []
-> > > > Some other approaches/ideas:
-> > > >  1. Filter all lkml messages that contain trace_printk. Already found
-> > > > 1 instance, and I can easily reply to those with a semi-canned answer,
-> > > > if I remember to check that filter regularly (not sustainable in the
-> > > > long run...).
-> > > 
-> > > Added Joe Perches to the thread.
-> > > 
-> > > We can update checkpatch.pl to complain about a trace_printk() that it
-> > > finds in the added code.
-> > 
-> > Why?
-> > 
-> > I don't see much value in a trace_printk checkpatch warning.
-> > tracing is still dependent on CONFIG_TRACING otherwise
-> > trace_printk is an if (0)
-> > 
-> > ELI5 please.
-> 
-> This is my "new" canned answer to this:
-> 
-> Please do not use trace_printk in production code [1,2], it is only
-> meant for debug use. Consider using trace events, or dev_dbg.
-> [1] https://elixir.bootlin.com/linux/v5.8/source/kernel/trace/trace.c#L3158
-> [2] https://elixir.bootlin.com/linux/v5.8/source/include/linux/kernel.h#L766
-> 
-> I also had arguments in patch 2/3 notes:
-> 
-> There's at least 3 reasons that I can come up with:
->  1. trace_printk introduces some overhead. [some users, e.g.
-> Android/Chrome OS, want CONFIG_TRACING but _not_ that extra overhead]
->  2. If the kernel keeps adding always-enabled trace_printk, it will be
-> much harder for developers to make use of trace_printk for debugging.
->  3. People may assume that trace_printk is for debugging only, and may
-> accidentally output sensitive data (theoretical at this stage).
+Don't use RDPID in the paranoid entry flow if KVM is enabled as doing so
+can consume a KVM guest's MSR_TSC_AUX value if an NMI arrives in KVM's
+run loop.
 
-Perhaps make trace_printk dependent on #define DEBUG?
+As a performance optimization, KVM loads the guest's TSC_AUX when a CPU
+first enters its run loop, and on AMD's SVM doesn't restore the host's
+value until the CPU exits the run loop.  VMX is even more aggressive and
+defers restoring the host's value until the CPU returns to userspace.
+This optimization obviously relies on the kernel not consuming TSC_AUX,
+which falls apart if an NMI arrives in the run loop.
 
-Something like:
+Removing KVM's optimizaton would be painful, as both SVM and VMX would
+need to context switch the MSR on every VM-Enter (2x WRMSR + 1x RDMSR),
+whereas using LSL instead RDPID is a minor blip.
+
+Fixes: eaad981291ee3 ("x86/entry/64: Introduce the FIND_PERCPU_BASE macro")
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: Chang Seok Bae <chang.seok.bae@intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Sasha Levin <sashal@kernel.org>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: kvm@vger.kernel.org
+Reported-by: Tom Lendacky <thomas.lendacky@amd.com>
+Debugged-by: Tom Lendacky <thomas.lendacky@amd.com>
+Suggested-by: Andy Lutomirski <luto@kernel.org>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
- include/linux/kernel.h | 7 +++++++
- 1 file changed, 7 insertions(+)
 
-diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index 500def620d8f..6ca8f958df73 100644
---- a/include/linux/kernel.h
-+++ b/include/linux/kernel.h
-@@ -717,6 +717,7 @@ do {									\
-  * let gcc optimize the rest.
+Andy, I know you said "unconditionally", but it felt weird adding a
+comment way down in GET_PERCPU_BASE without plumbing a param in to help
+provide context.  But, paranoid_entry is the only user so adding a param
+that is unconditional also felt weird.  That being said, I definitely
+don't have a strong opinion one way or the other.
+
+ arch/x86/entry/calling.h  | 10 +++++++---
+ arch/x86/entry/entry_64.S |  7 ++++++-
+ 2 files changed, 13 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
+index 98e4d8886f11c..a925c0cf89c1a 100644
+--- a/arch/x86/entry/calling.h
++++ b/arch/x86/entry/calling.h
+@@ -342,9 +342,9 @@ For 32-bit we have the following conventions - kernel is built with
+ #endif
+ .endm
+ 
+-.macro SAVE_AND_SET_GSBASE scratch_reg:req save_reg:req
++.macro SAVE_AND_SET_GSBASE scratch_reg:req save_reg:req no_rdpid=0
+ 	rdgsbase \save_reg
+-	GET_PERCPU_BASE \scratch_reg
++	GET_PERCPU_BASE \scratch_reg \no_rdpid
+ 	wrgsbase \scratch_reg
+ .endm
+ 
+@@ -375,11 +375,15 @@ For 32-bit we have the following conventions - kernel is built with
+  * We normally use %gs for accessing per-CPU data, but we are setting up
+  * %gs here and obviously can not use %gs itself to access per-CPU data.
   */
+-.macro GET_PERCPU_BASE reg:req
++.macro GET_PERCPU_BASE reg:req no_rdpid=0
++	.if \no_rdpid
++	LOAD_CPU_AND_NODE_SEG_LIMIT \reg
++	.else
+ 	ALTERNATIVE \
+ 		"LOAD_CPU_AND_NODE_SEG_LIMIT \reg", \
+ 		"RDPID	\reg", \
+ 		X86_FEATURE_RDPID
++	.endif
+ 	andq	$VDSO_CPUNODE_MASK, \reg
+ 	movq	__per_cpu_offset(, \reg, 8), \reg
+ .endm
+diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+index 70dea93378162..fd915c46297c5 100644
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -842,8 +842,13 @@ SYM_CODE_START_LOCAL(paranoid_entry)
+ 	 *
+ 	 * The MSR write ensures that no subsequent load is based on a
+ 	 * mispredicted GSBASE. No extra FENCE required.
++	 *
++	 * Disallow RDPID if KVM is enabled as it may consume a guest's TSC_AUX
++	 * if an NMI arrives in KVM's run loop.  KVM loads guest's TSC_AUX on
++	 * VM-Enter and may not restore the host's value until the CPU returns
++	 * to userspace, i.e. KVM depends on the kernel not using TSC_AUX.
+ 	 */
+-	SAVE_AND_SET_GSBASE scratch_reg=%rax save_reg=%rbx
++	SAVE_AND_SET_GSBASE scratch_reg=%rax save_reg=%rbx no_rdpid=IS_ENABLED(CONFIG_KVM)
+ 	ret
  
-+#ifdef DEBUG
- #define trace_printk(fmt, ...)				\
- do {							\
- 	char _______STR[] = __stringify((__VA_ARGS__));	\
-@@ -725,6 +726,12 @@ do {							\
- 	else						\
- 		trace_puts(fmt);			\
- } while (0)
-+#else
-+#define trace_printk(fmt, ...)						\
-+do {									\
-+	__trace_printk_check_format(fmt, ##args);			\
-+} while (0)
-+#endif
- 
- #define do_trace_printk(fmt, args...)					\
- do {									\
-
+ .Lparanoid_entry_checkgs:
+-- 
+2.28.0
 
