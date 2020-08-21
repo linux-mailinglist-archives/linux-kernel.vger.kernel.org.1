@@ -2,168 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C131824D619
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 15:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADFF124D61C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 15:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728680AbgHUNbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 09:31:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35346 "EHLO
+        id S1728755AbgHUNcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 09:32:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728508AbgHUNbg (ORCPT
+        with ESMTP id S1728508AbgHUNb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 09:31:36 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7AE5C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 06:31:30 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id d16so1932488wrq.9
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 06:31:30 -0700 (PDT)
+        Fri, 21 Aug 2020 09:31:56 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E395C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 06:31:55 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id x5so1881730wmi.2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 06:31:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=09U6vmSaahNdcLROs1sJRQMLO2jTllhKcJ+uh2MtTKA=;
-        b=FBhfxiepYWlS9uM4Bp3qtAyG46bdidayLJQHBxfbLueX+M3HuwfkeT558+nRQSbGQ4
-         WIkVB7yUWXC2eCaRIJYc9a46sTBZ1NQ87YdhCK4Kk7YUvpR4FWpISpOByJZ/KcL7WD9W
-         FnnokDVRdBqspIHoF/ghT0bvw9dXJK9uZLJKKLX3++cPmth+P3DTxEK7dchVqIzmC7/w
-         qESqZ7Ekkci69zw1SX0P7XlEJHyLp71EYw9mf3yxrtfwZQN2AVKie5IdT9vBStgJ3ipy
-         xWFmymgEZ+MbB5be3/p9NsdJln2lhDmi8cUI7UmvNIiDwlTSZprlboBjw6xYvbCGDtGk
-         6u7w==
+         :content-disposition:in-reply-to;
+        bh=/vzJF5387NyjF3nOJV/SJFXMwXDsvo3icVibo5VrwR8=;
+        b=S41w5fwx7XkF3IGvGRMT/ai/JsOGs+u4u2juAxr8Au3+Sp8ii4yYkar2pJz1GXDo3B
+         cjOKgtodJ5rH9hehhqHEFtjoSQLH7CeFm4WIqzOJxE3xX6Z0TToXlLlUAsW545MuZnnw
+         01JWtE5ZfhkoNwaoqpsNdfBC0E5795Chxi8LXI8FE/MC8Lu38VZRoPawvSrQfWmLnlMu
+         Vvr8PiM2J2tlNc2e/WCGTrT+IJc7djjGqjr6+QHtFHgT0yK7rD5iInk3srKW1olYK5vQ
+         CRlYoHrQr3Xu40/UWxm8y87/bIOWU3oVv8pH+RABzs7sfK1WN3WiqfVItS3vxVLlPtIU
+         R3Rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=09U6vmSaahNdcLROs1sJRQMLO2jTllhKcJ+uh2MtTKA=;
-        b=ViHnlNkUYizwfT3/OthIKvILABnh3TIw9dBgofGFbZCRSg5NymVpijqQ406LCph3Jd
-         4PQQOWCzQi3XqOm0G90rEBMHl3RICUisMhdRed4Uu66NZE4pBawFOJOnC31Y8MJvju81
-         FfGQGLZ/Gd2qZE+ayzANB2lIo83tIhYhMppW9bNceFjOFijqL5CraNPisOrjgQZJxmE8
-         et2DJRy9JYBjl3kbalxwMsQJnkAXQdzTISopSYlpz85IoIJrmUQ17H2/hB7ZpZvsSsvx
-         ByHbpxQdwDdZGyE11yZtybkINHita7MxdLouvUIpzxh4NYJ7DqsOxsGvsc6LVlx4nZOI
-         87RQ==
-X-Gm-Message-State: AOAM532mPHdBBWdMtRjPlkwFKBJLr8A16b2yYB7nM+4t5P4hHRmCdJNH
-        bkhq2eOzOt2jsm5F+ZOjtZSRGA==
-X-Google-Smtp-Source: ABdhPJxriNxDM/f9/YbCE9WsW7FeM36vohjb4MJ/IXB6Q5OW1j4S16rZa29+Vlc8vCz1eSzYWkhUIg==
-X-Received: by 2002:a5d:4a8d:: with SMTP id o13mr471970wrq.194.1598016687509;
-        Fri, 21 Aug 2020 06:31:27 -0700 (PDT)
-Received: from elver.google.com ([100.105.32.75])
-        by smtp.gmail.com with ESMTPSA id 15sm4796747wmo.33.2020.08.21.06.31.25
+         :mime-version:content-disposition:in-reply-to;
+        bh=/vzJF5387NyjF3nOJV/SJFXMwXDsvo3icVibo5VrwR8=;
+        b=n3+o7cgDUNPe0WoGwnvl4DXFW7fZD34gOwVo9uGCbbLd9/Do4OY6fgHzgC7F6HdVcP
+         LOJkFeluqX/xvryXrwWIQrW1YJjM0w6O3YWKDqhWHPj+7Vn9agH/da5Y4C16kehfDc39
+         KycZDw0eoOZNkvDANJSxvo0+sEziCPz7UP0TF1R79L+pztMnfOy/24m/Wn/8m0WrWnc0
+         GCoGXBs6WbkzkuvFU6DEqbdAvCOpYMPx5RIT8DdeXX9mFkIXdAFOINzd4qO0PCmVDWzq
+         P72QxXm1TnVmAC5bA6Mm8JfMAIhUw0x5KH23eHKHyT80fZSzYatYpEZEBzXbfMe95yZC
+         arqQ==
+X-Gm-Message-State: AOAM533e3DYsaZNE7RR1SxJwUuQa8VsbvzxR6WBPqx7Yg9gCHHAq0ktw
+        wPQWq4KF6ek7fbcJpSc8HUGTnQ==
+X-Google-Smtp-Source: ABdhPJyD82UgI6gRkwXYIbPhA4GpalKzTRLpfv0OggKxvX8FCT6/IBkP/oMec1mkiaZsOb7nRyET6w==
+X-Received: by 2002:a1c:4e0c:: with SMTP id g12mr3223538wmh.136.1598016712736;
+        Fri, 21 Aug 2020 06:31:52 -0700 (PDT)
+Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
+        by smtp.gmail.com with ESMTPSA id v20sm4737033wrd.6.2020.08.21.06.31.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 06:31:26 -0700 (PDT)
-Date:   Fri, 21 Aug 2020 15:31:20 +0200
-From:   Marco Elver <elver@google.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     albert.linde@gmail.com, Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Albert van der Linde <alinde@google.com>
-Subject: Re: [PATCH 1/3] lib, include/linux: add usercopy failure capability
-Message-ID: <20200821133120.GA3145341@elver.google.com>
-References: <20200821104926.828511-1-alinde@google.com>
- <20200821104926.828511-2-alinde@google.com>
- <CACT4Y+ZeoUX39tBZs-DLoX0q5tC+skB56Cxf_SSpKiJdv3mMFg@mail.gmail.com>
+        Fri, 21 Aug 2020 06:31:51 -0700 (PDT)
+Date:   Fri, 21 Aug 2020 14:31:49 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     peterz@infradead.org
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Kyle Huey <me@kylehuey.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Robert O'Callahan <rocallahan@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [RFC][PATCH 4/7] x86/debug: Move historical SYSENTER junk into
+ exc_debug_kernel()
+Message-ID: <20200821133149.s6pq5wgo5v5iauij@holly.lan>
+References: <20200820103832.486877479@infradead.org>
+ <20200820104905.294802764@infradead.org>
+ <20200820152828.tvluka3lvmzof5xt@holly.lan>
+ <20200821101903.GK1362448@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+ZeoUX39tBZs-DLoX0q5tC+skB56Cxf_SSpKiJdv3mMFg@mail.gmail.com>
-User-Agent: Mutt/1.14.4 (2020-06-18)
+In-Reply-To: <20200821101903.GK1362448@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 01:51PM +0200, Dmitry Vyukov wrote:
-...
-> > +++ b/lib/fault-inject-usercopy.c
-> > @@ -0,0 +1,66 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +#include <linux/fault-inject.h>
-> > +#include <linux/fault-inject-usercopy.h>
-> > +#include <linux/random.h>
-> > +
-> > +static struct {
-> > +       struct fault_attr attr;
-> > +       u32 failsize;
-> > +} fail_usercopy = {
-> > +       .attr = FAULT_ATTR_INITIALIZER,
-> > +       .failsize = 0,
-> > +};
-> > +
-> > +static int __init setup_fail_usercopy(char *str)
-> > +{
-> > +       return setup_fault_attr(&fail_usercopy.attr, str);
-> > +}
-> > +__setup("fail_usercopy=", setup_fail_usercopy);
-> > +
-> > +#ifdef CONFIG_FAULT_INJECTION_DEBUG_FS
-> > +
-> > +static int __init fail_usercopy_debugfs(void)
-> > +{
-> > +       umode_t mode = S_IFREG | 0600;
-> > +       struct dentry *dir;
-> > +
-> > +       dir = fault_create_debugfs_attr("fail_usercopy", NULL,
-> > +                                       &fail_usercopy.attr);
-> > +       if (IS_ERR(dir))
-> > +               return PTR_ERR(dir);
-> > +
-> > +       debugfs_create_u32("failsize", mode, dir,
-> > +                          &fail_usercopy.failsize);
+On Fri, Aug 21, 2020 at 12:19:03PM +0200, peterz@infradead.org wrote:
+> On Thu, Aug 20, 2020 at 04:28:28PM +0100, Daniel Thompson wrote:
 > 
-> Marco, what's the right way to annotate these concurrent accesses for KCSAN?
+> > Specifically I've entered the kdb in pretty much the simplest way
+> > possible: a direct call to kgdb_breakpoint() from a task context. I
+> > generate a backtrace to illustrate this, just to give you a better
+> > understanding of what might be happening) and then ran the single step.
+> 
+> 
+> > + make -C .. O=$PWD x86_64_defconfig
+> > + ../scripts/config --enable RUNTIME_TESTING_MENU
+> > + ../scripts/config --enable DEBUG_INFO --enable DEBUG_FS --enable KALLSYMS_ALL --enable MAGIC_SYSRQ --enable KGDB --enable KGDB_TESTS --enable KGDB_KDB --enable KDB_KEYBOARD --enable LKDTM
+> > + ../scripts/config --enable PROVE_LOCKING --enable DEBUG_ATOMIC_SLEEP
+> > + make olddefconfig
+> 
+> 
+> That asked me about a kgdb boottime selftest, which I figured was a good
+> idea, but even without my patches that seems to fail, and fail so that
+> it doesn't boot :/
 
-For debugfs variables that are accessed concurrently, the only
-non-data-racy option (currently) is to use debugfs_create_atomic_t() and
-make the variable an atomic_t.
+If you are running to fork test (the F100 in the default test string of
+kgdbts=V1F100 kgdbwait) then you will need rodata=off to avoid problems
+setting or clearing breakpoints (you also need to have at last 100 calls
+to fork for the test suite to complete; a modern kernel without the
+excessive forking for hotplug will usually make it well into userspace
+before racking up this many forks).
 
-If it's read-mostly as is the case here, and given that atomic_read() is
-cheap (it maps to READ_ONCE on x86 and arm64), that'd be reasonable even
-if performance is a concern.
+This will prevent the test suite from hanging the boot although I think
+you will still see the still see the stacktrace from the hardware
+watchpoint test (this is unrelated to current patchset).
 
-> > +       return 0;
-> > +}
-> > +
-> > +late_initcall(fail_usercopy_debugfs);
-> > +
-> > +#endif /* CONFIG_FAULT_INJECTION_DEBUG_FS */
-> > +
-> > +/**
-> > + * should_fail_usercopy() - Failure code or amount of bytes not to copy.
-> > + * @n: Size of the original copy call.
-> > + *
-> > + * The general idea is to have a method which returns the amount of bytes not
-> > + * to copy, a failure to return, or 0 if the calling function should progress
-> > + * without a failure. E.g., copy_{to,from}_user should NOT copy the amount of
-> > + * bytes returned by should_fail_usercopy, returning this value (in addition
-> > + * to any bytes that could actually not be copied) or a failure.
-> > + *
-> > + * Return: one of:
-> > + * negative, failure to return;
-> > + * 0, progress normally;
-> > + * a number in ]0, n], the number of bytes not to copy.
-> > + *
-> > + */
-> > +long should_fail_usercopy(unsigned long n)
-> > +{
-> > +       if (should_fail(&fail_usercopy.attr, n)) {
-> > +               if (fail_usercopy.failsize > 0)
-> > +                       return fail_usercopy.failsize % (n + 1);
 
-If you wanted to retain the u32 in debugfs, you can mark this
-'data_race(fail_usercopy.failsize)' -- since what we're doing here is
-probabilistic anyway, reading a garbage value won't affect things much.
-
-Alternatively, just switch to atomic_t and it'll just be an
-atomic_read().
-
-Thanks,
--- Marco
+Daniel.
