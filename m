@@ -2,116 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E19B524CAF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 04:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B8724CAF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 04:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727090AbgHUCoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 22:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726702AbgHUCoJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 22:44:09 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B33C3C061385;
-        Thu, 20 Aug 2020 19:44:09 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id 128so306445pgd.5;
-        Thu, 20 Aug 2020 19:44:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dx/BZ20WfKAvV2mkdGmQP8JhT0k8HCX9a2G2fUQx028=;
-        b=C12/NdmXdhnbdKHg8xF7oTky+TCJsSwEfi5y9F2Pe2/zQuDXSkXhxqiLaNOsoIDP8i
-         fpqtL6jeGV+UG3KpPecJAASHJ2vlexrmDeVDASoRqBqproQZOGG1gdQBLNR4otRNqR9p
-         FlusfAt+7sNZBBhpnCj5RSG/CBpOLj8czZo3J3sh+aUF5svkTbN6TnzqzJstlT5mTL3O
-         EuCvOrk+NPahFXMxrRS1WvysmlpnezRzvZqmYMKCQIYICnnvTQww/erlQlwE+A/4Alb7
-         hqw55wQy1bAjxwy3YVcjMvkLQ6DtaxPhQlJMIZjI3zjlWvzEW2FGMbxQDK2ZCCmKoAUe
-         4ePw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dx/BZ20WfKAvV2mkdGmQP8JhT0k8HCX9a2G2fUQx028=;
-        b=WJ9bfUPKApfD6hFsZa6edQUFfVHzN6MpPdjvt/nIKLhDkc4O1GyxcJpVEUQ7+PjYFn
-         59h7xpl2OHLfJRO92OqF75lzLyf5muk5UC30oKQ23EjE8aTq70xGW1CwyPNglhAl9hrb
-         Pa5l+XYaCUzSYW0LwC8LQmRury8l9fhKAqxSc2jbGkNrVaaLi4xItn7td01nVbrsoIPL
-         wU9n8+MUYykFs/2FGYxxDlX6AsnPYeOtzsr3lid/6rZ7W7EQ/pOiWbxhjbnLwOODtpev
-         MUdSwndtPfm1xvNs62+kPQn54vxFw6odIudPzYvB6FJS7wwzPezuM2NftiBwlvwkNvzD
-         Lk3w==
-X-Gm-Message-State: AOAM530Ii3VZUqxe+kIDFtMngH2bSJ9jM3PrYcPOoDBxHiJvSLQz0lnX
-        3AjfQPA5DwFKwf5ecS0D22flVuE2Q+k=
-X-Google-Smtp-Source: ABdhPJwGxKScz30n1Eztir9iL2Up6EZINDBhMijtDsi5IgTsqfMcsV19lPtyASDWWGyrW7dThwN3pQ==
-X-Received: by 2002:aa7:84d4:: with SMTP id x20mr725600pfn.96.1597977849269;
-        Thu, 20 Aug 2020 19:44:09 -0700 (PDT)
-Received: from huyue2.ccdomain.com ([124.156.176.71])
-        by smtp.gmail.com with ESMTPSA id b20sm486109pfp.140.2020.08.20.19.44.06
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 20 Aug 2020 19:44:08 -0700 (PDT)
-From:   Yue Hu <zbestahu@gmail.com>
-To:     rui.zhang@intel.com, daniel.lezcano@linaro.org,
-        amit.kucheria@verdurent.com, viresh.kumar@linaro.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, zhangwen@yulong.com
-Subject: [PATCH] thermal: sysfs: Fall back to vmalloc() for cooling device's statistics
-Date:   Fri, 21 Aug 2020 10:44:05 +0800
-Message-Id: <20200821024406.10404-1-zbestahu@gmail.com>
-X-Mailer: git-send-email 2.19.1.windows.1
+        id S1727116AbgHUCpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 22:45:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53294 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726840AbgHUCpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 22:45:02 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0D94B20758;
+        Fri, 21 Aug 2020 02:45:00 +0000 (UTC)
+Date:   Thu, 20 Aug 2020 22:44:59 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Nicolas Boichat <drinkcat@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        devel@driverdev.osuosl.org, lkml <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: Re: [PATCH v4 3/3] media: atomisp: Only use trace_printk if allowed
+Message-ID: <20200820224459.0968b9f4@oasis.local.home>
+In-Reply-To: <f9d33bcaa2eda680752205d3c3690cb6bc421730.camel@perches.com>
+References: <20200820170951.v4.1.Ia54fe801f246a0b0aee36fb1f3bfb0922a8842b0@changeid>
+        <20200820170951.v4.3.I066d89f39023956c47fb0a42edf196b3950ffbf7@changeid>
+        <20200820102347.15d2f610@oasis.local.home>
+        <CANMq1KCoEZVj=sjxCqBhqLZKBab57+82=Rk_LN7fc3aCuNHMUw@mail.gmail.com>
+        <20200820203601.4f70bf98@oasis.local.home>
+        <CANMq1KAAgXG9MKMZ_D9zYFV-j0oVreA_AeSw-8FoyJgZ9eWQpg@mail.gmail.com>
+        <20200820215701.667f02b2@oasis.local.home>
+        <f9d33bcaa2eda680752205d3c3690cb6bc421730.camel@perches.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yue Hu <huyue2@yulong.com>
+On Thu, 20 Aug 2020 19:36:19 -0700
+Joe Perches <joe@perches.com> wrote:
 
-We observed warning about kzalloc() when register thermal cooling device
-in backlight_device_register(). backlight display can be a cooling device
-since reducing screen brightness will can help reduce temperature.
+> On Thu, 2020-08-20 at 21:57 -0400, Steven Rostedt wrote:
+> > On Fri, 21 Aug 2020 09:39:19 +0800
+> > Nicolas Boichat <drinkcat@chromium.org> wrote:  
+> []
+> > > Some other approaches/ideas:
+> > >  1. Filter all lkml messages that contain trace_printk. Already found
+> > > 1 instance, and I can easily reply to those with a semi-canned answer,
+> > > if I remember to check that filter regularly (not sustainable in the
+> > > long run...).  
+> > 
+> > Added Joe Perches to the thread.
+> > 
+> > We can update checkpatch.pl to complain about a trace_printk() that it
+> > finds in the added code.  
+> 
+> Why?
+> 
+> I don't see much value in a trace_printk checkpatch warning.
+> tracing is still dependent on CONFIG_TRACING otherwise
+> trace_printk is an if (0)
+> 
+> ELI5 please.
+> 
 
-However, ->get_max_state of backlight will assign max brightness of 1024
-to states. The memory size can be getting 1MB+ due to states * states.
-That is so large to trigger kmalloc() warning.
+Because no production code should contain trace_printk(). It should be
+deleted before going to Linus. If you have trace_printk() in your code,
+you will be greeted by the following banner in your dmesg:
 
-So, let's use kvzalloc() to avoid the issue, also change kfree -> kvfree.
+ **********************************************************
+ **   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **
+ **                                                      **
+ ** trace_printk() being used. Allocating extra memory.  **
+ **                                                      **
+ ** This means that this is a DEBUG kernel and it is     **
+ ** unsafe for production use.                           **
+ **                                                      **
+ ** If you see this message and you are not debugging    **
+ ** the kernel, report this immediately to your vendor!  **
+ **                                                      **
+ **   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **
+ **********************************************************
 
-Suggested-by: Amit Kucheria <amitk@kernel.org>
-Signed-off-by: Yue Hu <huyue2@yulong.com>
----
- drivers/thermal/thermal_sysfs.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
-index aa99edb..d1703ee 100644
---- a/drivers/thermal/thermal_sysfs.c
-+++ b/drivers/thermal/thermal_sysfs.c
-@@ -16,6 +16,7 @@
- #include <linux/device.h>
- #include <linux/err.h>
- #include <linux/slab.h>
-+#include <linux/mm.h>
- #include <linux/string.h>
- #include <linux/jiffies.h>
- 
-@@ -919,7 +920,7 @@ static void cooling_device_stats_setup(struct thermal_cooling_device *cdev)
- 	var += sizeof(*stats->time_in_state) * states;
- 	var += sizeof(*stats->trans_table) * states * states;
- 
--	stats = kzalloc(var, GFP_KERNEL);
-+	stats = kvzalloc(var, GFP_KERNEL);
- 	if (!stats)
- 		return;
- 
-@@ -938,7 +939,7 @@ static void cooling_device_stats_setup(struct thermal_cooling_device *cdev)
- 
- static void cooling_device_stats_destroy(struct thermal_cooling_device *cdev)
- {
--	kfree(cdev->stats);
-+	kvfree(cdev->stats);
- 	cdev->stats = NULL;
- }
- 
--- 
-1.9.1
-
+-- Steve
