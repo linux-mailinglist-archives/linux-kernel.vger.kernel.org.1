@@ -2,120 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9162D24DBA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C5E24DB3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728478AbgHUQpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 12:45:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728380AbgHUQUl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:20:41 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C09C061573
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 09:20:41 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id f19so1587148qtp.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 09:20:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=SnctsuDqqlA5ER6TRf1wGNDf5ctTnVHX934E0v8jiKs=;
-        b=kE2/rzVKhLFjVHa4TBoS4RNn4LkOQyfSEpegQ1o5S1smE6U1gjIbdzoACeuOT1w/hS
-         CFwjGcSYrK3z8ltyVrRDPX1tIaueQtkdUz9d4seWs56SfVhltnNi55DrKsvW/1WK/ygp
-         ewgl0UFESexwf4yIx/m3K60SiHFxgiSXaBsXgyuPY6sr7cFXcUUzM0C9F5iYcFutWwfX
-         gj8tvxTERGCRPf0OuJThfFvRoTUvt+grGqDSGSU+B6sYoVOBBaa5kXcVeP6taU0fXz09
-         I1k+QPCDHAbdGuNnTID+AENF2qdS+HvW0+sK2irNllXdsy1tgrRT9o+0DOSMH+TD/IFV
-         kjAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SnctsuDqqlA5ER6TRf1wGNDf5ctTnVHX934E0v8jiKs=;
-        b=qTpp36no7g77g+j/BsPO3Ww/9s40Sm50ErTz7JXtM2UuvVbLE3dur87WgEcRv8tz4u
-         GAGKhJdPGkPWN6rGl22/nXsNrSGYGmVJhmYrBHnnCLuOrRVeEtOjI3esS8978rNrq3TN
-         H87KvJo8eF4VPELOwtbbuN9qE9ITbUIqlKGvQgfGOEn5BAomOwfZlzOQq4Wl+avy10z5
-         uqf+MTj5psdNrCIYzckSti0ktcVvmUugVXMysrXjwH+cHMXAVA3TDOKjMU8l6Dz5wXql
-         Q5BwkNIwhcJO7q2V9rTFC0kfwav5UDQ/917x6rI2/WW75ONFKcGV97YvPgT/KF2u/hFZ
-         HwgA==
-X-Gm-Message-State: AOAM530gDCQequfr1lx83nnQjU1arjcjxW03JWbHlm3Exm3F5OMfxupL
-        4BdDke566VQI+PtJ8sS0TZo=
-X-Google-Smtp-Source: ABdhPJwk5mPqN/pK3UEoSEsH0DnR8mrYFh5ZdA08dUAcPlo0SwInasFrQxXSuurg/NOrbDsr+lTOXg==
-X-Received: by 2002:ac8:12cc:: with SMTP id b12mr3312871qtj.349.1598026835922;
-        Fri, 21 Aug 2020 09:20:35 -0700 (PDT)
-Received: from tong-desktop.local ([2601:5c0:c100:b9d:613a:3cfc:fb4b:2e6])
-        by smtp.googlemail.com with ESMTPSA id l66sm2465030qte.48.2020.08.21.09.20.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 09:20:35 -0700 (PDT)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     jikos@kernel.org, dsterba@suse.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, ztong0001@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] tty: ipwireless: fix error handling
-Date:   Fri, 21 Aug 2020 12:19:40 -0400
-Message-Id: <20200821161942.36589-1-ztong0001@gmail.com>
+        id S1728415AbgHUQg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 12:36:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56856 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728433AbgHUQVK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 12:21:10 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B125922B40;
+        Fri, 21 Aug 2020 16:20:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598026816;
+        bh=4RWpZvOoJA/5UINqIY4RDIvOA2ssL54rfpG3Hg+9Hsk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GAys6x+PK8KwLDVTKbANrGXfHsMp9uHpnRZkp7vSTe1Llt9kHMm+tHSeruhHzKYTZ
+         MutNerPmg4NuPwLxYbNaCCgXZipXa05BYAEXhTRa7+t/M3TB0hsAMSfeDtnuP80QdT
+         Si01ohWVh+zF08OC/PjIvLYgt4KFBwAGS+Lv6CvM=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>, Takashi Iwai <tiwai@suse.de>,
+        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 4.4 01/22] ALSA: pci: delete repeated words in comments
+Date:   Fri, 21 Aug 2020 12:19:53 -0400
+Message-Id: <20200821162014.349506-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200821092844.GB2026@suse.cz>
-References: <20200821092844.GB2026@suse.cz>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ipwireless_send_packet() can only return 0 on success and -ENOMEM on
-error, the caller should check non zero for error condition
+From: Randy Dunlap <rdunlap@infradead.org>
 
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+[ Upstream commit c7fabbc51352f50cc58242a6dc3b9c1a3599849b ]
+
+Drop duplicated words in sound/pci/.
+{and, the, at}
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Link: https://lore.kernel.org/r/20200806021926.32418-1-rdunlap@infradead.org
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
+ sound/pci/cs46xx/cs46xx_lib.c       | 2 +-
+ sound/pci/cs46xx/dsp_spos_scb_lib.c | 2 +-
+ sound/pci/hda/hda_codec.c           | 2 +-
+ sound/pci/hda/hda_generic.c         | 2 +-
+ sound/pci/hda/patch_sigmatel.c      | 2 +-
+ sound/pci/ice1712/prodigy192.c      | 2 +-
+ sound/pci/oxygen/xonar_dg.c         | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
 
-v2: - According to Jiri's comment, I made the checking consistent with
-the rest of the kernel. I also rebased the code using f684668a24ec.
-Thank you Jiri!
-v3: fix commit log according to David's comment, and rebased using
-Greg's tty-testing tree. Thank you David!
-
- drivers/tty/ipwireless/network.c | 4 ++--
- drivers/tty/ipwireless/tty.c     | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/tty/ipwireless/network.c b/drivers/tty/ipwireless/network.c
-index cf20616340a1..fe569f6294a2 100644
---- a/drivers/tty/ipwireless/network.c
-+++ b/drivers/tty/ipwireless/network.c
-@@ -117,7 +117,7 @@ static int ipwireless_ppp_start_xmit(struct ppp_channel *ppp_channel,
- 					       skb->len,
- 					       notify_packet_sent,
- 					       network);
--			if (ret == -1) {
-+			if (ret < 0) {
- 				skb_pull(skb, 2);
- 				return 0;
- 			}
-@@ -134,7 +134,7 @@ static int ipwireless_ppp_start_xmit(struct ppp_channel *ppp_channel,
- 					       notify_packet_sent,
- 					       network);
- 			kfree(buf);
--			if (ret == -1)
-+			if (ret < 0)
- 				return 0;
- 		}
- 		kfree_skb(skb);
-diff --git a/drivers/tty/ipwireless/tty.c b/drivers/tty/ipwireless/tty.c
-index fad3401e604d..23584769fc29 100644
---- a/drivers/tty/ipwireless/tty.c
-+++ b/drivers/tty/ipwireless/tty.c
-@@ -218,7 +218,7 @@ static int ipw_write(struct tty_struct *linux_tty,
- 	ret = ipwireless_send_packet(tty->hardware, IPW_CHANNEL_RAS,
- 			       buf, count,
- 			       ipw_write_packet_sent_callback, tty);
--	if (ret == -1) {
-+	if (ret < 0) {
- 		mutex_unlock(&tty->ipw_tty_mutex);
- 		return 0;
+diff --git a/sound/pci/cs46xx/cs46xx_lib.c b/sound/pci/cs46xx/cs46xx_lib.c
+index 2706f271a83b0..8a174c170e0aa 100644
+--- a/sound/pci/cs46xx/cs46xx_lib.c
++++ b/sound/pci/cs46xx/cs46xx_lib.c
+@@ -780,7 +780,7 @@ static void snd_cs46xx_set_capture_sample_rate(struct snd_cs46xx *chip, unsigned
+ 		rate = 48000 / 9;
+ 
+ 	/*
+-	 *  We can not capture at at rate greater than the Input Rate (48000).
++	 *  We can not capture at a rate greater than the Input Rate (48000).
+ 	 *  Return an error if an attempt is made to stray outside that limit.
+ 	 */
+ 	if (rate > 48000)
+diff --git a/sound/pci/cs46xx/dsp_spos_scb_lib.c b/sound/pci/cs46xx/dsp_spos_scb_lib.c
+index 7488e1b7a7707..4e726d39b05d1 100644
+--- a/sound/pci/cs46xx/dsp_spos_scb_lib.c
++++ b/sound/pci/cs46xx/dsp_spos_scb_lib.c
+@@ -1742,7 +1742,7 @@ int cs46xx_iec958_pre_open (struct snd_cs46xx *chip)
+ 	struct dsp_spos_instance * ins = chip->dsp_spos_instance;
+ 
+ 	if ( ins->spdif_status_out & DSP_SPDIF_STATUS_OUTPUT_ENABLED ) {
+-		/* remove AsynchFGTxSCB and and PCMSerialInput_II */
++		/* remove AsynchFGTxSCB and PCMSerialInput_II */
+ 		cs46xx_dsp_disable_spdif_out (chip);
+ 
+ 		/* save state */
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 825d9b27dbe12..4962a9d8a572b 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -3496,7 +3496,7 @@ EXPORT_SYMBOL_GPL(snd_hda_set_power_save);
+  * @nid: NID to check / update
+  *
+  * Check whether the given NID is in the amp list.  If it's in the list,
+- * check the current AMP status, and update the the power-status according
++ * check the current AMP status, and update the power-status according
+  * to the mute status.
+  *
+  * This function is supposed to be set or called from the check_power_status
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index 869c322ddae31..7cd1047a4edf3 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -837,7 +837,7 @@ static void activate_amp_in(struct hda_codec *codec, struct nid_path *path,
  	}
+ }
+ 
+-/* sync power of each widget in the the given path */
++/* sync power of each widget in the given path */
+ static hda_nid_t path_power_update(struct hda_codec *codec,
+ 				   struct nid_path *path,
+ 				   bool allow_powerdown)
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index d1a6d20ace0da..80b72d0702c5e 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -862,7 +862,7 @@ static int stac_auto_create_beep_ctls(struct hda_codec *codec,
+ 	static struct snd_kcontrol_new beep_vol_ctl =
+ 		HDA_CODEC_VOLUME(NULL, 0, 0, 0);
+ 
+-	/* check for mute support for the the amp */
++	/* check for mute support for the amp */
+ 	if ((caps & AC_AMPCAP_MUTE) >> AC_AMPCAP_MUTE_SHIFT) {
+ 		const struct snd_kcontrol_new *temp;
+ 		if (spec->anabeep_nid == nid)
+diff --git a/sound/pci/ice1712/prodigy192.c b/sound/pci/ice1712/prodigy192.c
+index 3919aed39ca03..5e52086d7b986 100644
+--- a/sound/pci/ice1712/prodigy192.c
++++ b/sound/pci/ice1712/prodigy192.c
+@@ -31,7 +31,7 @@
+  *		  Experimentally I found out that only a combination of
+  *		  OCKS0=1, OCKS1=1 (128fs, 64fs output) and ice1724 -
+  *		  VT1724_MT_I2S_MCLK_128X=0 (256fs input) yields correct
+- *		  sampling rate. That means the the FPGA doubles the
++ *		  sampling rate. That means that the FPGA doubles the
+  *		  MCK01 rate.
+  *
+  *	Copyright (c) 2003 Takashi Iwai <tiwai@suse.de>
+diff --git a/sound/pci/oxygen/xonar_dg.c b/sound/pci/oxygen/xonar_dg.c
+index 4cf3200e988b0..df44135e1b0c9 100644
+--- a/sound/pci/oxygen/xonar_dg.c
++++ b/sound/pci/oxygen/xonar_dg.c
+@@ -39,7 +39,7 @@
+  *   GPIO 4 <- headphone detect
+  *   GPIO 5 -> enable ADC analog circuit for the left channel
+  *   GPIO 6 -> enable ADC analog circuit for the right channel
+- *   GPIO 7 -> switch green rear output jack between CS4245 and and the first
++ *   GPIO 7 -> switch green rear output jack between CS4245 and the first
+  *             channel of CS4361 (mechanical relay)
+  *   GPIO 8 -> enable output to speakers
+  *
 -- 
 2.25.1
 
