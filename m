@@ -2,127 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B91724E0AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 21:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 741DE24E0B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 21:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgHUTbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 15:31:12 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47401 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725801AbgHUTbK (ORCPT
+        id S1726440AbgHUTeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 15:34:44 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:58621 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1725831AbgHUTeo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 15:31:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598038269;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MHf1EBkT1Dy1Sxom78LRrOH5QXXkCxI+ZwxWCHSIPnM=;
-        b=XpWyyqs/OU6JUfNfHPK36reHxJ1F00panReHGQhIncgb6UylwGdgFIq8yd2JoVczLwYqpN
-        STrO/cwqMY8Kz4q5Mw++s2WA9qj1BvVDsyogTBW3kqHIMMi/dfb6q/0aR6HBJOnHzAr6pJ
-        g41UStEo/KyrGMcfeixAQWc6fmhLIBg=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-567-ab475QYfPwyHfzLWQbEVXg-1; Fri, 21 Aug 2020 15:31:03 -0400
-X-MC-Unique: ab475QYfPwyHfzLWQbEVXg-1
-Received: by mail-qv1-f70.google.com with SMTP id i4so1923821qvv.4
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:31:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MHf1EBkT1Dy1Sxom78LRrOH5QXXkCxI+ZwxWCHSIPnM=;
-        b=CmcueUIMewMWBWE/ceKe4a2Qhj6s/VdBwWqJS6W165sdqHe/ynS0hx4O6nvvU7fEuG
-         8QtK7UolLTb2tFBSZCehTggSbPcsKU8y/gZeO9YsPwuY2BNhw2/fSILj6POPGZ/770s9
-         lNrXpvCWvtFWSsTRAIUNG51GM0FXA0puJ2O+f7+HnzmXfUvJNsZNKlpzqai2SyYgQvs1
-         03n5Y7qSbm72VD7kLySg5tEgLr21dKFfcvF1suNDyUJJRN96HKoZhrhDO04WDej2sMte
-         Fh3y8NvMHqfzpEDAJmL17MVtADxVLb42AxjwkMblE2diiZLTB6hMHMi08qckHmOn5Mfz
-         ferA==
-X-Gm-Message-State: AOAM530wZAtVq31Xk56ZFGDx9gGmGJb79kQSrle8U8wr/ZDqgtyqW6XV
-        D3bjHdf0RJuz8/2uHj7VHv6HagwE+hWPrFlvGHLrf6bbQj1wNTBNdVxNOXiwWfXnQFguRKJOFVW
-        imRz88039iiHpDB1ece0f9FI1
-X-Received: by 2002:a37:9a97:: with SMTP id c145mr4112674qke.385.1598038263093;
-        Fri, 21 Aug 2020 12:31:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyIDT+dfkV6MshPTrHOcz6MO3y6HAU3upZRyOOq+yPyHjO60OLZanIZiouXFJFyoqVR7pfbaw==
-X-Received: by 2002:a37:9a97:: with SMTP id c145mr4112646qke.385.1598038262741;
-        Fri, 21 Aug 2020 12:31:02 -0700 (PDT)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
-        by smtp.gmail.com with ESMTPSA id o21sm2487226qkk.94.2020.08.21.12.31.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 12:31:01 -0700 (PDT)
-Date:   Fri, 21 Aug 2020 15:31:00 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jan Kara <jack@suse.cz>, Andrea Arcangeli <aarcange@redhat.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Jann Horn <jannh@google.com>, Christoph Hellwig <hch@lst.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Kirill Shutemov <kirill@shutemov.name>
-Subject: Re: [PATCH v3] mm/gup: Allow real explicit breaking of COW
-Message-ID: <20200821193100.GA38249@xz-x1>
-References: <20200811214255.GE6353@xz-x1>
- <CAHk-=wiVN-+P1vOCSMyfGwYQD3hF7A18OJyXgpiMwGDfMaU+8w@mail.gmail.com>
- <20200820215449.GB358043@xz-x1>
- <CAHk-=wjGzOjsfmX1Dc=yz6o_+62w4wcTVXX_hia9sHLfsCoxjg@mail.gmail.com>
- <20200821101333.GA3432@quack2.suse.cz>
- <CAHk-=whXfL5DtinS42dgtNu6i+xchK_VP+XLprQbu_og2J5Dkw@mail.gmail.com>
- <20200821154756.GC3432@quack2.suse.cz>
- <CAHk-=wj-pfzKf3JDe9fr4o_nKYXJXfuYAMFCajwhy0YYYri4Fw@mail.gmail.com>
- <20200821180848.GA11376@xz-x1>
- <CAHk-=wj3fY2dch7Ah-MLbJcfU3buoXgJnwc1zWFSjVujSd39GA@mail.gmail.com>
+        Fri, 21 Aug 2020 15:34:44 -0400
+Received: (qmail 266418 invoked by uid 1000); 21 Aug 2020 15:34:42 -0400
+Date:   Fri, 21 Aug 2020 15:34:42 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: Re: [PATCH] PM: sleep: core: Fix the handling of pending runtime
+ resume requests
+Message-ID: <20200821193442.GA264863@rowland.harvard.edu>
+References: <7969920.MVx1BpXlEM@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wj3fY2dch7Ah-MLbJcfU3buoXgJnwc1zWFSjVujSd39GA@mail.gmail.com>
+In-Reply-To: <7969920.MVx1BpXlEM@kreacher>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 11:23:31AM -0700, Linus Torvalds wrote:
-> On Fri, Aug 21, 2020 at 11:08 AM Peter Xu <peterx@redhat.com> wrote:
-> >
-> > IIUC, Jan wanted to point out the fact that KSM didn't increase page count for
-> > stable pages (reasons are above get_ksm_page()).
+On Fri, Aug 21, 2020 at 07:41:02PM +0200, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> Ouch.
+> It has been reported that system-wide suspend may be aborted in the
+> absence of any wakeup events due to unforseen interactions of it with
+> the runtume PM framework.
 > 
-> > Do we still at least need to check the swap count if PageSwapCache(page)?
+> One failing scenario is when there are multiple devices sharing an
+> ACPI power resource and runtime-resume needs to be carried out for
+> one of them during system-wide suspend (for example, because it needs
+> to be reconfigured before the whole system goes to sleep).  In that
+> case, the runtime-resume of that device involves turning the ACPI
+> power resource "on" which in turn causes runtime resume requests
+> to be queued up for all of the other devices sharing it.  Those
+> requests go to the runtime PM workqueue which is frozen during
+> system-wide suspend, so they are not actually taken care of until
+> the resume of the whole system, but the pm_runtime_barrier()
+> call in __device_suspend() sees them and triggers system wakeup
+> events for them which then cause the system-wide suspend to be
+> aborted if wakeup source objects are in active use.
 > 
-> No. Because a PageSwapCache() page should be a perfectly normal page
-> cache thing. It will increment the page count if it's active.
+> Of course, the logic that leads to triggering those wakeup events is
+> questionable in the first place, because clearly there are cases in
+> which a pending runtime resume request for a device is not connected
+> to any real wakeup events in any way (like the one above).  Moreover,
+> if there is a pending runtime resume request for a device while
+> __device_suspend() is running for it, the physical state of the
+> device may not be in agreement with the "suspended" runtime PM status
+> of it (which may be the very reason for queuing up the runtime resume
+> request for it).
 > 
-> That PageKsm() thing that *doesn't* increment the page could does look
-> worrisome, but
+> For these reasons, rework __device_suspend() to carry out synchronous
+> runtime-resume for devices with pending runtime resume requests before
+> attempting to invoke system-wide suspend callbacks for them with the
+> expectation that their drivers will trigger system-wide wakeup events
+> in the process of handling the runtime resume, if necessary.
 > 
-> > So we check page_count() (which covers KSM or normal pages) after we've got the
-> > page lock, while we keep all the rest.
+> Fixes: 1e2ef05bb8cf8 ("PM: Limit race conditions between runtime PM and system sleep (v2)")
+> Reported-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+>  drivers/base/power/main.c |   12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 > 
-> Why would we keep the rest? I
-> 
-> The actual thing I would really want to get rid of is the page lock,
-> in fact. We shouldn't need it in this path, and it's the most
-> expensive part of it all. But that's also why I did the page count
-> test optimistically unlocked - because if page_count is 1, then we
-> really shouldn't contend with anything else, so hopefully the
-> (currently quite expensive) page locking is actually a non-issue once
-> you get there.
-> 
-> But the PageKsm() page_count() issue I didn't even realize. That worries me.
+> Index: linux-pm/drivers/base/power/main.c
+> ===================================================================
+> --- linux-pm.orig/drivers/base/power/main.c
+> +++ linux-pm/drivers/base/power/main.c
+> @@ -1606,13 +1606,13 @@ static int __device_suspend(struct devic
+>  	}
+>  
+>  	/*
+> -	 * If a device configured to wake up the system from sleep states
+> -	 * has been suspended at run time and there's a resume request pending
+> -	 * for it, this is equivalent to the device signaling wakeup, so the
+> -	 * system suspend operation should be aborted.
+> +	 * If there's a runtime resume request pending for the device, resume
+> +	 * it before proceeding with invoking the system-wide suspend callbacks
+> +	 * for it, because the physical state of the device may not reflect the
+> +	 * "suspended" runtime PM status already in that case.
+>  	 */
+> -	if (pm_runtime_barrier(dev) && device_may_wakeup(dev))
+> -		pm_wakeup_event(dev, 0);
+> +	if (pm_runtime_barrier(dev))
+> +		pm_runtime_resume(dev);
 
-That's definitely tricky.. Though IMHO that's another KSM topic that we might
-want to look into later besides the current effort to fix up the COW breaking
-issue for gup.  For now, it shouldn't be hard for us as long as we do cow
-always for KSM pages.  However, do we really want to revert the whole logic of
-52d1e606ee73?  Asking because it still seems to be an improvement to me (after
-all we'll need to look after KSM pages here).  So it seems still good to keep.
+Is this really right?  Note that whenever pm_runtime_barrier() returns a 
+nonzero value, it already calls rpm_resume(dev, 0).  So the 
+pm_runtime_resume() call added here is redundant.
 
-Thanks,
+Furthermore, by the logic used in this patch, the call to 
+pm_wakeup_event() in the original code is also redundant: Any required 
+wakeup event should have been generated when the runtime resume inside 
+pm_runtime_barrer() was carried out.  Removing a redundant function call 
+can't fix a bug!
 
--- 
-Peter Xu
+This means that the code could be simplified to just:
 
+	pm_runtime_barrier(dev);
+
+Will this fix the reported bug?  It seems likely to me that the actual 
+problem with the failure scenario in the patch description was that 
+turning on an ACPI power resource causes runtime-resume requests to be 
+queued for all devices sharing that resource.  Wouldn't it make more 
+sense to resume only the device that requested it and leave the others 
+in runtime suspend?
+
+Alan Stern
