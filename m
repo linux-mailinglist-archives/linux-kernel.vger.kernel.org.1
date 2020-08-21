@@ -2,110 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B111124E09A
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 21:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 931A724E09B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 21:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726633AbgHUTTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 15:19:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgHUTTC (ORCPT
+        id S1726466AbgHUTVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 15:21:18 -0400
+Received: from smtprelay0029.hostedemail.com ([216.40.44.29]:52922 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725831AbgHUTVS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 15:19:02 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25E0CC061573
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:19:02 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id w14so3043046ljj.4
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:19:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DLc84kj5PHVUSiFGEP5mfzNqVCypKwLtWPaDrgaberY=;
-        b=SofWc/w6t4rEsc85RaLfw4+1oCNKhS2jGDmsKj708JnMxQaUL81Q5yOWX5EhAMzU+x
-         Cb3KyXSNMzLbsgJPGamhAP2iMjt3UL8rroxFzqL7p6C5UBNeY6HNa3Jd1zJI2GavW46Q
-         WhVw+1qcn3yzbaRWJ0lfgO2uTu43gklL+LpRw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DLc84kj5PHVUSiFGEP5mfzNqVCypKwLtWPaDrgaberY=;
-        b=dnL9y5an4AebaHwClIguIf9fsQB19XYJunpi9sS9D9yLUJjFETf9gui5PWJ1d+0V8l
-         oGAj3tTfDVQ4eg42LkZQPizPdR9hW0B7KLbh7mZMEhZdt0PenhzFn1ssg1fGboyQdDw/
-         GBgKDibf7UYhRfPFnJ1JO35ZhNBqIaD1oERxHM312HeoZ7mEJrZFTpx09fnG7WJWJIss
-         UqM0INs+e0dr0Vt+8J7wu1T6Me1L9Ud0eACVfN1GEJwS9KZQoasDf1SEMFFgImr66PYN
-         6s7d7yMzCCB+5A9OekByzpEc0zGifekretnfwAc6w3XF6DI6aR881VAqz1Nh2OrFvfit
-         Jq2A==
-X-Gm-Message-State: AOAM5336+FHAi7N+c4The5xfpAwlFcXp+pV1IgrbUUKf91wS1NqX2bIx
-        wWO7Yz9b7xYrQHJ6NehbqNQ5DN45YwaOWw==
-X-Google-Smtp-Source: ABdhPJxWOTRdaLbFofCTg/MowVjA5TrEYL/PfHoPnIeaFcbyM9xLIF9iB+eKEJfozK0yzpFqX/0GPQ==
-X-Received: by 2002:a05:651c:555:: with SMTP id q21mr2081057ljp.6.1598037539655;
-        Fri, 21 Aug 2020 12:18:59 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id e17sm550965ljg.85.2020.08.21.12.18.57
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Aug 2020 12:18:57 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id d2so1446551lfj.1
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:18:57 -0700 (PDT)
-X-Received: by 2002:a05:6512:3b7:: with SMTP id v23mr2073008lfp.10.1598037536954;
- Fri, 21 Aug 2020 12:18:56 -0700 (PDT)
+        Fri, 21 Aug 2020 15:21:18 -0400
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave01.hostedemail.com (Postfix) with ESMTP id 150751803EB5B;
+        Fri, 21 Aug 2020 19:21:17 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 59C72181D2063;
+        Fri, 21 Aug 2020 19:21:15 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2693:2828:2919:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:4362:5007:6117:6120:6248:7901:7903:10004:10400:10848:11232:11658:11914:12048:12297:12679:12740:12760:12895:13069:13095:13181:13229:13255:13311:13357:13439:14659:14721:14777:21067:21080:21433:21627:21819:21939:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: hate40_0c00a172703b
+X-Filterd-Recvd-Size: 1695
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf12.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 21 Aug 2020 19:21:14 +0000 (UTC)
+Message-ID: <ed518871bf6182bb7d9a2b95074985cf8af1d5c4.camel@perches.com>
+Subject: Re: [PATCH v2 00/10] fs: NTFS read-write driver GPL implementation
+ by Paragon Software.
+From:   Joe Perches <joe@perches.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Cc:     Pali =?ISO-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Date:   Fri, 21 Aug 2020 12:21:12 -0700
+In-Reply-To: <904d985365a34f0787a4511435417ab3@paragon-software.com>
+References: <904d985365a34f0787a4511435417ab3@paragon-software.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-References: <20200821123746.16904-1-joro@8bytes.org>
-In-Reply-To: <20200821123746.16904-1-joro@8bytes.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 21 Aug 2020 12:18:41 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgNEsVwVMwQdHL4O1tDWQa-HcmOv-EmqLTQH+SoC2CkWA@mail.gmail.com>
-Message-ID: <CAHk-=wgNEsVwVMwQdHL4O1tDWQa-HcmOv-EmqLTQH+SoC2CkWA@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: Track page table modifications in __apply_to_page_range()
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        Pavel Machek <pavel@ucw.cz>, Dave Airlie <airlied@redhat.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Vrabel <david.vrabel@citrix.com>,
-        Joerg Roedel <jroedel@suse.de>, stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 5:38 AM Joerg Roedel <joro@8bytes.org> wrote:
->
-> From: Joerg Roedel <jroedel@suse.de>
->
-> The __apply_to_page_range() function is also used to change and/or
-> allocate page-table pages in the vmalloc area of the address space.
-> Make sure these changes get synchronized to other page-tables in the
-> system by calling arch_sync_kernel_mappings() when necessary.
+On Fri, 2020-08-21 at 16:24 +0000, Konstantin Komarov wrote:
+> This patch adds NTFS Read-Write driver to fs/ntfs3.
 
-I get the strong feeling that these functions should be using a
-"struct apply_details *" or something like that (the way the
-zap_page_range() code has that "zap_details" thing).
+Thanks.
+Proper ntfs read/write support will be great addition.
 
-Because adding more and more arguments gets pretty painful after a
-while. But maybe the compiler inlining it all makes it a non-issue.
+Trivia:
 
-It also strikes me that I think the only architecture that uses the
-whole arch_sync_kernel_mappings() thing is now just x86-32.
+If this patchset is submitted again with a new version,
+please use something like "git format-patch --cover-letter"
+and "git send-email" so all parts of the patches and replies
+have the a single message thread to follow.
 
-[ Well, x86-64 still has it, but that's because we undid the 64-bit
-removal, but it's on the verge of going away and x86-64 shouldn't
-actually _need_ it any more ]
+That will add an "in-reply-to" header of the 0/m patch
+message-id to all n/m parts.
 
-So all of this seems to be purely for 32-bit x86. Which kind of makes
-this all fail the smell test.
+One style oddity I noticed is the use of goto labels in
+favor of if block indentation.  It's not terrible style,
+just unusual for kernel code.
 
-But the patch does seem to be the minimal fix for a real issue - I'm
-just pointing out ugly details, not actual problems with the patch.
 
-IOW, a somewhat reluctant Ack, hoping that this will be cleaned up
-some day. Possibly/hopefully because arch_sync_kernel_mappings() just
-goes away entirely.
-
-                 Linus
