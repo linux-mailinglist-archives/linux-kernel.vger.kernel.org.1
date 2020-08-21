@@ -2,51 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50FC824DD69
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C21D24DD6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729065AbgHURQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 13:16:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59916 "EHLO mail.kernel.org"
+        id S1728750AbgHURRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 13:17:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728092AbgHURQU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 13:16:20 -0400
-Subject: Re: [GIT PULL] sound fixes for 5.9-rc2
+        id S1728935AbgHURQV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 13:16:21 -0400
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1598030180;
-        bh=Xi5uDqEgd+wyCMVTJ6agj4KL0IiNBxuM+S+CfdFnmQk=;
+        bh=q6rfVjn0yYm6ThxeEtdzNfNV7StWYionyldIVlJ8C5I=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=VF/ibpyYn14wTWHRn/a0FaQa+4PIp+H18mmUURROcIufqcnOR5sCPQzIEGtOOz6gm
-         +P27PdAI5GdqE2KlqVCmycZb9oAKbyc0jaFJlL0ZqAr8A778uUWHO6d8cczaS9lOUP
-         AgqPDaqdK0QSoXHNASVs4AuxjuQvfuslzQqVYkbA=
+        b=f9bz0sbcpokVFDROQn1sw4RpkvwN6hA8K+gR+QVzoLXaYLz96CQVWIRYaR7mxJwse
+         73Gp4KA8qEV0eFTPO77xKjkdwrOv+YqIqZlbwOu+AqxFOzF4h2UOgIPiLICulDxw0D
+         vea5mOT/Cb6VAKYK4POdCPwxbg8vA7j2J2asmAg8=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <s5hzh6ocpr1.wl-tiwai@suse.de>
-References: <s5hzh6ocpr1.wl-tiwai@suse.de>
+In-Reply-To: <20200821140612.GA2665062@nvidia.com>
+References: <20200821140612.GA2665062@nvidia.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <s5hzh6ocpr1.wl-tiwai@suse.de>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.9-rc2
-X-PR-Tracked-Commit-Id: b90b925fd52c75ee7531df739d850a1f7c58ef06
+X-PR-Tracked-Message-Id: <20200821140612.GA2665062@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: f6da70d99c96256f8be0cbb4dd72d45d622c7823
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 7f04f3ed621fd345ca1b01ec6e98c9b85d95851f
-Message-Id: <159803018045.29562.10705885967473858922.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: cd02217a5d813e2bbec984a9eeb8280ff290a150
+Message-Id: <159803018077.29562.10055519306729526899.pr-tracker-bot@kernel.org>
 Date:   Fri, 21 Aug 2020 17:16:20 +0000
-To:     Takashi Iwai <tiwai@suse.de>
+To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 21 Aug 2020 11:28:02 +0200:
+The pull request you sent on Fri, 21 Aug 2020 11:06:12 -0300:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.9-rc2
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/7f04f3ed621fd345ca1b01ec6e98c9b85d95851f
+https://git.kernel.org/torvalds/c/cd02217a5d813e2bbec984a9eeb8280ff290a150
 
 Thank you!
 
