@@ -2,114 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B0024CF92
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 09:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E28324CFC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 09:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728258AbgHUHk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 03:40:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727912AbgHUHkJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 03:40:09 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40C5BC061388
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 00:40:08 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id j188so393456vsd.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 00:40:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bAU9iZW9yGALOB30mTlHDeoRf5CRh/Snlg+xCwRu8JU=;
-        b=kOxOuxMxSQ+ksSLjKg3Ni5aIYiY5w0RxKooi0DNSCKve7b14PccYxmywLlnGxld6mc
-         WqavXtK7TC9i0AqdD3XPTGzIoa5x8gqELOCV/+vAlvOIAyKSZztrQsMbO4Rg2Sd1UFPg
-         SiEMKltZUmr8lz2zr42CVDG7YdRtLuErHINARiW/rqVexyezip3RnwlVXtlEpgakssZH
-         NiFgJ9BjbUnADlw9BpI2N/RodkTY07zEH8wagrgldLZZX2bBReCzCGOX1V/M9Lb+z/Vk
-         +T51a1HYvojPzfuH4UOvwvYnJe1ukLKul84xO8Z6/4GZPuwyMPAeamxXv+di9soZ/b3m
-         KOmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bAU9iZW9yGALOB30mTlHDeoRf5CRh/Snlg+xCwRu8JU=;
-        b=bO4NVi1HSGm+KNCjfkGGTggVDoyo09Jx5oAueZwn97tTcqqdrXKvT2Pi434CSvSK6p
-         z48qlYtw7ErJXCBEK8UFHlI02KUmKGpspGh8HmN1rPjiYAzWQtTlAQN9Qy02veaIl4XQ
-         6xxo89t8tus1LguJzYwa83oa3du+QS3svTkVQBx/waS5Wlsb91Yas5AA/M0UIevZRKqK
-         KnTy1on55K5obcT+ZQrm89v841abJwzfUegLX91lAb5TK5PGqxBvnyXyuvnLCLaeVAF/
-         tZweHCwr+Gi/ypDNkxN9sHAmqiRvJSCtqk0aI+EYX/OctoFk2Gd0I3FtKRdE9yaX9CuP
-         MyiA==
-X-Gm-Message-State: AOAM532mEFWDP27VacdzYIH4fnTl4r4oxkMYEByjwIwSTBOUyWX59C2R
-        OppO3Q/O0JGpkF1ZnJEDY1xz/xPcncZsaSzqo5mnqQ==
-X-Google-Smtp-Source: ABdhPJwcZWnwUZBTqM0sxN5IRp11B+ol/YTZpoa5qsJpj61ysTHH9tG19j4VKQcti7QxF7eU+rcXtzQeNyrlpU0p/zI=
-X-Received: by 2002:a67:e9d8:: with SMTP id q24mr887206vso.165.1597995607373;
- Fri, 21 Aug 2020 00:40:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <1596673949-1571-1-git-send-email-skomatineni@nvidia.com>
-In-Reply-To: <1596673949-1571-1-git-send-email-skomatineni@nvidia.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 21 Aug 2020 09:39:31 +0200
-Message-ID: <CAPDyKFre3Rpfd-XW=kMzuKJAfUcr4v-vEj9KVkPyAvkbTdRuGg@mail.gmail.com>
-Subject: Re: [PATCH v3 0/6] Fix timeout clock used by hardware data timeout
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        "# 4.0+" <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728008AbgHUHnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 03:43:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38234 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726002AbgHUHnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 03:43:08 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B1022078D;
+        Fri, 21 Aug 2020 07:43:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597995788;
+        bh=snzhPM8cOWUDWnwq2KTsF9Bnjhly7fQhbcxo/se/pak=;
+        h=From:To:Subject:Date:From;
+        b=n/0mfI5N7S+Ofkrfi6HMmkCIBszBlYwspVxEdfmTFUWu8L5oEoOOTakE+JZ0St4TP
+         wtQLT5hlmBSpr9oOJKYK+QERc8H4N56d5ZHv3j/m8rL/I//tLXEBVw0fyjYzBPajj4
+         dXhiJD2bqmQAYXVI5LqgJu6iY3zt9atia8ijt2uc=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: s3c: Cleanup from old plat-samsung include
+Date:   Fri, 21 Aug 2020 09:42:51 +0200
+Message-Id: <20200821074251.26798-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 6 Aug 2020 at 02:32, Sowjanya Komatineni <skomatineni@nvidia.com> wrote:
->
-> Tegra210/Tegra186/Tegra194 has incorrectly enabled
-> SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK from the beginning of their support.
->
-> Tegra210 and later SDMMC hardware default uses sdmmc_legacy_tm (TMCLK)
-> all the time for hardware data timeout instead of SDCLK and this TMCLK
-> need to be kept enabled by Tegra sdmmc driver.
->
-> This series includes patches to fix this for Tegra210/Tegra186/Tegra194.
->
-> These patches need to be manually backported for 4.9, 4.14 and 4.19.
->
-> Will send patches to backport separately once these patches are ack'd.
->
-> Delta between patch versions:
-> [v3]:   Same as v2 with fixes tag
->
-> [v2]:   Includes minor fix
->         - Patch-0006: parentheses around operand of '!'
->
-> Sowjanya Komatineni (6):
->   sdhci: tegra: Remove SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK for Tegra210
->   sdhci: tegra: Remove SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK for Tegra186
->   arm64: tegra: Add missing timeout clock to Tegra210 SDMMC
->   arm64: tegra: Add missing timeout clock to Tegra186 SDMMC nodes
->   arm64: tegra: Add missing timeout clock to Tegra194 SDMMC nodes
->   sdhci: tegra: Add missing TMCLK for data timeout
->
->  arch/arm64/boot/dts/nvidia/tegra186.dtsi | 20 +++++++++------
->  arch/arm64/boot/dts/nvidia/tegra194.dtsi | 15 ++++++-----
->  arch/arm64/boot/dts/nvidia/tegra210.dtsi | 20 +++++++++------
->  drivers/mmc/host/sdhci-tegra.c           | 43 ++++++++++++++++++++++++++++++--
->  4 files changed, 74 insertions(+), 24 deletions(-)
->
-> --
-> 2.7.4
->
+The arch/arm/plat-samsung/ was removed and merged into
+arch/arm/mach-s3c/ so the include path is not needed anymore.
 
-This looks good to me.
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ arch/arm/mach-s3c/Makefile.s3c64xx | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-If it helps, I can also pick the arm64 patches for my fixes branch,
-but I need an ack from Thierry/Jon to do that.
+diff --git a/arch/arm/mach-s3c/Makefile.s3c64xx b/arch/arm/mach-s3c/Makefile.s3c64xx
+index e06e5356da9b..0c18e31936df 100644
+--- a/arch/arm/mach-s3c/Makefile.s3c64xx
++++ b/arch/arm/mach-s3c/Makefile.s3c64xx
+@@ -3,8 +3,8 @@
+ # Copyright 2008 Openmoko, Inc.
+ # Copyright 2008 Simtec Electronics
+ 
+-ccflags-$(CONFIG_ARCH_MULTIPLATFORM) := -I$(srctree)/$(src)/include -I$(srctree)/arch/arm/plat-samsung/include
+-asflags-$(CONFIG_ARCH_MULTIPLATFORM) := -I$(srctree)/$(src)/include -I$(srctree)/arch/arm/plat-samsung/include
++ccflags-$(CONFIG_ARCH_MULTIPLATFORM) := -I$(srctree)/$(src)/include
++asflags-$(CONFIG_ARCH_MULTIPLATFORM) := -I$(srctree)/$(src)/include
+ 
+ # PM
+ 
+-- 
+2.17.1
 
-Kind regards
-Uffe
