@@ -2,121 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F07D24CE42
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 08:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAEC424CE2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 08:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727854AbgHUGvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 02:51:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54880 "EHLO mx2.suse.de"
+        id S1727882AbgHUGqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 02:46:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbgHUGvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 02:51:09 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 36528B663;
-        Fri, 21 Aug 2020 06:51:35 +0000 (UTC)
-Date:   Fri, 21 Aug 2020 08:51:05 +0200
-From:   Petr Vorel <pvorel@suse.cz>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LTP List <ltp@lists.linux.it>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, patches@kernelci.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        linux- stable <stable@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [LTP] [PATCH 5.8 000/232] 5.8.3-rc1 review
-Message-ID: <20200821065105.GB11908@dell5510>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-References: <20200820091612.692383444@linuxfoundation.org>
- <CA+G9fYtebf78TH-XpqArunHc1L6s9mHdLEbpY1EY9tSyDjp=sg@mail.gmail.com>
- <20200820182516.GA49496@sol.localdomain>
+        id S1726119AbgHUGqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 02:46:17 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D5EEA20748;
+        Fri, 21 Aug 2020 06:46:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597992376;
+        bh=E8/QKt/psBiZD7V2dq3ByXn++GuY707IyEPgBWV+szQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=0rFD/WFXI+/TBHiNQU/T93FRcCh0QW22vFPqQvpF/U2pQ+Xquq9m1332tyabfVFLt
+         eqD36Hoe0SBJpiiPBusYgi4Z78S9qHAC/VUWiHEyMv6M4KsJTQ22mkh3ZedJp2s789
+         bxowu5jFIfR59e/b0A2k9jxvQG7bd+fpb8K6KpmY=
+Date:   Fri, 21 Aug 2020 01:52:04 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Christian Lamparter <chunkeey@googlemail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH][next] carl9170: Use fallthrough pseudo-keyword
+Message-ID: <20200821065204.GA24827@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200820182516.GA49496@sol.localdomain>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Replace the existing /* fall through */ comments and its variants with
+the new pseudo-keyword macro fallthrough[1].
 
-> On Thu, Aug 20, 2020 at 08:57:57PM +0530, Naresh Kamboju wrote:
-> > On Thu, 20 Aug 2020 at 14:55, Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
+[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-> > > This is the start of the stable review cycle for the 5.8.3 release.
-> > > There are 232 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/wireless/ath/carl9170/rx.c | 2 +-
+ drivers/net/wireless/ath/carl9170/tx.c | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-> > > Responses should be made by Sat, 22 Aug 2020 09:15:09 +0000.
-> > > Anything received after that time might be too late.
+diff --git a/drivers/net/wireless/ath/carl9170/rx.c b/drivers/net/wireless/ath/carl9170/rx.c
+index 23ab8a80c18c..908c4c8b7f82 100644
+--- a/drivers/net/wireless/ath/carl9170/rx.c
++++ b/drivers/net/wireless/ath/carl9170/rx.c
+@@ -766,7 +766,7 @@ static void carl9170_rx_untie_data(struct ar9170 *ar, u8 *buf, int len)
+ 
+ 			goto drop;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 
+ 	case AR9170_RX_STATUS_MPDU_MIDDLE:
+ 		/*  These are just data + mac status */
+diff --git a/drivers/net/wireless/ath/carl9170/tx.c b/drivers/net/wireless/ath/carl9170/tx.c
+index 2407931440ed..8f896e1a6ad6 100644
+--- a/drivers/net/wireless/ath/carl9170/tx.c
++++ b/drivers/net/wireless/ath/carl9170/tx.c
+@@ -830,12 +830,12 @@ static bool carl9170_tx_rts_check(struct ar9170 *ar,
+ 	case CARL9170_ERP_AUTO:
+ 		if (ampdu)
+ 			break;
+-		/* fall through */
++		fallthrough;
+ 
+ 	case CARL9170_ERP_MAC80211:
+ 		if (!(rate->flags & IEEE80211_TX_RC_USE_RTS_CTS))
+ 			break;
+-		/* fall through */
++		fallthrough;
+ 
+ 	case CARL9170_ERP_RTS:
+ 		if (likely(!multi))
+@@ -856,7 +856,7 @@ static bool carl9170_tx_cts_check(struct ar9170 *ar,
+ 	case CARL9170_ERP_MAC80211:
+ 		if (!(rate->flags & IEEE80211_TX_RC_USE_CTS_PROTECT))
+ 			break;
+-		/* fall through */
++		fallthrough;
+ 
+ 	case CARL9170_ERP_CTS:
+ 		return true;
+-- 
+2.27.0
 
-> > > The whole patch series can be found in one patch at:
-> > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.3-rc1.gz
-> > > or in the git tree and branch at:
-> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.8.y
-> > > and the diffstat can be found below.
-
-> > > thanks,
-
-> > > greg k-h
-
-> > > Herbert Xu <herbert@gondor.apana.org.au>
-> > >     crypto: af_alg - Fix regression on empty requests
-
-> > Results from Linaro’s test farm.
-> > Regressions detected.
-
-> >   ltp-crypto-tests:
-> >     * af_alg02
-> >   ltp-cve-tests:
-> >     * cve-2017-17805
-
-> > af_alg02.c:52: BROK: Timed out while reading from request socket.
-> > We are running the LTP 20200515 tag released test suite.
-> >  https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/crypto/af_alg02.c
-
-> > Summary
-> > ------------------------------------------------------------------------
-
-> > kernel: 5.8.3-rc1
-> > git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> > git branch: linux-5.8.y
-> > git commit: 201fff807310ce10485bcff294d47be95f3769eb
-> > git describe: v5.8.2-233-g201fff807310
-> > Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.8-oe/build/v5.8.2-233-g201fff807310
-
-> > Regressions (compared to build v5.8.2)
-> > ------------------------------------------------------------------------
-
-> > x15:
-> >   ltp-crypto-tests:
-> >     * af_alg02
-
-> >   ltp-cve-tests:
-> >     * cve-2017-17805
-
-
-> Looks like this test is still "broken" because it assumes behavior that isn't
-> clearly specified, as previously discussed at
-> https://lkml.kernel.org/r/20200702033221.GA19367@gondor.apana.org.au.
-
-> I sent out LTP patches to fix it:
-> https://lkml.kernel.org/linux-crypto/20200820181918.404758-1-ebiggers@kernel.org/T/#u
-
-FYI fix for LTP merged.
-
-Kind regards,
-Petr
-
-> - Eric
