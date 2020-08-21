@@ -2,103 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 331A224D4A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 14:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08CC024D4AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 14:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728364AbgHUMFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 08:05:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37003 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725935AbgHUMF1 (ORCPT
+        id S1727808AbgHUMIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 08:08:05 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:46846 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728245AbgHUMHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 08:05:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598011525;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QtKGfR+1iR3kEPsEfjDAOfFZGutCuRuneaQE3YwB9Lg=;
-        b=OGx1XxScDqNqx0DyLVsiMUTHwAfWbI2wH19FA03ABwJEZEpGKvLs51V5XzXN4Vyy3fr7i1
-        4q18ufGNjoq6q+gtCgNYSoFbibHG0aQtHG+HGflngXOxhPaLVeckLqguGuv+bWzdQGm2Jl
-        fDpr9Jek8I4OwLbizGq3Pfz4WUfwpoY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-550-2ptqIlFQPKaVrVvN1P1Tbw-1; Fri, 21 Aug 2020 08:05:21 -0400
-X-MC-Unique: 2ptqIlFQPKaVrVvN1P1Tbw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0AF017A162;
-        Fri, 21 Aug 2020 12:05:19 +0000 (UTC)
-Received: from gondolin (ovpn-113-4.ams2.redhat.com [10.36.113.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0614D5D9CC;
-        Fri, 21 Aug 2020 12:05:12 +0000 (UTC)
-Date:   Fri, 21 Aug 2020 14:05:10 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Pierre Morel <pmorel@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, pasic@linux.ibm.com,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, mst@redhat.com,
-        jasowang@redhat.com, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, thomas.lendacky@amd.com,
-        david@gibson.dropbear.id.au, linuxram@us.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v9 2/2] s390: virtio: PV needs VIRTIO I/O device
- protection
-Message-ID: <20200821140510.3849410c.cohuck@redhat.com>
-In-Reply-To: <1597854198-2871-3-git-send-email-pmorel@linux.ibm.com>
-References: <1597854198-2871-1-git-send-email-pmorel@linux.ibm.com>
-        <1597854198-2871-3-git-send-email-pmorel@linux.ibm.com>
-Organization: Red Hat GmbH
+        Fri, 21 Aug 2020 08:07:41 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07LC73JE030109;
+        Fri, 21 Aug 2020 07:07:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1598011623;
+        bh=Elz/9n2A7E9MeIn4e8Ei1rQfUn6BwgGav4oa/R3NlgY=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=oBK7zLkdjltsOOeJe+AYO98TES7rye9lU54yuwIZH8hY0Xs4Ga1AfGvYkcJXuBaUC
+         nlICVFizJ5QEdy0mQhackZOQZjMJVArHnZwwVon3MX7gWDAAT4CBxbO6B4hzGztdxW
+         s5mvAMhM/DQGZ9By8k8zX/hrUt53oy2w8/O3S5hY=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 07LC72PV056631
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 21 Aug 2020 07:07:03 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 21
+ Aug 2020 07:07:02 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 21 Aug 2020 07:07:02 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07LC6x4O110362;
+        Fri, 21 Aug 2020 07:07:00 -0500
+Subject: Re: [PATCH] drm/omap: Fix runtime PM imbalance in dsi_runtime_get
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, <kjlu@umn.edu>
+CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Tony Lindgren <tony@atomide.com>,
+        zhengbin <zhengbin13@huawei.com>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+References: <20200821074506.32359-1-dinghao.liu@zju.edu.cn>
+From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
+Message-ID: <5123d7ae-f491-d2d2-788d-b5250ae9e31d@ti.com>
+Date:   Fri, 21 Aug 2020 15:06:59 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200821074506.32359-1-dinghao.liu@zju.edu.cn>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Aug 2020 18:23:18 +0200
-Pierre Morel <pmorel@linux.ibm.com> wrote:
+Hi,
 
-> If protected virtualization is active on s390, VIRTIO has retricted
-
-s/retricted/only restricted/
-
-> access to the guest memory.
-> Define CONFIG_ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS and export
-> arch_has_restricted_virtio_memory_access to advertize VIRTIO if that's
-> the case, preventing a host error on access attempt.
+On 21/08/2020 10:45, Dinghao Liu wrote:
+> pm_runtime_get_sync() increments the runtime PM usage counter
+> even when it returns an error code. However, users of
+> dsi_runtime_get(), a direct wrapper of pm_runtime_get_sync(),
+> assume that PM usage counter will not change on error. Thus a
+> pairing decrement is needed on the error handling path to keep
+> the counter balanced.
 > 
-> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
+> Fixes: 4fbafaf371be7 ("OMAP: DSS2: Use PM runtime & HWMOD support")
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 > ---
->  arch/s390/Kconfig   |  1 +
->  arch/s390/mm/init.c | 11 +++++++++++
->  2 files changed, 12 insertions(+)
-
-(...)
-
-> diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
-> index 6dc7c3b60ef6..8febd73ed6ca 100644
-> --- a/arch/s390/mm/init.c
-> +++ b/arch/s390/mm/init.c
-> @@ -45,6 +45,7 @@
->  #include <asm/kasan.h>
->  #include <asm/dma-mapping.h>
->  #include <asm/uv.h>
-> +#include <linux/virtio_config.h>
-
-I don't think you need this include anymore.
-
+>  drivers/gpu/drm/omapdrm/dss/dsi.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/omapdrm/dss/dsi.c b/drivers/gpu/drm/omapdrm/dss/dsi.c
+> index eeccf40bae41..973bfa14a104 100644
+> --- a/drivers/gpu/drm/omapdrm/dss/dsi.c
+> +++ b/drivers/gpu/drm/omapdrm/dss/dsi.c
+> @@ -1112,8 +1112,11 @@ static int dsi_runtime_get(struct dsi_data *dsi)
+>  	DSSDBG("dsi_runtime_get\n");
 >  
->  pgd_t swapper_pg_dir[PTRS_PER_PGD] __section(.bss..swapper_pg_dir);
->  
+>  	r = pm_runtime_get_sync(dsi->dev);
+> -	WARN_ON(r < 0);
+> -	return r < 0 ? r : 0;
+> +	if (WARN_ON(r < 0)) {
+> +		pm_runtime_put_noidle(dsi->dev);
+> +		return r;
+> +	}
+> +	return 0;
+>  }
 
-(...)
+Thanks! Good catch. I think this is broken in all the other modules in omapdrm too (e.g. dispc.c,
+venc.c, etc).
 
-With the nit fixed,
+Would you like to update the patch to cover the whole omapdrm?
 
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+ Tomi
 
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
