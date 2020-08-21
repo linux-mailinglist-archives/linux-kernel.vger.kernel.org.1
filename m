@@ -2,71 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35DCC24CFF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 09:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F9F24CFDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 09:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728249AbgHUHuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 03:50:25 -0400
-Received: from elvis.franken.de ([193.175.24.41]:54252 "EHLO elvis.franken.de"
+        id S1728131AbgHUHrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 03:47:45 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:55462 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728010AbgHUHuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 03:50:18 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1k91oP-00079q-02; Fri, 21 Aug 2020 09:50:09 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id EC7FBC0D89; Fri, 21 Aug 2020 09:47:05 +0200 (CEST)
-Date:   Fri, 21 Aug 2020 09:47:05 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-mips@linux-mips.org, Huacai Chen <chenhc@lemote.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Liangliang Huang <huanglllzu@gmail.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
-        <linux-mips@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH mips-fixes 0/2] MIPS: BMIPS: couple of fixes
-Message-ID: <20200821074705.GC8336@alpha.franken.de>
-References: <20200819182645.30132-1-f.fainelli@gmail.com>
+        id S1725908AbgHUHro (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 03:47:44 -0400
+Received: from zn.tnic (p200300ec2f0eda00b4e1d8975031aaf0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:da00:b4e1:d897:5031:aaf0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 522451EC013E;
+        Fri, 21 Aug 2020 09:47:43 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1597996063;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=x0qqa/IvqrLY60Nv10kXxs4ZIliJBY04I896OOhUGRs=;
+        b=juC3rw6mRkclVIO9LDa0WrzWnTCqKSyhGOm2CZ5oQY1OW1o37YT2e/7Q/fzIblYhrqVhXM
+        cAzBNBKLHa+HLide6l50783CgJZIn/YZbkq+OmkwWjwMTgzUOMiDlUaNEiKoBboXSnGqd/
+        aXtqVIr/+gWx0Una9QOIpG/Md4MpqeI=
+Date:   Fri, 21 Aug 2020 09:47:43 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@intel.com>,
+        Chang Seok Bae <chang.seok.bae@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH] x86/entry/64: Disallow RDPID in paranoid entry if KVM is
+ enabled
+Message-ID: <20200821074743.GB12181@zn.tnic>
+References: <20200821025050.32573-1-sean.j.christopherson@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200819182645.30132-1-f.fainelli@gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20200821025050.32573-1-sean.j.christopherson@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 11:26:43AM -0700, Florian Fainelli wrote:
-> Hi Thomas,
-> 
-> These two patches are fixes for the BMIPS5000/5200 CPU cores which were
-> missing an inclusive physical cache setting from the cpuinfo structure
-> and we would not be calling CPU specific initialization for secondarey
-> cores on the second hardware thread.
-> 
-> Thanks!
-> 
-> Florian Fainelli (2):
->   MIPS: mm: BMIPS5000 has inclusive physical caches
->   MIPS: BMIPS: Also call bmips_cpu_setup() for secondary cores
-> 
->  arch/mips/kernel/smp-bmips.c | 2 ++
->  arch/mips/mm/c-r4k.c         | 4 ++++
->  2 files changed, 6 insertions(+)
+On Thu, Aug 20, 2020 at 07:50:50PM -0700, Sean Christopherson wrote:
+> +	 * Disallow RDPID if KVM is enabled as it may consume a guest's TSC_AUX
+> +	 * if an NMI arrives in KVM's run loop.  KVM loads guest's TSC_AUX on
+> +	 * VM-Enter and may not restore the host's value until the CPU returns
+> +	 * to userspace, i.e. KVM depends on the kernel not using TSC_AUX.
+>  	 */
 
-series applied to mips-fixes.
-
-Thomas.
+And frankly, this is really unfair. The kernel should be able to use any
+MSR. IOW, KVM needs to be fixed here. I'm sure it context-switches other
+MSRs so one more MSR is not a big deal.
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
