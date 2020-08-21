@@ -2,192 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5B624D5D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 15:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC4124D5DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 15:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727929AbgHUNJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 09:09:51 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:54382 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726879AbgHUNJt (ORCPT
+        id S1728740AbgHUNMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 09:12:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728424AbgHUNMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 09:09:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598015387;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Od+bO6wwGHZOpfyUe8CiRlpyX1hZ1GD4+OWd3dAX8YA=;
-        b=STB2EhqUyy49UsAXTTFI1HiJZRY1NW+uJWaeMn2QGu+w9LW8TBYTfmPLLha1JUsqcWdRpB
-        +H9djbOQgOA8nAcvuI9yLake6AJAWqrUhaWVhCzQwmbazFlGaDYRDs/zKW+i2OACFFZZpp
-        dAeL/l+82+ndepKHZ0YMU9UrqPWBT5E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-350-mXq3zwf3MwmX4df6JT2Brg-1; Fri, 21 Aug 2020 09:09:44 -0400
-X-MC-Unique: mXq3zwf3MwmX4df6JT2Brg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E550B18BA282;
-        Fri, 21 Aug 2020 13:09:41 +0000 (UTC)
-Received: from [10.36.113.93] (ovpn-113-93.ams2.redhat.com [10.36.113.93])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8D35877DC2;
-        Fri, 21 Aug 2020 13:09:31 +0000 (UTC)
-Subject: Re: [PATCH v6 08/15] iommu: Pass domain to sva_unbind_gpasid()
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        Liu Yi L <yi.l.liu@intel.com>
-Cc:     baolu.lu@linux.intel.com, joro@8bytes.org, kevin.tian@intel.com,
-        jacob.jun.pan@linux.intel.com, ashok.raj@intel.com,
-        jun.j.tian@intel.com, yi.y.sun@intel.com, jean-philippe@linaro.org,
-        peterx@redhat.com, hao.wu@intel.com, stefanha@gmail.com,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
+        Fri, 21 Aug 2020 09:12:08 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1523C061386
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 06:12:07 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id p37so989442pgl.3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 06:12:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=puresoftware-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=D2PwpsMUTCasLz9FqCzUHUP5KXb5LPz5R+x6aX8WiZQ=;
+        b=1onrWeHHMmDVknpA2uV25ha9IJr0G5mTStI8ZlUbClOQix1A+pPdhjnagMz/u4XR65
+         qDAk6aPswygvKlb9PqI7ZKCOdUyGppai4bsY/M7TUb91W7908R2FrpRbMaY9+KfA7YgH
+         qEdalhB8uYl50TiRpFs+7n8BpXTjpviu6lC1XRKpMQF7yqFz8taEWWOpKwaK0kpFWoTZ
+         GNUle4PRsbS16PtZzBmXzfoUrG5xTZCUkt3Kv/aNIAKSvzWLeJJ5Wz5bkewNlBfLheKV
+         Sv7fZy+d66IcfsVfp2FrUBGzXu0b4vkuUY5hI0kooIvRZxawjobiWs2hKuMFWHK5JdFi
+         890g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=D2PwpsMUTCasLz9FqCzUHUP5KXb5LPz5R+x6aX8WiZQ=;
+        b=mMr4BSc5e3NAMag0g/cytXRFFqZzqEq7w4NhsBF5Ta8bsDIdWk8wL1HaHnasRcB504
+         8sJHMxiF78j5NtlJmh7EmAJyaZBCPrpu2BQJ+iFHGWeYxNrjNyfHKFA7sNWsWZkcp+k2
+         45tACmtdlqnoS2e6mqUqAKu58D6ajYnDqSdzZ339c3Kh/FUq3q6l0Qn+n2RGrGbYVNlO
+         vVxv0rR7Io1kkdkrTX6GHfd4+eCbS8z8jrKfc5qzpQHrGGGeNV1oljoUz3fUQDJEdEne
+         xJwA00MxEXNjFAGCxo2nZALpP8sIcRvH6B94qF9y6SQs70biVSKDj72VekDJ/cwa8+GL
+         4w1g==
+X-Gm-Message-State: AOAM531GOwfs6Qghz3okRHjEPgFWGicGmdow3KdhBoIOOyjfwmKD3QQV
+        csX2FFm6vs5gXk2iDa2r01FpOg==
+X-Google-Smtp-Source: ABdhPJzfb0gN2abYX4GdmaZSHtC8hbDKtREiTizuy/pbCL5T4rwYku3c2SEIQzNgqnnRz+2iLNBuoA==
+X-Received: by 2002:a62:1dc3:: with SMTP id d186mr2475579pfd.93.1598015526392;
+        Fri, 21 Aug 2020 06:12:06 -0700 (PDT)
+Received: from DESKTOP-C4AMQCQ.domain.name ([106.215.106.193])
+        by smtp.gmail.com with ESMTPSA id l4sm2147732pgk.74.2020.08.21.06.12.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Aug 2020 06:12:05 -0700 (PDT)
+From:   kuldip dwivedi <kuldip.dwivedi@puresoftware.com>
+To:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <1595917664-33276-1-git-send-email-yi.l.liu@intel.com>
- <1595917664-33276-9-git-send-email-yi.l.liu@intel.com>
- <20200820150619.5dc1ec7a@x1.home>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <7db3f15c-09e3-6a52-352a-c9a499895922@redhat.com>
-Date:   Fri, 21 Aug 2020 15:09:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-MIME-Version: 1.0
-In-Reply-To: <20200820150619.5dc1ec7a@x1.home>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Cc:     Qiang Zhao <qiang.zhao@nxp.com>,
+        Pankaj Bansal <pankaj.bansal@nxp.com>,
+        Varun Sethi <V.Sethi@nxp.com>,
+        kuldip dwivedi <kuldip.dwivedi@puresoftware.com>,
+        tanveer <tanveer.alam@puresoftware.com>
+Subject: [PATCH] spi: spi-fsl-dspi: Add ACPI support
+Date:   Fri, 21 Aug 2020 18:40:29 +0530
+Message-Id: <20200821131029.11440-1-kuldip.dwivedi@puresoftware.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Currently fsl DSPI driver has support of DT only. Adding ACPI
+support to the drive so that it can be used by UEFI firmware
+boot in ACPI mode. This driver will be probed if any firmware
+will expose HID "NXP0005" in DSDT table.
 
-On 8/20/20 11:06 PM, Alex Williamson wrote:
-> On Mon, 27 Jul 2020 23:27:37 -0700
-> Liu Yi L <yi.l.liu@intel.com> wrote:
-> 
->> From: Yi Sun <yi.y.sun@intel.com>
->>
->> Current interface is good enough for SVA virtualization on an assigned
->> physical PCI device, but when it comes to mediated devices, a physical
->> device may attached with multiple aux-domains. Also, for guest unbind,
-> 
-> s/may/may be/
-> 
->> the PASID to be unbind should be allocated to the VM. This check requires
->> to know the ioasid_set which is associated with the domain.
->>
->> So this interface needs to pass in domain info. Then the iommu driver is
->> able to know which domain will be used for the 2nd stage translation of
->> the nesting mode and also be able to do PASID ownership check. This patch
->> passes @domain per the above reason. Also, the prototype of &pasid is
->> changed frnt" to "u32" as the below link.
-> 
-> s/frnt"/from an "int"/
->  
->> https://lore.kernel.org/kvm/27ac7880-bdd3-2891-139e-b4a7cd18420b@redhat.com/
-> 
-> This is really confusing, the link is to Eric's comment asking that the
-> conversion from (at the time) int to ioasid_t be included in the commit
-> log.  The text here implies that it's pointing to some sort of
-> justification for the change, which it isn't.  It just notes that it
-> happened, not why it happened, with a mostly irrelevant link.
-> 
->> Cc: Kevin Tian <kevin.tian@intel.com>
->> CC: Jacob Pan <jacob.jun.pan@linux.intel.com>
->> Cc: Alex Williamson <alex.williamson@redhat.com>
->> Cc: Eric Auger <eric.auger@redhat.com>
->> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
->> Cc: Joerg Roedel <joro@8bytes.org>
->> Cc: Lu Baolu <baolu.lu@linux.intel.com>
->> Reviewed-by: Eric Auger <eric.auger@redhat.com>
->> Signed-off-by: Yi Sun <yi.y.sun@intel.com>
->> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
->> ---
->> v5 -> v6:
->> *) use "u32" prototype for @pasid.
->> *) add review-by from Eric Auger.
-> 
-> I'd probably hold off on adding Eric's R-b given the additional change
-> in this version FWIW.  Thanks,
+Signed-off-by: tanveer <tanveer.alam@puresoftware.com>
+Signed-off-by: kuldip dwivedi <kuldip.dwivedi@puresoftware.com>
+---
+ drivers/spi/spi-fsl-dspi.c | 91 +++++++++++++++++++++++++++++---------
+ 1 file changed, 69 insertions(+), 22 deletions(-)
 
-Yep I did not notice that change given the R-b was applied ;-)
-
-Thanks
-
-Eric
-> 
-> Alex
->  
->> v2 -> v3:
->> *) pass in domain info only
->> *) use u32 for pasid instead of int type
->>
->> v1 -> v2:
->> *) added in v2.
->> ---
->>  drivers/iommu/intel/svm.c   | 3 ++-
->>  drivers/iommu/iommu.c       | 2 +-
->>  include/linux/intel-iommu.h | 3 ++-
->>  include/linux/iommu.h       | 3 ++-
->>  4 files changed, 7 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
->> index c27d16a..c85b8d5 100644
->> --- a/drivers/iommu/intel/svm.c
->> +++ b/drivers/iommu/intel/svm.c
->> @@ -436,7 +436,8 @@ int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
->>  	return ret;
->>  }
->>  
->> -int intel_svm_unbind_gpasid(struct device *dev, int pasid)
->> +int intel_svm_unbind_gpasid(struct iommu_domain *domain,
->> +			    struct device *dev, u32 pasid)
->>  {
->>  	struct intel_iommu *iommu = intel_svm_device_to_iommu(dev);
->>  	struct intel_svm_dev *sdev;
->> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->> index 1ce2a61..bee79d7 100644
->> --- a/drivers/iommu/iommu.c
->> +++ b/drivers/iommu/iommu.c
->> @@ -2145,7 +2145,7 @@ int iommu_sva_unbind_gpasid(struct iommu_domain *domain, struct device *dev,
->>  	if (unlikely(!domain->ops->sva_unbind_gpasid))
->>  		return -ENODEV;
->>  
->> -	return domain->ops->sva_unbind_gpasid(dev, data->hpasid);
->> +	return domain->ops->sva_unbind_gpasid(domain, dev, data->hpasid);
->>  }
->>  EXPORT_SYMBOL_GPL(iommu_sva_unbind_gpasid);
->>  
->> diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
->> index 0d0ab32..f98146b 100644
->> --- a/include/linux/intel-iommu.h
->> +++ b/include/linux/intel-iommu.h
->> @@ -738,7 +738,8 @@ extern int intel_svm_enable_prq(struct intel_iommu *iommu);
->>  extern int intel_svm_finish_prq(struct intel_iommu *iommu);
->>  int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
->>  			  struct iommu_gpasid_bind_data *data);
->> -int intel_svm_unbind_gpasid(struct device *dev, int pasid);
->> +int intel_svm_unbind_gpasid(struct iommu_domain *domain,
->> +			    struct device *dev, u32 pasid);
->>  struct iommu_sva *intel_svm_bind(struct device *dev, struct mm_struct *mm,
->>  				 void *drvdata);
->>  void intel_svm_unbind(struct iommu_sva *handle);
->> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
->> index b1ff702..80467fc 100644
->> --- a/include/linux/iommu.h
->> +++ b/include/linux/iommu.h
->> @@ -303,7 +303,8 @@ struct iommu_ops {
->>  	int (*sva_bind_gpasid)(struct iommu_domain *domain,
->>  			struct device *dev, struct iommu_gpasid_bind_data *data);
->>  
->> -	int (*sva_unbind_gpasid)(struct device *dev, int pasid);
->> +	int (*sva_unbind_gpasid)(struct iommu_domain *domain,
->> +				 struct device *dev, u32 pasid);
->>  
->>  	int (*def_domain_type)(struct device *dev);
->>  
-> 
+diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
+index 91c6affe139c..7100a8a0a30e 100644
+--- a/drivers/spi/spi-fsl-dspi.c
++++ b/drivers/spi/spi-fsl-dspi.c
+@@ -2,10 +2,12 @@
+ //
+ // Copyright 2013 Freescale Semiconductor, Inc.
+ // Copyright 2020 NXP
++// Copyright 2020 Puresoftware Ltd.
+ //
+ // Freescale DSPI driver
+ // This file contains a driver for the Freescale DSPI
+ 
++#include <linux/acpi.h>
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/dmaengine.h>
+@@ -1070,6 +1072,12 @@ static void dspi_cleanup(struct spi_device *spi)
+ 	kfree(chip);
+ }
+ 
++static const struct acpi_device_id fsl_dspi_acpi_ids[] = {
++	{ "NXP0005", .driver_data = (kernel_ulong_t)&devtype_data[LS2085A], },
++	{},
++};
++MODULE_DEVICE_TABLE(acpi, fsl_dspi_acpi_ids);
++
+ static const struct of_device_id fsl_dspi_dt_ids[] = {
+ 	{
+ 		.compatible = "fsl,vf610-dspi",
+@@ -1272,6 +1280,7 @@ static int dspi_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	void __iomem *base;
+ 	bool big_endian;
++	u32 clk_rate;
+ 
+ 	ctlr = spi_alloc_master(&pdev->dev, sizeof(struct fsl_dspi));
+ 	if (!ctlr)
+@@ -1300,20 +1309,41 @@ static int dspi_probe(struct platform_device *pdev)
+ 		big_endian = true;
+ 	} else {
+ 
+-		ret = of_property_read_u32(np, "spi-num-chipselects", &cs_num);
++		if (is_acpi_node(pdev->dev.fwnode))
++			ret = device_property_read_u32(&pdev->dev,
++					"spi-num-chipselects", &cs_num);
++		else
++			ret = of_property_read_u32(np,
++					"spi-num-chipselects", &cs_num);
+ 		if (ret < 0) {
+ 			dev_err(&pdev->dev, "can't get spi-num-chipselects\n");
+ 			goto out_ctlr_put;
+ 		}
+ 		ctlr->num_chipselect = cs_num;
+ 
+-		of_property_read_u32(np, "bus-num", &bus_num);
++		if (is_acpi_node(pdev->dev.fwnode)) {
++			ret = device_property_read_u32(&pdev->dev,
++							"bus-num", &bus_num);
++			if (ret < 0) {
++				dev_err(&pdev->dev, "can't get bus-num\n");
++				goto out_ctlr_put;
++			}
++		} else {
++			of_property_read_u32(np, "bus-num", &bus_num);
++		}
+ 		ctlr->bus_num = bus_num;
+ 
+-		if (of_property_read_bool(np, "spi-slave"))
+-			ctlr->slave = true;
++		if (!is_acpi_node(pdev->dev.fwnode)) {
++			if (of_property_read_bool(np, "spi-slave"))
++				ctlr->slave = true;
++		}
++
++		if (is_acpi_node(pdev->dev.fwnode))
++			dspi->devtype_data = device_get_match_data(&pdev->dev);
++		else
++			dspi->devtype_data =
++				of_device_get_match_data(&pdev->dev);
+ 
+-		dspi->devtype_data = of_device_get_match_data(&pdev->dev);
+ 		if (!dspi->devtype_data) {
+ 			dev_err(&pdev->dev, "can't get devtype_data\n");
+ 			ret = -EFAULT;
+@@ -1367,15 +1397,18 @@ static int dspi_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	dspi->clk = devm_clk_get(&pdev->dev, "dspi");
+-	if (IS_ERR(dspi->clk)) {
+-		ret = PTR_ERR(dspi->clk);
+-		dev_err(&pdev->dev, "unable to get clock\n");
+-		goto out_ctlr_put;
++	if (!is_acpi_node(pdev->dev.fwnode)) {
++		dspi->clk = devm_clk_get(&pdev->dev, "dspi");
++		if (IS_ERR(dspi->clk)) {
++			ret = PTR_ERR(dspi->clk);
++			dev_err(&pdev->dev, "unable to get clock\n");
++			goto out_ctlr_put;
++		}
++
++		ret = clk_prepare_enable(dspi->clk);
++		if (ret)
++			goto out_ctlr_put;
+ 	}
+-	ret = clk_prepare_enable(dspi->clk);
+-	if (ret)
+-		goto out_ctlr_put;
+ 
+ 	ret = dspi_init(dspi);
+ 	if (ret)
+@@ -1408,8 +1441,21 @@ static int dspi_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	ctlr->max_speed_hz =
+-		clk_get_rate(dspi->clk) / dspi->devtype_data->max_clock_factor;
++	if (is_acpi_node(pdev->dev.fwnode)) {
++		ret = device_property_read_u32(&pdev->dev,
++					       "clock-frequency", &clk_rate);
++		if (ret < 0) {
++			dev_err(&pdev->dev, "can't get clock-frequency\n");
++			goto out_ctlr_put;
++		}
++
++		ctlr->max_speed_hz =
++			clk_rate / dspi->devtype_data->max_clock_factor;
++	} else {
++		clk_rate = clk_get_rate(dspi->clk);
++		ctlr->max_speed_hz =
++			clk_rate / dspi->devtype_data->max_clock_factor;
++	}
+ 
+ 	if (dspi->devtype_data->trans_mode != DSPI_DMA_MODE)
+ 		ctlr->ptp_sts_supported = true;
+@@ -1465,13 +1511,14 @@ static void dspi_shutdown(struct platform_device *pdev)
+ }
+ 
+ static struct platform_driver fsl_dspi_driver = {
+-	.driver.name		= DRIVER_NAME,
+-	.driver.of_match_table	= fsl_dspi_dt_ids,
+-	.driver.owner		= THIS_MODULE,
+-	.driver.pm		= &dspi_pm,
+-	.probe			= dspi_probe,
+-	.remove			= dspi_remove,
+-	.shutdown		= dspi_shutdown,
++	.driver.name			= DRIVER_NAME,
++	.driver.of_match_table		= fsl_dspi_dt_ids,
++	.driver.acpi_match_table	= ACPI_PTR(fsl_dspi_acpi_ids),
++	.driver.owner			= THIS_MODULE,
++	.driver.pm			= &dspi_pm,
++	.probe				= dspi_probe,
++	.remove				= dspi_remove,
++	.shutdown			= dspi_shutdown,
+ };
+ module_platform_driver(fsl_dspi_driver);
+ 
+-- 
+2.17.1
 
