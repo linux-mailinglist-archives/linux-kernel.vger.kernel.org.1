@@ -2,128 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB06F24DB5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:38:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C0C824DB8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728253AbgHUQik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 12:38:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728506AbgHUQi3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:38:29 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F22C061573
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 09:38:29 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id s14so1122109plp.4
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 09:38:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pantacor-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3W9iCgbZK9Cw1buvEJZPkNGO1pB0TJP+IziLsIrcWLQ=;
-        b=qWa++oMpGxJ4Bw6on2ysodl/N7exZxt3WocQm4s4PTPWs8wtdP6wADlHcM4rh/koD2
-         iHIMLb2lbzoz77N8Su8CIHUPExc+EmRKETVn4/Jao711qUL14VQjc+K5Q1yEHu8hMpat
-         /W2Uj7GFSpuI4sFRIom8jhadNvf+HW98mUZ772RTaUme8mTmUIinYRKNOmGYHErAr8BC
-         srfHs3E1s2DHCP+iDHNlyxQJFVn+ysFWZii7OrGjTCZGT+/iGGDTT35/3LzM7K3GXMBC
-         YdvX+XHasW6jBdCgPYl0Yh5FvQpwFSjxdk3jQUZzsHaeZfnqPi3sWV1vFmbJ5DzSnz+k
-         B6Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3W9iCgbZK9Cw1buvEJZPkNGO1pB0TJP+IziLsIrcWLQ=;
-        b=BsHbhBIa8FpN6IoOCsSDVd4YIr7W4cY1j55pBJx+XnZsGdwm5Q+1R1nIRxb3+BVQzU
-         IbQ/x4VMxlgW7n4VjAhN1N6rCpuPhVa3oScEpDVjTTFnfbvy6A9MWftGkyL+thGd6dau
-         Z4fPvtkp6yHugphRDW1C4aJwSIrAg+qL/IMFk1acv0ZdUTIx3YgBXMi6LLcwm6cRmjDf
-         RsEJ0jLFIqvmJD+XkPt5zgMYVxLoXbVfertVwuk3An0pJzMQzGKI/me/ErpLYrpG+MYd
-         SkmIbGNI6fg2qE0k6hAI2IZHsikJ9kGciP34FmJcS5pPyr2LXeawdIyMirBFLOOOZe0j
-         bl6A==
-X-Gm-Message-State: AOAM5319C2r81JijzjQJXp3HpsYHceg+UY4tnPG1UVfp/yl8tTRPQjLR
-        yXR1phf2eRJ7Rbe5CQY5vfoOrkm64ioQoh1I9zjbBw==
-X-Google-Smtp-Source: ABdhPJzxPHhy5wstykAk668oz2z0rXxsvRp9cZNcYsd0b6oEwQK0YiuuWTnuBT3qcCTpbLHQI09C+t6ItLQ6HUSmhZ4=
-X-Received: by 2002:a17:90a:514a:: with SMTP id k10mr1746257pjm.81.1598027908631;
- Fri, 21 Aug 2020 09:38:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <CABfyVHc=oQmZG9NuJgu1G92VQqsxkynE+S9DosQzh9r+9G1Jbg@mail.gmail.com>
-In-Reply-To: <CABfyVHc=oQmZG9NuJgu1G92VQqsxkynE+S9DosQzh9r+9G1Jbg@mail.gmail.com>
-From:   Pranay Srivastava <pranay.srivastava@pantacor.com>
-Date:   Fri, 21 Aug 2020 22:08:17 +0530
-Message-ID: <CABfyVHcmd0nymzr3M_zxxwbXfMXhJs4HDARy+eMZ+jfLGsy8tw@mail.gmail.com>
-Subject: Re: mountinfo contents changed when rootfs is ramfs
-To:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Cc:     dhowells@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1728503AbgHUQmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 12:42:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54738 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728139AbgHUQkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 12:40:20 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4EF0C207BB;
+        Fri, 21 Aug 2020 16:40:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598028019;
+        bh=pRIfmNaiNOw1L35y4l06tL/wHSPMxVTsjUkGjVve9oA=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=qTTDKWveXPeCEbKj/21q8Q3uNVUNe1ETGOUcRV3IABy7DtksxhPMSWk2CCZPezbFa
+         PvTZHgcJxYEOfb4IJbTUJT/c5AaQVUpPwW+aueWZHQngGv2B3Lpa4its2rHT8VHFXU
+         0UAwBVCBnScmbmCIAxsvWbHiqjVTihrgLydy/GJg=
+Date:   Fri, 21 Aug 2020 17:39:46 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Fabio Estevam <festevam@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Timur Tabi <timur@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+In-Reply-To: <20200821071153.7317-1-matthias.schiffer@ew.tq-group.com>
+References: <20200821071153.7317-1-matthias.schiffer@ew.tq-group.com>
+Subject: Re: [PATCH 1/2] ASoC: bindings: fsl-asoc-card: add compatible string for TLV320AIC32x4 codec
+Message-Id: <159802798182.25503.6288597388971978944.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 5:20 PM Pranay Srivastava
-<pranay.srivastava@pantacor.com> wrote:
->
-> Hello,
->
-> I'm running a system where rootfs is ramfs. For kernel version 5.2.11
->
-> # cat /proc/self/mountinfo
-> 0 0 0:1 / / rw - rootfs rootfs rw
-> %<---snip>%
->
-> while for kernel 5.4.58
-> # cat /proc/self/mountinfo
-> 0 0 0:1 / / rw - rootfs none rw
-> %<---snip>%
->
-> The reason for the above difference is because for kernel 5.2.11 the
-> parse_param for
-> rootfs was set to legacy_parse_param which handled the "source" param
-> instead of
-> ignoring it.
->
-> With kernel 5.4.58 this is set to ramfs_parse_param which ignores any
-> parameters not
-> recognized and also returns 0 instead of -ENOPARAM. This causes
-> vfs_parse_fs_param
-> to not set the file context  source(fc->source) which results in "none" from
-> alloc_vfs_mount(fc->source ? : "none")
->
-> The commit which introduced the above change was
->
-> commit f32356261d44d580649a7abce1156d15d49cf20f
-> Author: David Howells <dhowells@redhat.com>
-> Date:   Mon Mar 25 16:38:31 2019 +0000
->
->     vfs: Convert ramfs, shmem, tmpfs, devtmpfs, rootfs to use the new mount API
->
-> I'm not sure if this is a regression? But if it is, do we handle it like
->
-> diff --git a/fs/ramfs/inode.c b/fs/ramfs/inode.c
-> index ee179a81b3da..47a39baa0535 100644
-> --- a/fs/ramfs/inode.c
-> +++ b/fs/ramfs/inode.c
->
-> @@ -200,7 +200,7 @@ static int ramfs_parse_param(struct fs_context
-> *fc, struct fs_parameter *param)
->                  * and as it is used as a !CONFIG_SHMEM simple substitute
->                  * for tmpfs, better continue to ignore other mount options.
->                  */
-> -               if (opt == -ENOPARAM)
-> +               if (opt == -ENOPARAM && strcmp(param->key, "source"))
->                         opt = 0;
->                 return opt;
->         }
->
-> so that mountinfo gives the same information as for earlier kernels.
->
-> Thanks!
-> --
-> Regards,
-> Pranay Srivastava
+On Fri, 21 Aug 2020 09:11:52 +0200, Matthias Schiffer wrote:
+> The TLV320AIC32x4 is commonly used on TQ-Systems starterkit mainboards
+> for i.MX-based SoMs (i.MX6Q/DL, i.MX6UL, i.MX7) and LS1021A.
 
-Kindly let me know if the above is a regression and needs to be fixed?
+Applied to
 
--- 
-Regards,
-Pranay Srivastava
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/2] ASoC: bindings: fsl-asoc-card: add compatible string for TLV320AIC32x4 codec
+      commit: 6d3029e92f320531805e6aed33c74185e5e3f8fa
+[2/2] ASoC: fsl-asoc-card: add support for TLV320AIC32x4 codec
+      commit: b50747558855ff94523dbb7f08a8c9fadfdd9110
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
