@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B8124E13B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 21:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E77CB24E141
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 21:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726737AbgHUTyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 15:54:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38272 "EHLO
+        id S1726848AbgHUTyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 15:54:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbgHUTyB (ORCPT
+        with ESMTP id S1726731AbgHUTyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 15:54:01 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0916C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:54:00 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id s14so1355961plp.4
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:54:00 -0700 (PDT)
+        Fri, 21 Aug 2020 15:54:06 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FF57C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:54:04 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id bh1so1340464plb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:54:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=DLGrXrQrOnwocgl0d2lDlCmyCMk0LzJNzAhGu1QupvY=;
-        b=TOCS9QXFvi2sKYKTRr7ee6kse0TEhswUvVuKqMoKi3tljAuSEAQbpwLZo0K9qaprrb
-         0bsJpMg221HwjQsJw+E3oqeYuH95C/KSW+y5f5cGNHh1HZGSHWEcRCqDGVat33dSK1xj
-         BvjA1iJ703xzao5ihIUvP0L+zcmeoM7uEoJQc=
+        bh=X1pLED4dOZHjJehTtWdStx3hbiXOC8sBHN8PPW1XfeE=;
+        b=PH6uKvVhsYajnUeu9WI2S5GhMXGTVSnkPRxAIXL2PQfyslzAd+tUmyU2hUVqyaQiNq
+         R753MmTdw4LGV1AeWW4YF/PEX9V5Kij7VQwCWXLgHNxh+7mIIWrxJDxeVUGxkMY13cGg
+         ETS7WkMSrGy3ull8otZSIbk81u4Ez6PoMkmzA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DLGrXrQrOnwocgl0d2lDlCmyCMk0LzJNzAhGu1QupvY=;
-        b=CbCl7MEsp0sVDOy+FVKpwOCemy53CcabRZldmUpe9L0ULgXQOfnLGH8+Yma9xozgkk
-         vAINFrT0ZgWm+niuCCR9BLsr+NA5CIRIQTOYkYME9bgv5x46d6l9y7wgft7iYGVLBn4n
-         D/E+SeMzA0v+K20TTUuRPdzsDBL4U01ZO0gxSd5cTFF7g7BSD6ULEs9oxelL7Hx4IUhd
-         dSdDzYLSiXmbpQrfEbiLSsNNFxR7IaII1cleNiDDSsB8kyZLDRoFkm+2euLSmPqRMcDA
-         KXUw4vPyy7MKJOOU3fA8DzM8vBw37UPfRfQfhud8dG0fJ44lSjaE7dauRa20VfewDRcm
-         BVow==
-X-Gm-Message-State: AOAM531j5nlp2SDU2UlhUxexjXkHE9/WsvHQR1wFyjaXE7vr+XlddEhg
-        g3eSu+VchA8VeLqUNc/3jpkbrg==
-X-Google-Smtp-Source: ABdhPJxQwlh39B9Zs+13fgS+Mj5RyeBXBYwZUtq7yzKxm2wrKQBpH/KK+GuDxakqY9UBFLOVsfmNSw==
-X-Received: by 2002:a17:902:c211:: with SMTP id 17mr2292148pll.343.1598039640054;
-        Fri, 21 Aug 2020 12:54:00 -0700 (PDT)
+        bh=X1pLED4dOZHjJehTtWdStx3hbiXOC8sBHN8PPW1XfeE=;
+        b=kihMtwBIdd3eOQvcOtb97p34v4tuWYQ0PbfvHmUcOjrWM1oT9htLawI9G2JP7iXHOT
+         AUXZHAQjwWfcRR9WxgngQbKS601o+Ytd1qOwHvpqUSkG0eol95nNlsXs+9L2zT5z+cSM
+         BKtbu/z4XK3gSawJbbo0pj6dHBXRw/TNbjaOIvB1dSQxzKm01jPfJnqkjwFsR3B8PvZL
+         ypYl6ShegI4Zbp+KL6Nyn9HOanbwdJR2zvYtLxsifuevW7sGltDtaBhveomYr99MqvTY
+         G0tIhercSMICjVtAcuk5nMJJx0mOh7UPT/y4KL3f4AcRMDRoMwXvKfZFCZtXrx/FEvs9
+         XlvA==
+X-Gm-Message-State: AOAM532514quIC4TudVhl76QGizoFIhD3KjbOt72Pb+s6jTKp+GpnMxJ
+        x7NkddNXHBYQ2xNRXb2qiEsAhg==
+X-Google-Smtp-Source: ABdhPJz0nuBd9Wk5RpEnkrKlLdMQ6PcV+wFlYs/rvYLJ53wHdBdXbAoFW0IM+5VNqofeAUl0Piyg0Q==
+X-Received: by 2002:a17:902:a60f:: with SMTP id u15mr2567999plq.239.1598039644162;
+        Fri, 21 Aug 2020 12:54:04 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id x26sm3139562pfn.218.2020.08.21.12.53.58
+        by smtp.gmail.com with ESMTPSA id h18sm3442336pfo.21.2020.08.21.12.54.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 12:53:59 -0700 (PDT)
+        Fri, 21 Aug 2020 12:54:02 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     Ingo Molnar <mingo@kernel.org>
 Cc:     Kees Cook <keescook@chromium.org>,
@@ -63,9 +63,9 @@ Cc:     Kees Cook <keescook@chromium.org>,
         clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
         linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v6 28/29] x86/boot/compressed: Add missing debugging sections to output
-Date:   Fri, 21 Aug 2020 12:43:09 -0700
-Message-Id: <20200821194310.3089815-29-keescook@chromium.org>
+Subject: [PATCH v6 29/29] x86/boot/compressed: Warn on orphan section placement
+Date:   Fri, 21 Aug 2020 12:43:10 -0700
+Message-Id: <20200821194310.3089815-30-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200821194310.3089815-1-keescook@chromium.org>
 References: <20200821194310.3089815-1-keescook@chromium.org>
@@ -76,27 +76,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Include the missing DWARF and STABS sections in the compressed image,
-when they are present.
+We don't want to depend on the linker's orphan section placement
+heuristics as these can vary between linkers, and may change between
+versions. All sections need to be explicitly handled in the linker
+script.
+
+Now that all sections are explicitly handled, enable orphan section
+warnings.
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- arch/x86/boot/compressed/vmlinux.lds.S | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/boot/compressed/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
-index 02f6feb0e55b..112b2375d021 100644
---- a/arch/x86/boot/compressed/vmlinux.lds.S
-+++ b/arch/x86/boot/compressed/vmlinux.lds.S
-@@ -69,6 +69,8 @@ SECTIONS
- 	. = ALIGN(PAGE_SIZE);	/* keep ZO size page aligned */
- 	_end = .;
+diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
+index 5b7f6e175b03..647e15837a28 100644
+--- a/arch/x86/boot/compressed/Makefile
++++ b/arch/x86/boot/compressed/Makefile
+@@ -54,6 +54,7 @@ KBUILD_LDFLAGS += $(call ld-option,--no-ld-generated-unwind-info)
+ # Compressed kernel should be built as PIE since it may be loaded at any
+ # address by the bootloader.
+ LDFLAGS_vmlinux := -pie $(call ld-option, --no-dynamic-linker)
++LDFLAGS_vmlinux += --orphan-handling=warn
+ LDFLAGS_vmlinux += -T
  
-+	STABS_DEBUG
-+	DWARF_DEBUG
- 	ELF_DETAILS
- 
- 	DISCARDS
+ hostprogs	:= mkpiggy
 -- 
 2.25.1
 
