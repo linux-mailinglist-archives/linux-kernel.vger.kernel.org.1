@@ -2,107 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1E724D8C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E7B24D8E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728367AbgHUPhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 11:37:42 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2686 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728020AbgHUPhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 11:37:38 -0400
-Received: from lhreml715-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id 98A7062CF7245DA15360;
-        Fri, 21 Aug 2020 16:37:34 +0100 (IST)
-Received: from fraeml711-chm.china.huawei.com (10.206.15.60) by
- lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Fri, 21 Aug 2020 16:37:34 +0100
-Received: from lhreml722-chm.china.huawei.com (10.201.108.73) by
- fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Fri, 21 Aug 2020 17:37:33 +0200
-Received: from lhreml722-chm.china.huawei.com ([10.201.108.73]) by
- lhreml722-chm.china.huawei.com ([10.201.108.73]) with mapi id 15.01.1913.007;
- Fri, 21 Aug 2020 16:37:33 +0100
-From:   Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "containers@lists.linux-foundation.org" 
-        <containers@lists.linux-foundation.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "stefanb@linux.vnet.ibm.com" <stefanb@linux.vnet.ibm.com>,
-        "sunyuqiong1988@gmail.com" <sunyuqiong1988@gmail.com>,
-        "mkayaalp@cs.binghamton.edu" <mkayaalp@cs.binghamton.edu>,
-        "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
-        "serge@hallyn.com" <serge@hallyn.com>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "christian@brauner.io" <christian@brauner.io>,
-        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "luto@amacapital.net" <luto@amacapital.net>,
-        "jannh@google.com" <jannh@google.com>
-Subject: RE: [RFC PATCH 00/30] ima: Introduce IMA namespace
-Thread-Topic: [RFC PATCH 00/30] ima: Introduce IMA namespace
-Thread-Index: AQHWdXPBkpeRDLdh20+fyp1BiEOjYak+A3mAgASuOEA=
-Date:   Fri, 21 Aug 2020 15:37:33 +0000
-Message-ID: <1b706f78375f472988702f77d607f8f7@huawei.com>
-References: <N> <20200818152037.11869-1-krzysztof.struczynski@huawei.com>
- <20200818164943.va3um7toztazcfud@wittgenstein>
-In-Reply-To: <20200818164943.va3um7toztazcfud@wittgenstein>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.48.215.114]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1728341AbgHUPiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 11:38:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727971AbgHUPif (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 11:38:35 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD96C061573;
+        Fri, 21 Aug 2020 08:38:34 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id y6so1042874plt.3;
+        Fri, 21 Aug 2020 08:38:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kco/6vI1blM/NwfzBHIDs3oyI1qAQDpBfmbjozxRSNk=;
+        b=Mqf3QLSjkioKMk0zBDuIglw6zdeZUKHZ1HQUwduW7GDONUqZycokbVPPLpKEOpQl4b
+         PDAb2rY3stSYZvKhK1ciDdXI9QFuSd5868ZADYj2vkdJQuduZNKyrfw/bl/VOhAJoTHE
+         5SQ3KeiX1D57s96SJHQo5n9Kx3TDPfJxYN6T73LU2hqZcH37Y2pQK8ncVnOIHTCw+dH9
+         JH5LBDlhrptca3/0S5Ff7Fwp+Av93sdvs2f7yyKFqjraHST6wJ+2aZBaDb4HvmRbJ8cZ
+         Ev10EsauM4bU6+fZB47gY9myTYHuYjfP5cXd8jqrKQ0astUglqR98D7equtA387ONVto
+         1OLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kco/6vI1blM/NwfzBHIDs3oyI1qAQDpBfmbjozxRSNk=;
+        b=bSSeUfLwWjDSN2g/2HCvNOeIkT0JO3x3ZwmKsv9qy3v61B3U0ef8QmkScyE3RAIuf8
+         3GrzDl7vypiMDg1u/sZJjo0eVG5Ax/o8Zrog4sRF1fz48yjGoN3Ugn/kWr8fS7/l+FFW
+         3kybaQFHoi6cX71V6gH39PYFhE0hO7O49PYhRoaGQ8iI6nrqk80wXGjtZQTpgO5naPcZ
+         9r7WSk5KL+bYW/lHls3ZTSACpuRKwU4WnPUO30UPM03i9yjU+FHQzvg5qhvqqyTJcCnC
+         9luI06+rHSl/AOlQWEhx01oQ7Ced1CnKJieDL1XC1EloO3rC4YWRPtBtlct1MYR2IRsu
+         7b/Q==
+X-Gm-Message-State: AOAM531Y6dw3haM9DIny4DOjrTl3IQOWmnuYyPhwJhGPBTR3vbQ3EPXP
+        TvA8DaeKDOpIMERY0yU0jpo=
+X-Google-Smtp-Source: ABdhPJwru3LiGVN0/RGun5gHVd79iZu23NuOL+aXtjWUQONE0O/idm7t/GaI88fUhyFkLtAmK/d3Rw==
+X-Received: by 2002:a17:90a:ba05:: with SMTP id s5mr1612246pjr.114.1598024313966;
+        Fri, 21 Aug 2020 08:38:33 -0700 (PDT)
+Received: from [10.1.10.11] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id q207sm2581667pgq.71.2020.08.21.08.38.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Aug 2020 08:38:33 -0700 (PDT)
+Subject: Re: [PATCH v6 11/12] mm/vmalloc: Hugepage vmalloc mappings
+To:     Nicholas Piggin <npiggin@gmail.com>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Zefan Li <lizefan@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+References: <20200821151216.1005117-1-npiggin@gmail.com>
+ <20200821151216.1005117-12-npiggin@gmail.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <1e001c2c-6c47-21a9-e920-caf78933b713@gmail.com>
+Date:   Fri, 21 Aug 2020 08:38:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200821151216.1005117-12-npiggin@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBDaHJpc3RpYW4gQnJhdW5lciBbbWFpbHRvOmNocmlzdGlhbi5icmF1bmVyQHVidW50
-dS5jb21dDQo+IE9uIFR1ZSwgQXVnIDE4LCAyMDIwIGF0IDA1OjIwOjA3UE0gKzAyMDAsIGtyenlz
-enRvZi5zdHJ1Y3p5bnNraUBodWF3ZWkuY29tDQo+IHdyb3RlOg0KPiA+IEZyb206IEtyenlzenRv
-ZiBTdHJ1Y3p5bnNraSA8a3J6eXN6dG9mLnN0cnVjenluc2tpQGh1YXdlaS5jb20+DQo+ID4NCj4g
-PiBJTUEgaGFzIG5vdCBiZWVuIGRlc2lnbmVkIHRvIHdvcmsgd2l0aCBjb250YWluZXJzLiBJdCBo
-YW5kbGVzIGV2ZXJ5DQo+ID4gcHJvY2VzcyBpbiB0aGUgc2FtZSB3YXksIGFuZCBpdCBjYW5ub3Qg
-ZGlzdGluZ3Vpc2ggaWYgYSBwcm9jZXNzIGJlbG9uZ3MgdG8NCj4gPiBhIGNvbnRhaW5lciBvciBu
-b3QuDQo+ID4NCj4gPiBDb250YWluZXJzIHVzZSBuYW1lc3BhY2VzIHRvIG1ha2UgaXQgYXBwZWFy
-IHRvIHRoZSBwcm9jZXNzZXMgaW4gdGhlDQo+ID4gY29udGFpbmVycyB0aGF0IHRoZXkgaGF2ZSB0
-aGVpciBvd24gaXNvbGF0ZWQgaW5zdGFuY2Ugb2YgdGhlIGdsb2JhbA0KPiA+IHJlc291cmNlLiBG
-b3IgSU1BIGFzIHdlbGwsIGl0IGlzIGRlc2lyYWJsZSB0byBsZXQgcHJvY2Vzc2VzIGluIHRoZQ0K
-PiANCj4gSU1BIGlzIGJyb3VnaHQgdXAgb24gYSByZWd1bGFyIGJhc2lzIHdpdGggIndlIHdhbnQg
-dG8gaGF2ZSB0aGlzIiBmb3INCj4geWVhcnMgYW5kIHRoZW4gbm9uLW9uZSBzZWVtcyB0byByZWFs
-bHkgY2FyZSBlbm91Z2guDQo+IA0KPiBJJ20gaGlnaGx5IHNrZXB0aWNhbCBvZiB0aGUgdmFsdWUg
-b2YgfjI1MDAgbGluZXMgb2YgY29kZSBldmVuIGlmIGl0DQo+IGluY2x1ZGVzIGEgYnVuY2ggb2Yg
-bmFtZXNwYWNlIGJvaWxlcnBsYXRlLiBJdCdzIHlldCBhbm90aGVyIG5hbWVzcGFjZSwNCj4gYW5k
-IHlldCBhbm90aGVyIHNlY3VyaXR5IGZyYW1ld29yay4NCj4gV2h5IGRvZXMgSU1BIG5lZWQgdG8g
-YmUgYSBzZXBhcmF0ZSBuYW1lc3BhY2U/IEtleXJpbmdzIGFyZSB0aWVkIHRvIHVzZXINCj4gbmFt
-ZXNwYWNlcyB3aHkgY2FuJ3QgSU1BIGJlPyBJIGJlbGlldmUgRXJpYyBoYXMgZXZlbiBwb2ludGVk
-IHRoYXQgb3V0DQo+IGJlZm9yZS4NCg0KVGhlIHVzZXIgbmFtZXNwYWNlIGhhcyBpdHMgd2VsbCBk
-ZWZpbmVkIHB1cnBvc2UgdG8gaXNvbGF0ZQ0Kc2VjdXJpdHktcmVsYXRlZCBpZGVudGlmaWVycyBh
-bmQgYXR0cmlidXRlcywgcGFydGljdWxhcmx5IFVJRHMgYW5kIEdJRHMuDQpJIHRoaW5rIHRoYXQg
-SU1BIGdvYWxzIGFyZSBkaWZmZXJlbnQuDQoNCkEgdXNlciBtYXkgd2FudCB0byBpc29sYXRlIGUu
-Zy4gVUlEcyBidXQgbm90IHRvIGNyZWF0ZSBhIHNlcGFyYXRlIElNTCBvcg0KZGVmaW5lIHRoZSBu
-ZXcgSU1BIHBvbGljaWVzLiBPbiB0aGUgb3RoZXIgaGFuZCwgZXNwZWNpYWxseSBpbiB0aGUNCnNp
-bmdsZS10ZW5hbnQgZW52aXJvbm1lbnQsIHRoZSB1c2VyIG1heSB3YW50IHRvIGhhdmUgYSBwZXIg
-Y29udGFpbmVyIElNTCwNCmJ1dCBubyBVSUQvR0lEIG1hcHBpbmcgaXMgcmVxdWlyZWQuIElNQSBw
-b2xpY3kgZGVmaW5lcyBzdWJqZWN0LWJhc2VkDQpydWxlcyAodWlkLCBldWlkLCBzdWJqXyosIC4u
-LiksIGJ1dCBhbHNvIG9iamVjdC1iYXNlZCBydWxlcy4NCg0KSU1BIGhhcyB0byBiZSBwcmUtY29u
-ZmlndXJlZCwgZS5nLiBhbGwgYWN0aW9ucyBvZiB0aGUgcHJvY2VzcyBoYXZlIHRvIGJlDQphcHBy
-YWlzZWQvbWVhc3VyZWQvYXVkaXRlZCBhY2NvcmRpbmcgdG8gdGhlIHByZS1kZWZpbmVkIHBvbGlj
-eSwgYXBwcmFpc2FsDQprZXkgaGFzIHRvIGJlIGF2YWlsYWJsZSBiZWZvcmUgdGhlIHByb2Nlc3Mg
-aXMgY3JlYXRlZCwgZXRjLiBJZiBJTUEgaXMgdGllZA0KdG8gdGhlIHVzZXIgbmFtZXNwYWNlLCB3
-aGVuIGlzIGEgZ29vZCBtb21lbnQgdG8gZG8gaXQ/DQoNCldoYXQncyB0aGUgYXJndW1lbnQgYWdh
-aW5zdCBhZGRpbmcgYSBuZXcgbmFtZXNwYWNlPw0KDQo+IA0KPiBFcmljLCB0aG91Z2h0cz8NCj4g
-DQo+IENocmlzdGlhbg0K
+
+On 8/21/20 8:12 AM, Nicholas Piggin wrote:
+> Support huge page vmalloc mappings. Config option HAVE_ARCH_HUGE_VMALLOC
+> enables support on architectures that define HAVE_ARCH_HUGE_VMAP and
+> supports PMD sized vmap mappings.
+> 
+> vmalloc will attempt to allocate PMD-sized pages if allocating PMD size or
+> larger, and fall back to small pages if that was unsuccessful.
+> 
+> Allocations that do not use PAGE_KERNEL prot are not permitted to use huge
+> pages, because not all callers expect this (e.g., module allocations vs
+> strict module rwx).
+> 
+> This reduces TLB misses by nearly 30x on a `git diff` workload on a 2-node
+> POWER9 (59,800 -> 2,100) and reduces CPU cycles by 0.54%.
+> 
+> This can result in more internal fragmentation and memory overhead for a
+> given allocation, an option nohugevmalloc is added to disable at boot.
+> 
+>
+
+Thanks for working on this stuff, I tried something similar in the past,
+but could not really do more than a hack.
+( https://lkml.org/lkml/2016/12/21/285 )
+
+Note that __init alloc_large_system_hash() is used at boot time,
+when NUMA policy is spreading allocations over all NUMA nodes.
+
+This means that on a dual node system, a hash table should be 50/50 spread.
+
+With your patch, if a hashtable is exactly the size of one huge page,
+the location of this hashtable will be not balanced, this might have some
+unwanted impact.
+
+Thanks !
+
