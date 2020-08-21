@@ -2,126 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E51B24DF9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6B624DFA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbgHUSaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 14:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53420 "EHLO
+        id S1726945AbgHUSbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 14:31:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725821AbgHUSaQ (ORCPT
+        with ESMTP id S1726718AbgHUSbI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 14:30:16 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04371C06179B;
-        Fri, 21 Aug 2020 11:30:16 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id h12so1390317pgm.7;
-        Fri, 21 Aug 2020 11:30:15 -0700 (PDT)
+        Fri, 21 Aug 2020 14:31:08 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC599C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:24:27 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id kr4so1184266pjb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:24:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zP47110S/VhRjoKqw44D0J+M/2tpqI2WT8Gl3dFgMLU=;
-        b=FHJhuIIIl2pjvt5gC0n9ebYyiLz7oPCyOoZ204GanM2l+Dt/AZK351tSCFaXcetIgB
-         B0QuwgtbOLYh3yinGuPNmEMuTnVlomUiZvIknKW5OINsVq95f5P/8IfYpOvTztpQk7wj
-         5rKQx4S3UkuY6qUu7yzqikp5pMBrC0C27wlZZgHZ0vmAdgusHDxAyG5sy7EtJNqSH6Wl
-         OQ9tZfCKlVWZju4ne50ug0G12g6VyTIGBO2fmhyEgM8OAZohfuG6Zn2pIJdtYfRPmDME
-         ho6FzKYOww8DX4s00jUzULiSihELcvDbmTArHDtqj9RyazRKS6cbNpGU0eNKfS/zzlyr
-         dl2g==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=P+HGPUUEt/yeZPA3aGMYIqvfoymS1eSd9/ssdWii5Ww=;
+        b=gL3E2vI4RdEkGoqPQ5bhPya5HSCwBlSpXY7p6WmAA99o71qfrPhE/NpMCkBqecqy+V
+         +JME0II/bywwuTEmErR+Mov3glI2MHbzDimh1+IVoyx05yRlgpV32YCuX4SeJi8nxsqH
+         F+DPGriKAagurCtecEduI7KobxI4nsJyNM8PU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zP47110S/VhRjoKqw44D0J+M/2tpqI2WT8Gl3dFgMLU=;
-        b=YDEg1cIfjTG4m+gm5YVQ7pZEt2GVuNbk4TlbNx9FXbo5qDz1aVaui1WD4KHp58iBNp
-         vXRVh9ktSHODWT9txJCt4VTECC23BjFhjTCKFa5+5t7TUEK104LamnXe3NTmYK7WKshw
-         wp33tg58VJm6/huMU3dgAIrkePAm+oPmXL/B8b54co2QZnzCrXZTMnO9RhP5N8n0SS01
-         k0XwBKXaEKPqpvy4fKWto3X/LWTe322gwc6bP40m2EpDLNKL3PGHOKBiygo5aQJHDHA4
-         t6ft3B7Fu2rwcy7ZiqtfvmbIzE4U1F3apgVVCf85+EjRp/ZfOu09DA/X70epAswKm2gF
-         xxyg==
-X-Gm-Message-State: AOAM531rZzvKfXFmXGHjsOTYo5agichd/C7YEdgMRTv9hcq82c0NbnG8
-        OJen07qGX3g4wqmnMbvVRVw=
-X-Google-Smtp-Source: ABdhPJxp1f9fXlscpv6Qe1ELd6qPs9/3TfsCbJWXquPOKCpMw0FIPwawnTMfQ9II/Phab4f9G10iHw==
-X-Received: by 2002:aa7:8b18:: with SMTP id f24mr3453731pfd.301.1598034615578;
-        Fri, 21 Aug 2020 11:30:15 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c207sm3072159pfc.64.2020.08.21.11.30.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 21 Aug 2020 11:30:15 -0700 (PDT)
-Date:   Fri, 21 Aug 2020 11:30:13 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Stephen Kitt <steve@sk2.org>
-Cc:     Eric Tremblay <etremblay@distech-controls.com>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=P+HGPUUEt/yeZPA3aGMYIqvfoymS1eSd9/ssdWii5Ww=;
+        b=fokwI8azXZRuKsStd6H1X+q6TJn2XL3um7fjjwxmzRwkO8fdpRRHeArMNotHCNUzVJ
+         sTHdGx1jkDQIZY3cigRKhX45vc2q7Po7a1DkOISfZAujLLGnOoKFZyc7Y9Gn33ZY0qTY
+         2hwnUjI6iZj0i0XvQkEg9oYOJBlaEbmrAC5vzKtuKDH1NhKzu74hdWi2h3q0IyN5Ku2K
+         UKSrg+MSa/K1VTDvzChjGNjyq3q3m+0Ap6OU8+5WjB1vz8uu2z00vKtLFjQKynPTurZr
+         Zi7r1/tRr0RVSv0U+CnGMd8Ppov+Ho8MCuDSy3GJEeHOEvpuGBJ/XtP4mVsQQrbv/nJv
+         PiKA==
+X-Gm-Message-State: AOAM531bcv/o9m9bvSi+RjnEKDXm/MhFKXi8xy98nYPuf2uMzuDUU211
+        zU69Cq6gZsSxkmustZNLXQmHpQ==
+X-Google-Smtp-Source: ABdhPJwY3MUwUyYflRLBpNg5NofmVB1Nw4sxCEvR4NrTn4s3G8/7jK9B7t0fPN6uAooj0VHUOYEZGw==
+X-Received: by 2002:a17:90a:34c3:: with SMTP id m3mr3347042pjf.71.1598034267529;
+        Fri, 21 Aug 2020 11:24:27 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id h1sm3273433pfr.39.2020.08.21.11.24.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Aug 2020 11:24:26 -0700 (PDT)
+Date:   Fri, 21 Aug 2020 11:24:25 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
+        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwmon: (tmp513) use simple i2c probe
-Message-ID: <20200821183013.GA61218@roeck-us.net>
-References: <20200821160231.592571-1-steve@sk2.org>
+Subject: Re: [PATCH v5 32/36] x86/boot/compressed: Reorganize zero-size
+ section asserts
+Message-ID: <202008211123.AD9EA0441@keescook>
+References: <20200731230820.1742553-1-keescook@chromium.org>
+ <20200731230820.1742553-33-keescook@chromium.org>
+ <20200801014755.GA2700342@rani.riverdale.lan>
+ <20200801025325.GA2800311@rani.riverdale.lan>
+ <202007312235.4A48157938@keescook>
+ <20200801171225.GB3249534@rani.riverdale.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200821160231.592571-1-steve@sk2.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200801171225.GB3249534@rani.riverdale.lan>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 06:02:31PM +0200, Stephen Kitt wrote:
-> As part of the ongoing i2c transition to the simple probe
-> ("probe_new"), this patch uses i2c_match_id to retrieve the
-> driver_data for the probed device. The id parameter is thus no longer
-> necessary and the simple probe can be used instead.
-> 
-> Signed-off-by: Stephen Kitt <steve@sk2.org>
+On Sat, Aug 01, 2020 at 01:12:25PM -0400, Arvind Sankar wrote:
+> Actually, moving it to the end also requires marking it INFO or
+> stripping it out when creating the bzImage. Otherwise we get back to
+> that old problem of materializing .bss/.pgtable in the bzImage.
 
-Applied.
+Yeah -- I wonder what the best way to make sure we avoid causing the
+.bss appearing again...
 
-Thanks,
-Guenter
-
-> ---
->  drivers/hwmon/tmp513.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/hwmon/tmp513.c b/drivers/hwmon/tmp513.c
-> index df66e0bc1253..9f5885b0eb74 100644
-> --- a/drivers/hwmon/tmp513.c
-> +++ b/drivers/hwmon/tmp513.c
-> @@ -709,8 +709,7 @@ static int tmp51x_configure(struct device *dev, struct tmp51x_data *data)
->  	return 0;
->  }
->  
-> -static int tmp51x_probe(struct i2c_client *client,
-> -			const struct i2c_device_id *id)
-> +static int tmp51x_probe(struct i2c_client *client)
->  {
->  	struct device *dev = &client->dev;
->  	struct tmp51x_data *data;
-> @@ -724,7 +723,7 @@ static int tmp51x_probe(struct i2c_client *client,
->  	if (client->dev.of_node)
->  		data->id = (enum tmp51x_ids)device_get_match_data(&client->dev);
->  	else
-> -		data->id = id->driver_data;
-> +		data->id = i2c_match_id(tmp51x_id, client)->driver_data;
->  
->  	ret = tmp51x_configure(dev, data);
->  	if (ret < 0) {
-> @@ -751,7 +750,7 @@ static int tmp51x_probe(struct i2c_client *client,
->  	if (IS_ERR(hwmon_dev))
->  		return PTR_ERR(hwmon_dev);
->  
-> -	dev_dbg(dev, "power monitor %s\n", id->name);
-> +	dev_dbg(dev, "power monitor %s\n", client->name);
->  
->  	return 0;
->  }
-> @@ -761,7 +760,7 @@ static struct i2c_driver tmp51x_driver = {
->  		.name	= "tmp51x",
->  		.of_match_table = of_match_ptr(tmp51x_of_match),
->  	},
-> -	.probe		= tmp51x_probe,
-> +	.probe_new	= tmp51x_probe,
->  	.id_table	= tmp51x_id,
->  };
->  
+-- 
+Kees Cook
