@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC8924E120
+	by mail.lfdr.de (Postfix) with ESMTP id 22E3F24E11F
 	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 21:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727049AbgHUTre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 15:47:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40990 "EHLO mail.kernel.org"
+        id S1727125AbgHUTrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 15:47:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726440AbgHUTrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 15:47:10 -0400
+        id S1727049AbgHUTrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 15:47:12 -0400
 Received: from localhost.localdomain (c-73-211-240-131.hsd1.il.comcast.net [73.211.240.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4399207BB;
-        Fri, 21 Aug 2020 19:47:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1CA24207DA;
+        Fri, 21 Aug 2020 19:47:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598039229;
-        bh=S6dcRAdeTpUdhqBralYNBKRs92bvR5wAJJq1s5WcS70=;
+        s=default; t=1598039231;
+        bh=9s0dxQfEM7trRmPp4oaJKHOhthvJmZ+52qF9JNKKRZs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
          References:From;
-        b=umhRCS1Kl07lT3+NNeROkgKekyNrIwxAmSo1a7/CnyH7pkY7OHda+JObTUT4VYvXu
-         DF7aTbG6NpKJm0wpZJ4sUoI0AuVXcPtCvFxxRpj76Ac37Q3YUoCjtgwWrQQNlx1BA1
-         eCvZb8l11X9Kq9tD7D4pgzR4wkh7+YhjKNcPHYTo=
+        b=DMX4ZNLNASS/cpxY1+eFI5iYXYwgYMEkpbb5a0/DzOORLQgaeEe/tHKcOmzXNAdZ5
+         cqUgWIG95DZwAXOV24Y3LLe6eJ2To7Ww+OLl+jedOdLgFNyuST8EFdoF3BItjt4gRj
+         u/IPTZkgUYuRf4y+QoSL00F/6AexLfCMOvQEyDtU=
 From:   zanussi@kernel.org
 To:     LKML <linux-kernel@vger.kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
@@ -35,11 +35,11 @@ To:     LKML <linux-kernel@vger.kernel.org>,
         Daniel Wagner <wagi@monom.org>,
         Clark Williams <williams@redhat.com>,
         Pavel Machek <pavel@denx.de>, Tom Zanussi <zanussi@kernel.org>
-Cc:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH RT 3/5] net: phy: fixed_phy: Remove unused seqcount
-Date:   Fri, 21 Aug 2020 14:47:02 -0500
-Message-Id: <31cc35dc4938fe8f94631327ab9e9966de09dd50.1598039186.git.zanussi@kernel.org>
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        Davidlohr Bueso <dbueso@suse.de>
+Subject: [PATCH RT 4/5] net: xfrm: fix compress vs decompress serialization
+Date:   Fri, 21 Aug 2020 14:47:03 -0500
+Message-Id: <962434cf5eb6c4c469df413b2312b8ae80e3906d.1598039186.git.zanussi@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <cover.1598039186.git.zanussi@kernel.org>
 References: <cover.1598039186.git.zanussi@kernel.org>
@@ -50,7 +50,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Ahmed S. Darwish" <a.darwish@linutronix.de>
+From: Davidlohr Bueso <dave@stgolabs.net>
 
 v4.19.135-rt61-rc1 stable review patch.
 If anyone has any objections, please let me know.
@@ -58,86 +58,99 @@ If anyone has any objections, please let me know.
 -----------
 
 
-[ Upstream commit 6554eac9ef2bd1c968886b31cc7266b49258a463 ]
+A crash was seen in xfrm when running ltp's 'tcp4_ipsec06' stresser on v4.x
+based RT kernels.
 
-Commit bf7afb29d545 ("phy: improve safety of fixed-phy MII register
-reading") protected the fixed PHY status with a sequence counter.
+ipcomp_compress() will serialize access to the ipcomp_scratches percpu buffer by
+disabling BH and preventing a softirq from coming in and running ipcom_decompress(),
+which is never called from process context. This of course won't work on RT and
+the buffer can get corrupted; there have been similar issues with in the past with
+such assumptions, ie: ebf255ed6c44 (net: add back the missing serialization in
+ip_send_unicast_reply()).
 
-Two years later, commit d2b977939b18 ("net: phy: fixed-phy: remove
-fixed_phy_update_state()") removed the sequence counter's write side
-critical section -- neutralizing its read side retry loop.
+Similarly, this patch addresses the issue with locallocks allowing RT to have a
+percpu spinlock and do the correct serialization.
 
-Remove the unused seqcount.
-
-Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
-Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-(cherry picked from v5.8-rc1 commit 79cbb6bc3332da7162c2581e151659ab8ebaa528)
-Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
 Signed-off-by: Tom Zanussi <zanussi@kernel.org>
 ---
- drivers/net/phy/fixed_phy.c | 25 +++++++++----------------
- 1 file changed, 9 insertions(+), 16 deletions(-)
+ net/xfrm/xfrm_ipcomp.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/phy/fixed_phy.c b/drivers/net/phy/fixed_phy.c
-index 59820164502e..953ff54dd5df 100644
---- a/drivers/net/phy/fixed_phy.c
-+++ b/drivers/net/phy/fixed_phy.c
-@@ -23,7 +23,6 @@
+diff --git a/net/xfrm/xfrm_ipcomp.c b/net/xfrm/xfrm_ipcomp.c
+index a00ec715aa46..a97997385423 100644
+--- a/net/xfrm/xfrm_ipcomp.c
++++ b/net/xfrm/xfrm_ipcomp.c
+@@ -20,6 +20,7 @@
+ #include <linux/list.h>
+ #include <linux/module.h>
+ #include <linux/mutex.h>
++#include <linux/locallock.h>
+ #include <linux/percpu.h>
  #include <linux/slab.h>
- #include <linux/of.h>
- #include <linux/gpio.h>
--#include <linux/seqlock.h>
- #include <linux/idr.h>
+ #include <linux/smp.h>
+@@ -36,6 +37,7 @@ struct ipcomp_tfms {
  
- #include "swphy.h"
-@@ -36,7 +35,6 @@ struct fixed_mdio_bus {
- struct fixed_phy {
- 	int addr;
- 	struct phy_device *phydev;
--	seqcount_t seqcount;
- 	struct fixed_phy_status status;
- 	int (*link_update)(struct net_device *, struct fixed_phy_status *);
- 	struct list_head node;
-@@ -62,18 +60,15 @@ static int fixed_mdio_read(struct mii_bus *bus, int phy_addr, int reg_num)
- 	list_for_each_entry(fp, &fmb->phys, node) {
- 		if (fp->addr == phy_addr) {
- 			struct fixed_phy_status state;
--			int s;
--
--			do {
--				s = read_seqcount_begin(&fp->seqcount);
--				/* Issue callback if user registered it. */
--				if (fp->link_update)
--					fp->link_update(fp->phydev->attached_dev,
--							&fp->status);
--				/* Check the GPIO for change in status */
--				fixed_phy_update(fp);
--				state = fp->status;
--			} while (read_seqcount_retry(&fp->seqcount, s));
+ static DEFINE_MUTEX(ipcomp_resource_mutex);
+ static void * __percpu *ipcomp_scratches;
++static DEFINE_LOCAL_IRQ_LOCK(ipcomp_scratches_lock);
+ static int ipcomp_scratch_users;
+ static LIST_HEAD(ipcomp_tfms_list);
+ 
+@@ -45,12 +47,15 @@ static int ipcomp_decompress(struct xfrm_state *x, struct sk_buff *skb)
+ 	const int plen = skb->len;
+ 	int dlen = IPCOMP_SCRATCH_SIZE;
+ 	const u8 *start = skb->data;
+-	const int cpu = get_cpu();
+-	u8 *scratch = *per_cpu_ptr(ipcomp_scratches, cpu);
+-	struct crypto_comp *tfm = *per_cpu_ptr(ipcd->tfms, cpu);
+-	int err = crypto_comp_decompress(tfm, start, plen, scratch, &dlen);
+-	int len;
++	u8 *scratch;
++	struct crypto_comp *tfm;
++	int err, len;
 +
-+			/* Issue callback if user registered it. */
-+			if (fp->link_update)
-+				fp->link_update(fp->phydev->attached_dev,
-+						&fp->status);
++	local_lock(ipcomp_scratches_lock);
+ 
++	scratch = *this_cpu_ptr(ipcomp_scratches);
++	tfm = *this_cpu_ptr(ipcd->tfms);
++	err = crypto_comp_decompress(tfm, start, plen, scratch, &dlen);
+ 	if (err)
+ 		goto out;
+ 
+@@ -103,7 +108,7 @@ static int ipcomp_decompress(struct xfrm_state *x, struct sk_buff *skb)
+ 	err = 0;
+ 
+ out:
+-	put_cpu();
++	local_unlock(ipcomp_scratches_lock);
+ 	return err;
+ }
+ 
+@@ -146,6 +151,8 @@ static int ipcomp_compress(struct xfrm_state *x, struct sk_buff *skb)
+ 	int err;
+ 
+ 	local_bh_disable();
++	local_lock(ipcomp_scratches_lock);
 +
-+			/* Check the GPIO for change in status */
-+			fixed_phy_update(fp);
-+			state = fp->status;
+ 	scratch = *this_cpu_ptr(ipcomp_scratches);
+ 	tfm = *this_cpu_ptr(ipcd->tfms);
+ 	err = crypto_comp_compress(tfm, start, plen, scratch, &dlen);
+@@ -158,12 +165,14 @@ static int ipcomp_compress(struct xfrm_state *x, struct sk_buff *skb)
+ 	}
  
- 			return swphy_read_reg(reg_num, &state);
- 		}
-@@ -131,8 +126,6 @@ int fixed_phy_add(unsigned int irq, int phy_addr,
- 	if (!fp)
- 		return -ENOMEM;
+ 	memcpy(start + sizeof(struct ip_comp_hdr), scratch, dlen);
++	local_unlock(ipcomp_scratches_lock);
+ 	local_bh_enable();
  
--	seqcount_init(&fp->seqcount);
--
- 	if (irq != PHY_POLL)
- 		fmb->mii_bus->irq[phy_addr] = irq;
+ 	pskb_trim(skb, dlen + sizeof(struct ip_comp_hdr));
+ 	return 0;
  
+ out:
++	local_unlock(ipcomp_scratches_lock);
+ 	local_bh_enable();
+ 	return err;
+ }
 -- 
 2.17.1
 
