@@ -2,105 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016A324D79A
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 16:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 344F424D782
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 16:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728043AbgHUOpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 10:45:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46674 "EHLO
+        id S1727912AbgHUOnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 10:43:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727982AbgHUOok (ORCPT
+        with ESMTP id S1726118AbgHUOnY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 10:44:40 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5DD0C0617A1
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 07:44:37 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id 12so1028757lfb.11
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 07:44:37 -0700 (PDT)
+        Fri, 21 Aug 2020 10:43:24 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A2EC061573;
+        Fri, 21 Aug 2020 07:43:23 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id y6so968040plt.3;
+        Fri, 21 Aug 2020 07:43:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=dCxd2Q4l5lkrNLliGFJQWYHxizvRKPbrS09MX/RoHLM=;
-        b=GmKcGM6UHhTOSrzyGoon8fimsUsJsoCmfRi2IX7drBYlygMYxMH+UN27VCNCU1t3AG
-         C6uS7uOwqapSy69YRq29pHHahyG3Z+49HchV+3KC25FAyTZasPEnxRLa1PdHVU0WJ0Gq
-         mm25ZZImCfybEp8lRAcrSSJ5lEoxK9ctEzOKnJirmpymflqtczwRXdrIlNPawPiSb30n
-         OGdx7u9DWqzbahDTGzZdXsXrvGScFStGCRT/0+COD3hX8YlG3C3msC8Us3RoQYrROPCY
-         Ked5yYkGMsOAXVN/IFfl8JrXSg5XwrYlEXFQV6Cxcg2VnqycEwfx5+61IBjaOG1Fyhvm
-         Z0QQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KxSiaalwJaME4ZfRAha7YffGpv+JyYBz2E05xYHBT9o=;
+        b=RDvtAUTu0zgMV7yaQDSc9aYO/XI5MPDNeFekaOswDUpcu94OPV5HdA0a54YLa2yA7L
+         AL0GDo8vxaDZK9LXJ2179GGJHLSA+j3VQLOwzwf15/ZaZHncVvImEdpjrRIe3bfsefor
+         GfzvK10EgBFAt6ZZaTpgtx4CQKjkghmQ38XIhN4I/F1bozSWtTJSKc1V1FPrSCe9Yc+1
+         OBGlVWBAdX37jy3efbhRvs7rmaKNZNS36HoT6j2UfD2AhiOhfngZVXjxFwVU/ciblhFS
+         FW92LJrc4Z8Lmw1pcUlHM9eLuE4kHoHG8jwozUNPHRPlkEIT/V7vJVF3R5DNaMRU0tfh
+         4mYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=dCxd2Q4l5lkrNLliGFJQWYHxizvRKPbrS09MX/RoHLM=;
-        b=sAzWNfHx0rphQ291RSK9qKxLezqn7zn/cvbFLhlUIzeEMeJ2HjlIIHjyHiT5mjKr6Z
-         FDZjwaSt/cQbinLZHcL1rVvMpkbGaIWOClGmHHdM65WeCpNmFdFFeU1KX0BaXsJwO50O
-         TkkHHs/cVwZNjEUyty5g7XZrep2I2FUqXGlOIlzqOhlZgTjUCR6zofIAZPlmKWHWhWiq
-         RXTIwHtTnVLkG2PzIAhLG1V+KhhQ3tCZy5rpIwghbs7Madbt9W8V/ay6LhZVAkGJRdXK
-         yJkJOh9bpfOhRJ53lli93TEXfr7PJAZ9kP7N+fleZKac6Z9LTWpul+jxbTA4432IapCO
-         VLKA==
-X-Gm-Message-State: AOAM5330uLVboujECbWjDiIgujKRGIENvH61k3v2xNI/Q/Asxx8skT/D
-        eri+WmKdu4xPk6wTCApjd3AQfQ==
-X-Google-Smtp-Source: ABdhPJy+O9TCor1YYjDT1vPpSOc3rLR+SybCootz5q6qINXbs623zAq/NPoBXcSDtFn6O6eD3oRHSQ==
-X-Received: by 2002:ac2:4881:: with SMTP id x1mr1621731lfc.162.1598021075745;
-        Fri, 21 Aug 2020 07:44:35 -0700 (PDT)
-Received: from gilgamesh.semihalf.com (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
-        by smtp.gmail.com with ESMTPSA id u10sm425301lfo.39.2020.08.21.07.44.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 21 Aug 2020 07:44:35 -0700 (PDT)
-From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-To:     ssantosh@kernel.org, s-anna@ti.com
-Cc:     grzegorz.jaszczyk@linaro.org, santosh.shilimkar@oracle.com,
-        robh+dt@kernel.org, lee.jones@linaro.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        praneeth@ti.com, tony@atomide.com
-Subject: [PATCH v2 7/7] soc: ti: pruss: Enable support for ICSSG subsystems on K3 J721E SoCs
-Date:   Fri, 21 Aug 2020 16:42:44 +0200
-Message-Id: <1598020964-29877-8-git-send-email-grzegorz.jaszczyk@linaro.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1598020964-29877-1-git-send-email-grzegorz.jaszczyk@linaro.org>
-References: <1598020964-29877-1-git-send-email-grzegorz.jaszczyk@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KxSiaalwJaME4ZfRAha7YffGpv+JyYBz2E05xYHBT9o=;
+        b=PvGnpLOu6Ugh4ToaN9MO2SIggFI4mykgxq7+ZD6/D7UaKJ6izw0v6WexWh/JON5Tue
+         2oRNlBFxPT4gEmh+y7Rl10gycyd9tXtMqevaKZiRaUOCZpBOTWJv+E7mK3ebZI6nji8I
+         cyhR+8zhTM5Mz6ejvZrjK7e5mtnP9k9fjcQNSgu3outtw6WbuEvaFFa842tJSRntJVGC
+         9T0HTw9eEcJUE/1w3Of/nHGN1KrYUeRbkMl4cRDA5NMwST82FgmG/J3GbnGIzjfVm+bX
+         hBIdoaaxZFaJ80LDrxVwpoWYvbLzryXFEzhmoRCQmkB+0pDgQaf+Knozadz6P93sCBR5
+         rK5A==
+X-Gm-Message-State: AOAM530grrcXTqEdhESSyqkcetF1yjFA3qPnkcWNAXL3lUoS70oas0/I
+        nL9+00oxP0LsBz4xB6ZrtoZZYoDQMfg=
+X-Google-Smtp-Source: ABdhPJxgldVhE1PcofC9mYkwJyVlEM4WbizC8HPHrqcEoChF65VDb1ZOAavOBDNY96gC3+eObka9Lg==
+X-Received: by 2002:a17:902:221:: with SMTP id 30mr2674485plc.222.1598021002532;
+        Fri, 21 Aug 2020 07:43:22 -0700 (PDT)
+Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
+        by smtp.gmail.com with ESMTPSA id n26sm2795181pff.30.2020.08.21.07.43.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Aug 2020 07:43:21 -0700 (PDT)
+Subject: Re: [PATCH] net: dsa: b53: check for timeout
+To:     trix@redhat.com, andrew@lunn.ch, vivien.didelot@gmail.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200821135600.18017-1-trix@redhat.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <b249a607-8963-f6c4-3852-0160b72427fc@gmail.com>
+Date:   Fri, 21 Aug 2020 07:43:20 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.1.1
+MIME-Version: 1.0
+In-Reply-To: <20200821135600.18017-1-trix@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suman Anna <s-anna@ti.com>
 
-The K3 J721E family of SoCs have a revised version of the PRU-ICSS (ICSSG)
-processor subsystem present on K3 AM65x SoCs. These SoCs contain typically
-two ICSSG instances named ICSSG0 and ICSSG1. The two ICSSGs are identical
-to each other for the most part with minor SoC integration differences and
-capabilities. The ICSSG1 supports slightly enhanced features like SGMII
-mode Ethernet, while the ICSSG0 instance is limited to MII mode only.
 
-There is no change in the Interrupt Controller w.r.t AM65x. All other
-integration aspects are very similar to the ICSSGs on AM65x SoCs.
+On 8/21/2020 6:56 AM, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> clang static analysis reports this problem
+> 
+> b53_common.c:1583:13: warning: The left expression of the compound
+>    assignment is an uninitialized value. The computed value will
+>    also be garbage
+>          ent.port &= ~BIT(port);
+>          ~~~~~~~~ ^
+> 
+> ent is set by a successful call to b53_arl_read().  Unsuccessful
+> calls are caught by an switch statement handling specific returns.
+> b32_arl_read() calls b53_arl_op_wait() which fails with the
+> unhandled -ETIMEDOUT.
+> 
+> So add -ETIMEDOUT to the switch statement.  Because
+> b53_arl_op_wait() already prints out a message, do not add another
+> one.
+> 
+> Fixes: 1da6df85c6fb ("net: dsa: b53: Implement ARL add/del/dump operations")
 
-The existing pruss platform driver has been updated to support these new
-ICSSG instances through new J721E specific compatibles.
+For future submissions: no need for a newline between your tags here, 
+the Fixes tag is just a regular tag in the commit message.
 
-Signed-off-by: Suman Anna <s-anna@ti.com>
-Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
----
-v1->v2:
- - New patch which was not present in v1.
----
- drivers/soc/ti/pruss.c | 1 +
- 1 file changed, 1 insertion(+)
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-diff --git a/drivers/soc/ti/pruss.c b/drivers/soc/ti/pruss.c
-index ccc9783..37df543 100644
---- a/drivers/soc/ti/pruss.c
-+++ b/drivers/soc/ti/pruss.c
-@@ -164,6 +164,7 @@ static const struct of_device_id pruss_of_match[] = {
- 	{ .compatible = "ti,am5728-pruss" },
- 	{ .compatible = "ti,k2g-pruss" },
- 	{ .compatible = "ti,am654-icssg" },
-+	{ .compatible = "ti,j721e-icssg" },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, pruss_of_match);
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.7.4
-
+Florian
