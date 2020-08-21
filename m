@@ -2,65 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C54D24D5E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 15:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0DC24D609
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 15:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728641AbgHUNPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 09:15:36 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:58431 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726345AbgHUNP1 (ORCPT
+        id S1728699AbgHUNSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 09:18:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727879AbgHUNSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 09:15:27 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1k96sz-0004WG-7i; Fri, 21 Aug 2020 13:15:13 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        wlanfae <wlanfae@realtek.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Mike McCormack <mikem@ring3k.org>, devel@driverdev.osuosl.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: rtl8192e: fix missing failure check on a call to dev_alloc_name
-Date:   Fri, 21 Aug 2020 14:15:12 +0100
-Message-Id: <20200821131512.348775-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        Fri, 21 Aug 2020 09:18:16 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE47C061388
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 06:18:14 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id g19so2219658ejc.9
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 06:18:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9Ewq1eqi128tS/YtHe1Hdp0zK/pkzPgQy1G+gIZ86vk=;
+        b=NU0Mcks72tdUBoRxTtGff5uEDLvy5q+04uOXS/JLA0SJHrmqdiP6jaEKtTvuhKsMgU
+         lDfci7M0dnl3iqCTEKGFvbcUksW7F5hk3a91SmK7L3wWBKVmDsI9uP/rUVnGbwAsuDli
+         PjLRD2P5KK/Uqcps5LzpvzKRXm9f6EQs1OMtc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9Ewq1eqi128tS/YtHe1Hdp0zK/pkzPgQy1G+gIZ86vk=;
+        b=ZT5sZYBeFW8ACBOHj3EF7GwjjC+k3oWwYPPGcmsrWkcapL0InQ9yRJQItTYxMbkjex
+         6imoGVcDbukhC7WqKkoYET69n6Xcr3U89TaCJlV0ixeL3CVCkYq9NdOBh4mYek61n5aQ
+         oYWVCnbX9UydOSJmky7hez5y8dllxKK5jXLQf/cZiW4nZxkLL09oG675kfHgj0Rge8Sz
+         NaFPcB6QUlCpHsPysQiNZyeB9DoeWsqmLsTybN8XmX3nxT2gq/TXXRNmx4lmLGT34m7h
+         VVzrHpUEzkz37ObuAFlPGqLYAzG3gdK81I9FEslqwr6xITPjM8sU8ubjXqeEPdcHqXmZ
+         fAkg==
+X-Gm-Message-State: AOAM532hh6WoYIfDHjNw1QmlPLgO3cVxQUEYIA5BM1Ikzi2Eq25eM1VT
+        wE+AMAJUSFgggzZeDvnXzyE2xWPwXESKGlPXJA+OVA==
+X-Google-Smtp-Source: ABdhPJx3TSW7MukTCaIid5gIoeUYGZLVJD0O+yZ7UPk2PTQBJG9g/hYdPVKEFV4KdfwhkvYvNtwBHnp0gKnoaXGmvjM=
+X-Received: by 2002:a17:906:b2d7:: with SMTP id cf23mr2811015ejb.113.1598015890534;
+ Fri, 21 Aug 2020 06:18:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <1842689.1596468469@warthog.procyon.org.uk> <1845353.1596469795@warthog.procyon.org.uk>
+ <CAJfpegunY3fuxh486x9ysKtXbhTE0745ZCVHcaqs9Gww9RV2CQ@mail.gmail.com>
+ <ac1f5e3406abc0af4cd08d818fe920a202a67586.camel@themaw.net>
+ <CAJfpegu8omNZ613tLgUY7ukLV131tt7owR+JJ346Kombt79N0A@mail.gmail.com>
+ <CAJfpegtNP8rQSS4Z14Ja4x-TOnejdhDRTsmmDD-Cccy2pkfVVw@mail.gmail.com>
+ <20200811135419.GA1263716@miu.piliscsaba.redhat.com> <CAHk-=wjzLmMRf=QG-n+1HnxWCx4KTQn9+OhVvUSJ=ZCQd6Y1WA@mail.gmail.com>
+ <52483.1597190733@warthog.procyon.org.uk> <CAHk-=wiPx0UJ6Q1X=azwz32xrSeKnTJcH8enySwuuwnGKkHoPA@mail.gmail.com>
+ <066f9aaf-ee97-46db-022f-5d007f9e6edb@redhat.com> <CAHk-=wgz5H-xYG4bOrHaEtY7rvFA1_6+mTSpjrgK8OsNbfF+Pw@mail.gmail.com>
+ <94f907f0-996e-0456-db8a-7823e2ef3d3f@redhat.com> <CAHk-=wig0ZqWxgWtD9F1xZzE7jEmgLmXRWABhss0+er3ZRtb9g@mail.gmail.com>
+ <CAHk-=wh4qaj6iFTrbHy8TPfmM3fj+msYC5X_KE0rCdStJKH2NA@mail.gmail.com>
+ <CAJfpegsr8URJHoFunnGShB-=jqypvtrmLV-BcWajkHux2H4x2w@mail.gmail.com>
+ <CAHk-=wh5YifP7hzKSbwJj94+DZ2czjrZsczy6GBimiogZws=rg@mail.gmail.com>
+ <CAJfpegt9yEHX3C-sF9UyOXJcRa1cfDnf450OEJ47Xk=FmyEs8A@mail.gmail.com> <CAHk-=wiUcfgC1PdbS_4mfAj2+VTacOwD_uUu6krSxjpvh42T7A@mail.gmail.com>
+In-Reply-To: <CAHk-=wiUcfgC1PdbS_4mfAj2+VTacOwD_uUu6krSxjpvh42T7A@mail.gmail.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Fri, 21 Aug 2020 15:17:59 +0200
+Message-ID: <CAJfpegsBSsMkSXReN6Sheye1cksCO2pcqcx_3VwY4C1J9kDhaw@mail.gmail.com>
+Subject: Re: file metadata via fs API
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Steven Whitehouse <swhiteho@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, Karel Zak <kzak@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Christian Brauner <christian@brauner.io>,
+        Lennart Poettering <lennart@poettering.net>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ian Kent <raven@themaw.net>,
+        LSM <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Tue, Aug 18, 2020 at 10:53 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 
-Currently the second call to dev_alloc_name is not checking if this
-failed.  Add the check and perform necessary cleanup on an error.
+> Basically, I think a rough rule of thumb can and should be:
+>
+>  - stuff that the VFS knows about natively and fully is clearly pretty
+> mount-agnostic and generic, and can be represented in whatever
+> extended "struct statfs_x" directly.
+>
+>  - anything that is variable-format and per-fs should be expressed in
+> the ASCII buffer
+>
+> Look at our fancy new fs_context - that's pretty much what it does
+> even inside the kernel. Sure, we have "binary" fields there for core
+> basic information ("struct dentry *root", but also things like flags
+> with MNT_NOSUID), but the configuration stuff is ASCII that the
+> filesystem can parse itself.
+>
+> Exactly because some things are very much specific to some
+> filesystems, not generic things.
+>
+> So we fundamentally already have a mix of "standard FS data" and
+> "filesystem-specific options", and it's already basically split that
+> way: binary flag fields for the generic stuff, and ASCII text for the
+> odd options.
 
-Addresses-Coverity: ("Unchecked return value")
-Fixes: 94a799425eee ("rtl8192e: Import new version of driver from realtek")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/staging/rtl8192e/rtl8192e/rtl_core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Okay.
 
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-index fac58eebf263..7b15faeefff2 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-@@ -2489,7 +2489,8 @@ static int _rtl92e_pci_probe(struct pci_dev *pdev,
- 	if (dev_alloc_name(dev, ifname) < 0) {
- 		RT_TRACE(COMP_INIT,
- 			 "Oops: devname already taken! Trying wlan%%d...\n");
--		dev_alloc_name(dev, ifname);
-+		if (dev_alloc_name(dev, ifname) < 0)
-+			goto err_unmap;
- 	}
- 
- 	RT_TRACE(COMP_INIT, "Driver probe completed1\n");
--- 
-2.27.0
+Something else:  do we want a separate statmount(2) or is it okay to
+mix per-mount and per-sb attributes in the same syscall?
 
+/proc/mounts concatenates mount and sb options (since it copies the
+/etc/mtab format)
+
+/proc/self/mountinfo separates per-mount and per-sb data into
+different fields at least, but the fields themselves are mixed
+
+If we are introducing completely new interfaces, I think it would make
+sense to separate per-mount and per-sb attributes somehow.  Atomicity
+arguments don't apply since they have separate locking.  And we
+already have separate interfaces for configuring them...
+
+Thanks,
+Miklos
