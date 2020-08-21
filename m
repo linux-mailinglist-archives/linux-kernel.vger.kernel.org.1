@@ -2,86 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A508724D149
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 11:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A9D24D14D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 11:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728074AbgHUJTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 05:19:03 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:33306 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725806AbgHUJTD (ORCPT
+        id S1728276AbgHUJT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 05:19:29 -0400
+Received: from mail-out.m-online.net ([212.18.0.9]:45315 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725806AbgHUJT2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 05:19:03 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id BF1FD1C0BB4; Fri, 21 Aug 2020 11:19:00 +0200 (CEST)
-Date:   Fri, 21 Aug 2020 11:19:00 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Dave Airlie <airlied@gmail.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Subject: Re: [Intel-gfx] 5.9-rc1: graphics regression moved from -next to
- mainline
-Message-ID: <20200821091900.hzbivycs5ky5d3iw@duo.ucw.cz>
-References: <20200817161132.GA4711@amd>
- <CAHk-=wh6_eWwvpL=AhOeY0btf_dkpu+0joNzPZWfbBWgAeAhMA@mail.gmail.com>
- <CAPM=9tw8LVWsuA6m_nkUDgm00iz2txYRNZY0b0WWZbyiUVzLEw@mail.gmail.com>
- <CAHk-=wg34bw1ude07nC_XCPOJHZ21-v6117p4574d5S7iP4gxw@mail.gmail.com>
- <20200820092349.GA3792@amd>
- <CAHk-=wjX=ck_u8uvp=PjGCQ3M9igE-yqyRPsJ54th1gQWpwMnA@mail.gmail.com>
+        Fri, 21 Aug 2020 05:19:28 -0400
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4BXwvK4SfGz1qs0H;
+        Fri, 21 Aug 2020 11:19:25 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4BXwvK3qgKz1qy63;
+        Fri, 21 Aug 2020 11:19:25 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id F0_dCBk9PgC1; Fri, 21 Aug 2020 11:19:24 +0200 (CEST)
+X-Auth-Info: xzm2TsjnGK9QJrldEjTYj5rRu9jtvPfdYQZy6A0x9whwb0PqbRObjNI3MuMTzqpI
+Received: from igel.home (ppp-46-244-185-194.dynamic.mnet-online.de [46.244.185.194])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Fri, 21 Aug 2020 11:19:24 +0200 (CEST)
+Received: by igel.home (Postfix, from userid 1000)
+        id EAD032C0765; Fri, 21 Aug 2020 11:19:23 +0200 (CEST)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] powerpc/32s: Fix module loading failure when
+ VMALLOC_END is over 0xf0000000
+References: <09fc73fe9c7423c6b4cf93f93df9bb0ed8eefab5.1597994047.git.christophe.leroy@csgroup.eu>
+X-Yow:  HERE!!  Put THIS on!!  I'm in CHARGE!!
+Date:   Fri, 21 Aug 2020 11:19:23 +0200
+In-Reply-To: <09fc73fe9c7423c6b4cf93f93df9bb0ed8eefab5.1597994047.git.christophe.leroy@csgroup.eu>
+        (Christophe Leroy's message of "Fri, 21 Aug 2020 07:15:25 +0000
+        (UTC)")
+Message-ID: <874kowwe3o.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="flaffuju4iqng467"
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjX=ck_u8uvp=PjGCQ3M9igE-yqyRPsJ54th1gQWpwMnA@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Aug 21 2020, Christophe Leroy wrote:
 
---flaffuju4iqng467
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> In is_module_segment(), when VMALLOC_END is over 0xf0000000,
+> ALIGN(VMALLOC_END, SZ_256M) has value 0.
+>
+> In that case, addr >= ALIGN(VMALLOC_END, SZ_256M) is always
+> true then is_module_segment() always returns false.
+>
+> Use (ALIGN(VMALLOC_END, SZ_256M) - 1) which will have
+> value 0xffffffff and will be suitable for the comparison.
+>
+> Reported-by: Andreas Schwab <schwab@linux-m68k.org>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Fixes: c49643319715 ("powerpc/32s: Only leave NX unset on segments used for modules")
 
-On Thu 2020-08-20 09:16:18, Linus Torvalds wrote:
-> On Thu, Aug 20, 2020 at 2:23 AM Pavel Machek <pavel@ucw.cz> wrote:
-> >
-> > Yes, it seems they make things work. (Chris asked for new patch to be
-> > tested, so I am switching to his kernel, but it survived longer than
-> > it usually does.)
->=20
-> Ok, so at worst we know how to solve it, at best the reverts won't be
-> needed because Chris' patch will fix the issue properly.
->=20
-> So I'll archive this thread, but remind me if this hasn't gotten
-> sorted out in the later rc's.
+Thanks, that fixes the crash.
 
-Yes, thank you, it seems we have a solution w/o the revert.
+Tested-by: Andreas Schwab <schwab@linux-m68k.org>
 
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
+Andreas.
 
---flaffuju4iqng467
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EARECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXz+RhAAKCRAw5/Bqldv6
-8uD4AJ9wxBkyX2NDdBB2rL/oeGMClEedJACglQjPofMhal5uP1yWgF+eVF2jZJc=
-=LW91
------END PGP SIGNATURE-----
-
---flaffuju4iqng467--
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
