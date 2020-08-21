@@ -2,160 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D445424D75B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 16:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 055D524D761
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 16:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727817AbgHUO2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 10:28:47 -0400
-Received: from mga09.intel.com ([134.134.136.24]:40735 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727091AbgHUO2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 10:28:47 -0400
-IronPort-SDR: 0g8xVY0iyrKT/0P9YuHYec8jsh8qSyafrdHYoXY4xMFn+yDI0Ovi5uYaBkAtNmrGyLp2Ood07j
- hxseELYwybfA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9719"; a="156595407"
-X-IronPort-AV: E=Sophos;i="5.76,337,1592895600"; 
-   d="scan'208";a="156595407"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2020 07:28:46 -0700
-IronPort-SDR: AJrAyZoWR5sT0vUxtRkAvJQnYwpeH8jNo6DiUn+ppEZBZqMrOJj5NQoFeLEklyk8ykP9G3Y2or
- OT56dLCFGRfw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,337,1592895600"; 
-   d="scan'208";a="497995621"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.73]) ([10.237.72.73])
-  by fmsmga006.fm.intel.com with ESMTP; 21 Aug 2020 07:28:41 -0700
-Subject: Re: [RFC PATCH V3 04/21] mmc: core: UHS-II support, try to select
- UHS-II interface
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Ben Chuang <benchuanggli@gmail.com>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        Takahiro Akashi <takahiro.akashi@linaro.org>,
-        greg.tu@genesyslogic.com.tw
-References: <20200710110848.29114-1-benchuanggli@gmail.com>
- <CAPDyKFoGQFxdNVA+A76NitGP=yZvE2z90fewAo21Q8U+bgPbBQ@mail.gmail.com>
- <CACT4zj_iO58CPk_PTfNCot+c2Z1_vcWeVUwH2nPgN-jx43eN2g@mail.gmail.com>
- <CAPDyKFoL8Yh_SJSw56kQsFBRE64oRGTnyzgvOm__-1f+Cvxpzw@mail.gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <a5ee1d39-01c7-acb4-fe84-64a416ced9de@intel.com>
-Date:   Fri, 21 Aug 2020 17:28:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727091AbgHUOct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 10:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726118AbgHUOcs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 10:32:48 -0400
+X-Greylist: delayed 350 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 21 Aug 2020 07:32:47 PDT
+Received: from outbound.soverin.net (outbound.soverin.net [IPv6:2a01:4f8:fff0:2d:8::218])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CDFFC061573
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 07:32:47 -0700 (PDT)
+Received: from smtp.soverin.net (unknown [10.10.3.28])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by outbound.soverin.net (Postfix) with ESMTPS id B364E600DF
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 14:32:44 +0000 (UTC)
+Received: from smtp.soverin.net (smtp.soverin.net [159.69.232.142]) by soverin.net
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=bartavi.nl; s=soverin;
+        t=1598020364; bh=d0d600mOuaRwk2pd+47jPHrWgSsBHwS+AdjY8auuIFg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DU9mh1XJfCzkIeIPZ/tDrqZYOiCUDn/IlEIS9+wx9R2UbcyBiriGizc0mLmB0Yb24
+         lyQUATO0rV6bCAzidrNLcsOdsZAkWZk+lcuE++2kqot1JZE6BwH1BGMgl6CcnrXhcR
+         42nhr2Elg9wZ7hLo7lV9fFMsgBCLqpeeH0BaBKVp8MzOUZSQdM4jwiW+vmm/fbbt5s
+         HLuCp2uvcU8QDET3DDrKCt/MspFA/fX0Pj2CAwpEPQKXL7uh+MR8aGCzHKhylw2UWP
+         DKkj2Mm7BiZ0kM2gjFIeS4NgqSOv97MnFVxMgyNEpDhXlI0Y5PVF8uHC4oh06ZA8yk
+         2cbw8bfMCT0ag==
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=bartavi.nl; s=soverin;
+        t=1598020364; bh=d0d600mOuaRwk2pd+47jPHrWgSsBHwS+AdjY8auuIFg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DU9mh1XJfCzkIeIPZ/tDrqZYOiCUDn/IlEIS9+wx9R2UbcyBiriGizc0mLmB0Yb24
+         lyQUATO0rV6bCAzidrNLcsOdsZAkWZk+lcuE++2kqot1JZE6BwH1BGMgl6CcnrXhcR
+         42nhr2Elg9wZ7hLo7lV9fFMsgBCLqpeeH0BaBKVp8MzOUZSQdM4jwiW+vmm/fbbt5s
+         HLuCp2uvcU8QDET3DDrKCt/MspFA/fX0Pj2CAwpEPQKXL7uh+MR8aGCzHKhylw2UWP
+         DKkj2Mm7BiZ0kM2gjFIeS4NgqSOv97MnFVxMgyNEpDhXlI0Y5PVF8uHC4oh06ZA8yk
+         2cbw8bfMCT0ag==
+From:   Bart Groeneveld <avi@bartavi.nl>
+To:     linux-kernel@vger.kernel.org
+Cc:     Bart Groeneveld <avi@bartavi.nl>
+Subject: [PATCH] net: Use standardized (IANA) local port range
+Date:   Fri, 21 Aug 2020 16:32:41 +0200
+Message-Id: <20200821143241.46798-1-avi@bartavi.nl>
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFoL8Yh_SJSw56kQsFBRE64oRGTnyzgvOm__-1f+Cvxpzw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.102.4 at c03mi01
+X-Virus-Status: Clean
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/08/20 3:25 pm, Ulf Hansson wrote:
-> [...]
-> 
->>>> @@ -2300,6 +2304,33 @@ void mmc_rescan(struct work_struct *work)
->>>>                 goto out;
->>>>         }
->>>>
->>>> +       if (host->caps & MMC_CAP_UHS2) {
->>>> +               /*
->>>> +                * Start to try UHS-II initialization from 52MHz to 26MHz
->>>> +                * (RCLK range) per spec.
->>>> +                */
->>>> +               for (i = 0; i < ARRAY_SIZE(uhs2_freqs); i++) {
->>>> +                       unsigned int freq = uhs2_freqs[i];
->>>> +                       int err;
->>>> +
->>>> +                       err = mmc_uhs2_rescan_try_freq(host,
->>>> +                                                      max(freq, host->f_min));
->>>> +                       if (!err) {
->>>> +                               mmc_release_host(host);
->>>> +                               goto out;
->>>> +                       }
->>>> +
->>>> +                       if (err == UHS2_PHY_INIT_ERR)
->>>> +                               /* UHS2 IF detect or Lane Sync error.
->>>> +                                * Try legacy interface.
->>>> +                                */
->>>> +                               break;
->>>> +
->>>> +                       if (freq <= host->f_min)
->>>> +                               break;
->>>> +               }
->>>
->>> Assuming we change the initialization order, trying to initialize the
->>> legacy SD interface first to figure out if UHS-II is supported, then I
->>> think we should be able to move the entire code above into a the
->>> UHS-II specific code/path.
->>
->> If the host tries to use the SD interface first,
->> some failure status needs to be considered.
->>
->> For example, first run in SD mode, try UHS-II interface failure,
->>  and then return to SD flow again.
->> I don't know a good way to go back to SD flow again.
-> 
-> Right, a re-try path for the legacy SD interface is a very good idea!
-> However, I don't think the initial support for UHS-II needs to cover
-> it. Instead we can add that on top, don't you think?
-> 
-> As a matter of fact, we could even use something like that for
-> different legacy SD speed modes. For example, if UHS-I SDR104 fails we
-> could try with UHS-I SDR25.
-> 
->>
->>>
->>>> +       }
->>>> +
->>>>         for (i = 0; i < ARRAY_SIZE(freqs); i++) {
->>>>                 unsigned int freq = freqs[i];
->>>>                 if (freq > host->f_max) {
->>>> diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
->>>> index 5a2210c25aa7..c5b071bd98b3 100644
->>>> --- a/drivers/mmc/core/sd.c
->>>> +++ b/drivers/mmc/core/sd.c
->>>> @@ -901,6 +901,20 @@ int mmc_sd_setup_card(struct mmc_host *host, struct mmc_card *card,
->>>>                 err = mmc_read_switch(card);
->>>>                 if (err)
->>>>                         return err;
->>>> +               if (host->flags & MMC_UHS2_INITIALIZED) {
->>>
->>> Rather than using host->flags, to tweak the behavior of
->>> mmc_sd_setup_card() to support UHS-II, I would prefer to give
->>> mmc_sd_setup_card() a new in-parameter that it can look at instead.
->>
->> Do you mean that adding a new in-parameter to mmc_sd_setup_card() likes this
->> mmc_sd_setup_card(struct mmc_host *, struct mmc_card *, boot reinit,
->> boot uhsii); ?
-> 
-> Correct.
-> 
-> [...]
-> 
-> Looks like we have covered most of the review for the mmc core
-> changes. But please tell me, if there is anything else you want me to
-> look at - at any time. Otherwise I am deferring to wait for a new
-> version of the series.
-> 
-> If I get some time, I may start to help with hacking some code.
-> Perhaps I can do some preparations, so it makes it easier for you to
-> add the UHS-II specific code. If so, I will let you know about it, of
-> course.
-> 
-> When it comes to the changes to SDHCI, I am relying on Adrian to give
-> his opinions.
+IANA specifies User ports as 1024-49151,
+and Private ports (local/ephemeral/dynamic/w/e) as 49152-65535 [1].
 
-I have made some comments.  The thrust of which is:
-- get all the UHS-II code into sdhci-uhs2 (not sdhci.c)
-- make the driver (i.e sdhci-pci-gli) set existing mmc host ops callbacks
-and sdhci host ops callbacks as much as possible to provide UHS-II
-functionality i.e. avoid adding new hooks if possible
-- refactoring and exporting functions from sdhci.c where that can be done
-logically, but otherwise writing separate code for UHS-II
+This means Linux uses 32768-49151 'illegally'.
+This is not just a matter of following specifications:
+IANA actually assigns numbers in this range [1].
+
+I understand that Linux uses 61000-65535 for masquarading/NAT [2],
+so I left the high value at 60999.
+This means the high value still does not follow the specification,
+but it also doesn't conflict with it.
+
+This change will effectively halve the available ephemeral ports,
+increasing the risk of port exhaustion. But:
+a) I don't think that warrants ignoring standards.
+	Consider for example setting up a (corporate) firewall blocking
+	all unknown external services.
+	It will only allow outgoing trafiic at port 80,443 and 49152-65535.
+	A Linux computer behind such a firewall will not be able to connect
+	to *any* external service *half of the time*.
+	Of course, the firewall can be adjusted to also allow 32768-49151,
+	but that allows computers to use some services against the policy.
+b) It is only an issue with more than 11848 *outgoing* connections.
+	I think that is a niche case (I know, citation needed, but still).
+	If someone finds themselves in such a niche case,
+	they can still modify ip_local_port_range.
+
+This patch keeps the low and high value at different parity,
+as to optimize port assignment [3].
+
+[1]: https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.txt
+[2]: https://marc.info/?l=linux-kernel&m=117900026927289
+[3]: See for example commit 1580ab63fc9a03593072cc5656167a75c4f1d173
+
+Signed-off-by: Bart Groeneveld <avi@bartavi.nl>
+---
+ Documentation/networking/ip-sysctl.rst | 4 ++--
+ net/ipv4/af_inet.c                     | 2 +-
+ net/ipv4/inet_connection_sock.c        | 2 +-
+ net/ipv4/inet_hashtables.c             | 2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/Documentation/networking/ip-sysctl.rst b/Documentation/networking/ip-sysctl.rst
+index 837d51f9e1fa..5048b326f773 100644
+--- a/Documentation/networking/ip-sysctl.rst
++++ b/Documentation/networking/ip-sysctl.rst
+@@ -1024,7 +1024,7 @@ ip_local_port_range - 2 INTEGERS
+ 	If possible, it is better these numbers have different parity
+ 	(one even and one odd value).
+ 	Must be greater than or equal to ip_unprivileged_port_start.
+-	The default values are 32768 and 60999 respectively.
++	The default values are 49152 and 60999 respectively.
+ 
+ ip_local_reserved_ports - list of comma separated ranges
+ 	Specify the ports which are reserved for known third-party
+@@ -1047,7 +1047,7 @@ ip_local_reserved_ports - list of comma separated ranges
+ 	ip_local_port_range, e.g.::
+ 
+ 	    $ cat /proc/sys/net/ipv4/ip_local_port_range
+-	    32000	60999
++	    49152	60999
+ 	    $ cat /proc/sys/net/ipv4/ip_local_reserved_ports
+ 	    8080,9148
+ 
+diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+index 4307503a6f0b..f95a9ffffdc9 100644
+--- a/net/ipv4/af_inet.c
++++ b/net/ipv4/af_inet.c
+@@ -1838,7 +1838,7 @@ static __net_init int inet_init_net(struct net *net)
+ 	 * Set defaults for local port range
+ 	 */
+ 	seqlock_init(&net->ipv4.ip_local_ports.lock);
+-	net->ipv4.ip_local_ports.range[0] =  32768;
++	net->ipv4.ip_local_ports.range[0] =  49152;
+ 	net->ipv4.ip_local_ports.range[1] =  60999;
+ 
+ 	seqlock_init(&net->ipv4.ping_group_range.lock);
+diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+index b457dd2d6c75..322bcfce0737 100644
+--- a/net/ipv4/inet_connection_sock.c
++++ b/net/ipv4/inet_connection_sock.c
+@@ -196,7 +196,7 @@ inet_csk_find_open_port(struct sock *sk, struct inet_bind_bucket **tb_ret, int *
+ 	attempt_half = (sk->sk_reuse == SK_CAN_REUSE) ? 1 : 0;
+ other_half_scan:
+ 	inet_get_local_port_range(net, &low, &high);
+-	high++; /* [32768, 60999] -> [32768, 61000[ */
++	high++; /* [49152, 60999] -> [49152, 61000[ */
+ 	if (high - low < 4)
+ 		attempt_half = 0;
+ 	if (attempt_half) {
+diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
+index 239e54474b65..547b95a4891a 100644
+--- a/net/ipv4/inet_hashtables.c
++++ b/net/ipv4/inet_hashtables.c
+@@ -695,7 +695,7 @@ int __inet_hash_connect(struct inet_timewait_death_row *death_row,
+ 	l3mdev = inet_sk_bound_l3mdev(sk);
+ 
+ 	inet_get_local_port_range(net, &low, &high);
+-	high++; /* [32768, 60999] -> [32768, 61000[ */
++	high++; /* [49152, 60999] -> [49152, 61000[ */
+ 	remaining = high - low;
+ 	if (likely(remaining > 1))
+ 		remaining &= ~1U;
+-- 
+2.28.0
+
