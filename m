@@ -2,236 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F48A24DE6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8782224DE76
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729178AbgHUR36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 13:29:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728754AbgHUR3j (ORCPT
+        id S1728380AbgHURam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 13:30:42 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:37180 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726805AbgHUQOI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 13:29:39 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DCCC061573;
-        Fri, 21 Aug 2020 10:29:39 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id t23so1761715qto.3;
-        Fri, 21 Aug 2020 10:29:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5YuybKZTV6+y2jdsm8D937XYyXteASeCgo782uMSN54=;
-        b=DaXjCsU6rUCmYHNazMqmOYKGd5+E7dI8Ey8oG06UZdKZ6MEfAwCzeJuL5jPFWIpu5F
-         bvmtLt5LAvQd9ILlvhPajOdyPzp83wbzwxrBShXw/fWBXwhWh7BOzSuUfWA4cLaQJFan
-         CoPd5gvagUyrnVZqK+GQwjwMsQYbisbUrjq4Ivtf97aTmu+eeKguGqP09cBgRX9YL2NA
-         Hln+YzwbfuFCKoa8SCIulLXPrZGbpU61MbbT2vVxC6tISr/LyhNMi7KU03DIy5+XLWW5
-         J0ypft08k/bOe9E8bhOukd+oVls6eH2IZkzJIokr6q+3iqEIVUuMHnjrP0K+Mvwl/JWP
-         GyCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=5YuybKZTV6+y2jdsm8D937XYyXteASeCgo782uMSN54=;
-        b=oS2o593Dt6F2ycLGHd0QTxNj7Y+MJLKOORrYtG1ufUSh+lW7n6EcvcHL8QE6hKCzlV
-         B5DNOqT/oIcWyR4ZKzskDBEphmDBKvAefwN/P9t2/CI95pblmKBiIGam3XK2Aaz8JJjt
-         st/nH3qFadV5PT2yBCHLYmiHoY/4WysruPNSxzx263IlWA5kktVjElrYjtVZCIVTmALP
-         yDXlaZ3I3KKxZlUhITJdhLBOi5pq8cZPun//nDgsKdKMe64fpAV8/QsG5Y/KbAgwngyz
-         Va7/n4Fsiq/HzJERSoGGCy4MgsMCHVdZlh+JTKBRwjQ3Jza9AujwWYXXz+XqUxizT3wx
-         Q+eQ==
-X-Gm-Message-State: AOAM530g4qFlyubpPUPVAOk6nmzB92rhw44VTVB8Ehu/1DU6XhzEVQzy
-        VJiluGzIEvNMFlRqeIZsrSE=
-X-Google-Smtp-Source: ABdhPJyh4Xad2b+n7JZSbMQHz8G1pyzv4nfZxw6XeH/8FvDa3KZKEdCj5fLjYlIZHR31w0iq87urFA==
-X-Received: by 2002:ac8:ec7:: with SMTP id w7mr3770399qti.118.1598030978689;
-        Fri, 21 Aug 2020 10:29:38 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id j61sm2521675qtd.52.2020.08.21.10.29.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 10:29:37 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Fri, 21 Aug 2020 13:29:35 -0400
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        =?utf-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
-        Eli Friedman <efriedma@quicinc.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Joe Perches <joe@perches.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Bruce Ashfield <bruce.ashfield@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
-Subject: Re: [PATCH 0/4] -ffreestanding/-fno-builtin-* patches
-Message-ID: <20200821172935.GA1411923@rani.riverdale.lan>
-References: <CAKwvOdk6A4AqTtOsD34WNwxRjyTvXP8KCNj2xfNWYdPT+sLHwQ@mail.gmail.com>
- <76071c24-ec6f-7f7a-4172-082bd574d581@zytor.com>
- <CAHk-=wiPeRQU_5JXCN0TLoW-xHZHp7dmrhx0wyXUSKxiCxE02Q@mail.gmail.com>
- <20200818202407.GA3143683@rani.riverdale.lan>
- <CAKwvOdnfh9nWwu1xV=WDbETGiabwDxXxQDRCAfpa-+kSZijb9w@mail.gmail.com>
- <CAKwvOdkA4SC==vGZ4e7xqFG3Zo=fnhU=FgnSazmWkkVWhkaSYw@mail.gmail.com>
- <20200818214146.GA3196105@rani.riverdale.lan>
- <df6c1da4-b910-ecb8-0de2-6156dd651be6@rasmusvillemoes.dk>
- <20200820175617.GA604994@rani.riverdale.lan>
- <CAHk-=whn91ar+EbcBXQb9UXad00Q5WjU-TCB6UBzVba682a4ew@mail.gmail.com>
+        Fri, 21 Aug 2020 12:14:08 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200821161406euoutp01664fad75bc1ef2c335ae075fe7f515b7~tVJYyBmgR2042020420euoutp01O
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 16:14:06 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200821161406euoutp01664fad75bc1ef2c335ae075fe7f515b7~tVJYyBmgR2042020420euoutp01O
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1598026446;
+        bh=KeqMlAnQDioCCu8vW3lN/TARMJriFxWP6OI28/BAWlA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=aScxBX/H9Dp1x6jyam5vwzJDJJr3efXztBr2k+/4S3luCx/mVnzSN2iZ0mbxKpwnf
+         2wFtk4lJkrvg+2kWZYhlNi6DnGECYvV1Ws8OCVyx2fdkC6aR18A/ITSzkd/bmsPy2E
+         p+g1vfFFRKzVt7yFLdAYcVkFxGX5iL3WVM7XeU6I=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200821161406eucas1p2111ed4bdeb3a760d71a878cfd0798d39~tVJYJCXCm1870518705eucas1p2l;
+        Fri, 21 Aug 2020 16:14:06 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id A1.B2.06318.EC2FF3F5; Fri, 21
+        Aug 2020 17:14:06 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200821161405eucas1p20aad659cd41bc4f56d5123d3c63394f0~tVJXtZ90P1823418234eucas1p2h;
+        Fri, 21 Aug 2020 16:14:05 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200821161405eusmtrp1c7883aee9cc58d774fe9cd425768a4ca~tVJXsxwz-1179011790eusmtrp13;
+        Fri, 21 Aug 2020 16:14:05 +0000 (GMT)
+X-AuditID: cbfec7f5-38bff700000018ae-d0-5f3ff2ce3dbb
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id ED.A9.06017.DC2FF3F5; Fri, 21
+        Aug 2020 17:14:05 +0100 (BST)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200821161405eusmtip1fbfb185c6d98c1845c601bf4c1ed7cdd~tVJXevJ1R1633816338eusmtip1J;
+        Fri, 21 Aug 2020 16:14:05 +0000 (GMT)
+From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+To:     Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Andi Shyti <andi@etezian.org>, Mark Brown <broonie@kernel.org>,
+        linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     m.szyprowski@samsung.com, b.zolnierkie@samsung.com,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+Subject: [PATCH v2 2/9] spi: spi-s3s64xx: Add S3C64XX_SPI_QUIRK_CS_AUTO for
+ Exynos3250
+Date:   Fri, 21 Aug 2020 18:13:54 +0200
+Message-Id: <20200821161401.11307-3-l.stelmach@samsung.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200821161401.11307-1-l.stelmach@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whn91ar+EbcBXQb9UXad00Q5WjU-TCB6UBzVba682a4ew@mail.gmail.com>
+Organization: Samsung R&D Institute Poland
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0hTYRjm29nZOS5nZ5vh2wqFlUGCWihyItEMf4xIMPoTYdnSg5o6ZcdZ
+        U8oblBNvaJJNMfGCyy6rpdPMVJZlJk3zkkkpeEFLDUwzTEvTnUn+e97vubzvAx+JSUy4jIxR
+        JTFqlTJOLhDyzW9+93paFwPDj+inCLp6ZYZHPy014nTJ+JSALpicw+je3icEPWIxINo0+RGn
+        B1rKBXRpbxuPzvgxQtCPOkeJE7sUwzWLmMJUrxMontWkKfIb6pFiyeQaip8X+kcycTHJjNo7
+        4JIwuml1EE+sFFyrHXtApCM9noMcSKB8YcCgQzlISEooA4LMyhqMG34iaF/L5nHDEoKNETN/
+        29L+edpO1CEYmqrFuWEGQb9undhSCaggKKh9ayOcqUIejFvnBVsERmkg97nFhqXUOTD+XbPF
+        8il3aH71Gm1hEXUcvnRsENw6N7hV12TTO1D+0NWfiXMaMXTfnbJ5d1Me8DBzmM/lu0FWY5mt
+        BFBWAj505iMuKBh+9c3ZQ6Uw29Vgx/uhpzh300xu4jQoLvLjvLkIzOUr9s6bB1lXBVsajDoM
+        xhZv7jkIht7peJzVCT59F3MnOEGR+Q7GPYsg+6aEUx+ExwWt9kAZ5M0aUCGS63eU0e8ooP+/
+        qxJh9ciF0bDxUQzro2KuerHKeFajivKKSIg3oc2f1LPetdyM2v5ctiCKRHJH0YolMFyCK5NZ
+        bbwFAYnJnUUn3/dclIgildoURp0QrtbEMawF7SP5cheRT9W3CxIqSpnExDJMIqPeZnmkgywd
+        NYhjB5eMEyWpGcslCdUT189aKcm9G2Ed6f7mtqyxUBkbqu8T+0j9qiYP0RGu9HJYdEkepq06
+        FYDRsoX0kAqiJrl7tHbxyoS7WRWysKY95ojvmZ5Wo/nZF5638/LDvlpOS6GCeOlrQGfClQf2
+        lrUuNN5XpBxISI0NbtKM9cn5bLTyqAemZpX/AEFpOvtFAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrAIsWRmVeSWpSXmKPExsVy+t/xu7pnP9nHG6xcqmyx+MdzJouNM9az
+        Wkx9+ITNov/xa2aL8+c3sFvcPLSC0WLT42usFpd3zWGzmHF+H5NF48eb7BZrj9xld+D2uL7k
+        E7PHplWdbB6bl9R79G1ZxejxeZNcAGuUnk1RfmlJqkJGfnGJrVK0oYWRnqGlhZ6RiaWeobF5
+        rJWRqZK+nU1Kak5mWWqRvl2CXsb2X1dYCxawVSy9t5q9gXEWaxcjJ4eEgInE/tvPmEBsIYGl
+        jBK934HiHEBxKYmVc9MhSoQl/lzrYuti5AIqecoosXPCdnaQBJuAo0T/0hOsIAkRgRlMEk9u
+        TAYbyixQLnFp1nN2kEHCAmESjxbWg4RZBFQldhw+yghi8wpYS9w58J8dYoG8RPvy7WwgNqeA
+        jcTxS02sEPdYS2xbfJkFol5Q4uTMJywgI5kF1CXWzxMCCfMLaEmsabrOArFVXqJ562zmCYxC
+        s5B0zELomIWkagEj8ypGkdTS4tz03GIjveLE3OLSvHS95PzcTYzA2Nt27OeWHYxd74IPMQpw
+        MCrx8P44ZB8vxJpYVlyZe4hRgoNZSYTX6ezpOCHelMTKqtSi/Pii0pzU4kOMpkBvTmSWEk3O
+        B6aFvJJ4Q1NDcwtLQ3Njc2MzCyVx3g6BgzFCAumJJanZqakFqUUwfUwcnFINjDp+/Ku9ypme
+        Ch8/lPeWI3bKgYNC3yM2CahPjOw3Ntl54LyBsl//1eX96c6niprOd1/u4W67NP23psz7Bs+A
+        GmXWB53af7mWbKq93b53506rJCluzk2ez/efaTU44vs1+6y0j3J5+/RvWZ83nSoRlXDzesCv
+        eP5p8D6DuDT2jl9B13wb439cUGIpzkg01GIuKk4EAIuL3bjTAgAA
+X-CMS-MailID: 20200821161405eucas1p20aad659cd41bc4f56d5123d3c63394f0
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200821161405eucas1p20aad659cd41bc4f56d5123d3c63394f0
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200821161405eucas1p20aad659cd41bc4f56d5123d3c63394f0
+References: <20200821161401.11307-1-l.stelmach@samsung.com>
+        <CGME20200821161405eucas1p20aad659cd41bc4f56d5123d3c63394f0@eucas1p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 04:33:03PM -0700, Linus Torvalds wrote:
-> On Thu, Aug 20, 2020 at 10:56 AM Arvind Sankar <nivedita@alum.mit.edu> wrote:
-> >
-> > Clang's interpretation is more useful for embedded, since you can use
-> > -fno-builtin-foo and avoid calling __builtin_foo directly, and be
-> > guaranteed that there will be no calls to foo that you didn't write
-> > explicitly (outside of memcpy/memset/memcmp). In this case you are free
-> > to implement foo with non-standard semantics, or avoid implementing it
-> > altogether, and be reasonably confident that it will all work.
-> 
-> Honestly, I think concentrating on whether __builtin_foo() works or
-> not misses the point entirely.
-> 
-> That has never _ever_ been a problem for us, and I doubt it has been a
-> problem for anybody else either.
-> 
-> If you use __builtin_memcpy() in your source tree, then why would you
-> possibly ever want to disable it? And if you _don't_ use it, then
-> again - why would you ever want to disable it?
-> 
-> No, the real (and only) problem has always been about the compilers
-> magically and silently "recognizing" certain source patterns, and
-> turning them into function calls behind the users back.
-> 
-> And that has nothing to do with __builtin_foo(). At least it
-> _shouldn't_ have anything to do with it.
-> 
+This and the previous patch fix issues with DMA transfers bigger than
+512 bytes on Exynos3250. Without the patches such transfers fail.
 
-There seems to be some confusion here. The recognition and
-__builtin_foo() go hand-in-hand: memcpy() is special _because_ the
-compiler defines it to be __builtin_memcpy(); and the compiler turns the
-patterns into __builtin_foo() calls, which just end up as a call to
-foo() if they can't be inlined. The no-builtin- options _don't_ disable
-__builtin_ functions. They remove the default definition of foo() as
-__builtin_foo().
+The vendor kernel for ARTIK5 handles CS in a simmilar way.
 
-Take the problem that instigated this thread. __builtin_stpcpy() doesn't
-work in the kernel because the fallback, stpcpy(), isn't implemented.
-The optimization is doing:
-  sprintf(buf,"%s",s)
-  -> __builtin_sprintf(buf,"%s",s)
-  -> __builtin_stpcpy(buf,s)-buf
-  -> stpcpy(buf,s)-buf
+Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+---
+ drivers/spi/spi-s3c64xx.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Now, further below, you basically say this is an example of the compiler
-taking something non-stpcpy() and turning it into stpcpy(), and you ask
-for a no-magic-stpcpy that would stop this optimization. That's what
-clang's no-builtin-stpcpy already does. The only extra thing it does is
-that the compiler will also not touch an explicit call to stpcpy(), but
-you can still call __builtin_stpcpy() if you really want it.
+diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
+index 26c7cb79cd78..22bf8c75580a 100644
+--- a/drivers/spi/spi-s3c64xx.c
++++ b/drivers/spi/spi-s3c64xx.c
+@@ -1379,6 +1379,7 @@ static struct s3c64xx_spi_port_config exynos4_spi_port_config = {
+ 	.tx_st_done	= 25,
+ 	.high_speed	= true,
+ 	.clk_from_cmu	= true,
++	.quirks		=  S3C64XX_SPI_QUIRK_CS_AUTO,
+ };
+ 
+ static struct s3c64xx_spi_port_config exynos7_spi_port_config = {
+-- 
+2.26.2
 
-This is what was going on in that LZ4 memcpy() issue: the compiler was
-faithfully compiling code like memcpy(d,s,8) into a call to memcpy()
-because we told it not to define memcpy() as __builtin_memcpy(), by
-compiling for a freestanding environment.
-
-This is why I'm saying clang's no-builtin-foo option is useful for
-embedded: it doesn't prevent the programmer using __builtin_foo(), it
-prevents the _compiler_ using __builtin_foo() on its own.
-
-> So this is things like the compiler silently seeing "oh, you called
-> your function 'free()', so we know that the stores you did to it are
-> dead and we'll remove them".
-> 
-> Or this is the compiler doing "Oh, you did four stores of zero in a
-> row, and and you asked for size optimizations, so we'll turn those
-> into a 'bzero()' call".
-
-This one is slightly different from the previous one. The first case is
-really a call to __builtin_free().
-
-This one is turning something that wasn't a function call into
-__builtin_bzero(), and I would hope that no-builtin-bzero would stop it
-as well. OTOH, the compiler is free to turn it into memset(), just like
-it could for structure/array initializers.
-
-The memcpy/memset/memcmp family is a bit of an edge case: the compiler
-requires them to be defined even for freestanding environments, so you
-can't in general stop the compiler from turning something into memset().
-(That -ffreestanding stops gcc from turning loops into memset() is a
-pragmatic recognition that some people are going to try to implement
-memset() in C.)
-
-> 
-> Or the compiler doing completely broken things, and turning a
-> "!memcmp()" expression into a "!bcmp()" because the compilier
-> incorrectly assumes it's faster.
-
-Stop it with the bcmp-shaming already. bcmp _can_ be implemented faster
-than memcmp, and it's no great loss if it isn't, since then it'll just
-be an alias to memcmp in any sensible libc.
-
-> 
-> Notice? Not a single one of those had any __builtin_xyz() pattern in
-> them. Quite the reverse. The compiler took something completely
-> different, and assumed builtin semantics without us having told it to.
-> 
-> So I think "-fno-builtin-xyz" is barking *completely* up the wrong
-> tree. It's missing the problem. The problem is not "I have some
-> builtin patterns, here, you can use them".
-
-Nope: in a hosted environment, xyz() _is_ __builtin_xyz(), and that is
-almost always a good thing for 99% of the code out there: you tell it to
-use builtin semantics by choosing to compile for a hosted environment.
-
-If you want something in between freestanding and hosted, you absolutely
-need some way to tell the compiler exactly which xyz()'s can be treated
-as __builtin_xyz() and which ones shouldn't. The no-builtin- flags allow
-you to start from a hosted environment and turn off the specialness of
-the functions that you don't want to be special. The proposed builtin-
-flags would allow you to start from freestanding and turn on the
-specialness of the functions that you do want to be special.
-
-> 
-> It's the same as all the vector intrinsics. Those don't hurt anybody -
-> as long as they only get used when people use the intrinsics. If the
-> compiler starts to suddenly use vector intrinsics without being told
-> to, *THAT* can be a problem. But there is never any reson to turn off
-> any particular intrinsic otherwise.
-> 
-> If you don't want it used, don't use it. And if you do use it, the
-> compiler generates the vector code sequence. It's that simple.
-> 
-> So to me, a compiler flag like "-fno-builtin-memcpy" is completely
-> insane. The flag adds absolutely no value.
-> 
-> The real value would be "-fno-magic-bcmp" which turns off stupid
-> optimizations that magically turn non-bcmp things into bcmp. But it
-> should not turn off *actual* __builtin_bcmp() if such a thing exists
-> and people want to explicitly use it.
-> 
->              Linus
