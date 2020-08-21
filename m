@@ -2,51 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F39C24DB84
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3D824DB7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728428AbgHUQm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 12:42:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55002 "EHLO mail.kernel.org"
+        id S1728646AbgHUQlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 12:41:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726956AbgHUQka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:40:30 -0400
+        id S1728634AbgHUQkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 12:40:35 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7ED4820738;
-        Fri, 21 Aug 2020 16:40:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 527382072D;
+        Fri, 21 Aug 2020 16:40:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598028030;
-        bh=eeD33E/GM5/WtGmv+bjQ9EqZZdzjh3+IGMJzdajAfKk=;
+        s=default; t=1598028034;
+        bh=DtGgnPkg8Vi64C6+dKTHm1EqoFMOck2QxuISZD/5lx0=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=So0tK9r4QCjDNUgTZ/eg3qedxTbwmYbxb50oP3TgYxxRoEvV38q69vk0rsrwy/RBl
-         sWtJzrkOI5yoyFlO37/Txe2OY/aQJz/54m/eJUqQla0YcV5WE0cNJBOMZ1ntjRM2On
-         nVyCOpqof/gih7HGjjkqfAFg243X3YaGIr4UXFiM=
-Date:   Fri, 21 Aug 2020 17:39:57 +0100
+        b=qMiOzNe6KP7t162HHbQjkPpYIlCVtFv8ltnH10opD/JDehV3q+upopsMV2bo60TM8
+         6Z8WJGPJUdMhItnbU72Y6dskZsMOoGS2HMZSYzDh6KgmEGd3CpOKS9Q4VMnCh+7Qxa
+         GA4kPln/R6m7gkeNxxk4N6dWGdmMey+I6ho9CHW8=
+Date:   Fri, 21 Aug 2020 17:40:02 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Support Opensource <support.opensource@diasemi.com>,
+To:     alsa-devel@alsa-project.org, Brent Lu <brent.lu@intel.com>
+Cc:     Daniel Stuart <daniel.stuart14@gmail.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Sam McNally <sammc@chromium.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
         Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20200821142259.C2ECE3FB96@swsrvapps-01.diasemi.com>
-References: <20200821142259.C2ECE3FB96@swsrvapps-01.diasemi.com>
-Subject: Re: [PATCH] ASoC: da7219: Fix I/O voltage range configuration during probe
-Message-Id: <159802798182.25503.9768924803803430146.b4-ty@kernel.org>
+        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Damian van Soelen <dj.vsoelen@gmail.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+In-Reply-To: <1596198365-10105-1-git-send-email-brent.lu@intel.com>
+References: <1596020585-11517-1-git-send-email-brent.lu@intel.com> <1596198365-10105-1-git-send-email-brent.lu@intel.com>
+Subject: Re: [PATCH v3 0/2] Add period size constraint for Atom Chromebook
+Message-Id: <159802798182.25503.9357316995968776171.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Aug 2020 15:22:59 +0100, Adam Thomson wrote:
-> Previous improvements around handling device and codec level
-> probe functionality added the possibility of the voltage level
-> being undefined for the scenario where the IO voltage retrieved
-> from the regulator supply was below 1.2V, whereas previously the
-> code defaulted to the 2.5V to 3.6V range in that case. This
-> commit restores the default value to avoid this happening.
+On Fri, 31 Jul 2020 20:26:03 +0800, Brent Lu wrote:
+> Two different constraints are implemented: one is in platform's CPU
+> DAI to enforce the period to be multiple of 1ms to align with firmware
+> design. The other is in Atom Chromebook's machine driver to use 240 as
+> period size which is selected by google.
+> 
+> 
+> Changes since v1:
+> -Add comma at the end of media_period_size array declaration.
+> 
+> [...]
 
 Applied to
 
@@ -54,8 +68,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: da7219: Fix I/O voltage range configuration during probe
-      commit: fcea8b023a5f06ea0180ae65b01520b0414ee325
+[1/1] ASoC: intel: atom: Add period size constraint
+      commit: 5e7820e369248f880767c4c4079b414529bc2125
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
