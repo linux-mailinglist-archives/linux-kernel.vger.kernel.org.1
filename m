@@ -2,78 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED4124CFE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 09:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C5E724CFF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 09:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728123AbgHUHs7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 Aug 2020 03:48:59 -0400
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:60985 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725908AbgHUHs6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 03:48:58 -0400
-Received: from [2001:67c:670:100:3ad5:47ff:feaf:1a17] (helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1k91nD-000287-Le; Fri, 21 Aug 2020 09:48:55 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1k91nC-0006r7-JA; Fri, 21 Aug 2020 09:48:54 +0200
-Message-ID: <ce211ce5b10024aec1ff03e4a2abe1b46a71e8ff.camel@pengutronix.de>
-Subject: Re: [PATCH 4.9 196/212] gpu: ipu-v3: image-convert: Combine
- rotate/no-rotate irq handlers
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Pavel Machek <pavel@denx.de>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Steve Longerbeam <slongerbeam@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Date:   Fri, 21 Aug 2020 09:48:54 +0200
-In-Reply-To: <20200821073440.GB1681156@kroah.com>
-References: <20200820091602.251285210@linuxfoundation.org>
-         <20200820091612.258939813@linuxfoundation.org> <20200821070216.GB23823@amd>
-         <e586d38120241447df58818c1f9e3c04e5068972.camel@pengutronix.de>
-         <20200821073440.GB1681156@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        id S1728253AbgHUHv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 03:51:29 -0400
+Received: from mga18.intel.com ([134.134.136.126]:59609 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727846AbgHUHv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 03:51:26 -0400
+IronPort-SDR: 9Tx6wnEmslE4sFm2fZnnK0nk+wn04qZD8YI1ncCVbF9Xu0H5KueAxQ3vTT8LLfduPBY4ewCWDf
+ GpnCWS51r/Jg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9719"; a="143119158"
+X-IronPort-AV: E=Sophos;i="5.76,335,1592895600"; 
+   d="scan'208";a="143119158"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2020 00:51:25 -0700
+IronPort-SDR: If98b8/s7kduG3CE2pUTKpwUC5swudFLNuRksqTdhyWOu3sn3Fd5p/3pXjY6v0hqTi7ttCy+Su
+ e0g0fUOZOpdg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,335,1592895600"; 
+   d="scan'208";a="280210579"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga008.fm.intel.com with ESMTP; 21 Aug 2020 00:51:25 -0700
+Received: from [10.226.38.22] (unknown [10.226.38.22])
+        by linux.intel.com (Postfix) with ESMTP id 998D258045A;
+        Fri, 21 Aug 2020 00:51:22 -0700 (PDT)
+Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
+Subject: Re: [PATCH v8 0/2] phy: Add USB PHY support on Intel LGM SoC
+To:     linux-kernel@vger.kernel.org, kishon@ti.com, vkoul@kernel.org
+Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, p.zabel@pengutronix.de,
+        andriy.shevchenko@intel.com, balbi@kernel.org,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com, yin1.li@intel.com
+References: <20200817031249.36795-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+From:   "Ramuthevar, Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Message-ID: <bf2301f3-7c70-06b1-898c-f18284babe75@linux.intel.com>
+Date:   Fri, 21 Aug 2020 15:51:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20200817031249.36795-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-08-21 at 09:34 +0200, Greg Kroah-Hartman wrote:
-> On Fri, Aug 21, 2020 at 09:10:30AM +0200, Philipp Zabel wrote:
-> > Hi,
-> > 
-> > On Fri, 2020-08-21 at 09:02 +0200, Pavel Machek wrote:
-> > > Hi!
-> > > 
-> > > > From: Steve Longerbeam <slongerbeam@gmail.com>
-> > > > 
-> > > > [ Upstream commit 0f6245f42ce9b7e4d20f2cda8d5f12b55a44d7d1 ]
-> > > > 
-> > > > Combine the rotate_irq() and norotate_irq() handlers into a single
-> > > > eof_irq() handler.
-> > > 
-> > > AFAICT this is preparation for next patch, not a backfix. And actual
-> > > fix patch is not there for 4.19, so this can be dropped, too.
-                                ^^^^^^ 4.9
-> > 
-> > You are right, this patch is preparation for commit 0f6245f42ce9 ("gpu:
-> > ipu-v3: image-convert: Wait for all EOFs before completing a tile").
-> 
-> Which is included in this patch series...
+Hi Kishon, Vinod,
 
-It didn't hit my inbox for the v4.9 series, I can't see it on lore
-either:
+Gentle reminder!, kindly can you please merge this series of patches, as 
+those patches got Reviewed-By Philipp Zabel and Rob Herring, Thanks!
 
-https://lore.kernel.org/stable/20200820091602.251285210@linuxfoundation.org/
+Please do the needful.
 
-regards
-Philipp
+Regards
+Vadivel
+
+On 17/8/2020 11:12 am, Ramuthevar,Vadivel MuruganX wrote:
+> The USB PHY provides the optimized for low power dissipation while active, idle, or on standby.
+> Requires minimal external components, a single resistor, for best operation.
+> Supports 10/5-Gbps high-speed data transmission rates through 3-m USB 3.x cable
+> ---
+> v8:
+>    - Rebase to V5.9-rc1
