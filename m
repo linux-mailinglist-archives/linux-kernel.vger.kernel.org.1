@@ -2,89 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C549224D749
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 16:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B56C124D740
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 16:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727123AbgHUOYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 10:24:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbgHUOYn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 10:24:43 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 447C8C061573
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 07:24:43 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id 6so1310546qtt.0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 07:24:43 -0700 (PDT)
+        id S1727859AbgHUOXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 10:23:06 -0400
+Received: from mail-eopbgr70089.outbound.protection.outlook.com ([40.107.7.89]:7159
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726907AbgHUOXF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 10:23:05 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oJ11sdkWRA8QW0jjZp6xs2szDtuvP9ceCfDHHH1yAU1XooYEIsWdqDKiPfa+dtd5vXYOqzBeg8GPpRoqpdcShM1mbubpfNpaBIPEBZTX1oYqCdNWfiFB0BnWgjIGMBFXMRiJt2u+GHLnUwqVwxhn/v+Nm43W5igd2Sv/wd4htmNvlxSv/zt6wSDkICEJKjTgfOi7xgUpm5ercL88sYV0rFZ1WOnqFAkAvvGQEVVZloehNKP8HUtBMG4/gBWKGwCUMnQRajvSlAluNkG8olhgEjwhO94oFe77RpzNzFsHVQQcZ8g0dFrcURPrGqxrFNfhhRyWavJXgt+mkU8P7VOHTA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q4BxIhAsnRn4eJES5vWq0GH6y20y+19R5uS+OdV0e3w=;
+ b=VfsZOuH73xBBdw2AynHEkcLAphriIK67GTdNB9NarkcspspAaTC03HAj8D/s18h7PevK3Yn/StfIxdAOtkOOSaIUMHPbhLZcWEP/Lp6jc/KNQ2xQ4saEKYU19oWnV2sfYd3nBsYRAZym/5Jc7wjEVYU63vDO1Wem91h1MEierG8pixgsehjN4D+IfvQT/47L/0u4OvRFYzszaqAza28nyJGH+5O3FlET9RCJEZExFtSOmE5I42wklDB89fxor0iC2I3iwuUzu+4pjkQZmiQqbPL/suXEURZ3Xg+RPrsTtFvPO9k1Et9gA+K1KhzRSRHmCv3a/1WXuLTerlrJTm4xeg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=neutral (sender ip is
+ 193.240.239.45) smtp.rcpttodomain=perex.cz smtp.mailfrom=diasemi.com;
+ dmarc=fail (p=none sp=none pct=100) action=none header.from=diasemi.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=E5wf4mt808i5uA5gBCo+dSHXigscnzU9oaameGk1kBE=;
-        b=S7qIw+Z6SWFkzpEfXXNGNsWZNxAm+oI8BEi4J/KguLDm3x9niSIeyc0tSo3+HOcJoL
-         JK7EH9ZRpuZpQN+1AsKrYpnhj6PjFmU3Zv3oX/N0+wSYUSU92xqyyrvJ44WdDX1kajGO
-         NVfN4mz7XZ2389FgFlrLjXAcMNnwmU3HDjf9p8kLfPDt6yZ/k4sxw5jGVg18TBzrmefF
-         G3/YWDtJs76PhzusAwXWDgOiIQnFSgoIxGeX5sPqcnMJeQoCklMu8cmsEfbgL8Ab+Woy
-         blWyNsx55D8idb+Om7i4NTQdJe9TqvpTqcpYqe9kA7+nVMQXmCEO5kO/unhhIJ2UA8Rm
-         /rRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=E5wf4mt808i5uA5gBCo+dSHXigscnzU9oaameGk1kBE=;
-        b=A9kufpgNwacr8UrpnoEqIk2O9SLyiZ7WbAvFMxX5YW9Lc2lypY0STa94MU3JIytEDw
-         LnmSB0rtjtKDWqmnTi57FR7vy+P25V1bw/BYMLBLNqKfoGJiyrDXVd7fgo0pTmXHJ01i
-         ohLdm6a/JWjEi8lo8k3as8ZG/arWAX3+IrDZSM4jelwKKIW8i+trOUQ0TwiXjA8VSXta
-         x+hBF8vybE5eSS8fHBDbjvHfPheMVG2P68VM2bdsMvIO77oS3+GkitLcxgUuuYn+xQ0Z
-         FBfYM1nKC/XcaBon22w3VVLNL95N5rvYmP4qtolzgwPji0fPXVV9dbeY5R0hse7saGeq
-         l+Mg==
-X-Gm-Message-State: AOAM530WJ+UQ7O0hLDMcSW5b3NZ18VidCr1Z5rDtNLil0VqyZEABW/Zv
-        rTN1NrMdlWdk4TBJcE6/c1I=
-X-Google-Smtp-Source: ABdhPJwGAtJBqwHbS8dpY9Ih3A1oa3Iydds1/wjtxXCwpReAeFZK9Gj+DSYEeUERYTHsfxxsH2gwXw==
-X-Received: by 2002:ac8:7387:: with SMTP id t7mr2940728qtp.236.1598019882362;
-        Fri, 21 Aug 2020 07:24:42 -0700 (PDT)
-Received: from localhost.localdomain ([177.194.72.74])
-        by smtp.gmail.com with ESMTPSA id v58sm2321784qtj.56.2020.08.21.07.24.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 07:24:41 -0700 (PDT)
-From:   Fabio Estevam <festevam@gmail.com>
-To:     broonie@kernel.org
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] regulator: dbx500: Remove unused debugfs goto label
-Date:   Fri, 21 Aug 2020 11:22:29 -0300
-Message-Id: <20200821142229.12087-1-festevam@gmail.com>
-X-Mailer: git-send-email 2.17.1
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q4BxIhAsnRn4eJES5vWq0GH6y20y+19R5uS+OdV0e3w=;
+ b=XLdjNQeh/OJQoD1/XF8w5ag3qQp0DCh8TLunmQ7l76HsWi4f+iWIabNLCGAgjoPnegr2gSzyFab1VKBVL4BR8DZCPL4KUlJ9/krIWh1IQ2OBMJAdzYB6jnJ/7bvsH3/FVTuSkpXSInv25k99uJUyX3BbmOf8H5u+Wou76FUJV5s=
+Received: from AM6P194CA0030.EURP194.PROD.OUTLOOK.COM (2603:10a6:209:90::43)
+ by AM6PR10MB2887.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:e4::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.26; Fri, 21 Aug
+ 2020 14:23:01 +0000
+Received: from VE1EUR02FT025.eop-EUR02.prod.protection.outlook.com
+ (2603:10a6:209:90:cafe::e0) by AM6P194CA0030.outlook.office365.com
+ (2603:10a6:209:90::43) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24 via Frontend
+ Transport; Fri, 21 Aug 2020 14:23:01 +0000
+X-MS-Exchange-Authentication-Results: spf=neutral (sender IP is
+ 193.240.239.45) smtp.mailfrom=diasemi.com; perex.cz; dkim=none (message not
+ signed) header.d=none;perex.cz; dmarc=fail action=none
+ header.from=diasemi.com;
+Received-SPF: Neutral (protection.outlook.com: 193.240.239.45 is neither
+ permitted nor denied by domain of diasemi.com)
+Received: from mailrelay1.diasemi.com (193.240.239.45) by
+ VE1EUR02FT025.mail.protection.outlook.com (10.152.12.109) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3305.24 via Frontend Transport; Fri, 21 Aug 2020 14:23:00 +0000
+Received: from swsrvapps-01.diasemi.com (10.20.28.141) by
+ NB-EX-CASHUB01.diasemi.com (10.1.16.140) with Microsoft SMTP Server id
+ 14.3.468.0; Fri, 21 Aug 2020 16:23:00 +0200
+Received: by swsrvapps-01.diasemi.com (Postfix, from userid 22379)      id
+ C2ECE3FB96; Fri, 21 Aug 2020 15:22:59 +0100 (BST)
+From:   Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Date:   Fri, 21 Aug 2020 15:22:59 +0100
+Subject: [PATCH] ASoC: da7219: Fix I/O voltage range configuration during
+ probe
+To:     Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>
+CC:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        Support Opensource <support.opensource@diasemi.com>
+Message-ID: <20200821142259.C2ECE3FB96@swsrvapps-01.diasemi.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 38419e5f-0efb-4a1d-82de-08d845ddb5a8
+X-MS-TrafficTypeDiagnostic: AM6PR10MB2887:
+X-Microsoft-Antispam-PRVS: <AM6PR10MB28873C53C10AEE1C10E9E52DA75B0@AM6PR10MB2887.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:913;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gYSCjpDhUUhXzGc++Mx4luEAAnbDZGfLQ8Ib3u5lHn3MFmYMyup/QHBr1xBjgmqTmUHi/bUT8cR6CEse398GGS8NaAoZFgsFztswYoukia+7DVphM5PbyVbnBmljSjjspJEO76eHybmMFJQlT1ps6RjMVmCOCl/lZfONAf+N+cghhgiEzw1OBrvCPsD3hyN1ivwf5Qi6pYSxk3zh9CHHDUW4jgLiiaGROSCw+sb3tq7DEZvI6J70LHZnhLXNdY09ceZmkO9FyEVnYQuZFET3jb70AC9QI7n2qrqIDoP2DKqpJucx0Vmrp+ioM7ps/wFshKWCgtC7hparGCYVTQc5/ktk552aL4JDEHpAcPGzKop27BHj8YtwBo6su/wGlUrvtkzYGxHEvpcogul5rFTcvia7Q18aEF88w4gh/Wiy8YFHCjRAQITzaLndPfDIHR/KnLgddamjGfpG5DQsOGETmw==
+X-Forefront-Antispam-Report: CIP:193.240.239.45;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mailrelay1.diasemi.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(39860400002)(376002)(46966005)(186003)(316002)(356005)(81166007)(426003)(1076003)(5660300002)(82310400002)(2906002)(26005)(6266002)(42186006)(36906005)(70586007)(70206006)(33310700002)(8936002)(82740400003)(47076004)(83380400001)(4326008)(107886003)(33656002)(110136005)(86362001)(54906003)(478600001)(8676002)(336012)(34020700003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: diasemi.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2020 14:23:00.8234
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 38419e5f-0efb-4a1d-82de-08d845ddb5a8
+X-MS-Exchange-CrossTenant-Id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=511e3c0e-ee96-486e-a2ec-e272ffa37b7c;Ip=[193.240.239.45];Helo=[mailrelay1.diasemi.com]
+X-MS-Exchange-CrossTenant-AuthSource: VE1EUR02FT025.eop-EUR02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR10MB2887
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following build warning is seen after commit 8bdaa43808b7 ("regulator:
-dbx500: no need to check return value of debugfs_create functions"):
+Previous improvements around handling device and codec level
+probe functionality added the possibility of the voltage level
+being undefined for the scenario where the IO voltage retrieved
+from the regulator supply was below 1.2V, whereas previously the
+code defaulted to the 2.5V to 3.6V range in that case. This
+commit restores the default value to avoid this happening.
 
-drivers/regulator/dbx500-prcmu.c:144:1: warning: label 'exit_no_debugfs' defined but not used [-Wunused-label]
-
-Reported-by: Olof's autobuilder <build@lixom.net>
-Remove the unused label and its associated error message.
-
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
+Fixes: aa5b18d1c290 ("ASoC: da7219: Move soft reset handling to codec level probe")
+Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 ---
- drivers/regulator/dbx500-prcmu.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/codecs/da7219.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/regulator/dbx500-prcmu.c b/drivers/regulator/dbx500-prcmu.c
-index 7395ad2105ab..8b70bfe88019 100644
---- a/drivers/regulator/dbx500-prcmu.c
-+++ b/drivers/regulator/dbx500-prcmu.c
-@@ -141,8 +141,6 @@ ux500_regulator_debug_init(struct platform_device *pdev,
- 	kfree(rdebug.state_before_suspend);
- exit_destroy_power_state:
- 	debugfs_remove_recursive(rdebug.dir);
--exit_no_debugfs:
--	dev_err(&pdev->dev, "failed to create debugfs entries.\n");
- 	return -ENOMEM;
- }
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index ddd422c..045aeb6 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1862,6 +1862,9 @@ static int da7219_handle_supplies(struct snd_soc_component *component,
+ 		return ret;
+ 	}
  
++	/* Default to upper range */
++	*io_voltage_lvl = DA7219_IO_VOLTAGE_LEVEL_2_5V_3_6V;
++
+ 	/* Determine VDDIO voltage provided */
+ 	vddio = da7219->supplies[DA7219_SUPPLY_VDDIO].consumer;
+ 	ret = regulator_get_voltage(vddio);
+@@ -1869,8 +1872,6 @@ static int da7219_handle_supplies(struct snd_soc_component *component,
+ 		dev_warn(component->dev, "Invalid VDDIO voltage\n");
+ 	else if (ret < 2800000)
+ 		*io_voltage_lvl = DA7219_IO_VOLTAGE_LEVEL_1_2V_2_8V;
+-	else
+-		*io_voltage_lvl = DA7219_IO_VOLTAGE_LEVEL_2_5V_3_6V;
+ 
+ 	/* Enable main supplies */
+ 	ret = regulator_bulk_enable(DA7219_NUM_SUPPLIES, da7219->supplies);
 -- 
-2.17.1
+1.9.1
 
