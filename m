@@ -2,127 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54D6424CE20
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 08:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD5C24CE37
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 08:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727097AbgHUGlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 02:41:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726057AbgHUGle (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 02:41:34 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9264120732;
-        Fri, 21 Aug 2020 06:41:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597992093;
-        bh=zx1WG7372o1PzR/3ixloWF65ocSDbw/i79bZ5GZdrto=;
-        h=Date:From:To:Cc:Subject:From;
-        b=nCS0QGqwHdGXyMA8O6IaQbCQy5vQjpcWkIhd7UOSwZhj0uuEnctoc32wMXe8S0kYC
-         2rd7swzD7dTpFszzAkbNKv6OXKk4xogU1K4YCSZMzlNm5ZHQmBGB05xrckmugfsvMn
-         MXgS9xMSR9WBCRnjRAzxWvn30UaYU60NVWTonAUI=
-Date:   Fri, 21 Aug 2020 01:47:20 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH][next] mwifiex: Use fallthrough pseudo-keyword
-Message-ID: <20200821064720.GA22182@embeddedor>
+        id S1727873AbgHUGtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 02:49:05 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10250 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726119AbgHUGtD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 02:49:03 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 3BAEB2361A4606B1535F;
+        Fri, 21 Aug 2020 14:48:58 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.253) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Fri, 21 Aug 2020
+ 14:48:56 +0800
+Subject: Re: [PATCH 1/1] block: move the PAGE_SECTORS definition into
+ <linux/blkdev.h>
+To:     Coly Li <colyli@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        dm-devel <dm-devel@redhat.com>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-bcache <linux-bcache@vger.kernel.org>
+References: <20200821020345.3358-1-thunder.leizhen@huawei.com>
+ <b4643e74-aad9-385f-01f2-f8e48ba4dbef@suse.de>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <ad100923-e479-faf0-f749-ac8e4cf87899@huawei.com>
+Date:   Fri, 21 Aug 2020 14:48:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <b4643e74-aad9-385f-01f2-f8e48ba4dbef@suse.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.253]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the existing /* fall through */ comments and its variants with
-the new pseudo-keyword macro fallthrough[1].
 
-[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/wireless/marvell/mwifiex/cfg80211.c | 8 ++++----
- drivers/net/wireless/marvell/mwifiex/ie.c       | 2 +-
- drivers/net/wireless/marvell/mwifiex/scan.c     | 2 +-
- 3 files changed, 6 insertions(+), 6 deletions(-)
+On 8/21/2020 12:11 PM, Coly Li wrote:
+> On 2020/8/21 10:03, Zhen Lei wrote:
+>> There are too many PAGE_SECTORS definitions, and all of them are the
+>> same. It looks a bit of a mess. So why not move it into <linux/blkdev.h>,
+>> to achieve a basic and unique definition.
+>>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> 
+> 
+> A lazy question about page size > 4KB: currently in bcache code the
+> sector size is assumed to be 512 sectors, if kernel page > 4KB, it is
+> possible that PAGE_SECTORS in bcache will be a number > 8 ?
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/cfg80211.c b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-index 96848fa0e417..a6b9dc6700b1 100644
---- a/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-+++ b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-@@ -1163,7 +1163,7 @@ mwifiex_cfg80211_change_virtual_intf(struct wiphy *wiphy,
- 		case NL80211_IFTYPE_UNSPECIFIED:
- 			mwifiex_dbg(priv->adapter, INFO,
- 				    "%s: kept type as IBSS\n", dev->name);
--			/* fall through */
-+			fallthrough;
- 		case NL80211_IFTYPE_ADHOC:	/* This shouldn't happen */
- 			return 0;
- 		default:
-@@ -1194,7 +1194,7 @@ mwifiex_cfg80211_change_virtual_intf(struct wiphy *wiphy,
- 		case NL80211_IFTYPE_UNSPECIFIED:
- 			mwifiex_dbg(priv->adapter, INFO,
- 				    "%s: kept type as STA\n", dev->name);
--			/* fall through */
-+			fallthrough;
- 		case NL80211_IFTYPE_STATION:	/* This shouldn't happen */
- 			return 0;
- 		default:
-@@ -1217,7 +1217,7 @@ mwifiex_cfg80211_change_virtual_intf(struct wiphy *wiphy,
- 		case NL80211_IFTYPE_UNSPECIFIED:
- 			mwifiex_dbg(priv->adapter, INFO,
- 				    "%s: kept type as AP\n", dev->name);
--			/* fall through */
-+			fallthrough;
- 		case NL80211_IFTYPE_AP:		/* This shouldn't happen */
- 			return 0;
- 		default:
-@@ -1257,7 +1257,7 @@ mwifiex_cfg80211_change_virtual_intf(struct wiphy *wiphy,
- 		case NL80211_IFTYPE_UNSPECIFIED:
- 			mwifiex_dbg(priv->adapter, INFO,
- 				    "%s: kept type as P2P\n", dev->name);
--			/* fall through */
-+			fallthrough;
- 		case NL80211_IFTYPE_P2P_CLIENT:
- 		case NL80211_IFTYPE_P2P_GO:
- 			return 0;
-diff --git a/drivers/net/wireless/marvell/mwifiex/ie.c b/drivers/net/wireless/marvell/mwifiex/ie.c
-index 811abe963af2..40e99eaf5a30 100644
---- a/drivers/net/wireless/marvell/mwifiex/ie.c
-+++ b/drivers/net/wireless/marvell/mwifiex/ie.c
-@@ -374,7 +374,7 @@ static int mwifiex_uap_parse_tail_ies(struct mwifiex_private *priv,
- 						    (const u8 *)hdr,
- 						    token_len))
- 				break;
--			/* fall through */
-+			fallthrough;
- 		default:
- 			if (ie_len + token_len > IEEE_MAX_IE_SIZE) {
- 				err = -EINVAL;
-diff --git a/drivers/net/wireless/marvell/mwifiex/scan.c b/drivers/net/wireless/marvell/mwifiex/scan.c
-index 2fb69a590bd8..c2a685f63e95 100644
---- a/drivers/net/wireless/marvell/mwifiex/scan.c
-+++ b/drivers/net/wireless/marvell/mwifiex/scan.c
-@@ -1328,7 +1328,7 @@ int mwifiex_update_bss_desc_with_ie(struct mwifiex_adapter *adapter,
- 
- 		case WLAN_EID_CHANNEL_SWITCH:
- 			bss_entry->chan_sw_ie_present = true;
--			/* fall through */
-+			fallthrough;
- 		case WLAN_EID_PWR_CAPABILITY:
- 		case WLAN_EID_TPC_REPORT:
- 		case WLAN_EID_QUIET:
--- 
-2.27.0
+Sorry, I don't fully understand your question. I known that the sector size
+can be 512 or 4K, and the PAGE_SIZE can be 4K or 64K. So even if sector size
+is 4K, isn't it greater than 8 for 64K pages?
+
+I'm not sure if the question you're asking is the one Matthew Wilcox has
+answered before:
+https://www.spinics.net/lists/raid/msg64345.html
+
+> 
+> Thanks.
+> 
+> Coly Li
+> 
+> 
+>> ---
+>>  drivers/block/brd.c           | 1 -
+>>  drivers/block/null_blk_main.c | 1 -
+>>  drivers/md/bcache/util.h      | 2 --
+>>  include/linux/blkdev.h        | 5 +++--
+>>  include/linux/device-mapper.h | 1 -
+>>  5 files changed, 3 insertions(+), 7 deletions(-)
+>>
+> 
+> [snipped]
+> 
+>> diff --git a/drivers/md/bcache/util.h b/drivers/md/bcache/util.h
+>> index c029f7443190805..55196e0f37c32c6 100644
+>> --- a/drivers/md/bcache/util.h
+>> +++ b/drivers/md/bcache/util.h
+>> @@ -15,8 +15,6 @@
+>>  
+>>  #include "closure.h"
+>>  
+>> -#define PAGE_SECTORS		(PAGE_SIZE / 512)
+>> -
+>>  struct closure;
+>>  
+>>  #ifdef CONFIG_BCACHE_DEBUG
+>> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+>> index bb5636cc17b91a7..b068dfc5f2ef0ab 100644
+>> --- a/include/linux/blkdev.h
+>> +++ b/include/linux/blkdev.h
+>> @@ -949,11 +949,12 @@ static inline struct request_queue *bdev_get_queue(struct block_device *bdev)
+>>   * multiple of 512 bytes. Hence these two constants.
+>>   */
+>>  #ifndef SECTOR_SHIFT
+>> -#define SECTOR_SHIFT 9
+>> +#define SECTOR_SHIFT		9
+>>  #endif
+>>  #ifndef SECTOR_SIZE
+>> -#define SECTOR_SIZE (1 << SECTOR_SHIFT)
+>> +#define SECTOR_SIZE		(1 << SECTOR_SHIFT)
+>>  #endif
+>> +#define PAGE_SECTORS		(PAGE_SIZE / SECTOR_SIZE)
+>>  
+>>  /*
+>>   * blk_rq_pos()			: the current sector
+> [snipped]
+> 
+> 
 
