@@ -2,92 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 433C724C9CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 04:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB8724C9F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 04:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727770AbgHUCAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 22:00:03 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:53790 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727070AbgHUCAA (ORCPT
+        id S1727111AbgHUCQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 22:16:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727076AbgHUCQk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 22:00:00 -0400
-X-IronPort-AV: E=Sophos;i="5.76,335,1592841600"; 
-   d="scan'208";a="98365593"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 21 Aug 2020 09:59:58 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
-        by cn.fujitsu.com (Postfix) with ESMTP id 0A8DF48990C1;
-        Fri, 21 Aug 2020 09:59:56 +0800 (CST)
-Received: from G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Fri, 21 Aug 2020 09:59:55 +0800
-Received: from localhost.localdomain (10.167.225.206) by
- G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.2 via Frontend Transport; Fri, 21 Aug 2020 09:59:55 +0800
-From:   Hao Li <lihao2018.fnst@cn.fujitsu.com>
-To:     <viro@zeniv.linux.org.uk>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lihao2018.fnst@cn.fujitsu.com>, <y-goto@fujitsu.com>
-Subject: [PATCH] fs: Kill DCACHE_DONTCACHE dentry even if DCACHE_REFERENCED is set
-Date:   Fri, 21 Aug 2020 09:59:53 +0800
-Message-ID: <20200821015953.22956-1-lihao2018.fnst@cn.fujitsu.com>
-X-Mailer: git-send-email 2.28.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: 0A8DF48990C1.A0C10
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lihao2018.fnst@cn.fujitsu.com
-X-Spam-Status: No
+        Thu, 20 Aug 2020 22:16:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E0BC061385;
+        Thu, 20 Aug 2020 19:16:40 -0700 (PDT)
+Message-Id: <20200821002424.119492231@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597976198;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:content-transfer-encoding:content-transfer-encoding;
+        bh=6NqCao/16SSVwxU3sscyKk1x2qrVHv19Kl/+7RncOTA=;
+        b=ypwGQhEtLxJihh7WUOQQEaAMlphwrov24vksOjnplfhLD07eIrUGaOcUsnEzRKsQfyOv/i
+        7w3zMDmRM2AoILgUnodia+JhCGDeEecxjS6Pu5B9VOARPg36DZQvZeo3cHLxUaeivTe+oA
+        b91J3yONxQwvP86lUhhb4bjxDEGxzXuyNYzWewdtECWVYDomQWqDCXKmI2M3HSXB6Prxt7
+        nLYJK526HDM/9meX7y2CpT4QepzWxd6Yg+SAMiq1YT8ZAHqO22TcuSmwUR8pFh1G1hA4Sr
+        0Uyr/DE44KKYwFVw7JO1Gl05Kv5vlC356zn0ns8or6odT6MWASx99abAUFd1zg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597976198;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:content-transfer-encoding:content-transfer-encoding;
+        bh=6NqCao/16SSVwxU3sscyKk1x2qrVHv19Kl/+7RncOTA=;
+        b=ModaSDKC/7KPKpfoJXwOupDLtqnQezio5NWZrrxDV9Wdr6vs4o0nJj6hFBppTFsrFMtbmR
+        0BGx93AAb/NWdaDg==
+Date:   Fri, 21 Aug 2020 02:24:24 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Jon Derrick <jonathan.derrick@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Dimitri Sivanich <sivanich@hpe.com>,
+        Russ Anderson <rja@hpe.com>, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Jonathan Derrick <jonathan.derrick@intel.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        xen-devel@lists.xenproject.org, Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Megha Dey <megha.dey@intel.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jacob Pan <jacob.jun.pan@intel.com>,
+        Baolu Lu <baolu.lu@intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: [patch RFC 00/38] x86, PCI, XEN, genirq ...: Prepare for device MSI
+Content-transfer-encoding: 8-bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, DCACHE_REFERENCED prevents the dentry with DCACHE_DONTCACHE
-set from being killed, so the corresponding inode can't be evicted. If
-the DAX policy of an inode is changed, we can't make policy changing
-take effects unless dropping caches manually.
+First of all, sorry for the horrible long Cc list, which was
+unfortunately unavoidable as this touches the world and some more.
 
-This patch fixes this problem and flushes the inode to disk to prepare
-for evicting it.
+This patch series aims to provide a base to support device MSI (non
+PCI based) in a halfways architecture independent way.
 
-Signed-off-by: Hao Li <lihao2018.fnst@cn.fujitsu.com>
----
- fs/dcache.c | 3 ++-
- fs/inode.c  | 2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+It's a mixed bag of bug fixes, cleanups and general improvements which
+are worthwhile independent of the device MSI stuff. Unfortunately this
+also comes with an evil abuse of the irqdomain system to coerce XEN on
+x86 into compliance without rewriting XEN from scratch.
 
-diff --git a/fs/dcache.c b/fs/dcache.c
-index ea0485861d93..486c7409dc82 100644
---- a/fs/dcache.c
-+++ b/fs/dcache.c
-@@ -796,7 +796,8 @@ static inline bool fast_dput(struct dentry *dentry)
- 	 */
- 	smp_rmb();
- 	d_flags = READ_ONCE(dentry->d_flags);
--	d_flags &= DCACHE_REFERENCED | DCACHE_LRU_LIST | DCACHE_DISCONNECTED;
-+	d_flags &= DCACHE_REFERENCED | DCACHE_LRU_LIST | DCACHE_DISCONNECTED
-+			| DCACHE_DONTCACHE;
- 
- 	/* Nothing to do? Dropping the reference was all we needed? */
- 	if (d_flags == (DCACHE_REFERENCED | DCACHE_LRU_LIST) && !d_unhashed(dentry))
-diff --git a/fs/inode.c b/fs/inode.c
-index 72c4c347afb7..5218a8aebd7f 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -1632,7 +1632,7 @@ static void iput_final(struct inode *inode)
- 	}
- 
- 	state = inode->i_state;
--	if (!drop) {
-+	if (!drop || (drop && (inode->i_state & I_DONTCACHE))) {
- 		WRITE_ONCE(inode->i_state, state | I_WILL_FREE);
- 		spin_unlock(&inode->i_lock);
- 
--- 
-2.28.0
+As discussed in length in this mail thread:
 
+  https://lore.kernel.org/r/87h7tcgbs2.fsf@nanos.tec.linutronix.de
 
+the initial attempt of piggypacking device MSI support on platform MSI
+is doomed for various reasons, but creating independent interrupt
+domains for these upcoming magic PCI subdevices which are not PCI, but
+might be exposed as PCI devices is not as trivial as it seems.
 
+The initially suggested and evaluated approach of extending platform
+MSI turned out to be the completely wrong direction and in fact
+platform MSI should be rewritten on top of device MSI or completely
+replaced by it.
+
+One of the main issues is that x86 does not support the concept of irq
+domains associations stored in device::msi_domain and still relies on
+the arch_*_msi_irqs() fallback implementations which has it's own set
+of problems as outlined in
+
+  https://lore.kernel.org/r/87bljg7u4f.fsf@nanos.tec.linutronix.de/
+
+in the very same thread.
+
+The main obstacle of storing that pointer is XEN which has it's own
+historical notiion of handling PCI MSI interupts.
+
+This series tries to address these issues in several steps:
+
+ 1) Accidental bug fixes
+	iommu/amd: Prevent NULL pointer dereference
+
+ 2) Janitoring
+	x86/init: Remove unused init ops
+
+ 3) Simplification of the x86 specific interrupt allocation mechanism
+
+	x86/irq: Rename X86_IRQ_ALLOC_TYPE_MSI* to reflect PCI dependency
+	x86/irq: Add allocation type for parent domain retrieval
+	iommu/vt-d: Consolidate irq domain getter
+	iommu/amd: Consolidate irq domain getter
+	iommu/irq_remapping: Consolidate irq domain lookup
+
+ 4) Consolidation of the X86 specific interrupt allocation mechanism to be as close
+    as possible to the generic MSI allocation mechanism which allows to get rid
+    of quite a bunch of x86'isms which are pointless
+
+	x86/irq: Prepare consolidation of irq_alloc_info
+	x86/msi: Consolidate HPET allocation
+	x86/ioapic: Consolidate IOAPIC allocation
+	x86/irq: Consolidate DMAR irq allocation
+	x86/irq: Consolidate UV domain allocation
+	PCI: MSI: Rework pci_msi_domain_calc_hwirq()
+	x86/msi: Consolidate MSI allocation
+	x86/msi: Use generic MSI domain ops
+
+  5) x86 specific cleanups to remove the dependency on arch_*_msi_irqs()
+
+	x86/irq: Move apic_post_init() invocation to one place
+	z86/pci: Reducde #ifdeffery in PCI init code
+	x86/irq: Initialize PCI/MSI domain at PCI init time
+	irqdomain/msi: Provide DOMAIN_BUS_VMD_MSI
+	PCI: vmd: Mark VMD irqdomain with DOMAIN_BUS_VMD_MSI
+	PCI: MSI: Provide pci_dev_has_special_msi_domain() helper
+	x86/xen: Make xen_msi_init() static and rename it to xen_hvm_msi_init()
+	x86/xen: Rework MSI teardown
+	x86/xen: Consolidate XEN-MSI init
+	irqdomain/msi: Allow to override msi_domain_alloc/free_irqs()
+	x86/xen: Wrap XEN MSI management into irqdomain
+	iommm/vt-d: Store irq domain in struct device
+	iommm/amd: Store irq domain in struct device
+	x86/pci: Set default irq domain in pcibios_add_device()
+	PCI/MSI: Allow to disable arch fallbacks
+	x86/irq: Cleanup the arch_*_msi_irqs() leftovers
+	x86/irq: Make most MSI ops XEN private
+
+    This one is paving the way to device MSI support, but it comes
+    with an ugly and evil hack. The ability of overriding the default
+    allocation/free functions of an MSI irq domain is useful in general as
+    (hopefully) demonstrated with the device MSI POC, but the abuse
+    in context of XEN is evil. OTOH without enough XENology and without
+    rewriting XEN from scratch wrapping XEN MSI handling into a pseudo
+    irq domain is a reasonable step forward for mere mortals with severly
+    limited XENology. One day the XEN folks might make it a real irq domain.
+    Perhaps when they have to support the same mess on other architectures.
+    Hope dies last...
+
+    At least the mechanism to override alloc/free turned out to be useful
+    for implementing the base infrastructure for device MSI. So it's not a
+    completely lost case.
+
+  6) X86 specific preparation for device MSI
+
+       x86/irq: Add DEV_MSI allocation type
+       x86/msi: Let pci_msi_prepare() handle non-PCI MSI
+
+  7) Generic device MSI infrastructure
+
+       platform-msi: Provide default irq_chip:ack
+       platform-msi: Add device MSI infrastructure
+
+  8) Infrastructure for and a POC of an IMS (Interrupt Message
+     Storm) irq domain and irqchip implementation
+
+       irqdomain/msi: Provide msi_alloc/free_store() callbacks
+       irqchip: Add IMS array driver - NOT FOR MERGING
+
+The whole lot is also available from git:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git device-msi
+
+This has been tested on Intel/AMD/KVM but lacks testing on:
+
+    - HYPERV (-ENODEV)
+    - VMD enabled systems (-ENODEV)
+    - XEN (-ENOCLUE)
+
+#1 and #2 should be applied unconditionally for obvious reasons
+#3-5 are wortwhile cleanups which should be done independent of device MSI
+
+#6-7 look promising to cleanup the platform MSI implementation
+     independent of #8, but I neither had cycles nor stomache to tackle that.
+
+#8 is obviously just for the folks interested in IMS
+
+And of course this all started with a 100 lines combo patch to figure
+out whether this is possible at all with a reasonable effort. 38
+patches later ...
+
+Thanks,
+
+	tglx
