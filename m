@@ -2,212 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 388AC24D331
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 12:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7AE24D334
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 12:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728426AbgHUKvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 06:51:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38570 "EHLO
+        id S1728550AbgHUKvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 06:51:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727870AbgHUKuv (ORCPT
+        with ESMTP id S1728479AbgHUKvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 06:50:51 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43308C061388;
-        Fri, 21 Aug 2020 03:50:51 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id 83so1385967wme.4;
-        Fri, 21 Aug 2020 03:50:51 -0700 (PDT)
+        Fri, 21 Aug 2020 06:51:15 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C26C061386
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 03:51:14 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id r2so1509493wrs.8
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 03:51:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=X7tDI05IPzywart990YNcTNTyc6TKWCEiVG0oiXqDtA=;
-        b=UAajDDkyhD907nQYZfjrHuWjZkUHLlVChhdHILZT3Vc2+yBkCOl5aYMgHBezbRKBBK
-         iD2SqkVvsl24F5ZT1wLQ2GRvGj1TzjzCsFttQoPr5SBfVHlwixlEGZcdMbAZ+vwehgTG
-         SBxD6LgxbFI6RJ+8xnarJUXCoWp6c+XFpOkoiNOFbHrxJB/JV+TQQDf5RDqqMvvr7EBo
-         HEC8LjHsjb0svfWleN9nI+Q+Wz32F50w/S28Yjrh1lAELT2+K/AE5dsJov54lBCTJvDZ
-         Fq7wMdwZ43iN3rdu6ELkHxZya6jRX+obA1KaSC0s2Nywi3jEIaTssJve9OYp4Bg1SSaJ
-         VeDQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zHmahM4WlAU5TkrnZ9qUadrG7WkBXC8LyNKGjyFPPtA=;
+        b=JZlV/bMFi3bja47qPW846zX9+5ZcUjXqZEUqi6aDKdZcnXdbDYLeAeEQt/MAPXm/ye
+         /t8CTNSmIJdEkA1GQEHfXVdG1AvitZZtz7yp9N2WRiYFeQV365HDFCP+G4UT+rfOiVLo
+         kJpE3L0T1OH8XvXmMrBPc/6NOlO4N0ENRAbC3FLerLvK6q5J5V/yBYxc/SdK36MeeeYn
+         C0Z7tuEzIcpSZmeIerWrbvrZrzFn9zvHOFEFKUXQCC83mjFLLpILW+/Qe50m+GsrJr5a
+         +8kv4f+wz5/uf3rMTnBOSG2l2+MVT4P5qJ9nM29Ti2uLcVcywA1ZHEjx8SZ24Mso1S7M
+         654A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=X7tDI05IPzywart990YNcTNTyc6TKWCEiVG0oiXqDtA=;
-        b=hfxRlzali5Gw6nSog0mBX8HEnfVnGz0yjGi7UekcPEuhkv2YVvtABgJ+wLV4r4vU69
-         ixFCqY/oxf9bC0HNEsWmIMSyO04IddRynBL69Hmcj2ONysd5Md+i/URN1taaGBhZvAei
-         uOUL8IDkJEBFd0+skT2fjxD3dja+GCsPrxtl0aYk/FB7sqCpEZS0pczLQusRGZw6MXMT
-         7MQn50hxQ6WSXLDwqJtWjmkHEFkl7OHW/ogz+f3W8z6FDaLhpHOnfs/iIVO1UrGb55i0
-         zXEHA68+j2raOTPs0okmxBhh4vQSrgiRsv0nQBrgLOIw82lb4WGS1Oknw6RG9WkUuc0q
-         lX4A==
-X-Gm-Message-State: AOAM532GYVYU9mPUsVwB2T+yep9w3cZ/Y00TZXeYYZAf5b0eSrqqubrc
-        +X5IKI24y4giwZ+f2oGoG3c=
-X-Google-Smtp-Source: ABdhPJwPEh3VKSxccgGmwY+rti6JeG+jmyaVESWFMKhS0PqYxi2oFt9ssH1E0fwIPrr1oRK0FuvbaQ==
-X-Received: by 2002:a7b:cc13:: with SMTP id f19mr2505519wmh.168.1598007049766;
-        Fri, 21 Aug 2020 03:50:49 -0700 (PDT)
-Received: from alinde.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id 8sm3784911wrl.7.2020.08.21.03.50.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 03:50:49 -0700 (PDT)
-From:   albert.linde@gmail.com
-X-Google-Original-From: alinde@google.com
-To:     akpm@linux-foundation.org, bp@alien8.de, mingo@redhat.com,
-        corbet@lwn.net, tglx@linutronix.de, arnd@arndb.de
-Cc:     akinobu.mita@gmail.com, hpa@zytor.com, viro@zeniv.linux.org.uk,
-        glider@google.com, andreyknvl@google.com, dvyukov@google.com,
-        elver@google.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        x86@kernel.org, Albert van der Linde <alinde@google.com>
-Subject: [PATCH 3/3] x86: add failure injection to get/put/clear_user
-Date:   Fri, 21 Aug 2020 10:49:25 +0000
-Message-Id: <20200821104926.828511-4-alinde@google.com>
-X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
-In-Reply-To: <20200821104926.828511-1-alinde@google.com>
-References: <20200821104926.828511-1-alinde@google.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zHmahM4WlAU5TkrnZ9qUadrG7WkBXC8LyNKGjyFPPtA=;
+        b=Gdy31xRzIzYDzdUyOPCRqbvmfX7qB9RBXbhLfxBh0A3HQOAfRE1Uu37wGYCXtcscYx
+         /U+QhJhjjcgaJskII0NdBXlTXbRhkoWSzWvR4++TwgEbAxzvKLKbOHELN8DWJytSiv2e
+         F4wEhXeGK9RkzX0ZsaDX1IVOjoYM3vfqhkwIvnoV7MsNLkgH4oDIc3bzDrUeA8oYCtag
+         50Z0YJrE/5Da0oyFwxeSkkMA3dc0ptoBrozhslleJ9pihVCLCeqqGDF5Yuho8aCf+mcL
+         wHzO0GOS9u0/fyyLjUhNTKrCVLP81E6wi6HMRwamNRd/AXhXkf9QmyK5+PCUS6FyIuB2
+         OVwg==
+X-Gm-Message-State: AOAM531m5uYiCjbbKHii2f18Xr6r/avPPmP1bbhbk2UYOliphOBat/HJ
+        1RwHPH9YO6U16ChkokeKDPPySQ==
+X-Google-Smtp-Source: ABdhPJzmKaDTcZfXCKyhcewuR1bQYiG2AundNu1zlG5E8k4jdRUOni8PGM5/AKGLL6Ql07oNTh7RJg==
+X-Received: by 2002:a5d:688d:: with SMTP id h13mr472373wru.176.1598007073221;
+        Fri, 21 Aug 2020 03:51:13 -0700 (PDT)
+Received: from [192.168.1.14] ([195.24.90.54])
+        by smtp.googlemail.com with ESMTPSA id d11sm3363460wrw.77.2020.08.21.03.51.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Aug 2020 03:51:12 -0700 (PDT)
+Subject: Re: [PATCH v5 0/3] Venus dynamic debug
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     jim.cromie@gmail.com, Joe Perches <joe@perches.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20200730095350.13925-1-stanimir.varbanov@linaro.org>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <eb96ce39-4a2e-aa94-be69-6018f4c7da33@linaro.org>
+Date:   Fri, 21 Aug 2020 13:51:08 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200730095350.13925-1-stanimir.varbanov@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Albert van der Linde <alinde@google.com>
+Hi all,
 
-To test fault-tolerance of usercopy accesses in x86, add support for
-fault injection.
+If no objections I'm going to queue 1/3 and 3/3 for v5.10. 2/3 will be
+postponed because of Stephen's comment.
 
-Make both put_user() and get_user() fail with -EFAULT, and clear_user()
-fail by partially clearing fewer bytes.
+On 7/30/20 12:53 PM, Stanimir Varbanov wrote:
+> Hello,
+> 
+> Changes in v5:
+>  * 1/3 - dropped dev_warn when set FW debug level - Greg KH
+>  * 3/3 - dropped pr_debug, and now group levels by prefix in dev_dbg
+> 
+> v4 can be fount at [1].
+> 
+> regards,
+> Stan
+> 
+> [1] https://www.spinics.net/lists/kernel/msg3550106.html
+> 
+> Stanimir Varbanov (3):
+>   venus: Add debugfs interface to set firmware log level
+>   venus: Add a debugfs file for SSR trigger
+>   venus: Make debug infrastructure more flexible
+> 
+>  drivers/media/platform/qcom/venus/Makefile    |  2 +-
+>  drivers/media/platform/qcom/venus/core.c      |  3 ++
+>  drivers/media/platform/qcom/venus/core.h      |  8 +++
+>  drivers/media/platform/qcom/venus/dbgfs.c     | 51 +++++++++++++++++++
+>  drivers/media/platform/qcom/venus/dbgfs.h     | 12 +++++
+>  drivers/media/platform/qcom/venus/helpers.c   |  2 +-
+>  drivers/media/platform/qcom/venus/hfi_msgs.c  | 18 +++----
+>  drivers/media/platform/qcom/venus/hfi_venus.c | 10 ++--
+>  .../media/platform/qcom/venus/pm_helpers.c    |  2 +-
+>  drivers/media/platform/qcom/venus/vdec.c      |  6 +--
+>  10 files changed, 96 insertions(+), 18 deletions(-)
+>  create mode 100644 drivers/media/platform/qcom/venus/dbgfs.c
+>  create mode 100644 drivers/media/platform/qcom/venus/dbgfs.h
+> 
 
-Signed-off-by: Albert van der Linde <alinde@google.com>
----
- arch/x86/include/asm/uaccess.h | 70 +++++++++++++++++++---------------
- arch/x86/lib/usercopy_64.c     |  9 ++++-
- 2 files changed, 48 insertions(+), 31 deletions(-)
-
-diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
-index ecefaffd15d4..dacb6105831e 100644
---- a/arch/x86/include/asm/uaccess.h
-+++ b/arch/x86/include/asm/uaccess.h
-@@ -5,6 +5,7 @@
-  * User space memory access functions
-  */
- #include <linux/compiler.h>
-+#include <linux/fault-inject-usercopy.h>
- #include <linux/kasan-checks.h>
- #include <linux/string.h>
- #include <asm/asm.h>
-@@ -174,12 +175,17 @@ extern int __get_user_bad(void);
- 	int __ret_gu;							\
- 	register __inttype(*(ptr)) __val_gu asm("%"_ASM_DX);		\
- 	__chk_user_ptr(ptr);						\
--	might_fault();							\
--	asm volatile("call __get_user_%P4"				\
--		     : "=a" (__ret_gu), "=r" (__val_gu),		\
-+	if (should_fail_usercopy(sizeof(*(ptr)))) {			\
-+		(x) = 0;						\
-+		__ret_gu = -EFAULT;					\
-+	} else {							\
-+		might_fault();						\
-+		asm volatile("call __get_user_%P4"			\
-+			: "=a" (__ret_gu), "=r" (__val_gu),		\
- 			ASM_CALL_CONSTRAINT				\
--		     : "0" (ptr), "i" (sizeof(*(ptr))));		\
--	(x) = (__force __typeof__(*(ptr))) __val_gu;			\
-+			: "0" (ptr), "i" (sizeof(*(ptr))));		\
-+		(x) = (__force __typeof__(*(ptr))) __val_gu;		\
-+	}								\
- 	__builtin_expect(__ret_gu, 0);					\
- })
- 
-@@ -236,31 +242,35 @@ extern void __put_user_8(void);
-  *
-  * Return: zero on success, or -EFAULT on error.
-  */
--#define put_user(x, ptr)					\
--({								\
--	int __ret_pu;						\
--	__typeof__(*(ptr)) __pu_val;				\
--	__chk_user_ptr(ptr);					\
--	might_fault();						\
--	__pu_val = x;						\
--	switch (sizeof(*(ptr))) {				\
--	case 1:							\
--		__put_user_x(1, __pu_val, ptr, __ret_pu);	\
--		break;						\
--	case 2:							\
--		__put_user_x(2, __pu_val, ptr, __ret_pu);	\
--		break;						\
--	case 4:							\
--		__put_user_x(4, __pu_val, ptr, __ret_pu);	\
--		break;						\
--	case 8:							\
--		__put_user_x8(__pu_val, ptr, __ret_pu);		\
--		break;						\
--	default:						\
--		__put_user_x(X, __pu_val, ptr, __ret_pu);	\
--		break;						\
--	}							\
--	__builtin_expect(__ret_pu, 0);				\
-+#define put_user(x, ptr)						\
-+({									\
-+	int __ret_pu;							\
-+	__typeof__(*(ptr)) __pu_val;					\
-+	__chk_user_ptr(ptr);						\
-+	might_fault();							\
-+	__pu_val = x;							\
-+	if (should_fail_usercopy(sizeof(*(ptr)))) {			\
-+		__ret_pu = -EFAULT;					\
-+	} else {							\
-+		switch (sizeof(*(ptr))) {				\
-+		case 1:							\
-+			__put_user_x(1, __pu_val, ptr, __ret_pu);	\
-+			break;						\
-+		case 2:							\
-+			__put_user_x(2, __pu_val, ptr, __ret_pu);	\
-+			break;						\
-+		case 4:							\
-+			__put_user_x(4, __pu_val, ptr, __ret_pu);	\
-+			break;						\
-+		case 8:							\
-+			__put_user_x8(__pu_val, ptr, __ret_pu);		\
-+			break;						\
-+		default:						\
-+			__put_user_x(X, __pu_val, ptr, __ret_pu);	\
-+			break;						\
-+		}							\
-+	}								\
-+	__builtin_expect(__ret_pu, 0);					\
- })
- 
- #define __put_user_size(x, ptr, size, label)				\
-diff --git a/arch/x86/lib/usercopy_64.c b/arch/x86/lib/usercopy_64.c
-index b0dfac3d3df7..b749590d753e 100644
---- a/arch/x86/lib/usercopy_64.c
-+++ b/arch/x86/lib/usercopy_64.c
-@@ -7,6 +7,7 @@
-  * Copyright 2002 Andi Kleen <ak@suse.de>
-  */
- #include <linux/export.h>
-+#include <linux/fault-inject-usercopy.h>
- #include <linux/uaccess.h>
- #include <linux/highmem.h>
- 
-@@ -50,8 +51,14 @@ EXPORT_SYMBOL(__clear_user);
- 
- unsigned long clear_user(void __user *to, unsigned long n)
- {
-+	long not_copied = should_fail_usercopy(n);
-+
-+	if (not_copied < 0)
-+		not_copied = n;
-+
- 	if (access_ok(to, n))
--		return __clear_user(to, n);
-+		return not_copied + __clear_user(to, n - not_copied);
-+
- 	return n;
- }
- EXPORT_SYMBOL(clear_user);
 -- 
-2.28.0.297.g1956fa8f8d-goog
-
+regards,
+Stan
