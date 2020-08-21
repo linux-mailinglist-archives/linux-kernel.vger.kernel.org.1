@@ -2,348 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6431624CDAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 08:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F10B224CDCA
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 08:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727087AbgHUGGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 02:06:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58260 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725867AbgHUGGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 02:06:00 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E25D207DA;
-        Fri, 21 Aug 2020 06:05:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597989958;
-        bh=59Bhlg03bophqCjhTvXtoOFm/L0sB/uyuECPf6berIs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=NwSOydEuElShglZkcANik6Ec+qKCU4ZLgxu0vHQZxJQqfvQdvpIdP7oLlA6ljM88H
-         rJE7c1kIgmjRSKukoshBZNdd45YdLefdC8mnRsf5Ergp8XawCZFXzyZI8y0xKJ5HaT
-         5gPPq9u91BiPg6obEjQhNuAkSc61Jxfac9QWuc2k=
-Date:   Fri, 21 Aug 2020 01:11:45 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Johannes Berg <johannes.berg@intel.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Intel Linux Wireless <linuxwifi@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH][next] iwlwifi: Use fallthrough pseudo-keyword
-Message-ID: <20200821061145.GA2859@embeddedor>
+        id S1727828AbgHUGMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 02:12:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725268AbgHUGMq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 02:12:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792CEC061385;
+        Thu, 20 Aug 2020 23:12:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XjECR8+eDUPEGuoHB06jbTzMefby4d/dy/IIb2Ht2a4=; b=Tbpt5kSnanADTOo1RWnYXI1TxW
+        RKUGe5xb2JaRZLaPWi1bweavQXKS2OJoYYiMPd31tHB7zYMsFT6/FpuQ/5Io7Usxfy7a0T6GSYHcS
+        wDpyd0iRHMdWQIhe2f+HKhwzC1yRAiFGM5exUGPWGtEHIBLxNR9UPEErW3Kww7orsbfpYfiOkf3+E
+        LOZnu2qb05CsM1L5DJPBxH9T2PWJlkPL3+Y/px/tiYv9ySuiIjn6bYLIRFY+xPoCmNuPb578diRc3
+        UWIWHHV8aiwLtF8rVVo6IcNZdwRpL82fKWZMtTKVChgmo2lzelJyU17VvT+Xe10Lxez5srIWpSlan
+        0QOioo0w==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k90Hy-0000qm-Ii; Fri, 21 Aug 2020 06:12:34 +0000
+Date:   Fri, 21 Aug 2020 07:12:34 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+Cc:     Gao Xiang <hsiangkao@redhat.com>, hch@infradead.org,
+        darrick.wong@oracle.com, willy@infradead.org, david@fromorbit.com,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
+Subject: Re: [RFC PATCH V3] iomap: add support to track dirty state of sub
+ pages
+Message-ID: <20200821061234.GE31091@infradead.org>
+References: <20200819120542.3780727-1-yukuai3@huawei.com>
+ <20200819125608.GA24051@xiangao.remote.csb>
+ <43dc04bf-17bb-9f15-4f1c-dfd6c47c3fb1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <43dc04bf-17bb-9f15-4f1c-dfd6c47c3fb1@huawei.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the existing /* fall through */ comments and its variants with
-the new pseudo-keyword macro fallthrough[1].
+On Thu, Aug 20, 2020 at 09:38:53AM +0800, yukuai (C) wrote:
+> > > +iomap_set_range_dirty(struct page *page, unsigned int off,
+> > > +		unsigned int len)
+> > > +{
+> > > +	if (PageError(page))
+> > > +		return;
+> > > +
+> > > +	if (page_has_private(page))
+> > > +		iomap_iop_set_range_dirty(page, off, len);
+> > 
+> > 
+> > I vaguely remembered iomap doesn't always set up PagePrivate.
+> > 
+> 
+> If so, maybe I should move iomap_set_page_dirty() to
+> ioamp_set_range_dirty().
 
-[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/wireless/intel/iwlwifi/dvm/mac80211.c |  2 +-
- drivers/net/wireless/intel/iwlwifi/dvm/rx.c       |  6 +++---
- drivers/net/wireless/intel/iwlwifi/dvm/scan.c     |  2 +-
- drivers/net/wireless/intel/iwlwifi/dvm/sta.c      |  2 +-
- drivers/net/wireless/intel/iwlwifi/dvm/tx.c       |  2 +-
- drivers/net/wireless/intel/iwlwifi/iwl-drv.c      |  2 +-
- drivers/net/wireless/intel/iwlwifi/mvm/led.c      |  2 +-
- drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c |  2 +-
- drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c |  2 +-
- drivers/net/wireless/intel/iwlwifi/mvm/phy-ctxt.c |  2 +-
- drivers/net/wireless/intel/iwlwifi/mvm/rx.c       |  2 +-
- drivers/net/wireless/intel/iwlwifi/mvm/rxmq.c     |  8 ++++----
- drivers/net/wireless/intel/iwlwifi/mvm/scan.c     |  2 +-
- drivers/net/wireless/intel/iwlwifi/mvm/sta.c      | 10 +++++-----
- drivers/net/wireless/intel/iwlwifi/mvm/tx.c       |  4 ++--
- 15 files changed, 25 insertions(+), 25 deletions(-)
-
-diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/mac80211.c b/drivers/net/wireless/intel/iwlwifi/dvm/mac80211.c
-index 423d3c396b2d..75e7665773c5 100644
---- a/drivers/net/wireless/intel/iwlwifi/dvm/mac80211.c
-+++ b/drivers/net/wireless/intel/iwlwifi/dvm/mac80211.c
-@@ -619,7 +619,7 @@ static int iwlagn_mac_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
- 	switch (key->cipher) {
- 	case WLAN_CIPHER_SUITE_TKIP:
- 		key->flags |= IEEE80211_KEY_FLAG_GENERATE_MMIC;
--		/* fall through */
-+		fallthrough;
- 	case WLAN_CIPHER_SUITE_CCMP:
- 		key->flags |= IEEE80211_KEY_FLAG_GENERATE_IV;
- 		break;
-diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/rx.c b/drivers/net/wireless/intel/iwlwifi/dvm/rx.c
-index 673d60784bfa..e16589018ebb 100644
---- a/drivers/net/wireless/intel/iwlwifi/dvm/rx.c
-+++ b/drivers/net/wireless/intel/iwlwifi/dvm/rx.c
-@@ -582,7 +582,7 @@ static int iwlagn_set_decrypted_flag(struct iwl_priv *priv,
- 		if ((decrypt_res & RX_RES_STATUS_DECRYPT_TYPE_MSK) ==
- 		    RX_RES_STATUS_BAD_KEY_TTAK)
- 			break;
--		/* fall through */
-+		fallthrough;
- 	case RX_RES_STATUS_SEC_TYPE_WEP:
- 		if ((decrypt_res & RX_RES_STATUS_DECRYPT_TYPE_MSK) ==
- 		    RX_RES_STATUS_BAD_ICV_MIC) {
-@@ -591,7 +591,7 @@ static int iwlagn_set_decrypted_flag(struct iwl_priv *priv,
- 			IWL_DEBUG_RX(priv, "Packet destroyed\n");
- 			return -1;
- 		}
--		/* fall through */
-+		fallthrough;
- 	case RX_RES_STATUS_SEC_TYPE_CCMP:
- 		if ((decrypt_res & RX_RES_STATUS_DECRYPT_TYPE_MSK) ==
- 		    RX_RES_STATUS_DECRYPT_OK) {
-@@ -720,7 +720,7 @@ static u32 iwlagn_translate_rx_status(struct iwl_priv *priv, u32 decrypt_in)
- 			decrypt_out |= RX_RES_STATUS_BAD_KEY_TTAK;
- 			break;
- 		}
--		/* fall through */
-+		fallthrough;
- 	default:
- 		if (!(decrypt_in & RX_MPDU_RES_STATUS_ICV_OK))
- 			decrypt_out |= RX_RES_STATUS_BAD_ICV_MIC;
-diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/scan.c b/drivers/net/wireless/intel/iwlwifi/dvm/scan.c
-index 1d8590046ff7..0eecc2afcf4d 100644
---- a/drivers/net/wireless/intel/iwlwifi/dvm/scan.c
-+++ b/drivers/net/wireless/intel/iwlwifi/dvm/scan.c
-@@ -406,7 +406,7 @@ static u16 iwl_limit_dwell(struct iwl_priv *priv, u16 dwell_time)
- 		limit = (limits[1] * 98) / 100 - IWL_CHANNEL_TUNE_TIME * 2;
- 		limit /= 2;
- 		dwell_time = min(limit, dwell_time);
--		/* fall through */
-+		fallthrough;
- 	case 1:
- 		limit = (limits[0] * 98) / 100 - IWL_CHANNEL_TUNE_TIME * 2;
- 		limit /= n_active;
-diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/sta.c b/drivers/net/wireless/intel/iwlwifi/dvm/sta.c
-index 51158edce15b..d49c46914275 100644
---- a/drivers/net/wireless/intel/iwlwifi/dvm/sta.c
-+++ b/drivers/net/wireless/intel/iwlwifi/dvm/sta.c
-@@ -1109,7 +1109,7 @@ static int iwlagn_send_sta_key(struct iwl_priv *priv,
- 		break;
- 	case WLAN_CIPHER_SUITE_WEP104:
- 		key_flags |= STA_KEY_FLG_KEY_SIZE_MSK;
--		/* fall through */
-+		fallthrough;
- 	case WLAN_CIPHER_SUITE_WEP40:
- 		key_flags |= STA_KEY_FLG_WEP;
- 		memcpy(&sta_cmd.key.key[3], keyconf->key, keyconf->keylen);
-diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/tx.c b/drivers/net/wireless/intel/iwlwifi/dvm/tx.c
-index fd454836adbe..52c682dd5957 100644
---- a/drivers/net/wireless/intel/iwlwifi/dvm/tx.c
-+++ b/drivers/net/wireless/intel/iwlwifi/dvm/tx.c
-@@ -210,7 +210,7 @@ static void iwlagn_tx_cmd_build_hwcrypto(struct iwl_priv *priv,
- 
- 	case WLAN_CIPHER_SUITE_WEP104:
- 		tx_cmd->sec_ctl |= TX_CMD_SEC_KEY128;
--		/* fall through */
-+		fallthrough;
- 	case WLAN_CIPHER_SUITE_WEP40:
- 		tx_cmd->sec_ctl |= (TX_CMD_SEC_WEP |
- 			(keyconf->keyidx & TX_CMD_SEC_MSK) << TX_CMD_SEC_SHIFT);
-diff --git a/drivers/net/wireless/intel/iwlwifi/iwl-drv.c b/drivers/net/wireless/intel/iwlwifi/iwl-drv.c
-index 04f14bfdd091..1a7bc29d1a72 100644
---- a/drivers/net/wireless/intel/iwlwifi/iwl-drv.c
-+++ b/drivers/net/wireless/intel/iwlwifi/iwl-drv.c
-@@ -1561,7 +1561,7 @@ static void iwl_req_fw_callback(const struct firmware *ucode_raw, void *context)
- 		break;
- 	default:
- 		WARN(1, "Invalid fw type %d\n", fw->type);
--		/* fall through */
-+		fallthrough;
- 	case IWL_FW_MVM:
- 		op = &iwlwifi_opmode_table[MVM_OP_MODE];
- 		break;
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/led.c b/drivers/net/wireless/intel/iwlwifi/mvm/led.c
-index 72c4b2b8399d..6c910d681a92 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/led.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/led.c
-@@ -115,7 +115,7 @@ int iwl_mvm_leds_init(struct iwl_mvm *mvm)
- 	switch (mode) {
- 	case IWL_LED_BLINK:
- 		IWL_ERR(mvm, "Blink led mode not supported, used default\n");
--		/* fall through */
-+		fallthrough;
- 	case IWL_LED_DEFAULT:
- 	case IWL_LED_RF_STATE:
- 		mode = IWL_LED_RF_STATE;
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c b/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c
-index b78992e341d5..4581edcecd64 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c
-@@ -289,7 +289,7 @@ int iwl_mvm_mac_ctxt_init(struct iwl_mvm *mvm, struct ieee80211_vif *vif)
- 	case NL80211_IFTYPE_STATION:
- 		if (!vif->p2p)
- 			break;
--		/* fall through */
-+		fallthrough;
- 	default:
- 		__clear_bit(0, data.available_mac_ids);
- 	}
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
-index 9374c85c5caf..e58898951815 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
-@@ -4059,7 +4059,7 @@ static int __iwl_mvm_assign_vif_chanctx(struct iwl_mvm *mvm,
- 			mvmvif->ap_ibss_active = true;
- 			break;
- 		}
--		/* fall through */
-+		fallthrough;
- 	case NL80211_IFTYPE_ADHOC:
- 		/*
- 		 * The AP binding flow is handled as part of the start_ap flow
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/phy-ctxt.c b/drivers/net/wireless/intel/iwlwifi/mvm/phy-ctxt.c
-index 0243dbe8ac49..103294969a26 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/phy-ctxt.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/phy-ctxt.c
-@@ -109,7 +109,7 @@ u8 iwl_mvm_get_ctrl_pos(struct cfg80211_chan_def *chandef)
- 		return PHY_VHT_CTRL_POS_4_ABOVE;
- 	default:
- 		WARN(1, "Invalid channel definition");
--		/* fall through */
-+		fallthrough;
- 	case 0:
- 		/*
- 		 * The FW is expected to check the control channel position only
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/rx.c b/drivers/net/wireless/intel/iwlwifi/mvm/rx.c
-index 77b8def26edb..9cf4c8e12a82 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/rx.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/rx.c
-@@ -226,7 +226,7 @@ static u32 iwl_mvm_set_mac80211_rx_flag(struct iwl_mvm *mvm,
- 		    !(rx_pkt_status & RX_MPDU_RES_STATUS_TTAK_OK))
- 			return 0;
- 		*crypt_len = IEEE80211_TKIP_IV_LEN;
--		/* fall through */
-+		fallthrough;
- 
- 	case RX_MPDU_RES_STATUS_SEC_WEP_ENC:
- 		if (!(rx_pkt_status & RX_MPDU_RES_STATUS_ICV_OK))
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/rxmq.c b/drivers/net/wireless/intel/iwlwifi/mvm/rxmq.c
-index c15f7dbc9516..78f4cc11e2eb 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/rxmq.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/rxmq.c
-@@ -354,7 +354,7 @@ static int iwl_mvm_rx_crypto(struct iwl_mvm *mvm, struct ieee80211_hdr *hdr,
- 			stats->flag |= RX_FLAG_MMIC_ERROR;
- 
- 		*crypt_len = IEEE80211_TKIP_IV_LEN;
--		/* fall through */
-+		fallthrough;
- 	case IWL_RX_MPDU_STATUS_SEC_WEP:
- 		if (!(status & IWL_RX_MPDU_STATUS_ICV_OK))
- 			return -1;
-@@ -1275,7 +1275,7 @@ static void iwl_mvm_decode_he_phy_data(struct iwl_mvm *mvm,
- 		he->data4 |= le16_encode_bits(le32_get_bits(phy_data->d2,
- 							    IWL_RX_PHY_DATA2_HE_TB_EXT_SPTL_REUSE4),
- 					      IEEE80211_RADIOTAP_HE_DATA4_TB_SPTL_REUSE4);
--		/* fall through */
-+		fallthrough;
- 	case IWL_RX_PHY_INFO_TYPE_HE_SU:
- 	case IWL_RX_PHY_INFO_TYPE_HE_MU:
- 	case IWL_RX_PHY_INFO_TYPE_HE_MU_EXT:
-@@ -1348,7 +1348,7 @@ static void iwl_mvm_decode_he_phy_data(struct iwl_mvm *mvm,
- 						       IWL_RX_PHY_DATA4_HE_MU_EXT_PREAMBLE_PUNC_TYPE_MASK),
- 					 IEEE80211_RADIOTAP_HE_MU_FLAGS2_PUNC_FROM_SIG_A_BW);
- 		iwl_mvm_decode_he_mu_ext(mvm, phy_data, rate_n_flags, he_mu);
--		/* fall through */
-+		fallthrough;
- 	case IWL_RX_PHY_INFO_TYPE_HE_MU:
- 		he_mu->flags2 |=
- 			le16_encode_bits(le32_get_bits(phy_data->d1,
-@@ -1358,7 +1358,7 @@ static void iwl_mvm_decode_he_phy_data(struct iwl_mvm *mvm,
- 			le16_encode_bits(le32_get_bits(phy_data->d1,
- 						       IWL_RX_PHY_DATA1_HE_MU_SIGB_COMPRESSION),
- 					 IEEE80211_RADIOTAP_HE_MU_FLAGS2_SIG_B_COMP);
--		/* fall through */
-+		fallthrough;
- 	case IWL_RX_PHY_INFO_TYPE_HE_TB:
- 	case IWL_RX_PHY_INFO_TYPE_HE_TB_EXT:
- 		iwl_mvm_decode_he_phy_ru_alloc(phy_data, rate_n_flags,
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/scan.c b/drivers/net/wireless/intel/iwlwifi/mvm/scan.c
-index 51a061b138ba..04ee18e565ba 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/scan.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/scan.c
-@@ -2149,7 +2149,7 @@ static int iwl_mvm_check_running_scans(struct iwl_mvm *mvm, int type)
- 		/* Something is wrong if no scan was running but we
- 		 * ran out of scans.
- 		 */
--		/* fall through */
-+		fallthrough;
- 	default:
- 		WARN_ON(1);
- 		break;
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/sta.c b/drivers/net/wireless/intel/iwlwifi/mvm/sta.c
-index 9e124755a3ce..f4bf102633af 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/sta.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/sta.c
-@@ -144,13 +144,13 @@ int iwl_mvm_sta_send_to_fw(struct iwl_mvm *mvm, struct ieee80211_sta *sta,
- 	switch (sta->bandwidth) {
- 	case IEEE80211_STA_RX_BW_160:
- 		add_sta_cmd.station_flags |= cpu_to_le32(STA_FLG_FAT_EN_160MHZ);
--		/* fall through */
-+		fallthrough;
- 	case IEEE80211_STA_RX_BW_80:
- 		add_sta_cmd.station_flags |= cpu_to_le32(STA_FLG_FAT_EN_80MHZ);
--		/* fall through */
-+		fallthrough;
- 	case IEEE80211_STA_RX_BW_40:
- 		add_sta_cmd.station_flags |= cpu_to_le32(STA_FLG_FAT_EN_40MHZ);
--		/* fall through */
-+		fallthrough;
- 	case IEEE80211_STA_RX_BW_20:
- 		if (sta->ht_cap.ht_supported)
- 			add_sta_cmd.station_flags |=
-@@ -3258,14 +3258,14 @@ static int iwl_mvm_send_sta_key(struct iwl_mvm *mvm,
- 		break;
- 	case WLAN_CIPHER_SUITE_WEP104:
- 		key_flags |= cpu_to_le16(STA_KEY_FLG_WEP_13BYTES);
--		/* fall through */
-+		fallthrough;
- 	case WLAN_CIPHER_SUITE_WEP40:
- 		key_flags |= cpu_to_le16(STA_KEY_FLG_WEP);
- 		memcpy(u.cmd.common.key + 3, key->key, key->keylen);
- 		break;
- 	case WLAN_CIPHER_SUITE_GCMP_256:
- 		key_flags |= cpu_to_le16(STA_KEY_FLG_KEY_32BYTES);
--		/* fall through */
-+		fallthrough;
- 	case WLAN_CIPHER_SUITE_GCMP:
- 		key_flags |= cpu_to_le16(STA_KEY_FLG_GCMP);
- 		memcpy(u.cmd.common.key, key->key, key->keylen);
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/tx.c b/drivers/net/wireless/intel/iwlwifi/mvm/tx.c
-index 2f6484e0d726..b536e04a35e6 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/tx.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/tx.c
-@@ -459,7 +459,7 @@ static void iwl_mvm_set_tx_cmd_crypto(struct iwl_mvm *mvm,
- 
- 	case WLAN_CIPHER_SUITE_WEP104:
- 		tx_cmd->sec_ctl |= TX_CMD_SEC_KEY128;
--		/* fall through */
-+		fallthrough;
- 	case WLAN_CIPHER_SUITE_WEP40:
- 		tx_cmd->sec_ctl |= TX_CMD_SEC_WEP |
- 			((keyconf->keyidx << TX_CMD_SEC_WEP_KEY_IDX_POS) &
-@@ -470,7 +470,7 @@ static void iwl_mvm_set_tx_cmd_crypto(struct iwl_mvm *mvm,
- 	case WLAN_CIPHER_SUITE_GCMP:
- 	case WLAN_CIPHER_SUITE_GCMP_256:
- 		type = TX_CMD_SEC_GCMP;
--		/* Fall through */
-+		fallthrough;
- 	case WLAN_CIPHER_SUITE_CCMP_256:
- 		/* TODO: Taking the key from the table might introduce a race
- 		 * when PTK rekeying is done, having an old packets with a PN
--- 
-2.27.0
-
+iomap sets PagePrivate if a iomap_page structure is allocated.  Right
+now that means for all pages on a file system with a block size smaller
+than the page size, although I hope we reduce that scope a little.
