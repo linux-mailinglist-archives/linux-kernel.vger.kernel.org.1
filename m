@@ -2,168 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A62D24DB46
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9162D24DBA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728440AbgHUQhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 12:37:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56842 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728432AbgHUQVJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:21:09 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6868022D6E;
-        Fri, 21 Aug 2020 16:20:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598026813;
-        bh=jsOvBr9rJdDGyGjXO4I8vMC3R8xRGofJQuE2DofuJ0Q=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gL4AnpiLciHDq49eEl5t7sJKJK9af+0jG9zreZBGroYY1Rp4qQlzvKYiPWeN0EaTY
-         NUv+NN94lBcX0z8CoPe/6uFYDGXAcVd4BGf4DAiMAKWXxZIYn9d0ub4BWVNDfi4qsA
-         VuI4nMOOBIA6Btims+AOse2uiTmAVJcfVJpWywQ0=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jason Baron <jbaron@akamai.com>, Borislav Petkov <bp@suse.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-edac <linux-edac@vger.kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.9 26/26] EDAC/ie31200: Fallback if host bridge device is already initialized
-Date:   Fri, 21 Aug 2020 12:19:37 -0400
-Message-Id: <20200821161938.349246-26-sashal@kernel.org>
+        id S1728478AbgHUQpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 12:45:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728380AbgHUQUl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 12:20:41 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C09C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 09:20:41 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id f19so1587148qtp.2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 09:20:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=SnctsuDqqlA5ER6TRf1wGNDf5ctTnVHX934E0v8jiKs=;
+        b=kE2/rzVKhLFjVHa4TBoS4RNn4LkOQyfSEpegQ1o5S1smE6U1gjIbdzoACeuOT1w/hS
+         CFwjGcSYrK3z8ltyVrRDPX1tIaueQtkdUz9d4seWs56SfVhltnNi55DrKsvW/1WK/ygp
+         ewgl0UFESexwf4yIx/m3K60SiHFxgiSXaBsXgyuPY6sr7cFXcUUzM0C9F5iYcFutWwfX
+         gj8tvxTERGCRPf0OuJThfFvRoTUvt+grGqDSGSU+B6sYoVOBBaa5kXcVeP6taU0fXz09
+         I1k+QPCDHAbdGuNnTID+AENF2qdS+HvW0+sK2irNllXdsy1tgrRT9o+0DOSMH+TD/IFV
+         kjAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=SnctsuDqqlA5ER6TRf1wGNDf5ctTnVHX934E0v8jiKs=;
+        b=qTpp36no7g77g+j/BsPO3Ww/9s40Sm50ErTz7JXtM2UuvVbLE3dur87WgEcRv8tz4u
+         GAGKhJdPGkPWN6rGl22/nXsNrSGYGmVJhmYrBHnnCLuOrRVeEtOjI3esS8978rNrq3TN
+         H87KvJo8eF4VPELOwtbbuN9qE9ITbUIqlKGvQgfGOEn5BAomOwfZlzOQq4Wl+avy10z5
+         uqf+MTj5psdNrCIYzckSti0ktcVvmUugVXMysrXjwH+cHMXAVA3TDOKjMU8l6Dz5wXql
+         Q5BwkNIwhcJO7q2V9rTFC0kfwav5UDQ/917x6rI2/WW75ONFKcGV97YvPgT/KF2u/hFZ
+         HwgA==
+X-Gm-Message-State: AOAM530gDCQequfr1lx83nnQjU1arjcjxW03JWbHlm3Exm3F5OMfxupL
+        4BdDke566VQI+PtJ8sS0TZo=
+X-Google-Smtp-Source: ABdhPJwk5mPqN/pK3UEoSEsH0DnR8mrYFh5ZdA08dUAcPlo0SwInasFrQxXSuurg/NOrbDsr+lTOXg==
+X-Received: by 2002:ac8:12cc:: with SMTP id b12mr3312871qtj.349.1598026835922;
+        Fri, 21 Aug 2020 09:20:35 -0700 (PDT)
+Received: from tong-desktop.local ([2601:5c0:c100:b9d:613a:3cfc:fb4b:2e6])
+        by smtp.googlemail.com with ESMTPSA id l66sm2465030qte.48.2020.08.21.09.20.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Aug 2020 09:20:35 -0700 (PDT)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     jikos@kernel.org, dsterba@suse.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, ztong0001@gmail.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] tty: ipwireless: fix error handling
+Date:   Fri, 21 Aug 2020 12:19:40 -0400
+Message-Id: <20200821161942.36589-1-ztong0001@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200821161938.349246-1-sashal@kernel.org>
-References: <20200821161938.349246-1-sashal@kernel.org>
+In-Reply-To: <20200821092844.GB2026@suse.cz>
+References: <20200821092844.GB2026@suse.cz>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Baron <jbaron@akamai.com>
+ipwireless_send_packet() can only return 0 on success and -ENOMEM on
+error, the caller should check non zero for error condition
 
-[ Upstream commit 709ed1bcef12398ac1a35c149f3e582db04456c2 ]
-
-The Intel uncore driver may claim some of the pci ids from ie31200 which
-means that the ie31200 edac driver will not initialize them as part of
-pci_register_driver().
-
-Let's add a fallback for this case to 'pci_get_device()' to get a
-reference on the device such that it can still be configured. This is
-similar in approach to other edac drivers.
-
-Signed-off-by: Jason Baron <jbaron@akamai.com>
-Cc: Borislav Petkov <bp@suse.de>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: linux-edac <linux-edac@vger.kernel.org>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Link: https://lore.kernel.org/r/1594923911-10885-1-git-send-email-jbaron@akamai.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
 ---
- drivers/edac/ie31200_edac.c | 50 ++++++++++++++++++++++++++++++++++---
- 1 file changed, 47 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/edac/ie31200_edac.c b/drivers/edac/ie31200_edac.c
-index 1c88d97074951..3438b98e60948 100644
---- a/drivers/edac/ie31200_edac.c
-+++ b/drivers/edac/ie31200_edac.c
-@@ -145,6 +145,8 @@
- 	(n << (28 + (2 * skl) - PAGE_SHIFT))
- 
- static int nr_channels;
-+static struct pci_dev *mci_pdev;
-+static int ie31200_registered = 1;
- 
- struct ie31200_priv {
- 	void __iomem *window;
-@@ -512,12 +514,16 @@ static int ie31200_probe1(struct pci_dev *pdev, int dev_idx)
- static int ie31200_init_one(struct pci_dev *pdev,
- 			    const struct pci_device_id *ent)
- {
--	edac_dbg(0, "MC:\n");
-+	int rc;
- 
-+	edac_dbg(0, "MC:\n");
- 	if (pci_enable_device(pdev) < 0)
- 		return -EIO;
-+	rc = ie31200_probe1(pdev, ent->driver_data);
-+	if (rc == 0 && !mci_pdev)
-+		mci_pdev = pci_dev_get(pdev);
- 
--	return ie31200_probe1(pdev, ent->driver_data);
-+	return rc;
- }
- 
- static void ie31200_remove_one(struct pci_dev *pdev)
-@@ -526,6 +532,8 @@ static void ie31200_remove_one(struct pci_dev *pdev)
- 	struct ie31200_priv *priv;
- 
- 	edac_dbg(0, "\n");
-+	pci_dev_put(mci_pdev);
-+	mci_pdev = NULL;
- 	mci = edac_mc_del_mc(&pdev->dev);
- 	if (!mci)
- 		return;
-@@ -574,17 +582,53 @@ static struct pci_driver ie31200_driver = {
- 
- static int __init ie31200_init(void)
- {
-+	int pci_rc, i;
-+
- 	edac_dbg(3, "MC:\n");
- 	/* Ensure that the OPSTATE is set correctly for POLL or NMI */
- 	opstate_init();
- 
--	return pci_register_driver(&ie31200_driver);
-+	pci_rc = pci_register_driver(&ie31200_driver);
-+	if (pci_rc < 0)
-+		goto fail0;
-+
-+	if (!mci_pdev) {
-+		ie31200_registered = 0;
-+		for (i = 0; ie31200_pci_tbl[i].vendor != 0; i++) {
-+			mci_pdev = pci_get_device(ie31200_pci_tbl[i].vendor,
-+						  ie31200_pci_tbl[i].device,
-+						  NULL);
-+			if (mci_pdev)
-+				break;
-+		}
-+		if (!mci_pdev) {
-+			edac_dbg(0, "ie31200 pci_get_device fail\n");
-+			pci_rc = -ENODEV;
-+			goto fail1;
-+		}
-+		pci_rc = ie31200_init_one(mci_pdev, &ie31200_pci_tbl[i]);
-+		if (pci_rc < 0) {
-+			edac_dbg(0, "ie31200 init fail\n");
-+			pci_rc = -ENODEV;
-+			goto fail1;
-+		}
-+	}
-+	return 0;
-+
-+fail1:
-+	pci_unregister_driver(&ie31200_driver);
-+fail0:
-+	pci_dev_put(mci_pdev);
-+
-+	return pci_rc;
- }
- 
- static void __exit ie31200_exit(void)
- {
- 	edac_dbg(3, "MC:\n");
- 	pci_unregister_driver(&ie31200_driver);
-+	if (!ie31200_registered)
-+		ie31200_remove_one(mci_pdev);
- }
- 
- module_init(ie31200_init);
+v2: - According to Jiri's comment, I made the checking consistent with
+the rest of the kernel. I also rebased the code using f684668a24ec.
+Thank you Jiri!
+v3: fix commit log according to David's comment, and rebased using
+Greg's tty-testing tree. Thank you David!
+
+ drivers/tty/ipwireless/network.c | 4 ++--
+ drivers/tty/ipwireless/tty.c     | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/tty/ipwireless/network.c b/drivers/tty/ipwireless/network.c
+index cf20616340a1..fe569f6294a2 100644
+--- a/drivers/tty/ipwireless/network.c
++++ b/drivers/tty/ipwireless/network.c
+@@ -117,7 +117,7 @@ static int ipwireless_ppp_start_xmit(struct ppp_channel *ppp_channel,
+ 					       skb->len,
+ 					       notify_packet_sent,
+ 					       network);
+-			if (ret == -1) {
++			if (ret < 0) {
+ 				skb_pull(skb, 2);
+ 				return 0;
+ 			}
+@@ -134,7 +134,7 @@ static int ipwireless_ppp_start_xmit(struct ppp_channel *ppp_channel,
+ 					       notify_packet_sent,
+ 					       network);
+ 			kfree(buf);
+-			if (ret == -1)
++			if (ret < 0)
+ 				return 0;
+ 		}
+ 		kfree_skb(skb);
+diff --git a/drivers/tty/ipwireless/tty.c b/drivers/tty/ipwireless/tty.c
+index fad3401e604d..23584769fc29 100644
+--- a/drivers/tty/ipwireless/tty.c
++++ b/drivers/tty/ipwireless/tty.c
+@@ -218,7 +218,7 @@ static int ipw_write(struct tty_struct *linux_tty,
+ 	ret = ipwireless_send_packet(tty->hardware, IPW_CHANNEL_RAS,
+ 			       buf, count,
+ 			       ipw_write_packet_sent_callback, tty);
+-	if (ret == -1) {
++	if (ret < 0) {
+ 		mutex_unlock(&tty->ipw_tty_mutex);
+ 		return 0;
+ 	}
 -- 
 2.25.1
 
