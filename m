@@ -2,182 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB8E24D674
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 15:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81ED924D67F
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 15:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728979AbgHUNqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 09:46:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39312 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728917AbgHUNqY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 09:46:24 -0400
-Received: from localhost (104.sub-72-107-126.myvzw.com [72.107.126.104])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34E7A20578;
-        Fri, 21 Aug 2020 13:46:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598017583;
-        bh=eR4savNfPpi1Bov9kuM6We12VX5PsJEnD49TjFI45vg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=GkneyOgRoOluuwCS8xddIUouzrh/qxThxKNQqmUwYR7Jnj2FNd7CmaGUCo9Y5LNWH
-         EO7HofDa6BDrqn5DFQtjbw35eaJgRLSAij7dSUApb/jB2fCp5ifAMxfdRww/kcoeSJ
-         88rBxQ9cvp6v3DCLnmkaTHi5lqEzwBvg2yvXhMoo=
-Date:   Fri, 21 Aug 2020 08:46:22 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     linux-mm@kvack.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, rafael@kernel.org,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>, linuxarm@huawei.com,
-        Dan Williams <dan.j.williams@intel.com>,
-        Brice Goglin <Brice.Goglin@inria.fr>,
-        Sean V Kelley <sean.v.kelley@linux.intel.com>,
-        linux-api@vger.kernel.org, Keith Busch <kbusch@kernel.org>
-Subject: Re: [PATCH v9 4/6] ACPI: HMAT: Fix handling of changes from ACPI 6.2
- to ACPI 6.3
-Message-ID: <20200821134622.GA1620197@bjorn-Precision-5520>
+        id S1729023AbgHUNrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 09:47:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729008AbgHUNrD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 09:47:03 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD39C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 06:47:02 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id si26so2311874ejb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 06:47:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=OCNzDue0d+9gLeuNDZrCDBO7b3B7dWV+FryyxTem/wM=;
+        b=BDf9azafY0usvDzD6SWESmOB5PViNnJj/9/rufIn6pIb+SY+E3IMtw8WgrrAe16c4D
+         4N8dFgKM6uDJ5zMAeHRHVh2MspW7Vyqt4+RMuWrtXCAaCTzuLDaaynS6Xh7n16Druirz
+         jcpfkpFlm4VZpqGAv6FeR4sQcbKFoxcUoI9PiSQp2IX8EAvR6ej9RtSNHVACLazukIfV
+         nmyeHO03NRVFJEKHpywQOu/goM180NbO31Wc3qb2ZZwR3x3+nzZBtDf2svECy09qT82G
+         mwkkIc7GZ9nPEBr821KMJE0RuuapIE4o0Co9wpwdrldJBb6eTDutPhyuviqb3sI1SyIC
+         7SaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OCNzDue0d+9gLeuNDZrCDBO7b3B7dWV+FryyxTem/wM=;
+        b=W5FLqPsyWQAD5ILgAQ7LSD2wcY9lSXu3HJmeYZcE/Nhvs7HDLEM9mQqYiz2706PDZd
+         6G5AkLX6jcC0p/SFMx4GIf0SbxDYAIuq/n0Qc3SaQ+VZc7ysmxa3syraon4pY+/mnput
+         r3Wvyo1wk4Ay4EdAXmt+x8TyW+El9VlkWClyqXTaDwqWPBrfu4e1jKmbSS40WXwemlk/
+         EVZKuu9fIFaAl13h4HcE4nlkMu60xaIV5gxBQSqkT8ffRUOFW0IkKtCS9bpzVj3PbLCS
+         HKqDxW50qW70MuD34vrJW0VZsOd2wy3nDFD/eISgzCm3gnws9sPDtIeEXHF0pynhcqvP
+         I1LA==
+X-Gm-Message-State: AOAM530sbacbztMnYTeCCDpjGgTEEaK+EqoLgbj1/lv3HR4kJ3xZp4Nh
+        shf73SryvhNue8vaQRxJJQVuX+TZaQ2N6H0XKVes
+X-Google-Smtp-Source: ABdhPJy6zIIVIwF1GHspiGxBu6rQjz/cqHvYRzEm2Z4xJYFQGvRzpYb/UmjUqCMgmnE906lKpJCPOKo+BUF7LdsX8Lo=
+X-Received: by 2002:a17:906:e0e:: with SMTP id l14mr2792528eji.398.1598017621287;
+ Fri, 21 Aug 2020 06:47:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200821135901.0000260b@Huawei.com>
+References: <20200817170729.2605279-1-tweek@google.com> <20200817170729.2605279-4-tweek@google.com>
+ <0bb62de9-1020-a7c4-3a7f-48ae2f78e3b7@gmail.com> <20200817162933.79f69c66@oasis.local.home>
+ <20200818120948.1a428da9@oasis.local.home> <66e6d84e-20b5-1bd3-e107-322f42ce35d3@gmail.com>
+ <20200820223136.162850ce@oasis.local.home> <CAEjxPJ7-6PaHjPzB7vN=nh+VMNV-T2bnKM-YrXdQwOzNtG+9zg@mail.gmail.com>
+ <CAHC9VhTLOWsD9LbVGBj=o3N3SPe-uJDvrdQAySy6MmE4uyuzng@mail.gmail.com> <CA+zpnLfNjDwxgoG2p3W8YfXxYVQDum4Eh_MJQvKP4rGLqsqACA@mail.gmail.com>
+In-Reply-To: <CA+zpnLfNjDwxgoG2p3W8YfXxYVQDum4Eh_MJQvKP4rGLqsqACA@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 21 Aug 2020 09:46:50 -0400
+Message-ID: <CAHC9VhRXZXiYFX20wtMt9bTv-6sAer91gY1x5ueJv4fa-i5jPA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] selinux: add permission names to trace event
+To:     =?UTF-8?Q?Thi=C3=A9baud_Weksteen?= <tweek@google.com>
+Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Nick Kralevich <nnk@google.com>,
+        Peter Enderborg <peter.enderborg@sony.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 01:59:01PM +0100, Jonathan Cameron wrote:
-> On Fri, 21 Aug 2020 07:13:56 -0500
-> Bjorn Helgaas <helgaas@kernel.org> wrote:
-> 
-> > [+cc Keith, author of 3accf7ae37a9 ("acpi/hmat: Parse and report
-> > heterogeneous memory")]
-> > 
-> > On Fri, Aug 21, 2020 at 09:42:58AM +0100, Jonathan Cameron wrote:
-> > > On Thu, 20 Aug 2020 17:21:29 -0500
-> > > Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > >   
-> > > > On Wed, Aug 19, 2020 at 10:51:09PM +0800, Jonathan Cameron wrote:  
-> > > > > In ACPI 6.3, the Memory Proximity Domain Attributes Structure
-> > > > > changed substantially.  One of those changes was that the flag
-> > > > > for "Memory Proximity Domain field is valid" was deprecated.
-> > > > > 
-> > > > > This was because the field "Proximity Domain for the Memory"
-> > > > > became a required field and hence having a validity flag makes
-> > > > > no sense.
-> > > > > 
-> > > > > So the correct logic is to always assume the field is there.
-> > > > > Current code assumes it never is.
-> > > > > 
-> > > > > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > > > > ---
-> > > > >  drivers/acpi/numa/hmat.c | 2 +-
-> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > 
-> > > > > diff --git a/drivers/acpi/numa/hmat.c b/drivers/acpi/numa/hmat.c
-> > > > > index 2c32cfb72370..07cfe50136e0 100644
-> > > > > --- a/drivers/acpi/numa/hmat.c
-> > > > > +++ b/drivers/acpi/numa/hmat.c
-> > > > > @@ -424,7 +424,7 @@ static int __init hmat_parse_proximity_domain(union acpi_subtable_headers *heade
-> > > > >  		pr_info("HMAT: Memory Flags:%04x Processor Domain:%u Memory Domain:%u\n",
-> > > > >  			p->flags, p->processor_PD, p->memory_PD);
-> > > > >  
-> > > > > -	if (p->flags & ACPI_HMAT_MEMORY_PD_VALID && hmat_revision == 1) {
-> > > > > +	if ((p->flags & ACPI_HMAT_MEMORY_PD_VALID && hmat_revision == 1) || hmat_revision == 2) {    
-> > > > 
-> > > > I hope/assume the spec is written in such a way that p->memory_PD is
-> > > > required for any revision > 1?  So maybe this should be:
-> > > > 
-> > > >   if ((p->flags & ACPI_HMAT_MEMORY_PD_VALID && hmat_revision == 1) ||
-> > > >       hmat_revision > 1) {  
-> > 
-> > I should have said simply:
-> > 
-> >   if (hmat_revision == 1 && p->flags & ACPI_HMAT_MEMORY_PD_VALID)
-> > 
-> > We shouldn't even test p->flags for ACPI_HMAT_MEMORY_PD_VALID unless
-> > we already know it's revision 1.
-> > 
-> > And unless there was a revision 0 of HMAT, there's no need to look for
-> > hmat_revison > 1.
-> 
-> It needs to stay as an or statement as you had the first time.
-> The field is always valid for hmat_revision > 1, and valid for
-> hmat_revision == 1 with the flag set.  You could express it as
-> 
-> if ((p->flags & ACPI_HMAT_MEMORY_PD_VALID) || (hmat_revision != 1))
-> 
-> but that seems more confusing to me.
+On Fri, Aug 21, 2020 at 9:21 AM Thi=C3=A9baud Weksteen <tweek@google.com> w=
+rote:
+>>
+>> I'm okay with merging patches 1/3 and 2/3 wth the changes Stephen
+>> suggested, but I think we will need to leave patch 3/3 out of this for
+>> now.
+>
+> That works for me.
 
-Oh, you're right, sorry!  There are two questions here:
+Can you respin patches 1 and two with those changes and repost?  I try
+to refrain from making non-merge-fuzz changes when merging patches.
 
-1) In what order should we test "p->flags & ACPI_HMAT_MEMORY_PD_VALID"
-   and "hmat_revision == 1"?  ACPI_HMAT_MEMORY_PD_VALID is defined
-   only when "hmat_revision == 1", so I think we should test the
-   revision first.
-
-   When "hmat_revision == 2", ACPI_HMAT_MEMORY_PD_VALID is reserved,
-   so we shouldn't test it, even if we later check the revision and
-   discard the result of the flag test.  This is a tiny thing,
-   admittedly, but I think it follows the spec more clearly.
-
-2) Do we need to test hmat_revision for anything other than 1?  Yes,
-   you're right, see below.
-
-> > > Good point.  We have existing protections elsewhere against
-> > > hmat_revision being anything other than 1 or 2, so we should aim to
-> > > keep that in only one place.  
-> > 
-> > I think the "Ignoring HMAT: Unknown revision" test in hmat_init(),
-> > added by 3accf7ae37a9 ("acpi/hmat: Parse and report heterogeneous
-> > memory"), is a mistake.
-> > 
-> > And I think hmat_normalize() has a similar mistake in that it tests
-> > explicitly for hmat_revision == 2 when it should accept 2 AND anything
-> > later.
-> > 
-> > We should assume that future spec revisions will be backwards
-> > compatible.  Otherwise we're forced to make kernel changes when we
-> > otherwise would not have to.
-> 
-> I disagree with this. There is no rule in ACPI about maintaining
-> backwards compatibility. The assumption is that the version number
-> will always be checked.  The meaning of fields changed between
-> version 1 and version 2 so it would be bold to assume that won't
-> happen in the future!
-
-There *is* a rule about maintaining backwards compatibility.  ACPI
-v6.3, sec 5.2.2, says:
-
-  All versions of the ACPI tables must maintain backward
-  compatibility. To accomplish this, modifications of the tables
-  consist of redefinition of previously reserved fields and values
-  plus appending data to the 1.0 tables. Modifications of the ACPI
-  tables require that the version numbers of the modified tables be
-  incremented.
-
-> HMAT is an optional table, so if someone boots up an old kernel
-> they are probably better off failing to use it at all than
-> misinterpreting it. 
-
-An old kernel tests:
-
-  if (p->flags & ACPI_HMAT_MEMORY_PD_VALID && hmat_revision == 1)
-    target = find_mem_target(p->memory_PD);
-
-which is fine on old firmware.  On new firmware (hmat_revision == 2),
-it will ignore p->memory_PD.  That is probably a problem, but I think
-we should check for that at the place where we need a memory_PD and
-don't find one.  That's more general than sanity checking a revision.
-
-A new kernel that tests:
-
-  if ((hmat_revision == 1 && p->flags & ACPI_HMAT_MEMORY_PD_VALID) ||
-       hmat_revision > 1)
-    target = find_mem_target(p->memory_PD);
-
-will do the right thing on both old and new firmware.
-
-Bjorn
+--=20
+paul moore
+www.paul-moore.com
