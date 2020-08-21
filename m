@@ -2,138 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01FB024DF06
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CECD424DF0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726991AbgHUSAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 14:00:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32815 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725958AbgHUSAE (ORCPT
+        id S1726906AbgHUSC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 14:02:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgHUSC1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 14:00:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598032802;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hfd87vPX7imdizr5awfMVB6fuuvJvnhJKohnbOuYDr0=;
-        b=D3uxg38C2MqAha5lY7SMIPtp0O9ObVjoTkWLwO0ItcHo98GWVM3zwt3bonp5qeIEHyqzAR
-        Qt83bRVU0dYzgnquSN/yqN9UFERjN4nUFQeK7CsNq3OzZJTtH+mJCsidC5xuKgn3Q4a98E
-        277fx1HANmUPIAjsUjuyVwFlSbqMJGg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-272-tl_K1AAsMAWrM8DCAs5e7Q-1; Fri, 21 Aug 2020 13:59:58 -0400
-X-MC-Unique: tl_K1AAsMAWrM8DCAs5e7Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 77D781006706;
-        Fri, 21 Aug 2020 17:59:54 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.15])
-        by smtp.corp.redhat.com (Postfix) with SMTP id D451F7E318;
-        Fri, 21 Aug 2020 17:59:44 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Fri, 21 Aug 2020 19:59:54 +0200 (CEST)
-Date:   Fri, 21 Aug 2020 19:59:43 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tim Murray <timmurray@google.com>, mingo@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
-        christian@kellner.me, areber@redhat.com,
-        Shakeel Butt <shakeelb@google.com>, cyphar@cyphar.com,
-        adobriyan@gmail.com, Andrew Morton <akpm@linux-foundation.org>,
-        gladkov.alexey@gmail.com, Michel Lespinasse <walken@google.com>,
-        daniel.m.jordan@oracle.com, avagin@gmail.com,
-        bernd.edlinger@hotmail.de,
-        John Johansen <john.johansen@canonical.com>,
-        laoar.shao@gmail.com, Minchan Kim <minchan@kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm <linux-mm@kvack.org>
-Subject: Re: [PATCH 1/1] mm, oom_adj: don't loop through tasks in
- __set_oom_adj when not necessary
-Message-ID: <20200821175943.GD19445@redhat.com>
-References: <dcb62b67-5ad6-f63a-a909-e2fa70b240fc@i-love.sakura.ne.jp>
- <20200820140054.fdkbotd4tgfrqpe6@wittgenstein>
- <637ab0e7-e686-0c94-753b-b97d24bb8232@i-love.sakura.ne.jp>
- <87k0xtv0d4.fsf@x220.int.ebiederm.org>
- <CAJuCfpHsjisBnNiDNQbm8Yi92cznaptiXYPdc-aVa+_zkuaPhA@mail.gmail.com>
- <20200820162645.GP5033@dhcp22.suse.cz>
- <87r1s0txxe.fsf@x220.int.ebiederm.org>
- <20200821111558.GG4546@redhat.com>
- <CAJuCfpF_GhTy5SCjxqyqTFUrJNaw3UGJzCi=WSCXfqPAcbThYg@mail.gmail.com>
- <20200821163300.GB19445@redhat.com>
+        Fri, 21 Aug 2020 14:02:27 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A87B7C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:02:26 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id h19so2775595ljg.13
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:02:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=W5jlbfKRCl3JIOGz2Ss/o2Y7bPu9rBvFEngYmreq1Cw=;
+        b=XdIrKLreG3mWA0Sd5hGpTYI4JB4BZR668IVI8Q/2P4m+46HsQmwrBjgqHESZb6n9zJ
+         QHgdBE8kWpe39ioWRxyYwUfSIq+91IB9t13h/N7011Gb97HTKzOp+ui928AEOkIbRhXP
+         QclUoQWTcwkjMCaHsF+xRHWLLfxntTzt9G7EI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W5jlbfKRCl3JIOGz2Ss/o2Y7bPu9rBvFEngYmreq1Cw=;
+        b=P5J7L6gZ4m1pATgVkVPGDKr0NcX/a8uWtfN6Vy9eFnrcchk3e3Gl4Jccxq/SgEzsEV
+         fPTZ5rBtHhcMJo3sEpXf8/zFNl1rIuW9lrN1wccW/H8xf7DDp8gTOzApSR1HWW82SXNH
+         oid2dLmDjbZynhqCFzQ/EGqifYkYBczahChJUPDOS3QTKy03uxzmqmaNQq6Z7D44JvsO
+         C6GYlxNxwKhru4cnND6D7nSt2i1AtT2mBu2ROEhBKPx0WIJdgRAOhpz2xSAIkSVN4fie
+         aawONa9otk+jUXKjMiqBVEDgIEl6tsWe7thQCOfsbvcfAk2ygu0kJ2wfVTgZyaIr0p5L
+         UsZA==
+X-Gm-Message-State: AOAM531UquTRp5pc62mbbACfRmYAg/M8tFqmPaAin65//rnaS7FC0Wx7
+        Z6BzLlDtkfRYCIigq5f6VB+1vBXMXy9Bww==
+X-Google-Smtp-Source: ABdhPJxLaXCkqGsM2nUv2BSnPQmY3vkbgsBhcXtFN05rPGq+qjpFlQJKIvepvrQ55/OCGlJ15fmt3Q==
+X-Received: by 2002:a05:651c:1344:: with SMTP id j4mr2189172ljb.164.1598032945153;
+        Fri, 21 Aug 2020 11:02:25 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id h6sm514142ljg.86.2020.08.21.11.02.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Aug 2020 11:02:24 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id w14so2809767ljj.4
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:02:24 -0700 (PDT)
+X-Received: by 2002:a2e:545:: with SMTP id 66mr2226306ljf.285.1598032944089;
+ Fri, 21 Aug 2020 11:02:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200821163300.GB19445@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <CAKwvOdk6A4AqTtOsD34WNwxRjyTvXP8KCNj2xfNWYdPT+sLHwQ@mail.gmail.com>
+ <76071c24-ec6f-7f7a-4172-082bd574d581@zytor.com> <CAHk-=wiPeRQU_5JXCN0TLoW-xHZHp7dmrhx0wyXUSKxiCxE02Q@mail.gmail.com>
+ <20200818202407.GA3143683@rani.riverdale.lan> <CAKwvOdnfh9nWwu1xV=WDbETGiabwDxXxQDRCAfpa-+kSZijb9w@mail.gmail.com>
+ <CAKwvOdkA4SC==vGZ4e7xqFG3Zo=fnhU=FgnSazmWkkVWhkaSYw@mail.gmail.com>
+ <20200818214146.GA3196105@rani.riverdale.lan> <df6c1da4-b910-ecb8-0de2-6156dd651be6@rasmusvillemoes.dk>
+ <20200820175617.GA604994@rani.riverdale.lan> <CAHk-=whn91ar+EbcBXQb9UXad00Q5WjU-TCB6UBzVba682a4ew@mail.gmail.com>
+ <20200821172935.GA1411923@rani.riverdale.lan> <CAHk-=wi8vdb+wo-DACDpSijYfAbCs135YcnnAbRhGJcU+A=-+Q@mail.gmail.com>
+In-Reply-To: <CAHk-=wi8vdb+wo-DACDpSijYfAbCs135YcnnAbRhGJcU+A=-+Q@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 21 Aug 2020 11:02:08 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whjVCTjZG0Y88WhJruLdbxF=7q3mmFThD+N5WK0P5giSw@mail.gmail.com>
+Message-ID: <CAHk-=whjVCTjZG0Y88WhJruLdbxF=7q3mmFThD+N5WK0P5giSw@mail.gmail.com>
+Subject: Re: [PATCH 0/4] -ffreestanding/-fno-builtin-* patches
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        =?UTF-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
+        Eli Friedman <efriedma@quicinc.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Joe Perches <joe@perches.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Bruce Ashfield <bruce.ashfield@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/21, Oleg Nesterov wrote:
+On Fri, Aug 21, 2020 at 10:54 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> On 08/21, Suren Baghdasaryan wrote:
+> On Fri, Aug 21, 2020 at 10:29 AM Arvind Sankar <nivedita@alum.mit.edu> wrote:
 > >
-> > On Fri, Aug 21, 2020 at 4:16 AM Oleg Nesterov <oleg@redhat.com> wrote:
-> > >
-> > >         bool probably_has_other_mm_users(tsk)
-> > >         {
-> > >                 return  atomic_read_acquire(&tsk->mm->mm_users) >
-> > >                         atomic_read(&tsk->signal->live);
-> > >         }
-> > >
-> > > The barrier implied by _acquire ensures that if we race with the exiting
-> > > task and see the result of exit_mm()->mmput(mm), then we must also see
-> > > the result of atomic_dec_and_test(signal->live).
-> > >
-> > > Either way, if we want to fix the race with clone(CLONE_VM) we need other
-> > > changes.
-> >
-> > The way I understand this condition in __set_oom_adj() sync logic is
-> > that we would be ok with false positives (when we loop unnecessarily)
-> > but we can't tolerate false negatives (when oom_score_adj gets out of
-> > sync).
+> > This is why I'm saying clang's no-builtin-foo option is useful for
+> > embedded: it doesn't prevent the programmer using __builtin_foo(), it
+> > prevents the _compiler_ using __builtin_foo() on its own.
 >
-> Yes,
->
-> > With the clone(CLONE_VM) race not addressed we are allowing
-> > false negatives and IMHO that's not acceptable because it creates a
-> > possibility for userspace to get an inconsistent picture. When
-> > developing the patch I did think about using (p->mm->mm_users >
-> > p->signal->nr_threads) condition and had to reject it due to that
-> > reason.
->
-> Not sure I understand... I mean, the test_bit(MMF_PROC_SHARED) you propose
-> is equally racy and we need copy_oom_score() at the end of copy_process()
-> either way?
+> And that's fine. But it's apparently not what gcc does.
 
-On a second thought I agree that probably_has_other_mm_users() above can't
-work ;) Compared to the test_bit(MMF_PROC_SHARED) check it is not _equally_
-racy, it adds _another_ race with clone(CLONE_VM).
+Oh, testing it seems to say that that is exactly what gcc does too. I
+must have misunderstood some comment in this thread to mean otherwise.
 
-Suppose a single-threaded process P does
-
-	clone(CLONE_VM); // creates the child C
-
-	// mm_users == 2; P->signal->live == 1;
-
-	clone(CLONE_THREAD | CLONE_VM);
-
-	// mm_users == 3; P->signal->live == 2;
-
-the problem is that in theory clone(CLONE_THREAD | CLONE_VM) can increment
-_both_ counters between atomic_read_acquire(mm_users) and atomic_read(live)
-in probably_has_other_mm_users() so it can observe mm_users == live == 2.
-
-Oleg.
-
+                Linus
