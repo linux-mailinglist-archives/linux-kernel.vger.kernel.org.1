@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27CD824D225
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 12:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C72424D22B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 12:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728606AbgHUKVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 06:21:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33944 "EHLO
+        id S1728626AbgHUKWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 06:22:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728595AbgHUKVt (ORCPT
+        with ESMTP id S1728372AbgHUKVo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 06:21:49 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8680EC061385
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 03:21:49 -0700 (PDT)
+        Fri, 21 Aug 2020 06:21:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F081C061386
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 03:21:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=1KthyYVeQG1Z3bnv0wlVVPWU8hBkSXSEYySbte/Kc5k=; b=gksTdrf1eVCOxQMJkS4ma+Mb13
-        b/KJFUpWrOCg8G0SF4/Sd2aL6+/WNTaViL87MoOsKKJ7scGbXlsG3igcVy23ZPh79gvTb+/keQL9k
-        V5nCSqQghaNBXd/oJF52CjlfMeXmuz24r4R+Vcq7H5yoGmNIElymytltsxFTwly62AuSWLFiAuQDU
-        LW7KA5wQ+RGmlGczlijaelFGXDQStnBB1gt7jro5+nDduSgxNX19FPlo0+eNrTRJk7sJqnu0GLbZk
-        8N0HvP+oju6/hr4u/RYcyYuJO8Or7xn8hRRks/npMuA6VORcda99mISuJ74A5jCNk8HbSCCzkHg5A
-        fQBVjc+Q==;
+        bh=AdGrrqMQ6rl4GO9VH7qBKAFNd8P/sp+D3lGhXAJHb0E=; b=PFfBR0q97nsq2AgRr88rFkr1/t
+        /GP2kJ/mUBeuxLKe/1G22OTPvFjA3QcLxpxXs+Cme8g+6C7NDmTHqUlM/NOy8g0JsnIcjj99oW17r
+        fVtHhHv64ESSP7XjbsF9kAxPlEH4vW8NUO71B7wK95SPqI+dCn5mEzaJWJ4NP8BPOQKMjo0Xij7qE
+        I6fsAswDQxBrBsLchvx51k3q4sFzRVqtuliFGCnPqXwSr9kHbVrwkhHzlsgEC0dA9HWSIW1HHzt9N
+        0EcSNzQKLMfS4tljL1GcCszIlbShXPwolKN6Zm+DWB7UjPcuNfKQPhQCPuidGUm1X+EjMjR2IXlMu
+        64dJCEZA==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k94An-0008GP-Rp; Fri, 21 Aug 2020 10:21:26 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k94An-0003G1-1I; Fri, 21 Aug 2020 10:21:25 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6CB09305815;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 719673059C6;
         Fri, 21 Aug 2020 12:21:24 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 579552C8FF367; Fri, 21 Aug 2020 12:21:24 +0200 (CEST)
-Message-ID: <20200821102052.910320981@infradead.org>
+        id 5CD572C8FF369; Fri, 21 Aug 2020 12:21:24 +0200 (CEST)
+Message-ID: <20200821102052.969925934@infradead.org>
 User-Agent: quilt/0.66
-Date:   Fri, 21 Aug 2020 11:39:15 +0200
+Date:   Fri, 21 Aug 2020 11:39:16 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org, Kyle Huey <me@kylehuey.com>,
@@ -58,7 +58,7 @@ Cc:     linux-kernel@vger.kernel.org, Kyle Huey <me@kylehuey.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Daniel Thompson <daniel.thompson@linaro.org>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v2 3/8] x86/debug: Move kprobe_debug_handler() into exc_debug_kernel()
+Subject: [PATCH v2 4/8] x86/debug: Remove handle_debug(.user) argument
 References: <20200821093912.815135402@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -67,54 +67,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kprobes are on kernel text, and thus only matter for #DB-from-kernel.
-Kprobes are ordered before the generic notifier, preserve that order.
+The handle_debug(.user) argument is used to terminate the #DB handler
+early for the INT1-from-kernel case, since the kernel doesn't use
+INT1.
+
+Remove the argument and handle this explicitly in #DB-from-kernel.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/include/asm/kprobes.h |    4 ++++
- arch/x86/kernel/traps.c        |   10 ++++------
- 2 files changed, 8 insertions(+), 6 deletions(-)
+ arch/x86/kernel/traps.c |   21 ++++++++++-----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
 
---- a/arch/x86/include/asm/kprobes.h
-+++ b/arch/x86/include/asm/kprobes.h
-@@ -106,5 +106,9 @@ extern int kprobe_exceptions_notify(stru
- extern int kprobe_int3_handler(struct pt_regs *regs);
- extern int kprobe_debug_handler(struct pt_regs *regs);
- 
-+#else
-+
-+static inline int kprobe_debug_handler(struct pt_regs *regs) { return 0; }
-+
- #endif /* CONFIG_KPROBES */
- #endif /* _ASM_X86_KPROBES_H */
 --- a/arch/x86/kernel/traps.c
 +++ b/arch/x86/kernel/traps.c
-@@ -806,12 +806,6 @@ static void handle_debug(struct pt_regs
+@@ -783,25 +783,18 @@ static __always_inline unsigned long deb
+  *
+  * May run on IST stack.
+  */
+-static void handle_debug(struct pt_regs *regs, unsigned long dr6, bool user)
++static void handle_debug(struct pt_regs *regs, unsigned long dr6)
+ {
+ 	struct task_struct *tsk = current;
+ 	bool user_icebp;
+ 	int si_code;
+ 
+ 	/*
+-	 * If DR6 is zero, no point in trying to handle it. The kernel is
+-	 * not using INT1.
+-	 */
+-	if (!user && !dr6)
+-		return;
+-
+-	/*
+ 	 * If dr6 has no reason to give us about the origin of this trap,
+ 	 * then it's very likely the result of an icebp/int01 trap.
+ 	 * User wants a sigtrap for that.
+ 	 */
+-	user_icebp = user && !dr6;
++	user_icebp = !dr6;
+ 
  	/* Store the virtualized DR6 value */
  	tsk->thread.debugreg6 = dr6;
+@@ -874,7 +867,13 @@ static __always_inline void exc_debug_ke
+ 	if (kprobe_debug_handler(regs))
+ 		goto out;
  
--#ifdef CONFIG_KPROBES
--	if (kprobe_debug_handler(regs)) {
--		return;
--	}
--#endif
--
- 	if (notify_die(DIE_DEBUG, "debug", regs, (long)&dr6, 0,
- 		       SIGTRAP) == NOTIFY_STOP) {
- 		return;
-@@ -877,8 +871,12 @@ static __always_inline void exc_debug_ke
- 	if ((dr6 & DR_STEP) && is_sysenter_singlestep(regs))
- 		dr6 &= ~DR_STEP;
- 
-+	if (kprobe_debug_handler(regs))
+-	handle_debug(regs, dr6, false);
++	/*
++	 * The kernel doesn't use INT1
++	 */
++	if (!dr6)
 +		goto out;
 +
- 	handle_debug(regs, dr6, false);
++	handle_debug(regs, dr6);
  
-+out:
+ out:
  	instrumentation_end();
- 	idtentry_exit_nmi(regs, irq_state);
+@@ -904,7 +903,7 @@ static __always_inline void exc_debug_us
+ 	irqentry_enter_from_user_mode(regs);
+ 	instrumentation_begin();
  
+-	handle_debug(regs, dr6, true);
++	handle_debug(regs, dr6);
+ 
+ 	instrumentation_end();
+ 	irqentry_exit_to_user_mode(regs);
 
 
