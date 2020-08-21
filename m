@@ -2,68 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F9F24CFDF
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 09:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECDEC24CFED
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 09:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728131AbgHUHrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 03:47:45 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:55462 "EHLO mail.skyhub.de"
+        id S1728138AbgHUHuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 03:50:13 -0400
+Received: from elvis.franken.de ([193.175.24.41]:54238 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725908AbgHUHro (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 03:47:44 -0400
-Received: from zn.tnic (p200300ec2f0eda00b4e1d8975031aaf0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:da00:b4e1:d897:5031:aaf0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 522451EC013E;
-        Fri, 21 Aug 2020 09:47:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1597996063;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=x0qqa/IvqrLY60Nv10kXxs4ZIliJBY04I896OOhUGRs=;
-        b=juC3rw6mRkclVIO9LDa0WrzWnTCqKSyhGOm2CZ5oQY1OW1o37YT2e/7Q/fzIblYhrqVhXM
-        cAzBNBKLHa+HLide6l50783CgJZIn/YZbkq+OmkwWjwMTgzUOMiDlUaNEiKoBboXSnGqd/
-        aXtqVIr/+gWx0Una9QOIpG/Md4MpqeI=
-Date:   Fri, 21 Aug 2020 09:47:43 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@intel.com>,
-        Chang Seok Bae <chang.seok.bae@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [PATCH] x86/entry/64: Disallow RDPID in paranoid entry if KVM is
- enabled
-Message-ID: <20200821074743.GB12181@zn.tnic>
-References: <20200821025050.32573-1-sean.j.christopherson@intel.com>
+        id S1726332AbgHUHuM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 03:50:12 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1k91oP-00079q-03; Fri, 21 Aug 2020 09:50:09 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 6E382C0D89; Fri, 21 Aug 2020 09:48:21 +0200 (CEST)
+Date:   Fri, 21 Aug 2020 09:48:21 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     zhe.he@windriver.com
+Cc:     rric@kernel.org, oprofile-list@lists.sf.net,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mips/oprofile: Fix fallthrough placement
+Message-ID: <20200821074821.GD8336@alpha.franken.de>
+References: <20200820125440.350184-1-zhe.he@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200821025050.32573-1-sean.j.christopherson@intel.com>
+In-Reply-To: <20200820125440.350184-1-zhe.he@windriver.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 07:50:50PM -0700, Sean Christopherson wrote:
-> +	 * Disallow RDPID if KVM is enabled as it may consume a guest's TSC_AUX
-> +	 * if an NMI arrives in KVM's run loop.  KVM loads guest's TSC_AUX on
-> +	 * VM-Enter and may not restore the host's value until the CPU returns
-> +	 * to userspace, i.e. KVM depends on the kernel not using TSC_AUX.
->  	 */
+On Thu, Aug 20, 2020 at 08:54:40PM +0800, zhe.he@windriver.com wrote:
+> From: He Zhe <zhe.he@windriver.com>
+> 
+> We want neither
+> "
+> include/linux/compiler_attributes.h:201:41: warning: statement will never
+> be executed [-Wswitch-unreachable]
+>   201 | # define fallthrough __attribute__((__fallthrough__))
+>       |                      ^~~~~~~~~~~~~
+> "
+> nor
+> "
+> include/linux/compiler_attributes.h:201:41: warning: attribute
+> 'fallthrough' not preceding a case label or default label
+>   201 | # define fallthrough __attribute__((__fallthrough__))
+>       |                      ^~~~~~~~~~~~~
+> "
+> 
+> It's not worth adding one more macro. Let's simply place the fallthrough
+> in between the expansions.
+> 
+> Signed-off-by: He Zhe <zhe.he@windriver.com>
 
-And frankly, this is really unfair. The kernel should be able to use any
-MSR. IOW, KVM needs to be fixed here. I'm sure it context-switches other
-MSRs so one more MSR is not a big deal.
+there is already another patch for the problem, which I've applied
+to mips-fixes.
+
+Thomas.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
