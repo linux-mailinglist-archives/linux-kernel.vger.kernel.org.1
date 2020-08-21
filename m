@@ -2,95 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DDA224C977
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 03:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB89424C987
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 03:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726975AbgHUBLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 21:11:20 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:45735 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726735AbgHUBLR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 21:11:17 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BXk412qZhz9sTT;
-        Fri, 21 Aug 2020 11:11:12 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1597972273;
-        bh=UBg7kOl51N6Tb2Tsu+7IDQRJF0Nd7kkVtqrn3TJ16DE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=j9+RjCb/5QjPMqhiYSe9CIMa1Ms98eMLyX6Ew8TMUc+YY+LQIcJI2HPVuAZbj7Tm7
-         lE3M8FeD4I/JiqO9bGOYjzYHLgb4/NevgzsKJjCkXC8SpSoQ0I/5ZN1y0f7az6aEI9
-         x2Jyfg7QUtY5iE1kr235gvkRGg2svxkEyx/F3/TDLwkijeevBjzwuHm8CXlr/VUShn
-         YlppQGNc1H5vR9ippku7OxtFtd3rP36JNiY8OtD7mV3LEtclvR8UuvKG342NN8dq/R
-         eagjh5/gB+Z6rdXu3j1SjurMEYEOV4sh4uJyLZSv7w34GWBwfzwmfL2sjowKDpX3hk
-         JIhUCzFeCxeRw==
-Date:   Fri, 21 Aug 2020 11:11:11 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: build failure after merge of the bpf-next tree
-Message-ID: <20200821111111.6c04acd6@canb.auug.org.au>
+        id S1726912AbgHUB3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 21:29:52 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:48814 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725859AbgHUB3w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 21:29:52 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id E3870F6F848AB82DB325;
+        Fri, 21 Aug 2020 09:29:48 +0800 (CST)
+Received: from DESKTOP-C3MD9UG.china.huawei.com (10.174.177.253) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 21 Aug 2020 09:29:38 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Song Liu <song@kernel.org>, <linux-raid@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] md: Simplify code with existing definition RESYNC_SECTORS in raid10.c
+Date:   Fri, 21 Aug 2020 09:29:18 +0800
+Message-ID: <20200821012918.3302-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/NlhOx9ZdzMqp_qgERtfT_zZ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.253]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/NlhOx9ZdzMqp_qgERtfT_zZ
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+#define RESYNC_SECTORS (RESYNC_BLOCK_SIZE >> 9)
 
-Hi all,
+"RESYNC_BLOCK_SIZE/512" is equal to "RESYNC_BLOCK_SIZE >> 9", replace it
+with RESYNC_SECTORS.
 
-After merging the bpf-next tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ drivers/md/raid10.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Auto-detecting system features:
-...                        libelf: [ =1B[31mOFF=1B[m ]
-...                          zlib: [ =1B[31mOFF=1B[m ]
-...                           bpf: [ =1B[32mon=1B[m  ]
+diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
+index e8fa327339171c7..da12e3daf6fa8d9 100644
+--- a/drivers/md/raid10.c
++++ b/drivers/md/raid10.c
+@@ -4466,8 +4466,8 @@ static sector_t reshape_request(struct mddev *mddev, sector_t sector_nr,
+ 		last = conf->reshape_progress - 1;
+ 		sector_nr = last & ~(sector_t)(conf->geo.chunk_mask
+ 					       & conf->prev.chunk_mask);
+-		if (sector_nr + RESYNC_BLOCK_SIZE/512 < last)
+-			sector_nr = last + 1 - RESYNC_BLOCK_SIZE/512;
++		if (sector_nr + RESYNC_SECTORS < last)
++			sector_nr = last + 1 - RESYNC_SECTORS;
+ 	} else {
+ 		/* 'next' is after the last device address that we
+ 		 * might write to for this chunk in the new layout
+@@ -4489,8 +4489,8 @@ static sector_t reshape_request(struct mddev *mddev, sector_t sector_nr,
+ 		last  = sector_nr | (conf->geo.chunk_mask
+ 				     & conf->prev.chunk_mask);
+ 
+-		if (sector_nr + RESYNC_BLOCK_SIZE/512 <= last)
+-			last = sector_nr + RESYNC_BLOCK_SIZE/512 - 1;
++		if (sector_nr + RESYNC_SECTORS <= last)
++			last = sector_nr + RESYNC_SECTORS - 1;
+ 	}
+ 
+ 	if (need_flush ||
+-- 
+1.8.3
 
-No libelf found
-make[5]: *** [Makefile:284: elfdep] Error 1
 
-Caused by commit
-
-  d71fa5c9763c ("bpf: Add kernel module with user mode driver that populate=
-s bpffs.")
-
-[For a start, can we please *not* add this verbose feature detection
-output to the nrormal build?]
-
-This is a PowerPC hosted cross build.
-
-I have marked BPF_PRELOAD as BROKEN for now.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/NlhOx9ZdzMqp_qgERtfT_zZ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8/Hy8ACgkQAVBC80lX
-0Gxf/Af/UDlTubmlwjHakfa6/ViNgOwKc/F4XWOraZX417ps1BIHa/gRvcJpOkPQ
-rZ5l9IL0yVe5S3brl6hNzLFEpUWhLj0f5XQPWhwMiPVy3YnWNORH+WuOD2dFQQMf
-nCYDpqtd3ay9rBYUCVJ7BdoLldMDsMFoufFL+LTEv9gqnHphExC6r4R2USGuOckv
-gNbwqTr/AdkSS9s9mnHfDVP3sbzBmvzpZNEG9jrFgxiOwAiLxV/5Zza15m0TpIZo
-468QUuo3jADd5GW1dFhfjquPU2g4ia/vdqi4Zz5yN7nSt0A9J4lpvxyKYTKQrhFv
-cOEY0K3F631xhDpmAxjI4ECnJ6m4/g==
-=Yshc
------END PGP SIGNATURE-----
-
---Sig_/NlhOx9ZdzMqp_qgERtfT_zZ--
