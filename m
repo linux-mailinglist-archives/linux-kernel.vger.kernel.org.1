@@ -2,105 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C2324DFB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33DD524DFBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgHUSfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 14:35:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726387AbgHUSfB (ORCPT
+        id S1726433AbgHUSfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 14:35:55 -0400
+Received: from smtprelay0065.hostedemail.com ([216.40.44.65]:54846 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725768AbgHUSfy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 14:35:01 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6AC0C061573;
-        Fri, 21 Aug 2020 11:35:00 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id h2so1275454plr.0;
-        Fri, 21 Aug 2020 11:35:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=JoIejRu3GXVmKj8cMY9UV1I6PbZ8S3Q6ft2ghX7hxTw=;
-        b=NBu/8zocZGDiGrG4E9Aunx3MiMWHQ/DbqnIZIIGUKj+gwLiaY5Zm3Tzsr6kkC34xZ8
-         vQdXF4/3m2OJs4+OSFUKebs+ayxf+nJB99UAL647l4jH5SXXstv/qQgLQqLMpP5daEyQ
-         wwYPxPCSE+fwFwXWRPTzqgwfznjCR0dMgQrDdPchjISPXdmBamy3qNywXA/EvN6As5+h
-         TNN7NWQuobO8fKNuyUpQOzePfjQDttdyBz5j1C6uT/h8qYLjQ5xJ87ofFhfQIncCL8ts
-         1wz18zn/Y/sM8Bw+/KIqWqssMkpdWswLCOQ3GCihK+nhzjduPnsKtw9xt/kKb6kP5i3m
-         /9ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=JoIejRu3GXVmKj8cMY9UV1I6PbZ8S3Q6ft2ghX7hxTw=;
-        b=Q3R8yMnVYL7HFUbBXIRW/WqcYevVt8MpjD0sZMC5sX9b0xbVcfLyoDxHlNiYNYh3LW
-         WuiB5cIBHQjo6BUauFz1blS54KfNJa5nAh5V2h2MWGicinI6aov8vVxNR552de16aRau
-         DPd+HOu+FTl/BPoZgOCJP8f1ObuaAUicSdHFYQ5Mfd04w9pak/KxJ4YQtYoJGfvwd6Bf
-         CWSUqcobTQhu+q+wWunFVWbA1rJznF8tjgjrHKmQyAZrLt3b0CVTuH+wfF9veq1uXq4z
-         hwDB3fpIxyCodPXqpj9m5zDtL05GP4sLpHOLdWpAK33t7ldmktxN9BdL39ktletZjcqz
-         tcfg==
-X-Gm-Message-State: AOAM5329eOQr7gGc1di75yenfwQgpj+Uq9yMc+MJEXda1gJlR59oLxgm
-        h4WG5hIe74gIOBqNzUvYESSe3emsQ9k=
-X-Google-Smtp-Source: ABdhPJwMME1R8UpmQwpatqgtNJLOgW7AEaHEo7Fv5uD2w2wCDXArBFMv6cumaqUQigIUpIOeQiPcVA==
-X-Received: by 2002:a17:902:ed4a:: with SMTP id y10mr3496148plb.106.1598034900348;
-        Fri, 21 Aug 2020 11:35:00 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t28sm2841570pgn.81.2020.08.21.11.34.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 21 Aug 2020 11:34:59 -0700 (PDT)
-Date:   Fri, 21 Aug 2020 11:34:59 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     kamil@wypas.org, b.zolnierkie@samsung.com, jdelvare@suse.com,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linux-imx@nxp.com
-Subject: Re: [PATCH] hwmon: pwm-fan: Use dev_err_probe() to simplify error
- handling
-Message-ID: <20200821183459.GA198234@roeck-us.net>
-References: <1597649673-22329-1-git-send-email-Anson.Huang@nxp.com>
+        Fri, 21 Aug 2020 14:35:54 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 6DC3E1822495E;
+        Fri, 21 Aug 2020 18:35:53 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2198:2199:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3351:3622:3865:3867:3868:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:5007:9025:10004:10400:10848:11232:11658:11914:12043:12050:12297:12438:12555:12740:12760:12895:12986:13069:13161:13229:13311:13357:13439:13618:13845:14181:14659:14721:21080:21627:21740:21811:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: shoe97_390c3bd2703b
+X-Filterd-Recvd-Size: 1887
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf14.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 21 Aug 2020 18:35:52 +0000 (UTC)
+Message-ID: <745aba13716b91cf58a45468083b59201d1530fc.camel@perches.com>
+Subject: Re: [PATCH] MAINTAINERS: Add entry for HPE Superdome Flex (UV)
+ maintainers
+From:   Joe Perches <joe@perches.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Steve Wahl <steve.wahl@hpe.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>
+Date:   Fri, 21 Aug 2020 11:35:50 -0700
+In-Reply-To: <CAL_JsqL0v6PXgMLVZzqZwjpZ4KTUGmutg6Z0YuvTccdAUa-=mw@mail.gmail.com>
+References: <20200821154848.GI7871@localhost.localdomain>
+         <CAL_JsqLBfwXamvCB0C9ujhy-BS6P4BpU-MWPuZX+_+sYPVsUSg@mail.gmail.com>
+         <8213206d4764375f32cbea36ea214573248094dc.camel@perches.com>
+         <CAL_JsqL0v6PXgMLVZzqZwjpZ4KTUGmutg6Z0YuvTccdAUa-=mw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1597649673-22329-1-git-send-email-Anson.Huang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 03:34:33PM +0800, Anson Huang wrote:
-> dev_err_probe() can reduce code size, uniform error handling and record the
-> defer probe reason etc., use it to simplify the code.
-> 
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+On Fri, 2020-08-21 at 12:17 -0600, Rob Herring wrote:
+> I have another reason for wanting the split. I want to generate a
+> MAINTAINERS file from the DT schema files. We have the data there and
+> it's checked automatically. I don't care to either continually tell
+> folks to add a MAINTAINERS entry or tell them to run checkpatch.pl to
+> tell them that. But if the infrastructure got merged, would that
+> already work?
 
-Applied.
+It already gets addresses from yaml files.
+The same could be done for dts/dtsi files.
 
-Thanks,
-Guenter
+Last month I proposed:
 
-> ---
->  drivers/hwmon/pwm-fan.c | 10 ++--------
->  1 file changed, 2 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/hwmon/pwm-fan.c b/drivers/hwmon/pwm-fan.c
-> index 17bb642..bdba214 100644
-> --- a/drivers/hwmon/pwm-fan.c
-> +++ b/drivers/hwmon/pwm-fan.c
-> @@ -293,14 +293,8 @@ static int pwm_fan_probe(struct platform_device *pdev)
->  	mutex_init(&ctx->lock);
->  
->  	ctx->pwm = devm_of_pwm_get(dev, dev->of_node, NULL);
-> -	if (IS_ERR(ctx->pwm)) {
-> -		ret = PTR_ERR(ctx->pwm);
-> -
-> -		if (ret != -EPROBE_DEFER)
-> -			dev_err(dev, "Could not get PWM: %d\n", ret);
-> -
-> -		return ret;
-> -	}
-> +	if (IS_ERR(ctx->pwm))
-> +		return dev_err_probe(dev, PTR_ERR(ctx->pwm), "Could not get PWM\n");
->  
->  	platform_set_drvdata(pdev, ctx);
->  
+https://lore.kernel.org/linux-arm-kernel/da52724655ff2161add7fb27fea8fc673028b9fc.camel@perches.com/
+
+
