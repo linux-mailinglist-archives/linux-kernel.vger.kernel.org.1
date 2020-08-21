@@ -2,124 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03E324E00F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:54:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78AE724DFFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727020AbgHUSyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 14:54:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57228 "EHLO
+        id S1726740AbgHUSxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 14:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726867AbgHUSy0 (ORCPT
+        with ESMTP id S1726118AbgHUSxN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 14:54:26 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7880BC061798
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:54:19 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id p4so2281760qkf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:54:19 -0700 (PDT)
+        Fri, 21 Aug 2020 14:53:13 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1857C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:53:12 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id v20so824694ual.4
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:53:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+7lmgRcS/6fJp6h5ROUarTA7VyvP90YaETxkd0V3RrY=;
-        b=Gg5bZtNErShDFFliPCKHJSHXYpOYbTHAPgKnjGKH7Zh5psQoONprAgu2PZDZAHs7jO
-         GGt/Mr1vvLjFMeBFzVhkXEH0tZvddFX0ptPH15Ttcrp3AvKnaWJEe2AXKdP2MUmAJMAN
-         91lef8AX6/3GKeLUVM6JFYvYxYsGa+swb+POOiMfJBFAnKQjipsB0HVljr6SNOXhZ4wi
-         knhvroQk4W0HEHPtjLHSTgbRA8iO6kuyQB6iblPHdxIdiayMDfEv1CLOricB7Fp8awb0
-         AwllXhunB8EOrsiyovQb3UicmRbyugu8gAkyEcMrLpyDYVmCk40V1+ved5X9E7SVl3N5
-         SSwg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3ykL1MaQAjReQJ2aQ56GZWudKyZ/kETzd1mJIShvlqg=;
+        b=lOO5KcjensU81n90JpwVdSdGl5pnw5AlKyiczE4LcmppuBoUTaiEO8XtuFPn4c4PaQ
+         qddvy17JKDmJleSHaIO/Ogew7cBYeFm0pULTnsX65QMgLAMSSyAoynE5HSP5hFg9UVvt
+         fxCxcmgFeMk1I/1MRqOX80fFINtH8/xQu3EChS11kj/UfRKA3Np5FtlLQ8ARBPO1T2Lx
+         Zjzodc2A6qbv2G4od4J2JjvFlfj4FNrM2jL7fEbsJ3kZTUj3qtKjZNIVYJn61lbTGFmW
+         C8cpfqZSURM8+r8V7HOyTGK2UyRXJVTntF7jXg3HKsBdF2j/xvTvOAWXA7k1st3Q/JBC
+         FHDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+7lmgRcS/6fJp6h5ROUarTA7VyvP90YaETxkd0V3RrY=;
-        b=cdLLdbff+1qk4L3wk2xvEEYJ3jJqDza0IBYRB21GUDaQNfE65mp6kIoj/wSqiR+iUA
-         zhUs4lKUEE0ot+eO6kMaTZFmvk54tPWf7linZiixkNIgxal02oCzOr7J0B544mcn9s16
-         3mcvD5WVXewswv6HBrNfpc0BucJy/dHlmSU9+N0zbJbt8SanSZmxKfcSQAWaURon4drI
-         nr2IsdiXZKLbZ+1TD6a2G2fFCWoFi+uImhUyqQIG0Vu+Jy1QPqk+D7GY3v6Tjhq4YkOb
-         A00GFlRXsPxd0bRVEqvzjBWCCa6NXjW1jo1fgNho1557+OlWEv1+0rXMF05Y5XBrpJJ7
-         f+eg==
-X-Gm-Message-State: AOAM531p4wugpeg46WNxZzN6yXUBFEw4W6ebjdxUnARhQnZ14/JMHJ1r
-        lBvrHrVuLFEZdqzvKHHlkLU=
-X-Google-Smtp-Source: ABdhPJzLNHO6gRBGrFLUhGPu/Ih6ZLGxsDG8HffwpSpchiVDouTbRlCpvrfSdr0/MuufzA2SGnC+6w==
-X-Received: by 2002:a05:620a:1523:: with SMTP id n3mr3892360qkk.245.1598036058814;
-        Fri, 21 Aug 2020 11:54:18 -0700 (PDT)
-Received: from localhost.localdomain (cpe-71-65-111-223.cinci.res.rr.com. [71.65.111.223])
-        by smtp.googlemail.com with ESMTPSA id o72sm2468426qka.113.2020.08.21.11.54.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 11:54:18 -0700 (PDT)
-From:   Connor McAdams <conmanx360@gmail.com>
-Cc:     conmanx360@gmail.com, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 20/20] ALSA: hda/ca0132 - Add AE-7 exit commands.
-Date:   Fri, 21 Aug 2020 14:52:37 -0400
-Message-Id: <20200821185239.26133-21-conmanx360@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200821185239.26133-1-conmanx360@gmail.com>
-References: <20200821185239.26133-1-conmanx360@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3ykL1MaQAjReQJ2aQ56GZWudKyZ/kETzd1mJIShvlqg=;
+        b=nObhkWR6TqWvsOZRJDk4bbwPYJCPgdimPA/NHGUvvfkarTGm03uio1LQsv8f2Nnnhz
+         mvMNRs/qwz1K6mllw5RNDzmN+j6OkCPRhBulKeCkjuvZB+ASrO3ImOlbsk8+5c0aHJAK
+         EpIpgep0dkffq6hKl1Ex/dbfPXbwF/o5JQiuUITyf8BnyPhfcLzAr9CbXM9Nq4DBY6Ab
+         VnXGiiFYNhrJPsuYQ8JBOE+QB4vwithD0cQmiUjsIQ9sPl1TjbP2Wr7unPhcd4/OtDt8
+         Xxqb62eRsRDEvfWX7lB01flIKSCJZTsbD2WDPmUJH9WOcz1KWN+at4TrbxZzpiE4/iED
+         YmIw==
+X-Gm-Message-State: AOAM530xNd9q5JVxtXuNzYVdMKDn5rGUtiKf6lypoBnm5cX3nEnVjxVt
+        qoXucbY7j9cnguzHcI/7RWVTgu58WcsVTosbufwb7Q==
+X-Google-Smtp-Source: ABdhPJwLGWowOiHwq4OtK9k4dIWPuKAtxD38z1jFWXA2gU6Jz5vFAR5L9E8i2RsRzeGBQZ0cRDBXAVroDaZuRzdsANs=
+X-Received: by 2002:a9f:2265:: with SMTP id 92mr2464321uad.86.1598035991532;
+ Fri, 21 Aug 2020 11:53:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <dcb62b67-5ad6-f63a-a909-e2fa70b240fc@i-love.sakura.ne.jp>
+ <20200820140054.fdkbotd4tgfrqpe6@wittgenstein> <637ab0e7-e686-0c94-753b-b97d24bb8232@i-love.sakura.ne.jp>
+ <87k0xtv0d4.fsf@x220.int.ebiederm.org> <CAJuCfpHsjisBnNiDNQbm8Yi92cznaptiXYPdc-aVa+_zkuaPhA@mail.gmail.com>
+ <20200820162645.GP5033@dhcp22.suse.cz> <87r1s0txxe.fsf@x220.int.ebiederm.org>
+ <20200821111558.GG4546@redhat.com> <CAJuCfpF_GhTy5SCjxqyqTFUrJNaw3UGJzCi=WSCXfqPAcbThYg@mail.gmail.com>
+ <20200821163300.GB19445@redhat.com> <20200821175943.GD19445@redhat.com>
+In-Reply-To: <20200821175943.GD19445@redhat.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 21 Aug 2020 11:53:00 -0700
+Message-ID: <CAJuCfpGn+7gtpUVv_T3ZvT7WEwP8z-c1z1Qu2qe1jq8RSxbHMA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm, oom_adj: don't loop through tasks in
+ __set_oom_adj when not necessary
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tim Murray <timmurray@google.com>, mingo@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
+        christian@kellner.me, areber@redhat.com,
+        Shakeel Butt <shakeelb@google.com>, cyphar@cyphar.com,
+        adobriyan@gmail.com, Andrew Morton <akpm@linux-foundation.org>,
+        gladkov.alexey@gmail.com, Michel Lespinasse <walken@google.com>,
+        daniel.m.jordan@oracle.com, avagin@gmail.com,
+        bernd.edlinger@hotmail.de,
+        John Johansen <john.johansen@canonical.com>,
+        laoar.shao@gmail.com, Minchan Kim <minchan@kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add exit commands for the AE-7.
+On Fri, Aug 21, 2020 at 11:00 AM Oleg Nesterov <oleg@redhat.com> wrote:
+>
+> On 08/21, Oleg Nesterov wrote:
+> >
+> > On 08/21, Suren Baghdasaryan wrote:
+> > >
+> > > On Fri, Aug 21, 2020 at 4:16 AM Oleg Nesterov <oleg@redhat.com> wrote:
+> > > >
+> > > >         bool probably_has_other_mm_users(tsk)
+> > > >         {
+> > > >                 return  atomic_read_acquire(&tsk->mm->mm_users) >
+> > > >                         atomic_read(&tsk->signal->live);
+> > > >         }
+> > > >
+> > > > The barrier implied by _acquire ensures that if we race with the exiting
+> > > > task and see the result of exit_mm()->mmput(mm), then we must also see
+> > > > the result of atomic_dec_and_test(signal->live).
+> > > >
+> > > > Either way, if we want to fix the race with clone(CLONE_VM) we need other
+> > > > changes.
+> > >
+> > > The way I understand this condition in __set_oom_adj() sync logic is
+> > > that we would be ok with false positives (when we loop unnecessarily)
+> > > but we can't tolerate false negatives (when oom_score_adj gets out of
+> > > sync).
+> >
+> > Yes,
+> >
+> > > With the clone(CLONE_VM) race not addressed we are allowing
+> > > false negatives and IMHO that's not acceptable because it creates a
+> > > possibility for userspace to get an inconsistent picture. When
+> > > developing the patch I did think about using (p->mm->mm_users >
+> > > p->signal->nr_threads) condition and had to reject it due to that
+> > > reason.
+> >
+> > Not sure I understand... I mean, the test_bit(MMF_PROC_SHARED) you propose
+> > is equally racy and we need copy_oom_score() at the end of copy_process()
+> > either way?
+>
+> On a second thought I agree that probably_has_other_mm_users() above can't
+> work ;) Compared to the test_bit(MMF_PROC_SHARED) check it is not _equally_
+> racy, it adds _another_ race with clone(CLONE_VM).
+>
+> Suppose a single-threaded process P does
+>
+>         clone(CLONE_VM); // creates the child C
+>
+>         // mm_users == 2; P->signal->live == 1;
+>
+>         clone(CLONE_THREAD | CLONE_VM);
+>
+>         // mm_users == 3; P->signal->live == 2;
+>
+> the problem is that in theory clone(CLONE_THREAD | CLONE_VM) can increment
+> _both_ counters between atomic_read_acquire(mm_users) and atomic_read(live)
+> in probably_has_other_mm_users() so it can observe mm_users == live == 2.
 
-Signed-off-by: Connor McAdams <conmanx360@gmail.com>
----
- sound/pci/hda/patch_ca0132.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+I see. So even though live is incremented after mm_users, the observer
+from __set_oom_adj still can see them becoming equal because it reads
+mm_users first.
 
-diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 9c70d85b21e0..4d26440eceb0 100644
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -8838,6 +8838,32 @@ static void ae5_exit_chip(struct hda_codec *codec)
- 	snd_hda_codec_write(codec, 0x01, 0, 0x724, 0x83);
- }
- 
-+static void ae7_exit_chip(struct hda_codec *codec)
-+{
-+	chipio_set_stream_control(codec, 0x18, 0);
-+	chipio_set_stream_source_dest(codec, 0x21, 0xc8, 0xc8);
-+	chipio_set_stream_channels(codec, 0x21, 0);
-+	chipio_set_control_param(codec, CONTROL_PARAM_NODE_ID, 0x09);
-+	chipio_set_control_param(codec, 0x20, 0x01);
-+
-+	chipio_set_control_param(codec, CONTROL_PARAM_ASI, 0);
-+
-+	chipio_set_stream_control(codec, 0x18, 0);
-+	chipio_set_stream_control(codec, 0x0c, 0);
-+
-+	ca0113_mmio_command_set(codec, 0x30, 0x2b, 0x00);
-+	snd_hda_codec_write(codec, 0x15, 0, 0x724, 0x83);
-+	ca0113_mmio_command_set_type2(codec, 0x48, 0x07, 0x83);
-+	ca0113_mmio_command_set(codec, 0x30, 0x30, 0x00);
-+	ca0113_mmio_command_set(codec, 0x30, 0x2e, 0x00);
-+	ca0113_mmio_gpio_set(codec, 0, false);
-+	ca0113_mmio_gpio_set(codec, 1, false);
-+	ca0113_mmio_command_set(codec, 0x30, 0x32, 0x3f);
-+
-+	snd_hda_codec_write(codec, 0x01, 0, 0x793, 0x00);
-+	snd_hda_codec_write(codec, 0x01, 0, 0x794, 0x53);
-+}
-+
- static void zxr_exit_chip(struct hda_codec *codec)
- {
- 	chipio_set_stream_control(codec, 0x03, 0);
-@@ -9457,6 +9483,9 @@ static void ca0132_free(struct hda_codec *codec)
- 	case QUIRK_AE5:
- 		ae5_exit_chip(codec);
- 		break;
-+	case QUIRK_AE7:
-+		ae7_exit_chip(codec);
-+		break;
- 	case QUIRK_R3DI:
- 		r3di_gpio_shutdown(codec);
- 		break;
--- 
-2.20.1
+Do you see any such races if I incorporate the changes proposed by
+Michal in http://lkml.kernel.org/r/20200820124109.GI5033@dhcp22.suse.cz
+? I have the new patch and I'm testing it right now. So far it behaves
+well but maybe I'm missing some rare race here that won't show up in
+my testing?
 
+
+>
+> Oleg.
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
