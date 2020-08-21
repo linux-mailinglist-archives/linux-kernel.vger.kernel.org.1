@@ -2,61 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E29624DEEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 107EE24DEF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726853AbgHURxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 13:53:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:35310 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725873AbgHURxb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 13:53:31 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 74E2B1063;
-        Fri, 21 Aug 2020 10:53:30 -0700 (PDT)
-Received: from [192.168.1.8] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1E7C53F66B;
-        Fri, 21 Aug 2020 10:53:28 -0700 (PDT)
-Subject: Re: CFS flat runqueue proposal fixes/update
-To:     Rik van Riel <riel@surriel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Paul Turner <pjt@google.com>,
-        "vincent.guittot" <vincent.guittot@linaro.org>, kernel-team@fb.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dietmar.eggeman" <dietmar.eggeman@arm.com>
-References: <1609106d05a6a4a5938233e993548510f599d7d9.camel@surriel.com>
- <0e7a9174-6ed9-752d-dacb-4dce182852cf@arm.com>
- <ad2a59c680d361847f257cdae576dd479e6ab9ac.camel@surriel.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <7b6349fc-c4c1-9c32-6b8f-0a9b3d7fa93c@arm.com>
-Date:   Fri, 21 Aug 2020 19:53:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727107AbgHURzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 13:55:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726867AbgHURzS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 13:55:18 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1BB7C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 10:55:17 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id c15so1329328lfi.3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 10:55:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m4V8fZt1LIyKWUpK//pHmx+UE2cyQI+1k+0DpARcdKs=;
+        b=UCXANsHTDuglcuMoaPQrO2SPcgEY6vG1EKV1rTav9qeDhjuPUXwzOzAWO97GPtjQDH
+         vnro5pnl96FGhRTeEBpt/OEZjQu48BweLMmP5gUzvXiHcfKKCnzSqCp8rihnevc6AQ5B
+         Ceo5/n8nq9tRTr1tnI08EiIZY6bxL404FbH6M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=m4V8fZt1LIyKWUpK//pHmx+UE2cyQI+1k+0DpARcdKs=;
+        b=nPmsr5/N2kmO+NzJpmJ/bvNwLWYidC20EYWLv4kNNgC9Akg43XDCm5bBJc2LFW1/eu
+         Mz8HGaAkaoyBNYh3SDi88iZqtZde6RRr/eCCMBLxxDWmG50IVK9VKO3ykF8FABGnYzCh
+         acLykC52mgDginik79N4lpflF4WuRMpnUtLzKwgD8JEnBMkKdk5qft5m2ZQ9y89AAjGb
+         FGuUNrKJM/bPtmIpUa/UiRBgsN+G0PYPzHH0cdHFm1T1QJHMzzldChlq6kLNwsa+nTng
+         uccNcx9uk92B174MjmI75xCwcff/VcQOVB2+Wy9NEwWp77hNlbtf7lZr0VlM4IdbSUoC
+         GKbQ==
+X-Gm-Message-State: AOAM531Ls99Ps18oRmLtzR89xxATJ33jFEn5nclAhT3I3eKTTHY99Cj6
+        b99WRH2Rbaz/qTc18oqTjjLv8SNFN33vzA==
+X-Google-Smtp-Source: ABdhPJy3mDGyARiSV3L9V/mBjZOA9cHGHgZUa0hNIyPy9sZuzUjIDP8+PE7hr+AyaECV9UNt369kcg==
+X-Received: by 2002:ac2:5e2c:: with SMTP id o12mr1894921lfg.71.1598032515439;
+        Fri, 21 Aug 2020 10:55:15 -0700 (PDT)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id y26sm508804ljm.132.2020.08.21.10.55.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Aug 2020 10:55:14 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id w14so2786166ljj.4
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 10:55:13 -0700 (PDT)
+X-Received: by 2002:a05:651c:503:: with SMTP id o3mr2203972ljp.312.1598032513384;
+ Fri, 21 Aug 2020 10:55:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ad2a59c680d361847f257cdae576dd479e6ab9ac.camel@surriel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAKwvOdk6A4AqTtOsD34WNwxRjyTvXP8KCNj2xfNWYdPT+sLHwQ@mail.gmail.com>
+ <76071c24-ec6f-7f7a-4172-082bd574d581@zytor.com> <CAHk-=wiPeRQU_5JXCN0TLoW-xHZHp7dmrhx0wyXUSKxiCxE02Q@mail.gmail.com>
+ <20200818202407.GA3143683@rani.riverdale.lan> <CAKwvOdnfh9nWwu1xV=WDbETGiabwDxXxQDRCAfpa-+kSZijb9w@mail.gmail.com>
+ <CAKwvOdkA4SC==vGZ4e7xqFG3Zo=fnhU=FgnSazmWkkVWhkaSYw@mail.gmail.com>
+ <20200818214146.GA3196105@rani.riverdale.lan> <df6c1da4-b910-ecb8-0de2-6156dd651be6@rasmusvillemoes.dk>
+ <20200820175617.GA604994@rani.riverdale.lan> <CAHk-=whn91ar+EbcBXQb9UXad00Q5WjU-TCB6UBzVba682a4ew@mail.gmail.com>
+ <20200821172935.GA1411923@rani.riverdale.lan>
+In-Reply-To: <20200821172935.GA1411923@rani.riverdale.lan>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 21 Aug 2020 10:54:57 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi8vdb+wo-DACDpSijYfAbCs135YcnnAbRhGJcU+A=-+Q@mail.gmail.com>
+Message-ID: <CAHk-=wi8vdb+wo-DACDpSijYfAbCs135YcnnAbRhGJcU+A=-+Q@mail.gmail.com>
+Subject: Re: [PATCH 0/4] -ffreestanding/-fno-builtin-* patches
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        =?UTF-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
+        Eli Friedman <efriedma@quicinc.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Joe Perches <joe@perches.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Bruce Ashfield <bruce.ashfield@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.08.20 22:39, Rik van Riel wrote:
-> On Thu, 2020-08-20 at 16:56 +0200, Dietmar Eggemann wrote:
+On Fri, Aug 21, 2020 at 10:29 AM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> The no-builtin- options _don't_ disable
+> __builtin_ functions. They remove the default definition of foo() as
+> __builtin_foo().
 
-[...]
+Oh, ok, then it's fine.
 
-> The issue happens with a flat runqueue, when t1 goes
-> to sleep, but t2 and t3 continue running.
-> 
-> We need to make sure the vruntime for t2 has not been
-> advanced so far into the future that cgroup A is unable
-> to get its fair share of CPU wihle t1 is sleeping.
+> Take the problem that instigated this thread. __builtin_stpcpy() doesn't
+> work in the kernel because the fallback, stpcpy(), isn't implemented.
 
-Ah, these problems are related to the 'CFS flat runqueue' patch-set!
-Misunderstanding om my side.
+Right.
 
-I somehow assumed that you wanted to say that these problems exist in
-current mainline and could be solved with the patch-set plus some extra
-functionality on top.
+The only problem is the - bogus - recognition of (or rewriting of)
+code patterns that the compiler recohnmizes.
+
+__builtin_stpcpy() itself is fine if somebody wants to use it - and
+has the fallback.
+
+But implicitly recognizing some code sequence and turning it into
+something else is the problem.
+
+> This is why I'm saying clang's no-builtin-foo option is useful for
+> embedded: it doesn't prevent the programmer using __builtin_foo(), it
+> prevents the _compiler_ using __builtin_foo() on its own.
+
+And that's fine. But it's apparently not what gcc does.
+
+> > So this is things like the compiler silently seeing "oh, you called
+> > your function 'free()', so we know that the stores you did to it are
+> > dead and we'll remove them".
+> >
+> > Or this is the compiler doing "Oh, you did four stores of zero in a
+> > row, and and you asked for size optimizations, so we'll turn those
+> > into a 'bzero()' call".
+>
+> This one is slightly different from the previous one. The first case is
+> really a call to __builtin_free().
+
+No, the first case is a disgrace and a compiler bug.
+
+We've had a situation where gcc complained about a static function
+called "free()", without any header file inclusion, and then
+complained about it not matching its idea of what "free()" is.
+
+Which is pure and utter garbage.
+
+It's like you have a local variable "int free", and the compiler says
+"hey, this doesn't match the prototype that I know this name should
+have". It's BS. You just saw the user not just *use* that name, but
+*define* it, and do it in a scope where the complaint is irrelevant
+and stupid, and when we hadn't even included the header that would
+have resulted in conflicts.
+
+IOW, it's an example of a compiler that thinks "it knows better".
+
+It's a broken compiler. And it's an example of the kind of breakage
+that compilers absolutely shouldn't do.
+
+The second example is from clang doesn't something horribly horribly stupid.
+
+> This one is turning something that wasn't a function call into
+> __builtin_bzero(), and I would hope that no-builtin-bzero would stop it
+> as well. OTOH, the compiler is free to turn it into memset(), just like
+> it could for structure/array initializers.
+
+The whole "the compiler is free to do X" argument is pure BS. Stop
+repeating that bogus argument.
+
+Of COURSE a compiler can do whatever the hell it wants.
+
+That doesn't change the fact that certain things are broken beyond
+words and utterly stupid, and a compiler that does them is a *BAD*
+compiler.
+
+Turning four stores into a memset() is garbage. Just admit it, instead
+of trying to say that it's allowed.
+
+Technically a compiler can decode to simply not compile the kernel at
+all, because we do things that are outside a lot of standards.
+
+So the "technically allowed" is not an argument.
+
+             Linus
