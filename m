@@ -2,193 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0E024DC63
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE02224DC9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727955AbgHURAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 13:00:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728269AbgHUQTZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:19:25 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1BB9D22D2C;
-        Fri, 21 Aug 2020 16:18:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598026716;
-        bh=r+vHRWWu2w3ZF3UsA/CeFeXJT3lpFdYiC0k6NtPT8Wg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HR9p9ooSV5OZf2RtYKOYYT2uQKPOqE3gYTvmZ5kOEdcnl+xfvSvhrcqzL3fU3nRbL
-         TKuU4IFgFbB+VGVgnGiNJsNAxB8rGpODJtkM/V+VylEjKgRgQC/YveM5nr7OHn56YN
-         QAH7OdOeJvOJsnqrVRAe+6RNUI09HOamOsKL0tNs=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Aditya Pakki <pakki001@umn.edu>, kjlu@umn.edu, wu000273@umn.edu,
-        Allison Randal <allison@lohutok.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Enrico Weigelt <info@metux.net>,
-        "Andrew F. Davis" <afd@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sasha Levin <sashal@kernel.org>, linux-omap@vger.kernel.org,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 4.19 22/38] omapfb: fix multiple reference count leaks due to pm_runtime_get_sync
-Date:   Fri, 21 Aug 2020 12:17:51 -0400
-Message-Id: <20200821161807.348600-22-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200821161807.348600-1-sashal@kernel.org>
-References: <20200821161807.348600-1-sashal@kernel.org>
+        id S1728811AbgHURFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 13:05:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728252AbgHUQSr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 12:18:47 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 456A6C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 09:18:42 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id h4so2266315ioe.5
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 09:18:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lixom-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=luUAi1TbOa9Dnc1tIwWCWIIp6OXw4Q4Gp7/3zvZWN+4=;
+        b=ahSuHdM/nkUJ6JtkBGtFBeRVfzbonjEc/j96YRLEJ4vtmgg/KKihM/7sXJPF+cxzsp
+         QAV3Vt2rftE+yFPlN3N9m9EO0Q3Hto7nzTNZzODiCr5quN7ecOhjw9W9+c9BmYLGabVu
+         E257jRzn/TFc6+q8S1SliMsuyT+g5ggI0Wq4nsEiLaXf0oxG8Za4ala0j1N8BM9LU4kh
+         5R1yY5XWkQh5JRWT1nTTfhm7+z8qkA/rAv9wlXqFEiUn2wJKGX1I4s0Tw9kozND2q7vL
+         N5Rn5ptnxGRFDutvd0+GGNwT+yWVBwQ6bT8s+/djlP7sY3x7ga+3SVfN2hoA+YqCoBF6
+         PzvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=luUAi1TbOa9Dnc1tIwWCWIIp6OXw4Q4Gp7/3zvZWN+4=;
+        b=U/QigE2m3kkXDb3btzNnC3ZjbVEYGdIKOGUoz3zJiAzaBYYUasdTi+avMAd2JLm4Or
+         WfaBKuLn5vSedDjrbWfYJoZ6Ihn+9VSedhYVi5maKkanb+K8jW/fQXHsoC61zDqiGDA1
+         BNYe2hEcRQDleYaly6MKr8+Zv+asa2d6kT05Pvf+aMvEd3t3HsIeXc62DxcpprdA0b1V
+         17jom0PvZOJ9Zo3lhAupPE0PV6nUD0uMKzC8SA61kcoLADosoEuS108NqA1enT6pfljo
+         jBXlkI6r6cv1eonoy+H0+OUQSQ6w70K4fQnQ8b0KdZLKHyMvWjXZtD/lFQnB29s3fnO0
+         bQmA==
+X-Gm-Message-State: AOAM532kQn48ho+UaCWFi/yiIcS6ut2NF8QvH1Adv8JKd9kTwuyBMAko
+        9ImOzG0h2/vYT7T7hDbJIWBeGQfKAIZvqMC5vDX/oxz5PvsNtQ==
+X-Google-Smtp-Source: ABdhPJz5jpr2DxnMaG9eqJjbyNPm6jyyHc64mTSoHOxOHhYYkgi7vT1uWhdnCIVnP0s7oboMggBGb9m0MGs/KT7TKYo=
+X-Received: by 2002:a6b:b495:: with SMTP id d143mr2998016iof.61.1598026721446;
+ Fri, 21 Aug 2020 09:18:41 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20200821151942.6b01dbd8@canb.auug.org.au>
+In-Reply-To: <20200821151942.6b01dbd8@canb.auug.org.au>
+From:   Olof Johansson <olof@lixom.net>
+Date:   Fri, 21 Aug 2020 09:18:29 -0700
+Message-ID: <CAOesGMhHhBBdXdEAM+P5orFz56bdQTk8MP20k4UZ2rh53Ge6XQ@mail.gmail.com>
+Subject: Re: linux-next: Signed-off-by missing for commits in the
+ arm-soc-fixes tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aditya Pakki <pakki001@umn.edu>
+Hi,
 
-[ Upstream commit 78c2ce9bde70be5be7e3615a2ae7024ed8173087 ]
+On Thu, Aug 20, 2020 at 10:19 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> Commits
+>
+>   8d53ecfbf231 ("arm64: dts: xilinx: Align IOMMU nodename with dtschema")
+>   b4b6fb8de8dc ("arm64: dts: zynqmp: Add GTR transceivers")
+>
+> are missing a Signed-off-by from their committer.
 
-On calling pm_runtime_get_sync() the reference count of the device
-is incremented. In case of failure, decrement the
-reference count before returning the error.
+Ah, I see what happened here. I've been relying on some of my
+semi-automation scripts for catching this, but I had to use regular
+manual git merge for this branch due to GPG signatures not capturing
+it in patchwork.
 
-Signed-off-by: Aditya Pakki <pakki001@umn.edu>
-Cc: kjlu@umn.edu
-Cc: wu000273@umn.edu
-Cc: Allison Randal <allison@lohutok.net>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Enrico Weigelt <info@metux.net>
-cc: "Andrew F. Davis" <afd@ti.com>
-Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc: Alexios Zavras <alexios.zavras@intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: YueHaibing <yuehaibing@huawei.com>
-Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200614030528.128064-1-pakki001@umn.edu
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/video/fbdev/omap2/omapfb/dss/dispc.c | 7 +++++--
- drivers/video/fbdev/omap2/omapfb/dss/dsi.c   | 7 +++++--
- drivers/video/fbdev/omap2/omapfb/dss/dss.c   | 7 +++++--
- drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c | 5 +++--
- drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c | 5 +++--
- drivers/video/fbdev/omap2/omapfb/dss/venc.c  | 7 +++++--
- 6 files changed, 26 insertions(+), 12 deletions(-)
+Since the committer was Michal, and the pull request came from him, we
+still have the chain of contribution documented, but I'll keep this in
+mind on future manual merges.
 
-diff --git a/drivers/video/fbdev/omap2/omapfb/dss/dispc.c b/drivers/video/fbdev/omap2/omapfb/dss/dispc.c
-index a06d9c25765c5..0bd582e845f31 100644
---- a/drivers/video/fbdev/omap2/omapfb/dss/dispc.c
-+++ b/drivers/video/fbdev/omap2/omapfb/dss/dispc.c
-@@ -531,8 +531,11 @@ int dispc_runtime_get(void)
- 	DSSDBG("dispc_runtime_get\n");
- 
- 	r = pm_runtime_get_sync(&dispc.pdev->dev);
--	WARN_ON(r < 0);
--	return r < 0 ? r : 0;
-+	if (WARN_ON(r < 0)) {
-+		pm_runtime_put_sync(&dispc.pdev->dev);
-+		return r;
-+	}
-+	return 0;
- }
- EXPORT_SYMBOL(dispc_runtime_get);
- 
-diff --git a/drivers/video/fbdev/omap2/omapfb/dss/dsi.c b/drivers/video/fbdev/omap2/omapfb/dss/dsi.c
-index 8e1d60d48dbb0..50792d31533bf 100644
---- a/drivers/video/fbdev/omap2/omapfb/dss/dsi.c
-+++ b/drivers/video/fbdev/omap2/omapfb/dss/dsi.c
-@@ -1148,8 +1148,11 @@ static int dsi_runtime_get(struct platform_device *dsidev)
- 	DSSDBG("dsi_runtime_get\n");
- 
- 	r = pm_runtime_get_sync(&dsi->pdev->dev);
--	WARN_ON(r < 0);
--	return r < 0 ? r : 0;
-+	if (WARN_ON(r < 0)) {
-+		pm_runtime_put_sync(&dsi->pdev->dev);
-+		return r;
-+	}
-+	return 0;
- }
- 
- static void dsi_runtime_put(struct platform_device *dsidev)
-diff --git a/drivers/video/fbdev/omap2/omapfb/dss/dss.c b/drivers/video/fbdev/omap2/omapfb/dss/dss.c
-index b6c6c24979dd6..faebf9a773ba5 100644
---- a/drivers/video/fbdev/omap2/omapfb/dss/dss.c
-+++ b/drivers/video/fbdev/omap2/omapfb/dss/dss.c
-@@ -779,8 +779,11 @@ int dss_runtime_get(void)
- 	DSSDBG("dss_runtime_get\n");
- 
- 	r = pm_runtime_get_sync(&dss.pdev->dev);
--	WARN_ON(r < 0);
--	return r < 0 ? r : 0;
-+	if (WARN_ON(r < 0)) {
-+		pm_runtime_put_sync(&dss.pdev->dev);
-+		return r;
-+	}
-+	return 0;
- }
- 
- void dss_runtime_put(void)
-diff --git a/drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c b/drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c
-index 28de56e21c74b..9fd9a02bb871d 100644
---- a/drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c
-+++ b/drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c
-@@ -50,9 +50,10 @@ static int hdmi_runtime_get(void)
- 	DSSDBG("hdmi_runtime_get\n");
- 
- 	r = pm_runtime_get_sync(&hdmi.pdev->dev);
--	WARN_ON(r < 0);
--	if (r < 0)
-+	if (WARN_ON(r < 0)) {
-+		pm_runtime_put_sync(&hdmi.pdev->dev);
- 		return r;
-+	}
- 
- 	return 0;
- }
-diff --git a/drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c b/drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c
-index 2e2fcc3d6d4f7..13f3a5ce55294 100644
---- a/drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c
-+++ b/drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c
-@@ -54,9 +54,10 @@ static int hdmi_runtime_get(void)
- 	DSSDBG("hdmi_runtime_get\n");
- 
- 	r = pm_runtime_get_sync(&hdmi.pdev->dev);
--	WARN_ON(r < 0);
--	if (r < 0)
-+	if (WARN_ON(r < 0)) {
-+		pm_runtime_put_sync(&hdmi.pdev->dev);
- 		return r;
-+	}
- 
- 	return 0;
- }
-diff --git a/drivers/video/fbdev/omap2/omapfb/dss/venc.c b/drivers/video/fbdev/omap2/omapfb/dss/venc.c
-index 392464da12e41..96714b4596d2d 100644
---- a/drivers/video/fbdev/omap2/omapfb/dss/venc.c
-+++ b/drivers/video/fbdev/omap2/omapfb/dss/venc.c
-@@ -402,8 +402,11 @@ static int venc_runtime_get(void)
- 	DSSDBG("venc_runtime_get\n");
- 
- 	r = pm_runtime_get_sync(&venc.pdev->dev);
--	WARN_ON(r < 0);
--	return r < 0 ? r : 0;
-+	if (WARN_ON(r < 0)) {
-+		pm_runtime_put_sync(&venc.pdev->dev);
-+		return r;
-+	}
-+	return 0;
- }
- 
- static void venc_runtime_put(void)
--- 
-2.25.1
 
+-Olof
