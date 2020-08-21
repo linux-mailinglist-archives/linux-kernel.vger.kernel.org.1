@@ -2,111 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3422424D0D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 10:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA14724D0E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 10:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728192AbgHUIu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 04:50:26 -0400
-Received: from mail.fireflyinternet.com ([77.68.26.236]:55722 "EHLO
-        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727868AbgHUIuZ (ORCPT
+        id S1728036AbgHUIyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 04:54:10 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55564 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726243AbgHUIyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 04:50:25 -0400
-X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
-Received: from build.alporthouse.com (unverified [78.156.65.138]) 
-        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP id 22195100-1500050 
-        for multiple; Fri, 21 Aug 2020 09:50:15 +0100
-From:   Chris Wilson <chris@chris-wilson.co.uk>
-To:     linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org
-Cc:     linux-mm@kvack.org, Chris Wilson <chris@chris-wilson.co.uk>,
-        Pavel Machek <pavel@ucw.cz>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        stable@vger.kernel.org
-Subject: [PATCH 4/4] drm/i915/gem: Replace reloc chain with terminator on error unwind
-Date:   Fri, 21 Aug 2020 09:50:11 +0100
-Message-Id: <20200821085011.28878-4-chris@chris-wilson.co.uk>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200821085011.28878-1-chris@chris-wilson.co.uk>
-References: <20200821085011.28878-1-chris@chris-wilson.co.uk>
+        Fri, 21 Aug 2020 04:54:06 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07L8X7fK072907;
+        Fri, 21 Aug 2020 04:54:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : date : mime-version : in-reply-to : content-type :
+ content-transfer-encoding : message-id; s=pp1;
+ bh=tMpNeTWf65DjC70rS5HyK/935zN2nZFWJAbrMtoWLWM=;
+ b=ROGpziHzLer7q4RxRNMlsIh02QHcsuW4nx++4W55MlAtDvOnm/34MSU8qEoaLAzmD+7w
+ nqAjYrE1XeOtfd8QRjezVGQfBhj6Sd0bbGl7Bo751retTKKsInVQwOhtx9QscBOoaYne
+ 0rY8IHweV1QP7Mo0k7L/MZMzooxmsfqVyBdJlWGwGRiln6UxMRjbz/neUvPF6qZ3bEOw
+ b+HXkegr5fRrIG5z2nG0fwUTDXaduQntoBkSWO+/FFsYVwv1fk59mY/82uYE/hUk4ag0
+ j93qu64MIdTR5+BTPYz1fVQ4QxOhjkqoIS3wfbfGLBovyc+ehlsOaclW4gqGgD8noq7L ng== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33257sshsd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 Aug 2020 04:54:02 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07L8q58q025176;
+        Fri, 21 Aug 2020 08:54:00 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 330tbvtupg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 Aug 2020 08:54:00 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07L8rwYK65405230
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 21 Aug 2020 08:53:58 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 16D634C044;
+        Fri, 21 Aug 2020 08:53:58 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 93CF64C040;
+        Fri, 21 Aug 2020 08:53:56 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.33.217])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 21 Aug 2020 08:53:56 +0000 (GMT)
+Subject: Re: [PATCH] iomap: Fix the write_count in iomap_add_to_ioend().
+To:     Christoph Hellwig <hch@infradead.org>,
+        Anju T Sudhakar <anju@linux.vnet.ibm.com>,
+        linux-block@vger.kernel.org
+Cc:     darrick.wong@oracle.com, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        willy@infradead.org
+References: <20200819102841.481461-1-anju@linux.vnet.ibm.com>
+ <20200821060710.GC31091@infradead.org>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Fri, 21 Aug 2020 14:23:55 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200821060710.GC31091@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Message-Id: <20200821085356.93CF64C040@d06av22.portsmouth.uk.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-21_06:2020-08-21,2020-08-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
+ mlxlogscore=840 suspectscore=0 impostorscore=0 mlxscore=0 adultscore=0
+ spamscore=0 clxscore=1011 priorityscore=1501 lowpriorityscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008210079
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we hit an error during construction of the reloc chain, we need to
-replace the chain into the next batch with the terminator so that upon
-flushing the relocations so far, we do not execute a hanging batch.
 
-Reported-by: Pavel Machek <pavel@ucw.cz>
-Fixes: 964a9b0f611e ("drm/i915/gem: Use chained reloc batches")
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc: Pavel Machek <pavel@ucw.cz>
-Cc: <stable@vger.kernel.org> # v5.8+
----
- .../gpu/drm/i915/gem/i915_gem_execbuffer.c    | 31 ++++++++++---------
- 1 file changed, 16 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c b/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
-index 24a1486d2dc5..a09f04eee417 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
-@@ -972,21 +972,6 @@ static int reloc_gpu_chain(struct reloc_cache *cache)
- 	if (err)
- 		goto out_pool;
- 
--	GEM_BUG_ON(cache->rq_size + RELOC_TAIL > PAGE_SIZE  / sizeof(u32));
--	cmd = cache->rq_cmd + cache->rq_size;
--	*cmd++ = MI_ARB_CHECK;
--	if (cache->gen >= 8)
--		*cmd++ = MI_BATCH_BUFFER_START_GEN8;
--	else if (cache->gen >= 6)
--		*cmd++ = MI_BATCH_BUFFER_START;
--	else
--		*cmd++ = MI_BATCH_BUFFER_START | MI_BATCH_GTT;
--	*cmd++ = lower_32_bits(batch->node.start);
--	*cmd++ = upper_32_bits(batch->node.start); /* Always 0 for gen<8 */
--	i915_gem_object_flush_map(cache->rq_vma->obj);
--	i915_gem_object_unpin_map(cache->rq_vma->obj);
--	cache->rq_vma = NULL;
--
- 	err = intel_gt_buffer_pool_mark_active(pool, rq);
- 	if (err == 0) {
- 		i915_vma_lock(batch);
-@@ -999,15 +984,31 @@ static int reloc_gpu_chain(struct reloc_cache *cache)
- 	if (err)
- 		goto out_pool;
- 
-+	GEM_BUG_ON(cache->rq_size + RELOC_TAIL > PAGE_SIZE  / sizeof(u32));
-+	cmd = cache->rq_cmd + cache->rq_size;
-+	*cmd++ = MI_ARB_CHECK;
-+	if (cache->gen >= 8)
-+		*cmd++ = MI_BATCH_BUFFER_START_GEN8;
-+	else if (cache->gen >= 6)
-+		*cmd++ = MI_BATCH_BUFFER_START;
-+	else
-+		*cmd++ = MI_BATCH_BUFFER_START | MI_BATCH_GTT;
-+	*cmd++ = lower_32_bits(batch->node.start);
-+	*cmd++ = upper_32_bits(batch->node.start); /* Always 0 for gen<8 */
-+
- 	cmd = i915_gem_object_pin_map(batch->obj,
- 				      cache->has_llc ?
- 				      I915_MAP_FORCE_WB :
- 				      I915_MAP_FORCE_WC);
- 	if (IS_ERR(cmd)) {
-+		/* We will replace the BBS with BBE upon flushing the rq */
- 		err = PTR_ERR(cmd);
- 		goto out_pool;
- 	}
- 
-+	i915_gem_object_flush_map(cache->rq_vma->obj);
-+	i915_gem_object_unpin_map(cache->rq_vma->obj);
-+
- 	/* Return with batch mapping (cmd) still pinned */
- 	cache->rq_cmd = cmd;
- 	cache->rq_size = 0;
--- 
-2.20.1
+On 8/21/20 11:37 AM, Christoph Hellwig wrote:
+> On Wed, Aug 19, 2020 at 03:58:41PM +0530, Anju T Sudhakar wrote:
+>> From: Ritesh Harjani <riteshh@linux.ibm.com>
+>>
+>> __bio_try_merge_page() may return same_page = 1 and merged = 0.
+>> This could happen when bio->bi_iter.bi_size + len > UINT_MAX.
+>> Handle this case in iomap_add_to_ioend() by incrementing write_count.
+>> This scenario mostly happens where we have too much dirty data accumulated.
+>>
+>> w/o the patch we hit below kernel warning,
+> 
+> I think this is better fixed in the block layer rather than working
+> around the problem in the callers.  Something like this:
+> 
+> diff --git a/block/bio.c b/block/bio.c
+> index c63ba04bd62967..ef321cd1072e4e 100644
+> --- a/block/bio.c
+> +++ b/block/bio.c
+> @@ -879,8 +879,10 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
+>   		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
+>   
+>   		if (page_is_mergeable(bv, page, len, off, same_page)) {
+> -			if (bio->bi_iter.bi_size > UINT_MAX - len)
+> +			if (bio->bi_iter.bi_size > UINT_MAX - len) {
+> +				*same_page = false;
+>   				return false;
+> +			}
+>   			bv->bv_len += len;
+>   			bio->bi_iter.bi_size += len;
+>   			return true;
+> 
 
+Ya, we had think of that. But what we then thought was, maybe the
+API does return the right thing. Meaning, what API says is, same_page is
+true, but the page couldn't be merged hence it returned ret = false.
+With that thought, we fixed this in the caller.
+
+But agree with you that with ret = false, there is no meaning of
+same_page being true. Ok, so let linux-block comment on whether
+above also looks good. If yes, I can spin out an official patch with
+all details.
+
+-ritesh
