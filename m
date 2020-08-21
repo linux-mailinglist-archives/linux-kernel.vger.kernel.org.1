@@ -2,86 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8465E24CFD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 09:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F1724CFEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 09:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728149AbgHUHqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 03:46:07 -0400
-Received: from mail.zju.edu.cn ([61.164.42.155]:14198 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727824AbgHUHqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 03:46:05 -0400
-Received: from localhost.localdomain (unknown [10.192.85.18])
-        by mail-app4 (Coremail) with SMTP id cS_KCgDHP3uFez9fIjMsAQ--.38108S4;
-        Fri, 21 Aug 2020 15:45:14 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Tony Lindgren <tony@atomide.com>,
-        zhengbin <zhengbin13@huawei.com>, Kevin Hilman <khilman@ti.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/omap: Fix runtime PM imbalance in dsi_runtime_get
-Date:   Fri, 21 Aug 2020 15:45:03 +0800
-Message-Id: <20200821074506.32359-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cS_KCgDHP3uFez9fIjMsAQ--.38108S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrKrW7ZFyDtr4kZrW7CrykXwb_yoWkWFX_Ww
-        n0qrnxGr43KFyqqw4UAa4YvrySvFW7Zay8Xr18tayfArWIvr1DJry0vrZrAwsxXa17AF1D
-        Ca1vgF93ArZrCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbV8Fc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
-        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
-        0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x0JUdHUDUUUUU=
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoSBlZdtPnBhAAhs+
+        id S1728190AbgHUHuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 03:50:13 -0400
+Received: from elvis.franken.de ([193.175.24.41]:54235 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725908AbgHUHuM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 03:50:12 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1k91oP-00079q-00; Fri, 21 Aug 2020 09:50:09 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id D9FBCC0D76; Fri, 21 Aug 2020 09:46:25 +0200 (CEST)
+Date:   Fri, 21 Aug 2020 09:46:25 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Robert Richter <rric@kernel.org>, Huacai Chen <chenhc@lemote.com>,
+        Liangliang Huang <huanglllzu@gmail.com>,
+        oprofile-list@lists.sf.net, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: op_model_mipsxx: Fix non-executable code bug
+Message-ID: <20200821074625.GA8336@alpha.franken.de>
+References: <20200819045813.GA24181@embeddedor>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200819045813.GA24181@embeddedor>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm_runtime_get_sync() increments the runtime PM usage counter
-even when it returns an error code. However, users of
-dsi_runtime_get(), a direct wrapper of pm_runtime_get_sync(),
-assume that PM usage counter will not change on error. Thus a
-pairing decrement is needed on the error handling path to keep
-the counter balanced.
+On Tue, Aug 18, 2020 at 11:58:13PM -0500, Gustavo A. R. Silva wrote:
+> The fallthrough pseudo-keyword is being wrongly used and is causing
+> the non-executable code error below:
+> 
+> arch/mips/oprofile/op_model_mipsxx.c: In function ‘mipsxx_perfcount_handler’:
+> ./include/linux/compiler_attributes.h:214:41: warning: statement will never be executed [-Wswitch-unreachable]
+>  # define fallthrough                    __attribute__((__fallthrough__))
+>                                          ^
+> arch/mips/oprofile/op_model_mipsxx.c:248:2: note: in expansion of macro ‘fallthrough’
+>   fallthrough;       \
+>   ^~~~~~~~~~~
+> arch/mips/oprofile/op_model_mipsxx.c:258:2: note: in expansion of macro ‘HANDLE_COUNTER’
+>   HANDLE_COUNTER(3)
+>   ^~~~~~~~~~~~~~
+> 
+> Fix this by placing the fallthrough macro at the proper place.
+> 
+> Fixes: c9b029903466 ("MIPS: Use fallthrough for arch/mips")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  arch/mips/oprofile/op_model_mipsxx.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Fixes: 4fbafaf371be7 ("OMAP: DSS2: Use PM runtime & HWMOD support")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/gpu/drm/omapdrm/dss/dsi.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+applied to mips-fixes.
 
-diff --git a/drivers/gpu/drm/omapdrm/dss/dsi.c b/drivers/gpu/drm/omapdrm/dss/dsi.c
-index eeccf40bae41..973bfa14a104 100644
---- a/drivers/gpu/drm/omapdrm/dss/dsi.c
-+++ b/drivers/gpu/drm/omapdrm/dss/dsi.c
-@@ -1112,8 +1112,11 @@ static int dsi_runtime_get(struct dsi_data *dsi)
- 	DSSDBG("dsi_runtime_get\n");
- 
- 	r = pm_runtime_get_sync(dsi->dev);
--	WARN_ON(r < 0);
--	return r < 0 ? r : 0;
-+	if (WARN_ON(r < 0)) {
-+		pm_runtime_put_noidle(dsi->dev);
-+		return r;
-+	}
-+	return 0;
- }
- 
- static void dsi_runtime_put(struct dsi_data *dsi)
+Thomas.
+
 -- 
-2.17.1
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
