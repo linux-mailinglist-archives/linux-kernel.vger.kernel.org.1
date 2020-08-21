@@ -2,178 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9783E24DB0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 639C224DB26
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:35:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728008AbgHUQcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 12:32:52 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:18647 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728122AbgHUQcQ (ORCPT
+        id S1728249AbgHUQfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 12:35:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42870 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726809AbgHUQd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:32:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1598027524;
-        s=strato-dkim-0002; d=gerhold.net;
-        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=5oM6hmHrkxSTh2VeiPEAHTyoVLjwfurKxWYpMhitciA=;
-        b=M/KVTksU1p3DnoGrWCOFV3S16GhMXigs6zNTYa6Ps/mQHpp7FoTQWk90YclJeUCZBk
-        vaQ1Zx86QhUZ814akr4NwjdgA8WMmr9eqoP4j5lff+v0GMOfFNVyvtJCTz7UHEvVAMQP
-        84c2RMMWhKEjSQo1nZOJtkm7V56+696yIE73JaH1YT2P1nmqxURvDepFmwc2QqlX1vZI
-        dGMpTmxSCW0gfw56YedVk2WOsT9u0+cfw7Vejr2etSAcU0jNzi1Zop2stgtLj5PwEby8
-        /xzScXcrR7NCfd4P/6HMrccilo8bnsZ+PMzTdGdPWfCf8hmdYIW4fstVZo8pkP+GAyM+
-        ITWw==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j7Ic/Fboo="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-        by smtp.strato.de (RZmta 46.10.7 DYNA|AUTH)
-        with ESMTPSA id g0b6c1w7LGW2KXw
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Fri, 21 Aug 2020 18:32:02 +0200 (CEST)
-Date:   Fri, 21 Aug 2020 18:31:52 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Niklas Cassel <nks@flawful.org>
-Subject: Re: [RFC PATCH 2/3] opp: Set required OPPs in reverse order when
- scaling down
-Message-ID: <20200821163152.GA3422@gerhold.net>
-References: <20200730080146.25185-1-stephan@gerhold.net>
- <20200730080146.25185-3-stephan@gerhold.net>
+        Fri, 21 Aug 2020 12:33:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598027601;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=71SIGIW8765UhVrcPeIzz5zqD/0d0YwU7JAOQ+5WuGI=;
+        b=SDgorumrUkaPFP5Brf8UPMG2f4cpJNYAGl32rYaJlsz/RzDTPVy2I2NPUPVVIsi/wzudRU
+        7y8U3x8Y/R8wQz2cz+OxnXNlO8K53YYunNcOQTbZlCZkhyq7+lcl8yYVLAoayLETfzjDeo
+        5H7On6d+DCeH4Bl+hfJfohgKeD/uYvQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-323-w4fSooo0OPSM6XZNNgiiDQ-1; Fri, 21 Aug 2020 12:33:17 -0400
+X-MC-Unique: w4fSooo0OPSM6XZNNgiiDQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A75128799EF;
+        Fri, 21 Aug 2020 16:33:13 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.15])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 7E8FF10013C4;
+        Fri, 21 Aug 2020 16:33:02 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Fri, 21 Aug 2020 18:33:13 +0200 (CEST)
+Date:   Fri, 21 Aug 2020 18:33:01 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tim Murray <timmurray@google.com>, mingo@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
+        christian@kellner.me, areber@redhat.com,
+        Shakeel Butt <shakeelb@google.com>, cyphar@cyphar.com,
+        adobriyan@gmail.com, Andrew Morton <akpm@linux-foundation.org>,
+        gladkov.alexey@gmail.com, Michel Lespinasse <walken@google.com>,
+        daniel.m.jordan@oracle.com, avagin@gmail.com,
+        bernd.edlinger@hotmail.de,
+        John Johansen <john.johansen@canonical.com>,
+        laoar.shao@gmail.com, Minchan Kim <minchan@kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm <linux-mm@kvack.org>
+Subject: Re: [PATCH 1/1] mm, oom_adj: don't loop through tasks in
+ __set_oom_adj when not necessary
+Message-ID: <20200821163300.GB19445@redhat.com>
+References: <20200820133454.ch24kewh42ax4ebl@wittgenstein>
+ <dcb62b67-5ad6-f63a-a909-e2fa70b240fc@i-love.sakura.ne.jp>
+ <20200820140054.fdkbotd4tgfrqpe6@wittgenstein>
+ <637ab0e7-e686-0c94-753b-b97d24bb8232@i-love.sakura.ne.jp>
+ <87k0xtv0d4.fsf@x220.int.ebiederm.org>
+ <CAJuCfpHsjisBnNiDNQbm8Yi92cznaptiXYPdc-aVa+_zkuaPhA@mail.gmail.com>
+ <20200820162645.GP5033@dhcp22.suse.cz>
+ <87r1s0txxe.fsf@x220.int.ebiederm.org>
+ <20200821111558.GG4546@redhat.com>
+ <CAJuCfpF_GhTy5SCjxqyqTFUrJNaw3UGJzCi=WSCXfqPAcbThYg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200730080146.25185-3-stephan@gerhold.net>
+In-Reply-To: <CAJuCfpF_GhTy5SCjxqyqTFUrJNaw3UGJzCi=WSCXfqPAcbThYg@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh,
+On 08/21, Suren Baghdasaryan wrote:
+>
+> On Fri, Aug 21, 2020 at 4:16 AM Oleg Nesterov <oleg@redhat.com> wrote:
+> >
+> >         bool probably_has_other_mm_users(tsk)
+> >         {
+> >                 return  atomic_read_acquire(&tsk->mm->mm_users) >
+> >                         atomic_read(&tsk->signal->live);
+> >         }
+> >
+> > The barrier implied by _acquire ensures that if we race with the exiting
+> > task and see the result of exit_mm()->mmput(mm), then we must also see
+> > the result of atomic_dec_and_test(signal->live).
+> >
+> > Either way, if we want to fix the race with clone(CLONE_VM) we need other
+> > changes.
+>
+> The way I understand this condition in __set_oom_adj() sync logic is
+> that we would be ok with false positives (when we loop unnecessarily)
+> but we can't tolerate false negatives (when oom_score_adj gets out of
+> sync).
 
-On Thu, Jul 30, 2020 at 10:01:45AM +0200, Stephan Gerhold wrote:
-> The OPP core already has well-defined semantics to ensure required
-> OPPs/regulators are set before/after the frequency change, depending
-> on if we scale up or down.
-> 
-> Similar requirements might exist for the order of required OPPs
-> when multiple power domains need to be scaled for a frequency change.
-> 
-> For example, on Qualcomm platforms using CPR (Core Power Reduction),
-> we need to scale the VDDMX and CPR power domain. When scaling up,
-> MX should be scaled up before CPR. When scaling down, CPR should be
-> scaled down before MX.
-> 
-> In general, if there are multiple "required-opps" in the device tree
-> I would expect that the order is either irrelevant, or there is some
-> dependency between the power domains. In that case, the power domains
-> should be scaled down in reverse order.
-> 
-> This commit updates _set_required_opps() to set required OPPs in
-> reverse order when scaling down.
-> 
-> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Yes,
 
-This patch does not apply anymore after the cleanup you pushed to
-opp/linux-next. I would be happy to send a v2 with that fixed.
+> With the clone(CLONE_VM) race not addressed we are allowing
+> false negatives and IMHO that's not acceptable because it creates a
+> possibility for userspace to get an inconsistent picture. When
+> developing the patch I did think about using (p->mm->mm_users >
+> p->signal->nr_threads) condition and had to reject it due to that
+> reason.
 
-On my other OPP patch set you mentioned that you might apply these
-directly with some of your own changes - would you also prefer to do it
-yourself in this case or should I send a v2?
+Not sure I understand... I mean, the test_bit(MMF_PROC_SHARED) you propose
+is equally racy and we need copy_oom_score() at the end of copy_process()
+either way?
 
-Still looking for your feedback on both patch sets by the way! :)
+Oleg.
 
-Thanks!
-Stephan
-
-> ---
-> Related discussion: https://lore.kernel.org/linux-arm-msm/20200525194443.GA11851@flawful.org/
-> 
-> The advantage of this approach is that the CPR driver does not need
-> to bother with the VDDMX power domain at all - the requirements
-> can be fully described within the device tree, see e.g. [1].
-> An alternative option would be to modify the CPR driver to make these votes.
-> 
-> [1]: https://lore.kernel.org/linux-arm-msm/20200507104603.GA581328@gerhold.net/2-msm8916-vdd-mx.patch
-> ---
->  drivers/opp/core.c | 30 +++++++++++++++++++++---------
->  1 file changed, 21 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index f7a476b55069..f93f551c911e 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
-> @@ -799,7 +799,7 @@ static int _set_required_opp(struct device *dev, struct device *pd_dev,
->  /* This is only called for PM domain for now */
->  static int _set_required_opps(struct device *dev,
->  			      struct opp_table *opp_table,
-> -			      struct dev_pm_opp *opp)
-> +			      struct dev_pm_opp *opp, bool up)
->  {
->  	struct opp_table **required_opp_tables = opp_table->required_opp_tables;
->  	struct device **genpd_virt_devs = opp_table->genpd_virt_devs;
-> @@ -821,12 +821,24 @@ static int _set_required_opps(struct device *dev,
->  	 */
->  	mutex_lock(&opp_table->genpd_virt_dev_lock);
->  
-> -	for (i = 0; i < opp_table->required_opp_count; i++) {
-> -		pd_dev = genpd_virt_devs[i];
-> +	if (up) {
-> +		/* Scaling up? Set required OPPs in normal order */
-> +		for (i = 0; i < opp_table->required_opp_count; i++) {
-> +			pd_dev = genpd_virt_devs[i];
->  
-> -		ret = _set_required_opp(dev, pd_dev, opp, i);
-> -		if (ret)
-> -			break;
-> +			ret = _set_required_opp(dev, pd_dev, opp, i);
-> +			if (ret)
-> +				break;
-> +		}
-> +	} else {
-> +		/* Scaling down? Set required OPPs in reverse order */
-> +		for (i = opp_table->required_opp_count - 1; i >= 0; i--) {
-> +			pd_dev = genpd_virt_devs[i];
-> +
-> +			ret = _set_required_opp(dev, pd_dev, opp, i);
-> +			if (ret)
-> +				break;
-> +		}
->  	}
->  	mutex_unlock(&opp_table->genpd_virt_dev_lock);
->  
-> @@ -914,7 +926,7 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
->  			opp_table->regulator_enabled = false;
->  		}
->  
-> -		ret = _set_required_opps(dev, opp_table, NULL);
-> +		ret = _set_required_opps(dev, opp_table, NULL, false);
->  		goto put_opp_table;
->  	}
->  
-> @@ -973,7 +985,7 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
->  
->  	/* Scaling up? Configure required OPPs before frequency */
->  	if (freq >= old_freq) {
-> -		ret = _set_required_opps(dev, opp_table, opp);
-> +		ret = _set_required_opps(dev, opp_table, opp, true);
->  		if (ret)
->  			goto put_opp;
->  	}
-> @@ -993,7 +1005,7 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
->  
->  	/* Scaling down? Configure required OPPs after frequency */
->  	if (!ret && freq < old_freq) {
-> -		ret = _set_required_opps(dev, opp_table, opp);
-> +		ret = _set_required_opps(dev, opp_table, opp, false);
->  		if (ret)
->  			dev_err(dev, "Failed to set required opps: %d\n", ret);
->  	}
-> -- 
-> 2.27.0
-> 
