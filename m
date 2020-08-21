@@ -2,74 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3383B24CCAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 06:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE8224CCD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 06:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725965AbgHUEZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 00:25:07 -0400
-Received: from smtprelay0149.hostedemail.com ([216.40.44.149]:49976 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725270AbgHUEZH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 00:25:07 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 9DBFB173086C;
-        Fri, 21 Aug 2020 04:25:05 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1381:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4362:5007:7974:8985:9025:10004:10400:10848:11232:11658:11914:12043:12048:12297:12555:12740:12760:12895:12986:13069:13311:13357:13439:14096:14097:14180:14181:14659:14721:21060:21080:21325:21627:21811:30041:30054:30083:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: sheet48_5e1546627036
-X-Filterd-Recvd-Size: 1931
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf03.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 21 Aug 2020 04:25:04 +0000 (UTC)
-Message-ID: <9230a7f0b80b4a984f18c979ca3c703edd7d6f98.camel@perches.com>
-Subject: Re: [PATCH v2] checkpatch: Fix the usage of capture group ( ... )
-From:   Joe Perches <joe@perches.com>
-To:     Mrinal Pandey <mrinalmni@gmail.com>, apw@canonical.com,
-        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
-        skhan@linuxfoundation.org,
-        Linux-kernel-mentees@lists.linuxfoundation.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Date:   Thu, 20 Aug 2020 21:25:03 -0700
-In-Reply-To: <20200820045232.tmun7jlppeeesg4p@mrinalpandey>
-References: <20200714032352.f476hanaj2dlmiot@mrinalpandey>
-         <alpine.DEB.2.21.2007300746330.13710@felia>
-         <a2773089a844047407855f2da7bd72c2970d2e6b.camel@perches.com>
-         <20200820045232.tmun7jlppeeesg4p@mrinalpandey>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S1726243AbgHUElk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 00:41:40 -0400
+Received: from mail2.skidata.com ([91.230.2.91]:2296 "EHLO mail2.skidata.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725270AbgHUElj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 00:41:39 -0400
+X-Greylist: delayed 432 seconds by postgrey-1.27 at vger.kernel.org; Fri, 21 Aug 2020 00:41:38 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=skidata.com; i=@skidata.com; q=dns/txt; s=selector1;
+  t=1597984899; x=1629520899;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=8MCltXRL+RGxf4gw22SJJk0rZoXwbuNIta681mVBukg=;
+  b=oVkHTLcejWFNHoZlNHs3zN4oXkYbvWRQTYwWBKfs4lBfMjgfrhhVe/Es
+   40JAMoksRnMtLzbiSKd6EWC0XR8an+3lOUMRsmgR6SC7hMZSrAXlR4YpV
+   +SsZPxcDX9+VWWZL5kdjoWXW0mOIrgQRTKVSHGwFxdp6R+TKe5p7CFnbs
+   hcXdFAtvI4uZOuf2IIw9bYeJH/pwLbyPCWCuGIHe+tuaDrPSjIERlwIn0
+   +xpyqMFjrknY/3xeKhlDXeNdrOn8+ndTvBM9UMmCVupguWwVtFgM6P8dj
+   JpuKjzO4u6NU3jZhZERVXvC+0a59/3KReZN6waVG5nuhJt9P+/t6+hA90
+   g==;
+IronPort-SDR: HAN9vym7mM33d8fMsKj7u4xEC2g2HvwohDQjA95kU2hj4jut2jxR/PHsvKaEd7LbB7+IDRkmaB
+ Zj/9cm09Gb+dP1nj9NLcIT5B+4A8/7PBANIHGP5zyyRfYxDJyi9jP0d8Y4eWOAVXQ05OH539Re
+ NEwAp5488VCy830zzz14uO+BsLZJnhTVS0/xn/kmzWinSOQyaQLyXxLtVcX2jB0GvOns9WFHBC
+ J8FOf9prgzvqw/1mFhBCfyrAKFizPQmu/tk7pPG4uM3HvHH3dUSuBxxPp+3XpUHxvBxqPsjzc5
+ UjY=
+X-IronPort-AV: E=Sophos;i="5.76,335,1592863200"; 
+   d="scan'208";a="2647454"
+Date:   Fri, 21 Aug 2020 06:34:18 +0200
+From:   Richard Leitner <richard.leitner@skidata.com>
+To:     Robin Gong <yibin.gong@nxp.com>
+CC:     Benjamin Bara - SKIDATA <Benjamin.Bara@skidata.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "timur@kernel.org" <timur@kernel.org>,
+        "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Subject: Re: pcm|dmaengine|imx-sdma race condition on i.MX6
+Message-ID: <20200821043418.GA65616@pcleri>
+References: <20200813112258.GA327172@pcleri>
+ <VE1PR04MB6638EE5BDBE2C65FF50B7DB889400@VE1PR04MB6638.eurprd04.prod.outlook.com>
+ <61498763c60e488a825e8dd270732b62@skidata.com>
+ <16942794-1e03-6da0-b8e5-c82332a217a5@metafoo.de>
+ <6b5799a567d14cfb9ce34d278a33017d@skidata.com>
+ <VE1PR04MB6638A7AC625B6771F9A69F0D895A0@VE1PR04MB6638.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <VE1PR04MB6638A7AC625B6771F9A69F0D895A0@VE1PR04MB6638.eurprd04.prod.outlook.com>
+X-Originating-IP: [192.168.111.252]
+X-ClientProxiedBy: sdex6srv.skidata.net (192.168.111.84) To
+ sdex5srv.skidata.net (192.168.111.83)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-08-20 at 10:22 +0530, Mrinal Pandey wrote:
-> On 20/07/30 12:31AM, Joe Perches wrote:
-> > On Thu, 2020-07-30 at 07:58 +0200, Lukas Bulwahn wrote:
-> > > Hi Joe,
-> > > 
-> > > did you see this quick fix to checkpatch.pl? Can you comment on the 
-> > > commit and can we get a quick ack on that fix, please?
+On Thu, Aug 20, 2020 at 03:01:44PM +0000, Robin Gong wrote:
+> On 2020/08/19 22:26 Benjamin Bara - SKIDATA <Benjamin.Bara@skidata.com> wrote: 
 > > 
-> > Yes, in a bit.
-> > 
-> > > General question on patches for ./scripts/checkpatch.pl:
-> > > How do they travel to Linus?
-> > 
-> > Generally via Andrew Morton.
-> > 
-> > > Do you pick those patches and provide them to Andrew Morton?
-> > > Or do you just ack them and we need to send them to Andrew Morton to get 
-> > > them into mainline?
-> > 
-> > Generally, ack and forward.
+> > @Robin:
+> > Is it possible to tag the commits for the stable-tree
+> > Cc: stable@vger.kernel.org?
+> Could my patch work in your side? If yes, I will add
+> Cc: stable@vger.kernel.org 
 
-https://lore.kernel.org/lkml/20200714032352.f476hanaj2dlmiot@mrinalpandey/
+I've tested the patches 3 & 4 (removing sdmac->context_loaded) of the
+series you mentioned and sent Tested-by tags for them [1,2], as they
+fix the EIO problems for our use case.
 
-Andrew, can you pick up this patch please.
+So from our side they are fine for stable.
 
-Thanks
+[1] https://lore.kernel.org/dmaengine/20200817053813.GA551027@pcleri/T/#u
+[2] https://lore.kernel.org/dmaengine/20200817053820.GB551027@pcleri/T/#u
 
+regards;rl
