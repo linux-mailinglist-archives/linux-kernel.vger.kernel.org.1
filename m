@@ -2,167 +2,463 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A873C24CD4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 07:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 483CF24CD53
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 07:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbgHUFkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 01:40:22 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44582 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726002AbgHUFkV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 01:40:21 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07L5XCl5090697;
-        Fri, 21 Aug 2020 01:40:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=Ndo/wsx4DSB4NS1qTcy70CYie2hiXo+pQWCA3AYcodM=;
- b=kC1IqvAM5r4XXMf/s2qI10NTJ4ckElK6fMNK9TX++qH4j9PgLCEPAQ+iOW0oPdOJ+1xV
- 72Oq457P/uvGmSgJNBd/qa3CCGl1mwTDbbJidAnaK6Ifv5e0aPlYj8Qe2Dr4wFUbJpM+
- Ie5xprReXIBaX30t0arLIdoBP4qJszqgvV64YVtiZsWLmS3VF+PASzYt0QOhzXyo5hfY
- iNK9JrfxOiANpZJFSK8dBS3czrE9SMMrVb6Gxq787Z/NU/YL1Vh2ltjYEtavwKNFnX5c
- v1faFNkDsEmfBgJSTwYX38gQ7B/v+B7ocUv0PjaBJpsOdG2hjpS2dEFk+a0YRwnJsSv1 vg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33273psd6a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Aug 2020 01:40:01 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07L5Y4w4095720;
-        Fri, 21 Aug 2020 01:40:01 -0400
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33273psd5t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Aug 2020 01:40:01 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07L5YqaP029166;
-        Fri, 21 Aug 2020 05:39:59 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma01wdc.us.ibm.com with ESMTP id 3304tm1ns2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Aug 2020 05:39:59 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07L5dwv61639074
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 Aug 2020 05:39:58 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BD5766A04F;
-        Fri, 21 Aug 2020 05:39:58 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 46F1A6A04D;
-        Fri, 21 Aug 2020 05:39:54 +0000 (GMT)
-Received: from skywalker.linux.ibm.com (unknown [9.102.2.201])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri, 21 Aug 2020 05:39:53 +0000 (GMT)
-X-Mailer: emacs 27.1 (via feedmail 11-beta-1 I)
-From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
+        id S1727029AbgHUFlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 01:41:00 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:50681 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725908AbgHUFlA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 01:41:00 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4BXr2H3pQFz9vCyR;
+        Fri, 21 Aug 2020 07:40:07 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id NBBJ9OMeuyRL; Fri, 21 Aug 2020 07:40:07 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BXr2H2m2nz9vCyQ;
+        Fri, 21 Aug 2020 07:40:07 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 448BE8B87B;
+        Fri, 21 Aug 2020 07:40:08 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id P7XZ6g2G32t3; Fri, 21 Aug 2020 07:40:08 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2D9A78B75F;
+        Fri, 21 Aug 2020 07:40:07 +0200 (CEST)
+Subject: Re: [PATCH v5 5/8] mm: HUGE_VMAP arch support cleanup
+To:     Nicholas Piggin <npiggin@gmail.com>, linux-mm@kvack.org,
         Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, luto@amacapital.net, axboe@kernel.dk,
-        keescook@chromium.org, torvalds@linux-foundation.org,
-        jannh@google.com, will@kernel.org, hch@lst.de, npiggin@gmail.com,
-        mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH v3] mm: Fix kthread_use_mm() vs TLB invalidate
-In-Reply-To: <20200721154106.GE10769@hirez.programming.kicks-ass.net>
-References: <20200721154106.GE10769@hirez.programming.kicks-ass.net>
-Date:   Fri, 21 Aug 2020 11:09:51 +0530
-Message-ID: <87y2m8muag.fsf@linux.ibm.com>
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zefan Li <lizefan@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        linuxppc-dev@lists.ozlabs.org
+References: <20200821044427.736424-1-npiggin@gmail.com>
+ <20200821044427.736424-6-npiggin@gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <9b67b892-9482-15dc-0c1e-c5d5a93a3c91@csgroup.eu>
+Date:   Fri, 21 Aug 2020 07:40:06 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-21_05:2020-08-19,2020-08-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1011
- malwarescore=0 suspectscore=0 mlxlogscore=687 impostorscore=0 mlxscore=0
- lowpriorityscore=0 phishscore=0 spamscore=0 priorityscore=1501 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008210052
+In-Reply-To: <20200821044427.736424-6-npiggin@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Zijlstra <peterz@infradead.org> writes:
-
-> For SMP systems using IPI based TLB invalidation, looking at
-> current->active_mm is entirely reasonable. This then presents the
-> following race condition:
->
->
->   CPU0			CPU1
->
->   flush_tlb_mm(mm)	use_mm(mm)
->     <send-IPI>
-> 			  tsk->active_mm = mm;
-> 			  <IPI>
-> 			    if (tsk->active_mm == mm)
-> 			      // flush TLBs
-> 			  </IPI>
-> 			  switch_mm(old_mm,mm,tsk);
->
->
-> Where it is possible the IPI flushed the TLBs for @old_mm, not @mm,
-> because the IPI lands before we actually switched.
->
-> Avoid this by disabling IRQs across changing ->active_mm and
-> switch_mm().
->
-> [ There are all sorts of reasons this might be harmless for various
-> architecture specific reasons, but best not leave the door open at
-> all. ]
 
 
-Do we have similar race with exec_mmap()? I am looking at exec_mmap()
-runnning parallel to do_exit_flush_lazy_tlb(). We can get
+Le 21/08/2020 à 06:44, Nicholas Piggin a écrit :
+> This changes the awkward approach where architectures provide init
+> functions to determine which levels they can provide large mappings for,
+> to one where the arch is queried for each call.
+> 
+> This removes code and indirection, and allows constant-folding of dead
+> code for unsupported levels.
 
-	if (current->active_mm == mm) {
+I think that in order to allow constant-folding of dead code for 
+unsupported levels, you must define arch_vmap_xxx_supported() as static 
+inline in a .h
 
-true and if we don't disable irq around updating tsk->mm/active_mm we
-can end up doing mmdrop on wrong mm?
+If you have them in .c files, you'll get calls to tiny functions that 
+will always return false, but will still be called and dead code won't 
+be eliminated. And performance wise, that's probably not optimal either.
 
->
-> Cc: stable@kernel.org
-> Reported-by: Andy Lutomirski <luto@amacapital.net>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Christophe
+
+
+> 
+> This also adds a prot argument to the arch query. This is unused
+> currently but could help with some architectures (e.g., some powerpc
+> processors can't map uncacheable memory with large pages).
+> 
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
 > ---
->
-> Sorry, I dropped the ball on this and only found it because I was
-> looking at the whole membarrier things vs use_mm().
->
->
->  kernel/kthread.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/kthread.c b/kernel/kthread.c
-> index 1d9e2fdfd67a..7221dcbffef3 100644
-> --- a/kernel/kthread.c
-> +++ b/kernel/kthread.c
-> @@ -1241,13 +1241,15 @@ void kthread_use_mm(struct mm_struct *mm)
->  	WARN_ON_ONCE(tsk->mm);
->  
->  	task_lock(tsk);
-> +	local_irq_disable();
->  	active_mm = tsk->active_mm;
->  	if (active_mm != mm) {
->  		mmgrab(mm);
->  		tsk->active_mm = mm;
->  	}
->  	tsk->mm = mm;
-> -	switch_mm(active_mm, mm, tsk);
-> +	switch_mm_irqs_off(active_mm, mm, tsk);
-> +	local_irq_enable();
->  	task_unlock(tsk);
->  #ifdef finish_arch_post_lock_switch
->  	finish_arch_post_lock_switch();
-> @@ -1276,9 +1278,11 @@ void kthread_unuse_mm(struct mm_struct *mm)
->  
->  	task_lock(tsk);
->  	sync_mm_rss(mm);
-> +	local_irq_disable();
->  	tsk->mm = NULL;
->  	/* active_mm is still 'mm' */
->  	enter_lazy_tlb(mm, tsk);
-> +	local_irq_enable();
->  	task_unlock(tsk);
->  }
->  EXPORT_SYMBOL_GPL(kthread_unuse_mm);
+>   arch/arm64/mm/mmu.c                      | 12 +--
+>   arch/powerpc/mm/book3s64/radix_pgtable.c | 10 ++-
+>   arch/x86/mm/ioremap.c                    | 12 +--
+>   include/linux/io.h                       |  9 ---
+>   include/linux/vmalloc.h                  | 10 +++
+>   init/main.c                              |  1 -
+>   mm/ioremap.c                             | 96 +++++++++++-------------
+>   7 files changed, 73 insertions(+), 77 deletions(-)
+> 
+> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> index 75df62fea1b6..bbb3ccf6a7ce 100644
+> --- a/arch/arm64/mm/mmu.c
+> +++ b/arch/arm64/mm/mmu.c
+> @@ -1304,12 +1304,13 @@ void *__init fixmap_remap_fdt(phys_addr_t dt_phys, int *size, pgprot_t prot)
+>   	return dt_virt;
+>   }
+>   
+> -int __init arch_ioremap_p4d_supported(void)
+> +#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+> +bool arch_vmap_p4d_supported(pgprot_t prot)
+>   {
+> -	return 0;
+> +	return false;
+>   }
+>   
+> -int __init arch_ioremap_pud_supported(void)
+> +bool arch_vmap_pud_supported(pgprot_t prot)
+>   {
+>   	/*
+>   	 * Only 4k granule supports level 1 block mappings.
+> @@ -1319,11 +1320,12 @@ int __init arch_ioremap_pud_supported(void)
+>   	       !IS_ENABLED(CONFIG_PTDUMP_DEBUGFS);
+>   }
+>   
+> -int __init arch_ioremap_pmd_supported(void)
+> +bool arch_vmap_pmd_supported(pgprot_t prot)
+>   {
+> -	/* See arch_ioremap_pud_supported() */
+> +	/* See arch_vmap_pud_supported() */
+>   	return !IS_ENABLED(CONFIG_PTDUMP_DEBUGFS);
+>   }
+> +#endif
+>   
+>   int pud_set_huge(pud_t *pudp, phys_addr_t phys, pgprot_t prot)
+>   {
+> diff --git a/arch/powerpc/mm/book3s64/radix_pgtable.c b/arch/powerpc/mm/book3s64/radix_pgtable.c
+> index ae823bba29f2..7d3a620c5adf 100644
+> --- a/arch/powerpc/mm/book3s64/radix_pgtable.c
+> +++ b/arch/powerpc/mm/book3s64/radix_pgtable.c
+> @@ -1182,13 +1182,14 @@ void radix__ptep_modify_prot_commit(struct vm_area_struct *vma,
+>   	set_pte_at(mm, addr, ptep, pte);
+>   }
+>   
+> -int __init arch_ioremap_pud_supported(void)
+> +#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+> +bool arch_vmap_pud_supported(pgprot_t prot)
+>   {
+>   	/* HPT does not cope with large pages in the vmalloc area */
+>   	return radix_enabled();
+>   }
+>   
+> -int __init arch_ioremap_pmd_supported(void)
+> +bool arch_vmap_pmd_supported(pgprot_t prot)
+>   {
+>   	return radix_enabled();
+>   }
+> @@ -1197,6 +1198,7 @@ int p4d_free_pud_page(p4d_t *p4d, unsigned long addr)
+>   {
+>   	return 0;
+>   }
+> +#endif
+>   
+>   int pud_set_huge(pud_t *pud, phys_addr_t addr, pgprot_t prot)
+>   {
+> @@ -1282,7 +1284,7 @@ int pmd_free_pte_page(pmd_t *pmd, unsigned long addr)
+>   	return 1;
+>   }
+>   
+> -int __init arch_ioremap_p4d_supported(void)
+> +bool arch_vmap_p4d_supported(pgprot_t prot)
+>   {
+> -	return 0;
+> +	return false;
+>   }
+> diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
+> index 84d85dbd1dad..5b8b495ab4ed 100644
+> --- a/arch/x86/mm/ioremap.c
+> +++ b/arch/x86/mm/ioremap.c
+> @@ -481,24 +481,26 @@ void iounmap(volatile void __iomem *addr)
+>   }
+>   EXPORT_SYMBOL(iounmap);
+>   
+> -int __init arch_ioremap_p4d_supported(void)
+> +#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+> +bool arch_vmap_p4d_supported(pgprot_t prot)
+>   {
+> -	return 0;
+> +	return false;
+>   }
+>   
+> -int __init arch_ioremap_pud_supported(void)
+> +bool arch_vmap_pud_supported(pgprot_t prot)
+>   {
+>   #ifdef CONFIG_X86_64
+>   	return boot_cpu_has(X86_FEATURE_GBPAGES);
+>   #else
+> -	return 0;
+> +	return false;
+>   #endif
+>   }
+>   
+> -int __init arch_ioremap_pmd_supported(void)
+> +bool arch_vmap_pmd_supported(pgprot_t prot)
+>   {
+>   	return boot_cpu_has(X86_FEATURE_PSE);
+>   }
+> +#endif
+>   
+>   /*
+>    * Convert a physical pointer to a virtual kernel pointer for /dev/mem
+> diff --git a/include/linux/io.h b/include/linux/io.h
+> index 8394c56babc2..f1effd4d7a3c 100644
+> --- a/include/linux/io.h
+> +++ b/include/linux/io.h
+> @@ -31,15 +31,6 @@ static inline int ioremap_page_range(unsigned long addr, unsigned long end,
+>   }
+>   #endif
+>   
+> -#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+> -void __init ioremap_huge_init(void);
+> -int arch_ioremap_p4d_supported(void);
+> -int arch_ioremap_pud_supported(void);
+> -int arch_ioremap_pmd_supported(void);
+> -#else
+> -static inline void ioremap_huge_init(void) { }
+> -#endif
+> -
+>   /*
+>    * Managed iomap interface
+>    */
+> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+> index 0221f852a7e1..787d77ad7536 100644
+> --- a/include/linux/vmalloc.h
+> +++ b/include/linux/vmalloc.h
+> @@ -84,6 +84,16 @@ struct vmap_area {
+>   	};
+>   };
+>   
+> +#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+> +bool arch_vmap_p4d_supported(pgprot_t prot);
+> +bool arch_vmap_pud_supported(pgprot_t prot);
+> +bool arch_vmap_pmd_supported(pgprot_t prot);
+> +#else
+> +static inline bool arch_vmap_p4d_supported(pgprot_t prot) { return false; }
+> +static inline bool arch_vmap_pud_supported(pgprot_t prot) { return false; }
+> +static inline bool arch_vmap_pmd_supported(pgprot_t prot) { return false; }
+> +#endif
+> +
+>   /*
+>    *	Highlevel APIs for driver use
+>    */
+> diff --git a/init/main.c b/init/main.c
+> index ae78fb68d231..1c89aa127b8f 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -820,7 +820,6 @@ static void __init mm_init(void)
+>   	pgtable_init();
+>   	debug_objects_mem_init();
+>   	vmalloc_init();
+> -	ioremap_huge_init();
+>   	/* Should be run before the first non-init thread is created */
+>   	init_espfix_bsp();
+>   	/* Should be run after espfix64 is set up. */
+> diff --git a/mm/ioremap.c b/mm/ioremap.c
+> index 6016ae3227ad..b0032dbadaf7 100644
+> --- a/mm/ioremap.c
+> +++ b/mm/ioremap.c
+> @@ -16,49 +16,16 @@
+>   #include "pgalloc-track.h"
+>   
+>   #ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+> -static int __read_mostly ioremap_p4d_capable;
+> -static int __read_mostly ioremap_pud_capable;
+> -static int __read_mostly ioremap_pmd_capable;
+> -static int __read_mostly ioremap_huge_disabled;
+> +static bool __ro_after_init iomap_allow_huge = true;
+>   
+>   static int __init set_nohugeiomap(char *str)
+>   {
+> -	ioremap_huge_disabled = 1;
+> +	iomap_allow_huge = false;
+>   	return 0;
+>   }
+>   early_param("nohugeiomap", set_nohugeiomap);
+> -
+> -void __init ioremap_huge_init(void)
+> -{
+> -	if (!ioremap_huge_disabled) {
+> -		if (arch_ioremap_p4d_supported())
+> -			ioremap_p4d_capable = 1;
+> -		if (arch_ioremap_pud_supported())
+> -			ioremap_pud_capable = 1;
+> -		if (arch_ioremap_pmd_supported())
+> -			ioremap_pmd_capable = 1;
+> -	}
+> -}
+> -
+> -static inline int ioremap_p4d_enabled(void)
+> -{
+> -	return ioremap_p4d_capable;
+> -}
+> -
+> -static inline int ioremap_pud_enabled(void)
+> -{
+> -	return ioremap_pud_capable;
+> -}
+> -
+> -static inline int ioremap_pmd_enabled(void)
+> -{
+> -	return ioremap_pmd_capable;
+> -}
+> -
+> -#else	/* !CONFIG_HAVE_ARCH_HUGE_VMAP */
+> -static inline int ioremap_p4d_enabled(void) { return 0; }
+> -static inline int ioremap_pud_enabled(void) { return 0; }
+> -static inline int ioremap_pmd_enabled(void) { return 0; }
+> +#else /* CONFIG_HAVE_ARCH_HUGE_VMAP */
+> +static const bool iomap_allow_huge = false;
+>   #endif	/* CONFIG_HAVE_ARCH_HUGE_VMAP */
+>   
+>   static int vmap_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
+> @@ -81,9 +48,12 @@ static int vmap_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
+>   }
+>   
+>   static int vmap_try_huge_pmd(pmd_t *pmd, unsigned long addr, unsigned long end,
+> -			phys_addr_t phys_addr, pgprot_t prot)
+> +			phys_addr_t phys_addr, pgprot_t prot, unsigned int max_page_shift)
+>   {
+> -	if (!ioremap_pmd_enabled())
+> +	if (max_page_shift < PMD_SHIFT)
+> +		return 0;
+> +
+> +	if (!arch_vmap_pmd_supported(prot))
+>   		return 0;
+>   
+>   	if ((end - addr) != PMD_SIZE)
+> @@ -102,7 +72,8 @@ static int vmap_try_huge_pmd(pmd_t *pmd, unsigned long addr, unsigned long end,
+>   }
+>   
+>   static int vmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
+> -			phys_addr_t phys_addr, pgprot_t prot, pgtbl_mod_mask *mask)
+> +			phys_addr_t phys_addr, pgprot_t prot, unsigned int max_page_shift,
+> +			pgtbl_mod_mask *mask)
+>   {
+>   	pmd_t *pmd;
+>   	unsigned long next;
+> @@ -113,7 +84,7 @@ static int vmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
+>   	do {
+>   		next = pmd_addr_end(addr, end);
+>   
+> -		if (vmap_try_huge_pmd(pmd, addr, next, phys_addr, prot)) {
+> +		if (vmap_try_huge_pmd(pmd, addr, next, phys_addr, prot, max_page_shift)) {
+>   			*mask |= PGTBL_PMD_MODIFIED;
+>   			continue;
+>   		}
+> @@ -125,9 +96,12 @@ static int vmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
+>   }
+>   
+>   static int vmap_try_huge_pud(pud_t *pud, unsigned long addr, unsigned long end,
+> -			phys_addr_t phys_addr, pgprot_t prot)
+> +			phys_addr_t phys_addr, pgprot_t prot, unsigned int max_page_shift)
+>   {
+> -	if (!ioremap_pud_enabled())
+> +	if (max_page_shift < PUD_SHIFT)
+> +		return 0;
+> +
+> +	if (!arch_vmap_pud_supported(prot))
+>   		return 0;
+>   
+>   	if ((end - addr) != PUD_SIZE)
+> @@ -146,7 +120,8 @@ static int vmap_try_huge_pud(pud_t *pud, unsigned long addr, unsigned long end,
+>   }
+>   
+>   static int vmap_pud_range(p4d_t *p4d, unsigned long addr, unsigned long end,
+> -			phys_addr_t phys_addr, pgprot_t prot, pgtbl_mod_mask *mask)
+> +			phys_addr_t phys_addr, pgprot_t prot, unsigned int max_page_shift,
+> +			pgtbl_mod_mask *mask)
+>   {
+>   	pud_t *pud;
+>   	unsigned long next;
+> @@ -157,21 +132,24 @@ static int vmap_pud_range(p4d_t *p4d, unsigned long addr, unsigned long end,
+>   	do {
+>   		next = pud_addr_end(addr, end);
+>   
+> -		if (vmap_try_huge_pud(pud, addr, next, phys_addr, prot)) {
+> +		if (vmap_try_huge_pud(pud, addr, next, phys_addr, prot, max_page_shift)) {
+>   			*mask |= PGTBL_PUD_MODIFIED;
+>   			continue;
+>   		}
+>   
+> -		if (vmap_pmd_range(pud, addr, next, phys_addr, prot, mask))
+> +		if (vmap_pmd_range(pud, addr, next, phys_addr, prot, max_page_shift, mask))
+>   			return -ENOMEM;
+>   	} while (pud++, phys_addr += (next - addr), addr = next, addr != end);
+>   	return 0;
+>   }
+>   
+>   static int vmap_try_huge_p4d(p4d_t *p4d, unsigned long addr, unsigned long end,
+> -			phys_addr_t phys_addr, pgprot_t prot)
+> +			phys_addr_t phys_addr, pgprot_t prot, unsigned int max_page_shift)
+>   {
+> -	if (!ioremap_p4d_enabled())
+> +	if (max_page_shift < P4D_SHIFT)
+> +		return 0;
+> +
+> +	if (!arch_vmap_p4d_supported(prot))
+>   		return 0;
+>   
+>   	if ((end - addr) != P4D_SIZE)
+> @@ -190,7 +168,8 @@ static int vmap_try_huge_p4d(p4d_t *p4d, unsigned long addr, unsigned long end,
+>   }
+>   
+>   static int vmap_p4d_range(pgd_t *pgd, unsigned long addr, unsigned long end,
+> -			phys_addr_t phys_addr, pgprot_t prot, pgtbl_mod_mask *mask)
+> +			phys_addr_t phys_addr, pgprot_t prot, unsigned int max_page_shift,
+> +			pgtbl_mod_mask *mask)
+>   {
+>   	p4d_t *p4d;
+>   	unsigned long next;
+> @@ -201,18 +180,19 @@ static int vmap_p4d_range(pgd_t *pgd, unsigned long addr, unsigned long end,
+>   	do {
+>   		next = p4d_addr_end(addr, end);
+>   
+> -		if (vmap_try_huge_p4d(p4d, addr, next, phys_addr, prot)) {
+> +		if (vmap_try_huge_p4d(p4d, addr, next, phys_addr, prot, max_page_shift)) {
+>   			*mask |= PGTBL_P4D_MODIFIED;
+>   			continue;
+>   		}
+>   
+> -		if (vmap_pud_range(p4d, addr, next, phys_addr, prot, mask))
+> +		if (vmap_pud_range(p4d, addr, next, phys_addr, prot, max_page_shift, mask))
+>   			return -ENOMEM;
+>   	} while (p4d++, phys_addr += (next - addr), addr = next, addr != end);
+>   	return 0;
+>   }
+>   
+> -int ioremap_page_range(unsigned long addr, unsigned long end, phys_addr_t phys_addr, pgprot_t prot)
+> +static int vmap_range(unsigned long addr, unsigned long end, phys_addr_t phys_addr, pgprot_t prot,
+> +			unsigned int max_page_shift)
+>   {
+>   	pgd_t *pgd;
+>   	unsigned long start;
+> @@ -227,7 +207,7 @@ int ioremap_page_range(unsigned long addr, unsigned long end, phys_addr_t phys_a
+>   	pgd = pgd_offset_k(addr);
+>   	do {
+>   		next = pgd_addr_end(addr, end);
+> -		err = vmap_p4d_range(pgd, addr, next, phys_addr, prot, &mask);
+> +		err = vmap_p4d_range(pgd, addr, next, phys_addr, prot, max_page_shift, &mask);
+>   		if (err)
+>   			break;
+>   	} while (pgd++, phys_addr += (next - addr), addr = next, addr != end);
+> @@ -240,6 +220,16 @@ int ioremap_page_range(unsigned long addr, unsigned long end, phys_addr_t phys_a
+>   	return err;
+>   }
+>   
+> +int ioremap_page_range(unsigned long addr, unsigned long end, phys_addr_t phys_addr, pgprot_t prot)
+> +{
+> +	unsigned int max_page_shift = PAGE_SHIFT;
+> +
+> +	if (iomap_allow_huge)
+> +		max_page_shift = P4D_SHIFT;
+> +
+> +	return vmap_range(addr, end, phys_addr, prot, max_page_shift);
+> +}
+> +
+>   #ifdef CONFIG_GENERIC_IOREMAP
+>   void __iomem *ioremap_prot(phys_addr_t addr, size_t size, unsigned long prot)
+>   {
+> 
