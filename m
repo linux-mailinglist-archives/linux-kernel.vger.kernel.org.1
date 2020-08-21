@@ -2,143 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 666F924D95F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F4524D963
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726767AbgHUQGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 12:06:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgHUQG1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:06:27 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63DA5C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 09:06:27 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id a13so1064716vso.12
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 09:06:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b7LMvTJRCBEy3uOnWRZT0zK9P07GM4iF4nxCqVfim8k=;
-        b=XM5WiqUM8GbZZWeaOuKkTmam3WvoxctYZV5DRa4dkgylCOr+Rseuisg062z5LgeG1P
-         cJco8xFaQWvWV6H3T8sJ69chqVgjazfM6SdYNODrXvyRCEDvLw4btsIpd5YUgypTUdml
-         RkmTqQ2iD7gVLxv/e3DZyo47BC2INp7QfIxaOytfUXR5OSBrGLA6OP+8fHfHPkbiUfgp
-         pvjPpGCCaZ71NEql+Gt2TnaXEJwgpYPyKjP7H0voySET5Ym5fEno9kR2UG63FDovPsl/
-         0neZla1O0l+BnfvPd39VsViQUkTk2cLtmnx38rn9B5h47bipQXkmULEYWC0iNy2DdzTw
-         31Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b7LMvTJRCBEy3uOnWRZT0zK9P07GM4iF4nxCqVfim8k=;
-        b=HfWYmimHIUyn1YSE/xEaaWJtmXYjNP8PEHlRsCMYtmphiwj5is25AuA/4dhrX7h/cZ
-         iblm+Lz9AtEdBQu3Fs71/2nvS7RMTH/okFKbPE3c8d3PqoixGmeINqwDtokd8JzkJanA
-         bEMZ4ohT0FMw3XxhBathBwte99OZ/UDORQwS8dsXRNtBzdCAfiNordro52KbiUp3F5A+
-         +R5MAnxtHXj07Vfm/WGMV+TvDeFq7zyCSHmkPgQFd9UTPyyPpZbLd8sLOVB1azA98oSL
-         jgSVIu7t7T2ihlC68RxtPKgC9XcWiKVID5A6KhhGlwGxFFc/dbP7Ql45fJDpYFyB4MPA
-         nc2g==
-X-Gm-Message-State: AOAM531rU4xXw96ivqkM8EpPM3QsrQlbtjOflF9Y7RC03IM2z9S3/BtZ
-        h2ZChv3XMeKDZOqbdtPglX9kP/ZmEW0maCJrICghVQ==
-X-Google-Smtp-Source: ABdhPJwJp9Y7eAvqM2EcEoZSaYF8tzqoAMXUXqdQJN+Vexb2/46sXF/P38JLaCGmhGPvKT+DFFarr66O1p/K/nONX9o=
-X-Received: by 2002:a67:ff92:: with SMTP id v18mr2543591vsq.221.1598025985891;
- Fri, 21 Aug 2020 09:06:25 -0700 (PDT)
+        id S1726347AbgHUQIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 12:08:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36440 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725834AbgHUQIB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 12:08:01 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 779ADB705;
+        Fri, 21 Aug 2020 16:08:27 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 38E851E1312; Fri, 21 Aug 2020 18:07:59 +0200 (CEST)
+Date:   Fri, 21 Aug 2020 18:07:59 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, Jan Kara <jack@suse.cz>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/7] mm: Add an 'end' parameter to find_get_entries
+Message-ID: <20200821160759.GE3432@quack2.suse.cz>
+References: <20200819150555.31669-1-willy@infradead.org>
+ <20200819150555.31669-4-willy@infradead.org>
 MIME-Version: 1.0
-References: <87d03lxysr.fsf@x220.int.ebiederm.org> <20200820132631.GK5033@dhcp22.suse.cz>
- <20200820133454.ch24kewh42ax4ebl@wittgenstein> <dcb62b67-5ad6-f63a-a909-e2fa70b240fc@i-love.sakura.ne.jp>
- <20200820140054.fdkbotd4tgfrqpe6@wittgenstein> <637ab0e7-e686-0c94-753b-b97d24bb8232@i-love.sakura.ne.jp>
- <87k0xtv0d4.fsf@x220.int.ebiederm.org> <CAJuCfpHsjisBnNiDNQbm8Yi92cznaptiXYPdc-aVa+_zkuaPhA@mail.gmail.com>
- <20200820162645.GP5033@dhcp22.suse.cz> <87r1s0txxe.fsf@x220.int.ebiederm.org>
- <20200821111558.GG4546@redhat.com> <CAJuCfpF_GhTy5SCjxqyqTFUrJNaw3UGJzCi=WSCXfqPAcbThYg@mail.gmail.com>
-In-Reply-To: <CAJuCfpF_GhTy5SCjxqyqTFUrJNaw3UGJzCi=WSCXfqPAcbThYg@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 21 Aug 2020 09:06:14 -0700
-Message-ID: <CAJuCfpG06_KLhQyg9N84bRQOdvG27uAZ2oBDEQPR-OnZeNJd1w@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm, oom_adj: don't loop through tasks in
- __set_oom_adj when not necessary
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tim Murray <timmurray@google.com>, mingo@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
-        christian@kellner.me, areber@redhat.com,
-        Shakeel Butt <shakeelb@google.com>, cyphar@cyphar.com,
-        adobriyan@gmail.com, Andrew Morton <akpm@linux-foundation.org>,
-        gladkov.alexey@gmail.com, Michel Lespinasse <walken@google.com>,
-        daniel.m.jordan@oracle.com, avagin@gmail.com,
-        bernd.edlinger@hotmail.de,
-        John Johansen <john.johansen@canonical.com>,
-        laoar.shao@gmail.com, Minchan Kim <minchan@kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200819150555.31669-4-willy@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 8:28 AM Suren Baghdasaryan <surenb@google.com> wrote:
->
-> On Fri, Aug 21, 2020 at 4:16 AM Oleg Nesterov <oleg@redhat.com> wrote:
-> >
-> > On 08/20, Eric W. Biederman wrote:
-> > >
-> > > That said if we are going for a small change why not:
-> > >
-> > >       /*
-> > >        * Make sure we will check other processes sharing the mm if this is
-> > >        * not vfrok which wants its own oom_score_adj.
-> > >        * pin the mm so it doesn't go away and get reused after task_unlock
-> > >        */
-> > >       if (!task->vfork_done) {
-> > >               struct task_struct *p = find_lock_task_mm(task);
-> > >
-> > >               if (p) {
-> > > -                     if (atomic_read(&p->mm->mm_users) > 1) {
-> > > +                     if (atomic_read(&p->mm->mm_users) > p->signal->nr_threads) {
-> >
-> > In theory this needs a barrier to avoid the race with do_exit(). And I'd
-> > suggest to use signal->live, I think signal->nr_threads should die...
-> > Something like
-> >
-> >         bool probably_has_other_mm_users(tsk)
-> >         {
-> >                 return  atomic_read_acquire(&tsk->mm->mm_users) >
-> >                         atomic_read(&tsk->signal->live);
-> >         }
-> >
-> > The barrier implied by _acquire ensures that if we race with the exiting
-> > task and see the result of exit_mm()->mmput(mm), then we must also see
-> > the result of atomic_dec_and_test(signal->live).
-> >
-> > Either way, if we want to fix the race with clone(CLONE_VM) we need other
-> > changes.
->
-> The way I understand this condition in __set_oom_adj() sync logic is
-> that we would be ok with false positives (when we loop unnecessarily)
-> but we can't tolerate false negatives (when oom_score_adj gets out of
-> sync). With the clone(CLONE_VM) race not addressed we are allowing
-> false negatives and IMHO that's not acceptable because it creates a
-> possibility for userspace to get an inconsistent picture. When
-> developing the patch I did think about using (p->mm->mm_users >
-> p->signal->nr_threads) condition and had to reject it due to that
-> reason.
->
+On Wed 19-08-20 16:05:51, Matthew Wilcox (Oracle) wrote:
+> This simplifies the callers and leads to a more efficient implementation
+> since the XArray has this functionality already.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Actually, reviewing again and considering where list_add_tail_rcu is
-happening, maybe the race with clone(CLONE_VM) does not introduce
-false negatives. However a false negative I think will happen when a
-task shares mm with another task and also has an additional thread.
-Shared mm will increment mm_users without adding to signal->live and
-the additional thread will advance signal->live without adding to
-mm_users. As a result these increments will balance themselves and
-(mm->mm_users > signal->live) condition will yield false negative.
+The patch looks good to me. Just I'd note that you could drop some:
 
-> >
-> > Oleg.
-> >
+	if (index >= end)
+		break;
+
+checks in shmem_undo_range() as well.
+
+In the past I was considering moving find_get_entries() to the same API as
+find_get_pages_range() has (which is essentially what you do now, but I
+also had 'start' to be a pgoff_t * so that we can return there where the
+iteration ended in the range). But in the end I've decided the churn is not
+worth the few removed lines and didn't push the patch in the end. What you
+did in this patch seems to be a reasonable middle-ground :)
+
+								Honza
+> ---
+>  include/linux/pagemap.h |  4 ++--
+>  mm/filemap.c            |  9 +++++----
+>  mm/shmem.c              | 10 ++++------
+>  mm/swap.c               |  2 +-
+>  4 files changed, 12 insertions(+), 13 deletions(-)
+> 
+> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+> index 7de11dcd534d..3f0dc8d00f2a 100644
+> --- a/include/linux/pagemap.h
+> +++ b/include/linux/pagemap.h
+> @@ -387,8 +387,8 @@ static inline struct page *find_subpage(struct page *head, pgoff_t index)
+>  struct page *find_get_entry(struct address_space *mapping, pgoff_t offset);
+>  struct page *find_lock_entry(struct address_space *mapping, pgoff_t offset);
+>  unsigned find_get_entries(struct address_space *mapping, pgoff_t start,
+> -			  unsigned int nr_entries, struct page **entries,
+> -			  pgoff_t *indices);
+> +		pgoff_t end, unsigned int nr_entries, struct page **entries,
+> +		pgoff_t *indices);
+>  unsigned find_get_pages_range(struct address_space *mapping, pgoff_t *start,
+>  			pgoff_t end, unsigned int nr_pages,
+>  			struct page **pages);
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index 1aaea26556cc..159cf3d6f1ae 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -1742,6 +1742,7 @@ EXPORT_SYMBOL(pagecache_get_page);
+>   * find_get_entries - gang pagecache lookup
+>   * @mapping:	The address_space to search
+>   * @start:	The starting page cache index
+> + * @end:	The highest page cache index to return.
+>   * @nr_entries:	The maximum number of entries
+>   * @entries:	Where the resulting entries are placed
+>   * @indices:	The cache indices corresponding to the entries in @entries
+> @@ -1765,9 +1766,9 @@ EXPORT_SYMBOL(pagecache_get_page);
+>   *
+>   * Return: the number of pages and shadow entries which were found.
+>   */
+> -unsigned find_get_entries(struct address_space *mapping,
+> -			  pgoff_t start, unsigned int nr_entries,
+> -			  struct page **entries, pgoff_t *indices)
+> +unsigned find_get_entries(struct address_space *mapping, pgoff_t start,
+> +		pgoff_t end, unsigned int nr_entries, struct page **entries,
+> +		pgoff_t *indices)
+>  {
+>  	XA_STATE(xas, &mapping->i_pages, start);
+>  	struct page *page;
+> @@ -1777,7 +1778,7 @@ unsigned find_get_entries(struct address_space *mapping,
+>  		return 0;
+>  
+>  	rcu_read_lock();
+> -	xas_for_each(&xas, page, ULONG_MAX) {
+> +	xas_for_each(&xas, page, end) {
+>  		if (xas_retry(&xas, page))
+>  			continue;
+>  		/*
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 0f9f149f4b5e..abdbe61a1aa7 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -906,9 +906,8 @@ static void shmem_undo_range(struct inode *inode, loff_t lstart, loff_t lend,
+>  	pagevec_init(&pvec);
+>  	index = start;
+>  	while (index < end) {
+> -		pvec.nr = find_get_entries(mapping, index,
+> -			min(end - index, (pgoff_t)PAGEVEC_SIZE),
+> -			pvec.pages, indices);
+> +		pvec.nr = find_get_entries(mapping, index, end - 1,
+> +				PAGEVEC_SIZE, pvec.pages, indices);
+>  		if (!pvec.nr)
+>  			break;
+>  		for (i = 0; i < pagevec_count(&pvec); i++) {
+> @@ -977,9 +976,8 @@ static void shmem_undo_range(struct inode *inode, loff_t lstart, loff_t lend,
+>  	while (index < end) {
+>  		cond_resched();
+>  
+> -		pvec.nr = find_get_entries(mapping, index,
+> -				min(end - index, (pgoff_t)PAGEVEC_SIZE),
+> -				pvec.pages, indices);
+> +		pvec.nr = find_get_entries(mapping, index, end - 1,
+> +				PAGEVEC_SIZE, pvec.pages, indices);
+>  		if (!pvec.nr) {
+>  			/* If all gone or hole-punch or unfalloc, we're done */
+>  			if (index == start || end != -1)
+> diff --git a/mm/swap.c b/mm/swap.c
+> index d16d65d9b4e0..fcf6ccb94b09 100644
+> --- a/mm/swap.c
+> +++ b/mm/swap.c
+> @@ -1060,7 +1060,7 @@ unsigned pagevec_lookup_entries(struct pagevec *pvec,
+>  				pgoff_t start, unsigned nr_entries,
+>  				pgoff_t *indices)
+>  {
+> -	pvec->nr = find_get_entries(mapping, start, nr_entries,
+> +	pvec->nr = find_get_entries(mapping, start, ULONG_MAX, nr_entries,
+>  				    pvec->pages, indices);
+>  	return pagevec_count(pvec);
+>  }
+> -- 
+> 2.28.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
