@@ -2,141 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB2724D423
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 13:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAD9924D47A
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 13:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728284AbgHULiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 07:38:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38010 "EHLO mx2.suse.de"
+        id S1728513AbgHULup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 07:50:45 -0400
+Received: from mga02.intel.com ([134.134.136.20]:14287 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728015AbgHULhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 07:37:23 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7F617B800;
-        Fri, 21 Aug 2020 11:37:39 +0000 (UTC)
-Date:   Fri, 21 Aug 2020 13:37:10 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Arpitha Raghunandan <98.arpi@gmail.com>, brendanhiggins@google.com,
-        skhan@linuxfoundation.org, andriy.shevchenko@linux.intel.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH] lib: Convert test_printf.c to KUnit
-Message-ID: <20200821113710.GA26290@alley>
-References: <20200817043028.76502-1-98.arpi@gmail.com>
- <f408efbd-10f7-f1dd-9baa-0f1233cafffc@rasmusvillemoes.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f408efbd-10f7-f1dd-9baa-0f1233cafffc@rasmusvillemoes.dk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1728550AbgHULju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 07:39:50 -0400
+IronPort-SDR: Y5K4zKlOqOXhkIeHxmflq9y3e5V83CXMLAo/MW/tfKfYTOU+bl4WBf53W+3yEKl3KDe7nC19tG
+ LfiJ5wHc59Cw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9719"; a="143305569"
+X-IronPort-AV: E=Sophos;i="5.76,335,1592895600"; 
+   d="scan'208";a="143305569"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2020 04:39:39 -0700
+IronPort-SDR: 8Sf87sfsDKabPw+QBy4GE2Sn2+XhoMzh7YDQ/CEJfaG8d3zBCBccMrQcd9YCuyf3tak5HIeRjv
+ BROt9xdMvj8A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,335,1592895600"; 
+   d="scan'208";a="327740407"
+Received: from wwanmoha-ilbpg2.png.intel.com ([10.88.227.42])
+  by orsmga008.jf.intel.com with ESMTP; 21 Aug 2020 04:39:37 -0700
+From:   Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
+To:     kishon@ti.com, vkoul@kernel.org, robh+dt@kernel.org,
+        andriy.shevchenko@intel.com, eswara.kota@linux.intel.com,
+        vadivel.muruganx.ramuthevar@linux.intel.com,
+        lakshmi.bai.raja.subramanian@intel.com
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH v7 0/3] phy: intel: Add Keem Bay eMMC PHY support
+Date:   Fri, 21 Aug 2020 19:37:44 +0800
+Message-Id: <20200821113747.2912-1-wan.ahmad.zainie.wan.mohamad@intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2020-08-17 09:06:32, Rasmus Villemoes wrote:
-> On 17/08/2020 06.30, Arpitha Raghunandan wrote:
-> > Converts test lib/test_printf.c to KUnit.
-> > More information about KUnit can be found at
-> > https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html.
-> > KUnit provides a common framework for unit tests in the kernel.
-> 
-> So I can continue to build a kernel with some appropriate CONFIG set to
-> y, boot it under virt-me, run dmesg and see if I broke printf? That's
-> what I do now, and I don't want to have to start using some enterprisy
-> framework.
+Hi.
 
-I had the same concern. I have tried it. It compiled a module called
-printf_kunit.c.
+The first patch is new and added to rename rename
+phy-intel-{combo,emmc}.c to phy-intel-lgm-{combo,emmc}.c..
 
-    #> modprobe printf_kunit
+The second patch is to document DT bindings for Keem Bay eMMC PHY.
 
-produced the following in dmesg:
+The the third is the driver file, loosely based on phy-rockchip-emmc.c
+and phy-intel-emmc.c. The latter is not being reused as there are
+quite a number of differences i.e. registers offset, supported clock
+rates, bitfield to set.
 
-[   60.931175] printf_kunit: module verification failed: signature and/or required key missing - tainting kernel
-[   60.942209] TAP version 14
-[   60.945197]     # Subtest: printf-kunit-test
-[   60.945200]     1..1
-[   60.951092]     ok 1 - selftest
-[   60.953414] ok 1 - printf-kunit-test
+The patch was tested with Keem Bay evaluation module board.
 
-I could live with the above. Then I tried to break a test by the following change:
+Thank you.
 
+Best regards,
+Zainie
 
-diff --git a/lib/printf_kunit.c b/lib/printf_kunit.c
-index 68ac5f9b8d28..1689dadd70a3 100644
---- a/lib/printf_kunit.c
-+++ b/lib/printf_kunit.c
-@@ -395,7 +395,7 @@ ip4(struct kunit *kunittest)
-        sa.sin_port = cpu_to_be16(12345);
-        sa.sin_addr.s_addr = cpu_to_be32(0x7f000001);
- 
--       test(kunittest, "127.000.000.001|127.0.0.1", "%pi4|%pI4", &sa.sin_addr, &sa.sin_addr);
-+       test(kunittest, "127-000.000.001|127.0.0.1", "%pi4|%pI4", &sa.sin_addr, &sa.sin_addr);
-        test(kunittest, "127.000.000.001|127.0.0.1", "%piS|%pIS", &sa, &sa);
-        sa.sin_addr.s_addr = cpu_to_be32(0x01020304);
-        test(kunittest, "001.002.003.004:12345|1.2.3.4:12345", "%piSp|%pISp", &sa, &sa);
+Changes since v6:
+- Add new patch to rename phy-intel-{combo,emmc}.c to
+  phy-intel-lgm-{combo,emmc}.c.
+- Add Reviewed-by: Rob Herring <robh@kernel.org> tag to 2nd patch.
+- In 3rd patch,
+  - add and use generic helper to update register bits,
+  - end module name with .ko in Kconfig help.
 
+Changes since resend v5:
+- In keembay_emmc_phy_power(), remove redundant return ret;.
 
-It produced::
+Resend v5:
+- Include missing changes done for phy-keembay-emmc.c (See Changes since
+  v3)
 
-[   56.786858] TAP version 14
-[   56.787493]     # Subtest: printf-kunit-test
-[   56.787494]     1..1
-[   56.788612]     # selftest: EXPECTATION FAILED at lib/printf_kunit.c:76
-                   Expected memcmp(test_buffer, expect, written) == 0, but
-                       memcmp(test_buffer, expect, written) == 1
-                       0 == 0
-               vsnprintf(buf, 256, "%pi4|%pI4", ...) wrote '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
-[   56.795433]     # selftest: EXPECTATION FAILED at lib/printf_kunit.c:76
-                   Expected memcmp(test_buffer, expect, written) == 0, but
-                       memcmp(test_buffer, expect, written) == 1
-                       0 == 0
-               vsnprintf(buf, 20, "%pi4|%pI4", ...) wrote '127.000.000.001|127', expected '127-000.000.001|127'
-[   56.800909]     # selftest: EXPECTATION FAILED at lib/printf_kunit.c:108
-                   Expected memcmp(p, expect, elen+1) == 0, but
-                       memcmp(p, expect, elen+1) == 1
-                       0 == 0
-               kvasprintf(..., "%pi4|%pI4", ...) returned '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
-[   56.806497]     not ok 1 - selftest
-[   56.806497] not ok 1 - printf-kunit-test
+Changes since v4:
+- In Kconfig file, add depends on ARM64 || COMPILE_TEST and
+  depends on OF && HAS_IOMEM.
+- In Kconfig file, reword the help section to be more verbose.
 
-while the original code would have written the following error messages:
+Changes since v3:
+- Exit keembay_emmc_phy_power() with return ret;.
+- In keembay_emmc_phy_init(), use PTR_ERR_OR_ZERO(...).
+- In keembay_emmc_phy_probe(), devm_regmap_init_mmio(...) in single
+  line.
 
-[   95.859225] test_printf: loaded.
-[   95.860031] test_printf: vsnprintf(buf, 256, "%pi4|%pI4", ...) wrote '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
-[   95.862630] test_printf: vsnprintf(buf, 6, "%pi4|%pI4", ...) wrote '127.0', expected '127-0'
-[   95.864118] test_printf: kvasprintf(..., "%pi4|%pI4", ...) returned '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
-[   95.866589] test_printf: failed 3 out of 388 tests
+Changes since v2:
+- Modify DT example to use single cell for address and size.
+
+Changes since v1:
+- Rework phy-keembay-emmc.c to make it similar to phy-intel-emmc.c.
+- Use regmap_mmio, and remove reference to intel,syscon.
+- Use node name phy@....
+- Update license i.e. use dual license.
 
 
-Even the error output is acceptable for me. I am just curious why
-the 2nd failure is different:
+Wan Ahmad Zainie (3):
+  phy: intel: Rename phy-intel to phy-intel-lgm
+  dt-bindings: phy: intel: Add Keem Bay eMMC PHY bindings
+  phy: intel: Add Keem Bay eMMC PHY support
 
-   + original code: vsnprintf(buf, 6, "%pi4|%pI4", ...) wrote '127.0', expected '127-0'
-   + kunit code: vsnprintf(buf, 20, "%pi4|%pI4", ...) wrote '127.000.000.001|127', expected '127-000.000.001|127'   
+ .../bindings/phy/intel,keembay-emmc-phy.yaml  |  44 +++
+ drivers/phy/intel/Kconfig                     |  22 +-
+ drivers/phy/intel/Makefile                    |   5 +-
+ drivers/phy/intel/phy-intel-keembay-emmc.c    | 310 ++++++++++++++++++
+ ...hy-intel-combo.c => phy-intel-lgm-combo.c} |   0
+ ...{phy-intel-emmc.c => phy-intel-lgm-emmc.c} |   0
+ 6 files changed, 374 insertions(+), 7 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/phy/intel,keembay-emmc-phy.yaml
+ create mode 100644 drivers/phy/intel/phy-intel-keembay-emmc.c
+ rename drivers/phy/intel/{phy-intel-combo.c => phy-intel-lgm-combo.c} (100%)
+ rename drivers/phy/intel/{phy-intel-emmc.c => phy-intel-lgm-emmc.c} (100%)
 
+-- 
+2.17.1
 
-I am also a bit scared by the following note at
-https://www.kernel.org/doc/html/latest/dev-tools/kunit/start.html#running-tests-without-the-kunit-wrapper
-
-   "KUnit is not designed for use in a production system, and it’s
-   possible that tests may reduce the stability or security of the
-   system."
-
-What does it mean thay it might reduce stability or security?
-Is it because the tests might cause problems?
-Or because the kunit framework modifies functionality of the running
-system all the time?
-
-
-Best Regards,
-Petr
-
-PS: I still have to look at the code. Anwyay, the comments from Rasmus make
-sense.
