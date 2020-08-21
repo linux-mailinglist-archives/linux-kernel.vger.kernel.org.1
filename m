@@ -2,126 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9D324D8B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0921A24D8BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:36:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728050AbgHUPfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 11:35:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54646 "EHLO
+        id S1728244AbgHUPgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 11:36:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727802AbgHUPfh (ORCPT
+        with ESMTP id S1727887AbgHUPfj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 11:35:37 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0087FC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 08:35:36 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id ds1so975864pjb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 08:35:36 -0700 (PDT)
+        Fri, 21 Aug 2020 11:35:39 -0400
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C36C061755;
+        Fri, 21 Aug 2020 08:35:38 -0700 (PDT)
+Received: by mail-oo1-xc41.google.com with SMTP id z10so426725ooi.10;
+        Fri, 21 Aug 2020 08:35:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=soERAZs9Qqj0stxZ21kcyBQ2mrcQaIYycZ2RGXP4UCc=;
-        b=OfV+SpGv14O8eiiPmbak3/VqcCOP9Svc+4+NW66iyBfeZw0VYn9jzvZx5zJ/Si9JoT
-         ie98uM6X+4gO7ltkaWyLLJ/ZLfDpilz/pNVH+ptOfmPx16/pJ4DFURvLiqHs+sgbLep8
-         BzoHATwNhB5btbStuIJQ9WkhhES9xSiuZ6+1Q=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=SvUQuk+rHgKISg+6rb+6W/mr4lYNsMnpLOa6G9AwJ1k=;
+        b=VeDmOiCow0mnT8FwybNdZNdmwHM2Nu0d+jxGDzRFEBreEuwDNzBsHYMi3OGjADf/WL
+         YjvK83iGfIihAMZU577sHMRfCZIHvObAEnmuAhL9UlEJDAPMFaWfko9cXASi+SrK+D1I
+         THcCYYk007Lily9BKDaRpdZcPj1YhDyCEXZo0OJmgtA2FSeEt/G+5IPEDmK7mv/SyLvx
+         SvqmzjPRMgslq1aPelOa36DYtxKO1Eq9coXEbMtEGZn2wj3Wxj4WIpNRsJPWlkSldgvE
+         g+I0QKt8GmyTcCrjTaBUkVcrJRjPT9PiNsNL5gp1DdiQk5BApdo9V25Ik4FjNfhkB8UK
+         tgTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=soERAZs9Qqj0stxZ21kcyBQ2mrcQaIYycZ2RGXP4UCc=;
-        b=B7kjEuL3FJb35uJaeAp9hrKNvS38hSKyjQUzj22kVNmsaTDEoLLZ5xF+MTr1kkcKFX
-         SFTywDUX9bxQu4luaj2rGuezCaJVXrY1p/OLpe7q0pdASfO7qUlzUglgonWsIKMGr2Lv
-         fHzA5FHAFXKaHZAxpvvR6SUU/J7v7p8AF5+3iiy/f4zntIv4Mhgg/c1eOHnUttQBU/UP
-         WXXsmsNysrFqjjSCKUaB///RWRkjW0T0i2En4+K9p6cyV2ncrLfsVvWk7TULM2mUs6x4
-         UNyHi5OUjCYK15xMvKnzFgPiuPqXjMFlIveHyEJWJJmP13C5FvwGsSgrhS2uEyjinX3U
-         o8lw==
-X-Gm-Message-State: AOAM532FIkcJW6br7sPjpNtgCM9faisENYKnuy58wciFYp0onXTY66Yh
-        k8QLPmwIx2cJfhf5o9n7oYc1N1R7hHxSfA==
-X-Google-Smtp-Source: ABdhPJz5/8mxA1qiicGG2N+7IOeZNeMhwEcpWMGEM59KuhuEqOcUCsU/8VVBUQ8LHzl67/I3gKACyw==
-X-Received: by 2002:a17:90a:de83:: with SMTP id n3mr2784787pjv.62.1598024136533;
-        Fri, 21 Aug 2020 08:35:36 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id u8sm2200720pjy.35.2020.08.21.08.35.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 08:35:36 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, robdclark@chromium.org,
-        Douglas Anderson <dianders@chromium.org>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] drm: panel: simple: Add KD116N21-30NV-A010
-Date:   Fri, 21 Aug 2020 08:35:15 -0700
-Message-Id: <20200821083454.2.Idf25356dff4b36c62704188c3e3d39a2010d6f6a@changeid>
-X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
-In-Reply-To: <20200821083454.1.I61e6248813d797c9eeebfbb7019c713aa71c4419@changeid>
-References: <20200821083454.1.I61e6248813d797c9eeebfbb7019c713aa71c4419@changeid>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=SvUQuk+rHgKISg+6rb+6W/mr4lYNsMnpLOa6G9AwJ1k=;
+        b=MrrUxhn1+djYQUidM+JG7fJcFL5zNKWQ4hJd0xlLUTT8E16ACAytJkPm0HmzpZn98f
+         /TpPlImRC4sctBeBJiZNY0dhnBslaDrejW1aSs+PQeLA5gDs7OvJdlpHByRNCJrgsEnX
+         JY0uA73Hyw20Dfgw8YH99xWbNmWv+fSXphO3O5b0iRvemyNAy9vFjRwgAP4rEcxtjMa+
+         7DcKnIhOoPtZu1JMo9qctnSdnPtCjG9DZ5DpmzCAMY8B5n1jRqnN6P44/Dq4xiRG+oIK
+         HvBPuC3mE80si4Se0PGPwR7bCg2510E7f2Vyvtn/SRZuXN8yPtwUcSTzKxX4E5ztmNoA
+         dF3w==
+X-Gm-Message-State: AOAM531MhJCmrj0KitQp+hf+8g4dKm3VQXlZ7fvWPkjtrAOtT7k3uBso
+        WVDpG24O9sBagAbSxlVktT80b//1WgQUb2P+OzU=
+X-Google-Smtp-Source: ABdhPJyov7PitoQCwzWl7xrkZh9OAU4RlTH38R5BCXsvGrRreeAMvQAD9kuLnTlUJ8EEEvouO3cz6v1UEghxWwmN76g=
+X-Received: by 2002:a4a:9f93:: with SMTP id z19mr2563687ool.58.1598024135515;
+ Fri, 21 Aug 2020 08:35:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200821140836.3707282-1-tweek@google.com> <20200821140836.3707282-3-tweek@google.com>
+In-Reply-To: <20200821140836.3707282-3-tweek@google.com>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Date:   Fri, 21 Aug 2020 11:35:24 -0400
+Message-ID: <CAEjxPJ7TP7mvKFDBfP51n8hNzdGFuME8YJ-yT1_VngDufajQKw@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] selinux: add basic filtering for audit trace events
+To:     =?UTF-8?Q?Thi=C3=A9baud_Weksteen?= <tweek@google.com>
+Cc:     Paul Moore <paul@paul-moore.com>, Nick Kralevich <nnk@google.com>,
+        Peter Enderborg <peter.enderborg@sony.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Values come from the vendor and have been tested on hardware.
+On Fri, Aug 21, 2020 at 10:09 AM Thi=C3=A9baud Weksteen <tweek@google.com> =
+wrote:
+>
+> From: Peter Enderborg <peter.enderborg@sony.com>
+>
+> This patch adds further attributes to the event. These attributes are
+> helpful to understand the context of the message and can be used
+> to filter the events.
+>
+> There are three common items. Source context, target context and tclass.
+> There are also items from the outcome of operation performed.
+>
+> An event is similar to:
+>            <...>-1309  [002] ....  6346.691689: selinux_audited:
+>        requested=3D0x4000000 denied=3D0x4000000 audited=3D0x4000000
+>        result=3D-13
+>        scontext=3Dsystem_u:system_r:cupsd_t:s0-s0:c0.c1023
+>        tcontext=3Dsystem_u:object_r:bin_t:s0 tclass=3Dfile
+>
+> With systems where many denials are occurring, it is useful to apply a
+> filter. The filtering is a set of logic that is inserted with
+> the filter file. Example:
+>  echo "tclass=3D=3D\"file\" " > events/avc/selinux_audited/filter
+>
+> This adds that we only get tclass=3Dfile.
+>
+> The trace can also have extra properties. Adding the user stack
+> can be done with
+>    echo 1 > options/userstacktrace
+>
+> Now the output will be
+>          runcon-1365  [003] ....  6960.955530: selinux_audited:
+>      requested=3D0x4000000 denied=3D0x4000000 audited=3D0x4000000
+>      result=3D-13
+>      scontext=3Dsystem_u:system_r:cupsd_t:s0-s0:c0.c1023
+>      tcontext=3Dsystem_u:object_r:bin_t:s0 tclass=3Dfile
+>           runcon-1365  [003] ....  6960.955560: <user stack trace>
+>  =3D>  <00007f325b4ce45b>
+>  =3D>  <00005607093efa57>
+>
+> Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
+> Reviewed-by: Thi=C3=A9baud Weksteen <tweek@google.com>
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-
- drivers/gpu/drm/panel/panel-simple.c | 31 ++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
-
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 4eabfdd3be2d..f499de71ab3d 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -2341,6 +2341,34 @@ static const struct panel_desc ivo_m133nwf4_r0 = {
- 	.connector_type = DRM_MODE_CONNECTOR_eDP,
- };
- 
-+static const struct drm_display_mode kingdisplay_kd116n21_30nv_a010_mode = {
-+	.clock = 81000,
-+	.hdisplay = 1366,
-+	.hsync_start = 1366 + 40,
-+	.hsync_end = 1366 + 40 + 32,
-+	.htotal = 1366 + 40 + 32 + 62,
-+	.vdisplay = 768,
-+	.vsync_start = 768 + 5,
-+	.vsync_end = 768 + 5 + 5,
-+	.vtotal = 768 + 5 + 5 + 122,
-+	.flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
-+};
-+
-+static const struct panel_desc kingdisplay_kd116n21_30nv_a010 = {
-+	.modes = &kingdisplay_kd116n21_30nv_a010_mode,
-+	.num_modes = 1,
-+	.bpc = 6,
-+	.size = {
-+		.width = 256,
-+		.height = 144,
-+	},
-+	.delay = {
-+		.hpd_absent_delay = 200,
-+	},
-+	.bus_format = MEDIA_BUS_FMT_RGB666_1X18,
-+	.connector_type = DRM_MODE_CONNECTOR_eDP,
-+};
-+
- static const struct display_timing koe_tx14d24vm1bpa_timing = {
- 	.pixelclock = { 5580000, 5850000, 6200000 },
- 	.hactive = { 320, 320, 320 },
-@@ -4047,6 +4075,9 @@ static const struct of_device_id platform_of_match[] = {
- 	}, {
- 		.compatible = "ivo,m133nwf4-r0",
- 		.data = &ivo_m133nwf4_r0,
-+	}, {
-+		.compatible = "kingdisplay,kd116n21-30nv-a010",
-+		.data = &kingdisplay_kd116n21_30nv_a010,
- 	}, {
- 		.compatible = "koe,tx14d24vm1bpa",
- 		.data = &koe_tx14d24vm1bpa,
--- 
-2.28.0.297.g1956fa8f8d-goog
-
+Acked-by: Stephen Smalley <stephen.smalley.work@gmail.com>
