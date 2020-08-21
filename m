@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0807024E013
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A64A24E015
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbgHUSzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 14:55:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57222 "EHLO
+        id S1726943AbgHUSzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 14:55:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726627AbgHUSyZ (ORCPT
+        with ESMTP id S1726740AbgHUSyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 21 Aug 2020 14:54:25 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57CCEC061795
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A282DC061796
         for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:54:15 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id j10so1069826qvo.13
+Received: by mail-qv1-xf41.google.com with SMTP id t6so1090392qvw.1
         for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:54:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8oxfznRuxrb0aNVbLz/oSH4iUfl8mxNBqknvHByn30A=;
-        b=qJyCxedGgqPbgUhudbJC1fhdciQkZwbrZWG5L05yORpgM78RVuYXTyFmiK+yWF5VPJ
-         mbEkCIwEB0CK/ZWwM7xc34vPZWDwNjrYMDxhSbMpxJRXBqxwrUZwZ5vsTSMhkMY98wvn
-         BTncLGrnBIVnJ4iANimGVmRtuqEjhk92FVoCy1eMH4DvD5jIn5I2lvy3sb4qkIgIYXsx
-         yAIYkhl/vtz48AmPKLKcT5DWEVZ+9W2XBjep9G/aCvBAhzsdiz9zh/Mex3m2QnFLAXSS
-         cZT2Ktm06xLrzlH4EZHUCK3Wot1VSUaXcSypblwmYmMW5DRjCglVhQTl0+GIrp58GK1S
-         ysgQ==
+        bh=Nh1SeH655blb1lMsGRsZcuvpTaQWPjWEn/zrRW9ahdk=;
+        b=mE+a7e+L2zMvC3oBW95DSznj8stF0K+CCHUS7uvPsHY2jNp+L2nhKvp1nNnfpk3bIe
+         jOxyztVEfgvd7sf8pbyzkprs0aNnNrElB8py6oBxLjx6+1u6rRUWFmlcdH4PWmNDVMIG
+         zshJDg8WrAiyHQea1lJB9G2YN3hCVt69g2ZmK2ZijznzbY9HGfTXerRQAApQXwx5oB5k
+         0O1u0C3ba6Pwh5fZVNML/PErCmcyf+ZwEalBXFM3Oz5TzCKuaoq+WG1l+WpyQwchg0Ls
+         2oQFChZEF+Hb3P326cFah7Qi4l4PEay+Z6lA5I9mVOdFABo80L8nAl/WDScRbMDUtcyT
+         GsMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8oxfznRuxrb0aNVbLz/oSH4iUfl8mxNBqknvHByn30A=;
-        b=cTjylkhegramnI2RimqrDvbJglKsp90pQQCFKQmNFIp97djsQ8BYYuLCC9GHtesuWw
-         +BGCijdiiALIcJWdh2FwsAEKXKgwVCqBKKcEehMpGHMTi5LwEhT8DnUgHSH4MuUALMvJ
-         ysoVyfclHO3W+kkYB/Q9nGM4imoJ8ZAvPh+TegeKUtZTyUntaTaR4rU0A2KHcTpV1ol9
-         k5dx3HSysfk/YAjRfXL+Qpg0R/qzvLGH7O0rXRKlJB4xQ88hUsDPzzrnvvkUWtoHwhbz
-         9IsxRu4vU6ZyS8JUwaOevbmHssuFoYAWGybK77C/DZR1aq4Tme4Vwc/j9Ti9+ZGgcmDZ
-         Z4og==
-X-Gm-Message-State: AOAM530yulA95pkmnpKVfN4pdOO4Kc32nMk9jA4mg/ggGG5MBzEoUbi5
-        GozBI1h6sI0vc0DsfKhtma8=
-X-Google-Smtp-Source: ABdhPJwyIoGjnn/b6livni1+fFSQ4C7Ne/IqJ8Hey2qSQ/j1ruP1iGJohD1MnFyfdtopPjKPY6SMgw==
-X-Received: by 2002:ad4:51c8:: with SMTP id p8mr3614397qvq.31.1598036053138;
-        Fri, 21 Aug 2020 11:54:13 -0700 (PDT)
+        bh=Nh1SeH655blb1lMsGRsZcuvpTaQWPjWEn/zrRW9ahdk=;
+        b=tfMmr1m80919WDDJDd5g8dOLyjDShp1VqV2UNm9aYhMxeDvgUDF21vFb/B73JHlNl+
+         Ge+iLA/3WYOFrxtLghHjVhk7+QsbveFPvnvH7xDHWDnBmTksImDBwlweMo7ZAI8VXboC
+         3E8PBtGMvEdkWBMdAbro8NJ4ZFvGqkBxKqjjR17UiyY/KcMfQyGG6AnijTiDB6PcWJHk
+         xG94TGPO5gIuzu0Gh/3oHRGQ1CaZfQpfnhIcUEMK9GpJlSIdlpPjmzVrUdcEiTVcxDZd
+         CQ6AS6HH6t8TbZk/VJPCa7n1KpSvhrYouYc1wD93y3nkGhhCHEck7Lm9/drQ1qkfo6D6
+         ba0g==
+X-Gm-Message-State: AOAM531MjREc7TTgtbF6nYBR84EVXF7RMxfDyCvJEKMNEQsDgUZRik8V
+        dsyJNqaCGmlpoDU98gKwTSc=
+X-Google-Smtp-Source: ABdhPJwE4nMumlYjaLS4lWaAmu6jEEVGiRXoA1KUQpzmOPGLoyj3FUleVHp+0RO/r0PTDtY2AX2QIA==
+X-Received: by 2002:ad4:510b:: with SMTP id g11mr3567035qvp.20.1598036054969;
+        Fri, 21 Aug 2020 11:54:14 -0700 (PDT)
 Received: from localhost.localdomain (cpe-71-65-111-223.cinci.res.rr.com. [71.65.111.223])
-        by smtp.googlemail.com with ESMTPSA id o72sm2468426qka.113.2020.08.21.11.54.12
+        by smtp.googlemail.com with ESMTPSA id o72sm2468426qka.113.2020.08.21.11.54.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 11:54:12 -0700 (PDT)
+        Fri, 21 Aug 2020 11:54:14 -0700 (PDT)
 From:   Connor McAdams <conmanx360@gmail.com>
 Cc:     conmanx360@gmail.com, Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 17/20] ALSA: hda/ca0132 - Add output selection for SoundBlaster AE-7.
-Date:   Fri, 21 Aug 2020 14:52:34 -0400
-Message-Id: <20200821185239.26133-18-conmanx360@gmail.com>
+Subject: [PATCH 18/20] ALSA: hda/ca0132 - Add AE-7 microphone selection commands.
+Date:   Fri, 21 Aug 2020 14:52:35 -0400
+Message-Id: <20200821185239.26133-19-conmanx360@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200821185239.26133-1-conmanx360@gmail.com>
 References: <20200821185239.26133-1-conmanx360@gmail.com>
@@ -66,143 +66,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add output selection quirk table information for SoundBlaster AE-7, and
-slightly modify the AE-5's ca0113 command table to accommodate the AE-7.
+Add AE-7 quirk data for setting of microphone. The AE-7 has no front
+panel connector, so only rear-mic/line-in have new commands.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- sound/pci/hda/patch_ca0132.c | 88 ++++++++++++++++++++++++++++--------
- 1 file changed, 68 insertions(+), 20 deletions(-)
+ sound/pci/hda/patch_ca0132.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 040233b33074..ad594c2d47ec 100644
+index ad594c2d47ec..933f3b0be63e 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -727,22 +727,29 @@ static const struct ct_dsp_volume_ctl ca0132_alt_vol_ctls[] = {
- };
+@@ -4997,6 +4997,15 @@ static int ca0132_alt_select_in(struct hda_codec *codec)
+ 			ca0113_mmio_command_set(codec, 0x30, 0x28, 0x00);
+ 			tmp = FLOAT_THREE;
+ 			break;
++		case QUIRK_AE7:
++			ca0113_mmio_command_set(codec, 0x30, 0x28, 0x00);
++			tmp = FLOAT_THREE;
++			chipio_set_conn_rate(codec, MEM_CONNID_MICIN2,
++					SR_96_000);
++			chipio_set_conn_rate(codec, MEM_CONNID_MICOUT2,
++					SR_96_000);
++			dspio_set_uint_param(codec, 0x80, 0x01, FLOAT_ZERO);
++			break;
+ 		default:
+ 			tmp = FLOAT_ONE;
+ 			break;
+@@ -5042,6 +5051,14 @@ static int ca0132_alt_select_in(struct hda_codec *codec)
+ 		case QUIRK_AE5:
+ 			ca0113_mmio_command_set(codec, 0x30, 0x28, 0x00);
+ 			break;
++		case QUIRK_AE7:
++			ca0113_mmio_command_set(codec, 0x30, 0x28, 0x3f);
++			chipio_set_conn_rate(codec, MEM_CONNID_MICIN2,
++					SR_96_000);
++			chipio_set_conn_rate(codec, MEM_CONNID_MICOUT2,
++					SR_96_000);
++			dspio_set_uint_param(codec, 0x80, 0x01, FLOAT_ZERO);
++			break;
+ 		default:
+ 			break;
+ 		}
+@@ -5051,7 +5068,10 @@ static int ca0132_alt_select_in(struct hda_codec *codec)
+ 		if (ca0132_quirk(spec) == QUIRK_R3DI)
+ 			chipio_set_conn_rate(codec, 0x0F, SR_96_000);
  
- /* Values for ca0113_mmio_command_set for selecting output. */
--#define AE5_CA0113_OUT_SET_COMMANDS 6
--struct ae5_ca0113_output_set {
--	unsigned int group[AE5_CA0113_OUT_SET_COMMANDS];
--	unsigned int target[AE5_CA0113_OUT_SET_COMMANDS];
--	unsigned int vals[AE5_CA0113_OUT_SET_COMMANDS];
-+#define AE_CA0113_OUT_SET_COMMANDS 6
-+struct ae_ca0113_output_set {
-+	unsigned int group[AE_CA0113_OUT_SET_COMMANDS];
-+	unsigned int target[AE_CA0113_OUT_SET_COMMANDS];
-+	unsigned int vals[NUM_OF_OUTPUTS][AE_CA0113_OUT_SET_COMMANDS];
- };
+-		tmp = FLOAT_ZERO;
++		if (ca0132_quirk(spec) == QUIRK_AE7)
++			tmp = FLOAT_THREE;
++		else
++			tmp = FLOAT_ZERO;
+ 		dspio_set_uint_param(codec, 0x80, 0x00, tmp);
  
--static const struct ae5_ca0113_output_set ae5_ca0113_output_presets[] = {
--	{ .group =  { 0x30, 0x30, 0x48, 0x48, 0x48, 0x30 },
--	  .target = { 0x2e, 0x30, 0x0d, 0x17, 0x19, 0x32 },
--	  .vals =   { 0x00, 0x00, 0x40, 0x00, 0x00, 0x3f }
--	},
--	{ .group =  { 0x30, 0x30, 0x48, 0x48, 0x48, 0x30 },
--	  .target = { 0x2e, 0x30, 0x0d, 0x17, 0x19, 0x32 },
--	  .vals =   { 0x3f, 0x3f, 0x00, 0x00, 0x00, 0x00 }
--	}
-+static const struct ae_ca0113_output_set ae5_ca0113_output_presets = {
-+	.group =  { 0x30, 0x30, 0x48, 0x48, 0x48, 0x30 },
-+	.target = { 0x2e, 0x30, 0x0d, 0x17, 0x19, 0x32 },
-+		    /* Speakers. */
-+	.vals =   { { 0x00, 0x00, 0x40, 0x00, 0x00, 0x3f },
-+		    /* Headphones. */
-+		    { 0x3f, 0x3f, 0x00, 0x00, 0x00, 0x00 } },
-+};
-+
-+static const struct ae_ca0113_output_set ae7_ca0113_output_presets = {
-+	.group  = { 0x30, 0x30, 0x48, 0x48, 0x48, 0x30 },
-+	.target = { 0x2e, 0x30, 0x0d, 0x17, 0x19, 0x32 },
-+		    /* Speakers. */
-+	.vals   = { { 0x00, 0x00, 0x40, 0x00, 0x00, 0x3f },
-+		    /* Headphones. */
-+		    { 0x3f, 0x3f, 0x00, 0x00, 0x02, 0x00 } },
- };
- 
- /* ae5 ca0113 command sequences to set headphone gain levels. */
-@@ -1427,6 +1434,41 @@ static const struct ca0132_alt_out_set_quirk_data quirk_out_set_data[] = {
- 		  .chipio_write_addr = 0x0018b03c,
- 		  .chipio_write_data = 0x00000012
- 		} },
-+	},
-+	{ .quirk_id = QUIRK_AE7,
-+	  .has_headphone_gain = true,
-+	  .is_ae_series       = true,
-+	  .out_set_info = {
-+		/* Speakers. */
-+		{ .dac2port          = 0x58,
-+		  .has_hda_gpio      = false,
-+		  .mmio_gpio_count   = 1,
-+		  .mmio_gpio_pin     = { 0 },
-+		  .mmio_gpio_set     = { 1 },
-+		  .scp_cmds_count    = 2,
-+		  .scp_cmd_mid       = { 0x96, 0x96 },
-+		  .scp_cmd_req       = { SPEAKER_TUNING_FRONT_LEFT_INVERT,
-+					 SPEAKER_TUNING_FRONT_RIGHT_INVERT },
-+		  .scp_cmd_val       = { FLOAT_ZERO, FLOAT_ZERO },
-+		  .has_chipio_write  = true,
-+		  .chipio_write_addr = 0x0018b03c,
-+		  .chipio_write_data = 0x00000000
-+		},
-+		/* Headphones. */
-+		{ .dac2port          = 0x58,
-+		  .has_hda_gpio      = false,
-+		  .mmio_gpio_count   = 1,
-+		  .mmio_gpio_pin     = { 0 },
-+		  .mmio_gpio_set     = { 1 },
-+		  .scp_cmds_count    = 2,
-+		  .scp_cmd_mid       = { 0x96, 0x96 },
-+		  .scp_cmd_req       = { SPEAKER_TUNING_FRONT_LEFT_INVERT,
-+					 SPEAKER_TUNING_FRONT_RIGHT_INVERT },
-+		  .scp_cmd_val       = { FLOAT_ONE, FLOAT_ONE },
-+		  .has_chipio_write  = true,
-+		  .chipio_write_addr = 0x0018b03c,
-+		  .chipio_write_data = 0x00000010
-+		} },
- 	}
- };
- 
-@@ -4383,18 +4425,24 @@ static int ca0132_effects_set(struct hda_codec *codec, hda_nid_t nid, long val);
- static void ae5_mmio_select_out(struct hda_codec *codec)
- {
- 	struct ca0132_spec *spec = codec->spec;
-+	const struct ae_ca0113_output_set *out_cmds;
- 	unsigned int i;
- 
--	for (i = 0; i < AE5_CA0113_OUT_SET_COMMANDS; i++)
--		ca0113_mmio_command_set(codec,
--			ae5_ca0113_output_presets[spec->cur_out_type].group[i],
--			ae5_ca0113_output_presets[spec->cur_out_type].target[i],
--			ae5_ca0113_output_presets[spec->cur_out_type].vals[i]);
-+	if (ca0132_quirk(spec) == QUIRK_AE5)
-+		out_cmds = &ae5_ca0113_output_presets;
-+	else
-+		out_cmds = &ae7_ca0113_output_presets;
-+
-+	for (i = 0; i < AE_CA0113_OUT_SET_COMMANDS; i++)
-+		ca0113_mmio_command_set(codec, out_cmds->group[i],
-+				out_cmds->target[i],
-+				out_cmds->vals[spec->cur_out_type][i]);
- }
- 
- static int ca0132_alt_set_full_range_speaker(struct hda_codec *codec)
- {
- 	struct ca0132_spec *spec = codec->spec;
-+	int quirk = ca0132_quirk(spec);
- 	unsigned int tmp;
- 	int err;
- 
-@@ -4426,7 +4474,7 @@ static int ca0132_alt_set_full_range_speaker(struct hda_codec *codec)
- 	 * Only the AE series cards set this value when setting full-range,
- 	 * and it's always 1.0f.
- 	 */
--	if (ca0132_quirk(spec) == QUIRK_AE5) {
-+	if (quirk == QUIRK_AE5 || quirk == QUIRK_AE7) {
- 		err = dspio_set_uint_param(codec, 0x96,
- 				SPEAKER_FULL_RANGE_SURROUND_L_R, FLOAT_ONE);
- 		if (err < 0)
+ 		switch (ca0132_quirk(spec)) {
 -- 
 2.20.1
 
