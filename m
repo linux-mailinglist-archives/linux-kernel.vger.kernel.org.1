@@ -2,139 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2230424DFE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C2224DFEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726711AbgHUSpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 14:45:30 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23686 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725906AbgHUSp0 (ORCPT
+        id S1726585AbgHUSsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 14:48:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725821AbgHUSsO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 14:45:26 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07LIX9jP063691;
-        Fri, 21 Aug 2020 14:45:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=vSOS4YCf0VCleD8hfNfex3HRQvYcTP2XxAkZXGq19qo=;
- b=UBn8tYSNsfkoeSxiwg1bdoiR5tPseLBd+3251b7x4IA0t5Jl+pg3+Q4anG7vQMnY28yr
- Xs80SUKuGV3yOLVdUP+yGlJszJAny6J15bM8AeXcIPvSTouS6uVtCWiW5pBgPOrTbFid
- 0Ef2yBJ9AkBRAIy5naK+A+FJhtay4SgxplmuyCTm/+54oNi38sFZwLmWTr8x0oaZewta
- 6PX3YP/2bCPhhiwD4NNbic3kfDZq9OjJArQuWAjW7TfgxF7lNfFu4e5JhRgKnv2E3ZPy
- gSWa2Py8f52MAErMHw4HerdgxXRQPBzlfNjFOj3CfVZCdRBeu1accV2zF7l88J5rRmDE Xg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 332hdd45c1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Aug 2020 14:45:22 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07LIY2gc066917;
-        Fri, 21 Aug 2020 14:45:22 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 332hdd45b8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Aug 2020 14:45:21 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07LIjJGL012179;
-        Fri, 21 Aug 2020 18:45:19 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04fra.de.ibm.com with ESMTP id 3304ujtud6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Aug 2020 18:45:19 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07LIjHTD21823964
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 Aug 2020 18:45:17 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 429D0A4053;
-        Fri, 21 Aug 2020 18:45:17 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CBFDAA4057;
-        Fri, 21 Aug 2020 18:45:15 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.65.240])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 21 Aug 2020 18:45:15 +0000 (GMT)
-Message-ID: <8a1773d7707639d275fff138736d57472e26ade5.camel@linux.ibm.com>
-Subject: Re: [PATCH 02/11] evm: Load EVM key in ima_load_x509() to avoid
- appraisal
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>, mjg59@google.com
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 21 Aug 2020 14:45:14 -0400
-In-Reply-To: <20200618160133.937-2-roberto.sassu@huawei.com>
-References: <20200618160133.937-1-roberto.sassu@huawei.com>
-         <20200618160133.937-2-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-21_08:2020-08-21,2020-08-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- malwarescore=0 bulkscore=0 phishscore=0 clxscore=1015 mlxlogscore=999
- suspectscore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008210175
+        Fri, 21 Aug 2020 14:48:14 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F5C0C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:48:14 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id m20so2305296eds.2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:48:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zFS0hAClZdBqg1ygZpYSD8oadp4rG9FtsqCxJLGMqfA=;
+        b=sR7x2B3WYmbJC0y0bskKUkgCZEZ0j6lJfaOE9m/aD1tPrwC+sndJCJ4t2wQ4hKQfbQ
+         7FoezsNiRLAR4hKbKjrEMl76ogeQUCZGtDMDP7LxzfEgFbINSDDNYgMAGx1xoEXq3VpN
+         v0MSaBpjMz+kGMMSpn3MoG9Z87EHCAuqGjzax6a4NbGzpiktpJ1dlZ1SY+H8NzLr9EeP
+         RaXaiuPjTpMpdTeUflreO3Gt+Uk4fksOchPjyUfHNBmJ931yTLIpXUOk8bUq2a67QQCy
+         o+VkBqZZx2uUaYQDUr/mQYz9VD5rnYJzHOfyeLpwvLQYSpQ3DMVul1NsBzC3nzxmWEMr
+         GElQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zFS0hAClZdBqg1ygZpYSD8oadp4rG9FtsqCxJLGMqfA=;
+        b=qUjbs7C5tWkDtjFFLWGlwp5xCAaDfQYYseBaRPnnL0y3GLZ2JB/KEQG4xwzR0yCrfM
+         4K2pTaNgIVbRvze6biLTRVhW3vtdhMzmgnQR/e2kYq3v0e921YCaAlN1eiA63wppFLrj
+         f6wgWZ/xzTncOti8MjNhb2Zt/wQr9O6v7DsU5gPsC9VUZxvd6UJPzlvK1aKtnTlC9YWG
+         bLKVjOXbc+ljvVlK36iw1TmFXIJE0vIKO/sIsGfWuH6J6HQOWQz55dODxxvoHMszA0o1
+         iIB4cvfqmD3fjZTP8Ts/QnepMwGrWXiXC19CmXHL+7g/X94IuNa1hzljjUKhpaxg/bQR
+         G15A==
+X-Gm-Message-State: AOAM5324VD6MCphFfZ6MCZtithW08roOrHQJI8H6MGRr3eEeno/NyEEW
+        3EeD91dFM891vodZUffNBgDHkfogQQLXoUcWCRPj
+X-Google-Smtp-Source: ABdhPJxY+3WwF8gu1nXbDCAOZ7CXNs3ESEQrI/MAHP08AsZCOrBpTjUWaGk4a55AOk3EOVvdlEJTtMfdxww8QDWXNp8=
+X-Received: by 2002:a50:ee93:: with SMTP id f19mr4182974edr.31.1598035692549;
+ Fri, 21 Aug 2020 11:48:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1593198710.git.rgb@redhat.com> <f01f38dbb3190191e5914874322342700aecb9e1.1593198710.git.rgb@redhat.com>
+ <CAHC9VhRPm4=_dVkZCu9iD5u5ixJOUnGNZ2wM9CL4kWwqv3GRnA@mail.gmail.com> <20200729190025.mueangq3os3r7ew6@madcap2.tricolour.ca>
+In-Reply-To: <20200729190025.mueangq3os3r7ew6@madcap2.tricolour.ca>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 21 Aug 2020 14:48:01 -0400
+Message-ID: <CAHC9VhQoSH7Lza517WNr+6LaS7i890JPQfvisV6thLmnu01QOw@mail.gmail.com>
+Subject: Re: [PATCH ghak90 V9 06/13] audit: add contid support for signalling
+ the audit daemon
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        sgrubb@redhat.com, Ondrej Mosnacek <omosnace@redhat.com>,
+        dhowells@redhat.com, simo@redhat.com,
+        Eric Paris <eparis@parisplace.org>,
+        Serge Hallyn <serge@hallyn.com>, ebiederm@xmission.com,
+        nhorman@tuxdriver.com, Dan Walsh <dwalsh@redhat.com>,
+        mpatel@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-06-18 at 18:01 +0200, Roberto Sassu wrote:
-> Public keys do not need to be appraised by IMA as the restriction on the
-> IMA/EVM keyrings ensures that a key is loaded only if it is signed with a
-> key in the primary or secondary keyring.
-> 
-> However, when evm_load_x509() is loaded, appraisal is already enabled and
-> a valid IMA signature must be added to the EVM key to pass verification.
-> 
-> Since the restriction is applied on both IMA and EVM keyrings, it is safe
-> to disable appraisal also when the EVM key is loaded. This patch calls
-> evm_load_x509() inside ima_load_x509() if CONFIG_IMA_LOAD_X509 is defined.
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->  security/integrity/iint.c         | 2 ++
->  security/integrity/ima/ima_init.c | 4 ++++
->  2 files changed, 6 insertions(+)
-> 
-> diff --git a/security/integrity/iint.c b/security/integrity/iint.c
-> index e12c4900510f..4765a266ba96 100644
-> --- a/security/integrity/iint.c
-> +++ b/security/integrity/iint.c
-> @@ -212,7 +212,9 @@ int integrity_kernel_read(struct file *file, loff_t offset,
->  void __init integrity_load_keys(void)
->  {
->  	ima_load_x509();
-> +#ifndef CONFIG_IMA_LOAD_X509
->  	evm_load_x509();
-> +#endif
->  }
->  
->  static int __init integrity_fs_init(void)
-> diff --git a/security/integrity/ima/ima_init.c b/security/integrity/ima/ima_init.c
-> index 4902fe7bd570..9d29a1680da8 100644
-> --- a/security/integrity/ima/ima_init.c
-> +++ b/security/integrity/ima/ima_init.c
-> @@ -106,6 +106,10 @@ void __init ima_load_x509(void)
->  
->  	ima_policy_flag &= ~unset_flags;
->  	integrity_load_x509(INTEGRITY_KEYRING_IMA, CONFIG_IMA_X509_PATH);
-> +
-> +	/* load also EVM key to avoid appraisal */
-> +	evm_load_x509();
-> +
->  	ima_policy_flag |= unset_flags;
->  }
->  #endif
+On Wed, Jul 29, 2020 at 3:00 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> On 2020-07-05 11:10, Paul Moore wrote:
+> > On Sat, Jun 27, 2020 at 9:22 AM Richard Guy Briggs <rgb@redhat.com> wrote:
+> > >
+> > > Add audit container identifier support to the action of signalling the
+> > > audit daemon.
+> > >
+> > > Since this would need to add an element to the audit_sig_info struct,
+> > > a new record type AUDIT_SIGNAL_INFO2 was created with a new
+> > > audit_sig_info2 struct.  Corresponding support is required in the
+> > > userspace code to reflect the new record request and reply type.
+> > > An older userspace won't break since it won't know to request this
+> > > record type.
+> > >
+> > > Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+> > > ---
+> > >  include/linux/audit.h       |  8 ++++
+> > >  include/uapi/linux/audit.h  |  1 +
+> > >  kernel/audit.c              | 95 ++++++++++++++++++++++++++++++++++++++++++++-
+> > >  security/selinux/nlmsgtab.c |  1 +
+> > >  4 files changed, 104 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/include/linux/audit.h b/include/linux/audit.h
+> > > index 5eeba0efffc2..89cf7c66abe6 100644
+> > > --- a/include/linux/audit.h
+> > > +++ b/include/linux/audit.h
+> > > @@ -22,6 +22,13 @@ struct audit_sig_info {
+> > >         char            ctx[];
+> > >  };
+> > >
+> > > +struct audit_sig_info2 {
+> > > +       uid_t           uid;
+> > > +       pid_t           pid;
+> > > +       u32             cid_len;
+> > > +       char            data[];
+> > > +};
+> > > +
+> > >  struct audit_buffer;
+> > >  struct audit_context;
+> > >  struct inode;
+> > > @@ -105,6 +112,7 @@ struct audit_contobj {
+> > >         u64                     id;
+> > >         struct task_struct      *owner;
+> > >         refcount_t              refcount;
+> > > +       refcount_t              sigflag;
+> > >         struct rcu_head         rcu;
+> > >  };
+> >
+> > It seems like we need some protection in audit_set_contid() so that we
+> > don't allow reuse of an audit container ID when "refcount == 0 &&
+> > sigflag != 0", yes?
+>
+> We have it, see -ESHUTDOWN below.
 
-As much as possible IMA and EVM should remain independent of each
-other.   Modifying integrity_load_x509() doesn't help.  This looks like
-a good reason for calling another EVM function from within IMA.
+That check in audit_set_contid() is checking ->refcount and not
+->sigflag; ->sigflag is more important in this context, yes?
 
-Mimi
+> > > diff --git a/include/uapi/linux/audit.h b/include/uapi/linux/audit.h
+> > > index fd98460c983f..a56ad77069b9 100644
+> > > --- a/include/uapi/linux/audit.h
+> > > +++ b/include/uapi/linux/audit.h
+> > > @@ -72,6 +72,7 @@
+> > >  #define AUDIT_SET_FEATURE      1018    /* Turn an audit feature on or off */
+> > >  #define AUDIT_GET_FEATURE      1019    /* Get which features are enabled */
+> > >  #define AUDIT_CONTAINER_OP     1020    /* Define the container id and info */
+> > > +#define AUDIT_SIGNAL_INFO2     1021    /* Get info auditd signal sender */
+> > >
+> > >  #define AUDIT_FIRST_USER_MSG   1100    /* Userspace messages mostly uninteresting to kernel */
+> > >  #define AUDIT_USER_AVC         1107    /* We filter this differently */
+> > > diff --git a/kernel/audit.c b/kernel/audit.c
+> > > index a09f8f661234..54dd2cb69402 100644
+> > > --- a/kernel/audit.c
+> > > +++ b/kernel/audit.c
+> > > @@ -126,6 +126,8 @@ struct auditd_connection {
+> > >  kuid_t         audit_sig_uid = INVALID_UID;
+> > >  pid_t          audit_sig_pid = -1;
+> > >  u32            audit_sig_sid = 0;
+> > > +static struct audit_contobj *audit_sig_cid;
+> > > +static struct task_struct *audit_sig_atsk;
+> >
+> > This looks like a typo, or did you mean "atsk" for some reason?
+>
+> No, I meant atsk to refer specifically to the audit daemon task and not
+> any other random one that is doing the signalling.  I can change it is
+> there is a strong objection.
 
+Esh, yeah, "atsk" looks too much like a typo ;)  At the very leask add
+a 'd' in there, e.g. "adtsk", but something better than that would be
+welcome.
 
+> > > @@ -2532,6 +2620,11 @@ int audit_set_contid(struct task_struct *task, u64 contid)
+> > >                         if (cont->id == contid) {
+> > >                                 /* task injection to existing container */
+> > >                                 if (current == cont->owner) {
+> > > +                                       if (!refcount_read(&cont->refcount)) {
+> > > +                                               rc = -ESHUTDOWN;
+> >
+> > Reuse -ENOTUNIQ; I'm not overly excited about providing a lot of
+> > detail here as these are global system objects.  If you must have a
+> > different errno (and I would prefer you didn't), use something like
+> > -EBUSY.
+>
+> I don't understand the issue of "global system objects" since the only
+> time this error would be issued is if its own contid were being reused
+> but it hadn't cleaned up its own references yet by either issuing an
+> AUDIT_SIGNAL_INFO* request or the targetted audit daemon hadn't cleaned
+> up yet.  EBUSY could be confused with already having spawned threads or
+> children, and ENOTUNIQ could indicate that another orchestrator/engine
+> had stolen its desired contid after we released it and wanted to reuse
+> it.
+
+All the more reason for ENOTUNIQ.  The point is that the audit
+container ID is not available for use, and since the IDs are shared
+across the entire system I think we are better off having some
+ambiquity here with errnos.
+
+> This gets me thinking about making reservations for preferred
+> contids that are otherwise unavailable and making callbacks to indicate
+> when they become available, but that seems undesirably complex right
+> now.
+
+That is definitely beyond the scope of this work, or rather *should*
+be beyond the scope of this work.
+
+-- 
+paul moore
+www.paul-moore.com
