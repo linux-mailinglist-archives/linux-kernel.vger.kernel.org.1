@@ -2,182 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD29C24DB1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 411B624DB6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 18:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727994AbgHUQe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 12:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727828AbgHUQd2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:33:28 -0400
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A6DC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 09:33:26 -0700 (PDT)
-Received: by mail-ua1-x942.google.com with SMTP id g11so705266ual.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 09:33:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=A/oKwkfb+xE2igh2JqvZd62SK5vd7DixPSCmGhlvK1k=;
-        b=V4ONi0I9AyonItoyAW5bAn7URlmj2HhOUx8++1wxxTgr94yoWNKDPy/jOy5JKzkJds
-         7tKHErCQpnD74nhcYdu09jHWIybsrgW2UQ0AA1kaKw3KdfGQOD6Iz8rwMCWrqTX8zx1K
-         4cv1RVA7CaLd+Ws9eTBhpFvHdP1ezaAUp4HKrDzWi4FcpF7VCZWiKGy/M1AK4jYViFYW
-         A+d/izcLkFj5V5rPvHbhKFRw2uzqAVRG+miIrt0NHLQ3zHJMS5jedmYIQqHEnZmgLOxD
-         VwLxyfkvrFwwLA7JWQWDWoGGE442hlF9j9EnEFH3TREma2Sn/johYvEBfYbSV8Cyf6Iu
-         Cxvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=A/oKwkfb+xE2igh2JqvZd62SK5vd7DixPSCmGhlvK1k=;
-        b=a+IZ1ge2hMXrQzRnVi9iPsgfPZRUqSzHJKxXILHC3noqP1LDb3fyxNJAU8TRK8l9Hn
-         YpHHb/+ioSTVqwj90yB7S5YQGPJmD3YzRGy/mxE+AnCrA+RkTnZ8DeBExks4FnKSWuZT
-         QRhOxXQFhC2lE714W7qQOtog94dkZDUAJ+N+dlD1L+NebMyXBC2ztmXIYKrbVvvgrTXW
-         iEw2skcsZXpDxOPzEtZwO1wRHATfyCF36lNnVGPAemPEbui/UOX9K7RebUz2JZoekM0y
-         gnE3gcPe+BGcUWxcwG6pcQcjDks4ZQiYwyzWleNIwgpO+ucko9KoA7qhAgq85/3moJpK
-         n+pg==
-X-Gm-Message-State: AOAM5306ytFDmUf3Z52UyUrAGL3M9EY+fcAkoXoi3JI0ep8+/BARQYc/
-        CcMuqeNZJBjeyud3coCNpMc4YnweCG5ojRrYGhfx6w==
-X-Google-Smtp-Source: ABdhPJyRGomSCWkNSAQh+1bafasZbt4z/W29crB8eERvEmKzieWFU+zXwDVBeZoMz3g0Y+NKUBquSQbgfLwNscyvo0M=
-X-Received: by 2002:ab0:4029:: with SMTP id h38mr2196269uad.6.1598027602234;
- Fri, 21 Aug 2020 09:33:22 -0700 (PDT)
+        id S1728611AbgHUQju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 12:39:50 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2688 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728370AbgHUQiw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 12:38:52 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id E73945C0CB8D9B46D780;
+        Fri, 21 Aug 2020 17:38:50 +0100 (IST)
+Received: from localhost (10.52.123.86) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Fri, 21 Aug
+ 2020 17:38:50 +0100
+Date:   Fri, 21 Aug 2020 17:37:18 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     <linux-mm@kvack.org>, <linux-acpi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <x86@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, <rafael@kernel.org>,
+        <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>, <linuxarm@huawei.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Brice Goglin" <Brice.Goglin@inria.fr>,
+        Sean V Kelley <sean.v.kelley@linux.intel.com>,
+        <linux-api@vger.kernel.org>, Keith Busch <kbusch@kernel.org>
+Subject: Re: [PATCH v9 4/6] ACPI: HMAT: Fix handling of changes from ACPI
+ 6.2 to ACPI 6.3
+Message-ID: <20200821173718.000028fc@Huawei.com>
+In-Reply-To: <20200821134622.GA1620197@bjorn-Precision-5520>
+References: <20200821135901.0000260b@Huawei.com>
+        <20200821134622.GA1620197@bjorn-Precision-5520>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <20200820091553.615456912@linuxfoundation.org> <CA+G9fYt+z3Cs9Cbf8HH8o59gsUkwjuKRCZmvQQ2K5OM_ydSRHQ@mail.gmail.com>
-In-Reply-To: <CA+G9fYt+z3Cs9Cbf8HH8o59gsUkwjuKRCZmvQQ2K5OM_ydSRHQ@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 21 Aug 2020 22:03:10 +0530
-Message-ID: <CA+G9fYvGiOSBiCHpVGYXeXo3ZF3UDzj_Jy+_jqBD8CgwotS2hg@mail.gmail.com>
-Subject: Re: [PATCH 5.4 000/152] 5.4.60-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.123.86]
+X-ClientProxiedBy: lhreml701-chm.china.huawei.com (10.201.108.50) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Aug 2020 at 22:54, Naresh Kamboju <naresh.kamboju@linaro.org> wr=
-ote:
->
-> On Thu, 20 Aug 2020 at 15:15, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 5.4.60 release.
-> > There are 152 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Sat, 22 Aug 2020 09:15:09 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patc=
-h-5.4.60-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git linux-5.4.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
->
-> > Herbert Xu <herbert@gondor.apana.org.au>
-> >     crypto: af_alg - Fix regression on empty requests
->
-> Results from Linaro=E2=80=99s test farm.
-> Regressions detected.
->
-> LTP crypto af_alg02 and cve-2017-17805 failed on stable-rc 5.4, 5.7 and 5=
-.8
-> branches on arm, arm64, i386 and x86_64.
+On Fri, 21 Aug 2020 08:46:22 -0500
+Bjorn Helgaas <helgaas@kernel.org> wrote:
 
-Apart from the reported LTP crypto test case problem all other results
-look good to me.
+> On Fri, Aug 21, 2020 at 01:59:01PM +0100, Jonathan Cameron wrote:
+> > On Fri, 21 Aug 2020 07:13:56 -0500
+> > Bjorn Helgaas <helgaas@kernel.org> wrote:
+> >   
+> > > [+cc Keith, author of 3accf7ae37a9 ("acpi/hmat: Parse and report
+> > > heterogeneous memory")]
+> > > 
+> > > On Fri, Aug 21, 2020 at 09:42:58AM +0100, Jonathan Cameron wrote:  
+> > > > On Thu, 20 Aug 2020 17:21:29 -0500
+> > > > Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > > >     
+> > > > > On Wed, Aug 19, 2020 at 10:51:09PM +0800, Jonathan Cameron wrote:    
+> > > > > > In ACPI 6.3, the Memory Proximity Domain Attributes Structure
+> > > > > > changed substantially.  One of those changes was that the flag
+> > > > > > for "Memory Proximity Domain field is valid" was deprecated.
+> > > > > > 
+> > > > > > This was because the field "Proximity Domain for the Memory"
+> > > > > > became a required field and hence having a validity flag makes
+> > > > > > no sense.
+> > > > > > 
+> > > > > > So the correct logic is to always assume the field is there.
+> > > > > > Current code assumes it never is.
+> > > > > > 
+> > > > > > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > > > > > ---
+> > > > > >  drivers/acpi/numa/hmat.c | 2 +-
+> > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > > 
+> > > > > > diff --git a/drivers/acpi/numa/hmat.c b/drivers/acpi/numa/hmat.c
+> > > > > > index 2c32cfb72370..07cfe50136e0 100644
+> > > > > > --- a/drivers/acpi/numa/hmat.c
+> > > > > > +++ b/drivers/acpi/numa/hmat.c
+> > > > > > @@ -424,7 +424,7 @@ static int __init hmat_parse_proximity_domain(union acpi_subtable_headers *heade
+> > > > > >  		pr_info("HMAT: Memory Flags:%04x Processor Domain:%u Memory Domain:%u\n",
+> > > > > >  			p->flags, p->processor_PD, p->memory_PD);
+> > > > > >  
+> > > > > > -	if (p->flags & ACPI_HMAT_MEMORY_PD_VALID && hmat_revision == 1) {
+> > > > > > +	if ((p->flags & ACPI_HMAT_MEMORY_PD_VALID && hmat_revision == 1) || hmat_revision == 2) {      
+> > > > > 
+> > > > > I hope/assume the spec is written in such a way that p->memory_PD is
+> > > > > required for any revision > 1?  So maybe this should be:
+> > > > > 
+> > > > >   if ((p->flags & ACPI_HMAT_MEMORY_PD_VALID && hmat_revision == 1) ||
+> > > > >       hmat_revision > 1) {    
+> > > 
+> > > I should have said simply:
+> > > 
+> > >   if (hmat_revision == 1 && p->flags & ACPI_HMAT_MEMORY_PD_VALID)
+> > > 
+> > > We shouldn't even test p->flags for ACPI_HMAT_MEMORY_PD_VALID unless
+> > > we already know it's revision 1.
+> > > 
+> > > And unless there was a revision 0 of HMAT, there's no need to look for
+> > > hmat_revison > 1.  
+> > 
+> > It needs to stay as an or statement as you had the first time.
+> > The field is always valid for hmat_revision > 1, and valid for
+> > hmat_revision == 1 with the flag set.  You could express it as
+> > 
+> > if ((p->flags & ACPI_HMAT_MEMORY_PD_VALID) || (hmat_revision != 1))
+> > 
+> > but that seems more confusing to me.  
+> 
+> Oh, you're right, sorry!  There are two questions here:
+> 
+> 1) In what order should we test "p->flags & ACPI_HMAT_MEMORY_PD_VALID"
+>    and "hmat_revision == 1"?  ACPI_HMAT_MEMORY_PD_VALID is defined
+>    only when "hmat_revision == 1", so I think we should test the
+>    revision first.
+> 
+>    When "hmat_revision == 2", ACPI_HMAT_MEMORY_PD_VALID is reserved,
+>    so we shouldn't test it, even if we later check the revision and
+>    discard the result of the flag test.  This is a tiny thing,
+>    admittedly, but I think it follows the spec more clearly.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Agreed.
 
-Summary
-------------------------------------------------------------------------
+> 
+> 2) Do we need to test hmat_revision for anything other than 1?  Yes,
+>    you're right, see below.
+> 
+> > > > Good point.  We have existing protections elsewhere against
+> > > > hmat_revision being anything other than 1 or 2, so we should aim to
+> > > > keep that in only one place.    
+> > > 
+> > > I think the "Ignoring HMAT: Unknown revision" test in hmat_init(),
+> > > added by 3accf7ae37a9 ("acpi/hmat: Parse and report heterogeneous
+> > > memory"), is a mistake.
+> > > 
+> > > And I think hmat_normalize() has a similar mistake in that it tests
+> > > explicitly for hmat_revision == 2 when it should accept 2 AND anything
+> > > later.
+> > > 
+> > > We should assume that future spec revisions will be backwards
+> > > compatible.  Otherwise we're forced to make kernel changes when we
+> > > otherwise would not have to.  
+> > 
+> > I disagree with this. There is no rule in ACPI about maintaining
+> > backwards compatibility. The assumption is that the version number
+> > will always be checked.  The meaning of fields changed between
+> > version 1 and version 2 so it would be bold to assume that won't
+> > happen in the future!  
+> 
+> There *is* a rule about maintaining backwards compatibility.  ACPI
+> v6.3, sec 5.2.2, says:
+> 
+>   All versions of the ACPI tables must maintain backward
+>   compatibility. To accomplish this, modifications of the tables
+>   consist of redefinition of previously reserved fields and values
+>   plus appending data to the 1.0 tables. Modifications of the ACPI
+>   tables require that the version numbers of the modified tables be
+>   incremented.
 
-kernel: 5.4.60
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.4.y
-git commit: 77fcb48939fc863d9ba9d808fac9000959e937d3
-git describe: v5.4.60
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.4-oe/bui=
-ld/v5.4.60
+Fair point.  Unfortunately it's not true here...  The field we
+are talking about here is probably fine, but the latency units
+changed between v1 and v2.  
 
-No regressions (compared to build v5.4.59)
+> 
+> > HMAT is an optional table, so if someone boots up an old kernel
+> > they are probably better off failing to use it at all than
+> > misinterpreting it.   
+> 
+> An old kernel tests:
+> 
+>   if (p->flags & ACPI_HMAT_MEMORY_PD_VALID && hmat_revision == 1)
+>     target = find_mem_target(p->memory_PD);
+> 
+> which is fine on old firmware.  On new firmware (hmat_revision == 2),
+> it will ignore p->memory_PD.  That is probably a problem, but I think
+> we should check for that at the place where we need a memory_PD and
+> don't find one.  That's more general than sanity checking a revision.
+> 
+> A new kernel that tests:
+> 
+>   if ((hmat_revision == 1 && p->flags & ACPI_HMAT_MEMORY_PD_VALID) ||
+>        hmat_revision > 1)
+>     target = find_mem_target(p->memory_PD);
+> 
+> will do the right thing on both old and new firmware.
+> 
 
-No fixes (compared to build v5.4.59)
+For the case here we are fine, but as mentioned above, it's not the
+only version dependent part.
 
-Ran 28522 total tests in the following environments and test suites.
+Jonathan
 
-Environments
---------------
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15
-- x86
-- x86-kasan
 
-Test Suites
------------
-* build
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-fs-tests
-* ltp-io-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* perf
-* ltp-commands-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-tracing-tests
-* network-basic-tests
-* v4l2-compliance
-* ltp-cve-tests
-* ltp-open-posix-tests
+> Bjorn
 
---=20
-Linaro LKFT
-https://lkft.linaro.org
+
