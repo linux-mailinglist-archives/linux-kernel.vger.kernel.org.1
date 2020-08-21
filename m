@@ -2,100 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2110324D1AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 11:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD07624D1B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 11:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728183AbgHUJol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 05:44:41 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:45223 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725855AbgHUJok (ORCPT
+        id S1728426AbgHUJt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 05:49:58 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:43964 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725855AbgHUJt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 05:44:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598003078;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5xvNOCI/T24E9b4WJ3j1AFKLWyH8JLbOkVQBD24hcGw=;
-        b=ZAMcBk7hgVEtZvD1pZZFcawcTizIdt9adAcX3q9wXFH7eb2QRYOqy3CQhoY6EkD2mZfcdO
-        YR/E81R/oxVQpLF6z4HZW4T8MCgNbU1xLd2EVfEC+7WFA7ecQPFcwRtZS6qtGblkZd76qf
-        eN8MpADWUBllnG1Fax/FqnOpoX7ycqk=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-579-7ixooGJrMuKR54bWMfnMjw-1; Fri, 21 Aug 2020 05:44:37 -0400
-X-MC-Unique: 7ixooGJrMuKR54bWMfnMjw-1
-Received: by mail-wm1-f71.google.com with SMTP id d13so599452wmd.8
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 02:44:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5xvNOCI/T24E9b4WJ3j1AFKLWyH8JLbOkVQBD24hcGw=;
-        b=I83U5FYNsu3i8XHpNyURFJWOtZvkuI85IwjE872liGB29VtXLNA637323XgENwpz+S
-         cPSDfFenKLeasDh2u7UestOhnKMSJzGK2+gLcAsoTSihXdvRDliSR2c3UhaE9mXFbZhP
-         noeCzdl/Lg/gDBR2Hhz/YzseXcsFQ1itAdqSKmrs3sqG1/qjjZaeCS24/6erVGYCO3sn
-         1ksBgYIwSe0qEZCCw5/Sp2wc2UFNP5tpXVPhOqV4FTP2RW+pM5TlCo/yy0ZzUPs4X+IH
-         g+k2Z8KBNJd3uKjftwvu3BeI0RAQwHgiFMOAkqw8ZqGOmY8aVPPLrVk9dyLrxtO6GioP
-         fV4A==
-X-Gm-Message-State: AOAM532FVMqrf3VApusRePDOdny+x/TuPvAdtsqpaPC+LtCFnPt6dWmK
-        9o5boXebXWPNoOoSy535HCJdQ/027iOWCPdY9ZHcCTtnbMJvOgPQI57YfvR5U33v3ZXem1uaSwj
-        mpeMmVDjBp9gbdAiph05PPBbk
-X-Received: by 2002:a1c:7918:: with SMTP id l24mr2908410wme.158.1598003075965;
-        Fri, 21 Aug 2020 02:44:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy6JglJ1VS+h/6tPMLaP2AyZuVQTrXmvTg3zqq1jBqyZgkSEMmoLY77Xi2H35dhd6C7SLIcIw==
-X-Received: by 2002:a1c:7918:: with SMTP id l24mr2908394wme.158.1598003075764;
-        Fri, 21 Aug 2020 02:44:35 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:1cc0:4e4e:f1a9:1745? ([2001:b07:6468:f312:1cc0:4e4e:f1a9:1745])
-        by smtp.gmail.com with ESMTPSA id k4sm3429929wrd.72.2020.08.21.02.44.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Aug 2020 02:44:35 -0700 (PDT)
-Subject: Re: [PATCH] x86/entry/64: Disallow RDPID in paranoid entry if KVM is
- enabled
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@intel.com>,
-        Chang Seok Bae <chang.seok.bae@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>, kvm@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>
-References: <20200821025050.32573-1-sean.j.christopherson@intel.com>
- <20200821074743.GB12181@zn.tnic>
- <3eb94913-662d-5423-21b1-eaf75635142a@redhat.com>
- <20200821081633.GD12181@zn.tnic>
- <3b4ba9e9-dbf6-a094-0684-e68248050758@redhat.com>
- <20200821092237.GF12181@zn.tnic>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <1442e559-dde4-70f6-85ac-58109cf81c16@redhat.com>
-Date:   Fri, 21 Aug 2020 11:44:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <20200821092237.GF12181@zn.tnic>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Fri, 21 Aug 2020 05:49:57 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07L9gMlm082026;
+        Fri, 21 Aug 2020 09:49:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=orjAXZiNJh1MaoNFDKY8bEIm3QOf3FaECDDCfTCafAA=;
+ b=nf3gJW5wWhdtOqFrWIJBzI1j8cwnInu1ZZnwJ0QrlK6Lx/tjSwGOXgNfOnuxsphgN7QG
+ Ml7LRwxDjHaQ5FKUAMj6H2ZWST0U6Uoe0mjBLJ/7lYpC5ue+UaV7c/5S0ZXXHj9EGwDa
+ ZRV7Ap0OS3YYiiDFK+l32hC1S4OngfOj/274jR5hbID26wXE5YG29x5VvGsK64QPD6EI
+ f38BgdtnXfn5kRMLtrKgNUYPrWwLoH009sbTWdg1MACyn8GWfLe5gs+ELfoi7ZthoIO8
+ KhQOC2sxjWu9U6jR5YeSeOeyv2/6RdK5c08P3l8dBp1OQrHnGWEIMJuM8snfzRZG+mMY aQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 32x74rnaux-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 21 Aug 2020 09:49:46 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07L9iYoF028593;
+        Fri, 21 Aug 2020 09:47:45 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 331b2ejg71-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 21 Aug 2020 09:47:45 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07L9laAQ000738;
+        Fri, 21 Aug 2020 09:47:36 GMT
+Received: from dhcp-10-175-160-47.vpn.oracle.com (/10.175.160.47)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 21 Aug 2020 09:47:35 +0000
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH] IB/uverbs: Fix memleak in ib_uverbs_add_one
+From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
+In-Reply-To: <20200821081013.4762-1-dinghao.liu@zju.edu.cn>
+Date:   Fri, 21 Aug 2020 11:47:32 +0200
+Cc:     kjlu@umn.edu, Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Ariel Elior <ariel.elior@marvell.com>,
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E59593D2-E7F5-4D41-B6DC-B8B8C55241CE@oracle.com>
+References: <20200821081013.4762-1-dinghao.liu@zju.edu.cn>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9719 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
+ mlxlogscore=999 adultscore=0 suspectscore=62 phishscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008210089
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9719 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxlogscore=999
+ priorityscore=1501 phishscore=0 spamscore=0 mlxscore=0 adultscore=0
+ suspectscore=62 lowpriorityscore=0 bulkscore=0 malwarescore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008210089
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/08/20 11:22, Borislav Petkov wrote:
->> Hence the assumption that KVM makes (and has made ever since TSC_AUX was
->> introduced.
-> And *this* is the problem. KVM can't just be grabbing MSRs and claiming
-> them because it started using them first. You guys need to stop this. If
-> it is a shared resource, there better be an agreement about sharing it.
 
-It's not like we grab MSRs every day.  The user-return notifier restores
-6 MSRs (7 on very old processors).  The last two that were added were
-MSR_TSC_AUX itself in 2009 (!) and MSR_IA32_TSX_CTRL last year.
 
-Paolo
+> On 21 Aug 2020, at 10:10, Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
+>=20
+> When ida_alloc_max() fails, uverbs_dev should be freed
+> just like when init_srcu_struct() fails. It's the same
+> for the error paths after this call.
+>=20
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
+> drivers/infiniband/core/uverbs_main.c | 1 +
+> 1 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/infiniband/core/uverbs_main.c =
+b/drivers/infiniband/core/uverbs_main.c
+> index 37794d88b1f3..c6b4e3e2aff6 100644
+> --- a/drivers/infiniband/core/uverbs_main.c
+> +++ b/drivers/infiniband/core/uverbs_main.c
+> @@ -1170,6 +1170,7 @@ static int ib_uverbs_add_one(struct ib_device =
+*device)
+> 		ib_uverbs_comp_dev(uverbs_dev);
+> 	wait_for_completion(&uverbs_dev->comp);
+> 	put_device(&uverbs_dev->dev);
+> +	kfree(uverbs_dev);
+
+Isn't this taken care of by the *release* function pointer, which =
+happens to be ib_uverbs_release_dev() ?
+
+
+Thxs, H=C3=A5kon
+
+> 	return ret;
+> }
+>=20
+> --=20
+> 2.17.1
+>=20
 
