@@ -2,93 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 727AD24CAB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 04:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE61024CAAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 04:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbgHUCYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 22:24:05 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:50802 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727095AbgHUCYE (ORCPT
+        id S1727843AbgHUCWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 22:22:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727086AbgHUCW3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 22:24:04 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07L2MYrv136110;
-        Fri, 21 Aug 2020 02:23:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=1AzXLjEPpnWLYbLoMsSP3jYjnRJgSmcm895+0943qZs=;
- b=AynTdYUWeQ22HtziZ0LwfvTk6EUpthDT/KNPrM4lE7HlgiwiCWdSLnvec/s979SYvAdz
- tLbBw8RVNBa41VWQ9sMs5IzANUw4TquXkE2i2MfQvl1WyCYiVon6heGlAizJqPxSH96y
- nK/NxJAQoyp9fAk+4wtd7LD44POQyCMwbuBVWEwUz+X4EQmj9SvK7xDyPs5W4dC1VJwE
- t1/E30uOTkQwIJFqFE7TC/FLMniUEFlBD49A/UQXr3tkFUTsggFOku3mektjkRfXMcYm
- UGiz/Cnf7YduFYi0OSlj3hMCb10/UxuW//FrhGq2VBuj5HZn8CmAHE89OL3zr54pPacl /g== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 32x74rkx59-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 21 Aug 2020 02:23:54 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07L2IL4h055415;
-        Fri, 21 Aug 2020 02:21:54 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 3325368k5n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 Aug 2020 02:21:54 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07L2LpRw000637;
-        Fri, 21 Aug 2020 02:21:51 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 20 Aug 2020 19:21:51 -0700
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     <hare@suse.de>, <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] scsi: libfc: Fix passing zero to 'PTR_ERR' warning
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1ft8gvje1.fsf@ca-mkp.ca.oracle.com>
-References: <20200818114235.51052-1-yuehaibing@huawei.com>
-        <20200819020546.59172-1-yuehaibing@huawei.com>
-Date:   Thu, 20 Aug 2020 22:21:49 -0400
-In-Reply-To: <20200819020546.59172-1-yuehaibing@huawei.com>
-        (yuehaibing@huawei.com's message of "Wed, 19 Aug 2020 10:05:46 +0800")
+        Thu, 20 Aug 2020 22:22:29 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E97C061388
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 19:22:28 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id g19so543586ejc.9
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 19:22:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nsUdliivJtp5Q6+//ViL/TxskEesc9x2uBqaTetkCW4=;
+        b=L8/i1aFPC1LxPUXg1D2GZxUkWHDtGd90ELK9RK2LLZ/IoGIS77V8+gaXk+Q4UT9HLS
+         9ODRRXaHvdWMFdIps9AiYjyN6aMLDmXWvcBqbDcZoqRdCBZG46ZBJ2SEJW7q/aZXZEw6
+         Btcif9qvwviSGgM1R5lxRHiavoVAapIMBHrbzhhl5eicCKkUrjk+N1xi9imjVoaShxj0
+         O81wLvdNL3pcmfbn9Y1kXAgRT9uu2r3azu025AM5CBkRFXHLsyjQqooRtostkuEczfdT
+         L18Pmoa7tAOrjkPTGS3HnB4NAmu7SDZ4rvinOLaRHgFWlC92KRMG9edwE39Wnnw86Ob8
+         ZTrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nsUdliivJtp5Q6+//ViL/TxskEesc9x2uBqaTetkCW4=;
+        b=ekbaCNtfpTNrKSQPedbjuH85/Kb6tanrXvR4VMXZ12NI5om295FETniMGqRyhv2kL9
+         5IqqMz2As0OjhKd1pVib54PDjIHgvugSlntYEaPZm80NNpMIF6izRP6q9+r9jIo6GKWB
+         n47yMSP9yaxgQFULWlHEM+yHnGZ4vBJoEOykFgzucHywc3a27CYgDaCpTChE1ahD0DY8
+         XpuEvD8zkyjZBnZTz+2rA7tai/m0UP66ndLig3WzUojk8FH3G/+JYXyTzaxxGkVmIxbR
+         GS0xGn03fwF8StEkMxtuHW/Zr2+QiJZanwuKCl9UTrBva7xzjkI46bDC7zORMWMiGIjf
+         tA3Q==
+X-Gm-Message-State: AOAM530ecC4FLN438nIc1RonqYjvNU+FotQyzS/l7UW1cCHDJLhljVIA
+        DGRDr2iYvdhqZd/hI3fos200emEINBUUT7AdZnBAvQ==
+X-Google-Smtp-Source: ABdhPJxPa2BAinWcuRWziYxt33mJwF+y04RBKXB9gCPjrMmz1mDiblORWW7FKZhTjJKjGzr2w/qzpE7L/GbxmhpT5nA=
+X-Received: by 2002:a17:906:3b45:: with SMTP id h5mr804466ejf.136.1597976547157;
+ Thu, 20 Aug 2020 19:22:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9719 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxscore=0 spamscore=0
- phishscore=0 malwarescore=0 adultscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008210019
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9719 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxlogscore=999
- priorityscore=1501 phishscore=0 spamscore=0 mlxscore=0 adultscore=0
- suspectscore=1 lowpriorityscore=0 bulkscore=0 malwarescore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008210020
+References: <20200819224030.1615203-1-haoluo@google.com> <20200819224030.1615203-2-haoluo@google.com>
+ <20200820215327.jsvjbsvv6ts3x4wn@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200820215327.jsvjbsvv6ts3x4wn@ast-mbp.dhcp.thefacebook.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Thu, 20 Aug 2020 19:22:15 -0700
+Message-ID: <CA+khW7hGGCWkjqb_TNSQvpN-=4K==dtjF4fwUOf3zd8eoON5nw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/8] bpf: Introduce pseudo_btf_id
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 20, 2020 at 2:53 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> Why did you choose to do it during main do_check() walk instead of this pre-pass ?
+> check_ld_imm() can be called multiple times for the same insn,
+> so it's faster and less surprising to do it during replace_map_fd_with_map_ptr().
+> BTF needs to be parsed first, of course.
+> You can either move check_btf_info() before replace_map_fd_with_map_ptr() or
+> move replace_map_fd_with_map_ptr() after check_btf_info().
+> The latter is probably cleaner.
 
-YueHaibing,
+Ah, that does make more sense. I can move
+replace_map_fd_with_map_ptr() after check_btf_info() (or
+check_attach_btf_id()) and rename it to better reflect the fact that
+it's not just for maps now.
 
-> diff --git a/drivers/scsi/libfc/fc_disc.c b/drivers/scsi/libfc/fc_disc.c
-> index d8cbc9c0e766..574e842cefed 100644
-> --- a/drivers/scsi/libfc/fc_disc.c
-> +++ b/drivers/scsi/libfc/fc_disc.c
-> @@ -302,7 +302,7 @@ static void fc_disc_error(struct fc_disc *disc, struct fc_frame *fp)
->  	unsigned long delay = 0;
->  
->  	FC_DISC_DBG(disc, "Error %ld, retries %d/%d\n",
-> -		    PTR_ERR(fp), disc->retry_count,
-> +		    IS_ERR(fp) ? PTR_ERR(fp) : 0, disc->retry_count,
->  		    FC_DISC_RETRY_LIMIT);
->  
->  	if (!fp || PTR_ERR(fp) == -FC_EX_TIMEOUT) {
-
-Why not PTR_ERR_OR_ZERO()?
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Thanks for the insights!
+Hao
