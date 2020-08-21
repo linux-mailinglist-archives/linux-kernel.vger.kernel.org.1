@@ -2,133 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D516A24DEE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B64C124DEE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726970AbgHURtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 13:49:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47068 "EHLO
+        id S1727099AbgHURt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 13:49:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726231AbgHURtG (ORCPT
+        with ESMTP id S1725866AbgHURt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 13:49:06 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B69C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 10:49:05 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id y206so1415395pfb.10
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 10:49:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/GMuE4utOPjO8y1lqv+OxzSdgWvuN+Qw8CbwkSqlnRQ=;
-        b=eCrDRDas+JgyG8vEvUBUgIPw2N0eqtQG+RYzV7XhtoynuOnlhuZrdDQKbyFFclHrPn
-         41Z9Xw1JtPUYek4ggdgXpKsZFiJa3q15fhr1kziwDYEDNpfhigdXs7VY5AbnexGH6F6H
-         IR7D2Fb0exwgeUNMSrGrEH3RoaO/zxNkwt0yE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/GMuE4utOPjO8y1lqv+OxzSdgWvuN+Qw8CbwkSqlnRQ=;
-        b=GuASd9+pAMaN/Z5qtKD/onFKsVx7NiOc0DxZBomKihX7+1FHRPK5tGBBE3A9LNefYS
-         CCeY+bwfKpDE4xp2Cn1p08TA1Zmr9llVZdwTjSk739Msg1jQwpoCPfZe55Pg7alupjii
-         nb86nh2ARqptS6uIjJ0vfidL/cR1k9slQzmpDOhN5l4aMKnBTZV6vTIAjy+FXzEbsBUH
-         qBwlh6sXCUhLOrLSaRR3n51HS2lcXAWXayw72i4er0Lg2CfO7m+W0LZRsDmvA6F9iN+Y
-         GqfAitwfAI42Ec5j5C1NLPWfjEVc3ivVoRKVrr24UKr/BBLoVZU6F0LDSstxLUpOB73/
-         mFLQ==
-X-Gm-Message-State: AOAM5333RdHlV1hSd8BFCtsPyZRR9EOKy+ZoRoKgyBp7NFBcCFgbFFsC
-        k2HJsrowuyRhnP3vv1aivU+7sQ==
-X-Google-Smtp-Source: ABdhPJzUl78taPwahfjnA2wW/6wLLpPTFwhGbButfOHh+DcCELkk9TL4PVM8Ve4ZrX5sUSPgeYg/vQ==
-X-Received: by 2002:a63:cf03:: with SMTP id j3mr3144186pgg.14.1598032144842;
-        Fri, 21 Aug 2020 10:49:04 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c10sm3107533pfc.62.2020.08.21.10.49.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 10:49:03 -0700 (PDT)
-Date:   Fri, 21 Aug 2020 10:49:02 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        James Morse <james.morse@arm.com>,
-        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
-        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 29/36] x86/build: Enforce an empty .got.plt section
-Message-ID: <202008211047.9088D8571C@keescook>
-References: <20200731230820.1742553-1-keescook@chromium.org>
- <20200731230820.1742553-30-keescook@chromium.org>
- <20200801021248.GB2700342@rani.riverdale.lan>
+        Fri, 21 Aug 2020 13:49:57 -0400
+Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A26BC061573
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 10:49:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
+         s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=xsP3wwnaNKMcSqMiBY14/rt8ZmaTuGWOI0p+amFu4xs=; b=piUl1DHBdVLI5DX/FIzWiqwC3T
+        I5e6kQTyUgl3DB9SRiBg6PVxAdx5tUyExOQp2FGV6X88NHrpup+pLDzDOZ6q74nJs/SvpZhmsOxc7
+        D/EVDVQmVK+f+D5GTGfx97JNlO2dn4mSfnUAMmCCL4xDSN3qEDmH/hQIobB5zGlPwRiw=;
+Received: from p5b206497.dip0.t-ipconnect.de ([91.32.100.151] helo=nf.local)
+        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <nbd@nbd.name>)
+        id 1k9BAp-0001EF-1W; Fri, 21 Aug 2020 19:49:55 +0200
+Subject: Re: perf regression after "genirq/affinity: Handle affinity setting
+ on inactive interrupts correctly"
+From:   Felix Fietkau <nbd@nbd.name>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+References: <c3bd7f1d-3126-d20d-67f3-2fed967a3ab9@nbd.name>
+Autocrypt: addr=nbd@nbd.name; prefer-encrypt=mutual; keydata=
+ xsDiBEah5CcRBADIY7pu4LIv3jBlyQ/2u87iIZGe6f0f8pyB4UjzfJNXhJb8JylYYRzIOSxh
+ ExKsdLCnJqsG1PY1mqTtoG8sONpwsHr2oJ4itjcGHfn5NJSUGTbtbbxLro13tHkGFCoCr4Z5
+ Pv+XRgiANSpYlIigiMbOkide6wbggQK32tC20QxUIwCg4k6dtV/4kwEeiOUfErq00TVqIiEE
+ AKcUi4taOuh/PQWx/Ujjl/P1LfJXqLKRPa8PwD4j2yjoc9l+7LptSxJThL9KSu6gtXQjcoR2
+ vCK0OeYJhgO4kYMI78h1TSaxmtImEAnjFPYJYVsxrhay92jisYc7z5R/76AaELfF6RCjjGeP
+ wdalulG+erWju710Bif7E1yjYVWeA/9Wd1lsOmx6uwwYgNqoFtcAunDaMKi9xVQW18FsUusM
+ TdRvTZLBpoUAy+MajAL+R73TwLq3LnKpIcCwftyQXK5pEDKq57OhxJVv1Q8XkA9Dn1SBOjNB
+ l25vJDFAT9ntp9THeDD2fv15yk4EKpWhu4H00/YX8KkhFsrtUs69+vZQwc0cRmVsaXggRmll
+ dGthdSA8bmJkQG5iZC5uYW1lPsJgBBMRAgAgBQJGoeQnAhsjBgsJCAcDAgQVAggDBBYCAwEC
+ HgECF4AACgkQ130UHQKnbvXsvgCgjsAIIOsY7xZ8VcSm7NABpi91yTMAniMMmH7FRenEAYMa
+ VrwYTIThkTlQzsFNBEah5FQQCACMIep/hTzgPZ9HbCTKm9xN4bZX0JjrqjFem1Nxf3MBM5vN
+ CYGBn8F4sGIzPmLhl4xFeq3k5irVg/YvxSDbQN6NJv8o+tP6zsMeWX2JjtV0P4aDIN1pK2/w
+ VxcicArw0VYdv2ZCarccFBgH2a6GjswqlCqVM3gNIMI8ikzenKcso8YErGGiKYeMEZLwHaxE
+ Y7mTPuOTrWL8uWWRL5mVjhZEVvDez6em/OYvzBwbkhImrryF29e3Po2cfY2n7EKjjr3/141K
+ DHBBdgXlPNfDwROnA5ugjjEBjwkwBQqPpDA7AYPvpHh5vLbZnVGu5CwG7NAsrb2isRmjYoqk
+ wu++3117AAMFB/9S0Sj7qFFQcD4laADVsabTpNNpaV4wAgVTRHKV/kC9luItzwDnUcsZUPdQ
+ f3MueRJ3jIHU0UmRBG3uQftqbZJj3ikhnfvyLmkCNe+/hXhPu9sGvXyi2D4vszICvc1KL4RD
+ aLSrOsROx22eZ26KqcW4ny7+va2FnvjsZgI8h4sDmaLzKczVRIiLITiMpLFEU/VoSv0m1F4B
+ FtRgoiyjFzigWG0MsTdAN6FJzGh4mWWGIlE7o5JraNhnTd+yTUIPtw3ym6l8P+gbvfoZida0
+ TspgwBWLnXQvP5EDvlZnNaKa/3oBes6z0QdaSOwZCRA3QSLHBwtgUsrT6RxRSweLrcabwkkE
+ GBECAAkFAkah5FQCGwwACgkQ130UHQKnbvW2GgCfTKx80VvCR/PvsUlrvdOLsIgeRGAAn1ee
+ RjMaxwtSdaCKMw3j33ZbsWS4
+Message-ID: <51480c84-e9c2-6508-4b3d-a63f93264587@nbd.name>
+Date:   Fri, 21 Aug 2020 19:49:54 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200801021248.GB2700342@rani.riverdale.lan>
+In-Reply-To: <c3bd7f1d-3126-d20d-67f3-2fed967a3ab9@nbd.name>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 31, 2020 at 10:12:48PM -0400, Arvind Sankar wrote:
-> On Fri, Jul 31, 2020 at 04:08:13PM -0700, Kees Cook wrote:
-> > The .got.plt section should always be zero (or filled only with the
-> > linker-generated lazy dispatch entry). Enforce this with an assert and
-> > mark the section as NOLOAD. This is more sensitive than just blindly
-> > discarding the section.
-> > 
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  arch/x86/kernel/vmlinux.lds.S | 14 +++++++++++++-
-> >  1 file changed, 13 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-> > index 0cc035cb15f1..7faffe7414d6 100644
-> > --- a/arch/x86/kernel/vmlinux.lds.S
-> > +++ b/arch/x86/kernel/vmlinux.lds.S
-> > @@ -414,8 +414,20 @@ SECTIONS
-> >  	ELF_DETAILS
-> >  
-> >  	DISCARDS
-> > -}
-> >  
-> > +	/*
-> > +	 * Make sure that the .got.plt is either completely empty or it
-> > +	 * contains only the lazy dispatch entries.
-> > +	 */
-> > +	.got.plt (NOLOAD) : { *(.got.plt) }
-> > +	ASSERT(SIZEOF(.got.plt) == 0 ||
-> > +#ifdef CONFIG_X86_64
-> > +	       SIZEOF(.got.plt) == 0x18,
-> > +#else
-> > +	       SIZEOF(.got.plt) == 0xc,
-> > +#endif
-> > +	       "Unexpected GOT/PLT entries detected!")
-> > +}
-> >  
-> >  #ifdef CONFIG_X86_32
-> >  /*
-> > -- 
-> > 2.25.1
-> > 
+On 2020-08-21 19:38, Felix Fietkau wrote:
+> Hi Thomas,
 > 
-> Is this actually needed? vmlinux is a position-dependent executable, and
-> it doesn't get linked with any shared libraries, so it should never have
-> a .got or .got.plt at all I think? Does it show up as an orphan without
-> this?
+> after updating my MT7622 ARM64 device from Linux 5.4.52 to 5.4.59, perf
+> stopped working. Whenever I started it, I got an IRQ storm on the second
+> arm-pmu IRQ. After some digging, I figured out that reverting commit
+> 9f8d3d2f79ba189ecc122d214d32396e5737963b ("genirq/affinity: Handle
+> affinity setting on inactive interrupts correctly") made it work again.
+Never mind, I just found your fix in 5.4.60 and it works for me.
+Sorry for the noise :)
 
-Yup, I see this:
-
-/usr/bin/ld.bfd: warning: orphan section `.got.plt' from `arch/x86/kernel/head_64.o' being placed in section `.got.plt'
-
-
--- 
-Kees Cook
+- Felix
