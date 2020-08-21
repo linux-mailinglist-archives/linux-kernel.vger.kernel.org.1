@@ -2,128 +2,360 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 713C324D147
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 11:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1FE724D14C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 11:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728010AbgHUJRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 05:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52338 "EHLO
+        id S1728190AbgHUJTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 05:19:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725855AbgHUJRt (ORCPT
+        with ESMTP id S1725806AbgHUJTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 05:17:49 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD962C061385;
-        Fri, 21 Aug 2020 02:17:49 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id d4so559975pjx.5;
-        Fri, 21 Aug 2020 02:17:49 -0700 (PDT)
+        Fri, 21 Aug 2020 05:19:10 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0110C061385;
+        Fri, 21 Aug 2020 02:19:10 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id m200so684531ybf.10;
+        Fri, 21 Aug 2020 02:19:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=FowiN7wGUIsFhFJkyzUhtvp+B7SgUmBl2oc4E8odKUg=;
-        b=u5imW/obXnthlptyuM+UmZMrIJpnkZhelXsiU1c0RPMDUbj3oQWZdP0i9N4UfPSleC
-         KfJ/OfpP0+MYveLl9IG5eAvuVZrZxxi0NB63ep5eZsz2hD99jBPZJQC0VkarKWVs7c+m
-         2qzbfQOKImRQONRgimycy8is1Ho47cs+XGHJRcTSTa4hnzhi3dqhZ9IphiTAgGSZykl7
-         36NmF4e8k7/DPRUQcxW4i/DonSqdJAtMDycWwa19T1Z8As5IMjLJkRXTbQ/JeOYi7YWk
-         YsMPSgpTyFyYHsflZ8QzTReDRcTciU7WF1+e39v+mZe8aV5axhVeFOzivWEOGNdQawP6
-         AAkg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=giJS01C2uRmkcBNmO7mS9KtwK43uwMA7OS6WWAjaKvI=;
+        b=tic4VOYGe4Kp/x0I7VNK3QiuSOWdPzpfxMoWOnXJ7e6FPgCzwBT6zhRkB8aHSTTxFL
+         c4AbcRvayex5ykHsbjxYAZoj5+zn8vnCKpk+8ii04gzff2VztDe2vUGgMb5A/NWyBFvN
+         P6dCv3/xd3c8/n0VJgC2zrcLjm6JFoj/m0PiIiz2uqmnDtialqv4NtdDY7sYfLaakT/M
+         3TnlBC1fiHHbRHgAeMf5a2RSWvjM4beJGpzXGpk3Izqc/6efsK/QC1tpgvuVVFU87F7S
+         vTESbFSddJN8Wb+dTeI02MzC95cWqPqDkMQxyOvkp2m9KdvtKQDvRtV0ElOkmXHH6UpH
+         yhvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=FowiN7wGUIsFhFJkyzUhtvp+B7SgUmBl2oc4E8odKUg=;
-        b=FGNivJNRu8Ap6dDiffaLT0JzahEKWmo36JrHQtCoXRRBildcW9WZ/y0JS1Gwk0aiQ8
-         anF//EJpJKPb8x+cKWq6XGLu36rXMszbEdnA+XdznfDKXLnZUxb2tYEmsjYQO6VWZdbN
-         meg8k0AnT6gkAUIwd5wvufYIzFcB+ICc6G98ahB/tTnDAxH19FgF8vUjUxDBA7GvEBHq
-         97pHpV4R/oylc56TC8sg//CPNUguymamRsAAisObl1hC9d/qiZa+x654zDY6lBR0NFLa
-         pIUL6FfxfzUeAwdNX5qAjqfhQO+00eK1tmh1OE6w1ghnGLKI06DHwUeBfMTBisfp1b+Y
-         wOIQ==
-X-Gm-Message-State: AOAM53050MGsIvoNDsrOdewfdwha5CygnJJAHr14l9m/dMWktcQ6W6vE
-        /t9n4T+3isHJFA3dqVnI962qF30Z/WU=
-X-Google-Smtp-Source: ABdhPJzNNdQKEjdNXXETsWvOfEIJS9o3AaeMqd6oRQlM6ML8PWimk/XtWQ755wUwRXMeFh9RI3JzRQ==
-X-Received: by 2002:a17:90a:ee08:: with SMTP id e8mr1840282pjy.86.1598001468857;
-        Fri, 21 Aug 2020 02:17:48 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.6])
-        by smtp.googlemail.com with ESMTPSA id b26sm1961190pff.54.2020.08.21.02.17.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 21 Aug 2020 02:17:48 -0700 (PDT)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: [PATCH] KVM: LAPIC: Don't kick vCPU which is injecting already-expired timer
-Date:   Fri, 21 Aug 2020 17:17:34 +0800
-Message-Id: <1598001454-11709-1-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=giJS01C2uRmkcBNmO7mS9KtwK43uwMA7OS6WWAjaKvI=;
+        b=eUdcV1tA8i5ozZ9kMczI9CawZxSU+ir6Ip6ota8egq0e5rCL+UUZto5AObB+yHJwmh
+         NefvtBrDW2rsWGjn6RBG8Be0KHF89F/vO429GQsG93HJIQJgTxZ8g9qIWzb2+LVBjhbz
+         JarbfHCUTJJZZKK7Xg8RTec2XX0y71txzbzjNQmu6uvoFMjv0LgBy/5Y6Xc5jgu554Mw
+         5bdBsHg6yhLQXMQ7d2bayhXKehk3QEYNL1AKBXFoeXz+45lmMp83/MHAeRolLrkv0Uau
+         ptqFjOwr50zJDmJPqkTCjudLMGrZVfWmm3Giw95parufmXMG2rBLO29oBL9lJwSzUCVX
+         N7qA==
+X-Gm-Message-State: AOAM531AF/KNufxdnqtDE2AQTnO0aB2LoOYO+QADaS/fVuGy4tyEUz3v
+        uhuHVZCbRPGwTYhVO7a2bVG6lUo4dJksy3le7Uc=
+X-Google-Smtp-Source: ABdhPJzIgpqXFC8gbAcWn5p5M0LTP7U4xnkTWUlz29pKX9vsKGxNrpgUbSpg27/nBWhaPt/n0NvrA5eLtoF0eDDeVXs=
+X-Received: by 2002:a5b:d08:: with SMTP id y8mr2654456ybp.476.1598001549861;
+ Fri, 21 Aug 2020 02:19:09 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200710110819.28965-1-benchuanggli@gmail.com>
+ <CAPDyKFrvzZSYWkqD_JgZSCmF8p+Bj7JXfdbZ5D=OsszTPsSDdw@mail.gmail.com>
+ <CACT4zj989TsK9CMtPwEVOwBr-HtLVqQyt_EPAdkEexGuGNfatQ@mail.gmail.com> <CAPDyKFqpy-+sL-8ai2v-Br1n8MC88u3wTF7r=8Lt3qyLwCxRKg@mail.gmail.com>
+In-Reply-To: <CAPDyKFqpy-+sL-8ai2v-Br1n8MC88u3wTF7r=8Lt3qyLwCxRKg@mail.gmail.com>
+From:   Ben Chuang <benchuanggli@gmail.com>
+Date:   Fri, 21 Aug 2020 17:18:58 +0800
+Message-ID: <CACT4zj-W2EECQgMTQ=VoaFZdQfVgWer-sEWqnqpfNG25FT-xLw@mail.gmail.com>
+Subject: Re: [RFC PATCH V3 02/21] mmc: core: UHS-II support, modify power-up sequence
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        Takahiro Akashi <takahiro.akashi@linaro.org>,
+        greg.tu@genesyslogic.com.tw
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+On Fri, Jul 24, 2020 at 8:36 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> On Fri, 24 Jul 2020 at 13:11, Ben Chuang <benchuanggli@gmail.com> wrote:
+> >
+> > Hi Ulf,
+> >
+> > On Fri, Jul 17, 2020 at 7:26 PM Ulf Hansson <ulf.hansson@linaro.org> wr=
+ote:
+> > >
+> > > On Fri, 10 Jul 2020 at 13:07, Ben Chuang <benchuanggli@gmail.com> wro=
+te:
+> > > >
+> > > > From: AKASHI Takahiro <takahiro.akashi@linaro.org>
+> > > >
+> > > > According to Fig. 3-35 in "SD Host Controller Simplified Spec. Ver4=
+.20":
+> > > > - Prepare vdd1, vdd2 and ios.timing for using after/in step (2)
+> > > > - chip_select is not used in UHS-II, used to return to the legacy f=
+low
+> > >
+> > > Thanks for pointing to the spec, but please explain why/what/how for
+> > > the change - as this helps me to review.
+> > >
+> > > I am going to stop commenting on each patch's commit message, beyond
+> > > this patch - as it seems the same comment applies to more patches.
+> > >
+> > > >
+> > > > Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> > > > Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+> > > > ---
+> > > >  drivers/mmc/core/core.c      | 62 ++++++++++++++++++++++++--------=
+----
+> > > >  drivers/mmc/core/regulator.c | 14 ++++++++
+> > > >  2 files changed, 56 insertions(+), 20 deletions(-)
+> > > >
+> > > > diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
+> > > > index 8d2b808e9b58..85c83c82ad0c 100644
+> > > > --- a/drivers/mmc/core/core.c
+> > > > +++ b/drivers/mmc/core/core.c
+> > > > @@ -1315,33 +1315,51 @@ void mmc_power_up(struct mmc_host *host, u3=
+2 ocr)
+> > > >         if (host->ios.power_mode =3D=3D MMC_POWER_ON)
+> > > >                 return;
+> > > >
+> > > > -       mmc_pwrseq_pre_power_on(host);
+> > > > +       if (host->flags & MMC_UHS2_SUPPORT) {
+> > > > +               /* TODO: handle 'ocr' parameter */
+> > > > +               host->ios.vdd =3D fls(host->ocr_avail) - 1;
+> > > > +               host->ios.vdd2 =3D fls(host->ocr_avail_uhs2) - 1;
+> > > > +               if (mmc_host_is_spi(host))
+> > > > +                       host->ios.chip_select =3D MMC_CS_HIGH;
+> > > > +               else
+> > > > +                       host->ios.chip_select =3D MMC_CS_DONTCARE;
+> > > > +               host->ios.timing =3D MMC_TIMING_UHS2;
+> > >
+> > > If I understand correctly, the intent is to always try to initialize
+> > > the UHS-II interface/phy if that is supported. That doesn't seem
+> > > correct to me. What about if the SD card doesn't support UHS-II, then
+> > > we should use the legacy SD interface instead right?
+> >
+> > Please always try UHS-II I/F first, then if UHS-II I/F fails, then
+> > switch to SD I/F.
+> >
+> > >
+> > > Or perhaps the MMC_UHS2_SUPPORT bit becomes cleared somewhere in the
+> > > error path when first trying to initialize an UHS-II card, from
+> > > subsequent changes?
+> >
+> > Yes, MMC_UHS2_SUPPORT will be cleared in some cases.
+> >
+> > >
+> > > So, assuming that is the intent then, I am still not sure about this =
+approach.
+> > >
+> > > What about if we instead always start with legacy SD initialization?
+> > > When we have read the OCR register, via mmc_send_app_op_cond(), we ca=
+n
+> > > check if the card supports UHS-II by looking at the UHS-II Card Statu=
+s
+> > > (bit 29).
+> >
+> > UHS-II spec recommends to detect UHS-II first.
+> > Or in Host controller spec, section 3.13.2 card interface detection seq=
+uence,
+> > it also starts from UHS-II path, then go SD legacy path if UHS-II
+> > initialization fails.
+>
+> I have carefully read the specs. While you are right, that the flow
+> charts seem to prefer to start with UHS-II - I don't think it's a good
+> idea.
+>
+> Have a look at "7.2.3.2 Interface Selection after Power Up", in the
+> UHS-II Addendum Version 2.00. This section states this:
+>
+> "If Host intends to use only Legacy SD interface or detects that
+> Legacy SD Card is inserted, it is allowed to supply only VDD1 and
+> SDCLK, and issue CMD8 in order to accelerate initialization of Legacy
+> SD interface. Note that once UHS-II I/F is disabled, Host requires
+> power cycle to enable UHS-II again."
+>
+> That said, I am also concerned about the case when a bootloader has
+> initialized the SD card. When the kernel tries to re-initialize the
+> card during boot, it may fail with UHS-II - unless the legacy SD init
+> path is tried first.
+>
+> >
+> > The bit29 in response of ACMD41 is defined as =E2=80=9CUHS-II Card Stat=
+us=E2=80=9D,
+> > not UHS-II supported.
+> > We have experience using this value to determine whether a card support=
+s UHS-II,
+> > but not every card reports if they support UHS-II by the response of
+> > ACMD41 correctly.
+>
+> I see.
+>
+> If that is the case, I think we should invent an SD quirk for that
+> particular card. Along the lines of what already exists for SDIO and
+> eMMC.
+>
+> So, when a card with this kind of quirk is found, we should simply
+> bail out in the SD legacy init path and try the UHS-II path instead.
+>
+> What card have you found missing to set the bit29?
 
-The kick after setting KVM_REQ_PENDING_TIMER is used to handle the timer 
-fires on a different pCPU which vCPU is running on, we don't need this 
-kick when injecting already-expired timer, this kick is expensive since 
-memory barrier, rcu, preemption disable/enable operations. This patch 
-reduces the overhead by don't kick vCPU which is injecting already-expired 
-timer.
+In my hand, two uhs-ii cards, one is a Lexar  card and another is an ADATA =
+card.
 
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
----
- arch/x86/kvm/lapic.c | 2 +-
- arch/x86/kvm/x86.c   | 5 +++--
- arch/x86/kvm/x86.h   | 2 +-
- 3 files changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index 248095a..5b5ae66 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -1642,7 +1642,7 @@ static void apic_timer_expired(struct kvm_lapic *apic, bool from_timer_fn)
- 	}
- 
- 	atomic_inc(&apic->lapic_timer.pending);
--	kvm_set_pending_timer(vcpu);
-+	kvm_set_pending_timer(vcpu, from_timer_fn);
- }
- 
- static void start_sw_tscdeadline(struct kvm_lapic *apic)
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 599d732..2a45405 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -1778,10 +1778,11 @@ static s64 get_kvmclock_base_ns(void)
- }
- #endif
- 
--void kvm_set_pending_timer(struct kvm_vcpu *vcpu)
-+void kvm_set_pending_timer(struct kvm_vcpu *vcpu, bool should_kick)
- {
- 	kvm_make_request(KVM_REQ_PENDING_TIMER, vcpu);
--	kvm_vcpu_kick(vcpu);
-+	if (should_kick)
-+		kvm_vcpu_kick(vcpu);
- }
- 
- static void kvm_write_wall_clock(struct kvm *kvm, gpa_t wall_clock)
-diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-index 995ab69..0eaae9c 100644
---- a/arch/x86/kvm/x86.h
-+++ b/arch/x86/kvm/x86.h
-@@ -246,7 +246,7 @@ static inline bool kvm_vcpu_latch_init(struct kvm_vcpu *vcpu)
- 	return is_smm(vcpu) || kvm_x86_ops.apic_init_signal_blocked(vcpu);
- }
- 
--void kvm_set_pending_timer(struct kvm_vcpu *vcpu);
-+void kvm_set_pending_timer(struct kvm_vcpu *vcpu, bool should_kick);
- void kvm_inject_realmode_interrupt(struct kvm_vcpu *vcpu, int irq, int inc_eip);
- 
- void kvm_write_tsc(struct kvm_vcpu *vcpu, struct msr_data *msr);
--- 
-2.7.4
-
+>
+> >
+> > >
+> > > If it turns out that the card supports UHS-II and the host does as
+> > > well, then we do a mmc_power_off() to completely reset the
+> > > card/host/phy. Then we can call into a UHS-II specific path, that
+> > > tries to power on and initialize things according to the UHS-II spec.
+> > >
+> > > In this way, we are going to prioritize initialization of legacy SD
+> > > cards to remain quick, as we won't try to use UHS-II unless the card
+> > > supports it. Moreover, I get the impression that we can keep the
+> > > existing code more as is - and instead introduce UHS-II specifics in =
+a
+> > > separate path. This also also for UHS-II specific optimizations, I
+> > > think.
+> >
+> > Agree that we can try to keep the existing code and also need your advi=
+ce/help.
+>
+> Sure, I will help the best I can.
+>
+> I will have a look at the next patch in the series as well, but it may
+> take some time as I am currently trying to get some time off for
+> holidays.
+>
+> >
+> > >
+> > > > +       } else {
+> > > > +               mmc_pwrseq_pre_power_on(host);
+> > > >
+> > > > -       host->ios.vdd =3D fls(ocr) - 1;
+> > > > -       host->ios.power_mode =3D MMC_POWER_UP;
+> > > > -       /* Set initial state and call mmc_set_ios */
+> > > > -       mmc_set_initial_state(host);
+> > > > +               host->ios.vdd =3D fls(ocr) - 1;
+> > > > +               host->ios.power_mode =3D MMC_POWER_UP;
+> > > > +               /* Set initial state and call mmc_set_ios */
+> > > > +               mmc_set_initial_state(host);
+> > > >
+> > > > -       mmc_set_initial_signal_voltage(host);
+> > > > +               mmc_set_initial_signal_voltage(host);
+> > > >
+> > > > -       /*
+> > > > -        * This delay should be sufficient to allow the power suppl=
+y
+> > > > -        * to reach the minimum voltage.
+> > > > -        */
+> > > > -       mmc_delay(host->ios.power_delay_ms);
+> > > > -
+> > > > -       mmc_pwrseq_post_power_on(host);
+> > > > +               /*
+> > > > +                * This delay should be sufficient to allow the pow=
+er supply
+> > > > +                * to reach the minimum voltage.
+> > > > +                */
+> > > > +               mmc_delay(host->ios.power_delay_ms);
+> > > >
+> > > > +               mmc_pwrseq_post_power_on(host);
+> > > > +       }
+> > > >         host->ios.clock =3D host->f_init;
+> > > > -
+> > > >         host->ios.power_mode =3D MMC_POWER_ON;
+> > > > +
+> > > >         mmc_set_ios(host);
+> > > >
+> > > > -       /*
+> > > > -        * This delay must be at least 74 clock sizes, or 1 ms, or =
+the
+> > > > -        * time required to reach a stable voltage.
+> > > > -        */
+> > > > -       mmc_delay(host->ios.power_delay_ms);
+> > > > +       if (host->flags & MMC_UHS2_SUPPORT)
+> > > > +               /*
+> > > > +                * This delay should be sufficient to allow the pow=
+er supply
+> > > > +                * to reach the minimum voltage.
+> > > > +                */
+> > > > +               /*  TODO: avoid an immediate value */
+> > > > +               mmc_delay(10);
+> > > > +       else
+> > > > +               /*
+> > > > +                * This delay must be at least 74 clock sizes, or 1=
+ ms, or the
+> > > > +                * time required to reach a stable voltage.
+> > > > +                */
+> > > > +               mmc_delay(host->ios.power_delay_ms);
+> > > >  }
+> > > >
+> > > >  void mmc_power_off(struct mmc_host *host)
+> > > > @@ -2307,7 +2325,11 @@ void mmc_start_host(struct mmc_host *host)
+> > > >
+> > > >         if (!(host->caps2 & MMC_CAP2_NO_PRESCAN_POWERUP)) {
+> > > >                 mmc_claim_host(host);
+> > > > -               mmc_power_up(host, host->ocr_avail);
+> > > > +
+> > > > +               /* Power up here will make UHS2 init ugly. */
+> > > > +               if (!(host->caps & MMC_CAP_UHS2))
+> > > > +                       mmc_power_up(host, host->ocr_avail);
+> > > > +
+> > >
+> > > According to my suggestions, then this would not be needed.
+> >
+> > This should not be needed. Thank you.
+> >
+> > >
+> > > >                 mmc_release_host(host);
+> > > >         }
+> > > >
+> > > > diff --git a/drivers/mmc/core/regulator.c b/drivers/mmc/core/regula=
+tor.c
+> > > > index 96b1d15045d6..05556225d9ac 100644
+> > > > --- a/drivers/mmc/core/regulator.c
+> > > > +++ b/drivers/mmc/core/regulator.c
+> > > > @@ -247,6 +247,7 @@ int mmc_regulator_get_supply(struct mmc_host *m=
+mc)
+> > > >
+> > > >         mmc->supply.vmmc =3D devm_regulator_get_optional(dev, "vmmc=
+");
+> > > >         mmc->supply.vqmmc =3D devm_regulator_get_optional(dev, "vqm=
+mc");
+> > > > +       mmc->supply.vmmc2 =3D devm_regulator_get_optional(dev, "vmm=
+c2");
+> > >
+> > > Please move the regulator thingy here into a separate patch. Please
+> > > make sure corresponding header file, adding the vmmc2 to it is part o=
+f
+> > > that change as well.
+> >
+> > Yes. will do it.
+> >
+> > >
+> > > >
+> > > >         if (IS_ERR(mmc->supply.vmmc)) {
+> > > >                 if (PTR_ERR(mmc->supply.vmmc) =3D=3D -EPROBE_DEFER)
+> > > > @@ -266,6 +267,19 @@ int mmc_regulator_get_supply(struct mmc_host *=
+mmc)
+> > > >                 dev_dbg(dev, "No vqmmc regulator found\n");
+> > > >         }
+> > > >
+> > > > +       if (IS_ERR(mmc->supply.vmmc2)) {
+> > > > +               if (PTR_ERR(mmc->supply.vmmc2) =3D=3D -EPROBE_DEFER=
+)
+> > > > +                       return -EPROBE_DEFER;
+> > > > +               dev_dbg(dev, "No vmmc2 regulator found\n");
+> > > > +       } else {
+> > > > +               ret =3D mmc_regulator_get_ocrmask(mmc->supply.vmmc2=
+);
+> > > > +               if (ret > 0)
+> > > > +                       mmc->ocr_avail_uhs2 =3D ret;
+> > > > +               else
+> > > > +                       dev_warn(dev, "Failed getting UHS2 OCR mask=
+: %d\n",
+> > > > +                                ret);
+> > > > +       }
+> > > > +
+> > > >         return 0;
+> > > >  }
+> > > >  EXPORT_SYMBOL_GPL(mmc_regulator_get_supply);
+> > > > --
+> > > > 2.27.0
+> > > >
+>
+> Kind regards
+> Uffe
