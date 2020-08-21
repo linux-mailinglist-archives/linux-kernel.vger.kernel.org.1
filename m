@@ -2,157 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78AE724DFFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED6124E011
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 20:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbgHUSxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 14:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbgHUSxN (ORCPT
+        id S1726990AbgHUSzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 14:55:10 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:33131 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726885AbgHUSye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 14:53:13 -0400
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1857C061573
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:53:12 -0700 (PDT)
-Received: by mail-ua1-x942.google.com with SMTP id v20so824694ual.4
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 11:53:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3ykL1MaQAjReQJ2aQ56GZWudKyZ/kETzd1mJIShvlqg=;
-        b=lOO5KcjensU81n90JpwVdSdGl5pnw5AlKyiczE4LcmppuBoUTaiEO8XtuFPn4c4PaQ
-         qddvy17JKDmJleSHaIO/Ogew7cBYeFm0pULTnsX65QMgLAMSSyAoynE5HSP5hFg9UVvt
-         fxCxcmgFeMk1I/1MRqOX80fFINtH8/xQu3EChS11kj/UfRKA3Np5FtlLQ8ARBPO1T2Lx
-         Zjzodc2A6qbv2G4od4J2JjvFlfj4FNrM2jL7fEbsJ3kZTUj3qtKjZNIVYJn61lbTGFmW
-         C8cpfqZSURM8+r8V7HOyTGK2UyRXJVTntF7jXg3HKsBdF2j/xvTvOAWXA7k1st3Q/JBC
-         FHDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3ykL1MaQAjReQJ2aQ56GZWudKyZ/kETzd1mJIShvlqg=;
-        b=nObhkWR6TqWvsOZRJDk4bbwPYJCPgdimPA/NHGUvvfkarTGm03uio1LQsv8f2Nnnhz
-         mvMNRs/qwz1K6mllw5RNDzmN+j6OkCPRhBulKeCkjuvZB+ASrO3ImOlbsk8+5c0aHJAK
-         EpIpgep0dkffq6hKl1Ex/dbfPXbwF/o5JQiuUITyf8BnyPhfcLzAr9CbXM9Nq4DBY6Ab
-         VnXGiiFYNhrJPsuYQ8JBOE+QB4vwithD0cQmiUjsIQ9sPl1TjbP2Wr7unPhcd4/OtDt8
-         Xxqb62eRsRDEvfWX7lB01flIKSCJZTsbD2WDPmUJH9WOcz1KWN+at4TrbxZzpiE4/iED
-         YmIw==
-X-Gm-Message-State: AOAM530xNd9q5JVxtXuNzYVdMKDn5rGUtiKf6lypoBnm5cX3nEnVjxVt
-        qoXucbY7j9cnguzHcI/7RWVTgu58WcsVTosbufwb7Q==
-X-Google-Smtp-Source: ABdhPJwLGWowOiHwq4OtK9k4dIWPuKAtxD38z1jFWXA2gU6Jz5vFAR5L9E8i2RsRzeGBQZ0cRDBXAVroDaZuRzdsANs=
-X-Received: by 2002:a9f:2265:: with SMTP id 92mr2464321uad.86.1598035991532;
- Fri, 21 Aug 2020 11:53:11 -0700 (PDT)
+        Fri, 21 Aug 2020 14:54:34 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1598036074; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=ZBEo8ZeEHfGtM2pRpX9PkSiYXraZn21iFGcK2Njnv+c=; b=NK/EUI8KAIKqC2P1MXm61AKwSJz4LLAvNKBejoXBZZNfaof2WjmOnCly49BYT6ZghE1UOkhC
+ MNxGmcniGckJtdsXSBjBCKfv/97ySS7YZaoYEJDo/tFEfgUHTuX6Z2+eNhalx4wq3Uxj5Rag
+ 9BP4veqHteASiQP9bd+BFAi/Ba8=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5f401836c1ce10a051f4e151 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 21 Aug 2020 18:53:42
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D035BC433A1; Fri, 21 Aug 2020 18:53:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from jordan-laptop.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6F09FC433C6;
+        Fri, 21 Aug 2020 18:53:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6F09FC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] drm/msm: Split the a5xx preemption record
+Date:   Fri, 21 Aug 2020 12:53:35 -0600
+Message-Id: <20200821185336.2196780-1-jcrouse@codeaurora.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <dcb62b67-5ad6-f63a-a909-e2fa70b240fc@i-love.sakura.ne.jp>
- <20200820140054.fdkbotd4tgfrqpe6@wittgenstein> <637ab0e7-e686-0c94-753b-b97d24bb8232@i-love.sakura.ne.jp>
- <87k0xtv0d4.fsf@x220.int.ebiederm.org> <CAJuCfpHsjisBnNiDNQbm8Yi92cznaptiXYPdc-aVa+_zkuaPhA@mail.gmail.com>
- <20200820162645.GP5033@dhcp22.suse.cz> <87r1s0txxe.fsf@x220.int.ebiederm.org>
- <20200821111558.GG4546@redhat.com> <CAJuCfpF_GhTy5SCjxqyqTFUrJNaw3UGJzCi=WSCXfqPAcbThYg@mail.gmail.com>
- <20200821163300.GB19445@redhat.com> <20200821175943.GD19445@redhat.com>
-In-Reply-To: <20200821175943.GD19445@redhat.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 21 Aug 2020 11:53:00 -0700
-Message-ID: <CAJuCfpGn+7gtpUVv_T3ZvT7WEwP8z-c1z1Qu2qe1jq8RSxbHMA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm, oom_adj: don't loop through tasks in
- __set_oom_adj when not necessary
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tim Murray <timmurray@google.com>, mingo@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
-        christian@kellner.me, areber@redhat.com,
-        Shakeel Butt <shakeelb@google.com>, cyphar@cyphar.com,
-        adobriyan@gmail.com, Andrew Morton <akpm@linux-foundation.org>,
-        gladkov.alexey@gmail.com, Michel Lespinasse <walken@google.com>,
-        daniel.m.jordan@oracle.com, avagin@gmail.com,
-        bernd.edlinger@hotmail.de,
-        John Johansen <john.johansen@canonical.com>,
-        laoar.shao@gmail.com, Minchan Kim <minchan@kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 11:00 AM Oleg Nesterov <oleg@redhat.com> wrote:
->
-> On 08/21, Oleg Nesterov wrote:
-> >
-> > On 08/21, Suren Baghdasaryan wrote:
-> > >
-> > > On Fri, Aug 21, 2020 at 4:16 AM Oleg Nesterov <oleg@redhat.com> wrote:
-> > > >
-> > > >         bool probably_has_other_mm_users(tsk)
-> > > >         {
-> > > >                 return  atomic_read_acquire(&tsk->mm->mm_users) >
-> > > >                         atomic_read(&tsk->signal->live);
-> > > >         }
-> > > >
-> > > > The barrier implied by _acquire ensures that if we race with the exiting
-> > > > task and see the result of exit_mm()->mmput(mm), then we must also see
-> > > > the result of atomic_dec_and_test(signal->live).
-> > > >
-> > > > Either way, if we want to fix the race with clone(CLONE_VM) we need other
-> > > > changes.
-> > >
-> > > The way I understand this condition in __set_oom_adj() sync logic is
-> > > that we would be ok with false positives (when we loop unnecessarily)
-> > > but we can't tolerate false negatives (when oom_score_adj gets out of
-> > > sync).
-> >
-> > Yes,
-> >
-> > > With the clone(CLONE_VM) race not addressed we are allowing
-> > > false negatives and IMHO that's not acceptable because it creates a
-> > > possibility for userspace to get an inconsistent picture. When
-> > > developing the patch I did think about using (p->mm->mm_users >
-> > > p->signal->nr_threads) condition and had to reject it due to that
-> > > reason.
-> >
-> > Not sure I understand... I mean, the test_bit(MMF_PROC_SHARED) you propose
-> > is equally racy and we need copy_oom_score() at the end of copy_process()
-> > either way?
->
-> On a second thought I agree that probably_has_other_mm_users() above can't
-> work ;) Compared to the test_bit(MMF_PROC_SHARED) check it is not _equally_
-> racy, it adds _another_ race with clone(CLONE_VM).
->
-> Suppose a single-threaded process P does
->
->         clone(CLONE_VM); // creates the child C
->
->         // mm_users == 2; P->signal->live == 1;
->
->         clone(CLONE_THREAD | CLONE_VM);
->
->         // mm_users == 3; P->signal->live == 2;
->
-> the problem is that in theory clone(CLONE_THREAD | CLONE_VM) can increment
-> _both_ counters between atomic_read_acquire(mm_users) and atomic_read(live)
-> in probably_has_other_mm_users() so it can observe mm_users == live == 2.
+The main a5xx preemption record can be marked as privileged to
+protect it from user access but the counters storage needs to be
+remain unprivileged. Split the buffers mark the critical memory
+privileged.
 
-I see. So even though live is incremented after mm_users, the observer
-from __set_oom_adj still can see them becoming equal because it reads
-mm_users first.
+Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+---
 
-Do you see any such races if I incorporate the changes proposed by
-Michal in http://lkml.kernel.org/r/20200820124109.GI5033@dhcp22.suse.cz
-? I have the new patch and I'm testing it right now. So far it behaves
-well but maybe I'm missing some rare race here that won't show up in
-my testing?
+ drivers/gpu/drm/msm/adreno/a5xx_gpu.h     |  1 +
+ drivers/gpu/drm/msm/adreno/a5xx_preempt.c | 25 ++++++++++++++++++-----
+ 2 files changed, 21 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.h b/drivers/gpu/drm/msm/adreno/a5xx_gpu.h
+index 54868d4e3958..1e5b1a15a70f 100644
+--- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.h
++++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.h
+@@ -31,6 +31,7 @@ struct a5xx_gpu {
+ 	struct msm_ringbuffer *next_ring;
+ 
+ 	struct drm_gem_object *preempt_bo[MSM_GPU_MAX_RINGS];
++	struct drm_gem_object *preempt_counters_bo[MSM_GPU_MAX_RINGS];
+ 	struct a5xx_preempt_record *preempt[MSM_GPU_MAX_RINGS];
+ 	uint64_t preempt_iova[MSM_GPU_MAX_RINGS];
+ 
+diff --git a/drivers/gpu/drm/msm/adreno/a5xx_preempt.c b/drivers/gpu/drm/msm/adreno/a5xx_preempt.c
+index 9cf9353a7ff1..9f3fe177b00e 100644
+--- a/drivers/gpu/drm/msm/adreno/a5xx_preempt.c
++++ b/drivers/gpu/drm/msm/adreno/a5xx_preempt.c
+@@ -226,19 +226,31 @@ static int preempt_init_ring(struct a5xx_gpu *a5xx_gpu,
+ 	struct adreno_gpu *adreno_gpu = &a5xx_gpu->base;
+ 	struct msm_gpu *gpu = &adreno_gpu->base;
+ 	struct a5xx_preempt_record *ptr;
+-	struct drm_gem_object *bo = NULL;
+-	u64 iova = 0;
++	void *counters;
++	struct drm_gem_object *bo = NULL, *counters_bo = NULL;
++	u64 iova = 0, counters_iova = 0;
+ 
+ 	ptr = msm_gem_kernel_new(gpu->dev,
+ 		A5XX_PREEMPT_RECORD_SIZE + A5XX_PREEMPT_COUNTER_SIZE,
+-		MSM_BO_UNCACHED, gpu->aspace, &bo, &iova);
++		MSM_BO_UNCACHED | MSM_BO_MAP_PRIV, gpu->aspace, &bo, &iova);
+ 
+ 	if (IS_ERR(ptr))
+ 		return PTR_ERR(ptr);
+ 
++	/* The buffer to store counters needs to be unprivileged */
++	counters = msm_gem_kernel_new(gpu->dev,
++		A5XX_PREEMPT_COUNTER_SIZE,
++		MSM_BO_UNCACHED, gpu->aspace, &counters_bo, &counters_iova);
++	if (IS_ERR(counters)) {
++		msm_gem_kernel_put(bo, gpu->aspace, true);
++		return PTR_ERR(counters);
++	}
++
+ 	msm_gem_object_set_name(bo, "preempt");
++	msm_gem_object_set_name(counters_bo, "preempt_counters");
+ 
+ 	a5xx_gpu->preempt_bo[ring->id] = bo;
++	a5xx_gpu->preempt_counters_bo[ring->id] = counters_bo;
+ 	a5xx_gpu->preempt_iova[ring->id] = iova;
+ 	a5xx_gpu->preempt[ring->id] = ptr;
+ 
+@@ -249,7 +261,7 @@ static int preempt_init_ring(struct a5xx_gpu *a5xx_gpu,
+ 	ptr->data = 0;
+ 	ptr->cntl = MSM_GPU_RB_CNTL_DEFAULT;
+ 	ptr->rptr_addr = rbmemptr(ring, rptr);
+-	ptr->counter = iova + A5XX_PREEMPT_RECORD_SIZE;
++	ptr->counter = counters_iova;
+ 
+ 	return 0;
+ }
+@@ -260,8 +272,11 @@ void a5xx_preempt_fini(struct msm_gpu *gpu)
+ 	struct a5xx_gpu *a5xx_gpu = to_a5xx_gpu(adreno_gpu);
+ 	int i;
+ 
+-	for (i = 0; i < gpu->nr_rings; i++)
++	for (i = 0; i < gpu->nr_rings; i++) {
+ 		msm_gem_kernel_put(a5xx_gpu->preempt_bo[i], gpu->aspace, true);
++		msm_gem_kernel_put(a5xx_gpu->preempt_counters_bo[i],
++			gpu->aspace, true);
++	}
+ }
+ 
+ void a5xx_preempt_init(struct msm_gpu *gpu)
+-- 
+2.25.1
 
->
-> Oleg.
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
->
