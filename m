@@ -2,154 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A44424DCCE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73CE924DC66
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728899AbgHURIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 13:08:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728219AbgHUQSD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:18:03 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11945C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 09:18:02 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id d6so2960090ejr.5
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 09:18:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ptn3HzexirT3XdAWduQkOmakKONtwiNCxuYSboBYnto=;
-        b=RIu0IhImYyZb+DCQMBwkJ+3WPSis6jTVueamCSe5QQipks9UerbYdyD8Sq4CLTzzNk
-         XTVnXAq/vHXlH/jKZsfTBdR8qbQzJxrWAomXDLBlKiNGK3tYbaNSdTTRiIRetwiTZ3Q9
-         a+sQ0FP2pAqHggqQFBJNTPDLS7XiuUSb8nNxkchFktftLWgLOqvuvwi9+VDrRfM8Td9W
-         Jt6kAy3v6P4EOnxQEbw96hCMvOUQMKkXa2VOts+BmZ4Ov7+MrlVefcMGlH08eDTAV7zk
-         2HckMpr7tM+UN4J4i//sprE9bCobWntwzz6+4jCT2kWtV+893cVCvC3PAN2kX6yVst0T
-         7t5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ptn3HzexirT3XdAWduQkOmakKONtwiNCxuYSboBYnto=;
-        b=NHBV+e6vMOt5oN2M7gUT1KE+yWRN41sQDWFsiMX/+HFetZQdfrVZ+7tVHe0QRFFpdf
-         26zkCuO+s+VTQ1BwElAe7GJvZtEEGieSyScKYckDdwomzSSQSMIWgKamh2IvqawIUfbT
-         O8+6R5xkNmRsxfkLIFPAtgpZutX2focPEVypulJynX3JMvAqkSQprUmQkZ2/d2B644hp
-         KTzl047LBUosOyaNJYL3RcjUwzVKuTyRVZEDKW50y194R7olsM2yKxZtUQnxSxZ0Lw8x
-         0BBeQSGqOP6hBrOmo1dtyhkCdSaCPTd1G17DEW+u7d6cQQgvEJ9KBuruaarLXS6RDKuA
-         s6BA==
-X-Gm-Message-State: AOAM533kGj8fA3Ji+NC2p5cLPZ8JYv8eTtmv7rA77EbARkuasW0FWdEh
-        XK80MnYXLEI2toaMGK8oxTDSoigHr4KilI9D9C/n0z73uWs=
-X-Google-Smtp-Source: ABdhPJy/1qSCgmfbU6wNHXKkCpa9LF5ZYhy1PGrzlWHfEx/m/36FbJHC3jvEjhB6QmM0PEA786bXcBLr3cl9AK28q7Y=
-X-Received: by 2002:a17:906:84e1:: with SMTP id zp1mr3253699ejb.499.1598026680604;
- Fri, 21 Aug 2020 09:18:00 -0700 (PDT)
+        id S1728709AbgHURA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 13:00:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50912 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728261AbgHUQTY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 12:19:24 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C4C722B4B;
+        Fri, 21 Aug 2020 16:18:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598026713;
+        bh=kMyQW+GIqVIWX7MDhYsm/NuDZLK9PMBzl9HaFYCjPGY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=LjB93xCHeKYuPVdZfNTfGJNVv6lqoHeYS5h1gtSWMqs4N25LRt/KvzjLFWwf9yNUQ
+         zLXIXRovZ1r7Yp3HdFcTzbsHFVdbJnst+0YWDFKYWlb3b/uZLUKdOyUq3NAteE0f5I
+         gZEptMTFZPxCJo3MNczzT8440FPbbgFtl73x0LHU=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     "Desnes A. Nunes do Rosario" <desnesn@linux.ibm.com>,
+        Sachin Sant <sachinp@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>, linuxppc-dev@lists.ozlabs.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 20/38] selftests/powerpc: Purge extra count_pmc() calls of ebb selftests
+Date:   Fri, 21 Aug 2020 12:17:49 -0400
+Message-Id: <20200821161807.348600-20-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200821161807.348600-1-sashal@kernel.org>
+References: <20200821161807.348600-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20200818184122.29C415DF@viggo.jf.intel.com> <20200818184131.C972AFCC@viggo.jf.intel.com>
- <87lfi9wxk9.fsf@yhuang-dev.intel.com> <6a378a57-a453-0318-924b-05dfa0a10c1f@intel.com>
- <CAHbLzkrjxm38VV+ibQxoQkC4nW7F13aJcL5RypUchX30rqUstA@mail.gmail.com> <87v9hcvmr5.fsf@yhuang-dev.intel.com>
-In-Reply-To: <87v9hcvmr5.fsf@yhuang-dev.intel.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Fri, 21 Aug 2020 09:17:48 -0700
-Message-ID: <CAHbLzkpnCSgRa1TGKk8zih7-h2bAh1N6X==rsLpSPY-n90F-ww@mail.gmail.com>
-Subject: Re: [RFC][PATCH 5/9] mm/migrate: demote pages during reclaim
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Rientjes <rientjes@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 5:57 PM Huang, Ying <ying.huang@intel.com> wrote:
->
-> Yang Shi <shy828301@gmail.com> writes:
->
-> > On Thu, Aug 20, 2020 at 8:22 AM Dave Hansen <dave.hansen@intel.com> wrote:
-> >>
-> >> On 8/20/20 1:06 AM, Huang, Ying wrote:
-> >> >> +    /* Migrate pages selected for demotion */
-> >> >> +    nr_reclaimed += demote_page_list(&ret_pages, &demote_pages, pgdat, sc);
-> >> >> +
-> >> >>      pgactivate = stat->nr_activate[0] + stat->nr_activate[1];
-> >> >>
-> >> >>      mem_cgroup_uncharge_list(&free_pages);
-> >> >> _
-> >> > Generally, it's good to batch the page migration.  But one side effect
-> >> > is that, if the pages are failed to be migrated, they will be placed
-> >> > back to the LRU list instead of falling back to be reclaimed really.
-> >> > This may cause some issue in some situation.  For example, if there's no
-> >> > enough space in the PMEM (slow) node, so the page migration fails, OOM
-> >> > may be triggered, because the direct reclaiming on the DRAM (fast) node
-> >> > may make no progress, while it can reclaim some pages really before.
-> >>
-> >> Yes, agreed.
-> >
-> > Kind of. But I think that should be transient and very rare. The
-> > kswapd on pmem nodes will be waken up to drop pages when we try to
-> > allocate migration target pages. It should be very rare that there is
-> > not reclaimable page on pmem nodes.
-> >
-> >>
-> >> There are a couple of ways we could fix this.  Instead of splicing
-> >> 'demote_pages' back into 'ret_pages', we could try to get them back on
-> >> 'page_list' and goto the beginning on shrink_page_list().  This will
-> >> probably yield the best behavior, but might be a bit ugly.
-> >>
-> >> We could also add a field to 'struct scan_control' and just stop trying
-> >> to migrate after it has failed one or more times.  The trick will be
-> >> picking a threshold that doesn't mess with either the normal reclaim
-> >> rate or the migration rate.
-> >
-> > In my patchset I implemented a fallback mechanism via adding a new
-> > PGDAT_CONTENDED node flag. Please check this out:
-> > https://patchwork.kernel.org/patch/10993839/.
-> >
-> > Basically the PGDAT_CONTENDED flag will be set once migrate_pages()
-> > return -ENOMEM which indicates the target pmem node is under memory
-> > pressure, then it would fallback to regular reclaim path. The flag
-> > would be cleared by clear_pgdat_congested() once the pmem node memory
-> > pressure is gone.
->
-> There may be some races between the flag set and clear.  For example,
->
-> - try to migrate some pages from DRAM node to PMEM node
->
-> - no enough free pages on the PMEM node, so wakeup kswapd
->
-> - kswapd on PMEM node reclaimed some page and try to clear
->   PGDAT_CONTENDED on DRAM node
->
-> - set PGDAT_CONTENDED on DRAM node
+From: "Desnes A. Nunes do Rosario" <desnesn@linux.ibm.com>
 
-Yes, the race is true. Someone else may set PGDAT_CONTENDED, but pmem
-node's kswapd already went to sleep, so the flag might be not be able
-to be cleared for a while.
+[ Upstream commit 3337bf41e0dd70b4064cdf60acdfcdc2d050066c ]
 
-I think this can be solved easily. We can just move the flag set to
-kswapd. Once kswapd is waken up we know there is kind of memory
-pressure on that node, then set the flag, clear the flag when kswapd
-goes to sleep. kswapd is single threaded and just set/clear its own
-node's flag, so there should be no race if I don't miss something.
+An extra count on ebb_state.stats.pmc_count[PMC_INDEX(pmc)] is being per-
+formed when count_pmc() is used to reset PMCs on a few selftests. This
+extra pmc_count can occasionally invalidate results, such as the ones from
+cycles_test shown hereafter. The ebb_check_count() failed with an above
+the upper limit error due to the extra value on ebb_state.stats.pmc_count.
 
->
-> This may be resolvable.  But I still prefer to fallback to real page
-> reclaiming directly for the pages failed to be migrated.  That looks
-> more robust.
->
-> Best Regards,
-> Huang, Ying
->
-> > We already use node flags to indicate the state of node in reclaim
-> > code, i.e. PGDAT_WRITEBACK, PGDAT_DIRTY, etc. So, adding a new flag
-> > sounds more straightforward to me IMHO.
-> >
-> >>
-> >> This is on my list to fix up next.
-> >>
+Furthermore, this extra count is also indicated by extra PMC1 trace_log on
+the output of the cycle test (as well as on pmc56_overflow_test):
+
+==========
+   ...
+   [21]: counter = 8
+   [22]: register SPRN_MMCR0 = 0x0000000080000080
+   [23]: register SPRN_PMC1  = 0x0000000080000004
+   [24]: counter = 9
+   [25]: register SPRN_MMCR0 = 0x0000000080000080
+   [26]: register SPRN_PMC1  = 0x0000000080000004
+   [27]: counter = 10
+   [28]: register SPRN_MMCR0 = 0x0000000080000080
+   [29]: register SPRN_PMC1  = 0x0000000080000004
+>> [30]: register SPRN_PMC1  = 0x000000004000051e
+PMC1 count (0x280000546) above upper limit 0x2800003e8 (+0x15e)
+[FAIL] Test FAILED on line 52
+failure: cycles
+==========
+
+Signed-off-by: Desnes A. Nunes do Rosario <desnesn@linux.ibm.com>
+Tested-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200626164737.21943-1-desnesn@linux.ibm.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ .../selftests/powerpc/pmu/ebb/back_to_back_ebbs_test.c     | 2 --
+ tools/testing/selftests/powerpc/pmu/ebb/cycles_test.c      | 2 --
+ .../selftests/powerpc/pmu/ebb/cycles_with_freeze_test.c    | 2 --
+ .../selftests/powerpc/pmu/ebb/cycles_with_mmcr2_test.c     | 2 --
+ tools/testing/selftests/powerpc/pmu/ebb/ebb.c              | 2 --
+ .../selftests/powerpc/pmu/ebb/ebb_on_willing_child_test.c  | 2 --
+ .../selftests/powerpc/pmu/ebb/lost_exception_test.c        | 1 -
+ .../testing/selftests/powerpc/pmu/ebb/multi_counter_test.c | 7 -------
+ .../selftests/powerpc/pmu/ebb/multi_ebb_procs_test.c       | 2 --
+ .../testing/selftests/powerpc/pmu/ebb/pmae_handling_test.c | 2 --
+ .../selftests/powerpc/pmu/ebb/pmc56_overflow_test.c        | 2 --
+ 11 files changed, 26 deletions(-)
+
+diff --git a/tools/testing/selftests/powerpc/pmu/ebb/back_to_back_ebbs_test.c b/tools/testing/selftests/powerpc/pmu/ebb/back_to_back_ebbs_test.c
+index 94110b1dcd3d8..031baa43646fb 100644
+--- a/tools/testing/selftests/powerpc/pmu/ebb/back_to_back_ebbs_test.c
++++ b/tools/testing/selftests/powerpc/pmu/ebb/back_to_back_ebbs_test.c
+@@ -91,8 +91,6 @@ int back_to_back_ebbs(void)
+ 	ebb_global_disable();
+ 	ebb_freeze_pmcs();
+ 
+-	count_pmc(1, sample_period);
+-
+ 	dump_ebb_state();
+ 
+ 	event_close(&event);
+diff --git a/tools/testing/selftests/powerpc/pmu/ebb/cycles_test.c b/tools/testing/selftests/powerpc/pmu/ebb/cycles_test.c
+index 7c57a8d79535d..361e0be9df9ae 100644
+--- a/tools/testing/selftests/powerpc/pmu/ebb/cycles_test.c
++++ b/tools/testing/selftests/powerpc/pmu/ebb/cycles_test.c
+@@ -42,8 +42,6 @@ int cycles(void)
+ 	ebb_global_disable();
+ 	ebb_freeze_pmcs();
+ 
+-	count_pmc(1, sample_period);
+-
+ 	dump_ebb_state();
+ 
+ 	event_close(&event);
+diff --git a/tools/testing/selftests/powerpc/pmu/ebb/cycles_with_freeze_test.c b/tools/testing/selftests/powerpc/pmu/ebb/cycles_with_freeze_test.c
+index ecf5ee3283a3e..fe7d0dc2a1a26 100644
+--- a/tools/testing/selftests/powerpc/pmu/ebb/cycles_with_freeze_test.c
++++ b/tools/testing/selftests/powerpc/pmu/ebb/cycles_with_freeze_test.c
+@@ -99,8 +99,6 @@ int cycles_with_freeze(void)
+ 	ebb_global_disable();
+ 	ebb_freeze_pmcs();
+ 
+-	count_pmc(1, sample_period);
+-
+ 	dump_ebb_state();
+ 
+ 	printf("EBBs while frozen %d\n", ebbs_while_frozen);
+diff --git a/tools/testing/selftests/powerpc/pmu/ebb/cycles_with_mmcr2_test.c b/tools/testing/selftests/powerpc/pmu/ebb/cycles_with_mmcr2_test.c
+index c0faba520b35c..b9b30f974b5ea 100644
+--- a/tools/testing/selftests/powerpc/pmu/ebb/cycles_with_mmcr2_test.c
++++ b/tools/testing/selftests/powerpc/pmu/ebb/cycles_with_mmcr2_test.c
+@@ -71,8 +71,6 @@ int cycles_with_mmcr2(void)
+ 	ebb_global_disable();
+ 	ebb_freeze_pmcs();
+ 
+-	count_pmc(1, sample_period);
+-
+ 	dump_ebb_state();
+ 
+ 	event_close(&event);
+diff --git a/tools/testing/selftests/powerpc/pmu/ebb/ebb.c b/tools/testing/selftests/powerpc/pmu/ebb/ebb.c
+index 46681fec549b8..2694ae161a84a 100644
+--- a/tools/testing/selftests/powerpc/pmu/ebb/ebb.c
++++ b/tools/testing/selftests/powerpc/pmu/ebb/ebb.c
+@@ -396,8 +396,6 @@ int ebb_child(union pipe read_pipe, union pipe write_pipe)
+ 	ebb_global_disable();
+ 	ebb_freeze_pmcs();
+ 
+-	count_pmc(1, sample_period);
+-
+ 	dump_ebb_state();
+ 
+ 	event_close(&event);
+diff --git a/tools/testing/selftests/powerpc/pmu/ebb/ebb_on_willing_child_test.c b/tools/testing/selftests/powerpc/pmu/ebb/ebb_on_willing_child_test.c
+index a991d2ea8d0a1..174e4f4dae6c0 100644
+--- a/tools/testing/selftests/powerpc/pmu/ebb/ebb_on_willing_child_test.c
++++ b/tools/testing/selftests/powerpc/pmu/ebb/ebb_on_willing_child_test.c
+@@ -38,8 +38,6 @@ static int victim_child(union pipe read_pipe, union pipe write_pipe)
+ 	ebb_global_disable();
+ 	ebb_freeze_pmcs();
+ 
+-	count_pmc(1, sample_period);
+-
+ 	dump_ebb_state();
+ 
+ 	FAIL_IF(ebb_state.stats.ebb_count == 0);
+diff --git a/tools/testing/selftests/powerpc/pmu/ebb/lost_exception_test.c b/tools/testing/selftests/powerpc/pmu/ebb/lost_exception_test.c
+index 2ed7ad33f7a3b..dddb95938304e 100644
+--- a/tools/testing/selftests/powerpc/pmu/ebb/lost_exception_test.c
++++ b/tools/testing/selftests/powerpc/pmu/ebb/lost_exception_test.c
+@@ -75,7 +75,6 @@ static int test_body(void)
+ 	ebb_freeze_pmcs();
+ 	ebb_global_disable();
+ 
+-	count_pmc(4, sample_period);
+ 	mtspr(SPRN_PMC4, 0xdead);
+ 
+ 	dump_summary_ebb_state();
+diff --git a/tools/testing/selftests/powerpc/pmu/ebb/multi_counter_test.c b/tools/testing/selftests/powerpc/pmu/ebb/multi_counter_test.c
+index 6ff8c8ff27d66..035c02273cd49 100644
+--- a/tools/testing/selftests/powerpc/pmu/ebb/multi_counter_test.c
++++ b/tools/testing/selftests/powerpc/pmu/ebb/multi_counter_test.c
+@@ -70,13 +70,6 @@ int multi_counter(void)
+ 	ebb_global_disable();
+ 	ebb_freeze_pmcs();
+ 
+-	count_pmc(1, sample_period);
+-	count_pmc(2, sample_period);
+-	count_pmc(3, sample_period);
+-	count_pmc(4, sample_period);
+-	count_pmc(5, sample_period);
+-	count_pmc(6, sample_period);
+-
+ 	dump_ebb_state();
+ 
+ 	for (i = 0; i < 6; i++)
+diff --git a/tools/testing/selftests/powerpc/pmu/ebb/multi_ebb_procs_test.c b/tools/testing/selftests/powerpc/pmu/ebb/multi_ebb_procs_test.c
+index 037cb6154f360..3e9d4ac965c85 100644
+--- a/tools/testing/selftests/powerpc/pmu/ebb/multi_ebb_procs_test.c
++++ b/tools/testing/selftests/powerpc/pmu/ebb/multi_ebb_procs_test.c
+@@ -61,8 +61,6 @@ static int cycles_child(void)
+ 	ebb_global_disable();
+ 	ebb_freeze_pmcs();
+ 
+-	count_pmc(1, sample_period);
+-
+ 	dump_summary_ebb_state();
+ 
+ 	event_close(&event);
+diff --git a/tools/testing/selftests/powerpc/pmu/ebb/pmae_handling_test.c b/tools/testing/selftests/powerpc/pmu/ebb/pmae_handling_test.c
+index c5fa64790c22e..d90891fe96a32 100644
+--- a/tools/testing/selftests/powerpc/pmu/ebb/pmae_handling_test.c
++++ b/tools/testing/selftests/powerpc/pmu/ebb/pmae_handling_test.c
+@@ -82,8 +82,6 @@ static int test_body(void)
+ 	ebb_global_disable();
+ 	ebb_freeze_pmcs();
+ 
+-	count_pmc(1, sample_period);
+-
+ 	dump_ebb_state();
+ 
+ 	if (mmcr0_mismatch)
+diff --git a/tools/testing/selftests/powerpc/pmu/ebb/pmc56_overflow_test.c b/tools/testing/selftests/powerpc/pmu/ebb/pmc56_overflow_test.c
+index 30e1ac62e8cb4..8ca92b9ee5b01 100644
+--- a/tools/testing/selftests/powerpc/pmu/ebb/pmc56_overflow_test.c
++++ b/tools/testing/selftests/powerpc/pmu/ebb/pmc56_overflow_test.c
+@@ -76,8 +76,6 @@ int pmc56_overflow(void)
+ 	ebb_global_disable();
+ 	ebb_freeze_pmcs();
+ 
+-	count_pmc(2, sample_period);
+-
+ 	dump_ebb_state();
+ 
+ 	printf("PMC5/6 overflow %d\n", pmc56_overflowed);
+-- 
+2.25.1
+
