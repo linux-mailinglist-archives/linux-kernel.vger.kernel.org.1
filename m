@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D0E24DD70
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50FC824DD69
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729037AbgHURRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 13:17:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59732 "EHLO mail.kernel.org"
+        id S1729065AbgHURQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 13:16:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729032AbgHURQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 13:16:19 -0400
-Subject: Re: [git pull] drm fixes for 5.9-rc2
+        id S1728092AbgHURQU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 13:16:20 -0400
+Subject: Re: [GIT PULL] sound fixes for 5.9-rc2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598030179;
-        bh=cNoYfjKrtJSQm8jTogKaryiMVq/0p/K2zYAGKiXnugk=;
+        s=default; t=1598030180;
+        bh=Xi5uDqEgd+wyCMVTJ6agj4KL0IiNBxuM+S+CfdFnmQk=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=u6NMUj12rlNC/dENNgDFZa0GNKkuXi11Hfce0yrDmeBep0Hs5dwuYXK+Bi0iJuq1y
-         +5zllTWnqUqzMem86uRwswLbsC5OjR8tfZlViy1Baw1YE2VsynTDAphSteGxWX+t4G
-         xdyrq+TdprPX5iqNV8O1mTSuZEYJAuRY2QpwXSLk=
+        b=VF/ibpyYn14wTWHRn/a0FaQa+4PIp+H18mmUURROcIufqcnOR5sCPQzIEGtOOz6gm
+         +P27PdAI5GdqE2KlqVCmycZb9oAKbyc0jaFJlL0ZqAr8A778uUWHO6d8cczaS9lOUP
+         AgqPDaqdK0QSoXHNASVs4AuxjuQvfuslzQqVYkbA=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAPM=9tzpqLjG31xd0nPmGaYs7NXiWEQTtYaZ=vQZedyWU+yjfQ@mail.gmail.com>
-References: <CAPM=9tzpqLjG31xd0nPmGaYs7NXiWEQTtYaZ=vQZedyWU+yjfQ@mail.gmail.com>
+In-Reply-To: <s5hzh6ocpr1.wl-tiwai@suse.de>
+References: <s5hzh6ocpr1.wl-tiwai@suse.de>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAPM=9tzpqLjG31xd0nPmGaYs7NXiWEQTtYaZ=vQZedyWU+yjfQ@mail.gmail.com>
-X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-08-21
-X-PR-Tracked-Commit-Id: 0790e63f58f22a68696667102be03efb92a4da5f
+X-PR-Tracked-Message-Id: <s5hzh6ocpr1.wl-tiwai@suse.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.9-rc2
+X-PR-Tracked-Commit-Id: b90b925fd52c75ee7531df739d850a1f7c58ef06
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 43d387a4adc48e1fe68bf467cbfd67a11d65eb45
-Message-Id: <159803017933.29562.97618442697473059.pr-tracker-bot@kernel.org>
-Date:   Fri, 21 Aug 2020 17:16:19 +0000
-To:     Dave Airlie <airlied@gmail.com>
+X-PR-Merge-Commit-Id: 7f04f3ed621fd345ca1b01ec6e98c9b85d95851f
+Message-Id: <159803018045.29562.10705885967473858922.pr-tracker-bot@kernel.org>
+Date:   Fri, 21 Aug 2020 17:16:20 +0000
+To:     Takashi Iwai <tiwai@suse.de>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 21 Aug 2020 11:55:16 +1000:
+The pull request you sent on Fri, 21 Aug 2020 11:28:02 +0200:
 
-> git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-08-21
+> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.9-rc2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/43d387a4adc48e1fe68bf467cbfd67a11d65eb45
+https://git.kernel.org/torvalds/c/7f04f3ed621fd345ca1b01ec6e98c9b85d95851f
 
 Thank you!
 
