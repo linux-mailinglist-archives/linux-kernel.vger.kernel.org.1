@@ -2,166 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4ABB24CE1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 08:37:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F5BA24CE04
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 08:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727808AbgHUGhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 02:37:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727050AbgHUGhp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 02:37:45 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B45C061385
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 23:37:44 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id r2so914759wrs.8
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 23:37:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=QItSkxomgZddqKFgXhd2Dp3/b385ih5CrxI3SGmUc1k=;
-        b=E3x+eQ8CUXoja0ZbVom1sy7IZSb4mZS+ZwPu+pHgpeHLG/Zm1yANzw6iY2iRqFlcgw
-         3lKsutxt762BLx0lzZmhC5pV8f0waSEVccD1sIGTlSzHkWX4uu/0kitlHncsyh+jLuTp
-         0QO/mn3rGOxdUnK8lvdjdX3owUpojvrsNQu3TPUtmesTsQosb80ykKk8h+c3U0wYusPu
-         GXmL7SmEWlp8kAJjUSkJbTrOME2wITMLvxUl5Qe9EMPW8/0v60P/+qfagaScZQTU/Q1Z
-         KdZPR3QmGsf4WPrIU/2y6erDex6MaZDYLv660T7CtwRj6n3LoJQbcouCd26bLWoCVXZU
-         ZUJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=QItSkxomgZddqKFgXhd2Dp3/b385ih5CrxI3SGmUc1k=;
-        b=NPiwSMo9JqLo1Ecb2NwNFZnzTGRO4K7ux+RLxPLtmJIeBLVHZPpnWiOMcmz6sZ087q
-         OS/DWPxdg4wUH/OtAaX2tR5+265FK2qfT35Q7EV4sVGtGfKdqgdDtZvEPUGETklTp6z+
-         qes/xdv3I/PW5u05hHLqFZ3FYosJe7pbmmOx4VG1Zacd1gx1i/rTCbqSgGZi0Ygq1eY9
-         H7azCgPlYkoVCfE2BUWi6UADUFBrtvCgM9rfNoYa+pcxr8nkcaUXgUgtw8dviloEpLJh
-         mcfOch9bEesxIEhUBZs2cHDbOFOyt6Xu0tYKiZe76BSaxdP1I4Z41UH5gBiUSDaxnLin
-         lGvg==
-X-Gm-Message-State: AOAM532j8Pb/BNjA+inmlCh4lPKzLqDSzmlppBgbJIQ8fVKouXOb895g
-        cKFLIHlVxYarxPkt+/gInNr8aRDZe92Evg==
-X-Google-Smtp-Source: ABdhPJyqBHrOSxiz02DxFq4JTWhGDvpiON9R4ATj2W1u1WmincfvddakxNDzMvRjtHrOvmideyd7oA==
-X-Received: by 2002:a5d:5682:: with SMTP id f2mr1242594wrv.248.1597991863080;
-        Thu, 20 Aug 2020 23:37:43 -0700 (PDT)
-Received: from elver.google.com ([100.105.32.75])
-        by smtp.gmail.com with ESMTPSA id 68sm2321466wra.39.2020.08.20.23.37.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 23:37:42 -0700 (PDT)
-Date:   Fri, 21 Aug 2020 08:37:36 +0200
-From:   Marco Elver <elver@google.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, will@kernel.org, npiggin@gmail.com,
-        jgross@suse.com, paulmck@kernel.org, rjw@rjwysocki.net,
-        joel@joelfernandes.org, svens@linux.ibm.com, tglx@linutronix.de
-Subject: Re: [PATCH 0/9] TRACE_IRQFLAGS wreckage
-Message-ID: <20200821063736.GA1722858@elver.google.com>
-References: <20200820073031.886217423@infradead.org>
- <20200820103643.1b9abe88@oasis.local.home>
- <20200820145821.GA1362448@hirez.programming.kicks-ass.net>
- <20200820172046.GA177701@elver.google.com>
- <20200820155923.3d5c4873@oasis.local.home>
+        id S1727103AbgHUGcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 02:32:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725951AbgHUGcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 02:32:12 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 11D0020732;
+        Fri, 21 Aug 2020 06:32:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597991531;
+        bh=qMQ4DO3ojjEcT05k8u0HaeNGZvJba3kCFJEYgbSc5uM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=LTr4CN13XIBCYEhBtRHJ+fOt5pkHVIXYlUPSzh1BDfau86a9Pil/IUS3yJDu1Knri
+         n7FBGRPvMpfWV7nEzcy2pg62H3jTu5PN8oc4U++V49e6BzqUmrfAH/8PoNdkjhI3ox
+         Z2/a9wY4NJO5jepNK0gyxbBGtelO5lC2OXtvGRKM=
+Date:   Fri, 21 Aug 2020 01:37:58 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH][next] brcmfmac: Use fallthrough pseudo-keyword
+Message-ID: <20200821063758.GA17783@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200820155923.3d5c4873@oasis.local.home>
-User-Agent: Mutt/1.14.4 (2020-06-18)
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 03:59PM -0400, Steven Rostedt wrote:
-> On Thu, 20 Aug 2020 19:20:46 +0200
-> Marco Elver <elver@google.com> wrote:
-> 
-> > On Thu, Aug 20, 2020 at 04:58PM +0200, peterz@infradead.org wrote:
-> > > On Thu, Aug 20, 2020 at 10:36:43AM -0400, Steven Rostedt wrote:  
-> > > > 
-> > > > I tested this series on top of tip/master and triggered the below
-> > > > warning when running the irqsoff tracer boot up test (config attached).
-> > > > 
-> > > > -- Steve
-> > > > 
-> > > >  Testing tracer irqsoff: 
-> > > >  
-> > > >  =============================
-> > > >  WARNING: suspicious RCU usage
-> > > >  5.9.0-rc1-test+ #92 Not tainted
-> > > >  -----------------------------
-> > > >  include/trace/events/lock.h:13 suspicious rcu_dereference_check() usage!  
-> > ...
-> > > 
-> > > Shiny, I think that wants something like the below, but let me go frob
-> > > my config and test it.
-> > > 
-> > > ---
-> > > --- a/drivers/cpuidle/cpuidle.c
-> > > +++ b/drivers/cpuidle/cpuidle.c  
-> > ...
-> > 
-> > With that applied (manually, due to conflicts), I still get warnings for
-> > certain call locations with KCSAN on (that is with my fix from the other
-> > email):
-> > 
-> > | =============================
-> > | WARNING: suspicious RCU usage
-> > | 5.9.0-rc1+ #23 Tainted: G        W        
-> > | -----------------------------
-> > | include/trace/events/random.h:310 suspicious rcu_dereference_check() usage!
-> > | 
-> > | other info that might help us debug this:
-> > | 
-> > | 
-> > | rcu_scheduler_active = 2, debug_locks = 0
-> > | RCU used illegally from extended quiescent state!
-> > | no locks held by swapper/1/0.
-> > | 
-> > | stack backtrace:
-> > | CPU: 1 PID: 0 Comm: swapper/1 Tainted: G        W         5.9.0-rc1+ #23
-> > | Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
-> > | Call Trace:
-> > |  __dump_stack lib/dump_stack.c:77 [inline]
-> > |  dump_stack+0xf1/0x14d lib/dump_stack.c:118
-> > |  trace_prandom_u32 include/trace/events/random.h:310 [inline]
-> > |  prandom_u32+0x1ee/0x200 lib/random32.c:86
-> > |  prandom_u32_max include/linux/prandom.h:46 [inline]
-> > |  reset_kcsan_skip kernel/kcsan/core.c:277 [inline]
-> > |  kcsan_setup_watchpoint+0x9b/0x600 kernel/kcsan/core.c:424
-> > |  is_idle_task+0xd/0x20 include/linux/sched.h:1671 		<==== inline, but not noinstr
-> > |  irqentry_enter+0x17/0x50 kernel/entry/common.c:293 		<==== noinstr function
-> > 
-> 
-> What happens if you apply the below patch?
-> 
-> -- Steve
-> 
-> diff --git a/lib/random32.c b/lib/random32.c
-> index 932345323af0..1c5607a411d4 100644
-> --- a/lib/random32.c
-> +++ b/lib/random32.c
-> @@ -83,7 +83,7 @@ u32 prandom_u32(void)
->  	u32 res;
->  
->  	res = prandom_u32_state(state);
-> -	trace_prandom_u32(res);
-> +	trace_prandom_u32_rcuidle(res);
->  	put_cpu_var(net_rand_state);
->  
->  	return res;
+Replace the existing /* fall through */ comments and its variants with
+the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+fall-through markings when it is the case.
 
-Thank you, this resolves the problem. It also works if I remove my 2
-other patches (for now, I think I still need the recursion-guard but
-it's not urgent, will send that separately).
+[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-And my apologies, it seems 5.9-rc1 is already broken, which I should
-have noticed. I sent a separate patch, which should be picked up into
-5.9: https://lkml.kernel.org/r/20200821063043.1949509-1-elver@google.com
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c | 2 --
+ .../net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c   | 8 ++++----
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c   | 2 +-
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c   | 2 --
+ 4 files changed, 5 insertions(+), 9 deletions(-)
 
-With that fix + start_critical_timings-switcheroo, this series is:
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
+index 1a7ab49295aa..0dc4de2fa9f6 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
+@@ -916,9 +916,7 @@ int brcmf_sdiod_probe(struct brcmf_sdio_dev *sdiodev)
+ 		f2_blksz = SDIO_4373_FUNC2_BLOCKSIZE;
+ 		break;
+ 	case SDIO_DEVICE_ID_BROADCOM_4359:
+-		/* fallthrough */
+ 	case SDIO_DEVICE_ID_BROADCOM_4354:
+-		/* fallthrough */
+ 	case SDIO_DEVICE_ID_BROADCOM_4356:
+ 		f2_blksz = SDIO_435X_FUNC2_BLOCKSIZE;
+ 		break;
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+index 444639f09aa4..8b5fda9bb853 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+@@ -3477,7 +3477,7 @@ brcmf_get_netinfo_array(struct brcmf_pno_scanresults_le *pfn_v1)
+ 	switch (pfn_v1->version) {
+ 	default:
+ 		WARN_ON(1);
+-		/* fall-thru */
++		fallthrough;
+ 	case cpu_to_le32(1):
+ 		netinfo = (struct brcmf_pno_net_info_le *)(pfn_v1 + 1);
+ 		break;
+@@ -6473,7 +6473,7 @@ static int brcmf_construct_chaninfo(struct brcmf_cfg80211_info *cfg,
+ 		default:
+ 			wiphy_warn(wiphy, "Firmware reported unsupported bandwidth %d\n",
+ 				   ch.bw);
+-			/* fall through */
++			fallthrough;
+ 		case BRCMU_CHAN_BW_20:
+ 			/* enable the channel and disable other bandwidths
+ 			 * for now as mentioned order assure they are enabled
+@@ -6611,10 +6611,10 @@ static void brcmf_get_bwcap(struct brcmf_if *ifp, u32 bw_cap[])
+ 	switch (mimo_bwcap) {
+ 	case WLC_N_BW_40ALL:
+ 		bw_cap[NL80211_BAND_2GHZ] |= WLC_BW_40MHZ_BIT;
+-		/* fall-thru */
++		fallthrough;
+ 	case WLC_N_BW_20IN2G_40IN5G:
+ 		bw_cap[NL80211_BAND_5GHZ] |= WLC_BW_40MHZ_BIT;
+-		/* fall-thru */
++		fallthrough;
+ 	case WLC_N_BW_20ALL:
+ 		bw_cap[NL80211_BAND_2GHZ] |= WLC_BW_20MHZ_BIT;
+ 		bw_cap[NL80211_BAND_5GHZ] |= WLC_BW_20MHZ_BIT;
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c
+index a3a257089696..5bf11e46fc49 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c
+@@ -1390,7 +1390,7 @@ bool brcmf_chip_sr_capable(struct brcmf_chip *pub)
+ 	case BRCM_CC_4345_CHIP_ID:
+ 		/* explicitly check SR engine enable bit */
+ 		pmu_cc3_mask = BIT(2);
+-		/* fall-through */
++		fallthrough;
+ 	case BRCM_CC_43241_CHIP_ID:
+ 	case BRCM_CC_4335_CHIP_ID:
+ 	case BRCM_CC_4339_CHIP_ID:
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+index 3c07d1bbe1c6..d1b96bad2718 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+@@ -4305,9 +4305,7 @@ static void brcmf_sdio_firmware_callback(struct device *dev, int err,
+ 					   CY_43455_MESBUSYCTRL, &err);
+ 			break;
+ 		case SDIO_DEVICE_ID_BROADCOM_4359:
+-			/* fallthrough */
+ 		case SDIO_DEVICE_ID_BROADCOM_4354:
+-			/* fallthrough */
+ 		case SDIO_DEVICE_ID_BROADCOM_4356:
+ 			brcmf_dbg(INFO, "set F2 watermark to 0x%x*4 bytes\n",
+ 				  CY_435X_F2_WATERMARK);
+-- 
+2.27.0
 
-Tested-by: Marco Elver <elver@google.com>
-
-Thanks,
--- Marco
