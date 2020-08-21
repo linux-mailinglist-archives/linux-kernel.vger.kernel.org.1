@@ -2,131 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5612524D0A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 10:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FDF724D0B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 10:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728027AbgHUIlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 04:41:19 -0400
-Received: from mga12.intel.com ([192.55.52.136]:16703 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726243AbgHUIlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 04:41:15 -0400
-IronPort-SDR: 9gWNK2wQmWGx4Pf78A6tZQffAQe+XBDZ9Y/TDBUxT4JsMHWdScsRL+UigdGT3zHEbEAdYN0HOH
- uODWQW3N8zmQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9719"; a="135024940"
-X-IronPort-AV: E=Sophos;i="5.76,335,1592895600"; 
-   d="scan'208";a="135024940"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2020 01:41:14 -0700
-IronPort-SDR: wU6wB33vOuYQk4bmvf0tN6XTxL0Kijnb7VWExrEYbjA3kFzXNZCtjsMJ0hgtAGTs/di5LEk6bT
- VW6DgVR9dbUg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,335,1592895600"; 
-   d="scan'208";a="329972949"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
-  by fmsmga002.fm.intel.com with ESMTP; 21 Aug 2020 01:41:12 -0700
-Subject: Re: [PATCH] xhci: Always restore EP_SOFT_CLEAR_TOGGLE even if ep
- reset failed
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Ding Hui <dinghui@sangfor.com.cn>
-Cc:     mathias.nyman@intel.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200821070652.27782-1-dinghui@sangfor.com.cn>
- <20200821073147.GA1681156@kroah.com>
-From:   Mathias Nyman <mathias.nyman@linux.intel.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=mathias.nyman@linux.intel.com; prefer-encrypt=mutual; keydata=
- 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 fiD/
-Message-ID: <c6275105-a204-fe23-2dae-2bfa6c06a839@linux.intel.com>
-Date:   Fri, 21 Aug 2020 11:44:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1728051AbgHUIqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 04:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728000AbgHUIqL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 04:46:11 -0400
+Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992EAC061386
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 01:46:09 -0700 (PDT)
+Received: by mail-ua1-x941.google.com with SMTP id u15so324498uau.10
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 01:46:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FBSyf+yXd7kiYAF9BZfiPGXH0tN6S8pKBPuNovCFIWg=;
+        b=bzUnGTMpFMBlKFRo4KHl6EmHFbz2NNiN55TErkmKGkClkdBPW7M8o/cmJou7X3zh0E
+         v5/1DmgNBKJFGQftdVexRCnYxq9PSrmpRxK9hFhyuewGRT8Q8cFKzskZTQqdYYppLPk0
+         PZiCmQp/v/qeABwXaKmgFTkeK7NPzfMpZYgDekBA3fbM0fUDL2rGNjmycIungSLFP3l1
+         Ixq4N3ChAyrt0ePjJF0OAvJhHeFgIx+uaM3OpcHRf3zaL08JxrD+npAW6F+jBN6DIat6
+         s1CYxZufog8kBKhFOL9J93G+rlVALXH/IVTc4E4FDU3BbV9XSNuz+ZrIyb/g625Sc+bI
+         A64Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FBSyf+yXd7kiYAF9BZfiPGXH0tN6S8pKBPuNovCFIWg=;
+        b=oIu374PN1Op1ycE0m6MQ4Otv6sTjDxGiYU7nz5UPvBnMP3tDnD9MIxWC6PXnOJsZ1d
+         ByE1rxxG6Xt/B30ESFWyR79GfyG9aT9NHtxziGc8ndEStrPsoQWjl32AKH/Qo/tQtF3c
+         31QQQ/DQnzHLOaATcri+V6f9Ufwwf/EZPWG/se0IOYqzE2R2SXeYjVPOpXosmQXIZVUl
+         gykFMESApHmavv4nA6gAR6TgEqQIgjMva38hCKC0LAHS6Cdf6p3B8NIgrxXAEthciQ0i
+         +XM0SKFkvuKSekrKp4RSbLW4kzKjvG6FgudsNya/vQ0kCvrjmw1uSkRDA5Ulzy4Pfk0H
+         9H1w==
+X-Gm-Message-State: AOAM531SL2MVCJr2vfUjLZ45ja1iNTqd+4HVs2Jz5wJHxY1nSfa3zuN9
+        r7OsOydlDTx+5x0sZyF/0PppEwdlZgJ/NO6aYlRT5A==
+X-Google-Smtp-Source: ABdhPJzrlAajobgpJPI56OVk2bDqzvfYUokRh11GmgukIRnTn43dOHrshkENdJIqI9aJ7hMomaPoCzr2mWE9EakgQ+E=
+X-Received: by 2002:ab0:6341:: with SMTP id f1mr778421uap.19.1597999568563;
+ Fri, 21 Aug 2020 01:46:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200821073147.GA1681156@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200814185011.3252020-1-t.schramm@manjaro.org>
+In-Reply-To: <20200814185011.3252020-1-t.schramm@manjaro.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 21 Aug 2020 10:45:31 +0200
+Message-ID: <CAPDyKFruUf7BxrF3YeYnJn=U4vZKMoQhms4SC=Gp91Z3fzk0Sw@mail.gmail.com>
+Subject: Re: [PATCH] mmc: mmc_spi: fix timeout calculation
+To:     Tobias Schramm <t.schramm@manjaro.org>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.8.2020 10.31, Greg KH wrote:
-> On Fri, Aug 21, 2020 at 03:06:52PM +0800, Ding Hui wrote:
->> Some devices driver call libusb_clear_halt when target ep queue
->> is not empty. (eg. spice client connected to qemu for usb redir)
->>
->> Before commit f5249461b504 ("xhci: Clear the host side toggle
->> manually when endpoint is soft reset"), that works well.
->> But now, we got the error log:
->>
->>     EP not empty, refuse reset
->>
->> xhch_endpoint_reset failed and left ep_state's EP_SOFT_CLEAR_TOGGLE
->> bit is still on
->>
->> So all the subsequent urb sumbit to the ep will fail with the
->> warn log:
->>
->>     Can't enqueue URB while manually clearing toggle
->>
->> We need restore ep_state EP_SOFT_CLEAR_TOGGLE bit after
->> xhci_endpoint_reset, even if it is failed.
->>
->> Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
+On Fri, 14 Aug 2020 at 20:50, Tobias Schramm <t.schramm@manjaro.org> wrote:
+>
+> Previously the cycle timeout was converted to a microsecond value but
+> then incorrectly treated as a nanosecond timeout. This patch changes
+> the code to convert both the nanosecond timeout and the cycle timeout
+> to a microsecond value and use that directly.
+>
+> Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
 
-Thanks, nice catch.
+This looks good to me, but before applying just wanted to check that
+you tested this on some HW, to make sure it doesn't break anything?
 
->> ---
->>  drivers/usb/host/xhci.c | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> Shouldn't this have a Fixes: tag on it and be backported to the affected
-> stable trees?
+Kind regards
+Uffe
 
-It should, but I like this patch and want it in, so I'll add the tags this time.
 
-Thanks
--Mathias
+> ---
+>  drivers/mmc/host/mmc_spi.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/mmc/host/mmc_spi.c b/drivers/mmc/host/mmc_spi.c
+> index 39bb1e30c2d7..f85e0ad896a9 100644
+> --- a/drivers/mmc/host/mmc_spi.c
+> +++ b/drivers/mmc/host/mmc_spi.c
+> @@ -882,9 +882,9 @@ mmc_spi_data_do(struct mmc_spi_host *host, struct mmc_command *cmd,
+>         else
+>                 clock_rate = spi->max_speed_hz;
+>
+> -       timeout = data->timeout_ns +
+> +       timeout = data->timeout_ns / 1000 +
+>                   data->timeout_clks * 1000000 / clock_rate;
+> -       timeout = usecs_to_jiffies((unsigned int)(timeout / 1000)) + 1;
+> +       timeout = usecs_to_jiffies((unsigned int)timeout) + 1;
+>
+>         /* Handle scatterlist segments one at a time, with synch for
+>          * each 512-byte block
+> --
+> 2.28.0
+>
