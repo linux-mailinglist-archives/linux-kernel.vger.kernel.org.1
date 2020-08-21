@@ -2,100 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9685324D039
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 10:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D58F724D042
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 10:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728251AbgHUIBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 04:01:41 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:50080 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726332AbgHUIBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 04:01:35 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1k91zP-00049V-NF; Fri, 21 Aug 2020 18:01:32 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 21 Aug 2020 18:01:31 +1000
-Date:   Fri, 21 Aug 2020 18:01:31 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Yang Shen <shenyang39@huawei.com>
-Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, xuzaibo@huawei.com,
-        wangzhou1@hisilicon.com
-Subject: Re: [PATCH v5 00/10] crypto: hisilicon/qm - misc fixes
-Message-ID: <20200821080131.GP25143@gondor.apana.org.au>
-References: <1597485377-2678-1-git-send-email-shenyang39@huawei.com>
+        id S1728074AbgHUIES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 04:04:18 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:39644 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727868AbgHUIEQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 04:04:16 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07L843p3077507;
+        Fri, 21 Aug 2020 03:04:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1597997043;
+        bh=3moiLAddzCWNDg5ZrAgOTe5zFdXnsmpF1jV7VBnCQ1Y=;
+        h=From:To:CC:Subject:Date;
+        b=LxY77ScWaXJi+4KDTULt0MDVWt++rgt4UN/UH1gYp/tHTvFE2ECwWCB2++8aY7Iol
+         LXnGFPRRx5qWyl+OwZyRkLdWhoNxOgI5Ei3o3shcLheqLTZ6pC6ilc1yQFxNdFy1Uz
+         4KuYwI6heealQdZ64qI0J0dn5AaVxT17I0lzilAo=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07L842xF113532;
+        Fri, 21 Aug 2020 03:04:03 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 21
+ Aug 2020 03:04:03 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 21 Aug 2020 03:04:03 -0500
+Received: from lta0400828a.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07L841Ha073636;
+        Fri, 21 Aug 2020 03:04:01 -0500
+From:   Roger Quadros <rogerq@ti.com>
+To:     <kishon@ti.com>, <vkoul@kernel.org>
+CC:     <nsekhar@ti.com>, <vigneshr@ti.com>, <jan.kiszka@siemens.com>,
+        <linux-kernel@vger.kernel.org>, Roger Quadros <rogerq@ti.com>
+Subject: [PATCH v5] phy: omap-usb2-phy: disable PHY charger detect
+Date:   Fri, 21 Aug 2020 11:03:56 +0300
+Message-ID: <20200821080356.17103-1-rogerq@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1597485377-2678-1-git-send-email-shenyang39@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 15, 2020 at 05:56:07PM +0800, Yang Shen wrote:
-> This patchset fix some qm bugs:
-> patch 1: store the string address before pass to 'strsep'
-> patch 2: clear 'qp_status->used' when init the 'qp'
-> patch 3: use 'dev_info_ratelimited' to avoid printk flooding.
-> patch 4: fix the judgement of queue is full
-> patch 7: save the vf configuration space to make sure it is available
-> 	 after the 'PF' 'FLR'
-> patch 8: register callback to 'pci_driver.shutdown'
-> patch 9: wait for all working function finishs when remove the device
-> patch 10: move the process of register alg to crypto in driver 'hisi_zip'
-> 
-> v5:
->  - add a error branch instead of return immediately in patch "fix wrong
->    release after using strsep"
-> 
-> v4:
->  - exchange the patch 'fix the call trace when unbind device' and
->    'fix the process of register algorithms to crypto' to make sure the
->    driver is stable.
-> 
-> v3:
->  - add the patch 10 which is aimed to fix the call trace when remove a
->    working device
-> 
-> v2:
->  - fix the wrong email address on patch 1
-> 
-> Hui Tang (1):
->   crypto: hisilicon/qm - fix judgement of queue is full
-> 
-> Shukun Tan (3):
->   crypto: hisilicon/qm - clear used reference count when start qp
->   crypto: hisilicon/qm - fix event queue depth to 2048
->   crypto: hisilicon/qm - fix VF not available after PF FLR
-> 
-> Sihang Chen (1):
->   crypto: hisilicon/qm - fix wrong release after using strsep
-> 
-> Weili Qian (1):
->   crypto: hisilicon/qm - fix the call trace when unbind device
-> 
-> Yang Shen (4):
->   crypto: hisilicon/qm - fix print frequence in hisi_qp_send
->   crypto: hisilicon/qm - fix no stop reason when use 'hisi_qm_stop'
->   crypto: hisilicon/qm - register callback function to
->     'pci_driver.shutdown'
->   crypto: hisilicon/qm - fix the process of register algorithms to
->     crypto
-> 
->  drivers/crypto/hisilicon/hpre/hpre_crypto.c |  36 ++---
->  drivers/crypto/hisilicon/hpre/hpre_main.c   |  28 ++--
->  drivers/crypto/hisilicon/qm.c               | 224 ++++++++++++++++++++++++----
->  drivers/crypto/hisilicon/qm.h               |  27 ++--
->  drivers/crypto/hisilicon/sec2/sec_crypto.c  |  35 ++---
->  drivers/crypto/hisilicon/sec2/sec_main.c    |  34 ++---
->  drivers/crypto/hisilicon/zip/zip_crypto.c   |   2 +-
->  drivers/crypto/hisilicon/zip/zip_main.c     |  49 +++---
->  8 files changed, 290 insertions(+), 145 deletions(-)
+AM654x PG1.0 has a silicon bug that D+ is pulled high after POR, which
+could cause enumeration failure with some USB hubs.  Disabling the
+USB2_PHY Charger Detect function will put D+ into the normal state.
 
-All applied.  Thanks.
+This addresses Silicon Errata:
+i2075 - "USB2PHY: USB2PHY Charger Detect is Enabled by Default Without VBUS
+Presence"
+
+Signed-off-by: Roger Quadros <rogerq@ti.com>
+Tested-by: Jan Kiszka <jan.kiszka@siemens.com>
+---
+Vinod/Kishon,
+
+As this is an errata fix, it should be targetted for 5.9-rc cycle.
+Thanks.
+
+cheers,
+-roger
+
+Changelog:
+v5
+- don't use dt property to enable workaround. Use soc_device_match() instead.
+
+v4
+- fix example to fix dt_binding_check warnings
+- '#phy-cells' -> "#phy-cells"
+- Add 'oneOf' to compatible logic to allow just "ti,omap-usb2" as valid
+
+v3
+- Removed quotes from compatibles
+- changed property to "ti,disable-charger-det"
+
+v2
+- Address Rob's comments on YAML schema.
+
+ drivers/phy/ti/phy-omap-usb2.c | 70 +++++++++++++++++++++++++---------
+ 1 file changed, 51 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/phy/ti/phy-omap-usb2.c b/drivers/phy/ti/phy-omap-usb2.c
+index cb2dd3230fa7..65d73142d4ec 100644
+--- a/drivers/phy/ti/phy-omap-usb2.c
++++ b/drivers/phy/ti/phy-omap-usb2.c
+@@ -6,26 +6,31 @@
+  * Author: Kishon Vijay Abraham I <kishon@ti.com>
+  */
+ 
+-#include <linux/module.h>
+-#include <linux/platform_device.h>
+-#include <linux/slab.h>
+-#include <linux/of.h>
+-#include <linux/io.h>
+-#include <linux/phy/omap_usb.h>
+-#include <linux/usb/phy_companion.h>
+ #include <linux/clk.h>
+-#include <linux/err.h>
+-#include <linux/pm_runtime.h>
+ #include <linux/delay.h>
++#include <linux/err.h>
++#include <linux/io.h>
++#include <linux/mfd/syscon.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_platform.h>
+ #include <linux/phy/omap_control_phy.h>
++#include <linux/phy/omap_usb.h>
+ #include <linux/phy/phy.h>
+-#include <linux/mfd/syscon.h>
++#include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
+-#include <linux/of_platform.h>
++#include <linux/slab.h>
++#include <linux/sys_soc.h>
++#include <linux/usb/phy_companion.h>
+ 
+ #define USB2PHY_ANA_CONFIG1		0x4c
+ #define USB2PHY_DISCON_BYP_LATCH	BIT(31)
+ 
++#define USB2PHY_CHRG_DET			0x14
++#define USB2PHY_CHRG_DET_USE_CHG_DET_REG	BIT(29)
++#define USB2PHY_CHRG_DET_DIS_CHG_DET		BIT(28)
++
+ /* SoC Specific USB2_OTG register definitions */
+ #define AM654_USB2_OTG_PD		BIT(8)
+ #define AM654_USB2_VBUS_DET_EN		BIT(5)
+@@ -43,6 +48,7 @@
+ #define OMAP_USB2_HAS_START_SRP			BIT(0)
+ #define OMAP_USB2_HAS_SET_VBUS			BIT(1)
+ #define OMAP_USB2_CALIBRATE_FALSE_DISCONNECT	BIT(2)
++#define OMAP_USB2_DISABLE_CHRG_DET		BIT(3)
+ 
+ struct omap_usb {
+ 	struct usb_phy		phy;
+@@ -236,6 +242,13 @@ static int omap_usb_init(struct phy *x)
+ 		omap_usb_writel(phy->phy_base, USB2PHY_ANA_CONFIG1, val);
+ 	}
+ 
++	if (phy->flags & OMAP_USB2_DISABLE_CHRG_DET) {
++		val = omap_usb_readl(phy->phy_base, USB2PHY_CHRG_DET);
++		val |= USB2PHY_CHRG_DET_USE_CHG_DET_REG |
++		       USB2PHY_CHRG_DET_DIS_CHG_DET;
++		omap_usb_writel(phy->phy_base, USB2PHY_CHRG_DET, val);
++	}
++
+ 	return 0;
+ }
+ 
+@@ -329,6 +342,26 @@ static const struct of_device_id omap_usb2_id_table[] = {
+ };
+ MODULE_DEVICE_TABLE(of, omap_usb2_id_table);
+ 
++static void omap_usb2_init_errata(struct omap_usb *phy)
++{
++	static const struct soc_device_attribute am65x_sr10_soc_devices[] = {
++		{ .family = "AM65X", .revision = "SR1.0" },
++		{ /* sentinel */ }
++	};
++
++	/*
++	 * Errata i2075: USB2PHY: USB2PHY Charger Detect is Enabled by
++	 * Default Without VBUS Presence.
++	 *
++	 * AM654x SR1.0 has a silicon bug due to which D+ is pulled high after
++	 * POR, which could cause enumeration failure with some USB hubs.
++	 * Disabling the USB2_PHY Charger Detect function will put D+
++	 * into the normal state.
++	 */
++	if (soc_device_match(am65x_sr10_soc_devices))
++		phy->flags |= OMAP_USB2_DISABLE_CHRG_DET;
++}
++
+ static int omap_usb2_probe(struct platform_device *pdev)
+ {
+ 	struct omap_usb	*phy;
+@@ -366,14 +399,14 @@ static int omap_usb2_probe(struct platform_device *pdev)
+ 	phy->mask		= phy_data->mask;
+ 	phy->power_on		= phy_data->power_on;
+ 	phy->power_off		= phy_data->power_off;
++	phy->flags		= phy_data->flags;
+ 
+-	if (phy_data->flags & OMAP_USB2_CALIBRATE_FALSE_DISCONNECT) {
+-		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-		phy->phy_base = devm_ioremap_resource(&pdev->dev, res);
+-		if (IS_ERR(phy->phy_base))
+-			return PTR_ERR(phy->phy_base);
+-		phy->flags |= OMAP_USB2_CALIBRATE_FALSE_DISCONNECT;
+-	}
++	omap_usb2_init_errata(phy);
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	phy->phy_base = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(phy->phy_base))
++		return PTR_ERR(phy->phy_base);
+ 
+ 	phy->syscon_phy_power = syscon_regmap_lookup_by_phandle(node,
+ 							"syscon-phy-power");
+@@ -405,7 +438,6 @@ static int omap_usb2_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-
+ 	phy->wkupclk = devm_clk_get(phy->dev, "wkupclk");
+ 	if (IS_ERR(phy->wkupclk)) {
+ 		if (PTR_ERR(phy->wkupclk) == -EPROBE_DEFER)
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+
