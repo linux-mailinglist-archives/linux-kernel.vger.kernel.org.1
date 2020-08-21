@@ -2,71 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E188B24D85B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 391E324D868
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728260AbgHUPSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 11:18:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51942 "EHLO
+        id S1728047AbgHUPTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 11:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727941AbgHUPSH (ORCPT
+        with ESMTP id S1727887AbgHUPSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 11:18:07 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBDDC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 08:18:07 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id w2so1717937edv.7
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 08:18:07 -0700 (PDT)
+        Fri, 21 Aug 2020 11:18:15 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7551C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 08:18:13 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id ba10so1735589edb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 08:18:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EW86S+wOpEKW8Kx1XDDlLAS9uMUipxyI6cdNEFb3Vyc=;
-        b=gE1uffvkQ25P/5633mrrWxh8bc7NtDkX3krN3YHGog8ioySgsKwYrYIjKpLUwJEqj0
-         /cB3n1LkfGWtRU9dZn3uY8rYFUa88pVyEB2MDEHXGzj03D6nIcV5rvssfwfp37+/xUfq
-         u+LPKbKan9sXbY233/JYB0+SuRDm11ph2ehAQvn1fk7IFhnfISd62SqoSRkOo9rg47sO
-         fsa3mKa5hBfYnLJzQnUEqFVs7IqyycEiHSMa/23WU0wIobD3bWR+Dyr5WOkSUhxSOo/e
-         QtPgrJhHhV7CIRluNvapatdHo/7riRekygzRlKkmxv1NtNvlxYM2kJ2uuiAD0y65o3MJ
-         fZyA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=rQR67AqDgTFceM1GcH2o1VP0eXhNCBh9bwg17gfoTgU=;
+        b=1yxK8FrAf4JsUoVuTMaIeajsDp7BkyBW/nIt5zPEpq0A5jbvKscdEPur41ES+s4LjB
+         YzceM+KnfPfM0ob8s3SLA4DJz5LU2oDIc6HO0bh5W5xf1Gw9UeC7/XaFhXGaq4OLW2+n
+         4IDSN/klhWSlzfzWyN2TeMrYu+EUk5dtYqlkp4tZI4UFmSMJEgTMR/1J4iR/4A1Gv8ox
+         8G3+ez8CiW0u2ok6Ib3LW/QAfL6m9uguROWnrZuIUjMhqb9BrvHQO/CgTa7PY81DOBCh
+         9H7PoNj7mTzRcz4nHkV26CikoPkkdUFhFD2v7vX/dXYE8M/sBlKgane36KSzePtex7x0
+         3IAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EW86S+wOpEKW8Kx1XDDlLAS9uMUipxyI6cdNEFb3Vyc=;
-        b=XvLu6zdaw4tS3w50XrDbnrW6K7PPU8sFtYmHxkapRdJyKsq1oBpzhvz6wGm2Qq0Tfg
-         wFW4O3nJoqIS3weyaADyT0zB9LIupObCbNL0CwQLHN5/HLcHa1Q1n1RkYzBvLWhEbXeA
-         88A6OOF/bDpBxsk2SxcJMaU8J6zMMlwHxQRT1FHL2KrpEHYHDkdJPNpm0xNv7VeQ0IMj
-         c2zv8k9ea7zzNcdrdO2MWlUnhYJVvmGS8pVmk2ZoouIFkOgSAxgFBPh/r4eW6JoqiFGu
-         OwvTDS/gqo54lm3ODoXaGEjsWteDLqLe23JU2of/TemMohZEPfvWnJ3yNPmnWQPRD+eG
-         knng==
-X-Gm-Message-State: AOAM5312k1N0vuXI5YQy+Es1ExxTlfwFrnA8M8eopKgQeqjBzZ03P7iH
-        GGr2sTz7a5UpVQc9C4ZoIxA+Rw==
-X-Google-Smtp-Source: ABdhPJwMNB68/r/+Pn1Djk2McNP2tPUKyR/yeSAbMTRbuPvKKlWLlLS4F9/9jsYD8g4maRjcgs/p+Q==
-X-Received: by 2002:a05:6402:3130:: with SMTP id dd16mr3250341edb.55.1598023085801;
-        Fri, 21 Aug 2020 08:18:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=rQR67AqDgTFceM1GcH2o1VP0eXhNCBh9bwg17gfoTgU=;
+        b=F23UVbCObw1KyqU5QPlsMlwLIBhVdQ4RsqBZyRPcYWzToNXV9F99PdL2s6HUOW4z9Q
+         gzq2JXGA1JX0i61QA0Kb7EYLD97DiNqlh5uIY4mgi8xaG0H/5+l8W0BPvEA63nL5+2Fp
+         NXCMUOlNMtI9YlLMWe7qYm9uoF7QPnDg3sOHSNiKQd2rS9yU3bcWm8R/wQP1JBC62A3t
+         x6JR+9J4YV/6HONkf6Te3DuWvoa/IRdnvtGxwyVt1e6u9p5EkqXGXVvdyTDmbFmQSTSb
+         A1p95fZBXyxho96z8qh2L0q6AN6vKbOz0xdOSwFMO03omVvhyH+Acz8MZfbsKur0X/AI
+         8gzg==
+X-Gm-Message-State: AOAM532yXjDi2g+mxq7Q+dKjJaebxxR28uB09LH0NpOjzE814pfpu16A
+        JFQi9niCgipVwViEulYpg9IQhw==
+X-Google-Smtp-Source: ABdhPJyi0tkiH5q/ltl//GjdPiGKtU+rjkFW0l048hREebCe9VF5uhvGKNPNQnNuLlWSRFI9KMG57g==
+X-Received: by 2002:a50:93a2:: with SMTP id o31mr3343896eda.203.1598023092403;
+        Fri, 21 Aug 2020 08:18:12 -0700 (PDT)
 Received: from localhost.localdomain (223.60-242-81.adsl-dyn.isp.belgacom.be. [81.242.60.223])
-        by smtp.gmail.com with ESMTPSA id qp16sm1482709ejb.89.2020.08.21.08.18.04
+        by smtp.gmail.com with ESMTPSA id qp16sm1482709ejb.89.2020.08.21.08.18.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 08:18:05 -0700 (PDT)
+        Fri, 21 Aug 2020 08:18:11 -0700 (PDT)
 From:   Nicolas Rybowski <nicolas.rybowski@tessares.net>
 To:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
 Cc:     Nicolas Rybowski <nicolas.rybowski@tessares.net>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mptcp@lists.01.org, netdev@vger.kernel.org
-Subject: [PATCH bpf-next 0/3] bpf: add MPTCP subflow support
-Date:   Fri, 21 Aug 2020 17:15:38 +0200
-Message-Id: <20200821151544.1211989-1-nicolas.rybowski@tessares.net>
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next 1/3] bpf: expose is_mptcp flag to bpf_tcp_sock
+Date:   Fri, 21 Aug 2020 17:15:39 +0200
+Message-Id: <20200821151544.1211989-2-nicolas.rybowski@tessares.net>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200821151544.1211989-1-nicolas.rybowski@tessares.net>
+References: <20200821151544.1211989-1-nicolas.rybowski@tessares.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -74,33 +76,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously it was not possible to make a distinction between plain TCP
-sockets and MPTCP subflow sockets on the BPF_PROG_TYPE_SOCK_OPS hook.
+is_mptcp is a field from struct tcp_sock used to indicate that the
+current tcp_sock is part of the MPTCP protocol.
 
-This patch series now enables a fine control of subflow sockets. In its
-current state, it allows to put different sockopt on each subflow from a
-same MPTCP connection (socket mark, TCP congestion algorithm, ...) using
-BPF programs.
+In this protocol, a first socket (mptcp_sock) is created with
+sk_protocol set to IPPROTO_MPTCP (=262) for control purpose but it
+isn't directly on the wire. This is the role of the subflow (kernel)
+sockets which are classical tcp_sock with sk_protocol set to
+IPPROTO_TCP. The only way to differentiate such sockets from plain TCP
+sockets is the is_mptcp field from tcp_sock.
 
-It should also be the basis of exposing MPTCP-specific fields through BPF.
+Such an exposure in BPF is thus required to be able to differentiate
+plain TCP sockets from MPTCP subflow sockets in BPF_PROG_TYPE_SOCK_OPS
+programs.
 
-Nicolas Rybowski (3):
-  bpf: expose is_mptcp flag to bpf_tcp_sock
-  mptcp: attach subflow socket to parent cgroup
-  bpf: add 'bpf_mptcp_sock' structure and helper
+The choice has been made to silently pass the case when CONFIG_MPTCP is
+unset by defaulting is_mptcp to 0 in order to make BPF independent of
+the MPTCP configuration. Another solution is to make the verifier fail
+in 'bpf_tcp_sock_is_valid_ctx_access' but this will add an additional
+'#ifdef CONFIG_MPTCP' in the BPF code and a same injected BPF program
+will not run if MPTCP is not set.
 
- include/linux/bpf.h            | 33 ++++++++++++++++
- include/uapi/linux/bpf.h       | 14 +++++++
- kernel/bpf/verifier.c          | 30 ++++++++++++++
- net/core/filter.c              | 13 +++++-
- net/mptcp/Makefile             |  2 +
- net/mptcp/bpf.c                | 72 ++++++++++++++++++++++++++++++++++
- net/mptcp/subflow.c            | 27 +++++++++++++
- scripts/bpf_helpers_doc.py     |  2 +
- tools/include/uapi/linux/bpf.h | 14 +++++++
- 9 files changed, 206 insertions(+), 1 deletion(-)
- create mode 100644 net/mptcp/bpf.c
+An example use-case is provided in
+https://github.com/multipath-tcp/mptcp_net-next/tree/scripts/bpf/examples
 
+Suggested-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Acked-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+Signed-off-by: Nicolas Rybowski <nicolas.rybowski@tessares.net>
+---
+ include/uapi/linux/bpf.h       | 1 +
+ net/core/filter.c              | 9 ++++++++-
+ tools/include/uapi/linux/bpf.h | 1 +
+ 3 files changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 0480f893facd..a9fccfdb3a62 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3865,6 +3865,7 @@ struct bpf_tcp_sock {
+ 	__u32 delivered;	/* Total data packets delivered incl. rexmits */
+ 	__u32 delivered_ce;	/* Like the above but only ECE marked packets */
+ 	__u32 icsk_retransmits;	/* Number of unrecovered [RTO] timeouts */
++	__u32 is_mptcp;		/* Is MPTCP subflow? */
+ };
+ 
+ struct bpf_sock_tuple {
+diff --git a/net/core/filter.c b/net/core/filter.c
+index b2df52086445..eb400aeea282 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -5742,7 +5742,7 @@ bool bpf_tcp_sock_is_valid_access(int off, int size, enum bpf_access_type type,
+ 				  struct bpf_insn_access_aux *info)
+ {
+ 	if (off < 0 || off >= offsetofend(struct bpf_tcp_sock,
+-					  icsk_retransmits))
++					  is_mptcp))
+ 		return false;
+ 
+ 	if (off % size != 0)
+@@ -5876,6 +5876,13 @@ u32 bpf_tcp_sock_convert_ctx_access(enum bpf_access_type type,
+ 	case offsetof(struct bpf_tcp_sock, icsk_retransmits):
+ 		BPF_INET_SOCK_GET_COMMON(icsk_retransmits);
+ 		break;
++	case offsetof(struct bpf_tcp_sock, is_mptcp):
++#ifdef CONFIG_MPTCP
++		BPF_TCP_SOCK_GET_COMMON(is_mptcp);
++#else
++		*insn++ = BPF_MOV32_IMM(si->dst_reg, 0);
++#endif
++		break;
+ 	}
+ 
+ 	return insn - insn_buf;
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 0480f893facd..a9fccfdb3a62 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -3865,6 +3865,7 @@ struct bpf_tcp_sock {
+ 	__u32 delivered;	/* Total data packets delivered incl. rexmits */
+ 	__u32 delivered_ce;	/* Like the above but only ECE marked packets */
+ 	__u32 icsk_retransmits;	/* Number of unrecovered [RTO] timeouts */
++	__u32 is_mptcp;		/* Is MPTCP subflow? */
+ };
+ 
+ struct bpf_sock_tuple {
 -- 
 2.28.0
 
