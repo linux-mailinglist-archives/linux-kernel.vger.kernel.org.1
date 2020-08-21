@@ -2,59 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A98C24D560
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 14:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50FE624D565
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 14:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728508AbgHUMtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 08:49:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727106AbgHUMs6 (ORCPT
+        id S1728723AbgHUMtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 08:49:36 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:47022 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727839AbgHUMte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 08:48:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01174C061385;
-        Fri, 21 Aug 2020 05:48:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BGM5ZvRWq1tHvEi5qIUzOP5QdqrrvuPPh/jW7ffuOuY=; b=oamX2t9TrjIA63ujaKlq2z9qZr
-        6cO7BrVvfkxVp0QJCArzLkx9y+EnmYgRaoQ7ReFJI9LxdigKyN8hUuvDiDo1Ohxox65Y6m5pIjwuv
-        bNYKwBcCKBDeXDd6LL8CWTYPR6FHN1TQ1YnVRcwLmhLrqdCcdhLggJ9kJhKOWdA1wZ2mPlLrFpQur
-        uM2vTfA3pbsUKD1WdnJaQHXqto4kJSQ3s7sIYPyhe4bTHfXIJXWzb2SDmKrELIk7JbVVb3YrEa77u
-        UTt8UFwCip6e0PvUGu49luapWDI+W6MhcOVVxyjiE1bDWA8FLpuROyESwTbH2IDMFSWFEUvlvbh7e
-        OuCIRosA==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k96TU-0002qL-Pw; Fri, 21 Aug 2020 12:48:52 +0000
-Date:   Fri, 21 Aug 2020 13:48:52 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Yu Kuai <yukuai3@huawei.com>, hch@infradead.org,
-        darrick.wong@oracle.com, david@fromorbit.com,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [PATCH 3/3] iomap: Support arbitrarily many blocks per page
-Message-ID: <20200821124852.GR17456@casper.infradead.org>
-References: <20200821124424.GQ17456@casper.infradead.org>
- <20200821124606.10165-1-willy@infradead.org>
- <20200821124606.10165-3-willy@infradead.org>
+        Fri, 21 Aug 2020 08:49:34 -0400
+Received: by mail-oi1-f195.google.com with SMTP id v13so1371708oiv.13;
+        Fri, 21 Aug 2020 05:49:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rjOR1LmEKfBAICv/oUVmVt9ScklJwbBO66lk/funKdI=;
+        b=nflgJ8t5aXajiMTbTVKHE4YYFNmaLZWWjroY2Jh3KH1xQQuPo8XbHiFr3QFVYz0OHk
+         OWM7CephvaT2v8SfN2Pt8+DeiSkkSeS8HdGG0VYdcurmUNb9tBdtU87btIvPFFvaWrj1
+         Vp3liG9TZhXkrYUElEhI3zexA9En/6k5J0GIj+VBi2f6ucSh4IPoWLDa4GrTzOGmlDm3
+         6G8Z4wci6X3UQBZrCYdJNpske7e8f0jDMQ4mTQyH/E9goQMn5RjMmqEYNEKkd58T67Vu
+         N3/RCex/+JhuiNDlD2rPmvsDh5siQc6U+1wS/FNZXkosmsZP+Fa0jgf2X601qd3Mf+3s
+         GGuw==
+X-Gm-Message-State: AOAM533fYaP1Ma5ogdSJqZye8fEXY76Ar8FrzA7Ew+w61IoTZwmbadrZ
+        KjDBFwgKH8JMpakklqCLQxWVB1qB4+WpihPoZNg=
+X-Google-Smtp-Source: ABdhPJzz75flJqlcgm/5pJRSwS4KxLsRUf7C3UrU8LFP2uay8UIHgSPAopyMegH8gsFlk8YxFUBtt+e2BRo7+5+sibs=
+X-Received: by 2002:aca:adc4:: with SMTP id w187mr1440803oie.153.1598014173372;
+ Fri, 21 Aug 2020 05:49:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200821124606.10165-3-willy@infradead.org>
+References: <20200816190732.6905-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20200816190732.6905-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200816190732.6905-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 21 Aug 2020 14:49:22 +0200
+Message-ID: <CAMuHMdUmj0W9ELiJXgp6KLjeVAs7hD8C6rahLxFchh+=ny4LhA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] dt-bindings: can: rcar_can: Add r8a7742 support
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 01:46:06PM +0100, Matthew Wilcox (Oracle) wrote:
-> @@ -45,11 +46,13 @@ static struct iomap_page *
->  iomap_page_create(struct inode *inode, struct page *page)
->  {
->  	struct iomap_page *iop = to_iomap_page(page);
-> +	unsigned int nr_blocks = i_blocks_per_page(inode, page);
->  
+On Sun, Aug 16, 2020 at 9:07 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Document RZ/G1H (r8a7742) SoC specific bindings. The R8A7742 CAN module
+> is identical to R-Car Gen2 family.
+>
+> No driver change is needed due to the fallback compatible value
+> "renesas,rcar-gen2-can".
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
 
-i_blocks_per_page isn't part of this series.  It's here:
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-http://git.infradead.org/users/willy/pagecache.git/commitdiff/e3177f30c0d0906bec49586a86704a2a5736b6c3
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
