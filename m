@@ -2,86 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E6324D3E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 13:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D7324D40B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 13:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728138AbgHULZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 07:25:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38242 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727982AbgHULVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 07:21:38 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 378C82054F;
-        Fri, 21 Aug 2020 11:21:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598008870;
-        bh=wIHnziovTq/GuaiND/z2I5281pOd4DVCK+dCOSRCHIw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PcSliOZS3tcBKMbeSR3XaPv/ZGWUPKX9YSogRdLwuTDjMmwiNY1SM9y9mjy2LbVWM
-         wKT4WDDJ2FNx3Q+MP+JARGf1KkeqXgSrn7eg/Jy+KF+jND2xTGLw8aIgdeT9yMGj1J
-         bYzBg/iQgpr4e5t9XIW2GjR+m2AG0ELB7MEXiOvM=
-Date:   Fri, 21 Aug 2020 13:21:29 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Pavel Machek <pavel@denx.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stable <stable@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 83/92] mfd: dln2: Run event handler loop under
- spinlock
-Message-ID: <20200821112129.GA2284907@kroah.com>
-References: <20200820091537.490965042@linuxfoundation.org>
- <20200820091541.964627271@linuxfoundation.org>
- <20200821072123.GC23823@amd>
- <CAHp75Vcbmc-PV-gQxuj9i8sAcFCzhJKe_qzEfrkUTZbnf3Vupg@mail.gmail.com>
- <20200821091416.GA1894114@kroah.com>
- <20200821091510.GA1894407@kroah.com>
- <20200821105449.GN1891694@smile.fi.intel.com>
+        id S1728060AbgHULdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 07:33:52 -0400
+Received: from 5.mo68.mail-out.ovh.net ([46.105.62.179]:56481 "EHLO
+        5.mo68.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726803AbgHULdm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 07:33:42 -0400
+Received: from player735.ha.ovh.net (unknown [10.110.208.83])
+        by mo68.mail-out.ovh.net (Postfix) with ESMTP id 08A71176644
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 13:25:32 +0200 (CEST)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player735.ha.ovh.net (Postfix) with ESMTPSA id 7B4F8152CABB2;
+        Fri, 21 Aug 2020 11:25:25 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-104R005a6cdfe79-642f-4464-9630-78fb3fb6c30d,
+                    20EB7F6BE0168D07063FB82D5C23839419BBC220) smtp.auth=steve@sk2.org
+Date:   Fri, 21 Aug 2020 13:25:23 +0200
+From:   Stephen Kitt <steve@sk2.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Beniamin Bia <beniamin.bia@analog.com>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers/hwmon/adm1177.c: use simple i2c probe
+Message-ID: <20200821132456.0c9a7b54@heffalump.sk2.org>
+In-Reply-To: <20200814151358.GA256451@roeck-us.net>
+References: <20200813160958.1506536-1-steve@sk2.org>
+        <20200814151358.GA256451@roeck-us.net>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200821105449.GN1891694@smile.fi.intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/T8vEHXh221/e0deqj8_/PKm"; protocol="application/pgp-signature"
+X-Ovh-Tracer-Id: 12622463856318827790
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrudduvddgfeegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtsehgtderreertdejnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucggtffrrghtthgvrhhnpeevledvueefvdeivefftdeugeekveethefftdffteelheejkeejjeduffeiudetkeenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeefhedrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 01:54:49PM +0300, Andy Shevchenko wrote:
-> On Fri, Aug 21, 2020 at 11:15:10AM +0200, Greg Kroah-Hartman wrote:
-> > On Fri, Aug 21, 2020 at 11:14:16AM +0200, Greg Kroah-Hartman wrote:
-> > > On Fri, Aug 21, 2020 at 12:06:45PM +0300, Andy Shevchenko wrote:
-> > > > On Fri, Aug 21, 2020 at 10:26 AM Pavel Machek <pavel@denx.de> wrote:
-> > > > > > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > > > >
-> > > > > > [ Upstream commit 3d858942250820b9adc35f963a257481d6d4c81d ]
-> > > > > >
-> > > > > > The event handler loop must be run with interrupts disabled.
-> > > > > > Otherwise we will have a warning:
-> > > > > ...
-> > > > > > Recently xHCI driver switched to tasklets in the commit 36dc01657b49
-> > > > > > ("usb: host: xhci: Support running urb giveback in tasklet
-> > > > > > context").
-> > > > >
-> > > > > AFAICT, 36dc01657b49 is not included in 4.19.141, so this commit
-> > > > > should not be needed, either.
-> > > > 
-> > > > I'm wondering if there are any other USB host controller drivers that
-> > > > use URB giveback in interrupt enabled context.
-> > > 
-> > > Almost all do.
-> > 
-> > Sorry, read that the wrong way, most have interrupts disabled, so this
-> > change should be fine.
-> 
-> The change is harmless in these cases. I was wondering if it actually *helps*
-> in some cases besides xHCI.
+--Sig_/T8vEHXh221/e0deqj8_/PKm
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-It might, I forgot about usbip, which probably runs in this mode.
+On Fri, 14 Aug 2020 08:13:58 -0700, Guenter Roeck <linux@roeck-us.net> wrot=
+e:
+> On Thu, Aug 13, 2020 at 06:09:58PM +0200, Stephen Kitt wrote:
+> > This driver doesn't use the id information provided by the old i2c
+> > probe function, so it can trivially be converted to the simple
+> > ("probe_new") form.
+> >=20
+> > Signed-off-by: Stephen Kitt <steve@sk2.org> =20
+>=20
+> I'll apply the entire series, but please don't use entire path names
+> as tag in the future but follow bubsystem rules.
 
-thanks,
+Sorry about that, I=E2=80=99ll bear that in mind for the remaining hwmon pa=
+tches (and
+more generally).
 
-greg k-h
+Regards,
+
+Stephen
+
+--Sig_/T8vEHXh221/e0deqj8_/PKm
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAl8/ryMACgkQgNMC9Yht
+g5yQ6w/+KE+YETNP307h4d2A3H1iZlOMtOGg0JP62siyM6zkrFjJV373y22q9kQd
+7jF6rlPMPv/B0aFNuR/Abarlyc7kn/FDlPz6mpVomwnQVjpREIMYHgFYhrjq+u0Q
+raY5+1PN0/VF9SS1qSqs5F37yUn7MGPqoQVnntH3bqo8+UGDP8A4slGJQU+wFHd/
+7L9HwsiM5ufuVeRqLY0OssyC+0oPh+g5cdSACpZqzzyyOmMm1ojWk26fwWK9nQVQ
+UO/CILGfHyBhc7Ng5iaH0ycKRbJKyEFVfgA1Vy4uN7MkiGnCtfuvkHXgGz/L9LV/
+D7sJsxixhvs2oasO70RxCnKLMC7LVQ5bmxQ1mpuLEmnuvcgmzDpRO5eShG02yoLY
+6L0TE+SjdmAWWUigcZcUhFztALccGhCjNcuM+BMniiaHgPacT4ocNooF/e/+v7aP
+oyODufQppaSZXp7+n0wHejvV8RyumVW1kl9INDrURWUN7stPjAcNaeIXkpg+BP45
+dXyqQgY906kYyyafEr5AF886tpMOPTjaPhSVIyg7wpLxW8hdJoKzDeEDT8H6lp4Y
+5ENdR8cAw8yrb6rL6JXgFIJIMybzTiPsl6hzAvlE+wOIUOgWCCpfUFMzkEd3yBNg
+jwzzbPYAbDjgapSHjXyjaoJrc3zxq4H2ivvcRFuJQZ1j5TCnkSI=
+=9UWE
+-----END PGP SIGNATURE-----
+
+--Sig_/T8vEHXh221/e0deqj8_/PKm--
