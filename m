@@ -2,104 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F0324D7F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3823424D802
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727921AbgHUPEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 11:04:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49744 "EHLO
+        id S1728084AbgHUPHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 11:07:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbgHUPEK (ORCPT
+        with ESMTP id S1728010AbgHUPHD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 11:04:10 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C0E8C061573;
-        Fri, 21 Aug 2020 08:04:10 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id j187so1604924qke.11;
-        Fri, 21 Aug 2020 08:04:10 -0700 (PDT)
+        Fri, 21 Aug 2020 11:07:03 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA9FFC061573
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 08:07:03 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id v6so2012046iow.11
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 08:07:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1FzqZJ6ck6KUzOqSuKnj7ejxM9ufdWSJqP1xoW29qVs=;
-        b=YMyC8odRxwt4e+ebHOdmQFNxzIqRf1A3/okUdcouS+5ljxpc1mDGkbrRKCaOWLMRFr
-         tbYI+SM/yvrHIvogo40z5OqLqYJkChEfGfUzeEtpFZaCRIPZPxYLYEHSc17+Zo/0VE9d
-         TzKI7FDaqtwoQKWX9hUMNi6bHRg3MniqKbnRaJ20ycXK2km/LwmfJw14EqQ2fXHsyxJH
-         0cd8PXp02Ei2m+BYXl573s3GRyAK3iD/xnGq61OQAg6T9ndogxeZFI095Wf2QmPScfjg
-         nermWatu5yNdkT9mlCcjxRIfZTCkdBGzvDieCK0LVBtz3oicHcxtogJkOwk+IkcJnSXu
-         Ya/w==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GnYQNhwtXwVYlPdVsnrBy6dOuo2Ol5Ijyx6D4Eg1YoA=;
+        b=ePdvtcgT7ltVEACaDkXOhjZZ02iFArzqiVXgTDQe++M82pCs5Zf0M73C4dRNooFsv/
+         cgVAYMgsOzHtCuF+zIyKxbetlNSd0YbgaQjMzgkoNV1ZslxvAQKHHIMs4AuMmXRkwStD
+         MxbkCWxUBT8aX9J7V4C58hIzUznGe9Ja//XJ3gocQY+1wW7Uf1c2OAAVtt6j/iB3Ive2
+         /AsQS4f/5HH3nDNe9GiqlKBPJdVCcpFW9aEfQN/F1tkd+q+fPo3rAIRo7dOJMcmEFsPw
+         /MqQtHQ1eHKBczcqsdcZmYgRVxC+t7yK7VUfgM+Iwx6+CU2Yv5USTsx2ilYXs/W6v0KY
+         Htag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1FzqZJ6ck6KUzOqSuKnj7ejxM9ufdWSJqP1xoW29qVs=;
-        b=iUJkRQeFuIukuRSEOMFErl0LkqrL0GhzAQyEUQlCYB5bVklpS1yEj+XAX66UPrmDuf
-         00YjYkUrT04sHR23bLHQ4Lk9/mfUbjvOe4yFZyp0T/a7KDGy/9/yEPKyRxHIcqM4sBKR
-         rVf5yAF9CBWPWFJk7Ekt+lF99XR3pZczL7zh+YbBmYCeA1/NaJL0iSOHYDoF43RtUnfK
-         Dpo0chkyE6ts3u5DGrkIn4BdE4fdRJVT2yS4Ai5DlGX0Kjf9T0gDdvfplaJjleS78VBZ
-         l1xqJbzaGbxMjIuYH4l3SMF3eLed3qwUj2iEh7eudzn4Ah7SXIQRKXitOzgfex6uJ7EO
-         sb6A==
-X-Gm-Message-State: AOAM530WGpk0dcBgs7pBgxdpKQNKzYBRjKI8hn0kaq82MMkDD9JJ+fEO
-        jPiy0dxR2yG/Fbo9kW0xXgw=
-X-Google-Smtp-Source: ABdhPJyBL+mb4e1OJT95Eq9kjSKGYgP7Np7BlljR/yVQfblx5fKS/WHmWdNwlkY/T6ACOLTj7g3OPw==
-X-Received: by 2002:a05:620a:24c9:: with SMTP id m9mr3122749qkn.487.1598022249324;
-        Fri, 21 Aug 2020 08:04:09 -0700 (PDT)
-Received: from dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com ([2620:10d:c091:480::1:4586])
-        by smtp.gmail.com with ESMTPSA id 65sm1942875qkf.33.2020.08.21.08.04.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 08:04:08 -0700 (PDT)
-Date:   Fri, 21 Aug 2020 11:04:05 -0400
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:FILESYSTEMS (VFS and infrastructure)" 
-        <linux-fsdevel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <linux-mm@kvack.org>
-Subject: Re: [PATCH v6 0/4] Charge loop device i/o to issuing cgroup
-Message-ID: <20200821150405.GA4137@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
-References: <20200528135444.11508-1-schatzberg.dan@gmail.com>
- <CALvZod655MqFxmzwCf4ZLSh9QU+oLb0HL-Q_yKomh3fb-_W0Vg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GnYQNhwtXwVYlPdVsnrBy6dOuo2Ol5Ijyx6D4Eg1YoA=;
+        b=NtcSwH7O5zRKH5jSCNEvESmdGCeXPby/nb7FShU9ZrKf2P8jdsut++Rcf6uNi2jSW1
+         pgns6oCMycLBl+t/BDlrda2APwS6d8v0ijaGAIoTVMorYzsYH1oi3KGiBfIs9Qz6ej/P
+         AG/ifiOGomfbcUMUbOSAH0dNJdnpG3TbwEZldztBFIliM73KlBUq8MgCX8CgL7/wBI9e
+         eBANKPG64SGYrJF4OgQAn6juN3EkbKdnp6YEKjxx4RyNwHkBwIj6rVENxbmpNofTGF+A
+         Ob1Jda3MxT8Cgy1GFgtAvIunYEWMFSW+UXfNzWg5d3b0ku7RzfloUAiHdDGAhZNkLqdV
+         OuDA==
+X-Gm-Message-State: AOAM533CiwcAQ/LFQBnpd16Zf+G39zCv25qUQWZwO1GSeUjQFaQBQHS4
+        d0eVFTXCiNXPih+wHzPFT5LPLRQIvgZDhJocJ+L4aA==
+X-Google-Smtp-Source: ABdhPJzB1KDJI41X8qYxbJ9m5IjiKVoEO8Gk4B7Q2R8J9LQz3LTFJRJTOF0VfsN9KiurkFP8iE4R3IK9Cog2hB3AgZA=
+X-Received: by 2002:a6b:7846:: with SMTP id h6mr2643881iop.145.1598022421093;
+ Fri, 21 Aug 2020 08:07:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod655MqFxmzwCf4ZLSh9QU+oLb0HL-Q_yKomh3fb-_W0Vg@mail.gmail.com>
+References: <20200821063043.1949509-1-elver@google.com> <20200821085907.GJ1362448@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200821085907.GJ1362448@hirez.programming.kicks-ass.net>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 21 Aug 2020 08:06:49 -0700
+Message-ID: <CANn89i+1MQRCSRVg-af758en5e9nwQBes3aBSjQ6BY1pV5+HdQ@mail.gmail.com>
+Subject: Re: [PATCH] random32: Use rcuidle variant for tracepoint
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Marco Elver <elver@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 10:06:44AM -0700, Shakeel Butt wrote:
-> On Thu, May 28, 2020 at 6:55 AM Dan Schatzberg <schatzberg.dan@gmail.com> wrote:
+On Fri, Aug 21, 2020 at 1:59 AM <peterz@infradead.org> wrote:
+>
+> On Fri, Aug 21, 2020 at 08:30:43AM +0200, Marco Elver wrote:
+> > With KCSAN enabled, prandom_u32() may be called from any context,
+> > including idle CPUs.
 > >
-> > Much of the discussion about this has died down. There's been a
-> > concern raised that we could generalize infrastructure across loop,
-> > md, etc. This may be possible, in the future, but it isn't clear to me
-> > how this would look like. I'm inclined to fix the existing issue with
-> > loop devices now (this is a problem we hit at FB) and address
-> > consolidation with other cases if and when those need to be addressed.
-> >
-> 
-> What's the status of this series?
+> > Therefore, switch to using trace_prandom_u32_rcuidle(), to avoid various
+> > issues due to recursion and lockdep warnings when KCSAN and tracing is
+> > enabled.
+>
+> At some point we're going to have to introduce noinstr to idle as well.
+> But until that time this should indeed cure things.
 
-Thanks for reminding me about this. I haven't got any further
-feedback. I'll bug Jens to take a look and see if he has any concerns
-and if not send a rebased version.
+I do not understand what the issue is.  This _rcuidle() is kind of opaque ;)
+
+Would this alternative patch work, or is it something more fundamental ?
+
+Thanks !
+
+diff --git a/lib/random32.c b/lib/random32.c
+index 932345323af092a93fc2690b0ebbf4f7485ae4f3..17af2d1631e5ab6e02ad1e9288af7e007bed6d5f
+100644
+--- a/lib/random32.c
++++ b/lib/random32.c
+@@ -83,9 +83,10 @@ u32 prandom_u32(void)
+        u32 res;
+
+        res = prandom_u32_state(state);
+-       trace_prandom_u32(res);
+        put_cpu_var(net_rand_state);
+
++       trace_prandom_u32(res);
++
+        return res;
+ }
+ EXPORT_SYMBOL(prandom_u32);
