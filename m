@@ -2,98 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55FF624D178
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 11:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098B224D174
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 11:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728471AbgHUJ2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 05:28:55 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:55426 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728461AbgHUJ2q (ORCPT
+        id S1728454AbgHUJ2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 05:28:38 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55596 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728423AbgHUJ2e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 05:28:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598002125;
+        Fri, 21 Aug 2020 05:28:34 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1598002112;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=JjMCOzpJotfhpqv5rwTIXLpouUojwObpb+Um6+p3l6o=;
-        b=X00bfB2HtEnZd/lTuxC4yr7gzI+tnAV00o/5mkdVe6Zi4DGSE2FZP4A+PMff7DjCgskYwE
-        MXRsi0FLhfwYyUyTIDJuJnHlZUzf+GyGMEQZW7/rn8/W3NCYUgfRs73/yVawOsj0CYkCeq
-        Fjlub1DK0q+swnAYN+QT8XYYRnMXReg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-189-UHmgBtRlMzi2jd2R4zBR0A-1; Fri, 21 Aug 2020 05:28:43 -0400
-X-MC-Unique: UHmgBtRlMzi2jd2R4zBR0A-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C195873084;
-        Fri, 21 Aug 2020 09:28:42 +0000 (UTC)
-Received: from hp-dl380pg8-01.lab.eng.pek2.redhat.com (hp-dl380pg8-01.lab.eng.pek2.redhat.com [10.73.8.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5BA2B7E30F;
-        Fri, 21 Aug 2020 09:28:34 +0000 (UTC)
-From:   Jason Wang <jasowang@redhat.com>
-To:     mst@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     rob.miller@broadcom.com, lingshan.zhu@intel.com,
-        eperezma@redhat.com, lulu@redhat.com, shahafs@mellanox.com,
-        hanand@xilinx.com, mhabets@solarflare.com, gdawar@xilinx.com,
-        saugatm@xilinx.com, vmireyno@marvell.com,
-        zhangweining@ruijie.com.cn, eli@mellanox.com,
-        Jason Wang <jasowang@redhat.com>
-Subject: [PATCH V2 3/3] vdpa_sim: implement get_iova_range()
-Date:   Fri, 21 Aug 2020 05:28:13 -0400
-Message-Id: <20200821092813.8952-4-jasowang@redhat.com>
-In-Reply-To: <20200821092813.8952-1-jasowang@redhat.com>
-References: <20200821092813.8952-1-jasowang@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VU2HxPgLNLazukFoPOzD00O9Xl1vG0JgE6354eT+dVU=;
+        b=QJOfX/Y6wXrHej6IcmnqxUyPMKZwipi+Xyftmz4lK2aD3g7bG1juDXdgGKzPq7dSSKOBb/
+        ssYMMYJzJcs0p+Dt3HVBXnkIc3psWtjrTBhzlA3Iprqy7alQorOGSs+u1UbzF3UVMjR2qz
+        tkKaw+4khq2l3aHWmFGYN4nDWjyCd6EB0W8YEAkcmSfuefo71OkMXu5sUFWQHrJhnNjKkG
+        K5Rkxf7G/dYyteCM488T2Okxy27aatHvOrAmC5fSlyQldDGCn9HL4kxIFcqT949przTCHw
+        EJ+4jVKy28pHAAxB8+IS8kmt4SfZihamvMCbj7P9eo1MlB4JH56745dW12Erog==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1598002112;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VU2HxPgLNLazukFoPOzD00O9Xl1vG0JgE6354eT+dVU=;
+        b=voT2OdXpJOLurUTBKVhdXgyagX/vUxVwvyPvxG0AEg7NKcs9BVoP/kLLId2AntIxI1k3Oq
+        sd9gY9jeYgvgrlBQ==
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
+        Chang Seok Bae <chang.seok.bae@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>, kvm@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH] x86/entry/64: Disallow RDPID in paranoid entry if KVM is enabled
+In-Reply-To: <3eb94913-662d-5423-21b1-eaf75635142a@redhat.com>
+References: <20200821025050.32573-1-sean.j.christopherson@intel.com> <20200821074743.GB12181@zn.tnic> <3eb94913-662d-5423-21b1-eaf75635142a@redhat.com>
+Date:   Fri, 21 Aug 2020 11:28:32 +0200
+Message-ID: <87r1s0gxfj.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Jason Wang <jasowang@redhat.com>
----
- drivers/vdpa/vdpa_sim/vdpa_sim.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+On Fri, Aug 21 2020 at 10:09, Paolo Bonzini wrote:
+> On 21/08/20 09:47, Borislav Petkov wrote:
+>> On Thu, Aug 20, 2020 at 07:50:50PM -0700, Sean Christopherson wrote:
+>>> +	 * Disallow RDPID if KVM is enabled as it may consume a guest's TSC_AUX
+>>> +	 * if an NMI arrives in KVM's run loop.  KVM loads guest's TSC_AUX on
+>>> +	 * VM-Enter and may not restore the host's value until the CPU returns
+>>> +	 * to userspace, i.e. KVM depends on the kernel not using TSC_AUX.
+>>>  	 */
+>> And frankly, this is really unfair. The kernel should be able to use any
+>> MSR. IOW, KVM needs to be fixed here. I'm sure it context-switches other
+>> MSRs so one more MSR is not a big deal.
+>
+> The only MSR that KVM needs to context-switch manually are XSS and
+> SPEC_CTRL.  They tend to be the same on host and guest in which case
+> they can be optimized away.
+>
+> All the other MSRs (EFER and PAT are those that come to mind) are
+> handled by the microcode and thus they don't have the slowness of
+> RDMSR/WRMSR
+>
+> One more MSR *is* a big deal: KVM's vmentry+vmexit cost is around 1000
+> cycles, adding 100 clock cycles for 2 WRMSRs is a 10% increase.
 
-diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-index 62d640327145..89854e17c3c2 100644
---- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-@@ -574,6 +574,16 @@ static u32 vdpasim_get_generation(struct vdpa_device *vdpa)
- 	return vdpasim->generation;
- }
- 
-+struct vdpa_iova_range vdpasim_get_iova_range(struct vdpa_device *vdpa)
-+{
-+	struct vdpa_iova_range range = {
-+		.first = 0ULL,
-+		.last = ULLONG_MAX,
-+	};
-+
-+	return range;
-+}
-+
- static int vdpasim_set_map(struct vdpa_device *vdpa,
- 			   struct vhost_iotlb *iotlb)
- {
-@@ -657,6 +667,7 @@ static const struct vdpa_config_ops vdpasim_net_config_ops = {
- 	.get_config             = vdpasim_get_config,
- 	.set_config             = vdpasim_set_config,
- 	.get_generation         = vdpasim_get_generation,
-+	.get_iova_range         = vdpasim_get_iova_range,
- 	.dma_map                = vdpasim_dma_map,
- 	.dma_unmap              = vdpasim_dma_unmap,
- 	.free                   = vdpasim_free,
-@@ -683,6 +694,7 @@ static const struct vdpa_config_ops vdpasim_net_batch_config_ops = {
- 	.get_config             = vdpasim_get_config,
- 	.set_config             = vdpasim_set_config,
- 	.get_generation         = vdpasim_get_generation,
-+	.get_iova_range         = vdpasim_get_iova_range,
- 	.set_map                = vdpasim_set_map,
- 	.free                   = vdpasim_free,
- };
--- 
-2.18.1
+We all know that MSRs are slow, but as a general rule I have to make it
+entirely clear that the kernel has precedence over KVM.
 
+If the kernel wants to use an MSR for it's own purposes then KVM has to
+deal with that and not the other way round. Preventing the kernel from
+using a facility freely is not an option ever.
+
+The insanities of KVM performance optimizations have bitten us more than
+once.
+
+For this particular case at hand I don't care much and we should just
+rip the whole RDPID thing out unconditionally. We still have zero
+numbers about the performance difference vs. LSL.
+
+Thanks,
+
+        tglx
