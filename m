@@ -2,104 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131E624D19A
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 11:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D2524D1A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 11:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728140AbgHUJhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 05:37:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25405 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725855AbgHUJhT (ORCPT
+        id S1728138AbgHUJkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 05:40:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725965AbgHUJkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 05:37:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598002637;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HM8iWB8SC7hD7f4RpIcbL31EFLRVSaFi+Uelkb/Y1jg=;
-        b=GN4xvvVcrDFt8SsA18jSqlvoZPv5leekixRS85MRZX8R12qXC9Rg55QibYefAMuGxn9eCf
-        DEwv3SAy2Zfyujeb2J/7sROEVGwjiXuLJ43yc65oVRB7KN0673m1umsHdA3Ju+Gn5/V3k9
-        7GUmU04Mj6st0AXswCwBJDQwuANRlJU=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-132-1sQGRsjSMwqD4JRBF8grow-1; Fri, 21 Aug 2020 05:37:16 -0400
-X-MC-Unique: 1sQGRsjSMwqD4JRBF8grow-1
-Received: by mail-wm1-f70.google.com with SMTP id q23so327962wmj.0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 02:37:16 -0700 (PDT)
+        Fri, 21 Aug 2020 05:40:16 -0400
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C541DC061385
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 02:40:15 -0700 (PDT)
+Received: by mail-vk1-xa43.google.com with SMTP id r197so252209vkf.13
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 02:40:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=1dXsLAdD/HVr0aypwMgxgpVJbDNFXP6FiKC2otHgH1Y=;
+        b=E7dmo+MN5nYduaGj/JAiyY5OSzfBzBS2w/cF9WHN8nsuR54F0LS0QdQHVF9yssq2qZ
+         /DB+Dl+YzEo/MNxIMaKd4A13ztlbPA45EDHE7ugicIdczck4cC5MH13zMs2tBT0EzqhD
+         Fw0vEiTH40gIl89gCj6mi8aWi94kQW0xOwxFQgL4UyiYJnrapPBQiqzO9la4NjfLf3E7
+         ULyRjtZqES8XGsDq37/lF1nliX/LaDrSW1gUBM92dBo+YT+MpW6WcUC3o5U7FKc7H46f
+         siLME/fwmxiRwdIjZ+YAAkr+nLkLKPsgSCWgibNtGifOMCFXvdip0Hk21tvSCnvfkWQQ
+         afGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HM8iWB8SC7hD7f4RpIcbL31EFLRVSaFi+Uelkb/Y1jg=;
-        b=Qb7Om7PRcJ/dnLzFcbkWnxhxPB1tMQenuy84NzTYPyZdJkk6ZYcLld03U60B/E5+jb
-         GKMDVpeCefqivc8PoDNCsWLcz01zciOgFtq5Xl6iL/dn/skdu+HOXtSU+6YztrFI6tF9
-         jAkOX40SikK4/6e4w3UUthEkZcbIzy5yNRepK0DcZCjVcDSJrkIDVBaz+gbQnWqtktCK
-         MOq9kpOq3eO6fUlGBAhb9j3VZdfN5Tg7dU3qSJB+1P75jQCPVJTQLdggFaJNgmWM5Y2A
-         891VxHhocHtI+Hmjmo3brc23j79bib+Yw5y0WSSD0AZ76LZn9lJWd3nJr35DubXvXWPX
-         oQkQ==
-X-Gm-Message-State: AOAM533qeHhb977KitJQFloqutRDKFndxRHMhGxENHIYI/dziuU5DMYc
-        tKD5KUz1ICXCUsaaFgB+ahn2etj9TOi9a7YgOsZg/Rl0GsG6o9lUsDqaxQqECHUxHhqHfobUwVP
-        UOTdQNqhchpI4xnnwKKHTiKKf
-X-Received: by 2002:a7b:c84e:: with SMTP id c14mr3074368wml.51.1598002635063;
-        Fri, 21 Aug 2020 02:37:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwwC4R8JV8L5mLEba4NKsTdVDCxAA6Mt6rRW2RutzRg5Vy9Fkhbug+fOmXTIeN9cV11aJiiDA==
-X-Received: by 2002:a7b:c84e:: with SMTP id c14mr3074345wml.51.1598002634800;
-        Fri, 21 Aug 2020 02:37:14 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:1cc0:4e4e:f1a9:1745? ([2001:b07:6468:f312:1cc0:4e4e:f1a9:1745])
-        by smtp.gmail.com with ESMTPSA id c10sm2887323wrn.24.2020.08.21.02.37.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Aug 2020 02:37:14 -0700 (PDT)
-Subject: Re: [PATCH] x86/entry/64: Disallow RDPID in paranoid entry if KVM is
- enabled
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
-        Chang Seok Bae <chang.seok.bae@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>, kvm@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>
-References: <20200821025050.32573-1-sean.j.christopherson@intel.com>
- <20200821074743.GB12181@zn.tnic>
- <3eb94913-662d-5423-21b1-eaf75635142a@redhat.com>
- <87r1s0gxfj.fsf@nanos.tec.linutronix.de>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f8597183-5a14-de7c-330b-46b9bf015d0c@redhat.com>
-Date:   Fri, 21 Aug 2020 11:37:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1dXsLAdD/HVr0aypwMgxgpVJbDNFXP6FiKC2otHgH1Y=;
+        b=KuYJeWFuAZeefd9peQzScLRj6YSQPA6waHhE+Nl5EphmqgGauuOdxxwsis6900WE5c
+         CoLd6FeKUg0IwDfGxrHSVfKtVWwBLcI9WhqetxQ87sYi/zeMjifMhYwSudtNr38JieeT
+         z0SYFMYlihXSuh4MuOoqh3zDkRZ56kzKtdQK0f+RfNojnQ9P4S7zFluOj+flxE/E7F9y
+         dFA0EPF3hTqM0GMTOuQNrDXsjYHuVoNUaCJi34y3DiRasmzQNb6aU/fzPJc/NfogPcry
+         zvYgyGThAzqYjyCfYUG6C1wDPkHG7p7ptleQ0y5IUbmfZ9Rxr6j4KAQHhDqvowbHBWTm
+         WvLg==
+X-Gm-Message-State: AOAM5315alYLF5kKk3bbi1oEzaq43SizYuETh4F2e5/3mkjNdsMyiERR
+        SamccbHiko0obuJzrUrKTUVCvawOPnFJatfH5PmUcVvArMfohwgp
+X-Google-Smtp-Source: ABdhPJzObFpOXs7+mNxh+vLL1/3RWAib08n7aBJ/mRdsRanKFNbQie33YlcYxXmCaGw0mbiF5GPKXIRaKFrlVrhhbJ8=
+X-Received: by 2002:a1f:eecb:: with SMTP id m194mr991597vkh.40.1598002814707;
+ Fri, 21 Aug 2020 02:40:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87r1s0gxfj.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200820091602.251285210@linuxfoundation.org>
+In-Reply-To: <20200820091602.251285210@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 21 Aug 2020 15:10:03 +0530
+Message-ID: <CA+G9fYvDcnBcnUJQWGutPj13C9HQ53E9bsGtJKmm48OrzuWZTA@mail.gmail.com>
+Subject: Re: [PATCH 4.9 000/212] 4.9.233-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/08/20 11:28, Thomas Gleixner wrote:
-> We all know that MSRs are slow, but as a general rule I have to make it
-> entirely clear that the kernel has precedence over KVM.
+On Thu, 20 Aug 2020 at 15:28, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.9.233 release.
+> There are 212 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 22 Aug 2020 09:15:09 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.233-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-I totally agree.  I just don't think that it matters _in this case_,
-because the kernel hardly has any reason to use TSC_AUX while in ring0.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Paolo
+Summary
+------------------------------------------------------------------------
 
-> If the kernel wants to use an MSR for it's own purposes then KVM has to
-> deal with that and not the other way round. Preventing the kernel from
-> using a facility freely is not an option ever.
-> 
-> The insanities of KVM performance optimizations have bitten us more than
-> once.
-> 
-> For this particular case at hand I don't care much and we should just
-> rip the whole RDPID thing out unconditionally. We still have zero
-> numbers about the performance difference vs. LSL.
+kernel: 4.9.233-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.9.y
+git commit: 1a1baeef1d3674ffce6cf9dfa5b5778c60555587
+git describe: v4.9.232-213-g1a1baeef1d36
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.9-oe/bui=
+ld/v4.9.232-213-g1a1baeef1d36
 
+No regressions (compared to build v4.9.232)
+
+No fixes (compared to build v4.9.232)
+
+
+Ran 34241 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* network-basic-tests
+* ltp-open-posix-tests
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-native/drivers
+* kselftest-vsyscall-mode-native/filesystems
+* kselftest-vsyscall-mode-none
+* kselftest-vsyscall-mode-none/drivers
+* kselftest-vsyscall-mode-none/filesystems
+* ssuite
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
