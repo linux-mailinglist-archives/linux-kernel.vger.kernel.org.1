@@ -2,114 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E8824E21D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 22:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD2324E221
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 22:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726630AbgHUUeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 16:34:19 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:2759 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725831AbgHUUeS (ORCPT
+        id S1726739AbgHUUef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 16:34:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725831AbgHUUed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 16:34:18 -0400
-X-IronPort-AV: E=Sophos;i="5.76,338,1592863200"; 
-   d="scan'208";a="464264063"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Aug 2020 22:34:17 +0200
-Date:   Fri, 21 Aug 2020 22:34:16 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Denis Efremov <efremov@linux.com>
-cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
-Subject: Re: [Cocci] [PATCH v2] coccinelle: api: add kobj_to_dev.cocci
- script
-In-Reply-To: <20200821201137.446423-1-efremov@linux.com>
-Message-ID: <alpine.DEB.2.22.394.2008212234060.2486@hadrien>
-References: <20200821153100.434332-1-efremov@linux.com> <20200821201137.446423-1-efremov@linux.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Fri, 21 Aug 2020 16:34:33 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B7FC061573
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 13:34:32 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id w2so2578709edv.7
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 13:34:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Rl2kaa3w6LmV9LlXdX0qDQsxWMR1VskZDempA7/xnho=;
+        b=O3uOF+Z3g6sMRe45YA0hU6snYHJ/bF6nwj//IDmUjyNvN8ELDhoi7H8HMisEjtMZXi
+         6y006OmrQxe7UeeTyisEbpEPV4Xe/Qd1qJk0BxSV/SFy7e4Mo7J1wWbQZQnDpzZNobfe
+         o+UcLeTDQrEu8+qDya8qgF8WwIIuy96JBBUX3N24buf1J0dYkT64xzU/uQF8ZDzc00nZ
+         wuq0UuX++9PVEjP5wHchWXCLuEt9YfIvMciXdVmt43DzKZc33lTa3E32eAv9kCw1vkwW
+         DCHC1ftV6DhvP8IfKoQUVbVDMh19KIn6CUq1QEGAIGgbRblUcNgcZL3AFLt5t71iWFxf
+         GIBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Rl2kaa3w6LmV9LlXdX0qDQsxWMR1VskZDempA7/xnho=;
+        b=PTM/4EjNET/aGMaPLTq4MIAYB4rYgnN6xRXGjxNMJRWQkTyXJmyHvhpLp24rwahumS
+         FN2sFofEmqjt6cIRXaEkEgdDLtCB9CorFqukU5CXTiPYP+O1uI1a0YVqVG62STK0FXt+
+         gkB24GIZwfLkQ/NTbiaDkU1Gwz7yGOJDz4ajn+vzEOWaFZ1Df9LJBOPicZJx9SgxVjNL
+         dUZKTTvzIQNnrVpLqf95DkPtu4H/X3oWSoqVs735iozkSX7hSxgkk5s+FTJADWgxn/K4
+         NTv+/AVay81xzYnVZLMt0bItTZRzjS/ORwhJM0U+zQmYoPUi/RmDATlDIRhqg2UYVt+l
+         +jwA==
+X-Gm-Message-State: AOAM532bXr55giA/JUC31oN5Q8X19y/7ZLDziDLa+UwhIpHzbFhs83gr
+        EC/nJLhtyDvDfcZdApYsY4sZ7Y9ptiyrVmu2Jo0VNlv6FsY=
+X-Google-Smtp-Source: ABdhPJzEdQbRXw+tnAj3mroyHaGUXhNpQJ3hwEu1sO4EBldWJaih6xbI6g96eIVUMUHRkiShrKMcmYuvJ93HfVsqMhA=
+X-Received: by 2002:a05:6402:1c10:: with SMTP id ck16mr4561066edb.151.1598042071476;
+ Fri, 21 Aug 2020 13:34:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <000000000000e44b7d05ad6624df@google.com> <CAHbLzkqM-x0aD59z0mFRW37JsxRPL+5xKRRfU1qY18LKksQ3ZQ@mail.gmail.com>
+ <20200821130337.f4d1f5cd665ab149e1f43ed5@linux-foundation.org>
+In-Reply-To: <20200821130337.f4d1f5cd665ab149e1f43ed5@linux-foundation.org>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 21 Aug 2020 13:34:17 -0700
+Message-ID: <CAHbLzkpuCHquxCkN4EXpcZjidUHHyW0DrOC9uqDR7EA72aB6bg@mail.gmail.com>
+Subject: Re: KASAN: use-after-free Read in do_madvise
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     syzbot <syzbot+b90df26038d1d5d85c97@syzkaller.appspotmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, syzkaller-bugs@googlegroups.com,
+        Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Fri, 21 Aug 2020, Denis Efremov wrote:
-
-> Use kobj_to_dev() instead of container_of().
+On Fri, Aug 21, 2020 at 1:03 PM Andrew Morton <akpm@linux-foundation.org> wrote:
 >
-> Signed-off-by: Denis Efremov <efremov@linux.com>
+> On Fri, 21 Aug 2020 10:15:45 -0700 Yang Shi <shy828301@gmail.com> wrote:
+>
+> > It looks the vma is gone. The below patch should be able to fix it:
+> >
+> > diff --git a/mm/madvise.c b/mm/madvise.c
+> > index dd1d43cf026d..d4aa5f776543 100644
+> > --- a/mm/madvise.c
+> > +++ b/mm/madvise.c
+> > @@ -289,9 +289,9 @@ static long madvise_willneed(struct vm_area_struct *vma,
+> >          */
+> >         *prev = NULL;   /* tell sys_madvise we drop mmap_lock */
+> >         get_file(file);
+> > -       mmap_read_unlock(current->mm);
+> >         offset = (loff_t)(start - vma->vm_start)
+> >                         + ((loff_t)vma->vm_pgoff << PAGE_SHIFT);
+> > +       mmap_read_unlock(current->mm);
+> >         vfs_fadvise(file, offset, end - start, POSIX_FADV_WILLNEED);
+> >         fput(file);
+> >         mmap_read_lock(current->mm);
+>
+> Oh geeze.  Can you please send this along as a real patch, cc:stable,
+> Fixes: 692fe62433d4c?  Please cc Jan!
 
-Applied, thanks.
-
-julia
-
-> ---
-> Changes in v2:
->  - "symbol kobj;" added to the rule r
->
->  scripts/coccinelle/api/kobj_to_dev.cocci | 45 ++++++++++++++++++++++++
->  1 file changed, 45 insertions(+)
->  create mode 100644 scripts/coccinelle/api/kobj_to_dev.cocci
->
-> diff --git a/scripts/coccinelle/api/kobj_to_dev.cocci b/scripts/coccinelle/api/kobj_to_dev.cocci
-> new file mode 100644
-> index 000000000000..cd5d31c6fe76
-> --- /dev/null
-> +++ b/scripts/coccinelle/api/kobj_to_dev.cocci
-> @@ -0,0 +1,45 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +///
-> +/// Use kobj_to_dev() instead of container_of()
-> +///
-> +// Confidence: High
-> +// Copyright: (C) 2020 Denis Efremov ISPRAS
-> +// Options: --no-includes --include-headers
-> +//
-> +// Keywords: kobj_to_dev, container_of
-> +//
-> +
-> +virtual context
-> +virtual report
-> +virtual org
-> +virtual patch
-> +
-> +
-> +@r depends on !patch@
-> +expression ptr;
-> +symbol kobj;
-> +position p;
-> +@@
-> +
-> +* container_of(ptr, struct device, kobj)@p
-> +
-> +
-> +@depends on patch@
-> +expression ptr;
-> +@@
-> +
-> +- container_of(ptr, struct device, kobj)
-> ++ kobj_to_dev(ptr)
-> +
-> +
-> +@script:python depends on report@
-> +p << r.p;
-> +@@
-> +
-> +coccilib.report.print_report(p[0], "WARNING opportunity for kobj_to_dev()")
-> +
-> +@script:python depends on org@
-> +p << r.p;
-> +@@
-> +
-> +coccilib.org.print_todo(p[0], "WARNING opportunity for kobj_to_dev()")
-> --
-> 2.26.2
->
-> _______________________________________________
-> Cocci mailing list
-> Cocci@systeme.lip6.fr
-> https://systeme.lip6.fr/mailman/listinfo/cocci
->
+Yes, sure. Working on a real patch now.
