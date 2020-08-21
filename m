@@ -2,98 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF7B24CAB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 04:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A05A024CABC
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 04:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727901AbgHUCWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 22:22:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44422 "EHLO
+        id S1727781AbgHUCZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 22:25:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727106AbgHUCWo (ORCPT
+        with ESMTP id S1727086AbgHUCZ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 22:22:44 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9E55C061386
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 19:22:43 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id f24so560661ejx.6
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 19:22:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b1QCc14GPT5F3fBeMa9aJ6/+QjqukYcGYpP98XcieAM=;
-        b=rkZem/xP//Yw5RcfZCb8d0EXj6/DVgghiIYX4ouKUYXL4ERL6uT3z9/PYcwXrBpuLc
-         eWLEEvEkCH2oNtkT+d6wgthUF8PW9ENjWXnmCj01NAX5IdAF6ZBYl4JEMcjb0dXAHve8
-         +E4+9H1EXNQLcmcuqoHYIUvx+Z1pxM8IM7Ugrw7HMSd3fjEhW6UWVQzb0a3ye4G/QoBR
-         ncjW0WD4h1qyLnCNayIlH6/adY3RT1mR9iGVUiFyPjsx/TZSavmNgZol65w8ZJxjcK8y
-         fd7t3uiZBtGH0ySTH6qg5DBbQqCxHTpBJ/x5WUsf3tdcBh+u7NUGh+RQLkIoemQotdyX
-         Yvbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b1QCc14GPT5F3fBeMa9aJ6/+QjqukYcGYpP98XcieAM=;
-        b=UJCgzveW8uixmhth37KmQBDHOA1GVLJSflmyHlR/x0C7QGjG+2rZ+1fZNgRya2v4u0
-         J+fp8jLwy+KbsHfbOHkjLpsEOIDARr6RDbfevmexbywVBUWyecdMKqwdMwbxHlKjuupx
-         pX/RywoRqMmmM4KITxQRpXhc5onMz+t6fKZb84RLfDCJCuiqZ8uzMhVg0ly0MDrb7EL/
-         OVVU4eB/fdilwSraG6xB9vxI5DQxcs9DT1pbCt2uTtoEQhNplKSb7NJ9/UVw0Exn7fPi
-         jTAVAuE5U36o+ZWSMP898dK35JuOYoPexElMYAk9IARCj68ik3WKwhacVkz4c0CvkUms
-         nEVw==
-X-Gm-Message-State: AOAM533ksG73t7rXzYBBtYwocZNORbE1F8DkFM4CQX6qXe9tcD8a2MJV
-        v+Cm6rxTHl0wsBwki2ok6mYlq57RKeFetb6ZHuwd
-X-Google-Smtp-Source: ABdhPJxDoNqUGswwKhuSmyyuHeuGX8npxTUSizhNwYUXP9URQ7CAZQPQ5Go9M0OJ/H6WfRFApNa0sCSv9uFlANluKwY=
-X-Received: by 2002:a17:906:1911:: with SMTP id a17mr623897eje.431.1597976562364;
- Thu, 20 Aug 2020 19:22:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200817170729.2605279-1-tweek@google.com> <20200817170729.2605279-4-tweek@google.com>
- <d8b1d7a2-2b8e-c714-77b6-d4e7f3fedf08@gmail.com> <6730ec4a-d11b-5c05-b64f-380104a86dab@sony.com>
- <CAEjxPJ7k648nQxCDzcHc0h1vEfNhAJShG5iKmD52nuO5s9phsQ@mail.gmail.com>
-In-Reply-To: <CAEjxPJ7k648nQxCDzcHc0h1vEfNhAJShG5iKmD52nuO5s9phsQ@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 20 Aug 2020 22:22:30 -0400
-Message-ID: <CAHC9VhSYJUAacvzp1hR4RMChTctJ2sFb5+oy_wbsigaWMGTYHg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] selinux: add permission names to trace event
-To:     Stephen Smalley <stephen.smalley.work@gmail.com>
-Cc:     peter enderborg <peter.enderborg@sony.com>,
-        =?UTF-8?Q?Thi=C3=A9baud_Weksteen?= <tweek@google.com>,
-        Nick Kralevich <nnk@google.com>,
+        Thu, 20 Aug 2020 22:25:58 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0422BC061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 19:25:58 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597976756;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Pep2opEDdTAbVK1vQIZNLYAMKewMUZ+8IiDQVHdbRgw=;
+        b=dXl5rr/YcgVIFDsu7luyXfMfLxXIA2ZqsBri/WnmA3L6b2UrAQnRTz5Xb9SPp936GO4U32
+        7hMt5K9/tKxR3EByFgMMcbbVrA4V8NcwdVo6TeOiEk3ZqWcZnlyBthDk4kIpyeQKHYhAAn
+        4lMcgOAdWgI5QLdYikpiciYj8HbhzY3BjCmuv/A9GP+IVdROwx6Z5Arw4wtfFWa4ctv1xa
+        XXIfSvMd1IN2l0TVeOTJGFwqVMQrmbDkarQ/2HKzXDMOtlRXIyJkcGNQOTWiUEjHQodLd5
+        s6iDcxPeBClOuaBInkMua05CVCzKM4z6W9lPb9ycFUg5vKXhsZ3ropeNpj1onA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597976756;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Pep2opEDdTAbVK1vQIZNLYAMKewMUZ+8IiDQVHdbRgw=;
+        b=dlAHNmwE1h4LRLoLiya6hEa/prxEn+mubTXoxIK4uvcRyv47rhldw/tjfJeQ4JPGrb1CrI
+        ZyHc8kYPIkd/rZDQ==
+To:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Kyle Huey <me@kylehuey.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Robert O'Callahan <rocallahan@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Eric Paris <eparis@parisplace.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        SElinux list <selinux@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC][PATCH 2/7] x86/debug: Sync BTF earlier
+In-Reply-To: <20200820104905.178074795@infradead.org>
+References: <20200820103832.486877479@infradead.org> <20200820104905.178074795@infradead.org>
+Date:   Fri, 21 Aug 2020 04:25:55 +0200
+Message-ID: <87wo1shgzw.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 8:14 AM Stephen Smalley
-<stephen.smalley.work@gmail.com> wrote:
-> On Tue, Aug 18, 2020 at 4:11 AM peter enderborg <peter.enderborg@sony.com> wrote:
+On Thu, Aug 20 2020 at 12:38, Peter Zijlstra wrote:
 
-...
-
-> > Is there any other things we need to fix? A part 1&2 now OK?
->
-> They looked ok to me, but Paul should review them.
-
-Patches 1 and 2 look fine to me with the small nits that Stephen
-pointed out corrected.  I'm glad to see the information in string form
-now, I think that will be a big help for people making use of this.
-
-Unfortunately, I'm a little concerned about patch 3 for the reason
-Stephen already mentioned.  While changes to the class mapping are
-infrequent, they do happen, and I'm not very excited about adding it
-to the userspace kAPI via a header.  Considering that the tracing
-tools are going to be running on the same system that is being
-inspected, perhaps the tracing tools could inspect
-/sys/fs/selinux/class at runtime to query the permission mappings?
-Stephen, is there a libselinux API which does this already?
-
--- 
-paul moore
-www.paul-moore.com
+The WHAT is clearly spelled out, just the WHY is a big void ....
