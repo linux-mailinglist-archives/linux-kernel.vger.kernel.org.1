@@ -2,104 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C5A24D2B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 12:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB7A24D2A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 12:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728754AbgHUKhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 06:37:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728759AbgHUKh1 (ORCPT
+        id S1728631AbgHUKgs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 Aug 2020 06:36:48 -0400
+Received: from mail.fireflyinternet.com ([77.68.26.236]:58620 "EHLO
+        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728428AbgHUKgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 06:37:27 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8742FC061349
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 03:37:27 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id z23so693220plo.8
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 03:37:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DufvN1VHKhvycaUKRq7bCN3zR8+vkOiC/Y9oiV+15/w=;
-        b=HvtvAHLNuEBtOSAUa+7D7d50ohlMgLoBYEZZbiVTcm9izI+AGbs6y8jlsmWnkcMU3N
-         q4AP13L+wM7iufOmGvaxPVQsglfouW9tD/iCeCQcaJurm3jux6JjQMo7YVc2GHQ4GNH4
-         PkOXOLKnCislXsGbtjcFFMwQR625Ue9zBxPVc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DufvN1VHKhvycaUKRq7bCN3zR8+vkOiC/Y9oiV+15/w=;
-        b=Xg3f124itFTzXb5JoBSSgdtckPbBYeh4EB+fiOGMSZsBUHnpFqpWUVAHgIno9F1ZBP
-         QY3kITne7NqJaKayTPLeO5aBuo2XTzme7XbHFjB3YZBQSuu54plFnzPIQ7BkXaJWxC+L
-         WA90Vf0eFyuhfi+hHT5eGNHpA/F6C3JTqkkKQJJgHXZpRuWiRzds+TMtAMa0x1onGSMN
-         1ETzLVZDVSxXwo1PDy3oI+SsSOBpPuuTOaJxpbGYqltX8iKe+gVfgJoPEEwJevH88C6h
-         wv8tuJLs0up1I/aax09iEiKtU19oa0hhE9XP6cP8goFddqP1sWwCei/CCjCzDDlwJaob
-         b5fg==
-X-Gm-Message-State: AOAM532uFfhhALATNVPh5LCdU+E1udLqxisTrmpR7gjgteZZfsqucrhq
-        V+577boJfoWvUQTXPQ2eyb6L7Q==
-X-Google-Smtp-Source: ABdhPJwDddg8xE6aw1cgQorjp++aUtEmKN10tnGi0rgs5jvKyG1NLD77bBM5fWtyTpMsucUd1d2s/Q==
-X-Received: by 2002:a17:90a:bd15:: with SMTP id y21mr1898704pjr.144.1598006247152;
-        Fri, 21 Aug 2020 03:37:27 -0700 (PDT)
-Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:eeb1:d7ff:fe57:b7e5])
-        by smtp.gmail.com with ESMTPSA id y20sm2081525pfn.183.2020.08.21.03.37.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 03:37:26 -0700 (PDT)
-From:   Alexandre Courbot <acourbot@chromium.org>
-To:     Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        Maoguang Meng <maoguang.meng@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexandre Courbot <acourbot@chromium.org>
-Subject: [PATCH v4 16/17] media: mtk-vcodec: venc: set default time per frame
-Date:   Fri, 21 Aug 2020 19:36:07 +0900
-Message-Id: <20200821103608.2310097-17-acourbot@chromium.org>
-X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
-In-Reply-To: <20200821103608.2310097-1-acourbot@chromium.org>
-References: <20200821103608.2310097-1-acourbot@chromium.org>
+        Fri, 21 Aug 2020 06:36:17 -0400
+X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
+Received: from localhost (unverified [78.156.65.138]) 
+        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 22196525-1500050 
+        for multiple; Fri, 21 Aug 2020 11:36:09 +0100
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200821102204.GH3354@suse.de>
+References: <20200821085011.28878-1-chris@chris-wilson.co.uk> <20200821095129.GF3354@suse.de> <159800366215.29194.8455636122843151159@build.alporthouse.com> <20200821102204.GH3354@suse.de>
+Subject: Re: [PATCH 1/4] mm: Export flush_vm_area() to sync the PTEs upon construction
+From:   Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        linux-mm@kvack.org, Pavel Machek <pavel@ucw.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Dave Airlie <airlied@redhat.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Vrabel <david.vrabel@citrix.com>, stable@vger.kernel.org
+To:     Joerg Roedel <jroedel@suse.de>
+Date:   Fri, 21 Aug 2020 11:36:07 +0100
+Message-ID: <159800616716.29194.8354000222129735639@build.alporthouse.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The time per frame was left initialized to 0/0, which make the driver
-fail v4l2-compliance, and also leaves it potentially exposed to doing a
-division by zero.
+Quoting Joerg Roedel (2020-08-21 11:22:04)
+> On Fri, Aug 21, 2020 at 10:54:22AM +0100, Chris Wilson wrote:
+> > Ok. I thought it had to be after assigning the *ptep. If we apply the
+> > sync first, do not have to worry about PGTBL_PTE_MODIFIED from the
+> > *ptep?
+> 
+> Hmm, if I understand the code correctly, you are re-implementing some
+> generic ioremap/vmalloc mapping logic in the i915 driver. I don't know
+> the reason, but if it is valid you need to manually call
+> arch_sync_kernel_mappings() from your driver like this to be correct:
+> 
+>         if (ARCH_PAGE_TABLE_SYNC_MASK & PGTBL_PTE_MODIFIED)
+>                 arch_sync_kernel_mappings();
+> 
+> In practice this is a no-op, because nobody sets PGTBL_PTE_MODIFIED in
+> ARCH_PAGE_TABLE_SYNC_MASK, so the above code would be optimized away.
+> 
+> But what you really care about is the tracking in apply_to_page_range(),
+> as that allocates the !pte levels of your page-table, which needs
+> synchronization on x86-32.
+> 
+> Btw, what are the reasons you can't use generic vmalloc/ioremap
+> interfaces to map the range?
 
-Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
----
- drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
-index 1b79185cf922..09baac2dbc36 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
-@@ -24,6 +24,9 @@
- #define DFT_CFG_HEIGHT	MTK_VENC_MIN_H
- #define MTK_MAX_CTRLS_HINT	20
- 
-+#define MTK_DEFAULT_FRAMERATE_NUM 1001
-+#define MTK_DEFAULT_FRAMERATE_DENOM 30000
-+
- static void mtk_venc_worker(struct work_struct *work);
- 
- static const struct v4l2_frmsize_stepwise mtk_venc_framesizes = {
-@@ -1197,6 +1200,8 @@ void mtk_vcodec_enc_set_default_params(struct mtk_vcodec_ctx *ctx)
- 		DFT_CFG_WIDTH * DFT_CFG_HEIGHT;
- 	ctx->q_data[MTK_Q_DATA_DST].bytesperline[0] = 0;
- 
-+	ctx->enc_params.framerate_num = MTK_DEFAULT_FRAMERATE_NUM;
-+	ctx->enc_params.framerate_denom = MTK_DEFAULT_FRAMERATE_DENOM;
- }
- 
- int mtk_vcodec_enc_ctrls_setup(struct mtk_vcodec_ctx *ctx)
--- 
-2.28.0.297.g1956fa8f8d-goog
-
+ioremap_prot and ioremap_page_range assume a contiguous IO address. So
+we needed to allocate the vmalloc area [and would then need to iterate
+over the discontiguous iomem chunks with ioremap_page_range], and since
+alloc_vm_area returned the ptep, it looked clearer to then assign those
+according to whether we wanted ioremapping or a plain page. So we ended
+up with one call to the core to return us a vm_struct and a pte array
+that worked for either backing store.
+-Chris
