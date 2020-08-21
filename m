@@ -2,125 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C6924E403
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 01:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC87624E407
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 01:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgHUXuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 19:50:24 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:42259 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726737AbgHUXuO (ORCPT
+        id S1726828AbgHUXwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 19:52:49 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:59470 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726688AbgHUXwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 19:50:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598053812;
+        Fri, 21 Aug 2020 19:52:47 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1598053964;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=r0CkcmCYgcP4TRFy3+MaJk8hhxqQa23QkpKUGatylGE=;
-        b=DydGPsInDYqspIePWektOp8KxYhRBl9PlA9uTc43vehmRuR2F5HN2uJ/Ll91IjQmrP1NwE
-        rxGw9T1uGwwFWjw62jo/k6aw7+Cn4Q10cKxUQ5emTWYbvcHF4zFFi6Ta/pmlrPXhtJ9QvA
-        EoPZqC+4zWjPOQX2wUEn+hh1z1qhYn0=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-85-UgnwhL5EPWKGv6hmT2GFMA-1; Fri, 21 Aug 2020 19:50:11 -0400
-X-MC-Unique: UgnwhL5EPWKGv6hmT2GFMA-1
-Received: by mail-qv1-f71.google.com with SMTP id q4so2308317qvu.6
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 16:50:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=r0CkcmCYgcP4TRFy3+MaJk8hhxqQa23QkpKUGatylGE=;
-        b=NXkh8ouNm0Gd5nTSFTLiPMZSC5mg+UYfb+GByeLc3Pl4df15ZnT75DRmKExJA7LB2k
-         RjN9qZjMzz/t0tBl2G7bZe84VuvSKvr+XZIlKkFstNDKdnHMYXLjFEdq3AsVv8mvGoy1
-         6wi6sZk1rohPwGe/GI53qYQBtLSDPcXTq1kQWrKr8GaNFTohQCftm7SjI75tEOzIK+jJ
-         hdVR7KQwqEbiBHEssncHKxWzg5SjfUdRRUuHqoHKlPVAHCLKt74w77mwV6YNqJdfef5/
-         QpLHR9AgCBu51E9QoDqlOca3Bd8dQtSf/kNX49r8DOzalR9fqxVtkwDz70Zr3QzkR9W0
-         D3Tg==
-X-Gm-Message-State: AOAM533oni5zlzfVimxX8Cb4C3l0yh+wIhsnEwn57jMYuXW5aOnn+tm+
-        J8eGxbDutgBLBHGh3s+KJWwOhWLsGiDh/oXl+KxLrxNit9Q8IicLleEBa1smQMTkQT1qV8fGI+W
-        uTynZ/qexXG8Hd7YZTHheYxkV
-X-Received: by 2002:a05:620a:142:: with SMTP id e2mr4945275qkn.418.1598053810815;
-        Fri, 21 Aug 2020 16:50:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyq8utWn/uGDVs4w1V1vmhZ4RBMhtk+HitMud9u/saO8354xmjH2egHRHqcI3om3OSy7hnB5w==
-X-Received: by 2002:a05:620a:142:: with SMTP id e2mr4945253qkn.418.1598053810611;
-        Fri, 21 Aug 2020 16:50:10 -0700 (PDT)
-Received: from localhost.localdomain (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
-        by smtp.gmail.com with ESMTPSA id t69sm2821600qka.73.2020.08.21.16.50.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 16:50:08 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Marty Mcfadden <mcfadden8@llnl.gov>, peterx@redhat.com,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH 4/4] mm: Add PGREUSE counter
-Date:   Fri, 21 Aug 2020 19:49:58 -0400
-Message-Id: <20200821234958.7896-5-peterx@redhat.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200821234958.7896-1-peterx@redhat.com>
-References: <20200821234958.7896-1-peterx@redhat.com>
+        bh=+LZCecR158RlHm3Lfth6ASLtXm3kGC9vvr84iJ8MvX8=;
+        b=xZsKT6+dHTeL/lPigJTJYxz10V5jp4mNkl4ys/Z1+RQa2aOyMCwJ0A9QGvZ+gtLEU2rlOt
+        w9ZkLky8Zf8dQgL59I+NSKflohKRF4aEGsbOV7+0oXvtRe8KnhKhibYsAQsJJfgI7w2XNA
+        zUMuX/W1n1W0geuTAbFGJ1K+Uyutpby/+hG50EyUJqr1aro5r5FdZfRhNZ2nxUDcS4X7g6
+        rfbaQW+/f9sSwjisuSHue5r3wlfGuZFDNHSPtxW6nY3x5d/ivg/fELnDG0tMatQXTlE+VT
+        ORFQYAnqvWTDHElBmHM9mS70rdctzqqQlyWDMHZ9ZV9WoYiV4LNuT+UuNHaA2Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1598053964;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+LZCecR158RlHm3Lfth6ASLtXm3kGC9vvr84iJ8MvX8=;
+        b=DVVyWJbpQAVeIGWvbb0PJSl2YfWN/KZCi3QwxtKS4FEVVEGQqao4CMhOsFBZuiWK+UdRPN
+        tXMkbWltoox6BoAw==
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Adam Borowski <kilobyte@angband.pl>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, linux-pci@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <len.brown@intel.com>
+Subject: Re: [PATCH] x86/pci: don't set acpi stuff if !CONFIG_ACPI
+In-Reply-To: <85e70752-8034-ab95-f6b4-018c7086edad@infradead.org>
+References: <20200820125320.9967-1-kilobyte@angband.pl> <87y2m7rc4a.fsf@nanos.tec.linutronix.de> <20200821203232.GA2187@angband.pl> <85e70752-8034-ab95-f6b4-018c7086edad@infradead.org>
+Date:   Sat, 22 Aug 2020 01:52:44 +0200
+Message-ID: <87mu2nr1yr.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This accounts for wp_page_reuse() case, where we reused a page for COW.
+On Fri, Aug 21 2020 at 14:19, Randy Dunlap wrote:
+> On 8/21/20 1:32 PM, Adam Borowski wrote:
+>> If I understand Randy Dunlap correctly, he already sent a pair of patches
+>> that do what you want.
 
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- include/linux/vm_event_item.h | 1 +
- mm/memory.c                   | 1 +
- mm/vmstat.c                   | 1 +
- 3 files changed, 3 insertions(+)
+I replied before reading Randy's reply. Old habit of reading stuff from
+top and not getting biased by other peoples replies before doing so. Is
+most of the time the correct approach, but sometimes it would be better
+to do it the other way round :)
 
-diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
-index 2e6ca53b9bbd..18e75974d4e3 100644
---- a/include/linux/vm_event_item.h
-+++ b/include/linux/vm_event_item.h
-@@ -30,6 +30,7 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
- 		PGFAULT, PGMAJFAULT,
- 		PGLAZYFREED,
- 		PGREFILL,
-+		PGREUSE,
- 		PGSTEAL_KSWAPD,
- 		PGSTEAL_DIRECT,
- 		PGSCAN_KSWAPD,
-diff --git a/mm/memory.c b/mm/memory.c
-index cb9006189d22..148eafb8cbb1 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2622,6 +2622,7 @@ static inline void wp_page_reuse(struct vm_fault *vmf)
- 	if (ptep_set_access_flags(vma, vmf->address, vmf->pte, entry, 1))
- 		update_mmu_cache(vma, vmf->address, vmf->pte);
- 	pte_unmap_unlock(vmf->pte, vmf->ptl);
-+	count_vm_event(PGREUSE);
- }
- 
- /*
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index e670f910cd2f..4f7b4ee6aa12 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1241,6 +1241,7 @@ const char * const vmstat_text[] = {
- 	"pglazyfreed",
- 
- 	"pgrefill",
-+	"pgreuse",
- 	"pgsteal_kswapd",
- 	"pgsteal_direct",
- 	"pgscan_kswapd",
--- 
-2.26.2
+> I did, but I sent them to the Xen and PCI maintainers,
+> not the x86 maintainers, but I will happily resend this patch.
+> The Xen patch has already been applied whereas the patch
+> to intel_mid_pci.c is in limbo. :(
+>
+> Thomas, do you want me to send it to you/X86 people?
+> (with 2 Reviewed-by: additions)
 
+Sure, but usually Bjorn handles the x86/pci/ stuff.
+
+As I trust you, here is a blind
+
+  Acked-by: Thomas Gleixner <tglx@linutronix.de>
+
+just in case.
+
+Thanks,
+
+        tglx
