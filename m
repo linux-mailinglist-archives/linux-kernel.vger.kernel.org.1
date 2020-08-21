@@ -2,159 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504EE24CB7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 05:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E54AC24CB83
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 05:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727829AbgHUDop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 23:44:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727090AbgHUDop (ORCPT
+        id S1727930AbgHUDpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 23:45:22 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:58948 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727881AbgHUDpV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 23:44:45 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ABEDC061385;
-        Thu, 20 Aug 2020 20:44:45 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id v16so287530plo.1;
-        Thu, 20 Aug 2020 20:44:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=wyIVjmGqTstjchVJqOQwrnaOjDzoFs+oUprn8zSTmnY=;
-        b=isZUrOqsG/63XB4tWP2IwaGUbFUurZ4oY18SSWClUtvGV1RD7DhBaPPGd/Ww2XLMAn
-         ZgT+SRonsJCO8fqqnRx098Y7ADJforV8DZeJcMylQH/R0cTn4yB2ORxxz0vEC99R6j1F
-         sExxtN/AFIrh947Q4vAjS5MJF4ZJAb42EqawgP1AJ+agcXB0Qjm5W2MGErw2KuZSr6Kl
-         o9qRaZtYiyYmmfzrX1jggDAHXaP6YM6CZqNBYZFKHGUnFHCz38w3BYc9wE8RoJyJ8418
-         VaNWPV0IYt0sR+zSBrzFzCmFczt0tVCUcc5c/u4LukCZQadKosm9JXT615rVih1iKokq
-         6qbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=wyIVjmGqTstjchVJqOQwrnaOjDzoFs+oUprn8zSTmnY=;
-        b=ghUqZ6nsEbzjmVhOZ/3LyXn/Ln2e9TxQraRMnEHTeT+fsRZ3Uxm2DTO7rwE152PAbE
-         jPBNCeFiRcj4lrbmoXiHEqyzGQYR5Tz4vUShGMEL7FDwrytD8gVbAuLWrhA0kPhN42OW
-         zsELreozbN8ypjIeeMHVudI0eT7PC+/Lwwdkpgt+XBIycxwrI05bLljAIDgt9ABFrFtJ
-         jVKipY3DddcRRyUkVkpfUi91qPaShPdvImenn6AL0wDMWrGC7PEBxoOL4JnRVFOPUBbJ
-         5ohJDgaejptTLG73Enfv1pxykX17I7bb8MrGitoB7mTmhL1CWtaHszHAoIv01NRZLMDF
-         eiTA==
-X-Gm-Message-State: AOAM531UBIfdadJQHtwM2MzL+RcIXDdugCudh+KKZgBFkbi6t+6vqDA4
-        Nz5mYQbgLtz2Hl70y47hHw==
-X-Google-Smtp-Source: ABdhPJzvXgDyygUBAVsUvY687NV+FhoagdzjUUXE14qWdVGU3IGqA98UMadI38IkKipvJyvWBKAxbQ==
-X-Received: by 2002:a17:90a:e64b:: with SMTP id ep11mr925111pjb.86.1597981484578;
-        Thu, 20 Aug 2020 20:44:44 -0700 (PDT)
-Received: from localhost.localdomain ([2402:3a80:cfa:ca54:b051:6744:d734:a674])
-        by smtp.gmail.com with ESMTPSA id q17sm607755pfh.32.2020.08.20.20.44.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 20:44:43 -0700 (PDT)
-From:   madhuparnabhowmik10@gmail.com
-To:     paul@crapouillou.net, vkoul@kernel.org, dan.j.williams@intel.com,
-        lars@metafoo.de
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        andrianov@ispras.ru, ldv-project@linuxtesting.org,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Subject: [PATCH v2] drivers/dma/dma-jz4780: Fix race condition between probe and irq handler
-Date:   Fri, 21 Aug 2020 09:14:23 +0530
-Message-Id: <20200821034423.12713-1-madhuparnabhowmik10@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 20 Aug 2020 23:45:21 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1597981521; h=Content-Transfer-Encoding: MIME-Version:
+ References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=sgHf5RdH5NSLatlP0u6s2NYUEwytZERgJAj09Fj0IO4=; b=IfyhcZtForIZbES7emnv2TPave4NYisP4wWC48MJIowA+HJ+vEWCB/J8N1+ZAmi/vp8tjLhF
+ 4C8BBel3N3zv/MbjcREGGN4Qndrj19m60mIvWr7x4NRBJqaubiGLrclooCLQDRCVBqQrjjz+
+ cWRAE82Fy1mfkEejtGI5rBeukKQ=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f3f434a5ece01f611018f5f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 21 Aug 2020 03:45:14
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 185DCC43387; Fri, 21 Aug 2020 03:45:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from tingweiz-gv.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: tingwei)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 83853C433CA;
+        Fri, 21 Aug 2020 03:45:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 83853C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=tingwei@codeaurora.org
+From:   Tingwei Zhang <tingwei@codeaurora.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mike Leach <mike.leach@linaro.org>
+Cc:     Tingwei Zhang <tingwei@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Kim Phillips <kim.phillips@arm.com>,
+        Mian Yousaf Kaukab <ykaukab@suse.de>, tsoni@codeaurora.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v10 02/24] coresight: cpu_debug: define MODULE_DEVICE_TABLE
+Date:   Fri, 21 Aug 2020 11:44:23 +0800
+Message-Id: <20200821034445.967-3-tingwei@codeaurora.org>
+X-Mailer: git-send-email 2.20.0
+In-Reply-To: <20200821034445.967-1-tingwei@codeaurora.org>
+References: <20200821034445.967-1-tingwei@codeaurora.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Define a MODULE_DEVICE_TABLE for cpu_debug so module can
+be auto loaded on boot.
 
-In probe, IRQ is requested before zchan->id is initialized which can be
-read in the irq handler. Hence, shift request irq after other initializations
-complete.
-
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-
+Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
-Changes since v1:
-Keep enable clock before request IRQ.
----
- drivers/dma/dma-jz4780.c | 38 +++++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 19 deletions(-)
+ drivers/hwtracing/coresight/coresight-cpu-debug.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/dma/dma-jz4780.c b/drivers/dma/dma-jz4780.c
-index 448f663da89c..8beed91428bd 100644
---- a/drivers/dma/dma-jz4780.c
-+++ b/drivers/dma/dma-jz4780.c
-@@ -879,24 +879,11 @@ static int jz4780_dma_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	}
+diff --git a/drivers/hwtracing/coresight/coresight-cpu-debug.c b/drivers/hwtracing/coresight/coresight-cpu-debug.c
+index 96544b348c27..1d0880b3764a 100644
+--- a/drivers/hwtracing/coresight/coresight-cpu-debug.c
++++ b/drivers/hwtracing/coresight/coresight-cpu-debug.c
+@@ -665,6 +665,8 @@ static const struct amba_id debug_ids[] = {
+ 	{},
+ };
  
--	ret = platform_get_irq(pdev, 0);
--	if (ret < 0)
--		return ret;
--
--	jzdma->irq = ret;
--
--	ret = request_irq(jzdma->irq, jz4780_dma_irq_handler, 0, dev_name(dev),
--			  jzdma);
--	if (ret) {
--		dev_err(dev, "failed to request IRQ %u!\n", jzdma->irq);
--		return ret;
--	}
--
- 	jzdma->clk = devm_clk_get(dev, NULL);
- 	if (IS_ERR(jzdma->clk)) {
- 		dev_err(dev, "failed to get clock\n");
- 		ret = PTR_ERR(jzdma->clk);
--		goto err_free_irq;
-+		return ret;
- 	}
- 
- 	clk_prepare_enable(jzdma->clk);
-@@ -949,10 +936,23 @@ static int jz4780_dma_probe(struct platform_device *pdev)
- 		jzchan->vchan.desc_free = jz4780_dma_desc_free;
- 	}
- 
-+	ret = platform_get_irq(pdev, 0);
-+	if (ret < 0)
-+		goto err_disable_clk;
++MODULE_DEVICE_TABLE(amba, debug_ids);
 +
-+	jzdma->irq = ret;
-+
-+	ret = request_irq(jzdma->irq, jz4780_dma_irq_handler, 0, dev_name(dev),
-+			  jzdma);
-+	if (ret) {
-+		dev_err(dev, "failed to request IRQ %u!\n", jzdma->irq);
-+		goto err_disable_clk;
-+	}
-+
- 	ret = dmaenginem_async_device_register(dd);
- 	if (ret) {
- 		dev_err(dev, "failed to register device\n");
--		goto err_disable_clk;
-+		goto err_free_irq;
- 	}
- 
- 	/* Register with OF DMA helpers. */
-@@ -960,17 +960,17 @@ static int jz4780_dma_probe(struct platform_device *pdev)
- 					 jzdma);
- 	if (ret) {
- 		dev_err(dev, "failed to register OF DMA controller\n");
--		goto err_disable_clk;
-+		goto err_free_irq;
- 	}
- 
- 	dev_info(dev, "JZ4780 DMA controller initialised\n");
- 	return 0;
- 
--err_disable_clk:
--	clk_disable_unprepare(jzdma->clk);
--
- err_free_irq:
- 	free_irq(jzdma->irq, jzdma);
-+
-+err_disable_clk:
-+	clk_disable_unprepare(jzdma->clk);
- 	return ret;
- }
- 
+ static struct amba_driver debug_driver = {
+ 	.drv = {
+ 		.name   = "coresight-cpu-debug",
 -- 
-2.17.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
