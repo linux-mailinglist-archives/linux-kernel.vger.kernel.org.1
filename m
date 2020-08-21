@@ -2,53 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF6624E0FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 21:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6665624E101
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 21:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726943AbgHUTpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 15:45:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36836 "EHLO
+        id S1726967AbgHUTpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 15:45:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726843AbgHUTpD (ORCPT
+        with ESMTP id S1726817AbgHUTo5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 15:45:03 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176A7C061796
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:44:33 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id j13so1248277pjd.4
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:44:33 -0700 (PDT)
+        Fri, 21 Aug 2020 15:44:57 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79898C06138F
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:44:31 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id t6so1254915pjr.0
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 12:44:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=j7Lys61YjFpfMX3OTBjlFH6rsXYj3ZGDYGY4DwTK5Rs=;
-        b=hSwetOEXXxyxeqO2If++xh0K5ka/8LVM4nGggu0hSfsYxPm6EElfkKCKJXvMPutNd2
-         +nEASJBRgtVPVNXEsdkY2ic7EKx+blKB8AzP2lSSIUTBVYnSjMvenCFrH6X5tNxRdcSy
-         u0VnAuKKc+tad0YmxEFMvwCtQ4NCnqkFN296g=
+        bh=2SO+UGcbCrLenHkErAflqsGtJX/MLOFJ7NqTGBJ73x8=;
+        b=GF8WNGGbz0L91U/cKK8hFCLiRU4GwBwG4dOQCTOrpJCd24QY/0vGi6vnGJMoYwqo9j
+         tg5x5+RDELdR2JEO4trH7JtQZw3eWL1PnG0VNMUjRiMWm8/9k2VtuwglST1tWIBAWTS1
+         P+x+GSWOlYP3io7XqFUjxcgSnBkW/qZP7U2eY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=j7Lys61YjFpfMX3OTBjlFH6rsXYj3ZGDYGY4DwTK5Rs=;
-        b=KacOL4Uv9zPu0gqSjJNr3shlAGyJs+4tRsIw9sv7YODzV6r/SPbOk+Qm+44RGwYK5n
-         jZUotuDIgbRU2EnY8c/R5MKDgQtsyP8Bn+Pjcm/RgxVTH244KA/zXPBHdbK6J6SJEAn+
-         q/moF8dcNCtpSiwycSCAQcVMLNn7CVe193RhKKukb51gtMTjrwGMb6cP5BjefRCedsmV
-         R1gCmdT/ABeJtQpxt0wTlRS5ZxthW3Qj68Dw6x6cRVS9BVI1s/rBVaeQs7U2L2iSZ755
-         OyyVFHq9LmhpqzHch4v36GvMarynodK92x1i2zFTqUGEc1Dff628fDdEEk3Bm5MM53OK
-         x0sg==
-X-Gm-Message-State: AOAM5319C9dSCoWM8Mdu+346H8tvgFXfqOqf6rYbRcS8NXGbw4eXQVqy
-        mL3kx/n4FnX103KpmijvVaO98w==
-X-Google-Smtp-Source: ABdhPJwFMRlTYY2KYKppAuaQC9yLtjntKg85fiBsI+6m2kKPSyZ8YXZJFboskYZxMwNbk8lwKTO2kw==
-X-Received: by 2002:a17:902:8d89:: with SMTP id v9mr3489157plo.289.1598039072600;
-        Fri, 21 Aug 2020 12:44:32 -0700 (PDT)
+        bh=2SO+UGcbCrLenHkErAflqsGtJX/MLOFJ7NqTGBJ73x8=;
+        b=blA97oGORqv7EJ/jJjR48V9OxbgwxLBtSNIi72JfaYJ6QhONlEHNn87zpVE9JfuAbq
+         5KwEROKM1M46oO1RlSK3fzYWbJIrXoNNRRXje86r4EJkWWrWrsRGlAQEXtiS7KB4NbOx
+         cJkoBGyC6RXD4Q7XfAV2aZCwm0aPFIVveDuzr32lrVmzuufbCmLE9OY9IxvMDBiE/DAE
+         16R1VtCbjWXfc7k6q1S96tlnvT51kpGFNkwPaD/c1K1Iy5UNAUJBHOAfFxf5+DRgMu2W
+         EdmTBSi9NcZ1TXSYZLQpm3fA+KdMLLT4O//RCd73yZHE0OfweD+BSy+ufjEitKLRSeTr
+         uigg==
+X-Gm-Message-State: AOAM531rr0g/LXarqyKqmogve1CdnSPgQZoyTs9/ac8KgE2DukautIIW
+        L5Xs33Q1wwN1S0MS+a+/TyaPyg==
+X-Google-Smtp-Source: ABdhPJzikcTbC/fNRsbXZsG6J+yKOcBq9l6HMfMb0yjrQqmgOT0JeBslBYouM6YVYP4aQU9tg4bQUA==
+X-Received: by 2002:a17:902:d691:: with SMTP id v17mr3392145ply.235.1598039071121;
+        Fri, 21 Aug 2020 12:44:31 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 207sm3467672pfz.203.2020.08.21.12.44.25
+        by smtp.gmail.com with ESMTPSA id o66sm2795858pgo.25.2020.08.21.12.44.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 21 Aug 2020 12:44:30 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     Ingo Molnar <mingo@kernel.org>
 Cc:     Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Ard Biesheuvel <ardb@kernel.org>,
@@ -58,14 +57,15 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Russell King <linux@armlinux.org.uk>,
         Masahiro Yamada <masahiroy@kernel.org>,
         Arvind Sankar <nivedita@alum.mit.edu>,
+        Nick Desaulniers <ndesaulniers@google.com>,
         Nathan Chancellor <natechancellor@gmail.com>,
         Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
         clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
         linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v6 17/29] arm/build: Add missing sections
-Date:   Fri, 21 Aug 2020 12:42:58 -0700
-Message-Id: <20200821194310.3089815-18-keescook@chromium.org>
+Subject: [PATCH v6 18/29] arm/build: Assert for unwanted sections
+Date:   Fri, 21 Aug 2020 12:42:59 -0700
+Message-Id: <20200821194310.3089815-19-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200821194310.3089815-1-keescook@chromium.org>
 References: <20200821194310.3089815-1-keescook@chromium.org>
@@ -76,56 +76,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing text stub sections .vfp11_veneer and .v4_bx, as well as
-missing DWARF sections, when present in the build.
+In preparation for warning on orphan sections, enforce
+expected-to-be-zero-sized sections (since discarding them might hide
+problems with them suddenly gaining unexpected entries).
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- arch/arm/include/asm/vmlinux.lds.h | 4 +++-
- arch/arm/kernel/vmlinux-xip.lds.S  | 1 +
- arch/arm/kernel/vmlinux.lds.S      | 1 +
- 3 files changed, 5 insertions(+), 1 deletion(-)
+ arch/arm/include/asm/vmlinux.lds.h | 11 +++++++++++
+ arch/arm/kernel/vmlinux-xip.lds.S  |  2 ++
+ arch/arm/kernel/vmlinux.lds.S      |  2 ++
+ 3 files changed, 15 insertions(+)
 
 diff --git a/arch/arm/include/asm/vmlinux.lds.h b/arch/arm/include/asm/vmlinux.lds.h
-index c4af5182ab48..6624dd97475c 100644
+index 6624dd97475c..4a91428c324d 100644
 --- a/arch/arm/include/asm/vmlinux.lds.h
 +++ b/arch/arm/include/asm/vmlinux.lds.h
-@@ -59,7 +59,9 @@
- #define ARM_STUBS_TEXT							\
- 		*(.gnu.warning)						\
- 		*(.glue_7)						\
--		*(.glue_7t)
-+		*(.glue_7t)						\
-+		*(.vfp11_veneer)                                        \
-+		*(.v4_bx)
+@@ -52,6 +52,17 @@
+ 		ARM_MMU_DISCARD(*(__ex_table))				\
+ 		COMMON_DISCARDS
  
- #define ARM_TEXT							\
- 		IDMAP_TEXT						\
++/*
++ * Sections that should stay zero sized, which is safer to explicitly
++ * check instead of blindly discarding.
++ */
++#define ARM_ASSERTS							\
++	.plt : {							\
++		*(.iplt) *(.rel.iplt) *(.iplt) *(.igot.plt)		\
++	}								\
++	ASSERT(SIZEOF(.plt) == 0,					\
++	       "Unexpected run-time procedure linkages detected!")
++
+ #define ARM_DETAILS							\
+ 		ELF_DETAILS						\
+ 		.ARM.attributes 0 : { *(.ARM.attributes) }
 diff --git a/arch/arm/kernel/vmlinux-xip.lds.S b/arch/arm/kernel/vmlinux-xip.lds.S
-index 57fcbf55f913..11ffa79751da 100644
+index 11ffa79751da..50136828f5b5 100644
 --- a/arch/arm/kernel/vmlinux-xip.lds.S
 +++ b/arch/arm/kernel/vmlinux-xip.lds.S
-@@ -150,6 +150,7 @@ SECTIONS
- 	_end = .;
- 
+@@ -152,6 +152,8 @@ SECTIONS
  	STABS_DEBUG
-+	DWARF_DEBUG
+ 	DWARF_DEBUG
  	ARM_DETAILS
++
++	ARM_ASSERTS
  }
  
+ /*
 diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmlinux.lds.S
-index 1d3d3b599635..dc672fe35de3 100644
+index dc672fe35de3..5f4922e858d0 100644
 --- a/arch/arm/kernel/vmlinux.lds.S
 +++ b/arch/arm/kernel/vmlinux.lds.S
-@@ -149,6 +149,7 @@ SECTIONS
- 	_end = .;
- 
+@@ -151,6 +151,8 @@ SECTIONS
  	STABS_DEBUG
-+	DWARF_DEBUG
+ 	DWARF_DEBUG
  	ARM_DETAILS
++
++	ARM_ASSERTS
  }
  
+ #ifdef CONFIG_STRICT_KERNEL_RWX
 -- 
 2.25.1
 
