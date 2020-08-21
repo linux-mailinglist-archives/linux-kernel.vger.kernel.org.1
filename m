@@ -2,83 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A91B224C914
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 02:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D5624C918
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 02:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726874AbgHUASx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 20:18:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726795AbgHUASu (ORCPT
+        id S1726823AbgHUAWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 20:22:03 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:20163 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725859AbgHUAWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 20:18:50 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5026FC061387
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 17:18:48 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id q1so54040pjd.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 17:18:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=s+gefwGGLS4RZ9aAtxwt9F/Q7T9fxHVOG5Dd2Edw1yI=;
-        b=a925dQD7UAnI2WEHBuEp1k6vs46a15EXpwoO8/XlJ2KVU7wPk+MkHan4VwcKlaJ7UT
-         j5OgC4nnfa03FnISqr4Pz0w98qcVngy8HTRZ5tGwyTFBFsLslNIIE4JkLP0ozADvhQGx
-         NcGR0SsMTlfRtOjLWJyfTfIaXNw9PBCWPqYxI=
+        Thu, 20 Aug 2020 20:22:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597969319;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3aBHsIrR7D1rmQusl3vZJUEll0MhNbsTlUTcbOAur3g=;
+        b=K/iwexCse09iSj0Ii0nnBpPgYOsmb+c14NbJ6D986HBd3hdPFYQ9Xm27cqc9my1OBBE5WZ
+        6Bi1rnoy570BT1fQIIx5lwdA+ZfHrsQykzgWFHniQ79fqMaKEaxyxoOabzffAxWlpJIn4Z
+        NcRwBlHh3b6+bKa7nw1vwzJWFshYHyg=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-555-ePbOEGk_OG6cTP2tOEWJsg-1; Thu, 20 Aug 2020 20:21:57 -0400
+X-MC-Unique: ePbOEGk_OG6cTP2tOEWJsg-1
+Received: by mail-pf1-f198.google.com with SMTP id a73so232185pfa.10
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 17:21:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=s+gefwGGLS4RZ9aAtxwt9F/Q7T9fxHVOG5Dd2Edw1yI=;
-        b=T79B0+egqbymQpXIn7cIFMAKXDQLzA3VHG/IAWk1Lbnb8F0QKymO/Q/FyTMFOfAX2v
-         UvLi8p37N39GPY4xDxSXB5VKQu0mvC460y+24TRqxI/IHJJ5gbz+R3UttXgTlV6/B75+
-         NpUyu9DU8++iOznlSSso5fO195VlTMeoIO4/WFEoGzCjcyLcxpZ5EFoe+wSmzxMY64jj
-         WfN4i2hEWWINg13AkRRN6zLpUR8mE7hp4LRtADSxvLAgtRMNj5LKrJ4fcycNQNfM/pqG
-         BUWr9RhsnOf2Z3kDzSldbwEdwH2n4DTtd1w5IV1LLKdFEWzuIQor81/gewewtQGhHGJk
-         WhUA==
-X-Gm-Message-State: AOAM5337jOdAWInvSORdp3V0ZIGUvAtA4XX47m++g80MkpwXATxJhAR5
-        S6lbLRuHBlRxTtRB9+mDefeh2w==
-X-Google-Smtp-Source: ABdhPJycAJIRRlSrBG3gbwhGKoE6fAYeLdDcGy0d95wxs2vWn2H649ZQ/s3tg7y+5yjnbfnHBOKx8w==
-X-Received: by 2002:a17:90a:1749:: with SMTP id 9mr249662pjm.127.1597969127726;
-        Thu, 20 Aug 2020 17:18:47 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id w14sm221421pfi.211.2020.08.20.17.18.46
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3aBHsIrR7D1rmQusl3vZJUEll0MhNbsTlUTcbOAur3g=;
+        b=nfiPjvkEbPscuV9A0m/Vd15Cwosy4ZoRdpU9tLs+Dx9eZnZ2dHVjv6f5JGy9H8rCeM
+         a9E2J/SLk3cP3nDFhlAHXnFsjHQlgyaCJwYMDd0Sf7mHNNwEJGI4CLcYXFesJh/8l0wv
+         9QfibYZBjAi6b083L8JRyPKLUE6SzFcbz/Moq9Fvtdy0tj8KLPPY4ci/mCBuKfK7mBmM
+         FbuBsknlcXBEtKGLyw3PVvCtKSDcNbwHvQuaGh3yCODL1AbCIdAUwcAM3Y2Guet41Dzy
+         CkDV8/jUEA200oymRAtqhuwY7Lkr1lhySnRIZherw5NbvPG3fjtJAzMs/F2amAlFTgff
+         lg1Q==
+X-Gm-Message-State: AOAM5323aUuc+6xHNWufZs9YVYb3dPzwt/Zu+ICHUTZQHu2QPcB/lZKH
+        xnOyvTan8BX4if77scnQ9Errf4CxvUpAZBxfzNCZov7gOTpPBq4yoCTh0OlG30VXWMcSV13mgLo
+        zKr4sNPaVPNe2mBvQwiG+FrxY
+X-Received: by 2002:a62:20e:: with SMTP id 14mr305543pfc.207.1597969316729;
+        Thu, 20 Aug 2020 17:21:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwKnJ5d5JB7dEtC9MO6PnJWSvjC7EM//ku1FdHc84FzCEHPg33i7BQaa39t+IuifAAfBOurJg==
+X-Received: by 2002:a62:20e:: with SMTP id 14mr305520pfc.207.1597969316393;
+        Thu, 20 Aug 2020 17:21:56 -0700 (PDT)
+Received: from xiangao.remote.csb ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id y135sm248586pfg.148.2020.08.20.17.21.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 17:18:47 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 20 Aug 2020 17:21:55 -0700 (PDT)
+Date:   Fri, 21 Aug 2020 08:21:45 +0800
+From:   Gao Xiang <hsiangkao@redhat.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Carlos Maiolino <cmaiolino@redhat.com>,
+        Eric Sandeen <esandeen@redhat.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Rafael Aquini <aquini@redhat.com>,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH v2] mm, THP, swap: fix allocating cluster for swapfile by
+ mistake
+Message-ID: <20200821002145.GA28298@xiangao.remote.csb>
+References: <20200820045323.7809-1-hsiangkao@redhat.com>
+ <20200820233446.GB7728@dread.disaster.area>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200820103522.26242-2-rojay@codeaurora.org>
-References: <20200820103522.26242-1-rojay@codeaurora.org> <20200820103522.26242-2-rojay@codeaurora.org>
-Subject: Re: [PATCH V2 1/2] i2c: i2c-qcom-geni: Store DMA mapping data in geni_i2c_dev struct
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     dianders@chromium.org, saiprakash.ranjan@codeaurora.org,
-        gregkh@linuxfoundation.org, mka@chromium.org,
-        akashast@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org, rnayak@codeaurora.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        Roja Rani Yarubandi <rojay@codeaurora.org>
-To:     Roja Rani Yarubandi <rojay@codeaurora.org>, wsa@kernel.org
-Date:   Thu, 20 Aug 2020 17:18:45 -0700
-Message-ID: <159796912574.334488.10846610259602895929@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200820233446.GB7728@dread.disaster.area>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Roja Rani Yarubandi (2020-08-20 03:35:21)
-> Store DMA mapping data in geni_i2c_dev struct to enhance DMA mapping
-> data scope. For example during shutdown callback to unmap DMA mapping,
-> this stored DMA mapping data can be used to call geni_se_tx_dma_unprep
-> and geni_se_rx_dma_unprep functions.
->=20
-> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
-> ---
+Hi Dave,
 
-Can this be squashed with the next patch? I don't see how this stands on
-its own.
+On Fri, Aug 21, 2020 at 09:34:46AM +1000, Dave Chinner wrote:
+> On Thu, Aug 20, 2020 at 12:53:23PM +0800, Gao Xiang wrote:
+> > SWP_FS is used to make swap_{read,write}page() go through
+> > the filesystem, and it's only used for swap files over
+> > NFS. So, !SWP_FS means non NFS for now, it could be either
+> > file backed or device backed. Something similar goes with
+> > legacy SWP_FILE.
+> > 
+> > So in order to achieve the goal of the original patch,
+> > SWP_BLKDEV should be used instead.
+> > 
+> > FS corruption can be observed with SSD device + XFS +
+> > fragmented swapfile due to CONFIG_THP_SWAP=y.
+> > 
+> > I reproduced the issue with the following details:
+> > 
+> > Environment:
+> > QEMU + upstream kernel + buildroot + NVMe (2 GB)
+> > 
+> > Kernel config:
+> > CONFIG_BLK_DEV_NVME=y
+> > CONFIG_THP_SWAP=y
+> 
+> Ok, so at it's core this is a swap file extent versus THP swap
+> cluster alignment issue?
+
+I think yes.
+
+> 
+> > diff --git a/mm/swapfile.c b/mm/swapfile.c
+> > index 6c26916e95fd..2937daf3ca02 100644
+> > --- a/mm/swapfile.c
+> > +++ b/mm/swapfile.c
+> > @@ -1074,7 +1074,7 @@ int get_swap_pages(int n_goal, swp_entry_t swp_entries[], int entry_size)
+> >  			goto nextsi;
+> >  		}
+> >  		if (size == SWAPFILE_CLUSTER) {
+> > -			if (!(si->flags & SWP_FS))
+> > +			if (si->flags & SWP_BLKDEV)
+> >  				n_ret = swap_alloc_cluster(si, swp_entries);
+> >  		} else
+> >  			n_ret = scan_swap_map_slots(si, SWAP_HAS_CACHE,
+> 
+> IOWs, if you don't make this change, does the corruption problem go
+> away if you align swap extents in iomap_swapfile_add_extent() to
+> (SWAPFILE_CLUSTER * PAGE_SIZE) instead of just PAGE_SIZE?
+> 
+> I.e. if the swapfile extents are aligned correctly to huge page swap
+> cluster size and alignment, does the swap clustering optimisations
+> for swapping THP pages work correctly? And, if so, is there any
+> performance benefit we get from enabling proper THP swap clustering
+> on swapfiles?
+> 
+
+Yeah, I once think about some similiar thing as well. My thought for now is
+
+ - First, SWAP THP doesn't claim to support such swapfile for now.
+   And the original author tried to explicitly avoid the whole thing in
+
+   f0eea189e8e9 ("mm, THP, swap: Don't allocate huge cluster for file backed swap device")
+
+   So such thing would be considered as some new feature and need
+   more testing at least. But for now I think we just need a quick
+   fix to fix the commit f0eea189e8e9 to avoid regression and for
+   backport use.
+
+ - It is hard for users to control swapfile in
+   SWAPFILE_CLUSTER * PAGE_SIZE extents, especially users'
+   disk are fragmented or have some on-disk metadata limitation or
+   something. It's very hard for users to utilize this and arrange
+   their swapfile physical addr alignment and fragments for now.
+
+So my point is, if it's considered in the future (supporting SWAP
+THP swapfile), it needs more carefully consideration and decision
+(e.g. stability, performance, simplicity, etc). For now, it's just
+a exist regression which fixes the original fix, and finish
+the original author claim.
+
+Thanks,
+Gao Xiang
+
+> Cheers,
+> 
+> Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
+> 
+
