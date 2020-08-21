@@ -2,119 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21FF624D55C
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 14:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78AA424D562
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 14:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728253AbgHUMsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 08:48:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56810 "EHLO
+        id S1728656AbgHUMtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 08:49:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727106AbgHUMso (ORCPT
+        with ESMTP id S1727839AbgHUMtQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 08:48:44 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC893C061385;
-        Fri, 21 Aug 2020 05:48:43 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id o13so971219pgf.0;
-        Fri, 21 Aug 2020 05:48:43 -0700 (PDT)
+        Fri, 21 Aug 2020 08:49:16 -0400
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8414C061386
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 05:49:15 -0700 (PDT)
+Received: by mail-vk1-xa44.google.com with SMTP id i20so382000vkk.2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 05:49:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YAj+ZHFEhi6DkE5EadqxNJjUQhpwoFMrhs/00bSdKUM=;
-        b=GN2/HyCMile6eX0I8wDeO11bNFyoKrKRkByJ5dBfneQo1rktDNPo4H8eMjfCGnC7FC
-         euGiEDsn1TWo9kS2CPHT95v9cPTtzDUJs2AGfNBbY+FTfsXw/VCEZoi3vmmS2+HsZwB3
-         7kLk6NRz2gRKvZfVlMv9Xe8B84c7G9Gg3PcRZmEs/k6gPxYEqenwBLdfPiQCooSO2HBb
-         Vm0QsFlUlV8VjYMWbEDVlqLhL2z5I4ZzDa5sN0nczTmYQT31lfGDJ7hwvJmnT6MwSwG/
-         AsmtLuhutRpWwm7J8cRMLdHxcvlKRu2S6VBsjgYCrqzPb7SQXPl0cpjDHyiitnZWSTWN
-         YJoA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mQgK+SNMvMHD2kMEy8rXU+kpyN6Xvc8FHA+4wVp0ysE=;
+        b=Gna3F4cQeMdRPcx3MCe9fCAP6nafVCC1qEUsyb9rU2Au9Y4znu+61ohEmEmWjcq8JG
+         ssjcV0YRJUQlItcSkspzyh+tjBRXSXFqc4GOnR3eOU6GlzFluiYEtFw+Rh7hZlftS2bt
+         Mhm5S5M5v4SvAYTiEpkiL7NJuppdQklwADY47Oq3DRtqTBJ13lagaF+eTtu9ocArbjHd
+         Pn8d6RL5KZlsZN48xthW2uuAiz9xzoUDO+BCZtfVkNDFYIfdgX+eYWR/M1vKbgdNUA8I
+         by3cIZu6Ls+6ttjTsJcLdN36RJLVg8JdlC0imjFUazgjgyJpZRrldRmHVbLvOiTk5TpV
+         0Wvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YAj+ZHFEhi6DkE5EadqxNJjUQhpwoFMrhs/00bSdKUM=;
-        b=SUZJgvWB8FlmSvZJtnmA+3U0xacUpYDCpvBcL+BbRyS/fSj5O6IWRd9CxKSQBZP9iG
-         vYbOYMG6l5GQrRZUUqym0k4s3MNQpln5+tvxk5TOvQEUJElUh+OnZbOzDqSDW6XHO5UL
-         hX5ENQDeEm6JjvCgQoHsVWSfAOmPE8nT/kpq2TFFsvMOXyK0HMRvhIYTIDQQzbn2YK9b
-         uOMmKSopOZ2gkwDAayhALP3Kjj8R1U/jjSvDg9EwvZoiMnpTKCQYK8xhEqpF7lnn9gAa
-         bfEU/7HPlYMYA4UwYUjmaf2diIjXGOVH07VgKnZmv9I9YGEWWO/rM9T+616s0aLC5Xrn
-         rxqQ==
-X-Gm-Message-State: AOAM533ppX7eqGBUA8VSblJCAPZfSUVq6kPaOn6uDtnjUJoI3jbZBheh
-        EH7/rvSGRHS+qC5xcH5yDA==
-X-Google-Smtp-Source: ABdhPJycqqj97WmndmIB3OwSgFsbVw33CadUqAHlJRa6VhQFdVhwboO2MZyWw3P6qvzoqZWcTTMUtA==
-X-Received: by 2002:a62:1c58:: with SMTP id c85mr2341720pfc.105.1598014122415;
-        Fri, 21 Aug 2020 05:48:42 -0700 (PDT)
-Received: from localhost.localdomain ([2600:3c01::f03c:91ff:fe6e:64cd])
-        by smtp.gmail.com with ESMTPSA id d13sm2598787pfq.118.2020.08.21.05.48.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 05:48:42 -0700 (PDT)
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
-        Vandana BN <bnvandana@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: [Linux-kernel-mentees] [PATCH v2] vivid: Fix global-out-of-bounds read in precalculate_color()
-Date:   Fri, 21 Aug 2020 08:46:45 -0400
-Message-Id: <20200821124645.495649-1-yepeilin.cs@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200810050532.640075-1-yepeilin.cs@gmail.com>
-References: <20200810050532.640075-1-yepeilin.cs@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mQgK+SNMvMHD2kMEy8rXU+kpyN6Xvc8FHA+4wVp0ysE=;
+        b=GYqCPtF8W7KT/MG7/WEKQHN7BRX/5hbBvjOrqYTHlwo4AvsFFDVwxs792H0zNIu9Ct
+         pgLSc68l499GYNPNoDkCn4FHKtngJtJs+ZEW/DkcRl3EC1usd2gU9wDsg12PkTQOncZq
+         3UjuDxE/I2a7hK1C1ojnEnk68H2FwHJ8DK5y6yyEC9txmasstRlboVTZB7Zearaqewiq
+         dHG/IshWhKMkaVcmqFMfhqbnEqwOupWqXjki2ir3TAuFEglj4PSinAR8IDoYYzVOAKls
+         41hsRLTa1VB2LNRmnsW4YPMI/pIOKToQ0rBKxML7ngAu5FjSX1LBZD/GqMrHgKS0P9vl
+         n/6Q==
+X-Gm-Message-State: AOAM5303YP/NgdzIq1j5AOrpxGt5DIlrYSVeTFvDDz4qXJQGidhjDCHM
+        QLimaKUtRAqUY6YY9B0Dx6MoIMxz9QD6Zybb4B06LA==
+X-Google-Smtp-Source: ABdhPJwrS6QbuUDR6nCJUwjTtfPYuTq0XZSBfGtPdzuQVxc0gkKzzB3hELKAxvsVsO3J9XYhJ1LvhP0yoRBwYDHYw2g=
+X-Received: by 2002:a1f:9d85:: with SMTP id g127mr1445404vke.101.1598014153688;
+ Fri, 21 Aug 2020 05:49:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200803072857.8880-1-madhuparnabhowmik10@gmail.com>
+In-Reply-To: <20200803072857.8880-1-madhuparnabhowmik10@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 21 Aug 2020 14:48:37 +0200
+Message-ID: <CAPDyKFo2njN6bU+VqpuHPpHDx4+ZkuoNRZVb0a0EjGBi9uXa7g@mail.gmail.com>
+Subject: Re: [PATCH] drivers: mmc: host: via-sdmmc: Fix data race bug
+To:     madhuparnabhowmik10@gmail.com
+Cc:     Bruce Chang <brucechang@via.com.tw>,
+        Harald Welte <HaraldWelte@viatech.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ldv-project@linuxtesting.org, andrianov@ispras.ru
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vivid_meta_out_process() is setting `brightness`, `contrast`, `saturation`
-and `hue` using tpg_s_*(). This is wrong, since tpg_s_*() do not provide
-range checks. Using tpg_s_*() here also makes the control framework
-out-of-sync with the actual values. Use v4l2_ctrl_s_ctrl() instead.
+On Mon, 3 Aug 2020 at 09:29, <madhuparnabhowmik10@gmail.com> wrote:
+>
+> From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+>
+> via_save_pcictrlreg() should be called with host->lock held
+> as it writes to pm_pcictrl_reg, otherwise there can be a race
+> condition between via_sd_suspend() and via_sdc_card_detect().
+> The same pattern is used in the function via_reset_pcictrl()
+> as well, where via_save_pcictrlreg() is called with host->lock
+> held.
+>
+> Found by Linux Driver Verification project (linuxtesting.org).
+>
+> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-This issue has been reported by syzbot as an out-of-bounds read bug in
-precalculate_color().
+This doesn't apply to my mmc tree, can you please rebase and submit a
+new version.
 
-Fixes: 746facd39370 ("media: vivid: Add metadata output support")
-Reported-and-tested-by: syzbot+02d9172bf4c43104cd70@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=02d9172bf4c43104cd70
-Suggested-by: Hans Verkuil <hverkuil@xs4all.nl>
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
----
-I'm not very sure how to name this patch since we are fixing a bug in
-v4l2-tpg by modifying vivid.
+Kind regards
+Uffe
 
-Change in v2:
-    - Solve the root of the problem instead of adding more boundary checks
-      in precalculate_color(). (Suggested by Hans Verkuil
-      <hverkuil@xs4all.nl>)
-
- drivers/media/test-drivers/vivid/vivid-meta-out.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/media/test-drivers/vivid/vivid-meta-out.c b/drivers/media/test-drivers/vivid/vivid-meta-out.c
-index ff8a039aba72..95835b52b58f 100644
---- a/drivers/media/test-drivers/vivid/vivid-meta-out.c
-+++ b/drivers/media/test-drivers/vivid/vivid-meta-out.c
-@@ -164,10 +164,11 @@ void vivid_meta_out_process(struct vivid_dev *dev,
- {
- 	struct vivid_meta_out_buf *meta = vb2_plane_vaddr(&buf->vb.vb2_buf, 0);
- 
--	tpg_s_brightness(&dev->tpg, meta->brightness);
--	tpg_s_contrast(&dev->tpg, meta->contrast);
--	tpg_s_saturation(&dev->tpg, meta->saturation);
--	tpg_s_hue(&dev->tpg, meta->hue);
-+	v4l2_ctrl_s_ctrl(dev->brightness, meta->brightness);
-+	v4l2_ctrl_s_ctrl(dev->contrast, meta->contrast);
-+	v4l2_ctrl_s_ctrl(dev->saturation, meta->saturation);
-+	v4l2_ctrl_s_ctrl(dev->hue, meta->hue);
-+
- 	dprintk(dev, 2, " %s brightness %u contrast %u saturation %u hue %d\n",
- 		__func__, meta->brightness, meta->contrast,
- 		meta->saturation, meta->hue);
--- 
-2.25.1
-
+> ---
+>  drivers/mmc/host/via-sdmmc.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/mmc/host/via-sdmmc.c b/drivers/mmc/host/via-sdmmc.c
+> index ef95bce50889..e4d8126cd4e5 100644
+> --- a/drivers/mmc/host/via-sdmmc.c
+> +++ b/drivers/mmc/host/via-sdmmc.c
+> @@ -1259,11 +1259,14 @@ static void via_init_sdc_pm(struct via_crdr_mmc_host *host)
+>  static int via_sd_suspend(struct pci_dev *pcidev, pm_message_t state)
+>  {
+>         struct via_crdr_mmc_host *host;
+> +       unsigned long flags;
+>
+>         host = pci_get_drvdata(pcidev);
+>
+> +       spin_lock_irqsave(&host->lock, flags);
+>         via_save_pcictrlreg(host);
+>         via_save_sdcreg(host);
+> +       spin_unlock_irqrestore(&host->lock, flags);
+>
+>         pci_save_state(pcidev);
+>         pci_enable_wake(pcidev, pci_choose_state(pcidev, state), 0);
+> --
+> 2.17.1
+>
