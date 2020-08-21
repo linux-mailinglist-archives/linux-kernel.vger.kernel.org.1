@@ -2,206 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35BC324DE27
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84C1724DE6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 19:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729088AbgHUR0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 13:26:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727770AbgHUQPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:15:03 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 964E222B47;
-        Fri, 21 Aug 2020 16:15:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598026502;
-        bh=NsleeLpoFr9zVOwZF4Ju7apv/4G47aEv8g0z9TG7r0s=;
+        id S1729171AbgHURaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 13:30:19 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:38791 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725976AbgHUQOM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 12:14:12 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200821161407euoutp02a6c15b53aedfdbe4ae8d713816f2c871~tVJZE0bg80393803938euoutp02S
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 16:14:07 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200821161407euoutp02a6c15b53aedfdbe4ae8d713816f2c871~tVJZE0bg80393803938euoutp02S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1598026447;
+        bh=axDL6sluj5xlo96GTCxVwhlUTt8MkkA+5p9ugSmGU9s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U0yL2fi6i8yuh9cmw1UZ/blWmQQplNJOFk2US124c2+SnXoiNVgPQ6EQjyAHnOduL
-         Ipn3aFBgi/iP/n5ffnD7f2Z5EXaZAdMT7eiDwkoUusC7QEgpMg57F9vjCMyFix4ejt
-         MjArcM+JjHoqGBcq/gcj0STFR+Bfu/UXzVsQXGeI=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dave Chinner <dchinner@redhat.com>,
-        Brian Foster <bfoster@redhat.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-xfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 31/62] xfs: Don't allow logging of XFS_ISTALE inodes
-Date:   Fri, 21 Aug 2020 12:13:52 -0400
-Message-Id: <20200821161423.347071-31-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200821161423.347071-1-sashal@kernel.org>
-References: <20200821161423.347071-1-sashal@kernel.org>
+        b=eseW2q+qu3KPVliloXQxVSu0+cdcikfPMSPh8dMH+W30dXcsqDVlZa1RTidaG07tB
+         nkxFJvITH/gUJfvUemmaJmcwopxeyXIDrtjM9GsCb3xek8TstixrWgirGy6P4WcoGj
+         FY4GefsgBw95JnkmKEAHXS6LXZGuRbDUB7lr/4Dk=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200821161406eucas1p1b4e6d827233652edce283502ebebb13b~tVJYw8rW-0799907999eucas1p1e;
+        Fri, 21 Aug 2020 16:14:06 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 55.D9.06456.EC2FF3F5; Fri, 21
+        Aug 2020 17:14:06 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200821161406eucas1p2be3221183a855afd0213f8ce58bd8942~tVJYXQO7A1578115781eucas1p2k;
+        Fri, 21 Aug 2020 16:14:06 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200821161406eusmtrp1362332e2149498732b1d6ae5059a9c1f~tVJYWjVmN1179011790eusmtrp15;
+        Fri, 21 Aug 2020 16:14:06 +0000 (GMT)
+X-AuditID: cbfec7f2-7efff70000001938-d4-5f3ff2cef0c9
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id CE.A9.06017.EC2FF3F5; Fri, 21
+        Aug 2020 17:14:06 +0100 (BST)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200821161406eusmtip26e6c03e133428d45de6e68d8da2bb565~tVJYJPEpw2051720517eusmtip2m;
+        Fri, 21 Aug 2020 16:14:06 +0000 (GMT)
+From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+To:     Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Andi Shyti <andi@etezian.org>, Mark Brown <broonie@kernel.org>,
+        linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     m.szyprowski@samsung.com, b.zolnierkie@samsung.com,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+Subject: [PATCH v2 4/9] spi: spi-s3c64xx: Rename S3C64XX_SPI_SLAVE_* to
+ S3C64XX_SPI_CS_*
+Date:   Fri, 21 Aug 2020 18:13:56 +0200
+Message-Id: <20200821161401.11307-5-l.stelmach@samsung.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200821161401.11307-1-l.stelmach@samsung.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+Organization: Samsung R&D Institute Poland
 Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrAKsWRmVeSWpSXmKPExsWy7djPc7rnPtnHG3w4Y2Cx+MdzJouNM9az
+        Wkx9+ITNov/xa2aL8+c3sFvcPLSC0WLT42usFpd3zWGzmHF+H5NF48eb7BZrj9xld+D2uL7k
+        E7PHplWdbB6bl9R79G1ZxejxeZNcAGsUl01Kak5mWWqRvl0CV8bWp9vYCtaLVrxaeYylgfG5
+        YBcjJ4eEgInE94332LoYuTiEBFYwSvw4NoMVwvnCKPF08XUWCOczo8SzRX+Zuxg5wFoeL+aB
+        iC9nlJj74jRU+3NGif3nTrGAzGUTcJToX3oCbJSIwAQmiYfn3rCBJJgFSiV6dh4Cs4UFoiSa
+        pl1nB7FZBFQl3j2YzwSygVfAWmLGK0+I++Ql2pdvByvnFLCROH6piRXE5hUQlDg58wnYLn4B
+        LYk1TddZIMbLSzRvnc0MsldC4BK7xO39a9kgBrlIfOjdyQphC0u8Or6FHcKWkTg9uYcF4rN6
+        icmTzCB6exglts35wQJRYy1x59wvNpAaZgFNifW79CHCjhInd++FBgqfxI23ghAn8ElM2jYd
+        Kswr0dEmBFGtIrGufw/UQCmJ3lcrGCcwKs1C8swsJA/MQti1gJF5FaN4amlxbnpqsWFearle
+        cWJucWleul5yfu4mRmA6Ov3v+KcdjF8vJR1iFOBgVOLh/XHIPl6INbGsuDL3EKMEB7OSCK/T
+        2dNxQrwpiZVVqUX58UWlOanFhxilOViUxHmNF72MFRJITyxJzU5NLUgtgskycXBKNTA6/lm+
+        Nzm64D1PqI6guOBk/pMK04xWGgr9u9w0KX7ZodSPc6ev0bQOnuSyWCr30hVLBrEWZ2ulqqTt
+        uskuBVWTth1hOLvk/OO9Bx0dAjrPLn6/gjttfdx21Ry5ad/7RQ0SC/8/e9zWuTbCYM4kJ/v2
+        DZvOihW0sa92O3TCpJh18eEdJ002LXyrxFKckWioxVxUnAgAJ6Z1oEMDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrAIsWRmVeSWpSXmKPExsVy+t/xe7rnPtnHGzzfK2ix+MdzJouNM9az
+        Wkx9+ITNov/xa2aL8+c3sFvcPLSC0WLT42usFpd3zWGzmHF+H5NF48eb7BZrj9xld+D2uL7k
+        E7PHplWdbB6bl9R79G1ZxejxeZNcAGuUnk1RfmlJqkJGfnGJrVK0oYWRnqGlhZ6RiaWeobF5
+        rJWRqZK+nU1Kak5mWWqRvl2CXsbWp9vYCtaLVrxaeYylgfG5YBcjB4eEgInE48U8XYxcHEIC
+        Sxklpu7rZoWIS0msnJvexcgJZApL/LnWxQZR85RRou/qXhaQBJuAo0T/0hOsIAkRgRlMEk9u
+        TGYFSTALlEtcmvWcHcQWFoiQaJw7H8xmEVCVePdgPhPIAl4Ba4kZrzwhFshLtC/fzgZicwrY
+        SBy/1AQ2RgioZNviy2C7eAUEJU7OfMIC0sosoC6xfp4QSJhfQEtiTdN1Foit8hLNW2czT2AU
+        moWkYxZCxywkVQsYmVcxiqSWFuem5xYb6RUn5haX5qXrJefnbmIExt62Yz+37GDsehd8iFGA
+        g1GJh/fHIft4IdbEsuLK3EOMEhzMSiK8TmdPxwnxpiRWVqUW5ccXleakFh9iNAX6ciKzlGhy
+        PjAt5JXEG5oamltYGpobmxubWSiJ83YIHIwREkhPLEnNTk0tSC2C6WPi4JRqYEw6dmZHzKF1
+        uYzfLuWkXrXgYro0TYfr1IOEHeev3jNx6Nm1s0x+wdTVLktaJvKb5CZ/WWFoZtmkcW4r10kX
+        7RnaZp+8ldOVVSe47loTOO/VidCfBb0tM69E/hH4sSp6a3RH/zGTgwzP32xW9nEX8We5ubJk
+        Zn/1xZmffvwU8dE4/bXAUNWm31aJpTgj0VCLuag4EQB/sswZ0wIAAA==
+X-CMS-MailID: 20200821161406eucas1p2be3221183a855afd0213f8ce58bd8942
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200821161406eucas1p2be3221183a855afd0213f8ce58bd8942
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200821161406eucas1p2be3221183a855afd0213f8ce58bd8942
+References: <20200821161401.11307-1-l.stelmach@samsung.com>
+        <CGME20200821161406eucas1p2be3221183a855afd0213f8ce58bd8942@eucas1p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Chinner <dchinner@redhat.com>
+Rename S3C64XX_SPI_SLAVE_* to S3C64XX_SPI_CS_* to match documentation.
 
-[ Upstream commit 96355d5a1f0ee6dcc182c37db4894ec0c29f1692 ]
-
-In tracking down a problem in this patchset, I discovered we are
-reclaiming dirty stale inodes. This wasn't discovered until inodes
-were always attached to the cluster buffer and then the rcu callback
-that freed inodes was assert failing because the inode still had an
-active pointer to the cluster buffer after it had been reclaimed.
-
-Debugging the issue indicated that this was a pre-existing issue
-resulting from the way the inodes are handled in xfs_inactive_ifree.
-When we free a cluster buffer from xfs_ifree_cluster, all the inodes
-in cache are marked XFS_ISTALE. Those that are clean have nothing
-else done to them and so eventually get cleaned up by background
-reclaim. i.e. it is assumed we'll never dirty/relog an inode marked
-XFS_ISTALE.
-
-On journal commit dirty stale inodes as are handled by both
-buffer and inode log items to run though xfs_istale_done() and
-removed from the AIL (buffer log item commit) or the log item will
-simply unpin it because the buffer log item will clean it. What happens
-to any specific inode is entirely dependent on which log item wins
-the commit race, but the result is the same - stale inodes are
-clean, not attached to the cluster buffer, and not in the AIL. Hence
-inode reclaim can just free these inodes without further care.
-
-However, if the stale inode is relogged, it gets dirtied again and
-relogged into the CIL. Most of the time this isn't an issue, because
-relogging simply changes the inode's location in the current
-checkpoint. Problems arise, however, when the CIL checkpoints
-between two transactions in the xfs_inactive_ifree() deferops
-processing. This results in the XFS_ISTALE inode being redirtied
-and inserted into the CIL without any of the other stale cluster
-buffer infrastructure being in place.
-
-Hence on journal commit, it simply gets unpinned, so it remains
-dirty in memory. Everything in inode writeback avoids XFS_ISTALE
-inodes so it can't be written back, and it is not tracked in the AIL
-so there's not even a trigger to attempt to clean the inode. Hence
-the inode just sits dirty in memory until inode reclaim comes along,
-sees that it is XFS_ISTALE, and goes to reclaim it. This reclaiming
-of a dirty inode caused use after free, list corruptions and other
-nasty issues later in this patchset.
-
-Hence this patch addresses a violation of the "never log XFS_ISTALE
-inodes" caused by the deferops processing rolling a transaction
-and relogging a stale inode in xfs_inactive_free. It also adds a
-bunch of asserts to catch this problem in debug kernels so that
-we don't reintroduce this problem in future.
-
-Reproducer for this issue was generic/558 on a v4 filesystem.
-
-Signed-off-by: Dave Chinner <dchinner@redhat.com>
-Reviewed-by: Brian Foster <bfoster@redhat.com>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- fs/xfs/libxfs/xfs_trans_inode.c |  2 ++
- fs/xfs/xfs_icache.c             |  3 ++-
- fs/xfs/xfs_inode.c              | 25 ++++++++++++++++++++++---
- 3 files changed, 26 insertions(+), 4 deletions(-)
+ drivers/spi/spi-s3c64xx.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/fs/xfs/libxfs/xfs_trans_inode.c b/fs/xfs/libxfs/xfs_trans_inode.c
-index b5dfb66548422..4504d215cd590 100644
---- a/fs/xfs/libxfs/xfs_trans_inode.c
-+++ b/fs/xfs/libxfs/xfs_trans_inode.c
-@@ -36,6 +36,7 @@ xfs_trans_ijoin(
+diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
+index 3364d362ed21..433b9d77b914 100644
+--- a/drivers/spi/spi-s3c64xx.c
++++ b/drivers/spi/spi-s3c64xx.c
+@@ -29,7 +29,7 @@
+ #define S3C64XX_SPI_CH_CFG		0x00
+ #define S3C64XX_SPI_CLK_CFG		0x04
+ #define S3C64XX_SPI_MODE_CFG		0x08
+-#define S3C64XX_SPI_SLAVE_SEL		0x0C
++#define S3C64XX_SPI_CS_REG		0x0C
+ #define S3C64XX_SPI_INT_EN		0x10
+ #define S3C64XX_SPI_STATUS		0x14
+ #define S3C64XX_SPI_TX_DATA		0x18
+@@ -64,9 +64,9 @@
+ #define S3C64XX_SPI_MODE_TXDMA_ON		(1<<1)
+ #define S3C64XX_SPI_MODE_4BURST			(1<<0)
  
- 	ASSERT(iip->ili_lock_flags == 0);
- 	iip->ili_lock_flags = lock_flags;
-+	ASSERT(!xfs_iflags_test(ip, XFS_ISTALE));
+-#define S3C64XX_SPI_SLAVE_AUTO			(1<<1)
+-#define S3C64XX_SPI_SLAVE_SIG_INACT		(1<<0)
+-#define S3C64XX_SPI_SLAVE_NSC_CNT_2		(2<<4)
++#define S3C64XX_SPI_CS_NSC_CNT_2		(2<<4)
++#define S3C64XX_SPI_CS_AUTO			(1<<1)
++#define S3C64XX_SPI_CS_SIG_INACT		(1<<0)
  
- 	/*
- 	 * Get a log_item_desc to point at the new item.
-@@ -89,6 +90,7 @@ xfs_trans_log_inode(
+ #define S3C64XX_SPI_INT_TRAILING_EN		(1<<6)
+ #define S3C64XX_SPI_INT_RX_OVERRUN_EN		(1<<5)
+@@ -319,18 +319,18 @@ static void s3c64xx_spi_set_cs(struct spi_device *spi, bool enable)
  
- 	ASSERT(ip->i_itemp != NULL);
- 	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL));
-+	ASSERT(!xfs_iflags_test(ip, XFS_ISTALE));
+ 	if (enable) {
+ 		if (!(sdd->port_conf->quirks & S3C64XX_SPI_QUIRK_CS_AUTO)) {
+-			writel(0, sdd->regs + S3C64XX_SPI_SLAVE_SEL);
++			writel(0, sdd->regs + S3C64XX_SPI_CS_REG);
+ 		} else {
+-			u32 ssel = readl(sdd->regs + S3C64XX_SPI_SLAVE_SEL);
++			u32 ssel = readl(sdd->regs + S3C64XX_SPI_CS_REG);
  
- 	/*
- 	 * Don't bother with i_lock for the I_DIRTY_TIME check here, as races
-diff --git a/fs/xfs/xfs_icache.c b/fs/xfs/xfs_icache.c
-index 5daef654956cb..59dea8178ae3c 100644
---- a/fs/xfs/xfs_icache.c
-+++ b/fs/xfs/xfs_icache.c
-@@ -1141,7 +1141,7 @@ xfs_reclaim_inode(
- 			goto out_ifunlock;
- 		xfs_iunpin_wait(ip);
- 	}
--	if (xfs_iflags_test(ip, XFS_ISTALE) || xfs_inode_clean(ip)) {
-+	if (xfs_inode_clean(ip)) {
- 		xfs_ifunlock(ip);
- 		goto reclaim;
- 	}
-@@ -1228,6 +1228,7 @@ xfs_reclaim_inode(
- 	xfs_ilock(ip, XFS_ILOCK_EXCL);
- 	xfs_qm_dqdetach(ip);
- 	xfs_iunlock(ip, XFS_ILOCK_EXCL);
-+	ASSERT(xfs_inode_clean(ip));
- 
- 	__xfs_inode_free(ip);
- 	return error;
-diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-index 9aea7d68d8ab9..6d70daf1c92a7 100644
---- a/fs/xfs/xfs_inode.c
-+++ b/fs/xfs/xfs_inode.c
-@@ -1740,10 +1740,31 @@ xfs_inactive_ifree(
- 		return error;
- 	}
- 
-+	/*
-+	 * We do not hold the inode locked across the entire rolling transaction
-+	 * here. We only need to hold it for the first transaction that
-+	 * xfs_ifree() builds, which may mark the inode XFS_ISTALE if the
-+	 * underlying cluster buffer is freed. Relogging an XFS_ISTALE inode
-+	 * here breaks the relationship between cluster buffer invalidation and
-+	 * stale inode invalidation on cluster buffer item journal commit
-+	 * completion, and can result in leaving dirty stale inodes hanging
-+	 * around in memory.
-+	 *
-+	 * We have no need for serialising this inode operation against other
-+	 * operations - we freed the inode and hence reallocation is required
-+	 * and that will serialise on reallocating the space the deferops need
-+	 * to free. Hence we can unlock the inode on the first commit of
-+	 * the transaction rather than roll it right through the deferops. This
-+	 * avoids relogging the XFS_ISTALE inode.
-+	 *
-+	 * We check that xfs_ifree() hasn't grown an internal transaction roll
-+	 * by asserting that the inode is still locked when it returns.
-+	 */
- 	xfs_ilock(ip, XFS_ILOCK_EXCL);
--	xfs_trans_ijoin(tp, ip, 0);
-+	xfs_trans_ijoin(tp, ip, XFS_ILOCK_EXCL);
- 
- 	error = xfs_ifree(tp, ip);
-+	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL));
- 	if (error) {
- 		/*
- 		 * If we fail to free the inode, shut down.  The cancel
-@@ -1756,7 +1777,6 @@ xfs_inactive_ifree(
- 			xfs_force_shutdown(mp, SHUTDOWN_META_IO_ERROR);
+-			ssel |= (S3C64XX_SPI_SLAVE_AUTO |
+-						S3C64XX_SPI_SLAVE_NSC_CNT_2);
+-			writel(ssel, sdd->regs + S3C64XX_SPI_SLAVE_SEL);
++			ssel |= (S3C64XX_SPI_CS_AUTO |
++						S3C64XX_SPI_CS_NSC_CNT_2);
++			writel(ssel, sdd->regs + S3C64XX_SPI_CS_REG);
  		}
- 		xfs_trans_cancel(tp);
--		xfs_iunlock(ip, XFS_ILOCK_EXCL);
- 		return error;
+ 	} else {
+ 		if (!(sdd->port_conf->quirks & S3C64XX_SPI_QUIRK_CS_AUTO))
+-			writel(S3C64XX_SPI_SLAVE_SIG_INACT,
+-			       sdd->regs + S3C64XX_SPI_SLAVE_SEL);
++			writel(S3C64XX_SPI_CS_SIG_INACT,
++			       sdd->regs + S3C64XX_SPI_CS_REG);
  	}
- 
-@@ -1774,7 +1794,6 @@ xfs_inactive_ifree(
- 		xfs_notice(mp, "%s: xfs_trans_commit returned error %d",
- 			__func__, error);
- 
--	xfs_iunlock(ip, XFS_ILOCK_EXCL);
- 	return 0;
  }
  
+@@ -951,9 +951,9 @@ static void s3c64xx_spi_hwinit(struct s3c64xx_spi_driver_data *sdd)
+ 	sdd->cur_speed = 0;
+ 
+ 	if (sci->no_cs)
+-		writel(0, sdd->regs + S3C64XX_SPI_SLAVE_SEL);
++		writel(0, sdd->regs + S3C64XX_SPI_CS_REG);
+ 	else if (!(sdd->port_conf->quirks & S3C64XX_SPI_QUIRK_CS_AUTO))
+-		writel(S3C64XX_SPI_SLAVE_SIG_INACT, sdd->regs + S3C64XX_SPI_SLAVE_SEL);
++		writel(S3C64XX_SPI_CS_SIG_INACT, sdd->regs + S3C64XX_SPI_CS_REG);
+ 
+ 	/* Disable Interrupts - we use Polling if not DMA mode */
+ 	writel(0, regs + S3C64XX_SPI_INT_EN);
 -- 
-2.25.1
+2.26.2
 
