@@ -2,129 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74EE124E23E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 22:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 325F724E244
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 22:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726719AbgHUUr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 16:47:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49410 "EHLO mail.kernel.org"
+        id S1726746AbgHUUtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 16:49:51 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:62187 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725831AbgHUUrz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 16:47:55 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725767AbgHUUto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 16:49:44 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1598042983; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=ALqZgq9ZtnQonj8cTUH/j06ZhhOBH6qr1BwztPuJkc4=; b=uUPFDmFNOXtQW5DAyxeq7eVnaTwJ7DSybxqe/GrAApy+4UYgMcjApQfRA1wjpZQlbKIxSiUe
+ IX8GKwmT3VBFqEE7IHeHoC6O6O77/6QoGU+5otQwTLdtd8FMEfrHYmjvFz2OwNB+PqDiMeFb
+ 6utHoKWWWkDz+fDoC1IsFy9qQxk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5f40336291f122588b1f576f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 21 Aug 2020 20:49:38
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4C85EC433AF; Fri, 21 Aug 2020 20:49:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C91A20724;
-        Fri, 21 Aug 2020 20:47:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598042874;
-        bh=ky40Y5YjHz90o9pVQm0aMe9wxiKFgD1hSlf/t9X1qUE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qtDsUUMHyFKgEaATg3dwQZQXMoQsoAkigUCnJL75KZyhTKfDeTYb9+V1ORJGrvYFp
-         VMXFD18kKw233JixIVRahJsVwXqpsF+MeThiEAoBRjLvSsAIJnbC8gC1st3ymLwyzC
-         4jH6AS2LBmfoklsI6bpnyDi1lzUImy6tc1yt/woc=
-Date:   Fri, 21 Aug 2020 13:47:53 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Joerg Vehlow <lkml@jv-coder.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Huang Ying <ying.huang@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Joerg Vehlow <joerg.vehlow@aox-tech.de>
-Subject: Re: [BUG RT] dump-capture kernel not executed for panic in
- interrupt context
-Message-Id: <20200821134753.9547695c9b782275be3c95b5@linux-foundation.org>
-In-Reply-To: <20200821110848.6c3183d1@oasis.local.home>
-References: <2c243f59-6d10-7abb-bab4-e7b1796cd54f@jv-coder.de>
-        <20200528084614.0c949e8d@gandalf.local.home>
-        <cbbf7926-148e-7acb-dc03-3f055d73364b@jv-coder.de>
-        <20200727163655.8c94c8e245637b62311f5053@linux-foundation.org>
-        <c6b095af-fc92-420f-303f-d2efd9f28873@jv-coder.de>
-        <20200821110848.6c3183d1@oasis.local.home>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1AF42C433CA;
+        Fri, 21 Aug 2020 20:49:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1AF42C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sibis@codeaurora.org
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     bjorn.andersson@linaro.org, ulf.hansson@linaro.org,
+        khilman@kernel.org, swboyd@chromium.org
+Cc:     rjw@rjwysocki.net, agross@kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        gregkh@linuxfoundation.org, pavel@ucw.cz, len.brown@intel.com,
+        rnayak@codeaurora.org, dianders@chromium.org, mka@chromium.org,
+        Sibi Sankar <sibis@codeaurora.org>
+Subject: [PATCH v2 1/2] PM / Domains: Add GENPD_FLAG_NO_SUSPEND/RESUME flags
+Date:   Sat, 22 Aug 2020 02:19:20 +0530
+Message-Id: <20200821204921.32536-1-sibis@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Aug 2020 11:08:48 -0400 Steven Rostedt <rostedt@goodmis.org> wro=
-te:
+Add GENPD_FLAG_NO_SUSPEND/RESUME flags to instruct genpd to keep the
+status of the PM domain unaltered during suspend/resume respectively.
+The flags are aimed at power domains coupled to co-processors which
+enter low-power modes independent to that of the application processor.
 
-> On Fri, 21 Aug 2020 12:25:33 +0200
-> Joerg Vehlow <lkml@jv-coder.de> wrote:
->=20
-> > Hi Andrew and Others (please read at least the part with @RT developers=
-),
-> >=20
-> > > Yup, mutex_trylock() from interrupt is improper.  Well dang, that's a
-> > > bit silly.  Presumably the 2006 spin_lock_mutex() wasn't taken with
-> > > irqs-off.
-> > >
-> > > Ho hum, did you look at switching the kexec code back to the xchg
-> > > approach?
-> > > =20
-> > I looked into reverting to the xchg approach, but that seems to be
-> > not a good solution anymore, because the mutex is used in many places,
-> > a lot with waiting locks and I guess that would require spinning now,
-> > if we do this with bare xchg.
-> >=20
-> > Instead I thought about using a spinlock, because they are supposed
-> > to be used in interrupt context as well, if I understand the documentat=
-ion
-> > correctly ([1]).
-> > @RT developers
-> > Unfortunately the rt patches seem to interpret it a bit different and
-> > spin_trylock uses __rt_mutex_trylock again, with the same consequences =
-as
-> > with the current code.
-> >=20
-> > I tried raw_spinlocks, but it looks like they result in a deadlock at
-> > least in the rt kernel. Thiy may be because of memory allocations in the
-> > critical sections, that are not allowed if I understand it correctly.
-> >=20
-> > I have no clue how to fix it at this point.
-> >=20
-> > J=F6rg
-> >=20
-> > [1] https://kernel.readthedocs.io/en/sphinx-samples/kernel-locking.html
->=20
-> There's only two places that wait on the mutex, and all other places
-> try to get it, and if it fails, it simply exits.
->=20
-> What I would do is introduce a kexec_busy counter, and have something
-> like this:
->=20
-> For the two locations that actually wait on the mutex:
->=20
-> loop:
-> 	mutex_lock(&kexec_mutex);
-> 	ret =3D atomic_inc_return(&kexec_busy);
-> 	if (ret > 1) {
-> 		/* Atomic context is busy on this counter, spin */
-> 		atomic_dec(&kexec_busy);
-> 		mutex_unlock(&kexec_mutex);
-> 		goto loop;
-> 	}
-> 	[..]
-> 	atomic_dec(&kexec_busy);
-> 	mutex_unlock(&kexec_mutex);
->=20
-> And then all the other places that do the trylock:
->=20
-> 	cant_sleep();
-> 	ret =3D atomic_inc_return(&kexec_busy);
-> 	if (ret > 1) {
-> 		atomic_dec(&kexec_busy);
-> 		return;
-> 	}
-> 	[..]
-> 	atomic_dec(&kexec_busy);
+Specifically the flags are to be used by the power domains exposed
+by the AOSS QMP driver linked to modem, adsp, cdsp remoteprocs. These
+power domains are used to notify the Always on Subsystem (AOSS) that
+a particular co-processor is up. AOSS uses this information to wait
+for the co-processors to suspend before starting its sleep sequence.
+The application processor powers off these power domains only if the
+co-processor has crashed or powered off and remains unaltered during
+system suspend/resume.
 
-Aw gee.  Hide all this in include/linux/rostedt_lock.h...
+Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+---
 
-Sigh.  Is it too hard to make mutex_trylock() usable from interrupt
-context?
+V2:
+ * Add more info in commit msg and description [Uffe/Kevin/Stephen]
+ * Rename and split functionality into two flags [Uffe]
+ * Drop R-b/T-b
+
+ drivers/base/power/domain.c |  6 ++++--
+ include/linux/pm_domain.h   | 10 ++++++++++
+ 2 files changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+index 2cb5e04cf86cd..a5df5916f30f8 100644
+--- a/drivers/base/power/domain.c
++++ b/drivers/base/power/domain.c
+@@ -129,6 +129,8 @@ static const struct genpd_lock_ops genpd_spin_ops = {
+ #define genpd_is_active_wakeup(genpd)	(genpd->flags & GENPD_FLAG_ACTIVE_WAKEUP)
+ #define genpd_is_cpu_domain(genpd)	(genpd->flags & GENPD_FLAG_CPU_DOMAIN)
+ #define genpd_is_rpm_always_on(genpd)	(genpd->flags & GENPD_FLAG_RPM_ALWAYS_ON)
++#define genpd_is_no_suspend(genpd)	(genpd->flags & GENPD_FLAG_NO_SUSPEND)
++#define genpd_is_no_resume(genpd)	(genpd->flags & GENPD_FLAG_NO_RESUME)
+ 
+ static inline bool irq_safe_dev_in_no_sleep_domain(struct device *dev,
+ 		const struct generic_pm_domain *genpd)
+@@ -949,7 +951,7 @@ static void genpd_sync_power_off(struct generic_pm_domain *genpd, bool use_lock,
+ {
+ 	struct gpd_link *link;
+ 
+-	if (!genpd_status_on(genpd) || genpd_is_always_on(genpd))
++	if (!genpd_status_on(genpd) || genpd_is_always_on(genpd) || genpd_is_no_suspend(genpd))
+ 		return;
+ 
+ 	if (genpd->suspended_count != genpd->device_count
+@@ -991,7 +993,7 @@ static void genpd_sync_power_on(struct generic_pm_domain *genpd, bool use_lock,
+ {
+ 	struct gpd_link *link;
+ 
+-	if (genpd_status_on(genpd))
++	if (genpd_status_on(genpd) || genpd_is_no_resume(genpd))
+ 		return;
+ 
+ 	list_for_each_entry(link, &genpd->child_links, child_node) {
+diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
+index ee11502a575b0..568abdf2e89cf 100644
+--- a/include/linux/pm_domain.h
++++ b/include/linux/pm_domain.h
+@@ -55,6 +55,14 @@
+  *
+  * GENPD_FLAG_RPM_ALWAYS_ON:	Instructs genpd to always keep the PM domain
+  *				powered on except for system suspend.
++ *
++ * GENPD_FLAG_NO_SUSPEND:	Instructs genpd to keep the PM domain powered
++ *				on during suspend (if it's already powered on)
++ *				and runtime PM controlled otherwise.
++ *
++ * GENPD_FLAG_NO_RESUME:	Instructs genpd to keep the PM domain powered
++ *				off during resume (if it's already powered off)
++ *				and runtime PM controlled otherwise.
+  */
+ #define GENPD_FLAG_PM_CLK	 (1U << 0)
+ #define GENPD_FLAG_IRQ_SAFE	 (1U << 1)
+@@ -62,6 +70,8 @@
+ #define GENPD_FLAG_ACTIVE_WAKEUP (1U << 3)
+ #define GENPD_FLAG_CPU_DOMAIN	 (1U << 4)
+ #define GENPD_FLAG_RPM_ALWAYS_ON (1U << 5)
++#define GENPD_FLAG_NO_SUSPEND	 (1U << 6)
++#define GENPD_FLAG_NO_RESUME	 (1U << 7)
+ 
+ enum gpd_status {
+ 	GPD_STATE_ACTIVE = 0,	/* PM domain is active */
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
