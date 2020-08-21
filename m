@@ -2,72 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7843324D588
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 14:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EAE124D589
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 14:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728653AbgHUM5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 08:57:41 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:40869 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725935AbgHUM5e (ORCPT
+        id S1728656AbgHUM60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 08:58:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725935AbgHUM6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 08:57:34 -0400
-Received: by mail-ot1-f65.google.com with SMTP id h16so1472398oti.7;
-        Fri, 21 Aug 2020 05:57:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oRAzEfIgQrSeDg+xvF8A8FPFPbG3VhPyO/5fKQRhXVk=;
-        b=TnowRt26h6VLVoD3hHkX8SVtOvlAhr1Bnw2eTVVapir0y0Up+BNTuJZOil5cICe50r
-         hzsQL4R5nPpAfIXCZQULnpQ3GcwrNPpbAt9nxZtb7L2Ve77SQgq23b7E0mVTG2cJzRHn
-         +ONJMdg6QFAsgOfBzTiViHX+dskkrlmIL7d2Xt0EZDE1tU9HeM6VZMZ8bPtcrsi5swfY
-         +wiQ2KXcbNK662d/IZqgsJKUMv5blhHpELH40ToseJ77eBn0Y32162MkNQL78Eo35tQm
-         8rFDUjJOrq2JN0Kd0Ug0CVKWwAQ6fKdR9/MdeJxfsLLbCPlatYVA1MxHljfULzzjIPFb
-         QwCw==
-X-Gm-Message-State: AOAM533Oi5BY1x4y0Fh1vYwpeUSH2QOQdc+YE8TXFjO8RsjXWb/JgL9X
-        FnzkfAUs581fDQ8TB6xogn1gSbAwYGL/j1c/WfMJ98ug
-X-Google-Smtp-Source: ABdhPJyrowlAUZuOruZSLQeU4SRabkyazL1Z2LCpmYviVLirFX8NPUVc6XdQ0mDp4OLxKHW7VNyvC90YKK/DAUHIV+w=
-X-Received: by 2002:a9d:7d8c:: with SMTP id j12mr1864132otn.250.1598014653879;
- Fri, 21 Aug 2020 05:57:33 -0700 (PDT)
+        Fri, 21 Aug 2020 08:58:23 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4470C061385
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 05:58:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fs9tyi7s7vl5c/kjSzahJIV3w7w67N8aLKAkPZ7hGos=; b=25pOpFy85n/mzSPR86PVtxsfCo
+        AK+mI/loF1+JJ2xRbY50ImedRD/uuROvAy6L7HIpnMgEHU6JTxCzLJjNya5Xfg2X+Wp/Vh4+xdqyz
+        BCHeA7BbQRgP9pkJhxRb4960hA/5h1pjSzqUnK3TnGfVFHBJl+GVjEK+U/gK9XR41F2Ld7alm2z9U
+        gyD6HEcf2FMGp8wE6IYiwWfuAgZZplKUupFXb698WJauXNJXw9Ypy1cNGKwbOjwsw1jBYE9FQKBqo
+        L9PGB8kJ9zmQ7kYY5rCDgDFHA5Mmi9dsY52WpiEreFcD+g/9AQIptNiZKLZ49QSOF3mNOlO65Uam5
+        Xlt0PWLQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k96cR-0002gj-B6; Fri, 21 Aug 2020 12:58:07 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 11CDB301324;
+        Fri, 21 Aug 2020 14:58:06 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 032F92C912D84; Fri, 21 Aug 2020 14:58:05 +0200 (CEST)
+Date:   Fri, 21 Aug 2020 14:58:05 +0200
+From:   peterz@infradead.org
+To:     linux-kernel@vger.kernel.org, mingo@kernel.org, will@kernel.org
+Cc:     npiggin@gmail.com, elver@google.com, jgross@suse.com,
+        paulmck@kernel.org, rostedt@goodmis.org, rjw@rjwysocki.net,
+        joel@joelfernandes.org, svens@linux.ibm.com, tglx@linutronix.de
+Subject: Re: [PATCH v2 00/11] TRACE_IRQFLAGS wreckage
+Message-ID: <20200821125805.GO1362448@hirez.programming.kicks-ass.net>
+References: <20200821084738.508092956@infradead.org>
 MIME-Version: 1.0
-References: <20200816193316.7641-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20200816193316.7641-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20200816193316.7641-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 21 Aug 2020 14:57:22 +0200
-Message-ID: <CAMuHMdW9bd0fFqELaR14tzUFiydRPBS3ytNRE7UURo6bwsMqAQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] ARM: dts: r8a7742-iwg21m: Sort the nodes alphabetically
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200821084738.508092956@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 16, 2020 at 9:33 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Sort the DT nodes alphabetically so that its easier to maintain.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+On Fri, Aug 21, 2020 at 10:47:38AM +0200, Peter Zijlstra wrote:
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v5.10.
+> TRACE_IRQFLAGS
 
-Gr{oetje,eeting}s,
+> ---
+> 
+>  arch/arm/mach-omap2/pm34xx.c      |    4 --
+>  arch/arm64/include/asm/irqflags.h |    5 ++
+>  arch/arm64/kernel/process.c       |    2 -
+>  arch/nds32/include/asm/irqflags.h |    5 ++
+>  arch/powerpc/include/asm/hw_irq.h |   11 ++---
+>  arch/s390/kernel/idle.c           |    3 -
+>  arch/x86/entry/thunk_32.S         |    5 --
+>  arch/x86/include/asm/mmu.h        |    1 
+>  arch/x86/kernel/process.c         |    4 --
+>  arch/x86/mm/tlb.c                 |   13 +-----
+>  drivers/cpuidle/cpuidle.c         |   19 +++++++--
+>  drivers/idle/intel_idle.c         |   16 --------
+>  include/linux/cpuidle.h           |   13 +++---
+>  include/linux/irqflags.h          |   73 ++++++++++++++++++++------------------
+>  include/linux/lockdep.h           |   18 ++++++---
+>  include/linux/mmu_context.h       |    5 ++
+>  kernel/locking/lockdep.c          |   18 +++++----
+>  kernel/sched/idle.c               |   25 +++++--------
+>  18 files changed, 118 insertions(+), 122 deletions(-)
 
-                        Geert
+Whole set also available at:
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+  git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git locking/wip
