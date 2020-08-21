@@ -2,193 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 880E724E300
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 00:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B05324E2ED
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Aug 2020 00:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726976AbgHUWHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 18:07:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57700 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726766AbgHUWHx (ORCPT
+        id S1726887AbgHUWBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 18:01:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726731AbgHUWBe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 18:07:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598047670;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DkSg3luBHRm0cvkVLNBpsnCZK9HVFB0m9kyx8QwK1QI=;
-        b=D1boRI8f1KQoX0JCm2r9cyKTuCaenilBvXSEGa0O9Rwz6ikzFweyi3ytHipSP9Mr/XEYj7
-        /eDZnEM0ON2XCrd8XAVWynvEnuUGTXWE4IPp8RuLFw26m66QEpw/gvS4pEWvfiu2Cq9RCs
-        2ITMpxNkQkKUTa6XjzWR375c+SKCdHM=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-523-uir71xXmPLm8O565bg76fg-1; Fri, 21 Aug 2020 18:07:48 -0400
-X-MC-Unique: uir71xXmPLm8O565bg76fg-1
-Received: by mail-ej1-f72.google.com with SMTP id u13so1273517ejr.19
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 15:07:48 -0700 (PDT)
+        Fri, 21 Aug 2020 18:01:34 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D501C061573;
+        Fri, 21 Aug 2020 15:01:34 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id f193so1707414pfa.12;
+        Fri, 21 Aug 2020 15:01:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=v4doKJMXz/bCPlxNTC7fCoLKgwPpC45XGFDYEXX3QR0=;
+        b=ukrRjFdjt9s0Rr4E5E4ezyHFNL75geIs/RyityMJGiDC+9eQm0rSWsOEWXVvh6UGly
+         d4ULRrnYWKRcnJGMoPAW0nwaKWZzF0joMXzZGYHI/Hb9svRIRn01WF1Q9t1Vm2gZVz8U
+         Ew8FiatIAJwqiV3Ok9G7KVAArIF8HlP7UI7L8dQUVEUJAHIzPifqUvkz0ERmvdyOnh1Q
+         c/1fdcVaQqYpDj6ZSPYmu4o58AAnaOAKhD2kaC4VYj13mNxihT5XQFxfAc8/uPl7m525
+         1pFB1boX52roQCx5R9Mn8KMMT5D40heZ+p6NrIyo70b6NGLN4MoXU415mITkTSXEKVBi
+         CR6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=DkSg3luBHRm0cvkVLNBpsnCZK9HVFB0m9kyx8QwK1QI=;
-        b=WfaROjWkGpHeLcwuAypzsf3DbtWn5aQegCTb+E2ZHENX5EZ9Pn4YxY0Jo4xvY3cSOw
-         bzpKpACaCG+fxWWLaGuDQwpsB2AJIRTPsHnWJZRqdsJY7e3nLMNTlR1w5JtRJLT88mp/
-         1RJdsH4/U6ZAAqOVsT/FF7tWmu8lxti734WxlQY6thhVPH0DAEpW/tjhszAw7KwjlArt
-         yZoQr5kMYEexTFtfIw28BBx3ZEm8cKj6yFOoE40k0ZShA+B+53u0DPW5uPesHsgc7pKI
-         dm0sJfm0ZemRwfz5E/AEw6z6zKP9V1UGski3HX8kHKtwAy8cVp/Kt4OhWCkL5UHCX3fG
-         y8zA==
-X-Gm-Message-State: AOAM531ldimKkS4YYoLB9BUNcSWXZIbbIciJkna1WDyD1CYCGvUzbJH8
-        HeTYRINju0Q0/6ZM6TxkSXltNF6ifCU8kf2+etmKpNeApXbd7kuQiIEd87oI3/+46gdavKM2HYZ
-        UHba7y+gKZAexlrQ3P4mER+0r
-X-Received: by 2002:a17:906:2a04:: with SMTP id j4mr5244904eje.440.1598047667322;
-        Fri, 21 Aug 2020 15:07:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwhvJaQ8AyV/ONfuc3qKwQ/zzerkQ6ZDcGPqYKrvzzg0K+cbZJ1cq8ZccJ0IrDrvfkZ/kgetQ==
-X-Received: by 2002:a17:906:2a04:: with SMTP id j4mr5244849eje.440.1598047667115;
-        Fri, 21 Aug 2020 15:07:47 -0700 (PDT)
-Received: from [192.168.3.122] (p5b0c6231.dip0.t-ipconnect.de. [91.12.98.49])
-        by smtp.gmail.com with ESMTPSA id zc8sm181245ejb.103.2020.08.21.15.07.46
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=v4doKJMXz/bCPlxNTC7fCoLKgwPpC45XGFDYEXX3QR0=;
+        b=kqcVYAUD99S6NkqBD7TOMghGQNMwvHa5TjGB8S0QF6WQpx3yrbmwvHFqWN6ohIYhZr
+         f9SD9nO2Hm0i6G3qEA6QogSK0Z2D2NUVHVv20jPGY2eYSQZ2DXvxkHuVAGrjIIM/Ge7Q
+         OkLZHo1AJJxxZQpBR3KiOSicpWnSvY322E1cCxZYV3YDOjfLJSAWqDHnDabTi60iDJ1O
+         9APRxVQBEI8ew8kFyIAes6Kd6oOqXzfI993i+OWiAjojVdoxza8KFDv3r7YFCODbBalY
+         EKUIIpzP/RRw7Te1eSk+071+9o50t4Stp80+yJFrM260zevfYDlzlhI0zYdM3mzbIZyW
+         bSSg==
+X-Gm-Message-State: AOAM531AKFRtxrWobCgfCFoI7CGmVtxFvxK+4hHQGg+aHl+XcGE0D905
+        WSgPo9Oj3Ai76OGnXcX/DVroHMnLots=
+X-Google-Smtp-Source: ABdhPJwQn9coieRALySJCYUFFaRFmt97g5oZyziqTDcH2WqI2rvMnaQMVmyq/e7Wm8Cywnhz5R+tsQ==
+X-Received: by 2002:aa7:9712:: with SMTP id a18mr3872039pfg.197.1598047293244;
+        Fri, 21 Aug 2020 15:01:33 -0700 (PDT)
+Received: from [10.67.50.75] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id y29sm3590946pfr.11.2020.08.21.15.01.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Aug 2020 15:07:46 -0700 (PDT)
+        Fri, 21 Aug 2020 15:01:32 -0700 (PDT)
+Subject: Re: [PATCH] of: Export of_node_ktype for modular use of of_init_node
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Grant Likely <grant.likely@linaro.org>,
+        Pantelis Antoniou <panto@antoniou-consulting.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>
+References: <1597966267-33614-1-git-send-email-f.fainelli@gmail.com>
+ <CAL_JsqJQuBjNio37Mc1VPxmE-15Sy9qymR-T36=8wOOeoMYPgQ@mail.gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
+ 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
+ G10n8gCguORqNGMsVRxrlLs7/himep7MrCc=
+Message-ID: <0c705b54-daa1-6f36-b6d2-cd003a75198c@gmail.com>
+Date:   Fri, 21 Aug 2020 15:01:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAL_JsqJQuBjNio37Mc1VPxmE-15Sy9qymR-T36=8wOOeoMYPgQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   David Hildenbrand <david@redhat.com>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v4 00/23] device-dax: Support sub-dividing soft-reserved ranges
-Date:   Fri, 21 Aug 2020 23:43:50 +0200
-Message-Id: <D0A25288-C72D-47C1-BD8F-C1C1A6BFA0BF@redhat.com>
-References: <646DDE9B-90C2-493A-958C-90EFA1CCA475@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        David Airlie <airlied@linux.ie>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Wei Yang <richardw.yang@linux.intel.com>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Jason Gunthorpe <jgg@mellanox.com>, Jia He <justin.he@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Brice Goglin <Brice.Goglin@inria.fr>,
-        Jeff Moyer <jmoyer@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>
-In-Reply-To: <646DDE9B-90C2-493A-958C-90EFA1CCA475@redhat.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-X-Mailer: iPhone Mail (17G68)
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/21/20 3:00 PM, Rob Herring wrote:
+> On Thu, Aug 20, 2020 at 5:31 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>>
+>> To permit the use of of_init_node() by kernel modules, we must export
+>> of_node_ktype which is directly referenced by kobject_init() called from
+>> of_init_node() otherwise modules would be getting linking failures.
+> 
+> You mean of_node_init()?
 
+Yes, I kept inverting the two words.
 
-> Am 21.08.2020 um 23:34 schrieb David Hildenbrand <david@redhat.com>:
->=20
-> =EF=BB=BF
->=20
->>> Am 21.08.2020 um 23:17 schrieb Dan Williams <dan.j.williams@intel.com>:
->>>=20
->>> =EF=BB=BFOn Fri, Aug 21, 2020 at 11:30 AM David Hildenbrand <david@redha=
-t.com> wrote:
->>>=20
->>>> On 21.08.20 20:27, Dan Williams wrote:
->>>> On Fri, Aug 21, 2020 at 3:15 AM David Hildenbrand <david@redhat.com> wr=
-ote:
->>>>>=20
->>>>>>>=20
->>>>>>> 1. On x86-64, e820 indicates "soft-reserved" memory. This memory is n=
-ot
->>>>>>> automatically used in the buddy during boot, but remains untouched
->>>>>>> (similar to pmem). But as it involves ACPI as well, it could also be=
+> 
+> There's not anything in the kernel using this that's a module. It's a
+> low level function that I don't really want to see more users for.
 
->>>>>>> used on arm64 (-e820), correct?
->>>>>>=20
->>>>>> Correct, arm64 also gets the EFI support for enumerating memory this
->>>>>> way. However, I would clarify that whether soft-reserved is given to
->>>>>> the buddy allocator by default or not is the kernel's policy choice,
->>>>>> "buddy-by-default" is ok and is what will happen anyways with older
->>>>>> kernels on platforms that enumerate a memory range this way.
->>>>>=20
->>>>> Is "soft-reserved" then the right terminology for that? It sounds very=
-
->>>>> x86-64/e820 specific. Maybe a compressed for of "performance
->>>>> differentiated memory" might be a better fit to expose to user space, n=
-o?
->>>>=20
->>>> No. The EFI "Specific Purpose" bit is an attribute independent of
->>>> e820, it's x86-Linux that entangles those together. There is no
->>>> requirement for platform firmware to use that designation even for
->>>> drastic performance differentiation between ranges, and conversely
->>>> there is no requirement that memory *with* that designation has any
->>>> performance difference compared to the default memory pool. So it
->>>> really is a reservation policy about a memory range to keep out of the
->>>> buddy allocator by default.
->>>=20
->>> Okay, still "soft-reserved" is x86-64 specific, no?
->>=20
->> There's nothing preventing other EFI archs, or a similar designation
->> in another firmware spec, picking up this policy.
->>=20
->>> (AFAIK,
->>> "soft-reserved" will be visible in /proc/iomem, or am I confusing
->>> stuff?)
->>=20
->> No, you're correct.
->>=20
->>> IOW, it "performance differentiated" is not universally
->>> applicable, maybe  "specific purpose memory" is ?
->>=20
->> Those bikeshed colors don't seem an improvement to me.
->>=20
->> "Soft-reserved" actually tells you something about the kernel policy
->> for the memory. The criticism of "specific purpose" that led to
->> calling it "soft-reserved" in Linux is the fact that "specific" is
->> undefined as far as the firmware knows, and "specific" may have
->> different applications based on the platform user. "Soft-reserved"
->> like "Reserved" tells you that a driver policy might be in play for
->> that memory.
->>=20
->> Also note that the current color of the bikeshed has already shipped sinc=
-e v5.5:
->>=20
->>  262b45ae3ab4 x86/efi: EFI soft reservation to E820 enumeration
->>=20
->=20
-> I was asking because I was struggling to even understand what =E2=80=9Esof=
-t-reserved=E2=80=9C is and I could bet most people have no clue what that is=
- supposed to be.
->=20
-> In contrast =E2=80=9Epersistent memory=E2=80=9C or =E2=80=9Especial purpos=
-e memory=E2=80=9C in /proc/iomem is something normal (Linux using) human bei=
-ngs can understand.
-
-Obviously s/normal/most/
-
-Cheers!=
-
+OK, fair enough, the candidate use I had in mind is probably too ugly to
+be submitted upstream anyway.
+-- 
+Florian
