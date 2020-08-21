@@ -2,317 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8F524CB24
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 05:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 293B024CB41
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 05:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727112AbgHUDIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 23:08:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725852AbgHUDIh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 23:08:37 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A35C061385;
-        Thu, 20 Aug 2020 20:08:36 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id ep8so206649pjb.3;
-        Thu, 20 Aug 2020 20:08:36 -0700 (PDT)
+        id S1727123AbgHUDV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 23:21:26 -0400
+Received: from mail-mw2nam10on2044.outbound.protection.outlook.com ([40.107.94.44]:29441
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726844AbgHUDVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 23:21:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=g12RjynUQGtBLPtvLxofzMQ45pD/S6PalFFN1S+FWp4KYPBQnsGQizSdPlhzLmU8grbWU4Vkg35gLsktIt/yGmvW/aDpaEPGUQcyv/X1V/OeTKwJB8+gLgkn7h0S1CNJAFxnLzuMu9C9rA/nygB9/u3YPzY5dZ7sAqGkHvzv5Z8YeKHDcz/bcJMNcinxYxAxTXmQaLL+HrPKdm6O/XtSBdNIy/ziCe2Xq9B5iRvJRUyXfob4O+w9WgoxuhfHLXvmRh5zK15AC9nxL0A+4v/C9HKk5oiMjKxkag8r3VbQ89vH70MDKUYqldhch9tlNsIKUlFG1c9dnhzyvnQR6wEHRA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ohvAV5OOiKl0ReUg5vjlQe6z3tHePAnxgumjPGXP+nA=;
+ b=Wy/zoEJ22so7Zmr0q1dnzJkUgqZKqfEdwxTAlWT8j/CakFvtvVGVZmi1G0goP7b3RRt84Ee5JyRUl4ZlkZlHkDqxvFO5X4ZYRvXlk7lkMOxKlOiR7RFXgOahPjMnp1tAlzbfGMlgcXYCOSFu3eWqhVc/u+1lo5bDLNTIYHf6f7y5jzuxo5U5e2wL5UMDhbEL7DtmgwLK9BTxdIv+taan1FATSilJd0pSXfz28Nt+1h/h6CZaM6tS6Yqsn40Ilr8sYwvlKBaVpIqX4+hW9sz/B/7HGD5vGYPrlCb0lmdwjGhHjKXjPQ+zaBLSYRlsX3b0Blu6g8H19GnpNi48WUUD1Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QovNeBLcz/7U1y28iI074IyoegagSi9Pk7ZasyQM9Xw=;
-        b=lNPUrNxNIaN3d3qmYG+uNNh2/bZ3UBB//1VGnslfwd0JVUdirtZRbkGgbX/XPYjp26
-         V0l2dZNTpmS1pbrUtkcYZtoHPYwp3vLzRclaeAj7BE2MTdGAT6rOvfjZFSQOpiw06Xb1
-         i51Lw90UQtUYgTCPDgnglSmFkGhfYQQJ91ZTYGfcZKmLZh8nNFyq9mT123e+xahr5ltO
-         XvsC5FXg6KZeWtrvDOILcbMF5HlM9RphG8jBRzV2iA7CZqH9jH/cYf8c8++pewsJ8Z9O
-         Qo7kjxC32v1ccbz9gg6gw19Ljx6uPo8jvprZxovKlh2E7g1iZhQysjxgWPlAdeC9oNPU
-         cp2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QovNeBLcz/7U1y28iI074IyoegagSi9Pk7ZasyQM9Xw=;
-        b=Zh4CNne0K46fhlPQlchnN9WxpL0OVcgl42Vou+fhV+OA5Fa3p4VgTEDT3yRjlpEfzY
-         KFESg53eOm4X/r4eKxqUnIkYd/wsNfmhWGHaCeWn4ecgwTnufiX35wGx/RIJCNUMVjxO
-         bA0q79N9795k6P5IQ4JeEqzfCkHR9b+Kx1wUHJ7EK3z8XYGQkKdppcHNPNOXSsATq+xa
-         wFTMjC+QUVwQlDlHCjS5d/FYQf+/e1VJ73VrSIFNVd4riLGO+rrl7Y1Ox4JrjG50k8xV
-         hFEot8G1lS4CbVu0fZcEdl3W984WZIkTK8ln9U1QlfK0guMJhsWTzOESWMVd/32SHTAp
-         a+7g==
-X-Gm-Message-State: AOAM532m1GGoS6LX1XIgyMuBLKHY/bheCv0bbjBwc5SVBg0Eypo8aVaI
-        DDOB6EbWbi35LgaITbvjYQw=
-X-Google-Smtp-Source: ABdhPJzs3ZCyONm3LzrL803MO8Uuq2kCoUY+mP5bs4am5Kpt5047p7K/IWc6qR7/kFRpWt6rDJe/qA==
-X-Received: by 2002:a17:902:bd85:: with SMTP id q5mr666244pls.99.1597979316397;
-        Thu, 20 Aug 2020 20:08:36 -0700 (PDT)
-Received: from localhost ([2001:e42:102:1532:160:16:113:140])
-        by smtp.gmail.com with ESMTPSA id q82sm564189pfc.139.2020.08.20.20.08.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 20:08:35 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Fri, 21 Aug 2020 11:08:22 +0800
-To:     Benjamin Poirier <benjamin.poirier@gmail.com>
-Cc:     netdev@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Manish Chopra <manishc@marvell.com>,
-        GR-Linux-NIC-Dev@marvell.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>
-Subject: Re: [RFC 1/3] Initialize devlink health dump framework for the dlge
- driver
-Message-ID: <20200821030822.huyuxa5o5tcvtv2o@Rk>
-References: <20200814160601.901682-1-coiby.xu@gmail.com>
- <20200814160601.901682-2-coiby.xu@gmail.com>
- <20200816025640.GA27529@f3>
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ohvAV5OOiKl0ReUg5vjlQe6z3tHePAnxgumjPGXP+nA=;
+ b=HOgnok7cLW6PETClgThYGxtaZbX5u45wc85UYwGApklYDlg0c9uaBWDb26U/TFG9+/C/S2Mel7ID3U+lzAp+2N/zdT0syCpSt6ZMjX5D54Uxr8lyoStACUhf5OoVECHwfogSg+hEe16F2Bf7y0ngCcM9QRY/qA3t/1t5xPb/zNo=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=synaptics.com;
+Received: from DM6PR03MB4555.namprd03.prod.outlook.com (2603:10b6:5:102::17)
+ by DM6PR03MB4617.namprd03.prod.outlook.com (2603:10b6:5:15e::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.25; Fri, 21 Aug
+ 2020 03:21:22 +0000
+Received: from DM6PR03MB4555.namprd03.prod.outlook.com
+ ([fe80::e494:740f:155:4a38]) by DM6PR03MB4555.namprd03.prod.outlook.com
+ ([fe80::e494:740f:155:4a38%7]) with mapi id 15.20.3305.025; Fri, 21 Aug 2020
+ 03:21:22 +0000
+Date:   Fri, 21 Aug 2020 11:11:35 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Icenowy Zheng <icenowy@aosc.io>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v2 00/15] regulator: Fix W=1 build warning when CONFIG_OF=n
+Message-ID: <20200821111135.0b958d3a@xhacker.debian>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TY2PR06CA0043.apcprd06.prod.outlook.com
+ (2603:1096:404:2e::31) To DM6PR03MB4555.namprd03.prod.outlook.com
+ (2603:10b6:5:102::17)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200816025640.GA27529@f3>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from 255.255.255.255 (255.255.255.255) by TY2PR06CA0043.apcprd06.prod.outlook.com (2603:1096:404:2e::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24 via Frontend Transport; Fri, 21 Aug 2020 03:21:19 +0000
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+X-Originating-IP: [124.74.246.114]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7e186b9c-fb7f-4160-b199-08d845814771
+X-MS-TrafficTypeDiagnostic: DM6PR03MB4617:
+X-Microsoft-Antispam-PRVS: <DM6PR03MB46171CFF3EC2D841D0E105AEED5B0@DM6PR03MB4617.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:117;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jL+vUKPtu0WzZXLBfVAFwYrjyV/DbI2qwj0LlBpxljRqOyOb3+/nFj14hpvALux63uX3Min0h0lZg6aPsoUOVRfXdWJAvrVEm8cZLQoOQUXH6C7PnHbcc4guKehD0lDHML0EFnVT9NO6Jc9N+QzCWVGc4Nm+GFzWU1VyB4yjw1Sl3sZJ4u04UbmHTXk4cIt+vS+6ITSB8nNz0JP1W0CKyDwTuNW+6hUmkMQMz0PpNYE1pspvAo9T8eLxyfYibeUqhvvlv3sS/9vU2J7ESC+spCjftllf8O+dBeep7AB7towvFoTK9EcJW7/nnsp0b42sY5EPv1uB4dVzLT4+JRn+3juZtYZTniUiM7GupOwm2YcwUkPM0+5ByzhWjvz45mik
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4555.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(376002)(366004)(39860400002)(346002)(66946007)(478600001)(8936002)(1076003)(7416002)(66556008)(6486002)(52116002)(110011004)(9686003)(4326008)(66476007)(8676002)(6666004)(5660300002)(86362001)(956004)(16576012)(186003)(316002)(26005)(110136005)(2906002)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: AT2F9uteWrhkTMx+5TNZV+GMlHXjnsat8nVlCIgCDAzjGJ0UyXvo85jqwVCFs5tDMSrszb5RhPte7XaO7Cluos/VgqJzqel9UlEdnIbB+33Q5OKmxgQQUIXONZV70e4Z0rBF2Wow4FitccY02FA5CMM63/zU/d71mDgUfFi6FwP8juMReXyTSz2gZbYUxtwv+BVnrODdhS+u2PhZwhKnhkjzX135h0dCwnNdE9ZbsqE3UpLFHQ3vqCSBL0vj4HpEYgDt1prsJNAIyFjhfYduUk3s/fDwDSRLjlqgOgCyStJQdKWW5MOALI/9wsvMqwNF2XTFxsJdl3YQkNmkc5HoA2mNOmDbkdQzTOdVccr/o3rt4sw4umSK7pw9YCHT8RyqrchtlquV4nNoSlDShUNwlIDHwKaOwTn5Uj6lLcoL/jdoubo6iartV+jUE/RwPnYv1ymLxwebVucymvKDlNWO+4pCeuMI/0tnf6KOe4OLfQ7hoo3zUN9AyNEjehwdISiiU3IIycVLVLJi/BsCaf1C8nahkpHjmAzEeR8sxxiE/QFsMdLN7cF8LPg7cRT7umjaIy1W18eNJQDj2ERwp4aMMb9a+qutepjLzmiEDaWurlZyBQyGlZ1ljBEmXHOavoXu0gj1sGUGhlcL3GDewCxzrw==
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7e186b9c-fb7f-4160-b199-08d845814771
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4555.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2020 03:21:22.7394
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MbQ084ZDwM7t7LC2M+uCuMmaoiEz46r/AGB6Drh69r0Q6OJ6dJwb9kTX33etS6S7P9PSqAk0hbKLEM99kg0p6g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB4617
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 16, 2020 at 11:56:40AM +0900, Benjamin Poirier wrote:
->On 2020-08-15 00:05 +0800, Coiby Xu wrote:
->> Initialize devlink health dump framework for the dlge driver so the
->> coredump could be done via devlink.
->>
->> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
->> ---
->>  drivers/staging/qlge/Makefile      |  2 +-
->>  drivers/staging/qlge/qlge.h        |  9 +++++++
->>  drivers/staging/qlge/qlge_health.c | 43 ++++++++++++++++++++++++++++++
->>  drivers/staging/qlge/qlge_health.h |  2 ++
->>  drivers/staging/qlge/qlge_main.c   | 21 +++++++++++++++
->>  5 files changed, 76 insertions(+), 1 deletion(-)
->>  create mode 100644 drivers/staging/qlge/qlge_health.c
->>  create mode 100644 drivers/staging/qlge/qlge_health.h
->>
->> diff --git a/drivers/staging/qlge/Makefile b/drivers/staging/qlge/Makefile
->> index 1dc2568e820c..0a1e4c8dd546 100644
->> --- a/drivers/staging/qlge/Makefile
->> +++ b/drivers/staging/qlge/Makefile
->> @@ -5,4 +5,4 @@
->>
->>  obj-$(CONFIG_QLGE) += qlge.o
->>
->> -qlge-objs := qlge_main.o qlge_dbg.o qlge_mpi.o qlge_ethtool.o
->> +qlge-objs := qlge_main.o qlge_dbg.o qlge_mpi.o qlge_ethtool.o qlge_health.o
->> diff --git a/drivers/staging/qlge/qlge.h b/drivers/staging/qlge/qlge.h
->> index fc8c5ca8935d..055ded6dab60 100644
->> --- a/drivers/staging/qlge/qlge.h
->> +++ b/drivers/staging/qlge/qlge.h
->> @@ -2061,6 +2061,14 @@ struct nic_operations {
->>  	int (*port_initialize) (struct ql_adapter *);
->>  };
->>
->
->This patch doesn't apply over the latest staging tree. I think your tree
->is missing commit d923bb6bf508 ("staging: qlge: qlge.h: Function
->definition arguments should have names.")
+Fixing W=1 build warning when no support for device tree is there.
 
-Thank you for applying the patch to test it! I had incorrect
-understanding about the word "RFC" and didn't do a rebase onto
-the latest staging tree.
+Since v1:
+  - fix the warning with __maybe_unused instead of CONFIG_OF macro
+  - add 3 more patches to fix the same issue
 
->
->> +
->> +
->> +struct qlge_devlink {
->> +        struct ql_adapter *qdev;
->> +        struct net_device *ndev;
->
->I don't have experience implementing devlink callbacks but looking at
->some other devlink users (mlx4, ionic, ice), all of them use devlink
->priv space for their main private structure. That would be struct
->ql_adapter in this case. Is there a good reason to stray from that
->pattern?
->
->> +        struct devlink_health_reporter *reporter;
->> +};
->> +
->>  /*
->>   * The main Adapter structure definition.
->>   * This structure has all fields relevant to the hardware.
->> @@ -2078,6 +2086,7 @@ struct ql_adapter {
->>  	struct pci_dev *pdev;
->>  	struct net_device *ndev;	/* Parent NET device */
->>
->> +	struct qlge_devlink *devlink;
->>  	/* Hardware information */
->>  	u32 chip_rev_id;
->>  	u32 fw_rev_id;
->> diff --git a/drivers/staging/qlge/qlge_health.c b/drivers/staging/qlge/qlge_health.c
->> new file mode 100644
->> index 000000000000..292f6b1827e1
->> --- /dev/null
->> +++ b/drivers/staging/qlge/qlge_health.c
->> @@ -0,0 +1,43 @@
->> +#include "qlge.h"
->> +#include "qlge_health.h"
->> +
->> +static int
->> +qlge_reporter_coredump(struct devlink_health_reporter *reporter,
->> +			struct devlink_fmsg *fmsg, void *priv_ctx,
->> +			struct netlink_ext_ack *extack)
->> +{
->> +	return 0;
->> +}
->> +
->> +static const struct devlink_health_reporter_ops qlge_reporter_ops = {
->> +		.name = "dummy",
->> +		.dump = qlge_reporter_coredump,
->> +};
->
->I think
->	select NET_DEVLINK
->should be added to drivers/staging/qlge/Kconfig
+Jisheng Zhang (15):
+  regulator: 88pg86x: Fix W=1 build warning when CONFIG_OF=n
+  regulator: da9210: Fix W=1 build warning when CONFIG_OF=n
+  regulator: fan53555: Fix W=1 build warning when CONFIG_OF=n
+  regulator: fixed: Fix W=1 build warnings when CONFIG_OF=n
+  regulator: ltc3589: Fix W=1 build warning when CONFIG_OF=n
+  regulator: ltc3676: Fix W=1 build warning when CONFIG_OF=n
+  regulator: max1586: Fix W=1 build warning when CONFIG_OF=n
+  regulator: max77826: Fix W=1 build warning when CONFIG_OF=n
+  regulator: pwm: Fix W=1 build warning when CONFIG_OF=n
+  regulator: stm32-pwr: Fix W=1 build warning when CONFIG_OF=n
+  regulator: stm32-vrefbuf: Fix W=1 build warning when CONFIG_OF=n
+  regulator: sy8106a: Fix W=1 build warning when CONFIG_OF=n
+  regulator: qcom-rpmh: Fix W=1 build warning when CONFIG_OF=n
+  regulator: stm32-booster: Fix W=1 build warning when CONFIG_OF=n
+  regulator: tps65023: Fix W=1 build warning when CONFIG_OF=n
 
-Thank you for reminding me!
+ drivers/regulator/88pg86x.c             |  2 +-
+ drivers/regulator/da9210-regulator.c    |  2 +-
+ drivers/regulator/fan53555.c            |  2 +-
+ drivers/regulator/fixed.c               | 16 ++++++++--------
+ drivers/regulator/ltc3589.c             |  2 +-
+ drivers/regulator/ltc3676.c             |  2 +-
+ drivers/regulator/max1586.c             |  2 +-
+ drivers/regulator/max77826-regulator.c  |  2 +-
+ drivers/regulator/pwm-regulator.c       |  2 +-
+ drivers/regulator/qcom-rpmh-regulator.c |  2 +-
+ drivers/regulator/stm32-booster.c       |  2 +-
+ drivers/regulator/stm32-pwr.c           |  2 +-
+ drivers/regulator/stm32-vrefbuf.c       |  2 +-
+ drivers/regulator/sy8106a-regulator.c   |  2 +-
+ drivers/regulator/tps65023-regulator.c  |  2 +-
+ 15 files changed, 22 insertions(+), 22 deletions(-)
 
->
->> +
->> +int qlge_health_create_reporters(struct qlge_devlink *priv)
->> +{
->> +	int err;
->> +
->> +	struct devlink_health_reporter *reporter;
->> +	struct devlink *devlink;
->> +
->> +	devlink = priv_to_devlink(priv);
->> +	reporter =
->> +		devlink_health_reporter_create(devlink, &qlge_reporter_ops,
->> +					       0,
->> +					       priv);
->> +	if (IS_ERR(reporter)) {
->> +		netdev_warn(priv->ndev,
->> +			    "Failed to create reporter, err = %ld\n",
->> +			    PTR_ERR(reporter));
->> +		return PTR_ERR(reporter);
->> +	}
->> +	priv->reporter = reporter;
->> +
->> +	if (err)
->> +		return err;
->> +
->> +	return 0;
->> +}
->> +
->> +
->
->Stray newlines
+-- 
+2.28.0
 
-Will fix it in v1.
-
->
->> diff --git a/drivers/staging/qlge/qlge_health.h b/drivers/staging/qlge/qlge_health.h
->> new file mode 100644
->> index 000000000000..07d3bafab845
->> --- /dev/null
->> +++ b/drivers/staging/qlge/qlge_health.h
->> @@ -0,0 +1,2 @@
->> +#include <net/devlink.h>
->> +int qlge_health_create_reporters(struct qlge_devlink *priv);
->
->I would suggest to put this in qlge.h instead of creating a new file.
-
-Although there are only two lines for now, is it possible qlge will add
-more devlink code? If that's the case, a file to single out these code
-is necessary as is the same to some other drivers,
-
-     $ find drivers -name *health*.h
-     drivers/net/ethernet/mellanox/mlx5/core/en/health.h
-
-     $ find drivers -name *devlink*.h
-     drivers/net/ethernet/huawei/hinic/hinic_devlink.h
-     drivers/net/ethernet/mellanox/mlx5/core/devlink.h
-     drivers/net/ethernet/mellanox/mlx5/core/en/devlink.h
-     drivers/net/ethernet/intel/ice/ice_devlink.h
-     drivers/net/ethernet/pensando/ionic/ionic_devlink.h
-     drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.h
-
->
->> diff --git a/drivers/staging/qlge/qlge_main.c b/drivers/staging/qlge/qlge_main.c
->> index 1650de13842f..b2be7f4b7dd6 100644
->> --- a/drivers/staging/qlge/qlge_main.c
->> +++ b/drivers/staging/qlge/qlge_main.c
->> @@ -42,6 +42,7 @@
->>  #include <net/ip6_checksum.h>
->>
->>  #include "qlge.h"
->> +#include "qlge_health.h"
->>
->>  char qlge_driver_name[] = DRV_NAME;
->>  const char qlge_driver_version[] = DRV_VERSION;
->> @@ -4550,6 +4551,8 @@ static void ql_timer(struct timer_list *t)
->>  	mod_timer(&qdev->timer, jiffies + (5 * HZ));
->>  }
->>
->> +static const struct devlink_ops qlge_devlink_ops;
->> +
->>  static int qlge_probe(struct pci_dev *pdev,
->>  		      const struct pci_device_id *pci_entry)
->>  {
->> @@ -4557,6 +4560,13 @@ static int qlge_probe(struct pci_dev *pdev,
->>  	struct ql_adapter *qdev = NULL;
->>  	static int cards_found;
->>  	int err = 0;
->> +	struct devlink *devlink;
->> +	struct qlge_devlink *qlge_dl;
->> +
->> +	devlink = devlink_alloc(&qlge_devlink_ops, sizeof(struct qlge_devlink));
->> +	if (!devlink)
->> +		return -ENOMEM;
->> +	qlge_dl = devlink_priv(devlink);
->>
->>  	ndev = alloc_etherdev_mq(sizeof(struct ql_adapter),
->>  				 min(MAX_CPUS,
->> @@ -4615,6 +4625,15 @@ static int qlge_probe(struct pci_dev *pdev,
->>  		free_netdev(ndev);
->>  		return err;
->>  	}
->> +
->> +	err = devlink_register(devlink, &pdev->dev);
->> +	if (err)
->> +		devlink_free(devlink);
->
->Are you sure it's safe to continue devlink init after an error here?
->Again, that does not resemble usage of devlink in other drivers (ex.
->bnxt).
-
-Thank you for pointing out my neglect!
-
->
->> +
->> +	qlge_health_create_reporters(qlge_dl);
->> +	qlge_dl->qdev = qdev;
->> +	qlge_dl->ndev = ndev;
->> +	qdev->devlink = qlge_dl;
->>  	/* Start up the timer to trigger EEH if
->>  	 * the bus goes dead
->>  	 */
->> @@ -4647,6 +4666,8 @@ static void qlge_remove(struct pci_dev *pdev)
->>  	unregister_netdev(ndev);
->>  	ql_release_all(pdev);
->>  	pci_disable_device(pdev);
->> +	devlink_unregister(priv_to_devlink(qdev->devlink));
->> +	devlink_health_reporter_destroy(qdev->devlink->reporter);
->
->Isn't the order of those two calls mixed up?
-
-I haven't studied the code to figure out why but other drivers also
-use the same order.
->
->>  	free_netdev(ndev);
->>  }
->>
->> --
->> 2.27.0
->>
-
---
-Best regards,
-Coiby
