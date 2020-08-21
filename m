@@ -2,505 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D254924D85D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5602024D84B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 17:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728301AbgHUPSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 11:18:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728212AbgHUPS3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 11:18:29 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B5A7C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 08:18:29 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id k25so1706909edj.13
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 08:18:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Qp+IvPt9siLMIiICExlCypmGKVhYNZIXdw92BsiuWt8=;
-        b=OCZFyhNcE7mIGhGb6YvmGLv4ON3jYPV2/Put2q4q/oIQyy1/NcVtQszrPkfJjC30Oz
-         vrHzhuWOzvpDw77bOD0YV4w9r1uGSdzdLR+KUpPpQcp9KYZVrBLACiVbmKkFKj2iAZoA
-         H398lgdF1mSK+u3IEWu55dgCgtTbWJMfFWXloxFR9MsCEUwysOhGE0OShh2P5iWNpK2x
-         LymDqlHdG8IMXjFrpHCjxEjRmun40lFdeFPgFS66poC1jBgKf14hN4dL1n3hhEHaLWMH
-         MMwgn6xFuXLDz4cAGflhKU+KQZ6BE0MN6zWySSUh7ELp7+PaiPg4kKxrCmgQEro0JUWn
-         zDJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Qp+IvPt9siLMIiICExlCypmGKVhYNZIXdw92BsiuWt8=;
-        b=L4aIa/4wug5S9a1XmhaBkloxPxf+Ag0Beqpb6uhDQXX8NAZH8b7zD6fvKhNQfVq0Uo
-         r99aRT5eHE21MJ37An8wm9+QZMkpZGegHjznCTj1ckhkk8ihb0hXQQ6wTWIW3+fi3Lah
-         NxSq+xNDAV2oNXf6B1wAZs73EpsPfjZS8YJ6NpYuV18DZCciddgbC/v4ebn/Fy++bwol
-         9K6oTq1+kvTz8Jdrw48NbNu1ADYQlK7BuIcDaxt/wgjHETeVwJlifgty+NnK/pyc3HPE
-         znOYwU0G77sUBveok9IDcPonQ3GDmurv32e/buAwRFdqC7gl8EdXfNK1hrGf0itr4ITU
-         T5Rg==
-X-Gm-Message-State: AOAM530P9dujEHg++t24bYKG3M6/vrFcxb3k5aL3X2h+1tVR6+0BhC2h
-        BAPpeC+HwUge31B7BAi40ZD3ZQ==
-X-Google-Smtp-Source: ABdhPJyLo8mj3nnDOBfYfLfYora9xT+HvJH3pVftN4vFbkxZ3gEqz4L/Uyc1IRWM3WHxv4N5IcC2Yg==
-X-Received: by 2002:a05:6402:486:: with SMTP id k6mr3339348edv.83.1598023107886;
-        Fri, 21 Aug 2020 08:18:27 -0700 (PDT)
-Received: from localhost.localdomain (223.60-242-81.adsl-dyn.isp.belgacom.be. [81.242.60.223])
-        by smtp.gmail.com with ESMTPSA id qp16sm1482709ejb.89.2020.08.21.08.18.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 08:18:27 -0700 (PDT)
-From:   Nicolas Rybowski <nicolas.rybowski@tessares.net>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>
-Cc:     Nicolas Rybowski <nicolas.rybowski@tessares.net>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, mptcp@lists.01.org
-Subject: [PATCH bpf-next 3/3] bpf: add 'bpf_mptcp_sock' structure and helper
-Date:   Fri, 21 Aug 2020 17:15:41 +0200
-Message-Id: <20200821151544.1211989-4-nicolas.rybowski@tessares.net>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200821151544.1211989-1-nicolas.rybowski@tessares.net>
-References: <20200821151544.1211989-1-nicolas.rybowski@tessares.net>
+        id S1727994AbgHUPRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 11:17:30 -0400
+Received: from mga06.intel.com ([134.134.136.31]:18349 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727791AbgHUPR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 11:17:28 -0400
+IronPort-SDR: Hlsn19nD8YWku2/mcNy7uukn9FXxqY9O+s361/9OIAMNJSI85Qhjt7tdh9wbumSpgVHdgBGIJu
+ fQeqkp/nwyBQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9719"; a="217094652"
+X-IronPort-AV: E=Sophos;i="5.76,337,1592895600"; 
+   d="scan'208";a="217094652"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2020 08:17:27 -0700
+IronPort-SDR: X3WZs6CSMS+GgnkdfsfTbfDrbYXMtwd4QXENHMbQ/vkSmOsQgjxTnbAVin/D+ElXQ3Weo9quLC
+ ipOKHUYXOXLg==
+X-IronPort-AV: E=Sophos;i="5.76,337,1592895600"; 
+   d="scan'208";a="442377166"
+Received: from pcmiller-mobl1.amr.corp.intel.com (HELO [10.209.120.121]) ([10.209.120.121])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2020 08:17:25 -0700
+Subject: Re: [PATCH] soundwire: cadence: fix race condition between suspend
+ and Slave device alerts
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
+        alsa-devel@alsa-project.org, tiwai@suse.de,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+        broonie@kernel.org, srinivas.kandagatla@linaro.org,
+        jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
+        rander.wang@linux.intel.com, bard.liao@intel.com
+References: <20200817222340.18042-1-yung-chuan.liao@linux.intel.com>
+ <20200819090637.GE2639@vkoul-mobl>
+ <8d60fa6f-bb7f-daa8-5ae2-51386b87ccad@linux.intel.com>
+ <20200821050758.GI2639@vkoul-mobl>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <29ea5a44-b971-770a-519c-ae879557b63f@linux.intel.com>
+Date:   Fri, 21 Aug 2020 10:17:25 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200821050758.GI2639@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to precisely identify the parent MPTCP connection of a subflow,
-it is required to access the mptcp_sock's token which uniquely identify a
-MPTCP connection.
 
-This patch adds a new structure 'bpf_mptcp_sock' exposing the 'token' field
-of the 'mptcp_sock' extracted from a subflow's 'tcp_sock'. It also adds the
-declaration of a new BPF helper of the same name to expose the newly
-defined structure in the userspace BPF API.
 
-This is the foundation to expose more MPTCP-specific fields through BPF.
+>> cancel_work_sync() will either
+>> a) wait until the current work completes, or
+>> b) prevent a new one from starting.
+>>
+>> there's no way to really 'abort' a workqueue, 'cancel' means either complete
+>> or don't start.
+> 
+> Quite right, as that is how everyone deals with it. Stop the irq from
+> firing first and then wait until work is cancelled or completed, hence
+> cancel_work_sync()
 
-Currently, it is limited to the field 'token' of the msk but it is
-easily extensible.
+No, this cannot work... The work queue in progress will initiate 
+transactions which would never complete because the interrupts are disabled.
 
-Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Acked-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
-Signed-off-by: Nicolas Rybowski <nicolas.rybowski@tessares.net>
----
- include/linux/bpf.h            | 33 ++++++++++++++++
- include/uapi/linux/bpf.h       | 13 ++++++
- kernel/bpf/verifier.c          | 30 ++++++++++++++
- net/core/filter.c              |  4 ++
- net/mptcp/Makefile             |  2 +
- net/mptcp/bpf.c                | 72 ++++++++++++++++++++++++++++++++++
- scripts/bpf_helpers_doc.py     |  2 +
- tools/include/uapi/linux/bpf.h | 13 ++++++
- 8 files changed, 169 insertions(+)
- create mode 100644 net/mptcp/bpf.c
+>> if you disable the interrupts then cancel the work, you have a risk of not
+>> letting the work complete if it already started (case a).
+>>
+>> The race is
+>> a) the interrupt thread (this function) starts
+>> b) the work is scheduled and starts
+>> c) the suspend handler starts and disables interrupts in [1] below.
+>> d) the work initiates transactions which will never complete since Cadence
+>> interrupts have been disabled.
+> 
+> Would it not be better to let work handle the case of interrupts
+> disabled and not initiates transactions which wont complete here? That
+> sounds more reasonable to do rather than complete the work which anyone
+> doesn't matter as you are suspending
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index a9b7185a6b37..b4d6a80a653c 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -281,6 +281,7 @@ enum bpf_return_type {
- 	RET_PTR_TO_SOCK_COMMON_OR_NULL,	/* returns a pointer to a sock_common or NULL */
- 	RET_PTR_TO_ALLOC_MEM_OR_NULL,	/* returns a pointer to dynamically allocated memory or NULL */
- 	RET_PTR_TO_BTF_ID_OR_NULL,	/* returns a pointer to a btf_id or NULL */
-+	RET_PTR_TO_MPTCP_SOCK_OR_NULL,	/* returns a pointer to mptcp_sock or NULL */
- };
- 
- /* eBPF function prototype used by verifier to allow BPF_CALLs from eBPF programs
-@@ -360,6 +361,8 @@ enum bpf_reg_type {
- 	PTR_TO_RDONLY_BUF_OR_NULL, /* reg points to a readonly buffer or NULL */
- 	PTR_TO_RDWR_BUF,	 /* reg points to a read/write buffer */
- 	PTR_TO_RDWR_BUF_OR_NULL, /* reg points to a read/write buffer or NULL */
-+	PTR_TO_MPTCP_SOCK,	 /* reg points to struct mptcp_sock */
-+	PTR_TO_MPTCP_SOCK_OR_NULL, /* reg points to struct mptcp_sock or NULL */
- };
- 
- /* The information passed from prog-specific *_is_valid_access
-@@ -1737,6 +1740,7 @@ extern const struct bpf_func_proto bpf_skc_to_tcp_sock_proto;
- extern const struct bpf_func_proto bpf_skc_to_tcp_timewait_sock_proto;
- extern const struct bpf_func_proto bpf_skc_to_tcp_request_sock_proto;
- extern const struct bpf_func_proto bpf_skc_to_udp6_sock_proto;
-+extern const struct bpf_func_proto bpf_mptcp_sock_proto;
- 
- const struct bpf_func_proto *bpf_tracing_func_proto(
- 	enum bpf_func_id func_id, const struct bpf_prog *prog);
-@@ -1793,6 +1797,35 @@ struct sk_reuseport_kern {
- 	u32 reuseport_id;
- 	bool bind_inany;
- };
-+
-+#ifdef CONFIG_MPTCP
-+bool bpf_mptcp_sock_is_valid_access(int off, int size,
-+				    enum bpf_access_type type,
-+				    struct bpf_insn_access_aux *info);
-+
-+u32 bpf_mptcp_sock_convert_ctx_access(enum bpf_access_type type,
-+				      const struct bpf_insn *si,
-+				      struct bpf_insn *insn_buf,
-+				      struct bpf_prog *prog,
-+				      u32 *target_size);
-+#else /* CONFIG_MPTCP */
-+static inline bool bpf_mptcp_sock_is_valid_access(int off, int size,
-+						  enum bpf_access_type type,
-+						  struct bpf_insn_access_aux *info)
-+{
-+	return false;
-+}
-+
-+static inline u32 bpf_mptcp_sock_convert_ctx_access(enum bpf_access_type type,
-+						    const struct bpf_insn *si,
-+						    struct bpf_insn *insn_buf,
-+						    struct bpf_prog *prog,
-+						    u32 *target_size)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_MPTCP */
-+
- bool bpf_tcp_sock_is_valid_access(int off, int size, enum bpf_access_type type,
- 				  struct bpf_insn_access_aux *info);
- 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index a9fccfdb3a62..58b6e075537d 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -3395,6 +3395,14 @@ union bpf_attr {
-  *		A non-negative value equal to or less than *size* on success,
-  *		or a negative error in case of failure.
-  *
-+ * struct bpf_mptcp_sock *bpf_mptcp_sock(struct bpf_sock *sk)
-+ *	Description
-+ *		This helper gets a **struct bpf_mptcp_sock** pointer from a
-+ *		**struct bpf_sock** pointer.
-+ *	Return
-+ *		A **struct bpf_mptcp_sock** pointer on success, or **NULL** in
-+ *		case of failure.
-+ *
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -3539,6 +3547,7 @@ union bpf_attr {
- 	FN(skc_to_tcp_request_sock),	\
- 	FN(skc_to_udp6_sock),		\
- 	FN(get_task_stack),		\
-+	FN(mptcp_sock),			\
- 	/* */
- 
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-@@ -3868,6 +3877,10 @@ struct bpf_tcp_sock {
- 	__u32 is_mptcp;		/* Is MPTCP subflow? */
- };
- 
-+struct bpf_mptcp_sock {
-+	__u32 token;		/* msk token */
-+};
-+
- struct bpf_sock_tuple {
- 	union {
- 		struct {
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index ef938f17b944..423bbd786eb8 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -391,6 +391,7 @@ static bool type_is_sk_pointer(enum bpf_reg_type type)
- 	return type == PTR_TO_SOCKET ||
- 		type == PTR_TO_SOCK_COMMON ||
- 		type == PTR_TO_TCP_SOCK ||
-+		type == PTR_TO_MPTCP_SOCK ||
- 		type == PTR_TO_XDP_SOCK;
- }
- 
-@@ -398,6 +399,7 @@ static bool reg_type_not_null(enum bpf_reg_type type)
- {
- 	return type == PTR_TO_SOCKET ||
- 		type == PTR_TO_TCP_SOCK ||
-+		type == PTR_TO_MPTCP_SOCK ||
- 		type == PTR_TO_MAP_VALUE ||
- 		type == PTR_TO_SOCK_COMMON;
- }
-@@ -408,6 +410,7 @@ static bool reg_type_may_be_null(enum bpf_reg_type type)
- 	       type == PTR_TO_SOCKET_OR_NULL ||
- 	       type == PTR_TO_SOCK_COMMON_OR_NULL ||
- 	       type == PTR_TO_TCP_SOCK_OR_NULL ||
-+	       type == PTR_TO_MPTCP_SOCK_OR_NULL ||
- 	       type == PTR_TO_BTF_ID_OR_NULL ||
- 	       type == PTR_TO_MEM_OR_NULL ||
- 	       type == PTR_TO_RDONLY_BUF_OR_NULL ||
-@@ -426,6 +429,8 @@ static bool reg_type_may_be_refcounted_or_null(enum bpf_reg_type type)
- 		type == PTR_TO_SOCKET_OR_NULL ||
- 		type == PTR_TO_TCP_SOCK ||
- 		type == PTR_TO_TCP_SOCK_OR_NULL ||
-+		type == PTR_TO_MPTCP_SOCK ||
-+		type == PTR_TO_MPTCP_SOCK_OR_NULL ||
- 		type == PTR_TO_MEM ||
- 		type == PTR_TO_MEM_OR_NULL;
- }
-@@ -499,6 +504,8 @@ static const char * const reg_type_str[] = {
- 	[PTR_TO_SOCK_COMMON_OR_NULL] = "sock_common_or_null",
- 	[PTR_TO_TCP_SOCK]	= "tcp_sock",
- 	[PTR_TO_TCP_SOCK_OR_NULL] = "tcp_sock_or_null",
-+	[PTR_TO_MPTCP_SOCK]	= "mptcp_sock",
-+	[PTR_TO_MPTCP_SOCK_OR_NULL] = "mptcp_sock_or_null",
- 	[PTR_TO_TP_BUFFER]	= "tp_buffer",
- 	[PTR_TO_XDP_SOCK]	= "xdp_sock",
- 	[PTR_TO_BTF_ID]		= "ptr_",
-@@ -2176,6 +2183,8 @@ static bool is_spillable_regtype(enum bpf_reg_type type)
- 	case PTR_TO_SOCK_COMMON_OR_NULL:
- 	case PTR_TO_TCP_SOCK:
- 	case PTR_TO_TCP_SOCK_OR_NULL:
-+	case PTR_TO_MPTCP_SOCK:
-+	case PTR_TO_MPTCP_SOCK_OR_NULL:
- 	case PTR_TO_XDP_SOCK:
- 	case PTR_TO_BTF_ID:
- 	case PTR_TO_BTF_ID_OR_NULL:
-@@ -2777,6 +2786,9 @@ static int check_sock_access(struct bpf_verifier_env *env, int insn_idx,
- 	case PTR_TO_TCP_SOCK:
- 		valid = bpf_tcp_sock_is_valid_access(off, size, t, &info);
- 		break;
-+	case PTR_TO_MPTCP_SOCK:
-+		valid = bpf_mptcp_sock_is_valid_access(off, size, t, &info);
-+		break;
- 	case PTR_TO_XDP_SOCK:
- 		valid = bpf_xdp_sock_is_valid_access(off, size, t, &info);
- 		break;
-@@ -2935,6 +2947,9 @@ static int check_ptr_alignment(struct bpf_verifier_env *env,
- 	case PTR_TO_TCP_SOCK:
- 		pointer_desc = "tcp_sock ";
- 		break;
-+	case PTR_TO_MPTCP_SOCK:
-+		pointer_desc = "mptcp_sock ";
-+		break;
- 	case PTR_TO_XDP_SOCK:
- 		pointer_desc = "xdp_sock ";
- 		break;
-@@ -4899,6 +4914,10 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
- 		mark_reg_known_zero(env, regs, BPF_REG_0);
- 		regs[BPF_REG_0].type = PTR_TO_TCP_SOCK_OR_NULL;
- 		regs[BPF_REG_0].id = ++env->id_gen;
-+	} else if (fn->ret_type == RET_PTR_TO_MPTCP_SOCK_OR_NULL) {
-+		mark_reg_known_zero(env, regs, BPF_REG_0);
-+		regs[BPF_REG_0].type = PTR_TO_MPTCP_SOCK_OR_NULL;
-+		regs[BPF_REG_0].id = ++env->id_gen;
- 	} else if (fn->ret_type == RET_PTR_TO_ALLOC_MEM_OR_NULL) {
- 		mark_reg_known_zero(env, regs, BPF_REG_0);
- 		regs[BPF_REG_0].type = PTR_TO_MEM_OR_NULL;
-@@ -5226,6 +5245,8 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 	case PTR_TO_SOCK_COMMON_OR_NULL:
- 	case PTR_TO_TCP_SOCK:
- 	case PTR_TO_TCP_SOCK_OR_NULL:
-+	case PTR_TO_MPTCP_SOCK:
-+	case PTR_TO_MPTCP_SOCK_OR_NULL:
- 	case PTR_TO_XDP_SOCK:
- 		verbose(env, "R%d pointer arithmetic on %s prohibited\n",
- 			dst, reg_type_str[ptr_reg->type]);
-@@ -6880,6 +6901,8 @@ static void mark_ptr_or_null_reg(struct bpf_func_state *state,
- 			reg->type = PTR_TO_SOCK_COMMON;
- 		} else if (reg->type == PTR_TO_TCP_SOCK_OR_NULL) {
- 			reg->type = PTR_TO_TCP_SOCK;
-+		} else if (reg->type == PTR_TO_MPTCP_SOCK_OR_NULL) {
-+			reg->type = PTR_TO_MPTCP_SOCK;
- 		} else if (reg->type == PTR_TO_BTF_ID_OR_NULL) {
- 			reg->type = PTR_TO_BTF_ID;
- 		} else if (reg->type == PTR_TO_MEM_OR_NULL) {
-@@ -8242,6 +8265,8 @@ static bool regsafe(struct bpf_reg_state *rold, struct bpf_reg_state *rcur,
- 	case PTR_TO_SOCK_COMMON_OR_NULL:
- 	case PTR_TO_TCP_SOCK:
- 	case PTR_TO_TCP_SOCK_OR_NULL:
-+	case PTR_TO_MPTCP_SOCK:
-+	case PTR_TO_MPTCP_SOCK_OR_NULL:
- 	case PTR_TO_XDP_SOCK:
- 		/* Only valid matches are exact, which memcmp() above
- 		 * would have accepted
-@@ -8769,6 +8794,8 @@ static bool reg_type_mismatch_ok(enum bpf_reg_type type)
- 	case PTR_TO_SOCK_COMMON_OR_NULL:
- 	case PTR_TO_TCP_SOCK:
- 	case PTR_TO_TCP_SOCK_OR_NULL:
-+	case PTR_TO_MPTCP_SOCK:
-+	case PTR_TO_MPTCP_SOCK_OR_NULL:
- 	case PTR_TO_XDP_SOCK:
- 	case PTR_TO_BTF_ID:
- 	case PTR_TO_BTF_ID_OR_NULL:
-@@ -9889,6 +9916,9 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
- 		case PTR_TO_TCP_SOCK:
- 			convert_ctx_access = bpf_tcp_sock_convert_ctx_access;
- 			break;
-+		case PTR_TO_MPTCP_SOCK:
-+			convert_ctx_access = bpf_mptcp_sock_convert_ctx_access;
-+			break;
- 		case PTR_TO_XDP_SOCK:
- 			convert_ctx_access = bpf_xdp_sock_convert_ctx_access;
- 			break;
-diff --git a/net/core/filter.c b/net/core/filter.c
-index eb400aeea282..a103ccc2506d 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -6560,6 +6560,10 @@ sock_ops_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 	case BPF_FUNC_tcp_sock:
- 		return &bpf_tcp_sock_proto;
- #endif /* CONFIG_INET */
-+#ifdef CONFIG_MPTCP
-+	case BPF_FUNC_mptcp_sock:
-+		return &bpf_mptcp_sock_proto;
-+#endif /* CONFIG_MPTCP */
- 	default:
- 		return bpf_base_func_proto(func_id);
- 	}
-diff --git a/net/mptcp/Makefile b/net/mptcp/Makefile
-index a611968be4d7..aae2ede220ed 100644
---- a/net/mptcp/Makefile
-+++ b/net/mptcp/Makefile
-@@ -10,3 +10,5 @@ obj-$(CONFIG_INET_MPTCP_DIAG) += mptcp_diag.o
- mptcp_crypto_test-objs := crypto_test.o
- mptcp_token_test-objs := token_test.o
- obj-$(CONFIG_MPTCP_KUNIT_TESTS) += mptcp_crypto_test.o mptcp_token_test.o
-+
-+obj-$(CONFIG_BPF) += bpf.o
-diff --git a/net/mptcp/bpf.c b/net/mptcp/bpf.c
-new file mode 100644
-index 000000000000..5332469fbb28
---- /dev/null
-+++ b/net/mptcp/bpf.c
-@@ -0,0 +1,72 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Multipath TCP
-+ *
-+ * Copyright (c) 2020, Tessares SA.
-+ *
-+ * Author: Nicolas Rybowski <nicolas.rybowski@tessares.net>
-+ *
-+ */
-+
-+#include <linux/bpf.h>
-+
-+#include "protocol.h"
-+
-+bool bpf_mptcp_sock_is_valid_access(int off, int size, enum bpf_access_type type,
-+				    struct bpf_insn_access_aux *info)
-+{
-+	if (off < 0 || off >= offsetofend(struct bpf_mptcp_sock, token))
-+		return false;
-+
-+	if (off % size != 0)
-+		return false;
-+
-+	switch (off) {
-+	default:
-+		return size == sizeof(__u32);
-+	}
-+}
-+
-+u32 bpf_mptcp_sock_convert_ctx_access(enum bpf_access_type type,
-+				      const struct bpf_insn *si,
-+				      struct bpf_insn *insn_buf,
-+				      struct bpf_prog *prog, u32 *target_size)
-+{
-+	struct bpf_insn *insn = insn_buf;
-+
-+#define BPF_MPTCP_SOCK_GET_COMMON(FIELD)							\
-+	do {											\
-+		BUILD_BUG_ON(sizeof_field(struct mptcp_sock, FIELD) >				\
-+				sizeof_field(struct bpf_mptcp_sock, FIELD));			\
-+		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct mptcp_sock, FIELD),		\
-+							si->dst_reg, si->src_reg,		\
-+							offsetof(struct mptcp_sock, FIELD));	\
-+	} while (0)
-+
-+	if (insn > insn_buf)
-+		return insn - insn_buf;
-+
-+	switch (si->off) {
-+	case offsetof(struct bpf_mptcp_sock, token):
-+		BPF_MPTCP_SOCK_GET_COMMON(token);
-+		break;
-+	}
-+
-+	return insn - insn_buf;
-+}
-+
-+BPF_CALL_1(bpf_mptcp_sock, struct sock *, sk)
-+{
-+	if (sk_fullsock(sk) && sk->sk_protocol == IPPROTO_TCP && sk_is_mptcp(sk)) {
-+		struct mptcp_subflow_context *mptcp_sfc = mptcp_subflow_ctx(sk);
-+
-+		return (unsigned long)mptcp_sfc->conn;
-+	}
-+	return (unsigned long)NULL;
-+}
-+
-+const struct bpf_func_proto bpf_mptcp_sock_proto = {
-+	.func           = bpf_mptcp_sock,
-+	.gpl_only       = false,
-+	.ret_type       = RET_PTR_TO_MPTCP_SOCK_OR_NULL,
-+	.arg1_type      = ARG_PTR_TO_SOCK_COMMON,
-+};
-diff --git a/scripts/bpf_helpers_doc.py b/scripts/bpf_helpers_doc.py
-index 5bfa448b4704..4db41a1c344a 100755
---- a/scripts/bpf_helpers_doc.py
-+++ b/scripts/bpf_helpers_doc.py
-@@ -428,6 +428,7 @@ class PrinterHelpers(Printer):
-             'struct tcp_request_sock',
-             'struct udp6_sock',
-             'struct task_struct',
-+            'struct bpf_mptcp_sock',
- 
-             'struct __sk_buff',
-             'struct sk_msg_md',
-@@ -472,6 +473,7 @@ class PrinterHelpers(Printer):
-             'struct tcp_request_sock',
-             'struct udp6_sock',
-             'struct task_struct',
-+            'struct bpf_mptcp_sock',
-     }
-     mapped_types = {
-             'u8': '__u8',
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index a9fccfdb3a62..58b6e075537d 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -3395,6 +3395,14 @@ union bpf_attr {
-  *		A non-negative value equal to or less than *size* on success,
-  *		or a negative error in case of failure.
-  *
-+ * struct bpf_mptcp_sock *bpf_mptcp_sock(struct bpf_sock *sk)
-+ *	Description
-+ *		This helper gets a **struct bpf_mptcp_sock** pointer from a
-+ *		**struct bpf_sock** pointer.
-+ *	Return
-+ *		A **struct bpf_mptcp_sock** pointer on success, or **NULL** in
-+ *		case of failure.
-+ *
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -3539,6 +3547,7 @@ union bpf_attr {
- 	FN(skc_to_tcp_request_sock),	\
- 	FN(skc_to_udp6_sock),		\
- 	FN(get_task_stack),		\
-+	FN(mptcp_sock),			\
- 	/* */
- 
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-@@ -3868,6 +3877,10 @@ struct bpf_tcp_sock {
- 	__u32 is_mptcp;		/* Is MPTCP subflow? */
- };
- 
-+struct bpf_mptcp_sock {
-+	__u32 token;		/* msk token */
-+};
-+
- struct bpf_sock_tuple {
- 	union {
- 		struct {
--- 
-2.28.0
+A in-progress workqueue has no notion that interrupts are disabled, nor 
+that the device is in the process of suspending. It writes into a fifo 
+and blocks with wait_for_completion(). the complete() is done in an 
+interrupt thread, triggered when the RX Fifo reaches a watermark.
 
+So if you disable interrupts, the complete() never happens.
+
+The safe way to do things with the current code is to let the workqueue 
+complete, then disable interrupts.
+
+We only disable interrupts on suspend, we don't need to test if 
+interrupts are enabled for every single byte that's transmitted on the 
+bus. Not to mention that this additional test would be racy as hell and 
+require yet another synchronization primitive making the code more 
+complicated.
+
+So yes, the current transactions will complete and will be ignored, but 
+it's a lot better than trying to prevent these transactions from 
+happening with extra layers of complexity that will impact *every* 
+transaction.
+
+BTW I looked at another alternative based on the msg lock, so that 
+interrupts cannot be disabled while a message is being sent. However 
+because a workqueue may send multiple messages, e.g. to read registers 
+are non-contiguous locations, there is no way to guarantee what happens 
+how messages and interrupt disabling are scheduled, so there'd still be 
+a case of a workqueue not completing and being stuck on a mutex_lock(), 
+not so good either.
+
+In short, this is the simplest way to fix the timeout on resume.
