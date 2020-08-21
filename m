@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F54A24D223
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 12:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D9924D22D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 12:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728594AbgHUKVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 06:21:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33938 "EHLO
+        id S1728674AbgHUKWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 06:22:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727791AbgHUKVs (ORCPT
+        with ESMTP id S1728599AbgHUKWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 06:21:48 -0400
+        Fri, 21 Aug 2020 06:22:04 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F74C061385
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 03:21:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41A44C061386
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Aug 2020 03:22:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=2RHV/9w9BBmlZJ222cAFXt8o60uKDv+U1v4ikGBmpTA=; b=KYxMIMoqhkoPv6Pp9aGkveWSvw
-        0e54SE3i4fkA7ahj2qTbWv8BYESIlJlLfCEJ77meoCB5qbk1jeRcAgHA4yVCHkYZFNby9DOccYKcY
-        e0mWQAdIGXs/swuICyM0P6Evmzw9DWp03l2egIIBtHNLdn/u6zDGwYGFu/H+xrEUB2c6fSmEqGBLA
-        jFYODyEF0LUkU4q9go0ajaB2J1sOKueeJDbezffVfqoFZ2bsfuw1sulKY7Y5cSTFhyIyiIY1xe1We
-        FK/UnWovDDsOmZoJ8hIyAAtyZepzEvn9q9b7bnCYz/1McoOTp6DOdiwMPwaUbu6PyivnrtEm5XQnj
-        QH1v5iHA==;
+        bh=JyJ51hlk0BrqK7XKW/FKU2cPxtbzAdVRWf6x3vbR6xQ=; b=JH1jyk14xpZ3EtbRbsP2oav/dC
+        3l/ADogNrquVMrEgvsJk0qEZXF4m2KoTzxJEMalnPjUL3aDy0TlZel9yBeT8EHuRQweH9LvjS22uO
+        pMqUNRGKP+uOJzBo6ox67YdI2anjBameppj6d348u7y58mNaUX6uChzSWSuwrZGuYvUpwBANA5jAE
+        18x75JNwI9YzkHkQVG2QMABHNnjja+5VnWHI2td8eLKHnsw9jBgeQzC9g1cU4gUmG/JB163C1SxWg
+        GD1FZI1B3pk6NHTiohZsRlApnZjTJ7XI813ozgmeWr5+vKNl0AHYWuYIv0Z/RDezrJ3gmvILjSoB+
+        F5iSbH5g==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k94Ao-0003G8-1c; Fri, 21 Aug 2020 10:21:26 +0000
+        id 1k94Ao-0003GB-23; Fri, 21 Aug 2020 10:21:26 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B0ED33060F2;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B701F3060F3;
         Fri, 21 Aug 2020 12:21:24 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 67BCF2C8FF36C; Fri, 21 Aug 2020 12:21:24 +0200 (CEST)
-Message-ID: <20200821102053.160728884@infradead.org>
+        id 69E182C8FF36B; Fri, 21 Aug 2020 12:21:24 +0200 (CEST)
+Message-ID: <20200821102053.219655533@infradead.org>
 User-Agent: quilt/0.66
-Date:   Fri, 21 Aug 2020 11:39:19 +0200
+Date:   Fri, 21 Aug 2020 11:39:20 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org, Kyle Huey <me@kylehuey.com>,
@@ -57,8 +57,9 @@ Cc:     linux-kernel@vger.kernel.org, Kyle Huey <me@kylehuey.com>,
         Andy Lutomirski <luto@kernel.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Daniel Thompson <daniel.thompson@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v2 7/8] x86/debug: Move cond_local_irq_enable() block into exc_debug_user()
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@amacapital.net>
+Subject: [PATCH v2 8/8] x86/debug: Remove the historical junk
 References: <20200821093912.815135402@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -67,100 +68,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cond_local_irq_enable() block, dealing with vm86 and sending
-signals is only relevant for #DB-from-user, move it there.
+Remove the historical junk and replace it with a WARN and a comment.
 
-This then reduces handle_debug() to only the notifier call, so rename
-it to notify_debug().
+The problem is that even though the kernel only uses TF single-step in
+kprobes and KGDB, both of which consume the event before this,
+QEMU/KVM has bugs in this area that can trigger this state so we have
+to deal with it.
 
+Suggested-by: Brian Gerst <brgerst@gmail.com>
+Suggested-by: Andy Lutomirski <luto@amacapital.net>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/kernel/traps.c |   51 +++++++++++++++++++++++-------------------------
- 1 file changed, 25 insertions(+), 26 deletions(-)
+ arch/x86/kernel/traps.c |   24 ++++++++++--------------
+ 1 file changed, 10 insertions(+), 14 deletions(-)
 
 --- a/arch/x86/kernel/traps.c
 +++ b/arch/x86/kernel/traps.c
-@@ -783,7 +783,8 @@ static __always_inline unsigned long deb
-  *
-  * May run on IST stack.
-  */
--static bool handle_debug(struct pt_regs *regs, unsigned long *dr6)
-+
-+static bool notify_debug(struct pt_regs *regs, unsigned long *dr6)
- {
- 	struct task_struct *tsk = current;
+@@ -839,22 +839,18 @@ static __always_inline void exc_debug_ke
+ 		goto out;
  
-@@ -793,31 +794,9 @@ static bool handle_debug(struct pt_regs
- 	if (notify_die(DIE_DEBUG, "debug", regs, (long)dr6, 0, SIGTRAP) == NOTIFY_STOP)
- 		return true;
- 
--	/* It's safe to allow irq's after DR6 has been saved */
--	cond_local_irq_enable(regs);
+ 	/*
+-	 * Reload dr6, the notifier might have changed it.
++	 * The kernel doesn't use TF single-step outside of:
++	 *
++	 *  - Kprobes, consumed through kprobe_debug_handler()
++	 *  - KGDB, consumed through notify_debug()
++	 *
++	 * So if we get here with DR_STEP set, something is wonky.
++	 *
++	 * A known way to trigger this is through QEMU's GDB stub,
++	 * which leaks #DB into the guest and causes IST recursion.
+ 	 */
+-	dr6 = current->thread.debugreg6;
 -
--	if (v8086_mode(regs)) {
--		handle_vm86_trap((struct kernel_vm86_regs *) regs, 0,
--				 X86_TRAP_DB);
--		goto out;
+-	if (WARN_ON_ONCE(dr6 & DR_STEP)) {
+-		/*
+-		 * Historical junk that used to handle SYSENTER single-stepping.
+-		 * This should be unreachable now.  If we survive for a while
+-		 * without anyone hitting this warning, we'll turn this into
+-		 * an oops.
+-		 */
+-		dr6 &= ~DR_STEP;
+-		set_thread_flag(TIF_SINGLESTEP);
++	if (WARN_ON_ONCE(current->thread.debugreg6 & DR_STEP))
+ 		regs->flags &= ~X86_EFLAGS_TF;
 -	}
 -
--	/*
--	 * Reload dr6, the notifier might have changed it.
--	 */
-+	/* Reload the DR6 value, the notifier might have changed it */
- 	*dr6 = tsk->thread.debugreg6;
- 
--	/*
--	 * If dr6 has no reason to give us about the origin of this trap,
--	 * then it's very likely the result of an icebp/int01 trap.
--	 * User wants a sigtrap for that.
--	 */
--	if (*dr6 & (DR_STEP | DR_TRAP_BITS) || !*dr6)
--		send_sigtrap(regs, 0, get_si_code(*dr6));
--
--out:
--	cond_local_irq_disable(regs);
--
- 	return false;
- }
- 
-@@ -861,7 +840,7 @@ static __always_inline void exc_debug_ke
- 	if (!dr6)
- 		goto out;
- 
--	if (handle_debug(regs, &dr6))
-+	if (notify_debug(regs, &dr6))
- 		goto out;
- 
- 	if (WARN_ON_ONCE(dr6 & DR_STEP)) {
-@@ -904,8 +883,28 @@ static __always_inline void exc_debug_us
- 	irqentry_enter_from_user_mode(regs);
- 	instrumentation_begin();
- 
--	handle_debug(regs, &dr6);
-+	if (notify_debug(regs, &dr6))
-+		goto out;
-+
-+	/* It's safe to allow irq's after DR6 has been saved */
-+	local_irq_enable();
-+
-+	if (v8086_mode(regs)) {
-+		handle_vm86_trap((struct kernel_vm86_regs *)regs, 0, X86_TRAP_DB);
-+		goto out_irq;
-+	}
- 
-+	/*
-+	 * If dr6 has no reason to give us about the origin of this trap,
-+	 * then it's very likely the result of an icebp/int01 trap.
-+	 * User wants a sigtrap for that.
-+	 */
-+	if (dr6 & (DR_STEP | DR_TRAP_BITS) || !dr6)
-+		send_sigtrap(regs, 0, get_si_code(dr6));
-+
-+out_irq:
-+	local_irq_disable();
-+out:
+ out:
  	instrumentation_end();
- 	irqentry_exit_to_user_mode(regs);
- }
+ 	idtentry_exit_nmi(regs, irq_state);
 
 
