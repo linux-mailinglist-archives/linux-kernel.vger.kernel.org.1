@@ -2,59 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A3E24CB97
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 05:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA41524CB9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 05:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728093AbgHUDrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 23:47:49 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:49744 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727859AbgHUDrt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 23:47:49 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1k8y1l-0008RK-9o; Fri, 21 Aug 2020 13:47:42 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 21 Aug 2020 13:47:41 +1000
-Date:   Fri, 21 Aug 2020 13:47:41 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>
-Cc:     "Andrei Botila (OSS)" <andrei.botila@oss.nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RESEND 1/9] crypto: caam/jr - add fallback for XTS with
- more than 8B IV
-Message-ID: <20200821034741.GB25442@gondor.apana.org.au>
-References: <20200806163551.14395-1-andrei.botila@oss.nxp.com>
- <20200806163551.14395-2-andrei.botila@oss.nxp.com>
- <fe251307-ba89-a4bc-23f5-205a1e1343ea@nxp.com>
+        id S1727909AbgHUDtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 23:49:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727074AbgHUDtF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Aug 2020 23:49:05 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D583C061385
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 20:49:05 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id t15so474545iob.3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 20:49:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YD6EeTnsT2wy78rPM62cWU7iNSgM0HOqIQD7wF0JrbY=;
+        b=Aq+MFU9KfwsZ6o2zwcEjbLvshHLnaZ6+vHTfx0cyGPVPvcdPDwWcejYGYyDqS3xjHG
+         McomnkZUutkTmLbcxfQyj/9Da7L6YBAqC3T/66zupxF23Yvl/gjon8spfexymNQ7S1px
+         iSStKpkFx0XXuhE79pL51BmzeTXHk+JpFXgaGli36qLoxMCyzzLpP0FZS+iNL5ZdUC2x
+         xMnP0ex12um7i+J6B9RgoAtiZzv0bvjkzB5GaNC9TccJNFCnfnZMTsKBrSE5u+jdN7yI
+         B4PsPDzSC31jiX+amsUT7YPuPBq+uS50qXN5DIZ+mHEs9kbz+ElK6ekebmV8mEMH6F5O
+         R1Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YD6EeTnsT2wy78rPM62cWU7iNSgM0HOqIQD7wF0JrbY=;
+        b=J5zAuG8mkxypyA8XSVKn9kSbcy5Wwhmlsr1zRspfPdIvZUm/LjLATFLb4w2WteZddf
+         tRDgI6E14LUytk0XOhELSwsgNJJ+VP5V3TV/FnANzenrk7LldZyrAHc4BKwLBkcXT/nC
+         J1a3BeaIeeoD6hR3uN9rzNODGkZZp9AUqpD8fKXml+kAu3wM8IOaHKD/JIrD2VpZo+Ce
+         Nc0crJW0gVVG7at8tK0hKp5oSviQd6nJ79P2fzWFu2+oCurf58GjGsw9WSArhJIXDjLg
+         T5JKSYHZJ3FjdHKVG/RHaIpV3IZ/wkS2o1YnCiAiAGTgVeyv0eoSjNx+433SExyXL7eF
+         csJg==
+X-Gm-Message-State: AOAM5306YuhbXVgQnsftX/pIozrosJ7SjxzKU0LnS8kSx/m81OXrTpM5
+        +MwBsremCZzu1rFWkooGOzZxULdJO8Abx3ZpJ+j5/A==
+X-Google-Smtp-Source: ABdhPJxsfUIfpYKTijmSzZMn/3bzl+PiJKaMjoCHFOVRg+kLNgbYqegwT2dpCaQupytAQ40v4lUIluDFJfph+PDjmzo=
+X-Received: by 2002:a05:6602:45a:: with SMTP id e26mr880042iov.168.1597981744082;
+ Thu, 20 Aug 2020 20:49:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fe251307-ba89-a4bc-23f5-205a1e1343ea@nxp.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200807224941.3440722-1-lokeshgidra@google.com> <alpine.LRH.2.21.2008210433591.29407@namei.org>
+In-Reply-To: <alpine.LRH.2.21.2008210433591.29407@namei.org>
+From:   Lokesh Gidra <lokeshgidra@google.com>
+Date:   Thu, 20 Aug 2020 20:48:52 -0700
+Message-ID: <CA+EESO5u89hEqgmBZMKq9njHvAKyWJJusVtkSLFHoQpv8rBzMg@mail.gmail.com>
+Subject: Re: [PATCH v6 0/3] SELinux support for anonymous inodes and UFFD
+To:     James Morris <jmorris@namei.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Daniel Colascione <dancol@dancol.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        KP Singh <kpsingh@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Matthew Garrett <matthewgarrett@google.com>,
+        Aaron Goidel <acgoide@tycho.nsa.gov>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Adrian Reber <areber@redhat.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Calin Juravle <calin@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Nick Kralevich <nnk@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 05:30:41PM +0300, Horia Geantă wrote:
+On Thu, Aug 20, 2020 at 11:36 AM James Morris <jmorris@namei.org> wrote:
 >
-> > +		if (IS_ERR(fallback)) {
-> > +			pr_err("Failed to allocate %s fallback: %ld\n",
-> > +			       tfm_name, PTR_ERR(fallback));
-> > +			return PTR_ERR(fallback);
-> Shouldn't error out so early. It might be that the fallback won't be needed.
-> Let's postpone this until we're sure fallback is required.
+> On Fri, 7 Aug 2020, Lokesh Gidra wrote:
+>
+> > Userfaultfd in unprivileged contexts could be potentially very
+> > useful. We'd like to harden userfaultfd to make such unprivileged use
+> > less risky. This patch series allows SELinux to manage userfaultfd
+> > file descriptors and in the future, other kinds of
+> > anonymous-inode-based file descriptor.  SELinux policy authors can
+> > apply policy types to anonymous inodes by providing name-based
+> > transition rules keyed off the anonymous inode internal name (
+> > "[userfaultfd]" in the case of userfaultfd(2) file descriptors) and
+> > applying policy to the new SIDs thus produced.
+>
+> Can you expand more on why this would be useful, e.g. use-cases?
+>
+With SELinux managed userfaultfd file descriptors, an administrator
+can control creation and movement of them. In particular, handling of
+a userfaultfd descriptor by a different process is essentially a
+ptrace access into the process, without any of the
+corresponding security_ptrace_access_check() checks. For privacy, the
+admin may want to deny such accesses,
+which is possible with SELinux support.
 
-Why? The generic should always be there as otherwise you won't
-even pass the self-test.  If we're OOM then we should error out
-ASAP.
-
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+I'll add this use case in the cover letter too in the next version.
