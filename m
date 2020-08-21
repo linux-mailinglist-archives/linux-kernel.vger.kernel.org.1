@@ -2,69 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D39924D138
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 11:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 026FF24D13D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 11:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728236AbgHUJN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Aug 2020 05:13:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45740 "EHLO mail.kernel.org"
+        id S1728328AbgHUJOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Aug 2020 05:14:36 -0400
+Received: from mga14.intel.com ([192.55.52.115]:48118 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725855AbgHUJN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Aug 2020 05:13:58 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0BD892087D;
-        Fri, 21 Aug 2020 09:13:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598001237;
-        bh=BstpKq0K+UB9fK7IvcmMudc9rC7PhRprOeU+BJfrk8A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JmD2/2ktTLm+Jp/JqAGW03t9itqYnmFBJuri36WegciTaTnFnn/kSwy5cus76iNDz
-         U7DU7REMGheXUWUiQ+zCg8xd0oNGwwYwEIG1+6FsHsf5Z8LE77B68VivWx1XNzgGC4
-         yOLsulfO8OzhH4hWYyzFKcKx2VL2bIQQqZUn71kE=
-Date:   Fri, 21 Aug 2020 11:14:16 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Pavel Machek <pavel@denx.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stable <stable@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 83/92] mfd: dln2: Run event handler loop under
- spinlock
-Message-ID: <20200821091416.GA1894114@kroah.com>
-References: <20200820091537.490965042@linuxfoundation.org>
- <20200820091541.964627271@linuxfoundation.org>
- <20200821072123.GC23823@amd>
- <CAHp75Vcbmc-PV-gQxuj9i8sAcFCzhJKe_qzEfrkUTZbnf3Vupg@mail.gmail.com>
+        id S1725855AbgHUJOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 Aug 2020 05:14:35 -0400
+IronPort-SDR: 2bns/17trGbkQnY4S7+BxZdgY8gYPsXzpbOvpomQpnkAR+z5t0oI4mOwtL4CBR4Xt8dYydJqbQ
+ rxOaP6PSRWvg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9719"; a="154763282"
+X-IronPort-AV: E=Sophos;i="5.76,335,1592895600"; 
+   d="scan'208";a="154763282"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2020 02:14:34 -0700
+IronPort-SDR: Bkh9B8RFZMBPfu5d+mES5xY/5CkXNFpuBirBk/Y5TY8vuOOQ78Brr5064ufoZuL6MOD7aUnrpv
+ HwUbzpdy7gdQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,335,1592895600"; 
+   d="scan'208";a="321195575"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga004.fm.intel.com with ESMTP; 21 Aug 2020 02:14:35 -0700
+Received: from [10.214.149.100] (rtanwar-MOBL.gar.corp.intel.com [10.214.149.100])
+        by linux.intel.com (Postfix) with ESMTP id 9FFA458045A;
+        Fri, 21 Aug 2020 02:14:30 -0700 (PDT)
+Subject: Re: [PATCH v8 2/2] Add PWM fan controller driver for LGM SoC
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
+        lee.jones@linaro.org, thierry.reding@gmail.com,
+        p.zabel@pengutronix.de, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, rahul.tanwar.linux@gmail.com,
+        rtanwar@maxlinear.com
+References: <cover.1597898872.git.rahul.tanwar@linux.intel.com>
+ <b6d0a65625a2bc231c649c970c0a1af1ff3a5dd5.1597898872.git.rahul.tanwar@linux.intel.com>
+ <20200820105255.GB1891694@smile.fi.intel.com>
+From:   "Tanwar, Rahul" <rahul.tanwar@linux.intel.com>
+Message-ID: <56c2a40d-6872-8ae7-7214-420b8bb9f027@linux.intel.com>
+Date:   Fri, 21 Aug 2020 17:14:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vcbmc-PV-gQxuj9i8sAcFCzhJKe_qzEfrkUTZbnf3Vupg@mail.gmail.com>
+In-Reply-To: <20200820105255.GB1891694@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 12:06:45PM +0300, Andy Shevchenko wrote:
-> On Fri, Aug 21, 2020 at 10:26 AM Pavel Machek <pavel@denx.de> wrote:
-> > > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > >
-> > > [ Upstream commit 3d858942250820b9adc35f963a257481d6d4c81d ]
-> > >
-> > > The event handler loop must be run with interrupts disabled.
-> > > Otherwise we will have a warning:
-> > ...
-> > > Recently xHCI driver switched to tasklets in the commit 36dc01657b49
-> > > ("usb: host: xhci: Support running urb giveback in tasklet
-> > > context").
-> >
-> > AFAICT, 36dc01657b49 is not included in 4.19.141, so this commit
-> > should not be needed, either.
-> 
-> I'm wondering if there are any other USB host controller drivers that
-> use URB giveback in interrupt enabled context.
 
-Almost all do.
+
+On 20/8/2020 6:52 pm, Andy Shevchenko wrote:
+> On Thu, Aug 20, 2020 at 12:50:46PM +0800, Rahul Tanwar wrote:
+>> Intel Lightning Mountain(LGM) SoC contains a PWM fan controller.
+>> This PWM controller does not have any other consumer, it is a
+>> dedicated PWM controller for fan attached to the system. Add
+>> driver for this PWM fan controller.
+> ...
+> +#include <linux/bitfield.h>
+> +#include <linux/clk.h>
+> +#include <linux/module.h>
+>> +#include <linux/of_device.h>
+> This should be mod_devicetable.h.
+
+Inlcuding mod_devicetable.h instead of of_device.h results in
+build failure related to all platform calls. Build is ok if
+i remove it. Just FYI..
+
+Regards,
+Rahul
+
