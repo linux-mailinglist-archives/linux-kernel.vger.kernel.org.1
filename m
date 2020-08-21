@@ -2,155 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 124A324C995
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 03:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 383BE24C99D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Aug 2020 03:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726885AbgHUBjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Aug 2020 21:39:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726819AbgHUBjd (ORCPT
+        id S1726975AbgHUBoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Aug 2020 21:44:32 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:1829 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725859AbgHUBoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Aug 2020 21:39:33 -0400
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2235C061386
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 18:39:32 -0700 (PDT)
-Received: by mail-vk1-xa43.google.com with SMTP id x142so100120vke.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Aug 2020 18:39:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mYhfQVGQv2L9AAT3zv6RHMzgR14goIa2TqteKXtO4h8=;
-        b=l9tUm6ZxQ1aEm0XHA/GfgsZB3oFioaAFFJ1boYEsC8BOPyrxF+wxlxx/W9UNWgQQcu
-         KvMW3NbUeZ3qwPdp3kHHW74HKcjNVYLlXOsNoU1kSK+cgIdcEi0Us2Ht9Q/yN3P2oeh9
-         RtCNWnfmcQFN68wxrVR0DM8Mp3ePfsnEXgbSI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mYhfQVGQv2L9AAT3zv6RHMzgR14goIa2TqteKXtO4h8=;
-        b=Klu8+UKge6g7AaKw7Gco4/IKa8FEExKhpbsx1/tsHbAs1PSYWSl+di7IgwzRQQBAn+
-         +TQ+Z/GJ1lw8S+sjqiU6vL6Hdwk4wjadKYEs/738+8TM85k3isaCDj78rKcBVJtppg9Z
-         ibWpk30ISyyaJ+tb5k9ERKLRuIkdGuuUaX/mgwYR3mbzNBtO+Caz4MyL5KSSBjEXi9J6
-         o+x21b71p9lQNydZmpuzu61TIUS9nGsVLPXCsdAIiCQagVMOoCvKUhSQ2ODj1on8/8n1
-         fquv8JU7OOLVJfrmLLAmMNzZDrTcCJMbNoYHUBTprRfRtX7l1E2VDxCxpgaF6ltnNzWm
-         FO9A==
-X-Gm-Message-State: AOAM5337RXm+Dy26IJ3Hog+auAfrIFRKbJK9kb0wjFbzQecRHdbWLDiM
-        gkjYq1UWWiqEXaNq9Nj5DIJG8Jf3+0bRhQ31tlqxMPXIRyc=
-X-Google-Smtp-Source: ABdhPJz/aNYj42JHobF04JJmjRX/OdD6icUob7+KY1YA18J+hJjOyVRvLsR5WOvo+GEr+rqzX8OGQ4tTMlkUICbpwHA=
-X-Received: by 2002:a1f:9bc6:: with SMTP id d189mr426867vke.54.1597973970647;
- Thu, 20 Aug 2020 18:39:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200820170951.v4.1.Ia54fe801f246a0b0aee36fb1f3bfb0922a8842b0@changeid>
- <20200820170951.v4.3.I066d89f39023956c47fb0a42edf196b3950ffbf7@changeid>
- <20200820102347.15d2f610@oasis.local.home> <CANMq1KCoEZVj=sjxCqBhqLZKBab57+82=Rk_LN7fc3aCuNHMUw@mail.gmail.com>
- <20200820203601.4f70bf98@oasis.local.home>
-In-Reply-To: <20200820203601.4f70bf98@oasis.local.home>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Fri, 21 Aug 2020 09:39:19 +0800
-Message-ID: <CANMq1KAAgXG9MKMZ_D9zYFV-j0oVreA_AeSw-8FoyJgZ9eWQpg@mail.gmail.com>
-Subject: Re: [PATCH v4 3/3] media: atomisp: Only use trace_printk if allowed
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        devel@driverdev.osuosl.org, lkml <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>
+        Thu, 20 Aug 2020 21:44:30 -0400
+X-UUID: f669e5d1f69a4fe1bd47bc46ef479947-20200821
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=myVsjwfmsGiFqleY7utMNLzdKyLv2kTDb2x08UFOPCQ=;
+        b=d+PzrZd1if0v4MPLIPVPJTCzaR6PoZlzt5yEfmGQiNXZVO7Zr7bD+Cm65fG0N19zwhpAUGiToIjgmd8/8tDBjiB1FUFtITBtBQcWv/Orz+mtTlVuwDOJIhcpNhvcPazmqEIjtrp1DNke3XUNlYElB01B2BjHlOL+bsrP2AvE4vs=;
+X-UUID: f669e5d1f69a4fe1bd47bc46ef479947-20200821
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLS)
+        with ESMTP id 1742172575; Fri, 21 Aug 2020 09:44:25 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS32DR.mediatek.inc
+ (172.27.6.104) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 21 Aug
+ 2020 09:44:24 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 21 Aug 2020 09:44:23 +0800
+Message-ID: <1597974192.21253.1.camel@mhfsdcap03>
+Subject: Re: [PATCH v2 11/11] iopoll: update kerneldoc of
+ read_poll_timeout_atomic()
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Alan Stern <stern@rowland.harvard.edu>
+Date:   Fri, 21 Aug 2020 09:43:12 +0800
+In-Reply-To: <49de5eaf-9870-522c-b1f2-037ecb122237@gmail.com>
+References: <1597902349-8998-1-git-send-email-chunfeng.yun@mediatek.com>
+         <1597902349-8998-11-git-send-email-chunfeng.yun@mediatek.com>
+         <49de5eaf-9870-522c-b1f2-037ecb122237@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: 442D63025AC8AD7A9DE72A802969C476581D10A5A37734827091AB339203CB192000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 8:36 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Fri, 21 Aug 2020 08:13:00 +0800
-> Nicolas Boichat <drinkcat@chromium.org> wrote:
->
-> > On Thu, Aug 20, 2020 at 10:23 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> > >
-> > > On Thu, 20 Aug 2020 17:14:12 +0800
-> > > Nicolas Boichat <drinkcat@chromium.org> wrote:
-> > >
-> > > > Technically, we could only initialize the trace_printk buffers
-> > > > when the print env is switched, to avoid the build error and
-> > > > unconditional boot-time warning, but I assume this printing
-> > > > framework will eventually get removed when the driver moves out
-> > > > of staging?
-> > >
-> > > Perhaps this should be converting into a trace event. Look at what bpf
-> > > did for their bpf_trace_printk().
-> > >
-> > > The more I think about it, the less I like this series.
-> >
-> > To make it clear, the primary goal of this series is to get rid of
-> > trace_printk sprinkled in the kernel by making sure some randconfig
-> > builds fail. Since my v2, there already has been one more added (the
-> > one that this patch removes), so I'd like to land 2/3 ASAP to prevent
-> > even more from being added.
-> >
-> > Looking at your reply on 1/3, I think we are aligned on that goal? Is
-> > there some other approach you'd recommend?
-> >
-> > Now, I'm not pretending my fixes are the best possible ones, but I
-> > would much rather have the burden of converting to trace events on the
-> > respective driver maintainers. (btw is there a short
-> > documentation/tutorial that I could link to in these patches, to help
-> > developers understand what is the recommended way now?)
-> >
->
-> I like the goal, but I guess I never articulated the problem I have
-> with the methodology.
->
-> trace_printk() is meant to be a debugging tool. Something that people
-> can and do sprinkle all over the kernel to help them find a bug in
-> areas that are called quite often (where printk() is way too slow).
->
-> The last thing I want them to deal with is adding a trace_printk() with
-> their distro's config (or a config from someone that triggered the bug)
-> only to have the build to fail, because they also need to add a config
-> value.
->
-> I add to the Cc a few developers I know that use trace_printk() in this
-> fashion. I'd like to hear their view on having to add a config option
-> to make trace_printk work before they test a config that is sent to
-> them.
+T24gVGh1LCAyMDIwLTA4LTIwIGF0IDEzOjE0ICswMzAwLCBTZXJnZWkgU2h0eWx5b3Ygd3JvdGU6
+DQo+IEhlbGxvIQ0KPiANCj4gT24gMjAuMDguMjAyMCA4OjQ1LCBDaHVuZmVuZyBZdW4gd3JvdGU6
+DQo+IA0KPiA+IEFyZ3VtZW50cyBkZXNjcmlwdGlvbiBvZiByZWFkX3BvbGxfdGltZW91dF9hdG9t
+aWMoKSBpZiBvdXQgb2YgZGF0ZSwNCj4gDQo+ICAgICBzL2lmL2lzLz8NCldpbGwgZml4IGl0LCB0
+aGFua3MNCg0KPiANCj4gPiB1cGRhdGUgaXQuDQo+ID4gDQo+ID4gQ2M6IEFsYW4gU3Rlcm4gPHN0
+ZXJuQHJvd2xhbmQuaGFydmFyZC5lZHU+DQo+ID4gU2lnbmVkLW9mZi1ieTogQ2h1bmZlbmcgWXVu
+IDxjaHVuZmVuZy55dW5AbWVkaWF0ZWsuY29tPg0KPiBbLi4uXQ0KPiANCj4gTUJSLCBTZXJnZWkN
+Cg0K
 
-Gotcha, thanks. I have also used trace_printk in the past, as
-uncommitted changes (and understand the usefulness ,-)). And in Chrome
-OS team here, developers have also raised this concern: how do we make
-the developer flow convenient so that we can add trace_printk to our
-code for debugging, without having to flip back that config option,
-and _yet_ make sure that no trace_printk ever makes it into our
-production kernels. We have creative ways of making that work (portage
-USE flags and stuff). But I'm not sure about other flows, and your
-concern is totally valid...
-
-Some other approaches/ideas:
- 1. Filter all lkml messages that contain trace_printk. Already found
-1 instance, and I can easily reply to those with a semi-canned answer,
-if I remember to check that filter regularly (not sustainable in the
-long run...).
- 2. Integration into some kernel test robot? (I will not roll my own
-for this ,-)) It may be a bit difficult as some debug config options
-do enable trace_printk, and that's ok.
- 3. In Chromium OS, I can add a unit test (i.e. something outside of
-the normal kernel build system), but that'll only catch regressions
-downstream (or when we happen to backport patches).
-
-Down the line, #3 catches what I care about the most (Chromium OS
-issues: we had production kernels for a few days/weeks showing that
-splat on boot), but it'd be nice to have something upstream that
-benefits everyone.
-
-Thanks,
-
->
-> -- Steve
